@@ -37,9 +37,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 // FIXME: this must be put here, because it is used by MIP_Problem.defs.hh
 // and otherwise compilation will fail for ppl-config.o.
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 
-#include "Matrix.defs.hh"
+#include "Dense_Matrix.defs.hh"
 
 #include "Sparse_Matrix.defs.hh"
 
@@ -498,7 +498,7 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 class Parma_Polyhedra_Library::PIP_Problem {
 public:
 #ifndef USE_PPL_SPARSE_MATRIX
-  typedef Matrix matrix_type;
+  typedef Dense_Matrix matrix_type;
 #else
   typedef Sparse_Matrix matrix_type;
 #endif

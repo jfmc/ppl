@@ -9,13 +9,14 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Matrix_types_hh
-#define PPL_Matrix_types_hh 1
+#ifndef PPL_Dense_Row_types_hh
+#define PPL_Dense_Row_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class Matrix;
+class Dense_Row_Impl_Handler;
+class Dense_Row;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Matrix_types_hh)
+#endif // !defined(PPL_Dense_Row_types_hh)

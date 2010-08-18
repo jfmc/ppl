@@ -2167,7 +2167,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       while (i > 1) {
 	const Coefficient& c_i = c[--i];
 	if (c_i != 0) {
-	  // See the comment in Row::normalize().
+	  // See the comment in Dense_Row::normalize().
 	  gcd_assign(gcd, c_i, gcd);
 	  if (gcd == 1)
 	    goto next_constraint;

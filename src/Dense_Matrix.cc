@@ -1,4 +1,4 @@
-/* Matrix class implementation (non-inline functions).
+/* Dense_Matrix class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,17 +22,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 
-#include "Matrix.defs.hh"
-#include "Row.defs.hh"
+#include "Dense_Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Matrix::Matrix(const dimension_type n_rows,
-		    const dimension_type n_columns,
-		    Row::Flags row_flags)
+PPL::Dense_Matrix::Dense_Matrix(const dimension_type n_rows,
+                                const dimension_type n_columns,
+                                Dense_Row::Flags row_flags)
   :
 #ifdef NDEBUG
     rows(n_rows),
@@ -49,7 +49,8 @@ PPL::Matrix::Matrix(const dimension_type n_rows,
 }
 
 void
-PPL::Matrix::add_zero_rows(const dimension_type n, Row::Flags row_flags) {
+PPL::Dense_Matrix::add_zero_rows(const dimension_type n,
+                                 Dense_Row::Flags row_flags) {
   PPL_ASSERT(n > 0);
   PPL_ASSERT(n <= max_num_rows() - num_rows());
   const dimension_type old_num_rows = rows.size();
@@ -57,9 +58,9 @@ PPL::Matrix::add_zero_rows(const dimension_type n, Row::Flags row_flags) {
 
   if (rows.capacity() < new_num_rows) {
     // Reallocation will take place.
-    std::vector<Row> new_rows;
+    std::vector<Dense_Row> new_rows;
     new_rows.reserve(compute_capacity(new_num_rows, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_num_rows, Row());
+    new_rows.insert(new_rows.end(), new_num_rows, Dense_Row());
     // Construct the new rows.
     dimension_type i = new_num_rows;
     while (i-- > old_num_rows)
@@ -73,14 +74,14 @@ PPL::Matrix::add_zero_rows(const dimension_type n, Row::Flags row_flags) {
   }
   else {
     // Reallocation will NOT take place.
-    rows.insert(rows.end(), n, Row());
+    rows.insert(rows.end(), n, Dense_Row());
     for (dimension_type i = new_num_rows; i-- > old_num_rows; )
       rows[i].construct(row_size, row_capacity, row_flags);
   }
 }
 
 void
-PPL::Matrix::add_zero_columns(const dimension_type n) {
+PPL::Dense_Matrix::add_zero_columns(const dimension_type n) {
   PPL_ASSERT(n > 0);
   PPL_ASSERT(n <= max_num_columns() - num_columns());
   const dimension_type num_rows = rows.size();
@@ -97,7 +98,7 @@ PPL::Matrix::add_zero_columns(const dimension_type n) {
       = compute_capacity(new_num_columns, max_num_columns());
     PPL_ASSERT(new_row_capacity <= max_num_columns());
     for (dimension_type i = num_rows; i-- > 0; ) {
-      Row new_row(rows[i], new_num_columns, new_row_capacity);
+      Dense_Row new_row(rows[i], new_num_columns, new_row_capacity);
       std::swap(rows[i], new_row);
     }
     row_capacity = new_row_capacity;
@@ -107,7 +108,7 @@ PPL::Matrix::add_zero_columns(const dimension_type n) {
 }
 
 void
-PPL::Matrix::add_zero_columns(dimension_type n, dimension_type i) {
+PPL::Dense_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
   const dimension_type old_num_columns = num_columns();
 
   PPL_ASSERT(i <= old_num_columns);
@@ -131,9 +132,9 @@ PPL::Matrix::add_zero_columns(dimension_type n, dimension_type i) {
 }
 
 void
-PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
-				       const dimension_type m,
-				       Row::Flags row_flags) {
+PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
+                                             const dimension_type m,
+                                             Dense_Row::Flags row_flags) {
   PPL_ASSERT(n > 0);
   PPL_ASSERT(n <= max_num_rows() - num_rows());
   PPL_ASSERT(m > 0);
@@ -146,9 +147,9 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
     // We can recycle the old rows.
     if (rows.capacity() < new_num_rows) {
       // Reallocation will take place.
-      std::vector<Row> new_rows;
+      std::vector<Dense_Row> new_rows;
       new_rows.reserve(compute_capacity(new_num_rows, max_num_rows()));
-      new_rows.insert(new_rows.end(), new_num_rows, Row());
+      new_rows.insert(new_rows.end(), new_num_rows, Dense_Row());
       // Construct the new rows.
       dimension_type i = new_num_rows;
       while (i-- > old_num_rows)
@@ -164,7 +165,7 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
     }
     else {
       // Reallocation will NOT take place.
-      rows.insert(rows.end(), n, Row());
+      rows.insert(rows.end(), n, Dense_Row());
       // Construct the new rows.
       dimension_type i = new_num_rows;
       while (i-- > old_num_rows)
@@ -178,9 +179,9 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
   }
   else {
     // We cannot even recycle the old rows.
-    Matrix new_matrix;
+    Dense_Matrix new_matrix;
     new_matrix.rows.reserve(compute_capacity(new_num_rows, max_num_rows()));
-    new_matrix.rows.insert(new_matrix.rows.end(), new_num_rows, Row());
+    new_matrix.rows.insert(new_matrix.rows.end(), new_num_rows, Dense_Row());
     // Construct the new rows.
     new_matrix.row_size = new_num_columns;
     new_matrix.row_capacity = compute_capacity(new_num_columns,
@@ -193,7 +194,7 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
     // Copy the old rows.
     ++i;
     while (i-- > 0) {
-      Row new_row(rows[i],
+      Dense_Row new_row(rows[i],
 		  new_matrix.row_size,
 		  new_matrix.row_capacity);
       std::swap(new_matrix.rows[i], new_row);
@@ -204,16 +205,16 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
 }
 
 void
-PPL::Matrix::add_recycled_row(Row& y) {
+PPL::Dense_Matrix::add_recycled_row(Dense_Row& y) {
   // The added row must have the same size and capacity as the
   // existing rows of the system.
   PPL_ASSERT(y.OK(row_size, row_capacity));
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
-    std::vector<Row> new_rows;
+    std::vector<Dense_Row> new_rows;
     new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
+    new_rows.insert(new_rows.end(), new_rows_size, Dense_Row());
     // Put the new row in place.
     dimension_type i = new_rows_size-1;
     std::swap(new_rows[i], y);
@@ -227,15 +228,15 @@ PPL::Matrix::add_recycled_row(Row& y) {
     // Reallocation will NOT take place.
     // Inserts a new empty row at the end,
     // then substitutes it with a copy of the given row.
-    std::swap(*rows.insert(rows.end(), Row()), y);
+    std::swap(*rows.insert(rows.end(), Dense_Row()), y);
 
   PPL_ASSERT(OK());
 }
 
 void
-PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
-			    const dimension_type new_n_columns,
-			    Row::Flags row_flags) {
+PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
+                                  const dimension_type new_n_columns,
+                                  Dense_Row::Flags row_flags) {
   dimension_type old_n_rows = rows.size();
   // Note that, if we have `new_n_rows <= old_n_rows' and
   // `new_n_columns >= row_size', the matrix will keep its sortedness.
@@ -247,9 +248,9 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
       // We can recycle the old rows.
       if (rows.capacity() < new_n_rows) {
 	// Reallocation (of vector `rows') will take place.
-	std::vector<Row> new_rows;
+	std::vector<Dense_Row> new_rows;
 	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
-	new_rows.insert(new_rows.end(), new_n_rows, Row());
+	new_rows.insert(new_rows.end(), new_n_rows, Dense_Row());
 	// Construct the new rows (be careful: each new row must have
 	// the same capacity as each one of the old rows).
 	dimension_type i = new_n_rows;
@@ -264,7 +265,7 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
       }
       else {
 	// Reallocation (of vector `rows') will NOT take place.
-	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	rows.insert(rows.end(), new_n_rows - old_n_rows, Dense_Row());
 	// Be careful: each new row must have
 	// the same capacity as each one of the old rows.
 	for (dimension_type i = new_n_rows; i-- > old_n_rows; )
@@ -273,7 +274,7 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
     }
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
-      Matrix new_matrix(new_n_rows, new_n_columns, row_flags);
+      Dense_Matrix new_matrix(new_n_rows, new_n_columns, row_flags);
       swap(new_matrix);
       return;
     }
@@ -302,7 +303,7 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
 	const dimension_type new_row_capacity
 	  = compute_capacity(new_n_columns, max_num_columns());
 	for (dimension_type i = old_n_rows; i-- > 0; ) {
-	  Row new_row(new_n_columns, new_row_capacity, row_flags);
+	  Dense_Row new_row(new_n_columns, new_row_capacity, row_flags);
 	  std::swap(rows[i], new_row);
 	}
 	row_capacity = new_row_capacity;
@@ -313,8 +314,8 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
 }
 
 void
-PPL::Matrix::ascii_dump(std::ostream& s) const {
-  const Matrix& x = *this;
+PPL::Dense_Matrix::ascii_dump(std::ostream& s) const {
+  const Dense_Matrix& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
   s << x_num_rows << " x " << x_num_columns << "\n";
@@ -322,11 +323,11 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
     x[i].ascii_dump(s);
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Matrix)
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Dense_Matrix)
 
 bool
-PPL::Matrix::ascii_load(std::istream& s) {
-  Matrix& x = *this;
+PPL::Dense_Matrix::ascii_load(std::istream& s) {
+  Dense_Matrix& x = *this;
   std::string str;
   dimension_type x_num_rows;
   dimension_type x_num_cols;
@@ -337,7 +338,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
   if (!(s >> x_num_cols))
     return false;
 
-  resize_no_copy(x_num_rows, x_num_cols, Row::Flags());
+  resize_no_copy(x_num_rows, x_num_cols, Dense_Row::Flags());
 
   for (dimension_type row = 0; row < x_num_rows; ++row)
     if (!x[row].ascii_load(s))
@@ -349,16 +350,16 @@ PPL::Matrix::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Matrix::swap_columns(const dimension_type i, const dimension_type j) {
+PPL::Dense_Matrix::swap_columns(const dimension_type i, const dimension_type j) {
   PPL_ASSERT(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Row& rows_k = rows[k];
+    Dense_Row& rows_k = rows[k];
     std::swap(rows_k[i], rows_k[j]);
   }
 }
 
 void
-PPL::Matrix::remove_trailing_columns(const dimension_type n) {
+PPL::Dense_Matrix::remove_trailing_columns(const dimension_type n) {
   PPL_ASSERT(n > 0);
   PPL_ASSERT(n <= row_size);
   row_size -= n;
@@ -367,7 +368,7 @@ PPL::Matrix::remove_trailing_columns(const dimension_type n) {
 }
 
 void
-PPL::Matrix::remove_column(const dimension_type i) {
+PPL::Dense_Matrix::remove_column(const dimension_type i) {
   PPL_ASSERT(i < row_size);
   const dimension_type n_cols = num_columns();
   if (i != n_cols - 1) {
@@ -381,12 +382,12 @@ PPL::Matrix::remove_column(const dimension_type i) {
 }
 
 void
-PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
+PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Row& rows_k = rows[k];
+    Dense_Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)
@@ -407,9 +408,9 @@ PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::Matrix */
+/*! \relates Parma_Polyhedra_Library::Dense_Matrix */
 bool
-PPL::operator==(const Matrix& x, const Matrix& y) {
+PPL::operator==(const Dense_Matrix& x, const Dense_Matrix& y) {
   if (x.num_columns() != y.num_columns())
     return false;
   const dimension_type x_num_rows = x.num_rows();
@@ -423,18 +424,18 @@ PPL::operator==(const Matrix& x, const Matrix& y) {
 }
 
 PPL::memory_size_type
-PPL::Matrix::external_memory_in_bytes() const {
-  memory_size_type n = rows.capacity() * sizeof(Row);
+PPL::Dense_Matrix::external_memory_in_bytes() const {
+  memory_size_type n = rows.capacity() * sizeof(Dense_Row);
   for (dimension_type i = num_rows(); i-- > 0; )
     n += rows[i].external_memory_in_bytes(row_capacity);
   return n;
 }
 
 bool
-PPL::Matrix::OK() const {
+PPL::Dense_Matrix::OK() const {
   if (row_size > row_capacity) {
 #ifndef NDEBUG
-    std::cerr << "Matrix completely broken: "
+    std::cerr << "Dense_Matrix completely broken: "
 	      << "row_capacity is " << row_capacity
 	      << ", row_size is " << row_size
 	      << std::endl;
@@ -442,7 +443,7 @@ PPL::Matrix::OK() const {
     return false;
   }
 
-  const Matrix& x = *this;
+  const Dense_Matrix& x = *this;
   for (dimension_type i = 0, n_rows = num_rows(); i < n_rows; ++i)
     if (!x[i].OK(row_size, row_capacity))
       return false;

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Congruence.types.hh"
 #include "Scalar_Products.types.hh"
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Grid.types.hh"
 #include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
@@ -207,7 +207,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   syntactically different from the (semantically equivalent)
   congruence considered.
 */
-class Parma_Polyhedra_Library::Congruence : private Row {
+class Parma_Polyhedra_Library::Congruence : private Dense_Row {
 public:
   //! Ordinary copy constructor.
   Congruence(const Congruence& cg);

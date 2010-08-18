@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
 
-#include "Row.defs.hh"
-#include "Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Dense_Matrix.defs.hh"
 
 #include "Sparse_Matrix.defs.hh"
 
@@ -83,10 +83,10 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
 
-  typedef Row row_type;
+  typedef Dense_Row row_type;
 
 #ifndef USE_PPL_SPARSE_MATRIX
-  typedef Matrix matrix_type;
+  typedef Dense_Matrix matrix_type;
 #else
   typedef Sparse_Matrix matrix_type;
 #endif

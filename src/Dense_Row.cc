@@ -1,4 +1,4 @@
-/* Row class implementation (non-inline functions).
+/* Dense_Row class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <ppl-config.h>
 
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Coefficient.defs.hh"
 #include <iostream>
 #include <iomanip>
@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Row_Impl_Handler::
+PPL::Dense_Row_Impl_Handler::
 Impl::expand_within_capacity(const dimension_type new_size) {
   PPL_ASSERT(size() <= new_size && new_size <= max_size());
 #if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
@@ -46,7 +46,7 @@ Impl::expand_within_capacity(const dimension_type new_size) {
 }
 
 void
-PPL::Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
+PPL::Dense_Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
   const dimension_type old_size = size();
   PPL_ASSERT(new_size <= old_size);
   // Since ~Coefficient() does not throw exceptions, nothing here does.
@@ -63,7 +63,7 @@ PPL::Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
 }
 
 void
-PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
+PPL::Dense_Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
   const dimension_type y_size = y.size();
 #if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
@@ -84,8 +84,8 @@ PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
 }
 
 void
-PPL::Row::normalize() {
-  Row& x = *this;
+PPL::Dense_Row::normalize() {
+  Dense_Row& x = *this;
   // Compute the GCD of all the coefficients.
   const dimension_type sz = size();
   dimension_type i = sz;
@@ -132,7 +132,7 @@ PPL::Row::normalize() {
 }
 
 void
-PPL::Row::reset(dimension_type first, dimension_type last) {
+PPL::Dense_Row::reset(dimension_type first, dimension_type last) {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= size());
   for (dimension_type i = first; i < last; ++i)
@@ -140,7 +140,7 @@ PPL::Row::reset(dimension_type first, dimension_type last) {
 }
 
 void
-PPL::Row::Flags::ascii_dump(std::ostream& s) const {
+PPL::Dense_Row::Flags::ascii_dump(std::ostream& s) const {
   s << "0x";
   std::istream::fmtflags f = s.setf(std::istream::hex);
   std::streamsize sz = s.width(2*sizeof(Flags::base_type));
@@ -151,10 +151,10 @@ PPL::Row::Flags::ascii_dump(std::ostream& s) const {
   s.flags(f);
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row::Flags)
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Dense_Row::Flags)
 
 bool
-PPL::Row::Flags::ascii_load(std::istream& s) {
+PPL::Dense_Row::Flags::ascii_load(std::istream& s) {
   std::string str;
   std::streamsize sz = s.width(2);
   if (!(s >> str) || str != "0x")
@@ -167,8 +167,8 @@ PPL::Row::Flags::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Row::ascii_dump(std::ostream& s) const {
-  const Row& x = *this;
+PPL::Dense_Row::ascii_dump(std::ostream& s) const {
+  const Dense_Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
@@ -178,10 +178,10 @@ PPL::Row::ascii_dump(std::ostream& s) const {
   s << "\n";
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row)
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Dense_Row)
 
 bool
-PPL::Row::ascii_load(std::istream& s) {
+PPL::Dense_Row::ascii_load(std::istream& s) {
   std::string str;
   if (!(s >> str) || str != "size")
     return false;
@@ -189,12 +189,12 @@ PPL::Row::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  Row& x = *this;
+  Dense_Row& x = *this;
   const dimension_type old_size = x.size();
   if (new_size < old_size)
     x.shrink(new_size);
   else if (new_size > old_size) {
-    Row y(new_size, Row::Flags());
+    Dense_Row y(new_size, Dense_Row::Flags());
     x.swap(y);
   }
 
@@ -207,7 +207,7 @@ PPL::Row::ascii_load(std::istream& s) {
 }
 
 PPL::memory_size_type
-PPL::Row_Impl_Handler::Impl::external_memory_in_bytes() const {
+PPL::Dense_Row_Impl_Handler::Impl::external_memory_in_bytes() const {
   memory_size_type n = 0;
   for (dimension_type i = size(); i-- > 0; )
     n += PPL::external_memory_in_bytes(vec_[i]);
@@ -215,7 +215,7 @@ PPL::Row_Impl_Handler::Impl::external_memory_in_bytes() const {
 }
 
 bool
-PPL::Row::OK() const {
+PPL::Dense_Row::OK() const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -232,7 +232,7 @@ PPL::Row::OK() const {
   else
 # endif // !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ > max_size()) {
-    cerr << "Row capacity exceeds the maximum allowed size:"
+    cerr << "Dense_Row capacity exceeds the maximum allowed size:"
 	 << endl
 	 << "is " << capacity_
 	 << ", should be less than or equal to " << max_size() << "."
@@ -242,7 +242,7 @@ PPL::Row::OK() const {
 #endif // PPL_ROW_EXTRA_DEBUG
   if (size() > max_size()) {
 #ifndef NDEBUG
-    cerr << "Row size exceeds the maximum allowed size:"
+    cerr << "Dense_Row size exceeds the maximum allowed size:"
 	 << endl
 	 << "is " << size()
 	 << ", should be less than or equal to " << max_size() << "."
@@ -253,7 +253,7 @@ PPL::Row::OK() const {
 #if PPL_ROW_EXTRA_DEBUG
   if (capacity_ < size()) {
 #ifndef NDEBUG
-    cerr << "Row is completely broken: capacity is " << capacity_
+    cerr << "Dense_Row is completely broken: capacity is " << capacity_
 	 << ", size is " << size() << "."
 	 << endl;
 #endif
@@ -264,7 +264,7 @@ PPL::Row::OK() const {
 }
 
 bool
-PPL::Row::OK(const dimension_type row_size,
+PPL::Dense_Row::OK(const dimension_type row_size,
 	     const dimension_type
 #if PPL_ROW_EXTRA_DEBUG
 	     row_capacity
@@ -286,7 +286,7 @@ PPL::Row::OK(const dimension_type row_size,
   else
 # endif // !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ != row_capacity) {
-    cerr << "Row capacity mismatch: is " << capacity_
+    cerr << "Dense_Row capacity mismatch: is " << capacity_
 	 << ", should be " << row_capacity << "."
 	 << endl;
     is_broken = true;
@@ -296,7 +296,7 @@ PPL::Row::OK(const dimension_type row_size,
   // Check the declared size.
   if (size() != row_size) {
 #ifndef NDEBUG
-    cerr << "Row size mismatch: is " << size()
+    cerr << "Dense_Row size mismatch: is " << size()
 	 << ", should be " << row_size << "."
 	 << endl;
 #endif
@@ -305,9 +305,9 @@ PPL::Row::OK(const dimension_type row_size,
   return !is_broken;
 }
 
-/*! \relates Parma_Polyhedra_Library::Row */
+/*! \relates Parma_Polyhedra_Library::Dense_Row */
 bool
-PPL::operator==(const Row& x, const Row& y) {
+PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   const dimension_type x_size = x.size();
   const dimension_type y_size = y.size();
   if (x_size != y_size)

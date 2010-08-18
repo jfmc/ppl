@@ -186,7 +186,7 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
 
 PPL::memory_size_type
 PPL::Bit_Matrix::external_memory_in_bytes() const {
-  memory_size_type n = rows.capacity() * sizeof(Row);
+  memory_size_type n = rows.capacity() * sizeof(Dense_Row);
   for (dimension_type i = num_rows(); i-- > 0; )
     n += rows[i].external_memory_in_bytes();
   return n;

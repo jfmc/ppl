@@ -35,8 +35,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef USE_PPL_SPARSE_MATRIX
 
-#include "Matrix.defs.hh"
-#include "Row.defs.hh"
+#include "Dense_Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
 
 #else
 
@@ -57,7 +57,7 @@ namespace Parma_Polyhedra_Library {
 class PIP_Tree_Node {
 public:
 #ifndef USE_PPL_SPARSE_MATRIX
-  typedef Matrix matrix_type;
+  typedef Dense_Matrix matrix_type;
 #else
   typedef Sparse_Matrix matrix_type;
 #endif
@@ -227,7 +227,7 @@ protected:
                                const Variables_Set& params,
                                dimension_type space_dim) = 0;
 
-  //! Inserts a new parametric constraint in internal Row format
+  //! Inserts a new parametric constraint in internal row format
   void add_constraint(const matrix_type::row_type& x,
                       const Variables_Set& parameters);
 
@@ -676,7 +676,7 @@ protected:
     to be updated if a new artificial parameter is to be created
 
     \param context
-    a set of linear inequalities on the parameters, in Matrix form; to be
+    a set of linear inequalities on the parameters, in matrix form; to be
     updated if a new artificial parameter is to be created
 
     \param space_dimension

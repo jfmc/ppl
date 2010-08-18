@@ -66,7 +66,7 @@ PPL::Constraint::Constraint(const Congruence& cg)
 					 "congruence cg must be an equality."),
 		  0),
 	       // Capacity also includes a column for the epsilon coefficient.
-	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
+	       compute_capacity(cg.space_dimension() + 2, Dense_Row::max_size()),
 	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.

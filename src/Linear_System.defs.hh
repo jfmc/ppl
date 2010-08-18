@@ -24,10 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_System_defs_hh 1
 
 #include "Linear_System.types.hh"
-#include "Row.types.hh"
+#include "Dense_Row.types.hh"
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
-#include "Matrix.defs.hh"
+#include "Dense_Matrix.defs.hh"
 #include "Topology.hh"
 #include "Linear_Row.defs.hh"
 
@@ -51,7 +51,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-class Parma_Polyhedra_Library::Linear_System : public Matrix {
+class Parma_Polyhedra_Library::Linear_System : public Dense_Matrix {
 public:
   //! Builds an empty linear system with specified topology.
   /*!
@@ -391,7 +391,7 @@ private:
 
   //! Ordering predicate (used when implementing the sort algorithm).
   struct Row_Less_Than {
-    bool operator()(const Row& x, const Row& y) const;
+    bool operator()(const Dense_Row& x, const Dense_Row& y) const;
   };
 };
 
@@ -425,15 +425,15 @@ bool operator!=(const Linear_System& x, const Linear_System& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator keeping a Linear_System consistent with a Bit_Matrix.
 /*! \ingroup PPL_CXX_interface
-  An iterator on the vector of Row objects encoded in a Linear_System
+  An iterator on the vector of Dense_Row objects encoded in a Linear_System
   extended to maintain a corresponding iterator on a vector of
-  Bit_Row objects.  Access to values is always done on the Row
+  Bit_Row objects.  Access to values is always done on the Dense_Row
   objects, but iterator movements and swaps are done on both components.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator {
 public:
-  typedef std::vector<Row>::iterator Iter1;
+  typedef std::vector<Dense_Row>::iterator Iter1;
   typedef std::vector<Bit_Row>::iterator Iter2;
 
 private:
@@ -492,7 +492,7 @@ public:
   //! Access-through operator.
   pointer operator->() const;
 
-  //! Swaps the pointed Row objects while keeping Bit_Matrix consistent.
+  //! Swaps the pointed Dense_Row objects while keeping Bit_Matrix consistent.
   void iter_swap(const With_Bit_Matrix_iterator& y) const;
 
 };

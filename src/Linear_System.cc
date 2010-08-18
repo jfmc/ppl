@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_System.defs.hh"
 #include "Coefficient.defs.hh"
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <algorithm>
@@ -57,7 +57,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   Linear_System& x = *this;
 
   // A temporary vector of rows...
-  std::vector<Row> tmp;
+  std::vector<Dense_Row> tmp;
   // ... with enough capacity not to require any reallocations.
   tmp.reserve(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
 
@@ -274,7 +274,7 @@ PPL::Linear_System::add_pending_rows(const Linear_System& y) {
 
   // Copy the rows of `y', forcing size and capacity.
   for (dimension_type i = y_n_rows; i-- > 0; ) {
-    Row copy(y[i], x.row_size, x.row_capacity);
+    Dense_Row copy(y[i], x.row_size, x.row_capacity);
     std::swap(copy, x[x_n_rows+i]);
   }
   // Do not check for strong normalization,
@@ -332,11 +332,11 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
 
   // First sort without removing duplicates.
-  std::vector<Row>::iterator first = rows.begin() + first_row;
-  std::vector<Row>::iterator last = rows.begin() + last_row;
+  std::vector<Dense_Row>::iterator first = rows.begin() + first_row;
+  std::vector<Dense_Row>::iterator last = rows.begin() + last_row;
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
-  std::vector<Row>::iterator new_last = swapping_unique(first, last);
+  std::vector<Dense_Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
   // NOTE: we cannot check all invariants of the system here,
@@ -354,7 +354,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
 
   const bool was_sorted = is_sorted();
 
-  Matrix::add_row(r);
+  Dense_Matrix::add_row(r);
 
   //  We update `index_first_pending', because it must be equal to
   // `num_rows()'.
@@ -391,11 +391,11 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
-    std::vector<Row> new_rows;
+    std::vector<Dense_Row> new_rows;
     new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
+    new_rows.insert(new_rows.end(), new_rows_size, Dense_Row());
     // Put the new row in place.
-    Row new_row(r, row_capacity);
+    Dense_Row new_row(r, row_capacity);
     dimension_type i = new_rows_size-1;
     std::swap(new_rows[i], new_row);
     // Steal the old rows.
@@ -408,8 +408,8 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
     // Reallocation will NOT take place.
     // Inserts a new empty row at the end, then substitutes it with a
     // copy of the given row.
-    Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Row()), tmp);
+    Dense_Row tmp(r, row_capacity);
+    std::swap(*rows.insert(rows.end(), Dense_Row()), tmp);
   }
 
   // The added row was a pending row.
@@ -424,9 +424,9 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
-    std::vector<Row> new_rows;
+    std::vector<Dense_Row> new_rows;
     new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
+    new_rows.insert(new_rows.end(), new_rows_size, Dense_Row());
     // Put the new row in place.
     Linear_Row new_row(row_size, row_capacity, flags);
     dimension_type i = new_rows_size-1;
@@ -441,7 +441,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
     // Reallocation will NOT take place.
     // Insert a new empty row at the end, then construct it assigning
     // it the given type.
-    Row& new_row = *rows.insert(rows.end(), Row());
+    Dense_Row& new_row = *rows.insert(rows.end(), Dense_Row());
     static_cast<Linear_Row&>(new_row).construct(row_size, row_capacity, flags);
   }
 
@@ -490,7 +490,7 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
     return false;
   if (x.first_pending_row() != y.first_pending_row())
     return false;
-  // Notice that calling operator==(const Matrix&, const Matrix&)
+  // Notice that calling operator==(const Dense_Matrix&, const Dense_Matrix&)
   // would be wrong here, as equality of the type fields would
   // not be checked.
   for (dimension_type i = x_num_rows; i-- > 0; )

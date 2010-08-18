@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.types.hh"
 #include "Scalar_Products.types.hh"
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.defs.hh"
@@ -435,7 +435,7 @@ private:
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator;
-  // This is for access to Row and Linear_Row in `insert'.
+  // This is for access to Dense_Row and Linear_Row in `insert'.
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend

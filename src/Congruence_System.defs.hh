@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
-#include "Matrix.defs.hh"
+#include "Dense_Matrix.defs.hh"
 #include "Grid.types.hh"
 #include "Grid_Certificate.types.hh"
 #include <iosfwd>
@@ -118,7 +118,7 @@ swap(Parma_Polyhedra_Library::Congruence_System& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other congruences), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::Congruence_System : private Matrix {
+class Parma_Polyhedra_Library::Congruence_System : private Dense_Matrix {
 public:
   //! Default constructor: builds an empty system of congruences.
   Congruence_System();
@@ -278,13 +278,13 @@ public:
     friend class Congruence_System;
 
     //! The const iterator over the matrix of congruences.
-    Matrix::const_iterator i;
+    Dense_Matrix::const_iterator i;
 
     //! A const pointer to the matrix of congruences.
-    const Matrix* csp;
+    const Dense_Matrix* csp;
 
     //! Constructor.
-    const_iterator(const Matrix::const_iterator& iter,
+    const_iterator(const Dense_Matrix::const_iterator& iter,
 		   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
@@ -308,7 +308,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
     Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Matrix, each row in the system is a valid Congruence and the
+    Dense_Matrix, each row in the system is a valid Congruence and the
     number of columns is consistent with the number of congruences.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

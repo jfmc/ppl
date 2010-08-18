@@ -1,4 +1,4 @@
-/* Row class implementation: non-inline template functions.
+/* Dense_Row class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,15 +20,15 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Row_templates_hh
-#define PPL_Row_templates_hh 1
+#ifndef PPL_Dense_Row_templates_hh
+#define PPL_Dense_Row_templates_hh 1
 
 namespace Parma_Polyhedra_Library {
 
 
 template <typename Func1, typename Func2>
 void
-Row::combine_needs_first(const Row& y, const Func1& /* f */,
+Dense_Row::combine_needs_first(const Dense_Row& y, const Func1& /* f */,
                                const Func2& g) {
   for (dimension_type i = size(); i-- > 0; )
     g((*this)[i], y[i]);
@@ -36,7 +36,7 @@ Row::combine_needs_first(const Row& y, const Func1& /* f */,
 
 template <typename Func1, typename Func2>
 void
-Row::combine_needs_second(const Row& y, const Func1& g,
+Dense_Row::combine_needs_second(const Dense_Row& y, const Func1& g,
                                 const Func2& /* h */) {
   for (dimension_type i = size(); i-- > 0; )
     g((*this)[i], y[i]);
@@ -44,7 +44,7 @@ Row::combine_needs_second(const Row& y, const Func1& g,
 
 template <typename Func1, typename Func2, typename Func3>
 void
-Row::combine(const Row& y, const Func1& /* f */, const Func2& g,
+Dense_Row::combine(const Dense_Row& y, const Func1& /* f */, const Func2& g,
                    const Func3& /* h */) {
   for (dimension_type i = size(); i-- > 0; )
     g((*this)[i], y[i]);
@@ -52,4 +52,4 @@ Row::combine(const Row& y, const Func1& /* f */, const Func2& g,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Row_templates_hh)
+#endif // !defined(PPL_Dense_Row_templates_hh)

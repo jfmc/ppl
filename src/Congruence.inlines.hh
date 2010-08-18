@@ -32,19 +32,19 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Congruence::Congruence(const Congruence& cg)
-  : Row(cg) {
+  : Dense_Row(cg) {
 }
 
 inline
 Congruence::Congruence(const Congruence& cg,
 		       dimension_type sz, dimension_type capacity)
-  : Row(cg, sz, capacity) {
+  : Dense_Row(cg, sz, capacity) {
 }
 
 inline
 Congruence::Congruence(const Congruence& cg,
 		       Coefficient_traits::const_reference k)
-  : Row(cg) {
+  : Dense_Row(cg) {
   if (k >= 0)
     (*this)[size()-1] *= k;
   else
@@ -58,7 +58,7 @@ Congruence::~Congruence() {
 inline
 Congruence::Congruence(Linear_Expression& le,
 		       Coefficient_traits::const_reference m) {
-  Row::swap(static_cast<Row&>(le));
+  Dense_Row::swap(static_cast<Dense_Row&>(le));
   PPL_ASSERT(m >= 0);
   (*this)[size()-1] = m;
 }
@@ -114,7 +114,7 @@ Congruence::zero_dim_false() {
 
 inline Congruence&
 Congruence::operator=(const Congruence& c) {
-  Row::operator=(c);
+  Dense_Row::operator=(c);
   return *this;
 }
 
@@ -141,7 +141,8 @@ operator==(const Congruence& x, const Congruence& y) {
   Congruence y_temp(y);
   x_temp.strong_normalize();
   y_temp.strong_normalize();
-  return static_cast<const Row&>(x_temp) == static_cast<const Row&>(y_temp);
+  return static_cast<const Dense_Row&>(x_temp)
+         == static_cast<const Dense_Row&>(y_temp);
 }
 
 /*! \relates Congruence */
@@ -209,17 +210,17 @@ Congruence::negate(dimension_type start, dimension_type end) {
 
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
-  return Row::external_memory_in_bytes();
+  return Dense_Row::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Congruence::total_memory_in_bytes() const {
-  return Row::total_memory_in_bytes();
+  return Dense_Row::total_memory_in_bytes();
 }
 
 inline void
 Congruence::swap(Congruence& y) {
-  Row::swap(y);
+  Dense_Row::swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library
