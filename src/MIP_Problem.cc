@@ -1076,11 +1076,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   // This helps to reduce the number of calls to new [] and delete [].
   columns.reserve(tableau_num_columns - 2);
   for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
-    if (sgn(working_cost[column]) == cost_sign) {
+    if (sgn(working_cost[column]) == cost_sign)
       columns.push_back(std::pair<dimension_type, Coefficient>
-                        (column, Coefficient_zero()));
-      columns.back().second = squared_lcm_basis;
-    }
+                        (column, squared_lcm_basis));
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const matrix_type::row_type& tableau_i = tableau[i];
     matrix_type::row_type::const_iterator j = tableau_i.begin();
