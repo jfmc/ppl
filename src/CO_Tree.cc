@@ -1105,14 +1105,12 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
 
   // The complete subtree rooted at itr has 2*k - 1 nodes.
 
-  const dimension_type limit = root_index + (k - 1);
-
   PPL_ASSERT(root_index > (k - 1));
 
-  const dimension_type* indexes = itr.tree.indexes;
+  dimension_type* current_index = &(itr.tree.indexes[root_index - (k - 1)]);
 
-  for (dimension_type j = root_index - (k - 1); j <= limit; ++j)
-    if (indexes[j] != unused_index)
+  for (dimension_type j = 2*k - 1; j > 0; --j, ++current_index)
+    if (*current_index != unused_index)
       ++n;
 
   return n;
