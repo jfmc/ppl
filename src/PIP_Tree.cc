@@ -422,6 +422,11 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
           row_ja = &(row_itr->second);
           ++row_itr;
         }
+
+        // Before computing and comparing the actual values, the signs are
+        // compared. This speeds up the code, because the values' computation
+        // is a bit expensive.
+
         // lhs_sign is actually the opposite of the left-hand side sign.
         // rhs_sign is actually the opposite of the right-hand side sign.
         int lhs_sign = sgn(*row_ja);
@@ -435,6 +440,9 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
             new_candidates.push_back(min_column);
           }
         } else {
+          // Sign comparison is not enough this time.
+          // Do the full computation.
+
           // lhs is actually the left-hand side with toggled sign.
           // rhs is actually the right-hand side with toggled sign.
           lhs = *sij_b * *row_ja;
@@ -647,6 +655,10 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
         } else
           row_challenger_value = &(Coefficient_zero());
 
+        // Before computing and comparing the actual values, the signs are
+        // compared. This speeds up the code, because the values' computation
+        // is a bit expensive.
+
         int lhs_sign = sgn(*cost) * sgn(*row_value);
         int rhs_sign = sgn(*challenger_cost) * sgn(*row_challenger_value);
 
@@ -661,6 +673,9 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
             new_candidates.push_back(*i);
           }
         } else {
+
+          // Sign comparison is not enough this time.
+          // Do the full computation.
 
           PPL_DIRTY_TEMP_COEFFICIENT(lhs);
           lhs = *cost;
@@ -731,6 +746,9 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
         PPL_ASSERT(*(current_data.value) > 0);
         PPL_ASSERT(value_b > 0);
 
+        // Before computing and comparing the actual values, the signs are
+        // compared. This speeds up the code, because the values' computation
+        // is a bit expensive.
         int lhs_coeff_sgn = sgn(*(current_data.cost));
         int rhs_coeff_sgn = sgn(s_i0);
 
@@ -746,6 +764,9 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
           }
           // Otherwise, keep current pivot for this column.
         } else {
+
+          // Sign comparison is not enough this time.
+          // Do the full computation.
 
           PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
           lhs_coeff = *(current_data.cost);
