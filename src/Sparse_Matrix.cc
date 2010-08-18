@@ -41,7 +41,7 @@ PPL::Sparse_Matrix
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Sparse_Row_Reference rows_k = (*this)[k];
+    Sparse_Row& rows_k = (*this)[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)
@@ -77,18 +77,24 @@ void
 PPL::Sparse_Matrix::resize(dimension_type num_rows,
                            dimension_type num_columns,
                            Flags row_flags) {
-  typedef std::vector<Unlimited_Sparse_Row>::iterator rows_itr_type;
   const dimension_type old_num_rows = rows.size();
   rows.resize(num_rows);
   if (old_num_rows < num_rows) {
-    for (dimension_type i = old_num_rows; i < num_rows; ++i)
+    for (dimension_type i = old_num_rows; i < num_rows; ++i) {
       rows[i].flags() = row_flags;
-  }
-  if (num_columns < num_columns_) {
-    for (rows_itr_type i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-      i->reset_after(num_columns);
-  }
-  num_columns_ = num_columns;
+      rows[i].resize(num_columns);
+    }
+    if (num_columns_ != num_columns) {
+      num_columns_ = num_columns;
+      for (dimension_type i = 0; i < old_num_rows; ++i)
+        rows[i].resize(num_columns);
+    }
+  } else
+    if (num_columns_ != num_columns) {
+      num_columns_ = num_columns;
+      for (dimension_type i = 0; i < num_rows; ++i)
+        rows[i].resize(num_columns);
+    }
   PPL_ASSERT(OK());
 }
 
@@ -114,8 +120,7 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
   if (!(s >> new_num_cols))
     return false;
 
-  for (std::vector<Unlimited_Sparse_Row>::iterator
-       i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
+  for (iterator i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
     i->clear();
 
   resize(new_num_rows, new_num_cols);
@@ -140,13 +145,8 @@ PPL::Sparse_Matrix::external_memory_in_bytes() const {
 
 bool
 PPL::Sparse_Matrix::OK() const {
-  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
-    if (i->begin() != i->end()) {
-      Unlimited_Sparse_Row::const_iterator last = i->end();
-      --last;
-      if (last->first >= num_columns_)
-        return false;
-    }
-  }
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
+    if (i->size() != num_columns_)
+      return false;
   return true;
 }

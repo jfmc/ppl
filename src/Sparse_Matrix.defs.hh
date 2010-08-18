@@ -33,16 +33,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Sparse_Matrix {
 
 public:
-  typedef Sparse_Row_Reference row_reference_type;
-  typedef const Unlimited_Sparse_Row& row_const_reference_type;
-  typedef const Unlimited_Sparse_Row* row_const_pointer_type;
-  typedef Sparse_Row_Reference::iterator row_iterator;
-  typedef Sparse_Row_Reference::const_iterator row_const_iterator;
-  typedef Unlimited_Sparse_Row::const_iterator const_row_const_iterator;
+  typedef Sparse_Row& row_reference_type;
+  typedef const Sparse_Row& row_const_reference_type;
+  typedef const Sparse_Row* row_const_pointer_type;
+  typedef Sparse_Row::iterator row_iterator;
+  typedef Sparse_Row::const_iterator row_const_iterator;
+  typedef Sparse_Row::const_iterator const_row_const_iterator;
   typedef Sparse_Row row_copy_type;
 
-  class iterator;
-  typedef std::vector<Unlimited_Sparse_Row>::const_iterator const_iterator;
+  typedef std::vector<Sparse_Row>::iterator iterator;
+  typedef std::vector<Sparse_Row>::const_iterator const_iterator;
 
   typedef Sparse_Row::Flags Flags;
 
@@ -105,13 +105,13 @@ public:
   /*!
     This method takes \f$O(1)\f$ time.
   */
-  Sparse_Row_Reference operator[](dimension_type i);
+  Sparse_Row& operator[](dimension_type i);
 
   //! Returns a const reference to the i-th row.
   /*!
     This method takes \f$O(1)\f$ time.
   */
-  const Unlimited_Sparse_Row& operator[](dimension_type i) const;
+  const Sparse_Row& operator[](dimension_type i) const;
 
   //! Returns the number of rows in the matrix.
   /*!
@@ -182,17 +182,18 @@ public:
 
     Adding n rows takes \f$O(n)\f$ amortized time.
 
-    Adding n columns takes \f$O(1)\f$ time.
+    Adding n columns takes \f$O(r)\f$ time, where r is \p num_rows.
 
-    Removing n rows takes \f$O(n+k)\f$ amortized time, where k is the total number
-    of stored elements in the removed rows.
+    Removing n rows takes \f$O(n+k)\f$ amortized time, where k is the total
+    number of stored elements in the removed rows.
 
     Removing n columns takes \f$O(\sum_{j=1}^{r} k_j*\log n_j)\f$ time, where r
     is the number of rows, \f$k_j\f$ is the number of stored elements in the
     columns of the j-th row that must be removed and \f$n_j\f$ is the number of
     stored elements in the j-th row.
-    A weaker (but simpler) bound is \f$O(k*\log c)\f$, where k is the number of
-    elements that have to be removed and c is the number of columns.
+    A weaker (but simpler) bound is \f$O(r+k*\log c)\f$, where r is the number
+    of rows, k is the number of elements that have to be removed and c is the
+    number of columns.
   */
   void resize(dimension_type num_rows, dimension_type num_columns,
               Flags row_flags = Flags());
@@ -273,22 +274,6 @@ public:
   */
   void add_row(const Sparse_Row& x);
 
-  //! Adds the row \p x to the matrix.
-  /*!
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(n)\f$ amortized time.
-  */
-  void add_row(const Sparse_Row_Reference& x);
-
-  //! Adds a copy of the row \p x to the matrix.
-  /*!
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(n)\f$ amortized time.
-  */
-  void add_row(const Unlimited_Sparse_Row& x);
-
   //! Shrinks the matrix by removing its \p n trailing columns.
   /*!
     This method is provided for compatibility with Dense_Matrix.
@@ -344,77 +329,10 @@ public:
 
 private:
   //! The vector that stores the matrix's elements.
-  std::vector<Unlimited_Sparse_Row> rows;
+  std::vector<Sparse_Row> rows;
 
   //! The number of columns in this matrix.
   dimension_type num_columns_;
-};
-
-//! An iterator over the matrix's rows.
-class Parma_Polyhedra_Library::Sparse_Matrix::iterator {
-
-public:
-  //! The copy constructor.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  iterator(const iterator&);
-
-  //! Assigns itr into *this.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  iterator& operator=(const iterator& itr);
-
-  //! Compares itr with *this.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  bool operator==(const iterator& itr) const;
-
-  //! Compares itr with *this.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  bool operator!=(const iterator& itr) const;
-
-  //! Returns a reference to the pointed row.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  Sparse_Row_Reference operator*();
-
-  //! Advances to the next row.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  iterator& operator++();
-
-  //! Advances to the next row.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  iterator operator++(int);
-
-private:
-  //! The default constructor.
-  /*!
-    \param size is the number of columns in the matrix.
-
-    This is private so only Sparse_Matrix can access this.
-
-    This method takes \f$O(1)\f$ time.
-  */
-  iterator(std::vector<Unlimited_Sparse_Row>::iterator,
-           dimension_type size);
-
-  //! The wrapped iterator.
-  std::vector<Unlimited_Sparse_Row>::iterator itr;
-
-  //! The number of columns in the matrix.
-  const dimension_type size_;
-
-  friend class Parma_Polyhedra_Library::Sparse_Matrix;
 };
 
 namespace std {

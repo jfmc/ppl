@@ -32,8 +32,10 @@ namespace Parma_Polyhedra_Library {
 inline
 Sparse_Matrix::Sparse_Matrix(dimension_type n, Flags row_flags)
   : rows(n), num_columns_(n) {
-  for (dimension_type i = 0; i < rows.size(); ++i)
+  for (dimension_type i = 0; i < rows.size(); ++i) {
     rows[i].flags() = row_flags;
+    rows[i].resize(num_columns_);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -42,8 +44,10 @@ Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
                              dimension_type num_columns,
                              Flags row_flags)
   : rows(num_rows), num_columns_(num_columns) {
-  for (dimension_type i = 0; i < rows.size(); ++i)
+  for (dimension_type i = 0; i < rows.size(); ++i) {
     rows[i].flags() = row_flags;
+    rows[i].resize(num_columns_);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -55,12 +59,12 @@ Sparse_Matrix::swap(Sparse_Matrix& x) {
 
 inline Sparse_Matrix::iterator
 Sparse_Matrix::begin() {
-  return iterator(rows.begin(), num_columns());
+  return rows.begin();
 }
 
 inline Sparse_Matrix::iterator
 Sparse_Matrix::end() {
-  return iterator(rows.end(), num_columns());
+  return rows.end();
 }
 
 inline Sparse_Matrix::const_iterator
@@ -73,13 +77,13 @@ Sparse_Matrix::end() const {
   return rows.end();
 }
 
-inline Sparse_Row_Reference
+inline Sparse_Row&
 Sparse_Matrix::operator[](dimension_type i) {
   PPL_ASSERT(i < rows.size());
-  return Sparse_Row_Reference(rows[i], num_columns());
+  return rows[i];
 }
 
-inline const Unlimited_Sparse_Row&
+inline const Sparse_Row&
 Sparse_Matrix::operator[](dimension_type i) const {
   PPL_ASSERT(i < rows.size());
   return rows[i];
@@ -124,23 +128,10 @@ Sparse_Matrix::add_zero_rows_and_columns(dimension_type n,
 
 inline void
 Sparse_Matrix::add_row(const Sparse_Row& x) {
-  add_zero_rows(1, Flags());
-  (*this)[num_rows() - 1] = x;
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Matrix::add_row(const Sparse_Row_Reference& x) {
-  Unlimited_Sparse_Row row(x);
+  Sparse_Row row(x);
   add_zero_rows(1, Flags());
   // Now x may have been invalidated, if it was a row of this matrix.
   rows.back().swap(row);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Matrix::add_row(const Unlimited_Sparse_Row& x) {
-  rows.push_back(x);
   PPL_ASSERT(OK());
 }
 
@@ -158,53 +149,6 @@ Sparse_Matrix::erase_to_end(dimension_type first_to_erase) {
 inline memory_size_type
 Sparse_Matrix::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
-}
-
-
-inline
-Sparse_Matrix::iterator
-::iterator(std::vector<Unlimited_Sparse_Row>::iterator i,
-           dimension_type size)
-  : itr(i), size_(size) {
-}
-
-inline
-Sparse_Matrix::iterator::iterator(const iterator& x)
-  : itr(x.itr), size_(x.size_) {
-}
-
-inline Sparse_Matrix::iterator&
-Sparse_Matrix::iterator::operator=(const iterator& x) {
-  itr = x.itr;
-  return *this;
-}
-
-inline bool
-Sparse_Matrix::iterator::operator==(const iterator& x) const {
-  return itr == x.itr;
-}
-
-inline bool
-Sparse_Matrix::iterator::operator!=(const iterator& x) const {
-  return !(*this == x);
-}
-
-inline Sparse_Row_Reference
-Sparse_Matrix::iterator::operator*() {
-  return Sparse_Row_Reference(*itr, size_);
-}
-
-inline Sparse_Matrix::iterator&
-Sparse_Matrix::iterator::operator++() {
-  ++itr;
-  return *this;
-}
-
-inline Sparse_Matrix::iterator
-Sparse_Matrix::iterator::operator++(int) {
-  iterator x(*this);
-  ++(*this);
-  return x;
 }
 
 } // namespace Parma_Polyhedra_Library
