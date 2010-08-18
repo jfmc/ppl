@@ -1060,6 +1060,7 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 
   PPL_ASSERT(size == 0);
   PPL_ASSERT(reserved_size == x.reserved_size);
+  PPL_ASSERT(structure_OK());
 
   if (x.size == 0) {
     PPL_ASSERT(OK());
