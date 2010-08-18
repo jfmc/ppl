@@ -817,58 +817,75 @@ PPL::CO_Tree
 
   PPL_ASSERT(subtree_size != 1 || !add_element);
 
-  dimension_type first_unused_index = last_in_subtree;
-  while (indexes[last_in_subtree] == unused_index)
-    --last_in_subtree;
+  dimension_type* last_index_in_subtree = &(indexes[last_in_subtree]);
+  data_type* last_data_in_subtree = &(data[last_in_subtree]);
 
-  // From now on, last_in_subtree points to the rightmost node with a value in
-  // the subtree and first_unused_index points to the rightmost unused node in
-  // the subtree.
+  dimension_type* first_unused_index = last_index_in_subtree;
+  data_type* first_unused_data = last_data_in_subtree;
+
+  while (*last_index_in_subtree == unused_index) {
+    --last_index_in_subtree;
+    --last_data_in_subtree;
+  }
+
+  // From now on, last_index_in_subtree and last_data_in_subtree point to the
+  // rightmost node with a value in the subtree. first_unused_index and
+  // first_unused_data point to the rightmost unused node in the subtree.
 
   if (add_element)
     while (subtree_size != 0) {
       --subtree_size;
-      if (last_in_subtree == 0 || key > indexes[last_in_subtree]) {
-        if (last_in_subtree == 0 || last_in_subtree != first_unused_index) {
-          PPL_ASSERT(first_unused_index != 0);
-          PPL_ASSERT(indexes[first_unused_index] == unused_index);
-          indexes[first_unused_index] = key;
-          new (&(data[first_unused_index])) data_type(value);
+      if (last_index_in_subtree == indexes || key > *last_index_in_subtree) {
+        if (last_index_in_subtree == indexes
+            || last_index_in_subtree != first_unused_index) {
+          PPL_ASSERT(first_unused_index != indexes);
+          PPL_ASSERT(*first_unused_index == unused_index);
+          *first_unused_index = key;
+          new (first_unused_data) data_type(value);
           --first_unused_index;
+          --first_unused_data;
         }
         break;
       } else {
-        if (last_in_subtree != first_unused_index) {
-          PPL_ASSERT(first_unused_index != 0);
-          PPL_ASSERT(last_in_subtree != 0);
-          PPL_ASSERT(indexes[first_unused_index] == unused_index);
-          indexes[first_unused_index] = indexes[last_in_subtree];
-          indexes[last_in_subtree] = unused_index;
-          move_data_element(data[first_unused_index], data[last_in_subtree]);
+        if (last_index_in_subtree != first_unused_index) {
+          PPL_ASSERT(first_unused_index != indexes);
+          PPL_ASSERT(last_index_in_subtree != indexes);
+          PPL_ASSERT(*first_unused_index == unused_index);
+          *first_unused_index = *last_index_in_subtree;
+          *last_index_in_subtree = unused_index;
+          move_data_element(*first_unused_data, *last_data_in_subtree);
         }
-        --last_in_subtree;
-        while (indexes[last_in_subtree] == unused_index)
-          --last_in_subtree;
+        --last_index_in_subtree;
+        --last_data_in_subtree;
+        while (*last_index_in_subtree == unused_index) {
+          --last_index_in_subtree;
+          --last_data_in_subtree;
+        }
         --first_unused_index;
+        --first_unused_data;
       }
     }
   while (subtree_size != 0) {
-    if (last_in_subtree != first_unused_index) {
-      PPL_ASSERT(first_unused_index != 0);
-      PPL_ASSERT(last_in_subtree != 0);
-      PPL_ASSERT(indexes[first_unused_index] == unused_index);
-      indexes[first_unused_index] = indexes[last_in_subtree];
-      indexes[last_in_subtree] = unused_index;
-      move_data_element(data[first_unused_index], data[last_in_subtree]);
+    if (last_index_in_subtree != first_unused_index) {
+      PPL_ASSERT(first_unused_index != indexes);
+      PPL_ASSERT(last_index_in_subtree != indexes);
+      PPL_ASSERT(*first_unused_index == unused_index);
+      *first_unused_index = *last_index_in_subtree;
+      *last_index_in_subtree = unused_index;
+      move_data_element(*first_unused_data, *last_data_in_subtree);
     }
-    --last_in_subtree;
-    while (indexes[last_in_subtree] == unused_index)
-      --last_in_subtree;
+    --last_index_in_subtree;
+    --last_data_in_subtree;
+    while (*last_index_in_subtree == unused_index) {
+      --last_index_in_subtree;
+      --last_data_in_subtree;
+    }
     --first_unused_index;
+    --first_unused_data;
     --subtree_size;
   }
 
-  return first_unused_index;
+  return first_unused_index - indexes;
 }
 
 void
