@@ -85,16 +85,6 @@ private:
   class tree_iterator;
 
 public:
-  class iterator;
-  class const_iterator;
-
-  // This is declared here because it is a friend of iterator.
-  bool is_before_begin(const iterator& itr) const;
-
-  // This is declared here because it is a friend of const_iterator.
-  bool is_before_begin(const const_iterator& itr) const;
-
-public:
 
   //! The type of the data elements associated with keys.
   /*!
@@ -244,8 +234,6 @@ public:
     //! A pointer to the corresponding tree, used for debug purposes only.
     const CO_Tree* tree;
 #endif
-
-    friend bool CO_Tree::is_before_begin(const const_iterator& itr) const;
   };
 
   //! An iterator on the tree elements, ordered by key.
@@ -414,7 +402,6 @@ public:
 #endif
 
     friend const_iterator& const_iterator::operator=(const iterator&);
-    friend bool CO_Tree::is_before_begin(const iterator& itr) const;
   };
 
   //! Constructs an empty tree.

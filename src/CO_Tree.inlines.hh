@@ -29,17 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-
-inline bool
-CO_Tree::is_before_begin(const iterator& itr) const {
-  return indexes == itr.current_index;
-}
-
-inline bool
-CO_Tree::is_before_begin(const const_iterator& itr) const {
-  return indexes == itr.current_index;
-}
-
 inline
 CO_Tree::CO_Tree() {
 
