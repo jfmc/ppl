@@ -122,7 +122,7 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
   if (new_rows == 0)
     return;
   const dimension_type old_num_rows = x.num_rows();
-  x.add_zero_rows(new_rows, Dense_Row::Flags());
+  x.add_zero_rows(new_rows, Row_Flags());
 
   // Compute once for all.
   const dimension_type cs_space_dim = y.space_dimension();
@@ -1989,7 +1989,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         var_row.push_back(mapping.size());
         basis.push_back(false);
         mapping.push_back(num_rows);
-        s.add_zero_rows(1, Dense_Row::Flags());
+        s.add_zero_rows(1, Row_Flags());
         matrix_type::row_type& cut = s[num_rows];
         ++num_rows;
         const matrix_type::row_type& s_mi = s[mi];
@@ -2027,7 +2027,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     }
 
     // Create an identity row corresponding to basic variable pj.
-    s.add_zero_rows(1, Dense_Row::Flags());
+    s.add_zero_rows(1, Row_Flags());
     matrix_type::row_type& pivot = s[num_rows];
     pivot[pj] = 1;
 
@@ -2175,8 +2175,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
     // (Tentatively) Add new rows to s and t matrices.
     // These will be removed at the end if they turn out to be useless.
     const dimension_type row_id = tableau.s.num_rows();
-    tableau.s.add_zero_rows(1, Dense_Row::Flags());
-    tableau.t.add_zero_rows(1, Dense_Row::Flags());
+    tableau.s.add_zero_rows(1, Row_Flags());
+    tableau.t.add_zero_rows(1, Row_Flags());
     matrix_type::row_type& v_row = tableau.s[row_id];
     matrix_type::row_type& p_row = tableau.t[row_id];
 
@@ -2249,8 +2249,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
           // FIXME: for now, we don't handle the case where the variable
           // is basic, and we just create a new row.
           // This might be faster however.
-          tableau.s.add_zero_rows(1, Dense_Row::Flags());
-          tableau.t.add_zero_rows(1, Dense_Row::Flags());
+          tableau.s.add_zero_rows(1, Row_Flags());
+          tableau.t.add_zero_rows(1, Row_Flags());
           // NOTE: addition of rows invalidates references v_row and p_row
           // due to possible matrix reallocations: recompute them.
           neg_assign_row(tableau.s[1 + row_id], tableau.s[row_id]);
@@ -2348,7 +2348,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           new_sign = POSITIVE;
         // Check compatibility for constraint t_i(z) < 0,
         // i.e., -t_i(z) - 1 >= 0.
-        matrix_type::row_type t_i_compl(num_params, Dense_Row::Flags());
+        matrix_type::row_type t_i_compl(num_params, Row_Flags());
         complement_assign(t_i_compl, t_i, tableau_den);
         if (compatibility_check(context, t_i_compl))
           new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
@@ -2483,11 +2483,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
       // Creating identity rows corresponding to basic variable pj:
       // 1. add them to tableau so as to have proper size and capacity;
-      tableau.s.add_zero_rows(1, Dense_Row::Flags());
-      tableau.t.add_zero_rows(1, Dense_Row::Flags());
+      tableau.s.add_zero_rows(1, Row_Flags());
+      tableau.t.add_zero_rows(1, Row_Flags());
       // 2. swap the rows just added with empty ones.
-      matrix_type::row_type s_pivot(0, Dense_Row::Flags());
-      matrix_type::row_type t_pivot(0, Dense_Row::Flags());
+      matrix_type::row_type s_pivot(0, Row_Flags());
+      matrix_type::row_type t_pivot(0, Row_Flags());
       s_pivot.swap(tableau.s[num_rows]);
       t_pivot.swap(tableau.t[num_rows]);
       // 3. drop rows previously added at end of tableau.
@@ -3078,7 +3078,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 
       // Update current context with constraints on the new parameter.
       const dimension_type ctx_num_rows = context.num_rows();
-      context.add_zero_rows(2, Dense_Row::Flags());
+      context.add_zero_rows(2, Row_Flags());
       matrix_type::row_type& ctx1 = context[ctx_num_rows];
       matrix_type::row_type& ctx2 = context[ctx_num_rows+1];
       // Recompute row reference after possible reallocation.
@@ -3143,8 +3143,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   }
 
   // Generate new cut.
-  tableau.s.add_zero_rows(1, Dense_Row::Flags());
-  tableau.t.add_zero_rows(1, Dense_Row::Flags());
+  tableau.s.add_zero_rows(1, Row_Flags());
+  tableau.t.add_zero_rows(1, Row_Flags());
   matrix_type::row_type& cut_s = tableau.s[num_rows];
   matrix_type::row_type& cut_t = tableau.t[num_rows];
   // Recompute references after possible reallocation.

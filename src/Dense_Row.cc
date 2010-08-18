@@ -140,33 +140,6 @@ PPL::Dense_Row::reset(dimension_type first, dimension_type last) {
 }
 
 void
-PPL::Dense_Row::Flags::ascii_dump(std::ostream& s) const {
-  s << "0x";
-  std::istream::fmtflags f = s.setf(std::istream::hex);
-  std::streamsize sz = s.width(2*sizeof(Flags::base_type));
-  std::ostream::char_type ch = s.fill('0');
-  s << bits;
-  s.fill(ch);
-  s.width(sz);
-  s.flags(f);
-}
-
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Dense_Row::Flags)
-
-bool
-PPL::Dense_Row::Flags::ascii_load(std::istream& s) {
-  std::string str;
-  std::streamsize sz = s.width(2);
-  if (!(s >> str) || str != "0x")
-    return false;
-  s.width(sz);
-  std::istream::fmtflags f = s.setf(std::istream::hex);
-  bool r = s >> bits;
-  s.flags(f);
-  return r;
-}
-
-void
 PPL::Dense_Row::ascii_dump(std::ostream& s) const {
   const Dense_Row& x = *this;
   const dimension_type x_size = x.size();
@@ -194,7 +167,7 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
   if (new_size < old_size)
     x.shrink(new_size);
   else if (new_size > old_size) {
-    Dense_Row y(new_size, Dense_Row::Flags());
+    Dense_Row y(new_size, Flags());
     x.swap(y);
   }
 

@@ -153,7 +153,7 @@ PPL::PIP_Problem::solve() const {
 
         check_feasible_context = true;
 
-        x.initial_context.add_zero_rows(1, Dense_Row::Flags());
+        x.initial_context.add_zero_rows(1, Row_Flags());
 
         matrix_type::row_type& row
           = x.initial_context[x.initial_context.num_rows()-1];
@@ -187,7 +187,7 @@ PPL::PIP_Problem::solve() const {
 
         // If it is an equality, also insert its negation.
         if (c.is_equality()) {
-          x.initial_context.add_zero_rows(1, Dense_Row::Flags());
+          x.initial_context.add_zero_rows(1, Row_Flags());
 
           // The reference `row' has been invalidated.
 

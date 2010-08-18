@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Dense_Row_inlines_hh
 #define PPL_Dense_Row_inlines_hh 1
 
-#include "math_utilities.defs.hh"
 #include "assert.hh"
 #include <cstddef>
 #include <limits>
@@ -31,46 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline
-Dense_Row::Flags::Flags()
-  : bits(0) {
-}
-
-inline
-Dense_Row::Flags::Flags(base_type n)
-  : bits(n) {
-}
-
-inline Dense_Row::Flags::base_type
-Dense_Row::Flags::get_bits() const {
-  return bits;
-}
-
-inline void
-Dense_Row::Flags::set_bits(const base_type mask) {
-  bits |= mask;
-}
-
-inline void
-Dense_Row::Flags::reset_bits(const base_type mask) {
-  bits &= ~mask;
-}
-
-inline bool
-Dense_Row::Flags::test_bits(const base_type mask) const {
-  return (bits & mask) == mask;
-}
-
-inline bool
-Dense_Row::Flags::operator==(const Flags& y) const {
-  base_type mask = low_bits_mask<base_type>(first_free_bit);
-  return (get_bits() & mask) == (y.get_bits() & mask);
-}
-
-inline bool
-Dense_Row::Flags::operator!=(const Flags& y) const {
-  return !operator==(y);
-}
 
 inline void*
 Dense_Row_Impl_Handler::Impl::operator new(const size_t fixed_size,
@@ -114,7 +73,7 @@ Dense_Row_Impl_Handler::Impl::bump_size() {
 }
 
 inline
-Dense_Row_Impl_Handler::Impl::Impl(const Dense_Row::Flags f)
+Dense_Row_Impl_Handler::Impl::Impl(const Row_Flags f)
   : size_(0), flags_(f) {
 }
 
@@ -123,12 +82,12 @@ Dense_Row_Impl_Handler::Impl::~Impl() {
   shrink(0);
 }
 
-inline const Dense_Row::Flags&
+inline const Row_Flags&
 Dense_Row_Impl_Handler::Impl::flags() const {
   return flags_;
 }
 
-inline Dense_Row::Flags&
+inline Row_Flags&
 Dense_Row_Impl_Handler::Impl::flags() {
   return flags_;
 }
@@ -174,12 +133,12 @@ Dense_Row::size() const {
   return impl->size();
 }
 
-inline const Dense_Row::Flags&
+inline const Row_Flags&
 Dense_Row::flags() const {
   return impl->flags();
 }
 
-inline Dense_Row::Flags&
+inline Row_Flags&
 Dense_Row::flags() {
   return impl->flags();
 }

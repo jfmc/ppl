@@ -65,7 +65,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
-    working_cost(0, Dense_Row::Flags()),
+    working_cost(0, Row_Flags()),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -93,7 +93,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
-    working_cost(0, Dense_Row::Flags()),
+    working_cost(0, Row_Flags()),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -708,7 +708,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // Resize the tableau: first add additional rows ...
   if (additional_tableau_rows > 0)
-    tableau.add_zero_rows(additional_tableau_rows, Dense_Row::Flags());
+    tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
 
   // ... then add additional columns.
   // We need columns for additional (split) problem variables, additional
@@ -829,7 +829,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Reset the working cost function to have the right size.
-  working_cost = row_type(tableau_num_cols, Dense_Row::Flags());
+  working_cost = row_type(tableau_num_cols, Row_Flags());
 
   // Set up artificial variables: these will have coefficient 1 in the
   // constraint, will enter the base and will have coefficient -1 in
@@ -1713,7 +1713,7 @@ PPL::MIP_Problem::second_phase() {
   // Build the objective function for the second phase.
   const dimension_type input_obj_function_sd
     = input_obj_function.space_dimension();
-  row_type new_cost(input_obj_function_sd + 1, Dense_Row::Flags());
+  row_type new_cost(input_obj_function_sd + 1, Row_Flags());
   for (dimension_type i = input_obj_function_sd; i-- > 0; )
     new_cost[i + 1] = input_obj_function.coefficient(Variable(i));
   new_cost[0] = input_obj_function.inhomogeneous_term();

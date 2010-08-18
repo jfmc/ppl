@@ -25,9 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Sparse_Row.types.hh"
 
-// TODO: Remove this, it is needed for Dense_Row::Flags only.
-#include "Dense_Row.defs.hh"
-
+#include "Row_Flags.defs.hh"
 #include "CO_Tree.defs.hh"
 #include "Coefficient.defs.hh"
 
@@ -42,7 +40,7 @@ class Sparse_Row {
 
 public:
 
-  typedef Dense_Row::Flags Flags;
+  typedef Row_Flags Flags;
 
   //! An iterator on the row elements
   /*!

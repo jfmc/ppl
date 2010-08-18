@@ -24,7 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Dense_Row_defs_hh 1
 
 #include "Dense_Row.types.hh"
+
 #include "globals.defs.hh"
+
+#include "Row_Flags.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
@@ -87,69 +90,7 @@ private:
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Dense_Row : private Dense_Row_Impl_Handler {
 public:
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Wrapper class to represent a set of flags with bits in a native
-    unsigned integral type.
-    \ingroup PPL_CXX_interface
-  */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags {
-  public:
-    //! Constructs an object with all the flags unset.
-    Flags();
-
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
-    bool operator==(const Flags& y) const;
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if \p *this and \p y
-      are different.
-    */
-    bool operator!=(const Flags& y) const;
-
-    PPL_OUTPUT_DECLARATIONS
-
-    //! Uses the ASCII Flags representation from \p s to recreate *this.
-    /*!
-      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by
-      \ref Parma_Polyhedra_Library::Dense_Row::Flags::ascii_dump.
-    */
-    bool ascii_load(std::istream& s);
-
-  protected:
-    //! A native integral type holding the bits that encode the flags.
-    typedef unsigned int base_type;
-
-    //! Index of the first bit derived classes can use.
-    static const unsigned first_free_bit = 0;
-
-    //! Total number of bits that can be stored.
-    static const unsigned num_bits = std::numeric_limits<base_type>::digits;
-
-    //! Constructs an object with flags set as in \p n.
-    explicit Flags(base_type n);
-
-    //! Returns the integer encoding \p *this.
-    base_type get_bits() const;
-
-    //! Sets the bits in \p mask.
-    void set_bits(base_type mask);
-
-    //! Resets the bits in \p mask.
-    void reset_bits(base_type mask);
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if all the bits
-      in \p mask are set.
-    */
-    bool test_bits(base_type mask) const;
-
-  private:
-    //! The integer encoding \p *this.
-    base_type bits;
-  };
+  typedef Row_Flags Flags;
 
   class iterator;
   class const_iterator;
@@ -628,7 +569,7 @@ public:
   //@} // Custom allocator and deallocator
 
   //! Constructor.
-  Impl(Dense_Row::Flags f);
+  Impl(Row_Flags f);
 
   //! Destructor.
   /*!
@@ -658,10 +599,10 @@ public:
   //! \name Flags accessors
   //@{
   //! Returns a const reference to the flags of \p *this.
-  const Dense_Row::Flags& flags() const;
+  const Row_Flags& flags() const;
 
   //! Returns a non-const reference to the flags of \p *this.
-  Dense_Row::Flags& flags();
+  Row_Flags& flags();
   //@} // Flags accessors
 
   //! \name Size accessors
@@ -702,7 +643,7 @@ private:
   dimension_type size_;
 
   //! The flags of this row.
-  Dense_Row::Flags flags_;
+  Row_Flags flags_;
 
   //! The vector of coefficients.
   Coefficient vec_[

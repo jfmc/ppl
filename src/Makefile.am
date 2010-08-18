@@ -139,6 +139,7 @@ Generator.types.hh \
 Grid_Generator.types.hh \
 Congruence.types.hh \
 Init.types.hh \
+Row_Flags.types.hh \
 Dense_Row.types.hh \
 CO_Tree.types.hh \
 Sparse_Row.types.hh \
@@ -238,6 +239,8 @@ Init.defs.hh \
 Init.inlines.hh \
 initializer.hh \
 Topology.hh \
+Row_Flags.defs.hh \
+Row_Flags.inlines.hh \
 Dense_Row.defs.hh \
 Dense_Row.inlines.hh \
 Dense_Row.templates.hh \
@@ -423,6 +426,7 @@ Pointset_Powerset.cc \
 CO_Tree.cc \
 Sparse_Row.cc \
 Sparse_Matrix.cc \
+Row_Flags.cc \
 Dense_Row.cc \
 Linear_Row.cc \
 Bit_Matrix.cc \
