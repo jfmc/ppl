@@ -993,16 +993,14 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     const matrix_type::row_type& tableau_i = tableau[i];
     const Coefficient& tableau_i_base_i = tableau_i.get(base[i]);
     assign(float_tableau_denum, tableau_i_base_i);
-    matrix_type::row_type::const_iterator j = tableau_i.begin();
-    matrix_type::row_type::const_iterator j_end = tableau_i.end();
-    while (j != j_end) {
+    matrix_type::row_type::const_iterator j;
+    matrix_type::row_type::const_iterator j_end;
+    for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j) {
       if (j->first >= tableau_num_columns_minus_1)
         break;
       std::pair<bool, double>& current_data = columns[j->first];
-      if (!current_data.first) {
-        ++j;
+      if (!current_data.first)
         continue;
-      }
       const Coefficient& tableau_ij = j->second;
       WEIGHT_BEGIN();
       if (tableau_ij != 0) {
@@ -1013,7 +1011,6 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         current_data.second += float_tableau_value;
       }
       WEIGHT_ADD_MUL(338, tableau_num_rows);
-      ++j;
     }
   }
   for (dimension_type i = tableau_num_columns_minus_1; i-- > 1; )
