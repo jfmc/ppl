@@ -27,10 +27,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Sparse_Matrix::remove_column(dimension_type i) {
-  for (dimension_type j = rows.size(); j-- > 0; )
-    rows[j].delete_element_and_shift(i);
-  --num_columns_;
+PPL::Sparse_Matrix::resize(dimension_type num_rows,
+                           dimension_type num_columns,
+                           Flags row_flags) {
+  const dimension_type old_num_rows = rows.size();
+  rows.resize(num_rows);
+  if (old_num_rows < num_rows) {
+    for (dimension_type i = old_num_rows; i < num_rows; ++i) {
+      rows[i].flags() = row_flags;
+      rows[i].resize(num_columns);
+    }
+    if (num_columns_ != num_columns) {
+      num_columns_ = num_columns;
+      for (dimension_type i = 0; i < old_num_rows; ++i)
+        rows[i].resize(num_columns);
+    }
+  } else
+    if (num_columns_ != num_columns) {
+      num_columns_ = num_columns;
+      for (dimension_type i = 0; i < num_rows; ++i)
+        rows[i].resize(num_columns);
+    }
   PPL_ASSERT(OK());
 }
 
@@ -74,27 +91,10 @@ PPL::Sparse_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
 }
 
 void
-PPL::Sparse_Matrix::resize(dimension_type num_rows,
-                           dimension_type num_columns,
-                           Flags row_flags) {
-  const dimension_type old_num_rows = rows.size();
-  rows.resize(num_rows);
-  if (old_num_rows < num_rows) {
-    for (dimension_type i = old_num_rows; i < num_rows; ++i) {
-      rows[i].flags() = row_flags;
-      rows[i].resize(num_columns);
-    }
-    if (num_columns_ != num_columns) {
-      num_columns_ = num_columns;
-      for (dimension_type i = 0; i < old_num_rows; ++i)
-        rows[i].resize(num_columns);
-    }
-  } else
-    if (num_columns_ != num_columns) {
-      num_columns_ = num_columns;
-      for (dimension_type i = 0; i < num_rows; ++i)
-        rows[i].resize(num_columns);
-    }
+PPL::Sparse_Matrix::remove_column(dimension_type i) {
+  for (dimension_type j = rows.size(); j-- > 0; )
+    rows[j].delete_element_and_shift(i);
+  --num_columns_;
   PPL_ASSERT(OK());
 }
 
