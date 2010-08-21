@@ -1312,7 +1312,7 @@ PPL::MIP_Problem::linear_combine(row_type& x,
       Coefficient& x_i = x[i];
       x_i *= normalized_y_k;
     }
-  x.reset(k);
+  x[k] = 0;
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
