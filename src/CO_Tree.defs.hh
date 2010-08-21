@@ -54,7 +54,7 @@ namespace Parma_Polyhedra_Library {
   Assuming \p n is the number of elements in the tree and \p B is the number
   of &lt;dimension_type,Coefficient&gt; pairs that fit in cache, the time and
   cache misses complexities are the following:
-  -Insertions/Queries/Deletions: \f$O(\log n)\f$ time,
+  -Insertions/Queries/Deletions: \f$O(\log^2 n)\f$ time,
                                  \f$O(\log \frac{n}{B}))\f$ cache misses.
   -Tree traversal from begin() to end(), using an iterator: \f$O(n)\f$ time,
         \f$O(\frac{n}{B})\f$  cache misses.
@@ -99,8 +99,7 @@ public:
 
   //! A const iterator on the tree elements, ordered by key.
   /*!
-    Iterator increment and decrement operations are \f$O(1)\f$ amortized time,
-    but are not constant time.
+    Iterator increment and decrement operations are \f$O(1)\f$ time.
     These iterators are invalidated by operations that add or remove elements
     from the tree.
   */
@@ -135,7 +134,7 @@ public:
 
     //! Constructs an iterator pointing to the first element of the tree.
     /*!
-      This constructor takes \f$O(1)\f$ expected time.
+      This constructor takes \f$O(1)\f$ time.
     */
     explicit const_iterator(const CO_Tree& tree);
 
@@ -179,25 +178,25 @@ public:
 
     //! Navigates to the next element.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     const_iterator& operator++();
 
     //! Navigates to the previous element.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     const_iterator& operator--();
 
     //! Navigates to the next element.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     const_iterator operator++(int);
 
     //! Navigates to the previous element.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     const_iterator operator--(int);
 
@@ -238,8 +237,7 @@ public:
 
   //! An iterator on the tree elements, ordered by key.
   /*!
-    Iterator increment and decrement operations are \f$O(1)\f$ amortized time,
-    but are not constant time.
+    Iterator increment and decrement operations are \f$O(1)\f$ time.
     These iterators are invalidated by operations that add or remove elements
     from the tree.
   */
@@ -287,7 +285,7 @@ public:
 
     //! Constructs an iterator pointing to first element of the tree.
     /*!
-      This constructor takes \f$O(1)\f$ expected time.
+      This constructor takes \f$O(1)\f$ time.
     */
     explicit iterator(CO_Tree& tree);
 
@@ -334,25 +332,25 @@ public:
 
     //! Navigates to the next element in the tree.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     iterator& operator++();
 
     //! Navigates to the previous element in the tree.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     iterator& operator--();
 
     //! Navigates to the next element in the tree.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     iterator operator++(int);
 
     //! Navigates to the previous element in the tree.
     /*!
-      This method takes \f$O(n)\f$ amortized time.
+      This method takes \f$O(1)\f$ time.
     */
     iterator operator--(int);
 
@@ -457,7 +455,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time if the element already
+    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(dimension_type key);
 
@@ -470,7 +469,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time if the element already
+    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(dimension_type key, const data_type& data);
 
@@ -490,7 +490,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time if the element already
+    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(iterator itr, dimension_type key);
 
@@ -510,7 +511,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time if the element already
+    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(iterator itr, dimension_type key, const data_type& data);
 
@@ -521,7 +523,8 @@ public:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time if the element already
+    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator erase(dimension_type key);
 
@@ -532,7 +535,8 @@ public:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time if the element already
+    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator erase(iterator itr);
 
@@ -542,7 +546,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(k+\log n)\f$ expected time, where k is the number
+    This method takes \f$O(k+\log^2 n)\f$ expected time, where k is the number
     of elements with keys greater than \p key.
   */
   void erase_element_and_shift_left(dimension_type key);
@@ -564,7 +568,7 @@ public:
 
   //! Returns an iterator that points at the first element.
   /*!
-    This method takes \f$O(1)\f$ expected time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator begin();
 
@@ -587,7 +591,7 @@ public:
 
   //! Returns an iterator that points at the first element.
   /*!
-    This method takes \f$O(1)\f$ expected time.
+    This method takes \f$O(1)\f$ time.
   */
   const_iterator cbegin() const;
 
@@ -609,7 +613,7 @@ public:
     preceding or succeeding value.
     If the tree is empty, end() is returned.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   iterator bisect(dimension_type key);
 
@@ -620,7 +624,7 @@ public:
     preceding or succeeding value.
     If the tree is empty, end() is returned.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   const_iterator bisect(dimension_type key) const;
 
@@ -634,7 +638,7 @@ public:
 
     \note last is included in the search, too.
 
-    This method takes \f$O(\log(last - first + 1))\f$ expected time.
+    This method takes \f$O(\log(last - first + 1))\f$ time.
   */
   iterator bisect_in(iterator first, iterator last, dimension_type key);
 
@@ -648,7 +652,7 @@ public:
 
     \note last is included in the search, too.
 
-    This method takes \f$O(\log(last - first + 1))\f$ expected time.
+    This method takes \f$O(\log(last - first + 1))\f$ time.
   */
   const_iterator bisect_in(const_iterator first, const_iterator last,
                            dimension_type key) const;
@@ -662,9 +666,8 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this tree. \p itr may even be end().
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    the returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$
-    expected time.
+    This method takes \f$O(\log n)\f$ time. If the distance between the
+    returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$ time.
   */
   iterator bisect_near(iterator hint, dimension_type key);
 
@@ -677,9 +680,8 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this tree. \p itr may even be end().
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    the returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$
-    expected time.
+    This method takes \f$O(\log n)\f$ time. If the distance between the
+    returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$ time.
   */
   const_iterator bisect_near(const_iterator hint, dimension_type key) const;
 
@@ -697,7 +699,7 @@ private:
 
     \note last is included in the search, too.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   dimension_type bisect_in(dimension_type first, dimension_type last,
                            dimension_type key) const;
@@ -713,9 +715,8 @@ private:
 
     \p hint must be the index of a valid element.
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    the returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$
-    expected time.
+    This method takes \f$O(\log n)\f$ time. If the distance between the
+    returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$ time.
   */
   dimension_type bisect_near(dimension_type hint, dimension_type key) const;
 
@@ -731,7 +732,8 @@ private:
                be his parent.
     \return an iterator that points to the inserted element.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(1)\f$ time if the element already exists, and
+    \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   tree_iterator insert_precise(dimension_type key, const data_type& data,
                                tree_iterator itr);
@@ -753,7 +755,7 @@ private:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   iterator erase(tree_iterator itr);
 
@@ -855,7 +857,7 @@ private:
     \returns an iterator pointing to the root of the subtree that was
              rebalanced.
 
-    This method takes \f$O(1)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   tree_iterator rebalance(tree_iterator itr, dimension_type key,
                           const data_type& value);
@@ -919,8 +921,8 @@ private:
 
   //! Counts the number of used elements in the subtree rooted at itr.
   /*!
-    This method takes \f$O(k)\f$ time, where k is the number of elements in the
-    subtree.
+    This method takes \f$O(k)\f$ time, where k is the number of elements in
+    the subtree.
   */
   static dimension_type count_used_in_subtree(tree_iterator itr);
 
@@ -1114,7 +1116,7 @@ public:
     \brief Follows left childs with a value, until it arrives at a leaf or at
            a node with no value.
 
-    This method takes \f$O(1)\f$ expected time.
+    This method takes \f$O(1)\f$ time.
   */
   void follow_left_childs_with_value();
 
@@ -1122,7 +1124,7 @@ public:
     \brief Follows right childs with a value, until it arrives at a leaf or at
            a node with no value.
 
-    This method takes \f$O(1)\f$ expected time.
+    This method takes \f$O(1)\f$ time.
   */
   void follow_right_childs_with_value();
 
@@ -1170,7 +1172,7 @@ public:
            counting from 0.
 
     Thus leaves have offset 1.
-    This is faster than depth(), so it is useful for comparing node depths.
+    This is faster than depth(), so it is useful to compare node depths.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -1194,7 +1196,7 @@ private:
            counting from 0.
 
     Thus leaves have offset 1.
-    This is equal to (i & -i), and is stored to increase performance only.
+    This is equal to (i & -i), and is only stored to increase performance.
   */
   dimension_type offset;
 };
