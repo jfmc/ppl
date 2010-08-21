@@ -947,7 +947,7 @@ private:
 
   //! The minimum density of used nodes.
   /*!
-    Must be strictly lower than max_density_percent.
+    Must be strictly lower than the half of max_density_percent.
   */
   static const dimension_type min_density_percent = 35;
 
