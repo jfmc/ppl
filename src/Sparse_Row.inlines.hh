@@ -286,43 +286,6 @@ Sparse_Row::find_create(iterator itr, dimension_type i) {
 }
 
 inline void
-Sparse_Row::swap(dimension_type i, dimension_type j) {
-  PPL_ASSERT(i < size_);
-  PPL_ASSERT(j < size_);
-
-  if (tree.empty())
-    return;
-
-  iterator itr_i = tree.bisect(i);
-  iterator itr_j = tree.bisect(j);
-  if (itr_i->first == i)
-    if (itr_j->first == j)
-      // Both elements are in the tree
-      std::swap(itr_i->second, itr_j->second);
-    else {
-      // i is in the tree, j isn't
-      PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(itr_i->second, tmp);
-      tree.erase(itr_i);
-      // Now both iterators have been invalidated.
-      itr_j = tree.insert(j);
-      std::swap(itr_j->second, tmp);
-    }
-  else
-    if (itr_j->first == j) {
-      // j is in the tree, i isn't
-      PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(itr_j->second, tmp);
-      // Now both iterators have been invalidated.
-      tree.erase(itr_j);
-      itr_i = tree.insert(i);
-      std::swap(itr_i->second, tmp);
-    } else {
-      // Do nothing, elements are both unstored zeroes.
-    }
-}
-
-inline void
 Sparse_Row::swap(iterator i, iterator j) {
   PPL_ASSERT(i != end());
   PPL_ASSERT(j != end());
@@ -337,44 +300,9 @@ Sparse_Row::reset(iterator i) {
   return res;
 }
 
-inline Sparse_Row::iterator
-Sparse_Row::reset(iterator first, iterator last) {
-  if (first == last)
-    return first;
-  PPL_ASSERT(last != end());
-  --last;
-  const dimension_type j = last->first;
-  PPL_ASSERT(first->first <= j);
-  // We can't just compare first and last at each iteration, because last will
-  // be invalidated by the first erase.
-  while (first->first < j)
-    first = reset(first);
-
-  first = reset(first);
-
-  PPL_ASSERT(OK());
-  return first;
-}
-
 inline void
 Sparse_Row::reset(dimension_type i) {
   tree.erase(i);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Sparse_Row::reset_after(dimension_type i) {
-  PPL_ASSERT(i < size_);
-
-  iterator itr = lower_bound(i);
-  // This is a const reference to an internal iterator, that is kept valid.
-  // If we just stored a copy, that would be invalidated by the calls to
-  // reset().
-  const iterator& itr_end = end();
-
-  while (itr != itr_end)
-    itr = reset(itr);
-
   PPL_ASSERT(OK());
 }
 
