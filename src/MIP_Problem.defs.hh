@@ -83,8 +83,6 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
 
-  typedef Dense_Row row_type;
-
 #ifndef USE_PPL_SPARSE_MATRIX
   typedef Dense_Matrix matrix_type;
 #else
@@ -447,7 +445,7 @@ private:
   matrix_type tableau;
 
   //! The working cost function.
-  row_type working_cost;
+  Dense_Row working_cost;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
@@ -652,7 +650,7 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(row_type& x, const row_type& y,
+  static void linear_combine(Dense_Row& x, const Dense_Row& y,
                              const dimension_type k);
 
 #ifdef USE_PPL_SPARSE_MATRIX
@@ -690,7 +688,7 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(row_type& x,
+  static void linear_combine(Dense_Row& x,
                              const matrix_type::row_type& y,
                              const dimension_type k);
 #endif // defined(USE_PPL_SPARSE_MATRIX)

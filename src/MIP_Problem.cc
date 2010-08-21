@@ -829,7 +829,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Reset the working cost function to have the right size.
-  working_cost = row_type(tableau_num_cols, Row_Flags());
+  working_cost = Dense_Row(tableau_num_cols, Row_Flags());
 
   // Set up artificial variables: these will have coefficient 1 in the
   // constraint, will enter the base and will have coefficient -1 in
@@ -1219,7 +1219,7 @@ private:
 } // namespace
 
 void
-PPL::MIP_Problem::linear_combine(row_type& x, const row_type& y,
+PPL::MIP_Problem::linear_combine(Dense_Row& x, const Dense_Row& y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
@@ -1273,7 +1273,7 @@ PPL::MIP_Problem::linear_combine(matrix_type::row_type& x,
 }
 
 void
-PPL::MIP_Problem::linear_combine(row_type& x,
+PPL::MIP_Problem::linear_combine(Dense_Row& x,
                                  const matrix_type::row_type& y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
@@ -1704,7 +1704,7 @@ PPL::MIP_Problem::second_phase() {
   // Build the objective function for the second phase.
   const dimension_type input_obj_function_sd
     = input_obj_function.space_dimension();
-  row_type new_cost(input_obj_function_sd + 1, Row_Flags());
+  Dense_Row new_cost(input_obj_function_sd + 1, Row_Flags());
   for (dimension_type i = input_obj_function_sd; i-- > 0; )
     new_cost[i + 1] = input_obj_function.coefficient(Variable(i));
   new_cost[0] = input_obj_function.inhomogeneous_term();
@@ -1716,7 +1716,7 @@ PPL::MIP_Problem::second_phase() {
 
   // Substitute properly the cost function in the `costs' matrix.
   const dimension_type cost_zero_size = working_cost.size();
-  row_type tmp_cost = row_type(new_cost, cost_zero_size, cost_zero_size);
+  Dense_Row tmp_cost = Dense_Row(new_cost, cost_zero_size, cost_zero_size);
   tmp_cost.swap(working_cost);
   working_cost[cost_zero_size - 1] = 1;
 
