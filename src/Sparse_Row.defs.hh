@@ -293,10 +293,12 @@ public:
              equal to i.
              If there are no such elements, returns end().
 
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time.
+    If the distance between \p itr and the searched position is \f$O(1)\f$,
+    this method takes \f$O(1)\f$ time.
   */
   iterator lower_bound(iterator itr, dimension_type i);
 
@@ -319,10 +321,12 @@ public:
              equal to i.
              If there are no such elements, returns end().
 
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time.
+    If the distance between \p itr and the searched position is \f$O(1)\f$,
+    this method takes \f$O(1)\f$ time.
   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
