@@ -122,11 +122,11 @@ public:
   /*!
     This operation invalidates existing iterators on rows' elements.
 
-    This method takes \f$O(k + \sum_{j=1}^{r} \log n_j)\f$ expected time, where k
-    is the number of stored elements with column index greater than i, r the
-    number of rows in this matrix and \f$n_j\f$ the number of stored elements in
-    row j.
-    A weaker (but simpler) bound is \f$O(r*(c-i+\log c))\f$, where r is the
+    This method takes \f$O(k + \sum_{j=1}^{r} \log^2 n_j)\f$ amortized time,
+    where k is the number of elements stored with column index greater than i,
+    r the number of rows in this matrix and \f$n_j\f$ the number of elements
+    stored in row j.
+    A weaker (but simpler) bound is \f$O(r*(c-i+\log^2 c))\f$, where r is the
     number of rows, c is the number of columns and i is the parameter passed
     to this method.
   */
@@ -151,11 +151,11 @@ public:
     turn can be represented by a vector of 6 elements containing 1, 3,
     6, 0, 2, 4, 0.
 
-    This method takes \f$O(k*\sum_{j=1}^{r} \log n_j)\f$ expected time, where k is
-    the size of the \p cycles vector, r the number of rows and \f$n_j\f$ the
-    number of stored elements in row j.
-    A weaker (but simpler) bound is \f$O(k*r*\log c )\f$, where k is the size of
-    the \p cycles vector, r is the number of rows and c is the number of
+    This method takes \f$O(k*\sum_{j=1}^{r} \log^2 n_j)\f$ expected time,
+    where k is the size of the \p cycles vector, r the number of rows and
+    \f$n_j\f$ the number of elements stored in row j.
+    A weaker (but simpler) bound is \f$O(k*r*\log^2 c)\f$, where k is the size
+    of the \p cycles vector, r is the number of rows and c is the number of
     columns.
 
     \note
@@ -178,15 +178,15 @@ public:
     Adding n columns takes \f$O(r)\f$ time, where r is \p num_rows.
 
     Removing n rows takes \f$O(n+k)\f$ amortized time, where k is the total
-    number of stored elements in the removed rows.
+    number of elements stored in the removed rows.
 
-    Removing n columns takes \f$O(\sum_{j=1}^{r} k_j*\log n_j)\f$ time, where r
-    is the number of rows, \f$k_j\f$ is the number of stored elements in the
-    columns of the j-th row that must be removed and \f$n_j\f$ is the number of
-    stored elements in the j-th row.
-    A weaker (but simpler) bound is \f$O(r+k*\log c)\f$, where r is the number
-    of rows, k is the number of elements that have to be removed and c is the
-    number of columns.
+    Removing n columns takes \f$O(\sum_{j=1}^{r} k_j*\log^2 n_j)\f$ time,
+    where r is the number of rows, \f$k_j\f$ is the number of elements stored
+    in the columns of the j-th row that must be removed and \f$n_j\f$ is the
+    total number of elements stored in the j-th row.
+    A weaker (but simpler) bound is \f$O(r+k*\log^2 c)\f$, where r is the
+    number of rows, k is the number of elements that have to be removed and c
+    is the number of columns.
   */
   void resize(dimension_type num_rows, dimension_type num_columns,
               Flags row_flags = Flags());
@@ -210,6 +210,9 @@ public:
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
+
+    This method takes \f$O(k)\f$ amortized time, where k is the number of the
+    new rows.
   */
   void add_zero_rows(dimension_type n, Flags row_flags);
 
@@ -223,6 +226,9 @@ public:
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
+
+    This method takes \f$O(r)\f$ amortized time, where r is the numer of the
+    matrix's rows.
   */
   void add_zero_columns(dimension_type n);
 
@@ -230,10 +236,10 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\sum_{j=1}^{r} k_j+\log n_j)\f$ expected time, where r
-    is the number of rows, \f$k_j\f$ is the number of stored elements in the
-    columns of the j-th row that must be shifted and \f$n_j\f$ is the number of
-    stored elements in the j-th row.
+    This method takes \f$O(\sum_{j=1}^{r} k_j+\log n_j)\f$ time, where r is
+    the number of rows, \f$k_j\f$ is the number of elements stored in the
+    columns of the j-th row that must be shifted and \f$n_j\f$ is the number
+    of elements stored in the j-th row.
     A weaker (but simpler) bound is \f$O(k+r*\log c)\f$ time, where k is the
     number of elements that must be shifted, r is the number of the rows and c
     is the number of the columns.
@@ -255,6 +261,9 @@ public:
     the \f$(r+n) \times (c+m)\f$ matrix
     \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
+
+    This method takes \f$O(r)\f$ time, where r is the number of the matrix's
+    rows after the operation.
   */
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
          Flags row_flags);
@@ -263,7 +272,8 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes \f$O(n)\f$ amortized time.
+    This method takes \f$O(n)\f$ amortized time, where n is the numer of
+    elements stored in \p x.
   */
   void add_row(const Sparse_Row& x);
 
@@ -298,22 +308,22 @@ public:
     It is equivalent to resize(first_to_erase,num_columns()).
 
     This method takes \f$O(n+k)\f$ amortized time, where k is the total number
-    of stored elements in the removed rows and n is the number of removed
+    of elements stored in the removed rows and n is the number of removed
     rows.
   */
   void erase_to_end(dimension_type first_to_erase);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   /*!
-    This method is \f$O(r+k)\f$, where r is the number of rows and k is the number
-    of stored elements in the matrix.
+    This method is \f$O(r+k)\f$, where r is the number of rows and k is the
+    number of elements stored in the matrix.
   */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
     This method is \f$O(r+k)\f$, where r is the number of rows and k is the number
-    of stored elements in the matrix.
+    of elements stored in the matrix.
   */
   memory_size_type external_memory_in_bytes() const;
 
