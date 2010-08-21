@@ -64,40 +64,6 @@ public:
   */
   explicit Sparse_Row(dimension_type n = 0, Flags flags = Flags());
 
-  //! Resets all the elements of this row.
-  /*!
-    This method takes \f$O(n)\f$ time.
-  */
-  void clear();
-
-  //! Swaps *this and x.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  void swap(Sparse_Row& x);
-
-  //! Returns the flags associated with this row.
-  const Flags& flags() const;
-
-  //! Returns a reference to the flags associated with this row.
-  Flags& flags();
-
-  //! Swaps the i-th element with the j-th element.
-  /*!
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(\log^2 n)\f$ amortized time.
-  */
-  void swap(dimension_type i, dimension_type j);
-
-  //! Swaps the element pointed to by i with the element pointed to by j.
-  /*!
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(1)\f$ time.
-  */
-  void swap(iterator i, iterator j);
-
   //! Resizes the row to size \p n.
   /*!
     This method, with this signature, is needed for compatibility with
@@ -122,6 +88,18 @@ public:
   */
   void construct(dimension_type n, dimension_type capacity);
 
+  //! Swaps *this and x.
+  /*!
+    This method takes \f$O(1)\f$ time.
+  */
+  void swap(Sparse_Row& x);
+
+  //! Returns the size of the row.
+  /*!
+    This method takes \f$O(1)\f$ time.
+  */
+  dimension_type size() const;
+
   //! Resizes the row to the specified size.
   /*!
     This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the row
@@ -140,11 +118,281 @@ public:
   */
   void shrink(dimension_type n);
 
-  //! Returns the size of the row.
+  /*!
+    \brief Deletes the i-th element from the row, shifting the next elements
+           to the left.
+
+    The size of the row is decreased by 1.
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(k+\log^2 n)\f$ amortized time, where k is the
+    number of elements with index greater than i.
+  */
+  void delete_element_and_shift(dimension_type i);
+
+  //! Adds \p n zeroes before index i.
+  /*!
+    Existing elements with index greater than or equal to i are shifted to
+    the right by n positions. The size is increased by \p n.
+
+    Existing iterators are not invalidated, but are shifted to the right by n
+    if they pointed at or after index i (i.e. they point to the same,
+    possibly shifted, values as before).
+
+    This method takes \f$O(k+\log n)\f$ expected time, where k is the number of
+    elements with index greater than or equal to i and n the number of stored
+    elements (not the parameter to this method).
+  */
+  void add_zeroes_and_shift(dimension_type n, dimension_type i);
+
+  //! Returns an iterator that points at the first stored element.
   /*!
     This method takes \f$O(1)\f$ time.
   */
-  dimension_type size() const;
+  iterator begin();
+
+  //! Returns an iterator that points after the last stored element.
+  /*!
+    This method always returns a reference to the same internal iterator,
+    that is kept valid.
+    Client code can keep a const reference to that iterator instead of
+    keep updating a local iterator.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  const iterator& end();
+
+  //! Equivalent to cbegin().
+  const_iterator begin() const;
+
+  //! Equivalent to cend().
+  const const_iterator& end() const;
+
+  //! Returns an iterator that points at the first element.
+  /*!
+    This method takes \f$O(1)\f$ time.
+  */
+  const_iterator cbegin() const;
+
+  //! Returns an iterator that points after the last element.
+  /*!
+    This method always returns a reference to the same internal iterator,
+    that is updated at each operation that modifies the structure.
+    Client code can keep a const reference to that iterator instead of
+    keep updating a local iterator.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  const const_iterator& cend() const;
+
+  //! Returns the flags associated with this row.
+  const Flags& flags() const;
+
+  //! Returns a reference to the flags associated with this row.
+  Flags& flags();
+
+  //! Resets all the elements of this row.
+  /*!
+    This method takes \f$O(n)\f$ time.
+  */
+  void clear();
+
+  //! Gets a reference to the i-th element.
+  /*!
+    For read-only access it's better to use get(), that avoids allocating
+    space for zeroes.
+
+    If possible, use the find_create(), find() or lower_bound() methods with
+    a hint instead of this, to improve performance.
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log n)\f$ amortized time when there is already an
+    element with index \p i, and \f$O(\log^2 n)\f$ otherwise.
+  */
+  Coefficient& operator[](dimension_type i);
+
+  //! Equivalent to get(i), provided for convenience.
+  /*!
+    This method takes \f$O(\log n)\f$ time.
+  */
+  const Coefficient& operator[](dimension_type i) const;
+
+  //! Gets the i-th element in the sequence.
+  /*!
+    If possible, use the find_create(), find() or lower_bound() methods with
+    a hint instead of this, to improve performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  const Coefficient& get(dimension_type i) const;
+
+  //! Looks for an element with index i.
+  /*!
+    If possible, use the find() method that takes a hint iterator, to improve
+    performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  iterator find(dimension_type i);
+
+  //! Looks for an element with index i.
+  /*!
+    \p itr is used as a hint. This method will be faster if the searched
+    element is near to \p itr.
+
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
+
+    This method takes \f$O(\log n)\f$ time.
+    If the distance between \p itr and the searched position is \f$O(1)\f$,
+    this method takes \f$O(1)\f$ time.
+  */
+  iterator find(iterator itr, dimension_type i);
+
+  //! Looks for an element with index i.
+  /*!
+    If possible, use the find() method that takes a hint iterator, to improve
+    performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  const_iterator find(dimension_type i) const;
+
+  //! Looks for an element with index i.
+  /*!
+    \p itr is used as a hint. This method will be faster if the searched
+    element is near to \p itr.
+
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid iterator for this row. \p itr may even be end().
+
+    This method takes \f$O(\log n)\f$ time.
+    If the distance between \p itr and the searched position is \f$O(1)\f$,
+    this method takes \f$O(1)\f$ time.
+  */
+  const_iterator find(const_iterator itr, dimension_type i) const;
+
+  //! Lower bound of index i.
+  /*!
+    \returns an iterator to the first element with index greater than or
+             equal to i.
+             If there are no such elements, returns end().
+
+    If possible, use the find() method that takes a hint iterator, to improve
+    performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  iterator lower_bound(dimension_type i);
+
+  //! Lower bound of index i.
+  /*!
+    \returns an iterator to the first element with index greater than or
+             equal to i.
+             If there are no such elements, returns end().
+
+    If possible, use the find() method that takes a hint iterator, to improve
+    performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  iterator lower_bound(iterator itr, dimension_type i);
+
+  //! Lower bound of index i.
+  /*!
+    \returns an iterator to the first element with index greater than or
+             equal to i.
+             If there are no such elements, returns end().
+
+    If possible, use the find() method that takes a hint iterator, to improve
+    performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  const_iterator lower_bound(dimension_type i) const;
+
+  //! Lower bound of index i.
+  /*!
+    \returns an iterator to the first element with index greater than or
+             equal to i.
+             If there are no such elements, returns end().
+
+    If possible, use the find() method that takes a hint iterator, to improve
+    performance.
+
+    This method takes \f$O(\log n)\f$ time.
+  */
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
+
+  //! Equivalent to (*this)[i] = x; find(i); , but faster.
+  /*!
+    If possible, use versions of this method that take a hint, to improve
+    performance.
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log^2 n)\f$ amortized time.
+  */
+  iterator find_create(dimension_type i, const Coefficient& x);
+
+  //! Equivalent to (*this)[i]=x; find(i); , but faster.
+  /*!
+    If \p itr points near the added element, this is faster, even faster than
+    <CODE>(*this)[i]=x;</CODE>.
+
+    The value of \p itr does not change the result. \p itr may even be end().
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log^2 n)\f$ amortized time. If the distance
+    between \p itr and the searched position is \f$O(1)\f$ and the row already
+    contains an element with this index, this method takes \f$O(1)\f$ time.
+  */
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
+
+  //! Equivalent to (*this)[i]; find(i); , but faster.
+  /*!
+    If possible, use versions of this method that take a hint, to improve
+    performance.
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log^2 n)\f$ amortized time.
+  */
+  iterator find_create(dimension_type i);
+
+  //! Equivalent to (*this)[i]; find(i); , but faster.
+  /*!
+    If \p itr points near the added element, this is faster, even faster than
+    <CODE>(*this)[i];</CODE>.
+
+    The value of \p itr does not change the result. \p itr may even be end().
+
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log^2 n)\f$ amortized time. If the distance
+    between \p itr and the searched position is \f$O(1)\f$ and the row already
+    contains an element with this index, this method takes \f$O(1)\f$ time.
+  */
+  iterator find_create(iterator itr, dimension_type i);
+
+  //! Swaps the i-th element with the j-th element.
+  /*!
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(\log^2 n)\f$ amortized time.
+  */
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  /*!
+    This operation invalidates existing iterators.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  void swap(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
   /*!
@@ -191,34 +439,6 @@ public:
     number of elements with index greater than or equal to i.
   */
   void reset_after(dimension_type i);
-
-  /*!
-    \brief Deletes the i-th element from the row, shifting the next elements
-           to the left.
-
-    The size of the row is decreased by 1.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(k+\log^2 n)\f$ amortized time, where k is the
-    number of elements with index greater than i.
-  */
-  void delete_element_and_shift(dimension_type i);
-
-  //! Adds \p n zeroes before index i.
-  /*!
-    Existing elements with index greater than or equal to i are shifted to
-    the right by n positions. The size is increased by \p n.
-
-    Existing iterators are not invalidated, but are shifted to the right by n
-    if they pointed at or after index i (i.e. they point to the same,
-    possibly shifted, values as before).
-
-    This method takes \f$O(k+\log n)\f$ expected time, where k is the number of
-    elements with index greater than or equal to i and n the number of stored
-    elements (not the parameter to this method).
-  */
-  void add_zeroes_and_shift(dimension_type n, dimension_type i);
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -269,226 +489,6 @@ public:
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
-
-  //! Gets a reference to the i-th element.
-  /*!
-    For read-only access it's better to use get(), that avoids allocating
-    space for zeroes.
-
-    If possible, use the find_create(), find() or lower_bound() methods with
-    a hint instead of this, to improve performance.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(\log n)\f$ amortized time when there is already an
-    element with index \p i, and \f$O(\log^2 n)\f$ otherwise.
-  */
-  Coefficient& operator[](dimension_type i);
-
-  //! Equivalent to get(i), provided for convenience.
-  /*!
-    This method takes \f$O(\log n)\f$ time.
-  */
-  const Coefficient& operator[](dimension_type i) const;
-
-  //! Gets the i-th element in the sequence.
-  /*!
-    If possible, use the find_create(), find() or lower_bound() methods with
-    a hint instead of this, to improve performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  const Coefficient& get(dimension_type i) const;
-
-  //! Returns an iterator that points at the first stored element.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  iterator begin();
-
-  //! Returns an iterator that points after the last stored element.
-  /*!
-    This method always returns a reference to the same internal iterator,
-    that is kept valid.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
-
-    This method takes \f$O(1)\f$ time.
-  */
-  const iterator& end();
-
-  //! Equivalent to cbegin().
-  const_iterator begin() const;
-
-  //! Equivalent to cend().
-  const const_iterator& end() const;
-
-  //! Returns an iterator that points at the first element.
-  /*!
-    This method takes \f$O(1)\f$ time.
-  */
-  const_iterator cbegin() const;
-
-  //! Returns an iterator that points after the last element.
-  /*!
-    This method always returns a reference to the same internal iterator,
-    that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
-
-    This method takes \f$O(1)\f$ time.
-  */
-  const const_iterator& cend() const;
-
-  //! Looks for an element with index i.
-  /*!
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  iterator find(dimension_type i);
-
-  //! Lower bound of index i.
-  /*!
-    \returns an iterator to the first element with index greater than or
-             equal to i.
-             If there are no such elements, returns end().
-
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  iterator lower_bound(dimension_type i);
-
-  //! Looks for an element with index i.
-  /*!
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  const_iterator find(dimension_type i) const;
-
-  //! Lower bound of index i.
-  /*!
-    \returns an iterator to the first element with index greater than or
-             equal to i.
-             If there are no such elements, returns end().
-
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  const_iterator lower_bound(dimension_type i) const;
-
-  //! Looks for an element with index i.
-  /*!
-    \p itr is used as a hint. This method will be faster if the searched
-    element is near to \p itr.
-
-    The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this row. \p itr may even be end().
-
-    This method takes \f$O(\log n)\f$ time.
-    If the distance between \p itr and the searched position is \f$O(1)\f$,
-    this method takes \f$O(1)\f$ time.
-  */
-  iterator find(iterator itr, dimension_type i);
-
-  //! Lower bound of index i.
-  /*!
-    \returns an iterator to the first element with index greater than or
-             equal to i.
-             If there are no such elements, returns end().
-
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  iterator lower_bound(iterator itr, dimension_type i);
-
-  //! Looks for an element with index i.
-  /*!
-    \p itr is used as a hint. This method will be faster if the searched
-    element is near to \p itr.
-
-    The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this row. \p itr may even be end().
-
-    This method takes \f$O(\log n)\f$ time.
-    If the distance between \p itr and the searched position is \f$O(1)\f$,
-    this method takes \f$O(1)\f$ time.
-  */
-  const_iterator find(const_iterator itr, dimension_type i) const;
-
-  //! Lower bound of index i.
-  /*!
-    \returns an iterator to the first element with index greater than or
-             equal to i.
-             If there are no such elements, returns end().
-
-    If possible, use the find() method that takes a hint iterator, to improve
-    performance.
-
-    This method takes \f$O(\log n)\f$ time.
-  */
-  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
-
-  //! Equivalent to (*this)[i] = x; find(i); , but faster.
-  /*!
-    If possible, use versions of this method that take a hint, to improve
-    performance.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(\log^2 n)\f$ amortized time.
-  */
-  iterator find_create(dimension_type i, const Coefficient& x);
-
-  //! Equivalent to (*this)[i]; find(i); , but faster.
-  /*!
-    If possible, use versions of this method that take a hint, to improve
-    performance.
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(\log^2 n)\f$ amortized time.
-  */
-  iterator find_create(dimension_type i);
-
-  //! Equivalent to (*this)[i]=x; find(i); , but faster.
-  /*!
-    If \p itr points near the added element, this is faster, even faster than
-    <CODE>(*this)[i]=x;</CODE>.
-
-    The value of \p itr does not change the result. \p itr may even be end().
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(\log^2 n)\f$ amortized time. If the distance
-    between \p itr and the searched position is \f$O(1)\f$ and the row already
-    contains an element with this index, this method takes \f$O(1)\f$ time.
-  */
-  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
-
-  //! Equivalent to (*this)[i]; find(i); , but faster.
-  /*!
-    If \p itr points near the added element, this is faster, even faster than
-    <CODE>(*this)[i];</CODE>.
-
-    The value of \p itr does not change the result. \p itr may even be end().
-
-    This operation invalidates existing iterators.
-
-    This method takes \f$O(\log^2 n)\f$ amortized time. If the distance
-    between \p itr and the searched position is \f$O(1)\f$ and the row already
-    contains an element with this index, this method takes \f$O(1)\f$ time.
-  */
-  iterator find_create(iterator itr, dimension_type i);
 
   PPL_OUTPUT_DECLARATIONS
 
