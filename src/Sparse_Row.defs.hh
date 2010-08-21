@@ -86,7 +86,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   void swap(dimension_type i, dimension_type j);
 
@@ -94,7 +94,7 @@ public:
   /*!
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(1)\f$ time.
   */
   void swap(iterator i, iterator j);
 
@@ -103,9 +103,9 @@ public:
     This method, with this signature, is needed for compatibility with
     Dense_Row.
 
-    This method takes \f$O(k*\log n)\f$ amortized time when shrinking the row
-    and removing the trailing k elements. This method takes \f$O(1)\f$ time
-    when enlarging the row.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
+    row and removing the trailing k elements.
+    It takes \f$O(1)\f$ time when enlarging the row.
   */
   void construct(dimension_type n);
 
@@ -116,17 +116,17 @@ public:
     This method, with this signature, is needed for compatibility with
     Dense_Row.
 
-    This method takes \f$O(k*\log n)\f$ amortized time when shrinking the row
-    and removing the trailing k elements. This method takes \f$O(1)\f$ time
-    when enlarging the row.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
+    row and removing the trailing k elements.
+    It takes \f$O(1)\f$ time when enlarging the row.
   */
   void construct(dimension_type n, dimension_type capacity);
 
   //! Resizes the row to the specified size.
   /*!
-    This method takes \f$O(k*\log n)\f$ amortized time when shrinking the row
-    and removing the trailing k elements. This method takes \f$O(1)\f$ time
-    when enlarging the row.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the row
+    and removing the trailing k elements.
+    It takes \f$O(1)\f$ time when enlarging the row.
   */
   void resize(dimension_type n);
 
@@ -135,8 +135,8 @@ public:
     This method, with this signature, is needed for compatibility with
     Dense_Row.
 
-    This method takes \f$O(k*\log n)\f$ amortized time where k is the number of
-    removed elements.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time where k is the number
+    of removed elements.
   */
   void shrink(dimension_type n);
 
@@ -153,7 +153,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   iterator reset(iterator i);
 
@@ -164,8 +164,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(k*\log n)\f$ amortized time, where k is the number of
-    elements in [first,last).
+    This method takes \f$O(k*\log^2 n)\f$ amortized time, where k is the
+    number of elements in [first,last).
   */
   iterator reset(iterator first, iterator last);
 
@@ -176,7 +176,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   void reset(dimension_type i);
 
@@ -187,8 +187,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(k*\log n)\f$ amortized time, where k is the number of
-    elements with index greater than or equal to i.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time, where k is the
+    number of elements with index greater than or equal to i.
   */
   void reset_after(dimension_type i);
 
@@ -200,8 +200,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(k+\log n)\f$ amortized time, where k is the number
-    of elements with index greater than i.
+    This method takes \f$O(k+\log^2 n)\f$ amortized time, where k is the
+    number of elements with index greater than i.
   */
   void delete_element_and_shift(dimension_type i);
 
@@ -280,7 +280,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log n)\f$ amortized time when there is already an
+    element with index \p i, and \f$O(\log^2 n)\f$ otherwise.
   */
   Coefficient& operator[](dimension_type i);
 
@@ -301,7 +302,7 @@ public:
 
   //! Returns an iterator that points at the first stored element.
   /*!
-    This method takes \f$O(1)\f$ expected time.
+    This method takes \f$O(1)\f$ time.
   */
   iterator begin();
 
@@ -324,7 +325,7 @@ public:
 
   //! Returns an iterator that points at the first element.
   /*!
-    This method takes \f$O(1)\f$ expected time.
+    This method takes \f$O(1)\f$ time.
   */
   const_iterator cbegin() const;
 
@@ -339,16 +340,16 @@ public:
   */
   const const_iterator& cend() const;
 
-  //! Looks for an element with key i.
+  //! Looks for an element with index i.
   /*!
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   iterator find(dimension_type i);
 
-  //! Lower bound of key i.
+  //! Lower bound of index i.
   /*!
     \returns an iterator to the first element with index greater than or
              equal to i.
@@ -357,20 +358,20 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   iterator lower_bound(dimension_type i);
 
-  //! Looks for an element with key i.
+  //! Looks for an element with index i.
   /*!
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   const_iterator find(dimension_type i) const;
 
-  //! Lower bound of key i.
+  //! Lower bound of index i.
   /*!
     \returns an iterator to the first element with index greater than or
              equal to i.
@@ -379,11 +380,11 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   const_iterator lower_bound(dimension_type i) const;
 
-  //! Looks for an element with key i.
+  //! Looks for an element with index i.
   /*!
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
@@ -391,13 +392,13 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this row. \p itr may even be end().
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    \p itr and the searched position is \f$O(1)\f$, this method takes
-    \f$O(1)\f$ time.
+    This method takes \f$O(\log n)\f$ time.
+    If the distance between \p itr and the searched position is \f$O(1)\f$,
+    this method takes \f$O(1)\f$ time.
   */
   iterator find(iterator itr, dimension_type i);
 
-  //! Lower bound of key i.
+  //! Lower bound of index i.
   /*!
     \returns an iterator to the first element with index greater than or
              equal to i.
@@ -406,11 +407,11 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   iterator lower_bound(iterator itr, dimension_type i);
 
-  //! Looks for an element with key i.
+  //! Looks for an element with index i.
   /*!
     \p itr is used as a hint. This method will be faster if the searched
     element is near to \p itr.
@@ -418,13 +419,13 @@ public:
     The value of \p itr does not affect the result of this method, as long it
     is a valid iterator for this row. \p itr may even be end().
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    \p itr and the searched position is \f$O(1)\f$, this method takes
-    \f$O(1)\f$ time.
+    This method takes \f$O(\log n)\f$ time.
+    If the distance between \p itr and the searched position is \f$O(1)\f$,
+    this method takes \f$O(1)\f$ time.
   */
   const_iterator find(const_iterator itr, dimension_type i) const;
 
-  //! Lower bound of key i.
+  //! Lower bound of index i.
   /*!
     \returns an iterator to the first element with index greater than or
              equal to i.
@@ -433,7 +434,7 @@ public:
     If possible, use the find() method that takes a hint iterator, to improve
     performance.
 
-    This method takes \f$O(\log n)\f$ expected time.
+    This method takes \f$O(\log n)\f$ time.
   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
@@ -444,7 +445,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   iterator find_create(dimension_type i, const Coefficient& x);
 
@@ -455,7 +456,7 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time.
+    This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   iterator find_create(dimension_type i);
 
@@ -468,8 +469,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    \p itr and the searched position is \f$O(1)\f$ and the row already
+    This method takes \f$O(\log^2 n)\f$ amortized time. If the distance
+    between \p itr and the searched position is \f$O(1)\f$ and the row already
     contains an element with this index, this method takes \f$O(1)\f$ time.
   */
   iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
@@ -483,9 +484,9 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ expected time. If the distance between
-    \p itr and the searched position is \f$O(1)\f$ and the row already contains
-    an element with this index, this method takes \f$O(1)\f$ time.
+    This method takes \f$O(\log^2 n)\f$ amortized time. If the distance
+    between \p itr and the searched position is \f$O(1)\f$ and the row already
+    contains an element with this index, this method takes \f$O(1)\f$ time.
   */
   iterator find_create(iterator itr, dimension_type i);
 
@@ -496,7 +497,7 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
-    This method takes \f$O(1)\f$ time.
+    This method takes \f$O(n)\f$ time.
   */
   memory_size_type external_memory_in_bytes() const;
 
