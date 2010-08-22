@@ -1118,7 +1118,7 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
 
 bool
 PPL::CO_Tree::const_iterator::OK() const {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   if (tree == 0) {
     if (current_index != 0)
       return false;
@@ -1149,7 +1149,7 @@ PPL::CO_Tree::const_iterator::OK() const {
 
 bool
 PPL::CO_Tree::iterator::OK() const {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   if (tree == 0) {
     if (current_index != 0)
       return false;

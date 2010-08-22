@@ -25,6 +25,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 
+#ifndef PPL_CO_TREE_EXTRA_DEBUG
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*!
+  \brief
+  Enables extra debugging information for class CO_Tree.
+
+  \ingroup PPL_CXX_interface
+  When <CODE>PPL_CO_TREE_EXTRA_DEBUG</CODE> evaluates to <CODE>true</CODE>,
+  each CO_Tree iterator and const_iterator carries a pointer to the associated
+  tree; this enables extra consistency checks to be performed.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+#define PPL_CO_TREE_EXTRA_DEBUG 1
+#else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#define PPL_CO_TREE_EXTRA_DEBUG 0
+#endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#endif // !defined(PPL_CO_TREE_EXTRA_DEBUG)
+
+
 namespace Parma_Polyhedra_Library {
 
 //! A cache-oblivious binary search tree of pairs.
@@ -275,7 +295,7 @@ public:
     //! A pointer to the corresponding element of the tree's data[] array.
     const data_type* current_data;
 
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
     //! A pointer to the corresponding tree, used for debug purposes only.
     const CO_Tree* tree;
 #endif
@@ -501,7 +521,7 @@ public:
     //! A pointer to the corresponding element of the tree's data[] array.
     data_type* current_data;
 
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
     //! A pointer to the corresponding tree, used for debug purposes only.
     CO_Tree* tree;
 #endif

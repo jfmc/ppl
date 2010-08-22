@@ -311,7 +311,7 @@ CO_Tree::move_data_element(data_type& to, data_type& from) {
 inline
 CO_Tree::const_iterator::const_iterator()
   : current_index(0), current_data(0) {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = 0;
 #endif
   PPL_ASSERT(OK());
@@ -320,7 +320,7 @@ CO_Tree::const_iterator::const_iterator()
 inline
 CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
   : current_index(&(tree1.indexes[1])), current_data(&(tree1.data[1])) {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
 #endif
   if (!tree1.empty())
@@ -335,7 +335,7 @@ inline
 CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1,
                                         dimension_type i)
   : current_index(&(tree1.indexes[i])), current_data(&(tree1.data[i])) {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
 #endif
   PPL_ASSERT(i != 0);
@@ -360,7 +360,7 @@ inline void
 CO_Tree::const_iterator::swap(const_iterator& itr) {
   std::swap(current_data, itr.current_data);
   std::swap(current_index, itr.current_index);
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   std::swap(tree, itr.tree);
 #endif
   PPL_ASSERT(OK());
@@ -371,7 +371,7 @@ inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator=(const const_iterator& itr2) {
   current_index = itr2.current_index;
   current_data = itr2.current_data;
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = itr2.tree;
 #endif
   PPL_ASSERT(OK());
@@ -382,7 +382,7 @@ inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator=(const iterator& itr2) {
   current_index = itr2.current_index;
   current_data = itr2.current_data;
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = itr2.tree;
 #endif
   PPL_ASSERT(OK());
@@ -393,7 +393,7 @@ inline CO_Tree::const_iterator&
 CO_Tree::const_iterator::operator++() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
 #endif
   ++current_index;
@@ -483,7 +483,7 @@ CO_Tree::const_iterator::Const_Member_Access_Helper::operator->() const {
 inline
 CO_Tree::iterator::iterator()
   : current_index(0), current_data(0) {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = 0;
 #endif
   PPL_ASSERT(OK());
@@ -492,7 +492,7 @@ CO_Tree::iterator::iterator()
 inline
 CO_Tree::iterator::iterator(CO_Tree& tree1)
   : current_index(&(tree1.indexes[1])), current_data(&(tree1.data[1])) {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
 #endif
   if (!tree1.empty())
@@ -506,7 +506,7 @@ CO_Tree::iterator::iterator(CO_Tree& tree1)
 inline
 CO_Tree::iterator::iterator(CO_Tree& tree1, dimension_type i)
   : current_index(&(tree1.indexes[i])), current_data(&(tree1.data[i])) {
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
 #endif
   PPL_ASSERT(i != 0);
@@ -531,7 +531,7 @@ inline void
 CO_Tree::iterator::swap(iterator& itr) {
   std::swap(current_data, itr.current_data);
   std::swap(current_index, itr.current_index);
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   std::swap(tree, itr.tree);
 #endif
   PPL_ASSERT(OK());
@@ -542,7 +542,7 @@ inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
   current_index = &(itr.tree.indexes[itr.index()]);
   current_data = &(itr.tree.data[itr.index()]);
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = &(itr.tree);
 #endif
   PPL_ASSERT(OK());
@@ -553,7 +553,7 @@ inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const iterator& itr2) {
   current_index = itr2.current_index;
   current_data = itr2.current_data;
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   tree = itr2.tree;
 #endif
   PPL_ASSERT(OK());
@@ -564,7 +564,7 @@ inline CO_Tree::iterator&
 CO_Tree::iterator::operator++() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
-#ifndef NDEBUG
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
 #endif
   ++current_index;
