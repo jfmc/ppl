@@ -517,8 +517,13 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     size = 0;
     reserved_size = ((dimension_type)1 << max_depth) - 1;
     indexes = new dimension_type[reserved_size + 2];
-    data = static_cast<data_type*>(operator new(sizeof(data_type)
-                                                * (reserved_size + 1)));
+    try {
+      data = static_cast<data_type*>(operator new(sizeof(data_type)
+                                                  * (reserved_size + 1)));
+    } catch (...) {
+      delete [] indexes;
+      throw;
+    }
     // Mark all pairs as unused.
     for (dimension_type i = 1; i <= reserved_size; ++i)
       indexes[i] = unused_index;
@@ -693,9 +698,16 @@ PPL::CO_Tree::rebuild_bigger_tree() {
   dimension_type new_reserved_size = reserved_size*2 + 1;
 
   dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
-  data_type* new_data
-    = static_cast<data_type*>(operator new(sizeof(data_type)
-                                            * (new_reserved_size + 1)));
+
+  data_type* new_data;
+
+  try {
+    new_data = static_cast<data_type*>(operator new(sizeof(data_type)
+                                       * (new_reserved_size + 1)));
+  } catch (...) {
+    delete new_indexes;
+    throw;
+  }
 
   new_indexes[1] = unused_index;
 
