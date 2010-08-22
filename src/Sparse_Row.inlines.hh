@@ -85,7 +85,7 @@ Sparse_Row::delete_element_and_shift(dimension_type i) {
 inline void
 Sparse_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
   PPL_ASSERT(i <= size_);
-  tree.increase_keys_after(i, n);
+  tree.increase_keys_from(i, n);
   size_ += n;
   PPL_ASSERT(OK());
 }

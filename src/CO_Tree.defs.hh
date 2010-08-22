@@ -713,7 +713,7 @@ public:
     This method takes \f$O(k+\log n)\f$ expected time, where k is the number
     of elements with keys greater than or equal to \p key.
   */
-  void increase_keys_after(dimension_type key, dimension_type n);
+  void increase_keys_from(dimension_type key, dimension_type n);
 
   //! Swaps x with *this.
   /*!

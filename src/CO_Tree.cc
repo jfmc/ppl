@@ -174,7 +174,7 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
 }
 
 void
-PPL::CO_Tree::increase_keys_after(dimension_type key, dimension_type n) {
+PPL::CO_Tree::increase_keys_from(dimension_type key, dimension_type n) {
   if (empty())
     return;
   dimension_type* p = indexes + reserved_size;

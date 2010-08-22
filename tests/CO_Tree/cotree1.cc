@@ -2223,7 +2223,7 @@ test11() {
   if (!tree.empty())
     return false;
 
-  tree.increase_keys_after(1, 5);
+  tree.increase_keys_from(1, 5);
 
   if (!tree.empty())
     return false;
@@ -2233,7 +2233,7 @@ test11() {
   tree.insert(3, 0);
   tree.insert(4, 0);
 
-  tree.increase_keys_after(2, 5);
+  tree.increase_keys_from(2, 5);
 
   CO_Tree::iterator itr = tree.begin();
 
