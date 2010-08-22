@@ -449,7 +449,8 @@ public:
     It is used as a hint. This method will be faster if the searched element
     is near to \p itr, even faster than <CODE>(*this)[i]=x;</CODE>.
 
-    The value of \p itr does not change the result. \p itr may even be end().
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid %iterator for this row. \p itr may even be end().
 
     This operation invalidates existing iterators.
 
@@ -482,7 +483,8 @@ public:
     It is used as a hint. This method will be faster if the searched element
     is near to \p itr, even faster than <CODE>(*this)[i];</CODE>.
 
-    The value of \p itr does not change the result. \p itr may even be end().
+    The value of \p itr does not affect the result of this method, as long it
+    is a valid %iterator for this row. \p itr may even be end().
 
     This operation invalidates existing iterators.
 
