@@ -29,6 +29,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 
 //! A sparse matrix of Coefficient.
+/*!
+  This class is a drop-in replacement of Dense_Matrix, meaning that code
+  using Dense_Matrix can be ported to Sparse_Matrix changing only references
+  to Dense_Matrix and Dense_Row into references to Sparse_Matrix and
+  Sparse_Row. The resulting code will work, but probably needs more CPU and
+  memory (it does not exploit the sparse representation yet).
+  To avoid unnecessary preprocessor's if conditions, use the row_type type
+  defined in both Dense_Matrix and Sparse_Matrix instead of using Dense_Row
+  and Sparse_Row directly.
+
+  To take advantage of the sparse representation, the client code must then be
+  modified to use methods which can have a faster implementation on sparse
+  data structures.
+
+  The main changes are the replacement of calls to operator[] on Sparse_Row
+  objects with calls to find(), lower_bound() or find_create(), using hint
+  iterators when possible. Sequential scanning of rows should probably be
+  implemented using iterators rather than indexes, to improve performance.
+  reset() should be called to zero elements.
+
+  \see Sparse_Row
+*/
 class Parma_Polyhedra_Library::Sparse_Matrix {
 
 public:
@@ -43,6 +65,9 @@ public:
     \brief Constructs a square matrix with the given size, filled with
            unstored zeroes.
 
+    \param n
+    The size of the new square matrix.
+
     \param row_flags
     The flags used to build the rows of the matrix;
     by default, the rows will have all flags unset.
@@ -55,6 +80,12 @@ public:
     \brief Constructs a matrix with the given dimensions, filled with unstored
            zeroes.
 
+    \param num_rows
+    The number of rows in the new matrix.
+
+    \param num_columns
+    The number of columns in the new matrix.
+
     \param row_flags
     The flags used to build the rows of the matrix;
     by default, the rows will have all flags unset.
@@ -62,10 +93,14 @@ public:
     This method takes \f$O(n)\f$ time, where n is \p num_rows.
   */
   Sparse_Matrix(dimension_type num_rows, dimension_type num_columns,
-                Flags flags = Flags());
+                Flags row_flags = Flags());
 
   //! Swaps (*this) with x.
   /*!
+
+    \param x
+    The matrix that will be swapped with *this.
+
     This method takes \f$O(1)\f$ time.
   */
   void swap(Sparse_Matrix& x);
@@ -87,6 +122,16 @@ public:
 
   //! Resizes this matrix to the specified dimensions.
   /*!
+
+    \param num_rows
+    The desired numer of rows.
+
+    \param num_columns
+    The desired numer of columns.
+
+    \param row_flags
+    The flags used for new rows.
+
     New rows and columns will contain non-stored zeroes.
 
     This operation invalidates existing iterators.
@@ -98,7 +143,7 @@ public:
     Removing n rows takes \f$O(n+k)\f$ amortized time, where k is the total
     number of elements stored in the removed rows.
 
-    Removing n columns takes \f$O(\sum_{j=1}^{r} k_j*\log^2 n_j)\f$ time,
+    Removing n columns takes \f$O(\sum_{j=1}^{r} (k_j*\log^2 n_j))\f$ time,
     where r is the number of rows, \f$k_j\f$ is the number of elements stored
     in the columns of the j-th row that must be removed and \f$n_j\f$ is the
     total number of elements stored in the j-th row.
@@ -129,7 +174,7 @@ public:
     rows after the operation.
   */
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
-         Flags row_flags);
+                                 Flags row_flags);
 
   //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
@@ -150,8 +195,12 @@ public:
   */
   void add_zero_rows(dimension_type n, Flags row_flags);
 
-  //! Adds a copy of the row \p x to the matrix.
+  //! Adds a copy of the row \p x at the end of the matrix.
   /*!
+
+    \param x
+    The row that will be appended to the matrix.
+
     This operation invalidates existing iterators.
 
     This method takes \f$O(n)\f$ amortized time, where n is the numer of
@@ -162,6 +211,9 @@ public:
   /*! \brief
     Erases from the matrix all the rows but those having
     an index less than \p first_to_erase.
+
+    \param first_to_erase
+    The index of the first row that will be erased.
 
     Provided for compatibility with Dense_Row.
     It is equivalent to resize(first_to_erase,num_columns()).
@@ -213,7 +265,6 @@ public:
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
-    The matrix is expanded avoiding reallocation whenever possible.
 
     This method takes \f$O(r)\f$ amortized time, where r is the numer of the
     matrix's rows.
@@ -222,9 +273,16 @@ public:
 
   //! Adds \p n columns of non-stored zeroes to the matrix before column i.
   /*!
+
+    \param n
+    The numer of columns that will be added.
+
+    \param i
+    The index of the column before which the new columns will be added.
+
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\sum_{j=1}^{r} k_j+\log n_j)\f$ time, where r is
+    This method takes \f$O(\sum_{j=1}^{r} (k_j+\log n_j))\f$ time, where r is
     the number of rows, \f$k_j\f$ is the number of elements stored in the
     columns of the j-th row that must be shifted and \f$n_j\f$ is the number
     of elements stored in the j-th row.
@@ -236,9 +294,13 @@ public:
 
   //! Removes the i-th from the matrix, shifting other columns to the left.
   /*!
+
+    \param i
+    The index of the column that will be removed.
+
     This operation invalidates existing iterators on rows' elements.
 
-    This method takes \f$O(k + \sum_{j=1}^{r} \log^2 n_j)\f$ amortized time,
+    This method takes \f$O(k + \sum_{j=1}^{r} (\log^2 n_j))\f$ amortized time,
     where k is the number of elements stored with column index greater than i,
     r the number of rows in this matrix and \f$n_j\f$ the number of elements
     stored in row j.
@@ -250,11 +312,15 @@ public:
 
   //! Shrinks the matrix by removing its \p n trailing columns.
   /*!
+
+    \param n
+    The number of trailing columns that will be removed.
+
     This method is provided for compatibility with Dense_Matrix.
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\sum_{j=1}^r k_j*\log n_j)\f$ amortized time, where r
+    This method takes \f$O(\sum_{j=1}^r (k_j*\log n_j))\f$ amortized time, where r
     is the number of rows, \f$k_j\f$ is the number of elements that have to be
     removed from row j and \f$n_j\f$ is the total number of elements stored in
     row j.
@@ -269,25 +335,25 @@ public:
   */
   void clear();
 
-  //! Returns an iterator pointing to the first row.
+  //! Returns an %iterator pointing to the first row.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   iterator begin();
 
-  //! Returns an iterator pointing after the last row.
+  //! Returns an %iterator pointing after the last row.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   iterator end();
 
-  //! Returns an iterator pointing to the first row.
+  //! Returns an %iterator pointing to the first row.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   const_iterator begin() const;
 
-  //! Returns an iterator pointing after the last row.
+  //! Returns an %iterator pointing after the last row.
   /*!
     This method takes \f$O(1)\f$ time.
   */
@@ -295,18 +361,27 @@ public:
 
   //! Returns a reference to the i-th row.
   /*!
+    \param i
+    The index of the desired row.
+
     This method takes \f$O(1)\f$ time.
   */
   Sparse_Row& operator[](dimension_type i);
 
   //! Returns a const reference to the i-th row.
   /*!
+    \param i
+    The index of the desired row.
+
     This method takes \f$O(1)\f$ time.
   */
   const Sparse_Row& operator[](dimension_type i) const;
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
   /*!
+    \param s
+    The stream from which read the ASCII representation.
+
     This method takes \f$O(n*\log n)\f$ time.
   */
   bool ascii_load(std::istream& s);

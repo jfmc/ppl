@@ -35,6 +35,24 @@ namespace Parma_Polyhedra_Library {
 /*!
   This class is implemented using a CO_Tree. See the documentation of CO_Tree
   for details on the implementation and the performance.
+
+  This class is a drop-in replacement of Dense_Row, meaning that code
+  using Dense_Row can be ported to Sparse_Row changing only the type.
+  The resulting code will work, but probably needs more CPU and memory (it
+  does not exploit the sparse representation yet).
+
+  To take advantage of the sparse representation, the client code must then be
+  modified to use methods which can have a faster implementation on sparse
+  data structures.
+
+  The main changes are the replacement of calls to operator[] with calls to
+  find(), lower_bound() or find_create(), using hint iterators when possible.
+  Sequential scanning of rows should probably be implemented using iterators
+  rather than indexes, to improve performance.
+  reset() should be called to zero elements.
+
+  \see Sparse_Matrix
+  \see CO_Tree
 */
 class Sparse_Row {
 
@@ -42,22 +60,28 @@ public:
 
   typedef Row_Flags Flags;
 
-  //! An iterator on the row elements
+  //! An %iterator on the row elements
   /*!
-    This iterator skips non-stored zeroes.
+    This %iterator skips non-stored zeroes.
     \see CO_Tree::iterator
   */
   typedef CO_Tree::iterator iterator;
 
-  //! A const iterator on the row elements
+  //! A const %iterator on the row elements
   /*!
-    This iterator skips non-stored zeroes.
+    This %iterator skips non-stored zeroes.
     \see CO_Tree::const_iterator
   */
   typedef CO_Tree::const_iterator const_iterator;
 
   //! Constructs a row with the specified size.
   /*!
+    \param n
+    The size for the new row.
+
+    \param flags
+    The flags to associate with the new row.
+
     The row will contain only non-stored zeroes.
 
     This constructor takes \f$O(1)\f$ time.
@@ -66,6 +90,9 @@ public:
 
   //! Resizes the row to size \p n.
   /*!
+    \param n
+    The new size for the row.
+
     This method, with this signature, is needed for compatibility with
     Dense_Row.
 
@@ -77,7 +104,11 @@ public:
 
   //! Resizes the row to size \p n.
   /*!
-    \param capacity is ignored.
+    \param n
+    The new size for the row.
+
+    \param capacity
+    This is ignored.
 
     This method, with this signature, is needed for compatibility with
     Dense_Row.
@@ -90,6 +121,9 @@ public:
 
   //! Swaps *this and x.
   /*!
+    \param x
+    The row that will be swapped with *this.
+
     This method takes \f$O(1)\f$ time.
   */
   void swap(Sparse_Row& x);
@@ -102,6 +136,9 @@ public:
 
   //! Resizes the row to the specified size.
   /*!
+    \param n
+    The new size for the row.
+
     This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the row
     and removing the trailing k elements.
     It takes \f$O(1)\f$ time when enlarging the row.
@@ -110,6 +147,9 @@ public:
 
   //! Resizes the row to size \p n.
   /*!
+    \param n
+    The new size for the row.
+
     This method, with this signature, is needed for compatibility with
     Dense_Row.
 
@@ -122,6 +162,9 @@ public:
     \brief Deletes the i-th element from the row, shifting the next elements
            to the left.
 
+    \param i
+    The index of the element that will be deleted.
+
     The size of the row is decreased by 1.
 
     This operation invalidates existing iterators.
@@ -133,6 +176,12 @@ public:
 
   //! Adds \p n zeroes before index i.
   /*!
+    \param n
+    The number of unstored zeroes that will be added to the row.
+
+    \param i
+    The index of the element before which the zeroes will be added.
+
     Existing elements with index greater than or equal to i are shifted to
     the right by n positions. The size is increased by \p n.
 
@@ -146,18 +195,18 @@ public:
   */
   void add_zeroes_and_shift(dimension_type n, dimension_type i);
 
-  //! Returns an iterator that points at the first stored element.
+  //! Returns an %iterator that points at the first stored element.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   iterator begin();
 
-  //! Returns an iterator that points after the last stored element.
+  //! Returns an %iterator that points after the last stored element.
   /*!
-    This method always returns a reference to the same internal iterator,
+    This method always returns a reference to the same internal %iterator,
     that is kept valid.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
+    Client code can keep a const reference to that %iterator instead of
+    keep updating a local %iterator.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -169,18 +218,18 @@ public:
   //! Equivalent to cend().
   const const_iterator& end() const;
 
-  //! Returns an iterator that points at the first element.
+  //! Returns an %iterator that points at the first element.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   const_iterator cbegin() const;
 
-  //! Returns an iterator that points after the last element.
+  //! Returns an %iterator that points after the last element.
   /*!
-    This method always returns a reference to the same internal iterator,
+    This method always returns a reference to the same internal %iterator,
     that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
+    Client code can keep a const reference to that %iterator instead of
+    keep updating a local %iterator.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -200,6 +249,9 @@ public:
 
   //! Gets a reference to the i-th element.
   /*!
+    \param i
+    The index of the desired element.
+
     For read-only access it's better to use get(), that avoids allocating
     space for zeroes.
 
@@ -221,6 +273,9 @@ public:
 
   //! Gets the i-th element in the sequence.
   /*!
+    \param i
+    The index of the desired element.
+
     If possible, use the find_create(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
@@ -230,7 +285,10 @@ public:
 
   //! Looks for an element with index i.
   /*!
-    If possible, use the find() method that takes a hint iterator, to improve
+    \param i
+    The index of the desired element.
+
+    If possible, use the find() method that takes a hint %iterator, to improve
     performance.
 
     This method takes \f$O(\log n)\f$ time.
@@ -239,11 +297,15 @@ public:
 
   //! Looks for an element with index i.
   /*!
-    \p itr is used as a hint. This method will be faster if the searched
-    element is near to \p itr.
+    \param i
+    The index of the desired element.
+
+    \param itr
+    It is used as a hint. This method will be faster if the searched element
+    is near to \p itr.
 
     The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this row. \p itr may even be end().
+    is a valid %iterator for this row. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time.
     If the distance between \p itr and the searched position is \f$O(1)\f$,
@@ -253,7 +315,10 @@ public:
 
   //! Looks for an element with index i.
   /*!
-    If possible, use the find() method that takes a hint iterator, to improve
+    \param i
+    The index of the desired element.
+
+    If possible, use the find() method that takes a hint %iterator, to improve
     performance.
 
     This method takes \f$O(\log n)\f$ time.
@@ -262,11 +327,15 @@ public:
 
   //! Looks for an element with index i.
   /*!
-    \p itr is used as a hint. This method will be faster if the searched
-    element is near to \p itr.
+    \param i
+    The index of the desired element.
+
+    \param itr
+    It is used as a hint. This method will be faster if the searched element
+    is near to \p itr.
 
     The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this row. \p itr may even be end().
+    is a valid %iterator for this row. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time.
     If the distance between \p itr and the searched position is \f$O(1)\f$,
@@ -276,11 +345,14 @@ public:
 
   //! Lower bound of index i.
   /*!
-    \returns an iterator to the first element with index greater than or
+    \param i
+    The index of the desired element.
+
+    \returns an %iterator to the first element with index greater than or
              equal to i.
              If there are no such elements, returns end().
 
-    If possible, use the find() method that takes a hint iterator, to improve
+    If possible, use the find() method that takes a hint %iterator, to improve
     performance.
 
     This method takes \f$O(\log n)\f$ time.
@@ -289,12 +361,19 @@ public:
 
   //! Lower bound of index i.
   /*!
-    \returns an iterator to the first element with index greater than or
+    \param i
+    The index of the desired element.
+
+    \param itr
+    It is used as a hint. This method will be faster if the searched element
+    is near to \p itr.
+
+    \returns an %iterator to the first element with index greater than or
              equal to i.
              If there are no such elements, returns end().
 
     The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this row. \p itr may even be end().
+    is a valid %iterator for this row. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time.
     If the distance between \p itr and the searched position is \f$O(1)\f$,
@@ -304,11 +383,15 @@ public:
 
   //! Lower bound of index i.
   /*!
-    \returns an iterator to the first element with index greater than or
+
+    \param i
+    The index of the desired element.
+
+    \returns an %iterator to the first element with index greater than or
              equal to i.
              If there are no such elements, returns end().
 
-    If possible, use the find() method that takes a hint iterator, to improve
+    If possible, use the find() method that takes a hint %iterator, to improve
     performance.
 
     This method takes \f$O(\log n)\f$ time.
@@ -317,12 +400,19 @@ public:
 
   //! Lower bound of index i.
   /*!
-    \returns an iterator to the first element with index greater than or
+    \param i
+    The index of the desired element.
+
+    \param itr
+    It is used as a hint. This method will be faster if the searched element
+    is near to \p itr.
+
+    \returns an %iterator to the first element with index greater than or
              equal to i.
              If there are no such elements, returns end().
 
     The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this row. \p itr may even be end().
+    is a valid %iterator for this row. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time.
     If the distance between \p itr and the searched position is \f$O(1)\f$,
@@ -332,6 +422,12 @@ public:
 
   //! Equivalent to (*this)[i] = x; find(i); , but faster.
   /*!
+    \param i
+    The index of the desired element.
+
+    \param x
+    The value that will be associated to the element.
+
     If possible, use versions of this method that take a hint, to improve
     performance.
 
@@ -343,8 +439,15 @@ public:
 
   //! Equivalent to (*this)[i]=x; find(i); , but faster.
   /*!
-    If \p itr points near the added element, this is faster, even faster than
-    <CODE>(*this)[i]=x;</CODE>.
+    \param i
+    The index of the desired element.
+
+    \param x
+    The value that will be associated to the element.
+
+    \param itr
+    It is used as a hint. This method will be faster if the searched element
+    is near to \p itr, even faster than <CODE>(*this)[i]=x;</CODE>.
 
     The value of \p itr does not change the result. \p itr may even be end().
 
@@ -358,6 +461,9 @@ public:
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
+    \param i
+    The index of the desired element.
+
     If possible, use versions of this method that take a hint, to improve
     performance.
 
@@ -369,8 +475,12 @@ public:
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
-    If \p itr points near the added element, this is faster, even faster than
-    <CODE>(*this)[i];</CODE>.
+    \param i
+    The index of the desired element.
+
+    \param itr
+    It is used as a hint. This method will be faster if the searched element
+    is near to \p itr, even faster than <CODE>(*this)[i];</CODE>.
 
     The value of \p itr does not change the result. \p itr may even be end().
 
@@ -384,6 +494,12 @@ public:
 
   //! Swaps the i-th element with the j-th element.
   /*!
+    \param i
+    The index of an element.
+
+    \param j
+    The index of another element.
+
     This operation invalidates existing iterators.
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
@@ -392,6 +508,12 @@ public:
 
   //! Swaps the element pointed to by i with the element pointed to by j.
   /*!
+    \param i
+    An %iterator pointing to an element.
+
+    \param j
+    An %iterator pointing to another element.
+
     This operation invalidates existing iterators.
 
     This method takes \f$O(1)\f$ time.
@@ -400,6 +522,10 @@ public:
 
   //! Resets to zero the value pointed to by i.
   /*!
+    \param i
+    An %iterator pointing to the element that will be reset (not stored
+    anymore).
+
     By calling this method instead of getting a reference to the value and
     setting it to zero, the element will no longer be stored.
 
@@ -411,6 +537,12 @@ public:
 
   //! Resets to zero the values in the range [first,last).
   /*!
+    \param first
+    An %iterator pointing to the first element to reset.
+
+    \param last
+    An %iterator pointing after the last element to reset.
+
     By calling this method instead of getting a reference to the values and
     setting them to zero, the elements will no longer be stored.
 
@@ -423,6 +555,9 @@ public:
 
   //! Resets to zero the i-th element.
   /*!
+    \param i
+    The index of the element to reset.
+
     By calling this method instead of getting a reference to the value and
     setting it to zero, the element will no longer be stored.
 
@@ -434,6 +569,9 @@ public:
 
   //! Resets to zero the elements with index greater than or equal to i.
   /*!
+    \param i
+    The index of the first element to reset.
+
     By calling this method instead of getting a reference to the values and
     setting them to zero, the elements will no longer be stored.
 
@@ -455,12 +593,25 @@ public:
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
-    \param f should take a Coefficient&.
-             f(c1) must be equivalent to g(c1, 0).
-    \param g should take a Coefficient& and a const Coefficient&.
-             g(c1, c2) must do nothing if c1 is zero.
+    \param y
+    The row that will be combined with *this.
 
-    This method takes \f$O(n)\f$ time.
+    \param f
+    A functor that should take a Coefficient&.
+    f(c1) must be equivalent to g(c1, 0).
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing when c1 is zero.
+
+    This method takes \f$O(n*\log^2 n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_second
+    \see combine
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Sparse_Row& y,
@@ -468,12 +619,25 @@ public:
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-             g(c1, 0) must do nothing, for every c1.
-    \param h should take a Coefficient& and a const Coefficient&.
-             h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+    \param y
+    The row that will be combined with *this.
 
-    This method takes \f$O(n)\f$ time.
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, 0) must do nothing, for every c1.
+
+    \param h
+    A functor that should take a Coefficient& and a const Coefficient&.
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+
+    This method takes \f$O(n*\log^2 n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_first
+    \see combine
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Sparse_Row& y,
@@ -481,14 +645,29 @@ public:
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
-    \param f should take a Coefficient&.
-             f(c1) must be equivalent to g(c1, 0).
-    \param g should take a Coefficient& and a const Coefficient&.
-             g(c1, c2) must do nothing when both c1 and c2 are zero.
-    \param h should take a Coefficient& and a const Coefficient&.
-             h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+    \param y
+    The row that will be combined with *this.
 
-    This method takes \f$O(n)\f$ time.
+    \param f
+    A functor that should take a Coefficient&.
+    f(c1) must be equivalent to g(c1, 0).
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing when both c1 and c2 are zero.
+
+    \param h
+    A functor that should take a Coefficient& and a const Coefficient&.
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+
+    This method takes \f$O(n*\log^2 n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_first
+    \see combine_needs_second
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Sparse_Row& y,
@@ -497,6 +676,10 @@ public:
   PPL_OUTPUT_DECLARATIONS
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
+  /*!
+    \param s
+    The stream from which the ASCII representation will be loaded.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the size in bytes of the memory managed by \p *this.

@@ -32,7 +32,7 @@ namespace Parma_Polyhedra_Library {
   This class implements a bynary search tree with keys of dimension_type type
   and data of Coefficient type, layed out in a dynamic-sized array.
 
-  The array-based layout saves calls to new/delete (for n inserted elements,
+  The array-based layout saves calls to new/delete (to insert n elements
   only \f$O(\log n)\f$ allocations are performed) and, more importantly, is
   much more cache-friendly than a standard (pointer-based) tree, because the
   elements are stored sequentially in memory (leaving some holes to allow
@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
   The downside of this representation is that all iterators are invalidated
   when an element is added or removed, because the array could have been
   enlarged or shrunk. This is partially addressed by providing references to
-  internal and end iterators that are updated when needed.
+  internal end iterators that are updated when needed.
 
   B-trees are cache-friendly too, but the cache size is fixed (usually at
   compile-time). This raises two problems: firstly the cache size must be
@@ -54,13 +54,14 @@ namespace Parma_Polyhedra_Library {
   Assuming \p n is the number of elements in the tree and \p B is the number
   of &lt;dimension_type,Coefficient&gt; pairs that fit in cache, the time and
   cache misses complexities are the following:
-  -Insertions/Queries/Deletions: \f$O(\log^2 n)\f$ time,
-                                 \f$O(\log \frac{n}{B}))\f$ cache misses.
-  -Tree traversal from begin() to end(), using an iterator: \f$O(n)\f$ time,
-        \f$O(\frac{n}{B})\f$  cache misses.
-  -Queries with a hint: \f$O(\log k)\f$ time and \f$O(\log \frac{k}{B})\f$,
-   where k is the distance between the given iterator and the searched element
-   (or the position where it would have been).
+
+  - Insertions/Queries/Deletions: \f$O(\log^2 n)\f$ time,
+                                  \f$O(\log \frac{n}{B}))\f$ cache misses.
+  - Tree traversal from begin() to end(), using an %iterator: \f$O(n)\f$ time,
+         \f$O(\frac{n}{B})\f$  cache misses.
+  - Queries with a hint: \f$O(\log k)\f$ time and \f$O(\log \frac{k}{B})\f$
+    cache misses, where k is the distance between the given %iterator and the
+    searched element (or the position where it would have been).
 
   The binary search tree is embedded in a (slightly bigger) complete tree,
   that is enlarged and shrunk when needed. The complete tree is layed out
@@ -70,8 +71,7 @@ namespace Parma_Polyhedra_Library {
   cache-misses during key queries.
 
   The tree can store up to (-(dimension_type)1)/100 elements.
-  This limit allows faster density computations, but could be removed if
-  needed.
+  This limit allows faster density computations, but can be removed if needed.
 */
 class CO_Tree {
 
@@ -97,7 +97,7 @@ public:
 
   class iterator;
 
-  //! A const iterator on the tree elements, ordered by key.
+  //! A const %iterator on the tree elements, ordered by key.
   /*!
     Iterator increment and decrement operations are \f$O(1)\f$ time.
     These iterators are invalidated by operations that add or remove elements
@@ -106,15 +106,29 @@ public:
   class const_iterator {
   private:
     //! This is an helper class used by operator->().
+    /*!
+      This allows client code to use itr->first and itr->second, without
+      the data being actually stored in pairs.
+    */
     class Const_Member_Access_Helper {
 
     public:
+      //! Constructs an helper object that stores \p key and \p data.
+      /*!
+        \param key
+        The key that will be stored in this object.
+
+        \param data
+        The const-reference-to-data that will be stored in this object.
+      */
       Const_Member_Access_Helper(dimension_type key, const data_type& data);
 
+      //! Returns a pointer to \p my_pair.
       const std::pair<const dimension_type, const data_type&>* operator->()
         const;
 
     private:
+      //! The pair that stores the data.
       std::pair<const dimension_type, const data_type&> my_pair;
     };
 
@@ -132,14 +146,23 @@ public:
     */
     explicit const_iterator();
 
-    //! Constructs an iterator pointing to the first element of the tree.
+    //! Constructs an %iterator pointing to the first element of the tree.
     /*!
+      \param tree
+      The tree that the new %iterator will point to.
+
       This constructor takes \f$O(1)\f$ time.
     */
     explicit const_iterator(const CO_Tree& tree);
 
     //! Constructs a const_iterator pointing to the i-th node of the tree.
     /*!
+      \param tree
+      The tree that the new %iterator will point to.
+
+      \param i
+      The index of the element in \p tree to which the %iterator will point to.
+
       The i-th node must be a node with a value or end().
 
       This constructor takes \f$O(1)\f$ time.
@@ -148,30 +171,45 @@ public:
 
     //! The copy constructor.
     /*!
+      \param itr
+      The %iterator that will be copied.
+
       This constructor takes \f$O(1)\f$ time.
     */
     const_iterator(const const_iterator& itr);
 
     //! Converts an iterator into a const_iterator.
     /*!
+      \param itr
+      The iterator that will be converted into a const_iterator.
+
       This constructor takes \f$O(1)\f$ time.
     */
     const_iterator(const iterator& itr);
 
     //! Swaps itr with *this.
     /*!
+      \param itr
+      The %iterator that will be swapped with *this.
+
       This method takes \f$O(1)\f$ time.
     */
     void swap(const_iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
+      \param itr
+      The %iterator that will be assigned into *this.
+
       This method takes \f$O(1)\f$ time.
     */
     const_iterator& operator=(const const_iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
+      \param itr
+      The %iterator that will be assigned into *this.
+
       This method takes \f$O(1)\f$ time.
     */
     const_iterator& operator=(const iterator& itr);
@@ -214,9 +252,17 @@ public:
     Const_Member_Access_Helper operator->() const;
 
     //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
     bool operator==(const const_iterator& x) const;
 
     //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
     bool operator!=(const const_iterator& x) const;
 
   private:
@@ -235,7 +281,7 @@ public:
 #endif
   };
 
-  //! An iterator on the tree elements, ordered by key.
+  //! An %iterator on the tree elements, ordered by key.
   /*!
     Iterator increment and decrement operations are \f$O(1)\f$ time.
     These iterators are invalidated by operations that add or remove elements
@@ -245,27 +291,55 @@ public:
   private:
 
     //! An helper class used by operator->().
+    /*!
+      This allows client code to use itr->first and itr->second, without
+      the data being actually stored in pairs.
+    */
     class Member_Access_Helper {
 
     public:
+      //! Constructs an helper object that stores \p key and \p data.
+      /*!
+        \param key
+        The key that will be stored in the helper object.
+
+        \param data
+        The reference-to-data that will be stored in the helper object.
+      */
       Member_Access_Helper(dimension_type key, data_type& data);
 
+      //! Returns a pointer to \p my_pair.
       std::pair<const dimension_type, data_type&>* operator->();
 
     private:
+      //! The pair that stores the key and the reference-to-data.
       std::pair<const dimension_type, data_type&> my_pair;
     };
 
     //! An helper class used by the const version of operator->().
+    /*!
+      This allows client code to use itr->first and itr->second, without
+      the data being actually stored in pairs.
+    */
     class Const_Member_Access_Helper {
 
     public:
+      //! Constructs an helper object that stores \p key and \p data.
+      /*!
+        \param key
+        The key that will be stored in the helper object.
+
+        \param data
+        The reference-to-data that will be stored in the helper object.
+      */
       Const_Member_Access_Helper(dimension_type key, const data_type& data);
 
+      //! Returns a pointer to \p my_pair.
       const std::pair<const dimension_type, const data_type&>* operator->()
         const;
 
     private:
+      //! The pair that stores the key and the const-reference-to-data.
       std::pair<const dimension_type, const data_type&> my_pair;
     };
 
@@ -283,14 +357,24 @@ public:
     */
     iterator();
 
-    //! Constructs an iterator pointing to first element of the tree.
+    //! Constructs an %iterator pointing to first element of the tree.
     /*!
+      \param tree
+      The tree to which the new %iterator will point to.
+
       This constructor takes \f$O(1)\f$ time.
     */
     explicit iterator(CO_Tree& tree);
 
-    //! Constructs an iterator pointing to the i-th node.
+    //! Constructs an %iterator pointing to the i-th node.
     /*!
+      \param tree
+      The tree to which the new %iterator will point to.
+
+      \param i
+      The index of the element in \p tree to which the new %iterator will point
+      to.
+
       The i-th node must be a node with a value or end().
 
       This constructor takes \f$O(1)\f$ time.
@@ -299,6 +383,9 @@ public:
 
     //! The constructor from a tree_iterator.
     /*!
+      \param itr
+      The tree_iterator that will be converted into an iterator.
+
       This is meant for use by CO_Tree only.
       This is not private to avoid the friend declaration.
 
@@ -308,24 +395,36 @@ public:
 
     //! The copy contructor.
     /*!
+      \param itr
+      The %iterator that will be copied.
+
       This constructor takes \f$O(1)\f$ time.
     */
     iterator(const iterator& itr);
 
     //! Swaps itr with *this.
     /*!
+      \param itr
+      The %iterator that will be swapped with *this.
+
       This method takes \f$O(1)\f$ time.
     */
-    void swap(iterator&itr);
+    void swap(iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
+      \param itr
+      The %iterator that will be assigned into *this.
+
       This method takes \f$O(1)\f$ time.
     */
     iterator& operator=(const iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
+      \param itr
+      The %iterator that will be assigned into *this.
+
       This method takes \f$O(1)\f$ time.
     */
     iterator& operator=(const tree_iterator& itr);
@@ -379,9 +478,17 @@ public:
     Const_Member_Access_Helper operator->() const;
 
     //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
     bool operator==(const iterator& x) const;
 
     //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
     bool operator!=(const iterator& x) const;
 
   private:
@@ -410,12 +517,18 @@ public:
 
   //! The copy constructor.
   /*!
+    \param v
+    The tree that will be copied.
+
     This constructor takes \f$O(n)\f$ time.
   */
   CO_Tree(const CO_Tree& v);
 
   //! The assignment operator.
   /*!
+    \param x
+    The tree that will be assigned into *this.
+
     This method takes \f$O(n)\f$ time.
   */
   CO_Tree& operator=(const CO_Tree& x);
@@ -449,56 +562,85 @@ public:
 
   //! Inserts an element in the tree.
   /*!
-    \returns an iterator that points to the inserted pair.
+    \returns
+    An %iterator that points to the inserted pair.
 
-    If such a pair already exists, an iterator to that pair is returned.
+    \param key
+    The key that will be inserted into the tree, associated with the default
+    data.
+
+    If such a pair already exists, an %iterator pointing to that pair is
+    returned.
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time if the element already
-    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
+    This method takes \f$O(\log n)\f$ time if the element already exists, and
+    \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(dimension_type key);
 
   //! Inserts an element in the tree.
   /*!
-    \returns an iterator that points to the inserted element.
+    \returns
+    An %iterator that points to the inserted element.
+
+    \param key
+    The key that will be inserted into the tree..
+
+    \param data
+    The data that will be inserted into the tree.
 
     If an element with the specified key already exists, its associated data
-    is set to \p data and an iterator pointing to that pair is returned.
+    is set to \p data and an %iterator pointing to that pair is returned.
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time if the element already
-    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
+    This method takes \f$O(\log n)\f$ time if the element already exists, and
+    \f$O(\log^2 n)\f$ amortized time otherwise.amortized
   */
   iterator insert(dimension_type key, const data_type& data);
 
   //! Inserts an element in the tree.
   /*!
-    \return an iterator that points to the inserted element.
-    \param itr the iterator used as hint
+    \return
+    An %iterator that points to the inserted element.
+
+    \param itr
+    The %iterator used as hint
+
+    \param key
+    The key that will be inserted into the tree, associated with the default
+    data.
 
     This will be faster if \p itr points near to the place where the new
     element will be inserted (or where is already stored).
     However, the value of \p itr does not affect the result of this
-    method, as long it is a valid iterator for this tree. \p itr may even be
+    method, as long it is a valid %iterator for this tree. \p itr may even be
     end().
 
-    If an element with the specified key already exists, an iterator to that
-    pair is returned.
+    If an element with the specified key already exists, an %iterator pointing
+    to that pair is returned.
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time if the element already
-    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
+    This method takes \f$O(\log n)\f$ time if the element already exists, and
+    \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(iterator itr, dimension_type key);
 
   //! Inserts an element in the tree.
   /*!
-    \return an iterator that points to the inserted element.
-    \param itr the iterator used as hint
+    \return
+    An iterator that points to the inserted element.
+
+    \param itr
+    The iterator used as hint
+
+    \param key
+    The key that will be inserted into the tree.
+
+    \param data
+    The data that will be inserted into the tree.
 
     This will be faster if \p itr points near to the place where the new
     element will be inserted (or where is already stored).
@@ -511,8 +653,8 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\log n)\f$ amortized time if the element already
-    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
+    This method takes \f$O(\log n)\f$ time if the element already exists,
+    and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator insert(iterator itr, dimension_type key, const data_type& data);
 
@@ -523,8 +665,11 @@ public:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes \f$O(\log n)\f$ amortized time if the element already
-    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
+    \param key
+    The key of the element that will be erased from the tree.
+
+    This method takes \f$O(\log n)\f$ time if the element already exists,
+    and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator erase(dimension_type key);
 
@@ -535,14 +680,20 @@ public:
     \returns an iterator to the next element (or end() if there are no
              elements with key greater than \p key ).
 
-    This method takes \f$O(\log n)\f$ amortized time if the element already
-    exists, and \f$O(\log^2 n)\f$ amortized time otherwise.
+    \param itr
+    An iterator pointing to the element that will be erased from the tree.
+
+    This method takes \f$O(\log n)\f$ time if the element already exists, and
+    \f$O(\log^2 n)\f$ amortized time otherwise.
   */
   iterator erase(iterator itr);
 
   /*!
     \brief Removes the element with key \p key (if it exists) and decrements
            by 1 all elements' keys that were greater than \p key.
+
+    \param key
+    The key of the element that will be erased from the tree.
 
     This operation invalidates existing iterators.
 
@@ -553,6 +704,12 @@ public:
 
   //! Adds \p n to all keys greater than or equal to \p key.
   /*!
+    \param key
+    The key of the first element whose key will be increased.
+
+    \param n
+    Specifies how much the keys will be increased.
+
     This method takes \f$O(k+\log n)\f$ expected time, where k is the number
     of elements with keys greater than or equal to \p key.
   */
@@ -560,6 +717,9 @@ public:
 
   //! Swaps x with *this.
   /*!
+    \param x
+    The tree that will be swapped with *this.
+
     This operation invalidates existing iterators.
 
     This method takes \f$O(1)\f$ time.
@@ -574,10 +734,10 @@ public:
 
   //! Returns an iterator that points after the last element.
   /*!
-    This method always returns a reference to the same internal iterator,
+    This method always returns a reference to the same internal %iterator,
     that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
+    Client code can keep a const reference to that %iterator instead of
+    keep updating a local %iterator.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -589,18 +749,18 @@ public:
   //! Equivalent to cend().
   const const_iterator& end() const;
 
-  //! Returns an iterator that points at the first element.
+  //! Returns a const_iterator that points at the first element.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   const_iterator cbegin() const;
 
-  //! Returns an iterator that points after the last element.
+  //! Returns a const_iterator that points after the last element.
   /*!
-    This method always returns a reference to the same internal iterator,
+    This method always returns a reference to the same internal %iterator,
     that is updated at each operation that modifies the structure.
-    Client code can keep a const reference to that iterator instead of
-    keep updating a local iterator.
+    Client code can keep a const reference to that %iterator instead of
+    keep updating a local %iterator.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -608,8 +768,11 @@ public:
 
   //! Searches an element with key \p key using bisection.
   /*!
-    If the element is found, an iterator pointing to that element is
-    returned; otherwise, the returned iterator refers to the immediately
+    \param key
+    The key that will be searched for.
+
+    If the element is found, an %iterator pointing to that element is
+    returned; otherwise, the returned %iterator refers to the immediately
     preceding or succeeding value.
     If the tree is empty, end() is returned.
 
@@ -619,8 +782,11 @@ public:
 
   //! Searches an element with key \p key using bisection.
   /*!
-    If the element is found, an iterator pointing to that element is
-    returned; otherwise, the returned iterator refers to the immediately
+    \param key
+    The key that will be searched for.
+
+    If the element is found, an %iterator pointing to that element is
+    returned; otherwise, the returned %iterator refers to the immediately
     preceding or succeeding value.
     If the tree is empty, end() is returned.
 
@@ -630,13 +796,23 @@ public:
 
   //! Searches an element with key \p key in [first, last] using bisection.
   /*!
-    If the element is found, an iterator pointing to that element is
-    returned; otherwise, the returned iterator refers to the immediately
-    preceding or succeeding value.
-    \p first and \p last must not be end().
-    If the tree is empty, end() is returned.
+    \param first
+    An %iterator pointing to the first element in the range.
+    It must not be end().
 
-    \note last is included in the search, too.
+    \param last
+    An %iterator pointing to the last element in the range.
+    Note that this is included in the search.
+    It must not be end().
+
+    \param key
+    The key that will be searched for.
+
+    \return
+    If the specified key is found, an %iterator pointing to that element is
+    returned; otherwise, the returned %iterator refers to the immediately
+    preceding or succeeding value.
+    If the tree is empty, end() is returned.
 
     This method takes \f$O(\log(last - first + 1))\f$ time.
   */
@@ -644,13 +820,23 @@ public:
 
   //! Searches an element with key \p key in [first, last] using bisection.
   /*!
-    If the element is found, an iterator pointing to that element is
-    returned; otherwise, the returned iterator refers to the immediately
-    preceding or succeeding value.
-    \p first and \p last must not be end().
-    If the tree is empty, end() is returned.
+    \param first
+    An %iterator pointing to the first element in the range.
+    It must not be end().
 
-    \note last is included in the search, too.
+    \param last
+    An %iterator pointing to the last element in the range.
+    Note that this is included in the search.
+    It must not be end().
+
+    \param key
+    The key that will be searched for.
+
+    \return
+    If the specified key is found, an %iterator pointing to that element is
+    returned; otherwise, the returned %iterator refers to the immediately
+    preceding or succeeding value.
+    If the tree is empty, end() is returned.
 
     This method takes \f$O(\log(last - first + 1))\f$ time.
   */
@@ -659,12 +845,18 @@ public:
 
   //! Searches an element with key \p key near \p hint.
   /*!
-    If the element is found, the returned iterator points to that element;
+    \param hint
+    An %iterator used as a hint.
+
+    \param key
+    The key that will be searched for.
+
+    If the element is found, the returned %iterator points to that element;
     otherwise, it points to the immediately preceding or succeeding value.
     If the tree is empty, end() is returned.
 
     The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this tree. \p itr may even be end().
+    is a valid %iterator for this tree. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time. If the distance between the
     returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$ time.
@@ -673,12 +865,18 @@ public:
 
   //! Searches an element with key \p key near \p hint.
   /*!
-    If the element is found, the returned iterator points to that element;
+    \param hint
+    An %iterator used as a hint.
+
+    \param key
+    The key that will be searched for.
+
+    If the element is found, the returned %iterator points to that element;
     otherwise, it points to the immediately preceding or succeeding value.
     If the tree is empty, end() is returned.
 
     The value of \p itr does not affect the result of this method, as long it
-    is a valid iterator for this tree. \p itr may even be end().
+    is a valid %iterator for this tree. \p itr may even be end().
 
     This method takes \f$O(\log n)\f$ time. If the distance between the
     returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$ time.
@@ -689,15 +887,21 @@ private:
 
   //! Searches an element with key \p key in [first, last] using bisection.
   /*!
-    If the element is found, an iterator pointing to that element is
-    returned; otherwise, the returned iterator refers to the immediately
-    preceding or succeeding value.
+    \param first
+    The index of the first element in the range.
+    It must be the index of an element with a value.
 
-    \p first and \p last must be indexes of existing values in the indexes[]
-    and data[] arrays. They must not be end().
-    If the tree is empty, end() is returned.
+    \param last
+    The index of the last element in the range.
+    It must be the index of an element with a value.
+    Note that this is included in the search.
 
-    \note last is included in the search, too.
+    \param key
+    The key that will be searched for.
+
+    \return
+    If the element is found, the index of that element is returned; otherwise,
+    the returned index refers to the immediately preceding or succeeding value.
 
     This method takes \f$O(\log n)\f$ time.
   */
@@ -706,14 +910,20 @@ private:
 
   //! Searches an element with key \p key near \p hint.
   /*!
-    If the element is found, the returned iterator points to that element;
-    otherwise, it points to the immediately preceding or succeeding value.
+    \param hint
+    An index used as a hint.
+    It must be the index of an element with a value.
+
+    \param key
+    The key that will be searched for.
+
+    \return
+    If the element is found, the index of that element is returned; otherwise,
+    the returned index refers to the immediately preceding or succeeding value.
 
     This uses a binary progression and then a bisection, so this method is
     \f$O(\log n)\f$, and it is \f$O(1)\f$ if the distance between the returned
     position and \p hint is \f$O(1)\f$.
-
-    \p hint must be the index of a valid element.
 
     This method takes \f$O(\log n)\f$ time. If the distance between the
     returned position and \p hint is \f$O(1)\f$ it takes \f$O(1)\f$ time.
@@ -727,10 +937,18 @@ private:
 
     This operation invalidates existing iterators.
 
-    \param itr must point to the element in the tree with key \p key or, if
-               no such element exists, it must point to the node that would
-               be his parent.
-    \return an iterator that points to the inserted element.
+    \return
+    An %iterator that points to the inserted element.
+
+    \param key
+    The key that will be inserted into the tree.
+
+    \param data
+    The data that will be associated with \p key.
+
+    \param itr
+    It must point to the element in the tree with key \p key or, if no such
+    element exists, it must point to the node that would be his parent.
 
     This method takes \f$O(1)\f$ time if the element already exists, and
     \f$O(\log^2 n)\f$ amortized time otherwise.
@@ -740,20 +958,31 @@ private:
 
   //! Inserts an element in the tree.
   /*!
+
+    \param key
+    The key that will be inserted into the tree.
+
+    \param data
+    The data that will be associated with \p key.
+
     The tree must be empty.
 
     This operation invalidates existing iterators.
 
     This method takes \f$O(1)\f$ time.
   */
-  void insert_in_empty_tree(dimension_type key1, const data_type& data1);
+  void insert_in_empty_tree(dimension_type key, const data_type& data);
 
   //! Erases from the tree the element pointed to by \p itr .
   /*!
     This operation invalidates existing iterators.
 
-    \returns an iterator to the next element (or end() if there are no
-             elements with key greater than \p key ).
+    \returns
+    An %iterator to the next element (or end() if there are no elements with
+    key greater than \p key ).
+
+    \param itr
+    An %iterator pointing to the element that will be erased.
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
@@ -761,6 +990,9 @@ private:
 
   //! Initializes a tree with reserved size at least \p n .
   /*!
+    \param n
+    A lower bound on the tree's desired reserved size.
+
     This method takes \f$O(n)\f$ time.
   */
   void init(dimension_type n);
@@ -782,7 +1014,8 @@ private:
 
   //! Returns the floor of the base-2 logarithm of \p n .
   /*!
-    \p n must be greater than zero.
+    \param n
+    It must be greater than zero.
 
     This method takes \f$O(\log n)\f$ time.
   */
@@ -790,10 +1023,17 @@ private:
 
   //! Compares the fractions num/den with ratio/100.
   /*!
-    \p ratio must be less than or equal to 100.
+    \returns
+    Returns true if the fraction num/den is less than the fraction ratio/100.
 
-    \returns true if the fraction num/den is less than the fraction
-             ratio/100.
+    \param ratio
+    It must be less than or equal to 100.
+
+    \param num
+    The numerator of the fraction.
+
+    \param den
+    The denominator of the fraction.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -802,10 +1042,18 @@ private:
 
   //! Compares the fractions num/den with ratio/100.
   /*!
-    \p ratio must be less than or equal to 100.
+    \returns
+    Returns true if the fraction num/den is greater than the fraction
+    ratio/100.
 
-    \returns true if the fraction num/den is greater than the fraction
-             ratio/100.
+    \param ratio
+    It must be less than or equal to 100.
+
+    \param num
+    The numerator of the fraction.
+
+    \param den
+    The denominator of the fraction.
 
     This method takes \f$O(1)\f$ time.
   */
@@ -813,6 +1061,10 @@ private:
                                     dimension_type ratio);
 
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
+  /*!
+    \param itr
+    A tree_iterator pointing to the root of the desired subtree.
+  */
   static void dump_subtree(tree_iterator itr);
 
   //! Increases the tree's reserved size.
@@ -845,17 +1097,25 @@ private:
   */
   void refresh_cached_iterators();
 
-  //! Rebalances the tree after an insertions or a deletion.
+  //! Rebalances the tree.
   /*!
-    \param itr points to the inserted (or deleted) node.
-
-    For insertions, it adds the pair (key, value).
+    For insertions, it adds the pair (key, value) in the process.
 
     This operation invalidates existing iterators that point to nodes in the
     rebalanced subtree.
 
-    \returns an iterator pointing to the root of the subtree that was
+    \returns an %iterator pointing to the root of the subtree that was
              rebalanced.
+
+    \param itr
+    It points to the node where the new element has to be inserted or where an
+    element has just been deleted.
+
+    \param key
+    The index that will be inserted in the tree (for insertions only).
+
+    \param value
+    The value that will be inserted in the tree (for insertions only).
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
@@ -864,14 +1124,25 @@ private:
 
   //! Moves all elements of a subtree to the rightmost end.
   /*!
-    If \p add_element is true, it tries to add an element with key \p key and
-    value \p value in the process.
+    \returns
+    The index of the rightmost unused node in the subtree after the process.
 
-    \param last_in_subtree is the index of the last element in the subtree.
-    \param subtree_size is the number of valid elements in the subtree.
-                        It must be greater than zero.
-    \returns the index of the rightmost unused node in the subtree after the
-             process.
+    \param last_in_subtree
+    It is the index of the last element in the subtree.
+
+    \param subtree_size
+    It is the number of valid elements in the subtree.
+    It must be greater than zero.
+
+    \param key
+    The key that may be added to the tree if add_element is \c true.
+
+    \param value
+    The value that may be added to the tree if add_element is \c true.
+
+    \param add_element
+    If it is true, it tries to add an element with key \p key and value
+    \p value in the process (but it may not).
 
     This method takes \f$O(k)\f$ time, where k is \p subtree_size.
   */
@@ -884,12 +1155,25 @@ private:
   /*!
     The subtree's elements must be compacted to the rightmost end.
 
-    \param subtree_size the number of used elements in the subtree.
-                        It must be greater than zero.
-    \param add_element if it is true, it tries to add an element with the
-                       specified key and value in the process.
-    \param last_used points to the leftmost element with a value in the
-                     subtree.
+    \param root_index
+    The index of the subtree's root node.
+
+    \param subtree_size
+    It is the number of used elements in the subtree.
+    It must be greater than zero.
+
+    \param last_used
+    It points to the leftmost element with a value in the subtree.
+
+    \param add_element
+    If it is true, this method adds an element with the specified key and
+    value in the process.
+
+    \param key
+    The key that will be added to the tree if \p add_element is \c true.
+
+    \param value
+    The data that will be added to the tree if \p add_element is \c true.
 
     This method takes \f$O(k)\f$ time, where k is \p subtree_size.
   */
@@ -902,6 +1186,9 @@ private:
 
   //! Moves all data in the tree \p tree into *this.
   /*!
+    \param tree
+    The tree from which the element will be moved into *this.
+
     *this must be empty and big enough to contain all of tree's data without
     exceeding max_density.
 
@@ -911,7 +1198,10 @@ private:
 
   //! Copies all data in the tree \p tree into *this.
   /*!
-    *this must be empty andhave the same reserved size of \p tree.
+    \param tree
+    The tree from which the element will be copied into *this.
+
+    *this must be empty and must have the same reserved size of \p tree.
     this->OK() may return false before this method is called, but
     this->structure_OK() must return true.
 
@@ -921,6 +1211,9 @@ private:
 
   //! Counts the number of used elements in the subtree rooted at itr.
   /*!
+    \param itr
+    An %iterator pointing to the root of the desired subtree.
+
     This method takes \f$O(k)\f$ time, where k is the number of elements in
     the subtree.
   */
@@ -928,8 +1221,11 @@ private:
 
   //! Moves the value of \p from in \p to .
   /*!
-    \param from must be a valid value.
-    \param to must be a non-constructed chunk of memory.
+    \param from
+    It must be a valid value.
+
+    \param to
+    It must be a non-constructed chunk of memory.
 
     After the move, \p from becomes a non-constructed chunk of memory and
     \p to gets the value previously stored by \p from.
@@ -965,13 +1261,13 @@ private:
   */
   static const dimension_type unused_index = -(dimension_type)1;
 
-  //! The iterator returned by end().
+  //! The %iterator returned by end().
   /*!
     It is updated when needed, to keep it valid.
   */
   iterator cached_end;
 
-  //! The iterator returned by the const version of end().
+  //! The %iterator returned by the const version of end().
   /*!
     It is updated when needed, to keep it valid.
   */
@@ -1017,27 +1313,55 @@ class CO_Tree::tree_iterator {
 private:
 
   //! An helper class used by operator->().
+  /*!
+    This allows using itr->first and itr->second without requiring elements
+    to be actually stored in pairs in the tree.
+  */
   class Member_Access_Helper {
 
   public:
+    //! Constructs a helper object.
+    /*!
+      \param key
+      The key that will be stored in the helper object.
+
+      \param data
+      The reference-to-data that will be stored in the helper object.
+    */
     Member_Access_Helper(dimension_type& key, data_type& data);
 
+    //! Returns a pointer to \p my_pair.
     std::pair<dimension_type&, data_type&>* operator->();
 
   private:
+    //! The pair that stores the key and the reference-to-data.
     std::pair<dimension_type&, data_type&> my_pair;
   };
 
   //! An helper class used by the const version of operator->().
+  /*!
+    This allows using itr->first and itr->second without requiring elements
+    to be actually stored in pairs in the tree.
+  */
   class Const_Member_Access_Helper {
 
   public:
+    //! Constructs a helper object.
+    /*!
+      \param key
+      The key that will be stored in the helper object.
+
+      \param data
+      The reference-to-data that will be stored in the helper object.
+    */
     Const_Member_Access_Helper(dimension_type key, const data_type& data);
 
+    //! Returns a pointer to \p my_pair.
     const std::pair<const dimension_type, const data_type&>* operator->()
       const;
 
   private:
+    //! The pair that stores the key and the reference-to-data.
     std::pair<const dimension_type, const data_type&> my_pair;
   };
 
@@ -1047,35 +1371,65 @@ public:
     \brief Constructs a tree_iterator pointing at the root node of the
            specified tree
 
-    \p tree must not be empty.
+    \param tree
+    The tree to which the new %iterator will point to.
+    It must not be empty.
   */
   explicit tree_iterator(CO_Tree& tree);
 
   //! Constructs a tree_iterator pointing at the specified node of the tree.
   /*!
-    \p tree must not be empty.
+    \param tree
+    The tree to which the new %iterator will point to.
+    It must not be empty.
+
+    \param i
+    The index of the element in \p tree to which the new %iterator will point
+    to.
   */
   tree_iterator(CO_Tree& tree, dimension_type i);
 
   //! Constructs a tree_iterator from an iterator.
   /*!
-    \p itr must not be end().
+    \param itr
+    The iterator that will be converted into a tree_iterator.
+    It must not be end().
+
+    \param tree
+    The tree to which the new %iterator will point to.
+    It must not be empty.
   */
   tree_iterator(const iterator& itr, CO_Tree& tree);
 
   //! The assignment operator.
+  /*!
+    \param itr
+    The %iterator that will be assigned into *this.
+  */
   tree_iterator& operator=(const tree_iterator& itr);
 
   //! The assignment operator from an iterator.
+  /*!
+    \param itr
+    The iterator that will be assigned into *this.
+  */
   tree_iterator& operator=(const iterator& itr);
 
   //! Compares *this with \p itr.
+  /*!
+    \param itr
+    The %iterator that will compared with *this.
+  */
   bool operator==(const tree_iterator& itr) const;
 
   //! Compares *this with \p itr.
+  /*!
+    \param itr
+    The %iterator that will compared with *this.
+  */
   bool operator!=(const tree_iterator& itr) const;
 
-  //! Makes the iterator point to the root of \p tree.
+  //! Makes the %iterator point to the root of \p tree.
   /*!
     The values of all fields (beside tree) are overwritten.
 
@@ -1083,19 +1437,19 @@ public:
   */
   void get_root();
 
-  //! Makes the iterator point to the left child of the current node.
+  //! Makes the %iterator point to the left child of the current node.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   void get_left_child();
 
-  //! Makes the iterator point to the right child of the current node.
+  //! Makes the %iterator point to the right child of the current node.
   /*!
     This method takes \f$O(1)\f$ time.
   */
   void get_right_child();
 
-  //! Makes the iterator point to the parent of the current node.
+  //! Makes the %iterator point to the parent of the current node.
   /*!
     This method takes \f$O(1)\f$ time.
   */
@@ -1104,6 +1458,9 @@ public:
   /*!
     \brief Searches for an element with key \p key in the subtree rooted at
            \p *this.
+
+    \param key
+    The searched for key.
 
     After this method, *this points to the found node (if it exists) or to
     the node that would be his parent (otherwise).
@@ -1158,7 +1515,7 @@ public:
   //! Returns a pointer to the value_type of the current node.
   Const_Member_Access_Helper operator->() const;
 
-  //! The tree containing the element pointed to by this iterator.
+  //! The tree containing the element pointed to by this %iterator.
   CO_Tree& tree;
 
   /*!

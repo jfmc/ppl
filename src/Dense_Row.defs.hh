@@ -303,10 +303,25 @@ public:
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if c1 is zero.
+    \param y
+    The row that will be combined with *this.
+
+    \param f
+    A functor that should take a Coefficient&.
     f(c1) must be equivalent to g(c1, 0).
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing when c1 is zero.
+
+    This method takes \f$O(n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_second
+    \see combine
   */
   template <typename Func1, typename Func2>
   void combine_needs_first(const Dense_Row& y,
@@ -314,10 +329,25 @@ public:
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, 0) must do nothing.
+    \param y
+    The row that will be combined with *this.
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, 0) must do nothing, for every c1.
+
+    \param h
+    A functor that should take a Coefficient& and a const Coefficient&.
     h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+
+    This method takes \f$O(n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_first
+    \see combine
   */
   template <typename Func1, typename Func2>
   void combine_needs_second(const Dense_Row& y,
@@ -325,12 +355,29 @@ public:
 
   //! Calls g(x[i],y[i]), for each i.
   /*!
-    \param f should take a Coefficient&.
-    \param g should take a Coefficient& and a const Coefficient&.
-    \param h should take a Coefficient& and a const Coefficient&.
-    g(c1, c2) must do nothing if both c1 and c2 are zero.
+    \param y
+    The row that will be combined with *this.
+
+    \param f
+    A functor that should take a Coefficient&.
     f(c1) must be equivalent to g(c1, 0).
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing when both c1 and c2 are zero.
+
+    \param h
+    A functor that should take a Coefficient& and a const Coefficient&.
     h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+
+    This method takes \f$O(n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_first
+    \see combine_needs_second
   */
   template <typename Func1, typename Func2, typename Func3>
   void combine(const Dense_Row& y,

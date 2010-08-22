@@ -573,7 +573,7 @@ private:
     is only meaningful when the function exit returning value \c true.
 
     \return
-    \c false if a trivially false constraint is detected, \true otherwise.
+    \c false if a trivially false constraint is detected, \c true otherwise.
 
     \param additional_tableau_rows
     On exit, this will store the number of rows that have to be added
