@@ -1271,7 +1271,7 @@ private:
 
   //! The minimum density at the leaves' depth.
   /*!
-    Must be strictly lower than min_density_percent..
+    Must be greater than zero and strictly lower than min_density_percent.
   */
   static const dimension_type min_leaf_density_percent = 30;
 
