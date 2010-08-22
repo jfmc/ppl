@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <limits>
 
-#ifndef PPL_ROW_EXTRA_DEBUG
+#ifndef PPL_DENSE_ROW_EXTRA_DEBUG
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
@@ -40,16 +40,16 @@ site: http://www.cs.unipr.it/ppl/ . */
   Enables extra debugging information for class Dense_Row.
 
   \ingroup PPL_CXX_interface
-  When <CODE>PPL_ROW_EXTRA_DEBUG</CODE> evaluates to <CODE>true</CODE>,
+  When <CODE>PPL_DENSE_ROW_EXTRA_DEBUG</CODE> evaluates to <CODE>true</CODE>,
   each instance of the class Dense_Row carries its own capacity; this enables
   extra consistency checks to be performed.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define PPL_ROW_EXTRA_DEBUG 1
+#define PPL_DENSE_ROW_EXTRA_DEBUG 1
 #else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
-#define PPL_ROW_EXTRA_DEBUG 0
+#define PPL_DENSE_ROW_EXTRA_DEBUG 0
 #endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
-#endif // !defined(PPL_ROW_EXTRA_DEBUG)
+#endif // !defined(PPL_DENSE_ROW_EXTRA_DEBUG)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The handler of the actual Dense_Row implementation.
@@ -71,10 +71,10 @@ public:
   //! A pointer to the actual implementation.
   Impl* impl;
 
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   //! The capacity of \p impl (only available during debugging).
   dimension_type capacity_;
-#endif // PPL_ROW_EXTRA_DEBUG
+#endif // PPL_DENSE_ROW_EXTRA_DEBUG
 
 private:
   //! Private and unimplemented: copy construction is not allowed.
@@ -429,10 +429,10 @@ private:
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const Dense_Row& y);
 
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-#endif // PPL_ROW_EXTRA_DEBUG
+#endif // PPL_DENSE_ROW_EXTRA_DEBUG
 };
 
 class Parma_Polyhedra_Library::Dense_Row::iterator {

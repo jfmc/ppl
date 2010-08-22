@@ -143,7 +143,7 @@ Dense_Row::flags() {
   return impl->flags();
 }
 
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
 inline dimension_type
 Dense_Row::capacity() const {
   return capacity_;
@@ -153,7 +153,7 @@ Dense_Row::capacity() const {
 inline
 Dense_Row_Impl_Handler::Dense_Row_Impl_Handler()
   : impl(0) {
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   capacity_ = 0;
 #endif
 }
@@ -182,7 +182,7 @@ Dense_Row::allocate(
 #endif
   PPL_ASSERT(impl == 0);
   impl = new (capacity) Impl(f);
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   PPL_ASSERT(capacity_ == 0);
   capacity_ = capacity;
 #endif
@@ -191,7 +191,7 @@ Dense_Row::allocate(
 inline void
 Dense_Row::expand_within_capacity(const dimension_type new_size) {
   PPL_ASSERT(impl);
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   PPL_ASSERT(new_size <= capacity_);
 #endif
   impl->expand_within_capacity(new_size);
@@ -200,7 +200,7 @@ Dense_Row::expand_within_capacity(const dimension_type new_size) {
 inline void
 Dense_Row::copy_construct_coefficients(const Dense_Row& y) {
   PPL_ASSERT(impl && y.impl);
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   PPL_ASSERT(y.size() <= capacity_);
 #endif
   impl->copy_construct_coefficients(*(y.impl));
@@ -278,7 +278,7 @@ Dense_Row::shrink(const dimension_type new_size) {
 inline void
 Dense_Row::swap(Dense_Row& y) {
   std::swap(impl, y.impl);
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   std::swap(capacity_, y.capacity_);
 #endif
 }
@@ -286,7 +286,7 @@ Dense_Row::swap(Dense_Row& y) {
 inline void
 Dense_Row::assign(Dense_Row& y) {
   impl = y.impl;
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   capacity_ = y.capacity_;
 #endif
 }
@@ -438,7 +438,7 @@ Dense_Row::total_memory_in_bytes(dimension_type capacity) const {
 
 inline memory_size_type
 Dense_Row::external_memory_in_bytes() const {
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   return impl->total_memory_in_bytes(capacity_);
 #else
   return impl->total_memory_in_bytes();
