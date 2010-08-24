@@ -653,7 +653,6 @@ private:
   static void linear_combine(Dense_Row& x, const Dense_Row& y,
                              const dimension_type k);
 
-#ifdef USE_PPL_SPARSE_MATRIX
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
     \param x
@@ -669,8 +668,7 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(matrix_type::row_type& x,
-                             const matrix_type::row_type& y,
+  static void linear_combine(Sparse_Row& x, const Sparse_Row& y,
                              const dimension_type k);
 
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
@@ -688,10 +686,8 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(Dense_Row& x,
-                             const matrix_type::row_type& y,
+  static void linear_combine(Dense_Row& x, const Sparse_Row& y,
                              const dimension_type k);
-#endif // defined(USE_PPL_SPARSE_MATRIX)
 
   /*! \brief
     Performs the pivoting operation on the tableau.

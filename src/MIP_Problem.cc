@@ -1287,11 +1287,9 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x, const Dense_Row& y,
   WEIGHT_ADD_MUL(83, x_size);
 }
 
-#ifdef USE_PPL_SPARSE_MATRIX
-
 void
-PPL::MIP_Problem::linear_combine(matrix_type::row_type& x,
-                                 const matrix_type::row_type& y,
+PPL::MIP_Problem::linear_combine(Sparse_Row& x,
+                                 const Sparse_Row& y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
@@ -1317,7 +1315,7 @@ PPL::MIP_Problem::linear_combine(matrix_type::row_type& x,
 
 void
 PPL::MIP_Problem::linear_combine(Dense_Row& x,
-                                 const matrix_type::row_type& y,
+                                 const Sparse_Row& y,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
@@ -1330,8 +1328,8 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  matrix_type::row_type::const_iterator j = y.begin();
-  matrix_type::row_type::const_iterator j_end = y.end();
+  Sparse_Row::const_iterator j = y.begin();
+  Sparse_Row::const_iterator j_end = y.end();
   dimension_type i;
   for (i = 0; j != j_end; ++i) {
     PPL_ASSERT(i < x_size);
@@ -1359,8 +1357,6 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
-
-#endif // defined(USE_PPL_SPARSE_MATRIX)
 
 // See pages 42-43 of [PapadimitriouS98].
 void
