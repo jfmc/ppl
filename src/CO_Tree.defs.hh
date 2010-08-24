@@ -1261,19 +1261,23 @@ private:
   /*!
     This must be greater than or equal to 50 and lower than 100.
   */
-  static const dimension_type max_density_percent = 90;
+  static const dimension_type max_density_percent = 91;
 
   //! The minimum density of used nodes.
   /*!
     Must be strictly lower than the half of max_density_percent.
   */
-  static const dimension_type min_density_percent = 35;
+  static const dimension_type min_density_percent = 38;
 
   //! The minimum density at the leaves' depth.
   /*!
     Must be greater than zero and strictly lower than min_density_percent.
+
+    Increasing the value is safe but leads to time inefficiencies
+    (measured against ppl_lpsol on 24 August 2010), because it forces trees to
+    be more balanced, increasing the rebalancement const.
   */
-  static const dimension_type min_leaf_density_percent = 30;
+  static const dimension_type min_leaf_density_percent = 1;
 
   //! An index used as a marker for unused nodes in the tree.
   /*!
