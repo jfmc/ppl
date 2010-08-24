@@ -965,7 +965,6 @@ PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_columns = tableau.num_columns();
-  const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   PPL_ASSERT(tableau_num_rows == base.size());
   double current_value_squared = 0.0;
   // Due to our integer implementation, the `1' term in the denominator
@@ -974,6 +973,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   double float_tableau_denum;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+
+  // These two implementation work for both sparse and dense matrices.
+  // However, when using sparse matrices the first one is fast and the second
+  // one is slow, and when using dense matrices the first one is slow and
+  // the second one is fast.
+#ifdef USE_PPL_SPARSE_MATRIX
+  const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   // This is static to improve performance.
   // A pair (true, y) at position i means that
   // sgn(working_cost[i]) == cost_sign and y is the denominator of the
@@ -1021,6 +1027,41 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         entering_index = i;
       }
     }
+#else
+  double challenger_num = 0.0;
+  double challenger_den = 0.0;
+  for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
+    const Coefficient& cost_j = working_cost[j];
+    if (sgn(cost_j) == cost_sign) {
+      WEIGHT_BEGIN();
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      assign(challenger_num, cost_j);
+      challenger_num = std::abs(challenger_num);
+      // Due to our integer implementation, the `1' term in the denominator
+      // of the original formula has to be replaced by `squared_lcm_basis'.
+      challenger_den = 1.0;
+      for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+        const matrix_type::row_type& tableau_i = tableau[i];
+        const Coefficient& tableau_ij = tableau_i[j];
+        if (tableau_ij != 0) {
+          PPL_ASSERT(tableau_i[base[i]] != 0);
+          assign(float_tableau_value, tableau_ij);
+          assign(float_tableau_denum, tableau_i[base[i]]);
+          float_tableau_value /= float_tableau_denum;
+          challenger_den += float_tableau_value * float_tableau_value;
+        }
+      }
+      // Initialize `current_value' during the first iteration.
+      // Otherwise update if the challenger wins.
+      if (entering_index == 0 || challenger_den > current_value_squared) {
+        current_value_squared = challenger_den;
+        entering_index = j;
+      }
+      WEIGHT_ADD_MUL(338, tableau_num_rows);
+    }
+  }
+#endif
   return entering_index;
 }
 
