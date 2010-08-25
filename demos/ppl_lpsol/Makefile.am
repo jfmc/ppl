@@ -59,6 +59,7 @@ dummy.cc
 ppl_lpsol_LDADD = \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
+$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 dist_man_MANS = \
