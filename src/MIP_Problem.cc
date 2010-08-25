@@ -1068,8 +1068,6 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
-  const dimension_type tableau_num_columns = tableau.num_columns();
-  const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   PPL_ASSERT(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
@@ -1105,6 +1103,13 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
 
+  // These two implementation work for both sparse and dense matrices.
+  // However, when using sparse matrices the first one is fast and the second
+  // one is slow, and when using dense matrices the first one is slow and
+  // the second one is fast.
+#ifdef USE_PPL_SPARSE_MATRIX
+  const dimension_type tableau_num_columns = tableau.num_columns();
+  const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   // This is static to improve performance.
   // A pair (i, x) means that sgn(working_cost[i]) == cost_sign and x
   // is the denominator of the challenger, for the column i.
@@ -1174,6 +1179,46 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       entering_index = k->first;
     }
   }
+#else
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
+  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
+    const Coefficient& cost_j = working_cost[j];
+    if (sgn(cost_j) == cost_sign) {
+      WEIGHT_BEGIN();
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      challenger_num = cost_j * cost_j;
+      // Due to our integer implementation, the `1' term in the denominator
+      // of the original formula has to be replaced by `squared_lcm_basis'.
+      challenger_den = squared_lcm_basis;
+      for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+        const Coefficient& tableau_ij = tableau[i][j];
+        // The test against 0 gives rise to a consistent speed up: see
+        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+        if (tableau_ij != 0) {
+          scalar_value = tableau_ij * norm_factor[i];
+          add_mul_assign(challenger_den, scalar_value, scalar_value);
+        }
+      }
+      // Initialization during the first loop.
+      if (entering_index == 0) {
+        std::swap(current_num, challenger_num);
+        std::swap(current_den, challenger_den);
+        entering_index = j;
+        continue;
+      }
+      challenger_value = challenger_num * current_den;
+      current_value = current_num * challenger_den;
+      // Update the values, if the challenger wins.
+      if (challenger_value > current_value) {
+        std::swap(current_num, challenger_num);
+        std::swap(current_den, challenger_den);
+        entering_index = j;
+      }
+      WEIGHT_ADD_MUL(47, tableau_num_rows);
+    }
+  }
+#endif
   return entering_index;
 }
 
