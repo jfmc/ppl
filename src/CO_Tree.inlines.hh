@@ -23,10 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_CO_Tree_inlines_hh
 #define PPL_CO_Tree_inlines_hh 1
 
-// TODO: Remove this.
-// Added to please KDevelop4.
-#include "CO_Tree.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 inline

@@ -23,10 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Sparse_Row_inlines_hh
 #define PPL_Sparse_Row_inlines_hh 1
 
-// FIXME: Remove this.
-// It's needed only to please KDevelop4.
-#include "Sparse_Row.defs.hh"
-
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
