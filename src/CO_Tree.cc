@@ -739,6 +739,14 @@ PPL::CO_Tree::rebuild_bigger_tree() {
 PPL::CO_Tree::tree_iterator
 PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                         const data_type& value) {
+  // Trees with reserved size 3 need not to be rebalanced.
+  // This check is needed because they can't be shrunk, so they may violate the
+  // density thresholds, and this would prevent the following while from working
+  // correctly.
+  if (reserved_size == 3) {
+    PPL_ASSERT(OK());
+    return tree_iterator(*this);
+  }
   PPL_ASSERT(itr->first == unused_index || itr.is_leaf());
   height_t itr_depth_minus_1 = itr.depth() - 1;
   height_t height = max_depth - itr_depth_minus_1;
@@ -760,26 +768,9 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                                min_density_percent - itr_depth_minus_1
                                *(min_density_percent - min_leaf_density_percent)
                                /(max_depth - 1))) {
-    if (itr_depth_minus_1 == 0) {
-      // TODO: Check if this is correct
-      // We may arrive here, because we are using a fake subtree_size (it
-      // isn't the real tree size, because the inserted/deleted element is
-      // already taken into account).
-#ifndef NDEBUG
-      dimension_type real_subtree_size = subtree_size;
-      if (!deleting)
-        --real_subtree_size;
-      PPL_ASSERT(!is_greater_than_ratio(real_subtree_size,
-                                        subtree_reserved_size,
-                                        max_density_percent));
-      if (is_greater_than_ratio(real_subtree_size, subtree_reserved_size,
-                                min_density_percent))
-        PPL_ASSERT(is_greater_than_ratio(real_subtree_size,
-                                         subtree_reserved_size/2,
-                                         max_density_percent));
-#endif
-      break;
-    }
+    // The density in the tree is correct, so the while condition is always
+    // false for the root.
+    PPL_ASSERT(itr_depth_minus_1 != 0);
     bool is_right_brother = itr.is_right_child();
     itr.get_parent();
     if (is_right_brother)
