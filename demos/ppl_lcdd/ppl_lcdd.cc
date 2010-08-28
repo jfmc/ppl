@@ -332,7 +332,7 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
 #if PPL_HAVE_DECL_RLIMIT_AS
 
 void
-limit_virtual_memory(const unsigned bytes) {
+limit_virtual_memory(const unsigned long bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -348,7 +348,7 @@ limit_virtual_memory(const unsigned bytes) {
 #else
 
 void
-limit_virtual_memory(unsigned) {
+limit_virtual_memory(unsigned long) {
 }
 
 #endif // !PPL_HAVE_DECL_RLIMIT_AS
