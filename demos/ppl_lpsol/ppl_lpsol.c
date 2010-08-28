@@ -521,7 +521,7 @@ set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
 #if PPL_HAVE_DECL_RLIMIT_AS
 
 void
-limit_virtual_memory(unsigned bytes) {
+limit_virtual_memory(unsigned long bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -537,7 +537,7 @@ limit_virtual_memory(unsigned bytes) {
 #else
 
 void
-limit_virtual_memory(unsigned bytes ATTRIBUTE_UNUSED) {
+limit_virtual_memory(unsigned long bytes ATTRIBUTE_UNUSED) {
 }
 
 #endif /* !PPL_HAVE_DECL_RLIMIT_AS */
@@ -649,8 +649,8 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
       : lpx_mip_obj_val(glpk_lp);
 
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
-      error("check failed: for GLPK the problem's optimum is %.10g,"
-	    " not %.10g", glpk_optimum_value, ppl_optimum_value);
+      error("check failed: for GLPK the problem's optimum is %.20g,"
+	    " not %.20g", glpk_optimum_value, ppl_optimum_value);
       check_results_failed = 1;
     }
   }
