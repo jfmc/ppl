@@ -649,8 +649,8 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
       : lpx_mip_obj_val(glpk_lp);
 
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
-      error("check failed: for GLPK the problem's optimum is %.10g,"
-	    " not %.10g", glpk_optimum_value, ppl_optimum_value);
+      error("check failed: for GLPK the problem's optimum is %.20g,"
+	    " not %.20g", glpk_optimum_value, ppl_optimum_value);
       check_results_failed = 1;
     }
   }
