@@ -56,7 +56,7 @@ ppl_set_GMP_memory_allocation_functions(void) {
 #include <gmpxx.h>
 #include <vector>
 #include <set>
-#include <limits>
+#include <climits>
 #include <cassert>
 #include <cstdarg>
 #include <csignal>
@@ -669,6 +669,8 @@ process_options(int argc, char* argv[]) {
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
 	fatal("a non-negative integer must follow `-R'");
+      else if (((unsigned long) l) > ULONG_MAX/(1024*1024))
+        max_bytes_of_virtual_memory = ULONG_MAX;
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
