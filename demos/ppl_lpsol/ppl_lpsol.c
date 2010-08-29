@@ -1172,7 +1172,12 @@ solve(char* file_name) {
 
   /* Set the ppl_objective_le to be the objective function. */
   ppl_new_Linear_Expression_with_dimension(&ppl_objective_le, dimension);
-  /* The inhomogeneous term is completely useless for our purpose. */
+  /* Set value for objective function's inhomogeneous term. */
+  mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
+  mpz_divexact(tmp_z, tmp_z, mpq_denref(objective[0]));
+  ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
+  ppl_Linear_Expression_add_to_inhomogeneous(ppl_objective_le, ppl_coeff);
+  /* Set values for objective function's variable coefficients. */
   for (i = 1; i <= dimension; ++i) {
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
     mpz_divexact(tmp_z, tmp_z, mpq_denref(objective[i]));
@@ -1182,6 +1187,8 @@ solve(char* file_name) {
 
   if (verbosity >= 4) {
     fprintf(output_file, "Objective function:\n");
+    if (mpz_cmp_si(den_lcm, 1) != 0)
+      fprintf(output_file, "(");
     ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
   }
 
