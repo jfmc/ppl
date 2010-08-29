@@ -54,6 +54,7 @@ bin_PROGRAMS = ppl_lpsol
 # dummy.cc serves the only purpose to force linking using the C++ compiler.
 ppl_lpsol_SOURCES = \
 ppl_lpsol.c \
+glpk_set_d_eps.c \
 dummy.cc
 
 ppl_lpsol_LDADD = \
