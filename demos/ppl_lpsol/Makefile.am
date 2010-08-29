@@ -54,6 +54,7 @@ bin_PROGRAMS = ppl_lpsol
 # dummy.cc serves the only purpose to force linking using the C++ compiler.
 ppl_lpsol_SOURCES = \
 ppl_lpsol.c \
+glpk_set_d_eps.c \
 dummy.cc
 
 ppl_lpsol_LDADD = \
@@ -161,10 +162,11 @@ boeing1.mps \
 boeing2.mps \
 rout.mps
 
-DO_NOT_CHECK_PROBLEMS = \
+INDIVIDUALLY_CHECKED_PROBLEMS = \
+boeing1.mps \
+boeing2.mps \
 ex12.mps \
 mas74.mps \
-mas76.mps \
 modglob.mps
 
 if HOST_OS_CYGWIN
@@ -226,14 +228,14 @@ ECHO_SIMPLEX_NOCHECK = echo "***" $(SIMPLEX_NOCHECK)
 check-local: ppl_lpsol$(EXEEXT)
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(LP_PROBLEMS) >lp_problems
-	echo $(DO_NOT_CHECK_PROBLEMS) >do_not_check_problems
+	echo $(INDIVIDUALLY_CHECKED_PROBLEMS) >individually_checked_problems
 	export LC_ALL=C; \
 	echo $(TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY) >tough_examples
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
 	  $(FGREP) $$file lp_problems >/dev/null 2>&1 && continue; \
-	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file individually_checked_problems >/dev/null 2>&1 && continue; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  $(ECHO_SIMPLEX) "-n $$m $$file" >>obtained; \
 	  $(SIMPLEX) -n $$path >/dev/null; \
@@ -243,7 +245,7 @@ check-local: ppl_lpsol$(EXEEXT)
 	do \
 	  file=`basename $$path`; \
 	  $(FGREP) $$file lp_problems >/dev/null 2>&1 && continue; \
-	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file individually_checked_problems >/dev/null 2>&1 && continue; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
@@ -256,7 +258,7 @@ check-local: ppl_lpsol$(EXEEXT)
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	 file=`basename $$path`; \
-	 $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	 $(FGREP) $$file individually_checked_problems >/dev/null 2>&1 && continue; \
 	 $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	 verbosity=''; \
 	 $(FGREP) $$file do_not_output_location >/dev/null 2>&1 && verbosity='-v 2'; \
@@ -270,27 +272,34 @@ check-local: ppl_lpsol$(EXEEXT)
 	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  $(FGREP) $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  $(FGREP) $$file individually_checked_problems >/dev/null 2>&1 && continue; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
 	  ./ppl_lpsol$(EXEEXT) -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
+	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.00000000518 boeing1.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -m -c0.00000000518 $(srcdir)/examples/boeing1.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.0000000105 boeing1.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.0000000105 $(srcdir)/examples/boeing1.mps $$m >/dev/null
+	$(ECHO_SIMPLEX) "-n boeing1.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/boeing1.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.00000000863 boeing2.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -m -c0.00000000863 $(srcdir)/examples/boeing2.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.00000000213 boeing2.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.00000000213 $(srcdir)/examples/boeing2.mps $$m >/dev/null
+	$(ECHO_SIMPLEX) "-n boeing2.mps" >>obtained
+	-$(SIMPLEX) -n $(srcdir)/examples/boeing2.mps >/dev/null
+
 	$(ECHO_SIMPLEX) "-r -m mas74.mps" >>obtained
 	-$(SIMPLEX) -r -m $(srcdir)/examples/mas74.mps >/dev/null
 	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.000123 mas74.mps" >>obtained
 	-$(SIMPLEX_NOCHECK) -r -M -c0.000123 $(srcdir)/examples/mas74.mps $$m >/dev/null
 	$(ECHO_SIMPLEX) "-n mas74.mps" >>obtained
 	-$(SIMPLEX) -n $(srcdir)/examples/mas74.mps >/dev/null
-	$(ECHO_SIMPLEX) "-r -m mas76.mps" >>obtained
-	-$(SIMPLEX) -r -m $(srcdir)/examples/mas76.mps >/dev/null
-	$(ECHO_SIMPLEX) "-r -M -c0.000123 mas76.mps" >>obtained
-	-$(SIMPLEX_NOCHECK) -r -M -c0.000123 $(srcdir)/examples/mas76.mps >/dev/null
-	$(ECHO_SIMPLEX) "-n mas76.mps" >>obtained
-	-$(SIMPLEX) -n $(srcdir)/examples/mas76.mps >/dev/null
-	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.0000002 modglob.mps" >>obtained
-	-$(SIMPLEX_NOCHECK) -r -m -c0.0000002 $(srcdir)/examples/modglob.mps >/dev/null
-	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.000003 modglob.mps" >>obtained
-	-$(SIMPLEX_NOCHECK) -r -M -c0.000003 $(srcdir)/examples/modglob.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.0000273 modglob.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -m -c0.0000273 $(srcdir)/examples/modglob.mps >/dev/null
+	$(ECHO_SIMPLEX_NOCHECK) "-r -M -c0.0290 modglob.mps" >>obtained
+	-$(SIMPLEX_NOCHECK) -r -M -c0.0290 $(srcdir)/examples/modglob.mps >/dev/null
 	$(ECHO_SIMPLEX) "-n modglob.mps" >>obtained
 	-$(SIMPLEX) -n $(srcdir)/examples/modglob.mps >/dev/null
 	$(DIFF_COMMAND)
@@ -299,7 +308,7 @@ endif HAVE_GLPK
 endif BUILD_C_INTERFACE
 
 MOSTLYCLEANFILES = \
-do_not_check_problems \
+individually_checked_problems \
 do_not_output_location \
 expected_optima \
 lp_problems \

@@ -64,7 +64,7 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.11 source distribution
-(44 directories, 1588 files):
+(44 directories, 1589 files):
 
 ppl-0.11
 |-- BUGS
@@ -375,6 +375,7 @@ ppl-0.11
 |   |   |-- expected_int8_a
 |   |   |-- expected_mpz
 |   |   |-- expected_mpz_a
+|   |   |-- glpk_set_d_eps.c
 |   |   |-- ppl_lpsol.1
 |   |   `-- ppl_lpsol.c
 |   `-- ppl_pips
