@@ -589,7 +589,7 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     /* Set the problem class to LP: MIP problems are thus treated as
        LP ones. */
     lpx_set_class(glpk_lp, LPX_LP);
-    lpx_simplex(glpk_lp);
+    lpx_exact(glpk_lp);
     glpk_status = lpx_get_status(glpk_lp);
   }
   else {
