@@ -42,26 +42,30 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/interfaces/C \
 @extra_includes@
 
-if GCC
-
-# We cannot use -std=c89 because of the definition of sigaction in <signal.h>.
-AM_CFLAGS = -pedantic -std=gnu89 -Werror
-
-endif GCC
-
 bin_PROGRAMS = ppl_lpsol
 
 # dummy.cc serves the only purpose to force linking using the C++ compiler.
 ppl_lpsol_SOURCES = \
 ppl_lpsol.c \
-glpk_set_d_eps.c \
 dummy.cc
 
+if GCC
+
+# We cannot use -std=c89 because of the definition of sigaction in <signal.h>.
+ppl_lpsol_CFLAGS = -pedantic -std=gnu89 -Werror
+
+endif GCC
+
 ppl_lpsol_LDADD = \
+libglpk_set_d_eps.a \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
+
+noinst_LIBRARIES = libglpk_set_d_eps.a
+libglpk_set_d_eps_a_SOURCES = \
+glpk_set_d_eps.c
 
 dist_man_MANS = \
 ppl_lpsol.1
