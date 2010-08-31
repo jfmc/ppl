@@ -192,6 +192,8 @@ test07() {
     && aux_test("0xx", "nan", "x", V_CVT_STR_UNK)
     && aux_test("0x0.f", "15/16", "", V_EQ)
     && aux_test("0x.f", "15/16", "", V_EQ)
+    && aux_test("0x.fp3", "15/2", "", V_EQ)
+    && aux_test("0x100p-9", "1/2", "", V_EQ)
     && aux_test("0x.f*^1", "15", "", V_EQ)
     && aux_test("0x-f", "nan", "-f", V_CVT_STR_UNK)
     && aux_test("0xfa", "250", "", V_EQ)

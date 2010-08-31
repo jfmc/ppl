@@ -960,9 +960,9 @@ num     : unum						| '+'
         | SIGN unum					;
 
 unum	: unum1					EXP	: 'e'
-	| HEX unum1					| '*^'
-	| base BASE unum1				;
-	;
+	| HEX unum1					| 'p'
+	| base BASE unum1				| '*^'
+	;                                               ;
 						POINT	: '.'
 unum1	: mantissa					;
 	| mantissa EXP exponent

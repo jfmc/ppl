@@ -40,6 +40,7 @@ struct number_struct {
   bool neg_mantissa;
   bool neg_exponent;
   std::string mantissa;
+  unsigned int base_for_exponent;
   unsigned long exponent;
 };
 
@@ -100,7 +101,9 @@ parse_number_part(std::istream& is, number_struct& num) {
   bool empty_exponent = true;
   bool empty_mantissa = true;
   long exponent_offset = 0;
+  long exponent_offset_scale = 1;
   num.base = 10;
+  num.base_for_exponent = 10;
   num.neg_mantissa = false;
   num.neg_exponent = false;
   num.mantissa.erase();
@@ -144,6 +147,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     int d = is.get();
     if (d == 'x' || d == 'X') {
       num.base = 16;
+      num.base_for_exponent = 16;
       state = INTEGER;
       c = is.get();
     }
@@ -179,6 +183,7 @@ parse_number_part(std::istream& is, number_struct& num) {
 	}
 	if (num.base < 2)
 	  goto error;
+        num.base_for_exponent = num.base;
 	num.mantissa.erase();
 	empty_mantissa = true;
 	state = INTEGER;
@@ -210,7 +215,16 @@ parse_number_part(std::istream& is, number_struct& num) {
       if (empty_mantissa)
 	goto error;
       if (c == 'e' || c == 'E')
-	goto exp;
+        goto exp;
+      if (c == 'p' || c == 'P') {
+        if (num.base == 16) {
+          num.base_for_exponent = 2;
+          exponent_offset_scale = 4;
+          goto exp;
+        }
+        else
+          goto error;
+      }
       if (c == '*') {
 	c = is.get();
 	if (c != '^')
@@ -263,7 +277,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     else
       neg = false;
     sum_sign(num.neg_exponent, num.exponent,
-	     neg, exponent_offset);
+	     neg, exponent_offset * exponent_offset_scale);
     return V_EQ;
   }
 
@@ -292,7 +306,8 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
   r = parse_number_part(is, den);
   if (r != V_EQ)
     return V_CVT_STR_UNK;
-  if (num.base == den.base) {
+  if (num.base == den.base
+      && num.base_for_exponent == den.base_for_exponent) {
     if (sum_sign(num.neg_exponent, num.exponent,
 		 !den.neg_exponent, den.exponent)) {
       if (num.neg_exponent) {
@@ -333,14 +348,14 @@ input_mpq(mpq_class& to, std::istream& is) {
       mpz_t z;
       mpz_init(z);
       if (num_struct.exponent) {
-	mpz_ui_pow_ui(z, num_struct.base, num_struct.exponent);
+        mpz_ui_pow_ui(z, num_struct.base_for_exponent, num_struct.exponent);
 	if (num_struct.neg_exponent)
 	  mpz_mul(den, den, z);
 	else
 	  mpz_mul(num, num, z);
       }
       if (den_struct.exponent) {
-	mpz_ui_pow_ui(z, den_struct.base, den_struct.exponent);
+        mpz_ui_pow_ui(z, den_struct.base_for_exponent, den_struct.exponent);
 	if (den_struct.neg_exponent)
 	  mpz_mul(num, num, z);
 	else
@@ -355,13 +370,13 @@ input_mpq(mpq_class& to, std::istream& is) {
     if (num_struct.exponent) {
       if (num_struct.neg_exponent) {
 	// Add the negative exponent as a denominator.
-	mpz_ui_pow_ui(den, num_struct.base, num_struct.exponent);
+        mpz_ui_pow_ui(den, num_struct.base_for_exponent, num_struct.exponent);
 	goto end;
       }
       // Multiply the exponent into the numerator.
       mpz_t z;
       mpz_init(z);
-      mpz_ui_pow_ui(z, num_struct.base, num_struct.exponent);
+      mpz_ui_pow_ui(z, num_struct.base_for_exponent, num_struct.exponent);
       mpz_mul(num, num, z);
       mpz_clear(z);
     }
