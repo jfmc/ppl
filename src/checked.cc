@@ -120,6 +120,12 @@ parse_number_part(std::istream& is, number_struct& num) {
     c = is.get();
     if (c == 'i' || c == 'I')
       goto inf;
+    if (c != '.')
+      break;
+    // Fall through.
+  case '.':
+    state = FRACTIONAL;
+    c = is.get();
     break;
   case 'n':
   case 'N':
@@ -141,25 +147,27 @@ parse_number_part(std::istream& is, number_struct& num) {
       goto error;
     return num.neg_mantissa ? V_EQ_MINUS_INFINITY : V_EQ_PLUS_INFINITY;
   }
-  if (get_digit(c, 10) < 0)
-    goto error;
-  if (c == '0') {
-    int d = is.get();
-    if (d == 'x' || d == 'X') {
-      num.base = 16;
-      num.base_for_exponent = 16;
-      state = INTEGER;
-      c = is.get();
+  if (state != FRACTIONAL) {
+    if (get_digit(c, 10) < 0)
+      goto error;
+    if (c == '0') {
+      int d = is.get();
+      if (d == 'x' || d == 'X') {
+        num.base = 16;
+        num.base_for_exponent = 16;
+        state = INTEGER;
+        c = is.get();
+      }
+      else {
+        c = d;
+        empty_mantissa = false;
+      }
     }
     else {
-      c = d;
+      num.mantissa += (char) c;
       empty_mantissa = false;
+      c = is.get();
     }
-  }
-  else {
-    num.mantissa += (char) c;
-    empty_mantissa = false;
-    c = is.get();
   }
   while (true) {
     switch (state) {

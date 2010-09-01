@@ -144,7 +144,9 @@ test04() {
     && aux_test("0.123456 101", "1929/15625", " 101", V_EQ)
     && aux_test("0.123456   101", "1929/15625", "   101", V_EQ)
     && aux_test("0.123456     ", "1929/15625", "     ", V_EQ)
-    && aux_test(".333", "nan", ".333", V_CVT_STR_UNK);
+    && aux_test(".499975", "19999/40000", "", V_EQ)
+    && aux_test(".333", "333/1000", "", V_EQ)
+    && aux_test(".0x333", "0", "x333", V_EQ);
 }
 
 // Testing exponent.
@@ -256,7 +258,7 @@ test09() {
 bool
 test10() {
   return
-  // Fraction.
+    // Fraction.
     aux_test("2^^11.1", "7/2", "", V_EQ)
     && aux_test("2^^11.1a", "7/2", "a", V_EQ)
     && aux_test("2^^11.1.", "7/2", ".", V_EQ)
