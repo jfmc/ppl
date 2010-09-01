@@ -146,6 +146,8 @@ test04() {
     && aux_test("0.123456     ", "1929/15625", "     ", V_EQ)
     && aux_test(".499975", "19999/40000", "", V_EQ)
     && aux_test(".333", "333/1000", "", V_EQ)
+    && aux_test("+.333", "333/1000", "", V_EQ)
+    && aux_test("-.333", "-333/1000", "", V_EQ)
     && aux_test(".0x333", "0", "x333", V_EQ);
 }
 
@@ -195,7 +197,10 @@ test07() {
     && aux_test("0x0.f", "15/16", "", V_EQ)
     && aux_test("0x.f", "15/16", "", V_EQ)
     && aux_test("0x.fp3", "15/2", "", V_EQ)
+    && aux_test("16^^.fp3", "15/2", "", V_EQ)
     && aux_test("0x100p-9", "1/2", "", V_EQ)
+    && aux_test("16^^100p-9", "1/2", "", V_EQ)
+    && aux_test("100p-9", "nan", "p-9", V_CVT_STR_UNK)
     && aux_test("0x.f*^1", "15", "", V_EQ)
     && aux_test("0x-f", "nan", "-f", V_CVT_STR_UNK)
     && aux_test("0xfa", "250", "", V_EQ)
