@@ -165,7 +165,7 @@ PPL::PIP_Problem::solve() const {
             itr = row.find_create(0, c.inhomogeneous_term());
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
-              --(itr->second);
+              --(*itr);
           } else {
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
@@ -199,7 +199,7 @@ PPL::PIP_Problem::solve() const {
           matrix_type::row_type::iterator i = last_row.begin();
           matrix_type::row_type::iterator i_end = last_row.end();
           for ( ; i != i_end; ++i)
-            neg_assign(i->second);
+            neg_assign(*i);
         }
       }
 

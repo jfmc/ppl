@@ -57,10 +57,10 @@ test02() {
   if (itr == row.end())
     return false;
 
-  if (itr->first != 1)
+  if (itr.index() != 1)
     return false;
 
-  if (itr->second != 5)
+  if (*itr != 5)
     return false;
 
   ++itr;
@@ -68,10 +68,10 @@ test02() {
   if (itr == row.end())
     return false;
 
-  if ((*itr).first != 3)
+  if (itr.index() != 3)
     return false;
 
-  if ((*itr).second != 6)
+  if (*itr != 6)
     return false;
 
   ++itr;
@@ -84,10 +84,10 @@ test02() {
   if (itr == row.end())
     return false;
 
-  if ((*itr).first != 3)
+  if (itr.index() != 3)
     return false;
 
-  if ((*itr).second != 6)
+  if (*itr != 6)
     return false;
 
   Sparse_Row::const_iterator citr = row.cbegin();
@@ -95,10 +95,10 @@ test02() {
   if (citr == row.cend())
     return false;
 
-  if (citr->first != 1)
+  if (citr.index() != 1)
     return false;
 
-  if (citr->second != 5)
+  if (*citr != 5)
     return false;
 
   ++citr;
@@ -106,10 +106,10 @@ test02() {
   if (citr == row.cend())
     return false;
 
-  if ((*citr).first != 3)
+  if (citr.index() != 3)
     return false;
 
-  if ((*citr).second != 6)
+  if (*citr != 6)
     return false;
 
   ++citr;
@@ -122,10 +122,10 @@ test02() {
   if (citr == row.cend())
     return false;
 
-  if ((*citr).first != 3)
+  if (citr.index() != 3)
     return false;
 
-  if ((*citr).second != 6)
+  if (*citr != 6)
     return false;
 
   return true;
@@ -467,16 +467,16 @@ test08() {
 
   row[2] = 3;
 
-  if (row.lower_bound(1)->first != 2)
+  if (row.lower_bound(1).index() != 2)
     return false;
 
-  if (crow.lower_bound(1)->first != 2)
+  if (crow.lower_bound(1).index() != 2)
     return false;
 
-  if (row.lower_bound(2)->first != 2)
+  if (row.lower_bound(2).index() != 2)
     return false;
 
-  if (crow.lower_bound(2)->first != 2)
+  if (crow.lower_bound(2).index() != 2)
     return false;
 
   if (row.lower_bound(3) != row.end())
@@ -487,16 +487,16 @@ test08() {
 
   // Now the same checks with a dummy hint.
 
-  if (row.lower_bound(row.end(), 1)->first != 2)
+  if (row.lower_bound(row.end(), 1).index() != 2)
     return false;
 
-  if (crow.lower_bound(crow.end(), 1)->first != 2)
+  if (crow.lower_bound(crow.end(), 1).index() != 2)
     return false;
 
-  if (row.lower_bound(row.end(), 2)->first != 2)
+  if (row.lower_bound(row.end(), 2).index() != 2)
     return false;
 
-  if (crow.lower_bound(crow.end(), 2)->first != 2)
+  if (crow.lower_bound(crow.end(), 2).index() != 2)
     return false;
 
   if (row.lower_bound(row.end(), 3) != row.end())

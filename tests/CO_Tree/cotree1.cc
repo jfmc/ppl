@@ -2190,7 +2190,7 @@ test10() {
   itr = tree.insert(itr, 10, 0);
   itr = tree.insert(itr, 12, 0);
 
-  if (itr->first != 12)
+  if (itr.index() != 12)
     return false;
 
   --itr;
@@ -2199,13 +2199,13 @@ test10() {
   itr = tree.insert(itr, 5, 0);
   itr = tree.erase(itr);
 
-  if (itr->first != 6)
+  if (itr.index() != 6)
     return false;
 
   itr = tree.insert(itr, 5, 0);
   itr = tree.erase(itr);
 
-  if (itr->first != 6)
+  if (itr.index() != 6)
     return false;
 
   return true;
@@ -2237,22 +2237,22 @@ test11() {
 
   CO_Tree::iterator itr = tree.begin();
 
-  if (itr->first != 1)
+  if (itr.index() != 1)
     return false;
 
   ++itr;
 
-  if (itr->first != 7)
+  if (itr.index() != 7)
     return false;
 
   ++itr;
 
-  if (itr->first != 8)
+  if (itr.index() != 8)
     return false;
 
   ++itr;
 
-  if (itr->first != 9)
+  if (itr.index() != 9)
     return false;
 
   ++itr;
@@ -2314,18 +2314,18 @@ test13() {
 
   itr = tree.bisect(12);
 
-  if (itr->first != 12)
+  if (itr.index() != 12)
     return false;
 
   itr = tree.bisect_near(itr, 4);
 
-  if (itr->first != 4)
+  if (itr.index() != 4)
     return false;
 
   itr = tree.bisect(12);
   itr = tree.bisect_near(itr, 10);
 
-  if (itr->first != 10)
+  if (itr.index() != 10)
     return false;
 
   return true;
@@ -2367,16 +2367,16 @@ test15() {
 
   itr1.swap(itr2);
 
-  if ((*itr2).first != 1)
+  if (itr2.index() != 1)
     return false;
 
-  if ((*itr2).second != 1)
+  if (*itr2 != 1)
     return false;
 
-  if ((*itr1).first != 2)
+  if (itr1.index() != 2)
     return false;
 
-  if ((*itr1).second != 2)
+  if (*itr1 != 2)
     return false;
 
   CO_Tree::const_iterator itr3 = tree.bisect(1);
@@ -2384,16 +2384,16 @@ test15() {
 
   itr3.swap(itr4);
 
-  if ((*itr4).first != 1)
+  if (itr4.index() != 1)
     return false;
 
-  if ((*itr4).second != 1)
+  if (*itr4 != 1)
     return false;
 
-  if ((*itr3).first != 2)
+  if (itr3.index() != 2)
     return false;
 
-  if ((*itr3).second != 2)
+  if (*itr3 != 2)
     return false;
 
   return true;
@@ -2415,44 +2415,44 @@ test16() {
 
   itr++;
 
-  if (itr->first != 2)
+  if (itr.index() != 2)
     return false;
 
   itr++;
 
-  if (itr->first != 3)
+  if (itr.index() != 3)
     return false;
 
   itr--;
 
-  if (itr->first != 2)
+  if (itr.index() != 2)
     return false;
 
   itr--;
 
-  if (itr->first != 1)
+  if (itr.index() != 1)
     return false;
 
   CO_Tree::const_iterator itr2 = tree.bisect(1);
 
   itr2++;
 
-  if (itr2->first != 2)
+  if (itr2.index() != 2)
     return false;
 
   itr2++;
 
-  if (itr2->first != 3)
+  if (itr2.index() != 3)
     return false;
 
   itr2--;
 
-  if (itr2->first != 2)
+  if (itr2.index() != 2)
     return false;
 
   itr2--;
 
-  if (itr2->first != 1)
+  if (itr2.index() != 1)
     return false;
 
   return true;

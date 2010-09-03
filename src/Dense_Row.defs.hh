@@ -438,44 +438,26 @@ private:
 class Parma_Polyhedra_Library::Dense_Row::iterator {
 public:
 
-  typedef std::pair<const dimension_type,Coefficient&> value_type;
-  typedef std::pair<const dimension_type,const Coefficient&> const_type;
-
-private:
-
-  class Member_Access_Helper {
-  public:
-
-    Member_Access_Helper(dimension_type index, Coefficient& data);
-
-    value_type* operator->();
-
-  private:
-    value_type value;
-  };
-
-  class Const_Member_Access_Helper {
-  public:
-
-    Const_Member_Access_Helper(dimension_type index,
-                               const Coefficient& data);
-
-    const const_type* operator->() const;
-
-  private:
-    const_type value;
-  };
-
-public:
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef Coefficient value_type;
+  typedef ptrdiff_t difference_type;
+  typedef value_type* pointer;
+  typedef value_type& reference;
 
   iterator();
   iterator(Dense_Row& row1, dimension_type i1);
 
-  value_type operator*();
-  const_type operator*() const;
+  Coefficient& operator*();
+  Coefficient_traits::const_reference operator*() const;
 
-  Member_Access_Helper operator->();
-  Const_Member_Access_Helper operator->() const;
+  //! Returns the index of the element pointed to by \c *this.
+  /*!
+    If itr is a valid iterator for row, <CODE>row[itr.index()]</CODE> is
+    equivalent to *itr.
+
+    \returns the index of the element pointed to by \c *this.
+  */
+  dimension_type index() const;
 
   iterator& operator++();
   iterator operator++(int);
@@ -497,29 +479,25 @@ private:
 
 class Parma_Polyhedra_Library::Dense_Row::const_iterator {
 public:
-  typedef std::pair<const dimension_type, const Coefficient&> const_type;
 
-private:
-
-  class Const_Member_Access_Helper {
-  public:
-
-    Const_Member_Access_Helper(dimension_type index,
-                               const Coefficient& data);
-
-    const const_type* operator->() const;
-
-  private:
-    const_type value;
-  };
-
-public:
+  typedef const Coefficient value_type;
+  typedef ptrdiff_t difference_type;
+  typedef value_type* pointer;
+  typedef Coefficient_traits::const_reference reference;
 
   const_iterator();
   const_iterator(const Dense_Row& row1, dimension_type i1);
 
-  const_type operator*() const;
-  Const_Member_Access_Helper operator->() const;
+  Coefficient_traits::const_reference operator*() const;
+
+  //! Returns the index of the element pointed to by \c *this.
+  /*!
+    If itr is a valid iterator for row, <CODE>row[itr.index()]</CODE> is
+    equivalent to *itr.
+
+    \returns the index of the element pointed to by \c *this.
+  */
+  dimension_type index() const;
 
   const_iterator& operator++();
   const_iterator operator++(int);

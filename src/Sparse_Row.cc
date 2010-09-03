@@ -36,28 +36,28 @@ PPL::Sparse_Row::swap(dimension_type i, dimension_type j) {
 
   iterator itr_i = tree.bisect(i);
   iterator itr_j = tree.bisect(j);
-  if (itr_i->first == i)
-    if (itr_j->first == j)
+  if (itr_i.index() == i)
+    if (itr_j.index() == j)
       // Both elements are in the tree
-      std::swap(itr_i->second, itr_j->second);
+      std::swap(*itr_i, *itr_j);
     else {
       // i is in the tree, j isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(itr_i->second, tmp);
+      std::swap(*itr_i, tmp);
       tree.erase(itr_i);
       // Now both iterators have been invalidated.
       itr_j = tree.insert(j);
-      std::swap(itr_j->second, tmp);
+      std::swap(*itr_j, tmp);
     }
   else
-    if (itr_j->first == j) {
+    if (itr_j.index() == j) {
       // j is in the tree, i isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(itr_j->second, tmp);
+      std::swap(*itr_j, tmp);
       // Now both iterators have been invalidated.
       tree.erase(itr_j);
       itr_i = tree.insert(i);
-      std::swap(itr_i->second, tmp);
+      std::swap(*itr_i, tmp);
     } else {
       // Do nothing, elements are both unstored zeroes.
     }
@@ -69,11 +69,11 @@ PPL::Sparse_Row::reset(iterator first, iterator last) {
     return first;
   PPL_ASSERT(last != end());
   --last;
-  const dimension_type j = last->first;
-  PPL_ASSERT(first->first <= j);
+  const dimension_type j = last.index();
+  PPL_ASSERT(first.index() <= j);
   // We can't just compare first and last at each iteration, because last will
   // be invalidated by the first erase.
-  while (first->first < j)
+  while (first.index() < j)
     first = reset(first);
 
   first = reset(first);
@@ -105,7 +105,7 @@ PPL::Sparse_Row::normalize() {
   const_iterator i = begin();
   const_iterator i_end = end();
   for ( ; i != i_end; ++i) {
-    const Coefficient& x_i = i->second;
+    const Coefficient& x_i = *i;
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
       if (x_i_sign < 0)
@@ -120,7 +120,7 @@ PPL::Sparse_Row::normalize() {
   if (gcd == 1)
     return;
   for (++i; i != i_end; ++i) {
-    const Coefficient& x_i = i->second;
+    const Coefficient& x_i = *i;
     if (x_i != 0) {
       // Note: we use the ternary version instead of a more concise
       // gcd_assign(gcd, x_i) to take advantage of the fact that
@@ -140,7 +140,7 @@ PPL::Sparse_Row::normalize() {
   }
   // Divide the coefficients by the GCD.
   for (iterator j = begin(), j_end = end(); j != j_end; ++j) {
-    Coefficient& x_j = j->second;
+    Coefficient& x_j = *j;
     exact_div_assign(x_j, x_j, gcd);
   }
 
@@ -155,7 +155,7 @@ PPL::Sparse_Row::ascii_dump(std::ostream& s) const {
     ++n_elements;
   s << "elements " << n_elements << ' ';
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
-    s << "[ " << i->first << " ]= " << i->second << ' ';
+    s << "[ " << i.index() << " ]= " << *i << ' ';
   s << "\n";
 }
 
@@ -200,5 +200,5 @@ PPL::Sparse_Row::OK() const {
     return true;
   const_iterator last = end();
   --last;
-  return (last->first < size_);
+  return (last.index() < size_);
 }

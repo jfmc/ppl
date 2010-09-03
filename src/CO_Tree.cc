@@ -35,7 +35,7 @@ PPL::CO_Tree::external_memory_in_bytes() const {
     // Add the size of indexes[]
     size += (reserved_size + 2)*sizeof(indexes[0]);
     for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
-      size += PPL::external_memory_in_bytes(itr->second);
+      size += PPL::external_memory_in_bytes(*itr);
   }
   return size;
 }
@@ -54,13 +54,13 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
 
   iterator candidate1 = bisect_near(itr, key1);
 
-  if (key1 == candidate1->first)
+  if (key1 == candidate1.index())
     return candidate1;
 
   // `&(candidate1->second) - data' is the index of candidate1.
-  dimension_type candidate2_index = &(candidate1->second) - data;
+  dimension_type candidate2_index = &(*candidate1) - data;
 
-  if (key1 < candidate1->first) {
+  if (key1 < candidate1.index()) {
     --candidate2_index;
     while (indexes[candidate2_index] == unused_index)
       --candidate2_index;
@@ -115,15 +115,15 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) 
 
   iterator candidate1 = bisect_near(itr, key1);
 
-  if (key1 == candidate1->first) {
-    candidate1->second = data1;
+  if (key1 == candidate1.index()) {
+    *candidate1 = data1;
     return candidate1;
   }
 
   // `&(candidate1->second) - data' is the index of candidate1.
-  dimension_type candidate2_index = &(candidate1->second) - data;
+  dimension_type candidate2_index = &(*candidate1) - data;
 
-  if (key1 < candidate1->first) {
+  if (key1 < candidate1.index()) {
     --candidate2_index;
     while (indexes[candidate2_index] == unused_index)
       --candidate2_index;
@@ -164,7 +164,7 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   iterator itr = erase(key);
   if (itr == end())
     return;
-  dimension_type i = &(itr->second) - data;
+  dimension_type i = &(*itr) - data;
   dimension_type* p = indexes + i;
   dimension_type* p_end = indexes + reserved_size + 1;
   for ( ; p != p_end; ++p)
@@ -361,8 +361,8 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   PPL_ASSERT(itr == itr2);
 #endif
 
-  if (itr->first == key1) {
-    itr->second = data1;
+  if (itr.index() == key1) {
+    *itr = data1;
     PPL_ASSERT(OK());
     return itr;
   }
@@ -375,7 +375,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
     itr.get_root();
     itr.go_down_searching_key(key1);
 
-    PPL_ASSERT(itr->first != key1);
+    PPL_ASSERT(itr.index() != key1);
   }
 
   PPL_ASSERT(!is_greater_than_ratio(size + 1, reserved_size,
@@ -384,14 +384,14 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
   size++;
 
   if (!itr.is_leaf()) {
-    if (key1 < itr->first)
+    if (key1 < itr.index())
       itr.get_left_child();
     else
       itr.get_right_child();
-    PPL_ASSERT(itr->first == unused_index);
+    PPL_ASSERT(itr.index() == unused_index);
 
-    itr->first = key1;
-    new (&(itr->second)) data_type(data1);
+    itr.index() = key1;
+    new (&(*itr)) data_type(data1);
 
   } else {
 
@@ -399,7 +399,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
     itr.go_down_searching_key(key1);
 
-    PPL_ASSERT(itr->first == key1);
+    PPL_ASSERT(itr.index() == key1);
   }
   PPL_ASSERT(OK());
 
@@ -408,7 +408,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
 
 PPL::CO_Tree::iterator
 PPL::CO_Tree::erase(tree_iterator itr) {
-  PPL_ASSERT(itr->first != unused_index);
+  PPL_ASSERT(itr.index() != unused_index);
 
   PPL_ASSERT(size != 0);
 
@@ -422,7 +422,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
       && !is_greater_than_ratio(size - 1, reserved_size/2,
                                 max_density_percent)) {
 
-    const dimension_type key = itr->first;
+    const dimension_type key = itr.index();
 
     PPL_ASSERT(!is_greater_than_ratio(size, reserved_size, max_density_percent));
 
@@ -430,7 +430,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     itr.get_root();
     itr.go_down_searching_key(key);
 
-    PPL_ASSERT(itr->first == key);
+    PPL_ASSERT(itr.index() == key);
   }
 
 #ifndef NDEBUG
@@ -441,23 +441,23 @@ PPL::CO_Tree::erase(tree_iterator itr) {
                                         max_density_percent));
 #endif
 
-  const dimension_type deleted_key = itr->first;
+  const dimension_type deleted_key = itr.index();
   tree_iterator deleted_node = itr;
-  itr->second.~data_type();
+  (*itr).~data_type();
   while (1) {
-    dimension_type& current_key  = itr->first;
-    data_type&      current_data = itr->second;
+    dimension_type& current_key  = itr.index();
+    data_type&      current_data = *itr;
     if (itr.is_leaf())
       break;
     itr.get_left_child();
-    if (itr->first != unused_index)
+    if (itr.index() != unused_index)
       // The left child has a value.
       itr.follow_right_childs_with_value();
     else {
       // The left child hasn't a value, try the right child.
       itr.get_parent();
       itr.get_right_child();
-      if (itr->first != unused_index)
+      if (itr.index() != unused_index)
         // The right child has a value.
         itr.follow_left_childs_with_value();
       else {
@@ -466,12 +466,12 @@ PPL::CO_Tree::erase(tree_iterator itr) {
         break;
       }
     }
-    std::swap(current_key, itr->first);
-    move_data_element(current_data, itr->second);
+    std::swap(current_key, itr.index());
+    move_data_element(current_data, *itr);
   }
 
-  PPL_ASSERT(itr->first != unused_index);
-  itr->first = unused_index;
+  PPL_ASSERT(itr.index() != unused_index);
+  itr.index() = unused_index;
   --size;
 
   PPL_ASSERT(OK());
@@ -486,16 +486,16 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   iterator result(itr);
 
-  if (result->first < deleted_key)
+  if (result.index() < deleted_key)
     ++result;
 
   PPL_ASSERT(OK());
-  PPL_ASSERT(result == end() || result->first > deleted_key);
+  PPL_ASSERT(result == end() || result.index() > deleted_key);
 #ifndef NDEBUG
   if (!empty()) {
     iterator last = end();
     --last;
-    PPL_ASSERT((result == end()) == (last->first < deleted_key));
+    PPL_ASSERT((result == end()) == (last.index() < deleted_key));
   }
 #endif
 
@@ -589,7 +589,7 @@ PPL::CO_Tree::structure_OK() const {
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
     tree_iterator itr(*const_cast<CO_Tree*>(this));
-    if (itr->first != unused_index)
+    if (itr.index() != unused_index)
       return false;
 
   } else {
@@ -608,12 +608,12 @@ PPL::CO_Tree::structure_OK() const {
     const_iterator itr_end = end();
 
     if (itr != itr_end) {
-      dimension_type last_index = itr->first;
+      dimension_type last_index = itr.index();
       for (++itr; itr != itr_end; ++itr) {
-        if (last_index >= itr->first)
+        if (last_index >= itr.index())
           // Found index \p itr->first after index \p last_index.
           return false;
-        last_index = itr->first;
+        last_index = itr.index();
       }
     }
   }
@@ -676,10 +676,10 @@ PPL::CO_Tree::dump_subtree(tree_iterator itr) {
     itr.get_parent();
   }
   std::cout << "At depth: " << itr.depth();
-  if (itr->first == unused_index)
+  if (itr.index() == unused_index)
     std::cout << " (no data)" << std::endl;
   else
-    std::cout << " pair (" << itr->first << "," << itr->second << ")" << std::endl;
+    std::cout << " pair (" << itr.index() << "," << *itr << ")" << std::endl;
   if (!itr.is_leaf()) {
     itr.get_right_child();
     dump_subtree(itr);
@@ -747,12 +747,12 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     PPL_ASSERT(OK());
     return tree_iterator(*this);
   }
-  PPL_ASSERT(itr->first == unused_index || itr.is_leaf());
+  PPL_ASSERT(itr.index() == unused_index || itr.is_leaf());
   height_t itr_depth_minus_1 = itr.depth() - 1;
   height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
   dimension_type subtree_reserved_size = ((dimension_type)1 << height) - 1;
-  const bool deleting = itr->first == unused_index;
+  const bool deleting = itr.index() == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
   if (deleting)
     subtree_size = 0;
@@ -779,7 +779,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
       itr.get_right_child();
     subtree_size += count_used_in_subtree(itr);
     itr.get_parent();
-    PPL_ASSERT(itr->first != unused_index);
+    PPL_ASSERT(itr.index() != unused_index);
     ++subtree_size;
     subtree_reserved_size = 2*subtree_reserved_size + 1;
     --itr_depth_minus_1;
@@ -1047,11 +1047,11 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
       --stack_first_empty;
     } else {
       if (top_n == 1) {
-        PPL_ASSERT(root->first == unused_index);
+        PPL_ASSERT(root.index() == unused_index);
         PPL_ASSERT(tree.indexes[source_index] != unused_index);
-        root->first = tree.indexes[source_index];
+        root.index() = tree.indexes[source_index];
         tree.indexes[source_index] = unused_index;
-        move_data_element(root->second, tree.data[source_index]);
+        move_data_element(*root, tree.data[source_index]);
         PPL_ASSERT(source_index <= tree.reserved_size);
         ++source_index;
         while (tree.indexes[source_index] == unused_index)
@@ -1201,19 +1201,19 @@ PPL::CO_Tree::tree_iterator::go_down_searching_key(dimension_type key) {
   // *this points to a node, so the tree is not empty.
   PPL_ASSERT(!tree.empty());
   PPL_ASSERT(key != unused_index);
-  PPL_ASSERT((*this)->first != unused_index);
+  PPL_ASSERT(index() != unused_index);
   while (!is_leaf()) {
-    if (key == (*this)->first)
+    if (key == index())
       break;
-    if (key < (*this)->first) {
+    if (key < index()) {
       get_left_child();
-      if ((*this)->first == unused_index) {
+      if (index() == unused_index) {
         get_parent();
         break;
       }
     } else {
       get_right_child();
-      if ((*this)->first == unused_index) {
+      if (index() == unused_index) {
         get_parent();
         break;
       }

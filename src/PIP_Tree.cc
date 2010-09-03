@@ -162,7 +162,7 @@ neg_assign_row(PIP_Tree_Node::matrix_type::row_type& x,
   PIP_Tree_Node::matrix_type::row_type::iterator i = x.begin();
   PIP_Tree_Node::matrix_type::row_type::iterator i_end = x.end();
   for ( ; i != i_end; ++i)
-    neg_assign(i->second);
+    neg_assign(*i);
 }
 
 #else // !USE_PPL_SPARSE_MATRIX
@@ -187,7 +187,7 @@ complement_assign(PIP_Tree_Node::matrix_type::row_type& x,
   PPL_ASSERT(den > 0);
   neg_assign_row(x, y);
   PIP_Tree_Node::matrix_type::row_type::iterator itr = x.find_create(0);
-  Coefficient& x_0 = itr->second;
+  Coefficient& x_0 = *itr;
   if (den == 1)
     --x_0;
   else {
@@ -361,7 +361,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     PIP_Tree_Node::matrix_type::row_type::const_iterator pivot_itr;
     pivot_itr = pivot_row.find(min_column);
     PPL_ASSERT(pivot_itr != pivot_row.end());
-    const Coefficient* sij_b = &(pivot_itr->second);
+    const Coefficient* sij_b = &(*pivot_itr);
     ++pivot_itr;
     const dimension_type row_index = mapping[var_index];
     const bool in_base = basis[var_index];
@@ -369,7 +369,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
       for ( ; i != i_end; ++i) {
         pivot_itr = pivot_row.find(pivot_itr, *i);
         PPL_ASSERT(pivot_itr != pivot_row.end());
-        const Coefficient& sij_a = pivot_itr->second;
+        const Coefficient& sij_a = *pivot_itr;
         ++pivot_itr;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
@@ -396,30 +396,30 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
       PIP_Tree_Node::matrix_type::row_type::const_iterator row_end
         = row.end();
       const Coefficient* row_jb;
-      if (row_itr == row_end || row_itr->first > min_column)
+      if (row_itr == row_end || row_itr.index() > min_column)
         row_jb = &(Coefficient_zero());
       else {
-        PPL_ASSERT(row_itr->first == min_column);
-        row_jb = &(row_itr->second);
+        PPL_ASSERT(row_itr.index() == min_column);
+        row_jb = &(*row_itr);
         ++row_itr;
       }
       for ( ; i != i_end; ++i) {
         pivot_itr = pivot_row.find(pivot_itr, *i);
         PPL_ASSERT(pivot_itr != pivot_row.end());
-        const Coefficient& sij_a = pivot_itr->second;
+        const Coefficient& sij_a = *pivot_itr;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
 
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-        if (row_itr != row_end && row_itr->first < *i)
+        if (row_itr != row_end && row_itr.index() < *i)
           row_itr = row.lower_bound(row_itr, *i);
         const Coefficient* row_ja;
-        if (row_itr == row_end || row_itr->first > *i)
+        if (row_itr == row_end || row_itr.index() > *i)
           row_ja = &(Coefficient_zero());
         else {
-          PPL_ASSERT(row_itr->first == *i);
-          row_ja = &(row_itr->second);
+          PPL_ASSERT(row_itr.index() == *i);
+          row_ja = &(*row_itr);
           ++row_itr;
         }
 
@@ -484,8 +484,9 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
   PIP_Tree_Node::matrix_type::row_type::const_iterator i_end
     = pivot_row.end();
   for ( ; i != i_end; ++i)
-    if (i->second > 0)
-      candidates.push_back(i->first);
+    if (*i > 0)
+      candidates.push_back(i.index());
+
   if (candidates.empty()) {
     j_out = num_cols;
     return false;
@@ -509,7 +510,7 @@ row_normalize(PIP_Tree_Node::matrix_type::row_type& x,
   gcd = den;
   for (PIP_Tree_Node::matrix_type::row_type::const_iterator
     i = x.begin(), i_end = x.end(); i != i_end; ++i) {
-    const Coefficient& x_i = i->second;
+    const Coefficient& x_i = *i;
     if (x_i != 0) {
       gcd_assign(gcd, x_i, gcd);
       if (gcd == 1)
@@ -519,7 +520,7 @@ row_normalize(PIP_Tree_Node::matrix_type::row_type& x,
   // Divide the coefficients by the GCD.
   for (PIP_Tree_Node::matrix_type::row_type::iterator
     i = x.begin(), i_end = x.end(); i != i_end; ++i) {
-    Coefficient& x_i = i->second;
+    Coefficient& x_i = *i;
     exact_div_assign(x_i, x_i, gcd);
   }
   // Divide the denominator by the GCD.
@@ -619,8 +620,8 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
         = row.lower_bound(pj);
       PIP_Tree_Node::matrix_type::row_type::const_iterator row_end = row.end();
       const Coefficient* row_value;
-      if (row_itr != row_end && row_itr->first == pj) {
-        row_value = &(row_itr->second);
+      if (row_itr != row_end && row_itr.index() == pj) {
+        row_value = &(*row_itr);
         ++row_itr;
       } else
         row_value = &(Coefficient_zero());
@@ -636,19 +637,19 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
         const Coefficient* row_challenger_value;
         // row_challenger_value = &(row.get(challenger_j));
         if (row_itr != row_end) {
-          if (row_itr->first < challenger_j) {
+          if (row_itr.index() < challenger_j) {
             row_itr = row.lower_bound(row_itr, challenger_j);
-            if (row_itr != row_end && row_itr->first == challenger_j) {
-              row_challenger_value = &(row_itr->second);
+            if (row_itr != row_end && row_itr.index() == challenger_j) {
+              row_challenger_value = &(*row_itr);
               ++row_itr;
             } else
               row_challenger_value = &(Coefficient_zero());
           } else {
-            if (row_itr->first == challenger_j) {
-              row_challenger_value = &(row_itr->second);
+            if (row_itr.index() == challenger_j) {
+              row_challenger_value = &(*row_itr);
               ++row_itr;
             } else {
-              PPL_ASSERT(row_itr->first > challenger_j);
+              PPL_ASSERT(row_itr.index() > challenger_j);
               row_challenger_value = &(Coefficient_zero());
             }
           }
@@ -1093,14 +1094,14 @@ PIP_Tree_Node
     dimension_type j_index = 1;
     matrix_type::row_type::const_iterator i = row.begin();
     matrix_type::row_type::const_iterator i_end = row.end();
-    if (i != i_end && i->first == 0)
+    if (i != i_end && i.index() == 0)
       ++i;
     // NOTE: iterating in [1..num_params].
     for ( ; i != i_end; ++i) {
-      PPL_ASSERT(i->first <= parameters.size());
-      std::advance(j, i->first - j_index);
-      j_index = i->first;
-      add_mul_assign(expr, i->second, Variable(*j));
+      PPL_ASSERT(i.index() <= parameters.size());
+      std::advance(j, i.index() - j_index);
+      j_index = i.index();
+      add_mul_assign(expr, *i, Variable(*j));
     }
   }
   // Add the parameter constraint.
@@ -1459,7 +1460,7 @@ PIP_Solution_Node::Tableau::normalize() {
     matrix_type::row_type::const_iterator j = s_i.begin();
     matrix_type::row_type::const_iterator j_end = s_i.end();
     for ( ; j != j_end; ++j) {
-      const Coefficient& s_ij = j->second;
+      const Coefficient& s_ij = *j;
       if (s_ij != 0) {
         gcd_assign(gcd, s_ij, gcd);
         if (gcd == 1)
@@ -1470,7 +1471,7 @@ PIP_Solution_Node::Tableau::normalize() {
     j = t_i.begin();
     j_end = t_i.end();
     for ( ; j != j_end; ++j) {
-      const Coefficient& t_ij = j->second;
+      const Coefficient& t_ij = *j;
       if (t_ij != 0) {
         gcd_assign(gcd, t_ij, gcd);
         if (gcd == 1)
@@ -1485,14 +1486,14 @@ PIP_Solution_Node::Tableau::normalize() {
     matrix_type::row_type::iterator j = s_i.begin();
     matrix_type::row_type::iterator j_end = s_i.end();
     for ( ; j != j_end; ++j) {
-      Coefficient& s_ij = j->second;
+      Coefficient& s_ij = *j;
       exact_div_assign(s_ij, s_ij, gcd);
     }
     matrix_type::row_type& t_i = t[i];
     j = t_i.begin();
     j_end = t_i.end();
     for ( ; j != j_end; ++j) {
-      Coefficient& t_ij = j->second;
+      Coefficient& t_ij = *j;
       exact_div_assign(t_ij, t_ij, gcd);
     }
   }
@@ -1507,10 +1508,10 @@ PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
     matrix_type::row_type::iterator j_end;
     matrix_type::row_type& s_i = s[i];
     for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
-      j->second *= ratio;
+      *j *= ratio;
     matrix_type::row_type& t_i = t[i];
     for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
-      j->second *= ratio;
+      *j *= ratio;
   }
   denom *= ratio;
 }
@@ -1542,13 +1543,13 @@ PIP_Solution_Node::Tableau
     matrix_type::row_type::const_iterator j;
     matrix_type::row_type::const_iterator j_end;
     for (j = t_0.begin(), j_end = t_0.end(); j != j_end; ++j) {
-      Coefficient& coeff = coeff_0[j->first];
-      coeff = j->second;
+      Coefficient& coeff = coeff_0[j.index()];
+      coeff = *j;
       coeff *= s_1_1;
     }
     for (j = t_1.begin(), j_end = t_1.end(); j != j_end; ++j) {
-      Coefficient& coeff = coeff_1[j->first];
-      coeff = j->second;
+      Coefficient& coeff = coeff_1[j.index()];
+      coeff = *j;
       coeff *= s_0_0;
     }
   }
@@ -1563,46 +1564,46 @@ PIP_Solution_Node::Tableau
     j0 = t_0.begin();
     j1 = t_1.begin();
     while (j0 != j0_end && j1 != j1_end) {
-      if (j0->first == j1->first) {
-        product_0 = j0->second * s_1_1 * s_i_col_0;
-        product_1 = j1->second * s_0_0 * s_i_col_1;
+      if (j0.index() == j1.index()) {
+        product_0 = (*j0) * s_1_1 * s_i_col_0;
+        product_1 = (*j1) * s_0_0 * s_i_col_1;
         if (product_0 != product_1) {
           // Mismatch found: exit from both loops.
-          j_mismatch = j0->first;
+          j_mismatch = j0.index();
           goto end_loop;
         }
         ++j0;
         ++j1;
       } else
-        if (j0->first < j1->first) {
-          if (j0->second != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
+        if (j0.index() < j1.index()) {
+          if (*j0 != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
             // Mismatch found: exit from both loops.
-            j_mismatch = j0->first;
+            j_mismatch = j0.index();
             goto end_loop;
           }
           ++j0;
         } else {
-          PPL_ASSERT(j0->first > j1->first);
-          if (j1->second != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
+          PPL_ASSERT(j0.index() > j1.index());
+          if (*j1 != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
             // Mismatch found: exit from both loops.
-            j_mismatch = j1->first;
+            j_mismatch = j1.index();
             goto end_loop;
           }
           ++j1;
         }
     }
     while (j0 != j0_end) {
-      if (j0->second != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
+      if (*j0 != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
         // Mismatch found: exit from both loops.
-        j_mismatch = j0->first;
+        j_mismatch = j0.index();
         goto end_loop;
       }
       ++j0;
     }
     while (j1 != j1_end) {
-      if (j1->second != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
+      if (*j1 != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
         // Mismatch found: exit from both loops.
-        j_mismatch = j1->first;
+        j_mismatch = j1.index();
         goto end_loop;
       }
     }
@@ -1610,8 +1611,7 @@ PIP_Solution_Node::Tableau
 
  end_loop:
   return (j_mismatch != num_params)
-    && column_lower(s, mapping, basis, s_0, col_0, s_1, col_1,
-                    j0->second, j1->second);
+    && column_lower(s, mapping, basis, s_0, col_0, s_1, col_1, *j0, *j1);
 }
 
 void
@@ -1907,7 +1907,7 @@ PIP_Solution_Node::row_sign(const matrix_type::row_type& x,
   matrix_type::row_type::const_iterator i = x.begin();
   matrix_type::row_type::const_iterator i_end = x.end();
   for ( ; i != i_end; ++i) {
-    const Coefficient& x_i = i->second;
+    const Coefficient& x_i = *i;
     if (x_i > 0) {
       if (sign == NEGATIVE)
         return MIXED;
@@ -2018,7 +2018,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         matrix_type::row_type::iterator cut_i = cut.begin();
         matrix_type::row_type::iterator cut_end = cut.end();
         for ( ; cut_i != cut_end; ++cut_i)
-          mod_assign(cut_i->second, cut_i->second, den);
+          mod_assign(*cut_i, *cut_i, den);
         cut[0] -= den;
         scaling.push_back(den);
       }
@@ -2065,9 +2065,9 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
       matrix_type::row_type::const_iterator j;
       matrix_type::row_type::const_iterator j_end;
       for (j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
-        if (j->first == pj)
+        if (j.index() == pj)
           continue;
-        const Coefficient& pivot_j = j->second;
+        const Coefficient& pivot_j = *j;
         // Do nothing if the j-th pivot element is zero.
         if (pivot_j == 0)
           continue;
@@ -2081,13 +2081,13 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
             matrix_type::row_type::iterator k;
             matrix_type::row_type::iterator k_end;
             for (k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
-              k->second *= scale_factor;
+              *k *= scale_factor;
             product *= scale_factor;
             scaling[i] *= scale_factor;
           }
           PPL_ASSERT(product % pivot_pj == 0);
           exact_div_assign(product, product, pivot_pj);
-          s_i[j->first] -= product;
+          s_i[j.index()] -= product;
         }
       }
     }
@@ -2104,7 +2104,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           matrix_type::row_type::iterator k;
           matrix_type::row_type::iterator k_end;
           for (k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
-            k->second *= scale_factor;
+            *k *= scale_factor;
           product *= scale_factor;
           scaling[i] *= scale_factor;
         }
@@ -2407,7 +2407,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           matrix_type::row_type::const_iterator j;
           matrix_type::row_type::const_iterator j_end;
           for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
-            if (j->second > 0) {
+            if (*j > 0) {
               has_positive = true;
               break;
             }
@@ -2539,8 +2539,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_type::const_iterator j_end;
         matrix_type::row_type::iterator itr = s_i.end();
         for (j = s_pivot.begin(), j_end = s_pivot.end(); j != j_end; ++j) {
-          if (j->first != pj) {
-            const Coefficient& s_pivot_j = j->second;
+          if (j.index() != pj) {
+            const Coefficient& s_pivot_j = *j;
             // Do nothing if the j-th pivot element is zero.
             if (s_pivot_j != 0) {
               product = s_pivot_j * s_i_pj;
@@ -2555,8 +2555,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
               if (product != 0) {
-                itr = s_i.find_create(itr, j->first);
-                itr->second -= product;
+                itr = s_i.find_create(itr, j.index());
+                *itr -= product;
               }
             }
           }
@@ -2573,7 +2573,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_type::const_iterator j_end;
         matrix_type::row_type::iterator k = t_i.end();
         for (j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
-          const Coefficient& t_pivot_j = j->second;
+          const Coefficient& t_pivot_j = *j;
           // Do nothing if the j-th pivot element is zero.
           if (t_pivot_j != 0) {
             product = t_pivot_j * s_i_pj;
@@ -2587,8 +2587,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
             if (product != 0) {
-              k = t_i.find_create(k, j->first);
-              k->second -= product;
+              k = t_i.find_create(k, j.index());
+              *k -= product;
             }
 
             // Update row sign.
@@ -2624,7 +2624,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           itr = s_i.find(pj);
           if (itr == s_i.end())
             continue;
-          product = itr->second * pivot_den;
+          product = *itr * pivot_den;
           if (product % s_pivot_pj != 0) {
             // As above, perform matrix scaling.
             gcd_assign(gcd, product, s_pivot_pj);
@@ -2633,8 +2633,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             product *= scale_factor;
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
-          if (product != 0 || itr->second != 0)
-            exact_div_assign(itr->second, product, s_pivot_pj);
+          if (product != 0 || *itr != 0)
+            exact_div_assign(*itr, product, s_pivot_pj);
         }
       }
 
@@ -2665,7 +2665,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           matrix_type::row_type::const_iterator j;
           matrix_type::row_type::const_iterator j_end;
           for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
-            if (j->second > 0) {
+            if (*j > 0) {
               has_positive = true;
               break;
             }
@@ -2680,7 +2680,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           matrix_type::row_type::const_iterator j;
           matrix_type::row_type::const_iterator j_end;
           for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
-            score += j->second;
+            score += *j;
         }
         if (i_neg == not_a_dim || score < best_score) {
           i_neg = i;
@@ -2715,7 +2715,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           matrix_type::row_type::const_iterator j;
           matrix_type::row_type::const_iterator j_end;
           for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
-            score += j->second;
+            score += *j;
         }
         if (best_i == not_a_dim || score < best_score) {
           best_score = score;
@@ -2851,7 +2851,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       matrix_type::row_type::const_iterator j;
       matrix_type::row_type::const_iterator j_end;
       for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-        if (j->second % den != 0)
+        if (*j % den != 0)
           goto non_integer;
       }
     }
@@ -2882,7 +2882,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_type::const_iterator j;
         matrix_type::row_type::const_iterator j_end;
         for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-          mod_assign(mod, j->second, den);
+          mod_assign(mod, *j, den);
           if (mod != 0)
             ++pcount;
         }
@@ -2917,7 +2917,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           matrix_type::row_type::const_iterator j;
           matrix_type::row_type::const_iterator j_end;
           for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-            mod_assign(mod, j->second, den);
+            mod_assign(mod, *j, den);
             if (mod != 0) {
               score += den;
               score -= mod;
@@ -2933,7 +2933,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           matrix_type::row_type::const_iterator j;
           matrix_type::row_type::const_iterator j_end;
           for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
-            mod_assign(mod, j->second, den);
+            mod_assign(mod, *j, den);
             s_score += den;
             s_score -= mod;
           }
@@ -3004,10 +3004,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     matrix_type::row_type::const_iterator j = row_t.begin();
     matrix_type::row_type::const_iterator j_end = row_t.end();
     // Skip the element with index 0.
-    if (j != j_end && j->first == 0)
+    if (j != j_end && j.index() == 0)
       ++j;
     for ( ; j != j_end; ++j)
-      if (j->second % den != 0) {
+      if (*j % den != 0) {
         generate_parametric_cut = true;
         break;
       }
@@ -3026,8 +3026,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       const matrix_type::row_type& row_t = tableau.t[index];
       matrix_type::row_type::const_iterator j = row_t.begin();
       matrix_type::row_type::const_iterator j_end = row_t.end();
-      if (j != j_end && j->first == 0) {
-        mod_assign(mod, j->second, den);
+      if (j != j_end && j.index() == 0) {
+        mod_assign(mod, *j, den);
         ++j;
         if (mod != 0) {
           // Optimizing computation: expr += (den - mod);
@@ -3041,13 +3041,13 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Variables_Set::const_iterator p_j = parameters.begin();
         dimension_type last_index = 1;
         for ( ; j != j_end; ++j) {
-          mod_assign(mod, j->second, den);
+          mod_assign(mod, *j, den);
           if (mod != 0) {
             // Optimizing computation: expr += (den - mod) * Variable(*p_j);
             coeff = den - mod;
-            PPL_ASSERT(last_index <= j->first);
-            std::advance(p_j, j->first - last_index);
-            last_index = j->first;
+            PPL_ASSERT(last_index <= j.index());
+            std::advance(p_j, j.index() - last_index);
+            last_index = j.index();
             add_mul_assign(expr, coeff, Variable(*p_j));
           }
         }
@@ -3109,39 +3109,39 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         matrix_type::row_type::const_iterator j_end = row_t.end();
         matrix_type::row_type::iterator itr1 = ctx1.end();
         matrix_type::row_type::iterator itr2 = ctx2.end();
-        if (j != j_end && j->first == 0) {
-          mod_assign(mod, j->second, den);
+        if (j != j_end && j.index() == 0) {
+          mod_assign(mod, *j, den);
           if (mod != 0) {
             itr1 = ctx1.find_create(0, den);
-            itr1->second -= mod;
-            itr2 = ctx2.find_create(0, itr1->second);
-            neg_assign(itr2->second);
+            *itr1 -= mod;
+            itr2 = ctx2.find_create(0, *itr1);
+            neg_assign(*itr2);
             // ctx2[0] += den-1;
-            itr2->second += den;
-            --(itr2->second);
+            *itr2 += den;
+            --(*itr2);
           } else {
             // ctx2[0] += den-1;
             itr2 = ctx2.find_create(0, den);
-            --(itr2->second);
+            --(*itr2);
           }
           ++j;
         } else {
           // ctx2[0] += den-1;
           itr2 = ctx2.find_create(0, den);
-          --(itr2->second);
+          --(*itr2);
         }
         for ( ; j != j_end; ++j) {
-          mod_assign(mod, j->second, den);
+          mod_assign(mod, *j, den);
           if (mod != 0) {
-            const dimension_type j_index = j->first;
+            const dimension_type j_index = j.index();
             itr1 = ctx1.find_create(itr1, j_index, den);
-            itr1->second -= mod;
-            itr2 = ctx2.find_create(itr2, j_index, itr1->second);
-            neg_assign(itr2->second);
+            *itr1 -= mod;
+            itr2 = ctx2.find_create(itr2, j_index, *itr1);
+            neg_assign(*itr2);
           }
         }
         itr1 = ctx1.find_create(itr1, num_params, den);
-        neg_assign(itr1->second);
+        neg_assign(*itr1);
         itr2 = ctx2.find_create(itr2, num_params, den);
       }
 
@@ -3176,8 +3176,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     matrix_type::row_type::const_iterator j_end;
     matrix_type::row_type::iterator itr = cut_s.end();
     for (j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
-      itr = cut_s.find_create(itr, j->first, j->second);
-      itr->second %= den;
+      itr = cut_s.find_create(itr, j.index(), *j);
+      *itr %= den;
     }
   }
   {
@@ -3185,10 +3185,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     matrix_type::row_type::const_iterator j_end = row_t.end();
     matrix_type::row_type::iterator cut_t_itr = cut_t.end();
     for ( ; j!=j_end; ++j) {
-      mod_assign(mod, j->second, den);
+      mod_assign(mod, *j, den);
       if (mod != 0) {
-        cut_t_itr = cut_t.find_create(cut_t_itr, j->first, mod);
-        cut_t_itr->second -= den;
+        cut_t_itr = cut_t.find_create(cut_t_itr, j.index(), mod);
+        *cut_t_itr -= den;
       }
     }
   }
@@ -3495,16 +3495,16 @@ PIP_Solution_Node
     matrix_type::row_type::const_iterator j = row.begin();
     matrix_type::row_type::const_iterator j_end = row.end();
     // Skip the element with index 0.
-    if (j != j_end && j->first == 0)
+    if (j != j_end && j.index() == 0)
       ++j;
     for ( ; j != j_end; ++j) {
-      const Coefficient& coeff = j->second;
+      const Coefficient& coeff = *j;
       if (coeff == 0)
         continue;
       norm_coeff = coeff / den;
       if (norm_coeff != 0)
         add_mul_assign(sol_i, norm_coeff,
-                      Variable(all_param_names[j->first - 1]));
+                      Variable(all_param_names[j.index() - 1]));
     }
     norm_coeff = row.get(0) / den;
     sol_i += norm_coeff;

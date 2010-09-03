@@ -113,8 +113,6 @@ public:
   */
   typedef Coefficient data_type;
 
-  typedef std::pair<const dimension_type, data_type&> value_type;
-
   class iterator;
 
   //! A const %iterator on the tree elements, ordered by key.
@@ -125,40 +123,13 @@ public:
   */
   class const_iterator {
   private:
-    //! This is an helper class used by operator->().
-    /*!
-      This allows client code to use itr->first and itr->second, without
-      the data being actually stored in pairs.
-    */
-    class Const_Member_Access_Helper {
-
-    public:
-      //! Constructs an helper object that stores \p key and \p data.
-      /*!
-        \param key
-        The key that will be stored in this object.
-
-        \param data
-        The const-reference-to-data that will be stored in this object.
-      */
-      Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-      //! Returns a pointer to \p my_pair.
-      const std::pair<const dimension_type, const data_type&>* operator->()
-        const;
-
-    private:
-      //! The pair that stores the data.
-      std::pair<const dimension_type, const data_type&> my_pair;
-    };
-
   public:
 
     typedef std::bidirectional_iterator_tag iterator_category;
-    typedef std::pair<const dimension_type, const data_type&> value_type;
+    typedef const data_type value_type;
     typedef ptrdiff_t difference_type;
     typedef value_type* pointer;
-    typedef value_type& reference;
+    typedef Coefficient_traits::const_reference reference;
 
     //! Constructs an invalid const_iterator.
     /*!
@@ -259,17 +230,13 @@ public:
     const_iterator operator--(int);
 
     //! Returns the current element.
-    std::pair<const dimension_type, const data_type&> operator*() const;
+    Coefficient_traits::const_reference operator*() const;
 
-    //! Returns a pointer to the value_type of the current node.
+    //! Returns the index of the element pointed to by \c *this.
     /*!
-      This allows using itr->first to access the key of the current
-      element and itr->second to access its value.
-
-      This confusing signature is needed because elements are not internally
-      stored as pairs in the tree, so it can't just return a pair reference.
+      \returns the index of the element pointed to by \c *this.
     */
-    Const_Member_Access_Helper operator->() const;
+    dimension_type index() const;
 
     //! Compares \p *this with x .
     /*!
@@ -308,65 +275,10 @@ public:
     from the tree.
   */
   class iterator {
-  private:
-
-    //! An helper class used by operator->().
-    /*!
-      This allows client code to use itr->first and itr->second, without
-      the data being actually stored in pairs.
-    */
-    class Member_Access_Helper {
-
-    public:
-      //! Constructs an helper object that stores \p key and \p data.
-      /*!
-        \param key
-        The key that will be stored in the helper object.
-
-        \param data
-        The reference-to-data that will be stored in the helper object.
-      */
-      Member_Access_Helper(dimension_type key, data_type& data);
-
-      //! Returns a pointer to \p my_pair.
-      std::pair<const dimension_type, data_type&>* operator->();
-
-    private:
-      //! The pair that stores the key and the reference-to-data.
-      std::pair<const dimension_type, data_type&> my_pair;
-    };
-
-    //! An helper class used by the const version of operator->().
-    /*!
-      This allows client code to use itr->first and itr->second, without
-      the data being actually stored in pairs.
-    */
-    class Const_Member_Access_Helper {
-
-    public:
-      //! Constructs an helper object that stores \p key and \p data.
-      /*!
-        \param key
-        The key that will be stored in the helper object.
-
-        \param data
-        The reference-to-data that will be stored in the helper object.
-      */
-      Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-      //! Returns a pointer to \p my_pair.
-      const std::pair<const dimension_type, const data_type&>* operator->()
-        const;
-
-    private:
-      //! The pair that stores the key and the const-reference-to-data.
-      std::pair<const dimension_type, const data_type&> my_pair;
-    };
-
   public:
 
     typedef std::bidirectional_iterator_tag iterator_category;
-    typedef CO_Tree::value_type value_type;
+    typedef data_type value_type;
     typedef ptrdiff_t difference_type;
     typedef value_type* pointer;
     typedef value_type& reference;
@@ -474,28 +386,16 @@ public:
     iterator operator--(int);
 
     //! Returns the current element.
-    std::pair<const dimension_type, data_type&> operator*();
+    data_type& operator*();
 
     //! Returns the current element.
-    std::pair<const dimension_type, const data_type&> operator*() const;
+    const data_type& operator*() const;
 
-    //! Returns a pointer to the value_type of the current node.
+    //! Returns the index of the element pointed to by \c *this.
     /*!
-      This allows using itr->first to access the key of the current
-      element and itr->second to access its value.
-      This confusing signature is needed because elements are not internally
-      stored as pairs in the tree, so it can't just return a pair reference.
+      \returns the index of the element pointed to by \c *this.
     */
-    Member_Access_Helper operator->();
-
-    //! Returns a pointer to the value_type of the current node.
-    /*!
-      This allows using itr->first to access the key of the current
-      element and itr->second to access its value.
-      This confusing signature is needed because elements are not internally
-      stored as pairs in the tree, so it can't just return a pair reference.
-    */
-    Const_Member_Access_Helper operator->() const;
+    dimension_type index() const;
 
     //! Compares \p *this with x .
     /*!
@@ -1334,61 +1234,6 @@ private:
 
 class CO_Tree::tree_iterator {
 
-private:
-
-  //! An helper class used by operator->().
-  /*!
-    This allows using itr->first and itr->second without requiring elements
-    to be actually stored in pairs in the tree.
-  */
-  class Member_Access_Helper {
-
-  public:
-    //! Constructs a helper object.
-    /*!
-      \param key
-      The key that will be stored in the helper object.
-
-      \param data
-      The reference-to-data that will be stored in the helper object.
-    */
-    Member_Access_Helper(dimension_type& key, data_type& data);
-
-    //! Returns a pointer to \p my_pair.
-    std::pair<dimension_type&, data_type&>* operator->();
-
-  private:
-    //! The pair that stores the key and the reference-to-data.
-    std::pair<dimension_type&, data_type&> my_pair;
-  };
-
-  //! An helper class used by the const version of operator->().
-  /*!
-    This allows using itr->first and itr->second without requiring elements
-    to be actually stored in pairs in the tree.
-  */
-  class Const_Member_Access_Helper {
-
-  public:
-    //! Constructs a helper object.
-    /*!
-      \param key
-      The key that will be stored in the helper object.
-
-      \param data
-      The reference-to-data that will be stored in the helper object.
-    */
-    Const_Member_Access_Helper(dimension_type key, const data_type& data);
-
-    //! Returns a pointer to \p my_pair.
-    const std::pair<const dimension_type, const data_type&>* operator->()
-      const;
-
-  private:
-    //! The pair that stores the key and the reference-to-data.
-    std::pair<const dimension_type, const data_type&> my_pair;
-  };
-
 public:
 
   /*!
@@ -1528,16 +1373,29 @@ public:
   bool is_leaf() const;
 
   //! Returns the key and value of the current node.
-  std::pair<dimension_type&, data_type&> operator*();
+  data_type& operator*();
 
   //! Returns the key and value of the current node.
-  std::pair<const dimension_type, const data_type&> operator*() const;
+  const data_type& operator*() const;
 
-  //! Returns a pointer to the value_type of the current node.
-  Member_Access_Helper operator->();
+  //! Returns a reference to the index of the element pointed to by \c *this.
+  /*!
+    \returns a reference to the index of the element pointed to by \c *this.
+  */
+  dimension_type& index();
 
-  //! Returns a pointer to the value_type of the current node.
-  Const_Member_Access_Helper operator->() const;
+  //! Returns the index of the element pointed to by \c *this.
+  /*!
+    \returns the index of the element pointed to by \c *this.
+  */
+  dimension_type index() const;
+
+  //! Returns the index of the node pointed to by \c *this.
+  /*!
+    \returns the key of the node pointed to by \c *this, or unused_index if
+             the current node does not contain a valid element.
+  */
+  dimension_type key() const;
 
   //! The tree containing the element pointed to by this %iterator.
   CO_Tree& tree;
