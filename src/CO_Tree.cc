@@ -791,14 +791,15 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
 
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
-  dimension_type last_index_in_subtree = itr.index() + itr.get_offset() - 1;
+  dimension_type last_index_in_subtree
+    = itr.dfs_index() + itr.get_offset() - 1;
 
   dimension_type first_unused
     = compact_elements_in_the_rightmost_end(last_index_in_subtree, subtree_size,
                                             key, value, !deleting);
 
   // Step 2: redistribute the elements, from left to right.
-  redistribute_elements_in_subtree(itr.index(), subtree_size,
+  redistribute_elements_in_subtree(itr.dfs_index(), subtree_size,
                                    first_unused + 1, key, value,
                                    first_unused != last_index_in_subtree
                                                    - subtree_size);
@@ -1104,7 +1105,7 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
   dimension_type n = 0;
 
   const dimension_type k = itr.get_offset();
-  const dimension_type root_index = itr.index();
+  const dimension_type root_index = itr.dfs_index();
 
   // The complete subtree rooted at itr has 2*k - 1 nodes.
 

@@ -540,8 +540,8 @@ CO_Tree::iterator::swap(iterator& itr) {
 
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
-  current_index = &(itr.tree.indexes[itr.index()]);
-  current_data = &(itr.tree.data[itr.index()]);
+  current_index = &(itr.tree.indexes[itr.dfs_index()]);
+  current_data = &(itr.tree.data[itr.dfs_index()]);
 #if PPL_CO_TREE_EXTRA_DEBUG
   tree = &(itr.tree);
 #endif
@@ -850,7 +850,7 @@ CO_Tree::tree_iterator::operator->() const {
 }
 
 inline dimension_type
-CO_Tree::tree_iterator::index() const {
+CO_Tree::tree_iterator::dfs_index() const {
   return i;
 }
 

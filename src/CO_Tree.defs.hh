@@ -1546,7 +1546,7 @@ public:
     \brief Returns the index of the current node in the DFS layout of the
            complete tree.
   */
-  dimension_type index() const;
+  dimension_type dfs_index() const;
 
   /*!
     \brief Returns 2^h, with h the height of the current node in the tree,
