@@ -435,7 +435,9 @@ CO_Tree::const_iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
+#endif
   return std::pair<const dimension_type&, const data_type&>(*current_index,
                                                             *current_data);
 }
@@ -445,7 +447,9 @@ CO_Tree::const_iterator::operator->() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
+#endif
   return Const_Member_Access_Helper(*current_index, *current_data);
 }
 
@@ -608,7 +612,9 @@ CO_Tree::iterator::operator*() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
+#endif
   return std::pair<const dimension_type, data_type&>(*current_index,
                                                      *current_data);
 }
@@ -618,7 +624,9 @@ CO_Tree::iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
+#endif
   return std::pair<const dimension_type, const data_type&>(*current_index,
                                                            *current_data);
 }
@@ -628,7 +636,9 @@ CO_Tree::iterator::operator->() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
+#endif
   return Member_Access_Helper(*current_index, *current_data);
 }
 
@@ -637,7 +647,9 @@ CO_Tree::iterator::operator->() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
+#endif
   return Const_Member_Access_Helper(*current_index, *current_data);
 }
 
