@@ -389,7 +389,7 @@ public:
     data_type& operator*();
 
     //! Returns the current element.
-    const data_type& operator*() const;
+    Coefficient_traits::const_reference operator*() const;
 
     //! Returns the index of the element pointed to by \c *this.
     /*!
@@ -1376,7 +1376,7 @@ public:
   data_type& operator*();
 
   //! Returns the key and value of the current node.
-  const data_type& operator*() const;
+  Coefficient_traits::const_reference operator*() const;
 
   //! Returns a reference to the index of the element pointed to by \c *this.
   /*!
