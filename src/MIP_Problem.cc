@@ -978,7 +978,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // However, when using sparse matrices the first one is fast and the second
   // one is slow, and when using dense matrices the first one is slow and
   // the second one is fast.
-#ifdef USE_PPL_SPARSE_MATRIX
+#if USE_PPL_SPARSE_MATRIX
+
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   // This is static to improve performance.
   // A pair (true, y) at position i means that
@@ -989,7 +990,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   static std::vector<std::pair<bool, double> > columns;
   // The first element is not used.
   columns.resize(tableau_num_columns - 1);
-  for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
+  for (dimension_type column = 1;
+       column < tableau_num_columns_minus_1;
+       ++column)
     if (sgn(working_cost[column]) == cost_sign) {
       columns[column].first = true;
       columns[column].second = 1.0;
@@ -1028,7 +1031,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         entering_index = i;
       }
     }
-#else
+
+#else // !USE_PPL_SPARSE_MATRIX
+
   double challenger_num = 0.0;
   double challenger_den = 0.0;
   for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
@@ -1063,7 +1068,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       WEIGHT_ADD_MUL(338, tableau_num_rows);
     }
   }
-#endif
+
+#endif // !USE_PPL_SPARSE_MATRIX
+
   return entering_index;
 }
 
@@ -1109,7 +1116,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   // However, when using sparse matrices the first one is fast and the second
   // one is slow, and when using dense matrices the first one is slow and
   // the second one is fast.
-#ifdef USE_PPL_SPARSE_MATRIX
+#if USE_PPL_SPARSE_MATRIX
+
   const dimension_type tableau_num_columns = tableau.num_columns();
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   // This is static to improve performance.
@@ -1181,7 +1189,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       entering_index = k->first;
     }
   }
-#else
+
+#else // !USE_PPL_SPARSE_MATRIX
+
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
@@ -1220,7 +1230,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       WEIGHT_ADD_MUL(47, tableau_num_rows);
     }
   }
-#endif
+
+#endif // !USE_PPL_SPARSE_MATRIX
+
   return entering_index;
 }
 

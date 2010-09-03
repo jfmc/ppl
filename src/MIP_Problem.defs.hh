@@ -25,12 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
-
 #include "Dense_Row.defs.hh"
 #include "Dense_Matrix.defs.hh"
-
 #include "Sparse_Matrix.defs.hh"
-
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
@@ -82,11 +79,10 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 */
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
-
-#ifndef USE_PPL_SPARSE_MATRIX
-  typedef Dense_Matrix matrix_type;
-#else
+#if USE_PPL_SPARSE_MATRIX
   typedef Sparse_Matrix matrix_type;
+#else
+  typedef Dense_Matrix matrix_type;
 #endif
 
   //! Builds a trivial MIP problem.

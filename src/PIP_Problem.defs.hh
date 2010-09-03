@@ -40,10 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Dense_Row.defs.hh"
 
 #include "Dense_Matrix.defs.hh"
-
 #include "Sparse_Matrix.defs.hh"
-
-
 #include "Sparse_Row.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -497,10 +494,10 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 */
 class Parma_Polyhedra_Library::PIP_Problem {
 public:
-#ifndef USE_PPL_SPARSE_MATRIX
-  typedef Dense_Matrix matrix_type;
-#else
+#if USE_PPL_SPARSE_MATRIX
   typedef Sparse_Matrix matrix_type;
+#else
+  typedef Dense_Matrix matrix_type;
 #endif
 
   //! Builds a trivial PIP problem.

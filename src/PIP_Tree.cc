@@ -152,16 +152,7 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
   }
 }
 
-#ifndef USE_PPL_SPARSE_MATRIX
-
-inline void
-neg_assign_row(PIP_Tree_Node::matrix_type::row_type& x,
-               const PIP_Tree_Node::matrix_type::row_type& y) {
-  for (dimension_type i = x.size(); i-- > 0; )
-    neg_assign(x[i], y[i]);
-}
-
-#else
+#if USE_PPL_SPARSE_MATRIX
 
 // Assigns to row x the negation of row y.
 inline void
@@ -170,11 +161,20 @@ neg_assign_row(PIP_Tree_Node::matrix_type::row_type& x,
   x = y;
   PIP_Tree_Node::matrix_type::row_type::iterator i = x.begin();
   PIP_Tree_Node::matrix_type::row_type::iterator i_end = x.end();
-  for ( ; i!=i_end; ++i)
+  for ( ; i != i_end; ++i)
     neg_assign(i->second);
 }
 
-#endif // !defined(USE_PPL_SPARSE_MATRIX)
+#else // !USE_PPL_SPARSE_MATRIX
+
+inline void
+neg_assign_row(PIP_Tree_Node::matrix_type::row_type& x,
+               const PIP_Tree_Node::matrix_type::row_type& y) {
+  for (dimension_type i = x.size(); i-- > 0; )
+    neg_assign(x[i], y[i]);
+}
+
+#endif // !USE_PPL_SPARSE_MATRIX
 
 // Given context row \p y and denominator \p den,
 // to be interpreted as expression expr = y / den,

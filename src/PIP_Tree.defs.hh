@@ -33,15 +33,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "PIP_Problem.defs.hh"
 
-#ifndef USE_PPL_SPARSE_MATRIX
-
-#include "Dense_Matrix.defs.hh"
-#include "Dense_Row.defs.hh"
-
-#else
+#if USE_PPL_SPARSE_MATRIX
 
 #include "Sparse_Matrix.defs.hh"
 #include "Sparse_Row.defs.hh"
+
+#else
+
+#include "Dense_Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
 
 #endif
 
@@ -56,10 +56,10 @@ namespace Parma_Polyhedra_Library {
 */
 class PIP_Tree_Node {
 public:
-#ifndef USE_PPL_SPARSE_MATRIX
-  typedef Dense_Matrix matrix_type;
-#else
+#if USE_PPL_SPARSE_MATRIX
   typedef Sparse_Matrix matrix_type;
+#else
+  typedef Dense_Matrix matrix_type;
 #endif
 
 protected:
