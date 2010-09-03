@@ -23,33 +23,67 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "Affine_Space.defs.hh"
-#if 0
-#include "Topology.hh"
-#include "Scalar_Products.defs.hh"
-
-#include "assert.hh"
-#endif
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Affine_Space::Affine_Space(const Affine_Space& y,
-                                Complexity_Class complexity)
-  : gr(y.gr, complexity) {
+PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
+  dimension_type space_dim = gs.space_dimension();
+  // First find a point or closure point and convert it to a
+  // grid point and add to the (initially empty) set of grid generators.
+  Grid_Generator_System ggs(space_dim);
+  Linear_Expression point_expr;
+  PPL_DIRTY_TEMP_COEFFICIENT(point_divisor);
+  for (Generator_System::const_iterator g = gs.begin(),
+         gs_end = gs.end(); g != gs_end; ++g) {
+    if (g->is_ray())
+      throw std::invalid_argument("Affine_Space::Affine_Space(gs):\n"
+                                  "gs contains rays.");
+    else if (g->is_point() || g->is_closure_point()) {
+      for (dimension_type i = space_dim; i-- > 0; ) {
+        const Variable v(i);
+        point_expr += g->coefficient(v) * v;
+        point_divisor = g->divisor();
+      }
+      ggs.insert(grid_point(point_expr, point_divisor));
+      goto non_empty;
+    }
+  }
+  // No (closure) point was found.
+  Grid(EMPTY).swap(gr);
+  return;
+
+ non_empty:
+  // Add a grid line for each line.  If the generator is a (closure)
+  // point, the grid line must have the direction given by a line
+  // that joins the grid point already inserted and the new point.
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  PPL_DIRTY_TEMP_COEFFICIENT(g_divisor);
+  for (Generator_System::const_iterator g = gs.begin(),
+         gs_end = gs.end(); g != gs_end; ++g) {
+    Linear_Expression e;
+    if (g->is_point() || g->is_closure_point()) {
+      g_divisor = g->divisor();
+      for (dimension_type i = space_dim; i-- > 0; ) {
+        const Variable v(i);
+        coeff = point_expr.coefficient(v) * g_divisor;
+        coeff -= g->coefficient(v) * point_divisor;
+        e += coeff * v;
+      }
+      if (e.all_homogeneous_terms_are_zero())
+        continue;
+    }
+    else
+      for (dimension_type i = space_dim; i-- > 0; ) {
+        const Variable v(i);
+        e += g->coefficient(v) * v;
+      }
+    ggs.insert(grid_line(e));
+  }
+  Grid(ggs).swap(gr);
+  PPL_ASSERT(OK());
 }
 
-PPL::Affine_Space::Affine_Space(const Constraint_System& cs)
-  : gr(cs) {
-}
-
-PPL::Affine_Space::Affine_Space(Constraint_System& cs, Recycle_Input ri)
-  : gr(cs, ri) {
-}
-
-PPL::Affine_Space::Affine_Space(const Polyhedron& ph,
-                                Complexity_Class complexity)
-  : gr(ph, complexity) {
-}
 
 PPL::Affine_Space&
 PPL::Affine_Space::operator=(const Affine_Space& y) {

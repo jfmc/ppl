@@ -23,6 +23,8 @@
 SUBDIRS = \
 . \
 Concrete_Expression \
+CO_Tree \
+Sparse_Matrix \
 PIP_Problem \
 Powerset \
 Partially_Reduced_Product \

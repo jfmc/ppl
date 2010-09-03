@@ -100,7 +100,7 @@ bool test01() {
   print_constraints(ph, "*** ph ***");
 
   try {
-    Weightwatch ww(2500000, too_fat);
+    Weightwatch ww(5000000, too_fat);
     // Thanks to the blind relaxation of the strict inequality constraint,
     // polyhedron ph is easily seen to contain an integer point.
     const bool contains = ph.contains_integer_point();

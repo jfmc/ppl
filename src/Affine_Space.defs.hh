@@ -24,30 +24,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Affine_Space_defs_hh 1
 
 #include "Affine_Space.types.hh"
-#if 0
-#include "globals.defs.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.types.hh"
-#include "Linear_Expression.defs.hh"
-#include "Constraint.defs.hh"
+#include "Linear_Expression.types.hh"
+#include "Constraint.types.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
-#include "Grid_Generator_System.defs.hh"
-#include "Grid_Generator_System.inlines.hh"
-#include "Grid_Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
-#include "Grid_Certificate.types.hh"
 #include "Box.types.hh"
-#include "Polyhedron.defs.hh"
 #include "Polyhedron.types.hh"
-#include "Polyhedron.inlines.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
-#include <vector>
-#endif
 #include "Grid.defs.hh"
 #include <iosfwd>
 
@@ -139,7 +129,7 @@ bool operator!=(const Affine_Space& x, const Affine_Space& y);
   Variable y(1);
   \endcode
 
-  FIXME(0.11): revise the contents below this point of this comment block.
+  FIXME: revise the contents below this point of this comment block.
 
   \par Example 1
   The following code builds an affine space corresponding to the even integer
@@ -696,7 +686,7 @@ public:
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
 
-  // FIXME(0.11): revise all the comment blocks below this one.
+  // FIXME: revise all the comment blocks below this one.
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -1696,31 +1686,6 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    const char* as_name,
 				    const Affine_Space& as) const;
-#if 0
-  void throw_dimension_incompatible(const char* method,
-				    const char* e_name,
-				    const Linear_Expression& e) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* cg_name,
-				    const Congruence& cg) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* c_name,
-				    const Constraint& c) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* g_name,
-				    const Generator& g) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* cgs_name,
-				    const Congruence_System& cgs) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* cs_name,
-				    const Constraint_System& cs) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* var_name,
-				    Variable var) const;
-  void throw_dimension_incompatible(const char* method,
-				    dimension_type required_space_dim) const;
-#endif
 
   // Note: it has to be a static method, because it can be called inside
   // constructors (before actually constructing the grid object).

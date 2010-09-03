@@ -149,11 +149,12 @@ MIP_Problem::clear() {
   swap(tmp);
 }
 
+
 inline memory_size_type
 MIP_Problem::external_memory_in_bytes() const {
   memory_size_type n
-    = tableau.external_memory_in_bytes()
-    + working_cost.external_memory_in_bytes()
+    = working_cost.external_memory_in_bytes()
+    + tableau.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
   // Adding the external memory for `input_cs'.

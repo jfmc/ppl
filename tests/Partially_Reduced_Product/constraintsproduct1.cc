@@ -28,7 +28,9 @@ typedef NNC_Polyhedron Poly;
 
 typedef Domain_Product<Poly, Grid>::Constraints_Product PolyGrid;
 typedef Domain_Product<Poly, TBox>::Constraints_Product PolyBox;
+#if 0
 typedef Domain_Product<Affine_Space, TBox>::Constraints_Product AffBox;
+#endif
 typedef Domain_Product<Grid, TBox>::Constraints_Product GridBox;
 
 namespace {
@@ -294,6 +296,7 @@ test08() {
   return ok;
 }
 
+#if 0
 bool
 test09() {
   Variable A(0);
@@ -326,6 +329,7 @@ test09() {
 
   return ok;
 }
+#endif
 
 // space_dimension()
 bool
@@ -348,6 +352,7 @@ test10() {
   return cons_ok;
 }
 
+#if 0
 // Example taken from SenS07 (figure 5(a)
 bool
 test11() {
@@ -527,6 +532,7 @@ test12() {
 
   return ok;
 }
+#endif
 
 } // namespace
 
@@ -539,8 +545,8 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
+//DO_TEST(test09);
   DO_TEST(test10);
-  DO_TEST_F8(test11);
-  DO_TEST(test12);
+//DO_TEST_F8(test11);
+//DO_TEST(test12);
 END_MAIN

@@ -296,28 +296,7 @@ public:
 
   template <typename C>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
-  lower_extend(const C& c) {
-    PPL_ASSERT(OK());
-    bool open;
-    switch (c.rel()) {
-    case V_LGE:
-      return lower_extend();
-    case V_NAN:
-      return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
-    case V_GT:
-      open = true;
-      break;
-    case V_GE:
-    case V_EQ:
-      open = false;
-      break;
-    default:
-      PPL_ASSERT(false);
-    }
-    min_assign(LOWER, lower(), info(), LOWER, c.value(), f_info(c.value(), open));
-    PPL_ASSERT(OK());
-    return I_ANY;
-  }
+  lower_extend(const C& c);
 
   I_Result upper_extend() {
     info().clear_boundary_properties(UPPER);
@@ -327,28 +306,7 @@ public:
 
   template <typename C>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C>::value, I_Result>::type
-  upper_extend(const C& c) {
-    PPL_ASSERT(OK());
-    bool open;
-    switch (c.rel()) {
-    case V_LGE:
-      return lower_extend();
-    case V_NAN:
-      return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
-    case V_LT:
-      open = true;
-      break;
-    case V_LE:
-    case V_EQ:
-      open = false;
-      break;
-    default:
-      PPL_ASSERT(false);
-    }
-    max_assign(UPPER, upper(), info(), UPPER, c.value(), f_info(c.value(), open));
-    PPL_ASSERT(OK());
-    return I_ANY;
-  }
+  upper_extend(const C& c);
 
   I_Result build() {
     return assign(UNIVERSE);

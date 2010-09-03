@@ -160,12 +160,12 @@ PPL::Grid_Generator::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  Row& x = *this;
+  Dense_Row& x = *this;
   const dimension_type old_size = x.size();
   if (new_size < old_size)
     x.shrink(new_size);
   else if (new_size > old_size) {
-    Row y(new_size, Row::Flags());
+    Dense_Row y(new_size, Dense_Row::Flags());
     x.swap(y);
   }
 
@@ -216,8 +216,8 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
     tmp_y[last] = 0;
   }
   // Normalize the copies, including the divisor column.
-  tmp.Row::normalize();
-  tmp_y.Row::normalize();
+  tmp.Dense_Row::normalize();
+  tmp_y.Dense_Row::normalize();
   // Check for equality.
   while (last-- > 0)
     if (tmp[last] != tmp_y[last])

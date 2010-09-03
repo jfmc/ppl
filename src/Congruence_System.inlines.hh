@@ -29,12 +29,12 @@ namespace Parma_Polyhedra_Library {
 
 inline Congruence&
 Congruence_System::operator[](const dimension_type k) {
-  return static_cast<Congruence&>(Matrix::operator[](k));
+  return static_cast<Congruence&>(Dense_Matrix::operator[](k));
 }
 
 inline const Congruence&
 Congruence_System::operator[](const dimension_type k) const {
-  return static_cast<const Congruence&>(Matrix::operator[](k));
+  return static_cast<const Congruence&>(Dense_Matrix::operator[](k));
 }
 
 inline void
@@ -46,29 +46,29 @@ Congruence_System::insert(const Congruence& cg) {
 
 inline
 Congruence_System::Congruence_System()
-  : Matrix(0, 2) {
+  : Dense_Matrix(0, 2) {
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence& cg)
-  : Matrix(0, 2) {
+  : Dense_Matrix(0, 2) {
   insert(cg);
 }
 
 inline
 Congruence_System::Congruence_System(const Constraint& c)
-  : Matrix(0, 2) {
+  : Dense_Matrix(0, 2) {
   insert(c);
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence_System& cs)
-  : Matrix(cs) {
+  : Dense_Matrix(cs) {
 }
 
 inline
 Congruence_System::Congruence_System(const dimension_type d)
-  : Matrix(0, d + 2) {
+  : Dense_Matrix(0, d + 2) {
 }
 
 inline
@@ -77,30 +77,31 @@ Congruence_System::~Congruence_System() {
 
 inline Congruence_System&
 Congruence_System::operator=(const Congruence_System& y) {
-  Matrix::operator=(y);
+  Dense_Matrix::operator=(y);
   return *this;
 }
 
 inline dimension_type
 Congruence_System::max_space_dimension() {
-  return Matrix::max_num_columns() - 2;
+  return Dense_Matrix::max_num_columns() - 2;
 }
 
 inline dimension_type
 Congruence_System::space_dimension() const {
-  return Matrix::num_columns() - 2;
+  return Dense_Matrix::num_columns() - 2;
 }
 
 inline void
 Congruence_System::clear() {
-  Matrix::clear();
+  Dense_Matrix::clear();
   add_zero_columns(2);		// Modulus and constant term.
 }
 
 inline void
 Congruence_System::resize_no_copy(const dimension_type new_num_rows,
 				  const dimension_type new_num_columns) {
-  Matrix::resize_no_copy(new_num_rows, new_num_columns, Row::Flags());
+  Dense_Matrix::resize_no_copy(new_num_rows, new_num_columns,
+                               Dense_Row::Flags());
 }
 
 inline const Congruence_System&
@@ -166,21 +167,21 @@ Congruence_System::const_iterator::operator!=(const const_iterator& y) const {
 
 inline
 Congruence_System::const_iterator::
-const_iterator(const Matrix::const_iterator& iter,
+const_iterator(const Dense_Matrix::const_iterator& iter,
 	       const Congruence_System& csys)
   : i(iter), csp(&csys) {
 }
 
 inline Congruence_System::const_iterator
 Congruence_System::begin() const {
-  const_iterator i(Matrix::begin(), *this);
+  const_iterator i(Dense_Matrix::begin(), *this);
   i.skip_forward();
   return i;
 }
 
 inline Congruence_System::const_iterator
 Congruence_System::end() const {
-  const const_iterator i(Matrix::end(), *this);
+  const const_iterator i(Dense_Matrix::end(), *this);
   return i;
 }
 
@@ -191,17 +192,17 @@ Congruence_System::empty() const {
 
 inline void
 Congruence_System::swap(Congruence_System& y) {
-  Matrix::swap(y);
+  Dense_Matrix::swap(y);
 }
 
 inline memory_size_type
 Congruence_System::external_memory_in_bytes() const {
-  return Matrix::external_memory_in_bytes();
+  return Dense_Matrix::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Congruence_System::total_memory_in_bytes() const {
-  return Matrix::total_memory_in_bytes();
+  return Dense_Matrix::total_memory_in_bytes();
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -9,13 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Matrix_types_hh
-#define PPL_Matrix_types_hh 1
+#ifndef PPL_CO_Tree_types_hh
+#define PPL_CO_Tree_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class Matrix;
+class CO_Tree;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Matrix_types_hh)
+#endif // !defined(PPL_CO_Tree_types_hh)

@@ -34,19 +34,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence::Congruence(const Constraint& c)
-  : Row(c.is_equality()
+  : Dense_Row(c.is_equality()
 	? c
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
 	   c),
 	c.space_dimension() + 2,
-	compute_capacity(c.space_dimension() + 2, Row::max_size())) {
+	compute_capacity(c.space_dimension() + 2, Dense_Row::max_size())) {
   (*this)[size()-1] = 0;
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
 			    dimension_type sz, dimension_type capacity)
-  : Row(c.is_equality()
+  : Dense_Row(c.is_equality()
 	? c
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
@@ -59,7 +59,7 @@ PPL::Congruence::Congruence(const Constraint& c,
 
 void
 PPL::Congruence::sign_normalize() {
-  Row& x = *this;
+  Dense_Row& x = *this;
   const dimension_type sz = x.size() - 1;
   // `first_non_zero' indicates the index of the first
   // coefficient of the row different from zero, disregarding
@@ -103,7 +103,7 @@ PPL::Congruence::normalize() {
 void
 PPL::Congruence::strong_normalize() {
   normalize();
-  Row::normalize();
+  Dense_Row::normalize();
 }
 
 PPL::Congruence
@@ -205,7 +205,7 @@ PPL::Congruence::is_inconsistent() const {
 
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
-  const Row& x = *this;
+  const Dense_Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
   if (x_size > 0) {
@@ -227,12 +227,12 @@ PPL::Congruence::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  Row& x = *this;
+  Dense_Row& x = *this;
   const dimension_type old_size = x.size();
   if (new_size < old_size)
     x.shrink(new_size);
   else if (new_size > old_size) {
-    Row y(new_size, Row::Flags());
+    Dense_Row y(new_size, Dense_Row::Flags());
     x.swap(y);
   }
 
@@ -250,8 +250,8 @@ PPL::Congruence::ascii_load(std::istream& s) {
 
 bool
 PPL::Congruence::OK() const {
-  // A Congruence must be a valid Row.
-  if (!Row::OK())
+  // A Congruence must be a valid Dense_Row.
+  if (!Dense_Row::OK())
     return false;
 
   // Modulus check.

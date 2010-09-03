@@ -29,10 +29,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Constraint.defs.hh"
-#include "Matrix.defs.hh"
 #include "Variables_Set.defs.hh"
 #include "globals.defs.hh"
 #include "PIP_Problem.defs.hh"
+
+#if USE_PPL_SPARSE_MATRIX
+
+#include "Sparse_Matrix.defs.hh"
+#include "Sparse_Row.defs.hh"
+
+#else
+
+#include "Dense_Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
+
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -44,6 +55,13 @@ namespace Parma_Polyhedra_Library {
     - PIP_Solution_Node, for the leaves of the tree.
 */
 class PIP_Tree_Node {
+public:
+#if USE_PPL_SPARSE_MATRIX
+  typedef Sparse_Matrix matrix_type;
+#else
+  typedef Dense_Matrix matrix_type;
+#endif
+
 protected:
   //! Constructor: builds a node owned by \p *owner.
   explicit PIP_Tree_Node(const PIP_Problem* owner);
@@ -205,12 +223,13 @@ protected:
   */
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const Matrix& context,
+                               const matrix_type& context,
                                const Variables_Set& params,
                                dimension_type space_dim) = 0;
 
-  //! Inserts a new parametric constraint in internal Row format
-  void add_constraint(const Row& x, const Variables_Set& parameters);
+  //! Inserts a new parametric constraint in internal row format
+  void add_constraint(const matrix_type::row_type& x,
+                      const Variables_Set& parameters);
 
   //! Merges parent's artificial parameters into \p *this.
   void parent_merge();
@@ -249,13 +268,14 @@ protected:
     solution is integer by applying a cut generation method when
     intermediate non-integer solutions are found.
   */
-  static bool compatibility_check(Matrix& s);
+  static bool compatibility_check(matrix_type& s);
 
   /*! \brief
     Helper method: checks for satisfiability of the restricted context
     obtained by adding \p row to \p context.
   */
-  static bool compatibility_check(const Matrix& context, const Row& row);
+  static bool compatibility_check(const matrix_type& context,
+                                  const matrix_type::row_type& row);
 
 }; // class PIP_Tree_Node
 
@@ -338,6 +358,7 @@ private:
 //! A tree node representing part of the space of solutions.
 class PIP_Solution_Node : public PIP_Tree_Node {
 public:
+
   //! Constructor: builds a solution node owned by \p *owner.
   explicit PIP_Solution_Node(const PIP_Problem* owner);
 
@@ -387,9 +408,9 @@ private:
   //! The type for parametric simplex tableau.
   struct Tableau {
     //! The matrix of simplex coefficients.
-    Matrix s;
+    matrix_type s;
     //! The matrix of parameter coefficients.
-    Matrix t;
+    matrix_type t;
     //! A common denominator for all matrix elements
     Coefficient denom;
 
@@ -588,7 +609,8 @@ private:
   bool solution_valid;
 
   //! Returns the sign of row \p x.
-  static Row_Sign row_sign(const Row& x, dimension_type big_dimension);
+  static Row_Sign row_sign(const matrix_type::row_type& x,
+                           dimension_type big_dimension);
 
 protected:
   //! Copy constructor.
@@ -639,7 +661,7 @@ protected:
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const Matrix& context,
+                               const matrix_type& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
 
@@ -654,7 +676,7 @@ protected:
     to be updated if a new artificial parameter is to be created
 
     \param context
-    a set of linear inequalities on the parameters, in Matrix form; to be
+    a set of linear inequalities on the parameters, in matrix form; to be
     updated if a new artificial parameter is to be created
 
     \param space_dimension
@@ -663,7 +685,7 @@ protected:
   */
   void generate_cut(dimension_type i,
                     Variables_Set& parameters,
-                    Matrix& context,
+                    matrix_type& context,
                     dimension_type& space_dimension);
 
   //! Prints on \p s the tree rooted in \p *this.
@@ -773,7 +795,7 @@ protected:
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const Matrix& context,
+                               const matrix_type& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
 

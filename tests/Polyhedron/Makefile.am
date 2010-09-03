@@ -81,6 +81,7 @@ constrains1 \
 constraints1 \
 contains1 contains2 \
 containsintegerpoint1 \
+densematrix1 \
 disjoint1 disjoint2 \
 dropsomenonintegerpoints1 dropsomenonintegerpoints2 \
 dualhypercubes \
@@ -107,7 +108,6 @@ linearpartition1 \
 linearexpression1 \
 linearsystem1 \
 mapspacedims1 \
-matrix1 \
 max_min1 \
 maxspacedim1 \
 mc91 \
@@ -352,7 +352,7 @@ linearsystem1_SOURCES = linearsystem1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-matrix1_SOURCES = matrix1.cc
+densematrix1_SOURCES = densematrix1.cc
 
 max_min1_SOURCES = max_min1.cc
 
@@ -712,7 +712,7 @@ MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
 ascii_dump_load2.dat \
 ascii_dump_load3.dat \
-matrix1.dat \
+densematrix1.dat \
 linearsystem1.dat \
 writegensys1.dat \
 writepolyhedron1.dat \

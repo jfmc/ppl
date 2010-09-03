@@ -39,5 +39,5 @@ public class PIP_Solution_Node extends PIP_Tree_Node {
       \param var
       The variable being queried.
     */
-    public native Linear_Expression parametric_values(Variable d);
+    public native Linear_Expression parametric_values(Variable var);
 }

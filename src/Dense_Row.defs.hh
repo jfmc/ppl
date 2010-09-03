@@ -1,4 +1,4 @@
-/* Row class declaration.
+/* Dense_Row class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,141 +20,83 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Row_defs_hh
-#define PPL_Row_defs_hh 1
+#ifndef PPL_Dense_Row_defs_hh
+#define PPL_Dense_Row_defs_hh 1
 
-#include "Row.types.hh"
+#include "Dense_Row.types.hh"
+
 #include "globals.defs.hh"
+
+#include "Row_Flags.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
 
-#ifndef PPL_ROW_EXTRA_DEBUG
+#ifndef PPL_DENSE_ROW_EXTRA_DEBUG
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
   \brief
-  Enables extra debugging information for class Row.
+  Enables extra debugging information for class Dense_Row.
 
   \ingroup PPL_CXX_interface
-  When <CODE>PPL_ROW_EXTRA_DEBUG</CODE> evaluates to <CODE>true</CODE>,
-  each instance of the class Row carries its own capacity; this enables
+  When <CODE>PPL_DENSE_ROW_EXTRA_DEBUG</CODE> evaluates to <CODE>true</CODE>,
+  each instance of the class Dense_Row carries its own capacity; this enables
   extra consistency checks to be performed.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define PPL_ROW_EXTRA_DEBUG 1
+#define PPL_DENSE_ROW_EXTRA_DEBUG 1
 #else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
-#define PPL_ROW_EXTRA_DEBUG 0
+#define PPL_DENSE_ROW_EXTRA_DEBUG 0
 #endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
-#endif // !defined(PPL_ROW_EXTRA_DEBUG)
+#endif // !defined(PPL_DENSE_ROW_EXTRA_DEBUG)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The handler of the actual Row implementation.
+//! The handler of the actual Dense_Row implementation.
 /*! \ingroup PPL_CXX_interface
   Exception-safety is the only responsibility of this class: it has
   to ensure that its \p impl member is correctly deallocated.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Parma_Polyhedra_Library::Row_Impl_Handler {
+class Parma_Polyhedra_Library::Dense_Row_Impl_Handler {
 public:
   //! Default constructor.
-  Row_Impl_Handler();
+  Dense_Row_Impl_Handler();
 
   //! Destructor.
-  ~Row_Impl_Handler();
+  ~Dense_Row_Impl_Handler();
 
   class Impl;
 
   //! A pointer to the actual implementation.
   Impl* impl;
 
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   //! The capacity of \p impl (only available during debugging).
   dimension_type capacity_;
-#endif // PPL_ROW_EXTRA_DEBUG
+#endif // PPL_DENSE_ROW_EXTRA_DEBUG
 
 private:
   //! Private and unimplemented: copy construction is not allowed.
-  Row_Impl_Handler(const Row_Impl_Handler&);
+  Dense_Row_Impl_Handler(const Dense_Row_Impl_Handler&);
 
   //! Private and unimplemented: copy assignment is not allowed.
-  Row_Impl_Handler& operator=(const Row_Impl_Handler&);
+  Dense_Row_Impl_Handler& operator=(const Dense_Row_Impl_Handler&);
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sequence of coefficients.
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Parma_Polyhedra_Library::Row : private Row_Impl_Handler {
+class Parma_Polyhedra_Library::Dense_Row : private Dense_Row_Impl_Handler {
 public:
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Wrapper class to represent a set of flags with bits in a native
-    unsigned integral type.
-    \ingroup PPL_CXX_interface
-  */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags {
-  public:
-    //! Constructs an object with all the flags unset.
-    Flags();
+  typedef Row_Flags Flags;
 
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
-    bool operator==(const Flags& y) const;
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if \p *this and \p y
-      are different.
-    */
-    bool operator!=(const Flags& y) const;
-
-    PPL_OUTPUT_DECLARATIONS
-
-    //! Uses the ASCII Flags representation from \p s to recreate *this.
-    /*!
-      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by
-      \ref Parma_Polyhedra_Library::Row::Flags::ascii_dump.
-    */
-    bool ascii_load(std::istream& s);
-
-  protected:
-    //! A native integral type holding the bits that encode the flags.
-    typedef unsigned int base_type;
-
-    //! Index of the first bit derived classes can use.
-    static const unsigned first_free_bit = 0;
-
-    //! Total number of bits that can be stored.
-    static const unsigned num_bits = std::numeric_limits<base_type>::digits;
-
-    //! Constructs an object with flags set as in \p n.
-    explicit Flags(base_type n);
-
-    //! Returns the integer encoding \p *this.
-    base_type get_bits() const;
-
-    //! Sets the bits in \p mask.
-    void set_bits(base_type mask);
-
-    //! Resets the bits in \p mask.
-    void reset_bits(base_type mask);
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if all the bits
-      in \p mask are set.
-    */
-    bool test_bits(base_type mask) const;
-
-  private:
-    //! The integer encoding \p *this.
-    base_type bits;
-
-    friend class Row;
-  };
+  class iterator;
+  class const_iterator;
 
   //! Pre-constructs a row: construction must be completed by construct().
-  Row();
+  Dense_Row();
 
   //! \name Post-constructors
   //@{
@@ -186,7 +128,7 @@ public:
   /*!
     Constructs a row with size and capacity \p sz, and flags \p f.
   */
-  Row(dimension_type sz, Flags f);
+  Dense_Row(dimension_type sz, Flags f);
 
   //! Sizing constructor with capacity.
   /*!
@@ -203,48 +145,48 @@ public:
     \p sz of which are default-constructed now.
     The row flags are set to \p f.
   */
-  Row(dimension_type sz, dimension_type capacity, Flags f);
+  Dense_Row(dimension_type sz, dimension_type capacity, Flags f);
 
   //! Ordinary copy constructor.
-  Row(const Row& y);
+  Dense_Row(const Dense_Row& y);
 
   //! Copy constructor with specified capacity.
   /*!
     It is assumed that \p capacity is greater than or equal to
     the size of \p y.
   */
-  Row(const Row& y, dimension_type capacity);
+  Dense_Row(const Dense_Row& y, dimension_type capacity);
 
   //! Copy constructor with specified size and capacity.
   /*!
     It is assumed that \p sz is greater than or equal to the size of \p y
     and, of course, that \p sz is less than or equal to \p capacity.
   */
-  Row(const Row& y, dimension_type sz, dimension_type capacity);
+  Dense_Row(const Dense_Row& y, dimension_type sz, dimension_type capacity);
 
   //! Destructor.
-  ~Row();
+  ~Dense_Row();
 
   //! Assignment operator.
-  Row& operator=(const Row& y);
+  Dense_Row& operator=(const Dense_Row& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Row& y);
+  void swap(Dense_Row& y);
 
   //! Assigns the implementation of \p y to \p *this.
   /*!
     To be used with extra care, since it may easily cause memory leaks
     or undefined behavior.
   */
-  void assign(Row& y);
+  void assign(Dense_Row& y);
 
   /*! \brief
-    Allocates memory for a default constructed Row object, setting
+    Allocates memory for a default constructed Dense_Row object, setting
     flags to \p f and allowing for \p capacity coefficients at most.
 
     It is assumed that no allocation has been performed before
     (otherwise, a memory leak will occur).
-    After execution, the size of the Row object is zero.
+    After execution, the size of the Dense_Row object is zero.
   */
   void allocate(dimension_type capacity, Flags f);
 
@@ -271,7 +213,7 @@ public:
   //! Returns a non-const reference to the flags of \p *this.
   Flags& flags();
 
-  //! Returns the size() of the largest possible Row.
+  //! Returns the size() of the largest possible Dense_Row.
   static dimension_type max_size();
 
   //! Gives the number of coefficients currently in use.
@@ -292,6 +234,154 @@ public:
     the row and normalizes them by the GCD itself.
   */
   void normalize();
+
+  //! Swaps the i-th element with the j-th element.
+  //! Provided for compatibility with Sparse_Row
+  void swap(dimension_type i, dimension_type j);
+
+  //! Swaps the element pointed to by i with the element pointed to by j.
+  //! Provided for compatibility with Sparse_Row
+  void swap(iterator i, iterator j);
+
+  iterator begin();
+  const_iterator begin() const;
+
+  iterator end();
+  const_iterator end() const;
+
+  //! Resets the i-th element to 0.
+  //! Provided for compatibility with Sparse_Row
+  void reset(dimension_type i);
+
+  //! Resets the elements [first,last) to 0.
+  //! Provided for compatibility with Sparse_Row
+  void reset(dimension_type first, dimension_type last);
+
+  //! Resets the element pointed to by itr to 0.
+  //! Provided for compatibility with Sparse_Row.
+  iterator reset(iterator itr);
+
+  //! Gets the i-th element.
+  //! Provided for compatibility with Sparse_Row.
+  const Coefficient& get(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator find(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find(iterator itr, dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator find(const_iterator itr, dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator lower_bound(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator lower_bound(dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator lower_bound(iterator itr, dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  const_iterator lower_bound(const_iterator itr, dimension_type i) const;
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(dimension_type i, const Coefficient& x);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(dimension_type i);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
+
+  //! Provided for compatibility with Sparse_Row.
+  iterator find_create(iterator itr, dimension_type i);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param y
+    The row that will be combined with *this.
+
+    \param f
+    A functor that should take a Coefficient&.
+    f(c1) must be equivalent to g(c1, 0).
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing when c1 is zero.
+
+    This method takes \f$O(n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_second
+    \see combine
+  */
+  template <typename Func1, typename Func2>
+  void combine_needs_first(const Dense_Row& y,
+                           const Func1& f, const Func2& g);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param y
+    The row that will be combined with *this.
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, 0) must do nothing, for every c1.
+
+    \param h
+    A functor that should take a Coefficient& and a const Coefficient&.
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+
+    This method takes \f$O(n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_first
+    \see combine
+  */
+  template <typename Func1, typename Func2>
+  void combine_needs_second(const Dense_Row& y,
+                            const Func1& g, const Func2& h);
+
+  //! Calls g(x[i],y[i]), for each i.
+  /*!
+    \param y
+    The row that will be combined with *this.
+
+    \param f
+    A functor that should take a Coefficient&.
+    f(c1) must be equivalent to g(c1, 0).
+
+    \param g
+    A functor that should take a Coefficient& and a const Coefficient&.
+    g(c1, c2) must do nothing when both c1 and c2 are zero.
+
+    \param h
+    A functor that should take a Coefficient& and a const Coefficient&.
+    h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
+
+    This method takes \f$O(n)\f$ time.
+
+    \note
+    The functors will only be called when necessary, assuming the requested
+    properties hold.
+
+    \see combine_needs_first
+    \see combine_needs_second
+  */
+  template <typename Func1, typename Func2, typename Func3>
+  void combine(const Dense_Row& y,
+               const Func1& f, const Func2& g, const Func3& h);
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -337,23 +427,126 @@ public:
 
 private:
   //! Exception-safe copy construction mechanism for coefficients.
-  void copy_construct_coefficients(const Row& y);
+  void copy_construct_coefficients(const Dense_Row& y);
 
-#if PPL_ROW_EXTRA_DEBUG
+#if PPL_DENSE_ROW_EXTRA_DEBUG
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-#endif // PPL_ROW_EXTRA_DEBUG
+#endif // PPL_DENSE_ROW_EXTRA_DEBUG
 };
+
+class Parma_Polyhedra_Library::Dense_Row::iterator {
+public:
+
+  typedef std::pair<const dimension_type,Coefficient&> value_type;
+  typedef std::pair<const dimension_type,const Coefficient&> const_type;
+
+private:
+
+  class Member_Access_Helper {
+  public:
+
+    Member_Access_Helper(dimension_type index, Coefficient& data);
+
+    value_type* operator->();
+
+  private:
+    value_type value;
+  };
+
+  class Const_Member_Access_Helper {
+  public:
+
+    Const_Member_Access_Helper(dimension_type index,
+                               const Coefficient& data);
+
+    const const_type* operator->() const;
+
+  private:
+    const_type value;
+  };
+
+public:
+
+  iterator();
+  iterator(Dense_Row& row1, dimension_type i1);
+
+  value_type operator*();
+  const_type operator*() const;
+
+  Member_Access_Helper operator->();
+  Const_Member_Access_Helper operator->() const;
+
+  iterator& operator++();
+  iterator operator++(int);
+
+  iterator& operator--();
+  iterator operator--(int);
+
+  bool operator==(const iterator& x) const;
+  bool operator!=(const iterator& x) const;
+
+  operator const_iterator() const;
+
+  bool OK() const;
+
+private:
+  Dense_Row* row;
+  dimension_type i;
+};
+
+class Parma_Polyhedra_Library::Dense_Row::const_iterator {
+public:
+  typedef std::pair<const dimension_type, const Coefficient&> const_type;
+
+private:
+
+  class Const_Member_Access_Helper {
+  public:
+
+    Const_Member_Access_Helper(dimension_type index,
+                               const Coefficient& data);
+
+    const const_type* operator->() const;
+
+  private:
+    const_type value;
+  };
+
+public:
+
+  const_iterator();
+  const_iterator(const Dense_Row& row1, dimension_type i1);
+
+  const_type operator*() const;
+  Const_Member_Access_Helper operator->() const;
+
+  const_iterator& operator++();
+  const_iterator operator++(int);
+
+  const_iterator& operator--();
+  const_iterator operator--(int);
+
+  bool operator==(const const_iterator& x) const;
+  bool operator!=(const const_iterator& x) const;
+
+  bool OK() const;
+
+private:
+  const Dense_Row* row;
+  dimension_type i;
+};
+
 
 namespace Parma_Polyhedra_Library {
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
-/*! \relates Row */
-bool operator==(const Row& x, const Row& y);
+/*! \relates Dense_Row */
+bool operator==(const Dense_Row& x, const Dense_Row& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
-/*! \relates Row */
-bool operator!=(const Row& x, const Row& y);
+/*! \relates Dense_Row */
+bool operator!=(const Dense_Row& x, const Dense_Row& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -362,30 +555,30 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Row */
+/*! \relates Parma_Polyhedra_Library::Dense_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Row& x,
-	  Parma_Polyhedra_Library::Row& y);
+void swap(Parma_Polyhedra_Library::Dense_Row& x,
+          Parma_Polyhedra_Library::Dense_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Row */
+/*! \relates Parma_Polyhedra_Library::Dense_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
-	       std::vector<Parma_Polyhedra_Library::Row>::iterator y);
+void iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
+               std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y);
 
 } // namespace std
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The actual implementation of a Row object.
+//! The actual implementation of a Dense_Row object.
 /*! \ingroup PPL_CXX_interface
-  The class Row_Impl_Handler::Impl provides the implementation of Row
-  objects and, in particular, of the corresponding memory allocation
+  The class Dense_Row_Impl_Handler::Impl provides the implementation of
+  Dense_Row objects and, in particular, of the corresponding memory allocation
   functions.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Parma_Polyhedra_Library::Row_Impl_Handler::Impl {
+class Parma_Polyhedra_Library::Dense_Row_Impl_Handler::Impl {
 public:
   //! \name Custom allocator and deallocator
   //@{
@@ -423,7 +616,7 @@ public:
   //@} // Custom allocator and deallocator
 
   //! Constructor.
-  Impl(Row::Flags f);
+  Impl(Row_Flags f);
 
   //! Destructor.
   /*!
@@ -453,10 +646,10 @@ public:
   //! \name Flags accessors
   //@{
   //! Returns a const reference to the flags of \p *this.
-  const Row::Flags& flags() const;
+  const Row_Flags& flags() const;
 
   //! Returns a non-const reference to the flags of \p *this.
-  Row::Flags& flags();
+  Row_Flags& flags();
   //@} // Flags accessors
 
   //! \name Size accessors
@@ -497,7 +690,7 @@ private:
   dimension_type size_;
 
   //! The flags of this row.
-  Row::Flags flags_;
+  Row_Flags flags_;
 
   //! The vector of coefficients.
   Coefficient vec_[
@@ -516,6 +709,7 @@ private:
   Impl& operator=(const Impl&);
 };
 
-#include "Row.inlines.hh"
+#include "Dense_Row.inlines.hh"
+#include "Dense_Row.templates.hh"
 
-#endif // !defined(PPL_Row_defs_hh)
+#endif // !defined(PPL_Dense_Row_defs_hh)

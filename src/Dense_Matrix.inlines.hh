@@ -1,4 +1,4 @@
-/* Matrix class implementation: inline functions.
+/* Dense_Matrix class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Matrix_inlines_hh
-#define PPL_Matrix_inlines_hh 1
+#ifndef PPL_Dense_Matrix_inlines_hh
+#define PPL_Dense_Matrix_inlines_hh 1
 
 #include "globals.defs.hh"
 #include <algorithm>
@@ -30,114 +30,114 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
-Matrix::max_num_rows() {
-  return std::vector<Row>().max_size();
+Dense_Matrix::max_num_rows() {
+  return std::vector<Dense_Row>().max_size();
 }
 
 inline dimension_type
-Matrix::max_num_columns() {
-  return Row::max_size();
+Dense_Matrix::max_num_columns() {
+  return Dense_Row::max_size();
 }
 
 inline memory_size_type
-Matrix::total_memory_in_bytes() const {
+Dense_Matrix::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline
-Matrix::const_iterator::const_iterator()
+Dense_Matrix::const_iterator::const_iterator()
   : i() {
 }
 
 inline
-Matrix::const_iterator::const_iterator(const Iter& b)
+Dense_Matrix::const_iterator::const_iterator(const Iter& b)
   : i(b) {
 }
 
 inline
-Matrix::const_iterator::const_iterator(const const_iterator& y)
+Dense_Matrix::const_iterator::const_iterator(const const_iterator& y)
   : i(y.i) {
 }
 
-inline Matrix::const_iterator&
-Matrix::const_iterator::operator=(const const_iterator& y) {
+inline Dense_Matrix::const_iterator&
+Dense_Matrix::const_iterator::operator=(const const_iterator& y) {
   i = y.i;
   return *this;
 }
 
-inline Matrix::const_iterator::reference
-Matrix::const_iterator::operator*() const {
+inline Dense_Matrix::const_iterator::reference
+Dense_Matrix::const_iterator::operator*() const {
   return *i;
 }
 
-inline Matrix::const_iterator::pointer
-Matrix::const_iterator::operator->() const {
+inline Dense_Matrix::const_iterator::pointer
+Dense_Matrix::const_iterator::operator->() const {
   return &*i;
 }
 
-inline Matrix::const_iterator&
-Matrix::const_iterator::operator++() {
+inline Dense_Matrix::const_iterator&
+Dense_Matrix::const_iterator::operator++() {
   ++i;
   return *this;
 }
 
-inline Matrix::const_iterator
-Matrix::const_iterator::operator++(int) {
+inline Dense_Matrix::const_iterator
+Dense_Matrix::const_iterator::operator++(int) {
   return const_iterator(i++);
 }
 
 inline bool
-Matrix::const_iterator::operator==(const const_iterator& y) const {
+Dense_Matrix::const_iterator::operator==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-Matrix::const_iterator::operator!=(const const_iterator& y) const {
+Dense_Matrix::const_iterator::operator!=(const const_iterator& y) const {
   return !operator==(y);
 }
 
 inline bool
-Matrix::has_no_rows() const {
+Dense_Matrix::has_no_rows() const {
   return rows.empty();
 }
 
-inline Matrix::const_iterator
-Matrix::begin() const {
+inline Dense_Matrix::const_iterator
+Dense_Matrix::begin() const {
   return const_iterator(rows.begin());
 }
 
-inline Matrix::const_iterator
-Matrix::end() const {
+inline Dense_Matrix::const_iterator
+Dense_Matrix::end() const {
   return const_iterator(rows.end());
 }
 
 inline void
-Matrix::swap(Matrix& y) {
+Dense_Matrix::swap(Dense_Matrix& y) {
   std::swap(rows, y.rows);
   std::swap(row_size, y.row_size);
   std::swap(row_capacity, y.row_capacity);
 }
 
 inline
-Matrix::Matrix()
+Dense_Matrix::Dense_Matrix()
   : rows(),
     row_size(0),
     row_capacity(0) {
 }
 
 inline
-Matrix::Matrix(const Matrix& y)
+Dense_Matrix::Dense_Matrix(const Dense_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
     row_capacity(compute_capacity(y.row_size, max_num_columns())) {
 }
 
 inline
-Matrix::~Matrix() {
+Dense_Matrix::~Dense_Matrix() {
 }
 
-inline Matrix&
-Matrix::operator=(const Matrix& y) {
+inline Dense_Matrix&
+Dense_Matrix::operator=(const Dense_Matrix& y) {
   // Without the following guard against auto-assignments we would
   // recompute the row capacity based on row size, possibly without
   // actually increasing the capacity of the rows.  This would lead to
@@ -154,50 +154,50 @@ Matrix::operator=(const Matrix& y) {
 }
 
 inline void
-Matrix::add_row(const Row& y) {
-  Row new_row(y, row_capacity);
+Dense_Matrix::add_row(const Dense_Row& y) {
+  Dense_Row new_row(y, row_capacity);
   add_recycled_row(new_row);
 }
 
-inline Row&
-Matrix::operator[](const dimension_type k) {
+inline Dense_Row&
+Dense_Matrix::operator[](const dimension_type k) {
   PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
-inline const Row&
-Matrix::operator[](const dimension_type k) const {
+inline const Dense_Row&
+Dense_Matrix::operator[](const dimension_type k) const {
   PPL_ASSERT(k < rows.size());
   return rows[k];
 }
 
 inline dimension_type
-Matrix::num_rows() const {
+Dense_Matrix::num_rows() const {
   return rows.size();
 }
 
 inline dimension_type
-Matrix::num_columns() const {
+Dense_Matrix::num_columns() const {
   return row_size;
 }
 
-/*! \relates Matrix */
+/*! \relates Dense_Matrix */
 inline bool
-operator!=(const Matrix& x, const Matrix& y) {
+operator!=(const Dense_Matrix& x, const Dense_Matrix& y) {
   return !(x == y);
 }
 
 inline void
-Matrix::erase_to_end(const dimension_type first_to_erase) {
+Dense_Matrix::erase_to_end(const dimension_type first_to_erase) {
   PPL_ASSERT(first_to_erase <= rows.size());
   if (first_to_erase < rows.size())
     rows.erase(rows.begin() + first_to_erase, rows.end());
 }
 
 inline void
-Matrix::clear() {
+Dense_Matrix::clear() {
   // Clear `rows' and minimize its capacity.
-  std::vector<Row>().swap(rows);
+  std::vector<Dense_Row>().swap(rows);
   row_size = 0;
   row_capacity = 0;
 }
@@ -206,13 +206,13 @@ Matrix::clear() {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Matrix */
+/*! \relates Parma_Polyhedra_Library::Dense_Matrix */
 inline void
-swap(Parma_Polyhedra_Library::Matrix& x,
-     Parma_Polyhedra_Library::Matrix& y) {
+swap(Parma_Polyhedra_Library::Dense_Matrix& x,
+     Parma_Polyhedra_Library::Dense_Matrix& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Matrix_inlines_hh)
+#endif // !defined(PPL_Dense_Matrix_inlines_hh)

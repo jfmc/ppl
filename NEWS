@@ -4,7 +4,23 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.11  (to be released on May 8, 2010)
+NEWS for version 0.11  (release date to be decided)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
+o  Corrected a bug affecting methods
+
+     Box::CC76_widening_assign(const T&, Iterator, Iterator)
+     Interval::CC76_widening_assign(const From&, Iterator, Iterator)
+
+   whereby a lower bound would not be computed correctly when the two
+   iterators specify an empty list of stop points.
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.11  (released on August 2, 2010)
 --------------------------------------------------------------------------
 
 New and Changed Features
@@ -14,13 +30,13 @@ o  New class PIP_Problem provides a Parametric Integer Programming
    (PIP) problem solver (mainly based on P. Feautrier's
    specification).  The implementation combines a parametric dual
    simplex algorithm using exact arithmetic with Gomory's cut
-   generation.  Still under beta testing.
+   generation.
 
 o  New "deterministic" timeout computation facilities: it is now
    possible to set computational bounds (on the library calls taking
    exponential time) that do not depend on the actual elapsed time and
    hence are independent from the actual computation environment (CPU,
-   operating system, etc.).  Still under beta testing.
+   operating system, etc.).
 
 o  New support for termination analysis via the automatic synthesis of
    linear ranking functions.  Given a sound approximation of a loop,
@@ -29,7 +45,14 @@ o  New support for termination analysis via the automatic synthesis of
    witness for termination) and to compute the space of all such
    functions.  In addition, methods are provided to obtain the space
    of all linear quasi-ranking functions, for use in conditional
-   termination analysis.  Still under beta testing.
+   termination analysis.
+
+o  New support for approximating computations involving (bounded)
+   machine integers.  A general wrapping operator is provided that is
+   parametric with respect to the set of space dimensions (variables)
+   to be wrapped, the width, representation and overflow behavior of
+   all these variables.  An optional constraint system can, when
+   given, improve the precision.
 
 o  All the PPL semantic objects provide new methods
 
@@ -84,6 +107,8 @@ o  The Java interface has to be explicitly initialized before use by
 o  The C and Java interfaces now support timeout computation facilities.
 
 o  Implementation of general (C and NNC) polyhedra speeded up.
+
+o  Implementation of the MIP solver speeded up.
 
 o  When the PPL has been configured with
    CPPFLAGS="-DPPL_ARM_CAN_CONTROL_FPU=1", the library initialization

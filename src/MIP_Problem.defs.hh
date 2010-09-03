@@ -25,8 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
-#include "Row.defs.hh"
-#include "Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Dense_Matrix.defs.hh"
+#include "Sparse_Matrix.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
@@ -78,6 +79,12 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 */
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
+#if USE_PPL_SPARSE_MATRIX
+  typedef Sparse_Matrix matrix_type;
+#else
+  typedef Dense_Matrix matrix_type;
+#endif
+
   //! Builds a trivial MIP problem.
   /*!
     A trivial MIP problem requires to maximize the objective function
@@ -131,10 +138,10 @@ public:
   */
   template <typename In>
   MIP_Problem(dimension_type dim,
-	      In first, In last,
-	      const Variables_Set& int_vars,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
+              In first, In last,
+              const Variables_Set& int_vars,
+              const Linear_Expression& obj = Linear_Expression::zero(),
+              Optimization_Mode mode = MAXIMIZATION);
 
   /*! \brief
     Builds an MIP problem having space dimension \p dim
@@ -199,9 +206,9 @@ public:
     objective function) is strictly greater than \p dim.
   */
   MIP_Problem(dimension_type dim,
-	      const Constraint_System& cs,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
+              const Constraint_System& cs,
+              const Linear_Expression& obj = Linear_Expression::zero(),
+              Optimization_Mode mode = MAXIMIZATION);
 
   //! Ordinary copy constructor.
   MIP_Problem(const MIP_Problem& y);
@@ -348,8 +355,8 @@ public:
     or if the generator \p evaluating_point is not a point.
   */
   void evaluate_objective_function(const Generator& evaluating_point,
-				   Coefficient& num,
-				   Coefficient& den) const;
+                                   Coefficient& num,
+                                   Coefficient& den) const;
 
   //! Returns a feasible point for \p *this, if it exists.
   /*!
@@ -431,10 +438,10 @@ private:
   dimension_type internal_space_dim;
 
   //! The matrix encoding the current feasible region in tableau form.
-  Matrix tableau;
+  matrix_type tableau;
 
   //! The working cost function.
-  Row working_cost;
+  Dense_Row working_cost;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
@@ -562,7 +569,7 @@ private:
     is only meaningful when the function exit returning value \c true.
 
     \return
-    \c false if a trivially false constraint is detected, \true otherwise.
+    \c false if a trivially false constraint is detected, \c true otherwise.
 
     \param additional_tableau_rows
     On exit, this will store the number of rows that have to be added
@@ -627,10 +634,10 @@ private:
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
     \param x
-    The Row that will be combined with \p y object.
+    The row that will be combined with \p y object.
 
     \param y
-    The Row that will be combined with \p x object.
+    The row that will be combined with \p x object.
 
     \param k
     The position of \p *this that have to be \f$0\f$.
@@ -639,7 +646,44 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(Row& x, const Row& y, const dimension_type k);
+  static void linear_combine(Dense_Row& x, const Dense_Row& y,
+                             const dimension_type k);
+
+  //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
+  /*!
+    \param x
+    The row that will be combined with \p y object.
+
+    \param y
+    The row that will be combined with \p x object.
+
+    \param k
+    The position of \p *this that have to be \f$0\f$.
+
+    Computes a linear combination of \p x and \p y having
+    the element of index \p k equal to \f$0\f$. Then it assigns
+    the resulting Linear_Row to \p x and normalizes it.
+  */
+  static void linear_combine(Sparse_Row& x, const Sparse_Row& y,
+                             const dimension_type k);
+
+  //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
+  /*!
+    \param x
+    The row that will be combined with \p y object.
+
+    \param y
+    The row that will be combined with \p x object.
+
+    \param k
+    The position of \p *this that have to be \f$0\f$.
+
+    Computes a linear combination of \p x and \p y having
+    the element of index \p k equal to \f$0\f$. Then it assigns
+    the resulting Linear_Row to \p x and normalizes it.
+  */
+  static void linear_combine(Dense_Row& x, const Sparse_Row& y,
+                             const dimension_type k);
 
   /*! \brief
     Performs the pivoting operation on the tableau.
@@ -651,7 +695,7 @@ private:
     The index of the row exiting the base.
   */
   void pivot(dimension_type entering_var_index,
-	     dimension_type exiting_base_index);
+             dimension_type exiting_base_index);
 
   /*! \brief
     Computes the column index of the variable entering the base,
@@ -742,7 +786,7 @@ private:
     Note that column index end_artificial is \e excluded from the range.
   */
   void erase_artificials(dimension_type begin_artificials,
-			 dimension_type end_artificials);
+                         dimension_type end_artificials);
 
   bool is_in_base(dimension_type var_index,
 		  dimension_type& row_index) const;
@@ -793,10 +837,10 @@ private:
     The variables that are constrained to take an integer value.
   */
   static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
-				      mpq_class& incumbent_solution_value,
-				      Generator& incumbent_solution_point,
-				      MIP_Problem& mip,
-				      const Variables_Set& i_vars);
+                                      mpq_class& incumbent_solution_value,
+                                      Generator& incumbent_solution_point,
+                                      MIP_Problem& mip,
+                                      const Variables_Set& i_vars);
 
   /*! \brief
     Returns \c true if and if only the LP problem is satisfiable.
@@ -817,7 +861,7 @@ private:
     If \c true is returned, it will encode a feasible point.
   */
   static bool is_mip_satisfiable(MIP_Problem& lp,
-				 const Variables_Set& i_vars,
+                                 const Variables_Set& i_vars,
                                  Generator& p);
 
   /*! \brief
@@ -835,8 +879,8 @@ private:
     index on which the `branch and bound' algorithm should be applied.
   */
   static bool choose_branching_variable(const MIP_Problem& lp,
-					const Variables_Set& i_vars,
-					dimension_type& branching_index);
+                                        const Variables_Set& i_vars,
+                                        dimension_type& branching_index);
 };
 
 namespace std {
@@ -844,7 +888,7 @@ namespace std {
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
 void swap(Parma_Polyhedra_Library::MIP_Problem& x,
-	  Parma_Polyhedra_Library::MIP_Problem& y);
+          Parma_Polyhedra_Library::MIP_Problem& y);
 
 } // namespace std
 

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmp.h>
 #include <stdio.h>
 #include <assert.h>
+#include <limits.h>
 #include <time.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -127,20 +128,22 @@ static struct option long_options[] = {
   "Reads a file in MPS format and attempts solution using the optimization\n" \
   "algorithms provided by the PPL.\n\n"                                 \
   "Options:\n"                                                          \
-  "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n" \
-  "                          with a tolerance of THRESHOLD (default %.10g)\n" \
-  "  -i, --incremental       solves the problem incrementally\n"        \
-  "  -m, --min               minimizes the objective function\n"        \
-  "  -M, --max               maximizes the objective function (default)\n"
+  "  -c, --check[=THRESHOLD] checks the obtained results using GLPK;\n" \
+  "                          optima are checked with a tolerance of\n"  \
+  "                          THRESHOLD (default %.10g);  input data\n"  \
+  "                          are also perturbed the same way as GLPK does\n" \
+  "  -i, --incremental       solves the problem incrementally\n"
 #define USAGE_STRING1                                                   \
+  "  -m, --min               minimizes the objective function\n"        \
+  "  -M, --max               maximizes the objective function (default)\n" \
   "  -n, --no-optimization   checks for satisfiability only\n"          \
   "  -r, --no-mip            consider integer variables as real variables\n" \
   "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"        \
   "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"     \
   "  -h, --help              prints this help text to stdout\n"         \
-  "  -oPATH, --output=PATH   appends output to PATH\n"                  \
-  "  -e, --enumerate         use the (expensive!) enumeration method\n"
+  "  -oPATH, --output=PATH   appends output to PATH\n"
 #define USAGE_STRING2                                                   \
+  "  -e, --enumerate         use the (expensive!) enumeration method\n" \
   "  -pM, --pricing=M        use pricing method M for simplex (assumes -s);\n" \
   "                          M is an int from 0 to 2, default 0:\n"     \
   "                          0 --> steepest-edge using floating point\n" \
@@ -208,7 +211,7 @@ my_exit(int status) {
   exit(status);
 }
 
-static void
+void
 fatal(const char* format, ...) {
   va_list ap;
   fprintf(stderr, "%s: ", program_name);
@@ -337,6 +340,8 @@ process_options(int argc, char* argv[]) {
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
 	fatal("a non-negative integer must follow `-R'");
+      else if (((unsigned long) l) > ULONG_MAX/(1024*1024))
+        max_bytes_of_virtual_memory = ULONG_MAX;
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -521,7 +526,7 @@ set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
 #if PPL_HAVE_DECL_RLIMIT_AS
 
 void
-limit_virtual_memory(unsigned bytes) {
+limit_virtual_memory(unsigned long bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -537,7 +542,7 @@ limit_virtual_memory(unsigned bytes) {
 #else
 
 void
-limit_virtual_memory(unsigned bytes ATTRIBUTE_UNUSED) {
+limit_virtual_memory(unsigned long bytes ATTRIBUTE_UNUSED) {
 }
 
 #endif /* !PPL_HAVE_DECL_RLIMIT_AS */
@@ -584,7 +589,7 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     /* Set the problem class to LP: MIP problems are thus treated as
        LP ones. */
     lpx_set_class(glpk_lp, LPX_LP);
-    lpx_simplex(glpk_lp);
+    lpx_exact(glpk_lp);
     glpk_status = lpx_get_status(glpk_lp);
   }
   else {
@@ -649,8 +654,8 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
       : lpx_mip_obj_val(glpk_lp);
 
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
-      error("check failed: for GLPK the problem's optimum is %.10g,"
-	    " not %.10g", glpk_optimum_value, ppl_optimum_value);
+      error("check failed: for GLPK the problem's optimum is %.20g,"
+	    " not %.20g", glpk_optimum_value, ppl_optimum_value);
       check_results_failed = 1;
     }
   }
@@ -992,6 +997,15 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 }
 
 static void
+set_mpq_t_from_double(mpq_t q, double d) {
+  void set_d_eps(mpq_t x, double val);
+  if (check_results)
+    set_d_eps(q, d);
+  else
+    mpq_set_d(q, d);
+}
+
+static void
 solve(char* file_name) {
   ppl_Constraint_System_t ppl_cs;
 #ifndef NDEBUG
@@ -1088,14 +1102,14 @@ solve(char* file_name) {
     /* Set `nz' to the number of non-zero coefficients. */
     nz = lpx_get_mat_row(glpk_lp, row, coefficient_index, coefficient_value);
     for (i = 1; i <= nz; ++i) {
-      mpq_set_d(rational_coefficient[i], coefficient_value[i]);
+      set_mpq_t_from_double(rational_coefficient[i], coefficient_value[i]);
       /* Update den_lcm. */
       mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_coefficient[i]));
     }
     lpx_get_row_bnds(glpk_lp, row, &type, &lb, &ub);
-    mpq_set_d(rational_lb, lb);
+    set_mpq_t_from_double(rational_lb, lb);
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
-    mpq_set_d(rational_ub, ub);
+    set_mpq_t_from_double(rational_ub, ub);
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_ub));
 
     ppl_new_Linear_Expression_with_dimension(&ppl_le, dimension);
@@ -1132,8 +1146,8 @@ solve(char* file_name) {
   for (column = 1; column <= dimension; ++column) {
     lpx_get_col_bnds(glpk_lp, column, &type, &lb, &ub);
 
-    mpq_set_d(rational_lb, lb);
-    mpq_set_d(rational_ub, ub);
+    set_mpq_t_from_double(rational_lb, lb);
+    set_mpq_t_from_double(rational_ub, ub);
 
     /* Initialize the least common multiple computation. */
     mpz_set_si(den_lcm, 1);
@@ -1159,17 +1173,22 @@ solve(char* file_name) {
   mpz_set_si(den_lcm, 1);
 
   mpq_init(objective[0]);
-  mpq_set_d(objective[0], lpx_get_obj_coef(glpk_lp, 0));
+  set_mpq_t_from_double(objective[0], lpx_get_obj_coef(glpk_lp, 0));
   for (i = 1; i <= dimension; ++i) {
     mpq_init(objective[i]);
-    mpq_set_d(objective[i], lpx_get_obj_coef(glpk_lp, i));
+    set_mpq_t_from_double(objective[i], lpx_get_obj_coef(glpk_lp, i));
     /* Update den_lcm. */
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
 
   /* Set the ppl_objective_le to be the objective function. */
   ppl_new_Linear_Expression_with_dimension(&ppl_objective_le, dimension);
-  /* The inhomogeneous term is completely useless for our purpose. */
+  /* Set value for objective function's inhomogeneous term. */
+  mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
+  mpz_divexact(tmp_z, tmp_z, mpq_denref(objective[0]));
+  ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
+  ppl_Linear_Expression_add_to_inhomogeneous(ppl_objective_le, ppl_coeff);
+  /* Set values for objective function's variable coefficients. */
   for (i = 1; i <= dimension; ++i) {
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
     mpz_divexact(tmp_z, tmp_z, mpq_denref(objective[i]));
@@ -1179,6 +1198,8 @@ solve(char* file_name) {
 
   if (verbosity >= 4) {
     fprintf(output_file, "Objective function:\n");
+    if (mpz_cmp_si(den_lcm, 1) != 0)
+      fprintf(output_file, "(");
     ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
   }
 

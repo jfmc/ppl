@@ -55,6 +55,7 @@ pwl-config.h \
 pwl-config.h.in \
 pwl-config.sed \
 BUGS \
+ChangeLog_2001-2008 \
 CREDITS
 
 DISTCLEANFILES = \

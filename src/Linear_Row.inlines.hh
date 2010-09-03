@@ -31,13 +31,13 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Linear_Row::Flags::Flags()
-  : Row::Flags() {
+  : Dense_Row::Flags() {
   // Note that the constructed type has its validity bit unset.
 }
 
 inline
 Linear_Row::Flags::Flags(const Topology t)
-  : Row::Flags(t << nnc_bit) {
+  : Dense_Row::Flags(t << nnc_bit) {
 #ifndef NDEBUG
   set_bits(1 << nnc_validity_bit);
 #endif
@@ -45,7 +45,7 @@ Linear_Row::Flags::Flags(const Topology t)
 
 inline
 Linear_Row::Flags::Flags(const Topology t, const Kind k)
-  : Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
+  : Dense_Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
 #ifndef NDEBUG
   set_bits((1 << rpi_validity_bit)
 	   | (1 << nnc_validity_bit));
@@ -126,12 +126,12 @@ Linear_Row::Flags::operator!=(const Flags& y) const {
 
 inline const Linear_Row::Flags&
 Linear_Row::flags() const {
-  return static_cast<const Flags&>(Row::flags());
+  return static_cast<const Flags&>(Dense_Row::flags());
 }
 
 inline Linear_Row::Flags&
 Linear_Row::flags() {
-  return static_cast<Flags&>(Row::flags());
+  return static_cast<Flags&>(Dense_Row::flags());
 }
 
 inline bool
@@ -156,13 +156,13 @@ Linear_Row::space_dimension() const {
 
 inline
 Linear_Row::Linear_Row()
-  : Row() {
+  : Dense_Row() {
 }
 
 inline void
 Linear_Row::construct(const dimension_type sz, const dimension_type capacity,
 		      const Flags f) {
-  Row::construct(sz, capacity, f);
+  Dense_Row::construct(sz, capacity, f);
 }
 
 inline
@@ -183,19 +183,19 @@ Linear_Row::Linear_Row(const dimension_type sz, const Flags f) {
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y)
-  : Row(y) {
+  : Dense_Row(y) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
 		       const dimension_type capacity)
-  : Row(y, capacity) {
+  : Dense_Row(y, capacity) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
 		       const dimension_type sz, const dimension_type capacity)
-  : Row(y, sz, capacity) {
+  : Dense_Row(y, sz, capacity) {
 }
 
 inline
@@ -257,7 +257,7 @@ Linear_Row::strong_normalize() {
 inline bool
 operator==(const Linear_Row& x, const Linear_Row& y) {
   return x.flags() == y.flags()
-    && static_cast<const Row&>(x) == static_cast<const Row&>(y);
+    && static_cast<const Dense_Row&>(x) == static_cast<const Dense_Row&>(y);
 }
 
 /*! \relates Linear_Row */

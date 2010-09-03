@@ -56,7 +56,7 @@ ppl_set_GMP_memory_allocation_functions(void) {
 #include <gmpxx.h>
 #include <vector>
 #include <set>
-#include <limits>
+#include <climits>
 #include <cassert>
 #include <cstdarg>
 #include <csignal>
@@ -215,14 +215,17 @@ public:
     pip_display_sol(out, solution, params, vars, pip.space_dimension());
   }
 
+  typedef std::vector<PPL::Coefficient> Coeff_Vector;
+  typedef std::vector<int> Int_Vector;
+
   bool update_pip(PPL::dimension_type num_vars,
                   PPL::dimension_type num_params,
                   PPL::dimension_type num_constraints,
                   PPL::dimension_type num_ctx_rows,
-                  const PPL::Coefficient* constraints,
-                  const PPL::Coefficient* context,
-                  const int constraint_type[],
-                  const int ctx_type[],
+                  const Coeff_Vector& constraints,
+                  const Coeff_Vector& context,
+                  const Int_Vector& constraint_type,
+                  const Int_Vector& ctx_type,
                   PPL::dimension_type bignum_column) {
     pip.add_space_dimensions_and_embed(num_vars, num_params);
     for (PPL::dimension_type k = 0, i = 0; i < num_constraints; ++i) {
@@ -275,15 +278,14 @@ public:
     PPL_ASSERT(num_params >= 2);
     num_params -= 2;
 
-    PPL::Coefficient context[num_ctx_rows][num_params+1];
-    int ctx_type[num_ctx_rows];
-
+    Coeff_Vector context(num_ctx_rows * (1+num_params));
+    Int_Vector ctx_type(num_ctx_rows);
     for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
       getline_nocomment(in, line);
       std::istringstream sin(line);
       sin >> ctx_type[i];
       for (PPL::dimension_type j = 0; j <= num_params; ++j) {
-        sin >> context[i][j];
+        sin >> context[i * num_ctx_rows + j];
       }
     }
 
@@ -305,14 +307,14 @@ public:
     constraint_width -= 1;
     num_vars = constraint_width - num_params - 1;
 
-    PPL::Coefficient constraints[num_constraints][constraint_width];
-    int constraint_type[num_constraints];
+    Coeff_Vector constraints(num_constraints * constraint_width);
+    Int_Vector constraint_type(num_constraints);
     for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
       getline_nocomment(in, line);
       std::istringstream sin(line);
       sin >> constraint_type[i];
       for (PPL::dimension_type j = 0; j < constraint_width; ++j) {
-        sin >> constraints[i][j];
+        sin >> constraints[i * constraint_width + j];
       }
     }
 
@@ -322,7 +324,7 @@ public:
 
     bool result = update_pip(num_vars, num_params,
                              num_constraints, num_ctx_rows,
-                             &constraints[0][0], &context[0][0],
+                             constraints, context,
                              constraint_type, ctx_type,
                              bignum_column);
     return result;
@@ -374,25 +376,25 @@ public:
     if (!expect(in, '('))
       return false;
     PPL::dimension_type constraint_width = num_vars+num_params+1;
-    PPL::Coefficient constraints[num_constraints][constraint_width];
-    int constraint_type[num_constraints];
+    Coeff_Vector constraints(num_constraints * constraint_width);
+    Int_Vector constraint_type(num_constraints);
     for (PPL::dimension_type i = 0; i < num_constraints; ++i)
       constraint_type[i] = 1;
     for (PPL::dimension_type i = 0; i < num_constraints; ++i)
-      if (!read_vector(in, constraint_width, num_vars, constraints[i]))
+      if (!read_vector(in, i, constraint_width, num_vars, constraints))
         return false;
 
-    PPL::Coefficient context[num_ctx_rows][num_params+1];
-    int ctx_type[num_ctx_rows];
+    Coeff_Vector context(num_ctx_rows * (1+num_params));
+    Int_Vector ctx_type(num_ctx_rows);
     for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i)
       ctx_type[i] = 1;
     for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i)
-      if (!read_vector(in, num_params+1, num_params, context[i]))
+      if (!read_vector(in, i, num_params+1, num_params, context))
         return false;
 
     bool result = update_pip(num_vars, num_params,
                              num_constraints, num_ctx_rows,
-                             &constraints[0][0], &context[0][0],
+                             constraints, context,
                              constraint_type, ctx_type,
                              bignum_column);
     return result;
@@ -424,9 +426,11 @@ protected:
     return a == c;
   }
 
-  static bool read_vector(std::istream& in, PPL::dimension_type size,
+  static bool read_vector(std::istream& in,
+                          PPL::dimension_type row_index,
+                          PPL::dimension_type row_size,
                           PPL::dimension_type cst_col,
-                          PPL::Coefficient tab[]) {
+                          Coeff_Vector& tab) {
     if (!expect(in, '#'))
       return false;
     if (!expect(in, '['))
@@ -435,13 +439,14 @@ protected:
     if (getline(in, s, ']').bad())
       return false;
     std::istringstream iss(s);
-    PPL::dimension_type k = 0;
+    PPL::dimension_type start_index = row_index * row_size;
+    PPL::dimension_type k = start_index;
     for (PPL::dimension_type i = 0; i < cst_col; ++i)
       if (!(iss >> tab[k++]))
         return false;
-    if (!(iss >> tab[size-1]))
+    if (!(iss >> tab[start_index + row_size - 1]))
       return false;
-    for (PPL::dimension_type i = cst_col + 1; i < size; ++i)
+    for (PPL::dimension_type i = cst_col + 1; i < row_size; ++i)
       if (!(iss >> tab[k++]))
         return false;
     return true;
@@ -613,7 +618,7 @@ warning(const char* format, ...) {
 #if PPL_HAVE_DECL_RLIMIT_AS
 
 void
-limit_virtual_memory(const unsigned bytes) {
+limit_virtual_memory(const unsigned long bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -629,7 +634,7 @@ limit_virtual_memory(const unsigned bytes) {
 #else
 
 void
-limit_virtual_memory(unsigned) {
+limit_virtual_memory(unsigned long) {
 }
 
 #endif // !PPL_HAVE_DECL_RLIMIT_AS
@@ -664,6 +669,8 @@ process_options(int argc, char* argv[]) {
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
 	fatal("a non-negative integer must follow `-R'");
+      else if (((unsigned long) l) > ULONG_MAX/(1024*1024))
+        max_bytes_of_virtual_memory = ULONG_MAX;
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;

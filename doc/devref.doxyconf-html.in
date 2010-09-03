@@ -107,6 +107,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Coefficient.defs.hh \
                          @srcdir@/../src/Coefficient.inlines.hh \
                          @srcdir@/../src/Coefficient.cc \
+                         @srcdir@/../src/CO_Tree.types.hh \
+                         @srcdir@/../src/CO_Tree.defs.hh \
+                         @srcdir@/../src/CO_Tree.inlines.hh \
+                         @srcdir@/../src/CO_Tree.cc \
                          @srcdir@/../src/checked.defs.hh \
                          @srcdir@/../src/checked.inlines.hh \
                          @srcdir@/../src/checked_float.inlines.hh \
@@ -136,14 +140,24 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/termination.templates.hh \
                          @srcdir@/../src/termination.cc \
                          @srcdir@/../src/Topology.hh \
-                         @srcdir@/../src/Row.types.hh \
-                         @srcdir@/../src/Row.defs.hh \
-                         @srcdir@/../src/Row.inlines.hh \
-                         @srcdir@/../src/Row.cc \
-                         @srcdir@/../src/Matrix.types.hh \
-                         @srcdir@/../src/Matrix.defs.hh \
-                         @srcdir@/../src/Matrix.inlines.hh \
-                         @srcdir@/../src/Matrix.cc \
+                         @srcdir@/../src/Sparse_Row.types.hh \
+                         @srcdir@/../src/Sparse_Row.defs.hh \
+                         @srcdir@/../src/Sparse_Row.inlines.hh \
+                         @srcdir@/../src/Sparse_Row.templates.hh \
+                         @srcdir@/../src/Sparse_Row.cc \
+                         @srcdir@/../src/Dense_Row.types.hh \
+                         @srcdir@/../src/Dense_Row.defs.hh \
+                         @srcdir@/../src/Dense_Row.inlines.hh \
+                         @srcdir@/../src/Dense_Row.templates.hh \
+                         @srcdir@/../src/Dense_Row.cc \
+                         @srcdir@/../src/Sparse_Matrix.types.hh \
+                         @srcdir@/../src/Sparse_Matrix.defs.hh \
+                         @srcdir@/../src/Sparse_Matrix.inlines.hh \
+                         @srcdir@/../src/Sparse_Matrix.cc \
+                         @srcdir@/../src/Dense_Matrix.types.hh \
+                         @srcdir@/../src/Dense_Matrix.defs.hh \
+                         @srcdir@/../src/Dense_Matrix.inlines.hh \
+                         @srcdir@/../src/Dense_Matrix.cc \
                          @srcdir@/../src/Linear_Row.types.hh \
                          @srcdir@/../src/Linear_Row.defs.hh \
                          @srcdir@/../src/Linear_Row.inlines.hh \

@@ -29,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 
 inline memory_size_type
 Linear_System::external_memory_in_bytes() const {
-  return Matrix::external_memory_in_bytes();
+  return Dense_Matrix::external_memory_in_bytes();
 }
 
 inline memory_size_type
@@ -54,7 +54,7 @@ Linear_System::set_sorted(const bool b) {
 
 inline
 Linear_System::Linear_System(Topology topol)
-  : Matrix(),
+  : Dense_Matrix(),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
@@ -63,7 +63,7 @@ Linear_System::Linear_System(Topology topol)
 inline
 Linear_System::Linear_System(Topology topol,
 			     dimension_type n_rows, dimension_type n_columns)
-  : Matrix(n_rows, n_columns, Linear_Row::Flags(topol)),
+  : Dense_Matrix(n_rows, n_columns, Linear_Row::Flags(topol)),
     row_topology(topol),
     index_first_pending(n_rows),
     sorted(true) {
@@ -92,7 +92,7 @@ Linear_System::set_index_first_pending_row(const dimension_type i) {
 
 inline
 Linear_System::Linear_System(const Linear_System& y)
-  : Matrix(y),
+  : Dense_Matrix(y),
     row_topology(y.row_topology) {
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -102,7 +102,7 @@ Linear_System::Linear_System(const Linear_System& y)
 
 inline
 Linear_System::Linear_System(const Linear_System& y, With_Pending)
-  : Matrix(y),
+  : Dense_Matrix(y),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
@@ -110,7 +110,7 @@ Linear_System::Linear_System(const Linear_System& y, With_Pending)
 
 inline Linear_System&
 Linear_System::operator=(const Linear_System& y) {
-  Matrix::operator=(y);
+  Dense_Matrix::operator=(y);
   row_topology = y.row_topology;
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -121,7 +121,7 @@ Linear_System::operator=(const Linear_System& y) {
 
 inline void
 Linear_System::assign_with_pending(const Linear_System& y) {
-  Matrix::operator=(y);
+  Dense_Matrix::operator=(y);
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
@@ -129,7 +129,7 @@ Linear_System::assign_with_pending(const Linear_System& y) {
 
 inline void
 Linear_System::swap(Linear_System& y) {
-  Matrix::swap(y);
+  Dense_Matrix::swap(y);
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
@@ -138,7 +138,7 @@ Linear_System::swap(Linear_System& y) {
 inline void
 Linear_System::clear() {
   // Note: do NOT modify the value of `row_topology'.
-  Matrix::clear();
+  Dense_Matrix::clear();
   index_first_pending = 0;
   sorted = true;
 }
@@ -146,7 +146,7 @@ Linear_System::clear() {
 inline void
 Linear_System::resize_no_copy(const dimension_type new_n_rows,
 			      const dimension_type new_n_columns) {
-  Matrix::resize_no_copy(new_n_rows, new_n_columns,
+  Dense_Matrix::resize_no_copy(new_n_rows, new_n_columns,
 			 Linear_Row::Flags(row_topology));
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
@@ -176,12 +176,12 @@ Linear_System::is_necessarily_closed() const {
 
 inline Linear_Row&
 Linear_System::operator[](const dimension_type k) {
-  return static_cast<Linear_Row&>(Matrix::operator[](k));
+  return static_cast<Linear_Row&>(Dense_Matrix::operator[](k));
 }
 
 inline const Linear_Row&
 Linear_System::operator[](const dimension_type k) const {
-  return static_cast<const Linear_Row&>(Matrix::operator[](k));
+  return static_cast<const Linear_Row&>(Dense_Matrix::operator[](k));
 }
 
 inline Topology
@@ -207,7 +207,7 @@ Linear_System::space_dimension() const {
 
 inline void
 Linear_System::remove_trailing_columns(const dimension_type n) {
-  Matrix::remove_trailing_columns(n);
+  Dense_Matrix::remove_trailing_columns(n);
   // Have to re-normalize the rows of the system,
   // since we removed some coefficients.
   strong_normalize();
@@ -215,7 +215,7 @@ Linear_System::remove_trailing_columns(const dimension_type n) {
 
 inline void
 Linear_System::permute_columns(const std::vector<dimension_type>& cycles) {
-  Matrix::permute_columns(cycles);
+  Dense_Matrix::permute_columns(cycles);
   // The rows with permuted columns are still normalized but may
   // be not strongly normalized: sign normalization is necessary.
   sign_normalize();
@@ -228,7 +228,8 @@ operator!=(const Linear_System& x, const Linear_System& y) {
 }
 
 inline bool
-Linear_System::Row_Less_Than::operator()(const Row& x, const Row& y) const {
+Linear_System::Row_Less_Than::operator()(const Dense_Row& x,
+                                         const Dense_Row& y) const {
   return compare(static_cast<const Linear_Row&>(x),
 		 static_cast<const Linear_Row&>(y)) < 0;
 }

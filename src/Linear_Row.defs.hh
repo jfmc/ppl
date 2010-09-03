@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.types.hh"
 #include "globals.defs.hh"
-#include "Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
@@ -121,7 +121,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-class Parma_Polyhedra_Library::Linear_Row : public Row {
+class Parma_Polyhedra_Library::Linear_Row : public Dense_Row {
 public:
   //! The possible kinds of Linear_Row objects.
   enum Kind {
@@ -140,7 +140,7 @@ public:
     of a Linear_Row object.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags : public Row::Flags {
+  class Flags : public Dense_Row::Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.
     Flags();
@@ -191,19 +191,19 @@ public:
     //@{
     // NB: ascii_load assumes that these are sequential.
     static const unsigned rpi_validity_bit
-    = Row::Flags::first_free_bit + 0;
+    = Dense_Row::Flags::first_free_bit + 0;
     static const unsigned rpi_bit
-    = Row::Flags::first_free_bit + 1;
+    = Dense_Row::Flags::first_free_bit + 1;
     static const unsigned nnc_validity_bit
-    = Row::Flags::first_free_bit + 2;
+    = Dense_Row::Flags::first_free_bit + 2;
     static const unsigned nnc_bit
-    = Row::Flags::first_free_bit + 3;
+    = Dense_Row::Flags::first_free_bit + 3;
     //@}
 
   protected:
     //! Index of the first bit derived classes can use.
     static const unsigned first_free_bit
-    = Row::Flags::first_free_bit + 4;
+    = Dense_Row::Flags::first_free_bit + 4;
 
     friend class Parma_Polyhedra_Library::Linear_Row;
   };

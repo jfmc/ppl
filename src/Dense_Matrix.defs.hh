@@ -1,4 +1,4 @@
-/* Matrix class declaration.
+/* Dense_Matrix class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,11 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Matrix_defs_hh
-#define PPL_Matrix_defs_hh 1
+#ifndef PPL_Dense_Matrix_defs_hh
+#define PPL_Dense_Matrix_defs_hh 1
 
-#include "Matrix.types.hh"
-#include "Row.defs.hh"
+#include "Dense_Matrix.types.hh"
+#include "Dense_Row.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
 #include "Coefficient.types.hh"
@@ -34,27 +34,29 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
 /*! \ingroup PPL_CXX_interface
-  A Matrix object is a sequence of Row objects and is characterized
-  by the matrix dimensions (the number of rows and columns).
+  A Dense_Matrix object is a sequence of Dense_Row objects and is
+  characterized by the matrix dimensions (the number of rows and columns).
   All the rows in a matrix, besides having the same size (corresponding
   to the number of columns of the matrix), are also bound to have the
   same capacity.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-class Parma_Polyhedra_Library::Matrix {
+class Parma_Polyhedra_Library::Dense_Matrix {
 public:
-  //! Returns the maximum number of rows of a Matrix.
+  typedef Dense_Row row_type;
+
+  //! Returns the maximum number of rows of a Dense_Matrix.
   static dimension_type max_num_rows();
 
-  //! Returns the maximum number of columns of a Matrix.
+  //! Returns the maximum number of columns of a Dense_Matrix.
   static dimension_type max_num_columns();
 
   //! Builds an empty matrix.
   /*!
     Rows' size and capacity are initialized to \f$0\f$.
   */
-  Matrix();
+  Dense_Matrix();
 
   //! Builds a zero matrix with specified dimensions and flags.
   /*!
@@ -68,28 +70,28 @@ public:
     The flags used to build the rows of the matrix;
     by default, the rows will have all flags unset.
   */
-  Matrix(dimension_type n_rows, dimension_type n_columns,
-	 Row::Flags row_flags = Row::Flags());
+  Dense_Matrix(dimension_type n_rows, dimension_type n_columns,
+	 Dense_Row::Flags row_flags = Dense_Row::Flags());
 
   //! Copy constructor.
-  Matrix(const Matrix& y);
+  Dense_Matrix(const Dense_Matrix& y);
 
   //! Destructor.
-  ~Matrix();
+  ~Dense_Matrix();
 
   //! Assignment operator.
-  Matrix& operator=(const Matrix& y);
+  Dense_Matrix& operator=(const Dense_Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! An iterator over a matrix.
   /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
-    to each row contained in a Matrix object.
+    to each row contained in a Dense_Matrix object.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class const_iterator {
   private:
-    typedef std::vector<Row>::const_iterator Iter;
+    typedef std::vector<Dense_Row>::const_iterator Iter;
     //! The const iterator on the rows' vector \p rows.
     Iter i;
 
@@ -164,7 +166,7 @@ public:
   // FIXME: the following section must become private.
 protected:
   //! Contains the rows of the matrix.
-  std::vector<Row> rows;
+  std::vector<Dense_Row> rows;
 
   //! Size of the initialized part of each row.
   dimension_type row_size;
@@ -174,7 +176,7 @@ protected:
 
 public:
   //! Swaps \p *this with \p y.
-  void swap(Matrix& y);
+  void swap(Dense_Matrix& y);
 
   //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
@@ -188,7 +190,7 @@ public:
     the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_zero_rows(dimension_type n, Row::Flags row_flags);
+  void add_zero_rows(dimension_type n, Dense_Row::Flags row_flags);
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
@@ -200,6 +202,18 @@ public:
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_columns(dimension_type n);
+
+  //! Adds \p n columns of zeroes to the matrix before the i-th column.
+  /*!
+    \param n
+    The number of columns to be added: must be strictly positive.
+
+    \param i
+    The column before which the new columns have to be added.
+
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_zero_columns(dimension_type n, dimension_type i);
 
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
@@ -218,7 +232,7 @@ public:
     The matrix is expanded avoiding reallocation whenever possible.
   */
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
-				 Row::Flags row_flags);
+                                 Dense_Row::Flags row_flags);
 
   //! Adds a copy of the row \p y to the matrix.
   /*!
@@ -231,7 +245,7 @@ public:
     \f$\genfrac{(}{)}{0pt}{}{M}{y}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_row(const Row& y);
+  void add_row(const Dense_Row& y);
 
   //! Adds the row \p y to the matrix.
   /*!
@@ -245,10 +259,13 @@ public:
     \f$\genfrac{(}{)}{0pt}{}{M}{y}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_recycled_row(Row& y);
+  void add_recycled_row(Dense_Row& y);
 
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
+
+  //! Makes the matrix shrink by removing its i-th column.
+  void remove_column(dimension_type i);
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
@@ -266,7 +283,7 @@ public:
     The contents of the original matrix is lost.
   */
   void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns,
-		      Row::Flags row_flags);
+                      Dense_Row::Flags row_flags);
 
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
@@ -279,13 +296,17 @@ public:
 
     The \p cycles vector contains, one after the other, the
     non-trivial cycles (i.e., the cycles of length greater than one)
-    of a permutation of non-zero column indexes.  Each cycle is
-    terminated by zero.  For example, assuming the matrix has 6
+    of a permutation of \e non-zero column indexes.  Each cycle is
+    terminated by zero.  For example, assuming the matrix has 7
     columns, the permutation \f$ \{ 1 \mapsto 3, 2 \mapsto 4,
     3 \mapsto 6, 4 \mapsto 2, 5 \mapsto 5, 6 \mapsto 1 \}\f$ can be
     represented by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in
     turn can be represented by a vector of 6 elements containing 1, 3,
     6, 0, 2, 4, 0.
+
+    \note
+    The first column of the matrix, having index zero, is never involved
+    in a permutation.
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
 
@@ -302,10 +323,10 @@ public:
   //! \name Subscript operators
   //@{
   //! Returns a reference to the \p k-th row of the matrix.
-  Row& operator[](dimension_type k);
+  Dense_Row& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k-th row of the matrix.
-  const Row& operator[](dimension_type k) const;
+  const Dense_Row& operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! Clears the matrix deallocating all its rows.
@@ -340,10 +361,10 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Specializes <CODE>std::swap</CODE>.
-  /*! \relates Parma_Polyhedra_Library::Matrix */
+  /*! \relates Parma_Polyhedra_Library::Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Matrix& x,
-	  Parma_Polyhedra_Library::Matrix& y);
+void swap(Parma_Polyhedra_Library::Dense_Matrix& x,
+          Parma_Polyhedra_Library::Dense_Matrix& y);
 
 } // namespace std
 
@@ -352,18 +373,18 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
-/*! \relates Matrix */
+/*! \relates Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool operator==(const Matrix& x, const Matrix& y);
+bool operator==(const Dense_Matrix& x, const Dense_Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
-/*! \relates Matrix */
+/*! \relates Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool operator!=(const Matrix& x, const Matrix& y);
+bool operator!=(const Dense_Matrix& x, const Dense_Matrix& y);
 
 } // namespace Parma_Polyhedra_Library
 
-#include "Matrix.inlines.hh"
+#include "Dense_Matrix.inlines.hh"
 
-#endif // !defined(PPL_Matrix_defs_hh)
+#endif // !defined(PPL_Dense_Matrix_defs_hh)

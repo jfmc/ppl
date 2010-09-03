@@ -176,7 +176,7 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
     if (!(s >> str))
       return false;
     if (str[0] == '+')
-      set_bits(1 << (Row::Flags::first_free_bit + bit));
+      set_bits(1 << (Dense_Row::Flags::first_free_bit + bit));
     else if (str[0] != '-')
       return false;
     if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
@@ -187,7 +187,7 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
 
 void
 PPL::Linear_Row::ascii_dump(std::ostream& s) const {
-  const Row& x = *this;
+  const Dense_Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
@@ -208,12 +208,12 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  Row& x = *this;
+  Dense_Row& x = *this;
   const dimension_type old_size = x.size();
   if (new_size < old_size)
     x.shrink(new_size);
   else if (new_size > old_size) {
-    Row y(new_size, Row::Flags());
+    Dense_Row y(new_size, Dense_Row::Flags());
     x.swap(y);
   }
 
@@ -227,11 +227,11 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
 
 bool
 PPL::Linear_Row::OK() const {
-  return Row::OK();
+  return Dense_Row::OK();
 }
 
 bool
 PPL::Linear_Row::OK(const dimension_type row_size,
 		    const dimension_type row_capacity) const {
-  return Row::OK(row_size, row_capacity);
+  return Dense_Row::OK(row_size, row_capacity);
 }

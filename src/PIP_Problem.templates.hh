@@ -29,9 +29,8 @@ namespace Parma_Polyhedra_Library {
 
 template <typename In>
 PIP_Problem::PIP_Problem(dimension_type dim,
-			 In first,
-			 In last,
-			 const Variables_Set& p_vars)
+                         In first, In last,
+                         const Variables_Set& p_vars)
   : external_space_dim(dim),
     internal_space_dim(0),
     status(PARTIALLY_SATISFIABLE),
