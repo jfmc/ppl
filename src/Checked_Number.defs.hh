@@ -926,6 +926,10 @@ ascii_dump(std::ostream& s, const T& t);
     <CODE>16^^1*^2</CODE> (meaning \f$256\f$);
   - the C-style hexadecimal prefix <CODE>0x</CODE> is interpreted as
     the Mathematica-style prefix <CODE>16^^</CODE>;
+  - the C-style binary exponent indicator <CODE>p</CODE> can only be used
+    when base 16 has been specified; if used, the exponent will be
+    applied to base 2 (instead of base 16, as is the case when the
+    indicator <CODE>e</CODE> is used);
   - special values like <CODE>inf</CODE> and <CODE>+inf</CODE>
     (meaning \f$+\infty\f$), <CODE>-inf</CODE> (meaning \f$-\infty\f$),
     and <CODE>nan</CODE> (meaning "not a number").
@@ -960,9 +964,9 @@ num     : unum						| '+'
         | SIGN unum					;
 
 unum	: unum1					EXP	: 'e'
-	| HEX unum1					| '*^'
-	| base BASE unum1				;
-	;
+	| HEX unum1					| 'p'
+	| base BASE unum1				| '*^'
+	;                                               ;
 						POINT	: '.'
 unum1	: mantissa					;
 	| mantissa EXP exponent
