@@ -105,7 +105,7 @@ PPL::Sparse_Row::normalize() {
   const_iterator i = begin();
   const_iterator i_end = end();
   for ( ; i != i_end; ++i) {
-    const Coefficient& x_i = *i;
+    Coefficient_traits::const_reference x_i = *i;
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
       if (x_i_sign < 0)
@@ -120,7 +120,7 @@ PPL::Sparse_Row::normalize() {
   if (gcd == 1)
     return;
   for (++i; i != i_end; ++i) {
-    const Coefficient& x_i = *i;
+    Coefficient_traits::const_reference x_i = *i;
     if (x_i != 0) {
       // Note: we use the ternary version instead of a more concise
       // gcd_assign(gcd, x_i) to take advantage of the fact that

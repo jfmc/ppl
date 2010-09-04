@@ -138,12 +138,12 @@ Sparse_Row::operator[](dimension_type i) {
   return *itr;
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Sparse_Row::operator[](dimension_type i) const {
   return get(i);
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Sparse_Row::get(dimension_type i) const {
   PPL_ASSERT(i < size_);
   if (tree.empty())
@@ -257,14 +257,15 @@ Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(dimension_type i, const Coefficient& x) {
+Sparse_Row::find_create(dimension_type i,
+                        Coefficient_traits::const_reference x) {
   PPL_ASSERT(i < size_);
   return tree.insert(i, x);
 }
 
 inline Sparse_Row::iterator
 Sparse_Row::find_create(iterator itr, dimension_type i,
-                        const Coefficient& x) {
+                        Coefficient_traits::const_reference x) {
   PPL_ASSERT(i < size_);
   return tree.insert(itr, i, x);
 }

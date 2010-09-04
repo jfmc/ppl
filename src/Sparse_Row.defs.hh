@@ -269,7 +269,7 @@ public:
   /*!
     This method takes \f$O(\log n)\f$ time.
   */
-  const Coefficient& operator[](dimension_type i) const;
+  Coefficient_traits::const_reference operator[](dimension_type i) const;
 
   //! Gets the i-th element in the sequence.
   /*!
@@ -281,7 +281,7 @@ public:
 
     This method takes \f$O(\log n)\f$ time.
   */
-  const Coefficient& get(dimension_type i) const;
+  Coefficient_traits::const_reference get(dimension_type i) const;
 
   //! Looks for an element with index i.
   /*!
@@ -435,7 +435,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  iterator find_create(dimension_type i, const Coefficient& x);
+  iterator find_create(dimension_type i, Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]=x; find(i); , but faster.
   /*!
@@ -458,7 +458,8 @@ public:
     between \p itr and the searched position is \f$O(1)\f$ and the row already
     contains an element with this index, this method takes \f$O(1)\f$ time.
   */
-  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
+  iterator find_create(iterator itr, dimension_type i,
+                       Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
@@ -603,7 +604,8 @@ public:
     f(c1) must be equivalent to g(c1, 0).
 
     \param g
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     g(c1, c2) must do nothing when c1 is zero.
 
     This method takes \f$O(n*\log^2 n)\f$ time.
@@ -625,11 +627,13 @@ public:
     The row that will be combined with *this.
 
     \param g
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     g(c1, 0) must do nothing, for every c1.
 
     \param h
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
     This method takes \f$O(n*\log^2 n)\f$ time.
@@ -655,11 +659,13 @@ public:
     f(c1) must be equivalent to g(c1, 0).
 
     \param g
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     g(c1, c2) must do nothing when both c1 and c2 are zero.
 
     \param h
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
     This method takes \f$O(n*\log^2 n)\f$ time.
