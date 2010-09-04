@@ -177,7 +177,8 @@ PPL::PIP_Problem::solve() const {
           // itr may still be end(), but it can still be used as hint.
           for ( ; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
-              const Coefficient& x = c.coefficient(Variable(*pi));
+              Coefficient_traits::const_reference x
+                = c.coefficient(Variable(*pi));
               if (x != 0)
                 itr = row.find_create(itr, i, x);
             } else
