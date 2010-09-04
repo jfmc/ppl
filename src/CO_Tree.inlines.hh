@@ -228,8 +228,7 @@ inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
-  dimension_type index = bisect_in(&(*first) - data,
-                                   &(*last) - data, key);
+  dimension_type index = bisect_in(dfs_index(first), dfs_index(last), key);
   return iterator(*this, index);
 }
 
@@ -238,8 +237,7 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    dimension_type key) const {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
-  dimension_type index = bisect_in(&(*first) - data,
-                                   &(*last) - data, key);
+  dimension_type index = bisect_in(dfs_index(first), dfs_index(last), key);
   return const_iterator(*this, index);
 }
 
@@ -247,7 +245,7 @@ inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, dimension_type key) {
   if (hint == end())
     return bisect(key);
-  dimension_type index = bisect_near(&(*hint) - data, key);
+  dimension_type index = bisect_near(dfs_index(hint), key);
   return iterator(*this, index);
 }
 
@@ -255,7 +253,7 @@ inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
   if (hint == end())
     return bisect(key);
-  dimension_type index = bisect_near(&(*hint) - data, key);
+  dimension_type index = bisect_near(dfs_index(hint), key);
   return const_iterator(*this, index);
 }
 
@@ -694,7 +692,7 @@ CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
   PPL_ASSERT(itr != tree.end());
-  i = &(*itr) - tree.data;
+  i = tree.dfs_index(itr);
   offset = i;
   // This assumes two's complement encoding.
   offset &= -i;

@@ -57,8 +57,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
   if (key1 == candidate1.index())
     return candidate1;
 
-  // `&(candidate1->second) - data' is the index of candidate1.
-  dimension_type candidate2_index = &(*candidate1) - data;
+  dimension_type candidate2_index = dfs_index(candidate1);
 
   if (key1 < candidate1.index()) {
     --candidate2_index;
@@ -121,8 +120,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
     return candidate1;
   }
 
-  // `&(candidate1->second) - data' is the index of candidate1.
-  dimension_type candidate2_index = &(*candidate1) - data;
+  dimension_type candidate2_index = dfs_index(candidate1);
 
   if (key1 < candidate1.index()) {
     --candidate2_index;
@@ -165,7 +163,7 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   iterator itr = erase(key);
   if (itr == end())
     return;
-  dimension_type i = &(*itr) - data;
+  dimension_type i = dfs_index(itr);
   dimension_type* p = indexes + i;
   dimension_type* p_end = indexes + reserved_size + 1;
   for ( ; p != p_end; ++p)
