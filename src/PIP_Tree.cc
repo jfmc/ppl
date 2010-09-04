@@ -48,12 +48,12 @@ class add_mul_assign_row_helper1 {
 
 public:
   inline
-  add_mul_assign_row_helper1(const Coefficient& c1)
+  add_mul_assign_row_helper1(Coefficient_traits::const_reference c1)
     : c(c1) {
   }
 
   inline void
-  operator()(Coefficient& x, const Coefficient& y) const {
+  operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
     x += c * y;
   }
 
@@ -65,12 +65,12 @@ class add_mul_assign_row_helper2 {
 
 public:
   inline
-  add_mul_assign_row_helper2(const Coefficient& c1)
+  add_mul_assign_row_helper2(Coefficient_traits::const_reference c1)
     : c(c1) {
   }
 
   inline void
-  operator()(Coefficient& x, const Coefficient& y) const {
+  operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
     x = y;
     x *= c;
   }
@@ -93,12 +93,12 @@ add_mul_assign_row(PIP_Tree_Node::matrix_type::row_type& x,
 namespace {
 
 inline void
-sub_assign_helper1(Coefficient& x, const Coefficient& y) {
+sub_assign_helper1(Coefficient& x, Coefficient_traits::const_reference y) {
   x -= y;
 }
 
 inline void
-sub_assign_helper2(Coefficient& x, const Coefficient& y) {
+sub_assign_helper2(Coefficient& x, Coefficient_traits::const_reference y) {
   x = y;
   neg_assign(x);
 }
@@ -134,7 +134,8 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
          y_end = y.end(); y_i != y_end; ++y_i, ++i) {
     PPL_ASSERT(y_i->is_nonstrict_inequality());
     PIP_Tree_Node::matrix_type::row_type& x_i = x[i];
-    const Coefficient& inhomogeneous_term = y_i->inhomogeneous_term();
+    Coefficient_traits::const_reference inhomogeneous_term
+      = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj = parameters.begin();
     dimension_type j = 1;
     PIP_Tree_Node::matrix_type::row_type::iterator itr = x_i.end();
@@ -145,7 +146,7 @@ merge_assign(PIP_Tree_Node::matrix_type& x,
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
         break;
-      const Coefficient& c = y_i->coefficient(vj);
+      Coefficient_traits::const_reference c = y_i->coefficient(vj);
       if (c != 0)
         itr = x_i.find_create(itr, j, c);
     }
@@ -243,8 +244,8 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
              const dimension_type jb,
              Coefficient_traits::const_reference cst_a = -1,
              Coefficient_traits::const_reference cst_b = -1) {
-  const Coefficient& sij_a = pivot_a.get(ja);
-  const Coefficient& sij_b = pivot_b.get(jb);
+  Coefficient_traits::const_reference sij_a = pivot_a.get(ja);
+  Coefficient_traits::const_reference sij_b = pivot_b.get(jb);
   PPL_ASSERT(sij_a > 0);
   PPL_ASSERT(sij_b > 0);
 
@@ -296,8 +297,8 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
     } else {
       // Not in base.
       const PIP_Tree_Node::matrix_type::row_type& t_mk = tableau[mk];
-      const Coefficient& t_mk_ja = t_mk.get(ja);
-      const Coefficient& t_mk_jb = t_mk.get(jb);
+      Coefficient_traits::const_reference t_mk_ja = t_mk.get(ja);
+      Coefficient_traits::const_reference t_mk_jb = t_mk.get(jb);
       if (&t_mk_ja == &Coefficient_zero())
         if (&t_mk_jb == &Coefficient_zero())
           continue;
@@ -369,7 +370,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
       for ( ; i != i_end; ++i) {
         pivot_itr = pivot_row.find(pivot_itr, *i);
         PPL_ASSERT(pivot_itr != pivot_row.end());
-        const Coefficient& sij_a = *pivot_itr;
+        Coefficient_traits::const_reference sij_a = *pivot_itr;
         ++pivot_itr;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
@@ -406,7 +407,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
       for ( ; i != i_end; ++i) {
         pivot_itr = pivot_row.find(pivot_itr, *i);
         PPL_ASSERT(pivot_itr != pivot_row.end());
-        const Coefficient& sij_a = *pivot_itr;
+        Coefficient_traits::const_reference sij_a = *pivot_itr;
         PPL_ASSERT(sij_a > 0);
         PPL_ASSERT(*sij_b > 0);
 
@@ -510,7 +511,7 @@ row_normalize(PIP_Tree_Node::matrix_type::row_type& x,
   gcd = den;
   for (PIP_Tree_Node::matrix_type::row_type::const_iterator
     i = x.begin(), i_end = x.end(); i != i_end; ++i) {
-    const Coefficient& x_i = *i;
+    Coefficient_traits::const_reference x_i = *i;
     if (x_i != 0) {
       gcd_assign(gcd, x_i, gcd);
       if (gcd == 1)
@@ -725,14 +726,14 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
   candidates_map_t candidates_map;
   for (dimension_type i = 0; i < num_rows; ++i) {
     const PIP_Tree_Node::matrix_type::row_type& s_i = s[i];
-    const Coefficient& s_i0 = s_i.get(0);
+    Coefficient_traits::const_reference s_i0 = s_i.get(0);
     if (s_i0 < 0) {
       dimension_type j;
       if (!find_lexico_minimum_column(s, mapping, basis, s_i, 1, j)) {
         // No positive pivot candidate: unfeasible problem.
         return false;
       }
-      const Coefficient& s_ij = s_i.get(j);
+      Coefficient_traits::const_reference s_ij = s_i.get(j);
       candidates_map_t::iterator itr = candidates_map.find(j);
       if (itr == candidates_map.end()) {
         data_struct& current_data = candidates_map[j];
@@ -742,7 +743,7 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
       } else {
         data_struct& current_data = candidates_map[j];
 
-        const Coefficient& value_b = s_i.get(j);
+        Coefficient_traits::const_reference value_b = s_i.get(j);
 
         PPL_ASSERT(*(current_data.value) > 0);
         PPL_ASSERT(value_b > 0);
@@ -1460,7 +1461,7 @@ PIP_Solution_Node::Tableau::normalize() {
     matrix_type::row_type::const_iterator j = s_i.begin();
     matrix_type::row_type::const_iterator j_end = s_i.end();
     for ( ; j != j_end; ++j) {
-      const Coefficient& s_ij = *j;
+      Coefficient_traits::const_reference s_ij = *j;
       if (s_ij != 0) {
         gcd_assign(gcd, s_ij, gcd);
         if (gcd == 1)
@@ -1471,7 +1472,7 @@ PIP_Solution_Node::Tableau::normalize() {
     j = t_i.begin();
     j_end = t_i.end();
     for ( ; j != j_end; ++j) {
-      const Coefficient& t_ij = *j;
+      Coefficient_traits::const_reference t_ij = *j;
       if (t_ij != 0) {
         gcd_assign(gcd, t_ij, gcd);
         if (gcd == 1)
@@ -1528,8 +1529,8 @@ PIP_Solution_Node::Tableau
   const dimension_type num_rows = s.num_rows();
   const matrix_type::row_type& s_0 = s[row_0];
   const matrix_type::row_type& s_1 = s[row_1];
-  const Coefficient& s_0_0 = s_0.get(col_0);
-  const Coefficient& s_1_1 = s_1.get(col_1);
+  Coefficient_traits::const_reference s_0_0 = s_0.get(col_0);
+  Coefficient_traits::const_reference s_1_1 = s_1.get(col_1);
   const matrix_type::row_type& t_0 = t[row_0];
   const matrix_type::row_type& t_1 = t[row_1];
   PPL_DIRTY_TEMP_COEFFICIENT(product_0);
@@ -1559,8 +1560,8 @@ PIP_Solution_Node::Tableau
   matrix_type::row_type::const_iterator j1_end = t_1.end();
   for (dimension_type i = 0; i < num_rows; ++i) {
     const matrix_type::row_type& s_i = s[i];
-    const Coefficient& s_i_col_0 = s_i.get(col_0);
-    const Coefficient& s_i_col_1 = s_i.get(col_1);
+    Coefficient_traits::const_reference s_i_col_0 = s_i.get(col_0);
+    Coefficient_traits::const_reference s_i_col_1 = s_i.get(col_1);
     j0 = t_0.begin();
     j1 = t_1.begin();
     while (j0 != j0_end && j1 != j1_end) {
@@ -1895,7 +1896,7 @@ PIP_Solution_Node::row_sign(const matrix_type::row_type& x,
   if (big_dimension != not_a_dimension()) {
     // If a big parameter has been set and its coefficient is not zero,
     // then return the sign of the coefficient.
-    const Coefficient& x_big = x.get(big_dimension);
+    Coefficient_traits::const_reference x_big = x.get(big_dimension);
     if (x_big > 0)
       return POSITIVE;
     if (x_big < 0)
@@ -1907,7 +1908,7 @@ PIP_Solution_Node::row_sign(const matrix_type::row_type& x,
   matrix_type::row_type::const_iterator i = x.begin();
   matrix_type::row_type::const_iterator i_end = x.end();
   for ( ; i != i_end; ++i) {
-    const Coefficient& x_i = *i;
+    Coefficient_traits::const_reference x_i = *i;
     if (x_i > 0) {
       if (sign == NEGATIVE)
         return MIXED;
@@ -2001,7 +2002,7 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           continue;
         // Not a basic variable.
         const dimension_type mi = mapping[i];
-        const Coefficient& den = scaling[mi];
+        Coefficient_traits::const_reference den = scaling[mi];
         if (s[mi].get(0) % den == 0)
           continue;
         // Here constant term is not integer.
@@ -2060,14 +2061,14 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     scaling[pi] = 1;
 
     // Perform a pivot operation on the matrix.
-    const Coefficient& pivot_pj = pivot.get(pj);
+    Coefficient_traits::const_reference pivot_pj = pivot.get(pj);
     {
       matrix_type::row_type::const_iterator j;
       matrix_type::row_type::const_iterator j_end;
       for (j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
         if (j.index() == pj)
           continue;
-        const Coefficient& pivot_j = *j;
+        Coefficient_traits::const_reference pivot_j = *j;
         // Do nothing if the j-th pivot element is zero.
         if (pivot_j == 0)
           continue;
@@ -2187,7 +2188,7 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
     big_dimension = std::distance(parameters.begin(), pos) + 1;
   }
 
-  const Coefficient& denom = tableau.denominator();
+  Coefficient_traits::const_reference denom = tableau.denominator();
 
   for (Constraint_Sequence::const_iterator
          c_iter = input_cs.begin() + first_pending_constraint,
@@ -2219,7 +2220,8 @@ PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
       for (dimension_type i = 0, i_end = constraint.space_dimension();
            i != i_end; ++i) {
         const bool is_parameter = (1 == parameters.count(i));
-        const Coefficient& coeff_i = constraint.coefficient(Variable(i));
+        Coefficient_traits::const_reference coeff_i
+          = constraint.coefficient(Variable(i));
         if (coeff_i == 0) {
           // Optimize computation below: only update p/v index.
           if (is_parameter)
@@ -2331,7 +2333,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     const dimension_type num_rows = tableau.t.num_rows();
     const dimension_type num_vars = tableau.s.num_columns();
     const dimension_type num_params = tableau.t.num_columns();
-    const Coefficient& tableau_den = tableau.denominator();
+    Coefficient_traits::const_reference tableau_den = tableau.denominator();
 
 #ifdef NOISY_PIP
     tableau.ascii_dump(std::cerr);
@@ -2540,7 +2542,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_type::iterator itr = s_i.end();
         for (j = s_pivot.begin(), j_end = s_pivot.end(); j != j_end; ++j) {
           if (j.index() != pj) {
-            const Coefficient& s_pivot_j = *j;
+            Coefficient_traits::const_reference s_pivot_j = *j;
             // Do nothing if the j-th pivot element is zero.
             if (s_pivot_j != 0) {
               product = s_pivot_j * s_i_pj;
@@ -2568,12 +2570,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       for (dimension_type i = num_rows; i-- > 0; ) {
         matrix_type::row_type& s_i = tableau.s[i];
         matrix_type::row_type& t_i = tableau.t[i];
-        const Coefficient& s_i_pj = s_i.get(pj);
+        Coefficient_traits::const_reference s_i_pj = s_i.get(pj);
         matrix_type::row_type::const_iterator j;
         matrix_type::row_type::const_iterator j_end;
         matrix_type::row_type::iterator k = t_i.end();
         for (j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
-          const Coefficient& t_pivot_j = *j;
+          Coefficient_traits::const_reference t_pivot_j = *j;
           // Do nothing if the j-th pivot element is zero.
           if (t_pivot_j != 0) {
             product = t_pivot_j * s_i_pj;
@@ -2841,7 +2843,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     tableau.normalize();
 
     // Look for any row having non integer parameter coefficients.
-    const Coefficient& den = tableau.denominator();
+    Coefficient_traits::const_reference den = tableau.denominator();
     for (dimension_type k = 0; k < num_vars; ++k) {
       if (basis[k])
         // Basic variable = 0, hence integer.
@@ -2985,7 +2987,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   const dimension_type num_vars = tableau.s.num_columns();
   const dimension_type num_params = tableau.t.num_columns();
   PPL_ASSERT(num_params == 1 + parameters.size());
-  const Coefficient& den = tableau.denominator();
+  Coefficient_traits::const_reference den = tableau.denominator();
 
   PPL_DIRTY_TEMP_COEFFICIENT(mod);
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
@@ -3483,7 +3485,7 @@ PIP_Solution_Node
 
 
   PPL_DIRTY_TEMP_COEFFICIENT(norm_coeff);
-  const Coefficient& den = tableau.denominator();
+  Coefficient_traits::const_reference den = tableau.denominator();
   for (dimension_type i = num_pip_vars; i-- > 0; ) {
     Linear_Expression& sol_i = x.solution[i];
     sol_i = Linear_Expression(0);
@@ -3498,7 +3500,7 @@ PIP_Solution_Node
     if (j != j_end && j.index() == 0)
       ++j;
     for ( ; j != j_end; ++j) {
-      const Coefficient& coeff = *j;
+      Coefficient_traits::const_reference coeff = *j;
       if (coeff == 0)
         continue;
       norm_coeff = coeff / den;
