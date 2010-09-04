@@ -91,7 +91,7 @@ PPL::Dense_Row::normalize() {
   dimension_type i = sz;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   while (i > 0) {
-    const Coefficient& x_i = x[--i];
+    Coefficient_traits::const_reference x_i = x[--i];
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
       if (x_i_sign < 0)
@@ -106,7 +106,7 @@ PPL::Dense_Row::normalize() {
   if (gcd == 1)
     return;
   while (i > 0) {
-    const Coefficient& x_i = x[--i];
+    Coefficient_traits::const_reference x_i = x[--i];
     if (x_i != 0) {
       // Note: we use the ternary version instead of a more concise
       // gcd_assign(gcd, x_i) to take advantage of the fact that

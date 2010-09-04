@@ -355,7 +355,7 @@ Dense_Row::end() const {
   return const_iterator(*this, size());
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Dense_Row::get(dimension_type i) const {
   return (*this)[i];
 }
@@ -403,7 +403,8 @@ Dense_Row::lower_bound(const_iterator itr, dimension_type i) const {
 }
 
 inline Dense_Row::iterator
-Dense_Row::find_create(dimension_type i, const Coefficient& x) {
+Dense_Row::find_create(dimension_type i,
+                       Coefficient_traits::const_reference x) {
   (*this)[i] = x;
   return find(i);
 }
@@ -414,7 +415,8 @@ Dense_Row::find_create(dimension_type i) {
 }
 
 inline Dense_Row::iterator
-Dense_Row::find_create(iterator itr, dimension_type i, const Coefficient& x) {
+Dense_Row::find_create(iterator itr, dimension_type i,
+                       Coefficient_traits::const_reference x) {
   (void)itr;
   (*this)[i] = x;
   return find(i);

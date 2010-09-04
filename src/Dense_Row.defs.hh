@@ -263,7 +263,7 @@ public:
 
   //! Gets the i-th element.
   //! Provided for compatibility with Sparse_Row.
-  const Coefficient& get(dimension_type i) const;
+  Coefficient_traits::const_reference get(dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
   iterator find(dimension_type i);
@@ -290,13 +290,14 @@ public:
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(dimension_type i, const Coefficient& x);
+  iterator find_create(dimension_type i, Coefficient_traits::const_reference x);
 
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(dimension_type i);
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(iterator itr, dimension_type i, const Coefficient& x);
+  iterator find_create(iterator itr, dimension_type i,
+                       Coefficient_traits::const_reference x);
 
   //! Provided for compatibility with Sparse_Row.
   iterator find_create(iterator itr, dimension_type i);
@@ -311,7 +312,8 @@ public:
     f(c1) must be equivalent to g(c1, 0).
 
     \param g
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     g(c1, c2) must do nothing when c1 is zero.
 
     This method takes \f$O(n)\f$ time.
@@ -333,11 +335,13 @@ public:
     The row that will be combined with *this.
 
     \param g
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     g(c1, 0) must do nothing, for every c1.
 
     \param h
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
     This method takes \f$O(n)\f$ time.
@@ -363,11 +367,13 @@ public:
     f(c1) must be equivalent to g(c1, 0).
 
     \param g
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     g(c1, c2) must do nothing when both c1 and c2 are zero.
 
     \param h
-    A functor that should take a Coefficient& and a const Coefficient&.
+    A functor that should take a Coefficient& and a
+    Coefficient_traits::const_reference.
     h(c1, c2) must be equivalent to g(c1, c2) when c1 is zero.
 
     This method takes \f$O(n)\f$ time.
