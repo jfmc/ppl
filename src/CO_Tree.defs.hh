@@ -95,6 +95,10 @@ namespace Parma_Polyhedra_Library {
 */
 class CO_Tree {
 
+public:
+  class const_iterator;
+  class iterator;
+
 private:
   //! This is used for node heights and depths in the tree.
   typedef unsigned height_t;
@@ -103,6 +107,28 @@ private:
                          "height_t is too small to store depths.");
 
   class tree_iterator;
+
+  // This must be declared here, because it is a friend of const_iterator.
+  //! Returns the index of the current element in the DFS layout of the
+  //! complete tree.
+  /*!
+    \return the index of the current element in the DFS layout of the complete
+            tree.
+
+    \param itr the iterator that points to the desired element.
+  */
+  dimension_type dfs_index(const_iterator itr) const;
+
+  // This must be declared here, because it is a friend of iterator.
+  //! Returns the index of the current element in the DFS layout of the
+  //! complete tree.
+  /*!
+    \return the index of the current element in the DFS layout of the complete
+            tree.
+
+    \param itr the iterator that points to the desired element.
+  */
+  dimension_type dfs_index(iterator itr) const;
 
 public:
 
@@ -267,6 +293,8 @@ public:
     //! A pointer to the corresponding tree, used for debug purposes only.
     const CO_Tree* tree;
 #endif
+
+    friend dimension_type CO_Tree::dfs_index(const_iterator itr) const;
   };
 
   //! An %iterator on the tree elements, ordered by key.
@@ -428,6 +456,7 @@ public:
 #endif
 
     friend const_iterator& const_iterator::operator=(const iterator&);
+    friend dimension_type CO_Tree::dfs_index(iterator itr) const;
   };
 
   //! Constructs an empty tree.

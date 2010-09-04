@@ -25,6 +25,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+CO_Tree::dfs_index(const_iterator itr) const {
+  PPL_ASSERT(itr.current_index != 0);
+  PPL_ASSERT(itr.current_index >= indexes + 1);
+  PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+  return static_cast<dimension_type>(itr.current_index - indexes);
+}
+
+inline dimension_type
+CO_Tree::dfs_index(iterator itr) const {
+  PPL_ASSERT(itr.current_index != 0);
+  PPL_ASSERT(itr.current_index >= indexes + 1);
+  PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+  return static_cast<dimension_type>(itr.current_index - indexes);
+}
+
 inline
 CO_Tree::CO_Tree() {
 
