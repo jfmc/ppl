@@ -112,6 +112,7 @@ public:
     implementation have to be replaced with consts of the correct type.
   */
   typedef Coefficient data_type;
+  typedef Coefficient_traits::const_reference data_type_const_reference;
 
   class iterator;
 
@@ -129,7 +130,7 @@ public:
     typedef const data_type value_type;
     typedef ptrdiff_t difference_type;
     typedef value_type* pointer;
-    typedef Coefficient_traits::const_reference reference;
+    typedef data_type_const_reference reference;
 
     //! Constructs an invalid const_iterator.
     /*!
@@ -230,7 +231,7 @@ public:
     const_iterator operator--(int);
 
     //! Returns the current element.
-    Coefficient_traits::const_reference operator*() const;
+    data_type_const_reference operator*() const;
 
     //! Returns the index of the element pointed to by \c *this.
     /*!
@@ -389,7 +390,7 @@ public:
     data_type& operator*();
 
     //! Returns the current element.
-    Coefficient_traits::const_reference operator*() const;
+    data_type_const_reference operator*() const;
 
     //! Returns the index of the element pointed to by \c *this.
     /*!
@@ -518,7 +519,7 @@ public:
     This method takes \f$O(\log n)\f$ time if the element already exists, and
     \f$O(\log^2 n)\f$ amortized time otherwise.amortized
   */
-  iterator insert(dimension_type key, const data_type& data);
+  iterator insert(dimension_type key, data_type_const_reference data);
 
   //! Inserts an element in the tree.
   /*!
@@ -576,7 +577,8 @@ public:
     This method takes \f$O(\log n)\f$ time if the element already exists,
     and \f$O(\log^2 n)\f$ amortized time otherwise.
   */
-  iterator insert(iterator itr, dimension_type key, const data_type& data);
+  iterator insert(iterator itr, dimension_type key,
+                  data_type_const_reference data);
 
   //! Erases the element with key \p key from the tree.
   /*!
@@ -873,7 +875,8 @@ private:
     This method takes \f$O(1)\f$ time if the element already exists, and
     \f$O(\log^2 n)\f$ amortized time otherwise.
   */
-  tree_iterator insert_precise(dimension_type key, const data_type& data,
+  tree_iterator insert_precise(dimension_type key,
+                               data_type_const_reference data,
                                tree_iterator itr);
 
   //! Inserts an element in the tree.
@@ -891,7 +894,8 @@ private:
 
     This method takes \f$O(1)\f$ time.
   */
-  void insert_in_empty_tree(dimension_type key, const data_type& data);
+  void insert_in_empty_tree(dimension_type key,
+                            data_type_const_reference data);
 
   //! Erases from the tree the element pointed to by \p itr .
   /*!
@@ -1040,7 +1044,7 @@ private:
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
   tree_iterator rebalance(tree_iterator itr, dimension_type key,
-                          const data_type& value);
+                          data_type_const_reference value);
 
   //! Moves all elements of a subtree to the rightmost end.
   /*!
@@ -1068,7 +1072,7 @@ private:
   */
   dimension_type compact_elements_in_the_rightmost_end(
     dimension_type last_in_subtree, dimension_type subtree_size,
-    dimension_type key, const data_type& value,
+    dimension_type key, data_type_const_reference value,
     bool add_element);
 
   //! Redistributes the elements in the subtree rooted at \p root_index.
@@ -1101,7 +1105,7 @@ private:
                                         dimension_type subtree_size,
                                         dimension_type last_used,
                                         dimension_type key,
-                                        const data_type& value,
+                                        data_type_const_reference value,
                                         bool add_element);
 
   //! Moves all data in the tree \p tree into *this.

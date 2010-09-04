@@ -102,7 +102,8 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
 }
 
 PPL::CO_Tree::iterator
-PPL::CO_Tree::insert(iterator itr, dimension_type key1, const data_type& data1) {
+PPL::CO_Tree::insert(iterator itr, dimension_type key1,
+                     data_type_const_reference data1) {
   PPL_ASSERT(key1 != unused_index);
 
   if (empty()) {
@@ -350,7 +351,8 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 }
 
 PPL::CO_Tree::tree_iterator
-PPL::CO_Tree::insert_precise(dimension_type key1, const data_type& data1,
+PPL::CO_Tree::insert_precise(dimension_type key1,
+                             data_type_const_reference data1,
                              tree_iterator itr) {
   PPL_ASSERT(key1 != unused_index);
   PPL_ASSERT(!empty());
@@ -738,7 +740,7 @@ PPL::CO_Tree::rebuild_bigger_tree() {
 
 PPL::CO_Tree::tree_iterator
 PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
-                        const data_type& value) {
+                        data_type_const_reference value) {
   // Trees with reserved size 3 need not to be rebalanced.
   // This check is needed because they can't be shrunk, so they may violate the
   // density thresholds, and this would prevent the following while from working
@@ -814,7 +816,7 @@ PPL::CO_Tree
 ::compact_elements_in_the_rightmost_end(dimension_type last_in_subtree,
                                         dimension_type subtree_size,
                                         dimension_type key,
-                                        const data_type& value,
+                                        data_type_const_reference value,
                                         bool add_element) {
 
   PPL_ASSERT(subtree_size != 0);
@@ -897,7 +899,7 @@ PPL::CO_Tree::redistribute_elements_in_subtree(dimension_type root_index,
                                                dimension_type subtree_size,
                                                dimension_type last_used,
                                                dimension_type key,
-                                               const data_type& value,
+                                               data_type_const_reference value,
                                                bool add_element) {
   // This is static and with static allocation, to improve performance.
   // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a

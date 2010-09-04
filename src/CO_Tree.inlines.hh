@@ -98,7 +98,7 @@ CO_Tree::insert(dimension_type key1) {
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key1, const data_type& data1) {
+CO_Tree::insert(dimension_type key1, data_type_const_reference data1) {
   if (empty()) {
     insert_in_empty_tree(key1, data1);
     tree_iterator itr(*this);
@@ -244,7 +244,8 @@ CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
 }
 
 inline void
-CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) {
+CO_Tree::insert_in_empty_tree(dimension_type key1,
+                              data_type_const_reference data1) {
   PPL_ASSERT(empty());
   rebuild_bigger_tree();
   tree_iterator itr(*this);
