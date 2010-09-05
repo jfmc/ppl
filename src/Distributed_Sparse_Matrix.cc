@@ -500,6 +500,8 @@ PPL::Distributed_Sparse_Matrix::init(dimension_type num_rows1,
 
     PPL_ASSERT(k < comm_size);
     next_rank = k + 1;
+    if (next_rank == comm_size)
+      next_rank = 0;
 
     PPL_ASSERT(current_row == num_rows1);
 
