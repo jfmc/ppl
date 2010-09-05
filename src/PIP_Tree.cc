@@ -299,8 +299,8 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
       const PIP_Tree_Node::matrix_type::row_type& t_mk = tableau[mk];
       Coefficient_traits::const_reference t_mk_ja = t_mk.get(ja);
       Coefficient_traits::const_reference t_mk_jb = t_mk.get(jb);
-      if (&t_mk_ja == &Coefficient_zero())
-        if (&t_mk_jb == &Coefficient_zero())
+      if (t_mk_ja == 0)
+        if (t_mk_jb == 0)
           continue;
         else {
           const int rhs_sign = rhs_coeff_sign * sgn(t_mk_jb);
@@ -310,7 +310,7 @@ column_lower(const PIP_Tree_Node::matrix_type& tableau,
             return 0 > rhs_sign;
         }
       else
-        if (&t_mk_jb == &Coefficient_zero()) {
+        if (t_mk_jb == 0) {
           const int lhs_sign = lhs_coeff_sign * sgn(t_mk_ja);
           if (lhs_sign == 0)
             continue;
@@ -362,7 +362,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
     PIP_Tree_Node::matrix_type::row_type::const_iterator pivot_itr;
     pivot_itr = pivot_row.find(min_column);
     PPL_ASSERT(pivot_itr != pivot_row.end());
-    const Coefficient* sij_b = &(*pivot_itr);
+    Coefficient sij_b = *pivot_itr;
     ++pivot_itr;
     const dimension_type row_index = mapping[var_index];
     const bool in_base = basis[var_index];
@@ -373,7 +373,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         Coefficient_traits::const_reference sij_a = *pivot_itr;
         ++pivot_itr;
         PPL_ASSERT(sij_a > 0);
-        PPL_ASSERT(*sij_b > 0);
+        PPL_ASSERT(sij_b > 0);
 
         // Reconstitute the identity submatrix part of tableau.
         if (row_index != *i) {
@@ -381,7 +381,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
             new_candidates.clear();
             min_column = *i;
-            sij_b = &sij_a;
+            sij_b = sij_a;
             new_candidates.push_back(min_column);
           } else
             // Optimizing for: lhs == 0 && rhs == 0;
@@ -396,12 +396,12 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         = row.lower_bound(min_column);
       PIP_Tree_Node::matrix_type::row_type::const_iterator row_end
         = row.end();
-      const Coefficient* row_jb;
+      PPL_DIRTY_TEMP_COEFFICIENT(row_jb);
       if (row_itr == row_end || row_itr.index() > min_column)
-        row_jb = &(Coefficient_zero());
+        row_jb = 0;
       else {
         PPL_ASSERT(row_itr.index() == min_column);
-        row_jb = &(*row_itr);
+        row_jb = *row_itr;
         ++row_itr;
       }
       for ( ; i != i_end; ++i) {
@@ -409,56 +409,35 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
         PPL_ASSERT(pivot_itr != pivot_row.end());
         Coefficient_traits::const_reference sij_a = *pivot_itr;
         PPL_ASSERT(sij_a > 0);
-        PPL_ASSERT(*sij_b > 0);
+        PPL_ASSERT(sij_b > 0);
 
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
         if (row_itr != row_end && row_itr.index() < *i)
           row_itr = row.lower_bound(row_itr, *i);
-        const Coefficient* row_ja;
+        PPL_DIRTY_TEMP_COEFFICIENT(row_ja);
         if (row_itr == row_end || row_itr.index() > *i)
-          row_ja = &(Coefficient_zero());
+          row_ja = 0;
         else {
           PPL_ASSERT(row_itr.index() == *i);
-          row_ja = &(*row_itr);
+          row_ja = *row_itr;
           ++row_itr;
         }
 
-        // Before computing and comparing the actual values, the signs are
-        // compared. This speeds up the code, because the values' computation
-        // is a bit expensive.
-
-        // lhs_sign is actually the opposite of the left-hand side sign.
-        // rhs_sign is actually the opposite of the right-hand side sign.
-        int lhs_sign = sgn(*row_ja);
-        int rhs_sign = sgn(*row_jb);
-        if (lhs_sign != rhs_sign) {
-          if (lhs_sign < rhs_sign) {
+        // lhs is actually the left-hand side with toggled sign.
+        // rhs is actually the right-hand side with toggled sign.
+        lhs = sij_b * row_ja;
+        rhs = sij_a * row_jb;
+        if (lhs == rhs)
+          new_candidates.push_back(*i);
+        else
+          if (lhs < rhs) {
             new_candidates.clear();
             min_column = *i;
             row_jb = row_ja;
-            sij_b = &sij_a;
+            sij_b = sij_a;
             new_candidates.push_back(min_column);
           }
-        } else {
-          // Sign comparison is not enough this time.
-          // Do the full computation.
-
-          // lhs is actually the left-hand side with toggled sign.
-          // rhs is actually the right-hand side with toggled sign.
-          lhs = *sij_b * *row_ja;
-          rhs = sij_a * *row_jb;
-          if (lhs == rhs)
-            new_candidates.push_back(*i);
-          else
-            if (lhs < rhs) {
-              new_candidates.clear();
-              min_column = *i;
-              row_jb = row_ja;
-              sij_b = &sij_a;
-              new_candidates.push_back(min_column);
-            }
-        }
       }
     }
     std::swap(candidates, new_candidates);
@@ -532,10 +511,9 @@ row_normalize(PIP_Tree_Node::matrix_type::row_type& x,
 // compatibility_check_find_pivot, so it must be a global declaration.
 struct compatibility_check_find_pivot_in_set_data {
   dimension_type row_index;
-  // We cache pointers to cost and value to avoid calling get() multiple
-  // times.
-  const Coefficient* cost;
-  const Coefficient* value;
+  // We cache cost and value to avoid calling get() multiple times.
+  Coefficient cost;
+  Coefficient value;
   bool operator==(const compatibility_check_find_pivot_in_set_data& x) const {
     return row_index == x.row_index;
   }
@@ -566,8 +544,8 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
     PPL_ASSERT(i != i_end);
     dimension_type pi = i->second.row_index;
     dimension_type pj = i->first;
-    const Coefficient* cost = i->second.cost;
-    const Coefficient* value = i->second.value;
+    Coefficient cost = i->second.cost;
+    Coefficient value = i->second.value;
     new_candidates.clear();
     new_candidates.push_back(*i);
     if (in_base) {
@@ -576,14 +554,14 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
 
         const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
-        const Coefficient* challenger_cost = i->second.cost;
-        const Coefficient* challenger_value = i->second.value;
-        PPL_ASSERT(*value > 0);
-        PPL_ASSERT(*challenger_value > 0);
+        Coefficient_traits::const_reference challenger_cost = i->second.cost;
+        Coefficient_traits::const_reference challenger_value = i->second.value;
+        PPL_ASSERT(value > 0);
+        PPL_ASSERT(challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
 
-        const int lhs_coeff_sgn = sgn(*cost);
-        const int rhs_coeff_sgn = sgn(*challenger_cost);
+        const int lhs_coeff_sgn = sgn(cost);
+        const int rhs_coeff_sgn = sgn(challenger_cost);
 
         PPL_ASSERT(pj != challenger_j);
 
@@ -620,49 +598,49 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
       PIP_Tree_Node::matrix_type::row_type::const_iterator row_itr
         = row.lower_bound(pj);
       PIP_Tree_Node::matrix_type::row_type::const_iterator row_end = row.end();
-      const Coefficient* row_value;
+      PPL_DIRTY_TEMP_COEFFICIENT(row_value);
       if (row_itr != row_end && row_itr.index() == pj) {
-        row_value = &(*row_itr);
+        row_value = *row_itr;
         ++row_itr;
       } else
-        row_value = &(Coefficient_zero());
+        row_value = 0;
       for (++i; i != i_end; ++i) {
         const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
-        const Coefficient* challenger_cost = i->second.cost;
-        const Coefficient* challenger_value = i->second.value;
-        PPL_ASSERT(*value > 0);
-        PPL_ASSERT(*challenger_value > 0);
+        Coefficient_traits::const_reference challenger_cost = i->second.cost;
+        Coefficient_traits::const_reference challenger_value = i->second.value;
+        PPL_ASSERT(value > 0);
+        PPL_ASSERT(challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
 
-        const Coefficient* row_challenger_value;
+        PPL_DIRTY_TEMP_COEFFICIENT(row_challenger_value);
         // row_challenger_value = &(row.get(challenger_j));
         if (row_itr != row_end) {
           if (row_itr.index() < challenger_j) {
             row_itr = row.lower_bound(row_itr, challenger_j);
             if (row_itr != row_end && row_itr.index() == challenger_j) {
-              row_challenger_value = &(*row_itr);
+              row_challenger_value = *row_itr;
               ++row_itr;
             } else
-              row_challenger_value = &(Coefficient_zero());
+              row_challenger_value = 0;
           } else {
             if (row_itr.index() == challenger_j) {
-              row_challenger_value = &(*row_itr);
+              row_challenger_value = *row_itr;
               ++row_itr;
             } else {
               PPL_ASSERT(row_itr.index() > challenger_j);
-              row_challenger_value = &(Coefficient_zero());
+              row_challenger_value = 0;
             }
           }
         } else
-          row_challenger_value = &(Coefficient_zero());
+          row_challenger_value = 0;
 
         // Before computing and comparing the actual values, the signs are
         // compared. This speeds up the code, because the values' computation
         // is a bit expensive.
 
-        int lhs_sign = sgn(*cost) * sgn(*row_value);
-        int rhs_sign = sgn(*challenger_cost) * sgn(*row_challenger_value);
+        int lhs_sign = sgn(cost) * sgn(row_value);
+        int rhs_sign = sgn(challenger_cost) * sgn(row_challenger_value);
 
         if (lhs_sign != rhs_sign) {
           if (lhs_sign > rhs_sign) {
@@ -680,14 +658,14 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
           // Do the full computation.
 
           PPL_DIRTY_TEMP_COEFFICIENT(lhs);
-          lhs = *cost;
-          lhs *= *challenger_value;
+          lhs = cost;
+          lhs *= challenger_value;
           PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-          rhs = *challenger_cost;
-          rhs *= *value;
+          rhs = challenger_cost;
+          rhs *= value;
 
-          lhs *= *row_value;
-          rhs *= *row_challenger_value;
+          lhs *= row_value;
+          rhs *= row_challenger_value;
 
           if (lhs == rhs)
             new_candidates.push_back(*i);
@@ -738,20 +716,20 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
       if (itr == candidates_map.end()) {
         data_struct& current_data = candidates_map[j];
         current_data.row_index = i;
-        current_data.cost = &s_i0;
-        current_data.value = &s_ij;
+        current_data.cost = s_i0;
+        current_data.value = s_ij;
       } else {
         data_struct& current_data = candidates_map[j];
 
         Coefficient_traits::const_reference value_b = s_i.get(j);
 
-        PPL_ASSERT(*(current_data.value) > 0);
+        PPL_ASSERT(current_data.value > 0);
         PPL_ASSERT(value_b > 0);
 
         // Before computing and comparing the actual values, the signs are
         // compared. This speeds up the code, because the values' computation
         // is a bit expensive.
-        int lhs_coeff_sgn = sgn(*(current_data.cost));
+        int lhs_coeff_sgn = sgn(current_data.cost);
         int rhs_coeff_sgn = sgn(s_i0);
 
         if (lhs_coeff_sgn != rhs_coeff_sgn) {
@@ -761,8 +739,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
           if (lhs_coeff_sgn > rhs_coeff_sgn) {
             // Found better pivot
             current_data.row_index = i;
-            current_data.cost = &(s_i0);
-            current_data.value = &(s_ij);
+            current_data.cost = s_i0;
+            current_data.value = s_ij;
           }
           // Otherwise, keep current pivot for this column.
         } else {
@@ -771,12 +749,12 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
           // Do the full computation.
 
           PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
-          lhs_coeff = *(current_data.cost);
+          lhs_coeff = current_data.cost;
           lhs_coeff *= value_b;
 
           PPL_DIRTY_TEMP_COEFFICIENT(rhs_coeff);
           rhs_coeff = s_i0;
-          rhs_coeff *= *(current_data.value);
+          rhs_coeff *= current_data.value;
 
           // Same column: just compare the ratios.
           // This works since all columns are lexico-positive.
@@ -784,8 +762,8 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
           if (lhs_coeff > rhs_coeff) {
             // Found better pivot
             current_data.row_index = i;
-            current_data.cost = &(s_i0);
-            current_data.value = &(s_ij);
+            current_data.cost = s_i0;
+            current_data.value = s_ij;
           }
           // Otherwise, keep current pivot for this column.
         }
