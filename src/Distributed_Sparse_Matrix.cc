@@ -1308,8 +1308,10 @@ void
 PPL::Distributed_Sparse_Matrix::Worker
 ::compare_with_sparse_matrix(dimension_type id) {
   row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
+  if (itr == row_chunks.end()) {
+    mpi::reduce(comm(), true, std::logical_and<bool>(), 0);
     return;
+  }
   std::vector<Sparse_Row>& rows = itr->second;
   std::vector<Sparse_Row> received_rows(rows.size());
 
