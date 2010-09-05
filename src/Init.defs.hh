@@ -26,6 +26,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.types.hh"
 #include "fpu.types.hh"
 
+#include "Distributed_Sparse_Matrix.types.hh"
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
+
+#endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
@@ -75,6 +84,10 @@ private:
   //! Count the number of objects created.
   static unsigned int count;
   static fpu_rounding_direction_type old_rounding_direction;
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  static boost::mpi::communicator* mpi_communicator;
+  static boost::mpi::environment* mpi_environment;
+#endif
 
   friend void set_rounding_for_PPL();
   friend void restore_pre_PPL_rounding();

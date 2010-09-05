@@ -40,11 +40,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include <stdexcept>
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+#include "Distributed_Sparse_Matrix.defs.hh"
+#endif
+
+
 namespace PPL = Parma_Polyhedra_Library;
 
 unsigned int PPL::Init::count = 0;
 
 PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+boost::mpi::communicator* PPL::Init::mpi_communicator;
+boost::mpi::environment* PPL::Init::mpi_environment;
+#endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
 extern "C" void
 ppl_set_GMP_memory_allocation_functions(void)
@@ -176,12 +186,38 @@ PPL::Init::Init() {
     // The default is choosen to have a precision greater than most
     // precise IEC559 floating point (112 bits of mantissa).
     set_irrational_precision(128);
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    // Initialize MPI
+    int fake_argc = 0;
+    char c = '\0';
+    char *fake_argv0 = &c;
+    char **fake_argv = &fake_argv0;
+    mpi_environment = new boost::mpi::environment(fake_argc, fake_argv);
+    mpi_communicator = new boost::mpi::communicator();
+    if (mpi_communicator->rank() == 0) {
+      Distributed_Sparse_Matrix::init_root(*mpi_communicator);
+    } else {
+      // WARNING: worker nodes will block here until process termination
+      Distributed_Sparse_Matrix::worker_main_loop(*mpi_communicator);
+      delete mpi_communicator;
+      delete mpi_environment;
+      exit(0);
+    }
+#endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   }
 }
 
 PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
   if (--count == 0) {
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    // Release MPI resources.
+    Distributed_Sparse_Matrix::quit_workers();
+    delete mpi_communicator;
+    delete mpi_environment;
+#endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
 #if PPL_CAN_CONTROL_FPU
     // ... the FPU rounding direction is restored, ...
     fpu_set_rounding_direction(old_rounding_direction);
