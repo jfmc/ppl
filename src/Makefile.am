@@ -147,6 +147,7 @@ Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
 Dense_Matrix.types.hh \
+Distributed_Sparse_Matrix.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
@@ -258,6 +259,7 @@ Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Dense_Matrix.defs.hh \
 Dense_Matrix.inlines.hh \
+Distributed_Sparse_Matrix.defs.hh \
 Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \
@@ -401,6 +403,7 @@ Coefficient.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Dense_Matrix.cc \
+Distributed_Sparse_Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \
