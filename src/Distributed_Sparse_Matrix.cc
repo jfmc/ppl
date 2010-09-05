@@ -192,6 +192,13 @@ PPL::Distributed_Sparse_Matrix::quit_workers() {
 #endif
 }
 
+PPL::Distributed_Sparse_Matrix::Distributed_Sparse_Matrix()
+  : my_num_columns(0), id(get_unique_id()), row_mapping(),
+    reverse_row_mapping(comm_size), next_rank(0), local_rows(0) {
+  PPL_ASSERT(comm().rank() == 0);
+  PPL_ASSERT(OK());
+}
+
 PPL::Distributed_Sparse_Matrix
 ::Distributed_Sparse_Matrix(dimension_type num_rows1,
                             dimension_type num_cols1) {

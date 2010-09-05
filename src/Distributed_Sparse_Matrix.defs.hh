@@ -54,6 +54,9 @@ public:
   //! destroyed, just before process termination.
   static void quit_workers();
 
+  //! Constructs an empty Distributed_Sparse_Matrix.
+  Distributed_Sparse_Matrix();
+
   Distributed_Sparse_Matrix(dimension_type num_rows,
                             dimension_type num_cols);
 
