@@ -142,6 +142,12 @@ ascii_load(std::istream& s, T& t) {
   }
 }
 
+template <typename Archive, typename T, typename Policy>
+void serialize(Archive& ar, Checked_Number<T, Policy>& number,
+               unsigned int /* version */) {
+ ar & number.raw_value();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Checked_Number_templates_hh)
