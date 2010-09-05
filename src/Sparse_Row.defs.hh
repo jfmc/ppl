@@ -88,6 +88,28 @@ public:
   */
   explicit Sparse_Row(dimension_type n = 0, Flags flags = Flags());
 
+  //! Compares *this with \p row.
+  /*!
+    \return true if and only if (*this).get(i) == row.get(i), for each i.
+
+    \param row
+    The other row
+
+    Unstored and stored zeroes are considered equal.
+  */
+  bool operator==(const Sparse_Row& row) const;
+
+  //! Compares *this with \p row.
+  /*!
+    \return false if and only if (*this).get(i) == row.get(i), for each i.
+
+    \param row
+    The other row
+
+    Unstored and stored zeroes are considered equal.
+  */
+  bool operator!=(const Sparse_Row& row) const;
+
   //! Resizes the row to size \p n.
   /*!
     \param n

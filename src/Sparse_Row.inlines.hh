@@ -33,6 +33,11 @@ Sparse_Row::Sparse_Row(dimension_type n, Flags flags)
   PPL_ASSERT(OK());
 }
 
+inline bool
+Sparse_Row::operator!=(const Sparse_Row& row) const {
+  return !(*this == row);
+}
+
 inline void
 Sparse_Row::construct(dimension_type sz) {
   resize(sz);

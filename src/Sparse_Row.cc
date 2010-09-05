@@ -26,6 +26,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+bool
+PPL::Sparse_Row::operator==(const Sparse_Row& row) const {
+  if (flags() != row.flags())
+    return false;
+  if (size() != row.size())
+    return false;
+  const_iterator i = begin();
+  const_iterator i_end = end();
+  const_iterator j = row.begin();
+  const_iterator j_end = row.end();
+  while (i != i_end && j != j_end) {
+    if (*i == 0) {
+      ++i;
+      continue;
+    }
+    if (*j == 0) {
+      ++j;
+      continue;
+    }
+    if (i.index() != j.index() || *i != *j)
+      return false;
+    ++i;
+    ++j;
+  }
+  for ( ; i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  for ( ; j != j_end; ++j)
+    if (*j != 0)
+      return false;
+  return true;
+}
+
 void
 PPL::Sparse_Row::swap(dimension_type i, dimension_type j) {
   PPL_ASSERT(i < size_);
