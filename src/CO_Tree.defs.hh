@@ -1190,6 +1190,16 @@ private:
   */
   static void move_data_element(data_type& to, data_type& from);
 
+public:
+  template <typename Archive>
+  void save(Archive & ar, const unsigned int version) const;
+
+  template <typename Archive>
+  void load(Archive & ar, const unsigned int version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+private:
   //! The maximum density of used nodes.
   /*!
     This must be greater than or equal to 50 and lower than 100.
@@ -1503,6 +1513,7 @@ void swap(Parma_Polyhedra_Library::CO_Tree::iterator& x,
 } // namespace std
 
 #include "CO_Tree.inlines.hh"
+#include "CO_Tree.templates.hh"
 
 
 #endif // !defined(PPL_CO_Tree_defs_hh)

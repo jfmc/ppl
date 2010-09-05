@@ -248,8 +248,7 @@ Dense_Row.inlines.hh \
 Dense_Row.templates.hh \
 CO_Tree.defs.hh \
 CO_Tree.inlines.hh \
-CO_Tree.defs.hh \
-CO_Tree.inlines.hh \
+CO_Tree.templates.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Row.templates.hh \
