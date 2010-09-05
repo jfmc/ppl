@@ -104,7 +104,8 @@ COEFFICIENT_TYPES_INCLUDE_FILES = \
 
 COEFFICIENT_DEFS_INCLUDE_FILES = \
   GMP_Integer.defs.hh \
-  GMP_Integer.inlines.hh
+  GMP_Integer.inlines.hh \
+  GMP_Integer.templates.hh
 
 endif USE_GMP_INTEGERS
 

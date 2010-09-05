@@ -146,5 +146,6 @@ int cmp(const GMP_Integer& x, const GMP_Integer& y);
 } // namespace Parma_Polyhedra_Library
 
 #include "GMP_Integer.inlines.hh"
+#include "GMP_Integer.templates.hh"
 
 #endif // !defined(PPL_GMP_Integer_defs_hh)
