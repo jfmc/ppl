@@ -242,6 +242,7 @@ initializer.hh \
 Topology.hh \
 Row_Flags.defs.hh \
 Row_Flags.inlines.hh \
+Row_Flags.templates.hh \
 Dense_Row.defs.hh \
 Dense_Row.inlines.hh \
 Dense_Row.templates.hh \

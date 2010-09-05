@@ -58,6 +58,9 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  template <typename Archive>
+  void serialize(Archive & ar, const unsigned int /* version */);
+
 protected:
   //! A native integral type holding the bits that encode the flags.
   typedef unsigned int base_type;
@@ -93,5 +96,6 @@ private:
 
 
 #include "Row_Flags.inlines.hh"
+#include "Row_Flags.templates.hh"
 
 #endif // !defined(PPL_Row_Flags_defs_hh)
