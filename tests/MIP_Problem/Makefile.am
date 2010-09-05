@@ -29,7 +29,15 @@ $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
 
 else !VALGRIND_TESTS_ENABLED
 
+if MPIRUN_TESTS_ENABLED
+
+CHECKER = mpirun -n 5
+
+else !MPIRUN_TESTS_ENABLED
+
 CHECKER =
+
+endif !MPIRUN_TESTS_ENABLED
 
 endif !VALGRIND_TESTS_ENABLED
 

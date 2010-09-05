@@ -1355,6 +1355,26 @@ no)
 esac
 AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
+enableval=no
+AC_MSG_CHECKING([whether tests should be run under mpirun - n 5])
+AC_ARG_ENABLE(mpirun-tests,
+  AS_HELP_STRING([--enable-mpirun-tests],
+                 [run library tests under mpirun -n 5]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  enable_mpirun_tests=yes
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  enable_mpirun_tests=no
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-mpirun-tests, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(MPIRUN_TESTS_ENABLED, test x"$enable_mpirun_tests" = xyes)
+
 enableval=thorough
 AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
 AC_ARG_ENABLE(check,
