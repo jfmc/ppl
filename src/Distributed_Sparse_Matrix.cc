@@ -268,6 +268,12 @@ PPL::Distributed_Sparse_Matrix::swap(Distributed_Sparse_Matrix& matrix) {
 bool
 PPL::Distributed_Sparse_Matrix
 ::operator==(const Sparse_Matrix& matrix) const {
+
+  if (num_rows() != matrix.num_rows())
+    return false;
+  if (num_columns() != matrix.num_columns())
+    return false;
+
   broadcast_operation(COMPARE_WITH_SPARSE_MATRIX_OPERATION, id);
 
   std::vector<mpi::request> requests;
