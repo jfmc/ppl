@@ -36,6 +36,9 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    distributed_tableau(),
+#endif
     working_cost(0, Row_Flags()),
     mapping(),
     base(),
@@ -48,6 +51,7 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     opt_mode(mode),
     last_generator(point()),
     i_variables(int_vars) {
+
   // Check that integer Variables_Set does not exceed the space dimension
   // of the problem.
   if (i_variables.space_dimension() > external_space_dim) {
@@ -104,6 +108,9 @@ MIP_Problem::MIP_Problem(dimension_type dim,
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    distributed_tableau(),
+#endif
     working_cost(0, Row_Flags()),
     mapping(),
     base(),

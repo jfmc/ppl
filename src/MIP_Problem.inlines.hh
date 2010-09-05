@@ -44,6 +44,9 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
     tableau(y.tableau),
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    distributed_tableau(y.distributed_tableau),
+#endif
     working_cost(y.working_cost),
     mapping(y.mapping),
     base(y.base),
@@ -122,6 +125,9 @@ MIP_Problem::swap(MIP_Problem& y) {
   std::swap(external_space_dim, y.external_space_dim);
   std::swap(internal_space_dim, y.internal_space_dim);
   std::swap(tableau, y.tableau);
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  std::swap(distributed_tableau, y.distributed_tableau);
+#endif
   std::swap(working_cost, y.working_cost);
   std::swap(mapping, y.mapping);
   std::swap(initialized, y.initialized);

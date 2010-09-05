@@ -37,6 +37,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 #include <iosfwd>
 
+#include "Distributed_Sparse_Matrix.types.hh"
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+#include "Distributed_Sparse_Matrix.defs.hh"
+#endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
+
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
@@ -439,6 +446,10 @@ private:
 
   //! The matrix encoding the current feasible region in tableau form.
   matrix_type tableau;
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  Distributed_Sparse_Matrix distributed_tableau;
+#endif
 
   //! The working cost function.
   Dense_Row working_cost;
