@@ -1156,12 +1156,14 @@ PPL::Distributed_Sparse_Matrix::Worker
     result = (n == itr->second.size());
   if (!result)
     std::cerr << "Worker node: row check failed" << std::endl;
-  for (std::vector<Sparse_Row>::const_iterator
-      i = itr->second.begin(), i_end = itr->second.end(); i != i_end; ++i)
-    if (i->size() != num_columns) {
-      std::cerr << "Worker node: column check failed" << std::endl;
-      result = false;
-    }
+  if (itr != row_chunks.end()) {
+    for (std::vector<Sparse_Row>::const_iterator
+        i = itr->second.begin(), i_end = itr->second.end(); i != i_end; ++i)
+      if (i->size() != num_columns) {
+        std::cerr << "Worker node: column check failed" << std::endl;
+        result = false;
+      }
+  }
   mpi::reduce(comm(), result, std::logical_and<bool>(), 0);
 }
 
