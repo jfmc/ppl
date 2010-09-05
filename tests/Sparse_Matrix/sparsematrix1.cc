@@ -135,8 +135,8 @@ test03() {
   Sparse_Matrix large(2,5);
   Sparse_Matrix tall(6,3);
 
-  large[0][4] = 100;
-  tall[4][0] = 200;
+  large[0][4] = 10;
+  tall[4][0] = 20;
 
   std::swap(large, tall);
 
@@ -152,10 +152,10 @@ test03() {
   if (tall.num_rows() != 2)
     return false;
 
-  if (tall[0][4] != 100)
+  if (tall[0][4] != 10)
     return false;
 
-  if (large[4][0] != 200)
+  if (large[4][0] != 20)
     return false;
 
   return true;
