@@ -712,6 +712,9 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  template <typename Archive>
+  void serialize(Archive & ar, const unsigned int version);
+
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
     This method takes \f$O(n)\f$ time.

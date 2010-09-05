@@ -139,6 +139,14 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
   }
 }
 
+template <typename Archive>
+void
+Sparse_Row::serialize(Archive & ar, const unsigned int /* version */) {
+  ar & size_;
+  ar & flags();
+  ar & tree;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Sparse_Row_templates_hh)
