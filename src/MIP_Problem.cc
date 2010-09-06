@@ -1788,7 +1788,8 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   const dimension_type num_artificials = end_artificials - begin_artificials;
   tableau.remove_trailing_columns(num_artificials);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  distributed_tableau.remove_trailing_columns(num_artificials);
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
