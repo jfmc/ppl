@@ -1809,7 +1809,8 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   for (dimension_type i = tableau_n_rows; i-- > 0; )
     tableau[i].reset(new_last_column);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  distributed_tableau.reset_column(new_last_column);
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
   // ... then properly set the element in the (new) last column,
