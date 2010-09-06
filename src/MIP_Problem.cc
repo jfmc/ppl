@@ -1754,7 +1754,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       for ( ; (j != j_end) && (j.index() < begin_artificials); ++j)
         if (*j != 0) {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-          distributed_tableau = tableau;
+          PPL_ASSERT(distributed_tableau == tableau);
 #endif
           pivot(j.index(), i);
           redundant = false;
@@ -1768,15 +1768,23 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
           // Replace the redundant row with the last one,
           // taking care of adjusting the iteration index.
           tableau_i.swap(tableau[tableau_n_rows]);
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+          distributed_tableau.swap_rows(i, tableau_n_rows);
+          PPL_ASSERT(distributed_tableau == tableau);
+#endif
           base[i] = base[tableau_n_rows];
           --i;
         }
         tableau.erase_to_end(tableau_n_rows);
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+        distributed_tableau.remove_trailing_rows(distributed_tableau.num_rows() - tableau_n_rows);
+        PPL_ASSERT(distributed_tableau == tableau);
+#endif
         base.pop_back();
       }
     }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
