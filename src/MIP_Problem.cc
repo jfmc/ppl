@@ -1514,7 +1514,8 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
       linear_combine(tableau_i, tableau_out, entering_var_index);
   }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  distributed_tableau.linear_combine_matrix(exiting_base_index,
+                                            entering_var_index);
   PPL_ASSERT(distributed_tableau == tableau);
 #endif
   // Linearly combine the cost function.
