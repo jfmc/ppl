@@ -941,7 +941,6 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
   PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
