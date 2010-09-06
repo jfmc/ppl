@@ -729,7 +729,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 #endif
     tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau = tableau;
+    distributed_tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
     PPL_ASSERT(distributed_tableau == tableau);
 #endif
   }
@@ -768,7 +768,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 #endif
     tableau.add_zero_columns(additional_tableau_columns);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau = tableau;
+    distributed_tableau.add_zero_columns(additional_tableau_columns);
     PPL_ASSERT(distributed_tableau == tableau);
 #endif
   }
@@ -2036,7 +2036,7 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
         // the second that represent the `sign'.
         x.tableau.add_zero_columns(2);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-        x.distributed_tableau = x.tableau;
+        x.distributed_tableau.add_zero_columns(2);
         PPL_ASSERT(x.distributed_tableau == x.tableau);
 #endif
         // Sync `mapping' for the inhomogeneous term.
