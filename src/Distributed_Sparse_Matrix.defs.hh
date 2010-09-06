@@ -90,9 +90,9 @@ public:
 
   void reset_column(dimension_type column_index);
   void remove_column(dimension_type column_index);
-  void remove_trailing_columns(dimension_type column_index);
+  void remove_trailing_columns(dimension_type n);
 
-  void remove_trailing_rows(dimension_type row_index);
+  void remove_trailing_rows(dimension_type n);
 
   void add_zero_columns(dimension_type n);
   void add_zero_rows(dimension_type n, Row_Flags flags = Row_Flags());

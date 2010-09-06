@@ -797,27 +797,29 @@ PPL::Distributed_Sparse_Matrix::remove_column(dimension_type column_index) {
 
 void
 PPL::Distributed_Sparse_Matrix
-::remove_trailing_columns(dimension_type column_index) {
-  broadcast_operation(REMOVE_TRAILING_COLUMNS_OPERATION, id, column_index);
+::remove_trailing_columns(dimension_type n) {
+  PPL_ASSERT(my_num_columns >= n);
+  my_num_columns -= n;
+  broadcast_operation(REMOVE_TRAILING_COLUMNS_OPERATION, id, my_num_columns);
 
   for (std::vector<Sparse_Row>::iterator
       i = local_rows.begin(), i_end = local_rows.end(); i != i_end; ++i)
-    i->resize(column_index);
-
-  my_num_columns = column_index;
+    i->resize(my_num_columns);
 
   PPL_ASSERT(OK());
 }
 
 void
 PPL::Distributed_Sparse_Matrix
-::remove_trailing_rows(dimension_type row_index) {
+::remove_trailing_rows(dimension_type n) {
+  PPL_ASSERT(num_rows() >= n);
+  dimension_type row_n = num_rows() - n;
   broadcast_operation(REMOVE_TRAILING_ROWS_OPERATION, id);
 
   std::vector<dimension_type> local_sizes(comm_size);
   for (int rank = 0; rank < comm_size; ++rank)
     local_sizes[rank] = reverse_row_mapping[rank].size();
-  for (dimension_type row = row_index; row < num_rows(); ++row) {
+  for (dimension_type row = row_n; row < num_rows(); ++row) {
     int rank = row_mapping[row].first;
     dimension_type local_index = row_mapping[row].second;
     if (local_sizes[rank] > local_index)
@@ -829,7 +831,7 @@ PPL::Distributed_Sparse_Matrix
 
   local_rows.resize(local_size);
 
-  row_mapping.resize(row_index);
+  row_mapping.resize(row_n);
   for (int rank = 0; rank < comm_size; ++rank)
     reverse_row_mapping[rank].resize(local_sizes[rank]);
 
