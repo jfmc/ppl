@@ -405,7 +405,8 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
 #endif
   tableau.remove_column(removing_column);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  distributed_tableau.remove_column(removing_column);
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
   // var_index is no longer split.
