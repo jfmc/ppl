@@ -48,7 +48,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // SET_ROW_OPERATION: rank
   3, // LINEAR_COMBINE_OPERATION: rank, id, col_index
   2, // REMOVE_COLUMN_OPERATION: id, col_index
-  2, // REMOVE_TRAILING_COLUMN_OPERATION: id, col_index
+  2, // REMOVE_TRAILING_COLUMNS_OPERATION: id, n
   2, // ADD_ZERO_COLUMNS_OPERATION: id, n
   2, // CHECK_OPERATION: id, num_columns
   3, // ADD_ZERO_ROWS_OPERATION: id, num_columns, flag_bits
