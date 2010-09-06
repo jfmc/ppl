@@ -276,10 +276,14 @@ bool
 PPL::Distributed_Sparse_Matrix
 ::operator==(const Sparse_Matrix& matrix) const {
 
-  if (num_rows() != matrix.num_rows())
+  if (num_rows() != matrix.num_rows()) {
+    std::cout << "Wrong number of rows" << std::endl;
     return false;
-  if (num_columns() != matrix.num_columns())
+  }
+  if (num_columns() != matrix.num_columns()) {
+    std::cout << "Wrong number of columns" << std::endl;
     return false;
+  }
 
   broadcast_operation(COMPARE_WITH_SPARSE_MATRIX_OPERATION, id);
 
@@ -304,8 +308,10 @@ PPL::Distributed_Sparse_Matrix
     int rank = row_mapping[i].first;
     dimension_type local_i = row_mapping[i].second;
     if (rank == 0)
-      if (!(local_rows[local_i] == matrix[i]))
+      if (!(local_rows[local_i] == matrix[i])) {
+        std::cout << "Found mismatch in root node" << std::endl;
         local_result = false;
+      }
   }
 
   mpi::wait_all(requests.begin(), requests.end());
@@ -1336,6 +1342,7 @@ PPL::Distributed_Sparse_Matrix::Worker
   bool result = true;
   for (dimension_type i = 0; i < rows.size(); i++)
     if (rows[i] != received_rows[i]) {
+      std::cout << "Found mismatch in worker node" << std::endl;
       result = false;
       break;
     }
