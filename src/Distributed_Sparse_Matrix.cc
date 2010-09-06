@@ -753,14 +753,15 @@ PPL::Distributed_Sparse_Matrix
     Sparse_Row& row = local_rows[local_index];
     mpi::broadcast(comm(), row, 0);
     for (dimension_type i = 0; i < local_rows.size(); i++)
-      if (i != local_index)
+      if (i != local_index && local_rows[i].get(col_index) != 0)
         linear_combine(local_rows[i], row, col_index);
   } else {
     Sparse_Row row;
     comm().send(rank, 0, local_index);
     mpi::broadcast(comm(), row, rank);
     for (dimension_type i = 0; i < local_rows.size(); i++)
-      linear_combine(local_rows[i], row, col_index);
+      if (local_rows[i].get(col_index) != 0)
+        linear_combine(local_rows[i], row, col_index);
   }
 }
 
@@ -1093,14 +1094,15 @@ PPL::Distributed_Sparse_Matrix::Worker
       Sparse_Row& row = rows[local_index];
       mpi::broadcast(comm(), row, rank);
       for (dimension_type i = 0; i < rows.size(); i++)
-        if (i != local_index)
+        if (i != local_index && rows[i].get(col_index) != 0)
           linear_combine(rows[i], row, col_index);
     } else {
       Sparse_Row row;
       mpi::broadcast(comm(), row, rank);
       for (std::vector<Sparse_Row>::iterator
           i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-        linear_combine(*i, row, col_index);
+        if (i->get(col_index) != 0)
+          linear_combine(*i, row, col_index);
     }
   }
 }
