@@ -64,6 +64,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // COMPUTE_WORKING_COST_OPERATION: id
   1, // MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION: id
   1, // SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION: id
+  1, // ASCII_DUMP_OPERATION: id
 };
 
 const mpi::communicator*
@@ -188,6 +189,10 @@ PPL::Distributed_Sparse_Matrix
 
     case SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION:
       worker.set_artificial_indexes_for_unfeasible_rows(op.params[0]);
+      break;
+
+    case ASCII_DUMP_OPERATION:
+      worker.ascii_dump(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -1259,6 +1264,35 @@ PPL::Distributed_Sparse_Matrix::set_artificial_indexes_for_unfeasible_rows(
     local_rows[*i].find_create(current_artificial, Coefficient_one());
 }
 
+void
+PPL::Distributed_Sparse_Matrix::ascii_dump(std::ostream& stream) const {
+  broadcast_operation(ASCII_DUMP_OPERATION, id);
+
+  std::vector<std::string> root_output;
+  root_output.reserve(local_rows.size());
+  for (std::vector<Sparse_Row>::const_iterator
+      i = local_rows.begin(), i_end = local_rows.end(); i != i_end; ++i) {
+    std::ostringstream strstream;
+    i->ascii_dump(strstream);
+    // TODO: Avoid the string copy.
+    root_output.push_back(strstream.str());
+  }
+
+  // vec[rank][local_index] will store the ASCII representation of the row
+  // with index `local_index', stored at the node with rank `rank'.
+  std::vector<std::vector<std::string> > output(comm_size);
+
+  mpi::gather(comm(), root_output, output, 0);
+
+  stream << num_rows() << " x ";
+  stream << num_columns() << "\n";
+  for (dimension_type i = 0; i < num_rows(); ++i) {
+    int rank = row_mapping[i].first;
+    dimension_type local_index = row_mapping[i].second;
+    stream << output[rank][local_index];
+  }
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1712,6 +1746,29 @@ PPL::Distributed_Sparse_Matrix::Worker
       i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i)
     rows[*i].find_create(current_artificial, Coefficient_one());
 }
+
+void
+PPL::Distributed_Sparse_Matrix::Worker::ascii_dump(dimension_type id) const {
+
+  std::vector<std::string> output;
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+
+  if (itr != row_chunks.end()) {
+    const std::vector<Sparse_Row>& rows = itr->second;
+    output.reserve(rows.size());
+    for (std::vector<Sparse_Row>::const_iterator
+        i = rows.begin(), i_end = rows.end(); i != i_end; ++i) {
+      std::ostringstream strstream;
+      i->ascii_dump(strstream);
+      // TODO: Avoid the string copy.
+      output.push_back(strstream.str());
+    }
+  }
+
+  mpi::gather(comm(), output, 0);
+}
+
 
 template <typename Archive>
 void

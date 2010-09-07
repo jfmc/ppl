@@ -113,6 +113,8 @@ public:
       const std::vector<dimension_type>& unfeasible_tableau_rows,
       dimension_type artificial_index);
 
+  void ascii_dump(std::ostream& stream) const;
+
   bool OK() const;
 
 private:
@@ -167,6 +169,7 @@ private:
     void compute_working_cost(dimension_type id);
     void make_inhomogeneous_terms_nonpositive(dimension_type id);
     void set_artificial_indexes_for_unfeasible_rows(dimension_type id);
+    void ascii_dump(dimension_type id) const;
 
   private:
     // Every node has an associated Node_Data, including the root node.
@@ -230,6 +233,8 @@ private:
     MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION,
     //! Parameters: id
     SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION,
+    //! Parameters: id
+    ASCII_DUMP_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
