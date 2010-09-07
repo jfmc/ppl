@@ -165,7 +165,7 @@ PPL::PIP_Problem::solve() const {
             itr = row.find_create(0, c.inhomogeneous_term());
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
-              --(itr->second);
+              --(*itr);
           } else {
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
@@ -177,7 +177,8 @@ PPL::PIP_Problem::solve() const {
           // itr may still be end(), but it can still be used as hint.
           for ( ; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
-              const Coefficient& x = c.coefficient(Variable(*pi));
+              Coefficient_traits::const_reference x
+                = c.coefficient(Variable(*pi));
               if (x != 0)
                 itr = row.find_create(itr, i, x);
             } else
@@ -199,7 +200,7 @@ PPL::PIP_Problem::solve() const {
           matrix_type::row_type::iterator i = last_row.begin();
           matrix_type::row_type::iterator i_end = last_row.end();
           for ( ; i != i_end; ++i)
-            neg_assign(i->second);
+            neg_assign(*i);
         }
       }
 

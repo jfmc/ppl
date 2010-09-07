@@ -25,6 +25,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+CO_Tree::dfs_index(const_iterator itr) const {
+  PPL_ASSERT(itr.current_index != 0);
+  PPL_ASSERT(itr.current_index >= indexes + 1);
+  PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+  return static_cast<dimension_type>(itr.current_index - indexes);
+}
+
+inline dimension_type
+CO_Tree::dfs_index(iterator itr) const {
+  PPL_ASSERT(itr.current_index != 0);
+  PPL_ASSERT(itr.current_index >= indexes + 1);
+  PPL_ASSERT(itr.current_index <= indexes + reserved_size);
+  return static_cast<dimension_type>(itr.current_index - indexes);
+}
+
 inline
 CO_Tree::CO_Tree() {
 
@@ -90,7 +106,7 @@ CO_Tree::insert(dimension_type key1) {
   else {
     tree_iterator itr(*this);
     itr.go_down_searching_key(key1);
-    if (itr->first == key1)
+    if (itr.index() == key1)
       return iterator(itr);
     else
       return iterator(insert_precise(key1, Coefficient_zero(), itr));
@@ -98,11 +114,11 @@ CO_Tree::insert(dimension_type key1) {
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key1, const data_type& data1) {
+CO_Tree::insert(dimension_type key1, data_type_const_reference data1) {
   if (empty()) {
     insert_in_empty_tree(key1, data1);
     tree_iterator itr(*this);
-    PPL_ASSERT(itr->first != unused_index);
+    PPL_ASSERT(itr.index() != unused_index);
     return iterator(itr);
   } else {
     tree_iterator itr(*this);
@@ -121,18 +137,18 @@ CO_Tree::erase(dimension_type key) {
   tree_iterator itr(*this);
   itr.go_down_searching_key(key);
 
-  if (itr->first == key)
+  if (itr.index() == key)
     return erase(itr);
 
   iterator result(itr);
-  if (result->first < key)
+  if (result.index() < key)
     ++result;
 
-  PPL_ASSERT(result == end() || result->first > key);
+  PPL_ASSERT(result == end() || result.index() > key);
 #ifndef NDEBUG
   iterator last = end();
   --last;
-  PPL_ASSERT((result == end()) == (last->first < key));
+  PPL_ASSERT((result == end()) == (last.index() < key));
 #endif
 
   return result;
@@ -212,8 +228,7 @@ inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
-  dimension_type index = bisect_in(&(first->second) - data,
-                                   &(last->second) - data, key);
+  dimension_type index = bisect_in(dfs_index(first), dfs_index(last), key);
   return iterator(*this, index);
 }
 
@@ -222,8 +237,7 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    dimension_type key) const {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
-  dimension_type index = bisect_in(&(first->second) - data,
-                                   &(last->second) - data, key);
+  dimension_type index = bisect_in(dfs_index(first), dfs_index(last), key);
   return const_iterator(*this, index);
 }
 
@@ -231,7 +245,7 @@ inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, dimension_type key) {
   if (hint == end())
     return bisect(key);
-  dimension_type index = bisect_near(&(hint->second) - data, key);
+  dimension_type index = bisect_near(dfs_index(hint), key);
   return iterator(*this, index);
 }
 
@@ -239,18 +253,19 @@ inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
   if (hint == end())
     return bisect(key);
-  dimension_type index = bisect_near(&(hint->second) - data, key);
+  dimension_type index = bisect_near(dfs_index(hint), key);
   return const_iterator(*this, index);
 }
 
 inline void
-CO_Tree::insert_in_empty_tree(dimension_type key1, const data_type& data1) {
+CO_Tree::insert_in_empty_tree(dimension_type key1,
+                              data_type_const_reference data1) {
   PPL_ASSERT(empty());
   rebuild_bigger_tree();
   tree_iterator itr(*this);
-  PPL_ASSERT(itr->first == unused_index);
-  itr->first = key1;
-  new (&(itr->second)) data_type(data1);
+  PPL_ASSERT(itr.index() == unused_index);
+  itr.index() = key1;
+  new (&(*itr)) data_type(data1);
   size++;
 
   PPL_ASSERT(OK());
@@ -430,23 +445,26 @@ CO_Tree::const_iterator::operator--(int) {
   return itr;
 }
 
-inline std::pair<const dimension_type, const CO_Tree::data_type&>
+inline Coefficient_traits::const_reference
 CO_Tree::const_iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-  return std::pair<const dimension_type&, const data_type&>(*current_index,
-                                                            *current_data);
+#endif
+  return *current_data;
 }
 
-inline CO_Tree::const_iterator::Const_Member_Access_Helper
-CO_Tree::const_iterator::operator->() const {
+inline dimension_type
+CO_Tree::const_iterator::index() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-  return Const_Member_Access_Helper(*current_index, *current_data);
+#endif
+  return *current_index;
 }
 
 inline bool
@@ -460,19 +478,6 @@ CO_Tree::const_iterator::operator==(const const_iterator& x) const {
 inline bool
 CO_Tree::const_iterator::operator!=(const const_iterator& x) const {
   return !(*this == x);
-}
-
-
-inline
-CO_Tree::const_iterator::Const_Member_Access_Helper
-::Const_Member_Access_Helper(dimension_type key, const data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-const std::pair<const dimension_type, const CO_Tree::data_type&>*
-CO_Tree::const_iterator::Const_Member_Access_Helper::operator->() const {
-  return &my_pair;
 }
 
 
@@ -536,8 +541,8 @@ CO_Tree::iterator::swap(iterator& itr) {
 
 inline CO_Tree::iterator&
 CO_Tree::iterator::operator=(const tree_iterator& itr) {
-  current_index = &(itr.tree.indexes[itr.index()]);
-  current_data = &(itr.tree.data[itr.index()]);
+  current_index = &(itr.tree.indexes[itr.dfs_index()]);
+  current_data = &(itr.tree.data[itr.dfs_index()]);
 #if PPL_CO_TREE_EXTRA_DEBUG
   tree = &(itr.tree);
 #endif
@@ -603,42 +608,37 @@ CO_Tree::iterator::operator--(int) {
   return itr;
 }
 
-inline std::pair<const dimension_type, CO_Tree::data_type&>
+inline CO_Tree::data_type&
 CO_Tree::iterator::operator*() {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-  return std::pair<const dimension_type, data_type&>(*current_index,
-                                                     *current_data);
+#endif
+  return *current_data;
 }
 
-inline std::pair<const dimension_type, const CO_Tree::data_type&>
+inline Coefficient_traits::const_reference
 CO_Tree::iterator::operator*() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-  return std::pair<const dimension_type, const data_type&>(*current_index,
-                                                           *current_data);
+#endif
+  return *current_data;
 }
 
-inline CO_Tree::iterator::Member_Access_Helper
-CO_Tree::iterator::operator->() {
+inline dimension_type
+CO_Tree::iterator::index() const {
   PPL_ASSERT(current_index != 0);
   PPL_ASSERT(current_data != 0);
   PPL_ASSERT(OK());
+#if PPL_CO_TREE_EXTRA_DEBUG
   PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-  return Member_Access_Helper(*current_index, *current_data);
-}
-
-inline CO_Tree::iterator::Const_Member_Access_Helper
-CO_Tree::iterator::operator->() const {
-  PPL_ASSERT(current_index != 0);
-  PPL_ASSERT(current_data != 0);
-  PPL_ASSERT(OK());
-  PPL_ASSERT(current_index != &(tree->indexes[tree->reserved_size + 1]));
-  return Const_Member_Access_Helper(*current_index, *current_data);
+#endif
+  return *current_index;
 }
 
 inline bool
@@ -652,32 +652,6 @@ CO_Tree::iterator::operator==(const iterator& x) const {
 inline bool
 CO_Tree::iterator::operator!=(const iterator& x) const {
   return !(*this == x);
-}
-
-
-inline
-CO_Tree::iterator::Member_Access_Helper
-::Member_Access_Helper(const dimension_type key, data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-std::pair<const dimension_type, CO_Tree::data_type&>*
-CO_Tree::iterator::Member_Access_Helper::operator->() {
-  return &my_pair;
-}
-
-
-inline
-CO_Tree::iterator::Const_Member_Access_Helper
-::Const_Member_Access_Helper(dimension_type key, const data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-const std::pair<const dimension_type, const CO_Tree::data_type&>*
-CO_Tree::iterator::Const_Member_Access_Helper::operator->() const {
-  return &my_pair;
 }
 
 
@@ -718,7 +692,7 @@ CO_Tree::tree_iterator::operator=(const tree_iterator& itr) {
 inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
   PPL_ASSERT(itr != tree.end());
-  i = &(itr->second) - tree.data;
+  i = tree.dfs_index(itr);
   offset = i;
   // This assumes two's complement encoding.
   offset &= -i;
@@ -772,7 +746,7 @@ CO_Tree::tree_iterator::get_parent() {
 
 inline void
 CO_Tree::tree_iterator::follow_left_childs_with_value() {
-  PPL_ASSERT((*this)->first != unused_index);
+  PPL_ASSERT(index() != unused_index);
   dimension_type* p = tree.indexes;
   p += i;
   p -= (offset - 1);
@@ -785,7 +759,7 @@ CO_Tree::tree_iterator::follow_left_childs_with_value() {
 
 inline void
 CO_Tree::tree_iterator::follow_right_childs_with_value() {
-  PPL_ASSERT((*this)->first != unused_index);
+  PPL_ASSERT(index() != unused_index);
   dimension_type* p = tree.indexes;
   p += i;
   p += (offset - 1);
@@ -815,30 +789,28 @@ CO_Tree::tree_iterator::is_leaf() const {
   return offset == 1;
 }
 
-inline std::pair<dimension_type&, CO_Tree::data_type&>
+inline CO_Tree::data_type&
 CO_Tree::tree_iterator::operator*() {
-  return std::pair<dimension_type&, data_type&>(tree.indexes[i],
-                                                tree.data[i]);
+  return tree.data[i];
 }
 
-inline std::pair<const dimension_type, const CO_Tree::data_type&>
+inline Coefficient_traits::const_reference
 CO_Tree::tree_iterator::operator*() const {
-  return std::pair<const dimension_type&, const data_type&>(tree.indexes[i],
-                                                            tree.data[i]);
+  return tree.data[i];
 }
 
-inline CO_Tree::tree_iterator::Member_Access_Helper
-CO_Tree::tree_iterator::operator->() {
-  return Member_Access_Helper(tree.indexes[i], tree.data[i]);
-}
-
-inline CO_Tree::tree_iterator::Const_Member_Access_Helper
-CO_Tree::tree_iterator::operator->() const {
-  return Const_Member_Access_Helper(tree.indexes[i], tree.data[i]);
+inline dimension_type&
+CO_Tree::tree_iterator::index() {
+  return tree.indexes[i];
 }
 
 inline dimension_type
 CO_Tree::tree_iterator::index() const {
+  return tree.indexes[i];
+}
+
+inline dimension_type
+CO_Tree::tree_iterator::dfs_index() const {
   return i;
 }
 
@@ -850,32 +822,6 @@ CO_Tree::tree_iterator::get_offset() const {
 inline CO_Tree::height_t
 CO_Tree::tree_iterator::depth() const {
   return integer_log2((tree.reserved_size + 1) / offset);
-}
-
-
-inline
-CO_Tree::tree_iterator::Member_Access_Helper
-::Member_Access_Helper(dimension_type& key, data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-std::pair<dimension_type&, CO_Tree::data_type&>*
-CO_Tree::tree_iterator::Member_Access_Helper::operator->() {
-  return &my_pair;
-}
-
-
-inline
-CO_Tree::tree_iterator::Const_Member_Access_Helper
-::Const_Member_Access_Helper(dimension_type key, const data_type& data)
-  : my_pair(key, data) {
-}
-
-inline
-const std::pair<const dimension_type, const CO_Tree::data_type&>*
-CO_Tree::tree_iterator::Const_Member_Access_Helper::operator->() const {
-  return &my_pair;
 }
 
 } // namespace Parma_Polyhedra_Library

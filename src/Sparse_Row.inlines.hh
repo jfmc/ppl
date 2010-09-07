@@ -135,22 +135,22 @@ inline Coefficient&
 Sparse_Row::operator[](dimension_type i) {
   PPL_ASSERT(i < size_);
   iterator itr = find_create(i);
-  return itr->second;
+  return *itr;
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Sparse_Row::operator[](dimension_type i) const {
   return get(i);
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Sparse_Row::get(dimension_type i) const {
   PPL_ASSERT(i < size_);
   if (tree.empty())
     return Coefficient_zero();
   const_iterator itr = find(i);
   if (itr != end())
-    return itr->second;
+    return *itr;
   else
     return Coefficient_zero();
 }
@@ -159,7 +159,7 @@ inline Sparse_Row::iterator
 Sparse_Row::find(dimension_type i) {
   iterator itr = tree.bisect(i);
 
-  if (itr != end() && itr->first == i)
+  if (itr != end() && itr.index() == i)
     return itr;
 
   return end();
@@ -169,7 +169,7 @@ inline Sparse_Row::iterator
 Sparse_Row::find(iterator hint, dimension_type i) {
   iterator itr = tree.bisect_near(hint, i);
 
-  if (itr != end() && itr->first == i)
+  if (itr != end() && itr.index() == i)
     return itr;
 
   return end();
@@ -179,7 +179,7 @@ inline Sparse_Row::const_iterator
 Sparse_Row::find(dimension_type i) const {
   const_iterator itr = tree.bisect(i);
 
-  if (itr != end() && itr->first == i)
+  if (itr != end() && itr.index() == i)
     return itr;
 
   return end();
@@ -189,7 +189,7 @@ inline Sparse_Row::const_iterator
 Sparse_Row::find(const_iterator hint, dimension_type i) const {
   const_iterator itr = tree.bisect_near(hint, i);
 
-  if (itr != end() && itr->first == i)
+  if (itr != end() && itr.index() == i)
     return itr;
 
   return end();
@@ -202,10 +202,10 @@ Sparse_Row::lower_bound(dimension_type i) {
   if (itr == end())
     return end();
 
-  if (itr->first < i)
+  if (itr.index() < i)
     ++itr;
 
-  PPL_ASSERT(itr == end() || itr->first >= i);
+  PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
 }
@@ -218,10 +218,10 @@ Sparse_Row::lower_bound(iterator hint, dimension_type i) {
   if (itr == end())
     return end();
 
-  if (itr->first < i)
+  if (itr.index() < i)
     ++itr;
 
-  PPL_ASSERT(itr == end() || itr->first >= i);
+  PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
 }
@@ -233,10 +233,10 @@ Sparse_Row::lower_bound(dimension_type i) const {
   if (itr == end())
     return end();
 
-  if (itr->first < i)
+  if (itr.index() < i)
     ++itr;
 
-  PPL_ASSERT(itr == end() || itr->first >= i);
+  PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
 }
@@ -248,23 +248,24 @@ Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
   if (itr == end())
     return end();
 
-  if (itr->first < i)
+  if (itr.index() < i)
     ++itr;
 
-  PPL_ASSERT(itr == end() || itr->first >= i);
+  PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(dimension_type i, const Coefficient& x) {
+Sparse_Row::find_create(dimension_type i,
+                        Coefficient_traits::const_reference x) {
   PPL_ASSERT(i < size_);
   return tree.insert(i, x);
 }
 
 inline Sparse_Row::iterator
 Sparse_Row::find_create(iterator itr, dimension_type i,
-                        const Coefficient& x) {
+                        Coefficient_traits::const_reference x) {
   PPL_ASSERT(i < size_);
   return tree.insert(itr, i, x);
 }
@@ -285,7 +286,7 @@ inline void
 Sparse_Row::swap(iterator i, iterator j) {
   PPL_ASSERT(i != end());
   PPL_ASSERT(j != end());
-  std::swap(i->second, j->second);
+  std::swap(*i, *j);
   PPL_ASSERT(OK());
 }
 

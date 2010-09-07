@@ -8,6 +8,8 @@ PPL error code -6: Positive overflow.
 PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n  markshare2.mps
 PPL error code -6: Negative overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n  mas76.mps
+PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n  mip.mps
 PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n  noswot.mps
@@ -19,7 +21,7 @@ PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n  pk1.mps
 PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n  rout.mps
-PPL error code -6: Positive overflow.
+PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n  unboundedmin.mps
 Feasible problem.
 *** ./ppl_lpsol -s -p1 -c -oobtained -m ex1.mps
@@ -57,14 +59,6 @@ PPL error code -6: Positive overflow.
 PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M blend.mps
 PPL error code -6: Negative overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -r -m boeing1.mps
-PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -r -M boeing1.mps
-PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -r -m boeing2.mps
-PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -r -M boeing2.mps
-PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -m egout.mps
 PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M egout.mps
@@ -92,6 +86,10 @@ PPL error code -6: Negative overflow.
 PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M markshare2.mps
 PPL error code -6: Negative overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -m mas76.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -r -M mas76.mps
+PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -m mip.mps
 PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M mip.mps
@@ -113,9 +111,9 @@ PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M pk1.mps
 PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -m rout.mps
-PPL error code -6: Positive overflow.
+PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M rout.mps
-PPL error code -6: Positive overflow.
+PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -m sample.mps
 PPL error code -6: Negative overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -M sample.mps
@@ -157,21 +155,27 @@ Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
+*** ./ppl_lpsol -s -p1 -oobtained -r -m -c0.00000000518 boeing1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.0000000105 boeing1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n boeing1.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -oobtained -r -m -c0.00000000863 boeing2.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.00000000213 boeing2.mps
+PPL error code -6: Positive overflow.
+*** ./ppl_lpsol -s -p1 -c -oobtained -n boeing2.mps
+PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -r -m mas74.mps
 PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000123 mas74.mps
 PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n mas74.mps
 PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -r -m mas76.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -m -c0.0000273 modglob.mps
 PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -r -M -c0.000123 mas76.mps
-PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -c -oobtained -n mas76.mps
-PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -oobtained -r -m -c0.0000002 modglob.mps
-PPL error code -6: Positive overflow.
-*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.000003 modglob.mps
+*** ./ppl_lpsol -s -p1 -oobtained -r -M -c0.0290 modglob.mps
 PPL error code -6: Positive overflow.
 *** ./ppl_lpsol -s -p1 -c -oobtained -n modglob.mps
 PPL error code -6: Positive overflow.
