@@ -2330,13 +2330,13 @@ PPL::MIP_Problem::OK() const {
         matrix_type::row_type::const_iterator itr = tableau_j.begin();
         matrix_type::row_type::const_iterator itr_end = tableau_j.end();
         for ( ; i != i_end && itr != itr_end; ++i) {
-          // tableau[i][base[i]] must be different from zero.
-          // tableau[i][base[j]], with i different from j, must not be a zero.
+          // tableau[i][base[j]], with i different from j, must be zero.
           if (itr.index() < i->first)
             itr = tableau_j.lower_bound(itr, itr.index());
           if (i->second != j && itr.index() == i->first && *itr != 0) {
 #ifndef NDEBUG
-            cerr << "tableau[i][base[i]] must be different from zero" << endl;
+            cerr << "tableau[i][base[j]], with i different from j, must be "
+                 << "zero" << endl;
             ascii_dump(cerr);
 #endif
             return false;
@@ -2344,11 +2344,11 @@ PPL::MIP_Problem::OK() const {
         }
       }
     }
+    // tableau[i][base[i]] must not be a zero.
     for (dimension_type i = base.size(); i-- > 0; ) {
       if (tableau[i].get(base[i]) == 0) {
 #ifndef NDEBUG
-        cerr << "tableau[i][base[j]], with i different from j, must not be "
-             << "a zero" << endl;
+        cerr << "tableau[i][base[i]] must not be a zero" << endl;
         ascii_dump(cerr);
 #endif
         return false;
