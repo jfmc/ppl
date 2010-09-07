@@ -16,9 +16,19 @@ o  The implementations of the MIP and PIP solvers are based on a new
    show an improvement on the average case, that grows when the toughest
    tests in the benchmark suite are considered.
 
+o  When the --check option is used, the input data for demo ppl_lpsol
+   is perturbed the same way as GLPK does, thereby allowing for a
+   meaningful comparison of the results obtained.
+
+o  The input routine for PPL numeric datatypes has been extended to
+   accept the ISO9899 (C99) hexadecimal floating constant syntax.
+
 
 Bugfixes
 ========
+
+o  Corrected a bug affecting the input routine of ppl_lpsol, whereby
+   the inhomogeneous term of the objective function was disregarded.
 
 o  Corrected a bug affecting methods
 
