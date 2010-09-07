@@ -931,12 +931,16 @@ PPL::MIP_Problem::process_pending_constraints() {
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
+  Dense_Row working_cost2 = working_cost;
 #endif
   // Express the problem in terms of the variables in base.
   for (dimension_type i = tableau_num_rows; i-- > 0; )
     if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
-
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  distributed_tableau.compute_working_cost(working_cost2, base);
+  PPL_ASSERT(working_cost == working_cost2);
+#endif
   // Deal with zero dimensional problems.
   if (space_dimension() == 0) {
     status = OPTIMIZED;
@@ -1956,6 +1960,11 @@ PPL::MIP_Problem::second_phase() {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
 #endif
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  PPL_ASSERT(distributed_tableau == tableau);
+  Dense_Row working_cost2 = working_cost;
+#endif
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
@@ -1963,6 +1972,11 @@ PPL::MIP_Problem::second_phase() {
     if (working_cost[base_i] != 0)
       linear_combine(working_cost, tableau[i], base_i);
   }
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  distributed_tableau.compute_working_cost(working_cost2, base);
+  PPL_ASSERT(working_cost == working_cost2);
+#endif
+
   // Solve the second phase problem.
   bool second_phase_successful
     = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
