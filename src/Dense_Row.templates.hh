@@ -50,6 +50,31 @@ Dense_Row::combine(const Dense_Row& y, const Func1& /* f */, const Func2& g,
     g((*this)[i], y[i]);
 }
 
+template <typename Archive>
+void
+Dense_Row::save(Archive & ar, const unsigned int /* version */) const {
+  dimension_type n = size();
+  ar & n;
+  Row_Flags::base_type flag_bits = flags().get_bits();
+  ar & flag_bits;
+  for (dimension_type i = 0; i < n; i++)
+    ar & (*this)[i];
+}
+
+template <typename Archive>
+void
+Dense_Row::load(Archive & ar, const unsigned int /* version */) {
+  dimension_type n;
+  ar & n;
+  Row_Flags::base_type flag_bits;
+  ar & flag_bits;
+  Dense_Row row(n, Row_Flags(flag_bits));
+  std::swap(*this, row);
+  PPL_ASSERT(size() == n);
+  for (dimension_type i = 0; i < n; i++)
+    ar & (*this)[i];
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Dense_Row_templates_hh)

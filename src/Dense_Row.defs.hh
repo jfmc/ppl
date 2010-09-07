@@ -32,6 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <limits>
 
+#include <boost/serialization/split_member.hpp>
+
 #ifndef PPL_DENSE_ROW_EXTRA_DEBUG
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -397,6 +399,14 @@ public:
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
+
+  template <typename Archive>
+  void save(Archive & ar, const unsigned int version) const;
+
+  template <typename Archive>
+  void load(Archive & ar, const unsigned int version);
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
