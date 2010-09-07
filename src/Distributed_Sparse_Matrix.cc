@@ -62,6 +62,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // FILL_MATRIX_OPERATION: id
   1, // COMPARE_WITH_SPARSE_MATRIX_OPERATION: id
   1, // COMPUTE_WORKING_COST_OPERATION: id
+  1, // MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION: id
 };
 
 const mpi::communicator*
@@ -178,6 +179,10 @@ PPL::Distributed_Sparse_Matrix
 
     case COMPUTE_WORKING_COST_OPERATION:
       worker.compute_working_cost(op.params[0]);
+      break;
+
+    case MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION:
+      worker.make_inhomogeneous_terms_nonpositive(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -1193,6 +1198,20 @@ PPL::Distributed_Sparse_Matrix
   working_cost.normalize();
 }
 
+void
+PPL::Distributed_Sparse_Matrix::make_inhomogeneous_terms_nonpositive() {
+  broadcast_operation(MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION, id);
+
+  for (dimension_type i = local_rows.size(); i-- > 0 ; ) {
+    Sparse_Row& row = local_rows[i];
+    if (row.get(0) > 0) {
+      for (Sparse_Row::iterator
+          j = row.begin(), j_end = row.end(); j != j_end; ++j)
+        neg_assign(*j);
+    }
+  }
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1612,6 +1631,22 @@ PPL::Distributed_Sparse_Matrix::Worker
   }
 }
 
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::make_inhomogeneous_terms_nonpositive(dimension_type id) {
+  row_chunks_itr_type itr = row_chunks.find(id);
+  if (itr == row_chunks.end())
+    return;
+  std::vector<Sparse_Row>& rows = itr->second;
+  for (dimension_type i = rows.size(); i-- > 0 ; ) {
+    Sparse_Row& row = rows[i];
+    if (row.get(0) > 0) {
+      for (Sparse_Row::iterator
+          j = row.begin(), j_end = row.end(); j != j_end; ++j)
+        neg_assign(*j);
+    }
+  }
+}
 
 template <typename Archive>
 void

@@ -107,6 +107,8 @@ public:
 
   void swap_rows(dimension_type row_index1, dimension_type row_index2);
 
+  void make_inhomogeneous_terms_nonpositive();
+
   bool OK() const;
 
 private:
@@ -159,6 +161,7 @@ private:
     void fill_matrix(dimension_type id);
     void compare_with_sparse_matrix(dimension_type id);
     void compute_working_cost(dimension_type id);
+    void make_inhomogeneous_terms_nonpositive(dimension_type id);
 
   private:
     // Every node has an associated Node_Data, including the root node.
@@ -218,6 +221,8 @@ private:
     COMPARE_WITH_SPARSE_MATRIX_OPERATION,
     //! Parameters: id
     COMPUTE_WORKING_COST_OPERATION,
+    //! Parameters: id
+    MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
