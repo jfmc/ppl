@@ -851,7 +851,7 @@ PPL::MIP_Problem::process_pending_constraints() {
       }
     }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau = tableau;
+    distributed_tableau.set_row(k, tableau_k);
     PPL_ASSERT(distributed_tableau == tableau);
 #endif
     for (dimension_type j = base_size; j-- > 0; )
