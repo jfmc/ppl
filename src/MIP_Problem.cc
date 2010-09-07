@@ -878,7 +878,8 @@ PPL::MIP_Problem::process_pending_constraints() {
     }
   }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  distributed_tableau.make_inhomogeneous_terms_nonpositive();
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
   // Reset the working cost function to have the right size.
