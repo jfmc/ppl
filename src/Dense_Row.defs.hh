@@ -237,6 +237,15 @@ public:
   */
   void normalize();
 
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+    \param gcd
+    This is set to the computed gcd.
+  */
+  void normalize(Coefficient& gcd);
+
   //! Swaps the i-th element with the j-th element.
   //! Provided for compatibility with Sparse_Row
   void swap(dimension_type i, dimension_type j);
