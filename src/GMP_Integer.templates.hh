@@ -29,16 +29,60 @@ site: http://www.cs.unipr.it/ppl/ . */
 template<class Archive>
 void save(Archive & ar, const Parma_Polyhedra_Library::GMP_Integer & n,
          const unsigned int /* version */) {
- std::string s = n.get_str(16);
- ar & s;
+  // Increasing this number the stack memory usage is incresed, but the
+  // new[]/delete[] overhead is reduced.
+  const size_t local_buffer_size = 100;
+  const __mpz_struct* mpz = n.get_mpz_t();
+  const size_t buffer_size = 1 + (mpz_sizeinbase(mpz, 2) - 1) / (CHAR_BIT*sizeof(mp_limb_t));
+  size_t count;
+  if (buffer_size <= local_buffer_size) {
+    mp_limb_t buffer[local_buffer_size];
+    mpz_export(buffer, &count, 1, sizeof(mp_limb_t), 0, 0, mpz);
+    PPL_ASSERT(count == buffer_size || (count == 0 && buffer_size == 1));
+    ar & count;
+    bool negative = (mpz_sgn(mpz) < 0);
+    ar & negative;
+    for (size_t i = 0; i < count; ++i)
+      ar & buffer[i];
+  } else {
+    mp_limb_t* buffer = new mp_limb_t[buffer_size];
+    mpz_export(buffer, &count, 1, sizeof(mp_limb_t), 0, 0, mpz);
+    PPL_ASSERT(count == buffer_size || (count == 0 && buffer_size == 1));
+    ar & count;
+    bool negative = (mpz_sgn(mpz) < 0);
+    ar & negative;
+    for (size_t i = 0; i < count; ++i)
+      ar & buffer[i];
+    delete [] buffer;
+  }
 }
 
 template<class Archive>
 void load(Archive & ar, Parma_Polyhedra_Library::GMP_Integer & n,
          const unsigned int /* version */) {
- std::string s;
- ar & s;
- n.set_str(s.c_str(), 16);
+  // Increasing this number the stack memory usage increases, but the
+  // new[]/delete[] overhead decreases.
+  const size_t local_buffer_size = 100;
+  size_t count;
+  ar & count;
+  bool negative;
+  ar & negative;
+  if (count <= local_buffer_size) {
+    mp_limb_t buffer[local_buffer_size];
+    for (size_t i = 0; i < count; ++i)
+      ar & buffer[i];
+    __mpz_struct* mpz = n.get_mpz_t();
+    mpz_import(mpz, count, 1, sizeof(mp_limb_t), 0, 0, buffer);
+  } else {
+    mp_limb_t* buffer = new mp_limb_t[count];
+    for (size_t i = 0; i < count; ++i)
+      ar & buffer[i];
+    __mpz_struct* mpz = n.get_mpz_t();
+    mpz_import(mpz, count, 1, sizeof(mp_limb_t), 0, 0, buffer);
+    delete [] buffer;
+  }
+  if (negative)
+    Parma_Polyhedra_Library::neg_assign(n);
 }
 
 template<class Archive>
