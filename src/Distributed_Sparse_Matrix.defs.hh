@@ -109,6 +109,10 @@ public:
 
   void make_inhomogeneous_terms_nonpositive();
 
+  void set_artificial_indexes_for_unfeasible_rows(
+      const std::vector<dimension_type>& unfeasible_tableau_rows,
+      dimension_type artificial_index);
+
   bool OK() const;
 
 private:
@@ -162,6 +166,7 @@ private:
     void compare_with_sparse_matrix(dimension_type id);
     void compute_working_cost(dimension_type id);
     void make_inhomogeneous_terms_nonpositive(dimension_type id);
+    void set_artificial_indexes_for_unfeasible_rows(dimension_type id);
 
   private:
     // Every node has an associated Node_Data, including the root node.
@@ -223,6 +228,8 @@ private:
     COMPUTE_WORKING_COST_OPERATION,
     //! Parameters: id
     MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION,
+    //! Parameters: id
+    SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type

@@ -63,6 +63,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // COMPARE_WITH_SPARSE_MATRIX_OPERATION: id
   1, // COMPUTE_WORKING_COST_OPERATION: id
   1, // MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION: id
+  1, // SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION: id
 };
 
 const mpi::communicator*
@@ -183,6 +184,10 @@ PPL::Distributed_Sparse_Matrix
 
     case MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION:
       worker.make_inhomogeneous_terms_nonpositive(op.params[0]);
+      break;
+
+    case SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION:
+      worker.set_artificial_indexes_for_unfeasible_rows(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -1212,6 +1217,48 @@ PPL::Distributed_Sparse_Matrix::make_inhomogeneous_terms_nonpositive() {
   }
 }
 
+void
+PPL::Distributed_Sparse_Matrix::set_artificial_indexes_for_unfeasible_rows(
+    const std::vector<dimension_type>& unfeasible_tableau_rows,
+    dimension_type artificial_index) {
+  broadcast_operation(SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION, id);
+
+  // This will be scattered to nodes, so it is indexed by rank.
+  // The first element of each pair is the artificial_index for that node, the
+  // second element is a vector containing the local indexes of the involved
+  // rows.
+  std::vector<std::pair<dimension_type, std::vector<dimension_type> > >
+    vec(comm_size);
+
+  // 1. Fill vec[i].second, for each i.
+
+  for (std::vector<dimension_type>::const_iterator
+      i = unfeasible_tableau_rows.begin(), i_end = unfeasible_tableau_rows.end();
+      i != i_end;
+      ++i) {
+    int rank = row_mapping[*i].first;
+    dimension_type local_index = row_mapping[*i].second;
+    vec[rank].second.push_back(local_index);
+  }
+
+  // 2. Fill vec[i].first, for each i.
+
+  for (std::vector<std::pair<dimension_type, std::vector<dimension_type> > >::iterator
+      i = vec.begin(), i_end = vec.end(); i != i_end; ++i) {
+    i->first = artificial_index;
+    artificial_index += i->second.size();
+  }
+
+  std::pair<dimension_type, std::vector<dimension_type> > root_data;
+  mpi::scatter(comm(), vec, root_data, 0);
+
+  std::vector<dimension_type>& root_indexes = root_data.second;
+  dimension_type current_artificial = root_data.first;
+  for (std::vector<dimension_type>::const_iterator
+      i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i)
+    local_rows[*i].find_create(current_artificial, Coefficient_one());
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1646,6 +1693,24 @@ PPL::Distributed_Sparse_Matrix::Worker
         neg_assign(*j);
     }
   }
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::set_artificial_indexes_for_unfeasible_rows(dimension_type id) {
+  std::pair<dimension_type, std::vector<dimension_type> > node_data;
+  mpi::scatter(comm(), node_data, 0);
+
+  row_chunks_itr_type itr = row_chunks.find(id);
+  if (itr == row_chunks.end())
+    return;
+  std::vector<Sparse_Row>& rows = itr->second;
+
+  std::vector<dimension_type>& root_indexes = node_data.second;
+  dimension_type current_artificial = node_data.first;
+  for (std::vector<dimension_type>::const_iterator
+      i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i)
+    rows[*i].find_create(current_artificial, Coefficient_one());
 }
 
 template <typename Archive>
