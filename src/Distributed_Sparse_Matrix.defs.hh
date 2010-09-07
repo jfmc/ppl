@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Sparse_Row.defs.hh"
 #include "Sparse_Matrix.types.hh"
 #include "Coefficient.defs.hh"
+#include "Dense_Row.types.hh"
 
 class Parma_Polyhedra_Library::Distributed_Sparse_Matrix {
 public:
@@ -87,6 +88,9 @@ public:
                            dimension_type row_i, dimension_type col_i);
 
   void linear_combine_with(const Sparse_Row& row, dimension_type column_index);
+
+  void compute_working_cost(Dense_Row& working_cost,
+                            const std::vector<dimension_type>& base);
 
   void reset_column(dimension_type column_index);
   void remove_column(dimension_type column_index);
@@ -154,6 +158,7 @@ private:
                    int rank2, dimension_type local_index2);
     void fill_matrix(dimension_type id);
     void compare_with_sparse_matrix(dimension_type id);
+    void compute_working_cost(dimension_type id);
 
   private:
     // Every node has an associated Node_Data, including the root node.
@@ -211,6 +216,8 @@ private:
     FILL_MATRIX_OPERATION,
     //! Parameters: id
     COMPARE_WITH_SPARSE_MATRIX_OPERATION,
+    //! Parameters: id
+    COMPUTE_WORKING_COST_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
