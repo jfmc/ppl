@@ -891,6 +891,8 @@ PPL::MIP_Problem::process_pending_constraints() {
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
+  distributed_tableau.set_artificial_indexes_for_unfeasible_rows(unfeasible_tableau_rows,
+                                                                 artificial_index);
 #endif
   // First go through nonpending constraints that became unfeasible
   // due to re-merging of split variables.
@@ -902,7 +904,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     ++artificial_index;
   }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
