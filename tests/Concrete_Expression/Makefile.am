@@ -54,14 +54,13 @@ ORIGINAL_TESTS = \
 C_Expr \
 digitalfilters1 \
 linearform1 \
-linearize
-#bdshape1 \
-#bdshape2 \
-#floatingpointexpr1 \
-#octagonalshape1 \
-#octagonalshape2 \
-#polyhedron1 \
-#polyhedron2
+linearize \
+bdshape1 \
+bdshape2 \
+octagonalshape1 \
+octagonalshape2 \
+polyhedron1 \
+polyhedron2
 
 DERIVED_TESTS =
 
@@ -138,8 +137,6 @@ bdshape1_SOURCES = bdshape1.cc
 bdshape2_SOURCES = bdshape2.cc
 
 digitalfilters1_SOURCES = digitalfilters1.cc
-
-floatingpointexpr1_SOURCES = floatingpointexpr1.cc
 
 linearform1_SOURCES = linearform1.cc
 

@@ -443,7 +443,6 @@ Coefficient.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Linear_Form.cc \
-Matrix.cc \
 Dense_Matrix.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
