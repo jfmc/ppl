@@ -2583,8 +2583,10 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\ntableau\n";
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  distributed_tableau.ascii_dump(s);
+#else
   tableau.ascii_dump(s);
+#endif
   s << "\nworking_cost( " << working_cost.size()<< " )\n";
   working_cost.ascii_dump(s);
 
