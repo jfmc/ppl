@@ -65,6 +65,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION: id
   1, // SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION: id
   1, // ASCII_DUMP_OPERATION: id
+  3, // LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION: id, k_rank, k_local_index
 };
 
 const mpi::communicator*
@@ -193,6 +194,11 @@ PPL::Distributed_Sparse_Matrix
 
     case ASCII_DUMP_OPERATION:
       worker.ascii_dump(op.params[0]);
+      break;
+
+    case LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION:
+      worker.linear_combine_with_base_rows(op.params[0], op.params[1],
+                                           op.params[2]);
       break;
 
     case QUIT_OPERATION:
@@ -731,9 +737,55 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
   scaling *= y_k;
   reverse_scaling = new_reverse_scaling;
 
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
   normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
 
   PPL_ASSERT(increase[k] * reverse_scaling == - scaling * x[k]);
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
+  WEIGHT_ADD_MUL(83, x_size);
+}
+
+void
+incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
+                           Sparse_Row& increase,
+                           const Sparse_Row& x, const Sparse_Row& y,
+                           dimension_type k) {
+  WEIGHT_BEGIN();
+  const dimension_type x_size = x.size();
+  Coefficient_traits::const_reference x_k = x.get(k);
+  Coefficient_traits::const_reference y_k = y.get(k);
+  PPL_ASSERT(y_k != 0 && x_k != 0);
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
+  Coefficient coeff1 = y_k * reverse_scaling;
+  Coefficient coeff2 = scaling * x_k;
+
+  PPL_DIRTY_TEMP_COEFFICIENT(new_reverse_scaling);
+  gcd_assign(new_reverse_scaling, coeff1, coeff2);
+  exact_div_assign(coeff1, coeff1, new_reverse_scaling);
+  exact_div_assign(coeff2, coeff2, new_reverse_scaling);
+  // Compute increase[i] and new_reverse_scaling such that
+  // increase[i] * new_reverse_scaling = increase[i]*reverse_scaling + y[i]*coeff, for each i.
+  increase.combine(y,
+                   linear_combine_helper1(coeff1),
+                   linear_combine_helper2(coeff2, coeff1),
+                   linear_combine_helper3(coeff2));
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  increase.normalize(gcd);
+  new_reverse_scaling *= gcd;
+
+  scaling *= y_k;
+  reverse_scaling = new_reverse_scaling;
+
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
+  normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
+
+  PPL_ASSERT(increase[k] * reverse_scaling == - scaling * x.get(k));
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
   WEIGHT_ADD_MUL(83, x_size);
 }
 
@@ -1327,6 +1379,112 @@ PPL::Distributed_Sparse_Matrix::ascii_dump(std::ostream& stream) const {
   }
 }
 
+void
+PPL::Distributed_Sparse_Matrix
+::linear_combine_with_base_rows(const std::vector<dimension_type>& base,
+                                dimension_type k) {
+  int k_rank = row_mapping[k].first;
+  dimension_type k_local_index = row_mapping[k].second;
+
+  broadcast_operation(LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION, id, k_rank,
+                      k_local_index);
+
+  // This vector will be scattered to nodes.
+  // vec[rank] contains the <local_index, column> pairs relevant to that node.
+  std::vector<std::vector<std::pair<dimension_type, dimension_type> > >
+    vec(comm_size);
+
+  for (dimension_type i = base.size(); i-- > 0; )
+    if (i != k && base[i] != 0) {
+      int rank = row_mapping[i].first;
+      dimension_type local_index = row_mapping[i].second;
+      vec[rank].push_back(std::make_pair(local_index, base[i]));
+    }
+
+  std::vector<std::pair<dimension_type, dimension_type> > workunit;
+  mpi::scatter(comm(), vec, workunit, 0);
+
+  linear_combine_with_base_rows__common(k_rank, k_local_index, workunit, 0,
+                                        local_rows);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
+    int k_rank, dimension_type k_local_index,
+    const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
+    int my_rank, std::vector<Sparse_Row>& local_rows) {
+
+  Sparse_Row a_local_row;
+
+  Sparse_Row& row_k = (k_rank == my_rank ? local_rows[k_local_index] : a_local_row);
+
+  mpi::broadcast(comm(), row_k, k_rank);
+
+  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
+  Coefficient& local_scaling = x.first.first;
+  Coefficient& local_reverse_scaling = x.first.second;
+  Sparse_Row& local_increase = x.second;
+
+  local_scaling = 1;
+  local_reverse_scaling = 1;
+  local_increase.resize(row_k.size());
+
+  for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
+    dimension_type local_index = i->first;
+    dimension_type column_index = i->second;
+    const Sparse_Row& row = local_rows[local_index];
+    if (row_k.get(column_index) != 0)
+      incremental_linear_combine(local_scaling, local_reverse_scaling,
+                                 local_increase, row_k, row, column_index);
+  }
+
+  PPL_ASSERT(local_scaling != 0);
+  PPL_ASSERT(local_reverse_scaling != 0);
+
+  if (k_rank != my_rank) {
+    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), k_rank);
+    return;
+  }
+
+  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> y;
+  mpi::reduce(comm(), x, y, compute_working_cost_reducer_functor(), k_rank);
+
+  Coefficient_traits::const_reference global_scaling = y.first.first;
+  Coefficient_traits::const_reference global_reverse_scaling = y.first.second;
+  const Sparse_Row& global_increase = y.second;
+
+#ifndef NDEBUG
+  {
+    PPL_ASSERT(global_scaling != 0);
+    PPL_ASSERT(global_reverse_scaling != 0);
+    // Check that global_scaling and global_increase are normalized.
+    Coefficient normalized_scaling;
+    Coefficient normalized_reverse_scaling;
+    normalize2(global_scaling, global_reverse_scaling,
+               normalized_scaling, normalized_reverse_scaling);
+    PPL_ASSERT(normalized_scaling == global_scaling);
+    PPL_ASSERT(normalized_reverse_scaling == global_reverse_scaling);
+  }
+#endif
+
+  // Calculate the global result from global_scaling and global_increase.
+  // global_result[i] == global_scaling * working_cost[i]
+  //                     + global_reverse_scaling * global_increase[i].
+  // The global result is stored in working_cost to improve performance.
+
+  // TODO: use row_k.combine() instead of these two loops.
+  for (Sparse_Row::iterator
+       i = row_k.begin(), i_end = row_k.end(); i != i_end; ++i)
+    *i *= global_scaling;
+  for (Sparse_Row::const_iterator
+       i = global_increase.begin(), i_end = global_increase.end();
+       i != i_end; ++i)
+    row_k[i.index()] += global_reverse_scaling * *i;
+
+  row_k.normalize();
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1786,6 +1944,32 @@ PPL::Distributed_Sparse_Matrix::Worker::ascii_dump(dimension_type id) const {
   }
 
   mpi::gather(comm(), output, 0);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::linear_combine_with_base_rows(dimension_type id, int k_rank,
+                                dimension_type k_local_index) {
+
+  std::vector<std::pair<dimension_type, dimension_type> > workunit;
+  mpi::scatter(comm(), workunit, 0);
+
+  row_chunks_itr_type itr = row_chunks.find(id);
+  if (itr == row_chunks.end()) {
+    // Nothing to do, partecipate in the collective operations to keep in sync
+    // with other nodes.
+    Sparse_Row row;
+    mpi::broadcast(comm(), row, k_rank);
+    std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
+    x.first.first = 1;
+    x.first.second = 1;
+    x.second.resize(row.size());
+    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), k_rank);
+    return;
+  }
+
+  linear_combine_with_base_rows__common(k_rank, k_local_index, workunit,
+                                        my_rank, itr->second);
 }
 
 

@@ -115,9 +115,18 @@ public:
 
   void ascii_dump(std::ostream& stream) const;
 
+  void linear_combine_with_base_rows(const std::vector<dimension_type>& base,
+                                     dimension_type k);
+
   bool OK() const;
 
 private:
+
+  static void linear_combine_with_base_rows__common(
+      int k_rank, dimension_type k_local_index,
+      const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
+      int my_rank, std::vector<Sparse_Row>& local_rows);
+
   void init(dimension_type num_rows, dimension_type num_columns);
 
   static dimension_type get_unique_id();
@@ -170,6 +179,8 @@ private:
     void make_inhomogeneous_terms_nonpositive(dimension_type id);
     void set_artificial_indexes_for_unfeasible_rows(dimension_type id);
     void ascii_dump(dimension_type id) const;
+    void linear_combine_with_base_rows(dimension_type id, int k_rank,
+                                       dimension_type k_local_index);
 
   private:
     // Every node has an associated Node_Data, including the root node.
@@ -235,6 +246,8 @@ private:
     SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION,
     //! Parameters: id
     ASCII_DUMP_OPERATION,
+    //! Parameters: id, k_rank, k_local_index
+    LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
