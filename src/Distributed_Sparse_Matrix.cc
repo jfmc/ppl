@@ -647,10 +647,13 @@ PPL::Distributed_Sparse_Matrix::broadcast_operation(operation_code code,
 // the PPL namespace.
 namespace Parma_Polyhedra_Library {
 
+// This is a template to avoid duplicating code.
+// Row_T is expected to be either Sparse_Row or Dense_Row.
+template <typename Row_T>
 void
 incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
                            Sparse_Row& increase,
-                           const Dense_Row& x, const Sparse_Row& y,
+                           const Row_T& x, const Sparse_Row& y,
                            dimension_type k) {
   WEIGHT_BEGIN();
   PPL_ASSERT(scaling != 0);
@@ -683,46 +686,6 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
   normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
 
   PPL_ASSERT(increase[k] * reverse_scaling == - scaling * x[k]);
-  PPL_ASSERT(scaling != 0);
-  PPL_ASSERT(reverse_scaling != 0);
-  WEIGHT_ADD_MUL(83, x_size);
-}
-
-void
-incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
-                           Sparse_Row& increase,
-                           const Sparse_Row& x, const Sparse_Row& y,
-                           dimension_type k) {
-  WEIGHT_BEGIN();
-  const dimension_type x_size = x.size();
-  Coefficient_traits::const_reference x_k = x.get(k);
-  Coefficient_traits::const_reference y_k = y.get(k);
-  PPL_ASSERT(y_k != 0 && x_k != 0);
-  PPL_ASSERT(scaling != 0);
-  PPL_ASSERT(reverse_scaling != 0);
-  Coefficient coeff1 = y_k * reverse_scaling;
-  Coefficient coeff2 = scaling * x_k;
-
-  // Compute increase[i] and new_reverse_scaling such that
-  // increase[i] * new_reverse_scaling = increase[i]*coeff1 - y[i]*coeff2, for each i.
-
-  gcd_assign(reverse_scaling, coeff1, coeff2);
-  exact_div_assign(coeff1, coeff1, reverse_scaling);
-  exact_div_assign(coeff2, coeff2, reverse_scaling);
-
-  neg_assign(coeff2);
-  increase.linear_combine(y, coeff1, coeff2);
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  increase.normalize(gcd);
-  reverse_scaling *= gcd;
-
-  scaling *= y_k;
-
-  PPL_ASSERT(scaling != 0);
-  PPL_ASSERT(reverse_scaling != 0);
-  normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
-
-  PPL_ASSERT(increase[k] * reverse_scaling == - scaling * x.get(k));
   PPL_ASSERT(scaling != 0);
   PPL_ASSERT(reverse_scaling != 0);
   WEIGHT_ADD_MUL(83, x_size);
