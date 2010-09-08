@@ -159,8 +159,9 @@ Interval<Boundary, Info>::Interval(const char* s) {
   case V_GT:
     lower_open = true;
     break;
-  case V_EQ_MINUS_INFINITY:
   case V_GT_MINUS_INFINITY:
+    lower_open = true;
+  case V_EQ_MINUS_INFINITY:
     lower_boundary_infinity = true;
     break;
   case V_EQ_PLUS_INFINITY:
@@ -187,8 +188,9 @@ Interval<Boundary, Info>::Interval(const char* s) {
     else
       assign(EMPTY);
     break;
-  case V_EQ_PLUS_INFINITY:
   case V_LT_PLUS_INFINITY:
+    upper_open = true;
+  case V_EQ_PLUS_INFINITY:
     upper_boundary_infinity = true;
     break;
   default:
@@ -202,12 +204,12 @@ Interval<Boundary, Info>::Interval(const char* s) {
     assign(EMPTY);
   else {
     if (lower_boundary_infinity)
-      special_set_boundary_infinity(LOWER, lower(), info());
+      set_minus_infinity(LOWER, lower(), info(), lower_open);
     else
       Boundary_NS::assign(LOWER, lower(), info(),
                           LOWER, lower_bound, SCALAR_INFO, lower_open);
     if (upper_boundary_infinity)
-      special_set_boundary_infinity(UPPER, upper(), info());
+      set_plus_infinity(UPPER, upper(), info(), upper_open);
     else
       Boundary_NS::assign(UPPER, upper(), info(),
                           UPPER, upper_bound, SCALAR_INFO, upper_open);
@@ -295,8 +297,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   case V_GT:
     lower_open = true;
     break;
-  case V_EQ_MINUS_INFINITY:
   case V_GT_MINUS_INFINITY:
+    lower_open = true;
+  case V_EQ_MINUS_INFINITY:
     lower_boundary_infinity = true;
     break;
   case V_EQ_PLUS_INFINITY:
@@ -316,8 +319,9 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   case V_LT:
     upper_open = true;
     break;
-  case V_EQ_MINUS_INFINITY:
   case V_GT_MINUS_INFINITY:
+    upper_open = true;
+  case V_EQ_MINUS_INFINITY:
     if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
       x.assign(UNIVERSE);
     else
@@ -338,12 +342,12 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     x.assign(EMPTY);
   else {
     if (lower_boundary_infinity)
-      special_set_boundary_infinity(LOWER, x.lower(), x.info());
+      set_minus_infinity(LOWER, x.lower(), x.info(), lower_open);
     else
       assign(LOWER, x.lower(), x.info(),
              LOWER, lower_bound, SCALAR_INFO, lower_open);
     if (upper_boundary_infinity)
-      special_set_boundary_infinity(UPPER, x.upper(), x.info());
+      set_plus_infinity(UPPER, x.upper(), x.info(), upper_open);
     else
       assign(UPPER, x.upper(), x.info(),
              UPPER, upper_bound, SCALAR_INFO, upper_open);
