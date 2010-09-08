@@ -198,14 +198,16 @@ private:
                                        dimension_type k_local_index);
 
   private:
+    struct Row_Chunk {
+      std::vector<Sparse_Row> rows;
+      std::vector<dimension_type> reverse_row_mapping;
+    };
     // Every node has an associated Node_Data, including the root node.
     // This declaration refers to worker nodes only.
-    std::tr1::unordered_map<dimension_type, std::vector<Sparse_Row> > row_chunks;
-    typedef std::tr1::unordered_map<dimension_type,
-                                    std::vector<Sparse_Row> >::iterator
+    std::tr1::unordered_map<dimension_type, Row_Chunk> row_chunks;
+    typedef std::tr1::unordered_map<dimension_type, Row_Chunk>::iterator
             row_chunks_itr_type;
-    typedef std::tr1::unordered_map<dimension_type,
-                                    std::vector<Sparse_Row> >::const_iterator
+    typedef std::tr1::unordered_map<dimension_type, Row_Chunk >::const_iterator
             row_chunks_const_itr_type;
     const int my_rank;
   };
