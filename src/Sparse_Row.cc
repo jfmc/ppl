@@ -181,6 +181,54 @@ PPL::Sparse_Row::normalize() {
 }
 
 void
+PPL::Sparse_Row::normalize(Coefficient& gcd) {
+  // Compute the GCD of all the coefficients.
+  const_iterator i = begin();
+  const_iterator i_end = end();
+  for ( ; i != i_end; ++i) {
+    Coefficient_traits::const_reference x_i = *i;
+    if (const int x_i_sign = sgn(x_i)) {
+      gcd = x_i;
+      if (x_i_sign < 0)
+        neg_assign(gcd);
+      goto compute_gcd;
+    }
+  }
+  // We reach this point only if all the coefficients were zero.
+  return;
+
+ compute_gcd:
+  if (gcd == 1)
+    return;
+  for (++i; i != i_end; ++i) {
+    Coefficient_traits::const_reference x_i = *i;
+    if (x_i != 0) {
+      // Note: we use the ternary version instead of a more concise
+      // gcd_assign(gcd, x_i) to take advantage of the fact that
+      // `gcd' will decrease very rapidly (see D. Knuth, The Art of
+      // Computer Programming, second edition, Section 4.5.2,
+      // Algorithm C, and the discussion following it).  Our
+      // implementation of gcd_assign(x, y, z) for checked numbers is
+      // optimized for the case where `z' is smaller than `y', so that
+      // on checked numbers we gain.  On the other hand, for the
+      // implementation of gcd_assign(x, y, z) on GMP's unbounded
+      // integers we cannot make any assumption, so here we draw.
+      // Overall, we win.
+      gcd_assign(gcd, x_i, gcd);
+      if (gcd == 1)
+        return;
+    }
+  }
+  // Divide the coefficients by the GCD.
+  for (iterator j = begin(), j_end = end(); j != j_end; ++j) {
+    Coefficient& x_j = *j;
+    exact_div_assign(x_j, x_j, gcd);
+  }
+
+  PPL_ASSERT(OK());
+}
+
+void
 PPL::Sparse_Row::ascii_dump(std::ostream& s) const {
   s << "size " << size_ << ' ';
   dimension_type n_elements = 0;

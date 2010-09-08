@@ -616,6 +616,18 @@ public:
   */
   void normalize();
 
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of the row
+    and normalizes them by the GCD itself.
+
+    \param gcd
+    This is set to the computed gcd.
+
+    This method takes \f$O(n)\f$ time.
+  */
+  void normalize(Coefficient& gcd);
+
   //! Calls g(x[i],y[i]), for each i.
   /*!
     \param y
