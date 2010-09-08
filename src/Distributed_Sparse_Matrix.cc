@@ -693,20 +693,19 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
 
 void
 linear_combine(Sparse_Row& x, const Sparse_Row& y, const dimension_type k) {
-  const Coefficient& x_k = x.get(k);
-  const Coefficient& y_k = y.get(k);
+  Coefficient x_k = x.get(k);
+  Coefficient y_k = y.get(k);
   PPL_ASSERT(y_k != 0 && x_k != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
-  normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
-  neg_assign(normalized_x_k);
-  x.linear_combine(y, normalized_y_k, normalized_x_k);
+  normalize2(x_k, y_k, x_k, y_k);
 
-  x.reset(k);
+  neg_assign(x_k);
+  x.linear_combine(y, y_k, x_k);
+
+  PPL_ASSERT(x.find(k) == x.end());
   x.normalize();
 }
 
