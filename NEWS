@@ -38,6 +38,13 @@ o  Corrected a bug affecting methods
    whereby a lower bound would not be computed correctly when the two
    iterators specify an empty list of stop points.
 
+o  Fixed a bug affecting
+
+     Interval::Interval(const char* s)
+
+   whereby a wrong interval would be constructed if `s' denotes a number
+   that can only be represented as an infinity.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.11  (released on August 2, 2010)
