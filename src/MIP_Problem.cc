@@ -1340,67 +1340,6 @@ PPL::MIP_Problem::textbook_entering_index() const {
   return 0;
 }
 
-
-namespace {
-
-class linear_combine_helper1 {
-
-public:
-  inline
-  linear_combine_helper1(const PPL::Coefficient& normalized_y_k1)
-    : normalized_y_k(normalized_y_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x) const {
-    x *= normalized_y_k;
-  }
-
-private:
-  PPL::Coefficient normalized_y_k;
-};
-
-class linear_combine_helper2 {
-
-public:
-  inline
-  linear_combine_helper2(const PPL::Coefficient& normalized_x_k1,
-                         const PPL::Coefficient& normalized_y_k1)
-    : normalized_x_k(normalized_x_k1), normalized_y_k(normalized_y_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x *= normalized_y_k;
-    PPL::sub_mul_assign(x, y, normalized_x_k);
-  }
-
-private:
-  PPL::Coefficient normalized_x_k;
-  PPL::Coefficient normalized_y_k;
-};
-
-class linear_combine_helper3 {
-
-public:
-  inline
-  linear_combine_helper3(const PPL::Coefficient& normalized_x_k1)
-    : normalized_x_k(normalized_x_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x = y;
-    x *= normalized_x_k;
-    PPL::neg_assign(x);
-  }
-
-private:
-  PPL::Coefficient normalized_x_k;
-};
-
-} // namespace
-
 void
 PPL::MIP_Problem::linear_combine(Dense_Row& x, const Dense_Row& y,
                                  const dimension_type k) {
@@ -1445,10 +1384,8 @@ PPL::MIP_Problem::linear_combine(Sparse_Row& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
-  x.combine(y,
-            linear_combine_helper1(normalized_y_k),
-            linear_combine_helper2(normalized_x_k, normalized_y_k),
-            linear_combine_helper3(normalized_x_k));
+  neg_assign(normalized_x_k);
+  x.linear_combine(y, normalized_y_k, normalized_x_k);
 
   x.reset(k);
   x.normalize();
