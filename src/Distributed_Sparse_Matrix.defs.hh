@@ -122,6 +122,13 @@ public:
 
 private:
 
+  static void linear_combine_matrix__common(int rank,
+                                            dimension_type local_row_index,
+                                            dimension_type col_index,
+                                            int my_rank,
+                                            std::vector<Sparse_Row>&
+                                              local_rows);
+
   static void compute_working_cost__common(
       std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
       const Dense_Row& working_cost,
@@ -165,6 +172,7 @@ private:
     void get_row(int rank) const;
     void set_row(int rank);
     void linear_combine_matrix(int rank, dimension_type id,
+                               dimension_type local_row_index,
                                dimension_type col_index);
     void reset_column(dimension_type id, dimension_type column_index);
     void remove_column(dimension_type id, dimension_type col_index);
@@ -217,8 +225,8 @@ private:
     GET_ROW_OPERATION,
     //! Parameters: rank.
     SET_ROW_OPERATION,
-    //! Parameters: rank, id, col_index.
-    LINEAR_COMBINE_OPERATION,
+    //! Parameters: rank, id, local_row_index, col_index.
+    LINEAR_COMBINE_MATRIX_OPERATION,
     //! Parameters: id, col_index
     REMOVE_COLUMN_OPERATION,
     //! Parameters: id, col_index

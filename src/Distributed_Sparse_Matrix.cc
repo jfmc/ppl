@@ -47,7 +47,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // DELETE_MATRIX_OPERATION: id
   1, // GET_ROW_OPERATION: rank
   1, // SET_ROW_OPERATION: rank
-  3, // LINEAR_COMBINE_OPERATION: rank, id, col_index
+  4, // LINEAR_COMBINE_MATRIX_OPERATION: rank, id, local_row_index, col_index
   2, // REMOVE_COLUMN_OPERATION: id, col_index
   2, // REMOVE_TRAILING_COLUMNS_OPERATION: id, n
   2, // ADD_ZERO_COLUMNS_OPERATION: id, n
@@ -123,8 +123,9 @@ PPL::Distributed_Sparse_Matrix
       worker.set_row(op.params[0]);
       break;
 
-    case LINEAR_COMBINE_OPERATION:
-      worker.linear_combine_matrix(op.params[0], op.params[1], op.params[2]);
+    case LINEAR_COMBINE_MATRIX_OPERATION:
+      worker.linear_combine_matrix(op.params[0], op.params[1], op.params[2],
+                                   op.params[3]);
       break;
 
     case REMOVE_COLUMN_OPERATION:
@@ -760,23 +761,10 @@ PPL::Distributed_Sparse_Matrix
   int rank = row_info.first;
   dimension_type local_index = row_info.second;
 
-  broadcast_operation(LINEAR_COMBINE_OPERATION, rank, id, col_index);
+  broadcast_operation(LINEAR_COMBINE_MATRIX_OPERATION, rank, id, local_index,
+                      col_index);
 
-  if (rank == 0) {
-    PPL_ASSERT(local_index < local_rows.size());
-    Sparse_Row& row = local_rows[local_index];
-    mpi::broadcast(comm(), row, 0);
-    for (dimension_type i = 0; i < local_rows.size(); i++)
-      if (i != local_index && local_rows[i].get(col_index) != 0)
-        linear_combine(local_rows[i], row, col_index);
-  } else {
-    Sparse_Row row;
-    comm().send(rank, 0, local_index);
-    mpi::broadcast(comm(), row, rank);
-    for (dimension_type i = 0; i < local_rows.size(); i++)
-      if (local_rows[i].get(col_index) != 0)
-        linear_combine(local_rows[i], row, col_index);
-  }
+  linear_combine_matrix__common(rank, local_index, col_index, 0, local_rows);
 }
 
 void
@@ -1128,6 +1116,27 @@ PPL::Distributed_Sparse_Matrix
 
 void
 PPL::Distributed_Sparse_Matrix
+::linear_combine_matrix__common(int rank, dimension_type local_row_index,
+                                dimension_type col_index, int my_rank,
+                                std::vector<Sparse_Row>& local_rows) {
+  if (rank == my_rank) {
+    PPL_ASSERT(local_row_index < local_rows.size());
+    Sparse_Row& row = local_rows[local_row_index];
+    mpi::broadcast(comm(), row, rank);
+    for (dimension_type i = 0; i < local_rows.size(); i++)
+      if (i != local_row_index && local_rows[i].get(col_index) != 0)
+        linear_combine(local_rows[i], row, col_index);
+  } else {
+    Sparse_Row row;
+    mpi::broadcast(comm(), row, rank);
+    for (dimension_type i = 0; i < local_rows.size(); i++)
+      if (local_rows[i].get(col_index) != 0)
+        linear_combine(local_rows[i], row, col_index);
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix
 ::compute_working_cost__common(std::pair<std::pair<Coefficient, Coefficient>,
                                          Sparse_Row>& x,
                                const Dense_Row& working_cost,
@@ -1435,7 +1444,9 @@ PPL::Distributed_Sparse_Matrix::Worker::set_row(int rank) {
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
-::linear_combine_matrix(int rank, dimension_type id, dimension_type col_index) {
+::linear_combine_matrix(int rank, dimension_type id,
+                        dimension_type local_row_index,
+                        dimension_type col_index) {
   row_chunks_itr_type itr = row_chunks.find(id);
   if (itr == row_chunks.end()) {
     PPL_ASSERT(my_rank != rank);
@@ -1443,23 +1454,8 @@ PPL::Distributed_Sparse_Matrix::Worker
     Sparse_Row row;
     mpi::broadcast(comm(), row, rank);
   } else {
-    std::vector<Sparse_Row>& rows = itr->second;
-    if (my_rank == rank) {
-      dimension_type local_index;
-      comm().recv(0, 0, local_index);
-      Sparse_Row& row = rows[local_index];
-      mpi::broadcast(comm(), row, rank);
-      for (dimension_type i = 0; i < rows.size(); i++)
-        if (i != local_index && rows[i].get(col_index) != 0)
-          linear_combine(rows[i], row, col_index);
-    } else {
-      Sparse_Row row;
-      mpi::broadcast(comm(), row, rank);
-      for (std::vector<Sparse_Row>::iterator
-          i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-        if (i->get(col_index) != 0)
-          linear_combine(*i, row, col_index);
-    }
+    linear_combine_matrix__common(rank, local_row_index, col_index, my_rank,
+                                  itr->second);
   }
 }
 
