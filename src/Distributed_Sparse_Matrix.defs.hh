@@ -122,6 +122,13 @@ public:
 
 private:
 
+  static void compute_working_cost__common(
+      std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
+      const Dense_Row& working_cost,
+      const std::vector<dimension_type>& reverse_row_mapping,
+      const std::vector<dimension_type>& base,
+      const std::vector<Sparse_Row>& local_rows);
+
   static void linear_combine_with_base_rows__common(
       int k_rank, dimension_type k_local_index,
       const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
