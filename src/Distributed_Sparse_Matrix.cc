@@ -713,6 +713,8 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
                            const Dense_Row& x, const Sparse_Row& y,
                            dimension_type k) {
   WEIGHT_BEGIN();
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
   const dimension_type x_size = x.size();
   Coefficient_traits::const_reference x_k = x.get(k);
   Coefficient_traits::const_reference y_k = y.get(k);
@@ -1174,6 +1176,10 @@ struct compute_working_cost_reducer_functor {
     const PPL::Coefficient& x_reverse_scaling = x.first.second;
     const PPL::Coefficient& y_scaling = y.first.first;
     const PPL::Coefficient& y_reverse_scaling = y.first.second;
+    PPL_ASSERT(x_scaling != 0);
+    PPL_ASSERT(x_reverse_scaling != 0);
+    PPL_ASSERT(y_scaling != 0);
+    PPL_ASSERT(y_reverse_scaling != 0);
     const PPL::Sparse_Row& y_row = y.second;
     PPL::Coefficient& scaling = result.first.first;
     PPL::Coefficient& reverse_scaling = result.first.second;
@@ -1188,7 +1194,11 @@ struct compute_working_cost_reducer_functor {
 
     scaling *= y_scaling;
     reverse_scaling = gcd;
+    PPL_ASSERT(scaling != 0);
+    PPL_ASSERT(reverse_scaling != 0);
     PPL::normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
+    PPL_ASSERT(scaling != 0);
+    PPL_ASSERT(reverse_scaling != 0);
 
     PPL::dimension_type n = x.second.size();
     PPL::Dense_Row tmp(n, PPL::Row_Flags());
