@@ -858,7 +858,8 @@ PPL::MIP_Problem::process_pending_constraints() {
       if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
         linear_combine(tableau_k, tableau[j], base[j]);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau = tableau;
+    distributed_tableau.linear_combine_with_base_rows(base, k);
+    PPL_ASSERT(distributed_tableau == tableau);
 #endif
   }
 
