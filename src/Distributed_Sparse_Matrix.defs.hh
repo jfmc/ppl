@@ -135,6 +135,10 @@ private:
   static void make_inhomogeneous_terms_nonpositive__common(
       std::vector<Sparse_Row>& rows);
 
+  static void set_artificial_indexes_for_unfeasible_rows__common(
+    const std::pair<dimension_type, std::vector<dimension_type> >&node_data,
+    std::vector<Sparse_Row>& rows);
+
   static void linear_combine_with_base_rows__common(
       int k_rank, dimension_type k_local_index,
       const std::vector<std::pair<dimension_type, dimension_type> >& workunit,

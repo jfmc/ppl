@@ -680,6 +680,19 @@ PPL::Distributed_Sparse_Matrix
 }
 
 void
+PPL::Distributed_Sparse_Matrix
+::set_artificial_indexes_for_unfeasible_rows__common(
+    const std::pair<dimension_type, std::vector<dimension_type> >&node_data,
+    std::vector<Sparse_Row>& rows) {
+
+  const std::vector<dimension_type>& indexes = node_data.second;
+  dimension_type current_artificial = node_data.first;
+  for (std::vector<dimension_type>::const_iterator
+      i = indexes.begin(), i_end = indexes.end(); i != i_end; ++i)
+    rows[*i].find_create(current_artificial, Coefficient_one());
+}
+
+void
 PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
     int k_rank, dimension_type k_local_index,
     const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
@@ -1254,11 +1267,7 @@ PPL::Distributed_Sparse_Matrix::set_artificial_indexes_for_unfeasible_rows(
   std::pair<dimension_type, std::vector<dimension_type> > root_data;
   mpi::scatter(comm(), vec, root_data, 0);
 
-  std::vector<dimension_type>& root_indexes = root_data.second;
-  dimension_type current_artificial = root_data.first;
-  for (std::vector<dimension_type>::const_iterator
-      i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i)
-    local_rows[*i].find_create(current_artificial, Coefficient_one());
+  set_artificial_indexes_for_unfeasible_rows__common(root_data, local_rows);
 }
 
 void
@@ -1644,13 +1653,8 @@ PPL::Distributed_Sparse_Matrix::Worker
   row_chunks_itr_type itr = row_chunks.find(id);
   if (itr == row_chunks.end())
     return;
-  std::vector<Sparse_Row>& rows = itr->second;
 
-  std::vector<dimension_type>& root_indexes = node_data.second;
-  dimension_type current_artificial = node_data.first;
-  for (std::vector<dimension_type>::const_iterator
-      i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i)
-    rows[*i].find_create(current_artificial, Coefficient_one());
+  set_artificial_indexes_for_unfeasible_rows__common(node_data, itr->second);
 }
 
 void
