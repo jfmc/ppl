@@ -120,6 +120,11 @@ private:
                                             std::vector<Sparse_Row>&
                                               local_rows);
 
+  static void swap_rows__common(int rank1, int rank2,
+                                dimension_type local_index1,
+                                dimension_type local_index2,
+                                int my_rank, std::vector<Sparse_Row>& rows);
+
   static void compute_working_cost__common(
       std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
       const Dense_Row& working_cost,

@@ -549,6 +549,38 @@ PPL::Distributed_Sparse_Matrix
   }
 }
 
+void
+PPL::Distributed_Sparse_Matrix
+::swap_rows__common(int rank1, int rank2,
+                    dimension_type local_index1, dimension_type local_index2,
+                    int my_rank, std::vector<Sparse_Row>& rows) {
+  PPL_ASSERT(my_rank == rank1 || my_rank == rank2);
+  if (rank1 == rank2) {
+    std::swap(rows[local_index1], rows[local_index2]);
+    return;
+  }
+  if (rank1 > rank2) {
+    // These are useful to simplify the code below.
+    std::swap(rank1, rank2);
+    std::swap(local_index1, local_index2);
+  }
+  PPL_ASSERT(rank1 < rank2);
+  if (rank1 == my_rank) {
+    // rank1 < rank2, and this node has rank rank1, so it will do the actual
+    // swap.
+    Sparse_Row row;
+    comm().recv(rank2, 0, row);
+    comm().send(rank2, 0, rows[local_index1]);
+    std::swap(row, rows[local_index1]);
+  } else {
+    PPL_ASSERT(rank2 == my_rank);
+    // rank1 < rank2, and this node has rank rank2, so it won't do the actual
+    // swap.
+    comm().send(rank1, 0, rows[local_index2]);
+    comm().recv(rank1, 0, rows[local_index2]);
+  }
+}
+
 namespace {
 
 struct compute_working_cost_reducer_functor {
@@ -1113,22 +1145,7 @@ PPL::Distributed_Sparse_Matrix
   }
   broadcast_operation(SWAP_ROWS_OPERATION, id, rank1, local_index1, rank2,
                       local_index2);
-  if (rank1 != 0 && rank2 != 0)
-    return;
-  PPL_ASSERT(rank1 != rank2);
-  if (rank1 != 0) {
-    // These swaps are useful to simplify the code below.
-    std::swap(rank1, rank2);
-    std::swap(local_index1, local_index2);
-  }
-  PPL_ASSERT(rank1 == 0);
-  PPL_ASSERT(rank2 != 0);
-  // rank1 < rank2, and this node has rank rank1, so it will do the actual
-  // swap.
-  Sparse_Row row;
-  comm().recv(rank2, 0, row);
-  comm().send(rank2, 0, local_rows[local_index1]);
-  std::swap(row, local_rows[local_index1]);
+  swap_rows__common(rank1, rank2, local_index1, local_index2, 0, local_rows);
 }
 
 void
@@ -1522,31 +1539,8 @@ PPL::Distributed_Sparse_Matrix::Worker
   if (rank1 != my_rank && rank2 != my_rank)
     return;
   PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
-  std::vector<Sparse_Row>& rows = row_chunks[id];
-  if (rank1 == rank2) {
-    std::swap(rows[local_index1], rows[local_index2]);
-    return;
-  }
-  if (rank1 > rank2) {
-    // These are useful to simplify the code below.
-    std::swap(rank1, rank2);
-    std::swap(local_index1, local_index2);
-  }
-  PPL_ASSERT(rank1 < rank2);
-  if (rank1 == my_rank) {
-    // rank1 < rank2, and this node has rank rank1, so it will do the actual
-    // swap.
-    Sparse_Row row;
-    comm().recv(rank2, 0, row);
-    comm().send(rank2, 0, rows[local_index1]);
-    std::swap(row, rows[local_index1]);
-  } else {
-    PPL_ASSERT(rank2 == my_rank);
-    // rank1 < rank2, and this node has rank rank2, so it won't do the actual
-    // swap.
-    comm().send(rank1, 0, rows[local_index2]);
-    comm().recv(rank1, 0, rows[local_index2]);
-  }
+  swap_rows__common(rank1, rank2, local_index1, local_index2, my_rank,
+                    row_chunks[id]);
 }
 
 void
