@@ -643,63 +643,6 @@ PPL::Distributed_Sparse_Matrix::broadcast_operation(operation_code code,
   mpi::broadcast(comm(), op, 0);
 }
 
-namespace {
-
-class sum_of_products_combiner {
-private:
-  class helper_functor1 {
-  public:
-    helper_functor1(PPL::Coefficient_traits::const_reference coeff1)
-      : my_coeff1(coeff1) {
-    }
-    void operator()(PPL::Coefficient& x_i) const {
-      x_i *= my_coeff1;
-    }
-  private:
-    PPL::Coefficient my_coeff1;
-  };
-  class helper_functor2 {
-  public:
-    helper_functor2(PPL::Coefficient_traits::const_reference coeff1,
-                    PPL::Coefficient_traits::const_reference coeff2)
-      : my_coeff1(coeff1), my_coeff2(coeff2) {
-    }
-    void operator()(PPL::Coefficient& x_i,
-                    PPL::Coefficient_traits::const_reference y_i) const {
-      x_i *= my_coeff1;
-      x_i += my_coeff2 * y_i;
-    }
-  private:
-    PPL::Coefficient my_coeff1;
-    PPL::Coefficient my_coeff2;
-  };
-  class helper_functor3 {
-  public:
-    helper_functor3(PPL::Coefficient_traits::const_reference coeff2)
-      : my_coeff2(coeff2) {
-    }
-    void operator()(PPL::Coefficient& x_i,
-                    PPL::Coefficient_traits::const_reference y_i) const {
-      PPL_ASSERT(x_i == 0);
-      x_i = y_i;
-      x_i *= my_coeff2;
-    }
-  private:
-    PPL::Coefficient my_coeff2;
-  };
-public:
-  // For each i, computes
-  // x[i] = x[i]*coeff1 + y[i]*coeff2
-  static void combine(PPL::Sparse_Row& x, const PPL::Sparse_Row& y,
-                      PPL::Coefficient_traits::const_reference coeff1,
-                      PPL::Coefficient_traits::const_reference coeff2) {
-    x.combine(y, helper_functor1(coeff1), helper_functor2(coeff1, coeff2),
-              helper_functor3(coeff2));
-  }
-};
-
-} // namespace
-
 // This is needed because PPL_DIRTY_TEMP_COEFFICIENT works only inside
 // the PPL namespace.
 namespace Parma_Polyhedra_Library {
@@ -727,7 +670,7 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
   exact_div_assign(coeff2, coeff2, reverse_scaling);
 
   neg_assign(coeff2);
-  sum_of_products_combiner::combine(increase, y, coeff1, coeff2);
+  increase.linear_combine(y, coeff1, coeff2);
 
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   increase.normalize(gcd);
@@ -768,7 +711,7 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
   exact_div_assign(coeff2, coeff2, reverse_scaling);
 
   neg_assign(coeff2);
-  sum_of_products_combiner::combine(increase, y, coeff1, coeff2);
+  increase.linear_combine(y, coeff1, coeff2);
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   increase.normalize(gcd);
   reverse_scaling *= gcd;
@@ -798,7 +741,7 @@ linear_combine(Sparse_Row& x, const Sparse_Row& y, const dimension_type k) {
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
   neg_assign(normalized_x_k);
-  sum_of_products_combiner::combine(x, y, normalized_y_k, normalized_x_k);
+  x.linear_combine(y, normalized_y_k, normalized_x_k);
 
   x.reset(k);
   x.normalize();
@@ -1139,8 +1082,7 @@ struct compute_working_cost_reducer_functor {
 
     PPL::dimension_type n = x.second.size();
     PPL::Dense_Row tmp(n, PPL::Row_Flags());
-    sum_of_products_combiner::combine(row, y_row, y_normalized_scaling,
-                                      x_normalized_scaling);
+    row.linear_combine(y_row, y_normalized_scaling, x_normalized_scaling);
     // TODO: Check if the copy can be avoided.
     return result;
   }
