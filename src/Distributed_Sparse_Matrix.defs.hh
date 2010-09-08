@@ -79,15 +79,6 @@ public:
   void set_row(dimension_type i, const Sparse_Row& row);
 
   void linear_combine_matrix(dimension_type row_i, dimension_type col_i);
-  //! Linear combines the row whose indexes are in row_indexes with the
-  //! row_i-th row.
-  /*!
-    row_indexes must not contain duplicates nor row_i.
-  */
-  void linear_combine_some(const std::vector<dimension_type>& row_indexes,
-                           dimension_type row_i, dimension_type col_i);
-
-  void linear_combine_with(const Sparse_Row& row, dimension_type column_index);
 
   void compute_working_cost(Dense_Row& working_cost,
                             const std::vector<dimension_type>& base);
@@ -186,9 +177,6 @@ private:
     void add_zero_rows(dimension_type id, dimension_type num_columns,
                        dimension_type flag_bits);
     void add_row(int rank);
-    void linear_combine_some(dimension_type id, int rank,
-                             dimension_type column_index);
-    void linear_combine_with(dimension_type id, dimension_type column_index);
     void swap_rows(dimension_type id, int rank1, dimension_type local_index1,
                    int rank2, dimension_type local_index2);
     void fill_matrix(dimension_type id);
@@ -242,10 +230,6 @@ private:
     ADD_ZERO_ROWS_OPERATION,
     //! Parameters: rank
     ADD_ROW_OPERATION,
-    //! Parameters: id, rank, column_index
-    LINEAR_COMBINE_SOME_OPERATION,
-    //! Parameters: id, column_index
-    LINEAR_COMBINE_WITH_OPERATION,
     //! Parameters: id, column_index
     RESET_COLUMN_OPERATION,
     //! Parameters: id

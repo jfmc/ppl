@@ -54,8 +54,6 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   2, // CHECK_OPERATION: id, num_columns
   3, // ADD_ZERO_ROWS_OPERATION: id, num_columns, flag_bits
   1, // ADD_ROW_OPERATION: rank
-  3, // LINEAR_COMBINE_SOME_OPERATION: id, rank, column_index
-  2, // LINEAR_COMBINE_WITH_OPERATION: id, column_index
   2, // RESET_COLUMN_OPERATION: id, column_index
   1, // REMOVE_TRAILING_ROWS_OPERATION: id
   5, // SWAP_ROWS_OPERATION: id, rank1, local_index1, rank2, local_index2
@@ -150,14 +148,6 @@ PPL::Distributed_Sparse_Matrix
 
     case ADD_ROW_OPERATION:
       worker.add_row(op.params[0]);
-      break;
-
-    case LINEAR_COMBINE_SOME_OPERATION:
-      worker.linear_combine_some(op.params[0], op.params[1], op.params[2]);
-      break;
-
-    case LINEAR_COMBINE_WITH_OPERATION:
-      worker.linear_combine_with(op.params[0], op.params[1]);
       break;
 
     case RESET_COLUMN_OPERATION:
@@ -1143,55 +1133,6 @@ PPL::Distributed_Sparse_Matrix
 
 void
 PPL::Distributed_Sparse_Matrix
-::linear_combine_some(const std::vector<dimension_type>& row_indexes,
-                      dimension_type row_i, dimension_type col_i) {
-#ifndef NDEBUG
-  for (std::vector<dimension_type>::const_iterator
-      i = row_indexes.begin(), i_end = row_indexes.end(); i != i_end; ++i)
-    PPL_ASSERT(*i != row_i);
-#endif
-  int rank = row_mapping[row_i].first;
-  dimension_type local_index = row_mapping[row_i].second;
-  broadcast_operation(LINEAR_COMBINE_SOME_OPERATION, id, rank, col_i);
-  std::vector<std::vector<dimension_type> > vec;
-  std::vector<dimension_type> root_indexes;
-  map_indexes(row_indexes, vec);
-  mpi::scatter(comm(), vec, root_indexes, 0);
-  if (rank == 0) {
-    Sparse_Row& row = local_rows[local_index];
-    mpi::broadcast(comm(), row, 0);
-    for (std::vector<dimension_type>::const_iterator
-        i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i) {
-      PPL_ASSERT(*i < local_rows.size());
-      linear_combine(local_rows[*i], row, col_i);
-    }
-  } else {
-    comm().send(rank, 0, local_index);
-    Sparse_Row row;
-    mpi::broadcast(comm(), row, rank);
-    for (std::vector<dimension_type>::const_iterator
-        i = root_indexes.begin(), i_end = root_indexes.end(); i != i_end; ++i) {
-      PPL_ASSERT(*i < local_rows.size());
-      linear_combine(local_rows[*i], row, col_i);
-    }
-  }
-}
-
-void
-PPL::Distributed_Sparse_Matrix
-::linear_combine_with(const Sparse_Row& row, dimension_type column_index) {
-  broadcast_operation(LINEAR_COMBINE_WITH_OPERATION, id, column_index);
-  // The row will not be modified. The const_cast is needed because
-  // mpi::broadcast takes a non-const reference.
-  Sparse_Row& row_ref = const_cast<Sparse_Row&>(row);
-  mpi::broadcast(comm(), row_ref, 0);
-  for (std::vector<Sparse_Row>::iterator
-      i = local_rows.begin(), i_end = local_rows.end(); i != i_end; ++i)
-    linear_combine(*i, row, column_index);
-}
-
-void
-PPL::Distributed_Sparse_Matrix
 ::compute_working_cost(Dense_Row& working_cost,
                        const std::vector<dimension_type>& base) {
   PPL_ASSERT(working_cost.size() == num_columns());
@@ -1559,51 +1500,6 @@ PPL::Distributed_Sparse_Matrix::Worker::add_row(int rank) {
   rows.resize(rows.size() + 1);
   Sparse_Row& row = rows.back();
   comm().recv(0, 0, row);
-}
-
-void
-PPL::Distributed_Sparse_Matrix::Worker
-::linear_combine_some(dimension_type id, int rank,
-                      dimension_type column_index) {
-  std::vector<dimension_type> local_indexes;
-  mpi::scatter(comm(), local_indexes, 0);
-  std::vector<Sparse_Row>& rows = row_chunks[id];
-  if (my_rank == rank) {
-    dimension_type local_index;
-    comm().recv(0, 0, local_index);
-    PPL_ASSERT(local_index < rows.size());
-    Sparse_Row& row = rows[local_index];
-    mpi::broadcast(comm(), row, rank);
-    PPL_ASSERT(row.get(column_index) != 0);
-    for (std::vector<dimension_type>::const_iterator
-        i = local_indexes.begin(), i_end = local_indexes.end(); i != i_end; ++i) {
-      PPL_ASSERT(*i < rows.size());
-      linear_combine(rows[*i], row, column_index);
-    }
-  } else {
-    Sparse_Row row;
-    mpi::broadcast(comm(), row, rank);
-    PPL_ASSERT(row.get(column_index) != 0);
-    for (std::vector<dimension_type>::const_iterator
-        i = local_indexes.begin(), i_end = local_indexes.end(); i != i_end; ++i) {
-      PPL_ASSERT(*i < rows.size());
-      linear_combine(rows[*i], row, column_index);
-    }
-  }
-}
-
-void
-PPL::Distributed_Sparse_Matrix::Worker
-::linear_combine_with(dimension_type id, dimension_type column_index) {
-  Sparse_Row row;
-  mpi::broadcast(comm(), row, 0);
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
-    return;
-  std::vector<Sparse_Row>& rows = itr->second;
-  for (std::vector<Sparse_Row>::iterator
-      i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-    linear_combine(*i, row, column_index);
 }
 
 void
