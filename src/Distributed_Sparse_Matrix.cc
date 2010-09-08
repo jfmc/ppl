@@ -645,60 +645,57 @@ PPL::Distributed_Sparse_Matrix::broadcast_operation(operation_code code,
 
 namespace {
 
-class linear_combine_helper1 {
-
-public:
-  inline
-  linear_combine_helper1(const PPL::Coefficient& normalized_y_k1)
-    : normalized_y_k(normalized_y_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x) const {
-    x *= normalized_y_k;
-  }
-
+class sum_of_products_combiner {
 private:
-  PPL::Coefficient normalized_y_k;
-};
-
-class linear_combine_helper2 {
-
+  class helper_functor1 {
+  public:
+    helper_functor1(PPL::Coefficient_traits::const_reference coeff1)
+      : my_coeff1(coeff1) {
+    }
+    void operator()(PPL::Coefficient& x_i) const {
+      x_i *= my_coeff1;
+    }
+  private:
+    PPL::Coefficient my_coeff1;
+  };
+  class helper_functor2 {
+  public:
+    helper_functor2(PPL::Coefficient_traits::const_reference coeff1,
+                    PPL::Coefficient_traits::const_reference coeff2)
+      : my_coeff1(coeff1), my_coeff2(coeff2) {
+    }
+    void operator()(PPL::Coefficient& x_i,
+                    PPL::Coefficient_traits::const_reference y_i) const {
+      x_i *= my_coeff1;
+      x_i += my_coeff2 * y_i;
+    }
+  private:
+    PPL::Coefficient my_coeff1;
+    PPL::Coefficient my_coeff2;
+  };
+  class helper_functor3 {
+  public:
+    helper_functor3(PPL::Coefficient_traits::const_reference coeff2)
+      : my_coeff2(coeff2) {
+    }
+    void operator()(PPL::Coefficient& x_i,
+                    PPL::Coefficient_traits::const_reference y_i) const {
+      PPL_ASSERT(x_i == 0);
+      x_i = y_i;
+      x_i *= my_coeff2;
+    }
+  private:
+    PPL::Coefficient my_coeff2;
+  };
 public:
-  inline
-  linear_combine_helper2(const PPL::Coefficient& normalized_x_k1,
-                         const PPL::Coefficient& normalized_y_k1)
-    : normalized_x_k(normalized_x_k1), normalized_y_k(normalized_y_k1) {
+  // For each i, computes
+  // x[i] = x[i]*coeff1 + y[i]*coeff2
+  static void combine(PPL::Sparse_Row& x, const PPL::Sparse_Row& y,
+                      PPL::Coefficient_traits::const_reference coeff1,
+                      PPL::Coefficient_traits::const_reference coeff2) {
+    x.combine(y, helper_functor1(coeff1), helper_functor2(coeff1, coeff2),
+              helper_functor3(coeff2));
   }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x *= normalized_y_k;
-    PPL::sub_mul_assign(x, y, normalized_x_k);
-  }
-
-private:
-  PPL::Coefficient normalized_x_k;
-  PPL::Coefficient normalized_y_k;
-};
-
-class linear_combine_helper3 {
-
-public:
-  inline
-  linear_combine_helper3(const PPL::Coefficient& normalized_x_k1)
-    : normalized_x_k(normalized_x_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x = y;
-    x *= normalized_x_k;
-    PPL::neg_assign(x);
-  }
-
-private:
-  PPL::Coefficient normalized_x_k;
 };
 
 } // namespace
@@ -722,22 +719,21 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
   Coefficient coeff1 = y_k * reverse_scaling;
   Coefficient coeff2 = scaling * x_k;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(new_reverse_scaling);
-  gcd_assign(new_reverse_scaling, coeff1, coeff2);
-  exact_div_assign(coeff1, coeff1, new_reverse_scaling);
-  exact_div_assign(coeff2, coeff2, new_reverse_scaling);
   // Compute increase[i] and new_reverse_scaling such that
-  // increase[i] * new_reverse_scaling = increase[i]*reverse_scaling + y[i]*coeff, for each i.
-  increase.combine(y,
-                   linear_combine_helper1(coeff1),
-                   linear_combine_helper2(coeff2, coeff1),
-                   linear_combine_helper3(coeff2));
+  // increase[i] * new_reverse_scaling = increase[i]*coeff1 - y[i]*coeff2, for each i.
+
+  gcd_assign(reverse_scaling, coeff1, coeff2);
+  exact_div_assign(coeff1, coeff1, reverse_scaling);
+  exact_div_assign(coeff2, coeff2, reverse_scaling);
+
+  neg_assign(coeff2);
+  sum_of_products_combiner::combine(increase, y, coeff1, coeff2);
+
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   increase.normalize(gcd);
-  new_reverse_scaling *= gcd;
+  reverse_scaling *= gcd;
 
   scaling *= y_k;
-  reverse_scaling = new_reverse_scaling;
 
   PPL_ASSERT(scaling != 0);
   PPL_ASSERT(reverse_scaling != 0);
@@ -764,22 +760,20 @@ incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
   Coefficient coeff1 = y_k * reverse_scaling;
   Coefficient coeff2 = scaling * x_k;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(new_reverse_scaling);
-  gcd_assign(new_reverse_scaling, coeff1, coeff2);
-  exact_div_assign(coeff1, coeff1, new_reverse_scaling);
-  exact_div_assign(coeff2, coeff2, new_reverse_scaling);
   // Compute increase[i] and new_reverse_scaling such that
-  // increase[i] * new_reverse_scaling = increase[i]*reverse_scaling + y[i]*coeff, for each i.
-  increase.combine(y,
-                   linear_combine_helper1(coeff1),
-                   linear_combine_helper2(coeff2, coeff1),
-                   linear_combine_helper3(coeff2));
+  // increase[i] * new_reverse_scaling = increase[i]*coeff1 - y[i]*coeff2, for each i.
+
+  gcd_assign(reverse_scaling, coeff1, coeff2);
+  exact_div_assign(coeff1, coeff1, reverse_scaling);
+  exact_div_assign(coeff2, coeff2, reverse_scaling);
+
+  neg_assign(coeff2);
+  sum_of_products_combiner::combine(increase, y, coeff1, coeff2);
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   increase.normalize(gcd);
-  new_reverse_scaling *= gcd;
+  reverse_scaling *= gcd;
 
   scaling *= y_k;
-  reverse_scaling = new_reverse_scaling;
 
   PPL_ASSERT(scaling != 0);
   PPL_ASSERT(reverse_scaling != 0);
@@ -803,10 +797,8 @@ linear_combine(Sparse_Row& x, const Sparse_Row& y, const dimension_type k) {
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
-  x.combine(y,
-            linear_combine_helper1(normalized_y_k),
-            linear_combine_helper2(normalized_x_k, normalized_y_k),
-            linear_combine_helper3(normalized_x_k));
+  neg_assign(normalized_x_k);
+  sum_of_products_combiner::combine(x, y, normalized_y_k, normalized_x_k);
 
   x.reset(k);
   x.normalize();
@@ -1111,61 +1103,6 @@ PPL::Distributed_Sparse_Matrix
 
 namespace {
 
-class compute_working_cost_reducer_functor_helper1 {
-
-public:
-  inline
-  compute_working_cost_reducer_functor_helper1(const PPL::Coefficient& coeff1)
-    : my_coeff1(coeff1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x) const {
-    x *= my_coeff1;
-  }
-
-private:
-  PPL::Coefficient my_coeff1;
-};
-
-class compute_working_cost_reducer_functor_helper2 {
-
-public:
-  inline
-  compute_working_cost_reducer_functor_helper2(const PPL::Coefficient& coeff1,
-                                               const PPL::Coefficient& coeff2)
-    : my_coeff2(coeff2), my_coeff1(coeff1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x *= my_coeff1;
-    PPL::add_mul_assign(x, y, my_coeff2);
-  }
-
-private:
-  PPL::Coefficient my_coeff2;
-  PPL::Coefficient my_coeff1;
-};
-
-class compute_working_cost_reducer_functor_helper3 {
-
-public:
-  inline
-  compute_working_cost_reducer_functor_helper3(const PPL::Coefficient& coeff2)
-    : my_coeff2(coeff2) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x = y;
-    x *= my_coeff2;
-  }
-
-private:
-  PPL::Coefficient my_coeff2;
-};
-
 struct compute_working_cost_reducer_functor {
   typedef std::pair<std::pair<PPL::Coefficient,
                               PPL::Coefficient>, PPL::Sparse_Row> pair_type;
@@ -1202,11 +1139,8 @@ struct compute_working_cost_reducer_functor {
 
     PPL::dimension_type n = x.second.size();
     PPL::Dense_Row tmp(n, PPL::Row_Flags());
-    row.combine(y_row,
-        compute_working_cost_reducer_functor_helper1(y_normalized_scaling),
-        compute_working_cost_reducer_functor_helper2(y_normalized_scaling,
-                                                     x_normalized_scaling),
-        compute_working_cost_reducer_functor_helper3(x_normalized_scaling));
+    sum_of_products_combiner::combine(row, y_row, y_normalized_scaling,
+                                      x_normalized_scaling);
     // TODO: Check if the copy can be avoided.
     return result;
   }
