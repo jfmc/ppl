@@ -136,6 +136,9 @@ private:
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& local_rows);
 
+  static void make_inhomogeneous_terms_nonpositive__common(
+      std::vector<Sparse_Row>& rows);
+
   static void linear_combine_with_base_rows__common(
       int k_rank, dimension_type k_local_index,
       const std::vector<std::pair<dimension_type, dimension_type> >& workunit,

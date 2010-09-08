@@ -470,6 +470,270 @@ PPL::Distributed_Sparse_Matrix
   }
 }
 
+// This is needed because PPL_DIRTY_TEMP_COEFFICIENT works only inside
+// the PPL namespace.
+namespace Parma_Polyhedra_Library {
+
+// This is a template to avoid duplicating code.
+// Row_T is expected to be either Sparse_Row or Dense_Row.
+template <typename Row_T>
+void
+incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
+                           Sparse_Row& increase,
+                           const Row_T& x, const Sparse_Row& y,
+                           dimension_type k) {
+  WEIGHT_BEGIN();
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
+  const dimension_type x_size = x.size();
+  Coefficient_traits::const_reference x_k = x.get(k);
+  Coefficient_traits::const_reference y_k = y.get(k);
+  PPL_ASSERT(y_k != 0 && x_k != 0);
+  Coefficient coeff1 = y_k * reverse_scaling;
+  Coefficient coeff2 = scaling * x_k;
+
+  // Compute increase[i] and new_reverse_scaling such that
+  // increase[i] * new_reverse_scaling = increase[i]*coeff1 - y[i]*coeff2, for each i.
+
+  gcd_assign(reverse_scaling, coeff1, coeff2);
+  exact_div_assign(coeff1, coeff1, reverse_scaling);
+  exact_div_assign(coeff2, coeff2, reverse_scaling);
+
+  neg_assign(coeff2);
+  increase.linear_combine(y, coeff1, coeff2);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  increase.normalize(gcd);
+  reverse_scaling *= gcd;
+
+  scaling *= y_k;
+
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
+  normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
+
+  PPL_ASSERT(increase[k] * reverse_scaling == - scaling * x[k]);
+  PPL_ASSERT(scaling != 0);
+  PPL_ASSERT(reverse_scaling != 0);
+  WEIGHT_ADD_MUL(83, x_size);
+}
+
+void
+linear_combine(Sparse_Row& x, const Sparse_Row& y, const dimension_type k) {
+  Coefficient x_k = x.get(k);
+  Coefficient y_k = y.get(k);
+  PPL_ASSERT(y_k != 0 && x_k != 0);
+  // Let g be the GCD between `x[k]' and `y[k]'.
+  // For each i the following computes
+  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
+
+  normalize2(x_k, y_k, x_k, y_k);
+
+  neg_assign(x_k);
+  x.linear_combine(y, y_k, x_k);
+
+  PPL_ASSERT(x.find(k) == x.end());
+  x.normalize();
+}
+
+} // namespace Parma_Polyhedra_Library
+
+void
+PPL::Distributed_Sparse_Matrix
+::linear_combine_matrix__common(int rank, dimension_type local_row_index,
+                                dimension_type col_index, int my_rank,
+                                std::vector<Sparse_Row>& local_rows) {
+  if (rank == my_rank) {
+    PPL_ASSERT(local_row_index < local_rows.size());
+    Sparse_Row& row = local_rows[local_row_index];
+    mpi::broadcast(comm(), row, rank);
+    for (dimension_type i = 0; i < local_rows.size(); i++)
+      if (i != local_row_index && local_rows[i].get(col_index) != 0)
+        linear_combine(local_rows[i], row, col_index);
+  } else {
+    Sparse_Row row;
+    mpi::broadcast(comm(), row, rank);
+    for (dimension_type i = 0; i < local_rows.size(); i++)
+      if (local_rows[i].get(col_index) != 0)
+        linear_combine(local_rows[i], row, col_index);
+  }
+}
+
+namespace {
+
+struct compute_working_cost_reducer_functor {
+  typedef std::pair<std::pair<PPL::Coefficient,
+                              PPL::Coefficient>, PPL::Sparse_Row> pair_type;
+  pair_type
+  operator()(const pair_type& x, const pair_type& y) const {
+    pair_type result(x);
+    const PPL::Coefficient& x_scaling = x.first.first;
+    const PPL::Coefficient& x_reverse_scaling = x.first.second;
+    const PPL::Coefficient& y_scaling = y.first.first;
+    const PPL::Coefficient& y_reverse_scaling = y.first.second;
+    PPL_ASSERT(x_scaling != 0);
+    PPL_ASSERT(x_reverse_scaling != 0);
+    PPL_ASSERT(y_scaling != 0);
+    PPL_ASSERT(y_reverse_scaling != 0);
+    const PPL::Sparse_Row& y_row = y.second;
+    PPL::Coefficient& scaling = result.first.first;
+    PPL::Coefficient& reverse_scaling = result.first.second;
+    PPL::Sparse_Row& row = result.second;
+
+    PPL::Coefficient x_normalized_scaling = x_scaling * y_reverse_scaling;
+    PPL::Coefficient y_normalized_scaling = y_scaling * x_reverse_scaling;
+    PPL::Coefficient gcd;
+    PPL::gcd_assign(gcd, x_normalized_scaling, y_normalized_scaling);
+    PPL::exact_div_assign(x_normalized_scaling, x_normalized_scaling, gcd);
+    PPL::exact_div_assign(y_normalized_scaling, y_normalized_scaling, gcd);
+
+    scaling *= y_scaling;
+    reverse_scaling = gcd;
+    PPL_ASSERT(scaling != 0);
+    PPL_ASSERT(reverse_scaling != 0);
+    PPL::normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
+    PPL_ASSERT(scaling != 0);
+    PPL_ASSERT(reverse_scaling != 0);
+
+    PPL::dimension_type n = x.second.size();
+    PPL::Dense_Row tmp(n, PPL::Row_Flags());
+    row.linear_combine(y_row, y_normalized_scaling, x_normalized_scaling);
+    // TODO: Check if the copy can be avoided.
+    return result;
+  }
+};
+
+}
+
+namespace boost {
+namespace mpi {
+
+template <>
+struct is_commutative<compute_working_cost_reducer_functor,
+                      std::pair<PPL::Coefficient, PPL::Dense_Row> >: public mpl::true_ { };
+
+}
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::compute_working_cost__common(std::pair<std::pair<Coefficient, Coefficient>,
+                                         Sparse_Row>& x,
+                               const Dense_Row& working_cost,
+                               const std::vector<dimension_type>&
+                                 reverse_row_mapping,
+                               const std::vector<dimension_type>& base,
+                               const std::vector<Sparse_Row>& local_rows) {
+  Coefficient& local_scaling = x.first.first;
+  Coefficient& local_reverse_scaling = x.first.second;
+  Sparse_Row& local_increase = x.second;
+
+  local_scaling = 1;
+  local_reverse_scaling = 1;
+  local_increase.resize(working_cost.size());
+
+  for (dimension_type local_index = 0;
+      local_index < reverse_row_mapping.size(); ++local_index) {
+    dimension_type global_index = reverse_row_mapping[local_index];
+    const Sparse_Row& row = local_rows[local_index];
+    Coefficient_traits::const_reference cost_i = working_cost[base[global_index]];
+    if (cost_i != 0)
+      incremental_linear_combine(local_scaling, local_reverse_scaling,
+                                 local_increase, working_cost,
+                                 row, base[global_index]);
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::make_inhomogeneous_terms_nonpositive__common(std::vector<Sparse_Row>& rows) {
+  for (dimension_type i = rows.size(); i-- > 0 ; ) {
+    Sparse_Row& row = rows[i];
+    if (row.get(0) > 0) {
+      for (Sparse_Row::iterator
+          j = row.begin(), j_end = row.end(); j != j_end; ++j)
+        neg_assign(*j);
+    }
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
+    int k_rank, dimension_type k_local_index,
+    const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
+    int my_rank, std::vector<Sparse_Row>& local_rows) {
+
+  Sparse_Row a_local_row;
+
+  Sparse_Row& row_k = (k_rank == my_rank ? local_rows[k_local_index] : a_local_row);
+
+  mpi::broadcast(comm(), row_k, k_rank);
+
+  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
+  Coefficient& local_scaling = x.first.first;
+  Coefficient& local_reverse_scaling = x.first.second;
+  Sparse_Row& local_increase = x.second;
+
+  local_scaling = 1;
+  local_reverse_scaling = 1;
+  local_increase.resize(row_k.size());
+
+  for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
+    dimension_type local_index = i->first;
+    dimension_type column_index = i->second;
+    const Sparse_Row& row = local_rows[local_index];
+    if (row_k.get(column_index) != 0)
+      incremental_linear_combine(local_scaling, local_reverse_scaling,
+                                 local_increase, row_k, row, column_index);
+  }
+
+  PPL_ASSERT(local_scaling != 0);
+  PPL_ASSERT(local_reverse_scaling != 0);
+
+  if (k_rank != my_rank) {
+    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), k_rank);
+    return;
+  }
+
+  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> y;
+  mpi::reduce(comm(), x, y, compute_working_cost_reducer_functor(), k_rank);
+
+  Coefficient_traits::const_reference global_scaling = y.first.first;
+  Coefficient_traits::const_reference global_reverse_scaling = y.first.second;
+  const Sparse_Row& global_increase = y.second;
+
+#ifndef NDEBUG
+  {
+    PPL_ASSERT(global_scaling != 0);
+    PPL_ASSERT(global_reverse_scaling != 0);
+    // Check that global_scaling and global_increase are normalized.
+    Coefficient normalized_scaling;
+    Coefficient normalized_reverse_scaling;
+    normalize2(global_scaling, global_reverse_scaling,
+               normalized_scaling, normalized_reverse_scaling);
+    PPL_ASSERT(normalized_scaling == global_scaling);
+    PPL_ASSERT(normalized_reverse_scaling == global_reverse_scaling);
+  }
+#endif
+
+  // Calculate the global result from global_scaling and global_increase.
+  // global_result[i] == global_scaling * working_cost[i]
+  //                     + global_reverse_scaling * global_increase[i].
+  // The global result is stored in working_cost to improve performance.
+
+  // TODO: use row_k.combine() instead of these two loops.
+  for (Sparse_Row::iterator
+       i = row_k.begin(), i_end = row_k.end(); i != i_end; ++i)
+    *i *= global_scaling;
+  for (Sparse_Row::const_iterator
+       i = global_increase.begin(), i_end = global_increase.end();
+       i != i_end; ++i)
+    row_k[i.index()] += global_reverse_scaling * *i;
+
+  row_k.normalize();
+}
+
 void
 PPL::Distributed_Sparse_Matrix::init(dimension_type num_rows1,
                                      dimension_type num_cols1) {
@@ -643,74 +907,6 @@ PPL::Distributed_Sparse_Matrix::broadcast_operation(operation_code code,
 
   mpi::broadcast(comm(), op, 0);
 }
-
-// This is needed because PPL_DIRTY_TEMP_COEFFICIENT works only inside
-// the PPL namespace.
-namespace Parma_Polyhedra_Library {
-
-// This is a template to avoid duplicating code.
-// Row_T is expected to be either Sparse_Row or Dense_Row.
-template <typename Row_T>
-void
-incremental_linear_combine(Coefficient& scaling, Coefficient& reverse_scaling,
-                           Sparse_Row& increase,
-                           const Row_T& x, const Sparse_Row& y,
-                           dimension_type k) {
-  WEIGHT_BEGIN();
-  PPL_ASSERT(scaling != 0);
-  PPL_ASSERT(reverse_scaling != 0);
-  const dimension_type x_size = x.size();
-  Coefficient_traits::const_reference x_k = x.get(k);
-  Coefficient_traits::const_reference y_k = y.get(k);
-  PPL_ASSERT(y_k != 0 && x_k != 0);
-  Coefficient coeff1 = y_k * reverse_scaling;
-  Coefficient coeff2 = scaling * x_k;
-
-  // Compute increase[i] and new_reverse_scaling such that
-  // increase[i] * new_reverse_scaling = increase[i]*coeff1 - y[i]*coeff2, for each i.
-
-  gcd_assign(reverse_scaling, coeff1, coeff2);
-  exact_div_assign(coeff1, coeff1, reverse_scaling);
-  exact_div_assign(coeff2, coeff2, reverse_scaling);
-
-  neg_assign(coeff2);
-  increase.linear_combine(y, coeff1, coeff2);
-
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  increase.normalize(gcd);
-  reverse_scaling *= gcd;
-
-  scaling *= y_k;
-
-  PPL_ASSERT(scaling != 0);
-  PPL_ASSERT(reverse_scaling != 0);
-  normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
-
-  PPL_ASSERT(increase[k] * reverse_scaling == - scaling * x[k]);
-  PPL_ASSERT(scaling != 0);
-  PPL_ASSERT(reverse_scaling != 0);
-  WEIGHT_ADD_MUL(83, x_size);
-}
-
-void
-linear_combine(Sparse_Row& x, const Sparse_Row& y, const dimension_type k) {
-  Coefficient x_k = x.get(k);
-  Coefficient y_k = y.get(k);
-  PPL_ASSERT(y_k != 0 && x_k != 0);
-  // Let g be the GCD between `x[k]' and `y[k]'.
-  // For each i the following computes
-  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-
-  normalize2(x_k, y_k, x_k, y_k);
-
-  neg_assign(x_k);
-  x.linear_combine(y, y_k, x_k);
-
-  PPL_ASSERT(x.find(k) == x.end());
-  x.normalize();
-}
-
-} // namespace Parma_Polyhedra_Library
 
 void
 PPL::Distributed_Sparse_Matrix
@@ -994,62 +1190,6 @@ PPL::Distributed_Sparse_Matrix
     linear_combine(*i, row, column_index);
 }
 
-namespace {
-
-struct compute_working_cost_reducer_functor {
-  typedef std::pair<std::pair<PPL::Coefficient,
-                              PPL::Coefficient>, PPL::Sparse_Row> pair_type;
-  pair_type
-  operator()(const pair_type& x, const pair_type& y) const {
-    pair_type result(x);
-    const PPL::Coefficient& x_scaling = x.first.first;
-    const PPL::Coefficient& x_reverse_scaling = x.first.second;
-    const PPL::Coefficient& y_scaling = y.first.first;
-    const PPL::Coefficient& y_reverse_scaling = y.first.second;
-    PPL_ASSERT(x_scaling != 0);
-    PPL_ASSERT(x_reverse_scaling != 0);
-    PPL_ASSERT(y_scaling != 0);
-    PPL_ASSERT(y_reverse_scaling != 0);
-    const PPL::Sparse_Row& y_row = y.second;
-    PPL::Coefficient& scaling = result.first.first;
-    PPL::Coefficient& reverse_scaling = result.first.second;
-    PPL::Sparse_Row& row = result.second;
-
-    PPL::Coefficient x_normalized_scaling = x_scaling * y_reverse_scaling;
-    PPL::Coefficient y_normalized_scaling = y_scaling * x_reverse_scaling;
-    PPL::Coefficient gcd;
-    PPL::gcd_assign(gcd, x_normalized_scaling, y_normalized_scaling);
-    PPL::exact_div_assign(x_normalized_scaling, x_normalized_scaling, gcd);
-    PPL::exact_div_assign(y_normalized_scaling, y_normalized_scaling, gcd);
-
-    scaling *= y_scaling;
-    reverse_scaling = gcd;
-    PPL_ASSERT(scaling != 0);
-    PPL_ASSERT(reverse_scaling != 0);
-    PPL::normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
-    PPL_ASSERT(scaling != 0);
-    PPL_ASSERT(reverse_scaling != 0);
-
-    PPL::dimension_type n = x.second.size();
-    PPL::Dense_Row tmp(n, PPL::Row_Flags());
-    row.linear_combine(y_row, y_normalized_scaling, x_normalized_scaling);
-    // TODO: Check if the copy can be avoided.
-    return result;
-  }
-};
-
-}
-
-namespace boost {
-namespace mpi {
-
-template <>
-struct is_commutative<compute_working_cost_reducer_functor,
-                      std::pair<PPL::Coefficient, PPL::Dense_Row> >: public mpl::true_ { };
-
-}
-}
-
 void
 PPL::Distributed_Sparse_Matrix
 ::compute_working_cost(Dense_Row& working_cost,
@@ -1115,67 +1255,10 @@ PPL::Distributed_Sparse_Matrix
 }
 
 void
-PPL::Distributed_Sparse_Matrix
-::linear_combine_matrix__common(int rank, dimension_type local_row_index,
-                                dimension_type col_index, int my_rank,
-                                std::vector<Sparse_Row>& local_rows) {
-  if (rank == my_rank) {
-    PPL_ASSERT(local_row_index < local_rows.size());
-    Sparse_Row& row = local_rows[local_row_index];
-    mpi::broadcast(comm(), row, rank);
-    for (dimension_type i = 0; i < local_rows.size(); i++)
-      if (i != local_row_index && local_rows[i].get(col_index) != 0)
-        linear_combine(local_rows[i], row, col_index);
-  } else {
-    Sparse_Row row;
-    mpi::broadcast(comm(), row, rank);
-    for (dimension_type i = 0; i < local_rows.size(); i++)
-      if (local_rows[i].get(col_index) != 0)
-        linear_combine(local_rows[i], row, col_index);
-  }
-}
-
-void
-PPL::Distributed_Sparse_Matrix
-::compute_working_cost__common(std::pair<std::pair<Coefficient, Coefficient>,
-                                         Sparse_Row>& x,
-                               const Dense_Row& working_cost,
-                               const std::vector<dimension_type>&
-                                 reverse_row_mapping,
-                               const std::vector<dimension_type>& base,
-                               const std::vector<Sparse_Row>& local_rows) {
-  Coefficient& local_scaling = x.first.first;
-  Coefficient& local_reverse_scaling = x.first.second;
-  Sparse_Row& local_increase = x.second;
-
-  local_scaling = 1;
-  local_reverse_scaling = 1;
-  local_increase.resize(working_cost.size());
-
-  for (dimension_type local_index = 0;
-      local_index < reverse_row_mapping.size(); ++local_index) {
-    dimension_type global_index = reverse_row_mapping[local_index];
-    const Sparse_Row& row = local_rows[local_index];
-    Coefficient_traits::const_reference cost_i = working_cost[base[global_index]];
-    if (cost_i != 0)
-      incremental_linear_combine(local_scaling, local_reverse_scaling,
-                                 local_increase, working_cost,
-                                 row, base[global_index]);
-  }
-}
-
-void
 PPL::Distributed_Sparse_Matrix::make_inhomogeneous_terms_nonpositive() {
   broadcast_operation(MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION, id);
 
-  for (dimension_type i = local_rows.size(); i-- > 0 ; ) {
-    Sparse_Row& row = local_rows[i];
-    if (row.get(0) > 0) {
-      for (Sparse_Row::iterator
-          j = row.begin(), j_end = row.end(); j != j_end; ++j)
-        neg_assign(*j);
-    }
-  }
+  make_inhomogeneous_terms_nonpositive__common(local_rows);
 }
 
 void
@@ -1276,83 +1359,6 @@ PPL::Distributed_Sparse_Matrix
 
   linear_combine_with_base_rows__common(k_rank, k_local_index, workunit, 0,
                                         local_rows);
-}
-
-void
-PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
-    int k_rank, dimension_type k_local_index,
-    const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
-    int my_rank, std::vector<Sparse_Row>& local_rows) {
-
-  Sparse_Row a_local_row;
-
-  Sparse_Row& row_k = (k_rank == my_rank ? local_rows[k_local_index] : a_local_row);
-
-  mpi::broadcast(comm(), row_k, k_rank);
-
-  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
-  Coefficient& local_scaling = x.first.first;
-  Coefficient& local_reverse_scaling = x.first.second;
-  Sparse_Row& local_increase = x.second;
-
-  local_scaling = 1;
-  local_reverse_scaling = 1;
-  local_increase.resize(row_k.size());
-
-  for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
-       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
-    dimension_type local_index = i->first;
-    dimension_type column_index = i->second;
-    const Sparse_Row& row = local_rows[local_index];
-    if (row_k.get(column_index) != 0)
-      incremental_linear_combine(local_scaling, local_reverse_scaling,
-                                 local_increase, row_k, row, column_index);
-  }
-
-  PPL_ASSERT(local_scaling != 0);
-  PPL_ASSERT(local_reverse_scaling != 0);
-
-  if (k_rank != my_rank) {
-    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), k_rank);
-    return;
-  }
-
-  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> y;
-  mpi::reduce(comm(), x, y, compute_working_cost_reducer_functor(), k_rank);
-
-  Coefficient_traits::const_reference global_scaling = y.first.first;
-  Coefficient_traits::const_reference global_reverse_scaling = y.first.second;
-  const Sparse_Row& global_increase = y.second;
-
-#ifndef NDEBUG
-  {
-    PPL_ASSERT(global_scaling != 0);
-    PPL_ASSERT(global_reverse_scaling != 0);
-    // Check that global_scaling and global_increase are normalized.
-    Coefficient normalized_scaling;
-    Coefficient normalized_reverse_scaling;
-    normalize2(global_scaling, global_reverse_scaling,
-               normalized_scaling, normalized_reverse_scaling);
-    PPL_ASSERT(normalized_scaling == global_scaling);
-    PPL_ASSERT(normalized_reverse_scaling == global_reverse_scaling);
-  }
-#endif
-
-  // Calculate the global result from global_scaling and global_increase.
-  // global_result[i] == global_scaling * working_cost[i]
-  //                     + global_reverse_scaling * global_increase[i].
-  // The global result is stored in working_cost to improve performance.
-
-  // TODO: use row_k.combine() instead of these two loops.
-  for (Sparse_Row::iterator
-       i = row_k.begin(), i_end = row_k.end(); i != i_end; ++i)
-    *i *= global_scaling;
-  for (Sparse_Row::const_iterator
-       i = global_increase.begin(), i_end = global_increase.end();
-       i != i_end; ++i)
-    row_k[i.index()] += global_reverse_scaling * *i;
-
-  row_k.normalize();
 }
 
 PPL::dimension_type
@@ -1736,15 +1742,7 @@ PPL::Distributed_Sparse_Matrix::Worker
   row_chunks_itr_type itr = row_chunks.find(id);
   if (itr == row_chunks.end())
     return;
-  std::vector<Sparse_Row>& rows = itr->second;
-  for (dimension_type i = rows.size(); i-- > 0 ; ) {
-    Sparse_Row& row = rows[i];
-    if (row.get(0) > 0) {
-      for (Sparse_Row::iterator
-          j = row.begin(), j_end = row.end(); j != j_end; ++j)
-        neg_assign(*j);
-    }
-  }
+  make_inhomogeneous_terms_nonpositive__common(itr->second);
 }
 
 void
