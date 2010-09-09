@@ -222,10 +222,7 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-#ifndef __alpha__
-  // Exception handling is broken in GCC on the Alpha.
   DO_TEST(test07);
-#endif
   DO_TEST(test08);
   DO_TEST(test09);
 END_MAIN
