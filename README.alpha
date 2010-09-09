@@ -1,5 +1,6 @@
-There appears to be a bug in GCC (all versions) concerning exception
-handling on the Alpha.  This may be related to
+There appears to be a bug in GCC (all versions up to and including
+4.3.x) concerning exception handling on the Alpha.  This may be
+related to
 
   http://gcc.gnu.org/bugzilla/show_bug.cgi?id=8966
 
