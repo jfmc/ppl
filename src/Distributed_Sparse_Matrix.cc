@@ -1178,11 +1178,8 @@ PPL::Distributed_Sparse_Matrix
     = const_cast<std::vector<dimension_type>&>(base);
   mpi::broadcast(comm(), base_ref, 0);
 
-  std::vector<dimension_type> root_reverse_row_mapping;
-  mpi::scatter(comm(), reverse_row_mapping, root_reverse_row_mapping, 0);
-
   std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
-  compute_working_cost__common(x, working_cost, root_reverse_row_mapping,
+  compute_working_cost__common(x, working_cost, reverse_row_mapping[0],
                                base, local_rows);
 
   std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> y;
@@ -1671,9 +1668,6 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<dimension_type> base;
   mpi::broadcast(comm(), base, 0);
 
-  std::vector<dimension_type> reverse_row_mapping;
-  mpi::scatter(comm(), reverse_row_mapping, 0);
-
   row_chunks_itr_type itr = row_chunks.find(id);
 
   if (itr == row_chunks.end()) {
@@ -1686,10 +1680,13 @@ PPL::Distributed_Sparse_Matrix::Worker
     mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
 
   } else {
+    Row_Chunk& row_chunk = itr->second;
+
     std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
 
-    compute_working_cost__common(x, working_cost, reverse_row_mapping, base,
-                                 itr->second.rows);
+    compute_working_cost__common(x, working_cost,
+                                 row_chunk.reverse_row_mapping, base,
+                                 row_chunk.rows);
 
     mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
   }
