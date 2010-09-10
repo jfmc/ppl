@@ -4,11 +4,31 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.11  (release date to be decided)
+NEWS for version 0.12  (release date to be decided)
 --------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  The implementations of the MIP and PIP solvers are based on a new
+   data structure leading to significant space and time savings when
+   the tableau matrix is sparse; the benchmarks of the ppl_lpsol demo
+   show an improvement on the average case, that grows when the toughest
+   tests in the benchmark suite are considered.
+
+o  When the --check option is used, the input data for demo ppl_lpsol
+   is perturbed the same way as GLPK does, thereby allowing for a
+   meaningful comparison of the results obtained.
+
+o  The input routine for PPL numeric datatypes has been extended to
+   accept the ISO9899 (C99) hexadecimal floating constant syntax.
+
 
 Bugfixes
 ========
+
+o  Corrected a bug affecting the input routine of ppl_lpsol, whereby
+   the inhomogeneous term of the objective function was disregarded.
 
 o  Corrected a bug affecting methods
 
@@ -17,6 +37,13 @@ o  Corrected a bug affecting methods
 
    whereby a lower bound would not be computed correctly when the two
    iterators specify an empty list of stop points.
+
+o  Fixed a bug affecting
+
+     Interval::Interval(const char* s)
+
+   whereby a wrong interval would be constructed if `s' denotes a number
+   that can only be represented as an infinity.
 
 
 --------------------------------------------------------------------------
