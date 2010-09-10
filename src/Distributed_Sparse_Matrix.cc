@@ -53,7 +53,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   2, // ADD_ZERO_COLUMNS_OPERATION: id, n
   2, // CHECK_OPERATION: id, num_columns
   5, // ADD_ZERO_ROWS_OPERATION: id, n, num_columns, flag_bits, old_num_rows
-  1, // ADD_ROW_OPERATION: rank
+  3, // ADD_ROW_OPERATION: rank, id, global_index
   2, // RESET_COLUMN_OPERATION: id, column_index
   2, // REMOVE_TRAILING_ROWS_OPERATION: id, row_n
   5, // SWAP_ROWS_OPERATION: id, rank1, local_index1, rank2, local_index2
@@ -148,7 +148,7 @@ PPL::Distributed_Sparse_Matrix
       break;
 
     case ADD_ROW_OPERATION:
-      worker.add_row(op.params[0]);
+      worker.add_row(op.params[0], op.params[1], op.params[2]);
       break;
 
     case RESET_COLUMN_OPERATION:
@@ -1132,7 +1132,6 @@ PPL::Distributed_Sparse_Matrix::add_row(Sparse_Row& row) {
   ++next_rank;
   if (next_rank == comm_size)
     next_rank = 0;
-  broadcast_operation(ADD_ROW_OPERATION, rank);
   dimension_type local_index = reverse_row_mapping[rank].size();
   dimension_type global_index = num_rows();
   reverse_row_mapping[rank].push_back(global_index);
@@ -1141,7 +1140,7 @@ PPL::Distributed_Sparse_Matrix::add_row(Sparse_Row& row) {
     local_rows.resize(local_rows.size() + 1);
     std::swap(local_rows.back(), row);
   } else {
-    comm().send(rank, 0, std::make_pair(id, global_index));
+    broadcast_operation(ADD_ROW_OPERATION, rank, id, global_index);
     comm().send(rank, 0, row);
   }
   PPL_ASSERT(OK());
@@ -1568,13 +1567,11 @@ PPL::Distributed_Sparse_Matrix::Worker
 }
 
 void
-PPL::Distributed_Sparse_Matrix::Worker::add_row(int rank) {
+PPL::Distributed_Sparse_Matrix::Worker::add_row(int rank,
+                                                dimension_type id,
+                                                dimension_type global_index) {
   if (rank != my_rank)
     return;
-  std::pair<dimension_type, dimension_type> x;
-  comm().recv(0, 0, x);
-  dimension_type id = x.first;
-  dimension_type global_index = x.second;
   Row_Chunk& row_chunk = row_chunks[id];
   std::vector<Sparse_Row>& rows = row_chunk.rows;
   rows.resize(rows.size() + 1);

@@ -186,7 +186,7 @@ private:
     void add_zero_rows(dimension_type id, dimension_type n,
                        dimension_type num_columns, dimension_type flag_bits,
                        dimension_type old_num_rows);
-    void add_row(int rank);
+    void add_row(int rank, dimension_type id, dimension_type global_index);
     void swap_rows(dimension_type id, int rank1, dimension_type local_index1,
                    int rank2, dimension_type local_index2);
     void fill_matrix(dimension_type id);
@@ -240,7 +240,7 @@ private:
     CHECK_OPERATION,
     //! Parameters: id, n, num_columns, flag_bits, old_num_rows
     ADD_ZERO_ROWS_OPERATION,
-    //! Parameters: rank
+    //! Parameters: rank, id, global_index
     ADD_ROW_OPERATION,
     //! Parameters: id, column_index
     RESET_COLUMN_OPERATION,
