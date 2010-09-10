@@ -180,7 +180,7 @@ private:
     void reset_column(dimension_type id, dimension_type column_index);
     void remove_column(dimension_type id, dimension_type col_index);
     void remove_trailing_columns(dimension_type id, dimension_type col_index);
-    void remove_trailing_rows(dimension_type id);
+    void remove_trailing_rows(dimension_type id, dimension_type row_n);
     void add_zero_columns(dimension_type id, dimension_type n);
     void check(dimension_type id, dimension_type num_columns) const;
     void add_zero_rows(dimension_type id, dimension_type num_columns,

@@ -55,7 +55,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   3, // ADD_ZERO_ROWS_OPERATION: id, num_columns, flag_bits
   1, // ADD_ROW_OPERATION: rank
   2, // RESET_COLUMN_OPERATION: id, column_index
-  1, // REMOVE_TRAILING_ROWS_OPERATION: id
+  2, // REMOVE_TRAILING_ROWS_OPERATION: id, row_n
   5, // SWAP_ROWS_OPERATION: id, rank1, local_index1, rank2, local_index2
   1, // FILL_MATRIX_OPERATION: id
   1, // COMPARE_WITH_SPARSE_MATRIX_OPERATION: id
@@ -155,7 +155,7 @@ PPL::Distributed_Sparse_Matrix
       break;
 
     case REMOVE_TRAILING_ROWS_OPERATION:
-      worker.remove_trailing_rows(op.params[0]);
+      worker.remove_trailing_rows(op.params[0], op.params[1]);
       break;
 
     case SWAP_ROWS_OPERATION:
@@ -1050,26 +1050,15 @@ PPL::Distributed_Sparse_Matrix
 ::remove_trailing_rows(dimension_type n) {
   PPL_ASSERT(num_rows() >= n);
   dimension_type row_n = num_rows() - n;
-  broadcast_operation(REMOVE_TRAILING_ROWS_OPERATION, id);
+  broadcast_operation(REMOVE_TRAILING_ROWS_OPERATION, id, row_n);
 
-  std::vector<dimension_type> local_sizes(comm_size);
-  for (int rank = 0; rank < comm_size; ++rank)
-    local_sizes[rank] = reverse_row_mapping[rank].size();
-  for (dimension_type row = row_n; row < num_rows(); ++row) {
-    int rank = row_mapping[row].first;
-    dimension_type local_index = row_mapping[row].second;
-    if (local_sizes[rank] > local_index)
-      local_sizes[rank] = local_index;
-  }
-
-  dimension_type local_size;
-  mpi::scatter(comm(), local_sizes, local_size, 0);
-
-  local_rows.resize(local_size);
+  local_rows.resize(row_n);
 
   row_mapping.resize(row_n);
   for (int rank = 0; rank < comm_size; ++rank)
-    reverse_row_mapping[rank].resize(local_sizes[rank]);
+    while (!reverse_row_mapping[rank].empty()
+           && reverse_row_mapping[rank].back() >= row_n)
+      reverse_row_mapping[rank].pop_back();
 
   PPL_ASSERT(OK());
 }
@@ -1605,18 +1594,21 @@ PPL::Distributed_Sparse_Matrix::Worker::add_row(int rank) {
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
-::remove_trailing_rows(dimension_type id) {
-  dimension_type local_size;
-  mpi::scatter(comm(), local_size, 0);
+::remove_trailing_rows(dimension_type id, dimension_type row_n) {
+
   row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr != row_chunks.end()) {
-    PPL_ASSERT(itr->second.rows.size() >= local_size);
-    Row_Chunk& row_chunk = itr->second;
-    std::vector<Sparse_Row>& rows = row_chunk.rows;
-    rows.resize(local_size);
-    std::vector<dimension_type>& reverse_row_mapping
-      = row_chunk.reverse_row_mapping;
-    reverse_row_mapping.resize(local_size);
+  if (itr == row_chunks.end())
+    return;
+
+  Row_Chunk& row_chunk = itr->second;
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
+  std::vector<dimension_type>& reverse_row_mapping
+    = row_chunk.reverse_row_mapping;
+
+  while (!reverse_row_mapping.empty()
+          && reverse_row_mapping.back() >= row_n) {
+    reverse_row_mapping.pop_back();
+    rows.pop_back();
   }
 }
 
