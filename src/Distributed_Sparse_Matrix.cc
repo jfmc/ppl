@@ -52,7 +52,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   2, // REMOVE_TRAILING_COLUMNS_OPERATION: id, n
   2, // ADD_ZERO_COLUMNS_OPERATION: id, n
   2, // CHECK_OPERATION: id, num_columns
-  3, // ADD_ZERO_ROWS_OPERATION: id, num_columns, flag_bits
+  5, // ADD_ZERO_ROWS_OPERATION: id, n, num_columns, flag_bits, old_num_rows
   1, // ADD_ROW_OPERATION: rank
   2, // RESET_COLUMN_OPERATION: id, column_index
   2, // REMOVE_TRAILING_ROWS_OPERATION: id, row_n
@@ -143,7 +143,8 @@ PPL::Distributed_Sparse_Matrix
       break;
 
     case ADD_ZERO_ROWS_OPERATION:
-      worker.add_zero_rows(op.params[0], op.params[1], op.params[2]);
+      worker.add_zero_rows(op.params[0], op.params[1], op.params[2],
+                           op.params[3], op.params[4]);
       break;
 
     case ADD_ROW_OPERATION:
@@ -1079,40 +1080,20 @@ PPL::Distributed_Sparse_Matrix::add_zero_columns(dimension_type n) {
 void
 PPL::Distributed_Sparse_Matrix
 ::add_zero_rows(dimension_type n, Row_Flags flags) {
-  broadcast_operation(ADD_ZERO_ROWS_OPERATION, id, num_columns(),
-                      flags.get_bits());
-
-  std::vector<std::pair<dimension_type, dimension_type> > vec(comm_size);
+  broadcast_operation(ADD_ZERO_ROWS_OPERATION, id, n, num_columns(),
+                      flags.get_bits(), num_rows());
 
   dimension_type k = n / comm_size;
   int remainder = n % comm_size;
 
-  {
-    dimension_type current_global_index = num_rows();
-    for (int rank = 0; rank < remainder; ++rank) {
-      vec[rank].first = k + 1;
-      vec[rank].second = current_global_index;
-      current_global_index += k + 1;
-    }
-    for (int rank = remainder; rank < comm_size; ++rank) {
-      vec[rank].first = k;
-      vec[rank].second = current_global_index;
-      current_global_index += k;
-    }
-    PPL_ASSERT(current_global_index == num_rows() + n);
-  }
+  dimension_type root_n = k;
+  if (remainder != 0)
+    ++root_n;
 
   next_rank += remainder;
   if (next_rank >= comm_size)
     next_rank -= comm_size;
   PPL_ASSERT(next_rank >= 0 && next_rank < comm_size);
-
-  std::pair<dimension_type, dimension_type> x;
-  mpi::scatter(comm(), vec, x, 0);
-  dimension_type root_n = x.first;
-  // x.second is unused, because the root node already stores the full
-  // reverse_row_mapping, so it does not need to separately store
-  // reverse_row_mapping[0].
 
 #ifndef NDEBUG
   const dimension_type old_row_n = num_rows();
@@ -1122,7 +1103,10 @@ PPL::Distributed_Sparse_Matrix
 
   for (int rank = 0; rank < comm_size; rank++) {
     dimension_type local_row_n = reverse_row_mapping[rank].size();
-    for (dimension_type i = 0; i < vec[rank].first; i++) {
+    dimension_type local_k = k;
+    if (rank < remainder)
+      ++local_k;
+    for (dimension_type i = 0; i < local_k; i++) {
       reverse_row_mapping[rank].push_back(row_n);
       ++row_n;
       row_mapping.push_back(std::make_pair(rank, local_row_n));
@@ -1515,7 +1499,7 @@ PPL::Distributed_Sparse_Matrix::Worker
   bool result = true;
   if (itr == row_chunks.end()) {
     if (correct_reverse_row_mapping.size() != 0) {
-      std::cerr << "Worker node: row check failed" << std::endl;
+      std::cerr << "Worker node: no rows found for this id." << std::endl;
       result = false;
     }
   } else {
@@ -1554,23 +1538,30 @@ PPL::Distributed_Sparse_Matrix::Worker
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
-::add_zero_rows(dimension_type id, dimension_type num_columns,
-                dimension_type flag_bits) {
-  std::pair<dimension_type, dimension_type> x;
-  mpi::scatter(comm(), x, 0);
-  dimension_type n = x.first;
-  dimension_type current_global_index = x.second;
-  if (n == 0)
+::add_zero_rows(dimension_type id, dimension_type n,
+                dimension_type num_columns, dimension_type flag_bits,
+                dimension_type old_num_rows) {
+  dimension_type my_n = n / comm_size;
+  // The first (n % comm_size) nodes will store one more row.
+  dimension_type current_global_index;
+  int remainder = n % comm_size;
+  if (my_rank < remainder) {
+    current_global_index = old_num_rows + (my_n + 1) * my_rank;
+    ++my_n;
+  } else
+    current_global_index = old_num_rows + remainder*(my_n + 1)
+                           + (my_rank - remainder)*my_n;
+  if (my_n == 0)
     return;
   Row_Flags flags(flag_bits);
   Sparse_Row row(num_columns, flags);
   // This may default-construct the Row_Chunk.
   Row_Chunk& row_chunk = row_chunks[id];
   std::vector<Sparse_Row>& rows = row_chunk.rows;
-  rows.resize(rows.size() + n, row);
+  rows.resize(rows.size() + my_n, row);
   std::vector<dimension_type>& reverse_row_mapping
     = row_chunk.reverse_row_mapping;
-  for (dimension_type i = 0; i < n; ++i) {
+  for (dimension_type i = 0; i < my_n; ++i) {
     reverse_row_mapping.push_back(current_global_index);
     ++current_global_index;
   }

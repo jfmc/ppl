@@ -183,8 +183,9 @@ private:
     void remove_trailing_rows(dimension_type id, dimension_type row_n);
     void add_zero_columns(dimension_type id, dimension_type n);
     void check(dimension_type id, dimension_type num_columns) const;
-    void add_zero_rows(dimension_type id, dimension_type num_columns,
-                       dimension_type flag_bits);
+    void add_zero_rows(dimension_type id, dimension_type n,
+                       dimension_type num_columns, dimension_type flag_bits,
+                       dimension_type old_num_rows);
     void add_row(int rank);
     void swap_rows(dimension_type id, int rank1, dimension_type local_index1,
                    int rank2, dimension_type local_index2);
@@ -237,7 +238,7 @@ private:
     ADD_ZERO_COLUMNS_OPERATION,
     //! Parameters: id, num_columns
     CHECK_OPERATION,
-    //! Parameters: id, num_columns, flag_bits
+    //! Parameters: id, n, num_columns, flag_bits, old_num_rows
     ADD_ZERO_ROWS_OPERATION,
     //! Parameters: rank
     ADD_ROW_OPERATION,
