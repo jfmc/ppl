@@ -52,8 +52,7 @@ unsigned int PPL::Init::count = 0;
 PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-boost::mpi::communicator* PPL::Init::mpi_communicator;
-boost::mpi::environment* PPL::Init::mpi_environment;
+boost::mpi::communicator* PPL::Init::mpi_communicator = NULL;
 #endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
 extern "C" void
@@ -189,11 +188,11 @@ PPL::Init::Init() {
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     // Initialize MPI
-    int fake_argc = 0;
+    int fake_argc = 1;
     char c = '\0';
     char *fake_argv0 = &c;
     char **fake_argv = &fake_argv0;
-    mpi_environment = new boost::mpi::environment(fake_argc, fake_argv);
+    MPI_Init(&fake_argc, &fake_argv);
     mpi_communicator = new boost::mpi::communicator();
     if (mpi_communicator->rank() == 0) {
       Distributed_Sparse_Matrix::init_root(*mpi_communicator);
@@ -201,7 +200,7 @@ PPL::Init::Init() {
       // WARNING: worker nodes will block here until process termination
       Distributed_Sparse_Matrix::worker_main_loop(*mpi_communicator);
       delete mpi_communicator;
-      delete mpi_environment;
+      MPI_Finalize();
       exit(0);
     }
 #endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
@@ -215,7 +214,7 @@ PPL::Init::~Init() {
     // Release MPI resources.
     Distributed_Sparse_Matrix::quit_workers();
     delete mpi_communicator;
-    delete mpi_environment;
+    MPI_Finalize();
 #endif // USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
 #if PPL_CAN_CONTROL_FPU

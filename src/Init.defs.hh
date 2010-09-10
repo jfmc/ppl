@@ -86,7 +86,6 @@ private:
   static fpu_rounding_direction_type old_rounding_direction;
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   static boost::mpi::communicator* mpi_communicator;
-  static boost::mpi::environment* mpi_environment;
 #endif
 
   friend void set_rounding_for_PPL();
