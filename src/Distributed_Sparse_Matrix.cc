@@ -763,6 +763,8 @@ PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
        i != i_end; ++i)
     row_k[i.index()] += global_reverse_scaling * *i;
 
+  // TODO: row_k seems to be already normalized, check whether this can be
+  // removed or not.
   row_k.normalize();
 }
 
