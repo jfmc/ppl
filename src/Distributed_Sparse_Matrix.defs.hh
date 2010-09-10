@@ -172,8 +172,8 @@ private:
     void create_matrix(dimension_type id, dimension_type num_cols);
     void copy_matrix(dimension_type source_id, dimension_type id);
     void delete_matrix(dimension_type id);
-    void get_row(int rank) const;
-    void set_row(int rank);
+    void get_row(int rank, dimension_type id, dimension_type row_index) const;
+    void set_row(int rank, dimension_type id, dimension_type row_index);
     void linear_combine_matrix(int rank, dimension_type id,
                                dimension_type local_row_index,
                                dimension_type col_index);
@@ -223,9 +223,9 @@ private:
     COPY_MATRIX_OPERATION,
     //! Parameters: id.
     DELETE_MATRIX_OPERATION,
-    //! Parameters: rank.
+    //! Parameters: rank, id, local_index.
     GET_ROW_OPERATION,
-    //! Parameters: rank.
+    //! Parameters: rank, id, local_index.
     SET_ROW_OPERATION,
     //! Parameters: rank, id, local_row_index, col_index.
     LINEAR_COMBINE_MATRIX_OPERATION,

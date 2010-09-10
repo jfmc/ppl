@@ -45,8 +45,8 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   2, // CREATE_MATRIX_OPERATION: id, num_cols
   2, // COPY_MATRIX_OPERATION: source_id, id
   1, // DELETE_MATRIX_OPERATION: id
-  1, // GET_ROW_OPERATION: rank
-  1, // SET_ROW_OPERATION: rank
+  3, // GET_ROW_OPERATION: rank, id, local_index
+  3, // SET_ROW_OPERATION: rank, id, local_index
   4, // LINEAR_COMBINE_MATRIX_OPERATION: rank, id, local_row_index, col_index
   2, // REMOVE_COLUMN_OPERATION: id, col_index
   2, // REMOVE_TRAILING_COLUMNS_OPERATION: id, n
@@ -114,11 +114,11 @@ PPL::Distributed_Sparse_Matrix
       break;
 
     case GET_ROW_OPERATION:
-      worker.get_row(op.params[0]);
+      worker.get_row(op.params[0], op.params[1], op.params[2]);
       break;
 
     case SET_ROW_OPERATION:
-      worker.set_row(op.params[0]);
+      worker.set_row(op.params[0], op.params[1], op.params[2]);
       break;
 
     case LINEAR_COMBINE_MATRIX_OPERATION:
@@ -969,10 +969,8 @@ PPL::Distributed_Sparse_Matrix
     PPL_ASSERT(local_index < local_rows.size());
     row = local_rows[local_index];
   } else {
-    broadcast_operation(GET_ROW_OPERATION, rank);
+    broadcast_operation(GET_ROW_OPERATION, rank, id, local_index);
 
-    std::pair<dimension_type, dimension_type> y(id, local_index);
-    comm().send(rank, 0, y);
     comm().recv(rank, 0, row);
   }
 }
@@ -990,10 +988,8 @@ PPL::Distributed_Sparse_Matrix
     PPL_ASSERT(local_index < local_rows.size());
     local_rows[local_index] = row;
   } else {
-    broadcast_operation(SET_ROW_OPERATION, rank);
+    broadcast_operation(SET_ROW_OPERATION, rank, id, local_index);
 
-    std::pair<dimension_type, dimension_type> y(id, local_index);
-    comm().send(rank, 0, y);
     comm().send(rank, 0, row);
   }
 }
@@ -1434,28 +1430,23 @@ PPL::Distributed_Sparse_Matrix::Worker::delete_matrix(dimension_type id) {
 
 
 void
-PPL::Distributed_Sparse_Matrix::Worker::get_row(int rank) const {
+PPL::Distributed_Sparse_Matrix::Worker::get_row(int rank,
+                                                dimension_type id,
+                                                dimension_type row_index
+                                               ) const {
   if (my_rank != rank)
     return;
-  std::pair<dimension_type, dimension_type> x;
-  comm().recv(0, 0, x);
-  dimension_type id = x.first;
-  dimension_type row_index = x.second;
   PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
   PPL_ASSERT(row_index < row_chunks.find(id)->second.rows.size());
   comm().send(0, 0, row_chunks.find(id)->second.rows[row_index]);
 }
 
 void
-PPL::Distributed_Sparse_Matrix::Worker::set_row(int rank) {
+PPL::Distributed_Sparse_Matrix::Worker::set_row(int rank, dimension_type id,
+                                                dimension_type row_index) {
   if (my_rank != rank)
     return;
-  std::pair<dimension_type, dimension_type> x;
-  comm().recv(0, 0, x);
-  dimension_type id = x.first;
-  dimension_type row_index = x.second;
-  // If row_chunks did not contain the `id' key, the assertion will fail,
-  // because default-constructed rows have size 0.
+  PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
   PPL_ASSERT(row_index < row_chunks[id].rows.size());
   comm().recv(0, 0, row_chunks[id].rows[row_index]);
 }
