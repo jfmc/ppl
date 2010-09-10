@@ -583,21 +583,18 @@ namespace {
 struct compute_working_cost_reducer_functor {
   typedef std::pair<std::pair<PPL::Coefficient,
                               PPL::Coefficient>, PPL::Sparse_Row> pair_type;
-  pair_type
-  operator()(const pair_type& x, const pair_type& y) const {
-    pair_type result(x);
-    const PPL::Coefficient& x_scaling = x.first.first;
-    const PPL::Coefficient& x_reverse_scaling = x.first.second;
+  const pair_type&
+  operator()(pair_type& x, const pair_type& y) const {
+    PPL::Coefficient& x_scaling = x.first.first;
+    PPL::Coefficient& x_reverse_scaling = x.first.second;
+    PPL::Sparse_Row& x_row = x.second;
     const PPL::Coefficient& y_scaling = y.first.first;
     const PPL::Coefficient& y_reverse_scaling = y.first.second;
+    const PPL::Sparse_Row& y_row = y.second;
     PPL_ASSERT(x_scaling != 0);
     PPL_ASSERT(x_reverse_scaling != 0);
     PPL_ASSERT(y_scaling != 0);
     PPL_ASSERT(y_reverse_scaling != 0);
-    const PPL::Sparse_Row& y_row = y.second;
-    PPL::Coefficient& scaling = result.first.first;
-    PPL::Coefficient& reverse_scaling = result.first.second;
-    PPL::Sparse_Row& row = result.second;
 
     PPL::Coefficient x_normalized_scaling = x_scaling * y_reverse_scaling;
     PPL::Coefficient y_normalized_scaling = y_scaling * x_reverse_scaling;
@@ -606,19 +603,20 @@ struct compute_working_cost_reducer_functor {
     PPL::exact_div_assign(x_normalized_scaling, x_normalized_scaling, gcd);
     PPL::exact_div_assign(y_normalized_scaling, y_normalized_scaling, gcd);
 
-    scaling *= y_scaling;
-    reverse_scaling = gcd;
-    PPL_ASSERT(scaling != 0);
-    PPL_ASSERT(reverse_scaling != 0);
-    PPL::normalize2(scaling, reverse_scaling, scaling, reverse_scaling);
-    PPL_ASSERT(scaling != 0);
-    PPL_ASSERT(reverse_scaling != 0);
+    x_scaling *= y_scaling;
+    x_reverse_scaling = gcd;
 
-    PPL::dimension_type n = x.second.size();
-    PPL::Dense_Row tmp(n, PPL::Row_Flags());
-    row.linear_combine(y_row, y_normalized_scaling, x_normalized_scaling);
-    // TODO: Check if the copy can be avoided.
-    return result;
+    x_row.linear_combine(y_row, y_normalized_scaling, x_normalized_scaling);
+
+    x_row.normalize(gcd);
+    x_reverse_scaling *= gcd;
+
+    PPL::normalize2(x_scaling, x_reverse_scaling,
+                    x_scaling, x_reverse_scaling);
+
+    // This return is needed because mpi::reduce() requires it.
+    // x will be assigned to itself, so the data will not be copied.
+    return x;
   }
 };
 
