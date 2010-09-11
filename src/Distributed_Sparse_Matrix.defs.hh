@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Sparse_Matrix.types.hh"
 #include "Coefficient.defs.hh"
 #include "Dense_Row.types.hh"
+#include <deque>
 
 class Parma_Polyhedra_Library::Distributed_Sparse_Matrix {
 public:
@@ -125,6 +126,11 @@ public:
   dimension_type float_entering_index(const Dense_Row& working_cost,
                                       const std::vector<dimension_type>&
                                         base) const;
+
+  void set_artificial_indexes_for_new_rows(dimension_type old_num_rows,
+                                           const std::deque<bool>&
+                                              worked_out_row,
+                                           dimension_type artificial_index);
 
   bool OK() const;
 
@@ -224,6 +230,7 @@ private:
     void get_column(dimension_type id, dimension_type column_index) const;
     void get_scattered_row(dimension_type id) const;
     void float_entering_index(dimension_type id) const;
+    void set_artificial_indexes_for_new_rows(dimension_type id);
 
   private:
     struct Row_Chunk {
@@ -295,6 +302,8 @@ private:
     GET_SCATTERED_ROW_OPERATION,
     //! Parameters: id
     FLOAT_ENTERING_INDEX_OPERATION,
+    //! Parameters: id
+    SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type

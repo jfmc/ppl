@@ -67,6 +67,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   2, // GET_COLUMN_OPERATION: id, column_index
   1, // GET_SCATTERED_ROW_OPERATION: id
   1, // FLOAT_ENTERING_INDEX_OPERATION: id
+  1, // SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION: id
 };
 
 const mpi::communicator*
@@ -206,6 +207,10 @@ PPL::Distributed_Sparse_Matrix
 
     case FLOAT_ENTERING_INDEX_OPERATION:
       worker.float_entering_index(op.params[0]);
+      break;
+
+    case SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION:
+      worker.set_artificial_indexes_for_new_rows(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -1559,6 +1564,34 @@ PPL::Distributed_Sparse_Matrix
   return entering_index;
 }
 
+void
+PPL::Distributed_Sparse_Matrix
+::set_artificial_indexes_for_new_rows(dimension_type old_num_rows,
+                                      const std::deque<bool>& worked_out_row,
+                                      dimension_type artificial_index) {
+  broadcast_operation(SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION, id);
+
+  std::vector<std::vector<std::pair<dimension_type, dimension_type> > >
+    workunits(comm_size);
+
+  for (dimension_type i = old_num_rows; i < num_rows(); ++i) {
+    if (worked_out_row[i])
+      continue;
+    int rank = mapping[i].first;
+    dimension_type local_row_index = mapping[i].second;
+    workunits[rank].push_back(std::make_pair(local_row_index,
+                                             artificial_index));
+    ++artificial_index;
+  }
+
+  std::vector<std::pair<dimension_type, dimension_type> > workunit;
+  mpi::scatter(comm(), workunits, workunit, 0);
+
+  for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i)
+    local_rows[i->first].find_create(i->second, Coefficient_one());
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -2076,6 +2109,26 @@ PPL::Distributed_Sparse_Matrix::Worker
   mpi::reduce(comm(), results, float_entering_index_reducer_functor(), 0);
 }
 
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::set_artificial_indexes_for_new_rows(dimension_type id) {
+
+  std::vector<std::pair<dimension_type, dimension_type> > workunit;
+  mpi::scatter(comm(), workunit, 0);
+
+  row_chunks_itr_type itr = row_chunks.find(id);
+
+  if (itr == row_chunks.end()) {
+    PPL_ASSERT(workunit.empty());
+    return;
+  }
+
+  std::vector<Sparse_Row>& rows = itr->second.rows;
+
+  for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i)
+    rows[i->first].find_create(i->second, Coefficient_one());
+}
 
 template <typename Archive>
 void
