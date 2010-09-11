@@ -343,7 +343,11 @@ PPL::Distributed_Sparse_Matrix
     dimension_type local_i = mapping[i].second;
     if (rank == 0)
       if (!(local_rows[local_i] == matrix[i])) {
-        std::cout << "Found mismatch in root node" << std::endl;
+        std::cout << "Found mismatch in root node, at row " << i << std::endl;
+        std::cout << "LHS: ";
+        local_rows[local_i].ascii_dump(std::cout);
+        std::cout << "RHS: ";
+        matrix[i].ascii_dump(std::cout);
         local_result = false;
       }
   }
@@ -1879,7 +1883,12 @@ PPL::Distributed_Sparse_Matrix::Worker
   bool result = true;
   for (dimension_type i = 0; i < rows.size(); i++)
     if (rows[i] != received_rows[i]) {
-      std::cout << "Found mismatch in worker node" << std::endl;
+      std::cout << "Found mismatch in root node, at row "
+                << itr->second.reverse_mapping[i] << std::endl;
+      std::cout << "LHS: ";
+      rows[i].ascii_dump(std::cout);
+      std::cout << "RHS: ";
+      received_rows[i].ascii_dump(std::cout);
       result = false;
       break;
     }
