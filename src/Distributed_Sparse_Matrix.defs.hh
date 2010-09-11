@@ -114,6 +114,14 @@ public:
 
   bool ascii_load(std::istream& stream);
 
+  //! Gets an element from each column of the matrix.
+  /*!
+    After this method, result[i] contains the element at column i and row
+    indexes[i], for each i.
+  */
+  void get_scattered_row(const std::vector<dimension_type>& indexes,
+                         std::vector<Coefficient>& result) const;
+
   bool OK() const;
 
 private:
@@ -203,6 +211,7 @@ private:
     void linear_combine_with_base_rows(dimension_type id, int k_rank,
                                        dimension_type k_local_index);
     void get_column(dimension_type id, dimension_type column_index) const;
+    void get_scattered_row(dimension_type id) const;
 
   private:
     struct Row_Chunk {
@@ -270,6 +279,8 @@ private:
     LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION,
     //! Parameters: id, column_index
     GET_COLUMN_OPERATION,
+    //! Parameters: id
+    GET_SCATTERED_ROW_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type

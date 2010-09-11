@@ -65,6 +65,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // ASCII_DUMP_OPERATION: id
   3, // LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION: id, k_rank, k_local_index
   2, // GET_COLUMN_OPERATION: id, column_index
+  1, // GET_SCATTERED_ROW_OPERATION: id
 };
 
 const mpi::communicator*
@@ -196,6 +197,10 @@ PPL::Distributed_Sparse_Matrix
 
     case GET_COLUMN_OPERATION:
       worker.get_column(op.params[0], op.params[1]);
+      break;
+
+    case GET_SCATTERED_ROW_OPERATION:
+      worker.get_scattered_row(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -1378,6 +1383,51 @@ PPL::Distributed_Sparse_Matrix::ascii_load(std::istream& stream) {
   return true;
 }
 
+void
+PPL::Distributed_Sparse_Matrix
+::get_scattered_row(const std::vector<dimension_type>& indexes,
+                    std::vector<Coefficient>& row) const {
+  broadcast_operation(GET_SCATTERED_ROW_OPERATION, id);
+
+  // This will be scattered among nodes.
+  // workunits[rank] is a vector of <local_row_index, column_index> pairs.
+  // column_index is stored as an int, because it will be used as a tag.
+  std::vector<std::vector<std::pair<dimension_type, int> > >
+    workunits(comm_size);
+
+  for (dimension_type i = 0; i < num_columns(); ++i) {
+    dimension_type global_row_index = indexes[i];
+    int rank = mapping[global_row_index].first;
+    dimension_type local_row_index = mapping[global_row_index].second;
+    // TODO: This cast can be dangerous!
+    int column_index = static_cast<int>(i);
+    workunits[rank].push_back(std::make_pair(local_row_index, column_index));
+  }
+
+  std::vector<std::pair<dimension_type, int> > workunit;
+  mpi::scatter(comm(), workunits, workunit, 0);
+
+  std::vector<mpi::request> requests;
+  requests.reserve(num_columns() - workunit.size());
+
+  row.resize(num_columns());
+
+  // NOTE: This skips rank 0.
+  for (int rank = 1; rank < comm_size; ++rank) {
+    for (std::vector<std::pair<dimension_type, int> >::const_iterator
+         i = workunits[rank].begin(), i_end = workunits[rank].end();
+         i != i_end; ++i)
+      requests.push_back(comm().irecv(rank, i->second, row[i->second]));
+  }
+
+  // The root node does its copies, while other nodes are sending data.
+  for (std::vector<std::pair<dimension_type, int> >::const_iterator
+        i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i)
+    row[i->second] = local_rows[i->first].get(i->second);
+
+  mpi::wait_all(requests.begin(), requests.end());
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1835,6 +1885,35 @@ PPL::Distributed_Sparse_Matrix::Worker
     int tag = static_cast<int>(i);
     requests.push_back(comm().isend(0, tag, rows[i].get(column_index)));
   }
+
+  mpi::wait_all(requests.begin(), requests.end());
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::get_scattered_row(dimension_type id) const {
+
+  // workunit is a vector of <local_row_index, column_index> pairs.
+  // column_index is stored as an int, because it is used as a tag.
+  std::vector<std::pair<dimension_type, int> > workunit;
+  mpi::scatter(comm(), workunit, 0);
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+
+  if (itr == row_chunks.end()) {
+    PPL_ASSERT(workunit.empty());
+    return;
+  }
+
+  const std::vector<Sparse_Row>& rows = itr->second.rows;
+
+  std::vector<mpi::request> requests;
+  requests.reserve(workunit.size());
+
+  for (std::vector<std::pair<dimension_type, int> >::const_iterator
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i)
+    requests.push_back(comm().isend(0, i->second,
+                                    rows[i->first].get(i->second)));
 
   mpi::wait_all(requests.begin(), requests.end());
 }
