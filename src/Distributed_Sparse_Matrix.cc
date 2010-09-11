@@ -1366,6 +1366,18 @@ PPL::Distributed_Sparse_Matrix
   mpi::wait_all(requests.begin(), requests.end());
 }
 
+bool
+PPL::Distributed_Sparse_Matrix::ascii_load(std::istream& stream) {
+  Sparse_Matrix matrix;
+  if (!matrix.ascii_load(stream))
+    return false;
+  // Only a binary representation of the matrix will be sent to nodes, instead
+  // of the bloated human-readable ASCII representation.
+  *this = matrix;
+
+  return true;
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;

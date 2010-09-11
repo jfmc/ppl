@@ -112,6 +112,8 @@ public:
   void get_column(dimension_type column_index,
                   std::vector<Coefficient>& results) const;
 
+  bool ascii_load(std::istream& stream);
+
   bool OK() const;
 
 private:
