@@ -2518,6 +2518,29 @@ PPL::MIP_Problem::OK() const {
         }
       }
     }
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    // tableau[i][base[i]] must not be a zero.
+    if (distributed_tableau.num_rows() != 0) {
+      std::vector<dimension_type>
+        indexes(distributed_tableau.num_columns(), 0);
+      for (dimension_type i = base.size(); i-- > 0; )
+        indexes[base[i]] = i;
+
+      std::vector<Coefficient> result;
+      distributed_tableau.get_scattered_row(indexes, result);
+
+      for (dimension_type i = base.size(); i-- > 0; ) {
+        if (result[base[i]] == 0) {
+#ifndef NDEBUG
+          cerr << "tableau[i][base[i]] must not be a zero" << endl;
+          ascii_dump(cerr);
+#endif
+          return false;
+        }
+      }
+    }
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     // tableau[i][base[i]] must not be a zero.
     for (dimension_type i = base.size(); i-- > 0; ) {
       if (tableau[i].get(base[i]) == 0) {
@@ -2528,6 +2551,7 @@ PPL::MIP_Problem::OK() const {
         return false;
       }
     }
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
     // The last column of the tableau must contain only zeroes.
     for (dimension_type i = tableau_nrows; i-- > 0; )
