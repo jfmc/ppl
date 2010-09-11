@@ -869,7 +869,7 @@ PPL::MIP_Problem::process_pending_constraints() {
       if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
         linear_combine(tableau_k, tableau[j], base[j]);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau.linear_combine_with_base_rows(base, k);
+    distributed_tableau.linear_combine_with_base_rows(k);
     PPL_ASSERT(distributed_tableau == tableau);
 #endif
   }
@@ -958,7 +958,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.compute_working_cost(working_cost2, base);
+  distributed_tableau.compute_working_cost(working_cost2);
   PPL_ASSERT(working_cost == working_cost2);
 #endif
   // Deal with zero dimensional problems.
@@ -1058,7 +1058,7 @@ PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
-  return distributed_tableau.float_entering_index(working_cost, base);
+  return distributed_tableau.float_entering_index(working_cost);
 #else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_columns = tableau.num_columns();
@@ -2018,7 +2018,7 @@ PPL::MIP_Problem::second_phase() {
       linear_combine(working_cost, tableau[i], base_i);
   }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.compute_working_cost(working_cost2, base);
+  distributed_tableau.compute_working_cost(working_cost2);
   PPL_ASSERT(working_cost == working_cost2);
 #endif
 

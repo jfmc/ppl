@@ -712,13 +712,11 @@ PPL::Distributed_Sparse_Matrix
 
   for (dimension_type local_index = 0;
       local_index < reverse_mapping.size(); ++local_index) {
-    dimension_type global_index = reverse_mapping[local_index];
-    const Sparse_Row& row = local_rows[local_index];
-    Coefficient_traits::const_reference cost_i = working_cost[base[global_index]];
+    Coefficient_traits::const_reference cost_i = working_cost[base[local_index]];
     if (cost_i != 0)
       incremental_linear_combine(local_scaling, local_reverse_scaling,
                                  local_increase, working_cost,
-                                 row, base[global_index]);
+                                 local_rows[local_index], base[local_index]);
   }
 }
 
@@ -753,8 +751,8 @@ PPL::Distributed_Sparse_Matrix
 void
 PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
     int k_rank, dimension_type k_local_index,
-    const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
-    int my_rank, std::vector<Sparse_Row>& local_rows) {
+    int my_rank, std::vector<Sparse_Row>& local_rows,
+    const std::vector<dimension_type>& base) {
 
   Sparse_Row a_local_row;
 
@@ -771,14 +769,26 @@ PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
   local_reverse_scaling = 1;
   local_increase.resize(row_k.size());
 
-  for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
-       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
-    dimension_type local_index = i->first;
-    dimension_type column_index = i->second;
-    const Sparse_Row& row = local_rows[local_index];
-    if (row_k.get(column_index) != 0)
-      incremental_linear_combine(local_scaling, local_reverse_scaling,
-                                 local_increase, row_k, row, column_index);
+  if (my_rank == k_rank) {
+    for (dimension_type i = local_rows.size(); i-- > 0; ) {
+      if (i == k_local_index)
+        continue;
+      if (base[i] == 0)
+        continue;
+      const Sparse_Row& row = local_rows[i];
+      if (row_k.get(base[i]) != 0)
+        incremental_linear_combine(local_scaling, local_reverse_scaling,
+                                  local_increase, row_k, row, base[i]);
+    }
+  } else {
+    for (dimension_type i = local_rows.size(); i-- > 0; ) {
+      if (base[i] == 0)
+        continue;
+      const Sparse_Row& row = local_rows[i];
+      if (row_k.get(base[i]) != 0)
+        incremental_linear_combine(local_scaling, local_reverse_scaling,
+                                  local_increase, row_k, row, base[i]);
+    }
   }
 
   PPL_ASSERT(local_scaling != 0);
@@ -858,8 +868,6 @@ PPL::Distributed_Sparse_Matrix
 ::float_entering_index__common(const std::vector<bool>& candidates,
                                const std::vector<dimension_type>& base,
                                const std::vector<Sparse_Row>& rows,
-                               const std::vector<dimension_type>&
-                                reverse_mapping,
                                std::vector<double>& results) {
   const dimension_type num_rows = rows.size();
   const dimension_type num_columns_minus_1 = candidates.size();
@@ -867,7 +875,7 @@ PPL::Distributed_Sparse_Matrix
   for (dimension_type i = num_rows; i-- > 0; ) {
     const Sparse_Row& row_i = rows[i];
     Coefficient_traits::const_reference tableau_i_base_i
-      = row_i.get(base[reverse_mapping[i]]);
+      = row_i.get(base[i]);
     double float_tableau_denum;
     assign(float_tableau_denum, tableau_i_base_i);
     for (Sparse_Row::const_iterator
@@ -1295,19 +1303,10 @@ PPL::Distributed_Sparse_Matrix
 
 void
 PPL::Distributed_Sparse_Matrix
-::compute_working_cost(Dense_Row& working_cost,
-                       const std::vector<dimension_type>& base) {
+::compute_working_cost(Dense_Row& working_cost) {
   PPL_ASSERT(working_cost.size() == num_columns());
-  PPL_ASSERT(base.size() == num_rows());
   broadcast_operation(COMPUTE_WORKING_COST_OPERATION, id);
   mpi::broadcast(comm(), working_cost, 0);
-
-  // base will not be modified.
-  // This const cast is needed because mpi::broadcast takes a non-const
-  // reference.
-  std::vector<dimension_type>& base_ref
-    = const_cast<std::vector<dimension_type>&>(base);
-  mpi::broadcast(comm(), base_ref, 0);
 
   std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
   compute_working_cost__common(x, working_cost, reverse_mapping[0],
@@ -1343,13 +1342,6 @@ PPL::Distributed_Sparse_Matrix
        i = global_increase.begin(), i_end = global_increase.end();
        i != i_end; ++i)
     working_cost[i.index()] += global_reverse_scaling * *i;
-
-#ifndef NDEBUG
-  // Check that the working_cost values that correspond to variables in base
-  // are zero.
-  for (dimension_type i = 0; i < num_rows(); ++i)
-    PPL_ASSERT(working_cost[base[i]] == 0);
-#endif
 
   working_cost.normalize();
 }
@@ -1431,31 +1423,15 @@ PPL::Distributed_Sparse_Matrix::ascii_dump(std::ostream& stream) const {
 
 void
 PPL::Distributed_Sparse_Matrix
-::linear_combine_with_base_rows(const std::vector<dimension_type>& base,
-                                dimension_type k) {
+::linear_combine_with_base_rows(dimension_type k) {
   int k_rank = mapping[k].first;
   dimension_type k_local_index = mapping[k].second;
 
   broadcast_operation(LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION, id, k_rank,
                       k_local_index);
 
-  // This vector will be scattered to nodes.
-  // vec[rank] contains the <local_index, column> pairs relevant to that node.
-  std::vector<std::vector<std::pair<dimension_type, dimension_type> > >
-    vec(comm_size);
-
-  for (dimension_type i = base.size(); i-- > 0; )
-    if (i != k && base[i] != 0) {
-      int rank = mapping[i].first;
-      dimension_type local_index = mapping[i].second;
-      vec[rank].push_back(std::make_pair(local_index, base[i]));
-    }
-
-  std::vector<std::pair<dimension_type, dimension_type> > workunit;
-  mpi::scatter(comm(), vec, workunit, 0);
-
-  linear_combine_with_base_rows__common(k_rank, k_local_index, workunit, 0,
-                                        local_rows);
+  linear_combine_with_base_rows__common(k_rank, k_local_index, 0, local_rows,
+                                        base);
 }
 
 void
@@ -1566,8 +1542,7 @@ public:
 
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix
-::float_entering_index(const Dense_Row& working_cost,
-                       const std::vector<dimension_type>& base) const {
+::float_entering_index(const Dense_Row& working_cost) const {
   broadcast_operation(FLOAT_ENTERING_INDEX_OPERATION, id);
 
   const dimension_type num_columns_minus_1 = num_columns() - 1;
@@ -1582,14 +1557,9 @@ PPL::Distributed_Sparse_Matrix
 
   mpi::broadcast(comm(), candidates, 0);
 
-  std::vector<dimension_type>& base_ref
-    = const_cast<std::vector<dimension_type>&>(base);
-  mpi::broadcast(comm(), base_ref, 0);
-
   std::vector<double> results(num_columns_minus_1, 1.0);
 
-  float_entering_index__common(candidates, base, local_rows,
-                               reverse_mapping[0], results);
+  float_entering_index__common(candidates, base, local_rows, results);
 
   std::vector<double> global_results;
   mpi::reduce(comm(), results, global_results,
@@ -2073,9 +2043,6 @@ PPL::Distributed_Sparse_Matrix::Worker
   Dense_Row working_cost(0, Row_Flags());
   mpi::broadcast(comm(), working_cost, 0);
 
-  std::vector<dimension_type> base;
-  mpi::broadcast(comm(), base, 0);
-
   row_chunks_itr_type itr = row_chunks.find(id);
 
   if (itr == row_chunks.end()) {
@@ -2093,7 +2060,7 @@ PPL::Distributed_Sparse_Matrix::Worker
     std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
 
     compute_working_cost__common(x, working_cost,
-                                 row_chunk.reverse_mapping, base,
+                                 row_chunk.reverse_mapping, row_chunk.base,
                                  row_chunk.rows);
 
     mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
@@ -2153,9 +2120,6 @@ PPL::Distributed_Sparse_Matrix::Worker
 ::linear_combine_with_base_rows(dimension_type id, int k_rank,
                                 dimension_type k_local_index) {
 
-  std::vector<std::pair<dimension_type, dimension_type> > workunit;
-  mpi::scatter(comm(), workunit, 0);
-
   row_chunks_itr_type itr = row_chunks.find(id);
   if (itr == row_chunks.end()) {
     // Nothing to do, partecipate in the collective operations to keep in sync
@@ -2170,8 +2134,8 @@ PPL::Distributed_Sparse_Matrix::Worker
     return;
   }
 
-  linear_combine_with_base_rows__common(k_rank, k_local_index, workunit,
-                                        my_rank, itr->second.rows);
+  linear_combine_with_base_rows__common(k_rank, k_local_index, my_rank,
+                                        itr->second.rows, itr->second.base);
 }
 
 void
@@ -2232,16 +2196,13 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<bool> candidates;
   mpi::broadcast(comm(), candidates, 0);
 
-  std::vector<dimension_type> base;
-  mpi::broadcast(comm(), base, 0);
-
   row_chunks_const_itr_type itr = row_chunks.find(id);
 
   std::vector<double> results(candidates.size(), 0.0);
 
   if (itr != row_chunks.end()) {
-    float_entering_index__common(candidates, base, itr->second.rows,
-                                 itr->second.reverse_mapping, results);
+    float_entering_index__common(candidates, itr->second.base,
+                                 itr->second.rows, results);
   }
 
   mpi::reduce(comm(), results, float_entering_index_reducer_functor(), 0);

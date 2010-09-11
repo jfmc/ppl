@@ -81,8 +81,7 @@ public:
 
   void linear_combine_matrix(dimension_type row_i, dimension_type col_i);
 
-  void compute_working_cost(Dense_Row& working_cost,
-                            const std::vector<dimension_type>& base);
+  void compute_working_cost(Dense_Row& working_cost);
 
   void reset_column(dimension_type column_index);
   void remove_column(dimension_type column_index);
@@ -107,8 +106,7 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-  void linear_combine_with_base_rows(const std::vector<dimension_type>& base,
-                                     dimension_type k);
+  void linear_combine_with_base_rows(dimension_type k);
 
   void get_column(dimension_type column_index,
                   std::vector<Coefficient>& results) const;
@@ -123,9 +121,7 @@ public:
   void get_scattered_row(const std::vector<dimension_type>& indexes,
                          std::vector<Coefficient>& result) const;
 
-  dimension_type float_entering_index(const Dense_Row& working_cost,
-                                      const std::vector<dimension_type>&
-                                        base) const;
+  dimension_type float_entering_index(const Dense_Row& working_cost) const;
 
   void set_artificial_indexes_for_new_rows(dimension_type old_num_rows,
                                            const std::deque<bool>&
@@ -171,14 +167,13 @@ private:
 
   static void linear_combine_with_base_rows__common(
       int k_rank, dimension_type k_local_index,
-      const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
-      int my_rank, std::vector<Sparse_Row>& local_rows);
+      int my_rank, std::vector<Sparse_Row>& local_rows,
+      const std::vector<dimension_type>& base);
 
   static void float_entering_index__common(
       const std::vector<bool>& candidates,
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& rows,
-      const std::vector<dimension_type>& reverse_mapping,
       std::vector<double>& results);
 
   void init(dimension_type num_rows, dimension_type num_columns);
