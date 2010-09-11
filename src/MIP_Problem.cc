@@ -2480,6 +2480,18 @@ PPL::MIP_Problem::OK() const {
 #endif
       return false;
     }
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    {
+      std::vector<dimension_type> stored_base;
+      distributed_tableau.get_base(stored_base);
+      if (base != stored_base) {
+#ifndef NDEBUG
+        cerr << "The base stored in the tableau is wrong." << endl;
+#endif
+        return false;
+      }
+    }
+#endif
     // The size of `mapping' should be equal to the space dimension
     // of `input_cs' plus one.
     if (mapping.size() != external_space_dim + 1) {
