@@ -109,6 +109,9 @@ public:
   void linear_combine_with_base_rows(const std::vector<dimension_type>& base,
                                      dimension_type k);
 
+  void get_column(dimension_type column_index,
+                  std::vector<Coefficient>& results) const;
+
   bool OK() const;
 
 private:
@@ -197,6 +200,7 @@ private:
     void ascii_dump(dimension_type id) const;
     void linear_combine_with_base_rows(dimension_type id, int k_rank,
                                        dimension_type k_local_index);
+    void get_column(dimension_type id, dimension_type column_index) const;
 
   private:
     struct Row_Chunk {
@@ -262,6 +266,8 @@ private:
     ASCII_DUMP_OPERATION,
     //! Parameters: id, k_rank, k_local_index
     LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION,
+    //! Parameters: id, column_index
+    GET_COLUMN_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type

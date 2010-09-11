@@ -64,6 +64,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION: id
   1, // ASCII_DUMP_OPERATION: id
   3, // LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION: id, k_rank, k_local_index
+  2, // GET_COLUMN_OPERATION: id, column_index
 };
 
 const mpi::communicator*
@@ -191,6 +192,10 @@ PPL::Distributed_Sparse_Matrix
     case LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION:
       worker.linear_combine_with_base_rows(op.params[0], op.params[1],
                                            op.params[2]);
+      break;
+
+    case GET_COLUMN_OPERATION:
+      worker.get_column(op.params[0], op.params[1]);
       break;
 
     case QUIT_OPERATION:
@@ -1326,6 +1331,41 @@ PPL::Distributed_Sparse_Matrix
                                         local_rows);
 }
 
+void
+PPL::Distributed_Sparse_Matrix
+::get_column(dimension_type column_index,
+             std::vector<Coefficient>& results) const {
+
+  PPL_ASSERT(column_index < num_columns());
+
+  broadcast_operation(GET_COLUMN_OPERATION, id, column_index);
+
+  results.resize(num_rows());
+
+  std::vector<mpi::request> requests;
+  requests.reserve(num_rows() - local_rows.size());
+
+  // NOTE: this loop skips rank 0.
+  for (int rank = 1; rank < comm_size; ++rank) {
+    const std::vector<dimension_type>& node_reverse_mapping
+      = reverse_mapping[rank];
+    for (dimension_type i = node_reverse_mapping.size(); i-- > 0; ) {
+      // TODO: This cast can be dangerous!
+      int tag = static_cast<int>(i);
+      requests.push_back(comm().irecv(rank, tag,
+                                      results[node_reverse_mapping[i]]));
+    }
+  }
+
+  // The root node does its copies while the other nodes send the data.
+  const std::vector<dimension_type>& root_reverse_mapping
+    = reverse_mapping[0];
+  for (dimension_type i = root_reverse_mapping.size(); i-- > 0; )
+    results[root_reverse_mapping[i]] = local_rows[i].get(column_index);
+
+  mpi::wait_all(requests.begin(), requests.end());
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1761,6 +1801,28 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   linear_combine_with_base_rows__common(k_rank, k_local_index, workunit,
                                         my_rank, itr->second.rows);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::get_column(dimension_type id, dimension_type column_index) const {
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+  if (itr == row_chunks.end())
+    return;
+
+  const std::vector<Sparse_Row>& rows = itr->second.rows;
+
+  std::vector<mpi::request> requests;
+  requests.reserve(rows.size());
+
+  for (dimension_type i = rows.size(); i-- > 0; ) {
+    // TODO: This cast can be dangerous!
+    int tag = static_cast<int>(i);
+    requests.push_back(comm().isend(0, tag, rows[i].get(column_index)));
+  }
+
+  mpi::wait_all(requests.begin(), requests.end());
 }
 
 
