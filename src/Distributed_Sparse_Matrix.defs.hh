@@ -122,6 +122,10 @@ public:
   void get_scattered_row(const std::vector<dimension_type>& indexes,
                          std::vector<Coefficient>& result) const;
 
+  dimension_type float_entering_index(const Dense_Row& working_cost,
+                                      const std::vector<dimension_type>&
+                                        base) const;
+
   bool OK() const;
 
 private:
@@ -156,6 +160,13 @@ private:
       int k_rank, dimension_type k_local_index,
       const std::vector<std::pair<dimension_type, dimension_type> >& workunit,
       int my_rank, std::vector<Sparse_Row>& local_rows);
+
+  static void float_entering_index__common(
+      const std::vector<bool>& candidates,
+      const std::vector<dimension_type>& base,
+      const std::vector<Sparse_Row>& rows,
+      const std::vector<dimension_type>& reverse_mapping,
+      std::vector<double>& results);
 
   void init(dimension_type num_rows, dimension_type num_columns);
 
@@ -212,6 +223,7 @@ private:
                                        dimension_type k_local_index);
     void get_column(dimension_type id, dimension_type column_index) const;
     void get_scattered_row(dimension_type id) const;
+    void float_entering_index(dimension_type id) const;
 
   private:
     struct Row_Chunk {
@@ -281,6 +293,8 @@ private:
     GET_COLUMN_OPERATION,
     //! Parameters: id
     GET_SCATTERED_ROW_OPERATION,
+    //! Parameters: id
+    FLOAT_ENTERING_INDEX_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type

@@ -66,6 +66,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   3, // LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION: id, k_rank, k_local_index
   2, // GET_COLUMN_OPERATION: id, column_index
   1, // GET_SCATTERED_ROW_OPERATION: id
+  1, // FLOAT_ENTERING_INDEX_OPERATION: id
 };
 
 const mpi::communicator*
@@ -201,6 +202,10 @@ PPL::Distributed_Sparse_Matrix
 
     case GET_SCATTERED_ROW_OPERATION:
       worker.get_scattered_row(op.params[0]);
+      break;
+
+    case FLOAT_ENTERING_INDEX_OPERATION:
+      worker.float_entering_index(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -775,6 +780,68 @@ PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
   // TODO: row_k seems to be already normalized, check whether this can be
   // removed or not.
   row_k.normalize();
+}
+
+namespace {
+
+// NOTE: the following two `assign' helper functions are needed to
+// handle the assignment of a Coefficient to a double in method
+//     Distributed_Sparse_Matrix::float_entering_index__common().
+// We cannot use assign_r(double, Coefficient, Rounding_Dir) as it would
+// lead to a compilation error on those platforms (e.g., ARM) where
+// controlled floating point rounding is not available (even if the
+// rounding mode would be set to ROUND_IGNORE).
+
+inline void
+assign(double& d, const mpz_class& c) {
+  d = c.get_d();
+}
+
+template <typename T, typename Policy>
+inline void
+assign(double& d,
+       const Parma_Polyhedra_Library::Checked_Number<T, Policy>& c) {
+  d = raw_value(c);
+}
+
+} // namespace
+
+void
+PPL::Distributed_Sparse_Matrix
+::float_entering_index__common(const std::vector<bool>& candidates,
+                               const std::vector<dimension_type>& base,
+                               const std::vector<Sparse_Row>& rows,
+                               const std::vector<dimension_type>&
+                                reverse_mapping,
+                               std::vector<double>& results) {
+  const dimension_type num_rows = rows.size();
+  const dimension_type num_columns_minus_1 = candidates.size();
+
+  for (dimension_type i = num_rows; i-- > 0; ) {
+    const Sparse_Row& row_i = rows[i];
+    Coefficient_traits::const_reference tableau_i_base_i
+      = row_i.get(base[reverse_mapping[i]]);
+    double float_tableau_denum;
+    assign(float_tableau_denum, tableau_i_base_i);
+    for (Sparse_Row::const_iterator
+         j = row_i.begin(), j_end = row_i.end(); j != j_end; ++j) {
+      if (j.index() >= num_columns_minus_1)
+        break;
+      if (!candidates[j.index()])
+        continue;
+      Coefficient_traits::const_reference tableau_ij = *j;
+      WEIGHT_BEGIN();
+      if (tableau_ij != 0) {
+        PPL_ASSERT(tableau_i_base_i != 0);
+        double float_tableau_value;
+        assign(float_tableau_value, tableau_ij);
+        float_tableau_value /= float_tableau_denum;
+        float_tableau_value *= float_tableau_value;
+        results[j.index()] += float_tableau_value;
+      }
+      WEIGHT_ADD_MUL(338, num_rows);
+    }
+  }
 }
 
 void
@@ -1428,6 +1495,66 @@ PPL::Distributed_Sparse_Matrix
   mpi::wait_all(requests.begin(), requests.end());
 }
 
+namespace {
+
+class float_entering_index_reducer_functor {
+public:
+  const std::vector<double>& operator()(std::vector<double>& x,
+                                        const std::vector<double>& y) {
+    for (PPL::dimension_type i = x.size(); i-- > 0; )
+      x[i] += y[i];
+    return x;
+  }
+};
+
+} // namespace
+
+PPL::dimension_type
+PPL::Distributed_Sparse_Matrix
+::float_entering_index(const Dense_Row& working_cost,
+                       const std::vector<dimension_type>& base) const {
+  broadcast_operation(FLOAT_ENTERING_INDEX_OPERATION, id);
+
+  const dimension_type num_columns_minus_1 = num_columns() - 1;
+
+  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+
+  // When candidate[i] is true, i is one of the column candidates.
+  std::vector<bool> candidates(num_columns_minus_1);
+
+  for (dimension_type column = 1; column < num_columns_minus_1; ++column)
+    candidates[column] = (sgn(working_cost[column]) == cost_sign);
+
+  mpi::broadcast(comm(), candidates, 0);
+
+  std::vector<dimension_type>& base_ref
+    = const_cast<std::vector<dimension_type>&>(base);
+  mpi::broadcast(comm(), base_ref, 0);
+
+  std::vector<double> results(num_columns_minus_1, 1.0);
+
+  float_entering_index__common(candidates, base, local_rows,
+                               reverse_mapping[0], results);
+
+  std::vector<double> global_results;
+  mpi::reduce(comm(), results, global_results,
+              float_entering_index_reducer_functor(), 0);
+
+  double current_value = 0.0;
+  dimension_type entering_index = 0;
+
+  for (dimension_type i = num_columns_minus_1; i-- > 1; )
+    if (candidates[i]) {
+      double challenger_value = sqrt(results[i]);
+      if (entering_index == 0 || challenger_value > current_value) {
+        current_value = challenger_value;
+        entering_index = i;
+      }
+    }
+
+  return entering_index;
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -1916,6 +2043,28 @@ PPL::Distributed_Sparse_Matrix::Worker
                                     rows[i->first].get(i->second)));
 
   mpi::wait_all(requests.begin(), requests.end());
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::float_entering_index(dimension_type id) const {
+
+  std::vector<bool> candidates;
+  mpi::broadcast(comm(), candidates, 0);
+
+  std::vector<dimension_type> base;
+  mpi::broadcast(comm(), base, 0);
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+
+  std::vector<double> results(candidates.size(), 0.0);
+
+  if (itr != row_chunks.end()) {
+    float_entering_index__common(candidates, base, itr->second.rows,
+                                 itr->second.reverse_mapping, results);
+  }
+
+  mpi::reduce(comm(), results, float_entering_index_reducer_functor(), 0);
 }
 
 
