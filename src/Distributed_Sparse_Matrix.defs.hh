@@ -132,6 +132,12 @@ public:
                                               worked_out_row,
                                            dimension_type artificial_index);
 
+  void add_row_into_base(dimension_type row_index,
+                         dimension_type column_index);
+  void remove_row_from_base(dimension_type row_index);
+  void set_base(const std::vector<dimension_type>& base);
+  void get_base(std::vector<dimension_type>& base) const;
+
   bool OK() const;
 
 private:
@@ -146,7 +152,8 @@ private:
   static void swap_rows__common(int rank1, int rank2,
                                 dimension_type local_index1,
                                 dimension_type local_index2,
-                                int my_rank, std::vector<Sparse_Row>& rows);
+                                int my_rank, std::vector<Sparse_Row>& rows,
+                                std::vector<dimension_type>& base);
 
   static void compute_working_cost__common(
       std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
@@ -160,7 +167,7 @@ private:
 
   static void set_artificial_indexes_for_unfeasible_rows__common(
     const std::pair<dimension_type, std::vector<dimension_type> >&node_data,
-    std::vector<Sparse_Row>& rows);
+    std::vector<Sparse_Row>& rows, std::vector<dimension_type>& base);
 
   static void linear_combine_with_base_rows__common(
       int k_rank, dimension_type k_local_index,
@@ -231,11 +238,23 @@ private:
     void get_scattered_row(dimension_type id) const;
     void float_entering_index(dimension_type id) const;
     void set_artificial_indexes_for_new_rows(dimension_type id);
+    void add_row_into_base(dimension_type id, int rank,
+                           dimension_type row_index,
+                           dimension_type column_index);
+    void remove_row_from_base(dimension_type id, int rank,
+                              dimension_type local_row_index);
+    void set_base(dimension_type id);
+    void get_base(dimension_type id) const;
 
   private:
     struct Row_Chunk {
       std::vector<Sparse_Row> rows;
       std::vector<dimension_type> reverse_mapping;
+      /*!
+        base[i] is 0 iff the i-th local row is in base.
+        If base[i] is not 0, it is the column associated with that row.
+      */
+      std::vector<dimension_type> base;
     };
     // Every node has an associated Node_Data, including the root node.
     // This declaration refers to worker nodes only.
@@ -304,6 +323,14 @@ private:
     FLOAT_ENTERING_INDEX_OPERATION,
     //! Parameters: id
     SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION,
+    //! Parameters: id, rank, row_index, column_index
+    ADD_ROW_INTO_BASE_OPERATION,
+    //! Parameters: id, rank, row_index
+    REMOVE_ROW_FROM_BASE_OPERATION,
+    //! Parameters: id
+    SET_BASE_OPERATION,
+    //! Parameters: id
+    GET_BASE_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
@@ -360,6 +387,12 @@ private:
 
   //! The rows that are stored at the root.
   std::vector<Sparse_Row> local_rows;
+
+  /*!
+    base[i] is 0 iff the i-th local row is in base.
+    If base[i] is not 0, it is the column associated with that row.
+  */
+  std::vector<dimension_type> base;
 };
 
 namespace std {

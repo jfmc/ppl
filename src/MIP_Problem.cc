@@ -418,6 +418,9 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
     if (base[i] > removing_column)
       --base[i];
   }
+  // Now the base stored in distributed_tableau will differ from the base
+  // stored in MIP_Problem. This issue will be addressed in
+  // process_pending_constraints(), after all the calls to this method.
   const dimension_type mapping_size = mapping.size();
   for (dimension_type i = mapping_size; i-- > 0; ) {
     if (mapping[i].first > removing_column)
@@ -690,6 +693,11 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (unfeasible_row != not_a_dimension())
       unfeasible_tableau_rows.push_back(unfeasible_row);
   }
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  // The copy of `base' stored in distributed_tableau is out of sync due to
+  // merge_split_variable() calls.
+  distributed_tableau.set_base(base);
+#endif
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
@@ -848,6 +856,9 @@ PPL::MIP_Problem::process_pending_constraints() {
       if (is_satisfied_inequality[i]) {
         base[k] = slack_index;
         worked_out_row[k] = true;
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+        distributed_tableau.add_row_into_base(k, slack_index);
+#endif
       }
     }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
@@ -901,6 +912,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
                                                     Coefficient_one());
     working_cost[artificial_index] = -1;
+    PPL_ASSERT(base[unfeasible_tableau_rows[i]] == 0);
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
   }
@@ -1463,6 +1475,10 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
   if (working_cost[entering_var_index] != 0)
     linear_combine(working_cost, tableau_out, entering_var_index);
   // Adjust the base.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  distributed_tableau.add_row_into_base(exiting_base_index,
+                                        entering_var_index);
+#endif
   base[exiting_base_index] = entering_var_index;
 }
 
@@ -2827,6 +2843,10 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
       return false;
     base.push_back(base_value);
   }
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  PPL_ASSERT(distributed_tableau.num_rows() == base.size());
+  distributed_tableau.set_base(base);
+#endif
 
   if (!(s >> str) || str != "last_generator")
     return false;

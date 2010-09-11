@@ -68,6 +68,10 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // GET_SCATTERED_ROW_OPERATION: id
   1, // FLOAT_ENTERING_INDEX_OPERATION: id
   1, // SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION: id
+  4, // ADD_ROW_INTO_BASE_OPERATION: id, rank, row_index, column_index
+  3, // REMOVE_ROW_FROM_BASE_OPERATION: id, rank, row_index
+  1, // SET_BASE_OPERATION: id
+  1, // GET_BASE_OPERATION: id
 };
 
 const mpi::communicator*
@@ -213,6 +217,23 @@ PPL::Distributed_Sparse_Matrix
       worker.set_artificial_indexes_for_new_rows(op.params[0]);
       break;
 
+    case ADD_ROW_INTO_BASE_OPERATION:
+      worker.add_row_into_base(op.params[0], op.params[1], op.params[2],
+                               op.params[3]);
+      break;
+
+    case REMOVE_ROW_FROM_BASE_OPERATION:
+      worker.remove_row_from_base(op.params[0], op.params[1], op.params[2]);
+      break;
+
+    case SET_BASE_OPERATION:
+      worker.set_base(op.params[0]);
+      break;
+
+    case GET_BASE_OPERATION:
+      worker.get_base(op.params[0]);
+      break;
+
     case QUIT_OPERATION:
       PPL_ASSERT(false);
 
@@ -233,7 +254,7 @@ PPL::Distributed_Sparse_Matrix::quit_workers() {
 
 PPL::Distributed_Sparse_Matrix::Distributed_Sparse_Matrix()
   : my_num_columns(0), id(get_unique_id()), mapping(),
-    reverse_mapping(comm_size), next_rank(0), local_rows(0) {
+    reverse_mapping(comm_size), next_rank(0), local_rows(0), base(0) {
   PPL_ASSERT(comm().rank() == 0);
   PPL_ASSERT(OK());
 }
@@ -252,7 +273,8 @@ PPL::Distributed_Sparse_Matrix
     mapping(matrix.mapping),
     reverse_mapping(matrix.reverse_mapping),
     next_rank(matrix.next_rank),
-    local_rows(matrix.local_rows) {
+    local_rows(matrix.local_rows),
+    base(matrix.base) {
 
   id = get_unique_id();
 
@@ -307,6 +329,7 @@ PPL::Distributed_Sparse_Matrix::swap(Distributed_Sparse_Matrix& matrix) {
   std::swap(reverse_mapping, matrix.reverse_mapping);
   std::swap(next_rank, matrix.next_rank);
   std::swap(local_rows, matrix.local_rows);
+  std::swap(base, matrix.base);
   PPL_ASSERT(OK());
   PPL_ASSERT(matrix.OK());
 }
@@ -422,7 +445,7 @@ PPL::Distributed_Sparse_Matrix::OK() const {
   }
 
   // 2. Check that the parts of reverse_mapping stored by worker nodes
-  // are in sync with reverse_mapping.
+  // are in sync with reverse_mapping, and that base[] has the correct size.
 
   broadcast_operation(CHECK_OPERATION, id, num_columns());
 
@@ -432,6 +455,11 @@ PPL::Distributed_Sparse_Matrix::OK() const {
   bool local_result = (root_reverse_mapping.size() == local_rows.size());
   if (!local_result)
     std::cerr << "Distributed_Sparse_Matrix error: row check failed for root node." << std::endl;
+
+  if (local_rows.size() != base.size()) {
+    local_result = false;
+    std::cerr << "Distributed_Sparse_Matrix error: base[] has wrong size, in root node." << std::endl;
+  }
 
   for (std::vector<Sparse_Row>::const_iterator
       i = local_rows.begin(), i_end = local_rows.end(); i != i_end; ++i)
@@ -575,10 +603,12 @@ void
 PPL::Distributed_Sparse_Matrix
 ::swap_rows__common(int rank1, int rank2,
                     dimension_type local_index1, dimension_type local_index2,
-                    int my_rank, std::vector<Sparse_Row>& rows) {
+                    int my_rank, std::vector<Sparse_Row>& rows,
+                    std::vector<dimension_type>& base) {
   PPL_ASSERT(my_rank == rank1 || my_rank == rank2);
   if (rank1 == rank2) {
     std::swap(rows[local_index1], rows[local_index2]);
+    std::swap(base[local_index1], base[local_index2]);
     return;
   }
   if (rank1 > rank2) {
@@ -591,15 +621,21 @@ PPL::Distributed_Sparse_Matrix
     // rank1 < rank2, and this node has rank rank1, so it will do the actual
     // swap.
     Sparse_Row row;
+    dimension_type base_i;
+    std::vector<mpi::request> requests;
     comm().recv(rank2, 0, row);
+    comm().recv(rank2, 0, base_i);
     comm().send(rank2, 0, rows[local_index1]);
+    comm().send(rank2, 0, base[local_index1]);
     std::swap(row, rows[local_index1]);
   } else {
     PPL_ASSERT(rank2 == my_rank);
     // rank1 < rank2, and this node has rank rank2, so it won't do the actual
     // swap.
     comm().send(rank1, 0, rows[local_index2]);
+    comm().send(rank1, 0, base[local_index2]);
     comm().recv(rank1, 0, rows[local_index2]);
+    comm().recv(rank1, 0, base[local_index2]);
   }
 }
 
@@ -703,13 +739,15 @@ void
 PPL::Distributed_Sparse_Matrix
 ::set_artificial_indexes_for_unfeasible_rows__common(
     const std::pair<dimension_type, std::vector<dimension_type> >&node_data,
-    std::vector<Sparse_Row>& rows) {
+    std::vector<Sparse_Row>& rows, std::vector<dimension_type>& base) {
 
   const std::vector<dimension_type>& indexes = node_data.second;
   dimension_type current_artificial = node_data.first;
   for (std::vector<dimension_type>::const_iterator
-      i = indexes.begin(), i_end = indexes.end(); i != i_end; ++i)
+      i = indexes.begin(), i_end = indexes.end(); i != i_end; ++i) {
     rows[*i].find_create(current_artificial, Coefficient_one());
+    base[*i] = current_artificial;
+  }
 }
 
 void
@@ -866,6 +904,7 @@ PPL::Distributed_Sparse_Matrix::init(dimension_type num_rows1,
 
   if (comm_size == 1) {
     local_rows.resize(num_rows1);
+    base.resize(num_rows1, 0);
     for (dimension_type i = 0; i < num_rows1; ++i) {
       local_rows[i].resize(num_columns());
       mapping[i].first = 0;
@@ -946,6 +985,7 @@ PPL::Distributed_Sparse_Matrix::init(dimension_type num_rows1,
     PPL_ASSERT(current_row == num_rows1);
 
     local_rows.resize(root_n);
+    base.resize(root_n, 0);
     for (std::vector<Sparse_Row>::iterator
         i = local_rows.begin(), i_end = local_rows.end(); i != i_end; ++i)
       i->resize(num_columns());
@@ -1140,6 +1180,7 @@ PPL::Distributed_Sparse_Matrix
   broadcast_operation(REMOVE_TRAILING_ROWS_OPERATION, id, row_n);
 
   local_rows.resize(row_n);
+  base.resize(row_n);
 
   mapping.resize(row_n);
   for (int rank = 0; rank < comm_size; ++rank)
@@ -1207,6 +1248,7 @@ PPL::Distributed_Sparse_Matrix
 
   Sparse_Row row(num_columns(), flags);
   local_rows.resize(local_rows.size() + root_n, row);
+  base.resize(base.size() + root_n, 0);
 
   PPL_ASSERT(OK());
 }
@@ -1224,6 +1266,7 @@ PPL::Distributed_Sparse_Matrix::add_row(Sparse_Row& row) {
   mapping.push_back(std::make_pair(rank, local_index));
   if (rank == 0) {
     local_rows.resize(local_rows.size() + 1);
+    base.push_back(0);
     std::swap(local_rows.back(), row);
   } else {
     broadcast_operation(ADD_ROW_OPERATION, rank, id, global_index);
@@ -1241,11 +1284,13 @@ PPL::Distributed_Sparse_Matrix
   dimension_type local_index2 = mapping[row_index2].second;
   if (rank1 == 0 && rank2 == 0) {
     std::swap(local_rows[local_index1], local_rows[local_index2]);
+    std::swap(base[local_index1], base[local_index2]);
     return;
   }
   broadcast_operation(SWAP_ROWS_OPERATION, id, rank1, local_index1, rank2,
                       local_index2);
-  swap_rows__common(rank1, rank2, local_index1, local_index2, 0, local_rows);
+  swap_rows__common(rank1, rank2, local_index1, local_index2, 0, local_rows,
+                    base);
 }
 
 void
@@ -1351,7 +1396,8 @@ PPL::Distributed_Sparse_Matrix::set_artificial_indexes_for_unfeasible_rows(
   std::pair<dimension_type, std::vector<dimension_type> > root_data;
   mpi::scatter(comm(), vec, root_data, 0);
 
-  set_artificial_indexes_for_unfeasible_rows__common(root_data, local_rows);
+  set_artificial_indexes_for_unfeasible_rows__common(root_data, local_rows,
+                                                     base);
 }
 
 void
@@ -1588,8 +1634,81 @@ PPL::Distributed_Sparse_Matrix
   mpi::scatter(comm(), workunits, workunit, 0);
 
   for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
-       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i)
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
     local_rows[i->first].find_create(i->second, Coefficient_one());
+    base[i->first] = i->second;
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::add_row_into_base(dimension_type row_index, dimension_type column_index) {
+  PPL_ASSERT(column_index != 0);
+  int rank = mapping[row_index].first;
+  dimension_type local_row_index = mapping[row_index].second;
+
+  if (rank == 0) {
+    base[local_row_index] = column_index;
+    return;
+  }
+
+  broadcast_operation(ADD_ROW_INTO_BASE_OPERATION, id, rank, local_row_index,
+                      column_index);
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::remove_row_from_base(dimension_type row_index) {
+  int rank = mapping[row_index].first;
+  dimension_type local_row_index = mapping[row_index].second;
+
+  if (rank == 0) {
+    base[local_row_index] = 0;
+    return;
+  }
+
+  broadcast_operation(REMOVE_ROW_FROM_BASE_OPERATION, id, rank, row_index);
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::set_base(const std::vector<dimension_type>& base1) {
+  broadcast_operation(SET_BASE_OPERATION, id);
+
+  PPL_ASSERT(base1.size() == num_rows());
+
+  std::vector<std::vector<dimension_type> > vec(comm_size);
+
+  for (int i = 0; i < comm_size; ++i)
+    vec[i].resize(reverse_mapping[i].size());
+
+  for (dimension_type i = num_rows(); i-- > 0; ) {
+    int rank = mapping[i].first;
+    dimension_type local_row_index = mapping[i].second;
+    vec[rank][local_row_index] = base1[i];
+  }
+
+  std::vector<dimension_type> new_base;
+  mpi::scatter(comm(), vec, new_base, 0);
+
+  base = new_base;
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::get_base(std::vector<dimension_type>& base1) const {
+  broadcast_operation(GET_BASE_OPERATION, id);
+
+  std::vector<std::vector<dimension_type> > vec(comm_size);
+  mpi::gather(comm(), base, vec, 0);
+
+  base1.resize(num_rows());
+
+  for (dimension_type i = num_rows(); i-- > 0; ) {
+    int rank = mapping[i].first;
+    dimension_type local_row_index = mapping[i].second;
+    base1[i] = vec[rank][local_row_index];
+  }
 }
 
 PPL::dimension_type
@@ -1629,6 +1748,7 @@ PPL::Distributed_Sparse_Matrix::Worker
   if (num_rows == 0)
     return;
   Row_Chunk& row_chunk = row_chunks[id];
+  row_chunk.base.resize(num_rows, 0);
   std::vector<Sparse_Row>& rows = row_chunk.rows;
   rows.resize(num_rows);
   for (std::vector<Sparse_Row>::iterator i = rows.begin(), i_end = rows.end();
@@ -1646,8 +1766,8 @@ PPL::Distributed_Sparse_Matrix::Worker
 }
 
 void
-PPL::Distributed_Sparse_Matrix::Worker::copy_matrix(dimension_type source_id,
-                                               dimension_type id) {
+PPL::Distributed_Sparse_Matrix::Worker
+::copy_matrix(dimension_type source_id, dimension_type id) {
   PPL_ASSERT(row_chunks.find(id) == row_chunks.end());
   row_chunks_itr_type itr = row_chunks.find(source_id);
   if (itr == row_chunks.end())
@@ -1769,6 +1889,10 @@ PPL::Distributed_Sparse_Matrix::Worker
       std::cerr << "Worker node: row check failed" << std::endl;
       result = false;
     }
+    if (itr->second.base.size() != itr->second.rows.size()) {
+      std::cerr << "Worker node: base[] has the wrong size." << std::endl;
+      result = false;
+    }
     if (correct_reverse_mapping != itr->second.reverse_mapping) {
       std::cerr << "Worker node: reverse_mapping check failed" << std::endl;
       std::cerr << "Correct reverse_mapping:" << std::endl;
@@ -1819,8 +1943,13 @@ PPL::Distributed_Sparse_Matrix::Worker
   Sparse_Row row(num_columns, flags);
   // This may default-construct the Row_Chunk.
   Row_Chunk& row_chunk = row_chunks[id];
+
   std::vector<Sparse_Row>& rows = row_chunk.rows;
   rows.resize(rows.size() + my_n, row);
+
+  std::vector<dimension_type>& base = row_chunk.base;
+  base.resize(base.size() + my_n, 0);
+
   std::vector<dimension_type>& reverse_mapping
     = row_chunk.reverse_mapping;
   for (dimension_type i = 0; i < my_n; ++i) {
@@ -1836,8 +1965,13 @@ PPL::Distributed_Sparse_Matrix::Worker::add_row(int rank,
   if (rank != my_rank)
     return;
   Row_Chunk& row_chunk = row_chunks[id];
+
   std::vector<Sparse_Row>& rows = row_chunk.rows;
   rows.resize(rows.size() + 1);
+
+  std::vector<dimension_type>& base = row_chunk.base;
+  base.push_back(0);
+
   row_chunk.reverse_mapping.push_back(global_index);
   Sparse_Row& row = rows.back();
   comm().recv(0, 0, row);
@@ -1853,6 +1987,7 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   Row_Chunk& row_chunk = itr->second;
   std::vector<Sparse_Row>& rows = row_chunk.rows;
+  std::vector<dimension_type>& base = row_chunk.base;
   std::vector<dimension_type>& reverse_mapping
     = row_chunk.reverse_mapping;
 
@@ -1860,6 +1995,7 @@ PPL::Distributed_Sparse_Matrix::Worker
           && reverse_mapping.back() >= row_n) {
     reverse_mapping.pop_back();
     rows.pop_back();
+    base.pop_back();
   }
 }
 
@@ -1871,8 +2007,9 @@ PPL::Distributed_Sparse_Matrix::Worker
   if (rank1 != my_rank && rank2 != my_rank)
     return;
   PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
+  Row_Chunk& row_chunk = row_chunks[id];
   swap_rows__common(rank1, rank2, local_index1, local_index2, my_rank,
-                    row_chunks[id].rows);
+                    row_chunk.rows, row_chunk.base);
 }
 
 void
@@ -1983,7 +2120,8 @@ PPL::Distributed_Sparse_Matrix::Worker
     return;
 
   set_artificial_indexes_for_unfeasible_rows__common(node_data,
-                                                     itr->second.rows);
+                                                     itr->second.rows,
+                                                     itr->second.base);
 }
 
 void
@@ -2124,10 +2262,64 @@ PPL::Distributed_Sparse_Matrix::Worker
   }
 
   std::vector<Sparse_Row>& rows = itr->second.rows;
+  std::vector<dimension_type>& base = itr->second.base;
 
   for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
-       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i)
+       i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
     rows[i->first].find_create(i->second, Coefficient_one());
+    base[i->first] = i->second;
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::add_row_into_base(dimension_type id, int rank,
+                    dimension_type local_row_index,
+                    dimension_type column_index) {
+  if (my_rank == rank) {
+    PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
+    row_chunks[id].base[local_row_index] = column_index;
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::remove_row_from_base(dimension_type id, int rank,
+                       dimension_type local_row_index) {
+  if (my_rank == rank) {
+    PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
+    row_chunks[id].base[local_row_index] = 0;
+  }
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker::set_base(dimension_type id) {
+
+  std::vector<dimension_type> new_base;
+  mpi::scatter(comm(), new_base, 0);
+
+  row_chunks_itr_type itr = row_chunks.find(id);
+
+  if (itr == row_chunks.end()) {
+    PPL_ASSERT(new_base.empty());
+    return;
+  }
+
+  PPL_ASSERT(new_base.size() == itr->second.base.size());
+
+  itr->second.base = new_base;
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker::get_base(dimension_type id) const {
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+
+  if (itr == row_chunks.end()) {
+    std::vector<dimension_type> fake_base;
+    mpi::gather(comm(), fake_base, 0);
+  } else
+    mpi::gather(comm(), itr->second.base, 0);
 }
 
 template <typename Archive>
