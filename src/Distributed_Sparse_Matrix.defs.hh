@@ -104,7 +104,7 @@ public:
       const std::vector<dimension_type>& unfeasible_tableau_rows,
       dimension_type artificial_index);
 
-  void ascii_dump(std::ostream& stream) const;
+  PPL_OUTPUT_DECLARATIONS
 
   void linear_combine_with_base_rows(const std::vector<dimension_type>& base,
                                      dimension_type k);

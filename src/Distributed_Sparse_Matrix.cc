@@ -1789,6 +1789,8 @@ PPL::Distributed_Sparse_Matrix::Worker::ascii_dump(dimension_type id) const {
   mpi::gather(comm(), output, 0);
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Distributed_Sparse_Matrix)
+
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::linear_combine_with_base_rows(dimension_type id, int k_rank,
