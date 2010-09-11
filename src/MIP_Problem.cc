@@ -1784,6 +1784,31 @@ PPL::MIP_Problem::compute_generator() const {
   std::vector<Coefficient> first_column;
   distributed_tableau.get_column(0, first_column);
 
+  // Some columns are not really needed. In such cases, the element of the
+  // first row will be retrieved and will not be used.
+  std::vector<dimension_type> indexes(distributed_tableau.num_columns(), 0);
+
+  for (dimension_type i = external_space_dim; i-- > 0; ) {
+    const dimension_type original_var = mapping[i+1].first;
+    if (is_in_base(original_var, row)) {
+      // Note that this check does not guarantee that indexes[original_var]
+      // hasn't been initialized yet.
+      PPL_ASSERT(indexes[original_var] == 0);
+      indexes[original_var] = row;
+    }
+    const dimension_type split_var = mapping[i+1].second;
+    if (split_var != 0) {
+      if (is_in_base(split_var, row)) {
+        // Note that this check does not guarantee that indexes[original_var]
+        // hasn't been initialized yet.
+        indexes[split_var] = row;
+      }
+    }
+  }
+
+  std::vector<Coefficient> result;
+  distributed_tableau.get_scattered_row(indexes, result);
+
   // We start to compute num[] and den[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
     Coefficient& num_i = num[i];
@@ -1792,8 +1817,7 @@ PPL::MIP_Problem::compute_generator() const {
     // (if it is not a basic variable, the value is 0).
     const dimension_type original_var = mapping[i+1].first;
     if (is_in_base(original_var, row)) {
-      const matrix_type::row_type& t_row = tableau[row];
-      Coefficient_traits::const_reference t_row_original_var = t_row.get(original_var);
+      Coefficient_traits::const_reference t_row_original_var = result[original_var];
       if (t_row_original_var > 0) {
         neg_assign(num_i, first_column[row]);
         den_i = t_row_original_var;
@@ -1814,9 +1838,8 @@ PPL::MIP_Problem::compute_generator() const {
       // having index mapping[i+1].second .
       // Like before, we he have to check if the variable is in base.
       if (is_in_base(split_var, row)) {
-        const matrix_type::row_type& t_row = tableau[row];
         Coefficient_traits::const_reference t_row_split_var
-          = t_row.get(split_var);
+          = result[split_var];
         if (t_row_split_var > 0) {
           split_num = -first_column[row];
           split_den = t_row_split_var;
