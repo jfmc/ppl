@@ -2454,6 +2454,29 @@ PPL::MIP_Problem::OK() const {
 #endif
         return false;
       }
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
+    std::vector<Coefficient> last_column;
+    distributed_tableau.get_column(tableau_ncols-1, last_column);
+
+#ifndef NDEBUG
+    for (dimension_type i = 0; i < tableau_nrows; ++i)
+      PPL_ASSERT(last_column[i] == tableau[i].get(tableau_ncols-1));
+#endif
+
+    for (std::vector<Coefficient>::const_iterator
+         i = last_column.begin(), i_end = last_column.end(); i != i_end; ++i) {
+      if (*i != 0) {
+#ifndef NDEBUG
+        cerr << "the last column of the tableau must contain only"
+          "zeroes"<< endl;
+        ascii_dump(cerr);
+#endif
+        return false;
+      }
+    }
+#endif
   }
 
   // All checks passed.
