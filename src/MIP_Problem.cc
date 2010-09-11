@@ -1780,7 +1780,68 @@ PPL::MIP_Problem::compute_generator() const {
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
-#endif
+
+  std::vector<Coefficient> first_column;
+  distributed_tableau.get_column(0, first_column);
+
+  // We start to compute num[] and den[].
+  for (dimension_type i = external_space_dim; i-- > 0; ) {
+    Coefficient& num_i = num[i];
+    Coefficient& den_i = den[i];
+    // Get the value of the variable from the tableau
+    // (if it is not a basic variable, the value is 0).
+    const dimension_type original_var = mapping[i+1].first;
+    if (is_in_base(original_var, row)) {
+      const matrix_type::row_type& t_row = tableau[row];
+      Coefficient_traits::const_reference t_row_original_var = t_row.get(original_var);
+      if (t_row_original_var > 0) {
+        neg_assign(num_i, first_column[row]);
+        den_i = t_row_original_var;
+      }
+      else {
+        num_i = first_column[row];
+        neg_assign(den_i, t_row_original_var);
+      }
+    }
+    else {
+      num_i = 0;
+      den_i = 1;
+    }
+    // Check whether the variable was split.
+    const dimension_type split_var = mapping[i+1].second;
+    if (split_var != 0) {
+      // The variable was split: get the value for the negative component,
+      // having index mapping[i+1].second .
+      // Like before, we he have to check if the variable is in base.
+      if (is_in_base(split_var, row)) {
+        const matrix_type::row_type& t_row = tableau[row];
+        Coefficient_traits::const_reference t_row_split_var
+          = t_row.get(split_var);
+        if (t_row_split_var > 0) {
+          split_num = -first_column[row];
+          split_den = t_row_split_var;
+        }
+        else {
+          split_num = first_column[row];
+          split_den = -t_row_split_var;
+        }
+        // We compute the lcm to compute subsequently the difference
+        // between the 2 variables.
+        lcm_assign(lcm, den_i, split_den);
+        exact_div_assign(den_i, lcm, den_i);
+        exact_div_assign(split_den, lcm, split_den);
+        num_i *= den_i;
+        sub_mul_assign(num_i, split_num, split_den);
+        if (num_i == 0)
+          den_i = 1;
+        else
+          den_i = lcm;
+      }
+      // Note: if the negative component was not in base, then
+      // it has value zero and there is nothing left to do.
+    }
+  }
+#else
   // We start to compute num[] and den[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
     Coefficient& num_i = num[i];
@@ -1838,6 +1899,7 @@ PPL::MIP_Problem::compute_generator() const {
       // it has value zero and there is nothing left to do.
     }
   }
+#endif
 
   // Compute the lcm of all denominators.
   lcm = den[0];
