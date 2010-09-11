@@ -128,7 +128,7 @@ private:
   static void compute_working_cost__common(
       std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
       const Dense_Row& working_cost,
-      const std::vector<dimension_type>& reverse_row_mapping,
+      const std::vector<dimension_type>& reverse_mapping,
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& local_rows);
 
@@ -201,7 +201,7 @@ private:
   private:
     struct Row_Chunk {
       std::vector<Sparse_Row> rows;
-      std::vector<dimension_type> reverse_row_mapping;
+      std::vector<dimension_type> reverse_mapping;
     };
     // Every node has an associated Node_Data, including the root node.
     // This declaration refers to worker nodes only.
@@ -297,20 +297,20 @@ private:
 
   //! Maps the rows to the rank that stores them and its local index.
   /*!
-    For each row index \p i, row_mapping[i] is a pair < rank, local_index >.
-    row_mapping.size() is the total number of rows.
+    For each row index \p i, mapping[i] is a pair < rank, local_index >.
+    mapping.size() is the total number of rows.
   */
-  std::vector<std::pair<int, dimension_type> > row_mapping;
+  std::vector<std::pair<int, dimension_type> > mapping;
 
   //! Maps the local row indexes to the matrix's row indexes.
   /*!
-    reverse_row_mapping[rank][local_index] is the global row index.
-    reverse_row_mapping[rank].size() is the number of rows stored in that node.
+    reverse_mapping[rank][local_index] is the global row index.
+    reverse_mapping[rank].size() is the number of rows stored in that node.
 
-    This could be computed from row_mapping, but it is stored to increase
+    This could be computed from mapping, but it is stored to increase
     performance.
   */
-  std::vector<std::vector<dimension_type> > reverse_row_mapping;
+  std::vector<std::vector<dimension_type> > reverse_mapping;
 
   //! The rank that will be used to insert the next row.
   //! This cycles through all ranks, to distribute rows evenly among nodes.
