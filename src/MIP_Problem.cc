@@ -1042,7 +1042,8 @@ PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  return distributed_tableau.float_entering_index(working_cost, base);
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_columns = tableau.num_columns();
   PPL_ASSERT(tableau_num_rows == base.size());
@@ -1152,6 +1153,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #endif // !USE_PPL_SPARSE_MATRIX
 
   return entering_index;
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 }
 
 PPL::dimension_type
