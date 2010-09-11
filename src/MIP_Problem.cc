@@ -910,6 +910,10 @@ PPL::MIP_Problem::process_pending_constraints() {
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
+  distributed_tableau
+    .set_artificial_indexes_for_new_rows(old_tableau_num_rows,
+                                         worked_out_row,
+                                         artificial_index);
 #endif
   // Then go through newly added tableau rows, disregarding inequalities
   // that are already satisfied by `last_generator' (this information
@@ -923,7 +927,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     ++artificial_index;
   }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
+  PPL_ASSERT(distributed_tableau == tableau);
 #endif
   // One past the last tableau column index containing an artificial variable.
   const dimension_type end_artificials = artificial_index;
