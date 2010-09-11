@@ -154,7 +154,6 @@ private:
   static void compute_working_cost__common(
       std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
       const Dense_Row& working_cost,
-      const std::vector<dimension_type>& reverse_mapping,
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& local_rows);
 

@@ -698,8 +698,6 @@ PPL::Distributed_Sparse_Matrix
 ::compute_working_cost__common(std::pair<std::pair<Coefficient, Coefficient>,
                                          Sparse_Row>& x,
                                const Dense_Row& working_cost,
-                               const std::vector<dimension_type>&
-                                 reverse_mapping,
                                const std::vector<dimension_type>& base,
                                const std::vector<Sparse_Row>& local_rows) {
   Coefficient& local_scaling = x.first.first;
@@ -711,7 +709,7 @@ PPL::Distributed_Sparse_Matrix
   local_increase.resize(working_cost.size());
 
   for (dimension_type local_index = 0;
-      local_index < reverse_mapping.size(); ++local_index) {
+      local_index < local_rows.size(); ++local_index) {
     Coefficient_traits::const_reference cost_i = working_cost[base[local_index]];
     if (cost_i != 0)
       incremental_linear_combine(local_scaling, local_reverse_scaling,
@@ -1309,8 +1307,7 @@ PPL::Distributed_Sparse_Matrix
   mpi::broadcast(comm(), working_cost, 0);
 
   std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
-  compute_working_cost__common(x, working_cost, reverse_mapping[0],
-                               base, local_rows);
+  compute_working_cost__common(x, working_cost, base, local_rows);
 
   std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> y;
   mpi::reduce(comm(), x, y, compute_working_cost_reducer_functor(), 0);
@@ -2059,8 +2056,7 @@ PPL::Distributed_Sparse_Matrix::Worker
 
     std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
 
-    compute_working_cost__common(x, working_cost,
-                                 row_chunk.reverse_mapping, row_chunk.base,
+    compute_working_cost__common(x, working_cost, row_chunk.base,
                                  row_chunk.rows);
 
     mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
