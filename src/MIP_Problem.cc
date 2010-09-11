@@ -1864,7 +1864,7 @@ PPL::MIP_Problem::compute_generator() const {
       // it has value zero and there is nothing left to do.
     }
   }
-#else
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   // We start to compute num[] and den[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
     Coefficient& num_i = num[i];
@@ -1922,7 +1922,7 @@ PPL::MIP_Problem::compute_generator() const {
       // it has value zero and there is nothing left to do.
     }
   }
-#endif
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
   // Compute the lcm of all denominators.
   lcm = den[0];
