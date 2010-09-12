@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Distributed_Sparse_Matrix {
 public:
+  typedef Sparse_Row row_type;
+
   //! This must be called before creating any Distributed_Sparse_Matrix
   //! objects.
   /*!
