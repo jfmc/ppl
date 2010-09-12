@@ -161,6 +161,9 @@ MIP_Problem::external_memory_in_bytes() const {
   memory_size_type n
     = working_cost.external_memory_in_bytes()
     + tableau.external_memory_in_bytes()
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    + distributed_tableau.external_memory_in_bytes()
+#endif
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
   // Adding the external memory for `input_cs'.
