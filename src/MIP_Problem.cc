@@ -1497,8 +1497,12 @@ PPL::MIP_Problem
   // Find the first tableau constraint `c' having a positive value for
   // tableau[i][entering_var_index] / tableau[i][base[i]]
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
   PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  return distributed_tableau.exiting_index(entering_var_index);
+
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
   const dimension_type tableau_num_rows = tableau.num_rows();
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
@@ -1550,6 +1554,8 @@ PPL::MIP_Problem
     }
   }
   return exiting_base_index;
+
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 }
 
 // See page 49 of [PapadimitriouS98].
