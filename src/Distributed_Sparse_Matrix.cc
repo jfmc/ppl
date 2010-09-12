@@ -74,6 +74,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // GET_BASE_OPERATION: id
   1, // EXACT_ENTERING_INDEX_OPERATION: id
   2, // EXITING_INDEX_OPERATION: id, entering_index
+  4, // REMOVE_ROW_OPERATION: id, rank_i, local_index_i, rank_last
 };
 
 const mpi::communicator*
@@ -242,6 +243,11 @@ PPL::Distributed_Sparse_Matrix
 
     case EXITING_INDEX_OPERATION:
       worker.exiting_index(op.params[0], op.params[1]);
+      break;
+
+    case REMOVE_ROW_OPERATION:
+      worker.remove_row(op.params[0], op.params[1], op.params[2],
+                        op.params[3]);
       break;
 
     case QUIT_OPERATION:
@@ -1113,6 +1119,40 @@ void exiting_index__common(exiting_index_candidate& current,
 }
 
 } // namespace Parma_Polyhedra_Library
+
+void
+PPL::Distributed_Sparse_Matrix
+::remove_row__common(const mpi::communicator& comm, int my_rank,
+                     int rank_i, dimension_type local_index_i,
+                     int rank_last, std::vector<Sparse_Row>& rows,
+                     std::vector<dimension_type>& base,
+                     std::vector<dimension_type>& reverse_mapping) {
+  if (rank_i == my_rank) {
+    if (rank_last == my_rank) {
+      // This node stores both of the involved rows.
+      std::swap(rows[local_index_i], rows.back());
+      std::swap(base[local_index_i], base.back());
+      rows.pop_back();
+      base.pop_back();
+      reverse_mapping.pop_back();
+    } else {
+      // This node stores the row that has to be removed, but not the last.
+      comm.recv(rank_last, 0, rows[local_index_i]);
+      comm.recv(rank_last, 0, base[local_index_i]);
+    }
+  } else {
+    if (rank_last == my_rank) {
+      // This node stores the last row, but not the one that must be removed.
+      comm.send(rank_i, 0, rows.back());
+      comm.send(rank_i, 0, base.back());
+      rows.pop_back();
+      base.pop_back();
+      reverse_mapping.pop_back();
+    } else {
+      // Nothing to do, this node doesn't store the involved rows.
+    }
+  }
+}
 
 void
 PPL::Distributed_Sparse_Matrix::init(dimension_type num_rows1,
@@ -1994,6 +2034,44 @@ PPL::Distributed_Sparse_Matrix
   return winner.index;
 }
 
+void
+PPL::Distributed_Sparse_Matrix::remove_row(dimension_type i) {
+  // This guarantees that num_rows() != 0, too.
+  PPL_ASSERT(i < num_rows());
+
+  int rank_i = mapping[i].first;
+  dimension_type local_index_i = mapping[i].second;
+
+  int rank_last = mapping.back().first;
+  dimension_type local_index_last = mapping.back().second;
+
+  mapping.pop_back();
+  // This check is needed, because if rank_last == 0, this is done in
+  // remove_row__common().
+  if (rank_last != 0)
+    reverse_mapping[rank_last].pop_back();
+
+  if (rank_i == 0 && rank_last == 0) {
+    // Lucky case, no broadcasts needed.
+    if (local_index_i != local_index_last) {
+      std::swap(local_rows[local_index_i], local_rows[local_index_last]);
+      std::swap(base[local_index_i], base[local_index_last]);
+    }
+    local_rows.pop_back();
+    base.pop_back();
+    reverse_mapping[0].pop_back();
+    return;
+  }
+
+  broadcast_operation(REMOVE_ROW_OPERATION, id, rank_i, local_index_i,
+                      rank_last, local_index_last);
+
+  remove_row__common(comm(), 0, rank_i, local_index_i, rank_last, local_rows,
+                     base, reverse_mapping[0]);
+
+  PPL_ASSERT(OK());
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -2642,6 +2720,18 @@ PPL::Distributed_Sparse_Matrix::Worker
                           entering_index, itr->second.reverse_mapping);
 
   mpi::reduce(comm(), current, exiting_index_reducer_functor(), 0);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::remove_row(dimension_type id, int rank_i, dimension_type local_index_i,
+             int rank_last) {
+
+  Row_Chunk row_chunk = row_chunks[id];
+
+  remove_row__common(comm(), my_rank, rank_i, local_index_i, rank_last,
+                     row_chunk.rows, row_chunk.base,
+                     row_chunk.reverse_mapping);
 }
 
 template <typename Archive>

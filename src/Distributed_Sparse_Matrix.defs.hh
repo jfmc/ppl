@@ -136,6 +136,16 @@ public:
   dimension_type exact_entering_index(const Dense_Row& working_cost) const;
   dimension_type exiting_index(dimension_type entering_index) const;
 
+  //! Removes the i-th row, replacing it with the last row.
+  /*!
+    Note that rows after i are not shifted up.
+    This is a faster equivalent of
+
+    <CODE>swap_rows(i, num_rows()-1);
+    remove_trailing_rows(1);</CODE>.
+  */
+  void remove_row(dimension_type i);
+
   bool OK() const;
 
 private:
@@ -183,6 +193,14 @@ private:
       const std::vector<Sparse_Row>& rows,
       const std::vector<dimension_type>& base,
       Coefficient& squared_lcm_basis);
+
+  static void remove_row__common(const boost::mpi::communicator& comm,
+                                 int my_rank, int rank_i,
+                                 dimension_type local_index_i, int rank_last,
+                                 std::vector<Sparse_Row>& rows,
+                                 std::vector<dimension_type>& base,
+                                 std::vector<dimension_type>&
+                                    reverse_mapping);
 
   void init(dimension_type num_rows, dimension_type num_columns);
 
@@ -251,6 +269,8 @@ private:
     void exact_entering_index(dimension_type id) const;
     void exiting_index(dimension_type id,
                        dimension_type entering_index) const;
+    void remove_row(dimension_type id, int rank_i,
+                    dimension_type local_index_i, int rank_last);
 
   private:
     struct Row_Chunk {
@@ -341,6 +361,8 @@ private:
     EXACT_ENTERING_INDEX_OPERATION,
     //! Parameters: id, entering_index
     EXITING_INDEX_OPERATION,
+    //! Parameters: id, rank_i, local_index_i, rank_last
+    REMOVE_ROW_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
