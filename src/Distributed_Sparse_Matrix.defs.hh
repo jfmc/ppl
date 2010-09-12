@@ -133,6 +133,7 @@ public:
   void remove_row_from_base(dimension_type row_index);
   void set_base(const std::vector<dimension_type>& base);
   void get_base(std::vector<dimension_type>& base) const;
+  dimension_type exact_entering_index(const Dense_Row& working_cost) const;
 
   bool OK() const;
 
@@ -174,6 +175,13 @@ private:
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& rows,
       std::vector<double>& results);
+
+  static void exact_entering_index__common(
+      const std::vector<dimension_type>& columns,
+      std::vector<Coefficient>& challenger_values,
+      const std::vector<Sparse_Row>& rows,
+      const std::vector<dimension_type>& base,
+      Coefficient& squared_lcm_basis);
 
   void init(dimension_type num_rows, dimension_type num_columns);
 
@@ -239,6 +247,7 @@ private:
                               dimension_type local_row_index);
     void set_base(dimension_type id);
     void get_base(dimension_type id) const;
+    void exact_entering_index(dimension_type id) const;
 
   private:
     struct Row_Chunk {
@@ -325,6 +334,8 @@ private:
     SET_BASE_OPERATION,
     //! Parameters: id
     GET_BASE_OPERATION,
+    //! Parameters: id
+    EXACT_ENTERING_INDEX_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type

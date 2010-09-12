@@ -72,6 +72,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   3, // REMOVE_ROW_FROM_BASE_OPERATION: id, rank, row_index
   1, // SET_BASE_OPERATION: id
   1, // GET_BASE_OPERATION: id
+  1, // EXACT_ENTERING_INDEX_OPERATION: id
 };
 
 const mpi::communicator*
@@ -232,6 +233,10 @@ PPL::Distributed_Sparse_Matrix
 
     case GET_BASE_OPERATION:
       worker.get_base(op.params[0]);
+      break;
+
+    case EXACT_ENTERING_INDEX_OPERATION:
+      worker.exact_entering_index(op.params[0]);
       break;
 
     case QUIT_OPERATION:
@@ -893,6 +898,85 @@ PPL::Distributed_Sparse_Matrix
         results[j.index()] += float_tableau_value;
       }
       WEIGHT_ADD_MUL(338, num_rows);
+    }
+  }
+}
+
+namespace {
+
+class exact_entering_index_reducer_functor {
+public:
+  const PPL::Coefficient&
+  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
+    PPL::lcm_assign(x, x, y);
+    return x;
+  }
+};
+
+} // namespace
+
+void
+PPL::Distributed_Sparse_Matrix
+::exact_entering_index__common(const std::vector<dimension_type>& columns,
+                               std::vector<Coefficient>& challenger_values,
+                               const std::vector<Sparse_Row>& rows,
+                               const std::vector<dimension_type>& base,
+                               Coefficient& squared_lcm_basis) {
+  // The normalization factor for each coefficient in the tableau.
+  std::vector<Coefficient> norm_factor(rows.size());
+  {
+    // Compute the lcm of all the coefficients of variables in base.
+    PPL_DIRTY_TEMP_COEFFICIENT(local_lcm_basis);
+    local_lcm_basis = 1;
+    for (dimension_type i = rows.size(); i-- > 0; )
+      lcm_assign(local_lcm_basis, local_lcm_basis, rows[i].get(base[i]));
+
+    PPL_DIRTY_TEMP_COEFFICIENT(global_lcm_basis);
+    mpi::all_reduce(comm(), local_lcm_basis, global_lcm_basis,
+                    exact_entering_index_reducer_functor());
+
+    // Compute normalization factors for local rows.
+    for (dimension_type i = rows.size(); i-- > 0; )
+      exact_div_assign(norm_factor[i], global_lcm_basis,
+                       rows[i].get(base[i]));
+
+    // Compute the square of `global_lcm_basis', exploiting the fact that
+    // `global_lcm_basis' will no longer be needed.
+    global_lcm_basis *= global_lcm_basis;
+    std::swap(squared_lcm_basis, global_lcm_basis);
+  }
+
+  PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
+
+  const dimension_type columns_size = columns.size();
+
+  for (dimension_type i = rows.size(); i-- > 0; ) {
+    const Sparse_Row& row = rows[i];
+    Sparse_Row::const_iterator j = row.begin();
+    Sparse_Row::const_iterator j_end = row.end();
+    // This will be used to index the columns[] and challenger_values[]
+    // vectors.
+    dimension_type k = 0;
+    while (j != j_end) {
+      while (k != columns_size && j.index() > columns[k])
+        ++k;
+      if (k == columns_size)
+        break;
+      PPL_ASSERT(j.index() <= columns[k]);
+      if (j.index() < columns[k])
+        j = row.lower_bound(j, columns[k]);
+      else {
+        Coefficient_traits::const_reference tableau_ij = *j;
+        // FIXME: Check if the test against zero speeds up the sparse version.
+        // The test against 0 gives rise to a consistent speed up: see
+        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+        if (tableau_ij != 0) {
+          scalar_value = tableau_ij * norm_factor[i];
+          add_mul_assign(challenger_values[k], scalar_value, scalar_value);
+        }
+        ++k;
+        ++j;
+      }
     }
   }
 }
@@ -1573,6 +1657,83 @@ PPL::Distributed_Sparse_Matrix
         entering_index = i;
       }
     }
+
+  return entering_index;
+}
+
+namespace {
+
+class exact_entering_index_reducer_functor2 {
+public:
+  const std::vector<PPL::Coefficient>&
+  operator()(std::vector<PPL::Coefficient>& x,
+             const std::vector<PPL::Coefficient>& y) const {
+    PPL_ASSERT(x.size() == y.size());
+    for (PPL::dimension_type i = x.size(); i-- > 0; )
+      x[i] += y[i];
+    return x;
+  }
+};
+
+} // namespace
+
+PPL::dimension_type
+PPL::Distributed_Sparse_Matrix
+::exact_entering_index(const Dense_Row& working_cost) const {
+  broadcast_operation(EXACT_ENTERING_INDEX_OPERATION, id);
+
+  // Contains the list of the (column) indexes of challengers.
+  std::vector<dimension_type> columns;
+  // This is only an upper bound.
+  columns.reserve(num_columns() - 1);
+
+  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  for (dimension_type column = 1; column < num_columns() - 1; ++column)
+    if (sgn(working_cost[column]) == cost_sign) {
+      columns.push_back(column);
+    }
+
+  mpi::broadcast(comm(), columns, 0);
+
+  // For each i, challenger_values[i] contains the challenger value for the
+  // columns[i] column.
+  std::vector<Coefficient> challenger_values(columns.size());
+  PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
+  exact_entering_index__common(columns, challenger_values, local_rows, base,
+                               squared_lcm_basis);
+
+  std::vector<Coefficient> global_challenger_values;
+  mpi::reduce(comm(), challenger_values, global_challenger_values,
+              exact_entering_index_reducer_functor2(), 0);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_value);
+  dimension_type entering_index = 0;
+  for (dimension_type k = 0; k < columns.size(); ++k) {
+    global_challenger_values[k] += squared_lcm_basis;
+    Coefficient_traits::const_reference cost_j = working_cost[columns[k]];
+    // We cannot compute the (exact) square root of abs(\Delta x_j).
+    // The workaround is to compute the square of `cost[j]'.
+    challenger_num = cost_j * cost_j;
+    // Initialization during the first loop.
+    if (entering_index == 0) {
+      std::swap(current_num, challenger_num);
+      std::swap(current_den, global_challenger_values[k]);
+      entering_index = columns[k];
+      continue;
+    }
+    challenger_value = challenger_num * current_den;
+    current_value = current_num * global_challenger_values[k];
+    // Update the values, if the challenger wins.
+    if (challenger_value > current_value) {
+      std::swap(current_num, challenger_num);
+      std::swap(current_den, global_challenger_values[k]);
+      entering_index = columns[k];
+    }
+  }
 
   return entering_index;
 }
@@ -2277,6 +2438,34 @@ PPL::Distributed_Sparse_Matrix::Worker::get_base(dimension_type id) const {
     mpi::gather(comm(), fake_base, 0);
   } else
     mpi::gather(comm(), itr->second.base, 0);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::exact_entering_index(dimension_type id) const {
+  // Contains the list of the (column) indexes of challengers.
+  std::vector<dimension_type> columns;
+
+  mpi::broadcast(comm(), columns, 0);
+
+  // For each i, challenger_values[i] contains the challenger value for the
+  // columns[i] column.
+  std::vector<Coefficient> challenger_values(columns.size());
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
+  if (itr == row_chunks.end()) {
+    std::vector<Sparse_Row> rows;
+    std::vector<dimension_type> base;
+    exact_entering_index__common(columns, challenger_values, rows, base,
+                                 squared_lcm_basis);
+  } else
+    exact_entering_index__common(columns, challenger_values, itr->second.rows,
+                                 itr->second.base, squared_lcm_basis);
+
+  mpi::reduce(comm(), challenger_values,
+              exact_entering_index_reducer_functor2(), 0);
 }
 
 template <typename Archive>
