@@ -74,6 +74,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // EXACT_ENTERING_INDEX_OPERATION: id
   2, // EXITING_INDEX_OPERATION: id, entering_index
   4, // REMOVE_ROW_OPERATION: id, rank_i, local_index_i, rank_last
+  1, // BASE_VARIABLES_OCCUR_ONCE_OPERATION: id
 };
 
 const mpi::communicator*
@@ -244,6 +245,10 @@ PPL::Distributed_Sparse_Matrix
 
     case REMOVE_ROW_OPERATION:
       worker.remove_row(PARAMS_4);
+      break;
+
+    case BASE_VARIABLES_OCCUR_ONCE_OPERATION:
+      worker.base_variables_occur_once(PARAMS_1);
       break;
 
     case QUIT_OPERATION:
@@ -1154,6 +1159,43 @@ PPL::Distributed_Sparse_Matrix
       // Nothing to do, this node doesn't store the involved rows.
     }
   }
+}
+
+bool
+PPL::Distributed_Sparse_Matrix
+::base_variables_occur_once__common(const std::vector<Sparse_Row>& rows,
+                                    const std::vector<dimension_type>&
+                                        reverse_mapping,
+                                    const std::vector<dimension_type>& base) {
+  // Needed to sort accesses to tableau_j, improving performance.
+  // This is calculated separately by each node, to save bandwidth.
+  typedef std::vector<std::pair<dimension_type, dimension_type> >
+    pair_vector_t;
+  pair_vector_t vars_in_base;
+  for (dimension_type i = base.size(); i-- > 0; )
+    vars_in_base.push_back(std::make_pair(base[i], i));
+
+  std::sort(vars_in_base.begin(), vars_in_base.end());
+
+  for (dimension_type j = rows.size(); j-- > 0; ) {
+    const Sparse_Row& tableau_j = rows[j];
+    pair_vector_t::iterator i = vars_in_base.begin();
+    pair_vector_t::iterator i_end = vars_in_base.end();
+    Sparse_Row::const_iterator itr = tableau_j.begin();
+    Sparse_Row::const_iterator itr_end = tableau_j.end();
+    for ( ; i != i_end && itr != itr_end; ++i) {
+      // tableau[i][base[j]], with i different from j, must be zero.
+      if (itr.index() < i->first)
+        itr = tableau_j.lower_bound(itr, itr.index());
+      if (i->second != reverse_mapping[j]
+          && itr.index() == i->first
+          && *itr != 0) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 void
@@ -2076,6 +2118,26 @@ PPL::Distributed_Sparse_Matrix::remove_row(dimension_type i) {
   PPL_ASSERT(OK());
 }
 
+bool
+PPL::Distributed_Sparse_Matrix
+::base_variables_occur_once(const std::vector<dimension_type>& base1) const {
+  broadcast_operation(BASE_VARIABLES_OCCUR_ONCE_OPERATION, id);
+
+  std::vector<dimension_type>& base_ref
+    = const_cast<std::vector<dimension_type>&>(base1);
+  mpi::broadcast(comm(), base_ref, 0);
+
+  bool local_result = base_variables_occur_once__common(local_rows,
+                                                        reverse_mapping[0],
+                                                        base1);
+
+  bool global_result;
+  mpi::reduce(comm(), local_result, global_result, std::logical_and<bool>(),
+              0);
+
+  return global_result;
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
@@ -2726,6 +2788,31 @@ PPL::Distributed_Sparse_Matrix::Worker
   remove_row__common(comm(), my_rank, rank_i, local_index_i, rank_last,
                      row_chunk.rows, row_chunk.base,
                      row_chunk.reverse_mapping);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::base_variables_occur_once(dimension_type id) const {
+
+  std::vector<dimension_type> base;
+  mpi::broadcast(comm(), base, 0);
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+
+  bool local_result;
+
+  if (itr == row_chunks.end()) {
+    std::vector<Sparse_Row> rows;
+    std::vector<dimension_type> reverse_mapping;
+    local_result = base_variables_occur_once__common(rows, reverse_mapping,
+                                                     base);
+  } else {
+    local_result
+      = base_variables_occur_once__common(itr->second.rows,
+                                          itr->second.reverse_mapping, base);
+  }
+
+  mpi::reduce(comm(), local_result, std::logical_and<bool>(), 0);
 }
 
 template <typename Archive>

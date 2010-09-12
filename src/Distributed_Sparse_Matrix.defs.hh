@@ -147,6 +147,9 @@ public:
   */
   void remove_row(dimension_type i);
 
+  bool
+    base_variables_occur_once(const std::vector<dimension_type>& base) const;
+
   bool OK() const;
 
 private:
@@ -202,6 +205,12 @@ private:
                                  std::vector<dimension_type>& base,
                                  std::vector<dimension_type>&
                                     reverse_mapping);
+
+
+  static bool base_variables_occur_once__common(
+      const std::vector<Sparse_Row>& rows,
+      const std::vector<dimension_type>& reverse_mapping,
+      const std::vector<dimension_type>& base);
 
   void init(dimension_type num_rows, dimension_type num_columns);
 
@@ -272,6 +281,7 @@ private:
                        dimension_type entering_index) const;
     void remove_row(dimension_type id, int rank_i,
                     dimension_type local_index_i, int rank_last);
+    void base_variables_occur_once(dimension_type id) const;
 
   private:
     struct Row_Chunk {
@@ -362,6 +372,8 @@ private:
     EXITING_INDEX_OPERATION,
     //! Parameters: id, rank_i, local_index_i, rank_last
     REMOVE_ROW_OPERATION,
+    //! Parameters: id
+    BASE_VARIABLES_OCCUR_ONCE_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
