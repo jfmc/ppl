@@ -73,6 +73,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // SET_BASE_OPERATION: id
   1, // GET_BASE_OPERATION: id
   1, // EXACT_ENTERING_INDEX_OPERATION: id
+  2, // EXITING_INDEX_OPERATION: id, entering_index
 };
 
 const mpi::communicator*
@@ -237,6 +238,10 @@ PPL::Distributed_Sparse_Matrix
 
     case EXACT_ENTERING_INDEX_OPERATION:
       worker.exact_entering_index(op.params[0]);
+      break;
+
+    case EXITING_INDEX_OPERATION:
+      worker.exiting_index(op.params[0], op.params[1]);
       break;
 
     case QUIT_OPERATION:
@@ -980,6 +985,134 @@ PPL::Distributed_Sparse_Matrix
     }
   }
 }
+
+namespace {
+
+struct exiting_index_candidate {
+  //! The (local, for node calculations, or global, for reductions) row index.
+  PPL::dimension_type index;
+
+  //! base[index].
+  PPL::dimension_type base_index;
+
+  //! row[0].
+  PPL::Coefficient row_0;
+
+  //! row[entering_index].
+  PPL::Coefficient row_entering;
+
+  template <typename Archive>
+  void serialize(Archive& ar, const unsigned long /* version */) {
+    ar & index;
+    ar & base_index;
+    ar & row_0;
+    ar & row_entering;
+  }
+};
+
+} // namespace
+
+// This is needed to make the PPL_DIRTY_TEMP_COEFFICIENT macros work.
+namespace Parma_Polyhedra_Library {
+
+class exiting_index_reducer_functor {
+public:
+  const exiting_index_candidate&
+  operator()(exiting_index_candidate& x,
+             const exiting_index_candidate& y) const {
+    const dimension_type unused_index = -(dimension_type)1;
+
+    if (y.index == unused_index)
+      return x;
+
+    if (x.index == unused_index)
+      x = y;
+    else {
+      PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+      PPL_DIRTY_TEMP_COEFFICIENT(current_min);
+      PPL_DIRTY_TEMP_COEFFICIENT(challenger);
+      lcm_assign(lcm, x.row_entering, y.row_entering);
+      exact_div_assign(current_min, lcm, x.row_entering);
+      current_min *= x.row_0;
+      abs_assign(current_min);
+      exact_div_assign(challenger, lcm, y.row_entering);
+      challenger *= y.row_0;
+      abs_assign(challenger);
+      current_min -= challenger;
+      const int sign = sgn(current_min);
+      if (sign > 0
+          || (sign == 0 && x.base_index < y.base_index))
+        x = y;
+    }
+    return x;
+  }
+};
+
+// Note that this is not in the Distributed_Sparse_Matrix class, because
+// it would have required to declare exiting_index_candidate in the class.
+// exiting_index_candidate is used by exiting_index_reducer_functor, so it
+// should either have been public or made visible using a friend declaration,
+// and both solutions are not good.
+void exiting_index__common(exiting_index_candidate& current,
+                           const std::vector<Sparse_Row>& local_rows,
+                           const std::vector<dimension_type>& base,
+                           dimension_type entering_index,
+                           const std::vector<dimension_type>&
+                              reverse_mapping) {
+
+  const dimension_type unused_index = -(dimension_type)1;
+
+  // The variable exiting the base should be associated to a tableau
+  // constraint such that the ratio
+  // tableau[i][entering_var_index] / tableau[i][base[i]]
+  // is strictly positive and minimal.
+
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_min);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger);
+  for (dimension_type i = 0; i < local_rows.size(); ++i) {
+    const Sparse_Row& t_i = local_rows[i];
+    Coefficient_traits::const_reference t_i_0
+      = t_i.get(0);
+    Coefficient_traits::const_reference t_i_entering
+      = t_i.get(entering_index);
+    Coefficient_traits::const_reference t_i_base_i
+      = t_i.get(base[i]);
+    const int num_sign = sgn(t_i_entering);
+    if (num_sign != 0 && num_sign == sgn(t_i_base_i)) {
+      if (current.index != unused_index) {
+        lcm_assign(lcm, current.row_entering, t_i_entering);
+        exact_div_assign(current_min, lcm, current.row_entering);
+        current_min *= current.row_0;
+        abs_assign(current_min);
+        exact_div_assign(challenger, lcm, t_i_entering);
+        challenger *= t_i_0;
+        abs_assign(challenger);
+        current_min -= challenger;
+        const int sign = sgn(current_min);
+        if (sign > 0
+            || (sign == 0 && base[i] < current.base_index)) {
+          current.index = i;
+          current.base_index = base[i];
+          current.row_0 = t_i_0;
+          current.row_entering = t_i_entering;
+        }
+      } else {
+        // This is the first candidate, no comparisons are needed.
+        current.index = i;
+        current.base_index = base[i];
+        current.row_entering = t_i_entering;
+        current.row_0 = t_i_0;
+      }
+    }
+  }
+
+  // Convert current.index into a global index.
+  if (current.index != unused_index)
+    current.index = reverse_mapping[current.index];
+}
+
+} // namespace Parma_Polyhedra_Library
 
 void
 PPL::Distributed_Sparse_Matrix::init(dimension_type num_rows1,
@@ -1840,6 +1973,28 @@ PPL::Distributed_Sparse_Matrix
 }
 
 PPL::dimension_type
+PPL::Distributed_Sparse_Matrix
+::exiting_index(dimension_type entering_index) const {
+  broadcast_operation(EXITING_INDEX_OPERATION, id, entering_index);
+
+  const dimension_type unused_index = -(dimension_type)1;
+
+  exiting_index_candidate current;
+  current.index = unused_index;
+
+  exiting_index__common(current, local_rows, base, entering_index,
+                        reverse_mapping[0]);
+
+  exiting_index_candidate winner;
+  mpi::reduce(comm(), current, winner, exiting_index_reducer_functor(), 0);
+
+  if (winner.index == unused_index)
+    return num_rows();
+
+  return winner.index;
+}
+
+PPL::dimension_type
 PPL::Distributed_Sparse_Matrix::get_unique_id() {
   static dimension_type next_id = 0;
   return next_id++;
@@ -2466,6 +2621,27 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   mpi::reduce(comm(), challenger_values,
               exact_entering_index_reducer_functor2(), 0);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::exiting_index(dimension_type id, dimension_type entering_index) const {
+
+  const dimension_type unused_index = -(dimension_type)1;
+
+  exiting_index_candidate current;
+  current.index = unused_index;
+
+  row_chunks_const_itr_type itr = row_chunks.find(id);
+  if (itr == row_chunks.end()) {
+    std::vector<Sparse_Row> rows;
+    std::vector<dimension_type> base;
+    exiting_index__common(current, rows, base, entering_index, base);
+  } else
+    exiting_index__common(current, itr->second.rows, itr->second.base,
+                          entering_index, itr->second.reverse_mapping);
+
+  mpi::reduce(comm(), current, exiting_index_reducer_functor(), 0);
 }
 
 template <typename Archive>

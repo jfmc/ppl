@@ -134,6 +134,7 @@ public:
   void set_base(const std::vector<dimension_type>& base);
   void get_base(std::vector<dimension_type>& base) const;
   dimension_type exact_entering_index(const Dense_Row& working_cost) const;
+  dimension_type exiting_index(dimension_type entering_index) const;
 
   bool OK() const;
 
@@ -248,6 +249,8 @@ private:
     void set_base(dimension_type id);
     void get_base(dimension_type id) const;
     void exact_entering_index(dimension_type id) const;
+    void exiting_index(dimension_type id,
+                       dimension_type entering_index) const;
 
   private:
     struct Row_Chunk {
@@ -336,6 +339,8 @@ private:
     GET_BASE_OPERATION,
     //! Parameters: id
     EXACT_ENTERING_INDEX_OPERATION,
+    //! Parameters: id, entering_index
+    EXITING_INDEX_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
