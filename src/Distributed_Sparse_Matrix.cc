@@ -2032,7 +2032,7 @@ PPL::Distributed_Sparse_Matrix
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
   PPL_DIRTY_TEMP_COEFFICIENT(current_value);
   dimension_type entering_index = 0;
-  for (dimension_type k = 0; k < columns.size(); ++k) {
+  for (dimension_type k = columns.size(); k-- > 0; ) {
     global_challenger_values[k] += squared_lcm_basis;
     Coefficient_traits::const_reference cost_j = working_cost[columns[k]];
     // We cannot compute the (exact) square root of abs(\Delta x_j).
