@@ -1661,83 +1661,6 @@ PPL::Distributed_Sparse_Matrix
   return entering_index;
 }
 
-namespace {
-
-class exact_entering_index_reducer_functor2 {
-public:
-  const std::vector<PPL::Coefficient>&
-  operator()(std::vector<PPL::Coefficient>& x,
-             const std::vector<PPL::Coefficient>& y) const {
-    PPL_ASSERT(x.size() == y.size());
-    for (PPL::dimension_type i = x.size(); i-- > 0; )
-      x[i] += y[i];
-    return x;
-  }
-};
-
-} // namespace
-
-PPL::dimension_type
-PPL::Distributed_Sparse_Matrix
-::exact_entering_index(const Dense_Row& working_cost) const {
-  broadcast_operation(EXACT_ENTERING_INDEX_OPERATION, id);
-
-  // Contains the list of the (column) indexes of challengers.
-  std::vector<dimension_type> columns;
-  // This is only an upper bound.
-  columns.reserve(num_columns() - 1);
-
-  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
-  for (dimension_type column = 1; column < num_columns() - 1; ++column)
-    if (sgn(working_cost[column]) == cost_sign) {
-      columns.push_back(column);
-    }
-
-  mpi::broadcast(comm(), columns, 0);
-
-  // For each i, challenger_values[i] contains the challenger value for the
-  // columns[i] column.
-  std::vector<Coefficient> challenger_values(columns.size());
-  PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
-  exact_entering_index__common(columns, challenger_values, local_rows, base,
-                               squared_lcm_basis);
-
-  std::vector<Coefficient> global_challenger_values;
-  mpi::reduce(comm(), challenger_values, global_challenger_values,
-              exact_entering_index_reducer_functor2(), 0);
-
-  PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
-  PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
-  PPL_DIRTY_TEMP_COEFFICIENT(current_value);
-  dimension_type entering_index = 0;
-  for (dimension_type k = 0; k < columns.size(); ++k) {
-    global_challenger_values[k] += squared_lcm_basis;
-    Coefficient_traits::const_reference cost_j = working_cost[columns[k]];
-    // We cannot compute the (exact) square root of abs(\Delta x_j).
-    // The workaround is to compute the square of `cost[j]'.
-    challenger_num = cost_j * cost_j;
-    // Initialization during the first loop.
-    if (entering_index == 0) {
-      std::swap(current_num, challenger_num);
-      std::swap(current_den, global_challenger_values[k]);
-      entering_index = columns[k];
-      continue;
-    }
-    challenger_value = challenger_num * current_den;
-    current_value = current_num * global_challenger_values[k];
-    // Update the values, if the challenger wins.
-    if (challenger_value > current_value) {
-      std::swap(current_num, challenger_num);
-      std::swap(current_den, global_challenger_values[k]);
-      entering_index = columns[k];
-    }
-  }
-
-  return entering_index;
-}
-
 void
 PPL::Distributed_Sparse_Matrix
 ::set_artificial_indexes_for_new_rows(dimension_type old_num_rows,
@@ -1837,6 +1760,83 @@ PPL::Distributed_Sparse_Matrix
     dimension_type local_row_index = mapping[i].second;
     base1[i] = vec[rank][local_row_index];
   }
+}
+
+namespace {
+
+class exact_entering_index_reducer_functor2 {
+public:
+  const std::vector<PPL::Coefficient>&
+  operator()(std::vector<PPL::Coefficient>& x,
+             const std::vector<PPL::Coefficient>& y) const {
+    PPL_ASSERT(x.size() == y.size());
+    for (PPL::dimension_type i = x.size(); i-- > 0; )
+      x[i] += y[i];
+    return x;
+  }
+};
+
+} // namespace
+
+PPL::dimension_type
+PPL::Distributed_Sparse_Matrix
+::exact_entering_index(const Dense_Row& working_cost) const {
+  broadcast_operation(EXACT_ENTERING_INDEX_OPERATION, id);
+
+  // Contains the list of the (column) indexes of challengers.
+  std::vector<dimension_type> columns;
+  // This is only an upper bound.
+  columns.reserve(num_columns() - 1);
+
+  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  for (dimension_type column = 1; column < num_columns() - 1; ++column)
+    if (sgn(working_cost[column]) == cost_sign) {
+      columns.push_back(column);
+    }
+
+  mpi::broadcast(comm(), columns, 0);
+
+  // For each i, challenger_values[i] contains the challenger value for the
+  // columns[i] column.
+  std::vector<Coefficient> challenger_values(columns.size());
+  PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
+  exact_entering_index__common(columns, challenger_values, local_rows, base,
+                               squared_lcm_basis);
+
+  std::vector<Coefficient> global_challenger_values;
+  mpi::reduce(comm(), challenger_values, global_challenger_values,
+              exact_entering_index_reducer_functor2(), 0);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_value);
+  dimension_type entering_index = 0;
+  for (dimension_type k = 0; k < columns.size(); ++k) {
+    global_challenger_values[k] += squared_lcm_basis;
+    Coefficient_traits::const_reference cost_j = working_cost[columns[k]];
+    // We cannot compute the (exact) square root of abs(\Delta x_j).
+    // The workaround is to compute the square of `cost[j]'.
+    challenger_num = cost_j * cost_j;
+    // Initialization during the first loop.
+    if (entering_index == 0) {
+      std::swap(current_num, challenger_num);
+      std::swap(current_den, global_challenger_values[k]);
+      entering_index = columns[k];
+      continue;
+    }
+    challenger_value = challenger_num * current_den;
+    current_value = current_num * global_challenger_values[k];
+    // Update the values, if the challenger wins.
+    if (challenger_value > current_value) {
+      std::swap(current_num, challenger_num);
+      std::swap(current_den, global_challenger_values[k]);
+      entering_index = columns[k];
+    }
+  }
+
+  return entering_index;
 }
 
 PPL::dimension_type
