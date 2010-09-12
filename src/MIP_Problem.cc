@@ -2526,6 +2526,16 @@ PPL::MIP_Problem::OK() const {
       }
     }
     {
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+      if (!distributed_tableau.base_variables_occur_once(base)) {
+#ifndef NDEBUG
+        cerr << "tableau[i][base[j]], with i different from j, must be "
+              << "zero" << endl;
+        ascii_dump(cerr);
+#endif
+        return false;
+      }
+#endif
       // Needed to sort accesses to tableau_j, improving performance.
       typedef std::vector<std::pair<dimension_type, dimension_type> >
         pair_vector_t;
