@@ -2245,12 +2245,9 @@ PPL::Distributed_Sparse_Matrix::Worker
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::copy_matrix(dimension_type source_id, dimension_type id) {
+
   PPL_ASSERT(row_chunks.find(id) == row_chunks.end());
-  row_chunks_itr_type itr = row_chunks.find(source_id);
-  if (itr == row_chunks.end())
-    // This node doesn't store data for the specified matrix, nothing to do.
-    return;
-  row_chunks[id] = itr->second;
+  row_chunks[id] = row_chunks[source_id];
 }
 
 void
@@ -2288,64 +2285,63 @@ PPL::Distributed_Sparse_Matrix::Worker
 ::linear_combine_matrix(int rank, dimension_type id,
                         dimension_type local_row_index,
                         dimension_type col_index) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end()) {
-    PPL_ASSERT(my_rank != rank);
-    // Partecipate in the broadcast operation, then return.
-    Sparse_Row row;
-    mpi::broadcast(comm(), row, rank);
-  } else {
-    linear_combine_matrix__common(rank, local_row_index, col_index, my_rank,
-                                  itr->second.rows);
-  }
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  linear_combine_matrix__common(rank, local_row_index, col_index, my_rank,
+                                row_chunk.rows);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::reset_column(dimension_type id, dimension_type col_index) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr != row_chunks.end()) {
-    std::vector<Sparse_Row>& rows = itr->second.rows;
-    for (std::vector<Sparse_Row>::iterator
-        i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-      i->reset(col_index);
-  }
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
+  for (std::vector<Sparse_Row>::iterator
+      i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
+    i->reset(col_index);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::remove_column(dimension_type id, dimension_type col_index) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr != row_chunks.end()) {
-    std::vector<Sparse_Row>& rows = itr->second.rows;
-    for (std::vector<Sparse_Row>::iterator
-        i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-      i->delete_element_and_shift(col_index);
-  }
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
+  for (std::vector<Sparse_Row>::iterator
+      i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
+    i->delete_element_and_shift(col_index);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::remove_trailing_columns(dimension_type id, dimension_type col_index) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr != row_chunks.end()) {
-    std::vector<Sparse_Row>& rows = itr->second.rows;
-    for (std::vector<Sparse_Row>::iterator
-        i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-      i->resize(col_index);
-  }
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
+  for (std::vector<Sparse_Row>::iterator
+      i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
+    i->resize(col_index);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::add_zero_columns(dimension_type id, dimension_type n) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr != row_chunks.end()) {
-    std::vector<Sparse_Row>& rows = itr->second.rows;
-    for (std::vector<Sparse_Row>::iterator
-        i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-      i->resize(i->size() + n);
-  }
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
+  for (std::vector<Sparse_Row>::iterator
+      i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
+    i->resize(i->size() + n);
 }
 
 void
@@ -2354,48 +2350,43 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<dimension_type> correct_reverse_mapping;
   mpi::scatter(comm(), correct_reverse_mapping, 0);
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
   bool result = true;
-  if (itr == row_chunks.end()) {
-    if (correct_reverse_mapping.size() != 0) {
-      std::cerr << "Worker node: no rows found for this id." << std::endl;
-      result = false;
-    }
-  } else {
-    if (correct_reverse_mapping.size() != itr->second.rows.size()) {
-      std::cerr << "Worker node: row check failed" << std::endl;
-      result = false;
-    }
-    if (itr->second.base.size() != itr->second.rows.size()) {
-      std::cerr << "Worker node: base[] has the wrong size." << std::endl;
-      result = false;
-    }
-    if (correct_reverse_mapping != itr->second.reverse_mapping) {
-      std::cerr << "Worker node: reverse_mapping check failed" << std::endl;
-      std::cerr << "Correct reverse_mapping:" << std::endl;
-      for (std::vector<dimension_type>::const_iterator
-           i = correct_reverse_mapping.begin(),
-           i_end = correct_reverse_mapping.end(); i != i_end; ++i)
-        std::cerr << *i << ' ';
-      std::cerr << std::endl;
-      std::cerr << "Local reverse_mapping:" << std::endl;
-      for (std::vector<dimension_type>::const_iterator
-           i = itr->second.reverse_mapping.begin(),
-           i_end = itr->second.reverse_mapping.end(); i != i_end; ++i)
-        std::cerr << *i << ' ';
-      std::cerr << std::endl;
-      result = false;
-    }
+
+  const Row_Chunk& row_chunk = get_row_chunk(id);
+
+  if (correct_reverse_mapping.size() != row_chunk.rows.size()) {
+    std::cerr << "Worker node: row check failed" << std::endl;
+    result = false;
   }
-  if (itr != row_chunks.end()) {
-    const std::vector<Sparse_Row>& rows = itr->second.rows;
-    for (std::vector<Sparse_Row>::const_iterator
-        i = rows.begin(), i_end = rows.end(); i != i_end; ++i)
-      if (i->size() != num_columns) {
-        std::cerr << "Worker node: column check failed" << std::endl;
-        result = false;
-      }
+  if (row_chunk.base.size() != row_chunk.rows.size()) {
+    std::cerr << "Worker node: base[] has the wrong size." << std::endl;
+    result = false;
   }
+  if (correct_reverse_mapping != row_chunk.reverse_mapping) {
+    std::cerr << "Worker node: reverse_mapping check failed" << std::endl;
+    std::cerr << "Correct reverse_mapping:" << std::endl;
+    for (std::vector<dimension_type>::const_iterator
+          i = correct_reverse_mapping.begin(),
+          i_end = correct_reverse_mapping.end(); i != i_end; ++i)
+      std::cerr << *i << ' ';
+    std::cerr << std::endl;
+    std::cerr << "Local reverse_mapping:" << std::endl;
+    for (std::vector<dimension_type>::const_iterator
+         i = row_chunk.reverse_mapping.begin(),
+         i_end = row_chunk.reverse_mapping.end(); i != i_end; ++i)
+      std::cerr << *i << ' ';
+    std::cerr << std::endl;
+    result = false;
+  }
+
+  for (std::vector<Sparse_Row>::const_iterator
+      i = row_chunk.rows.begin(), i_end = row_chunk.rows.end();
+      i != i_end; ++i)
+    if (i->size() != num_columns) {
+      std::cerr << "Worker node: column check failed" << std::endl;
+      result = false;
+    }
+
   mpi::reduce(comm(), result, std::logical_and<bool>(), 0);
 }
 
@@ -2458,18 +2449,14 @@ void
 PPL::Distributed_Sparse_Matrix::Worker
 ::remove_trailing_rows(dimension_type id, dimension_type row_n) {
 
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
-    return;
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
 
-  Row_Chunk& row_chunk = itr->second;
   std::vector<Sparse_Row>& rows = row_chunk.rows;
   std::vector<dimension_type>& base = row_chunk.base;
-  std::vector<dimension_type>& reverse_mapping
-    = row_chunk.reverse_mapping;
+  std::vector<dimension_type>& reverse_mapping = row_chunk.reverse_mapping;
 
-  while (!reverse_mapping.empty()
-          && reverse_mapping.back() >= row_n) {
+  while (!reverse_mapping.empty() && reverse_mapping.back() >= row_n) {
     reverse_mapping.pop_back();
     rows.pop_back();
     base.pop_back();
@@ -2483,8 +2470,10 @@ PPL::Distributed_Sparse_Matrix::Worker
             int rank2, dimension_type local_index2) {
   if (rank1 != my_rank && rank2 != my_rank)
     return;
+
   PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
   Row_Chunk& row_chunk = row_chunks[id];
+
   swap_rows__common(rank1, rank2, local_index1, local_index2, my_rank,
                     row_chunk.rows, row_chunk.base);
 }
@@ -2492,10 +2481,11 @@ PPL::Distributed_Sparse_Matrix::Worker
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::fill_matrix(dimension_type id) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
-    return;
-  std::vector<Sparse_Row>& rows = itr->second.rows;
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
 
   std::vector<mpi::request> requests;
   requests.reserve(rows.size());
@@ -2510,12 +2500,11 @@ PPL::Distributed_Sparse_Matrix::Worker
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::compare_with_sparse_matrix(dimension_type id) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end()) {
-    mpi::reduce(comm(), true, std::logical_and<bool>(), 0);
-    return;
-  }
-  std::vector<Sparse_Row>& rows = itr->second.rows;
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
   std::vector<Sparse_Row> received_rows(rows.size());
 
   std::vector<mpi::request> requests;
@@ -2531,7 +2520,7 @@ PPL::Distributed_Sparse_Matrix::Worker
   for (dimension_type i = 0; i < rows.size(); i++)
     if (rows[i] != received_rows[i]) {
       std::cout << "Found mismatch in root node, at row "
-                << itr->second.reverse_mapping[i] << std::endl;
+                << row_chunk.reverse_mapping[i] << std::endl;
       std::cout << "LHS: ";
       rows[i].ascii_dump(std::cout);
       std::cout << "RHS: ";
@@ -2550,36 +2539,25 @@ PPL::Distributed_Sparse_Matrix::Worker
   Dense_Row working_cost(0, Row_Flags());
   mpi::broadcast(comm(), working_cost, 0);
 
-  row_chunks_itr_type itr = row_chunks.find(id);
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
 
-  if (itr == row_chunks.end()) {
+  std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
 
-    // Construct a dummy result object
-    std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>
-      x(std::pair<Coefficient, Coefficient>(1, 1), Sparse_Row(working_cost.size()));
+  compute_working_cost__common(x, working_cost, row_chunk.base,
+                               row_chunk.rows);
 
-    // And use it in the reduce operation.
-    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
-
-  } else {
-    Row_Chunk& row_chunk = itr->second;
-
-    std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
-
-    compute_working_cost__common(x, working_cost, row_chunk.base,
-                                 row_chunk.rows);
-
-    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
-  }
+  mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), 0);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::make_inhomogeneous_terms_nonpositive(dimension_type id) {
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
-    return;
-  make_inhomogeneous_terms_nonpositive__common(itr->second.rows);
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  make_inhomogeneous_terms_nonpositive__common(row_chunk.rows);
 }
 
 void
@@ -2588,32 +2566,29 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::pair<dimension_type, std::vector<dimension_type> > node_data;
   mpi::scatter(comm(), node_data, 0);
 
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
-    return;
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
 
   set_artificial_indexes_for_unfeasible_rows__common(node_data,
-                                                     itr->second.rows,
-                                                     itr->second.base);
+                                                     row_chunk.rows,
+                                                     row_chunk.base);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker::ascii_dump(dimension_type id) const {
 
+  const Row_Chunk& row_chunk = get_row_chunk(id);
+
   std::vector<std::string> output;
+  output.reserve(row_chunk.rows.size());
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
-
-  if (itr != row_chunks.end()) {
-    const std::vector<Sparse_Row>& rows = itr->second.rows;
-    output.reserve(rows.size());
-    for (std::vector<Sparse_Row>::const_iterator
-        i = rows.begin(), i_end = rows.end(); i != i_end; ++i) {
-      std::ostringstream strstream;
-      i->ascii_dump(strstream);
-      // TODO: Avoid the string copy.
-      output.push_back(strstream.str());
-    }
+  for (std::vector<Sparse_Row>::const_iterator
+      i = row_chunk.rows.begin(), i_end = row_chunk.rows.end();
+      i != i_end; ++i) {
+    std::ostringstream strstream;
+    i->ascii_dump(strstream);
+    // TODO: Avoid the string copy.
+    output.push_back(strstream.str());
   }
 
   mpi::gather(comm(), output, 0);
@@ -2626,33 +2601,20 @@ PPL::Distributed_Sparse_Matrix::Worker
 ::linear_combine_with_base_rows(dimension_type id, int k_rank,
                                 dimension_type k_local_index) {
 
-  row_chunks_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end()) {
-    // Nothing to do, partecipate in the collective operations to keep in sync
-    // with other nodes.
-    Sparse_Row row;
-    mpi::broadcast(comm(), row, k_rank);
-    std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row> x;
-    x.first.first = 1;
-    x.first.second = 1;
-    x.second.resize(row.size());
-    mpi::reduce(comm(), x, compute_working_cost_reducer_functor(), k_rank);
-    return;
-  }
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
 
   linear_combine_with_base_rows__common(k_rank, k_local_index, my_rank,
-                                        itr->second.rows, itr->second.base);
+                                        row_chunk.rows, row_chunk.base);
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
 ::get_column(dimension_type id, dimension_type column_index) const {
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end())
-    return;
+  const Row_Chunk& row_chunk = get_row_chunk(id);
 
-  const std::vector<Sparse_Row>& rows = itr->second.rows;
+  const std::vector<Sparse_Row>& rows = row_chunk.rows;
 
   std::vector<mpi::request> requests;
   requests.reserve(rows.size());
@@ -2675,14 +2637,9 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<std::pair<dimension_type, int> > workunit;
   mpi::scatter(comm(), workunit, 0);
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
+  const Row_Chunk& row_chunk = get_row_chunk(id);
 
-  if (itr == row_chunks.end()) {
-    PPL_ASSERT(workunit.empty());
-    return;
-  }
-
-  const std::vector<Sparse_Row>& rows = itr->second.rows;
+  const std::vector<Sparse_Row>& rows = row_chunk.rows;
 
   std::vector<mpi::request> requests;
   requests.reserve(workunit.size());
@@ -2702,14 +2659,12 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<bool> candidates;
   mpi::broadcast(comm(), candidates, 0);
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
+  const Row_Chunk& row_chunk = get_row_chunk(id);
 
   std::vector<double> results(candidates.size(), 0.0);
 
-  if (itr != row_chunks.end()) {
-    float_entering_index__common(candidates, itr->second.base,
-                                 itr->second.rows, results);
-  }
+  float_entering_index__common(candidates, row_chunk.base, row_chunk.rows,
+                               results);
 
   mpi::reduce(comm(), results, float_entering_index_reducer_functor(), 0);
 }
@@ -2721,15 +2676,11 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<std::pair<dimension_type, dimension_type> > workunit;
   mpi::scatter(comm(), workunit, 0);
 
-  row_chunks_itr_type itr = row_chunks.find(id);
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
 
-  if (itr == row_chunks.end()) {
-    PPL_ASSERT(workunit.empty());
-    return;
-  }
-
-  std::vector<Sparse_Row>& rows = itr->second.rows;
-  std::vector<dimension_type>& base = itr->second.base;
+  std::vector<Sparse_Row>& rows = row_chunk.rows;
+  std::vector<dimension_type>& base = row_chunk.base;
 
   for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
        i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
@@ -2755,28 +2706,20 @@ PPL::Distributed_Sparse_Matrix::Worker::set_base(dimension_type id) {
   std::vector<dimension_type> new_base;
   mpi::scatter(comm(), new_base, 0);
 
-  row_chunks_itr_type itr = row_chunks.find(id);
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
 
-  if (itr == row_chunks.end()) {
-    PPL_ASSERT(new_base.empty());
-    return;
-  }
+  PPL_ASSERT(new_base.size() == row_chunk.base.size());
 
-  PPL_ASSERT(new_base.size() == itr->second.base.size());
-
-  itr->second.base = new_base;
+  row_chunk.base = new_base;
 }
 
 void
 PPL::Distributed_Sparse_Matrix::Worker::get_base(dimension_type id) const {
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
+  const Row_Chunk& row_chunk = get_row_chunk(id);
 
-  if (itr == row_chunks.end()) {
-    std::vector<dimension_type> fake_base;
-    mpi::gather(comm(), fake_base, 0);
-  } else
-    mpi::gather(comm(), itr->second.base, 0);
+  mpi::gather(comm(), row_chunk.base, 0);
 }
 
 void
@@ -2791,17 +2734,12 @@ PPL::Distributed_Sparse_Matrix::Worker
   // columns[i] column.
   std::vector<Coefficient> challenger_values(columns.size());
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
-
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
-  if (itr == row_chunks.end()) {
-    std::vector<Sparse_Row> rows;
-    std::vector<dimension_type> base;
-    exact_entering_index__common(columns, challenger_values, rows, base,
-                                 squared_lcm_basis);
-  } else
-    exact_entering_index__common(columns, challenger_values, itr->second.rows,
-                                 itr->second.base, squared_lcm_basis);
+
+  const Row_Chunk& row_chunk = get_row_chunk(id);
+
+  exact_entering_index__common(columns, challenger_values, row_chunk.rows,
+                               row_chunk.base, squared_lcm_basis);
 
   mpi::reduce(comm(), challenger_values,
               exact_entering_index_reducer_functor2(), 0);
@@ -2816,14 +2754,10 @@ PPL::Distributed_Sparse_Matrix::Worker
   exiting_index_candidate current;
   current.index = unused_index;
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
-  if (itr == row_chunks.end()) {
-    std::vector<Sparse_Row> rows;
-    std::vector<dimension_type> base;
-    exiting_index__common(current, rows, base, entering_index, base);
-  } else
-    exiting_index__common(current, itr->second.rows, itr->second.base,
-                          entering_index, itr->second.reverse_mapping);
+  const Row_Chunk& row_chunk = get_row_chunk(id);
+
+  exiting_index__common(current, row_chunk.rows, row_chunk.base,
+                        entering_index, row_chunk.reverse_mapping);
 
   mpi::reduce(comm(), current, exiting_index_reducer_functor(), 0);
 }
