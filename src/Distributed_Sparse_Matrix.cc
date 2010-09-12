@@ -2847,22 +2847,27 @@ PPL::Distributed_Sparse_Matrix::Worker
   std::vector<dimension_type> base;
   mpi::broadcast(comm(), base, 0);
 
-  row_chunks_const_itr_type itr = row_chunks.find(id);
+  const Row_Chunk& row_chunk = get_row_chunk(id);
 
-  bool local_result;
-
-  if (itr == row_chunks.end()) {
-    std::vector<Sparse_Row> rows;
-    std::vector<dimension_type> reverse_mapping;
-    local_result = base_variables_occur_once__common(rows, reverse_mapping,
-                                                     base);
-  } else {
-    local_result
-      = base_variables_occur_once__common(itr->second.rows,
-                                          itr->second.reverse_mapping, base);
-  }
+  bool local_result
+    = base_variables_occur_once__common(row_chunk.rows,
+                                        row_chunk.reverse_mapping, base);
 
   mpi::reduce(comm(), local_result, std::logical_and<bool>(), 0);
+}
+
+const PPL::Distributed_Sparse_Matrix::Worker::Row_Chunk&
+PPL::Distributed_Sparse_Matrix::Worker
+::get_row_chunk(dimension_type id) const {
+  static const Row_Chunk empty_row_chunk;
+
+  std::tr1::unordered_map<dimension_type, Row_Chunk>::const_iterator itr
+    = row_chunks.find(id);
+
+  if (itr == row_chunks.end())
+    return empty_row_chunk;
+  else
+    return itr->second;
 }
 
 template <typename Archive>

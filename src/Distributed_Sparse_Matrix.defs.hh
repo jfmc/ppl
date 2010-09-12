@@ -286,6 +286,13 @@ private:
     void base_variables_occur_once(dimension_type id) const;
 
   private:
+
+    struct Row_Chunk;
+
+    // This is a helper method that returns the Row_Chunk associated with id,
+    // if any. Otherwise, it returns an empty Row_Chunk.
+    const Row_Chunk& get_row_chunk(dimension_type id) const;
+
     struct Row_Chunk {
       std::vector<Sparse_Row> rows;
       std::vector<dimension_type> reverse_mapping;
