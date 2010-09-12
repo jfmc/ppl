@@ -1735,6 +1735,23 @@ PPL::Distributed_Sparse_Matrix::ascii_load(std::istream& stream) {
   return true;
 }
 
+PPL::dimension_type
+PPL::Distributed_Sparse_Matrix::external_memory_in_bytes() const {
+  dimension_type result = 0;
+  for (std::vector<Sparse_Row>::const_iterator
+       i = local_rows.begin(), i_end = local_rows.end(); i != i_end; ++i)
+    result += i->external_memory_in_bytes();
+  result += local_rows.capacity() * sizeof(local_rows[0]);
+  result += base.capacity() * sizeof(base[0]);
+  result += mapping.capacity() * sizeof(mapping[0]);
+  result += reverse_mapping.capacity() * sizeof(reverse_mapping[0]);
+  for (std::vector<std::vector<dimension_type> >::const_iterator
+       i = reverse_mapping.begin(), i_end = reverse_mapping.end();
+       i != i_end; ++i)
+    result += i->capacity() * sizeof((*i)[0]);
+  return result;
+}
+
 void
 PPL::Distributed_Sparse_Matrix
 ::get_scattered_row(const std::vector<dimension_type>& indexes,

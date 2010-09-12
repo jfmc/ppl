@@ -113,6 +113,8 @@ public:
 
   bool ascii_load(std::istream& stream);
 
+  dimension_type external_memory_in_bytes() const;
+
   //! Gets an element from each column of the matrix.
   /*!
     After this method, result[i] contains the element at column i and row
