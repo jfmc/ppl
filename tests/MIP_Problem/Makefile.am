@@ -31,7 +31,7 @@ else !VALGRIND_TESTS_ENABLED
 
 if MPIRUN_TESTS_ENABLED
 
-CHECKER = mpirun -n 5
+CHECKER = mpirun -n @mpirun_jobs@
 
 else !MPIRUN_TESTS_ENABLED
 

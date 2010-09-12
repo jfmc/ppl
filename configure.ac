@@ -1356,10 +1356,10 @@ esac
 AM_CONDITIONAL(VALGRIND_TESTS_ENABLED, test x"$enable_valgrind_tests" = xyes)
 
 enableval=no
-AC_MSG_CHECKING([whether tests should be run under mpirun - n 5])
+AC_MSG_CHECKING([whether tests should be run under mpirun ])
 AC_ARG_ENABLE(mpirun-tests,
   AS_HELP_STRING([--enable-mpirun-tests],
-                 [run library tests under mpirun -n 5]))
+                 [run library tests under mpirun]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -1374,6 +1374,21 @@ no)
   ;;
 esac
 AM_CONDITIONAL(MPIRUN_TESTS_ENABLED, test x"$enable_mpirun_tests" = xyes)
+
+
+if test x"${enable_mpirun_tests}" = xyes
+then
+
+enableval=3
+AC_MSG_CHECKING([the number of MPI jobs to be used for tests])
+AC_ARG_ENABLE(mpirun-jobs,
+  AS_HELP_STRING([--enable-mpirun-jobs],
+                 [the number of MPI jobs to be used for tests]))
+  AC_MSG_RESULT("${enableval}")
+mpirun_jobs="${enableval}"
+
+fi
+
 
 enableval=thorough
 AC_MSG_CHECKING([whether `make check' does a thorough or quick check])
@@ -1522,6 +1537,7 @@ AC_SUBST(SHREXT, [$shrext_cmds])
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
+AC_SUBST(mpirun_jobs)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)

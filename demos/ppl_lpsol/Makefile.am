@@ -22,6 +22,27 @@
 
 SUBDIRS = examples
 
+if VALGRIND_TESTS_ENABLED
+
+CHECKER = \
+$(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
+--num-callers=100 --leak-resolution=high \
+--suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+else !VALGRIND_TESTS_ENABLED
+
+if MPIRUN_TESTS_ENABLED
+
+CHECKER = mpirun -n @mpirun_jobs@
+
+else !MPIRUN_TESTS_ENABLED
+
+CHECKER =
+
+endif !MPIRUN_TESTS_ENABLED
+
+endif !VALGRIND_TESTS_ENABLED
+
 EXTRA_DIST = \
 ppl_lpsol.c \
 expected_mpz \
@@ -224,10 +245,10 @@ endif !HOST_OS_CYGWIN
 # NOTE: use exact steepest-edge pricing (-p1) instead float-based one.
 # This has an efficiency penalty, but it guarantees deterministic
 # results across different architectures.
-SIMPLEX = ./ppl_lpsol$(EXEEXT) -s -p1 $(CHECK_OPTION) -oobtained
-SIMPLEX_NOCHECK = ./ppl_lpsol$(EXEEXT) -s -p1 -oobtained
-ECHO_SIMPLEX = echo "***" $(SIMPLEX)
-ECHO_SIMPLEX_NOCHECK = echo "***" $(SIMPLEX_NOCHECK)
+SIMPLEX = $(CHECKER) ./ppl_lpsol$(EXEEXT) -s -p1 $(CHECK_OPTION) -oobtained
+SIMPLEX_NOCHECK = $(CHECKER) ./ppl_lpsol$(EXEEXT) -s -p1 -oobtained
+ECHO_SIMPLEX = echo "***" $(CHECKER) $(SIMPLEX)
+ECHO_SIMPLEX_NOCHECK = echo "***" $(CHECKER) $(SIMPLEX_NOCHECK)
 
 check-local: ppl_lpsol$(EXEEXT)
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
@@ -279,7 +300,7 @@ check-local: ppl_lpsol$(EXEEXT)
 	  $(FGREP) $$file individually_checked_problems >/dev/null 2>&1 && continue; \
 	  $(FGREP) $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
-	  ./ppl_lpsol$(EXEEXT) -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	  $(CHECKER) ./ppl_lpsol$(EXEEXT) -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
 	$(ECHO_SIMPLEX_NOCHECK) "-r -m -c0.00000000518 boeing1.mps" >>obtained
 	-$(SIMPLEX_NOCHECK) -r -m -c0.00000000518 $(srcdir)/examples/boeing1.mps >/dev/null
