@@ -35,11 +35,7 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
                          const Optimization_Mode mode)
   : external_space_dim(dim),
     internal_space_dim(0),
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau(),
-#else
     tableau(),
-#endif
     working_cost(0, Row_Flags()),
     mapping(),
     base(),
@@ -108,11 +104,7 @@ MIP_Problem::MIP_Problem(dimension_type dim,
                          Optimization_Mode mode)
   : external_space_dim(dim),
     internal_space_dim(0),
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau(),
-#else
     tableau(),
-#endif
     working_cost(0, Row_Flags()),
     mapping(),
     base(),

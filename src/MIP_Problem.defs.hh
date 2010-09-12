@@ -87,7 +87,13 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
 #if USE_PPL_SPARSE_MATRIX
+
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  typedef Distributed_Sparse_Matrix matrix_type;
+#else
   typedef Sparse_Matrix matrix_type;
+#endif
+
 #else
   typedef Dense_Matrix matrix_type;
 #endif
@@ -444,14 +450,8 @@ private:
   */
   dimension_type internal_space_dim;
 
-#if !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   //! The matrix encoding the current feasible region in tableau form.
   matrix_type tableau;
-#endif
-
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  Distributed_Sparse_Matrix distributed_tableau;
-#endif
 
   //! The working cost function.
   Dense_Row working_cost;

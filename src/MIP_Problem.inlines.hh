@@ -43,11 +43,7 @@ inline
 MIP_Problem::MIP_Problem(const MIP_Problem& y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau(y.distributed_tableau),
-#else
     tableau(y.tableau),
-#endif
     working_cost(y.working_cost),
     mapping(y.mapping),
     base(y.base),
@@ -125,11 +121,7 @@ inline void
 MIP_Problem::swap(MIP_Problem& y) {
   std::swap(external_space_dim, y.external_space_dim);
   std::swap(internal_space_dim, y.internal_space_dim);
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  std::swap(distributed_tableau, y.distributed_tableau);
-#else
   std::swap(tableau, y.tableau);
-#endif
   std::swap(working_cost, y.working_cost);
   std::swap(mapping, y.mapping);
   std::swap(initialized, y.initialized);
@@ -162,11 +154,7 @@ inline memory_size_type
 MIP_Problem::external_memory_in_bytes() const {
   memory_size_type n
     = working_cost.external_memory_in_bytes()
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    + distributed_tableau.external_memory_in_bytes()
-#else
     + tableau.external_memory_in_bytes()
-#endif
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
   // Adding the external memory for `input_cs'.
