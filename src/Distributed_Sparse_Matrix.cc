@@ -90,6 +90,13 @@ PPL::Distributed_Sparse_Matrix
   comm_size = comm().size();
 }
 
+#define PARAMS_1 op.params[0]
+#define PARAMS_2 op.params[0], op.params[1]
+#define PARAMS_3 op.params[0], op.params[1], op.params[2]
+#define PARAMS_4 op.params[0], op.params[1], op.params[2], op.params[3]
+#define PARAMS_5 op.params[0], op.params[1], op.params[2], op.params[3], \
+                 op.params[4]
+
 void
 PPL::Distributed_Sparse_Matrix
 ::worker_main_loop(const mpi::communicator& comm1) {
@@ -112,137 +119,131 @@ PPL::Distributed_Sparse_Matrix
     switch (op.code) {
 
     case CREATE_MATRIX_OPERATION:
-      worker.create_matrix(op.params[0], op.params[1]);
+      worker.create_matrix(PARAMS_2);
       break;
 
     case COPY_MATRIX_OPERATION:
-      worker.copy_matrix(op.params[0], op.params[1]);
+      worker.copy_matrix(PARAMS_2);
       break;
 
     case DELETE_MATRIX_OPERATION:
-      worker.delete_matrix(op.params[0]);
+      worker.delete_matrix(PARAMS_1);
       break;
 
     case GET_ROW_OPERATION:
-      worker.get_row(op.params[0], op.params[1], op.params[2]);
+      worker.get_row(PARAMS_3);
       break;
 
     case SET_ROW_OPERATION:
-      worker.set_row(op.params[0], op.params[1], op.params[2]);
+      worker.set_row(PARAMS_3);
       break;
 
     case LINEAR_COMBINE_MATRIX_OPERATION:
-      worker.linear_combine_matrix(op.params[0], op.params[1], op.params[2],
-                                   op.params[3]);
+      worker.linear_combine_matrix(PARAMS_4);
       break;
 
     case REMOVE_COLUMN_OPERATION:
-      worker.remove_column(op.params[0], op.params[1]);
+      worker.remove_column(PARAMS_2);
       break;
 
     case REMOVE_TRAILING_COLUMNS_OPERATION:
-      worker.remove_trailing_columns(op.params[0], op.params[1]);
+      worker.remove_trailing_columns(PARAMS_2);
       break;
 
     case ADD_ZERO_COLUMNS_OPERATION:
-      worker.add_zero_columns(op.params[0], op.params[1]);
+      worker.add_zero_columns(PARAMS_2);
       break;
 
     case CHECK_OPERATION:
-      worker.check(op.params[0], op.params[1]);
+      worker.check(PARAMS_2);
       break;
 
     case ADD_ZERO_ROWS_OPERATION:
-      worker.add_zero_rows(op.params[0], op.params[1], op.params[2],
-                           op.params[3], op.params[4]);
+      worker.add_zero_rows(PARAMS_5);
       break;
 
     case ADD_ROW_OPERATION:
-      worker.add_row(op.params[0], op.params[1], op.params[2]);
+      worker.add_row(PARAMS_3);
       break;
 
     case RESET_COLUMN_OPERATION:
-      worker.reset_column(op.params[0], op.params[1]);
+      worker.reset_column(PARAMS_2);
       break;
 
     case REMOVE_TRAILING_ROWS_OPERATION:
-      worker.remove_trailing_rows(op.params[0], op.params[1]);
+      worker.remove_trailing_rows(PARAMS_2);
       break;
 
     case SWAP_ROWS_OPERATION:
-      worker.swap_rows(op.params[0], op.params[1], op.params[2], op.params[3],
-                       op.params[4]);
+      worker.swap_rows(PARAMS_5);
       break;
 
     case FILL_MATRIX_OPERATION:
-      worker.fill_matrix(op.params[0]);
+      worker.fill_matrix(PARAMS_1);
       break;
 
     case COMPARE_WITH_SPARSE_MATRIX_OPERATION:
-      worker.compare_with_sparse_matrix(op.params[0]);
+      worker.compare_with_sparse_matrix(PARAMS_1);
       break;
 
     case COMPUTE_WORKING_COST_OPERATION:
-      worker.compute_working_cost(op.params[0]);
+      worker.compute_working_cost(PARAMS_1);
       break;
 
     case MAKE_INHOMOGENEOUS_TERMS_NONPOSITIVE_OPERATION:
-      worker.make_inhomogeneous_terms_nonpositive(op.params[0]);
+      worker.make_inhomogeneous_terms_nonpositive(PARAMS_1);
       break;
 
     case SET_ARTIFICIAL_INDEXES_FOR_UNFEASIBLE_ROWS_OPERATION:
-      worker.set_artificial_indexes_for_unfeasible_rows(op.params[0]);
+      worker.set_artificial_indexes_for_unfeasible_rows(PARAMS_1);
       break;
 
     case ASCII_DUMP_OPERATION:
-      worker.ascii_dump(op.params[0]);
+      worker.ascii_dump(PARAMS_1);
       break;
 
     case LINEAR_COMBINE_WITH_BASE_ROWS_OPERATION:
-      worker.linear_combine_with_base_rows(op.params[0], op.params[1],
-                                           op.params[2]);
+      worker.linear_combine_with_base_rows(PARAMS_3);
       break;
 
     case GET_COLUMN_OPERATION:
-      worker.get_column(op.params[0], op.params[1]);
+      worker.get_column(PARAMS_2);
       break;
 
     case GET_SCATTERED_ROW_OPERATION:
-      worker.get_scattered_row(op.params[0]);
+      worker.get_scattered_row(PARAMS_1);
       break;
 
     case FLOAT_ENTERING_INDEX_OPERATION:
-      worker.float_entering_index(op.params[0]);
+      worker.float_entering_index(PARAMS_1);
       break;
 
     case SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION:
-      worker.set_artificial_indexes_for_new_rows(op.params[0]);
+      worker.set_artificial_indexes_for_new_rows(PARAMS_1);
       break;
 
     case SET_BASE_COLUMN_OPERATION:
-      worker.set_base_column(op.params[0], op.params[1], op.params[2],
-                             op.params[3]);
+      worker.set_base_column(PARAMS_4);
       break;
 
     case SET_BASE_OPERATION:
-      worker.set_base(op.params[0]);
+      worker.set_base(PARAMS_1);
       break;
 
     case GET_BASE_OPERATION:
-      worker.get_base(op.params[0]);
+      worker.get_base(PARAMS_1);
       break;
 
     case EXACT_ENTERING_INDEX_OPERATION:
-      worker.exact_entering_index(op.params[0]);
+      worker.exact_entering_index(PARAMS_1);
       break;
 
     case EXITING_INDEX_OPERATION:
-      worker.exiting_index(op.params[0], op.params[1]);
+      worker.exiting_index(PARAMS_2);
       break;
 
     case REMOVE_ROW_OPERATION:
-      worker.remove_row(op.params[0], op.params[1], op.params[2],
-                        op.params[3]);
+      worker.remove_row(PARAMS_4);
       break;
 
     case QUIT_OPERATION:
@@ -254,6 +255,12 @@ PPL::Distributed_Sparse_Matrix
   }
   comm_ptr = NULL;
 }
+
+#undef PARAMS_1
+#undef PARAMS_2
+#undef PARAMS_3
+#undef PARAMS_4
+#undef PARAMS_5
 
 void
 PPL::Distributed_Sparse_Matrix::quit_workers() {
