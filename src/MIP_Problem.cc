@@ -1521,9 +1521,8 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   // These pointers are used instead of references in the following loop, to
   // improve performance.
-  const matrix_type::row_type* t_e = &(tableau[exiting_base_index]);
-  Coefficient t_e0 = t_e->get(0);
-  Coefficient t_ee = t_e->get(entering_var_index);
+  Coefficient t_e0 = tableau[exiting_base_index].get(0);
+  Coefficient t_ee = tableau[exiting_base_index].get(entering_var_index);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     const matrix_type::row_type& t_i = tableau[i];
     Coefficient_traits::const_reference t_ie = t_i.get(entering_var_index);
@@ -1531,21 +1530,21 @@ PPL::MIP_Problem
     const int t_ie_sign = sgn(t_ie);
     if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
       WEIGHT_BEGIN();
+      Coefficient_traits::const_reference t_i0 = t_i.get(0);
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
       current_min *= t_e0;
       abs_assign(current_min);
       exact_div_assign(challenger, lcm, t_ie);
-      challenger *= t_i.get(0);
+      challenger *= t_i0;
       abs_assign(challenger);
       current_min -= challenger;
       const int sign = sgn(current_min);
       if (sign > 0
           || (sign == 0 && base[i] < base[exiting_base_index])) {
         exiting_base_index = i;
-        t_e = &(tableau[exiting_base_index]);
-        t_e0 = t_e->get(0);
-        t_ee = t_e->get(entering_var_index);
+        t_e0 = t_i0;
+        t_ee = t_ie;
       }
       WEIGHT_ADD(1044);
     }
