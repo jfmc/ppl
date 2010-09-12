@@ -114,8 +114,10 @@ PPL::Distributed_Sparse_Matrix
 
     mpi::broadcast(comm(), op, 0);
 
-    if (op.code == QUIT_OPERATION)
+    if (op.code == QUIT_OPERATION) {
+      PPL_ASSERT(worker.row_chunks.empty());
       break;
+    }
 
     switch (op.code) {
 

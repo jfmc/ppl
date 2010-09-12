@@ -309,6 +309,9 @@ private:
     std::tr1::unordered_map<dimension_type, Row_Chunk> row_chunks;
 
     const int my_rank;
+
+    friend void Distributed_Sparse_Matrix
+        ::worker_main_loop(const boost::mpi::communicator& comm1);
   };
 
   // WARNING: when the following enum is modified, num_operation_params[]
