@@ -1422,9 +1422,9 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
                         const dimension_type exiting_base_index) {
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  tableau.linear_combine_matrix(exiting_base_index, entering_var_index);
   matrix_type::row_type tableau_out;
-  tableau.get_row(exiting_base_index, tableau_out);
+  tableau.linear_combine_matrix(exiting_base_index, entering_var_index,
+                                tableau_out);
 #else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const matrix_type::row_type& tableau_out = tableau[exiting_base_index];
   // Linearly combine the constraints.

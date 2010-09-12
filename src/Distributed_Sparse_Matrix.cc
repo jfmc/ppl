@@ -1451,7 +1451,8 @@ PPL::Distributed_Sparse_Matrix
 
 void
 PPL::Distributed_Sparse_Matrix
-::linear_combine_matrix(dimension_type row_index, dimension_type col_index) {
+::linear_combine_matrix(dimension_type row_index, dimension_type col_index,
+                        Sparse_Row& combined_row) {
   std::pair<int, dimension_type>& row_info = mapping[row_index];
   int rank = row_info.first;
   dimension_type local_index = row_info.second;
@@ -1460,6 +1461,11 @@ PPL::Distributed_Sparse_Matrix
                       col_index);
 
   linear_combine_matrix__common(rank, local_index, col_index, 0, local_rows);
+
+  if (rank == 0)
+    combined_row = local_rows[local_index];
+  else
+    comm().recv(rank, 0, combined_row);
 }
 
 void
@@ -2283,6 +2289,9 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   linear_combine_matrix__common(rank, local_row_index, col_index, my_rank,
                                 row_chunk.rows);
+
+  if (rank == my_rank)
+    comm().send(0, 0, row_chunk.rows[local_row_index]);
 }
 
 void

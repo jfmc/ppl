@@ -81,7 +81,9 @@ public:
   void get_row(dimension_type i, Sparse_Row& row) const;
   void set_row(dimension_type i, const Sparse_Row& row);
 
-  void linear_combine_matrix(dimension_type row_i, dimension_type col_i);
+  //! combined_row is set to the combined row.
+  void linear_combine_matrix(dimension_type row_i, dimension_type col_i,
+                             Sparse_Row& combined_row);
 
   void compute_working_cost(Dense_Row& working_cost);
 
