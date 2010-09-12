@@ -130,9 +130,8 @@ public:
                                               worked_out_row,
                                            dimension_type artificial_index);
 
-  void add_row_into_base(dimension_type row_index,
-                         dimension_type column_index);
-  void remove_row_from_base(dimension_type row_index);
+  void set_base_column(dimension_type row_index,
+                       dimension_type column_index);
   void set_base(const std::vector<dimension_type>& base);
   void get_base(std::vector<dimension_type>& base) const;
   dimension_type exact_entering_index(const Dense_Row& working_cost) const;
@@ -261,9 +260,9 @@ private:
     void get_scattered_row(dimension_type id) const;
     void float_entering_index(dimension_type id) const;
     void set_artificial_indexes_for_new_rows(dimension_type id);
-    void add_row_into_base(dimension_type id, int rank,
-                           dimension_type row_index,
-                           dimension_type column_index);
+    void set_base_column(dimension_type id, int rank,
+                         dimension_type row_index,
+                         dimension_type column_index);
     void remove_row_from_base(dimension_type id, int rank,
                               dimension_type local_row_index);
     void set_base(dimension_type id);
@@ -352,9 +351,7 @@ private:
     //! Parameters: id
     SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION,
     //! Parameters: id, rank, row_index, column_index
-    ADD_ROW_INTO_BASE_OPERATION,
-    //! Parameters: id, rank, row_index
-    REMOVE_ROW_FROM_BASE_OPERATION,
+    SET_BASE_COLUMN_OPERATION,
     //! Parameters: id
     SET_BASE_OPERATION,
     //! Parameters: id

@@ -68,8 +68,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   1, // GET_SCATTERED_ROW_OPERATION: id
   1, // FLOAT_ENTERING_INDEX_OPERATION: id
   1, // SET_ARTIFICIAL_INDEXES_FOR_NEW_ROWS_OPERATION: id
-  4, // ADD_ROW_INTO_BASE_OPERATION: id, rank, row_index, column_index
-  3, // REMOVE_ROW_FROM_BASE_OPERATION: id, rank, row_index
+  4, // SET_BASE_COLUMN_OPERATION: id, rank, row_index, column_index
   1, // SET_BASE_OPERATION: id
   1, // GET_BASE_OPERATION: id
   1, // EXACT_ENTERING_INDEX_OPERATION: id
@@ -220,13 +219,9 @@ PPL::Distributed_Sparse_Matrix
       worker.set_artificial_indexes_for_new_rows(op.params[0]);
       break;
 
-    case ADD_ROW_INTO_BASE_OPERATION:
-      worker.add_row_into_base(op.params[0], op.params[1], op.params[2],
-                               op.params[3]);
-      break;
-
-    case REMOVE_ROW_FROM_BASE_OPERATION:
-      worker.remove_row_from_base(op.params[0], op.params[1], op.params[2]);
+    case SET_BASE_COLUMN_OPERATION:
+      worker.set_base_column(op.params[0], op.params[1], op.params[2],
+                             op.params[3]);
       break;
 
     case SET_BASE_OPERATION:
@@ -1883,8 +1878,7 @@ PPL::Distributed_Sparse_Matrix
 
 void
 PPL::Distributed_Sparse_Matrix
-::add_row_into_base(dimension_type row_index, dimension_type column_index) {
-  PPL_ASSERT(column_index != 0);
+::set_base_column(dimension_type row_index, dimension_type column_index) {
   int rank = mapping[row_index].first;
   dimension_type local_row_index = mapping[row_index].second;
 
@@ -1893,22 +1887,8 @@ PPL::Distributed_Sparse_Matrix
     return;
   }
 
-  broadcast_operation(ADD_ROW_INTO_BASE_OPERATION, id, rank, local_row_index,
+  broadcast_operation(SET_BASE_COLUMN_OPERATION, id, rank, local_row_index,
                       column_index);
-}
-
-void
-PPL::Distributed_Sparse_Matrix
-::remove_row_from_base(dimension_type row_index) {
-  int rank = mapping[row_index].first;
-  dimension_type local_row_index = mapping[row_index].second;
-
-  if (rank == 0) {
-    base[local_row_index] = 0;
-    return;
-  }
-
-  broadcast_operation(REMOVE_ROW_FROM_BASE_OPERATION, id, rank, row_index);
 }
 
 void
@@ -2641,22 +2621,12 @@ PPL::Distributed_Sparse_Matrix::Worker
 
 void
 PPL::Distributed_Sparse_Matrix::Worker
-::add_row_into_base(dimension_type id, int rank,
-                    dimension_type local_row_index,
-                    dimension_type column_index) {
+::set_base_column(dimension_type id, int rank,
+                  dimension_type local_row_index,
+                  dimension_type column_index) {
   if (my_rank == rank) {
     PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
     row_chunks[id].base[local_row_index] = column_index;
-  }
-}
-
-void
-PPL::Distributed_Sparse_Matrix::Worker
-::remove_row_from_base(dimension_type id, int rank,
-                       dimension_type local_row_index) {
-  if (my_rank == rank) {
-    PPL_ASSERT(row_chunks.find(id) != row_chunks.end());
-    row_chunks[id].base[local_row_index] = 0;
   }
 }
 

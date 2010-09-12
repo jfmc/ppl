@@ -857,7 +857,7 @@ PPL::MIP_Problem::process_pending_constraints() {
         base[k] = slack_index;
         worked_out_row[k] = true;
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-        distributed_tableau.add_row_into_base(k, slack_index);
+        distributed_tableau.set_base_column(k, slack_index);
 #endif
       }
     }
@@ -1479,8 +1479,7 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
     linear_combine(working_cost, tableau_out, entering_var_index);
   // Adjust the base.
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.add_row_into_base(exiting_base_index,
-                                        entering_var_index);
+  distributed_tableau.set_base_column(exiting_base_index, entering_var_index);
 #endif
   base[exiting_base_index] = entering_var_index;
 }
