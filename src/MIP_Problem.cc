@@ -1176,7 +1176,8 @@ PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  return distributed_tableau.exact_entering_index(working_cost);
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
   PPL_ASSERT(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
@@ -1332,6 +1333,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 #endif // !USE_PPL_SPARSE_MATRIX
 
   return entering_index;
+
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 }
 
 
