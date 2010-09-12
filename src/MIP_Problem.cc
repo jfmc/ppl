@@ -1717,7 +1717,12 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     if (begin_artificials <= base[i] && base[i] < end_artificials) {
       // Search for a non-zero element to enter the base.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+      matrix_type::row_type tableau_i;
+      distributed_tableau.get_row(i, tableau_i);
+#else
       matrix_type::row_type& tableau_i = tableau[i];
+#endif
       bool redundant = true;
       matrix_type::row_type::const_iterator j = tableau_i.begin();
       matrix_type::row_type::const_iterator j_end = tableau_i.end();
@@ -1726,9 +1731,6 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
         ++j;
       for ( ; (j != j_end) && (j.index() < begin_artificials); ++j)
         if (*j != 0) {
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-          PPL_ASSERT(distributed_tableau == tableau);
-#endif
           pivot(j.index(), i);
           redundant = false;
           break;
@@ -1740,7 +1742,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
         if (i < tableau_n_rows) {
           // Replace the redundant row with the last one,
           // taking care of adjusting the iteration index.
-          tableau_i.swap(tableau[tableau_n_rows]);
+          tableau[i].swap(tableau[tableau_n_rows]);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
           distributed_tableau.swap_rows(i, tableau_n_rows);
           PPL_ASSERT(distributed_tableau == tableau);
