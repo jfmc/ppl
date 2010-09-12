@@ -444,8 +444,10 @@ private:
   */
   dimension_type internal_space_dim;
 
+#if !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   //! The matrix encoding the current feasible region in tableau form.
   matrix_type tableau;
+#endif
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   Distributed_Sparse_Matrix distributed_tableau;

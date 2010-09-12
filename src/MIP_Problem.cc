@@ -64,9 +64,10 @@ unsigned mip_recursion_level = 0;
 PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
-    tableau(),
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     distributed_tableau(),
+#else
+    tableau(),
 #endif
     working_cost(0, Row_Flags()),
     mapping(),
@@ -95,9 +96,10 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
                               const Optimization_Mode mode)
   : external_space_dim(dim),
     internal_space_dim(0),
-    tableau(),
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     distributed_tableau(),
+#else
+    tableau(),
 #endif
     working_cost(0, Row_Flags()),
     mapping(),
@@ -401,12 +403,9 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
   }
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
-  tableau.remove_column(removing_column);
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   distributed_tableau.remove_column(removing_column);
-  PPL_ASSERT(distributed_tableau == tableau);
+#else
+  tableau.remove_column(removing_column);
 #endif
 
   // var_index is no longer split.
@@ -700,10 +699,12 @@ PPL::MIP_Problem::process_pending_constraints() {
 #endif
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  const dimension_type old_tableau_num_rows = distributed_tableau.num_rows();
+  const dimension_type old_tableau_num_cols = distributed_tableau.num_columns();
+#else
   const dimension_type old_tableau_num_rows = tableau.num_rows();
   const dimension_type old_tableau_num_cols = tableau.num_columns();
+#endif
   const dimension_type first_free_tableau_index = old_tableau_num_cols - 1;
 
   // Update mapping for the new problem variables (if any).
@@ -733,12 +734,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   // Resize the tableau: first add additional rows ...
   if (additional_tableau_rows > 0) {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    PPL_ASSERT(distributed_tableau == tableau);
-#endif
-    tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     distributed_tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
-    PPL_ASSERT(distributed_tableau == tableau);
+#else
+    tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
 #endif
   }
 
@@ -772,21 +770,20 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   if (additional_tableau_columns > 0) {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    PPL_ASSERT(distributed_tableau == tableau);
-#endif
-    tableau.add_zero_columns(additional_tableau_columns);
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     distributed_tableau.add_zero_columns(additional_tableau_columns);
-    PPL_ASSERT(distributed_tableau == tableau);
+#else
+    tableau.add_zero_columns(additional_tableau_columns);
 #endif
   }
 
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
   // Dimensions of the tableau after resizing.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  const dimension_type tableau_num_rows = distributed_tableau.num_rows();
+  const dimension_type tableau_num_cols = distributed_tableau.num_columns();
+#else
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_cols = tableau.num_columns();
+#endif
 
   // The following vector will be useful know if a constraint is feasible
   // and does not require an additional artificial variable.
@@ -795,7 +792,6 @@ PPL::MIP_Problem::process_pending_constraints() {
   // Sync the `base' vector size to the new tableau: fill with zeros
   // to encode that these rows are not OK and must be adjusted.
   base.insert(base.end(), additional_tableau_rows, 0);
-  const dimension_type base_size = base.size();
 
   // These indexes will be used to insert slack and artificial variables
   // in the appropriate position.
@@ -817,10 +813,12 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (!is_tableau_constraint[i])
       continue;
     // Copy the original constraint in the tableau.
+    --k;
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    PPL_ASSERT(distributed_tableau == tableau);
+    matrix_type::row_type tableau_k(distributed_tableau.num_columns());
+#else
+    matrix_type::row_type& tableau_k = tableau[k];
 #endif
-    matrix_type::row_type& tableau_k = tableau[--k];
     matrix_type::row_type::iterator itr = tableau_k.end();
 
     const Constraint& c = input_cs[i + first_pending_constraint];
@@ -863,20 +861,18 @@ PPL::MIP_Problem::process_pending_constraints() {
     }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     distributed_tableau.set_row(k, tableau_k);
-    PPL_ASSERT(distributed_tableau == tableau);
-#endif
+    distributed_tableau.linear_combine_with_base_rows(k);
+#else
+  const dimension_type base_size = base.size();
     for (dimension_type j = base_size; j-- > 0; )
       if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
         linear_combine(tableau_k, tableau[j], base[j]);
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-    distributed_tableau.linear_combine_with_base_rows(k);
-    PPL_ASSERT(distributed_tableau == tableau);
 #endif
   }
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  distributed_tableau.make_inhomogeneous_terms_nonpositive();
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   // Let all inhomogeneous terms in the tableau be nonpositive,
   // so as to simplify the insertion of artificial variables
   // (the coefficient of each artificial variable will be 1).
@@ -889,10 +885,7 @@ PPL::MIP_Problem::process_pending_constraints() {
         neg_assign(*j);
     }
   }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.make_inhomogeneous_terms_nonpositive();
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
   // Reset the working cost function to have the right size.
   working_cost = Dense_Row(tableau_num_cols, Row_Flags());
@@ -901,13 +894,19 @@ PPL::MIP_Problem::process_pending_constraints() {
   // constraint, will enter the base and will have coefficient -1 in
   // the cost function.
 
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-  distributed_tableau.set_artificial_indexes_for_unfeasible_rows(unfeasible_tableau_rows,
-                                                                 artificial_index);
-#endif
   // First go through nonpending constraints that became unfeasible
   // due to re-merging of split variables.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  distributed_tableau
+    .set_artificial_indexes_for_unfeasible_rows(unfeasible_tableau_rows,
+                                                artificial_index);
+  for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
+    working_cost[artificial_index] = -1;
+    PPL_ASSERT(base[unfeasible_tableau_rows[i]] == 0);
+    base[unfeasible_tableau_rows[i]] = artificial_index;
+    ++artificial_index;
+  }
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
     tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
                                                     Coefficient_one());
@@ -916,20 +915,24 @@ PPL::MIP_Problem::process_pending_constraints() {
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
   }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
+  // Then go through newly added tableau rows, disregarding inequalities
+  // that are already satisfied by `last_generator' (this information
+  // is encoded in `worked_out_row').
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
   distributed_tableau
     .set_artificial_indexes_for_new_rows(old_tableau_num_rows,
                                          worked_out_row,
                                          artificial_index);
-#endif
-  // Then go through newly added tableau rows, disregarding inequalities
-  // that are already satisfied by `last_generator' (this information
-  // is encoded in `worked_out_row').
+  for (dimension_type i = old_tableau_num_rows; i < tableau_num_rows; ++i) {
+    if (worked_out_row[i])
+      continue;
+    working_cost[artificial_index] = -1;
+    base[i] = artificial_index;
+    ++artificial_index;
+  }
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   for (dimension_type i = old_tableau_num_rows; i < tableau_num_rows; ++i) {
     if (worked_out_row[i])
       continue;
@@ -938,9 +941,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     base[i] = artificial_index;
     ++artificial_index;
   }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   // One past the last tableau column index containing an artificial variable.
   const dimension_type end_artificials = artificial_index;
 
@@ -950,16 +951,12 @@ PPL::MIP_Problem::process_pending_constraints() {
   working_cost[last_obj_index] = 1;
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-  Dense_Row working_cost2 = working_cost;
-#endif
+  distributed_tableau.compute_working_cost(working_cost);
+#else
   // Express the problem in terms of the variables in base.
   for (dimension_type i = tableau_num_rows; i-- > 0; )
     if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.compute_working_cost(working_cost2);
-  PPL_ASSERT(working_cost == working_cost2);
 #endif
   // Deal with zero dimensional problems.
   if (space_dimension() == 0) {
@@ -1057,7 +1054,6 @@ assign(double& d,
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
   return distributed_tableau.float_entering_index(working_cost);
 #else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -1175,7 +1171,6 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
   return distributed_tableau.exact_entering_index(working_cost);
 #else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -1459,9 +1454,13 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
 void
 PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
                         const dimension_type exiting_base_index) {
+
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  distributed_tableau.linear_combine_matrix(exiting_base_index,
+                                            entering_var_index);
+  matrix_type::row_type tableau_out;
+  distributed_tableau.get_row(exiting_base_index, tableau_out);
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const matrix_type::row_type& tableau_out = tableau[exiting_base_index];
   // Linearly combine the constraints.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
@@ -1469,11 +1468,8 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
     if (i != exiting_base_index && tableau_i.get(entering_var_index) != 0)
       linear_combine(tableau_i, tableau_out, entering_var_index);
   }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.linear_combine_matrix(exiting_base_index,
-                                            entering_var_index);
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
   // Linearly combine the cost function.
   if (working_cost[entering_var_index] != 0)
     linear_combine(working_cost, tableau_out, entering_var_index);
@@ -1497,7 +1493,6 @@ PPL::MIP_Problem
   // tableau[i][entering_var_index] / tableau[i][base[i]]
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
-  PPL_ASSERT(distributed_tableau == tableau);
   return distributed_tableau.exiting_index(entering_var_index);
 
 #else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
@@ -1576,11 +1571,14 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
   abs_assign(current_den, cost_sgn_coeff);
+
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  PPL_ASSERT(distributed_tableau.num_columns() == working_cost.size());
+  const dimension_type tableau_num_rows = distributed_tableau.num_rows();
+#else
   PPL_ASSERT(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
+#endif
 
   while (true) {
     // Choose the index of the variable entering the base, if any.
@@ -1655,13 +1653,18 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
 bool
 PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  PPL_ASSERT(distributed_tableau.num_columns() == working_cost.size());
+#else
   PPL_ASSERT(tableau.num_columns() == working_cost.size());
+#endif
   PPL_ASSERT(get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_EXACT
          || get_control_parameter(PRICING) == PRICING_TEXTBOOK);
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  const dimension_type tableau_num_rows = distributed_tableau.num_rows();
+#else
   const dimension_type tableau_num_rows = tableau.num_rows();
+#endif
   const bool textbook_pricing
     = (PRICING_TEXTBOOK == get_control_parameter(PRICING));
 
@@ -1708,10 +1711,13 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   PPL_ASSERT(0 < begin_artificials && begin_artificials < end_artificials);
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  const dimension_type old_last_column = distributed_tableau.num_columns() - 1;
+  dimension_type tableau_n_rows = distributed_tableau.num_rows();
+#else
   const dimension_type old_last_column = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
+#endif
+
   // Step 1: try to remove from the base all the remaining slack variables.
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     if (begin_artificials <= base[i] && base[i] < end_artificials) {
@@ -1744,41 +1750,37 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
         if (i < tableau_n_rows) {
           // Replace the redundant row with the last one,
           // taking care of adjusting the iteration index.
+#if !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
           tableau[i].swap(tableau[tableau_n_rows]);
+#endif
           base[i] = base[tableau_n_rows];
           --i;
         }
+#if !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
         tableau.erase_to_end(tableau_n_rows);
+#endif
         base.pop_back();
       }
     }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
 
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
 
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
   // Resize the tableau.
   const dimension_type num_artificials = end_artificials - begin_artificials;
-  tableau.remove_trailing_columns(num_artificials);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   distributed_tableau.remove_trailing_columns(num_artificials);
-  PPL_ASSERT(distributed_tableau == tableau);
+#else
+  tableau.remove_trailing_columns(num_artificials);
 #endif
 
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
   // Zero the last column of the tableau.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  const dimension_type new_last_column = distributed_tableau.num_columns() - 1;
+  distributed_tableau.reset_column(new_last_column);
+#else
   const dimension_type new_last_column = tableau.num_columns() - 1;
   for (dimension_type i = tableau_n_rows; i-- > 0; )
     tableau[i].reset(new_last_column);
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.reset_column(new_last_column);
-  PPL_ASSERT(distributed_tableau == tableau);
 #endif
 
   // ... then properly set the element in the (new) last column,
@@ -1805,8 +1807,6 @@ PPL::MIP_Problem::compute_generator() const {
   PPL_DIRTY_TEMP_COEFFICIENT(split_den);
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-
   std::vector<Coefficient> first_column;
   distributed_tableau.get_column(0, first_column);
 
@@ -2006,14 +2006,10 @@ PPL::MIP_Problem::second_phase() {
     if (mapping[i].second != 0)
       working_cost[split_var] = - new_cost[i];
   }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-  Dense_Row working_cost2 = working_cost;
-#endif
+  distributed_tableau.compute_working_cost(working_cost);
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
@@ -2021,10 +2017,7 @@ PPL::MIP_Problem::second_phase() {
     if (working_cost[base_i] != 0)
       linear_combine(working_cost, tableau[i], base_i);
   }
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau.compute_working_cost(working_cost2);
-  PPL_ASSERT(working_cost == working_cost2);
-#endif
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
   // Solve the second phase problem.
   bool second_phase_successful
@@ -2091,15 +2084,16 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
       // This code tries to handle the case that happens if the tableau is
       // empty, so it must be initialized.
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-      PPL_ASSERT(distributed_tableau == tableau);
-#endif
+      if (distributed_tableau.num_columns() == 0) {
+#else
       if (tableau.num_columns() == 0) {
+#endif
         // Add two columns, the first that handles the inhomogeneous term and
         // the second that represent the `sign'.
-        x.tableau.add_zero_columns(2);
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
         x.distributed_tableau.add_zero_columns(2);
-        PPL_ASSERT(x.distributed_tableau == x.tableau);
+#else
+        x.tableau.add_zero_columns(2);
 #endif
         // Sync `mapping' for the inhomogeneous term.
         x.mapping.push_back(std::make_pair(0, 0));
@@ -2404,10 +2398,13 @@ PPL::MIP_Problem::OK() const {
       return false;
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  if (!distributed_tableau.OK() || !input_obj_function.OK()
+      || !last_generator.OK())
+    return false;
+#else
   if (!tableau.OK() || !input_obj_function.OK() || !last_generator.OK())
     return false;
+#endif
 
   // Constraint system should contain no strict inequalities.
   for (dimension_type i = input_cs_num_rows; i-- > 0; )
@@ -2473,8 +2470,13 @@ PPL::MIP_Problem::OK() const {
       }
     }
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    const dimension_type tableau_nrows = distributed_tableau.num_rows();
+    const dimension_type tableau_ncols = distributed_tableau.num_columns();
+#else
     const dimension_type tableau_nrows = tableau.num_rows();
     const dimension_type tableau_ncols = tableau.num_columns();
+#endif
 
     // The number of rows in the tableau and base should be equal.
     if (tableau_nrows != base.size()) {
@@ -2535,7 +2537,7 @@ PPL::MIP_Problem::OK() const {
 #endif
         return false;
       }
-#endif
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
       // Needed to sort accesses to tableau_j, improving performance.
       typedef std::vector<std::pair<dimension_type, dimension_type> >
         pair_vector_t;
@@ -2565,6 +2567,7 @@ PPL::MIP_Problem::OK() const {
           }
         }
       }
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
     }
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
@@ -2601,26 +2604,12 @@ PPL::MIP_Problem::OK() const {
     }
 #endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
-    // The last column of the tableau must contain only zeroes.
-    for (dimension_type i = tableau_nrows; i-- > 0; )
-      if (tableau[i].get(tableau_ncols-1) != 0) {
-#ifndef NDEBUG
-        cerr << "the last column of the tableau must contain only"
-          "zeroes"<< endl;
-        ascii_dump(cerr);
-#endif
-        return false;
-      }
 
+    // The last column of the tableau must contain only zeroes.
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
     std::vector<Coefficient> last_column;
     distributed_tableau.get_column(tableau_ncols-1, last_column);
-
-#ifndef NDEBUG
-    for (dimension_type i = 0; i < tableau_nrows; ++i)
-      PPL_ASSERT(last_column[i] == tableau[i].get(tableau_ncols-1));
-#endif
 
     for (std::vector<Coefficient>::const_iterator
          i = last_column.begin(), i_end = last_column.end(); i != i_end; ++i) {
@@ -2633,7 +2622,17 @@ PPL::MIP_Problem::OK() const {
         return false;
       }
     }
+#else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+    for (dimension_type i = tableau_nrows; i-- > 0; )
+      if (tableau[i].get(tableau_ncols-1) != 0) {
+#ifndef NDEBUG
+        cerr << "the last column of the tableau must contain only"
+          "zeroes"<< endl;
+        ascii_dump(cerr);
 #endif
+        return false;
+      }
+#endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   }
 
   // All checks passed.
@@ -2697,7 +2696,6 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ntableau\n";
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
   distributed_tableau.ascii_dump(s);
 #else
   tableau.ascii_dump(s);
@@ -2831,12 +2829,11 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
     return false;
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
+  if (!distributed_tableau.ascii_load(s))
+    return false;
+#else
   if (!tableau.ascii_load(s))
     return false;
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  distributed_tableau = tableau;
 #endif
 
   if (!(s >> str) || str != "working_cost(")
@@ -2870,7 +2867,6 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
     base.push_back(base_value);
   }
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau.num_rows() == base.size());
   distributed_tableau.set_base(base);
 #endif
 
@@ -2894,13 +2890,15 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   dimension_type second_value;
   dimension_type index;
 
-#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
-  PPL_ASSERT(distributed_tableau == tableau);
-#endif
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  if (distributed_tableau.num_columns() != 0)
+    mapping.push_back(std::make_pair(0, 0));
+#else
   if (tableau.num_columns() != 0)
     mapping.push_back(std::make_pair(0, 0));
+#endif
 
   for (dimension_type i = 1; i < mapping_size; ++i) {
     if (!(s >> index))
