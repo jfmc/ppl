@@ -665,6 +665,7 @@ PPL::Distributed_Sparse_Matrix
 namespace {
 
 struct compute_working_cost_reducer_functor {
+
   typedef std::pair<std::pair<PPL::Coefficient,
                               PPL::Coefficient>, PPL::Sparse_Row> pair_type;
   const pair_type&
@@ -711,7 +712,8 @@ namespace mpi {
 
 template <>
 struct is_commutative<compute_working_cost_reducer_functor,
-                      std::pair<PPL::Coefficient, PPL::Dense_Row> >: public mpl::true_ { };
+                      std::pair<std::pair<PPL::Coefficient, PPL::Coefficient>,
+                                PPL::Dense_Row> >: public mpl::true_ { };
 
 }
 }
@@ -933,6 +935,16 @@ public:
 
 } // namespace
 
+namespace boost {
+namespace mpi {
+
+template <>
+struct is_commutative<exact_entering_index_reducer_functor, PPL::Coefficient>
+  : public mpl::true_ { };
+
+}
+}
+
 void
 PPL::Distributed_Sparse_Matrix
 ::exact_entering_index__common(const std::vector<dimension_type>& columns,
@@ -1060,6 +1072,22 @@ public:
     return x;
   }
 };
+
+} // namespace Parma_Polyhedra_Library
+
+namespace boost {
+namespace mpi {
+
+template <>
+struct is_commutative<Parma_Polyhedra_Library::exiting_index_reducer_functor,
+                      exiting_index_candidate>
+  : public mpl::true_ { };
+
+}
+}
+
+
+namespace Parma_Polyhedra_Library {
 
 // Note that this is not in the Distributed_Sparse_Matrix class, because
 // it would have required to declare exiting_index_candidate in the class.
@@ -1855,6 +1883,17 @@ public:
 
 } // namespace
 
+namespace boost {
+namespace mpi {
+
+template <>
+struct is_commutative<float_entering_index_reducer_functor,
+                      std::vector<double> >
+  : public mpl::true_ { };
+
+}
+}
+
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix
 ::float_entering_index(const Dense_Row& working_cost) const {
@@ -1996,6 +2035,17 @@ public:
 };
 
 } // namespace
+
+namespace boost {
+namespace mpi {
+
+template <>
+struct is_commutative<exact_entering_index_reducer_functor2,
+                      std::vector<PPL::Coefficient> >
+  : public mpl::true_ { };
+
+}
+}
 
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix
