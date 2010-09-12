@@ -361,14 +361,11 @@ bool
 PPL::Distributed_Sparse_Matrix
 ::operator==(const Sparse_Matrix& matrix) const {
 
-  if (num_rows() != matrix.num_rows()) {
-    std::cout << "Wrong number of rows" << std::endl;
+  if (num_rows() != matrix.num_rows())
     return false;
-  }
-  if (num_columns() != matrix.num_columns()) {
-    std::cout << "Wrong number of columns" << std::endl;
+
+  if (num_columns() != matrix.num_columns())
     return false;
-  }
 
   broadcast_operation(COMPARE_WITH_SPARSE_MATRIX_OPERATION, id);
 
@@ -394,12 +391,8 @@ PPL::Distributed_Sparse_Matrix
     dimension_type local_i = mapping[i].second;
     if (rank == 0)
       if (!(local_rows[local_i] == matrix[i])) {
-        std::cout << "Found mismatch in root node, at row " << i << std::endl;
-        std::cout << "LHS: ";
-        local_rows[local_i].ascii_dump(std::cout);
-        std::cout << "RHS: ";
-        matrix[i].ascii_dump(std::cout);
         local_result = false;
+        break;
       }
   }
 
@@ -2519,12 +2512,6 @@ PPL::Distributed_Sparse_Matrix::Worker
   bool result = true;
   for (dimension_type i = 0; i < rows.size(); i++)
     if (rows[i] != received_rows[i]) {
-      std::cout << "Found mismatch in root node, at row "
-                << row_chunk.reverse_mapping[i] << std::endl;
-      std::cout << "LHS: ";
-      rows[i].ascii_dump(std::cout);
-      std::cout << "RHS: ";
-      received_rows[i].ascii_dump(std::cout);
       result = false;
       break;
     }
