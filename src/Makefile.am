@@ -260,6 +260,7 @@ Linear_Row.inlines.hh \
 Dense_Matrix.defs.hh \
 Dense_Matrix.inlines.hh \
 Distributed_Sparse_Matrix.defs.hh \
+Distributed_Sparse_Matrix.inlines.hh \
 Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \

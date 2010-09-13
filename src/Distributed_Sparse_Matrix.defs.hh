@@ -460,4 +460,6 @@ void swap(Parma_Polyhedra_Library::Distributed_Sparse_Matrix& x,
 
 } // namespace std
 
+#include "Distributed_Sparse_Matrix.inlines.hh"
+
 #endif // !defined(PPL_Distributed_Sparse_Matrix_defs_hh)
