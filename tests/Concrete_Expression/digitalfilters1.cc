@@ -25,6 +25,49 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+class Test_Oracle : public FP_Oracle<C_Expr,FP_Interval> {
+public:
+  Test_Oracle() : int_store(0) {}
+
+  Test_Oracle(FP_Interval_Abstract_Store init) : int_store(init) {}
+
+  bool get_interval(dimension_type dim, FP_Interval& result) const {
+    result = int_store.get_interval(Variable(dim));
+    return true;
+  }
+
+  bool get_fp_constant_value(const Floating_Point_Constant<C_Expr>& expr,
+                             FP_Interval& result) const {
+    result = FP_Interval((const char *)expr.value);
+    return true;
+  }
+
+  bool get_integer_expr_value(const Concrete_Expression<C_Expr>& expr,
+                              FP_Interval& result) const {
+    if (expr.kind() == INT_CON) {
+      const Integer_Constant<C_Expr>* ic_expr =
+        reinterpret_cast< const Integer_Constant<C_Expr>* >(&expr);
+      result = FP_Interval(ic_expr->value);
+    }
+    else {
+      const Approximable_Reference<C_Expr>* ar_expr =
+        reinterpret_cast< const Approximable_Reference<C_Expr>* >(&expr);
+      result = FP_Interval(ar_expr->value);
+    }
+
+    return true;
+  }
+
+  bool get_associated_dimensions(
+       const Approximable_Reference<C_Expr>& expr,
+       std::set<dimension_type>& result) const {
+    result = expr.dimensions;
+    return true;
+  }
+
+  FP_Interval_Abstract_Store int_store;
+};
+
 using namespace Parma_Polyhedra_Library::IO_Operators;
 Concrete_Expression_Type FP_Type =
   Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
@@ -442,8 +485,8 @@ test05() {
   // Actual rate.
   Variable R(4);
 
-  FP_Interval_Abstract_Store interval_store(5);
-  FP_Interval_Abstract_Store is_begin(5);
+  Test_Oracle oracle(FP_Interval_Abstract_Store(5));
+  Test_Oracle or_begin(FP_Interval_Abstract_Store (5));
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   FP_BD_Shape bd(5);
   FP_BD_Shape bd_begin(5);
@@ -471,15 +514,15 @@ test05() {
   // differences domain.
   // Then, we consider the intersection between these abstract domains.
 
-  lin_success = linearize(con_y, interval_store, lf_abstract_store, lk);
-  interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
+  lin_success = linearize(con_y, oracle, lf_abstract_store, lk);
+  oracle.int_store.affine_form_image(Y, FP_Linear_Form(tmp));
   if (lin_success) {
     bd.affine_form_image(Y, lk);
   }
   else {
-    bd.intersection_assign(FP_BD_Shape(interval_store));
+    bd.intersection_assign(FP_BD_Shape(oracle.int_store));
   }
-  interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+  oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
   // This loop iterate until a fixed point is reached.
   do {
@@ -487,35 +530,35 @@ test05() {
     // Iteration no. n+1.
     nout << "*** n = " << n << " ***" << endl;
     bd_begin = bd;
-    is_begin = interval_store;
-    print_constraints(interval_store, "*** before loop ***");
+    or_begin.int_store = oracle.int_store;
+    print_constraints(oracle.int_store, "*** before loop ***");
 
     // X = [-128, 128];
     tmp.lower() = -128;
     tmp.upper() = 128;
-    interval_store.affine_form_image(X, FP_Linear_Form(tmp));
+    oracle.int_store.affine_form_image(X, FP_Linear_Form(tmp));
     bd.affine_form_image(X, FP_Linear_Form(tmp));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // D = [0, 16];
     tmp.lower() = 0;
     tmp.upper() = 16;
-    interval_store.affine_form_image(D, FP_Linear_Form(tmp));
+    oracle.int_store.affine_form_image(D, FP_Linear_Form(tmp));
     bd.affine_form_image(D, FP_Linear_Form(tmp));    
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // S = Y;
     Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
                                          Y.id());
-    lin_success = linearize(var_y, interval_store, lf_abstract_store, ly);
-    interval_store.affine_form_image(S, FP_Linear_Form(Y));
+    lin_success = linearize(var_y, oracle, lf_abstract_store, ly);
+    oracle.int_store.affine_form_image(S, FP_Linear_Form(Y));
     if (lin_success) {
       bd.affine_form_image(S, ly);
     }
     else {
-      bd.intersection_assign(FP_BD_Shape(interval_store));
+      bd.intersection_assign(FP_BD_Shape(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // R = X - S;
     Approximable_Reference<C_Expr> px(FP_Type, Int_Interval(mpz_class(0)),
@@ -524,110 +567,112 @@ test05() {
                                       S.id());
     Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &px, &ps);
-    lin_success = linearize(x_dif_s, interval_store, lf_abstract_store, lr);
-    interval_store.affine_form_image(R, FP_Linear_Form(X - S));
+    lin_success = linearize(x_dif_s, oracle, lf_abstract_store, lr);
+    oracle.int_store.affine_form_image(R, FP_Linear_Form(X - S));
     if (lin_success) {
       bd.affine_form_image(R, lr);
     }
     else {
-      bd.intersection_assign(FP_BD_Shape(interval_store));
+      bd.intersection_assign(FP_BD_Shape(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // Y = X;
-    lin_success = linearize(px, interval_store, lf_abstract_store, lx);
-    interval_store.affine_form_image(Y, FP_Linear_Form(X));
+    lin_success = linearize(px, oracle, lf_abstract_store, lx);
+    oracle.int_store.affine_form_image(Y, FP_Linear_Form(X));
     if (lin_success) {
       bd.affine_form_image(Y, lx);
     }
     else {
-      bd.intersection_assign(FP_BD_Shape(interval_store));
+      bd.intersection_assign(FP_BD_Shape(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // if (R <= -D)
     FP_BD_Shape bd_then(bd);
-    FP_Interval_Abstract_Store is_then(interval_store);
-    is_then.refine_with_constraint(R <= -D);
+    Test_Oracle or_then(oracle.int_store);
+    or_then.int_store.refine_with_constraint(R <= -D);
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                                -FP_Linear_Form(D));
-    is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // then Y = S - D;
     Approximable_Reference<C_Expr> pd(FP_Type, Int_Interval(mpz_class(0)),
                                       D.id());
     Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &ps, &pd);
-    lin_success = linearize(s_dif_d, is_then, lf_abstract_store, ly);
-    is_then.affine_form_image(Y, FP_Linear_Form(S - D));
+    lin_success = linearize(s_dif_d, or_then, lf_abstract_store, ly);
+    or_then.int_store.affine_form_image(Y, FP_Linear_Form(S - D));
     if (lin_success) {
       bd_then.affine_form_image(Y, ly);
     }
     else {
-      bd_then.intersection_assign(FP_BD_Shape(is_then));
+      bd_then.intersection_assign(FP_BD_Shape(or_then.int_store));
     }
-    is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // else skip;
-    interval_store.refine_with_constraint(R > -D);
+    oracle.int_store.refine_with_constraint(R > -D);
     bd.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                           FP_Linear_Form(R));
-    bd.intersection_assign(FP_BD_Shape(interval_store));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    bd.intersection_assign(FP_BD_Shape(oracle.int_store));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // LUB between then and else branches.
     bd.upper_bound_assign(bd_then);
-    interval_store.upper_bound_assign(is_then);
-    print_constraints(interval_store, "*** after if (R <= -D) Y = S - D; ***");
+    oracle.int_store.upper_bound_assign(or_then.int_store);
+    print_constraints(oracle.int_store,
+                      "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)
     bd_then = bd;
-    is_then = interval_store;
-    is_then.refine_with_constraint(R >= D);
+    or_then.int_store = oracle.int_store;
+    or_then.int_store.refine_with_constraint(R >= D);
     bd_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
-    is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // then Y = S + D;
     Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
                                     &ps, &pd);
-    lin_success = linearize(s_sum_d, is_then, lf_abstract_store, ly);
-    is_then.affine_form_image(Y, FP_Linear_Form(S + D));
+    lin_success = linearize(s_sum_d, or_then, lf_abstract_store, ly);
+    or_then.int_store.affine_form_image(Y, FP_Linear_Form(S + D));
     if (lin_success) {
       bd_then.affine_form_image(Y, ly);
     }
     else {
-      bd_then.intersection_assign(FP_BD_Shape(is_then));
+      bd_then.intersection_assign(FP_BD_Shape(or_then.int_store));
     }
-    is_then.intersection_assign(FP_Interval_Abstract_Store(bd_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(bd_then));
 
     // else skip;
     bd.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D));
-    interval_store.refine_with_constraint(R < D);
-    bd.intersection_assign(FP_BD_Shape(interval_store));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(bd));
+    oracle.int_store.refine_with_constraint(R < D);
+    bd.intersection_assign(FP_BD_Shape(oracle.int_store));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // LUB between then and else branches.
     bd.upper_bound_assign(bd_then);
-    interval_store.upper_bound_assign(is_then);
-    print_constraints(interval_store, "*** after if (R >= D)  Y = S + D; ***");
+    oracle.int_store.upper_bound_assign(or_then.int_store);
+    print_constraints(oracle.int_store,
+                      "*** after if (R >= D)  Y = S + D; ***");
 
     // LUB between the actual abstract domains and the corresponding
     // domains at the beginning of the loop.
     bd.upper_bound_assign(bd_begin);
-    interval_store.upper_bound_assign(is_begin);
+    oracle.int_store.upper_bound_assign(or_begin.int_store);
 
     // Limited extrapolation: we enforce the satisfaction
     // of the constraint system cs = {Y <= M; Y >= -M}
     bd.limited_BHMZ05_extrapolation_assign(bd_begin, cs);
-    interval_store.limited_CC76_extrapolation_assign(is_begin, cs);
-    print_constraints(interval_store, "*** end loop ***");
+    oracle.int_store.limited_CC76_extrapolation_assign(or_begin.int_store, cs);
+    print_constraints(oracle.int_store, "*** end loop ***");
     ++n;
 
-  } while(is_begin != interval_store);
+  } while(or_begin.int_store != oracle.int_store);
 
-  tmp = interval_store.get_interval(Y);
+  tmp = oracle.int_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
   return (tmp.lower() == -144 && tmp.upper() == 144);
 }
@@ -649,8 +694,8 @@ test06() {
   // Actual rate.
   Variable R(4);
 
-  FP_Interval_Abstract_Store interval_store(5);
-  FP_Interval_Abstract_Store is_begin(5);
+  Test_Oracle oracle(FP_Interval_Abstract_Store(5));
+  Test_Oracle or_begin(FP_Interval_Abstract_Store(5));
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   FP_Octagonal_Shape oc(5);
   FP_Octagonal_Shape oc_begin(5);
@@ -678,51 +723,51 @@ test06() {
   // differences domain.
   // Then, we consider the intersection between these abstract domains.
 
-  lin_success = linearize(con_y, interval_store, lf_abstract_store, lk);
-  interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
+  lin_success = linearize(con_y, oracle, lf_abstract_store, lk);
+  oracle.int_store.affine_form_image(Y, FP_Linear_Form(tmp));
   if (lin_success) {
     oc.affine_form_image(Y, lk);
   }
   else {
-    oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+    oc.intersection_assign(FP_Octagonal_Shape(oracle.int_store));
   }
-  interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+  oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
-  // This loop iterate until a fixed point is reached.
+  // This loop iterates until a fixed point is reached.
   do {
 
     // Iteration no. n+1.
     nout << "*** n = " << n << " ***" << endl;
     oc_begin = oc;
-    is_begin = interval_store;
-    print_constraints(interval_store, "*** before loop ***");
+    or_begin.int_store = oracle.int_store;
+    print_constraints(oracle.int_store, "*** before loop ***");
 
     // X = [-128, 128];
     tmp.lower() = -128;
     tmp.upper() = 128;
-    interval_store.affine_form_image(X, FP_Linear_Form(tmp));
+    oracle.int_store.affine_form_image(X, FP_Linear_Form(tmp));
     oc.affine_form_image(X, FP_Linear_Form(tmp));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // D = [0, 16];
     tmp.lower() = 0;
     tmp.upper() = 16;
-    interval_store.affine_form_image(D, FP_Linear_Form(tmp));
+    oracle.int_store.affine_form_image(D, FP_Linear_Form(tmp));
     oc.affine_form_image(D, FP_Linear_Form(tmp));    
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // S = Y;
     Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
                                          Y.id());
-    lin_success = linearize(var_y, interval_store, lf_abstract_store, ly);
-    interval_store.affine_form_image(S, FP_Linear_Form(Y));
+    lin_success = linearize(var_y, oracle, lf_abstract_store, ly);
+    oracle.int_store.affine_form_image(S, FP_Linear_Form(Y));
     if (lin_success) {
       oc.affine_form_image(S, ly);
     }
     else {
-      oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+      oc.intersection_assign(FP_Octagonal_Shape(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // R = X - S;
     Approximable_Reference<C_Expr> px(FP_Type, Int_Interval(mpz_class(0)),
@@ -731,110 +776,112 @@ test06() {
                                       S.id());
     Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &px, &ps);
-    lin_success = linearize(x_dif_s, interval_store, lf_abstract_store, lr);
-    interval_store.affine_form_image(R, FP_Linear_Form(X - S));
+    lin_success = linearize(x_dif_s, oracle, lf_abstract_store, lr);
+    oracle.int_store.affine_form_image(R, FP_Linear_Form(X - S));
     if (lin_success) {
       oc.affine_form_image(R, lr);
     }
     else {
-      oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+      oc.intersection_assign(FP_Octagonal_Shape(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // Y = X;
-    lin_success = linearize(px, interval_store, lf_abstract_store, lx);
-    interval_store.affine_form_image(Y, FP_Linear_Form(X));
+    lin_success = linearize(px, oracle, lf_abstract_store, lx);
+    oracle.int_store.affine_form_image(Y, FP_Linear_Form(X));
     if (lin_success) {
       oc.affine_form_image(Y, lx);
     }
     else {
-      oc.intersection_assign(FP_Octagonal_Shape(interval_store));
+      oc.intersection_assign(FP_Octagonal_Shape(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // if (R <= -D)
     FP_Octagonal_Shape oc_then(oc);
-    FP_Interval_Abstract_Store is_then(interval_store);
-    is_then.refine_with_constraint(R <= -D);
+    Test_Oracle or_then(oracle.int_store);
+    or_then.int_store.refine_with_constraint(R <= -D);
     oc_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                                -FP_Linear_Form(D));
-    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(oc_then));
 
     // then Y = S - D;
     Approximable_Reference<C_Expr> pd(FP_Type, Int_Interval(mpz_class(0)),
                                       D.id());
     Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &ps, &pd);
-    lin_success = linearize(s_dif_d, is_then, lf_abstract_store, ly);
-    is_then.affine_form_image(Y, FP_Linear_Form(S - D));
+    lin_success = linearize(s_dif_d, or_then, lf_abstract_store, ly);
+    or_then.int_store.affine_form_image(Y, FP_Linear_Form(S - D));
     if (lin_success) {
       oc_then.affine_form_image(Y, ly);
     }
     else {
-      oc_then.intersection_assign(FP_Octagonal_Shape(is_then));
+      oc_then.intersection_assign(FP_Octagonal_Shape(or_then.int_store));
     }
-    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(oc_then));
 
     // else skip;
-    interval_store.refine_with_constraint(R > -D);
+    oracle.int_store.refine_with_constraint(R > -D);
     oc.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                           FP_Linear_Form(R));
-    oc.intersection_assign(FP_Octagonal_Shape(interval_store));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oc.intersection_assign(FP_Octagonal_Shape(oracle.int_store));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // LUB between then and else branches.
     oc.upper_bound_assign(oc_then);
-    interval_store.upper_bound_assign(is_then);
-    print_constraints(interval_store, "*** after if (R <= -D) Y = S - D; ***");
+    oracle.int_store.upper_bound_assign(or_then.int_store);
+    print_constraints(oracle.int_store,
+                      "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)
     oc_then = oc;
-    is_then = interval_store;
-    is_then.refine_with_constraint(R >= D);
+    or_then.int_store = oracle.int_store;
+    or_then.int_store.refine_with_constraint(R >= D);
     oc_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
-    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(oc_then));
 
     // then Y = S + D;
     Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
                                     &ps, &pd);
-    lin_success = linearize(s_sum_d, is_then, lf_abstract_store, ly);
-    is_then.affine_form_image(Y, FP_Linear_Form(S + D));
+    lin_success = linearize(s_sum_d, or_then, lf_abstract_store, ly);
+    or_then.int_store.affine_form_image(Y, FP_Linear_Form(S + D));
     if (lin_success) {
       oc_then.affine_form_image(Y, ly);
     }
     else {
-      oc_then.intersection_assign(FP_Octagonal_Shape(is_then));
+      oc_then.intersection_assign(FP_Octagonal_Shape(or_then.int_store));
     }
-    is_then.intersection_assign(FP_Interval_Abstract_Store(oc_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(oc_then));
 
     // else skip;
     oc.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D));
-    interval_store.refine_with_constraint(R < D);
-    oc.intersection_assign(FP_Octagonal_Shape(interval_store));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(oc));
+    oracle.int_store.refine_with_constraint(R < D);
+    oc.intersection_assign(FP_Octagonal_Shape(oracle.int_store));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // LUB between then and else branches.
     oc.upper_bound_assign(oc_then);
-    interval_store.upper_bound_assign(is_then);
-    print_constraints(interval_store, "*** after if (R >= D)  Y = S + D; ***");
+    oracle.int_store.upper_bound_assign(or_then.int_store);
+    print_constraints(oracle.int_store,
+                      "*** after if (R >= D)  Y = S + D; ***");
 
     // LUB between the actual abstract domains and the corresponding
     // domains at the beginning of the loop.
     oc.upper_bound_assign(oc_begin);
-    interval_store.upper_bound_assign(is_begin);
+    oracle.int_store.upper_bound_assign(or_begin.int_store);
 
     // Limited extrapolation: we enforce the satisfaction
     // of the constraint system cs = {Y <= M; Y >= -M}
     oc.limited_BHMZ05_extrapolation_assign(oc_begin, cs);
-    interval_store.limited_CC76_extrapolation_assign(is_begin, cs);
-    print_constraints(interval_store, "*** end loop ***");
+    oracle.int_store.limited_CC76_extrapolation_assign(or_begin.int_store, cs);
+    print_constraints(oracle.int_store, "*** end loop ***");
     ++n;
 
-  } while(is_begin != interval_store);
+  } while(or_begin.int_store != oracle.int_store);
 
-  tmp = interval_store.get_interval(Y);
+  tmp = oracle.int_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
   return (tmp.lower() == -144 && tmp.upper() == 144);
 }
@@ -856,8 +903,8 @@ test07() {
   // Actual rate.
   Variable R(4);
 
-  FP_Interval_Abstract_Store interval_store(5);
-  FP_Interval_Abstract_Store is_begin(5);
+  Test_Oracle oracle(FP_Interval_Abstract_Store(5));
+  Test_Oracle or_begin(FP_Interval_Abstract_Store(5));
   FP_Linear_Form_Abstract_Store lf_abstract_store;
   NNC_Polyhedron ph(5);
   NNC_Polyhedron ph_begin(5);
@@ -885,15 +932,15 @@ test07() {
   // differences domain.
   // Then, we consider the intersection between these abstract domains.
 
-  lin_success = linearize(con_y, interval_store, lf_abstract_store, lk);
-  interval_store.affine_form_image(Y, FP_Linear_Form(tmp));
+  lin_success = linearize(con_y, oracle, lf_abstract_store, lk);
+  oracle.int_store.affine_form_image(Y, FP_Linear_Form(tmp));
   if (lin_success) {
     ph.affine_form_image(Y, lk);
   }
   else {
-    ph.intersection_assign(NNC_Polyhedron(interval_store));
+    ph.intersection_assign(NNC_Polyhedron(oracle.int_store));
   }
-  interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+  oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
   // This loop iterate until a fixed point is reached.
   do {
@@ -901,35 +948,35 @@ test07() {
     // Iteration no. n+1.
     nout << "*** n = " << n << " ***" << endl;
     ph_begin = ph;
-    is_begin = interval_store;
-    print_constraints(interval_store, "*** before loop ***");
+    or_begin.int_store = oracle.int_store;
+    print_constraints(oracle.int_store, "*** before loop ***");
 
     // X = [-128, 128];
     tmp.lower() = -128;
     tmp.upper() = 128;
-    interval_store.affine_form_image(X, FP_Linear_Form(tmp));
+    oracle.int_store.affine_form_image(X, FP_Linear_Form(tmp));
     ph.affine_form_image(X, FP_Linear_Form(tmp));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // D = [0, 16];
     tmp.lower() = 0;
     tmp.upper() = 16;
-    interval_store.affine_form_image(D, FP_Linear_Form(tmp));
+    oracle.int_store.affine_form_image(D, FP_Linear_Form(tmp));
     ph.affine_form_image(D, FP_Linear_Form(tmp));    
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // S = Y;
     Approximable_Reference<C_Expr> var_y(FP_Type, Int_Interval(mpz_class(0)),
                                          Y.id());
-    lin_success = linearize(var_y, interval_store, lf_abstract_store, ly);
-    interval_store.affine_form_image(S, FP_Linear_Form(Y));
+    lin_success = linearize(var_y, oracle, lf_abstract_store, ly);
+    oracle.int_store.affine_form_image(S, FP_Linear_Form(Y));
     if (lin_success) {
       ph.affine_form_image(S, ly);
     }
     else {
-      ph.intersection_assign(NNC_Polyhedron(interval_store));
+      ph.intersection_assign(NNC_Polyhedron(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // R = X - S;
     Approximable_Reference<C_Expr> px(FP_Type, Int_Interval(mpz_class(0)),
@@ -938,110 +985,111 @@ test07() {
                                       S.id());
     Binary_Operator<C_Expr> x_dif_s(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &px, &ps);
-    lin_success = linearize(x_dif_s, interval_store, lf_abstract_store, lr);
-    interval_store.affine_form_image(R, FP_Linear_Form(X - S));
+    lin_success = linearize(x_dif_s, oracle, lf_abstract_store, lr);
+    oracle.int_store.affine_form_image(R, FP_Linear_Form(X - S));
     if (lin_success) {
       ph.affine_form_image(R, lr);
     }
     else {
-      ph.intersection_assign(NNC_Polyhedron(interval_store));
+      ph.intersection_assign(NNC_Polyhedron(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // Y = X;
-    lin_success = linearize(px, interval_store, lf_abstract_store, lx);
-    interval_store.affine_form_image(Y, FP_Linear_Form(X));
+    lin_success = linearize(px, oracle, lf_abstract_store, lx);
+    oracle.int_store.affine_form_image(Y, FP_Linear_Form(X));
     if (lin_success) {
       ph.affine_form_image(Y, lx);
     }
     else {
-      ph.intersection_assign(NNC_Polyhedron(interval_store));
+      ph.intersection_assign(NNC_Polyhedron(oracle.int_store));
     }
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // if (R <= -D)
     NNC_Polyhedron ph_then(ph);
-    FP_Interval_Abstract_Store is_then(interval_store);
-    is_then.refine_with_constraint(R <= -D);
+    Test_Oracle or_then(oracle.int_store);
+    or_then.int_store.refine_with_constraint(R <= -D);
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                                -FP_Linear_Form(D));
-    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(ph_then));
 
     // then Y = S - D;
     Approximable_Reference<C_Expr> pd(FP_Type, Int_Interval(mpz_class(0)),
                                       D.id());
     Binary_Operator<C_Expr> s_dif_d(FP_Type, Binary_Operator<C_Expr>::SUB,
                                     &ps, &pd);
-    lin_success = linearize(s_dif_d, is_then, lf_abstract_store, ly);
-    is_then.affine_form_image(Y, FP_Linear_Form(S - D));
+    lin_success = linearize(s_dif_d, or_then, lf_abstract_store, ly);
+    or_then.int_store.affine_form_image(Y, FP_Linear_Form(S - D));
     if (lin_success) {
       ph_then.affine_form_image(Y, ly);
     }
     else {
-      ph_then.intersection_assign(NNC_Polyhedron(is_then));
+      ph_then.intersection_assign(NNC_Polyhedron(or_then.int_store));
     }
-    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(ph_then));
 
     // else skip;
-    interval_store.refine_with_constraint(R > -D);
+    oracle.int_store.refine_with_constraint(R > -D);
     ph.refine_with_linear_form_inequality(-FP_Linear_Form(D),
                                           FP_Linear_Form(R));
-    ph.intersection_assign(NNC_Polyhedron(interval_store));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    ph.intersection_assign(NNC_Polyhedron(oracle.int_store));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // LUB between then and else branches.
     ph.upper_bound_assign(ph_then);
-    interval_store.upper_bound_assign(is_then);
-    print_constraints(interval_store, "*** after if (R <= -D) Y = S - D; ***");
+    oracle.int_store.upper_bound_assign(or_then.int_store);
+    print_constraints(oracle.int_store, "*** after if (R <= -D) Y = S - D; ***");
 
     // if (R >= D)
     ph_then = ph;
-    is_then = interval_store;
-    is_then.refine_with_constraint(R >= D);
+    or_then.int_store = oracle.int_store;
+    or_then.int_store.refine_with_constraint(R >= D);
     ph_then.refine_with_linear_form_inequality(FP_Linear_Form(D),
                                                FP_Linear_Form(R));
-    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(ph_then));
 
     // then Y = S + D;
     Binary_Operator<C_Expr> s_sum_d(FP_Type, Binary_Operator<C_Expr>::ADD,
                                     &ps, &pd);
-    lin_success = linearize(s_sum_d, is_then, lf_abstract_store, ly);
-    is_then.affine_form_image(Y, FP_Linear_Form(S + D));
+    lin_success = linearize(s_sum_d, or_then, lf_abstract_store, ly);
+    or_then.int_store.affine_form_image(Y, FP_Linear_Form(S + D));
     if (lin_success) {
       ph_then.affine_form_image(Y, ly);
     }
     else {
-      ph_then.intersection_assign(NNC_Polyhedron(is_then));
+      ph_then.intersection_assign(NNC_Polyhedron(or_then.int_store));
     }
-    is_then.intersection_assign(FP_Interval_Abstract_Store(ph_then));
+    or_then.int_store.intersection_assign(FP_Interval_Abstract_Store(ph_then));
 
     // else skip;
     ph.refine_with_linear_form_inequality(FP_Linear_Form(R),
                                           FP_Linear_Form(D));
-    interval_store.refine_with_constraint(R < D);
-    ph.intersection_assign(NNC_Polyhedron(interval_store));
-    interval_store.intersection_assign(FP_Interval_Abstract_Store(ph));
+    oracle.int_store.refine_with_constraint(R < D);
+    ph.intersection_assign(NNC_Polyhedron(oracle.int_store));
+    oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // LUB between then and else branches.
     ph.upper_bound_assign(ph_then);
-    interval_store.upper_bound_assign(is_then);
-    print_constraints(interval_store, "*** after if (R >= D)  Y = S + D; ***");
+    oracle.int_store.upper_bound_assign(or_then.int_store);
+    print_constraints(oracle.int_store,
+                      "*** after if (R >= D)  Y = S + D; ***");
 
     // LUB between the actual abstract domains and the corresponding
     // domains at the beginning of the loop.
     ph.upper_bound_assign(ph_begin);
-    interval_store.upper_bound_assign(is_begin);
+    oracle.int_store.upper_bound_assign(or_begin.int_store);
 
     // Limited extrapolation: we enforce the satisfaction
     // of the constraint system cs = {Y <= M; Y >= -M}
     ph.limited_BHRZ03_extrapolation_assign(ph_begin, cs);
-    interval_store.limited_CC76_extrapolation_assign(is_begin, cs);
-    print_constraints(interval_store, "*** end loop ***");
+    oracle.int_store.limited_CC76_extrapolation_assign(or_begin.int_store, cs);
+    print_constraints(oracle.int_store, "*** end loop ***");
     ++n;
 
-  } while(is_begin != interval_store);
+  } while(or_begin.int_store != oracle.int_store);
 
-  tmp = interval_store.get_interval(Y);
+  tmp = oracle.int_store.get_interval(Y);
   nout << "*** Y in " << tmp << " ***" << endl;
   return (tmp.lower() == -144 && tmp.upper() == 144);
 }
@@ -1065,9 +1113,8 @@ BEGIN_MAIN
   PPL_CPP_OR(COND_F64, PPL_CPP_OR(PPL_CUSTOM_COND_32, PPL_CUSTOM_COND_64))
 
   COND_DO_TEST(PPL_CUSTOM_COND, test05);
-/*
   COND_DO_TEST(PPL_CUSTOM_COND, test06);
 
   DO_TEST_F64(test07);
-*/
+
 END_MAIN

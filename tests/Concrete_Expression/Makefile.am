@@ -54,6 +54,7 @@ ORIGINAL_TESTS = \
 C_Expr \
 linearform1 \
 linearize \
+digitalfilters1 \
 bdshape1 \
 bdshape2 \
 octagonalshape1 \
