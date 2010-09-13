@@ -154,6 +154,12 @@ public:
   bool
     base_variables_occur_once(const std::vector<dimension_type>& base) const;
 
+  //! This returns false if no variable exited the base.
+  //! tableau_out is set to the row that exited the base.
+  bool get_exiting_and_pivot(dimension_type entering_index,
+                             Sparse_Row& tableau_out,
+                             dimension_type& exiting_index);
+
   bool OK() const;
 
 private:
@@ -287,6 +293,9 @@ private:
                     dimension_type local_index_i, int rank_last);
     void base_variables_occur_once(dimension_type id) const;
 
+    void get_exiting_and_pivot(dimension_type id,
+                               dimension_type entering_index);
+
   private:
 
     struct Row_Chunk;
@@ -385,6 +394,8 @@ private:
     REMOVE_ROW_OPERATION,
     //! Parameters: id
     BASE_VARIABLES_OCCUR_ONCE_OPERATION,
+    //! Parameters: id, entering_index
+    GET_EXITING_AND_PIVOT,
   };
 
   // This associates to each operation code the number of dimension_type

@@ -72,6 +72,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   2, // EXITING_INDEX_OPERATION: id, entering_index
   4, // REMOVE_ROW_OPERATION: id, rank_i, local_index_i, rank_last
   1, // BASE_VARIABLES_OCCUR_ONCE_OPERATION: id
+  2, // GET_EXITING_AND_PIVOT: id, entering_index
 };
 
 const mpi::communicator*
@@ -239,6 +240,10 @@ PPL::Distributed_Sparse_Matrix
 
     case BASE_VARIABLES_OCCUR_ONCE_OPERATION:
       worker.base_variables_occur_once(PARAMS_1);
+      break;
+
+    case GET_EXITING_AND_PIVOT:
+      worker.get_exiting_and_pivot(PARAMS_2);
       break;
 
     case QUIT_OPERATION:
@@ -1803,6 +1808,64 @@ PPL::Distributed_Sparse_Matrix
   return entering_index;
 }
 
+bool
+PPL::Distributed_Sparse_Matrix
+::get_exiting_and_pivot(dimension_type entering_index,
+                        Sparse_Row& tableau_out,
+                        dimension_type& exiting_var_index) {
+
+  broadcast_operation(GET_EXITING_AND_PIVOT, id, entering_index);
+
+  // 1. exiting_index(entering_index):
+
+  // EXITING_INDEX_OPERATION: id, entering_index
+
+  const dimension_type unused_index = -(dimension_type)1;
+
+  exiting_index_candidate current;
+  current.index = unused_index;
+
+  exiting_index__common(current, local_rows, base, entering_index,
+                        reverse_mapping[0]);
+
+  exiting_index_candidate winner;
+  mpi::all_reduce(comm(), current, winner, exiting_index_reducer_functor());
+
+  if (winner.index == unused_index)
+    return false;
+
+  exiting_var_index = winner.index;
+
+  // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
+
+  std::pair<int, dimension_type>& row_info = mapping[exiting_var_index];
+  int rank = row_info.first;
+  dimension_type local_index = row_info.second;
+  // TODO: Remove this broadcast.
+  mpi::broadcast(comm(), row_info, 0);
+
+  // LINEAR_COMBINE_MATRIX_OPERATION: rank, id, local_index, entering_index
+
+  linear_combine_matrix__common(rank, local_index, entering_index, 0,
+                                local_rows);
+
+  if (rank == 0)
+    tableau_out = local_rows[local_index];
+  else
+    comm().recv(rank, 0, tableau_out);
+
+  // 3. set_base_column(exiting_var_index, entering_index);
+
+  if (rank == 0) {
+    base[local_index] = entering_index;
+  } else {
+
+    // SET_BASE_COLUMN_OPERATION: id, rank, local_row_index, entering_index
+  }
+
+  return true;
+}
+
 
 PPL::Distributed_Sparse_Matrix::Worker::Worker()
   : my_rank(comm().rank()) {
@@ -2391,6 +2454,52 @@ PPL::Distributed_Sparse_Matrix::Worker
                                         row_chunk.reverse_mapping, base);
 
   mpi::reduce(comm(), local_result, std::logical_and<bool>(), 0);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::get_exiting_and_pivot(dimension_type id, dimension_type entering_index) {
+
+  const dimension_type unused_index = -(dimension_type)1;
+
+  // This may create a new Row_Chunk.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  // 1. exiting_index(entering_index):
+
+  exiting_index_candidate current;
+  current.index = unused_index;
+
+  exiting_index__common(current, row_chunk.rows, row_chunk.base,
+                        entering_index, row_chunk.reverse_mapping);
+
+  exiting_index_candidate winner;
+  mpi::all_reduce(comm(), current, winner, exiting_index_reducer_functor());
+
+  if (winner.index == unused_index)
+    return;
+
+  dimension_type exiting_var_index = winner.index;
+
+  // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
+
+  // TODO: Remove this broadcast:
+  std::pair<int, dimension_type> x;
+  mpi::broadcast(comm(), x, 0);
+  int rank = x.first;
+  dimension_type local_row_index = x.second;
+
+  linear_combine_matrix__common(rank, local_row_index, entering_index, my_rank,
+                                row_chunk.rows);
+
+  if (rank == my_rank)
+    comm().send(0, 0, row_chunk.rows[local_row_index]);
+
+  // 3. set_base_column(exiting_var_index, entering_index);
+
+  if (my_rank == rank) {
+    row_chunk.base[local_row_index] = entering_index;
+  }
 }
 
 template <typename Archive>

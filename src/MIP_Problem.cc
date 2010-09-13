@@ -1538,7 +1538,10 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   abs_assign(current_den, cost_sgn_coeff);
 
   PPL_ASSERT(tableau.num_columns() == working_cost.size());
+
+#if !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
+#endif
 
   while (true) {
     // Choose the index of the variable entering the base, if any.
@@ -1551,6 +1554,30 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (entering_var_index == 0)
       return true;
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
+    // We have not reached the optimality or unbounded condition:
+    // compute the new base and the corresponding vertex of the
+    // feasible region.
+
+    matrix_type::row_type tableau_out;
+    dimension_type exiting_var_index;
+    bool result = tableau.get_exiting_and_pivot(entering_var_index,
+                                                tableau_out,
+                                                exiting_var_index);
+
+    // If no exiting index was computed, the problem is unbounded.
+    if (!result)
+      return false;
+
+    // Linearly combine the cost function.
+    if (working_cost[entering_var_index] != 0)
+      linear_combine(working_cost, tableau_out, entering_var_index);
+
+    base[exiting_var_index] = entering_var_index;
+
+#else
+
     // Choose the index of the row exiting the base.
     const dimension_type exiting_base_index
       = get_exiting_base_index(entering_var_index);
@@ -1558,15 +1585,18 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (exiting_base_index == tableau_num_rows)
       return false;
 
-    // Check if the client has requested abandoning all expensive
-    // computations. If so, the exception specified by the client
-    // is thrown now.
-    maybe_abandon();
-
     // We have not reached the optimality or unbounded condition:
     // compute the new base and the corresponding vertex of the
     // feasible region.
     pivot(entering_var_index, exiting_base_index);
+
+#endif
+
+    // TODO: This was moved after pivot(), is this OK?
+    // Check if the client has requested abandoning all expensive
+    // computations. If so, the exception specified by the client
+    // is thrown now.
+    maybe_abandon();
 
     WEIGHT_BEGIN();
     // Now begins the objective function's value check to choose between
@@ -1616,7 +1646,10 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
   PPL_ASSERT(get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_EXACT
          || get_control_parameter(PRICING) == PRICING_TEXTBOOK);
 
+#if !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   const dimension_type tableau_num_rows = tableau.num_rows();
+#endif
+
   const bool textbook_pricing
     = (PRICING_TEXTBOOK == get_control_parameter(PRICING));
 
@@ -1630,6 +1663,30 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (entering_var_index == 0)
       return true;
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+
+    // We have not reached the optimality or unbounded condition:
+    // compute the new base and the corresponding vertex of the
+    // feasible region.
+
+    matrix_type::row_type tableau_out;
+    dimension_type exiting_var_index;
+    bool result = tableau.get_exiting_and_pivot(entering_var_index,
+                                                tableau_out,
+                                                exiting_var_index);
+
+    // If no exiting index was computed, the problem is unbounded.
+    if (!result)
+      return false;
+
+    // Linearly combine the cost function.
+    if (working_cost[entering_var_index] != 0)
+      linear_combine(working_cost, tableau_out, entering_var_index);
+
+    base[exiting_var_index] = entering_var_index;
+
+#else
+
     // Choose the index of the row exiting the base.
     const dimension_type exiting_base_index
       = get_exiting_base_index(entering_var_index);
@@ -1637,15 +1694,19 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (exiting_base_index == tableau_num_rows)
       return false;
 
+    // We have not reached the optimality or unbounded condition:
+    // compute the new base and the corresponding vertex of the
+    // feasible region.
+    pivot(entering_var_index, exiting_base_index);
+
+#endif
+
+    // TODO: This was moved after pivot(), is this OK?
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
     maybe_abandon();
 
-    // We have not reached the optimality or unbounded condition:
-    // compute the new base and the corresponding vertex of the
-    // feasible region.
-    pivot(entering_var_index, exiting_base_index);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
