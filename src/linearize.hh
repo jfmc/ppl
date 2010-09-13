@@ -738,15 +738,22 @@ linearize(const Concrete_Expression<Target>& expr,
   {
     const Approximable_Reference<Target>* ref_expr =
       expr.template as<Approximable_Reference>();
-    /* Variable references are the only that we are currently
-       able to analyze */
-    dimension_type variable_index = oracle.get_associated_dimension(*ref_expr);
-    if (variable_index == not_a_dimension())
+    std::set<dimension_type> associated_dimensions;
+    if (!oracle.get_associated_dimensions(*ref_expr, associated_dimensions)
+        || associated_dimensions.empty())
+      /*
+        We were unable to find any associated space dimension:
+        linearization fails.
+      */
       return false;
-    else {
-      /* If a linear form associated to the referenced variable
-	 exists in lf_store, return that form. Otherwise, return
-         the simplest linear form. */
+    
+    if (associated_dimensions.size() == 1) {
+      /* If a linear form associated to the only referenced
+         space dimension exists in lf_store, return that form.
+         Otherwise, return the simplest linear form. */
+      dimension_type variable_index = *associated_dimensions.begin();
+      PPL_ASSERT(variable_index != not_a_dimension());
+
       typename FP_Linear_Form_Abstract_Store::const_iterator
                variable_value = lf_store.find(variable_index);
       if (variable_value == lf_store.end()) {
@@ -759,6 +766,27 @@ linearize(const Concrete_Expression<Target>& expr,
 	 that an unbounded linear form was saved into lf_store? */
       return !result.overflows();
     }
+
+    /*
+      Here associated_dimensions.size() > 1. Try to return the LUB
+      of all intervals associated to each space dimension.
+    */
+    std::set<dimension_type>::const_iterator i = associated_dimensions.begin();
+    std::set<dimension_type>::const_iterator i_end =
+      associated_dimensions.end();
+    FP_Interval_Type lub(EMPTY);
+    for (; i != i_end; ++i) {
+      FP_Interval_Type curr_int;
+      PPL_ASSERT(*i != not_a_dimension());
+      if (!oracle.get_interval(*i, curr_int))
+        return false;
+
+      lub.join_assign(curr_int);
+    }
+
+    result = FP_Linear_Form(lub);
+    return !result.overflows();
+
     break;
   }
   case Cast_Operator<Target>::KIND:

@@ -433,14 +433,18 @@ public:
                                       FP_Interval_Type& result) const = 0;
 
   /*! \brief
-    Asks the external analyzer for the space dimension associated to
-    the approximable reference \p expr.
+    Asks the external analyzer for the possible space dimensions that
+    are associated to the approximable reference \p expr.
+    Result is stored into \p result.
 
-    \return the associated space dimension if succesful,
-    <CODE>not_a_dimension()<CODE> otherwise.
+    \return <CODE>true</CODE> if the analyzer was able to return
+    the (possibly empty!) set, <CODE>false</CODE> otherwise.
+
+    The resulting set MUST NOT contain <CODE>not_a_dimension()</CODE>.
   */
-  virtual dimension_type get_associated_dimension(
-		         const Approximable_Reference<Target>& expr) const = 0;
+  virtual bool get_associated_dimensions(
+	  const Approximable_Reference<Target>& expr,
+          std::set<dimension_type>& result) const = 0;
 
 };
 

@@ -227,10 +227,10 @@ class Approximable_Reference<C_Expr>
   : public Concrete_Expression<C_Expr>,
     public Approximable_Reference_Common<C_Expr> {
 public:
-  //! Builds a reference to the variable having the given index.
+  //! Builds a reference to the entity having the given index.
   Approximable_Reference<C_Expr>(Concrete_Expression_Type type,
-               const Integer_Interval_Type& val,
-               dimension_type var_index);
+				 const Integer_Interval_Type& val,
+                                 dimension_type index);
 
   //! Do-nothing destructor.
   ~Approximable_Reference<C_Expr>();
@@ -241,11 +241,11 @@ public:
   //! Constant identifying approximable reference nodes.
   enum { KIND = APPROX_REF };
 
-  //! An interval in which the variable's value falls.
+  //! An interval in which the referenced entity's value falls.
   Integer_Interval_Type value;
 
-  //! The index of the referenced variable.
-  dimension_type var_dimension;
+  //! The set of possible indexes for the referenced entity.
+  std::set<dimension_type> dimensions;
 };
 
 } // namespace Parma_Polyhedra_Library

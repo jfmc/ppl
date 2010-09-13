@@ -165,10 +165,11 @@ inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(Concrete_Expression_Type type,
 		       const Integer_Interval_Type& val,
-                       dimension_type var_index)
+                       dimension_type index)
   : Concrete_Expression<C_Expr>(type, APPROX_REF),
     value(val),
-    var_dimension(var_index) {
+    dimensions() {
+  dimensions.insert(index);
 }
 
 inline

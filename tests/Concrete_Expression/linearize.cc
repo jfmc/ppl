@@ -58,9 +58,11 @@ public:
     return true;
   }
 
-  dimension_type get_associated_dimension(
-		 const Approximable_Reference<C_Expr>& expr) const {
-    return expr.var_dimension;
+  bool get_associated_dimensions(
+       const Approximable_Reference<C_Expr>& expr,
+       std::set<dimension_type>& result) const {
+    result = expr.dimensions;
+    return true;
   }
 
   FP_Interval_Abstract_Store int_store;
@@ -99,10 +101,13 @@ test02() {
   Binary_Operator<C_Expr> dif(FP_Type, Binary_Operator<C_Expr>::SUB, &var1, &con);
   Binary_Operator<C_Expr> mul(FP_Type, Binary_Operator<C_Expr>::MUL, &dif, &var0);
   FP_Linear_Form result;
-  linearize(mul, oracle, FP_Linear_Form_Abstract_Store(), result);
+  if (!linearize(mul, oracle, FP_Linear_Form_Abstract_Store(), result))
+    return false;
 
   FP_Linear_Form known_result(compute_absolute_error<FP_Interval>(ANALYZED_FP_FORMAT));
 
+  nout << "*** result ***" << endl
+       << result << endl;
   nout << "*** known_result ***" << endl
        << known_result << endl;
   bool ok = (result == known_result);
@@ -274,6 +279,37 @@ test08() {
   return ok1 && ok2;
 }
 
+/*
+  Tests linearization of an approximable reference having more than
+  one associated index.
+*/
+bool
+test09() {
+  Test_Oracle oracle(FP_Interval_Abstract_Store(4));
+  oracle.int_store.set_interval(Variable(0), FP_Interval(0));
+  oracle.int_store.set_interval(Variable(1), FP_Interval(10));
+  oracle.int_store.set_interval(Variable(2), FP_Interval(20));
+  oracle.int_store.set_interval(Variable(3), FP_Interval(5));
+  Approximable_Reference<C_Expr> ref(FP_Type, Int_Interval(mpz_class(0)), 0);
+  ref.dimensions.insert(1);
+  ref.dimensions.insert(3);
+  FP_Linear_Form result;
+  if (!linearize(ref, oracle, FP_Linear_Form_Abstract_Store(), result))
+    return false;
+
+  FP_Interval known_int(FP_Interval(0));
+  known_int.join_assign(FP_Interval(10));
+  FP_Linear_Form known_result(known_int);
+
+  nout << "*** result ***" << endl
+       << result << endl;
+  nout << "*** known_result ***" << endl
+       << known_result << endl;
+  bool ok = (result == known_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -285,4 +321,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
