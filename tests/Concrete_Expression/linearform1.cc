@@ -306,23 +306,6 @@ test09() {
   return ok1 && ok2 && ok3;
 }
 
-bool
-test10() {
-  Variable A(0);
-  FP_Linear_Form f;
-  FP_Interval_Abstract_Store s(2);
-  FP_Interval i(2.0);
-  f += i;
-  f += A;
-  s.set_interval(A, i);
-  FP_Interval result;
-  f.intervalize(s, result);
-  FP_Interval known_result = i+i;
-  nout << "Result: " << result << std::endl;
-  nout << "Known result: " << known_result << std::endl;
-  return result == known_result;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -335,5 +318,4 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
 END_MAIN

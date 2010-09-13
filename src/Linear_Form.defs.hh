@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Variable.defs.hh"
 #include "Box.types.hh"
+#include "Float.defs.hh"
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
@@ -368,10 +369,19 @@ public:
 
   /*! \brief
     Makes \p result become an interval that overapproximates all the
-    possible values of \p *this in the interval abstract store \p store.
+    possible values of \p *this.
 
-    \param store The abstract store.
+    \param oracle The FP_Oracle to be queried.
     \param result The linear form that will store the result.
+
+    \return <CODE>true</CODE> if the operation was succesful,
+    <CODE>false</CODE> otherwise (the possibility of failure
+    depends on the oracle's implementation).
+
+    \par Template type parameters
+
+    - The class template parameter \p Target specifies the implementation
+    of Concrete_Expression to be used.
 
     This method makes <CODE>result</CODE> become
     \f$\iota(lf)\rho^{\#}\f$, that is an interval defined as:
@@ -381,11 +391,14 @@ public:
     i \asifp \left(\bigoplus_{v \in \cV}{}^{\#}i_{v} \amifp
     \rho^{\#}(v)\right)
     \f]
+    where \f$\rho^{\#}(v)\f$ is an interval (provided by the oracle)
+    that correctly approximates the value of \f$v\f$.
 
-    The result is undefined if \p T is not the type of an interval with
+    The result is undefined if \p C is not the type of an interval with
     floating point boundaries.
   */
-  void intervalize(const Box<C>& store, C& result) const;
+  template <typename Target>
+  bool intervalize(const FP_Oracle<Target,C>& oracle, C& result) const;
 
 private:
   //! The generic coefficient equal to the singleton zero.

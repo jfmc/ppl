@@ -452,19 +452,22 @@ Linear_Form<C>::relative_error(
 }
 
 template <typename C>
-void
-Linear_Form<C>::intervalize(const Box<C>& store, C& result) const {
+template <typename Target>
+bool
+Linear_Form<C>::intervalize(const FP_Oracle<Target,C>& oracle,
+                            C& result) const {
   result = C(inhomogeneous_term());
   dimension_type dimension = space_dimension();
-  assert(dimension <= store.space_dimension());
   for (dimension_type i = 0; i < dimension; ++i) {
     C current_addend = coefficient(Variable(i));
-    const C& curr_int = store.get_interval(Variable(i));
+    C curr_int;
+    if (!oracle.get_interval(i, curr_int))
+      return false;
     current_addend *= curr_int;
     result += current_addend;
   }
 
-  return;
+  return true;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */

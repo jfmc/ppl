@@ -38,6 +38,7 @@ enum C_Expr_Kind {
   APPROX_REF
 };
 
+//! Toy class for testing analysis of floating point computations.
 template <>
 class Concrete_Expression<C_Expr> : public Concrete_Expression_Common<C_Expr> {
 public:
@@ -50,14 +51,6 @@ public:
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  virtual Integer_Interval_Type
-  get_integer_interval() const = 0;
-
-protected:
   //! The expression's type.
   Concrete_Expression_Type expr_type;
 
@@ -90,13 +83,6 @@ public:
   //! Returns the right-hand side of \p *this.
   const Concrete_Expression<C_Expr>* right_hand_side() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
   //! Constant identifying binary operator nodes.
   enum {
     KIND = BOP
@@ -116,7 +102,6 @@ public:
     RSHIFT
   };
 
-private:
   //! The operator of \p *this.
   const Concrete_Expression_BOP bop;
 
@@ -148,13 +133,6 @@ public:
   //! Returns the argument of \p *this.
   const Concrete_Expression<C_Expr>* argument() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
   //! Constant identifying unary operator nodes.
   enum {
     KIND = UOP
@@ -167,7 +145,6 @@ public:
     BNOT
   };
 
-private:
   //! The operator of \p *this.
   const Concrete_Expression_UOP uop;
 
@@ -193,17 +170,9 @@ public:
   //! Returns the casted expression.
   const Concrete_Expression<C_Expr>* argument() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
   //! Constant identifying cast nodes.
   enum { KIND = CAST };
 
-private:
   //! The casted expression.
   const Concrete_Expression<C_Expr>* arg;
 };
@@ -223,17 +192,9 @@ public:
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
   //! Constant identifying integer constant nodes.
   enum { KIND = INT_CON };
 
-private:
   //! An interval in which the value of the constant falls.
   Integer_Interval_Type value;
 };
@@ -253,28 +214,14 @@ public:
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called on this kind of expression.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
-  /*! \brief
-    Returns a string for the floating point constant as written
-    in the analyzed program.
-  */
-  const char* get_value_as_string() const;
-
   //! Constant identifying floating constant nodes.
   enum { KIND = FP_CON };
 
-private:
   //! The floating point constant as written.
   char* value;
 };
 
-// We currently only consider references to floating point variables.
+// The use of Integer_Interval here is for simplicity only.
 template <>
 class Approximable_Reference<C_Expr>
   : public Concrete_Expression<C_Expr>,
@@ -291,23 +238,9 @@ public:
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
 
-  /*! \brief
-    If \p *this is a variable reference, returns the variable's
-    index. Returns <CODE>not_a_dimension()</CODE> otherwise.
-  */
-  dimension_type associated_dimension() const;
-
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
   //! Constant identifying approximable reference nodes.
   enum { KIND = APPROX_REF };
 
-private:
   //! An interval in which the variable's value falls.
   Integer_Interval_Type value;
 

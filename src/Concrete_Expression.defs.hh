@@ -144,13 +144,6 @@ public:
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
 
-  /*! \brief
-    Returns an overapproximation of the integer type value of \p *this.
-    Shouldn't be called if the expression has a different type.
-  */
-  Integer_Interval_Type
-  get_integer_interval() const;
-
   //! Tests if \p *this has the same kind as <CODE>Derived<Target></CODE>.
   template <template <typename T> class Derived>
   bool is() const;
@@ -206,21 +199,10 @@ class Integer_Constant_Common {
 
 template <typename Target>
 class Floating_Point_Constant_Common {
-  /*! \brief
-    Returns a string for the floating point constant as written
-    in the analyzed program.
-  */
-  const char* get_value_as_string() const;
 };
 
 template <typename Target>
 class Approximable_Reference_Common {
-public:
-  /*! \brief
-    If \p *this is a variable reference, returns the variable's
-    index. Returns <CODE>not_a_dimension()</CODE> otherwise.
-  */
-  dimension_type associated_dimension() const;
 };
 
 } // namespace Parma_Polyhedra_Library

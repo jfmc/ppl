@@ -25,6 +25,47 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+class Test_Oracle : public FP_Oracle<C_Expr,FP_Interval> {
+public:
+  Test_Oracle() : int_store(0) {}
+
+  Test_Oracle(FP_Interval_Abstract_Store init) : int_store(init) {}
+
+  bool get_interval(dimension_type dim, FP_Interval& result) const {
+    result = int_store.get_interval(Variable(dim));
+    return true;
+  }
+
+  bool get_fp_constant_value(const Floating_Point_Constant<C_Expr>& expr,
+                             FP_Interval& result) const {
+    result = FP_Interval((const char *)expr.value);
+    return true;
+  }
+
+  bool get_integer_expr_value(const Concrete_Expression<C_Expr>& expr,
+                              FP_Interval& result) const {
+    if (expr.kind() == INT_CON) {
+      const Integer_Constant<C_Expr>* ic_expr =
+        reinterpret_cast< const Integer_Constant<C_Expr>* >(&expr);
+      result = FP_Interval(ic_expr->value);
+    }
+    else {
+      const Approximable_Reference<C_Expr>* ar_expr =
+        reinterpret_cast< const Approximable_Reference<C_Expr>* >(&expr);
+      result = FP_Interval(ar_expr->value);
+    }
+
+    return true;
+  }
+
+  dimension_type get_associated_dimension(
+		 const Approximable_Reference<C_Expr>& expr) const {
+    return expr.var_dimension;
+  }
+
+  FP_Interval_Abstract_Store int_store;
+};
+
 using namespace Parma_Polyhedra_Library::IO_Operators;
 Concrete_Expression_Type FP_Type =
   Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
@@ -38,8 +79,8 @@ test01() {
   Floating_Point_Constant<C_Expr> den("0", 2);
   Binary_Operator<C_Expr> div(FP_Type, Binary_Operator<C_Expr>::DIV, &num, &den);
   FP_Linear_Form result;
-  if (!linearize(div, FP_Interval_Abstract_Store(),
-                 FP_Linear_Form_Abstract_Store(), result)) {
+  if (!linearize(div, Test_Oracle(), FP_Linear_Form_Abstract_Store(),
+                 result)) {
     nout << "*** Linearization failed due to division by zero. ***" << endl;
     return true;
   }
@@ -49,16 +90,16 @@ test01() {
 // Tests multiplication by zero.
 bool
 test02() {
-  FP_Interval_Abstract_Store store(2);
-  store.set_interval(Variable(0), FP_Interval(0));
-  store.set_interval(Variable(1), FP_Interval(10));
+  Test_Oracle oracle(FP_Interval_Abstract_Store(2));
+  oracle.int_store.set_interval(Variable(0), FP_Interval(0));
+  oracle.int_store.set_interval(Variable(1), FP_Interval(10));
   Floating_Point_Constant<C_Expr> con("5.5", 4);
   Approximable_Reference<C_Expr> var0(FP_Type, Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(FP_Type, Int_Interval(mpz_class(0)), 1);
   Binary_Operator<C_Expr> dif(FP_Type, Binary_Operator<C_Expr>::SUB, &var1, &con);
   Binary_Operator<C_Expr> mul(FP_Type, Binary_Operator<C_Expr>::MUL, &dif, &var0);
   FP_Linear_Form result;
-  linearize(mul, store, FP_Linear_Form_Abstract_Store(), result);
+  linearize(mul, oracle, FP_Linear_Form_Abstract_Store(), result);
 
   FP_Linear_Form known_result(compute_absolute_error<FP_Interval>(ANALYZED_FP_FORMAT));
 
@@ -78,7 +119,7 @@ test03() {
   store[0] = known_result;
   Approximable_Reference<C_Expr> var(FP_Type, Int_Interval(mpz_class(0)), 0);
   FP_Linear_Form result;
-  linearize(var, FP_Interval_Abstract_Store(0), store, result);
+  linearize(var, Test_Oracle(), store, result);
 
   nout << "*** known_result ***" << endl
        << known_result << endl;
@@ -91,14 +132,15 @@ test03() {
 bool
 test04() {
   FP_Interval tmp(0);
-  FP_Interval_Abstract_Store store(2);
-  store.set_interval(Variable(0), tmp);
-  store.set_interval(Variable(1), tmp);
+  Test_Oracle oracle(FP_Interval_Abstract_Store(2));
+  oracle.int_store.set_interval(Variable(0), tmp);
+  oracle.int_store.set_interval(Variable(1), tmp);
   Approximable_Reference<C_Expr> var0(FP_Type, Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(FP_Type, Int_Interval(mpz_class(0)), 1);
-  Binary_Operator<C_Expr> sum(FP_Type, Binary_Operator<C_Expr>::ADD, &var0, &var1);
+  Binary_Operator<C_Expr> sum(FP_Type, Binary_Operator<C_Expr>::ADD,
+                              &var0, &var1);
   FP_Linear_Form result;
-  linearize(sum, store, FP_Linear_Form_Abstract_Store(), result);
+  linearize(sum, oracle, FP_Linear_Form_Abstract_Store(), result);
 
   Variable A(0);
   Variable B(1);
@@ -122,14 +164,15 @@ test04() {
 bool
 test05() {
   FP_Interval tmp(0);
-  FP_Interval_Abstract_Store store(2);
-  store.set_interval(Variable(0), tmp);
-  store.set_interval(Variable(1), tmp);
+  Test_Oracle oracle(FP_Interval_Abstract_Store(2));
+  oracle.int_store.set_interval(Variable(0), tmp);
+  oracle.int_store.set_interval(Variable(1), tmp);
   Approximable_Reference<C_Expr> var0(FP_Type, Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(FP_Type, Int_Interval(mpz_class(0)), 1);
-  Binary_Operator<C_Expr> dif(FP_Type, Binary_Operator<C_Expr>::SUB, &var0, &var1);
+  Binary_Operator<C_Expr> dif(FP_Type, Binary_Operator<C_Expr>::SUB,
+                              &var0, &var1);
   FP_Linear_Form result;
-  linearize(dif, store, FP_Linear_Form_Abstract_Store(), result);
+  linearize(dif, oracle, FP_Linear_Form_Abstract_Store(), result);
 
   Variable A(0);
   Variable B(1);
@@ -155,14 +198,15 @@ bool
 test06() {
   FP_Interval tmp(0);
   tmp.join_assign(1);
-  FP_Interval_Abstract_Store store(2);
-  store.set_interval(Variable(0), tmp);
-  store.set_interval(Variable(1), FP_Interval(2));
+  Test_Oracle oracle(FP_Interval_Abstract_Store(2));
+  oracle.int_store.set_interval(Variable(0), tmp);
+  oracle.int_store.set_interval(Variable(1), FP_Interval(2));
   Approximable_Reference<C_Expr> var0(FP_Type, Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(FP_Type, Int_Interval(mpz_class(0)), 1);
-  Binary_Operator<C_Expr> mul(FP_Type, Binary_Operator<C_Expr>::MUL, &var0, &var1);
+  Binary_Operator<C_Expr> mul(FP_Type, Binary_Operator<C_Expr>::MUL,
+                              &var0, &var1);
   FP_Linear_Form result;
-  linearize(mul, store, FP_Linear_Form_Abstract_Store(), result);
+  linearize(mul, oracle, FP_Linear_Form_Abstract_Store(), result);
 
   Variable A(0);
   FP_Interval coeff = FP_Interval(2);
@@ -183,14 +227,15 @@ bool
 test07() {
   FP_Interval tmp(0);
   tmp.join_assign(1);
-  FP_Interval_Abstract_Store store(2);
-  store.set_interval(Variable(0), tmp);
-  store.set_interval(Variable(1), FP_Interval(2));
+  Test_Oracle oracle(FP_Interval_Abstract_Store(2));
+  oracle.int_store.set_interval(Variable(0), tmp);
+  oracle.int_store.set_interval(Variable(1), FP_Interval(2));
   Approximable_Reference<C_Expr> var0(FP_Type, Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(FP_Type, Int_Interval(mpz_class(0)), 1);
-  Binary_Operator<C_Expr> div(FP_Type, Binary_Operator<C_Expr>::DIV, &var0, &var1);
+  Binary_Operator<C_Expr> div(FP_Type, Binary_Operator<C_Expr>::DIV,
+                              &var0, &var1);
   FP_Linear_Form result;
-  linearize(div, store, FP_Linear_Form_Abstract_Store(), result);
+  linearize(div, oracle, FP_Linear_Form_Abstract_Store(), result);
 
   Variable A(0);
   FP_Interval coeff = FP_Interval(1 / 2.0);
@@ -213,7 +258,7 @@ test08() {
   Integer_Constant<C_Expr> ic_expr(Concrete_Expression_Type::bounded_integer(BITS_32, UNSIGNED, OVERFLOW_WRAPS), i);
   Cast_Operator<C_Expr> cast(FP_Type, &ic_expr);
   FP_Linear_Form result;
-  linearize(cast, FP_Interval_Abstract_Store(),
+  linearize(cast, Test_Oracle(),
             FP_Linear_Form_Abstract_Store(), result);
 
   Int_Interval approx(mpz_class(123456700));
@@ -222,8 +267,7 @@ test08() {
 
   Approximable_Reference<C_Expr> var(Concrete_Expression_Type::bounded_integer(BITS_32, UNSIGNED, OVERFLOW_WRAPS), i, 0);
   Cast_Operator<C_Expr> cast2(FP_Type, &var);
-  linearize(cast2, FP_Interval_Abstract_Store(),
-            FP_Linear_Form_Abstract_Store(), result);
+  linearize(cast2, Test_Oracle(), FP_Linear_Form_Abstract_Store(), result);
 
   bool ok2 = approx.contains(result.inhomogeneous_term());
 

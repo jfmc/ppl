@@ -48,18 +48,12 @@ namespace Parma_Polyhedra_Library {
 
   \param expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>ADD</CODE>.
-  \param int_store The interval abstract store.
+  \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
-
-  Note that all floating point variables occuring
-  in the expressions represented
-  by \p first_operand and \p second_operand MUST have an associated value in
-  \p int_store. If this precondition is not met, calling the method
-  causes an undefined behavior.
 
   \par Linearization of sum floating-point expressions
 
@@ -105,7 +99,7 @@ namespace Parma_Polyhedra_Library {
 template <typename Target, typename FP_Interval_Type>
 static bool
 add_linearize(const Binary_Operator<Target>& bop_expr,
-              const Box<FP_Interval_Type>& int_store,
+              const FP_Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::ADD);
@@ -115,7 +109,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
-  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
     return false;
 
   Floating_Point_Format analyzed_format =
@@ -124,7 +118,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
                  linearized_second_operand))
     return false;
 
@@ -154,18 +148,12 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
 
   \param expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>SUB</CODE>.
-  \param int_store The interval abstract store.
+  \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
-
-  Note that all floating point variables occuring
-  in the expressions represented
-  by \p first_operand and \p second_operand MUST have an associated value in
-  \p int_store. If this precondition is not met, calling the method
-  causes an undefined behavior.
 
   \par Linearization of difference floating-point expressions
 
@@ -217,7 +205,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 sub_linearize(const Binary_Operator<Target>& bop_expr,
-              const Box<FP_Interval_Type>& int_store,
+              const FP_Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::SUB);
@@ -227,7 +215,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
-  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
     return false;
 
   Floating_Point_Format analyzed_format =
@@ -236,7 +224,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   result.relative_error(analyzed_format, rel_error);
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
                  linearized_second_operand))
     return false;
 
@@ -266,18 +254,12 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
 
   \param expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>MUL</CODE>.
-  \param int_store The interval abstract store.
+  \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
-
-  Note that all floating point variables occuring
-  in the expressions represented
-  by \p first_operand and \p second_operand MUST have an associated value in
-  \p int_store. If this precondition is not met, calling the method
-  causes an undefined behavior.
 
   \par Linearization of multiplication floating-point expressions
 
@@ -358,7 +340,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 mul_linearize(const Binary_Operator<Target>& bop_expr,
-              const Box<FP_Interval_Type>& int_store,
+              const FP_Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::MUL);
@@ -383,17 +365,20 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   // true if we intervalize the first form, false if we intervalize the second.
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand;
-  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store,
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store,
                  linearized_first_operand))
     return false;
   FP_Interval_Type intervalized_first_operand;
-  linearized_first_operand.intervalize(int_store, intervalized_first_operand);
+  if (!linearized_first_operand.intervalize(oracle, intervalized_first_operand))
+    return false;
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
                  linearized_second_operand))
     return false;
   FP_Interval_Type intervalized_second_operand;
-  linearized_second_operand.intervalize(int_store, intervalized_second_operand);
+  if (!linearized_second_operand.intervalize(oracle,
+                                             intervalized_second_operand))
+    return false;
   analyzer_format first_interval_size, second_interval_size;
 
   // FIXME: we are not sure that what we do here is policy-proof.
@@ -458,18 +443,12 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
 
   \param expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>DIV</CODE>.
-  \param int_store The interval abstract store.
+  \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
-
-  Note that all floating point variables occuring
-  in the expressions represented
-  by \p first_operand and \p second_operand MUST have an associated value in
-  \p int_store. If this precondition is not met, calling the method
-  causes an undefined behavior.
 
   \par Linearization of division floating-point expressions
 
@@ -538,7 +517,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 div_linearize(const Binary_Operator<Target>& bop_expr,
-              const Box<FP_Interval_Type>& int_store,
+              const FP_Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::DIV);
@@ -549,11 +528,13 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   FP_Linear_Form linearized_second_operand;
-  if (!linearize(*(bop_expr.right_hand_side()), int_store, lf_store,
+  if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
                  linearized_second_operand))
     return false;
   FP_Interval_Type intervalized_second_operand;
-  linearized_second_operand.intervalize(int_store, intervalized_second_operand);
+  if (!linearized_second_operand.intervalize(oracle,
+                                             intervalized_second_operand))
+    return false;
 
   // Check if we may divide by zero.
   if ((intervalized_second_operand.lower_is_boundary_infinity() ||
@@ -562,7 +543,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
        intervalized_second_operand.upper() >= 0))
     return false;
 
-  if (!linearize(*(bop_expr.left_hand_side()), int_store, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
     return false;
 
   Floating_Point_Format analyzed_format =
@@ -594,21 +575,17 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   composite abstract store.
 
   \param expr The cast operator concrete expression to linearize.
-  \param int_store The interval abstract store.
+  \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
-
-  Note that all floating point variables occuring in the expression represented
-  by \p cast_expr MUST have an associated value in \p int_store. If this
-  precondition is not met, calling the method causes an undefined behavior.
 */
 template <typename Target, typename FP_Interval_Type>
 static bool
 cast_linearize(const Cast_Operator<Target>& cast_expr,
-               const Box<FP_Interval_Type>& int_store,
+               const FP_Oracle<Target,FP_Interval_Type>& oracle,
                const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
                Linear_Form<FP_Interval_Type>& result) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
@@ -620,7 +597,7 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     cast_expr.type().floating_point_format();
   const Concrete_Expression<Target>* cast_arg = cast_expr.argument();
   if (cast_arg->type().is_floating_point()) {
-    if (!linearize(*cast_arg, int_store, lf_store, result))
+    if (!linearize(*cast_arg, oracle, lf_store, result))
       return false;
     if (!is_less_precise_than(analyzed_format,
                               cast_arg->type().floating_point_format()))
@@ -628,7 +605,10 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
       return true;
   }
   else {
-    result = FP_Linear_Form(FP_Interval_Type(cast_arg->get_integer_interval()));
+    FP_Interval_Type expr_value;
+    if (!oracle.get_integer_expr_value(*cast_arg, expr_value))
+      return false;
+    result = FP_Linear_Form(expr_value);
     if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format))
       // We are rounding to a less precise format. Do not add errors.
       return true;
@@ -657,29 +637,22 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   should have a floating point type.
 
   \param expr The concrete expression to linearize.
-  \param int_store The interval abstract store.
+  \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result Becomes the linearized expression.
 
   \return <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
 
-  Formally, if \p expr represents the expression \f$e\f$,
-  \p int_store represents the interval abstract store \f$\rho^{\#}\f$ and
+  Formally, if \p expr represents the expression \f$e\f$ and
   \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
-  then \p result will become
-  \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$
+  then \p result will become \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$
   if the linearization succeeds.
-
-  All variables occuring in the floating point expression MUST have
-  an associated interval in \p int_store.
-  If this precondition is not met, calling the method causes an
-  undefined behavior.
 */
 template <typename Target, typename FP_Interval_Type>
 bool
 linearize(const Concrete_Expression<Target>& expr,
-          const Box<FP_Interval_Type>& int_store,
+          const FP_Oracle<Target,FP_Interval_Type>& oracle,
           const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
           Linear_Form<FP_Interval_Type>& result) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
@@ -694,13 +667,16 @@ linearize(const Concrete_Expression<Target>& expr,
 
   switch(expr.kind()) {
   case Integer_Constant<Target>::KIND:
-    throw std::runtime_error("PPL internal error: unimplemented");
+    throw std::runtime_error("PPL internal error: unreachable");
     break;
   case Floating_Point_Constant<Target>::KIND:
   {
     const Floating_Point_Constant<Target>* fpc_expr =
       expr.template as<Floating_Point_Constant>();
-    result = FP_Linear_Form(FP_Interval_Type(fpc_expr->get_value_as_string()));
+    FP_Interval_Type constant_value;
+    if (!oracle.get_fp_constant_value(*fpc_expr, constant_value))
+      return false;
+    result = FP_Linear_Form(constant_value);
     return true;
     break;
   }
@@ -710,10 +686,10 @@ linearize(const Concrete_Expression<Target>& expr,
       expr.template as<Unary_Operator>();
     switch (uop_expr->unary_operator()) {
     case Unary_Operator<Target>::UPLUS:
-      return linearize(*(uop_expr->argument()), int_store, lf_store, result);
+      return linearize(*(uop_expr->argument()), oracle, lf_store, result);
       break;
     case Unary_Operator<Target>::UMINUS:
-      if (!linearize(*(uop_expr->argument()), int_store, lf_store, result))
+      if (!linearize(*(uop_expr->argument()), oracle, lf_store, result))
         return false;
 
       result.negate();
@@ -723,7 +699,7 @@ linearize(const Concrete_Expression<Target>& expr,
       throw std::runtime_error("PPL internal error: unimplemented");
       break;
     default:
-      throw std::runtime_error("PPL internal error");
+      throw std::runtime_error("PPL internal error: unreachable");
     }
     break;
   }
@@ -733,16 +709,16 @@ linearize(const Concrete_Expression<Target>& expr,
       expr.template as<Binary_Operator>();
     switch (bop_expr->binary_operator()) {
     case Binary_Operator<Target>::ADD:
-      return add_linearize(*bop_expr, int_store, lf_store, result);
+      return add_linearize(*bop_expr, oracle, lf_store, result);
       break;
     case Binary_Operator<Target>::SUB:
-      return sub_linearize(*bop_expr, int_store, lf_store, result);
+      return sub_linearize(*bop_expr, oracle, lf_store, result);
       break;
     case Binary_Operator<Target>::MUL:
-      return mul_linearize(*bop_expr, int_store, lf_store, result);
+      return mul_linearize(*bop_expr, oracle, lf_store, result);
       break;
     case Binary_Operator<Target>::DIV:
-      return div_linearize(*bop_expr, int_store, lf_store, result);
+      return div_linearize(*bop_expr, oracle, lf_store, result);
       break;
     case Binary_Operator<Target>::REM:
     case Binary_Operator<Target>::BAND:
@@ -754,7 +730,7 @@ linearize(const Concrete_Expression<Target>& expr,
       return false;
       break;
     default:
-      throw std::runtime_error("PPL internal error");
+      throw std::runtime_error("PPL internal error: unreachable");
     }
     break;
   }
@@ -764,7 +740,7 @@ linearize(const Concrete_Expression<Target>& expr,
       expr.template as<Approximable_Reference>();
     /* Variable references are the only that we are currently
        able to analyze */
-    dimension_type variable_index = ref_expr->associated_dimension();
+    dimension_type variable_index = oracle.get_associated_dimension(*ref_expr);
     if (variable_index == not_a_dimension())
       return false;
     else {
@@ -789,7 +765,7 @@ linearize(const Concrete_Expression<Target>& expr,
   {
     const Cast_Operator<Target>* cast_expr =
       expr.template as<Cast_Operator>();
-    return cast_linearize(*cast_expr, int_store, lf_store, result);
+    return cast_linearize(*cast_expr, oracle, lf_store, result);
     break;
   }
   default:
