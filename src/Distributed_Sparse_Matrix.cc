@@ -839,18 +839,12 @@ PPL::Distributed_Sparse_Matrix::linear_combine_with_base_rows__common(
 #endif
 
   // Calculate the global result from global_scaling and global_increase.
-  // global_result[i] == global_scaling * working_cost[i]
+  // global_result[i] == global_scaling * row_k[i]
   //                     + global_reverse_scaling * global_increase[i].
-  // The global result is stored in working_cost to improve performance.
+  // The global result is stored in row_k to improve performance.
 
-  // TODO: use row_k.combine() instead of these two loops.
-  for (Sparse_Row::iterator
-       i = row_k.begin(), i_end = row_k.end(); i != i_end; ++i)
-    *i *= global_scaling;
-  for (Sparse_Row::const_iterator
-       i = global_increase.begin(), i_end = global_increase.end();
-       i != i_end; ++i)
-    row_k[i.index()] += global_reverse_scaling * *i;
+  row_k.linear_combine(global_increase, global_scaling,
+                       global_reverse_scaling);
 
   // TODO: row_k seems to be already normalized, check whether this can be
   // removed or not.
