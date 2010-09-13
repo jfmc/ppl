@@ -155,21 +155,24 @@ public:
     base_variables_occur_once(const std::vector<dimension_type>& base) const;
 
   //! This returns false if no variable exited the base.
-  //! tableau_out is set to the row that exited the base.
+  //! tableau_out is set to the address of the row that exited the base.
+  //! The row pointed to by tableau_out will be invalidated by the next call
+  //! to this method.
   bool get_exiting_and_pivot(dimension_type entering_index,
-                             Sparse_Row& tableau_out,
+                             const Sparse_Row*& tableau_out,
                              dimension_type& exiting_index);
 
   bool OK() const;
 
 private:
 
-  static void linear_combine_matrix__common(int rank,
-                                            dimension_type local_row_index,
-                                            dimension_type col_index,
-                                            int my_rank,
-                                            std::vector<Sparse_Row>&
-                                              local_rows);
+  // This returns a const reference to the local row, if this node stores it,
+  // or to an internal copy of the remote row, that will be valid until the
+  // next call to this method.
+  static const Sparse_Row&
+  linear_combine_matrix__common(int rank, dimension_type local_row_index,
+                                dimension_type col_index, int my_rank,
+                                std::vector<Sparse_Row>& local_rows);
 
   static void swap_rows__common(int rank1, int rank2,
                                 dimension_type local_index1,

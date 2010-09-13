@@ -513,7 +513,7 @@ linear_combine(Sparse_Row& x, const Sparse_Row& y, const dimension_type k) {
 
 } // namespace Parma_Polyhedra_Library
 
-void
+const PPL::Sparse_Row&
 PPL::Distributed_Sparse_Matrix
 ::linear_combine_matrix__common(int rank, dimension_type local_row_index,
                                 dimension_type col_index, int my_rank,
@@ -525,12 +525,14 @@ PPL::Distributed_Sparse_Matrix
     for (dimension_type i = 0; i < local_rows.size(); i++)
       if (i != local_row_index && local_rows[i].get(col_index) != 0)
         linear_combine(local_rows[i], row, col_index);
+    return row;
   } else {
-    Sparse_Row row;
+    static Sparse_Row row;
     mpi::broadcast(comm(), row, rank);
     for (dimension_type i = 0; i < local_rows.size(); i++)
       if (local_rows[i].get(col_index) != 0)
         linear_combine(local_rows[i], row, col_index);
+    return row;
   }
 }
 
@@ -1809,14 +1811,12 @@ PPL::Distributed_Sparse_Matrix
 bool
 PPL::Distributed_Sparse_Matrix
 ::get_exiting_and_pivot(dimension_type entering_index,
-                        Sparse_Row& tableau_out,
+                        const Sparse_Row*& tableau_out,
                         dimension_type& exiting_var_index) {
 
   broadcast_operation(GET_EXITING_AND_PIVOT, id, entering_index);
 
   // 1. exiting_index(entering_index):
-
-  // EXITING_INDEX_OPERATION: id, entering_index
 
   const dimension_type unused_index = -(dimension_type)1;
 
@@ -1839,24 +1839,16 @@ PPL::Distributed_Sparse_Matrix
 
   // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
 
-  // LINEAR_COMBINE_MATRIX_OPERATION: rank, id, local_index, entering_index
+  const Sparse_Row& returned_tableau_out
+    = linear_combine_matrix__common(rank, local_index, entering_index, 0,
+                                    local_rows);
 
-  linear_combine_matrix__common(rank, local_index, entering_index, 0,
-                                local_rows);
-
-  if (rank == 0)
-    tableau_out = local_rows[local_index];
-  else
-    comm().recv(rank, 0, tableau_out);
+  tableau_out = &returned_tableau_out;
 
   // 3. set_base_column(exiting_var_index, entering_index);
 
-  if (rank == 0) {
+  if (rank == 0)
     base[local_index] = entering_index;
-  } else {
-
-    // SET_BASE_COLUMN_OPERATION: id, rank, local_row_index, entering_index
-  }
 
   return true;
 }
@@ -1940,8 +1932,10 @@ PPL::Distributed_Sparse_Matrix::Worker
   // This may create a new Row_Chunk.
   Row_Chunk& row_chunk = row_chunks[id];
 
-  linear_combine_matrix__common(rank, local_row_index, col_index, my_rank,
-                                row_chunk.rows);
+  const Sparse_Row& tableau_out
+    = linear_combine_matrix__common(rank, local_row_index, col_index, my_rank,
+                                    row_chunk.rows);
+  (void)tableau_out;
 
   if (rank == my_rank)
     comm().send(0, 0, row_chunk.rows[local_row_index]);
@@ -2481,15 +2475,14 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
 
-  linear_combine_matrix__common(rank, local_row_index, entering_index, my_rank,
-                                row_chunk.rows);
-
-  if (rank == my_rank)
-    comm().send(0, 0, row_chunk.rows[local_row_index]);
+  const Sparse_Row& tableau_out
+    = linear_combine_matrix__common(rank, local_row_index, entering_index,
+                                    my_rank, row_chunk.rows);
+  (void)tableau_out;
 
   // 3. set_base_column(exiting_var_index, entering_index);
 
-  if (my_rank == rank) {
+  if (rank == my_rank) {
     row_chunk.base[local_row_index] = entering_index;
   }
 }

@@ -1560,7 +1560,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     // compute the new base and the corresponding vertex of the
     // feasible region.
 
-    matrix_type::row_type tableau_out;
+    const matrix_type::row_type* tableau_out = NULL;
     dimension_type exiting_var_index;
     bool result = tableau.get_exiting_and_pivot(entering_var_index,
                                                 tableau_out,
@@ -1572,7 +1572,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
 
     // Linearly combine the cost function.
     if (working_cost[entering_var_index] != 0)
-      linear_combine(working_cost, tableau_out, entering_var_index);
+      linear_combine(working_cost, *tableau_out, entering_var_index);
 
     base[exiting_var_index] = entering_var_index;
 
@@ -1669,7 +1669,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     // compute the new base and the corresponding vertex of the
     // feasible region.
 
-    matrix_type::row_type tableau_out;
+    const matrix_type::row_type* tableau_out = NULL;
     dimension_type exiting_var_index;
     bool result = tableau.get_exiting_and_pivot(entering_var_index,
                                                 tableau_out,
@@ -1681,7 +1681,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
 
     // Linearly combine the cost function.
     if (working_cost[entering_var_index] != 0)
-      linear_combine(working_cost, tableau_out, entering_var_index);
+      linear_combine(working_cost, *tableau_out, entering_var_index);
 
     base[exiting_var_index] = entering_var_index;
 
