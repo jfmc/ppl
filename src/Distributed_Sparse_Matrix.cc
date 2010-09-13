@@ -920,8 +920,11 @@ PPL::Distributed_Sparse_Matrix
 namespace {
 
 struct exiting_index_candidate {
-  //! The (local, for node calculations, or global, for reductions) row index.
+  //! The local row index.
   PPL::dimension_type index;
+
+  //! The rank of the node that sent this candidate.
+  int rank;
 
   //! base[index].
   PPL::dimension_type base_index;
@@ -935,6 +938,7 @@ struct exiting_index_candidate {
   template <typename Archive>
   void serialize(Archive& ar, const unsigned long /* version */) {
     ar & index;
+    ar & rank;
     ar & base_index;
     ar & row_0;
     ar & row_entering;
@@ -1003,9 +1007,7 @@ namespace Parma_Polyhedra_Library {
 void exiting_index__common(exiting_index_candidate& current,
                            const std::vector<Sparse_Row>& local_rows,
                            const std::vector<dimension_type>& base,
-                           dimension_type entering_index,
-                           const std::vector<dimension_type>&
-                              reverse_mapping) {
+                           dimension_type entering_index) {
 
   const dimension_type unused_index = -(dimension_type)1;
 
@@ -1053,10 +1055,6 @@ void exiting_index__common(exiting_index_candidate& current,
       }
     }
   }
-
-  // Convert current.index into a global index.
-  if (current.index != unused_index)
-    current.index = reverse_mapping[current.index];
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -1707,9 +1705,9 @@ PPL::Distributed_Sparse_Matrix
 
   exiting_index_candidate current;
   current.index = unused_index;
+  current.rank = 0;
 
-  exiting_index__common(current, local_rows, base, entering_index,
-                        reverse_mapping[0]);
+  exiting_index__common(current, local_rows, base, entering_index);
 
   exiting_index_candidate winner;
   mpi::reduce(comm(), current, winner, exiting_index_reducer_functor(), 0);
@@ -1717,7 +1715,7 @@ PPL::Distributed_Sparse_Matrix
   if (winner.index == unused_index)
     return num_rows();
 
-  return winner.index;
+  return reverse_mapping[winner.rank][winner.index];
 }
 
 namespace {
@@ -1824,9 +1822,9 @@ PPL::Distributed_Sparse_Matrix
 
   exiting_index_candidate current;
   current.index = unused_index;
+  current.rank = 0;
 
-  exiting_index__common(current, local_rows, base, entering_index,
-                        reverse_mapping[0]);
+  exiting_index__common(current, local_rows, base, entering_index);
 
   exiting_index_candidate winner;
   mpi::all_reduce(comm(), current, winner, exiting_index_reducer_functor());
@@ -1834,15 +1832,12 @@ PPL::Distributed_Sparse_Matrix
   if (winner.index == unused_index)
     return false;
 
-  exiting_var_index = winner.index;
+  dimension_type local_index = winner.index;
+  int rank = winner.rank;
+
+  exiting_var_index = reverse_mapping[rank][local_index];
 
   // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
-
-  std::pair<int, dimension_type>& row_info = mapping[exiting_var_index];
-  int rank = row_info.first;
-  dimension_type local_index = row_info.second;
-  // TODO: Remove this broadcast.
-  mpi::broadcast(comm(), row_info, 0);
 
   // LINEAR_COMBINE_MATRIX_OPERATION: rank, id, local_index, entering_index
 
@@ -2419,11 +2414,12 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   exiting_index_candidate current;
   current.index = unused_index;
+  current.rank = my_rank;
 
   const Row_Chunk& row_chunk = get_row_chunk(id);
 
   exiting_index__common(current, row_chunk.rows, row_chunk.base,
-                        entering_index, row_chunk.reverse_mapping);
+                        entering_index);
 
   mpi::reduce(comm(), current, exiting_index_reducer_functor(), 0);
 }
@@ -2469,9 +2465,10 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   exiting_index_candidate current;
   current.index = unused_index;
+  current.rank = my_rank;
 
   exiting_index__common(current, row_chunk.rows, row_chunk.base,
-                        entering_index, row_chunk.reverse_mapping);
+                        entering_index);
 
   exiting_index_candidate winner;
   mpi::all_reduce(comm(), current, winner, exiting_index_reducer_functor());
@@ -2479,15 +2476,10 @@ PPL::Distributed_Sparse_Matrix::Worker
   if (winner.index == unused_index)
     return;
 
-  dimension_type exiting_var_index = winner.index;
+  int rank = winner.rank;
+  dimension_type local_row_index = winner.index;
 
   // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
-
-  // TODO: Remove this broadcast:
-  std::pair<int, dimension_type> x;
-  mpi::broadcast(comm(), x, 0);
-  int rank = x.first;
-  dimension_type local_row_index = x.second;
 
   linear_combine_matrix__common(rank, local_row_index, entering_index, my_rank,
                                 row_chunk.rows);
