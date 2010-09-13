@@ -757,8 +757,14 @@ test08() {
   Coefficient num_kr = -5;
   Coefficient den_kr = 1;
 
+  // With distributed matrices, the optimum point depends on the number of
+  // jobs, so it must not be checked.
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  return num == num_kr && den == den_kr;
+#else
   return pg == point(-A - 2*B - C - D)
     && num == num_kr && den == den_kr;
+#endif
 }
 
 bool
