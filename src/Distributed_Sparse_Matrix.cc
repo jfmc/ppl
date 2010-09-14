@@ -1593,13 +1593,19 @@ PPL::Distributed_Sparse_Matrix
   const dimension_type num_columns_minus_1 = num_columns() - 1;
 
   const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
+  PPL_ASSERT(cost_sign != 0);
 
   // When candidate[i] is true, i is one of the column candidates.
-  std::vector<bool> candidates(num_columns_minus_1);
+  std::vector<bool> candidates(num_columns_minus_1, false);
 
-  // TODO: Optimize here.
-  for (dimension_type column = 1; column < num_columns_minus_1; ++column)
-    candidates[column] = (sgn(working_cost.get(column)) == cost_sign);
+  {
+    Sparse_Row::const_iterator i = working_cost.lower_bound(1);
+    // Note that find() is equivalent to linear_combine() when searching the
+    // last element.
+    Sparse_Row::const_iterator i_end = working_cost.find(num_columns_minus_1);
+    for ( ; i != i_end; ++i)
+      candidates[i.index()] = (sgn(*i) == cost_sign);
+  }
 
   mpi::broadcast(comm(), candidates, 0);
 
