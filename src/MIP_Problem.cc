@@ -1859,16 +1859,24 @@ PPL::MIP_Problem::second_phase() {
                                                  cost_zero_size,
                                                  new_cost.flags());
   tmp_cost.swap(working_cost);
-  working_cost.find_create(cost_zero_size - 1, Coefficient_one());
 
-  // Split the variables the cost function.
-  for (dimension_type i = new_cost.size(); i-- > 1; ) {
-    const dimension_type original_var = mapping[i].first;
-    const dimension_type split_var = mapping[i].second;
-    working_cost[original_var] = new_cost[i];
-    if (mapping[i].second != 0)
-      working_cost[split_var] = - new_cost[i];
+  {
+    working_cost_type::iterator itr
+      = working_cost.find_create(cost_zero_size - 1, Coefficient_one());
+
+    // Split the variables in the cost function.
+    for (working_cost_type::const_iterator
+         i = new_cost.lower_bound(1), i_end = new_cost.end();
+         i != i_end; ++i) {
+      const dimension_type index = i.index();
+      const dimension_type original_var = mapping[index].first;
+      const dimension_type split_var = mapping[index].second;
+      itr = working_cost.find_create(itr, original_var, *i);
+      if (mapping[index].second != 0)
+        itr = working_cost.find_create(itr, split_var, - (*i));
+    }
   }
+
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
   {
