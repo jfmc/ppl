@@ -1849,14 +1849,16 @@ PPL::MIP_Problem::second_phase() {
 
   // Negate the cost function if we are minimizing.
   if (opt_mode == MINIMIZATION)
-    for (dimension_type i = new_cost.size(); i-- > 0; )
-      neg_assign(new_cost[i]);
+    for (working_cost_type::iterator
+         i = new_cost.begin(), i_end = new_cost.end(); i != i_end; ++i)
+      neg_assign(*i);
 
   // Substitute properly the cost function in the `costs' matrix.
   const dimension_type cost_zero_size = working_cost.size();
-  working_cost_type tmp_cost = working_cost_type(new_cost, cost_zero_size, cost_zero_size);
+  working_cost_type tmp_cost = working_cost_type(new_cost, cost_zero_size,
+                                                 cost_zero_size);
   tmp_cost.swap(working_cost);
-  working_cost[cost_zero_size - 1] = 1;
+  working_cost.find_create(cost_zero_size - 1, Coefficient_one());
 
   // Split the variables the cost function.
   for (dimension_type i = new_cost.size(); i-- > 1; ) {
