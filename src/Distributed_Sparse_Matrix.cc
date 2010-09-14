@@ -1389,13 +1389,8 @@ PPL::Distributed_Sparse_Matrix
   //                     + global_reverse_scaling * global_increase[i].
   // The global result is stored in working_cost to improve performance.
 
-  // TODO: Optimize here
-  for (dimension_type i = 0; i < working_cost.size(); ++i)
-    working_cost[i] *= global_scaling;
-  for (Sparse_Row::const_iterator
-       i = global_increase.begin(), i_end = global_increase.end();
-       i != i_end; ++i)
-    working_cost[i.index()] += global_reverse_scaling * *i;
+  working_cost.linear_combine(global_increase, global_scaling,
+                              global_reverse_scaling);
 
   working_cost.normalize();
 }
