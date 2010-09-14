@@ -979,7 +979,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   double float_tableau_value;
   double float_tableau_denum;
   dimension_type entering_index = 0;
-  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
 
   // These two implementation work for both sparse and dense matrices.
   // However, when using sparse matrices the first one is fast and the second
@@ -988,63 +988,69 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #if USE_PPL_SPARSE_MATRIX
 
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
-  // This is static to improve performance.
-  // A pair (true, y) at position i means that
-  // sgn(working_cost[i]) == cost_sign and y is the denominator of the
-  // challenger, for the column i.
-  // A pair (false, y) at position i means that
-  // sgn(working_cost[i]) != cost_sign, and y is unused.
-  static std::vector<std::pair<bool, double> > columns;
-  // The first element is not used.
-  columns.resize(tableau_num_columns - 1);
-  for (dimension_type column = 1;
-       column < tableau_num_columns_minus_1;
-       ++column)
-    if (sgn(working_cost[column]) == cost_sign) {
-      columns[column].first = true;
-      columns[column].second = 1.0;
-    } else
-      columns[column].first = false;
+  // A vector of <column_index, challenger_den> pairs, ordered by
+  // column_index.
+  std::vector<std::pair<dimension_type, double> > columns;
+  {
+    working_cost_type::const_iterator i = working_cost.lower_bound(1);
+    // Note that find() is used instead of lower_bound().
+    working_cost_type::const_iterator i_end
+      = working_cost.find(tableau_num_columns_minus_1);
+    for ( ; i != i_end; ++i)
+      if (sgn(*i) == cost_sign)
+        columns.push_back(std::make_pair(i.index(), 1.0));
+  }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const matrix_type::row_type& tableau_i = tableau[i];
     Coefficient_traits::const_reference tableau_i_base_i = tableau_i.get(base[i]);
     assign(float_tableau_denum, tableau_i_base_i);
-    matrix_type::row_type::const_iterator j;
-    matrix_type::row_type::const_iterator j_end;
-    for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j) {
-      if (j.index() >= tableau_num_columns_minus_1)
-        break;
-      std::pair<bool, double>& current_data = columns[j.index()];
-      if (!current_data.first)
-        continue;
-      Coefficient_traits::const_reference tableau_ij = *j;
-      WEIGHT_BEGIN();
-      if (tableau_ij != 0) {
-        PPL_ASSERT(tableau_i_base_i != 0);
-        assign(float_tableau_value, tableau_ij);
-        float_tableau_value /= float_tableau_denum;
-        float_tableau_value *= float_tableau_value;
-        current_data.second += float_tableau_value;
+    matrix_type::row_type::const_iterator j = tableau_i.begin();
+    matrix_type::row_type::const_iterator j_end = tableau_i.end();
+    std::vector<std::pair<dimension_type, double> >::iterator k
+      = columns.begin();
+    std::vector<std::pair<dimension_type, double> >::iterator k_end
+      = columns.end();
+    while (j != j_end && k != k_end) {
+      const dimension_type column = j.index();
+      if (k->first != column) {
+        if (k->first < column)
+          ++k;
+        else
+          j = tableau_i.lower_bound(j, k->first);
+      } else {
+        Coefficient_traits::const_reference tableau_ij = *j;
+        WEIGHT_BEGIN();
+        if (tableau_ij != 0) {
+          PPL_ASSERT(tableau_i_base_i != 0);
+          assign(float_tableau_value, tableau_ij);
+          float_tableau_value /= float_tableau_denum;
+          float_tableau_value *= float_tableau_value;
+          k->second += float_tableau_value;
+        }
+        WEIGHT_ADD_MUL(338, tableau_num_rows);
+        ++j;
+        ++k;
       }
-      WEIGHT_ADD_MUL(338, tableau_num_rows);
     }
   }
-  for (dimension_type i = tableau_num_columns_minus_1; i-- > 1; )
-    if (columns[i].first) {
-      double challenger_value = sqrt(columns[i].second);
-      // challenger_dens[*k] is the square of the challenger value.
-      if (entering_index == 0 || challenger_value > current_value) {
-        current_value = challenger_value;
-        entering_index = i;
-      }
+  // The candidates are processed backwards to get the same result in both
+  // this implementation and the dense implementation below.
+  for (std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
+       i = columns.rbegin(), i_end = columns.rend(); i != i_end; ++i) {
+    double challenger_value = sqrt(i->second);
+    // challenger_dens[*k] is the square of the challenger value.
+    if (entering_index == 0 || challenger_value > current_value) {
+      current_value = challenger_value;
+      entering_index = i->first;
     }
+  }
 
 #else // !USE_PPL_SPARSE_MATRIX
 
   double challenger_num = 0.0;
   double challenger_den = 0.0;
   for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
-    Coefficient_traits::const_reference cost_j = working_cost[j];
+    Coefficient_traits::const_reference cost_j = working_cost.get(j);
     if (sgn(cost_j) == cost_sign) {
       WEIGHT_BEGIN();
       // We cannot compute the (exact) square root of abs(\Delta x_j).
