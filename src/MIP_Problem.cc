@@ -1833,9 +1833,19 @@ PPL::MIP_Problem::second_phase() {
   const dimension_type input_obj_function_sd
     = input_obj_function.space_dimension();
   working_cost_type new_cost(input_obj_function_sd + 1, Row_Flags());
-  for (dimension_type i = input_obj_function_sd; i-- > 0; )
-    new_cost[i + 1] = input_obj_function.coefficient(Variable(i));
-  new_cost[0] = input_obj_function.inhomogeneous_term();
+  {
+    // This will be used as a hint.
+    working_cost_type::iterator itr = new_cost.end();
+    for (dimension_type i = input_obj_function_sd; i-- > 0; ) {
+      Coefficient_traits::const_reference c
+        = input_obj_function.coefficient(Variable(i));
+      if (c != 0)
+        itr = new_cost.find_create(itr, i + 1, c);
+    }
+    if (input_obj_function.inhomogeneous_term() != 0)
+      itr = new_cost.find_create(itr, 0,
+                                 input_obj_function.inhomogeneous_term());
+  }
 
   // Negate the cost function if we are minimizing.
   if (opt_mode == MINIMIZATION)
