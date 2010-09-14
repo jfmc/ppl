@@ -201,10 +201,11 @@ private:
       const std::vector<dimension_type>& base);
 
   static void float_entering_index__common(
-      const std::vector<bool>& candidates,
+      std::vector<dimension_type>& candidates,
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& rows,
-      std::vector<double>& results);
+      std::vector<double>& results, int my_rank,
+      const Sparse_Row& working_cost);
 
   static void exact_entering_index__common(
       const std::vector<dimension_type>& columns,

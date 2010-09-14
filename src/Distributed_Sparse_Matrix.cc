@@ -803,36 +803,74 @@ assign(double& d,
 
 void
 PPL::Distributed_Sparse_Matrix
-::float_entering_index__common(const std::vector<bool>& candidates,
+::float_entering_index__common(std::vector<dimension_type>& candidates,
                                const std::vector<dimension_type>& base,
                                const std::vector<Sparse_Row>& rows,
-                               std::vector<double>& results) {
+                               std::vector<double>& results,
+                               int my_rank, const Sparse_Row& working_cost) {
+
   const dimension_type num_rows = rows.size();
-  const dimension_type num_columns_minus_1 = candidates.size();
+  const dimension_type num_columns_minus_1 = working_cost.size() - 1;
+
+  PPL_ASSERT(candidates.empty());
+  {
+    const int cost_sign = sgn(working_cost.get(num_columns_minus_1));
+    PPL_ASSERT(cost_sign != 0);
+    Sparse_Row::const_iterator i = working_cost.lower_bound(1);
+    // Note that find() is equivalent to linear_combine() when searching the
+    // last element.
+    Sparse_Row::const_iterator i_end = working_cost.find(num_columns_minus_1);
+    for ( ; i != i_end; ++i)
+      if (sgn(*i) == cost_sign)
+        candidates.push_back(i.index());
+  }
+
+  PPL_ASSERT(results.empty());
+
+  if (my_rank == 0)
+    results.resize(candidates.size(), 0.0);
+  else
+    results.resize(candidates.size(), 1.0);
 
   for (dimension_type i = num_rows; i-- > 0; ) {
-    const Sparse_Row& row_i = rows[i];
+    const Sparse_Row& tableau_i = rows[i];
     Coefficient_traits::const_reference tableau_i_base_i
-      = row_i.get(base[i]);
+      = tableau_i.get(base[i]);
     double float_tableau_denum;
     assign(float_tableau_denum, tableau_i_base_i);
-    for (Sparse_Row::const_iterator
-         j = row_i.begin(), j_end = row_i.end(); j != j_end; ++j) {
-      if (j.index() >= num_columns_minus_1)
-        break;
-      if (!candidates[j.index()])
-        continue;
-      Coefficient_traits::const_reference tableau_ij = *j;
-      WEIGHT_BEGIN();
-      if (tableau_ij != 0) {
-        PPL_ASSERT(tableau_i_base_i != 0);
-        double float_tableau_value;
-        assign(float_tableau_value, tableau_ij);
-        float_tableau_value /= float_tableau_denum;
-        float_tableau_value *= float_tableau_value;
-        results[j.index()] += float_tableau_value;
+    Sparse_Row::const_iterator j = tableau_i.begin();
+    Sparse_Row::const_iterator j_end = tableau_i.end();
+    std::vector<dimension_type>::iterator k1 = candidates.begin();
+    std::vector<dimension_type>::iterator k1_end = candidates.end();
+    std::vector<double>::iterator k2 = results.begin();
+    std::vector<double>::iterator k2_end = results.end();
+    while (j != j_end && k1 != k1_end) {
+      const dimension_type column = j.index();
+      while (k1 != k1_end && column > *k1) {
+        ++k1;
+        ++k2;
       }
-      WEIGHT_ADD_MUL(338, num_rows);
+      if (k1 == k1_end)
+        break;
+      if (*k1 > column) {
+        j = tableau_i.lower_bound(j, *k1);
+      } else {
+        PPL_ASSERT(*k1 == column);
+        Coefficient_traits::const_reference tableau_ij = *j;
+        WEIGHT_BEGIN();
+        if (tableau_ij != 0) {
+          PPL_ASSERT(tableau_i_base_i != 0);
+          double float_tableau_value;
+          assign(float_tableau_value, tableau_ij);
+          float_tableau_value /= float_tableau_denum;
+          float_tableau_value *= float_tableau_value;
+          *k2 += float_tableau_value;
+        }
+        WEIGHT_ADD_MUL(338, num_rows);
+        ++j;
+        ++k1;
+        ++k2;
+      }
     }
   }
 }
@@ -1595,28 +1633,11 @@ PPL::Distributed_Sparse_Matrix
 ::float_entering_index(const Sparse_Row& working_cost) const {
   broadcast_operation(FLOAT_ENTERING_INDEX_OPERATION, id);
 
-  const dimension_type num_columns_minus_1 = num_columns() - 1;
+  std::vector<dimension_type> candidates;
+  std::vector<double> results;
 
-  const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
-  PPL_ASSERT(cost_sign != 0);
-
-  // When candidate[i] is true, i is one of the column candidates.
-  std::vector<bool> candidates(num_columns_minus_1, false);
-
-  {
-    Sparse_Row::const_iterator i = working_cost.lower_bound(1);
-    // Note that find() is equivalent to linear_combine() when searching the
-    // last element.
-    Sparse_Row::const_iterator i_end = working_cost.find(num_columns_minus_1);
-    for ( ; i != i_end; ++i)
-      candidates[i.index()] = (sgn(*i) == cost_sign);
-  }
-
-  mpi::broadcast(comm(), candidates, 0);
-
-  std::vector<double> results(num_columns_minus_1, 1.0);
-
-  float_entering_index__common(candidates, base, local_rows, results);
+  float_entering_index__common(candidates, base, local_rows, results, 0,
+                               working_cost);
 
   std::vector<double> global_results;
   mpi::reduce(comm(), results, global_results,
@@ -1625,14 +1646,13 @@ PPL::Distributed_Sparse_Matrix
   double current_value = 0.0;
   dimension_type entering_index = 0;
 
-  for (dimension_type i = num_columns_minus_1; i-- > 1; )
-    if (candidates[i]) {
-      double challenger_value = sqrt(results[i]);
-      if (entering_index == 0 || challenger_value > current_value) {
-        current_value = challenger_value;
-        entering_index = i;
-      }
+  for (dimension_type i = candidates.size(); i-- > 0; ) {
+    double challenger_value = sqrt(global_results[i]);
+    if (entering_index == 0 || challenger_value > current_value) {
+      current_value = challenger_value;
+      entering_index = candidates[i];
     }
+  }
 
   return entering_index;
 }
@@ -2364,15 +2384,14 @@ void
 PPL::Distributed_Sparse_Matrix::Worker
 ::float_entering_index(dimension_type id) const {
 
-  std::vector<bool> candidates;
-  mpi::broadcast(comm(), candidates, 0);
-
   const Row_Chunk& row_chunk = get_row_chunk(id);
+  const Sparse_Row& working_cost = row_chunk.working_cost;
 
-  std::vector<double> results(candidates.size(), 0.0);
+  std::vector<dimension_type> candidates;
+  std::vector<double> results;
 
   float_entering_index__common(candidates, row_chunk.base, row_chunk.rows,
-                               results);
+                               results, my_rank, working_cost);
 
   mpi::reduce(comm(), results, float_entering_index_reducer_functor(), 0);
 }
