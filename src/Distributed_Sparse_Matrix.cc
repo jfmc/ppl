@@ -647,10 +647,12 @@ PPL::Distributed_Sparse_Matrix
   local_reverse_scaling = 1;
   local_increase.resize(working_cost.size());
 
+  Sparse_Row::const_iterator i = working_cost.end();
+  Sparse_Row::const_iterator i_end = working_cost.end();
   for (dimension_type local_index = 0;
       local_index < local_rows.size(); ++local_index) {
-    Coefficient_traits::const_reference cost_i = working_cost.get(base[local_index]);
-    if (cost_i != 0)
+    i = working_cost.lower_bound(i, base[local_index]);
+    if (i != i_end && i.index() == base[local_index] && *i != 0)
       incremental_linear_combine(local_scaling, local_reverse_scaling,
                                  local_increase, working_cost,
                                  local_rows[local_index], base[local_index]);
