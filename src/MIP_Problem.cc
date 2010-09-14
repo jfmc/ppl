@@ -871,9 +871,17 @@ PPL::MIP_Problem::process_pending_constraints() {
   working_cost[last_obj_index] = 1;
 
   // Express the problem in terms of the variables in base.
-  for (dimension_type i = tableau_num_rows; i-- > 0; )
-    if (working_cost.get(base[i]) != 0)
-      linear_combine(working_cost, tableau[i], base[i]);
+  {
+    working_cost_type::const_iterator itr = working_cost.end();
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+      itr = working_cost.lower_bound(itr, base[i]);
+      if (itr != working_cost.end() && itr.index() == base[i] && *itr != 0) {
+        linear_combine(working_cost, tableau[i], base[i]);
+        // itr has been invalidated by the call to linear_combine().
+        itr = working_cost.end();
+      }
+    }
+  }
 
   // Deal with zero dimensional problems.
   if (space_dimension() == 0) {
