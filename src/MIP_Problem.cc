@@ -1857,12 +1857,20 @@ PPL::MIP_Problem::second_phase() {
          i = new_cost.begin(), i_end = new_cost.end(); i != i_end; ++i)
       neg_assign(*i);
 
-  // Substitute properly the cost function in the `costs' matrix.
   const dimension_type cost_zero_size = working_cost.size();
-  working_cost_type tmp_cost = working_cost_type(cost_zero_size,
-                                                 cost_zero_size,
-                                                 new_cost.flags());
-  tmp_cost.swap(working_cost);
+
+  // Substitute properly the cost function in the `costs' matrix.
+#if USE_PPL_SPARSE_MATRIX
+  working_cost.clear();
+  working_cost.flags() = Row_Flags();
+#else
+  {
+    working_cost_type tmp_cost = working_cost_type(cost_zero_size,
+                                                   cost_zero_size,
+                                                   new_cost.flags());
+    tmp_cost.swap(working_cost);
+  }
+#endif
 
   {
     working_cost_type::iterator itr
