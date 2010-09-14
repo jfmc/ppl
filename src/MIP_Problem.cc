@@ -1610,7 +1610,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       return false;
 
     // Linearly combine the cost function.
-    if (working_cost[entering_var_index] != 0)
+    if (working_cost.get(entering_var_index) != 0)
       linear_combine(working_cost, *tableau_out, entering_var_index);
 
     base[exiting_var_index] = entering_var_index;
@@ -1719,7 +1719,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
       return false;
 
     // Linearly combine the cost function.
-    if (working_cost[entering_var_index] != 0)
+    if (working_cost.get(entering_var_index) != 0)
       linear_combine(working_cost, *tableau_out, entering_var_index);
 
     base[exiting_var_index] = entering_var_index;
