@@ -921,14 +921,23 @@ PPL::MIP_Problem::process_pending_constraints() {
   const dimension_type last_obj_index = working_cost.size() - 1;
   working_cost[last_obj_index] = 1;
 
+  // Express the problem in terms of the variables in base.
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   tableau.compute_working_cost(working_cost);
 #else
-  // Express the problem in terms of the variables in base.
-  for (dimension_type i = tableau_num_rows; i-- > 0; )
-    if (working_cost.get(base[i]) != 0)
-      linear_combine(working_cost, tableau[i], base[i]);
+  {
+    working_cost_type::const_iterator itr = working_cost.end();
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+      itr = working_cost.lower_bound(itr, base[i]);
+      if (itr != working_cost.end() && itr.index() == base[i] && *itr != 0) {
+        linear_combine(working_cost, tableau[i], base[i]);
+        // itr has been invalidated by the call to linear_combine().
+        itr = working_cost.end();
+      }
+    }
+  }
 #endif
+
   // Deal with zero dimensional problems.
   if (space_dimension() == 0) {
     status = OPTIMIZED;
@@ -1045,9 +1054,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #if USE_PPL_SPARSE_MATRIX
 
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
+  // This is static to improve performance.
   // A vector of <column_index, challenger_den> pairs, ordered by
   // column_index.
-  std::vector<std::pair<dimension_type, double> > columns;
+  static std::vector<std::pair<dimension_type, double> > columns;
+  columns.clear();
+  // (working_cost.size() - 2) is an upper bound only.
+  columns.reserve(working_cost.size() - 2);
   {
     working_cost_type::const_iterator i = working_cost.lower_bound(1);
     // Note that find() is used instead of lower_bound().
@@ -1069,12 +1082,14 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       = columns.end();
     while (j != j_end && k != k_end) {
       const dimension_type column = j.index();
-      if (k->first != column) {
-        if (k->first < column)
-          ++k;
-        else
-          j = tableau_i.lower_bound(j, k->first);
+      while (k != k_end && column > k->first)
+        ++k;
+      if (k == k_end)
+        break;
+      if (k->first > column) {
+        j = tableau_i.lower_bound(j, k->first);
       } else {
+        PPL_ASSERT(k->first == column);
         Coefficient_traits::const_reference tableau_ij = *j;
         WEIGHT_BEGIN();
         if (tableau_ij != 0) {
@@ -1327,11 +1342,17 @@ PPL::MIP_Problem::textbook_entering_index() const {
 
   // Get the "sign" of the cost function.
   const dimension_type cost_sign_index = working_cost.size() - 1;
-  const int cost_sign = sgn(working_cost[cost_sign_index]);
+  const int cost_sign = sgn(working_cost.get(cost_sign_index));
   PPL_ASSERT(cost_sign != 0);
-  for (dimension_type i = 1; i < cost_sign_index; ++i)
-    if (sgn(working_cost[i]) == cost_sign)
-      return i;
+
+  working_cost_type::const_iterator i = working_cost.lower_bound(1);
+  // Note that find() is used instead of lower_bound() because they are
+  // equivalent when searching the last element in the row.
+  working_cost_type::const_iterator i_end
+    = working_cost.find(cost_sign_index);
+  for ( ; i != i_end; ++i)
+    if (sgn(*i) == cost_sign)
+      return i.index();
   // No variable has to enter the base:
   // the cost function was optimized.
   return 0;
@@ -1454,7 +1475,7 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
 #endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
   // Linearly combine the cost function.
-  if (working_cost[entering_var_index] != 0)
+  if (working_cost.get(entering_var_index) != 0)
     linear_combine(working_cost, tableau_out, entering_var_index);
   // Adjust the base.
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
@@ -1549,8 +1570,8 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   PPL_DIRTY_TEMP_COEFFICIENT(current);
 
-  cost_sgn_coeff = working_cost[working_cost.size() - 1];
-  current_num = working_cost[0];
+  cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
+  current_num = working_cost.get(0);
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
   abs_assign(current_den, cost_sgn_coeff);
@@ -1619,9 +1640,9 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     WEIGHT_BEGIN();
     // Now begins the objective function's value check to choose between
     // the `textbook' and the float `steepest-edge' technique.
-    cost_sgn_coeff = working_cost[working_cost.size() - 1];
+    cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
 
-    challenger = working_cost[0];
+    challenger = working_cost.get(0);
     if (cost_sgn_coeff < 0)
       neg_assign(challenger);
     challenger *= current_den;
@@ -1650,7 +1671,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       non_increased_times = 0;
       textbook_pricing = false;
     }
-    current_num = working_cost[0];
+    current_num = working_cost.get(0);
     if (cost_sgn_coeff < 0)
       neg_assign(current_num);
     abs_assign(current_den, cost_sgn_coeff);
@@ -1807,7 +1828,18 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
-  working_cost[new_last_column] = working_cost[old_last_column];
+  {
+    // This block is equivalent to:
+    // working_cost[new_last_column] = working_cost.get(old_last_column);
+
+    Coefficient_traits::const_reference old_cost
+      = working_cost.get(old_last_column);
+    if (old_cost == 0)
+      working_cost.reset(new_last_column);
+    else
+      working_cost.find_create(new_last_column, old_cost);
+  }
+
   // ... and finally remove redundant columns.
   const dimension_type working_cost_new_size
     = working_cost.size() - num_artificials;
@@ -2005,28 +2037,56 @@ PPL::MIP_Problem::second_phase() {
   const dimension_type input_obj_function_sd
     = input_obj_function.space_dimension();
   working_cost_type new_cost(input_obj_function_sd + 1, Row_Flags());
-  for (dimension_type i = input_obj_function_sd; i-- > 0; )
-    new_cost[i + 1] = input_obj_function.coefficient(Variable(i));
-  new_cost[0] = input_obj_function.inhomogeneous_term();
+  {
+    // This will be used as a hint.
+    working_cost_type::iterator itr = new_cost.end();
+    for (dimension_type i = input_obj_function_sd; i-- > 0; ) {
+      Coefficient_traits::const_reference c
+        = input_obj_function.coefficient(Variable(i));
+      if (c != 0)
+        itr = new_cost.find_create(itr, i + 1, c);
+    }
+    if (input_obj_function.inhomogeneous_term() != 0)
+      itr = new_cost.find_create(itr, 0,
+                                 input_obj_function.inhomogeneous_term());
+  }
 
   // Negate the cost function if we are minimizing.
   if (opt_mode == MINIMIZATION)
-    for (dimension_type i = new_cost.size(); i-- > 0; )
-      neg_assign(new_cost[i]);
+    for (working_cost_type::iterator
+         i = new_cost.begin(), i_end = new_cost.end(); i != i_end; ++i)
+      neg_assign(*i);
+
+  const dimension_type cost_zero_size = working_cost.size();
 
   // Substitute properly the cost function in the `costs' matrix.
-  const dimension_type cost_zero_size = working_cost.size();
-  working_cost_type tmp_cost = working_cost_type(new_cost, cost_zero_size, cost_zero_size);
-  tmp_cost.swap(working_cost);
-  working_cost[cost_zero_size - 1] = 1;
+#if USE_PPL_SPARSE_MATRIX
+  working_cost.clear();
+  working_cost.flags() = Row_Flags();
+#else
+  {
+    working_cost_type tmp_cost = working_cost_type(cost_zero_size,
+                                                   cost_zero_size,
+                                                   new_cost.flags());
+    tmp_cost.swap(working_cost);
+  }
+#endif
 
-  // Split the variables the cost function.
-  for (dimension_type i = new_cost.size(); i-- > 1; ) {
-    const dimension_type original_var = mapping[i].first;
-    const dimension_type split_var = mapping[i].second;
-    working_cost[original_var] = new_cost[i];
-    if (mapping[i].second != 0)
-      working_cost[split_var] = - new_cost[i];
+  {
+    working_cost_type::iterator itr
+      = working_cost.find_create(cost_zero_size - 1, Coefficient_one());
+
+    // Split the variables in the cost function.
+    for (working_cost_type::const_iterator
+         i = new_cost.lower_bound(1), i_end = new_cost.end();
+         i != i_end; ++i) {
+      const dimension_type index = i.index();
+      const dimension_type original_var = mapping[index].first;
+      const dimension_type split_var = mapping[index].second;
+      itr = working_cost.find_create(itr, original_var, *i);
+      if (mapping[index].second != 0)
+        itr = working_cost.find_create(itr, split_var, - (*i));
+    }
   }
 
 #if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
@@ -2034,10 +2094,16 @@ PPL::MIP_Problem::second_phase() {
 #else // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
-  for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
-    const dimension_type base_i = base[i];
-    if (working_cost[base_i] != 0)
-      linear_combine(working_cost, tableau[i], base_i);
+  {
+    working_cost_type::iterator itr = working_cost.end();
+    for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
+      const dimension_type base_i = base[i];
+      itr = working_cost.lower_bound(itr, base_i);
+      if (itr != working_cost.end() && itr.index() == base_i && *itr != 0) {
+        linear_combine(working_cost, tableau[i], base_i);
+        itr = working_cost.end();
+      }
+    }
   }
 #endif // !USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 
