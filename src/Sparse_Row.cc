@@ -293,9 +293,16 @@ void
 PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
                                 Coefficient_traits::const_reference coeff1,
                                 Coefficient_traits::const_reference coeff2) {
-  combine(y, linear_combine_helper1(coeff1),
-          linear_combine_helper2(coeff1, coeff2),
-          linear_combine_helper3(coeff2));
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+  if (coeff1 == 1) {
+    combine_needs_second(y, linear_combine_helper2(coeff1, coeff2),
+                        linear_combine_helper3(coeff2));
+  } else {
+    combine(y, linear_combine_helper1(coeff1),
+            linear_combine_helper2(coeff1, coeff2),
+            linear_combine_helper3(coeff2));
+  }
 }
 
 void
