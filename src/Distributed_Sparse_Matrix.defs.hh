@@ -85,7 +85,7 @@ public:
   void linear_combine_matrix(dimension_type row_i, dimension_type col_i,
                              Sparse_Row& combined_row);
 
-  void compute_working_cost(Dense_Row& working_cost);
+  void compute_working_cost(Sparse_Row& working_cost);
 
   void reset_column(dimension_type column_index);
   void remove_column(dimension_type column_index);
@@ -127,7 +127,7 @@ public:
   void get_scattered_row(const std::vector<dimension_type>& indexes,
                          std::vector<Coefficient>& result) const;
 
-  dimension_type float_entering_index(const Dense_Row& working_cost) const;
+  dimension_type float_entering_index(const Sparse_Row& working_cost) const;
 
   void set_artificial_indexes_for_new_rows(dimension_type old_num_rows,
                                            const std::deque<bool>&
@@ -138,7 +138,7 @@ public:
                        dimension_type column_index);
   void set_base(const std::vector<dimension_type>& base);
   void get_base(std::vector<dimension_type>& base) const;
-  dimension_type exact_entering_index(const Dense_Row& working_cost) const;
+  dimension_type exact_entering_index(const Sparse_Row& working_cost) const;
   dimension_type exiting_index(dimension_type entering_index) const;
 
   //! Removes the i-th row, replacing it with the last row.
@@ -182,7 +182,7 @@ private:
 
   static void compute_working_cost__common(
       std::pair<std::pair<Coefficient, Coefficient>, Sparse_Row>& x,
-      const Dense_Row& working_cost,
+      const Sparse_Row& working_cost,
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& local_rows);
 

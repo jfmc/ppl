@@ -453,8 +453,14 @@ private:
   //! The matrix encoding the current feasible region in tableau form.
   matrix_type tableau;
 
+#if USE_PPL_SPARSE_MATRIX
+  typedef Sparse_Row working_cost_type;
+#else
+  typedef Dense_Row working_cost_type;
+#endif
+
   //! The working cost function.
-  Dense_Row working_cost;
+  working_cost_type working_cost;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!

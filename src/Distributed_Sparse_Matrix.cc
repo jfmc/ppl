@@ -636,7 +636,7 @@ void
 PPL::Distributed_Sparse_Matrix
 ::compute_working_cost__common(std::pair<std::pair<Coefficient, Coefficient>,
                                          Sparse_Row>& x,
-                               const Dense_Row& working_cost,
+                               const Sparse_Row& working_cost,
                                const std::vector<dimension_type>& base,
                                const std::vector<Sparse_Row>& local_rows) {
   Coefficient& local_scaling = x.first.first;
@@ -649,7 +649,7 @@ PPL::Distributed_Sparse_Matrix
 
   for (dimension_type local_index = 0;
       local_index < local_rows.size(); ++local_index) {
-    Coefficient_traits::const_reference cost_i = working_cost[base[local_index]];
+    Coefficient_traits::const_reference cost_i = working_cost.get(base[local_index]);
     if (cost_i != 0)
       incremental_linear_combine(local_scaling, local_reverse_scaling,
                                  local_increase, working_cost,
@@ -1355,7 +1355,7 @@ PPL::Distributed_Sparse_Matrix
 
 void
 PPL::Distributed_Sparse_Matrix
-::compute_working_cost(Dense_Row& working_cost) {
+::compute_working_cost(Sparse_Row& working_cost) {
   PPL_ASSERT(working_cost.size() == num_columns());
   broadcast_operation(COMPUTE_WORKING_COST_OPERATION, id);
   mpi::broadcast(comm(), working_cost, 0);
@@ -1387,6 +1387,7 @@ PPL::Distributed_Sparse_Matrix
   //                     + global_reverse_scaling * global_increase[i].
   // The global result is stored in working_cost to improve performance.
 
+  // TODO: Optimize here
   for (dimension_type i = 0; i < working_cost.size(); ++i)
     working_cost[i] *= global_scaling;
   for (Sparse_Row::const_iterator
@@ -1589,18 +1590,19 @@ struct is_commutative<float_entering_index_reducer_functor,
 
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix
-::float_entering_index(const Dense_Row& working_cost) const {
+::float_entering_index(const Sparse_Row& working_cost) const {
   broadcast_operation(FLOAT_ENTERING_INDEX_OPERATION, id);
 
   const dimension_type num_columns_minus_1 = num_columns() - 1;
 
-  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
 
   // When candidate[i] is true, i is one of the column candidates.
   std::vector<bool> candidates(num_columns_minus_1);
 
+  // TODO: Optimize here.
   for (dimension_type column = 1; column < num_columns_minus_1; ++column)
-    candidates[column] = (sgn(working_cost[column]) == cost_sign);
+    candidates[column] = (sgn(working_cost.get(column)) == cost_sign);
 
   mpi::broadcast(comm(), candidates, 0);
 
@@ -1749,7 +1751,7 @@ struct is_commutative<exact_entering_index_reducer_functor2,
 
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix
-::exact_entering_index(const Dense_Row& working_cost) const {
+::exact_entering_index(const Sparse_Row& working_cost) const {
   broadcast_operation(EXACT_ENTERING_INDEX_OPERATION, id);
 
   // Contains the list of the (column) indexes of challengers.
@@ -1757,9 +1759,9 @@ PPL::Distributed_Sparse_Matrix
   // This is only an upper bound.
   columns.reserve(num_columns() - 1);
 
-  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
   for (dimension_type column = 1; column < num_columns() - 1; ++column)
-    if (sgn(working_cost[column]) == cost_sign) {
+    if (sgn(working_cost.get(column)) == cost_sign) {
       columns.push_back(column);
     }
 
@@ -1784,7 +1786,7 @@ PPL::Distributed_Sparse_Matrix
   dimension_type entering_index = 0;
   for (dimension_type k = columns.size(); k-- > 0; ) {
     global_challenger_values[k] += squared_lcm_basis;
-    Coefficient_traits::const_reference cost_j = working_cost[columns[k]];
+    Coefficient_traits::const_reference cost_j = working_cost.get(columns[k]);
     // We cannot compute the (exact) square root of abs(\Delta x_j).
     // The workaround is to compute the square of `cost[j]'.
     challenger_num = cost_j * cost_j;
@@ -2179,7 +2181,7 @@ void
 PPL::Distributed_Sparse_Matrix::Worker
 ::compute_working_cost(dimension_type id) {
 
-  Dense_Row working_cost(0, Row_Flags());
+  Sparse_Row working_cost(0, Row_Flags());
   mpi::broadcast(comm(), working_cost, 0);
 
   // This may create a new Row_Chunk.
