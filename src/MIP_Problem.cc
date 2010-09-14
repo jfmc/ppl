@@ -1858,11 +1858,18 @@ PPL::MIP_Problem::second_phase() {
   }
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
-  for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
-    const dimension_type base_i = base[i];
-    if (working_cost[base_i] != 0)
-      linear_combine(working_cost, tableau[i], base_i);
+  {
+    working_cost_type::iterator itr = working_cost.end();
+    for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
+      const dimension_type base_i = base[i];
+      itr = working_cost.lower_bound(itr, base_i);
+      if (itr != working_cost.end() && itr.index() == base_i && *itr != 0) {
+        linear_combine(working_cost, tableau[i], base_i);
+        itr = working_cost.end();
+      }
+    }
   }
+
   // Solve the second phase problem.
   bool second_phase_successful
     = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
