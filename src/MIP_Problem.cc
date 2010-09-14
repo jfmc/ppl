@@ -1855,8 +1855,9 @@ PPL::MIP_Problem::second_phase() {
 
   // Substitute properly the cost function in the `costs' matrix.
   const dimension_type cost_zero_size = working_cost.size();
-  working_cost_type tmp_cost = working_cost_type(new_cost, cost_zero_size,
-                                                 cost_zero_size);
+  working_cost_type tmp_cost = working_cost_type(cost_zero_size,
+                                                 cost_zero_size,
+                                                 new_cost.flags());
   tmp_cost.swap(working_cost);
   working_cost.find_create(cost_zero_size - 1, Coefficient_one());
 
