@@ -831,7 +831,12 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Reset the working cost function to have the right size.
+#if USE_PPL_SPARSE_MATRIX
+  working_cost.clear();
+  working_cost.resize(tableau_num_cols);
+#else
   working_cost = working_cost_type(tableau_num_cols, Row_Flags());
+#endif
 
   // Set up artificial variables: these will have coefficient 1 in the
   // constraint, will enter the base and will have coefficient -1 in
@@ -867,7 +872,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // Express the problem in terms of the variables in base.
   for (dimension_type i = tableau_num_rows; i-- > 0; )
-    if (working_cost[base[i]] != 0)
+    if (working_cost.get(base[i]) != 0)
       linear_combine(working_cost, tableau[i], base[i]);
 
   // Deal with zero dimensional problems.
@@ -924,7 +929,7 @@ PPL::MIP_Problem::process_pending_constraints() {
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
 
-  if (!first_phase_succesful || working_cost[0] != 0) {
+  if (!first_phase_succesful || working_cost.get(0) != 0) {
     // The feasible region is empty.
     status = UNSATISFIABLE;
     return false;
