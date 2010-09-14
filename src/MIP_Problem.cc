@@ -1448,7 +1448,7 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
       linear_combine(tableau_i, tableau_out, entering_var_index);
   }
   // Linearly combine the cost function.
-  if (working_cost[entering_var_index] != 0)
+  if (working_cost.get(entering_var_index) != 0)
     linear_combine(working_cost, tableau_out, entering_var_index);
   // Adjust the base.
   base[exiting_base_index] = entering_var_index;
@@ -1532,8 +1532,8 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   PPL_DIRTY_TEMP_COEFFICIENT(current);
 
-  cost_sgn_coeff = working_cost[working_cost.size() - 1];
-  current_num = working_cost[0];
+  cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
+  current_num = working_cost.get(0);
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
   abs_assign(current_den, cost_sgn_coeff);
@@ -1571,9 +1571,9 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     WEIGHT_BEGIN();
     // Now begins the objective function's value check to choose between
     // the `textbook' and the float `steepest-edge' technique.
-    cost_sgn_coeff = working_cost[working_cost.size() - 1];
+    cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
 
-    challenger = working_cost[0];
+    challenger = working_cost.get(0);
     if (cost_sgn_coeff < 0)
       neg_assign(challenger);
     challenger *= current_den;
@@ -1602,7 +1602,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       non_increased_times = 0;
       textbook_pricing = false;
     }
-    current_num = working_cost[0];
+    current_num = working_cost.get(0);
     if (cost_sgn_coeff < 0)
       neg_assign(current_num);
     abs_assign(current_den, cost_sgn_coeff);
@@ -1710,7 +1710,18 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
-  working_cost[new_last_column] = working_cost[old_last_column];
+  {
+    // This block is equivalent to:
+    // working_cost[new_last_column] = working_cost.get(old_last_column);
+
+    Coefficient_traits::const_reference old_cost
+      = working_cost.get(old_last_column);
+    if (old_cost == 0)
+      working_cost.reset(new_last_column);
+    else
+      working_cost.find_create(new_last_column, old_cost);
+  }
+
   // ... and finally remove redundant columns.
   const dimension_type working_cost_new_size
     = working_cost.size() - num_artificials;
