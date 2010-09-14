@@ -204,7 +204,7 @@ private:
       std::vector<dimension_type>& candidates,
       const std::vector<dimension_type>& base,
       const std::vector<Sparse_Row>& rows,
-      std::vector<double>& results, int my_rank,
+      double*& results, int my_rank,
       const Sparse_Row& working_cost);
 
   static void exact_entering_index__common(

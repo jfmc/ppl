@@ -806,7 +806,7 @@ PPL::Distributed_Sparse_Matrix
 ::float_entering_index__common(std::vector<dimension_type>& candidates,
                                const std::vector<dimension_type>& base,
                                const std::vector<Sparse_Row>& rows,
-                               std::vector<double>& results,
+                               double*& results,
                                int my_rank, const Sparse_Row& working_cost) {
 
   const dimension_type num_rows = rows.size();
@@ -825,12 +825,17 @@ PPL::Distributed_Sparse_Matrix
         candidates.push_back(i.index());
   }
 
-  PPL_ASSERT(results.empty());
+  results = new double[candidates.size()];
+
+  double default_result;
 
   if (my_rank == 0)
-    results.resize(candidates.size(), 0.0);
+    default_result = 0.0;
   else
-    results.resize(candidates.size(), 1.0);
+    default_result = 1.0;
+
+  for (dimension_type i = candidates.size(); i-- > 0; )
+    results[i] = default_result;
 
   for (dimension_type i = num_rows; i-- > 0; ) {
     const Sparse_Row& tableau_i = rows[i];
@@ -842,8 +847,7 @@ PPL::Distributed_Sparse_Matrix
     Sparse_Row::const_iterator j_end = tableau_i.end();
     std::vector<dimension_type>::iterator k1 = candidates.begin();
     std::vector<dimension_type>::iterator k1_end = candidates.end();
-    std::vector<double>::iterator k2 = results.begin();
-    std::vector<double>::iterator k2_end = results.end();
+    double* k2 = results;
     while (j != j_end && k1 != k1_end) {
       const dimension_type column = j.index();
       while (k1 != k1_end && column > *k1) {
@@ -1603,45 +1607,23 @@ PPL::Distributed_Sparse_Matrix
   mpi::wait_all(requests.begin(), requests.end());
 }
 
-namespace {
-
-class float_entering_index_reducer_functor {
-public:
-  const std::vector<double>& operator()(std::vector<double>& x,
-                                        const std::vector<double>& y) {
-    for (PPL::dimension_type i = x.size(); i-- > 0; )
-      x[i] += y[i];
-    return x;
-  }
-};
-
-} // namespace
-
-namespace boost {
-namespace mpi {
-
-template <>
-struct is_commutative<float_entering_index_reducer_functor,
-                      std::vector<double> >
-  : public mpl::true_ { };
-
-}
-}
-
 PPL::dimension_type
 PPL::Distributed_Sparse_Matrix
 ::float_entering_index(const Sparse_Row& working_cost) const {
   broadcast_operation(FLOAT_ENTERING_INDEX_OPERATION, id);
 
   std::vector<dimension_type> candidates;
-  std::vector<double> results;
+  double* results;
 
   float_entering_index__common(candidates, base, local_rows, results, 0,
                                working_cost);
 
-  std::vector<double> global_results;
-  mpi::reduce(comm(), results, global_results,
-              float_entering_index_reducer_functor(), 0);
+  double* global_results = new double[candidates.size()];
+
+  mpi::reduce(comm(), results, candidates.size(), global_results,
+              std::plus<double>(), 0);
+
+  delete [] results;
 
   double current_value = 0.0;
   dimension_type entering_index = 0;
@@ -1653,6 +1635,8 @@ PPL::Distributed_Sparse_Matrix
       entering_index = candidates[i];
     }
   }
+
+  delete [] global_results;
 
   return entering_index;
 }
@@ -2388,12 +2372,14 @@ PPL::Distributed_Sparse_Matrix::Worker
   const Sparse_Row& working_cost = row_chunk.working_cost;
 
   std::vector<dimension_type> candidates;
-  std::vector<double> results;
+  double* results;
 
   float_entering_index__common(candidates, row_chunk.base, row_chunk.rows,
                                results, my_rank, working_cost);
 
-  mpi::reduce(comm(), results, float_entering_index_reducer_functor(), 0);
+  mpi::reduce(comm(), results, candidates.size(), std::plus<double>(), 0);
+
+  delete [] results;
 }
 
 void
