@@ -88,6 +88,38 @@ public:
   */
   explicit Sparse_Row(dimension_type n = 0, Flags flags = Flags());
 
+  //! Constructs a row with the specified size.
+  /*!
+    \param n
+    The size for the new row.
+
+    \param flags
+    The flags to associate with the new row.
+
+    \param capacity
+    It is ignored. This parameter is needed for compatibility with Dense_Row.
+
+    The row will contain only non-stored zeroes.
+
+    This constructor takes \f$O(1)\f$ time.
+  */
+  Sparse_Row(dimension_type n, dimension_type capacity,
+             Flags flags = Flags());
+
+  //! Copy constructor with specified capacity.
+  /*!
+    It is assumed that \p capacity is greater than or equal to
+    the size of \p y.
+  */
+  Sparse_Row(const Sparse_Row& y, dimension_type capacity);
+
+  //! Copy constructor with specified size and capacity.
+  /*!
+    It is assumed that \p sz is greater than or equal to the size of \p y
+    and, of course, that \p sz is less than or equal to \p capacity.
+  */
+  Sparse_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity);
+
   //! Resizes the row to size \p n.
   /*!
     \param n

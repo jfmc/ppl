@@ -33,6 +33,27 @@ Sparse_Row::Sparse_Row(dimension_type n, Flags flags)
   PPL_ASSERT(OK());
 }
 
+inline
+Sparse_Row::Sparse_Row(dimension_type n, dimension_type capacity, Flags flags)
+  : size_(n), flags_(flags) {
+  (void)capacity;
+  PPL_ASSERT(OK());
+}
+
+inline
+Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type capacity)
+  : tree(y.tree), size_(y.size_), flags_(y.flags_) {
+  (void)capacity;
+}
+
+inline
+Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
+                       dimension_type capacity)
+  : tree(y.tree), size_(sz), flags_(y.flags_) {
+  PPL_ASSERT(y.size() <= sz);
+  (void)capacity;
+}
+
 inline void
 Sparse_Row::construct(dimension_type sz) {
   resize(sz);
