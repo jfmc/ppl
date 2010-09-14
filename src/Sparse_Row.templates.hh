@@ -77,6 +77,8 @@ Sparse_Row::combine_needs_second(const Sparse_Row& y,
   for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
     i = find_create(i, j.index());
     g(*i, *j);
+    if (*i == 0)
+      i = reset(i);
   }
 }
 
