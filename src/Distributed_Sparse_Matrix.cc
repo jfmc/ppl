@@ -904,11 +904,27 @@ struct is_commutative<exact_entering_index_reducer_functor, PPL::Coefficient>
 
 void
 PPL::Distributed_Sparse_Matrix
-::exact_entering_index__common(const std::vector<dimension_type>& columns,
+::exact_entering_index__common(std::vector<dimension_type>& columns,
                                std::vector<Coefficient>& challenger_values,
                                const std::vector<Sparse_Row>& rows,
                                const std::vector<dimension_type>& base,
-                               Coefficient& squared_lcm_basis) {
+                               Coefficient& squared_lcm_basis,
+                               const Sparse_Row& working_cost) {
+
+  {
+    const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
+    PPL_ASSERT(cost_sign != 0);
+
+    Sparse_Row::const_iterator i = working_cost.lower_bound(1);
+    // Note that find() is equivalent to linear_combine() when searching the
+    // last element.
+    Sparse_Row::const_iterator i_end
+      = working_cost.find(working_cost.size() - 1);
+    for ( ; i != i_end; ++i)
+      if (sgn(*i) == cost_sign)
+        columns.push_back(i.index());
+  }
+
   // The normalization factor for each coefficient in the tableau.
   std::vector<Coefficient> norm_factor(rows.size());
   {
@@ -936,6 +952,7 @@ PPL::Distributed_Sparse_Matrix
   PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
 
   const dimension_type columns_size = columns.size();
+  challenger_values.resize(columns_size);
 
   for (dimension_type i = rows.size(); i-- > 0; ) {
     const Sparse_Row& row = rows[i];
@@ -1766,31 +1783,15 @@ PPL::Distributed_Sparse_Matrix
 ::exact_entering_index(const Sparse_Row& working_cost) const {
   broadcast_operation(EXACT_ENTERING_INDEX_OPERATION, id);
 
-  const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
-  PPL_ASSERT(cost_sign != 0);
-
   // Contains the list of the column candidates.
   std::vector<dimension_type> columns;
-  columns.reserve(num_columns() - 1);
-
-  {
-    Sparse_Row::const_iterator i = working_cost.lower_bound(1);
-    // Note that find() is equivalent to linear_combine() when searching the
-    // last element.
-    Sparse_Row::const_iterator i_end = working_cost.find(num_columns() - 1);
-    for ( ; i != i_end; ++i)
-      if (sgn(*i) == cost_sign)
-        columns.push_back(i.index());
-  }
-
-  mpi::broadcast(comm(), columns, 0);
 
   // For each i, challenger_values[i] contains the challenger value for the
   // columns[i] column.
-  std::vector<Coefficient> challenger_values(columns.size());
+  std::vector<Coefficient> challenger_values;
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
   exact_entering_index__common(columns, challenger_values, local_rows, base,
-                               squared_lcm_basis);
+                               squared_lcm_basis, working_cost);
 
   std::vector<Coefficient> global_challenger_values;
   mpi::reduce(comm(), challenger_values, global_challenger_values,
@@ -2441,18 +2442,17 @@ PPL::Distributed_Sparse_Matrix::Worker
   // Contains the list of the (column) indexes of challengers.
   std::vector<dimension_type> columns;
 
-  mpi::broadcast(comm(), columns, 0);
-
   // For each i, challenger_values[i] contains the challenger value for the
   // columns[i] column.
-  std::vector<Coefficient> challenger_values(columns.size());
+  std::vector<Coefficient> challenger_values;
 
   PPL_DIRTY_TEMP_COEFFICIENT(squared_lcm_basis);
 
   const Row_Chunk& row_chunk = get_row_chunk(id);
 
   exact_entering_index__common(columns, challenger_values, row_chunk.rows,
-                               row_chunk.base, squared_lcm_basis);
+                               row_chunk.base, squared_lcm_basis,
+                               row_chunk.working_cost);
 
   mpi::reduce(comm(), challenger_values,
               exact_entering_index_reducer_functor2(), 0);

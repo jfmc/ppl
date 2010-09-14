@@ -208,11 +208,11 @@ private:
       const Sparse_Row& working_cost);
 
   static void exact_entering_index__common(
-      const std::vector<dimension_type>& columns,
+      std::vector<dimension_type>& columns,
       std::vector<Coefficient>& challenger_values,
       const std::vector<Sparse_Row>& rows,
       const std::vector<dimension_type>& base,
-      Coefficient& squared_lcm_basis);
+      Coefficient& squared_lcm_basis, const Sparse_Row& working_cost);
 
   static void remove_row__common(const boost::mpi::communicator& comm,
                                  int my_rank, int rank_i,
