@@ -996,9 +996,13 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 #if USE_PPL_SPARSE_MATRIX
 
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
+  // This is static to improve performance.
   // A vector of <column_index, challenger_den> pairs, ordered by
   // column_index.
-  std::vector<std::pair<dimension_type, double> > columns;
+  static std::vector<std::pair<dimension_type, double> > columns;
+  columns.clear();
+  // (working_cost.size() - 2) is an upper bound only.
+  columns.reserve(working_cost.size() - 2);
   {
     working_cost_type::const_iterator i = working_cost.lower_bound(1);
     // Note that find() is used instead of lower_bound().
@@ -1020,12 +1024,14 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       = columns.end();
     while (j != j_end && k != k_end) {
       const dimension_type column = j.index();
-      if (k->first != column) {
-        if (k->first < column)
-          ++k;
-        else
-          j = tableau_i.lower_bound(j, k->first);
+      while (k != k_end && column > k->first)
+        ++k;
+      if (k == k_end)
+        break;
+      if (k->first > column) {
+        j = tableau_i.lower_bound(j, k->first);
       } else {
+        PPL_ASSERT(k->first == column);
         Coefficient_traits::const_reference tableau_ij = *j;
         WEIGHT_BEGIN();
         if (tableau_ij != 0) {
