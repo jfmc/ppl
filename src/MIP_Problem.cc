@@ -1175,7 +1175,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   PPL_DIRTY_TEMP_COEFFICIENT(current_num);
   PPL_DIRTY_TEMP_COEFFICIENT(current_den);
   dimension_type entering_index = 0;
-  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
 
   // These two implementation work for both sparse and dense matrices.
   // However, when using sparse matrices the first one is fast and the second
@@ -1191,12 +1191,19 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   static std::vector<std::pair<dimension_type, Coefficient> > columns;
   columns.clear();
   // tableau_num_columns - 2 is only an upper bound on the required elements.
-  // This helps to reduce the number of calls to new [] and delete [].
+  // This helps to reduce the number of calls to new [] and delete [] and
+  // the construction/destruction of Coefficient objects.
   columns.reserve(tableau_num_columns - 2);
-  for (dimension_type column = 1; column < tableau_num_columns_minus_1; ++column)
-    if (sgn(working_cost[column]) == cost_sign)
-      columns.push_back(std::pair<dimension_type, Coefficient>
-                        (column, squared_lcm_basis));
+  {
+    working_cost_type::const_iterator i = working_cost.lower_bound(1);
+    // Note that find() is used instead of lower_bound.
+    working_cost_type::const_iterator i_end
+      = working_cost.find(tableau_num_columns_minus_1);
+    for ( ; i != i_end; ++i)
+      if (sgn(*i) == cost_sign)
+        columns.push_back(std::pair<dimension_type, Coefficient>
+                          (i.index(), squared_lcm_basis));
+  }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const matrix_type::row_type& tableau_i = tableau[i];
     matrix_type::row_type::const_iterator j = tableau_i.begin();
