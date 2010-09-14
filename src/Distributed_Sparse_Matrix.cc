@@ -73,6 +73,7 @@ PPL::Distributed_Sparse_Matrix::num_operation_params[] = {
   4, // REMOVE_ROW_OPERATION: id, rank_i, local_index_i, rank_last
   1, // BASE_VARIABLES_OCCUR_ONCE_OPERATION: id
   2, // GET_EXITING_AND_PIVOT: id, entering_index
+  1, // SET_WORKING_COST_OPERATION: id
 };
 
 const mpi::communicator*
@@ -244,6 +245,10 @@ PPL::Distributed_Sparse_Matrix
 
     case GET_EXITING_AND_PIVOT:
       worker.get_exiting_and_pivot(PARAMS_2);
+      break;
+
+    case SET_WORKING_COST_OPERATION:
+      worker.set_working_cost(PARAMS_1);
       break;
 
     case QUIT_OPERATION:
@@ -1844,8 +1849,8 @@ PPL::Distributed_Sparse_Matrix
 bool
 PPL::Distributed_Sparse_Matrix
 ::get_exiting_and_pivot(dimension_type entering_index,
-                        const Sparse_Row*& tableau_out,
-                        dimension_type& exiting_var_index) {
+                        dimension_type& exiting_var_index,
+                        Sparse_Row& working_cost) {
 
   broadcast_operation(GET_EXITING_AND_PIVOT, id, entering_index);
 
@@ -1860,30 +1865,45 @@ PPL::Distributed_Sparse_Matrix
   exiting_index__common(current, local_rows, base, entering_index);
 
   exiting_index_candidate winner;
+
   mpi::all_reduce(comm(), current, winner, exiting_index_reducer_functor());
 
   if (winner.index == unused_index)
     return false;
+
+  // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
+
+  const Sparse_Row& tableau_out
+    = linear_combine_matrix__common(winner.rank, winner.index, entering_index,
+                                    0, local_rows);
+
+  // 3. set_base_column(exiting_var_index, entering_index);
+
+  if (winner.rank == 0)
+    base[winner.index] = entering_index;
+
+  // 4. Linearly combine the cost function.
+
+  if (working_cost.get(entering_index) != 0)
+    linear_combine(working_cost, tableau_out, entering_index);
+
+  // 5. Set the correct value for exiting_var_index.
 
   dimension_type local_index = winner.index;
   int rank = winner.rank;
 
   exiting_var_index = reverse_mapping[rank][local_index];
 
-  // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
-
-  const Sparse_Row& returned_tableau_out
-    = linear_combine_matrix__common(rank, local_index, entering_index, 0,
-                                    local_rows);
-
-  tableau_out = &returned_tableau_out;
-
-  // 3. set_base_column(exiting_var_index, entering_index);
-
-  if (rank == 0)
-    base[local_index] = entering_index;
-
   return true;
+}
+
+void
+PPL::Distributed_Sparse_Matrix
+::set_working_cost(const Sparse_Row& working_cost) {
+  broadcast_operation(SET_WORKING_COST_OPERATION, id);
+
+  Sparse_Row& working_cost_ref = const_cast<Sparse_Row&>(working_cost);
+  mpi::broadcast(comm(), working_cost_ref, 0);
 }
 
 
@@ -2483,12 +2503,12 @@ void
 PPL::Distributed_Sparse_Matrix::Worker
 ::get_exiting_and_pivot(dimension_type id, dimension_type entering_index) {
 
-  const dimension_type unused_index = -(dimension_type)1;
-
   // This may create a new Row_Chunk.
   Row_Chunk& row_chunk = row_chunks[id];
 
   // 1. exiting_index(entering_index):
+
+  const dimension_type unused_index = -(dimension_type)1;
 
   exiting_index_candidate current;
   current.index = unused_index;
@@ -2498,26 +2518,37 @@ PPL::Distributed_Sparse_Matrix::Worker
                         entering_index);
 
   exiting_index_candidate winner;
+
   mpi::all_reduce(comm(), current, winner, exiting_index_reducer_functor());
 
   if (winner.index == unused_index)
     return;
 
-  int rank = winner.rank;
-  dimension_type local_row_index = winner.index;
-
   // 2. linear_combine_matrix(exiting_var_index, entering_index, tableau_out);
 
   const Sparse_Row& tableau_out
-    = linear_combine_matrix__common(rank, local_row_index, entering_index,
+    = linear_combine_matrix__common(winner.rank, winner.index, entering_index,
                                     my_rank, row_chunk.rows);
-  (void)tableau_out;
 
   // 3. set_base_column(exiting_var_index, entering_index);
 
-  if (rank == my_rank) {
-    row_chunk.base[local_row_index] = entering_index;
-  }
+  if (winner.rank == my_rank)
+    row_chunk.base[winner.index] = entering_index;
+
+  // 4. Linearly combine the cost function.
+
+  if (row_chunk.working_cost.get(entering_index) != 0)
+    linear_combine(row_chunk.working_cost, tableau_out, entering_index);
+}
+
+void
+PPL::Distributed_Sparse_Matrix::Worker
+::set_working_cost(dimension_type id) {
+
+  // This may create a new Row_Chunk for this id.
+  Row_Chunk& row_chunk = row_chunks[id];
+
+  mpi::broadcast(comm(), row_chunk.working_cost, 0);
 }
 
 template <typename Archive>

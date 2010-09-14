@@ -1582,6 +1582,10 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   const dimension_type tableau_num_rows = tableau.num_rows();
 #endif
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  tableau.set_working_cost(working_cost);
+#endif
+
   while (true) {
     // Choose the index of the variable entering the base, if any.
     const dimension_type entering_var_index
@@ -1599,19 +1603,14 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     // compute the new base and the corresponding vertex of the
     // feasible region.
 
-    const matrix_type::row_type* tableau_out = NULL;
     dimension_type exiting_var_index;
     bool result = tableau.get_exiting_and_pivot(entering_var_index,
-                                                tableau_out,
-                                                exiting_var_index);
+                                                exiting_var_index,
+                                                working_cost);
 
     // If no exiting index was computed, the problem is unbounded.
     if (!result)
       return false;
-
-    // Linearly combine the cost function.
-    if (working_cost.get(entering_var_index) != 0)
-      linear_combine(working_cost, *tableau_out, entering_var_index);
 
     base[exiting_var_index] = entering_var_index;
 
@@ -1692,6 +1691,10 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
   const bool textbook_pricing
     = (PRICING_TEXTBOOK == get_control_parameter(PRICING));
 
+#if USE_PPL_DISTRIBUTED_SPARSE_MATRIX
+  tableau.set_working_cost(working_cost);
+#endif
+
   while (true) {
     // Choose the index of the variable entering the base, if any.
     const dimension_type entering_var_index
@@ -1708,19 +1711,14 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     // compute the new base and the corresponding vertex of the
     // feasible region.
 
-    const matrix_type::row_type* tableau_out = NULL;
     dimension_type exiting_var_index;
     bool result = tableau.get_exiting_and_pivot(entering_var_index,
-                                                tableau_out,
-                                                exiting_var_index);
+                                                exiting_var_index,
+                                                working_cost);
 
     // If no exiting index was computed, the problem is unbounded.
     if (!result)
       return false;
-
-    // Linearly combine the cost function.
-    if (working_cost.get(entering_var_index) != 0)
-      linear_combine(working_cost, *tableau_out, entering_var_index);
 
     base[exiting_var_index] = entering_var_index;
 

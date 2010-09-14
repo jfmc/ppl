@@ -155,12 +155,14 @@ public:
     base_variables_occur_once(const std::vector<dimension_type>& base) const;
 
   //! This returns false if no variable exited the base.
-  //! tableau_out is set to the address of the row that exited the base.
-  //! The row pointed to by tableau_out will be invalidated by the next call
-  //! to this method.
   bool get_exiting_and_pivot(dimension_type entering_index,
-                             const Sparse_Row*& tableau_out,
-                             dimension_type& exiting_index);
+                             dimension_type& exiting_index,
+                             Sparse_Row& working_cost);
+
+  //! This updates the distributed copy of the working_cost used by
+  //! exact_entering_index() and float_entering_index(). It is needed whenever
+  //! the working_cost is changed out of get_exiting_and_pivot.
+  void set_working_cost(const Sparse_Row& working_cost);
 
   bool OK() const;
 
@@ -299,6 +301,8 @@ private:
     void get_exiting_and_pivot(dimension_type id,
                                dimension_type entering_index);
 
+    void set_working_cost(dimension_type id);
+
   private:
 
     struct Row_Chunk;
@@ -315,6 +319,8 @@ private:
         If base[i] is not 0, it is the column associated with that row.
       */
       std::vector<dimension_type> base;
+
+      Sparse_Row working_cost;
     };
     // Every node has an associated Node_Data, including the root node.
     // This declaration refers to worker nodes only.
@@ -399,6 +405,8 @@ private:
     BASE_VARIABLES_OCCUR_ONCE_OPERATION,
     //! Parameters: id, entering_index
     GET_EXITING_AND_PIVOT,
+    //! Parameters: id
+    SET_WORKING_COST_OPERATION,
   };
 
   // This associates to each operation code the number of dimension_type
