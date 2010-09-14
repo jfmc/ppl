@@ -1264,11 +1264,13 @@ PPL::MIP_Problem::textbook_entering_index() const {
 
   // Get the "sign" of the cost function.
   const dimension_type cost_sign_index = working_cost.size() - 1;
-  const int cost_sign = sgn(working_cost[cost_sign_index]);
+  const int cost_sign = sgn(working_cost.get(cost_sign_index));
   PPL_ASSERT(cost_sign != 0);
-  for (dimension_type i = 1; i < cost_sign_index; ++i)
-    if (sgn(working_cost[i]) == cost_sign)
-      return i;
+  for (working_cost_type::const_iterator
+       i = working_cost.lower_bound(1), i_end = working_cost.end();
+       i != i_end; ++i)
+    if (sgn(*i) == cost_sign)
+      return i.index();
   // No variable has to enter the base:
   // the cost function was optimized.
   return 0;
