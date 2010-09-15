@@ -1754,6 +1754,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   {
     // This block is equivalent to:
     // working_cost[new_last_column] = working_cost.get(old_last_column);
+    // But it avoids storing zeroes.
 
     Coefficient_traits::const_reference old_cost
       = working_cost.get(old_last_column);
