@@ -457,6 +457,12 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
                            const dimension_type start_j,
                            dimension_type& j_out) {
   const dimension_type num_cols = tableau.num_columns();
+
+  PPL_ASSERT(start_j <= pivot_row.size());
+  if (start_j == pivot_row.size())
+    // There are no candidates, so there is no minimum.
+    return false;
+
   // This is used as a set, it is always sorted.
   std::vector<dimension_type> candidates;
   PIP_Tree_Node::matrix_type::row_type::const_iterator i
