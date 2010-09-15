@@ -160,9 +160,8 @@ inline void
 neg_assign_row(PIP_Tree_Node::matrix_type::row_type& x,
                const PIP_Tree_Node::matrix_type::row_type& y) {
   x = y;
-  PIP_Tree_Node::matrix_type::row_type::iterator i = x.begin();
-  PIP_Tree_Node::matrix_type::row_type::iterator i_end = x.end();
-  for ( ; i != i_end; ++i)
+  for (PIP_Tree_Node::matrix_type::row_type::iterator
+       i = x.begin(), i_end = x.end(); i != i_end; ++i)
     neg_assign(*i);
 }
 
@@ -459,11 +458,9 @@ find_lexico_minimum_column(const PIP_Tree_Node::matrix_type& tableau,
   const dimension_type num_cols = tableau.num_columns();
   // This is used as a set, it is always sorted.
   std::vector<dimension_type> candidates;
-  PIP_Tree_Node::matrix_type::row_type::const_iterator i
-    = pivot_row.lower_bound(start_j);
-  PIP_Tree_Node::matrix_type::row_type::const_iterator i_end
-    = pivot_row.end();
-  for ( ; i != i_end; ++i)
+  for (PIP_Tree_Node::matrix_type::row_type::const_iterator
+       i = pivot_row.lower_bound(start_j), i_end = pivot_row.end();
+       i != i_end; ++i)
     if (*i > 0)
       candidates.push_back(i.index());
 
@@ -489,7 +486,7 @@ row_normalize(PIP_Tree_Node::matrix_type::row_type& x,
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = den;
   for (PIP_Tree_Node::matrix_type::row_type::const_iterator
-    i = x.begin(), i_end = x.end(); i != i_end; ++i) {
+       i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient_traits::const_reference x_i = *i;
     if (x_i != 0) {
       gcd_assign(gcd, x_i, gcd);
@@ -499,7 +496,7 @@ row_normalize(PIP_Tree_Node::matrix_type::row_type& x,
   }
   // Divide the coefficients by the GCD.
   for (PIP_Tree_Node::matrix_type::row_type::iterator
-    i = x.begin(), i_end = x.end(); i != i_end; ++i) {
+       i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient& x_i = *i;
     exact_div_assign(x_i, x_i, gcd);
   }
@@ -771,9 +768,9 @@ compatibility_check_find_pivot(const PIP_Tree_Node::matrix_type& s,
     }
   }
   candidates_t candidates;
-  candidates_map_t::iterator i = candidates_map.begin();
-  candidates_map_t::iterator i_end = candidates_map.end();
-  for ( ; i != i_end; ++i)
+  for (candidates_map_t::iterator
+       i = candidates_map.begin(), i_end = candidates_map.end();
+       i != i_end; ++i)
     candidates.push_back(*i);
   if (!candidates.empty()) {
     compatibility_check_find_pivot_in_set(candidates, s, mapping, basis);
@@ -1041,12 +1038,10 @@ PIP_Tree_Node::OK() const {
   using std::cerr;
 #endif
 
-  const Constraint_System::const_iterator begin = constraints_.begin();
-  const Constraint_System::const_iterator end = constraints_.end();
-
   // Parameter constraint system should contain no strict inequalities.
-  for (Constraint_System::const_iterator ci = begin; ci != end; ++ci)
-    if (ci->is_strict_inequality()) {
+  for (Constraint_System::const_iterator
+       i = constraints_.begin(), i_end = constraints_.end(); i != i_end; ++i)
+    if (i->is_strict_inequality()) {
 #ifndef NDEBUG
       cerr << "The feasible region of the PIP_Problem parameter context"
            << "is defined by a constraint system containing strict "
@@ -1285,8 +1280,8 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     // them if not necessary.
     Constraint_System cs;
     cs.swap(constraints_);
-    const Constraint_System::const_iterator end = cs.end();
-    for (Constraint_System::const_iterator ci = cs.begin(); ci != end; ++ci) {
+    for (Constraint_System::const_iterator
+         ci = cs.begin(), ci_end = cs.end(); ci != ci_end; ++ci) {
       matrix_type ctx_copy(context);
       merge_assign(ctx_copy, Constraint_System(*ci), all_params);
       matrix_type::row_type& last = ctx_copy[ctx_copy.num_rows()-1];
@@ -1436,9 +1431,8 @@ PIP_Solution_Node::Tableau::normalize() {
   gcd = denom;
   for (dimension_type i = num_rows; i-- > 0; ) {
     const matrix_type::row_type& s_i = s[i];
-    matrix_type::row_type::const_iterator j = s_i.begin();
-    matrix_type::row_type::const_iterator j_end = s_i.end();
-    for ( ; j != j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
       Coefficient_traits::const_reference s_ij = *j;
       if (s_ij != 0) {
         gcd_assign(gcd, s_ij, gcd);
@@ -1447,9 +1441,8 @@ PIP_Solution_Node::Tableau::normalize() {
       }
     }
     const matrix_type::row_type& t_i = t[i];
-    j = t_i.begin();
-    j_end = t_i.end();
-    for ( ; j != j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
       Coefficient_traits::const_reference t_ij = *j;
       if (t_ij != 0) {
         gcd_assign(gcd, t_ij, gcd);
@@ -1462,16 +1455,14 @@ PIP_Solution_Node::Tableau::normalize() {
   // Normalize all coefficients.
   for (dimension_type i = num_rows; i-- > 0; ) {
     matrix_type::row_type& s_i = s[i];
-    matrix_type::row_type::iterator j = s_i.begin();
-    matrix_type::row_type::iterator j_end = s_i.end();
-    for ( ; j != j_end; ++j) {
+    for (matrix_type::row_type::iterator
+         j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
       Coefficient& s_ij = *j;
       exact_div_assign(s_ij, s_ij, gcd);
     }
     matrix_type::row_type& t_i = t[i];
-    j = t_i.begin();
-    j_end = t_i.end();
-    for ( ; j != j_end; ++j) {
+    for (matrix_type::row_type::iterator
+         j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
       Coefficient& t_ij = *j;
       exact_div_assign(t_ij, t_ij, gcd);
     }
@@ -1483,13 +1474,13 @@ PIP_Solution_Node::Tableau::normalize() {
 void
 PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
   for (dimension_type i = s.num_rows(); i-- > 0; ) {
-    matrix_type::row_type::iterator j;
-    matrix_type::row_type::iterator j_end;
     matrix_type::row_type& s_i = s[i];
-    for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
+    for (matrix_type::row_type::iterator
+         j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
       *j *= ratio;
     matrix_type::row_type& t_i = t[i];
-    for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
+    for (matrix_type::row_type::iterator
+         j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
       *j *= ratio;
   }
   denom *= ratio;
@@ -1519,14 +1510,14 @@ PIP_Solution_Node::Tableau
   std::vector<Coefficient> coeff_0(num_params,0);
   std::vector<Coefficient> coeff_1(num_params,0);
   {
-    matrix_type::row_type::const_iterator j;
-    matrix_type::row_type::const_iterator j_end;
-    for (j = t_0.begin(), j_end = t_0.end(); j != j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = t_0.begin(), j_end = t_0.end(); j != j_end; ++j) {
       Coefficient& coeff = coeff_0[j.index()];
       coeff = *j;
       coeff *= s_1_1;
     }
-    for (j = t_1.begin(), j_end = t_1.end(); j != j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = t_1.begin(), j_end = t_1.end(); j != j_end; ++j) {
       Coefficient& coeff = coeff_1[j.index()];
       coeff = *j;
       coeff *= s_0_0;
@@ -1883,9 +1874,8 @@ PIP_Solution_Node::row_sign(const matrix_type::row_type& x,
   }
 
   PIP_Solution_Node::Row_Sign sign = ZERO;
-  matrix_type::row_type::const_iterator i = x.begin();
-  matrix_type::row_type::const_iterator i_end = x.end();
-  for ( ; i != i_end; ++i) {
+  for (matrix_type::row_type::const_iterator
+       i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient_traits::const_reference x_i = *i;
     if (x_i > 0) {
       if (sign == NEGATIVE)
@@ -1994,10 +1984,9 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
         ++num_rows;
         const matrix_type::row_type& s_mi = s[mi];
         cut = s_mi;
-        matrix_type::row_type::iterator cut_i = cut.begin();
-        matrix_type::row_type::iterator cut_end = cut.end();
-        for ( ; cut_i != cut_end; ++cut_i)
-          mod_assign(*cut_i, *cut_i, den);
+        for (matrix_type::row_type::iterator
+             j = cut.begin(), j_end = cut.end(); j != j_end; ++j)
+          mod_assign(*j, *j, den);
         cut[0] -= den;
         scaling.push_back(den);
       }
@@ -2041,9 +2030,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
     // Perform a pivot operation on the matrix.
     Coefficient_traits::const_reference pivot_pj = pivot.get(pj);
     {
-      matrix_type::row_type::const_iterator j;
-      matrix_type::row_type::const_iterator j_end;
-      for (j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
+      for (matrix_type::row_type::const_iterator
+           j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
         if (j.index() == pj)
           continue;
         Coefficient_traits::const_reference pivot_j = *j;
@@ -2057,9 +2045,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
             // Must scale row s_i to stay in integer case.
             gcd_assign(gcd, product, pivot_pj);
             exact_div_assign(scale_factor, pivot_pj, gcd);
-            matrix_type::row_type::iterator k;
-            matrix_type::row_type::iterator k_end;
-            for (k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
+            for (matrix_type::row_type::iterator
+                 k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
               *k *= scale_factor;
             product *= scale_factor;
             scaling[i] *= scale_factor;
@@ -2080,9 +2067,8 @@ PIP_Tree_Node::compatibility_check(matrix_type& s) {
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
-          matrix_type::row_type::iterator k;
-          matrix_type::row_type::iterator k_end;
-          for (k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
+          for (matrix_type::row_type::iterator
+               k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k)
             *k *= scale_factor;
           product *= scale_factor;
           scaling[i] *= scale_factor;
@@ -2384,9 +2370,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         const matrix_type::row_type& s_i = tableau.s[i];
         bool has_positive = false;
         {
-          matrix_type::row_type::const_iterator j;
-          matrix_type::row_type::const_iterator j_end;
-          for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
+          for (matrix_type::row_type::const_iterator
+               j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
             if (*j > 0) {
               has_positive = true;
               break;
@@ -2515,10 +2500,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_type& s_i = tableau.s[i];
         PPL_DIRTY_TEMP_COEFFICIENT(s_i_pj);
         s_i_pj = s_i.get(pj);
-        matrix_type::row_type::const_iterator j;
-        matrix_type::row_type::const_iterator j_end;
         matrix_type::row_type::iterator itr = s_i.end();
-        for (j = s_pivot.begin(), j_end = s_pivot.end(); j != j_end; ++j) {
+        for (matrix_type::row_type::const_iterator
+             j = s_pivot.begin(), j_end = s_pivot.end(); j != j_end; ++j) {
           if (j.index() != pj) {
             Coefficient_traits::const_reference s_pivot_j = *j;
             // Do nothing if the j-th pivot element is zero.
@@ -2549,10 +2533,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         matrix_type::row_type& s_i = tableau.s[i];
         matrix_type::row_type& t_i = tableau.t[i];
         Coefficient_traits::const_reference s_i_pj = s_i.get(pj);
-        matrix_type::row_type::const_iterator j;
-        matrix_type::row_type::const_iterator j_end;
         matrix_type::row_type::iterator k = t_i.end();
-        for (j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
+        for (matrix_type::row_type::const_iterator
+             j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
           Coefficient_traits::const_reference t_pivot_j = *j;
           // Do nothing if the j-th pivot element is zero.
           if (t_pivot_j != 0) {
@@ -2642,9 +2625,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         bool has_positive = false;
         {
           const matrix_type::row_type& s_i = tableau.s[i];
-          matrix_type::row_type::const_iterator j;
-          matrix_type::row_type::const_iterator j_end;
-          for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
+          for (matrix_type::row_type::const_iterator
+               j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
             if (*j > 0) {
               has_positive = true;
               break;
@@ -2657,9 +2639,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         score = 0;
         {
           const matrix_type::row_type& t_i = tableau.t[i];
-          matrix_type::row_type::const_iterator j;
-          matrix_type::row_type::const_iterator j_end;
-          for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
+          for (matrix_type::row_type::const_iterator
+               j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
             score += *j;
         }
         if (i_neg == not_a_dim || score < best_score) {
@@ -2692,9 +2673,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         score = 0;
         {
           const matrix_type::row_type& t_i = tableau.t[i];
-          matrix_type::row_type::const_iterator j;
-          matrix_type::row_type::const_iterator j_end;
-          for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
+          for (matrix_type::row_type::const_iterator
+               j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j)
             score += *j;
         }
         if (best_i == not_a_dim || score < best_score) {
@@ -2828,9 +2808,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         continue;
       const dimension_type i = mapping[k];
       const matrix_type::row_type& t_i = tableau.t[i];
-      matrix_type::row_type::const_iterator j;
-      matrix_type::row_type::const_iterator j_end;
-      for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
+      for (matrix_type::row_type::const_iterator
+           j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
         if (*j % den != 0)
           goto non_integer;
       }
@@ -2859,9 +2838,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Count the number of non-integer parameter coefficients.
         dimension_type pcount = 0;
         const matrix_type::row_type& t_i = tableau.t[i];
-        matrix_type::row_type::const_iterator j;
-        matrix_type::row_type::const_iterator j_end;
-        for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
+        for (matrix_type::row_type::const_iterator
+             j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
           mod_assign(mod, *j, den);
           if (mod != 0)
             ++pcount;
@@ -2894,9 +2872,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         dimension_type pcount = 0;
         {
           const matrix_type::row_type& t_i = tableau.t[i];
-          matrix_type::row_type::const_iterator j;
-          matrix_type::row_type::const_iterator j_end;
-          for (j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
+          for (matrix_type::row_type::const_iterator
+               j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
             mod_assign(mod, *j, den);
             if (mod != 0) {
               score += den;
@@ -2910,9 +2887,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         s_score = 0;
         {
           const matrix_type::row_type& s_i = tableau.s[i];
-          matrix_type::row_type::const_iterator j;
-          matrix_type::row_type::const_iterator j_end;
-          for (j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
+          for (matrix_type::row_type::const_iterator
+               j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
             mod_assign(mod, *j, den);
             s_score += den;
             s_score -= mod;
@@ -3152,19 +3128,17 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   const matrix_type::row_type& row_s = tableau.s[index];
   const matrix_type::row_type& row_t = tableau.t[index];
   {
-    matrix_type::row_type::const_iterator j;
-    matrix_type::row_type::const_iterator j_end;
     matrix_type::row_type::iterator itr = cut_s.end();
-    for (j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
       itr = cut_s.find_create(itr, j.index(), *j);
       *itr %= den;
     }
   }
   {
-    matrix_type::row_type::const_iterator j = row_t.begin();
-    matrix_type::row_type::const_iterator j_end = row_t.end();
     matrix_type::row_type::iterator cut_t_itr = cut_t.end();
-    for ( ; j!=j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = row_t.begin(), j_end = row_t.end(); j!=j_end; ++j) {
       mod_assign(mod, *j, den);
       if (mod != 0) {
         cut_t_itr = cut_t.find_create(cut_t_itr, j.index(), mod);
