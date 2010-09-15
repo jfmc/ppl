@@ -842,12 +842,16 @@ PPL::MIP_Problem::process_pending_constraints() {
   // constraint, will enter the base and will have coefficient -1 in
   // the cost function.
 
+  // This is used as a hint for insertions in working_cost.
+  working_cost_type::iterator cost_itr = working_cost.end();
+
   // First go through nonpending constraints that became unfeasible
   // due to re-merging of split variables.
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
     tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
                                                     Coefficient_one());
-    working_cost[artificial_index] = -1;
+    cost_itr = working_cost.find_create(cost_itr, artificial_index);
+    *cost_itr = -1;
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
   }
@@ -858,7 +862,8 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (worked_out_row[i])
       continue;
     tableau[i].find_create(artificial_index, Coefficient_one());
-    working_cost[artificial_index] = -1;
+    cost_itr = working_cost.find_create(cost_itr, artificial_index);
+    *cost_itr = -1;
     base[i] = artificial_index;
     ++artificial_index;
   }
@@ -868,7 +873,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // Set the extra-coefficient of the cost functions to record its sign.
   // This is done to keep track of the possible sign's inversion.
   const dimension_type last_obj_index = working_cost.size() - 1;
-  working_cost[last_obj_index] = 1;
+  working_cost.find_create(cost_itr, last_obj_index, Coefficient_one());
 
   // Express the problem in terms of the variables in base.
   {
