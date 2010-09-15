@@ -147,6 +147,83 @@ PPL::Sparse_Row::normalize() {
   PPL_ASSERT(OK());
 }
 
+namespace {
+
+class linear_combine_helper1 {
+
+public:
+  inline
+  linear_combine_helper1(PPL::Coefficient_traits::const_reference coeff1)
+    : my_coeff1(coeff1) {
+  }
+
+  inline void
+  operator()(PPL::Coefficient& x_i) const {
+    x_i *= my_coeff1;
+  }
+
+private:
+  PPL::Coefficient my_coeff1;
+};
+
+class linear_combine_helper2 {
+
+public:
+  inline
+  linear_combine_helper2(PPL::Coefficient_traits::const_reference coeff1,
+                         PPL::Coefficient_traits::const_reference coeff2)
+    : my_coeff1(coeff1), my_coeff2(coeff2) {
+  }
+
+  inline void
+  operator()(PPL::Coefficient& x_i,
+             PPL::Coefficient_traits::const_reference y_i) const {
+    x_i *= my_coeff1;
+    PPL::add_mul_assign(x_i, y_i, my_coeff2);
+  }
+
+private:
+  PPL::Coefficient my_coeff1;
+  PPL::Coefficient my_coeff2;
+};
+
+class linear_combine_helper3 {
+
+public:
+  inline
+  linear_combine_helper3(PPL::Coefficient_traits::const_reference coeff2)
+    : my_coeff2(coeff2) {
+  }
+
+  inline void
+  operator()(PPL::Coefficient& x_i,
+             PPL::Coefficient_traits::const_reference y_i) const {
+    x_i = y_i;
+    x_i *= my_coeff2;
+  }
+
+private:
+  PPL::Coefficient my_coeff2;
+};
+
+} // namespace
+
+void
+PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
+                                Coefficient_traits::const_reference coeff1,
+                                Coefficient_traits::const_reference coeff2) {
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+  if (coeff1 == 1) {
+    combine_needs_second(y, linear_combine_helper2(coeff1, coeff2),
+                        linear_combine_helper3(coeff2));
+  } else {
+    combine(y, linear_combine_helper1(coeff1),
+            linear_combine_helper2(coeff1, coeff2),
+            linear_combine_helper3(coeff2));
+  }
+}
+
 void
 PPL::Sparse_Row::ascii_dump(std::ostream& s) const {
   s << "size " << size_ << ' ';

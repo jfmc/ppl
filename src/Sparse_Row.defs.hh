@@ -713,6 +713,33 @@ public:
   void combine(const Sparse_Row& y,
                const Func1& f, const Func2& g, const Func3& h);
 
+  //! Executes <CODE>(*this)[i] = (*this)[i]*coeff1 + y[i]*coeff2</CODE>, for
+  //! each i.
+  /*!
+    \param y
+    The row that will be combined with *this.
+
+    \param coeff1
+    The coefficient used for elements of *this.
+
+    \param coeff2
+    The coefficient used for elements of y.
+
+    This method takes \f$O(n*\log^2 n)\f$ time.
+
+    \note
+    The functors will only be called when necessary.
+    This method is implemented using combine(). It is provided for
+    convenience only.
+
+    \see combine_needs_first
+    \see combine_needs_second
+    \see combine
+  */
+  void linear_combine(const Sparse_Row& y,
+                      Coefficient_traits::const_reference coeff1,
+                      Coefficient_traits::const_reference coeff2);
+
   PPL_OUTPUT_DECLARATIONS
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
