@@ -15,8 +15,11 @@ PURPOSE. */
 // This is needed for USE_PPL_SPARSE_MATRIX.
 #include "globals.defs.hh"
 
+#if USE_PPL_SPARSE_MATRIX
 #include "Sparse_Row.types.hh"
+#else
 #include "Dense_Row.types.hh"
+#endif
 
 namespace Parma_Polyhedra_Library {
 

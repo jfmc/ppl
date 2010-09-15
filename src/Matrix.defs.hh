@@ -25,7 +25,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.types.hh"
 
+#if USE_PPL_SPARSE_MATRIX
 #include "Sparse_Matrix.defs.hh"
+#else
 #include "Dense_Matrix.defs.hh"
+#endif
+
 
 #endif // !defined(PPL_Matrix_defs_hh)

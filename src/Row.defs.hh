@@ -25,7 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Row.types.hh"
 
+#if USE_PPL_SPARSE_MATRIX
 #include "Sparse_Row.defs.hh"
+#else
 #include "Dense_Row.defs.hh"
+#endif
 
 #endif // !defined(PPL_Row_defs_hh)
