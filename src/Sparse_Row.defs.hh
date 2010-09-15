@@ -731,7 +731,7 @@ public:
 
     \note
     The functors will only be called when necessary.
-    This method is implemented using combine(). It is provided for
+    This method can be implemented in user code, too. It is provided for
     convenience only.
 
     \see combine_needs_first
