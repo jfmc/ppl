@@ -455,7 +455,7 @@ test07() {
 bool
 test08() {
 
-  Sparse_Row row(3);
+  Sparse_Row row(4);
 
   if (row.lower_bound(2) != row.end())
     return false;
