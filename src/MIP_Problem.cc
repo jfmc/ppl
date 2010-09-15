@@ -1035,15 +1035,12 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         j = tableau_i.lower_bound(j, k->first);
       } else {
         PPL_ASSERT(k->first == column);
-        Coefficient_traits::const_reference tableau_ij = *j;
         WEIGHT_BEGIN();
-        if (tableau_ij != 0) {
-          PPL_ASSERT(tableau_i.get(base[i]) != 0);
-          assign(float_tableau_value, tableau_ij);
-          float_tableau_value /= float_tableau_denum;
-          float_tableau_value *= float_tableau_value;
-          k->second += float_tableau_value;
-        }
+        PPL_ASSERT(tableau_i.get(base[i]) != 0);
+        assign(float_tableau_value, *j);
+        float_tableau_value /= float_tableau_denum;
+        float_tableau_value *= float_tableau_value;
+        k->second += float_tableau_value;
         WEIGHT_ADD_MUL(338, tableau_num_rows);
         ++j;
         ++k;
@@ -1185,13 +1182,18 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       else {
         Coefficient_traits::const_reference tableau_ij = *j;
         WEIGHT_BEGIN();
-        // FIXME: Check if the test against zero speeds up the sparse version.
-        // The test against 0 gives rise to a consistent speed up: see
+#if USE_PPL_SPARSE_MATRIX
+        scalar_value = tableau_ij * norm_factor[i];
+        add_mul_assign(k->second, scalar_value, scalar_value);
+#else
+        // The test against 0 gives rise to a consistent speed up in the dense
+        // implementation: see
         // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
         if (tableau_ij != 0) {
           scalar_value = tableau_ij * norm_factor[i];
           add_mul_assign(k->second, scalar_value, scalar_value);
         }
+#endif
         WEIGHT_ADD_MUL(47, tableau_num_rows);
         ++k;
         ++j;
