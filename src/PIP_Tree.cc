@@ -540,9 +540,8 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
         const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
         Coefficient_traits::const_reference challenger_cost = i->second.cost;
-        Coefficient_traits::const_reference challenger_value = i->second.value;
         PPL_ASSERT(value > 0);
-        PPL_ASSERT(challenger_value > 0);
+        PPL_ASSERT(i->second.value > 0);
         PPL_ASSERT(pj < challenger_j);
 
         const int lhs_coeff_sgn = sgn(cost);
@@ -572,7 +571,7 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
           pi = challenger_i;
           pj = challenger_j;
           cost = challenger_cost;
-          value = challenger_value;
+          value = i->second.value;
           new_candidates.clear();
           new_candidates.push_back(*i);
         }
@@ -589,7 +588,6 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
       } else
         row_value = 0;
       for (++i; i != i_end; ++i) {
-        const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
         Coefficient_traits::const_reference challenger_cost = i->second.cost;
         Coefficient_traits::const_reference challenger_value = i->second.value;
@@ -628,7 +626,7 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
 
         if (lhs_sign != rhs_sign) {
           if (lhs_sign > rhs_sign) {
-            pi = challenger_i;
+            pi = i->second.row_index;
             pj = challenger_j;
             cost = challenger_cost;
             value = challenger_value;
@@ -655,7 +653,7 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
             new_candidates.push_back(*i);
           else {
             if (lhs > rhs) {
-              pi = challenger_i;
+              pi = i->second.row_index;
               pj = challenger_j;
               cost = challenger_cost;
               value = challenger_value;
