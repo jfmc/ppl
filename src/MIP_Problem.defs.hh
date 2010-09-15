@@ -25,9 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
-#include "Dense_Row.defs.hh"
-#include "Dense_Matrix.defs.hh"
-#include "Sparse_Matrix.defs.hh"
+#include "Row.defs.hh"
+#include "Matrix.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
@@ -79,12 +78,6 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 */
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
-#if USE_PPL_SPARSE_MATRIX
-  typedef Sparse_Matrix matrix_type;
-#else
-  typedef Dense_Matrix matrix_type;
-#endif
-
   //! Builds a trivial MIP problem.
   /*!
     A trivial MIP problem requires to maximize the objective function
@@ -438,13 +431,9 @@ private:
   dimension_type internal_space_dim;
 
   //! The matrix encoding the current feasible region in tableau form.
-  matrix_type tableau;
+  Matrix tableau;
 
-#if USE_PPL_SPARSE_MATRIX
-  typedef Sparse_Row working_cost_type;
-#else
-  typedef Dense_Row working_cost_type;
-#endif
+  typedef Row working_cost_type;
 
   //! The working cost function.
   working_cost_type working_cost;
@@ -652,44 +641,7 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(Dense_Row& x, const Dense_Row& y,
-                             const dimension_type k);
-
-  //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
-  /*!
-    \param x
-    The row that will be combined with \p y object.
-
-    \param y
-    The row that will be combined with \p x object.
-
-    \param k
-    The position of \p *this that have to be \f$0\f$.
-
-    Computes a linear combination of \p x and \p y having
-    the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Linear_Row to \p x and normalizes it.
-  */
-  static void linear_combine(Sparse_Row& x, const Sparse_Row& y,
-                             const dimension_type k);
-
-  //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
-  /*!
-    \param x
-    The row that will be combined with \p y object.
-
-    \param y
-    The row that will be combined with \p x object.
-
-    \param k
-    The position of \p *this that have to be \f$0\f$.
-
-    Computes a linear combination of \p x and \p y having
-    the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Linear_Row to \p x and normalizes it.
-  */
-  static void linear_combine(Dense_Row& x, const Sparse_Row& y,
-                             const dimension_type k);
+  static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
   /*! \brief
     Performs the pivoting operation on the tableau.

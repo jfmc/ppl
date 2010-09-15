@@ -283,6 +283,10 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
+Row.types.hh \
+Row.defs.hh \
+Matrix.types.hh \
+Matrix.defs.hh \
 MIP_Problem.types.hh \
 MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \
