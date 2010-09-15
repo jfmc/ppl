@@ -1333,7 +1333,10 @@ PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
   x.linear_combine(y, normalized_y_k, normalized_x_k);
 
   PPL_ASSERT(x.get(k) == 0);
-  x.reset(k);
+
+#if USE_PPL_SPARSE_MATRIX
+  PPL_ASSERT(x.find(k) == x.end());
+#endif
 
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
