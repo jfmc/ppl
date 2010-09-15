@@ -1485,22 +1485,6 @@ PIP_Solution_Node::Tableau
   // On exit from the loop, if j_mismatch == num_params then
   // no column mismatch was found.
   dimension_type j_mismatch = num_params;
-  std::vector<Coefficient> coeff_0(num_params,0);
-  std::vector<Coefficient> coeff_1(num_params,0);
-  {
-    for (Row::const_iterator
-         j = t_0.begin(), j_end = t_0.end(); j != j_end; ++j) {
-      Coefficient& coeff = coeff_0[j.index()];
-      coeff = *j;
-      coeff *= s_1_1;
-    }
-    for (Row::const_iterator
-         j = t_1.begin(), j_end = t_1.end(); j != j_end; ++j) {
-      Coefficient& coeff = coeff_1[j.index()];
-      coeff = *j;
-      coeff *= s_0_0;
-    }
-  }
   Row::const_iterator j0 = t_0.end();
   Row::const_iterator j0_end = t_0.end();
   Row::const_iterator j1 = t_1.end();
