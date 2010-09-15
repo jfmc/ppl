@@ -1204,25 +1204,43 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     k = columns.rbegin();
   std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
     k_end = columns.rend();
+  working_cost_type::const_iterator itr = working_cost.end();
   for ( ; k != k_end; ++k) {
-    Coefficient_traits::const_reference cost_j = working_cost[k->first];
-    // We cannot compute the (exact) square root of abs(\Delta x_j).
-    // The workaround is to compute the square of `cost[j]'.
-    challenger_num = cost_j * cost_j;
-    // Initialization during the first loop.
-    if (entering_index == 0) {
-      std::swap(current_num, challenger_num);
-      std::swap(current_den, k->second);
-      entering_index = k->first;
-      continue;
-    }
-    challenger_value = challenger_num * current_den;
-    current_value = current_num * k->second;
-    // Update the values, if the challenger wins.
-    if (challenger_value > current_value) {
-      std::swap(current_num, challenger_num);
-      std::swap(current_den, k->second);
-      entering_index = k->first;
+    itr = working_cost.lower_bound(itr, k->first);
+    if (itr != working_cost.end() && itr.index() == k->first) {
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      challenger_num = (*itr) * (*itr);
+      // Initialization during the first loop.
+      if (entering_index == 0) {
+        std::swap(current_num, challenger_num);
+        std::swap(current_den, k->second);
+        entering_index = k->first;
+        continue;
+      }
+      challenger_value = challenger_num * current_den;
+      current_value = current_num * k->second;
+      // Update the values, if the challenger wins.
+      if (challenger_value > current_value) {
+        std::swap(current_num, challenger_num);
+        std::swap(current_den, k->second);
+        entering_index = k->first;
+      }
+    } else {
+      PPL_ASSERT(working_cost.get(k->first) == 0);
+      // Initialization during the first loop.
+      if (entering_index == 0) {
+        current_num = 0;
+        std::swap(current_den, k->second);
+        entering_index = k->first;
+        continue;
+      }
+      // Update the values, if the challenger wins.
+      if (0 > sgn(current_num) * sgn(k->second)) {
+        current_num = 0;
+        std::swap(current_den, k->second);
+        entering_index = k->first;
+      }
     }
   }
 
