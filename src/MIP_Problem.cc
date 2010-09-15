@@ -823,9 +823,8 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
     matrix_type::row_type& tableau_i = tableau[i];
     if (tableau_i.get(0) > 0) {
-      matrix_type::row_type::iterator j;
-      matrix_type::row_type::iterator j_end;
-      for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j)
+      for (matrix_type::row_type::iterator
+           j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j)
         neg_assign(*j);
     }
   }
@@ -1004,9 +1003,8 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     const matrix_type::row_type& tableau_i = tableau[i];
     Coefficient_traits::const_reference tableau_i_base_i = tableau_i.get(base[i]);
     assign(float_tableau_denum, tableau_i_base_i);
-    matrix_type::row_type::const_iterator j;
-    matrix_type::row_type::const_iterator j_end;
-    for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j) {
+    for (matrix_type::row_type::const_iterator
+         j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j) {
       if (j.index() >= tableau_num_columns_minus_1)
         break;
       std::pair<bool, double>& current_data = columns[j.index()];
@@ -1163,11 +1161,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       }
     }
   }
-  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
-    k = columns.rbegin();
-  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
-    k_end = columns.rend();
-  for ( ; k != k_end; ++k) {
+
+  for (std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
+       k = columns.rbegin(), k_end = columns.rend(); k != k_end; ++k) {
     Coefficient_traits::const_reference cost_j = working_cost[k->first];
     // We cannot compute the (exact) square root of abs(\Delta x_j).
     // The workaround is to compute the square of `cost[j]'.
