@@ -721,9 +721,11 @@ public:
 
     \param coeff1
     The coefficient used for elements of *this.
+    This must not be 0.
 
     \param coeff2
     The coefficient used for elements of y.
+    This must not be 0.
 
     This method takes \f$O(n*\log^2 n)\f$ time.
 
