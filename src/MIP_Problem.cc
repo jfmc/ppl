@@ -1314,68 +1314,6 @@ PPL::MIP_Problem::textbook_entering_index() const {
 }
 
 
-#if USE_PPL_SPARSE_MATRIX
-
-namespace {
-
-class linear_combine_helper1 {
-
-public:
-  inline
-  linear_combine_helper1(const PPL::Coefficient& normalized_y_k1)
-    : normalized_y_k(normalized_y_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x) const {
-    x *= normalized_y_k;
-  }
-
-private:
-  PPL::Coefficient normalized_y_k;
-};
-
-class linear_combine_helper2 {
-
-public:
-  inline
-  linear_combine_helper2(const PPL::Coefficient& normalized_x_k1,
-                         const PPL::Coefficient& normalized_y_k1)
-    : normalized_x_k(normalized_x_k1), normalized_y_k(normalized_y_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x *= normalized_y_k;
-    PPL::sub_mul_assign(x, y, normalized_x_k);
-  }
-
-private:
-  PPL::Coefficient normalized_x_k;
-  PPL::Coefficient normalized_y_k;
-};
-
-class linear_combine_helper3 {
-
-public:
-  inline
-  linear_combine_helper3(const PPL::Coefficient& normalized_x_k1)
-    : normalized_x_k(normalized_x_k1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x, const PPL::Coefficient& y) const {
-    x = y;
-    x *= normalized_x_k;
-    PPL::neg_assign(x);
-  }
-
-private:
-  PPL::Coefficient normalized_x_k;
-};
-
-} // namespace
-
 void
 PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
                                  const dimension_type k) {
@@ -1391,47 +1329,15 @@ PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
 
-  x.combine(y,
-            linear_combine_helper1(normalized_y_k),
-            linear_combine_helper2(normalized_x_k, normalized_y_k),
-            linear_combine_helper3(normalized_x_k));
+  neg_assign(normalized_y_k);
+  x.linear_combine(y, normalized_y_k, normalized_x_k);
 
+  PPL_ASSERT(x.get(k) == 0);
   x.reset(k);
+
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
-
-#else // !USE_PPL_SPARSE_MATRIX
-
-void
-PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
-                                 const dimension_type k) {
-  WEIGHT_BEGIN();
-  const dimension_type x_size = x.size();
-  PPL_ASSERT(x_size == y.size());
-  PPL_ASSERT(y[k] != 0 && x[k] != 0);
-  // Let g be the GCD between `x[k]' and `y[k]'.
-  // For each i the following computes
-  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
-  normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
-  for (dimension_type i = x_size; i-- > 0; )
-    if (i != k) {
-      Coefficient& x_i = x[i];
-      x_i *= normalized_y_k;
-      // The test against 0 gives rise to a consistent speed up: see
-      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      Coefficient_traits::const_reference y_i = y[i];
-      if (y_i != 0)
-        sub_mul_assign(x_i, y_i, normalized_x_k);
-    }
-  x[k] = 0;
-  x.normalize();
-  WEIGHT_ADD_MUL(83, x_size);
-}
-
-#endif // !USE_PPL_SPARSE_MATRIX
 
 // See pages 42-43 of [PapadimitriouS98].
 void
