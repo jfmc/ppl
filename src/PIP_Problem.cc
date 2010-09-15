@@ -172,10 +172,10 @@ PPL::PIP_Problem::solve() const {
               itr = row.find_create(0, -1);
           }
           dimension_type i = 1;
-          Variables_Set::const_iterator pi = param_begin;
 
           // itr may still be end(), but it can still be used as hint.
-          for ( ; pi != param_end; ++pi, ++i) {
+          for (Variables_Set::const_iterator
+               pi = param_begin; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
               Coefficient_traits::const_reference x
                 = c.coefficient(Variable(*pi));
@@ -197,9 +197,8 @@ PPL::PIP_Problem::solve() const {
 
           last_row = x.initial_context[x.initial_context.num_rows()-2];
 
-          matrix_type::row_type::iterator i = last_row.begin();
-          matrix_type::row_type::iterator i_end = last_row.end();
-          for ( ; i != i_end; ++i)
+          for (matrix_type::row_type::iterator
+               i = last_row.begin(), i_end = last_row.end(); i != i_end; ++i)
             neg_assign(*i);
         }
       }
