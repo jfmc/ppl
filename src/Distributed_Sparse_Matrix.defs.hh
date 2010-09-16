@@ -470,6 +470,8 @@ private:
     If base[i] is not 0, it is the column associated with that row.
   */
   std::vector<dimension_type> base;
+
+  dimension_type pivot_count;
 };
 
 namespace std {

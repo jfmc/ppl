@@ -55,6 +55,7 @@ Distributed_Sparse_Matrix::Distributed_Sparse_Matrix()
     reverse_mapping(comm_size), next_rank(0), local_rows(0), base(0) {
   PPL_ASSERT(comm().rank() == 0);
   PPL_ASSERT(OK());
+  pivot_count = 0;
 }
 
 inline
@@ -64,6 +65,7 @@ Distributed_Sparse_Matrix
   PPL_ASSERT(comm().rank() == 0);
 
   init(num_rows1, num_cols1);
+  pivot_count = 0;
 }
 
 inline
@@ -79,6 +81,8 @@ Distributed_Sparse_Matrix
   id = get_unique_id();
 
   broadcast_operation(COPY_MATRIX_OPERATION, matrix.id, id);
+
+  pivot_count = 0;
 
   PPL_ASSERT(OK());
 }
@@ -107,6 +111,7 @@ Distributed_Sparse_Matrix::~Distributed_Sparse_Matrix() {
   broadcast_operation(DELETE_MATRIX_OPERATION, id);
 
   // The rows stored at the root will be destroyed automatically.
+  std::cout << pivot_count << std::endl;
 }
 
 inline dimension_type
