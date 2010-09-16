@@ -33,17 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "PIP_Problem.defs.hh"
 
-#if USE_PPL_SPARSE_MATRIX
-
-#include "Sparse_Matrix.defs.hh"
-#include "Sparse_Row.defs.hh"
-
-#else
-
-#include "Dense_Matrix.defs.hh"
-#include "Dense_Row.defs.hh"
-
-#endif
+#include "Row.defs.hh"
+#include "Matrix.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -55,13 +46,6 @@ namespace Parma_Polyhedra_Library {
     - PIP_Solution_Node, for the leaves of the tree.
 */
 class PIP_Tree_Node {
-public:
-#if USE_PPL_SPARSE_MATRIX
-  typedef Sparse_Matrix matrix_type;
-#else
-  typedef Dense_Matrix matrix_type;
-#endif
-
 protected:
   //! Constructor: builds a node owned by \p *owner.
   explicit PIP_Tree_Node(const PIP_Problem* owner);
@@ -223,13 +207,12 @@ protected:
   */
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const matrix_type& context,
+                               const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim) = 0;
 
   //! Inserts a new parametric constraint in internal row format
-  void add_constraint(const matrix_type::row_type& x,
-                      const Variables_Set& parameters);
+  void add_constraint(const Row& x, const Variables_Set& parameters);
 
   //! Merges parent's artificial parameters into \p *this.
   void parent_merge();
@@ -268,14 +251,13 @@ protected:
     solution is integer by applying a cut generation method when
     intermediate non-integer solutions are found.
   */
-  static bool compatibility_check(matrix_type& s);
+  static bool compatibility_check(Matrix& s);
 
   /*! \brief
     Helper method: checks for satisfiability of the restricted context
     obtained by adding \p row to \p context.
   */
-  static bool compatibility_check(const matrix_type& context,
-                                  const matrix_type::row_type& row);
+  static bool compatibility_check(const Matrix& context, const Row& row);
 
 }; // class PIP_Tree_Node
 
@@ -408,9 +390,9 @@ private:
   //! The type for parametric simplex tableau.
   struct Tableau {
     //! The matrix of simplex coefficients.
-    matrix_type s;
+    Matrix s;
     //! The matrix of parameter coefficients.
-    matrix_type t;
+    Matrix t;
     //! A common denominator for all matrix elements
     Coefficient denom;
 
@@ -609,7 +591,7 @@ private:
   bool solution_valid;
 
   //! Returns the sign of row \p x.
-  static Row_Sign row_sign(const matrix_type::row_type& x,
+  static Row_Sign row_sign(const Row& x,
                            dimension_type big_dimension);
 
 protected:
@@ -661,7 +643,7 @@ protected:
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const matrix_type& context,
+                               const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
 
@@ -683,14 +665,11 @@ protected:
     the current space dimension, including variables and all parameters; to
     be updated if an extra parameter is to be created
   */
-  void generate_cut(dimension_type i,
-                    Variables_Set& parameters,
-                    matrix_type& context,
-                    dimension_type& space_dimension);
+  void generate_cut(dimension_type i, Variables_Set& parameters,
+                    Matrix& context, dimension_type& space_dimension);
 
   //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s,
-                          unsigned indent,
+  virtual void print_tree(std::ostream& s, unsigned indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const;
 
@@ -795,13 +774,12 @@ protected:
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const matrix_type& context,
+                               const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
 
   //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s,
-                          unsigned indent,
+  virtual void print_tree(std::ostream& s, unsigned indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const;
 

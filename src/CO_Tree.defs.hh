@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_CO_Tree_defs_hh
 #define PPL_CO_Tree_defs_hh 1
 
+#include "CO_Tree.types.hh"
+
 #include "Coefficient.defs.hh"
 
 #ifndef PPL_CO_TREE_EXTRA_DEBUG

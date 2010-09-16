@@ -155,11 +155,10 @@ PPL::PIP_Problem::solve() const {
 
         x.initial_context.add_zero_rows(1, Row_Flags());
 
-        matrix_type::row_type& row
-          = x.initial_context[x.initial_context.num_rows()-1];
+        Row& row = x.initial_context[x.initial_context.num_rows()-1];
 
         {
-          matrix_type::row_type::iterator itr = row.end();
+          Row::iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
             itr = row.find_create(0, c.inhomogeneous_term());
@@ -172,10 +171,10 @@ PPL::PIP_Problem::solve() const {
               itr = row.find_create(0, -1);
           }
           dimension_type i = 1;
-          Variables_Set::const_iterator pi = param_begin;
 
           // itr may still be end(), but it can still be used as hint.
-          for ( ; pi != param_end; ++pi, ++i) {
+          for (Variables_Set::const_iterator
+               pi = param_begin; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
               Coefficient_traits::const_reference x
                 = c.coefficient(Variable(*pi));
@@ -192,21 +191,19 @@ PPL::PIP_Problem::solve() const {
 
           // The reference `row' has been invalidated.
 
-          matrix_type::row_type& last_row
-            = x.initial_context[x.initial_context.num_rows()-1];
+          Row& last_row = x.initial_context[x.initial_context.num_rows()-1];
 
           last_row = x.initial_context[x.initial_context.num_rows()-2];
 
-          matrix_type::row_type::iterator i = last_row.begin();
-          matrix_type::row_type::iterator i_end = last_row.end();
-          for ( ; i != i_end; ++i)
+          for (Row::iterator
+               i = last_row.begin(), i_end = last_row.end(); i != i_end; ++i)
             neg_assign(*i);
         }
       }
 
       if (check_feasible_context) {
         // Check for feasibility of initial context.
-        matrix_type ctx_copy(initial_context);
+        Matrix ctx_copy(initial_context);
         if (!PIP_Solution_Node::compatibility_check(ctx_copy)) {
           // Problem found to be unfeasible.
           delete x.current_solution;

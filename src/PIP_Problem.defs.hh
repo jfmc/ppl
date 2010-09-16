@@ -35,13 +35,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 #include <iosfwd>
 
-// FIXME: this must be put here, because it is used by MIP_Problem.defs.hh
-// and otherwise compilation will fail for ppl-config.o.
-#include "Dense_Row.defs.hh"
-
-#include "Dense_Matrix.defs.hh"
-#include "Sparse_Matrix.defs.hh"
-#include "Sparse_Row.defs.hh"
+#include "Row.defs.hh"
+#include "Matrix.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -494,12 +489,6 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 */
 class Parma_Polyhedra_Library::PIP_Problem {
 public:
-#if USE_PPL_SPARSE_MATRIX
-  typedef Sparse_Matrix matrix_type;
-#else
-  typedef Dense_Matrix matrix_type;
-#endif
-
   //! Builds a trivial PIP problem.
   /*!
     A trivial PIP problem requires to compute the lexicographic minimum
@@ -814,7 +803,7 @@ private:
 
     Contains problem constraints on parameters only
   */
-  matrix_type initial_context;
+  Matrix initial_context;
 
   //! The control parameters for the problem object.
   Control_Parameter_Value

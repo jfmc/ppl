@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
+#if USE_PPL_SPARSE_MATRIX
+
 #include <vector>
 #include <algorithm>
 #include <set>
@@ -2478,3 +2480,16 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
 END_MAIN
+
+#else // !USE_PPL_SPARSE_MATRIX
+
+// A fake test to avoid compiler warnings in BEGIN_MAIN.
+bool test01() {
+  return true;
+}
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+
+#endif // !USE_PPL_SPARSE_MATRIX

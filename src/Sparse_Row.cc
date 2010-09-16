@@ -228,80 +228,57 @@ PPL::Sparse_Row::normalize(Coefficient& gcd) {
   PPL_ASSERT(OK());
 }
 
-namespace {
-
-class linear_combine_helper1 {
-
-public:
-  inline
-  linear_combine_helper1(PPL::Coefficient_traits::const_reference coeff1)
-    : my_coeff1(coeff1) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x_i) const {
-    x_i *= my_coeff1;
-  }
-
-private:
-  PPL::Coefficient my_coeff1;
-};
-
-class linear_combine_helper2 {
-
-public:
-  inline
-  linear_combine_helper2(PPL::Coefficient_traits::const_reference coeff1,
-                         PPL::Coefficient_traits::const_reference coeff2)
-    : my_coeff1(coeff1), my_coeff2(coeff2) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x_i,
-             PPL::Coefficient_traits::const_reference y_i) const {
-    x_i *= my_coeff1;
-    PPL::add_mul_assign(x_i, y_i, my_coeff2);
-  }
-
-private:
-  PPL::Coefficient my_coeff1;
-  PPL::Coefficient my_coeff2;
-};
-
-class linear_combine_helper3 {
-
-public:
-  inline
-  linear_combine_helper3(PPL::Coefficient_traits::const_reference coeff2)
-    : my_coeff2(coeff2) {
-  }
-
-  inline void
-  operator()(PPL::Coefficient& x_i,
-             PPL::Coefficient_traits::const_reference y_i) const {
-    x_i = y_i;
-    x_i *= my_coeff2;
-  }
-
-private:
-  PPL::Coefficient my_coeff2;
-};
-
-} // namespace
-
 void
 PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
                                 Coefficient_traits::const_reference coeff1,
                                 Coefficient_traits::const_reference coeff2) {
   PPL_ASSERT(coeff1 != 0);
   PPL_ASSERT(coeff2 != 0);
+  PPL_ASSERT(this != &y);
   if (coeff1 == 1) {
-    combine_needs_second(y, linear_combine_helper2(coeff1, coeff2),
-                        linear_combine_helper3(coeff2));
+    iterator i = end();
+    for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
+      i = find_create(i, j.index());
+      add_mul_assign(*i, *j, coeff2);
+      if (*i == 0)
+        i = reset(i);
+    }
   } else {
-    combine(y, linear_combine_helper1(coeff1),
-            linear_combine_helper2(coeff1, coeff2),
-            linear_combine_helper3(coeff2));
+    iterator i = begin();
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset() and find_create().
+    const iterator& i_end = end();
+    const_iterator j = y.begin();
+    const_iterator j_end = y.end();
+    while (i != i_end && j != j_end) {
+      if (i.index() == j.index()) {
+        (*i) *= coeff1;
+        add_mul_assign(*i, *j, coeff2);
+        if (*i == 0)
+          i = reset(i);
+        else
+          ++i;
+        ++j;
+      } else
+        if (i.index() < j.index()) {
+          (*i) *= coeff1;
+          ++i;
+        } else {
+          PPL_ASSERT(i.index() > j.index());
+          i = find_create(i, j.index(), *j);
+          (*i) *= coeff2;
+          ++i;
+          ++j;
+        }
+    }
+    PPL_ASSERT(i == i_end || j == j_end);
+    for ( ; i != i_end; ++i)
+      (*i) *= coeff1;
+    for ( ; j != j_end; ++j) {
+      i = find_create(i, j.index(), *j);
+      (*i) *= coeff2;
+    }
   }
 }
 
