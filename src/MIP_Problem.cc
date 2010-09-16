@@ -1716,7 +1716,7 @@ PPL::MIP_Problem::compute_generator() const {
   // Finally, build the generator.
   Linear_Expression expr;
   for (dimension_type i = external_space_dim; i-- > 0; )
-    expr += num[i] * Variable(i);
+    add_mul_assign(expr, num[i], Variable(i));
 
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   x.last_generator = point(expr, lcm);
