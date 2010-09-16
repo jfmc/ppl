@@ -1040,7 +1040,7 @@ public:
       current_min -= challenger;
       const int sign = sgn(current_min);
       if (sign > 0
-          || (sign == 0 && x.base_index < y.base_index))
+          || (sign == 0 && y.base_index < x.base_index))
         x = y;
     }
     return x;
