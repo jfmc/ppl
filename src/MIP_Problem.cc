@@ -823,9 +823,8 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
     matrix_type::row_type& tableau_i = tableau[i];
     if (tableau_i.get(0) > 0) {
-      matrix_type::row_type::iterator j;
-      matrix_type::row_type::iterator j_end;
-      for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j)
+      for (matrix_type::row_type::iterator
+           j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j)
         neg_assign(*j);
     }
   }
@@ -1002,11 +1001,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       columns[column].first = false;
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const matrix_type::row_type& tableau_i = tableau[i];
-    Coefficient_traits::const_reference tableau_i_base_i = tableau_i.get(base[i]);
-    assign(float_tableau_denum, tableau_i_base_i);
-    matrix_type::row_type::const_iterator j;
-    matrix_type::row_type::const_iterator j_end;
-    for (j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j) {
+    assign(float_tableau_denum, tableau_i.get(base[i]));
+    for (matrix_type::row_type::const_iterator
+         j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j) {
       if (j.index() >= tableau_num_columns_minus_1)
         break;
       std::pair<bool, double>& current_data = columns[j.index()];
@@ -1015,7 +1012,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       Coefficient_traits::const_reference tableau_ij = *j;
       WEIGHT_BEGIN();
       if (tableau_ij != 0) {
-        PPL_ASSERT(tableau_i_base_i != 0);
+        PPL_ASSERT(tableau_i.get(base[i]) != 0);
         assign(float_tableau_value, tableau_ij);
         float_tableau_value /= float_tableau_denum;
         float_tableau_value *= float_tableau_value;
@@ -1089,14 +1086,11 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // Compute the lcm of all the coefficients of variables in base.
     PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
-    std::vector<Coefficient> tableau_base(tableau_num_rows);
-    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-      tableau_base[i] = tableau[i].get(base[i]);
-      lcm_assign(lcm_basis, lcm_basis, tableau_base[i]);
-    }
+    for (dimension_type i = tableau_num_rows; i-- > 0; )
+      lcm_assign(lcm_basis, lcm_basis, tableau[i].get(base[i]));
     // Compute normalization factors.
     for (dimension_type i = tableau_num_rows; i-- > 0; )
-      exact_div_assign(norm_factor[i], lcm_basis, tableau_base[i]);
+      exact_div_assign(norm_factor[i], lcm_basis, tableau[i].get(base[i]));
     // Compute the square of `lcm_basis', exploiting the fact that
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
@@ -1166,11 +1160,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       }
     }
   }
-  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
-    k = columns.rbegin();
-  std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
-    k_end = columns.rend();
-  for ( ; k != k_end; ++k) {
+
+  for (std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
+       k = columns.rbegin(), k_end = columns.rend(); k != k_end; ++k) {
     Coefficient_traits::const_reference cost_j = working_cost[k->first];
     // We cannot compute the (exact) square root of abs(\Delta x_j).
     // The workaround is to compute the square of `cost[j]'.
@@ -1354,15 +1346,13 @@ PPL::MIP_Problem::linear_combine(Sparse_Row& x,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
-  Coefficient_traits::const_reference x_k = x.get(k);
-  Coefficient_traits::const_reference y_k = y.get(k);
-  PPL_ASSERT(y_k != 0 && x_k != 0);
+  PPL_ASSERT(y.get(k) != 0 && x.get(k) != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
-  normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
+  normalize2(x.get(k), y.get(k), normalized_x_k, normalized_y_k);
 
   x.combine(y,
             linear_combine_helper1(normalized_y_k),
@@ -1380,15 +1370,13 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
                                  const dimension_type k) {
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
-  Coefficient_traits::const_reference x_k = x.get(k);
-  Coefficient_traits::const_reference y_k = y.get(k);
-  PPL_ASSERT(y_k != 0 && x_k != 0);
+  PPL_ASSERT(y[k] != 0 && x[k] != 0);
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
-  normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
+  normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   Sparse_Row::const_iterator j = y.begin();
   Sparse_Row::const_iterator j_end = y.end();
   dimension_type i;
@@ -1410,10 +1398,9 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
   }
   PPL_ASSERT(j == j_end);
   for ( ; i < x_size; ++i)
-    if (i != k) {
-      Coefficient& x_i = x[i];
-      x_i *= normalized_y_k;
-    }
+    if (i != k)
+      x[i] *= normalized_y_k;
+
   x[k] = 0;
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
@@ -1452,10 +1439,8 @@ PPL::MIP_Problem
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
     const matrix_type::row_type& t_i = tableau[i];
-    Coefficient_traits::const_reference t_i_entering = t_i.get(entering_var_index);
-    Coefficient_traits::const_reference t_i_base_i = t_i.get(base[i]);
-    const int num_sign = sgn(t_i_entering);
-    if (num_sign != 0 && num_sign == sgn(t_i_base_i)) {
+    const int num_sign = sgn(t_i.get(entering_var_index));
+    if (num_sign != 0 && num_sign == sgn(t_i.get(base[i]))) {
       exiting_base_index = i;
       break;
     }
@@ -1468,33 +1453,29 @@ PPL::MIP_Problem
   PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   PPL_DIRTY_TEMP_COEFFICIENT(current_min);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
-  // These pointers are used instead of references in the following loop, to
-  // improve performance.
-  const matrix_type::row_type* t_e = &(tableau[exiting_base_index]);
-  Coefficient t_e0 = t_e->get(0);
-  Coefficient t_ee = t_e->get(entering_var_index);
+  Coefficient t_e0 = tableau[exiting_base_index].get(0);
+  Coefficient t_ee = tableau[exiting_base_index].get(entering_var_index);
   for (dimension_type i = exiting_base_index + 1; i < tableau_num_rows; ++i) {
     const matrix_type::row_type& t_i = tableau[i];
     Coefficient_traits::const_reference t_ie = t_i.get(entering_var_index);
-    Coefficient_traits::const_reference t_ib = t_i.get(base[i]);
     const int t_ie_sign = sgn(t_ie);
-    if (t_ie_sign != 0 && t_ie_sign == sgn(t_ib)) {
+    if (t_ie_sign != 0 && t_ie_sign == sgn(t_i.get(base[i]))) {
       WEIGHT_BEGIN();
+      Coefficient_traits::const_reference t_i0 = t_i.get(0);
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
       current_min *= t_e0;
       abs_assign(current_min);
       exact_div_assign(challenger, lcm, t_ie);
-      challenger *= t_i.get(0);
+      challenger *= t_i0;
       abs_assign(challenger);
       current_min -= challenger;
       const int sign = sgn(current_min);
       if (sign > 0
           || (sign == 0 && base[i] < base[exiting_base_index])) {
         exiting_base_index = i;
-        t_e = &(tableau[exiting_base_index]);
-        t_e0 = t_e->get(0);
-        t_ee = t_e->get(entering_var_index);
+        t_e0 = t_i0;
+        t_ee = t_ie;
       }
       WEIGHT_ADD(1044);
     }
@@ -1787,7 +1768,7 @@ PPL::MIP_Problem::compute_generator() const {
   // Finally, build the generator.
   Linear_Expression expr;
   for (dimension_type i = external_space_dim; i-- > 0; )
-    expr += num[i] * Variable(i);
+    add_mul_assign(expr, num[i], Variable(i));
 
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   x.last_generator = point(expr, lcm);
