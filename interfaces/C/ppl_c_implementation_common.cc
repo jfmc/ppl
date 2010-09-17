@@ -536,7 +536,7 @@ ppl_Linear_Expression_add_to_coefficient(ppl_Linear_Expression_t le,
 					 ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
   const Coefficient& nn = *to_const(n);
-  lle += nn * Variable(var);
+  add_mul_assign(lle, nn, Variable(var));
   return 0;
 }
 CATCH_ALL
