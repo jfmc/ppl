@@ -773,10 +773,10 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
 		      ppl_Coefficient_t optimum_d,
 		      ppl_Generator_t point) {
   ppl_Polyhedron_t ppl_ph;
+  int optimum_found = 0;
   int empty;
   int unbounded;
   int included;
-  int ok;
 
   /* Create the polyhedron (recycling the data structures of ppl_cs). */
   ppl_new_C_Polyhedron_recycle_Constraint_System(&ppl_ph, ppl_cs);
@@ -809,7 +809,7 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
     if (verbosity >= 1)
       fprintf(output_file, "Unfeasible problem.\n");
     maybe_check_results(PPL_MIP_PROBLEM_STATUS_UNFEASIBLE, 0.0);
-    return 0;
+    goto exit;
   }
 
   if (!empty && no_optimization) {
@@ -818,7 +818,7 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
     /* Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
        to let work `maybe_check_results'. */
     maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
-    return 0;
+    goto exit;
   }
 
   /* Check whether the problem is unbounded. */
@@ -841,21 +841,16 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
     if (verbosity >= 1)
       fprintf(output_file, "Unbounded problem.\n");
     maybe_check_results(PPL_MIP_PROBLEM_STATUS_UNBOUNDED, 0.0);
-    return 0;
+    goto exit;
   }
 
-  ok = maximize
+  optimum_found = maximize
     ? ppl_Polyhedron_maximize_with_point(ppl_ph, ppl_objective_le,
-			      optimum_n, optimum_d, &included,
-			      point)
+                                         optimum_n, optimum_d, &included,
+                                         point)
     : ppl_Polyhedron_minimize_with_point(ppl_ph, ppl_objective_le,
-			      optimum_n, optimum_d, &included,
-			      point);
-
-  if (!ok)
-    fatal("internal error");
-
-  ppl_delete_Polyhedron(ppl_ph);
+                                         optimum_n, optimum_d, &included,
+                                         point);
 
 #ifdef PPL_LPSOL_SUPPORTS_TIMINGS
 
@@ -868,10 +863,15 @@ solve_with_generators(ppl_Constraint_System_t ppl_cs,
 
 #endif /* defined(PPL_LPSOL_SUPPORTS_TIMINGS) */
 
+  if (!optimum_found)
+    fatal("internal error");
+
   if (!included)
     fatal("internal error");
 
-  return 1;
+ exit:
+  ppl_delete_Polyhedron(ppl_ph);
+  return optimum_found;
 }
 
 static int
@@ -881,6 +881,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   ppl_MIP_Problem_t ppl_mip;
+  int optimum_found = 0;
   int pricing = 0;
   int status = 0;
   int satisfiable = 0;
@@ -967,7 +968,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     if (verbosity >= 1)
       fprintf(output_file, "Unfeasible problem.\n");
     maybe_check_results(status, 0.0);
-    return 0;
+    goto exit;
   }
   else if (no_optimization && satisfiable) {
     if (verbosity >= 1)
@@ -975,25 +976,27 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     /* Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
        to let work `maybe_check_results'. */
     maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
-    return 0;
+    goto exit;
   }
   else if (status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED) {
     if (verbosity >= 1)
       fprintf(output_file, "Unbounded problem.\n");
     maybe_check_results(status, 0.0);
-    return 0;
+    goto exit;
   }
   else if (status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED) {
     ppl_MIP_Problem_optimal_value(ppl_mip, optimum_n, optimum_d);
     ppl_MIP_Problem_optimizing_point(ppl_mip, &g);
     ppl_assign_Generator_from_Generator(point, g);
-    return 1;
+    optimum_found = 1;
+    goto exit;
   }
   else
     fatal("internal error");
 
-  /* This is just to avoid a compiler warning. */
-  return 0;
+ exit:
+  ppl_delete_MIP_Problem(ppl_mip);
+  return optimum_found;
 }
 
 static void
