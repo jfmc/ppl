@@ -27,11 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "Row.defs.hh"
 
-#ifdef USE_PPL_DISTRIBUTED_SPARSE_MATRIX
 #include "Distributed_Sparse_Matrix.defs.hh"
-#else
 #include "Matrix.defs.hh"
-#endif
 
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
@@ -451,10 +448,8 @@ private:
   Matrix tableau;
 #endif
 
-  typedef Row working_cost_type;
-
   //! The working cost function.
-  working_cost_type working_cost;
+  Row working_cost;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
