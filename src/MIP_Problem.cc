@@ -1678,12 +1678,12 @@ PPL::MIP_Problem::compute_generator() const {
         Coefficient_traits::const_reference t_row_split_var
           = t_row.get(split_var);
         if (t_row_split_var > 0) {
-          split_num = -t_row.get(0);
+          neg_assign(split_num, t_row.get(0));
           split_den = t_row_split_var;
         }
         else {
           split_num = t_row.get(0);
-          split_den = -t_row_split_var;
+          neg_assign(split_den, t_row_split_var);
         }
         // We compute the lcm to compute subsequently the difference
         // between the 2 variables.
@@ -1780,8 +1780,10 @@ PPL::MIP_Problem::second_phase() {
       const dimension_type original_var = mapping[index].first;
       const dimension_type split_var = mapping[index].second;
       itr = working_cost.find_create(itr, original_var, *i);
-      if (mapping[index].second != 0)
-        itr = working_cost.find_create(itr, split_var, - (*i));
+      if (mapping[index].second != 0) {
+        itr = working_cost.find_create(itr, split_var);
+        neg_assign(*itr, *i);
+      }
     }
   }
 
