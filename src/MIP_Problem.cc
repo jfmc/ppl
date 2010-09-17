@@ -1730,12 +1730,12 @@ PPL::MIP_Problem::compute_generator() const {
         Coefficient_traits::const_reference t_row_split_var
           = t_row.get(split_var);
         if (t_row_split_var > 0) {
-          split_num = -t_row.get(0);
+          neg_assign(split_num, t_row.get(0));
           split_den = t_row_split_var;
         }
         else {
           split_num = t_row.get(0);
-          split_den = -t_row_split_var;
+          neg_assign(split_den, t_row_split_var);
         }
         // We compute the lcm to compute subsequently the difference
         // between the 2 variables.
@@ -1808,7 +1808,7 @@ PPL::MIP_Problem::second_phase() {
     const dimension_type split_var = mapping[i].second;
     working_cost[original_var] = new_cost[i];
     if (mapping[i].second != 0)
-      working_cost[split_var] = - new_cost[i];
+      neg_assign(working_cost[split_var], new_cost[i]);
   }
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
