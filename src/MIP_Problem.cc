@@ -1425,12 +1425,12 @@ PPL::MIP_Problem::compute_generator() const {
       if (is_in_base(split_var, row)) {
 	const Row& t_row = tableau[row];
 	if (t_row[split_var] > 0) {
-	  split_num = -t_row[0];
+	  neg_assign(split_num, t_row[0]);
 	  split_den = t_row[split_var];
 	}
 	else {
 	  split_num = t_row[0];
- 	  split_den = -t_row[split_var];
+ 	  neg_assign(split_den, t_row[split_var]);
 	}
 	// We compute the lcm to compute subsequently the difference
 	// between the 2 variables.
@@ -1463,7 +1463,7 @@ PPL::MIP_Problem::compute_generator() const {
   // Finally, build the generator.
   Linear_Expression expr;
   for (dimension_type i = external_space_dim; i-- > 0; )
-    expr += num[i] * Variable(i);
+    add_mul_assign(expr, num[i], Variable(i));
 
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   x.last_generator = point(expr, lcm);
@@ -1502,7 +1502,7 @@ PPL::MIP_Problem::second_phase() {
     const dimension_type split_var = mapping[i].second;
     working_cost[original_var] = new_cost[i];
     if (mapping[i].second != 0)
-      working_cost[split_var] = - new_cost[i];
+      neg_assign(working_cost[split_var], new_cost[i]);
   }
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.

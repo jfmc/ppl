@@ -2165,7 +2165,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         dimension_type j = 1;
         for (Variables_Set::const_iterator p = all_params.begin(),
                p_end = all_params.end(); p != p_end; ++p, ++j)
-          expr += t_test[j] * Variable(*p);
+          add_mul_assign(expr, t_test[j], Variable(*p));
         using namespace IO_Operators;
         std::cerr << "Found mixed parameter sign row: " << best_i << ".\n"
                   << "Solution depends on sign of parameter "
@@ -2549,8 +2549,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Linear_Expression expr1(ctx1[0]);
         Linear_Expression expr2(ctx2[0]);
         for (dimension_type j = 1; j <= num_params; ++j, ++p) {
-          expr1 += ctx1[j] * Variable(*p);
-          expr2 += ctx2[j] * Variable(*p);
+          add_mul_assign(expr1, ctx1[j], Variable(*p));
+          add_mul_assign(expr2, ctx2[j], Variable(*p));
         }
         std::cout << "Inserting into context: "
                   << Constraint(expr1 >= 0) << " ; "
@@ -2594,9 +2594,9 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     dimension_type si = 0;
     for (dimension_type j = 0; j < space_dimension; ++j) {
       if (parameters.count(j) == 1)
-        expr += cut_t[ti++] * Variable(j);
+        add_mul_assign(expr, cut_t[ti++], Variable(j));
       else
-        expr += cut_s[si++] * Variable(j);
+        add_mul_assign(expr, cut_s[si++], Variable(j));
     }
     std::cout << "Adding cut: "
               << Constraint(expr + cut_t[0] >= 0)

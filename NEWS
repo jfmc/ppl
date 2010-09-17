@@ -10,6 +10,12 @@ NEWS for version 0.11.1  (release date to be decided)
 Bugfixes
 ========
 
+o  Corrected an efficiency bug in the C language interface function
+     int ppl_Linear_Expression_add_to_coefficient()
+
+o  Corrected an efficiency bug in method
+     MIP_Problem::compute_generator()
+
 o  Corrected a bug affecting the input routine of ppl_lpsol, whereby
    the inhomogeneous term of the objective function was disregarded.
 
