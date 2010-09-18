@@ -122,6 +122,13 @@ public:
   Sparse_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity);
 
   //! Constructor from a Dense_Row.
+  /*!
+    \param row
+    The row that will be copied into *this.
+
+    This constructor takes \f$O(n)\f$ time. Note that constructing of a row of
+    zeroes and then inserting n elements costs \f$O(n*\log^2 n)\f$ time.
+  */
   explicit Sparse_Row(const Dense_Row& row);
 
   //! Resizes the row to size \p n.
