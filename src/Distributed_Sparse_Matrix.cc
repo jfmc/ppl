@@ -1873,8 +1873,6 @@ PPL::Distributed_Sparse_Matrix
                         dimension_type& exiting_var_index,
                         Sparse_Row& working_cost) {
 
-  ++pivot_count;
-
   broadcast_operation(GET_EXITING_AND_PIVOT, id, entering_index);
 
   // 1. exiting_index(entering_index):
