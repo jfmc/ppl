@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row_Flags.defs.hh"
 #include "CO_Tree.defs.hh"
 #include "Coefficient.defs.hh"
+#include "Dense_Row.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -119,6 +120,9 @@ public:
     and, of course, that \p sz is less than or equal to \p capacity.
   */
   Sparse_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity);
+
+  //! Constructor from a Dense_Row.
+  explicit Sparse_Row(const Dense_Row& row);
 
   //! Resizes the row to size \p n.
   /*!

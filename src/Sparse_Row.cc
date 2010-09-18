@@ -23,8 +23,89 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "Sparse_Row.defs.hh"
+#include "Dense_Row.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
+
+namespace {
+
+class Sparse_Row_from_Dense_Row_helper_iterator {
+public:
+  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1,
+                                            PPL::dimension_type i1)
+    : row(row1), i(i1) {
+    PPL_ASSERT(i <= row.size());
+    if (i < row.size() && row[i] == 0)
+      ++(*this);
+  }
+
+  Sparse_Row_from_Dense_Row_helper_iterator& operator++() {
+    PPL_ASSERT(i < row.size());
+    ++i;
+    while (i < row.size() && row[i] == 0)
+      ++i;
+    return *this;
+  }
+
+  Sparse_Row_from_Dense_Row_helper_iterator operator++(int) {
+    Sparse_Row_from_Dense_Row_helper_iterator tmp = *this;
+    ++(*this);
+    return tmp;
+  }
+
+  const PPL::Coefficient&
+  operator*() const {
+    PPL_ASSERT(i < row.size());
+    return row[i];
+  }
+
+  const PPL::Coefficient*
+  operator->() const {
+    PPL_ASSERT(i < row.size());
+    return &(*(*this));
+  }
+
+  PPL::dimension_type
+  index() const {
+    PPL_ASSERT(i < row.size());
+    return i;
+  }
+
+  bool
+  operator==(const Sparse_Row_from_Dense_Row_helper_iterator& itr) const {
+    PPL_ASSERT(&row == &(itr.row));
+    return i == itr.i;
+  }
+
+  bool
+  operator!=(const Sparse_Row_from_Dense_Row_helper_iterator& itr) const {
+    return !(*this == itr);
+  }
+
+private:
+  const PPL::Dense_Row& row;
+  PPL::dimension_type i;
+};
+
+// Returns the number of nonzero elements in row.
+PPL::dimension_type
+Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row) {
+  PPL::dimension_type count = 0;
+  for (PPL::dimension_type i = row.size(); i-- > 0; )
+    if (row[i] != 0)
+      ++count;
+  return count;
+}
+
+} // namespace
+
+PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
+  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, 0),
+         Sparse_Row_from_Dense_Row_helper_iterator(row, row.size()),
+         Sparse_Row_from_Dense_Row_helper_function(row)),
+    size_(row.size()) {
+  PPL_ASSERT(OK());
+}
 
 void
 PPL::Sparse_Row::swap(dimension_type i, dimension_type j) {
