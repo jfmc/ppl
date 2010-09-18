@@ -784,10 +784,10 @@ PPL::MIP_Problem::process_pending_constraints() {
       Coefficient_traits::const_reference coeff_sd
         = c.coefficient(Variable(sd));
       if (coeff_sd != 0) {
-        itr = tableau_k.find_create(itr, mapping[sd+1].first, coeff_sd);
+        itr = tableau_k.insert(itr, mapping[sd+1].first, coeff_sd);
         // Split if needed.
         if (mapping[sd+1].second != 0) {
-          itr = tableau_k.find_create(itr, mapping[sd+1].second);
+          itr = tableau_k.insert(itr, mapping[sd+1].second);
           neg_assign(*itr, coeff_sd);
         }
       }
@@ -795,10 +795,10 @@ PPL::MIP_Problem::process_pending_constraints() {
     Coefficient_traits::const_reference inhomo
       = c.inhomogeneous_term();
     if (inhomo != 0) {
-      tableau_k.find_create(itr, mapping[0].first, inhomo);
+      tableau_k.insert(itr, mapping[0].first, inhomo);
       // Split if needed.
       if (mapping[0].second != 0) {
-        itr = tableau_k.find_create(itr, mapping[0].second);
+        itr = tableau_k.insert(itr, mapping[0].second);
         neg_assign(*itr, inhomo);
       }
     }
@@ -849,9 +849,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   // First go through nonpending constraints that became unfeasible
   // due to re-merging of split variables.
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
-    tableau[unfeasible_tableau_rows[i]].find_create(artificial_index,
-                                                    Coefficient_one());
-    cost_itr = working_cost.find_create(cost_itr, artificial_index);
+    tableau[unfeasible_tableau_rows[i]].insert(artificial_index,
+                                               Coefficient_one());
+    cost_itr = working_cost.insert(cost_itr, artificial_index);
     *cost_itr = -1;
     base[unfeasible_tableau_rows[i]] = artificial_index;
     ++artificial_index;
@@ -862,8 +862,8 @@ PPL::MIP_Problem::process_pending_constraints() {
   for (dimension_type i = old_tableau_num_rows; i < tableau_num_rows; ++i) {
     if (worked_out_row[i])
       continue;
-    tableau[i].find_create(artificial_index, Coefficient_one());
-    cost_itr = working_cost.find_create(cost_itr, artificial_index);
+    tableau[i].insert(artificial_index, Coefficient_one());
+    cost_itr = working_cost.insert(cost_itr, artificial_index);
     *cost_itr = -1;
     base[i] = artificial_index;
     ++artificial_index;
@@ -874,7 +874,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // Set the extra-coefficient of the cost functions to record its sign.
   // This is done to keep track of the possible sign's inversion.
   const dimension_type last_obj_index = working_cost.size() - 1;
-  working_cost.find_create(cost_itr, last_obj_index, Coefficient_one());
+  working_cost.insert(cost_itr, last_obj_index, Coefficient_one());
 
   // Express the problem in terms of the variables in base.
   {
@@ -1625,7 +1625,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
     if (old_cost == 0)
       working_cost.reset(new_last_column);
     else
-      working_cost.find_create(new_last_column, old_cost);
+      working_cost.insert(new_last_column, old_cost);
   }
 
   // ... and finally remove redundant columns.
@@ -1747,11 +1747,10 @@ PPL::MIP_Problem::second_phase() {
       Coefficient_traits::const_reference c
         = input_obj_function.coefficient(Variable(i));
       if (c != 0)
-        itr = new_cost.find_create(itr, i + 1, c);
+        itr = new_cost.insert(itr, i + 1, c);
     }
     if (input_obj_function.inhomogeneous_term() != 0)
-      itr = new_cost.find_create(itr, 0,
-                                 input_obj_function.inhomogeneous_term());
+      itr = new_cost.insert(itr, 0, input_obj_function.inhomogeneous_term());
   }
 
   // Negate the cost function if we are minimizing.
@@ -1775,7 +1774,7 @@ PPL::MIP_Problem::second_phase() {
 
   {
     Row::iterator itr
-      = working_cost.find_create(cost_zero_size - 1, Coefficient_one());
+      = working_cost.insert(cost_zero_size - 1, Coefficient_one());
 
     // Split the variables in the cost function.
     for (Row::const_iterator
@@ -1784,9 +1783,9 @@ PPL::MIP_Problem::second_phase() {
       const dimension_type index = i.index();
       const dimension_type original_var = mapping[index].first;
       const dimension_type split_var = mapping[index].second;
-      itr = working_cost.find_create(itr, original_var, *i);
+      itr = working_cost.insert(itr, original_var, *i);
       if (mapping[index].second != 0) {
-        itr = working_cost.find_create(itr, split_var);
+        itr = working_cost.insert(itr, split_var);
         neg_assign(*itr, *i);
       }
     }

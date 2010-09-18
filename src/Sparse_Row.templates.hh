@@ -75,7 +75,7 @@ Sparse_Row::combine_needs_second(const Sparse_Row& y,
                                  const Func2& /* h */) {
   iterator i = begin();
   for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
-    i = find_create(i, j.index());
+    i = insert(i, j.index());
     g(*i, *j);
     if (*i == 0)
       i = reset(i);
@@ -93,7 +93,7 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.
     // If we just stored a copy, that would be invalidated by the calls to
-    // reset() and find_create().
+    // reset() and insert().
     const iterator& i_end = end();
     const_iterator j = y.begin();
     const_iterator j_end = y.end();
@@ -114,7 +114,7 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
             ++i;
         } else {
           PPL_ASSERT(i.index() > j.index());
-          i = find_create(i, j.index());
+          i = insert(i, j.index());
           h(*i, *j);
           if (*i == 0)
             i = reset(i);
@@ -132,7 +132,7 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
         ++i;
     }
     while (j != j_end) {
-      i = find_create(i, j.index());
+      i = insert(i, j.index());
       h(*i, *j);
       if (*i == 0)
         i = reset(i);

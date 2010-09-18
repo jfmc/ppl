@@ -47,7 +47,7 @@ namespace Parma_Polyhedra_Library {
   data structures.
 
   The main changes are the replacement of calls to operator[] with calls to
-  find(), lower_bound() or find_create(), using hint iterators when possible.
+  find(), lower_bound() or insert(), using hint iterators when possible.
   Sequential scanning of rows should probably be implemented using iterators
   rather than indexes, to improve performance.
   reset() should be called to zero elements.
@@ -298,7 +298,7 @@ public:
     For read-only access it's better to use get(), that avoids allocating
     space for zeroes.
 
-    If possible, use the find_create(), find() or lower_bound() methods with
+    If possible, use the insert(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
     This operation invalidates existing iterators.
@@ -319,7 +319,7 @@ public:
     \param i
     The index of the desired element.
 
-    If possible, use the find_create(), find() or lower_bound() methods with
+    If possible, use the insert(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
     This method takes \f$O(\log n)\f$ time.
@@ -478,8 +478,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  iterator find_create(dimension_type i,
-                       Coefficient_traits::const_reference x);
+  iterator insert(dimension_type i, Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]=x; find(i); , but faster.
   /*!
@@ -502,8 +501,8 @@ public:
     between \p itr and the searched position is \f$O(1)\f$ and the row already
     contains an element with this index, this method takes \f$O(1)\f$ time.
   */
-  iterator find_create(iterator itr, dimension_type i,
-                       Coefficient_traits::const_reference x);
+  iterator insert(iterator itr, dimension_type i,
+                  Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
@@ -517,7 +516,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  iterator find_create(dimension_type i);
+  iterator insert(dimension_type i);
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
@@ -537,7 +536,7 @@ public:
     between \p itr and the searched position is \f$O(1)\f$ and the row already
     contains an element with this index, this method takes \f$O(1)\f$ time.
   */
-  iterator find_create(iterator itr, dimension_type i);
+  iterator insert(iterator itr, dimension_type i);
 
   //! Swaps the i-th element with the j-th element.
   /*!

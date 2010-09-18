@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   data structures.
 
   The main changes are the replacement of calls to operator[] on Sparse_Row
-  objects with calls to find(), lower_bound() or find_create(), using hint
+  objects with calls to find(), lower_bound() or insert(), using hint
   iterators when possible. Sequential scanning of rows should probably be
   implemented using iterators rather than indexes, to improve performance.
   reset() should be called to zero elements.

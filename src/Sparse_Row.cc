@@ -238,7 +238,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
   if (coeff1 == 1) {
     iterator i = end();
     for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
-      i = find_create(i, j.index());
+      i = insert(i, j.index());
       add_mul_assign(*i, *j, coeff2);
       if (*i == 0)
         i = reset(i);
@@ -247,7 +247,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.
     // If we just stored a copy, that would be invalidated by the calls to
-    // reset() and find_create().
+    // reset() and insert().
     const iterator& i_end = end();
     const_iterator j = y.begin();
     const_iterator j_end = y.end();
@@ -266,7 +266,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
           ++i;
         } else {
           PPL_ASSERT(i.index() > j.index());
-          i = find_create(i, j.index(), *j);
+          i = insert(i, j.index(), *j);
           (*i) *= coeff2;
           ++i;
           ++j;
@@ -276,7 +276,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     for ( ; i != i_end; ++i)
       (*i) *= coeff1;
     for ( ; j != j_end; ++j) {
-      i = find_create(i, j.index(), *j);
+      i = insert(i, j.index(), *j);
       (*i) *= coeff2;
     }
   }

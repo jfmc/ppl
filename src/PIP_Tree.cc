@@ -137,7 +137,7 @@ merge_assign(Matrix& x, const Constraint_System& y,
     dimension_type j = 1;
     Row::iterator itr = x_i.end();
     if (inhomogeneous_term != 0)
-      itr = x_i.find_create(0, inhomogeneous_term);
+      itr = x_i.insert(0, inhomogeneous_term);
     // itr may still be end() but it can still be used as a hint.
     for ( ; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
@@ -145,7 +145,7 @@ merge_assign(Matrix& x, const Constraint_System& y,
         break;
       Coefficient_traits::const_reference c = y_i->coefficient(vj);
       if (c != 0)
-        itr = x_i.find_create(itr, j, c);
+        itr = x_i.insert(itr, j, c);
     }
   }
 }
@@ -180,7 +180,7 @@ complement_assign(Row& x,
                   Coefficient_traits::const_reference den) {
   PPL_ASSERT(den > 0);
   neg_assign_row(x, y);
-  Row::iterator itr = x.find_create(0);
+  Row::iterator itr = x.insert(0);
   Coefficient& x_0 = *itr;
   if (den == 1)
     --x_0;
@@ -2164,7 +2164,7 @@ PIP_Solution_Node::update_tableau(
         }
 
         if (is_parameter) {
-          p_row.find_create(p_index, coeff_i * denom);
+          p_row.insert(p_index, coeff_i * denom);
           ++p_index;
         }
         else {
@@ -2485,7 +2485,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
               if (product != 0) {
-                itr = s_i.find_create(itr, j.index());
+                itr = s_i.insert(itr, j.index());
                 *itr -= product;
               }
             }
@@ -2516,7 +2516,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
             if (product != 0) {
-              k = t_i.find_create(k, j.index());
+              k = t_i.insert(k, j.index());
               *k -= product;
             }
 
@@ -3034,37 +3034,37 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         if (j != j_end && j.index() == 0) {
           mod_assign(mod, *j, den);
           if (mod != 0) {
-            itr1 = ctx1.find_create(0, den);
+            itr1 = ctx1.insert(0, den);
             *itr1 -= mod;
-            itr2 = ctx2.find_create(0, *itr1);
+            itr2 = ctx2.insert(0, *itr1);
             neg_assign(*itr2);
             // ctx2[0] += den-1;
             *itr2 += den;
             --(*itr2);
           } else {
             // ctx2[0] += den-1;
-            itr2 = ctx2.find_create(0, den);
+            itr2 = ctx2.insert(0, den);
             --(*itr2);
           }
           ++j;
         } else {
           // ctx2[0] += den-1;
-          itr2 = ctx2.find_create(0, den);
+          itr2 = ctx2.insert(0, den);
           --(*itr2);
         }
         for ( ; j != j_end; ++j) {
           mod_assign(mod, *j, den);
           if (mod != 0) {
             const dimension_type j_index = j.index();
-            itr1 = ctx1.find_create(itr1, j_index, den);
+            itr1 = ctx1.insert(itr1, j_index, den);
             *itr1 -= mod;
-            itr2 = ctx2.find_create(itr2, j_index, *itr1);
+            itr2 = ctx2.insert(itr2, j_index, *itr1);
             neg_assign(*itr2);
           }
         }
-        itr1 = ctx1.find_create(itr1, num_params, den);
+        itr1 = ctx1.insert(itr1, num_params, den);
         neg_assign(*itr1);
-        itr2 = ctx2.find_create(itr2, num_params, den);
+        itr2 = ctx2.insert(itr2, num_params, den);
       }
 
 #ifdef NOISY_PIP
@@ -3097,7 +3097,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     Row::iterator itr = cut_s.end();
     for (Row::const_iterator
          j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
-      itr = cut_s.find_create(itr, j.index(), *j);
+      itr = cut_s.insert(itr, j.index(), *j);
       *itr %= den;
     }
   }
@@ -3107,7 +3107,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
          j = row_t.begin(), j_end = row_t.end(); j!=j_end; ++j) {
       mod_assign(mod, *j, den);
       if (mod != 0) {
-        cut_t_itr = cut_t.find_create(cut_t_itr, j.index(), mod);
+        cut_t_itr = cut_t.insert(cut_t_itr, j.index(), mod);
         *cut_t_itr -= den;
       }
     }
