@@ -181,7 +181,8 @@ public:
       The tree that the new %iterator will point to.
 
       \param i
-      The index of the element in \p tree to which the %iterator will point to.
+      The index of the element in \p tree to which the %iterator will point
+      to.
 
       The i-th node must be a node with a value or end().
 
@@ -335,8 +336,8 @@ public:
       The tree to which the new %iterator will point to.
 
       \param i
-      The index of the element in \p tree to which the new %iterator will point
-      to.
+      The index of the element in \p tree to which the new %iterator will
+      point to.
 
       The i-th node must be a node with a value or end().
 
@@ -854,7 +855,8 @@ private:
 
     \return
     If the element is found, the index of that element is returned; otherwise,
-    the returned index refers to the immediately preceding or succeeding value.
+    the returned index refers to the immediately preceding or succeeding
+    value.
 
     This method takes \f$O(\log n)\f$ time.
   */
@@ -872,7 +874,8 @@ private:
 
     \return
     If the element is found, the index of that element is returned; otherwise,
-    the returned index refers to the immediately preceding or succeeding value.
+    the returned index refers to the immediately preceding or succeeding
+    value.
 
     This uses a binary progression and then a bisection, so this method is
     \f$O(\log n)\f$, and it is \f$O(1)\f$ if the distance between the returned

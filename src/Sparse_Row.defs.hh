@@ -171,8 +171,8 @@ public:
     \param n
     The new size for the row.
 
-    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the row
-    and removing the trailing k elements.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
+    row and removing the trailing k elements.
     It takes \f$O(1)\f$ time when enlarging the row.
   */
   void resize(dimension_type n);
@@ -221,9 +221,9 @@ public:
     if they pointed at or after index i (i.e. they point to the same,
     possibly shifted, values as before).
 
-    This method takes \f$O(k+\log n)\f$ expected time, where k is the number of
-    elements with index greater than or equal to i and n the number of stored
-    elements (not the parameter to this method).
+    This method takes \f$O(k+\log n)\f$ expected time, where k is the number
+    of elements with index greater than or equal to i and n the number of
+    stored elements (not the parameter to this method).
   */
   void add_zeroes_and_shift(dimension_type n, dimension_type i);
 
@@ -467,7 +467,8 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  iterator find_create(dimension_type i, Coefficient_traits::const_reference x);
+  iterator find_create(dimension_type i,
+                       Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]=x; find(i); , but faster.
   /*!

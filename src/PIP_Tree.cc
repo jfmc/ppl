@@ -509,13 +509,14 @@ struct compatibility_check_find_pivot_in_set_data {
 };
 
 void
-compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
-                                      compatibility_check_find_pivot_in_set_data
-                                      > >& candidates,
-                                      const Matrix& s,
-                                      const std::vector<dimension_type>&
-                                        mapping,
-                                      const std::vector<bool>& basis) {
+compatibility_check_find_pivot_in_set(
+    std::vector<std::pair<dimension_type,
+                          compatibility_check_find_pivot_in_set_data> >&
+        candidates,
+    const Matrix& s,
+    const std::vector<dimension_type>& mapping,
+    const std::vector<bool>& basis) {
+
   typedef compatibility_check_find_pivot_in_set_data data_struct;
   typedef std::vector<std::pair<dimension_type, data_struct> > candidates_t;
   // This is used as a set, it is always sorted.
@@ -590,7 +591,8 @@ compatibility_check_find_pivot_in_set(std::vector<std::pair<dimension_type,
       for (++i; i != i_end; ++i) {
         const dimension_type challenger_j = i->first;
         Coefficient_traits::const_reference challenger_cost = i->second.cost;
-        Coefficient_traits::const_reference challenger_value = i->second.value;
+        Coefficient_traits::const_reference challenger_value
+          = i->second.value;
         PPL_ASSERT(value > 0);
         PPL_ASSERT(challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
@@ -1007,7 +1009,8 @@ PIP_Solution_Node::Tableau::OK() const {
 
   if (denom <= 0) {
 #ifndef NDEBUG
-    std::cerr << "PIP_Solution_Node::Tableau with non-positive denominator.\n";
+    std::cerr << "PIP_Solution_Node::Tableau with non-positive "
+              << "denominator.\n";
 #endif
     return false;
   }
@@ -1184,11 +1187,13 @@ PIP_Decision_Node::OK() const {
 }
 
 void
-PIP_Decision_Node::update_tableau(const PIP_Problem& pip,
-                                  const dimension_type external_space_dim,
-                                  const dimension_type first_pending_constraint,
-                                  const Constraint_Sequence& input_cs,
-                                  const Variables_Set& parameters) {
+PIP_Decision_Node::update_tableau(
+    const PIP_Problem& pip,
+    const dimension_type external_space_dim,
+    const dimension_type first_pending_constraint,
+    const Constraint_Sequence& input_cs,
+    const Variables_Set& parameters) {
+
   true_child->update_tableau(pip,
                              external_space_dim,
                              first_pending_constraint,
@@ -2046,11 +2051,13 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
 }
 
 void
-PIP_Solution_Node::update_tableau(const PIP_Problem& pip,
-                                  const dimension_type external_space_dim,
-                                  const dimension_type first_pending_constraint,
-                                  const Constraint_Sequence& input_cs,
-                                  const Variables_Set& parameters) {
+PIP_Solution_Node::update_tableau(
+    const PIP_Problem& pip,
+    const dimension_type external_space_dim,
+    const dimension_type first_pending_constraint,
+    const Constraint_Sequence& input_cs,
+    const Variables_Set& parameters) {
+
   // Make sure a parameter column exists, for the inhomogeneous term.
   if (tableau.t.num_columns() == 0)
     tableau.t.add_zero_columns(1);
@@ -3274,7 +3281,8 @@ PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
   indent_and_print(s, indent, "else\n");
 
   if (false_child)
-    false_child->print_tree(s, indent+1, pip_dim_is_param, child_first_art_dim);
+    false_child->print_tree(s, indent+1, pip_dim_is_param,
+                            child_first_art_dim);
   else
     indent_and_print(s, indent+1, "_|_\n");
 }

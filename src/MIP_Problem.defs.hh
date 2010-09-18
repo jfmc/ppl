@@ -51,7 +51,8 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 
 //! A Mixed Integer (linear) Programming problem.
 /*! \ingroup PPL_CXX_interface
-  An object of this class encodes a mixed integer (linear) programming problem.
+  An object of this class encodes a mixed integer (linear) programming
+  problem.
   The MIP problem is specified by providing:
    - the dimension of the vector space;
    - the feasible region, by means of a finite set of linear equality
@@ -551,7 +552,8 @@ private:
     <CODE>UNBOUNDED_MIP_PROBLEM</CODE> if the problem is trivially unbounded
     (the computed tableau contains no constraints);
     <CODE>OPTIMIZED_MIP_PROBLEM></CODE> if the problem is neither trivially
-    unfeasible nor trivially unbounded (the tableau was computed successfully).
+    unfeasible nor trivially unbounded (the tableau was computed
+    successfully).
   */
   MIP_Problem_Status
   compute_tableau(std::vector<dimension_type>& worked_out_row);

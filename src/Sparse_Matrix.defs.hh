@@ -320,12 +320,13 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\sum_{j=1}^r (k_j*\log n_j))\f$ amortized time, where r
-    is the number of rows, \f$k_j\f$ is the number of elements that have to be
-    removed from row j and \f$n_j\f$ is the total number of elements stored in
-    row j.
-    A weaker (but simpler) bound is \f$O(r*n*\log c)\f$, where r is the number of
-    rows, c the number of columns and n the parameter passed to this method.
+    This method takes \f$O(\sum_{j=1}^r (k_j*\log n_j))\f$ amortized time,
+    where r is the number of rows, \f$k_j\f$ is the number of elements that
+    have to be removed from row j and \f$n_j\f$ is the total number of
+    elements stored in row j.
+    A weaker (but simpler) bound is \f$O(r*n*\log c)\f$, where r is the number
+    of rows, c the number of columns and n the parameter passed to this
+    method.
   */
   void remove_trailing_columns(dimension_type n);
 
@@ -397,8 +398,8 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
-    This method is \f$O(r+k)\f$, where r is the number of rows and k is the number
-    of elements stored in the matrix.
+    This method is \f$O(r+k)\f$, where r is the number of rows and k is the
+    number of elements stored in the matrix.
   */
   memory_size_type external_memory_in_bytes() const;
 

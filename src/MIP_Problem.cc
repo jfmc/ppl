@@ -124,8 +124,8 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
   if (cs.space_dimension() > dim) {
     std::ostringstream s;
     s << "PPL::MIP_Problem::MIP_Problem(dim, cs, obj, mode):\n"
-      << "cs.space_dimension == " << cs.space_dimension() << " exceeds dim == "
-      << dim << ".";
+      << "cs.space_dimension == " << cs.space_dimension()
+      << " exceeds dim == " << dim << ".";
     throw std::invalid_argument(s.str());
   }
   if (cs.has_strict_inequalities())
@@ -452,7 +452,8 @@ PPL::MIP_Problem
 
   const dimension_type cs_space_dim = external_space_dim;
   const dimension_type cs_num_rows = input_cs.size();
-  const dimension_type cs_num_pending = cs_num_rows - first_pending_constraint;
+  const dimension_type cs_num_pending
+    = cs_num_rows - first_pending_constraint;
 
   // Counters determining the change in dimensions of the tableau:
   // initialized here, they will be updated while examining `input_cs'.
@@ -488,7 +489,8 @@ PPL::MIP_Problem
   const dimension_type mapping_size = mapping.size();
   if (mapping_size > 0) {
     // Note: mapping[0] is associated to the cost function.
-    for (dimension_type i = std::min(mapping_size - 1, cs_space_dim); i-- > 0; )
+    for (dimension_type i = std::min(mapping_size - 1, cs_space_dim);
+         i-- > 0; )
       if (mapping[i + 1].second == 0)
         is_nonnegative_variable[i] = true;
   }
@@ -1188,7 +1190,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 #else
         // The test against 0 gives rise to a consistent speed up in the dense
         // implementation: see
-        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/
+        // 014000.html
         if (tableau_ij != 0) {
           scalar_value = tableau_ij * norm_factor[i];
           add_mul_assign(k->second, scalar_value, scalar_value);
@@ -1257,7 +1260,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
         Coefficient_traits::const_reference tableau_ij = tableau[i][j];
         // The test against 0 gives rise to a consistent speed up: see
-        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+        // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/
+        // 014000.html
         if (tableau_ij != 0) {
           scalar_value = tableau_ij * norm_factor[i];
           add_mul_assign(challenger_den, scalar_value, scalar_value);
@@ -1653,7 +1657,8 @@ PPL::MIP_Problem::compute_generator() const {
     const dimension_type original_var = mapping[i+1].first;
     if (is_in_base(original_var, row)) {
       const Row& t_row = tableau[row];
-      Coefficient_traits::const_reference t_row_original_var = t_row.get(original_var);
+      Coefficient_traits::const_reference t_row_original_var
+        = t_row.get(original_var);
       if (t_row_original_var > 0) {
         neg_assign(num_i, t_row.get(0));
         den_i = t_row_original_var;
