@@ -1,5 +1,5 @@
 Build problems have been reported for Solaris 10, affecting the build
-of the Java language interface, which are due to the use of an
+of the (C, Java, ...) language interfaces, which are due to the use of an
 incompatible version of sed:
 
   https://www.cs.unipr.it/mantis/view.php?id=103
