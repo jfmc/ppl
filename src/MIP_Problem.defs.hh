@@ -441,10 +441,11 @@ private:
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
     Contains all the pairs (i, j) such that mapping[i].first encodes the index
-    of the column in the tableau where input_cs[i] is stored; mapping[i].second
-    not a zero, encodes the split part of the tableau of input_cs[i].
-    The "positive" one is represented by mapping[i].first and
-    the "negative" one is represented by mapping[i].second.
+    of the column in the tableau where input_cs[i] is stored; if
+    mapping[i].second is not a zero, it encodes the split part of the tableau
+    of input_cs[i].
+    The "positive" one is represented by mapping[i].first and the "negative"
+    one is represented by mapping[i].second.
   */
   std::vector<std::pair<dimension_type, dimension_type> > mapping;
 
