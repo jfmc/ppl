@@ -832,19 +832,14 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Reset the working cost function to have the right size.
-#if USE_PPL_SPARSE_MATRIX
-  working_cost.clear();
-  working_cost.resize(tableau_num_cols);
-#else
-  working_cost = Row(tableau_num_cols, Row_Flags());
-#endif
+  working_cost = working_cost_type(tableau_num_cols, Row_Flags());
 
   // Set up artificial variables: these will have coefficient 1 in the
   // constraint, will enter the base and will have coefficient -1 in
   // the cost function.
 
   // This is used as a hint for insertions in working_cost.
-  Row::iterator cost_itr = working_cost.end();
+  working_cost_type::iterator cost_itr = working_cost.end();
 
   // First go through nonpending constraints that became unfeasible
   // due to re-merging of split variables.
@@ -878,7 +873,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // Express the problem in terms of the variables in base.
   {
-    Row::const_iterator itr = working_cost.end();
+    working_cost_type::const_iterator itr = working_cost.end();
     for (dimension_type i = tableau_num_rows; i-- > 0; ) {
       itr = working_cost.lower_bound(itr, base[i]);
       if (itr != working_cost.end() && itr.index() == base[i] && *itr != 0) {
@@ -1010,9 +1005,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // (working_cost.size() - 2) is an upper bound only.
   columns.reserve(working_cost.size() - 2);
   {
-    Row::const_iterator i = working_cost.lower_bound(1);
+    working_cost_type::const_iterator i = working_cost.lower_bound(1);
     // Note that find() is used instead of lower_bound().
-    Row::const_iterator i_end
+    working_cost_type::const_iterator i_end
       = working_cost.find(tableau_num_columns_minus_1);
     for ( ; i != i_end; ++i)
       if (sgn(*i) == cost_sign)
@@ -1156,9 +1151,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   // the construction/destruction of Coefficient objects.
   columns.reserve(tableau_num_columns - 2);
   {
-    Row::const_iterator i = working_cost.lower_bound(1);
+    working_cost_type::const_iterator i = working_cost.lower_bound(1);
     // Note that find() is used instead of lower_bound.
-    Row::const_iterator i_end
+    working_cost_type::const_iterator i_end
       = working_cost.find(tableau_num_columns_minus_1);
     for ( ; i != i_end; ++i)
       if (sgn(*i) == cost_sign)
@@ -1203,7 +1198,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       }
     }
   }
-  Row::const_iterator itr = working_cost.end();
+  working_cost_type::const_iterator itr = working_cost.end();
   for (std::vector<std::pair<dimension_type, Coefficient> >::reverse_iterator
        k = columns.rbegin(), k_end = columns.rend(); k != k_end; ++k) {
     itr = working_cost.lower_bound(itr, k->first);
@@ -1305,10 +1300,11 @@ PPL::MIP_Problem::textbook_entering_index() const {
   const int cost_sign = sgn(working_cost.get(cost_sign_index));
   PPL_ASSERT(cost_sign != 0);
 
-  Row::const_iterator i = working_cost.lower_bound(1);
+  working_cost_type::const_iterator i = working_cost.lower_bound(1);
   // Note that find() is used instead of lower_bound() because they are
   // equivalent when searching the last element in the row.
-  Row::const_iterator i_end = working_cost.find(cost_sign_index);
+  working_cost_type::const_iterator i_end
+    = working_cost.find(cost_sign_index);
   for ( ; i != i_end; ++i)
     if (sgn(*i) == cost_sign)
       return i.index();
@@ -1762,18 +1758,14 @@ PPL::MIP_Problem::second_phase() {
   const dimension_type cost_zero_size = working_cost.size();
 
   // Substitute properly the cost function in the `costs' matrix.
-#if USE_PPL_SPARSE_MATRIX
-  working_cost.clear();
-  working_cost.flags() = Row_Flags();
-#else
   {
-    Row tmp_cost = Row(cost_zero_size, cost_zero_size, new_cost.flags());
+    working_cost_type tmp_cost
+      = working_cost_type(cost_zero_size, cost_zero_size, new_cost.flags());
     tmp_cost.swap(working_cost);
   }
-#endif
 
   {
-    Row::iterator itr
+    working_cost_type::iterator itr
       = working_cost.insert(cost_zero_size - 1, Coefficient_one());
 
     // Split the variables in the cost function.
@@ -1794,7 +1786,7 @@ PPL::MIP_Problem::second_phase() {
   // Here the first phase problem succeeded with optimum value zero.
   // Express the old cost function in terms of the computed base.
   {
-    Row::iterator itr = working_cost.end();
+    working_cost_type::iterator itr = working_cost.end();
     for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
       const dimension_type base_i = base[i];
       itr = working_cost.lower_bound(itr, base_i);
