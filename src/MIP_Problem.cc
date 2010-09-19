@@ -36,6 +36,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cmath>
 
+// TODO: Remove this when the sparse working cost has been tested enough.
+#if USE_PPL_SPARSE_MATRIX
+
+// These are needed for the linear_combine() method that takes a Dense_Row and
+// a Sparse_Row.
+#include "Dense_Row.defs.hh"
+#include "Sparse_Row.defs.hh"
+
+#endif // USE_PPL_SPARSE_MATRIX
+
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
 #endif
@@ -1341,6 +1351,56 @@ PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
+
+// TODO: Remove this when the sparse working cost has been tested enough.
+#if USE_PPL_SPARSE_MATRIX
+
+void
+PPL::MIP_Problem::linear_combine(Dense_Row& x,
+                                 const Sparse_Row& y,
+                                 const dimension_type k) {
+  PPL_ASSERT(x.size() == y.size());
+  WEIGHT_BEGIN();
+  const dimension_type x_size = x.size();
+  Coefficient_traits::const_reference x_k = x.get(k);
+  Coefficient_traits::const_reference y_k = y.get(k);
+  PPL_ASSERT(y_k != 0 && x_k != 0);
+  // Let g be the GCD between `x[k]' and `y[k]'.
+  // For each i the following computes
+  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
+  normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
+  Sparse_Row::const_iterator j = y.begin();
+  Sparse_Row::const_iterator j_end = y.end();
+  dimension_type i;
+  for (i = 0; j != j_end; ++i) {
+    PPL_ASSERT(i < x_size);
+    PPL_ASSERT(j.index() >= i);
+    if (j.index() == i) {
+      if (i != k) {
+        Coefficient& x_i = x[i];
+        x_i *= normalized_y_k;
+        Coefficient_traits::const_reference y_i = *j;
+        sub_mul_assign(x_i, y_i, normalized_x_k);
+      }
+      ++j;
+    } else {
+      if (i != k)
+        x[i] *= normalized_y_k;
+    }
+  }
+  PPL_ASSERT(j == j_end);
+  for ( ; i < x_size; ++i)
+    if (i != k)
+      x[i] *= normalized_y_k;
+
+  x[k] = 0;
+  x.normalize();
+  WEIGHT_ADD_MUL(83, x_size);
+}
+
+#endif // defined(USE_PPL_SPARSE_MATRIX)
 
 // See pages 42-43 of [PapadimitriouS98].
 void
