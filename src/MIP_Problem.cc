@@ -1313,10 +1313,10 @@ PPL::MIP_Problem::textbook_entering_index() const {
   return 0;
 }
 
-
 void
 PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
                                  const dimension_type k) {
+  PPL_ASSERT(x.size() == y.size());
   WEIGHT_BEGIN();
   const dimension_type x_size = x.size();
   Coefficient_traits::const_reference x_k = x.get(k);
