@@ -161,14 +161,14 @@ PPL::PIP_Problem::solve() const {
           Row::iterator itr = row.end();
 
           if (c.inhomogeneous_term() != 0) {
-            itr = row.find_create(0, c.inhomogeneous_term());
+            itr = row.insert(0, c.inhomogeneous_term());
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
               --(*itr);
           } else {
             // Adjust inhomogenous term if strict.
             if (c.is_strict_inequality())
-              itr = row.find_create(0, -1);
+              itr = row.insert(0, -1);
           }
           dimension_type i = 1;
 
@@ -179,7 +179,7 @@ PPL::PIP_Problem::solve() const {
               Coefficient_traits::const_reference x
                 = c.coefficient(Variable(*pi));
               if (x != 0)
-                itr = row.find_create(itr, i, x);
+                itr = row.insert(itr, i, x);
             } else
               break;
           }

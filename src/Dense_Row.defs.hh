@@ -301,17 +301,17 @@ public:
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(dimension_type i, Coefficient_traits::const_reference x);
+  iterator insert(dimension_type i, Coefficient_traits::const_reference x);
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(dimension_type i);
+  iterator insert(dimension_type i);
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(iterator itr, dimension_type i,
+  iterator insert(iterator itr, dimension_type i,
                        Coefficient_traits::const_reference x);
 
   //! Provided for compatibility with Sparse_Row.
-  iterator find_create(iterator itr, dimension_type i);
+  iterator insert(iterator itr, dimension_type i);
 
   //! Calls g(x[i],y[i]), for each i.
   /*!

@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row_Flags.defs.hh"
 #include "CO_Tree.defs.hh"
 #include "Coefficient.defs.hh"
+#include "Dense_Row.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -46,7 +47,7 @@ namespace Parma_Polyhedra_Library {
   data structures.
 
   The main changes are the replacement of calls to operator[] with calls to
-  find(), lower_bound() or find_create(), using hint iterators when possible.
+  find(), lower_bound() or insert(), using hint iterators when possible.
   Sequential scanning of rows should probably be implemented using iterators
   rather than indexes, to improve performance.
   reset() should be called to zero elements.
@@ -142,6 +143,16 @@ public:
   */
   Sparse_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity);
 
+  //! Constructor from a Dense_Row.
+  /*!
+    \param row
+    The row that will be copied into *this.
+
+    This constructor takes \f$O(n)\f$ time. Note that constructing of a row of
+    zeroes and then inserting n elements costs \f$O(n*\log^2 n)\f$ time.
+  */
+  explicit Sparse_Row(const Dense_Row& row);
+
   //! Resizes the row to size \p n.
   /*!
     \param n
@@ -193,8 +204,8 @@ public:
     \param n
     The new size for the row.
 
-    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the row
-    and removing the trailing k elements.
+    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
+    row and removing the trailing k elements.
     It takes \f$O(1)\f$ time when enlarging the row.
   */
   void resize(dimension_type n);
@@ -243,9 +254,9 @@ public:
     if they pointed at or after index i (i.e. they point to the same,
     possibly shifted, values as before).
 
-    This method takes \f$O(k+\log n)\f$ expected time, where k is the number of
-    elements with index greater than or equal to i and n the number of stored
-    elements (not the parameter to this method).
+    This method takes \f$O(k+\log n)\f$ expected time, where k is the number
+    of elements with index greater than or equal to i and n the number of
+    stored elements (not the parameter to this method).
   */
   void add_zeroes_and_shift(dimension_type n, dimension_type i);
 
@@ -309,7 +320,7 @@ public:
     For read-only access it's better to use get(), that avoids allocating
     space for zeroes.
 
-    If possible, use the find_create(), find() or lower_bound() methods with
+    If possible, use the insert(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
     This operation invalidates existing iterators.
@@ -330,7 +341,7 @@ public:
     \param i
     The index of the desired element.
 
-    If possible, use the find_create(), find() or lower_bound() methods with
+    If possible, use the insert(), find() or lower_bound() methods with
     a hint instead of this, to improve performance.
 
     This method takes \f$O(\log n)\f$ time.
@@ -489,7 +500,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  iterator find_create(dimension_type i, Coefficient_traits::const_reference x);
+  iterator insert(dimension_type i, Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]=x; find(i); , but faster.
   /*!
@@ -512,8 +523,8 @@ public:
     between \p itr and the searched position is \f$O(1)\f$ and the row already
     contains an element with this index, this method takes \f$O(1)\f$ time.
   */
-  iterator find_create(iterator itr, dimension_type i,
-                       Coefficient_traits::const_reference x);
+  iterator insert(iterator itr, dimension_type i,
+                  Coefficient_traits::const_reference x);
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
@@ -527,7 +538,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  iterator find_create(dimension_type i);
+  iterator insert(dimension_type i);
 
   //! Equivalent to (*this)[i]; find(i); , but faster.
   /*!
@@ -547,7 +558,7 @@ public:
     between \p itr and the searched position is \f$O(1)\f$ and the row already
     contains an element with this index, this method takes \f$O(1)\f$ time.
   */
-  iterator find_create(iterator itr, dimension_type i);
+  iterator insert(iterator itr, dimension_type i);
 
   //! Swaps the i-th element with the j-th element.
   /*!

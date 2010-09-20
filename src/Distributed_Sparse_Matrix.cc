@@ -687,7 +687,7 @@ PPL::Distributed_Sparse_Matrix
   dimension_type current_artificial = node_data.first;
   for (std::vector<dimension_type>::const_iterator
       i = indexes.begin(), i_end = indexes.end(); i != i_end; ++i) {
-    rows[*i].find_create(current_artificial, Coefficient_one());
+    rows[*i].insert(current_artificial, Coefficient_one());
     base[*i] = current_artificial;
   }
 }
@@ -1699,7 +1699,7 @@ PPL::Distributed_Sparse_Matrix
 
   for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
        i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
-    local_rows[i->first].find_create(i->second, Coefficient_one());
+    local_rows[i->first].insert(i->second, Coefficient_one());
     base[i->first] = i->second;
   }
 }
@@ -2412,7 +2412,7 @@ PPL::Distributed_Sparse_Matrix::Worker
 
   for (std::vector<std::pair<dimension_type, dimension_type> >::const_iterator
        i = workunit.begin(), i_end = workunit.end(); i != i_end; ++i) {
-    rows[i->first].find_create(i->second, Coefficient_one());
+    rows[i->first].insert(i->second, Coefficient_one());
     base[i->first] = i->second;
   }
 }
