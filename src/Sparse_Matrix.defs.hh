@@ -209,20 +209,19 @@ public:
   void add_row(const Sparse_Row& x);
 
   /*! \brief
-    Erases from the matrix all the rows but those having
-    an index less than \p first_to_erase.
+    Removes from the matrix the last \p n rows.
 
-    \param first_to_erase
-    The index of the first row that will be erased.
+    \param n
+    The number of row that will be removed.
 
     Provided for compatibility with Dense_Row.
-    It is equivalent to resize(first_to_erase,num_columns()).
+    It is equivalent to resize(num_rows() - n, num_columns()).
 
     This method takes \f$O(n+k)\f$ amortized time, where k is the total number
     of elements stored in the removed rows and n is the number of removed
     rows.
   */
-  void erase_to_end(dimension_type first_to_erase);
+  void remove_trailing_rows(dimension_type n);
 
   //! Permutes the columns of the matrix.
   /*!

@@ -1137,7 +1137,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // system.
   Constraint_System& cs = x.con_sys;
   Bit_Matrix& sat = x.sat_g;
-  dimension_type cs_rows = cs.num_rows();
+  const dimension_type old_cs_rows = cs.num_rows();
+  dimension_type cs_rows = old_cs_rows;
   const dimension_type eps_index = cs.num_columns() - 1;
   for (dimension_type i = 0; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
@@ -1209,7 +1210,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     // If the constraint system has been changed, we have to erase
     // the epsilon-redundant constraints.
     PPL_ASSERT(cs_rows < cs.num_rows());
-    cs.erase_to_end(cs_rows);
+    cs.remove_trailing_rows(old_cs_rows - cs_rows);
     // The remaining constraints are not pending.
     cs.unset_pending_rows();
     // The constraint system is no longer sorted.
@@ -1291,7 +1292,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   // and eventually move them to the bottom part of the system.
   Generator_System& gs = const_cast<Generator_System&>(gen_sys);
   Bit_Matrix& sat = const_cast<Bit_Matrix&>(sat_c);
-  dimension_type gs_rows = gs.num_rows();
+  const dimension_type old_gs_rows = gs.num_rows();
+  dimension_type gs_rows = old_gs_rows;
   const dimension_type n_lines = gs.num_lines();
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_lines; i < gs_rows; )
@@ -1334,8 +1336,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 
   // If needed, erase the eps-redundant generators (also updating
   // `index_first_pending').
-  if (gs_rows < gs.num_rows()) {
-    gs.erase_to_end(gs_rows);
+  if (gs_rows < old_gs_rows) {
+    gs.remove_trailing_rows(old_gs_rows - gs_rows);
     gs.unset_pending_rows();
   }
 

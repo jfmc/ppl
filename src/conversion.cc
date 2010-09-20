@@ -821,7 +821,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // which have been swapped at the end of the system.
   if (source_num_redundant > 0) {
     PPL_ASSERT(source_num_redundant == source.num_rows() - source_num_rows);
-    source.erase_to_end(source_num_rows);
+    source.remove_trailing_rows(source_num_redundant);
     sat.columns_erase_to_end(source_num_rows);
   }
   // If `start == 0', then `source' was sorted and remained so.
@@ -839,7 +839,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
   // We may have identified some redundant rays in `dest',
   // which have been swapped at the end of the system.
   if (dest_num_rows < dest.num_rows()) {
-    dest.erase_to_end(dest_num_rows);
+    dest.remove_trailing_rows(dest.num_rows() - dest_num_rows);
     // Be careful: we might have erased some of the non-pending rows.
     if (dest.first_pending_row() > dest_num_rows)
       dest.unset_pending_rows();

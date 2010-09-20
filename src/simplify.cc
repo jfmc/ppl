@@ -85,7 +85,8 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   PPL_ASSERT(sys.OK(true));
   PPL_ASSERT(sys.num_columns() >= 1);
 
-  dimension_type num_rows = sys.num_rows();
+  const dimension_type old_num_rows = sys.num_rows();
+  dimension_type num_rows = old_num_rows;
   const dimension_type num_columns = sys.num_columns();
   const dimension_type num_cols_sat = sat.num_columns();
 
@@ -292,7 +293,7 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
 
   // Here we physically remove the redundant inequalities previously
   // moved to the bottom of `sys' and the corresponding `sat' rows.
-  sys.erase_to_end(num_rows);
+  sys.remove_trailing_rows(old_num_rows - num_rows);
   sys.unset_pending_rows();
   sat.rows_erase_to_end(num_rows);
   // At this point the first `num_lines_or_equalities' rows of 'sys'

@@ -2043,7 +2043,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
       }
     }
     // Drop pivot to restore proper matrix size.
-    s.erase_to_end(num_rows);
+    s.remove_trailing_rows(1);
   }
 
   // This point should be unreachable.
@@ -2185,8 +2185,8 @@ PIP_Solution_Node::update_tableau(
     if (row_sign(v_row, not_a_dimension()) == ZERO) {
       // Parametric-only constraints have already been inserted in
       // initial context, so no need to insert them in the tableau.
-      tableau.s.erase_to_end(row_id);
-      tableau.t.erase_to_end(row_id);
+      tableau.s.remove_trailing_rows(1);
+      tableau.t.remove_trailing_rows(1);
     }
     else {
       const dimension_type var_id = mapping.size();
@@ -2443,8 +2443,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       s_pivot.swap(tableau.s[num_rows]);
       t_pivot.swap(tableau.t[num_rows]);
       // 3. drop rows previously added at end of tableau.
-      tableau.s.erase_to_end(num_rows);
-      tableau.t.erase_to_end(num_rows);
+      tableau.s.remove_trailing_rows(1);
+      tableau.t.remove_trailing_rows(1);
 
       // Save current pivot denominator.
       PPL_DIRTY_TEMP_COEFFICIENT(pivot_den);

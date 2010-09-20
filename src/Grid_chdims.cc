@@ -343,7 +343,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
       if (num_redundant > 0) {
 	// Chop zero rows from end of system, to keep minimal form.
-	gen_sys.erase_to_end(gen_sys.num_rows() - num_redundant);
+	gen_sys.remove_trailing_rows(num_redundant);
 	gen_sys.unset_pending_rows();
       }
       dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
@@ -374,7 +374,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	std::swap(con_sys[low], con_sys[high]);
       // Chop newly redundant rows from end of system, to keep minimal
       // form.
-      con_sys.erase_to_end(rows - num_redundant);
+      con_sys.remove_trailing_rows(num_redundant);
     }
     dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
     clear_generators_up_to_date();

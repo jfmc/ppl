@@ -118,7 +118,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// We may have identified some closure points.
 	if (num_closure_points > 0) {
 	  PPL_ASSERT(num_closure_points == num_rows() - gs_end);
-	  erase_to_end(gs_end);
+	  remove_trailing_rows(num_closure_points);
 	}
 	// Remove the epsilon column, re-normalize and, after that,
 	// add the missing dimensions. This ensures that
@@ -952,7 +952,8 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
   Generator_System& gs = *this;
-  dimension_type n_rows = gs.num_rows();
+  const dimension_type old_n_rows = gs.num_rows();
+  dimension_type n_rows = old_n_rows;
   if (num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
       Generator& g = gs[i];
@@ -1000,7 +1001,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
       }
     }
   }
-  gs.erase_to_end(n_rows);
+  gs.remove_trailing_rows(old_n_rows - n_rows);
 }
 
 const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;

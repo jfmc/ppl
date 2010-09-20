@@ -347,11 +347,8 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  /*! \brief
-    Erases from the matrix all the rows but those having
-    an index less than \p first_to_erase.
-  */
-  void erase_to_end(dimension_type first_to_erase);
+  //! Removes from the matrix the last \p n rows.
+  void remove_trailing_rows(dimension_type n);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

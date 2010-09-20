@@ -1018,7 +1018,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // the polyhedron is not OK.
       Constraint_System new_con_sys(topology());
       Generator_System gs_without_pending = gen_sys;
-      gs_without_pending.erase_to_end(gen_sys.first_pending_row());
+      gs_without_pending.remove_trailing_rows(gs_without_pending.num_rows()
+                                              - gen_sys.first_pending_row());
       gs_without_pending.unset_pending_rows();
       Generator_System copy_of_gen_sys = gs_without_pending;
       Bit_Matrix new_sat_c;
@@ -1124,7 +1125,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     }
 
     Constraint_System cs_without_pending = con_sys;
-    cs_without_pending.erase_to_end(con_sys.first_pending_row());
+    cs_without_pending.remove_trailing_rows(cs_without_pending.num_rows()
+                                            - con_sys.first_pending_row());
     cs_without_pending.unset_pending_rows();
     Constraint_System copy_of_con_sys = cs_without_pending;
     bool empty = false;
@@ -1987,7 +1989,7 @@ add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
   else {
     // eq is not linear independent.
     PPL_ASSERT(rank == eq_sys_num_rows - 1);
-    eq_sys.erase_to_end(rank);
+    eq_sys.remove_trailing_rows(1);
     return false;
   }
 }
@@ -3367,7 +3369,8 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // At this point both generator systems are up-to-date,
   // possibly containing pending generators.
   Generator_System gs = y.gen_sys;
-  dimension_type gs_num_rows = gs.num_rows();
+  const dimension_type old_gs_num_rows = gs.num_rows();
+  dimension_type gs_num_rows = old_gs_num_rows;
 
   if (!x.is_necessarily_closed())
     // `x' and `y' are NNC polyhedra.
@@ -3428,7 +3431,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // For NNC polyhedra, also erase all the points of `gs',
   // whose role can be played by the closure points.
   // These have been previously moved to the end of `gs'.
-  gs.erase_to_end(gs_num_rows);
+  gs.remove_trailing_rows(old_gs_num_rows - gs_num_rows);
   gs.unset_pending_rows();
 
   // `gs' may now have no rows.

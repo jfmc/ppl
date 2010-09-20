@@ -1653,7 +1653,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
           base[i] = base[tableau_n_rows];
           --i;
         }
-        tableau.erase_to_end(tableau_n_rows);
+        tableau.remove_trailing_rows(1);
         base.pop_back();
       }
     }

@@ -188,10 +188,10 @@ operator!=(const Dense_Matrix& x, const Dense_Matrix& y) {
 }
 
 inline void
-Dense_Matrix::erase_to_end(const dimension_type first_to_erase) {
-  PPL_ASSERT(first_to_erase <= rows.size());
-  if (first_to_erase < rows.size())
-    rows.erase(rows.begin() + first_to_erase, rows.end());
+Dense_Matrix::remove_trailing_rows(const dimension_type n) {
+  PPL_ASSERT(n <= rows.size());
+  if (n != 0)
+    rows.erase(rows.end() - n, rows.end());
 }
 
 inline void

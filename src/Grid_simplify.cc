@@ -348,7 +348,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
        sys.num_columns() - 1);
     PPL_ASSERT(ret == true);
 #endif
-    sys.erase_to_end(pivot_index);
+    sys.remove_trailing_rows(num_rows - pivot_index);
   }
 
   sys.unset_pending_rows();
@@ -484,7 +484,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       last_row[0] = 1;
       dim_kinds.resize(1);
       std::swap(sys.rows[0], sys.rows.back());
-      sys.erase_to_end(1);
+      sys.remove_trailing_rows(num_rows - 1);
 
       PPL_ASSERT(sys.OK());
       return true;
@@ -526,7 +526,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
        num_columns);
     PPL_ASSERT(ret == true);
 #endif
-    sys.erase_to_end(reduced_num_rows);
+    sys.remove_trailing_rows(num_rows - reduced_num_rows);
   }
 
   PPL_ASSERT(sys.num_rows() == reduced_num_rows);
