@@ -53,16 +53,10 @@ public:
     return tmp;
   }
 
-  const PPL::Coefficient&
+  PPL::Coefficient_traits::const_reference
   operator*() const {
     PPL_ASSERT(i < row.size());
     return row[i];
-  }
-
-  const PPL::Coefficient*
-  operator->() const {
-    PPL_ASSERT(i < row.size());
-    return &(*(*this));
   }
 
   PPL::dimension_type
