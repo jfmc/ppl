@@ -530,7 +530,7 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   sys.remove_trailing_rows(num_duplicates);
   sys.set_index_first_pending_row(new_first_pending_row);
   // ... and the corresponding rows of the saturation matrix.
-  sat.rows_erase_to_end(sat.num_rows() - num_duplicates);
+  sat.remove_trailing_rows(num_duplicates);
   PPL_ASSERT(sys.check_sorted());
   // Now the system is sorted.
   sys.set_sorted(true);

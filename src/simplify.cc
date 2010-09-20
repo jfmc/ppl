@@ -295,7 +295,7 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // moved to the bottom of `sys' and the corresponding `sat' rows.
   sys.remove_trailing_rows(old_num_rows - num_rows);
   sys.unset_pending_rows();
-  sat.rows_erase_to_end(num_rows);
+  sat.remove_trailing_rows(old_num_rows - num_rows);
   // At this point the first `num_lines_or_equalities' rows of 'sys'
   // represent the irredundant equalities, while the remaining rows
   // (i.e., those having indexes from `num_lines_or_equalities' to

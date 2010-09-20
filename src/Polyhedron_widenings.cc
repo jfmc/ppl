@@ -97,13 +97,14 @@ PPL::Polyhedron
   // this is needed in order to widen the polyhedron and not the
   // corresponding homogenized polyhedral cone.
   const Constraint_System& y_cs = y.con_sys;
-  dimension_type num_rows = y_cs.num_rows();
+  const dimension_type old_num_rows = y_cs.num_rows();
+  dimension_type num_rows = old_num_rows;
   for (dimension_type i = 0; i < num_rows; ++i)
     if (y_cs[i].is_tautological()) {
       --num_rows;
       std::swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
     }
-  tmp_sat_g.rows_erase_to_end(num_rows);
+  tmp_sat_g.remove_trailing_rows(old_num_rows - num_rows);
   tmp_sat_g.sort_rows();
 
   // A constraint in `con_sys' is copied to `cs_selected'

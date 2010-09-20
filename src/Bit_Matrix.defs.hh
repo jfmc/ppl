@@ -102,11 +102,11 @@ public:
   */
   void add_recycled_row(Bit_Row& row);
 
-  //! Erases the rows from the \p first_to_erase -th to the last one.
-  void rows_erase_to_end(dimension_type first_to_erase);
+  //! Removes the last \p n rows.
+  void remove_trailing_rows(dimension_type n);
 
-  //! Erases the columns from the \p first_to_erase -th to the last one.
-  void columns_erase_to_end(dimension_type first_to_erase);
+  //! Removes the last \p n columns.
+  void remove_trailing_columns(dimension_type n);
 
   //! Resizes the matrix copying the old contents.
   void resize(dimension_type new_n_rows, dimension_type new_n_columns);
