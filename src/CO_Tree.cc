@@ -424,7 +424,8 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
     const dimension_type key = itr.index();
 
-    PPL_ASSERT(!is_greater_than_ratio(size, reserved_size, max_density_percent));
+    PPL_ASSERT(!is_greater_than_ratio(size, reserved_size,
+                                      max_density_percent));
 
     rebuild_smaller_tree();
     itr.get_root();
@@ -740,9 +741,9 @@ PPL::CO_Tree::tree_iterator
 PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                         data_type_const_reference value) {
   // Trees with reserved size 3 need not to be rebalanced.
-  // This check is needed because they can't be shrunk, so they may violate the
-  // density thresholds, and this would prevent the following while from working
-  // correctly.
+  // This check is needed because they can't be shrunk, so they may violate
+  // the density thresholds, and this would prevent the following while from
+  // working correctly.
   if (reserved_size == 3) {
     PPL_ASSERT(OK());
     return tree_iterator(*this);
@@ -766,7 +767,8 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                                /(max_depth - 1))
          || is_less_than_ratio(subtree_size, subtree_reserved_size,
                                min_density_percent - itr_depth_minus_1
-                               *(min_density_percent - min_leaf_density_percent)
+                               *(min_density_percent
+                                 - min_leaf_density_percent)
                                /(max_depth - 1))) {
     // The density in the tree is correct, so the while condition is always
     // false for the root.
@@ -795,8 +797,9 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     = itr.dfs_index() + itr.get_offset() - 1;
 
   dimension_type first_unused
-    = compact_elements_in_the_rightmost_end(last_index_in_subtree, subtree_size,
-                                            key, value, !deleting);
+    = compact_elements_in_the_rightmost_end(last_index_in_subtree,
+                                            subtree_size, key, value,
+                                            !deleting);
 
   // Step 2: redistribute the elements, from left to right.
   redistribute_elements_in_subtree(itr.dfs_index(), subtree_size,
@@ -893,19 +896,23 @@ PPL::CO_Tree
 }
 
 void
-PPL::CO_Tree::redistribute_elements_in_subtree(dimension_type root_index,
-                                               dimension_type subtree_size,
-                                               dimension_type last_used,
-                                               dimension_type key,
-                                               data_type_const_reference value,
-                                               bool add_element) {
+PPL::CO_Tree::redistribute_elements_in_subtree(
+    dimension_type root_index,
+    dimension_type subtree_size,
+    dimension_type last_used,
+    dimension_type key,
+    data_type_const_reference value,
+    bool add_element) {
+
   // This is static and with static allocation, to improve performance.
   // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
   // dimension_type, so it is the maximum tree height.
   // For each node level, the stack may contain up to two element (one for the
   // subtree rooted at the right son of a node of that level, and one for the
   // node itself). An additional element can be at the top of the tree.
-  static std::pair<dimension_type,dimension_type> stack[2*CHAR_BIT*sizeof(dimension_type)+1];
+  static std::pair<dimension_type,dimension_type>
+    stack[2*CHAR_BIT*sizeof(dimension_type)+1];
+
   std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
 
   // A pair (n, i) in the stack means to visit the subtree with root index i
@@ -928,7 +935,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(dimension_type root_index,
 
     PPL_ASSERT(top_n != 0);
     if (top_n == 1) {
-      if (add_element && (last_used > reserved_size || indexes[last_used] > key)) {
+      if (add_element
+          && (last_used > reserved_size || indexes[last_used] > key)) {
         PPL_ASSERT(last_used != top_i);
         PPL_ASSERT(indexes[top_i] == unused_index);
         add_element = false;
@@ -994,7 +1002,9 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
-  static std::pair<dimension_type,char> stack[5*CHAR_BIT*sizeof(dimension_type)];
+  static std::pair<dimension_type,char>
+    stack[5*CHAR_BIT*sizeof(dimension_type)];
+
   dimension_type stack_first_empty = 0;
 
   // A pair (n, operation) in the stack means:

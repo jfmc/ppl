@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   data structures.
 
   The main changes are the replacement of calls to operator[] on Sparse_Row
-  objects with calls to find(), lower_bound() or find_create(), using hint
+  objects with calls to find(), lower_bound() or insert(), using hint
   iterators when possible. Sequential scanning of rows should probably be
   implemented using iterators rather than indexes, to improve performance.
   reset() should be called to zero elements.
@@ -209,20 +209,19 @@ public:
   void add_row(const Sparse_Row& x);
 
   /*! \brief
-    Erases from the matrix all the rows but those having
-    an index less than \p first_to_erase.
+    Removes from the matrix the last \p n rows.
 
-    \param first_to_erase
-    The index of the first row that will be erased.
+    \param n
+    The number of row that will be removed.
 
     Provided for compatibility with Dense_Row.
-    It is equivalent to resize(first_to_erase,num_columns()).
+    It is equivalent to resize(num_rows() - n, num_columns()).
 
     This method takes \f$O(n+k)\f$ amortized time, where k is the total number
     of elements stored in the removed rows and n is the number of removed
     rows.
   */
-  void erase_to_end(dimension_type first_to_erase);
+  void remove_trailing_rows(dimension_type n);
 
   //! Permutes the columns of the matrix.
   /*!
@@ -320,12 +319,13 @@ public:
 
     This operation invalidates existing iterators.
 
-    This method takes \f$O(\sum_{j=1}^r (k_j*\log n_j))\f$ amortized time, where r
-    is the number of rows, \f$k_j\f$ is the number of elements that have to be
-    removed from row j and \f$n_j\f$ is the total number of elements stored in
-    row j.
-    A weaker (but simpler) bound is \f$O(r*n*\log c)\f$, where r is the number of
-    rows, c the number of columns and n the parameter passed to this method.
+    This method takes \f$O(\sum_{j=1}^r (k_j*\log n_j))\f$ amortized time,
+    where r is the number of rows, \f$k_j\f$ is the number of elements that
+    have to be removed from row j and \f$n_j\f$ is the total number of
+    elements stored in row j.
+    A weaker (but simpler) bound is \f$O(r*n*\log c)\f$, where r is the number
+    of rows, c the number of columns and n the parameter passed to this
+    method.
   */
   void remove_trailing_columns(dimension_type n);
 
@@ -397,8 +397,8 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   /*!
-    This method is \f$O(r+k)\f$, where r is the number of rows and k is the number
-    of elements stored in the matrix.
+    This method is \f$O(r+k)\f$, where r is the number of rows and k is the
+    number of elements stored in the matrix.
   */
   memory_size_type external_memory_in_bytes() const;
 

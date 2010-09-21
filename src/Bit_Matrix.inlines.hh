@@ -57,21 +57,21 @@ Bit_Matrix::~Bit_Matrix() {
 }
 
 inline void
-Bit_Matrix::rows_erase_to_end(const dimension_type first_to_erase) {
-  // The first row to be erased cannot be greater
+Bit_Matrix::remove_trailing_rows(const dimension_type n) {
+  // The number of rows to be erased cannot be greater
   // than the actual number of the rows of the matrix.
-  PPL_ASSERT(first_to_erase <= rows.size());
-  if (first_to_erase < rows.size())
-    rows.erase(rows.begin() + first_to_erase, rows.end());
+  PPL_ASSERT(n <= rows.size());
+  if (n != 0)
+    rows.erase(rows.end() - n, rows.end());
   PPL_ASSERT(OK());
 }
 
 inline void
-Bit_Matrix::columns_erase_to_end(const dimension_type first_to_erase) {
-  // The first column to be erased cannot be greater
+Bit_Matrix::remove_trailing_columns(const dimension_type n) {
+  // The number of columns to be erased cannot be greater
   // than the actual number of the columns of the matrix.
-  PPL_ASSERT(first_to_erase <= row_size);
-  row_size = first_to_erase;
+  PPL_ASSERT(n <= row_size);
+  row_size -= n;
   PPL_ASSERT(OK());
 }
 

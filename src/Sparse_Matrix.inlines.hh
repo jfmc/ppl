@@ -68,8 +68,8 @@ Sparse_Matrix::add_row(const Sparse_Row& x) {
 }
 
 inline void
-Sparse_Matrix::erase_to_end(dimension_type first_to_erase) {
-  resize(first_to_erase, num_columns());
+Sparse_Matrix::remove_trailing_rows(dimension_type n) {
+  resize(num_rows() - n, num_columns());
 }
 
 inline void

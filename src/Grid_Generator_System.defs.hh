@@ -489,12 +489,6 @@ private:
   */
   dimension_type num_columns() const;
 
-  /*! \brief
-    Erases from the matrix all the rows but those having an index less
-    than \p first_to_erase.
-  */
-  void erase_to_end(dimension_type first_to_erase);
-
   //! Permutes the columns of the matrix.
   /*
     \param cycles

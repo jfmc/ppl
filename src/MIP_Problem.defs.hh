@@ -25,9 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
-#include "Dense_Row.defs.hh"
-#include "Dense_Matrix.defs.hh"
-#include "Sparse_Matrix.defs.hh"
+#include "Row.defs.hh"
+#include "Matrix.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
@@ -36,6 +35,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <deque>
 #include <iosfwd>
+
+// TODO: Remove this when the sparse working cost has been tested enough.
+#if USE_PPL_SPARSE_MATRIX
+
+// These are needed for the linear_combine() method that takes a Dense_Row and
+// a Sparse_Row.
+#include "Dense_Row.types.hh"
+#include "Sparse_Row.types.hh"
+
+#endif // defined(USE_PPL_SPARSE_MATRIX)
 
 namespace Parma_Polyhedra_Library {
 
@@ -52,7 +61,8 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 
 //! A Mixed Integer (linear) Programming problem.
 /*! \ingroup PPL_CXX_interface
-  An object of this class encodes a mixed integer (linear) programming problem.
+  An object of this class encodes a mixed integer (linear) programming
+  problem.
   The MIP problem is specified by providing:
    - the dimension of the vector space;
    - the feasible region, by means of a finite set of linear equality
@@ -79,12 +89,6 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 */
 class Parma_Polyhedra_Library::MIP_Problem {
 public:
-#if USE_PPL_SPARSE_MATRIX
-  typedef Sparse_Matrix matrix_type;
-#else
-  typedef Dense_Matrix matrix_type;
-#endif
-
   //! Builds a trivial MIP problem.
   /*!
     A trivial MIP problem requires to maximize the objective function
@@ -438,18 +442,21 @@ private:
   dimension_type internal_space_dim;
 
   //! The matrix encoding the current feasible region in tableau form.
-  matrix_type tableau;
+  Matrix tableau;
+
+  typedef Row working_cost_type;
 
   //! The working cost function.
-  Dense_Row working_cost;
+  working_cost_type working_cost;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
     Contains all the pairs (i, j) such that mapping[i].first encodes the index
-    of the column in the tableau where input_cs[i] is stored; mapping[i].second
-    not a zero, encodes the split part of the tableau of input_cs[i].
-    The "positive" one is represented by mapping[i].first and
-    the "negative" one is represented by mapping[i].second.
+    of the column in the tableau where input_cs[i] is stored; if
+    mapping[i].second is not a zero, it encodes the split part of the tableau
+    of input_cs[i].
+    The "positive" one is represented by mapping[i].first and the "negative"
+    one is represented by mapping[i].second.
   */
   std::vector<std::pair<dimension_type, dimension_type> > mapping;
 
@@ -555,7 +562,8 @@ private:
     <CODE>UNBOUNDED_MIP_PROBLEM</CODE> if the problem is trivially unbounded
     (the computed tableau contains no constraints);
     <CODE>OPTIMIZED_MIP_PROBLEM></CODE> if the problem is neither trivially
-    unfeasible nor trivially unbounded (the tableau was computed successfully).
+    unfeasible nor trivially unbounded (the tableau was computed
+    successfully).
   */
   MIP_Problem_Status
   compute_tableau(std::vector<dimension_type>& worked_out_row);
@@ -646,26 +654,10 @@ private:
     the element of index \p k equal to \f$0\f$. Then it assigns
     the resulting Linear_Row to \p x and normalizes it.
   */
-  static void linear_combine(Dense_Row& x, const Dense_Row& y,
-                             const dimension_type k);
+  static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
-  //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
-  /*!
-    \param x
-    The row that will be combined with \p y object.
-
-    \param y
-    The row that will be combined with \p x object.
-
-    \param k
-    The position of \p *this that have to be \f$0\f$.
-
-    Computes a linear combination of \p x and \p y having
-    the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Linear_Row to \p x and normalizes it.
-  */
-  static void linear_combine(Sparse_Row& x, const Sparse_Row& y,
-                             const dimension_type k);
+  // TODO: Remove this when the sparse working cost has been tested enough.
+#if USE_PPL_SPARSE_MATRIX
 
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
@@ -684,6 +676,8 @@ private:
   */
   static void linear_combine(Dense_Row& x, const Sparse_Row& y,
                              const dimension_type k);
+
+#endif // defined(USE_PPL_SPARSE_MATRIX)
 
   /*! \brief
     Performs the pivoting operation on the tableau.

@@ -33,6 +33,27 @@ Sparse_Row::Sparse_Row(dimension_type n, Flags flags)
   PPL_ASSERT(OK());
 }
 
+inline
+Sparse_Row::Sparse_Row(dimension_type n, dimension_type capacity, Flags flags)
+  : size_(n), flags_(flags) {
+  (void)capacity;
+  PPL_ASSERT(OK());
+}
+
+inline
+Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type capacity)
+  : tree(y.tree), size_(y.size_), flags_(y.flags_) {
+  (void)capacity;
+}
+
+inline
+Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
+                       dimension_type capacity)
+  : tree(y.tree), size_(sz), flags_(y.flags_) {
+  PPL_ASSERT(y.size() <= sz);
+  (void)capacity;
+}
+
 inline void
 Sparse_Row::construct(dimension_type sz) {
   resize(sz);
@@ -134,7 +155,7 @@ Sparse_Row::clear() {
 inline Coefficient&
 Sparse_Row::operator[](dimension_type i) {
   PPL_ASSERT(i < size_);
-  iterator itr = find_create(i);
+  iterator itr = insert(i);
   return *itr;
 }
 
@@ -157,6 +178,8 @@ Sparse_Row::get(dimension_type i) const {
 
 inline Sparse_Row::iterator
 Sparse_Row::find(dimension_type i) {
+  PPL_ASSERT(i < size());
+
   iterator itr = tree.bisect(i);
 
   if (itr != end() && itr.index() == i)
@@ -167,6 +190,8 @@ Sparse_Row::find(dimension_type i) {
 
 inline Sparse_Row::iterator
 Sparse_Row::find(iterator hint, dimension_type i) {
+  PPL_ASSERT(i < size());
+
   iterator itr = tree.bisect_near(hint, i);
 
   if (itr != end() && itr.index() == i)
@@ -177,6 +202,8 @@ Sparse_Row::find(iterator hint, dimension_type i) {
 
 inline Sparse_Row::const_iterator
 Sparse_Row::find(dimension_type i) const {
+  PPL_ASSERT(i < size());
+
   const_iterator itr = tree.bisect(i);
 
   if (itr != end() && itr.index() == i)
@@ -187,6 +214,8 @@ Sparse_Row::find(dimension_type i) const {
 
 inline Sparse_Row::const_iterator
 Sparse_Row::find(const_iterator hint, dimension_type i) const {
+  PPL_ASSERT(i < size());
+
   const_iterator itr = tree.bisect_near(hint, i);
 
   if (itr != end() && itr.index() == i)
@@ -197,6 +226,8 @@ Sparse_Row::find(const_iterator hint, dimension_type i) const {
 
 inline Sparse_Row::iterator
 Sparse_Row::lower_bound(dimension_type i) {
+  PPL_ASSERT(i <= size());
+
   iterator itr = tree.bisect(i);
 
   if (itr == end())
@@ -212,6 +243,7 @@ Sparse_Row::lower_bound(dimension_type i) {
 
 inline Sparse_Row::iterator
 Sparse_Row::lower_bound(iterator hint, dimension_type i) {
+  PPL_ASSERT(i <= size());
 
   iterator itr = tree.bisect_near(hint, i);
 
@@ -228,6 +260,8 @@ Sparse_Row::lower_bound(iterator hint, dimension_type i) {
 
 inline Sparse_Row::const_iterator
 Sparse_Row::lower_bound(dimension_type i) const {
+  PPL_ASSERT(i <= size());
+
   const_iterator itr = tree.bisect(i);
 
   if (itr == end())
@@ -243,6 +277,8 @@ Sparse_Row::lower_bound(dimension_type i) const {
 
 inline Sparse_Row::const_iterator
 Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
+  PPL_ASSERT(i <= size());
+
   const_iterator itr = tree.bisect_near(hint, i);
 
   if (itr == end())
@@ -257,27 +293,26 @@ Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(dimension_type i,
-                        Coefficient_traits::const_reference x) {
+Sparse_Row::insert(dimension_type i, Coefficient_traits::const_reference x) {
   PPL_ASSERT(i < size_);
   return tree.insert(i, x);
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(iterator itr, dimension_type i,
-                        Coefficient_traits::const_reference x) {
+Sparse_Row::insert(iterator itr, dimension_type i,
+                   Coefficient_traits::const_reference x) {
   PPL_ASSERT(i < size_);
   return tree.insert(itr, i, x);
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(dimension_type i) {
+Sparse_Row::insert(dimension_type i) {
   PPL_ASSERT(i < size_);
   return tree.insert(i);
 }
 
 inline Sparse_Row::iterator
-Sparse_Row::find_create(iterator itr, dimension_type i) {
+Sparse_Row::insert(iterator itr, dimension_type i) {
   PPL_ASSERT(i < size_);
   return tree.insert(itr, i);
 }
@@ -299,6 +334,8 @@ Sparse_Row::reset(iterator i) {
 
 inline void
 Sparse_Row::reset(dimension_type i) {
+  PPL_ASSERT(i < size());
+
   tree.erase(i);
   PPL_ASSERT(OK());
 }

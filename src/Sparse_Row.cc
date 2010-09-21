@@ -23,8 +23,83 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "Sparse_Row.defs.hh"
+#include "Dense_Row.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
+
+namespace {
+
+class Sparse_Row_from_Dense_Row_helper_iterator {
+public:
+  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1,
+                                            PPL::dimension_type i1)
+    : row(row1), i(i1) {
+    PPL_ASSERT(i <= row.size());
+    if (i < row.size() && row[i] == 0)
+      ++(*this);
+  }
+
+  Sparse_Row_from_Dense_Row_helper_iterator& operator++() {
+    PPL_ASSERT(i < row.size());
+    ++i;
+    while (i < row.size() && row[i] == 0)
+      ++i;
+    return *this;
+  }
+
+  Sparse_Row_from_Dense_Row_helper_iterator operator++(int) {
+    Sparse_Row_from_Dense_Row_helper_iterator tmp = *this;
+    ++(*this);
+    return tmp;
+  }
+
+  PPL::Coefficient_traits::const_reference
+  operator*() const {
+    PPL_ASSERT(i < row.size());
+    return row[i];
+  }
+
+  PPL::dimension_type
+  index() const {
+    PPL_ASSERT(i < row.size());
+    return i;
+  }
+
+  bool
+  operator==(const Sparse_Row_from_Dense_Row_helper_iterator& itr) const {
+    PPL_ASSERT(&row == &(itr.row));
+    return i == itr.i;
+  }
+
+  bool
+  operator!=(const Sparse_Row_from_Dense_Row_helper_iterator& itr) const {
+    return !(*this == itr);
+  }
+
+private:
+  const PPL::Dense_Row& row;
+  PPL::dimension_type i;
+};
+
+// Returns the number of nonzero elements in row.
+PPL::dimension_type
+Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row) {
+  PPL::dimension_type count = 0;
+  for (PPL::dimension_type i = row.size(); i-- > 0; )
+    if (row[i] != 0)
+      ++count;
+  return count;
+}
+
+} // namespace
+
+PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
+  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, 0),
+         Sparse_Row_from_Dense_Row_helper_iterator(row, row.size()),
+         Sparse_Row_from_Dense_Row_helper_function(row)),
+    size_(row.size()) {
+  PPL_ASSERT(OK());
+}
 
 void
 PPL::Sparse_Row::swap(dimension_type i, dimension_type j) {
@@ -145,6 +220,60 @@ PPL::Sparse_Row::normalize() {
   }
 
   PPL_ASSERT(OK());
+}
+
+void
+PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
+                                Coefficient_traits::const_reference coeff1,
+                                Coefficient_traits::const_reference coeff2) {
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+  PPL_ASSERT(this != &y);
+  if (coeff1 == 1) {
+    iterator i = end();
+    for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
+      i = insert(i, j.index());
+      add_mul_assign(*i, *j, coeff2);
+      if (*i == 0)
+        i = reset(i);
+    }
+  } else {
+    iterator i = begin();
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset() and insert().
+    const iterator& i_end = end();
+    const_iterator j = y.begin();
+    const_iterator j_end = y.end();
+    while (i != i_end && j != j_end) {
+      if (i.index() == j.index()) {
+        (*i) *= coeff1;
+        add_mul_assign(*i, *j, coeff2);
+        if (*i == 0)
+          i = reset(i);
+        else
+          ++i;
+        ++j;
+      } else
+        if (i.index() < j.index()) {
+          (*i) *= coeff1;
+          ++i;
+        } else {
+          PPL_ASSERT(i.index() > j.index());
+          i = insert(i, j.index(), *j);
+          (*i) *= coeff2;
+          ++i;
+          ++j;
+        }
+    }
+    PPL_ASSERT(i == i_end || j == j_end);
+    for ( ; i != i_end; ++i)
+      (*i) *= coeff1;
+    for ( ; j != j_end; ++j) {
+      i = insert(i, j.index(), *j);
+      (*i) *= coeff2;
+    }
+  }
 }
 
 void

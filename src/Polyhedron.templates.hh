@@ -141,7 +141,7 @@ Polyhedron::Polyhedron(Topology topol,
   con_sys.set_sorted(false);
   // NOTE: here there are no pending constraints.
   con_sys.set_index_first_pending_row(n_rows);
-  con_sys.erase_to_end(n_rows);
+  con_sys.remove_trailing_rows(1);
 
   // Constraints are up-to-date.
   set_constraints_up_to_date();

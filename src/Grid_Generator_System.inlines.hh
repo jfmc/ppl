@@ -55,11 +55,6 @@ Grid_Generator_System::num_columns() const {
 }
 
 inline void
-Grid_Generator_System::erase_to_end(dimension_type first_to_erase) {
-  return Generator_System::erase_to_end(first_to_erase);
-}
-
-inline void
 Grid_Generator_System
 ::permute_columns(const std::vector<dimension_type>& cycles) {
   return Generator_System::permute_columns(cycles);

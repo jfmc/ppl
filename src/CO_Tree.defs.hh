@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_CO_Tree_defs_hh
 #define PPL_CO_Tree_defs_hh 1
 
+#include "CO_Tree.types.hh"
+
 #include "Coefficient.defs.hh"
 
 #ifndef PPL_CO_TREE_EXTRA_DEBUG
@@ -179,7 +181,8 @@ public:
       The tree that the new %iterator will point to.
 
       \param i
-      The index of the element in \p tree to which the %iterator will point to.
+      The index of the element in \p tree to which the %iterator will point
+      to.
 
       The i-th node must be a node with a value or end().
 
@@ -333,8 +336,8 @@ public:
       The tree to which the new %iterator will point to.
 
       \param i
-      The index of the element in \p tree to which the new %iterator will point
-      to.
+      The index of the element in \p tree to which the new %iterator will
+      point to.
 
       The i-th node must be a node with a value or end().
 
@@ -473,6 +476,29 @@ public:
     This constructor takes \f$O(n)\f$ time.
   */
   CO_Tree(const CO_Tree& v);
+
+  //! A constructor from a sequence of \p n elements.
+  /*!
+    \param i
+    An iterator that points to the first element of the sequence.
+
+    \param i_end
+    An iterator that points to the last element of the sequence.
+
+    \param n
+    The number of elements in the [i, i_end) sequence.
+
+    i and i_end must be input iterators on a sequence of data_type elements,
+    sorted by index.
+    They must have an index() that returns the index with which the current
+    element must be inserted.
+
+    This constructor takes \f$O(n)\f$ time, so it is more efficient than
+    the construction of an empty tree followed by n insertions, that would
+    take \f$O(n*\log^2 n)\f$ time.
+  */
+  template <typename Iterator>
+  CO_Tree(Iterator i, Iterator i_end, dimension_type n);
 
   //! The assignment operator.
   /*!
@@ -852,7 +878,8 @@ private:
 
     \return
     If the element is found, the index of that element is returned; otherwise,
-    the returned index refers to the immediately preceding or succeeding value.
+    the returned index refers to the immediately preceding or succeeding
+    value.
 
     This method takes \f$O(\log n)\f$ time.
   */
@@ -870,7 +897,8 @@ private:
 
     \return
     If the element is found, the index of that element is returned; otherwise,
-    the returned index refers to the immediately preceding or succeeding value.
+    the returned index refers to the immediately preceding or succeeding
+    value.
 
     This uses a binary progression and then a bisection, so this method is
     \f$O(\log n)\f$, and it is \f$O(1)\f$ if the distance between the returned
@@ -1503,6 +1531,6 @@ void swap(Parma_Polyhedra_Library::CO_Tree::iterator& x,
 } // namespace std
 
 #include "CO_Tree.inlines.hh"
-
+#include "CO_Tree.templates.hh"
 
 #endif // !defined(PPL_CO_Tree_defs_hh)

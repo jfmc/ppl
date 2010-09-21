@@ -22,6 +22,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
+#if USE_PPL_SPARSE_MATRIX
+
 #include <vector>
 #include <algorithm>
 #include <set>
@@ -455,7 +457,7 @@ test07() {
 bool
 test08() {
 
-  Sparse_Row row(3);
+  Sparse_Row row(4);
 
   if (row.lower_bound(2) != row.end())
     return false;
@@ -508,6 +510,93 @@ test08() {
   return true;
 }
 
+bool
+test09() {
+  // These test the construction of a Sparse_Row from a Dense_Row.
+  {
+    Dense_Row dense(3, Row_Flags());
+    Sparse_Row sparse(dense);
+    if (sparse.size() != dense.size())
+      return false;
+    if (sparse.begin() != sparse.end())
+      return false;
+  }
+
+  {
+    Dense_Row dense(5, Row_Flags());
+    dense[1] = 2;
+    dense[3] = 4;
+    Sparse_Row sparse(dense);
+    if (sparse.size() != dense.size())
+      return false;
+    Sparse_Row::iterator itr = sparse.begin();
+
+    if (itr == sparse.end())
+      return false;
+    if (itr.index() != 1)
+      return false;
+    if (*itr != 2)
+      return false;
+
+    ++itr;
+
+    if (itr == sparse.end())
+      return false;
+    if (itr.index() != 3)
+      return false;
+    if (*itr != 4)
+      return false;
+
+    ++itr;
+
+    if (itr != sparse.end())
+      return false;
+  }
+
+  {
+    Dense_Row dense(5, Row_Flags());
+    dense[0] = 1;
+    dense[2] = 3;
+    dense[4] = 5;
+    Sparse_Row sparse(dense);
+    if (sparse.size() != dense.size())
+      return false;
+    Sparse_Row::iterator itr = sparse.begin();
+
+    if (itr == sparse.end())
+      return false;
+    if (itr.index() != 0)
+      return false;
+    if (*itr != 1)
+      return false;
+
+    ++itr;
+
+    if (itr == sparse.end())
+      return false;
+    if (itr.index() != 2)
+      return false;
+    if (*itr != 3)
+      return false;
+
+    ++itr;
+
+    if (itr == sparse.end())
+      return false;
+    if (itr.index() != 4)
+      return false;
+    if (*itr != 5)
+      return false;
+
+    ++itr;
+
+    if (itr != sparse.end())
+      return false;
+  }
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -519,4 +608,18 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
+
+#else // !USE_PPL_SPARSE_MATRIX
+
+// A dummy test to avoid compiler warnings in BEGIN_MAIN.
+bool test01() {
+  return true;
+}
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+
+#endif // !USE_PPL_SPARSE_MATRIX

@@ -527,10 +527,10 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
       std::swap(sys[new_first_pending_row + i], sys[n_rows - i]);
   }
   // Erasing the duplicated rows...
-  sys.erase_to_end(sys.num_rows() - num_duplicates);
+  sys.remove_trailing_rows(num_duplicates);
   sys.set_index_first_pending_row(new_first_pending_row);
   // ... and the corresponding rows of the saturation matrix.
-  sat.rows_erase_to_end(sat.num_rows() - num_duplicates);
+  sat.remove_trailing_rows(num_duplicates);
   PPL_ASSERT(sys.check_sorted());
   // Now the system is sorted.
   sys.set_sorted(true);
@@ -695,7 +695,8 @@ PPL::Linear_System::simplify() {
   PPL_ASSERT(x.num_pending_rows() == 0);
 
   // Partially sort the linear system so that all lines/equalities come first.
-  dimension_type nrows = x.num_rows();
+  const dimension_type old_nrows = x.num_rows();
+  dimension_type nrows = old_nrows;
   dimension_type n_lines_or_equalities = 0;
   for (dimension_type i = 0; i < nrows; ++i)
     if (x[i].is_line_or_equality()) {
@@ -717,7 +718,7 @@ PPL::Linear_System::simplify() {
 			   n_rays_or_points_or_inequalities);
     for (dimension_type i = num_swaps; i-- > 0; )
       std::swap(x[--nrows], x[rank + i]);
-    x.erase_to_end(nrows);
+    x.remove_trailing_rows(old_nrows - nrows);
     x.unset_pending_rows();
     if (n_rays_or_points_or_inequalities > num_swaps)
       x.set_sorted(false);
@@ -776,7 +777,8 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
   x.sort_rows(first_pending, x.num_rows());
   // Recompute the number of rows, because we may have removed
   // some rows occurring more than once in the pending part.
-  dimension_type num_rows = x.num_rows();
+  const dimension_type old_num_rows = x.num_rows();
+  dimension_type num_rows = old_num_rows;
 
   dimension_type k1 = 0;
   dimension_type k2 = first_pending;
@@ -813,7 +815,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
     if (k2 < num_rows)
       for (++k2; k2 < num_rows; ++k2)
 	std::swap(x[k2], x[k2 + num_duplicates]);
-    x.erase_to_end(num_rows);
+    x.remove_trailing_rows(old_num_rows - num_rows);
   }
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
