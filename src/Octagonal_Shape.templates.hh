@@ -7654,6 +7654,50 @@ Octagonal_Shape<T>
   PPL_ASSERT(OK());
 }
 
+template <typename T>
+template <typename U>
+void
+Octagonal_Shape<T>
+::export_interval_constraints(U& dest) const {
+  if (space_dim > dest.space_dimension())
+    throw std::invalid_argument(
+               "Octagonal_Shape<T>::export_interval_constraints");
+
+  strong_closure_assign();
+
+  if (marked_empty()) {
+    dest.set_empty();
+    return;
+  }
+
+  PPL_DIRTY_TEMP(N, lbound);
+  PPL_DIRTY_TEMP(N, ubound);
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    const dimension_type ii = 2*i;
+    const dimension_type cii = ii + 1;
+
+    // Set the upper bound.
+    const N& twice_ub = matrix[cii][ii];
+    if (!is_plus_infinity(twice_ub)) {
+      assign_r(ubound, twice_ub, ROUND_NOT_NEEDED);
+      div_2exp_assign_r(ubound, ubound, 1, ROUND_UP);
+      if (!dest.restrict_upper(i, ubound))
+        return;
+    }
+
+    // Set the lower bound.
+    const N& twice_lb = matrix[ii][cii];
+    if (!is_plus_infinity(twice_lb)) {
+      assign_r(lbound, twice_lb, ROUND_NOT_NEEDED);
+      neg_assign_r(lbound, lbound, ROUND_NOT_NEEDED);
+      div_2exp_assign_r(lbound, lbound, 1, ROUND_DOWN);
+      if (!dest.restrict_lower(i, lbound))
+        return;
+    }
+  }
+
+}
+
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
