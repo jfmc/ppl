@@ -7681,7 +7681,8 @@ Octagonal_Shape<T>
     if (!is_plus_infinity(twice_ub)) {
       assign_r(ubound, twice_ub, ROUND_NOT_NEEDED);
       div_2exp_assign_r(ubound, ubound, 1, ROUND_UP);
-      if (!dest.restrict_upper(i, ubound))
+      // FIXME: passing a raw value may not be general enough.
+      if (!dest.restrict_upper(i, ubound.raw_value()))
         return;
     }
 
@@ -7691,7 +7692,8 @@ Octagonal_Shape<T>
       assign_r(lbound, twice_lb, ROUND_NOT_NEEDED);
       neg_assign_r(lbound, lbound, ROUND_NOT_NEEDED);
       div_2exp_assign_r(lbound, lbound, 1, ROUND_DOWN);
-      if (!dest.restrict_lower(i, lbound))
+      // FIXME: passing a raw value may not be general enough.
+      if (!dest.restrict_lower(i, lbound.raw_value()))
         return;
     }
   }
