@@ -7665,7 +7665,7 @@ Octagonal_Shape<T>
 
   strong_closure_assign();
 
-  if (marked_empty()) {
+  if (is_empty()) {
     dest.set_empty();
     return;
   }
