@@ -55,13 +55,14 @@ _CIAO_PRINT_INCLUDE_DIR_EOF
   AC_LANG_PUSH(C++)
   AC_CHECK_HEADER(ciao_prolog.h,
                   AC_MSG_CHECKING([for Ciao Prolog version x.y.z or later])
-                  AC_COMPILE_IFELSE(
-[#include <ciao_prolog.h>
+                  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <ciao_prolog.h>
 
 int
 main() {
   return 0;
-}],
+}
+                    ]])],
                     AC_MSG_RESULT(yes),
                     ciao_prolog=""
                     AC_MSG_RESULT(no)
