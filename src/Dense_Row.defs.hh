@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 
+#include "Sparse_Row.types.hh"
 #include "Row_Flags.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
@@ -97,6 +98,8 @@ public:
 
   //! Pre-constructs a row: construction must be completed by construct().
   Dense_Row();
+
+  Dense_Row(const Sparse_Row& row);
 
   //! \name Post-constructors
   //@{
@@ -169,6 +172,9 @@ public:
 
   //! Assignment operator.
   Dense_Row& operator=(const Dense_Row& y);
+
+  //! Assignment operator.
+  Dense_Row& operator=(const Sparse_Row& y);
 
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
