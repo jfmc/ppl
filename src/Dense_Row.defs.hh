@@ -99,7 +99,7 @@ public:
   //! Pre-constructs a row: construction must be completed by construct().
   Dense_Row();
 
-  Dense_Row(const Sparse_Row& row);
+  explicit Dense_Row(const Sparse_Row& row);
 
   //! \name Post-constructors
   //@{
