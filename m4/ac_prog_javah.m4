@@ -26,6 +26,7 @@
 AC_DEFUN([AC_PROG_JAVAH],[
 AC_REQUIRE([AC_CANONICAL_HOST])dnl
 AC_REQUIRE([AC_PROG_CPP])dnl
+AC_LANG_PUSH(C++)dnl
 if test "x$JAVAPREFIX" = x; then
         AC_CHECK_PROGS(JAVAH,javah, no)
 else
@@ -33,7 +34,7 @@ else
 fi
 
 if test x"`eval 'echo $ac_cv_path_JAVAH'`" != xno ; then
-  AC_PREPROC_IFELSE([#include <jni.h> ] ,,[
+  AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <jni.h>]]) ] ,,[
     ac_save_CPPFLAGS="$CPPFLAGS"
 changequote(, )dnl
     ac_dir=`echo $ac_cv_path_JAVAH | sed 's,\(.*\)/[^/]*/[^/]*$,\1/include,'`
@@ -42,9 +43,11 @@ changequote([, ])dnl
     JNIFLAGS="-I$ac_dir -I$ac_dir/$ac_machdep"
     CPPFLAGS="$ac_save_CPPFLAGS $JNIFLAGS"
     AC_SUBST(JNIFLAGS)
-    AC_PREPROC_IFELSE([#include <jni.h>],
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <jni.h>]])],
                CPPFLAGS="$ac_save_CPPFLAGS",
                AC_MSG_WARN([unable to include <jni.h>])
 	       JAVAH=no)
     CPPFLAGS="$ac_save_CPPFLAGS"])
-fi])
+fi
+AC_LANG_POP(C++)
+])
