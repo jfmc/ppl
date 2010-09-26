@@ -482,23 +482,20 @@ public:
     \param i
     An iterator that points to the first element of the sequence.
 
-    \param i_end
-    An iterator that points to the last element of the sequence.
-
     \param n
     The number of elements in the [i, i_end) sequence.
 
-    i and i_end must be input iterators on a sequence of data_type elements,
+    i must be an input iterator on a sequence of data_type elements,
     sorted by index.
-    They must have an index() that returns the index with which the current
-    element must be inserted.
+    Objects of Iterator type must have an index() method that returns the
+    index with which the element pointed to by the iterator must be inserted.
 
     This constructor takes \f$O(n)\f$ time, so it is more efficient than
     the construction of an empty tree followed by n insertions, that would
     take \f$O(n*\log^2 n)\f$ time.
   */
   template <typename Iterator>
-  CO_Tree(Iterator i, Iterator i_end, dimension_type n);
+  CO_Tree(Iterator i, dimension_type n);
 
   //! The assignment operator.
   /*!

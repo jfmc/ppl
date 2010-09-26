@@ -31,11 +31,9 @@ namespace {
 
 class Sparse_Row_from_Dense_Row_helper_iterator {
 public:
-  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1,
-                                            PPL::dimension_type i1)
-    : row(row1), i(i1) {
-    PPL_ASSERT(i <= row.size());
-    if (i < row.size() && row[i] == 0)
+  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1)
+    : row(row1), i(0) {
+    if (row.size() != 0 && row[0] == 0)
       ++(*this);
   }
 
@@ -94,8 +92,7 @@ Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row) {
 } // namespace
 
 PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
-  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, 0),
-         Sparse_Row_from_Dense_Row_helper_iterator(row, row.size()),
+  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row),
          Sparse_Row_from_Dense_Row_helper_function(row)),
     size_(row.size()) {
   PPL_ASSERT(OK());
