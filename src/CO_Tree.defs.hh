@@ -524,6 +524,12 @@ public:
   */
   bool empty() const;
 
+  //! Returns the number of elements stored in the tree.
+  /*!
+    This method takes \f$O(1)\f$ time.
+  */
+  dimension_type size() const;
+
   //! Dumps the tree to stdout, for debugging purposes.
   void dump_tree() const;
 
@@ -1287,7 +1293,7 @@ private:
   dimension_type reserved_size;
 
   //! The number of values stored in the tree.
-  dimension_type size;
+  dimension_type size_;
 };
 
 class CO_Tree::tree_iterator {

@@ -126,7 +126,7 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
       }
     }
   }
-  size = n;
+  size_ = n;
   PPL_ASSERT(OK());
 }
 
