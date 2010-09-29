@@ -4503,13 +4503,15 @@ BD_Shape<T>
     // Set the upper bound.
     const N& u = dbm_0[i+1];
     if (!is_plus_infinity(u))
-      dest.restrict_upper(i, u.raw_value());
+      if (!dest.restrict_upper(i, u.raw_value()))
+        return;
 
     // Set the lower bound.
     const N& negated_l = dbm[i+1][0];
     if (!is_plus_infinity(negated_l)) {
       neg_assign_r(tmp, negated_l, ROUND_DOWN);
-      dest.restrict_lower(i, negated_l.raw_value());
+      if (!dest.restrict_lower(i, negated_l.raw_value()))
+        return;
     }
   }
 
