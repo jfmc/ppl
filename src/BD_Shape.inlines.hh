@@ -839,6 +839,34 @@ BD_Shape<T>::hash_code() const {
 template <typename T>
 template <typename Interval_Info>
 inline void
+BD_Shape<T>::generalized_refine_with_linear_form_inequality(
+	     const Linear_Form< Interval<T, Interval_Info> >& left,
+	     const Linear_Form< Interval<T, Interval_Info> >& right,
+             const Relation_Symbol relsym) {
+  switch (relsym) {
+  case EQUAL:
+    // TODO: see if we can handle this case more efficiently.
+    refine_with_linear_form_inequality(left, right);
+    refine_with_linear_form_inequality(right, left);
+    break;
+  case LESS_THAN:
+  case LESS_OR_EQUAL:
+    refine_with_linear_form_inequality(left, right);
+    break;
+  case GREATER_THAN:
+  case GREATER_OR_EQUAL:
+    refine_with_linear_form_inequality(right, left);
+    break;
+  case NOT_EQUAL:
+    break;
+  default:
+    throw std::runtime_error("PPL internal error");
+  }
+}
+
+template <typename T>
+template <typename Interval_Info>
+inline void
 BD_Shape<T>::refine_fp_interval_abstract_store(
 	            Box< Interval<T, Interval_Info> >& store) const {
 
