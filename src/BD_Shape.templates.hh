@@ -4491,7 +4491,7 @@ BD_Shape<T>
   // Expose all the interval constraints.
   shortest_path_closure_assign();
 
-  if (is_empty()) {
+  if (marked_empty()) {
     dest.set_empty();
     PPL_ASSERT(OK());
     return;
