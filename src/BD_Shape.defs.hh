@@ -1037,6 +1037,39 @@ public:
                    const Linear_Form< Interval<T, Interval_Info> >& left,
                    const Linear_Form< Interval<T, Interval_Info> >& right);
 
+  //! Applies to \p dest the interval constraints embedded in \p *this.
+  /*!
+    \param dest
+    The object to which the constraints will be added.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p dest.
+
+    The template type parameter U must provide the following methods.
+    \code
+      dimension_type space_dimension() const
+    \endcode
+    returns the space dimension of the object.
+    \code
+      void set_empty()
+    \endcode
+    sets the object to an empty object.
+    \code
+      bool restrict_lower(dimension_type dim, const T& lb)
+    \endcode
+    restricts the object by applying the lower bound \p lb to the space
+    dimension \p dim and returns <CODE>false</CODE> if and only if the
+    object becomes empty.
+    \code
+      bool restrict_upper(dimension_type dim, const T& ub)
+    \endcode
+    restricts the object by applying the upper bound \p ub to the space
+    dimension \p dim and returns <CODE>false</CODE> if and only if the
+    object becomes empty.
+  */
+  template <typename U>
+  void export_interval_constraints(U& dest) const;
+
   /*! \brief
     Computes the \ref Cylindrification "cylindrification" of \p *this with
     respect to space dimension \p var, assigning the result to \p *this.

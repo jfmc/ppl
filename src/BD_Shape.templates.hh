@@ -4479,6 +4479,44 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
 } // end of refine_with_linear_form_inequality
 
 template <typename T>
+template <typename U>
+void
+BD_Shape<T>
+::export_interval_constraints(U& dest) const {
+  const dimension_type space_dim = space_dimension();
+  if (space_dim > dest.space_dimension())
+    throw std::invalid_argument(
+               "BD_Shape<T>::export_interval_constraints");
+
+  // Expose all the interval constraints.
+  shortest_path_closure_assign();
+
+  if (is_empty()) {
+    dest.set_empty();
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  PPL_DIRTY_TEMP(N, tmp);
+  const DB_Row<N>& dbm_0 = dbm[0];
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    // Set the upper bound.
+    const N& u = dbm_0[i+1];
+    if (!is_plus_infinity(u))
+      dest.restrict_upper(i, u.raw_value());
+
+    // Set the lower bound.
+    const N& negated_l = dbm[i+1][0];
+    if (!is_plus_infinity(negated_l)) {
+      neg_assign_r(tmp, negated_l, ROUND_DOWN);
+      dest.restrict_lower(i, negated_l.raw_value());
+    }
+  }
+
+  PPL_ASSERT(OK());
+}
+
+template <typename T>
 template <typename Interval_Info>
 void
 BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
