@@ -232,6 +232,107 @@ PPL::Sparse_Row::normalize() {
   PPL_ASSERT(OK());
 }
 
+namespace {
+
+class sparse_row_linear_combine_helper_iterator {
+public:
+  sparse_row_linear_combine_helper_iterator(
+    const PPL::Sparse_Row& x, const PPL::Sparse_Row& y,
+    PPL::Coefficient_traits::const_reference coeff1_1,
+    PPL::Coefficient_traits::const_reference coeff2_1)
+    : coeff1(coeff1_1), coeff2(coeff2_1) {
+    i = x.begin();
+    i_end = x.end();
+    j = y.begin();
+    j_end = y.end();
+    update_current_data();
+  }
+
+  void operator++() {
+    if (from_i)
+      ++i;
+    if (from_j)
+      ++j;
+    update_current_data();
+  }
+
+  PPL::Coefficient_traits::const_reference operator*() {
+    return current_value;
+  }
+
+  PPL::dimension_type index() {
+    return current_index;
+  }
+
+private:
+  void update_current_data() {
+    if (i == i_end) {
+      if (j == j_end) {
+        return;
+      } else {
+        // i == i_end, j != j_end, so use j.
+        current_index = j.index();
+        current_value = *j;
+        current_value *= coeff2;
+        from_i = false;
+        from_j = true;
+      }
+    } else {
+      if (j == j_end) {
+        // i != i_end, j == j_end, so use i.
+        current_index = i.index();
+        current_value = *i;
+        current_value *= coeff1;
+        from_i = true;
+        from_j = false;
+      } else {
+        // i != i_end and j != j_end.
+        if (i.index() < j.index()) {
+          // i.index() < j.index(), so use i.
+          current_index = i.index();
+          current_value = *i;
+          current_value *= coeff1;
+          from_i = true;
+          from_j = false;
+        } else {
+          if (i.index() != j.index()) {
+            PPL_ASSERT(i.index() > j.index());
+            // i.index() > j.index(), so use j.
+            current_index = j.index();
+            current_value = *j;
+            current_value *= coeff2;
+            from_i = false;
+            from_j = true;
+          } else {
+            // i.index() == j.index(), so use both i and j.
+            current_index = i.index();
+            current_value = *i;
+            current_value *= coeff1;
+            PPL::add_mul_assign(current_value, *j, coeff2);
+            from_i = true;
+            from_j = true;
+          }
+        }
+      }
+    }
+    PPL_ASSERT(!from_i || i != i_end);
+    PPL_ASSERT(!from_j || j != j_end);
+  }
+
+  PPL::Coefficient_traits::const_reference coeff1;
+  PPL::Coefficient_traits::const_reference coeff2;
+  PPL::Sparse_Row::const_iterator i;
+  PPL::Sparse_Row::const_iterator i_end;
+  PPL::Sparse_Row::const_iterator j;
+  PPL::Sparse_Row::const_iterator j_end;
+  PPL::dimension_type current_index;
+  PPL::Coefficient current_value;
+  bool from_i;
+  bool from_j;
+};
+
+} // namespace
+
 void
 PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
                                 Coefficient_traits::const_reference coeff1,
@@ -239,7 +340,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
   PPL_ASSERT(coeff1 != 0);
   PPL_ASSERT(coeff2 != 0);
   PPL_ASSERT(this != &y);
+
   if (coeff1 == 1) {
+    // Optimize for this special case.
     iterator i = end();
     for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
       i = insert(i, j.index());
@@ -247,7 +350,45 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       if (*i == 0)
         i = reset(i);
     }
-  } else {
+    return;
+  }
+
+  dimension_type counter = 0;
+  // Count the number of elements that are stored in y but not in *this.
+  {
+    iterator i = begin();
+    iterator i_end = end();
+    const_iterator j = y.begin();
+    const_iterator j_end = y.end();
+    if (i != i_end) {
+      while (j != j_end) {
+        PPL_ASSERT(i != i_end);
+        if (i.index() == j.index()) {
+          ++i;
+          ++j;
+          if (i == i_end)
+            break;
+        } else
+          if (i.index() < j.index()) {
+            i = lower_bound(i, j.index());
+            if (i == i_end)
+              break;
+          } else {
+            PPL_ASSERT(i.index() > j.index());
+            ++counter;
+            ++j;
+          }
+      }
+    }
+    PPL_ASSERT(i == i_end || j == j_end);
+    for ( ; j != j_end; ++j)
+      ++counter;
+  }
+  // This condition is arbitrary. Changing it affects performance but not
+  // correctness. The values have been tuned using some ppl_lpsol benchmarks
+  // on 2 October 2010.
+  if (counter == 0 || counter < 7 * size() / 64) {
+    // Few insertions needed, do them directly.
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.
     // If we just stored a copy, that would be invalidated by the calls to
@@ -282,6 +423,27 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     for ( ; j != j_end; ++j) {
       i = insert(i, j.index(), *j);
       (*i) *= coeff2;
+    }
+  } else {
+    // Too many insertions needed, a full copy is probably faster than
+    // inserting all those new elements into *this.
+    CO_Tree new_tree(sparse_row_linear_combine_helper_iterator(*this, y,
+                                                                coeff1,
+                                                                coeff2),
+                     counter + tree.size());
+    std::swap(tree, new_tree);
+
+    // Now remove stored zeroes.
+    iterator i = begin();
+    // Note that end() can not be called only once, because reset()
+    // invalidates all iterators.
+    while (i != end()) {
+      if (*i == 0) {
+        const dimension_type old_index = i.index();
+        i = reset(i);
+        PPL_ASSERT(find(old_index) == end());
+      } else
+        ++i;
     }
   }
 }
