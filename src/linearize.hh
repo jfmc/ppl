@@ -600,8 +600,12 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     if (!linearize(*cast_arg, oracle, lf_store, result))
       return false;
     if (!is_less_precise_than(analyzed_format,
-                              cast_arg->type().floating_point_format()))
-      // We are casting to a more precise format. Do not add errors.
+                              cast_arg->type().floating_point_format()) ||
+        result == FP_Linear_Form(FP_Interval_Type(0)))
+      /*
+        We are casting to a more precise format or casting the 0 value.
+        Do not add errors.
+      */
       return true;
   }
   else {
@@ -609,8 +613,12 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     if (!oracle.get_integer_expr_value(*cast_arg, expr_value))
       return false;
     result = FP_Linear_Form(expr_value);
-    if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format))
-      // We are rounding to a less precise format. Do not add errors.
+    if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format) ||
+        result == FP_Linear_Form(FP_Interval_Type(0)))
+      /*
+        We are casting to a more precise format or casting the 0 value.
+        Do not add errors.
+      */
       return true;
   }
 
