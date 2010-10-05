@@ -604,6 +604,10 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
         result == FP_Linear_Form(FP_Interval_Type(0)) ||
         result == FP_Linear_Form(FP_Interval_Type(1)))
       /*
+        FIXME: find a general way to check if the casted constant
+        is exactly representable in the less precise format.
+      */
+      /*
         We are casting to a more precise format or casting
         a definitely safe value: do not add errors.
       */
@@ -617,6 +621,10 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format) ||
         result == FP_Linear_Form(FP_Interval_Type(0)) ||
         result == FP_Linear_Form(FP_Interval_Type(1)))
+      /*
+        FIXME: find a general way to check if the casted constant
+        is exactly representable in the less precise format.
+      */
       /*
         We are casting to a more precise format or casting
         a definitely safe value: do not add errors.
