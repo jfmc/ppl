@@ -601,10 +601,11 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
       return false;
     if (!is_less_precise_than(analyzed_format,
                               cast_arg->type().floating_point_format()) ||
-        result == FP_Linear_Form(FP_Interval_Type(0)))
+        result == FP_Linear_Form(FP_Interval_Type(0)) ||
+        result == FP_Linear_Form(FP_Interval_Type(1)))
       /*
-        We are casting to a more precise format or casting the 0 value.
-        Do not add errors.
+        We are casting to a more precise format or casting
+        a definitely safe value: do not add errors.
       */
       return true;
   }
@@ -614,10 +615,11 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
       return false;
     result = FP_Linear_Form(expr_value);
     if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format) ||
-        result == FP_Linear_Form(FP_Interval_Type(0)))
+        result == FP_Linear_Form(FP_Interval_Type(0)) ||
+        result == FP_Linear_Form(FP_Interval_Type(1)))
       /*
-        We are casting to a more precise format or casting the 0 value.
-        Do not add errors.
+        We are casting to a more precise format or casting
+        a definitely safe value: do not add errors.
       */
       return true;
   }
