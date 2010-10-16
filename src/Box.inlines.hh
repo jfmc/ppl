@@ -523,21 +523,23 @@ Box<ITV>::propagate_constraints(const Constraint_System& cs,
 template <typename ITV>
 inline void
 Box<ITV>::unconstrain(const Variable var) {
-  const dimension_type dim = var.id();
+  const dimension_type var_id = var.id();
   // Dimension-compatibility check.
-  if (dim > space_dimension())
-    throw_dimension_incompatible("unconstrain(var)", dim);
+  if (space_dimension() < var_id + 1)
+    throw_dimension_incompatible("unconstrain(var)", var_id + 1);
 
   // If the box is already empty, there is nothing left to do.
   if (marked_empty())
     return;
+
   // Here the box might still be empty (but we haven't detected it yet):
   // check emptiness of the interval for `var' before cylindrification.
-  ITV& seq_var = seq[dim];
+  ITV& seq_var = seq[var_id];
   if (seq_var.is_empty())
     set_empty();
   else
     seq_var.assign(UNIVERSE);
+
   PPL_ASSERT(OK());
 }
 

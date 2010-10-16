@@ -28,7 +28,8 @@ Bugfixes
 ========
 
 o  Corrected an efficiency bug in the C language interface function
-     int ppl_Linear_Expression_add_to_coefficient()
+
+     ppl_Linear_Expression_add_to_coefficient().
 
 o  Corrected a bug affecting the input routine of ppl_lpsol, whereby
    the inhomogeneous term of the objective function was disregarded.
@@ -47,6 +48,12 @@ o  Fixed a bug affecting
 
    whereby a wrong interval would be constructed if `s' denotes a number
    that can only be represented as an infinity.
+
+o  Fixed a bug whereby the argument of all the methods
+
+     unconstrain(Variable var)
+
+   was not checked correctly for space dimension compatibility.
 
 
 --------------------------------------------------------------------------

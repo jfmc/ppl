@@ -28,6 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iomanip>
 #include "assert.hh"
 
+#include "Sparse_Row.defs.hh"
+
 namespace PPL = Parma_Polyhedra_Library;
 
 void
@@ -81,6 +83,45 @@ PPL::Dense_Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
     }
   }
 #endif
+}
+
+PPL::Dense_Row::Dense_Row(const Sparse_Row& row)
+  : Dense_Row_Impl_Handler() {
+  construct(row.size(), row.size(), row.flags());
+  for (Sparse_Row::const_iterator
+       i = row.begin(), i_end = row.end(); i != i_end; ++i)
+    (*this)[i.index()] = *i;
+}
+
+PPL::Dense_Row&
+PPL::Dense_Row::operator=(const Sparse_Row& row) {
+  if (size() == row.size()) {
+    dimension_type index = 0;
+    Sparse_Row::const_iterator i = row.begin();
+    Sparse_Row::const_iterator i_end = row.end();
+    while (i != i_end) {
+      PPL_ASSERT(index <= i.index());
+      if (index == i.index()) {
+        (*this)[index] = *i;
+        ++i;
+      } else
+        (*this)[index] = 0;
+      ++index;
+    }
+    for ( ; index < size(); ++index)
+      (*this)[index] = 0;
+  } else {
+    {
+      // Resize to row.size() and set all elements to zero.
+      Dense_Row tmp(row.size(), row.size(), flags());
+      std::swap(*this, tmp);
+    }
+    for (Sparse_Row::const_iterator
+        i = row.begin(), i_end = row.end(); i != i_end; ++i)
+      (*this)[i.index()] = *i;
+  }
+
+  return *this;
 }
 
 void

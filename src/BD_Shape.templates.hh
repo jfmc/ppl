@@ -3390,9 +3390,9 @@ template <typename T>
 void
 BD_Shape<T>::unconstrain(const Variable var) {
   // Dimension-compatibility check.
-  const dimension_type dim = var.id();
-  if (space_dimension() < dim)
-    throw_dimension_incompatible("unconstrain(var)", dim);
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dimension() < var_space_dim)
+    throw_dimension_incompatible("unconstrain(var)", var_space_dim);
 
   // Shortest-path closure is necessary to detect emptiness
   // and all (possibly implicit) constraints.
@@ -3402,7 +3402,7 @@ BD_Shape<T>::unconstrain(const Variable var) {
   if (marked_empty())
     return;
 
-  forget_all_dbm_constraints(dim+1);
+  forget_all_dbm_constraints(var_space_dim);
   // Shortest-path closure is preserved, but not reduction.
   reset_shortest_path_reduced();
   PPL_ASSERT(OK());

@@ -1829,8 +1829,8 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
 void
 PPL::Polyhedron::unconstrain(const Variable var) {
   // Dimension-compatibility check.
-  if (space_dim < var.id())
-    throw_dimension_incompatible("unconstrain(var)", var.id());
+  if (space_dim < var.space_dimension())
+    throw_dimension_incompatible("unconstrain(var)", var.space_dimension());
 
   // Do something only if the polyhedron is non-empty.
   if (marked_empty()

@@ -131,6 +131,8 @@ public:
   */
   explicit Sparse_Row(const Dense_Row& row);
 
+  Sparse_Row& operator=(const Dense_Row& row);
+
   //! Resizes the row to size \p n.
   /*!
     \param n

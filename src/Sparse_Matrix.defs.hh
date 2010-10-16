@@ -54,8 +54,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Sparse_Matrix {
 
 public:
-  typedef Sparse_Row row_type;
-
   typedef std::vector<Sparse_Row>::iterator iterator;
   typedef std::vector<Sparse_Row>::const_iterator const_iterator;
 

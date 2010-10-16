@@ -200,7 +200,7 @@ PPL::Bit_Matrix::OK() const {
 #endif
 
   const Bit_Matrix& x = *this;
-  for (dimension_type i = num_rows(); i-- > 1; ) {
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     const Bit_Row& row = x[i];
     if (!row.OK())
       return false;

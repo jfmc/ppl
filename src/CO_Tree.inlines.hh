@@ -88,7 +88,12 @@ CO_Tree::~CO_Tree() {
 
 inline bool
 CO_Tree::empty() const {
-  return size == 0;
+  return size_ == 0;
+}
+
+inline dimension_type
+CO_Tree::size() const {
+  return size_;
 }
 
 inline void
@@ -167,7 +172,7 @@ CO_Tree::swap(CO_Tree& x) {
   std::swap(indexes, x.indexes);
   std::swap(data, x.data);
   std::swap(reserved_size, x.reserved_size);
-  std::swap(size, x.size);
+  std::swap(size_, x.size_);
   // Cached iterators have been invalidated by the swap, they must be
   // refreshed here.
   refresh_cached_iterators();
@@ -266,7 +271,7 @@ CO_Tree::insert_in_empty_tree(dimension_type key1,
   PPL_ASSERT(itr.index() == unused_index);
   itr.index() = key1;
   new (&(*itr)) data_type(data1);
-  size++;
+  size_++;
 
   PPL_ASSERT(OK());
 }

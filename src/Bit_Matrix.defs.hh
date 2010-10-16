@@ -106,6 +106,11 @@ public:
   void remove_trailing_rows(dimension_type n);
 
   //! Removes the last \p n columns.
+  /*!
+    \pre
+    The last \p n columns of the matrix are all made of zeros.
+    If such an assumption is not met, the behavior is undefined.
+  */
   void remove_trailing_columns(dimension_type n);
 
   //! Resizes the matrix copying the old contents.

@@ -210,6 +210,27 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  try {
+    TBox box(128);
+    // This is an invalid use of the method unconstrain(Variable):
+    // it is illegal to (try to) unconstrain a space dimension
+    // that is not in the polyhedron.
+    box.unconstrain(Variable(128));
+
+    // It is an error if the exception is not thrown.
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -222,4 +243,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

@@ -27,15 +27,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Iterator>
-CO_Tree::CO_Tree(Iterator i, Iterator i_end, dimension_type n) {
-
-  init(n);
+CO_Tree::CO_Tree(Iterator i, dimension_type n) {
 
   if (n == 0) {
-    PPL_ASSERT(i == i_end);
+    init(0);
     PPL_ASSERT(OK());
     return;
   }
+
+  dimension_type new_max_depth = integer_log2(n) + 1;
+  reserved_size = ((dimension_type)1 << new_max_depth) - 1;
+
+  if (is_greater_than_ratio(n, reserved_size, max_density_percent)
+      && reserved_size != 3)
+    reserved_size = reserved_size*2 + 1;
+
+  init(reserved_size);
 
   tree_iterator root(*this);
 
@@ -102,7 +109,6 @@ CO_Tree::CO_Tree(Iterator i, Iterator i_end, dimension_type n) {
     } else {
       if (top_n == 1) {
         PPL_ASSERT(root.index() == unused_index);
-        PPL_ASSERT(i != i_end);
         root.index() = i.index();
         new (&(*root)) data_type(*i);
         ++i;
@@ -120,8 +126,7 @@ CO_Tree::CO_Tree(Iterator i, Iterator i_end, dimension_type n) {
       }
     }
   }
-  size = n;
-  PPL_ASSERT(i == i_end);
+  size_ = n;
   PPL_ASSERT(OK());
 }
 

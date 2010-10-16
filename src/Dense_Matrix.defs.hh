@@ -44,8 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Dense_Matrix {
 public:
-  typedef Dense_Row row_type;
-
   //! Returns the maximum number of rows of a Dense_Matrix.
   static dimension_type max_num_rows();
 

@@ -28,16 +28,16 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
 PPL::CO_Tree::external_memory_in_bytes() const {
-  dimension_type size = 0;
+  dimension_type memory_size = 0;
   if (reserved_size != 0) {
     // Add the size of data[]
-    size += (reserved_size + 1)*sizeof(data[0]);
+    memory_size += (reserved_size + 1)*sizeof(data[0]);
     // Add the size of indexes[]
-    size += (reserved_size + 2)*sizeof(indexes[0]);
+    memory_size += (reserved_size + 2)*sizeof(indexes[0]);
     for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
-      size += PPL::external_memory_in_bytes(*itr);
+      memory_size += PPL::external_memory_in_bytes(*itr);
   }
-  return size;
+  return memory_size;
 }
 
 PPL::CO_Tree::iterator
@@ -367,7 +367,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
     return itr;
   }
 
-  if (is_greater_than_ratio(size + 1, reserved_size, max_density_percent)) {
+  if (is_greater_than_ratio(size_ + 1, reserved_size, max_density_percent)) {
 
     rebuild_bigger_tree();
 
@@ -378,10 +378,10 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
     PPL_ASSERT(itr.index() != key1);
   }
 
-  PPL_ASSERT(!is_greater_than_ratio(size + 1, reserved_size,
+  PPL_ASSERT(!is_greater_than_ratio(size_ + 1, reserved_size,
                                     max_density_percent));
 
-  size++;
+  size_++;
 
   if (!itr.is_leaf()) {
     if (key1 < itr.index())
@@ -410,21 +410,21 @@ PPL::CO_Tree::iterator
 PPL::CO_Tree::erase(tree_iterator itr) {
   PPL_ASSERT(itr.index() != unused_index);
 
-  PPL_ASSERT(size != 0);
+  PPL_ASSERT(size_ != 0);
 
-  if (size == 1) {
+  if (size_ == 1) {
     // Deleting the only element of this tree, now it is empty.
     clear();
     return end();
   }
 
-  if (is_less_than_ratio(size - 1, reserved_size, min_density_percent)
-      && !is_greater_than_ratio(size - 1, reserved_size/2,
+  if (is_less_than_ratio(size_ - 1, reserved_size, min_density_percent)
+      && !is_greater_than_ratio(size_ - 1, reserved_size/2,
                                 max_density_percent)) {
 
     const dimension_type key = itr.index();
 
-    PPL_ASSERT(!is_greater_than_ratio(size, reserved_size,
+    PPL_ASSERT(!is_greater_than_ratio(size_, reserved_size,
                                       max_density_percent));
 
     rebuild_smaller_tree();
@@ -435,10 +435,10 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   }
 
 #ifndef NDEBUG
-  if (size > 1)
-    PPL_ASSERT(!is_less_than_ratio(size - 1, reserved_size,
+  if (size_ > 1)
+    PPL_ASSERT(!is_less_than_ratio(size_ - 1, reserved_size,
                                    min_density_percent)
-               || is_greater_than_ratio(size - 1, reserved_size/2,
+               || is_greater_than_ratio(size_ - 1, reserved_size/2,
                                         max_density_percent));
 #endif
 
@@ -473,7 +473,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   PPL_ASSERT(itr.index() != unused_index);
   itr.index() = unused_index;
-  --size;
+  --size_;
 
   PPL_ASSERT(OK());
 
@@ -509,13 +509,13 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
   if (reserved_size1 == 0) {
     indexes = NULL;
     data = NULL;
-    size = 0;
+    size_ = 0;
     reserved_size = 0;
     max_depth = 0;
   } else {
     max_depth = integer_log2(reserved_size1) + 1;
 
-    size = 0;
+    size_ = 0;
     reserved_size = ((dimension_type)1 << max_depth) - 1;
     indexes = new dimension_type[reserved_size + 2];
     try {
@@ -556,7 +556,7 @@ PPL::CO_Tree::destroy() {
 bool
 PPL::CO_Tree::structure_OK() const {
 
-  if (size > reserved_size)
+  if (size_ > reserved_size)
     return false;
 
   if (reserved_size == 0) {
@@ -585,7 +585,7 @@ PPL::CO_Tree::structure_OK() const {
   if (max_depth == 0)
     return false;
 
-  if (size == 0) {
+  if (size_ == 0) {
 
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
@@ -598,13 +598,13 @@ PPL::CO_Tree::structure_OK() const {
     // but it would add much code duplication without a real need.
     tree_iterator itr(*const_cast<CO_Tree*>(this));
     dimension_type real_size = count_used_in_subtree(itr);
-    if (real_size != size)
+    if (real_size != size_)
       // There are \p real_size elements in the tree that are reachable by the
       // root, but size is \p size.
       return false;
   }
 
-  if (size != 0) {
+  if (size_ != 0) {
     const_iterator itr = begin();
     const_iterator itr_end = end();
 
@@ -639,18 +639,18 @@ PPL::CO_Tree::OK() const {
     for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
       ++real_size;
 
-    if (real_size != size)
+    if (real_size != size_)
       // There are \p real_size elements in the tree, but size is \p size.
       return false;
   }
 
   if (reserved_size > 0) {
-    if (is_greater_than_ratio(size, reserved_size, max_density_percent)
+    if (is_greater_than_ratio(size_, reserved_size, max_density_percent)
         && reserved_size != 3)
       // Found too high density.
       return false;
-    if (is_less_than_ratio(size, reserved_size, min_density_percent)
-        && !is_greater_than_ratio(size, reserved_size/2, max_density_percent))
+    if (is_less_than_ratio(size_, reserved_size, min_density_percent)
+        && !is_greater_than_ratio(size_, reserved_size/2, max_density_percent))
       // Found too low density
       return false;
   }
@@ -985,8 +985,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
 
 void
 PPL::CO_Tree::move_data_from(CO_Tree& tree) {
-  PPL_ASSERT(size == 0);
-  if (tree.size == 0)
+  PPL_ASSERT(size_ == 0);
+  if (tree.size_ == 0)
     return;
 
   tree_iterator root(*this);
@@ -1016,7 +1016,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   //   operation is 2.
   // * Visit the current tree (with size n), if operation is 3.
 
-  stack[0].first = tree.size;
+  stack[0].first = tree.size_;
   stack[0].second = 3;
   ++stack_first_empty;
 
@@ -1080,8 +1080,8 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
       }
     }
   }
-  size = tree.size;
-  tree.size = 0;
+  size_ = tree.size_;
+  tree.size_ = 0;
   PPL_ASSERT(tree.structure_OK());
   PPL_ASSERT(structure_OK());
 }
@@ -1089,11 +1089,11 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 void
 PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 
-  PPL_ASSERT(size == 0);
+  PPL_ASSERT(size_ == 0);
   PPL_ASSERT(reserved_size == x.reserved_size);
   PPL_ASSERT(structure_OK());
 
-  if (x.size == 0) {
+  if (x.size_ == 0) {
     PPL_ASSERT(OK());
     return;
   }
@@ -1106,7 +1106,7 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
       PPL_ASSERT(indexes[i] == unused_index);
     }
 
-  size = x.size;
+  size_ = x.size_;
   PPL_ASSERT(OK());
 }
 

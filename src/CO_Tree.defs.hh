@@ -74,8 +74,8 @@ namespace Parma_Polyhedra_Library {
   available caches.
 
   Assuming \p n is the number of elements in the tree and \p B is the number
-  of &lt;dimension_type,Coefficient&gt; pairs that fit in cache, the time and
-  cache misses complexities are the following:
+  of &lt;dimension_type,Coefficient&gt; pairs that fit in a cache line, the
+  time and cache misses complexities are the following:
 
   - Insertions/Queries/Deletions: \f$O(\log^2 n)\f$ time,
                                   \f$O(\log \frac{n}{B}))\f$ cache misses.
@@ -482,23 +482,20 @@ public:
     \param i
     An iterator that points to the first element of the sequence.
 
-    \param i_end
-    An iterator that points to the last element of the sequence.
-
     \param n
     The number of elements in the [i, i_end) sequence.
 
-    i and i_end must be input iterators on a sequence of data_type elements,
+    i must be an input iterator on a sequence of data_type elements,
     sorted by index.
-    They must have an index() that returns the index with which the current
-    element must be inserted.
+    Objects of Iterator type must have an index() method that returns the
+    index with which the element pointed to by the iterator must be inserted.
 
     This constructor takes \f$O(n)\f$ time, so it is more efficient than
     the construction of an empty tree followed by n insertions, that would
     take \f$O(n*\log^2 n)\f$ time.
   */
   template <typename Iterator>
-  CO_Tree(Iterator i, Iterator i_end, dimension_type n);
+  CO_Tree(Iterator i, dimension_type n);
 
   //! The assignment operator.
   /*!
@@ -526,6 +523,12 @@ public:
     This method takes \f$O(1)\f$ time.
   */
   bool empty() const;
+
+  //! Returns the number of elements stored in the tree.
+  /*!
+    This method takes \f$O(1)\f$ time.
+  */
+  dimension_type size() const;
 
   //! Dumps the tree to stdout, for debugging purposes.
   void dump_tree() const;
@@ -1290,7 +1293,7 @@ private:
   dimension_type reserved_size;
 
   //! The number of values stored in the tree.
-  dimension_type size;
+  dimension_type size_;
 };
 
 class CO_Tree::tree_iterator {
