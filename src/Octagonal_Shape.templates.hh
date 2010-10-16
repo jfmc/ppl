@@ -3814,9 +3814,9 @@ template <typename T>
 void
 Octagonal_Shape<T>::unconstrain(const Variable var) {
   // Dimension-compatibility check.
-  const dimension_type dim = var.id();
-  if (space_dimension() < dim)
-    throw_dimension_incompatible("unconstrain(var)", dim);
+  const dimension_type var_id = var.id();
+  if (space_dimension() < var_id + 1)
+    throw_dimension_incompatible("unconstrain(var)", var_id + 1);
 
   // Enforce strong closure for precision.
   strong_closure_assign();
@@ -3825,7 +3825,7 @@ Octagonal_Shape<T>::unconstrain(const Variable var) {
   if (marked_empty())
     return;
 
-  forget_all_octagonal_constraints(dim);
+  forget_all_octagonal_constraints(var_id);
   // Strong closure is preserved.
   PPL_ASSERT(OK());
 }
@@ -4431,7 +4431,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // `var' should be one of the dimensions of the octagon.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_image(v, e, d)", var.id()+1);
+    throw_dimension_incompatible("affine_image(v, e, d)", var_id + 1);
 
   strong_closure_assign();
   // The image of an empty octagon is empty too.
@@ -4840,7 +4840,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   // `var' should be one of the dimensions of the octagon.
   dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_preimage(v, e, d)", var.id()+1);
+    throw_dimension_incompatible("affine_preimage(v, e, d)", var_id + 1);
 
   strong_closure_assign();
   // The image of an empty octagon is empty too.
@@ -4950,7 +4950,7 @@ Octagonal_Shape<T>
   dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
-                                 var.id()+1);
+                                 var_id + 1);
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
@@ -5620,7 +5620,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
-                                 var.id()+1);
+                                 var_id + 1);
 
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.
@@ -5918,7 +5918,7 @@ Octagonal_Shape<T>
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
-                                 var.id()+1);
+                                 var_id + 1);
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
@@ -6150,7 +6150,7 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
-                                 var.id()+1);
+                                 var_id + 1);
 
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.

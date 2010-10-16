@@ -1316,8 +1316,8 @@ PPL::Grid::refine_with_constraints(const Constraint_System& cs) {
 void
 PPL::Grid::unconstrain(const Variable var) {
   // Dimension-compatibility check.
-  if (space_dim < var.id())
-    throw_dimension_incompatible("unconstrain(var)", var.id());
+  if (space_dim < var.space_dimension())
+    throw_dimension_incompatible("unconstrain(var)", var.space_dimension());
 
   // Do something only if the grid is non-empty.
   if (marked_empty()
