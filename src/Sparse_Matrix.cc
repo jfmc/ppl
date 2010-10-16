@@ -170,3 +170,20 @@ PPL::Sparse_Matrix::OK() const {
       return false;
   return true;
 }
+
+bool
+PPL::operator==(const Sparse_Matrix& x, const Sparse_Matrix& y) {
+  if (x.num_rows() != y.num_rows())
+    return false;
+  if (x.num_columns() != y.num_columns())
+    return false;
+  for (dimension_type i = x.num_rows(); i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+  return true;
+}
+
+bool
+PPL::operator!=(const Sparse_Matrix& x, const Sparse_Matrix& y) {
+  return !(x == y);
+}
