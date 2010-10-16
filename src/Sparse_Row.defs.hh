@@ -133,7 +133,7 @@ public:
 
   Sparse_Row& operator=(const Dense_Row& row);
 
-  //! Resizes the row to size \p n.
+  //! Resizes the row to size \p n and sets the flags to \p flags.
   /*!
     \param n
     The new size for the row.
@@ -145,9 +145,9 @@ public:
     row and removing the trailing k elements.
     It takes \f$O(1)\f$ time when enlarging the row.
   */
-  void construct(dimension_type n);
+  void construct(dimension_type n, Flags flags = Flags());
 
-  //! Resizes the row to size \p n.
+  //! Resizes the row to size \p n and sets the flags to \p flags.
   /*!
     \param n
     The new size for the row.
@@ -162,7 +162,8 @@ public:
     row and removing the trailing k elements.
     It takes \f$O(1)\f$ time when enlarging the row.
   */
-  void construct(dimension_type n, dimension_type capacity);
+  void construct(dimension_type n, dimension_type capacity,
+                 Flags flags = Flags());
 
   //! Swaps *this and x.
   /*!
@@ -189,6 +190,18 @@ public:
     It takes \f$O(1)\f$ time when enlarging the row.
   */
   void resize(dimension_type n);
+
+  //! Resizes the row to size \p n.
+  /*!
+    \param n
+    The new size for the row.
+
+    This method, with this signature, is needed for compatibility with
+    Dense_Row.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  void expand_within_capacity(dimension_type new_size);
 
   //! Resizes the row to size \p n.
   /*!
@@ -279,6 +292,9 @@ public:
     This method takes \f$O(1)\f$ time.
   */
   const const_iterator& cend() const;
+
+  //! Returns the size() of the largest possible Sparse_Row.
+  static dimension_type max_size();
 
   //! Returns the flags associated with this row.
   const Flags& flags() const;
@@ -770,10 +786,47 @@ public:
   */
   memory_size_type external_memory_in_bytes() const;
 
-private:
+  //! Returns the size in bytes of the memory managed by \p *this.
+  /*!
+    This method is provided for compatibility with Dense_Row.
+
+    This method takes \f$O(n)\f$ time.
+
+    \param capacity
+    This parameter is ignored.
+  */
+  memory_size_type external_memory_in_bytes(dimension_type capacity) const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  /*!
+    This method takes \f$O(n)\f$ time.
+  */
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  /*!
+    This method is provided for compatibility with Dense_Row.
+
+    This method takes \f$O(n)\f$ time.
+
+    \param capacity
+    This parameter is ignored.
+  */
+  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
+
   //! Checks the invariant.
   bool OK() const;
 
+  //! Checks the invariant.
+  /*!
+    This method is provided for compatibility with Dense_Row.
+
+    \param capacity
+    This parameter is ignored.
+  */
+  bool OK(dimension_type capacity) const;
+
+private:
   //! The tree used to store the elements.
   CO_Tree tree;
 
@@ -799,6 +852,18 @@ void swap(Parma_Polyhedra_Library::Sparse_Row& x,
           Parma_Polyhedra_Library::Sparse_Row& y);
 
 } // namespace std
+
+namespace Parma_Polyhedra_Library {
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
+/*! \relates Sparse_Row */
+bool operator==(const Sparse_Row& x, const Sparse_Row& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
+/*! \relates Sparse_Row */
+bool operator!=(const Sparse_Row& x, const Sparse_Row& y);
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Sparse_Row.templates.hh"
 #include "Sparse_Row.inlines.hh"

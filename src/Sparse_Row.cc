@@ -503,3 +503,49 @@ PPL::Sparse_Row::OK() const {
   --last;
   return (last.index() < size_);
 }
+
+bool
+PPL::Sparse_Row::OK(dimension_type /* capacity */) const {
+  return OK();
+}
+
+bool
+PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
+  if (x.size() != y.size())
+    return false;
+  Sparse_Row::const_iterator i = x.begin();
+  Sparse_Row::const_iterator i_end = x.end();
+  Sparse_Row::const_iterator j = y.begin();
+  Sparse_Row::const_iterator j_end = y.end();
+  while (i != i_end && j != j_end) {
+    if (i.index() == j.index()) {
+      if (*i != *j)
+        return false;
+      ++i;
+      ++j;
+    } else {
+      if (i.index() < j.index()) {
+        if (*i != 0)
+          return false;
+        ++i;
+      } else {
+        PPL_ASSERT(i.index() > j.index());
+        if (*j != 0)
+          return false;
+        ++j;
+      }
+    }
+  }
+  for ( ; i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  for ( ; j != j_end; ++j)
+    if (*j != 0)
+      return false;
+  return true;
+}
+
+bool
+PPL::operator!=(const Sparse_Row& x, const Sparse_Row& y) {
+  return !(x == y);
+}
