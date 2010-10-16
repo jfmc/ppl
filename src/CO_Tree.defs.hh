@@ -530,6 +530,9 @@ public:
   */
   dimension_type size() const;
 
+  //! Returns the size() of the largest possible CO_Tree.
+  static dimension_type max_size();
+
   //! Dumps the tree to stdout, for debugging purposes.
   void dump_tree() const;
 
