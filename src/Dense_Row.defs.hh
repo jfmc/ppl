@@ -179,13 +179,6 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
 
-  //! Assigns the implementation of \p y to \p *this.
-  /*!
-    To be used with extra care, since it may easily cause memory leaks
-    or undefined behavior.
-  */
-  void assign(Dense_Row& y);
-
   /*! \brief
     Allocates memory for a default constructed Dense_Row object, setting
     flags to \p f and allowing for \p capacity coefficients at most.

@@ -283,14 +283,6 @@ Dense_Row::swap(Dense_Row& y) {
 #endif
 }
 
-inline void
-Dense_Row::assign(Dense_Row& y) {
-  impl = y.impl;
-#if PPL_DENSE_ROW_EXTRA_DEBUG
-  capacity_ = y.capacity_;
-#endif
-}
-
 inline Dense_Row&
 Dense_Row::operator=(const Dense_Row& y) {
   // Copy-construct `tmp' from `y'.
