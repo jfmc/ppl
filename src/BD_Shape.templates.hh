@@ -4510,7 +4510,7 @@ BD_Shape<T>
     const N& negated_l = dbm[i+1][0];
     if (!is_plus_infinity(negated_l)) {
       neg_assign_r(tmp, negated_l, ROUND_DOWN);
-      if (!dest.restrict_lower(i, negated_l.raw_value()))
+      if (!dest.restrict_lower(i, tmp.raw_value()))
         return;
     }
   }
