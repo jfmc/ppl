@@ -4494,75 +4494,53 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       // Case 2: expr = w_coeff*w + b, with w_coeff = +/- denominator.
       if (w_id == var_id) {
         // Here `expr' is of the form: +/- denominator * v + b.
-        if (w_coeff == denominator) {
-          if (b == 0)
-            // The transformation is the identity function.
-            return;
-          else {
-            // Translate all the constraints on `var' adding or
-            // subtracting the value `b/denominator'.
-            PPL_DIRTY_TEMP(N, d);
-            div_round_up(d, b, denominator);
-            PPL_DIRTY_TEMP(N, minus_d);
-            div_round_up(minus_d, b, minus_den);
-            const Row_Iterator m_begin = matrix.row_begin();
-            const Row_Iterator m_end = matrix.row_end();
-            Row_Iterator m_iter = m_begin + n_var;
-            Row_Reference m_v = *m_iter;
-            ++m_iter;
-            Row_Reference m_cv = *m_iter;
-            ++m_iter;
-            // NOTE: delay update of unary constraints on `var'.
-            for (dimension_type j = n_var; j-- > 0; ) {
-              N& m_v_j = m_v[j];
-              add_assign_r(m_v_j, m_v_j, minus_d, ROUND_UP);
-              N& m_cv_j = m_cv[j];
-              add_assign_r(m_cv_j, m_cv_j, d, ROUND_UP);
-            }
-            for ( ; m_iter != m_end; ++m_iter) {
-              Row_Reference m_i = *m_iter;
-              N& m_i_v = m_i[n_var];
-              add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
-              N& m_i_cv = m_i[n_var+1];
-              add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
-            }
-            // Now update unary constraints on var.
-            mul_2exp_assign_r(d, d, 1, ROUND_UP);
-            N& m_cv_v = m_cv[n_var];
-            add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
-            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_UP);
-            N& m_v_cv = m_v[n_var+1];
-            add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
-           }
-          reset_strongly_closed();
+        const bool sign_symmetry = (w_coeff != denominator);
+        if (!sign_symmetry && b == 0)
+          // The transformation is the identity function.
+          return;
+        // Translate all the constraints on `var' adding or
+        // subtracting the value `b/denominator'.
+        PPL_DIRTY_TEMP(N, d);
+        div_round_up(d, b, denominator);
+        PPL_DIRTY_TEMP(N, minus_d);
+        div_round_up(minus_d, b, minus_den);
+        if (sign_symmetry)
+          std::swap(d, minus_d);
+        const Row_Iterator m_begin = matrix.row_begin();
+        const Row_Iterator m_end = matrix.row_end();
+        Row_Iterator m_iter = m_begin + n_var;
+        Row_Reference m_v = *m_iter;
+        ++m_iter;
+        Row_Reference m_cv = *m_iter;
+        ++m_iter;
+        // NOTE: delay update of unary constraints on `var'.
+        for (dimension_type j = n_var; j-- > 0; ) {
+          N& m_v_j = m_v[j];
+          add_assign_r(m_v_j, m_v_j, minus_d, ROUND_UP);
+          N& m_cv_j = m_cv[j];
+          add_assign_r(m_cv_j, m_cv_j, d, ROUND_UP);
+          if (sign_symmetry)
+            std::swap(m_v_j, m_cv_j);
         }
-        else {
-          // Here `w_coeff == -denominator'.
-          // Remove the binary constraints on `var'.
-          forget_binary_octagonal_constraints(var_id);
-          const Row_Iterator m_begin = matrix.row_begin();
-          Row_Iterator m_iter = m_begin + n_var;
-          N& m_v_cv = (*m_iter)[n_var+1];
-          ++m_iter;
-          N& m_cv_v = (*m_iter)[n_var];
-          // Swap the unary constraints on `var'.
-          std::swap(m_v_cv, m_cv_v);
-          // Strong closure is not preserved.
-          reset_strongly_closed();
-          if (b != 0) {
-            // Translate the unary constraints on `var',
-            // adding or subtracting the value `b/denominator'.
-            PPL_DIRTY_TEMP(N, d);
-            div_round_up(d, b, denominator);
-            mul_2exp_assign_r(d, d, 1, ROUND_UP);
-            add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
-            PPL_DIRTY_TEMP(N, minus_d);
-            div_round_up(minus_d, b, minus_den);
-            mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_UP);
-            add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
-          }
-          incremental_strong_closure_assign(var);
-         }
+        for ( ; m_iter != m_end; ++m_iter) {
+          Row_Reference m_i = *m_iter;
+          N& m_i_v = m_i[n_var];
+          add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
+          N& m_i_cv = m_i[n_var+1];
+          add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
+          if (sign_symmetry)
+            std::swap(m_i_v, m_i_cv);
+        }
+        // Now update unary constraints on var.
+        mul_2exp_assign_r(d, d, 1, ROUND_UP);
+        N& m_cv_v = m_cv[n_var];
+        add_assign_r(m_cv_v, m_cv_v, d, ROUND_UP);
+        mul_2exp_assign_r(minus_d, minus_d, 1, ROUND_UP);
+        N& m_v_cv = m_v[n_var+1];
+        add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
+        if (sign_symmetry)
+          std::swap(m_cv_v, m_v_cv);
+        // Note: strong closure is preserved.
       }
       else {
         // Here `w != var', so that `expr' is of the form
@@ -4571,7 +4549,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         forget_all_octagonal_constraints(var_id);
         const dimension_type n_w = 2*w_id;
         // Add the new constraint `var - w = b/denominator'.
-        if (w_coeff == denominator)
+        if (w_coeff == denominator) {
           if (var_id < w_id) {
             add_octagonal_constraint(n_w, n_var, b, denominator);
             add_octagonal_constraint(n_w+1, n_var+1, b, minus_den);
@@ -4580,7 +4558,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             add_octagonal_constraint(n_var+1, n_w+1, b, denominator);
             add_octagonal_constraint(n_var, n_w, b, minus_den);
           }
-        else
+        }
+        else {
           // Add the new constraint `var + w = b/denominator'.
           if (var_id < w_id) {
             add_octagonal_constraint(n_w+1, n_var, b, denominator);
@@ -4590,6 +4569,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             add_octagonal_constraint(n_var+1, n_w, b, denominator);
             add_octagonal_constraint(n_var, n_w+1, b, minus_den);
           }
+        }
         incremental_strong_closure_assign(var);
       }
       PPL_ASSERT(OK());
