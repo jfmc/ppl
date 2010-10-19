@@ -96,6 +96,11 @@ CO_Tree::size() const {
   return size_;
 }
 
+inline dimension_type
+CO_Tree::max_size() {
+  return (-dimension_type(1))/100;
+}
+
 inline void
 CO_Tree::dump_tree() const {
   if (empty())

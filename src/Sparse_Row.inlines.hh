@@ -55,12 +55,15 @@ Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
 }
 
 inline void
-Sparse_Row::construct(dimension_type sz) {
+Sparse_Row::construct(dimension_type sz, Flags flags1) {
+  flags() = flags1;
   resize(sz);
 }
 
 inline void
-Sparse_Row::construct(dimension_type sz, dimension_type /* capacity */) {
+Sparse_Row::construct(dimension_type sz, dimension_type /* capacity */,
+                      Flags flags1) {
+  flags() = flags1;
   resize(sz);
 }
 
@@ -88,6 +91,13 @@ Sparse_Row::resize(dimension_type n) {
 
 inline void
 Sparse_Row::shrink(dimension_type n) {
+  PPL_ASSERT(size() >= n);
+  resize(n);
+}
+
+inline void
+Sparse_Row::expand_within_capacity(dimension_type n) {
+  PPL_ASSERT(size() <= n);
   resize(n);
 }
 
@@ -135,6 +145,11 @@ Sparse_Row::cbegin() const {
 inline const Sparse_Row::const_iterator&
 Sparse_Row::cend() const {
   return tree.cend();
+}
+
+inline dimension_type
+Sparse_Row::max_size() {
+  return CO_Tree::max_size();
 }
 
 inline const Sparse_Row::Flags&
@@ -343,6 +358,21 @@ Sparse_Row::reset(dimension_type i) {
 inline memory_size_type
 Sparse_Row::external_memory_in_bytes() const {
   return tree.external_memory_in_bytes();
+}
+
+inline memory_size_type
+Sparse_Row::external_memory_in_bytes(dimension_type /* capacity */) const {
+  return external_memory_in_bytes();
+}
+
+inline memory_size_type
+Sparse_Row::total_memory_in_bytes() const {
+  return external_memory_in_bytes() + sizeof(*this);
+}
+
+inline memory_size_type
+Sparse_Row::total_memory_in_bytes(dimension_type /* capacity */) const {
+  return total_memory_in_bytes();
 }
 
 } // namespace Parma_Polyhedra_Library

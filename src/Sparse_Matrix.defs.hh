@@ -59,6 +59,12 @@ public:
 
   typedef Sparse_Row::Flags Flags;
 
+  //! Returns the maximum number of rows of a Sparse_Matrix.
+  static dimension_type max_num_rows();
+
+  //! Returns the maximum number of columns of a Sparse_Matrix.
+  static dimension_type max_num_columns();
+
   /*!
     \brief Constructs a square matrix with the given size, filled with
            unstored zeroes.
@@ -115,6 +121,17 @@ public:
   */
   dimension_type num_columns() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
+  /*!
+    \note
+    The unusual naming for this method is \em intentional:
+    we do not want it to be named \c empty because this would cause
+    an error prone name clash with the corresponding methods in derived
+    classes Constraint_System and Congruence_System (which have a
+    different semantics).
+  */
+  bool has_no_rows() const;
+
   //! Equivalent to resize(n, n, row_flags).
   void resize(dimension_type n, Flags row_flags = Flags());
 
@@ -151,6 +168,26 @@ public:
   */
   void resize(dimension_type num_rows, dimension_type num_columns,
               Flags row_flags = Flags());
+
+  //! Resizes the matrix without worrying about the old contents.
+  /*!
+    \param new_n_rows
+    The number of rows of the resized matrix;
+
+    \param new_n_columns
+    The number of columns of the resized matrix.
+
+    \param row_flags
+    The flags of the rows eventually added to the matrix.
+
+    The matrix is expanded to the specified dimensions avoiding
+    reallocation whenever possible.
+    The contents of the original matrix is lost.
+
+    This method is provided for compatibility with Dense_Matrix.
+  */
+  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns,
+                      Flags row_flags);
 
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
@@ -206,14 +243,30 @@ public:
   */
   void add_row(const Sparse_Row& x);
 
+  //! Adds the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be added: it must have the same size and capacity as
+    \p *this. It is not declared <CODE>const</CODE> because its
+    data-structures will recycled to build the new matrix row.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\genfrac{(}{)}{0pt}{}{M}{y}\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+
+    This method is provided for compatibility with Dense_Matrix.
+  */
+  void add_recycled_row(Sparse_Row& y);
+
   /*! \brief
     Removes from the matrix the last \p n rows.
 
     \param n
     The number of row that will be removed.
 
-    Provided for compatibility with Dense_Row.
-    It is equivalent to resize(num_rows() - n, num_columns()).
+    Provided for compatibility with Dense_Matrix.
+    It is equivalent to num_rows() - n, num_columns()).
 
     This method takes \f$O(n+k)\f$ amortized time, where k is the total number
     of elements stored in the removed rows and n is the number of removed
@@ -421,6 +474,22 @@ void swap(Parma_Polyhedra_Library::Sparse_Matrix& x,
           Parma_Polyhedra_Library::Sparse_Matrix& y);
 
 } // namespace std
+
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
+/*! \relates Sparse_Matrix */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool operator==(const Sparse_Matrix& x, const Sparse_Matrix& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
+/*! \relates Sparse_Matrix */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool operator!=(const Sparse_Matrix& x, const Sparse_Matrix& y);
+
+} // namespace Parma_Polyhedra_Library
 
 
 #include "Sparse_Matrix.inlines.hh"

@@ -25,6 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+Sparse_Matrix::max_num_rows() {
+  return std::vector<Sparse_Row>().max_size();
+}
+
+inline dimension_type
+Sparse_Matrix::max_num_columns() {
+  return Sparse_Row::max_size();
+}
+
 inline void
 Sparse_Matrix::swap(Sparse_Matrix& x) {
   std::swap(rows, x.rows);
@@ -41,9 +51,22 @@ Sparse_Matrix::num_columns() const {
   return num_columns_;
 }
 
+inline bool
+Sparse_Matrix::has_no_rows() const {
+  return num_rows() == 0;
+}
+
 inline void
 Sparse_Matrix::resize(dimension_type n, Flags row_flags) {
   resize(n, n, row_flags);
+}
+
+inline void
+Sparse_Matrix::resize_no_copy(dimension_type new_n_rows,
+                              dimension_type new_n_columns,
+                              Flags row_flags) {
+  clear();
+  resize(new_n_rows, new_n_columns, row_flags);
 }
 
 inline void
@@ -64,6 +87,13 @@ Sparse_Matrix::add_row(const Sparse_Row& x) {
   add_zero_rows(1, Flags());
   // Now x may have been invalidated, if it was a row of this matrix.
   rows.back().swap(row);
+  PPL_ASSERT(OK());
+}
+
+inline void
+Sparse_Matrix::add_recycled_row(Sparse_Row& x) {
+  add_zero_rows(1, Flags());
+  rows.back().swap(x);
   PPL_ASSERT(OK());
 }
 
