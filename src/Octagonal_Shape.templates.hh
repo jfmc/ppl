@@ -5281,68 +5281,49 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
     if (is_w_coeff_one || is_w_coeff_minus_one) {
       // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1;+/-1].
       if (w_id == var_id) {
-        // Here `lf' is of the form: [+/-1;+/-1]* v + b.
-        if (is_w_coeff_one) {
-          if (is_b_zero)
-            // The transformation is the identity function.
-            return;
-          else {
-            // Translate all the constraints on `var' by adding the value
-            // `b_ub' or subtracting the value `b_lb'.
-            const Row_Iterator m_begin = matrix.row_begin();
-            const Row_Iterator m_end = matrix.row_end();
-            Row_Iterator m_iter = m_begin + n_var;
-            Row_Reference m_v = *m_iter;
-            ++m_iter;
-            Row_Reference m_cv = *m_iter;
-            ++m_iter;
-            // NOTE: delay update of unary constraints on `var'
-            for (dimension_type j = n_var; j-- > 0; ) {
-              N& m_v_j = m_v[j];
-              add_assign_r(m_v_j, m_v_j, b_mlb, ROUND_UP);
-              N& m_cv_j = m_cv[j];
-              add_assign_r(m_cv_j, m_cv_j, b_ub, ROUND_UP);
-            }
-            for ( ; m_iter != m_end; ++m_iter) {
-              Row_Reference m_i = *m_iter;
-              N& m_i_v = m_i[n_var];
-              add_assign_r(m_i_v, m_i_v, b_ub, ROUND_UP);
-              N& m_i_cv = m_i[n_var+1];
-              add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
-            }
-            // Now update unary constraints on var.
-            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
-            N& m_cv_v = m_cv[n_var];
-            add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
-            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
-            N& m_v_cv = m_v[n_var+1];
-            add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
-            reset_strongly_closed();
-          }
+        // Here lf = w_coeff*v + b, with w_coeff = [+/-1;+/-1].
+        if (is_w_coeff_one && is_b_zero)
+          // The transformation is the identity function.
+          return;
+        // Translate all the constraints on `var' by adding the value
+        // `b_ub' or subtracting the value `b_lb'.
+        if (is_w_coeff_minus_one)
+          std::swap(b_ub, b_mlb);
+        const Row_Iterator m_begin = matrix.row_begin();
+        const Row_Iterator m_end = matrix.row_end();
+        Row_Iterator m_iter = m_begin + n_var;
+        Row_Reference m_v = *m_iter;
+        ++m_iter;
+        Row_Reference m_cv = *m_iter;
+        ++m_iter;
+        // NOTE: delay update of unary constraints on `var'.
+        for (dimension_type j = n_var; j-- > 0; ) {
+          N& m_v_j = m_v[j];
+          add_assign_r(m_v_j, m_v_j, b_mlb, ROUND_UP);
+          N& m_cv_j = m_cv[j];
+          add_assign_r(m_cv_j, m_cv_j, b_ub, ROUND_UP);
+          if (is_w_coeff_minus_one)
+            std::swap(m_v_j, m_cv_j);
         }
-        else {
-          // Here `w_coeff = [-1;-1].
-          // Remove the binary constraints on `var'.
-          forget_binary_octagonal_constraints(var_id);
-          const Row_Iterator m_begin = matrix.row_begin();
-          Row_Iterator m_iter = m_begin + n_var;
-          N& m_v_cv = (*m_iter)[n_var+1];
-          ++m_iter;
-          N& m_cv_v = (*m_iter)[n_var];
-          // Swap the unary constraints on `var'.
-          std::swap(m_v_cv, m_cv_v);
-          // Strong closure is not preserved.
-          reset_strongly_closed();
-          if (!is_b_zero) {
-            // Translate the unary constraints on `var' by adding the value
-            // `b_ub' or subtracting the value `b_lb'.
-            mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
-            mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
-            add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
-            add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
-          }
-          incremental_strong_closure_assign(var);
+        for ( ; m_iter != m_end; ++m_iter) {
+          Row_Reference m_i = *m_iter;
+          N& m_i_v = m_i[n_var];
+          add_assign_r(m_i_v, m_i_v, b_ub, ROUND_UP);
+          N& m_i_cv = m_i[n_var+1];
+          add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
+          if (is_w_coeff_minus_one)
+            std::swap(m_i_v, m_i_cv);
         }
+        // Now update unary constraints on var.
+        mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
+        N& m_cv_v = m_cv[n_var];
+        add_assign_r(m_cv_v, m_cv_v, b_ub, ROUND_UP);
+        mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
+        N& m_v_cv = m_v[n_var+1];
+        add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
+        if (is_w_coeff_minus_one)
+          std::swap(m_cv_v, m_v_cv);
+        // Note: strong closure is preserved.
       }
       else {
         // Here `w != var', so that `lf' is of the form

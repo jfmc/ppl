@@ -100,6 +100,7 @@ bool test03() {
   free_term.join_assign(2);
   FP_Linear_Form l(-A);
   l += free_term;
+  print_constraints(oc1, "*** oc1 ***");
   oc1.affine_form_image(A, l);
   print_constraints(oc1, "*** oc1.affine_form_image(A, -A + [0.5, 2]) ***");
 
@@ -107,6 +108,7 @@ bool test03() {
   known_result.add_constraint(-2 * A <= 3);
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(2*B - 2*A <= 7);
+  known_result.add_constraint(2*A + 2*B >= -5);
   print_constraints(known_result, "*** known_result ***");
   bool ok = (oc1 == known_result);
 
