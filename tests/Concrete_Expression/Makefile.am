@@ -89,7 +89,7 @@ TESTS = run_tests.stamp
 
 .PHONY: run_tests.stamp
 run_tests.stamp: run_tests
-	+MAKE=$(MAKE) $(srcdir)/run_tests
+	+MAKE="$(MAKE)" $(srcdir)/run_tests
 	echo "true" >run_tests.stamp
 	chmod +x run_tests.stamp
 
