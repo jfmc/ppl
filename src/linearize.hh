@@ -678,6 +678,7 @@ linearize(const Concrete_Expression<Target>& expr,
   typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
   typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
+  PPL_ASSERT(expr.type().is_floating_point());
   // Check that analyzer_format is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<analyzer_format>::is_exact,
       "linearize<Target, FP_Interval_Type>:"
@@ -789,6 +790,7 @@ linearize(const Concrete_Expression<Target>& expr,
       Here associated_dimensions.size() > 1. Try to return the LUB
       of all intervals associated to each space dimension.
     */
+    PPL_ASSERT(associated_dimensions.size() > 1);
     std::set<dimension_type>::const_iterator i = associated_dimensions.begin();
     std::set<dimension_type>::const_iterator i_end =
       associated_dimensions.end();
