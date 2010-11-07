@@ -27,6 +27,14 @@ o  The input routine for PPL numeric datatypes has been extended to
 Bugfixes
 ========
 
+o  Corrected a precision bug in method
+
+     Octagonal_Shape<T>::affine_image()
+
+   whereby in the case of an invertible affine transformation implementing
+   a variable sign symmetry (and optional translation), the computed result
+   was correct but unnecessarily imprecise.
+
 o  Corrected an efficiency bug in the C language interface function
 
      ppl_Linear_Expression_add_to_coefficient().
