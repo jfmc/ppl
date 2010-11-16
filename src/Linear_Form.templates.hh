@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Box.defs.hh"
 #include <stdexcept>
 #include <iostream>
+#include <cmath>
 
 namespace Parma_Polyhedra_Library {
 

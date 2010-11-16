@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_templates_hh
 #define PPL_Float_templates_hh 1
 
-#include <cmath>
 #include "Variable.defs.hh"
 #include "Linear_Form.defs.hh"
+#include <cmath>
 
 namespace Parma_Polyhedra_Library {
 
