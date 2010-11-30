@@ -46,7 +46,7 @@ namespace Parma_Polyhedra_Library {
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param expr The binary operator concrete expression to linearize.
+  \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>ADD</CODE>.
   \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
@@ -146,7 +146,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param expr The binary operator concrete expression to linearize.
+  \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>SUB</CODE>.
   \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
@@ -252,7 +252,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param expr The binary operator concrete expression to linearize.
+  \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>MUL</CODE>.
   \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
@@ -441,7 +441,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param expr The binary operator concrete expression to linearize.
+  \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>DIV</CODE>.
   \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
@@ -574,7 +574,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param expr The cast operator concrete expression to linearize.
+  \param cast_expr The cast operator concrete expression to linearize.
   \param oracle The FP_Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
