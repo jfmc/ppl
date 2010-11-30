@@ -179,6 +179,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Bit_Matrix.defs.hh \
                          @srcdir@/../src/Bit_Matrix.inlines.hh \
                          @srcdir@/../src/Bit_Matrix.cc \
+                         @srcdir@/../src/Integer_Interval.hh \
                          @srcdir@/../src/Variable.types.hh \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \
@@ -191,6 +192,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_Expression.defs.hh \
                          @srcdir@/../src/Linear_Expression.inlines.hh \
                          @srcdir@/../src/Linear_Expression.cc \
+                         @srcdir@/../src/Rational_Interval.hh \
                          @srcdir@/../src/Constraint.types.hh \
                          @srcdir@/../src/Constraint.defs.hh \
                          @srcdir@/../src/Constraint.inlines.hh \

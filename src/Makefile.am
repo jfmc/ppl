@@ -234,6 +234,7 @@ Box.defs.hh \
 Box_Status.inlines.hh \
 Box.inlines.hh \
 Box.templates.hh \
+Integer_Interval.hh \
 Rational_Interval.hh \
 Rational_Box.hh \
 Variable.defs.hh \
