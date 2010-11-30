@@ -72,7 +72,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 Concrete_Expression_Type FP_Type =
   Concrete_Expression_Type::floating_point(ANALYZED_FP_FORMAT);
 
-typedef Integer_Interval_Type Int_Interval;
+typedef Integer_Interval Int_Interval;
 
 /*
 This file tests a rate limiter that, given random input flows of floating

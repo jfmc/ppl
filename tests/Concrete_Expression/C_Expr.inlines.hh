@@ -133,7 +133,7 @@ Cast_Operator<C_Expr>::argument() const {
 inline
 Integer_Constant<C_Expr>::
 Integer_Constant(Concrete_Expression_Type type,
-                 const Integer_Interval_Type& val)
+                 const Integer_Interval& val)
   : Concrete_Expression<C_Expr>(type, INT_CON),
     value(val) {
 }
@@ -164,7 +164,7 @@ Floating_Point_Constant<C_Expr>::type() const {
 inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(Concrete_Expression_Type type,
-		       const Integer_Interval_Type& val,
+		       const Integer_Interval& val,
                        dimension_type index)
   : Concrete_Expression<C_Expr>(type, APPROX_REF),
     value(val),

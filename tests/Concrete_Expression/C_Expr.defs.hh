@@ -184,7 +184,7 @@ class Integer_Constant<C_Expr>
 public:
   //! Constructor from type and value.
   Integer_Constant<C_Expr>(Concrete_Expression_Type type,
-                  const Integer_Interval_Type& val);
+                  const Integer_Interval& val);
 
   //! Do-nothing destructor.
   ~Integer_Constant<C_Expr>();
@@ -196,7 +196,7 @@ public:
   enum { KIND = INT_CON };
 
   //! An interval in which the value of the constant falls.
-  Integer_Interval_Type value;
+  Integer_Interval value;
 };
 
 template <>
@@ -229,7 +229,7 @@ class Approximable_Reference<C_Expr>
 public:
   //! Builds a reference to the entity having the given index.
   Approximable_Reference<C_Expr>(Concrete_Expression_Type type,
-				 const Integer_Interval_Type& val,
+				 const Integer_Interval& val,
                                  dimension_type index);
 
   //! Do-nothing destructor.
@@ -242,7 +242,7 @@ public:
   enum { KIND = APPROX_REF };
 
   //! An interval in which the referenced entity's value falls.
-  Integer_Interval_Type value;
+  Integer_Interval value;
 
   //! The set of possible indexes for the referenced entity.
   std::set<dimension_type> dimensions;
