@@ -194,13 +194,36 @@ Linear_Form<C>::swap(Linear_Form& y) {
 template <typename C>
 inline void
 Linear_Form<C>::ascii_dump(std::ostream& s) const {
-  // FIXME: to be written.
+  // FIXME: the following commented code does not compile.
+  /*
+  using namespace IO_Operators;
+  const char separator = ' ';
+  dimension_type space = space_dimension();
+  s << space << "\n";
+  for (int i = 0; i <= space; ++i)
+    s << vec[i] << separator;
+  s << "\n";
+  */
 }
 
 template <typename C>
 inline bool
 Linear_Form<C>::ascii_load(std::istream& s) {
-  // FIXME: to be written.
+  // FIXME: the following commented code does not compile.
+  /*
+  using namespace IO_Operators;
+  dimension_type new_dim;
+  if (!(s >> new_dim))
+    return false;
+  vec.resize(new_dim + 1, zero);
+  for (int i = 0; i <= new_dim; ++i) {
+    if (!(s >> vec[i]))
+      return false;
+  }
+
+  PPL_ASSERT(OK());
+  return true;
+  */
   return false;
 }
 
