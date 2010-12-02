@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Form_inlines_hh 1
 
 #include "Variable.defs.hh"
+#include <iostream>
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
@@ -194,8 +195,6 @@ Linear_Form<C>::swap(Linear_Form& y) {
 template <typename C>
 inline void
 Linear_Form<C>::ascii_dump(std::ostream& s) const {
-  // FIXME: the following commented code does not compile.
-  /*
   using namespace IO_Operators;
   const char separator = ' ';
   dimension_type space = space_dimension();
@@ -203,18 +202,16 @@ Linear_Form<C>::ascii_dump(std::ostream& s) const {
   for (int i = 0; i <= space; ++i)
     s << vec[i] << separator;
   s << "\n";
-  */
 }
 
 template <typename C>
 inline bool
 Linear_Form<C>::ascii_load(std::istream& s) {
-  // FIXME: the following commented code does not compile.
-  /*
   using namespace IO_Operators;
   dimension_type new_dim;
   if (!(s >> new_dim))
     return false;
+
   vec.resize(new_dim + 1, zero);
   for (int i = 0; i <= new_dim; ++i) {
     if (!(s >> vec[i]))
@@ -223,8 +220,6 @@ Linear_Form<C>::ascii_load(std::istream& s) {
 
   PPL_ASSERT(OK());
   return true;
-  */
-  return false;
 }
 
 // Floating point analysis related methods.
