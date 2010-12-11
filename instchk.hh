@@ -247,11 +247,11 @@ public:
   }
 };
 
-template <typename PS>
+template <typename PSET>
 class Pointset_Powerset {
 public:
   static bool valid_instantiation() {
-    return PS::valid_Pointset_Powerset_argument();
+    return PSET::valid_Pointset_Powerset_argument();
   }
 };
 
