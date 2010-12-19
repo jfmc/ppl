@@ -27,14 +27,14 @@ namespace {
 // Uses every public Powerset method.
 bool
 test01() {
-  typedef Powerset<FCAIBVP> PS;
+  typedef Powerset<FCAIBVP> PSET;
 
   Variable A(0);
 
-  PS ps1;
+  PSET ps1;
   ps1.add_disjunct(FCAIBVP(A));
 
-  PS ps2 = ps1;
+  PSET ps2 = ps1;
 
   if (ps2 != ps1 || !(ps2 == ps1))
     return false;
@@ -43,7 +43,7 @@ test01() {
   nout << "ps1:" << endl << ps1 << endl;
 
   FCAIBVP d(A);
-  PS ps3(d);
+  PSET ps3(d);
 
   if (!ps1.definitely_entails(ps3))
     return false;
@@ -67,35 +67,35 @@ test01() {
 
   // Iterator.
   dimension_type count = 0;
-  for (PS::iterator i = ps3.begin(); i != ps3.end(); ++i)
+  for (PSET::iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
     return false;
 
   // Constant iterator.
   count = 0;
-  for (PS::const_iterator i = ps3.begin(); i != ps3.end(); ++i)
+  for (PSET::const_iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
     return false;
 
   // Reverse iterator.
   count = 0;
-  for (PS::reverse_iterator i = ps3.rbegin(); i != ps3.rend(); ++i)
+  for (PSET::reverse_iterator i = ps3.rbegin(); i != ps3.rend(); ++i)
     ++count;
   if (count != 1)
     return false;
 
   // Constant reverse iterator.
   count = 0;
-  for (PS::const_reverse_iterator i = ps3.rbegin(),
+  for (PSET::const_reverse_iterator i = ps3.rbegin(),
 	 ps3_rend = ps3.rend(); i != ps3_rend; ++i)
     ++count;
   if (count != 1)
     return false;
 
   ps2 = ps3;
-  PS ps_empty;
+  PSET ps_empty;
   ps2.drop_disjunct(ps2.begin());
   if (ps2 != ps_empty)
     return false;
