@@ -28,7 +28,8 @@ then
   dnl The following would fail to find the real base if `sicstus'
   dnl is a symbolic link.
   dnl sicstus_prolog_base=$(dirname $(dirname $sicstus_prolog))
-  sicstus_prolog_base=$(dirname $($sicstus_prolog -f --goal "use_module(library(system)), environ('SP_APP_DIR', X), write(X), nl, halt."))
+  sicstus_prolog_app_dir=`$sicstus_prolog -f --goal "use_module(library(system)), environ('SP_APP_DIR', X), write(X), nl, halt."`
+  sicstus_prolog_base=`dirname $sicstus_prolog_app_dir`
   SICSTUS_PROLOG_INCLUDE_OPTIONS="-I${sicstus_prolog_base}/include"
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $SICSTUS_PROLOG_INCLUDE_OPTIONS"

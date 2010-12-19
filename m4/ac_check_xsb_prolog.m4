@@ -28,14 +28,14 @@ then
   dnl The foreign language interface include file is `cinterf.h',
   dnl but this resides in the emulator directory and is not installed
   dnl in any standard place.
-  xsb_emu_dir=$(xsb --nobanner --quietload --noprompt \
+  xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
                 -e "write('emudir='), \
                   xsb_configuration(emudir, X), write(X), nl, halt." \
-                    2>/dev/null | sed "s/^emudir=//g")
-  xsb_config_dir=$(xsb --nobanner --quietload --noprompt \
+                    2>/dev/null | sed "s/^emudir=//g"`
+  xsb_config_dir=`xsb --nobanner --quietload --noprompt \
                    -e "write('config_dir='), \
                      xsb_configuration(config_dir,X), write(X), nl, halt." \
-                       2>/dev/null | sed "s/^config_dir=//g")
+                       2>/dev/null | sed "s/^config_dir=//g"`
   XSB_PROLOG_INCLUDE_OPTIONS="-I${xsb_emu_dir} -I${xsb_config_dir}"
   AC_SUBST(XSB_PROLOG_INCLUDE_OPTIONS)
 fi
