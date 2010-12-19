@@ -1174,7 +1174,7 @@ fi
 # Different instantiations are separated by a '@' character.
 di="        Polyhedron @ Grid"
 di="${di} @ Rational_Box"
-di="${di} @ BD_Shape<int8_t> @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
+di="${di} @ BD_Shape<mpz_class> @ BD_Shape<mpq_class>"
 di="${di} @ Octagonal_Shape<mpz_class> @ Octagonal_Shape<mpq_class>"
 di="${di} @ Constraints_Product<C_Polyhedron, Grid>"
 di="${di} @ Pointset_Powerset<C_Polyhedron>"
