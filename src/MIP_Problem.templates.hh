@@ -43,6 +43,7 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
+    inherited_constraints(0),
     first_pending_constraint(0),
     input_obj_function(obj),
     opt_mode(mode),
@@ -91,7 +92,7 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
         "this->space_dimension == " << dim << ".";
       throw std::invalid_argument(s.str());
     }
-    input_cs.push_back(*i);
+    add_constraint_helper(*i);
   }
   PPL_ASSERT(OK());
 }
@@ -111,6 +112,7 @@ MIP_Problem::MIP_Problem(dimension_type dim,
     pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
+    inherited_constraints(0),
     first_pending_constraint(0),
     input_obj_function(obj),
     opt_mode(mode),
@@ -148,7 +150,7 @@ MIP_Problem::MIP_Problem(dimension_type dim,
         "this->space_dimension == " << dim << ".";
       throw std::invalid_argument(s.str());
     }
-    input_cs.push_back(*i);
+    add_constraint_helper(*i);
   }
   PPL_ASSERT(OK());
 }

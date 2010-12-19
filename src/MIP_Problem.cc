@@ -82,6 +82,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
+    inherited_constraints(0),
     first_pending_constraint(0),
     input_obj_function(),
     opt_mode(MAXIMIZATION),
@@ -110,6 +111,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     pricing(PRICING_STEEPEST_EDGE_FLOAT),
     initialized(false),
     input_cs(),
+    inherited_constraints(0),
     first_pending_constraint(0),
     input_obj_function(obj),
     opt_mode(mode),
@@ -143,7 +145,10 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
                                 "MIP_Problem(d, cs, obj, m):\n"
                                 "cs contains strict inequalities.");
   // Actually copy the constraints.
-  input_cs.insert(input_cs.end(), cs.begin(), cs.end());
+  for (Constraint_System::const_iterator
+         i = cs.begin(), i_end = cs.end(); i != i_end; ++i)
+    add_constraint_helper(*i);
+
   PPL_ASSERT(OK());
 }
 
@@ -159,7 +164,7 @@ PPL::MIP_Problem::add_constraint(const Constraint& c) {
   if (c.is_strict_inequality())
     throw std::invalid_argument("PPL::MIP_Problem::add_constraint(c):\n"
                                 "c is a strict inequality.");
-  input_cs.push_back(c);
+  add_constraint_helper(c);
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
   PPL_ASSERT(OK());
@@ -178,7 +183,9 @@ PPL::MIP_Problem::add_constraints(const Constraint_System& cs) {
   if (cs.has_strict_inequalities())
     throw std::invalid_argument("PPL::MIP_Problem::add_constraints(cs):\n"
                                 "cs contains strict inequalities.");
-  input_cs.insert(input_cs.end(), cs.begin(), cs.end());
+  for (Constraint_System::const_iterator
+         i = cs.begin(), i_end = cs.end(); i != i_end; ++i)
+    add_constraint_helper(*i);
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
   PPL_ASSERT(OK());
@@ -309,7 +316,7 @@ PPL::MIP_Problem::solve() const{
         PPL_DIRTY_TEMP0(mpq_class, incumbent_solution);
         bool have_incumbent_solution = false;
 
-        MIP_Problem lp_copy(relaxed.lp);
+        MIP_Problem lp_copy(relaxed.lp, Inherit_Constraints());
         PPL_ASSERT(lp_copy.integer_space_dimensions().empty());
         return_value = solve_mip(have_incumbent_solution,
                                  incumbent_solution, g,
@@ -511,7 +518,7 @@ PPL::MIP_Problem
   //    will not be part of the tableau;
   //  - count the number of new slack variables.
   for (dimension_type i = cs_num_rows; i-- > first_pending_constraint; ) {
-    const Constraint& cs_i = input_cs[i];
+    const Constraint& cs_i = *(input_cs[i]);
     bool found_a_nonzero_coeff = false;
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
@@ -789,7 +796,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     Row& tableau_k = tableau[--k];
     Row::iterator itr = tableau_k.end();
 
-    const Constraint& c = input_cs[i + first_pending_constraint];
+    const Constraint& c = *(input_cs[i + first_pending_constraint]);
     for (dimension_type sd = c.space_dimension(); sd-- > 0; ) {
       Coefficient_traits::const_reference coeff_sd
         = c.coefficient(Variable(sd));
@@ -2037,7 +2044,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
-    MIP_Problem lp_aux = lp;
+    MIP_Problem lp_aux(lp, Inherit_Constraints());
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
@@ -2068,7 +2075,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
                                             const Variables_Set& i_vars,
                                             dimension_type& branching_index) {
   // Insert here the variables that don't satisfy the integrality condition.
-  const Constraint_Sequence& input_cs = lp.input_cs;
+  const std::vector<Constraint*>& input_cs = lp.input_cs;
   const Generator& last_generator = lp.last_generator;
   Coefficient_traits::const_reference last_generator_divisor
     = last_generator.divisor();
@@ -2093,8 +2100,8 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
   for (dimension_type i = input_cs_num_rows; i-- > 0; )
     // An equality is an `active constraint' by definition.
     // If we have an inequality, check if it is an `active constraint'.
-    if (input_cs[i].is_equality()
-        || is_saturated(input_cs[i], last_generator))
+    if (input_cs[i]->is_equality()
+        || is_saturated(*(input_cs[i]), last_generator))
       satisfiable_constraints[i] = true;
 
   dimension_type current_num_appearances = 0;
@@ -2107,8 +2114,8 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
     current_num_appearances = 0;
     for (dimension_type i = input_cs_num_rows; i-- > 0; )
       if (satisfiable_constraints[i]
-          && *v_it < input_cs[i].space_dimension()
-          && input_cs[i].coefficient(Variable(*v_it)) != 0)
+          && *v_it < input_cs[i]->space_dimension()
+          && input_cs[i]->coefficient(Variable(*v_it)) != 0)
         ++current_num_appearances;
     if (current_num_appearances >= winning_num_appearances) {
       winning_num_appearances = current_num_appearances;
@@ -2177,7 +2184,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
-    MIP_Problem lp_aux = lp;
+    MIP_Problem lp_aux(lp, Inherit_Constraints());
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
@@ -2221,10 +2228,31 @@ PPL::MIP_Problem::OK() const {
   using std::cerr;
 #endif
   const dimension_type input_cs_num_rows = input_cs.size();
+
   // Check that every member used is OK.
 
+  if (inherited_constraints > input_cs_num_rows) {
+#ifndef NDEBUG
+    cerr << "The MIP_Problem claims to have inherited from its ancestors "
+         << "more constraints than are recorded in this->input_cs."
+         << endl;
+    ascii_dump(cerr);
+#endif
+    return false;
+  }
+
+  if (first_pending_constraint > input_cs_num_rows) {
+#ifndef NDEBUG
+    cerr << "The MIP_Problem claims to have pending constraints "
+         << "that are not recorded in this->input_cs."
+         << endl;
+    ascii_dump(cerr);
+#endif
+    return false;
+  }
+
   for (dimension_type i = input_cs_num_rows; i-- > 0; )
-    if (!input_cs[i].OK())
+    if (!input_cs[i]->OK())
       return false;
 
   if (!tableau.OK() || !input_obj_function.OK() || !last_generator.OK())
@@ -2232,7 +2260,7 @@ PPL::MIP_Problem::OK() const {
 
   // Constraint system should contain no strict inequalities.
   for (dimension_type i = input_cs_num_rows; i-- > 0; )
-    if (input_cs[i].is_strict_inequality()) {
+    if (input_cs[i]->is_strict_inequality()) {
 #ifndef NDEBUG
       cerr << "The feasible region of the MIP_Problem is defined by "
            << "a constraint system containing strict inequalities."
@@ -2271,7 +2299,7 @@ PPL::MIP_Problem::OK() const {
     }
 
     for (dimension_type i = 0; i < first_pending_constraint; ++i)
-      if (!is_satisfied(input_cs[i], last_generator)) {
+      if (!is_satisfied(*(input_cs[i]), last_generator)) {
 #ifndef NDEBUG
         cerr << "The cached feasible point does not belong to "
              << "the feasible region of the MIP_Problem."
@@ -2402,7 +2430,10 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ninput_cs( " << input_cs_size << " )\n";
   for (dimension_type i = 0; i < input_cs_size; ++i)
-    input_cs[i].ascii_dump(s);
+    input_cs[i]->ascii_dump(s);
+
+  s << "\ninherited_constraints: " <<  inherited_constraints
+    << std::endl;
 
   s << "\nfirst_pending_constraint: " <<  first_pending_constraint
     << std::endl;
@@ -2499,11 +2530,22 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
     return false;
 
   Constraint c(Constraint::zero_dim_positivity());
+  input_cs.reserve(input_cs_size);
   for (dimension_type i = 0; i < input_cs_size; ++i) {
     if (!c.ascii_load(s))
       return false;
-    input_cs.push_back(c);
+    add_constraint_helper(c);
   }
+
+  if (!(s >> str) || str != "inherited_constraints:")
+    return false;
+
+  if (!(s >> inherited_constraints))
+    return false;
+  // NOTE: we loaded the number of inherited constraints, but we nonetheless
+  // reset to zero the corresponding data member, since we do not support
+  // constraint inheritance via ascii_load.
+  inherited_constraints = 0;
 
   if (!(s >> str) || str != "first_pending_constraint:")
     return false;

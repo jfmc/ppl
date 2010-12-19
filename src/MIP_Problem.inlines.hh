@@ -50,7 +50,35 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     status(y.status),
     pricing(y.pricing),
     initialized(y.initialized),
+    input_cs(),
+    inherited_constraints(0),
+    first_pending_constraint(),
+    input_obj_function(y.input_obj_function),
+    opt_mode(y.opt_mode),
+    last_generator(y.last_generator),
+    i_variables(y.i_variables) {
+  input_cs.reserve(y.input_cs.size());
+  for (Constraint_Sequence::const_iterator
+       i = y.input_cs.begin(), i_end = y.input_cs.end();
+       i != i_end; ++i)
+    add_constraint_helper(*(*i));
+  PPL_ASSERT(OK());
+}
+
+inline
+MIP_Problem::MIP_Problem(const MIP_Problem& y, Inherit_Constraints)
+  : external_space_dim(y.external_space_dim),
+    internal_space_dim(y.internal_space_dim),
+    tableau(y.tableau),
+    working_cost(y.working_cost),
+    mapping(y.mapping),
+    base(y.base),
+    status(y.status),
+    pricing(y.pricing),
+    initialized(y.initialized),
     input_cs(y.input_cs),
+    // NOTE: The constraints are inherited, NOT copied!
+    inherited_constraints(y.input_cs.size()),
     first_pending_constraint(y.first_pending_constraint),
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
@@ -59,8 +87,32 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
   PPL_ASSERT(OK());
 }
 
+inline void
+MIP_Problem::add_constraint_helper(const Constraint& c) {
+  // For exception safety, reserve space for the new element.
+  const dimension_type size = input_cs.size();
+  if (size == input_cs.capacity()) {
+    const dimension_type max_size = input_cs.max_size();
+    if (size == max_size)
+      throw std::length_error("MIP_Problem::add_constraint(): "
+                              "too many constraints");
+    // Use an exponential grow policy to avoid too many reallocations.
+    input_cs.reserve(compute_capacity(size + 1, max_size));
+  }
+
+  // This operation does not throw, because the space for the new element
+  // has already been reserved: hence the new-ed Constraint is safe.
+  input_cs.push_back(new Constraint(c));
+}
+
 inline
 MIP_Problem::~MIP_Problem() {
+  // NOTE: do NOT delete inherited constraints; they are owned
+  // (and will eventually be deleted) by ancestors.
+  for (Constraint_Sequence::const_iterator
+         i = input_cs.begin() + inherited_constraints,
+         i_end = input_cs.end(); i != i_end; ++i)
+    delete *i;
 }
 
 
@@ -92,12 +144,12 @@ MIP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
 
 inline MIP_Problem::const_iterator
 MIP_Problem::constraints_begin() const {
-  return input_cs.begin();
+  return const_iterator(input_cs.begin());
 }
 
 inline MIP_Problem::const_iterator
 MIP_Problem::constraints_end() const {
-  return input_cs.end();
+  return const_iterator(input_cs.end());
 }
 
 inline const Variables_Set&
@@ -129,6 +181,7 @@ MIP_Problem::swap(MIP_Problem& y) {
   std::swap(status, y.status);
   std::swap(pricing, y.pricing);
   std::swap(input_cs, y.input_cs);
+  std::swap(inherited_constraints, y.inherited_constraints);
   std::swap(first_pending_constraint, y.first_pending_constraint);
   std::swap(input_obj_function, y.input_obj_function);
   std::swap(opt_mode, y.opt_mode);
@@ -157,11 +210,15 @@ MIP_Problem::external_memory_in_bytes() const {
     + tableau.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
+
   // Adding the external memory for `input_cs'.
-  n += input_cs.capacity() * sizeof(Constraint);
-  for (const_iterator i = input_cs.begin(),
-	 i_end = input_cs.end(); i != i_end; ++i)
-    n += (i->external_memory_in_bytes());
+  // NOTE: disregard inherited constraints, as they are owned by ancestors.
+  n += input_cs.capacity() * sizeof(Constraint*);
+  for (Constraint_Sequence::const_iterator
+         i = input_cs.begin() + inherited_constraints,
+         i_end = input_cs.end(); i != i_end; ++i)
+    n += ((*i)->total_memory_in_bytes());
+
   // Adding the external memory for `base'.
   n += base.capacity() * sizeof(dimension_type);
   // Adding the external memory for `mapping'.
@@ -172,6 +229,84 @@ MIP_Problem::external_memory_in_bytes() const {
 inline memory_size_type
 MIP_Problem::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
+}
+
+inline
+MIP_Problem::const_iterator::const_iterator(Base x)
+  : itr(x) {
+}
+
+inline MIP_Problem::const_iterator::difference_type
+MIP_Problem::const_iterator::operator-(const const_iterator& y) const {
+  return itr - y.itr;
+}
+
+inline MIP_Problem::const_iterator&
+MIP_Problem::const_iterator::operator++() {
+  ++itr;
+  return *this;
+}
+
+inline MIP_Problem::const_iterator&
+MIP_Problem::const_iterator::operator--() {
+  --itr;
+  return *this;
+}
+
+inline MIP_Problem::const_iterator
+MIP_Problem::const_iterator::operator++(int) {
+  const_iterator x = *this;
+  operator++();
+  return x;
+}
+
+inline MIP_Problem::const_iterator
+MIP_Problem::const_iterator::operator--(int) {
+  const_iterator x = *this;
+  operator--();
+  return x;
+}
+
+inline MIP_Problem::const_iterator
+MIP_Problem::const_iterator::operator+(difference_type n) const {
+  return const_iterator(itr + n);
+}
+
+inline MIP_Problem::const_iterator
+MIP_Problem::const_iterator::operator-(difference_type n) const {
+  return const_iterator(itr - n);
+}
+
+inline MIP_Problem::const_iterator&
+MIP_Problem::const_iterator::operator+=(difference_type n) {
+  itr += n;
+  return *this;
+}
+
+inline MIP_Problem::const_iterator&
+MIP_Problem::const_iterator::operator-=(difference_type n) {
+  itr -= n;
+  return *this;
+}
+
+inline MIP_Problem::const_iterator::reference
+MIP_Problem::const_iterator::operator*() const {
+  return *(*itr);
+}
+
+inline MIP_Problem::const_iterator::pointer
+MIP_Problem::const_iterator::operator->() const {
+  return *itr;
+}
+
+inline bool
+MIP_Problem::const_iterator::operator==(const const_iterator& y) const {
+  return itr == y.itr;
+}
+
+inline bool
+MIP_Problem::const_iterator::operator!=(const const_iterator& y) const {
+  return itr != y.itr;
 }
 
 } // namespace Parma_Polyhedra_Library
