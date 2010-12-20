@@ -45,9 +45,10 @@ Current Contributors:
 
   Marco Poletti         (student of the University of Parma)
                         implemented the sparse matrices that are used
-                        in the MIP and PIP solvers of the PPL;  he is now
-                        experimenting with parallelization of the sparse
-                        matrices' computations.
+                        in the MIP and PIP solvers of the PPL; he also
+                        did experiments on the parallelization of the
+                        sparse matrices' computations; he is now working
+                        on improving the PPL's memory footprint.
 
   Enric Rodriguez Carbonell [4] (Technical University of Catalonia) is
                         working on the implementation of polynomial spaces.
