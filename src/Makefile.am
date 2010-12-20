@@ -142,6 +142,7 @@ Init.types.hh \
 Row_Flags.types.hh \
 Dense_Row.types.hh \
 CO_Tree.types.hh \
+COW_Pointer.types.hh \
 Sparse_Row.types.hh \
 Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
@@ -247,6 +248,8 @@ Dense_Row.templates.hh \
 CO_Tree.defs.hh \
 CO_Tree.inlines.hh \
 CO_Tree.templates.hh \
+COW_Pointer.defs.hh \
+COW_Pointer.inlines.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Row.templates.hh \
