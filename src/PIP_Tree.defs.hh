@@ -207,7 +207,7 @@ protected:
   */
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const Matrix& context,
+                               const Matrix<Row>& context,
                                const Variables_Set& params,
                                dimension_type space_dim) = 0;
 
@@ -251,13 +251,13 @@ protected:
     solution is integer by applying a cut generation method when
     intermediate non-integer solutions are found.
   */
-  static bool compatibility_check(Matrix& s);
+  static bool compatibility_check(Matrix<Row>& s);
 
   /*! \brief
     Helper method: checks for satisfiability of the restricted context
     obtained by adding \p row to \p context.
   */
-  static bool compatibility_check(const Matrix& context, const Row& row);
+  static bool compatibility_check(const Matrix<Row>& context, const Row& row);
 
 }; // class PIP_Tree_Node
 
@@ -390,9 +390,9 @@ private:
   //! The type for parametric simplex tableau.
   struct Tableau {
     //! The matrix of simplex coefficients.
-    Matrix s;
+    Matrix<Row> s;
     //! The matrix of parameter coefficients.
-    Matrix t;
+    Matrix<Row> t;
     //! A common denominator for all matrix elements
     Coefficient denom;
 
@@ -643,7 +643,7 @@ protected:
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const Matrix& context,
+                               const Matrix<Row>& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
 
@@ -666,7 +666,7 @@ protected:
     be updated if an extra parameter is to be created
   */
   void generate_cut(dimension_type i, Variables_Set& parameters,
-                    Matrix& context, dimension_type& space_dimension);
+                    Matrix<Row>& context, dimension_type& space_dimension);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s, unsigned indent,
@@ -774,7 +774,7 @@ protected:
   //! Implements pure virtual method PIP_Tree_Node::solve.
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
-                               const Matrix& context,
+                               const Matrix<Row>& context,
                                const Variables_Set& params,
                                dimension_type space_dim);
 

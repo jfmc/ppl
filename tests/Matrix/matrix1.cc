@@ -1,4 +1,4 @@
-/* Test the Sparse_Matrix class.
+/* Test the Matrix class.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,18 +22,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#if USE_PPL_SPARSE_MATRIX
-
 #include <vector>
 #include <algorithm>
-#include <set>
 
 namespace {
 
 bool
 test01() {
 
-  Sparse_Matrix matrix(3, 4);
+  Matrix<Row> matrix(3, 4);
 
   if (matrix.num_rows() != 3)
     return false;
@@ -63,7 +60,7 @@ test01() {
 bool
 test02() {
 
-  Sparse_Matrix matrix(3, 6);
+  Matrix<Row> matrix(3, 6);
 
   // ( 0  1  2  3  4  0 )
   // ( 0  6  7  8  9 10 )
@@ -134,8 +131,8 @@ test02() {
 
 bool
 test03() {
-  Sparse_Matrix large(2,5);
-  Sparse_Matrix tall(6,3);
+  Matrix<Row> large(2,5);
+  Matrix<Row> tall(6,3);
 
   large[0][4] = 10;
   tall[4][0] = 20;
@@ -166,7 +163,7 @@ test03() {
 bool
 test04() {
 
-  Sparse_Matrix x(2, 3);
+  Matrix<Row> x(2, 3);
 
   // ( 1 2 3 )
   // ( 4 5 6 )
@@ -178,7 +175,7 @@ test04() {
   x[1][1] = 5;
   x[1][2] = 6;
 
-  Sparse_Matrix::iterator itr = x.begin();
+  Matrix<Row>::iterator itr = x.begin();
 
   // First row
 
@@ -217,7 +214,7 @@ test04() {
 bool
 test05() {
 
-  Sparse_Matrix matrix(3, 5);
+  Matrix<Row> matrix(3, 5);
 
   // (  1  2  3  4  5 )
   // (  6  7  8  9 10 )
@@ -279,16 +276,3 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
 END_MAIN
-
-#else // !USE_PPL_SPARSE_MATRIX
-
-// A dummy test to avoid compiler warnings in BEGIN_MAIN.
-bool test01() {
-  return true;
-}
-
-BEGIN_MAIN
-  DO_TEST(test01);
-END_MAIN
-
-#endif // !USE_PPL_SPARSE_MATRIX

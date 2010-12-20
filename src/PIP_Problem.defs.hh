@@ -803,7 +803,7 @@ private:
 
     Contains problem constraints on parameters only
   */
-  Matrix initial_context;
+  Matrix<Row> initial_context;
 
   //! The control parameters for the problem object.
   Control_Parameter_Value

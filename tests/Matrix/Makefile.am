@@ -50,7 +50,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
-sparsematrix1 \
+matrix1 \
 sparserow1
 
 XFAIL_TESTS =
@@ -61,7 +61,7 @@ BUGS =
 # Sources for the tests
 #
 
-sparsematrix1_SOURCES = sparsematrix1.cc
+matrix1_SOURCES = matrix1.cc
 sparserow1_SOURCES = sparserow1.cc
 
 check_PROGRAMS = \

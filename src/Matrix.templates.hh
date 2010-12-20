@@ -1,4 +1,4 @@
-/* Sparse_Matrix class implementation (non-inline functions).
+/* Matrix class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,43 +20,41 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <ppl-config.h>
+#ifndef PPL_Matrix_templates_hh
+#define PPL_Matrix_templates_hh 1
 
-#include "Sparse_Matrix.defs.hh"
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Matrix.defs.hh"
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
-PPL::Sparse_Matrix::Sparse_Matrix(dimension_type n, Flags row_flags)
+template <typename Row>
+Matrix<Row>::Matrix(dimension_type n, Flags row_flags)
   : rows(n), num_columns_(n) {
-  for (dimension_type i = 0; i < rows.size(); ++i) {
-    rows[i].flags() = row_flags;
-    rows[i].resize(num_columns_);
-  }
+  for (dimension_type i = 0; i < rows.size(); ++i)
+    rows[i].construct(num_columns_, row_flags);
   PPL_ASSERT(OK());
 }
 
-PPL::Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
-                                  dimension_type num_columns,
-                                  Flags row_flags)
+template <typename Row>
+Matrix<Row>::Matrix(dimension_type num_rows, dimension_type num_columns,
+                    Flags row_flags)
   : rows(num_rows), num_columns_(num_columns) {
-  for (dimension_type i = 0; i < rows.size(); ++i) {
-    rows[i].flags() = row_flags;
-    rows[i].resize(num_columns_);
-  }
+  for (dimension_type i = 0; i < rows.size(); ++i)
+    rows[i].construct(num_columns_, row_flags);
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 void
-PPL::Sparse_Matrix::resize(dimension_type num_rows,
-                           dimension_type num_columns,
-                           Flags row_flags) {
+Matrix<Row>::resize(dimension_type num_rows, dimension_type num_columns,
+                    Flags row_flags) {
   const dimension_type old_num_rows = rows.size();
   rows.resize(num_rows);
   if (old_num_rows < num_rows) {
-    for (dimension_type i = old_num_rows; i < num_rows; ++i) {
-      rows[i].flags() = row_flags;
-      rows[i].resize(num_columns);
-    }
+    for (dimension_type i = old_num_rows; i < num_rows; ++i)
+      rows[i].construct(num_columns, row_flags);
     if (num_columns_ != num_columns) {
       num_columns_ = num_columns;
       for (dimension_type i = 0; i < old_num_rows; ++i)
@@ -71,14 +69,14 @@ PPL::Sparse_Matrix::resize(dimension_type num_rows,
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 void
-PPL::Sparse_Matrix
-::permute_columns(const std::vector<dimension_type>& cycles) {
+Matrix<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Sparse_Row& rows_k = (*this)[k];
+    Row& rows_k = (*this)[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)
@@ -102,34 +100,38 @@ PPL::Sparse_Matrix
   }
 }
 
+template <typename Row>
 void
-PPL::Sparse_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
+Matrix<Row>::add_zero_columns(dimension_type n, dimension_type i) {
   for (dimension_type j = rows.size(); j-- > 0; )
     rows[j].add_zeroes_and_shift(n, i);
   num_columns_ += n;
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 void
-PPL::Sparse_Matrix::remove_column(dimension_type i) {
+Matrix<Row>::remove_column(dimension_type i) {
   for (dimension_type j = rows.size(); j-- > 0; )
     rows[j].delete_element_and_shift(i);
   --num_columns_;
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 void
-PPL::Sparse_Matrix::ascii_dump(std::ostream& s) const {
+Matrix<Row>::ascii_dump(std::ostream& s) const {
   s << num_rows() << " x ";
   s << num_columns() << "\n";
   for (const_iterator i = begin(), i_end = end(); i !=i_end; ++i)
     i->ascii_dump(s);
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Sparse_Matrix)
+// PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(Row, Matrix<Row>)
 
+template <typename Row>
 bool
-PPL::Sparse_Matrix::ascii_load(std::istream& s) {
+Matrix<Row>::ascii_load(std::istream& s) {
   std::string str;
   dimension_type new_num_rows;
   dimension_type new_num_cols;
@@ -154,25 +156,28 @@ PPL::Sparse_Matrix::ascii_load(std::istream& s) {
   return true;
 }
 
-PPL::memory_size_type
-PPL::Sparse_Matrix::external_memory_in_bytes() const {
+template <typename Row>
+memory_size_type
+Matrix<Row>::external_memory_in_bytes() const {
   // Estimate the size of vector.
-  memory_size_type n = rows.capacity() * sizeof(Sparse_Row);
+  memory_size_type n = rows.capacity() * sizeof(Row);
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     n += i->external_memory_in_bytes();
   return n;
 }
 
+template <typename Row>
 bool
-PPL::Sparse_Matrix::OK() const {
+Matrix<Row>::OK() const {
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
     if (i->size() != num_columns_)
       return false;
   return true;
 }
 
+template <typename Row>
 bool
-PPL::operator==(const Sparse_Matrix& x, const Sparse_Matrix& y) {
+operator==(const Matrix<Row>& x, const Matrix<Row>& y) {
   if (x.num_rows() != y.num_rows())
     return false;
   if (x.num_columns() != y.num_columns())
@@ -183,7 +188,12 @@ PPL::operator==(const Sparse_Matrix& x, const Sparse_Matrix& y) {
   return true;
 }
 
+template <typename Row>
 bool
-PPL::operator!=(const Sparse_Matrix& x, const Sparse_Matrix& y) {
+operator!=(const Matrix<Row>& x, const Matrix<Row>& y) {
   return !(x == y);
 }
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Matrix_templates_hh)

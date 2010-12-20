@@ -112,7 +112,7 @@ sub_assign(Row& x, const Row& y) {
 
 // Merge constraint system to a matrix-form context such as x = x U y
 void
-merge_assign(Matrix& x, const Constraint_System& y,
+merge_assign(Matrix<Row>& x, const Constraint_System& y,
              const Variables_Set& parameters) {
   PPL_ASSERT(parameters.size() == x.num_columns() - 1);
   const dimension_type new_rows = std::distance(y.begin(), y.end());
@@ -195,7 +195,7 @@ complement_assign(Row& x,
 
 // Add to `context' the columns for new artificial parameters.
 inline void
-add_artificial_parameters(Matrix& context,
+add_artificial_parameters(Matrix<Row>& context,
                           const dimension_type num_art_params) {
   if (num_art_params > 0)
     context.add_zero_columns(num_art_params);
@@ -213,7 +213,7 @@ add_artificial_parameters(Variables_Set& params,
 // Update `context', `params' and `space_dim' to account for
 // the addition of the new artificial parameters.
 inline void
-add_artificial_parameters(Matrix& context, Variables_Set& params,
+add_artificial_parameters(Matrix<Row>& context, Variables_Set& params,
                           dimension_type& space_dim,
                           const dimension_type num_art_params) {
   add_artificial_parameters(context, num_art_params);
@@ -227,7 +227,7 @@ add_artificial_parameters(Matrix& context, Variables_Set& params,
   - Returns false otherwise
 */
 bool
-column_lower(const Matrix& tableau,
+column_lower(const Matrix<Row>& tableau,
              const std::vector<dimension_type>& mapping,
              const std::vector<bool>& basis,
              const Row& pivot_a, const dimension_type ja,
@@ -328,7 +328,7 @@ column_lower(const Matrix& tableau,
 */
 void
 find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
-                                  const Matrix& tableau,
+                                  const Matrix<Row>& tableau,
                                   const std::vector<dimension_type>& mapping,
                                   const std::vector<bool>& basis,
                                   const Row& pivot_row) {
@@ -435,7 +435,7 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
   - (column j) / pivot_row[j] is lexico-minimal
 */
 bool
-find_lexico_minimum_column(const Matrix& tableau,
+find_lexico_minimum_column(const Matrix<Row>& tableau,
                            const std::vector<dimension_type>& mapping,
                            const std::vector<bool>& basis,
                            const Row& pivot_row, const dimension_type start_j,
@@ -513,7 +513,7 @@ compatibility_check_find_pivot_in_set(
     std::vector<std::pair<dimension_type,
                           compatibility_check_find_pivot_in_set_data> >&
         candidates,
-    const Matrix& s,
+    const Matrix<Row>& s,
     const std::vector<dimension_type>& mapping,
     const std::vector<bool>& basis) {
 
@@ -674,7 +674,7 @@ compatibility_check_find_pivot_in_set(
 // Returns false if there isn't a posivive pivot candidate.
 // Otherwise, it sets pi, pj to the coordinates of the pivot in s.
 bool
-compatibility_check_find_pivot(const Matrix& s,
+compatibility_check_find_pivot(const Matrix<Row>& s,
                                const std::vector<dimension_type>& mapping,
                                const std::vector<bool>& basis,
                                dimension_type& pi, dimension_type& pj) {
@@ -1211,10 +1211,11 @@ PIP_Decision_Node::update_tableau(
 PIP_Tree_Node*
 PIP_Decision_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
-                         const Matrix& context, const Variables_Set& params,
+                         const Matrix<Row>& context,
+                         const Variables_Set& params,
                          dimension_type space_dim) {
   PPL_ASSERT(true_child != 0);
-  Matrix context_true(context);
+  Matrix<Row> context_true(context);
   Variables_Set all_params(params);
   const dimension_type num_art_params = artificial_parameters.size();
   add_artificial_parameters(context_true, all_params, space_dim,
@@ -1229,7 +1230,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     // Decision nodes with false child must have exactly one constraint
     PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
     // NOTE: modify context_true in place, complementing its last constraint.
-    Matrix& context_false = context_true;
+    Matrix<Row>& context_false = context_true;
     Row& last = context_false[context_false.num_rows() - 1];
     complement_assign(last, last, 1);
     false_child = false_child->solve(pip, check_feasible_context,
@@ -1269,7 +1270,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     cs.swap(constraints_);
     for (Constraint_System::const_iterator
          ci = cs.begin(), ci_end = cs.end(); ci != ci_end; ++ci) {
-      Matrix ctx_copy(context);
+      Matrix<Row> ctx_copy(context);
       merge_assign(ctx_copy, Constraint_System(*ci), all_params);
       Row& last = ctx_copy[ctx_copy.num_rows()-1];
       complement_assign(last, last, 1);
@@ -1858,15 +1859,15 @@ PIP_Solution_Node::row_sign(const Row& x,
 }
 
 bool
-PIP_Tree_Node::compatibility_check(const Matrix& context, const Row& row) {
+PIP_Tree_Node::compatibility_check(const Matrix<Row>& context, const Row& row) {
   // CHECKME: do `context' and `row' have compatible (row) capacity?
-  Matrix s(context);
+  Matrix<Row> s(context);
   s.add_row(row);
   return compatibility_check(s);
 }
 
 bool
-PIP_Tree_Node::compatibility_check(Matrix& s) {
+PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
   PPL_ASSERT(s.OK());
   // Note: num_rows may increase.
   dimension_type num_rows = s.num_rows();
@@ -2229,12 +2230,12 @@ PIP_Solution_Node::update_tableau(
 PIP_Tree_Node*
 PIP_Solution_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
-                         const Matrix& ctx, const Variables_Set& params,
+                         const Matrix<Row>& ctx, const Variables_Set& params,
                          dimension_type space_dim) {
   // Reset current solution as invalid.
   solution_valid = false;
 
-  Matrix context(ctx);
+  Matrix<Row> context(ctx);
   Variables_Set all_params(params);
   const dimension_type num_art_params = artificial_parameters.size();
   add_artificial_parameters(context, all_params, space_dim, num_art_params);
@@ -2242,7 +2243,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
   // If needed, (re-)check feasibility of context.
   if (check_feasible_context) {
-    Matrix ctx_copy(context);
+    Matrix<Row> ctx_copy(context);
     if (!compatibility_check(ctx_copy)) {
       delete this;
       return 0;
@@ -2900,7 +2901,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 void
 PIP_Solution_Node::generate_cut(const dimension_type index,
                                 Variables_Set& parameters,
-                                Matrix& context,
+                                Matrix<Row>& context,
                                 dimension_type& space_dimension) {
   const dimension_type num_rows = tableau.t.num_rows();
   PPL_ASSERT(index < num_rows);

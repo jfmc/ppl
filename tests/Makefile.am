@@ -23,7 +23,7 @@
 SUBDIRS = \
 . \
 CO_Tree \
-Sparse_Matrix \
+Matrix \
 PIP_Problem \
 Powerset \
 Partially_Reduced_Product \

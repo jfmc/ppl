@@ -498,7 +498,7 @@ private:
   dimension_type internal_space_dim;
 
   //! The matrix encoding the current feasible region in tableau form.
-  Matrix tableau;
+  Matrix<Row> tableau;
 
   typedef Row working_cost_type;
 

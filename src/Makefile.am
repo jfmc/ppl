@@ -143,8 +143,9 @@ Row_Flags.types.hh \
 Dense_Row.types.hh \
 CO_Tree.types.hh \
 Sparse_Row.types.hh \
-Sparse_Matrix.types.hh \
 Linear_Row.types.hh \
+Row.types.hh \
+Matrix.types.hh \
 Dense_Matrix.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
@@ -250,8 +251,6 @@ CO_Tree.templates.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Row.templates.hh \
-Sparse_Matrix.defs.hh \
-Sparse_Matrix.inlines.hh \
 Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Dense_Matrix.defs.hh \
@@ -282,10 +281,10 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
-Row.types.hh \
 Row.defs.hh \
-Matrix.types.hh \
 Matrix.defs.hh \
+Matrix.inlines.hh \
+Matrix.templates.hh \
 MIP_Problem.types.hh \
 MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \
@@ -428,7 +427,6 @@ Octagonal_Shape.cc \
 Pointset_Powerset.cc \
 CO_Tree.cc \
 Sparse_Row.cc \
-Sparse_Matrix.cc \
 Row_Flags.cc \
 Dense_Row.cc \
 Linear_Row.cc \

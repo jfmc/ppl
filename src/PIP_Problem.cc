@@ -203,7 +203,7 @@ PPL::PIP_Problem::solve() const {
 
       if (check_feasible_context) {
         // Check for feasibility of initial context.
-        Matrix ctx_copy(initial_context);
+        Matrix<Row> ctx_copy(initial_context);
         if (!PIP_Solution_Node::compatibility_check(ctx_copy)) {
           // Problem found to be unfeasible.
           delete x.current_solution;
