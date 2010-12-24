@@ -138,6 +138,9 @@ public:
     \param n
     The new size for the row.
 
+    \param flags
+    Flags for the row that will be constructed.
+
     This method, with this signature, is needed for compatibility with
     Dense_Row.
 
@@ -154,6 +157,9 @@ public:
 
     \param capacity
     This is ignored.
+
+    \param flags
+    Flags for the row that will be constructed.
 
     This method, with this signature, is needed for compatibility with
     Dense_Row.
@@ -201,7 +207,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void expand_within_capacity(dimension_type new_size);
+  void expand_within_capacity(dimension_type n);
 
   //! Resizes the row to size \p n.
   /*!
