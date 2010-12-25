@@ -77,22 +77,32 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     throw std::invalid_argument(s.str());
   }
   // Check the constraints.
-  for (In i = first; i != last; ++i) {
-    if (i->is_strict_inequality())
-      throw std::invalid_argument("PPL::MIP_Problem::"
-                                  "MIP_Problem(dim, first, last, int_vars,"
-                                  "obj, mode):\nrange [first, last) contains"
-                                  "a strict inequality constraint.");
-    if (i->space_dimension() > dim) {
-      std::ostringstream s;
-      s << "PPL::MIP_Problem::"
-        << "MIP_Problem(dim, first, last, int_vars, obj, mode):\n"
-        << "range [first, last) contains a constraint having space"
-        << "dimension  == " << i->space_dimension() << " that exceeds"
-        "this->space_dimension == " << dim << ".";
-      throw std::invalid_argument(s.str());
+  try {
+    for (In i = first; i != last; ++i) {
+      if (i->is_strict_inequality())
+        throw std::invalid_argument("PPL::MIP_Problem::"
+                                    "MIP_Problem(dim, first, last, int_vars,"
+                                    "obj, mode):\nrange [first, last) contains"
+                                    "a strict inequality constraint.");
+      if (i->space_dimension() > dim) {
+        std::ostringstream s;
+        s << "PPL::MIP_Problem::"
+          << "MIP_Problem(dim, first, last, int_vars, obj, mode):\n"
+          << "range [first, last) contains a constraint having space"
+          << "dimension  == " << i->space_dimension() << " that exceeds"
+          "this->space_dimension == " << dim << ".";
+        throw std::invalid_argument(s.str());
+      }
+      add_constraint_helper(*i);
     }
-    add_constraint_helper(*i);
+  } catch (...) {
+    // Delete the allocated constraints, to avoid memory leaks.
+
+    for (Constraint_Sequence::const_iterator
+          i = input_cs.begin(), i_end = input_cs.end(); i != i_end; ++i)
+      delete *i;
+
+    throw;
   }
   PPL_ASSERT(OK());
 }
@@ -134,23 +144,33 @@ MIP_Problem::MIP_Problem(dimension_type dim,
     throw std::invalid_argument(s.str());
   }
   // Check the constraints.
-  for (In i = first; i != last; ++i) {
-    if (i->is_strict_inequality())
-      throw std::invalid_argument("PPL::MIP_Problem::"
-                                  "MIP_Problem(dim, first, last, obj, mode):"
-                                  "\n"
-                                  "range [first, last) contains a strict "
-                                  "inequality constraint.");
-    if (i->space_dimension() > dim) {
-      std::ostringstream s;
-      s << "PPL::MIP_Problem::"
-        << "MIP_Problem(dim, first, last, obj, mode):\n"
-        << "range [first, last) contains a constraint having space"
-        << "dimension" << " == " << i->space_dimension() << " that exceeds"
-        "this->space_dimension == " << dim << ".";
-      throw std::invalid_argument(s.str());
+  try {
+    for (In i = first; i != last; ++i) {
+      if (i->is_strict_inequality())
+        throw std::invalid_argument("PPL::MIP_Problem::"
+                                    "MIP_Problem(dim, first, last, obj, mode):"
+                                    "\n"
+                                    "range [first, last) contains a strict "
+                                    "inequality constraint.");
+      if (i->space_dimension() > dim) {
+        std::ostringstream s;
+        s << "PPL::MIP_Problem::"
+          << "MIP_Problem(dim, first, last, obj, mode):\n"
+          << "range [first, last) contains a constraint having space"
+          << "dimension" << " == " << i->space_dimension() << " that exceeds"
+          "this->space_dimension == " << dim << ".";
+        throw std::invalid_argument(s.str());
+      }
+      add_constraint_helper(*i);
     }
-    add_constraint_helper(*i);
+  } catch (...) {
+    // Delete the allocated constraints, to avoid memory leaks.
+
+    for (Constraint_Sequence::const_iterator
+          i = input_cs.begin(), i_end = input_cs.end(); i != i_end; ++i)
+      delete *i;
+
+    throw;
   }
   PPL_ASSERT(OK());
 }
