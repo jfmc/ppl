@@ -28,6 +28,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Sparse_Row::Sparse_Row(Flags flags)
+  : size_(0), flags_(flags) {
+  PPL_ASSERT(OK());
+}
+
+inline
 Sparse_Row::Sparse_Row(dimension_type n, Flags flags)
   : size_(n), flags_(flags) {
   PPL_ASSERT(OK());
@@ -52,19 +58,6 @@ Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
   : tree(y.tree), size_(sz), flags_(y.flags_) {
   PPL_ASSERT(y.size() <= sz);
   (void)capacity;
-}
-
-inline void
-Sparse_Row::construct(dimension_type sz, Flags flags1) {
-  flags() = flags1;
-  resize(sz);
-}
-
-inline void
-Sparse_Row::construct(dimension_type sz, dimension_type /* capacity */,
-                      Flags flags1) {
-  flags() = flags1;
-  resize(sz);
 }
 
 inline void

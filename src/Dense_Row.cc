@@ -33,93 +33,199 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Dense_Row_Impl_Handler::
-Impl::expand_within_capacity(const dimension_type new_size) {
-  PPL_ASSERT(size() <= new_size && new_size <= max_size());
-#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  // vec_[0] is already constructed.
-  if (size() == 0 && new_size > 0)
-    bump_size();
-#endif
-  for (dimension_type i = size(); i < new_size; ++i) {
-    new (&vec_[i]) Coefficient();
-    bump_size();
-  }
-}
-
-void
-PPL::Dense_Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
-  const dimension_type old_size = size();
-  PPL_ASSERT(new_size <= old_size);
-  // Since ~Coefficient() does not throw exceptions, nothing here does.
-  set_size(new_size);
-#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  // Make sure we do not try to destroy vec_[0].
-  if (new_size == 0)
-    ++new_size;
-#endif
-  // We assume construction was done "forward".
-  // We thus perform destruction "backward".
-  for (dimension_type i = old_size; i-- > new_size; )
-    vec_[i].~Coefficient();
-}
-
-void
-PPL::Dense_Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
-  const dimension_type y_size = y.size();
-#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  for (dimension_type i = 0; i < y_size; ++i) {
-    new (&vec_[i]) Coefficient(y.vec_[i]);
-    bump_size();
-  }
-#else
-  PPL_ASSERT(y_size > 0);
-  if (y_size > 0) {
-    vec_[0] = y.vec_[0];
-    bump_size();
-    for (dimension_type i = 1; i < y_size; ++i) {
-      new (&vec_[i]) Coefficient(y.vec_[i]);
-      bump_size();
+PPL::Dense_Row::resize(dimension_type new_size) {
+  if (new_size <= size())
+    shrink(new_size);
+  else {
+    if (new_size > capacity()) {
+      // Reallocation is required.
+      // TODO: Consider using realloc() here.
+      // TODO: Consider using a smarter allocation strategy.
+      dimension_type new_capacity = new_size;
+      Coefficient* new_vec = static_cast<Coefficient*>(
+          operator new(sizeof(Coefficient) * new_capacity));
+      
+      if (vec_ != 0) {
+        memcpy(new_vec, vec_, sizeof(Coefficient) * size_);
+        
+        operator delete(vec_);
+      }
+      
+      vec_ = new_vec;
+      capacity_ = new_capacity;
+    }
+    PPL_ASSERT(new_size <= capacity_);
+    // Construct the additional elements.
+    while (size_ != new_size) {
+      new (&vec_[size_]) Coefficient();
+      size_++;
     }
   }
-#endif
+  PPL_ASSERT(size() == new_size);
+  PPL_ASSERT(OK());
 }
 
-PPL::Dense_Row::Dense_Row(const Sparse_Row& row)
-  : Dense_Row_Impl_Handler() {
-  construct(row.size(), row.size(), row.flags());
-  for (Sparse_Row::const_iterator
-       i = row.begin(), i_end = row.end(); i != i_end; ++i)
-    (*this)[i.index()] = *i;
+void
+PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
+  PPL_ASSERT(new_size <= new_capacity);
+  
+  if (new_capacity == 0) {
+    destroy();
+    vec_ = 0;
+    size_ = 0;
+    capacity_ = 0;
+    
+    PPL_ASSERT(size() == new_size);
+    PPL_ASSERT(capacity() == new_capacity);
+    PPL_ASSERT(OK());
+    
+    return;
+  }
+  
+  if (new_capacity < capacity()) {
+    
+    shrink(new_size);
+    
+    PPL_ASSERT(size_ == new_size);
+    
+    Coefficient* new_vec = static_cast<Coefficient*>(
+        operator new(sizeof(Coefficient) * new_capacity));
+    
+    PPL_ASSERT(vec_ != 0);
+    
+    memcpy(new_vec, vec_, sizeof(Coefficient) * size_);
+    
+    operator delete(vec_);
+    
+    vec_ = new_vec;
+    capacity_ = new_capacity;
+  } else {
+    if (new_capacity > capacity()) {
+      
+      Coefficient* new_vec = static_cast<Coefficient*>(
+          operator new(sizeof(Coefficient) * new_capacity));
+      
+      if (vec_ != 0) {
+        memcpy(new_vec, vec_, sizeof(Coefficient) * size_);
+        
+        operator delete(vec_);
+      }
+      
+      vec_ = new_vec;
+      capacity_ = new_capacity;
+      
+      resize(new_size);
+    }
+  }
+  
+  PPL_ASSERT(size() == new_size);
+  PPL_ASSERT(capacity() == new_capacity);
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::Dense_Row::expand_within_capacity(const dimension_type new_size) {
+  PPL_ASSERT(new_size <= capacity_);
+  PPL_ASSERT(size() <= new_size && new_size <= max_size());
+  while (size_ != new_size) {
+    new (&vec_[size_]) Coefficient();
+    ++size_;
+  }
+  PPL_ASSERT(size() == new_size);
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::Dense_Row::shrink(dimension_type new_size) {
+  PPL_ASSERT(new_size <= size());
+  // Since ~Coefficient() does not throw exceptions, nothing here does.
+
+  // We assume construction was done "forward".
+  // We thus perform destruction "backward".
+  while (size_ != new_size) {
+    --size_;
+    vec_[size_].~Coefficient();
+  }
+  
+  PPL_ASSERT(size() == new_size);
+  PPL_ASSERT(OK());
+}
+
+PPL::Dense_Row::Dense_Row(const Sparse_Row& row) {
+  init(row);
+  PPL_ASSERT(size() == row.size());
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::Dense_Row::init(const Sparse_Row& row) {
+  size_ = 0;
+  capacity_ = row.size();
+  flags_ = row.flags();
+  vec_ = static_cast<Coefficient*>(
+      operator new(sizeof(Coefficient) * capacity_));
+  Sparse_Row::const_iterator itr = row.begin();
+  Sparse_Row::const_iterator itr_end = row.end();
+  while (size_ != capacity_) {
+    // Constructs (*this)[size_] with row[size_].
+    if (itr != itr_end && itr.index() == size_) {
+      new (&vec_[size_]) Coefficient(*itr);
+      ++itr;
+    } else
+      new (&vec_[size_]) Coefficient();
+    ++size_;
+  }
+  PPL_ASSERT(size() == row.size());
+  PPL_ASSERT(OK());
 }
 
 PPL::Dense_Row&
 PPL::Dense_Row::operator=(const Sparse_Row& row) {
-  if (size() == row.size()) {
-    dimension_type index = 0;
-    Sparse_Row::const_iterator i = row.begin();
-    Sparse_Row::const_iterator i_end = row.end();
-    while (i != i_end) {
-      PPL_ASSERT(index <= i.index());
-      if (index == i.index()) {
-        (*this)[index] = *i;
-        ++i;
+  flags_ = row.flags();
+  if (size() > row.size()) {
+    // TODO: If the shrink() is modified to reallocate a smaller chunk,
+    // this can be optimized.
+    shrink(row.size());
+    Sparse_Row::const_iterator itr = row.begin();
+    Sparse_Row::const_iterator itr_end = row.end();
+    for (dimension_type i = 0; i < size_; ++i) {
+      // Computes (*this)[size_] = row[size_].
+      if (itr != itr_end && itr.index() == i) {
+        vec_[size_] = *itr;
+        ++itr;
       } else
-        (*this)[index] = 0;
-      ++index;
+        vec_[size_] = Coefficient_zero();
     }
-    for ( ; index < size(); ++index)
-      (*this)[index] = 0;
   } else {
-    {
-      // Resize to row.size() and set all elements to zero.
-      Dense_Row tmp(row.size(), row.size(), flags());
-      std::swap(*this, tmp);
+    if (capacity() >= row.size()) {
+      // size() <= row.size() <= capacity().
+      Sparse_Row::const_iterator itr = row.begin();
+      Sparse_Row::const_iterator itr_end = row.end();
+      for (dimension_type i = 0; i < size_; ++i) {
+        // The following code is equivalent to (*this)[i] = row[i].
+        if (itr != itr_end && itr.index() == size_) {
+          new (&vec_[size_]) Coefficient(*itr);
+          ++itr;
+        } else
+          new (&vec_[size_]) Coefficient();
+      }
+      // Construct the additional elements.
+      for ( ; size_ != row.size(); ++size_) {
+        // Constructs (*this)[size_] with row[size_].
+        if (itr != itr_end && itr.index() == size_) {
+          new (&vec_[size_]) Coefficient(*itr);
+          ++itr;
+        } else
+          new (&vec_[size_]) Coefficient();
+      }
+    } else {
+      // Reallocation is required.
+      destroy();
+      init(row);
     }
-    for (Sparse_Row::const_iterator
-        i = row.begin(), i_end = row.end(); i != i_end; ++i)
-      (*this)[i.index()] = *i;
   }
+  PPL_ASSERT(size() == row.size());
+  PPL_ASSERT(OK());
 
   return *this;
 }
@@ -136,14 +242,14 @@ PPL::Dense_Row::normalize() {
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
       if (x_i_sign < 0)
-	neg_assign(gcd);
+        neg_assign(gcd);
       goto compute_gcd;
     }
   }
   // We reach this point only if all the coefficients were zero.
   return;
 
- compute_gcd:
+compute_gcd:
   if (gcd == 1)
     return;
   while (i > 0) {
@@ -162,7 +268,7 @@ PPL::Dense_Row::normalize() {
       // Overall, we win.
       gcd_assign(gcd, x_i, gcd);
       if (gcd == 1)
-	return;
+        return;
     }
   }
   // Divide the coefficients by the GCD.
@@ -220,17 +326,10 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  Dense_Row& x = *this;
-  const dimension_type old_size = x.size();
-  if (new_size < old_size)
-    x.shrink(new_size);
-  else if (new_size > old_size) {
-    Dense_Row y(new_size, Flags());
-    x.swap(y);
-  }
+  resize(new_size);
 
   for (dimension_type col = 0; col < new_size; ++col)
-    if (!(s >> x[col]))
+    if (!(s >> (*this)[col]))
       return false;
   if (!(s >> str) || str != "f")
     return false;
@@ -238,8 +337,13 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
 }
 
 PPL::memory_size_type
-PPL::Dense_Row_Impl_Handler::Impl::external_memory_in_bytes() const {
-  memory_size_type n = 0;
+PPL::Dense_Row::external_memory_in_bytes(dimension_type /* capacity */) const {
+  return external_memory_in_bytes();
+}
+
+PPL::memory_size_type
+PPL::Dense_Row::external_memory_in_bytes() const {
+  memory_size_type n = capacity_ * sizeof(Coefficient);
   for (dimension_type i = size(); i-- > 0; )
     n += PPL::external_memory_in_bytes(vec_[i]);
   return n;
@@ -253,54 +357,56 @@ PPL::Dense_Row::OK() const {
 #endif
 
   bool is_broken = false;
-#if PPL_ROW_EXTRA_DEBUG
-# if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity_ == 0) {
-    cerr << "Illegal row capacity: is 0, should be at least 1"
-	 << endl;
-    is_broken = true;
-  }
-  else
-# endif // !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
+
   if (capacity_ > max_size()) {
-    cerr << "Dense_Row capacity exceeds the maximum allowed size:"
-	 << endl
-	 << "is " << capacity_
-	 << ", should be less than or equal to " << max_size() << "."
-	 << endl;
-    is_broken = true;
-  }
-#endif // PPL_ROW_EXTRA_DEBUG
-  if (size() > max_size()) {
 #ifndef NDEBUG
-    cerr << "Dense_Row size exceeds the maximum allowed size:"
-	 << endl
-	 << "is " << size()
-	 << ", should be less than or equal to " << max_size() << "."
-	 << endl;
+    cerr << "Dense_Row capacity exceeds the maximum allowed size:" << endl
+         << "is " << capacity_
+         << ", should be less than or equal to " << max_size() << "."
+         << endl;
 #endif
     is_broken = true;
   }
-#if PPL_ROW_EXTRA_DEBUG
+
+  if (size() > max_size()) {
+#ifndef NDEBUG
+    cerr << "Dense_Row size exceeds the maximum allowed size:" << endl
+         << "is " << size()
+         << ", should be less than or equal to " << max_size() << "." << endl;
+#endif
+    is_broken = true;
+  }
+
   if (capacity_ < size()) {
 #ifndef NDEBUG
     cerr << "Dense_Row is completely broken: capacity is " << capacity_
-	 << ", size is " << size() << "."
-	 << endl;
+         << ", size is " << size() << "." << endl;
 #endif
     is_broken = true;
   }
-#endif // PPL_ROW_EXTRA_DEBUG
+  
+  if (capacity() == 0) {
+    if (vec_ != 0)
+      is_broken = true;
+  } else {
+    if (vec_ == 0)
+      is_broken = true;
+  }
+  
+  // TODO: Remove this.
+  // It was added to help finding unconstructed Coefficients with valgrind.
+  
+  Coefficient sum;
+  
+  for (dimension_type i = size(); i-- > 0; )
+    sum += vec_[i];
+
   return !is_broken;
 }
 
 bool
 PPL::Dense_Row::OK(const dimension_type row_size,
-	     const dimension_type
-#if PPL_ROW_EXTRA_DEBUG
-	     row_capacity
-#endif
-	     ) const {
+                   const dimension_type row_capacity) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -308,28 +414,20 @@ PPL::Dense_Row::OK(const dimension_type row_size,
 
   bool is_broken = !OK();
 
-#if PPL_ROW_EXTRA_DEBUG
   // Check the declared capacity.
-# if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity_ == 1 && row_capacity == 0)
-    // This is fine.
-    ;
-  else
-# endif // !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ != row_capacity) {
+#ifndef NDEBUG
     cerr << "Dense_Row capacity mismatch: is " << capacity_
-	 << ", should be " << row_capacity << "."
-	 << endl;
+         << ", should be " << row_capacity << "." << endl;
+#endif // NDEBUG
     is_broken = true;
   }
-#endif // PPL_ROW_EXTRA_DEBUG
 
   // Check the declared size.
   if (size() != row_size) {
 #ifndef NDEBUG
     cerr << "Dense_Row size mismatch: is " << size()
-	 << ", should be " << row_size << "."
-	 << endl;
+         << ", should be " << row_size << "." << endl;
 #endif
     is_broken = true;
   }
@@ -341,6 +439,7 @@ bool
 PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   const dimension_type x_size = x.size();
   const dimension_type y_size = y.size();
+  
   if (x_size != y_size)
     return false;
 

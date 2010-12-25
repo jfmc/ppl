@@ -32,8 +32,10 @@ namespace Parma_Polyhedra_Library {
 template <typename Row>
 Matrix<Row>::Matrix(dimension_type n, Flags row_flags)
   : rows(n), num_columns_(n) {
-  for (dimension_type i = 0; i < rows.size(); ++i)
-    rows[i].construct(num_columns_, row_flags);
+  for (dimension_type i = 0; i < rows.size(); ++i) {
+    rows[i].flags() = row_flags;
+    rows[i].resize(num_columns_);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -41,8 +43,10 @@ template <typename Row>
 Matrix<Row>::Matrix(dimension_type num_rows, dimension_type num_columns,
                     Flags row_flags)
   : rows(num_rows), num_columns_(num_columns) {
-  for (dimension_type i = 0; i < rows.size(); ++i)
-    rows[i].construct(num_columns_, row_flags);
+  for (dimension_type i = 0; i < rows.size(); ++i) {
+    rows[i].flags() = row_flags;
+    rows[i].resize(num_columns_);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -53,8 +57,10 @@ Matrix<Row>::resize(dimension_type num_rows, dimension_type num_columns,
   const dimension_type old_num_rows = rows.size();
   rows.resize(num_rows);
   if (old_num_rows < num_rows) {
-    for (dimension_type i = old_num_rows; i < num_rows; ++i)
-      rows[i].construct(num_columns, row_flags);
+    for (dimension_type i = old_num_rows; i < num_rows; ++i) {
+      rows[i].flags() = row_flags;
+      rows[i].resize(num_columns);
+    }
     if (num_columns_ != num_columns) {
       num_columns_ = num_columns;
       for (dimension_type i = 0; i < old_num_rows; ++i)

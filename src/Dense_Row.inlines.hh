@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Dense_Row_inlines_hh
 #define PPL_Dense_Row_inlines_hh 1
 
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Dense_Row.defs.hh"
+
 #include "assert.hh"
 #include <cstddef>
 #include <limits>
@@ -30,279 +34,172 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-
-inline void*
-Dense_Row_Impl_Handler::Impl::operator new(const size_t fixed_size,
-                                           const dimension_type capacity) {
-#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  return ::operator new(fixed_size + capacity*sizeof(Coefficient));
-#else
-  PPL_ASSERT(capacity >= 1);
-  return ::operator new(fixed_size + (capacity-1)*sizeof(Coefficient));
-#endif
-}
-
-inline void
-Dense_Row_Impl_Handler::Impl::operator delete(void* p) {
-  ::operator delete(p);
-}
-
-inline void
-Dense_Row_Impl_Handler::Impl::operator delete(void* p, dimension_type) {
-  ::operator delete(p);
-}
-
 inline dimension_type
-Dense_Row_Impl_Handler::Impl::max_size() {
+Dense_Row::max_size() {
   return std::numeric_limits<size_t>::max() / sizeof(Coefficient);
 }
 
 inline dimension_type
-Dense_Row_Impl_Handler::Impl::size() const {
-  return size_;
-}
-
-inline void
-Dense_Row_Impl_Handler::Impl::set_size(const dimension_type new_size) {
-  size_ = new_size;
-}
-
-inline void
-Dense_Row_Impl_Handler::Impl::bump_size() {
-  ++size_;
-}
-
-inline
-Dense_Row_Impl_Handler::Impl::Impl(const Row_Flags f)
-  : size_(0), flags_(f) {
-}
-
-inline
-Dense_Row_Impl_Handler::Impl::~Impl() {
-  shrink(0);
-}
-
-inline const Row_Flags&
-Dense_Row_Impl_Handler::Impl::flags() const {
-  return flags_;
-}
-
-inline Row_Flags&
-Dense_Row_Impl_Handler::Impl::flags() {
-  return flags_;
-}
-
-inline Coefficient&
-Dense_Row_Impl_Handler::Impl::operator[](const dimension_type k) {
-  PPL_ASSERT(k < size());
-  return vec_[k];
-}
-
-inline Coefficient_traits::const_reference
-Dense_Row_Impl_Handler::Impl::operator[](const dimension_type k) const {
-  PPL_ASSERT(k < size());
-  return vec_[k];
-}
-
-inline memory_size_type
-Dense_Row_Impl_Handler::Impl
-::total_memory_in_bytes(dimension_type capacity) const {
-  return
-    sizeof(*this)
-    + capacity*sizeof(Coefficient)
-#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-    - 1*sizeof(Coefficient)
-#endif
-    + external_memory_in_bytes();
-}
-
-inline memory_size_type
-Dense_Row_Impl_Handler::Impl::total_memory_in_bytes() const {
-  // In general, this is a lower bound, as the capacity of *this
-  // may be strictly greater than `size_'
-  return total_memory_in_bytes(size_);
-}
-
-inline dimension_type
-Dense_Row::max_size() {
-  return Impl::max_size();
-}
-
-inline dimension_type
 Dense_Row::size() const {
-  return impl->size();
+  return size_;
 }
 
 inline const Row_Flags&
 Dense_Row::flags() const {
-  return impl->flags();
+  return flags_;
 }
 
 inline Row_Flags&
 Dense_Row::flags() {
-  return impl->flags();
+  return flags_;
 }
 
-#if PPL_DENSE_ROW_EXTRA_DEBUG
 inline dimension_type
 Dense_Row::capacity() const {
   return capacity_;
 }
-#endif
-
-inline
-Dense_Row_Impl_Handler::Dense_Row_Impl_Handler()
-  : impl(0) {
-#if PPL_DENSE_ROW_EXTRA_DEBUG
-  capacity_ = 0;
-#endif
-}
-
-inline
-Dense_Row_Impl_Handler::~Dense_Row_Impl_Handler() {
-  delete impl;
-}
 
 inline
 Dense_Row::Dense_Row()
-  : Dense_Row_Impl_Handler() {
+  : size_(0), capacity_(0), flags_(), vec_(0) {
+
+  PPL_ASSERT(OK());
 }
 
-inline void
-Dense_Row::allocate(
-#if PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-	       const
-#endif
-	       dimension_type capacity,
-	       const Flags f) {
-  PPL_ASSERT(capacity <= max_size());
-#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity == 0)
-    ++capacity;
-#endif
-  PPL_ASSERT(impl == 0);
-  impl = new (capacity) Impl(f);
-#if PPL_DENSE_ROW_EXTRA_DEBUG
-  PPL_ASSERT(capacity_ == 0);
-  capacity_ = capacity;
-#endif
-}
+inline
+Dense_Row::Dense_Row(Flags f)
+  : size_(0), capacity_(0), flags_(f), vec_(0) {
 
-inline void
-Dense_Row::expand_within_capacity(const dimension_type new_size) {
-  PPL_ASSERT(impl);
-#if PPL_DENSE_ROW_EXTRA_DEBUG
-  PPL_ASSERT(new_size <= capacity_);
-#endif
-  impl->expand_within_capacity(new_size);
-}
-
-inline void
-Dense_Row::copy_construct_coefficients(const Dense_Row& y) {
-  PPL_ASSERT(impl && y.impl);
-#if PPL_DENSE_ROW_EXTRA_DEBUG
-  PPL_ASSERT(y.size() <= capacity_);
-#endif
-  impl->copy_construct_coefficients(*(y.impl));
-}
-
-inline void
-Dense_Row::construct(const dimension_type sz,
-                     const dimension_type capacity,
-                     const Flags f) {
-  PPL_ASSERT(sz <= capacity && capacity <= max_size());
-  allocate(capacity, f);
-  expand_within_capacity(sz);
-}
-
-inline void
-Dense_Row::construct(const dimension_type sz, const Flags f) {
-  construct(sz, sz, f);
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const dimension_type sz,
                      const dimension_type capacity,
                      const Flags f)
-  : Dense_Row_Impl_Handler() {
-  construct(sz, capacity, f);
+  : size_(0), capacity_(0), flags_(f), vec_(0) {
+  resize(sz, capacity);
+  PPL_ASSERT(size() == sz);
+  PPL_ASSERT(capacity_ = capacity);
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const dimension_type sz, const Flags f)
-  : Dense_Row_Impl_Handler() {
-  construct(sz, f);
+  : size_(0), capacity_(0), flags_(f), vec_(0) {
+  resize(sz);
+  PPL_ASSERT(size() == sz);
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y)
-  : Dense_Row_Impl_Handler() {
-  if (y.impl) {
-    allocate(compute_capacity(y.size(), max_size()), y.flags());
-    copy_construct_coefficients(y);
+  : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
+  if (y.vec_ != 0) {
+    capacity_ = y.capacity();
+    vec_ = static_cast<Coefficient*>(
+        operator new(sizeof(Coefficient) * capacity_));
+    while (size_ != y.size()) {
+      new (&vec_[size_]) Coefficient(y[size_]);
+      ++size_;
+    }
   }
+  PPL_ASSERT(size() == y.size());
+  PPL_ASSERT(capacity() == y.capacity());
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y,
                      const dimension_type capacity)
-  : Dense_Row_Impl_Handler() {
-  PPL_ASSERT(y.impl);
-  PPL_ASSERT(y.size() <= capacity && capacity <= max_size());
-  allocate(capacity, y.flags());
-  copy_construct_coefficients(y);
+  : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
+  PPL_ASSERT(y.size() <= capacity);
+  PPL_ASSERT(capacity <= max_size());
+
+  vec_ = static_cast<Coefficient*>(
+      operator new(sizeof(Coefficient) * capacity));
+  capacity_ = capacity;
+
+  if (y.vec_ != 0) {
+    while (size_ != y.size()) {
+      new (&vec_[size_]) Coefficient(y[size_]);
+      ++size_;
+    }
+  }
+  PPL_ASSERT(size() == y.size());
+  PPL_ASSERT(capacity_ = capacity);
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y,
                      const dimension_type sz,
                      const dimension_type capacity)
-  : Dense_Row_Impl_Handler() {
-  PPL_ASSERT(y.impl);
-  PPL_ASSERT(y.size() <= sz && sz <= capacity && capacity <= max_size());
-  allocate(capacity, y.flags());
-  copy_construct_coefficients(y);
-  expand_within_capacity(sz);
+  : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
+  PPL_ASSERT(y.size() <= sz);
+  PPL_ASSERT(sz <= capacity);
+  PPL_ASSERT(capacity <= max_size());
+  PPL_ASSERT(capacity != 0);
+  
+  vec_ = static_cast<Coefficient*>(operator new(sizeof(Coefficient) * capacity));
+  capacity_ = capacity;
+  
+  dimension_type n = std::min(sz, y.size());
+  while (size_ != n) {
+    new (&vec_[size_]) Coefficient(y[size_]);
+    ++size_;
+  }
+  while (size_ != sz) {
+    new (&vec_[size_]) Coefficient();
+    ++size_;
+  }
+  PPL_ASSERT(size() == sz);
+  PPL_ASSERT(capacity_ = capacity);
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::~Dense_Row() {
+  destroy();
 }
 
 inline void
-Dense_Row::shrink(const dimension_type new_size) {
-  PPL_ASSERT(impl);
-  impl->shrink(new_size);
+Dense_Row::destroy() {
+  resize(0);
+  operator delete(vec_);
 }
 
 inline void
 Dense_Row::swap(Dense_Row& y) {
-  std::swap(impl, y.impl);
-#if PPL_DENSE_ROW_EXTRA_DEBUG
+  std::swap(size_, y.size_);
   std::swap(capacity_, y.capacity_);
-#endif
+  std::swap(flags_, y.flags_);
+  std::swap(vec_, y.vec_);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(y.OK());
 }
 
 inline Dense_Row&
 Dense_Row::operator=(const Dense_Row& y) {
-  // Copy-construct `tmp' from `y'.
-  Dense_Row tmp(y);
-  // Swap the implementation of `*this' with the one of `tmp'.
-  swap(tmp);
-  // Now `tmp' goes out of scope, so the old `*this' will be destroyed.
+  
+  Dense_Row x(y);
+  std::swap(*this, x);
+
   return *this;
 }
 
 inline Coefficient&
 Dense_Row::operator[](const dimension_type k) {
-  PPL_ASSERT(impl);
-  return (*impl)[k];
+  PPL_ASSERT(vec_ != 0);
+  PPL_ASSERT(k < size());
+  return vec_[k];
 }
 
 inline Coefficient_traits::const_reference
 Dense_Row::operator[](const dimension_type k) const {
-  PPL_ASSERT(impl);
-  return (*impl)[k];
+  PPL_ASSERT(vec_ != 0);
+  PPL_ASSERT(k < size());
+  return vec_[k];
 }
 
 inline void
@@ -396,7 +293,7 @@ Dense_Row::lower_bound(const_iterator itr, dimension_type i) const {
 
 inline Dense_Row::iterator
 Dense_Row::insert(dimension_type i,
-                       Coefficient_traits::const_reference x) {
+                  Coefficient_traits::const_reference x) {
   (*this)[i] = x;
   return find(i);
 }
@@ -408,7 +305,7 @@ Dense_Row::insert(dimension_type i) {
 
 inline Dense_Row::iterator
 Dense_Row::insert(iterator itr, dimension_type i,
-                       Coefficient_traits::const_reference x) {
+                  Coefficient_traits::const_reference x) {
   (void)itr;
   (*this)[i] = x;
   return find(i);
@@ -421,27 +318,13 @@ Dense_Row::insert(iterator itr, dimension_type i) {
 }
 
 inline memory_size_type
-Dense_Row::external_memory_in_bytes(dimension_type capacity) const {
-  return impl->total_memory_in_bytes(capacity);
+Dense_Row::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline memory_size_type
 Dense_Row::total_memory_in_bytes(dimension_type capacity) const {
   return sizeof(*this) + external_memory_in_bytes(capacity);
-}
-
-inline memory_size_type
-Dense_Row::external_memory_in_bytes() const {
-#if PPL_DENSE_ROW_EXTRA_DEBUG
-  return impl->total_memory_in_bytes(capacity_);
-#else
-  return impl->total_memory_in_bytes();
-#endif
-}
-
-inline memory_size_type
-Dense_Row::total_memory_in_bytes() const {
-  return sizeof(*this) + external_memory_in_bytes();
 }
 
 /*! \relates Dense_Row */

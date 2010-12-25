@@ -74,6 +74,8 @@ public:
     \see CO_Tree::const_iterator
   */
   typedef CO_Tree::const_iterator const_iterator;
+  
+  explicit Sparse_Row(Flags flags);
 
   //! Constructs a row with the specified size.
   /*!
@@ -132,44 +134,6 @@ public:
   explicit Sparse_Row(const Dense_Row& row);
 
   Sparse_Row& operator=(const Dense_Row& row);
-
-  //! Resizes the row to size \p n and sets the flags to \p flags.
-  /*!
-    \param n
-    The new size for the row.
-
-    \param flags
-    Flags for the row that will be constructed.
-
-    This method, with this signature, is needed for compatibility with
-    Dense_Row.
-
-    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
-    row and removing the trailing k elements.
-    It takes \f$O(1)\f$ time when enlarging the row.
-  */
-  void construct(dimension_type n, Flags flags = Flags());
-
-  //! Resizes the row to size \p n and sets the flags to \p flags.
-  /*!
-    \param n
-    The new size for the row.
-
-    \param capacity
-    This is ignored.
-
-    \param flags
-    Flags for the row that will be constructed.
-
-    This method, with this signature, is needed for compatibility with
-    Dense_Row.
-
-    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
-    row and removing the trailing k elements.
-    It takes \f$O(1)\f$ time when enlarging the row.
-  */
-  void construct(dimension_type n, dimension_type capacity,
-                 Flags flags = Flags());
 
   //! Swaps *this and x.
   /*!
