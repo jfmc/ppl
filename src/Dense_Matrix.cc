@@ -78,6 +78,7 @@ PPL::Dense_Matrix::add_zero_rows(const dimension_type n,
     for (dimension_type i = new_num_rows; i-- > old_num_rows; )
       rows[i].construct(row_size, row_capacity, row_flags);
   }
+  PPL_ASSERT(OK());
 }
 
 void
@@ -105,6 +106,7 @@ PPL::Dense_Matrix::add_zero_columns(const dimension_type n) {
   }
   // Rows have been expanded.
   row_size = new_num_columns;
+  PPL_ASSERT(OK());
 }
 
 void
@@ -129,6 +131,8 @@ PPL::Dense_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
     swaps.push_back(0);
   }
   permute_columns(swaps);
+  
+  PPL_ASSERT(OK());
 }
 
 void
@@ -202,6 +206,8 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
     // Put the new vector into place.
     swap(new_matrix);
   }
+  
+  PPL_ASSERT(OK());
 }
 
 void
@@ -311,6 +317,8 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
     // Rows have grown or shrunk.
     row_size = new_n_columns;
   }
+  
+  PPL_ASSERT(OK());
 }
 
 void
@@ -356,6 +364,8 @@ PPL::Dense_Matrix::swap_columns(const dimension_type i, const dimension_type j) 
     Dense_Row& rows_k = rows[k];
     std::swap(rows_k[i], rows_k[j]);
   }
+  
+  PPL_ASSERT(OK());
 }
 
 void
@@ -365,6 +375,8 @@ PPL::Dense_Matrix::remove_trailing_columns(const dimension_type n) {
   row_size -= n;
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].shrink(row_size);
+  
+  PPL_ASSERT(OK());
 }
 
 void
@@ -379,6 +391,8 @@ PPL::Dense_Matrix::remove_column(const dimension_type i) {
     permute_columns(cycle);
   }
   remove_trailing_columns(1);
+  
+  PPL_ASSERT(OK());
 }
 
 void
@@ -406,6 +420,7 @@ PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
       }
     }
   }
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Dense_Matrix */

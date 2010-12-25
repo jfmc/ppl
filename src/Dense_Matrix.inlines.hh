@@ -123,13 +123,15 @@ Dense_Matrix::Dense_Matrix()
   : rows(),
     row_size(0),
     row_capacity(0) {
+  PPL_ASSERT(OK());
 }
 
 inline
 Dense_Matrix::Dense_Matrix(const Dense_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
+    row_capacity(y.row_capacity) {
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -138,18 +140,12 @@ Dense_Matrix::~Dense_Matrix() {
 
 inline Dense_Matrix&
 Dense_Matrix::operator=(const Dense_Matrix& y) {
-  // Without the following guard against auto-assignments we would
-  // recompute the row capacity based on row size, possibly without
-  // actually increasing the capacity of the rows.  This would lead to
-  // an inconsistent state.
   if (this != &y) {
-    // The following assignment may do nothing on auto-assignments...
     rows = y.rows;
     row_size = y.row_size;
-    // ... hence the following assignment must not be done on
-    // auto-assignments.
-    row_capacity = compute_capacity(y.row_size, max_num_columns());
+    row_capacity = y.row_capacity;
   }
+  PPL_ASSERT(OK());
   return *this;
 }
 
@@ -157,6 +153,7 @@ inline void
 Dense_Matrix::add_row(const Dense_Row& y) {
   Dense_Row new_row(y, row_capacity);
   add_recycled_row(new_row);
+  PPL_ASSERT(OK());
 }
 
 inline Dense_Row&
@@ -192,6 +189,7 @@ Dense_Matrix::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(n <= rows.size());
   if (n != 0)
     rows.erase(rows.end() - n, rows.end());
+  PPL_ASSERT(OK());
 }
 
 inline void
@@ -200,6 +198,7 @@ Dense_Matrix::clear() {
   std::vector<Dense_Row>().swap(rows);
   row_size = 0;
   row_capacity = 0;
+  PPL_ASSERT(OK());
 }
 
 } // namespace Parma_Polyhedra_Library
