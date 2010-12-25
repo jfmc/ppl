@@ -100,7 +100,7 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, const Variable w)
                             "Linear_Expression(v, w):\n"
                             "v or w exceed the maximum allowed "
                             "space dimension.");
-  construct(space_dim+1, Linear_Row::Flags());
+  resize(space_dim+1);
   if (v_space_dim != w_space_dim) {
     ++((*this)[v_space_dim]);
     --((*this)[w_space_dim]);

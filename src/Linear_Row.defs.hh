@@ -211,32 +211,6 @@ public:
   //! Pre-constructs a row: construction must be completed by construct().
   Linear_Row();
 
-  //! \name Post-constructors
-  //@{
-  //! Constructs properly a default-constructed element.
-  /*!
-    Builds a row with type \p t, size \p sz and minimum capacity.
-  */
-  void construct(dimension_type sz, Flags f);
-
-  //! Constructs properly a default-constructed element.
-  /*!
-    \param sz
-    The size of the row that will be constructed;
-
-    \param capacity
-    The minimum capacity of the row that will be constructed.
-
-    \param f
-    Flags for the row that will be constructed.
-
-    The row that we are constructing has a minimum capacity, i.e., it
-    can contain at least \p capacity elements, \p sz of which will be
-    default-constructed now. The row flags are set to \p f.
-  */
-  void construct(dimension_type sz, dimension_type capacity, Flags f);
-  //@} // Post-constructors
-
   //! Tight constructor: resizing will require reallocation.
   Linear_Row(dimension_type sz, Flags f);
 

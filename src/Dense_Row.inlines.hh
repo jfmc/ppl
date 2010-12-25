@@ -66,24 +66,10 @@ Dense_Row::Dense_Row()
   PPL_ASSERT(OK());
 }
 
-inline void
-Dense_Row::construct(const dimension_type sz,
-                     const dimension_type capacity,
-                     const Flags f) {
-  PPL_ASSERT(capacity <= max_size());
-  PPL_ASSERT(sz <= capacity);
-  PPL_ASSERT(capacity_ == 0);
-  flags() = f;
-  resize(sz, capacity);
-  PPL_ASSERT(size() == sz);
-  PPL_ASSERT(capacity_ = capacity);
-  PPL_ASSERT(OK());
-}
+inline
+Dense_Row::Dense_Row(Flags f)
+  : size_(0), capacity_(0), flags_(f), vec_(0) {
 
-inline void
-Dense_Row::construct(const dimension_type sz, const Flags f) {
-  construct(sz, sz, f);
-  PPL_ASSERT(size() == sz);
   PPL_ASSERT(OK());
 }
 

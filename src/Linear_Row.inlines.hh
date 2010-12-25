@@ -159,26 +159,15 @@ Linear_Row::Linear_Row()
   : Dense_Row() {
 }
 
-inline void
-Linear_Row::construct(const dimension_type sz, const dimension_type capacity,
-		      const Flags f) {
-  Dense_Row::construct(sz, capacity, f);
-}
-
 inline
 Linear_Row::Linear_Row(const dimension_type sz, const dimension_type capacity,
-		       const Flags f) {
-  construct(sz, capacity, f);
-}
-
-inline void
-Linear_Row::construct(const dimension_type sz, const Flags f) {
-  construct(sz, sz, f);
+                       const Flags f)
+  : Dense_Row(sz, capacity, f) {
 }
 
 inline
-Linear_Row::Linear_Row(const dimension_type sz, const Flags f) {
-  construct(sz, f);
+Linear_Row::Linear_Row(const dimension_type sz, const Flags f)
+  : Dense_Row(sz, f) {
 }
 
 inline

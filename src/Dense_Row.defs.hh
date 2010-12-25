@@ -48,32 +48,8 @@ public:
   Dense_Row();
 
   explicit Dense_Row(const Sparse_Row& row);
-
-  //! \name Post-constructors
-  //@{
-  //! Constructs properly a default-constructed element.
-  /*!
-    Builds a row with size and capacity \p sz and flags \p f.
-  */
-  void construct(dimension_type sz, Flags f);
-
-  //! Constructs properly a default-constructed element.
-  /*!
-    \param sz
-    The size of the row that will be constructed;
-
-    \param capacity
-    The capacity of the row that will be constructed;
-
-    \param f
-    Flags for the row that will be constructed.
-
-    The row that is constructed has storage for \p capacity elements,
-    \p sz of which are default-constructed now.
-    The row flags are set to \p f.
-  */
-  void construct(dimension_type sz, dimension_type capacity, Flags f);
-  //@} // Post-constructors
+  
+  explicit Dense_Row(Flags f);
 
   //! Tight constructor: resizing may require reallocation.
   /*!
