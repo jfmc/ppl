@@ -879,7 +879,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   const Linear_System& x = *this;
   const dimension_type n_rows = num_rows();
   for (dimension_type i = 0; i < n_rows; ++i) {
-    if (!x[i].OK(row_size, row_capacity))
+    if (!x[i].OK(row_size))
       return false;
     // Checking for topology mismatches.
     if (x.topology() != x[i].topology()) {

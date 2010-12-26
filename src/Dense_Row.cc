@@ -405,23 +405,13 @@ PPL::Dense_Row::OK() const {
 }
 
 bool
-PPL::Dense_Row::OK(const dimension_type row_size,
-                   const dimension_type row_capacity) const {
+PPL::Dense_Row::OK(const dimension_type row_size) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
 #endif
 
   bool is_broken = !OK();
-
-  // Check the declared capacity.
-  if (capacity_ != row_capacity) {
-#ifndef NDEBUG
-    cerr << "Dense_Row capacity mismatch: is " << capacity_
-         << ", should be " << row_capacity << "." << endl;
-#endif // NDEBUG
-    is_broken = true;
-  }
 
   // Check the declared size.
   if (size() != row_size) {

@@ -214,7 +214,7 @@ void
 PPL::Dense_Matrix::add_recycled_row(Dense_Row& y) {
   // The added row must have the same size and capacity as the
   // existing rows of the system.
-  PPL_ASSERT(y.OK(row_size, row_capacity));
+  PPL_ASSERT(y.OK(row_size));
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -460,7 +460,7 @@ PPL::Dense_Matrix::OK() const {
 
   const Dense_Matrix& x = *this;
   for (dimension_type i = 0, n_rows = num_rows(); i < n_rows; ++i)
-    if (!x[i].OK(row_size, row_capacity))
+    if (!x[i].OK(row_size))
       return false;
 
   // All checks passed.

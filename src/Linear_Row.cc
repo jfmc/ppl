@@ -231,7 +231,6 @@ PPL::Linear_Row::OK() const {
 }
 
 bool
-PPL::Linear_Row::OK(const dimension_type row_size,
-		    const dimension_type row_capacity) const {
-  return Dense_Row::OK(row_size, row_capacity);
+PPL::Linear_Row::OK(const dimension_type row_size) const {
+  return Dense_Row::OK(row_size);
 }

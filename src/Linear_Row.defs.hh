@@ -359,9 +359,9 @@ public:
 
   /*! \brief
     Checks if all the invariants are satisfied and that the actual
-    size and capacity match the values provided as arguments.
+    size matches the value provided as argument.
   */
-  bool OK(dimension_type row_size, dimension_type row_capacity) const;
+  bool OK(dimension_type row_size) const;
 
 private:
   friend class Parma_Polyhedra_Library::Linear_Expression;
