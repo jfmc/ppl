@@ -483,7 +483,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     return_empty:
       last_row[0] = 1;
       dim_kinds.resize(1);
-      std::swap(sys.rows[0], sys.rows.back());
+      std::swap(sys[0], sys[sys.num_rows()-1]);
       sys.remove_trailing_rows(num_rows - 1);
 
       PPL_ASSERT(sys.OK());
