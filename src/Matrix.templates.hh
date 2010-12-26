@@ -55,6 +55,7 @@ void
 Matrix<Row>::resize(dimension_type num_rows, dimension_type num_columns,
                     Flags row_flags) {
   const dimension_type old_num_rows = rows.size();
+  reserve_rows(num_rows);
   rows.resize(num_rows);
   if (old_num_rows < num_rows) {
     for (dimension_type i = old_num_rows; i < num_rows; ++i) {
