@@ -137,11 +137,11 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     }
     else if (g_size < old_num_columns)
       if (old_num_rows == 0)
-	Dense_Matrix::add_row(Linear_Row(g, old_num_columns, row_capacity));
+	Dense_Matrix::add_row(Linear_Row(g, old_num_columns, old_num_columns));
       else {
 	// Create a resized copy of the row (and move the parameter
 	// divisor coefficient to its last position).
-	Linear_Row tmp_row(g, old_num_columns, row_capacity);
+	Linear_Row tmp_row(g, old_num_columns, old_num_columns);
 	std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
 	Dense_Matrix::add_row(tmp_row);
       }
