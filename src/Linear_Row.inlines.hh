@@ -36,6 +36,11 @@ Linear_Row::Flags::Flags()
 }
 
 inline
+Linear_Row::Flags::Flags(Dense_Row::Flags f)
+: Dense_Row::Flags(f) {
+}
+
+inline
 Linear_Row::Flags::Flags(const Topology t)
   : Dense_Row::Flags(t << nnc_bit) {
 #ifndef NDEBUG
@@ -124,14 +129,14 @@ Linear_Row::Flags::operator!=(const Flags& y) const {
   return !operator==(y);
 }
 
-inline const Linear_Row::Flags&
+inline const Linear_Row::Flags
 Linear_Row::flags() const {
-  return static_cast<const Flags&>(Dense_Row::flags());
+  return Flags(Dense_Row::flags());
 }
 
-inline Linear_Row::Flags&
-Linear_Row::flags() {
-  return static_cast<Flags&>(Dense_Row::flags());
+inline void
+Linear_Row::set_flags(Flags f) {
+  Dense_Row::set_flags(f);
 }
 
 inline bool
@@ -208,22 +213,30 @@ Linear_Row::topology() const {
 
 inline void
 Linear_Row::set_is_line_or_equality() {
-  flags().set_is_line_or_equality();
+  Flags f = flags();
+  f.set_is_line_or_equality();
+  set_flags(f);
 }
 
 inline void
 Linear_Row::set_is_ray_or_point_or_inequality() {
-  flags().set_is_ray_or_point_or_inequality();
+  Flags f = flags();
+  f.set_is_ray_or_point_or_inequality();
+  set_flags(f);
 }
 
 inline void
 Linear_Row::set_necessarily_closed() {
-  flags().set_necessarily_closed();
+  Flags f = flags();
+  f.set_necessarily_closed();
+  set_flags(f);
 }
 
 inline void
 Linear_Row::set_not_necessarily_closed() {
-  flags().set_not_necessarily_closed();
+  Flags f = flags();
+  f.set_not_necessarily_closed();
+  set_flags(f);
 }
 
 inline Coefficient_traits::const_reference

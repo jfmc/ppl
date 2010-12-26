@@ -105,7 +105,7 @@ PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
                    Sparse_Row_from_Dense_Row_helper_function(row));
   std::swap(tree, tmp_tree);
   size_ = row.size();
-  flags() = row.flags();
+  flags_ = row.flags();
   PPL_ASSERT(OK());
 
   return *this;

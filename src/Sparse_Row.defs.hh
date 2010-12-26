@@ -266,11 +266,11 @@ public:
   //! Returns the size() of the largest possible Sparse_Row.
   static dimension_type max_size();
 
-  //! Returns the flags associated with this row.
-  const Flags& flags() const;
+  //! Returns the flags of \p *this.
+  const Flags flags() const;
 
-  //! Returns a reference to the flags associated with this row.
-  Flags& flags();
+  //! Sets \p f as the flags of \p *this.
+  void set_flags(Flags f);
 
   //! Resets all the elements of this row.
   /*!
