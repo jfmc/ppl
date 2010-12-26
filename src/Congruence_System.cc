@@ -83,7 +83,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   }
   else if (cg_size < old_num_columns) {
     // Create a resized copy of `cg'.
-    Congruence rc(cg, old_num_columns, row_capacity);
+    Congruence rc(cg, old_num_columns);
     // Move the modulus to its place.
     std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
     add_recycled_row(rc);
@@ -101,7 +101,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
   const dimension_type old_num_columns = num_columns();
   if (cg_size < old_num_columns) {
     // Create a congruence of the required size from `c'.
-    Congruence cg(c, old_num_columns, row_capacity);
+    Congruence cg(c, old_num_columns, old_num_columns);
     add_recycled_row(cg);
   }
   else {
@@ -112,10 +112,10 @@ PPL::Congruence_System::insert(const Constraint& c) {
 	// Move the moduli to the last column.
 	swap_columns(old_num_columns - 1, cg_size - 1);
     }
-    Congruence cg(c, cg_size, row_capacity);
+    Congruence cg(c, cg_size, cg_size);
     add_recycled_row(cg);
   }
-  operator[](rows.size()-1).strong_normalize();
+  operator[](num_rows()-1).strong_normalize();
 
   PPL_ASSERT(OK());
 }
@@ -174,7 +174,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   const dimension_type x_mod_index = x.num_columns() - 1;
   const dimension_type y_mod_index = y_num_columns - 1;
   for (dimension_type i = y_num_rows; i-- > 0; ) {
-    Dense_Row copy(y[i], x.row_size, x.row_capacity);
+    Dense_Row copy(y[i], x.num_columns());
     // Swap the modulus to the correct column.
     std::swap(copy[x_mod_index], copy[y_mod_index]);
     std::swap(copy, x[x_num_rows+i]);
