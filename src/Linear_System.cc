@@ -57,7 +57,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   Linear_System& x = *this;
 
   // A temporary matrix...
-  Dense_Matrix tmp;
+  Matrix<Dense_Row> tmp;
   // ... with enough capacity not to require any reallocations.
   tmp.reserve_rows(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
 
@@ -92,7 +92,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
     }
 
   // We get the result matrix and let the old one be destroyed.
-  std::swap(tmp, static_cast<Dense_Matrix&>(*this));
+  std::swap(tmp, static_cast<Matrix<Dense_Row>&>(*this));
   // There are no pending rows.
   unset_pending_rows();
   PPL_ASSERT(check_sorted());
@@ -332,8 +332,8 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
 
   // First sort without removing duplicates.
-  Dense_Matrix::iterator first = begin() + first_row;
-  Dense_Matrix::iterator last = begin() + last_row;
+  Matrix<Dense_Row>::iterator first = begin() + first_row;
+  Matrix<Dense_Row>::iterator last = begin() + last_row;
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
   std::vector<Dense_Row>::iterator new_last = swapping_unique(first, last);
@@ -354,7 +354,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
 
   const bool was_sorted = is_sorted();
 
-  Dense_Matrix::add_row(r);
+  Matrix<Dense_Row>::add_row(r);
 
   //  We update `index_first_pending', because it must be equal to
   // `num_rows()'.
@@ -449,7 +449,8 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
     return false;
   if (x.first_pending_row() != y.first_pending_row())
     return false;
-  // Notice that calling operator==(const Dense_Matrix&, const Dense_Matrix&)
+  // Notice that calling operator==(const Matrix<Dense_Row>&,
+  //                                const Matrix<Dense_Row>&)
   // would be wrong here, as equality of the type fields would
   // not be checked.
   for (dimension_type i = x_num_rows; i-- > 0; )

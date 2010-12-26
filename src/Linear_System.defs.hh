@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Dense_Row.types.hh"
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
-#include "Dense_Matrix.defs.hh"
+#include "Matrix.defs.hh"
 #include "Topology.hh"
 #include "Linear_Row.defs.hh"
 
@@ -51,7 +51,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-class Parma_Polyhedra_Library::Linear_System : public Dense_Matrix {
+class Parma_Polyhedra_Library::Linear_System : public Matrix<Dense_Row> {
 public:
   //! Builds an empty linear system with specified topology.
   /*!

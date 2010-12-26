@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.types.hh"
 #include "globals.defs.hh"
+#include "Coefficient.defs.hh"
 #include <vector>
 #include <ostream>
 

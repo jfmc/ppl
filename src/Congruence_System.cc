@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
-  : Dense_Matrix(0, cs.space_dimension() + 2) {
+  : Matrix<Dense_Row>(0, cs.space_dimension() + 2) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
@@ -245,7 +245,7 @@ PPL::Congruence_System::has_linear_equalities() const {
 
 void
 PPL::Congruence_System::const_iterator::skip_forward() {
-  const Dense_Matrix::const_iterator csp_end = csp->end();
+  const Matrix<Dense_Row>::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
@@ -442,8 +442,8 @@ PPL::Congruence_System::finalize() {
 
 bool
 PPL::Congruence_System::OK() const {
-  // A Congruence_System must be a valid Dense_Matrix.
-  if (!Dense_Matrix::OK())
+  // A Congruence_System must be a valid Matrix.
+  if (!Matrix<Dense_Row>::OK())
     return false;
 
   if (num_rows()) {

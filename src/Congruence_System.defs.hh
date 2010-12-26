@@ -28,9 +28,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
-#include "Dense_Matrix.defs.hh"
+#include "Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Grid.types.hh"
 #include "Grid_Certificate.types.hh"
+#include "Constraint_System.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -118,7 +120,7 @@ swap(Parma_Polyhedra_Library::Congruence_System& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other congruences), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::Congruence_System : private Dense_Matrix {
+class Parma_Polyhedra_Library::Congruence_System : private Matrix<Dense_Row> {
 public:
   //! Default constructor: builds an empty system of congruences.
   Congruence_System();
@@ -278,13 +280,13 @@ public:
     friend class Congruence_System;
 
     //! The const iterator over the matrix of congruences.
-    Dense_Matrix::const_iterator i;
+    Matrix<Dense_Row>::const_iterator i;
 
     //! A const pointer to the matrix of congruences.
-    const Dense_Matrix* csp;
+    const Matrix<Dense_Row>* csp;
 
     //! Constructor.
-    const_iterator(const Dense_Matrix::const_iterator& iter,
+    const_iterator(const Matrix<Dense_Row>::const_iterator& iter,
 		   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
