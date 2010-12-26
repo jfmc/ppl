@@ -61,6 +61,12 @@ Matrix<Row>::num_columns() const {
 }
 
 template <typename Row>
+inline dimension_type
+Matrix<Row>::row_capacity() const {
+  return rows.capacity();
+}
+
+template <typename Row>
 inline bool
 Matrix<Row>::has_no_rows() const {
   return num_rows() == 0;
@@ -70,6 +76,26 @@ template <typename Row>
 inline void
 Matrix<Row>::resize(dimension_type n, Flags row_flags) {
   resize(n, n, row_flags);
+}
+
+template <typename Row>
+inline void
+Matrix<Row>::reserve_rows(dimension_type requested_capacity) {
+  
+  if (rows.capacity() < requested_capacity) {
+    // Reallocation will take place.
+    std::vector<Row> new_rows;
+    
+    new_rows.reserve(compute_capacity(requested_capacity, max_num_rows()));
+    new_rows.resize(rows.size());
+    
+    // Steal the old rows.
+    for (dimension_type i = rows.size(); i-- > 0; )
+      std::swap(new_rows[i], rows[i]);
+    
+    // Put the new vector into place.
+    std::swap(rows, new_rows);
+  }
 }
 
 template <typename Row>
@@ -97,6 +123,7 @@ Matrix<Row>::add_zero_rows(dimension_type n, Flags row_flags) {
 template <typename Row>
 inline void
 Matrix<Row>::add_row(const Row& x) {
+  // TODO: Optimize this.
   Row row(x);
   add_zero_rows(1, Flags());
   // Now x may have been invalidated, if it was a row of this matrix.
@@ -116,6 +143,12 @@ template <typename Row>
 inline void
 Matrix<Row>::remove_trailing_rows(dimension_type n) {
   resize(num_rows() - n, num_columns());
+}
+
+template <typename Row>
+inline void
+Matrix<Row>::remove_rows(iterator first, iterator last) {
+  rows.erase(first, last);
 }
 
 template <typename Row>

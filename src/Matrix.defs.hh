@@ -99,6 +99,10 @@ public:
     This method takes \f$O(1)\f$ time.
   */
   dimension_type num_columns() const;
+  
+  // TODO: Check if this can be removed.
+  //! Returns the capacity of the row vector.
+  dimension_type row_capacity() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
   /*!
@@ -113,6 +117,10 @@ public:
 
   //! Equivalent to resize(n, n, row_flags).
   void resize(dimension_type n, Flags row_flags = Flags());
+  
+  // TODO: Check if this can become private.
+  //! Reserves space for at least \p n rows.
+  void reserve_rows(dimension_type n);
 
   //! Resizes this matrix to the specified dimensions.
   /*!
@@ -252,6 +260,8 @@ public:
     rows.
   */
   void remove_trailing_rows(dimension_type n);
+  
+  void remove_rows(iterator first, iterator last);
 
   //! Permutes the columns of the matrix.
   /*!
@@ -284,6 +294,9 @@ public:
     in a permutation.
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
+
+  //! Swaps the columns having indexes \p i and \p j.
+  void swap_columns(dimension_type i,  dimension_type j);
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!

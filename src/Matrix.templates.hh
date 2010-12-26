@@ -108,6 +108,13 @@ Matrix<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
 
 template <typename Row>
 void
+Matrix<Row>::swap_columns(dimension_type i, dimension_type j) {
+  for (dimension_type k = num_rows(); k-- > 0; )
+    (*this)[k].swap(i, j);
+}
+
+template <typename Row>
+void
 Matrix<Row>::add_zero_columns(dimension_type n, dimension_type i) {
   for (dimension_type j = rows.size(); j-- > 0; )
     rows[j].add_zeroes_and_shift(n, i);
