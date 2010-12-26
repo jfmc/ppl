@@ -29,6 +29,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+Dense_Matrix::remove_rows(iterator first, iterator last) {
+  rows.erase(first, last);
+}
+
+inline void
+Dense_Matrix::reserve_rows(dimension_type n) {
+  rows.reserve(n);
+}
+
 inline dimension_type
 Dense_Matrix::max_num_rows() {
   return std::vector<Dense_Row>().max_size();
@@ -99,6 +109,16 @@ Dense_Matrix::const_iterator::operator!=(const const_iterator& y) const {
 inline bool
 Dense_Matrix::has_no_rows() const {
   return rows.empty();
+}
+
+inline Dense_Matrix::iterator
+Dense_Matrix::begin() {
+  return rows.begin();
+}
+
+inline Dense_Matrix::iterator
+Dense_Matrix::end() {
+  return rows.end();
 }
 
 inline Dense_Matrix::const_iterator

@@ -79,6 +79,8 @@ public:
 
   //! Assignment operator.
   Dense_Matrix& operator=(const Dense_Matrix& y);
+  
+  typedef std::vector<Dense_Row>::iterator iterator;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! An iterator over a matrix.
@@ -151,6 +153,9 @@ public:
     different semantics).
   */
   bool has_no_rows() const;
+
+  iterator begin();
+  iterator end();
 
   /*! \brief
     Returns the const_iterator pointing to the first row, if \p *this is
@@ -348,6 +353,9 @@ public:
   //! Removes from the matrix the last \p n rows.
   void remove_trailing_rows(dimension_type n);
 
+  void remove_rows(iterator first, iterator last);
+  void reserve_rows(dimension_type n);
+  
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 };
