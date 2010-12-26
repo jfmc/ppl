@@ -44,14 +44,14 @@ Dense_Row::size() const {
   return size_;
 }
 
-inline const Row_Flags&
+inline const Dense_Row::Flags
 Dense_Row::flags() const {
   return flags_;
 }
 
-inline Row_Flags&
-Dense_Row::flags() {
-  return flags_;
+inline void
+Dense_Row::set_flags(Dense_Row::Flags f) {
+  flags_ = f;
 }
 
 inline dimension_type

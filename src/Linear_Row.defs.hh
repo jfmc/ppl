@@ -186,6 +186,9 @@ public:
   private:
     //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
+    
+    //! Constructor from a Dense_Row::Flags object.
+    explicit Flags(Dense_Row::Flags flags);
 
     //! \name The bits that are currently in use
     //@{
@@ -238,11 +241,11 @@ public:
 
   //! \name Flags inspection methods
   //@{
-  //! Returns a const reference to the flags of \p *this.
-  const Flags& flags() const;
+  //! Returns the flags of \p *this.
+  const Flags flags() const;
 
-  //! Returns a non-const reference to the flags of \p *this.
-  Flags& flags();
+  //! Sets \p f as the flags of \p *this.
+  void set_flags(Flags f);
 
   //! Returns the topological kind of \p *this.
   Topology topology() const;

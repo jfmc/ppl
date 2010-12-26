@@ -126,11 +126,11 @@ public:
   */
   void shrink(dimension_type new_size);
 
-  //! Returns a const reference to the flags of \p *this.
-  const Flags& flags() const;
+  //! Returns the flags of \p *this.
+  const Flags flags() const;
 
-  //! Returns a non-const reference to the flags of \p *this.
-  Flags& flags();
+  //! Sets \p f as the flags of \p *this.
+  void set_flags(Flags f);
 
   //! Returns the size() of the largest possible Dense_Row.
   static dimension_type max_size();

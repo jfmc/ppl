@@ -145,14 +145,14 @@ Sparse_Row::max_size() {
   return CO_Tree::max_size();
 }
 
-inline const Sparse_Row::Flags&
+inline const Sparse_Row::Flags
 Sparse_Row::flags() const {
   return flags_;
 }
 
-inline Sparse_Row::Flags&
-Sparse_Row::flags() {
-  return flags_;
+inline void
+Sparse_Row::set_flags(Sparse_Row::Flags f) {
+  flags_ = f;
 }
 
 inline void

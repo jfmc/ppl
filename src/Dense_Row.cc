@@ -333,7 +333,7 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
       return false;
   if (!(s >> str) || str != "f")
     return false;
-  return flags().ascii_load(s);
+  return flags_.ascii_load(s);
 }
 
 PPL::memory_size_type

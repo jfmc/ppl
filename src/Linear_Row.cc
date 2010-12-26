@@ -222,7 +222,13 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
       return false;
   if (!(s >> str) || str != "f")
     return false;
-  return flags().ascii_load(s);
+  
+  Flags f;
+  if (!f.ascii_load(s))
+    return false;
+  set_flags(f);
+  
+  return true;
 }
 
 bool

@@ -44,7 +44,7 @@ PPL::Dense_Matrix::Dense_Matrix(const dimension_type n_rows,
   PPL_ASSERT(n_rows <= max_num_rows());
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i) {
-    rows[i].flags() = row_flags;
+    rows[i].set_flags(row_flags);
     rows[i].resize(n_columns, row_capacity);
   }
   PPL_ASSERT(OK());
