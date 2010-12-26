@@ -49,17 +49,17 @@ PPL::Linear_System::num_lines_or_equalities() const {
 
 void
 PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
-  PPL_ASSERT(row_size >= y.row_size);
+  PPL_ASSERT(num_columns() >= y.num_columns());
   // Both systems have to be sorted and have no pending rows.
   PPL_ASSERT(check_sorted() && y.check_sorted());
   PPL_ASSERT(num_pending_rows() == 0 && y.num_pending_rows() == 0);
 
   Linear_System& x = *this;
 
-  // A temporary vector of rows...
-  std::vector<Dense_Row> tmp;
+  // A temporary matrix...
+  Dense_Matrix tmp;
   // ... with enough capacity not to require any reallocations.
-  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
+  tmp.reserve_rows(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
 
   dimension_type xi = 0;
   dimension_type x_num_rows = x.num_rows();
@@ -70,29 +70,29 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
     const int comp = compare(x[xi], y[yi]);
     if (comp <= 0) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
-      std::swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
+      tmp.add_recycled_row(x[xi++]);
       if (comp == 0)
 	// A duplicate element.
 	++yi;
     }
     else {
       // (comp > 0)
-      Linear_Row copy(y[yi++], row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Linear_Row()));
+      Dense_Row copy(y[yi++], num_columns(), num_columns());
+      tmp.add_recycled_row(copy);
     }
   }
   // Insert what is left.
   if (xi < x_num_rows)
     while (xi < x_num_rows)
-      std::swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
+      tmp.add_recycled_row(x[xi++]);
   else
     while (yi < y_num_rows) {
-      Linear_Row copy(y[yi++], row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Linear_Row()));
+      Dense_Row copy(y[yi++], num_columns(), num_columns());
+      tmp.add_recycled_row(copy);
     }
 
-  // We get the result vector and let the old one be destroyed.
-  std::swap(tmp, rows);
+  // We get the result matrix and let the old one be destroyed.
+  std::swap(tmp, static_cast<Dense_Matrix&>(*this));
   // There are no pending rows.
   unset_pending_rows();
   PPL_ASSERT(check_sorted());
@@ -202,7 +202,7 @@ PPL::Linear_System::insert(const Linear_Row& r) {
   }
   else if (r_size < old_num_columns) {
     // Create a resized copy of the row.
-    Linear_Row tmp_row(r, old_num_columns, row_capacity);
+    Linear_Row tmp_row(r, old_num_columns, old_num_columns);
     // If needed, move the epsilon coefficient to the last position.
     if (!is_necessarily_closed())
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
@@ -241,11 +241,11 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
   }
   else if (r_size < old_num_columns)
     if (is_necessarily_closed() || old_num_rows == 0)
-      add_pending_row(Linear_Row(r, old_num_columns, row_capacity));
+      add_pending_row(Linear_Row(r, old_num_columns, old_num_columns));
     else {
       // Create a resized copy of the row (and move the epsilon
       // coefficient to its last position).
-      Linear_Row tmp_row(r, old_num_columns, row_capacity);
+      Linear_Row tmp_row(r, old_num_columns, old_num_columns);
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
       add_pending_row(tmp_row);
     }
@@ -263,7 +263,7 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
 void
 PPL::Linear_System::add_pending_rows(const Linear_System& y) {
   Linear_System& x = *this;
-  PPL_ASSERT(x.row_size == y.row_size);
+  PPL_ASSERT(x.num_columns() == y.num_columns());
 
   const dimension_type x_n_rows = x.num_rows();
   const dimension_type y_n_rows = y.num_rows();
@@ -274,7 +274,7 @@ PPL::Linear_System::add_pending_rows(const Linear_System& y) {
 
   // Copy the rows of `y', forcing size and capacity.
   for (dimension_type i = y_n_rows; i-- > 0; ) {
-    Dense_Row copy(y[i], x.row_size, x.row_capacity);
+    Dense_Row copy(y[i], x.num_columns(), x.num_columns());
     std::swap(copy, x[x_n_rows+i]);
   }
   // Do not check for strong normalization,
@@ -332,13 +332,13 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
 
   // First sort without removing duplicates.
-  std::vector<Dense_Row>::iterator first = rows.begin() + first_row;
-  std::vector<Dense_Row>::iterator last = rows.begin() + last_row;
+  Dense_Matrix::iterator first = begin() + first_row;
+  Dense_Matrix::iterator last = begin() + last_row;
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
   std::vector<Dense_Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
-  rows.erase(new_last, last);
+  remove_rows(new_last, last);
   // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
@@ -348,7 +348,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements as the existing rows of the system.
   PPL_ASSERT(r.check_strong_normalized());
-  PPL_ASSERT(r.size() == row_size);
+  PPL_ASSERT(r.size() == num_columns());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
@@ -386,31 +386,10 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements of the existing rows of the system.
   PPL_ASSERT(r.check_strong_normalized());
-  PPL_ASSERT(r.size() == row_size);
+  PPL_ASSERT(r.size() == num_columns());
 
-  const dimension_type new_rows_size = rows.size() + 1;
-  if (rows.capacity() < new_rows_size) {
-    // Reallocation will take place.
-    std::vector<Dense_Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Dense_Row());
-    // Put the new row in place.
-    Dense_Row new_row(r, row_capacity);
-    dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
-    // Steal the old rows.
-    while (i-- > 0)
-      new_rows[i].swap(rows[i]);
-    // Put the new rows into place.
-    std::swap(rows, new_rows);
-  }
-  else {
-    // Reallocation will NOT take place.
-    // Inserts a new empty row at the end, then substitutes it with a
-    // copy of the given row.
-    Dense_Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Dense_Row()), tmp);
-  }
+  Dense_Row tmp(r, num_columns());
+  add_recycled_row(tmp);
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
@@ -421,29 +400,9 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
 
 void
 PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
-  const dimension_type new_rows_size = rows.size() + 1;
-  if (rows.capacity() < new_rows_size) {
-    // Reallocation will take place.
-    std::vector<Dense_Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Dense_Row());
-    // Put the new row in place.
-    Linear_Row new_row(row_size, row_capacity, flags);
-    dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
-    // Steal the old rows.
-    while (i-- > 0)
-      new_rows[i].swap(rows[i]);
-    // Put the new vector into place.
-    std::swap(rows, new_rows);
-  }
-  else {
-    // Reallocation will NOT take place.
-    // Insert a new empty row at the end, then construct it assigning
-    // it the given type.
-    Dense_Row& new_row = *rows.insert(rows.end(), Dense_Row(flags));
-    static_cast<Linear_Row&>(new_row).resize(row_size, row_capacity);
-  }
+  
+  Linear_Row new_row(num_columns(), num_columns(), flags);
+  add_recycled_row(new_row);
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
@@ -510,7 +469,7 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_Bit_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
+  With_Bit_Matrix_iterator first(sys.begin(), sat.rows.begin());
   With_Bit_Matrix_iterator last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
@@ -879,7 +838,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   const Linear_System& x = *this;
   const dimension_type n_rows = num_rows();
   for (dimension_type i = 0; i < n_rows; ++i) {
-    if (!x[i].OK(row_size))
+    if (!x[i].OK(num_columns()))
       return false;
     // Checking for topology mismatches.
     if (x.topology() != x[i].topology()) {
