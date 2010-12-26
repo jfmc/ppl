@@ -310,7 +310,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
     Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Dense_Matrix, each row in the system is a valid Congruence and the
+    Matrix, each row in the system is a valid Congruence and the
     number of columns is consistent with the number of congruences.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

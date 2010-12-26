@@ -171,8 +171,6 @@ public:
     The matrix is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original matrix is lost.
-
-    This method is provided for compatibility with Dense_Matrix.
   */
   void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns,
                       Flags row_flags);
@@ -201,8 +199,6 @@ public:
 
   //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
-    Provided for compatibilty with Dense_Matrix.
-
     \param n
     The number of rows to be added: must be strictly positive.
 
@@ -242,8 +238,6 @@ public:
     the \f$(r+1) \times c\f$ matrix
     \f$\genfrac{(}{)}{0pt}{}{M}{y}\f$.
     The matrix is expanded avoiding reallocation whenever possible.
-
-    This method is provided for compatibility with Dense_Matrix.
   */
   void add_recycled_row(Row& y);
 
@@ -253,7 +247,6 @@ public:
     \param n
     The number of row that will be removed.
 
-    Provided for compatibility with Dense_Matrix.
     It is equivalent to num_rows() - n, num_columns()).
 
     This method takes \f$O(n+k)\f$ amortized time, where k is the total number
@@ -266,8 +259,8 @@ public:
 
   //! Permutes the columns of the matrix.
   /*!
-    This method is provided for compatibilty with Dense_Matrix but it is slow
-    and should be avoided if possible.
+    This method may be slow for some Row types, and should be avoided if
+    possible.
 
     \param cycles
     A vector representing the non-trivial cycles of the permutation
@@ -301,8 +294,6 @@ public:
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
-    Provided for compatibilty with Dense_Matrix.
-
     \param n
     The number of columns to be added: must be strictly positive.
 
@@ -359,8 +350,6 @@ public:
     \param n
     The number of trailing columns that will be removed.
 
-    This method is provided for compatibility with Dense_Matrix.
-
     This operation invalidates existing iterators.
 
     This method takes \f$O(\sum_{j=1}^r (k_j*\log n_j))\f$ amortized time,
@@ -374,9 +363,6 @@ public:
   void remove_trailing_columns(dimension_type n);
 
   //! Equivalent to resize(0,0).
-  /*!
-    Provided for compatibility with Dense_Matrix.
-  */
   void clear();
 
   //! Returns an %iterator pointing to the first row.

@@ -2432,7 +2432,7 @@ private:
     Uses the line \p pivot to change the representation of the line \p
     row so that the element at index \p col of \p row is zero.
   */
-  // A member of Grid for access to Dense_Matrix::rows.
+  // A member of Grid for access to Matrix<Dense_Row>::rows.
   static void reduce_line_with_line(Grid_Generator& row,
 				    Grid_Generator& pivot,
 				    dimension_type col);
@@ -2443,7 +2443,7 @@ private:
     equality \p row so that the element at index \p col of \p row is
     zero.
   */
-  // A member of Grid for access to Dense_Matrix::rows.
+  // A member of Grid for access to Matrix<Dense_Row>::rows.
   static void reduce_equality_with_equality(Congruence& row,
 					    const Congruence& pivot,
 					    dimension_type col);
@@ -2456,7 +2456,7 @@ private:
     is zero.  Only elements from index \p start to index \p end are
     modified (i.e. it is assumed that all other elements are zero).
   */
-  // Part of Grid for access to Dense_Matrix::rows.
+  // Part of Grid for access to Matrix<Dense_Row>::rows.
   template <typename R>
   static void reduce_pc_with_pc(R& row,
 				R& pivot,
@@ -2470,7 +2470,7 @@ private:
     parameter \p row such that the element at index \p col of \p row
     is zero.
   */
-  // A member of Grid for access to Dense_Matrix::rows.
+  // A member of Grid for access to Matrix<Dense_Row>::rows.
   static void reduce_parameter_with_line(Grid_Generator& row,
 					 const Grid_Generator& pivot,
 					 dimension_type col,
@@ -2482,7 +2482,7 @@ private:
     congruence \p row such that element at index \p col of \p row is
     zero.
   */
-  // A member of Grid for access to Dense_Matrix::rows.
+  // A member of Grid for access to Matrix<Dense_Row>::rows.
   static void reduce_congruence_with_equality(Congruence& row,
 					      const Congruence& pivot,
 					      dimension_type col,
@@ -2512,7 +2512,7 @@ private:
 			     bool generators = true);
 
   //! Multiply the elements of \p dest by \p multiplier.
-  // A member of Grid for access to Dense_Matrix::rows and cgs::operator[].
+  // A member of Grid for access to Matrix<Dense_Row>::rows and cgs::operator[].
   static void multiply_grid(const Coefficient& multiplier,
 			    Congruence& cg, Congruence_System& dest,
 			    dimension_type num_rows,
