@@ -102,7 +102,7 @@ public:
   
   // TODO: Check if this can be removed.
   //! Returns the capacity of the row vector.
-  dimension_type row_capacity() const;
+  dimension_type capacity() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
   /*!

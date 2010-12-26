@@ -62,7 +62,7 @@ Matrix<Row>::num_columns() const {
 
 template <typename Row>
 inline dimension_type
-Matrix<Row>::row_capacity() const {
+Matrix<Row>::capacity() const {
   return rows.capacity();
 }
 
