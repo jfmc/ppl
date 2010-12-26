@@ -166,8 +166,7 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  // FIXME: the following section must become private.
-protected:
+private:
   //! Contains the rows of the matrix.
   std::vector<Dense_Row> rows;
 
