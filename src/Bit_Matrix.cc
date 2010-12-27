@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "Bit_Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "globals.defs.hh"
 #include <iostream>
 #include <string>

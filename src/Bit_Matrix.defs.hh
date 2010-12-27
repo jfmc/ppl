@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Bit_Matrix_defs_hh 1
 
 #include "Bit_Matrix.types.hh"
-#include "Linear_System.defs.hh"
+#include "Linear_System.types.hh"
 #include "Bit_Row.defs.hh"
 #include <vector>
 #include <iosfwd>
@@ -152,10 +152,7 @@ private:
     bool operator()(const Bit_Row& x, const Bit_Row& y) const;
   };
 
-  friend
-  void Parma_Polyhedra_Library::
-  Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat);
-
+  friend class Parma_Polyhedra_Library::Linear_System;
 };
 
 namespace Parma_Polyhedra_Library {

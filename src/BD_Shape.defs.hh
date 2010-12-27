@@ -45,6 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "WRD_coefficient_types.defs.hh"
 #include "Bit_Matrix.defs.hh"
+#include "Coefficient.defs.hh"
 #include <cstddef>
 #include <iosfwd>
 #include <vector>
