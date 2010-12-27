@@ -91,65 +91,65 @@ Generator_System::operator[](const dimension_type k) const {
 }
 
 inline
-Generator_System::const_iterator::const_iterator()
+Generator_System_const_iterator::Generator_System_const_iterator()
   : i(), gsp(0) {
 }
 
 inline
-Generator_System::const_iterator::const_iterator(const const_iterator& y)
+Generator_System_const_iterator::Generator_System_const_iterator(const Generator_System_const_iterator& y)
   : i(y.i), gsp(y.gsp) {
 }
 
 inline
-Generator_System::const_iterator::~const_iterator() {
+Generator_System_const_iterator::~Generator_System_const_iterator() {
 }
 
 inline
-Generator_System::const_iterator&
-Generator_System::const_iterator::operator=(const const_iterator& y) {
+Generator_System_const_iterator&
+Generator_System_const_iterator::operator=(const Generator_System_const_iterator& y) {
   i = y.i;
   gsp = y.gsp;
   return *this;
 }
 
 inline const Generator&
-Generator_System::const_iterator::operator*() const {
+Generator_System_const_iterator::operator*() const {
   return static_cast<const Generator&>(*i);
 }
 
 inline const Generator*
-Generator_System::const_iterator::operator->() const {
+Generator_System_const_iterator::operator->() const {
   return static_cast<const Generator*>(i.operator->());
 }
 
-inline Generator_System::const_iterator&
-Generator_System::const_iterator::operator++() {
+inline Generator_System_const_iterator&
+Generator_System_const_iterator::operator++() {
   ++i;
   if (!gsp->is_necessarily_closed())
     skip_forward();
   return *this;
 }
 
-inline Generator_System::const_iterator
-Generator_System::const_iterator::operator++(int) {
-  const const_iterator tmp = *this;
+inline Generator_System_const_iterator
+Generator_System_const_iterator::operator++(int) {
+  const Generator_System_const_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
 inline bool
-Generator_System::const_iterator::operator==(const const_iterator& y) const {
+Generator_System_const_iterator::operator==(const Generator_System_const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-Generator_System::const_iterator::operator!=(const const_iterator& y) const {
+Generator_System_const_iterator::operator!=(const Generator_System_const_iterator& y) const {
   return i != y.i;
 }
 
 inline
-Generator_System::const_iterator::
-const_iterator(const Linear_System::const_iterator& iter,
+Generator_System_const_iterator::
+Generator_System_const_iterator(const Linear_System::const_iterator& iter,
 	       const Generator_System& gsys)
   : i(iter), gsp(&gsys) {
 }

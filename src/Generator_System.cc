@@ -262,7 +262,7 @@ PPL::Generator_System::has_points() const {
 }
 
 void
-PPL::Generator_System::const_iterator::skip_forward() {
+PPL::Generator_System_const_iterator::skip_forward() {
   const Linear_System::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
     Linear_System::const_iterator i_next = i;

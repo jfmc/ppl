@@ -225,89 +225,7 @@ public:
   */
   static const Generator_System& zero_dim_univ();
 
-  //! An iterator over a system of generators
-  /*! \ingroup PPL_CXX_interface
-      A const_iterator is used to provide read-only access
-      to each generator contained in an object of Generator_System.
-
-      \par Example
-      The following code prints the system of generators
-      of the polyhedron <CODE>ph</CODE>:
-      \code
-  const Generator_System& gs = ph.generators();
-  for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
-    cout << *i << endl;
-      \endcode
-      The same effect can be obtained more concisely by using
-      more features of the STL:
-      \code
-  const Generator_System& gs = ph.generators();
-  copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
-      \endcode
-  */
-  class const_iterator
-    : public std::iterator<std::forward_iterator_tag,
-			   Generator,
-			   ptrdiff_t,
-			   const Generator*,
-			   const Generator&> {
-  public:
-    //! Default constructor.
-    const_iterator();
-
-    //! Ordinary copy constructor.
-    const_iterator(const const_iterator& y);
-
-    //! Destructor.
-    ~const_iterator();
-
-    //! Assignment operator.
-    const_iterator& operator=(const const_iterator& y);
-
-    //! Dereference operator.
-    const Generator& operator*() const;
-
-    //! Indirect member selector.
-    const Generator* operator->() const;
-
-    //! Prefix increment operator.
-    const_iterator& operator++();
-
-    //! Postfix increment operator.
-    const_iterator operator++(int);
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if
-      \p *this and \p y are identical.
-    */
-    bool operator==(const const_iterator& y) const;
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if
-      \p *this and \p y are different.
-    */
-    bool operator!=(const const_iterator& y) const;
-
-  private:
-    friend class Generator_System;
-
-    //! The const iterator over the Linear_System.
-    Linear_System::const_iterator i;
-
-    //! A const pointer to the Linear_System.
-    const Linear_System* gsp;
-
-    //! Constructor.
-    const_iterator(const Linear_System::const_iterator& iter,
-		   const Generator_System& gsys);
-
-    /*! \brief
-      \p *this skips to the next generator, skipping those
-      closure points that are immediately followed by a matching point.
-    */
-    void skip_forward();
-  };
+  typedef Generator_System_const_iterator const_iterator;
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
   bool empty() const;
@@ -358,7 +276,7 @@ private:
   */
   static const Generator_System* zero_dim_univ_p;
 
-  friend class const_iterator;
+  friend class Generator_System_const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
@@ -508,6 +426,90 @@ private:
     It is a pending generator.
   */
   void insert_pending(const Generator& g);
+};
+
+//! An iterator over a system of generators
+/*! \ingroup PPL_CXX_interface
+    A const_iterator is used to provide read-only access
+    to each generator contained in an object of Generator_System.
+
+    \par Example
+    The following code prints the system of generators
+    of the polyhedron <CODE>ph</CODE>:
+    \code
+const Generator_System& gs = ph.generators();
+for (Generator_System::const_iterator i = gs.begin(),
+        gs_end = gs.end(); i != gs_end; ++i)
+  cout << *i << endl;
+    \endcode
+    The same effect can be obtained more concisely by using
+    more features of the STL:
+    \code
+const Generator_System& gs = ph.generators();
+copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
+    \endcode
+*/
+class Parma_Polyhedra_Library::Generator_System_const_iterator
+  : public std::iterator<std::forward_iterator_tag,
+        Generator,
+        ptrdiff_t,
+        const Generator*,
+        const Generator&> {
+public:
+  //! Default constructor.
+  Generator_System_const_iterator();
+
+  //! Ordinary copy constructor.
+  Generator_System_const_iterator(const Generator_System_const_iterator& y);
+
+  //! Destructor.
+  ~Generator_System_const_iterator();
+
+  //! Assignment operator.
+  Generator_System_const_iterator& operator=(const Generator_System_const_iterator& y);
+
+  //! Dereference operator.
+  const Generator& operator*() const;
+
+  //! Indirect member selector.
+  const Generator* operator->() const;
+
+  //! Prefix increment operator.
+  Generator_System_const_iterator& operator++();
+
+  //! Postfix increment operator.
+  Generator_System_const_iterator operator++(int);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this and \p y are identical.
+  */
+  bool operator==(const Generator_System_const_iterator& y) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this and \p y are different.
+  */
+  bool operator!=(const Generator_System_const_iterator& y) const;
+
+private:
+  friend class Generator_System;
+
+  //! The const iterator over the Linear_System.
+  Linear_System::const_iterator i;
+
+  //! A const pointer to the Linear_System.
+  const Linear_System* gsp;
+
+  //! Constructor.
+  Generator_System_const_iterator(const Linear_System::const_iterator& iter,
+      const Generator_System& gsys);
+
+  /*! \brief
+    \p *this skips to the next generator, skipping those
+    closure points that are immediately followed by a matching point.
+  */
+  void skip_forward();
 };
 
 // Generator_System.inlines.hh is not included here on purpose.

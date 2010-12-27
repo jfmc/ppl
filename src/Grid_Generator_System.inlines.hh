@@ -225,7 +225,7 @@ Grid_Generator_System::empty() const {
 inline
 Grid_Generator_System
 ::const_iterator::const_iterator(const Generator_System::const_iterator& y)
-  : Generator_System::const_iterator::const_iterator(y) {
+  : Generator_System::const_iterator(y) {
 }
 
 inline Grid_Generator_System::const_iterator

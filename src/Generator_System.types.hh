@@ -15,6 +15,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 class Generator_System;
+class Generator_System_const_iterator;
 
 } // namespace Parma_Polyhedra_Library
 

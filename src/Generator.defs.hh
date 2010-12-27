@@ -431,7 +431,7 @@ private:
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;
   friend class Parma_Polyhedra_Library::Generator_System;
-  friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
+  friend class Parma_Polyhedra_Library::Generator_System_const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator;
