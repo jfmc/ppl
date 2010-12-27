@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Dense_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
-#include "Generator_System.defs.hh"
+#include "Generator_System.types.hh"
 #include "Congruence_System.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
