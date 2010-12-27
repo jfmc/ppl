@@ -321,7 +321,7 @@ PPL::Constraint_System::num_equalities() const {
 }
 
 void
-PPL::Constraint_System::const_iterator::skip_forward() {
+PPL::Constraint_System_const_iterator::skip_forward() {
   const Linear_System::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
@@ -620,8 +620,8 @@ PPL::Constraint_System::OK() const {
 /*! \relates Parma_Polyhedra_Library::Constraint_System */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
-  Constraint_System::const_iterator i = cs.begin();
-  const Constraint_System::const_iterator cs_end = cs.end();
+  Constraint_System_const_iterator i = cs.begin();
+  const Constraint_System_const_iterator cs_end = cs.end();
   if (i == cs_end)
     s << "true";
   else {

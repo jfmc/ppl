@@ -15,6 +15,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 class Constraint_System;
+class Constraint_System_const_iterator;
 
 } // namespace Parma_Polyhedra_Library
 

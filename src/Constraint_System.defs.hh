@@ -185,80 +185,7 @@ public:
   */
   static const Constraint_System& zero_dim_empty();
 
-  //! An iterator over a system of constraints.
-  /*! \ingroup PPL_CXX_interface
-    A const_iterator is used to provide read-only access
-    to each constraint contained in a Constraint_System object.
-
-    \par Example
-    The following code prints the system of constraints
-    defining the polyhedron <CODE>ph</CODE>:
-    \code
-  const Constraint_System& cs = ph.constraints();
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
-    cout << *i << endl;
-    \endcode
-  */
-  class const_iterator
-    : public std::iterator<std::forward_iterator_tag,
-			   Constraint,
-			   ptrdiff_t,
-			   const Constraint*,
-			   const Constraint&> {
-  public:
-    //! Default constructor.
-    const_iterator();
-
-    //! Ordinary copy constructor.
-    const_iterator(const const_iterator& y);
-
-    //! Destructor.
-    ~const_iterator();
-
-    //! Assignment operator.
-    const_iterator& operator=(const const_iterator& y);
-
-    //! Dereference operator.
-    const Constraint& operator*() const;
-
-    //! Indirect member selector.
-    const Constraint* operator->() const;
-
-    //! Prefix increment operator.
-    const_iterator& operator++();
-
-    //! Postfix increment operator.
-    const_iterator operator++(int);
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if
-      \p *this and \p y are identical.
-    */
-    bool operator==(const const_iterator& y) const;
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if
-      \p *this and \p y are different.
-    */
-    bool operator!=(const const_iterator& y) const;
-
-  private:
-    friend class Constraint_System;
-
-    //! The const iterator over the matrix of constraints.
-    Linear_System::const_iterator i;
-
-    //! A const pointer to the matrix of constraints.
-    const Linear_System* csp;
-
-    //! Constructor.
-    const_iterator(const Linear_System::const_iterator& iter,
-		   const Constraint_System& csys);
-
-    //! \p *this skips to the next non-trivial constraint.
-    void skip_forward();
-  };
+  typedef Constraint_System_const_iterator const_iterator;
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no constraints.
   bool empty() const;
@@ -307,7 +234,7 @@ private:
   */
   static const Constraint_System* zero_dim_empty_p;
 
-  friend class const_iterator;
+  friend class Constraint_System_const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend bool operator==(const Polyhedron& x, const Polyhedron& y);
@@ -405,6 +332,84 @@ private:
 
   //! Adds low-level constraints to the constraint system.
   void add_low_level_constraints();
+};
+
+//! An iterator over a system of constraints.
+/*! \ingroup PPL_CXX_interface
+  A const_iterator is used to provide read-only access
+  to each constraint contained in a Constraint_System object.
+
+  \par Example
+  The following code prints the system of constraints
+  defining the polyhedron <CODE>ph</CODE>:
+  \code
+const Constraint_System& cs = ph.constraints();
+for (Constraint_System::const_iterator i = cs.begin(),
+        cs_end = cs.end(); i != cs_end; ++i)
+  cout << *i << endl;
+  \endcode
+*/
+// NOTE: This is not an inner class of Constraint_System, so Constraint can
+// declare that this class is his friend without including this file (the
+// .types.hh file suffices).
+class Parma_Polyhedra_Library::Constraint_System_const_iterator
+  : public std::iterator<std::forward_iterator_tag,
+        Constraint,
+        ptrdiff_t,
+        const Constraint*,
+        const Constraint&> {
+public:
+  //! Default constructor.
+  Constraint_System_const_iterator();
+
+  //! Ordinary copy constructor.
+  Constraint_System_const_iterator(const Constraint_System_const_iterator& y);
+
+  //! Destructor.
+  ~Constraint_System_const_iterator();
+
+  //! Assignment operator.
+  Constraint_System_const_iterator& operator=(const Constraint_System_const_iterator& y);
+
+  //! Dereference operator.
+  const Constraint& operator*() const;
+
+  //! Indirect member selector.
+  const Constraint* operator->() const;
+
+  //! Prefix increment operator.
+  Constraint_System_const_iterator& operator++();
+
+  //! Postfix increment operator.
+  Constraint_System_const_iterator operator++(int);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this and \p y are identical.
+  */
+  bool operator==(const Constraint_System_const_iterator& y) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this and \p y are different.
+  */
+  bool operator!=(const Constraint_System_const_iterator& y) const;
+
+private:
+  friend class Constraint_System;
+
+  //! The const iterator over the matrix of constraints.
+  Linear_System::const_iterator i;
+
+  //! A const pointer to the matrix of constraints.
+  const Linear_System* csp;
+
+  //! Constructor.
+  Constraint_System_const_iterator(const Linear_System::const_iterator& iter,
+      const Constraint_System& csys);
+
+  //! \p *this skips to the next non-trivial constraint.
+  void skip_forward();
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.

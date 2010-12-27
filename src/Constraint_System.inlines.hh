@@ -97,77 +97,77 @@ Constraint_System::zero_dim_empty() {
 }
 
 inline
-Constraint_System::const_iterator::const_iterator()
+Constraint_System_const_iterator::Constraint_System_const_iterator()
   : i(), csp(0) {
 }
 
 inline
-Constraint_System::const_iterator::const_iterator(const const_iterator& y)
+Constraint_System_const_iterator::Constraint_System_const_iterator(const Constraint_System_const_iterator& y)
   : i(y.i), csp(y.csp) {
 }
 
 inline
-Constraint_System::const_iterator::~const_iterator() {
+Constraint_System_const_iterator::~Constraint_System_const_iterator() {
 }
 
-inline Constraint_System::const_iterator&
-Constraint_System::const_iterator::operator=(const const_iterator& y) {
+inline Constraint_System_const_iterator&
+Constraint_System_const_iterator::operator=(const Constraint_System_const_iterator& y) {
   i = y.i;
   csp = y.csp;
   return *this;
 }
 
 inline const Constraint&
-Constraint_System::const_iterator::operator*() const {
+Constraint_System_const_iterator::operator*() const {
   return static_cast<const Constraint&>(*i);
 }
 
 inline const Constraint*
-Constraint_System::const_iterator::operator->() const {
+Constraint_System_const_iterator::operator->() const {
   return static_cast<const Constraint*>(i.operator->());
 }
 
-inline Constraint_System::const_iterator&
-Constraint_System::const_iterator::operator++() {
+inline Constraint_System_const_iterator&
+Constraint_System_const_iterator::operator++() {
   ++i;
   skip_forward();
   return *this;
 }
 
-inline Constraint_System::const_iterator
-Constraint_System::const_iterator::operator++(int) {
-  const const_iterator tmp = *this;
+inline Constraint_System_const_iterator
+Constraint_System_const_iterator::operator++(int) {
+  const Constraint_System_const_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
 inline bool
-Constraint_System::const_iterator::operator==(const const_iterator& y) const {
+Constraint_System_const_iterator::operator==(const Constraint_System_const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-Constraint_System::const_iterator::operator!=(const const_iterator& y) const {
+Constraint_System_const_iterator::operator!=(const Constraint_System_const_iterator& y) const {
   return i != y.i;
 }
 
 inline
-Constraint_System::const_iterator::
-const_iterator(const Linear_System::const_iterator& iter,
+Constraint_System_const_iterator::
+Constraint_System_const_iterator(const Linear_System::const_iterator& iter,
 	       const Constraint_System& csys)
   : i(iter), csp(&csys) {
 }
 
-inline Constraint_System::const_iterator
+inline Constraint_System_const_iterator
 Constraint_System::begin() const {
   const_iterator i(Linear_System::begin(), *this);
   i.skip_forward();
   return i;
 }
 
-inline Constraint_System::const_iterator
+inline Constraint_System_const_iterator
 Constraint_System::end() const {
-  const const_iterator i(Linear_System::end(), *this);
+  const Constraint_System_const_iterator i(Linear_System::end(), *this);
   return i;
 }
 

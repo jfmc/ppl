@@ -435,7 +435,7 @@ private:
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Constraint_System;
-  friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
+  friend class Parma_Polyhedra_Library::Constraint_System_const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
 
