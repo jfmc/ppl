@@ -78,7 +78,13 @@ Dense_Row::Dense_Row(const dimension_type sz,
                      const dimension_type capacity,
                      const Flags f)
   : size_(0), capacity_(0), flags_(f), vec_(0) {
-  resize(sz, capacity);
+  try {
+    resize(sz, capacity);
+  } catch (...) {
+    PPL_ASSERT(OK());
+    destroy();
+    throw;
+  }
   PPL_ASSERT(size() == sz);
   PPL_ASSERT(capacity_ = capacity);
   PPL_ASSERT(OK());
@@ -87,7 +93,13 @@ Dense_Row::Dense_Row(const dimension_type sz,
 inline
 Dense_Row::Dense_Row(const dimension_type sz, const Flags f)
   : size_(0), capacity_(0), flags_(f), vec_(0) {
-  resize(sz);
+  try {
+    resize(sz);
+  } catch (...) {
+    PPL_ASSERT(OK());
+    destroy();
+    throw;
+  }
   PPL_ASSERT(size() == sz);
   PPL_ASSERT(OK());
 }
@@ -96,12 +108,18 @@ inline
 Dense_Row::Dense_Row(const Dense_Row& y)
   : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
   if (y.vec_ != 0) {
-    capacity_ = y.capacity();
-    vec_ = static_cast<Coefficient*>(
-        operator new(sizeof(Coefficient) * capacity_));
-    while (size_ != y.size()) {
-      new (&vec_[size_]) Coefficient(y[size_]);
-      ++size_;
+    try {
+      capacity_ = y.capacity();
+      vec_ = static_cast<Coefficient*>(
+          operator new(sizeof(Coefficient) * capacity_));
+      while (size_ != y.size()) {
+        new (&vec_[size_]) Coefficient(y[size_]);
+        ++size_;
+      }
+    } catch (...) {
+      PPL_ASSERT(OK());
+      destroy();
+      throw;
     }
   }
   PPL_ASSERT(size() == y.size());
@@ -115,17 +133,26 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
   PPL_ASSERT(y.size() <= capacity);
   PPL_ASSERT(capacity <= max_size());
+  
+  try {
 
-  vec_ = static_cast<Coefficient*>(
-      operator new(sizeof(Coefficient) * capacity));
-  capacity_ = capacity;
+    vec_ = static_cast<Coefficient*>(
+        operator new(sizeof(Coefficient) * capacity));
+    capacity_ = capacity;
 
-  if (y.vec_ != 0) {
-    while (size_ != y.size()) {
-      new (&vec_[size_]) Coefficient(y[size_]);
-      ++size_;
+    if (y.vec_ != 0) {
+      while (size_ != y.size()) {
+        new (&vec_[size_]) Coefficient(y[size_]);
+        ++size_;
+      }
     }
+    
+  } catch (...) {
+    PPL_ASSERT(OK());
+    destroy();
+    throw;
   }
+  
   PPL_ASSERT(size() == y.size());
   PPL_ASSERT(capacity_ = capacity);
   PPL_ASSERT(OK());
@@ -141,18 +168,27 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(capacity <= max_size());
   PPL_ASSERT(capacity != 0);
   
-  vec_ = static_cast<Coefficient*>(operator new(sizeof(Coefficient) * capacity));
-  capacity_ = capacity;
+  try {
   
-  dimension_type n = std::min(sz, y.size());
-  while (size_ != n) {
-    new (&vec_[size_]) Coefficient(y[size_]);
-    ++size_;
+    vec_ = static_cast<Coefficient*>(operator new(sizeof(Coefficient) * capacity));
+    capacity_ = capacity;
+    
+    dimension_type n = std::min(sz, y.size());
+    while (size_ != n) {
+      new (&vec_[size_]) Coefficient(y[size_]);
+      ++size_;
+    }
+    while (size_ != sz) {
+      new (&vec_[size_]) Coefficient();
+      ++size_;
+    }
+    
+  } catch (...) {
+    PPL_ASSERT(OK());
+    destroy();
+    throw;
   }
-  while (size_ != sz) {
-    new (&vec_[size_]) Coefficient();
-    ++size_;
-  }
+  
   PPL_ASSERT(size() == sz);
   PPL_ASSERT(capacity_ = capacity);
   PPL_ASSERT(OK());

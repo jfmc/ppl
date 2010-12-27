@@ -151,15 +151,21 @@ PPL::Dense_Row::shrink(dimension_type new_size) {
   PPL_ASSERT(OK());
 }
 
-PPL::Dense_Row::Dense_Row(const Sparse_Row& row) {
-  init(row);
+PPL::Dense_Row::Dense_Row(const Sparse_Row& row)
+  : size_(0), capacity_(0), flags_(), vec_(0) {
+  try {
+    init(row);
+  } catch (...) {
+    PPL_ASSERT(OK());
+    destroy();
+    throw;
+  }
   PPL_ASSERT(size() == row.size());
   PPL_ASSERT(OK());
 }
 
 void
 PPL::Dense_Row::init(const Sparse_Row& row) {
-  size_ = 0;
   capacity_ = row.size();
   flags_ = row.flags();
   vec_ = static_cast<Coefficient*>(
