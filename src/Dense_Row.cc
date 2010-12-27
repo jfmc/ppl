@@ -392,14 +392,6 @@ PPL::Dense_Row::OK() const {
     if (vec_ == 0)
       is_broken = true;
   }
-  
-  // TODO: Remove this.
-  // It was added to help finding unconstructed Coefficients with valgrind.
-  
-  Coefficient sum;
-  
-  for (dimension_type i = size(); i-- > 0; )
-    sum += vec_[i];
 
   return !is_broken;
 }
