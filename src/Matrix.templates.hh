@@ -141,7 +141,7 @@ Matrix<Row>::ascii_dump(std::ostream& s) const {
     i->ascii_dump(s);
 }
 
-// PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(Row, Matrix<Row>)
+PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(Row, Matrix<Row>)
 
 template <typename Row>
 bool
