@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl-config.h>
 
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "Coefficient.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;

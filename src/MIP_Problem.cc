@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include <stdexcept>
 #include <deque>
 #include <vector>

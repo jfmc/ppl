@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "MIP_Problem.defs.hh"
 #include "wrap_assign.hh"
 #include <cstdlib>

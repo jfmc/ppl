@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "assert.hh"
 #include <string>
 #include <iostream>

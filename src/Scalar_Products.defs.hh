@@ -192,6 +192,7 @@ private:
   SPS_type sps_fp;
 };
 
-#include "Scalar_Products.inlines.hh"
+// NOTE: Scalar_Products.inlines.hh is NOT included here, to avoid cyclic
+// include dependencies.
 
 #endif // !defined(PPL_Scalar_Products_defs_hh)

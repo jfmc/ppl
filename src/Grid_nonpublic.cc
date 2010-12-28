@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "assert.hh"
 #include <string>
 #include <iostream>
