@@ -29,30 +29,30 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Constraint_System::Constraint_System()
-  : Linear_System(NECESSARILY_CLOSED) {
+  : Linear_System<Linear_Row>(NECESSARILY_CLOSED) {
 }
 
 inline
 Constraint_System::Constraint_System(const Constraint& c)
-  : Linear_System(c.topology()) {
-  Linear_System::insert(c);
+  : Linear_System<Linear_Row>(c.topology()) {
+  Linear_System<Linear_Row>::insert(c);
 }
 
 inline
 Constraint_System::Constraint_System(const Constraint_System& cs)
-  : Linear_System(cs) {
+  : Linear_System<Linear_Row>(cs) {
 }
 
 inline
 Constraint_System::Constraint_System(const Topology topol)
-  : Linear_System(topol) {
+  : Linear_System<Linear_Row>(topol) {
 }
 
 inline
 Constraint_System::Constraint_System(const Topology topol,
 				     const dimension_type n_rows,
 				     const dimension_type n_columns)
-  : Linear_System(topol, n_rows, n_columns) {
+  : Linear_System<Linear_Row>(topol, n_rows, n_columns) {
 }
 
 inline
@@ -61,33 +61,33 @@ Constraint_System::~Constraint_System() {
 
 inline Constraint_System&
 Constraint_System::operator=(const Constraint_System& y) {
-  Linear_System::operator=(y);
+  Linear_System<Linear_Row>::operator=(y);
   return *this;
 }
 
 inline Constraint&
 Constraint_System::operator[](const dimension_type k) {
-  return static_cast<Constraint&>(Linear_System::operator[](k));
+  return static_cast<Constraint&>(Linear_System<Linear_Row>::operator[](k));
 }
 
 inline const Constraint&
 Constraint_System::operator[](const dimension_type k) const {
-  return static_cast<const Constraint&>(Linear_System::operator[](k));
+  return static_cast<const Constraint&>(Linear_System<Linear_Row>::operator[](k));
 }
 
 inline dimension_type
 Constraint_System::max_space_dimension() {
-  return Linear_System::max_space_dimension();
+  return Linear_System<Linear_Row>::max_space_dimension();
 }
 
 inline dimension_type
 Constraint_System::space_dimension() const {
-  return Linear_System::space_dimension();
+  return Linear_System<Linear_Row>::space_dimension();
 }
 
 inline void
 Constraint_System::clear() {
-  Linear_System::clear();
+  Linear_System<Linear_Row>::clear();
 }
 
 inline const Constraint_System&
@@ -153,21 +153,21 @@ Constraint_System_const_iterator::operator!=(const Constraint_System_const_itera
 
 inline
 Constraint_System_const_iterator::
-Constraint_System_const_iterator(const Linear_System::const_iterator& iter,
+Constraint_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
 	       const Constraint_System& csys)
   : i(iter), csp(&csys) {
 }
 
 inline Constraint_System_const_iterator
 Constraint_System::begin() const {
-  const_iterator i(Linear_System::begin(), *this);
+  const_iterator i(Linear_System<Linear_Row>::begin(), *this);
   i.skip_forward();
   return i;
 }
 
 inline Constraint_System_const_iterator
 Constraint_System::end() const {
-  const Constraint_System_const_iterator i(Linear_System::end(), *this);
+  const Constraint_System_const_iterator i(Linear_System<Linear_Row>::end(), *this);
   return i;
 }
 
@@ -190,22 +190,22 @@ Constraint_System::add_low_level_constraints() {
 
 inline void
 Constraint_System::swap(Constraint_System& y) {
-  Linear_System::swap(y);
+  Linear_System<Linear_Row>::swap(y);
 }
 
 inline memory_size_type
 Constraint_System::external_memory_in_bytes() const {
-  return Linear_System::external_memory_in_bytes();
+  return Linear_System<Linear_Row>::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Constraint_System::total_memory_in_bytes() const {
-  return Linear_System::total_memory_in_bytes();
+  return Linear_System<Linear_Row>::total_memory_in_bytes();
 }
 
 inline void
 Constraint_System::simplify() {
-  Linear_System::simplify();
+  Linear_System<Linear_Row>::simplify();
 }
 
 } // namespace Parma_Polyhedra_Library

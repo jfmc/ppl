@@ -14,6 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Row>
 class Linear_System;
 
 } // namespace Parma_Polyhedra_Library

@@ -27,18 +27,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Row>
 inline memory_size_type
-Linear_System::external_memory_in_bytes() const {
-  return Matrix<Dense_Row>::external_memory_in_bytes();
+Linear_System<Row>::external_memory_in_bytes() const {
+  return Matrix<Row>::external_memory_in_bytes();
 }
 
+template <typename Row>
 inline memory_size_type
-Linear_System::total_memory_in_bytes() const {
+Linear_System<Row>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
+template <typename Row>
 inline bool
-Linear_System::is_sorted() const {
+Linear_System<Row>::is_sorted() const {
   // The flag `sorted' does not really reflect the sortedness status
   // of a system (if `sorted' evaluates to `false' nothing is known).
   // This assertion is used to ensure that the system
@@ -47,52 +50,60 @@ Linear_System::is_sorted() const {
   return sorted;
 }
 
+template <typename Row>
 inline void
-Linear_System::set_sorted(const bool b) {
+Linear_System<Row>::set_sorted(const bool b) {
   sorted = b;
 }
 
+template <typename Row>
 inline
-Linear_System::Linear_System(Topology topol)
-  : Matrix<Dense_Row>(),
+Linear_System<Row>::Linear_System(Topology topol)
+  : Matrix<Row>(),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
 }
 
+template <typename Row>
 inline
-Linear_System::Linear_System(Topology topol,
+Linear_System<Row>::Linear_System(Topology topol,
 			     dimension_type n_rows, dimension_type n_columns)
-  : Matrix<Dense_Row>(n_rows, n_columns, Linear_Row::Flags(topol)),
+  : Matrix<Row>(n_rows, n_columns, Flags(topol)),
     row_topology(topol),
     index_first_pending(n_rows),
     sorted(true) {
 }
 
+template <typename Row>
 inline dimension_type
-Linear_System::first_pending_row() const {
+Linear_System<Row>::first_pending_row() const {
   return index_first_pending;
 }
 
+template <typename Row>
 inline dimension_type
-Linear_System::num_pending_rows() const {
-  PPL_ASSERT(num_rows() >= first_pending_row());
-  return num_rows() - first_pending_row();
+Linear_System<Row>::num_pending_rows() const {
+  PPL_ASSERT(Matrix<Row>::num_rows() >= first_pending_row());
+  return Matrix<Row>::num_rows() - first_pending_row();
 }
 
+template <typename Row>
 inline void
-Linear_System::unset_pending_rows() {
-  index_first_pending = num_rows();
+Linear_System<Row>::unset_pending_rows() {
+  index_first_pending = Matrix<Row>::num_rows();
 }
 
+template <typename Row>
 inline void
-Linear_System::set_index_first_pending_row(const dimension_type i) {
+Linear_System<Row>::set_index_first_pending_row(const dimension_type i) {
   index_first_pending = i;
 }
 
+template <typename Row>
 inline
-Linear_System::Linear_System(const Linear_System& y)
-  : Matrix<Dense_Row>(y),
+Linear_System<Row>::Linear_System(const Linear_System& y)
+  : Matrix<Row>(y),
     row_topology(y.row_topology) {
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -100,17 +111,19 @@ Linear_System::Linear_System(const Linear_System& y)
   PPL_ASSERT(num_pending_rows() == 0);
 }
 
+template <typename Row>
 inline
-Linear_System::Linear_System(const Linear_System& y, With_Pending)
-  : Matrix<Dense_Row>(y),
+Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
+  : Matrix<Row>(y),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
 }
 
-inline Linear_System&
-Linear_System::operator=(const Linear_System& y) {
-  Matrix<Dense_Row>::operator=(y);
+template <typename Row>
+inline Linear_System<Row>&
+Linear_System<Row>::operator=(const Linear_System& y) {
+  Matrix<Row>::operator=(y);
   row_topology = y.row_topology;
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -119,35 +132,38 @@ Linear_System::operator=(const Linear_System& y) {
   return *this;
 }
 
+template <typename Row>
 inline void
-Linear_System::assign_with_pending(const Linear_System& y) {
-  Matrix<Dense_Row>::operator=(y);
+Linear_System<Row>::assign_with_pending(const Linear_System& y) {
+  Matrix<Row>::operator=(y);
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
 }
 
+template <typename Row>
 inline void
-Linear_System::swap(Linear_System& y) {
-  Matrix<Dense_Row>::swap(y);
+Linear_System<Row>::swap(Linear_System& y) {
+  Matrix<Row>::swap(y);
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
 }
 
+template <typename Row>
 inline void
-Linear_System::clear() {
+Linear_System<Row>::clear() {
   // Note: do NOT modify the value of `row_topology'.
-  Matrix<Dense_Row>::clear();
+  Matrix<Row>::clear();
   index_first_pending = 0;
   sorted = true;
 }
 
+template <typename Row>
 inline void
-Linear_System::resize_no_copy(const dimension_type new_n_rows,
+Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
 			      const dimension_type new_n_columns) {
-  Matrix<Dense_Row>::resize_no_copy(new_n_rows, new_n_columns,
-			 Linear_Row::Flags(row_topology));
+  Matrix<Row>::resize_no_copy(new_n_rows, new_n_columns, Flags(row_topology));
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
@@ -155,83 +171,95 @@ Linear_System::resize_no_copy(const dimension_type new_n_rows,
   set_sorted(false);
 }
 
+template <typename Row>
 inline void
-Linear_System::set_necessarily_closed() {
+Linear_System<Row>::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
-  if (!has_no_rows())
+  if (!Matrix<Row>::has_no_rows())
     set_rows_topology();
 }
 
+template <typename Row>
 inline void
-Linear_System::set_not_necessarily_closed() {
+Linear_System<Row>::set_not_necessarily_closed() {
   row_topology = NOT_NECESSARILY_CLOSED;
-  if (!has_no_rows())
+  if (!Matrix<Row>::has_no_rows())
     set_rows_topology();
 }
 
+template <typename Row>
 inline bool
-Linear_System::is_necessarily_closed() const {
+Linear_System<Row>::is_necessarily_closed() const {
   return row_topology == NECESSARILY_CLOSED;
 }
 
-inline Linear_Row&
-Linear_System::operator[](const dimension_type k) {
-  return static_cast<Linear_Row&>(Matrix<Dense_Row>::operator[](k));
+template <typename Row>
+inline Row&
+Linear_System<Row>::operator[](const dimension_type k) {
+  return static_cast<Row&>(Matrix<Row>::operator[](k));
 }
 
-inline const Linear_Row&
-Linear_System::operator[](const dimension_type k) const {
-  return static_cast<const Linear_Row&>(Matrix<Dense_Row>::operator[](k));
+template <typename Row>
+inline const Row&
+Linear_System<Row>::operator[](const dimension_type k) const {
+  return static_cast<const Row&>(Matrix<Row>::operator[](k));
 }
 
+template <typename Row>
 inline Topology
-Linear_System::topology() const {
+Linear_System<Row>::topology() const {
   return row_topology;
 }
 
+template <typename Row>
 inline dimension_type
-Linear_System::max_space_dimension() {
+Linear_System<Row>::max_space_dimension() {
   // Column zero holds the inhomogeneous term or the divisor.
   // In NNC linear systems, the last column holds the coefficient
   // of the epsilon dimension.
-  return max_num_columns() - 2;
+  return Matrix<Row>::max_num_columns() - 2;
 }
 
+template <typename Row>
 inline dimension_type
-Linear_System::space_dimension() const {
-  const dimension_type n_columns = num_columns();
+Linear_System<Row>::space_dimension() const {
+  const dimension_type n_columns = Matrix<Row>::num_columns();
   return (n_columns == 0)
     ? 0
     : n_columns - (is_necessarily_closed() ? 1 : 2);
 }
 
+template <typename Row>
 inline void
-Linear_System::remove_trailing_columns(const dimension_type n) {
-  Matrix<Dense_Row>::remove_trailing_columns(n);
+Linear_System<Row>::remove_trailing_columns(const dimension_type n) {
+  Matrix<Row>::remove_trailing_columns(n);
   // Have to re-normalize the rows of the system,
   // since we removed some coefficients.
   strong_normalize();
 }
 
+template <typename Row>
 inline void
-Linear_System::permute_columns(const std::vector<dimension_type>& cycles) {
-  Matrix<Dense_Row>::permute_columns(cycles);
+Linear_System<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
+  Matrix<Row>::permute_columns(cycles);
   // The rows with permuted columns are still normalized but may
   // be not strongly normalized: sign normalization is necessary.
   sign_normalize();
 }
 
 /*! \relates Linear_System */
+template <typename Row>
 inline bool
-operator!=(const Linear_System& x, const Linear_System& y) {
+operator!=(const Linear_System<Row>& x, const Linear_System<Row>& y) {
   return !(x == y);
 }
 
+template <typename Row>
 inline bool
-Linear_System::Row_Less_Than::operator()(const Dense_Row& x,
-                                         const Dense_Row& y) const {
-  return compare(static_cast<const Linear_Row&>(x),
-		 static_cast<const Linear_Row&>(y)) < 0;
+Linear_System<Row>::Row_Less_Than::operator()(const Row& x,
+                                         const Row& y) const {
+  return compare(static_cast<const Row&>(x),
+		 static_cast<const Row&>(y)) < 0;
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -239,9 +267,10 @@ Linear_System::Row_Less_Than::operator()(const Dense_Row& x,
 namespace std {
 
 /*! \relates Parma_Polyhedra_Library::Linear_System */
+template <typename Row>
 inline void
-swap(Parma_Polyhedra_Library::Linear_System& x,
-     Parma_Polyhedra_Library::Linear_System& y) {
+swap(Parma_Polyhedra_Library::Linear_System<Row>& x,
+     Parma_Polyhedra_Library::Linear_System<Row>& y) {
   x.swap(y);
 }
 
@@ -250,125 +279,144 @@ swap(Parma_Polyhedra_Library::Linear_System& x,
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Row>
 inline
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2)
   : i1(iter1), i2(iter2) {
 }
 
+template <typename Row>
 inline
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 With_Bit_Matrix_iterator(const With_Bit_Matrix_iterator& y)
   : i1(y.i1), i2(y.i2) {
 }
 
+template <typename Row>
 inline
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 ~With_Bit_Matrix_iterator() {
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator&
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator=(const With_Bit_Matrix_iterator& y) {
   i1 = y.i1;
   i2 = y.i2;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator++() {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator&
+Linear_System<Row>::With_Bit_Matrix_iterator::operator++() {
   ++i1;
   ++i2;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::operator++(int) {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator
+Linear_System<Row>::With_Bit_Matrix_iterator::operator++(int) {
   With_Bit_Matrix_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator--() {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator&
+Linear_System<Row>::With_Bit_Matrix_iterator::operator--() {
   --i1;
   --i2;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::operator--(int) {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator
+Linear_System<Row>::With_Bit_Matrix_iterator::operator--(int) {
   With_Bit_Matrix_iterator tmp = *this;
   operator--();
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator+=(difference_type d) {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator&
+Linear_System<Row>::With_Bit_Matrix_iterator::operator+=(difference_type d) {
   i1 += d;
   i2 += d;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator+(difference_type d) const {
   With_Bit_Matrix_iterator tmp = *this;
   tmp += d;
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator-=(difference_type d) {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator&
+Linear_System<Row>::With_Bit_Matrix_iterator::operator-=(difference_type d) {
   i1 -= d;
   i2 -= d;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator-(difference_type d) const {
   With_Bit_Matrix_iterator tmp = *this;
   tmp -= d;
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator::difference_type
-Linear_System::With_Bit_Matrix_iterator::
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator::difference_type
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator-(const With_Bit_Matrix_iterator& y) const {
   return i1 - y.i1;
 }
 
+template <typename Row>
 inline bool
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator==(const With_Bit_Matrix_iterator& y) const {
   return i1 == y.i1;
 }
 
+template <typename Row>
 inline bool
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator!=(const With_Bit_Matrix_iterator& y) const {
   return i1 != y.i1;
 }
 
+template <typename Row>
 inline bool
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 operator<(const With_Bit_Matrix_iterator& y) const {
   return i1 < y.i1;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator::reference
-Linear_System::With_Bit_Matrix_iterator::operator*() const {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator::reference
+Linear_System<Row>::With_Bit_Matrix_iterator::operator*() const {
   return *i1;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator::pointer
-Linear_System::With_Bit_Matrix_iterator::operator->() const {
+template <typename Row>
+inline typename Linear_System<Row>::With_Bit_Matrix_iterator::pointer
+Linear_System<Row>::With_Bit_Matrix_iterator::operator->() const {
   return &*i1;
 }
 
+template <typename Row>
 inline void
-Linear_System::With_Bit_Matrix_iterator::
+Linear_System<Row>::With_Bit_Matrix_iterator::
 iter_swap(const With_Bit_Matrix_iterator& y) const {
   std::iter_swap(i1, y.i1);
   std::iter_swap(i2, y.i2);
@@ -379,13 +427,14 @@ iter_swap(const With_Bit_Matrix_iterator& y) const {
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
+/*! \relates Parma_Polyhedra_Library::Linear_System<Row>::With_Bit_Matrix_iterator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename Row>
 inline void
-iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator x,
-	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator y) {
+iter_swap(typename Parma_Polyhedra_Library
+	  ::Linear_System<Row>::With_Bit_Matrix_iterator x,
+	  typename Parma_Polyhedra_Library
+	  ::Linear_System<Row>::With_Bit_Matrix_iterator y) {
   x.iter_swap(y);
 }
 

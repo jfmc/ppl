@@ -20,14 +20,15 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <ppl-config.h>
-#include "Linear_Row.defs.hh"
+#ifndef PPL_Polyhedron_minimize_templates_hh
+#define PPL_Polyhedron_minimize_templates_hh 1
+
 #include "Linear_System.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include <stdexcept>
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
 /*!
   \return
@@ -65,10 +66,11 @@ namespace PPL = Parma_Polyhedra_Library;
   This will simplify the description of the function; the dual case is
   similar.
 */
+template <typename Row>
 bool
-PPL::Polyhedron::minimize(const bool con_to_gen,
-			  Linear_System& source,
-			  Linear_System& dest,
+Polyhedron::minimize(const bool con_to_gen,
+			  Linear_System<Row>& source,
+			  Linear_System<Row>& dest,
 			  Bit_Matrix& sat) {
   // Topologies have to agree.
   PPL_ASSERT(source.topology() == dest.topology());
@@ -218,7 +220,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   pair (\p source1, \p dest) and a system of new constraints \p source2,
   modifies \p source1 by adding to it the constraints of \p source2 that
   are not in \p source1. Then, by invoking
-  <CODE>add_and_minimize(bool, Linear_System&, Linear_System&, Bit_Matrix&)</CODE>,
+  <CODE>add_and_minimize(bool, Linear_System<Row>&, Linear_System<Row>&, Bit_Matrix&)</CODE>,
   processes the added constraints obtaining a new DD pair.
 
   This method treats also the dual case, i.e., adding new generators to
@@ -229,12 +231,13 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   Since \p source2 contains the constraints (or the generators) that
   will be added to \p source1, it is constant: it will not be modified.
 */
+template <typename Row>
 bool
-PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System& source1,
-				  Linear_System& dest,
+Polyhedron::add_and_minimize(const bool con_to_gen,
+				  Linear_System<Row>& source1,
+				  Linear_System<Row>& dest,
 				  Bit_Matrix& sat,
-				  const Linear_System& source2) {
+				  const Linear_System<Row>& source2) {
   // `source1' and `source2' cannot be empty.
   PPL_ASSERT(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
@@ -330,10 +333,11 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   is the system of constraints corresponding to the non-pending part
   of \p source.
 */
+template <typename Row>
 bool
-PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System& source,
-				  Linear_System& dest,
+Polyhedron::add_and_minimize(const bool con_to_gen,
+				  Linear_System<Row>& source,
+				  Linear_System<Row>& dest,
 				  Bit_Matrix& sat) {
   PPL_ASSERT(source.num_pending_rows() > 0);
   PPL_ASSERT(source.num_columns() == dest.num_columns());
@@ -399,3 +403,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
     return false;
   }
 }
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Polyhedron_minimize_templates_hh)

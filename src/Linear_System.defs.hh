@@ -24,11 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_System_defs_hh 1
 
 #include "Linear_System.types.hh"
-#include "Dense_Row.types.hh"
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
 #include "Matrix.defs.hh"
 #include "Topology.hh"
+
+// TODO: Remove this.
 #include "Linear_Row.defs.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -36,10 +37,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*! \ingroup PPL_CXX_interface
   An object of this class represents either a constraint system
   or a generator system. Each Linear_System object can be viewed
-  as a finite sequence of strong-normalized Linear_Row objects,
-  where each Linear_Row implements a constraint or a generator.
+  as a finite sequence of strong-normalized Row objects, where each Row
+  implements a constraint or a generator.
   Linear systems are characterized by the matrix of coefficients,
-  also encoding the number, size and capacity of Linear_row objects,
+  also encoding the number, size and capacity of Row objects,
   as well as a few additional information, including:
    - the topological kind of (all) the rows;
    - an indication of whether or not some of the rows in the Linear_System
@@ -50,8 +51,11 @@ site: http://www.cs.unipr.it/ppl/ . */
      non-pending prefix of the sequence of rows is sorted.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
-class Parma_Polyhedra_Library::Linear_System : public Matrix<Dense_Row> {
+template <typename Row>
+class Parma_Polyhedra_Library::Linear_System : public Matrix<Row> {
+private:
+  typedef typename Row::Flags Flags;
+  
 public:
   //! Builds an empty linear system with specified topology.
   /*!
@@ -141,10 +145,10 @@ public:
   //! \name Subscript operators
   //@{
   //! Returns a reference to the \p k-th row of the system.
-  Linear_Row& operator[](dimension_type k);
+  Row& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k-th row of the system.
-  const Linear_Row& operator[](dimension_type k) const;
+  const Row& operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! Strongly normalizes the system.
@@ -236,22 +240,22 @@ public:
     Adds a copy of \p r to the system,
     automatically resizing the system or the row's copy, if needed.
   */
-  void insert(const Linear_Row& r);
+  void insert(const Row& r);
 
   /*! \brief
     Adds a copy of the given row to the pending part of the system,
     automatically resizing the system or the row, if needed.
   */
-  void insert_pending(const Linear_Row& r);
+  void insert_pending(const Row& r);
 
   //! Adds a copy of the given row to the system.
-  void add_row(const Linear_Row& r);
+  void add_row(const Row& r);
 
   //! Adds a new empty row to the system, setting only its flags.
-  void add_pending_row(Linear_Row::Flags flags);
+  void add_pending_row(Flags flags);
 
   //! Adds a copy of the given row to the pending part of the system.
-  void add_pending_row(const Linear_Row& r);
+  void add_pending_row(const Row& r);
 
   //! Adds to \p *this a copy of the rows of `y'.
   /*!
@@ -384,14 +388,14 @@ private:
 
   /*! \brief
     <CODE>true</CODE> if rows are sorted in the ascending order as defined by
-    <CODE>bool compare(const Linear_Row&, const Linear_Row&)</CODE>.
+    <CODE>bool compare(const Row&, const Row&)</CODE>.
     If <CODE>false</CODE> may not be sorted.
   */
   bool sorted;
 
   //! Ordering predicate (used when implementing the sort algorithm).
   struct Row_Less_Than {
-    bool operator()(const Dense_Row& x, const Dense_Row& y) const;
+    bool operator()(const Row& x, const Row& y) const;
   };
 };
 
@@ -401,8 +405,9 @@ namespace std {
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Linear_System& x,
-	  Parma_Polyhedra_Library::Linear_System& y);
+template <typename Row>
+void swap(Parma_Polyhedra_Library::Linear_System<Row>& x,
+          Parma_Polyhedra_Library::Linear_System<Row>& y);
 
 } // namespace std
 
@@ -412,28 +417,31 @@ namespace Parma_Polyhedra_Library {
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool operator==(const Linear_System& x, const Linear_System& y);
+template <typename Row>
+bool operator==(const Linear_System<Row>& x, const Linear_System<Row>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool operator!=(const Linear_System& x, const Linear_System& y);
+template <typename Row>
+bool operator!=(const Linear_System<Row>& x, const Linear_System<Row>& y);
 
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator keeping a Linear_System consistent with a Bit_Matrix.
 /*! \ingroup PPL_CXX_interface
-  An iterator on the vector of Dense_Row objects encoded in a Linear_System
+  An iterator on the vector of Row objects encoded in a Linear_System
   extended to maintain a corresponding iterator on a vector of
-  Bit_Row objects.  Access to values is always done on the Dense_Row
+  Bit_Row objects.  Access to values is always done on the Row
   objects, but iterator movements and swaps are done on both components.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator {
+template <typename Row>
+class Parma_Polyhedra_Library::Linear_System<Row>::With_Bit_Matrix_iterator {
 public:
-  typedef std::vector<Dense_Row>::iterator Iter1;
+  typedef typename std::vector<Row>::iterator Iter1;
   typedef std::vector<Bit_Row>::iterator Iter2;
 
 private:
@@ -442,11 +450,11 @@ private:
 
 public:
   // Same traits as Iter1.
-  typedef std::iterator_traits<Iter1>::iterator_category iterator_category;
-  typedef std::iterator_traits<Iter1>::value_type value_type;
-  typedef std::iterator_traits<Iter1>::difference_type difference_type;
-  typedef std::iterator_traits<Iter1>::pointer pointer;
-  typedef std::iterator_traits<Iter1>::reference reference;
+  typedef typename std::iterator_traits<Iter1>::iterator_category iterator_category;
+  typedef typename std::iterator_traits<Iter1>::value_type value_type;
+  typedef typename std::iterator_traits<Iter1>::difference_type difference_type;
+  typedef typename std::iterator_traits<Iter1>::pointer pointer;
+  typedef typename std::iterator_traits<Iter1>::reference reference;
 
   //! Constructor.
   With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2);
@@ -492,7 +500,7 @@ public:
   //! Access-through operator.
   pointer operator->() const;
 
-  //! Swaps the pointed Dense_Row objects while keeping Bit_Matrix consistent.
+  //! Swaps the pointed Row objects while keeping Bit_Matrix consistent.
   void iter_swap(const With_Bit_Matrix_iterator& y) const;
 
 };
@@ -503,14 +511,16 @@ namespace std {
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename Row>
 void
-iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator x,
-	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator y);
+iter_swap(typename Parma_Polyhedra_Library
+    ::Linear_System<Row>::With_Bit_Matrix_iterator x,
+	  typename Parma_Polyhedra_Library
+	  ::Linear_System<Row>::With_Bit_Matrix_iterator y);
 
 } // namespace std
 
 #include "Linear_System.inlines.hh"
+#include "Linear_System.templates.hh"
 
 #endif // !defined(PPL_Linear_System_defs_hh)

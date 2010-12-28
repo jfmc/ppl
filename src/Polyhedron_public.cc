@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Scalar_Products.inlines.hh"
 #include "MIP_Problem.defs.hh"
 #include "wrap_assign.hh"
+#include "Linear_Row.defs.hh"
 #include <cstdlib>
 #include "assert.hh"
 #include <iostream>
@@ -1977,7 +1978,7 @@ struct Ruled_Out_Less_Than {
 };
 
 bool
-add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
+add_to_system_and_check_independence(PPL::Linear_System<PPL::Linear_Row>& eq_sys,
                                      const PPL::Linear_Row& eq) {
   // Check if equality eqn is linear independent from eq_sys.
   PPL_ASSERT(eq.is_line_or_equality());
@@ -2311,7 +2312,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       Constraint_System nonred_eq;
       dimension_type num_nonred_eq = 0;
       const dimension_type needed_nonred_eq = z_cs_num_eq - y_cs_num_eq;
-      Linear_System eqs(x.topology());
+      Linear_System<Linear_Row> eqs(x.topology());
       if (needed_nonred_eq > 0) {
         // Populate eqs with the equalities from y.
         for (dimension_type i = 0; i < y_cs_num_eq; ++i)

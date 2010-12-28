@@ -264,9 +264,9 @@ PPL::Generator_System::has_points() const {
 
 void
 PPL::Generator_System_const_iterator::skip_forward() {
-  const Linear_System::const_iterator gsp_end = gsp->end();
+  const Linear_System<Linear_Row>::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
-    Linear_System::const_iterator i_next = i;
+    Linear_System<Linear_Row>::const_iterator i_next = i;
     ++i_next;
     if (i_next != gsp_end) {
       const Generator& cp = static_cast<const Generator&>(*i);
@@ -285,7 +285,7 @@ PPL::Generator_System::insert(const Generator& g) {
   // and that the new row is not a pending generator.
   PPL_ASSERT(num_pending_rows() == 0);
   if (topology() == g.topology())
-    Linear_System::insert(g);
+    Linear_System<Linear_Row>::insert(g);
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
@@ -305,7 +305,7 @@ PPL::Generator_System::insert(const Generator& g) {
       }
       set_not_necessarily_closed();
       // Inserting the new generator.
-      Linear_System::insert(g);
+      Linear_System<Linear_Row>::insert(g);
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -321,7 +321,7 @@ PPL::Generator_System::insert(const Generator& g) {
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
-      Linear_System::insert(tmp_g);
+      Linear_System<Linear_Row>::insert(tmp_g);
     }
   PPL_ASSERT(OK());
 }
@@ -329,7 +329,7 @@ PPL::Generator_System::insert(const Generator& g) {
 void
 PPL::Generator_System::insert_pending(const Generator& g) {
   if (topology() == g.topology())
-    Linear_System::insert_pending(g);
+    Linear_System<Linear_Row>::insert_pending(g);
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
@@ -349,7 +349,7 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       }
       set_not_necessarily_closed();
       // Inserting the new generator.
-      Linear_System::insert_pending(g);
+      Linear_System<Linear_Row>::insert_pending(g);
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -365,7 +365,7 @@ PPL::Generator_System::insert_pending(const Generator& g) {
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
-      Linear_System::insert_pending(tmp_g);
+      Linear_System<Linear_Row>::insert_pending(tmp_g);
     }
   PPL_ASSERT(OK());
 }
@@ -1026,7 +1026,7 @@ PPL::Generator_System::OK() const {
   // A Generator_System must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual generator.
-  if (!Linear_System::OK(false))
+  if (!Linear_System<Linear_Row>::OK(false))
     return false;
 
   // Checking each generator in the system.
