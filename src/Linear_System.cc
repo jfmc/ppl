@@ -57,7 +57,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   Linear_System& x = *this;
 
   // A temporary matrix...
-  Matrix<Dense_Row> tmp;
+  Matrix<Dense_Row> tmp(0, num_columns());
   // ... with enough capacity not to require any reallocations.
   tmp.reserve_rows(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
 

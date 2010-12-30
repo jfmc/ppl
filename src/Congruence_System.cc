@@ -83,7 +83,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   }
   else if (cg_size < old_num_columns) {
     // Create a resized copy of `cg'.
-    Congruence rc(cg, old_num_columns);
+    Congruence rc(cg, old_num_columns, old_num_columns);
     // Move the modulus to its place.
     std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
     add_recycled_row(rc);
@@ -174,7 +174,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   const dimension_type x_mod_index = x.num_columns() - 1;
   const dimension_type y_mod_index = y_num_columns - 1;
   for (dimension_type i = y_num_rows; i-- > 0; ) {
-    Dense_Row copy(y[i], x.num_columns());
+    Dense_Row copy(y[i], x.num_columns(), x.num_columns());
     // Swap the modulus to the correct column.
     std::swap(copy[x_mod_index], copy[y_mod_index]);
     std::swap(copy, x[x_num_rows+i]);
