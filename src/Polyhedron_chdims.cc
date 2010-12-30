@@ -32,6 +32,62 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
+PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
+				      Linear_System& sys2,
+				      Bit_Matrix& sat1,
+				      Bit_Matrix& sat2,
+				      dimension_type add_dim) {
+  PPL_ASSERT(sys1.topology() == sys2.topology());
+  PPL_ASSERT(sys1.num_columns() == sys2.num_columns());
+  PPL_ASSERT(add_dim != 0);
+
+  sys1.add_zero_columns(add_dim);
+  dimension_type old_index = sys2.first_pending_row();
+  sys2.add_rows_and_columns(add_dim);
+  // The added rows are in the non-pending part.
+  sys2.set_index_first_pending_row(old_index + add_dim);
+
+  // The resulting saturation matrix will be as follows:
+  // from row    0    to      add_dim-1       : only zeroes
+  //          add_dim     add_dim+num_rows-1  : old saturation matrix
+
+  // In fact all the old generators saturate all the new constraints
+  // because the polyhedron has not been embedded in the new space.
+  sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
+  // The old matrix is moved to the end of the new matrix.
+  for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; )
+    std::swap(sat1[i], sat1[i+add_dim]);
+  // Computes the "sat_c", too.
+  sat2.transpose_assign(sat1);
+
+  if (!sys1.is_necessarily_closed()) {
+    // Moving the epsilon coefficients to the new last column.
+    dimension_type new_eps_index = sys1.num_columns() - 1;
+    dimension_type old_eps_index = new_eps_index - add_dim;
+    // This swap preserves sortedness of `sys1'.
+    sys1.swap_columns(old_eps_index, new_eps_index);
+
+    // Try to preserve sortedness of `sys2'.
+    if (!sys2.is_sorted())
+      sys2.swap_columns(old_eps_index, new_eps_index);
+    else {
+      for (dimension_type i = sys2.num_rows(); i-- > add_dim; ) {
+	Linear_Row& r = sys2[i];
+	std::swap(r[old_eps_index], r[new_eps_index]);
+      }
+      // The upper-right corner of `sys2' contains the J matrix:
+      // swap coefficients to preserve sortedness.
+      for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
+	Linear_Row& r = sys2[i];
+	std::swap(r[old_eps_index], r[old_eps_index + 1]);
+      }
+    }
+    // NOTE: since we swapped columns in both `sys1' and `sys2',
+    // no swapping is required for `sat1' and `sat2'.
+  }
+}
+
+void
 PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
@@ -405,13 +461,13 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
     const dimension_type vsi_col = *vsi + 1;
     // All columns in between are moved to the left.
     while (src_col < vsi_col)
-      gen_sys.Matrix<Linear_Row>::swap_columns(dst_col++, src_col++);
+      gen_sys.Matrix<Dense_Row>::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Moving the remaining columns.
   const dimension_type gen_sys_num_columns = gen_sys.num_columns();
   while (src_col < gen_sys_num_columns)
-    gen_sys.Matrix<Linear_Row>::swap_columns(dst_col++, src_col++);
+    gen_sys.Matrix<Dense_Row>::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
   // Note that resizing also calls `set_sorted(false)'.

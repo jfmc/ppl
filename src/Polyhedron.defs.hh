@@ -2419,9 +2419,8 @@ private:
     constraints and that of generators (and the corresponding saturation
     matrices) in different order (see those methods for details).
   */
-  template <typename Row>
-  static void add_space_dimensions(Linear_System<Row>& mat1,
-				   Linear_System<Row>& mat2,
+  static void add_space_dimensions(Linear_System& mat1,
+				   Linear_System& mat2,
 				   Bit_Matrix& sat1,
 				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
@@ -2431,10 +2430,9 @@ private:
 
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
-  template <typename Row>
   static bool minimize(bool con_to_gen,
-		       Linear_System<Row>& source,
-		       Linear_System<Row>& dest,
+		       Linear_System& source,
+		       Linear_System& dest,
 		       Bit_Matrix& sat);
 
   /*! \brief
@@ -2442,30 +2440,27 @@ private:
     or vice versa.
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
-  template <typename Row>
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System<Row>& source1,
-			       Linear_System<Row>& dest,
+			       Linear_System& source1,
+			       Linear_System& dest,
 			       Bit_Matrix& sat,
-			       const Linear_System<Row>& source2);
+			       const Linear_System& source2);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
     or vice versa. The given constraints are in \p source.
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
-  template <typename Row>
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System<Row>& source,
-			       Linear_System<Row>& dest,
+			       Linear_System& source,
+			       Linear_System& dest,
 			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  template <typename Row>
-  static dimension_type conversion(Linear_System<Row>& source,
+  static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
-				   Linear_System<Row>& dest,
+				   Linear_System& dest,
 				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
@@ -2474,8 +2469,7 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  template <typename Row>
-  static dimension_type simplify(Linear_System<Row>& mat, Bit_Matrix& sat);
+  static dimension_type simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
@@ -2629,9 +2623,5 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 #include "Ph_Status.inlines.hh"
 #include "Polyhedron.inlines.hh"
 #include "Polyhedron.templates.hh"
-#include "Polyhedron_minimize.templates.hh"
-#include "Polyhedron_conversion.templates.hh"
-#include "Polyhedron_simplify.templates.hh"
-#include "Polyhedron_chdims.templates.hh"
 
 #endif // !defined(PPL_Polyhedron_defs_hh)

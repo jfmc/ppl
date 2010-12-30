@@ -20,8 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Polyhedron_conversion_templates_hh
-#define PPL_Polyhedron_conversion_templates_hh 1
+#include <ppl-config.h>
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
@@ -33,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <climits>
 
-namespace Parma_Polyhedra_Library {
+namespace PPL = Parma_Polyhedra_Library;
 
 /*!
   \return
@@ -344,11 +343,10 @@ namespace Parma_Polyhedra_Library {
   These two adjacent rays build a ray equal to \f$\vect{r}\f$ and so
   \f$\vect{r}\f$ is redundant.
 */
-template <typename Row>
-dimension_type
-Polyhedron::conversion(Linear_System<Row>& source,
+PPL::dimension_type
+PPL::Polyhedron::conversion(Linear_System& source,
 			    const dimension_type start,
-			    Linear_System<Row>& dest,
+			    Linear_System& dest,
 			    Bit_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
@@ -862,7 +860,3 @@ Polyhedron::conversion(Linear_System<Row>& source,
 
   return num_lines_or_equalities;
 }
-
-} // namespace Parma_Polyhedra_Library
-
-#endif // !defined(PPL_Polyhedron_conversion_templates_hh)

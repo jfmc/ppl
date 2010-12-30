@@ -20,8 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Polyhedron_simplify_templates_hh
-#define PPL_Polyhedron_simplify_templates_hh 1
+#include <ppl-config.h>
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
@@ -30,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <limits>
 
-namespace Parma_Polyhedra_Library {
+namespace PPL = Parma_Polyhedra_Library;
 
 /*!
   \return
@@ -80,9 +79,8 @@ namespace Parma_Polyhedra_Library {
   \f]
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
-template <typename Row>
-dimension_type
-Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
+PPL::dimension_type
+PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   PPL_ASSERT(sys.OK(true));
   PPL_ASSERT(sys.num_columns() >= 1);
@@ -319,7 +317,3 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
   // (See the Introduction for definition of lineality space dimension.)
   return num_lines_or_equalities;
 }
-
-} // namespace Parma_Polyhedra_Library
-
-#endif // !defined(PPL_Polyhedron_simplify_templates_hh)

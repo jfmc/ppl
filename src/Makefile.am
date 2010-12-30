@@ -256,7 +256,6 @@ Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \
 Linear_System.inlines.hh \
-Linear_System.templates.hh \
 Bit_Matrix.defs.hh \
 Bit_Matrix.inlines.hh \
 Constraint_System.defs.hh \
@@ -307,10 +306,6 @@ Grid_Certificate.inlines.hh \
 Partial_Function.defs.hh \
 Partial_Function.inlines.hh \
 Polyhedron.defs.hh \
-Polyhedron_conversion.templates.hh \
-Polyhedron_chdims.templates.hh \
-Polyhedron_minimize.templates.hh \
-Polyhedron_simplify.templates.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
 Polyhedron.templates.hh \
@@ -402,6 +397,7 @@ Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
+Linear_System.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \
@@ -436,6 +432,9 @@ Ph_Status.cc \
 Grid_Status.cc \
 Variable.cc \
 Variables_Set.cc \
+conversion.cc \
+minimize.cc \
+simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 stdiobuf.cc \

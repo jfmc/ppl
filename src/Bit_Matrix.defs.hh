@@ -152,7 +152,6 @@ private:
     bool operator()(const Bit_Row& x, const Bit_Row& y) const;
   };
 
-  template <typename Row>
   friend class Parma_Polyhedra_Library::Linear_System;
 };
 

@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
-  : Linear_System<Linear_Row>(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
+  : Linear_System(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())
@@ -243,7 +243,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
   // and that the new row is not a pending constraint.
   PPL_ASSERT(num_pending_rows() == 0);
   if (topology() == c.topology())
-    Linear_System<Linear_Row>::insert(c);
+    Linear_System::insert(c);
   else
     // `*this' and `c' have different topologies.
     if (is_necessarily_closed()) {
@@ -251,7 +251,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
       // corresponding to the epsilon coefficients.
       add_zero_columns(1);
       set_not_necessarily_closed();
-      Linear_System<Linear_Row>::insert(c);
+      Linear_System::insert(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
@@ -263,7 +263,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
 						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
-      Linear_System<Linear_Row>::insert(tmp_c);
+      Linear_System::insert(tmp_c);
     }
   PPL_ASSERT(OK());
 }
@@ -271,7 +271,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
 void
 PPL::Constraint_System::insert_pending(const Constraint& c) {
   if (topology() == c.topology())
-    Linear_System<Linear_Row>::insert_pending(c);
+    Linear_System::insert_pending(c);
   else
     // `*this' and `c' have different topologies.
     if (is_necessarily_closed()) {
@@ -279,7 +279,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       // corresponding to the epsilon coefficients.
       add_zero_columns(1);
       set_not_necessarily_closed();
-      Linear_System<Linear_Row>::insert_pending(c);
+      Linear_System::insert_pending(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
@@ -289,7 +289,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
 						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
-      Linear_System<Linear_Row>::insert_pending(tmp_c);
+      Linear_System::insert_pending(tmp_c);
     }
   PPL_ASSERT(OK());
 }
@@ -323,7 +323,7 @@ PPL::Constraint_System::num_equalities() const {
 
 void
 PPL::Constraint_System_const_iterator::skip_forward() {
-  const Linear_System<Linear_Row>::const_iterator csp_end = csp->end();
+  const Linear_System::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
@@ -605,7 +605,7 @@ PPL::Constraint_System::OK() const {
   // A Constraint_System must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual constraint.
-  if (!Linear_System<Linear_Row>::OK(false))
+  if (!Linear_System::OK(false))
     return false;
 
   // Checking each constraint in the system.
