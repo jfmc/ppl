@@ -34,10 +34,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "swapping_sort.icc"
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
-PPL::dimension_type
-PPL::Linear_System::num_lines_or_equalities() const {
+dimension_type
+Linear_System::num_lines_or_equalities() const {
   PPL_ASSERT(num_pending_rows() == 0);
   const Linear_System& x = *this;
   dimension_type n = 0;
@@ -48,7 +48,7 @@ PPL::Linear_System::num_lines_or_equalities() const {
 }
 
 void
-PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
+Linear_System::merge_rows_assign(const Linear_System& y) {
   PPL_ASSERT(num_columns() >= y.num_columns());
   // Both systems have to be sorted and have no pending rows.
   PPL_ASSERT(check_sorted() && y.check_sorted());
@@ -99,7 +99,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::set_rows_topology() {
+Linear_System::set_rows_topology() {
   Linear_System& x = *this;
   if (is_necessarily_closed())
     for (dimension_type i = num_rows(); i-- > 0; )
@@ -110,7 +110,7 @@ PPL::Linear_System::set_rows_topology() {
 }
 
 void
-PPL::Linear_System::ascii_dump(std::ostream& s) const {
+Linear_System::ascii_dump(std::ostream& s) const {
   // Prints the topology, the number of rows, the number of columns
   // and the sorted flag.  The specialized methods provided by
   // Constraint_System and Generator_System take care of properly
@@ -134,7 +134,7 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System)
 
 bool
-PPL::Linear_System::ascii_load(std::istream& s) {
+Linear_System::ascii_load(std::istream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;
@@ -179,7 +179,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Linear_System::insert(const Linear_Row& r) {
+Linear_System::insert(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -220,7 +220,7 @@ PPL::Linear_System::insert(const Linear_Row& r) {
 }
 
 void
-PPL::Linear_System::insert_pending(const Linear_Row& r) {
+Linear_System::insert_pending(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -261,7 +261,7 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
 }
 
 void
-PPL::Linear_System::add_pending_rows(const Linear_System& y) {
+Linear_System::add_pending_rows(const Linear_System& y) {
   Linear_System& x = *this;
   PPL_ASSERT(x.num_columns() == y.num_columns());
 
@@ -283,7 +283,7 @@ PPL::Linear_System::add_pending_rows(const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::add_rows(const Linear_System& y) {
+Linear_System::add_rows(const Linear_System& y) {
   PPL_ASSERT(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
@@ -313,7 +313,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::sort_rows() {
+Linear_System::sort_rows() {
   const dimension_type num_pending = num_pending_rows();
   // We sort the non-pending rows only.
   sort_rows(0, first_pending_row());
@@ -325,7 +325,7 @@ PPL::Linear_System::sort_rows() {
 }
 
 void
-PPL::Linear_System::sort_rows(const dimension_type first_row,
+Linear_System::sort_rows(const dimension_type first_row,
 			      const dimension_type last_row) {
   PPL_ASSERT(first_row <= last_row && last_row <= num_rows());
   // We cannot mix pending and non-pending rows.
@@ -344,7 +344,7 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
 }
 
 void
-PPL::Linear_System::add_row(const Linear_Row& r) {
+Linear_System::add_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements as the existing rows of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -382,7 +382,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
 }
 
 void
-PPL::Linear_System::add_pending_row(const Linear_Row& r) {
+Linear_System::add_pending_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements of the existing rows of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -399,7 +399,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
 }
 
 void
-PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
+Linear_System::add_pending_row(const Linear_Row::Flags flags) {
   
   Linear_Row new_row(num_columns(), num_columns(), flags);
   add_recycled_row(new_row);
@@ -409,7 +409,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
 }
 
 void
-PPL::Linear_System::normalize() {
+Linear_System::normalize() {
   Linear_System& x = *this;
   const dimension_type nrows = x.num_rows();
   // We normalize also the pending rows.
@@ -419,7 +419,7 @@ PPL::Linear_System::normalize() {
 }
 
 void
-PPL::Linear_System::strong_normalize() {
+Linear_System::strong_normalize() {
   Linear_System& x = *this;
   const dimension_type nrows = x.num_rows();
   // We strongly normalize also the pending rows.
@@ -429,7 +429,7 @@ PPL::Linear_System::strong_normalize() {
 }
 
 void
-PPL::Linear_System::sign_normalize() {
+Linear_System::sign_normalize() {
   Linear_System& x = *this;
   const dimension_type nrows = x.num_rows();
   // We sign-normalize also the pending rows.
@@ -440,7 +440,7 @@ PPL::Linear_System::sign_normalize() {
 
 /*! \relates Parma_Polyhedra_Library::Linear_System */
 bool
-PPL::operator==(const Linear_System& x, const Linear_System& y) {
+operator==(const Linear_System& x, const Linear_System& y) {
   if (x.num_columns() != y.num_columns())
     return false;
   const dimension_type x_num_rows = x.num_rows();
@@ -460,7 +460,7 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
+Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
   PPL_ASSERT(sys.first_pending_row() == sat.num_rows());
@@ -496,8 +496,8 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   sys.set_sorted(true);
 }
 
-PPL::dimension_type
-PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
+dimension_type
+Linear_System::gauss(const dimension_type n_lines_or_equalities) {
   Linear_System& x = *this;
   // This method is only applied to a well-formed linear system
   // having no pending rows and exactly `n_lines_or_equalities'
@@ -548,7 +548,7 @@ PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
 }
 
 void
-PPL::Linear_System
+Linear_System
 ::back_substitute(const dimension_type n_lines_or_equalities) {
   Linear_System& x = *this;
   // This method is only applied to a well-formed system
@@ -608,7 +608,7 @@ PPL::Linear_System
     const bool have_to_negate = (x_k[j] < 0);
     if (have_to_negate)
       for (dimension_type h = ncols; h-- > 0; )
-	PPL::neg_assign(x_k[h]);
+	neg_assign(x_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
@@ -631,7 +631,7 @@ PPL::Linear_System
     if (have_to_negate)
       // Negate `x_k' to restore strong-normalization.
       for (dimension_type h = ncols; h-- > 0; )
-	PPL::neg_assign(x_k[h]);
+	neg_assign(x_k[h]);
   }
 
   // Trying to keep sortedness.
@@ -647,7 +647,7 @@ PPL::Linear_System
 }
 
 void
-PPL::Linear_System::simplify() {
+Linear_System::simplify() {
   Linear_System& x = *this;
   // This method is only applied to a well-formed system
   // having no pending rows.
@@ -691,7 +691,7 @@ PPL::Linear_System::simplify() {
 }
 
 void
-PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
+Linear_System::add_rows_and_columns(const dimension_type n) {
   PPL_ASSERT(n > 0);
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = num_rows();
@@ -726,7 +726,7 @@ PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
 }
 
 void
-PPL::Linear_System::sort_pending_and_remove_duplicates() {
+Linear_System::sort_pending_and_remove_duplicates() {
   PPL_ASSERT(num_pending_rows() > 0);
   PPL_ASSERT(is_sorted());
   Linear_System& x = *this;
@@ -783,7 +783,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
 }
 
 bool
-PPL::Linear_System::check_sorted() const {
+Linear_System::check_sorted() const {
   const Linear_System& x = *this;
   for (dimension_type i = first_pending_row(); i-- > 1; )
     if (compare(x[i], x[i-1]) < 0)
@@ -792,7 +792,7 @@ PPL::Linear_System::check_sorted() const {
 }
 
 bool
-PPL::Linear_System::OK(const bool check_strong_normalized) const {
+Linear_System::OK(const bool check_strong_normalized) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -880,3 +880,5 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   // All checks passed.
   return true;
 }
+
+} // namespace Parma_Polyhedra_Library
