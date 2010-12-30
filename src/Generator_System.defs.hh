@@ -180,6 +180,8 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     reordered, removed (if they are duplicate or redundant), etc.
 */
 class Parma_Polyhedra_Library::Generator_System : protected Linear_System {
+private:
+  typedef Linear_System Base;
 public:
   //! Default constructor: builds an empty system of generators.
   Generator_System();
@@ -496,13 +498,13 @@ private:
   friend class Generator_System;
 
   //! The const iterator over the Linear_System.
-  Linear_System::const_iterator i;
+  Generator_System::Base::const_iterator i;
 
   //! A const pointer to the Linear_System.
-  const Linear_System* gsp;
+  const Generator_System::Base* gsp;
 
   //! Constructor.
-  Generator_System_const_iterator(const Linear_System::const_iterator& iter,
+  Generator_System_const_iterator(const Generator_System::Base::const_iterator& iter,
       const Generator_System& gsys);
 
   /*! \brief
