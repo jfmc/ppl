@@ -32,8 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
-				      Linear_System& sys2,
+PPL::Polyhedron::add_space_dimensions(Linear_System_Class& sys1,
+				      Linear_System_Class& sys2,
 				      Bit_Matrix& sat1,
 				      Bit_Matrix& sat2,
 				      dimension_type add_dim) {

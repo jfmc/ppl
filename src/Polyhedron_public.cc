@@ -1977,7 +1977,7 @@ struct Ruled_Out_Less_Than {
 };
 
 bool
-add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
+add_to_system_and_check_independence(PPL::Polyhedron::Linear_System_Class& eq_sys,
                                      const PPL::Linear_Row& eq) {
   // Check if equality eqn is linear independent from eq_sys.
   PPL_ASSERT(eq.is_line_or_equality());
@@ -2311,7 +2311,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       Constraint_System nonred_eq;
       dimension_type num_nonred_eq = 0;
       const dimension_type needed_nonred_eq = z_cs_num_eq - y_cs_num_eq;
-      Linear_System eqs(x.topology());
+      Linear_System_Class eqs(x.topology());
       if (needed_nonred_eq > 0) {
         // Populate eqs with the equalities from y.
         for (dimension_type i = 0; i < y_cs_num_eq; ++i)
@@ -3449,7 +3449,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
     x.set_generators_pending();
   }
   // Otherwise, the two systems are merged.
-  // `Linear_System::merge_rows_assign()' requires both systems to be sorted.
+  // `Linear_System_Class::merge_rows_assign()' requires both systems to be sorted.
   else {
     if (!x.gen_sys.is_sorted())
       x.gen_sys.sort_rows();

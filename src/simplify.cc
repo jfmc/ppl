@@ -80,7 +80,7 @@ namespace PPL = Parma_Polyhedra_Library;
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
 PPL::dimension_type
-PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
+PPL::Polyhedron::simplify(Linear_System_Class& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   PPL_ASSERT(sys.OK(true));
   PPL_ASSERT(sys.num_columns() >= 1);

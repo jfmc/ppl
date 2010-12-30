@@ -67,8 +67,8 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 bool
 PPL::Polyhedron::minimize(const bool con_to_gen,
-			  Linear_System& source,
-			  Linear_System& dest,
+			  Linear_System_Class& source,
+			  Linear_System_Class& dest,
 			  Bit_Matrix& sat) {
   // Topologies have to agree.
   PPL_ASSERT(source.topology() == dest.topology());
@@ -218,7 +218,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   pair (\p source1, \p dest) and a system of new constraints \p source2,
   modifies \p source1 by adding to it the constraints of \p source2 that
   are not in \p source1. Then, by invoking
-  <CODE>add_and_minimize(bool, Linear_System&, Linear_System&, Bit_Matrix&)</CODE>,
+  <CODE>add_and_minimize(bool, Linear_System_Class&, Linear_System_Class&, Bit_Matrix&)</CODE>,
   processes the added constraints obtaining a new DD pair.
 
   This method treats also the dual case, i.e., adding new generators to
@@ -231,10 +231,10 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 */
 bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System& source1,
-				  Linear_System& dest,
+				  Linear_System_Class& source1,
+				  Linear_System_Class& dest,
 				  Bit_Matrix& sat,
-				  const Linear_System& source2) {
+				  const Linear_System_Class& source2) {
   // `source1' and `source2' cannot be empty.
   PPL_ASSERT(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
@@ -332,8 +332,8 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 */
 bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System& source,
-				  Linear_System& dest,
+				  Linear_System_Class& source,
+				  Linear_System_Class& dest,
 				  Bit_Matrix& sat) {
   PPL_ASSERT(source.num_pending_rows() > 0);
   PPL_ASSERT(source.num_columns() == dest.num_columns());

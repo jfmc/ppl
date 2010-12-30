@@ -344,9 +344,9 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$\vect{r}\f$ is redundant.
 */
 PPL::dimension_type
-PPL::Polyhedron::conversion(Linear_System& source,
+PPL::Polyhedron::conversion(Linear_System_Class& source,
 			    const dimension_type start,
-			    Linear_System& dest,
+			    Linear_System_Class& dest,
 			    Bit_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
