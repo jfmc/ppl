@@ -377,18 +377,27 @@ private:
   
   void destroy();
   
-  //! The number of coefficients in the row.
-  dimension_type size_;
+  struct Impl {
+    
+    Impl();
+    
+    ~Impl();
+    
+    //! The number of coefficients in the row.
+    dimension_type size;
+    
+    //! The capacity of the row.
+    dimension_type capacity;
+
+    //! The flags of this row.
+    Row_Flags flags;
+
+    //! The vector of coefficients.
+    //! An empty vector may be stored as NULL instead of using a valid pointer.
+    Coefficient* vec;
+  };
   
-  //! The capacity of the row.
-  dimension_type capacity_;
-
-  //! The flags of this row.
-  Row_Flags flags_;
-
-  //! The vector of coefficients.
-  //! An empty vector may be stored as NULL instead of using a valid pointer.
-  Coefficient* vec_;
+  Impl impl;
 
   //! Returns the capacity of the row.
   dimension_type capacity() const;
