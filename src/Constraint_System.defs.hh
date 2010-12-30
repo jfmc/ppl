@@ -125,6 +125,9 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
     implied by other constraints), linearly combined, etc.
 */
 class Parma_Polyhedra_Library::Constraint_System : private Linear_System {
+private:
+  typedef Linear_System Base;
+  
 public:
   //! Default constructor: builds an empty system of constraints.
   Constraint_System();
@@ -399,13 +402,13 @@ private:
   friend class Constraint_System;
 
   //! The const iterator over the matrix of constraints.
-  Linear_System::const_iterator i;
+  Constraint_System::Base::const_iterator i;
 
   //! A const pointer to the matrix of constraints.
-  const Linear_System* csp;
+  const Constraint_System::Base* csp;
 
   //! Constructor.
-  Constraint_System_const_iterator(const Linear_System::const_iterator& iter,
+  Constraint_System_const_iterator(const Constraint_System::Base::const_iterator& iter,
       const Constraint_System& csys);
 
   //! \p *this skips to the next non-trivial constraint.
