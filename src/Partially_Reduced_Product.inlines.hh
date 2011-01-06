@@ -357,7 +357,7 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.time_elapse_assign(y.d1);
   d2.time_elapse_assign(y.d2);
-  assert(OK());
+  PPL_ASSERT(OK());
 }
 
 template <typename D1, typename D2, typename R>

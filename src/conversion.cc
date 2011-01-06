@@ -715,7 +715,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    redundant = true;
 		    break;
 		  }
-                assert(bound >= num_lines_or_equalities);
+                PPL_ASSERT(bound >= num_lines_or_equalities);
                 WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
 		if (!redundant) {
 		  // Adding the new ray to `dest' and the corresponding
