@@ -309,6 +309,10 @@ Partial_Function.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
+Polyhedron_chdims.templates.hh \
+Polyhedron_conversion.templates.hh \
+Polyhedron_minimize.templates.hh \
+Polyhedron_simplify.templates.hh \
 Polyhedron.templates.hh \
 Grid.defs.hh \
 Grid_Status.inlines.hh \
@@ -432,9 +436,6 @@ Ph_Status.cc \
 Grid_Status.cc \
 Variable.cc \
 Variables_Set.cc \
-conversion.cc \
-minimize.cc \
-simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 stdiobuf.cc \

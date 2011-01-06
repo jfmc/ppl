@@ -363,8 +363,6 @@ bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
-  typedef Linear_System<Linear_Row> Linear_System_Class;
-
   //! The numeric type of coefficients.
   typedef Coefficient coefficient_type;
 
@@ -2421,8 +2419,9 @@ private:
     constraints and that of generators (and the corresponding saturation
     matrices) in different order (see those methods for details).
   */
-  static void add_space_dimensions(Linear_System_Class& mat1,
-				   Linear_System_Class& mat2,
+  template <typename Row1, typename Row2>
+  static void add_space_dimensions(Linear_System<Row1>& mat1,
+				   Linear_System<Row2>& mat2,
 				   Bit_Matrix& sat1,
 				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
@@ -2432,9 +2431,10 @@ private:
 
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
+  template <typename Source_Row, typename Dest_Row>
   static bool minimize(bool con_to_gen,
-		       Linear_System_Class& source,
-		       Linear_System_Class& dest,
+		       Linear_System<Source_Row>& source,
+		       Linear_System<Dest_Row>& dest,
 		       Bit_Matrix& sat);
 
   /*! \brief
@@ -2442,27 +2442,30 @@ private:
     or vice versa.
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
+  template <typename Source_Row1, typename Source_Row2, typename Dest_Row>
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System_Class& source1,
-			       Linear_System_Class& dest,
+			       Linear_System<Source_Row1>& source1,
+			       Linear_System<Dest_Row>& dest,
 			       Bit_Matrix& sat,
-			       const Linear_System_Class& source2);
+			       const Linear_System<Source_Row2>& source2);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
     or vice versa. The given constraints are in \p source.
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
+  template <typename Source_Row, typename Dest_Row>
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System_Class& source,
-			       Linear_System_Class& dest,
+			       Linear_System<Source_Row>& source,
+			       Linear_System<Dest_Row>& dest,
 			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  static dimension_type conversion(Linear_System_Class& source,
+  template <typename Source_Row, typename Dest_Row>
+  static dimension_type conversion(Linear_System<Source_Row>& source,
 				   dimension_type start,
-				   Linear_System_Class& dest,
+				   Linear_System<Dest_Row>& dest,
 				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
@@ -2471,7 +2474,8 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static dimension_type simplify(Linear_System_Class& mat, Bit_Matrix& sat);
+  template <typename Row>
+  static dimension_type simplify(Linear_System<Row>& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
@@ -2625,5 +2629,9 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 #include "Ph_Status.inlines.hh"
 #include "Polyhedron.inlines.hh"
 #include "Polyhedron.templates.hh"
+#include "Polyhedron_chdims.templates.hh"
+#include "Polyhedron_conversion.templates.hh"
+#include "Polyhedron_minimize.templates.hh"
+#include "Polyhedron_simplify.templates.hh"
 
 #endif // !defined(PPL_Polyhedron_defs_hh)

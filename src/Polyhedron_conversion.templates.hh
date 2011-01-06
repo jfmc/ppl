@@ -20,7 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <ppl-config.h>
+#ifndef PPL_Polyhedron_conversion_templates_hh
+#define PPL_Polyhedron_conversion_templates_hh 1
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
@@ -32,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <climits>
 
-namespace PPL = Parma_Polyhedra_Library;
+namespace Parma_Polyhedra_Library {
 
 /*!
   \return
@@ -343,10 +344,11 @@ namespace PPL = Parma_Polyhedra_Library;
   These two adjacent rays build a ray equal to \f$\vect{r}\f$ and so
   \f$\vect{r}\f$ is redundant.
 */
-PPL::dimension_type
-PPL::Polyhedron::conversion(Linear_System_Class& source,
+template <typename Source_Row, typename Dest_Row>
+dimension_type
+Polyhedron::conversion(Linear_System<Source_Row>& source,
 			    const dimension_type start,
-			    Linear_System_Class& dest,
+			    Linear_System<Dest_Row>& dest,
 			    Bit_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
@@ -385,7 +387,7 @@ PPL::Polyhedron::conversion(Linear_System_Class& source,
       // There is no need to swap the columns of `sat' (all zeroes).
       std::swap(source[k], source[k+source_num_redundant]);
 
-    Linear_Row& source_k = source[k];
+    Source_Row& source_k = source[k];
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
@@ -460,7 +462,7 @@ PPL::Polyhedron::conversion(Linear_System_Class& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      Linear_Row& dest_nle = dest[num_lines_or_equalities];
+      Dest_Row& dest_nle = dest[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -495,7 +497,7 @@ PPL::Polyhedron::conversion(Linear_System_Class& source,
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Linear_Row& dest_i = dest[i];
+	  Dest_Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -531,7 +533,7 @@ PPL::Polyhedron::conversion(Linear_System_Class& source,
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Linear_Row& dest_i = dest[i];
+	  Dest_Row& dest_i = dest[i];
           WEIGHT_BEGIN();
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
@@ -860,3 +862,7 @@ PPL::Polyhedron::conversion(Linear_System_Class& source,
 
   return num_lines_or_equalities;
 }
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Polyhedron_conversion_templates_hh)
