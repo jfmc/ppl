@@ -182,8 +182,8 @@ Linear_Row::Linear_Row(const Linear_Row& y)
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
-		       const dimension_type capacity)
-  : Dense_Row(y, capacity) {
+                       const dimension_type size)
+  : Dense_Row(y, size, size) {
 }
 
 inline

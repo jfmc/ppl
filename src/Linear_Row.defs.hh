@@ -223,11 +223,11 @@ public:
   //! Ordinary copy constructor.
   Linear_Row(const Linear_Row& y);
 
-  //! Copy constructor with specified capacity.
+  //! Copy constructor with specified size.
   /*!
-    It is assumed that \p capacity is greater than or equal to \p y size.
+    It is assumed that \p size is greater than or equal to \p y size.
   */
-  Linear_Row(const Linear_Row& y, dimension_type capacity);
+  Linear_Row(const Linear_Row& y, dimension_type size);
 
   //! Copy constructor with specified size and capacity.
   /*!
