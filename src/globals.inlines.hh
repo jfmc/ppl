@@ -67,7 +67,7 @@ maybe_abandon() {
 inline dimension_type
 compute_capacity(const dimension_type requested_size,
 		 const dimension_type maximum_size) {
-  assert(requested_size <= maximum_size);
+  PPL_ASSERT(requested_size <= maximum_size);
   // Speculation factor 2.
   return (requested_size < maximum_size / 2)
     ? 2*(requested_size + 1)

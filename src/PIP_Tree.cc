@@ -2329,8 +2329,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       generate_cut(best_i, all_params, context, space_dim);
     }
     else {
-      assert(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
-             || cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
+      PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
+                 || cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
       // Find the row with simplest parametric part
       // which will generate the "deepest" cut.
       PPL_DIRTY_TEMP_COEFFICIENT(best_score);

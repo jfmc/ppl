@@ -3510,7 +3510,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
     }
     else {
       // We have a point or a closure point.
-      assert(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
+      PPL_ASSERT(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the value if there is a constant value.
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);

@@ -971,7 +971,7 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
     // Check the octagonal constraints between `v' and the other dimensions
     // that have non-zero coefficient in `le'.
     else {
-      assert(!constant_v);
+      PPL_ASSERT(!constant_v);
       using namespace Implementation::Octagonal_Shapes;
       const dimension_type ci = coherent_index(i);
       for (Row_Iterator j_iter = i_iter; j_iter != m_end; j_iter += 2) {
