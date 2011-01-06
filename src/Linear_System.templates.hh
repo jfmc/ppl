@@ -405,7 +405,7 @@ Linear_System<Row>::add_pending_row(const Row& r) {
   PPL_ASSERT(r.check_strong_normalized());
   PPL_ASSERT(r.size() == Matrix<Row>::num_columns());
 
-  Row tmp(r, Matrix<Row>::num_columns());
+  Row tmp(r, Matrix<Row>::num_columns(), Matrix<Row>::num_columns());
   Matrix<Row>::add_recycled_row(tmp);
 
   // The added row was a pending row.
