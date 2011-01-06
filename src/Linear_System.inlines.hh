@@ -73,7 +73,7 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol,
 			     dimension_type n_rows, dimension_type n_columns)
-  : Matrix<Row>(n_rows, n_columns, Linear_Row::Flags(topol)),
+  : Matrix<Row>(n_rows, n_columns, typename Row::Flags(topol)),
     row_topology(topol),
     index_first_pending(n_rows),
     sorted(true) {
@@ -168,7 +168,7 @@ inline void
 Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
 			      const dimension_type new_n_columns) {
   Matrix<Row>::resize_no_copy(new_n_rows, new_n_columns,
-			 Linear_Row::Flags(row_topology));
+			 typename Row::Flags(row_topology));
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
@@ -199,15 +199,15 @@ Linear_System<Row>::is_necessarily_closed() const {
 }
 
 template <typename Row>
-inline Linear_Row&
+inline Row&
 Linear_System<Row>::operator[](const dimension_type k) {
-  return static_cast<Linear_Row&>(Matrix<Row>::operator[](k));
+  return Matrix<Row>::operator[](k);
 }
 
 template <typename Row>
-inline const Linear_Row&
+inline const Row&
 Linear_System<Row>::operator[](const dimension_type k) const {
-  return static_cast<const Linear_Row&>(Matrix<Row>::operator[](k));
+  return Matrix<Row>::operator[](k);
 }
 
 template <typename Row>
@@ -263,8 +263,7 @@ template <typename Row>
 inline bool
 Linear_System<Row>::Row_Less_Than::operator()(const Row& x,
                                          const Row& y) const {
-  return compare(static_cast<const Linear_Row&>(x),
-		 static_cast<const Linear_Row&>(y)) < 0;
+  return compare(x, y) < 0;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -189,7 +189,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
 
 template <typename Row>
 void
-Linear_System<Row>::insert(const Linear_Row& r) {
+Linear_System<Row>::insert(const Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -212,7 +212,7 @@ Linear_System<Row>::insert(const Linear_Row& r) {
   }
   else if (r_size < old_num_columns) {
     // Create a resized copy of the row.
-    Linear_Row tmp_row(r, old_num_columns, old_num_columns);
+    Row tmp_row(r, old_num_columns, old_num_columns);
     // If needed, move the epsilon coefficient to the last position.
     if (!is_necessarily_closed())
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
@@ -231,7 +231,7 @@ Linear_System<Row>::insert(const Linear_Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::insert_pending(const Linear_Row& r) {
+Linear_System<Row>::insert_pending(const Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -252,11 +252,11 @@ Linear_System<Row>::insert_pending(const Linear_Row& r) {
   }
   else if (r_size < old_num_columns)
     if (is_necessarily_closed() || old_num_rows == 0)
-      add_pending_row(Linear_Row(r, old_num_columns, old_num_columns));
+      add_pending_row(Row(r, old_num_columns, old_num_columns));
     else {
       // Create a resized copy of the row (and move the epsilon
       // coefficient to its last position).
-      Linear_Row tmp_row(r, old_num_columns, old_num_columns);
+      Row tmp_row(r, old_num_columns, old_num_columns);
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
       add_pending_row(tmp_row);
     }
@@ -281,7 +281,7 @@ Linear_System<Row>::add_pending_rows(const Linear_System& y) {
   const dimension_type y_n_rows = y.num_rows();
   // Grow to the required size without changing sortedness.
   const bool was_sorted = sorted;
-  Matrix<Row>::add_zero_rows(y_n_rows, Linear_Row::Flags(row_topology));
+  Matrix<Row>::add_zero_rows(y_n_rows, typename Row::Flags(row_topology));
   sorted = was_sorted;
 
   // Copy the rows of `y', forcing size and capacity.
@@ -360,7 +360,7 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
 
 template <typename Row>
 void
-Linear_System<Row>::add_row(const Linear_Row& r) {
+Linear_System<Row>::add_row(const Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements as the existing rows of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -399,7 +399,7 @@ Linear_System<Row>::add_row(const Linear_Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_pending_row(const Linear_Row& r) {
+Linear_System<Row>::add_pending_row(const Row& r) {
   // The added row must be strongly normalized and have the same
   // number of elements of the existing rows of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -417,9 +417,9 @@ Linear_System<Row>::add_pending_row(const Linear_Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_pending_row(const Linear_Row::Flags flags) {
+Linear_System<Row>::add_pending_row(const typename Row::Flags flags) {
   
-  Linear_Row new_row(Matrix<Row>::num_columns(), Matrix<Row>::num_columns(), flags);
+  Row new_row(Matrix<Row>::num_columns(), Matrix<Row>::num_columns(), flags);
   Matrix<Row>::add_recycled_row(new_row);
 
   // The added row was a pending row.
@@ -603,14 +603,14 @@ Linear_System<Row>
     // For each line or equality, starting from the last one,
     // looks for the last non-zero element.
     // `j' will be the index of such a element.
-    Linear_Row& x_k = x[k];
+    Row& x_k = x[k];
     dimension_type j = ncols - 1;
     while (j != 0 && x_k[j] == 0)
       --j;
 
     // Go through the equalities above `x_k'.
     for (dimension_type i = k; i-- > 0; ) {
-      Linear_Row& x_i = x[i];
+      Row& x_i = x[i];
       if (x_i[j] != 0) {
 	// Combine linearly `x_i' with `x_k'
 	// so that `x_i[j]' becomes zero.
@@ -639,7 +639,7 @@ Linear_System<Row>
 
     // Go through all the other rows of the system.
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
-      Linear_Row& x_i = x[i];
+      Row& x_i = x[i];
       if (x_i[j] != 0) {
 	// Combine linearly the `x_i' with `x_k'
 	// so that `x_i[j]' becomes zero.
@@ -723,7 +723,7 @@ Linear_System<Row>::add_rows_and_columns(const dimension_type n) {
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = Matrix<Row>::num_rows();
   const dimension_type old_n_columns = Matrix<Row>::num_columns();
-  Matrix<Row>::add_zero_rows_and_columns(n, n, Linear_Row::Flags(row_topology));
+  Matrix<Row>::add_zero_rows_and_columns(n, n, typename Row::Flags(row_topology));
   Linear_System& x = *this;
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )
@@ -732,7 +732,7 @@ Linear_System<Row>::add_rows_and_columns(const dimension_type n) {
     // The top right-hand sub-system (i.e., the system made of new
     // rows and columns) is set to the specular image of the identity
     // matrix.
-    Linear_Row& r = x[i];
+    Row& r = x[i];
     r[c++] = 1;
     r.set_is_line_or_equality();
     // Note: `r' is strongly normalized.
@@ -885,7 +885,7 @@ Linear_System<Row>::OK(const bool check_strong_normalized) const {
   if (check_strong_normalized) {
     // Check for strong normalization of rows.
     // Note: normalization cannot be checked inside the
-    // Linear_Row::OK() method, because a Linear_Row object may also
+    // Row::OK() method, because a Linear_Row object may also
     // implement a Linear_Expression object, which in general cannot
     // be (strongly) normalized.
     Linear_System tmp(x, With_Pending());

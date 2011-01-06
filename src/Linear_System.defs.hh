@@ -140,10 +140,10 @@ public:
   //! \name Subscript operators
   //@{
   //! Returns a reference to the \p k-th row of the system.
-  Linear_Row& operator[](dimension_type k);
+  Row& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k-th row of the system.
-  const Linear_Row& operator[](dimension_type k) const;
+  const Row& operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! Strongly normalizes the system.
@@ -235,22 +235,22 @@ public:
     Adds a copy of \p r to the system,
     automatically resizing the system or the row's copy, if needed.
   */
-  void insert(const Linear_Row& r);
+  void insert(const Row& r);
 
   /*! \brief
     Adds a copy of the given row to the pending part of the system,
     automatically resizing the system or the row, if needed.
   */
-  void insert_pending(const Linear_Row& r);
+  void insert_pending(const Row& r);
 
   //! Adds a copy of the given row to the system.
-  void add_row(const Linear_Row& r);
+  void add_row(const Row& r);
 
   //! Adds a new empty row to the system, setting only its flags.
-  void add_pending_row(Linear_Row::Flags flags);
+  void add_pending_row(typename Row::Flags flags);
 
   //! Adds a copy of the given row to the pending part of the system.
-  void add_pending_row(const Linear_Row& r);
+  void add_pending_row(const Row& r);
 
   //! Adds to \p *this a copy of the rows of `y'.
   /*!
@@ -381,7 +381,7 @@ private:
 
   /*! \brief
     <CODE>true</CODE> if rows are sorted in the ascending order as defined by
-    <CODE>bool compare(const Linear_Row&, const Linear_Row&)</CODE>.
+    <CODE>bool compare(const Row&, const Row&)</CODE>.
     If <CODE>false</CODE> may not be sorted.
   */
   bool sorted;
