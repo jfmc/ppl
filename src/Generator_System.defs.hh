@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
+#include "Linear_Row.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"

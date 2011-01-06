@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Bit_Matrix.types.hh"
 #include "Matrix.defs.hh"
 #include "Topology.hh"
-#include "Linear_Row.defs.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for systems of constraints and generators.
