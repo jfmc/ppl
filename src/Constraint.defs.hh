@@ -257,7 +257,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   syntactically different from the (semantically equivalent)
   constraint considered.
 */
-class Parma_Polyhedra_Library::Constraint : private Linear_Row {
+class Parma_Polyhedra_Library::Constraint : public Linear_Row {
 public:
   //! Ordinary copy constructor.
   Constraint(const Constraint& c);
