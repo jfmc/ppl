@@ -276,7 +276,7 @@ PPL::Grid_Generator_System::OK() const {
   // A Generator_System and hence a Grid_Generator_System must be a
   // valid Linear_System; do not check for strong normalization, since
   // this will be done when checking each individual generator.
-  if (!Linear_System::OK(false))
+  if (!Linear_System<Dense_Row>::OK(false))
     return false;
 
   // Checking each generator in the system.

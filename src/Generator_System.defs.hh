@@ -179,9 +179,9 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::Generator_System : protected Linear_System {
+class Parma_Polyhedra_Library::Generator_System : protected Linear_System<Dense_Row> {
 private:
-  typedef Linear_System Base;
+  typedef Linear_System<Dense_Row> Base;
 public:
   //! Default constructor: builds an empty system of generators.
   Generator_System();

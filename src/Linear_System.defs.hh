@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_System_defs_hh 1
 
 #include "Linear_System.types.hh"
-#include "Dense_Row.types.hh"
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
 #include "Matrix.defs.hh"
@@ -50,8 +49,8 @@ site: http://www.cs.unipr.it/ppl/ . */
      non-pending prefix of the sequence of rows is sorted.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
-class Parma_Polyhedra_Library::Linear_System : public Matrix<Dense_Row> {
+template <typename Row>
+class Parma_Polyhedra_Library::Linear_System : public Matrix<Row> {
 public:
   //! Builds an empty linear system with specified topology.
   /*!
@@ -389,7 +388,7 @@ private:
 
   //! Ordering predicate (used when implementing the sort algorithm).
   struct Row_Less_Than {
-    bool operator()(const Dense_Row& x, const Dense_Row& y) const;
+    bool operator()(const Row& x, const Row& y) const;
   };
 };
 
@@ -399,8 +398,9 @@ namespace std {
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Linear_System& x,
-	  Parma_Polyhedra_Library::Linear_System& y);
+template <typename Row>
+void swap(Parma_Polyhedra_Library::Linear_System<Row>& x,
+          Parma_Polyhedra_Library::Linear_System<Row>& y);
 
 } // namespace std
 
@@ -410,28 +410,31 @@ namespace Parma_Polyhedra_Library {
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool operator==(const Linear_System& x, const Linear_System& y);
+template <typename Row>
+bool operator==(const Linear_System<Row>& x, const Linear_System<Row>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool operator!=(const Linear_System& x, const Linear_System& y);
+template <typename Row>
+bool operator!=(const Linear_System<Row>& x, const Linear_System<Row>& y);
 
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator keeping a Linear_System consistent with a Bit_Matrix.
 /*! \ingroup PPL_CXX_interface
-  An iterator on the vector of Dense_Row objects encoded in a Linear_System
+  An iterator on the vector of Row objects encoded in a Linear_System
   extended to maintain a corresponding iterator on a vector of
-  Bit_Row objects.  Access to values is always done on the Dense_Row
+  Bit_Row objects.  Access to values is always done on the Row
   objects, but iterator movements and swaps are done on both components.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename Row>
 class Parma_Polyhedra_Library::Linear_System_With_Bit_Matrix_iterator {
 public:
-  typedef std::vector<Dense_Row>::iterator Iter1;
+  typedef typename std::vector<Row>::iterator Iter1;
   typedef std::vector<Bit_Row>::iterator Iter2;
 
 private:
@@ -440,11 +443,11 @@ private:
 
 public:
   // Same traits as Iter1.
-  typedef std::iterator_traits<Iter1>::iterator_category iterator_category;
-  typedef std::iterator_traits<Iter1>::value_type value_type;
-  typedef std::iterator_traits<Iter1>::difference_type difference_type;
-  typedef std::iterator_traits<Iter1>::pointer pointer;
-  typedef std::iterator_traits<Iter1>::reference reference;
+  typedef typename std::iterator_traits<Iter1>::iterator_category iterator_category;
+  typedef typename std::iterator_traits<Iter1>::value_type value_type;
+  typedef typename std::iterator_traits<Iter1>::difference_type difference_type;
+  typedef typename std::iterator_traits<Iter1>::pointer pointer;
+  typedef typename std::iterator_traits<Iter1>::reference reference;
 
   //! Constructor.
   Linear_System_With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2);
@@ -490,7 +493,7 @@ public:
   //! Access-through operator.
   pointer operator->() const;
 
-  //! Swaps the pointed Dense_Row objects while keeping Bit_Matrix consistent.
+  //! Swaps the pointed Row objects while keeping Bit_Matrix consistent.
   void iter_swap(const Linear_System_With_Bit_Matrix_iterator& y) const;
 
 };
@@ -501,14 +504,16 @@ namespace std {
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System_With_Bit_Matrix_iterator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
 void
 iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System_With_Bit_Matrix_iterator x,
+	  ::Linear_System_With_Bit_Matrix_iterator<T> x,
 	  Parma_Polyhedra_Library
-	  ::Linear_System_With_Bit_Matrix_iterator y);
+	  ::Linear_System_With_Bit_Matrix_iterator<T> y);
 
 } // namespace std
 
 #include "Linear_System.inlines.hh"
+#include "Linear_System.templates.hh"
 
 #endif // !defined(PPL_Linear_System_defs_hh)

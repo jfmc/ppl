@@ -256,6 +256,7 @@ Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \
 Linear_System.inlines.hh \
+Linear_System.templates.hh \
 Bit_Matrix.defs.hh \
 Bit_Matrix.inlines.hh \
 Constraint_System.defs.hh \
@@ -397,7 +398,6 @@ Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
-Linear_System.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \

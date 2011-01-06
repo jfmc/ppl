@@ -363,7 +363,7 @@ bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
-  typedef Linear_System Linear_System_Class;
+  typedef Linear_System<Dense_Row> Linear_System_Class;
 
   //! The numeric type of coefficients.
   typedef Coefficient coefficient_type;
