@@ -15,6 +15,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 class Linear_System;
+class Linear_System_With_Bit_Matrix_iterator;
 
 } // namespace Parma_Polyhedra_Library
 

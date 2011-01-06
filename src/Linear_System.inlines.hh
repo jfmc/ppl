@@ -251,125 +251,125 @@ swap(Parma_Polyhedra_Library::Linear_System& x,
 namespace Parma_Polyhedra_Library {
 
 inline
-Linear_System::With_Bit_Matrix_iterator::
-With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2)
+Linear_System_With_Bit_Matrix_iterator::
+Linear_System_With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2)
   : i1(iter1), i2(iter2) {
 }
 
 inline
-Linear_System::With_Bit_Matrix_iterator::
-With_Bit_Matrix_iterator(const With_Bit_Matrix_iterator& y)
+Linear_System_With_Bit_Matrix_iterator::
+Linear_System_With_Bit_Matrix_iterator(const Linear_System_With_Bit_Matrix_iterator& y)
   : i1(y.i1), i2(y.i2) {
 }
 
 inline
-Linear_System::With_Bit_Matrix_iterator::
-~With_Bit_Matrix_iterator() {
+Linear_System_With_Bit_Matrix_iterator::
+~Linear_System_With_Bit_Matrix_iterator() {
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::
-operator=(const With_Bit_Matrix_iterator& y) {
+inline Linear_System_With_Bit_Matrix_iterator&
+Linear_System_With_Bit_Matrix_iterator::
+operator=(const Linear_System_With_Bit_Matrix_iterator& y) {
   i1 = y.i1;
   i2 = y.i2;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator++() {
+inline Linear_System_With_Bit_Matrix_iterator&
+Linear_System_With_Bit_Matrix_iterator::operator++() {
   ++i1;
   ++i2;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::operator++(int) {
-  With_Bit_Matrix_iterator tmp = *this;
+inline Linear_System_With_Bit_Matrix_iterator
+Linear_System_With_Bit_Matrix_iterator::operator++(int) {
+  Linear_System_With_Bit_Matrix_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator--() {
+inline Linear_System_With_Bit_Matrix_iterator&
+Linear_System_With_Bit_Matrix_iterator::operator--() {
   --i1;
   --i2;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::operator--(int) {
-  With_Bit_Matrix_iterator tmp = *this;
+inline Linear_System_With_Bit_Matrix_iterator
+Linear_System_With_Bit_Matrix_iterator::operator--(int) {
+  Linear_System_With_Bit_Matrix_iterator tmp = *this;
   operator--();
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator+=(difference_type d) {
+inline Linear_System_With_Bit_Matrix_iterator&
+Linear_System_With_Bit_Matrix_iterator::operator+=(difference_type d) {
   i1 += d;
   i2 += d;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::
+inline Linear_System_With_Bit_Matrix_iterator
+Linear_System_With_Bit_Matrix_iterator::
 operator+(difference_type d) const {
-  With_Bit_Matrix_iterator tmp = *this;
+  Linear_System_With_Bit_Matrix_iterator tmp = *this;
   tmp += d;
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator&
-Linear_System::With_Bit_Matrix_iterator::operator-=(difference_type d) {
+inline Linear_System_With_Bit_Matrix_iterator&
+Linear_System_With_Bit_Matrix_iterator::operator-=(difference_type d) {
   i1 -= d;
   i2 -= d;
   return *this;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator
-Linear_System::With_Bit_Matrix_iterator::
+inline Linear_System_With_Bit_Matrix_iterator
+Linear_System_With_Bit_Matrix_iterator::
 operator-(difference_type d) const {
-  With_Bit_Matrix_iterator tmp = *this;
+  Linear_System_With_Bit_Matrix_iterator tmp = *this;
   tmp -= d;
   return tmp;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator::difference_type
-Linear_System::With_Bit_Matrix_iterator::
-operator-(const With_Bit_Matrix_iterator& y) const {
+inline Linear_System_With_Bit_Matrix_iterator::difference_type
+Linear_System_With_Bit_Matrix_iterator::
+operator-(const Linear_System_With_Bit_Matrix_iterator& y) const {
   return i1 - y.i1;
 }
 
 inline bool
-Linear_System::With_Bit_Matrix_iterator::
-operator==(const With_Bit_Matrix_iterator& y) const {
+Linear_System_With_Bit_Matrix_iterator::
+operator==(const Linear_System_With_Bit_Matrix_iterator& y) const {
   return i1 == y.i1;
 }
 
 inline bool
-Linear_System::With_Bit_Matrix_iterator::
-operator!=(const With_Bit_Matrix_iterator& y) const {
+Linear_System_With_Bit_Matrix_iterator::
+operator!=(const Linear_System_With_Bit_Matrix_iterator& y) const {
   return i1 != y.i1;
 }
 
 inline bool
-Linear_System::With_Bit_Matrix_iterator::
-operator<(const With_Bit_Matrix_iterator& y) const {
+Linear_System_With_Bit_Matrix_iterator::
+operator<(const Linear_System_With_Bit_Matrix_iterator& y) const {
   return i1 < y.i1;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator::reference
-Linear_System::With_Bit_Matrix_iterator::operator*() const {
+inline Linear_System_With_Bit_Matrix_iterator::reference
+Linear_System_With_Bit_Matrix_iterator::operator*() const {
   return *i1;
 }
 
-inline Linear_System::With_Bit_Matrix_iterator::pointer
-Linear_System::With_Bit_Matrix_iterator::operator->() const {
+inline Linear_System_With_Bit_Matrix_iterator::pointer
+Linear_System_With_Bit_Matrix_iterator::operator->() const {
   return &*i1;
 }
 
 inline void
-Linear_System::With_Bit_Matrix_iterator::
-iter_swap(const With_Bit_Matrix_iterator& y) const {
+Linear_System_With_Bit_Matrix_iterator::
+iter_swap(const Linear_System_With_Bit_Matrix_iterator& y) const {
   std::iter_swap(i1, y.i1);
   std::iter_swap(i2, y.i2);
 }
@@ -379,13 +379,13 @@ iter_swap(const With_Bit_Matrix_iterator& y) const {
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
+/*! \relates Parma_Polyhedra_Library::Linear_System_With_Bit_Matrix_iterator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline void
 iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator x,
+	  ::Linear_System_With_Bit_Matrix_iterator x,
 	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator y) {
+	  ::Linear_System_With_Bit_Matrix_iterator y) {
   x.iter_swap(y);
 }
 

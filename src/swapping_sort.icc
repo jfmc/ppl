@@ -34,10 +34,10 @@ namespace {
 
   Moreover, the algorithm always uses std:iter_swap() instead of
   std::swap() so as to behave as expected when instantiated on
-  Linear_System::With_Bit_Matrix_iterator. Namely, using a sorting
+  Linear_System_With_Bit_Matrix_iterator. Namely, using a sorting
   routine that either copies objects or directly swaps them
   (i.e., without calling std::iter_swap) would not be correct
-  when using Linear_System::With_Bit_Matrix_iterator.
+  when using Linear_System_With_Bit_Matrix_iterator.
 */
 
 template <typename Value_Type, typename Compare>

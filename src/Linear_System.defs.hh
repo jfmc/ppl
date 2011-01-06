@@ -290,8 +290,6 @@ public:
   */
   void sort_pending_and_remove_duplicates();
 
-  class With_Bit_Matrix_iterator;
-
   /*! \brief
     Sorts the system, removing duplicates, keeping the saturation
     matrix consistent.
@@ -431,7 +429,7 @@ bool operator!=(const Linear_System& x, const Linear_System& y);
   objects, but iterator movements and swaps are done on both components.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator {
+class Parma_Polyhedra_Library::Linear_System_With_Bit_Matrix_iterator {
 public:
   typedef std::vector<Dense_Row>::iterator Iter1;
   typedef std::vector<Bit_Row>::iterator Iter2;
@@ -449,41 +447,41 @@ public:
   typedef std::iterator_traits<Iter1>::reference reference;
 
   //! Constructor.
-  With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2);
+  Linear_System_With_Bit_Matrix_iterator(Iter1 iter1, Iter2 iter2);
 
   //! Copy constructor.
-  With_Bit_Matrix_iterator(const With_Bit_Matrix_iterator& y);
+  Linear_System_With_Bit_Matrix_iterator(const Linear_System_With_Bit_Matrix_iterator& y);
 
   //! Destructor.
-  ~With_Bit_Matrix_iterator();
+  ~Linear_System_With_Bit_Matrix_iterator();
 
   //! Assignment operator.
-  With_Bit_Matrix_iterator&
-  operator=(const With_Bit_Matrix_iterator& y);
+  Linear_System_With_Bit_Matrix_iterator&
+  operator=(const Linear_System_With_Bit_Matrix_iterator& y);
 
   //! \name Operators Implementing Iterator Movement
   //@{
-  With_Bit_Matrix_iterator& operator++();
-  With_Bit_Matrix_iterator operator++(int);
+  Linear_System_With_Bit_Matrix_iterator& operator++();
+  Linear_System_With_Bit_Matrix_iterator operator++(int);
 
-  With_Bit_Matrix_iterator& operator--();
-  With_Bit_Matrix_iterator operator--(int);
+  Linear_System_With_Bit_Matrix_iterator& operator--();
+  Linear_System_With_Bit_Matrix_iterator operator--(int);
 
-  With_Bit_Matrix_iterator& operator+=(difference_type d);
-  With_Bit_Matrix_iterator operator+(difference_type d) const;
+  Linear_System_With_Bit_Matrix_iterator& operator+=(difference_type d);
+  Linear_System_With_Bit_Matrix_iterator operator+(difference_type d) const;
 
-  With_Bit_Matrix_iterator& operator-=(difference_type d);
-  With_Bit_Matrix_iterator operator-(difference_type d) const;
+  Linear_System_With_Bit_Matrix_iterator& operator-=(difference_type d);
+  Linear_System_With_Bit_Matrix_iterator operator-(difference_type d) const;
   //@}
 
   //! Distance operator.
-  difference_type operator-(const With_Bit_Matrix_iterator& y) const;
+  difference_type operator-(const Linear_System_With_Bit_Matrix_iterator& y) const;
 
   //! \name Comparisons between Iterators
   //@{
-  bool operator==(const With_Bit_Matrix_iterator& y) const;
-  bool operator!=(const With_Bit_Matrix_iterator& y) const;
-  bool operator<(const With_Bit_Matrix_iterator& y) const;
+  bool operator==(const Linear_System_With_Bit_Matrix_iterator& y) const;
+  bool operator!=(const Linear_System_With_Bit_Matrix_iterator& y) const;
+  bool operator<(const Linear_System_With_Bit_Matrix_iterator& y) const;
   //@}
 
   //! Dereference operator.
@@ -493,7 +491,7 @@ public:
   pointer operator->() const;
 
   //! Swaps the pointed Dense_Row objects while keeping Bit_Matrix consistent.
-  void iter_swap(const With_Bit_Matrix_iterator& y) const;
+  void iter_swap(const Linear_System_With_Bit_Matrix_iterator& y) const;
 
 };
 
@@ -501,13 +499,13 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
+/*! \relates Parma_Polyhedra_Library::Linear_System_With_Bit_Matrix_iterator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator x,
+	  ::Linear_System_With_Bit_Matrix_iterator x,
 	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator y);
+	  ::Linear_System_With_Bit_Matrix_iterator y);
 
 } // namespace std
 

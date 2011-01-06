@@ -470,11 +470,11 @@ Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_Bit_Matrix_iterator first(sys.begin(), sat.rows.begin());
-  With_Bit_Matrix_iterator last = first + sat.num_rows();
+  Linear_System_With_Bit_Matrix_iterator first(sys.begin(), sat.rows.begin());
+  Linear_System_With_Bit_Matrix_iterator last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_Bit_Matrix_iterator new_last = swapping_unique(first, last);
+  Linear_System_With_Bit_Matrix_iterator new_last = swapping_unique(first, last);
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row
