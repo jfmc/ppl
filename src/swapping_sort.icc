@@ -32,11 +32,11 @@ namespace {
   by performing more iter_swap's: it is meant to be used when
   object copying costs much more than object swapping.
 
-  Moreover, the algorithm always uses std:iter_swap() instead of
+  Moreover, the algorithm always uses iter_swap() instead of
   std::swap() so as to behave as expected when instantiated on
   Linear_System_With_Bit_Matrix_iterator. Namely, using a sorting
   routine that either copies objects or directly swaps them
-  (i.e., without calling std::iter_swap) would not be correct
+  (i.e., without calling iter_swap) would not be correct
   when using Linear_System_With_Bit_Matrix_iterator.
 */
 
@@ -49,10 +49,11 @@ median(const Value_Type& x, const Value_Type& y, const Value_Type& z,
     : (comp(x, z) ? x : (comp(y, z) ? z : y));
 }
 
-template <typename Iter, typename Value_Type, typename Compare>
+template <typename Iter, typename Value_Type, typename Compare,
+          typename Iter_Swap>
 Iter
 swapping_partition(Iter first, Iter last, const Value_Type& pivot,
-		   Compare comp) {
+		   Compare comp, Iter_Swap iter_swap) {
   for ( ; ; ) {
     while (comp(*first, pivot))
       ++first;
@@ -60,7 +61,7 @@ swapping_partition(Iter first, Iter last, const Value_Type& pivot,
     while (comp(pivot, *last))
       --last;
     if (first < last) {
-      std::iter_swap(first, last);
+      iter_swap(first, last);
       ++first;
     }
     else
@@ -68,9 +69,9 @@ swapping_partition(Iter first, Iter last, const Value_Type& pivot,
   }
 }
 
-template <typename Iter, typename Compare>
+template <typename Iter, typename Compare, typename Iter_Swap>
 void
-swapping_insertion_sort(Iter first, Iter last, Compare comp) {
+swapping_insertion_sort(Iter first, Iter last, Compare comp, Iter_Swap iter_swap) {
   if (first == last)
     return;
   for (Iter i = first + 1; i != last; ++i) {
@@ -78,19 +79,19 @@ swapping_insertion_sort(Iter first, Iter last, Compare comp) {
     if (comp(*current, *first)) {
       Iter next = current + 1;
       while (current != first)
-	std::iter_swap(--current, --next);
+        iter_swap(--current, --next);
     }
     else {
       Iter previous = current - 1;
       while (comp(*current, *previous))
-	std::iter_swap(current--, previous--);
+        iter_swap(current--, previous--);
     }
   }
 }
 
-template <typename Iter, typename Compare>
+template <typename Iter, typename Compare, typename Iter_Swap>
 void
-swapping_quicksort_loop(Iter first, Iter last, Compare comp) {
+swapping_quicksort_loop(Iter first, Iter last, Compare comp, Iter_Swap iter_swap) {
   const typename std::iterator_traits<Iter>::difference_type threshold = 16;
   while (last - first > threshold) {
     // The construction of this temporary object is
@@ -98,24 +99,30 @@ swapping_quicksort_loop(Iter first, Iter last, Compare comp) {
     Iter middle = first + (last - first) / 2;
     typename std::iterator_traits<Iter>::value_type
       pivot = median(*first, *middle, *(last - 1), comp);
-    Iter part_point = swapping_partition(first, last, pivot, comp);
-    swapping_quicksort_loop(part_point, last, comp);
+    Iter part_point = swapping_partition(first, last, pivot, comp, iter_swap);
+    swapping_quicksort_loop(part_point, last, comp, iter_swap);
     last = part_point;
   }
+}
+
+template <typename Iter, typename Compare, typename Iter_Swap>
+inline void
+swapping_sort(Iter first, Iter last, Compare comp, Iter_Swap iter_swap) {
+  if (first == last)
+    return;
+  swapping_quicksort_loop(first, last, comp, iter_swap);
+  swapping_insertion_sort(first, last, comp, iter_swap);
 }
 
 template <typename Iter, typename Compare>
 inline void
 swapping_sort(Iter first, Iter last, Compare comp) {
-  if (first == last)
-    return;
-  swapping_quicksort_loop(first, last, comp);
-  swapping_insertion_sort(first, last, comp);
+  swapping_sort(first, last, comp, std::iter_swap<Iter, Iter>);
 }
 
-template <typename Iter>
+template <typename Iter, typename Iter_Swap>
 Iter
-swapping_unique(Iter first, Iter last) {
+swapping_unique(Iter first, Iter last, Iter_Swap iter_swap) {
   if (first == last)
     return last;
   Iter current = first;
@@ -130,10 +137,16 @@ swapping_unique(Iter first, Iter last) {
   ++next;
   while (next != last) {
     if (*current != *next)
-      std::iter_swap(++current, next);
+      iter_swap(++current, next);
     ++next;
   }
   return ++current;
+}
+
+template <typename Iter>
+Iter
+swapping_unique(Iter first, Iter last) {
+  return swapping_unique(first, last, std::iter_swap<Iter, Iter>);
 }
 
 } // namespace
