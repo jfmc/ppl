@@ -1503,22 +1503,13 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // Here we do not require `con_sys' to be sorted.
   // also, we _swap_ (instead of copying) the coefficients of `cs'
   // (which is not a const).
-  const dimension_type old_num_rows = con_sys.num_rows();
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_columns = cs.num_columns();
-  con_sys.add_zero_rows(cs_num_rows,
-			Linear_Row::Flags(topology(),
-					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  for (dimension_type i = cs_num_rows; i-- > 0; ) {
-    // NOTE: we cannot directly swap the rows, since they might have
-    // different capacities (besides possibly having different sizes):
-    // thus, we steal one coefficient at a time.
-    Constraint& new_c = con_sys[old_num_rows + i];
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     Constraint& old_c = cs[i];
-    if (old_c.is_equality())
-      new_c.set_is_equality();
-    for (dimension_type j = cs_num_columns; j-- > 0; )
-      std::swap(new_c[j], old_c[j]);
+    old_c.resize(cs_num_columns);
+
+    con_sys.add_recycled_row(old_c);
   }
 
   if (adding_pending)
