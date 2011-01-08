@@ -58,8 +58,8 @@ PPL::Generator::point(const Linear_Expression& e,
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
   Linear_Expression ec = e;
+  ec[0] = d;
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
-  g[0] = d;
 
   // If the divisor is negative, we negate it as well as
   // all the coefficients of the point, because we want to preserve
@@ -99,8 +99,8 @@ PPL::Generator::ray(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a ray.");
 
   Linear_Expression ec = e;
+  ec[0] = 0;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
-  g[0] = 0;
   // Enforce normalization.
   g.normalize();
   return g;
@@ -114,8 +114,8 @@ PPL::Generator::line(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a line.");
 
   Linear_Expression ec = e;
+  ec[0] = 0;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
-  g[0] = 0;
   // Enforce normalization.
   g.strong_normalize();
   return g;
