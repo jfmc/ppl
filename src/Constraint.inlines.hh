@@ -34,6 +34,7 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   set_flags(Flags(topology, (type == EQUALITY
                             ? LINE_OR_EQUALITY
                             : RAY_OR_POINT_OR_INEQUALITY)));
+  strong_normalize();
 }
 
 inline
@@ -146,10 +147,7 @@ operator!=(const Constraint& x, const Constraint& y) {
 inline Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
   Linear_Expression diff = e1 - e2;
-  Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.strong_normalize();
-  return c;
+  return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -164,10 +162,7 @@ operator==(const Variable v1, const Variable v2) {
 inline Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
   Linear_Expression diff = e1 - e2;
-  Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.normalize();
-  return c;
+  return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -209,20 +204,14 @@ operator>(const Variable v1, const Variable v2) {
 inline Constraint
 operator==(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   Linear_Expression diff = n - e;
-  Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.strong_normalize();
-  return c;
+  return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   Linear_Expression diff = n - e;
-  Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.normalize();
-  return c;
+  return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -242,20 +231,14 @@ operator>(Coefficient_traits::const_reference n, const Linear_Expression& e) {
 inline Constraint
 operator==(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   Linear_Expression diff = e - n;
-  Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.strong_normalize();
-  return c;
+  return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   Linear_Expression diff = e - n;
-  Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  c.normalize();
-  return c;
+  return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
