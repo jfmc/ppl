@@ -261,9 +261,26 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 */
 class Parma_Polyhedra_Library::Constraint : public Linear_Row {
 public:
+
+  //! Constructs the \f$0<0\f$ constraint.
+  explicit Constraint(dimension_type sz = 2,
+                      Flags flags = Flags(NOT_NECESSARILY_CLOSED,
+                                          RAY_OR_POINT_OR_INEQUALITY));
+
+  //! Constructs the \f$0<0\f$ constraint.
+  Constraint(dimension_type sz, dimension_type capacity,
+             Flags flags = Flags(NOT_NECESSARILY_CLOSED,
+                                 RAY_OR_POINT_OR_INEQUALITY));
+
   //! Ordinary copy constructor.
   Constraint(const Constraint& c);
 
+  //! Copy constructor with given size.
+  Constraint(const Constraint& c, dimension_type sz);
+  
+  //! Copy constructor with given size and capacity.
+  Constraint(const Constraint& c, dimension_type sz, dimension_type capacity);
+  
   //! Copy-constructs from equality congruence \p cg.
   /*!
     \exception std::invalid_argument
@@ -326,6 +343,8 @@ public:
     is greater than or equal to the space dimension of \p *this.
   */
   Coefficient_traits::const_reference coefficient(Variable v) const;
+  
+  using Linear_Row::coefficient;
 
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
@@ -403,8 +422,13 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK(dimension_type sz) const;
+
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
+  
+  using Linear_Row::swap;
 
 private:
   /*! \brief
@@ -444,9 +468,6 @@ private:
   friend
   Parma_Polyhedra_Library
   ::Linear_Expression::Linear_Expression(const Constraint& c);
-
-  //! Default constructor: private and not implemented.
-  Constraint();
 
   /*! \brief
     Builds a constraint of type \p type and topology \p topology,
@@ -513,9 +534,6 @@ private:
   operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
   friend Constraint
   operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-  //! Copy constructor with given size.
-  Constraint(const Constraint& c, dimension_type sz);
 
   /*! \brief
     Builds a new copy of the zero-dimension space constraint

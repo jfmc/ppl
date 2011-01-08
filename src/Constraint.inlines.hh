@@ -28,6 +28,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Constraint::Constraint(dimension_type sz, Flags flags)
+  : Linear_Row(sz, flags) {
+  PPL_ASSERT(OK());
+}
+
+inline
+Constraint::Constraint(dimension_type sz, dimension_type capacity, Flags flags)
+  : Linear_Row(sz, capacity, flags) {
+  PPL_ASSERT(OK());
+}
+
+inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
@@ -47,6 +59,13 @@ Constraint::Constraint(const Constraint& c)
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
   : Linear_Row(c, sz, sz) {
+  PPL_ASSERT(OK());
+}
+
+inline
+Constraint::Constraint(const Constraint& c, const dimension_type sz,
+                       const dimension_type capacity)
+  : Linear_Row(c, sz, capacity) {
   PPL_ASSERT(OK());
 }
 

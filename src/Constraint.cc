@@ -328,6 +328,13 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
 PPL_OUTPUT_DEFINITIONS(Constraint)
 
 bool
+PPL::Constraint::OK(dimension_type sz) const {
+  if (size() != sz)
+    return false;
+  return OK();
+}
+
+bool
 PPL::Constraint::OK() const {
   // Check the underlying Linear_Row object.
   if (!Linear_Row::OK())
