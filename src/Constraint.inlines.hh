@@ -192,8 +192,7 @@ operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
   diff += e1;
   diff -= e2;
 
-  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
-  return c;
+  return Constraint(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -236,8 +235,7 @@ operator>(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   diff += n;
   diff -= e;
 
-  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
-  return c;
+  return Constraint(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
@@ -271,6 +269,8 @@ operator>(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   diff -= n;
 
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
+  
+  // TODO: Check if these are needed.
   c.set_not_necessarily_closed();
   c.set_is_inequality();
   return c;
