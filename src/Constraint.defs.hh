@@ -430,6 +430,24 @@ public:
   
   using Linear_Row::swap;
 
+  /*! \brief
+    Builds a constraint of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+  */
+  Constraint(Linear_Expression& e, Type type, Topology topology);
+
+  //! Constructs from a congruence, with specified size and capacity.
+  Constraint(const Congruence& cg, dimension_type sz, dimension_type capacity);
+
+  //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
+  static const Constraint& epsilon_geq_zero();
+
+  /*! \brief
+    The zero-dimension space constraint \f$\epsilon \leq 1\f$
+    (used to implement NNC polyhedra).
+  */
+  static const Constraint& epsilon_leq_one();
+
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
@@ -457,26 +475,7 @@ private:
   */
   static const Constraint* epsilon_leq_one_p;
 
-  friend class Parma_Polyhedra_Library::Congruence;
-  friend class Parma_Polyhedra_Library::Scalar_Products;
-  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Constraint_System;
-  friend class Parma_Polyhedra_Library::Constraint_System_const_iterator;
-  // FIXME: the following friend declaration should be avoided.
-  friend class Parma_Polyhedra_Library::Polyhedron;
-
-  friend
-  Parma_Polyhedra_Library
-  ::Linear_Expression::Linear_Expression(const Constraint& c);
-
-  /*! \brief
-    Builds a constraint of type \p type and topology \p topology,
-    stealing the coefficients from \p e.
-  */
-  Constraint(Linear_Expression& e, Type type, Topology topology);
-
-  //! Constructs from a congruence, with specified size and capacity.
-  Constraint(const Congruence& cg, dimension_type sz, dimension_type capacity);
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
@@ -494,61 +493,11 @@ private:
 			       const char* name_var,
 			       Variable v) const;
 
-  friend Constraint
-  operator==(const Linear_Expression& e1, const Linear_Expression& e2);
-  friend Constraint
-  operator==(Variable v1, Variable v2);
-  friend Constraint
-  operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
-  friend Constraint
-  operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-  friend Constraint
-  operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
-  friend Constraint
-  operator>=(Variable v1, Variable v2);
-  friend Constraint
-  operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-  friend Constraint
-  operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-  friend Constraint
-  operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
-  friend Constraint
-  operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-  friend Constraint
-  operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-  friend Constraint
-  operator>(const Linear_Expression& e1, const Linear_Expression& e2);
-  friend Constraint
-  operator>(Variable v1, Variable v2);
-  friend Constraint
-  operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
-  friend Constraint
-  operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-  friend Constraint
-  operator<(const Linear_Expression& e1, const Linear_Expression& e2);
-  friend Constraint
-  operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
-  friend Constraint
-  operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
   /*! \brief
     Builds a new copy of the zero-dimension space constraint
     \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
   */
   static Constraint construct_epsilon_geq_zero();
-
-  //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
-  static const Constraint& epsilon_geq_zero();
-
-  /*! \brief
-    The zero-dimension space constraint \f$\epsilon \leq 1\f$
-    (used to implement NNC polyhedra).
-  */
-  static const Constraint& epsilon_leq_one();
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
