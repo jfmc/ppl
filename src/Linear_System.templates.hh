@@ -495,9 +495,12 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
   Linear_System_With_Bit_Matrix_iterator<Row> first(sys.begin(), sat.rows.begin());
   Linear_System_With_Bit_Matrix_iterator<Row> last = first + sat.num_rows();
-  swapping_sort(first, last, Row_Less_Than());
+  swapping_sort(first, last, Row_Less_Than(),
+                std::mem_fun_ref(&Linear_System_With_Bit_Matrix_iterator<Row>::iter_swap));
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  Linear_System_With_Bit_Matrix_iterator<Row> new_last = swapping_unique(first, last);
+  Linear_System_With_Bit_Matrix_iterator<Row> new_last
+    = swapping_unique(first, last,
+                      std::mem_fun_ref(&Linear_System_With_Bit_Matrix_iterator<Row>::iter_swap));
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row
