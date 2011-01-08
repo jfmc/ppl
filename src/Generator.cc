@@ -70,6 +70,9 @@ PPL::Generator::point(const Linear_Expression& e,
 
   // Enforce normalization.
   g.normalize();
+  
+  PPL_ASSERT(g.OK());
+  
   return g;
 }
 
@@ -87,7 +90,11 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   // Fix the topology.
   g.set_not_necessarily_closed();
   // Enforce normalization.
+  // TODO: Check if this is necessary.
   g.normalize();
+  
+  PPL_ASSERT(g.OK());
+  
   return g;
 }
 

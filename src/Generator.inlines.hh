@@ -33,16 +33,19 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
                              ? LINE_OR_EQUALITY
                              : RAY_OR_POINT_OR_INEQUALITY)));
   strong_normalize();
+  PPL_ASSERT(OK());
 }
 
 inline
 Generator::Generator(const Generator& g)
   : Linear_Row(g) {
+  // NOTE: This does not call PPL_ASSERT(OK()) because this is called by OK().
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type dimension)
   : Linear_Row(g, dimension, dimension) {
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -52,6 +55,9 @@ Generator::~Generator() {
 inline Generator&
 Generator::operator=(const Generator& g) {
   Linear_Row::operator=(g);
+
+  PPL_ASSERT(OK());
+
   return *this;
 }
 
@@ -113,11 +119,13 @@ Generator::is_closure_point() const {
 inline void
 Generator::set_is_line() {
   set_is_line_or_equality();
+  // TODO: Add PPL_ASSERT(OK()) here.
 }
 
 inline void
 Generator::set_is_ray_or_point() {
   set_is_ray_or_point_or_inequality();
+  // TODO: Add PPL_ASSERT(OK()) here.
 }
 
 inline Coefficient_traits::const_reference
@@ -202,12 +210,19 @@ Generator::ascii_dump(std::ostream& s) const {
 
 inline bool
 Generator::ascii_load(std::istream& s) {
-  return Linear_Row::ascii_load(s);
+  bool result = Linear_Row::ascii_load(s);
+
+  PPL_ASSERT(OK());
+
+  return result;
 }
 
 inline void
 Generator::swap(Generator& y) {
   Linear_Row::swap(y);
+  // TODO: Uncomment the following lines:
+  // PPL_ASSERT(y.OK());
+  // PPL_ASSERT(OK());
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
