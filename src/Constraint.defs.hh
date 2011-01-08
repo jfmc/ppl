@@ -24,13 +24,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_defs_hh 1
 
 #include "Constraint.types.hh"
+
 #include "Scalar_Products.types.hh"
-#include "Linear_Row.defs.hh"
-#include "Variable.defs.hh"
-#include "Linear_Expression.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Polyhedron.types.hh"
 #include "Congruence.types.hh"
+
+#include "Linear_Row.defs.hh"
+#include "Variable.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
