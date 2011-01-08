@@ -73,6 +73,8 @@ PPL::Constraint::Constraint(const Congruence& cg)
     c[i] = cg[i];
   // Enforce normalization.
   strong_normalize();
+  
+  PPL_ASSERT(OK());
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
@@ -90,6 +92,8 @@ PPL::Constraint::Constraint(const Congruence& cg,
   PPL_ASSERT(sz > 0);
   while (sz-- > 0)
     c[sz] = cg[sz];
+  
+  PPL_ASSERT(OK());
 }
 
 bool

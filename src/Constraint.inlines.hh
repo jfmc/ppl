@@ -35,16 +35,19 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
                             ? LINE_OR_EQUALITY
                             : RAY_OR_POINT_OR_INEQUALITY)));
   strong_normalize();
+  PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(const Constraint& c)
   : Linear_Row(c) {
+  // NOTE: This does not call PPL_ASSERT(OK()) because this is called by OK().
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
   : Linear_Row(c, sz, sz) {
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -54,6 +57,8 @@ Constraint::~Constraint() {
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
   Linear_Row::operator=(c);
+  PPL_ASSERT(OK());
+  
   return *this;
 }
 
