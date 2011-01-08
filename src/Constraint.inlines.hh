@@ -275,12 +275,7 @@ operator>(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   diff += e;
   diff -= n;
 
-  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
-  
-  // TODO: Check if these are needed.
-  c.set_not_necessarily_closed();
-  c.set_is_inequality();
-  return c;
+  return Constraint(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
