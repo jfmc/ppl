@@ -272,7 +272,6 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // by leaving the old system of constraints in the upper left-hand side
   // and placing the constraints of `cs' in the lower right-hand side.
   // NOTE: here topologies agree, whereas dimensions may not agree.
-  dimension_type old_num_rows = con_sys.num_rows();
   dimension_type old_num_columns = con_sys.num_columns();
   dimension_type added_rows = cs.num_rows();
 
@@ -280,28 +279,17 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // also, `cs' contains the low-level constraints, at least.
   PPL_ASSERT(added_rows > 0 && added_columns > 0);
 
-  con_sys.add_zero_rows_and_columns(added_rows, added_columns,
-				    Linear_Row::Flags(topology(),
-						      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  con_sys.add_zero_columns(added_columns);
   // Move the epsilon coefficient to the last column, if needed.
   if (!is_necessarily_closed())
     con_sys.swap_columns(old_num_columns - 1,
 			 old_num_columns - 1 + added_columns);
-  dimension_type cs_num_columns = cs.num_columns();
   // Steal the constraints from `cs' and put them in `con_sys'
   // using the right displacement for coefficients.
-  for (dimension_type i = added_rows; i-- > 0; ) {
+  for (dimension_type i = 0; i < added_rows; ++i) {
     Constraint& c_old = cs[i];
-    Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `add_zero_rows_and_columns', by default, added inequalities.
-    if (c_old.is_equality())
-      c_new.set_is_equality();
-    // The inhomogeneous term is not displaced.
-    std::swap(c_new[0], c_old[0]);
-    // All homogeneous terms (included the epsilon coefficient,
-    // if present) are displaced by `space_dim' columns.
-    for (dimension_type j = 1; j < cs_num_columns; ++j)
-      std::swap(c_old[j], c_new[space_dim + j]);
+    c_old.add_zeroes_and_shift(space_dim, 1);
+    con_sys.add_recycled_row(c_old);
   }
 
   if (can_have_something_pending()) {
