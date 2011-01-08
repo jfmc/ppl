@@ -46,18 +46,20 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
 		       e.space_dimension() + 2);
-  Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
-  g[0] = 0;
-  // Using this constructor saves reallocation when creating the
-  // coefficients.
-  Grid_Generator gg(g);
-  gg.set_divisor(d);
+
+  ec[0] = 0;
+  ec[ec.size() - 1] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter.  This ensures that divisors are always positive.
   if (d < 0)
-    for (dimension_type i = gg.size(); i-- > 0; )
-      neg_assign(gg[i]);
+    for (dimension_type i = ec.size(); i-- > 0; )
+      neg_assign(ec[i]);
+
+  Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
+  // Using this constructor saves reallocation when creating the
+  // coefficients.
+  Grid_Generator gg(g);
 
   return gg;
 }
@@ -71,17 +73,18 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
 		       e.space_dimension() + 2);
-  Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
-  g[0] = d;
-  // Using this constructor saves reallocation when creating the
-  // coefficients.
-  Grid_Generator gg(g);
+  ec[0] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter.  This ensures that divisors are always positive.
   if (d < 0)
-    for (dimension_type i = gg.size(); i-- > 0; )
-      neg_assign(gg[i]);
+    for (dimension_type i = ec.size(); i-- > 0; )
+      neg_assign(ec[i]);
+
+  Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
+  // Using this constructor saves reallocation when creating the
+  // coefficients.
+  Grid_Generator gg(g);
 
   // Enforce normalization.
   gg.normalize();
@@ -98,8 +101,8 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
 		       e.space_dimension() + 2);
+  ec[0] = 0;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
-  g[0] = 0;
   // Using this constructor saves reallocation when creating the
   // coefficients.
   Grid_Generator gg(g);
