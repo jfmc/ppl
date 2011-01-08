@@ -86,8 +86,6 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
   // coefficients.
   Grid_Generator gg(g);
 
-  // Enforce normalization.
-  gg.normalize();
   return gg;
 }
 
@@ -107,8 +105,6 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
   // coefficients.
   Grid_Generator gg(g);
 
-  // Enforce normalization.
-  gg.strong_normalize();
   return gg;
 }
 

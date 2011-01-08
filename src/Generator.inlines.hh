@@ -32,6 +32,7 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   set_flags(Flags(topology, (type == LINE
                              ? LINE_OR_EQUALITY
                              : RAY_OR_POINT_OR_INEQUALITY)));
+  strong_normalize();
 }
 
 inline

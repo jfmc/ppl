@@ -101,8 +101,7 @@ PPL::Generator::ray(const Linear_Expression& e) {
   Linear_Expression ec = e;
   ec[0] = 0;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  g.normalize();
+
   return g;
 }
 
@@ -116,8 +115,7 @@ PPL::Generator::line(const Linear_Expression& e) {
   Linear_Expression ec = e;
   ec[0] = 0;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
-  // Enforce normalization.
-  g.strong_normalize();
+
   return g;
 }
 
