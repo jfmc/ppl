@@ -124,6 +124,76 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
 }
 
 void
+PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
+  PPL_ASSERT(i <= size());
+  const dimension_type new_size = size() + n;
+  if (new_size > capacity()) {
+    Dense_Row new_row;
+    
+    const dimension_type new_capacity = compute_capacity(new_size, max_size());
+    
+    // This may throw.
+    new_row.vec_ = static_cast<Coefficient*>(operator new(sizeof(Coefficient)
+                                                          * new_capacity));
+    new_row.capacity_ = new_capacity;
+
+    dimension_type j = i;
+    try {
+      // Construct coefficients with value 0 in new_row.vec_[i ... i + n - 1]
+      for ( ; j < i + n; ++j)
+        new (&(new_row.vec_[j])) Coefficient(0);
+    } catch (...) {
+      // Destroy the zeroes constructed so far.
+      while (j != i) {
+        --j;
+        new_row.vec_[j].~Coefficient();
+      }
+      
+      // The new_row's destructor will de-allocate the memory.
+      throw;
+    }
+
+    // Raw-copy the coefficients.
+    memcpy(new_row.vec_, vec_, sizeof(Coefficient) * i);
+    memcpy(&(new_row.vec_[i + n]), &vec_[i], sizeof(Coefficient) * (size_ - i));
+    
+    std::swap(vec_, new_row.vec_);
+    std::swap(capacity_, new_row.capacity_);
+    
+    // *this now owns all coefficients, including the newly-added zeroes.
+    size_ = new_size;
+
+    // The old vec_ will be de-allocated at the end of this block.
+
+  } else {
+    memmove(&vec_[n + i], &vec_[i], sizeof(Coefficient) * (size_ - i));
+    size_ = i;
+    const dimension_type target_size = size_ + n;
+    PPL_ASSERT(target_size == i + n);
+    try {
+      // Construct n zeroes where the moved elements resided.
+      while (size_ != target_size) {
+        new (&vec_[size_]) Coefficient(0);
+        ++size_;
+      }
+      size_ = new_size;
+    } catch (...) {
+      // vec_[size_]..vec_[target_size-1] are still unconstructed, but
+      // vec_[target_size]..vec_[new_size] are constructed, because the
+      // memmove() moved already-constructed objects.
+
+      // NOTE: This loop can't throw, because destructors must not throw.
+      for (dimension_type j = target_size; j < new_size; ++j)
+        vec_[j].~Coefficient();
+
+      throw;
+    }
+  }
+  
+  PPL_ASSERT(OK());
+}
+
+void
 PPL::Dense_Row::expand_within_capacity(const dimension_type new_size) {
   PPL_ASSERT(new_size <= capacity_);
   PPL_ASSERT(size() <= new_size && new_size <= max_size());
