@@ -74,6 +74,8 @@ public:
     \see CO_Tree::const_iterator
   */
   typedef CO_Tree::const_iterator const_iterator;
+  
+  explicit Sparse_Row(Flags flags);
 
   //! Constructs a row with the specified size.
   /*!
@@ -133,38 +135,6 @@ public:
 
   Sparse_Row& operator=(const Dense_Row& row);
 
-  //! Resizes the row to size \p n and sets the flags to \p flags.
-  /*!
-    \param n
-    The new size for the row.
-
-    This method, with this signature, is needed for compatibility with
-    Dense_Row.
-
-    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
-    row and removing the trailing k elements.
-    It takes \f$O(1)\f$ time when enlarging the row.
-  */
-  void construct(dimension_type n, Flags flags = Flags());
-
-  //! Resizes the row to size \p n and sets the flags to \p flags.
-  /*!
-    \param n
-    The new size for the row.
-
-    \param capacity
-    This is ignored.
-
-    This method, with this signature, is needed for compatibility with
-    Dense_Row.
-
-    This method takes \f$O(k*\log^2 n)\f$ amortized time when shrinking the
-    row and removing the trailing k elements.
-    It takes \f$O(1)\f$ time when enlarging the row.
-  */
-  void construct(dimension_type n, dimension_type capacity,
-                 Flags flags = Flags());
-
   //! Swaps *this and x.
   /*!
     \param x
@@ -201,7 +171,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void expand_within_capacity(dimension_type new_size);
+  void expand_within_capacity(dimension_type n);
 
   //! Resizes the row to size \p n.
   /*!
@@ -296,11 +266,11 @@ public:
   //! Returns the size() of the largest possible Sparse_Row.
   static dimension_type max_size();
 
-  //! Returns the flags associated with this row.
-  const Flags& flags() const;
+  //! Returns the flags of \p *this.
+  const Flags flags() const;
 
-  //! Returns a reference to the flags associated with this row.
-  Flags& flags();
+  //! Sets \p f as the flags of \p *this.
+  void set_flags(Flags f);
 
   //! Resets all the elements of this row.
   /*!

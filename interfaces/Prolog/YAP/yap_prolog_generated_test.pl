@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- ensure_loaded('ppl_yap.pl').
 :- ensure_loaded('ppl_prolog_generated_test_main.pl').
+:- use_module(library(lists), [append/3, member/2]).
 
 prolog_system('YAP').
 

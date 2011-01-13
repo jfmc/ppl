@@ -441,8 +441,8 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
     // Reallocation will NOT take place.
     // Insert a new empty row at the end, then construct it assigning
     // it the given type.
-    Dense_Row& new_row = *rows.insert(rows.end(), Dense_Row());
-    static_cast<Linear_Row&>(new_row).construct(row_size, row_capacity, flags);
+    Dense_Row& new_row = *rows.insert(rows.end(), Dense_Row(flags));
+    static_cast<Linear_Row&>(new_row).resize(row_size, row_capacity);
   }
 
   // The added row was a pending row.

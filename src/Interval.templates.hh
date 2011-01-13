@@ -144,7 +144,7 @@ Interval<Boundary, Info>::Interval(const char* s) {
   // Get the upper bound.
   Boundary upper_bound;
   Result upper_r = assign_r(upper_bound, s, ROUND_UP);
-  assert(upper_r != V_CVT_STR_UNK && upper_r != V_NAN);
+  PPL_ASSERT(upper_r != V_CVT_STR_UNK && upper_r != V_NAN);
   upper_r = result_relation_class(upper_r);
 
   // Buld the interval.

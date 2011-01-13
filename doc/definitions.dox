@@ -103,10 +103,10 @@ where:
 Other semantic GDs, the <EM>compound classes</EM>, can be constructed
 (also recursively) from all the GDs classes.
 These include:
-  - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PS\> \endlink,
+  - \link Parma_Polyhedra_Library::Pointset_Powerset \c Pointset_Powerset\<PSET\> \endlink,
   - \link Parma_Polyhedra_Library::Partially_Reduced_Product <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> \endlink,
   .
-where \c PS, \c D1 and \c D2 can be any semantic GD classes and \c R is the
+where \c PSET, \c D1 and \c D2 can be any semantic GD classes and \c R is the
 reduction operation to be applied to the component domains of the
 product class.
 
@@ -2856,10 +2856,10 @@ not themselves occur as one of their argument domains.  Therefore their
 use comes with the following warning.
 
 \warning
-The <CODE>Pointset_Powerset<PS></CODE> and
+The <CODE>Pointset_Powerset<PSET></CODE> and
 <CODE>Partially_Reduced_Product<D1, D2, R></CODE>
 should only be used with the following instantiations
-for the disjunct domain template \p PS and component domain
+for the disjunct domain template \p PSET and component domain
 templates \p D1 and \p D2:
 <CODE>C_Polyhedron</CODE>,
 <CODE>NNC_Polyhedron</CODE>,

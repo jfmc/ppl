@@ -29,7 +29,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Sparse_Matrix::Sparse_Matrix(dimension_type n, Flags row_flags)
   : rows(n), num_columns_(n) {
   for (dimension_type i = 0; i < rows.size(); ++i) {
-    rows[i].flags() = row_flags;
+    rows[i].set_flags(row_flags);
     rows[i].resize(num_columns_);
   }
   PPL_ASSERT(OK());
@@ -40,7 +40,7 @@ PPL::Sparse_Matrix::Sparse_Matrix(dimension_type num_rows,
                                   Flags row_flags)
   : rows(num_rows), num_columns_(num_columns) {
   for (dimension_type i = 0; i < rows.size(); ++i) {
-    rows[i].flags() = row_flags;
+    rows[i].set_flags(row_flags);
     rows[i].resize(num_columns_);
   }
   PPL_ASSERT(OK());
@@ -54,7 +54,7 @@ PPL::Sparse_Matrix::resize(dimension_type num_rows,
   rows.resize(num_rows);
   if (old_num_rows < num_rows) {
     for (dimension_type i = old_num_rows; i < num_rows; ++i) {
-      rows[i].flags() = row_flags;
+      rows[i].set_flags(row_flags);
       rows[i].resize(num_columns);
     }
     if (num_columns_ != num_columns) {

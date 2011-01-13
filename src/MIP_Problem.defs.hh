@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variables_Set.defs.hh"
 #include <vector>
 #include <deque>
+#include <iterator>
 #include <iosfwd>
 
 // TODO: Remove this when the sparse working cost has been tested enough.
@@ -237,14 +238,69 @@ public:
 
 private:
   //! A type alias for a sequence of constraints.
-  typedef std::vector<Constraint> Constraint_Sequence;
+  typedef std::vector<Constraint*> Constraint_Sequence;
 
 public:
-  /*! \brief
-    A type alias for the read-only iterator on the constraints
-    defining the feasible region.
-  */
-  typedef Constraint_Sequence::const_iterator const_iterator;
+  //! A read-only iterator on the constraints defining the feasible region.
+  class const_iterator {
+  private:
+    typedef Constraint_Sequence::const_iterator Base;
+    typedef std::iterator_traits<Base> Base_Traits;
+  public:
+    typedef Base_Traits::iterator_category iterator_category;
+    typedef Base_Traits::difference_type difference_type;
+    typedef const Constraint value_type;
+    typedef const Constraint* pointer;
+    typedef const Constraint& reference;
+
+    //! Iterator difference: computes distances.
+    difference_type operator-(const const_iterator& y) const;
+
+    //! Prefix increment.
+    const_iterator& operator++();
+    //! Prefix decrement.
+    const_iterator& operator--();
+    //! Postfix increment.
+    const_iterator operator++(int);
+    //! Postfix decrement.
+    const_iterator operator--(int);
+
+    //! Moves iterator forward of \p n positions.
+    const_iterator& operator+=(difference_type n);
+    //! Moves iterator backward of \p n positions.
+    const_iterator& operator-=(difference_type n);
+    //! Returns an iterator \p n positions forward.
+    const_iterator operator+(difference_type n) const;
+    //! Returns an iterator \p n positions backward.
+    const_iterator operator-(difference_type n) const;
+
+    //! Returns a reference to the "pointed" object.
+    reference operator*() const;
+    //! Returns the address of the "pointed" object.
+    pointer operator->() const;
+
+    //! Compares \p *this with y.
+    /*!
+      \param y
+      The %iterator that will be compared with *this.
+    */
+    bool operator==(const const_iterator& y) const;
+
+    //! Compares \p *this with y.
+    /*!
+      \param y
+      The %iterator that will be compared with *this.
+    */
+    bool operator!=(const const_iterator& y) const;
+
+  private:
+    //! Constructor from a Base iterator.
+    explicit const_iterator(Base itr);
+    //! The Base iterator on the Constraint_Sequence.
+    Base itr;
+
+    friend class MIP_Problem;
+  };
 
   /*! \brief
     Returns a read-only iterator to the first constraint defining
@@ -499,7 +555,18 @@ private:
   bool initialized;
 
   //! The sequence of constraints describing the feasible region.
-  Constraint_Sequence input_cs;
+  std::vector<Constraint*> input_cs;
+
+  /*! \brief
+    The number of constraints that are inherited from our parent
+    in the recursion tree built when solving via branch-and-bound.
+
+    The first \c inherited_constraints elements in \c input_cs point to
+    the inherited constraints, whose resources are owned by our ancestors.
+    The resources of the other elements in \c input_cs are owned by \c *this
+    and should be appropriately released on destruction.
+  */
+  dimension_type inherited_constraints;
 
   //! The first index of `input_cs' containing a pending constraint.
   dimension_type first_pending_constraint;
@@ -536,6 +603,15 @@ private:
     }
   };
   friend class RAII_Temporary_Real_Relaxation;
+
+  //! A tag type to distinguish normal vs. inheriting copy constructor.
+  struct Inherit_Constraints {};
+
+  //! Copy constructor inheriting constraints.
+  MIP_Problem(const MIP_Problem& y, Inherit_Constraints);
+
+  //! Helper method: implements exception safe addition.
+  void add_constraint_helper(const Constraint& c);
 
   //! Processes the pending constraints of \p *this.
   /*!
@@ -611,7 +687,7 @@ private:
     is \c true if the variable is known to be nonnegative (and hence should
     not be split into a positive and a negative part).
 
-    \param is_nonnegative_variable
+    \param is_remergeable_variable
     This container of Boolean flags is initially empty.
     On exit, it size is equal to \c internal_space_dim.
     For each variable (index), the corresponding element of this container

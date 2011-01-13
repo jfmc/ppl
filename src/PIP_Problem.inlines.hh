@@ -74,7 +74,7 @@ PIP_Problem::operator=(const PIP_Problem& y) {
 
 inline PIP_Problem::Control_Parameter_Value
 PIP_Problem::get_control_parameter(Control_Parameter_Name n) const {
-  assert(n >= 0 && n < CONTROL_PARAMETER_NAME_SIZE);
+  PPL_ASSERT(n >= 0 && n < CONTROL_PARAMETER_NAME_SIZE);
   return control_parameters[n];
 }
 

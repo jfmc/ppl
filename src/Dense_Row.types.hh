@@ -14,7 +14,6 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-class Dense_Row_Impl_Handler;
 class Dense_Row;
 
 } // namespace Parma_Polyhedra_Library
