@@ -1,4 +1,4 @@
-/* Test the Matrix class.
+/* Test some functionality of class Matrix.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,7 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include "files.hh"
 
+#include <fstream>
 #include <vector>
 #include <algorithm>
 
@@ -29,8 +31,46 @@ namespace {
 
 bool
 test01() {
+  Variable A(0);
+  Variable B(1);
+  Random_Number_Generator r;
+  const char* data_file = "densematrix1.dat";
 
-  Matrix<Row> matrix(3, 4);
+  for (dimension_type num_rows = 0; num_rows <= 3; ++num_rows)
+    for (dimension_type num_cols = 0; num_cols <= 3; ++num_cols) {
+      Matrix<Dense_Row> m1(num_rows, num_cols);
+      for (dimension_type row = 0; row < num_rows; ++row)
+	for (dimension_type col = 0; col < num_cols; ++col)
+	  r.get(m1[row][col], 0);
+
+      std::fstream f;
+      open(f, data_file, std::ios_base::out);
+      m1.ascii_dump(f);
+      close(f);
+
+      open(f, data_file, std::ios_base::in);
+      Matrix<Dense_Row> m2;
+      m2.ascii_load(f);
+      close(f);
+
+      if (m1 != m2) {
+
+	nout << "Matrix<Dense_Row>::ascii_dump/load test failed." << endl
+	     << "m1.ascii_dump() gives" << endl;
+	m1.ascii_dump(nout);
+	nout << "m2.ascii_dump() gives" << endl;
+	m2.ascii_dump(nout);
+
+	return false;
+      }
+    }
+  return true;
+}
+
+bool
+test02() {
+
+  Matrix<Sparse_Row> matrix(3, 4);
 
   if (matrix.num_rows() != 3)
     return false;
@@ -58,9 +98,9 @@ test01() {
 }
 
 bool
-test02() {
+test03() {
 
-  Matrix<Row> matrix(3, 6);
+  Matrix<Sparse_Row> matrix(3, 6);
 
   // ( 0  1  2  3  4  0 )
   // ( 0  6  7  8  9 10 )
@@ -130,9 +170,9 @@ test02() {
 }
 
 bool
-test03() {
-  Matrix<Row> large(2,5);
-  Matrix<Row> tall(6,3);
+test04() {
+  Matrix<Sparse_Row> large(2,5);
+  Matrix<Sparse_Row> tall(6,3);
 
   large[0][4] = 10;
   tall[4][0] = 20;
@@ -161,9 +201,9 @@ test03() {
 }
 
 bool
-test04() {
+test05() {
 
-  Matrix<Row> x(2, 3);
+  Matrix<Sparse_Row> x(2, 3);
 
   // ( 1 2 3 )
   // ( 4 5 6 )
@@ -175,7 +215,7 @@ test04() {
   x[1][1] = 5;
   x[1][2] = 6;
 
-  Matrix<Row>::iterator itr = x.begin();
+  Matrix<Sparse_Row>::iterator itr = x.begin();
 
   // First row
 
@@ -212,9 +252,9 @@ test04() {
 }
 
 bool
-test05() {
+test06() {
 
-  Matrix<Row> matrix(3, 5);
+  Matrix<Sparse_Row> matrix(3, 5);
 
   // (  1  2  3  4  5 )
   // (  6  7  8  9 10 )
@@ -267,6 +307,7 @@ test05() {
   return true;
 }
 
+
 } // namespace
 
 BEGIN_MAIN
@@ -275,4 +316,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

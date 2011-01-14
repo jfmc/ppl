@@ -81,7 +81,6 @@ constrains1 \
 constraints1 \
 contains1 contains2 \
 containsintegerpoint1 \
-densematrix1 \
 disjoint1 disjoint2 \
 dropsomenonintegerpoints1 dropsomenonintegerpoints2 \
 dualhypercubes \
@@ -108,6 +107,7 @@ linearpartition1 \
 linearexpression1 \
 linearsystem1 \
 mapspacedims1 \
+matrix1 \
 max_min1 \
 maxspacedim1 \
 mc91 \
@@ -130,6 +130,7 @@ refinewithcongruences1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 smm1 \
+sparserow1 \
 timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
@@ -352,7 +353,7 @@ linearsystem1_SOURCES = linearsystem1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-densematrix1_SOURCES = densematrix1.cc
+matrix1_SOURCES = matrix1.cc
 
 max_min1_SOURCES = max_min1.cc
 
