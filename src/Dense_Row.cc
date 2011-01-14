@@ -124,6 +124,12 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
 }
 
 void
+PPL::Dense_Row::clear() {
+  for (iterator i = begin(), i_end = end(); i != i_end; ++i)
+    *i = 0;
+}
+
+void
 PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
   PPL_ASSERT(i <= size());
   const dimension_type new_size = size() + n;

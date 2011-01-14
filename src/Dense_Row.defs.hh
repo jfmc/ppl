@@ -108,6 +108,9 @@ public:
 
   //! Resizes the row to \p sz, with capacity \p capacity.
   void resize(dimension_type sz, dimension_type capacity);
+  
+  //! Resets all the elements of this row.
+  void clear();
 
   //! Adds \p n zeroes before index i.
   /*!
