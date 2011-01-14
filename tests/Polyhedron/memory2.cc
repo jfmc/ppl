@@ -149,7 +149,7 @@ test1() {
 
   reset_allocators(6, ULONG_MAX);
   try {
-    Dense_Matrix* matrix = new Dense_Matrix(2, 5);
+    Matrix<Dense_Row>* matrix = new Matrix<Dense_Row>(2, 5);
     // We will get here only if no exception is thrown:
     // this happens when using native coefficients.
     delete matrix;
