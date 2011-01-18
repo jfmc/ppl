@@ -82,8 +82,7 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
 				"d == 0.");
   // Add 2 to space dimension to allow for parameter divisor column.
-  Linear_Expression ec(e,
-		       e.space_dimension() + 2);
+  Linear_Expression ec(e, 2 + e.space_dimension());
   ec[0] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
@@ -108,8 +107,7 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a line.");
 
   // Add 2 to space dimension to allow for parameter divisor column.
-  Linear_Expression ec(e,
-		       e.space_dimension() + 2);
+  Linear_Expression ec(e, 2 + e.space_dimension());
   ec[0] = 0;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   // Using this constructor saves reallocation when creating the
