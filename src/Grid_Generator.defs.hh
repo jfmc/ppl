@@ -209,7 +209,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
     cout << "Parameter g2: " << g2 << endl;
   }
   else
-    cout << "Grid Generator g1 is not a grid point." << endl;
+    cout << "Grid generator g1 is not a grid point." << endl;
   \endcode
   Therefore, for the grid point
   \code
