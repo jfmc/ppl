@@ -176,7 +176,7 @@ PPL::Grid_Generator_System
   // lines and rays into the origin of the space.
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
-    x.remove_invalid_lines_and_rays();
+    x.remove_invalid_lines_and_parameters();
 }
 
 PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
