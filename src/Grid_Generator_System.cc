@@ -97,59 +97,52 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
       return;
     }
 
-  {
-    // This block is a substitute for Generator_System::insert, in
-    // which the single call to Linear_System::insert has been
-    // inlined.
+  // We are sure that the matrix has no pending rows
+  // and that the new row is not a pending generator.
+  PPL_ASSERT(num_pending_rows() == 0);
 
-    // We are sure that the matrix has no pending rows
-    // and that the new row is not a pending generator.
-    PPL_ASSERT(num_pending_rows() == 0);
+  // TODO: Consider whether, if possible, it would be better to wrap
+  //       an NNC Generator, storing the generator divisor in the
+  //       epsilon column.
 
-    // TODO: Consider whether, if possible, it would be better to wrap
-    //       an NNC Generator, storing the generator divisor in the
-    //       epsilon column.
+  // This is a modified copy of Linear_System::insert.  It is here
+  // to force Grid_Generator::OK to be used (to work around the
+  // normalization assertions in Linear_System::OK) and so that the
+  // parameter divisor column can be moved during the insert.
 
-    // This is a modified copy of Linear_System::insert.  It is here
-    // to force Grid_Generator::OK to be used (to work around the
-    // normalization assertions in Linear_System::OK) and so that the
-    // parameter divisor column can be moved during the insert.
+  // The added row must be strongly normalized and have the same
+  // topology as the system.
+  PPL_ASSERT(topology() == g.topology());
+  // This method is only used when the system has no pending rows.
+  PPL_ASSERT(num_pending_rows() == 0);
 
-    // The added row must be strongly normalized and have the same
-    // topology as the system.
-    PPL_ASSERT(topology() == g.topology());
-    // This method is only used when the system has no pending rows.
-    PPL_ASSERT(num_pending_rows() == 0);
+  const dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_columns = num_columns();
+  const dimension_type g_size = g.size();
 
-    const dimension_type old_num_rows = num_rows();
-    const dimension_type old_num_columns = num_columns();
-    const dimension_type g_size = g.size();
-
-    // Resize the system, if necessary.
-    PPL_ASSERT(is_necessarily_closed());
-    if (g_size > old_num_columns) {
-      add_zero_columns(g_size - old_num_columns);
-      if (old_num_rows > 0)
-	// Swap the existing parameter divisor column into the new
-	// last column.
-	swap_columns(old_num_columns - 1, g_size - 1);
-      Matrix<Linear_Row>::add_row(g);
+  // Resize the system, if necessary.
+  PPL_ASSERT(is_necessarily_closed());
+  if (g_size > old_num_columns) {
+    add_zero_columns(g_size - old_num_columns);
+    if (old_num_rows > 0)
+      // Swap the existing parameter divisor column into the new
+      // last column.
+      swap_columns(old_num_columns - 1, g_size - 1);
+    Matrix<Linear_Row>::add_row(g);
+  }
+  else if (g_size < old_num_columns)
+    if (old_num_rows == 0)
+      Matrix<Linear_Row>::add_row(Linear_Row(g, old_num_columns, old_num_columns));
+    else {
+      // Create a resized copy of the row (and move the parameter
+      // divisor coefficient to its last position).
+      Linear_Row tmp_row(g, old_num_columns, old_num_columns);
+      std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
+      Matrix<Linear_Row>::add_row(tmp_row);
     }
-    else if (g_size < old_num_columns)
-      if (old_num_rows == 0)
-	Matrix<Linear_Row>::add_row(Linear_Row(g, old_num_columns, old_num_columns));
-      else {
-	// Create a resized copy of the row (and move the parameter
-	// divisor coefficient to its last position).
-	Linear_Row tmp_row(g, old_num_columns, old_num_columns);
-	std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-	Matrix<Linear_Row>::add_row(tmp_row);
-      }
-    else
-      // Here r_size == old_num_columns.
-      Matrix<Linear_Row>::add_row(g);
-
-  } // Generator_System::insert(g) substitute.
+  else
+    // Here r_size == old_num_columns.
+    Matrix<Linear_Row>::add_row(g);
 
   set_index_first_pending_row(num_rows());
   set_sorted(false);
