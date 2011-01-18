@@ -29,6 +29,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
+PPL::Grid_Generator::throw_dimension_incompatible(const char* method,
+                                                  const char* name_var,
+                                                  const Variable v) const {
+  std::ostringstream s;
+  s << "PPL::Grid_Generator::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << name_var << ".space_dimension() == " << v.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+void
 PPL::Grid_Generator::throw_invalid_argument(const char* method,
 					    const char* reason) const {
   std::ostringstream s;
