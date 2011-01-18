@@ -154,9 +154,10 @@ Grid_Generator::operator=(const Generator& g) {
 }
 
 inline void
-Grid_Generator::negate(dimension_type start, dimension_type end) {
-  while (start <= end)
-    neg_assign(operator[](start++));
+Grid_Generator::negate(dimension_type first, dimension_type last) {
+  Linear_Row& x = *this;
+  for ( ; first < last; ++first)
+    neg_assign(x[first]);
 }
 
 inline Coefficient_traits::const_reference

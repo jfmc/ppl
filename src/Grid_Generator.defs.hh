@@ -424,8 +424,11 @@ private:
   //! Returns the actual size of \p this.
   dimension_type size() const;
 
-  //! Negates the elements from index \p start to index \p end.
-  void negate(dimension_type start, dimension_type end);
+  /*! \brief
+    Negates the elements from index \p first (included)
+    to index \p last (excluded).
+  */
+  void negate(dimension_type first, dimension_type last);
 
   //! Sets the divisor of \p *this to \p d.
   /*!

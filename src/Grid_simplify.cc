@@ -325,7 +325,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
-	pivot.negate(dim, num_columns - 1);
+        pivot.negate(dim, num_columns);
 
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
