@@ -82,10 +82,13 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
 
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
-  dimension_type g_space_dim = g.space_dimension();
+  const dimension_type g_space_dim = g.space_dimension();
 
   if (g.is_parameter() && g.all_homogeneous_terms_are_zero()) {
-    dimension_type initial_space_dim = space_dimension();
+    // There is no need to add the origin as a parameter,
+    // as it will be immediately flagged as redundant.
+    // However, we still have to adjust space dimension.
+    const dimension_type initial_space_dim = space_dimension();
     if (initial_space_dim < g_space_dim) {
       // Adjust the space dimension.
       add_zero_columns(g_space_dim - initial_space_dim);
@@ -96,22 +99,9 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     return;
   }
 
-  // We are sure that the matrix has no pending rows
-  // and that the new row is not a pending generator.
-  PPL_ASSERT(num_pending_rows() == 0);
-
-  // TODO: Consider whether, if possible, it would be better to wrap
-  //       an NNC Generator, storing the generator divisor in the
-  //       epsilon column.
-
-  // This is a modified copy of Linear_System::insert.  It is here
-  // to force Grid_Generator::OK to be used (to work around the
-  // normalization assertions in Linear_System::OK) and so that the
-  // parameter divisor column can be moved during the insert.
-
-  // The added row must be strongly normalized and have the same
-  // topology as the system.
-  PPL_ASSERT(topology() == g.topology());
+  // Note: we can not call Linear_System<Linear_Row>::insert(g),
+  // because that would check for strong normalization of g.
+  PPL_ASSERT(is_necessarily_closed() && topology() == g.topology());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
@@ -120,7 +110,6 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   const dimension_type g_size = g.size();
 
   // Resize the system, if necessary.
-  PPL_ASSERT(is_necessarily_closed());
   if (g_size > old_num_columns) {
     add_zero_columns(g_size - old_num_columns);
     if (old_num_rows > 0)
@@ -129,16 +118,13 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
       swap_columns(old_num_columns - 1, g_size - 1);
     Matrix<Linear_Row>::add_row(g);
   }
-  else if (g_size < old_num_columns)
-    if (old_num_rows == 0)
-      Matrix<Linear_Row>::add_row(Linear_Row(g, old_num_columns, old_num_columns));
-    else {
-      // Create a resized copy of the row (and move the parameter
-      // divisor coefficient to its last position).
-      Linear_Row tmp_row(g, old_num_columns, old_num_columns);
-      std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-      Matrix<Linear_Row>::add_row(tmp_row);
-    }
+  else if (g_size < old_num_columns) {
+    // Create a resized copy of the row (and move the parameter
+    // divisor coefficient to its last position).
+    Linear_Row tmp_row(g, old_num_columns, old_num_columns);
+    std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
+    Matrix<Linear_Row>::add_row(tmp_row);
+  }
   else
     // Here r_size == old_num_columns.
     Matrix<Linear_Row>::add_row(g);
