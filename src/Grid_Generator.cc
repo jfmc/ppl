@@ -55,16 +55,16 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
     throw std::invalid_argument("PPL::parameter(e, d):\n"
 				"d == 0.");
   // Add 2 to space dimension to allow for parameter divisor column.
-  Linear_Expression ec(e,
-		       e.space_dimension() + 2);
+  const dimension_type gg_size = 2 + e.space_dimension();
+  Linear_Expression ec(e, gg_size);
 
   ec[0] = 0;
-  ec[ec.size() - 1] = d;
+  ec[gg_size - 1] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter.  This ensures that divisors are always positive.
   if (d < 0)
-    for (dimension_type i = ec.size(); i-- > 0; )
+    for (dimension_type i = gg_size; i-- > 0; )
       neg_assign(ec[i]);
 
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
