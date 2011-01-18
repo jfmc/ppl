@@ -251,13 +251,12 @@ PPL::Grid_Generator_System::OK() const {
     return false;
   }
 
-  // A Generator_System and hence a Grid_Generator_System must be a
-  // valid Linear_System; do not check for strong normalization, since
-  // this will be done when checking each individual generator.
+  // A Grid_Generator_System must be a valid Linear_System;
+  // do not check for strong normalization.
   if (!Linear_System<Linear_Row>::OK(false))
     return false;
 
-  // Checking each generator in the system.
+  // Checking each grid generator in the system.
   const Grid_Generator_System& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; )
     if (!x[i].OK())

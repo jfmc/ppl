@@ -24,8 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_System_defs_hh 1
 
 #include "Grid_Generator_System.types.hh"
-#include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
+#include "Linear_System.defs.hh"
+#include "Linear_Row.defs.hh"
 #include "Variables_Set.types.hh"
 #include "Grid.types.hh"
 #include <iosfwd>
@@ -176,7 +177,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     reordered, removed (if they are duplicate or redundant), etc.
 */
 class Parma_Polyhedra_Library::Grid_Generator_System
-  : private Generator_System {
+  : private Linear_System<Linear_Row> {
 public:
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
@@ -268,8 +269,7 @@ public:
 			   Grid_Generator,
 			   ptrdiff_t,
 			   const Grid_Generator*,
-			   const Grid_Generator&>,
-      private Generator_System::const_iterator {
+			   const Grid_Generator&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -310,8 +310,10 @@ public:
   private:
     friend class Grid_Generator_System;
 
-    //! Copy constructor from Generator_System::const_iterator.
-    const_iterator(const Generator_System::const_iterator& y);
+    Linear_System<Linear_Row>::const_iterator i;
+
+    //! Copy constructor from Linear_System< Linear_Row>::const_iterator.
+    const_iterator(const Linear_System<Linear_Row>::const_iterator& y);
   };
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no generators.

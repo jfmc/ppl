@@ -24,70 +24,72 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_System_inlines_hh 1
 
 #include "Grid_Generator.defs.hh"
-#include "Generator_System.inlines.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline void
 Grid_Generator_System::set_sorted(bool b) {
-  Generator_System::set_sorted(b);
+  Linear_System<Linear_Row>::set_sorted(b);
 }
 
 inline void
 Grid_Generator_System::unset_pending_rows() {
-  Generator_System::unset_pending_rows();
+  Linear_System<Linear_Row>::unset_pending_rows();
 }
 
 inline void
 Grid_Generator_System::set_index_first_pending_row(const dimension_type i) {
-  Generator_System::set_index_first_pending_row(i);
+  Linear_System<Linear_Row>::set_index_first_pending_row(i);
 }
 
 inline void
 Grid_Generator_System::resize_no_copy(const dimension_type new_num_rows,
 				      const dimension_type new_num_columns) {
-  Generator_System::resize_no_copy(new_num_rows, new_num_columns);
+  Linear_System<Linear_Row>::resize_no_copy(new_num_rows, new_num_columns);
 }
 
 inline dimension_type
 Grid_Generator_System::num_columns() const {
-  return Generator_System::num_columns();
+  return Linear_System<Linear_Row>::num_columns();
 }
 
 inline void
 Grid_Generator_System
 ::permute_columns(const std::vector<dimension_type>& cycles) {
-  return Generator_System::permute_columns(cycles);
+  return Linear_System<Linear_Row>::permute_columns(cycles);
 }
 
 inline bool
 Grid_Generator_System::is_equal_to(const Grid_Generator_System& y) const {
-  return operator==(static_cast<const Generator_System&>(*this),
-		    static_cast<const Generator_System&>(y));
+  return operator==(static_cast<const Linear_System<Linear_Row>&>(*this),
+                    static_cast<const Linear_System<Linear_Row>&>(y));
 }
 
 inline
 Grid_Generator_System::Grid_Generator_System()
-  : Generator_System(NECESSARILY_CLOSED) {
-  adjust_topology_and_space_dimension(NECESSARILY_CLOSED, 1);
+  : Linear_System<Linear_Row>(NECESSARILY_CLOSED) {
+  // For grid generators, two extra columns are needed.
+  add_zero_columns(2);
   set_sorted(false);
 }
 
 inline
 Grid_Generator_System::Grid_Generator_System(const Grid_Generator_System& gs)
-  : Generator_System(gs) {
+  : Linear_System<Linear_Row>(gs) {
 }
 
 inline
 Grid_Generator_System::Grid_Generator_System(dimension_type dim)
-  : Generator_System(NECESSARILY_CLOSED) {
-  adjust_topology_and_space_dimension(NECESSARILY_CLOSED, dim + 1);
+  : Linear_System<Linear_Row>(NECESSARILY_CLOSED) {
+  // For grid generators, two extra columns are needed.
+  add_zero_columns(dim + 2);
   set_sorted(false);
 }
 
 inline
 Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
-  : Generator_System(g) {
+  : Linear_System<Linear_Row>(NECESSARILY_CLOSED) {
+  Linear_System<Linear_Row>::insert(g);
   set_sorted(false);
 }
 
@@ -97,21 +99,21 @@ Grid_Generator_System::~Grid_Generator_System() {
 
 inline Grid_Generator_System&
 Grid_Generator_System::operator=(const Grid_Generator_System& y) {
-  Generator_System::operator=(y);
+  Linear_System<Linear_Row>::operator=(y);
   return *this;
 }
 
 inline dimension_type
 Grid_Generator_System::max_space_dimension() {
   // Grid generators use an extra column for the parameter divisor.
-  return Generator_System::max_space_dimension() - 1;
+  return Linear_System<Linear_Row>::max_space_dimension() - 1;
 }
 
 inline dimension_type
 Grid_Generator_System::space_dimension() const {
-  PPL_ASSERT(Generator_System::space_dimension() > 0);
+  PPL_ASSERT(Linear_System<Linear_Row>::space_dimension() > 0);
   // Grid generators use an extra column for the parameter divisor.
-  return Generator_System::space_dimension() - 1;
+  return Linear_System<Linear_Row>::space_dimension() - 1;
 }
 
 inline const Grid_Generator_System&
@@ -122,7 +124,7 @@ Grid_Generator_System::zero_dim_univ() {
 
 inline void
 Grid_Generator_System::clear() {
-  Generator_System::clear();
+  Linear_System<Linear_Row>::clear();
   // For grid generators, two extra columns are needed.
   add_zero_columns(2);
   set_sorted(false);
@@ -131,61 +133,58 @@ Grid_Generator_System::clear() {
 
 inline void
 Grid_Generator_System::swap(Grid_Generator_System& y) {
-  Generator_System::swap(y);
+  Linear_System<Linear_Row>::swap(y);
 }
 
 inline memory_size_type
 Grid_Generator_System::external_memory_in_bytes() const {
-  return Generator_System::external_memory_in_bytes();
+  return Linear_System<Linear_Row>::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Grid_Generator_System::total_memory_in_bytes() const {
-  return Generator_System::total_memory_in_bytes();
+  return Linear_System<Linear_Row>::total_memory_in_bytes();
 }
 
 inline dimension_type
 Grid_Generator_System::num_rows() const {
-  return Generator_System::num_rows();
+  return Linear_System<Linear_Row>::num_rows();
 }
 
 inline
 Grid_Generator_System::const_iterator::const_iterator()
-  : Generator_System::const_iterator() {
+  : i() {
 }
 
 inline
 Grid_Generator_System::const_iterator::const_iterator(const const_iterator& y)
-  : Generator_System::const_iterator(y) {
+  : i(y.i) {
 }
 
 inline
 Grid_Generator_System::const_iterator::~const_iterator() {
 }
 
-inline
-Grid_Generator_System::const_iterator&
+inline Grid_Generator_System::const_iterator&
 Grid_Generator_System::const_iterator::operator=(const const_iterator& y) {
-  return static_cast<Grid_Generator_System::const_iterator&>
-    (Generator_System::const_iterator::operator=(y));
+  i = y.i;
+  return *this;
 }
 
 inline const Grid_Generator&
 Grid_Generator_System::const_iterator::operator*() const {
-  return static_cast<const Grid_Generator&>
-    (Generator_System::const_iterator::operator*());
+  return static_cast<const Grid_Generator&>(*i);
 }
 
 inline const Grid_Generator*
 Grid_Generator_System::const_iterator::operator->() const {
-  return static_cast<const Grid_Generator*>
-    (Generator_System::const_iterator::operator->());
+  return static_cast<const Grid_Generator*>(i.operator->());
 }
 
 inline Grid_Generator_System::const_iterator&
 Grid_Generator_System::const_iterator::operator++() {
-  return static_cast<Grid_Generator_System::const_iterator&>
-    (Generator_System::const_iterator::operator++());
+  ++i;
+  return *this;
 }
 
 inline Grid_Generator_System::const_iterator
@@ -198,46 +197,46 @@ Grid_Generator_System::const_iterator::operator++(int) {
 inline bool
 Grid_Generator_System
 ::const_iterator::operator==(const const_iterator& y) const {
-  return Generator_System::const_iterator::operator==(y);
+  return i == y.i;
 }
 
 inline bool
 Grid_Generator_System
 ::const_iterator::operator!=(const const_iterator& y) const {
-  return Generator_System::const_iterator::operator!=(y);
+  return i != y.i;
 }
 
 inline bool
 Grid_Generator_System::empty() const {
-  return Generator_System::empty();
+  return Linear_System<Linear_Row>::has_no_rows();
 }
 
 inline
-Grid_Generator_System
-::const_iterator::const_iterator(const Generator_System::const_iterator& y)
-  : Generator_System::const_iterator(y) {
+Grid_Generator_System::const_iterator
+::const_iterator(const Linear_System<Linear_Row>::const_iterator& y)
+  : i(y) {
 }
 
 inline Grid_Generator_System::const_iterator
 Grid_Generator_System::begin() const {
   return static_cast<Grid_Generator_System::const_iterator>
-    (Generator_System::begin());
+    (Linear_System<Linear_Row>::begin());
 }
 
 inline Grid_Generator_System::const_iterator
 Grid_Generator_System::end() const {
   return static_cast<Grid_Generator_System::const_iterator>
-    (Generator_System::end());
+    (Linear_System<Linear_Row>::end());
 }
 
 inline Grid_Generator&
 Grid_Generator_System::operator[](const dimension_type k) {
-  return static_cast<Grid_Generator&>(Generator_System::operator[](k));
+  return static_cast<Grid_Generator&>(Linear_System<Linear_Row>::operator[](k));
 }
 
 inline const Grid_Generator&
 Grid_Generator_System::operator[](const dimension_type k) const {
-  return static_cast<const Grid_Generator&>(Generator_System::operator[](k));
+  return static_cast<const Grid_Generator&>(Linear_System<Linear_Row>::operator[](k));
 }
 
 /*! \relates Grid_Generator_System */
