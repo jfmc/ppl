@@ -84,18 +84,17 @@ void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   dimension_type g_space_dim = g.space_dimension();
 
-  if (g.is_parameter())
-    if (g.all_homogeneous_terms_are_zero()) {
-      dimension_type initial_space_dim = space_dimension();
-      if (initial_space_dim < g_space_dim) {
-	// Adjust the space dimension.
-	add_zero_columns(g_space_dim - initial_space_dim);
-	// Swap the parameter divisor column into the new last column.
-	swap_columns(g_space_dim + 1, initial_space_dim + 1);
-	PPL_ASSERT(OK());
-      }
-      return;
+  if (g.is_parameter() && g.all_homogeneous_terms_are_zero()) {
+    dimension_type initial_space_dim = space_dimension();
+    if (initial_space_dim < g_space_dim) {
+      // Adjust the space dimension.
+      add_zero_columns(g_space_dim - initial_space_dim);
+      // Swap the parameter divisor column into the new last column.
+      swap_columns(g_space_dim + 1, initial_space_dim + 1);
+      PPL_ASSERT(OK());
     }
+    return;
+  }
 
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
