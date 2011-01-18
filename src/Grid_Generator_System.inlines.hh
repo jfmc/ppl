@@ -149,16 +149,6 @@ Grid_Generator_System::num_rows() const {
   return Generator_System::num_rows();
 }
 
-inline dimension_type
-Grid_Generator_System::num_parameters() const {
-  return Generator_System::num_rays();
-}
-
-inline dimension_type
-Grid_Generator_System::num_lines() const {
-  return Generator_System::num_lines();
-}
-
 inline
 Grid_Generator_System::const_iterator::const_iterator()
   : Generator_System::const_iterator() {
@@ -238,11 +228,6 @@ inline Grid_Generator_System::const_iterator
 Grid_Generator_System::end() const {
   return static_cast<Grid_Generator_System::const_iterator>
     (Generator_System::end());
-}
-
-inline bool
-Grid_Generator_System::has_points() const {
-  return Generator_System::has_points();
 }
 
 inline Grid_Generator&

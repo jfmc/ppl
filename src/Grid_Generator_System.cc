@@ -434,3 +434,59 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
   }
   ggs.remove_trailing_rows(old_n_rows - n_rows);
 }
+
+bool
+PPL::Grid_Generator_System::has_points() const {
+  const Grid_Generator_System& ggs = *this;
+  for (dimension_type i = num_rows(); i-- > 0; ) {
+    if (!ggs[i].is_line_or_parameter())
+      return true;
+  }
+  return false;
+}
+
+PPL::dimension_type
+PPL::Grid_Generator_System::num_lines() const {
+  // We are sure that this method is applied only to a matrix
+  // that does not contain pending rows.
+  PPL_ASSERT(num_pending_rows() == 0);
+  const Grid_Generator_System& ggs = *this;
+  dimension_type n = 0;
+  // If the Linear_System happens to be sorted, take advantage of the fact
+  // that lines are at the top of the system.
+  if (is_sorted()) {
+    dimension_type nrows = num_rows();
+    for (dimension_type i = 0; i < nrows && ggs[i].is_line(); ++i)
+      ++n;
+  }
+  else {
+    for (dimension_type i = num_rows(); i-- > 0 ; )
+      if (ggs[i].is_line())
+	++n;
+  }
+  return n;
+}
+
+PPL::dimension_type
+PPL::Grid_Generator_System::num_parameters() const {
+  // We are sure that this method is applied only to a matrix
+  // that does not contain pending rows.
+  PPL_ASSERT(num_pending_rows() == 0);
+  const Grid_Generator_System& ggs = *this;
+  dimension_type n = 0;
+  // If the Linear_System happens to be sorted, take advantage of the fact
+  // that rays and points are at the bottom of the system and
+  // rays have the inhomogeneous term equal to zero.
+  if (is_sorted()) {
+    for (dimension_type i = num_rows();
+         i != 0 && ggs[--i].is_parameter_or_point(); )
+      if (ggs[i].is_line_or_parameter())
+	++n;
+  }
+  else {
+    for (dimension_type i = num_rows(); i-- > 0 ; )
+      if (ggs[i].is_parameter())
+	++n;
+  }
+  return n;
+}
