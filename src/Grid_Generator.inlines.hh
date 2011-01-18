@@ -138,7 +138,7 @@ Grid_Generator::set_is_line() {
 
 inline void
 Grid_Generator::set_is_parameter_or_point() {
-  Generator::set_is_ray_or_point();
+  set_is_ray_or_point_or_inequality();
 }
 
 inline Grid_Generator&

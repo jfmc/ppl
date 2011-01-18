@@ -125,7 +125,7 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
   if (y.is_line())
     set_is_line();
   else
-    set_is_ray_or_point();
+    set_is_ray_or_point_or_inequality();
   PPL_ASSERT(size() > 0);
   PPL_ASSERT(y.size() > 0);
   dimension_type sz = size() - 1;
@@ -186,7 +186,7 @@ PPL::Grid_Generator::ascii_load(std::istream& s) {
   if (str == "L")
     set_is_line();
   else if (str == "P" || str == "Q")
-    set_is_ray_or_point();
+    set_is_ray_or_point_or_inequality();
   else
     return false;
 
