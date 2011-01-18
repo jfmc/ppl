@@ -395,6 +395,13 @@ private:
   //! Sets the index of the first pending row to \p i.
   void set_index_first_pending_row(dimension_type i);
 
+  //! Removes all the invalid lines and parameters.
+  /*!
+    The invalid lines and parameters are those with all
+    the homogeneous terms set to zero.
+  */
+  void remove_invalid_lines_and_parameters();
+
   //! Returns the \p k- th generator of the system.
   Grid_Generator& operator[](dimension_type k);
 
