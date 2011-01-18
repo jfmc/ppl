@@ -452,7 +452,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
-	pivot.negate(0, dim);
+	pivot.negate(0, dim + 1);
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System, Congruence>
 	(sys, dim, pivot_index, 0, dim, dim_kinds, false);

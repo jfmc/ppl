@@ -203,9 +203,10 @@ Congruence::set_is_equality() {
 }
 
 inline void
-Congruence::negate(dimension_type start, dimension_type end) {
-  while (start <= end)
-    neg_assign(operator[](start++));
+Congruence::negate(dimension_type first, dimension_type last) {
+  Congruence& x = *this;
+  for ( ; first != last; ++first)
+    neg_assign(x[first]);
 }
 
 inline memory_size_type
