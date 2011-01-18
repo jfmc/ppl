@@ -119,21 +119,22 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
 
 void
 PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
-  // Swap one coefficient at a time into *this.  Doing this instead of
-  // swapping the entire row ensures that the row keeps the same
-  // capacity.
+  Grid_Generator& x = *this;
+  // Swap one coefficient at a time between x and y.
+  // Doing this instead of swapping the entire row ensures that
+  // the row keeps the same capacity.
   if (y.is_line())
-    set_is_line();
+    x.set_is_line();
   else
-    set_is_ray_or_point_or_inequality();
-  PPL_ASSERT(size() > 0);
+    x.set_is_ray_or_point_or_inequality();
+  PPL_ASSERT(x.size() > 0);
   PPL_ASSERT(y.size() > 0);
-  dimension_type sz = size() - 1;
+  dimension_type x_sz = x.size() - 1;
   dimension_type y_sz = y.size() - 1;
   // Swap parameter divisors.
-  std::swap(operator[](sz), y[y_sz]);
-  for (dimension_type j = (sz > y_sz ? y_sz : sz); j-- > 0; )
-    std::swap(operator[](j), y[j]);
+  std::swap(x[x_sz], y[y_sz]);
+  for (dimension_type j = (x_sz > y_sz ? y_sz : x_sz); j-- > 0; )
+    std::swap(x[j], y[j]);
 }
 
 void
