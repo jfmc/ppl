@@ -278,8 +278,7 @@ const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
 void
 PPL::Grid_Generator::initialize() {
   PPL_ASSERT(zero_dim_point_p == 0);
-  zero_dim_point_p
-    = new Grid_Generator(grid_point());
+  zero_dim_point_p = new Grid_Generator(grid_point());
 }
 
 void
