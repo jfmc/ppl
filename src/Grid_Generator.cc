@@ -200,9 +200,10 @@ PPL::Grid_Generator::set_is_parameter() {
   if (is_line())
     set_is_parameter_or_point();
   else if (!is_line_or_parameter()) {
-    // The generator is a point.
-    Generator::operator[](size() - 1) = Generator::operator[](0);
-    Generator::operator[](0) = 0;
+    // The grid generator is a point.
+    Grid_Generator& x = *this;
+    x[x.size() - 1] = x[0];
+    x[0] = 0;
   }
 }
 
