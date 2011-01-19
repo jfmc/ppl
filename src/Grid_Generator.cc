@@ -258,18 +258,18 @@ PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
 
 void
 PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
-  if (is_parameter_or_point()) {
-    if (d == 0)
-      throw std::invalid_argument("PPL::Grid_Generator::scale_to_divisor(d):\n"
-				  "d == 0.");
+  PPL_ASSERT(d != 0);
+  Grid_Generator& x = *this;
+  if (x.is_line())
+    return;
 
-    PPL_DIRTY_TEMP_COEFFICIENT(factor);
-    exact_div_assign(factor, d, divisor());
-    set_divisor(d);
-    PPL_ASSERT(factor > 0);
-    if (factor > 1)
-      for (dimension_type col = size() - 2; col >= 1; --col)
-	Generator::operator[](col) *= factor;
+  PPL_DIRTY_TEMP_COEFFICIENT(factor);
+  exact_div_assign(factor, d, x.divisor());
+  x.set_divisor(d);
+  PPL_ASSERT(factor > 0);
+  if (factor > 1) {
+    for (dimension_type i = x.size() - 2; i > 0; --i)
+      x[i] *= factor;
   }
 }
 
