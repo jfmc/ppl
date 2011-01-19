@@ -128,10 +128,11 @@ inline Coefficient_traits::const_reference
 Grid_Generator::divisor() const {
   if (is_line())
     throw_invalid_argument("divisor()", "*this is a line");
+  const Linear_Row& x = *this;
   if (is_line_or_parameter())
-    return Generator::operator[](size() - 1);
+    return x[size() - 1];
   else
-    return Generator::operator[](0);
+    return x[0];
 }
 
 inline bool
