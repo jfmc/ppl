@@ -376,56 +376,70 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 
 bool
 PPL::Grid_Generator::OK() const {
-  if (!is_necessarily_closed()) {
+  // Check the underlying Linear_Row object.
+  if (!Linear_Row::OK())
+    return false;
+
+  // NOTE: do not check for normalization, as it does not hold.
+  const Grid_Generator& x = *this;
+
+  if (!x.is_necessarily_closed()) {
 #ifndef NDEBUG
-    std::cerr << "Grid_Generator should be necessarily closed."
-	      << std::endl;
+    std::cerr << "Grid_Generator should be necessarily closed.\n";
 #endif
     return false;
   }
 
-  // Topology consistency check.
-  if (size() < 1) {
+  if (x.size() < 2) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator has fewer coefficients than the minimum "
-	      << "allowed:" << std::endl
-	      << "size is " << size() << ", minimum is 1." << std::endl;
+	      << "allowed:\nsize is " << x.size()
+              << ", minimum is 2.\n";
 #endif
     return false;
   }
 
-  switch (type()) {
+  switch (x.type()) {
   case Grid_Generator::LINE:
-    if (operator[](0) != 0) {
+    if (x[0] != 0) {
 #ifndef NDEBUG
-      std::cerr << "Inhomogeneous terms of lines must be zero!"
-		<< std::endl;
+      std::cerr << "Inhomogeneous terms of lines must be zero!\n";
 #endif
       return false;
     }
     break;
 
   case Grid_Generator::PARAMETER:
-    if (operator[](0) != 0) {
+    if (x[0] != 0) {
 #ifndef NDEBUG
-      std::cerr << "Inhomogeneous terms of parameters must be zero!"
-		<< std::endl;
+      std::cerr << "Inhomogeneous terms of parameters must be zero!\n";
 #endif
       return false;
     }
-    // Fall through.
-
-  case Grid_Generator::POINT:
-    if (divisor() <= 0) {
+    if (x.divisor() <= 0) {
 #ifndef NDEBUG
-      std::cerr << "Points and parameters must have positive divisors!"
-		<< std::endl;
+      std::cerr << "Parameters must have positive divisors!\n";
 #endif
       return false;
     }
     break;
 
-  }
+  case Grid_Generator::POINT:
+    if (x[0] <= 0) {
+#ifndef NDEBUG
+      std::cerr << "Points must have positive divisors!\n";
+#endif
+      return false;
+    }
+    if (x[size() - 1] != 0) {
+#ifndef NDEBUG
+      std::cerr << "Points must have a zero parameter divisor!\n";
+#endif
+      return false;
+    }
+    break;
+
+  } // switch (x.type())
 
   // All tests passed.
   return true;
