@@ -75,18 +75,9 @@ Grid_Generator::space_dimension() const {
 
 inline Grid_Generator::Type
 Grid_Generator::type() const {
-  switch (Generator::type()) {
-  case Generator::POINT:
-    return POINT;
-  case Generator::RAY:
-    return PARAMETER;
-  case Generator::LINE:
+  if (is_line())
     return LINE;
-  case Generator::CLOSURE_POINT:
-  default:
-    PPL_ASSERT(false);
-    return POINT;
-  }
+  return is_point() ? POINT : PARAMETER;
 }
 
 inline bool
