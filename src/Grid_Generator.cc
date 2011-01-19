@@ -238,11 +238,12 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
-  if (type() != y.type())
+  const Grid_Generator& x = *this;
+  if (x.type() != y.type())
     return false;
-  for (dimension_type col = (is_parameter() ? size() : size() - 1);
+  for (dimension_type col = (x.is_parameter() ? x.size() : x.size() - 1);
        col-- > 0; )
-    if (Generator::operator[](col) != y.Generator::operator[](col))
+    if (x[col] != y[col])
       return false;
   return true;
 }
