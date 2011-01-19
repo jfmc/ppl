@@ -421,6 +421,15 @@ private:
   */
   explicit Grid_Generator(Generator g);
 
+  /*! \brief
+    Constructs a grid generator of type \p t from linear expression \p e,
+    stealing the underlying data structures from \p e.
+
+    The last column in \p e becomes the parameter divisor column of
+    the new Grid_Generator.
+  */
+  Grid_Generator(Linear_Expression& e, Type t);
+
   //! Returns the actual size of \p this.
   dimension_type size() const;
 

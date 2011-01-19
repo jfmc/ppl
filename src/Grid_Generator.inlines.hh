@@ -26,6 +26,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
+  Linear_Row::swap(e);
+  set_flags(Flags(NECESSARILY_CLOSED, (type == LINE
+                                       ? LINE_OR_EQUALITY
+                                       : RAY_OR_POINT_OR_INEQUALITY)));
+}
+
+inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
   : Generator(g) {
 }
