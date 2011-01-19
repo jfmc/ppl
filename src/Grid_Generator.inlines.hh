@@ -45,32 +45,32 @@ Grid_Generator::~Grid_Generator() {
 inline
 Grid_Generator::Grid_Generator(Generator g)
   : Generator(Generator::point()) {
-  Generator::swap(g);
+  Linear_Row::swap(g);
 }
 
 inline dimension_type
 Grid_Generator::size() const {
-  return Generator::size();
+  return Linear_Row::size();
 }
 
 inline dimension_type
 Grid_Generator::max_space_dimension() {
-  return Generator::max_space_dimension() - 1;
+  return Linear_Row::max_space_dimension() - 1;
 }
 
 inline Coefficient&
 Grid_Generator::operator[](dimension_type k) {
-  return Generator::operator[](k);
+  return Linear_Row::operator[](k);
 }
 
 inline Coefficient_traits::const_reference
 Grid_Generator::operator[](dimension_type k) const {
-  return Generator::operator[](k);
+  return Linear_Row::operator[](k);
 }
 
 inline dimension_type
 Grid_Generator::space_dimension() const {
-  return Generator::space_dimension() - 1;
+  return Linear_Row::space_dimension() - 1;
 }
 
 inline Grid_Generator::Type
@@ -91,7 +91,7 @@ Grid_Generator::type() const {
 
 inline bool
 Grid_Generator::is_line() const {
-  return Generator::is_line();
+  return is_line_or_equality();
 }
 
 inline bool
@@ -101,12 +101,12 @@ Grid_Generator::is_parameter() const {
 
 inline bool
 Grid_Generator::is_line_or_parameter() const {
-  return is_line_or_ray();
+  return (*this)[0] == 0;
 }
 
 inline bool
 Grid_Generator::is_point() const {
-  return Generator::is_point();
+  return !is_line_or_parameter();
 }
 
 inline bool
@@ -144,7 +144,7 @@ Grid_Generator::is_equal_at_dimension(dimension_type dim,
 
 inline void
 Grid_Generator::set_is_line() {
-  Generator::set_is_line();
+  set_is_line_or_equality();
 }
 
 inline void
@@ -154,7 +154,7 @@ Grid_Generator::set_is_parameter_or_point() {
 
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
-  Generator::operator=(g);
+  Linear_Row::operator=(g);
   return *this;
 }
 
@@ -175,17 +175,17 @@ inline Coefficient_traits::const_reference
 Grid_Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Generator::coefficient(v);
+  return Linear_Row::coefficient(v.id());
 }
 
 inline memory_size_type
 Grid_Generator::total_memory_in_bytes() const {
-  return Generator::total_memory_in_bytes();
+  return Linear_Row::total_memory_in_bytes();
 }
 
 inline memory_size_type
 Grid_Generator::external_memory_in_bytes() const {
-  return Generator::external_memory_in_bytes();
+  return Linear_Row::external_memory_in_bytes();
 }
 
 inline const Grid_Generator&
@@ -196,12 +196,13 @@ Grid_Generator::zero_dim_point() {
 
 inline void
 Grid_Generator::strong_normalize() {
-  Generator::strong_normalize();
+  PPL_ASSERT(!is_parameter());
+  Linear_Row::strong_normalize();
 }
 
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
-  Generator::swap(y);
+  Linear_Row::swap(y);
 }
 
 /*! \relates Grid_Generator */
