@@ -117,10 +117,11 @@ Grid_Generator::is_parameter_or_point() const {
 inline void
 Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
   PPL_ASSERT(!is_line());
+  Linear_Row& x = *this;
   if (is_line_or_parameter())
-    Generator::operator[](size() - 1) = d;
+    x[size() - 1] = d;
   else
-    Generator::operator[](0) = d;
+    x[0] = d;
 }
 
 inline Coefficient_traits::const_reference
