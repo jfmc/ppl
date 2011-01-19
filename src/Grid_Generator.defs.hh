@@ -403,12 +403,11 @@ private:
 
   /*! \brief
     Scales \p *this to be represented with a divisor of \p d (if
-    \*this is a parameter or point).
+    \*this is a parameter or point). Does nothing at all on lines.
 
-    It is assumed that \p d is a multiple of the current divisor.
-
-    \exception std::invalid_argument
-    Thrown if \p d is zero.
+    It is assumed that \p d is a multiple of the current divisor
+    and different from zero. The behavior is undefined if the assumption
+    does not hold.
   */
   void scale_to_divisor(Coefficient_traits::const_reference d);
 
@@ -456,13 +455,12 @@ private:
   void set_is_parameter();
 
   /*! \brief
-    Strong normalization: ensures that different Grid_Generator
-    objects represent different hyperplanes or hyperspaces.
+    Strong normalization: ensures that equivalent Grid_Generator points
+    and lines are provided with the same representation.
 
-    Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
-
-    This is simply a wrapper around the Generator::strong_normalize,
-    which means applying it to a parameter may change the parameter.
+    \note
+    Applying strong normalization to a parameter changes the parameter
+    and may result in undefined behavior.
   */
   void strong_normalize();
 
