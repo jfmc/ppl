@@ -145,13 +145,13 @@ PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 0; i < x_size; ++i)
     s << x[i] << ' ';
   switch (x.type()) {
-  case Generator::LINE:
+  case LINE:
     s << "L";
     break;
-  case Generator::RAY:
+  case PARAMETER:
     s << "Q";
     break;
-  case Generator::POINT:
+  case POINT:
     s << "P";
     break;
   }
@@ -365,7 +365,7 @@ PPL::IO_Operators::operator<<(std::ostream& s,
   case Grid_Generator::PARAMETER:
     n = "PARAMETER";
     break;
-  case Generator::POINT:
+  case Grid_Generator::POINT:
     n = "POINT";
     break;
   }
