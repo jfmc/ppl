@@ -96,7 +96,7 @@ Grid_Generator::is_line() const {
 
 inline bool
 Grid_Generator::is_parameter() const {
-  return is_ray();
+  return is_parameter_or_point() && is_line_or_parameter();
 }
 
 inline bool
