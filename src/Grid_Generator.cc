@@ -249,9 +249,11 @@ PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
-  // Start at size() - 1 to avoid the extra grid generator column.
-  for (dimension_type i = size() - 1; --i > 0; )
-    if (operator[](i) != 0)
+  const Grid_Generator& x = *this;
+  // Start at size() - 2 to avoid the extra grid generator column.
+  // Also avoid the point divisor column (0).
+  for (dimension_type i = x.size() - 2; i > 0; --i)
+    if (x[i] != 0)
       return false;
   return true;
 }
