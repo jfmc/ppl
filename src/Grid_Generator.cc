@@ -344,7 +344,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     }
   }
   if (first)
-    // A generator in the origin.
+    // A grid generator in the origin.
     s << 0;
   if (extra_parentheses)
     s << ")";
