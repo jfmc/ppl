@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_defs_hh
 #define PPL_Float_defs_hh 1
 
+#include "Oracle.hh"
 #include "globals.types.hh"
 #include "meta_programming.hh"
 #include "compiler.hh"
@@ -377,77 +378,6 @@ public:
 //! Returns the position of the most significative bit in \p a.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 unsigned int ld2(unsigned long long a);
-
-/*! \brief
-  An abstract class to be implemented by an external analyzer such
-  as eCLAIR in order to provide to the PPL the necessary information
-  for performing the analysis of floating point computations.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
-*/
-template <typename Target, typename FP_Interval_Type>
-class FP_Oracle {
-public:
-  /*
-    FIXME: the const qualifiers on expressions may raise CLANG
-    compatibility issues. It may be necessary to omit them.
-  */
-
-  /*! \brief
-    Asks the external analyzer for an interval that correctly
-    approximates the floating point entity referenced by \p dim.
-    Result is stored into \p result.
-
-    \return <CODE>true</CODE> if the analyzer was able to find a correct
-    approximation, <CODE>false</CODE> otherwise.
-  */
-  virtual bool get_interval(dimension_type dim, FP_Interval_Type& result) const
-    = 0;
-
-  /*! \brief
-    Asks the external analyzer for an interval that correctly
-    approximates the value of floating point constant \p expr.
-    Result is stored into \p result.
-
-    \return <CODE>true</CODE> if the analyzer was able to find a correct
-    approximation, <CODE>false</CODE> otherwise.
-  */
-  virtual bool get_fp_constant_value(
-               const Floating_Point_Constant<Target>& expr,
-                     FP_Interval_Type& result) const = 0;
-
-  /*! \brief
-    Asks the external analyzer for an interval that correctly approximates
-    the value of \p expr, which must be of integer type.
-    Result is stored into \p result.
-
-    \return <CODE>true</CODE> if the analyzer was able to find a correct
-    approximation, <CODE>false</CODE> otherwise.
-  */
-  virtual bool get_integer_expr_value(const Concrete_Expression<Target>& expr,
-                                      FP_Interval_Type& result) const = 0;
-
-  /*! \brief
-    Asks the external analyzer for the possible space dimensions that
-    are associated to the approximable reference \p expr.
-    Result is stored into \p result.
-
-    \return <CODE>true</CODE> if the analyzer was able to return
-    the (possibly empty!) set, <CODE>false</CODE> otherwise.
-
-    The resulting set MUST NOT contain <CODE>not_a_dimension()</CODE>.
-  */
-  virtual bool get_associated_dimensions(
-	  const Approximable_Reference<Target>& expr,
-          std::set<dimension_type>& result) const = 0;
-
-};
 
 /* FIXME: some of the following  documentation should probably be
    under PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS */

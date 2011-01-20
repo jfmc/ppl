@@ -456,7 +456,7 @@ Linear_Form<C>::relative_error(
 template <typename C>
 template <typename Target>
 bool
-Linear_Form<C>::intervalize(const FP_Oracle<Target,C>& oracle,
+Linear_Form<C>::intervalize(const Oracle<Target,C>& oracle,
                             C& result) const {
   result = C(inhomogeneous_term());
   dimension_type dimension = space_dimension();

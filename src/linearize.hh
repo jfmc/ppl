@@ -49,7 +49,7 @@ namespace Parma_Polyhedra_Library {
 
   \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>ADD</CODE>.
-  \param oracle The FP_Oracle to be queried.
+  \param oracle The Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
@@ -100,7 +100,7 @@ namespace Parma_Polyhedra_Library {
 template <typename Target, typename FP_Interval_Type>
 static bool
 add_linearize(const Binary_Operator<Target>& bop_expr,
-              const FP_Oracle<Target,FP_Interval_Type>& oracle,
+              const Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::ADD);
@@ -149,7 +149,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
 
   \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>SUB</CODE>.
-  \param oracle The FP_Oracle to be queried.
+  \param oracle The Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
@@ -206,7 +206,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 sub_linearize(const Binary_Operator<Target>& bop_expr,
-              const FP_Oracle<Target,FP_Interval_Type>& oracle,
+              const Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::SUB);
@@ -255,7 +255,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
 
   \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>MUL</CODE>.
-  \param oracle The FP_Oracle to be queried.
+  \param oracle The Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
@@ -341,7 +341,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 mul_linearize(const Binary_Operator<Target>& bop_expr,
-              const FP_Oracle<Target,FP_Interval_Type>& oracle,
+              const Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::MUL);
@@ -444,7 +444,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
 
   \param bop_expr The binary operator concrete expression to linearize.
   Its binary operator type must be <CODE>DIV</CODE>.
-  \param oracle The FP_Oracle to be queried.
+  \param oracle The Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
@@ -518,7 +518,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 div_linearize(const Binary_Operator<Target>& bop_expr,
-              const FP_Oracle<Target,FP_Interval_Type>& oracle,
+              const Oracle<Target,FP_Interval_Type>& oracle,
               const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::DIV);
@@ -576,7 +576,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   composite abstract store.
 
   \param cast_expr The cast operator concrete expression to linearize.
-  \param oracle The FP_Oracle to be queried.
+  \param oracle The Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result The modified linear form.
 
@@ -586,7 +586,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
 template <typename Target, typename FP_Interval_Type>
 static bool
 cast_linearize(const Cast_Operator<Target>& cast_expr,
-               const FP_Oracle<Target,FP_Interval_Type>& oracle,
+               const Oracle<Target,FP_Interval_Type>& oracle,
                const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
                Linear_Form<FP_Interval_Type>& result) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
@@ -656,7 +656,7 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   should have a floating point type.
 
   \param expr The concrete expression to linearize.
-  \param oracle The FP_Oracle to be queried.
+  \param oracle The Oracle to be queried.
   \param lf_store The linear form abstract store.
   \param result Becomes the linearized expression.
 
@@ -668,35 +668,46 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   then \p result will become \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$
   if the linearization succeeds.
 */
-template <typename Target, typename FP_Interval_Type>
+template <typename Target, typename Interval_Type>
 bool
 linearize(const Concrete_Expression<Target>& expr,
-          const FP_Oracle<Target,FP_Interval_Type>& oracle,
-          const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
-          Linear_Form<FP_Interval_Type>& result) {
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
-  typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
+          const Oracle<Target,Interval_Type>& oracle,
+          const std::map<dimension_type, Linear_Form<Interval_Type> >& lf_store,
+          Linear_Form<Interval_Type>& result) {
+  typedef typename Interval_Type::boundary_type analyzer_format;
+  typedef Linear_Form<Interval_Type> Linear_Form;
+  typedef Box<Interval_Type> Interval_Abstract_Store;
+  typedef std::map<dimension_type, Linear_Form> Linear_Form_Abstract_Store;
 
   PPL_ASSERT(expr.type().is_floating_point());
+  PPL_ASSERT(expr.type().is_bounded_integer());
   // Check that analyzer_format is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<analyzer_format>::is_exact,
-      "linearize<Target, FP_Interval_Type>:"
-      " FP_Interval_Type is not the type of an interval with floating point boundaries.");
+      "linearize<Target, Interval_Type>:"
+      " Interval_Type is not the type of an interval with floating point boundaries.");
 
   switch(expr.kind()) {
   case Integer_Constant<Target>::KIND:
-    throw std::runtime_error("PPL internal error: unreachable");
+  {
+    const Integer_Constant<Target>* ic_expr =
+      expr.template as<Integer_Constant>();
+    Interval_Type constant_value;
+    if (!oracle.get_integer_constant_value(*ic_expr, constant_value))
+      return false;
+    result = Linear_Form(constant_value);
+    return true;
     break;
+  }
+//    throw std::runtime_error("PPL internal error: unreachable");
+//    break;
   case Floating_Point_Constant<Target>::KIND:
   {
     const Floating_Point_Constant<Target>* fpc_expr =
       expr.template as<Floating_Point_Constant>();
-    FP_Interval_Type constant_value;
+    Interval_Type constant_value;
     if (!oracle.get_fp_constant_value(*fpc_expr, constant_value))
       return false;
-    result = FP_Linear_Form(constant_value);
+    result = Linear_Form(constant_value);
     return true;
     break;
   }
@@ -774,14 +785,14 @@ linearize(const Concrete_Expression<Target>& expr,
       dimension_type variable_index = *associated_dimensions.begin();
       PPL_ASSERT(variable_index != not_a_dimension());
 
-      typename FP_Linear_Form_Abstract_Store::const_iterator
+      typename Linear_Form_Abstract_Store::const_iterator
                variable_value = lf_store.find(variable_index);
       if (variable_value == lf_store.end()) {
-        result = FP_Linear_Form(Variable(variable_index));
+        result = Linear_Form(Variable(variable_index));
         return true;
       }
 
-      result = FP_Linear_Form(variable_value->second);
+      result = Linear_Form(variable_value->second);
       /* FIXME: do we really need to contemplate the possibility
 	 that an unbounded linear form was saved into lf_store? */
       return !result.overflows();
@@ -795,9 +806,9 @@ linearize(const Concrete_Expression<Target>& expr,
     std::set<dimension_type>::const_iterator i = associated_dimensions.begin();
     std::set<dimension_type>::const_iterator i_end =
       associated_dimensions.end();
-    FP_Interval_Type lub(EMPTY);
+    Interval_Type lub(EMPTY);
     for (; i != i_end; ++i) {
-      FP_Interval_Type curr_int;
+      Interval_Type curr_int;
       PPL_ASSERT(*i != not_a_dimension());
       if (!oracle.get_interval(*i, curr_int))
         return false;
@@ -805,7 +816,7 @@ linearize(const Concrete_Expression<Target>& expr,
       lub.join_assign(curr_int);
     }
 
-    result = FP_Linear_Form(lub);
+    result = Linear_Form(lub);
     return !result.overflows();
 
     break;

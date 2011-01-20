@@ -372,7 +372,7 @@ public:
     Makes \p result become an interval that overapproximates all the
     possible values of \p *this.
 
-    \param oracle The FP_Oracle to be queried.
+    \param oracle The Oracle to be queried.
     \param result The linear form that will store the result.
 
     \return <CODE>true</CODE> if the operation was succesful,
@@ -399,7 +399,7 @@ public:
     floating point boundaries.
   */
   template <typename Target>
-  bool intervalize(const FP_Oracle<Target,C>& oracle, C& result) const;
+  bool intervalize(const Oracle<Target,C>& oracle, C& result) const;
 
 private:
   //! The generic coefficient equal to the singleton zero.

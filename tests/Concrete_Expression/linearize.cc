@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-class Test_Oracle : public FP_Oracle<C_Expr,FP_Interval> {
+class Test_Oracle : public Oracle<C_Expr,FP_Interval> {
 public:
   Test_Oracle() : int_store(0) {}
 
@@ -42,6 +42,9 @@ public:
     result = FP_Interval((const char *)expr.value);
     return true;
   }
+
+  bool get_integer_constant_value(const Integer_Constant<C_Expr>& expr,
+                     	     FP_Interval& result) const { }
 
   bool get_integer_expr_value(const Concrete_Expression<C_Expr>& expr,
                               FP_Interval& result) const {
