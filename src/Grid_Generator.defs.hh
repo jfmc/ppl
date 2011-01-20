@@ -452,12 +452,6 @@ private:
   */
   void strong_normalize();
 
-  //! Returns a reference to the element of the row indexed by \p k.
-  Coefficient& operator[](dimension_type k);
-
-  //! Returns a constant reference to the element of the row indexed by \p k.
-  Coefficient_traits::const_reference operator[](dimension_type k) const;
-
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception containing
     the appropriate error message.

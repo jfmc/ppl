@@ -52,16 +52,6 @@ Grid_Generator::max_space_dimension() {
   return Linear_Row::max_space_dimension() - 1;
 }
 
-inline Coefficient&
-Grid_Generator::operator[](dimension_type k) {
-  return Linear_Row::operator[](k);
-}
-
-inline Coefficient_traits::const_reference
-Grid_Generator::operator[](dimension_type k) const {
-  return Linear_Row::operator[](k);
-}
-
 inline dimension_type
 Grid_Generator::space_dimension() const {
   return Linear_Row::space_dimension() - 1;
