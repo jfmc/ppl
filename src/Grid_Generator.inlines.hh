@@ -35,17 +35,11 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
-  : Generator(g) {
+  : Linear_Row(g) {
 }
 
 inline
 Grid_Generator::~Grid_Generator() {
-}
-
-inline
-Grid_Generator::Grid_Generator(Generator g)
-  : Generator(Generator::point()) {
-  Linear_Row::swap(g);
 }
 
 inline dimension_type
@@ -145,12 +139,6 @@ Grid_Generator::set_is_parameter_or_point() {
 
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
-  Linear_Row::operator=(g);
-  return *this;
-}
-
-inline Grid_Generator&
-Grid_Generator::operator=(const Generator& g) {
   Linear_Row::operator=(g);
   return *this;
 }

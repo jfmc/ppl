@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid_Generator.types.hh"
 #include "Coefficient.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Grid_Generator_System.defs.hh"
-#include "Generator.defs.hh"
 #include "Grid.types.hh"
 #include <iosfwd>
 
@@ -224,7 +224,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor is 1.
 */
-class Parma_Polyhedra_Library::Grid_Generator : private Generator {
+class Parma_Polyhedra_Library::Grid_Generator : private Linear_Row {
 public:
   //! Returns the line of direction \p e.
   /*!
@@ -268,9 +268,6 @@ public:
 
   //! Assignment operator.
   Grid_Generator& operator=(const Grid_Generator& g);
-
-  //! Assignment operator.
-  Grid_Generator& operator=(const Generator& g);
 
   //! Returns the maximum space dimension a Grid_Generator can handle.
   static dimension_type max_space_dimension();
@@ -410,15 +407,6 @@ private:
     does not hold.
   */
   void scale_to_divisor(Coefficient_traits::const_reference d);
-
-  /*! \brief
-    Constructs from polyhedron generator \p g, stealing the underlying
-    data structures from \p g.
-
-    The last column in \p g becomes the parameter divisor column of
-    the new Grid_Generator.
-  */
-  explicit Grid_Generator(Generator g);
 
   /*! \brief
     Constructs a grid generator of type \p t from linear expression \p e,

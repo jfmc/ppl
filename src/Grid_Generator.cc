@@ -62,16 +62,17 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   ec[gg_size - 1] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
-  // the parameter.  This ensures that divisors are always positive.
+  // the parameter, so as to satisfy the invariant.
   if (d < 0)
     for (dimension_type i = gg_size; i-- > 0; )
       neg_assign(ec[i]);
 
-  Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   // Using this constructor saves reallocation when creating the
   // coefficients.
-  Grid_Generator gg(g);
+  Grid_Generator gg(ec, PARAMETER);
 
+  // Enforce normalization.
+  gg.normalize();
   return gg;
 }
 
@@ -86,16 +87,17 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
   ec[0] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
-  // the parameter.  This ensures that divisors are always positive.
+  // the point, so as to satisfy the invariant.
   if (d < 0)
     for (dimension_type i = ec.size(); i-- > 0; )
       neg_assign(ec[i]);
 
-  Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   // Using this constructor saves reallocation when creating the
   // coefficients.
-  Grid_Generator gg(g);
+  Grid_Generator gg(ec, POINT);
 
+  // Enforce normalization.
+  gg.normalize();
   return gg;
 }
 
@@ -109,11 +111,12 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 2 + e.space_dimension());
   ec[0] = 0;
-  Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   // Using this constructor saves reallocation when creating the
   // coefficients.
-  Grid_Generator gg(g);
+  Grid_Generator gg(ec, LINE);
 
+  // Enforce normalization.
+  gg.strong_normalize();
   return gg;
 }
 
