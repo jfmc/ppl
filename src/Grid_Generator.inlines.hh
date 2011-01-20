@@ -151,7 +151,7 @@ Grid_Generator::operator=(const Grid_Generator& g) {
 
 inline Grid_Generator&
 Grid_Generator::operator=(const Generator& g) {
-  Generator::operator=(g);
+  Linear_Row::operator=(g);
   return *this;
 }
 
