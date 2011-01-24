@@ -1,6 +1,7 @@
 /* Test Product<NNC_Polyhedron, Grid>::bounds_from_above() and
    Product<NNC_Polyhedron, Grid>::bounds_from_below()
-   Copyright (C) 2001-2009 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
