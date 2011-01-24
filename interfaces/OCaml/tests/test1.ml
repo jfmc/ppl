@@ -1,5 +1,6 @@
 (* Simple program testing the PPL OCaml interface on a few random things.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 

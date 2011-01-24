@@ -2,6 +2,7 @@
    multi-precision types.  This will become obsolete when GMP and MPFR
    will provide the specializations by themselves.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 

@@ -5,6 +5,7 @@ dnl This m4 file generates the file Prolog_configured_interface.dox
 dnl and Prolog_interface.dox
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
