@@ -48,6 +48,8 @@ o  Fixed a bug whereby the argument of all the methods
 
    was not checked correctly for space dimension compatibility.
 
+o  Portability improved.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.11  (released on August 2, 2010)
