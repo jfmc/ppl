@@ -72,18 +72,6 @@ public:
   virtual bool get_fp_constant_value(
                const Floating_Point_Constant<Target>& expr,
                      Interval_Type& result) const = 0;
-/*! \brief
-    Asks the external analyzer for an interval that correctly
-    approximates the value of integer constant \p expr.
-    Result is stored into \p result.
-
-    \return <CODE>true</CODE> if the analyzer was able to find a correct
-    approximation, <CODE>false</CODE> otherwise.
-  */
-  virtual bool get_integer_constant_value(
-               const Integer_Constant<Target>& expr,
-                     Interval_Type& result) const = 0;
-
 
   /*! \brief
     Asks the external analyzer for an interval that correctly approximates

@@ -689,13 +689,6 @@ linearize(const Concrete_Expression<Target>& expr,
   switch(expr.kind()) {
   case Integer_Constant<Target>::KIND:
   {
-    const Integer_Constant<Target>* ic_expr =
-      expr.template as<Integer_Constant>();
-    Interval_Type constant_value;
-    if (!oracle.get_integer_constant_value(*ic_expr, constant_value))
-      return false;
-    result = Linear_Form(constant_value);
-    return true;
     break;
   }
 //    throw std::runtime_error("PPL internal error: unreachable");
