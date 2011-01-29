@@ -1018,32 +1018,32 @@ then
   AC_PROG_OCAML
   if test x"$OCAMLC" != xno
   then
-     # Check for the bytecode version of ML GMP.
-     AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
-     if ( test ${mlgmp_dir} = +gmp && test -f ${OCAMLLIB}/gmp/gmp.cma ) \
-        || test -f ${mlgmp_dir}/gmp.cma;
-     then
-         AC_MSG_RESULT(yes)
-	 ocamlc_gmp="yes"
-     else
-         AC_MSG_RESULT(no)
-	 ocamlc_gmp="no"
-     fi
-  fi
-  if test x"$OCAMLOPT" != xno
-  then
-     ocamlopt_root=`${OCAMLOPT} -where`
-     # Check for the native version of ML GMP.
-     AC_MSG_CHECKING([for ML GMP native module gmp.cmxa])
-     if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlopt_root}/gmp/gmp.cmxa ) \
+    # Check for the bytecode version of ML GMP.
+    AC_MSG_CHECKING([for ML GMP bytecode module gmp.cma])
+    if ( test ${mlgmp_dir} = +gmp && test -f ${OCAMLLIB}/gmp/gmp.cma ) \
+      || test -f ${mlgmp_dir}/gmp.cma;
+    then
+      AC_MSG_RESULT(yes)
+      ocamlc_gmp="yes"
+    else
+      AC_MSG_RESULT(no)
+      ocamlc_gmp="no"
+    fi
+    if test x"$OCAMLOPT" != xno
+    then
+      ocamlopt_root=`${OCAMLOPT} -where`
+      # Check for the native version of ML GMP.
+      AC_MSG_CHECKING([for ML GMP native module gmp.cmxa])
+      if ( test ${mlgmp_dir} = +gmp && test -f ${ocamlopt_root}/gmp/gmp.cmxa ) \
         || test -f ${mlgmp_dir}/gmp.cmxa;
-     then
-         AC_MSG_RESULT(yes)
-	 ocamlopt_gmp="yes"
-     else
-         AC_MSG_RESULT(no)
-	 ocamlopt_gmp="no"
-     fi
+      then
+        AC_MSG_RESULT(yes)
+        ocamlopt_gmp="yes"
+      else
+        AC_MSG_RESULT(no)
+	ocamlopt_gmp="no"
+      fi
+    fi
   fi
 fi
 AM_CONDITIONAL(HAVE_OCAMLC, test x$ocamlc_gmp = xyes)
