@@ -46,6 +46,7 @@ ac_cxx_ieee_inexact_flag.m4 \
 ac_cxx_limit_memory.m4 \
 ac_cxx_long_double_binary_format.m4 \
 ac_cxx_long_double_exact_output.m4 \
+ac_cxx_plain_char_is_signed.m4 \
 ac_cxx_proper_long_double.m4 \
 ac_cxx_remainder_bug.m4 \
 ac_prog_jar.m4 \
