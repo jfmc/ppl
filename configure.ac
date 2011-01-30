@@ -666,6 +666,9 @@ AC_SEARCH_LIBS([sqrt], [m])
 # Check for the possibility to control the FPU.
 AC_CHECK_FPU_CONTROL
 
+# Check whether for the C++ compiler the plain char type is signed.
+AC_CXX_PLAIN_CHAR_IS_SIGNED
+
 # Check whether the C++ compiler provides proper long doubles.
 AC_CXX_PROVIDES_PROPER_LONG_DOUBLE
 
