@@ -36,8 +36,6 @@ int foo[std::numeric_limits<char>::is_signed ? 1 : -1];
   AC_MSG_RESULT(yes)
   ac_cxx_plain_char_is_signed=yes,
   AC_MSG_RESULT(no)
-  ac_cxx_plain_char_is_signed=no,
-  AC_MSG_RESULT(no)
   ac_cxx_plain_char_is_signed=no)
 
 if test x"$ac_cxx_plain_char_is_signed" = xyes
