@@ -887,7 +887,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   mpz_clear(r);
   if (bits == needed_bits + 1) {
     inexact = (inexact || mpz_odd_p(mantissa));
-    mpz_div_2exp(mantissa, mantissa, 1);
+    mpz_tdiv_q_2exp(mantissa, mantissa, 1);
   }
   else
     --exponent;
