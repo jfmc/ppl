@@ -35,9 +35,9 @@ namespace {
 
 // Calculate positive modulo of x % y
 inline void
-mod_assign(Coefficient& z,
-           Coefficient_traits::const_reference x,
-           Coefficient_traits::const_reference y) {
+pos_mod_assign(Coefficient& z,
+               Coefficient_traits::const_reference x,
+               Coefficient_traits::const_reference y) {
   z = x % y;
   if (z < 0)
     z += y;
@@ -187,7 +187,7 @@ complement_assign(Row& x,
     --x_0;
   else {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
-    mod_assign(mod, x_0, den);
+    pos_mod_assign(mod, x_0, den);
     x_0 -= (mod == 0) ? den : mod;
   }
   if (x_0 == 0)
@@ -1952,7 +1952,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         cut = s_mi;
         for (Row::iterator
              j = cut.begin(), j_end = cut.end(); j != j_end; ++j)
-          mod_assign(*j, *j, den);
+          pos_mod_assign(*j, *j, den);
         cut[0] -= den;
         scaling.push_back(den);
       }
@@ -2350,7 +2350,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Row row(tableau.t[i]);
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
         Coefficient& row0 = row[0];
-        mod_assign(mod, row0, tableau_den);
+        pos_mod_assign(mod, row0, tableau_den);
         row0 -= (mod == 0) ? tableau_den : mod;
         const bool compatible = compatibility_check(context, row);
         // Maybe update sign (and first_* indices).
@@ -2807,7 +2807,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         const Row& t_i = tableau.t[i];
         for (Row::const_iterator
              j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-          mod_assign(mod, *j, den);
+          pos_mod_assign(mod, *j, den);
           if (mod != 0)
             ++pcount;
         }
@@ -2841,7 +2841,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& t_i = tableau.t[i];
           for (Row::const_iterator
                j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-            mod_assign(mod, *j, den);
+            pos_mod_assign(mod, *j, den);
             if (mod != 0) {
               score += den;
               score -= mod;
@@ -2856,7 +2856,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& s_i = tableau.s[i];
           for (Row::const_iterator
                j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
-            mod_assign(mod, *j, den);
+            pos_mod_assign(mod, *j, den);
             s_score += den;
             s_score -= mod;
           }
@@ -2950,7 +2950,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       Row::const_iterator j = row_t.begin();
       Row::const_iterator j_end = row_t.end();
       if (j != j_end && j.index() == 0) {
-        mod_assign(mod, *j, den);
+        pos_mod_assign(mod, *j, den);
         ++j;
         if (mod != 0) {
           // Optimizing computation: expr += (den - mod);
@@ -2964,7 +2964,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Variables_Set::const_iterator p_j = parameters.begin();
         dimension_type last_index = 1;
         for ( ; j != j_end; ++j) {
-          mod_assign(mod, *j, den);
+          pos_mod_assign(mod, *j, den);
           if (mod != 0) {
             // Optimizing computation: expr += (den - mod) * Variable(*p_j);
             coeff = den - mod;
@@ -3033,7 +3033,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Row::iterator itr1 = ctx1.end();
         Row::iterator itr2 = ctx2.end();
         if (j != j_end && j.index() == 0) {
-          mod_assign(mod, *j, den);
+          pos_mod_assign(mod, *j, den);
           if (mod != 0) {
             itr1 = ctx1.insert(0, den);
             *itr1 -= mod;
@@ -3054,7 +3054,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           --(*itr2);
         }
         for ( ; j != j_end; ++j) {
-          mod_assign(mod, *j, den);
+          pos_mod_assign(mod, *j, den);
           if (mod != 0) {
             const dimension_type j_index = j.index();
             itr1 = ctx1.insert(itr1, j_index, den);
@@ -3099,14 +3099,14 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     for (Row::const_iterator
          j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
       itr = cut_s.insert(itr, j.index(), *j);
-      *itr %= den;
+      pos_mod_assign(*itr, *itr, den);
     }
   }
   {
     Row::iterator cut_t_itr = cut_t.end();
     for (Row::const_iterator
          j = row_t.begin(), j_end = row_t.end(); j!=j_end; ++j) {
-      mod_assign(mod, *j, den);
+      pos_mod_assign(mod, *j, den);
       if (mod != 0) {
         cut_t_itr = cut_t.insert(cut_t_itr, j.index(), mod);
         *cut_t_itr -= den;
