@@ -176,6 +176,9 @@ public:
   template <typename From, typename From_Policy>
   Checked_Number(const Checked_Number<From, From_Policy>& y, Rounding_Dir dir);
 
+  //! Direct initialization from a plain char and rounding mode.
+  Checked_Number(char y, Rounding_Dir dir);
+
   //! Direct initialization from a signed char and rounding mode.
   Checked_Number(signed char y, Rounding_Dir dir);
 
@@ -237,6 +240,9 @@ public:
   //! Direct initialization from a Checked_Number, default rounding mode.
   template <typename From, typename From_Policy>
   explicit Checked_Number(const Checked_Number<From, From_Policy>& y);
+
+  //! Direct initialization from a plain char, default rounding mode.
+  Checked_Number(char y);
 
   //! Direct initialization from a signed char, default rounding mode.
   Checked_Number(signed char y);
