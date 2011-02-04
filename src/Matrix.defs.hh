@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Matrix.types.hh"
 #include "globals.defs.hh"
 #include "Coefficient.defs.hh"
-#include <vector>
+#include "Swapping_Vector.defs.hh"
 #include <ostream>
 
 //! A sparse matrix of Coefficient.
@@ -438,7 +438,7 @@ public:
 
 private:
   //! The vector that stores the matrix's elements.
-  std::vector<Row> rows;
+  Swapping_Vector<Row> rows;
 
   //! The number of columns in this matrix.
   dimension_type num_columns_;

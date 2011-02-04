@@ -147,6 +147,7 @@ Sparse_Row.types.hh \
 Linear_Row.types.hh \
 Row.types.hh \
 Matrix.types.hh \
+Swapping_Vector.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
@@ -284,6 +285,8 @@ Row.defs.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
 Matrix.templates.hh \
+Swapping_Vector.defs.hh \
+Swapping_Vector.inlines.hh \
 MIP_Problem.types.hh \
 MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \

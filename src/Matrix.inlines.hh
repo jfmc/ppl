@@ -82,21 +82,8 @@ Matrix<Row>::resize(dimension_type n, Flags row_flags) {
 template <typename Row>
 inline void
 Matrix<Row>::reserve_rows(dimension_type requested_capacity) {
-  
-  if (rows.capacity() < requested_capacity) {
-    // Reallocation will take place.
-    std::vector<Row> new_rows;
-    
-    new_rows.reserve(compute_capacity(requested_capacity, max_num_rows()));
-    new_rows.resize(rows.size());
-    
-    // Steal the old rows.
-    for (dimension_type i = rows.size(); i-- > 0; )
-      std::swap(new_rows[i], rows[i]);
-    
-    // Put the new vector into place.
-    std::swap(rows, new_rows);
-  }
+
+  rows.reserve(requested_capacity);
 }
 
 template <typename Row>

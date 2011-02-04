@@ -56,7 +56,6 @@ void
 Matrix<Row>::resize(dimension_type num_rows, dimension_type num_columns,
                     Flags row_flags) {
   const dimension_type old_num_rows = rows.size();
-  reserve_rows(num_rows);
   rows.resize(num_rows);
   if (old_num_rows < num_rows) {
     for (dimension_type i = old_num_rows; i < num_rows; ++i) {
@@ -174,11 +173,7 @@ Matrix<Row>::ascii_load(std::istream& s) {
 template <typename Row>
 memory_size_type
 Matrix<Row>::external_memory_in_bytes() const {
-  // Estimate the size of vector.
-  memory_size_type n = rows.capacity() * sizeof(Row);
-  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
-    n += i->external_memory_in_bytes();
-  return n;
+  return rows.external_memory_in_bytes();
 }
 
 template <typename Row>
