@@ -29,6 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <memory>
 #include <map>
 
+// #define NOISY_PIP
+// #define VERY_NOISY_PIP 0
+
 namespace Parma_Polyhedra_Library {
 
 namespace {
@@ -800,6 +803,60 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
     parent_(0), // NOTE: parent is not copied.
     constraints_(y.constraints_),
     artificial_parameters(y.artificial_parameters) {
+}
+
+PIP_Tree_Node::Artificial_Parameter
+::Artificial_Parameter(const Linear_Expression& expr,
+                       Coefficient_traits::const_reference den)
+  : Linear_Expression(expr), denom(den) {
+  if (denom == 0)
+    throw std::invalid_argument("PIP_Tree_Node::Artificial_Parameter(e, d): "
+                                "denominator d is zero.");
+
+  // Normalize if needed.
+  // FIXME: Provide a proper normalization helper.
+  Linear_Expression& param_expr = *this;
+  if (denom < 0) {
+    neg_assign(denom);
+    param_expr *= -1;
+  }
+
+  // Compute GCD of parameter expression and denum.
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  gcd = denom;
+  gcd_assign(gcd, param_expr.inhomogeneous_term(), gcd);
+  if (gcd == 1)
+    return;
+  const dimension_type space_dim = param_expr.space_dimension();
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Coefficient_traits::const_reference
+      e_i = param_expr.coefficient(Variable(i));
+    if (e_i != 0) {
+      gcd_assign(gcd, e_i, gcd);
+      if (gcd == 1)
+        return;
+    }
+  }
+
+  // Divide coefficients and denominator by their (non-trivial) GCD.
+  PPL_ASSERT(gcd > 1);
+  Linear_Expression normalized(0 * Variable(space_dim-1));
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  exact_div_assign(coeff, param_expr.inhomogeneous_term(), gcd);
+  normalized += coeff;
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Coefficient_traits::const_reference
+      e_i = param_expr.coefficient(Variable(i));
+    if (e_i != 0) {
+      exact_div_assign(coeff, e_i, gcd);
+      add_mul_assign(normalized, coeff, Variable(i));
+    }
+  }
+  // Replace the parameter expression with the normalized one.
+  param_expr = normalized;
+  exact_div_assign(denom, denom, gcd);
+
+  PPL_ASSERT(OK());
 }
 
 bool
@@ -2262,11 +2319,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     const dimension_type num_params = tableau.t.num_columns();
     Coefficient_traits::const_reference tableau_den = tableau.denominator();
 
-#ifdef NOISY_PIP
+#ifdef VERY_NOISY_PIP
     tableau.ascii_dump(std::cerr);
     std::cerr << "context ";
     context.ascii_dump(std::cerr);
-#endif
+#endif // #ifdef VERY_NOISY_PIP
 
     // (Re-) Compute parameter row signs.
     // While at it, keep track of the first parameter rows
@@ -2407,7 +2464,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
 #ifdef NOISY_PIP
       std::cerr << "Pivot (pi, pj) = (" << pi << ", " << pj << ")\n";
-#endif
+#endif // #ifdef NOISY_PIP
 
       // Normalize the tableau before pivoting.
       tableau.normalize();
@@ -2617,7 +2674,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         std::cerr << "Found row (" << i_neg << ") with mixed parameter sign "
                   << "and negative variable coefficients.\n"
                   << "==> adding tautology.\n";
-#endif
+#endif // #ifdef NOISY_PIP
         Row copy = tableau.t[i_neg];
         copy.normalize();
         context.add_row(copy);
@@ -2994,8 +3051,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 #ifdef NOISY_PIP
       using namespace IO_Operators;
       std::cout << "Re-using parameter " << Variable(ap_column)
-                << " = (" << expr << ")/" << den
-                << std::endl;
+                << " = " << ap << std::endl;
 #endif // #ifdef NOISY_PIP
       ap_column = ap_column - num_vars + 1;
     }
@@ -3010,8 +3066,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       using namespace IO_Operators;
       std::cout << "Creating new parameter "
                 << Variable(space_dimension)
-                << " = (" << expr << ")/" << den
-                << std::endl;
+                << " = " << ap << std::endl;
 #endif // #ifdef NOISY_PIP
       ++space_dimension;
       ap_column = num_params;
