@@ -43,34 +43,29 @@ pos_mod_assign(Coefficient& z,
     z += y;
 }
 
-namespace {
-
-class add_mul_assign_row_helper1 {
-
+class Add_Mul_Assign_Row_Helper1 {
 public:
-  inline
-  add_mul_assign_row_helper1(Coefficient_traits::const_reference c1)
+  Add_Mul_Assign_Row_Helper1(Coefficient_traits::const_reference c1)
     : c(c1) {
   }
 
-  inline void
+  void
   operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
     x += c * y;
   }
 
 private:
   Coefficient c;
-};
+}; // class Add_Mul_Assign_Row_Helper1
 
-class add_mul_assign_row_helper2 {
 
+class Add_Mul_Assign_Row_Helper2 {
 public:
-  inline
-  add_mul_assign_row_helper2(Coefficient_traits::const_reference c1)
+  Add_Mul_Assign_Row_Helper2(Coefficient_traits::const_reference c1)
     : c(c1) {
   }
 
-  inline void
+  void
   operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
     x = y;
     x *= c;
@@ -78,37 +73,38 @@ public:
 
 private:
   Coefficient c;
-};
-
-}
+}; // class Add_Mul_Assign_Row_Helper2
 
 // Compute x += c * y
 inline void
-add_mul_assign_row(Row& x, Coefficient_traits::const_reference c,
+add_mul_assign_row(Row& x,
+                   Coefficient_traits::const_reference c,
                    const Row& y) {
-  x.combine_needs_second(y, add_mul_assign_row_helper1(c),
-                         add_mul_assign_row_helper2(c));
+  x.combine_needs_second(y,
+                         Add_Mul_Assign_Row_Helper1(c),
+                         Add_Mul_Assign_Row_Helper2(c));
 }
 
-namespace {
 
-inline void
-sub_assign_helper1(Coefficient& x, Coefficient_traits::const_reference y) {
-  x -= y;
-}
+struct Sub_Assign_Helper1 {
+  void
+  operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
+    x -= y;
+  }
+}; // struct Sub_Assign_Helper1
 
-inline void
-sub_assign_helper2(Coefficient& x, Coefficient_traits::const_reference y) {
-  x = y;
-  neg_assign(x);
-}
-
-}
+struct Sub_Assign_Helper2 {
+  void
+  operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
+    x = y;
+    neg_assign(x);
+  }
+}; // struct Sub_Assign_Helper2
 
 // Compute x -= y
 inline void
 sub_assign(Row& x, const Row& y) {
-  x.combine_needs_second(y, sub_assign_helper1, sub_assign_helper2);
+  x.combine_needs_second(y, Sub_Assign_Helper1(), Sub_Assign_Helper2());
 }
 
 // Merge constraint system to a matrix-form context such as x = x U y
