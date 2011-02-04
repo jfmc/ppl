@@ -1597,22 +1597,19 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   // Here we do not require `gen_sys' to be sorted.
   // also, we _swap_ (instead of copying) the coefficients of `gs'
   // (which is not a const).
-  const dimension_type old_num_rows = gen_sys.num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
-  const dimension_type gs_num_columns = gs.num_columns();
-  gen_sys.add_zero_rows(gs_num_rows,
-			Linear_Row::Flags(topology(),
-					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
     // thus, we steal one coefficient at a time.
-    Generator& new_g = gen_sys[old_num_rows + i];
     Generator& old_g = gs[i];
-    if (old_g.is_line())
-      new_g.set_is_line();
-    for (dimension_type j = gs_num_columns; j-- > 0; )
-      std::swap(new_g[j], old_g[j]);
+    bool was_line = old_g.is_line();
+    old_g.resize(gen_sys.num_columns());
+    old_g.set_flags(Linear_Row::Flags(topology(),
+                                      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    if (was_line)
+      old_g.set_is_line();
+    gen_sys.add_recycled_row(old_g);
   }
 
   if (adding_pending)
