@@ -117,18 +117,18 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
       // Swap the existing parameter divisor column into the new
       // last column.
       swap_columns(old_num_columns - 1, g_size - 1);
-    Matrix<Linear_Row>::add_row(g);
+    Linear_System<Linear_Row>::add_row(g);
   }
   else if (g_size < old_num_columns) {
     // Create a resized copy of the row (and move the parameter
     // divisor coefficient to its last position).
     Linear_Row tmp_row(g, old_num_columns, old_num_columns);
     std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-    Matrix<Linear_Row>::add_row(tmp_row);
+    Linear_System<Linear_Row>::add_recycled_row(tmp_row);
   }
   else
     // Here r_size == old_num_columns.
-    Matrix<Linear_Row>::add_row(g);
+    Linear_System<Linear_Row>::add_row(g);
 
   set_index_first_pending_row(num_rows());
   set_sorted(false);
@@ -322,16 +322,16 @@ PPL::Grid_Generator_System
     const dimension_type vsi_col = *vsi+1;
     // Move all columns in between to the left.
     while (src_col < vsi_col)
-      Matrix<Linear_Row>::swap_columns(dst_col++, src_col++);
+      Linear_System<Linear_Row>::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Move any remaining columns.
   const dimension_type num_columns = this->num_columns();
   while (src_col < num_columns)
-    Matrix<Linear_Row>::swap_columns(dst_col++, src_col++);
+    Linear_System<Linear_Row>::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
-  Matrix<Linear_Row>::remove_trailing_columns(num_columns - dst_col);
+  Linear_System<Linear_Row>::remove_trailing_columns_without_normalizing(num_columns - dst_col);
 }
 
 void
@@ -350,7 +350,7 @@ PPL::Grid_Generator_System
   // Swap the parameter divisor column into the column that will
   // become the last column.
   swap_columns(new_dimension + 1, space_dim + 1);
-  Matrix<Linear_Row>::remove_trailing_columns(space_dim - new_dimension);
+  Linear_System<Linear_Row>::remove_trailing_columns_without_normalizing(space_dim - new_dimension);
   PPL_ASSERT(OK());
 }
 
