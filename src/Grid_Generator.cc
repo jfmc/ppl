@@ -89,7 +89,7 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
   // If the divisor is negative, negate it and all the coefficients of
   // the point, so as to satisfy the invariant.
   if (d < 0)
-    for (dimension_type i = ec.size(); i-- > 0; )
+    for (dimension_type i = ec.size() - 1; i-- > 0; )
       neg_assign(ec[i]);
 
   // Using this constructor saves reallocation when creating the
@@ -244,9 +244,8 @@ PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
   if (x.type() != y.type())
     return false;
-  for (dimension_type col = (x.is_parameter() ? x.size() : x.size() - 1);
-       col-- > 0; )
-    if (x[col] != y[col])
+  for (dimension_type i = x.size(); i-- > 0; )
+    if (x[i] != y[i])
       return false;
   return true;
 }
