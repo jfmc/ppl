@@ -362,9 +362,14 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
 template <typename Row>
 void
 Linear_System<Row>::add_row(const Row& r) {
-  // The added row must be strongly normalized and have the same
-  // number of elements as the existing rows of the system.
-  PPL_ASSERT(r.check_strong_normalized());
+  // TODO: A Grid_Generator_System may contain non-normalized lines that
+  // represent parameters, so this check is disabled. Consider re-enabling it
+  // when it's possibile.
+  /*
+    // The added row must be strongly normalized and have the same
+    // number of elements as the existing rows of the system.
+    PPL_ASSERT(r.check_strong_normalized());
+  */
   PPL_ASSERT(r.size() == Matrix<Row>::num_columns());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
