@@ -37,24 +37,28 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type old_num_columns = num_columns();
   const dimension_type gs_num_columns = gs.num_columns();
-  if (old_num_columns >= gs_num_columns)
-    add_zero_rows(gs_num_rows,
-		  Linear_Row::Flags(NECESSARILY_CLOSED,
-				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  else {
-    add_zero_rows_and_columns(gs_num_rows,
-			      gs_num_columns - old_num_columns,
-			      Linear_Row::Flags(NECESSARILY_CLOSED,
-						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+  if (old_num_columns < gs_num_columns) {
+    add_zero_columns(gs_num_columns - old_num_columns);
     // Swap the parameter divisor column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
+  for (dimension_type i = 0; i < gs_num_rows; ++i) {
+    // TODO: Check if this can be simplified.
+    const bool was_line = gs[i].is_line();
+    gs[i].set_flags(Linear_Row::Flags(NECESSARILY_CLOSED,
+                                      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+    if (was_line)
+      gs[i].set_is_line();
+    else
+      gs[i].set_is_parameter_or_point();
+
+    const dimension_type old_size = gs[i].size();
+    gs[i].resize(num_columns());
+    std::swap(gs[i][old_size - 1], gs[i][num_columns() - 1]);
+
+    add_recycled_row(gs[i]);
+  }
   set_index_first_pending_row(old_num_rows + gs_num_rows);
-  // Swap one coefficient at a time into the newly added rows, instead
-  // of swapping each entire row.  This ensures that the added rows
-  // have the same capacities as the existing rows.
-  for (dimension_type i = gs_num_rows; i-- > 0; )
-    operator[](old_num_rows + i).coefficient_swap(gs[i]);
 }
 
 void
