@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <memory>
 #include <map>
 
+// #define NOISY_PIP_TREE_STRUCTURE
 // #define NOISY_PIP
 // #define VERY_NOISY_PIP
 
@@ -1281,7 +1282,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
                          const Matrix& context, const Variables_Set& params,
                          dimension_type space_dim,
                          const unsigned indent_level) {
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING DECISION NODE\n");
 #else
   used(indent_level);
@@ -1295,9 +1296,9 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   merge_assign(context_true, constraints_, all_params);
   bool has_false_child = (false_child != 0);
   bool has_true_child = (true_child != 0);
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level,
-                   "=== DECISION: SOLVING then CHILD\n");
+                   "=== DECISION: SOLVING THEN CHILD\n");
 #endif
   true_child = true_child->solve(pip, check_feasible_context,
                                  context_true, all_params, space_dim,
@@ -1310,9 +1311,9 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     Matrix& context_false = context_true;
     Row& last = context_false[context_false.num_rows() - 1];
     complement_assign(last, last, 1);
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
     indent_and_print(std::cerr, indent_level,
-                     "=== DECISION: SOLVING else CHILD\n");
+                     "=== DECISION: SOLVING ELSE CHILD\n");
 #endif
     false_child = false_child->solve(pip, check_feasible_context,
                                      context_false, all_params, space_dim,
@@ -1321,7 +1322,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
 
   if (true_child == 0 && false_child == 0) {
     // No childs: the whole subtree is unfeasible.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
     indent_and_print(std::cerr, indent_level,
                      "=== DECISION: BOTH BRANCHES NOW UNFEASIBLE: _|_\n");
 #endif
@@ -1334,9 +1335,9 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     // False child has become unfeasible: merge this node's artificials with
     // the true child, while removing the local parameter constraints, which
     // are no longer discriminative.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
     indent_and_print(std::cerr, indent_level,
-                     "=== DECISION: BRANCH else NOW UNFEASIBLE\n");
+                     "=== DECISION: ELSE BRANCH NOW UNFEASIBLE\n");
     indent_and_print(std::cerr, indent_level,
                      "==> merge then branch with parent.\n");
 #endif
@@ -1349,9 +1350,9 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   else if (has_true_child && true_child == 0) {
     // True child has become unfeasible: merge this node's artificials
     // with the false child.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
     indent_and_print(std::cerr, indent_level,
-                     "=== DECISION: BRANCH then NOW UNFEASIBLE\n");
+                     "=== DECISION: THEN BRANCH NOW UNFEASIBLE\n");
     indent_and_print(std::cerr, indent_level,
                      "==> merge else branch with parent.\n");
 #endif
@@ -1379,7 +1380,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     }
     // If the constraints set has become empty, only keep the true child.
     if (constraints_.empty()) {
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
       indent_and_print(std::cerr, indent_level,
                        "=== DECISION: NO BRANCHING CONSTRAINTS LEFT\n");
       indent_and_print(std::cerr, indent_level,
@@ -2338,7 +2339,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                          const Matrix& ctx, const Variables_Set& params,
                          dimension_type space_dim,
                          const unsigned indent_level) {
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING NODE\n");
 #else
   used(indent_level);
@@ -2502,10 +2503,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (!find_lexico_minimum_column(tableau.s, mapping, basis,
                                         tableau.s[i], 0, j)) {
           // No positive s_ij was found: problem is unfeasible.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
           indent_and_print(std::cerr, indent_level,
                            "No positive pivot: Solution = _|_\n");
-#endif // #ifdef NOISY_PIP
+#endif // #ifdef NOISY_PIP_TREE_STRUCTURE
           delete this;
           return 0;
         }
@@ -2821,8 +2822,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Add parametric constraint to context.
       context.add_row(t_test);
       // Recusively solve true node wrt updated context.
-#ifdef NOISY_PIP
-      indent_and_print(std::cerr, indent_level, "=== SOLVING then CHILD\n");
+#ifdef NOISY_PIP_TREE_STRUCTURE
+      indent_and_print(std::cerr, indent_level, "=== SOLVING THEN CHILD\n");
 #endif
       t_node = t_node->solve(pip, check_feasible_context,
                              context, all_params, space_dim,
@@ -2846,8 +2847,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       complement_assign(f_test, t_test, 1);
 
       // Recusively solve false node wrt updated context.
-#ifdef NOISY_PIP
-      indent_and_print(std::cerr, indent_level, "=== SOLVING else CHILD\n");
+#ifdef NOISY_PIP_TREE_STRUCTURE
+      indent_and_print(std::cerr, indent_level, "=== SOLVING ELSE CHILD\n");
 #endif
       f_node = f_node->solve(pip, check_feasible_context,
                              context, all_params, space_dim,
@@ -2857,9 +2858,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       if (t_node == 0) {
         if (f_node == 0) {
           // Both t_node and f_node unfeasible.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
           indent_and_print(std::cerr, indent_level,
-                           "=== BOTH BRANCHES UNFEASIBLE: _|_\n");
+                           "=== EXIT: BOTH BRANCHES UNFEASIBLE: _|_\n");
 #endif
           return 0;
         }
@@ -2871,9 +2872,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           f_node->artificial_parameters.swap(aps);
           // Add f_test to constraints.
           f_node->add_constraint(f_test, all_params);
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
           indent_and_print(std::cerr, indent_level,
-                           "=== THEN BRANCH UNFEASIBLE: SWAP BRANCHES\n");
+                           "=== EXIT: THEN BRANCH UNFEASIBLE: SWAP BRANCHES\n");
 #endif
           return f_node;
         }
@@ -2885,9 +2886,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         t_node->artificial_parameters.swap(aps);
         // Add t_test to t_nodes's constraints.
         t_node->add_constraint(t_test, all_params);
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
         indent_and_print(std::cerr, indent_level,
-                         "=== THEN BRANCH FEASIBLE\n");
+                         "=== EXIT: THEN BRANCH FEASIBLE\n");
 #endif
         // It is now safe to release previously wrapped t_node pointer
         // and return it to caller.
@@ -2896,9 +2897,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
       // Here both t_node and f_node are feasible:
       // create a new decision node.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
       indent_and_print(std::cerr, indent_level,
-                       "=== BOTH BRANCHES FEASIBLE: NEW DECISION NODE\n");
+                       "=== EXIT: BOTH BRANCHES FEASIBLE: NEW DECISION NODE\n");
 #endif
       PIP_Tree_Node* parent
         = new PIP_Decision_Node(f_node->get_owner(), f_node, t_node);
@@ -2911,9 +2912,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       parent->add_constraint(t_test, all_params);
 
       if (!cs.empty()) {
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
         indent_and_print(std::cerr, indent_level,
-                         "=== NODE HAD BOTH BRANCHES AND TAUTOLOGIES:\n");
+                         "=== NODE HAS BOTH BRANCHES AND TAUTOLOGIES:\n");
         indent_and_print(std::cerr, indent_level,
                          "=== CREATE NEW PARENT FOR TAUTOLOGIES\n");
 #endif
@@ -2960,9 +2961,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
     }
     // The goto was not taken, the solution is integer.
-#ifdef NOISY_PIP
+#ifdef NOISY_PIP_TREE_STRUCTURE
     indent_and_print(std::cerr, indent_level,
-                     "Solution found for current node.\n");
+                     "EXIT: solution found.\n");
 #endif // #ifdef NOISY_PIP
     return this;
 
