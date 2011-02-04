@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <map>
 
 // #define NOISY_PIP
-// #define VERY_NOISY_PIP 0
+// #define VERY_NOISY_PIP
 
 namespace Parma_Polyhedra_Library {
 
@@ -468,6 +468,25 @@ find_lexico_minimum_column(const Matrix& tableau,
   return true;
 }
 
+// Computes into gcd the GCD of gcd and all coefficients in [first, last).
+template <typename Iter>
+void
+gcd_assign_iter(Coefficient& gcd, Iter first, Iter last) {
+  PPL_ASSERT(gcd != 0);
+  if (gcd < 0)
+    neg_assign(gcd);
+  if (gcd == 1)
+    return;
+  for ( ; first != last; ++first) {
+    Coefficient_traits::const_reference coeff = *first;
+    if (coeff != 0) {
+      gcd_assign(gcd, coeff, gcd);
+      if (gcd == 1)
+        return;
+    }
+  }
+}
+
 // Divide all coefficients in row x and denominator y by their GCD.
 void
 row_normalize(Row& x, Coefficient& den) {
@@ -475,14 +494,8 @@ row_normalize(Row& x, Coefficient& den) {
     return;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = den;
-  for (Row::const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i) {
-    Coefficient_traits::const_reference x_i = *i;
-    if (x_i != 0) {
-      gcd_assign(gcd, x_i, gcd);
-      if (gcd == 1)
-        return;
-    }
-  }
+  gcd_assign_iter(gcd, x.begin(), x.end());
+
   // Divide the coefficients by the GCD.
   for (Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient& x_i = *i;
@@ -2423,12 +2436,13 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
     }
 
-#ifdef NOISY_PIP
+#ifdef VERY_NOISY_PIP
     std::cerr << "sign =";
     for (dimension_type i = 0; i < sign.size(); ++i)
       std::cerr << " " << "?0+-*"[sign[i]];
     std::cerr << std::endl;
-#endif
+#endif // #ifdef VERY_NOISY_PIP
+
 
     // If we have found a negative parameter row, then
     // either the problem is unfeasible, or a pivoting step is required.
@@ -2446,7 +2460,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           // No positive s_ij was found: problem is unfeasible.
 #ifdef NOISY_PIP
           std::cerr << "No positive pivot found: Solution = _|_\n";
-#endif
+#endif // #ifdef NOISY_PIP
           delete this;
           return 0;
         }
@@ -2462,9 +2476,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
 
-#ifdef NOISY_PIP
+#ifdef VERY_NOISY_PIP
       std::cerr << "Pivot (pi, pj) = (" << pi << ", " << pj << ")\n";
-#endif // #ifdef NOISY_PIP
+#endif // #ifdef VERY_NOISY_PIP
 
       // Normalize the tableau before pivoting.
       tableau.normalize();
@@ -2670,16 +2684,25 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
 
       if (i_neg != not_a_dim) {
-#ifdef NOISY_PIP
-        std::cerr << "Found row (" << i_neg << ") with mixed parameter sign "
-                  << "and negative variable coefficients.\n"
-                  << "==> adding tautology.\n";
-#endif // #ifdef NOISY_PIP
         Row copy = tableau.t[i_neg];
         copy.normalize();
         context.add_row(copy);
         add_constraint(copy, all_params);
         sign[i_neg] = POSITIVE;
+#ifdef NOISY_PIP
+        {
+          Linear_Expression expr = Linear_Expression(copy.get(0));
+          dimension_type j = 1;
+          for (Variables_Set::const_iterator p = all_params.begin(),
+                 p_end = all_params.end(); p != p_end; ++p, ++j)
+            add_mul_assign(expr, copy.get(j), Variable(*p));
+          Constraint tautology(expr >= 0);
+          using namespace IO_Operators;
+          std::cerr << "Found row (" << i_neg << ") with mixed parameter sign "
+                    << "and negative variable coefficients.\n"
+                    << "==> adding tautology: " << tautology << "\n";
+        }
+#endif // #ifdef NOISY_PIP
         // Jump to next iteration.
         continue;
       }
@@ -2704,7 +2727,30 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
 
       Row t_test(tableau.t[best_i]);
+      /* Simplify t_test by exploiting integrality. */
+      if (t_test[0] != 0) {
+        Row::const_iterator j_begin = t_test.begin();
+        Row::const_iterator j_end = t_test.end();
+        PPL_ASSERT(j_begin != j_end && j_begin.index() == 0 && *j_begin != 0);
+        /* Find next column with a non-zero value (there should be one). */
+        ++j_begin;
+        PPL_ASSERT(j_begin != j_end);
+        for ( ; *j_begin == 0; ++j_begin)
+          PPL_ASSERT(j_begin != j_end);
+        /* Use it to initialize gcd. */
+        PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+        gcd = *j_begin;
+        ++j_begin;
+        gcd_assign_iter(gcd, j_begin, j_end);
+        if (gcd != 1) {
+          PPL_DIRTY_TEMP_COEFFICIENT(mod);
+          pos_mod_assign(mod, t_test[0], gcd);
+          t_test[0] -= mod;
+        }
+      }
+      /* Normalize t_test. */
       t_test.normalize();
+
 #ifdef NOISY_PIP
       {
         Linear_Expression expr = Linear_Expression(t_test.get(0));
@@ -2817,7 +2863,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     // a new cut to try and get back into the integer case.
 #ifdef NOISY_PIP
     std::cout << "All parameters are positive.\n";
-#endif
+#endif // #ifdef NOISY_PIP
     tableau.normalize();
 
     // Look for any row having non integer parameter coefficients.
@@ -2837,7 +2883,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     // The goto was not taken, the solution is integer.
 #ifdef NOISY_PIP
     std::cout << "Solution found for problem in current node.\n";
-#endif
+#endif // #ifdef NOISY_PIP
     return this;
 
   non_integer:
@@ -3184,7 +3230,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
               << Constraint(expr + cut_t.get(0) >= 0)
               << std::endl;
   }
-#endif
+#endif // #ifdef NOISY_PIP
   var_row.push_back(num_rows + num_vars);
   basis.push_back(false);
   mapping.push_back(num_rows);
