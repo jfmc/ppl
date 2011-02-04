@@ -382,16 +382,6 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator& y);
 
-  /*! \brief
-    Swaps \p *this with \p y, leaving \p *this with the original
-    capacity.
-
-    All elements up to and including the last element of the smaller
-    of \p *this and \p y are swapped.  The parameter divisor element
-    of \p y is swapped with the divisor element of \p *this.
-  */
-  void coefficient_swap(Grid_Generator& y);
-
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
