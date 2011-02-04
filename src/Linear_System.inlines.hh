@@ -238,10 +238,15 @@ Linear_System<Row>::space_dimension() const {
 template <typename Row>
 inline void
 Linear_System<Row>::remove_trailing_columns(const dimension_type n) {
-  Matrix<Row>::remove_trailing_columns(n);
-  // Have to re-normalize the rows of the system,
-  // since we removed some coefficients.
+  remove_trailing_columns_without_normalizing(n);
   strong_normalize();
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>
+::remove_trailing_columns_without_normalizing(const dimension_type n) {
+  Matrix<Row>::remove_trailing_columns(n);
 }
 
 template <typename Row>

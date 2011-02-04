@@ -119,6 +119,14 @@ public:
   //! Makes the system shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 
+  // TODO: Remove this method.
+  // It is needed to be able to remove columns from a Grid_Generator_System,
+  // that should not be normalized afterwards because it may contain
+  // parameters, whose representation is not normalized.
+  //! Makes the system shrink by removing its \p n trailing columns.
+  //! This method does not normalize the rows afterwards.
+  void remove_trailing_columns_without_normalizing(dimension_type n);
+
   //! Permutes the columns of the system.
   /*
     \param cycles
