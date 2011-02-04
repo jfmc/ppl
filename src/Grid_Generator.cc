@@ -71,8 +71,8 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   // coefficients.
   Grid_Generator gg(ec, PARAMETER);
 
-  // Enforce normalization.
-  gg.normalize();
+  // NOTE: normalize() must *not* be called here, because this is a parameter,
+  // and it would change the represented parameter.
   return gg;
 }
 
