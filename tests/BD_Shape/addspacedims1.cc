@@ -1,6 +1,7 @@
 /* Test BD_Shape::add_space_dimensions_and_embed():
    we add two variables to a BD_Shape.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 

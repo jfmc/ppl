@@ -1,5 +1,6 @@
 /* Partially_Reduced_Product class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -357,7 +358,7 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   d1.time_elapse_assign(y.d1);
   d2.time_elapse_assign(y.d2);
-  assert(OK());
+  PPL_ASSERT_HEAVY(OK());
 }
 
 template <typename D1, typename D2, typename R>

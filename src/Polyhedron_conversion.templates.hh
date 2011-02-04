@@ -1,5 +1,6 @@
 /* Polyhedron class implementation: conversion().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -717,7 +718,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		    redundant = true;
 		    break;
 		  }
-                assert(bound >= num_lines_or_equalities);
+                PPL_ASSERT(bound >= num_lines_or_equalities);
                 WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
 		if (!redundant) {
 		  // Adding the new ray to `dest' and the corresponding

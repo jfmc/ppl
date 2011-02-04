@@ -1,5 +1,6 @@
 /* PIP_Problem class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -74,7 +75,7 @@ PIP_Problem::operator=(const PIP_Problem& y) {
 
 inline PIP_Problem::Control_Parameter_Value
 PIP_Problem::get_control_parameter(Control_Parameter_Name n) const {
-  assert(n >= 0 && n < CONTROL_PARAMETER_NAME_SIZE);
+  PPL_ASSERT(n >= 0 && n < CONTROL_PARAMETER_NAME_SIZE);
   return control_parameters[n];
 }
 

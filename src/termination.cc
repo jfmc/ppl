@@ -1,5 +1,6 @@
 /* Utilities for termination analysis: non-inline, non-template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -349,6 +350,10 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   \f$ \vect{u}_3 \in \Qset_-^s \f$.
   The space of ranking functions is then spanned by
   \f$ \vect{u}_3^\transpose E_C' \vect x \f$.
+
+  \param le_out
+  The expression to be minimized in the context of \p cs_out:
+  a value of \f$ -1 \f$ or less entails termination.
 */
 void
 fill_constraint_system_PR(const Constraint_System& cs_before,

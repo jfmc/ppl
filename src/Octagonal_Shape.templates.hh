@@ -1,5 +1,6 @@
 /* Octagonal_Shape class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -971,7 +972,7 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
     // Check the octagonal constraints between `v' and the other dimensions
     // that have non-zero coefficient in `le'.
     else {
-      assert(!constant_v);
+      PPL_ASSERT(!constant_v);
       using namespace Implementation::Octagonal_Shapes;
       const dimension_type ci = coherent_index(i);
       for (Row_Iterator j_iter = i_iter; j_iter != m_end; j_iter += 2) {

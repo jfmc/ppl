@@ -1,5 +1,6 @@
 /* MIP_Problem class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -687,7 +688,7 @@ private:
     is \c true if the variable is known to be nonnegative (and hence should
     not be split into a positive and a negative part).
 
-    \param is_nonnegative_variable
+    \param is_remergeable_variable
     This container of Boolean flags is initially empty.
     On exit, it size is equal to \c internal_space_dim.
     For each variable (index), the corresponding element of this container

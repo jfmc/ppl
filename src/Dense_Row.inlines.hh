@@ -1,5 +1,6 @@
 /* Dense_Row class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -34,6 +35,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline
+Dense_Row::Impl::Impl()
+  : size(0), capacity(0), flags(), vec(0) {
+}
+
+inline
+Dense_Row::Impl::~Impl() {
+  while (size != 0) {
+    --size;
+    vec[size].~Coefficient();
+  }
+  operator delete(vec);
+}
+
 inline dimension_type
 Dense_Row::max_size() {
   return std::numeric_limits<size_t>::max() / sizeof(Coefficient);
@@ -41,34 +56,36 @@ Dense_Row::max_size() {
 
 inline dimension_type
 Dense_Row::size() const {
-  return size_;
+  return impl.size;
 }
 
 inline const Dense_Row::Flags
 Dense_Row::flags() const {
-  return flags_;
+  return impl.flags;
 }
 
 inline void
 Dense_Row::set_flags(Dense_Row::Flags f) {
-  flags_ = f;
+  impl.flags = f;
 }
 
 inline dimension_type
 Dense_Row::capacity() const {
-  return capacity_;
+  return impl.capacity;
 }
 
 inline
 Dense_Row::Dense_Row()
-  : size_(0), capacity_(0), flags_(), vec_(0) {
+  : impl() {
 
   PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(Flags f)
-  : size_(0), capacity_(0), flags_(f), vec_(0) {
+  : impl() {
+  
+  impl.flags = f;
 
   PPL_ASSERT(OK());
 }
@@ -77,49 +94,40 @@ inline
 Dense_Row::Dense_Row(const dimension_type sz,
                      const dimension_type capacity,
                      const Flags f)
-  : size_(0), capacity_(0), flags_(f), vec_(0) {
-  try {
-    resize(sz, capacity);
-  } catch (...) {
-    PPL_ASSERT(OK());
-    destroy();
-    throw;
-  }
+  : impl() {
+
+  impl.flags = f;
+  resize(sz, capacity);
+
   PPL_ASSERT(size() == sz);
-  PPL_ASSERT(capacity_ = capacity);
+  PPL_ASSERT(impl.capacity = capacity);
   PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const dimension_type sz, const Flags f)
-  : size_(0), capacity_(0), flags_(f), vec_(0) {
-  try {
-    resize(sz);
-  } catch (...) {
-    PPL_ASSERT(OK());
-    destroy();
-    throw;
-  }
+  : impl() {
+
+  impl.flags = f;
+  resize(sz);
+
   PPL_ASSERT(size() == sz);
   PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::Dense_Row(const Dense_Row& y)
-  : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
-  if (y.vec_ != 0) {
-    try {
-      capacity_ = y.capacity();
-      vec_ = static_cast<Coefficient*>(
-          operator new(sizeof(Coefficient) * capacity_));
-      while (size_ != y.size()) {
-        new (&vec_[size_]) Coefficient(y[size_]);
-        ++size_;
-      }
-    } catch (...) {
-      PPL_ASSERT(OK());
-      destroy();
-      throw;
+  : impl() {
+
+  impl.flags = y.flags();
+
+  if (y.impl.vec != 0) {
+    impl.capacity = y.capacity();
+    impl.vec = static_cast<Coefficient*>(
+        operator new(sizeof(Coefficient) * impl.capacity));
+    while (impl.size != y.size()) {
+      new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
+      ++impl.size;
     }
   }
   PPL_ASSERT(size() == y.size());
@@ -130,31 +138,25 @@ Dense_Row::Dense_Row(const Dense_Row& y)
 inline
 Dense_Row::Dense_Row(const Dense_Row& y,
                      const dimension_type capacity)
-  : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
+  : impl() {
   PPL_ASSERT(y.size() <= capacity);
   PPL_ASSERT(capacity <= max_size());
-  
-  try {
 
-    vec_ = static_cast<Coefficient*>(
-        operator new(sizeof(Coefficient) * capacity));
-    capacity_ = capacity;
+  impl.flags = y.flags();
 
-    if (y.vec_ != 0) {
-      while (size_ != y.size()) {
-        new (&vec_[size_]) Coefficient(y[size_]);
-        ++size_;
-      }
+  impl.vec = static_cast<Coefficient*>(
+      operator new(sizeof(Coefficient) * capacity));
+  impl.capacity = capacity;
+
+  if (y.impl.vec != 0) {
+    while (impl.size != y.size()) {
+      new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
+      ++impl.size;
     }
-    
-  } catch (...) {
-    PPL_ASSERT(OK());
-    destroy();
-    throw;
   }
   
   PPL_ASSERT(size() == y.size());
-  PPL_ASSERT(capacity_ = capacity);
+  PPL_ASSERT(impl.capacity = capacity);
   PPL_ASSERT(OK());
 }
 
@@ -162,55 +164,50 @@ inline
 Dense_Row::Dense_Row(const Dense_Row& y,
                      const dimension_type sz,
                      const dimension_type capacity)
-  : size_(0), capacity_(0), flags_(y.flags()), vec_(0) {
+  : impl() {
   PPL_ASSERT(y.size() <= sz);
   PPL_ASSERT(sz <= capacity);
   PPL_ASSERT(capacity <= max_size());
   PPL_ASSERT(capacity != 0);
   
-  try {
+  impl.flags = y.flags();
   
-    vec_ = static_cast<Coefficient*>(operator new(sizeof(Coefficient) * capacity));
-    capacity_ = capacity;
-    
-    dimension_type n = std::min(sz, y.size());
-    while (size_ != n) {
-      new (&vec_[size_]) Coefficient(y[size_]);
-      ++size_;
-    }
-    while (size_ != sz) {
-      new (&vec_[size_]) Coefficient();
-      ++size_;
-    }
-    
-  } catch (...) {
-    PPL_ASSERT(OK());
-    destroy();
-    throw;
+  impl.vec = static_cast<Coefficient*>(
+      operator new(sizeof(Coefficient) * capacity));
+  impl.capacity = capacity;
+  
+  dimension_type n = std::min(sz, y.size());
+  while (impl.size != n) {
+    new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
+    ++impl.size;
+  }
+  while (impl.size != sz) {
+    new (&impl.vec[impl.size]) Coefficient();
+    ++impl.size;
   }
   
   PPL_ASSERT(size() == sz);
-  PPL_ASSERT(capacity_ = capacity);
+  PPL_ASSERT(impl.capacity = capacity);
   PPL_ASSERT(OK());
 }
 
 inline
 Dense_Row::~Dense_Row() {
-  destroy();
+  // The `impl' field will be destroyed automatically.
 }
 
 inline void
 Dense_Row::destroy() {
   resize(0);
-  operator delete(vec_);
+  operator delete(impl.vec);
 }
 
 inline void
 Dense_Row::swap(Dense_Row& y) {
-  std::swap(size_, y.size_);
-  std::swap(capacity_, y.capacity_);
-  std::swap(flags_, y.flags_);
-  std::swap(vec_, y.vec_);
+  std::swap(impl.size, y.impl.size);
+  std::swap(impl.capacity, y.impl.capacity);
+  std::swap(impl.flags, y.impl.flags);
+  std::swap(impl.vec, y.impl.vec);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());
 }
@@ -226,16 +223,16 @@ Dense_Row::operator=(const Dense_Row& y) {
 
 inline Coefficient&
 Dense_Row::operator[](const dimension_type k) {
-  PPL_ASSERT(vec_ != 0);
+  PPL_ASSERT(impl.vec != 0);
   PPL_ASSERT(k < size());
-  return vec_[k];
+  return impl.vec[k];
 }
 
 inline Coefficient_traits::const_reference
 Dense_Row::operator[](const dimension_type k) const {
-  PPL_ASSERT(vec_ != 0);
+  PPL_ASSERT(impl.vec != 0);
   PPL_ASSERT(k < size());
-  return vec_[k];
+  return impl.vec[k];
 }
 
 inline void

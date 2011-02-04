@@ -1,5 +1,6 @@
 /* Polyhedron class implementation (non-inline public functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -3502,7 +3503,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
     }
     else {
       // We have a point or a closure point.
-      assert(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
+      PPL_ASSERT(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the value if there is a constant value.
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);

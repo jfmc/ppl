@@ -1,5 +1,6 @@
 /* Specialized "checked" functions for native floating-point numbers.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -886,7 +887,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   mpz_clear(r);
   if (bits == needed_bits + 1) {
     inexact = (inexact || mpz_odd_p(mantissa));
-    mpz_div_2exp(mantissa, mantissa, 1);
+    mpz_tdiv_q_2exp(mantissa, mantissa, 1);
   }
   else
     --exponent;

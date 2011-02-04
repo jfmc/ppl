@@ -1,5 +1,6 @@
 /* Interval class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -144,7 +145,7 @@ Interval<Boundary, Info>::Interval(const char* s) {
   // Get the upper bound.
   Boundary upper_bound;
   Result upper_r = assign_r(upper_bound, s, ROUND_UP);
-  assert(upper_r != V_CVT_STR_UNK && upper_r != V_NAN);
+  PPL_ASSERT(upper_r != V_CVT_STR_UNK && upper_r != V_NAN);
   upper_r = result_relation_class(upper_r);
 
   // Buld the interval.

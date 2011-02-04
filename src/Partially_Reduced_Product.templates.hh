@@ -1,6 +1,7 @@
 /* Partially_Reduced_Product class implementation:
    non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -495,9 +496,9 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
 template <typename D1, typename D2>
 bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
   // It is assumed that cg is a proper congruence.
-  assert(cg.modulus() != 0);
+  PPL_ASSERT(cg.modulus() != 0);
   // It is assumed that cg is satisfied by all points in d1.
-  assert(d1.relation_with(cg) == Poly_Con_Relation::is_included());
+  PPL_ASSERT(d1.relation_with(cg) == Poly_Con_Relation::is_included());
 
   // Build the linear expression for the congruence cg.
   Linear_Expression e;
