@@ -293,16 +293,20 @@ PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
   PPL_ASSERT(num_columns() > 0);
   dimension_type col = num_columns() - 1;
-  add_zero_rows_and_columns(dims, dims,
-			    Linear_Row::Flags(NECESSARILY_CLOSED,
-					      Linear_Row::LINE_OR_EQUALITY));
-  unset_pending_rows();
+  add_zero_columns(dims);
   // Swap the parameter divisor column into the new last column.
   swap_columns(col, col + dims);
-  // Set the diagonal element of each added rows.
-  dimension_type num_rows = this->num_rows();
-  for (dimension_type row = num_rows - dims; row < num_rows; ++row, ++col)
-    const_cast<Coefficient&>(operator[](row)[col]) = 1;
+
+  // Add the new rows and set their diagonal element.
+  for (dimension_type i = 0; i < dims; ++i) {
+    Linear_Row tmp(num_columns(),
+                   Linear_Row::Flags(NECESSARILY_CLOSED,
+                                     Linear_Row::LINE_OR_EQUALITY));
+    tmp[col] = 1;
+    ++col;
+    add_recycled_row(tmp);
+  }
+  unset_pending_rows();
 }
 
 void
