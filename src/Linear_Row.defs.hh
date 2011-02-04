@@ -294,6 +294,10 @@ public:
   //! Returns the maximum space dimension a Linear_Row can handle.
   static dimension_type max_space_dimension();
 
+  // TODO: Should this be removed?
+  //! Returns the maximum number of columns that a Linear_Row can handle.
+  static dimension_type max_num_columns();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 

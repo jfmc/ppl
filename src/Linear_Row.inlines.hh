@@ -153,6 +153,11 @@ Linear_Row::max_space_dimension() {
 }
 
 inline dimension_type
+Linear_Row::max_num_columns() {
+  return max_size();
+}
+
+inline dimension_type
 Linear_Row::space_dimension() const {
   const dimension_type sz = size();
   return (sz == 0)
