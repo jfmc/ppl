@@ -279,7 +279,7 @@ Linear_System<Row>::insert_pending(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::add_pending_rows(const Linear_System& y) {
-  Linear_System tmp = y;
+  Linear_System tmp(y, With_Pending());
   add_recycled_pending_rows(tmp);
 }
 
@@ -305,7 +305,7 @@ Linear_System<Row>::add_recycled_pending_rows(Linear_System& y) {
 template <typename Row>
 void
 Linear_System<Row>::add_rows(const Linear_System& y) {
-  Linear_System tmp = y;
+  Linear_System tmp(y, With_Pending());
   add_recycled_rows(tmp);
 }
 
