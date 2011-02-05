@@ -426,6 +426,7 @@ Linear_System<Row>::add_recycled_pending_row(Row& r) {
     // number of elements as the existing rows of the system.
     PPL_ASSERT(r.check_strong_normalized());
   */
+  PPL_ASSERT(r.topology() == topology());
 
   rows.resize(rows.size() + 1);
   r.resize(num_columns());
@@ -867,6 +868,15 @@ Linear_System<Row>::OK(const bool check_strong_normalized) const {
     if (rows[i].size() != num_columns()) {
 #ifndef NDEBUG
       cerr << "Linear_System has a row with the wrong number of columns!"
+           << endl;
+#endif
+      return false;
+    }
+
+  for (dimension_type i = rows.size(); i-- > 0; )
+    if (rows[i].topology() != topology()) {
+#ifndef NDEBUG
+      cerr << "Linear_System has a row with the wrong topology!"
            << endl;
 #endif
       return false;
