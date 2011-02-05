@@ -286,24 +286,24 @@ public:
   */
   void insert_pending_recycled(Row& r);
 
-  //! Adds to \p *this a copy of the rows of `y'.
+  //! Adds to \p *this a copy of  the rows of \p y.
   /*!
     It is assumed that \p *this has no pending rows.
   */
-  void add_rows(const Linear_System& y);
+  void insert(const Linear_System& y);
 
   //! Adds a copy of the rows of `y' to the pending part of `*this'.
-  void add_pending_rows(const Linear_System& y);
+  void insert_pending(const Linear_System& r);
 
   //! Adds to \p *this a the rows of `y', stealing them from `y'.
   /*!
     It is assumed that \p *this has no pending rows.
   */
-  void add_recycled_rows(Linear_System& y);
+  void insert_recycled(Linear_System& r);
 
   //! Adds the rows of `y' to the pending part of `*this', stealing them from
   //! `y'.
-  void add_recycled_pending_rows(Linear_System& y);
+  void insert_pending_recycled(Linear_System& r);
 
   /*! \brief
     Sorts the non-pending rows (in growing order) and eliminates

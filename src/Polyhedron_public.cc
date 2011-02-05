@@ -1505,11 +1505,11 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // also, we _swap_ (instead of copying) the coefficients of `cs'
   // (which is not a const).
   if (adding_pending) {
-    con_sys.add_recycled_pending_rows(cs);
+    con_sys.insert_pending_recycled(cs);
 
     set_constraints_pending();
   } else {
-    con_sys.add_recycled_rows(cs);
+    con_sys.insert_recycled(cs);
 
     // Constraints are not minimized and generators are not up-to-date.
     clear_constraints_minimized();
@@ -1913,7 +1913,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   // If `x' can support pending constraints,
   // the constraints of `y' are added as pending constraints of `x'.
   if (x.can_have_something_pending()) {
-    x.con_sys.add_pending_rows(y.con_sys);
+    x.con_sys.Linear_System<Linear_Row>::insert_pending(y.con_sys);
     x.set_constraints_pending();
   }
   else {
@@ -1924,7 +1924,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 	&& y.con_sys.is_sorted() && !y.has_pending_constraints())
       x.con_sys.merge_rows_assign(y.con_sys);
     else
-      x.con_sys.add_rows(y.con_sys);
+      x.con_sys.Linear_System<Linear_Row>::insert(y.con_sys);
     // Generators are no longer up-to-date and constraints are no
     // longer minimized.
     x.clear_generators_up_to_date();
@@ -2418,7 +2418,7 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   // If `x' can support pending generators,
   // the generators of `y' are added as pending generators of `x'.
   if (x.can_have_something_pending()) {
-    x.gen_sys.add_pending_rows(y.gen_sys);
+    x.gen_sys.Linear_System<Linear_Row>::insert_pending(y.gen_sys);
     x.set_generators_pending();
   }
   else {
@@ -2429,7 +2429,7 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
 	&& y.gen_sys.is_sorted() && !y.has_pending_generators())
       x.gen_sys.merge_rows_assign(y.gen_sys);
     else
-      x.gen_sys.add_rows(y.gen_sys);
+      x.gen_sys.Linear_System<Linear_Row>::insert(y.gen_sys);
     // Constraints are no longer up-to-date
     // and generators are no longer minimized.
     x.clear_constraints_up_to_date();
@@ -3417,7 +3417,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // If the polyhedron can have something pending, we add `gs'
   // to `gen_sys' as pending rows
   if (x.can_have_something_pending()) {
-    x.gen_sys.add_pending_rows(gs);
+    x.gen_sys.Linear_System<Linear_Row>::insert_pending(gs);
     x.set_generators_pending();
   }
   // Otherwise, the two systems are merged.

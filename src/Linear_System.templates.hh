@@ -298,14 +298,14 @@ Linear_System<Row>::insert_pending_recycled(Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_pending_rows(const Linear_System& y) {
+Linear_System<Row>::insert_pending(const Linear_System& y) {
   Linear_System tmp(y, With_Pending());
-  add_recycled_pending_rows(tmp);
+  insert_pending_recycled(tmp);
 }
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_pending_rows(Linear_System& y) {
+Linear_System<Row>::insert_pending_recycled(Linear_System& y) {
   Linear_System& x = *this;
   PPL_ASSERT(x.num_columns() == y.num_columns());
 
@@ -313,7 +313,7 @@ Linear_System<Row>::add_recycled_pending_rows(Linear_System& y) {
   // This loop must use an increasing index (instead of a decreasing one) to
   // preserve the row ordering.
   for (dimension_type i = 0; i < y.num_rows(); i++)
-    add_recycled_pending_row(y[i]);
+    insert_pending_recycled(y[i]);
 
   y.clear();
 
@@ -324,14 +324,14 @@ Linear_System<Row>::add_recycled_pending_rows(Linear_System& y) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_rows(const Linear_System& y) {
+Linear_System<Row>::insert(const Linear_System& y) {
   Linear_System tmp(y, With_Pending());
-  add_recycled_rows(tmp);
+  insert_recycled(tmp);
 }
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_rows(Linear_System& y) {
+Linear_System<Row>::insert_recycled(Linear_System& y) {
   PPL_ASSERT(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
@@ -346,12 +346,12 @@ Linear_System<Row>::add_recycled_rows(Linear_System& y) {
       // `y' is sorted and has no pending rows.
       const dimension_type n_rows = num_rows();
       if (n_rows > 0)
-	set_sorted(compare(rows[n_rows-1], y[0]) <= 0);
+        set_sorted(compare(rows[n_rows-1], y[0]) <= 0);
     }
   }
 
   // Add the rows of `y' as if they were pending.
-  add_recycled_pending_rows(y);
+  insert_pending_recycled(y);
 
   // TODO: May y have pending rows? Should they remain pending?
 
