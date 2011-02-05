@@ -284,10 +284,7 @@ Linear_System<Row>::add_pending_rows(const Linear_System& y) {
 
   const dimension_type x_n_rows = x.num_rows();
   const dimension_type y_n_rows = y.num_rows();
-  // Grow to the required size without changing sortedness.
-  const bool was_sorted = sorted;
   x.rows.resize(x.rows.size() + y.rows.size());
-  sorted = was_sorted;
 
   // Copy the rows of `y', forcing size and capacity.
   for (dimension_type i = y_n_rows; i-- > 0; ) {
@@ -376,11 +373,27 @@ Linear_System<Row>::add_recycled_row(Row& r) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
+  const bool was_sorted = is_sorted();
+
   add_recycled_pending_row(r);
+
+  if (was_sorted) {
+    const dimension_type nrows = num_rows();
+    // The added row may have caused the system to be not sorted anymore.
+    if (nrows > 1) {
+      // If the system is not empty and the inserted row is the
+      // greatest one, the system is set to be sorted.
+      // If it is not the greatest one then the system is no longer sorted.
+      set_sorted(compare(rows[nrows-2], rows[nrows-1]) <= 0);
+    }
+    else
+      // A system having only one row is sorted.
+      set_sorted(true);
+  }
 
   //  We update `index_first_pending', because it must be equal to
   // `rows.size()'.
-  set_index_first_pending_row(rows.size());
+  unset_pending_rows();
   
   // The added row was not a pending row.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -398,25 +411,10 @@ Linear_System<Row>::add_recycled_pending_row(Row& r) {
     PPL_ASSERT(r.check_strong_normalized());
   */
 
-  const bool was_sorted = is_sorted();
-
   rows.resize(rows.size() + 1);
   r.resize(num_columns());
   std::swap(rows.back(), r);
 
-  if (was_sorted) {
-    const dimension_type nrows = num_rows();
-    // The added row may have caused the system to be not sorted anymore.
-    if (nrows > 1) {
-      // If the system is not empty and the inserted row is the
-      // greatest one, the system is set to be sorted.
-      // If it is not the greatest one then the system is no longer sorted.
-      set_sorted(compare(rows[nrows-2], rows[nrows-1]) <= 0);
-    }
-    else
-      // A system having only one row is sorted.
-      set_sorted(true);
-  }
   // Do not check for strong normalization, because no modification of
   // rows has occurred.
   PPL_ASSERT(OK(false));
@@ -425,32 +423,15 @@ Linear_System<Row>::add_recycled_pending_row(Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::add_pending_row(const Row& r) {
-  // The added row must be strongly normalized and have the same
-  // number of elements of the existing rows of the system.
-  PPL_ASSERT(r.check_strong_normalized());
-  PPL_ASSERT(r.size() == num_columns());
-
-  rows.resize(rows.size() + 1);
-  Row tmp(r, num_columns(), num_columns());
-  std::swap(rows.back(), tmp);
-
-  // The added row was a pending row.
-  PPL_ASSERT(num_pending_rows() > 0);
-  // Do not check for strong normalization, because no modification of
-  // rows has occurred.
-  PPL_ASSERT(OK(false));
+  Row tmp = r;
+  add_recycled_pending_row(tmp);
 }
 
 template <typename Row>
 void
 Linear_System<Row>::add_pending_row(const typename Row::Flags flags) {
-
-  rows.resize(rows.size() + 1);
   Row new_row(num_columns(), num_columns(), flags);
-  std::swap(rows.back(), new_row);
-
-  // The added row was a pending row.
-  PPL_ASSERT(num_pending_rows() > 0);
+  add_recycled_pending_row(new_row);
 }
 
 template <typename Row>
