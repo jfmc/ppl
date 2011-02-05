@@ -298,6 +298,16 @@ public:
   //! Adds a copy of the rows of `y' to the pending part of `*this'.
   void add_pending_rows(const Linear_System& y);
 
+  //! Adds to \p *this a the rows of `y', stealing them from `y'.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void add_recycled_rows(Linear_System& y);
+
+  //! Adds the rows of `y' to the pending part of `*this', stealing them from
+  //! `y'.
+  void add_recycled_pending_rows(Linear_System& y);
+
   /*! \brief
     Sorts the non-pending rows (in growing order) and eliminates
     duplicated ones.

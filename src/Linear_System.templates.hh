@@ -279,18 +279,24 @@ Linear_System<Row>::insert_pending(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::add_pending_rows(const Linear_System& y) {
+  Linear_System tmp = y;
+  add_recycled_pending_rows(tmp);
+}
+
+template <typename Row>
+void
+Linear_System<Row>::add_recycled_pending_rows(Linear_System& y) {
   Linear_System& x = *this;
   PPL_ASSERT(x.num_columns() == y.num_columns());
 
-  const dimension_type x_n_rows = x.num_rows();
-  const dimension_type y_n_rows = y.num_rows();
-  x.rows.resize(x.rows.size() + y.rows.size());
+  // Steal the rows of `y'.
+  // This loop must use an increasing index (instead of a decreasing one) to
+  // preserve the row ordering.
+  for (dimension_type i = 0; i < y.num_rows(); i++)
+    add_recycled_pending_row(y[i]);
 
-  // Copy the rows of `y', forcing size and capacity.
-  for (dimension_type i = y_n_rows; i-- > 0; ) {
-    Row copy(y[i], x.num_columns(), x.num_columns());
-    std::swap(copy, x[x_n_rows+i]);
-  }
+  y.clear();
+
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
   PPL_ASSERT(OK(false));
@@ -299,6 +305,13 @@ Linear_System<Row>::add_pending_rows(const Linear_System& y) {
 template <typename Row>
 void
 Linear_System<Row>::add_rows(const Linear_System& y) {
+  Linear_System tmp = y;
+  add_recycled_rows(tmp);
+}
+
+template <typename Row>
+void
+Linear_System<Row>::add_recycled_rows(Linear_System& y) {
   PPL_ASSERT(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
@@ -318,7 +331,7 @@ Linear_System<Row>::add_rows(const Linear_System& y) {
   }
 
   // Add the rows of `y' as if they were pending.
-  add_pending_rows(y);
+  add_recycled_pending_rows(y);
   // There are no pending_rows.
   unset_pending_rows();
 

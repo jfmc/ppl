@@ -1504,24 +1504,13 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // Here we do not require `con_sys' to be sorted.
   // also, we _swap_ (instead of copying) the coefficients of `cs'
   // (which is not a const).
-  const dimension_type cs_num_rows = cs.num_rows();
-  const dimension_type cs_num_columns = cs.num_columns();
   if (adding_pending) {
-    for (dimension_type i = 0; i < cs_num_rows; ++i) {
-      Constraint& old_c = cs[i];
-      old_c.resize(cs_num_columns);
+    con_sys.add_recycled_pending_rows(cs);
 
-      con_sys.add_recycled_pending_row(old_c);
-    }
-    
     set_constraints_pending();
   } else {
-    for (dimension_type i = 0; i < cs_num_rows; ++i) {
-      Constraint& old_c = cs[i];
-      old_c.resize(cs_num_columns);
+    con_sys.add_recycled_rows(cs);
 
-      con_sys.add_recycled_row(old_c);
-    }
     // Constraints are not minimized and generators are not up-to-date.
     clear_constraints_minimized();
     clear_generators_up_to_date();
