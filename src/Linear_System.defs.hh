@@ -427,7 +427,8 @@ private:
   //! columns.
   dimension_type num_columns_;
 
-  //! The topological kind of the rows in the system.
+  //! The topological kind of the rows in the system. All rows must have this
+  //! topology.
   Topology row_topology;
 
   //! The index of the first pending row.
