@@ -63,8 +63,10 @@ Grid::Grid(const Box<Interval>& box,
     PPL_DIRTY_TEMP_COEFFICIENT(u_n);
     PPL_DIRTY_TEMP_COEFFICIENT(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
-    Grid_Generator& point = gen_sys[0];
     for (dimension_type k = space_dim; k-- > 0; ) {
+      // This is declared here because it may be invalidated by the call to
+      // gen_sys.insert() at the end of the loop.
+      Grid_Generator& point = gen_sys[0];
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
