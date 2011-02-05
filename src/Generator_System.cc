@@ -200,7 +200,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
       cp[eps_index] = 0;
       // Enforcing normalization.
       cp.normalize();
-      gs.add_pending_row(cp);
+      gs.insert_pending_recycled(cp);
     }
   }
   PPL_ASSERT(OK());
@@ -226,7 +226,7 @@ PPL::Generator_System::add_corresponding_points() {
       // Note: normalization is preserved.
       Generator p = g;
       p[eps_index] = p[0];
-      gs.add_pending_row(p);
+      gs.insert_pending_recycled(p);
     }
   }
   PPL_ASSERT(OK());
