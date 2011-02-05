@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 
 #include "Bit_Row.defs.hh"
+#include "Coefficient.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -65,6 +66,7 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol)
   : rows(),
+    num_columns_(0),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
@@ -75,7 +77,8 @@ inline
 Linear_System<Row>::Linear_System(Topology topol,
                                   dimension_type n_rows,
                                   dimension_type n_columns)
-  : rows(n_rows, n_columns, typename Row::Flags(topol)),
+  : rows(n_rows, Row(n_columns, typename Row::Flags(topol))),
+    num_columns_(n_columns),
     row_topology(topol),
     index_first_pending(n_rows),
     sorted(true) {
@@ -110,6 +113,7 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(const Linear_System& y)
   : rows(y.rows),
+    num_columns_(y.num_columns_),
     row_topology(y.row_topology) {
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -121,6 +125,7 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
   : rows(y.rows),
+    num_columns_(y.num_columns_),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
@@ -130,6 +135,7 @@ template <typename Row>
 inline Linear_System<Row>&
 Linear_System<Row>::operator=(const Linear_System& y) {
   rows = y.rows;
+  num_columns_ = y.num_columns_;
   row_topology = y.row_topology;
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -142,6 +148,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::assign_with_pending(const Linear_System& y) {
   rows = y.rows;
+  num_columns_ = y.num_columns_;
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
@@ -151,6 +158,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::swap(Linear_System& y) {
   std::swap(rows, y.rows);
+  std::swap(num_columns_, y.num_columns_);
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
@@ -161,6 +169,7 @@ inline void
 Linear_System<Row>::clear() {
   // Note: do NOT modify the value of `row_topology'.
   rows.clear();
+  num_columns_ = 0;
   index_first_pending = 0;
   sorted = true;
 }
@@ -168,9 +177,13 @@ Linear_System<Row>::clear() {
 template <typename Row>
 inline void
 Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
-			      const dimension_type new_n_columns) {
-  rows.resize_no_copy(new_n_rows, new_n_columns,
-                      typename Row::Flags(row_topology));
+                                   const dimension_type new_n_columns) {
+  // TODO: Check if a rows.resize_no_copy() nethod could be more efficient.
+  num_columns_ = new_n_columns;
+  for (dimension_type i = std::min(rows.size(), new_n_rows); i-- > 0; )
+    rows[i].resize(new_n_columns);
+  rows.resize(new_n_rows,
+              Row(new_n_columns, typename Row::Flags(row_topology)));
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
@@ -239,13 +252,13 @@ Linear_System<Row>::end() const {
 template <typename Row>
 inline bool
 Linear_System<Row>::has_no_rows() const {
-  return rows.num_rows() == 0;
+  return rows.empty();
 }
 
 template <typename Row>
 inline dimension_type
 Linear_System<Row>::num_rows() const {
-  return rows.num_rows();
+  return rows.size();
 }
 
 template <typename Row>
@@ -260,7 +273,7 @@ Linear_System<Row>::max_space_dimension() {
   // Column zero holds the inhomogeneous term or the divisor.
   // In NNC linear systems, the last column holds the coefficient
   // of the epsilon dimension.
-  return Matrix<Row>::max_num_columns() - 2;
+  return Row::max_num_columns() - 2;
 }
 
 template <typename Row>
@@ -275,19 +288,23 @@ Linear_System<Row>::space_dimension() const {
 template <typename Row>
 inline dimension_type
 Linear_System<Row>::num_columns() const {
-  return rows.num_columns();
+  return num_columns_;
 }
 
 template <typename Row>
 inline void
 Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
-  rows.remove_trailing_rows(n);
+  PPL_ASSERT(rows.size() >= n);
+  rows.resize(rows.size() - n);
 }
 
 template <typename Row>
 inline void
-Linear_System<Row>::remove_trailing_columns(const dimension_type n) {
+Linear_System<Row>
+::remove_trailing_columns(const dimension_type n) {
   remove_trailing_columns_without_normalizing(n);
+  // Have to re-normalize the rows of the system,
+  // since we removed some coefficients.
   strong_normalize();
 }
 
@@ -295,13 +312,41 @@ template <typename Row>
 inline void
 Linear_System<Row>
 ::remove_trailing_columns_without_normalizing(const dimension_type n) {
-  rows.remove_trailing_columns(n);
+  PPL_ASSERT(num_columns_ >= n);
+  num_columns_ -= n;
+  for (dimension_type i = rows.size(); i-- > 0; )
+    rows[i].resize(num_columns_);
 }
 
 template <typename Row>
 inline void
 Linear_System<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
-  rows.permute_columns(cycles);
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+  const dimension_type n = cycles.size();
+  PPL_ASSERT(cycles[n - 1] == 0);
+  for (dimension_type k = rows.size(); k-- > 0; ) {
+    Row& rows_k = rows[k];
+    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
+      // Make `j' be the index of the next cycle terminator.
+      while (cycles[j] != 0)
+        ++j;
+      // Cycles of length less than 2 are not allowed.
+      PPL_ASSERT(j - i >= 2);
+      if (j - i == 2)
+        // For cycles of length 2 no temporary is needed, just a swap.
+        rows_k.swap(cycles[i], cycles[i + 1]);
+      else {
+        // Longer cycles need a temporary.
+        tmp = rows_k.get(cycles[j - 1]);
+        for (dimension_type l = (j - 1); l > i; --l)
+          rows_k.swap(cycles[l-1], cycles[l]);
+        if (tmp == 0)
+          rows_k.reset(cycles[i]);
+        else
+          std::swap(tmp, rows_k[cycles[i]]);
+      }
+    }
+  }
   // The rows with permuted columns are still normalized but may
   // be not strongly normalized: sign normalization is necessary.
   sign_normalize();
@@ -310,7 +355,8 @@ Linear_System<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
 template <typename Row>
 inline void
 Linear_System<Row>::swap_columns(dimension_type i, dimension_type j) {
-  rows.swap_columns(i, j);
+  for (dimension_type k = num_rows(); k-- > 0; )
+    rows[k].swap(i, j);
 }
 
 /*! \relates Linear_System */

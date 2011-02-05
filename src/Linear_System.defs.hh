@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.types.hh"
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
-#include "Matrix.defs.hh"
+#include "Swapping_Vector.defs.hh"
 #include "globals.defs.hh"
 #include "Topology.hh"
 
@@ -54,8 +54,8 @@ template <typename Row>
 class Parma_Polyhedra_Library::Linear_System {
 public:
 
-  typedef typename Matrix<Row>::iterator iterator;
-  typedef typename Matrix<Row>::const_iterator const_iterator;
+  typedef typename Swapping_Vector<Row>::iterator iterator;
+  typedef typename Swapping_Vector<Row>::const_iterator const_iterator;
   
   //! Builds an empty linear system with specified topology.
   /*!
@@ -410,7 +410,11 @@ public:
 
 private:
   //! The vector that contains the rows.
-  Matrix<Row> rows;
+  Swapping_Vector<Row> rows;
+
+  //! The number of columns of each row. All rows must have this number of
+  //! columns.
+  dimension_type num_columns_;
 
   //! The topological kind of the rows in the system.
   Topology row_topology;

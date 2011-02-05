@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // It was added to please KDevelop4.
 #include "Linear_System.defs.hh"
 
-#include "Coefficient.defs.hh"
 #include "Row.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Scalar_Products.defs.hh"
@@ -63,11 +62,11 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
 
   Linear_System& x = *this;
 
-  // A temporary matrix...
-  Matrix<Row> tmp(0, num_columns());
+  // A temporary vector...
+  Swapping_Vector<Row> tmp;
   // ... with enough capacity not to require any reallocations.
-  tmp.reserve_rows(compute_capacity(x.num_rows() + y.num_rows(),
-                                    Matrix<Row>::max_num_rows()));
+  tmp.reserve(compute_capacity(x.rows.size() + y.rows.size(),
+                               tmp.max_num_rows()));
 
   dimension_type xi = 0;
   dimension_type x_num_rows = x.num_rows();
@@ -78,25 +77,30 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     const int comp = compare(x[xi], y[yi]);
     if (comp <= 0) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
-      tmp.add_recycled_row(x[xi++]);
+      tmp.resize(tmp.size() + 1);
+      std::swap(tmp.back(), x[xi++]);
       if (comp == 0)
 	// A duplicate element.
 	++yi;
     }
     else {
       // (comp > 0)
+      tmp.resize(tmp.size() + 1);
       Row copy(y[yi++], num_columns(), num_columns());
-      tmp.add_recycled_row(copy);
+      std::swap(tmp.back(), copy);
     }
   }
   // Insert what is left.
   if (xi < x_num_rows)
-    while (xi < x_num_rows)
-      tmp.add_recycled_row(x[xi++]);
+    while (xi < x_num_rows) {
+      tmp.resize(tmp.size() + 1);
+      std::swap(tmp.back(), x[xi++]);
+    }
   else
     while (yi < y_num_rows) {
+      tmp.resize(tmp.size() + 1);
       Row copy(y[yi++], num_columns(), num_columns());
-      tmp.add_recycled_row(copy);
+      std::swap(tmp.back(), copy);
     }
 
   // We get the result matrix and let the old one be destroyed.
@@ -137,8 +141,8 @@ Linear_System<Row>::ascii_dump(std::ostream& s) const {
     << "\n"
     << "index_first_pending " << x.first_pending_row()
     << "\n";
-  for (dimension_type i = 0; i < x_num_rows; ++i)
-    x[i].ascii_dump(s);
+  for (dimension_type i = 0; i < rows.size(); ++i)
+    rows[i].ascii_dump(s);
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(Row, Linear_System<Row>)
@@ -179,9 +183,8 @@ Linear_System<Row>::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);
 
-  Linear_System& x = *this;
   for (dimension_type row = 0; row < nrows; ++row)
-    if (!x[row].ascii_load(s))
+    if (!rows[row].ascii_load(s))
       return false;
 
   // Check invariants.
@@ -199,17 +202,17 @@ Linear_System<Row>::insert(const Row& r) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
-  const dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_columns = num_columns();
+  const dimension_type old_num_rows = rows.size();
+  const dimension_type old_num_columns = num_columns_;
   const dimension_type r_size = r.size();
 
   // Resize the system, if necessary.
   if (r_size > old_num_columns) {
-    rows.add_zero_columns(r_size - old_num_columns);
+    add_zero_columns(r_size - old_num_columns);
     if (!is_necessarily_closed() && old_num_rows != 0)
       // Move the epsilon coefficients to the last column
       // (note: sorting is preserved).
-      rows.swap_columns(old_num_columns - 1, r_size - 1);
+      swap_columns(old_num_columns - 1, r_size - 1);
     add_row(r);
   }
   else if (r_size < old_num_columns) {
@@ -239,17 +242,17 @@ Linear_System<Row>::insert_pending(const Row& r) {
   PPL_ASSERT(r.check_strong_normalized());
   PPL_ASSERT(topology() == r.topology());
 
-  const dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_rows = rows.size();
   const dimension_type old_num_columns = num_columns();
   const dimension_type r_size = r.size();
 
   // Resize the system, if necessary.
   if (r_size > old_num_columns) {
-    rows.add_zero_columns(r_size - old_num_columns);
+    add_zero_columns(r_size - old_num_columns);
     if (!is_necessarily_closed() && old_num_rows != 0)
       // Move the epsilon coefficients to the last column
       // (note: sorting is preserved).
-      rows.swap_columns(old_num_columns - 1, r_size - 1);
+      swap_columns(old_num_columns - 1, r_size - 1);
     add_pending_row(r);
   }
   else if (r_size < old_num_columns)
@@ -283,7 +286,7 @@ Linear_System<Row>::add_pending_rows(const Linear_System& y) {
   const dimension_type y_n_rows = y.num_rows();
   // Grow to the required size without changing sortedness.
   const bool was_sorted = sorted;
-  rows.add_zero_rows(y_n_rows, typename Row::Flags(row_topology));
+  x.rows.resize(x.rows.size() + y.rows.size());
   sorted = was_sorted;
 
   // Copy the rows of `y', forcing size and capacity.
@@ -313,7 +316,7 @@ Linear_System<Row>::add_rows(const Linear_System& y) {
       // `y' is sorted and has no pending rows.
       const dimension_type n_rows = num_rows();
       if (n_rows > 0)
-	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
+	set_sorted(compare(rows[n_rows-1], y[0]) <= 0);
     }
   }
 
@@ -355,7 +358,7 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   // Second, move duplicates to the end.
   iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
-  rows.remove_rows(new_last, last);
+  rows.erase(new_last, last);
   // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
@@ -363,7 +366,9 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
 template <typename Row>
 void
 Linear_System<Row>::add_recycled_row(Row& r) {
-  rows.add_recycled_row(r);
+  rows.resize(rows.size() + 1);
+  r.resize(num_columns_);
+  std::swap(rows.back(), r);
 }
 
 template <typename Row>
@@ -383,7 +388,7 @@ Linear_System<Row>::add_row(const Row& r) {
 
   const bool was_sorted = is_sorted();
 
-  rows.add_row(r);
+  rows.push_back(r);
 
   //  We update `index_first_pending', because it must be equal to
   // `num_rows()'.
@@ -396,8 +401,7 @@ Linear_System<Row>::add_row(const Row& r) {
       // If the system is not empty and the inserted row is the
       // greatest one, the system is set to be sorted.
       // If it is not the greatest one then the system is no longer sorted.
-      Linear_System& x = *this;
-      set_sorted(compare(x[nrows-2], x[nrows-1]) <= 0);
+      set_sorted(compare(rows[nrows-2], rows[nrows-1]) <= 0);
     }
     else
       // A system having only one row is sorted.
@@ -418,8 +422,9 @@ Linear_System<Row>::add_pending_row(const Row& r) {
   PPL_ASSERT(r.check_strong_normalized());
   PPL_ASSERT(r.size() == num_columns());
 
+  rows.resize(rows.size() + 1);
   Row tmp(r, num_columns(), num_columns());
-  rows.add_recycled_row(tmp);
+  std::swap(rows.back(), tmp);
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
@@ -431,9 +436,10 @@ Linear_System<Row>::add_pending_row(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::add_pending_row(const typename Row::Flags flags) {
-  
+
+  rows.resize(rows.size() + 1);
   Row new_row(num_columns(), num_columns(), flags);
-  rows.add_recycled_row(new_row);
+  std::swap(rows.back(), new_row);
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
@@ -442,33 +448,30 @@ Linear_System<Row>::add_pending_row(const typename Row::Flags flags) {
 template <typename Row>
 void
 Linear_System<Row>::normalize() {
-  Linear_System& x = *this;
-  const dimension_type nrows = x.num_rows();
+  const dimension_type nrows = rows.size();
   // We normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
-    x[i].normalize();
+    rows[i].normalize();
   set_sorted(nrows <= 1);
 }
 
 template <typename Row>
 void
 Linear_System<Row>::strong_normalize() {
-  Linear_System& x = *this;
-  const dimension_type nrows = x.num_rows();
+  const dimension_type nrows = rows.size();
   // We strongly normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
-    x[i].strong_normalize();
+    rows[i].strong_normalize();
   set_sorted(nrows <= 1);
 }
 
 template <typename Row>
 void
 Linear_System<Row>::sign_normalize() {
-  Linear_System& x = *this;
-  const dimension_type nrows = x.num_rows();
+  const dimension_type nrows = rows.size();
   // We sign-normalize also the pending rows.
-  for (dimension_type i = num_rows(); i-- > 0; )
-    x[i].sign_normalize();
+  for (dimension_type i = nrows; i-- > 0; )
+    rows[i].sign_normalize();
   set_sorted(nrows <= 1);
 }
 
@@ -484,8 +487,9 @@ operator==(const Linear_System<Row>& x, const Linear_System<Row>& y) {
     return false;
   if (x.first_pending_row() != y.first_pending_row())
     return false;
-  // Notice that calling operator==(const Matrix<Row>&,
-  //                                const Matrix<Row>&)
+  // TODO: Check if the following comment is up to date.
+  // Notice that calling operator==(const Swapping_Vector<Row>&,
+  //                                const Swapping_Vector<Row>&)
   // would be wrong here, as equality of the type fields would
   // not be checked.
   for (dimension_type i = x_num_rows; i-- > 0; )
@@ -739,7 +743,9 @@ Linear_System<Row>::add_rows_and_columns(const dimension_type n) {
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = num_rows();
   const dimension_type old_n_columns = num_columns();
-  rows.add_zero_rows_and_columns(n, n, typename Row::Flags(row_topology));
+  add_zero_columns(n);
+  rows.resize(rows.size() + n,
+              Row(num_columns(), typename Row::Flags(row_topology)));
   Linear_System& x = *this;
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )
@@ -770,8 +776,10 @@ Linear_System<Row>::add_rows_and_columns(const dimension_type n) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_zero_columns(dimension_type n) {
-  rows.add_zero_columns(n);
+Linear_System<Row>::add_zero_columns(const dimension_type n) {
+  num_columns_ += n;
+  for (dimension_type i = rows.size(); i-- > 0; )
+    rows[i].resize(num_columns_);
 }
 
 template <typename Row>
@@ -825,7 +833,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
     if (k2 < num_rows)
       for (++k2; k2 < num_rows; ++k2)
 	std::swap(x[k2], x[k2 + num_duplicates]);
-    x.remove_trailing_rows(old_num_rows - num_rows);
+    x.rows.resize(num_rows);
   }
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
@@ -849,6 +857,15 @@ Linear_System<Row>::OK(const bool check_strong_normalized) const {
   using std::endl;
   using std::cerr;
 #endif
+
+  for (dimension_type i = rows.size(); i-- > 0; )
+    if (rows[i].size() != num_columns()) {
+#ifndef NDEBUG
+      cerr << "Linear_System has a row with the wrong number of columns!"
+           << endl;
+#endif
+      return false;
+    }
 
   // `index_first_pending' must be less than or equal to `num_rows()'.
   if (first_pending_row() > num_rows()) {
