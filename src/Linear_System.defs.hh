@@ -286,21 +286,6 @@ public:
   */
   void insert_pending_recycled(Row& r);
 
-  //! Adds a copy of the given row to the system.
-  void add_row(const Row& r);
-
-  //! Adds a the given row to the system, stealing its contents.
-  void add_recycled_row(Row& r);
-
-  //! Adds a new empty row to the system, setting only its flags.
-  void add_pending_row(typename Row::Flags flags);
-
-  //! Adds a copy of the given row to the pending part of the system.
-  void add_pending_row(const Row& r);
-
-  //! Adds a copy of the given row to the pending part of the system.
-  void add_recycled_pending_row(Row& r);
-
   //! Adds to \p *this a copy of the rows of `y'.
   /*!
     It is assumed that \p *this has no pending rows.
@@ -432,6 +417,21 @@ public:
   bool OK(bool check_strong_normalized = true) const;
 
 private:
+  //! Adds a copy of the given row to the system.
+  void add_row(const Row& r);
+
+  //! Adds a the given row to the system, stealing its contents.
+  void add_recycled_row(Row& r);
+
+  //! Adds a new empty row to the system, setting only its flags.
+  void add_pending_row(typename Row::Flags flags);
+
+  //! Adds a copy of the given row to the pending part of the system.
+  void add_pending_row(const Row& r);
+
+  //! Adds a copy of the given row to the pending part of the system.
+  void add_recycled_pending_row(Row& r);
+
   //! The vector that contains the rows.
   Swapping_Vector<Row> rows;
 
