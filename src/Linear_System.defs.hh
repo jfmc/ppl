@@ -258,7 +258,7 @@ public:
     where \f$J\f$ is the specular image
     of the \f$n \times n\f$ identity matrix.
   */
-  void add_rows_and_columns(dimension_type n);
+  void add_universe_rows_and_columns(dimension_type n);
 
   void add_zero_columns(dimension_type n);
 

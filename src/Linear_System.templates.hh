@@ -744,7 +744,7 @@ Linear_System<Row>::simplify() {
 
 template <typename Row>
 void
-Linear_System<Row>::add_rows_and_columns(const dimension_type n) {
+Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
   PPL_ASSERT(n > 0);
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = num_rows();

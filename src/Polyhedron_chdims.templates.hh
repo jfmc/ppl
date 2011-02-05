@@ -41,7 +41,7 @@ Polyhedron::add_space_dimensions(Linear_System<Row1>& sys1,
 
   sys1.add_zero_columns(add_dim);
   dimension_type old_index = sys2.first_pending_row();
-  sys2.add_rows_and_columns(add_dim);
+  sys2.add_universe_rows_and_columns(add_dim);
   // The added rows are in the non-pending part.
   sys2.set_index_first_pending_row(old_index + add_dim);
 

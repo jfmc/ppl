@@ -95,7 +95,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     PPL_ASSERT(generators_are_up_to_date());
-    gen_sys.add_rows_and_columns(m);
+    gen_sys.add_universe_rows_and_columns(m);
     // The polyhedron does not support pending generators.
     gen_sys.unset_pending_rows();
     // If the polyhedron is not necessarily closed,
@@ -186,7 +186,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     }
     else {
       // Only constraints are up-to-date: no need to modify the generators.
-      con_sys.add_rows_and_columns(m);
+      con_sys.add_universe_rows_and_columns(m);
       // The polyhedron does not support pending constraints.
       con_sys.unset_pending_rows();
       // If the polyhedron is not necessarily closed,
@@ -301,7 +301,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // system those lines corresponding to the newly added dimensions,
     // because the non-pending parts of `con_sys' and `gen_sys' must still
     // be a DD pair in minimal form.
-    gen_sys.add_rows_and_columns(added_columns);
+    gen_sys.add_universe_rows_and_columns(added_columns);
     gen_sys.set_sorted(false);
     if (!is_necessarily_closed())
       gen_sys.swap_columns(old_num_columns - 1,
