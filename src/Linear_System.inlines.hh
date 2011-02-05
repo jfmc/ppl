@@ -293,6 +293,19 @@ Linear_System<Row>::num_columns() const {
 
 template <typename Row>
 inline void
+Linear_System<Row>::swap_rows(const dimension_type i,
+                              const dimension_type j) {
+  PPL_ASSERT(i < rows.size());
+  PPL_ASSERT(j < rows.size());
+  // i and j must be either both pending or both non-pending.
+  PPL_ASSERT((i < first_pending_row() && j < first_pending_row())
+             || (i >= first_pending_row() && j >= first_pending_row()));
+  std::swap(rows[i], rows[j]);
+  set_sorted(false);
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(rows.size() >= n);
   rows.resize(rows.size() - n);

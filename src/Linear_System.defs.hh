@@ -124,6 +124,9 @@ public:
   // TODO: Check if this should be removed.
   dimension_type num_columns() const;
 
+  //! Swaps the i-th and the j-th rows.
+  void swap_rows(dimension_type i, dimension_type j);
+
   //! Makes the system shrink by removing its \p n trailing rows.
   void remove_trailing_rows(dimension_type n);
 
