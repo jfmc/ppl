@@ -277,6 +277,8 @@ public:
   //! Adds a copy of the given row to the system.
   void add_row(const Row& r);
 
+  // TODO: Remove this method, or change its semantic to make it similar to
+  // add_row().
   //! Adds a the given row to the system, stealing its contents.
   void add_recycled_row(Row& r);
 
