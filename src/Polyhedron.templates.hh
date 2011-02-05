@@ -135,8 +135,7 @@ Polyhedron::Polyhedron(Topology topol,
   con_sys.add_low_level_constraints();
   // Now removing the dummy constraint inserted before.
   dimension_type n_rows = con_sys.num_rows() - 1;
-  con_sys[0].swap(con_sys[n_rows]);
-  con_sys.set_sorted(false);
+  con_sys.swap_rows(0, n_rows);
   // NOTE: here there are no pending constraints.
   con_sys.set_index_first_pending_row(n_rows);
   con_sys.remove_trailing_rows(1);
