@@ -126,7 +126,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other constraints), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::Constraint_System : private Linear_System<Linear_Row> {
+class Parma_Polyhedra_Library::Constraint_System : public Linear_System<Linear_Row> {
 private:
   typedef Linear_System<Linear_Row> Base;
   
