@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 
 #include <vector>
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 

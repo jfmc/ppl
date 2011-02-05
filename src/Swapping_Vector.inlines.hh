@@ -189,13 +189,30 @@ Swapping_Vector<T>::end() const {
 template <typename T>
 inline typename Swapping_Vector<T>::iterator
 Swapping_Vector<T>::erase(iterator itr) {
-  return impl.erase(itr);
+  PPL_ASSERT(itr >= begin());
+  PPL_ASSERT(itr < end());
+  const dimension_type old_i = itr - begin();
+  dimension_type i = old_i;
+  ++i;
+  while (i != size())
+    std::swap(impl[i-1], impl[i]);
+  impl.pop_back();
+  return begin() + old_i;
 }
 
 template <typename T>
 inline typename Swapping_Vector<T>::iterator
 Swapping_Vector<T>::erase(iterator first, iterator last) {
-  return impl.erase(first, last);
+  PPL_ASSERT(begin() <= first);
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= end());
+  const iterator old_first = first;
+  const dimension_type k = last - first;
+  const dimension_type n = end() - last;
+  for (dimension_type i = 0; i < n; ++i, ++first)
+    std::swap(*first, *(first + k));
+  impl.erase(end() - k, end());
+  return old_first;
 }
 
 template <typename T>
