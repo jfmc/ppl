@@ -274,6 +274,18 @@ public:
   */
   void insert_pending(const Row& r);
 
+  /*! \brief
+    Adds \p r to the system, stealing its contents and
+    automatically resizing the system or the row, if needed.
+  */
+  void insert_recycled(Row& r);
+
+  /*! \brief
+    Adds the given row to the pending part of the system, stealing its
+    contents and automatically resizing the system or the row, if needed.
+  */
+  void insert_pending_recycled(Row& r);
+
   //! Adds a copy of the given row to the system.
   void add_row(const Row& r);
 

@@ -195,9 +195,21 @@ Linear_System<Row>::ascii_load(std::istream& s) {
 template <typename Row>
 void
 Linear_System<Row>::insert(const Row& r) {
-  // The added row must be strongly normalized and have the same
-  // topology of the system.
-  PPL_ASSERT(r.check_strong_normalized());
+  Row tmp = r;
+  insert_recycled(tmp);
+}
+
+template <typename Row>
+void
+Linear_System<Row>::insert_recycled(Row& r) {
+  // TODO: A Grid_Generator_System may contain non-normalized lines that
+  // represent parameters, so this check is disabled. Consider re-enabling it
+  // when it's possibile.
+  /*
+    // The added row must be strongly normalized and have the same
+    // topology of the system.
+    PPL_ASSERT(r.check_strong_normalized());
+  */
   PPL_ASSERT(topology() == r.topology());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -213,19 +225,19 @@ Linear_System<Row>::insert(const Row& r) {
       // Move the epsilon coefficients to the last column
       // (note: sorting is preserved).
       swap_columns(old_num_columns - 1, r_size - 1);
-    add_row(r);
+    add_recycled_row(r);
   }
   else if (r_size < old_num_columns) {
-    // Create a resized copy of the row.
-    Row tmp_row(r, old_num_columns, old_num_columns);
+    // Resize the row.
+    r.resize(old_num_columns);
     // If needed, move the epsilon coefficient to the last position.
     if (!is_necessarily_closed())
-      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-    add_recycled_row(tmp_row);
+      std::swap(r[r_size - 1], r[old_num_columns - 1]);
+    add_recycled_row(r);
   }
   else
     // Here r_size == old_num_columns.
-    add_row(r);
+    add_recycled_row(r);
 
   // The added row was not a pending row.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -237,6 +249,13 @@ Linear_System<Row>::insert(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::insert_pending(const Row& r) {
+  Row tmp = r;
+  insert_pending_recycled(tmp);
+}
+
+template <typename Row>
+void
+Linear_System<Row>::insert_pending_recycled(Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -253,21 +272,22 @@ Linear_System<Row>::insert_pending(const Row& r) {
       // Move the epsilon coefficients to the last column
       // (note: sorting is preserved).
       swap_columns(old_num_columns - 1, r_size - 1);
-    add_pending_row(r);
+    add_recycled_pending_row(r);
   }
   else if (r_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0)
-      add_pending_row(Row(r, old_num_columns, old_num_columns));
-    else {
-      // Create a resized copy of the row (and move the epsilon
-      // coefficient to its last position).
-      Row tmp_row(r, old_num_columns, old_num_columns);
-      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-      add_recycled_pending_row(tmp_row);
+    if (is_necessarily_closed() || old_num_rows == 0) {
+      r.resize(old_num_columns);
+      add_recycled_pending_row(r);
+    } else {
+      // Resize the row (and move the epsilon coefficient to its last
+      // position).
+      r.resize(old_num_columns);
+      std::swap(r[r_size - 1], r[old_num_columns - 1]);
+      add_recycled_pending_row(r);
     }
   else
     // Here r_size == old_num_columns.
-    add_pending_row(r);
+    add_recycled_pending_row(r);
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
