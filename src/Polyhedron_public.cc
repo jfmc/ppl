@@ -1584,33 +1584,27 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     return;
   }
 
-  const bool adding_pending = can_have_something_pending();
-
-  // Here we do not require `gen_sys' to be sorted.
-  // also, we _swap_ (instead of copying) the coefficients of `gs'
-  // (which is not a const).
-  const dimension_type gs_num_rows = gs.num_rows();
-  for (dimension_type i = gs_num_rows; i-- > 0; ) {
-    // NOTE: we cannot directly swap the rows, since they might have
-    // different capacities (besides possibly having different sizes):
-    // thus, we steal one coefficient at a time.
-    Generator& old_g = gs[i];
-    bool was_line = old_g.is_line();
-    old_g.resize(gen_sys.num_columns());
-    old_g.set_flags(Linear_Row::Flags(topology(),
-                                      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-    if (was_line)
-      old_g.set_is_line();
-
-    if (adding_pending)
+  if (can_have_something_pending()) {
+    // Here we do not require `gen_sys' to be sorted.
+    // also, we _swap_ (instead of copying) the coefficients of `gs'
+    // (which is not a const).
+    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
+      Generator& old_g = gs[i];
+      old_g.set_topology(topology());
       gen_sys.add_recycled_pending_row(old_g);
-    else
-      gen_sys.add_recycled_row(old_g);
-  }
-
-  if (adding_pending)
+    }
+    
     set_generators_pending();
-  else {
+  } else {
+    // Here we do not require `gen_sys' to be sorted.
+    // also, we _swap_ (instead of copying) the coefficients of `gs'
+    // (which is not a const).
+    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
+      Generator& old_g = gs[i];
+      old_g.set_topology(topology());
+      gen_sys.add_recycled_row(old_g);
+    }
+
     // Constraints are not up-to-date and generators are not minimized.
     clear_constraints_up_to_date();
     clear_generators_minimized();
