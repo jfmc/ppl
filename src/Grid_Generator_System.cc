@@ -43,47 +43,15 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
   for (dimension_type i = 0; i < gs_num_rows; ++i) {
-    // TODO: Check if this can be simplified.
-    const bool was_line = gs[i].is_line();
-    gs[i].set_flags(Linear_Row::Flags(NECESSARILY_CLOSED,
-                                      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-    if (was_line)
-      gs[i].set_is_line();
-    else
-      gs[i].set_is_parameter_or_point();
-
-    const dimension_type old_size = gs[i].size();
-    gs[i].resize(num_columns());
-    std::swap(gs[i][old_size - 1], gs[i][num_columns() - 1]);
-
-    add_recycled_row(gs[i]);
+    gs[i].set_topology(NECESSARILY_CLOSED);
+    insert_recycled(gs[i]);
   }
   set_index_first_pending_row(old_num_rows + gs_num_rows);
 }
 
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
-  dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_columns = num_columns();
-  const dimension_type old_g_num_columns = g.size();
-  if (old_num_columns < old_g_num_columns) {
-    add_zero_columns(old_g_num_columns - old_num_columns);
-    // Swap the parameter divisor column into the new last column.
-    swap_columns(old_num_columns - 1, num_columns() - 1);
-  } else {
-    g.resize(num_columns());
-    // Swap the parameter divisor column into the new last column.
-    std::swap(g[old_g_num_columns - 1], g[num_columns() - 1]);
-  }
-  const bool was_line = g.is_line();
-  g.set_flags(Linear_Row::Flags(NECESSARILY_CLOSED,
-                                Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-  if (was_line)
-    g.set_is_line();
-  else
-    g.set_is_parameter_or_point();
-  add_recycled_row(g);
-  set_index_first_pending_row(old_num_rows + 1);
+  Linear_System<Linear_Row>::insert_recycled(g);
 }
 
 void
@@ -122,18 +90,18 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
       // Swap the existing parameter divisor column into the new
       // last column.
       swap_columns(old_num_columns - 1, g_size - 1);
-    Linear_System<Linear_Row>::add_row(g);
+    Linear_System<Linear_Row>::insert(g);
   }
   else if (g_size < old_num_columns) {
     // Create a resized copy of the row (and move the parameter
     // divisor coefficient to its last position).
     Linear_Row tmp_row(g, old_num_columns, old_num_columns);
     std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-    Linear_System<Linear_Row>::add_recycled_row(tmp_row);
+    Linear_System<Linear_Row>::insert_recycled(tmp_row);
   }
   else
     // Here r_size == old_num_columns.
-    Linear_System<Linear_Row>::add_row(g);
+    Linear_System<Linear_Row>::insert(g);
 
   set_index_first_pending_row(num_rows());
   set_sorted(false);
@@ -304,7 +272,7 @@ PPL::Grid_Generator_System
                                      Linear_Row::LINE_OR_EQUALITY));
     tmp[col] = 1;
     ++col;
-    add_recycled_row(tmp);
+    insert_recycled(tmp);
   }
   unset_pending_rows();
 }
