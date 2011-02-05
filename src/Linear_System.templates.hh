@@ -332,6 +332,9 @@ Linear_System<Row>::add_recycled_rows(Linear_System& y) {
 
   // Add the rows of `y' as if they were pending.
   add_recycled_pending_rows(y);
+
+  // TODO: May y have pending rows? Should they remain pending?
+
   // There are no pending_rows.
   unset_pending_rows();
 
