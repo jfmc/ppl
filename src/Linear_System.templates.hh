@@ -221,7 +221,7 @@ Linear_System<Row>::insert(const Row& r) {
     // If needed, move the epsilon coefficient to the last position.
     if (!is_necessarily_closed())
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-    add_row(tmp_row);
+    add_recycled_row(tmp_row);
   }
   else
     // Here r_size == old_num_columns.
@@ -263,7 +263,7 @@ Linear_System<Row>::insert_pending(const Row& r) {
       // coefficient to its last position).
       Row tmp_row(r, old_num_columns, old_num_columns);
       std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
-      add_pending_row(tmp_row);
+      add_recycled_pending_row(tmp_row);
     }
   else
     // Here r_size == old_num_columns.
