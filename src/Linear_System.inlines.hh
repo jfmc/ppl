@@ -323,6 +323,13 @@ Linear_System<Row>
 
 template <typename Row>
 inline void
+Linear_System<Row>::release_row(Row& row) {
+  std::swap(row, rows.back());
+  rows.pop_back();
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>
 ::remove_trailing_columns_without_normalizing(const dimension_type n) {
   PPL_ASSERT(num_columns_ >= n);

@@ -141,6 +141,10 @@ public:
   //! This method does not normalize the rows afterwards.
   void remove_trailing_columns_without_normalizing(dimension_type n);
 
+  //! Swaps \p row with the last row and then removes that row from the
+  //! system.
+  void release_row(Row& row);
+
   //! Permutes the columns of the system.
   /*
     \param cycles
