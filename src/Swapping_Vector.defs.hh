@@ -62,6 +62,7 @@ public:
   const T& back() const;
 
   void push_back(const T& x);
+  void pop_back();
 
   iterator begin();
   iterator end();

@@ -147,6 +147,12 @@ Swapping_Vector<T>::push_back(const T& x) {
 }
 
 template <typename T>
+inline void
+Swapping_Vector<T>::pop_back() {
+  impl.pop_back();
+}
+
+template <typename T>
 inline memory_size_type
 Swapping_Vector<T>::external_memory_in_bytes() const {
   // Estimate the size of vector.
