@@ -1506,24 +1506,27 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // (which is not a const).
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_columns = cs.num_columns();
-  for (dimension_type i = 0; i < cs_num_rows; ++i) {
-    Constraint& old_c = cs[i];
-    old_c.resize(cs_num_columns);
+  if (adding_pending) {
+    for (dimension_type i = 0; i < cs_num_rows; ++i) {
+      Constraint& old_c = cs[i];
+      old_c.resize(cs_num_columns);
 
-    con_sys.add_recycled_row(old_c);
-  }
-
-  if (adding_pending)
+      con_sys.add_recycled_pending_row(old_c);
+    }
+    
     set_constraints_pending();
-  else {
-    // The newly added ones are not pending constraints.
-    con_sys.unset_pending_rows();
-    // They have been simply appended.
-    con_sys.set_sorted(false);
+  } else {
+    for (dimension_type i = 0; i < cs_num_rows; ++i) {
+      Constraint& old_c = cs[i];
+      old_c.resize(cs_num_columns);
+
+      con_sys.add_recycled_row(old_c);
+    }
     // Constraints are not minimized and generators are not up-to-date.
     clear_constraints_minimized();
     clear_generators_up_to_date();
   }
+
   // Note: the constraint system may have become unsatisfiable, thus
   // we do not check for satisfiability.
   PPL_ASSERT_HEAVY(OK());
@@ -1609,16 +1612,16 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
                                       Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     if (was_line)
       old_g.set_is_line();
-    gen_sys.add_recycled_row(old_g);
+
+    if (adding_pending)
+      gen_sys.add_recycled_pending_row(old_g);
+    else
+      gen_sys.add_recycled_row(old_g);
   }
 
   if (adding_pending)
     set_generators_pending();
   else {
-    // The newly added ones are not pending generators.
-    gen_sys.unset_pending_rows();
-    // They have been simply appended.
-    gen_sys.set_sorted(false);
     // Constraints are not up-to-date and generators are not minimized.
     clear_constraints_up_to_date();
     clear_generators_minimized();

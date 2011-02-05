@@ -365,15 +365,30 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_row(Row& r) {
-  rows.resize(rows.size() + 1);
-  r.resize(num_columns_);
-  std::swap(rows.back(), r);
+Linear_System<Row>::add_row(const Row& r) {
+  Row tmp = r;
+  add_recycled_row(tmp);
 }
 
 template <typename Row>
 void
-Linear_System<Row>::add_row(const Row& r) {
+Linear_System<Row>::add_recycled_row(Row& r) {
+  // This method is only used when the system has no pending rows.
+  PPL_ASSERT(num_pending_rows() == 0);
+
+  add_recycled_pending_row(r);
+
+  //  We update `index_first_pending', because it must be equal to
+  // `rows.size()'.
+  set_index_first_pending_row(rows.size());
+  
+  // The added row was not a pending row.
+  PPL_ASSERT(num_pending_rows() == 0);
+}
+
+template <typename Row>
+void
+Linear_System<Row>::add_recycled_pending_row(Row& r) {
   // TODO: A Grid_Generator_System may contain non-normalized lines that
   // represent parameters, so this check is disabled. Consider re-enabling it
   // when it's possibile.
@@ -382,17 +397,12 @@ Linear_System<Row>::add_row(const Row& r) {
     // number of elements as the existing rows of the system.
     PPL_ASSERT(r.check_strong_normalized());
   */
-  PPL_ASSERT(r.size() == num_columns());
-  // This method is only used when the system has no pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
 
   const bool was_sorted = is_sorted();
 
-  rows.push_back(r);
-
-  //  We update `index_first_pending', because it must be equal to
-  // `num_rows()'.
-  set_index_first_pending_row(num_rows());
+  rows.resize(rows.size() + 1);
+  r.resize(num_columns());
+  std::swap(rows.back(), r);
 
   if (was_sorted) {
     const dimension_type nrows = num_rows();
@@ -407,8 +417,6 @@ Linear_System<Row>::add_row(const Row& r) {
       // A system having only one row is sorted.
       set_sorted(true);
   }
-  // The added row was not a pending row.
-  PPL_ASSERT(num_pending_rows() == 0);
   // Do not check for strong normalization, because no modification of
   // rows has occurred.
   PPL_ASSERT(OK(false));

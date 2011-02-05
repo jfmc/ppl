@@ -277,8 +277,6 @@ public:
   //! Adds a copy of the given row to the system.
   void add_row(const Row& r);
 
-  // TODO: Remove this method, or change its semantic to make it similar to
-  // add_row().
   //! Adds a the given row to the system, stealing its contents.
   void add_recycled_row(Row& r);
 
@@ -287,6 +285,9 @@ public:
 
   //! Adds a copy of the given row to the pending part of the system.
   void add_pending_row(const Row& r);
+
+  //! Adds a copy of the given row to the pending part of the system.
+  void add_recycled_pending_row(Row& r);
 
   //! Adds to \p *this a copy of the rows of `y'.
   /*!

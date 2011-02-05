@@ -285,15 +285,17 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (!is_necessarily_closed())
     con_sys.swap_columns(old_num_columns - 1,
 			 old_num_columns - 1 + added_columns);
-  // Steal the constraints from `cs' and put them in `con_sys'
-  // using the right displacement for coefficients.
-  for (dimension_type i = 0; i < added_rows; ++i) {
-    Constraint& c_old = cs[i];
-    c_old.add_zeroes_and_shift(space_dim, 1);
-    con_sys.add_recycled_row(c_old);
-  }
 
   if (can_have_something_pending()) {
+    // Steal the constraints from `cs' and put them in `con_sys'
+    // using the right displacement for coefficients.
+    for (dimension_type i = 0; i < added_rows; ++i) {
+      Constraint& c_old = cs[i];
+      c_old.add_zeroes_and_shift(space_dim, 1);
+
+      con_sys.add_recycled_pending_row(c_old);
+    }
+
     // If `*this' can support pending constraints, then, since we have
     // resized the system of constraints, we must also add to the generator
     // system those lines corresponding to the newly added dimensions,
@@ -325,11 +327,15 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     set_constraints_pending();
   }
   else {
-    // The polyhedron cannot have pending constraints.
-    con_sys.unset_pending_rows();
+    // Steal the constraints from `cs' and put them in `con_sys'
+    // using the right displacement for coefficients.
+    for (dimension_type i = 0; i < added_rows; ++i) {
+      Constraint& c_old = cs[i];
+      c_old.add_zeroes_and_shift(space_dim, 1);
+
+      con_sys.add_recycled_row(c_old);
+    }
 #if BE_LAZY
-    con_sys.set_sorted(false);
-#else
     con_sys.sort_rows();
 #endif
     clear_constraints_minimized();
