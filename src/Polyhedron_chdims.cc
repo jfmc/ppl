@@ -293,7 +293,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
       Constraint& c_old = cs[i];
       c_old.add_zeroes_and_shift(space_dim, 1);
 
-      con_sys.add_recycled_pending_row(c_old);
+      con_sys.insert_pending_recycled(c_old);
     }
 
     // If `*this' can support pending constraints, then, since we have
@@ -333,7 +333,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
       Constraint& c_old = cs[i];
       c_old.add_zeroes_and_shift(space_dim, 1);
 
-      con_sys.add_recycled_row(c_old);
+      con_sys.insert_recycled(c_old);
     }
 #if BE_LAZY
     con_sys.sort_rows();

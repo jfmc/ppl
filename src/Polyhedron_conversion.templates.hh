@@ -725,8 +725,10 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		  // saturation row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
 		    // Make room for one more row.
-		    dest.add_pending_row(Linear_Row::Flags(dest.topology(),
-							   Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+		    Linear_Row tmp(dest.num_columns(),
+                                   Linear_Row::Flags(dest.topology(),
+                                                     Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest.insert_pending_recycled(tmp);
 		    sat.add_recycled_row(new_satrow);
 		  }
 		  else

@@ -1591,7 +1591,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       Generator& old_g = gs[i];
       old_g.set_topology(topology());
-      gen_sys.add_recycled_pending_row(old_g);
+      gen_sys.insert_pending_recycled(old_g);
     }
     
     set_generators_pending();
@@ -1602,7 +1602,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       Generator& old_g = gs[i];
       old_g.set_topology(topology());
-      gen_sys.add_recycled_row(old_g);
+      gen_sys.insert_recycled(old_g);
     }
 
     // Constraints are not up-to-date and generators are not minimized.
@@ -2901,7 +2901,7 @@ generalized_affine_image(const Variable var,
 	if (gen_sys[i].is_point()) {
 	  Generator& g = gen_sys[i];
 	  // Add a `var'-displaced copy of `g' to the generator system.
-	  gen_sys.add_row(g);
+	  gen_sys.insert(g);
 	  if (relsym == GREATER_THAN)
 	    ++gen_sys[gen_sys.num_rows()-1][var_space_dim];
 	  else
