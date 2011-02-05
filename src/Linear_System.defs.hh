@@ -133,6 +133,12 @@ public:
   //! Makes the system shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 
+  //! Makes the system grow so that num_columns() == n.
+  /*!
+    This method moves the epsilon coefficient column to the right place.
+  */
+  void increase_space_dimension(dimension_type n);
+
   // TODO: Remove this method.
   // It is needed to be able to remove columns from a Grid_Generator_System,
   // that should not be normalized afterwards because it may contain
