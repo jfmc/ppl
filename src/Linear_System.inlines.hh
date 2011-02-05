@@ -35,7 +35,7 @@ namespace Parma_Polyhedra_Library {
 template <typename Row>
 inline memory_size_type
 Linear_System<Row>::external_memory_in_bytes() const {
-  return Matrix<Row>::external_memory_in_bytes();
+  return rows.external_memory_in_bytes();
 }
 
 template <typename Row>
@@ -64,7 +64,7 @@ Linear_System<Row>::set_sorted(const bool b) {
 template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol)
-  : Matrix<Row>(),
+  : rows(),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
@@ -73,8 +73,9 @@ Linear_System<Row>::Linear_System(Topology topol)
 template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol,
-			     dimension_type n_rows, dimension_type n_columns)
-  : Matrix<Row>(n_rows, n_columns, typename Row::Flags(topol)),
+                                  dimension_type n_rows,
+                                  dimension_type n_columns)
+  : rows(n_rows, n_columns, typename Row::Flags(topol)),
     row_topology(topol),
     index_first_pending(n_rows),
     sorted(true) {
@@ -89,14 +90,14 @@ Linear_System<Row>::first_pending_row() const {
 template <typename Row>
 inline dimension_type
 Linear_System<Row>::num_pending_rows() const {
-  PPL_ASSERT(Matrix<Row>::num_rows() >= first_pending_row());
-  return Matrix<Row>::num_rows() - first_pending_row();
+  PPL_ASSERT(num_rows() >= first_pending_row());
+  return num_rows() - first_pending_row();
 }
 
 template <typename Row>
 inline void
 Linear_System<Row>::unset_pending_rows() {
-  index_first_pending = Matrix<Row>::num_rows();
+  index_first_pending = num_rows();
 }
 
 template <typename Row>
@@ -108,7 +109,7 @@ Linear_System<Row>::set_index_first_pending_row(const dimension_type i) {
 template <typename Row>
 inline
 Linear_System<Row>::Linear_System(const Linear_System& y)
-  : Matrix<Row>(y),
+  : rows(y.rows),
     row_topology(y.row_topology) {
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -119,7 +120,7 @@ Linear_System<Row>::Linear_System(const Linear_System& y)
 template <typename Row>
 inline
 Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
-  : Matrix<Row>(y),
+  : rows(y.rows),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
@@ -128,7 +129,7 @@ Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
 template <typename Row>
 inline Linear_System<Row>&
 Linear_System<Row>::operator=(const Linear_System& y) {
-  Matrix<Row>::operator=(y);
+  rows = y.rows;
   row_topology = y.row_topology;
   unset_pending_rows();
   // Previously pending rows may violate sortedness.
@@ -140,7 +141,7 @@ Linear_System<Row>::operator=(const Linear_System& y) {
 template <typename Row>
 inline void
 Linear_System<Row>::assign_with_pending(const Linear_System& y) {
-  Matrix<Row>::operator=(y);
+  rows = y.rows;
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
@@ -149,7 +150,7 @@ Linear_System<Row>::assign_with_pending(const Linear_System& y) {
 template <typename Row>
 inline void
 Linear_System<Row>::swap(Linear_System& y) {
-  Matrix<Row>::swap(y);
+  std::swap(rows, y.rows);
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
@@ -159,7 +160,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::clear() {
   // Note: do NOT modify the value of `row_topology'.
-  Matrix<Row>::clear();
+  rows.clear();
   index_first_pending = 0;
   sorted = true;
 }
@@ -168,8 +169,8 @@ template <typename Row>
 inline void
 Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
 			      const dimension_type new_n_columns) {
-  Matrix<Row>::resize_no_copy(new_n_rows, new_n_columns,
-			 typename Row::Flags(row_topology));
+  rows.resize_no_copy(new_n_rows, new_n_columns,
+                      typename Row::Flags(row_topology));
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
@@ -181,7 +182,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
-  if (!Matrix<Row>::has_no_rows())
+  if (!has_no_rows())
     set_rows_topology();
 }
 
@@ -189,7 +190,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::set_not_necessarily_closed() {
   row_topology = NOT_NECESSARILY_CLOSED;
-  if (!Matrix<Row>::has_no_rows())
+  if (!has_no_rows())
     set_rows_topology();
 }
 
@@ -202,13 +203,49 @@ Linear_System<Row>::is_necessarily_closed() const {
 template <typename Row>
 inline Row&
 Linear_System<Row>::operator[](const dimension_type k) {
-  return Matrix<Row>::operator[](k);
+  return rows[k];
 }
 
 template <typename Row>
 inline const Row&
 Linear_System<Row>::operator[](const dimension_type k) const {
-  return Matrix<Row>::operator[](k);
+  return rows[k];
+}
+
+template <typename Row>
+inline typename Linear_System<Row>::iterator
+Linear_System<Row>::begin() {
+  return rows.begin();
+}
+
+template <typename Row>
+inline typename Linear_System<Row>::iterator
+Linear_System<Row>::end() {
+  return rows.end();
+}
+
+template <typename Row>
+inline typename Linear_System<Row>::const_iterator
+Linear_System<Row>::begin() const {
+  return rows.begin();
+}
+
+template <typename Row>
+inline typename Linear_System<Row>::const_iterator
+Linear_System<Row>::end() const {
+  return rows.end();
+}
+
+template <typename Row>
+inline bool
+Linear_System<Row>::has_no_rows() const {
+  return rows.num_rows() == 0;
+}
+
+template <typename Row>
+inline dimension_type
+Linear_System<Row>::num_rows() const {
+  return rows.num_rows();
 }
 
 template <typename Row>
@@ -229,10 +266,22 @@ Linear_System<Row>::max_space_dimension() {
 template <typename Row>
 inline dimension_type
 Linear_System<Row>::space_dimension() const {
-  const dimension_type n_columns = Matrix<Row>::num_columns();
+  const dimension_type n_columns = num_columns();
   return (n_columns == 0)
     ? 0
     : n_columns - (is_necessarily_closed() ? 1 : 2);
+}
+
+template <typename Row>
+inline dimension_type
+Linear_System<Row>::num_columns() const {
+  return rows.num_columns();
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
+  rows.remove_trailing_rows(n);
 }
 
 template <typename Row>
@@ -246,16 +295,22 @@ template <typename Row>
 inline void
 Linear_System<Row>
 ::remove_trailing_columns_without_normalizing(const dimension_type n) {
-  Matrix<Row>::remove_trailing_columns(n);
+  rows.remove_trailing_columns(n);
 }
 
 template <typename Row>
 inline void
 Linear_System<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
-  Matrix<Row>::permute_columns(cycles);
+  rows.permute_columns(cycles);
   // The rows with permuted columns are still normalized but may
   // be not strongly normalized: sign normalization is necessary.
   sign_normalize();
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::swap_columns(dimension_type i, dimension_type j) {
+  rows.swap_columns(i, j);
 }
 
 /*! \relates Linear_System */

@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
 #include "Matrix.defs.hh"
+#include "globals.defs.hh"
 #include "Topology.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -50,8 +51,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Row>
-class Parma_Polyhedra_Library::Linear_System : public Matrix<Row> {
+class Parma_Polyhedra_Library::Linear_System {
 public:
+
+  typedef typename Matrix<Row>::iterator iterator;
+  typedef typename Matrix<Row>::const_iterator const_iterator;
+  
   //! Builds an empty linear system with specified topology.
   /*!
     Rows size and capacity are initialized to \f$0\f$.
@@ -116,6 +121,12 @@ public:
   */
   dimension_type space_dimension() const;
 
+  // TODO: Check if this should be removed.
+  dimension_type num_columns() const;
+
+  //! Makes the system shrink by removing its \p n trailing rows.
+  void remove_trailing_rows(dimension_type n);
+
   //! Makes the system shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 
@@ -145,6 +156,8 @@ public:
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
 
+  void swap_columns(dimension_type i, dimension_type j);
+
   //! \name Subscript operators
   //@{
   //! Returns a reference to the \p k-th row of the system.
@@ -153,6 +166,14 @@ public:
   //! Returns a constant reference to the \p k-th row of the system.
   const Row& operator[](dimension_type k) const;
   //@} // Subscript operators
+
+  iterator begin();
+  iterator end();
+  const_iterator begin() const;
+  const_iterator end() const;
+
+  bool has_no_rows() const;
+  dimension_type num_rows() const;
 
   //! Strongly normalizes the system.
   void strong_normalize();
@@ -239,6 +260,8 @@ public:
   */
   void add_rows_and_columns(dimension_type n);
 
+  void add_zero_columns(dimension_type n);
+
   /*! \brief
     Adds a copy of \p r to the system,
     automatically resizing the system or the row's copy, if needed.
@@ -253,6 +276,9 @@ public:
 
   //! Adds a copy of the given row to the system.
   void add_row(const Row& r);
+
+  //! Adds a the given row to the system, stealing its contents.
+  void add_recycled_row(Row& r);
 
   //! Adds a new empty row to the system, setting only its flags.
   void add_pending_row(typename Row::Flags flags);
@@ -381,6 +407,9 @@ public:
   bool OK(bool check_strong_normalized = true) const;
 
 private:
+  //! The vector that contains the rows.
+  Matrix<Row> rows;
+
   //! The topological kind of the rows in the system.
   Topology row_topology;
 
