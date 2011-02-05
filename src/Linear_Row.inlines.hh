@@ -99,6 +99,17 @@ Linear_Row::Flags::is_necessarily_closed() const {
 }
 
 inline void
+Linear_Row::Flags::set_topology(Topology x) {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  if (x == NOT_NECESSARILY_CLOSED)
+    set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+  else
+    reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline void
 Linear_Row::Flags::set_not_necessarily_closed() {
 #ifndef NDEBUG
   set_bits(1 << nnc_validity_bit);
@@ -235,6 +246,13 @@ inline void
 Linear_Row::set_necessarily_closed() {
   Flags f = flags();
   f.set_necessarily_closed();
+  set_flags(f);
+}
+
+inline void
+Linear_Row::set_topology(Topology x) {
+  Flags f = flags();
+  f.set_topology(x);
   set_flags(f);
 }
 

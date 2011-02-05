@@ -160,6 +160,7 @@ public:
     bool is_line_or_equality() const;
     bool is_ray_or_point_or_inequality() const;
 
+    void set_topology(Topology x);
     void set_necessarily_closed();
     void set_not_necessarily_closed();
     void set_is_line_or_equality();
@@ -278,6 +279,10 @@ public:
 
   //! \name Flags coercion methods
   //@{
+  
+  //! Sets to \p x the topological kind of \p *this row.
+  void set_topology(Topology x);
+
   //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_necessarily_closed();
 
