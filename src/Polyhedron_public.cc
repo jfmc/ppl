@@ -2899,15 +2899,15 @@ generalized_affine_image(const Variable var,
       const dimension_type eps_index = space_dim + 1;
       for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
 	if (gen_sys[i].is_point()) {
-	  Generator& g = gen_sys[i];
-	  // Add a `var'-displaced copy of `g' to the generator system.
-	  gen_sys.insert(g);
+	  // Add a `var'-displaced copy of `gen_sys[i]' to the generator
+          // system.
+	  gen_sys.insert(gen_sys[i]);
 	  if (relsym == GREATER_THAN)
 	    ++gen_sys[gen_sys.num_rows()-1][var_space_dim];
 	  else
 	    --gen_sys[gen_sys.num_rows()-1][var_space_dim];
-	  // Transform `g' into a closure point.
-	  g[eps_index] = 0;
+	  // Transform `gen_sys[i]' into a closure point.
+	  gen_sys[i][eps_index] = 0;
 	}
       clear_constraints_up_to_date();
       clear_generators_minimized();
