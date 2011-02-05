@@ -309,6 +309,8 @@ inline void
 Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(rows.size() >= n);
   rows.resize(rows.size() - n);
+  if (first_pending_row() > rows.size())
+    index_first_pending = rows.size();
 }
 
 template <typename Row>
@@ -325,7 +327,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::release_row(Row& row) {
   std::swap(row, rows.back());
-  rows.pop_back();
+  remove_trailing_rows(1);
 }
 
 template <typename Row>
