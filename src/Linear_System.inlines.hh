@@ -341,6 +341,24 @@ Linear_System<Row>::release_row(Row& row) {
 
 template <typename Row>
 inline void
+Linear_System<Row>::release_rows(Swapping_Vector<Row>& v) {
+  PPL_ASSERT(v.empty());
+  std::swap(rows, v);
+  unset_pending_rows();
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
+  PPL_ASSERT(num_rows() == 0);
+  std::swap(rows, v);
+  sorted = false;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>
 ::remove_trailing_columns_without_normalizing(const dimension_type n) {
   PPL_ASSERT(num_columns_ >= n);

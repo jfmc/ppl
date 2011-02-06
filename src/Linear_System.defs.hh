@@ -151,6 +151,12 @@ public:
   //! system.
   void release_row(Row& row);
 
+  //! Swaps the vector of rows with \p v. \p v must be empty.
+  void release_rows(Swapping_Vector<Row>& v);
+
+  //! Swaps the vector of rows with \p v. \p *this must have no rows.
+  void take_ownership_of_rows(Swapping_Vector<Row>& v);
+
   //! Permutes the columns of the system.
   /*
     \param cycles
