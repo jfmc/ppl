@@ -32,6 +32,7 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
   set_flags(Flags(NECESSARILY_CLOSED, (type == LINE
                                        ? LINE_OR_EQUALITY
                                        : RAY_OR_POINT_OR_INEQUALITY)));
+  PPL_ASSERT(OK());
 }
 
 inline
