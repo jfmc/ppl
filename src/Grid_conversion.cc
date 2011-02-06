@@ -309,6 +309,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);
+
+  PPL_ASSERT(dest.OK());
 }
 
 void
