@@ -344,6 +344,10 @@ private:
   */
   bool has_closure_points() const;
 
+  //! Converts this generator system into a non-necessarily closed generator
+  //! system.
+  void convert_into_non_necessarily_closed();
+
   //! Returns the \p k- th generator of the system.
   Generator& operator[](dimension_type k);
 

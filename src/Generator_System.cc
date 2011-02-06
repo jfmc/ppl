@@ -131,16 +131,8 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	add_zero_columns(cols_to_be_added);
       }
       else {
-	// A NECESSARILY_CLOSED generator system is converted to
-	// a NOT_NECESSARILY_CLOSED one by adding a further column
-	// and setting the epsilon coordinate of all points to 1.
-	// Note: normalization is preserved.
-	add_zero_columns(cols_to_be_added + 1);
-	Generator_System& gs = *this;
-	const dimension_type eps_index = new_space_dim + 1;
-	for (dimension_type i = num_rows(); i-- > 0; )
-	  gs[i][eps_index] = gs[i][0];
-	set_not_necessarily_closed();
+        add_zero_columns(cols_to_be_added);
+        convert_into_non_necessarily_closed();
       }
     else {
       // Topologies agree: first add the required zero columns ...
@@ -163,17 +155,8 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	remove_trailing_columns(1);
 	set_necessarily_closed();
       }
-      else {
-	// Add the column of the epsilon coefficients
-	// and set the epsilon coordinate of all points to 1.
-	// Note: normalization is preserved.
-	add_zero_columns(1);
-	Generator_System& gs = *this;
-	const dimension_type eps_index = new_space_dim + 1;
-	for (dimension_type i = num_rows(); i-- > 0; )
-	  gs[i][eps_index] = gs[i][0];
-	set_not_necessarily_closed();
-      }
+      else
+        convert_into_non_necessarily_closed();
     }
   // We successfully adjusted dimensions and topology.
   PPL_ASSERT(OK());
@@ -244,6 +227,25 @@ PPL::Generator_System::has_closure_points() const {
   return false;
 }
 
+void
+PPL::Generator_System::convert_into_non_necessarily_closed() {
+  // Padding the matrix with the column
+  // corresponding to the epsilon coefficients:
+  // all points must have epsilon coordinate equal to 1
+  // (i.e., the epsilon coefficient is equal to the divisor);
+  // rays and lines must have epsilon coefficient equal to 0.
+  // Note: normalization is preserved.
+  const dimension_type eps_index = num_columns();
+  add_zero_columns(1);
+  Generator_System& gs = *this;
+  for (dimension_type i = num_rows(); i-- > 0; ) {
+     Generator& gen = gs[i];
+     if (!gen.is_line_or_ray())
+       gen[eps_index] = gen[0];
+  }
+  set_not_necessarily_closed();
+}
+
 bool
 PPL::Generator_System::has_points() const {
   const Generator_System& gs = *this;
@@ -290,21 +292,7 @@ PPL::Generator_System::insert(const Generator& g) {
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
-      // Padding the matrix with the column
-      // corresponding to the epsilon coefficients:
-      // all points must have epsilon coordinate equal to 1
-      // (i.e., the epsilon coefficient is equal to the divisor);
-      // rays and lines must have epsilon coefficient equal to 0.
-      // Note: normalization is preserved.
-      const dimension_type eps_index = num_columns();
-      add_zero_columns(1);
-      Generator_System& gs = *this;
-      for (dimension_type i = num_rows(); i-- > 0; ) {
-	Generator& gen = gs[i];
-	if (!gen.is_line_or_ray())
-	  gen[eps_index] = gen[0];
-      }
-      set_not_necessarily_closed();
+      convert_into_non_necessarily_closed();
       // Inserting the new generator.
       Base::insert(g);
     }
@@ -334,21 +322,8 @@ PPL::Generator_System::insert_pending(const Generator& g) {
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
-      // Padding the matrix with the column
-      // corresponding to the epsilon coefficients:
-      // all points must have epsilon coordinate equal to 1
-      // (i.e., the epsilon coefficient is equal to the divisor);
-      // rays and lines must have epsilon coefficient equal to 0.
-      // Note: normalization is preserved.
-      const dimension_type eps_index = num_columns();
-      add_zero_columns(1);
-      Generator_System& gs = *this;
-      for (dimension_type i = num_rows(); i-- > 0; ) {
-	Generator& gen = gs[i];
-	if (!gen.is_line_or_ray())
-	  gen[eps_index] = gen[0];
-      }
-      set_not_necessarily_closed();
+      convert_into_non_necessarily_closed();
+
       // Inserting the new generator.
       Base::insert_pending(g);
     }
