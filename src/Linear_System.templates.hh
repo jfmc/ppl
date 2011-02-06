@@ -884,7 +884,7 @@ Linear_System<Row>::check_sorted() const {
 
 template <typename Row>
 bool
-Linear_System<Row>::OK(const bool check_strong_normalized) const {
+Linear_System<Row>::OK(const bool /* check_strong_normalized */) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -962,22 +962,27 @@ Linear_System<Row>::OK(const bool check_strong_normalized) const {
     }
   }
 
-  if (check_strong_normalized) {
-    // Check for strong normalization of rows.
-    // Note: normalization cannot be checked inside the
-    // Row::OK() method, because a Linear_Row object may also
-    // implement a Linear_Expression object, which in general cannot
-    // be (strongly) normalized.
-    Linear_System tmp(x, With_Pending());
-    tmp.strong_normalize();
-    if (x != tmp) {
-#ifndef NDEBUG
-      cerr << "Linear_System rows are not strongly normalized!"
-	   << endl;
-#endif
-      return false;
+  // TODO: Re-enable this. It was disabled because a Linear_System can be a
+  // Grid_Generator_System, which in turn can contain non-normalized rows
+  // representing parameters.
+  /*
+    if (check_strong_normalized) {
+      // Check for strong normalization of rows.
+      // Note: normalization cannot be checked inside the
+      // Row::OK() method, because a Linear_Row object may also
+      // implement a Linear_Expression object, which in general cannot
+      // be (strongly) normalized.
+      Linear_System tmp(x, With_Pending());
+      tmp.strong_normalize();
+      if (x != tmp) {
+  #ifndef NDEBUG
+        cerr << "Linear_System rows are not strongly normalized!"
+             << endl;
+  #endif
+        return false;
+      }
     }
-  }
+  */
 
   if (sorted && !check_sorted()) {
 #ifndef NDEBUG
