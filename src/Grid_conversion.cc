@@ -356,12 +356,12 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   //
   // The top-down order of the congruence system rows corresponds to
   // the right-left order of the dimensions.
-  dimension_type source_index = 0;
+  dimension_type source_index = source_num_rows;
   // The generator system has a bottom-up ordering.
-  dimension_type dest_index = dest_num_rows - 1;
-  for (dimension_type dim = dims; dim-- > 0; ) {
+  dimension_type dest_index = 0;
+  for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] == EQUALITY) {
-      ++source_index;
+      --source_index;
     }
     else {
       Grid_Generator& g = dest[dest_index];
@@ -377,10 +377,10 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       else {
 	PPL_ASSERT(dim_kinds[dim] == PROPER_CONGRUENCE);
 	g.set_is_parameter_or_point();
+        --source_index;
 	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
-	++source_index;
       }
-      --dest_index;
+      ++dest_index;
     }
   }
 
