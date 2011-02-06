@@ -583,13 +583,13 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     // gen_sys should have at least one point.
     PPL_ASSERT(row < num_rows);
   }
-  Grid_Generator& first_point = gen_sys[row];
+  const Grid_Generator& first_point = gen_sys[row];
   const Coefficient& gen_sys_divisor = first_point.divisor();
 
 #ifndef NDEBUG
   // Check that the divisors in gen_sys are equal.
   for (dimension_type i = row + 1; i < num_rows; ++i) {
-    Grid_Generator& g = gen_sys[i];
+    const Grid_Generator& g = gen_sys[i];
     if (g.is_parameter_or_point())
       PPL_ASSERT(gen_sys_divisor == g.divisor());
   }

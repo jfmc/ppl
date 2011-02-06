@@ -1022,7 +1022,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	// contain at least a single point afterward.
 	PPL_ASSERT(!gs.has_no_rows());
 	for (dimension_type row = gen_sys.num_rows(); row-- > 0; ) {
-	  Grid_Generator& g = gs[row];
+	  const Grid_Generator& g = gs[row];
 	  const Grid_Generator& g_copy = gen_sys[row];
 	  if (g.is_equal_to(g_copy))
 	    continue;
