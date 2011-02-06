@@ -174,16 +174,20 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> num_columns))
       return false;
-  resize_no_copy(num_rows, num_columns);
+  resize_no_copy(0, num_columns);
 
   set_sorted(false);
-  set_index_first_pending_row(num_rows);
 
-  Grid_Generator_System& x = *this;
-  for (dimension_type i = 0; i < num_rows; ++i)
-    if (!x[i].ascii_load(s))
+  for (dimension_type i = 0; i < num_rows; ++i) {
+    Grid_Generator tmp;
+    if (!tmp.ascii_load(s))
       return false;
+    if (i == 0)
+      set_topology(tmp.topology());
+    insert_recycled(tmp);
+  }
 
+  set_index_first_pending_row(num_rows);
   // Check invariants.
   PPL_ASSERT(OK());
 
