@@ -27,6 +27,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Generator::Generator()
+  : Linear_Row() {
+}
+
+inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);

@@ -272,6 +272,10 @@ public:
 			 Coefficient_traits::const_reference d
 			 = Coefficient_one());
 
+  // TODO: check this.
+  //! Default constructor. Constructs an invalid Generator.
+  Generator();
+
   //! Returns the closure point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
@@ -467,9 +471,6 @@ private:
     and both topologies and space dimensions agree.
   */
   bool is_matching_closure_point(const Generator& p) const;
-
-  //! Default constructor: private and not implemented.
-  Generator();
 };
 
 
