@@ -347,8 +347,11 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     throw std::runtime_error("PPL internal error: Grid::conversion:"
 			     " source matrix is singular.");
 
-  dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dims + 1 /* parameter divisor */);
+  Swapping_Vector<Linear_Row> recyclable_rows;
+  dest.release_rows(recyclable_rows);
+
+  dest.Linear_System<Linear_Row>::clear();
+  dest.add_zero_columns(dims + 1 /* parameter divisor */);
 
   // In `dest' initialize row types and elements, including setting
   // the diagonal elements to the inverse ratio of the `source'
@@ -358,17 +361,28 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // the right-left order of the dimensions.
   dimension_type source_index = source_num_rows;
   // The generator system has a bottom-up ordering.
-  dimension_type dest_index = 0;
   for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] == EQUALITY) {
       --source_index;
     }
     else {
-      Grid_Generator& g = dest[dest_index];
-      for (dimension_type j = dim; j-- > 0; )
-	g[j] = 0;
-      for (dimension_type j = dim + 1; j < dims; ++j)
-	g[j] = 0;
+      Grid_Generator g;
+      if (!recyclable_rows.empty()) {
+        // Recycle a previous row.
+        std::swap(recyclable_rows.back(), g);
+        recyclable_rows.pop_back();
+
+        g.resize(dims + 1);
+
+        for (dimension_type j = dim; j-- > 0; )
+          g[j] = 0;
+        for (dimension_type j = dim + 1; j <= dims; ++j)
+          g[j] = 0;
+      } else {
+        g.resize(dims + 1);
+        // All the elements have been default-constructed, so they are zero.
+        // We don't need to explictly reset them.
+      }
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
 	g.set_is_line();
@@ -380,10 +394,17 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         --source_index;
 	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
       }
-      ++dest_index;
+      g.set_topology(dest.topology());
+      dest.Linear_System<Linear_Row>::insert(g);
     }
   }
 
+  // TODO: Remove this when the following loop does not trigger assertions
+  // anymore.
+  dest.set_sorted(false);
+
+  PPL_ASSERT(dest.num_rows() == dest_num_rows);
+  PPL_ASSERT(dest.first_pending_row() == dest_num_rows);
   PPL_ASSERT(upper_triangular(dest, dim_kinds));
 
   // Convert.
@@ -394,7 +415,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // last to first (index 0) in `source' and from first to last in
   // `dest'.
   source_index = source_num_rows;
-  dest_index = 0;
+  dimension_type dest_index = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_source_dim);
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
