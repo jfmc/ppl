@@ -867,55 +867,59 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
       return false;
-  resize_no_copy(nrows, ncols);
+  resize_no_copy(0, ncols);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
   set_sorted(str == "(sorted)");
-  dimension_type index;
+  dimension_type pending_index;
   if (!(s >> str) || str != "index_first_pending")
     return false;
-  if (!(s >> index))
+  if (!(s >> pending_index))
     return false;
-  set_index_first_pending_row(index);
 
   Generator_System& x = *this;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
+  for (dimension_type i = 0; i < nrows; ++i) {
+    Linear_Row row(ncols, Linear_Row::Flags());
+    Generator& gen = static_cast<Generator&>(row);
+    
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (!(s >> x[i][j]))
+      if (!(s >> row[j]))
 	return false;
 
     if (!(s >> str))
       return false;
     if (str == "L")
-      x[i].set_is_line();
+      gen.set_is_line();
     else if (str == "R" || str == "P" || str == "C")
-      x[i].set_is_ray_or_point();
+      gen.set_is_ray_or_point();
     else
       return false;
 
+    gen.set_topology(topology());
+
     // Checking for equality of actual and declared types.
-    switch (x[i].type()) {
+    switch (gen.type()) {
     case Generator::LINE:
-      if (str == "L")
-	continue;
+      if (str != "L")
+	return false;
       break;
     case Generator::RAY:
-      if (str == "R")
-	continue;
+      if (str != "R")
+	return false;
       break;
     case Generator::POINT:
-      if (str == "P")
-	continue;
+      if (str != "P")
+	return false;
       break;
     case Generator::CLOSURE_POINT:
-      if (str == "C")
-	continue;
+      if (str != "C")
+	return false;
       break;
     }
-    // Reaching this point means that the input was illegal.
-    return false;
+    insert_pending_recycled(row);
   }
+  set_index_first_pending_row(pending_index);
 
   // Check invariants.
   PPL_ASSERT(OK());
