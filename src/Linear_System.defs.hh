@@ -438,7 +438,9 @@ public:
   */
   bool OK(bool check_strong_normalized = true) const;
 
-private:
+  // TODO: This should be `private'.
+protected:
+
   //! Adds a copy of the given row to the system.
   void add_row(const Row& r);
 
