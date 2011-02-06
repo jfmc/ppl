@@ -227,6 +227,9 @@ public:
   */
   bool check_sorted() const;
 
+  //! Sets the system topology to \p t .
+  void set_topology(Topology t);
+
   //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
   void set_necessarily_closed();
 

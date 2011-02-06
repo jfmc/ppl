@@ -193,6 +193,14 @@ Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
 
 template <typename Row>
 inline void
+Linear_System<Row>::set_topology(Topology t) {
+  row_topology = t;
+  if (!has_no_rows())
+    set_rows_topology();
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
   if (!has_no_rows())
