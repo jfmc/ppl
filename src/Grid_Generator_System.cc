@@ -346,12 +346,11 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
   dimension_type n_rows = old_n_rows;
   if (num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Grid_Generator& g = ggs[i];
+      const Grid_Generator& g = ggs[i];
       if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/parameter has been found.
 	--n_rows;
-	std::swap(g, ggs[n_rows]);
-	ggs.set_sorted(false);
+        ggs.swap_rows(i, n_rows);
       }
     }
     set_index_first_pending_row(n_rows);
@@ -367,27 +366,25 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
     PPL_ASSERT(num_pending_rows() > 0);
     dimension_type first_pending = first_pending_row();
     for (dimension_type i = first_pending; i-- > 0; ) {
-      Grid_Generator& g = ggs[i];
+      const Grid_Generator& g = ggs[i];
       if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/parameter has been found.
 	--first_pending;
-	std::swap(g, ggs[first_pending]);
-	ggs.set_sorted(false);
+        ggs.swap_rows(i, first_pending);
       }
     }
     const dimension_type num_invalid_rows
       = first_pending_row() - first_pending;
     set_index_first_pending_row(first_pending);
     for (dimension_type i = 0; i < num_invalid_rows; ++i)
-      std::swap(ggs[n_rows - i], ggs[first_pending + i]);
+      ggs.swap_rows(n_rows - i, first_pending + i);
     n_rows -= num_invalid_rows;
     for (dimension_type i = n_rows; i-- > first_pending; ) {
-      Grid_Generator& g = ggs[i];
+      const Grid_Generator& g = ggs[i];
       if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/parameter has been found.
 	--n_rows;
-	std::swap(g, ggs[n_rows]);
-	ggs.set_sorted(false);
+        ggs.swap_rows(i, n_rows);
       }
     }
   }
