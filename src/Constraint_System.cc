@@ -535,51 +535,53 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
       return false;
-  resize_no_copy(nrows, ncols);
+  resize_no_copy(0, ncols);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
   set_sorted(str == "(sorted)");
-  dimension_type index;
+  dimension_type pending_index;
   if (!(s >> str) || str != "index_first_pending")
     return false;
-  if (!(s >> index))
+  if (!(s >> pending_index))
     return false;
-  set_index_first_pending_row(index);
 
   Constraint_System& x = *this;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
+  for (dimension_type i = 0; i < nrows; ++i) {
+    Constraint row(ncols);
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (!(s >> x[i][j]))
+      if (!(s >> row[j]))
 	return false;
 
     if (!(s >> str))
       return false;
     if (str == "=")
-      x[i].set_is_equality();
+      row.set_is_equality();
     else if (str == ">=" || str == ">")
-      x[i].set_is_inequality();
+      row.set_is_inequality();
     else
       return false;
 
+    row.set_topology(topology());
+
     // Checking for equality of actual and declared types.
-    switch (x[i].type()) {
+    switch (row.type()) {
     case Constraint::EQUALITY:
-      if (str == "=")
-	continue;
+      if (str != "=")
+	return false;
       break;
     case Constraint::NONSTRICT_INEQUALITY:
-      if (str == ">=")
-	continue;
+      if (str != ">=")
+	return false;
       break;
     case Constraint::STRICT_INEQUALITY:
-      if (str == ">")
-	continue;
+      if (str != ">")
+	return false;
       break;
     }
-    // Reaching this point means that the input was illegal.
-    return false;
+    insert_pending_recycled(row);
   }
+  set_index_first_pending_row(pending_index);
   // Check invariants.
   PPL_ASSERT(OK());
   return true;
