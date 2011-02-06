@@ -109,7 +109,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  // indices starting from `i'.
 	  if (num_closure_points > 0)
 	    // Let next generator have index `i'.
-	    std::swap(gs[i], gs[i+num_closure_points]);
+            gs.swap_rows(i, i + num_closure_points);
 	  if (gs[i].is_closure_point()) {
 	    ++num_closure_points;
 	    --gs_end;
@@ -937,12 +937,11 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   dimension_type n_rows = old_n_rows;
   if (num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Generator& g = gs[i];
+      const Generator& g = gs[i];
       if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
-	std::swap(g, gs[n_rows]);
-	gs.set_sorted(false);
+        gs.swap_rows(i, n_rows);
       }
     }
     set_index_first_pending_row(n_rows);
@@ -958,27 +957,25 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     PPL_ASSERT(num_pending_rows() > 0);
     dimension_type first_pending = first_pending_row();
     for (dimension_type i = first_pending; i-- > 0; ) {
-      Generator& g = gs[i];
+      const Generator& g = gs[i];
       if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--first_pending;
-	std::swap(g, gs[first_pending]);
-	gs.set_sorted(false);
+	gs.swap_rows(i, first_pending);
       }
     }
     const dimension_type num_invalid_rows
       = first_pending_row() - first_pending;
     set_index_first_pending_row(first_pending);
     for (dimension_type i = 0; i < num_invalid_rows; ++i)
-      std::swap(gs[n_rows - i], gs[first_pending + i]);
+      gs.swap_rows(n_rows - i, first_pending + i);
     n_rows -= num_invalid_rows;
     for (dimension_type i = n_rows; i-- > first_pending; ) {
-      Generator& g = gs[i];
+      const Generator& g = gs[i];
       if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
-	std::swap(g, gs[n_rows]);
-	gs.set_sorted(false);
+        gs.swap_rows(i, n_rows);
       }
     }
   }
