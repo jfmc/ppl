@@ -261,6 +261,9 @@ public:
 				   Coefficient_traits::const_reference d
 				   = Coefficient_one());
 
+  //! Constructs an invalid Grid_Generator.
+  Grid_Generator();
+  
   //! Ordinary copy constructor.
   Grid_Generator(const Grid_Generator& g);
 

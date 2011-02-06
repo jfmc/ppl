@@ -35,6 +35,12 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
 }
 
 inline
+Grid_Generator::Grid_Generator()
+  : Linear_Row() {
+  set_flags(Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY));
+}
+
+inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
   : Linear_Row(g) {
 }
