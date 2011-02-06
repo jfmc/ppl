@@ -189,6 +189,7 @@ Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
   // it is very likely that the system will be overwritten as soon as
   // we return.
   set_sorted(false);
+  unset_pending_rows();
 }
 
 template <typename Row>
