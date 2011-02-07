@@ -39,6 +39,24 @@ Congruence_System::operator[](const dimension_type k) const {
 }
 
 inline void
+Congruence_System::release_rows(Swapping_Vector<Dense_Row>& v) {
+  PPL_ASSERT(v.empty());
+  v.resize(num_rows());
+  for (dimension_type i = num_rows(); i-- > 0; )
+    std::swap((*this)[i], v[i]);
+
+  Matrix<Dense_Row>::resize(0, num_columns());
+}
+
+inline void
+Congruence_System::take_ownership_of_rows(Swapping_Vector<Dense_Row>& v) {
+  PPL_ASSERT(Matrix<Dense_Row>::num_rows() == 0);
+  for (dimension_type i = 0; i < v.size(); ++i)
+    Matrix<Dense_Row>::add_recycled_row(v[i]);
+  v.clear();
+}
+
+inline void
 Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
   static_cast<Congruence&>(operator[](num_rows()-1)).strong_normalize();

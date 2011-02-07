@@ -422,6 +422,13 @@ private:
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
 
+  // TODO: Check if these methods should be improved.
+  void release_rows(Swapping_Vector<Dense_Row>& v);
+  void take_ownership_of_rows(Swapping_Vector<Dense_Row>& v);
+
+  // TODO: Remove this.
+  typedef Dense_Row internal_row_type;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if any of the dimensions in
     \p *this is free of constraint.
