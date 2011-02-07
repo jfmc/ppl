@@ -238,11 +238,21 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   const dimension_type eps_index = num_columns();
   add_zero_columns(1);
   Generator_System& gs = *this;
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-     Generator& gen = gs[i];
-     if (!gen.is_line_or_ray())
-       gen[eps_index] = gen[0];
+
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the linear system, so they can be modified.
+  gs.release_rows(rows);
+
+  for (dimension_type i = rows.size(); i-- > 0; ) {
+    Linear_Row& row = rows[i];
+    Generator& gen = static_cast<Generator&>(row);
+    if (!gen.is_line_or_ray())
+      gen[eps_index] = gen[0];
   }
+
+  // Put the rows back into the linear system.
+  gs.take_ownership_of_rows(rows);
+
   set_not_necessarily_closed();
 }
 
