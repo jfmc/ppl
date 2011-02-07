@@ -428,6 +428,12 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   dimension_type dest_index = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_source_dim);
 
+  // TODO: Improve this, considering that these rows have just been added to
+  // `dest'.
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the linear system, so they can be modified.
+  dest.release_rows(rows);
+
   for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
@@ -435,22 +441,18 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
-      for (dimension_type row = dest_index; row-- > 0; ) {
-	Grid_Generator& g = dest[row];
+
+      for (dimension_type i = dest_index; i-- > 0; ) {
+        Linear_Row& row = rows[i];
+        Grid_Generator& g = static_cast<Grid_Generator&>(row);
 
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
 	gcd_assign(reduced_source_dim, g[dim], source_dim);
 	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
-
-        Swapping_Vector<Linear_Row> rows;
-        dest.release_rows(rows);
-
 	multiply_grid(reduced_source_dim, g, rows, dest_num_rows,
 		      dims + 1 /* parameter divisor */);
-
-        dest.take_ownership_of_rows(rows);
 
 	Coefficient& g_dim = g[dim];
 	exact_div_assign(g_dim, g_dim, source_dim);
@@ -478,19 +480,21 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// I.e., for each row `dest_index' in `dest' that is above the
 	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_fol'.
-	for (dimension_type row = dest_index; row-- > 0; ) {
-	  PPL_ASSERT(row < dest_num_rows);
-	  Grid_Generator& g = dest[row];
-	  sub_mul_assign(g[dim_fol], source_dim, g[dim]);
+
+        for (dimension_type i = dest_index; i-- > 0; ) {
+	  PPL_ASSERT(i < dest_num_rows);
+          Linear_Row& row = rows[i];
+	  sub_mul_assign(row[dim_fol], source_dim, row[dim]);
 	}
       }
     }
   }
 
+#ifndef NDEBUG
+  dest.take_ownership_of_rows(rows);
   PPL_ASSERT(upper_triangular(dest, dim_kinds));
-
-  Swapping_Vector<Linear_Row> rows;
   dest.release_rows(rows);
+#endif
 
   // Since we are reducing the system to "strong minimal form",
   // reduce the coordinates in the grid_generator system
@@ -501,21 +505,26 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(rows, dim, i++, dim, dims - 1, dim_kinds);
 
-  dest.take_ownership_of_rows(rows);
-
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
-  const Coefficient& system_divisor = dest[0][0];
-  for (dimension_type row = dest.num_rows() - 1, dim = dims;
-       dim-- > 1; )
+  const Coefficient& system_divisor = rows[0][0];
+  
+  for (dimension_type i = rows.size() - 1, dim = dims;
+       dim-- > 1; ) {
+    Linear_Row& row = rows[i];
+    Grid_Generator& g = static_cast<Grid_Generator&>(row);
     switch (dim_kinds[dim]) {
     case PARAMETER:
-      dest[row].set_divisor(system_divisor);
+      g.set_divisor(system_divisor);
     case LINE:
-      --row;
+      --i;
     case GEN_VIRTUAL:
       break;
     }
+  }
+
+  // Put the rows back into the linear system.
+  dest.take_ownership_of_rows(rows);
 }
 
 } // namespace Parma_Polyhedra_Library
