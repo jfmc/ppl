@@ -2508,7 +2508,10 @@ private:
     congruence or generator system.
   */
   template <typename M, typename R>
-  static void reduce_reduced(M& sys, dimension_type dim,
+  // This takes a parameter with type `Swapping_Vector<M::internal_row_type>'
+  // instead of `M' to simplify the implementation of simplify().
+  static void reduce_reduced(Swapping_Vector<typename M::internal_row_type>& sys,
+                             dimension_type dim,
 			     dimension_type pivot_index,
 			     dimension_type start, dimension_type end,
 			     const Dimension_Kinds& dim_kinds,

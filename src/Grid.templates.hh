@@ -267,14 +267,18 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 // to "strong minimal form".
 template <typename M, typename R>
 void
-Grid::reduce_reduced(M& sys,
+Grid::reduce_reduced(Swapping_Vector<typename M::internal_row_type>& rows,
 		     const dimension_type dim,
 		     const dimension_type pivot_index,
 		     const dimension_type start,
 		     const dimension_type end,
 		     const Dimension_Kinds& dim_kinds,
 		     const bool generators) {
-  R& pivot = sys[pivot_index];
+  // TODO: Remove this.
+  typedef typename M::internal_row_type M_row_type;
+
+  const M_row_type& pivot_row = rows[pivot_index];
+  const R& pivot = static_cast<const R&>(pivot_row);
 
   const Coefficient& pivot_dim = pivot[dim];
 
@@ -310,7 +314,8 @@ Grid::reduce_reduced(M& sys,
     if (row_kind == line_or_equality
 	|| (row_kind == PARAMETER
 	    && dim_kinds[kinds_index] == PARAMETER)) {
-      R& row = sys[row_index];
+      M_row_type& lr = rows[row_index];
+      R& row = static_cast<R&>(lr);
 
       const Coefficient& row_dim = row[dim];
       // num_rows_to_subtract may be positive or negative.

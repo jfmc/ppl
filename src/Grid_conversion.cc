@@ -301,6 +301,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   PPL_ASSERT(lower_triangular(dest, dim_kinds));
 
+  Swapping_Vector<Dense_Row> rows;
+  dest.release_rows(rows);
+
   // Since we are reducing the system to "strong minimal form",
   // reduce the coefficients in the congruence system
   // using "diagonal" values.
@@ -308,7 +311,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
-	(dest, dim, i++, 0, dim, dim_kinds, false);
+	(rows, dim, i++, 0, dim, dim_kinds, false);
+
+  dest.take_ownership_of_rows(rows);
 
   PPL_ASSERT(dest.OK());
 }
@@ -475,6 +480,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   PPL_ASSERT(upper_triangular(dest, dim_kinds));
 
+  Swapping_Vector<Linear_Row> rows;
+  dest.release_rows(rows);
+
   // Since we are reducing the system to "strong minimal form",
   // reduce the coordinates in the grid_generator system
   // using "diagonal" values.
@@ -482,7 +490,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
-	(dest, dim, i++, dim, dims - 1, dim_kinds);
+	(rows, dim, i++, dim, dims - 1, dim_kinds);
+
+  dest.take_ownership_of_rows(rows);
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.

@@ -344,9 +344,14 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot[dim] < 0)
         pivot.negate(dim, num_columns);
 
+      Swapping_Vector<Linear_Row> rows;
+      sys.release_rows(rows);
+
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
-	(sys, dim, pivot_index, dim, num_columns - 1, dim_kinds);
+	(rows, dim, pivot_index, dim, num_columns - 1, dim_kinds);
+
+      sys.take_ownership_of_rows(rows);
 
       ++pivot_index;
     }
@@ -470,9 +475,15 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
 	pivot.negate(0, dim + 1);
+
+      Swapping_Vector<Dense_Row> rows;
+      sys.release_rows(rows);
+
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System, Congruence>
-	(sys, dim, pivot_index, 0, dim, dim_kinds, false);
+	(rows, dim, pivot_index, 0, dim, dim_kinds, false);
+
+      sys.take_ownership_of_rows(rows);
 
       ++pivot_index;
     }
@@ -577,10 +588,15 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     last_row[0] = last_row[mod_index];
   }
 
+  Swapping_Vector<Dense_Row> rows;
+  sys.release_rows(rows);
+
   // Since we are reducing the system to "strong minimal form",
   // factor the modified integrality congruence out of the other rows;
   reduce_reduced<Congruence_System, Congruence>
-    (sys, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
+    (rows, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
+
+  sys.take_ownership_of_rows(rows);
 
   PPL_ASSERT(sys.OK());
   return false;
