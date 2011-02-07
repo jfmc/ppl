@@ -785,11 +785,22 @@ PPL::Generator_System
   const dimension_type n_columns = x.num_columns();
   const dimension_type n_rows = x.num_rows();
 
+  // TODO: Check if it's correct to arrive at this point with some pending
+  // rows.
+  const dimension_type pending_row_index = first_pending_row();
+
+  // Avoid triggering assertions in release_rows().
+  unset_pending_rows();
+
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the linear system, so they can be modified.
+  x.release_rows(rows);
+
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
-    Generator& row = x[i];
+    Linear_Row& row = rows[i];
     Scalar_Products::assign(numerator, expr, row);
     std::swap(numerator, row[v]);
   }
@@ -799,12 +810,18 @@ PPL::Generator_System
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Generator& row = x[i];
+      Linear_Row& row = rows[i];
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
     }
   }
+
+  // Put the modified rows back into the linear system.
+  x.take_ownership_of_rows(rows);
+
+  // Restore the pending row index.
+  x.set_index_first_pending_row(pending_row_index);
 
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
