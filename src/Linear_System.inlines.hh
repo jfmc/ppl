@@ -59,6 +59,10 @@ Linear_System<Row>::is_sorted() const {
 template <typename Row>
 inline void
 Linear_System<Row>::set_sorted(const bool b) {
+#ifndef NDEBUG
+  if (b)
+    PPL_ASSERT(check_sorted());
+#endif
   sorted = b;
 }
 
@@ -343,6 +347,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::release_rows(Swapping_Vector<Row>& v) {
   PPL_ASSERT(v.empty());
+  PPL_ASSERT(num_pending_rows() == 0);
   std::swap(rows, v);
   unset_pending_rows();
   PPL_ASSERT(OK());
