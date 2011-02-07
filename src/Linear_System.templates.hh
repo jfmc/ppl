@@ -565,7 +565,7 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
     // In this case, we must put the duplicates after the pending rows.
     const dimension_type n_rows = sys.num_rows() - 1;
     for (dimension_type i = 0; i < num_duplicates; ++i)
-      std::swap(sys[new_first_pending_row + i], sys[n_rows - i]);
+      sys.swap_rows(new_first_pending_row + i, n_rows - i);
   }
   // Erasing the duplicated rows...
   sys.remove_trailing_rows(num_duplicates);
