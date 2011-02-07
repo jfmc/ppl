@@ -267,6 +267,10 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   const dimension_type num_rows = sys.num_rows();
 
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the linear system, so they can be modified.
+  sys.release_rows(rows);
+
   // For each dimension `dim' move or construct a row into position
   // `pivot_index' such that the row has zero in all elements
   // following column `dim' and a value other than zero in column
@@ -277,7 +281,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     dimension_type row_index = pivot_index;
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && sys[row_index][dim] == 0)
+    while (row_index < num_rows && rows[row_index][dim] == 0)
       ++row_index;
 
     if (row_index == num_rows)
@@ -285,8 +289,9 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       dim_kinds[dim] = GEN_VIRTUAL;
     else {
       if (row_index != pivot_index)
-	std::swap(sys[row_index], sys[pivot_index]);
-      Grid_Generator& pivot = sys[pivot_index];
+        std::swap(rows[row_index], rows[pivot_index]);
+      Linear_Row& pivot_row = rows[pivot_index];
+      Grid_Generator& pivot = static_cast<Grid_Generator&>(pivot_row);
       bool pivot_is_line = pivot.is_line();
 
       // Change the matrix so that the value at `dim' in every row
@@ -294,7 +299,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       while (row_index < num_rows - 1) {
 	++row_index;
 
-	Grid_Generator& row = sys[row_index];
+        Linear_Row& lr = rows[row_index];
+        Grid_Generator& row = static_cast<Grid_Generator&>(lr);
 
 	if (row[dim] == 0)
 	  continue;
@@ -306,26 +312,13 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
 	    std::swap(row, pivot);
 	    pivot_is_line = true;
-
-            Swapping_Vector<Linear_Row> rows;
-            sys.release_rows(rows);
-
-	    reduce_parameter_with_line(row, pivot, dim, rows,
-                                       sys.num_columns());
-
-            sys.take_ownership_of_rows(rows);
+	    reduce_parameter_with_line(row, pivot, dim, rows, num_columns + 1);
 	  }
 	else {
 	  PPL_ASSERT(row.is_parameter_or_point());
-	  if (pivot_is_line) {
-            Swapping_Vector<Linear_Row> rows;
-            sys.release_rows(rows);
-
-	    reduce_parameter_with_line(row, pivot, dim, rows,
-                                       sys.num_columns());
-
-            sys.take_ownership_of_rows(rows);
-          } else {
+	  if (pivot_is_line)
+	    reduce_parameter_with_line(row, pivot, dim, rows, num_columns + 1);
+	  else {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
 	    reduce_pc_with_pc(row, pivot, dim, dim + 1, num_columns);
 	  }
@@ -344,14 +337,9 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot[dim] < 0)
         pivot.negate(dim, num_columns);
 
-      Swapping_Vector<Linear_Row> rows;
-      sys.release_rows(rows);
-
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(rows, dim, pivot_index, dim, num_columns - 1, dim_kinds);
-
-      sys.take_ownership_of_rows(rows);
 
       ++pivot_index;
     }
@@ -360,6 +348,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Clip any zero rows from the end of the matrix.
   if (num_rows > pivot_index) {
 #ifndef NDEBUG
+    sys.take_ownership_of_rows(rows);
     const bool ret = rows_are_zero<Grid_Generator_System, Grid_Generator>
       (sys,
        // index of first
@@ -368,27 +357,31 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
        sys.num_rows() - 1,
        // row size
        sys.num_columns() - 1);
+    sys.release_rows(rows);
     PPL_ASSERT(ret == true);
 #endif
-    sys.remove_trailing_rows(num_rows - pivot_index);
+    rows.resize(pivot_index);
   }
-
-  sys.unset_pending_rows();
 
   // Ensure that the parameter divisors are the same as the system
   // divisor.
-  const Coefficient& system_divisor = sys[0][0];
-  for (dimension_type row = sys.num_rows() - 1,
-	 dim = sys.num_columns() - 2;
-       dim > 0; --dim)
+  const Coefficient& system_divisor = rows[0][0];
+  for (dimension_type i = rows.size() - 1, dim = num_columns - 1;
+       dim > 0; --dim) {
+    Linear_Row& row = rows[i];
+    Grid_Generator& g = static_cast<Grid_Generator&>(row);
+
     switch (dim_kinds[dim]) {
     case PARAMETER:
-      sys[row].set_divisor(system_divisor);
+      g.set_divisor(system_divisor);
     case LINE:
-      --row;
+      --i;
     case GEN_VIRTUAL:
       break;
     }
+  }
+
+  sys.take_ownership_of_rows(rows);
 
   PPL_ASSERT(sys.OK());
 }
