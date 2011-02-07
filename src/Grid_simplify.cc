@@ -126,7 +126,8 @@ void
 Grid::reduce_parameter_with_line(Grid_Generator& row,
 				 const Grid_Generator& pivot,
 				 const dimension_type column,
-				 Grid_Generator_System& sys) {
+				 Swapping_Vector<Linear_Row>& rows,
+                                 const dimension_type total_num_columns) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
 
@@ -134,7 +135,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   Coefficient& row_column = row[column];
 
   // Subtract one to allow for the parameter divisor column
-  const dimension_type num_columns = sys.num_columns() - 1;
+  const dimension_type num_columns = total_num_columns - 1;
 
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
@@ -165,12 +166,14 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // Multiply row such that a multiple of pivot can be subtracted from
   // it below to render row[column] zero.  This requires multiplying
   // all other parameters to match.
-  for (dimension_type index = sys.num_rows(); index-- > 0; ) {
-    Grid_Generator& gen = sys[index];
+  for (dimension_type index = rows.size(); index-- > 0; ) {
+    Linear_Row& row = rows[index];
+    Grid_Generator& gen = static_cast<Grid_Generator&>(row);
     if (gen.is_parameter_or_point())
       for (dimension_type col = num_columns; col-- > 0; )
         gen[col] *= reduced_pivot_col;
   }
+
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
   row_column = 0;
@@ -303,13 +306,26 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
 	    std::swap(row, pivot);
 	    pivot_is_line = true;
-	    reduce_parameter_with_line(row, pivot, dim, sys);
+
+            Swapping_Vector<Linear_Row> rows;
+            sys.release_rows(rows);
+
+	    reduce_parameter_with_line(row, pivot, dim, rows,
+                                       sys.num_columns());
+
+            sys.take_ownership_of_rows(rows);
 	  }
 	else {
 	  PPL_ASSERT(row.is_parameter_or_point());
-	  if (pivot_is_line)
-	    reduce_parameter_with_line(row, pivot, dim, sys);
-	  else {
+	  if (pivot_is_line) {
+            Swapping_Vector<Linear_Row> rows;
+            sys.release_rows(rows);
+
+	    reduce_parameter_with_line(row, pivot, dim, rows,
+                                       sys.num_columns());
+
+            sys.take_ownership_of_rows(rows);
+          } else {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
 	    reduce_pc_with_pc(row, pivot, dim, dim + 1, num_columns);
 	  }

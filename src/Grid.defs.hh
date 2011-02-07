@@ -2471,11 +2471,13 @@ private:
     parameter \p row such that the element at index \p col of \p row
     is zero.
   */
-  // A member of Grid for access to Matrix<Dense_Row>::rows.
+  // This takes a parameter with type Swapping_Vector<Linear_Row> (instead of
+  // Grid_Generator_System) to simplify the implementation of `simplify()'.
   static void reduce_parameter_with_line(Grid_Generator& row,
 					 const Grid_Generator& pivot,
 					 dimension_type col,
-					 Grid_Generator_System& sys);
+					 Swapping_Vector<Linear_Row>& sys,
+                                         dimension_type num_columns);
 
   //! Reduce \p row using \p pivot.
   /*!
