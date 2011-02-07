@@ -2526,9 +2526,11 @@ private:
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Grid_Generator::operator[].
+  // The type of `dest' is Swapping_Vector<Linear_Row> instead of
+  // Grid_Generator_System to simplify the implementation of conversion().
   static void multiply_grid(const Coefficient& multiplier,
 			    Grid_Generator& gen,
-			    Grid_Generator_System& dest,
+			    Swapping_Vector<Linear_Row>& dest,
 			    dimension_type num_rows,
 			    dimension_type num_dims);
 
