@@ -439,9 +439,20 @@ PPL::Constraint_System
   const dimension_type expr_size = expr.size();
   const bool not_invertible = (v >= expr_size || expr[v] == 0);
 
-  if (denominator != 1)
+  // TODO: Check if it is correct to arrive at this point with
+  // num_pending_rows() != 0.
+  const dimension_type pending_index = first_pending_row();
+
+  // Avoid triggering assertions in x.release_rows().
+  x.unset_pending_rows();
+  
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the linear system so they can be modified.
+  x.release_rows(rows);
+
+  if (denominator != 1) {
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Constraint& row = x[i];
+      Linear_Row& row = rows[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
 	for (dimension_type j = n_columns; j-- > 0; )
@@ -457,11 +468,11 @@ PPL::Constraint_System
 	  row_v *= expr[v];
       }
     }
-  else
+  } else {
     // Here `denominator' == 1: optimized computation
     // only considering columns having indexes < expr_size.
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Constraint& row = x[i];
+      Linear_Row& row = rows[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
@@ -473,6 +484,12 @@ PPL::Constraint_System
 	  row_v *= expr[v];
       }
     }
+  }
+
+  // Put the rows back in the Linear_System.
+  x.take_ownership_of_rows(rows);
+  x.set_index_first_pending_row(pending_index);
+
   // Strong normalization also resets the sortedness flag.
   x.strong_normalize();
 }
