@@ -359,6 +359,7 @@ Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
   PPL_ASSERT(num_rows() == 0);
   std::swap(rows, v);
   sorted = false;
+  unset_pending_rows();
   PPL_ASSERT(OK());
 }
 
