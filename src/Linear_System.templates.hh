@@ -396,11 +396,12 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
 
   // First sort without removing duplicates.
-  iterator first = begin() + first_row;
-  iterator last = begin() + last_row;
+  typename Swapping_Vector<Row>::iterator first = rows.begin() + first_row;
+  typename Swapping_Vector<Row>::iterator last = rows.begin() + last_row;
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
-  iterator new_last = swapping_unique(first, last);
+  typename Swapping_Vector<Row>::iterator new_last
+    = swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
   // NOTE: we cannot check all invariants of the system here,
@@ -547,7 +548,7 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  Linear_System_With_Bit_Matrix_iterator<Row> first(sys.begin(), sat.rows.begin());
+  Linear_System_With_Bit_Matrix_iterator<Row> first(rows.begin(), sat.rows.begin());
   Linear_System_With_Bit_Matrix_iterator<Row> last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than(),
                 std::mem_fun_ref(&Linear_System_With_Bit_Matrix_iterator<Row>::iter_swap));
