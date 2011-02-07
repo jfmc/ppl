@@ -35,8 +35,8 @@ template <typename Row>
 class Parma_Polyhedra_Library::Matrix {
 
 public:
-  typedef typename std::vector<Row>::iterator iterator;
-  typedef typename std::vector<Row>::const_iterator const_iterator;
+  typedef typename Swapping_Vector<Row>::iterator iterator;
+  typedef typename Swapping_Vector<Row>::const_iterator const_iterator;
 
   typedef typename Row::Flags Flags;
 
