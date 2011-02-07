@@ -171,21 +171,26 @@ Linear_System<Row>::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
     return false;
-  resize_no_copy(nrows, ncols);
+  clear();
+  num_columns_ = ncols;
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
-  set_sorted(str == "(sorted)");
+  bool sortedness = (str == "(sorted)");
   dimension_type index;
   if (!(s >> str) || str != "index_first_pending")
     return false;
   if (!(s >> index))
     return false;
-  set_index_first_pending_row(index);
 
-  for (dimension_type row = 0; row < nrows; ++row)
-    if (!rows[row].ascii_load(s))
+  Row row;
+  for (dimension_type i = 0; i < nrows; ++i) {
+    if (!row.ascii_load(s))
       return false;
+    add_recycled_row(row);
+  }
+  set_index_first_pending_row(index);
+  set_sorted(sortedness);
 
   // Check invariants.
   PPL_ASSERT(OK(true));
