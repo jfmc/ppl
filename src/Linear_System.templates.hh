@@ -870,6 +870,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
         std::swap(rows[k2], rows[k2 + num_duplicates]);
     rows.resize(num_rows);
   }
+  set_sorted(true);
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
   PPL_ASSERT(OK(false));
