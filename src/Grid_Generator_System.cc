@@ -42,9 +42,11 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
     // Swap the parameter divisor column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
+  Swapping_Vector<Linear_Row> rows;
+  gs.release_rows(rows);
   for (dimension_type i = 0; i < gs_num_rows; ++i) {
-    gs[i].set_topology(NECESSARILY_CLOSED);
-    insert_recycled(gs[i]);
+    rows[i].set_topology(NECESSARILY_CLOSED);
+    insert_recycled(rows[i]);
   }
   set_index_first_pending_row(old_num_rows + gs_num_rows);
 }
