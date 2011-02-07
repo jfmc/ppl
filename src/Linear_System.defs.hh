@@ -157,6 +157,9 @@ public:
   //! Swaps the vector of rows with \p v. \p *this must have no rows.
   void take_ownership_of_rows(Swapping_Vector<Row>& v);
 
+  // TODO: Remove this.
+  typedef Row internal_row_type;
+
   //! Permutes the columns of the system.
   /*
     \param cycles
