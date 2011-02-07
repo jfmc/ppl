@@ -637,10 +637,20 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       }
     }
 
+    Swapping_Vector<Linear_Row> rows;
+    // Release the rows from the linear system, so they can be modified.
+    sys.release_rows(rows);
+
     // Represent every point and every parameter using the newly
     // calculated divisor.
-    for (row = num_rows; row-- > 0; )
-      sys[row].scale_to_divisor(divisor);
+    for (dimension_type i = num_rows; i-- > 0; ) {
+      Linear_Row& row = rows[i];
+      Grid_Generator& g = static_cast<Grid_Generator&>(row);
+      g.scale_to_divisor(divisor);
+    }
+
+    // Put the rows back into the linear system.
+    sys.take_ownership_of_rows(rows);
   }
 }
 
