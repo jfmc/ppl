@@ -2462,12 +2462,20 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   normalize_divisors(gs, gen_sys);
 
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the linear system, so they can be modified.
+  gs.release_rows(rows);
+
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
-    Grid_Generator& g = gs[i];
+    Linear_Row& row = rows[i];
+    Grid_Generator& g = static_cast<Grid_Generator&>(row);
     if (g.is_point())
       // Transform the point into a parameter.
       g.set_is_parameter();
   }
+
+  // Put the rows back into the linear system.
+  gs.take_ownership_of_rows(rows);
 
   if (gs_num_rows == 0)
     // `y' was the grid containing a single point at the origin, so
