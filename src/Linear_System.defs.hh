@@ -54,7 +54,8 @@ template <typename Row>
 class Parma_Polyhedra_Library::Linear_System {
 public:
 
-  typedef typename Swapping_Vector<Row>::iterator iterator;
+  // NOTE: `iterator' is actually a const_iterator.
+  typedef typename Swapping_Vector<Row>::const_iterator iterator;
   typedef typename Swapping_Vector<Row>::const_iterator const_iterator;
   
   //! Builds an empty linear system with specified topology.
