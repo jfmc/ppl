@@ -531,7 +531,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   const bool closed = x.is_necessarily_closed();
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
-    Generator& g1 = x.gen_sys[i];
+    const Generator& g1 = x.gen_sys[i];
     // For C polyhedra, we choose a point of `x.gen_sys'
     // that is not included in `y'.
     // In the case of NNC polyhedra, we can restrict attention to
