@@ -3355,29 +3355,37 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   const dimension_type old_gs_num_rows = gs.num_rows();
   dimension_type gs_num_rows = old_gs_num_rows;
 
+  // release_rows() does not support pending rows.
+  gs.unset_pending_rows();
+
+  Swapping_Vector<Linear_Row> rows;
+  // Release the rows from the generator system, so they can be modified.
+  gs.release_rows(rows);
+
   if (!x.is_necessarily_closed())
     // `x' and `y' are NNC polyhedra.
-    for (dimension_type i = gs_num_rows; i-- > 0; )
-      switch (gs[i].type()) {
+    for (dimension_type i = gs_num_rows; i-- > 0; ) {
+      Linear_Row& lr = rows[i];
+      Generator& g = static_cast<Generator&>(lr);
+      switch (g.type()) {
       case Generator::POINT:
 	// The points of `gs' can be erased,
 	// since their role can be played by closure points.
 	--gs_num_rows;
-	std::swap(gs[i], gs[gs_num_rows]);
+        std::swap(g, rows[gs_num_rows]);
 	break;
       case Generator::CLOSURE_POINT:
 	{
-	  Generator& cp = gs[i];
 	  // If it is the origin, erase it.
-	  if (cp.all_homogeneous_terms_are_zero()) {
+	  if (g.all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
-	    std::swap(cp, gs[gs_num_rows]);
+            std::swap(g, rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
-	    cp[0] = 0;
+	    g[0] = 0;
 	    // Enforce normalization.
-	    cp.normalize();
+	    g.normalize();
 	  }
 	}
 	break;
@@ -3385,23 +3393,25 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	// For rays and lines, nothing to be done.
 	break;
       }
+    }
   else
     // `x' and `y' are C polyhedra.
-    for (dimension_type i = gs_num_rows; i-- > 0; )
-      switch (gs[i].type()) {
+    for (dimension_type i = gs_num_rows; i-- > 0; ) {
+      Linear_Row& lr = rows[i];
+      Generator& g = static_cast<Generator&>(lr);
+      switch (g.type()) {
       case Generator::POINT:
 	{
-	  Generator& p = gs[i];
 	  // If it is the origin, erase it.
-	  if (p.all_homogeneous_terms_are_zero()) {
+	  if (g.all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
-	    std::swap(p, gs[gs_num_rows]);
+            std::swap(g, rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {
-	    p[0] = 0;
+	    g[0] = 0;
 	    // Enforce normalization.
-	    p.normalize();
+	    g.normalize();
 	  }
 	}
 	break;
@@ -3409,13 +3419,17 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	// For rays and lines, nothing to be done.
 	break;
       }
+    }
+
   // If it was present, erase the origin point or closure point,
   // which cannot be transformed into a valid ray or line.
   // For NNC polyhedra, also erase all the points of `gs',
   // whose role can be played by the closure points.
   // These have been previously moved to the end of `gs'.
-  gs.remove_trailing_rows(old_gs_num_rows - gs_num_rows);
-  gs.unset_pending_rows();
+  rows.resize(gs_num_rows);
+
+  // Put the modified rows back into the generator system.
+  gs.take_ownership_of_rows(rows);
 
   // `gs' may now have no rows.
   // Namely, this happens when `y' was the singleton polyhedron
