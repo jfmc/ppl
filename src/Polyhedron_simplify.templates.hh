@@ -113,27 +113,35 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
   }
   dimension_type* num_saturators = simplify_num_saturators_p;
 
+  bool sys_sorted = sys.is_sorted();
+
+  // release_rows() does not support pending rows.
+  sys.unset_pending_rows();
+
+  Swapping_Vector<Linear_Row> sys_rows;
+  sys.release_rows(sys_rows);
+
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be
   // equalities (see Proposition above).
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i) {
     if (sat[i].empty()) {
-      // The constraint `sys[i]' is saturated by all the generators.
+      // The constraint `sys_rows[i]' is saturated by all the generators.
       // Thus, either it is already an equality or it can be transformed
       // to an equality (see Proposition above).
-      sys[i].set_is_line_or_equality();
+      sys_rows[i].set_is_line_or_equality();
       // Note: simple normalization already holds.
-      sys[i].sign_normalize();
+      sys_rows[i].sign_normalize();
       // We also move it just after all the other equalities,
-      // so that system `sys' keeps its partial sortedness.
+      // so that system `sys_rows' keeps its partial sortedness.
       if (i != num_lines_or_equalities) {
-	std::swap(sys[i], sys[num_lines_or_equalities]);
+        std::swap(sys_rows[i], sys_rows[num_lines_or_equalities]);
 	std::swap(sat[i], sat[num_lines_or_equalities]);
 	std::swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
       }
       ++num_lines_or_equalities;
       // `sys' is no longer sorted.
-      sys.set_sorted(false);
+      sys_sorted = false;
     }
     else
       // There exists a generator which does not saturate `sys[i]',
@@ -141,6 +149,11 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
       // We store the number of its saturators.
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
   }
+
+  sys.take_ownership_of_rows(sys_rows);
+
+  if (sys_sorted)
+    sys.set_sorted(true);
 
   // At this point, all the equalities of `sys' (included those
   // inequalities that we just transformed to equalities) have
@@ -297,7 +310,6 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
   // Here we physically remove the redundant inequalities previously
   // moved to the bottom of `sys' and the corresponding `sat' rows.
   sys.remove_trailing_rows(old_num_rows - num_rows);
-  sys.unset_pending_rows();
   sat.remove_trailing_rows(old_num_rows - num_rows);
   // At this point the first `num_lines_or_equalities' rows of 'sys'
   // represent the irredundant equalities, while the remaining rows
