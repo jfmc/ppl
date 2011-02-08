@@ -2134,8 +2134,17 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
   const dimension_type eps_index = space_dim + 1;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
 
-  for (dimension_type j = con_sys.num_rows(); j-- > 0; ) {
-    Constraint& c = con_sys[j];
+  const bool con_sys_was_sorted = con_sys.is_sorted();
+  const dimension_type first_pending_index = con_sys.first_pending_row();
+
+  con_sys.unset_pending_rows();
+
+  Swapping_Vector<Linear_Row> rows;
+  con_sys.release_rows(rows);
+
+  for (dimension_type j = rows.size(); j-- > 0; ) {
+    Linear_Row& row = rows[j];
+    Constraint& c = static_cast<Constraint&>(row);
     if (c.is_tautological())
       goto next_constraint;
 
@@ -2211,13 +2220,20 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     ;
   }
 
+  con_sys.take_ownership_of_rows(rows);
+
+  con_sys.set_index_first_pending_row(first_pending_index);
+
+  if (!changed && con_sys_was_sorted)
+    con_sys.set_sorted(true);
+
   if (changed) {
-    if (!is_necessarily_closed()) {
+    if (!is_necessarily_closed())
       con_sys.insert(Constraint::epsilon_leq_one());
-      // FIXME: make sure that the following line really can stay here
-      // and should not be moved below the brace.
-      con_sys.set_sorted(false);
-    }
+
+    // FIXME: make sure this is correct (otherwise it should be removed).
+    if (is_necessarily_closed() && con_sys_was_sorted)
+      con_sys.set_sorted(true);
 
     // After changing the system of constraints, the generators
     // are no longer up-to-date and the constraints are no longer
