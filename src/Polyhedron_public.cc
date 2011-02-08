@@ -3568,9 +3568,15 @@ PPL::Polyhedron::topological_closure_assign() {
   if (!has_pending_generators() && constraints_are_up_to_date()) {
     const dimension_type eps_index = space_dim + 1;
     bool changed = false;
+
+    Swapping_Vector<Linear_Row> rows;
+    // Release the rows from the constraint system so they can be modified.
+    con_sys.release_rows(rows);
+
     // Transform all strict inequalities into non-strict ones.
-    for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
-      Constraint& c = con_sys[i];
+    for (dimension_type i = rows.size(); i-- > 0; ) {
+      Linear_Row& row = rows[i];
+      Constraint& c = static_cast<Constraint&>(row);
       if (c[eps_index] < 0 && !c.is_tautological()) {
 	c[eps_index] = 0;
 	// Enforce normalization.
@@ -3578,6 +3584,10 @@ PPL::Polyhedron::topological_closure_assign() {
 	changed = true;
       }
     }
+
+    // Put the modified rows back into the constraint system.
+    con_sys.take_ownership_of_rows(rows);
+
     if (changed) {
       con_sys.insert(Constraint::epsilon_leq_one());
       con_sys.set_sorted(false);
