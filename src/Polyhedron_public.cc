@@ -1353,9 +1353,11 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// a corresponding closure point:
 	// turn the just inserted point into the corresponding
 	// (normalized) closure point.
-	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
+	Generator cp;
+        gen_sys.release_row(cp);
 	cp[space_dim + 1] = 0;
 	cp.normalize();
+        gen_sys.insert_recycled(cp);
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
       }
@@ -1391,14 +1393,19 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// a corresponding closure point:
 	// turn the just inserted point into the corresponding
 	// (normalized) closure point.
-	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
+	Generator cp;
+        gen_sys.release_row(cp);
 	cp[space_dim + 1] = 0;
 	cp.normalize();
-	// Re-insert the point (which is already normalized).
-	if (has_pending)
-	  gen_sys.insert_pending(g);
-	else
-	  gen_sys.insert(g);
+        if (has_pending) {
+          gen_sys.insert_pending_recycled(cp);
+          // Re-insert the point (which is already normalized).
+          gen_sys.insert_pending(g);
+        } else {
+          gen_sys.insert_recycled(cp);
+          // Re-insert the point (which is already normalized).
+          gen_sys.insert(g);
+        }
       }
     }
     else {
