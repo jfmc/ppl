@@ -1171,7 +1171,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	// Move it to the bottom of the constraint system,
 	// while keeping `sat_g' consistent.
 	--cs_rows;
-	std::swap(cs[i], cs[cs_rows]);
+        cs.swap_rows(i, cs_rows);
 	std::swap(sat[i], sat[cs_rows]);
 	// The constraint system is changed.
 	changed = true;
@@ -1192,7 +1192,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  // move it to the bottom of the constraint system,
 	  // while keeping `sat_g' consistent.
 	  --cs_rows;
-	  std::swap(cs[i], cs[cs_rows]);
+          cs.swap_rows(i, cs_rows);
 	  std::swap(sat[i], sat[cs_rows]);
 	  eps_redundant = true;
 	  // The constraint system is changed.
@@ -1208,15 +1208,13 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
 
+  PPL_ASSERT(cs.num_pending_rows() == 0);
+
   if (changed) {
     // If the constraint system has been changed, we have to erase
     // the epsilon-redundant constraints.
     PPL_ASSERT(cs_rows < cs.num_rows());
     cs.remove_trailing_rows(old_cs_rows - cs_rows);
-    // The remaining constraints are not pending.
-    cs.unset_pending_rows();
-    // The constraint system is no longer sorted.
-    cs.set_sorted(false);
     // The generator system is no longer up-to-date.
     x.clear_generators_up_to_date();
 
@@ -1298,8 +1296,13 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   dimension_type gs_rows = old_gs_rows;
   const dimension_type n_lines = gs.num_lines();
   const dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = n_lines; i < gs_rows; )
-    if (gs[i].is_point()) {
+  bool gs_sorted = gs.is_sorted();
+  Swapping_Vector<Linear_Row> rows;
+  gs.release_rows(rows);
+  for (dimension_type i = n_lines; i < gs_rows; ) {
+    Linear_Row& row = rows[i];
+    Generator& g = static_cast<Generator&>(row);
+    if (g.is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
       Bit_Row sat_gi(sat[i], sat_all_but_strict_ineq);
@@ -1307,25 +1310,27 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
-      for (dimension_type j = n_lines; j < gs_rows; ++j)
-	if (i != j && gs[j].is_point() && subset_or_equal(sat[j], sat_gi)) {
-	  // Point `gs[i]' is eps-redundant:
+      for (dimension_type j = n_lines; j < gs_rows; ++j) {
+        Linear_Row& row2 = rows[j];
+        Generator& g2 = static_cast<Generator&>(row2);
+	if (i != j && g2.is_point() && subset_or_equal(sat[j], sat_gi)) {
+	  // Point `g' is eps-redundant:
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' consistent.
 	  --gs_rows;
-	  std::swap(gs[i], gs[gs_rows]);
+          std::swap(g, rows[gs_rows]);
 	  std::swap(sat[i], sat[gs_rows]);
 	  eps_redundant = true;
 	  changed = true;
 	  break;
 	}
+      }
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	Generator& gi = gs[i];
-	if (gi[eps_index] != gi[0]) {
-	  gi[eps_index] = gi[0];
+	if (g[eps_index] != g[0]) {
+	  g[eps_index] = g[0];
 	  // Enforce normalization.
-	  gi.normalize();
+	  g.normalize();
 	  changed = true;
 	}
 	// Consider next generator.
@@ -1335,20 +1340,23 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     else
       // Consider next generator.
       ++i;
-
-  // If needed, erase the eps-redundant generators (also updating
-  // `index_first_pending').
-  if (gs_rows < old_gs_rows) {
-    gs.remove_trailing_rows(old_gs_rows - gs_rows);
-    gs.unset_pending_rows();
   }
+
+  // If needed, erase the eps-redundant generators.
+  if (gs_rows < old_gs_rows)
+    rows.resize(gs_rows);
+
+  gs.take_ownership_of_rows(rows);
 
   if (changed) {
     // The generator system is no longer sorted.
-    x.gen_sys.set_sorted(false);
+    gs_sorted = false;
     // The constraint system is no longer up-to-date.
     x.clear_constraints_up_to_date();
   }
+
+  if (gs_sorted)
+    gs.set_sorted(true);
 
   PPL_ASSERT_HEAVY(OK());
   return true;
