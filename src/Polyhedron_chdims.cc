@@ -335,7 +335,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
       con_sys.insert_recycled(c_old);
     }
-#if BE_LAZY
+#if !BE_LAZY
     con_sys.sort_rows();
 #endif
     clear_constraints_minimized();
