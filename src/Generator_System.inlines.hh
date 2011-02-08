@@ -81,11 +81,6 @@ Generator_System::clear() {
   Base::clear();
 }
 
-inline Generator&
-Generator_System::operator[](const dimension_type k) {
-  return static_cast<Generator&>(Base::operator[](k));
-}
-
 inline const Generator&
 Generator_System::operator[](const dimension_type k) const {
   return static_cast<const Generator&>(Base::operator[](k));

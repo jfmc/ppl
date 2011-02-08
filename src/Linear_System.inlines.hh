@@ -227,12 +227,6 @@ Linear_System<Row>::is_necessarily_closed() const {
 }
 
 template <typename Row>
-inline Row&
-Linear_System<Row>::operator[](const dimension_type k) {
-  return rows[k];
-}
-
-template <typename Row>
 inline const Row&
 Linear_System<Row>::operator[](const dimension_type k) const {
   return rows[k];

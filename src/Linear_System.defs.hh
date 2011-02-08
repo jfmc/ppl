@@ -182,10 +182,7 @@ public:
 
   //! \name Subscript operators
   //@{
-  //! Returns a reference to the \p k-th row of the system.
-  Row& operator[](dimension_type k);
-
-  //! Returns a constant reference to the \p k-th row of the system.
+  //! Returns a const reference to the \p k-th row of the system.
   const Row& operator[](dimension_type k) const;
   //@} // Subscript operators
 

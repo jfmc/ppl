@@ -266,9 +266,6 @@ private:
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
-  //! Returns the \p k- th constraint of the system.
-  Constraint& operator[](dimension_type k);
-
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator[](dimension_type k) const;
 

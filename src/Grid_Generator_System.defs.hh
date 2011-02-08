@@ -405,9 +405,6 @@ private:
   */
   void remove_invalid_lines_and_parameters();
 
-  //! Returns the \p k- th generator of the system.
-  Grid_Generator& operator[](dimension_type k);
-
   //! Returns a constant reference to the \p k- th generator of the system.
   const Grid_Generator& operator[](dimension_type k) const;
 

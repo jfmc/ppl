@@ -66,11 +66,6 @@ Constraint_System::operator=(const Constraint_System& y) {
   return *this;
 }
 
-inline Constraint&
-Constraint_System::operator[](const dimension_type k) {
-  return static_cast<Constraint&>(Base::operator[](k));
-}
-
 inline const Constraint&
 Constraint_System::operator[](const dimension_type k) const {
   return static_cast<const Constraint&>(Base::operator[](k));

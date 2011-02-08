@@ -230,11 +230,6 @@ Grid_Generator_System::end() const {
     (Linear_System<Linear_Row>::end());
 }
 
-inline Grid_Generator&
-Grid_Generator_System::operator[](const dimension_type k) {
-  return static_cast<Grid_Generator&>(Linear_System<Linear_Row>::operator[](k));
-}
-
 inline const Grid_Generator&
 Grid_Generator_System::operator[](const dimension_type k) const {
   return static_cast<const Grid_Generator&>(Linear_System<Linear_Row>::operator[](k));

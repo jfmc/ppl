@@ -354,9 +354,6 @@ private:
   //! system.
   void convert_into_non_necessarily_closed();
 
-  //! Returns the \p k- th generator of the system.
-  Generator& operator[](dimension_type k);
-
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](dimension_type k) const;
 
