@@ -299,13 +299,17 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 			 old_num_columns - 1 + added_columns);
 
   if (can_have_something_pending()) {
+    // release_rows() does not support pending rows.
+    cs.unset_pending_rows();
+
     // Steal the constraints from `cs' and put them in `con_sys'
     // using the right displacement for coefficients.
+    Swapping_Vector<Linear_Row> cs_rows;
+    cs.release_rows(cs_rows);
+    PPL_ASSERT(cs_rows.size() == added_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
-      Constraint& c_old = cs[i];
-      c_old.add_zeroes_and_shift(space_dim, 1);
-
-      con_sys.insert_pending_recycled(c_old);
+      cs_rows[i].add_zeroes_and_shift(space_dim, 1);
+      con_sys.insert_pending_recycled(cs_rows[i]);
     }
 
     // If `*this' can support pending constraints, then, since we have
