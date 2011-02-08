@@ -380,6 +380,16 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_i);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_o);
 
+  bool dest_sorted = dest.is_sorted();
+  const dimension_type dest_first_pending_row = dest.first_pending_row();
+
+  // release_rows() does not support pending rows.
+  dest.unset_pending_rows();
+
+  Swapping_Vector<Linear_Row> dest_rows;
+  // Release the rows from `dest' so they can be modified.
+  dest.release_rows(dest_rows);
+
   // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
   for (dimension_type k = start; k < source_num_rows; ) {
@@ -389,30 +399,30 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
     if (source_num_redundant > 0)
       // Let the next constraint have index `k'.
       // There is no need to swap the columns of `sat' (all zeroes).
-      std::swap(source[k], source[k+source_num_redundant]);
+      source.swap_rows(k, k + source_num_redundant);
 
-    Source_Row& source_k = source[k];
+    const Source_Row& source_k = source[k];
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
     PPL_ASSERT(source_num_columns == dest_num_columns);
 
     // `scalar_prod[i]' will contain the scalar product of the
-    // constraint `source_k' and the generator `dest[i]'.  This
+    // constraint `source_k' and the generator `dest_rows[i]'.  This
     // product is 0 if and only if the generator saturates the
     // constraint.
     PPL_DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
-    // `index_non_zero' will indicate the first generator in `dest'
+    // `index_non_zero' will indicate the first generator in `dest_rows'
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
       WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[index_non_zero],
 			      source_k,
-			      dest[index_non_zero]);
+			      dest_rows[index_non_zero]);
       WEIGHT_ADD_MUL(17, source_num_columns);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
@@ -424,7 +434,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       WEIGHT_BEGIN();
-      Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
+      Scalar_Products::assign(scalar_prod[i], source_k, dest_rows[i]);
       WEIGHT_ADD_MUL(25, source_num_columns);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
@@ -436,37 +446,37 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
     // `num_lines_or_equalities', i.e., when the generator that
     // does not saturate the constraint `source_k' is a line.
     // The other case (described later) is when all the lines
-    // in `dest' (i.e., all the rows having indexes less than
+    // in `dest_rows' (i.e., all the rows having indexes less than
     // `num_lines_or_equalities') do saturate the constraint.
 
     if (index_non_zero < num_lines_or_equalities) {
-      // Since the generator `dest[index_non_zero]' does not saturate
+      // Since the generator `dest_rows[index_non_zero]' does not saturate
       // the constraint `source_k', it can no longer be a line
       // (see saturation rule in Section \ref prelims).
       // Therefore, we first transform it to a ray.
-      dest[index_non_zero].set_is_ray_or_point_or_inequality();
+      dest_rows[index_non_zero].set_is_ray_or_point_or_inequality();
       // Of the two possible choices, we select the ray satisfying
       // the constraint (namely, the ray whose scalar product
       // with the constraint gives a positive result).
       if (scalar_prod[index_non_zero] < 0) {
-	// The ray `dest[index_non_zero]' lies on the wrong half-space:
+	// The ray `dest_rows[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
 	neg_assign(scalar_prod[index_non_zero]);
 	for (dimension_type j = dest_num_columns; j-- > 0; )
-	  neg_assign(dest[index_non_zero][j]);
+	  neg_assign(dest_rows[index_non_zero][j]);
       }
-      // Having changed a line to a ray, we set `dest' to be a
-      // non-sorted system, we decrement the number of lines of `dest' and,
-      // if necessary, we move the new ray below all the remaining lines.
-      dest.set_sorted(false);
+      // Having changed a line to a ray, we set `dest_rows' to be a
+      // non-sorted system, we decrement the number of lines of `dest_rows'
+      // and, if necessary, we move the new ray below all the remaining lines.
+      dest_sorted = false;
       --num_lines_or_equalities;
       if (index_non_zero != num_lines_or_equalities) {
-	std::swap(dest[index_non_zero],
-		  dest[num_lines_or_equalities]);
+        std::swap(dest_rows[index_non_zero],
+                  dest_rows[num_lines_or_equalities]);
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      Dest_Row& dest_nle = dest[num_lines_or_equalities];
+      const Dest_Row& dest_nle = dest_rows[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -494,14 +504,14 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
 	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= normalized_sp_n;
-	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
+	  //   dest_rows[i][c] *= normalized_sp_n;
+	  //   dest_rows[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Dest_Row& dest_i = dest[i];
+	  Dest_Row& dest_i = dest_rows[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -509,7 +519,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
-	  // `dest' has already been set as non-sorted.
+	  // dest_sorted has already been set to false.
 	}
       }
 
@@ -530,14 +540,14 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
 	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= normalized_sp_n;
-	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
+	  //   dest_rows[i][c] *= normalized_sp_n;
+	  //   dest_rows[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Dest_Row& dest_i = dest[i];
+	  Dest_Row& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
@@ -546,7 +556,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
-	  // `dest' has already been set as non-sorted.
+	  // `dest_sorted' has already been set to false.
           WEIGHT_ADD_MUL(41, dest_num_columns);
 	}
         // Check if the client has requested abandoning all expensive
@@ -563,25 +573,27 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	sat_nle.set(k);
       // ... otherwise, the constraint is an equality which is
       // violated by the generator `dest_nle': the generator has to be
-      // removed from `dest'.
+      // removed from `dest_rows'.
       else {
 	--dest_num_rows;
-        dest.swap_rows(num_lines_or_equalities, dest_num_rows);
+        std::swap(dest_rows[num_lines_or_equalities],
+                  dest_rows[dest_num_rows]);
         recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-        dest.release_row(recyclable_dest_rows.back());
-        PPL_ASSERT(dest_num_rows == dest.num_rows());
+        std::swap(dest_rows.back(), recyclable_dest_rows.back());
+        dest_rows.pop_back();
+        PPL_ASSERT(dest_num_rows == dest_rows.size());
 
 	std::swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
 	std::swap(sat_nle, sat[dest_num_rows]);
-	// `dest' has already been set as non-sorted.
+	// dest_sorted has already been set to false.
       }
       // We continue with the next constraint.
       ++k;
     }
     // Here we have `index_non_zero' >= `num_lines_or_equalities',
-    // so that all the lines in `dest' saturate the constraint `source_k'.
+    // so that all the lines in `dest_rows' saturate the constraint `source_k'.
     else {
-      // First, we reorder the generators in `dest' as follows:
+      // First, we reorder the generators in `dest_rows' as follows:
       // -# all the lines should have indexes between 0 and
       //    `num_lines_or_equalities' - 1 (this already holds);
       // -# all the rays that saturate the constraint should have
@@ -605,20 +617,20 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	const int sp_sign = sgn(scalar_prod[sup_bound]);
 	if (sp_sign == 0) {
 	  // This generator has to be moved in Q=.
-	  std::swap(dest[sup_bound], dest[lines_or_equal_bound]);
+	  std::swap(dest_rows[sup_bound], dest_rows[lines_or_equal_bound]);
 	  std::swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
 	  std::swap(sat[sup_bound], sat[lines_or_equal_bound]);
 	  ++lines_or_equal_bound;
 	  ++sup_bound;
-	  dest.set_sorted(false);
+          dest_sorted = false;
 	}
 	else if (sp_sign < 0) {
 	  // This generator has to be moved in Q-.
 	  --inf_bound;
-	  std::swap(dest[sup_bound], dest[inf_bound]);
+          std::swap(dest_rows[sup_bound], dest_rows[inf_bound]);
 	  std::swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
 	  std::swap(sat[sup_bound], sat[inf_bound]);
-	  dest.set_sorted(false);
+          dest_sorted = false;
 	}
 	else
 	  // sp_sign > 0: this generator has to be moved in Q+.
@@ -643,14 +655,15 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	else {
 	  // The constraint is an equality, so that all the generators
 	  // in Q+ violate it. Since the set Q- is empty, we can simply
-	  // remove from `dest' all the generators of Q+.
+	  // remove from `dest_rows' all the generators of Q+.
 	  PPL_ASSERT(dest_num_rows >= lines_or_equal_bound);
           while (dest_num_rows != lines_or_equal_bound) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-            dest.release_row(recyclable_dest_rows.back());
+            std::swap(dest_rows.back(), recyclable_dest_rows.back());
+            dest_rows.pop_back();
             --dest_num_rows;
           }
-          PPL_ASSERT(dest_num_rows == dest.num_rows());
+          PPL_ASSERT(dest_num_rows == dest_rows.size());
           // We continue with the next constraint.
 	  ++k;
         }
@@ -662,14 +675,15 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	if (sup_bound == num_lines_or_equalities) {
 	  // The set Q+ is empty, so that all generators that satisfy
 	  // the constraint also saturate it.
-	  // We can simply remove from `dest' all the generators in Q-.
+	  // We can simply remove from `dest_rows' all the generators in Q-.
           PPL_ASSERT(dest_num_rows >= sup_bound);
           while (dest_num_rows != sup_bound) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-            dest.release_row(recyclable_dest_rows.back());
+            std::swap(dest_rows.back(), recyclable_dest_rows.back());
+            dest_rows.pop_back();
             --dest_num_rows;
           }
-          PPL_ASSERT(dest_num_rows == dest.num_rows());
+          PPL_ASSERT(dest_num_rows == dest_rows.size());
         } else {
 	  // The sets Q+ and Q- are both non-empty.
 	  // The generators of the new pointed cone are all those satisfying
@@ -689,16 +703,18 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	  // `j' runs through the generators in the set Q-.
 	  for (dimension_type i = lines_or_equal_bound; i < sup_bound; ++i) {
 	    for(dimension_type j = sup_bound; j < bound; ++j) {
-	      // Checking if generators `dest[i]' and `dest[j]' are adjacent.
+	      // Checking if generators `dest_rows[i]' and `dest_rows[j]' are
+              // adjacent.
 	      // If there exist another generator that saturates
-	      // all the constraints saturated by both `dest[i]' and
-	      // `dest[j]', then they are NOT adjacent.
+	      // all the constraints saturated by both `dest_rows[i]' and
+	      // `dest_rows[j]', then they are NOT adjacent.
 	      PPL_ASSERT(sat[i].last() == ULONG_MAX || sat[i].last() < k);
 	      PPL_ASSERT(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
-	      // constraints saturated by both `dest[i]' and `dest[j]'.
+	      // constraints saturated by both `dest_rows[i]' and
+              // `dest_rows[j]'.
 	      Bit_Row new_satrow(sat[i], sat[j]);
 
 	      // Compute the number of common saturators.
@@ -708,7 +724,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		num_common_satur = k - new_satrow.count_ones();
 
 	      // Even before actually creating the new ray as a
-	      // positive combination of `dest[i]' and `dest[j]',
+	      // positive combination of `dest_rows[i]' and `dest_rows[j]',
 	      // we exploit saturation information to check if
 	      // it can be an extremal ray. To this end, we refer
 	      // to the definition of a minimal proper face
@@ -733,14 +749,15 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		  if (l != i && l != j
 		      && subset_or_equal(sat[l], new_satrow)) {
 		    // Found another generator saturating all the
-		    // constraints saturated by both `dest[i]' and `dest[j]'.
+		    // constraints saturated by both `dest_rows[i]' and
+                    // `dest_rows[j]'.
 		    redundant = true;
 		    break;
 		  }
                 PPL_ASSERT(bound >= num_lines_or_equalities);
                 WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
 		if (!redundant) {
-		  // Adding the new ray to `dest' and the corresponding
+		  // Adding the new ray to `dest_rows' and the corresponding
 		  // saturation row to `sat'.
 		  Linear_Row new_row;
 		  if (recyclable_dest_rows.empty()) {
@@ -765,8 +782,8 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
 		  // Coefficient normalized_sp_j = scalar_prod[j] / scale;
 		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		  //   new_row[c] = normalized_sp_i * dest[j][c];
-		  //   new_row[c] -= normalized_sp_j * dest[i][c];
+		  //   new_row[c] = normalized_sp_i * dest_rows[j][c];
+		  //   new_row[c] -= normalized_sp_j * dest_rows[i][c];
 		  // }
 		  normalize2(scalar_prod[i],
 			     scalar_prod[j],
@@ -775,12 +792,13 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		  WEIGHT_BEGIN();
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		    Coefficient& new_row_c = new_row[c];
-		    new_row_c = normalized_sp_i * dest[j][c];
-		    sub_mul_assign(new_row_c, normalized_sp_o, dest[i][c]);
+		    new_row_c = normalized_sp_i * dest_rows[j][c];
+		    sub_mul_assign(new_row_c, normalized_sp_o,
+                                   dest_rows[i][c]);
 		  }
                   WEIGHT_ADD_MUL(86, dest_num_columns);
 		  new_row.strong_normalize();
-		  // Since we added a new generator to `dest',
+		  // Since we added a new generator to `dest_rows',
 		  // we also add a new element to `scalar_prod';
 		  // by construction, the new ray lies on the hyper-plane
 		  // represented by the constraint `source_k'.
@@ -791,7 +809,8 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		  else
 		    scalar_prod[dest_num_rows] = Coefficient_zero();
 
-                  dest.insert_pending_recycled(new_row);
+                  dest_rows.resize(dest_rows.size() + 1);
+                  std::swap(dest_rows.back(), new_row);
 		  // Increment the number of generators.
 		  ++dest_num_rows;
 		} // if (!redundant)
@@ -826,11 +845,11 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	  dimension_type i = dest_num_rows;
 	  while (j < bound && i > bound) {
 	    --i;
-	    std::swap(dest[i], dest[j]);
+            std::swap(dest_rows[i], dest_rows[j]);
 	    std::swap(scalar_prod[i], scalar_prod[j]);
 	    std::swap(sat[i], sat[j]);
 	    ++j;
-	    dest.set_sorted(false);
+	    dest_sorted = false;
 	  }
 	  // Setting the number of generators in `dest':
 	  // - if the number of generators violating the constraint
@@ -843,10 +862,11 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
           PPL_ASSERT(dest_num_rows >= new_num_rows);
           while (dest_num_rows != new_num_rows) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-            dest.release_row(recyclable_dest_rows.back());
+            std::swap(dest_rows.back(), recyclable_dest_rows.back());
+            dest_rows.pop_back();
             --dest_num_rows;
           }
-          PPL_ASSERT(dest_num_rows == dest.num_rows());
+          PPL_ASSERT(dest_num_rows == dest_rows.size());
 	}
 	// We continue with the next constraint.
 	++k;
@@ -873,23 +893,26 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
   // There are no longer pending constraints in `source'.
   source.unset_pending_rows();
 
-  // We may have identified some redundant rays in `dest',
+  // We may have identified some redundant rays in `dest_rows',
   // which have been swapped into recyclable_dest_rows.
   if (!recyclable_dest_rows.empty()) {
     const dimension_type num_removed_rows = recyclable_dest_rows.size();
     sat.remove_trailing_rows(num_removed_rows);
   }
-  if (dest.is_sorted())
+  if (dest_sorted)
     // If the non-pending generators in `dest' are still declared to be
     // sorted, then we have to also check for the sortedness of the
     // pending generators.
-    for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)
-      if (compare(dest[i - 1], dest[i]) > 0) {
-	dest.set_sorted(false);
+    for (dimension_type i = dest_first_pending_row; i < dest_num_rows; ++i)
+      if (compare(dest_rows[i - 1], dest_rows[i]) > 0) {
+	dest_sorted = false;
 	break;
       }
-  // There are no pending generators in `dest'.
-  dest.unset_pending_rows();
+
+  dest.take_ownership_of_rows(dest_rows);
+
+  if (dest_sorted)
+    dest.set_sorted(true);
 
   return num_lines_or_equalities;
 }
