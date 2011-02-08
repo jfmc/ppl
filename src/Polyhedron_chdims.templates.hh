@@ -69,16 +69,22 @@ Polyhedron::add_space_dimensions(Linear_System<Row1>& sys1,
     if (!sys2.is_sorted())
       sys2.swap_columns(old_eps_index, new_eps_index);
     else {
-      for (dimension_type i = sys2.num_rows(); i-- > add_dim; ) {
-  Row2& r = sys2[i];
-  std::swap(r[old_eps_index], r[new_eps_index]);
+      Swapping_Vector<Linear_Row> rows;
+      sys2.release_rows(rows);
+
+      for (dimension_type i = rows.size(); i-- > add_dim; ) {
+        Linear_Row& r = rows[i];
+        std::swap(r[old_eps_index], r[new_eps_index]);
       }
       // The upper-right corner of `sys2' contains the J matrix:
       // swap coefficients to preserve sortedness.
       for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
-  Row2& r = sys2[i];
-  std::swap(r[old_eps_index], r[old_eps_index + 1]);
+        Linear_Row& r = rows[i];
+        std::swap(r[old_eps_index], r[old_eps_index + 1]);
       }
+
+      sys2.take_ownership_of_rows(rows);
+      sys2.set_sorted(true);
     }
     // NOTE: since we swapped columns in both `sys1' and `sys2',
     // no swapping is required for `sat1' and `sat2'.
