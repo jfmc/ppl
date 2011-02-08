@@ -2900,28 +2900,41 @@ generalized_affine_image(const Variable var,
       // in order to avoid adding too many redundant generators later.
       add_generator(ray(relsym == GREATER_THAN ? var : -var));
       minimize();
+
+      Swapping_Vector<Linear_Row> rows;
+      // Release the rows from the generator system, so they can be modified.
+      gen_sys.release_rows(rows);
+
       // We split each point of the generator system into two generators:
       // a closure point, having the same coordinates of the given point,
       // and another point, having the same coordinates for all but the
       // `var' dimension, which is displaced along the direction of the
       // newly introduced ray.
       const dimension_type eps_index = space_dim + 1;
-      for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
-	if (gen_sys[i].is_point()) {
-	  // Add a `var'-displaced copy of `gen_sys[i]' to the generator
+      for (dimension_type i =  rows.size(); i-- > 0; ) {
+        Linear_Row& row_i = rows[i];
+        Generator& gen_i = static_cast<Generator&>(row_i);
+	if (gen_i.is_point()) {
+	  // Add a `var'-displaced copy of `rows[i]' to the generator
           // system.
-          Generator g = gen_sys[i];
+          rows.push_back(gen_i);
+          Linear_Row& new_row = rows.back();
+          Generator& new_gen = static_cast<Generator&>(new_row);
 	  if (relsym == GREATER_THAN)
-	    ++g[var_space_dim];
+	    ++new_gen[var_space_dim];
 	  else
-	    --g[var_space_dim];
-          gen_sys.insert_recycled(g);
-	  // Transform `gen_sys[i]' into a closure point.
-	  gen_sys[i][eps_index] = 0;
+	    --new_gen[var_space_dim];
+          
+	  // Transform gen_i' into a closure point.
+	  gen_i[eps_index] = 0;
 	}
+      }
+
+      // Put the modified rows back into the generator system.
+      gen_sys.take_ownership_of_rows(rows);
+
       clear_constraints_up_to_date();
       clear_generators_minimized();
-      gen_sys.set_sorted(false);
       clear_sat_c_up_to_date();
       clear_sat_g_up_to_date();
     }
