@@ -202,18 +202,24 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
 	if (!con_sys.is_sorted())
 	  con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
 	else {
-	  dimension_type old_eps_index = space_dim + 1;
-	  dimension_type new_eps_index = old_eps_index + m;
-	  for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
-	    Constraint& r = con_sys[i];
-	    std::swap(r[old_eps_index], r[new_eps_index]);
-	  }
-	  // The upper-right corner of `con_sys' contains the J matrix:
-	  // swap coefficients to preserve sortedness.
-	  for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	    Constraint& r = con_sys[i];
-	    std::swap(r[old_eps_index], r[old_eps_index + 1]);
-	  }
+          Swapping_Vector<Linear_Row> rows;
+          con_sys.release_rows(rows);
+
+          dimension_type old_eps_index = space_dim + 1;
+          dimension_type new_eps_index = old_eps_index + m;
+          for (dimension_type i = rows.size(); i-- > m; ) {
+            Linear_Row& r = rows[i];
+            std::swap(r[old_eps_index], r[new_eps_index]);
+          }
+          // The upper-right corner of `rows' contains the J matrix:
+          // swap coefficients to preserve sortedness.
+          for (dimension_type i = m; i-- > 0; ++old_eps_index) {
+            Linear_Row& r = rows[i];
+            std::swap(r[old_eps_index], r[old_eps_index + 1]);
+          }
+
+          con_sys.take_ownership_of_rows(rows);
+          con_sys.set_sorted(true);
 	}
       }
     }
