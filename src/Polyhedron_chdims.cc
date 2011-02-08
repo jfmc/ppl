@@ -105,18 +105,24 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
       if (!gen_sys.is_sorted())
 	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
+        Swapping_Vector<Linear_Row> rows;
+        gen_sys.release_rows(rows);
+
 	dimension_type old_eps_index = space_dim + 1;
 	dimension_type new_eps_index = old_eps_index + m;
-	for (dimension_type i = gen_sys.num_rows(); i-- > m; ) {
-	  Generator& r = gen_sys[i];
+	for (dimension_type i = rows.size(); i-- > m; ) {
+          Linear_Row& r = rows[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
-	// The upper-right corner of `gen_sys' contains the J matrix:
+        // The upper-right corner of `rows' contains the J matrix:
 	// swap coefficients to preserve sortedness.
 	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	  Generator& r = gen_sys[i];
+	  Linear_Row& r = rows[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
+
+	gen_sys.take_ownership_of_rows(rows);
+        gen_sys.set_sorted(true);
       }
     }
   }
