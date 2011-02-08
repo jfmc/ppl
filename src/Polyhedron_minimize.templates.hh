@@ -100,14 +100,15 @@ Polyhedron::minimize(const bool con_to_gen,
   // Note that before calling `resize_no_copy()' we must update
   // `index_first_pending'.
   dest.set_index_first_pending_row(dest_num_rows);
-  dest.resize_no_copy(dest_num_rows, dest_num_rows);
+  dest.resize_no_copy(0, dest_num_rows);
 
   // Initialize `dest' to the identity matrix.
-  for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Dest_Row& dest_i = dest[i];
+  for (dimension_type i = 0; i < dest_num_rows; ++i) {
+    Dest_Row dest_i(dest_num_rows, typename Dest_Row::Flags(dest.topology()));
     for (dimension_type j = dest_num_rows; j-- > 0; )
       dest_i[j] = (i == j) ? 1 : 0;
     dest_i.set_is_line_or_equality();
+    dest.insert_recycled(dest_i);
   }
   // The identity matrix `dest' is not sorted (see the sorting rules
   // in Linear_Row.cc).
