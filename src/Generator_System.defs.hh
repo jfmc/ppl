@@ -218,6 +218,12 @@ public:
   */
   void insert(const Generator& g);
 
+  /*! \brief
+    Inserts in \p *this the generator \p g, stealing its contents and
+    increasing the number of space dimensions if needed.
+  */
+  void insert_recycled(Generator& g);
+
   //! Initializes the class.
   static void initialize();
 
@@ -434,6 +440,13 @@ private:
     It is a pending generator.
   */
   void insert_pending(const Generator& g);
+
+  /*! \brief
+    Inserts in \p *this the generator \p g, stealing its contents and
+    increasing the number of space dimensions if needed.
+    It is a pending generator.
+  */
+  void insert_pending_recycled(Generator& g);
 };
 
 //! An iterator over a system of generators

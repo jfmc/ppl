@@ -294,17 +294,29 @@ PPL::Generator_System_const_iterator::skip_forward() {
 
 void
 PPL::Generator_System::insert(const Generator& g) {
+  Generator tmp = g;
+  insert_recycled(tmp);
+}
+
+void
+PPL::Generator_System::insert_pending(const Generator& g) {
+  Generator tmp = g;
+  insert_pending_recycled(tmp);
+}
+
+void
+PPL::Generator_System::insert_recycled(Generator& g) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   PPL_ASSERT(num_pending_rows() == 0);
   if (topology() == g.topology())
-    Base::insert(g);
+    Base::insert_recycled(g);
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
       convert_into_non_necessarily_closed();
       // Inserting the new generator.
-      Base::insert(g);
+      Base::insert_recycled(g);
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -312,30 +324,30 @@ PPL::Generator_System::insert(const Generator& g) {
       // and the epsilon coefficient.
       const dimension_type new_size = 2 + std::max(g.space_dimension(),
 						   space_dimension());
-      Generator tmp_g(g, new_size);
+      g.resize(new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (!tmp_g.is_line_or_ray())
-	tmp_g[new_size - 1] = tmp_g[0];
-      tmp_g.set_not_necessarily_closed();
+      if (!g.is_line_or_ray())
+	g[new_size - 1] = g[0];
+      g.set_not_necessarily_closed();
       // Inserting the new generator.
-      Base::insert(tmp_g);
+      Base::insert_recycled(g);
     }
   PPL_ASSERT(OK());
 }
 
 void
-PPL::Generator_System::insert_pending(const Generator& g) {
+PPL::Generator_System::insert_pending_recycled(Generator& g) {
   if (topology() == g.topology())
-    Base::insert_pending(g);
+    Base::insert_pending_recycled(g);
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
       convert_into_non_necessarily_closed();
 
       // Inserting the new generator.
-      Base::insert_pending(g);
+      Base::insert_pending_recycled(g);
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -343,15 +355,15 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       // and the epsilon coefficient.
       const dimension_type new_size = 2 + std::max(g.space_dimension(),
 						   space_dimension());
-      Generator tmp_g(g, new_size);
+      g.resize(new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (!tmp_g.is_line_or_ray())
-	tmp_g[new_size - 1] = tmp_g[0];
-      tmp_g.set_not_necessarily_closed();
+      if (!g.is_line_or_ray())
+	g[new_size - 1] = g[0];
+      g.set_not_necessarily_closed();
       // Inserting the new generator.
-      Base::insert_pending(tmp_g);
+      Base::insert_pending_recycled(g);
     }
   PPL_ASSERT(OK());
 }
@@ -944,7 +956,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 	return false;
       break;
     }
-    insert_pending_recycled(row);
+    Base::insert_pending_recycled(row);
   }
   set_index_first_pending_row(pending_index);
 
