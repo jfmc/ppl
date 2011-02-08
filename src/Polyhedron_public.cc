@@ -1593,23 +1593,25 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
 
   if (can_have_something_pending()) {
     // Here we do not require `gen_sys' to be sorted.
-    // also, we _swap_ (instead of copying) the coefficients of `gs'
+    // also, we _remove_ (instead of copying) the rows of `gs'
     // (which is not a const).
+    Generator tmp;
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
-      Generator& old_g = gs[i];
-      old_g.set_topology(topology());
-      gen_sys.insert_pending_recycled(old_g);
+      gs.release_row(tmp);
+      tmp.set_topology(topology());
+      gen_sys.insert_pending_recycled(tmp);
     }
     
     set_generators_pending();
   } else {
     // Here we do not require `gen_sys' to be sorted.
-    // also, we _swap_ (instead of copying) the coefficients of `gs'
+    // also, we _remove_ (instead of copying) the coefficients of `gs'
     // (which is not a const).
+    Generator tmp;
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
-      Generator& old_g = gs[i];
-      old_g.set_topology(topology());
-      gen_sys.insert_recycled(old_g);
+      gs.release_row(tmp);
+      tmp.set_topology(topology());
+      gen_sys.insert_recycled(tmp);
     }
 
     // Constraints are not up-to-date and generators are not minimized.
