@@ -64,9 +64,6 @@ Grid::Grid(const Box<Interval>& box,
     PPL_DIRTY_TEMP_COEFFICIENT(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     for (dimension_type k = space_dim; k-- > 0; ) {
-      // This is declared here because it may be invalidated by the call to
-      // gen_sys.insert() at the end of the loop.
-      Grid_Generator& point = gen_sys[0];
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
@@ -75,6 +72,14 @@ Grid::Grid(const Box<Interval>& box,
 	    // A point interval sets dimension k of every point to a
 	    // single value.
 	    con_sys.insert(l_d * Variable(k) == l_n);
+
+            Swapping_Vector<Linear_Row> rows;
+            // Release the rows from the genertor system, so they can be
+            // modified.
+            gen_sys.release_rows(rows);
+
+            Linear_Row& point_row = rows[0];
+            Grid_Generator& point = static_cast<Grid_Generator&>(point_row);
 
 	    // Scale the point to use as divisor the lcm of the
 	    // divisors of the existing point and the lower bound.
@@ -92,6 +97,8 @@ Grid::Grid(const Box<Interval>& box,
 	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
 	    point[k + 1] = l_n * u_n;
 
+            gen_sys.take_ownership_of_rows(rows);
+
 	    continue;
 	  }
       }
@@ -100,8 +107,6 @@ Grid::Grid(const Box<Interval>& box,
     }
     set_congruences_up_to_date();
     set_generators_up_to_date();
-    gen_sys.unset_pending_rows();
-    gen_sys.set_sorted(false);
   }
 
   PPL_ASSERT(OK());
