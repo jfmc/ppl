@@ -184,10 +184,9 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
 	   && erasing > num_lines_or_equalities;
 	 ) {
       --erasing;
-      std::swap(sys[redundant], sys[erasing]);
+      sys.swap_rows(redundant, erasing);
       std::swap(sat[redundant], sat[erasing]);
       std::swap(num_saturators[redundant], num_saturators[erasing]);
-      sys.set_sorted(false);
       ++redundant;
     }
     // Adjusting the value of `num_rows' to the number of meaningful
@@ -234,10 +233,9 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `sys[i]' is redundant.
       --num_rows;
-      std::swap(sys[i], sys[num_rows]);
+      sys.swap_rows(i, num_rows);
       std::swap(sat[i], sat[num_rows]);
       std::swap(num_saturators[i], num_saturators[num_rows]);
-      sys.set_sorted(false);
     }
     else
       ++i;
@@ -282,10 +280,9 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
 	    // generators. Then we can remove either one of the two
 	    // inequalities: we remove `sys[j]'.
 	    --num_rows;
-	    std::swap(sys[j], sys[num_rows]);
+            sys.swap_rows(j, num_rows);
 	    std::swap(sat[j], sat[num_rows]);
 	    std::swap(num_saturators[j], num_saturators[num_rows]);
-	    sys.set_sorted(false);
 	  }
 	else
 	  // If we reach this point then we know that `sat[i]' does
@@ -297,10 +294,9 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
     if (redundant) {
       // The inequality `sys[i]' is redundant.
       --num_rows;
-      std::swap(sys[i], sys[num_rows]);
+      sys.swap_rows(i, num_rows);
       std::swap(sat[i], sat[num_rows]);
       std::swap(num_saturators[i], num_saturators[num_rows]);
-      sys.set_sorted(false);
     }
     else
       // The inequality `sys[i]' is not redundant.
