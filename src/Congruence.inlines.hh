@@ -226,6 +226,12 @@ Congruence::modulus() const {
   return (*this)[size()-1];
 }
 
+inline void
+Congruence::set_modulus(Coefficient_traits::const_reference m) {
+  (*this)[size()-1] = m;
+  PPL_ASSERT(OK());
+}
+
 inline bool
 Congruence::is_proper_congruence() const {
   return modulus() > 0;

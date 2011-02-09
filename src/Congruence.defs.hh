@@ -186,6 +186,9 @@ public:
   //! Returns a const reference to the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
 
+  //! Sets the modulus of \p *this to \p m .
+  void set_modulus(Coefficient_traits::const_reference m);
+
   //! Multiplies \p k into the modulus of \p *this.
   /*!
     If called with \p *this representing the congruence \f$ e_1 = e_2
