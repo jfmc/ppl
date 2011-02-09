@@ -349,6 +349,16 @@ public:
   */
   void negate(dimension_type first, dimension_type last);
 
+  //! Adds \p n to the space dimension.
+  void add_space_dimensions(dimension_type n);
+
+  //! Decreases the space dimension by \p n .
+  void remove_space_dimensions(dimension_type n);
+
+  //! Sets the space dimension by \p n , adding or removing coefficients as
+  //! needed.
+  void set_space_dimension(dimension_type n);
+
 protected:
 
   //! Normalizes the signs.

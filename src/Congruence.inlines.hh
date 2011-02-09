@@ -59,6 +59,31 @@ Congruence::Congruence(const Congruence& cg,
     (*this)[size()-1] *= -k;
 }
 
+inline void
+Congruence::add_space_dimensions(dimension_type n) {
+  const dimension_type old_size = size();
+  const dimension_type new_size = old_size + n;
+  resize(new_size);
+  Dense_Row::swap(old_size - 1, new_size - 1);
+}
+
+inline void
+Congruence::remove_space_dimensions(dimension_type n) {
+  PPL_ASSERT(size() >= n + 2);
+  const dimension_type old_size = size();
+  const dimension_type new_size = size() - n;
+  Dense_Row::swap(old_size - 1, new_size - 1);
+  resize(new_size);
+}
+
+inline void
+Congruence::set_space_dimension(dimension_type n) {
+  if (n > space_dimension())
+    add_space_dimensions(n - space_dimension());
+  else
+    remove_space_dimensions(space_dimension() - n);
+}
+
 inline
 Congruence::~Congruence() {
 }
