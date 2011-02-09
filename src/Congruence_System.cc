@@ -66,13 +66,13 @@ PPL::Congruence_System
         rows_k.swap(cycles[i], cycles[i + 1]);
       else {
         // Longer cycles need a temporary.
-        tmp = rows_k.get(cycles[j - 1]);
+        tmp = rows_k.coefficient(Variable(cycles[j - 1] - 1));
         for (dimension_type l = (j - 1); l > i; --l)
           rows_k.swap(cycles[l-1], cycles[l]);
         if (tmp == 0)
-          rows_k.reset(cycles[i]);
+          rows_k.set_coefficient(Variable(cycles[i] - 1), 0);
         else
-          std::swap(tmp, rows_k[cycles[i]]);
+          rows_k.set_coefficient(Variable(cycles[i] - 1), tmp);
       }
     }
   }
