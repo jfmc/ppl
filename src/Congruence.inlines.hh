@@ -32,6 +32,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Congruence::Congruence()
+  : Dense_Row() {
+  resize(2);
+  PPL_ASSERT(OK());
+}
+
+inline
 Congruence::Congruence(const Congruence& cg)
   : Dense_Row(cg) {
 }
@@ -223,6 +230,11 @@ Congruence::total_memory_in_bytes() const {
 inline void
 Congruence::swap(Congruence& y) {
   Dense_Row::swap(y);
+}
+
+inline void
+Congruence::swap(dimension_type i, dimension_type j) {
+  Dense_Row::swap(i, j);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -142,6 +142,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 class Parma_Polyhedra_Library::Congruence : public Dense_Row {
 public:
+
+  //! Constructs the 0 = 0 congruence with space dimension 0.
+  Congruence();
+
   //! Ordinary copy constructor.
   Congruence(const Congruence& cg);
 
@@ -326,6 +330,9 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Congruence& y);
 
+  //! Swaps the i-th and j-th coefficients.
+  void swap(dimension_type i, dimension_type j);
+
   // TODO: Make this private.
   //! Marks this congruence as a linear equality.
   void set_is_equality();
@@ -367,9 +374,6 @@ private:
     also known as the <EM>integrality congruence</EM>.
   */
   static const Congruence* zero_dim_integrality_p;
-
-  //! Default constructor: private and not implemented.
-  Congruence();
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
