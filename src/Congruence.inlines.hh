@@ -84,6 +84,11 @@ Congruence::set_space_dimension(dimension_type n) {
     remove_space_dimensions(space_dimension() - n);
 }
 
+inline void
+Congruence::shift_coefficients(dimension_type n, dimension_type i) {
+  Dense_Row::add_zeroes_and_shift(n, i + 1);
+}
+
 inline
 Congruence::~Congruence() {
 }

@@ -359,6 +359,10 @@ public:
   //! needed.
   void set_space_dimension(dimension_type n);
 
+  //! Shifts to the right by \p n positions the coefficients of variables with
+  //! index greater than \p i . The space dimension is increased by \p n .
+  void shift_coefficients(dimension_type n, dimension_type i);
+
 protected:
 
   //! Normalizes the signs.
