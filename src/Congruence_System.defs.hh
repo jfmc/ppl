@@ -91,7 +91,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     reordered, removed (if they are trivial, duplicate or
     implied by other congruences), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::Congruence_System : private Swapping_Vector<Dense_Row> {
+class Parma_Polyhedra_Library::Congruence_System {
 public:
   //! Default constructor: builds an empty system of congruences.
   Congruence_System();
@@ -250,10 +250,10 @@ public:
   private:
     friend class Congruence_System;
 
-    //! The const iterator over the matrix of congruences.
+    //! The const iterator over the vector of congruences.
     Swapping_Vector<Dense_Row>::const_iterator i;
 
-    //! A const pointer to the matrix of congruences.
+    //! A const pointer to the vector of congruences.
     const Swapping_Vector<Dense_Row>* csp;
 
     //! Constructor.
@@ -523,8 +523,9 @@ private:
   */
   static const Congruence_System* zero_dim_empty_p;
 
+  Swapping_Vector<Dense_Row> rows;
+  
   dimension_type num_columns_;
-
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if any of the dimensions in

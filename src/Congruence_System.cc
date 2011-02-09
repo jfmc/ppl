@@ -39,7 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
-  : Swapping_Vector<Dense_Row>(),
+  : rows(),
     num_columns_(cs.space_dimension() + 2) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
@@ -54,7 +54,7 @@ PPL::Congruence_System
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Dense_Row& rows_k = (*this)[k];
+    Dense_Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)
@@ -106,7 +106,7 @@ PPL::Congruence_System::swap_columns(dimension_type i, dimension_type j) {
   PPL_ASSERT(i < num_columns());
   PPL_ASSERT(j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; )
-    Swapping_Vector<Dense_Row>::operator[](k).swap(i, j);
+    rows[k].swap(i, j);
 }
 
 void
@@ -120,19 +120,19 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
     if (!has_no_rows())
       // Move the moduli to the last column.
       swap_columns(old_num_columns - 1, cg_size - 1);
-    Swapping_Vector<Dense_Row>::push_back(cg);
+    rows.push_back(cg);
   }
   else if (cg_size < old_num_columns) {
     // Create a resized copy of `cg'.
     Congruence rc(cg, old_num_columns, old_num_columns);
     // Move the modulus to its place.
     std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
-    Swapping_Vector<Dense_Row>::resize(num_rows() + 1);
-    std::swap(rc, Swapping_Vector<Dense_Row>::back());
+    rows.resize(num_rows() + 1);
+    std::swap(rc, rows.back());
   }
   else
     // Here cg_size == old_num_columns.
-    Swapping_Vector<Dense_Row>::push_back(cg);
+    rows.push_back(cg);
 
   PPL_ASSERT(OK());
 }
@@ -144,8 +144,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
   if (cg_size < old_num_columns) {
     // Create a congruence of the required size from `c'.
     Congruence cg(c, old_num_columns, old_num_columns);
-    Swapping_Vector<Dense_Row>::resize(num_rows() + 1);
-    std::swap(cg, Swapping_Vector<Dense_Row>::back());
+    rows.resize(num_rows() + 1);
+    std::swap(cg, rows.back());
   }
   else {
     if (cg_size > old_num_columns) {
@@ -156,8 +156,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
 	swap_columns(old_num_columns - 1, cg_size - 1);
     }
     Congruence cg(c, cg_size, cg_size);
-    Swapping_Vector<Dense_Row>::resize(num_rows() + 1);
-    std::swap(cg, Swapping_Vector<Dense_Row>::back());
+    rows.resize(num_rows() + 1);
+    std::swap(cg, rows.back());
   }
   operator[](num_rows()-1).strong_normalize();
 
@@ -483,7 +483,7 @@ bool
 PPL::Congruence_System::OK() const {
   // All rows must have num_columns() columns.
   for (dimension_type i = num_rows(); i-- > 0; )
-    if (Swapping_Vector<Dense_Row>::operator[](i).size() != num_columns())
+    if (rows[i].size() != num_columns())
       return false;
 
   if (num_rows() != 0) {
