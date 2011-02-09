@@ -112,7 +112,7 @@ PPL::Congruence_System::swap_columns(dimension_type i, dimension_type j) {
 void
 PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   const dimension_type old_num_columns = num_columns();
-  const dimension_type cg_size = cg.size();
+  const dimension_type cg_size = cg.space_dimension() + 2;
 
   if (cg_size > old_num_columns) {
     // Resize the system, if necessary.
@@ -126,7 +126,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
     // Create a resized copy of `cg'.
     Congruence rc(cg, old_num_columns, old_num_columns);
     // Move the modulus to its place.
-    std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
+    rc.swap(cg_size - 1, old_num_columns - 1);
     rows.resize(num_rows() + 1);
     std::swap(rc, rows.back());
   }
@@ -263,21 +263,30 @@ PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
   if (num_rows() != cgs.num_rows())
     return false;
 
-  for (dimension_type row = cgs.num_rows(); row-- > 0; )
-    for (dimension_type col = cgs.num_columns(); col-- > 0; ) {
-      if (operator[](row)[col] == cgs[row][col])
-	continue;
+  PPL_ASSERT(num_columns() >= 2);
+  PPL_ASSERT(cgs.num_columns() >= 2);
+
+  // FIXME: What happens when num_columns() != cgs.num_columns()?
+
+  for (dimension_type row = cgs.num_rows(); row-- > 0; ) {
+    for (dimension_type col = cgs.num_columns() - 2; col-- > 0; )
+      if ((*this)[row].coefficient(Variable(col))
+          != cgs[row].coefficient(Variable(col)))
+        return false;
+
+    if ((*this)[row].inhomogeneous_term() != cgs[row].inhomogeneous_term())
       return false;
-    }
+    if ((*this)[row].modulus() != cgs[row].modulus())
+      return false;
+  }
   return true;
 }
 
 bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
-  const dimension_type modulus_index = cgs.num_columns() - 1;
   for (dimension_type i = cgs.num_rows(); i-- > 0; )
-    if (cgs[i][modulus_index] == 0)
+    if (cgs[i].modulus() == 0)
       return true;
   return false;
 }
@@ -351,7 +360,7 @@ PPL::Congruence_System::has_a_free_dimension() const {
   for (dimension_type row = num_rows(); row-- > 0; ) {
     const Congruence& cg = operator[](row);
     for (dimension_type dim = space_dim; dim-- > 0; )
-      if (free_dim[dim] && cg[dim+1] != 0) {
+      if (free_dim[dim] && cg.coefficient(Variable(dim)) != 0) {
 	if (--free_dims == 0) {
 	  // All dimensions are constrained.
 #ifndef NDEBUG
@@ -481,9 +490,9 @@ PPL::Congruence_System::finalize() {
 
 bool
 PPL::Congruence_System::OK() const {
-  // All rows must have num_columns() columns.
+  // All rows must have space dimension `space_dimension()'.
   for (dimension_type i = num_rows(); i-- > 0; )
-    if (rows[i].size() != num_columns())
+    if (rows[i].space_dimension() != space_dimension())
       return false;
 
   if (num_rows() != 0) {
