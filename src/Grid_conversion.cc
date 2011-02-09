@@ -304,7 +304,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   PPL_ASSERT(lower_triangular(dest, dim_kinds));
 
-  Swapping_Vector<Dense_Row> rows;
+  Swapping_Vector<Congruence> rows;
   dest.release_rows(rows);
 
   // Since we are reducing the system to "strong minimal form",

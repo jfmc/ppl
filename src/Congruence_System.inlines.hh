@@ -30,12 +30,12 @@ namespace Parma_Polyhedra_Library {
 
 inline Congruence&
 Congruence_System::operator[](const dimension_type k) {
-  return static_cast<Congruence&>(rows[k]);
+  return rows[k];
 }
 
 inline const Congruence&
 Congruence_System::operator[](const dimension_type k) const {
-  return static_cast<const Congruence&>(rows[k]);
+  return rows[k];
 }
 
 inline dimension_type
@@ -70,7 +70,7 @@ Congruence_System::remove_trailing_columns(dimension_type n) {
 }
 
 inline void
-Congruence_System::add_zero_rows(dimension_type n, Dense_Row::Flags flags) {
+Congruence_System::add_zero_rows(dimension_type n, Congruence::Flags flags) {
   rows.resize(num_rows() + n);
   for (dimension_type i = n; i > 0; --i) {
     rows[num_rows() - i].set_flags(flags);
@@ -85,13 +85,13 @@ Congruence_System::remove_trailing_rows(dimension_type n) {
 }
 
 inline void
-Congruence_System::release_rows(Swapping_Vector<Dense_Row>& v) {
+Congruence_System::release_rows(Swapping_Vector<Congruence>& v) {
   PPL_ASSERT(v.empty());
   std::swap(rows, v);
 }
 
 inline void
-Congruence_System::take_ownership_of_rows(Swapping_Vector<Dense_Row>& v) {
+Congruence_System::take_ownership_of_rows(Swapping_Vector<Congruence>& v) {
   PPL_ASSERT(rows.size() == 0);
   std::swap(rows, v);
 }
@@ -99,7 +99,7 @@ Congruence_System::take_ownership_of_rows(Swapping_Vector<Dense_Row>& v) {
 inline void
 Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
-  static_cast<Congruence&>(rows.back()).strong_normalize();
+  rows.back().strong_normalize();
   PPL_ASSERT(OK());
 }
 
@@ -148,7 +148,7 @@ Congruence_System::operator=(const Congruence_System& y) {
 
 inline dimension_type
 Congruence_System::max_space_dimension() {
-  return Dense_Row::max_size() - 2;
+  return Congruence::max_size() - 2;
 }
 
 inline dimension_type
@@ -200,12 +200,12 @@ Congruence_System::const_iterator::operator=(const const_iterator& y) {
 
 inline const Congruence&
 Congruence_System::const_iterator::operator*() const {
-  return static_cast<const Congruence&>(*i);
+  return *i;
 }
 
 inline const Congruence*
 Congruence_System::const_iterator::operator->() const {
-  return static_cast<const Congruence*>(i.operator->());
+  return i.operator->();
 }
 
 inline Congruence_System::const_iterator&
@@ -234,7 +234,7 @@ Congruence_System::const_iterator::operator!=(const const_iterator& y) const {
 
 inline
 Congruence_System::const_iterator::
-const_iterator(const Swapping_Vector<Dense_Row>::const_iterator& iter,
+const_iterator(const Swapping_Vector<Congruence>::const_iterator& iter,
 	       const Congruence_System& csys)
   : i(iter), csp(&csys.rows) {
 }

@@ -469,7 +469,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       if (pivot[dim] < 0)
 	pivot.negate(0, dim + 1);
 
-      Swapping_Vector<Dense_Row> rows;
+      Swapping_Vector<Congruence> rows;
       sys.release_rows(rows);
 
       // Factor this row out of the preceding ones.
@@ -581,7 +581,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     last_row[0] = last_row[mod_index];
   }
 
-  Swapping_Vector<Dense_Row> rows;
+  Swapping_Vector<Congruence> rows;
   sys.release_rows(rows);
 
   // Since we are reducing the system to "strong minimal form",

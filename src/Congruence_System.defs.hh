@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Swapping_Vector.defs.hh"
-#include "Dense_Row.defs.hh"
+#include "Congruence.defs.hh"
 #include "Constraint_System.types.hh"
 #include <iosfwd>
 
@@ -254,13 +254,13 @@ public:
     friend class Congruence_System;
 
     //! The const iterator over the vector of congruences.
-    Swapping_Vector<Dense_Row>::const_iterator i;
+    Swapping_Vector<Congruence>::const_iterator i;
 
     //! A const pointer to the vector of congruences.
-    const Swapping_Vector<Dense_Row>* csp;
+    const Swapping_Vector<Congruence>* csp;
 
     //! Constructor.
-    const_iterator(const Swapping_Vector<Dense_Row>::const_iterator& iter,
+    const_iterator(const Swapping_Vector<Congruence>::const_iterator& iter,
 		   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
@@ -377,7 +377,7 @@ public:
 
   // TODO: Remove this, or make it private.
   void add_zero_rows(dimension_type n,
-                     Dense_Row::Flags flags = Dense_Row::Flags());
+                     Congruence::Flags flags = Congruence::Flags());
 
   // TODO: Remove this, or make it private.
   void remove_trailing_rows(dimension_type n);
@@ -497,11 +497,11 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
   // TODO: Remove this.
-  typedef Dense_Row internal_row_type;
+  typedef Congruence internal_row_type;
 
   // TODO: Check if these methods should be improved.
-  void release_rows(Swapping_Vector<Dense_Row>& v);
-  void take_ownership_of_rows(Swapping_Vector<Dense_Row>& v);
+  void release_rows(Swapping_Vector<Congruence>& v);
+  void take_ownership_of_rows(Swapping_Vector<Congruence>& v);
 
   // TODO: Remove this.
   //! Resizes the system without worrying about the old contents.
@@ -526,7 +526,7 @@ private:
   */
   static const Congruence_System* zero_dim_empty_p;
 
-  Swapping_Vector<Dense_Row> rows;
+  Swapping_Vector<Congruence> rows;
   
   dimension_type num_columns_;
 

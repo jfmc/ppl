@@ -54,7 +54,7 @@ PPL::Congruence_System
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
-    Dense_Row& rows_k = rows[k];
+    Congruence& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)
@@ -213,7 +213,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   const dimension_type x_mod_index = x.num_columns() - 1;
   const dimension_type y_mod_index = y_num_columns - 1;
   for (dimension_type i = y_num_rows; i-- > 0; ) {
-    Dense_Row copy(y[i], x.num_columns(), x.num_columns());
+    Congruence copy(y[i], x.num_columns(), x.num_columns());
     // Swap the modulus to the correct column.
     std::swap(copy[x_mod_index], copy[y_mod_index]);
     std::swap(copy, x[x_num_rows+i]);
@@ -284,7 +284,7 @@ PPL::Congruence_System::has_linear_equalities() const {
 
 void
 PPL::Congruence_System::const_iterator::skip_forward() {
-  const Swapping_Vector<Dense_Row>::const_iterator csp_end = csp->end();
+  const Swapping_Vector<Congruence>::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
