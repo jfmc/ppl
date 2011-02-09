@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include "Grid_Generator_System.defs.hh"
 #include "Grid.types.hh"
 #include <iosfwd>
 
@@ -225,7 +224,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor is 1.
 */
-class Parma_Polyhedra_Library::Grid_Generator : private Linear_Row {
+class Parma_Polyhedra_Library::Grid_Generator : public Linear_Row {
 public:
   //! Returns the line of direction \p e.
   /*!
@@ -385,13 +384,7 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator& y);
 
-private:
-  /*! \brief
-    Holds (between class initialization and finalization) a pointer to
-    the origin of the zero-dimensional space \f$\Rset^0\f$.
-  */
-  static const Grid_Generator* zero_dim_point_p;
-
+  // TODO: Make this private.
   /*! \brief
     Scales \p *this to be represented with a divisor of \p d (if
     \*this is a parameter or point). Does nothing at all on lines.
@@ -402,6 +395,40 @@ private:
   */
   void scale_to_divisor(Coefficient_traits::const_reference d);
 
+  // TODO: Make this private.
+  //! Converts the Grid_Generator into a parameter.
+  void set_is_parameter();
+
+  // TODO: Make this private.
+  //! Sets the divisor of \p *this to \p d.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this is a line.
+  */
+  void set_divisor(Coefficient_traits::const_reference d);
+
+  // TODO: Make this private.
+  //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
+  void set_is_line();
+
+  // TODO: Make this private.
+  //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
+  void set_is_parameter_or_point();
+
+  // TODO: Make this private.
+  /*! \brief
+    Negates the elements from index \p first (included)
+    to index \p last (excluded).
+  */
+  void negate(dimension_type first, dimension_type last);
+
+private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
+  static const Grid_Generator* zero_dim_point_p;
+
   /*! \brief
     Constructs a grid generator of type \p t from linear expression \p e,
     stealing the underlying data structures from \p e.
@@ -410,31 +437,6 @@ private:
     the new Grid_Generator.
   */
   Grid_Generator(Linear_Expression& e, Type t);
-
-  //! Returns the actual size of \p this.
-  dimension_type size() const;
-
-  /*! \brief
-    Negates the elements from index \p first (included)
-    to index \p last (excluded).
-  */
-  void negate(dimension_type first, dimension_type last);
-
-  //! Sets the divisor of \p *this to \p d.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this is a line.
-  */
-  void set_divisor(Coefficient_traits::const_reference d);
-
-  //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
-  void set_is_line();
-
-  //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
-  void set_is_parameter_or_point();
-
-  //! Converts the Grid_Generator into a parameter.
-  void set_is_parameter();
 
   /*! \brief
     Strong normalization: ensures that equivalent Grid_Generator points
@@ -464,16 +466,6 @@ private:
 
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
-  // FIXME: The following friend declaration is for operator[] and
-  //        divisor() access in Grid::conversion, Grid::simplify,
-  //        Grid::relation_with(c) and Grid::Grid(box, *).
-  friend class Grid;
-  friend class Grid_Generator_System;
-  friend class Grid_Generator_System::const_iterator;
-  friend class Congruence_System;
-  friend class Scalar_Products;
-  friend class Topology_Adjusted_Scalar_Product_Sign;
-  friend class Linear_Expression;
 };
 
 

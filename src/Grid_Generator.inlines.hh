@@ -51,11 +51,6 @@ Grid_Generator::~Grid_Generator() {
 }
 
 inline dimension_type
-Grid_Generator::size() const {
-  return Linear_Row::size();
-}
-
-inline dimension_type
 Grid_Generator::max_space_dimension() {
   return Linear_Row::max_space_dimension() - 1;
 }

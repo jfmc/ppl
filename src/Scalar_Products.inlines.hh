@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Scalar_Products_inlines_hh
 #define PPL_Scalar_Products_inlines_hh 1
 
+#include "Scalar_Products.defs.hh"
 #include "Linear_Row.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
