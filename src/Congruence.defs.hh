@@ -175,6 +175,11 @@ public:
   */
   Coefficient_traits::const_reference coefficient(Variable v) const;
 
+  // TODO: Should this method do bound-checking as Congruence::coefficient()
+  // does? Or should both avoid bounds checking?
+  //! Sets the coefficient of \p v in \p *this to \p c .
+  void set_coefficient(Variable v, Coefficient_traits::const_reference c);
+
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 

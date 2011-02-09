@@ -178,6 +178,13 @@ Congruence::coefficient(const Variable v) const {
   return (*this)[v.id()+1];
 }
 
+inline void
+Congruence::set_coefficient(const Variable v,
+                            Coefficient_traits::const_reference c) {
+  PPL_ASSERT(v.space_dimension() <= space_dimension());
+  (*this)[v.id() + 1] = c;
+}
+
 inline Coefficient_traits::const_reference
 Congruence::inhomogeneous_term() const {
   return (*this)[0];
