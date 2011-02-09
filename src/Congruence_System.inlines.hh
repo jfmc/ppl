@@ -146,7 +146,7 @@ Congruence_System::operator=(const Congruence_System& y) {
 
 inline dimension_type
 Congruence_System::max_space_dimension() {
-  return Congruence::max_size() - 2;
+  return Congruence::max_space_dimension();
 }
 
 inline dimension_type
