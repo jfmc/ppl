@@ -25,84 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Congruence_defs_hh 1
 
 #include "Congruence.types.hh"
-#include "Scalar_Products.types.hh"
-#include "Dense_Row.defs.hh"
-#include "Grid.types.hh"
-#include "Polyhedron.types.hh"
+
+#include "Coefficient.defs.hh"
 #include "Variable.defs.hh"
+#include "Dense_Row.defs.hh"
+
 #include "Constraint.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Linear_Row.types.hh"
-#include "Congruence_System.defs.hh"
+
 #include <iosfwd>
-
-namespace Parma_Polyhedra_Library {
-
-namespace IO_Operators {
-
-//! Output operators.
-
-/*! \relates Parma_Polyhedra_Library::Congruence */
-std::ostream&
-operator<<(std::ostream& s, const Congruence& c);
-
-// Put this in the namespace here to declare it a friend later.
-
-/*! \relates Parma_Polyhedra_Library::Congruence_System */
-std::ostream&
-operator<<(std::ostream& s, const Congruence_System& cgs);
-
-
-} // namespace IO_Operators
-
-// Put these in the namespace here to declare them friend later.
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence */
-bool
-operator==(const Congruence& x, const Congruence& y);
-
-//! Returns <CODE>false</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence */
-bool
-operator!=(const Congruence& x, const Congruence& y);
-
-//! Returns the congruence \f$e1 = e2 \pmod{1}\f$.
-/*! \relates Congruence */
-Congruence
-operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the congruence \f$e = n \pmod{1}\f$.
-/*! \relates Congruence */
-Congruence
-operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns a copy of \p cg, multiplying \p k into the copy's modulus.
-/*!
-    If \p cg represents the congruence \f$ e_1 = e_2
-    \pmod{m}\f$, then the result represents the
-    congruence \f$ e_1 = e_2 \pmod{mk}\f$.
-  \relates Congruence
-*/
-Congruence
-operator/(const Congruence& cg, Coefficient_traits::const_reference k);
-
-//! Creates a congruence from \p c, with \p m as the modulus.
-/*! \relates Congruence */
-Congruence
-operator/(const Constraint& c, Coefficient_traits::const_reference m);
-
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Congruence */
-void
-swap(Parma_Polyhedra_Library::Congruence& x,
-     Parma_Polyhedra_Library::Congruence& y);
-
-} // namespace std
 
 //! A linear congruence.
 /*! \ingroup PPL_CXX_interface
@@ -208,7 +140,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   syntactically different from the (semantically equivalent)
   congruence considered.
 */
-class Parma_Polyhedra_Library::Congruence : private Dense_Row {
+class Parma_Polyhedra_Library::Congruence : public Dense_Row {
 public:
   //! Ordinary copy constructor.
   Congruence(const Congruence& cg);
@@ -347,6 +279,64 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  // TODO: Make this private.
+  //! Calls normalize, then divides out common factors.
+  /*!
+    Strongly normalized Congruences have equivalent semantics if and
+    only if their syntaxes (as output by operator<<) are equal.
+  */
+  void strong_normalize();
+
+  // TODO: Make this private
+  //! Copy-constructs with specified size and capacity.
+  Congruence(const Congruence& cg,
+             dimension_type sz,
+             dimension_type capacity);
+
+  // TODO: Make this private.
+  //! Constructs from a constraint, with specified size and capacity.
+  Congruence(const Constraint& c,
+             dimension_type sz,
+             dimension_type capacity);
+
+  // TODO: Make this private.
+  //! Copy-constructs from \p cg, multiplying \p k into the modulus.
+  /*!
+    If \p cg represents the congruence \f$ e_1 = e_2
+    \pmod{m}\f$, then the result represents the
+    congruence \f$ e_1 = e_2 \pmod{mk}\f$.
+  */
+  Congruence(const Congruence& cg, Coefficient_traits::const_reference k);
+
+  // TODO: Make this private.
+  //! Constructs from Linear_Expression \p le, using modulus \p m.
+  /*!
+    Builds a congruence with modulus \p m, stealing the coefficients
+    from \p le.
+
+    \param le
+    The Linear_Expression holding the coefficients.
+
+    \param m
+    The modulus for the congruence, which must be zero or greater.
+  */
+  Congruence(Linear_Expression& le,
+             Coefficient_traits::const_reference m);
+
+  //! Swaps \p *this with \p y.
+  void swap(Congruence& y);
+
+  // TODO: Make this private.
+  //! Marks this congruence as a linear equality.
+  void set_is_equality();
+
+  // TODO: Make this private.
+  /*! \brief
+    Negates the elements from index \p first (included)
+    to index \p last (excluded).
+  */
+  void negate(dimension_type first, dimension_type last);
+
 protected:
 
   //! Normalizes the signs.
@@ -364,13 +354,6 @@ protected:
   */
   void normalize();
 
-  //! Calls normalize, then divides out common factors.
-  /*!
-    Strongly normalized Congruences have equivalent semantics if and
-    only if their syntaxes (as output by operator<<) are equal.
-  */
-  void strong_normalize();
-
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
@@ -385,52 +368,8 @@ private:
   */
   static const Congruence* zero_dim_integrality_p;
 
-  //! Marks this congruence as a linear equality.
-  void set_is_equality();
-
-  /*! \brief
-    Negates the elements from index \p first (included)
-    to index \p last (excluded).
-  */
-  void negate(dimension_type first, dimension_type last);
-
   //! Default constructor: private and not implemented.
   Congruence();
-
-  //! Copy-constructs with specified size and capacity.
-  Congruence(const Congruence& cg,
-	     dimension_type sz,
-	     dimension_type capacity);
-
-  //! Constructs from a constraint, with specified size and capacity.
-  Congruence(const Constraint& c,
-	     dimension_type sz,
-	     dimension_type capacity);
-
-  //! Copy-constructs from \p cg, multiplying \p k into the modulus.
-  /*!
-    If \p cg represents the congruence \f$ e_1 = e_2
-    \pmod{m}\f$, then the result represents the
-    congruence \f$ e_1 = e_2 \pmod{mk}\f$.
-  */
-  Congruence(const Congruence& cg, Coefficient_traits::const_reference k);
-
-  //! Constructs from Linear_Expression \p le, using modulus \p m.
-  /*!
-    Builds a congruence with modulus \p m, stealing the coefficients
-    from \p le.
-
-    \param le
-    The Linear_Expression holding the coefficients.
-
-    \param m
-    The modulus for the congruence, which must be zero or greater.
-  */
-  Congruence(Linear_Expression& le,
-	     Coefficient_traits::const_reference m);
-
-  //! Swaps \p *this with \p y.
-  void swap(Congruence& y);
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
@@ -447,36 +386,66 @@ private:
   throw_dimension_incompatible(const char* method,
 			       const char* v_name,
 			       Variable v) const;
-
-  friend Congruence
-  operator/(const Congruence& cg, Coefficient_traits::const_reference k);
-  friend Congruence
-  operator/(const Constraint& c, Coefficient_traits::const_reference m);
-
-  friend bool
-  operator==(const Congruence& x, const Congruence& y);
-
-  friend bool
-  operator!=(const Congruence& x, const Congruence& y);
-
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators
-  ::operator<<(std::ostream& s,
-	       const Congruence_System& cgs);
-
-  friend class Parma_Polyhedra_Library::Scalar_Products;
-  friend class Parma_Polyhedra_Library::Constraint;
-  friend class Parma_Polyhedra_Library::Congruence_System;
-  friend class Parma_Polyhedra_Library::Congruence_System::const_iterator;
-  // FIXME: The following friend declaration is at least for
-  //        operator[] access in Grid::conversion.
-  friend class Parma_Polyhedra_Library::Grid;
-  friend class Parma_Polyhedra_Library::Linear_Expression;
-
-  friend void
-  std::swap(Parma_Polyhedra_Library::Congruence& x,
-	    Parma_Polyhedra_Library::Congruence& y);
 };
+
+namespace Parma_Polyhedra_Library {
+
+namespace IO_Operators {
+
+//! Output operators.
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+std::ostream&
+operator<<(std::ostream& s, const Congruence& c);
+
+} // namespace IO_Operators
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Congruence */
+bool
+operator==(const Congruence& x, const Congruence& y);
+
+//! Returns <CODE>false</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Congruence */
+bool
+operator!=(const Congruence& x, const Congruence& y);
+
+//! Returns the congruence \f$e1 = e2 \pmod{1}\f$.
+/*! \relates Congruence */
+Congruence
+operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the congruence \f$e = n \pmod{1}\f$.
+/*! \relates Congruence */
+Congruence
+operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns a copy of \p cg, multiplying \p k into the copy's modulus.
+/*!
+    If \p cg represents the congruence \f$ e_1 = e_2
+    \pmod{m}\f$, then the result represents the
+    congruence \f$ e_1 = e_2 \pmod{mk}\f$.
+  \relates Congruence
+*/
+Congruence
+operator/(const Congruence& cg, Coefficient_traits::const_reference k);
+
+//! Creates a congruence from \p c, with \p m as the modulus.
+/*! \relates Congruence */
+Congruence
+operator/(const Constraint& c, Coefficient_traits::const_reference m);
+
+} // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Congruence */
+void
+swap(Parma_Polyhedra_Library::Congruence& x,
+     Parma_Polyhedra_Library::Congruence& y);
+
+} // namespace std
 
 #include "Congruence.inlines.hh"
 
