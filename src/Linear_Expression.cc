@@ -75,8 +75,9 @@ PPL::Linear_Expression::finalize() {
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
   : Linear_Row(cg.space_dimension() + 1, Linear_Row::Flags()) {
   Linear_Expression& e = *this;
-  for (dimension_type i = size(); i-- > 0; )
-    e[i] = cg[i];
+  for (dimension_type i = size() - 1; i-- > 0; )
+    e[i + 1] = cg.coefficient(Variable(i));
+  e[0] = cg.inhomogeneous_term();
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v)
