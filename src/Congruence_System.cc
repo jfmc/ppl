@@ -577,32 +577,19 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   dimension_type added_columns = cgs.space_dimension();
 
   dimension_type old_num_rows = num_rows();
-  dimension_type old_modi = num_columns() - 1;
   dimension_type old_space_dim = space_dimension();
 
-  add_zero_columns(added_columns);
+  increase_space_dimension(space_dimension() + added_columns);
 
-  dimension_type cgs_num_columns = cgs.num_columns();
-  dimension_type modi = num_columns() - 1;
-
-  // Swap the modulus and the new last column, in the old rows.
-  for (dimension_type i = old_num_rows; i-- > 0; ) {
-    Congruence& cg = operator[](i);
-    std::swap(cg[old_modi], cg[modi]);
-  }
-
-  add_zero_rows(added_rows);
+  rows.resize(rows.size() + added_rows);
 
   // Move the congruences into *this from `cgs', shifting the
   // coefficients along into the appropriate columns.
   for (dimension_type i = added_rows; i-- > 0; ) {
     Congruence& cg_old = cgs[i];
     Congruence& cg_new = operator[](old_num_rows + i);
-    // The inhomogeneous term is moved to the same column.
-    std::swap(cg_new[0], cg_old[0]);
-    // All homogeneous terms are shifted by `space_dim' columns.
-    for (dimension_type j = cgs_num_columns; j-- > 1; )
-      std::swap(cg_old[j], cg_new[old_space_dim + j]);
+    cg_old.shift_coefficients(old_space_dim, 0);
+    std::swap(cg_old, cg_new);
   }
 }
 
