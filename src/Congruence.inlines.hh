@@ -49,16 +49,6 @@ Congruence::Congruence(const Congruence& cg,
   : Dense_Row(cg, sz, capacity) {
 }
 
-inline
-Congruence::Congruence(const Congruence& cg,
-		       Coefficient_traits::const_reference k)
-  : Dense_Row(cg) {
-  if (k >= 0)
-    (*this)[size()-1] *= k;
-  else
-    (*this)[size()-1] *= -k;
-}
-
 inline void
 Congruence::add_space_dimensions(dimension_type n) {
   const dimension_type old_size = size();
@@ -136,7 +126,12 @@ operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 /*! \relates Parma_Polyhedra_Library::Congruence */
 inline Congruence
 operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
-  Congruence ret(cg, k);
+  Congruence ret = cg;
+  Coefficient m = ret.modulus();
+  m *= k;
+  if (m < 0)
+    neg_assign(m);
+  ret.set_modulus(m);
   return ret;
 }
 

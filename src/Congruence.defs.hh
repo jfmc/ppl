@@ -312,15 +312,6 @@ public:
              dimension_type capacity);
 
   // TODO: Make this private.
-  //! Copy-constructs from \p cg, multiplying \p k into the modulus.
-  /*!
-    If \p cg represents the congruence \f$ e_1 = e_2
-    \pmod{m}\f$, then the result represents the
-    congruence \f$ e_1 = e_2 \pmod{mk}\f$.
-  */
-  Congruence(const Congruence& cg, Coefficient_traits::const_reference k);
-
-  // TODO: Make this private.
   //! Constructs from Linear_Expression \p le, using modulus \p m.
   /*!
     Builds a congruence with modulus \p m, stealing the coefficients
