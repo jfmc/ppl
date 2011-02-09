@@ -39,26 +39,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
-  : Matrix<Dense_Row>(0, cs.space_dimension() + 2) {
+  : Swapping_Vector<Dense_Row>(),
+    num_columns_(cs.space_dimension() + 2) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       insert(*i);
 }
 
+void
+PPL::Congruence_System
+::permute_columns(const std::vector<dimension_type>& cycles) {
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+  const dimension_type n = cycles.size();
+  PPL_ASSERT(cycles[n - 1] == 0);
+  for (dimension_type k = num_rows(); k-- > 0; ) {
+    Dense_Row& rows_k = (*this)[k];
+    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
+      // Make `j' be the index of the next cycle terminator.
+      while (cycles[j] != 0)
+        ++j;
+      // Cycles of length less than 2 are not allowed.
+      PPL_ASSERT(j - i >= 2);
+      if (j - i == 2)
+        // For cycles of length 2 no temporary is needed, just a swap.
+        rows_k.swap(cycles[i], cycles[i + 1]);
+      else {
+        // Longer cycles need a temporary.
+        tmp = rows_k.get(cycles[j - 1]);
+        for (dimension_type l = (j - 1); l > i; --l)
+          rows_k.swap(cycles[l-1], cycles[l]);
+        if (tmp == 0)
+          rows_k.reset(cycles[i]);
+        else
+          std::swap(tmp, rows_k[cycles[i]]);
+      }
+    }
+  }
+}
+
 bool
-PPL::Congruence_System::
-increase_space_dimension(const dimension_type new_space_dim) {
+PPL::Congruence_System
+::increase_space_dimension(const dimension_type new_space_dim) {
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type cols_to_add = new_space_dim - space_dimension();
 
   if (cols_to_add) {
-    if (num_rows()) {
-      const dimension_type old_num_columns = num_columns();
+    if (num_rows() != 0) {
+      const dimension_type old_num_columns = num_columns_;
       add_zero_columns(cols_to_add);
       // Move the moduli.
-      swap_columns(num_columns() - 1, old_num_columns - 1);
+      swap_columns(num_columns_ - 1, old_num_columns - 1);
     }
     else
       // Empty system.
@@ -67,6 +99,14 @@ increase_space_dimension(const dimension_type new_space_dim) {
 
   PPL_ASSERT(OK());
   return true;
+}
+
+void
+PPL::Congruence_System::swap_columns(dimension_type i, dimension_type j) {
+  PPL_ASSERT(i < num_columns());
+  PPL_ASSERT(j < num_columns());
+  for (dimension_type k = num_rows(); k-- > 0; )
+    Swapping_Vector<Dense_Row>::operator[](k).swap(i, j);
 }
 
 void
@@ -80,18 +120,19 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
     if (!has_no_rows())
       // Move the moduli to the last column.
       swap_columns(old_num_columns - 1, cg_size - 1);
-    add_row(cg);
+    Swapping_Vector<Dense_Row>::push_back(cg);
   }
   else if (cg_size < old_num_columns) {
     // Create a resized copy of `cg'.
     Congruence rc(cg, old_num_columns, old_num_columns);
     // Move the modulus to its place.
     std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
-    add_recycled_row(rc);
+    Swapping_Vector<Dense_Row>::resize(num_rows() + 1);
+    std::swap(rc, Swapping_Vector<Dense_Row>::back());
   }
   else
     // Here cg_size == old_num_columns.
-    add_row(cg);
+    Swapping_Vector<Dense_Row>::push_back(cg);
 
   PPL_ASSERT(OK());
 }
@@ -103,7 +144,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
   if (cg_size < old_num_columns) {
     // Create a congruence of the required size from `c'.
     Congruence cg(c, old_num_columns, old_num_columns);
-    add_recycled_row(cg);
+    Swapping_Vector<Dense_Row>::resize(num_rows() + 1);
+    std::swap(cg, Swapping_Vector<Dense_Row>::back());
   }
   else {
     if (cg_size > old_num_columns) {
@@ -114,7 +156,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
 	swap_columns(old_num_columns - 1, cg_size - 1);
     }
     Congruence cg(c, cg_size, cg_size);
-    add_recycled_row(cg);
+    Swapping_Vector<Dense_Row>::resize(num_rows() + 1);
+    std::swap(cg, Swapping_Vector<Dense_Row>::back());
   }
   operator[](num_rows()-1).strong_normalize();
 
@@ -127,15 +170,12 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
   const dimension_type cgs_num_rows = cgs.num_rows();
   const dimension_type old_num_columns = num_columns();
   dimension_type cgs_num_columns = cgs.num_columns();
-  if (old_num_columns >= cgs_num_columns)
-    add_zero_rows(cgs_num_rows, Dense_Row::Flags());
-  else {
-    add_zero_rows_and_columns(cgs_num_rows,
-                              cgs_num_columns - old_num_columns,
-                              Dense_Row::Flags());
+  if (old_num_columns < cgs_num_columns) {
+    add_zero_columns(cgs_num_columns - old_num_columns);
     // Swap the modulus column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
+  add_zero_rows(cgs_num_rows);
   --cgs_num_columns; // Convert to modulus index.
   const dimension_type mod_index = num_columns() - 1;
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
@@ -148,6 +188,7 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
       std::swap(new_cg[j], old_cg[j]);
     std::swap(new_cg[mod_index], old_cg[cgs_num_columns]); // Modulus.
   }
+  cgs.clear();
 
   PPL_ASSERT(OK());
 }
@@ -161,15 +202,12 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   const dimension_type old_num_columns = x.num_columns();
   const dimension_type y_num_columns = y.num_columns();
   // Grow to the required size.
-  if (old_num_columns >= y_num_columns)
-    add_zero_rows(y_num_rows, Dense_Row::Flags());
-  else {
-    add_zero_rows_and_columns(y_num_rows,
-                              y_num_columns - old_num_columns,
-                              Dense_Row::Flags());
+  if (old_num_columns < y_num_columns) {
+    add_zero_columns(y_num_columns - old_num_columns);
     // Swap the modulus column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
+  add_zero_rows(y_num_rows);
 
   // Copy the rows of `y', forcing size and capacity.
   const dimension_type x_mod_index = x.num_columns() - 1;
@@ -246,7 +284,7 @@ PPL::Congruence_System::has_linear_equalities() const {
 
 void
 PPL::Congruence_System::const_iterator::skip_forward() {
-  const Matrix<Dense_Row>::const_iterator csp_end = csp->end();
+  const Swapping_Vector<Dense_Row>::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
@@ -443,11 +481,12 @@ PPL::Congruence_System::finalize() {
 
 bool
 PPL::Congruence_System::OK() const {
-  // A Congruence_System must be a valid Matrix.
-  if (!Matrix<Dense_Row>::OK())
-    return false;
+  // All rows must have num_columns() columns.
+  for (dimension_type i = num_rows(); i-- > 0; )
+    if (Swapping_Vector<Dense_Row>::operator[](i).size() != num_columns())
+      return false;
 
-  if (num_rows()) {
+  if (num_rows() != 0) {
     if (num_columns() < 2) {
 #ifndef NDEBUG
       std::cerr << "Congruence_System has rows and fewer than two columns."
@@ -508,20 +547,22 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   PPL_ASSERT(num_columns() > 0);
   dimension_type col = num_columns() - 1;
   dimension_type old_num_rows = num_rows();
-  add_zero_rows_and_columns(dims, dims,
-			    Linear_Row::Flags(NECESSARILY_CLOSED,
-					      Linear_Row::LINE_OR_EQUALITY));
+  add_zero_columns(dims);
   // Swap the modulus column into the new last column.
   swap_columns(col, col + dims);
+  add_zero_rows(dims, Linear_Row::Flags(NECESSARILY_CLOSED,
+                                        Linear_Row::LINE_OR_EQUALITY));
 
-  // Swap the added columns to the front of the matrix.
+  // Swap the added columns to the front of the vector.
   for (dimension_type row = old_num_rows; row-- > 0; )
     std::swap(operator[](row), operator[](row + dims));
 
   col += dims - 1;
-  // Set the diagonal element of each added row.
-  for (dimension_type row = dims; row-- > 0; )
+  // Set the size and the diagonal element of each added row.
+  for (dimension_type row = dims; row-- > 0; ) {
+    operator[](row).resize(num_columns_);
     const_cast<Coefficient&>(operator[](row)[col - row]) = 1;
+  }
 }
 
 void
@@ -536,7 +577,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   dimension_type old_modi = num_columns() - 1;
   dimension_type old_space_dim = space_dimension();
 
-  add_zero_rows_and_columns(added_rows, added_columns, Dense_Row::Flags());
+  add_zero_columns(added_columns);
 
   dimension_type cgs_num_columns = cgs.num_columns();
   dimension_type modi = num_columns() - 1;
@@ -546,6 +587,8 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
     Congruence& cg = operator[](i);
     std::swap(cg[old_modi], cg[modi]);
   }
+
+  add_zero_rows(added_rows);
 
   // Move the congruences into *this from `cgs', shifting the
   // coefficients along into the appropriate columns.

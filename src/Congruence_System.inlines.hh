@@ -30,64 +30,109 @@ namespace Parma_Polyhedra_Library {
 
 inline Congruence&
 Congruence_System::operator[](const dimension_type k) {
-  return static_cast<Congruence&>(Matrix<Dense_Row>::operator[](k));
+  return static_cast<Congruence&>(Swapping_Vector<Dense_Row>::operator[](k));
 }
 
 inline const Congruence&
 Congruence_System::operator[](const dimension_type k) const {
-  return static_cast<const Congruence&>(Matrix<Dense_Row>::operator[](k));
+  return static_cast<const Congruence&>(Swapping_Vector<Dense_Row>::operator[](k));
+}
+
+inline dimension_type
+Congruence_System::num_rows() const {
+  return Swapping_Vector<Dense_Row>::size();
+}
+
+inline bool
+Congruence_System::has_no_rows() const {
+  return num_rows() == 0;
+}
+
+
+inline dimension_type
+Congruence_System::num_columns() const {
+  return num_columns_;
+}
+
+inline void
+Congruence_System::add_zero_columns(dimension_type n) {
+  num_columns_ += n;
+  for (dimension_type i = num_rows(); i-- > 0; )
+    (*this)[i].resize(num_columns_);
+}
+
+inline void
+Congruence_System::remove_trailing_columns(dimension_type n) {
+  PPL_ASSERT(num_columns_ >= n);
+  num_columns_ -= n;
+  for (dimension_type i = num_rows(); i-- > 0; )
+    (*this)[i].resize(num_columns_);
+}
+
+inline void
+Congruence_System::add_zero_rows(dimension_type n, Dense_Row::Flags flags) {
+  Swapping_Vector<Dense_Row>::resize(num_rows() + n);
+  for (dimension_type i = n; i > 0; --i) {
+    (*this)[num_rows() - i].set_flags(flags);
+    (*this)[num_rows() - i].resize(num_columns_);
+  }
+}
+
+inline void
+Congruence_System::remove_trailing_rows(dimension_type n) {
+  PPL_ASSERT(num_rows() >= n);
+  Swapping_Vector<Dense_Row>::resize(num_rows() - n);
 }
 
 inline void
 Congruence_System::release_rows(Swapping_Vector<Dense_Row>& v) {
   PPL_ASSERT(v.empty());
-  v.resize(num_rows());
-  for (dimension_type i = num_rows(); i-- > 0; )
-    std::swap((*this)[i], v[i]);
-
-  Matrix<Dense_Row>::resize(0, num_columns());
+  std::swap(static_cast<Swapping_Vector<Dense_Row>&>(*this), v);
 }
 
 inline void
 Congruence_System::take_ownership_of_rows(Swapping_Vector<Dense_Row>& v) {
-  PPL_ASSERT(Matrix<Dense_Row>::num_rows() == 0);
-  for (dimension_type i = 0; i < v.size(); ++i)
-    Matrix<Dense_Row>::add_recycled_row(v[i]);
-  v.clear();
+  PPL_ASSERT(Swapping_Vector<Dense_Row>::size() == 0);
+  std::swap(static_cast<Swapping_Vector<Dense_Row>&>(*this), v);
 }
 
 inline void
 Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
-  static_cast<Congruence&>(operator[](num_rows()-1)).strong_normalize();
+  static_cast<Congruence&>(Swapping_Vector<Dense_Row>::back()).strong_normalize();
   PPL_ASSERT(OK());
 }
 
 inline
 Congruence_System::Congruence_System()
-  : Matrix<Dense_Row>(0, 2) {
+  : Swapping_Vector<Dense_Row>(),
+    num_columns_(2) {
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence& cg)
-  : Matrix<Dense_Row>(0, 2) {
+  : Swapping_Vector<Dense_Row>(),
+    num_columns_(2) {
   insert(cg);
 }
 
 inline
 Congruence_System::Congruence_System(const Constraint& c)
-  : Matrix<Dense_Row>(0, 2) {
+  : Swapping_Vector<Dense_Row>(),
+    num_columns_(2) {
   insert(c);
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence_System& cs)
-  : Matrix<Dense_Row>(cs) {
+  : Swapping_Vector<Dense_Row>(cs),
+    num_columns_(cs.num_columns_) {
 }
 
 inline
 Congruence_System::Congruence_System(const dimension_type d)
-  : Matrix<Dense_Row>(0, d + 2) {
+  : Swapping_Vector<Dense_Row>(),
+    num_columns_(d + 2) {
 }
 
 inline
@@ -96,31 +141,34 @@ Congruence_System::~Congruence_System() {
 
 inline Congruence_System&
 Congruence_System::operator=(const Congruence_System& y) {
-  Matrix<Dense_Row>::operator=(y);
+  Swapping_Vector<Dense_Row>::operator=(y);
+  num_columns_ = y.num_columns_;
   return *this;
 }
 
 inline dimension_type
 Congruence_System::max_space_dimension() {
-  return Matrix<Dense_Row>::max_num_columns() - 2;
+  return Dense_Row::max_size() - 2;
 }
 
 inline dimension_type
 Congruence_System::space_dimension() const {
-  return Matrix<Dense_Row>::num_columns() - 2;
+  return num_columns() - 2;
 }
 
 inline void
 Congruence_System::clear() {
-  Matrix<Dense_Row>::clear();
-  add_zero_columns(2);		// Modulus and constant term.
+  Swapping_Vector<Dense_Row>::clear();
+  num_columns_ = 2;		// Modulus and constant term.
 }
 
 inline void
 Congruence_System::resize_no_copy(const dimension_type new_num_rows,
 				  const dimension_type new_num_columns) {
-  Matrix<Dense_Row>::resize_no_copy(new_num_rows, new_num_columns,
-                                    Dense_Row::Flags());
+  Swapping_Vector<Dense_Row>::resize(new_num_rows);
+  for (dimension_type i = new_num_rows; i-- > 0; )
+    (*this)[i].resize(new_num_columns);
+  num_columns_ = new_num_columns;
 }
 
 inline const Congruence_System&
@@ -186,21 +234,21 @@ Congruence_System::const_iterator::operator!=(const const_iterator& y) const {
 
 inline
 Congruence_System::const_iterator::
-const_iterator(const Matrix<Dense_Row>::const_iterator& iter,
+const_iterator(const Swapping_Vector<Dense_Row>::const_iterator& iter,
 	       const Congruence_System& csys)
   : i(iter), csp(&csys) {
 }
 
 inline Congruence_System::const_iterator
 Congruence_System::begin() const {
-  const_iterator i(Matrix<Dense_Row>::begin(), *this);
+  const_iterator i(Swapping_Vector<Dense_Row>::begin(), *this);
   i.skip_forward();
   return i;
 }
 
 inline Congruence_System::const_iterator
 Congruence_System::end() const {
-  const const_iterator i(Matrix<Dense_Row>::end(), *this);
+  const const_iterator i(Swapping_Vector<Dense_Row>::end(), *this);
   return i;
 }
 
@@ -211,17 +259,18 @@ Congruence_System::empty() const {
 
 inline void
 Congruence_System::swap(Congruence_System& y) {
-  Matrix<Dense_Row>::swap(y);
+  Swapping_Vector<Dense_Row>::swap(y);
+  std::swap(num_columns_, y.num_columns_);
 }
 
 inline memory_size_type
 Congruence_System::external_memory_in_bytes() const {
-  return Matrix<Dense_Row>::external_memory_in_bytes();
+  return Swapping_Vector<Dense_Row>::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Congruence_System::total_memory_in_bytes() const {
-  return Matrix<Dense_Row>::total_memory_in_bytes();
+  return Swapping_Vector<Dense_Row>::external_memory_in_bytes() + sizeof(*this);
 }
 
 } // namespace Parma_Polyhedra_Library

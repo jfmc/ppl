@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
-#include "Matrix.defs.hh"
+#include "Swapping_Vector.defs.hh"
 #include "Dense_Row.defs.hh"
 #include "Grid.types.hh"
 #include "Grid_Certificate.types.hh"
@@ -121,7 +121,7 @@ swap(Parma_Polyhedra_Library::Congruence_System& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other congruences), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::Congruence_System : private Matrix<Dense_Row> {
+class Parma_Polyhedra_Library::Congruence_System : private Swapping_Vector<Dense_Row> {
 public:
   //! Default constructor: builds an empty system of congruences.
   Congruence_System();
@@ -281,13 +281,13 @@ public:
     friend class Congruence_System;
 
     //! The const iterator over the matrix of congruences.
-    Matrix<Dense_Row>::const_iterator i;
+    Swapping_Vector<Dense_Row>::const_iterator i;
 
     //! A const pointer to the matrix of congruences.
-    const Matrix<Dense_Row>* csp;
+    const Swapping_Vector<Dense_Row>* csp;
 
     //! Constructor.
-    const_iterator(const Matrix<Dense_Row>::const_iterator& iter,
+    const_iterator(const Swapping_Vector<Dense_Row>::const_iterator& iter,
 		   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
@@ -310,8 +310,8 @@ public:
   //! Checks if all the invariants are satisfied.
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Matrix, each row in the system is a valid Congruence and the
+    Returns <CODE>true</CODE> if and only if all rows have num_columns_
+    columns, each row in the system is a valid Congruence and the
     number of columns is consistent with the number of congruences.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
@@ -358,6 +358,66 @@ public:
   */
   void add_unit_rows_and_columns(dimension_type dims);
 
+  // TODO: Remove this, or make it private.
+  //! Permutes the columns of the congruence system.
+  /*!
+    This method may be slow for some Row types, and should be avoided if
+    possible.
+
+    \param cycles
+    A vector representing the non-trivial cycles of the permutation
+    according to which the columns must be rearranged.
+
+    The \p cycles vector contains, one after the other, the
+    non-trivial cycles (i.e., the cycles of length greater than one)
+    of a permutation of \e non-zero column indexes.  Each cycle is
+    terminated by zero.  For example, assuming the congruence system has 7
+    columns, the permutation \f$ \{ 1 \mapsto 3, 2 \mapsto 4,
+    3 \mapsto 6, 4 \mapsto 2, 5 \mapsto 5, 6 \mapsto 1 \}\f$ can be
+    represented by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in
+    turn can be represented by a vector of 6 elements containing 1, 3,
+    6, 0, 2, 4, 0.
+
+    \note
+    The first column of the matrix, having index zero, is never involved
+    in a permutation.
+  */
+  void permute_columns(const std::vector<dimension_type>& cycles);
+
+  // TODO: Remove this, or make it private.
+  //! Adds \p n columns of zeroes to the congruence system.
+  /*!
+    \param n
+    The number of columns to be added: must be strictly positive.
+
+    Turns the \f$r \times c\f$ congruence system \f$M\f$ into
+    the \f$r \times (c+n)\f$ congruence system \f$(M \, 0)\f$.
+  */
+  void add_zero_columns(dimension_type n);
+
+  // TODO: Remove this, or make it private.
+  void remove_trailing_columns(dimension_type n);
+
+  // TODO: Remove this, or make it private.
+  //! Swaps the columns having indexes \p i and \p j.
+  void swap_columns(dimension_type i,  dimension_type j);
+
+  // TODO: Remove this, or make it private.
+  void add_zero_rows(dimension_type n,
+                     Dense_Row::Flags flags = Dense_Row::Flags());
+
+  // TODO: Remove this, or make it private.
+  void remove_trailing_rows(dimension_type n);
+
+  //! Returns the number of rows in the system.
+  dimension_type num_rows() const;
+
+  //! Returns \c true if num_rows()==0.
+  bool has_no_rows() const;
+
+  //! Returns the number of columns of the system.
+  dimension_type num_columns() const;
+
 protected:
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
@@ -369,6 +429,8 @@ private:
     the singleton system containing only Congruence::zero_dim_false().
   */
   static const Congruence_System* zero_dim_empty_p;
+
+  dimension_type num_columns_;
 
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
   explicit Congruence_System(dimension_type d);
