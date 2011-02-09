@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_simplify_templates_hh
 #define PPL_Polyhedron_simplify_templates_hh 1
 
-#include "Linear_Row.defs.hh"
-#include "Linear_System.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include <cstddef>
@@ -81,11 +79,14 @@ namespace Parma_Polyhedra_Library {
   \f]
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
-template <typename Row>
+template <typename Linear_System1>
 dimension_type
-Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
+Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
+
+  typedef typename Linear_System1::internal_row_type internal_row_type;
+
   // This method is only applied to a well-formed system `sys'.
-  PPL_ASSERT(sys.OK(true));
+  PPL_ASSERT(sys.OK());
   PPL_ASSERT(sys.num_columns() >= 1);
 
   const dimension_type old_num_rows = sys.num_rows();
@@ -118,7 +119,7 @@ Polyhedron::simplify(Linear_System<Row>& sys, Bit_Matrix& sat) {
   // release_rows() does not support pending rows.
   sys.unset_pending_rows();
 
-  Swapping_Vector<Linear_Row> sys_rows;
+  Swapping_Vector<internal_row_type> sys_rows;
   sys.release_rows(sys_rows);
 
   // Computing the number of saturators for each inequality,

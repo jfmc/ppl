@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_conversion_templates_hh
 #define PPL_Polyhedron_conversion_templates_hh 1
 
-#include "Linear_Row.defs.hh"
-#include "Linear_System.defs.hh"
 #include "Bit_Row.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
@@ -345,20 +343,25 @@ namespace Parma_Polyhedra_Library {
   These two adjacent rays build a ray equal to \f$\vect{r}\f$ and so
   \f$\vect{r}\f$ is redundant.
 */
-template <typename Source_Row, typename Dest_Row>
+template <typename Source_Linear_System, typename Dest_Linear_System>
 dimension_type
-Polyhedron::conversion(Linear_System<Source_Row>& source,
-			    const dimension_type start,
-			    Linear_System<Dest_Row>& dest,
-			    Bit_Matrix& sat,
-			    dimension_type num_lines_or_equalities) {
+Polyhedron::conversion(Source_Linear_System& source,
+                       const dimension_type start,
+                       Dest_Linear_System& dest,
+                       Bit_Matrix& sat,
+                       dimension_type num_lines_or_equalities) {
+
+  typedef typename Dest_Linear_System::internal_row_type dest_internal_row_type;
+  typedef typename Dest_Linear_System::row_type dest_row_type;
+  typedef typename Source_Linear_System::row_type source_row_type;
+
   dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
   const dimension_type source_num_columns = source.num_columns();
   const dimension_type dest_num_columns = dest.num_columns();
   // The rows removed from `dest' will be placed in this vector, so they
   // can be recycled if needed.
-  std::vector<Dest_Row> recyclable_dest_rows;
+  std::vector<dest_internal_row_type> recyclable_dest_rows;
 
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
@@ -386,7 +389,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
   // release_rows() does not support pending rows.
   dest.unset_pending_rows();
 
-  Swapping_Vector<Linear_Row> dest_rows;
+  Swapping_Vector<dest_internal_row_type> dest_rows;
   // Release the rows from `dest' so they can be modified.
   dest.release_rows(dest_rows);
 
@@ -401,7 +404,7 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
       // There is no need to swap the columns of `sat' (all zeroes).
       source.swap_rows(k, k + source_num_redundant);
 
-    const Source_Row& source_k = source[k];
+    const source_row_type& source_k = source[k];
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
@@ -476,7 +479,8 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      const Dest_Row& dest_nle = dest_rows[num_lines_or_equalities];
+      const dest_internal_row_type& dest_row_nle = dest_rows[num_lines_or_equalities];
+      const dest_row_type& dest_nle = static_cast<const dest_row_type&>(dest_row_nle);
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -511,7 +515,8 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Dest_Row& dest_i = dest_rows[i];
+          dest_internal_row_type& dest_row_i = dest_rows[i];
+          dest_row_type& dest_i = static_cast<dest_row_type&>(dest_row_i);
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -547,7 +552,8 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-	  Dest_Row& dest_i = dest_rows[i];
+          dest_internal_row_type& dest_row_i = dest_rows[i];
+          dest_row_type& dest_i = static_cast<dest_row_type&>(dest_row_i);
           WEIGHT_BEGIN();
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
@@ -759,12 +765,12 @@ Polyhedron::conversion(Linear_System<Source_Row>& source,
 		if (!redundant) {
 		  // Adding the new ray to `dest_rows' and the corresponding
 		  // saturation row to `sat'.
-		  Linear_Row new_row;
+		  dest_internal_row_type new_row;
 		  if (recyclable_dest_rows.empty()) {
 		    // Create a new row.
-		    Linear_Row tmp(dest.num_columns(),
-                                   Linear_Row::Flags(dest.topology(),
-                                                     Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest_internal_row_type tmp(dest.num_columns(),
+                                               typename dest_internal_row_type::Flags(dest.topology(),
+                                                                                      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
                     std::swap(new_row, tmp);
 		    sat.add_recycled_row(new_satrow);
 		  }

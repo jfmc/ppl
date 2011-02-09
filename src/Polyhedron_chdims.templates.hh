@@ -28,13 +28,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Row1, typename Row2>
+template <typename Linear_System1, typename Linear_System2>
 void
-Polyhedron::add_space_dimensions(Linear_System<Row1>& sys1,
-              Linear_System<Row2>& sys2,
-              Bit_Matrix& sat1,
-              Bit_Matrix& sat2,
-              dimension_type add_dim) {
+Polyhedron::add_space_dimensions(Linear_System1& sys1,
+                                 Linear_System2& sys2,
+                                 Bit_Matrix& sat1,
+                                 Bit_Matrix& sat2,
+                                 dimension_type add_dim) {
+
+  typedef typename Linear_System2::internal_row_type sys2_internal_row_type;
+
   PPL_ASSERT(sys1.topology() == sys2.topology());
   PPL_ASSERT(sys1.num_columns() == sys2.num_columns());
   PPL_ASSERT(add_dim != 0);
@@ -69,17 +72,17 @@ Polyhedron::add_space_dimensions(Linear_System<Row1>& sys1,
     if (!sys2.is_sorted())
       sys2.swap_columns(old_eps_index, new_eps_index);
     else {
-      Swapping_Vector<Linear_Row> rows;
+      Swapping_Vector<sys2_internal_row_type> rows;
       sys2.release_rows(rows);
 
       for (dimension_type i = rows.size(); i-- > add_dim; ) {
-        Linear_Row& r = rows[i];
+        sys2_internal_row_type& r = rows[i];
         std::swap(r[old_eps_index], r[new_eps_index]);
       }
       // The upper-right corner of `sys2' contains the J matrix:
       // swap coefficients to preserve sortedness.
       for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
-        Linear_Row& r = rows[i];
+        sys2_internal_row_type& r = rows[i];
         std::swap(r[old_eps_index], r[old_eps_index + 1]);
       }
 

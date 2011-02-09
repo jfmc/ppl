@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_minimize_templates_hh
 #define PPL_Polyhedron_minimize_templates_hh 1
 
-#include "Linear_Row.defs.hh"
-#include "Linear_System.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include <stdexcept>
@@ -68,12 +66,16 @@ namespace Parma_Polyhedra_Library {
   This will simplify the description of the function; the dual case is
   similar.
 */
-template <typename Source_Row, typename Dest_Row>
+template <typename Source_Linear_System, typename Dest_Linear_System>
 bool
 Polyhedron::minimize(const bool con_to_gen,
-			  Linear_System<Source_Row>& source,
-			  Linear_System<Dest_Row>& dest,
-			  Bit_Matrix& sat) {
+                     Source_Linear_System& source,
+                     Dest_Linear_System& dest,
+                     Bit_Matrix& sat) {
+
+  typedef typename Dest_Linear_System::internal_row_type dest_internal_row_type;
+  typedef typename dest_internal_row_type::Flags dest_internal_row_type_flags;
+
   // Topologies have to agree.
   PPL_ASSERT(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -97,14 +99,12 @@ Polyhedron::minimize(const bool con_to_gen,
 
   // Resizing `dest' to be the appropriate square matrix.
   dimension_type dest_num_rows = source.num_columns();
-  // Note that before calling `resize_no_copy()' we must update
-  // `index_first_pending'.
-  dest.set_index_first_pending_row(dest_num_rows);
   dest.resize_no_copy(0, dest_num_rows);
 
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
-    Dest_Row dest_i(dest_num_rows, typename Dest_Row::Flags(dest.topology()));
+    dest_internal_row_type dest_i(dest_num_rows,
+                                  dest_internal_row_type_flags(dest.topology()));
     for (dimension_type j = dest_num_rows; j-- > 0; )
       dest_i[j] = (i == j) ? 1 : 0;
     dest_i.set_is_line_or_equality();
@@ -234,13 +234,14 @@ Polyhedron::minimize(const bool con_to_gen,
   Since \p source2 contains the constraints (or the generators) that
   will be added to \p source1, it is constant: it will not be modified.
 */
-template <typename Source_Row1, typename Source_Row2, typename Dest_Row>
+template <typename Source_Linear_System1, typename Source_Linear_System2,
+          typename Dest_Linear_System>
 bool
 Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System<Source_Row1>& source1,
-				  Linear_System<Dest_Row>& dest,
-				  Bit_Matrix& sat,
-				  const Linear_System<Source_Row2>& source2) {
+                             Source_Linear_System1& source1,
+                             Dest_Linear_System& dest,
+                             Bit_Matrix& sat,
+                             const Source_Linear_System2& source2) {
   // `source1' and `source2' cannot be empty.
   PPL_ASSERT(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
@@ -336,12 +337,12 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
   is the system of constraints corresponding to the non-pending part
   of \p source.
 */
-template <typename Source_Row, typename Dest_Row>
+template <typename Source_Linear_System, typename Dest_Linear_System>
 bool
 Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System<Source_Row>& source,
-				  Linear_System<Dest_Row>& dest,
-				  Bit_Matrix& sat) {
+                             Source_Linear_System& source,
+                             Dest_Linear_System& dest,
+                             Bit_Matrix& sat) {
   PPL_ASSERT(source.num_pending_rows() > 0);
   PPL_ASSERT(source.num_columns() == dest.num_columns());
   PPL_ASSERT(source.is_sorted());

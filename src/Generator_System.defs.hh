@@ -185,6 +185,9 @@ class Parma_Polyhedra_Library::Generator_System : public Linear_System<Linear_Ro
 private:
   typedef Linear_System<Linear_Row> Base;
 public:
+
+  typedef Generator row_type;
+
   //! Default constructor: builds an empty system of generators.
   Generator_System();
 
@@ -223,6 +226,9 @@ public:
     increasing the number of space dimensions if needed.
   */
   void insert_recycled(Generator& g);
+
+  using Base::insert;
+  using Base::insert_recycled;
 
   //! Initializes the class.
   static void initialize();

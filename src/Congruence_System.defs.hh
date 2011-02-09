@@ -93,6 +93,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 class Parma_Polyhedra_Library::Congruence_System {
 public:
+
+  typedef Congruence row_type;
+
   //! Default constructor: builds an empty system of congruences.
   Congruence_System();
 

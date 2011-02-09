@@ -226,6 +226,9 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 */
 class Parma_Polyhedra_Library::Grid_Generator : public Linear_Row {
 public:
+
+  typedef Grid_Generator row_type;
+
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument

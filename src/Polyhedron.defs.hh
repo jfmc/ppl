@@ -2420,9 +2420,9 @@ private:
     constraints and that of generators (and the corresponding saturation
     matrices) in different order (see those methods for details).
   */
-  template <typename Row1, typename Row2>
-  static void add_space_dimensions(Linear_System<Row1>& mat1,
-				   Linear_System<Row2>& mat2,
+  template <typename Linear_System1, typename Linear_System2>
+  static void add_space_dimensions(Linear_System1& mat1,
+				   Linear_System2& mat2,
 				   Bit_Matrix& sat1,
 				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
@@ -2432,10 +2432,10 @@ private:
 
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
-  template <typename Source_Row, typename Dest_Row>
+  template <typename Source_Linear_System, typename Dest_Linear_System>
   static bool minimize(bool con_to_gen,
-		       Linear_System<Source_Row>& source,
-		       Linear_System<Dest_Row>& dest,
+		       Source_Linear_System& source,
+		       Dest_Linear_System& dest,
 		       Bit_Matrix& sat);
 
   /*! \brief
@@ -2443,30 +2443,31 @@ private:
     or vice versa.
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
-  template <typename Source_Row1, typename Source_Row2, typename Dest_Row>
+  template <typename Source_Linear_System1, typename Source_Linear_System2,
+            typename Dest_Linear_System>
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System<Source_Row1>& source1,
-			       Linear_System<Dest_Row>& dest,
+			       Source_Linear_System1& source1,
+			       Dest_Linear_System& dest,
 			       Bit_Matrix& sat,
-			       const Linear_System<Source_Row2>& source2);
+			       const Source_Linear_System2& source2);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
     or vice versa. The given constraints are in \p source.
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
-  template <typename Source_Row, typename Dest_Row>
+  template <typename Source_Linear_System, typename Dest_Linear_System>
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System<Source_Row>& source,
-			       Linear_System<Dest_Row>& dest,
+			       Source_Linear_System& source,
+			       Dest_Linear_System& dest,
 			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  template <typename Source_Row, typename Dest_Row>
-  static dimension_type conversion(Linear_System<Source_Row>& source,
+  template <typename Source_Linear_System, typename Dest_Linear_System>
+  static dimension_type conversion(Source_Linear_System& source,
 				   dimension_type start,
-				   Linear_System<Dest_Row>& dest,
+				   Dest_Linear_System& dest,
 				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
@@ -2475,8 +2476,8 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  template <typename Row>
-  static dimension_type simplify(Linear_System<Row>& mat, Bit_Matrix& sat);
+  template <typename Linear_System1>
+  static dimension_type simplify(Linear_System1& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 

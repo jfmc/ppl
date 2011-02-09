@@ -131,6 +131,9 @@ private:
   typedef Linear_System<Linear_Row> Base;
   
 public:
+
+  typedef Constraint row_type;
+
   //! Default constructor: builds an empty system of constraints.
   Constraint_System();
 
