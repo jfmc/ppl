@@ -70,8 +70,9 @@ PPL::Constraint::Constraint(const Congruence& cg)
 	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.
-  for (dimension_type i = cg.space_dimension() + 1; i-- > 0; )
-    c[i] = cg[i];
+  for (dimension_type i = cg.space_dimension(); i-- > 0; )
+    c[i + 1] = cg.coefficient(Variable(i));
+  c[0] = cg.inhomogeneous_term();
   // Enforce normalization.
   strong_normalize();
   
