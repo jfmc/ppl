@@ -376,8 +376,7 @@ public:
   void swap_columns(dimension_type i,  dimension_type j);
 
   // TODO: Remove this, or make it private.
-  void add_zero_rows(dimension_type n,
-                     Congruence::Flags flags = Congruence::Flags());
+  void add_zero_rows(dimension_type n);
 
   // TODO: Remove this, or make it private.
   void remove_trailing_rows(dimension_type n);

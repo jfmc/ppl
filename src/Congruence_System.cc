@@ -550,8 +550,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   add_zero_columns(dims);
   // Swap the modulus column into the new last column.
   swap_columns(col, col + dims);
-  add_zero_rows(dims, Linear_Row::Flags(NECESSARILY_CLOSED,
-                                        Linear_Row::LINE_OR_EQUALITY));
+  add_zero_rows(dims);
 
   // Swap the added columns to the front of the vector.
   for (dimension_type row = old_num_rows; row-- > 0; )

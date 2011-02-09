@@ -70,12 +70,10 @@ Congruence_System::remove_trailing_columns(dimension_type n) {
 }
 
 inline void
-Congruence_System::add_zero_rows(dimension_type n, Congruence::Flags flags) {
+Congruence_System::add_zero_rows(dimension_type n) {
   rows.resize(num_rows() + n);
-  for (dimension_type i = n; i > 0; --i) {
-    rows[num_rows() - i].set_flags(flags);
+  for (dimension_type i = n; i > 0; --i)
     rows[num_rows() - i].resize(num_columns_);
-  }
 }
 
 inline void
