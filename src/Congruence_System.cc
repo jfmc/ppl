@@ -124,9 +124,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   }
   else if (cg_size < old_num_columns) {
     // Create a resized copy of `cg'.
-    Congruence rc(cg, old_num_columns, old_num_columns);
-    // Move the modulus to its place.
-    rc.swap(cg_size - 1, old_num_columns - 1);
+    Congruence rc(cg, space_dimension());
     rows.resize(num_rows() + 1);
     std::swap(rc, rows.back());
   }
@@ -205,12 +203,8 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   add_zero_rows(y_num_rows);
 
   // Copy the rows of `y', forcing size and capacity.
-  const dimension_type x_mod_index = x.num_columns() - 1;
-  const dimension_type y_mod_index = y_num_columns - 1;
   for (dimension_type i = y_num_rows; i-- > 0; ) {
-    Congruence copy(y[i], x.num_columns(), x.num_columns());
-    // Swap the modulus to the correct column.
-    std::swap(copy[x_mod_index], copy[y_mod_index]);
+    Congruence copy(y[i], x.space_dimension());
     std::swap(copy, x[x_num_rows+i]);
   }
   PPL_ASSERT(OK());

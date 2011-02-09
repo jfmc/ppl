@@ -45,8 +45,15 @@ Congruence::Congruence(const Congruence& cg)
 
 inline
 Congruence::Congruence(const Congruence& cg,
-		       dimension_type sz, dimension_type capacity)
-  : Dense_Row(cg, sz, capacity) {
+		       dimension_type new_space_dimension)
+  : Dense_Row(cg, new_space_dimension + 2, new_space_dimension + 2) {
+  if (new_space_dimension >= cg.space_dimension())
+    // Swap the modulus to the correct place.
+    swap(new_space_dimension + 1, cg.space_dimension() + 1);
+  else
+    // The modulus has not been copied yet, so do it.
+    (*this)[new_space_dimension + 1] = cg.modulus();
+  PPL_ASSERT(OK());
 }
 
 inline void

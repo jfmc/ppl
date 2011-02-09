@@ -299,11 +299,8 @@ public:
   */
   void strong_normalize();
 
-  // TODO: Make this private
-  //! Copy-constructs with specified size and capacity.
-  Congruence(const Congruence& cg,
-             dimension_type sz,
-             dimension_type capacity);
+  //! Copy-constructs with the specified space dimension.
+  Congruence(const Congruence& cg, dimension_type new_space_dimension);
 
   // TODO: Make this private.
   //! Constructs from a constraint, with specified size and capacity.
