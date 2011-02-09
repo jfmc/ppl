@@ -26,141 +26,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.types.hh"
 
-#include "Scalar_Products.types.hh"
-#include "Constraint_System.types.hh"
-#include "Polyhedron.types.hh"
 #include "Congruence.types.hh"
 
 #include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
+
 #include <iosfwd>
-
-namespace Parma_Polyhedra_Library {
-
-// Put them in the namespace here to declare them friend later.
-
-//! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
-/*! \relates Constraint */
-bool
-operator==(const Constraint& x, const Constraint& y);
-
-//! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
-/*! \relates Constraint */
-bool
-operator!=(const Constraint& x, const Constraint& y);
-
-//! Returns the constraint \p e1 = \p e2.
-/*! \relates Constraint */
-Constraint
-operator==(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 = \p v2.
-/*! \relates Constraint */
-Constraint
-operator==(Variable v1, Variable v2);
-
-//! Returns the constraint \p e = \p n.
-/*! \relates Constraint */
-Constraint
-operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n = \p e.
-/*! \relates Constraint */
-Constraint
-operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \<= \p e2.
-/*! \relates Constraint */
-Constraint
-operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \<= \p v2.
-/*! \relates Constraint */
-Constraint
-operator<=(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \<= \p n.
-/*! \relates Constraint */
-Constraint
-operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \<= \p e.
-/*! \relates Constraint */
-Constraint
-operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \>= \p e2.
-/*! \relates Constraint */
-Constraint
-operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \>= \p v2.
-/*! \relates Constraint */
-Constraint
-operator>=(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \>= \p n.
-/*! \relates Constraint */
-Constraint
-operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \>= \p e.
-/*! \relates Constraint */
-Constraint
-operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \< \p e2.
-/*! \relates Constraint */
-Constraint
-operator<(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \< \p v2.
-/*! \relates Constraint */
-Constraint
-operator<(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \< \p n.
-/*! \relates Constraint */
-Constraint
-operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \< \p e.
-/*! \relates Constraint */
-Constraint
-operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \> \p e2.
-/*! \relates Constraint */
-Constraint
-operator>(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \> \p v2.
-/*! \relates Constraint */
-Constraint
-operator>(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \> \p n.
-/*! \relates Constraint */
-Constraint
-operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \> \p e.
-/*! \relates Constraint */
-Constraint
-operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Constraint */
-void swap(Parma_Polyhedra_Library::Constraint& x,
-	  Parma_Polyhedra_Library::Constraint& y);
-
-} // namespace std
 
 //! A linear equality or inequality.
 /*! \ingroup PPL_CXX_interface
@@ -449,6 +321,19 @@ public:
   */
   static const Constraint& epsilon_leq_one();
 
+  // TODO: Make this private.
+  //! Sets the constraint type to <CODE>EQUALITY</CODE>.
+  void set_is_equality();
+
+  // TODO: Make this private.
+  //! Sets the constraint to be an inequality.
+  /*!
+    Whether the constraint type will become <CODE>NONSTRICT_INEQUALITY</CODE>
+    or <CODE>STRICT_INEQUALITY</CODE> depends on the topology and the value
+    of the low-level coefficients of the constraint.
+  */
+  void set_is_inequality();
+
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
@@ -476,8 +361,6 @@ private:
   */
   static const Constraint* epsilon_leq_one_p;
 
-  friend class Parma_Polyhedra_Library::Constraint_System;
-
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
     error message \p message.
@@ -499,17 +382,6 @@ private:
     \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
   */
   static Constraint construct_epsilon_geq_zero();
-
-  //! Sets the constraint type to <CODE>EQUALITY</CODE>.
-  void set_is_equality();
-
-  //! Sets the constraint to be an inequality.
-  /*!
-    Whether the constraint type will become <CODE>NONSTRICT_INEQUALITY</CODE>
-    or <CODE>STRICT_INEQUALITY</CODE> depends on the topology and the value
-    of the low-level coefficients of the constraint.
-  */
-  void set_is_inequality();
 };
 
 namespace Parma_Polyhedra_Library {
@@ -526,7 +398,128 @@ std::ostream& operator<<(std::ostream& s, const Constraint::Type& t);
 
 } // namespace IO_Operators
 
+//! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
+/*! \relates Constraint */
+bool
+operator==(const Constraint& x, const Constraint& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
+/*! \relates Constraint */
+bool
+operator!=(const Constraint& x, const Constraint& y);
+
+//! Returns the constraint \p e1 = \p e2.
+/*! \relates Constraint */
+Constraint
+operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 = \p v2.
+/*! \relates Constraint */
+Constraint
+operator==(Variable v1, Variable v2);
+
+//! Returns the constraint \p e = \p n.
+/*! \relates Constraint */
+Constraint
+operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n = \p e.
+/*! \relates Constraint */
+Constraint
+operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \<= \p e2.
+/*! \relates Constraint */
+Constraint
+operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \<= \p v2.
+/*! \relates Constraint */
+Constraint
+operator<=(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \<= \p n.
+/*! \relates Constraint */
+Constraint
+operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \<= \p e.
+/*! \relates Constraint */
+Constraint
+operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \>= \p e2.
+/*! \relates Constraint */
+Constraint
+operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \>= \p v2.
+/*! \relates Constraint */
+Constraint
+operator>=(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \>= \p n.
+/*! \relates Constraint */
+Constraint
+operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \>= \p e.
+/*! \relates Constraint */
+Constraint
+operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \< \p e2.
+/*! \relates Constraint */
+Constraint
+operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \< \p v2.
+/*! \relates Constraint */
+Constraint
+operator<(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \< \p n.
+/*! \relates Constraint */
+Constraint
+operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \< \p e.
+/*! \relates Constraint */
+Constraint
+operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \> \p e2.
+/*! \relates Constraint */
+Constraint
+operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \> \p v2.
+/*! \relates Constraint */
+Constraint
+operator>(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \> \p n.
+/*! \relates Constraint */
+Constraint
+operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \> \p e.
+/*! \relates Constraint */
+Constraint
+operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Constraint */
+void swap(Parma_Polyhedra_Library::Constraint& x,
+          Parma_Polyhedra_Library::Constraint& y);
+
+} // namespace std
+
 
 #include "Constraint.inlines.hh"
 
