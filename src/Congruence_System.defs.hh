@@ -31,38 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Swapping_Vector.defs.hh"
 #include "Dense_Row.defs.hh"
-#include "Grid.types.hh"
-#include "Grid_Certificate.types.hh"
 #include "Constraint_System.types.hh"
 #include <iosfwd>
-
-namespace Parma_Polyhedra_Library {
-
-namespace IO_Operators {
-
-//! Output operator.
-/*!
-  \relates Parma_Polyhedra_Library::Congruence_System
-  Writes <CODE>true</CODE> if \p cgs is empty.  Otherwise, writes on
-  \p s the congruences of \p cgs, all in one row and separated by ", ".
-*/
-std::ostream&
-operator<<(std::ostream& s, const Congruence_System& cgs);
-
-} // namespace IO_Operators
-
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Congruence_System */
-void
-swap(Parma_Polyhedra_Library::Congruence_System& x,
-     Parma_Polyhedra_Library::Congruence_System& y);
-
-} // namespace std
 
 //! A system of congruences.
 /*! \ingroup PPL_CXX_interface
@@ -418,40 +388,22 @@ public:
   //! Returns the number of columns of the system.
   dimension_type num_columns() const;
 
-protected:
-
-  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  bool satisfies_all_congruences(const Grid_Generator& g) const;
-
-private:
-  /*! \brief
-    Holds (between class initialization and finalization) a pointer to
-    the singleton system containing only Congruence::zero_dim_false().
-  */
-  static const Congruence_System* zero_dim_empty_p;
-
-  dimension_type num_columns_;
-
+  // TODO: Consider making this private.
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
   explicit Congruence_System(dimension_type d);
 
-  /*! \brief
-    Concatenates copies of the congruences from \p cgs onto \p *this.
+  // TODO: Remove this.
+  //! Returns the \p k- th congruence of the system.
+  Congruence& operator[](dimension_type k);
 
-    \param cgs
-    The congruence system to append to \p this.  The number of rows in
-    \p cgs must be strictly positive.
+  //! Returns a constant reference to the \p k- th congruence of the system.
+  const Congruence& operator[](dimension_type k) const;
 
-    The matrix for the new system of congruences is obtained by
-    leaving the old system in the upper left-hand side and placing the
-    congruences of \p cgs in the lower right-hand side, and padding
-    with zeroes.
-  */
-  void concatenate(const Congruence_System& cgs);
-
+  // TODO: Make this private.
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
 
+  // TODO: Consider making this private.
   //! Increase the number of space dimensions to \p new_space_dim.
   /*!
     \p new_space_dim must at least equal to the current space
@@ -459,49 +411,11 @@ private:
   */
   bool increase_space_dimension(dimension_type new_space_dim);
 
-  /*! \brief
-    Inserts in \p *this an exact copy of the congruence \p cg,
-    increasing the number of space dimensions if needed.
+  // TODO: Consider making this private.
+  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  bool satisfies_all_congruences(const Grid_Generator& g) const;
 
-    This method inserts a copy of \p cg in the given form, instead of
-    first strong normalizing \p cg as \ref insert would do.
-  */
-  void insert_verbatim(const Congruence& cg);
-
-  friend class const_iterator;
-  friend class Grid;
-  friend class Grid_Certificate;
-
-  friend void std::swap(Parma_Polyhedra_Library::Congruence_System& x,
-			Parma_Polyhedra_Library::Congruence_System& y);
-
-  friend bool
-  operator==(const Congruence_System& x, const Congruence_System& y);
-
-  //! Returns the \p k- th congruence of the system.
-  Congruence& operator[](dimension_type k);
-
-  //! Returns a constant reference to the \p k- th congruence of the system.
-  const Congruence& operator[](dimension_type k) const;
-
-  // TODO: Check if these methods should be improved.
-  void release_rows(Swapping_Vector<Dense_Row>& v);
-  void take_ownership_of_rows(Swapping_Vector<Dense_Row>& v);
-
-  // TODO: Remove this.
-  typedef Dense_Row internal_row_type;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if any of the dimensions in
-    \p *this is free of constraint.
-
-    Any equality or proper congruence affecting a dimension constrains
-    that dimension.
-
-    This method assumes the system is in minimal form.
-  */
-  bool has_a_free_dimension() const;
-
+  // TODO: Consider making this private.
   /*! \brief
     Substitutes a given column of coefficients by a given affine
     expression.
@@ -541,9 +455,35 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_preimage(dimension_type v,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator);
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator);
 
+  // TODO: Consider making this private.
+  /*! \brief
+    Concatenates copies of the congruences from \p cgs onto \p *this.
+
+    \param cgs
+    The congruence system to append to \p this.  The number of rows in
+    \p cgs must be strictly positive.
+
+    The matrix for the new system of congruences is obtained by
+    leaving the old system in the upper left-hand side and placing the
+    congruences of \p cgs in the lower right-hand side, and padding
+    with zeroes.
+  */
+  void concatenate(const Congruence_System& cgs);
+
+  // TODO: Consider making this private.
+  /*! \brief
+    Inserts in \p *this an exact copy of the congruence \p cg,
+    increasing the number of space dimensions if needed.
+
+    This method inserts a copy of \p cg in the given form, instead of
+    first strong normalizing \p cg as \ref insert would do.
+  */
+  void insert_verbatim(const Congruence& cg);
+
+  // TODO: Consider making this private.
   /*! \brief
     Removes the higher dimensions of the system so that the resulting
     system will have dimension \p new_dimension.
@@ -553,6 +493,14 @@ private:
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
+  // TODO: Remove this.
+  typedef Dense_Row internal_row_type;
+
+  // TODO: Check if these methods should be improved.
+  void release_rows(Swapping_Vector<Dense_Row>& v);
+  void take_ownership_of_rows(Swapping_Vector<Dense_Row>& v);
+
+  // TODO: Remove this.
   //! Resizes the system without worrying about the old contents.
   /*!
     \param new_num_rows
@@ -566,8 +514,60 @@ private:
     The contents of the original system is lost.
   */
   void resize_no_copy(dimension_type new_num_rows,
-		      dimension_type new_num_columns);
+                      dimension_type new_num_columns);
+
+private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Congruence::zero_dim_false().
+  */
+  static const Congruence_System* zero_dim_empty_p;
+
+  dimension_type num_columns_;
+
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if any of the dimensions in
+    \p *this is free of constraint.
+
+    Any equality or proper congruence affecting a dimension constrains
+    that dimension.
+
+    This method assumes the system is in minimal form.
+  */
+  bool has_a_free_dimension() const;
 };
+
+namespace Parma_Polyhedra_Library {
+
+namespace IO_Operators {
+
+//! Output operator.
+/*!
+  \relates Parma_Polyhedra_Library::Congruence_System
+  Writes <CODE>true</CODE> if \p cgs is empty.  Otherwise, writes on
+  \p s the congruences of \p cgs, all in one row and separated by ", ".
+*/
+std::ostream&
+operator<<(std::ostream& s, const Congruence_System& cgs);
+
+} // namespace IO_Operators
+
+bool
+operator==(const Congruence_System& x, const Congruence_System& y);
+
+} // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Congruence_System */
+void
+swap(Parma_Polyhedra_Library::Congruence_System& x,
+     Parma_Polyhedra_Library::Congruence_System& y);
+
+} // namespace std
 
 // Congruence_System.inlines.hh is not included here on purpose.
 
