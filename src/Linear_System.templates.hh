@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // It was added to please KDevelop4.
 #include "Linear_System.defs.hh"
 
-#include "Row.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <algorithm>
