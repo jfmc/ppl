@@ -175,18 +175,13 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
     // Swap the modulus column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
-  add_zero_rows(cgs_num_rows);
+  rows.resize(old_num_rows + cgs_num_rows);
   --cgs_num_columns; // Convert to modulus index.
-  const dimension_type mod_index = num_columns() - 1;
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
-    // Swap one coefficient at a time into the newly added rows, instead
-    // of swapping each entire row.  This ensures that the added rows
-    // have the same capacities as the existing rows.
     Congruence& new_cg = operator[](old_num_rows + i);
     Congruence& old_cg = cgs[i];
-    for (dimension_type j = cgs_num_columns; j-- > 0; )
-      std::swap(new_cg[j], old_cg[j]);
-    std::swap(new_cg[mod_index], old_cg[cgs_num_columns]); // Modulus.
+    old_cg.set_space_dimension(space_dimension());
+    std::swap(new_cg, old_cg);
   }
   cgs.clear();
 
