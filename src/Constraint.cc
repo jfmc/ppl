@@ -92,8 +92,10 @@ PPL::Constraint::Constraint(const Congruence& cg,
   Constraint& c = *this;
   // Copy coefficients.
   PPL_ASSERT(sz > 0);
+  --sz;
   while (sz-- > 0)
-    c[sz] = cg[sz];
+    c[sz + 1] = cg.coefficient(Variable(sz));
+  c[0] = cg.inhomogeneous_term();
   
   PPL_ASSERT(OK());
 }
