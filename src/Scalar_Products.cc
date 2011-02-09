@@ -58,12 +58,14 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Grid_Generator& x, const Congruence& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(x.space_dimension() <= y.space_dimension());
+  PPL_ASSERT(x.size() >= 2);
   z = 0;
-  for (dimension_type i = x.size() - 1 /* parameter divisor */; i-- > 0; )
+  for (dimension_type i = x.size() - 2 /* parameter divisor */; i-- > 0; )
     // The following line optimizes the computation of z += x[i] *
     // y[i].
-    add_mul_assign(z, x[i], y[i]);
+    add_mul_assign(z, x[i + 1], y.coefficient(Variable(i)));
+  add_mul_assign(z, x[0], y.inhomogeneous_term());
 }
 
 void
@@ -84,12 +86,13 @@ PPL::Scalar_Products::assign(Coefficient& z,
 			     const Congruence& x, const Grid_Generator& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(x.space_dimension() <= y.space_dimension());
   z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; )
+  for (dimension_type i = x.space_dimension(); i-- > 0; )
     // The following line optimizes the computation of z += x[i] *
     // y[i].
-    add_mul_assign(z, x[i], y[i]);
+    add_mul_assign(z, x.coefficient(Variable(i)), y[i + 1]);
+  add_mul_assign(z, x.inhomogeneous_term(), y[0]);
 }
 
 void
@@ -112,11 +115,14 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 				     const Congruence& y) {
   // The reduced scalar product is only defined if the topology of `x'
   // is NNC and `y' has enough coefficients.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(x.space_dimension() <= y.space_dimension());
+  PPL_ASSERT(x.size() >= 2);
   z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; )
-    // The following line optimizes z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = x.size() - 2; i-- > 0; )
+    // The following line optimizes
+    // z += x[i + 1] * y.coefficient(Variable(i))).
+    add_mul_assign(z, x[i + 1], y.coefficient(Variable(i)));
+  add_mul_assign(z, x[0], y.inhomogeneous_term());
 }
 
 void
@@ -139,12 +145,14 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 					 const Congruence& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(x.space_dimension() <= y.space_dimension());
+  PPL_ASSERT(x.size() >= 2);
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
-  for (dimension_type i = x.size() - 1; --i > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = x.size() - 2; --i > 0; )
+    // The following line optimizes the computation of
+    // z += x[i + 1] * y.coefficient(Variable(i)).
+    add_mul_assign(z, x[i + 1], y.coefficient(Variable(i)));
 }
 
 void
