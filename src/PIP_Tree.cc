@@ -488,6 +488,33 @@ gcd_assign_iter(Coefficient& gcd, Iter first, Iter last) {
   }
 }
 
+// Simplify row by exploiting variable integrality.
+void
+integral_simplification(Row& row) {
+  if (row[0] != 0) {
+    Row::const_iterator j_begin = row.begin();
+    Row::const_iterator j_end = row.end();
+    PPL_ASSERT(j_begin != j_end && j_begin.index() == 0 && *j_begin != 0);
+    /* Find next column with a non-zero value (there should be one). */
+    ++j_begin;
+    PPL_ASSERT(j_begin != j_end);
+    for ( ; *j_begin == 0; ++j_begin)
+      PPL_ASSERT(j_begin != j_end);
+    /* Use it to initialize gcd. */
+    PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+    gcd = *j_begin;
+    ++j_begin;
+    gcd_assign_iter(gcd, j_begin, j_end);
+    if (gcd != 1) {
+      PPL_DIRTY_TEMP_COEFFICIENT(mod);
+      pos_mod_assign(mod, row[0], gcd);
+      row[0] -= mod;
+    }
+  }
+  /* Final normalization. */
+  row.normalize();
+}
+
 // Divide all coefficients in row x and denominator y by their GCD.
 void
 row_normalize(Row& x, Coefficient& den) {
@@ -2730,25 +2757,26 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
 
       if (i_neg != not_a_dim) {
-        Row copy = tableau.t[i_neg];
-        copy.normalize();
-        context.add_row(copy);
-        add_constraint(copy, all_params);
+        Row tautology = tableau.t[i_neg];
+        /* Simplify tautology by exploiting integrality. */
+        integral_simplification(tautology);
+        context.add_row(tautology);
+        add_constraint(tautology, all_params);
         sign[i_neg] = POSITIVE;
 #ifdef NOISY_PIP
         {
-          Linear_Expression expr = Linear_Expression(copy.get(0));
+          Linear_Expression expr = Linear_Expression(tautology.get(0));
           dimension_type j = 1;
           for (Variables_Set::const_iterator p = all_params.begin(),
                  p_end = all_params.end(); p != p_end; ++p, ++j)
-            add_mul_assign(expr, copy.get(j), Variable(*p));
-          Constraint tautology(expr >= 0);
+            add_mul_assign(expr, tautology.get(j), Variable(*p));
           using namespace IO_Operators;
           std::cerr << std::setw(2 * indent_level) << ""
                     << "Row " << i_neg
                     << ": mixed param sign, negative var coeffs\n";
           std::cerr << std::setw(2 * indent_level) << ""
-                    << "==> adding tautology: " << tautology << ".\n";
+                    << "==> adding tautology: "
+                    << Constraint(expr >= 0) << ".\n";
         }
 #endif // #ifdef NOISY_PIP
         // Jump to next iteration.
@@ -2776,28 +2804,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
       Row t_test(tableau.t[best_i]);
       /* Simplify t_test by exploiting integrality. */
-      if (t_test[0] != 0) {
-        Row::const_iterator j_begin = t_test.begin();
-        Row::const_iterator j_end = t_test.end();
-        PPL_ASSERT(j_begin != j_end && j_begin.index() == 0 && *j_begin != 0);
-        /* Find next column with a non-zero value (there should be one). */
-        ++j_begin;
-        PPL_ASSERT(j_begin != j_end);
-        for ( ; *j_begin == 0; ++j_begin)
-          PPL_ASSERT(j_begin != j_end);
-        /* Use it to initialize gcd. */
-        PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-        gcd = *j_begin;
-        ++j_begin;
-        gcd_assign_iter(gcd, j_begin, j_end);
-        if (gcd != 1) {
-          PPL_DIRTY_TEMP_COEFFICIENT(mod);
-          pos_mod_assign(mod, t_test[0], gcd);
-          t_test[0] -= mod;
-        }
-      }
-      /* Normalize t_test. */
-      t_test.normalize();
+      integral_simplification(t_test);
 
 #ifdef NOISY_PIP
       {
