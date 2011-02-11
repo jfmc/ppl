@@ -62,6 +62,9 @@ aux_test(std::string input_string,
   std::stringstream input_stream(input_string);
   Checked_Number<mpq_class, Test_Extended_Number_Policy> value;
   Result result = input(value, input_stream, ROUND_UP);
+  // NOTE: clear input_stream status bits, since otherwise the next call
+  // to getline will retrieve nothing at all.
+  input_stream.clear();
   std::string residual;
   getline(input_stream, residual, '\0');
   std::stringstream output_stream;
@@ -335,7 +338,7 @@ test14() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST(test03);
+  DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
