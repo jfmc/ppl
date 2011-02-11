@@ -2224,15 +2224,50 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
       else if (f_node == 0) {
-        // t_node feasible, f_node unfeasible:
-        // restore cs and aps into t_node.
-        t_node->constraints_.swap(cs);
-        t_node->artificial_parameters.swap(aps);
-        // Add t_test to t_nodes's constraints.
-        t_node->add_constraint(t_test, all_params);
-        // It is now safe to release previously wrapped t_node pointer
-        // and return it to caller.
-        return wrapped_node.release();
+        // t_node feasible, f_node unfeasible.
+        // NOTE: in principle, we could merge t_node into its parent.
+        // However, if t_node is a decision node having both childs,
+        // then we would obtain a node violating the PIP_Decision_Node
+        // invariant saying that t_node should have a single constraint:
+        // it will have, at least, the two splitting constraints.
+        PIP_Decision_Node* dn = dynamic_cast<PIP_Decision_Node*>(t_node);
+        if (dn != 0 && dn->false_child != 0) {
+          // Do NOT merge: create a new decision node.
+          PIP_Tree_Node* parent
+            = new PIP_Decision_Node(t_node->get_owner(), 0, t_node);
+          // Previously wrapped 't_node' is now safe: release it
+          // and protect new 'parent' node from exception safety issues.
+          wrapped_node.release();
+          wrapped_node.reset(parent);
+          // Restore into parent `cs' and `aps'.
+          parent->constraints_.swap(cs);
+          parent->artificial_parameters.swap(aps);
+          // Add t_test to parent's constraints.
+          parent->add_constraint(t_test, all_params);
+          // It is now safe to release previously wrapped parent pointer
+          // and return it to caller.
+          return wrapped_node.release();
+        }
+        else {
+          // Merge t_node with its parent:
+          // a) append into `cs' the constraints of t_node;
+          for (Constraint_System::const_iterator
+                 i = t_node->constraints_.begin(),
+                 i_end = t_node->constraints_.end(); i != i_end; ++i)
+            cs.insert(*i);
+          // b) append into `aps' the parameters of t_node;
+          aps.insert(aps.end(),
+                     t_node->artificial_parameters.begin(),
+                     t_node->artificial_parameters.end());
+          // c) swap the updated `cs' and `aps' into t_node.
+          cs.swap(t_node->constraints_);
+          aps.swap(t_node->artificial_parameters);
+          // d) add t_test to t_nodes's constraints.
+          t_node->add_constraint(t_test, all_params);
+          // It is now safe to release previously wrapped t_node pointer
+          // and return it to caller.
+          return wrapped_node.release();
+        }
       }
 
       // Here both t_node and f_node are feasible:
