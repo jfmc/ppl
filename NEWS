@@ -16,6 +16,23 @@ NEWS for version 0.11.1  (release date to be decided)
 Bugfixes
 ========
 
+o  Corrected a problem in the input method for checked integers whereby,
+   under specific conditions, the input stream state bits were not updated.
+   The bug was only affecting builds using checked integer coefficients.
+
+o  Corrected a bug in the OCaml interface, which was affecting functions
+
+     ppl_Pointset_Powerset_<INSTANCE>_get_disjunct.
+
+o  Corrected a couple of resource (re-)allocation problems that, under
+   specific conditions, could affect the correctness of Grid constructor
+
+     Grid::Grid(const Box<Interval>& box)
+
+   and NNC_Polyhedron method
+
+     Polyhedron::generalized_affine_image().
+
 o  Corrected an efficiency bug in the C language interface function
 
      ppl_Linear_Expression_add_to_coefficient().
