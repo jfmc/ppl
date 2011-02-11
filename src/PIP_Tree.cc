@@ -1321,8 +1321,8 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   add_artificial_parameters(context_true, all_params, space_dim,
                             num_art_params);
   merge_assign(context_true, constraints_, all_params);
-  bool has_false_child = (false_child != 0);
-  bool has_true_child = (true_child != 0);
+  const bool has_false_child = (false_child != 0);
+  const bool has_true_child = (true_child != 0);
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level,
                    "=== DECISION: SOLVING THEN CHILD\n");
@@ -1357,7 +1357,6 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     return 0;
   }
 
-  PIP_Tree_Node* node = this;
   if (has_false_child && false_child == 0) {
     // False child has become unfeasible: merge this node's artificials with
     // the true child, while removing the local parameter constraints, which
@@ -1368,11 +1367,13 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     indent_and_print(std::cerr, indent_level,
                      "==> merge then branch with parent.\n");
 #endif
-    true_child->parent_merge();
-    true_child->set_parent(parent());
-    node = true_child;
+    PIP_Tree_Node* node = true_child;
+    node->parent_merge();
+    node->set_parent(parent());
     true_child = 0;
     delete this;
+    PPL_ASSERT(node->OK());
+    return node;
   }
   else if (has_true_child && true_child == 0) {
     // True child has become unfeasible: merge this node's artificials
@@ -1383,11 +1384,13 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     indent_and_print(std::cerr, indent_level,
                      "==> merge else branch with parent.\n");
 #endif
-    false_child->parent_merge();
-    false_child->set_parent(parent());
-    node = false_child;
+    PIP_Tree_Node* node = false_child;
+    node->parent_merge();
+    node->set_parent(parent());
     false_child = 0;
     delete this;
+    PPL_ASSERT(node->OK());
+    return node;
   }
   else if (check_feasible_context) {
     // Test all constraints for redundancy with the context, and eliminate
@@ -1401,7 +1404,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
       Row& last = ctx_copy[ctx_copy.num_rows()-1];
       complement_assign(last, last, 1);
       if (compatibility_check(ctx_copy)) {
-        // The constraint is not redundant with the context: we must keep it.
+        // The constraint is not redundant with the context: keep it.
         constraints_.insert(*ci);
       }
     }
@@ -1413,16 +1416,17 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
       indent_and_print(std::cerr, indent_level,
                        "==> merge then branch with parent.\n");
 #endif
-      /* FIXME: shouldn't we delete the else branch? */
-      true_child->parent_merge();
-      true_child->set_parent(parent());
-      node = true_child;
+      PIP_Tree_Node* node = true_child;
+      node->parent_merge();
+      node->set_parent(parent());
       true_child = 0;
       delete this;
+      PPL_ASSERT(node->OK());
+      return node;
     }
   }
-  PPL_ASSERT(node->OK());
-  return node;
+  PPL_ASSERT(OK());
+  return this;
 }
 
 void
@@ -2906,7 +2910,6 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           // and protect new 'parent' node from exception safety issues.
           wrapped_node.release();
           wrapped_node.reset(parent);
-          /* FIXME: delete this; */
           // Restore into parent `cs' and `aps'.
           parent->constraints_.swap(cs);
           parent->artificial_parameters.swap(aps);
@@ -2917,7 +2920,6 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           return wrapped_node.release();
         }
         else {
-          /* FIXME: delete this; */
           // Merge t_node with its parent:
           // a) append into `cs' the constraints of t_node;
           for (Constraint_System::const_iterator
