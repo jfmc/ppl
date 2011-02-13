@@ -229,7 +229,8 @@ PPL::PIP_Problem::solve() const {
                                                      check_feasible_context,
                                                      initial_context,
                                                      parameters,
-                                                     external_space_dim);
+                                                     external_space_dim,
+                                                     /* rec_depth=*/ 0);
       // Update problem status.
       x.status = (x.current_solution) ? OPTIMIZED : UNSATISFIABLE;
 

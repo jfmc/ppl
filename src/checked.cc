@@ -337,6 +337,11 @@ input_mpq(mpq_class& to, std::istream& is) {
   number_struct num_struct;
   number_struct den_struct;
   Result r = parse_number(is, num_struct, den_struct);
+  if (r == V_CVT_STR_UNK) {
+    is.setstate(is.failbit);
+    return r;
+  }
+  is.clear(is.rdstate() & ~is.failbit);
   if (r != V_EQ)
     return r;
   if (den_struct.base && den_struct.mantissa.empty())

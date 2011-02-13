@@ -437,19 +437,25 @@ protected:
     if (!expect(in, '['))
       return false;
     std::string s;
-    if (getline(in, s, ']').bad())
+    getline(in, s, ']');
+    if (in.fail())
       return false;
     std::istringstream iss(s);
     PPL::dimension_type start_index = row_index * row_size;
     PPL::dimension_type k = start_index;
-    for (PPL::dimension_type i = 0; i < cst_col; ++i)
-      if (!(iss >> tab[k++]))
+    for (PPL::dimension_type i = 0; i < cst_col; ++i, ++k) {
+      iss >> tab[k];
+      if (iss.fail())
         return false;
-    if (!(iss >> tab[start_index + row_size - 1]))
+    }
+    iss >> tab[start_index + row_size - 1];
+    if (iss.fail())
       return false;
-    for (PPL::dimension_type i = cst_col + 1; i < row_size; ++i)
-      if (!(iss >> tab[k++]))
+    for (PPL::dimension_type i = cst_col + 1; i < row_size; ++i, ++k) {
+      iss >> tab[k];
+      if (iss.fail())
         return false;
+    }
     return true;
   }
 

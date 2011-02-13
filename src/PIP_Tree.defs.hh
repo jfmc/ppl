@@ -210,7 +210,8 @@ protected:
                                bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dim) = 0;
+                               dimension_type space_dim,
+                               unsigned recursion_depth) = 0;
 
   //! Inserts a new parametric constraint in internal row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -646,7 +647,8 @@ protected:
                                bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dim);
+                               dimension_type space_dim,
+                               unsigned recursion_depth);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
@@ -667,7 +669,8 @@ protected:
     be updated if an extra parameter is to be created
   */
   void generate_cut(dimension_type i, Variables_Set& parameters,
-                    Matrix& context, dimension_type& space_dimension);
+                    Matrix& context, dimension_type& space_dimension,
+                    unsigned indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s, unsigned indent,
@@ -777,7 +780,8 @@ protected:
                                bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dim);
+                               dimension_type space_dim,
+                               unsigned recursion_depth);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s, unsigned indent,
