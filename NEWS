@@ -33,6 +33,10 @@ o  The input routine for PPL numeric datatypes has been extended to
 Bugfixes
 ========
 
+o  Corrected a problem in the simplification of PIP_Problem solution trees
+   whereby, under specific conditions, the node merging process produced
+   decision nodes that did not satisfy their class invariant.
+
 o  Corrected a problem in the input method for checked integers whereby,
    under specific conditions, the input stream state bits were not updated.
    The bug was only affecting builds using checked integer coefficients.
