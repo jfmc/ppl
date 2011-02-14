@@ -249,8 +249,8 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: yap_prolog_generated_test.pl ppl_yap.pl  ../tests/expected_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .
+	if [ $(abs_srcdir) != `pwd` ]; then \
           cp -f $(srcdir)/yap_prolog_generated_test.pl . ; \
           cp -f $(srcdir)/ppl_yap.pl . ; \
 	fi
@@ -262,12 +262,12 @@ ppl_prolog_generated_test: yap_prolog_generated_test.pl ppl_yap.pl  ../tests/exp
 		-dlopen ppl_yap.la \
 		$(YAP_PROLOG) -l yap_prolog_generated_test.pl \
 			<script_pgt >obtained_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f ppl_prolog_generated_test_common.pl; \
+	rm -f ppl_prolog_generated_test_common.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f yap_prolog_generated_test.pl; \
 	  rm -f ppl_yap.pl; \
         fi
-	rm -f ppl_prolog_generated_test_main.pl; \
+	rm -f ppl_prolog_generated_test_main.pl
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 endif ENABLE_SHARED
