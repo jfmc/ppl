@@ -451,24 +451,24 @@ private:
       suitable for pivoting than the \f$(i',j')\f$ pair
 
       \param mapping
-      the PIP_Solution_Node::mapping vector for the tableau
+      The PIP_Solution_Node::mapping vector for the tableau.
 
       \param basis
-      the PIP_Solution_Node::basis vector for the tableau
+      The PIP_Solution_Node::basis vector for the tableau.
 
       \param i
-      the row number for the first pivot row and column pair to be compared
+      The row number for the first pivot row and column pair to be compared.
 
       \param j
-      the column number for the first pivot row and column pair to be
-      compared
+      The column number for the first pivot row and column pair to be
+      compared.
 
       \param i_
-      the row number for the second pivot row and column pair to be compared
+      The row number for the second pivot row and column pair to be compared.
 
       \param j_
-      the column number for the second pivot row and column pair to be
-      compared
+      The column number for the second pivot row and column pair to be
+      compared.
     */
     bool is_better_pivot(const std::vector<dimension_type>& mapping,
                          const std::vector<bool>& basis,
@@ -657,19 +657,19 @@ protected:
     Generate a Gomory cut using non-integer tableau row \p i.
 
     \param i
-    Row index in simplex tableau from which the cut is generated
+    Row index in simplex tableau from which the cut is generated.
 
     \param parameters
     A std::set of the current parameter dimensions (including artificials);
-    to be updated if a new artificial parameter is to be created
+    to be updated if a new artificial parameter is to be created.
 
     \param context
     A set of linear inequalities on the parameters, in matrix form; to be
-    updated if a new artificial parameter is to be created
+    updated if a new artificial parameter is to be created.
 
     \param space_dimension
     The current space dimension, including variables and all parameters; to
-    be updated if an extra parameter is to be created
+    be updated if an extra parameter is to be created.
 
     \param indent_level
     The indentation level (for debugging output only).
