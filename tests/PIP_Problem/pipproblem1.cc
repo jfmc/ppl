@@ -90,9 +90,9 @@ test02() {
         return false;
       const Constraint& c = *cs.begin();
       if (!(c.is_inequality()
-            && c.coefficient(n) == 7
+            && c.coefficient(n) == 1
             && c.coefficient(m) == 0
-            && c.inhomogeneous_term() == -10))
+            && c.inhomogeneous_term() == -2))
         return false;
     }
     if (root->child_node(true) == 0 || root->child_node(false) != 0)
@@ -110,8 +110,8 @@ test02() {
       const Constraint& c = *cs.begin();
       if (!(c.is_inequality()
             && c.coefficient(n) == 0
-            && c.coefficient(m) == 7
-            && c.inhomogeneous_term() == -12))
+            && c.coefficient(m) == 1
+            && c.inhomogeneous_term() == -2))
         return false;
       // Dummy print of (non-root) tree node to increase code coverage.
       using namespace IO_Operators;
@@ -789,7 +789,7 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST_F8(test05);
-  DO_TEST(test06);
+  DO_TEST_F8(test06);
   DO_TEST_F8(test07);
   DO_TEST_F8(test08);
   DO_TEST_F8(test09);
