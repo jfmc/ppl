@@ -17,4 +17,5 @@ Pointset_Powerset_C_Polyhedron_Iterator.java
 Pointset_Powerset_NNC_Polyhedron.java
 Pointset_Powerset_NNC_Polyhedron_Iterator.java
 Polyhedron.java
+Termination.java
 parma_polyhedra_library_*.h

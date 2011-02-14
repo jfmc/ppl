@@ -42,9 +42,11 @@ coveringbox1
 coveringbox2
 discrete1
 disjoint1
+dropnonintegerpoints1
 equals1
 expandspacedim1
 foldspacedims1
+frequency1
 frombdshape1
 fromgrid1
 fromoctagonalshape1
@@ -97,6 +99,7 @@ unconstrain1
 widening1
 widening2
 widening3
+wrap1
 writecongruencesystem
 approximatepartition1
 frombox1

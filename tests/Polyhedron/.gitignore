@@ -41,8 +41,12 @@ constraints1
 contains1
 contains2
 containsintegerpoint1
+densematrix1
+densematrix1.dat
 disjoint1
 disjoint2
+dropsomenonintegerpoints1
+dropsomenonintegerpoints2
 dualhypercubes
 empty1
 equals1
@@ -53,6 +57,7 @@ expandspacedim1
 expandspacedim2
 foldspacedims1
 foldspacedims2
+frequency1
 frombdshape1
 frombox1
 frombox2
@@ -117,6 +122,7 @@ nnc_constraints1
 nnc_contains1
 nnc_containsintegerpoint1
 nnc_disjoint1
+nnc_dropsomenonintegerpoints1
 nnc_empty1
 nnc_equals1
 nnc_exceptions1
@@ -157,6 +163,7 @@ nnc_timeelapse1
 nnc_unconstrain1
 nnc_universe1
 nnc_wrap1
+nnc_wrap2
 nnc_writepolyhedron1
 nncminimize1
 nncminimize2
@@ -181,6 +188,8 @@ removespacedims1
 removespacedims2
 simplifyusingcontext1
 smm1
+termination1
+termination2
 timeelapse1
 timeelapse2
 topclosed1
@@ -190,7 +199,9 @@ universe1
 universe2
 variablesset1
 watchdog1
+weightwatch1
 wrap1
+wrap2
 writeconsys1
 writegensys1
 writepolyhedron1
