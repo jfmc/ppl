@@ -1116,6 +1116,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 common_main :-
   write('\
 Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
 under certain conditions.\n\
