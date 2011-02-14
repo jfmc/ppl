@@ -225,14 +225,10 @@ ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ci
 
 
 ciao_prolog_generated_test: .libs/libppl_ciao.so ppl_ciao.po ciao_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl | ciao_pl_check
-	if [ $(srcdir) != `pwd` ]; then \
-          cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .; \
-	fi
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .
 	cp -f ../tests/ppl_prolog_generated_test_main.pl .
 	ciaoc -o $@ ciao_prolog_generated_test.pl
-	if [ $(srcdir) != `pwd` ]; then \
-          rm -f ppl_prolog_generated_test_common.pl; \
-	fi
+	rm -f ppl_prolog_generated_test_common.pl
 	rm -f ppl_prolog_generated_test_main.pl
 
 CLPQ_TESTS_NONSTRICT = \
