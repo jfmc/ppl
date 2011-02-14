@@ -673,7 +673,8 @@ protected:
   void generate_cut(dimension_type i,
                     Variables_Set& parameters,
                     Matrix& context,
-                    dimension_type& space_dimension);
+                    dimension_type& space_dimension,
+                    unsigned indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s,

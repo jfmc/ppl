@@ -28,15 +28,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <memory>
 
+// #define NOISY_PIP_TREE_STRUCTURE
+// #define NOISY_PIP
+// #define VERY_NOISY_PIP
+
 namespace Parma_Polyhedra_Library {
 
 namespace {
 
 // Calculate positive modulo of x % y
 inline void
-mod_assign(Coefficient& z,
-           Coefficient_traits::const_reference x,
-           Coefficient_traits::const_reference y) {
+pos_mod_assign(Coefficient& z,
+               Coefficient_traits::const_reference x,
+               Coefficient_traits::const_reference y) {
   z = x % y;
   if (z < 0)
     z += y;
@@ -126,7 +130,7 @@ complement_assign(Row& x, const Row& y,
     --x[0];
   else {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
-    mod_assign(mod, x[0], den);
+    pos_mod_assign(mod, x[0], den);
     x[0] -= (mod == 0) ? den : mod;
   }
 }
@@ -298,6 +302,37 @@ row_normalize(Row& x, Coefficient& den) {
   exact_div_assign(den, den, gcd);
 }
 
+// Simplify row by exploiting variable integrality.
+void
+integral_simplification(Row& row) {
+  if (row[0] != 0) {
+    /* Find next column with a non-zero value (there should be one). */
+    const dimension_type row_size = row.size();
+    PPL_ASSERT(row_size > 1);
+    dimension_type i = 1;
+    for ( ; row[i] == 0; ++i)
+      PPL_ASSERT(i < row_size);
+    /* Use it to initialize gcd. */
+    PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+    gcd = row[i];
+    for (++i; i < row_size; ++i) {
+      Coefficient_traits::const_reference row_i = row[i];
+      if (row_i != 0) {
+        gcd_assign(gcd, gcd, row_i);
+        if (gcd == 1)
+          break;
+      }
+    }
+    if (gcd != 1) {
+      PPL_DIRTY_TEMP_COEFFICIENT(mod);
+      pos_mod_assign(mod, row[0], gcd);
+      row[0] -= mod;
+    }
+  }
+  /* Final normalization. */
+  row.normalize();
+}
+
 } // namespace
 
 namespace IO_Operators {
@@ -329,6 +364,60 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
     parent_(0), // NOTE: parent is not copied.
     constraints_(y.constraints_),
     artificial_parameters(y.artificial_parameters) {
+}
+
+PIP_Tree_Node::Artificial_Parameter
+::Artificial_Parameter(const Linear_Expression& expr,
+                       Coefficient_traits::const_reference den)
+  : Linear_Expression(expr), denom(den) {
+  if (denom == 0)
+    throw std::invalid_argument("PIP_Tree_Node::Artificial_Parameter(e, d): "
+                                "denominator d is zero.");
+
+  // Normalize if needed.
+  // FIXME: Provide a proper normalization helper.
+  Linear_Expression& param_expr = *this;
+  if (denom < 0) {
+    neg_assign(denom);
+    param_expr *= -1;
+  }
+
+  // Compute GCD of parameter expression and denum.
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  gcd = denom;
+  gcd_assign(gcd, param_expr.inhomogeneous_term(), gcd);
+  if (gcd == 1)
+    return;
+  const dimension_type space_dim = param_expr.space_dimension();
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Coefficient_traits::const_reference
+      e_i = param_expr.coefficient(Variable(i));
+    if (e_i != 0) {
+      gcd_assign(gcd, e_i, gcd);
+      if (gcd == 1)
+        return;
+    }
+  }
+
+  // Divide coefficients and denominator by their (non-trivial) GCD.
+  PPL_ASSERT(gcd > 1);
+  Linear_Expression normalized(0 * Variable(space_dim-1));
+  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
+  exact_div_assign(coeff, param_expr.inhomogeneous_term(), gcd);
+  normalized += coeff;
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Coefficient_traits::const_reference
+      e_i = param_expr.coefficient(Variable(i));
+    if (e_i != 0) {
+      exact_div_assign(coeff, e_i, gcd);
+      add_mul_assign(normalized, coeff, Variable(i));
+    }
+  }
+  // Replace the parameter expression with the normalized one.
+  param_expr = normalized;
+  exact_div_assign(denom, denom, gcd);
+
+  PPL_ASSERT(OK());
 }
 
 bool
@@ -734,7 +823,13 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
                          const Matrix& context,
                          const Variables_Set& params,
-                         dimension_type space_dim) {
+                         dimension_type space_dim,
+                         const unsigned indent_level) {
+#ifdef NOISY_PIP_TREE_STRUCTURE
+  indent_and_print(std::cerr, indent_level, "=== SOLVING DECISION NODE\n");
+#else
+  used(indent_level);
+#endif
   PPL_ASSERT(true_child != 0);
   Matrix context_true(context);
   Variables_Set all_params(params);
@@ -744,8 +839,13 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
   merge_assign(context_true, constraints_, all_params);
   bool has_false_child = (false_child != 0);
   bool has_true_child = (true_child != 0);
+#ifdef NOISY_PIP_TREE_STRUCTURE
+  indent_and_print(std::cerr, indent_level,
+                   "=== DECISION: SOLVING THEN CHILD\n");
+#endif
   true_child = true_child->solve(pip, check_feasible_context,
-                                 context_true, all_params, space_dim);
+                                 context_true, all_params, space_dim,
+                                 indent_level + 1);
 
   if (has_false_child) {
     // Decision nodes with false child must have exactly one constraint
@@ -754,35 +854,59 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     Matrix& context_false = context_true;
     Row& last = context_false[context_false.num_rows()-1];
     complement_assign(last, last, 1);
+#ifdef NOISY_PIP_TREE_STRUCTURE
+    indent_and_print(std::cerr, indent_level,
+                     "=== DECISION: SOLVING ELSE CHILD\n");
+#endif
     false_child = false_child->solve(pip, check_feasible_context,
-                                     context_false, all_params, space_dim);
+                                     context_false, all_params, space_dim,
+                                     indent_level + 1);
   }
 
   if (true_child == 0 && false_child == 0) {
     // No childs: the whole subtree is unfeasible.
+#ifdef NOISY_PIP_TREE_STRUCTURE
+    indent_and_print(std::cerr, indent_level,
+                     "=== DECISION: BOTH BRANCHES NOW UNFEASIBLE: _|_\n");
+#endif
     delete this;
     return 0;
   }
 
-  PIP_Tree_Node* node = this;
   if (has_false_child && false_child == 0) {
     // False child has become unfeasible: merge this node's artificials with
     // the true child, while removing the local parameter constraints, which
     // are no longer discriminative.
-    true_child->parent_merge();
-    true_child->set_parent(parent());
-    node = true_child;
+#ifdef NOISY_PIP_TREE_STRUCTURE
+    indent_and_print(std::cerr, indent_level,
+                     "=== DECISION: ELSE BRANCH NOW UNFEASIBLE\n");
+    indent_and_print(std::cerr, indent_level,
+                     "==> merge then branch with parent.\n");
+#endif
+    PIP_Tree_Node* node = true_child;
+    node->parent_merge();
+    node->set_parent(parent());
     true_child = 0;
     delete this;
+    PPL_ASSERT(node->OK());
+    return node;
   }
   else if (has_true_child && true_child == 0) {
     // True child has become unfeasible: merge this node's artificials
     // with the false child.
-    false_child->parent_merge();
-    false_child->set_parent(parent());
-    node = false_child;
+#ifdef NOISY_PIP_TREE_STRUCTURE
+    indent_and_print(std::cerr, indent_level,
+                     "=== DECISION: THEN BRANCH NOW UNFEASIBLE\n");
+    indent_and_print(std::cerr, indent_level,
+                     "==> merge else branch with parent.\n");
+#endif
+    PIP_Tree_Node* node = false_child;
+    node->parent_merge();
+    node->set_parent(parent());
     false_child = 0;
     delete this;
+    PPL_ASSERT(node->OK());
+    return node;
   }
   else if (check_feasible_context) {
     // Test all constraints for redundancy with the context, and eliminate
@@ -802,15 +926,23 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     }
     // If the constraints set has become empty, only keep the true child.
     if (constraints_.empty()) {
-      true_child->parent_merge();
-      true_child->set_parent(parent());
-      node = true_child;
+#ifdef NOISY_PIP_TREE_STRUCTURE
+      indent_and_print(std::cerr, indent_level,
+                       "=== DECISION: NO BRANCHING CONSTRAINTS LEFT\n");
+      indent_and_print(std::cerr, indent_level,
+                       "==> merge then branch with parent.\n");
+#endif
+      PIP_Tree_Node* node = true_child;
+      node->parent_merge();
+      node->set_parent(parent());
       true_child = 0;
       delete this;
+      PPL_ASSERT(node->OK());
+      return node;
     }
   }
-  PPL_ASSERT(node->OK());
-  return node;
+  PPL_ASSERT(OK());
+  return this;
 }
 
 void
@@ -1464,7 +1596,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         ++num_rows;
         const Row& s_mi = s[mi];
         for (dimension_type j = num_cols; j-- > 0; )
-          mod_assign(cut[j], s_mi[j], den);
+          pos_mod_assign(cut[j], s_mi[j], den);
         WEIGHT_ADD_MUL(1, num_cols);
         cut[0] -= den;
         scaling.push_back(den);
@@ -1756,7 +1888,13 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
                          const Matrix& ctx,
                          const Variables_Set& params,
-                         dimension_type space_dim) {
+                         dimension_type space_dim,
+                         const unsigned indent_level) {
+#ifdef NOISY_PIP_TREE_STRUCTURE
+  indent_and_print(std::cerr, indent_level, "=== SOLVING NODE\n");
+#else
+  used(indent_level);
+#endif
   // Reset current solution as invalid.
   solution_valid = false;
 
@@ -1791,11 +1929,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     const dimension_type num_params = tableau.t.num_columns();
     const Coefficient& tableau_den = tableau.denominator();
 
-#ifdef NOISY_PIP
+#ifdef VERY_NOISY_PIP
     tableau.ascii_dump(std::cerr);
     std::cerr << "context ";
     context.ascii_dump(std::cerr);
-#endif
+#endif // #ifdef VERY_NOISY_PIP
 
     // (Re-) Compute parameter row signs.
     // While at it, keep track of the first parameter rows
@@ -1872,7 +2010,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Check compatibility of constraint t_i(z) > 0.
         Row row(tableau.t[i]);
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
-        mod_assign(mod, row[0], tableau_den);
+        pos_mod_assign(mod, row[0], tableau_den);
         row[0] -= (mod == 0) ? tableau_den : mod;
         WEIGHT_ADD(2);
         const bool compatible = compatibility_check(context, row);
@@ -1893,12 +2031,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
     }
 
-#ifdef NOISY_PIP
+#ifdef VERY_NOISY_PIP
     std::cerr << "sign =";
     for (dimension_type i = 0; i < sign.size(); ++i)
       std::cerr << " " << "?0+-*"[sign[i]];
     std::cerr << std::endl;
-#endif
+#endif // #ifdef VERY_NOISY_PIP
 
     // If we have found a negative parameter row, then
     // either the problem is unfeasible, or a pivoting step is required.
@@ -1914,9 +2052,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (!find_lexico_minimum_column(tableau.s, mapping, basis,
                                         tableau.s[i], 0, j)) {
           // No positive s_ij was found: problem is unfeasible.
-#ifdef NOISY_PIP
-          std::cerr << "No positive pivot found: Solution = _|_\n";
-#endif
+#ifdef NOISY_PIP_TREE_STRUCTURE
+          indent_and_print(std::cerr, indent_level,
+                           "No positive pivot: Solution = _|_\n");
+#endif // #ifdef NOISY_PIP_TREE_STRUCTURE
           delete this;
           return 0;
         }
@@ -1932,9 +2071,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
 
-#ifdef NOISY_PIP
+#ifdef VERY_NOISY_PIP
       std::cerr << "Pivot (pi, pj) = (" << pi << ", " << pj << ")\n";
-#endif
+#endif // #ifdef VERY_NOISY_PIP
 
       // Normalize the tableau before pivoting.
       tableau.normalize();
@@ -2126,16 +2265,28 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
 
       if (i_neg != not_a_dim) {
-#ifdef NOISY_PIP
-        std::cerr << "Found row (" << i_neg << ") with mixed parameter sign "
-                  << "and negative variable coefficients.\n"
-                  << "==> adding tautology.\n";
-#endif
-        Row copy(tableau.t[i_neg]);
-        copy.normalize();
-        context.add_row(copy);
-        add_constraint(copy, all_params);
+        Row tautology = tableau.t[i_neg];
+        /* Simplify tautology by exploiting integrality. */
+        integral_simplification(tautology);
+        context.add_row(tautology);
+        add_constraint(tautology, all_params);
         sign[i_neg] = POSITIVE;
+#ifdef NOISY_PIP
+        {
+          Linear_Expression expr = Linear_Expression(tautology[0]);
+          dimension_type j = 1;
+          for (Variables_Set::const_iterator p = all_params.begin(),
+                 p_end = all_params.end(); p != p_end; ++p, ++j)
+            add_mul_assign(expr, tautology[j], Variable(*p));
+          using namespace IO_Operators;
+          std::cerr << std::setw(2 * indent_level) << ""
+                    << "Row " << i_neg
+                    << ": mixed param sign, negative var coeffs\n";
+          std::cerr << std::setw(2 * indent_level) << ""
+                    << "==> adding tautology: "
+                    << Constraint(expr >= 0) << ".\n";
+        }
+#endif // #ifdef NOISY_PIP
         // Jump to next iteration.
         continue;
       }
@@ -2159,7 +2310,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
 
       Row t_test(tableau.t[best_i]);
-      t_test.normalize();
+      /* Simplify t_test by exploiting integrality. */
+      integral_simplification(t_test);
 #ifdef NOISY_PIP
       {
         Linear_Expression expr = Linear_Expression(t_test[0]);
@@ -2168,9 +2320,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                p_end = all_params.end(); p != p_end; ++p, ++j)
           add_mul_assign(expr, t_test[j], Variable(*p));
         using namespace IO_Operators;
-        std::cerr << "Found mixed parameter sign row: " << best_i << ".\n"
-                  << "Solution depends on sign of parameter "
-                  << expr << ".\n";
+        std::cerr << std::setw(2 * indent_level) << ""
+                  << "Row " << best_i << ": mixed param sign\n";
+        std::cerr << std::setw(2 * indent_level) << ""
+                  << "==> depends on sign of " << expr << ".\n";
       }
 #endif // #ifdef NOISY_PIP
 
@@ -2182,8 +2335,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Add parametric constraint to context.
       context.add_row(t_test);
       // Recusively solve true node wrt updated context.
+#ifdef NOISY_PIP_TREE_STRUCTURE
+      indent_and_print(std::cerr, indent_level, "=== SOLVING THEN CHILD\n");
+#endif
       t_node = t_node->solve(pip, check_feasible_context,
-                             context, all_params, space_dim);
+                             context, all_params, space_dim,
+                             indent_level + 1);
       // Resolution may have changed t_node: in case, rewrap it.
       if (t_node != wrapped_node.get()) {
         wrapped_node.release();
@@ -2203,13 +2360,21 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       complement_assign(f_test, t_test, 1);
 
       // Recusively solve false node wrt updated context.
+#ifdef NOISY_PIP_TREE_STRUCTURE
+      indent_and_print(std::cerr, indent_level, "=== SOLVING ELSE CHILD\n");
+#endif
       f_node = f_node->solve(pip, check_feasible_context,
-                             context, all_params, space_dim);
+                             context, all_params, space_dim,
+                             indent_level + 1);
 
       // Case analysis on recursive resolution calls outcome.
       if (t_node == 0) {
         if (f_node == 0) {
           // Both t_node and f_node unfeasible.
+#ifdef NOISY_PIP_TREE_STRUCTURE
+          indent_and_print(std::cerr, indent_level,
+                           "=== EXIT: BOTH BRANCHES UNFEASIBLE: _|_\n");
+#endif
           return 0;
         }
         else {
@@ -2220,11 +2385,19 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           f_node->artificial_parameters.swap(aps);
           // Add f_test to constraints.
           f_node->add_constraint(f_test, all_params);
+#ifdef NOISY_PIP_TREE_STRUCTURE
+          indent_and_print(std::cerr, indent_level,
+                           "=== EXIT: THEN BRANCH UNFEASIBLE: SWAP BRANCHES\n");
+#endif
           return f_node;
         }
       }
       else if (f_node == 0) {
         // t_node feasible, f_node unfeasible.
+#ifdef NOISY_PIP_TREE_STRUCTURE
+        indent_and_print(std::cerr, indent_level,
+                         "=== EXIT: THEN BRANCH FEASIBLE\n");
+#endif
         // NOTE: in principle, we could merge t_node into its parent.
         // However, if t_node is a decision node having both childs,
         // then we would obtain a node violating the PIP_Decision_Node
@@ -2272,6 +2445,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
       // Here both t_node and f_node are feasible:
       // create a new decision node.
+#ifdef NOISY_PIP_TREE_STRUCTURE
+      indent_and_print(std::cerr, indent_level,
+                       "=== EXIT: BOTH BRANCHES FEASIBLE: NEW DECISION NODE\n");
+#endif
       PIP_Tree_Node* parent
         = new PIP_Decision_Node(f_node->get_owner(), f_node, t_node);
       // Previously wrapped 't_node' is now safe: release it
@@ -2283,6 +2460,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       parent->add_constraint(t_test, all_params);
 
       if (!cs.empty()) {
+#ifdef NOISY_PIP_TREE_STRUCTURE
+        indent_and_print(std::cerr, indent_level,
+                         "=== NODE HAS BOTH BRANCHES AND TAUTOLOGIES:\n");
+        indent_and_print(std::cerr, indent_level,
+                         "=== CREATE NEW PARENT FOR TAUTOLOGIES\n");
+#endif
         // If node to be solved had tautologies,
         // store them in a new decision node.
         parent = new PIP_Decision_Node(parent->get_owner(), 0, parent);
@@ -2306,8 +2489,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     // solution of the  integer problem. Otherwise, we may need to generate
     // a new cut to try and get back into the integer case.
 #ifdef NOISY_PIP
-    std::cout << "All parameters are positive.\n";
-#endif
+    indent_and_print(std::cerr, indent_level,
+                     "All parameters are positive.\n");
+#endif // #ifdef NOISY_PIP
     tableau.normalize();
 
     // Look for any row having non integer parameter coefficients.
@@ -2326,9 +2510,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
     }
     // The goto was not taken, the solution is integer.
-#ifdef NOISY_PIP
-    std::cout << "Solution found for problem in current node.\n";
-#endif
+#ifdef NOISY_PIP_TREE_STRUCTURE
+    indent_and_print(std::cerr, indent_level,
+                     "EXIT: solution found.\n");
+#endif // #ifdef NOISY_PIP
     return this;
 
   non_integer:
@@ -2351,7 +2536,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         WEIGHT_BEGIN();
         dimension_type pcount = 0;
         for (dimension_type j = num_params; j-- > 0; ) {
-          mod_assign(mod, t_i[j], den);
+          pos_mod_assign(mod, t_i[j], den);
           if (mod != 0)
             ++pcount;
         }
@@ -2362,7 +2547,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
       // Generate cut using 'best_i'.
-      generate_cut(best_i, all_params, context, space_dim);
+      generate_cut(best_i, all_params, context, space_dim, indent_level);
     }
     else {
       PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
@@ -2385,7 +2570,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         dimension_type pcount = 0;
         const Row& t_i = tableau.t[i];
         for (dimension_type j = num_params; j-- > 0; ) {
-          mod_assign(mod, t_i[j], den);
+          pos_mod_assign(mod, t_i[j], den);
           if (mod != 0) {
             score += den;
             score -= mod;
@@ -2399,7 +2584,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         s_score = 0;
         const Row& s_i = tableau.s[i];
         for (dimension_type j = num_vars; j-- > 0; ) {
-          mod_assign(mod, s_i[j], den);
+          pos_mod_assign(mod, s_i[j], den);
           s_score += den;
           s_score -= mod;
         }
@@ -2427,11 +2612,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           all_best_is.push_back(i);
       }
       if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
-        generate_cut(best_i, all_params, context, space_dim);
+        generate_cut(best_i, all_params, context, space_dim, indent_level);
       else {
         PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
         for (dimension_type k = all_best_is.size(); k-- > 0; )
-          generate_cut(all_best_is[k], all_params, context, space_dim);
+          generate_cut(all_best_is[k], all_params, context,
+                       space_dim, indent_level);
       }
     } // End of processing for non-integer solutions.
 
@@ -2445,7 +2631,15 @@ void
 PIP_Solution_Node::generate_cut(const dimension_type index,
                                 Variables_Set& parameters,
                                 Matrix& context,
-                                dimension_type& space_dimension) {
+                                dimension_type& space_dimension,
+                                const unsigned indent_level) {
+#ifdef NOISY_PIP
+  std::cerr << std::setw(2 * indent_level) << ""
+            << "Row " << index << " requires cut generation.\n";
+#else
+  used(indent_level);
+#endif // #ifdef NOISY_PIP
+
   const dimension_type num_rows = tableau.t.num_rows();
   PPL_ASSERT(index < num_rows);
   const dimension_type num_vars = tableau.s.num_columns();
@@ -2455,12 +2649,6 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 
   PPL_DIRTY_TEMP_COEFFICIENT(mod);
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-
-#ifdef NOISY_PIP
-  std::cout << "Row " << index << " contains non-integer coefficients. "
-            << "Cut generation required."
-            << std::endl;
-#endif // #ifdef NOISY_PIP
 
   // Test if cut to be generated must be parametric or not.
   bool generate_parametric_cut = false;
@@ -2488,7 +2676,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     // Limiting the scope of reference row_t (may be later invalidated).
     {
       const Row& row_t = tableau.t[index];
-      mod_assign(mod, row_t[0], den);
+      pos_mod_assign(mod, row_t[0], den);
       if (mod != 0) {
         // Optimizing computation: expr += (den - mod);
         expr += den;
@@ -2499,7 +2687,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       // NOTE: index j spans [1..num_params-1] downwards.
       WEIGHT_BEGIN();
       for (dimension_type j = num_params; j-- > 1; ) {
-        mod_assign(mod, row_t[j], den);
+        pos_mod_assign(mod, row_t[j], den);
         if (mod != 0) {
           // Optimizing computation: expr += (den - mod) * Variable(*p_j);
           coeff = den - mod;
@@ -2531,9 +2719,9 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       // We can re-use an existing Artificial_Parameter.
 #ifdef NOISY_PIP
       using namespace IO_Operators;
-      std::cout << "Re-using parameter " << Variable(ap_column)
-                << " = (" << expr << ")/" << den
-                << std::endl;
+      std::cerr << std::setw(2 * indent_level) << ""
+                << "Re-using parameter " << Variable(ap_column)
+                << " = " << ap << std::endl;
 #endif // #ifdef NOISY_PIP
       ap_column = ap_column - num_vars + 1;
     }
@@ -2546,10 +2734,9 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       parameters.insert(space_dimension);
 #ifdef NOISY_PIP
       using namespace IO_Operators;
-      std::cout << "Creating new parameter "
-                << Variable(space_dimension)
-                << " = (" << expr << ")/" << den
-                << std::endl;
+      std::cerr << std::setw(2 * indent_level) << ""
+                << "New parameter " << Variable(space_dimension)
+                << " = " << ap << std::endl;
 #endif // #ifdef NOISY_PIP
       ++space_dimension;
       ap_column = num_params;
@@ -2563,7 +2750,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       WEIGHT_BEGIN();
       const Row& row_t = tableau.t[index];
       for (dimension_type j = 0; j < num_params; ++j) {
-        mod_assign(mod, row_t[j], den);
+        pos_mod_assign(mod, row_t[j], den);
         if (mod != 0) {
           ctx1[j] = den;
           ctx1[j] -= mod;
@@ -2588,7 +2775,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           add_mul_assign(expr1, ctx1[j], Variable(*p));
           add_mul_assign(expr2, ctx2[j], Variable(*p));
         }
-        std::cout << "Inserting into context: "
+        std::cerr << std::setw(2 * indent_level) << ""
+                  << "Adding to context: "
                   << Constraint(expr1 >= 0) << " ; "
                   << Constraint(expr2 >= 0) << std::endl;
       }
@@ -2606,11 +2794,11 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   const Row& row_s = tableau.s[index];
   const Row& row_t = tableau.t[index];
   for (dimension_type j = 0; j < num_vars; ++j) {
-    mod_assign(cut_s[j], row_s[j], den);
+    pos_mod_assign(cut_s[j], row_s[j], den);
   }
   WEIGHT_ADD_MUL(1, num_params);
   for (dimension_type j = 0; j < num_params; ++j) {
-    mod_assign(mod, row_t[j], den);
+    pos_mod_assign(mod, row_t[j], den);
     if (mod != 0) {
       cut_t[j] = mod;
       cut_t[j] -= den;
@@ -2634,11 +2822,12 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       else
         add_mul_assign(expr, cut_s[si++], Variable(j));
     }
-    std::cout << "Adding cut: "
+    std::cerr << std::setw(2 * indent_level) << ""
+              << "Adding cut: "
               << Constraint(expr + cut_t[0] >= 0)
               << std::endl;
   }
-#endif
+#endif // #ifdef NOISY_PIP
   var_row.push_back(num_rows + num_vars);
   basis.push_back(false);
   mapping.push_back(num_rows);
