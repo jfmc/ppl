@@ -2643,14 +2643,15 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         Row& t_i = tableau.t[i];
-        Coefficient_traits::const_reference s_i_pj = s_i.get(pj);
         Row::iterator k = t_i.end();
         for (Row::const_iterator
              j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
           Coefficient_traits::const_reference t_pivot_j = *j;
           // Do nothing if the j-th pivot element is zero.
           if (t_pivot_j != 0) {
-            product = t_pivot_j * s_i_pj;
+            /* NOTE: s_i[pj] needs to be recomputed at each iteration,
+               as it may have been modified by tableau.scale(). */
+            product = t_pivot_j * s_i.get(pj);
             if (product % s_pivot_pj != 0) {
               // Must scale matrix to stay in integer case.
               gcd_assign(gcd, product, s_pivot_pj);
