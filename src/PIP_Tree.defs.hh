@@ -203,12 +203,16 @@ protected:
 
     \param space_dim
     The space dimension of parent, including artificial parameters.
+
+    \param indent_level
+    The indentation level (for debugging output only).
   */
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dim) = 0;
+                               dimension_type space_dim,
+                               unsigned indent_level) = 0;
 
   //! Inserts a new parametric constraint in internal Row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -642,25 +646,29 @@ protected:
                                bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dim);
+                               dimension_type space_dim,
+                               unsigned indent_level);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
 
     \param i
-    row index in simplex tableau from which the cut is generated
+    Row index in simplex tableau from which the cut is generated
 
     \param parameters
-    a std::set of the current parameter dimensions (including artificials);
+    A std::set of the current parameter dimensions (including artificials);
     to be updated if a new artificial parameter is to be created
 
     \param context
-    a set of linear inequalities on the parameters, in Matrix form; to be
+    A set of linear inequalities on the parameters, in matrix form; to be
     updated if a new artificial parameter is to be created
 
     \param space_dimension
-    the current space dimension, including variables and all parameters; to
+    The current space dimension, including variables and all parameters; to
     be updated if an extra parameter is to be created
+
+    \param indent_level
+    The indentation level (for debugging output only).
   */
   void generate_cut(dimension_type i,
                     Variables_Set& parameters,
@@ -776,7 +784,8 @@ protected:
                                bool check_feasible_context,
                                const Matrix& context,
                                const Variables_Set& params,
-                               dimension_type space_dim);
+                               dimension_type space_dim,
+                               unsigned indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s,
