@@ -25,7 +25,7 @@ if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
 $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
---num-callers=100 --leak-resolution=high \
+--num-callers=40 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
 else !VALGRIND_TESTS_ENABLED
@@ -276,18 +276,14 @@ endif !ASSERTIONS_ENABLED
 check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/pl_check.pl . ; \
-	fi ;\
-        echo "ensure_loaded('$(srcdir)/swi_pl_check'). main." > script_pchk
+	cp -f $(srcdir)/../tests/pl_check.pl .
+	echo "ensure_loaded('$(srcdir)/swi_pl_check'). main." > script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
                 $(CHECKER) ./ppl_pl < script_pchk
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f pl_check.pl; \
-	fi
+	rm -f pl_check.pl
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 $(CLPQ_TESTS):
@@ -310,20 +306,16 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: swi_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/ppl_prolog_generated_test_common.pl ../tests/expected_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
-	fi
-	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
-        echo "ensure_loaded('$(srcdir)/swi_prolog_generated_test'). main." > script_pgt
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .
+	cp -f ../tests/ppl_prolog_generated_test_main.pl .
+	echo "ensure_loaded('$(srcdir)/swi_prolog_generated_test'). main." > script_pgt
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_swiprolog.la \
                 $(CHECKER) ./ppl_pl <script_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f ppl_prolog_generated_test_common.pl; \
-        fi
-	rm -f ppl_prolog_generated_test_main.pl; \
+	rm -f ppl_prolog_generated_test_common.pl
+	rm -f ppl_prolog_generated_test_main.pl
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 CLEANFILES = \

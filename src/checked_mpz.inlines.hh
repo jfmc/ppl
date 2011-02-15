@@ -179,6 +179,7 @@ construct_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
     return V_EQ;
 }
 
+PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, char)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed char)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed short)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, signed int)
@@ -215,6 +216,7 @@ PPL_SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, float)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, double)
 
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, char)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed char)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed short)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed int)

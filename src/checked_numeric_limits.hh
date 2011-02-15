@@ -71,6 +71,8 @@ template <typename Policy>						\
   }									\
 };
 
+PPL_SPECIALIZE_LIMITS_INT(char)
+
 PPL_SPECIALIZE_LIMITS_INT(signed char)
 PPL_SPECIALIZE_LIMITS_INT(signed short)
 PPL_SPECIALIZE_LIMITS_INT(signed int)

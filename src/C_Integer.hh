@@ -62,6 +62,27 @@ template <typename T>
 struct C_Integer : public False { };
 
 template <>
+struct C_Integer<char> : public True {
+  enum anonymous_enum {
+#if PPL_CXX_PLAIN_CHAR_IS_SIGNED
+    is_signed = true
+#else
+    is_signed = false
+#endif
+  };
+  typedef void smaller_type;
+  typedef void smaller_signed_type;
+  typedef void smaller_unsigned_type;
+#if PPL_CXX_PLAIN_CHAR_IS_SIGNED
+  typedef unsigned char other_type;
+#else
+  typedef signed char other_type;
+#endif
+  static const char min = CHAR_MIN;
+  static const char max = CHAR_MAX;
+};
+
+template <>
 struct C_Integer<signed char> : public True {
   enum anonymous_enum { is_signed = true };
   typedef void smaller_type;

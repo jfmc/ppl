@@ -622,6 +622,7 @@ compatibility_check_find_pivot_in_set(
       // Not in base.
       const Row& row = s[row_index];
       Row::const_iterator row_itr = row.lower_bound(pj);
+      Row::const_iterator new_row_itr;
       Row::const_iterator row_end = row.end();
       PPL_DIRTY_TEMP_COEFFICIENT(row_value);
       if (row_itr != row_end && row_itr.index() == pj) {
@@ -629,6 +630,7 @@ compatibility_check_find_pivot_in_set(
         ++row_itr;
       } else
         row_value = 0;
+      PPL_DIRTY_TEMP_COEFFICIENT(row_challenger_value);
       for (++i; i != i_end; ++i) {
         const dimension_type challenger_j = i->first;
         Coefficient_traits::const_reference challenger_cost = i->second.cost;
@@ -638,27 +640,16 @@ compatibility_check_find_pivot_in_set(
         PPL_ASSERT(challenger_value > 0);
         PPL_ASSERT(pj < challenger_j);
 
-        PPL_DIRTY_TEMP_COEFFICIENT(row_challenger_value);
-        // row_challenger_value = &(row.get(challenger_j));
-        if (row_itr != row_end) {
-          if (row_itr.index() < challenger_j) {
-            row_itr = row.lower_bound(row_itr, challenger_j);
-            if (row_itr != row_end && row_itr.index() == challenger_j) {
-              row_challenger_value = *row_itr;
-              ++row_itr;
-            } else
-              row_challenger_value = 0;
-          } else {
-            if (row_itr.index() == challenger_j) {
-              row_challenger_value = *row_itr;
-              ++row_itr;
-            } else {
-              PPL_ASSERT(row_itr.index() > challenger_j);
-              row_challenger_value = 0;
-            }
-          }
-        } else
+        new_row_itr = row.find(row_itr, challenger_j);
+        if (new_row_itr != row.end()) {
+          row_challenger_value = *new_row_itr;
+          // Use new_row_itr as a hint in next iterations
+          row_itr = new_row_itr;
+        } else {
           row_challenger_value = 0;
+          // Using end() as a hint is not useful, keep the current hint.
+        }
+        PPL_ASSERT(row_challenger_value == row.get(challenger_j));
 
         // Before computing and comparing the actual values, the signs are
         // compared. This speeds up the code, because the values' computation
@@ -2643,7 +2634,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         Row& t_i = tableau.t[i];
-        Coefficient_traits::const_reference s_i_pj = s_i.get(pj);
+        Coefficient s_i_pj = s_i.get(pj);
         Row::iterator k = t_i.end();
         for (Row::const_iterator
              j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
@@ -2656,6 +2647,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               gcd_assign(gcd, product, s_pivot_pj);
               exact_div_assign(scale_factor, s_pivot_pj, gcd);
               tableau.scale(scale_factor);
+              // s_i[pj] has been modified by scale(), so s_i_pj must be
+              // updated.
+              s_i_pj *= scale_factor;
+              PPL_ASSERT(s_i.get(pj) == s_i_pj);
               product *= scale_factor;
             }
             PPL_ASSERT(product % s_pivot_pj == 0);

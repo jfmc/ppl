@@ -310,6 +310,7 @@ template <typename T>
 struct Is_Native : public False {
 };
 
+template <> struct Is_Native<char> : public True { };
 template <> struct Is_Native<signed char> : public True { };
 template <> struct Is_Native<signed short> : public True { };
 template <> struct Is_Native<signed int> : public True { };

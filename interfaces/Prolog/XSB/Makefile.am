@@ -286,9 +286,7 @@ pl_check_test: libppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.P ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
-	fi
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .
 	cp -f ../tests/ppl_prolog_generated_test_main.pl .
 	rm -f xsb_prolog_generated_test.xwam
 	$(LIBTOOL) --mode=execute \
@@ -296,10 +294,8 @@ ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.
 		$(WATCHDOG_DLOPEN) \
 		xsb xsb_prolog_generated_test \
 			>obtained_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f ppl_prolog_generated_test_common.pl ; \
-	fi
-	rm -f ppl_prolog_generated_test_main.pl ; \
+	rm -f ppl_prolog_generated_test_common.pl
+	rm -f ppl_prolog_generated_test_main.pl
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 

@@ -4,6 +4,7 @@
 *.gz
 *.lo
 *.loT
+*.lzma
 *.o
 *.zip
 *~
