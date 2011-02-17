@@ -518,10 +518,10 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // Set up the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
     if (num_rows == 0) {
-      sys.add_zero_rows(1);
-      Congruence& cg = sys[0];
+      Congruence cg(sys.space_dimension());
       cg[num_columns] = 1;
       cg[0] = 1;
+      sys.insert_verbatim_recycled(cg);
 
       PPL_ASSERT(sys.OK());
       return false;
