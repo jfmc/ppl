@@ -83,18 +83,12 @@ PPL::Congruence_System
 ::increase_space_dimension(const dimension_type new_space_dim) {
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
-  const dimension_type cols_to_add = new_space_dim - space_dimension();
+  const dimension_type diff = new_space_dim - space_dimension();
 
-  if (cols_to_add) {
-    if (num_rows() != 0) {
-      const dimension_type old_num_columns = num_columns_;
-      add_zero_columns(cols_to_add);
-      // Move the moduli.
-      swap_columns(num_columns_ - 1, old_num_columns - 1);
-    }
-    else
-      // Empty system.
-      add_zero_columns(cols_to_add);
+  if (diff != 0) {
+    num_columns_ += diff;
+    for (dimension_type i = num_rows(); i-- > 0; )
+      rows[i].add_space_dimensions(diff);
   }
 
   PPL_ASSERT(OK());
