@@ -165,7 +165,6 @@ Dense_Row::Dense_Row(const Dense_Row& y,
                      const dimension_type sz,
                      const dimension_type capacity)
   : impl() {
-  PPL_ASSERT(y.size() <= sz);
   PPL_ASSERT(sz <= capacity);
   PPL_ASSERT(capacity <= max_size());
   PPL_ASSERT(capacity != 0);

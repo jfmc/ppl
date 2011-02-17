@@ -119,8 +119,7 @@ public:
 
   //! Copy constructor with specified size and capacity.
   /*!
-    It is assumed that \p sz is greater than or equal to the size of \p y
-    and, of course, that \p sz is less than or equal to \p capacity.
+    It is assumed that \p sz is less than or equal to \p capacity.
   */
   Sparse_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity);
 

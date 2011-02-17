@@ -57,7 +57,8 @@ inline
 Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
                        dimension_type capacity)
   : tree(y.tree), size_(sz), flags_(y.flags_) {
-  PPL_ASSERT(y.size() <= sz);
+  if (y.size() > sz)
+    reset_after(sz);
   (void)capacity;
 }
 
