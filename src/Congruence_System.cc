@@ -156,19 +156,16 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
   const dimension_type x_num_rows = x.num_rows();
   const dimension_type y_num_rows = y.num_rows();
-  const dimension_type old_num_columns = x.num_columns();
-  const dimension_type y_num_columns = y.num_columns();
-  // Grow to the required size.
-  if (old_num_columns < y_num_columns) {
-    add_zero_columns(y_num_columns - old_num_columns);
-    // Swap the modulus column into the new last column.
-    swap_columns(old_num_columns - 1, num_columns() - 1);
-  }
-  add_zero_rows(y_num_rows);
 
-  // Copy the rows of `y', forcing size and capacity.
+  // Grow to the required size.
+  if (space_dimension() < y.space_dimension())
+    increase_space_dimension(y.space_dimension());
+
+  rows.resize(rows.size() + y_num_rows);
+
+  // Copy the rows of `y', with the new space dimension.
   for (dimension_type i = y_num_rows; i-- > 0; ) {
-    Congruence copy(y[i], x.space_dimension());
+    Congruence copy(y[i], space_dimension());
     std::swap(copy, x[x_num_rows+i]);
   }
   PPL_ASSERT(OK());
