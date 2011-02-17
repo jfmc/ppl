@@ -555,8 +555,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds[0] == CON_VIRTUAL) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
-    sys.add_zero_rows(1);
-    Congruence& new_last_row = sys[reduced_num_rows];
+    Congruence new_last_row(sys.space_dimension());
     new_last_row[mod_index] = 1;
     // Try use an existing modulus.
     dimension_type row_index = reduced_num_rows;
@@ -568,6 +567,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       }
     }
     new_last_row[0] = new_last_row[mod_index];
+    sys.insert_verbatim_recycled(new_last_row);
     // Since we are reducing the system to "strong minimal form",
     // increment the number of reduced rows.
     ++reduced_num_rows;
