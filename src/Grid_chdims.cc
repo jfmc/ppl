@@ -39,9 +39,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   PPL_ASSERT(dims > 0);
 
   const dimension_type old_modulus_index = cgs.num_columns() - 1;
-  cgs.add_zero_columns(dims);
-  // Move the moduli.
-  cgs.swap_columns(old_modulus_index, old_modulus_index + dims);
+  cgs.increase_space_dimension(space_dimension() + dims);
 
   if (congruences_are_minimized() || generators_are_minimized())
     dim_kinds.resize(old_modulus_index + dims, CON_VIRTUAL /* a.k.a. LINE */);
