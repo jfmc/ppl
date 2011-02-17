@@ -40,6 +40,7 @@ class Swapping_Vector {
 public:
   typedef typename std::vector<T>::const_iterator const_iterator;
   typedef typename std::vector<T>::iterator iterator;
+  typedef typename std::vector<T>::size_type size_type;
 
   Swapping_Vector();
   explicit Swapping_Vector(dimension_type new_size);

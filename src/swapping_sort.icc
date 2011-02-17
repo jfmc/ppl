@@ -24,124 +24,142 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_swapping_sort_icc
 #define PPL_swapping_sort_icc 1
 
-#include <iterator>
+#include <vector>
 #include <algorithm>
 
 namespace {
-/*
-  This sorting algorithm avoids (almost all) copies of objects
-  by performing more iter_swap's: it is meant to be used when
-  object copying costs much more than object swapping.
 
-  Moreover, the algorithm always uses iter_swap() instead of
-  std::swap() so as to behave as expected when instantiated on
-  Linear_System_With_Bit_Matrix_iterator. Namely, using a sorting
-  routine that either copies objects or directly swaps them
-  (i.e., without calling iter_swap) would not be correct
-  when using Linear_System_With_Bit_Matrix_iterator.
-*/
+template <typename RA_Container, typename Compare>
+struct Indirect_Sort_Compare {
+  typedef typename RA_Container::size_type size_type;
 
-template <typename Value_Type, typename Compare>
-inline const Value_Type&
-median(const Value_Type& x, const Value_Type& y, const Value_Type& z,
-       Compare comp) {
-  return comp(x, y)
-    ? (comp(y, z) ? y : (comp(x, z) ? z : x))
-    : (comp(x, z) ? x : (comp(y, z) ? z : y));
-}
+  Indirect_Sort_Compare(const RA_Container& cont,
+                        size_type base = 0,
+                        Compare comp = Compare())
+    : container(cont), base_index(base), compare(comp) {
+  }
 
-template <typename Iter, typename Value_Type, typename Compare,
-          typename Iter_Swap>
-Iter
-swapping_partition(Iter first, Iter last, const Value_Type& pivot,
-		   Compare comp, Iter_Swap iter_swap) {
-  for ( ; ; ) {
-    while (comp(*first, pivot))
-      ++first;
-    --last;
-    while (comp(pivot, *last))
-      --last;
-    if (first < last) {
-      iter_swap(first, last);
-      ++first;
+  bool operator()(size_type i, size_type j) const {
+    return compare(container[base_index + i], container[base_index + j]);
+  }
+
+  const RA_Container& container;
+  const size_type base_index;
+  const Compare compare;
+}; // struct Indirect_Sort_Compare
+
+template <typename RA_Container>
+struct Indirect_Unique_Compare {
+  typedef typename RA_Container::size_type size_type;
+
+  Indirect_Unique_Compare(const RA_Container& cont, size_type base = 0)
+    : container(cont), base_index(base) {
+  }
+
+  bool operator()(size_type i, size_type j) const {
+    return container[base_index + i] == container[base_index + j];
+  }
+
+  const RA_Container& container;
+  const size_type base_index;
+}; // struct Indirect_Unique_Compare
+
+template <typename RA_Container>
+struct Indirect_Swapper {
+  typedef typename RA_Container::size_type size_type;
+
+  Indirect_Swapper(RA_Container& cont, size_type base = 0)
+    : container(cont), base_index(base) {
+  }
+
+  void operator()(size_type i, size_type j) const {
+    std::swap(container[base_index + i], container[base_index + j]);
+  }
+
+  RA_Container& container;
+  const size_type base_index;
+}; // struct Indirect_Swapper
+
+template <typename RA_Container1, typename RA_Container2>
+struct Indirect_Swapper2 {
+  typedef typename RA_Container1::size_type size_type;
+
+  Indirect_Swapper2(RA_Container1& cont1, RA_Container2& cont2)
+    : container1(cont1), container2(cont2) {
+  }
+
+  void operator()(size_type i, size_type j) const {
+    std::swap(container1[i], container1[j]);
+    std::swap(container2[i], container2[j]);
+  }
+
+  RA_Container1& container1;
+  RA_Container2& container2;
+}; // struct Indirect_Swapper2
+
+template <typename Sort_Comparer, typename Unique_Comparer, typename Swapper>
+typename Sort_Comparer::size_type
+indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
+                         Sort_Comparer sort_cmp,
+                         Unique_Comparer unique_cmp,
+                         Swapper indirect_swap) {
+  typedef typename Sort_Comparer::size_type index_type;
+  // `iv' is a vector of indices for the portion of rows to be sorted.
+  PPL_ASSERT(num_elems >= 2);
+  std::vector<index_type> iv;
+  iv.reserve(num_elems);
+  for (index_type i = 0, i_end = num_elems; i != i_end; ++i)
+    iv.push_back(i);
+
+  typedef typename std::vector<index_type>::iterator Iter;
+  const Iter iv_begin = iv.begin();
+  Iter iv_end = iv.end();
+
+  // Sort `iv' by comparing the rows indexed by its elements.
+  std::sort(iv_begin, iv_end, sort_cmp);
+
+  // Swap the indexed rows according to `iv':
+  // for each index `i', the element that should be placed in
+  // position dst = i is the one placed in position src = iv[i].
+  for (index_type i = num_elems; i-- > 0; ) {
+    if (i != iv[i]) {
+      index_type dst = i;
+      index_type src = iv[i];
+      do {
+        indirect_swap(src, dst);
+        iv[dst] = dst;
+        dst = src;
+        src = iv[dst];
+      } while (i != src);
+      iv[dst] = dst;
     }
-    else
-      return first;
   }
-}
 
-template <typename Iter, typename Compare, typename Iter_Swap>
-void
-swapping_insertion_sort(Iter first, Iter last, Compare comp, Iter_Swap iter_swap) {
-  if (first == last)
-    return;
-  for (Iter i = first + 1; i != last; ++i) {
-    Iter current = i;
-    if (comp(*current, *first)) {
-      Iter next = current + 1;
-      while (current != first)
-        iter_swap(--current, --next);
-    }
-    else {
-      Iter previous = current - 1;
-      while (comp(*current, *previous))
-        iter_swap(current--, previous--);
-    }
+  // Restore `iv' indices to 0 .. num_elems-1 for the call to unique.
+  for (index_type i = num_elems; i-- > 0; )
+    iv[i] = i;
+
+  // Unique `iv' by comparing the rows indexed by its elements.
+  iv_end = std::unique(iv_begin, iv_end, unique_cmp);
+
+  const index_type num_sorted = iv_end - iv_begin;
+  const index_type num_duplicates = num_elems - num_sorted;
+  if (num_duplicates == 0)
+    return 0;
+
+  // There were duplicates: swap the rows according to `iv'.
+  index_type dst = 0;
+  while (dst < num_sorted && dst == iv[dst])
+    ++dst;
+  if (dst == num_sorted)
+    return num_duplicates;
+  do {
+    const index_type src = iv[dst];
+    indirect_swap(src, dst);
+    ++dst;
   }
-}
-
-template <typename Iter, typename Compare, typename Iter_Swap>
-void
-swapping_quicksort_loop(Iter first, Iter last, Compare comp, Iter_Swap iter_swap) {
-  const typename std::iterator_traits<Iter>::difference_type threshold = 16;
-  while (last - first > threshold) {
-    // The construction of this temporary object is
-    // required for the correctness of the algorithm.
-    Iter middle = first + (last - first) / 2;
-    typename std::iterator_traits<Iter>::value_type
-      pivot = median(*first, *middle, *(last - 1), comp);
-    Iter part_point = swapping_partition(first, last, pivot, comp, iter_swap);
-    swapping_quicksort_loop(part_point, last, comp, iter_swap);
-    last = part_point;
-  }
-}
-
-template <typename Iter, typename Compare, typename Iter_Swap>
-inline void
-swapping_sort(Iter first, Iter last, Compare comp, Iter_Swap iter_swap) {
-  if (first == last)
-    return;
-  swapping_quicksort_loop(first, last, comp, iter_swap);
-  swapping_insertion_sort(first, last, comp, iter_swap);
-}
-
-template <typename Iter, typename Compare>
-inline void
-swapping_sort(Iter first, Iter last, Compare comp) {
-  swapping_sort(first, last, comp, std::iter_swap<Iter, Iter>);
-}
-
-template <typename Iter, typename Iter_Swap>
-Iter
-swapping_unique(Iter first, Iter last, Iter_Swap iter_swap) {
-  if (first == last)
-    return last;
-  Iter current = first;
-  Iter next = current;
-  ++next;
-  while(next != last && *current != *next) {
-    current = next;
-    ++next;
-  }
-  if (next == last)
-    return last;
-  ++next;
-  while (next != last) {
-    if (*current != *next)
-      iter_swap(++current, next);
-    ++next;
-  }
-  return ++current;
+  while (dst < num_sorted);
+  return num_duplicates;
 }
 
 template <typename Iter>
