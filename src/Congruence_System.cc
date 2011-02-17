@@ -504,22 +504,22 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
 void
 PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   PPL_ASSERT(num_columns() > 0);
-  dimension_type col = num_columns() - 1;
   dimension_type old_num_rows = num_rows();
-  add_zero_columns(dims);
-  // Swap the modulus column into the new last column.
-  swap_columns(col, col + dims);
-  add_zero_rows(dims);
+  increase_space_dimension(space_dimension() + dims);
 
-  // Swap the added columns to the front of the vector.
+  rows.resize(rows.size() + dims);
+
+  // Swap the added rows to the front of the vector.
   for (dimension_type row = old_num_rows; row-- > 0; )
     std::swap(operator[](row), operator[](row + dims));
 
-  col += dims - 1;
-  // Set the size and the diagonal element of each added row.
+  PPL_ASSERT(num_columns() >= 2);
+  const dimension_type col = num_columns() - 2;
+  // Set the space dimension and the diagonal element of each added row.
   for (dimension_type row = dims; row-- > 0; ) {
-    operator[](row).resize(num_columns_);
-    const_cast<Coefficient&>(operator[](row)[col - row]) = 1;
+    rows[row].set_space_dimension(space_dimension());
+    PPL_ASSERT(col >= row + 1);
+    rows[row].set_coefficient(Variable(col - row - 1), Coefficient_one());
   }
 }
 
