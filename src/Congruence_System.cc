@@ -138,20 +138,12 @@ void
 PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type cgs_num_rows = cgs.num_rows();
-  const dimension_type old_num_columns = num_columns();
-  dimension_type cgs_num_columns = cgs.num_columns();
-  if (old_num_columns < cgs_num_columns) {
-    add_zero_columns(cgs_num_columns - old_num_columns);
-    // Swap the modulus column into the new last column.
-    swap_columns(old_num_columns - 1, num_columns() - 1);
-  }
+  if (space_dimension() < cgs.space_dimension())
+    increase_space_dimension(cgs.space_dimension());
   rows.resize(old_num_rows + cgs_num_rows);
-  --cgs_num_columns; // Convert to modulus index.
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
-    Congruence& new_cg = operator[](old_num_rows + i);
-    Congruence& old_cg = cgs[i];
-    old_cg.set_space_dimension(space_dimension());
-    std::swap(new_cg, old_cg);
+    cgs[i].set_space_dimension(space_dimension());
+    std::swap(cgs[i], rows[old_num_rows + i]);
   }
   cgs.clear();
 
