@@ -155,6 +155,14 @@ public:
   void insert(const Congruence& cg);
 
   /*! \brief
+    Inserts in \p *this the congruence \p cg, stealing its contents and
+    increasing the number of space dimensions if needed.
+
+    \p cg will be strongly normalized.
+  */
+  void insert_recycled(Congruence& cg);
+
+  /*! \brief
     Inserts in \p *this a copy of the equality constraint \p c, seen
     as a modulo 0 congruence, increasing the number of space
     dimensions if needed.

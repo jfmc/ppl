@@ -97,8 +97,13 @@ Congruence_System::take_ownership_of_rows(Swapping_Vector<Congruence>& v) {
 inline void
 Congruence_System::insert(const Congruence& cg) {
   Congruence tmp = cg;
-  tmp.strong_normalize();
-  insert_verbatim_recycled(tmp);
+  insert_recycled(tmp);
+}
+
+inline void
+Congruence_System::insert_recycled(Congruence& cg) {
+  cg.strong_normalize();
+  insert_verbatim_recycled(cg);
   PPL_ASSERT(OK());
 }
 
