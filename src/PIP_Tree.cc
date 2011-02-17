@@ -2639,16 +2639,19 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Row& s_i = tableau.s[i];
         Row& t_i = tableau.t[i];
 
-        if (s_i.get(pj) == 0)
+        Row::iterator s_i_pj_itr = s_i.find(pj);
+
+        if (s_i_pj_itr == s_i.end())
           continue;
 
-        // NOTE: For sparse rows, the non-const operator[] ensures that
-        // the element is actually stored in the row. At this point, however,
-        // it can't be zero, so it is already stored in the row.
         // NOTE: This is a Coefficient& instead of a
         // Coefficient_traits::const_reference, because scale() may silently
         // modify it.
-        Coefficient& s_i_pj = s_i[pj];
+        Coefficient& s_i_pj = *s_i_pj_itr;
+
+        if (s_i_pj == 0)
+          continue;
+
         Row::iterator k = t_i.end();
         for (Row::const_iterator
              j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
