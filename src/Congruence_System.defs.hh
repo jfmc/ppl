@@ -366,25 +366,8 @@ public:
   void permute_columns(const std::vector<dimension_type>& cycles);
 
   // TODO: Remove this, or make it private.
-  //! Adds \p n columns of zeroes to the congruence system.
-  /*!
-    \param n
-    The number of columns to be added: must be strictly positive.
-
-    Turns the \f$r \times c\f$ congruence system \f$M\f$ into
-    the \f$r \times (c+n)\f$ congruence system \f$(M \, 0)\f$.
-  */
-  void add_zero_columns(dimension_type n);
-
-  // TODO: Remove this, or make it private.
-  void remove_trailing_columns(dimension_type n);
-
-  // TODO: Remove this, or make it private.
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
-
-  // TODO: Remove this, or make it private.
-  void add_zero_rows(dimension_type n);
 
   // TODO: Remove this, or make it private.
   void remove_trailing_rows(dimension_type n);
