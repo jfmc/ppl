@@ -32,9 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Congruence::Congruence()
-  : Dense_Row() {
-  resize(2);
+Congruence::Congruence(dimension_type n)
+  : Dense_Row(n + 2, n + 2, Dense_Row::Flags()) {
   PPL_ASSERT(OK());
 }
 

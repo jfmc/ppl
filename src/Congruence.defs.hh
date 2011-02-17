@@ -143,8 +143,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Congruence : public Dense_Row {
 public:
 
-  //! Constructs the 0 = 0 congruence with space dimension 0.
-  Congruence();
+  //! Constructs the 0 = 0 congruence with space dimension \p n .
+  explicit Congruence(dimension_type n = 0);
 
   //! Ordinary copy constructor.
   Congruence(const Congruence& cg);
