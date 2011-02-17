@@ -46,14 +46,26 @@ PPL::Congruence::Congruence(const Constraint& c)
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
-			    dimension_type sz, dimension_type capacity)
+                            dimension_type new_space_dimension)
   : Dense_Row(c.is_equality()
-	? c
-	: (throw_invalid_argument("Congruence(c)",
-				  "constraint c must be an equality."),
-	   c),
-	sz,
-	capacity) {
+        ? c
+        : (throw_invalid_argument("Congruence(c)",
+                                  "constraint c must be an equality."),
+           c),
+        new_space_dimension + 2,
+        new_space_dimension + 2) {
+  set_modulus(Coefficient_zero());
+}
+
+PPL::Congruence::Congruence(const Constraint& c,
+                            dimension_type sz, dimension_type capacity)
+  : Dense_Row(c.is_equality()
+        ? c
+        : (throw_invalid_argument("Congruence(c)",
+                                  "constraint c must be an equality."),
+           c),
+        sz,
+        capacity) {
   PPL_ASSERT(sz > 1);
   (*this)[sz-1] = 0;
 }

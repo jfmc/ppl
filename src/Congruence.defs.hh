@@ -302,6 +302,10 @@ public:
   //! Copy-constructs with the specified space dimension.
   Congruence(const Congruence& cg, dimension_type new_space_dimension);
 
+  // TODO: Consider removing this method or improving this API.
+  //! Copy-constructs from a constraint, with the specified space dimension.
+  Congruence(const Constraint& cg, dimension_type new_space_dimension);
+
   // TODO: Make this private.
   //! Constructs from a constraint, with specified size and capacity.
   Congruence(const Constraint& c,
