@@ -117,12 +117,9 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       add_space_dimensions(con_sys, gen_sys, m);
     else {
       // Only congruences are up-to-date, so modify only them.
-      con_sys.add_zero_columns(m);
-      dimension_type size = con_sys.num_columns() - 1;
-      // Move the moduli.
-      con_sys.swap_columns(size - m, size);
+      con_sys.increase_space_dimension(con_sys.space_dimension() + m);
       if (congruences_are_minimized())
-	dim_kinds.resize(size, CON_VIRTUAL);
+	dim_kinds.resize(con_sys.num_columns() - 1, CON_VIRTUAL);
     }
   else {
     // Only generators are up-to-date, so modify only them.
