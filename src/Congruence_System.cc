@@ -124,27 +124,12 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
 
 void
 PPL::Congruence_System::insert(const Constraint& c) {
-  const dimension_type cg_size = c.space_dimension() + 2;
-  const dimension_type old_num_columns = num_columns();
-  if (cg_size < old_num_columns) {
-    // Create a congruence of the required size from `c'.
-    Congruence cg(c, old_num_columns, old_num_columns);
-    rows.resize(num_rows() + 1);
-    std::swap(cg, rows.back());
-  }
-  else {
-    if (cg_size > old_num_columns) {
-      // Resize the system, if necessary.
-      add_zero_columns(cg_size - old_num_columns);
-      if (!has_no_rows())
-	// Move the moduli to the last column.
-	swap_columns(old_num_columns - 1, cg_size - 1);
-    }
-    Congruence cg(c, cg_size, cg_size);
-    rows.resize(num_rows() + 1);
-    std::swap(cg, rows.back());
-  }
-  operator[](num_rows()-1).strong_normalize();
+  if (c.space_dimension() > space_dimension())
+    increase_space_dimension(c.space_dimension());
+  Congruence cg(c, space_dimension());
+  cg.strong_normalize();
+  rows.resize(num_rows() + 1);
+  std::swap(cg, rows.back());
 
   PPL_ASSERT(OK());
 }
