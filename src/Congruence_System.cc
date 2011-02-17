@@ -551,20 +551,11 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
 void
 PPL::Congruence_System
 ::remove_higher_space_dimensions(const dimension_type new_dimension) {
-  dimension_type space_dim = space_dimension();
+  PPL_ASSERT(new_dimension <= space_dimension());
 
-  PPL_ASSERT(new_dimension <= space_dim);
+  for (dimension_type i = num_rows(); i-- > 0; )
+    rows[i].set_space_dimension(new_dimension);
 
-  // The removal of no dimensions from any system is a no-op.  Note
-  // that this case also captures the only legal removal of dimensions
-  // from a system in a 0-dim space.
-  if (new_dimension == space_dim)
-    return;
-
-  // Swap the modulus column into the column that will become the last
-  // column.
-  swap_columns(new_dimension + 1, space_dim + 1);
-
-  remove_trailing_columns(space_dim - new_dimension);
+  num_columns_ = new_dimension + 2;
   PPL_ASSERT(OK());
 }
