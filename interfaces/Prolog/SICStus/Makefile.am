@@ -263,18 +263,14 @@ endif !ASSERTIONS_ENABLED
 check-local: pl_check_test clpq_test clpq2_test ppl_prolog_generated_test
 
 pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/pl_check.pl . ;\
-	fi
+	cp -f $(srcdir)/../tests/pl_check.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
         --goal "main."  \
 			>obtained_pchk
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f pl_check.pl ;\
-	fi
+	rm -f pl_check.pl
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 $(CLPQ_TESTS):
@@ -303,20 +299,16 @@ clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/scr
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.pl ../tests/ppl_prolog_generated_test_main.pl ../tests/expected_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl . ; \
-	fi
-	cp -f ../tests/ppl_prolog_generated_test_main.pl . ; \
+	cp -f $(srcdir)/../tests/ppl_prolog_generated_test_common.pl .
+	cp -f ../tests/ppl_prolog_generated_test_main.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		$(WATCHDOG_DLOPEN) \
 		./ppl_sicstus -l $(srcdir)/sp_prolog_generated_test.pl \
         --goal "main."  \
 			>obtained_pgt
-	if [ $(srcdir) != `pwd` ]; then \
-	  rm -f ppl_prolog_generated_test_common.pl; \
-        fi
-	rm -f ppl_prolog_generated_test_main.pl; \
+	rm -f ppl_prolog_generated_test_common.pl
+	rm -f ppl_prolog_generated_test_main.pl
 	diff -u --ignore-all-space $(srcdir)/../tests/expected_pgt obtained_pgt
 
 CLEANFILES = \

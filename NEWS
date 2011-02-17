@@ -16,6 +16,11 @@ NEWS for version 0.12  (release date to be decided)
 New and Changed Features
 ========================
 
+o  The resolution process for PIP_Problem now better exploits the
+   integrality of parameters to simplify the newly generated tautological
+   constraints, the splitting constraints of decision nodes, and the
+   expressions defining artificial parameters.
+
 o  The implementations of the MIP and PIP solvers are based on a new
    data structure leading to significant space and time savings when
    the tableau matrix is sparse; the benchmarks of the ppl_lpsol demo
@@ -32,6 +37,27 @@ o  The input routine for PPL numeric datatypes has been extended to
 
 Bugfixes
 ========
+
+o  Corrected a problem in the simplification of PIP_Problem solution trees
+   whereby, under specific conditions, the node merging process produced
+   decision nodes that did not satisfy their class invariant.
+
+o  Corrected a problem in the input method for checked integers whereby,
+   under specific conditions, the input stream state bits were not updated.
+   The bug was only affecting builds using checked integer coefficients.
+
+o  Corrected a bug in the OCaml interface, which was affecting functions
+
+     ppl_Pointset_Powerset_<INSTANCE>_get_disjunct.
+
+o  Corrected a couple of resource (re-)allocation problems that, under
+   specific conditions, could affect the correctness of Grid constructor
+
+     Grid::Grid(const Box<Interval>& box)
+
+   and NNC_Polyhedron method
+
+     Polyhedron::generalized_affine_image().
 
 o  Corrected a precision bug in method
 

@@ -984,9 +984,10 @@ ppl_@CLASS@_get_disjunct(value caml_it) try {
   CAMLparam1(caml_it);
   CAMLlocal1(caml_return_value);
   @CPP_CLASS@::iterator& cpp_it  = *p_@CLASS@_iterator_val(caml_it);
-  @DISJUNCT_TOPOLOGY@@A_DISJUNCT@ disjunct = cpp_it->pointset();
+  const @DISJUNCT_TOPOLOGY@@A_DISJUNCT@& disjunct = cpp_it->pointset();
   caml_return_value = unregistered_value_p_@DISJUNCT@(disjunct);
-  actual_p_@DISJUNCT@_val(caml_return_value) = mark(&disjunct);
+  actual_p_@DISJUNCT@_val(caml_return_value)
+    = const_cast<@DISJUNCT_TOPOLOGY@@A_DISJUNCT@*>(mark(&disjunct));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL

@@ -205,12 +205,16 @@ protected:
 
     \param space_dim
     The space dimension of parent, including artificial parameters.
+
+    \param indent_level
+    The indentation level (for debugging output only).
   */
   virtual PIP_Tree_Node* solve(const PIP_Problem& pip,
                                bool check_feasible_context,
                                const Matrix<Row>& context,
                                const Variables_Set& params,
-                               dimension_type space_dim) = 0;
+                               dimension_type space_dim,
+                               unsigned indent_level) = 0;
 
   //! Inserts a new parametric constraint in internal row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -447,24 +451,24 @@ private:
       suitable for pivoting than the \f$(i',j')\f$ pair
 
       \param mapping
-      the PIP_Solution_Node::mapping vector for the tableau
+      The PIP_Solution_Node::mapping vector for the tableau.
 
       \param basis
-      the PIP_Solution_Node::basis vector for the tableau
+      The PIP_Solution_Node::basis vector for the tableau.
 
       \param i
-      the row number for the first pivot row and column pair to be compared
+      The row number for the first pivot row and column pair to be compared.
 
       \param j
-      the column number for the first pivot row and column pair to be
-      compared
+      The column number for the first pivot row and column pair to be
+      compared.
 
       \param i_
-      the row number for the second pivot row and column pair to be compared
+      The row number for the second pivot row and column pair to be compared.
 
       \param j_
-      the column number for the second pivot row and column pair to be
-      compared
+      The column number for the second pivot row and column pair to be
+      compared.
     */
     bool is_better_pivot(const std::vector<dimension_type>& mapping,
                          const std::vector<bool>& basis,
@@ -646,28 +650,33 @@ protected:
                                bool check_feasible_context,
                                const Matrix<Row>& context,
                                const Variables_Set& params,
-                               dimension_type space_dim);
+                               dimension_type space_dim,
+                               unsigned indent_level);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
 
     \param i
-    row index in simplex tableau from which the cut is generated
+    Row index in simplex tableau from which the cut is generated.
 
     \param parameters
-    a std::set of the current parameter dimensions (including artificials);
-    to be updated if a new artificial parameter is to be created
+    A std::set of the current parameter dimensions (including artificials);
+    to be updated if a new artificial parameter is to be created.
 
     \param context
-    a set of linear inequalities on the parameters, in matrix form; to be
-    updated if a new artificial parameter is to be created
+    A set of linear inequalities on the parameters, in matrix form; to be
+    updated if a new artificial parameter is to be created.
 
     \param space_dimension
-    the current space dimension, including variables and all parameters; to
-    be updated if an extra parameter is to be created
+    The current space dimension, including variables and all parameters; to
+    be updated if an extra parameter is to be created.
+
+    \param indent_level
+    The indentation level (for debugging output only).
   */
   void generate_cut(dimension_type i, Variables_Set& parameters,
-                    Matrix<Row>& context, dimension_type& space_dimension);
+                    Matrix<Row>& context, dimension_type& space_dimension,
+                    unsigned indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s, unsigned indent,
@@ -777,7 +786,8 @@ protected:
                                bool check_feasible_context,
                                const Matrix<Row>& context,
                                const Variables_Set& params,
-                               dimension_type space_dim);
+                               dimension_type space_dim,
+                               unsigned indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
   virtual void print_tree(std::ostream& s, unsigned indent,

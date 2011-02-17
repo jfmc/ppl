@@ -134,6 +134,7 @@ Checked_Number<T, Policy>::Checked_Number(const type x) {		\
 #define PPL_COND_(if, ...) PPL_COND_##if(__VA_ARGS__)
 #define PPL_COND(if, ...) PPL_COND_(if, __VA_ARGS__)
 
+DEF_CTOR(char)
 DEF_CTOR(signed char)
 DEF_CTOR(signed short)
 DEF_CTOR(signed int)

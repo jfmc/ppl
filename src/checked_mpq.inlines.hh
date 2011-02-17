@@ -141,6 +141,7 @@ construct_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
 }
 
 PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, mpz_class)
+PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, char)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, signed char)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, signed short)
 PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, signed int)
@@ -168,6 +169,7 @@ PPL_SPECIALIZE_CONSTRUCT(construct_mpq_float, mpq_class, double)
 
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, mpq_class)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, mpz_class)
+PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, char)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, signed char)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, signed short)
 PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, signed int)

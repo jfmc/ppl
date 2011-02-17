@@ -1139,6 +1139,11 @@ struct Select_Temp_Boundary_Type<float> {
 };
 
 template <>
+struct Select_Temp_Boundary_Type<char> {
+  typedef signed long long type;
+};
+
+template <>
 struct Select_Temp_Boundary_Type<signed char> {
   typedef signed long long type;
 };

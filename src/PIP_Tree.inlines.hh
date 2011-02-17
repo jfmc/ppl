@@ -111,23 +111,6 @@ PIP_Tree_Node::Artificial_Parameter::Artificial_Parameter()
 
 inline
 PIP_Tree_Node::Artificial_Parameter
-::Artificial_Parameter(const Linear_Expression& expr,
-                       Coefficient_traits::const_reference den)
-  : Linear_Expression(expr), denom(den) {
-  if (denom == 0)
-    throw std::invalid_argument("PIP_Tree_Node::Artificial_Parameter(e, d): "
-                                "denominator d is zero.");
-  // Normalize if needed.
-  if (denom < 0) {
-    neg_assign(denom);
-    Linear_Expression& e = *this;
-    e *= -1;
-  }
-  PPL_ASSERT(OK());
-}
-
-inline
-PIP_Tree_Node::Artificial_Parameter
 ::Artificial_Parameter(const Artificial_Parameter& y)
   : Linear_Expression(y), denom(y.denom) {
   PPL_ASSERT(OK());

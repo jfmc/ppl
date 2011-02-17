@@ -52,24 +52,42 @@ struct Safe_Conversion<T, T> : public True {
 #define PPL_SAFE_CONVERSION(To, From)					\
   template <> struct Safe_Conversion<To, From> : public True { }
 
+#if PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed short, char);
+#endif
 PPL_SAFE_CONVERSION(signed short, signed char);
 #if PPL_SIZEOF_CHAR < PPL_SIZEOF_SHORT
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed short, char);
+#endif
 PPL_SAFE_CONVERSION(signed short, unsigned char);
 #endif
 
+#if PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed int, char);
+#endif
 PPL_SAFE_CONVERSION(signed int, signed char);
 PPL_SAFE_CONVERSION(signed int, signed short);
 #if PPL_SIZEOF_CHAR < PPL_SIZEOF_INT
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed int, char);
+#endif
 PPL_SAFE_CONVERSION(signed int, unsigned char);
 #endif
 #if PPL_SIZEOF_SHORT < PPL_SIZEOF_INT
 PPL_SAFE_CONVERSION(signed int, unsigned short);
 #endif
 
+#if PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed long, char);
+#endif
 PPL_SAFE_CONVERSION(signed long, signed char);
 PPL_SAFE_CONVERSION(signed long, signed short);
 PPL_SAFE_CONVERSION(signed long, signed int);
 #if PPL_SIZEOF_CHAR < PPL_SIZEOF_LONG
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed long, char);
+#endif
 PPL_SAFE_CONVERSION(signed long, unsigned char);
 #endif
 #if PPL_SIZEOF_SHORT < PPL_SIZEOF_LONG
@@ -79,11 +97,17 @@ PPL_SAFE_CONVERSION(signed long, unsigned short);
 PPL_SAFE_CONVERSION(signed long, unsigned int);
 #endif
 
+#if PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed long long, char);
+#endif
 PPL_SAFE_CONVERSION(signed long long, signed char);
 PPL_SAFE_CONVERSION(signed long long, signed short);
 PPL_SAFE_CONVERSION(signed long long, signed int);
 PPL_SAFE_CONVERSION(signed long long, signed long);
 #if PPL_SIZEOF_CHAR < PPL_SIZEOF_LONG_LONG
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(signed long long, char);
+#endif
 PPL_SAFE_CONVERSION(signed long long, unsigned char);
 #endif
 #if PPL_SIZEOF_SHORT < PPL_SIZEOF_LONG_LONG
@@ -96,15 +120,27 @@ PPL_SAFE_CONVERSION(signed long long, unsigned int);
 PPL_SAFE_CONVERSION(signed long long, unsigned long);
 #endif
 
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(unsigned short, char);
+#endif
 PPL_SAFE_CONVERSION(unsigned short, unsigned char);
 
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(unsigned int, char);
+#endif
 PPL_SAFE_CONVERSION(unsigned int, unsigned char);
 PPL_SAFE_CONVERSION(unsigned int, unsigned short);
 
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(unsigned long, char);
+#endif
 PPL_SAFE_CONVERSION(unsigned long, unsigned char);
 PPL_SAFE_CONVERSION(unsigned long, unsigned short);
 PPL_SAFE_CONVERSION(unsigned long, unsigned int);
 
+#if !PPL_CXX_PLAIN_CHAR_IS_SIGNED
+PPL_SAFE_CONVERSION(unsigned long long, char);
+#endif
 PPL_SAFE_CONVERSION(unsigned long long, unsigned char);
 PPL_SAFE_CONVERSION(unsigned long long, unsigned short);
 PPL_SAFE_CONVERSION(unsigned long long, unsigned int);
@@ -112,6 +148,7 @@ PPL_SAFE_CONVERSION(unsigned long long, unsigned long);
 
 
 #if PPL_SIZEOF_CHAR <= PPL_SIZEOF_FLOAT - 2
+PPL_SAFE_CONVERSION(float, char);
 PPL_SAFE_CONVERSION(float, signed char);
 PPL_SAFE_CONVERSION(float, unsigned char);
 #endif
@@ -133,6 +170,7 @@ PPL_SAFE_CONVERSION(float, unsigned long long);
 #endif
 
 #if PPL_SIZEOF_CHAR <= PPL_SIZEOF_DOUBLE - 4
+PPL_SAFE_CONVERSION(double, char);
 PPL_SAFE_CONVERSION(double, signed char);
 PPL_SAFE_CONVERSION(double, unsigned char);
 #endif
@@ -155,6 +193,7 @@ PPL_SAFE_CONVERSION(double, unsigned long long);
 PPL_SAFE_CONVERSION(double, float);
 
 #if PPL_SIZEOF_CHAR <= PPL_SIZEOF_LONG_DOUBLE - 4
+PPL_SAFE_CONVERSION(long double, char);
 PPL_SAFE_CONVERSION(long double, signed char);
 PPL_SAFE_CONVERSION(long double, unsigned char);
 #endif
@@ -177,6 +216,7 @@ PPL_SAFE_CONVERSION(long double, unsigned long long);
 PPL_SAFE_CONVERSION(long double, float);
 PPL_SAFE_CONVERSION(long double, double);
 
+PPL_SAFE_CONVERSION(mpz_class, char);
 PPL_SAFE_CONVERSION(mpz_class, signed char);
 PPL_SAFE_CONVERSION(mpz_class, signed short);
 PPL_SAFE_CONVERSION(mpz_class, signed int);
@@ -188,6 +228,7 @@ PPL_SAFE_CONVERSION(mpz_class, unsigned int);
 PPL_SAFE_CONVERSION(mpz_class, unsigned long);
 //PPL_SAFE_CONVERSION(mpz_class, unsigned long long);
 
+PPL_SAFE_CONVERSION(mpq_class, char);
 PPL_SAFE_CONVERSION(mpq_class, signed char);
 PPL_SAFE_CONVERSION(mpq_class, signed short);
 PPL_SAFE_CONVERSION(mpq_class, signed int);
