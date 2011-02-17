@@ -477,13 +477,13 @@ public:
 
   // TODO: Consider making this private.
   /*! \brief
-    Inserts in \p *this an exact copy of the congruence \p cg,
+    Inserts in \p *this the congruence \p cg, stealing its contents and
     increasing the number of space dimensions if needed.
 
-    This method inserts a copy of \p cg in the given form, instead of
-    first strong normalizing \p cg as \ref insert would do.
+    This method inserts \p cg in the given form, instead of first strong
+    normalizing \p cg as \ref insert would do.
   */
-  void insert_verbatim(const Congruence& cg);
+  void insert_verbatim_recycled(Congruence& cg);
 
   // TODO: Consider making this private.
   /*! \brief

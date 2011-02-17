@@ -435,8 +435,8 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 	e +=
 	  cg.coefficient(Variable(j))
 	  * (j == src_d ? Variable(dst_d) : Variable(j));
-      new_congruences.insert_verbatim((e + cg.inhomogeneous_term() %= 0)
-				      / cg.modulus());
+      Congruence c = (e + cg.inhomogeneous_term() %= 0) / cg.modulus();
+      new_congruences.insert_verbatim_recycled(c);
     }
   }
   add_recycled_congruences(new_congruences);

@@ -104,20 +104,14 @@ PPL::Congruence_System::swap_columns(dimension_type i, dimension_type j) {
 }
 
 void
-PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
-  const dimension_type old_num_columns = num_columns();
-  const dimension_type cg_size = cg.space_dimension() + 2;
-
-  if (cg_size >= old_num_columns) {
-    // Resize the system, if necessary.
+PPL::Congruence_System::insert_verbatim_recycled(Congruence& cg) {
+  if (cg.space_dimension() >= space_dimension())
     increase_space_dimension(cg.space_dimension());
-    rows.push_back(cg);
-  } else {
-    // Create a resized copy of `cg'.
-    Congruence rc(cg, space_dimension());
-    rows.resize(num_rows() + 1);
-    std::swap(rc, rows.back());
-  }
+  else
+    cg.set_space_dimension(space_dimension());
+
+  rows.resize(num_rows() + 1);
+  std::swap(cg, rows.back());
 
   PPL_ASSERT(OK());
 }
