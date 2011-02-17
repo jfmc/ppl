@@ -43,15 +43,23 @@ PPL::Bit_Matrix::operator=(const Bit_Matrix& y){
 
 void
 PPL::Bit_Matrix::sort_rows() {
-  typedef std::vector<Bit_Row>::iterator Iter;
-  // Sorting without removing duplicates.
-  Iter first = rows.begin();
-  Iter last = rows.end();
-  swapping_sort(first, last, Bit_Row_Less_Than());
-  // Moving all the duplicate elements at the end of the vector.
-  Iter new_last = swapping_unique(first, last);
-  // Removing duplicates.
-  rows.erase(new_last, last);
+  const dimension_type num_elems = rows.size();
+  if (num_elems < 2)
+    return;
+
+  // Build the function objects implementing indirect sort comparison,
+  // indirect unique comparison and indirect swap operation.
+  typedef std::vector<Bit_Row> Cont;
+  Indirect_Sort_Compare<Cont, Bit_Row_Less_Than> sort_cmp(rows);
+  Indirect_Unique_Compare<Cont> unique_cmp(rows);
+  Indirect_Swapper<Cont> swapper(rows);
+
+  const dimension_type num_duplicates
+    = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+
+  if (num_duplicates > 0)
+    rows.erase(rows.end() - num_duplicates, rows.end());
+
   PPL_ASSERT(OK());
 }
 

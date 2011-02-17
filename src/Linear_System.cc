@@ -330,16 +330,27 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
 			      const dimension_type last_row) {
   PPL_ASSERT(first_row <= last_row && last_row <= num_rows());
   // We cannot mix pending and non-pending rows.
-  PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
+  PPL_ASSERT(first_row >= first_pending_row()
+             || last_row <= first_pending_row());
 
-  // First sort without removing duplicates.
-  std::vector<Row>::iterator first = rows.begin() + first_row;
-  std::vector<Row>::iterator last = rows.begin() + last_row;
-  swapping_sort(first, last, Row_Less_Than());
-  // Second, move duplicates to the end.
-  std::vector<Row>::iterator new_last = swapping_unique(first, last);
-  // Finally, remove duplicates.
-  rows.erase(new_last, last);
+  const dimension_type num_elems = last_row - first_row;
+  if (num_elems < 2)
+    return;
+
+  // Build the function objects implementing indirect sort comparison,
+  // indirect unique comparison and indirect swap operation.
+  typedef std::vector<Row> Cont;
+  Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows, first_row);
+  Indirect_Unique_Compare<Cont> unique_cmp(rows, first_row);
+  Indirect_Swapper<Cont> swapper(rows, first_row);
+
+  const dimension_type num_duplicates
+    = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+
+  if (num_duplicates > 0)
+    rows.erase(rows.begin() + (last_row - num_duplicates),
+               rows.begin() + last_row);
+
   // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
@@ -510,14 +521,17 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
     return;
   }
 
-  // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_Bit_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
-  With_Bit_Matrix_iterator last = first + sat.num_rows();
-  swapping_sort(first, last, Row_Less_Than());
-  // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_Bit_Matrix_iterator new_last = swapping_unique(first, last);
+  const dimension_type num_elems = sat.num_rows();
+  // Build the function objects implementing indirect sort comparison,
+  // indirect unique comparison and indirect swap operation.
+  typedef std::vector<Row> Cont;
+  Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows);
+  Indirect_Unique_Compare<Cont> unique_cmp(rows);
+  Indirect_Swapper2<Cont, Bit_Matrix> swapper(rows, sat);
 
-  const dimension_type num_duplicates = last - new_last;
+  const dimension_type num_duplicates
+    = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+
   const dimension_type new_first_pending_row
     = sys.first_pending_row() - num_duplicates;
 
@@ -531,7 +545,7 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   sys.erase_to_end(sys.num_rows() - num_duplicates);
   sys.set_index_first_pending_row(new_first_pending_row);
   // ... and the corresponding rows of the saturation matrix.
-  sat.rows_erase_to_end(sat.num_rows() - num_duplicates);
+  sat.rows_erase_to_end(num_elems - num_duplicates);
   PPL_ASSERT(sys.check_sorted());
   // Now the system is sorted.
   sys.set_sorted(true);
