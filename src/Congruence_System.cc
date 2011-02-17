@@ -108,23 +108,16 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   const dimension_type old_num_columns = num_columns();
   const dimension_type cg_size = cg.space_dimension() + 2;
 
-  if (cg_size > old_num_columns) {
+  if (cg_size >= old_num_columns) {
     // Resize the system, if necessary.
-    add_zero_columns(cg_size - old_num_columns);
-    if (!has_no_rows())
-      // Move the moduli to the last column.
-      swap_columns(old_num_columns - 1, cg_size - 1);
+    increase_space_dimension(cg.space_dimension());
     rows.push_back(cg);
-  }
-  else if (cg_size < old_num_columns) {
+  } else {
     // Create a resized copy of `cg'.
     Congruence rc(cg, space_dimension());
     rows.resize(num_rows() + 1);
     std::swap(rc, rows.back());
   }
-  else
-    // Here cg_size == old_num_columns.
-    rows.push_back(cg);
 
   PPL_ASSERT(OK());
 }
