@@ -188,15 +188,12 @@ PPL::Congruence_System::normalize_moduli() {
 
     // Represent every row using the LCM as the modulus.
     PPL_DIRTY_TEMP_COEFFICIENT(factor);
-    dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
       const Coefficient& modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
       exact_div_assign(factor, lcm, modulus);
-      for (dimension_type col = row_size; col-- > 0; )
-	operator[](row)[col] *= factor;
-      operator[](row)[row_size-1] = lcm;
+      operator[](row).scale(factor);
     }
   }
   PPL_ASSERT(OK());
@@ -336,47 +333,8 @@ affine_preimage(dimension_type v,
   PPL_ASSERT(expr.space_dimension() <= space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  const dimension_type num_columns = this->num_columns();
-  const dimension_type num_rows = this->num_rows();
-  const dimension_type expr_size = expr.size();
-  const bool not_invertible = (v >= expr_size || expr[v] == 0);
-  Congruence_System& x = *this;
-
-  if (denominator == 1)
-    // Optimized computation only considering columns having indexes <
-    // expr_size.
-    for (dimension_type i = num_rows; i-- > 0; ) {
-      Congruence& row = x[i];
-      Coefficient& row_v = row[v];
-      if (row_v != 0) {
-	for (dimension_type j = expr_size; j-- > 0; )
-	  if (j != v)
-	    // row[j] = row[j] + row_v * expr[j]
-	    add_mul_assign(row[j], row_v, expr[j]);
-	if (not_invertible)
-	  row_v = 0;
-	else
-	  row_v *= expr[v];
-      }
-    }
-  else
-    for (dimension_type i = num_rows; i-- > 0; ) {
-      Congruence& row = x[i];
-      Coefficient& row_v = row[v];
-      if (row_v != 0) {
-	for (dimension_type j = num_columns; j-- > 0; )
-	  if (j != v) {
-	    Coefficient& row_j = row[j];
-	    row_j *= denominator;
-	    if (j < expr_size)
-	      add_mul_assign(row_j, row_v, expr[j]);
-	  }
-	if (not_invertible)
-	  row_v = 0;
-	else
-	  row_v *= expr[v];
-      }
-    }
+  for (dimension_type i = num_rows(); i-- > 0; )
+    rows[i].affine_preimage(v, expr, denominator);
 }
 
 void

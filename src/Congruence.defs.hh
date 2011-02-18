@@ -189,6 +189,16 @@ public:
   //! Sets the modulus of \p *this to \p m .
   void set_modulus(Coefficient_traits::const_reference m);
 
+  // TODO: Check if this should be removed or made private.
+  //! Multiplies all the coefficients, including the modulus, by \p factor .
+  void scale(Coefficient_traits::const_reference factor);
+
+  // TODO: Check if this should be removed or made private.
+  // TODO: Consider improving the API and document it.
+  void affine_preimage(dimension_type v,
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator);
+
   //! Multiplies \p k into the modulus of \p *this.
   /*!
     If called with \p *this representing the congruence \f$ e_1 = e_2

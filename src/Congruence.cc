@@ -119,6 +119,48 @@ PPL::Congruence::strong_normalize() {
   Dense_Row::normalize();
 }
 
+void
+PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
+  for (dimension_type i = size(); i-- > 0; )
+    Dense_Row::operator[](i) *= factor;
+}
+
+void
+PPL::Congruence
+::affine_preimage(dimension_type v, const Linear_Expression& expr,
+                  Coefficient_traits::const_reference denominator) {
+  const dimension_type expr_size = expr.size();
+
+  Coefficient& row_v = (*this)[v];
+
+  if (row_v == 0)
+    return;
+  
+  if (denominator == 1) {
+    // Optimized computation only considering columns having indexes <
+    // expr_size.
+    for (dimension_type j = expr_size; j-- > 0; )
+      if (j != v)
+        // row[j] = row[j] + row_v * expr[j]
+        add_mul_assign((*this)[j], row_v, expr[j]);
+
+  } else {
+    for (dimension_type j = size(); j-- > 0; )
+      if (j != v) {
+        Coefficient& row_j = (*this)[j];
+        row_j *= denominator;
+        if (j < expr_size)
+          add_mul_assign(row_j, row_v, expr[j]);
+      }
+  }
+
+  if (v >= expr_size || expr[v] == 0)
+    // Not invertible
+    row_v = 0;
+  else
+    row_v *= expr[v];
+}
+
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
 			const Linear_Expression& e2) {
