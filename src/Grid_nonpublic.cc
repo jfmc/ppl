@@ -458,7 +458,7 @@ PPL::Grid::set_empty() {
   // dimension and then swap it with `con_sys'.
   Congruence_System cgs(Congruence::zero_dim_false());
   cgs.set_space_dimension(space_dim);
-  const_cast<Congruence_System&>(con_sys).swap(cgs);
+  std::swap(con_sys, cgs);
 }
 
 void
