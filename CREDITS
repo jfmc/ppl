@@ -43,6 +43,14 @@ Current Contributors:
                         at the implementation of the Parametric Integer
                         Programming solver.
 
+  Marco Poletti         (student of the University of Bologna)
+                        implemented the sparse matrices that are used
+                        in the MIP and PIP solvers of the PPL; he also
+                        did experiments on the parallelization of the
+                        sparse matrices' computations; he is now working
+                        on improving the PPL's memory footprint and
+                        on other improvements to the library.
+
   Enric Rodriguez Carbonell [4] (Technical University of Catalonia) is
                         working on the implementation of polynomial spaces.
 
