@@ -359,12 +359,15 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> num_columns))
     return false;
-  resize_no_copy(num_rows, num_columns);
+  clear();
+  num_columns_ = num_columns;
 
-  Congruence_System& x = *this;
-  for (dimension_type i = 0; i < x.num_rows(); ++i)
-    if (!x[i].ascii_load(s))
+  Congruence c;
+  for (dimension_type i = 0; i < num_rows; ++i) {
+    if (!c.ascii_load(s))
       return false;
+    insert_verbatim_recycled(c);
+  }
 
   // Check invariants.
   PPL_ASSERT(OK());
