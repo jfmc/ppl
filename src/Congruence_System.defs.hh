@@ -483,6 +483,7 @@ public:
   typedef Congruence internal_row_type;
 
   // TODO: Check if these methods should be improved.
+  void release_row(Congruence& c);
   void release_rows(Swapping_Vector<Congruence>& v);
   void take_ownership_of_rows(Swapping_Vector<Congruence>& v);
 

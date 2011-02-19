@@ -66,6 +66,13 @@ Congruence_System::remove_trailing_rows(dimension_type n) {
 }
 
 inline void
+Congruence_System::release_row(Congruence& c) {
+  PPL_ASSERT(!rows.empty());
+  std::swap(rows.back(), c);
+  rows.pop_back();
+}
+
+inline void
 Congruence_System::release_rows(Swapping_Vector<Congruence>& v) {
   PPL_ASSERT(v.empty());
   std::swap(rows, v);
