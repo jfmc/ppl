@@ -79,7 +79,7 @@ test02() {
   if (matrix.num_columns() != 4)
     return false;
 
-  matrix.resize(5, Row_Flags());
+  matrix.resize(5);
 
   if (matrix.num_rows() != 5)
     return false;
@@ -87,7 +87,7 @@ test02() {
   if (matrix.num_columns() != 5)
     return false;
 
-  matrix.add_zero_rows_and_columns(2, 3, Row_Flags());
+  matrix.add_zero_rows_and_columns(2, 3);
 
   if (matrix.num_rows() != 7)
     return false;

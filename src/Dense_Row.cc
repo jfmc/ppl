@@ -244,7 +244,6 @@ PPL::Dense_Row::Dense_Row(const Sparse_Row& row)
 void
 PPL::Dense_Row::init(const Sparse_Row& row) {
   impl.capacity = row.size();
-  impl.flags = row.flags();
   impl.vec = static_cast<Coefficient*>(
       operator new(sizeof(Coefficient) * impl.capacity));
   Sparse_Row::const_iterator itr = row.begin();
@@ -264,7 +263,6 @@ PPL::Dense_Row::init(const Sparse_Row& row) {
 
 PPL::Dense_Row&
 PPL::Dense_Row::operator=(const Sparse_Row& row) {
-  impl.flags = row.flags();
   if (size() > row.size()) {
     // TODO: If the shrink() is modified to reallocate a smaller chunk,
     // this can be optimized.
@@ -392,9 +390,7 @@ PPL::Dense_Row::ascii_dump(std::ostream& s) const {
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
-    s << x[i] << ' ';
-  s << "f ";
-  flags().ascii_dump(s);
+    s << x[i];
   s << "\n";
 }
 
@@ -414,9 +410,8 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
   for (dimension_type col = 0; col < new_size; ++col)
     if (!(s >> (*this)[col]))
       return false;
-  if (!(s >> str) || str != "f")
-    return false;
-  return impl.flags.ascii_load(s);
+
+  return true;
 }
 
 PPL::memory_size_type
@@ -506,9 +501,6 @@ PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   const dimension_type y_size = y.size();
   
   if (x_size != y_size)
-    return false;
-
-  if (x.flags() != y.flags())
     return false;
 
   for (dimension_type i = x_size; i-- > 0; )

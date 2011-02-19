@@ -77,7 +77,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
-    working_cost(0, Row_Flags()),
+    working_cost(0),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -106,7 +106,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
-    working_cost(0, Row_Flags()),
+    working_cost(0),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -729,7 +729,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // Resize the tableau: first add additional rows ...
   if (additional_tableau_rows > 0)
-    tableau.add_zero_rows(additional_tableau_rows, Row_Flags());
+    tableau.add_zero_rows(additional_tableau_rows);
 
   // ... then add additional columns.
   // We need columns for additional (split) problem variables, additional
@@ -851,7 +851,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Reset the working cost function to have the right size.
-  working_cost = working_cost_type(tableau_num_cols, Row_Flags());
+  working_cost = working_cost_type(tableau_num_cols);
 
   // Set up artificial variables: these will have coefficient 1 in the
   // constraint, will enter the base and will have coefficient -1 in
@@ -1804,7 +1804,7 @@ PPL::MIP_Problem::second_phase() {
   // Build the objective function for the second phase.
   const dimension_type input_obj_function_sd
     = input_obj_function.space_dimension();
-  Row new_cost(input_obj_function_sd + 1, Row_Flags());
+  Row new_cost(input_obj_function_sd + 1);
   {
     // This will be used as a hint.
     Row::iterator itr = new_cost.end();
@@ -1828,8 +1828,7 @@ PPL::MIP_Problem::second_phase() {
 
   // Substitute properly the cost function in the `costs' matrix.
   {
-    working_cost_type tmp_cost
-      = working_cost_type(cost_zero_size, cost_zero_size, new_cost.flags());
+    working_cost_type tmp_cost(cost_zero_size, cost_zero_size);
     tmp_cost.swap(working_cost);
   }
 

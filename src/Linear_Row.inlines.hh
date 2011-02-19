@@ -32,18 +32,18 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Linear_Row::Flags::Flags()
-  : Dense_Row::Flags() {
+  : Row_Flags() {
   // Note that the constructed type has its validity bit unset.
 }
 
 inline
-Linear_Row::Flags::Flags(Dense_Row::Flags f)
-: Dense_Row::Flags(f) {
+Linear_Row::Flags::Flags(Row_Flags f)
+: Row_Flags(f) {
 }
 
 inline
 Linear_Row::Flags::Flags(const Topology t)
-  : Dense_Row::Flags(t << nnc_bit) {
+  : Row_Flags(t << nnc_bit) {
 #ifndef NDEBUG
   set_bits(1 << nnc_validity_bit);
 #endif
@@ -51,7 +51,7 @@ Linear_Row::Flags::Flags(const Topology t)
 
 inline
 Linear_Row::Flags::Flags(const Topology t, const Kind k)
-  : Dense_Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
+  : Row_Flags((k << rpi_bit) | (t << nnc_bit)) {
 #ifndef NDEBUG
   set_bits((1 << rpi_validity_bit)
 	   | (1 << nnc_validity_bit));
@@ -143,12 +143,12 @@ Linear_Row::Flags::operator!=(const Flags& y) const {
 
 inline const Linear_Row::Flags
 Linear_Row::flags() const {
-  return Flags(Dense_Row::flags());
+  return flags_;
 }
 
 inline void
 Linear_Row::set_flags(Flags f) {
-  Dense_Row::set_flags(f);
+  flags_ = f;
 }
 
 inline bool
@@ -184,33 +184,44 @@ Linear_Row::Linear_Row()
 inline
 Linear_Row::Linear_Row(const dimension_type sz, const dimension_type capacity,
                        const Flags f)
-  : Dense_Row(sz, capacity, f) {
+  : Dense_Row(sz, capacity), flags_(f) {
 }
 
 inline
 Linear_Row::Linear_Row(const dimension_type sz, const Flags f)
-  : Dense_Row(sz, f) {
+  : Dense_Row(sz), flags_(f) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y)
-  : Dense_Row(y) {
+  : Dense_Row(y), flags_(y.flags_) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
                        const dimension_type size)
-  : Dense_Row(y, size, size) {
+  : Dense_Row(y, size, size), flags_(y.flags_) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
 		       const dimension_type sz, const dimension_type capacity)
-  : Dense_Row(y, sz, capacity) {
+  : Dense_Row(y, sz, capacity), flags_(y.flags_) {
 }
 
 inline
 Linear_Row::~Linear_Row() {
+}
+
+inline void
+Linear_Row::swap(Linear_Row& y) {
+  Dense_Row::swap(y);
+  std::swap(flags_, y.flags_);
+}
+
+inline void
+Linear_Row::swap(dimension_type i, dimension_type j) {
+  Dense_Row::swap(i, j);
 }
 
 inline bool
@@ -230,37 +241,27 @@ Linear_Row::topology() const {
 
 inline void
 Linear_Row::set_is_line_or_equality() {
-  Flags f = flags();
-  f.set_is_line_or_equality();
-  set_flags(f);
+  flags_.set_is_line_or_equality();
 }
 
 inline void
 Linear_Row::set_is_ray_or_point_or_inequality() {
-  Flags f = flags();
-  f.set_is_ray_or_point_or_inequality();
-  set_flags(f);
+  flags_.set_is_ray_or_point_or_inequality();
 }
 
 inline void
 Linear_Row::set_necessarily_closed() {
-  Flags f = flags();
-  f.set_necessarily_closed();
-  set_flags(f);
+  flags_.set_necessarily_closed();
 }
 
 inline void
 Linear_Row::set_topology(Topology x) {
-  Flags f = flags();
-  f.set_topology(x);
-  set_flags(f);
+  flags_.set_topology(x);
 }
 
 inline void
 Linear_Row::set_not_necessarily_closed() {
-  Flags f = flags();
-  f.set_not_necessarily_closed();
-  set_flags(f);
+  flags_.set_not_necessarily_closed();
 }
 
 inline Coefficient_traits::const_reference

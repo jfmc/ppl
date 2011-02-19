@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Sparse_Row.types.hh"
 
-#include "Row_Flags.defs.hh"
 #include "CO_Tree.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Dense_Row.types.hh"
@@ -60,8 +59,6 @@ class Sparse_Row {
 
 public:
 
-  typedef Row_Flags Flags;
-
   //! An %iterator on the row elements
   /*!
     This %iterator skips non-stored zeroes.
@@ -76,29 +73,21 @@ public:
   */
   typedef CO_Tree::const_iterator const_iterator;
   
-  explicit Sparse_Row(Flags flags);
-
   //! Constructs a row with the specified size.
   /*!
     \param n
     The size for the new row.
-
-    \param flags
-    The flags to associate with the new row.
 
     The row will contain only non-stored zeroes.
 
     This constructor takes \f$O(1)\f$ time.
   */
-  explicit Sparse_Row(dimension_type n = 0, Flags flags = Flags());
+  explicit Sparse_Row(dimension_type n = 0);
 
   //! Constructs a row with the specified size.
   /*!
     \param n
     The size for the new row.
-
-    \param flags
-    The flags to associate with the new row.
 
     \param capacity
     It is ignored. This parameter is needed for compatibility with Dense_Row.
@@ -107,8 +96,7 @@ public:
 
     This constructor takes \f$O(1)\f$ time.
   */
-  Sparse_Row(dimension_type n, dimension_type capacity,
-             Flags flags = Flags());
+  Sparse_Row(dimension_type n, dimension_type capacity);
 
   //! Copy constructor with specified capacity.
   /*!
@@ -265,12 +253,6 @@ public:
 
   //! Returns the size() of the largest possible Sparse_Row.
   static dimension_type max_size();
-
-  //! Returns the flags of \p *this.
-  const Flags flags() const;
-
-  //! Sets \p f as the flags of \p *this.
-  void set_flags(Flags f);
 
   //! Resets all the elements of this row.
   /*!
@@ -805,9 +787,6 @@ private:
     The elements contained in this row have indexes that are less than size_.
   */
   dimension_type size_;
-
-  //! The flags of this row.
-  Flags flags_;
 };
 
 } // namespace Parma_Polyhedra_Library

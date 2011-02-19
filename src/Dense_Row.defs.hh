@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 
 #include "Sparse_Row.types.hh"
-#include "Row_Flags.defs.hh"
 #include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
@@ -40,23 +39,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Dense_Row {
 public:
-  typedef Row_Flags Flags;
-
   class iterator;
   class const_iterator;
 
-  //! Pre-constructs a row: construction must be completed by construct().
+  //! Constructs an empty row.
   Dense_Row();
 
   explicit Dense_Row(const Sparse_Row& row);
   
-  explicit Dense_Row(Flags f);
-
   //! Tight constructor: resizing may require reallocation.
   /*!
-    Constructs a row with size and capacity \p sz, and flags \p f.
+    Constructs a row with size and capacity \p sz.
   */
-  Dense_Row(dimension_type sz, Flags f);
+  Dense_Row(dimension_type sz);
 
   //! Sizing constructor with capacity.
   /*!
@@ -66,14 +61,10 @@ public:
     \param capacity
     The capacity of the row that will be constructed;
 
-    \param f
-    Flags for the row that will be constructed.
-
     The row that is constructed has storage for \p capacity elements,
     \p sz of which are default-constructed now.
-    The row flags are set to \p f.
   */
-  Dense_Row(dimension_type sz, dimension_type capacity, Flags f);
+  Dense_Row(dimension_type sz, dimension_type capacity);
 
   //! Ordinary copy constructor.
   Dense_Row(const Dense_Row& y);
@@ -143,12 +134,6 @@ public:
     It is assumed that \p new_size is not greater than the current size.
   */
   void shrink(dimension_type new_size);
-
-  //! Returns the flags of \p *this.
-  const Flags flags() const;
-
-  //! Sets \p f as the flags of \p *this.
-  void set_flags(Flags f);
 
   //! Returns the size() of the largest possible Dense_Row.
   static dimension_type max_size();
@@ -406,9 +391,6 @@ private:
     
     //! The capacity of the row.
     dimension_type capacity;
-
-    //! The flags of this row.
-    Row_Flags flags;
 
     //! The vector of coefficients.
     //! An empty vector may be stored as NULL instead of using a valid pointer.

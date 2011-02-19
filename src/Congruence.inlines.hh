@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Congruence::Congruence(dimension_type n)
-  : Dense_Row(n + 2, n + 2, Dense_Row::Flags()) {
+  : Dense_Row(n + 2, n + 2) {
   PPL_ASSERT(OK());
 }
 

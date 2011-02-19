@@ -38,8 +38,6 @@ public:
   typedef typename Swapping_Vector<Row>::iterator iterator;
   typedef typename Swapping_Vector<Row>::const_iterator const_iterator;
 
-  typedef typename Row::Flags Flags;
-
   //! Returns the maximum number of rows of a Sparse_Matrix.
   static dimension_type max_num_rows();
 
@@ -53,13 +51,9 @@ public:
     \param n
     The size of the new square matrix.
 
-    \param row_flags
-    The flags used to build the rows of the matrix;
-    by default, the rows will have all flags unset.
-
     This method takes \f$O(n)\f$ time.
   */
-  explicit Matrix(dimension_type n = 0, Flags row_flags = Flags());
+  explicit Matrix(dimension_type n = 0);
 
   /*!
     \brief Constructs a matrix with the given dimensions, filled with unstored
@@ -71,14 +65,9 @@ public:
     \param num_columns
     The number of columns in the new matrix.
 
-    \param row_flags
-    The flags used to build the rows of the matrix;
-    by default, the rows will have all flags unset.
-
     This method takes \f$O(n)\f$ time, where n is \p num_rows.
   */
-  Matrix(dimension_type num_rows, dimension_type num_columns,
-                Flags row_flags = Flags());
+  Matrix(dimension_type num_rows, dimension_type num_columns);
 
   //! Swaps (*this) with x.
   /*!
@@ -117,8 +106,8 @@ public:
   */
   bool has_no_rows() const;
 
-  //! Equivalent to resize(n, n, row_flags).
-  void resize(dimension_type n, Flags row_flags = Flags());
+  //! Equivalent to resize(n, n).
+  void resize(dimension_type n);
   
   // TODO: Check if this can become private.
   //! Reserves space for at least \p n rows.
@@ -132,9 +121,6 @@ public:
 
     \param num_columns
     The desired numer of columns.
-
-    \param row_flags
-    The flags used for new rows.
 
     New rows and columns will contain non-stored zeroes.
 
@@ -155,8 +141,7 @@ public:
     number of rows, k is the number of elements that have to be removed and c
     is the number of columns.
   */
-  void resize(dimension_type num_rows, dimension_type num_columns,
-              Flags row_flags = Flags());
+  void resize(dimension_type num_rows, dimension_type num_columns);
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
@@ -166,15 +151,11 @@ public:
     \param new_n_columns
     The number of columns of the resized matrix.
 
-    \param row_flags
-    The flags of the rows eventually added to the matrix.
-
     The matrix is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original matrix is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns,
-                      Flags row_flags);
+  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
 
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
@@ -184,9 +165,6 @@ public:
     \param m
     The number of columns to be added: must be strictly positive.
 
-    \param row_flags
-    Flags for the newly added rows.
-
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times (c+m)\f$ matrix
     \f$\bigl(\genfrac{}{}{0pt}{}{M}{0} \genfrac{}{}{0pt}{}{0}{0}\bigr)\f$.
@@ -195,16 +173,12 @@ public:
     This method takes \f$O(r)\f$ time, where r is the number of the matrix's
     rows after the operation.
   */
-  void add_zero_rows_and_columns(dimension_type n, dimension_type m,
-                                 Flags row_flags);
+  void add_zero_rows_and_columns(dimension_type n, dimension_type m);
 
-  //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
+  //! Adds to the matrix \p n rows of zeroes.
   /*!
     \param n
     The number of rows to be added: must be strictly positive.
-
-    \param row_flags
-    Flags for the newly added rows.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times c\f$ matrix \f$\genfrac{(}{)}{0pt}{}{M}{0}\f$.
@@ -213,7 +187,7 @@ public:
     This method takes \f$O(k)\f$ amortized time, where k is the number of the
     new rows.
   */
-  void add_zero_rows(dimension_type n, Flags row_flags);
+  void add_zero_rows(dimension_type n);
 
   //! Adds a copy of the row \p x at the end of the matrix.
   /*!

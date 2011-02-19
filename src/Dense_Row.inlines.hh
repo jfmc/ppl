@@ -37,7 +37,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Dense_Row::Impl::Impl()
-  : size(0), capacity(0), flags(), vec(0) {
+  : size(0), capacity(0), vec(0) {
 }
 
 inline
@@ -59,16 +59,6 @@ Dense_Row::size() const {
   return impl.size;
 }
 
-inline const Dense_Row::Flags
-Dense_Row::flags() const {
-  return impl.flags;
-}
-
-inline void
-Dense_Row::set_flags(Dense_Row::Flags f) {
-  impl.flags = f;
-}
-
 inline dimension_type
 Dense_Row::capacity() const {
   return impl.capacity;
@@ -82,21 +72,10 @@ Dense_Row::Dense_Row()
 }
 
 inline
-Dense_Row::Dense_Row(Flags f)
-  : impl() {
-  
-  impl.flags = f;
-
-  PPL_ASSERT(OK());
-}
-
-inline
 Dense_Row::Dense_Row(const dimension_type sz,
-                     const dimension_type capacity,
-                     const Flags f)
+                     const dimension_type capacity)
   : impl() {
 
-  impl.flags = f;
   resize(sz, capacity);
 
   PPL_ASSERT(size() == sz);
@@ -105,10 +84,9 @@ Dense_Row::Dense_Row(const dimension_type sz,
 }
 
 inline
-Dense_Row::Dense_Row(const dimension_type sz, const Flags f)
+Dense_Row::Dense_Row(const dimension_type sz)
   : impl() {
 
-  impl.flags = f;
   resize(sz);
 
   PPL_ASSERT(size() == sz);
@@ -118,8 +96,6 @@ Dense_Row::Dense_Row(const dimension_type sz, const Flags f)
 inline
 Dense_Row::Dense_Row(const Dense_Row& y)
   : impl() {
-
-  impl.flags = y.flags();
 
   if (y.impl.vec != 0) {
     impl.capacity = y.capacity();
@@ -141,8 +117,6 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   : impl() {
   PPL_ASSERT(y.size() <= capacity);
   PPL_ASSERT(capacity <= max_size());
-
-  impl.flags = y.flags();
 
   impl.vec = static_cast<Coefficient*>(
       operator new(sizeof(Coefficient) * capacity));
@@ -168,8 +142,6 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(sz <= capacity);
   PPL_ASSERT(capacity <= max_size());
   PPL_ASSERT(capacity != 0);
-  
-  impl.flags = y.flags();
   
   impl.vec = static_cast<Coefficient*>(
       operator new(sizeof(Coefficient) * capacity));
@@ -205,7 +177,6 @@ inline void
 Dense_Row::swap(Dense_Row& y) {
   std::swap(impl.size, y.impl.size);
   std::swap(impl.capacity, y.impl.capacity);
-  std::swap(impl.flags, y.impl.flags);
   std::swap(impl.vec, y.impl.vec);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());

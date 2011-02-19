@@ -75,8 +75,8 @@ Matrix<Row>::has_no_rows() const {
 
 template <typename Row>
 inline void
-Matrix<Row>::resize(dimension_type n, Flags row_flags) {
-  resize(n, n, row_flags);
+Matrix<Row>::resize(dimension_type n) {
+  resize(n, n);
 }
 
 template <typename Row>
@@ -89,23 +89,21 @@ Matrix<Row>::reserve_rows(dimension_type requested_capacity) {
 template <typename Row>
 inline void
 Matrix<Row>::resize_no_copy(dimension_type new_n_rows,
-                            dimension_type new_n_columns,
-                            Flags row_flags) {
+                            dimension_type new_n_columns) {
   clear();
-  resize(new_n_rows, new_n_columns, row_flags);
+  resize(new_n_rows, new_n_columns);
 }
 
 template <typename Row>
 inline void
-Matrix<Row>::add_zero_rows_and_columns(dimension_type n, dimension_type m,
-                                       Flags row_flags) {
-  resize(num_rows() + n, num_columns() + m, row_flags);
+Matrix<Row>::add_zero_rows_and_columns(dimension_type n, dimension_type m) {
+  resize(num_rows() + n, num_columns() + m);
 }
 
 template <typename Row>
 inline void
-Matrix<Row>::add_zero_rows(dimension_type n, Flags row_flags) {
-  resize(num_rows() + n, num_columns(), row_flags);
+Matrix<Row>::add_zero_rows(dimension_type n) {
+  resize(num_rows() + n, num_columns());
 }
 
 template <typename Row>
@@ -113,7 +111,7 @@ inline void
 Matrix<Row>::add_row(const Row& x) {
   // TODO: Optimize this.
   Row row(x);
-  add_zero_rows(1, Flags());
+  add_zero_rows(1);
   // Now x may have been invalidated, if it was a row of this matrix.
   rows.back().swap(row);
   PPL_ASSERT(OK());
@@ -122,7 +120,7 @@ Matrix<Row>::add_row(const Row& x) {
 template <typename Row>
 inline void
 Matrix<Row>::add_recycled_row(Row& x) {
-  add_zero_rows(1, Flags());
+  add_zero_rows(1);
   rows.back().swap(x);
   PPL_ASSERT(OK());
 }

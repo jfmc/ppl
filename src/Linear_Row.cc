@@ -177,7 +177,7 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
     if (!(s >> str))
       return false;
     if (str[0] == '+')
-      set_bits(1 << (Dense_Row::Flags::first_free_bit + bit));
+      set_bits(1 << (Row_Flags::first_free_bit + bit));
     else if (str[0] != '-')
       return false;
     if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
@@ -214,7 +214,7 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
   if (new_size < old_size)
     x.shrink(new_size);
   else if (new_size > old_size) {
-    Dense_Row y(new_size, Dense_Row::Flags());
+    Dense_Row y(new_size);
     x.swap(y);
   }
 
@@ -224,10 +224,8 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "f")
     return false;
   
-  Flags f;
-  if (!f.ascii_load(s))
+  if (!flags_.ascii_load(s))
     return false;
-  set_flags(f);
   
   return true;
 }

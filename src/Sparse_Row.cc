@@ -95,8 +95,7 @@ Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row) {
 PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
   : tree(Sparse_Row_from_Dense_Row_helper_iterator(row),
          Sparse_Row_from_Dense_Row_helper_function(row)),
-    size_(row.size()),
-    flags_(row.flags()) {
+    size_(row.size()) {
   PPL_ASSERT(OK());
 }
 
@@ -106,7 +105,6 @@ PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
                    Sparse_Row_from_Dense_Row_helper_function(row));
   std::swap(tree, tmp_tree);
   size_ = row.size();
-  flags_ = row.flags();
   PPL_ASSERT(OK());
 
   return *this;

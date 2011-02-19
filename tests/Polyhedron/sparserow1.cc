@@ -515,7 +515,7 @@ bool
 test09() {
   // These test the construction of a Sparse_Row from a Dense_Row.
   {
-    Dense_Row dense(3, Row_Flags());
+    Dense_Row dense(3);
     Sparse_Row sparse(dense);
     if (sparse.size() != dense.size())
       return false;
@@ -524,7 +524,7 @@ test09() {
   }
 
   {
-    Dense_Row dense(5, Row_Flags());
+    Dense_Row dense(5);
     dense[1] = 2;
     dense[3] = 4;
     Sparse_Row sparse(dense);
@@ -555,7 +555,7 @@ test09() {
   }
 
   {
-    Dense_Row dense(5, Row_Flags());
+    Dense_Row dense(5);
     dense[0] = 1;
     dense[2] = 3;
     dense[4] = 5;

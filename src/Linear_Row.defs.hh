@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.types.hh"
 #include "globals.defs.hh"
+#include "Row_Flags.defs.hh"
 #include "Dense_Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
@@ -141,7 +142,7 @@ public:
     of a Linear_Row object.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags : public Dense_Row::Flags {
+  class Flags : public Row_Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.
     Flags();
@@ -189,26 +190,26 @@ public:
     //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
     
-    //! Constructor from a Dense_Row::Flags object.
-    explicit Flags(Dense_Row::Flags flags);
+    //! Constructor from a Row_Flags object.
+    explicit Flags(Row_Flags flags);
 
     //! \name The bits that are currently in use
     //@{
     // NB: ascii_load assumes that these are sequential.
     static const unsigned rpi_validity_bit
-    = Dense_Row::Flags::first_free_bit + 0;
+    = Row_Flags::first_free_bit + 0;
     static const unsigned rpi_bit
-    = Dense_Row::Flags::first_free_bit + 1;
+    = Row_Flags::first_free_bit + 1;
     static const unsigned nnc_validity_bit
-    = Dense_Row::Flags::first_free_bit + 2;
+    = Row_Flags::first_free_bit + 2;
     static const unsigned nnc_bit
-    = Dense_Row::Flags::first_free_bit + 3;
+    = Row_Flags::first_free_bit + 3;
     //@}
 
   protected:
     //! Index of the first bit derived classes can use.
     static const unsigned first_free_bit
-    = Dense_Row::Flags::first_free_bit + 4;
+    = Row_Flags::first_free_bit + 4;
 
     friend class Parma_Polyhedra_Library::Linear_Row;
   };
@@ -240,6 +241,12 @@ public:
 
   //! Destructor.
   ~Linear_Row();
+
+  //! Swaps \p *this with \p y .
+  void swap(Linear_Row& y);
+
+  //! Swaps the i-th and j-th elements of the row.
+  void swap(dimension_type i, dimension_type j);
 
   //! \name Flags inspection methods
   //@{
@@ -377,6 +384,9 @@ public:
   bool OK(dimension_type row_size) const;
 
 private:
+
+  Flags flags_;
+
   friend class Parma_Polyhedra_Library::Linear_Expression;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
