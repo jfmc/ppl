@@ -63,7 +63,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     // Extend the zero dim false congruence system to the appropriate
     // dimension and then store it in `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_false());
-    cgs.increase_space_dimension(space_dim);
+    cgs.set_space_dimension(space_dim);
     const_cast<Congruence_System&>(con_sys).swap(cgs);
 
     PPL_ASSERT(OK());
@@ -71,7 +71,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
   }
 
   if (num_dimensions > 0) {
-    con_sys.increase_space_dimension(num_dimensions);
+    con_sys.set_space_dimension(num_dimensions);
 
     // Initialize both systems to universe representations.
 
@@ -82,7 +82,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     // Extend the zero dim integrality congruence system to the
     // appropriate dimension and then store it in `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_integrality());
-    cgs.increase_space_dimension(space_dim);
+    cgs.set_space_dimension(space_dim);
     cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
     con_sys.swap(cgs);
 
@@ -457,7 +457,7 @@ PPL::Grid::set_empty() {
   // Extend the zero dim false congruence system to the appropriate
   // dimension and then swap it with `con_sys'.
   Congruence_System cgs(Congruence::zero_dim_false());
-  cgs.increase_space_dimension(space_dim);
+  cgs.set_space_dimension(space_dim);
   const_cast<Congruence_System&>(con_sys).swap(cgs);
 }
 

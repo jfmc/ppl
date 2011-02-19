@@ -80,15 +80,12 @@ PPL::Congruence_System
 
 bool
 PPL::Congruence_System
-::increase_space_dimension(const dimension_type new_space_dim) {
-  PPL_ASSERT(space_dimension() <= new_space_dim);
+::set_space_dimension(const dimension_type new_space_dim) {
 
-  const dimension_type diff = new_space_dim - space_dimension();
-
-  if (diff != 0) {
-    num_columns_ += diff;
+  if (space_dimension() != new_space_dim) {
+    num_columns_ = new_space_dim + 2;
     for (dimension_type i = num_rows(); i-- > 0; )
-      rows[i].add_space_dimensions(diff);
+      rows[i].set_space_dimension(new_space_dim);
   }
 
   PPL_ASSERT(OK());
@@ -106,7 +103,7 @@ PPL::Congruence_System::swap_columns(dimension_type i, dimension_type j) {
 void
 PPL::Congruence_System::insert_verbatim_recycled(Congruence& cg) {
   if (cg.space_dimension() >= space_dimension())
-    increase_space_dimension(cg.space_dimension());
+    set_space_dimension(cg.space_dimension());
   else
     cg.set_space_dimension(space_dimension());
 
@@ -119,7 +116,7 @@ PPL::Congruence_System::insert_verbatim_recycled(Congruence& cg) {
 void
 PPL::Congruence_System::insert(const Constraint& c) {
   if (c.space_dimension() > space_dimension())
-    increase_space_dimension(c.space_dimension());
+    set_space_dimension(c.space_dimension());
   Congruence cg(c, space_dimension());
   cg.strong_normalize();
   rows.resize(num_rows() + 1);
@@ -133,7 +130,7 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type cgs_num_rows = cgs.num_rows();
   if (space_dimension() < cgs.space_dimension())
-    increase_space_dimension(cgs.space_dimension());
+    set_space_dimension(cgs.space_dimension());
   rows.resize(old_num_rows + cgs_num_rows);
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
     cgs[i].set_space_dimension(space_dimension());
@@ -153,7 +150,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
   // Grow to the required size.
   if (space_dimension() < y.space_dimension())
-    increase_space_dimension(y.space_dimension());
+    set_space_dimension(y.space_dimension());
 
   rows.resize(rows.size() + y_num_rows);
 
@@ -457,7 +454,7 @@ void
 PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   PPL_ASSERT(num_columns() > 0);
   dimension_type old_num_rows = num_rows();
-  increase_space_dimension(space_dimension() + dims);
+  set_space_dimension(space_dimension() + dims);
 
   rows.resize(rows.size() + dims);
 
@@ -486,7 +483,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   dimension_type old_num_rows = num_rows();
   dimension_type old_space_dim = space_dimension();
 
-  increase_space_dimension(space_dimension() + added_columns);
+  set_space_dimension(space_dimension() + added_columns);
 
   rows.resize(rows.size() + added_rows);
 
@@ -498,16 +495,4 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
     cg_old.shift_coefficients(old_space_dim, 0);
     std::swap(cg_old, cg_new);
   }
-}
-
-void
-PPL::Congruence_System
-::remove_higher_space_dimensions(const dimension_type new_dimension) {
-  PPL_ASSERT(new_dimension <= space_dimension());
-
-  for (dimension_type i = num_rows(); i-- > 0; )
-    rows[i].set_space_dimension(new_dimension);
-
-  num_columns_ = new_dimension + 2;
-  PPL_ASSERT(OK());
 }

@@ -50,7 +50,7 @@ PPL::Grid::Grid(const Grid& y, Complexity_Class)
     if (y.congruences_are_up_to_date())
       con_sys = y.con_sys;
     else
-      con_sys.increase_space_dimension(space_dim);
+      con_sys.set_space_dimension(space_dim);
     if (y.generators_are_up_to_date())
       gen_sys = y.gen_sys;
     else

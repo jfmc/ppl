@@ -56,7 +56,7 @@ Grid::Grid(const Box<Interval>& box,
     set_zero_dim_univ();
   else {
     // Initialize the space dimension as indicated by the box.
-    con_sys.increase_space_dimension(space_dim);
+    con_sys.set_space_dimension(space_dim);
     // Add congruences and generators according to `box'.
     PPL_DIRTY_TEMP_COEFFICIENT(l_n);
     PPL_DIRTY_TEMP_COEFFICIENT(l_d);

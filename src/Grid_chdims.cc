@@ -39,7 +39,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   PPL_ASSERT(dims > 0);
 
   const dimension_type old_modulus_index = cgs.num_columns() - 1;
-  cgs.increase_space_dimension(space_dimension() + dims);
+  cgs.set_space_dimension(space_dimension() + dims);
 
   if (congruences_are_minimized() || generators_are_minimized())
     dim_kinds.resize(old_modulus_index + dims, CON_VIRTUAL /* a.k.a. LINE */);
@@ -117,7 +117,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       add_space_dimensions(con_sys, gen_sys, m);
     else {
       // Only congruences are up-to-date, so modify only them.
-      con_sys.increase_space_dimension(con_sys.space_dimension() + m);
+      con_sys.set_space_dimension(con_sys.space_dimension() + m);
       if (congruences_are_minimized())
 	dim_kinds.resize(con_sys.num_columns() - 1, CON_VIRTUAL);
     }
@@ -353,12 +353,12 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     // dimension and then swap it with `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_false());
     // Extra 2 columns for inhomogeneous term and modulus.
-    cgs.increase_space_dimension(new_dimension + 2);
+    cgs.set_space_dimension(new_dimension + 2);
     con_sys.swap(cgs);
   }
   else {
     PPL_ASSERT(congruences_are_minimized());
-    con_sys.remove_higher_space_dimensions(new_dimension);
+    con_sys.set_space_dimension(new_dimension);
     // Count the actual number of rows that are now redundant.
     dimension_type num_redundant = 0;
     for (dimension_type row = space_dim; row > new_dimension; --row)

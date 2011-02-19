@@ -397,12 +397,12 @@ public:
   void normalize_moduli();
 
   // TODO: Consider making this private.
-  //! Increase the number of space dimensions to \p new_space_dim.
+  //! Sets the number of space dimensions to \p new_space_dim.
   /*!
-    \p new_space_dim must at least equal to the current space
-    dimension.
+    If \p new_space_dim is lower than the current space dimension, the
+    coefficients referring to the removed space dimensions are lost.
   */
-  bool increase_space_dimension(dimension_type new_space_dim);
+  bool set_space_dimension(dimension_type new_space_dim);
 
   // TODO: Consider making this private.
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
@@ -475,16 +475,6 @@ public:
     normalizing \p cg as \ref insert would do.
   */
   void insert_verbatim_recycled(Congruence& cg);
-
-  // TODO: Consider making this private.
-  /*! \brief
-    Removes the higher dimensions of the system so that the resulting
-    system will have dimension \p new_dimension.
-
-    The value of \p new_dimension must be at most the space dimension
-    of \p *this.
-  */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   // TODO: Remove this.
   typedef Congruence internal_row_type;
