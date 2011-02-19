@@ -71,6 +71,11 @@ Linear_Expression::space_dimension() const {
   return size() - 1;
 }
 
+inline void
+Linear_Expression::set_space_dimension(dimension_type n) {
+  resize(n + 1);
+}
+
 inline Coefficient_traits::const_reference
 Linear_Expression::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())

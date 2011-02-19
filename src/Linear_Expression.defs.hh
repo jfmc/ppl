@@ -323,6 +323,9 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Sets the dimension of the vector space enclosing \p *this to \p n .
+  void set_space_dimension(dimension_type n);
+
   //! Returns the coefficient of \p v in \p *this.
   Coefficient_traits::const_reference coefficient(Variable v) const;
 
