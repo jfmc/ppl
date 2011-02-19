@@ -469,10 +469,17 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   const dimension_type col = num_columns() - 2;
   // Set the space dimension and the diagonal element of each added row.
   for (dimension_type row = dims; row-- > 0; ) {
-    rows[row].set_space_dimension(space_dimension());
+    Linear_Expression expr;
+    // FIXME: The `+1' is needed by the current API, but it shouldn't be.
+    expr.set_space_dimension(space_dimension() + 1);
     PPL_ASSERT(col >= row + 1);
-    rows[row].set_coefficient(Variable(col - row - 1), Coefficient_one());
+    expr += Variable(col - row - 1);
+    // This constructor steals the contents of `expr'.
+    Congruence cg(expr, Coefficient_zero());
+    std::swap(rows[row], cg);
   }
+
+  PPL_ASSERT(OK());
 }
 
 void
