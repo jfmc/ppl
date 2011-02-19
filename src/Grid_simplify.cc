@@ -185,7 +185,7 @@ void
 Grid::reduce_congruence_with_equality(Congruence& row,
 				      const Congruence& pivot,
 				      const dimension_type column,
-				      Congruence_System& sys) {
+				      Swapping_Vector<Congruence>& sys) {
   // Very similar to reduce_parameter_with_line above.  Any change
   // here may be needed there too.
   PPL_ASSERT(row.modulus() > 0 && pivot.modulus() == 0);
@@ -193,7 +193,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
-  dimension_type num_columns = sys.num_columns();
+  const dimension_type num_columns = row.space_dimension() + 2;
 
   // If the elements at `column' in row and pivot are the same, then
   // just subtract `pivot' from `row'.
@@ -219,15 +219,12 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // Multiply `row', including the modulus, by reduced_pivot_col.  To
   // keep all the moduli the same this requires multiplying all the
   // other proper congruences in the same way.
-  for (dimension_type index = sys.num_rows(); index-- > 0; ) {
+  for (dimension_type index = sys.size(); index-- > 0; ) {
     Congruence& cg = sys[index];
     if (cg.is_proper_congruence())
       for (dimension_type col = num_columns; col-- > 0; )
         cg[col] *= reduced_pivot_col;
   }
-  // Column num_columns contains the modulus, so start at the next
-  // column.
-  --num_columns;
   row_column = 0;
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
@@ -421,10 +418,14 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // or `sys' is empty of rows.
       dim_kinds[dim] = CON_VIRTUAL;
     else {
-      // row_index != num_rows
+
+      Swapping_Vector<Congruence> rows;
+      sys.release_rows(rows);
+
       if (row_index != pivot_index)
-	std::swap(sys[row_index], sys[pivot_index]);
-      Congruence& pivot = sys[pivot_index];
+	std::swap(rows[row_index], rows[pivot_index]);
+
+      Congruence& pivot = rows[pivot_index];
       bool pivot_is_equality = pivot.is_equality();
 
       // Change the matrix so that the value at `dim' in every row
@@ -432,7 +433,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       while (row_index < num_rows - 1) {
 	++row_index;
 
-	Congruence& row = sys[row_index];
+	Congruence& row = rows[row_index];
 
 	if (row[dim] == 0)
 	  continue;
@@ -444,12 +445,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	    PPL_ASSERT(pivot.is_proper_congruence());
 	    std::swap(row, pivot);
 	    pivot_is_equality = true;
-	    reduce_congruence_with_equality(row, pivot, dim, sys);
+	    reduce_congruence_with_equality(row, pivot, dim, rows);
 	  }
 	else {
 	  PPL_ASSERT(row.is_proper_congruence());
 	  if (pivot_is_equality)
-	    reduce_congruence_with_equality(row, pivot, dim, sys);
+	    reduce_congruence_with_equality(row, pivot, dim, rows);
 	  else {
 	    PPL_ASSERT(pivot.is_proper_congruence());
 	    reduce_pc_with_pc(row, pivot, dim, 0, dim);
@@ -468,9 +469,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
 	pivot.negate(0, dim + 1);
-
-      Swapping_Vector<Congruence> rows;
-      sys.release_rows(rows);
 
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System, Congruence>

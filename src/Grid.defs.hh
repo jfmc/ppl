@@ -2486,10 +2486,12 @@ private:
     zero.
   */
   // A member of Grid for access to Matrix<Dense_Row>::rows.
+  // This takes a parameter with type Swapping_Vector<Congruence> (instead of
+  // Congruence_System) to simplify the implementation of `conversion()'.
   static void reduce_congruence_with_equality(Congruence& row,
 					      const Congruence& pivot,
 					      dimension_type col,
-					      Congruence_System& sys);
+					      Swapping_Vector<Congruence>& sys);
 
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
