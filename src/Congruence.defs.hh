@@ -36,6 +36,64 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iosfwd>
 
+// These are declared here because they are friend of Congruence.
+namespace Parma_Polyhedra_Library {
+
+//! Sums \p c2 into \p c1 .
+/*!
+  If \p c1 represents the congruence \f$ e_1 = k_1 \pmod{m_1}\f$ and
+  \p c2 represents the congruence \f$ e_2 = k_2 \pmod{m_2}\f$,
+  \p c1 is modified to represent the congruence
+  \f$ e_1 + e_2 = k_1 + k_2 \pmod{m}\f$, where \f$ m = max\{m_1, m_2\} \f$.
+
+  At least one of the two congruences must be a linear equality.
+*/
+Congruence&
+operator+=(Congruence& c1, const Congruence& c2);
+
+//! Subtracts \p c2 from \p c1 .
+/*!
+  If \p c1 represents the congruence \f$ e_1 = k_1 \pmod{m_1}\f$ and
+  \p c2 represents the congruence \f$ e_2 = k_2 \pmod{m_2}\f$,
+  \p c1 is modified to represent the congruence
+  \f$ e_1 - e_2 = k_1 - k_2 \pmod{m}\f$, where \f$ m = max\{m_1, m_2\} \f$.
+
+  At least one of the two congruences must be a linear equality.
+*/
+Congruence&
+operator-=(Congruence& c1, const Congruence& c2);
+
+//! Sums \p c2 multiplied by \p factor into \p c1.
+/*!
+  If \p c1 represents the congruence \f$ e_1 = k_1 \pmod{m_1}\f$ and
+  \p c2 represents the congruence \f$ e_2 = k_2 \pmod{m_2}\f$,
+  \p c1 is modified to represent the congruence
+  \f$ e_1 + e_2*factor = k_1 + k_2*factor \pmod{m}\f$, where
+  \f$ m = max\{m_1, m_2\} \f$.
+
+  At least one of the two congruences must be a linear equality.
+*/
+void add_mul_assign(Congruence& c1,
+                    Coefficient_traits::const_reference factor,
+                    const Congruence& c2);
+
+//! Subtracts \p c2 multiplied by \p factor into \p c1.
+/*!
+  If \p c1 represents the congruence \f$ e_1 = k_1 \pmod{m_1}\f$ and
+  \p c2 represents the congruence \f$ e_2 = k_2 \pmod{m_2}\f$,
+  \p c1 is modified to represent the congruence
+  \f$ e_1 - e_2*factor = k_1 - k_2*factor \pmod{m}\f$, where
+  \f$ m = max\{m_1, m_2\} \f$.
+
+  At least one of the two congruences must be a linear equality.
+*/
+void sub_mul_assign(Congruence& c1,
+                    Coefficient_traits::const_reference factor,
+                    const Congruence& c2);
+
+} // namespace Parma_Polyhedra_Library
+
+
 //! A linear congruence.
 /*! \ingroup PPL_CXX_interface
   An object of the class Congruence is a congruence:
@@ -417,6 +475,22 @@ private:
   throw_dimension_incompatible(const char* method,
 			       const char* v_name,
 			       Variable v) const;
+
+  friend Congruence&
+  operator+=(Congruence& c1, const Congruence& c2);
+
+  friend Congruence&
+  operator-=(Congruence& c1, const Congruence& c2);
+
+  friend void
+  add_mul_assign(Congruence& c1,
+                 Coefficient_traits::const_reference factor,
+                 const Congruence& c2);
+
+  friend void
+  sub_mul_assign(Congruence& c1,
+                 Coefficient_traits::const_reference factor,
+                 const Congruence& c2);
 };
 
 namespace Parma_Polyhedra_Library {
