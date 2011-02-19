@@ -2521,10 +2521,12 @@ private:
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix<Dense_Row>::rows and cgs::operator[].
+  // The type of `dest' is Swapping_Vector<Congruence> instead of
+  // Congruence_System to simplify the implementation of conversion().
   static void multiply_grid(const Coefficient& multiplier,
-			    Congruence& cg, Congruence_System& dest,
-			    dimension_type num_rows,
-			    dimension_type num_dims);
+			    Congruence& cg,
+                            Swapping_Vector<Congruence>& dest,
+			    dimension_type num_rows);
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Grid_Generator::operator[].

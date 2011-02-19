@@ -129,8 +129,10 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
 
 void
 Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
-		    Congruence_System& dest, const dimension_type num_rows,
-		    const dimension_type num_dims) {
+		    Swapping_Vector<Congruence>& dest,
+                    const dimension_type num_rows) {
+  const dimension_type num_dims = cg.space_dimension() + 2;
+
   if (multiplier == 1)
     return;
 
@@ -259,21 +261,26 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       --source_index;
       const Coefficient& source_dim = source[source_index][dim];
 
+      Swapping_Vector<Congruence> dest_rows;
+      dest.release_rows(dest_rows);
+
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
       for (dimension_type row = dest_index; row-- > 0; ) {
-	Congruence& cg = dest[row];
+	Congruence& cg = dest_rows[row];
 
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
 	gcd_assign(multiplier, cg[dim], source_dim);
 	exact_div_assign(multiplier, source_dim, multiplier);
-	multiply_grid(multiplier, cg, dest, dest_num_rows, dims);
+	multiply_grid(multiplier, cg, dest_rows, dest_num_rows);
 
 	Coefficient& cg_dim = cg[dim];
 	exact_div_assign(cg_dim, cg_dim, source_dim);
       }
+
+      dest.take_ownership_of_rows(dest_rows);
     }
 
     // Invert and transpose the source row at `source_index' into the
