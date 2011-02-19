@@ -196,39 +196,51 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     throw std::runtime_error("PPL internal error: Grid::conversion:"
 			     " source matrix is singular.");
 
-  dest.resize_no_copy(dest_num_rows, dims + 1 /* moduli */);
+  Swapping_Vector<Congruence> dest_recyclable_rows;
+  dest.release_rows(dest_recyclable_rows);
+
+  dest.set_space_dimension(dims - 1);
 
   // In `dest' initialize row types and elements, including setting
   // the diagonal elements to the inverse ratio of the `source'
   // diagonal elements.
-  dimension_type dest_index = 0;
   source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] == LINE)
       --source_index;
     else {
-      Congruence& cg = dest[dest_index];
-      for (dimension_type j = dim; j-- > 0; )
-	cg[j] = 0;
-      for (dimension_type j = dim + 1; j < dims; ++j)
-	cg[j] = 0;
+      Congruence cg;
+      if (dest_recyclable_rows.empty()) {
+        Congruence tmp(dest.space_dimension());
+        std::swap(cg, tmp);
+      } else {
+        // Recycle an old congruence.
+        std::swap(cg, dest_recyclable_rows.back());
+        dest_recyclable_rows.pop_back();
+
+        cg.set_space_dimension(dest.space_dimension());
+
+        // Set the appropriate elements to zero.
+        for (dimension_type j = dim; j-- > 0; )
+          cg[j] = 0;
+        for (dimension_type j = dim + 1; j < dims; ++j)
+          cg[j] = 0;
+      }
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
 	cg[dims] = 0;		// An equality.
 	cg[dim] = 1;
-      }
-      else {
+      } else {
 	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
 	--source_index;
 	cg[dims] = 1;		// A proper congruence.
 	exact_div_assign(cg[dim], diagonal_lcm, source[source_index][dim]);
       }
-      ++dest_index;
+      dest.insert_verbatim_recycled(cg);
     }
   }
 
   PPL_ASSERT(source_index == 0);
-  PPL_ASSERT(dest_index == dest_num_rows);
   PPL_ASSERT(lower_triangular(dest, dim_kinds));
 
   // Convert.
@@ -239,7 +251,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // last to first (index 0) in `source' and from first to last in
   // `dest'.
   source_index = source.num_rows();
-  dest_index = 0;
+  dimension_type dest_index = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(multiplier);
 
   for (dimension_type dim = dims; dim-- > 0; ) {
