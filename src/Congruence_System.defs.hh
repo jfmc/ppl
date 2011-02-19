@@ -388,10 +388,6 @@ public:
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
   explicit Congruence_System(dimension_type d);
 
-  // TODO: Remove this.
-  //! Returns the \p k- th congruence of the system.
-  Congruence& operator[](dimension_type k);
-
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
 

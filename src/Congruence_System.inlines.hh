@@ -28,11 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline Congruence&
-Congruence_System::operator[](const dimension_type k) {
-  return rows[k];
-}
-
 inline const Congruence&
 Congruence_System::operator[](const dimension_type k) const {
   return rows[k];
