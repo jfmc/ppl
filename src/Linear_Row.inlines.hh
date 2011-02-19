@@ -26,24 +26,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include "assert.hh"
+#include "math_utilities.defs.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
 inline
 Linear_Row::Flags::Flags()
-  : Row_Flags() {
+  : bits(0) {
   // Note that the constructed type has its validity bit unset.
 }
 
 inline
-Linear_Row::Flags::Flags(Row_Flags f)
-: Row_Flags(f) {
-}
-
-inline
 Linear_Row::Flags::Flags(const Topology t)
-  : Row_Flags(t << nnc_bit) {
+  : bits(t << nnc_bit) {
 #ifndef NDEBUG
   set_bits(1 << nnc_validity_bit);
 #endif
@@ -51,7 +47,7 @@ Linear_Row::Flags::Flags(const Topology t)
 
 inline
 Linear_Row::Flags::Flags(const Topology t, const Kind k)
-  : Row_Flags((k << rpi_bit) | (t << nnc_bit)) {
+  : bits((k << rpi_bit) | (t << nnc_bit)) {
 #ifndef NDEBUG
   set_bits((1 << rpi_validity_bit)
 	   | (1 << nnc_validity_bit));
@@ -139,6 +135,26 @@ Linear_Row::Flags::operator==(const Flags& y) const {
 inline bool
 Linear_Row::Flags::operator!=(const Flags& y) const {
   return !operator==(y);
+}
+
+inline Linear_Row::Flags::base_type
+Linear_Row::Flags::get_bits() const {
+  return bits;
+}
+
+inline void
+Linear_Row::Flags::set_bits(const base_type mask) {
+  bits |= mask;
+}
+
+inline void
+Linear_Row::Flags::reset_bits(const base_type mask) {
+  bits &= ~mask;
+}
+
+inline bool
+Linear_Row::Flags::test_bits(const base_type mask) const {
+  return (bits & mask) == mask;
 }
 
 inline const Linear_Row::Flags

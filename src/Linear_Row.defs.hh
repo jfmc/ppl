@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.types.hh"
 #include "globals.defs.hh"
-#include "Row_Flags.defs.hh"
 #include "Dense_Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
@@ -142,7 +141,7 @@ public:
     of a Linear_Row object.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags : public Row_Flags {
+  class Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.
     Flags();
@@ -187,29 +186,41 @@ public:
     bool ascii_load(std::istream& s);
 
   private:
+    //! A native integral type holding the bits that encode the flags.
+    typedef unsigned int base_type;
+
     //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
     
-    //! Constructor from a Row_Flags object.
-    explicit Flags(Row_Flags flags);
-
     //! \name The bits that are currently in use
     //@{
     // NB: ascii_load assumes that these are sequential.
-    static const unsigned rpi_validity_bit
-    = Row_Flags::first_free_bit + 0;
-    static const unsigned rpi_bit
-    = Row_Flags::first_free_bit + 1;
-    static const unsigned nnc_validity_bit
-    = Row_Flags::first_free_bit + 2;
-    static const unsigned nnc_bit
-    = Row_Flags::first_free_bit + 3;
+    static const unsigned rpi_validity_bit = 0;
+    static const unsigned rpi_bit = 1;
+    static const unsigned nnc_validity_bit = 2;
+    static const unsigned nnc_bit = 3;
     //@}
 
   protected:
     //! Index of the first bit derived classes can use.
-    static const unsigned first_free_bit
-    = Row_Flags::first_free_bit + 4;
+    static const unsigned first_free_bit = 4;
+
+    //! Returns the integer encoding \p *this.
+    base_type get_bits() const;
+
+    //! Sets the bits in \p mask.
+    void set_bits(base_type mask);
+
+    //! Resets the bits in \p mask.
+    void reset_bits(base_type mask);
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if all the bits
+      in \p mask are set.
+    */
+    bool test_bits(base_type mask) const;
+
+    base_type bits;
 
     friend class Parma_Polyhedra_Library::Linear_Row;
   };
