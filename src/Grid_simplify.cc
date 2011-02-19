@@ -193,13 +193,10 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
-  const dimension_type num_columns = row.space_dimension() + 2;
-
   // If the elements at `column' in row and pivot are the same, then
   // just subtract `pivot' from `row'.
   if (row_column == pivot_column) {
-    for (dimension_type col = num_columns; col-- > 0; )
-      row[col] -= pivot[col];
+    row -= pivot;
     return;
   }
 
@@ -222,14 +219,12 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   for (dimension_type index = sys.size(); index-- > 0; ) {
     Congruence& cg = sys[index];
     if (cg.is_proper_congruence())
-      for (dimension_type col = num_columns; col-- > 0; )
-        cg[col] *= reduced_pivot_col;
+      cg.scale(reduced_pivot_col);
   }
-  row_column = 0;
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  for (dimension_type col = column; col-- > 0; )
-    sub_mul_assign(row[col], reduced_row_col, pivot[col]);
+  sub_mul_assign(row, reduced_row_col, pivot);
+  PPL_ASSERT(row[column] == 0);
 }
 
 #ifndef NDEBUG
