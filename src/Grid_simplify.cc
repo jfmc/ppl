@@ -494,7 +494,9 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 #endif
     sys.remove_trailing_rows(num_rows - pivot_index);
 
-    Congruence& last_row = sys[sys.num_rows() - 1];
+    Congruence last_row;
+    sys.release_row(last_row);
+
     switch (dim_kinds[0]) {
 
     case PROPER_CONGRUENCE:
@@ -513,8 +515,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // reduced form) is some other value.
       last_row.set_inhomogeneous_term(Coefficient_one());
       dim_kinds.resize(1);
-      std::swap(sys[0], sys[sys.num_rows()-1]);
-      sys.remove_trailing_rows(sys.num_rows() - 1);
+      sys.remove_trailing_rows(sys.num_rows());
+      sys.insert_verbatim_recycled(last_row);
 
       PPL_ASSERT(sys.OK());
       return true;
@@ -522,13 +524,15 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     default:
       break;
     }
+
+    sys.insert_verbatim_recycled(last_row);
   }
   else {
     // Either sys is empty (it defines the universe) or every column
     // before the modulus column contains only zeroes.
 
+    if (num_rows > 0) {
 #ifndef NDEBUG
-    {
       const bool ret = rows_are_zero<Congruence_System, Congruence>
         (sys,
          // index of first
@@ -538,10 +542,10 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
          // row size
          num_columns);
       PPL_ASSERT(ret == true);
-    }
 #endif
-    // Ensure that a single row will remain for the integrality congruence.
-    sys.remove_trailing_rows(num_rows - 1);
+      // Ensure that a single row will remain for the integrality congruence.
+      sys.remove_trailing_rows(num_rows - 1);
+    }
 
     // Set up the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
@@ -554,7 +558,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       PPL_ASSERT(sys.OK());
       return false;
     }
-    sys[0].set_modulus(Coefficient_one());
+
+    Congruence cg;
+    sys.release_row(cg);
+    PPL_ASSERT(sys.num_rows() == 0);
+    cg.set_modulus(Coefficient_one());
+    sys.insert_verbatim_recycled(cg);
   }
 
   // Ensure that the last row is the integrality congruence.
@@ -566,7 +575,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // Try use an existing modulus.
     dimension_type row_index = sys.num_rows();
     while (row_index-- > 0) {
-      Congruence& row = sys[row_index];
+      const Congruence& row = sys[row_index];
       if (row.modulus() > 0) {
 	new_last_row.set_modulus(row.modulus());
 	break;
@@ -576,8 +585,10 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     sys.insert_verbatim_recycled(new_last_row);
   }
   else {
-    Congruence& last_row = sys[sys.num_rows() - 1];
+    Congruence last_row;
+    sys.release_row(last_row);
     last_row.set_inhomogeneous_term(last_row.modulus());
+    sys.insert_verbatim_recycled(last_row);
   }
 
   Swapping_Vector<Congruence> rows;
