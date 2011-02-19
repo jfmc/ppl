@@ -482,19 +482,22 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // If the last row is false then make it the equality 1 = 0, and
     // make it the only row.
     Congruence& last_row = sys[reduced_num_rows - 1];
-    if (dim_kinds[0] == PROPER_CONGRUENCE) {
-      if (last_row.inhomogeneous_term() % last_row.modulus() != 0) {
-	// The last row is a false proper congruence.
-	last_row.set_is_equality();
-	dim_kinds[0] = EQUALITY;
-	goto return_empty;
-      }
-    }
-    else if (dim_kinds[0] == EQUALITY) {
+    switch (dim_kinds[0]) {
+
+    case PROPER_CONGRUENCE:
+      if (last_row.inhomogeneous_term() % last_row.modulus() == 0)
+        break;
+      
+      // The last row is a false proper congruence.
+      last_row.set_is_equality();
+      dim_kinds[0] = EQUALITY;
+
+      // No break!
+
+    case EQUALITY:
       // The last row is a false equality, as all the coefficient terms
       // are zero while the inhomogeneous term (as a result of the
       // reduced form) is some other value.
-    return_empty:
       last_row[0] = 1;
       dim_kinds.resize(1);
       std::swap(sys[0], sys[sys.num_rows()-1]);
@@ -502,6 +505,9 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
       PPL_ASSERT(sys.OK());
       return true;
+
+    default:
+      break;
     }
   }
   else {
