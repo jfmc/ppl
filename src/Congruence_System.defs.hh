@@ -369,6 +369,9 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
 
+  //! Swaps the rows having indexes \p i and \p j.
+  void swap_rows(dimension_type i,  dimension_type j);
+
   // TODO: Remove this, or make it private.
   void remove_trailing_rows(dimension_type n);
 
