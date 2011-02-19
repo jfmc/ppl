@@ -131,24 +131,20 @@ void
 Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
 		    Swapping_Vector<Congruence>& dest,
                     const dimension_type num_rows) {
-  const dimension_type num_dims = cg.space_dimension() + 2;
-
   if (multiplier == 1)
     return;
 
-  if (cg.is_proper_congruence())
+  if (cg.is_proper_congruence()) {
     // Multiply every element of every congruence.
     for (dimension_type index = num_rows; index-- > 0; ) {
       Congruence& congruence = dest[index];
       if (congruence.is_proper_congruence())
-	for (dimension_type column = num_dims; column-- > 0; )
-	  congruence[column] *= multiplier;
+        congruence.scale(multiplier);
     }
-  else {
+  } else {
     PPL_ASSERT(cg.is_equality());
     // Multiply every element of the equality.
-    for (dimension_type column = num_dims; column-- > 0; )
-      cg[column] *= multiplier;
+    cg.scale(multiplier);
   }
 }
 
