@@ -498,7 +498,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // The last row is a false equality, as all the coefficient terms
       // are zero while the inhomogeneous term (as a result of the
       // reduced form) is some other value.
-      last_row[0] = 1;
+      last_row.set_inhomogeneous_term(Coefficient_one());
       dim_kinds.resize(1);
       std::swap(sys[0], sys[sys.num_rows()-1]);
       sys.remove_trailing_rows(num_rows - 1);
@@ -518,14 +518,14 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     dim_kinds[0] = PROPER_CONGRUENCE;
     if (num_rows == 0) {
       Congruence cg(sys.space_dimension());
-      cg[num_columns] = 1;
-      cg[0] = 1;
+      cg.set_modulus(Coefficient_one());
+      cg.set_inhomogeneous_term(Coefficient_one());
       sys.insert_verbatim_recycled(cg);
 
       PPL_ASSERT(sys.OK());
       return false;
     }
-    sys[0][num_columns] = 1;
+    sys[0].set_modulus(Coefficient_one());
     // Ensure that, after any zero row clipping below, a single row
     // will remain for the integrality congruence.
     reduced_num_rows = 1;
@@ -555,17 +555,17 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
     Congruence new_last_row(sys.space_dimension());
-    new_last_row[mod_index] = 1;
+    new_last_row.set_modulus(Coefficient_one());
     // Try use an existing modulus.
     dimension_type row_index = reduced_num_rows;
     while (row_index-- > 0) {
       Congruence& row = sys[row_index];
-      if (row[mod_index] > 0) {
-	new_last_row[mod_index] = row[mod_index];
+      if (row.modulus() > 0) {
+	new_last_row.set_modulus(row.modulus());
 	break;
       }
     }
-    new_last_row[0] = new_last_row[mod_index];
+    new_last_row.set_inhomogeneous_term(new_last_row.modulus());
     sys.insert_verbatim_recycled(new_last_row);
     // Since we are reducing the system to "strong minimal form",
     // increment the number of reduced rows.
@@ -573,7 +573,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   }
   else {
     Congruence& last_row = sys[reduced_num_rows - 1];
-    last_row[0] = last_row[mod_index];
+    last_row.set_inhomogeneous_term(last_row.modulus());
   }
 
   Swapping_Vector<Congruence> rows;
