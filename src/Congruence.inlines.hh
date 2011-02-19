@@ -210,10 +210,35 @@ Congruence::coefficient(const Variable v) const {
 }
 
 inline void
-Congruence::set_coefficient(const Variable v,
-                            Coefficient_traits::const_reference c) {
-  PPL_ASSERT(v.space_dimension() <= space_dimension());
-  (*this)[v.id() + 1] = c;
+Congruence::permute_dimensions(const std::vector<dimension_type>& cycles) {
+  PPL_ASSERT(cycles[cycles.size() - 1] == 0);
+#ifndef NDEBUG
+  // Check that no permutation involves the modulus.
+  for (dimension_type i = cycles.size(); i-- > 0; )
+    PPL_ASSERT(cycles[i] <= space_dimension());
+#endif
+  Dense_Row& x = *this;
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+  for (dimension_type i = 0, j = 0; i < cycles.size(); i = ++j) {
+    // Make `j' be the index of the next cycle terminator.
+    while (cycles[j] != 0)
+      ++j;
+    // Cycles of length less than 2 are not allowed.
+    PPL_ASSERT(j - i >= 2);
+    if (j - i == 2)
+      // For cycles of length 2 no temporary is needed, just a swap.
+      x.swap(cycles[i], cycles[i + 1]);
+    else {
+      // Longer cycles need a temporary.
+      tmp = x.get(cycles[j - 1]);
+      for (dimension_type l = (j - 1); l > i; --l)
+        x.swap(cycles[l-1], cycles[l]);
+      if (tmp == 0)
+        x.reset(cycles[i]);
+      else
+        std::swap(tmp, x[cycles[i]]);
+    }
+  }
 }
 
 inline Coefficient_traits::const_reference

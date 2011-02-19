@@ -226,17 +226,14 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  void permute_dimensions(const std::vector<dimension_type>& cycles);
+
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument thrown if the index of \p v
     is greater than or equal to the space dimension of \p *this.
   */
   Coefficient_traits::const_reference coefficient(Variable v) const;
-
-  // TODO: Should this method do bound-checking as Congruence::coefficient()
-  // does? Or should both avoid bounds checking?
-  //! Sets the coefficient of \p v in \p *this to \p c .
-  void set_coefficient(Variable v, Coefficient_traits::const_reference c);
 
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;

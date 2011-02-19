@@ -50,32 +50,8 @@ PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
 void
 PPL::Congruence_System
 ::permute_columns(const std::vector<dimension_type>& cycles) {
-  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-  const dimension_type n = cycles.size();
-  PPL_ASSERT(cycles[n - 1] == 0);
-  for (dimension_type k = num_rows(); k-- > 0; ) {
-    Congruence& rows_k = rows[k];
-    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
-      // Make `j' be the index of the next cycle terminator.
-      while (cycles[j] != 0)
-        ++j;
-      // Cycles of length less than 2 are not allowed.
-      PPL_ASSERT(j - i >= 2);
-      if (j - i == 2)
-        // For cycles of length 2 no temporary is needed, just a swap.
-        rows_k.swap(cycles[i], cycles[i + 1]);
-      else {
-        // Longer cycles need a temporary.
-        tmp = rows_k.coefficient(Variable(cycles[j - 1] - 1));
-        for (dimension_type l = (j - 1); l > i; --l)
-          rows_k.swap(cycles[l-1], cycles[l]);
-        if (tmp == 0)
-          rows_k.set_coefficient(Variable(cycles[i] - 1), 0);
-        else
-          rows_k.set_coefficient(Variable(cycles[i] - 1), tmp);
-      }
-    }
-  }
+  for (dimension_type k = num_rows(); k-- > 0; )
+    rows[k].permute_dimensions(cycles);
 }
 
 bool
