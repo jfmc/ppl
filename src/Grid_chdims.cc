@@ -369,7 +369,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
       for (dimension_type low = 0, high = num_redundant;
 	   high < rows;
 	   ++high, ++low)
-	std::swap(con_sys[low], con_sys[high]);
+        con_sys.swap_rows(low, high);
       // Chop newly redundant rows from end of system, to keep minimal
       // form.
       con_sys.remove_trailing_rows(num_redundant);
