@@ -300,22 +300,27 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// I.e., for each row `dest_index' in `dest' that is above the
 	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_prec'.
+        Swapping_Vector<Congruence> dest_rows;
+        dest.release_rows(dest_rows);
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  PPL_ASSERT(row < dest_num_rows);
-	  Congruence& cg = dest[row];
+	  Congruence& cg = dest_rows[row];
 	  sub_mul_assign(cg[dim_prec], source_dim, cg[dim]);
 	}
+	dest.take_ownership_of_rows(dest_rows);
       }
     }
   }
   // Set the modulus in every congruence.
-  const Coefficient& modulus = dest[dest_num_rows - 1][0];
+  Swapping_Vector<Congruence> dest_rows;
+  dest.release_rows(dest_rows);
+  const Coefficient& modulus = dest_rows[dest_num_rows - 1][0];
   for (dimension_type row = dest_num_rows; row-- > 0; ) {
-    Congruence& cg = dest[row];
-    if (cg[dims] > 0)
-      // `cg' is a proper congruence.
-      cg[dims] = modulus;
+    Congruence& cg = dest_rows[row];
+    if (cg.is_proper_congruence())
+      cg.set_modulus(modulus);
   }
+  dest.take_ownership_of_rows(dest_rows);
 
   PPL_ASSERT(lower_triangular(dest, dim_kinds));
 
