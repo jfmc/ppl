@@ -65,7 +65,7 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.11.1 source distribution
-(44 directories, 1586 files):
+(44 directories, 1590 files):
 
 ppl-0.11.1
 |-- BUGS
@@ -450,6 +450,9 @@ ppl-0.11.1
 |   |-- ppl-user-c-interface-0.11.1-html.tar.gz
 |   |-- ppl-user-c-interface-0.11.1.pdf
 |   |-- ppl-user-c-interface-0.11.1.ps.gz
+|   |-- ppl-user-java-interface-0.11.1-html.tar.gz
+|   |-- ppl-user-java-interface-0.11.1.pdf
+|   |-- ppl-user-java-interface-0.11.1.ps.gz
 |   |-- ppl-user-ocaml-interface-0.11.1-html.tar.gz
 |   |-- ppl-user-ocaml-interface-0.11.1.pdf
 |   |-- ppl-user-ocaml-interface-0.11.1.ps.gz
@@ -786,6 +789,7 @@ ppl-0.11.1
 |   |-- ac_cxx_limit_memory.m4
 |   |-- ac_cxx_long_double_binary_format.m4
 |   |-- ac_cxx_long_double_exact_output.m4
+|   |-- ac_cxx_plain_char_is_signed.m4
 |   |-- ac_cxx_proper_long_double.m4
 |   |-- ac_cxx_remainder_bug.m4
 |   |-- ac_prog_jar.m4
