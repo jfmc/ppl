@@ -475,13 +475,26 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     }
   } // end for (dimension_type dim = num_columns; dim-- > 0; )
 
-  // For clearer naming.
-  dimension_type& reduced_num_rows = pivot_index;
-
-  if (reduced_num_rows > 0) {
+  if (pivot_index > 0) {
     // If the last row is false then make it the equality 1 = 0, and
     // make it the only row.
-    Congruence& last_row = sys[reduced_num_rows - 1];
+
+#ifndef NDEBUG
+    {
+      const bool ret = rows_are_zero<Congruence_System, Congruence>
+        (sys,
+         // index of first
+         pivot_index,
+         // index of last
+         num_rows - 1,
+         // row size
+         num_columns);
+      PPL_ASSERT(ret == true);
+    }
+#endif
+    sys.remove_trailing_rows(num_rows - pivot_index);
+
+    Congruence& last_row = sys[sys.num_rows() - 1];
     switch (dim_kinds[0]) {
 
     case PROPER_CONGRUENCE:
@@ -501,7 +514,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       last_row.set_inhomogeneous_term(Coefficient_one());
       dim_kinds.resize(1);
       std::swap(sys[0], sys[sys.num_rows()-1]);
-      sys.remove_trailing_rows(num_rows - 1);
+      sys.remove_trailing_rows(sys.num_rows() - 1);
 
       PPL_ASSERT(sys.OK());
       return true;
@@ -513,6 +526,22 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   else {
     // Either sys is empty (it defines the universe) or every column
     // before the modulus column contains only zeroes.
+
+#ifndef NDEBUG
+    {
+      const bool ret = rows_are_zero<Congruence_System, Congruence>
+        (sys,
+         // index of first
+         0,
+         // index of last
+         num_rows - 1,
+         // row size
+         num_columns);
+      PPL_ASSERT(ret == true);
+    }
+#endif
+    // Ensure that a single row will remain for the integrality congruence.
+    sys.remove_trailing_rows(num_rows - 1);
 
     // Set up the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
@@ -526,38 +555,16 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       return false;
     }
     sys[0].set_modulus(Coefficient_one());
-    // Ensure that, after any zero row clipping below, a single row
-    // will remain for the integrality congruence.
-    reduced_num_rows = 1;
   }
-
-  // Clip any zero rows from the end of the matrix.
-  if (num_rows > 1 && num_rows > reduced_num_rows) {
-#ifndef NDEBUG
-    const bool ret = rows_are_zero<Congruence_System, Congruence>
-      (sys,
-       // index of first
-       reduced_num_rows,
-       // index of last
-       num_rows - 1,
-       // row size
-       num_columns);
-    PPL_ASSERT(ret == true);
-#endif
-    sys.remove_trailing_rows(num_rows - reduced_num_rows);
-  }
-
-  PPL_ASSERT(sys.num_rows() == reduced_num_rows);
 
   // Ensure that the last row is the integrality congruence.
-  const dimension_type mod_index = num_columns;
   if (dim_kinds[0] == CON_VIRTUAL) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
     Congruence new_last_row(sys.space_dimension());
     new_last_row.set_modulus(Coefficient_one());
     // Try use an existing modulus.
-    dimension_type row_index = reduced_num_rows;
+    dimension_type row_index = sys.num_rows();
     while (row_index-- > 0) {
       Congruence& row = sys[row_index];
       if (row.modulus() > 0) {
@@ -567,12 +574,9 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     }
     new_last_row.set_inhomogeneous_term(new_last_row.modulus());
     sys.insert_verbatim_recycled(new_last_row);
-    // Since we are reducing the system to "strong minimal form",
-    // increment the number of reduced rows.
-    ++reduced_num_rows;
   }
   else {
-    Congruence& last_row = sys[reduced_num_rows - 1];
+    Congruence& last_row = sys[sys.num_rows() - 1];
     last_row.set_inhomogeneous_term(last_row.modulus());
   }
 
@@ -582,7 +586,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // Since we are reducing the system to "strong minimal form",
   // factor the modified integrality congruence out of the other rows;
   reduce_reduced<Congruence_System, Congruence>
-    (rows, 0, reduced_num_rows - 1, 0, 0, dim_kinds, false);
+    (rows, 0, rows.size() - 1, 0, 0, dim_kinds, false);
 
   sys.take_ownership_of_rows(rows);
 
