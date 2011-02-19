@@ -183,6 +183,9 @@ public:
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Sets the inhomogeneous term of \p *this to \p c .
+  void set_inhomogeneous_term(Coefficient_traits::const_reference c);
+
   //! Returns a const reference to the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
 

@@ -221,6 +221,11 @@ Congruence::inhomogeneous_term() const {
   return (*this)[0];
 }
 
+inline void
+Congruence::set_inhomogeneous_term(Coefficient_traits::const_reference c) {
+  (*this)[0] = c;
+}
+
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
   PPL_ASSERT(size() > 1);
