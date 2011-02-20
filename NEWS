@@ -35,6 +35,10 @@ o  The input routine for PPL numeric datatypes has been extended to
    accept the ISO9899 (C99) hexadecimal floating constant syntax.
 
 
+--------------------------------------------------------------------------
+NEWS for version 0.11.1  (released on February 20, 2011)
+--------------------------------------------------------------------------
+
 Bugfixes
 ========
 
@@ -49,14 +53,6 @@ o  Corrected a precision bug in method
    whereby in the case of an invertible affine transformation implementing
    a variable sign symmetry (and optional translation), the computed result
    was correct but unnecessarily imprecise.
-
-
---------------------------------------------------------------------------
-NEWS for version 0.11.1  (release on February 20, 2011)
---------------------------------------------------------------------------
-
-Bugfixes
-========
 
 o  Corrected a problem in the input method for checked integers whereby,
    under specific conditions, the input stream state bits were not updated.
