@@ -1,3 +1,19 @@
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Added missing news items.
+
+2010-10-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh,
+	tests/Octagonal_Shape/affineimage1.cc: Improved precision of
+	Octagonal_Shape::affine_image().  The method was rather imprecise on
+	sign-symmetry affine transformations.  Also noted that strong
+	reduction is preserved in that case.
+
+2011-02-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
+
 2011-02-19  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* doc/libppl.3, doc/libppl_c.3, doc/ppl-config_extra_man_text: 
