@@ -246,7 +246,7 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
   with space dimension zero and then extended to space dimension 3
   in the fifth line.
 */
-class Parma_Polyhedra_Library::Linear_Expression : private Linear_Row {
+class Parma_Polyhedra_Library::Linear_Expression : public Linear_Row {
 public:
   //! Default constructor: returns a copy of Linear_Expression::zero().
   Linear_Expression();
@@ -374,41 +374,16 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Linear_Expression& y);
 
+  // TODO: Make this private.
+  //! Copy constructor with a specified space dimension.
+  Linear_Expression(const Linear_Expression& e, dimension_type sz);
+
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the (zero-dimension space) constant 0.
   */
   static const Linear_Expression* zero_p;
-
-  friend class Parma_Polyhedra_Library::Scalar_Products;
-  friend class Parma_Polyhedra_Library::Constraint;
-  friend class Parma_Polyhedra_Library::Generator;
-  // The following declaration grants access to Grid_Generator::parameter.
-  friend class Parma_Polyhedra_Library::Grid_Generator;
-  friend class Parma_Polyhedra_Library::Congruence;
-  // FIXME: the following friend declaration should be avoided.
-  friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::Grid;
-
-  // FIXME: the following friend declaration is only to grant access to
-  // Constraint_System::affine_preimage().
-  friend class Parma_Polyhedra_Library::Constraint_System;
-
-  // FIXME: the following friend declaration is only to grant access to
-  // Generator_System::affine_image().
-  friend class Parma_Polyhedra_Library::Generator_System;
-
-  // FIXME: the following friend declaration is only to grant access to
-  // Congruence_System::affine_preimage().
-  friend class Parma_Polyhedra_Library::Congruence_System;
-
-  // FIXME: the following friend declaration is only to grant access to
-  // Grid_Generator_System::affine_image().
-  friend class Parma_Polyhedra_Library::Grid_Generator_System;
-
-  //! Copy constructor with a specified space dimension.
-  Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
   //! Implementation sizing constructor.
   /*!
