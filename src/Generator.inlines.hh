@@ -34,7 +34,7 @@ Generator::Generator()
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
-  Linear_Row::swap(e);
+  Linear_Row::swap(e.get_linear_row());
   set_flags(Flags(topology, (type == LINE
                              ? LINE_OR_EQUALITY
                              : RAY_OR_POINT_OR_INEQUALITY)));

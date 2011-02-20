@@ -436,8 +436,8 @@ PPL::Constraint_System
 
   const dimension_type n_columns = x.num_columns();
   const dimension_type n_rows = x.num_rows();
-  const dimension_type expr_size = expr.size();
-  const bool not_invertible = (v >= expr_size || expr[v] == 0);
+  const dimension_type expr_size = expr.get_linear_row().size();
+  const bool not_invertible = (v >= expr_size || expr.get_linear_row()[v] == 0);
 
   // TODO: Check if it is correct to arrive at this point with
   // num_pending_rows() != 0.
@@ -460,12 +460,12 @@ PPL::Constraint_System
 	    Coefficient& row_j = row[j];
 	    row_j *= denominator;
 	    if (j < expr_size)
-	      add_mul_assign(row_j, row_v, expr[j]);
+	      add_mul_assign(row_j, row_v, expr.get_linear_row()[j]);
 	  }
 	if (not_invertible)
 	  row_v = 0;
 	else
-	  row_v *= expr[v];
+	  row_v *= expr.get_linear_row()[v];
       }
     }
   } else {
@@ -477,11 +477,11 @@ PPL::Constraint_System
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
 	  if (j != v)
-	    add_mul_assign(row[j], row_v, expr[j]);
+	    add_mul_assign(row[j], row_v, expr.get_linear_row()[j]);
 	if (not_invertible)
 	  row_v = 0;
 	else
-	  row_v *= expr[v];
+	  row_v *= expr.get_linear_row()[v];
       }
     }
   }

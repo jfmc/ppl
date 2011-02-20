@@ -1775,7 +1775,8 @@ PPL::Grid::affine_image(const Variable var,
   if (marked_empty())
     return;
 
-  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
+  if (var_space_dim <= expr_space_dim
+      && expr.get_linear_row()[var_space_dim] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date()) {
       // Grid_Generator_System::affine_image() requires the third argument
@@ -1794,19 +1795,21 @@ PPL::Grid::affine_image(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr[var_space_dim] > 0) {
+      if (expr.get_linear_row()[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse[var_space_dim] = denominator;
-	con_sys.affine_preimage(var_space_dim, inverse, expr[var_space_dim]);
+	inverse.get_linear_row()[var_space_dim] = denominator;
+	con_sys.affine_preimage(var_space_dim, inverse,
+                                expr.get_linear_row()[var_space_dim]);
       }
       else {
 	// The new denominator is negative: we negate everything once
 	// more, as Congruence_System::affine_preimage() requires the
 	// third argument to be positive.
 	inverse = expr;
-	inverse[var_space_dim] = denominator;
-	neg_assign(inverse[var_space_dim]);
-	con_sys.affine_preimage(var_space_dim, inverse, -expr[var_space_dim]);
+	inverse.get_linear_row()[var_space_dim] = denominator;
+	neg_assign(inverse.get_linear_row()[var_space_dim]);
+	con_sys.affine_preimage(var_space_dim, inverse,
+                                -expr.get_linear_row()[var_space_dim]);
       }
       clear_congruences_minimized();
     }
@@ -1857,7 +1860,7 @@ affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
-  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
+  if (var_space_dim <= expr_space_dim && expr.get_linear_row()[var_space_dim] != 0) {
     // The transformation is invertible.
     if (congruences_are_up_to_date()) {
       // Congruence_System::affine_preimage() requires the third argument
@@ -1873,19 +1876,21 @@ affine_preimage(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr[var_space_dim] > 0) {
+      if (expr.get_linear_row()[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse[var_space_dim] = denominator;
-	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
+	inverse.get_linear_row()[var_space_dim] = denominator;
+	gen_sys.affine_image(var_space_dim, inverse,
+                             expr.get_linear_row()[var_space_dim]);
       }
       else {
 	// The new denominator is negative: we negate everything once
 	// more, as Grid_Generator_System::affine_image() requires the
 	// third argument to be positive.
 	inverse = expr;
-	inverse[var_space_dim] = denominator;
-	neg_assign(inverse[var_space_dim]);
-	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
+	inverse.get_linear_row()[var_space_dim] = denominator;
+	neg_assign(inverse.get_linear_row()[var_space_dim]);
+	gen_sys.affine_image(var_space_dim, inverse,
+                             -expr.get_linear_row()[var_space_dim]);
       }
       clear_generators_minimized();
     }

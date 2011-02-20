@@ -37,17 +37,17 @@ Linear_Expression::max_space_dimension() {
 
 inline
 Linear_Expression::Linear_Expression()
-  : Linear_Row(1, Linear_Row::Flags()) {
+  : row(1, Linear_Row::Flags()) {
 }
 
 inline
 Linear_Expression::Linear_Expression(dimension_type sz, bool)
-  : Linear_Row(sz, Linear_Row::Flags()) {
+  : row(sz, Linear_Row::Flags()) {
 }
 
 inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e)
-  : Linear_Row(e) {
+  : row(e.row) {
 }
 
 inline
@@ -57,45 +57,55 @@ Linear_Expression::~Linear_Expression() {
 inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e,
 				     dimension_type sz)
-  : Linear_Row(e, sz, sz) {
+  : row(e.row, sz, sz) {
 }
 
 inline
 Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
-  : Linear_Row(1, Linear_Row::Flags()) {
-  (*this)[0] = n;
+  : row(1, Linear_Row::Flags()) {
+  row[0] = n;
+}
+
+inline Linear_Row&
+Linear_Expression::get_linear_row() {
+  return row;
+}
+
+inline const Linear_Row&
+Linear_Expression::get_linear_row() const {
+  return row;
 }
 
 inline dimension_type
 Linear_Expression::space_dimension() const {
-  return size() - 1;
+  return row.size() - 1;
 }
 
 inline void
 Linear_Expression::set_space_dimension(dimension_type n) {
-  resize(n + 1);
+  row.resize(n + 1);
 }
 
 inline Coefficient_traits::const_reference
 Linear_Expression::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Coefficient_zero();
-  return Linear_Row::coefficient(v.id());
+  return row.coefficient(v.id());
 }
 
 inline Coefficient_traits::const_reference
 Linear_Expression::inhomogeneous_term() const {
-  return Linear_Row::inhomogeneous_term();
+  return row.inhomogeneous_term();
 }
 
 inline bool
 Linear_Expression::is_zero() const {
-  return Linear_Row::is_zero();
+  return row.is_zero();
 }
 
 inline bool
 Linear_Expression::all_homogeneous_terms_are_zero() const {
-  return Linear_Row::all_homogeneous_terms_are_zero();
+  return row.all_homogeneous_terms_are_zero();
 }
 
 inline const Linear_Expression&
@@ -106,12 +116,12 @@ Linear_Expression::zero() {
 
 inline memory_size_type
 Linear_Expression::external_memory_in_bytes() const {
-  return Linear_Row::external_memory_in_bytes();
+  return row.external_memory_in_bytes();
 }
 
 inline memory_size_type
 Linear_Expression::total_memory_in_bytes() const {
-  return Linear_Row::total_memory_in_bytes();
+  return external_memory_in_bytes() + sizeof(*this);
 }
 
 /*! \relates Linear_Expression */
@@ -153,30 +163,30 @@ operator*(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 /*! \relates Linear_Expression */
 inline Linear_Expression&
 operator+=(Linear_Expression& e, Coefficient_traits::const_reference n) {
-  e[0] += n;
+  e.row[0] += n;
   return e;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression&
 operator-=(Linear_Expression& e, Coefficient_traits::const_reference n) {
-  e[0] -= n;
+  e.row[0] -= n;
   return e;
 }
 
 inline void
 Linear_Expression::swap(Linear_Expression& y) {
-  Linear_Row::swap(y);
+  row.swap(y.row);
 }
 
 inline void
 Linear_Expression::ascii_dump(std::ostream& s) const {
-  Linear_Row::ascii_dump(s);
+  row.ascii_dump(s);
 }
 
 inline bool
 Linear_Expression::ascii_load(std::istream& s) {
-  return Linear_Row::ascii_load(s);
+  return row.ascii_load(s);
 }
 
 } // namespace Parma_Polyhedra_Library

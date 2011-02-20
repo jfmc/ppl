@@ -813,7 +813,7 @@ PPL::Generator_System
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Linear_Row& row = rows[i];
-    Scalar_Products::assign(numerator, expr, row);
+    Scalar_Products::assign(numerator, expr.get_linear_row(), row);
     std::swap(numerator, row[v]);
   }
 
@@ -837,7 +837,7 @@ PPL::Generator_System
 
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
-  const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
+  const bool not_invertible = (v > expr.space_dimension() || expr.get_linear_row()[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
 

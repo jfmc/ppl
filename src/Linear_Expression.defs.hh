@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Expression_defs_hh 1
 
 #include "Linear_Expression.types.hh"
-#include "Scalar_Products.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Congruence.types.hh"
@@ -33,12 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Variable.defs.hh"
-#include "Constraint_System.types.hh"
-#include "Generator_System.types.hh"
-#include "Congruence_System.types.hh"
-#include "Grid_Generator_System.types.hh"
-#include "Polyhedron.types.hh"
-#include "Grid.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -246,7 +239,7 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
   with space dimension zero and then extended to space dimension 3
   in the fifth line.
 */
-class Parma_Polyhedra_Library::Linear_Expression : public Linear_Row {
+class Parma_Polyhedra_Library::Linear_Expression {
 public:
   //! Default constructor: returns a copy of Linear_Expression::zero().
   Linear_Expression();
@@ -378,12 +371,20 @@ public:
   //! Copy constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
+  // FIXME: Remove this.
+  Linear_Row& get_linear_row();
+
+  // FIXME: Remove this.
+  const Linear_Row& get_linear_row() const;
+
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the (zero-dimension space) constant 0.
   */
   static const Linear_Expression* zero_p;
+
+  Linear_Row row;
 
   //! Implementation sizing constructor.
   /*!

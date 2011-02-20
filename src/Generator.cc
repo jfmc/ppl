@@ -59,7 +59,7 @@ PPL::Generator::point(const Linear_Expression& e,
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
   Linear_Expression ec = e;
-  ec[0] = d;
+  ec.get_linear_row()[0] = d;
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
 
   // If the divisor is negative, we negate it as well as
@@ -100,7 +100,7 @@ PPL::Generator::ray(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a ray.");
 
   Linear_Expression ec = e;
-  ec[0] = 0;
+  ec.get_linear_row()[0] = 0;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
 
   return g;
@@ -114,7 +114,7 @@ PPL::Generator::line(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a line.");
 
   Linear_Expression ec = e;
-  ec[0] = 0;
+  ec.get_linear_row()[0] = 0;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
 
   return g;
@@ -139,11 +139,11 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
     Linear_Expression x_expr(x);
     Linear_Expression y_expr(y);
     // ... second, re-normalize ...
-    x_expr.normalize();
-    y_expr.normalize();
+    x_expr.get_linear_row().normalize();
+    y_expr.get_linear_row().normalize();
     // ... and finally check for syntactic equality.
     for (dimension_type i = x_space_dim + 1; i-- > 0; )
-      if (x_expr[i] != y_expr[i])
+      if (x_expr.get_linear_row()[i] != y_expr.get_linear_row()[i])
 	return false;
     return true;
   }

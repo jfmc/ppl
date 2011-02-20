@@ -92,7 +92,7 @@ Congruence::~Congruence() {
 inline
 Congruence::Congruence(Linear_Expression& le,
 		       Coefficient_traits::const_reference m) {
-  Dense_Row::swap(static_cast<Dense_Row&>(le));
+  Dense_Row::swap(static_cast<Dense_Row&>(le.get_linear_row()));
   PPL_ASSERT(m >= 0);
   (*this)[size()-1] = m;
 }
