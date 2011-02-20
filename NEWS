@@ -10,11 +10,23 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.11.1  (release on February 20, 2011)
+NEWS for version 0.11.1  (released on February 20, 2011)
 --------------------------------------------------------------------------
 
 Bugfixes
 ========
+
+o  Corrected a problem in the simplification of PIP_Problem solution trees
+   whereby, under specific conditions, the node merging process produced
+   decision nodes that did not satisfy their class invariant.
+
+o  Corrected a precision bug in method
+
+     Octagonal_Shape<T>::affine_image()
+
+   whereby in the case of an invertible affine transformation implementing
+   a variable sign symmetry (and optional translation), the computed result
+   was correct but unnecessarily imprecise.
 
 o  Corrected a problem in the input method for checked integers whereby,
    under specific conditions, the input stream state bits were not updated.
