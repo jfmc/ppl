@@ -663,9 +663,21 @@ watchdog1_SRCS = watchdog1.cc
 weightwatch1_SRCS = weightwatch1.cc
 
 if !VALGRIND_TESTS_ENABLED
-VALGRIND_BRITTLE_TESTS = memory1
+# The `memory1' test is currently disabled.  The reason is that there
+# is currently no reliable way to make it work, at least on Linux.
+# The reason is that memory is limited using RLIMIT_AS, which limits
+# brk, mmap and the stack: when we run out of stack, then of course
+# we crash.  So RLIMIT_AS cannot be used.  In principle, we could use
+# RLIMIT_DATA, which limits brk only.  However, glibc uses mmap when
+# it cannot obtain memory from brk (and perhaps in other cases as well),
+# but mmap is not limited by RLIMIT_DATA.  In summary, RLIMIT_AS limits
+# too much (in particular the stack, that should not be limited);
+# RLIMIT_DATA limits too little (it does not limit mmap, as we would like
+# it to).
 
-memory1_SOURCES = $(memory1_SRCS)
+#VALGRIND_BRITTLE_TESTS = memory1
+
+#memory1_SOURCES = $(memory1_SRCS)
 
 endif !VALGRIND_TESTS_ENABLED
 

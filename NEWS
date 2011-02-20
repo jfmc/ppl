@@ -35,12 +35,24 @@ o  The input routine for PPL numeric datatypes has been extended to
    accept the ISO9899 (C99) hexadecimal floating constant syntax.
 
 
+--------------------------------------------------------------------------
+NEWS for version 0.11.1  (released on February 20, 2011)
+--------------------------------------------------------------------------
+
 Bugfixes
 ========
 
 o  Corrected a problem in the simplification of PIP_Problem solution trees
    whereby, under specific conditions, the node merging process produced
    decision nodes that did not satisfy their class invariant.
+
+o  Corrected a precision bug in method
+
+     Octagonal_Shape<T>::affine_image()
+
+   whereby in the case of an invertible affine transformation implementing
+   a variable sign symmetry (and optional translation), the computed result
+   was correct but unnecessarily imprecise.
 
 o  Corrected a problem in the input method for checked integers whereby,
    under specific conditions, the input stream state bits were not updated.
@@ -59,17 +71,13 @@ o  Corrected a couple of resource (re-)allocation problems that, under
 
      Polyhedron::generalized_affine_image().
 
-o  Corrected a precision bug in method
-
-     Octagonal_Shape<T>::affine_image()
-
-   whereby in the case of an invertible affine transformation implementing
-   a variable sign symmetry (and optional translation), the computed result
-   was correct but unnecessarily imprecise.
-
 o  Corrected an efficiency bug in the C language interface function
 
      ppl_Linear_Expression_add_to_coefficient().
+
+o  Corrected an efficiency bug in method
+
+     MIP_Problem::compute_generator().
 
 o  Corrected a bug affecting the input routine of ppl_lpsol, whereby
    the inhomogeneous term of the objective function was disregarded.
@@ -94,6 +102,8 @@ o  Fixed a bug whereby the argument of all the methods
      unconstrain(Variable var)
 
    was not checked correctly for space dimension compatibility.
+
+o  Portability improved.
 
 
 --------------------------------------------------------------------------

@@ -2602,6 +2602,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Row& s_i = tableau.s[i];
         PPL_DIRTY_TEMP_COEFFICIENT(s_i_pj);
         s_i_pj = s_i.get(pj);
+
+        if (s_i_pj == 0)
+          continue;
+
         Row::iterator itr = s_i.end();
         for (Row::const_iterator
              j = s_pivot.begin(), j_end = s_pivot.end(); j != j_end; ++j) {
@@ -2634,7 +2638,20 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         Row& t_i = tableau.t[i];
-        Coefficient s_i_pj = s_i.get(pj);
+
+        Row::iterator s_i_pj_itr = s_i.find(pj);
+
+        if (s_i_pj_itr == s_i.end())
+          continue;
+
+        // NOTE: This is a Coefficient& instead of a
+        // Coefficient_traits::const_reference, because scale() may silently
+        // modify it.
+        Coefficient& s_i_pj = *s_i_pj_itr;
+
+        if (s_i_pj == 0)
+          continue;
+
         Row::iterator k = t_i.end();
         for (Row::const_iterator
              j = t_pivot.begin(), j_end = t_pivot.end(); j != j_end; ++j) {
@@ -2647,10 +2664,6 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               gcd_assign(gcd, product, s_pivot_pj);
               exact_div_assign(scale_factor, s_pivot_pj, gcd);
               tableau.scale(scale_factor);
-              // s_i[pj] has been modified by scale(), so s_i_pj must be
-              // updated.
-              s_i_pj *= scale_factor;
-              PPL_ASSERT(s_i.get(pj) == s_i_pj);
               product *= scale_factor;
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
