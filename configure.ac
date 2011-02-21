@@ -378,23 +378,24 @@ no)
 esac
 
 enableval=default
+use_fpmath=yes
 fpmath_may_use_387=yes
 fpmath_may_use_sse=yes
-AC_MSG_CHECKING([whether to select specific floating point arithmetics])
+AC_MSG_CHECKING([whether to use (a specific) floating point arithmetic])
 AC_ARG_ENABLE(fpmath,
   AS_HELP_STRING([--enable-fpmath=INSTRUCTION_SET],
-                 [select floating point arithmetics]))
+                 [select floating point arithmetic]))
 case "${enableval}" in
 sse)
   AC_MSG_RESULT(sse)
   OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse"
-  # The SSE instruction set only supports single precision arithmetics:
-  # double and extended precision arithmetics is still done using 387.
+  # The SSE instruction set only supports single precision arithmetic:
+  # double and extended precision arithmetic is still done using 387.
   ;;
 sse2)
   AC_MSG_RESULT(sse2)
   OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse"
-  # SSE2 still does not support extended precision arithmetics.
+  # SSE2 still does not support extended precision arithmetic.
   ;;
 387)
   AC_MSG_RESULT(387)
@@ -418,7 +419,8 @@ default)
   AC_MSG_RESULT(default)
   ;;
 no)
-  AC_MSG_RESULT(default)
+  AC_MSG_RESULT(no)
+  use_fpmath=no
   ;;
 *)
   AC_MSG_ERROR([bad value ${enableval} for --enable-fpmath, needs sse, sse2, 387, sse+387, sse2+387, default or no])
@@ -427,12 +429,12 @@ esac
 
 if test x"$fpmath_may_use_387" = xyes
 then
-  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
+  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetic may use the 387 unit.])
 fi
 
 if test x"$fpmath_may_use_sse" = xyes
 then
-  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
+  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetic may use the SSE instruction set.])
 fi
 
 # Disable all transformations and optimizations that assume default
@@ -663,8 +665,16 @@ AC_LANG(C++)
 # The PPL uses <cmath> for sqrt and other functions in several places.
 AC_SEARCH_LIBS([sqrt], [m])
 
-# Check for the possibility to control the FPU.
-AC_CHECK_FPU_CONTROL
+if test x"$use_fpmath" = xyes
+then
+  # Check for the possibility to control the FPU.
+  AC_CHECK_FPU_CONTROL
+else
+  ac_cv_can_control_fpu=0
+fi
+AM_CONDITIONAL(CAN_CONTROL_FPU, test $ac_cv_can_control_fpu = 1)
+AC_DEFINE_UNQUOTED(PPL_CAN_CONTROL_FPU, $ac_cv_can_control_fpu,
+    [Not zero if the FPU can be controlled.])
 
 # Check whether for the C++ compiler the plain char type is signed.
 AC_CXX_PLAIN_CHAR_IS_SIGNED
