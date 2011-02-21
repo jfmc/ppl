@@ -38,8 +38,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   their representation in the PPL and the operations provided
   by the PPL is given in the main \extref{preamble, PPL user manual}.
   Here we just describe those aspects that are specific to the Java interface.
-  In the sequel, \c prefix is the path prefix under which
-  the library has been installed (typically \c /usr or \c /usr/local).
+  In the sequel, <CODE>prefix</CODE> is the path prefix under which
+  the library has been installed (typically <CODE>/usr</CODE> or
+  <CODE>/usr/local</CODE>).
 
   <H2>Overview</H2>
 
@@ -49,29 +50,29 @@ site: http://www.cs.unipr.it/ppl/ . */
   - When the Parma Polyhedra Library is configured, it will automatically
     test for the existence of the Java system (unless configuration options
     are passed to disable the build of the Java interface;
-    see configuration option <code>--enable-interfaces</code>).
+    see configuration option <CODE>--enable-interfaces</CODE>).
     If Java is correctly installed in a standard location, things will be
     arranged so that the Java interface is built and installed
-    (see configuration option <code>--with-java</code> if you need to
+    (see configuration option <CODE>--with-java</CODE> if you need to
     specify a non-standard location for the Java system).
 
   - The Java interface files are all installed in the directory
-    \c prefix/lib/ppl.  Since this includes shared and
+    <CODE>prefix/lib/ppl</CODE>.  Since this includes shared and
     dynamically loaded libraries, you must make your dynamic
     linker/loader aware of this fact.  If you use a GNU/Linux system,
     try the commands <CODE>man ld.so</CODE> and <CODE>man ldconfig</CODE>
     for more information.
 
   - Any application using the PPL should:
-      - Load the PPL interface library by calling <code>System.load</code>
+      - Load the PPL interface library by calling <CODE>System.load</CODE>
         and passing the full path of the dynamic shared object;
       - Make sure that only the intended version(s) of the library has
-        been loaded, e.g., by calling static method <code>version()</code>
-        in class \c parma_polyhedra_library.Parma_Polyhedra_Library;
+        been loaded, e.g., by calling static method <CODE>version()</CODE>
+        in class <CODE>parma_polyhedra_library.Parma_Polyhedra_Library</CODE>;
       - Starting from version 0.11, initialize the interface by calling
-        static method <code>initialize_library()</code>;
+        static method <CODE>initialize_library()</CODE>;
         when all library work is done, finalize the interface by calling
-        <code>finalize_library()</code>.
+        <CODE>finalize_library()</CODE>.
 
   - The numerical abstract domains available to the Java user as
     Java classes consist of the <EM>simple</EM> domains,
@@ -79,7 +80,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     of simple domains. Note that the default configuration will
     only enable a subset of these domains (if you need a different
     set of domains, see configuration option
-    <code>--enable-instantiations</code>).
+    <CODE>--enable-instantiations</CODE>).
     - The simple domains are:
       - convex polyhedra, which consist of C_Polyhedron and
         NNC_Polyhedron;<BR>
@@ -159,7 +160,7 @@ public class Parma_Polyhedra_Library {
       This method must be called when work with the library is done.
       After finalization, no other library method can be called
       (except those in class Parma_Polyhedra_Library), unless the library
-      is re-initialized by calling <code>initialize_library()</code>.
+      is re-initialized by calling <CODE>initialize_library()</CODE>.
     */
     public static native void finalize_library();
 
@@ -246,10 +247,10 @@ public class Parma_Polyhedra_Library {
       Computations taking exponential time will be interrupted some time
       after \p hsecs hundreths of seconds have elapsed since the call to
       the timeout setting function, by throwing a
-      <code>Timeout_Exception</code> object.
+      <CODE>Timeout_Exception</CODE> object.
       Otherwise, if the computation completes without being interrupted,
       then the timeout should be reset by calling
-      <code>reset_timeout()</code>.
+      <CODE>reset_timeout()</CODE>.
     */
     public static native void set_timeout(int hsecs);
 
@@ -268,10 +269,10 @@ public class Parma_Polyhedra_Library {
 
       Computations taking exponential time will be interrupted some time
       after reaching the \p weight complexity threshold, by throwing a
-      <code>Timeout_Exception</code> object.
+      <CODE>Timeout_Exception</CODE> object.
       Otherwise, if the computation completes without being interrupted,
       then the deterministic timeout should be reset by calling
-      <code>reset_deterministic_timeout()</code>.
+      <CODE>reset_deterministic_timeout()</CODE>.
 
       \note
       This "timeout" checking functionality is said to be \e deterministic
