@@ -37,7 +37,6 @@ jmp_buf env;
 
 void
 illegal_instruction_catcher(int) {
-  signal(SIGILL, SIG_DFL);
   longjmp(env, 1);
 }
 
@@ -49,6 +48,7 @@ bool have_sse_unit = true;
 
 void
 detect_sse_unit() {
+  void (*old)(int);
   if (setjmp(env)) {
     // We will end up here if sse_get_control() raises SIGILL.
     have_sse_unit = false;
@@ -56,14 +56,14 @@ detect_sse_unit() {
   }
 
   // Install our own signal handler for SIGILL.
-  signal(SIGILL, illegal_instruction_catcher);
+  old = signal(SIGILL, illegal_instruction_catcher);
   (void) sse_get_control();
   // sse_get_control() did not raise SIGILL: we have an SSE unit.
   have_sse_unit = true;
 
  restore_sigill_handler:
-  // Restore the default signal handler for SIGILL.
-  signal(SIGILL, SIG_DFL);
+  // Restore the previous signal handler for SIGILL.
+  signal(SIGILL, old);
 }
 
 } // namespace Parma_Polyhedra_Library
