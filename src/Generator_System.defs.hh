@@ -25,13 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_System_defs_hh 1
 
 #include "Generator_System.types.hh"
-#include "Grid_Generator_System.types.hh"
+
 #include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Linear_Row.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
-#include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include <iosfwd>
 
@@ -48,10 +47,6 @@ namespace IO_Operators {
 std::ostream& operator<<(std::ostream& s, const Generator_System& gs);
 
 } // namespace IO_Operators
-
-// Put it in the namespace here to declare it friend later.
-/*! \relates Polyhedron */
-bool operator==(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -293,14 +288,13 @@ private:
   static const Generator_System* zero_dim_univ_p;
 
   friend class Generator_System_const_iterator;
-  friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
-  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
-
+public:
+  // TODO: Consider making this private.
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);
 
+private:
   /*! \brief
     Builds a system of \p n_rows rays/points on a \p n_columns - 1
     dimensional space (including the \f$\epsilon\f$ dimension, if
@@ -309,6 +303,8 @@ private:
   Generator_System(Topology topol,
 		   dimension_type n_rows, dimension_type n_columns);
 
+public:
+  // TODO: Make this private.
   /*! \brief
     Adjusts \p *this so that it matches the topology and
     the number of space dimensions given as parameters
@@ -320,6 +316,7 @@ private:
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
+  // TODO: Make this private.
   /*! \brief
     For each unmatched closure point in \p *this, adds the
     corresponding point.
@@ -329,12 +326,14 @@ private:
   */
   void add_corresponding_points();
 
+  // TODO: Make this private.
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains one or more points.
   */
   bool has_points() const;
 
+  // TODO: Make this private.
   /*! \brief
     For each unmatched point in \p *this, adds the corresponding
     closure point.
@@ -344,6 +343,7 @@ private:
   */
   void add_corresponding_closure_points();
 
+  // TODO: Consider making this private.
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains one or more closure points.
@@ -360,9 +360,12 @@ private:
   //! system.
   void convert_into_non_necessarily_closed();
 
+public:
+  // TODO: Consider making this private.
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](dimension_type k) const;
 
+  // TODO: Consider making this private.
   /*! \brief
     Returns the relations holding between the generator system
     and the constraint \p c.
@@ -370,9 +373,11 @@ private:
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c) const;
 
+  // TODO: Make this private.
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   bool satisfied_by_all_generators(const Constraint& c) const;
 
+private:
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   /*!
     It is assumed that <CODE>c.is_necessarily_closed()</CODE> holds.
@@ -385,6 +390,8 @@ private:
   */
   bool satisfied_by_all_generators_NNC(const Constraint& c) const;
 
+public:
+  // TODO: Consider making this private.
   //! Assigns to a given variable an affine expression.
   /*!
     \param v
@@ -416,18 +423,23 @@ private:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator);
 
+  // TODO: Consider making this private.
   //! Returns the number of lines of the system.
   dimension_type num_lines() const;
 
+  // TODO: Consider making this private.
   //! Returns the number of rays of the system.
   dimension_type num_rays() const;
 
+  // TODO: Make this private.
   //! Removes all the invalid lines and rays.
   /*!
     The invalid lines and rays are those with all
     the homogeneous terms set to zero.
   */
   void remove_invalid_lines_and_rays();
+
+private:
 
   /*! \brief
     Applies Gaussian elimination and back-substitution so as
@@ -437,6 +449,8 @@ private:
   */
   void simplify();
 
+public:
+  // TODO: Consider making this private.
   /*! \brief
     Inserts in \p *this a copy of the generator \p g,
     increasing the number of space dimensions if needed.
@@ -444,6 +458,7 @@ private:
   */
   void insert_pending(const Generator& g);
 
+  // TODO: Consider making this private.
   /*! \brief
     Inserts in \p *this the generator \p g, stealing its contents and
     increasing the number of space dimensions if needed.
