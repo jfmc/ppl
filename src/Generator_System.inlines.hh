@@ -26,34 +26,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Generator_System.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline
 Generator_System::Generator_System()
-  : Base(NECESSARILY_CLOSED) {
+  : sys(NECESSARILY_CLOSED) {
 }
 
 inline
 Generator_System::Generator_System(const Generator& g)
-  : Base(g.topology()) {
-  Base::insert(g);
+  : sys(g.topology()) {
+  sys.insert(g);
 }
 
 inline
 Generator_System::Generator_System(const Generator_System& gs)
-  : Base(gs) {
+  : sys(gs.sys) {
 }
 
 inline
 Generator_System::Generator_System(const Topology topol)
-  : Base(topol) {
+  : sys(topol) {
 }
 
 inline
 Generator_System::Generator_System(const Topology topol,
 				   const dimension_type n_rows,
 				   const dimension_type n_columns)
-  : Base(topol, n_rows, n_columns) {
+  : sys(topol, n_rows, n_columns) {
 }
 
 inline
@@ -62,28 +66,209 @@ Generator_System::~Generator_System() {
 
 inline Generator_System&
 Generator_System::operator=(const Generator_System& y) {
-  Base::operator=(y);
+  sys = y.sys;
   return *this;
 }
 
 inline dimension_type
 Generator_System::max_space_dimension() {
-  return Base::max_space_dimension();
+  return Linear_System<Linear_Row>::max_space_dimension();
 }
 
 inline dimension_type
 Generator_System::space_dimension() const {
-  return Base::space_dimension();
+  return sys.space_dimension();
 }
 
 inline void
 Generator_System::clear() {
-  Base::clear();
+  sys.clear();
 }
 
 inline const Generator&
 Generator_System::operator[](const dimension_type k) const {
-  return static_cast<const Generator&>(Base::operator[](k));
+  return static_cast<const Generator&>(sys[k]);
+}
+
+inline void
+Generator_System::permute_columns(const std::vector<dimension_type>& cycles) {
+  sys.permute_columns(cycles);
+}
+
+inline dimension_type
+Generator_System::num_rows() const {
+  return sys.num_rows();
+}
+
+inline void
+Generator_System::add_universe_rows_and_columns(dimension_type n) {
+  sys.add_universe_rows_and_columns(n);
+}
+
+inline void
+Generator_System::swap_columns(dimension_type i, dimension_type j) {
+  sys.swap_columns(i, j);
+}
+
+inline Topology
+Generator_System::topology() const {
+  return sys.topology();
+}
+
+inline dimension_type
+Generator_System::num_columns() const {
+  return sys.num_columns();
+}
+
+inline void
+Generator_System::remove_trailing_columns(dimension_type n) {
+  return sys.remove_trailing_columns(n);
+}
+
+inline dimension_type
+Generator_System::first_pending_row() const {
+  return sys.first_pending_row();
+}
+
+inline void
+Generator_System::unset_pending_rows() {
+  sys.unset_pending_rows();
+}
+
+inline void
+Generator_System::release_row(Linear_Row& row) {
+  sys.release_row(row);
+}
+
+inline void
+Generator_System::release_rows(Swapping_Vector<Linear_Row>& v) {
+  sys.release_rows(v);
+}
+
+inline void
+Generator_System::take_ownership_of_rows(Swapping_Vector<Linear_Row>& v) {
+  sys.take_ownership_of_rows(v);
+}
+
+inline void
+Generator_System::set_sorted(bool b) {
+  sys.set_sorted(b);
+}
+
+inline bool
+Generator_System::is_sorted() const {
+  return sys.is_sorted();
+}
+
+inline void
+Generator_System::add_zero_columns(dimension_type n) {
+  sys.add_zero_columns(n);
+}
+
+inline void
+Generator_System::set_index_first_pending_row(dimension_type i) {
+  sys.set_index_first_pending_row(i);
+}
+
+inline bool
+Generator_System::is_necessarily_closed() const {
+  return sys.is_necessarily_closed();
+}
+
+inline void
+Generator_System::assign_with_pending(const Generator_System& y) {
+  sys.assign_with_pending(y.sys);
+}
+
+inline dimension_type
+Generator_System::num_pending_rows() const {
+  return sys.num_pending_rows();
+}
+
+inline void
+Generator_System::sort_pending_and_remove_duplicates() {
+  return sys.sort_pending_and_remove_duplicates();
+}
+
+inline void
+Generator_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
+  sys.sort_and_remove_with_sat(sat);
+}
+
+inline void
+Generator_System::sort_rows() {
+  sys.sort_rows();
+}
+
+inline bool
+Generator_System::check_sorted() const {
+  return sys.check_sorted();
+}
+
+inline dimension_type
+Generator_System::num_lines_or_equalities() const {
+  return sys.num_lines_or_equalities();
+}
+
+inline void
+Generator_System::resize_no_copy(dimension_type new_n_rows,
+                                 dimension_type new_n_columns) {
+  sys.resize_no_copy(new_n_rows, new_n_columns);
+}
+
+inline void
+Generator_System::swap_rows(dimension_type i, dimension_type j) {
+  sys.swap_rows(i, j);
+}
+
+inline void
+Generator_System::remove_trailing_rows(dimension_type n) {
+  sys.remove_trailing_rows(n);
+}
+
+inline dimension_type
+Generator_System::gauss(dimension_type n_lines_or_equalities) {
+  return sys.gauss(n_lines_or_equalities);
+}
+
+inline void
+Generator_System::back_substitute(dimension_type n_lines_or_equalities) {
+  sys.back_substitute(n_lines_or_equalities);
+}
+
+inline void
+Generator_System::strong_normalize() {
+  sys.strong_normalize();
+}
+
+inline void
+Generator_System::merge_rows_assign(const Generator_System& y) {
+  sys.merge_rows_assign(y.sys);
+}
+
+inline void
+Generator_System::insert(const Generator_System& y) {
+  sys.insert(y.sys);
+}
+
+inline void
+Generator_System::insert_pending(const Generator_System& r) {
+  sys.insert_pending(r.sys);
+}
+
+inline void
+Generator_System::insert_recycled(Linear_Row& lr) {
+  sys.insert_recycled(lr);
+}
+
+inline bool
+operator==(const Generator_System& x, const Generator_System& y) {
+  return x.sys == y.sys;
+}
+
+inline bool
+operator!=(const Generator_System& x, const Generator_System& y) {
+  return !(x == y);
 }
 
 inline
@@ -145,27 +330,32 @@ Generator_System_const_iterator::operator!=(const Generator_System_const_iterato
 
 inline
 Generator_System_const_iterator::
-Generator_System_const_iterator(const Generator_System::Base::const_iterator& iter,
-	       const Generator_System& gsys)
-  : i(iter), gsp(&gsys) {
+Generator_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
+                                const Generator_System& gsys)
+  : i(iter), gsp(&gsys.sys) {
 }
 
 inline bool
 Generator_System::empty() const {
-  return Base::has_no_rows();
+  return sys.has_no_rows();
+}
+
+inline bool
+Generator_System::has_no_rows() const {
+  return sys.has_no_rows();
 }
 
 inline Generator_System::const_iterator
 Generator_System::begin() const {
-  const_iterator i(Base::begin(), *this);
-  if (!is_necessarily_closed())
+  const_iterator i(sys.begin(), *this);
+  if (!sys.is_necessarily_closed())
     i.skip_forward();
   return i;
 }
 
 inline Generator_System::const_iterator
 Generator_System::end() const {
-  const const_iterator i(Base::end(), *this);
+  const const_iterator i(sys.end(), *this);
   return i;
 }
 
@@ -177,22 +367,22 @@ Generator_System::zero_dim_univ() {
 
 inline void
 Generator_System::swap(Generator_System& y) {
-  Base::swap(y);
+  sys.swap(y.sys);
 }
 
 inline memory_size_type
 Generator_System::external_memory_in_bytes() const {
-  return Base::external_memory_in_bytes();
+  return sys.external_memory_in_bytes();
 }
 
 inline memory_size_type
 Generator_System::total_memory_in_bytes() const {
-  return Base::total_memory_in_bytes();
+  return external_memory_in_bytes() + sizeof(*this);
 }
 
 inline void
 Generator_System::simplify() {
-  Base::simplify();
+  sys.simplify();
   remove_invalid_lines_and_rays();
 }
 
