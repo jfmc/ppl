@@ -30,6 +30,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "fpu.defs.hh"
 #include <csetjmp>
 #include <csignal>
+// This inclusion is to work around a bug present in some versions
+// of GCC under mingw-w64.
+// See http://www.cs.unipr.it/pipermail/ppl-devel/2011-February/017342.html
+#include <cstddef>
 
 namespace {
 
