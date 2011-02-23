@@ -479,38 +479,38 @@ template <typename To, typename To_Policy>
 typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, char* x, Rounding_Dir dir);
 
-#define FUNC1(name) \
+#define FUNC1_A(name) \
 template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
 name(To& to, const From& x, Rounding_Dir dir);
 
-FUNC1(assign_r)
-FUNC1(floor_assign_r)
-FUNC1(ceil_assign_r)
-FUNC1(trunc_assign_r)
-FUNC1(neg_assign_r)
-FUNC1(abs_assign_r)
-FUNC1(sqrt_assign_r)
+FUNC1_A(assign_r)
+FUNC1_A(floor_assign_r)
+FUNC1_A(ceil_assign_r)
+FUNC1_A(trunc_assign_r)
+FUNC1_A(neg_assign_r)
+FUNC1_A(abs_assign_r)
+FUNC1_A(sqrt_assign_r)
 
-#undef FUNC1
+#undef FUNC1_A
 
-#define FUNC1(name) \
+#define FUNC1_B(name) \
 template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
 name(To& to, const From& x, int exp, Rounding_Dir dir);
 
-FUNC1(add_2exp_assign_r)
-FUNC1(sub_2exp_assign_r)
-FUNC1(mul_2exp_assign_r)
-FUNC1(div_2exp_assign_r)
-FUNC1(smod_2exp_assign_r)
-FUNC1(umod_2exp_assign_r)
+FUNC1_B(add_2exp_assign_r)
+FUNC1_B(sub_2exp_assign_r)
+FUNC1_B(mul_2exp_assign_r)
+FUNC1_B(div_2exp_assign_r)
+FUNC1_B(smod_2exp_assign_r)
+FUNC1_B(umod_2exp_assign_r)
 
-#undef FUNC1
+#undef FUNC1_B
 
 #define FUNC2(name) \
 template <typename To, typename From1, typename From2> \

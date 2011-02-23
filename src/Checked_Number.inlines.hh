@@ -344,7 +344,7 @@ assign_r(To& to, const char* x, Rounding_Dir dir) {
 		      dir);
 }
 
-#define FUNC1(name, func) \
+#define FUNC1_A(name, func) \
 template <typename To, typename From>					\
 inline typename Enable_If<Is_Native_Or_Checked<To>::value               \
                           && Is_Native_Or_Checked<From>::value,         \
@@ -359,18 +359,18 @@ name(To& to, const From& x, Rounding_Dir dir) {				\
 			   rounding_dir(dir)), dir);			\
 }
 
-FUNC1(construct, construct_ext)
-FUNC1(assign_r, assign_ext)
-FUNC1(floor_assign_r, floor_ext)
-FUNC1(ceil_assign_r, ceil_ext)
-FUNC1(trunc_assign_r, trunc_ext)
-FUNC1(neg_assign_r, neg_ext)
-FUNC1(abs_assign_r, abs_ext)
-FUNC1(sqrt_assign_r, sqrt_ext)
+FUNC1_A(construct, construct_ext)
+FUNC1_A(assign_r, assign_ext)
+FUNC1_A(floor_assign_r, floor_ext)
+FUNC1_A(ceil_assign_r, ceil_ext)
+FUNC1_A(trunc_assign_r, trunc_ext)
+FUNC1_A(neg_assign_r, neg_ext)
+FUNC1_A(abs_assign_r, abs_ext)
+FUNC1_A(sqrt_assign_r, sqrt_ext)
 
-#undef FUNC1
+#undef FUNC1_A
 
-#define FUNC1(name, func) \
+#define FUNC1_B(name, func) \
 template <typename To, typename From>					\
 inline typename Enable_If<Is_Native_Or_Checked<To>::value		\
                           && Is_Native_Or_Checked<From>::value,         \
@@ -387,14 +387,14 @@ name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
 		 dir);							\
 }
 
-FUNC1(add_2exp_assign_r, add_2exp_ext)
-FUNC1(sub_2exp_assign_r, sub_2exp_ext)
-FUNC1(mul_2exp_assign_r, mul_2exp_ext)
-FUNC1(div_2exp_assign_r, div_2exp_ext)
-FUNC1(smod_2exp_assign_r, smod_2exp_ext)
-FUNC1(umod_2exp_assign_r, umod_2exp_ext)
+FUNC1_B(add_2exp_assign_r, add_2exp_ext)
+FUNC1_B(sub_2exp_assign_r, sub_2exp_ext)
+FUNC1_B(mul_2exp_assign_r, mul_2exp_ext)
+FUNC1_B(div_2exp_assign_r, div_2exp_ext)
+FUNC1_B(smod_2exp_assign_r, smod_2exp_ext)
+FUNC1_B(umod_2exp_assign_r, umod_2exp_ext)
 
-#undef FUNC1
+#undef FUNC1_B
 
 #define FUNC2(name, func) \
 template <typename To, typename From1, typename From2>			\
