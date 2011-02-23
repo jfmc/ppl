@@ -390,7 +390,7 @@ PPL::Dense_Row::ascii_dump(std::ostream& s) const {
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
-    s << x[i];
+    s << x[i] << ' ';
   s << "\n";
 }
 
