@@ -23,6 +23,10 @@ o  Fixed the semantics of the `--disable-fpmath' configure option
 
 o  The PPL no longer overwrites the SIGILL signal handler.
 
+o  Minor documentation fixes.
+
+o  Portability improved.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.11.1  (released on February 20, 2011)
