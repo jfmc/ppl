@@ -181,8 +181,8 @@ int main() {
   ac_cv_gmp_supports_exceptions=yes,
   AC_MSG_RESULT(no)
   ac_cv_gmp_supports_exceptions=no,
-  AC_MSG_RESULT([assuming not])
-  ac_cv_gmp_supports_exceptions=no)
+  AC_MSG_RESULT([assuming yes])
+  ac_cv_gmp_supports_exceptions=yes)
 
 gmp_supports_exceptions=${ac_cv_gmp_supports_exceptions}
 if test x"$gmp_supports_exceptions" = xyes
