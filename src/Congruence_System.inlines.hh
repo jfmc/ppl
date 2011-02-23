@@ -154,9 +154,10 @@ Congruence_System::clear() {
 inline void
 Congruence_System::resize_no_copy(const dimension_type new_num_rows,
 				  const dimension_type new_num_columns) {
+  PPL_ASSERT(new_num_columns >= 2);
   rows.resize(new_num_rows);
   for (dimension_type i = new_num_rows; i-- > 0; )
-    rows[i].resize(new_num_columns);
+    rows[i].set_space_dimension(new_num_columns - 2);
   num_columns_ = new_num_columns;
 }
 
