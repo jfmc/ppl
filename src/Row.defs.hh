@@ -115,7 +115,7 @@ public:
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
       otherwise.  The ASCII representation is as output by
-      \ref Parma_Polyhedra_Library::Row::Flags::ascii_dump.
+      \ref Parma_Polyhedra_Library::Row::Flags::ascii_dump().
     */
     bool ascii_load(std::istream& s);
 
