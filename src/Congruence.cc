@@ -35,19 +35,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence::Congruence(const Constraint& c)
-  : Dense_Row(c.is_equality()
+  : row(c.is_equality()
 	? c
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
 	   c),
 	c.space_dimension() + 2,
 	compute_capacity(c.space_dimension() + 2, Dense_Row::max_size())) {
-  (*this)[size()-1] = 0;
+  row[row.size() - 1] = 0;
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
                             dimension_type new_space_dimension)
-  : Dense_Row(c.is_equality()
+  : row(c.is_equality()
         ? c
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
@@ -59,7 +59,7 @@ PPL::Congruence::Congruence(const Constraint& c,
 
 PPL::Congruence::Congruence(const Constraint& c,
                             dimension_type sz, dimension_type capacity)
-  : Dense_Row(c.is_equality()
+  : row(c.is_equality()
         ? c
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
@@ -67,28 +67,27 @@ PPL::Congruence::Congruence(const Constraint& c,
         sz,
         capacity) {
   PPL_ASSERT(sz > 1);
-  (*this)[sz-1] = 0;
+  row[sz - 1] = 0;
 }
 
 void
 PPL::Congruence::sign_normalize() {
-  Dense_Row& x = *this;
-  const dimension_type sz = x.size() - 1;
+  const dimension_type sz = row.size() - 1;
   // `first_non_zero' indicates the index of the first
   // coefficient of the row different from zero, disregarding
   // the very first coefficient (inhomogeneous term).
   dimension_type first_non_zero;
   for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
-    if (x[first_non_zero] != 0)
+    if (row[first_non_zero] != 0)
       break;
   if (first_non_zero < sz)
     // If the first non-zero coefficient of the row is negative,
     // negate all the coefficients and the inhomogeneous term.
-    if (x[first_non_zero] < 0) {
+    if (row[first_non_zero] < 0) {
       for (dimension_type j = first_non_zero; j < sz; ++j)
-	neg_assign(x[j]);
+	neg_assign(row[j]);
       // Also negate the inhomogeneous term.
-      neg_assign(x[0]);
+      neg_assign(row[0]);
     }
 }
 
@@ -96,7 +95,7 @@ void
 PPL::Congruence::normalize() {
   sign_normalize();
 
-  dimension_type sz = size();
+  dimension_type sz = row.size();
   if (sz == 0)
     return;
 
@@ -104,7 +103,7 @@ PPL::Congruence::normalize() {
   if (mod == 0)
     return;
 
-  Coefficient& row_0 = (*this)[0];
+  Coefficient& row_0 = row[0];
   // Factor the modulus out of the inhomogeneous term.
   row_0 %= mod;
   if (row_0 < 0)
@@ -116,13 +115,13 @@ PPL::Congruence::normalize() {
 void
 PPL::Congruence::strong_normalize() {
   normalize();
-  Dense_Row::normalize();
+  row.normalize();
 }
 
 void
 PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
-  for (dimension_type i = size(); i-- > 0; )
-    Dense_Row::operator[](i) *= factor;
+  for (dimension_type i = row.size(); i-- > 0; )
+    row[i] *= factor;
 }
 
 void
@@ -131,7 +130,7 @@ PPL::Congruence
                   Coefficient_traits::const_reference denominator) {
   const dimension_type expr_size = expr.get_linear_row().size();
 
-  Coefficient& row_v = (*this)[v];
+  Coefficient& row_v = row[v];
 
   if (row_v == 0)
     return;
@@ -142,12 +141,12 @@ PPL::Congruence
     for (dimension_type j = expr_size; j-- > 0; )
       if (j != v)
         // row[j] = row[j] + row_v * expr[j]
-        add_mul_assign((*this)[j], row_v, expr.get_linear_row()[j]);
+        add_mul_assign(row[j], row_v, expr.get_linear_row()[j]);
 
   } else {
-    for (dimension_type j = size(); j-- > 0; )
+    for (dimension_type j = row.size(); j-- > 0; )
       if (j != v) {
-        Coefficient& row_j = (*this)[j];
+        Coefficient& row_j = row[j];
         row_j *= denominator;
         if (j < expr_size)
           add_mul_assign(row_j, row_v, expr.get_linear_row()[j]);
@@ -239,7 +238,7 @@ PPL::Congruence::is_tautological() const {
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
     for (unsigned i = space_dimension(); i > 0; --i)
-      if (operator[](i) != 0)
+      if (row[i] != 0)
 	return false;
     return true;
   }
@@ -253,20 +252,19 @@ PPL::Congruence::is_inconsistent() const {
 	  && ((inhomogeneous_term() % modulus()) == 0)))
     return false;
   for (unsigned i = space_dimension(); i > 0; --i)
-    if (operator[](i) != 0)
+    if (row[i] != 0)
       return false;
   return true;
 }
 
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
-  const Dense_Row& x = *this;
-  const dimension_type x_size = x.size();
-  s << "size " << x_size << " ";
-  if (x_size > 0) {
-    for (dimension_type i = 0; i < x_size - 1; ++i)
-      s << x[i] << ' ';
-    s << "m " << x[x_size - 1];
+  const dimension_type row_size = row.size();
+  s << "size " << row_size << " ";
+  if (row_size > 0) {
+    for (dimension_type i = 0; i < row_size - 1; ++i)
+      s << row[i] << ' ';
+    s << "m " << row[row_size - 1];
   }
   s << std::endl;
 }
@@ -282,22 +280,21 @@ PPL::Congruence::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  Dense_Row& x = *this;
-  const dimension_type old_size = x.size();
+  const dimension_type old_size = row.size();
   if (new_size < old_size)
-    x.shrink(new_size);
+    row.shrink(new_size);
   else if (new_size > old_size) {
     Dense_Row y(new_size);
-    x.swap(y);
+    std::swap(row, y);
   }
 
   if (new_size > 0) {
     for (dimension_type col = 0; col < new_size - 1; ++col)
-      if (!(s >> x[col]))
+      if (!(s >> row[col]))
 	return false;
     if (!(s >> str) || str != "m")
       return false;
-    if (!(s >> x[new_size-1]))
+    if (!(s >> row[new_size-1]))
       return false;
   }
   return true;
@@ -306,7 +303,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
 bool
 PPL::Congruence::OK() const {
   // A Congruence must be a valid Dense_Row.
-  if (!Dense_Row::OK())
+  if (!row.OK())
     return false;
 
   // Modulus check.
@@ -330,7 +327,7 @@ PPL::operator+=(Congruence& c1, const Congruence& c2) {
   if (c1.space_dimension() < c2.space_dimension())
     c1.set_space_dimension(c2.space_dimension());
   for (dimension_type i = c2.space_dimension() + 1; i-- > 0; )
-    c1.Dense_Row::operator[](i) += c2[i];
+    c1.row[i] += c2.row[i];
   return c1;
 }
 
@@ -342,7 +339,7 @@ PPL::operator-=(Congruence& c1, const Congruence& c2) {
   if (c1.space_dimension() < c2.space_dimension())
     c1.set_space_dimension(c2.space_dimension());
   for (dimension_type i = c2.space_dimension() + 1; i-- > 0; )
-    c1.Dense_Row::operator[](i) -= c2[i];
+    c1.row[i] -= c2.row[i];
   return c1;
 }
 
@@ -356,7 +353,7 @@ PPL::add_mul_assign(Congruence& c1,
   if (c1.space_dimension() < c2.space_dimension())
     c1.set_space_dimension(c2.space_dimension());
   for (dimension_type i = c2.space_dimension() + 1; i-- > 0; )
-    add_mul_assign(c1.Dense_Row::operator[](i), factor, c2[i]);
+    add_mul_assign(c1.row[i], factor, c2.row[i]);
 }
 
 void
@@ -369,7 +366,7 @@ PPL::sub_mul_assign(Congruence& c1,
   if (c1.space_dimension() < c2.space_dimension())
     c1.set_space_dimension(c2.space_dimension());
   for (dimension_type i = c2.space_dimension() + 1; i-- > 0; )
-    sub_mul_assign(c1.Dense_Row::operator[](i), factor, c2[i]);
+    sub_mul_assign(c1.row[i], factor, c2.row[i]);
 }
 
 

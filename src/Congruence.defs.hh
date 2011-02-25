@@ -39,6 +39,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 // These are declared here because they are friend of Congruence.
 namespace Parma_Polyhedra_Library {
 
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Congruence */
+bool
+operator==(const Congruence& x, const Congruence& y);
+
+//! Returns <CODE>false</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Congruence */
+bool
+operator!=(const Congruence& x, const Congruence& y);
+
 //! Sums \p c2 into \p c1 .
 /*!
   If \p c1 represents the congruence \f$ e_1 = k_1 \pmod{m_1}\f$ and
@@ -198,7 +208,7 @@ void sub_mul_assign(Congruence& c1,
   syntactically different from the (semantically equivalent)
   congruence considered.
 */
-class Parma_Polyhedra_Library::Congruence : public Dense_Row {
+class Parma_Polyhedra_Library::Congruence {
 public:
 
   //! Constructs the 0 = 0 congruence with space dimension \p n .
@@ -227,6 +237,12 @@ public:
   dimension_type space_dimension() const;
 
   void permute_dimensions(const std::vector<dimension_type>& cycles);
+
+  // TODO: Remove this.
+  Coefficient_traits::const_reference operator[](dimension_type i) const;
+
+  // TODO: Remove this.
+  Coefficient& operator[](dimension_type i);
 
   //! Returns the coefficient of \p v in \p *this.
   /*!
@@ -460,6 +476,8 @@ private:
   */
   static const Congruence* zero_dim_integrality_p;
 
+  Dense_Row row;
+
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
     error message \p message.
@@ -475,6 +493,12 @@ private:
   throw_dimension_incompatible(const char* method,
 			       const char* v_name,
 			       Variable v) const;
+
+  friend bool
+  operator==(const Congruence& x, const Congruence& y);
+
+  friend bool
+  operator!=(const Congruence& x, const Congruence& y);
 
   friend Congruence&
   operator+=(Congruence& c1, const Congruence& c2);
@@ -504,16 +528,6 @@ std::ostream&
 operator<<(std::ostream& s, const Congruence& c);
 
 } // namespace IO_Operators
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence */
-bool
-operator==(const Congruence& x, const Congruence& y);
-
-//! Returns <CODE>false</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates Congruence */
-bool
-operator!=(const Congruence& x, const Congruence& y);
 
 //! Returns the congruence \f$e1 = e2 \pmod{1}\f$.
 /*! \relates Congruence */
