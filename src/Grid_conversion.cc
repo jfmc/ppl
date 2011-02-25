@@ -193,10 +193,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   if (diagonal_lcm == 0)
     throw std::runtime_error("PPL internal error: Grid::conversion:"
 			     " source matrix is singular.");
-
-  Swapping_Vector<Congruence> dest_recyclable_rows;
-  dest.release_rows(dest_recyclable_rows);
-
+  dest.clear();
   dest.set_space_dimension(dims - 1);
 
   // In `dest' initialize row types and elements, including setting
@@ -207,34 +204,23 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     if (dim_kinds[dim] == LINE)
       --source_index;
     else {
-      Congruence cg;
-      if (dest_recyclable_rows.empty()) {
-        Congruence tmp(dest.space_dimension());
-        std::swap(cg, tmp);
-      } else {
-        // Recycle an old congruence.
-        std::swap(cg, dest_recyclable_rows.back());
-        dest_recyclable_rows.pop_back();
-
-        cg.set_space_dimension(dest.space_dimension());
-
-        // Set the appropriate elements to zero.
-        for (dimension_type j = dim; j-- > 0; )
-          cg[j] = 0;
-        for (dimension_type j = dim + 1; j < dims; ++j)
-          cg[j] = 0;
-      }
+      Linear_Expression le;
+      // The `+ 1' is needed because the Congruence constructor that takes
+      // a Linear_Expression currently reduces the space dimension by 1.
+      le.set_space_dimension(dest.space_dimension() + 1);
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
-	cg[dims] = 0;		// An equality.
-	cg[dim] = 1;
+        le.get_linear_row()[dim] = 1;
+        Congruence cg(le, Coefficient_zero());
+        dest.insert_verbatim_recycled(cg);
       } else {
 	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
 	--source_index;
-	cg[dims] = 1;		// A proper congruence.
-	exact_div_assign(cg[dim], diagonal_lcm, source[source_index][dim]);
+	exact_div_assign(le.get_linear_row()[dim], diagonal_lcm,
+                         source[source_index][dim]);
+        Congruence cg(le, Coefficient_one());
+        dest.insert_verbatim_recycled(cg);
       }
-      dest.insert_verbatim_recycled(cg);
     }
   }
 
