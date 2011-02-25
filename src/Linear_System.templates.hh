@@ -192,7 +192,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   set_sorted(sortedness);
 
   // Check invariants.
-  PPL_ASSERT(OK(true));
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -245,9 +245,7 @@ Linear_System<Row>::insert_recycled(Row& r) {
 
   // The added row was not a pending row.
   PPL_ASSERT(num_pending_rows() == 0);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -301,9 +299,7 @@ Linear_System<Row>::insert_pending_recycled(Row& r) {
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -327,9 +323,7 @@ Linear_System<Row>::insert_pending_recycled(Linear_System& y) {
 
   y.clear();
 
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -368,9 +362,7 @@ Linear_System<Row>::insert_recycled(Linear_System& y) {
   // There are no pending_rows.
   unset_pending_rows();
 
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -381,9 +373,7 @@ Linear_System<Row>::sort_rows() {
   sort_rows(0, first_pending_row());
   set_index_first_pending_row(num_rows() - num_pending);
   sorted = true;
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -473,9 +463,7 @@ Linear_System<Row>::add_recycled_pending_row(Row& r) {
   r.resize(num_columns());
   std::swap(rows.back(), r);
 
-  // Do not check for strong normalization, because no modification of
-  // rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -594,7 +582,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   // having no pending rows and exactly `n_lines_or_equalities'
   // lines or equalities, all of which occur before the rays or points
   // or inequalities.
-  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.OK());
   PPL_ASSERT(x.num_pending_rows() == 0);
   PPL_ASSERT(n_lines_or_equalities == x.num_lines_or_equalities());
 #ifndef NDEBUG
@@ -634,7 +622,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   if (changed)
     x.set_sorted(false);
   // A well-formed system is returned.
-  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.OK());
   return rank;
 }
 
@@ -647,7 +635,7 @@ Linear_System<Row>
   // having no pending rows and exactly `n_lines_or_equalities'
   // lines or equalities, all of which occur before the first ray
   // or point or inequality.
-  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.OK());
   PPL_ASSERT(x.num_columns() >= 1);
   PPL_ASSERT(x.num_pending_rows() == 0);
   PPL_ASSERT(n_lines_or_equalities <= x.num_lines_or_equalities());
@@ -735,7 +723,7 @@ Linear_System<Row>
   x.set_sorted(still_sorted);
 
   // A well-formed system is returned.
-  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.OK());
 }
 
 template <typename Row>
@@ -744,7 +732,7 @@ Linear_System<Row>::simplify() {
   Linear_System& x = *this;
   // This method is only applied to a well-formed system
   // having no pending rows.
-  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.OK());
   PPL_ASSERT(x.num_pending_rows() == 0);
 
   // Partially sort the linear system so that all lines/equalities come first.
@@ -780,7 +768,7 @@ Linear_System<Row>::simplify() {
   // Apply back-substitution to the system of rays/points/inequalities.
   x.back_substitute(n_lines_or_equalities);
   // A well-formed system is returned.
-  PPL_ASSERT(x.OK(true));
+  PPL_ASSERT(x.OK());
 }
 
 template <typename Row>
@@ -817,7 +805,7 @@ Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
     set_sorted(compare(rows[n-1], rows[n]) <= 0);
 
   // A well-formed system has to be returned.
-  PPL_ASSERT(OK(true));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -881,9 +869,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
     rows.resize(num_rows);
   }
   set_sorted(true);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
-  PPL_ASSERT(OK(false));
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -898,7 +884,7 @@ Linear_System<Row>::check_sorted() const {
 
 template <typename Row>
 bool
-Linear_System<Row>::OK(const bool /* check_strong_normalized */) const {
+Linear_System<Row>::OK() const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -960,12 +946,10 @@ Linear_System<Row>::OK(const bool /* check_strong_normalized */) const {
     return false;
   }
 
+  // Check for topology mismatches.
   const Linear_System& x = *this;
   const dimension_type n_rows = num_rows();
-  for (dimension_type i = 0; i < n_rows; ++i) {
-    if (!x[i].OK(num_columns()))
-      return false;
-    // Checking for topology mismatches.
+  for (dimension_type i = 0; i < n_rows; ++i)
     if (x.topology() != x[i].topology()) {
 #ifndef NDEBUG
       cerr << "Topology mismatch between the system "
@@ -974,7 +958,6 @@ Linear_System<Row>::OK(const bool /* check_strong_normalized */) const {
 #endif
       return false;
     }
-  }
 
   // TODO: Re-enable this. It was disabled because a Linear_System can be a
   // Grid_Generator_System, which in turn can contain non-normalized rows

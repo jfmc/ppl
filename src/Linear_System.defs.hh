@@ -427,17 +427,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
-  /*!
-    \param check_strong_normalized
-    <CODE>true</CODE> if and only if the strong normalization of all
-    the rows in the system has to be checked.
-
-    By default, the strong normalization check is performed.
-    This check may be turned off to avoid useless repeated checking;
-    e.g., when re-checking a well-formed Linear_System after the permutation
-    or deletion of some of its rows.
-  */
-  bool OK(bool check_strong_normalized = true) const;
+  bool OK() const;
 
 private:
   //! Adds a copy of the given row to the system.
