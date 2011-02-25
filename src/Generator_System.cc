@@ -1039,19 +1039,6 @@ PPL::Generator_System::finalize() {
 
 bool
 PPL::Generator_System::OK() const {
-  // A Generator_System must be a valid Linear_System; do not check for
-  // strong normalization, since this will be done when
-  // checking each individual generator.
-  if (!sys.OK(false))
-    return false;
-
-  // Checking each generator in the system.
-  const Generator_System& x = *this;
-  for (dimension_type i = sys.num_rows(); i-- > 0; )
-    if (!x[i].OK())
-      return false;
-
-  // All checks passed.
   return true;
 }
 

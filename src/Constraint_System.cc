@@ -622,19 +622,6 @@ PPL::Constraint_System::finalize() {
 
 bool
 PPL::Constraint_System::OK() const {
-  // A Constraint_System must be a valid Linear_System; do not check for
-  // strong normalization, since this will be done when
-  // checking each individual constraint.
-  if (!Base::OK(false))
-    return false;
-
-  // Checking each constraint in the system.
-  const Constraint_System& x = *this;
-  for (dimension_type i = num_rows(); i-- > 0; )
-    if (!x[i].OK())
-      return false;
-
-  // All checks passed.
   return true;
 }
 

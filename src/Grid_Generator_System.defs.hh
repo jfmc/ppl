@@ -348,11 +348,8 @@ public:
   //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
   bool is_equal_to(const Grid_Generator_System& y) const;
 
+  // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.
-  /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Linear_System and each row in the system is a valid Grid_Generator.
-  */
   bool OK() const;
 
   PPL_OUTPUT_DECLARATIONS

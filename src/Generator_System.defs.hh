@@ -270,11 +270,8 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.
-  /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Linear_System and each row in the system is a valid Generator.
-  */
   bool OK() const;
 
   PPL_OUTPUT_DECLARATIONS
