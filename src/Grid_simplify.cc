@@ -107,8 +107,6 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   // then add to it a (possibly negative) multiple of row such that
   // the result in pivot[column] is the smallest possible positive
   // integer.
-  PPL_ASSERT(pivot.size() > 0);
-  PPL_ASSERT(row.size() > 0);
   row_column = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(old_pivot_col);
   for (dimension_type col = start; col < end; ++col) {
