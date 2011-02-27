@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 // It was added to please KDevelop4.
 #include "Linear_System.defs.hh"
 
+// TODO: Remove this. Linear_System should not depend on Linear_Row.
+#include "Linear_Row.defs.hh"
+
 #include "Bit_Row.defs.hh"
 #include "Coefficient.defs.hh"
 
@@ -418,8 +421,27 @@ operator!=(const Linear_System<Row>& x, const Linear_System<Row>& y) {
 template <typename Row>
 inline bool
 Linear_System<Row>::Row_Less_Than::operator()(const Row& x,
-                                         const Row& y) const {
-  return compare(x, y) < 0;
+                                              const Row& y) const {
+  // TODO: Remove the cast and avoid including Linear_Row.defs.hh.
+  return compare(static_cast<const Linear_Row&>(x),
+                 static_cast<const Linear_Row&>(y)) < 0;
+}
+
+template <typename Row>
+inline
+Linear_System<Row>::Unique_Compare
+::Unique_Compare(const Swapping_Vector<Row>& cont,
+                 dimension_type base)
+  : container(cont), base_index(base) {
+}
+
+template <typename Row>
+inline bool
+Linear_System<Row>::Unique_Compare
+::operator()(dimension_type i, dimension_type j) const {
+  // TODO: Remove the cast and avoid including Linear_Row.defs.hh.
+  return static_cast<const Linear_Row&>(container[base_index + i])
+         == static_cast<const Linear_Row&>(container[base_index + j]);
 }
 
 } // namespace Parma_Polyhedra_Library

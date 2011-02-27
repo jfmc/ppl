@@ -393,7 +393,7 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   // indirect unique comparison and indirect swap operation.
   typedef Swapping_Vector<Row> Cont;
   Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows, first_row);
-  Indirect_Unique_Compare<Cont> unique_cmp(rows, first_row);
+  Unique_Compare unique_cmp(rows, first_row);
   Indirect_Swapper<Cont> swapper(rows, first_row);
 
   const dimension_type num_duplicates
@@ -549,7 +549,7 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
   // indirect unique comparison and indirect swap operation.
   typedef Swapping_Vector<Row> Cont;
   Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows);
-  Indirect_Unique_Compare<Cont> unique_cmp(rows);
+  Unique_Compare unique_cmp(rows);
   Indirect_Swapper2<Cont, Bit_Matrix> swapper(rows, sat);
 
   const dimension_type num_duplicates

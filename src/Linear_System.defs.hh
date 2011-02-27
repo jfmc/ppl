@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_System_defs_hh 1
 
 #include "Linear_System.types.hh"
+
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
 #include "Swapping_Vector.defs.hh"
@@ -469,6 +470,17 @@ private:
   //! Ordering predicate (used when implementing the sort algorithm).
   struct Row_Less_Than {
     bool operator()(const Row& x, const Row& y) const;
+  };
+
+  //! Comparison predicate (used when implementing the unique algorithm).
+  struct Unique_Compare {
+    Unique_Compare(const Swapping_Vector<Row>& cont,
+                   dimension_type base = 0);
+
+    bool operator()(dimension_type i, dimension_type j) const;
+
+    const Swapping_Vector<Row>& container;
+    const dimension_type base_index;
   };
 };
 
