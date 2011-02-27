@@ -115,8 +115,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
       // of the polyhedron are not up-to-date, the polyhedron cannot
       // have pending constraints. By integrating the pending part
       // of `con_sys' we may loose sortedness.
-      con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
+      con_sys.unset_pending_rows();
     }
     con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
@@ -227,8 +227,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
       // of the polyhedron are not up-to-date, the polyhedron cannot
       // have pending generators. By integrating the pending part
       // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
       gen_sys.set_sorted(false);
+      gen_sys.unset_pending_rows();
     }
     // Generators are now up-to-date.
     set_generators_up_to_date();
@@ -289,8 +289,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
       // of the polyhedron are not up-to-date, the polyhedron cannot
       // have pending generators. By integrating the pending part
       // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
       gen_sys.set_sorted(false);
+      gen_sys.unset_pending_rows();
     }
     // Generators are now up-to-date.
     set_generators_up_to_date();
@@ -762,8 +762,8 @@ PPL::Polyhedron::remove_pending_to_obtain_constraints() const {
   // If the polyhedron has pending constraints, simply unset them.
   if (x.has_pending_constraints()) {
     // Integrate the pending constraints, which are possibly not sorted.
-    x.con_sys.unset_pending_rows();
     x.con_sys.set_sorted(false);
+    x.con_sys.unset_pending_rows();
     x.clear_pending_constraints();
     x.clear_constraints_minimized();
     x.clear_generators_up_to_date();
@@ -786,8 +786,8 @@ PPL::Polyhedron::remove_pending_to_obtain_generators() const {
   // If the polyhedron has pending generators, simply unset them.
   if (x.has_pending_generators()) {
     // Integrate the pending generators, which are possibly not sorted.
-    x.gen_sys.unset_pending_rows();
     x.gen_sys.set_sorted(false);
+    x.gen_sys.unset_pending_rows();
     x.clear_pending_generators();
     x.clear_generators_minimized();
     x.clear_constraints_up_to_date();
@@ -2135,6 +2135,10 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
   const bool con_sys_was_sorted = con_sys.is_sorted();
   const dimension_type first_pending_index = con_sys.first_pending_row();
 
+  // This avoids triggering assertions in unset_pending_rows().
+  con_sys.set_sorted(false);
+
+  // This avoids triggering assertions in release_rows().
   con_sys.unset_pending_rows();
 
   Swapping_Vector<Linear_Row> rows;
