@@ -372,10 +372,8 @@ Linear_System<Row>::insert_recycled(Linear_System& y) {
 template <typename Row>
 void
 Linear_System<Row>::sort_rows() {
-  const dimension_type num_pending = num_pending_rows();
   // We sort the non-pending rows only.
   sort_rows(0, first_pending_row());
-  set_index_first_pending_row(num_rows() - num_pending);
   sorted = true;
   PPL_ASSERT(OK());
 }
@@ -388,6 +386,9 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   // We cannot mix pending and non-pending rows.
   PPL_ASSERT(first_row >= first_pending_row()
              || last_row <= first_pending_row());
+
+  bool sorting_pending = (first_row >= first_pending_row());
+  const dimension_type old_num_pending = num_pending_rows();
 
   const dimension_type num_elems = last_row - first_row;
   if (num_elems < 2)
@@ -407,8 +408,14 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
     rows.erase(rows.begin() + (last_row - num_duplicates),
                rows.begin() + last_row);
 
-  // NOTE: we cannot check all invariants of the system here,
-  // because the caller still has to update `index_first_pending'.
+  if (sorting_pending) {
+    PPL_ASSERT(old_num_pending >= num_duplicates);
+    index_first_pending = num_rows() - (old_num_pending - num_duplicates);
+  } else {
+    index_first_pending = num_rows() - old_num_pending;
+  }
+
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
