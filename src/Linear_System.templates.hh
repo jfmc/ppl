@@ -536,11 +536,10 @@ operator==(const Linear_System<Row>& x, const Linear_System<Row>& y) {
 template <typename Row>
 void
 Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
-  Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
-  PPL_ASSERT(sys.first_pending_row() == sat.num_rows());
-  if (sys.first_pending_row() <= 1) {
-    sys.set_sorted(true);
+  PPL_ASSERT(first_pending_row() == sat.num_rows());
+  if (first_pending_row() <= 1) {
+    set_sorted(true);
     return;
   }
 
@@ -556,53 +555,53 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
     = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
 
   const dimension_type new_first_pending_row
-    = sys.first_pending_row() - num_duplicates;
+    = first_pending_row() - num_duplicates;
 
-  if (sys.num_pending_rows() > 0) {
+  if (num_pending_rows() > 0) {
     // In this case, we must put the duplicates after the pending rows.
-    const dimension_type n_rows = sys.num_rows() - 1;
+    const dimension_type n_rows = num_rows() - 1;
     for (dimension_type i = 0; i < num_duplicates; ++i)
-      sys.swap_rows(new_first_pending_row + i, n_rows - i);
+      std::swap(rows[new_first_pending_row + i], rows[n_rows - i]);
   }
+
   // Erasing the duplicated rows...
-  sys.remove_trailing_rows(num_duplicates);
-  sys.set_index_first_pending_row(new_first_pending_row);
+  rows.resize(rows.size() - num_duplicates);
+  index_first_pending = new_first_pending_row;
   // ... and the corresponding rows of the saturation matrix.
   sat.remove_trailing_rows(num_duplicates);
-  PPL_ASSERT(sys.check_sorted());
+
   // Now the system is sorted.
-  sys.set_sorted(true);
+  sorted = true;
+
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
 dimension_type
 Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
-  Linear_System& x = *this;
-  // This method is only applied to a well-formed linear system
-  // having no pending rows and exactly `n_lines_or_equalities'
-  // lines or equalities, all of which occur before the rays or points
-  // or inequalities.
-  PPL_ASSERT(x.OK());
-  PPL_ASSERT(x.num_pending_rows() == 0);
-  PPL_ASSERT(n_lines_or_equalities == x.num_lines_or_equalities());
+  // This method is only applied to a linear system having no pending rows and
+  // exactly `n_lines_or_equalities' lines or equalities, all of which occur
+  // before the rays or points or inequalities.
+  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(n_lines_or_equalities == num_lines_or_equalities());
 #ifndef NDEBUG
   for (dimension_type i = n_lines_or_equalities; i-- > 0; )
-    PPL_ASSERT(x[i].is_line_or_equality());
+    PPL_ASSERT((*this)[i].is_line_or_equality());
 #endif
 
   dimension_type rank = 0;
   // Will keep track of the variations on the system of equalities.
   bool changed = false;
-  for (dimension_type j = x.num_columns(); j-- > 0; )
+  for (dimension_type j = num_columns(); j-- > 0; )
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
-      if (x[i][j] == 0)
+      if ((*this)[i][j] == 0)
 	continue;
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
       if (i > rank) {
-	std::swap(x.rows[i], x.rows[rank]);
+	std::swap(rows[i], rows[rank]);
 	// After swapping the system is no longer sorted.
 	changed = true;
       }
@@ -610,8 +609,8 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // equalities following it, so that all the elements on the j-th
       // column in these rows become 0.
       for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k)
-	if (x.rows[k][j] != 0) {
-	  x.rows[k].linear_combine(x.rows[rank], j);
+	if (rows[k][j] != 0) {
+	  rows[k].linear_combine(rows[rank], j);
 	  changed = true;
 	}
       // Already dealt with the rank-th row.
@@ -620,9 +619,9 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       break;
     }
   if (changed)
-    x.set_sorted(false);
-  // A well-formed system is returned.
-  PPL_ASSERT(x.OK());
+    sorted = false;
+
+  PPL_ASSERT(OK());
   return rank;
 }
 
@@ -630,24 +629,21 @@ template <typename Row>
 void
 Linear_System<Row>
 ::back_substitute(const dimension_type n_lines_or_equalities) {
-  Linear_System& x = *this;
-  // This method is only applied to a well-formed system
-  // having no pending rows and exactly `n_lines_or_equalities'
-  // lines or equalities, all of which occur before the first ray
-  // or point or inequality.
-  PPL_ASSERT(x.OK());
-  PPL_ASSERT(x.num_columns() >= 1);
-  PPL_ASSERT(x.num_pending_rows() == 0);
-  PPL_ASSERT(n_lines_or_equalities <= x.num_lines_or_equalities());
+  // This method is only applied to a system having no pending rows and
+  // exactly `n_lines_or_equalities' lines or equalities, all of which occur
+  // before the first ray or point or inequality.
+  PPL_ASSERT(num_columns() >= 1);
+  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(n_lines_or_equalities <= num_lines_or_equalities());
 #ifndef NDEBUG
   for (dimension_type i = n_lines_or_equalities; i-- > 0; )
-    PPL_ASSERT(x[i].is_line_or_equality());
+    PPL_ASSERT((*this)[i].is_line_or_equality());
 #endif
 
-  const dimension_type nrows = x.num_rows();
-  const dimension_type ncols = x.num_columns();
+  const dimension_type nrows = num_rows();
+  const dimension_type ncols = num_columns();
   // Trying to keep sortedness.
-  bool still_sorted = x.is_sorted();
+  bool still_sorted = is_sorted();
   // This deque of Booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
@@ -658,18 +654,18 @@ Linear_System<Row>
     // For each line or equality, starting from the last one,
     // looks for the last non-zero element.
     // `j' will be the index of such a element.
-    Row& x_k = x.rows[k];
+    Row& row_k = rows[k];
     dimension_type j = ncols - 1;
-    while (j != 0 && x_k[j] == 0)
+    while (j != 0 && row_k[j] == 0)
       --j;
 
-    // Go through the equalities above `x_k'.
+    // Go through the equalities above `row_k'.
     for (dimension_type i = k; i-- > 0; ) {
-      Row& x_i = x.rows[i];
-      if (x_i[j] != 0) {
-	// Combine linearly `x_i' with `x_k'
-	// so that `x_i[j]' becomes zero.
-	x_i.linear_combine(x_k, j);
+      Row& row_i = rows[i];
+      if (row_i[j] != 0) {
+	// Combine linearly `row_i' with `row_k'
+	// so that `row_i[j]' becomes zero.
+	row_i.linear_combine(row_k, j);
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
@@ -681,24 +677,24 @@ Linear_System<Row>
     }
 
     // Due to strong normalization during previous iterations,
-    // the pivot coefficient `x_k[j]' may now be negative.
+    // the pivot coefficient `row_k[j]' may now be negative.
     // Since an inequality (or ray or point) cannot be multiplied
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
-    const bool have_to_negate = (x_k[j] < 0);
+    const bool have_to_negate = (row_k[j] < 0);
     if (have_to_negate)
       for (dimension_type h = ncols; h-- > 0; )
-	neg_assign(x_k[h]);
+	neg_assign(row_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
     // Go through all the other rows of the system.
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
-      Row& x_i = x.rows[i];
-      if (x_i[j] != 0) {
-	// Combine linearly the `x_i' with `x_k'
-	// so that `x_i[j]' becomes zero.
-	x_i.linear_combine(x_k, j);
+      Row& row_i = rows[i];
+      if (row_i[j] != 0) {
+	// Combine linearly the `row_i' with `row_k'
+	// so that `row_i[j]' becomes zero.
+	row_i.linear_combine(row_k, j);
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
@@ -709,47 +705,44 @@ Linear_System<Row>
       }
     }
     if (have_to_negate)
-      // Negate `x_k' to restore strong-normalization.
+      // Negate `row_k' to restore strong-normalization.
       for (dimension_type h = ncols; h-- > 0; )
-	neg_assign(x_k[h]);
+	neg_assign(row_k[h]);
   }
 
   // Trying to keep sortedness.
   for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i)
     if (check_for_sortedness[i])
-      // Have to check sortedness of `x[i]' with respect to `x[i+1]'.
-      still_sorted = (compare(x[i], x[i+1]) <= 0);
-  // Set the sortedness flag.
-  x.set_sorted(still_sorted);
+      // Have to check sortedness of `(*this)[i]' with respect to `(*this)[i+1]'.
+      still_sorted = (compare((*this)[i], (*this)[i+1]) <= 0);
 
-  // A well-formed system is returned.
-  PPL_ASSERT(x.OK());
+  // Set the sortedness flag.
+  sorted = still_sorted;
+
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
 void
 Linear_System<Row>::simplify() {
-  Linear_System& x = *this;
-  // This method is only applied to a well-formed system
-  // having no pending rows.
-  PPL_ASSERT(x.OK());
-  PPL_ASSERT(x.num_pending_rows() == 0);
+  // This method is only applied to a system having no pending rows.
+  PPL_ASSERT(num_pending_rows() == 0);
 
   // Partially sort the linear system so that all lines/equalities come first.
-  const dimension_type old_nrows = x.num_rows();
+  const dimension_type old_nrows = num_rows();
   dimension_type nrows = old_nrows;
   dimension_type n_lines_or_equalities = 0;
   for (dimension_type i = 0; i < nrows; ++i)
-    if (x[i].is_line_or_equality()) {
+    if ((*this)[i].is_line_or_equality()) {
       if (n_lines_or_equalities < i) {
-	std::swap(x.rows[i], x.rows[n_lines_or_equalities]);
+	std::swap(rows[i], rows[n_lines_or_equalities]);
 	// The system was not sorted.
-	PPL_ASSERT(!x.sorted);
+	PPL_ASSERT(!sorted);
       }
       ++n_lines_or_equalities;
     }
   // Apply Gaussian elimination to the subsystem of lines/equalities.
-  const dimension_type rank = x.gauss(n_lines_or_equalities);
+  const dimension_type rank = gauss(n_lines_or_equalities);
   // Eliminate any redundant line/equality that has been detected.
   if (rank < n_lines_or_equalities) {
     const dimension_type
@@ -758,17 +751,17 @@ Linear_System<Row>::simplify() {
       num_swaps = std::min(n_lines_or_equalities - rank,
 			   n_rays_or_points_or_inequalities);
     for (dimension_type i = num_swaps; i-- > 0; )
-      std::swap(x.rows[--nrows], x.rows[rank + i]);
-    x.remove_trailing_rows(old_nrows - nrows);
-    x.unset_pending_rows();
+      std::swap(rows[--nrows], rows[rank + i]);
+    remove_trailing_rows(old_nrows - nrows);
     if (n_rays_or_points_or_inequalities > num_swaps)
-      x.set_sorted(false);
+      set_sorted(false);
+    unset_pending_rows();
     n_lines_or_equalities = rank;
   }
   // Apply back-substitution to the system of rays/points/inequalities.
-  x.back_substitute(n_lines_or_equalities);
-  // A well-formed system is returned.
-  PPL_ASSERT(x.OK());
+  back_substitute(n_lines_or_equalities);
+
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -875,9 +868,8 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
 template <typename Row>
 bool
 Linear_System<Row>::check_sorted() const {
-  const Linear_System& x = *this;
   for (dimension_type i = first_pending_row(); i-- > 1; )
-    if (compare(x[i], x[i-1]) < 0)
+    if (compare(rows[i], rows[i-1]) < 0)
       return false;
   return true;
 }
@@ -947,10 +939,9 @@ Linear_System<Row>::OK() const {
   }
 
   // Check for topology mismatches.
-  const Linear_System& x = *this;
   const dimension_type n_rows = num_rows();
   for (dimension_type i = 0; i < n_rows; ++i)
-    if (x.topology() != x[i].topology()) {
+    if (topology() != rows[i].topology()) {
 #ifndef NDEBUG
       cerr << "Topology mismatch between the system "
 	   << "and one of its rows!"
