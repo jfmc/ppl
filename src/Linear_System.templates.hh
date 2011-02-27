@@ -107,6 +107,7 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
   // There are no pending rows.
   unset_pending_rows();
   PPL_ASSERT(check_sorted());
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -119,6 +120,7 @@ Linear_System<Row>::set_rows_topology() {
   else
     for (dimension_type i = num_rows(); i-- > 0; )
       x.rows[i].set_not_necessarily_closed();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -267,6 +269,7 @@ Linear_System<Row>::increase_space_dimension(dimension_type n) {
     // Move the epsilon coefficients to the last column
     // (note: sorting is preserved).
     swap_columns(num_columns() - 1, n - 1);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -442,19 +445,16 @@ Linear_System<Row>::add_recycled_row(Row& r) {
       // If the system is not empty and the inserted row is the
       // greatest one, the system is set to be sorted.
       // If it is not the greatest one then the system is no longer sorted.
-      set_sorted(compare(rows[nrows-2], rows[nrows-1]) <= 0);
+      sorted = (compare(rows[nrows-2], rows[nrows-1]) <= 0);
     }
     else
       // A system having only one row is sorted.
-      set_sorted(true);
+      sorted = true;
   }
 
-  //  We update `index_first_pending', because it must be equal to
-  // `rows.size()'.
   unset_pending_rows();
   
-  // The added row was not a pending row.
-  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -498,7 +498,8 @@ Linear_System<Row>::normalize() {
   // We normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
     rows[i].normalize();
-  set_sorted(nrows <= 1);
+  sorted = (nrows <= 1);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -508,7 +509,8 @@ Linear_System<Row>::strong_normalize() {
   // We strongly normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
     rows[i].strong_normalize();
-  set_sorted(nrows <= 1);
+  sorted = (nrows <= 1);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -518,7 +520,8 @@ Linear_System<Row>::sign_normalize() {
   // We sign-normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
     rows[i].sign_normalize();
-  set_sorted(nrows <= 1);
+  sorted = (nrows <= 1);
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_System */
@@ -803,12 +806,11 @@ Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
     rows[n-1].set_is_ray_or_point_or_inequality();
     // Since ray, points and inequalities come after lines
     // and equalities, this case implies the system is sorted.
-    set_sorted(true);
+    sorted = true;
   }
   else if (was_sorted)
-    set_sorted(compare(rows[n-1], rows[n]) <= 0);
+    sorted = (compare(rows[n-1], rows[n]) <= 0);
 
-  // A well-formed system has to be returned.
   PPL_ASSERT(OK());
 }
 
@@ -818,6 +820,7 @@ Linear_System<Row>::add_zero_columns(const dimension_type n) {
   num_columns_ += n;
   for (dimension_type i = rows.size(); i-- > 0; )
     rows[i].resize(num_columns_);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>

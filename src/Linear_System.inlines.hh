@@ -62,11 +62,8 @@ Linear_System<Row>::is_sorted() const {
 template <typename Row>
 inline void
 Linear_System<Row>::set_sorted(const bool b) {
-#ifndef NDEBUG
-  if (b)
-    PPL_ASSERT(check_sorted());
-#endif
   sorted = b;
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -103,6 +100,7 @@ Linear_System<Row>::Linear_System(Topology topol,
     row_topology(topol),
     index_first_pending(n_rows),
     sorted(true) {
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -122,12 +120,14 @@ template <typename Row>
 inline void
 Linear_System<Row>::unset_pending_rows() {
   index_first_pending = num_rows();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
 inline void
 Linear_System<Row>::set_index_first_pending_row(const dimension_type i) {
   index_first_pending = i;
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -136,10 +136,10 @@ Linear_System<Row>::Linear_System(const Linear_System& y)
   : rows(y.rows),
     num_columns_(y.num_columns_),
     row_topology(y.row_topology) {
-  unset_pending_rows();
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
-  PPL_ASSERT(num_pending_rows() == 0);
+  unset_pending_rows();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -150,6 +150,7 @@ Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -158,10 +159,10 @@ Linear_System<Row>::operator=(const Linear_System& y) {
   rows = y.rows;
   num_columns_ = y.num_columns_;
   row_topology = y.row_topology;
-  unset_pending_rows();
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
-  PPL_ASSERT(num_pending_rows() == 0);
+  unset_pending_rows();
+  PPL_ASSERT(OK());
   return *this;
 }
 
@@ -173,6 +174,7 @@ Linear_System<Row>::assign_with_pending(const Linear_System& y) {
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -183,6 +185,8 @@ Linear_System<Row>::swap(Linear_System& y) {
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(y.OK());
 }
 
 template <typename Row>
@@ -222,8 +226,9 @@ Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
   // we return.
-  set_sorted(false);
+  sorted = false;
   unset_pending_rows();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -232,6 +237,7 @@ Linear_System<Row>::set_topology(Topology t) {
   row_topology = t;
   if (!has_no_rows())
     set_rows_topology();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -240,6 +246,7 @@ Linear_System<Row>::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
   if (!has_no_rows())
     set_rows_topology();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -248,6 +255,7 @@ Linear_System<Row>::set_not_necessarily_closed() {
   row_topology = NOT_NECESSARILY_CLOSED;
   if (!has_no_rows())
     set_rows_topology();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -338,7 +346,8 @@ Linear_System<Row>::swap_rows(const dimension_type i,
   PPL_ASSERT((i < first_pending_row() && j < first_pending_row())
              || (i >= first_pending_row() && j >= first_pending_row()));
   std::swap(rows[i], rows[j]);
-  set_sorted(false);
+  sorted = false;
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -348,6 +357,7 @@ Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
   rows.resize(rows.size() - n);
   if (first_pending_row() > rows.size())
     index_first_pending = rows.size();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -358,6 +368,7 @@ Linear_System<Row>
   // Have to re-normalize the rows of the system,
   // since we removed some coefficients.
   strong_normalize();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -365,6 +376,7 @@ inline void
 Linear_System<Row>::release_row(Row& row) {
   std::swap(row, rows.back());
   remove_trailing_rows(1);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -395,6 +407,7 @@ Linear_System<Row>
   num_columns_ -= n;
   for (dimension_type i = rows.size(); i-- > 0; )
     rows[i].resize(num_columns_);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -429,6 +442,7 @@ Linear_System<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
   // The rows with permuted columns are still normalized but may
   // be not strongly normalized: sign normalization is necessary.
   sign_normalize();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -436,6 +450,7 @@ inline void
 Linear_System<Row>::swap_columns(dimension_type i, dimension_type j) {
   for (dimension_type k = num_rows(); k-- > 0; )
     rows[k].swap(i, j);
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Linear_System */
