@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 #include "Linear_Row.defs.hh"
 #include "Variables_Set.types.hh"
-#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -178,7 +177,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     reordered, removed (if they are duplicate or redundant), etc.
 */
 class Parma_Polyhedra_Library::Grid_Generator_System
-  : private Linear_System<Linear_Row> {
+  : public Linear_System<Linear_Row> {
 public:
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
@@ -374,37 +373,11 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator_System& y);
 
-private:
-  /*! \brief
-    Holds (between class initialization and finalization) a pointer to
-    the singleton system containing only Grid_Generator::zero_dim_point().
-  */
-  static const Grid_Generator_System* zero_dim_univ_p;
-
-  friend class Grid;
-
-  friend bool
-  operator==(const Grid_Generator_System& x, const Grid_Generator_System& y);
-
-  //! Sets the sortedness flag of the system to \p b.
-  void set_sorted(bool b);
-
-  //! Sets the index to indicate that the system has no pending rows.
-  void unset_pending_rows();
-
-  //! Sets the index of the first pending row to \p i.
-  void set_index_first_pending_row(dimension_type i);
-
-  //! Removes all the invalid lines and parameters.
-  /*!
-    The invalid lines and parameters are those with all
-    the homogeneous terms set to zero.
-  */
-  void remove_invalid_lines_and_parameters();
-
+  // TODO: Consider making this private.
   //! Returns a constant reference to the \p k- th generator of the system.
   const Grid_Generator& operator[](dimension_type k) const;
 
+  // TODO: Consider making this private.
   //! Assigns to a given variable an affine expression.
   /*!
     \param v
@@ -435,9 +408,14 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_image(dimension_type v,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator);
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator);
 
+  // TODO: Consider making this private.
+  //! Sets the sortedness flag of the system to \p b.
+  void set_sorted(bool b);
+
+  // TODO: Consider making this private.
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
     initializing the added rows as in the universe system.
@@ -455,14 +433,7 @@ private:
   */
   void add_universe_rows_and_columns(dimension_type dims);
 
-  //! Removes all the specified dimensions from the generator system.
-  /*!
-    The space dimension of the variable with the highest space
-    dimension in \p vars must be at most the space dimension
-    of \p this.
-  */
-  void remove_space_dimensions(const Variables_Set& vars);
-
+  // TODO: Consider making this private.
   /*! \brief
     Removes the higher dimensions of the system so that the resulting
     system will have dimension \p new_dimension.
@@ -472,27 +443,27 @@ private:
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
-  //! Resizes the system without worrying about the old contents.
+  // TODO: Consider making this private.
+  //! Removes all the specified dimensions from the generator system.
   /*!
-    \param new_num_rows
-    The number of rows of the resized system;
-
-    \param new_num_columns
-    The number of columns of the resized system.
-
-    The system is expanded to the specified dimensions avoiding
-    reallocation whenever possible.
-    The contents of the original system is lost.
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
   */
-  void resize_no_copy(dimension_type new_num_rows,
-		      dimension_type new_num_columns);
+  void remove_space_dimensions(const Variables_Set& vars);
 
+  // TODO: Consider making this private.
+  //! Sets the index to indicate that the system has no pending rows.
+  void unset_pending_rows();
+
+  // TODO: Consider making this private.
   /*! \brief
     Returns the number of columns of the matrix (i.e., the size of the
     rows).
   */
   dimension_type num_columns() const;
 
+  // TODO: Consider making this private.
   //! Permutes the columns of the matrix.
   /*
     \param cycles
@@ -510,6 +481,41 @@ private:
     6, 0, 2, 4, 0.
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
+
+private:
+  /*! \brief
+    Holds (between class initialization and finalization) a pointer to
+    the singleton system containing only Grid_Generator::zero_dim_point().
+  */
+  static const Grid_Generator_System* zero_dim_univ_p;
+
+  friend bool
+  operator==(const Grid_Generator_System& x, const Grid_Generator_System& y);
+
+  //! Sets the index of the first pending row to \p i.
+  void set_index_first_pending_row(dimension_type i);
+
+  //! Removes all the invalid lines and parameters.
+  /*!
+    The invalid lines and parameters are those with all
+    the homogeneous terms set to zero.
+  */
+  void remove_invalid_lines_and_parameters();
+
+  //! Resizes the system without worrying about the old contents.
+  /*!
+    \param new_num_rows
+    The number of rows of the resized system;
+
+    \param new_num_columns
+    The number of columns of the resized system.
+
+    The system is expanded to the specified dimensions avoiding
+    reallocation whenever possible.
+    The contents of the original system is lost.
+  */
+  void resize_no_copy(dimension_type new_num_rows,
+		      dimension_type new_num_columns);
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.
