@@ -146,6 +146,9 @@ public:
   //! Ordinary copy constructor.
   Constraint_System(const Constraint_System& cs);
 
+  //! Builds an empty system of constraints having the specified topology.
+  explicit Constraint_System(Topology topol);
+
   //! Destructor.
   ~Constraint_System();
 
@@ -169,6 +172,95 @@ public:
     contains one or more strict inequality constraints.
   */
   bool has_strict_inequalities() const;
+
+  // TODO: Consider making this private.
+  //! Returns the number of equality constraints.
+  dimension_type num_equalities() const;
+
+  // TODO: Consider making this private.
+  //! Returns the number of inequality constraints.
+  dimension_type num_inequalities() const;
+
+  // TODO: Consider making this private.
+  /*! \brief
+    Applies Gaussian elimination and back-substitution so as
+    to provide a partial simplification of the system of constraints.
+
+    It is assumed that the system has no pending constraints.
+  */
+  void simplify();
+
+  // TODO: Consider making this private.
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains strict inequalities.
+  */
+  bool adjust_topology_and_space_dimension(Topology topol,
+                                           dimension_type num_dimensions);
+
+  // TODO: Consider making this private.
+  //! Returns a constant reference to the \p k- th constraint of the system.
+  const Constraint& operator[](dimension_type k) const;
+
+  // TODO: Consider making this private.
+  //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
+  bool satisfies_all_constraints(const Generator& g) const;
+
+  // TODO: Consider making this private.
+  //! Substitutes a given column of coefficients by a given affine expression.
+  /*!
+    \param v
+    Index of the column to which the affine transformation is substituted.
+
+    \param expr
+    The numerator of the affine transformation:
+    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
+
+    \param denominator
+    The denominator of the affine transformation.
+
+    We want to allow affine transformations
+    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
+    having any rational coefficients. Since the coefficients of the
+    constraints are integers we must also provide an integer \p
+    denominator that will be used as denominator of the affine
+    transformation.
+    The denominator is required to be a positive integer.
+
+    The affine transformation substitutes the matrix of constraints
+    by a new matrix whose elements \f${a'}_{ij}\f$ are built from
+    the old one \f$a_{ij}\f$ as follows:
+    \f[
+      {a'}_{ij} =
+        \begin{cases}
+          a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
+            \quad \text{for } j \neq v; \\
+          \mathrm{expr}[v] * a_{iv}
+            \quad \text{for } j = v.
+        \end{cases}
+    \f]
+
+    \p expr is a constant parameter and unaltered by this computation.
+  */
+  void affine_preimage(dimension_type v,
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator);
+
+  // TODO: Consider making this private.
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+    It is a pending constraint.
+  */
+  void insert_pending(const Constraint& c);
+
+  // TODO: Consider making this private.
+  //! Adds low-level constraints to the constraint system.
+  void add_low_level_constraints();
 
   /*! \brief
     Removes all the constraints from the constraint system
@@ -238,12 +330,8 @@ private:
   static const Constraint_System* zero_dim_empty_p;
 
   friend class Constraint_System_const_iterator;
-  friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend bool operator==(const Polyhedron& x, const Polyhedron& y);
-
-  //! Builds an empty system of constraints having the specified topology.
-  explicit Constraint_System(Topology topol);
 
   /*! \brief
     Builds a system of \p n_rows constraints on a \p n_columns - 1
@@ -252,86 +340,6 @@ private:
   */
   Constraint_System(Topology topol,
 		    dimension_type n_rows, dimension_type n_columns);
-
-  /*! \brief
-    Adjusts \p *this so that it matches the topology and
-    the number of space dimensions given as parameters
-    (adding or removing columns if needed).
-    Returns <CODE>false</CODE> if and only if \p topol is
-    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-    contains strict inequalities.
-  */
-  bool adjust_topology_and_space_dimension(Topology topol,
-					   dimension_type num_dimensions);
-
-  //! Returns a constant reference to the \p k- th constraint of the system.
-  const Constraint& operator[](dimension_type k) const;
-
-  //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
-  bool satisfies_all_constraints(const Generator& g) const;
-
-  //! Substitutes a given column of coefficients by a given affine expression.
-  /*!
-    \param v
-    Index of the column to which the affine transformation is substituted.
-
-    \param expr
-    The numerator of the affine transformation:
-    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
-
-    \param denominator
-    The denominator of the affine transformation.
-
-    We want to allow affine transformations
-    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
-    having any rational coefficients. Since the coefficients of the
-    constraints are integers we must also provide an integer \p
-    denominator that will be used as denominator of the affine
-    transformation.
-    The denominator is required to be a positive integer.
-
-    The affine transformation substitutes the matrix of constraints
-    by a new matrix whose elements \f${a'}_{ij}\f$ are built from
-    the old one \f$a_{ij}\f$ as follows:
-    \f[
-      {a'}_{ij} =
-        \begin{cases}
-          a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
-            \quad \text{for } j \neq v; \\
-          \mathrm{expr}[v] * a_{iv}
-            \quad \text{for } j = v.
-        \end{cases}
-    \f]
-
-    \p expr is a constant parameter and unaltered by this computation.
-  */
-  void affine_preimage(dimension_type v,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator);
-
-  //! Returns the number of equality constraints.
-  dimension_type num_equalities() const;
-
-  //! Returns the number of inequality constraints.
-  dimension_type num_inequalities() const;
-
-  /*! \brief
-    Applies Gaussian elimination and back-substitution so as
-    to provide a partial simplification of the system of constraints.
-
-    It is assumed that the system has no pending constraints.
-  */
-  void simplify();
-
-  /*! \brief
-    Inserts in \p *this a copy of the constraint \p c,
-    increasing the number of space dimensions if needed.
-    It is a pending constraint.
-  */
-  void insert_pending(const Constraint& c);
-
-  //! Adds low-level constraints to the constraint system.
-  void add_low_level_constraints();
 };
 
 //! An iterator over a system of constraints.
