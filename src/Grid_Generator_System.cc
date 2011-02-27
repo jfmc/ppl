@@ -38,22 +38,22 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   const dimension_type old_num_columns = num_columns();
   const dimension_type gs_num_columns = gs.num_columns();
   if (old_num_columns < gs_num_columns) {
-    add_zero_columns(gs_num_columns - old_num_columns);
+    sys.add_zero_columns(gs_num_columns - old_num_columns);
     // Swap the parameter divisor column into the new last column.
-    swap_columns(old_num_columns - 1, num_columns() - 1);
+    sys.swap_columns(old_num_columns - 1, num_columns() - 1);
   }
   Swapping_Vector<Linear_Row> rows;
-  gs.release_rows(rows);
+  gs.sys.release_rows(rows);
   for (dimension_type i = 0; i < gs_num_rows; ++i) {
     rows[i].set_topology(NECESSARILY_CLOSED);
-    insert_recycled(rows[i]);
+    sys.insert_recycled(rows[i]);
   }
   set_index_first_pending_row(old_num_rows + gs_num_rows);
 }
 
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
-  Linear_System<Linear_Row>::insert_recycled(g);
+  sys.insert_recycled(g);
 }
 
 void
@@ -67,9 +67,9 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     const dimension_type initial_space_dim = space_dimension();
     if (initial_space_dim < g_space_dim) {
       // Adjust the space dimension.
-      add_zero_columns(g_space_dim - initial_space_dim);
+      sys.add_zero_columns(g_space_dim - initial_space_dim);
       // Swap the parameter divisor column into the new last column.
-      swap_columns(g_space_dim + 1, initial_space_dim + 1);
+      sys.swap_columns(g_space_dim + 1, initial_space_dim + 1);
       PPL_ASSERT(OK());
     }
     return;
@@ -77,9 +77,9 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
   // Note: we can not call Linear_System<Linear_Row>::insert(g),
   // because that would check for strong normalization of g.
-  PPL_ASSERT(is_necessarily_closed() && topology() == g.topology());
+  PPL_ASSERT(sys.is_necessarily_closed() && sys.topology() == g.topology());
   // This method is only used when the system has no pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(sys.num_pending_rows() == 0);
 
   const dimension_type old_num_rows = num_rows();
   const dimension_type old_num_columns = num_columns();
@@ -87,23 +87,23 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
   // Resize the system, if necessary.
   if (g_size > old_num_columns) {
-    add_zero_columns(g_size - old_num_columns);
+    sys.add_zero_columns(g_size - old_num_columns);
     if (old_num_rows > 0)
       // Swap the existing parameter divisor column into the new
       // last column.
-      swap_columns(old_num_columns - 1, g_size - 1);
-    Linear_System<Linear_Row>::insert(g);
+      sys.swap_columns(old_num_columns - 1, g_size - 1);
+    sys.insert(g);
   }
   else if (g_size < old_num_columns) {
     // Create a resized copy of the row (and move the parameter
     // divisor coefficient to its last position).
     Linear_Row tmp_row(g, old_num_columns, old_num_columns);
     std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-    Linear_System<Linear_Row>::insert_recycled(tmp_row);
+    sys.insert_recycled(tmp_row);
   }
   else
     // Here r_size == old_num_columns.
-    Linear_System<Linear_Row>::insert(g);
+    sys.insert(g);
 
   set_index_first_pending_row(num_rows());
   set_sorted(false);
@@ -121,8 +121,8 @@ PPL::Grid_Generator_System
   Grid_Generator_System& x = *this;
   // `v' is the index of a column corresponding to a "user" variable
   // (i.e., it cannot be the inhomogeneous term).
-  PPL_ASSERT(v > 0 && v <= x.space_dimension());
-  PPL_ASSERT(expr.space_dimension() <= x.space_dimension());
+  PPL_ASSERT(v > 0 && v <= x.sys.space_dimension());
+  PPL_ASSERT(expr.space_dimension() <= x.sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
   const dimension_type num_columns = x.num_columns();
@@ -132,14 +132,14 @@ PPL::Grid_Generator_System
   // to the column of `*this' indexed by `v'.
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
 
-  const dimension_type pending_row_index = first_pending_row();
+  const dimension_type pending_row_index = sys.first_pending_row();
 
   // Avoid triggering assertions in release_rows().
   unset_pending_rows();
 
   Swapping_Vector<Linear_Row> rows;
   // Release the rows from the linear system, so they can be modified.
-  x.release_rows(rows);
+  x.sys.release_rows(rows);
   
   for (dimension_type i = num_rows; i-- > 0; ) {
     Linear_Row& row = rows[i];
@@ -159,7 +159,7 @@ PPL::Grid_Generator_System
     }
 
   // Put the modified rows back into the linear system.
-  x.take_ownership_of_rows(rows);
+  x.sys.take_ownership_of_rows(rows);
 
   // Restore the number of pending rows.
   x.set_index_first_pending_row(pending_row_index);
@@ -202,8 +202,8 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     if (!tmp.ascii_load(s))
       return false;
     if (i == 0)
-      set_topology(tmp.topology());
-    insert_recycled(tmp);
+      sys.set_topology(tmp.topology());
+    sys.insert_recycled(tmp);
   }
 
   set_index_first_pending_row(num_rows);
@@ -232,7 +232,7 @@ PPL::Grid_Generator_System::finalize() {
 
 bool
 PPL::Grid_Generator_System::OK() const {
-  if (topology() == NOT_NECESSARILY_CLOSED) {
+  if (sys.topology() == NOT_NECESSARILY_CLOSED) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator_System is NOT_NECESSARILY_CLOSED"
 	      << std::endl;
@@ -240,7 +240,7 @@ PPL::Grid_Generator_System::OK() const {
     return false;
   }
 
-  if (is_sorted()) {
+  if (sys.is_sorted()) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator_System is marked as sorted."
 	      << std::endl;
@@ -273,9 +273,9 @@ PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
   PPL_ASSERT(num_columns() > 0);
   dimension_type col = num_columns() - 1;
-  add_zero_columns(dims);
+  sys.add_zero_columns(dims);
   // Swap the parameter divisor column into the new last column.
-  swap_columns(col, col + dims);
+  sys.swap_columns(col, col + dims);
 
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
@@ -284,7 +284,7 @@ PPL::Grid_Generator_System
                                      Linear_Row::LINE_OR_EQUALITY));
     tmp[col] = 1;
     ++col;
-    insert_recycled(tmp);
+    sys.insert_recycled(tmp);
   }
   unset_pending_rows();
 }
@@ -311,16 +311,16 @@ PPL::Grid_Generator_System
     const dimension_type vsi_col = *vsi+1;
     // Move all columns in between to the left.
     while (src_col < vsi_col)
-      Linear_System<Linear_Row>::swap_columns(dst_col++, src_col++);
+      sys.swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Move any remaining columns.
   const dimension_type num_columns = this->num_columns();
   while (src_col < num_columns)
-    Linear_System<Linear_Row>::swap_columns(dst_col++, src_col++);
+    sys.swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
-  Linear_System<Linear_Row>::remove_trailing_columns_without_normalizing(num_columns - dst_col);
+  sys.remove_trailing_columns_without_normalizing(num_columns - dst_col);
 }
 
 void
@@ -338,8 +338,8 @@ PPL::Grid_Generator_System
 
   // Swap the parameter divisor column into the column that will
   // become the last column.
-  swap_columns(new_dimension + 1, space_dim + 1);
-  Linear_System<Linear_Row>::remove_trailing_columns_without_normalizing(space_dim - new_dimension);
+  sys.swap_columns(new_dimension + 1, space_dim + 1);
+  sys.remove_trailing_columns_without_normalizing(space_dim - new_dimension);
   PPL_ASSERT(OK());
 }
 
@@ -352,13 +352,13 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
   Grid_Generator_System& ggs = *this;
   const dimension_type old_n_rows = ggs.num_rows();
   dimension_type n_rows = old_n_rows;
-  if (num_pending_rows() == 0) {
+  if (sys.num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
       const Grid_Generator& g = ggs[i];
       if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/parameter has been found.
 	--n_rows;
-        ggs.swap_rows(i, n_rows);
+        ggs.sys.swap_rows(i, n_rows);
       }
     }
     set_index_first_pending_row(n_rows);
@@ -371,32 +371,32 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
     // of the matrix, find the invalid rows in the pending
     // part and then erase the invalid rows that now
     // are in the bottom part of the matrix.
-    PPL_ASSERT(num_pending_rows() > 0);
-    dimension_type first_pending = first_pending_row();
+    PPL_ASSERT(sys.num_pending_rows() > 0);
+    dimension_type first_pending = sys.first_pending_row();
     for (dimension_type i = first_pending; i-- > 0; ) {
       const Grid_Generator& g = ggs[i];
       if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/parameter has been found.
 	--first_pending;
-        ggs.swap_rows(i, first_pending);
+        ggs.sys.swap_rows(i, first_pending);
       }
     }
     const dimension_type num_invalid_rows
-      = first_pending_row() - first_pending;
+      = sys.first_pending_row() - first_pending;
     set_index_first_pending_row(first_pending);
     for (dimension_type i = 0; i < num_invalid_rows; ++i)
-      ggs.swap_rows(n_rows - i, first_pending + i);
+      ggs.sys.swap_rows(n_rows - i, first_pending + i);
     n_rows -= num_invalid_rows;
     for (dimension_type i = n_rows; i-- > first_pending; ) {
       const Grid_Generator& g = ggs[i];
       if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/parameter has been found.
 	--n_rows;
-        ggs.swap_rows(i, n_rows);
+        ggs.sys.swap_rows(i, n_rows);
       }
     }
   }
-  ggs.remove_trailing_rows(old_n_rows - n_rows);
+  ggs.sys.remove_trailing_rows(old_n_rows - n_rows);
 }
 
 bool
@@ -413,12 +413,12 @@ PPL::dimension_type
 PPL::Grid_Generator_System::num_lines() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(sys.num_pending_rows() == 0);
   const Grid_Generator_System& ggs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
-  if (is_sorted()) {
+  if (sys.is_sorted()) {
     dimension_type nrows = num_rows();
     for (dimension_type i = 0; i < nrows && ggs[i].is_line(); ++i)
       ++n;
@@ -435,13 +435,13 @@ PPL::dimension_type
 PPL::Grid_Generator_System::num_parameters() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(sys.num_pending_rows() == 0);
   const Grid_Generator_System& ggs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that rays and points are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
-  if (is_sorted()) {
+  if (sys.is_sorted()) {
     for (dimension_type i = num_rows();
          i != 0 && ggs[--i].is_parameter_or_point(); )
       if (ggs[i].is_line_or_parameter())

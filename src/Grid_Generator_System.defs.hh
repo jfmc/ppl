@@ -176,9 +176,12 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::Grid_Generator_System
-  : public Linear_System<Linear_Row> {
+class Parma_Polyhedra_Library::Grid_Generator_System {
 public:
+
+  typedef Linear_Row internal_row_type;
+  typedef Grid_Generator row_type;
+
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
 
@@ -482,7 +485,43 @@ public:
   */
   void permute_columns(const std::vector<dimension_type>& cycles);
 
+  // TODO: Consider removing this or making it private.
+  //! Swaps \p row with the last row and then removes that row from the
+  //! system.
+  void release_row(Linear_Row& row);
+
+  // TODO: Consider removing this or making it private.
+  //! Swaps the vector of rows with \p v. \p v must be empty.
+  void release_rows(Swapping_Vector<Linear_Row>& v);
+
+  // TODO: Consider removing this or making it private.
+  //! Swaps the vector of rows with \p v. \p *this must have no rows.
+  void take_ownership_of_rows(Swapping_Vector<Linear_Row>& v);
+
+  // TODO: Consider removing this or making it private.
+  bool has_no_rows() const;
+
+  // TODO: Consider removing this or making it private.
+  //! Makes the system shrink by removing its \p n trailing rows.
+  void remove_trailing_rows(dimension_type n);
+
+  // TODO: Consider removing this or making it private.
+  void insert_verbatim(const Grid_Generator& g);
+
+  // TODO: Consider removing this or making it private.
+  void add_zero_columns(dimension_type n);
+
+  // TODO: Consider removing this or making it private.
+  //! Returns the system topology.
+  Topology topology() const;
+
+  // TODO: Consider removing this or making it private.
+  //! Returns the index of the first pending row.
+  dimension_type first_pending_row() const;
+
 private:
+  Linear_System<Linear_Row> sys;
+
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the singleton system containing only Grid_Generator::zero_dim_point().

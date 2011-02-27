@@ -366,10 +366,10 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   Swapping_Vector<Linear_Row> recyclable_rows;
   dest.release_rows(recyclable_rows);
 
-  dest.Linear_System<Linear_Row>::clear();
-  // The additional column for the parameter divisor has already been added
-  // by clear().
-  dest.add_zero_columns(dims);
+  dest.clear();
+  PPL_ASSERT(dims > 0);
+  // The additional two columns have already been added by clear().
+  dest.add_zero_columns(dims - 1);
 
   // In `dest' initialize row types and elements, including setting
   // the diagonal elements to the inverse ratio of the `source'
@@ -413,7 +413,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
       }
       g.set_topology(dest.topology());
-      dest.Linear_System<Linear_Row>::insert(g);
+      dest.insert_verbatim(g);
     }
   }
 
