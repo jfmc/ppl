@@ -1,6 +1,120 @@
+2011-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, README, Watchdog/src/Makefile.am, configure.ac,
+	demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_pips/ppl_pips.1, doc/libppl.3, doc/libppl_c.3,
+	doc/ppl-config.1, doc/ppl-config_extra_man_text, src/Makefile.am: 
+	Preparation for the release of PPL 0.11.2.
+
+2011-02-25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Row.defs.hh: Fixed a documentation problem in a \ref Doxygen
+	command.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Checked_Number.defs.hh, src/Checked_Number.inlines.hh: Avoid
+	(again) using the same macro name for different purposes.  Doing it
+	confuses both the reader and Doxygen.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/devref-language-interface.tex, doc/devref.tex,
+	doc/user-language-interface.tex, doc/user.tex: Get rid of LaTeX
+	warnings related to package fancyhdr.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am, doc/devref-language-interface.doxyconf.in,
+	doc/user-language-interface.doxyconf.in,
+	interfaces/C/C_interface.dox: Avoid duplicate PDF labels in the
+	configured C interface manuals.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/devref-language-interface.tex, doc/devref.tex,
+	doc/user-language-interface.tex, doc/user.tex: Fixed a duplicate
+	hypertarget error in the generated PDF documentation.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Checked_Number.defs.hh, src/Checked_Number.inlines.hh: Avoid
+	using the same macro name for different purposes.  Doing it confuses
+	both the reader and Doxygen.
+
+2011-02-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Two items added.
+
+2011-02-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4: When cross-compiling, assume that GMP has been
+	compiled with support for propagating exceptions.
+
+2011-02-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-ia32.cc: Work around a bug showing up under mingw-w64.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/devref.doxyconf-latex.in,
+	doc/devref-language-interface.doxyconf.in,
+	doc/devref.doxyconf-latex.in: Set INLINE_SOURCES = NO when producing
+	LaTeX documentation.  This change is a workaround to a pdftex + hyperref issue that may
+	result in the following error    \pdfendlink ended up in different nesting level than
+	   \pdfstartlink when using some versions of Doxygen (e.g., 1.7.3).  According to http://tug.org/errors.html the error is triggered when
+	a hyperlink is split across page boundaries and it can be generated
+	even by valid LaTeX code. Disabling source inlining is a way to
+	greatly decrease its likelihood.
+
+2011-02-22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/meta_programming.hh: Fixed a couple of Doxygen related
+	problems.
+
+2011-02-22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Updated.
+
+2011-02-22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-ia32.cc: No longer overwrite the SIGILL handler.
+
+2011-02-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	*
+	interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.jav
+	a: Never use `\c';  use <CODE></CODE> instead (yes, uppercase).
+
+2011-02-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, README.configure, configure.ac, m4/ac_check_fpu_control.m4: 
+	The `--disable-fpmath' configure option now disables all floating
+	point computations.
+
 2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* PPL 0.11.1 released.
+
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Update version.
+
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Mark ChangeLog.
+
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog: Mark ChangeLog.
+
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Added missing news items.
 
 2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
 

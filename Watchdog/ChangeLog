@@ -1,6 +1,34 @@
+2011-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, README, Watchdog/src/Makefile.am, configure.ac,
+	demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_pips/ppl_pips.1, doc/libppl.3, doc/libppl_c.3,
+	doc/ppl-config.1, doc/ppl-config_extra_man_text, src/Makefile.am: 
+	Preparation for the release of PPL 0.11.2.
+
+2011-02-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* Watchdog/doc/devref.doxyconf-latex.in,
+	doc/devref-language-interface.doxyconf.in,
+	doc/devref.doxyconf-latex.in: Set INLINE_SOURCES = NO when producing
+	LaTeX documentation.  This change is a workaround to a pdftex + hyperref issue that may
+	result in the following error    \pdfendlink ended up in different nesting level than
+	   \pdfstartlink when using some versions of Doxygen (e.g., 1.7.3).  According to http://tug.org/errors.html the error is triggered when
+	a hyperlink is split across page boundaries and it can be generated
+	even by valid LaTeX code. Disabling source inlining is a way to
+	greatly decrease its likelihood.
+
 2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* PPL 0.11.1 released.
+
+2011-02-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog: Mark ChangeLog.
+
+2011-02-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog: Updated.
 
 2011-02-19  Roberto Bagnara <bagnara@cs.unipr.it>
 
