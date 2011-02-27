@@ -1,5 +1,9 @@
 2011-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
 
+	* PPL 0.11.2 released.
+
+2011-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
 	* NEWS, README, Watchdog/src/Makefile.am, configure.ac,
 	demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
 	demos/ppl_pips/ppl_pips.1, doc/libppl.3, doc/libppl_c.3,
