@@ -139,8 +139,6 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
 */
 class Parma_Polyhedra_Library::Constraint_System {
 public:
-
-  typedef Constraint internal_row_type;
   typedef Constraint row_type;
 
   //! Default constructor: builds an empty system of constraints.

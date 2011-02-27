@@ -191,8 +191,6 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
 */
 class Parma_Polyhedra_Library::Generator_System {
 public:
-
-  typedef Generator internal_row_type;
   typedef Generator row_type;
 
   //! Default constructor: builds an empty system of generators.
