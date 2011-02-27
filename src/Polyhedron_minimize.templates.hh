@@ -73,8 +73,7 @@ Polyhedron::minimize(const bool con_to_gen,
                      Dest_Linear_System& dest,
                      Bit_Matrix& sat) {
 
-  typedef typename Dest_Linear_System::internal_row_type dest_internal_row_type;
-  typedef typename dest_internal_row_type::Flags dest_internal_row_type_flags;
+  typedef typename Dest_Linear_System::row_type dest_row_type;
 
   // Topologies have to agree.
   PPL_ASSERT(source.topology() == dest.topology());
@@ -103,7 +102,7 @@ Polyhedron::minimize(const bool con_to_gen,
 
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
-    dest_internal_row_type dest_i;
+    dest_row_type dest_i;
     dest_i.resize(dest_num_rows);
     dest_i.set_topology(dest.topology());
     for (dimension_type j = dest_num_rows; j-- > 0; )

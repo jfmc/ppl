@@ -351,7 +351,6 @@ Polyhedron::conversion(Source_Linear_System& source,
                        Bit_Matrix& sat,
                        dimension_type num_lines_or_equalities) {
 
-  typedef typename Dest_Linear_System::internal_row_type dest_internal_row_type;
   typedef typename Dest_Linear_System::row_type dest_row_type;
   typedef typename Source_Linear_System::row_type source_row_type;
 
@@ -361,7 +360,7 @@ Polyhedron::conversion(Source_Linear_System& source,
   const dimension_type dest_num_columns = dest.num_columns();
   // The rows removed from `dest' will be placed in this vector, so they
   // can be recycled if needed.
-  std::vector<dest_internal_row_type> recyclable_dest_rows;
+  std::vector<dest_row_type> recyclable_dest_rows;
 
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
@@ -389,7 +388,7 @@ Polyhedron::conversion(Source_Linear_System& source,
   // release_rows() does not support pending rows.
   dest.unset_pending_rows();
 
-  Swapping_Vector<dest_internal_row_type> dest_rows;
+  Swapping_Vector<dest_row_type> dest_rows;
   // Release the rows from `dest' so they can be modified.
   dest.release_rows(dest_rows);
 
@@ -479,8 +478,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      const dest_internal_row_type& dest_row_nle = dest_rows[num_lines_or_equalities];
-      const dest_row_type& dest_nle = static_cast<const dest_row_type&>(dest_row_nle);
+      const dest_row_type& dest_nle = dest_rows[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -515,8 +513,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-          dest_internal_row_type& dest_row_i = dest_rows[i];
-          dest_row_type& dest_i = static_cast<dest_row_type&>(dest_row_i);
+          dest_row_type& dest_i = dest_rows[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -552,8 +549,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
-          dest_internal_row_type& dest_row_i = dest_rows[i];
-          dest_row_type& dest_i = static_cast<dest_row_type&>(dest_row_i);
+          dest_row_type& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
@@ -765,12 +761,12 @@ Polyhedron::conversion(Source_Linear_System& source,
 		if (!redundant) {
 		  // Adding the new ray to `dest_rows' and the corresponding
 		  // saturation row to `sat'.
-		  dest_internal_row_type new_row;
+		  dest_row_type new_row;
 		  if (recyclable_dest_rows.empty()) {
 		    // Create a new row.
-		    dest_internal_row_type tmp(dest.num_columns(),
-                                               typename dest_internal_row_type::Flags(dest.topology(),
-                                                                                      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest_row_type tmp(dest.num_columns(),
+                                      typename dest_row_type::Flags(dest.topology(),
+                                                                    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
                     std::swap(new_row, tmp);
 		    sat.add_recycled_row(new_satrow);
 		  }

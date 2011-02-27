@@ -83,7 +83,7 @@ template <typename Linear_System1>
 dimension_type
 Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
 
-  typedef typename Linear_System1::internal_row_type internal_row_type;
+  typedef typename Linear_System1::row_type sys_row_type;
 
   // This method is only applied to a well-formed system `sys'.
   PPL_ASSERT(sys.OK());
@@ -119,7 +119,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
   // release_rows() does not support pending rows.
   sys.unset_pending_rows();
 
-  Swapping_Vector<internal_row_type> sys_rows;
+  Swapping_Vector<sys_row_type> sys_rows;
   sys.release_rows(sys_rows);
 
   // Computing the number of saturators for each inequality,
