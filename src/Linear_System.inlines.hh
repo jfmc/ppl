@@ -95,11 +95,13 @@ inline
 Linear_System<Row>::Linear_System(Topology topol,
                                   dimension_type n_rows,
                                   dimension_type n_columns)
-  : rows(n_rows, Row(n_columns, typename Row::Flags(topol))),
-    num_columns_(n_columns),
+  : rows(),
+    num_columns_(0),
     row_topology(topol),
-    index_first_pending(n_rows),
+    index_first_pending(0),
     sorted(true) {
+  resize_no_copy(n_rows, n_columns);
+  set_sorted(true);
   PPL_ASSERT(OK());
 }
 
@@ -220,8 +222,14 @@ Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
   num_columns_ = new_n_columns;
   for (dimension_type i = std::min(rows.size(), new_n_rows); i-- > 0; )
     rows[i].resize(new_n_columns);
-  rows.resize(new_n_rows,
-              Row(new_n_columns, typename Row::Flags(row_topology)));
+  const dimension_type old_n_rows = rows.size();
+  rows.resize(new_n_rows);
+  // NOTE: new_n_rows may be lower than old_n_rows, but this code works
+  // nevertheless.
+  for (dimension_type i = old_n_rows; i < new_n_rows; ++i) {
+    rows[i].resize(new_n_columns);
+    rows[i].set_topology(row_topology);
+  }
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
