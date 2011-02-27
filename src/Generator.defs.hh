@@ -241,7 +241,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor of the (closure) point is 1.
 */
-class Parma_Polyhedra_Library::Generator : private Linear_Row {
+class Parma_Polyhedra_Library::Generator : public Linear_Row {
 public:
   //! Returns the line of direction \p e.
   /*!
