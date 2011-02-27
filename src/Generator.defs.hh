@@ -276,6 +276,17 @@ public:
   //! Default constructor. Constructs an invalid Generator.
   Generator();
 
+  // TODO: Remove this.
+  explicit Generator(dimension_type num_columns, Flags flags = Flags());
+
+  // TODO: Remove this.
+  Generator(dimension_type num_columns, dimension_type num_reserved_columns,
+            Flags flags = Flags());
+
+  // TODO: Remove this.
+  Generator(const Generator& g, dimension_type num_columns,
+            dimension_type num_reserved_columns);
+
   //! Returns the closure point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
@@ -394,8 +405,15 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  //! Checks if all the invariants are satisfied and that num_columns() equals
+  //! \p expected_num_columns .
+  bool OK(dimension_type expected_num_columns) const;
+
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
+
+  //! Swaps the i-th and j-th elements of the row.
+  void swap(dimension_type i, dimension_type j);
 
 private:
   /*! \brief

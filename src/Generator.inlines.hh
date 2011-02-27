@@ -32,6 +32,20 @@ Generator::Generator()
 }
 
 inline
+Generator::Generator(dimension_type num_columns, Flags flags)
+  : Linear_Row(num_columns, flags) {
+  
+}
+
+inline
+Generator::Generator(dimension_type num_columns,
+                     dimension_type num_reserved_columns,
+                     Flags flags)
+  : Linear_Row(num_columns, num_reserved_columns, flags) {
+
+}
+
+inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e.get_linear_row());
@@ -49,6 +63,12 @@ Generator::Generator(const Generator& g)
 inline
 Generator::Generator(const Generator& g, dimension_type dimension)
   : Linear_Row(g, dimension, dimension) {
+}
+
+inline
+Generator::Generator(const Generator& g, dimension_type num_columns,
+                     dimension_type num_reserved_columns)
+  : Linear_Row(g, num_columns, num_reserved_columns) {
 }
 
 inline
@@ -214,6 +234,16 @@ Generator::ascii_load(std::istream& s) {
 inline void
 Generator::swap(Generator& y) {
   Linear_Row::swap(y);
+}
+
+inline void
+Generator::swap(dimension_type i, dimension_type j) {
+  Linear_Row::swap(i, j);
+}
+
+inline bool
+Generator::OK(dimension_type expected_num_columns) const {
+  return Linear_Row::OK(expected_num_columns);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
