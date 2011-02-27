@@ -464,13 +464,6 @@ namespace std {
 void swap(Parma_Polyhedra_Library::Linear_Row& x,
 	  Parma_Polyhedra_Library::Linear_Row& y);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void iter_swap(std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator x,
-	       std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator y);
-
 } // namespace std
 
 #include "Linear_Row.inlines.hh"

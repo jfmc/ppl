@@ -321,13 +321,6 @@ swap(Parma_Polyhedra_Library::Linear_Row& x,
   x.swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-inline void
-iter_swap(std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator y) {
-  swap(*x, *y);
-}
-
 } // namespace std
 
 #endif // !defined(PPL_Linear_Row_inlines_hh)
