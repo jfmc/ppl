@@ -43,7 +43,19 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Constraint& x, const Generator& y) {
+                             const Constraint& x, const Generator& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  PPL_ASSERT(x.size() <= y.size());
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
+PPL::Scalar_Products::assign(Coefficient& z,
+                             const Generator& x, const Constraint& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.size() <= y.size());
