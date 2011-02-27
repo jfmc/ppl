@@ -909,21 +909,7 @@ Linear_System<Row>::OK() const {
     return false;
   }
 
-  // An empty system is OK,
-  // unless it is an NNC system with exactly one column.
-  if (has_no_rows()) {
-    if (is_necessarily_closed() || num_columns() != 1)
-      return true;
-    else {
-#ifndef NDEBUG
-      cerr << "NNC Linear_System has one column" << endl;
-#endif
-      return false;
-    }
-  }
-
-  // A non-empty system will contain constraints or generators; in
-  // both cases it must have at least one column for the inhomogeneous
+  // A system must have at least one column for the inhomogeneous
   // term and, if it is NNC, another one for the epsilon coefficient.
   const dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
   if (num_columns() < min_cols) {

@@ -77,6 +77,20 @@ Linear_System<Row>::Linear_System(Topology topol)
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
+
+  switch (topology()) {
+  case NECESSARILY_CLOSED:
+    add_zero_columns(1);
+    break;
+
+  case NOT_NECESSARILY_CLOSED:
+    add_zero_columns(2);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -176,9 +190,22 @@ inline void
 Linear_System<Row>::clear() {
   // Note: do NOT modify the value of `row_topology'.
   rows.clear();
-  num_columns_ = 0;
   index_first_pending = 0;
   sorted = true;
+
+  switch (topology()) {
+  case NECESSARILY_CLOSED:
+    num_columns_ = 1;
+    break;
+
+  case NOT_NECESSARILY_CLOSED:
+    num_columns_ = 2;
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>

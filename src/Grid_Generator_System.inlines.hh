@@ -69,9 +69,11 @@ Grid_Generator_System::is_equal_to(const Grid_Generator_System& y) const {
 inline
 Grid_Generator_System::Grid_Generator_System()
   : Linear_System<Linear_Row>(NECESSARILY_CLOSED) {
-  // For grid generators, two extra columns are needed.
-  add_zero_columns(2);
+  // For grid generators, two extra columns are needed, but one has already
+  // been added by Linear_System's constructor.
+  add_zero_columns(1);
   set_sorted(false);
+  PPL_ASSERT(space_dimension() == 0);
 }
 
 inline
@@ -82,9 +84,11 @@ Grid_Generator_System::Grid_Generator_System(const Grid_Generator_System& gs)
 inline
 Grid_Generator_System::Grid_Generator_System(dimension_type dim)
   : Linear_System<Linear_Row>(NECESSARILY_CLOSED) {
-  // For grid generators, two extra columns are needed.
-  add_zero_columns(dim + 2);
+  // For grid generators, two extra columns are needed, but one has already
+  // been added by the Linear_System's constructor.
+  add_zero_columns(dim + 1);
   set_sorted(false);
+  PPL_ASSERT(space_dimension() == dim);
 }
 
 inline
@@ -126,10 +130,12 @@ Grid_Generator_System::zero_dim_univ() {
 inline void
 Grid_Generator_System::clear() {
   Linear_System<Linear_Row>::clear();
-  // For grid generators, two extra columns are needed.
-  add_zero_columns(2);
+  // For grid generators, two extra columns are needed, but one has already
+  // been added by Linear_System<Linear_Row>::clear().
+  add_zero_columns(1);
   set_sorted(false);
   unset_pending_rows();
+  PPL_ASSERT(space_dimension() == 0);
 }
 
 inline void

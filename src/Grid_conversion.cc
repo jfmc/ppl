@@ -367,7 +367,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   dest.release_rows(recyclable_rows);
 
   dest.Linear_System<Linear_Row>::clear();
-  dest.add_zero_columns(dims + 1 /* parameter divisor */);
+  // The additional column for the parameter divisor has already been added
+  // by clear().
+  dest.add_zero_columns(dims);
 
   // In `dest' initialize row types and elements, including setting
   // the diagonal elements to the inverse ratio of the `source'

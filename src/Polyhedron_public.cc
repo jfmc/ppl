@@ -94,7 +94,7 @@ PPL::Polyhedron::constraints() const {
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    PPL_ASSERT(con_sys.num_rows() == 0 && con_sys.num_columns() == 0);
+    PPL_ASSERT(con_sys.num_rows() == 0 && con_sys.space_dimension() == 0);
     return con_sys;
   }
 
@@ -142,7 +142,7 @@ PPL::Polyhedron::generators() const {
   }
 
   if (space_dim == 0) {
-    PPL_ASSERT(gen_sys.num_rows() == 0 && gen_sys.num_columns() == 0);
+    PPL_ASSERT(gen_sys.num_rows() == 0 && gen_sys.space_dimension() == 0);
     return Generator_System::zero_dim_univ();
   }
 
