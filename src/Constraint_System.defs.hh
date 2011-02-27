@@ -25,9 +25,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_System_defs_hh 1
 
 #include "Constraint_System.types.hh"
-#include "Linear_Expression.types.hh"
+
 #include "Linear_System.defs.hh"
-#include "Linear_Row.defs.hh"
+#include "Constraint.defs.hh"
+
+#include "Linear_Expression.types.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Congruence_System.types.hh"
@@ -138,7 +140,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
 class Parma_Polyhedra_Library::Constraint_System {
 public:
 
-  typedef Linear_Row internal_row_type;
+  typedef Constraint internal_row_type;
   typedef Constraint row_type;
 
   //! Default constructor: builds an empty system of constraints.
@@ -368,7 +370,7 @@ public:
     Adds the given row to the pending part of the system, stealing its
     contents and automatically resizing the system or the row, if needed.
   */
-  void insert_pending_recycled(Linear_Row& r);
+  void insert_pending_recycled(Constraint& r);
 
   // TODO: Consider removing this, or making it private.
   //! Adds the rows of `y' to the pending part of `*this', stealing them from
@@ -380,7 +382,7 @@ public:
     Adds \p r to the system, stealing its contents and
     automatically resizing the system or the row, if needed.
   */
-  void insert_recycled(Linear_Row& r);
+  void insert_recycled(Constraint& r);
 
   // TODO: Consider removing this, or making it private.
   //! Adds to \p *this a the rows of `y', stealing them from `y'.
@@ -422,15 +424,15 @@ public:
   // TODO: Consider removing this, or making it private.
   //! Swaps \p row with the last row and then removes that row from the
   //! system.
-  void release_row(Linear_Row& row);
+  void release_row(Constraint& row);
 
   // TODO: Consider removing this, or making it private.
   //! Swaps the vector of rows with \p v. \p v must be empty.
-  void release_rows(Swapping_Vector<Linear_Row>& v);
+  void release_rows(Swapping_Vector<Constraint>& v);
 
   // TODO: Consider removing this, or making it private.
   //! Swaps the vector of rows with \p v. \p *this must have no rows.
-  void take_ownership_of_rows(Swapping_Vector<Linear_Row>& v);
+  void take_ownership_of_rows(Swapping_Vector<Constraint>& v);
 
   // TODO: Consider removing this, or making it private.
   //! Resizes the system without worrying about the old contents.
@@ -580,7 +582,7 @@ public:
   void swap(Constraint_System& y);
 
 private:
-  Linear_System<Linear_Row> sys;
+  Linear_System<Constraint> sys;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
@@ -667,13 +669,13 @@ private:
   friend class Constraint_System;
 
   //! The const iterator over the matrix of constraints.
-  Linear_System<Linear_Row>::const_iterator i;
+  Linear_System<Constraint>::const_iterator i;
 
   //! A const pointer to the matrix of constraints.
-  const Linear_System<Linear_Row>* csp;
+  const Linear_System<Constraint>* csp;
 
   //! Constructor.
-  Constraint_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
+  Constraint_System_const_iterator(const Linear_System<Constraint>::const_iterator& iter,
       const Constraint_System& csys);
 
   //! \p *this skips to the next non-trivial constraint.

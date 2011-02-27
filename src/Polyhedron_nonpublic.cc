@@ -1996,9 +1996,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // compute their "mid-point" and check if it is both in `x' and `y'.
 
   // Note: reasoning at the polyhedral cone level.
-  // CHECKME, FIXME: Polyhedron is a (deprecated) friend of Generator.
-  // Here below we systematically exploit such a friendship, so as to
-  // freely reinterpret a Generator as a Linear_Row and vice versa.
+  // FIXME: This assumes that a Generator is a Linear_Row.
   Linear_Row mid_row;
   const Generator& mid_g = static_cast<const Generator&>(mid_row);
 
@@ -2141,12 +2139,11 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
   // This avoids triggering assertions in release_rows().
   con_sys.unset_pending_rows();
 
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Constraint> rows;
   con_sys.release_rows(rows);
 
   for (dimension_type j = rows.size(); j-- > 0; ) {
-    Linear_Row& row = rows[j];
-    Constraint& c = static_cast<Constraint&>(row);
+    Constraint& c = rows[j];
     if (c.is_tautological())
       goto next_constraint;
 

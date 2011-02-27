@@ -371,6 +371,7 @@ Constraint::swap(Constraint& y) {
 namespace std {
 
 /*! \relates Parma_Polyhedra_Library::Constraint */
+template <>
 inline void
 swap(Parma_Polyhedra_Library::Constraint& x,
      Parma_Polyhedra_Library::Constraint& y) {

@@ -111,13 +111,13 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
 	dimension_type old_eps_index = space_dim + 1;
 	dimension_type new_eps_index = old_eps_index + m;
 	for (dimension_type i = rows.size(); i-- > m; ) {
-          Linear_Row& r = rows[i];
+          Generator& r = rows[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
         // The upper-right corner of `rows' contains the J matrix:
 	// swap coefficients to preserve sortedness.
 	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	  Linear_Row& r = rows[i];
+	  Generator& r = rows[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
 
@@ -202,19 +202,19 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
 	if (!con_sys.is_sorted())
 	  con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
 	else {
-          Swapping_Vector<Linear_Row> rows;
+          Swapping_Vector<Constraint> rows;
           con_sys.release_rows(rows);
 
           dimension_type old_eps_index = space_dim + 1;
           dimension_type new_eps_index = old_eps_index + m;
           for (dimension_type i = rows.size(); i-- > m; ) {
-            Linear_Row& r = rows[i];
+            Constraint& r = rows[i];
             std::swap(r[old_eps_index], r[new_eps_index]);
           }
           // The upper-right corner of `rows' contains the J matrix:
           // swap coefficients to preserve sortedness.
           for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-            Linear_Row& r = rows[i];
+            Constraint& r = rows[i];
             std::swap(r[old_eps_index], r[old_eps_index + 1]);
           }
 
@@ -304,7 +304,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
     // Steal the constraints from `cs' and put them in `con_sys'
     // using the right displacement for coefficients.
-    Swapping_Vector<Linear_Row> cs_rows;
+    Swapping_Vector<Constraint> cs_rows;
     cs.release_rows(cs_rows);
     PPL_ASSERT(cs_rows.size() == added_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
@@ -348,7 +348,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
     // Steal the constraints from `cs' and put them in `con_sys'
     // using the right displacement for coefficients.
-    Swapping_Vector<Linear_Row> cs_rows;
+    Swapping_Vector<Constraint> cs_rows;
     cs.release_rows(cs_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
       cs_rows[i].add_zeroes_and_shift(space_dim, 1);

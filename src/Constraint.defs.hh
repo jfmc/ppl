@@ -515,6 +515,7 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Constraint */
+template <>
 void swap(Parma_Polyhedra_Library::Constraint& x,
           Parma_Polyhedra_Library::Constraint& y);
 

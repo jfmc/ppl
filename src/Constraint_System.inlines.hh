@@ -77,7 +77,7 @@ Constraint_System::operator[](const dimension_type k) const {
 
 inline dimension_type
 Constraint_System::max_space_dimension() {
-  return Linear_System<Linear_Row>::max_space_dimension();
+  return Linear_System<Constraint>::max_space_dimension();
 }
 
 inline dimension_type
@@ -153,7 +153,7 @@ Constraint_System_const_iterator::operator!=(const Constraint_System_const_itera
 
 inline
 Constraint_System_const_iterator::
-Constraint_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
+Constraint_System_const_iterator(const Linear_System<Constraint>::const_iterator& iter,
 	       const Constraint_System& csys)
   : i(iter), csp(&csys.sys) {
 }
@@ -289,7 +289,7 @@ Constraint_System::sort_rows() {
 }
 
 inline void
-Constraint_System::insert_pending_recycled(Linear_Row& r) {
+Constraint_System::insert_pending_recycled(Constraint& r) {
   sys.insert_pending_recycled(r);
 }
 
@@ -299,7 +299,7 @@ Constraint_System::insert_pending_recycled(Constraint_System& r) {
 }
 
 inline void
-Constraint_System::insert_recycled(Linear_Row& r) {
+Constraint_System::insert_recycled(Constraint& r) {
   sys.insert_recycled(r);
 }
 
@@ -334,17 +334,17 @@ Constraint_System::set_not_necessarily_closed() {
 }
 
 inline void
-Constraint_System::release_row(Linear_Row& row) {
+Constraint_System::release_row(Constraint& row) {
   sys.release_row(row);
 }
 
 inline void
-Constraint_System::release_rows(Swapping_Vector<Linear_Row>& v) {
+Constraint_System::release_rows(Swapping_Vector<Constraint>& v) {
   sys.release_rows(v);
 }
 
 inline void
-Constraint_System::take_ownership_of_rows(Swapping_Vector<Linear_Row>& v) {
+Constraint_System::take_ownership_of_rows(Swapping_Vector<Constraint>& v) {
   sys.take_ownership_of_rows(v);
 }
 

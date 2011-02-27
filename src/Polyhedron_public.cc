@@ -3582,7 +3582,7 @@ PPL::Polyhedron::topological_closure_assign() {
     const dimension_type eps_index = space_dim + 1;
     bool changed = false;
 
-    Swapping_Vector<Linear_Row> rows;
+    Swapping_Vector<Constraint> rows;
     // Release the rows from the constraint system so they can be modified.
     con_sys.release_rows(rows);
 

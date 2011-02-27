@@ -210,12 +210,9 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 bool
 PPL::Constraint_System::has_equalities() const {
   // We verify if the system has equalities also in the pending part.
-  for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-    const Linear_Row& lr = sys[i];
-    const Constraint& c = static_cast<const Constraint&>(lr);
-    if (c.is_equality())
+  for (dimension_type i = sys.num_rows(); i-- > 0; )
+    if (sys[i].is_equality())
       return true;
-  }
   return false;
 }
 
@@ -227,8 +224,7 @@ PPL::Constraint_System::has_strict_inequalities() const {
   // We verify if the system has strict inequalities
   // also in the pending part.
   for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-    const Linear_Row& lr = sys[i];
-    const Constraint& c = static_cast<const Constraint&>(lr);
+    const Constraint& c = sys[i];
     // Optimized type checking: we already know the topology;
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
@@ -325,7 +321,7 @@ PPL::Constraint_System::num_equalities() const {
 
 void
 PPL::Constraint_System_const_iterator::skip_forward() {
-  const Linear_System<Linear_Row>::const_iterator csp_end = csp->end();
+  const Linear_System<Constraint>::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
@@ -342,18 +338,14 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
   if (sys.is_necessarily_closed()) {
     if (g.is_line()) {
       // Lines must saturate all constraints.
-      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        const Linear_Row& lr = sys[i];
-        const Constraint& c = static_cast<const Constraint&>(lr);
-	if (sps(g, c) != 0)
+      for (dimension_type i = sys.num_rows(); i-- > 0; )
+	if (sps(g, sys[i]) != 0)
 	  return false;
-      }
     }
     else
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        const Linear_Row& lr = sys[i];
-        const Constraint& c = static_cast<const Constraint&>(lr);
+        const Constraint& c = sys[i];
 	const int sp_sign = sps(g, c);
 	if (c.is_inequality()) {
 	  // As `cs' is necessarily closed,
@@ -373,20 +365,17 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
     case Generator::LINE:
       // Lines must saturate all constraints.
-      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        const Linear_Row& lr = sys[i];
-        const Constraint& c = static_cast<const Constraint&>(lr);
-	if (sps(g, c) != 0)
+      for (dimension_type i = sys.num_rows(); i-- > 0; )
+	if (sps(g, sys[i]) != 0)
 	  return false;
-      }
+
       break;
 
     case Generator::POINT:
       // Have to perform the special test
       // when dealing with a strict inequality.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        const Linear_Row& lr = sys[i];
-        const Constraint& c = static_cast<const Constraint&>(lr);
+        const Constraint& c = sys[i];
 	const int sp_sign = sps(g, c);
 	switch (c.type()) {
 	case Constraint::EQUALITY:
@@ -409,8 +398,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
       // Intentionally fall through.
     case Generator::CLOSURE_POINT:
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        const Linear_Row& lr = sys[i];
-        const Constraint& c = static_cast<const Constraint&>(lr);
+        const Constraint& c = sys[i];
 	const int sp_sign = sps(g, c);
 	if (c.is_inequality()) {
 	  // Constraint `c' is either a strict or a non-strict inequality.
@@ -455,13 +443,13 @@ PPL::Constraint_System
   sys.set_sorted(false);
   sys.unset_pending_rows();
   
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Constraint> rows;
   // Release the rows from the linear system so they can be modified.
   sys.release_rows(rows);
 
   if (denominator != 1) {
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Linear_Row& row = rows[i];
+      Constraint& row = rows[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
 	for (dimension_type j = n_columns; j-- > 0; )
@@ -481,7 +469,7 @@ PPL::Constraint_System
     // Here `denominator' == 1: optimized computation
     // only considering columns having indexes < expr_size.
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Linear_Row& row = rows[i];
+      Constraint& row = rows[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
@@ -517,8 +505,7 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
     << "index_first_pending " << sys.first_pending_row()
     << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i) {
-    const Linear_Row& lr = sys[i];
-    const Constraint& c = static_cast<const Constraint&>(lr);
+    const Constraint& c = sys[i];
     for (dimension_type j = 0; j < x_num_columns; ++j)
       s << c[j] << ' ';
     switch (c.type()) {
