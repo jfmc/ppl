@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 #include "Linear_Row.defs.hh"
 #include "Generator.types.hh"
-#include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
 #include "Congruence_System.types.hh"
 #include <iterator>
@@ -48,10 +47,6 @@ namespace IO_Operators {
 std::ostream& operator<<(std::ostream& s, const Constraint_System& cs);
 
 } // namespace IO_Operators
-
-// Put it in the namespace here to declare it friend later.
-/*! \relates Polyhedron */
-bool operator==(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -330,8 +325,6 @@ private:
   static const Constraint_System* zero_dim_empty_p;
 
   friend class Constraint_System_const_iterator;
-
-  friend bool operator==(const Polyhedron& x, const Polyhedron& y);
 
   /*! \brief
     Builds a system of \p n_rows constraints on a \p n_columns - 1
