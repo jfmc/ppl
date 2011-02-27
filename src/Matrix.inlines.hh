@@ -90,6 +90,7 @@ template <typename Row>
 inline void
 Matrix<Row>::resize_no_copy(dimension_type new_n_rows,
                             dimension_type new_n_columns) {
+  // FIXME: Optimize this method.
   clear();
   resize(new_n_rows, new_n_columns);
 }
