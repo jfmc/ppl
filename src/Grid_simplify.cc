@@ -124,7 +124,7 @@ void
 Grid::reduce_parameter_with_line(Grid_Generator& row,
 				 const Grid_Generator& pivot,
 				 const dimension_type column,
-				 Swapping_Vector<Linear_Row>& rows,
+				 Swapping_Vector<Grid_Generator>& rows,
                                  const dimension_type total_num_columns) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
@@ -165,8 +165,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // it below to render row[column] zero.  This requires multiplying
   // all other parameters to match.
   for (dimension_type index = rows.size(); index-- > 0; ) {
-    Linear_Row& row = rows[index];
-    Grid_Generator& gen = static_cast<Grid_Generator&>(row);
+    Grid_Generator& gen = rows[index];
     if (gen.is_parameter_or_point())
       for (dimension_type col = num_columns; col-- > 0; )
         gen[col] *= reduced_pivot_col;
@@ -257,7 +256,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   const dimension_type num_rows = sys.num_rows();
 
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Grid_Generator> rows;
   // Release the rows from the linear system, so they can be modified.
   sys.release_rows(rows);
 
@@ -280,8 +279,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     else {
       if (row_index != pivot_index)
         std::swap(rows[row_index], rows[pivot_index]);
-      Linear_Row& pivot_row = rows[pivot_index];
-      Grid_Generator& pivot = static_cast<Grid_Generator&>(pivot_row);
+      Grid_Generator& pivot = rows[pivot_index];
       bool pivot_is_line = pivot.is_line();
 
       // Change the matrix so that the value at `dim' in every row
@@ -289,8 +287,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       while (row_index < num_rows - 1) {
 	++row_index;
 
-        Linear_Row& lr = rows[row_index];
-        Grid_Generator& row = static_cast<Grid_Generator&>(lr);
+        Grid_Generator& row = rows[row_index];
 
 	if (row[dim] == 0)
 	  continue;
@@ -358,12 +355,9 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   const Coefficient& system_divisor = rows[0][0];
   for (dimension_type i = rows.size() - 1, dim = num_columns - 1;
        dim > 0; --dim) {
-    Linear_Row& row = rows[i];
-    Grid_Generator& g = static_cast<Grid_Generator&>(row);
-
     switch (dim_kinds[dim]) {
     case PARAMETER:
-      g.set_divisor(system_divisor);
+      rows[i].set_divisor(system_divisor);
     case LINE:
       --i;
     case GEN_VIRTUAL:

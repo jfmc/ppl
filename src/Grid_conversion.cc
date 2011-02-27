@@ -103,7 +103,7 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
 
 void
 Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
-		    Swapping_Vector<Linear_Row>& dest_rows,
+		    Swapping_Vector<Grid_Generator>& dest_rows,
                     const dimension_type num_rows,
 		    const dimension_type num_dims) {
   if (multiplier == 1)
@@ -118,8 +118,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
     // Multiply every element of every parameter.
 
     for (dimension_type index = num_rows; index-- > 0; ) {
-      Linear_Row& row = dest_rows[index];
-      Grid_Generator& generator = static_cast<Grid_Generator&>(row);
+      Grid_Generator& generator = dest_rows[index];
       if (generator.is_parameter_or_point())
 	for (dimension_type column = num_dims; column-- > 0; )
 	  generator[column] *= multiplier;
@@ -363,7 +362,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     throw std::runtime_error("PPL internal error: Grid::conversion:"
 			     " source matrix is singular.");
 
-  Swapping_Vector<Linear_Row> recyclable_rows;
+  Swapping_Vector<Grid_Generator> recyclable_rows;
   dest.release_rows(recyclable_rows);
 
   dest.clear();
@@ -438,7 +437,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // TODO: Improve this, considering that these rows have just been added to
   // `dest'.
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Grid_Generator> rows;
   // Release the rows from the linear system, so they can be modified.
   dest.release_rows(rows);
 
@@ -451,8 +450,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       // at column `dim' by `source_dim'.
 
       for (dimension_type i = dest_index; i-- > 0; ) {
-        Linear_Row& row = rows[i];
-        Grid_Generator& g = static_cast<Grid_Generator&>(row);
+        Grid_Generator& g = rows[i];
 
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
@@ -491,7 +489,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
         for (dimension_type i = dest_index; i-- > 0; ) {
 	  PPL_ASSERT(i < dest_num_rows);
-          Linear_Row& row = rows[i];
+          Grid_Generator& row = rows[i];
 	  sub_mul_assign(row[dim_fol], source_dim, row[dim]);
 	}
       }
@@ -517,13 +515,10 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // the point.
   const Coefficient& system_divisor = rows[0][0];
   
-  for (dimension_type i = rows.size() - 1, dim = dims;
-       dim-- > 1; ) {
-    Linear_Row& row = rows[i];
-    Grid_Generator& g = static_cast<Grid_Generator&>(row);
+  for (dimension_type i = rows.size() - 1, dim = dims; dim-- > 1; ) {
     switch (dim_kinds[dim]) {
     case PARAMETER:
-      g.set_divisor(system_divisor);
+      rows[i].set_divisor(system_divisor);
     case LINE:
       --i;
     case GEN_VIRTUAL:

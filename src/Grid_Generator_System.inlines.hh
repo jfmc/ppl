@@ -110,7 +110,7 @@ Grid_Generator_System::operator=(const Grid_Generator_System& y) {
 inline dimension_type
 Grid_Generator_System::max_space_dimension() {
   // Grid generators use an extra column for the parameter divisor.
-  return Linear_System<Linear_Row>::max_space_dimension() - 1;
+  return Linear_System<Grid_Generator>::max_space_dimension() - 1;
 }
 
 inline dimension_type
@@ -130,7 +130,7 @@ inline void
 Grid_Generator_System::clear() {
   sys.clear();
   // For grid generators, two extra columns are needed, but one has already
-  // been added by Linear_System<Linear_Row>::clear().
+  // been added by sys.clear().
   sys.add_zero_columns(1);
   sys.set_sorted(false);
   sys.unset_pending_rows();
@@ -219,7 +219,7 @@ Grid_Generator_System::empty() const {
 
 inline
 Grid_Generator_System::const_iterator
-::const_iterator(const Linear_System<Linear_Row>::const_iterator& y)
+::const_iterator(const Linear_System<Grid_Generator>::const_iterator& y)
   : i(y) {
 }
 
@@ -239,17 +239,17 @@ Grid_Generator_System::operator[](const dimension_type k) const {
 }
 
 inline void
-Grid_Generator_System::release_row(Linear_Row& row) {
+Grid_Generator_System::release_row(Grid_Generator& row) {
   sys.release_row(row);
 }
 
 inline void
-Grid_Generator_System::release_rows(Swapping_Vector<Linear_Row>& v) {
+Grid_Generator_System::release_rows(Swapping_Vector<Grid_Generator>& v) {
   sys.release_rows(v);
 }
 
 inline void
-Grid_Generator_System::take_ownership_of_rows(Swapping_Vector<Linear_Row>& v) {
+Grid_Generator_System::take_ownership_of_rows(Swapping_Vector<Grid_Generator>& v) {
   sys.take_ownership_of_rows(v);
 }
 

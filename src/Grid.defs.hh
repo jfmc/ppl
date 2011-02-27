@@ -2471,12 +2471,12 @@ private:
     parameter \p row such that the element at index \p col of \p row
     is zero.
   */
-  // This takes a parameter with type Swapping_Vector<Linear_Row> (instead of
-  // Grid_Generator_System) to simplify the implementation of `simplify()'.
+  // This takes a parameter with type Swapping_Vector<Grid_Generator> (instead
+  // of Grid_Generator_System) to simplify the implementation of `simplify()'.
   static void reduce_parameter_with_line(Grid_Generator& row,
 					 const Grid_Generator& pivot,
 					 dimension_type col,
-					 Swapping_Vector<Linear_Row>& sys,
+					 Swapping_Vector<Grid_Generator>& sys,
                                          dimension_type num_columns);
 
   //! Reduce \p row using \p pivot.
@@ -2530,11 +2530,11 @@ private:
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Grid_Generator::operator[].
-  // The type of `dest' is Swapping_Vector<Linear_Row> instead of
+  // The type of `dest' is Swapping_Vector<Grid_Generator> instead of
   // Grid_Generator_System to simplify the implementation of conversion().
   static void multiply_grid(const Coefficient& multiplier,
 			    Grid_Generator& gen,
-			    Swapping_Vector<Linear_Row>& dest,
+			    Swapping_Vector<Grid_Generator>& dest,
 			    dimension_type num_rows,
 			    dimension_type num_dims);
 

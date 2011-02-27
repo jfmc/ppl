@@ -265,9 +265,18 @@ public:
 
   //! Constructs an invalid Grid_Generator.
   Grid_Generator();
-  
+
+  // TODO: Remove this.
+  //! Constructs a Grid_Generator with the specified size and flags.
+  Grid_Generator(dimension_type size, Flags f);
+
   //! Ordinary copy constructor.
   Grid_Generator(const Grid_Generator& g);
+
+  // TODO: Remove this.
+  //! Copy constructor with specified size and capacity.
+  Grid_Generator(const Grid_Generator& g, dimension_type size,
+                 dimension_type capacity);
 
   //! Destructor.
   ~Grid_Generator();
@@ -424,6 +433,10 @@ public:
     to index \p last (excluded).
   */
   void negate(dimension_type first, dimension_type last);
+
+  // TODO: Consider removing this or making this private.
+  //! Swaps the i-th and j-th elements of the row.
+  void swap(dimension_type i, dimension_type j);
 
 private:
   /*! \brief

@@ -47,6 +47,22 @@ Grid_Generator::Grid_Generator(const Grid_Generator& g)
 }
 
 inline
+Grid_Generator::Grid_Generator(dimension_type size, Flags f)
+  : Linear_Row(size, f) {
+}
+
+inline
+Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size,
+                               dimension_type capacity)
+  : Linear_Row(g, size, capacity) {
+}
+
+inline void
+Grid_Generator::swap(dimension_type i, dimension_type j) {
+  Linear_Row::swap(i, j);
+}
+
+inline
 Grid_Generator::~Grid_Generator() {
 }
 

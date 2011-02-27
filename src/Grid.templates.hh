@@ -73,13 +73,12 @@ Grid::Grid(const Box<Interval>& box,
 	    // single value.
 	    con_sys.insert(l_d * Variable(k) == l_n);
 
-            Swapping_Vector<Linear_Row> rows;
+            Swapping_Vector<Grid_Generator> rows;
             // Release the rows from the genertor system, so they can be
             // modified.
             gen_sys.release_rows(rows);
 
-            Linear_Row& point_row = rows[0];
-            Grid_Generator& point = static_cast<Grid_Generator&>(point_row);
+            Grid_Generator& point = rows[0];
 
 	    // Scale the point to use as divisor the lcm of the
 	    // divisors of the existing point and the lower bound.

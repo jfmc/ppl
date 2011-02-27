@@ -42,7 +42,7 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
     // Swap the parameter divisor column into the new last column.
     sys.swap_columns(old_num_columns - 1, num_columns() - 1);
   }
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Grid_Generator> rows;
   gs.sys.release_rows(rows);
   for (dimension_type i = 0; i < gs_num_rows; ++i) {
     rows[i].set_topology(NECESSARILY_CLOSED);
@@ -75,7 +75,7 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     return;
   }
 
-  // Note: we can not call Linear_System<Linear_Row>::insert(g),
+  // Note: we can not call sys.insert(g),
   // because that would check for strong normalization of g.
   PPL_ASSERT(sys.is_necessarily_closed() && sys.topology() == g.topology());
   // This method is only used when the system has no pending rows.
@@ -97,7 +97,7 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   else if (g_size < old_num_columns) {
     // Create a resized copy of the row (and move the parameter
     // divisor coefficient to its last position).
-    Linear_Row tmp_row(g, old_num_columns, old_num_columns);
+    Grid_Generator tmp_row(g, old_num_columns, old_num_columns);
     std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
     sys.insert_recycled(tmp_row);
   }
@@ -137,12 +137,12 @@ PPL::Grid_Generator_System
   // Avoid triggering assertions in release_rows().
   unset_pending_rows();
 
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Grid_Generator> rows;
   // Release the rows from the linear system, so they can be modified.
   x.sys.release_rows(rows);
   
   for (dimension_type i = num_rows; i-- > 0; ) {
-    Linear_Row& row = rows[i];
+    Grid_Generator& row = rows[i];
     Scalar_Products::assign(numerator, expr.get_linear_row(), row);
     std::swap(numerator, row[v]);
   }
@@ -152,7 +152,7 @@ PPL::Grid_Generator_System
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
     for (dimension_type i = num_rows; i-- > 0; ) {
-      Linear_Row& row = rows[i];
+      Grid_Generator& row = rows[i];
       for (dimension_type j = num_columns; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
@@ -279,9 +279,9 @@ PPL::Grid_Generator_System
 
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
-    Linear_Row tmp(num_columns(),
-                   Linear_Row::Flags(NECESSARILY_CLOSED,
-                                     Linear_Row::LINE_OR_EQUALITY));
+    Grid_Generator tmp(num_columns(),
+                       Linear_Row::Flags(NECESSARILY_CLOSED,
+                                         Linear_Row::LINE_OR_EQUALITY));
     tmp[col] = 1;
     ++col;
     sys.insert_recycled(tmp);

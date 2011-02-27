@@ -25,9 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_System_defs_hh 1
 
 #include "Grid_Generator_System.types.hh"
-#include "Grid_Generator.types.hh"
+
 #include "Linear_System.defs.hh"
-#include "Linear_Row.defs.hh"
+#include "Grid_Generator.defs.hh"
 #include "Variables_Set.types.hh"
 #include <iosfwd>
 
@@ -179,7 +179,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 class Parma_Polyhedra_Library::Grid_Generator_System {
 public:
 
-  typedef Linear_Row internal_row_type;
+  typedef Grid_Generator internal_row_type;
   typedef Grid_Generator row_type;
 
   //! Default constructor: builds an empty system of generators.
@@ -313,10 +313,10 @@ public:
   private:
     friend class Grid_Generator_System;
 
-    Linear_System<Linear_Row>::const_iterator i;
+    Linear_System<Grid_Generator>::const_iterator i;
 
-    //! Copy constructor from Linear_System< Linear_Row>::const_iterator.
-    const_iterator(const Linear_System<Linear_Row>::const_iterator& y);
+    //! Copy constructor from Linear_System< Grid_Generator>::const_iterator.
+    const_iterator(const Linear_System<Grid_Generator>::const_iterator& y);
   };
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
@@ -488,15 +488,15 @@ public:
   // TODO: Consider removing this or making it private.
   //! Swaps \p row with the last row and then removes that row from the
   //! system.
-  void release_row(Linear_Row& row);
+  void release_row(Grid_Generator& row);
 
   // TODO: Consider removing this or making it private.
   //! Swaps the vector of rows with \p v. \p v must be empty.
-  void release_rows(Swapping_Vector<Linear_Row>& v);
+  void release_rows(Swapping_Vector<Grid_Generator>& v);
 
   // TODO: Consider removing this or making it private.
   //! Swaps the vector of rows with \p v. \p *this must have no rows.
-  void take_ownership_of_rows(Swapping_Vector<Linear_Row>& v);
+  void take_ownership_of_rows(Swapping_Vector<Grid_Generator>& v);
 
   // TODO: Consider removing this or making it private.
   bool has_no_rows() const;
@@ -520,7 +520,7 @@ public:
   dimension_type first_pending_row() const;
 
 private:
-  Linear_System<Linear_Row> sys;
+  Linear_System<Grid_Generator> sys;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
