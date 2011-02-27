@@ -48,6 +48,20 @@ std::ostream& operator<<(std::ostream& s, const Constraint_System& cs);
 
 } // namespace IO_Operators
 
+// TODO: Consider removing this.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
+/*! \relates Constraint_System */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool operator==(const Constraint_System& x, const Constraint_System& y);
+
+// TODO: Consider removing this.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
+/*! \relates Constraint_System */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool operator!=(const Constraint_System& x, const Constraint_System& y);
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -121,12 +135,10 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other constraints), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::Constraint_System : public Linear_System<Linear_Row> {
-private:
-  typedef Linear_System<Linear_Row> Base;
-  
+class Parma_Polyhedra_Library::Constraint_System {
 public:
 
+  typedef Linear_Row internal_row_type;
   typedef Constraint row_type;
 
   //! Default constructor: builds an empty system of constraints.
@@ -269,6 +281,256 @@ public:
   */
   void insert(const Constraint& c);
 
+  // TODO: Consider removing this, or making it private.
+  //! Returns the system topology.
+  Topology topology() const;
+
+  // TODO: Consider removing this, or making it private.
+  dimension_type num_rows() const;
+
+  // TODO: Consider removing this, or making it private.
+  //! Swaps the i-th and the j-th rows.
+  void swap_rows(dimension_type i, dimension_type j);
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    the system topology is <CODE>NECESSARILY_CLOSED</CODE>.
+  */
+  bool is_necessarily_closed() const;
+
+  // TODO: Consider removing this, or making it private.
+  //! Returns the number of rows that are in the pending part of the system.
+  dimension_type num_pending_rows() const;
+
+  // TODO: Consider removing this, or making it private.
+  //! Returns the index of the first pending row.
+  dimension_type first_pending_row() const;
+
+  // TODO: Consider removing this, or making it private.
+  //! Returns the value of the sortedness flag.
+  bool is_sorted() const;
+
+  // TODO: Check if this should be removed.
+  dimension_type num_columns() const;
+
+  // TODO: Consider removing this, or making it private.
+  //! Sets the index to indicate that the system has no pending rows.
+  void unset_pending_rows();
+
+  // TODO: Consider removing this, or making it private.
+  //! Sets the index of the first pending row to \p i.
+  void set_index_first_pending_row(dimension_type i);
+
+  // TODO: Consider removing this, or making it private.
+  //! Sets the sortedness flag of the system to \p b.
+  void set_sorted(bool b);
+
+  // TODO: Consider removing this, or making it private.
+  //! Makes the system shrink by removing its \p n trailing rows.
+  void remove_trailing_rows(dimension_type n);
+
+  // TODO: Consider removing this, or making it private.
+  //! Permutes the columns of the system.
+  /*
+    \param cycles
+    A vector representing the non-trivial cycles of the permutation
+    according to which the columns must be rearranged.
+
+    The \p cycles vector contains, one after the other, the
+    non-trivial cycles (i.e., the cycles of length greater than one)
+    of a permutation of non-zero column indexes.  Each cycle is
+    terminated by zero.  For example, assuming the system has 6
+    columns, the permutation \f$ \{ 1 \mapsto 3, 2 \mapsto 4,
+    3 \mapsto 6, 4 \mapsto 2, 5 \mapsto 5, 6 \mapsto 1 \}\f$ can be
+    represented by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in
+    turn can be represented by a vector of 6 elements containing 1, 3,
+    6, 0, 2, 4, 0.
+  */
+  void permute_columns(const std::vector<dimension_type>& cycles);
+
+  // TODO: Consider removing this, or making it private.
+  bool has_no_rows() const;
+
+  // TODO: Consider removing this, or making it private.
+  //! Strongly normalizes the system.
+  void strong_normalize();
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Sorts the non-pending rows (in growing order) and eliminates
+    duplicated ones.
+  */
+  void sort_rows();
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Adds the given row to the pending part of the system, stealing its
+    contents and automatically resizing the system or the row, if needed.
+  */
+  void insert_pending_recycled(Linear_Row& r);
+
+  // TODO: Consider removing this, or making it private.
+  //! Adds the rows of `y' to the pending part of `*this', stealing them from
+  //! `y'.
+  void insert_pending_recycled(Constraint_System& r);
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Adds \p r to the system, stealing its contents and
+    automatically resizing the system or the row, if needed.
+  */
+  void insert_recycled(Linear_Row& r);
+
+  // TODO: Consider removing this, or making it private.
+  //! Adds to \p *this a the rows of `y', stealing them from `y'.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void insert_recycled(Constraint_System& r);
+
+  // TODO: Consider removing this, or making it private.
+  //! Adds a copy of the rows of `y' to the pending part of `*this'.
+  void insert_pending(const Constraint_System& r);
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Assigns to \p *this the result of merging its rows with
+    those of \p y, obtaining a sorted system.
+
+    Duplicated rows will occur only once in the result.
+    On entry, both systems are assumed to be sorted and have
+    no pending rows.
+  */
+  void merge_rows_assign(const Constraint_System& y);
+
+  // TODO: Consider removing this, or making it private.
+  //! Adds to \p *this a copy of  the rows of \p y.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void insert(const Constraint_System& y);
+
+  // TODO: Consider removing this, or making it private.
+  //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
+  void set_necessarily_closed();
+
+  // TODO: Consider removing this, or making it private.
+  //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  void set_not_necessarily_closed();
+
+  // TODO: Consider removing this, or making it private.
+  //! Swaps \p row with the last row and then removes that row from the
+  //! system.
+  void release_row(Linear_Row& row);
+
+  // TODO: Consider removing this, or making it private.
+  //! Swaps the vector of rows with \p v. \p v must be empty.
+  void release_rows(Swapping_Vector<Linear_Row>& v);
+
+  // TODO: Consider removing this, or making it private.
+  //! Swaps the vector of rows with \p v. \p *this must have no rows.
+  void take_ownership_of_rows(Swapping_Vector<Linear_Row>& v);
+
+  // TODO: Consider removing this, or making it private.
+  //! Resizes the system without worrying about the old contents.
+  /*!
+    \param new_n_rows
+    The number of rows of the resized system;
+
+    \param new_n_columns
+    The number of columns of the resized system.
+
+    The system is expanded to the specified dimensions avoiding
+    reallocation whenever possible.
+    The contents of the original system is lost.
+  */
+  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
+
+  // TODO: Consider removing this, or making it private.
+  //! Minimizes the subsystem of equations contained in \p *this.
+  /*!
+    This method works only on the equalities of the system:
+    the system is required to be partially sorted, so that
+    all the equalities are grouped at its top; it is assumed that
+    the number of equalities is exactly \p n_lines_or_equalities.
+    The method finds a minimal system for the equalities and
+    returns its rank, i.e., the number of linearly independent equalities.
+    The result is an upper triangular subsystem of equalities:
+    for each equality, the pivot is chosen starting from
+    the right-most columns.
+  */
+  dimension_type gauss(dimension_type n_lines_or_equalities);
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Back-substitutes the coefficients to reduce
+    the complexity of the system.
+
+    Takes an upper triangular system having \p n_lines_or_equalities rows.
+    For each row, starting from the one having the minimum number of
+    coefficients different from zero, computes the expression of an element
+    as a function of the remaining ones and then substitutes this expression
+    in all the other rows.
+  */
+  void back_substitute(dimension_type n_lines_or_equalities);
+
+  // TODO: Consider removing this, or making it private.
+  //! Full assignment operator: pending rows are copied as pending.
+  void assign_with_pending(const Constraint_System& y);
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Sorts the pending rows and eliminates those that also occur
+    in the non-pending part of the system.
+  */
+  void sort_pending_and_remove_duplicates();
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Sorts the system, removing duplicates, keeping the saturation
+    matrix consistent.
+
+    \param sat
+    Bit matrix with rows corresponding to the rows of \p *this.
+  */
+  void sort_and_remove_with_sat(Bit_Matrix& sat);
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is sorted,
+    without checking for duplicates.
+  */
+  bool check_sorted() const;
+
+  // TODO: Consider removing this, or making it private.
+  /*! \brief
+    Returns the number of rows in the system
+    that represent either lines or equalities.
+  */
+  dimension_type num_lines_or_equalities() const;
+
+  // TODO: Consider removing this, or making it private.
+  void add_zero_columns(dimension_type n);
+
+  // TODO: Consider removing this, or making it private.
+  void swap_columns(dimension_type i, dimension_type j);
+
+  // TODO: Consider removing this, or making it private.
+  //! Adds \p n rows and columns to the system.
+  /*!
+    \param n
+    The number of rows and columns to be added: must be strictly positive.
+
+    Turns the system \f$M \in \Rset^r \times \Rset^c\f$ into
+    the system \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
+    such that
+    \f$N = \bigl(\genfrac{}{}{0pt}{}{0}{M}\genfrac{}{}{0pt}{}{J}{o}\bigr)\f$,
+    where \f$J\f$ is the specular image
+    of the \f$n \times n\f$ identity matrix.
+  */
+  void add_universe_rows_and_columns(dimension_type n);
+
   //! Initializes the class.
   static void initialize();
 
@@ -318,6 +580,8 @@ public:
   void swap(Constraint_System& y);
 
 private:
+  Linear_System<Linear_Row> sys;
+
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the singleton system containing only Constraint::zero_dim_false().
@@ -325,6 +589,9 @@ private:
   static const Constraint_System* zero_dim_empty_p;
 
   friend class Constraint_System_const_iterator;
+
+  friend bool operator==(const Constraint_System& x,
+                         const Constraint_System& y);
 
   /*! \brief
     Builds a system of \p n_rows constraints on a \p n_columns - 1
@@ -400,13 +667,13 @@ private:
   friend class Constraint_System;
 
   //! The const iterator over the matrix of constraints.
-  Constraint_System::Base::const_iterator i;
+  Linear_System<Linear_Row>::const_iterator i;
 
   //! A const pointer to the matrix of constraints.
-  const Constraint_System::Base* csp;
+  const Linear_System<Linear_Row>* csp;
 
   //! Constructor.
-  Constraint_System_const_iterator(const Constraint_System::Base::const_iterator& iter,
+  Constraint_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
       const Constraint_System& csys);
 
   //! \p *this skips to the next non-trivial constraint.

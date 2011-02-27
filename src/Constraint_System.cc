@@ -39,7 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
-  : Base(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
+  : sys(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())
@@ -54,47 +54,47 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type old_space_dim = space_dimension();
-  const Topology old_topology = topology();
+  const Topology old_topology = sys.topology();
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
 
   // Dealing with empty constraint systems first.
-  if (num_rows() == 0) {
-    if (num_columns() == 0)
+  if (sys.num_rows() == 0) {
+    if (sys.num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
-	add_zero_columns(++cols_to_be_added);
-	set_necessarily_closed();
+	sys.add_zero_columns(++cols_to_be_added);
+	sys.set_necessarily_closed();
       }
       else {
 	cols_to_be_added += 2;
-	add_zero_columns(cols_to_be_added);
-	set_not_necessarily_closed();
+	sys.add_zero_columns(cols_to_be_added);
+	sys.set_not_necessarily_closed();
       }
     else
       // Here `num_columns() > 0'.
       if (old_topology != new_topology)
 	if (new_topology == NECESSARILY_CLOSED) {
-          set_necessarily_closed();
+          sys.set_necessarily_closed();
 	  switch (cols_to_be_added) {
 	  case 0:
-	    remove_trailing_columns(1);
+	    sys.remove_trailing_columns(1);
 	    break;
 	  case 1:
 	    // Nothing to do.
 	    break;
 	  default:
-	    add_zero_columns(--cols_to_be_added);
+	    sys.add_zero_columns(--cols_to_be_added);
 	  }
 	}
 	else {
 	  // Here old_topology == NECESSARILY_CLOSED
 	  //  and new_topology == NOT_NECESSARILY_CLOSED.
-	  add_zero_columns(++cols_to_be_added);
-	  set_not_necessarily_closed();
+	  sys.add_zero_columns(++cols_to_be_added);
+	  sys.set_not_necessarily_closed();
 	}
       else {
 	// Here topologies agree.
 	if (cols_to_be_added > 0)
-	  add_zero_columns(cols_to_be_added);
+	  sys.add_zero_columns(cols_to_be_added);
       }
     PPL_ASSERT(OK());
     return true;
@@ -115,74 +115,73 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// If they are present, we erase these rows, so that the
 	// epsilon column will only contain zeroes: as a consequence,
 	// we just decrement the number of columns to be added.
-	Constraint_System& cs = *this;
-	const dimension_type eps_index = old_space_dim + 1;
-  const dimension_type old_cs_num_rows = cs.num_rows();
-  dimension_type cs_num_rows = old_cs_num_rows;
-	bool was_sorted = cs.is_sorted();
+        const dimension_type eps_index = old_space_dim + 1;
+        const dimension_type old_sys_num_rows = sys.num_rows();
+        dimension_type sys_num_rows = old_sys_num_rows;
+	bool was_sorted = sys.is_sorted();
 	if (was_sorted)
-	  cs.set_sorted(false);
+	  sys.set_sorted(false);
 
 	// If we have no pending rows, we only check if
 	// we must erase some rows.
-	if (cs.num_pending_rows() == 0) {
-	  for (dimension_type i = cs_num_rows; i-- > 0; )
-	    if (cs[i][eps_index] != 0) {
-	      --cs_num_rows;
-              cs.swap_rows(i, cs_num_rows);
+	if (sys.num_pending_rows() == 0) {
+	  for (dimension_type i = sys_num_rows; i-- > 0; )
+	    if (sys[i][eps_index] != 0) {
+	      --sys_num_rows;
+              sys.swap_rows(i, sys_num_rows);
 	    }
-	  cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
-	  cs.unset_pending_rows();
+	  sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
+	  sys.unset_pending_rows();
 	}
 	else {
 	  // There are pending rows, and we cannot swap them
 	  // into the non-pending part of the matrix.
 	  // Thus, we first work on the non-pending part as if it was
 	  // an independent matrix; then we work on the pending part.
-	  const dimension_type old_first_pending = cs.first_pending_row();
+	  const dimension_type old_first_pending = sys.first_pending_row();
 	  dimension_type new_first_pending = old_first_pending;
 	  for (dimension_type i = new_first_pending; i-- > 0; )
-	    if (cs[i][eps_index] != 0) {
+	    if (sys[i][eps_index] != 0) {
 	      --new_first_pending;
-              cs.swap_rows(i, new_first_pending);
+              sys.swap_rows(i, new_first_pending);
 	    }
 	  const dimension_type num_swaps
 	    = old_first_pending - new_first_pending;
-          cs.set_index_first_pending_row(new_first_pending);
+          sys.set_index_first_pending_row(new_first_pending);
 	  // Move the swapped rows to the real end of the matrix.
 	  for (dimension_type i = num_swaps; i-- > 0; )
-            cs.swap_rows(old_first_pending - i, cs_num_rows - i);
-	  cs_num_rows -= num_swaps;
+            sys.swap_rows(old_first_pending - i, sys_num_rows - i);
+	  sys_num_rows -= num_swaps;
 	  // Now iterate through the pending rows.
-	  for (dimension_type i = cs_num_rows; i-- > new_first_pending; )
-	    if (cs[i][eps_index] != 0) {
-	      --cs_num_rows;
-              cs.swap_rows(i, cs_num_rows);
+	  for (dimension_type i = sys_num_rows; i-- > new_first_pending; )
+	    if (sys[i][eps_index] != 0) {
+	      --sys_num_rows;
+              sys.swap_rows(i, sys_num_rows);
 	    }
-	  cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
+	  sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
 	}
 
 	// If `cs' was sorted we sort it again.
 	if (was_sorted)
-	  cs.sort_rows();
+	  sys.sort_rows();
 	if (--cols_to_be_added > 0)
-	  add_zero_columns(cols_to_be_added);
-	set_necessarily_closed();
+	  sys.add_zero_columns(cols_to_be_added);
+	sys.set_necessarily_closed();
       }
       else {
 	// A NECESSARILY_CLOSED constraint system is converted to
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// of zeroes for the epsilon coefficients.
-	add_zero_columns(++cols_to_be_added);
-	set_not_necessarily_closed();
+	sys.add_zero_columns(++cols_to_be_added);
+	sys.set_not_necessarily_closed();
       }
     else {
       // Topologies agree: first add the required zero columns ...
-      add_zero_columns(cols_to_be_added);
+      sys.add_zero_columns(cols_to_be_added);
       // ... and, if needed, move the epsilon coefficients
       // to the new last column.
       if (old_topology == NOT_NECESSARILY_CLOSED)
-	swap_columns(old_space_dim + 1, new_space_dim + 1);
+	sys.swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
     // Here `cols_to_be_added == 0'.
@@ -194,13 +193,13 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	if (has_strict_inequalities())
 	  return false;
 	// We just remove the column of the epsilon coefficients.
-	remove_trailing_columns(1);
-	set_necessarily_closed();
+	sys.remove_trailing_columns(1);
+	sys.set_necessarily_closed();
       }
       else {
 	// We just add the column of the epsilon coefficients.
-	add_zero_columns(1);
-	set_not_necessarily_closed();
+	sys.add_zero_columns(1);
+	sys.set_not_necessarily_closed();
       }
     }
   // We successfully adjusted space dimensions and topology.
@@ -210,24 +209,26 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 
 bool
 PPL::Constraint_System::has_equalities() const {
-  const Constraint_System& cs = *this;
   // We verify if the system has equalities also in the pending part.
-  for (dimension_type i = cs.num_rows(); i-- > 0; )
-    if (cs[i].is_equality())
+  for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+    const Linear_Row& lr = sys[i];
+    const Constraint& c = static_cast<const Constraint&>(lr);
+    if (c.is_equality())
       return true;
+  }
   return false;
 }
 
 bool
 PPL::Constraint_System::has_strict_inequalities() const {
-  if (is_necessarily_closed())
+  if (sys.is_necessarily_closed())
     return false;
-  const Constraint_System& cs = *this;
-  const dimension_type eps_index = cs.num_columns() - 1;
+  const dimension_type eps_index = sys.num_columns() - 1;
   // We verify if the system has strict inequalities
   // also in the pending part.
-  for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-    const Constraint& c = cs[i];
+  for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+    const Linear_Row& lr = sys[i];
+    const Constraint& c = static_cast<const Constraint&>(lr);
     // Optimized type checking: we already know the topology;
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
@@ -242,17 +243,17 @@ void
 PPL::Constraint_System::insert(const Constraint& c) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending constraint.
-  PPL_ASSERT(num_pending_rows() == 0);
-  if (topology() == c.topology())
-    Base::insert(c);
+  PPL_ASSERT(sys.num_pending_rows() == 0);
+  if (sys.topology() == c.topology())
+    sys.insert(c);
   else
     // `*this' and `c' have different topologies.
-    if (is_necessarily_closed()) {
+    if (sys.is_necessarily_closed()) {
       // Padding the matrix with a columns of zeroes
       // corresponding to the epsilon coefficients.
-      add_zero_columns(1);
-      set_not_necessarily_closed();
-      Base::insert(c);
+      sys.add_zero_columns(1);
+      sys.set_not_necessarily_closed();
+      sys.insert(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
@@ -264,23 +265,23 @@ PPL::Constraint_System::insert(const Constraint& c) {
 						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
-      Base::insert(tmp_c);
+      sys.insert(tmp_c);
     }
   PPL_ASSERT(OK());
 }
 
 void
 PPL::Constraint_System::insert_pending(const Constraint& c) {
-  if (topology() == c.topology())
-    Base::insert_pending(c);
+  if (sys.topology() == c.topology())
+    sys.insert_pending(c);
   else
     // `*this' and `c' have different topologies.
-    if (is_necessarily_closed()) {
+    if (sys.is_necessarily_closed()) {
       // Padding the matrix with a columns of zeroes
       // corresponding to the epsilon coefficients.
-      add_zero_columns(1);
-      set_not_necessarily_closed();
-      Base::insert_pending(c);
+      sys.add_zero_columns(1);
+      sys.set_not_necessarily_closed();
+      sys.insert_pending(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
@@ -290,7 +291,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
 						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
-      Base::insert_pending(tmp_c);
+      sys.insert_pending(tmp_c);
     }
   PPL_ASSERT(OK());
 }
@@ -299,16 +300,16 @@ PPL::dimension_type
 PPL::Constraint_System::num_inequalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
+  PPL_ASSERT(sys.num_pending_rows() == 0);
   const Constraint_System& cs = *this;
   dimension_type n = 0;
   // If the Base happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
-  if (is_sorted())
-    for (dimension_type i = num_rows(); i > 0 && cs[--i].is_inequality(); )
+  if (sys.is_sorted())
+    for (dimension_type i = sys.num_rows(); i > 0 && cs[--i].is_inequality(); )
       ++n;
   else
-    for (dimension_type i = num_rows(); i-- > 0 ; )
+    for (dimension_type i = sys.num_rows(); i-- > 0 ; )
       if (cs[i].is_inequality())
 	++n;
   return n;
@@ -318,13 +319,13 @@ PPL::dimension_type
 PPL::Constraint_System::num_equalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
-  return num_rows() - num_inequalities();
+  PPL_ASSERT(sys.num_pending_rows() == 0);
+  return sys.num_rows() - num_inequalities();
 }
 
 void
 PPL::Constraint_System_const_iterator::skip_forward() {
-  const Constraint_System::Base::const_iterator csp_end = csp->end();
+  const Linear_System<Linear_Row>::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
@@ -338,18 +339,21 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
   // (which could also cause a mismatch in the number of columns).
   Topology_Adjusted_Scalar_Product_Sign sps(g);
 
-  const Constraint_System& cs = *this;
-  if (cs.is_necessarily_closed()) {
+  if (sys.is_necessarily_closed()) {
     if (g.is_line()) {
       // Lines must saturate all constraints.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sps(g, cs[i]) != 0)
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+        const Linear_Row& lr = sys[i];
+        const Constraint& c = static_cast<const Constraint&>(lr);
+	if (sps(g, c) != 0)
 	  return false;
+      }
     }
     else
       // `g' is either a ray, a point or a closure point.
-      for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-	const Constraint& c = cs[i];
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+        const Linear_Row& lr = sys[i];
+        const Constraint& c = static_cast<const Constraint&>(lr);
 	const int sp_sign = sps(g, c);
 	if (c.is_inequality()) {
 	  // As `cs' is necessarily closed,
@@ -369,16 +373,20 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
     case Generator::LINE:
       // Lines must saturate all constraints.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sps(g, cs[i]) != 0)
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+        const Linear_Row& lr = sys[i];
+        const Constraint& c = static_cast<const Constraint&>(lr);
+	if (sps(g, c) != 0)
 	  return false;
+      }
       break;
 
     case Generator::POINT:
       // Have to perform the special test
       // when dealing with a strict inequality.
-      for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-	const Constraint& c = cs[i];
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+        const Linear_Row& lr = sys[i];
+        const Constraint& c = static_cast<const Constraint&>(lr);
 	const int sp_sign = sps(g, c);
 	switch (c.type()) {
 	case Constraint::EQUALITY:
@@ -400,8 +408,9 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::RAY:
       // Intentionally fall through.
     case Generator::CLOSURE_POINT:
-      for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-	const Constraint& c = cs[i];
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+        const Linear_Row& lr = sys[i];
+        const Constraint& c = static_cast<const Constraint&>(lr);
 	const int sp_sign = sps(g, c);
 	if (c.is_inequality()) {
 	  // Constraint `c' is either a strict or a non-strict inequality.
@@ -426,16 +435,15 @@ PPL::Constraint_System
 ::affine_preimage(const dimension_type v,
 		  const Linear_Expression& expr,
 		  Coefficient_traits::const_reference denominator) {
-  Constraint_System& x = *this;
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
-  PPL_ASSERT(v > 0 && v <= x.space_dimension());
-  PPL_ASSERT(expr.space_dimension() <= x.space_dimension());
+  PPL_ASSERT(v > 0 && v <= sys.space_dimension());
+  PPL_ASSERT(expr.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  const dimension_type n_columns = x.num_columns();
-  const dimension_type n_rows = x.num_rows();
+  const dimension_type n_columns = sys.num_columns();
+  const dimension_type n_rows = sys.num_rows();
   const dimension_type expr_size = expr.get_linear_row().size();
   const bool not_invertible = (v >= expr_size || expr.get_linear_row()[v] == 0);
 
@@ -444,12 +452,12 @@ PPL::Constraint_System
   const dimension_type pending_index = first_pending_row();
 
   // Avoid triggering assertions in x.release_rows().
-  x.set_sorted(false);
-  x.unset_pending_rows();
+  sys.set_sorted(false);
+  sys.unset_pending_rows();
   
   Swapping_Vector<Linear_Row> rows;
   // Release the rows from the linear system so they can be modified.
-  x.release_rows(rows);
+  sys.release_rows(rows);
 
   if (denominator != 1) {
     for (dimension_type i = n_rows; i-- > 0; ) {
@@ -488,29 +496,29 @@ PPL::Constraint_System
   }
 
   // Put the rows back in the Linear_System.
-  x.take_ownership_of_rows(rows);
-  x.set_index_first_pending_row(pending_index);
+  sys.take_ownership_of_rows(rows);
+  sys.set_index_first_pending_row(pending_index);
 
   // Strong normalization also resets the sortedness flag.
-  x.strong_normalize();
+  sys.strong_normalize();
 }
 
 void
 PPL::Constraint_System::ascii_dump(std::ostream& s) const {
-  const Constraint_System& x = *this;
-  const dimension_type x_num_rows = x.num_rows();
-  const dimension_type x_num_columns = x.num_columns();
-  s << "topology " << (is_necessarily_closed()
+  const dimension_type x_num_rows = sys.num_rows();
+  const dimension_type x_num_columns = sys.num_columns();
+  s << "topology " << (sys.is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
     << x_num_rows << " x " << x_num_columns << ' '
-    << (x.is_sorted() ? "(sorted)" : "(not_sorted)")
+    << (sys.is_sorted() ? "(sorted)" : "(not_sorted)")
     << "\n"
-    << "index_first_pending " << x.first_pending_row()
+    << "index_first_pending " << sys.first_pending_row()
     << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i) {
-    const Constraint& c = x[i];
+    const Linear_Row& lr = sys[i];
+    const Constraint& c = static_cast<const Constraint&>(lr);
     for (dimension_type j = 0; j < x_num_columns; ++j)
       s << c[j] << ' ';
     switch (c.type()) {
@@ -538,11 +546,11 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (str == "NECESSARILY_CLOSED")
-    set_necessarily_closed();
+    sys.set_necessarily_closed();
   else {
     if (str != "NOT_NECESSARILY_CLOSED")
       return false;
-    set_not_necessarily_closed();
+    sys.set_not_necessarily_closed();
   }
 
   dimension_type nrows;
@@ -553,21 +561,20 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
       return false;
-  resize_no_copy(0, ncols);
+  sys.resize_no_copy(0, ncols);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
-  set_sorted(str == "(sorted)");
+  sys.set_sorted(str == "(sorted)");
   dimension_type pending_index;
   if (!(s >> str) || str != "index_first_pending")
     return false;
   if (!(s >> pending_index))
     return false;
 
-  Constraint_System& x = *this;
   for (dimension_type i = 0; i < nrows; ++i) {
     Constraint row(ncols);
-    for (dimension_type j = 0; j < x.num_columns(); ++j)
+    for (dimension_type j = 0; j < sys.num_columns(); ++j)
       if (!(s >> row[j]))
 	return false;
 
@@ -580,7 +587,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     else
       return false;
 
-    row.set_topology(topology());
+    row.set_topology(sys.topology());
 
     // Checking for equality of actual and declared types.
     switch (row.type()) {
@@ -597,9 +604,9 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
 	return false;
       break;
     }
-    insert_pending_recycled(row);
+    sys.insert_pending_recycled(row);
   }
-  set_index_first_pending_row(pending_index);
+  sys.set_index_first_pending_row(pending_index);
   // Check invariants.
   PPL_ASSERT(OK());
   return true;

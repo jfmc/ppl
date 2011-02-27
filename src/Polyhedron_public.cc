@@ -1922,7 +1922,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   // If `x' can support pending constraints,
   // the constraints of `y' are added as pending constraints of `x'.
   if (x.can_have_something_pending()) {
-    x.con_sys.Linear_System<Linear_Row>::insert_pending(y.con_sys);
+    x.con_sys.insert_pending(y.con_sys);
     x.set_constraints_pending();
   }
   else {
@@ -1933,7 +1933,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 	&& y.con_sys.is_sorted() && !y.has_pending_constraints())
       x.con_sys.merge_rows_assign(y.con_sys);
     else
-      x.con_sys.Linear_System<Linear_Row>::insert(y.con_sys);
+      x.con_sys.insert(y.con_sys);
     // Generators are no longer up-to-date and constraints are no
     // longer minimized.
     x.clear_generators_up_to_date();
