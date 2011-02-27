@@ -96,6 +96,7 @@ pwl_header.hh
 #	    0.7			0.10.2		    4:0:0
 #	    0.8			0.11		    5:0:0
 #	    0.8			0.11.1		    5:0:0
+#	    0.8			0.11.2		    5:0:0
 
 LIBPWL_LT_CURRENT =  5
 LIBPWL_LT_REVISION = 0

@@ -4,27 +4,27 @@
 .BR libppl_c(3)
 .sp
 Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
-.IR "The Parma Polyhedra Library User's Manual (version 0.11.1)",
+.IR "The Parma Polyhedra Library User's Manual (version 0.11.2)",
 available (in several formats) at
 \fBhttp://www.cs.unipr.it/ppl/\fR .
 .sp
 Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
-.IR "The Parma Polyhedra Library C Language Interface User's Manual (version 0.11.1)",
+.IR "The Parma Polyhedra Library C Language Interface User's Manual (version 0.11.2)",
 available (in several formats) at
 \fBhttp://www.cs.unipr.it/ppl/\fR .
 .sp
 Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
-.IR "The Parma Polyhedra Library Java Language Interface User's Manual (version 0.11.1)",
+.IR "The Parma Polyhedra Library Java Language Interface User's Manual (version 0.11.2)",
 available (in several formats) at
 \fBhttp://www.cs.unipr.it/ppl/\fR .
 .sp
 Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
-.IR "The Parma Polyhedra Library OCaml Language Interface User's Manual (version 0.11.1)",
+.IR "The Parma Polyhedra Library OCaml Language Interface User's Manual (version 0.11.2)",
 available (in several formats) at
 \fBhttp://www.cs.unipr.it/ppl/\fR .
 .sp
 Roberto Bagnara, Patricia M. Hill, and Enea Zaffanella.
-.IR "The Parma Polyhedra Library Prolog Language Interface User's Manual (version 0.11.1)",
+.IR "The Parma Polyhedra Library Prolog Language Interface User's Manual (version 0.11.2)",
 available (in several formats) at
 \fBhttp://www.cs.unipr.it/ppl/\fR .
 
