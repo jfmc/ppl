@@ -239,13 +239,12 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   sys.add_zero_columns(1);
   Generator_System& gs = *this;
 
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Generator> rows;
   // Release the rows from the linear system, so they can be modified.
   gs.sys.release_rows(rows);
 
   for (dimension_type i = rows.size(); i-- > 0; ) {
-    Linear_Row& row = rows[i];
-    Generator& gen = static_cast<Generator&>(row);
+    Generator& gen = rows[i];
     if (!gen.is_line_or_ray())
       gen[eps_index] = gen[0];
   }
@@ -277,13 +276,13 @@ PPL::Generator_System::has_points() const {
 
 void
 PPL::Generator_System_const_iterator::skip_forward() {
-  const Linear_System<Linear_Row>::const_iterator gsp_end = gsp->end();
+  const Linear_System<Generator>::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
-    Linear_System<Linear_Row>::const_iterator i_next = i;
+    Linear_System<Generator>::const_iterator i_next = i;
     ++i_next;
     if (i_next != gsp_end) {
-      const Generator& cp = static_cast<const Generator&>(*i);
-      const Generator& p = static_cast<const Generator&>(*i_next);
+      const Generator& cp = *i;
+      const Generator& p = *i_next;
       if (cp.is_closure_point()
 	  && p.is_point()
 	  && cp.is_matching_closure_point(p))
@@ -804,7 +803,7 @@ PPL::Generator_System
   // Avoid triggering assertions in release_rows().
   sys.unset_pending_rows();
 
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Generator> rows;
   // Release the rows from the linear system, so they can be modified.
   x.sys.release_rows(rows);
 
@@ -812,7 +811,7 @@ PPL::Generator_System
   // to the column of `*this' indexed by `v'.
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
-    Linear_Row& row = rows[i];
+    Generator& row = rows[i];
     Scalar_Products::assign(numerator, expr.get_linear_row(), row);
     std::swap(numerator, row[v]);
   }
@@ -822,7 +821,7 @@ PPL::Generator_System
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
     for (dimension_type i = n_rows; i-- > 0; ) {
-      Linear_Row& row = rows[i];
+      Generator& row = rows[i];
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
@@ -919,11 +918,10 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 
   Generator_System& x = *this;
   for (dimension_type i = 0; i < nrows; ++i) {
-    Linear_Row row(ncols, Linear_Row::Flags());
-    Generator& gen = static_cast<Generator&>(row);
+    Generator gen(ncols, Linear_Row::Flags());
     
     for (dimension_type j = 0; j < x.sys.num_columns(); ++j)
-      if (!(s >> row[j]))
+      if (!(s >> gen[j]))
 	return false;
 
     if (!(s >> str))
@@ -956,7 +954,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 	return false;
       break;
     }
-    sys.insert_pending_recycled(row);
+    sys.insert_pending_recycled(gen);
   }
   sys.set_index_first_pending_row(pending_index);
 
@@ -1056,3 +1054,4 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
     s << ", ";
   }
 }
+

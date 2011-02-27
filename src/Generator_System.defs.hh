@@ -28,8 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
-#include "Linear_Row.defs.hh"
-#include "Generator.types.hh"
+#include "Generator.defs.hh"
 #include "Constraint.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include <iosfwd>
@@ -193,7 +192,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
 class Parma_Polyhedra_Library::Generator_System {
 public:
 
-  typedef Linear_Row internal_row_type;
+  typedef Generator internal_row_type;
   typedef Generator row_type;
 
   //! Default constructor: builds an empty system of generators.
@@ -234,12 +233,6 @@ public:
     increasing the number of space dimensions if needed.
   */
   void insert_recycled(Generator& g);
-
-  // TODO: Remove this.
-  void insert(const Linear_Row& lr);
-
-  // TODO: Remove this.
-  void insert_recycled(Linear_Row& lr);
 
   //! Initializes the class.
   static void initialize();
@@ -356,15 +349,15 @@ public:
   // TODO: Consider removing this.
   //! Swaps \p row with the last row and then removes that row from the
   //! system.
-  void release_row(Linear_Row& row);
+  void release_row(Generator& row);
 
   // TODO: Consider removing this.
   //! Swaps the vector of rows with \p v. \p v must be empty.
-  void release_rows(Swapping_Vector<Linear_Row>& v);
+  void release_rows(Swapping_Vector<Generator>& v);
 
   // TODO: Consider removing this.
   //! Swaps the vector of rows with \p v. \p *this must have no rows.
-  void take_ownership_of_rows(Swapping_Vector<Linear_Row>& v);
+  void take_ownership_of_rows(Swapping_Vector<Generator>& v);
 
   // TODO: Consider removing this.
   //! Sets the sortedness flag of the system to \p b.
@@ -697,7 +690,7 @@ public:
   void insert_pending_recycled(Generator& g);
 
 private:
-  Linear_System<Linear_Row> sys;
+  Linear_System<Generator> sys;
 
   friend bool
   operator==(const Generator_System& x, const Generator_System& y);
@@ -771,13 +764,13 @@ private:
   friend class Generator_System;
 
   //! The const iterator over the Linear_System.
-  Linear_System<Linear_Row>::const_iterator i;
+  Linear_System<Generator>::const_iterator i;
 
   //! A const pointer to the Linear_System.
-  const Linear_System<Linear_Row>* gsp;
+  const Linear_System<Generator>* gsp;
 
   //! Constructor.
-  Generator_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
+  Generator_System_const_iterator(const Linear_System<Generator>::const_iterator& iter,
       const Generator_System& gsys);
 
   /*! \brief

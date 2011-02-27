@@ -1297,11 +1297,10 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   const dimension_type n_lines = gs.num_lines();
   const dimension_type eps_index = gs.num_columns() - 1;
   bool gs_sorted = gs.is_sorted();
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Generator> rows;
   gs.release_rows(rows);
   for (dimension_type i = n_lines; i < gs_rows; ) {
-    Linear_Row& row = rows[i];
-    Generator& g = static_cast<Generator&>(row);
+    Generator& g = rows[i];
     if (g.is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
@@ -1311,8 +1310,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
       for (dimension_type j = n_lines; j < gs_rows; ++j) {
-        Linear_Row& row2 = rows[j];
-        Generator& g2 = static_cast<Generator&>(row2);
+        Generator& g2 = rows[j];
 	if (i != j && g2.is_point() && subset_or_equal(sat[j], sat_gi)) {
 	  // Point `g' is eps-redundant:
 	  // move it to the bottom of the generator system,

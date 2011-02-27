@@ -72,7 +72,7 @@ Generator_System::operator=(const Generator_System& y) {
 
 inline dimension_type
 Generator_System::max_space_dimension() {
-  return Linear_System<Linear_Row>::max_space_dimension();
+  return Linear_System<Generator>::max_space_dimension();
 }
 
 inline dimension_type
@@ -87,7 +87,7 @@ Generator_System::clear() {
 
 inline const Generator&
 Generator_System::operator[](const dimension_type k) const {
-  return static_cast<const Generator&>(sys[k]);
+  return sys[k];
 }
 
 inline void
@@ -136,17 +136,17 @@ Generator_System::unset_pending_rows() {
 }
 
 inline void
-Generator_System::release_row(Linear_Row& row) {
+Generator_System::release_row(Generator& row) {
   sys.release_row(row);
 }
 
 inline void
-Generator_System::release_rows(Swapping_Vector<Linear_Row>& v) {
+Generator_System::release_rows(Swapping_Vector<Generator>& v) {
   sys.release_rows(v);
 }
 
 inline void
-Generator_System::take_ownership_of_rows(Swapping_Vector<Linear_Row>& v) {
+Generator_System::take_ownership_of_rows(Swapping_Vector<Generator>& v) {
   sys.take_ownership_of_rows(v);
 }
 
@@ -256,11 +256,6 @@ Generator_System::insert_pending(const Generator_System& r) {
   sys.insert_pending(r.sys);
 }
 
-inline void
-Generator_System::insert_recycled(Linear_Row& lr) {
-  sys.insert_recycled(lr);
-}
-
 inline bool
 operator==(const Generator_System& x, const Generator_System& y) {
   return x.sys == y.sys;
@@ -295,12 +290,12 @@ Generator_System_const_iterator::operator=(const Generator_System_const_iterator
 
 inline const Generator&
 Generator_System_const_iterator::operator*() const {
-  return static_cast<const Generator&>(*i);
+  return *i;
 }
 
 inline const Generator*
 Generator_System_const_iterator::operator->() const {
-  return static_cast<const Generator*>(i.operator->());
+  return i.operator->();
 }
 
 inline Generator_System_const_iterator&
@@ -330,7 +325,7 @@ Generator_System_const_iterator::operator!=(const Generator_System_const_iterato
 
 inline
 Generator_System_const_iterator::
-Generator_System_const_iterator(const Linear_System<Linear_Row>::const_iterator& iter,
+Generator_System_const_iterator(const Linear_System<Generator>::const_iterator& iter,
                                 const Generator_System& gsys)
   : i(iter), gsp(&gsys.sys) {
 }

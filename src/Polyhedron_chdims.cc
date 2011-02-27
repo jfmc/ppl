@@ -105,7 +105,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
       if (!gen_sys.is_sorted())
 	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
-        Swapping_Vector<Linear_Row> rows;
+        Swapping_Vector<Generator> rows;
         gen_sys.release_rows(rows);
 
 	dimension_type old_eps_index = space_dim + 1;

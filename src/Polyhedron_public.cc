@@ -2905,7 +2905,7 @@ generalized_affine_image(const Variable var,
       add_generator(ray(relsym == GREATER_THAN ? var : -var));
       minimize();
 
-      Swapping_Vector<Linear_Row> rows;
+      Swapping_Vector<Generator> rows;
       // Release the rows from the generator system, so they can be modified.
       gen_sys.release_rows(rows);
 
@@ -2916,14 +2916,12 @@ generalized_affine_image(const Variable var,
       // newly introduced ray.
       const dimension_type eps_index = space_dim + 1;
       for (dimension_type i =  rows.size(); i-- > 0; ) {
-        Linear_Row& row_i = rows[i];
-        Generator& gen_i = static_cast<Generator&>(row_i);
+        Generator& gen_i = rows[i];
 	if (gen_i.is_point()) {
 	  // Add a `var'-displaced copy of `rows[i]' to the generator
           // system.
           rows.push_back(gen_i);
-          Linear_Row& new_row = rows.back();
-          Generator& new_gen = static_cast<Generator&>(new_row);
+          Generator& new_gen = rows.back();
 	  if (relsym == GREATER_THAN)
 	    ++new_gen[var_space_dim];
 	  else
@@ -3375,15 +3373,14 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // release_rows() does not support pending rows.
   gs.unset_pending_rows();
 
-  Swapping_Vector<Linear_Row> rows;
+  Swapping_Vector<Generator> rows;
   // Release the rows from the generator system, so they can be modified.
   gs.release_rows(rows);
 
   if (!x.is_necessarily_closed())
     // `x' and `y' are NNC polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      Linear_Row& lr = rows[i];
-      Generator& g = static_cast<Generator&>(lr);
+      Generator& g = rows[i];
       switch (g.type()) {
       case Generator::POINT:
 	// The points of `gs' can be erased,
@@ -3414,8 +3411,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   else
     // `x' and `y' are C polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      Linear_Row& lr = rows[i];
-      Generator& g = static_cast<Generator&>(lr);
+      Generator& g = rows[i];
       switch (g.type()) {
       case Generator::POINT:
 	{
