@@ -154,12 +154,14 @@ Linear_System<Row>::ascii_load(std::istream& s) {
     return false;
   if (!(s >> str))
     return false;
+
+  Topology t;
   if (str == "NECESSARILY_CLOSED")
-    set_necessarily_closed();
+    t = NECESSARILY_CLOSED;
   else {
     if (str != "NOT_NECESSARILY_CLOSED")
       return false;
-    set_not_necessarily_closed();
+    t = NOT_NECESSARILY_CLOSED;
   }
 
   dimension_type nrows;
@@ -172,6 +174,8 @@ Linear_System<Row>::ascii_load(std::istream& s) {
     return false;
   clear();
   num_columns_ = ncols;
+
+  set_topology(t);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
@@ -188,8 +192,8 @@ Linear_System<Row>::ascii_load(std::istream& s) {
       return false;
     add_recycled_row(row);
   }
-  set_index_first_pending_row(index);
-  set_sorted(sortedness);
+  index_first_pending = index;
+  sorted = sortedness;
 
   // Check invariants.
   PPL_ASSERT(OK());
@@ -345,12 +349,12 @@ Linear_System<Row>::insert_recycled(Linear_System& y) {
   // Check if sortedness is preserved.
   if (is_sorted()) {
     if (!y.is_sorted() || y.num_pending_rows() > 0)
-      set_sorted(false);
+      sorted = false;
     else {
       // `y' is sorted and has no pending rows.
       const dimension_type n_rows = num_rows();
       if (n_rows > 0)
-        set_sorted(compare(rows[n_rows-1], y[0]) <= 0);
+        sorted = (compare(rows[n_rows-1], y[0]) <= 0);
     }
   }
 
@@ -861,7 +865,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
         std::swap(rows[k2], rows[k2 + num_duplicates]);
     rows.resize(num_rows);
   }
-  set_sorted(true);
+  sorted = true;
   PPL_ASSERT(OK());
 }
 
