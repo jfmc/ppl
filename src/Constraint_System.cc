@@ -73,6 +73,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       // Here `num_columns() > 0'.
       if (old_topology != new_topology)
 	if (new_topology == NECESSARILY_CLOSED) {
+          set_necessarily_closed();
 	  switch (cols_to_be_added) {
 	  case 0:
 	    remove_trailing_columns(1);
@@ -83,7 +84,6 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  default:
 	    add_zero_columns(--cols_to_be_added);
 	  }
-	  set_necessarily_closed();
 	}
 	else {
 	  // Here old_topology == NECESSARILY_CLOSED
@@ -444,6 +444,7 @@ PPL::Constraint_System
   const dimension_type pending_index = first_pending_row();
 
   // Avoid triggering assertions in x.release_rows().
+  x.set_sorted(false);
   x.unset_pending_rows();
   
   Swapping_Vector<Linear_Row> rows;
