@@ -269,9 +269,9 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
 // Needed for converting the congruence or grid_generator system
 // to "strong minimal form".
-template <typename M, typename R>
+template <typename M>
 void
-Grid::reduce_reduced(Swapping_Vector<typename M::internal_row_type>& rows,
+Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
 		     const dimension_type dim,
 		     const dimension_type pivot_index,
 		     const dimension_type start,
@@ -279,11 +279,9 @@ Grid::reduce_reduced(Swapping_Vector<typename M::internal_row_type>& rows,
 		     const Dimension_Kinds& dim_kinds,
 		     const bool generators) {
   // TODO: Remove this.
-  typedef typename M::internal_row_type M_row_type;
+  typedef typename M::row_type M_row_type;
 
-  const M_row_type& pivot_row = rows[pivot_index];
-  const R& pivot = static_cast<const R&>(pivot_row);
-
+  const M_row_type& pivot = rows[pivot_index];
   const Coefficient& pivot_dim = pivot[dim];
 
   if (pivot_dim == 0)
@@ -318,8 +316,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::internal_row_type>& rows,
     if (row_kind == line_or_equality
 	|| (row_kind == PARAMETER
 	    && dim_kinds[kinds_index] == PARAMETER)) {
-      M_row_type& lr = rows[row_index];
-      R& row = static_cast<R&>(lr);
+      M_row_type& row = rows[row_index];
 
       const Coefficient& row_dim = row[dim];
       // num_rows_to_subtract may be positive or negative.

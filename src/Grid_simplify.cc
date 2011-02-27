@@ -325,7 +325,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
         pivot.negate(dim, num_columns);
 
       // Factor this row out of the preceding rows.
-      reduce_reduced<Grid_Generator_System, Grid_Generator>
+      reduce_reduced<Grid_Generator_System>
 	(rows, dim, pivot_index, dim, num_columns - 1, dim_kinds);
 
       ++pivot_index;
@@ -458,7 +458,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	pivot.negate(0, dim + 1);
 
       // Factor this row out of the preceding ones.
-      reduce_reduced<Congruence_System, Congruence>
+      reduce_reduced<Congruence_System>
 	(rows, dim, pivot_index, 0, dim, dim_kinds, false);
 
       sys.take_ownership_of_rows(rows);
@@ -588,7 +588,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
   // Since we are reducing the system to "strong minimal form",
   // factor the modified integrality congruence out of the other rows;
-  reduce_reduced<Congruence_System, Congruence>
+  reduce_reduced<Congruence_System>
     (rows, 0, rows.size() - 1, 0, 0, dim_kinds, false);
 
   sys.take_ownership_of_rows(rows);

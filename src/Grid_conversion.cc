@@ -318,8 +318,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
     if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
-      reduce_reduced<Congruence_System, Congruence>
-	(rows, dim, i++, 0, dim, dim_kinds, false);
+      reduce_reduced<Congruence_System>
+        (rows, dim, i++, 0, dim, dim_kinds, false);
 
   dest.take_ownership_of_rows(rows);
 
@@ -508,7 +508,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
     if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
-      reduce_reduced<Grid_Generator_System, Grid_Generator>
+      reduce_reduced<Grid_Generator_System>
 	(rows, dim, i++, dim, dims - 1, dim_kinds);
 
   // Ensure that the parameter divisors are the same as the divisor of
