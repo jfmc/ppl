@@ -434,15 +434,8 @@ public:
   */
   void add_universe_rows_and_columns(dimension_type dims);
 
-  // TODO: Consider making this private.
-  /*! \brief
-    Removes the higher dimensions of the system so that the resulting
-    system will have dimension \p new_dimension.
-
-    The value of \p new_dimension must be at most the space dimension
-    of \p *this.
-  */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
+  //! Resizes the system to the specified space dimension.
+  void set_space_dimension(dimension_type space_dim);
 
   // TODO: Consider making this private.
   //! Removes all the specified dimensions from the generator system.

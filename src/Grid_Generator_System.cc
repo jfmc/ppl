@@ -325,10 +325,8 @@ PPL::Grid_Generator_System
 
 void
 PPL::Grid_Generator_System
-::remove_higher_space_dimensions(const dimension_type new_dimension) {
+::set_space_dimension(const dimension_type new_dimension) {
   dimension_type space_dim = space_dimension();
-
-  PPL_ASSERT(new_dimension <= space_dim);
 
   // The removal of no dimensions from any system is a no-op.  Note
   // that this case also captures the only legal removal of dimensions
@@ -336,10 +334,18 @@ PPL::Grid_Generator_System
   if (new_dimension == space_dim)
     return;
 
-  // Swap the parameter divisor column into the column that will
-  // become the last column.
-  sys.swap_columns(new_dimension + 1, space_dim + 1);
-  sys.remove_trailing_columns_without_normalizing(space_dim - new_dimension);
+  if (new_dimension < space_dim) {
+    // Swap the parameter divisor column into the column that will
+    // become the last column.
+    sys.swap_columns(new_dimension + 1, space_dim + 1);
+    sys.remove_trailing_columns_without_normalizing(space_dim - new_dimension);
+  } else {
+    sys.add_zero_columns(new_dimension - space_dim);
+    // Swap the parameter divisor column into the column that will
+    // become the last column.
+    sys.swap_columns(new_dimension + 1, space_dim + 1);
+  }
+
   PPL_ASSERT(OK());
 }
 

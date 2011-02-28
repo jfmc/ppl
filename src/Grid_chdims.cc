@@ -330,7 +330,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 
   // Favor the generators, as is done by is_empty().
   if (generators_are_up_to_date()) {
-    gen_sys.remove_higher_space_dimensions(new_dimension);
+    gen_sys.set_space_dimension(new_dimension);
     if (generators_are_minimized()) {
       // Count the actual number of rows that are now redundant.
       dimension_type num_redundant = 0;
