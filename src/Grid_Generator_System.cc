@@ -35,12 +35,12 @@ void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
-  const dimension_type old_num_columns = num_columns();
-  const dimension_type gs_num_columns = gs.num_columns();
+  const dimension_type old_num_columns = sys.num_columns();
+  const dimension_type gs_num_columns = gs.sys.num_columns();
   if (old_num_columns < gs_num_columns) {
     sys.add_zero_columns(gs_num_columns - old_num_columns);
     // Swap the parameter divisor column into the new last column.
-    sys.swap_columns(old_num_columns - 1, num_columns() - 1);
+    sys.swap_columns(old_num_columns - 1, sys.num_columns() - 1);
   }
   Swapping_Vector<Grid_Generator> rows;
   gs.sys.release_rows(rows);
@@ -82,7 +82,7 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   PPL_ASSERT(sys.num_pending_rows() == 0);
 
   const dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_columns = num_columns();
+  const dimension_type old_num_columns = sys.num_columns();
   const dimension_type g_size = g.size();
 
   // Resize the system, if necessary.
@@ -125,7 +125,7 @@ PPL::Grid_Generator_System
   PPL_ASSERT(expr.space_dimension() <= x.sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  const dimension_type num_columns = x.num_columns();
+  const dimension_type num_columns = x.sys.num_columns();
   const dimension_type num_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
@@ -177,7 +177,7 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
   const dimension_type num_rows = this->num_rows();
-  s << num_rows << " x " << num_columns() << '\n';
+  s << num_rows << " x " << sys.num_columns() << '\n';
   for (dimension_type i = 0; i < num_rows; ++i)
     operator[](i).ascii_dump(s);
 }
@@ -271,15 +271,15 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
-  PPL_ASSERT(num_columns() > 0);
-  dimension_type col = num_columns() - 1;
+  PPL_ASSERT(sys.num_columns() > 0);
+  dimension_type col = sys.num_columns() - 1;
   sys.add_zero_columns(dims);
   // Swap the parameter divisor column into the new last column.
   sys.swap_columns(col, col + dims);
 
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
-    Grid_Generator tmp(num_columns(),
+    Grid_Generator tmp(sys.num_columns(),
                        Linear_Row::Flags(NECESSARILY_CLOSED,
                                          Linear_Row::LINE_OR_EQUALITY));
     tmp[col] = 1;
@@ -315,7 +315,7 @@ PPL::Grid_Generator_System
     ++src_col;
   }
   // Move any remaining columns.
-  const dimension_type num_columns = this->num_columns();
+  const dimension_type num_columns = sys.num_columns();
   while (src_col < num_columns)
     sys.swap_columns(dst_col++, src_col++);
 

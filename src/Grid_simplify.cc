@@ -242,14 +242,12 @@ Grid::rows_are_zero(M& system, dimension_type first,
 void
 Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   PPL_ASSERT(!sys.has_no_rows());
-  // For reduce_pc_with_pc.
-  PPL_ASSERT(sys.num_columns() > 0);
 
   // Changes here may also be required in the congruence version
   // below.
 
   // Subtract one to allow for the parameter divisor column
-  const dimension_type num_columns = sys.num_columns() - 1;
+  const dimension_type num_columns = sys.space_dimension() + 1;
 
   if (dim_kinds.size() != num_columns)
     dim_kinds.resize(num_columns);
@@ -343,7 +341,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
        // index of last
        sys.num_rows() - 1,
        // row size
-       sys.num_columns() - 1);
+       sys.space_dimension() + 1);
     sys.release_rows(rows);
     PPL_ASSERT(ret == true);
 #endif

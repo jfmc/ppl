@@ -451,13 +451,6 @@ public:
   void unset_pending_rows();
 
   // TODO: Consider making this private.
-  /*! \brief
-    Returns the number of columns of the matrix (i.e., the size of the
-    rows).
-  */
-  dimension_type num_columns() const;
-
-  // TODO: Consider making this private.
   //! Permutes the columns of the matrix.
   /*
     \param cycles

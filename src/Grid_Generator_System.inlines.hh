@@ -49,11 +49,6 @@ Grid_Generator_System::resize_no_copy(const dimension_type new_num_rows,
   sys.resize_no_copy(new_num_rows, new_num_columns);
 }
 
-inline dimension_type
-Grid_Generator_System::num_columns() const {
-  return sys.num_columns();
-}
-
 inline void
 Grid_Generator_System
 ::permute_columns(const std::vector<dimension_type>& cycles) {
