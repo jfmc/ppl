@@ -86,11 +86,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
     }
     else {
       // Only constraints are up-to-date: no need to modify the generators.
-      con_sys.add_zero_columns(m);
-      // If the polyhedron is not necessarily closed,
-      // move the epsilon coefficients to the last column.
-      if (!is_necessarily_closed())
-	con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
+      con_sys.set_space_dimension(con_sys.space_dimension() + m);
     }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
@@ -168,11 +164,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     PPL_ASSERT(generators_are_up_to_date());
-    gen_sys.add_zero_columns(m);
-    // If the polyhedron is not necessarily closed,
-    // move the epsilon coefficients to the last column.
-    if (!is_necessarily_closed())
-      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
+    gen_sys.set_space_dimension(gen_sys.space_dimension() + m);
   }
   // Now we update the space dimension.
   space_dim += m;
@@ -227,18 +219,13 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // by leaving the old system of constraints in the upper left-hand side
   // and placing the constraints of `cs' in the lower right-hand side.
   // NOTE: here topologies agree, whereas dimensions may not agree.
-  dimension_type old_num_columns = con_sys.num_columns();
   dimension_type added_rows = cs.num_rows();
 
   // We already dealt with the cases of an empty or zero-dim `y' polyhedron;
   // also, `cs' contains the low-level constraints, at least.
   PPL_ASSERT(added_rows > 0 && added_columns > 0);
 
-  con_sys.add_zero_columns(added_columns);
-  // Move the epsilon coefficient to the last column, if needed.
-  if (!is_necessarily_closed())
-    con_sys.swap_columns(old_num_columns - 1,
-			 old_num_columns - 1 + added_columns);
+  con_sys.set_space_dimension(con_sys.space_dimension() + added_columns);
 
   if (can_have_something_pending()) {
     // release_rows() does not support pending rows.
@@ -414,18 +401,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  dimension_type new_num_cols = new_dimension + 1;
-  if (!is_necessarily_closed()) {
-    // The polyhedron is not necessarily closed: move the column
-    // of the epsilon coefficients to its new place.
-    gen_sys.swap_columns(gen_sys.num_columns() - 1, new_num_cols);
-    // The number of remaining columns is `new_dimension + 2'.
-    ++new_num_cols;
-  }
-  // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.remove_trailing_columns(space_dim - new_dimension);
-  // We may have invalid lines and rays now.
-  gen_sys.remove_invalid_lines_and_rays();
+  gen_sys.set_space_dimension(new_dimension);
 
   // Constraints are not up-to-date and generators are not minimized.
   clear_constraints_up_to_date();

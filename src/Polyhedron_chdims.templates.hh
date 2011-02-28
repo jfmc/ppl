@@ -42,7 +42,7 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
   PPL_ASSERT(sys1.num_columns() == sys2.num_columns());
   PPL_ASSERT(add_dim != 0);
 
-  sys1.add_zero_columns(add_dim);
+  sys1.set_space_dimension(sys1.space_dimension() + add_dim);
   sys2.add_universe_rows_and_columns(add_dim);
 
   // The resulting saturation matrix will be as follows:
@@ -57,17 +57,6 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
     std::swap(sat1[i], sat1[i+add_dim]);
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
-
-  if (!sys1.is_necessarily_closed()) {
-    // Moving the epsilon coefficients to the new last column.
-    dimension_type new_eps_index = sys1.num_columns() - 1;
-    dimension_type old_eps_index = new_eps_index - add_dim;
-    // This swap preserves sortedness of `sys1'.
-    sys1.swap_columns(old_eps_index, new_eps_index);
-
-    // NOTE: since we swapped columns in both `sys1' and `sys2',
-    // no swapping is required for `sat1' and `sat2'.
-  }
 }
 
 } // namespace Parma_Polyhedra_Library
