@@ -814,6 +814,32 @@ Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
   else if (was_sorted)
     sorted = (compare(rows[n-1], rows[n]) <= 0);
 
+  // If the system is not necessarily closed, move the epsilon coefficients to
+  // the last column.
+  if (!is_necessarily_closed()) {
+    // Try to preserve sortedness of `gen_sys'.
+    if (!is_sorted())
+      swap_columns(old_n_columns - 1, old_n_columns - 1 + n);
+    else {
+      dimension_type old_eps_index = old_n_columns - 1;
+      dimension_type new_eps_index = old_eps_index + n;
+      for (dimension_type i = rows.size(); i-- > n; ) {
+        Row& r = rows[i];
+        std::swap(r[old_eps_index], r[new_eps_index]);
+      }
+      // The upper-right corner of `rows' contains the J matrix:
+      // swap coefficients to preserve sortedness.
+      for (dimension_type i = n; i-- > 0; ++old_eps_index) {
+        Row& r = rows[i];
+        std::swap(r[old_eps_index], r[old_eps_index + 1]);
+      }
+
+      sorted = true;
+    }
+  }
+
+  unset_pending_rows();
+
   PPL_ASSERT(OK());
 }
 

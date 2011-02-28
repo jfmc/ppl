@@ -43,10 +43,7 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
   PPL_ASSERT(add_dim != 0);
 
   sys1.add_zero_columns(add_dim);
-  dimension_type old_index = sys2.first_pending_row();
   sys2.add_universe_rows_and_columns(add_dim);
-  // The added rows are in the non-pending part.
-  sys2.set_index_first_pending_row(old_index + add_dim);
 
   // The resulting saturation matrix will be as follows:
   // from row    0    to      add_dim-1       : only zeroes
@@ -68,27 +65,6 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
     // This swap preserves sortedness of `sys1'.
     sys1.swap_columns(old_eps_index, new_eps_index);
 
-    // Try to preserve sortedness of `sys2'.
-    if (!sys2.is_sorted())
-      sys2.swap_columns(old_eps_index, new_eps_index);
-    else {
-      Swapping_Vector<sys2_row_type> rows;
-      sys2.release_rows(rows);
-
-      for (dimension_type i = rows.size(); i-- > add_dim; ) {
-        sys2_row_type& r = rows[i];
-        std::swap(r[old_eps_index], r[new_eps_index]);
-      }
-      // The upper-right corner of `sys2' contains the J matrix:
-      // swap coefficients to preserve sortedness.
-      for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
-        sys2_row_type& r = rows[i];
-        std::swap(r[old_eps_index], r[old_eps_index + 1]);
-      }
-
-      sys2.take_ownership_of_rows(rows);
-      sys2.set_sorted(true);
-    }
     // NOTE: since we swapped columns in both `sys1' and `sys2',
     // no swapping is required for `sat1' and `sat2'.
   }

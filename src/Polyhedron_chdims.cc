@@ -96,35 +96,6 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
     // Only generators are up-to-date: no need to modify the constraints.
     PPL_ASSERT(generators_are_up_to_date());
     gen_sys.add_universe_rows_and_columns(m);
-    // The polyhedron does not support pending generators.
-    gen_sys.unset_pending_rows();
-    // If the polyhedron is not necessarily closed,
-    // move the epsilon coefficients to the last column.
-    if (!is_necessarily_closed()) {
-      // Try to preserve sortedness of `gen_sys'.
-      if (!gen_sys.is_sorted())
-	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
-      else {
-        Swapping_Vector<Generator> rows;
-        gen_sys.release_rows(rows);
-
-	dimension_type old_eps_index = space_dim + 1;
-	dimension_type new_eps_index = old_eps_index + m;
-	for (dimension_type i = rows.size(); i-- > m; ) {
-          Generator& r = rows[i];
-	  std::swap(r[old_eps_index], r[new_eps_index]);
-	}
-        // The upper-right corner of `rows' contains the J matrix:
-	// swap coefficients to preserve sortedness.
-	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	  Generator& r = rows[i];
-	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
-	}
-
-	gen_sys.take_ownership_of_rows(rows);
-        gen_sys.set_sorted(true);
-      }
-    }
   }
   // Update the space dimension.
   space_dim += m;
@@ -193,35 +164,6 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     else {
       // Only constraints are up-to-date: no need to modify the generators.
       con_sys.add_universe_rows_and_columns(m);
-      // The polyhedron does not support pending constraints.
-      con_sys.unset_pending_rows();
-      // If the polyhedron is not necessarily closed,
-      // move the epsilon coefficients to the last column.
-      if (!is_necessarily_closed()) {
-	// Try to preserve sortedness of `con_sys'.
-	if (!con_sys.is_sorted())
-	  con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
-	else {
-          Swapping_Vector<Constraint> rows;
-          con_sys.release_rows(rows);
-
-          dimension_type old_eps_index = space_dim + 1;
-          dimension_type new_eps_index = old_eps_index + m;
-          for (dimension_type i = rows.size(); i-- > m; ) {
-            Constraint& r = rows[i];
-            std::swap(r[old_eps_index], r[new_eps_index]);
-          }
-          // The upper-right corner of `rows' contains the J matrix:
-          // swap coefficients to preserve sortedness.
-          for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-            Constraint& r = rows[i];
-            std::swap(r[old_eps_index], r[old_eps_index + 1]);
-          }
-
-          con_sys.take_ownership_of_rows(rows);
-          con_sys.set_sorted(true);
-	}
-      }
     }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
@@ -318,12 +260,6 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // because the non-pending parts of `con_sys' and `gen_sys' must still
     // be a DD pair in minimal form.
     gen_sys.add_universe_rows_and_columns(added_columns);
-    gen_sys.set_sorted(false);
-    if (!is_necessarily_closed())
-      gen_sys.swap_columns(old_num_columns - 1,
-			   old_num_columns - 1 + added_columns);
-    // The added lines are not pending.
-    gen_sys.unset_pending_rows();
     // Since we added new lines at the beginning of `x.gen_sys',
     // we also have to adjust the saturation matrix `sat_c'.
     // FIXME: if `sat_c' is not up-to-date, couldn't we directly update
