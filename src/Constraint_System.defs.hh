@@ -446,14 +446,15 @@ public:
     \param new_n_rows
     The number of rows of the resized system;
 
-    \param new_n_columns
-    The number of columns of the resized system.
+    \param new_space_dim
+    The number of space dimensions of the resized system.
 
     The system is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original system is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_n_rows,
+                      dimension_type new_space_dim);
 
   // TODO: Consider removing this, or making it private.
   //! Minimizes the subsystem of equations contained in \p *this.

@@ -97,7 +97,13 @@ Linear_System<Row>::Linear_System(Topology topol,
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
-  resize_no_copy(n_rows, n_columns);
+  if (topology() == NECESSARILY_CLOSED) {
+    PPL_ASSERT(n_columns >= 1);
+    resize_no_copy(n_rows, n_columns - 1);
+  } else {
+    PPL_ASSERT(n_columns >= 2);
+    resize_no_copy(n_rows, n_columns - 2);
+  }
   set_sorted(true);
   PPL_ASSERT(OK());
 }
@@ -214,17 +220,20 @@ Linear_System<Row>::clear() {
 template <typename Row>
 inline void
 Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
-                                   const dimension_type new_n_columns) {
+                                   const dimension_type new_space_dim) {
   // TODO: Check if a rows.resize_no_copy() nethod could be more efficient.
-  num_columns_ = new_n_columns;
+  if (topology() == NECESSARILY_CLOSED)
+    num_columns_ = new_space_dim + 1;
+  else
+    num_columns_ = new_space_dim + 2;
   for (dimension_type i = std::min(rows.size(), new_n_rows); i-- > 0; )
-    rows[i].resize(new_n_columns);
+    rows[i].resize(num_columns_);
   const dimension_type old_n_rows = rows.size();
   rows.resize(new_n_rows);
   // NOTE: new_n_rows may be lower than old_n_rows, but this code works
   // nevertheless.
   for (dimension_type i = old_n_rows; i < new_n_rows; ++i) {
-    rows[i].resize(new_n_columns);
+    rows[i].resize(num_columns_);
     rows[i].set_topology(row_topology);
   }
   // Even though `*this' may happen to keep its sortedness, we believe

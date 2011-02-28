@@ -523,15 +523,15 @@ private:
     \param new_num_rows
     The number of rows of the resized system;
 
-    \param new_num_columns
-    The number of columns of the resized system.
+    \param new_space_dim
+    The number of space dimensions of the resized system.
 
     The system is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original system is lost.
   */
   void resize_no_copy(dimension_type new_num_rows,
-		      dimension_type new_num_columns);
+                      dimension_type new_space_dim);
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.

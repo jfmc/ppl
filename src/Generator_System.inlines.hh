@@ -223,8 +223,8 @@ Generator_System::num_lines_or_equalities() const {
 
 inline void
 Generator_System::resize_no_copy(dimension_type new_n_rows,
-                                 dimension_type new_n_columns) {
-  sys.resize_no_copy(new_n_rows, new_n_columns);
+                                 dimension_type new_space_dim) {
+  sys.resize_no_copy(new_n_rows, new_space_dim);
 }
 
 inline void

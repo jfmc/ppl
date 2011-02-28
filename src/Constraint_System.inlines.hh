@@ -363,8 +363,8 @@ Constraint_System::take_ownership_of_rows(Swapping_Vector<Constraint>& v) {
 
 inline void
 Constraint_System::resize_no_copy(dimension_type new_n_rows,
-                                  dimension_type new_n_columns) {
-  sys.resize_no_copy(new_n_rows, new_n_columns);
+                                  dimension_type new_space_dim) {
+  sys.resize_no_copy(new_n_rows, new_space_dim);
 }
 
 inline dimension_type

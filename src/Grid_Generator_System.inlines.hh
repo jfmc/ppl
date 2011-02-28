@@ -45,8 +45,8 @@ Grid_Generator_System::set_index_first_pending_row(const dimension_type i) {
 
 inline void
 Grid_Generator_System::resize_no_copy(const dimension_type new_num_rows,
-				      const dimension_type new_num_columns) {
-  sys.resize_no_copy(new_num_rows, new_num_columns);
+                                      const dimension_type new_space_dim) {
+  sys.resize_no_copy(new_num_rows, new_space_dim);
 }
 
 inline void
