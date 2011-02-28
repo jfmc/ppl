@@ -2819,14 +2819,13 @@ bounded_affine_preimage(const Variable var,
     const Variable new_var = Variable(space_dim);
     add_space_dimensions_and_embed(1);
     // Swap dimensions `var' and `new_var'.
-    std::vector<dimension_type> swapping_cycle;
-    swapping_cycle.push_back(var_space_dim);
-    swapping_cycle.push_back(space_dim);
-    swapping_cycle.push_back(0);
+    std::vector<Variable> swapping_cycle;
+    swapping_cycle.push_back(var);
+    swapping_cycle.push_back(new_var);
     if (constraints_are_up_to_date())
-      con_sys.permute_columns(swapping_cycle);
+      con_sys.permute_space_dimensions(swapping_cycle);
     if (generators_are_up_to_date())
-      gen_sys.permute_columns(swapping_cycle);
+      gen_sys.permute_space_dimensions(swapping_cycle);
     // Constrain the new dimension as dictated by `lb_expr' and `ub_expr'.
     // (we force minimization because we will need the generators).
     if (denominator > 0) {

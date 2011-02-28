@@ -91,8 +91,9 @@ Generator_System::operator[](const dimension_type k) const {
 }
 
 inline void
-Generator_System::permute_columns(const std::vector<dimension_type>& cycles) {
-  sys.permute_columns(cycles);
+Generator_System
+::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  sys.permute_space_dimensions(cycle);
 }
 
 inline dimension_type

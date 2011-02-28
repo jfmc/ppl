@@ -420,31 +420,28 @@ Linear_System<Row>
 
 template <typename Row>
 inline void
-Linear_System<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
-  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-  const dimension_type n = cycles.size();
-  PPL_ASSERT(cycles[n - 1] == 0);
-  for (dimension_type k = rows.size(); k-- > 0; ) {
-    Row& rows_k = rows[k];
-    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
-      // Make `j' be the index of the next cycle terminator.
-      while (cycles[j] != 0)
-        ++j;
-      // Cycles of length less than 2 are not allowed.
-      PPL_ASSERT(j - i >= 2);
-      if (j - i == 2)
-        // For cycles of length 2 no temporary is needed, just a swap.
-        rows_k.swap(cycles[i], cycles[i + 1]);
-      else {
-        // Longer cycles need a temporary.
-        tmp = rows_k.get(cycles[j - 1]);
-        for (dimension_type l = (j - 1); l > i; --l)
-          rows_k.swap(cycles[l-1], cycles[l]);
-        if (tmp == 0)
-          rows_k.reset(cycles[i]);
-        else
-          std::swap(tmp, rows_k[cycles[i]]);
-      }
+Linear_System<Row>
+::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  const dimension_type n = cycle.size();
+  if (n < 2)
+    // No-op. No need to call sign_normalize().
+    return;
+
+  if (n == 2) {
+    swap_columns(cycle[0].space_dimension(),
+                 cycle[1].space_dimension());
+  } else {
+    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+    for (dimension_type k = rows.size(); k-- > 0; ) {
+      Row& rows_k = rows[k];
+      tmp = rows_k.coefficient(cycle.back());
+      for (dimension_type i = n - 1; i-- > 0; )
+        rows_k.swap(cycle[i + 1].space_dimension(),
+                    cycle[i].space_dimension());
+      if (tmp == 0)
+        rows_k.reset(cycle[0].space_dimension());
+      else
+        std::swap(tmp, rows_k[cycle[0].space_dimension()]);
     }
   }
   // The rows with permuted columns are still normalized but may

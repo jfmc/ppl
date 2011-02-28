@@ -177,59 +177,45 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     // maximum efficiency, we will simply permute the columns of the
     // constraint system and/or the generator system.
 
-    // We first compute suitable permutation cycles for the columns of
-    // the `con_sys' and `gen_sys' matrices.  We will represent them
-    // with a linear array, using 0 as a terminator for each cycle
-    // (notice that the columns with index 0 of `con_sys' and
-    // `gen_sys' represent the inhomogeneous terms, and thus are
-    // unaffected by the permutation of dimensions).
-    // Cycles of length 1 will be omitted so that, in the worst case,
-    // we will have `space_dim' elements organized in `space_dim/2'
-    // cycles, which means we will have at most `space_dim/2'
-    // terminators.
-    std::vector<dimension_type> cycles;
-    cycles.reserve(space_dim + space_dim/2);
+    std::vector<Variable> cycle;
+    cycle.reserve(space_dim);
 
     // Used to mark elements as soon as they are inserted in a cycle.
     std::deque<bool> visited(space_dim);
 
     for (dimension_type i = space_dim; i-- > 0; ) {
-      if (!visited[i]) {
-	dimension_type j = i;
-	do {
-	  visited[j] = true;
-	  // The following initialization is only to make the compiler happy.
-	  dimension_type k = 0;
-	  if (!pfunc.maps(j, k))
-	    throw_invalid_argument("map_space_dimensions(pfunc)",
-				   " pfunc is inconsistent");
-	  if (k == j)
-	    // Cycle of length 1: skip it.
-	    goto skip;
+      if (visited[i])
+        continue;
+      
+      dimension_type j = i;
+      do {
+        visited[j] = true;
+        // The following initialization is only to make the compiler happy.
+        dimension_type k = 0;
+        if (!pfunc.maps(j, k))
+          throw_invalid_argument("map_space_dimensions(pfunc)",
+                                 " pfunc is inconsistent");
+        if (k == j)
+          break;
 
-	  cycles.push_back(j+1);
-	  // Go along the cycle.
-	  j = k;
-	} while (!visited[j]);
-	// End of cycle: mark it.
-	cycles.push_back(0);
-      skip:
-	;
-      }
+        cycle.push_back(Variable(j));
+        // Go along the cycle.
+        j = k;
+      } while (!visited[j]);
+
+      // End of cycle.
+
+      // Permute all that is up-to-date.  Notice that the contents of
+      // the saturation matrices is unaffected by the permutation of
+      // columns: they remain valid, if they were so.
+      if (constraints_are_up_to_date())
+        con_sys.permute_space_dimensions(cycle);
+
+      if (generators_are_up_to_date())
+        gen_sys.permute_space_dimensions(cycle);
+
+      cycle.clear();
     }
-
-    // If `cycles' is empty then `pfunc' is the identity.
-    if (cycles.empty())
-      return;
-
-    // Permute all that is up-to-date.  Notice that the contents of
-    // the saturation matrices is unaffected by the permutation of
-    // columns: they remain valid, if they were so.
-    if (constraints_are_up_to_date())
-      con_sys.permute_columns(cycles);
-
-    if (generators_are_up_to_date())
-      gen_sys.permute_columns(cycles);
 
     PPL_ASSERT_HEAVY(OK());
     return;

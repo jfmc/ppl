@@ -141,18 +141,8 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     // maximum efficiency, we will simply permute the columns of the
     // constraint system and/or the generator system.
 
-    // We first compute suitable permutation cycles for the columns of
-    // the `con_sys' and `gen_sys' matrices.  We will represent them
-    // with a linear array, using 0 as a terminator for each cycle
-    // (notice that the columns with index 0 of `con_sys' and
-    // `gen_sys' represent the inhomogeneous terms, and thus are
-    // unaffected by the permutation of dimensions).
-    // Cycles of length 1 will be omitted so that, in the worst case,
-    // we will have `space_dim' elements organized in `space_dim/2'
-    // cycles, which means we will have at most `space_dim/2'
-    // terminators.
-    std::vector<dimension_type> cycles;
-    cycles.reserve(space_dim + space_dim/2);
+    std::vector<Variable> cycle;
+    cycle.reserve(space_dim);
 
     // Used to mark elements as soon as they are inserted in a cycle.
     std::deque<bool> visited(space_dim);
@@ -168,33 +158,32 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	    throw_invalid_argument("map_space_dimensions(pfunc)",
 				   " pfunc is inconsistent");
 	  if (k == j)
-	    // Cycle of length 1: skip it.
-	    goto skip;
+	    break;
 
-	  cycles.push_back(j+1);
+	  cycle.push_back(Variable(j));
 	  // Go along the cycle.
 	  j = k;
 	} while (!visited[j]);
-	// End of cycle: mark it.
-	cycles.push_back(0);
-      skip:
-	;
+
+	// End of cycle.
+        
+        // Avoid calling clear_*_minimized() if cycle.size() is less than 2,
+        // to improve efficiency.
+        if (cycle.size() >= 2) {
+          // Permute all that is up-to-date.
+          if (congruences_are_up_to_date()) {
+            con_sys.permute_space_dimensions(cycle);
+            clear_congruences_minimized();
+          }
+
+          if (generators_are_up_to_date()) {
+            gen_sys.permute_space_dimensions(cycle);
+            clear_generators_minimized();
+          }
+        }
+
+        cycle.clear();
       }
-    }
-
-    // If `cycles' is empty then `pfunc' is the identity.
-    if (cycles.empty())
-      return;
-
-    // Permute all that is up-to-date.
-    if (congruences_are_up_to_date()) {
-      con_sys.permute_columns(cycles);
-      clear_congruences_minimized();
-    }
-
-    if (generators_are_up_to_date()) {
-      gen_sys.permute_columns(cycles);
-      clear_generators_minimized();
     }
 
     PPL_ASSERT(OK());

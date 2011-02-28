@@ -269,8 +269,9 @@ Constraint_System::remove_trailing_rows(dimension_type n) {
 }
 
 inline void
-Constraint_System::permute_columns(const std::vector<dimension_type>& cycles) {
-  sys.permute_columns(cycles);
+Constraint_System
+::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  sys.permute_space_dimensions(cycle);
 }
 
 inline bool

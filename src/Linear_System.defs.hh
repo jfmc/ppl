@@ -26,11 +26,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_System.types.hh"
 
-#include "Bit_Row.types.hh"
-#include "Bit_Matrix.types.hh"
 #include "Swapping_Vector.defs.hh"
 #include "globals.defs.hh"
 #include "Topology.hh"
+#include "Variable.defs.hh"
+
+#include "Bit_Row.types.hh"
+#include "Bit_Matrix.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for systems of constraints and generators.
@@ -162,23 +164,20 @@ public:
   // TODO: Remove this.
   typedef Row internal_row_type;
 
-  //! Permutes the columns of the system.
+  // TODO: Consider making this private.
+  //! Permutes the space dimensions of the matrix.
   /*
-    \param cycles
-    A vector representing the non-trivial cycles of the permutation
-    according to which the columns must be rearranged.
+    \param cycle
+    A vector representing a cycle of the permutation according to which the
+    columns must be rearranged.
 
-    The \p cycles vector contains, one after the other, the
-    non-trivial cycles (i.e., the cycles of length greater than one)
-    of a permutation of non-zero column indexes.  Each cycle is
-    terminated by zero.  For example, assuming the system has 6
-    columns, the permutation \f$ \{ 1 \mapsto 3, 2 \mapsto 4,
-    3 \mapsto 6, 4 \mapsto 2, 5 \mapsto 5, 6 \mapsto 1 \}\f$ can be
-    represented by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in
-    turn can be represented by a vector of 6 elements containing 1, 3,
-    6, 0, 2, 4, 0.
+    The \p cycle vector represents a cycle of a permutation of space
+    dimensions.
+    For example, the permutation
+    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
+    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
   */
-  void permute_columns(const std::vector<dimension_type>& cycles);
+  void permute_space_dimensions(const std::vector<Variable>& cycle);
 
   void swap_columns(dimension_type i, dimension_type j);
 
