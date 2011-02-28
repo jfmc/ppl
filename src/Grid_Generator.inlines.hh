@@ -76,6 +76,18 @@ Grid_Generator::space_dimension() const {
   return Linear_Row::space_dimension() - 1;
 }
 
+inline void
+Grid_Generator::set_space_dimension(dimension_type space_dim) {
+  const dimension_type old_space_dim = space_dimension();
+  if (space_dim > old_space_dim) {
+    resize(space_dim + 2);
+    Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+  } else {
+    Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+    resize(space_dim + 2);
+  }
+}
+
 inline Grid_Generator::Type
 Grid_Generator::type() const {
   if (is_line())

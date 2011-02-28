@@ -125,6 +125,9 @@ public:
   */
   dimension_type space_dimension() const;
 
+  //! Sets the space dimension of the rows in the system to \p space_dim .
+  void set_space_dimension(dimension_type space_dim);
+
   // TODO: Check if this should be removed.
   dimension_type num_columns() const;
 

@@ -81,6 +81,16 @@ Generator_System::space_dimension() const {
 }
 
 inline void
+Generator_System::set_space_dimension(dimension_type space_dim) {
+  const dimension_type old_space_dim = space_dimension();
+  sys.set_space_dimension(space_dim);
+
+  if (space_dim < old_space_dim)
+    // We may have invalid lines and rays now.
+    remove_invalid_lines_and_rays();
+}
+
+inline void
 Generator_System::clear() {
   sys.clear();
 }

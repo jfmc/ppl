@@ -91,6 +91,22 @@ Generator::space_dimension() const {
   return Linear_Row::space_dimension();
 }
 
+inline void
+Generator::set_space_dimension(dimension_type space_dim) {
+  if (topology() == NECESSARILY_CLOSED) {
+    resize(space_dim + 1);
+  } else {
+    const dimension_type old_space_dim = space_dimension();
+    if (space_dim > old_space_dim) {
+      resize(space_dim + 2);
+      Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+    } else {
+      Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+      resize(space_dim + 2);
+    }
+  }
+}
+
 inline bool
 Generator::is_line() const {
   return is_line_or_equality();

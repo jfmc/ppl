@@ -214,6 +214,9 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Sets the space dimension of the rows in the system to \p space_dim .
+  void set_space_dimension(dimension_type space_dim);
+
   /*! \brief
     Removes all the generators from the generator system
     and sets its space dimension to 0.

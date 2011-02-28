@@ -86,6 +86,11 @@ Constraint_System::space_dimension() const {
 }
 
 inline void
+Constraint_System::set_space_dimension(dimension_type space_dim) {
+  return sys.set_space_dimension(space_dim);
+}
+
+inline void
 Constraint_System::clear() {
   sys.clear();
 }

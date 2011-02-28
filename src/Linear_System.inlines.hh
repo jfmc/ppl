@@ -336,6 +336,18 @@ Linear_System<Row>::space_dimension() const {
 }
 
 template <typename Row>
+inline void
+Linear_System<Row>::set_space_dimension(dimension_type space_dim) {
+  for (dimension_type i = rows.size(); i-- > 0; )
+    rows[i].set_space_dimension(space_dim);
+  if (is_necessarily_closed())
+    num_columns_ = space_dim + 1;
+  else
+    num_columns_ = space_dim + 2;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
 inline dimension_type
 Linear_System<Row>::num_columns() const {
   return num_columns_;

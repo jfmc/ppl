@@ -173,6 +173,10 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Sets the dimension of the vector space enclosing \p *this to
+  //! \p space_dim .
+  void set_space_dimension(dimension_type space_dim);
+
   //! The constraint type.
   enum Type {
     /*! The constraint is an equality. */
