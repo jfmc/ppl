@@ -292,35 +292,7 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_space_dimensions(const Variables_Set& vars) {
-  // Dimension-compatibility assertion.
-  PPL_ASSERT(space_dimension() >= vars.space_dimension());
-
-  // The removal of no dimensions from any system is a no-op.  This
-  // case also captures the only legal removal of dimensions from a
-  // 0-dim system.
-  if (vars.empty())
-    return;
-
-  // For each variable to be removed, replace the corresponding column
-  // by shifting left the columns to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      sys.swap_columns(dst_col++, src_col++);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type num_columns = sys.num_columns();
-  while (src_col < num_columns)
-    sys.swap_columns(dst_col++, src_col++);
-
-  // The number of remaining columns is `dst_col'.
-  sys.remove_trailing_columns_without_normalizing(num_columns - dst_col);
+  sys.remove_space_dimensions(vars);
 }
 
 void

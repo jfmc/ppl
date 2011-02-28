@@ -332,29 +332,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
     return;
   }
 
-  // For each variable to be removed, we fill the corresponding column
-  // by shifting left those columns that will not be removed.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi + 1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi + 1;
-    // All columns in between are moved to the left.
-    while (src_col < vsi_col)
-      gen_sys.swap_columns(dst_col++, src_col++);
-    ++src_col;
-  }
-  // Moving the remaining columns.
-  const dimension_type gen_sys_num_columns = gen_sys.num_columns();
-  while (src_col < gen_sys_num_columns)
-    gen_sys.swap_columns(dst_col++, src_col++);
-
-  // The number of remaining columns is `dst_col'.
-  // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
-  // We may have invalid lines and rays now.
-  gen_sys.remove_invalid_lines_and_rays();
+  gen_sys.remove_space_dimensions(vars);
 
   // Constraints are not up-to-date and generators are not minimized.
   clear_constraints_up_to_date();
