@@ -223,6 +223,12 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   return true;
 }
 
+bool
+PPL::Constraint::is_equal_to(const Constraint& y) const {
+  return static_cast<const Linear_Row&>(*this)
+         == static_cast<const Linear_Row&>(y);
+}
+
 const PPL::Constraint* PPL::Constraint::zero_dim_false_p = 0;
 const PPL::Constraint* PPL::Constraint::zero_dim_positivity_p = 0;
 const PPL::Constraint* PPL::Constraint::epsilon_geq_zero_p = 0;
