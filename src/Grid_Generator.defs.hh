@@ -365,7 +365,11 @@ public:
   */
   bool is_equivalent_to(const Grid_Generator& y) const;
 
-  //! Returns <CODE>true</CODE> if \p *this is exactly equal to \p y.
+  //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
+  /*!
+    This is faster than is_equivalent_to(), but it may return `false' even
+    for equivalent generators.
+  */
   bool is_equal_to(const Grid_Generator& y) const;
 
   /*! \brief

@@ -223,13 +223,8 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
-  const Grid_Generator& x = *this;
-  if (x.type() != y.type())
-    return false;
-  for (dimension_type i = x.size(); i-- > 0; )
-    if (x[i] != y[i])
-      return false;
-  return true;
+  return static_cast<const Linear_Row&>(*this)
+         == static_cast<const Linear_Row&>(y);
 }
 
 bool
