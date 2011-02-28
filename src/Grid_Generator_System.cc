@@ -113,15 +113,13 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 
 void
 PPL::Grid_Generator_System
-::affine_image(dimension_type v,
+::affine_image(Variable v,
 	       const Linear_Expression& expr,
 	       Coefficient_traits::const_reference denominator) {
   // This is mostly a copy of Generator_System::affine_image.
 
   Grid_Generator_System& x = *this;
-  // `v' is the index of a column corresponding to a "user" variable
-  // (i.e., it cannot be the inhomogeneous term).
-  PPL_ASSERT(v > 0 && v <= x.sys.space_dimension());
+  PPL_ASSERT(v.space_dimension() <= x.sys.space_dimension());
   PPL_ASSERT(expr.space_dimension() <= x.sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
@@ -140,11 +138,13 @@ PPL::Grid_Generator_System
   Swapping_Vector<Grid_Generator> rows;
   // Release the rows from the linear system, so they can be modified.
   x.sys.release_rows(rows);
+
+  const dimension_type v_space_dim = v.space_dimension();
   
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = rows[i];
     Scalar_Products::assign(numerator, expr.get_linear_row(), row);
-    std::swap(numerator, row[v]);
+    std::swap(numerator, row[v_space_dim]);
   }
 
   if (denominator != 1)
@@ -154,7 +154,7 @@ PPL::Grid_Generator_System
     for (dimension_type i = num_rows; i-- > 0; ) {
       Grid_Generator& row = rows[i];
       for (dimension_type j = num_columns; j-- > 0; )
-	if (j != v)
+	if (j != v_space_dim)
 	  row[j] *= denominator;
     }
 
@@ -166,8 +166,8 @@ PPL::Grid_Generator_System
 
   // If the mapping is not invertible we may have transformed valid
   // lines and rays into the origin of the space.
-  const bool not_invertible = (v > expr.space_dimension()
-                               || expr.get_linear_row()[v] == 0);
+  const bool not_invertible = (v.space_dimension() >= expr.space_dimension()
+                               || expr.coefficient(v) == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_parameters();
 }

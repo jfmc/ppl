@@ -382,7 +382,7 @@ public:
   //! Assigns to a given variable an affine expression.
   /*!
     \param v
-    Index of the column to which the affine transformation is assigned;
+    The variable to which the affine transformation is assigned;
 
     \param expr
     The numerator of the affine transformation:
@@ -399,8 +399,8 @@ public:
     denominator is required to be a positive integer and its
     default value is 1.
 
-    The affine transformation assigns to each element of \p v -th
-    column the follow expression:
+    The affine transformation assigns to every variable \p v, in every
+    column, the follow expression:
     \f[
       \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
            {\mathrm{denominator}}.
@@ -408,7 +408,7 @@ public:
 
     \p expr is a constant parameter and unaltered by this computation.
   */
-  void affine_image(dimension_type v,
+  void affine_image(Variable v,
                     const Linear_Expression& expr,
                     Coefficient_traits::const_reference denominator);
 
