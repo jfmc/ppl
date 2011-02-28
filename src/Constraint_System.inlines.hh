@@ -413,11 +413,6 @@ Constraint_System::add_zero_columns(dimension_type n) {
 }
 
 inline void
-Constraint_System::swap_columns(dimension_type i, dimension_type j) {
-  sys.swap_columns(i, j);
-}
-
-inline void
 Constraint_System::add_universe_rows_and_columns(dimension_type n) {
   sys.add_universe_rows_and_columns(n);
 }

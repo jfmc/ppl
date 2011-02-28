@@ -131,11 +131,6 @@ Generator_System::add_universe_rows_and_columns(dimension_type n) {
   sys.add_universe_rows_and_columns(n);
 }
 
-inline void
-Generator_System::swap_columns(dimension_type i, dimension_type j) {
-  sys.swap_columns(i, j);
-}
-
 inline Topology
 Generator_System::topology() const {
   return sys.topology();

@@ -525,9 +525,6 @@ public:
   void add_zero_columns(dimension_type n);
 
   // TODO: Consider removing this, or making it private.
-  void swap_columns(dimension_type i, dimension_type j);
-
-  // TODO: Consider removing this, or making it private.
   //! Adds \p n rows and columns to the system.
   /*!
     \param n

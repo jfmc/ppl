@@ -335,9 +335,6 @@ public:
   */
   void add_universe_rows_and_columns(dimension_type n);
 
-  // TODO: Consider making this private.
-  void swap_columns(dimension_type i, dimension_type j);
-
   Topology topology() const;
 
   // TODO: Remove this.
