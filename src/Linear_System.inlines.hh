@@ -449,6 +449,15 @@ Linear_System<Row>
 
 template <typename Row>
 inline void
+Linear_System<Row>
+::swap_space_dimensions(Variable v1, Variable v2) {
+  PPL_ASSERT(v1.space_dimension() <= space_dimension());
+  PPL_ASSERT(v2.space_dimension() <= space_dimension());
+  swap_columns(v1.space_dimension(), v2.space_dimension());
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>::swap_columns(dimension_type i, dimension_type j) {
   for (dimension_type k = num_rows(); k-- > 0; )
     rows[k].swap(i, j);

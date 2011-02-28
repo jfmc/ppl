@@ -179,6 +179,9 @@ public:
   */
   void permute_space_dimensions(const std::vector<Variable>& cycle);
 
+  //! Swaps the coefficients of the variables \p v1 and \p v2 .
+  void swap_space_dimensions(Variable v1, Variable v2);
+
   void swap_columns(dimension_type i, dimension_type j);
 
   //! \name Subscript operators

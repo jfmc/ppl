@@ -96,6 +96,12 @@ Generator_System
   sys.permute_space_dimensions(cycle);
 }
 
+inline void
+Generator_System
+::swap_space_dimensions(Variable v1, Variable v2) {
+  sys.swap_space_dimensions(v1, v2);
+}
+
 inline dimension_type
 Generator_System::num_rows() const {
   return sys.num_rows();

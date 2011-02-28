@@ -274,6 +274,12 @@ Constraint_System
   sys.permute_space_dimensions(cycle);
 }
 
+inline void
+Constraint_System
+::swap_space_dimensions(Variable v1, Variable v2) {
+  sys.swap_space_dimensions(v1, v2);
+}
+
 inline bool
 Constraint_System::has_no_rows() const {
   return sys.has_no_rows();
