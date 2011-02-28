@@ -182,11 +182,6 @@ Generator_System::is_sorted() const {
 }
 
 inline void
-Generator_System::add_zero_columns(dimension_type n) {
-  sys.add_zero_columns(n);
-}
-
-inline void
 Generator_System::set_index_first_pending_row(dimension_type i) {
   sys.set_index_first_pending_row(i);
 }

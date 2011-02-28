@@ -373,9 +373,6 @@ public:
   //! Returns the value of the sortedness flag.
   bool is_sorted() const;
 
-  // TODO: Remove this.
-  void add_zero_columns(dimension_type n);
-
   // TODO: Consider removing this.
   //! Sets the index of the first pending row to \p i.
   void set_index_first_pending_row(dimension_type i);

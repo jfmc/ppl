@@ -408,11 +408,6 @@ Constraint_System::num_lines_or_equalities() const {
 }
 
 inline void
-Constraint_System::add_zero_columns(dimension_type n) {
-  sys.add_zero_columns(n);
-}
-
-inline void
 Constraint_System::add_universe_rows_and_columns(dimension_type n) {
   sys.add_universe_rows_and_columns(n);
 }

@@ -522,9 +522,6 @@ public:
   dimension_type num_lines_or_equalities() const;
 
   // TODO: Consider removing this, or making it private.
-  void add_zero_columns(dimension_type n);
-
-  // TODO: Consider removing this, or making it private.
   //! Adds \p n rows and columns to the system.
   /*!
     \param n
