@@ -367,8 +367,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   dest.clear();
   PPL_ASSERT(dims > 0);
-  // The additional two columns have already been added by clear().
-  dest.add_zero_columns(dims - 1);
+  dest.set_space_dimension(dims - 1);
 
   // In `dest' initialize row types and elements, including setting
   // the diagonal elements to the inverse ratio of the `source'
