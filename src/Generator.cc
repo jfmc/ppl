@@ -156,6 +156,12 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   return true;
 }
 
+bool
+PPL::Generator::is_equal_to(const Generator& y) const {
+  return static_cast<const Linear_Row&>(*this)
+         == static_cast<const Linear_Row&>(y);
+}
+
 const PPL::Generator* PPL::Generator::zero_dim_point_p = 0;
 const PPL::Generator* PPL::Generator::zero_dim_closure_point_p = 0;
 

@@ -393,6 +393,13 @@ public:
   */
   bool is_equivalent_to(const Generator& y) const;
 
+  //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
+  /*!
+    This is faster than is_equivalent_to(), but it may return `false' even
+    for equivalent generators.
+  */
+  bool is_equal_to(const Generator& y) const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
