@@ -182,7 +182,7 @@ Linear_System<Row>::assign_with_pending(const Linear_System& y) {
 template <typename Row>
 inline void
 Linear_System<Row>::swap(Linear_System& y) {
-  std::swap(rows, y.rows);
+  rows.swap(y.rows);
   std::swap(num_columns_, y.num_columns_);
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
@@ -353,7 +353,7 @@ Linear_System<Row>::swap_rows(const dimension_type i,
   // i and j must be either both pending or both non-pending.
   PPL_ASSERT((i < first_pending_row() && j < first_pending_row())
              || (i >= first_pending_row() && j >= first_pending_row()));
-  std::swap(rows[i], rows[j]);
+  rows[i].swap(rows[j]);
   sorted = false;
   PPL_ASSERT(OK());
 }
@@ -382,7 +382,7 @@ Linear_System<Row>
 template <typename Row>
 inline void
 Linear_System<Row>::release_row(Row& row) {
-  std::swap(row, rows.back());
+  row.swap(rows.back());
   remove_trailing_rows(1);
   PPL_ASSERT(OK());
 }
@@ -392,7 +392,7 @@ inline void
 Linear_System<Row>::release_rows(Swapping_Vector<Row>& v) {
   PPL_ASSERT(v.empty());
   PPL_ASSERT(num_pending_rows() == 0);
-  std::swap(rows, v);
+  rows.swap(v);
   unset_pending_rows();
   PPL_ASSERT(OK());
 }
@@ -401,7 +401,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
   PPL_ASSERT(num_rows() == 0);
-  std::swap(rows, v);
+  rows.swap(v);
   sorted = false;
   unset_pending_rows();
   PPL_ASSERT(OK());
