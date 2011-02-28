@@ -548,7 +548,14 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
       return false;
-  sys.resize_no_copy(0, ncols);
+  sys.clear();
+  if (sys.topology() == NECESSARILY_CLOSED) {
+    PPL_ASSERT(ncols >= 1);
+    sys.set_space_dimension(ncols - 1);
+  } else {
+    PPL_ASSERT(ncols >= 2);
+    sys.set_space_dimension(ncols - 2);
+  }
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;

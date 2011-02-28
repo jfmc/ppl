@@ -193,7 +193,15 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> num_columns))
       return false;
-  resize_no_copy(0, num_columns);
+
+  sys.clear();
+  if (sys.topology() == NECESSARILY_CLOSED) {
+    PPL_ASSERT(num_columns >= 1);
+    sys.set_space_dimension(num_columns - 1);
+  } else {
+    PPL_ASSERT(num_columns >= 2);
+    sys.set_space_dimension(num_columns - 2);
+  }
 
   set_sorted(false);
 
