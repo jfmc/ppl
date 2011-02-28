@@ -338,9 +338,6 @@ public:
   Topology topology() const;
 
   // TODO: Remove this.
-  dimension_type num_columns() const;
-
-  // TODO: Remove this.
   //! Makes the system shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 

@@ -248,11 +248,6 @@ Constraint_System::is_sorted() const {
   return sys.is_sorted();
 }
 
-inline dimension_type
-Constraint_System::num_columns() const {
-  return sys.num_columns();
-}
-
 inline void
 Constraint_System::unset_pending_rows() {
   sys.unset_pending_rows();

@@ -136,11 +136,6 @@ Generator_System::topology() const {
   return sys.topology();
 }
 
-inline dimension_type
-Generator_System::num_columns() const {
-  return sys.num_columns();
-}
-
 inline void
 Generator_System::remove_trailing_columns(dimension_type n) {
   return sys.remove_trailing_columns(n);

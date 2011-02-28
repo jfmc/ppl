@@ -314,9 +314,6 @@ public:
   //! Returns the value of the sortedness flag.
   bool is_sorted() const;
 
-  // TODO: Check if this should be removed.
-  dimension_type num_columns() const;
-
   // TODO: Consider removing this, or making it private.
   //! Sets the index to indicate that the system has no pending rows.
   void unset_pending_rows();
