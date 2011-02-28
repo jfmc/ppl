@@ -87,11 +87,9 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
 
   // This method is only applied to a well-formed system `sys'.
   PPL_ASSERT(sys.OK());
-  PPL_ASSERT(sys.num_columns() >= 1);
 
   const dimension_type old_num_rows = sys.num_rows();
   dimension_type num_rows = old_num_rows;
-  const dimension_type num_columns = sys.num_columns();
   const dimension_type num_cols_sat = sat.num_columns();
 
   // Looking for the first inequality in `sys'.
@@ -228,8 +226,11 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
   //      ==>
   //        redundant(sys[i]).
   //
+  const dimension_type sys_num_columns
+    = sys.topology() == NECESSARILY_CLOSED ? sys.space_dimension() + 1
+                                           : sys.space_dimension() + 2;
   const dimension_type min_saturators
-    = num_columns - num_lines_or_equalities - 1;
+    = sys_num_columns - num_lines_or_equalities - 1;
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `sys[i]' is redundant.

@@ -39,7 +39,7 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
   typedef typename Linear_System2::row_type sys2_row_type;
 
   PPL_ASSERT(sys1.topology() == sys2.topology());
-  PPL_ASSERT(sys1.num_columns() == sys2.num_columns());
+  PPL_ASSERT(sys1.space_dimension() == sys2.space_dimension());
   PPL_ASSERT(add_dim != 0);
 
   sys1.set_space_dimension(sys1.space_dimension() + add_dim);

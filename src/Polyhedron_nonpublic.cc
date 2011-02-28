@@ -122,15 +122,13 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
     set_constraints_up_to_date();
   }
   else {
-    // Here `space_dim == 0'.
-    if (cs.num_columns() > 0)
-      // See if an inconsistent constraint has been passed.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_inconsistent()) {
-	  // Inconsistent constraint found: the polyhedron is empty.
-	  set_empty();
-	  break;
-	}
+    // See if an inconsistent constraint has been passed.
+    for (dimension_type i = cs.num_rows(); i-- > 0; )
+      if (cs[i].is_inconsistent()) {
+        // Inconsistent constraint found: the polyhedron is empty.
+        set_empty();
+        break;
+      }
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -171,14 +169,14 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   }
   else {
     // Here `space_dim == 0'.
-    if (cs.num_columns() > 0)
-      // See if an inconsistent constraint has been passed.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_inconsistent()) {
-	  // Inconsistent constraint found: the polyhedron is empty.
-	  set_empty();
-	  break;
-	}
+
+    // See if an inconsistent constraint has been passed.
+    for (dimension_type i = cs.num_rows(); i-- > 0; )
+      if (cs[i].is_inconsistent()) {
+        // Inconsistent constraint found: the polyhedron is empty.
+        set_empty();
+        break;
+      }
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -1141,7 +1139,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   Bit_Matrix& sat = x.sat_g;
   const dimension_type old_cs_rows = cs.num_rows();
   dimension_type cs_rows = old_cs_rows;
-  const dimension_type eps_index = cs.num_columns() - 1;
+  const dimension_type eps_index = cs.space_dimension() + 1;
   for (dimension_type i = 0; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
@@ -1295,7 +1293,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   const dimension_type old_gs_rows = gs.num_rows();
   dimension_type gs_rows = old_gs_rows;
   const dimension_type n_lines = gs.num_lines();
-  const dimension_type eps_index = gs.num_columns() - 1;
+  const dimension_type eps_index = gs.space_dimension() + 1;
   bool gs_sorted = gs.is_sorted();
   Swapping_Vector<Generator> rows;
   gs.release_rows(rows);

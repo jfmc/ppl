@@ -95,10 +95,12 @@ Polyhedron::minimize(const bool con_to_gen,
   // To this end, we initialize it to the identity matrix of dimension
   // `source.num_columns()': the rows represent the lines corresponding
   // to the canonical basis of the vector space.
+  dimension_type dest_num_rows
+    = source.topology() == NECESSARILY_CLOSED ? source.space_dimension() + 1
+                                              : source.space_dimension() + 2;
 
-  // Resizing `dest' to be the appropriate square matrix.
-  dimension_type dest_num_rows = source.num_columns();
-  dest.resize_no_copy(0, dest_num_rows);
+  dest.clear();
+  dest.set_space_dimension(source.space_dimension());
 
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
@@ -152,7 +154,7 @@ Polyhedron::minimize(const bool con_to_gen,
   const dimension_type checking_index
     = dest.is_necessarily_closed()
     ? 0
-    : dest.num_columns() - 1;
+    : dest.space_dimension() + 1;
   dimension_type first_point;
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
@@ -344,7 +346,7 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
                              Dest_Linear_System& dest,
                              Bit_Matrix& sat) {
   PPL_ASSERT(source.num_pending_rows() > 0);
-  PPL_ASSERT(source.num_columns() == dest.num_columns());
+  PPL_ASSERT(source.space_dimension() == dest.space_dimension());
   PPL_ASSERT(source.is_sorted());
 
   // First, pad the saturation matrix with new columns (of zeroes)
@@ -370,7 +372,7 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
   const dimension_type checking_index
     = dest.is_necessarily_closed()
     ? 0
-    : dest.num_columns() - 1;
+    : dest.space_dimension() + 1;
   dimension_type first_point;
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;

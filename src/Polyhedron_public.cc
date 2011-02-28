@@ -480,7 +480,7 @@ PPL::Polyhedron::is_universe() const {
       obtain_sorted_constraints();
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
-      const dimension_type eps_index = con_sys.num_columns() - 1;
+      const dimension_type eps_index = con_sys.space_dimension() + 1;
       PPL_ASSERT(eps_leq_one[0] > 0 && eps_leq_one[eps_index] < 0
 	     && eps_geq_zero[0] == 0 && eps_geq_zero[eps_index] > 0);
       for (dimension_type i = 1; i < eps_index; ++i)
@@ -783,11 +783,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   using std::cerr;
 #endif
 
-  // The expected number of columns in the constraint and generator
-  // systems, if they are not empty.
-  const dimension_type poly_num_columns
-    = space_dim + (is_necessarily_closed() ? 1 : 2);
-
   // Check whether the topologies of `con_sys' and `gen_sys' agree.
   if (con_sys.topology() != gen_sys.topology()) {
 #ifndef NDEBUG
@@ -901,7 +896,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // `sat_c'   : number of generators  x number of constraints
   // `sat_g'   : number of constraints x number of generators.
   if (constraints_are_up_to_date()) {
-    if (con_sys.num_columns() != poly_num_columns) {
+    if (con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
       cerr << "Incompatible size! (con_sys and space_dim)"
 	   << endl;
@@ -925,7 +920,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
     if (generators_are_up_to_date())
-      if (con_sys.num_columns() != gen_sys.num_columns()) {
+      if (con_sys.space_dimension() != gen_sys.space_dimension()) {
 #ifndef NDEBUG
 	cerr << "Incompatible size! (con_sys and gen_sys)"
 	     << endl;
@@ -935,7 +930,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   if (generators_are_up_to_date()) {
-    if (gen_sys.num_columns() != poly_num_columns) {
+    if (gen_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
       cerr << "Incompatible size! (gen_sys and space_dim)"
 	   << endl;
@@ -996,7 +991,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     if (!is_necessarily_closed()) {
       dimension_type num_points = 0;
       dimension_type num_closure_points = 0;
-      dimension_type eps_index = gen_sys.num_columns() - 1;
+      dimension_type eps_index = gen_sys.space_dimension() + 1;
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
 	if (!gen_sys[i].is_line_or_ray())
 	  if (gen_sys[i][eps_index] > 0)
@@ -1110,7 +1105,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // must also contain a (combination of) the constraint epsilon >= 0,
       // i.e., a constraint with a positive epsilon coefficient.
       bool no_epsilon_geq_zero = true;
-      const dimension_type eps_index = con_sys.num_columns() - 1;
+      const dimension_type eps_index = con_sys.space_dimension() + 1;
       for (dimension_type i = con_sys.num_rows(); i-- > 0; )
 	if (con_sys[i][eps_index] > 0) {
 	  no_epsilon_geq_zero = false;

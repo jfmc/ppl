@@ -356,8 +356,6 @@ Polyhedron::conversion(Source_Linear_System& source,
 
   dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
-  const dimension_type source_num_columns = source.num_columns();
-  const dimension_type dest_num_columns = dest.num_columns();
   // The rows removed from `dest' will be placed in this vector, so they
   // can be recycled if needed.
   std::vector<dest_row_type> recyclable_dest_rows;
@@ -407,7 +405,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
-    PPL_ASSERT(source_num_columns == dest_num_columns);
+    PPL_ASSERT(source.space_dimension() == dest.space_dimension());
 
     // `scalar_prod[i]' will contain the scalar product of the
     // constraint `source_k' and the generator `dest_rows[i]'.  This
@@ -425,7 +423,7 @@ Polyhedron::conversion(Source_Linear_System& source,
       Scalar_Products::assign(scalar_prod[index_non_zero],
 			      source_k,
 			      dest_rows[index_non_zero]);
-      WEIGHT_ADD_MUL(17, source_num_columns);
+      WEIGHT_ADD_MUL(17, source.space_dimension());
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -437,7 +435,7 @@ Polyhedron::conversion(Source_Linear_System& source,
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[i], source_k, dest_rows[i]);
-      WEIGHT_ADD_MUL(25, source_num_columns);
+      WEIGHT_ADD_MUL(25, source.space_dimension());
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -463,6 +461,9 @@ Polyhedron::conversion(Source_Linear_System& source,
       if (scalar_prod[index_non_zero] < 0) {
 	// The ray `dest_rows[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
+	const dimension_type dest_num_columns
+          = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
+                                                  : dest.space_dimension() + 2;
 	neg_assign(scalar_prod[index_non_zero]);
 	for (dimension_type j = dest_num_columns; j-- > 0; )
 	  neg_assign(dest_rows[index_non_zero][j]);
@@ -514,6 +515,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_i,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
+          const dimension_type dest_num_columns
+            = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
+                                                    : dest.space_dimension() + 2;
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -551,6 +555,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
+          const dimension_type dest_num_columns
+            = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
+                                                    : dest.space_dimension() + 2;
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
@@ -739,6 +746,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 	      // an extremal ray saturates at least
 	      // `source_num_columns - num_lines_or_equalities - 2'
 	      // constraints.
+              const dimension_type source_num_columns
+                = source.topology() == NECESSARILY_CLOSED ? source.space_dimension() + 1
+                                                          : source.space_dimension() + 2;
 	      if (num_common_satur
 		  >= source_num_columns - num_lines_or_equalities - 2) {
 		// The minimal proper face rule is satisfied.
@@ -764,16 +774,16 @@ Polyhedron::conversion(Source_Linear_System& source,
 		  dest_row_type new_row;
 		  if (recyclable_dest_rows.empty()) {
 		    // Create a new row.
-		    dest_row_type tmp(dest.num_columns(),
-                                      typename dest_row_type::Flags(dest.topology(),
-                                                                    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest_row_type tmp(2, typename dest_row_type::Flags(dest.topology(),
+                                                                       Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                    tmp.set_space_dimension(dest.space_dimension());
                     std::swap(new_row, tmp);
 		    sat.add_recycled_row(new_satrow);
 		  }
 		  else {
                     std::swap(new_row, recyclable_dest_rows.back());
                     recyclable_dest_rows.pop_back();
-                    new_row.resize(dest.num_columns());
+                    new_row.set_space_dimension(dest.space_dimension());
                     sat[dest_num_rows].swap(new_satrow);
                   }
 
@@ -792,6 +802,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 			     normalized_sp_i,
 			     normalized_sp_o);
 		  WEIGHT_BEGIN();
+                  const dimension_type dest_num_columns
+                    = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
+                                                            : dest.space_dimension() + 2;
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		    Coefficient& new_row_c = new_row[c];
 		    new_row_c = normalized_sp_i * dest_rows[j][c];
