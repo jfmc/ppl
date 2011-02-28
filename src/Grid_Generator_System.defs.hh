@@ -489,9 +489,6 @@ public:
   void insert_verbatim(const Grid_Generator& g);
 
   // TODO: Consider removing this or making it private.
-  void add_zero_columns(dimension_type n);
-
-  // TODO: Consider removing this or making it private.
   //! Returns the system topology.
   Topology topology() const;
 

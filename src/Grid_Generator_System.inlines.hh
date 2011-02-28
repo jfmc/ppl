@@ -263,11 +263,6 @@ Grid_Generator_System::insert_verbatim(const Grid_Generator& g) {
   sys.insert(g);
 }
 
-inline void
-Grid_Generator_System::add_zero_columns(dimension_type n) {
-  sys.add_zero_columns(n);
-}
-
 inline Topology
 Grid_Generator_System::topology() const {
   return sys.topology();
