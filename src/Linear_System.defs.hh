@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Topology.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.defs.hh"
 
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
@@ -166,6 +167,15 @@ public:
 
   // TODO: Remove this.
   typedef Row internal_row_type;
+
+  // TODO: Consider making this private.
+  //! Removes all the specified dimensions from the system.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+  */
+  void remove_space_dimensions(const Variables_Set& vars);
 
   // TODO: Consider making this private.
   //! Permutes the space dimensions of the matrix.

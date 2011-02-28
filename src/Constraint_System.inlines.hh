@@ -275,6 +275,12 @@ Constraint_System::remove_trailing_rows(dimension_type n) {
 
 inline void
 Constraint_System
+::remove_space_dimensions(const Variables_Set& vars) {
+  sys.remove_space_dimensions(vars);
+}
+
+inline void
+Constraint_System
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   sys.permute_space_dimensions(cycle);
 }

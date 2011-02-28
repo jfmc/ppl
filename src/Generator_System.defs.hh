@@ -291,6 +291,15 @@ public:
   void swap(Generator_System& y);
 
   // TODO: Consider making this private.
+  //! Removes all the specified dimensions from the generator system.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+  */
+  void remove_space_dimensions(const Variables_Set& vars);
+
+  // TODO: Consider making this private.
   //! Permutes the space dimensions of the matrix.
   /*
     \param cycle
