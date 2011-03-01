@@ -39,7 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
-  : sys(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
+  : sys(NECESSARILY_CLOSED, cgs.space_dimension()) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())

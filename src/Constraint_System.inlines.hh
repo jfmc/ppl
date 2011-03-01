@@ -55,9 +55,8 @@ Constraint_System::Constraint_System(const Topology topol)
 
 inline
 Constraint_System::Constraint_System(const Topology topol,
-				     const dimension_type n_rows,
-				     const dimension_type n_columns)
-  : sys(topol, n_rows, n_columns) {
+				     const dimension_type space_dim)
+  : sys(topol, space_dim) {
 }
 
 inline

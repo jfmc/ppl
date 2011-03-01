@@ -73,18 +73,13 @@ public:
     \param topol
     The topology of the system that will be created;
 
-    \param n_rows
-    The number of rows of the system that will be created;
-
     \param n_columns
-    The number of columns of the system that will be created.
+    The number of space dimensions of the system that will be created.
 
-    Creates a \p n_rows \f$\times\f$ \p n_columns system whose
-    coefficients are all zero and whose rows are all initialized
-    to be of the given topology.
+    Creates a \p n_rows \f$\times\f$ \p space_dim system whose
+    coefficients are all zero and with the given topology.
   */
-  Linear_System(Topology topol,
-		dimension_type n_rows, dimension_type n_columns);
+  Linear_System(Topology topol, dimension_type space_dim);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A tag class.

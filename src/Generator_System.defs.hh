@@ -516,12 +516,11 @@ public:
 
 private:
   /*! \brief
-    Builds a system of \p n_rows rays/points on a \p n_columns - 1
-    dimensional space (including the \f$\epsilon\f$ dimension, if
-    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+    Builds a system of rays/points on a \p space_dim dimensional space. If
+    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE> the \f$\epsilon\f$
+    dimension is added.
   */
-  Generator_System(Topology topol,
-		   dimension_type n_rows, dimension_type n_columns);
+  Generator_System(Topology topol, dimension_type space_dim);
 
 public:
   // TODO: Make this private.

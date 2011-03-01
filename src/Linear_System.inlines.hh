@@ -90,21 +90,13 @@ Linear_System<Row>::Linear_System(Topology topol)
 template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol,
-                                  dimension_type n_rows,
-                                  dimension_type n_columns)
+                                  dimension_type space_dim)
   : rows(),
     num_columns_(0),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
-  if (topology() == NECESSARILY_CLOSED) {
-    PPL_ASSERT(n_columns >= 1);
-    resize_no_copy(n_rows, n_columns - 1);
-  } else {
-    PPL_ASSERT(n_columns >= 2);
-    resize_no_copy(n_rows, n_columns - 2);
-  }
-  set_sorted(true);
+  set_space_dimension(space_dim);
   PPL_ASSERT(OK());
 }
 
