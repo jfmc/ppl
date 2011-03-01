@@ -337,10 +337,6 @@ public:
 
   Topology topology() const;
 
-  // TODO: Remove this.
-  //! Makes the system shrink by removing its \p n trailing columns.
-  void remove_trailing_columns(dimension_type n);
-
   // TODO: Consider removing this.
   //! Returns the index of the first pending row.
   dimension_type first_pending_row() const;
