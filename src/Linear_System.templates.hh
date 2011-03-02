@@ -112,19 +112,6 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
 
 template <typename Row>
 void
-Linear_System<Row>::set_rows_topology() {
-  Linear_System& x = *this;
-  if (is_necessarily_closed())
-    for (dimension_type i = num_rows(); i-- > 0; )
-      x.rows[i].set_necessarily_closed();
-  else
-    for (dimension_type i = num_rows(); i-- > 0; )
-      x.rows[i].set_not_necessarily_closed();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
 Linear_System<Row>::ascii_dump(std::ostream& s) const {
   // Prints the topology, the number of rows, the number of columns
   // and the sorted flag.  The specialized methods provided by
@@ -177,7 +164,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   clear();
   num_columns_ = ncols;
 
-  set_topology(t);
+  raw_set_topology(t);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;

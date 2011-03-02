@@ -1225,14 +1225,14 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // necessarily closed, so that we can interpret the epsilon
       // dimension as a standard dimension. Be careful to reset the
       // topology of `cs' even on exceptional execution path.
-      cs.set_necessarily_closed();
+      cs.raw_set_necessarily_closed();
       try {
 	lp.add_space_dimensions_and_embed(cs.space_dimension());
 	lp.add_constraints(cs);
-	cs.set_not_necessarily_closed();
+	cs.raw_set_not_necessarily_closed();
       }
       catch (...) {
-	cs.set_not_necessarily_closed();
+	cs.raw_set_not_necessarily_closed();
 	throw;
       }
       // The objective function is `epsilon'.

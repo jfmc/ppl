@@ -51,11 +51,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     if (sys.num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
 	sys.add_zero_columns(cols_to_be_added + 1);
-	sys.set_necessarily_closed();
+	sys.raw_set_necessarily_closed();
       }
       else {
 	sys.add_zero_columns(cols_to_be_added + 2);
-	sys.set_not_necessarily_closed();
+	sys.raw_set_not_necessarily_closed();
       }
     else
       // Here `num_columns() > 0'.
@@ -71,13 +71,13 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  default:
 	    sys.add_zero_columns(cols_to_be_added - 1);
 	  }
-	  sys.set_necessarily_closed();
+	  sys.raw_set_necessarily_closed();
 	}
 	else {
 	  // Here old_topology == NECESSARILY_CLOSED
 	  //  and new_topology == NOT_NECESSARILY_CLOSED.
 	  sys.add_zero_columns(cols_to_be_added + 1);
-	  sys.set_not_necessarily_closed();
+	  sys.raw_set_not_necessarily_closed();
 	}
       else
 	// Here topologies agree.
@@ -126,7 +126,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// add the missing dimensions. This ensures that
 	// non-zero epsilon coefficients will be cleared.
 	sys.remove_trailing_columns(1);
-	sys.set_necessarily_closed();
+	sys.raw_set_necessarily_closed();
 	sys.normalize();
 	sys.add_zero_columns(cols_to_be_added);
       }
@@ -153,7 +153,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  return false;
 	// We just remove the column of the epsilon coefficients.
 	sys.remove_trailing_columns(1);
-	sys.set_necessarily_closed();
+	sys.raw_set_necessarily_closed();
       }
       else
         convert_into_non_necessarily_closed();
@@ -252,7 +252,7 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   // Put the rows back into the linear system.
   gs.sys.take_ownership_of_rows(rows);
 
-  sys.set_not_necessarily_closed();
+  sys.raw_set_not_necessarily_closed();
 }
 
 bool
@@ -890,11 +890,11 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (str == "NECESSARILY_CLOSED")
-    sys.set_necessarily_closed();
+    sys.raw_set_necessarily_closed();
   else {
     if (str != "NOT_NECESSARILY_CLOSED")
       return false;
-    sys.set_not_necessarily_closed();
+    sys.raw_set_not_necessarily_closed();
   }
 
   dimension_type nrows;

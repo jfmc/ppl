@@ -62,18 +62,18 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     if (sys.num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
 	sys.add_zero_columns(++cols_to_be_added);
-	sys.set_necessarily_closed();
+	sys.raw_set_necessarily_closed();
       }
       else {
 	cols_to_be_added += 2;
 	sys.add_zero_columns(cols_to_be_added);
-	sys.set_not_necessarily_closed();
+	sys.raw_set_not_necessarily_closed();
       }
     else
       // Here `num_columns() > 0'.
       if (old_topology != new_topology)
 	if (new_topology == NECESSARILY_CLOSED) {
-          sys.set_necessarily_closed();
+          sys.raw_set_necessarily_closed();
 	  switch (cols_to_be_added) {
 	  case 0:
 	    sys.remove_trailing_columns(1);
@@ -89,7 +89,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  // Here old_topology == NECESSARILY_CLOSED
 	  //  and new_topology == NOT_NECESSARILY_CLOSED.
 	  sys.add_zero_columns(++cols_to_be_added);
-	  sys.set_not_necessarily_closed();
+	  sys.raw_set_not_necessarily_closed();
 	}
       else {
 	// Here topologies agree.
@@ -166,14 +166,14 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  sys.sort_rows();
 	if (--cols_to_be_added > 0)
 	  sys.add_zero_columns(cols_to_be_added);
-	sys.set_necessarily_closed();
+	sys.raw_set_necessarily_closed();
       }
       else {
 	// A NECESSARILY_CLOSED constraint system is converted to
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// of zeroes for the epsilon coefficients.
 	sys.add_zero_columns(++cols_to_be_added);
-	sys.set_not_necessarily_closed();
+	sys.raw_set_not_necessarily_closed();
       }
     else {
       // Topologies agree: first add the required zero columns ...
@@ -194,12 +194,12 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  return false;
 	// We just remove the column of the epsilon coefficients.
 	sys.remove_trailing_columns(1);
-	sys.set_necessarily_closed();
+	sys.raw_set_necessarily_closed();
       }
       else {
 	// We just add the column of the epsilon coefficients.
 	sys.add_zero_columns(1);
-	sys.set_not_necessarily_closed();
+	sys.raw_set_not_necessarily_closed();
       }
     }
   // We successfully adjusted space dimensions and topology.
@@ -248,7 +248,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
       // Padding the matrix with a columns of zeroes
       // corresponding to the epsilon coefficients.
       sys.add_zero_columns(1);
-      sys.set_not_necessarily_closed();
+      sys.raw_set_not_necessarily_closed();
       sys.insert(c);
     }
     else {
@@ -276,7 +276,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       // Padding the matrix with a columns of zeroes
       // corresponding to the epsilon coefficients.
       sys.add_zero_columns(1);
-      sys.set_not_necessarily_closed();
+      sys.raw_set_not_necessarily_closed();
       sys.insert_pending(c);
     }
     else {
@@ -533,11 +533,11 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (str == "NECESSARILY_CLOSED")
-    sys.set_necessarily_closed();
+    sys.raw_set_necessarily_closed();
   else {
     if (str != "NOT_NECESSARILY_CLOSED")
       return false;
-    sys.set_not_necessarily_closed();
+    sys.raw_set_not_necessarily_closed();
   }
 
   dimension_type nrows;

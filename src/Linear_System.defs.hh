@@ -246,16 +246,13 @@ public:
   bool check_sorted() const;
 
   //! Sets the system topology to \p t .
-  void set_topology(Topology t);
+  void raw_set_topology(Topology t);
 
   //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
-  void set_necessarily_closed();
+  void raw_set_necessarily_closed();
 
   //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  void set_not_necessarily_closed();
-
-  //! Sets the topology of all rows equal to the system topology.
-  void set_rows_topology();
+  void raw_set_not_necessarily_closed();
 
   //! Sets the index to indicate that the system has no pending rows.
   void unset_pending_rows();

@@ -421,11 +421,11 @@ public:
 
   // TODO: Consider removing this, or making it private.
   //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
-  void set_necessarily_closed();
+  void raw_set_necessarily_closed();
 
   // TODO: Consider removing this, or making it private.
   //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  void set_not_necessarily_closed();
+  void raw_set_not_necessarily_closed();
 
   // TODO: Consider removing this, or making it private.
   //! Swaps \p row with the last row and then removes that row from the
