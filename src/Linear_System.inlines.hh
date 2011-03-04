@@ -262,6 +262,33 @@ Linear_System<Row>::raw_set_not_necessarily_closed() {
 
 template <typename Row>
 inline void
+Linear_System<Row>::mark_as_necessarily_closed() {
+  PPL_ASSERT(topology() == NOT_NECESSARILY_CLOSED);
+#ifndef NDEBUG
+  const dimension_type old_space_dim = space_dimension();
+#endif
+  row_topology = NECESSARILY_CLOSED;
+  for (dimension_type i = num_rows(); i-- > 0; )
+    rows[i].set_topology(NECESSARILY_CLOSED);
+  PPL_ASSERT(space_dimension() == old_space_dim + 1);
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::mark_as_not_necessarily_closed() {
+  PPL_ASSERT(topology() == NECESSARILY_CLOSED);
+  PPL_ASSERT(space_dimension() > 0);
+#ifndef NDEBUG
+  const dimension_type old_space_dim = space_dimension();
+#endif
+  row_topology = NOT_NECESSARILY_CLOSED;
+  for (dimension_type i = num_rows(); i-- > 0; )
+    rows[i].set_topology(NOT_NECESSARILY_CLOSED);
+  PPL_ASSERT(space_dimension() == old_space_dim - 1);
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>::set_topology(Topology t) {
   if (topology() == t)
     return;
