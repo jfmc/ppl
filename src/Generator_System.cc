@@ -43,121 +43,50 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type old_space_dim = space_dimension();
-  const Topology old_topology = sys.topology();
-  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
 
-  // Dealing with empty generator systems first.
-  if (sys.has_no_rows()) {
-    if (sys.num_columns() == 0)
-      if (new_topology == NECESSARILY_CLOSED) {
-	sys.add_zero_columns(cols_to_be_added + 1);
-	sys.raw_set_necessarily_closed();
+  if (sys.topology() != new_topology) {
+    if (new_topology == NECESSARILY_CLOSED) {
+      // A NOT_NECESSARILY_CLOSED generator system
+      // can be converted to a NECESSARILY_CLOSED one
+      // only if it does not contain closure points.
+      // This check has to be performed under the user viewpoint.
+      if (has_closure_points())
+        return false;
+      // For a correct implementation, we have to remove those
+      // closure points that were matching a point (i.e., those
+      // that are in the generator system, but are invisible to
+      // the user).
+      Generator_System& gs = *this;
+      dimension_type num_closure_points = 0;
+      dimension_type gs_end = gs.sys.num_rows();
+      for (dimension_type i = 0; i < gs_end; ) {
+        // All the closure points seen so far have consecutive
+        // indices starting from `i'.
+        if (num_closure_points > 0)
+          // Let next generator have index `i'.
+          gs.sys.swap_rows(i, i + num_closure_points);
+        if (gs[i].is_closure_point()) {
+          ++num_closure_points;
+          --gs_end;
+        }
+        else
+          ++i;
       }
-      else {
-	sys.add_zero_columns(cols_to_be_added + 2);
-	sys.raw_set_not_necessarily_closed();
+      // We may have identified some closure points.
+      if (num_closure_points > 0) {
+        PPL_ASSERT(num_closure_points == sys.num_rows() - gs_end);
+        sys.remove_trailing_rows(num_closure_points);
       }
-    else
-      // Here `num_columns() > 0'.
-      if (old_topology != new_topology)
-	if (new_topology == NECESSARILY_CLOSED) {
-	  switch (cols_to_be_added) {
-	  case 0:
-	    sys.remove_trailing_columns(1);
-	    break;
-	  case 1:
-	    // Nothing to do.
-	    break;
-	  default:
-	    sys.add_zero_columns(cols_to_be_added - 1);
-	  }
-	  sys.raw_set_necessarily_closed();
-	}
-	else {
-	  // Here old_topology == NECESSARILY_CLOSED
-	  //  and new_topology == NOT_NECESSARILY_CLOSED.
-	  sys.add_zero_columns(cols_to_be_added + 1);
-	  sys.raw_set_not_necessarily_closed();
-	}
-      else
-	// Here topologies agree.
-	if (cols_to_be_added > 0)
-	  sys.add_zero_columns(cols_to_be_added);
-    PPL_ASSERT(OK());
-    return true;
+      sys.set_necessarily_closed();
+      if (new_space_dim > old_space_dim)
+        sys.normalize();
+    } else {
+      convert_into_non_necessarily_closed();
+    }
   }
 
-  // Here the generator system is not empty.
-  if (cols_to_be_added > 0)
-    if (old_topology != new_topology)
-      if (new_topology == NECESSARILY_CLOSED) {
-	// A NOT_NECESSARILY_CLOSED generator system
-	// can be converted to a NECESSARILY_CLOSED one
-	// only if it does not contain closure points.
-	// This check has to be performed under the user viewpoint.
-	if (has_closure_points())
-	  return false;
-	// For a correct implementation, we have to remove those
-	// closure points that were matching a point (i.e., those
-	// that are in the generator system, but are invisible to
-	// the user).
-	Generator_System& gs = *this;
-	dimension_type num_closure_points = 0;
-	dimension_type gs_end = gs.sys.num_rows();
-	for (dimension_type i = 0; i < gs_end; ) {
-	  // All the closure points seen so far have consecutive
-	  // indices starting from `i'.
-	  if (num_closure_points > 0)
-	    // Let next generator have index `i'.
-            gs.sys.swap_rows(i, i + num_closure_points);
-	  if (gs[i].is_closure_point()) {
-	    ++num_closure_points;
-	    --gs_end;
-	  }
-	  else
-	    ++i;
-	}
-	// We may have identified some closure points.
-	if (num_closure_points > 0) {
-	  PPL_ASSERT(num_closure_points == sys.num_rows() - gs_end);
-	  sys.remove_trailing_rows(num_closure_points);
-	}
-	// Remove the epsilon column, re-normalize and, after that,
-	// add the missing dimensions. This ensures that
-	// non-zero epsilon coefficients will be cleared.
-	sys.remove_trailing_columns(1);
-	sys.raw_set_necessarily_closed();
-	sys.normalize();
-	sys.add_zero_columns(cols_to_be_added);
-      }
-      else {
-        sys.add_zero_columns(cols_to_be_added);
-        convert_into_non_necessarily_closed();
-      }
-    else {
-      // Topologies agree: first add the required zero columns ...
-      sys.add_zero_columns(cols_to_be_added);
-      // ... and, if needed, move the epsilon coefficients
-      // to the new last column.
-      if (old_topology == NOT_NECESSARILY_CLOSED)
-	sys.swap_columns(old_space_dim + 1, new_space_dim + 1);
-    }
-  else
-    // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology) {
-      if (new_topology == NECESSARILY_CLOSED) {
-	// A NOT_NECESSARILY_CLOSED generator system
-	// can be converted in to a NECESSARILY_CLOSED one
-	// only if it does not contain closure points.
-	if (has_closure_points())
-	  return false;
-	// We just remove the column of the epsilon coefficients.
-	sys.remove_trailing_columns(1);
-	sys.raw_set_necessarily_closed();
-      }
-      else
-        convert_into_non_necessarily_closed();
-    }
+  sys.set_space_dimension(new_space_dim);
+  
   // We successfully adjusted dimensions and topology.
   PPL_ASSERT(OK());
   return true;
