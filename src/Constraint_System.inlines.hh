@@ -336,16 +336,6 @@ Constraint_System::insert(const Constraint_System& y) {
 }
 
 inline void
-Constraint_System::raw_set_necessarily_closed() {
-  sys.raw_set_necessarily_closed();
-}
-
-inline void
-Constraint_System::raw_set_not_necessarily_closed() {
-  sys.raw_set_not_necessarily_closed();
-}
-
-inline void
 Constraint_System::mark_as_necessarily_closed() {
   sys.mark_as_necessarily_closed();
 }

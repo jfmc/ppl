@@ -420,14 +420,6 @@ public:
   void insert(const Constraint_System& y);
 
   // TODO: Consider removing this, or making it private.
-  //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
-  void raw_set_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  void raw_set_not_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
   //! Marks the epsilon dimension as a standard dimension.
   /*!
     The system topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and

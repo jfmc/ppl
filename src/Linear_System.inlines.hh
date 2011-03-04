@@ -239,29 +239,6 @@ Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
 
 template <typename Row>
 inline void
-Linear_System<Row>::raw_set_topology(Topology t) {
-  if (topology() == t)
-    return;
-  row_topology = t;
-  for (dimension_type i = num_rows(); i-- > 0; )
-    rows[i].set_topology(t);
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
-Linear_System<Row>::raw_set_necessarily_closed() {
-  raw_set_topology(NECESSARILY_CLOSED);
-}
-
-template <typename Row>
-inline void
-Linear_System<Row>::raw_set_not_necessarily_closed() {
-  raw_set_topology(NOT_NECESSARILY_CLOSED);
-}
-
-template <typename Row>
-inline void
 Linear_System<Row>::mark_as_necessarily_closed() {
   PPL_ASSERT(topology() == NOT_NECESSARILY_CLOSED);
 #ifndef NDEBUG

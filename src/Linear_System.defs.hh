@@ -254,15 +254,6 @@ public:
   //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   void set_not_necessarily_closed();
 
-  //! Sets the system topology to \p t .
-  void raw_set_topology(Topology t);
-
-  //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
-  void raw_set_necessarily_closed();
-
-  //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  void raw_set_not_necessarily_closed();
-
   // TODO: Consider removing this, or making it private.
   //! Marks the epsilon dimension as a standard dimension.
   /*!
