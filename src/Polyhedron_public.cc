@@ -2141,14 +2141,14 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         // closed, so that we can interpret the epsilon dimension as a
         // standard dimension. Be careful to reset the topology of `cs'
         // even on exceptional execution path.
-        const_cast<Constraint_System&>(y_cs).raw_set_necessarily_closed();
+        const_cast<Constraint_System&>(y_cs).mark_as_necessarily_closed();
         try {
           lp.add_space_dimensions_and_embed(x.space_dim+1);
           lp.add_constraints(y_cs);
-          const_cast<Constraint_System&>(y_cs).raw_set_not_necessarily_closed();
+          const_cast<Constraint_System&>(y_cs).mark_as_not_necessarily_closed();
         }
         catch (...) {
-          const_cast<Constraint_System&>(y_cs).raw_set_not_necessarily_closed();
+          const_cast<Constraint_System&>(y_cs).mark_as_not_necessarily_closed();
           throw;
         }
       }
