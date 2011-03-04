@@ -209,8 +209,6 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     Grid_Generator tmp;
     if (!tmp.ascii_load(s))
       return false;
-    if (i == 0)
-      sys.raw_set_topology(tmp.topology());
     sys.insert_recycled(tmp);
   }
 
