@@ -438,12 +438,15 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> str))
     return false;
+
+  sys.clear();
+
   if (str == "NECESSARILY_CLOSED")
-    sys.raw_set_necessarily_closed();
+    sys.set_necessarily_closed();
   else {
     if (str != "NOT_NECESSARILY_CLOSED")
       return false;
-    sys.raw_set_not_necessarily_closed();
+    sys.set_not_necessarily_closed();
   }
 
   dimension_type nrows;
@@ -454,7 +457,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
       return false;
-  sys.clear();
+
   if (sys.topology() == NECESSARILY_CLOSED) {
     PPL_ASSERT(ncols >= 1);
     sys.set_space_dimension(ncols - 1);
