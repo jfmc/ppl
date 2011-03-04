@@ -53,155 +53,72 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 				    const dimension_type new_space_dim) {
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
-  const dimension_type old_space_dim = space_dimension();
-  const Topology old_topology = sys.topology();
-  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
+  if (sys.topology() == NOT_NECESSARILY_CLOSED
+      && new_topology == NECESSARILY_CLOSED) {
+    // A NOT_NECESSARILY_CLOSED constraint system
+    // can be converted to a NECESSARILY_CLOSED one
+    // only if it does not contain strict inequalities.
+    if (has_strict_inequalities())
+      return false;
+    // Since there were no strict inequalities,
+    // the only constraints that may have a non-zero epsilon coefficient
+    // are the eps-leq-one and the eps-geq-zero constraints.
+    // If they are present, we erase these rows, so that the
+    // epsilon column will only contain zeroes: as a consequence,
+    // we just decrement the number of columns to be added.
+    const dimension_type eps_index = space_dimension() + 1;
+    const dimension_type old_sys_num_rows = sys.num_rows();
+    dimension_type sys_num_rows = old_sys_num_rows;
+    bool was_sorted = sys.is_sorted();
+    if (was_sorted)
+      sys.set_sorted(false);
 
-  // Dealing with empty constraint systems first.
-  if (sys.num_rows() == 0) {
-    if (sys.num_columns() == 0)
-      if (new_topology == NECESSARILY_CLOSED) {
-	sys.add_zero_columns(++cols_to_be_added);
-	sys.raw_set_necessarily_closed();
-      }
-      else {
-	cols_to_be_added += 2;
-	sys.add_zero_columns(cols_to_be_added);
-	sys.raw_set_not_necessarily_closed();
-      }
-    else
-      // Here `num_columns() > 0'.
-      if (old_topology != new_topology)
-	if (new_topology == NECESSARILY_CLOSED) {
-          sys.raw_set_necessarily_closed();
-	  switch (cols_to_be_added) {
-	  case 0:
-	    sys.remove_trailing_columns(1);
-	    break;
-	  case 1:
-	    // Nothing to do.
-	    break;
-	  default:
-	    sys.add_zero_columns(--cols_to_be_added);
-	  }
-	}
-	else {
-	  // Here old_topology == NECESSARILY_CLOSED
-	  //  and new_topology == NOT_NECESSARILY_CLOSED.
-	  sys.add_zero_columns(++cols_to_be_added);
-	  sys.raw_set_not_necessarily_closed();
-	}
-      else {
-	// Here topologies agree.
-	if (cols_to_be_added > 0)
-	  sys.add_zero_columns(cols_to_be_added);
-      }
-    PPL_ASSERT(OK());
-    return true;
+    // If we have no pending rows, we only check if
+    // we must erase some rows.
+    if (sys.num_pending_rows() == 0) {
+      for (dimension_type i = sys_num_rows; i-- > 0; )
+        if (sys[i][eps_index] != 0) {
+          --sys_num_rows;
+          sys.swap_rows(i, sys_num_rows);
+        }
+      sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
+    }
+    else {
+      // There are pending rows, and we cannot swap them
+      // into the non-pending part of the matrix.
+      // Thus, we first work on the non-pending part as if it was
+      // an independent matrix; then we work on the pending part.
+      const dimension_type old_first_pending = sys.first_pending_row();
+      dimension_type new_first_pending = old_first_pending;
+      for (dimension_type i = new_first_pending; i-- > 0; )
+        if (sys[i][eps_index] != 0) {
+          --new_first_pending;
+          sys.swap_rows(i, new_first_pending);
+        }
+      const dimension_type num_swaps
+        = old_first_pending - new_first_pending;
+      sys.set_index_first_pending_row(new_first_pending);
+      // Move the swapped rows to the real end of the matrix.
+      for (dimension_type i = num_swaps; i-- > 0; )
+        sys.swap_rows(old_first_pending - i, sys_num_rows - i);
+      sys_num_rows -= num_swaps;
+      // Now iterate through the pending rows.
+      for (dimension_type i = sys_num_rows; i-- > new_first_pending; )
+        if (sys[i][eps_index] != 0) {
+          --sys_num_rows;
+          sys.swap_rows(i, sys_num_rows);
+        }
+      sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
+    }
+
+    // If `cs' was sorted we sort it again.
+    if (was_sorted)
+      sys.sort_rows();
   }
 
-  // Here the constraint system is not empty.
-  if (cols_to_be_added > 0)
-    if (old_topology != new_topology)
-      if (new_topology == NECESSARILY_CLOSED) {
-	// A NOT_NECESSARILY_CLOSED constraint system
-	// can be converted to a NECESSARILY_CLOSED one
-	// only if it does not contain strict inequalities.
-	if (has_strict_inequalities())
-	  return false;
-	// Since there were no strict inequalities,
-	// the only constraints that may have a non-zero epsilon coefficient
-	// are the eps-leq-one and the eps-geq-zero constraints.
-	// If they are present, we erase these rows, so that the
-	// epsilon column will only contain zeroes: as a consequence,
-	// we just decrement the number of columns to be added.
-        const dimension_type eps_index = old_space_dim + 1;
-        const dimension_type old_sys_num_rows = sys.num_rows();
-        dimension_type sys_num_rows = old_sys_num_rows;
-	bool was_sorted = sys.is_sorted();
-	if (was_sorted)
-	  sys.set_sorted(false);
+  sys.set_topology(new_topology);
+  sys.set_space_dimension(new_space_dim);
 
-	// If we have no pending rows, we only check if
-	// we must erase some rows.
-	if (sys.num_pending_rows() == 0) {
-	  for (dimension_type i = sys_num_rows; i-- > 0; )
-	    if (sys[i][eps_index] != 0) {
-	      --sys_num_rows;
-              sys.swap_rows(i, sys_num_rows);
-	    }
-	  sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
-	  sys.unset_pending_rows();
-	}
-	else {
-	  // There are pending rows, and we cannot swap them
-	  // into the non-pending part of the matrix.
-	  // Thus, we first work on the non-pending part as if it was
-	  // an independent matrix; then we work on the pending part.
-	  const dimension_type old_first_pending = sys.first_pending_row();
-	  dimension_type new_first_pending = old_first_pending;
-	  for (dimension_type i = new_first_pending; i-- > 0; )
-	    if (sys[i][eps_index] != 0) {
-	      --new_first_pending;
-              sys.swap_rows(i, new_first_pending);
-	    }
-	  const dimension_type num_swaps
-	    = old_first_pending - new_first_pending;
-          sys.set_index_first_pending_row(new_first_pending);
-	  // Move the swapped rows to the real end of the matrix.
-	  for (dimension_type i = num_swaps; i-- > 0; )
-            sys.swap_rows(old_first_pending - i, sys_num_rows - i);
-	  sys_num_rows -= num_swaps;
-	  // Now iterate through the pending rows.
-	  for (dimension_type i = sys_num_rows; i-- > new_first_pending; )
-	    if (sys[i][eps_index] != 0) {
-	      --sys_num_rows;
-              sys.swap_rows(i, sys_num_rows);
-	    }
-	  sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
-	}
-
-	// If `cs' was sorted we sort it again.
-	if (was_sorted)
-	  sys.sort_rows();
-	if (--cols_to_be_added > 0)
-	  sys.add_zero_columns(cols_to_be_added);
-	sys.raw_set_necessarily_closed();
-      }
-      else {
-	// A NECESSARILY_CLOSED constraint system is converted to
-	// a NOT_NECESSARILY_CLOSED one by adding a further column
-	// of zeroes for the epsilon coefficients.
-	sys.add_zero_columns(++cols_to_be_added);
-	sys.raw_set_not_necessarily_closed();
-      }
-    else {
-      // Topologies agree: first add the required zero columns ...
-      sys.add_zero_columns(cols_to_be_added);
-      // ... and, if needed, move the epsilon coefficients
-      // to the new last column.
-      if (old_topology == NOT_NECESSARILY_CLOSED)
-	sys.swap_columns(old_space_dim + 1, new_space_dim + 1);
-    }
-  else
-    // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology) {
-      if (new_topology == NECESSARILY_CLOSED) {
-	// A NOT_NECESSARILY_CLOSED constraint system
-	// can be converted to a NECESSARILY_CLOSED one
-	// only if it does not contain strict inequalities.
-	if (has_strict_inequalities())
-	  return false;
-	// We just remove the column of the epsilon coefficients.
-	sys.remove_trailing_columns(1);
-	sys.raw_set_necessarily_closed();
-      }
-      else {
-	// We just add the column of the epsilon coefficients.
-	sys.add_zero_columns(1);
-	sys.raw_set_not_necessarily_closed();
-      }
-    }
   // We successfully adjusted space dimensions and topology.
   PPL_ASSERT(OK());
   return true;
