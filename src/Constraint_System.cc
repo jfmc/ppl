@@ -162,18 +162,10 @@ PPL::Constraint_System::insert(const Constraint& c) {
   else
     // `*this' and `c' have different topologies.
     if (sys.is_necessarily_closed()) {
-      // Padding the matrix with a columns of zeroes
-      // corresponding to the epsilon coefficients.
-      sys.add_zero_columns(1);
-      sys.raw_set_not_necessarily_closed();
+      sys.set_not_necessarily_closed();
       sys.insert(c);
     }
     else {
-      // Here `*this' is NNC and `c' is necessarily closed.
-      // Copying the constraint adding the epsilon coefficient
-      // and the missing space dimensions, if any.
-      // FIXME: provide a resizing copy constructor taking
-      // topology and the space dimension.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());
       Constraint tmp_c(c, new_size);
@@ -190,10 +182,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
   else
     // `*this' and `c' have different topologies.
     if (sys.is_necessarily_closed()) {
-      // Padding the matrix with a columns of zeroes
-      // corresponding to the epsilon coefficients.
-      sys.add_zero_columns(1);
-      sys.raw_set_not_necessarily_closed();
+      sys.set_not_necessarily_closed();
       sys.insert_pending(c);
     }
     else {
