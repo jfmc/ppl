@@ -165,7 +165,7 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   // rays and lines must have epsilon coefficient equal to 0.
   // Note: normalization is preserved.
   const dimension_type eps_index = sys.num_columns();
-  sys.add_zero_columns(1);
+  sys.set_not_necessarily_closed();
   Generator_System& gs = *this;
 
   Swapping_Vector<Generator> rows;
@@ -180,8 +180,6 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
 
   // Put the rows back into the linear system.
   gs.sys.take_ownership_of_rows(rows);
-
-  sys.raw_set_not_necessarily_closed();
 }
 
 bool
