@@ -144,6 +144,8 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
 
+  clear();
+
   Topology t;
   if (str == "NECESSARILY_CLOSED")
     t = NECESSARILY_CLOSED;
@@ -153,6 +155,8 @@ Linear_System<Row>::ascii_load(std::istream& s) {
     t = NOT_NECESSARILY_CLOSED;
   }
 
+  set_topology(t);
+
   dimension_type nrows;
   dimension_type ncols;
   if (!(s >> nrows))
@@ -161,10 +165,8 @@ Linear_System<Row>::ascii_load(std::istream& s) {
     return false;
   if (!(s >> ncols))
     return false;
-  clear();
-  num_columns_ = ncols;
 
-  raw_set_topology(t);
+  num_columns_ = ncols;
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
