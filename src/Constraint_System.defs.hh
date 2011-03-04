@@ -428,6 +428,22 @@ public:
   void raw_set_not_necessarily_closed();
 
   // TODO: Consider removing this, or making it private.
+  //! Marks the epsilon dimension as a standard dimension.
+  /*!
+    The system topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is increased by 1.
+  */
+  void mark_as_necessarily_closed();
+
+  // TODO: Consider removing this, or making it private.
+  //! Marks the last dimension as the epsilon dimension.
+  /*!
+    The system topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is decreased by 1.
+  */
+  void mark_as_not_necessarily_closed();
+
+  // TODO: Consider removing this, or making it private.
   //! Swaps \p row with the last row and then removes that row from the
   //! system.
   void release_row(Constraint& row);

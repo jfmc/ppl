@@ -346,6 +346,16 @@ Constraint_System::raw_set_not_necessarily_closed() {
 }
 
 inline void
+Constraint_System::mark_as_necessarily_closed() {
+  sys.mark_as_necessarily_closed();
+}
+
+inline void
+Constraint_System::mark_as_not_necessarily_closed() {
+  sys.mark_as_not_necessarily_closed();
+}
+
+inline void
 Constraint_System::release_row(Constraint& row) {
   sys.release_row(row);
 }
