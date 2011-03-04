@@ -261,6 +261,42 @@ Linear_System<Row>::raw_set_not_necessarily_closed() {
 }
 
 template <typename Row>
+inline void
+Linear_System<Row>::set_topology(Topology t) {
+  if (topology() == t)
+    return;
+  if (t == NECESSARILY_CLOSED) {
+    --num_columns_;
+    // Converting an NNC system into a C one.
+    for (dimension_type i = num_rows(); i-- > 0; ) {
+      rows[i].set_topology(t);
+      rows[i].resize(rows[i].size() - 1);
+    }
+  } else {
+    ++num_columns_;
+    // Converting a C system into an NNC one.
+    for (dimension_type i = num_rows(); i-- > 0; ) {
+      rows[i].set_topology(t);
+      rows[i].resize(rows[i].size() + 1);
+    }
+  }
+  row_topology = t;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::set_necessarily_closed() {
+  set_topology(NECESSARILY_CLOSED);
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::set_not_necessarily_closed() {
+  set_topology(NOT_NECESSARILY_CLOSED);
+}
+
+template <typename Row>
 inline bool
 Linear_System<Row>::is_necessarily_closed() const {
   return row_topology == NECESSARILY_CLOSED;

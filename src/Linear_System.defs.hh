@@ -246,6 +246,15 @@ public:
   bool check_sorted() const;
 
   //! Sets the system topology to \p t .
+  void set_topology(Topology t);
+
+  //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
+  void set_necessarily_closed();
+
+  //! Sets the system topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  void set_not_necessarily_closed();
+
+  //! Sets the system topology to \p t .
   void raw_set_topology(Topology t);
 
   //! Sets the system topology to <CODE>NECESSARILY_CLOSED</CODE>.
