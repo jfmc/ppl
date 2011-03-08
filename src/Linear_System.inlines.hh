@@ -406,6 +406,42 @@ Linear_System<Row>::swap_rows(const dimension_type i,
 
 template <typename Row>
 inline void
+Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
+  PPL_ASSERT(i < num_rows());
+  bool was_pending = (i >= index_first_pending);
+
+  if (is_sorted() && keep_sorted) {
+    for (dimension_type j = i + 1; j < rows.size(); ++j)
+      rows[j].swap(rows[j-1]);
+    rows.pop_back();
+  } else {
+    set_sorted(false);
+    bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
+    if (was_pending == last_row_is_pending)
+      // Either both rows are pending or both rows are not pending.
+      rows[i].swap(rows.back());
+    else {
+      // Pending rows are stored after the non-pending ones.
+      PPL_ASSERT(!was_pending);
+      PPL_ASSERT(last_row_is_pending);
+
+      // Swap the row with the last non-pending row.
+      rows[i].swap(rows[index_first_pending - 1]);
+
+      // Now the (not-pending) row that has to be deleted is between the
+      // not-pending and the pending rows.
+      rows[i].swap(rows.back());
+    }
+    rows.pop_back();
+  }
+  if (!was_pending)
+    // A not-pending row has been removed.
+    --index_first_pending;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(rows.size() >= n);
   rows.resize(rows.size() - n);
