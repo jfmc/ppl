@@ -72,6 +72,31 @@ PPL::Congruence_System
   PPL_ASSERT(OK());
 }
 
+void
+PPL::Congruence_System::remove_rows(const dimension_type first,
+                                    const dimension_type last,
+                                    bool keep_sorted) {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= num_rows());
+  const dimension_type n = last - first;
+
+  // Swap the rows in [first, last) with the rows in [size() - n, size())
+  // (note that these intervals may not be disjunct).
+
+  if (keep_sorted) {
+    for (dimension_type i = last; i < rows.size(); i++)
+      rows[i].swap(rows[i - n]);
+  } else {
+    const dimension_type offset = rows.size() - n - first;
+    for (dimension_type i = first; i < last; i++)
+      rows[i].swap(rows[i + offset]);
+  }
+
+  rows.resize(rows.size() - n);
+
+  PPL_ASSERT(OK());
+}
+
 bool
 PPL::Congruence_System
 ::set_space_dimension(const dimension_type new_space_dim) {

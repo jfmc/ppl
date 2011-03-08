@@ -361,6 +361,15 @@ public:
   //! Swaps the rows having indexes \p i and \p j.
   void swap_rows(dimension_type i,  dimension_type j);
 
+  // TODO: Consider removing this, or making it private.
+  //! Makes the system shrink by removing the rows in [first,last).
+  /*!
+    If \p keep_sorted is <CODE>true</CODE>, the ordering of the remaining rows
+    will be preserved.
+  */
+  void remove_rows(dimension_type first, dimension_type last,
+                   bool keep_sorted);
+
   // TODO: Remove this, or make it private.
   void remove_trailing_rows(dimension_type n);
 
