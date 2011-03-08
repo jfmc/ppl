@@ -442,6 +442,83 @@ Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
 
 template <typename Row>
 inline void
+Linear_System<Row>::remove_rows(const dimension_type first,
+                                const dimension_type last,
+                                bool keep_sorted) {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= num_rows());
+  const dimension_type n = last - first;
+
+  if (n == 0)
+    return;
+
+  // All the rows that have to be removed must have the same (pending or
+  // not-pending) status.
+  PPL_ASSERT(first >= index_first_pending || last <= index_first_pending);
+
+  bool were_pending = (first >= index_first_pending);
+
+  // Move the rows in [first,last) at the end of the system.
+  if (is_sorted() && keep_sorted && !were_pending) {
+    for (dimension_type i = last; i < rows.size(); ++i)
+      rows[i].swap(rows[i - n]);
+  } else {
+    // Ideally, we want to swap the rows in [first, last) with the rows in
+    // [size() - n, size()) (note that these intervals may not be disjunct).
+    if (index_first_pending == num_rows()) {
+      // There are no pending rows, just do the swaps.
+      PPL_ASSERT(!were_pending);
+      set_sorted(false);
+
+      const dimension_type offset = rows.size() - n - first;
+      for (dimension_type i = first; i < last; i++)
+        rows[i].swap(rows[i + offset]);
+    } else {
+      // There are some pending rows in [size() - n, size()).
+      if (were_pending) {
+        // Both intervals contain only pending rows, so just do the swaps.
+        PPL_ASSERT(were_pending);
+        // Don't call set_sorted(false) because pending rows don't affect
+        // sortedness.
+
+        const dimension_type offset = rows.size() - n - first;
+        for (dimension_type i = first; i < last; i++)
+          rows[i].swap(rows[i + offset]);
+      } else {
+        PPL_ASSERT(rows.size() - n < index_first_pending);
+        PPL_ASSERT(rows.size() > index_first_pending);
+        PPL_ASSERT(!were_pending);
+        // In the [size() - n, size()) interval there are some not-pending
+        // rows and some pending ones. Be careful not to mix them.
+
+        set_sorted(false);
+
+        // Firstly, move the rows that have to be deleted between the
+        // not-pending and the pending rows.
+        const dimension_type offset = index_first_pending - n - first;
+        for (dimension_type i = first; i < last; i++)
+          rows[i].swap(rows[i + offset]);
+
+        // Now the rows that have to be deleted are in the
+        // [first_pending_row - n, first_pending_row) interval.
+
+        const dimension_type offset2 = rows.size() - index_first_pending;
+        for (dimension_type i = index_first_pending - n; i < index_first_pending; i++)
+          rows[i].swap(rows[i + offset2]);
+      }
+    }
+  }
+
+  rows.resize(rows.size() - n);
+
+  if (!were_pending)
+    // `n' not-pending rows have been removed.
+    index_first_pending -= n;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline void
 Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(rows.size() >= n);
   rows.resize(rows.size() - n);
