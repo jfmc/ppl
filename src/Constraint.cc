@@ -274,12 +274,85 @@ PPL::Constraint::finalize() {
 
 void
 PPL::Constraint::ascii_dump(std::ostream& s) const {
-  Linear_Row::ascii_dump(s);
+  s << "size " << size() << " ";
+  for (dimension_type j = 0; j < size(); ++j)
+    s << (*this)[j] << ' ';
+  switch (type()) {
+  case Constraint::EQUALITY:
+    s << "=";
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    s << ">=";
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    s << ">";
+    break;
+  }
+  s << " ";
+  if (topology() == NECESSARILY_CLOSED)
+    s << "(C)";
+  else
+    s << "(NNC)";
+
+  s << "\n";
 }
 
 bool
 PPL::Constraint::ascii_load(std::istream& s) {
-  return Linear_Row::ascii_load(s);
+  std::string str;
+  std::string str2;
+
+  if (!(s >> str))
+    return false;
+  if (str != "size")
+    return false;
+
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  resize(new_size);
+
+  for (dimension_type j = 0; j < new_size; ++j)
+    if (!(s >> (*this)[j]))
+      return false;
+
+  if (!(s >> str))
+    return false;
+  if (str == "=")
+    set_is_equality();
+  else if (str == ">=" || str == ">")
+    set_is_inequality();
+  else
+    return false;
+
+  if (!(s >> str2))
+    return false;
+  if (str2 == "(NNC)")
+    set_topology(NOT_NECESSARILY_CLOSED);
+  else
+    if (str2 == "(C)")
+      set_topology(NECESSARILY_CLOSED);
+    else
+      return false;
+
+  // Checking for equality of actual and declared types.
+  switch (type()) {
+  case EQUALITY:
+    if (str != "=")
+      return false;
+    break;
+  case NONSTRICT_INEQUALITY:
+    if (str != ">=")
+      return false;
+    break;
+  case STRICT_INEQUALITY:
+    if (str != ">")
+      return false;
+    break;
+  }
+
+  return true;
 }
 
 /*! \relates Parma_Polyhedra_Library::Constraint */

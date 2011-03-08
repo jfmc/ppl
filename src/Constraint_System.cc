@@ -410,29 +410,9 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
     << "\n"
     << "index_first_pending " << sys.first_pending_row()
     << "\n";
-  for (dimension_type i = 0; i < x_num_rows; ++i) {
-    const Constraint& c = sys[i];
-    for (dimension_type j = 0; j < x_num_columns; ++j)
-      s << c[j] << ' ';
-    switch (c.type()) {
-    case Constraint::EQUALITY:
-      s << "=";
-      break;
-    case Constraint::NONSTRICT_INEQUALITY:
-      s << ">=";
-      break;
-    case Constraint::STRICT_INEQUALITY:
-      s << ">";
-      break;
-    }
-    s << " ";
-    if (topology() == NECESSARILY_CLOSED)
-      s << "(C)";
-    else
-      s << "(NNC)";
 
-    s << "\n";
-  }
+  for (dimension_type i = 0; i < x_num_rows; ++i)
+    sys[i].ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(Constraint_System)
@@ -483,47 +463,11 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     return false;
 
   for (dimension_type i = 0; i < nrows; ++i) {
-    Constraint row(ncols);
-    for (dimension_type j = 0; j < sys.num_columns(); ++j)
-      if (!(s >> row[j]))
-	return false;
-
-    if (!(s >> str))
-      return false;
-    if (str == "=")
-      row.set_is_equality();
-    else if (str == ">=" || str == ">")
-      row.set_is_inequality();
-    else
+    Constraint c;
+    if (!c.ascii_load(s))
       return false;
 
-    if (!(s >> str2))
-      return false;
-    if (str2 == "(NNC)")
-      row.set_topology(NOT_NECESSARILY_CLOSED);
-    else
-      if (str2 == "(C)")
-        row.set_topology(NECESSARILY_CLOSED);
-      else
-        return false;
-
-    // Checking for equality of actual and declared types.
-    switch (row.type()) {
-    case Constraint::EQUALITY:
-      if (str != "=")
-        return false;
-      break;
-    case Constraint::NONSTRICT_INEQUALITY:
-      if (str != ">=")
-        return false;
-      break;
-    case Constraint::STRICT_INEQUALITY:
-      if (str != ">")
-        return false;
-      break;
-    }
-
-    sys.insert_pending_recycled(row);
+    sys.insert_pending_recycled(c);
   }
   sys.set_index_first_pending_row(pending_index);
   // Check invariants.
