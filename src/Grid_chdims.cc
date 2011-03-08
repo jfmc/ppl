@@ -363,18 +363,10 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     dimension_type num_redundant = 0;
     for (dimension_type row = space_dim; row > new_dimension; --row)
       dim_kinds[row] == CON_VIRTUAL || ++num_redundant;
-    if (num_redundant > 0) {
-      dimension_type rows = con_sys.num_rows();
-      // Shuffle the remaining rows upwards.
-      for (dimension_type low = 0, high = num_redundant;
-	   high < rows;
-	   ++high, ++low)
-        con_sys.swap_rows(low, high);
-      // Chop newly redundant rows from end of system, to keep minimal
-      // form.
-      con_sys.remove_trailing_rows(num_redundant);
-    }
+
+    con_sys.remove_rows(0, num_redundant, true);
     dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+
     clear_generators_up_to_date();
     // Replace gen_sys with an empty system of the right dimension.
     // Extra 2 columns for inhomogeneous term and modulus.
