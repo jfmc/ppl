@@ -66,50 +66,16 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     // If they are present, we erase these rows, so that the
     // epsilon column will only contain zeroes: as a consequence,
     // we just decrement the number of columns to be added.
-    const dimension_type eps_index = space_dimension() + 1;
-    const dimension_type old_sys_num_rows = sys.num_rows();
-    dimension_type sys_num_rows = old_sys_num_rows;
     bool was_sorted = sys.is_sorted();
-    if (was_sorted)
-      sys.set_sorted(false);
+    const dimension_type eps_index = space_dimension() + 1;
 
-    // If we have no pending rows, we only check if
-    // we must erase some rows.
-    if (sys.num_pending_rows() == 0) {
-      for (dimension_type i = sys_num_rows; i-- > 0; )
-        if (sys[i][eps_index] != 0) {
-          --sys_num_rows;
-          sys.swap_rows(i, sys_num_rows);
-        }
-      sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
-    }
-    else {
-      // There are pending rows, and we cannot swap them
-      // into the non-pending part of the matrix.
-      // Thus, we first work on the non-pending part as if it was
-      // an independent matrix; then we work on the pending part.
-      const dimension_type old_first_pending = sys.first_pending_row();
-      dimension_type new_first_pending = old_first_pending;
-      for (dimension_type i = new_first_pending; i-- > 0; )
-        if (sys[i][eps_index] != 0) {
-          --new_first_pending;
-          sys.swap_rows(i, new_first_pending);
-        }
-      const dimension_type num_swaps
-        = old_first_pending - new_first_pending;
-      sys.set_index_first_pending_row(new_first_pending);
-      // Move the swapped rows to the real end of the matrix.
-      for (dimension_type i = num_swaps; i-- > 0; )
-        sys.swap_rows(old_first_pending - i, sys_num_rows - i);
-      sys_num_rows -= num_swaps;
-      // Now iterate through the pending rows.
-      for (dimension_type i = sys_num_rows; i-- > new_first_pending; )
-        if (sys[i][eps_index] != 0) {
-          --sys_num_rows;
-          sys.swap_rows(i, sys_num_rows);
-        }
-      sys.remove_trailing_rows(old_sys_num_rows - sys_num_rows);
-    }
+    // Note that num_rows() is *not* constant, because it is decreased by
+    // remove_row().
+    for (dimension_type i = 0; i < num_rows(); )
+      if (sys[i][eps_index] != 0)
+        sys.remove_row(i, false);
+      else
+        ++i;
 
     // If `cs' was sorted we sort it again.
     if (was_sorted)
