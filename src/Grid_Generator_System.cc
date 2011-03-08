@@ -308,54 +308,16 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
   // NOTE: the following swaps will mix grid generators without even trying
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
-  Grid_Generator_System& ggs = *this;
-  const dimension_type old_n_rows = ggs.num_rows();
-  dimension_type n_rows = old_n_rows;
-  if (sys.num_pending_rows() == 0) {
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      const Grid_Generator& g = ggs[i];
-      if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
-	// An invalid line/parameter has been found.
-	--n_rows;
-        ggs.sys.swap_rows(i, n_rows);
-      }
-    }
-    set_index_first_pending_row(n_rows);
+  
+  // Note that the num_rows() value is *not* constant because remove_row()
+  // decreases it.
+  for (dimension_type i = 0; i < num_rows(); ) {
+    const Grid_Generator& g = (*this)[i];
+    if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero())
+      sys.remove_row(i, false);
+    else
+      ++i;
   }
-  else {
-    // If the matrix has some pending rows, we can not
-    // swap the "normal" rows with the pending rows. So
-    // we must put at the end of the "normal" rows
-    // the invalid "normal" rows, put them at the end
-    // of the matrix, find the invalid rows in the pending
-    // part and then erase the invalid rows that now
-    // are in the bottom part of the matrix.
-    PPL_ASSERT(sys.num_pending_rows() > 0);
-    dimension_type first_pending = sys.first_pending_row();
-    for (dimension_type i = first_pending; i-- > 0; ) {
-      const Grid_Generator& g = ggs[i];
-      if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
-	// An invalid line/parameter has been found.
-	--first_pending;
-        ggs.sys.swap_rows(i, first_pending);
-      }
-    }
-    const dimension_type num_invalid_rows
-      = sys.first_pending_row() - first_pending;
-    set_index_first_pending_row(first_pending);
-    for (dimension_type i = 0; i < num_invalid_rows; ++i)
-      ggs.sys.swap_rows(n_rows - i, first_pending + i);
-    n_rows -= num_invalid_rows;
-    for (dimension_type i = n_rows; i-- > first_pending; ) {
-      const Grid_Generator& g = ggs[i];
-      if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
-	// An invalid line/parameter has been found.
-	--n_rows;
-        ggs.sys.swap_rows(i, n_rows);
-      }
-    }
-  }
-  ggs.sys.remove_trailing_rows(old_n_rows - n_rows);
 }
 
 bool
