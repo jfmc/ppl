@@ -256,9 +256,8 @@ PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
   PPL_ASSERT(sys.num_columns() > 0);
   dimension_type col = sys.num_columns() - 1;
-  sys.add_zero_columns(dims);
-  // Swap the parameter divisor column into the new last column.
-  sys.swap_columns(col, col + dims);
+
+  set_space_dimension(space_dimension() + dims);
 
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
@@ -269,7 +268,6 @@ PPL::Grid_Generator_System
     ++col;
     sys.insert_recycled(tmp);
   }
-  unset_pending_rows();
 }
 
 void
