@@ -346,11 +346,6 @@ Constraint_System::mark_as_not_necessarily_closed() {
 }
 
 inline void
-Constraint_System::release_row(Constraint& row) {
-  sys.release_row(row);
-}
-
-inline void
 Constraint_System::release_rows(Swapping_Vector<Constraint>& v) {
   sys.release_rows(v);
 }
