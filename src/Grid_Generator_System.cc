@@ -33,22 +33,19 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
-  const dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
-  const dimension_type old_num_columns = sys.num_columns();
-  const dimension_type gs_num_columns = gs.sys.num_columns();
-  if (old_num_columns < gs_num_columns) {
-    sys.add_zero_columns(gs_num_columns - old_num_columns);
-    // Swap the parameter divisor column into the new last column.
-    sys.swap_columns(old_num_columns - 1, sys.num_columns() - 1);
-  }
+
+  if (space_dimension() < gs.space_dimension())
+    set_space_dimension(gs.space_dimension());
+  else
+    gs.set_space_dimension(space_dimension());
+
   Swapping_Vector<Grid_Generator> rows;
   gs.sys.release_rows(rows);
-  for (dimension_type i = 0; i < gs_num_rows; ++i) {
-    rows[i].set_topology(NECESSARILY_CLOSED);
+  for (dimension_type i = 0; i < gs_num_rows; ++i)
     sys.insert_recycled(rows[i]);
-  }
-  set_index_first_pending_row(old_num_rows + gs_num_rows);
+
+  unset_pending_rows();
 }
 
 void
