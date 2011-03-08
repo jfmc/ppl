@@ -263,6 +263,11 @@ Constraint_System::set_sorted(bool b) {
 }
 
 inline void
+Constraint_System::remove_row(dimension_type i, bool keep_sorted) {
+  sys.remove_row(i, keep_sorted);
+}
+
+inline void
 Constraint_System::remove_trailing_rows(dimension_type n) {
   sys.remove_trailing_rows(n);
 }

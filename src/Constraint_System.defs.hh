@@ -327,6 +327,17 @@ public:
   void set_sorted(bool b);
 
   // TODO: Consider removing this, or making it private.
+  //! Makes the system shrink by removing its i-th row.
+  /*!
+    When \p keep_sorted is \p true and the system is sorted, sortedness will
+    be preserved, but this method costs O(n).
+
+    Otherwise, this method just swaps the i-th row with the last and then
+    removes it, so it costs O(1).
+  */
+  void remove_row(dimension_type i, bool keep_sorted = false);
+
+  // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing its \p n trailing rows.
   void remove_trailing_rows(dimension_type n);
 
