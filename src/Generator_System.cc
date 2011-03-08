@@ -891,54 +891,16 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // NOTE: the following swaps will mix generators without even trying
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
-  Generator_System& gs = *this;
-  const dimension_type old_n_rows = gs.sys.num_rows();
-  dimension_type n_rows = old_n_rows;
-  if (sys.num_pending_rows() == 0) {
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      const Generator& g = gs[i];
-      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
-	// An invalid line/ray has been found.
-	--n_rows;
-        gs.sys.swap_rows(i, n_rows);
-      }
-    }
-    sys.set_index_first_pending_row(n_rows);
+  
+  // Note that num_rows() is *not* constant, because it is decreased by
+  // remove_row().
+  for (dimension_type i = 0; i < num_rows(); ) {
+    const Generator& g = (*this)[i];
+    if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero())
+      sys.remove_row(i, false);
+    else
+      ++i;
   }
-  else {
-    // If the matrix has some pending rows, we can not
-    // swap the "normal" rows with the pending rows. So
-    // we must put at the end of the "normal" rows
-    // the invalid "normal" rows, put them at the end
-    // of the matrix, find the invalid rows in the pending
-    // part and then erase the invalid rows that now
-    // are in the bottom part of the matrix.
-    PPL_ASSERT(sys.num_pending_rows() > 0);
-    dimension_type first_pending = sys.first_pending_row();
-    for (dimension_type i = first_pending; i-- > 0; ) {
-      const Generator& g = gs[i];
-      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
-	// An invalid line/ray has been found.
-	--first_pending;
-	gs.sys.swap_rows(i, first_pending);
-      }
-    }
-    const dimension_type num_invalid_rows
-      = sys.first_pending_row() - first_pending;
-    sys.set_index_first_pending_row(first_pending);
-    for (dimension_type i = 0; i < num_invalid_rows; ++i)
-      gs.sys.swap_rows(n_rows - i, first_pending + i);
-    n_rows -= num_invalid_rows;
-    for (dimension_type i = n_rows; i-- > first_pending; ) {
-      const Generator& g = gs[i];
-      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
-	// An invalid line/ray has been found.
-	--n_rows;
-        gs.sys.swap_rows(i, n_rows);
-      }
-    }
-  }
-  gs.sys.remove_trailing_rows(old_n_rows - n_rows);
 }
 
 const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;
