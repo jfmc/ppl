@@ -368,16 +368,6 @@ Constraint::epsilon_leq_one() {
 }
 
 inline void
-Constraint::ascii_dump(std::ostream& s) const {
-  Linear_Row::ascii_dump(s);
-}
-
-inline bool
-Constraint::ascii_load(std::istream& s) {
-  return Linear_Row::ascii_load(s);
-}
-
-inline void
 Constraint::swap(Constraint& y) {
   Linear_Row::swap(y);
 }

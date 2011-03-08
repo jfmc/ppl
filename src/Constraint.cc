@@ -272,6 +272,16 @@ PPL::Constraint::finalize() {
   epsilon_leq_one_p = 0;
 }
 
+void
+PPL::Constraint::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+bool
+PPL::Constraint::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
+}
+
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
