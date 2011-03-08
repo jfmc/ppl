@@ -55,20 +55,12 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
 
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
-  const dimension_type g_space_dim = g.space_dimension();
-
   if (g.is_parameter() && g.all_homogeneous_terms_are_zero()) {
     // There is no need to add the origin as a parameter,
     // as it will be immediately flagged as redundant.
     // However, we still have to adjust space dimension.
-    const dimension_type initial_space_dim = space_dimension();
-    if (initial_space_dim < g_space_dim) {
-      // Adjust the space dimension.
-      sys.add_zero_columns(g_space_dim - initial_space_dim);
-      // Swap the parameter divisor column into the new last column.
-      sys.swap_columns(g_space_dim + 1, initial_space_dim + 1);
-      PPL_ASSERT(OK());
-    }
+    if (space_dimension() < g.space_dimension())
+      set_space_dimension(g.space_dimension());
     return;
   }
 
@@ -78,32 +70,20 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(sys.num_pending_rows() == 0);
 
-  const dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_columns = sys.num_columns();
-  const dimension_type g_size = g.size();
-
   // Resize the system, if necessary.
-  if (g_size > old_num_columns) {
-    sys.add_zero_columns(g_size - old_num_columns);
-    if (old_num_rows > 0)
-      // Swap the existing parameter divisor column into the new
-      // last column.
-      sys.swap_columns(old_num_columns - 1, g_size - 1);
+  if (g.space_dimension() > space_dimension()) {
+    set_space_dimension(g.space_dimension());
     sys.insert(g);
   }
-  else if (g_size < old_num_columns) {
-    // Create a resized copy of the row (and move the parameter
-    // divisor coefficient to its last position).
-    Grid_Generator tmp_row(g, old_num_columns, old_num_columns);
-    std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-    sys.insert_recycled(tmp_row);
+  else if (g.space_dimension() < space_dimension()) {
+    // Insert a resized copy of the row.
+    Grid_Generator tmp = g;
+    tmp.set_space_dimension(space_dimension());
+    sys.insert_recycled(tmp);
   }
   else
     // Here r_size == old_num_columns.
     sys.insert(g);
-
-  set_index_first_pending_row(num_rows());
-  set_sorted(false);
 
   PPL_ASSERT(OK());
 }
