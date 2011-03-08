@@ -425,6 +425,12 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
       s << ">";
       break;
     }
+    s << " ";
+    if (topology() == NECESSARILY_CLOSED)
+      s << "(C)";
+    else
+      s << "(NNC)";
+
     s << "\n";
   }
 }
@@ -434,6 +440,7 @@ PPL_OUTPUT_DEFINITIONS(Constraint_System)
 bool
 PPL::Constraint_System::ascii_load(std::istream& s) {
   std::string str;
+  std::string str2;
   if (!(s >> str) || str != "topology")
     return false;
   if (!(s >> str))
@@ -490,23 +497,32 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     else
       return false;
 
-    row.set_topology(sys.topology());
+    if (!(s >> str2))
+      return false;
+    if (str2 == "(NNC)")
+      row.set_topology(NOT_NECESSARILY_CLOSED);
+    else
+      if (str2 == "(C)")
+        row.set_topology(NECESSARILY_CLOSED);
+      else
+        return false;
 
     // Checking for equality of actual and declared types.
     switch (row.type()) {
     case Constraint::EQUALITY:
       if (str != "=")
-	return false;
+        return false;
       break;
     case Constraint::NONSTRICT_INEQUALITY:
       if (str != ">=")
-	return false;
+        return false;
       break;
     case Constraint::STRICT_INEQUALITY:
       if (str != ">")
-	return false;
+        return false;
       break;
     }
+
     sys.insert_pending_recycled(row);
   }
   sys.set_index_first_pending_row(pending_index);
