@@ -57,26 +57,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       // that are in the generator system, but are invisible to
       // the user).
       Generator_System& gs = *this;
-      dimension_type num_closure_points = 0;
-      dimension_type gs_end = gs.sys.num_rows();
-      for (dimension_type i = 0; i < gs_end; ) {
-        // All the closure points seen so far have consecutive
-        // indices starting from `i'.
-        if (num_closure_points > 0)
-          // Let next generator have index `i'.
-          gs.sys.swap_rows(i, i + num_closure_points);
-        if (gs[i].is_closure_point()) {
-          ++num_closure_points;
-          --gs_end;
-        }
+      for (dimension_type i = 0; i < sys.num_rows(); )
+        if (gs[i].is_closure_point())
+          sys.remove_row(i, false);
         else
           ++i;
-      }
-      // We may have identified some closure points.
-      if (num_closure_points > 0) {
-        PPL_ASSERT(num_closure_points == sys.num_rows() - gs_end);
-        sys.remove_trailing_rows(num_closure_points);
-      }
       sys.set_necessarily_closed();
       if (new_space_dim > old_space_dim)
         sys.normalize();
