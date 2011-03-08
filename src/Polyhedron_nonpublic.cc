@@ -1137,10 +1137,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // system.
   Constraint_System& cs = x.con_sys;
   Bit_Matrix& sat = x.sat_g;
-  const dimension_type old_cs_rows = cs.num_rows();
-  dimension_type cs_rows = old_cs_rows;
   const dimension_type eps_index = cs.space_dimension() + 1;
-  for (dimension_type i = 0; i < cs_rows; )
+  // Note that cs.num_rows() is *not* constant because the calls to
+  // cs.remove_row() decrease it.
+  for (dimension_type i = 0; i < cs.num_rows(); )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
       Bit_Row sat_ci;
@@ -1166,11 +1166,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	}
 	// Here `cs[i]' is not the eps_leq_one constraint,
 	// so it is eps-redundant.
-	// Move it to the bottom of the constraint system,
-	// while keeping `sat_g' consistent.
-	--cs_rows;
-        cs.swap_rows(i, cs_rows);
-	std::swap(sat[i], sat[cs_rows]);
+	// Remove it, while keeping `sat_g' consistent.
+	cs.remove_row(i, false);
+	std::swap(sat[i], sat[cs.num_rows()]);
 	// The constraint system is changed.
 	changed = true;
 	// Continue by considering next constraint,
@@ -1183,15 +1181,13 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       sat_ci.clear();
       set_union(sat[i], sat_all_but_points, sat_ci);
       bool eps_redundant = false;
-      for (dimension_type j = 0; j < cs_rows; ++j)
+      for (dimension_type j = 0; j < cs.num_rows(); ++j)
 	if (i != j && cs[j].is_strict_inequality()
 	    && subset_or_equal(sat[j], sat_ci)) {
 	  // Constraint `cs[i]' is eps-redundant:
-	  // move it to the bottom of the constraint system,
-	  // while keeping `sat_g' consistent.
-	  --cs_rows;
-          cs.swap_rows(i, cs_rows);
-	  std::swap(sat[i], sat[cs_rows]);
+	  // remove it, while keeping `sat_g' consistent.
+	  cs.remove_row(i, false);
+	  std::swap(sat[i], sat[cs.num_rows()]);
 	  eps_redundant = true;
 	  // The constraint system is changed.
 	  changed = true;
@@ -1209,10 +1205,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   PPL_ASSERT(cs.num_pending_rows() == 0);
 
   if (changed) {
-    // If the constraint system has been changed, we have to erase
+    // If the constraint system has been changed, we have erased
     // the epsilon-redundant constraints.
-    PPL_ASSERT(cs_rows < cs.num_rows());
-    cs.remove_trailing_rows(old_cs_rows - cs_rows);
+
     // The generator system is no longer up-to-date.
     x.clear_generators_up_to_date();
 
