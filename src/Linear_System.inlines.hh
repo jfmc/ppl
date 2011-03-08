@@ -410,12 +410,13 @@ Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
   PPL_ASSERT(i < num_rows());
   bool was_pending = (i >= index_first_pending);
 
-  if (is_sorted() && keep_sorted) {
+  if (is_sorted() && keep_sorted && !was_pending) {
     for (dimension_type j = i + 1; j < rows.size(); ++j)
       rows[j].swap(rows[j-1]);
     rows.pop_back();
   } else {
-    set_sorted(false);
+    if (!was_pending)
+      set_sorted(false);
     bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
     if (was_pending == last_row_is_pending)
       // Either both rows are pending or both rows are not pending.
