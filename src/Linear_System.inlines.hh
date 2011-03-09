@@ -445,8 +445,8 @@ Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
 
 template <typename Row>
 inline void
-Linear_System<Row>::remove_rows(const dimension_type first,
-                                const dimension_type last,
+Linear_System<Row>::remove_rows(dimension_type first,
+                                dimension_type last,
                                 bool keep_sorted) {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= num_rows());
@@ -463,60 +463,114 @@ Linear_System<Row>::remove_rows(const dimension_type first,
 
   // Move the rows in [first,last) at the end of the system.
   if (is_sorted() && keep_sorted && !were_pending) {
+    // Preserve the row ordering.
     for (dimension_type i = last; i < rows.size(); ++i)
       rows[i].swap(rows[i - n]);
+
+    rows.resize(rows.size() - n);
+
+    // `n' not-pending rows have been removed.
+    index_first_pending -= n;
+
+    PPL_ASSERT(OK());
+    return;
+  }
+
+  // We can ignore the row ordering, but we must not mix pending and
+  // not-pending rows.
+
+  dimension_type offset = rows.size() - n - first;
+  // We want to swap the rows in [first, last) and
+  // [first + offset, last + offset) (note that these intervals may not be
+  // disjunct).
+
+  if (index_first_pending == num_rows()) {
+    // There are no pending rows.
+    PPL_ASSERT(!were_pending);
+
+    swap_row_intervals(first, last, offset);
+
+    rows.resize(rows.size() - n);
+
+    // `n' not-pending rows have been removed.
+    index_first_pending -= n;
   } else {
-    // Ideally, we want to swap the rows in [first, last) with the rows in
-    // [size() - n, size()) (note that these intervals may not be disjunct).
-    if (index_first_pending == num_rows()) {
-      // There are no pending rows, just do the swaps.
-      PPL_ASSERT(!were_pending);
-      set_sorted(false);
+    // There are some pending rows in [first + offset, last + offset).
+    if (were_pending) {
+      // Both intervals contain only pending rows, because the second
+      // interval is after the first.
 
-      const dimension_type offset = rows.size() - n - first;
-      for (dimension_type i = first; i < last; i++)
-        rows[i].swap(rows[i + offset]);
+      swap_row_intervals(first, last, offset);
+
+      rows.resize(rows.size() - n);
+
+      // `n' not-pending rows have been removed.
+      index_first_pending -= n;
     } else {
-      // There are some pending rows in [size() - n, size()).
-      if (were_pending) {
-        // Both intervals contain only pending rows, so just do the swaps.
-        PPL_ASSERT(were_pending);
-        // Don't call set_sorted(false) because pending rows don't affect
-        // sortedness.
+      PPL_ASSERT(rows.size() - n < index_first_pending);
+      PPL_ASSERT(rows.size() > index_first_pending);
+      PPL_ASSERT(!were_pending);
+      // In the [size() - n, size()) interval there are some not-pending
+      // rows and some pending ones. Be careful not to mix them.
 
-        const dimension_type offset = rows.size() - n - first;
-        for (dimension_type i = first; i < last; i++)
-          rows[i].swap(rows[i + offset]);
-      } else {
-        PPL_ASSERT(rows.size() - n < index_first_pending);
-        PPL_ASSERT(rows.size() > index_first_pending);
-        PPL_ASSERT(!were_pending);
-        // In the [size() - n, size()) interval there are some not-pending
-        // rows and some pending ones. Be careful not to mix them.
+      PPL_ASSERT(index_first_pending >= last);
+      swap_row_intervals(first, last, index_first_pending - last);
 
-        set_sorted(false);
+      // Mark the rows that must be deleted as pending.
+      index_first_pending -= n;
+      first = index_first_pending;
+      last = first + n;
 
-        // Firstly, move the rows that have to be deleted between the
-        // not-pending and the pending rows.
-        const dimension_type offset = index_first_pending - n - first;
-        for (dimension_type i = first; i < last; i++)
-          rows[i].swap(rows[i + offset]);
+      // Move them at the end of the system.
+      swap_row_intervals(first, last, num_rows() - last);
 
-        // Now the rows that have to be deleted are in the
-        // [first_pending_row - n, first_pending_row) interval.
-
-        const dimension_type offset2 = rows.size() - index_first_pending;
-        for (dimension_type i = index_first_pending - n; i < index_first_pending; i++)
-          rows[i].swap(rows[i + offset2]);
-      }
+      // Actually remove the rows.
+      rows.resize(rows.size() - n);
     }
   }
 
-  rows.resize(rows.size() - n);
+  PPL_ASSERT(OK());
+}
 
-  if (!were_pending)
-    // `n' not-pending rows have been removed.
-    index_first_pending -= n;
+template <typename Row>
+inline void
+Linear_System<Row>::swap_row_intervals(dimension_type first,
+                                       dimension_type last,
+                                       dimension_type offset) {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last + offset <= num_rows());
+#ifndef NDEBUG
+  if (first < last) {
+    bool first_interval_has_pending_rows = (last > index_first_pending);
+    bool second_interval_has_pending_rows = (last + offset > index_first_pending);
+    bool first_interval_has_not_pending_rows = (first < index_first_pending);
+    bool second_interval_has_not_pending_rows = (first + offset < index_first_pending);
+    PPL_ASSERT(first_interval_has_not_pending_rows
+               == !first_interval_has_pending_rows);
+    PPL_ASSERT(second_interval_has_not_pending_rows
+               == !second_interval_has_pending_rows);
+    PPL_ASSERT(first_interval_has_pending_rows
+               == second_interval_has_pending_rows);
+  }
+#endif
+  if (first + offset < last) {
+    // The intervals are not disjunct, make them so.
+    const dimension_type k = last - first - offset;
+    last -= k;
+    offset += k;
+  }
+
+  if (first == last)
+    // Nothing to do.
+    return;
+
+  for (dimension_type i = first; i < last; i++)
+    rows[i].swap(rows[i + offset]);
+
+  if (first < index_first_pending)
+    // The swaps involved not pending rows, so they may not be sorted anymore.
+    set_sorted(false);
+
   PPL_ASSERT(OK());
 }
 

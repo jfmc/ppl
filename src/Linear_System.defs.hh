@@ -485,6 +485,19 @@ public:
   bool OK() const;
 
 private:
+  //! Swaps the [first,last) row interval with the
+  //! [first + offset, last + offset) interval.
+  /*!
+    These intervals may not be disjunct.
+
+    Sorting of these intervals is *not* preserved.
+
+    Either both intervals contain only not-pending rows, or they both
+    contain pending rows.
+  */
+  void swap_row_intervals(dimension_type first, dimension_type last,
+                          dimension_type offset);
+  
   //! Adds a copy of the given row to the system.
   void add_row(const Row& r);
 
