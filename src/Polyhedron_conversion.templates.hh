@@ -354,7 +354,7 @@ Polyhedron::conversion(Source_Linear_System& source,
   typedef typename Dest_Linear_System::row_type dest_row_type;
   typedef typename Source_Linear_System::row_type source_row_type;
 
-  dimension_type source_num_rows = source.num_rows();
+  const dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
   // The rows removed from `dest' will be placed in this vector, so they
   // can be recycled if needed.
@@ -369,14 +369,6 @@ Polyhedron::conversion(Source_Linear_System& source,
   // If `start > 0', then we are converting the pending constraints.
   PPL_ASSERT(start == 0 || start == source.first_pending_row());
 
-  // During the iteration on the constraints in `source' we may identify
-  // constraints that are redundant: these have to be removed by swapping
-  // the rows of `source', taking care not to compromise the sortedness
-  // of the constraints that still have to be considered.
-  // To this end, the following counter keeps the number of redundant
-  // constraints seen so far, to be used as a displacement when swapping rows.
-  dimension_type source_num_redundant = 0;
-
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_i);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_sp_o);
 
@@ -390,17 +382,12 @@ Polyhedron::conversion(Source_Linear_System& source,
   // Release the rows from `dest' so they can be modified.
   dest.release_rows(dest_rows);
 
+  // This will contain the row indexes of the rendundant rows of `source'.
+  std::vector<dimension_type> rendundant_source_rows;
+
   // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
-  for (dimension_type k = start; k < source_num_rows; ) {
-
-    // All the `source_num_redundant' redundant constraints identified so far
-    // have consecutive indices starting from `k'.
-    if (source_num_redundant > 0)
-      // Let the next constraint have index `k'.
-      // There is no need to swap the columns of `sat' (all zeroes).
-      source.swap_rows(k, k + source_num_redundant);
-
+  for (dimension_type k = start; k < source_num_rows; ++k) {
     const source_row_type& source_k = source[k];
 
     // Constraints and generators must have the same dimension,
@@ -579,7 +566,7 @@ Polyhedron::conversion(Source_Linear_System& source,
       // corresponding element of `sat' ...
       Bit_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
-	sat_nle.set(k);
+	sat_nle.set(k - rendundant_source_rows.size());
       // ... otherwise, the constraint is an equality which is
       // violated by the generator `dest_nle': the generator has to be
       // removed from `dest_rows'.
@@ -596,8 +583,6 @@ Polyhedron::conversion(Source_Linear_System& source,
 	std::swap(sat_nle, sat[dest_num_rows]);
 	// dest_sorted has already been set to false.
       }
-      // We continue with the next constraint.
-      ++k;
     }
     // Here we have `index_non_zero' >= `num_lines_or_equalities',
     // so that all the lines in `dest_rows' saturate the constraint `source_k'.
@@ -653,15 +638,8 @@ Polyhedron::conversion(Source_Linear_System& source,
 	// and it can be safely removed from the constraint system.
 	// This is why the `source' parameter is not declared `const'.
 	if (source_k.is_ray_or_point_or_inequality()) {
-	  ++source_num_redundant;
-	  --source_num_rows;
-	  // NOTE: we continue with the next cycle of the loop
-	  // without incrementing the index `k', because:
-	  // -# either `k == source_num_rows', and we will exit the loop;
-	  // -# or, having increased `source_num_redundant', we will swap
-	  //    in position `k' a constraint that still has to be examined.
-	}
-	else {
+          rendundant_source_rows.push_back(k);
+	} else {
 	  // The constraint is an equality, so that all the generators
 	  // in Q+ violate it. Since the set Q- is empty, we can simply
 	  // remove from `dest_rows' all the generators of Q+.
@@ -673,8 +651,6 @@ Polyhedron::conversion(Source_Linear_System& source,
             --dest_num_rows;
           }
           PPL_ASSERT(dest_num_rows == dest_rows.size());
-          // We continue with the next constraint.
-	  ++k;
         }
       }
       else {
@@ -845,8 +821,12 @@ Polyhedron::conversion(Source_Linear_System& source,
 	    j = sup_bound;
 	    // For all the generators in Q+, set to 1 the corresponding
 	    // entry for the constraint `source_k' in the saturation matrix.
+
+            // After the removal of rendundant rows in `source', the k-th
+            // row will have index `new_k'.
+            const dimension_type new_k = k - rendundant_source_rows.size();
             for (dimension_type l = lines_or_equal_bound; l < sup_bound; ++l)
-              sat[l].set(k);
+              sat[l].set(new_k);
 	  }
 	  else
 	    // The constraint is an equality:
@@ -883,19 +863,17 @@ Polyhedron::conversion(Source_Linear_System& source,
           }
           PPL_ASSERT(dest_num_rows == dest_rows.size());
 	}
-	// We continue with the next constraint.
-	++k;
       }
     }
   }
 
   // We may have identified some redundant constraints in `source',
   // which have been swapped at the end of the system.
-  if (source_num_redundant > 0) {
-    PPL_ASSERT(source_num_redundant == source.num_rows() - source_num_rows);
-    source.remove_trailing_rows(source_num_redundant);
-    sat.remove_trailing_columns(source_num_redundant);
+  if (rendundant_source_rows.size() > 0) {
+    source.remove_rows(rendundant_source_rows);
+    sat.remove_trailing_columns(rendundant_source_rows.size());
   }
+
   // If `start == 0', then `source' was sorted and remained so.
   // If otherwise `start > 0', then the two sub-system made by the
   // non-pending rows and the pending rows, respectively, were both sorted.
@@ -903,7 +881,7 @@ Polyhedron::conversion(Source_Linear_System& source,
   // `start == source_num_rows' (i.e., the second sub-system is empty)
   // or the row ordering holds for the two rows at the boundary between
   // the two sub-systems.
-  if (start > 0 && start < source_num_rows)
+  if (start > 0 && start < source.num_rows())
     source.set_sorted(compare(source[start - 1], source[start]) <= 0);
   // There are no longer pending constraints in `source'.
   source.unset_pending_rows();
