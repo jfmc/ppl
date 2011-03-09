@@ -421,7 +421,11 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
-  sys.set_sorted(str == "(sorted)");
+
+  // Set sortedness later, so insert_pending_recycled() will have no effect on
+  // it.
+  bool sorted = (str == "(sorted)");
+  set_sorted(false);
   dimension_type pending_index;
   if (!(s >> str) || str != "index_first_pending")
     return false;
@@ -436,6 +440,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     sys.insert_pending_recycled(c);
   }
   sys.set_index_first_pending_row(pending_index);
+  sys.set_sorted(sorted);
   // Check invariants.
   PPL_ASSERT(OK());
   return true;
