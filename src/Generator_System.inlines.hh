@@ -227,6 +227,11 @@ Generator_System::swap_rows(dimension_type i, dimension_type j) {
 }
 
 inline void
+Generator_System::remove_row(dimension_type i, bool keep_sorted) {
+  sys.remove_row(i, keep_sorted);
+}
+
+inline void
 Generator_System::remove_trailing_rows(dimension_type n) {
   sys.remove_trailing_rows(n);
 }
