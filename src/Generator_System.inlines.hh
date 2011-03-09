@@ -232,6 +232,12 @@ Generator_System::remove_row(dimension_type i, bool keep_sorted) {
 }
 
 inline void
+Generator_System::remove_rows(dimension_type first, dimension_type last,
+                              bool keep_sorted) {
+  sys.remove_rows(first, last, keep_sorted);
+}
+
+inline void
 Generator_System::remove_rows(const std::vector<dimension_type>& indexes) {
   sys.remove_rows(indexes);
 }

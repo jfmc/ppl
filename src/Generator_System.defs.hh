@@ -453,6 +453,18 @@ public:
   */
   void remove_row(dimension_type i, bool keep_sorted = false);
 
+  // TODO: Consider removing this, or making it private.
+  //! Makes the system shrink by removing the rows in [first,last).
+  /*!
+    When \p keep_sorted is \p true and the system is sorted, sortedness will
+    be preserved, but this method costs O(num_rows()).
+
+    Otherwise, this method just swaps the rows with the last ones and then
+    removes them, so it costs O(last - first).
+  */
+  void remove_rows(dimension_type first, dimension_type last,
+                   bool keep_sorted = false);
+
   // TODO: Consider removing this.
   //! Removes the specified rows. The row ordering of remaining rows is
   //! preserved.
