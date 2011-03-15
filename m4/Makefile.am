@@ -39,7 +39,7 @@ ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
 ac_cxx_double_binary_format.m4 \
 ac_cxx_double_exact_output.m4 \
-ac_cxx_flexible_arrays.m4 \
+ac_cxx_zero_length_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
 ac_cxx_float_exact_output.m4 \
 ac_cxx_ieee_inexact_flag.m4 \
