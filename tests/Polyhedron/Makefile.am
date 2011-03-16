@@ -406,6 +406,8 @@ removespacedims2_SOURCES = removespacedims2.cc
 
 smm1_SOURCES = smm1.cc
 
+sparserow1_SOURCES = sparserow1.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 timeelapse2_SOURCES = timeelapse2.cc
 
