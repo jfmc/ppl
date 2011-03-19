@@ -31,6 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Bit_Row.defs.hh"
 #include "Coefficient.defs.hh"
 
+#include <algorithm>
+
 namespace Parma_Polyhedra_Library {
 
 template <typename Row>
@@ -515,6 +517,86 @@ Linear_System<Row>::remove_rows(const dimension_type first,
   if (!were_pending)
     // `n' not-pending rows have been removed.
     index_first_pending -= n;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
+#ifndef NDEBUG
+  {
+    // Check that `indexes' is sorted.
+    std::vector<dimension_type> sorted_indexes = indexes;
+    std::sort(sorted_indexes.begin(), sorted_indexes.end());
+    PPL_ASSERT(indexes == sorted_indexes);
+
+    // Check that the last index (if any) is lower than num_rows().
+    // This guarantees that all indexes are in [0, num_rows()).
+    if (!indexes.empty())
+      PPL_ASSERT(indexes.back() < num_rows());
+  }
+#endif
+
+  if (indexes.empty())
+    return;
+
+  const dimension_type rows_size = rows.size();
+  typedef std::vector<dimension_type>::const_iterator itr_t;
+
+  // `i' and last_unused_row' start with the value `indexes[0]' instead
+  // of `0', because the loop would just increment `last_used_row' in the
+  // preceding iterations.
+  dimension_type last_unused_row = indexes[0];
+  dimension_type i = indexes[0];
+  itr_t itr = indexes.begin();
+  itr_t itr_end = indexes.end();
+  while (itr != itr_end) {
+    // i <= *itr < rows_size
+    PPL_ASSERT(i < rows_size);
+    if (*itr == i) {
+      // The current row has to be removed, don't increment last_used_row.
+      ++itr;
+    } else {
+      // The current row must not be removed, swap it after the last used row.
+      rows[last_unused_row].swap(rows[i]);
+      ++last_unused_row;
+    }
+    ++i;
+  }
+
+  // Move up the remaining rows, if any.
+  for ( ; i < rows_size; ++i) {
+    rows[last_unused_row].swap(rows[i]);
+    ++last_unused_row;
+  }
+
+  PPL_ASSERT(last_unused_row == num_rows() - indexes.size());
+
+  // The rows that have to be removed are now at the end of the system, just
+  // remove them.
+  rows.resize(last_unused_row);
+
+  // Adjust index_first_pending.
+  if (indexes[0] >= index_first_pending) {
+    // Removing pending rows only.
+  } else {
+    if (indexes.back() < index_first_pending) {
+      // Removing not-pending rows only.
+      index_first_pending -= indexes.size();
+    } else {
+      // Removing some pending and some not-pending rows, count the
+      // not-pending rows that must be removed.
+      // This exploits the fact that `indexes' is sorted by using binary
+      // search.
+      itr_t j = std::lower_bound(indexes.begin(), indexes.end(),
+                                 index_first_pending);
+      index_first_pending -= (j - indexes.begin());
+    }
+  }
+
+  // NOTE: This method does *not* call set_sorted(false), because it preserves
+  // the relative row ordering.
+
   PPL_ASSERT(OK());
 }
 
