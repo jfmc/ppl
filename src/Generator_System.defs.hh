@@ -454,6 +454,15 @@ public:
   void remove_row(dimension_type i, bool keep_sorted = false);
 
   // TODO: Consider removing this.
+  //! Removes the specified rows. The row ordering of remaining rows is
+  //! preserved.
+  /*!
+    \param indexes specifies a list of row indexes.
+                   It must be sorted.
+  */
+  void remove_rows(const std::vector<dimension_type>& indexes);
+
+  // TODO: Consider removing this.
   //! Makes the system shrink by removing its \p n trailing rows.
   void remove_trailing_rows(dimension_type n);
 
