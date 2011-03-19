@@ -268,6 +268,11 @@ Constraint_System::remove_row(dimension_type i, bool keep_sorted) {
 }
 
 inline void
+Constraint_System::remove_rows(const std::vector<dimension_type>& indexes) {
+  sys.remove_rows(indexes);
+}
+
+inline void
 Constraint_System::remove_trailing_rows(dimension_type n) {
   sys.remove_trailing_rows(n);
 }
