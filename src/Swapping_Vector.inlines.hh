@@ -70,10 +70,10 @@ Swapping_Vector<T>::reserve(dimension_type new_capacity) {
 
     // Steal the old rows.
     for (dimension_type i = impl.size(); i-- > 0; )
-      std::swap(new_impl[i], impl[i]);
+      new_impl[i].swap(impl[i]);
 
     // Put the new vector into place.
-    std::swap(impl, new_impl);
+    impl.swap(new_impl);
   }
 }
 
@@ -195,7 +195,7 @@ Swapping_Vector<T>::erase(iterator itr) {
   dimension_type i = old_i;
   ++i;
   while (i != size())
-    std::swap(impl[i-1], impl[i]);
+    impl[i-1].swap(impl[i]);
   impl.pop_back();
   return begin() + old_i;
 }
@@ -210,7 +210,7 @@ Swapping_Vector<T>::erase(iterator first, iterator last) {
   const dimension_type k = last - first;
   const dimension_type n = end() - last;
   for (dimension_type i = 0; i < n; ++i, ++first)
-    std::swap(*first, *(first + k));
+    (*first).swap(*(first + k));
   impl.erase(end() - k, end());
   return old_first;
 }

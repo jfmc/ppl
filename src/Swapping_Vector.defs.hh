@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-//! A wrapper for std::vector that calls std::swap() instead of copying
+//! A wrapper for std::vector that calls a swap() method instead of copying
 //! elements, when possible.
 template <typename T>
 class Swapping_Vector {
