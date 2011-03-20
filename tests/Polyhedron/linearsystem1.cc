@@ -47,9 +47,9 @@ test01() {
 #define ROWS 7
 #define COLS 3
 
-  Linear_System<Linear_Row> ls1(NOT_NECESSARILY_CLOSED);
+  Linear_System<Constraint> ls1(NOT_NECESSARILY_CLOSED);
   for (dimension_type rowi = 0; rowi < ROWS; ++rowi) {
-    Linear_Row row(COLS,
+    Constraint row(COLS,
 		   Linear_Row::Flags(NOT_NECESSARILY_CLOSED,
 				     Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     for (dimension_type col = 0; col < COLS; ++col) {
@@ -80,14 +80,14 @@ test01() {
     close(f);
 
     open(f, data_file, ios_base::in);
-    Linear_System<Linear_Row> ls2(NECESSARILY_CLOSED);
+    Linear_System<Constraint> ls2(NECESSARILY_CLOSED);
     ls2.ascii_load(f);
     close(f);
 
     if (ls1 == ls2)
       continue;
 
-    nout << "Linear_System<Linear_Row>::ascii_dump/load test failed." << endl
+    nout << "Linear_System<Constraint>::ascii_dump/load test failed." << endl
 	 << "m1.ascii_dump() gives" << endl;
     ls1.ascii_dump(nout);
     nout << "m2.ascii_dump() gives" << endl;
