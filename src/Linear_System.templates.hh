@@ -362,26 +362,21 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
   if (vars.empty())
     return;
 
-  // For each variable to be removed, replace the corresponding column
-  // by shifting left the columns to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      swap_columns(dst_col++, src_col++);
-    ++src_col;
+  // NOTE: num_rows() is *not* constant, because it may be decreased by
+  // remove_row_no_ok().
+  for (dimension_type i = 0; i < num_rows(); ) {
+    bool valid = rows[i].remove_space_dimensions(vars);
+    if (!valid) {
+      // Remove the current row.
+      // We can't call remove_row(i) here, because the system is not OK as
+      // some rows already have the new space dimension and others still have
+      // the old one.
+      remove_row_no_ok(i, false);
+    } else
+      ++i;
   }
-  // Move any remaining columns.
-  const dimension_type num_columns = this->num_columns();
-  while (src_col < num_columns)
-    swap_columns(dst_col++, src_col++);
 
-  // The number of remaining columns is `dst_col'.
-  remove_trailing_columns_without_normalizing(num_columns - dst_col);
+  num_columns_ -= vars.size();
 
   PPL_ASSERT(OK());
 }

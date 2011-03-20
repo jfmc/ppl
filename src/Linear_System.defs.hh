@@ -476,6 +476,19 @@ public:
   bool OK() const;
 
 private:
+  //! Makes the system shrink by removing its i-th row.
+  /*!
+    When \p keep_sorted is \p true and the system is sorted, sortedness will
+    be preserved, but this method costs O(n).
+
+    Otherwise, this method just swaps the i-th row with the last and then
+    removes it, so it costs O(1).
+
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid systems.
+  */
+  void remove_row_no_ok(dimension_type i, bool keep_sorted = false);
+
   //! Swaps the [first,last) row interval with the
   //! [first + offset, last + offset) interval.
   /*!

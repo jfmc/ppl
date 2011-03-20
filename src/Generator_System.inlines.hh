@@ -103,9 +103,6 @@ inline void
 Generator_System
 ::remove_space_dimensions(const Variables_Set& vars) {
   sys.remove_space_dimensions(vars);
-
-  // We may have invalid lines and rays now.
-  remove_invalid_lines_and_rays();
 }
 
 inline void

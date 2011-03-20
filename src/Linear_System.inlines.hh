@@ -390,7 +390,7 @@ Linear_System<Row>::num_columns() const {
 
 template <typename Row>
 inline void
-Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
+Linear_System<Row>::remove_row_no_ok(const dimension_type i, bool keep_sorted) {
   PPL_ASSERT(i < num_rows());
   bool was_pending = (i >= index_first_pending);
 
@@ -400,7 +400,7 @@ Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
     rows.pop_back();
   } else {
     if (!was_pending)
-      set_sorted(false);
+      sorted = false;
     bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
     if (was_pending == last_row_is_pending)
       // Either both rows are pending or both rows are not pending.
@@ -422,8 +422,15 @@ Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
   if (!was_pending)
     // A not-pending row has been removed.
     --index_first_pending;
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
+  remove_row_no_ok(i, keep_sorted);
   PPL_ASSERT(OK());
 }
+
 
 template <typename Row>
 inline void
