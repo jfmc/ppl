@@ -382,8 +382,8 @@ Polyhedron::conversion(Source_Linear_System& source,
   // Release the rows from `dest' so they can be modified.
   dest.release_rows(dest_rows);
 
-  // This will contain the row indexes of the rendundant rows of `source'.
-  std::vector<dimension_type> rendundant_source_rows;
+  // This will contain the row indexes of the redundant rows of `source'.
+  std::vector<dimension_type> redundant_source_rows;
 
   // Converting the sub-system of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
@@ -566,7 +566,7 @@ Polyhedron::conversion(Source_Linear_System& source,
       // corresponding element of `sat' ...
       Bit_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
-	sat_nle.set(k - rendundant_source_rows.size());
+	sat_nle.set(k - redundant_source_rows.size());
       // ... otherwise, the constraint is an equality which is
       // violated by the generator `dest_nle': the generator has to be
       // removed from `dest_rows'.
@@ -638,7 +638,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 	// and it can be safely removed from the constraint system.
 	// This is why the `source' parameter is not declared `const'.
 	if (source_k.is_ray_or_point_or_inequality()) {
-          rendundant_source_rows.push_back(k);
+          redundant_source_rows.push_back(k);
 	} else {
 	  // The constraint is an equality, so that all the generators
 	  // in Q+ violate it. Since the set Q- is empty, we can simply
@@ -822,9 +822,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 	    // For all the generators in Q+, set to 1 the corresponding
 	    // entry for the constraint `source_k' in the saturation matrix.
 
-            // After the removal of rendundant rows in `source', the k-th
+            // After the removal of redundant rows in `source', the k-th
             // row will have index `new_k'.
-            const dimension_type new_k = k - rendundant_source_rows.size();
+            const dimension_type new_k = k - redundant_source_rows.size();
             for (dimension_type l = lines_or_equal_bound; l < sup_bound; ++l)
               sat[l].set(new_k);
 	  }
@@ -869,9 +869,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 
   // We may have identified some redundant constraints in `source',
   // which have been swapped at the end of the system.
-  if (rendundant_source_rows.size() > 0) {
-    source.remove_rows(rendundant_source_rows);
-    sat.remove_trailing_columns(rendundant_source_rows.size());
+  if (redundant_source_rows.size() > 0) {
+    source.remove_rows(redundant_source_rows);
+    sat.remove_trailing_columns(redundant_source_rows.size());
   }
 
   // If `start == 0', then `source' was sorted and remained so.

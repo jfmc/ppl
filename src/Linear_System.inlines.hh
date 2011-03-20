@@ -584,7 +584,7 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
   typedef std::vector<dimension_type>::const_iterator itr_t;
 
   // `i' and last_unused_row' start with the value `indexes[0]' instead
-  // of `0', because the loop would just increment `last_used_row' in the
+  // of `0', because the loop would just increment `last_unused_row' in the
   // preceding iterations.
   dimension_type last_unused_row = indexes[0];
   dimension_type i = indexes[0];
@@ -594,7 +594,7 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
     // i <= *itr < rows_size
     PPL_ASSERT(i < rows_size);
     if (*itr == i) {
-      // The current row has to be removed, don't increment last_used_row.
+      // The current row has to be removed, don't increment last_unused_row.
       ++itr;
     } else {
       // The current row must not be removed, swap it after the last used row.
