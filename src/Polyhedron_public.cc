@@ -2572,7 +2572,7 @@ affine_image(const Variable var,
       if (expr.get_linear_row()[var_space_dim] > 0) {
 	inverse = -expr;
 	inverse.get_linear_row()[var_space_dim] = denominator;
-	con_sys.affine_preimage(var_space_dim, inverse,
+	con_sys.affine_preimage(var, inverse,
                                 expr.get_linear_row()[var_space_dim]);
       }
       else {
@@ -2582,7 +2582,7 @@ affine_image(const Variable var,
 	inverse = expr;
 	inverse.get_linear_row()[var_space_dim] = denominator;
 	neg_assign(inverse.get_linear_row()[var_space_dim]);
-	con_sys.affine_preimage(var_space_dim, inverse,
+	con_sys.affine_preimage(var, inverse,
                                 -expr.get_linear_row()[var_space_dim]);
       }
     }
@@ -2641,9 +2641,9 @@ affine_preimage(const Variable var,
       // Constraint_System::affine_preimage() requires the third argument
       // to be a positive Coefficient.
       if (denominator > 0)
-	con_sys.affine_preimage(var_space_dim, expr, denominator);
+	con_sys.affine_preimage(var, expr, denominator);
       else
-	con_sys.affine_preimage(var_space_dim, -expr, -denominator);
+	con_sys.affine_preimage(var, -expr, -denominator);
     }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
@@ -2678,9 +2678,9 @@ affine_preimage(const Variable var,
     // Constraint_System::affine_preimage() requires the third argument
     // to be a positive Coefficient.
     if (denominator > 0)
-      con_sys.affine_preimage(var_space_dim, expr, denominator);
+      con_sys.affine_preimage(var, expr, denominator);
     else
-      con_sys.affine_preimage(var_space_dim, -expr, -denominator);
+      con_sys.affine_preimage(var, -expr, -denominator);
     // Generators, minimality and saturators are no longer valid.
     clear_generators_up_to_date();
     clear_constraints_minimized();

@@ -224,7 +224,7 @@ public:
   //! Substitutes a given column of coefficients by a given affine expression.
   /*!
     \param v
-    Index of the column to which the affine transformation is substituted.
+    The variable to which the affine transformation is substituted.
 
     \param expr
     The numerator of the affine transformation:
@@ -256,7 +256,7 @@ public:
 
     \p expr is a constant parameter and unaltered by this computation.
   */
-  void affine_preimage(dimension_type v,
+  void affine_preimage(Variable v,
                        const Linear_Expression& expr,
                        Coefficient_traits::const_reference denominator);
 

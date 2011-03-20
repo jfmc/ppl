@@ -292,20 +292,18 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
 void
 PPL::Constraint_System
-::affine_preimage(const dimension_type v,
+::affine_preimage(const Variable v,
 		  const Linear_Expression& expr,
 		  Coefficient_traits::const_reference denominator) {
-  // `v' is the index of a column corresponding to
-  // a "user" variable (i.e., it cannot be the inhomogeneous term,
-  // nor the epsilon dimension of NNC polyhedra).
-  PPL_ASSERT(v > 0 && v <= sys.space_dimension());
+  PPL_ASSERT(v.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(expr.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
   const dimension_type n_columns = sys.num_columns();
   const dimension_type n_rows = sys.num_rows();
   const dimension_type expr_size = expr.get_linear_row().size();
-  const bool not_invertible = (v >= expr_size || expr.get_linear_row()[v] == 0);
+  const bool not_invertible = (v.space_dimension() >= expr_size
+                               || expr.coefficient(v) == 0);
 
   // TODO: Check if it is correct to arrive at this point with
   // num_pending_rows() != 0.
@@ -322,10 +320,10 @@ PPL::Constraint_System
   if (denominator != 1) {
     for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = rows[i];
-      Coefficient& row_v = row[v];
+      Coefficient& row_v = row[v.space_dimension()];
       if (row_v != 0) {
 	for (dimension_type j = n_columns; j-- > 0; )
-	  if (j != v) {
+	  if (j != v.space_dimension()) {
 	    Coefficient& row_j = row[j];
 	    row_j *= denominator;
 	    if (j < expr_size)
@@ -334,7 +332,7 @@ PPL::Constraint_System
 	if (not_invertible)
 	  row_v = 0;
 	else
-	  row_v *= expr.get_linear_row()[v];
+	  row_v *= expr.coefficient(v);
       }
     }
   } else {
@@ -342,15 +340,15 @@ PPL::Constraint_System
     // only considering columns having indexes < expr_size.
     for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = rows[i];
-      Coefficient& row_v = row[v];
+      Coefficient& row_v = row[v.space_dimension()];
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
-	  if (j != v)
+	  if (j != v.space_dimension())
 	    add_mul_assign(row[j], row_v, expr.get_linear_row()[j]);
 	if (not_invertible)
 	  row_v = 0;
 	else
-	  row_v *= expr.get_linear_row()[v];
+	  row_v *= expr.coefficient(v);
       }
     }
   }
