@@ -88,8 +88,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   PPL_ASSERT(sys.OK());
 
-  const dimension_type old_num_rows = sys.num_rows();
-  dimension_type num_rows = old_num_rows;
+  dimension_type num_rows = sys.num_rows();
   const dimension_type num_cols_sat = sat.num_columns();
 
   // Looking for the first inequality in `sys'.
@@ -174,7 +173,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
     // - index `redundant' runs through the redundant equalities
     // - index `erasing' identifies the first row that should
     //   be erased after this loop.
-    // Note that we exit the loop either because we have moved all
+    // Note that we exit the loop either because we have removed all
     // redundant equalities or because we have moved all the
     // inequalities.
     for (dimension_type redundant = rank,
@@ -183,7 +182,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
 	   && erasing > num_lines_or_equalities;
 	 ) {
       --erasing;
-      sys.swap_rows(redundant, erasing);
+      sys.remove_row(redundant);
       std::swap(sat[redundant], sat[erasing]);
       std::swap(num_saturators[redundant], num_saturators[erasing]);
       ++redundant;
@@ -193,9 +192,20 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
     // redundant equalities moved to the bottom of `sys', which are
     // no longer meaningful.
     num_rows -= num_lines_or_equalities - rank;
+
+    // If the above loop exited because it moved all inequalities, it may not
+    // have removed all the rendundant rows.
+    sys.remove_trailing_rows(sys.num_rows() - num_rows);
+
+    PPL_ASSERT(sys.num_rows() == num_rows);
+
+    sat.remove_trailing_rows(num_lines_or_equalities - rank);
+
     // Adjusting the value of `num_lines_or_equalities'.
     num_lines_or_equalities = rank;
   }
+
+  const dimension_type old_num_rows = sys.num_rows();
 
   // Now we use the definition of redundancy (given in the Introduction)
   // to remove redundant inequalities.
