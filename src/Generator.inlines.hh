@@ -239,12 +239,94 @@ operator!=(const Generator& x, const Generator& y) {
 
 inline void
 Generator::ascii_dump(std::ostream& s) const {
-  Linear_Row::ascii_dump(s);
+  s << "size " << size() << " ";
+  for (dimension_type j = 0; j < size(); ++j)
+    s << (*this)[j] << ' ';
+  switch (type()) {
+  case Generator::LINE:
+    s << "L ";
+    break;
+  case Generator::RAY:
+    s << "R ";
+    break;
+  case Generator::POINT:
+    s << "P ";
+    break;
+  case Generator::CLOSURE_POINT:
+    s << "C ";
+    break;
+  }
+  if (is_necessarily_closed())
+    s << "(C)";
+  else
+    s << "(NNC)";
+  s << "\n";
 }
 
 inline bool
 Generator::ascii_load(std::istream& s) {
-  return Linear_Row::ascii_load(s);
+  std::string str;
+
+  if (!(s >> str))
+    return false;
+  if (str != "size")
+    return false;
+
+  dimension_type sz;
+  if (!(s >> sz))
+    return false;
+  resize(sz);
+
+  for (dimension_type j = 0; j < size(); ++j)
+    if (!(s >> (*this)[j]))
+      return false;
+
+  if (!(s >> str))
+    return false;
+  if (str == "L")
+    set_is_line();
+  else if (str == "R" || str == "P" || str == "C")
+    set_is_ray_or_point();
+  else
+    return false;
+
+  std::string str2;
+
+  if (!(s >> str2))
+    return false;
+  if (str2 == "(C)") {
+    if (is_not_necessarily_closed())
+      // TODO: Avoid using the mark_as_*() methods if possible.
+      mark_as_necessarily_closed();
+  } else
+    if (str2 == "(NNC)") {
+      if (is_necessarily_closed())
+        // TODO: Avoid using the mark_as_*() methods if possible.
+        mark_as_not_necessarily_closed();
+    } else
+      return false;
+
+  // Checking for equality of actual and declared types.
+  switch (type()) {
+  case Generator::LINE:
+    if (str != "L")
+  return false;
+    break;
+  case Generator::RAY:
+    if (str != "R")
+  return false;
+    break;
+  case Generator::POINT:
+    if (str != "P")
+  return false;
+    break;
+  case Generator::CLOSURE_POINT:
+    if (str != "C")
+  return false;
+    break;
+  }
+
+  return true;
 }
 
 inline void

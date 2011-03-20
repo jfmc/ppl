@@ -756,38 +756,19 @@ PPL::Generator_System
 
 void
 PPL::Generator_System::ascii_dump(std::ostream& s) const {
-  const Generator_System& x = *this;
-  const dimension_type x_num_rows = x.sys.num_rows();
-  const dimension_type x_num_columns = x.sys.num_columns();
+  const dimension_type num_rows = sys.num_rows();
+  const dimension_type space_dims = sys.space_dimension();
   s << "topology " << (sys.is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
-    << x_num_rows << " x " << x_num_columns << ' '
-    << (x.sys.is_sorted() ? "(sorted)" : "(not_sorted)")
+    << num_rows << " x " << space_dims << ' '
+    << (sys.is_sorted() ? "(sorted)" : "(not_sorted)")
     << "\n"
-    << "index_first_pending " << x.sys.first_pending_row()
+    << "index_first_pending " << sys.first_pending_row()
     << "\n";
-  for (dimension_type i = 0; i < x_num_rows; ++i) {
-    const Generator& g = x[i];
-    for (dimension_type j = 0; j < x_num_columns; ++j)
-      s << g[j] << ' ';
-    switch (g.type()) {
-    case Generator::LINE:
-      s << "L";
-      break;
-    case Generator::RAY:
-      s << "R";
-      break;
-    case Generator::POINT:
-      s << "P";
-      break;
-    case Generator::CLOSURE_POINT:
-      s << "C";
-      break;
-    }
-    s << "\n";
-  }
+  for (dimension_type i = 0; i < num_rows; ++i)
+    sys[i].ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(Generator_System)
@@ -811,21 +792,15 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   }
 
   dimension_type nrows;
-  dimension_type ncols;
+  dimension_type space_dims;
   if (!(s >> nrows))
     return false;
   if (!(s >> str) || str != "x")
     return false;
-  if (!(s >> ncols))
+  if (!(s >> space_dims))
       return false;
 
-  if (sys.topology() == NECESSARILY_CLOSED) {
-    PPL_ASSERT(ncols >= 1);
-    sys.set_space_dimension(ncols - 1);
-  } else {
-    PPL_ASSERT(ncols >= 2);
-    sys.set_space_dimension(ncols - 2);
-  }
+  sys.set_space_dimension(space_dims);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
@@ -836,42 +811,9 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   if (!(s >> pending_index))
     return false;
 
-  Generator_System& x = *this;
   for (dimension_type i = 0; i < nrows; ++i) {
-    Generator gen(ncols, Linear_Row::Flags(sys.topology()));
-    
-    for (dimension_type j = 0; j < x.sys.num_columns(); ++j)
-      if (!(s >> gen[j]))
-	return false;
-
-    if (!(s >> str))
-      return false;
-    if (str == "L")
-      gen.set_is_line();
-    else if (str == "R" || str == "P" || str == "C")
-      gen.set_is_ray_or_point();
-    else
-      return false;
-
-    // Checking for equality of actual and declared types.
-    switch (gen.type()) {
-    case Generator::LINE:
-      if (str != "L")
-	return false;
-      break;
-    case Generator::RAY:
-      if (str != "R")
-	return false;
-      break;
-    case Generator::POINT:
-      if (str != "P")
-	return false;
-      break;
-    case Generator::CLOSURE_POINT:
-      if (str != "C")
-	return false;
-      break;
-    }
+    Generator gen;
+    gen.ascii_load(s);
     sys.insert_pending_recycled(gen);
   }
   sys.set_index_first_pending_row(pending_index);
