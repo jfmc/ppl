@@ -26,17 +26,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.types.hh"
 #include "Scalar_Products.types.hh"
-#include "Dense_Row.defs.hh"
-#include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
 #include "Congruence_System.types.hh"
-#include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Grid_Generator_System.types.hh"
+
+#include "Dense_Row.defs.hh"
+#include "Variable.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Checked_Number.defs.hh"
 #include "distances.defs.hh"
+
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -316,6 +319,19 @@ public:
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .
   void set_space_dimension(dimension_type space_dim);
+
+  // TODO: Consider making this private.
+  //! Removes all the specified dimensions from the generator.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+
+    If all dimensions with nonzero coefficients are removed from a ray or a
+    line, it is changed into a point and this method returns \p false .
+    Otherwise, it returns \p true .
+  */
+  bool remove_space_dimensions(const Variables_Set& vars);
 
   //! The generator type.
   enum Type {

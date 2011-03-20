@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 
 #include "Variable.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -119,6 +120,46 @@ PPL::Generator::line(const Linear_Expression& e) {
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
 
   return g;
+}
+
+bool
+PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
+  PPL_ASSERT(vars.space_dimension() <= space_dimension());
+  // For each variable to be removed, replace the corresponding coefficient
+  // by shifting left the coefficient to the right that will be kept.
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst_col = *vsi+1;
+  dimension_type src_col = dst_col + 1;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_col = *vsi+1;
+    // Move all columns in between to the left.
+    while (src_col < vsi_col)
+      std::swap((*this)[dst_col++], (*this)[src_col++]);
+    ++src_col;
+  }
+  // Move any remaining columns.
+  const dimension_type sz = size();
+  while (src_col < sz)
+    std::swap((*this)[dst_col++], (*this)[src_col++]);
+
+  // The number of remaining coefficients is `dst_col'.
+  resize(dst_col);
+
+  if (is_line_or_ray() && all_homogeneous_terms_are_zero()) {
+    // Become a point.
+    set_is_ray_or_point();
+    (*this)[0] = 1;
+    if (is_not_necessarily_closed())
+      (*this)[size() - 1] = 1;
+
+    PPL_ASSERT(OK());
+    return false;
+  } else {
+    strong_normalize();
+    PPL_ASSERT(OK());
+    return true;
+  }
 }
 
 bool
