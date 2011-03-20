@@ -439,9 +439,6 @@ public:
   void resize_no_copy(dimension_type new_n_rows,
                       dimension_type new_space_dim);
 
-  //! Swaps the i-th and the j-th rows.
-  void swap_rows(dimension_type i, dimension_type j);
-
   // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing its i-th row.
   /*!

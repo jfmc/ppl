@@ -292,10 +292,6 @@ public:
   dimension_type num_rows() const;
 
   // TODO: Consider removing this, or making it private.
-  //! Swaps the i-th and the j-th rows.
-  void swap_rows(dimension_type i, dimension_type j);
-
-  // TODO: Consider removing this, or making it private.
   /*! \brief
     Returns <CODE>true</CODE> if and only if
     the system topology is <CODE>NECESSARILY_CLOSED</CODE>.

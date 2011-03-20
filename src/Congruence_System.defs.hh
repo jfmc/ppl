@@ -358,9 +358,6 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
 
-  //! Swaps the rows having indexes \p i and \p j.
-  void swap_rows(dimension_type i,  dimension_type j);
-
   // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing the rows in [first,last).
   /*!

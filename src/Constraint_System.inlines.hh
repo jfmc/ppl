@@ -222,11 +222,6 @@ Constraint_System::num_rows() const {
   return sys.num_rows();
 }
 
-inline void
-Constraint_System::swap_rows(dimension_type i, dimension_type j) {
-  sys.swap_rows(i, j);
-}
-
 inline bool
 Constraint_System::is_necessarily_closed() const {
   return sys.is_necessarily_closed();

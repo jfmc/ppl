@@ -394,20 +394,6 @@ Linear_System<Row>::num_columns() const {
 
 template <typename Row>
 inline void
-Linear_System<Row>::swap_rows(const dimension_type i,
-                              const dimension_type j) {
-  PPL_ASSERT(i < rows.size());
-  PPL_ASSERT(j < rows.size());
-  // i and j must be either both pending or both non-pending.
-  PPL_ASSERT((i < first_pending_row() && j < first_pending_row())
-             || (i >= first_pending_row() && j >= first_pending_row()));
-  rows[i].swap(rows[j]);
-  sorted = false;
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
 Linear_System<Row>::remove_row(const dimension_type i, bool keep_sorted) {
   PPL_ASSERT(i < num_rows());
   bool was_pending = (i >= index_first_pending);

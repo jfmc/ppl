@@ -222,11 +222,6 @@ Generator_System::resize_no_copy(dimension_type new_n_rows,
 }
 
 inline void
-Generator_System::swap_rows(dimension_type i, dimension_type j) {
-  sys.swap_rows(i, j);
-}
-
-inline void
 Generator_System::remove_row(dimension_type i, bool keep_sorted) {
   sys.remove_row(i, keep_sorted);
 }

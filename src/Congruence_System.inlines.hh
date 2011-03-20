@@ -50,11 +50,6 @@ Congruence_System::num_columns() const {
 }
 
 inline void
-Congruence_System::swap_rows(dimension_type i, dimension_type j) {
-  std::swap(rows[i], rows[j]);
-}
-
-inline void
 Congruence_System::remove_trailing_rows(dimension_type n) {
   PPL_ASSERT(num_rows() >= n);
   rows.resize(num_rows() - n);
