@@ -227,8 +227,8 @@ Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
   // NOTE: new_n_rows may be lower than old_n_rows, but this code works
   // nevertheless.
   for (dimension_type i = old_n_rows; i < new_n_rows; ++i) {
-    rows[i].resize(num_columns_);
     rows[i].set_topology(row_topology);
+    rows[i].resize(num_columns_);
   }
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
@@ -248,7 +248,7 @@ Linear_System<Row>::mark_as_necessarily_closed() {
 #endif
   row_topology = NECESSARILY_CLOSED;
   for (dimension_type i = num_rows(); i-- > 0; )
-    rows[i].set_topology(NECESSARILY_CLOSED);
+    rows[i].mark_as_necessarily_closed();
   PPL_ASSERT(space_dimension() == old_space_dim + 1);
 }
 
@@ -262,7 +262,7 @@ Linear_System<Row>::mark_as_not_necessarily_closed() {
 #endif
   row_topology = NOT_NECESSARILY_CLOSED;
   for (dimension_type i = num_rows(); i-- > 0; )
-    rows[i].set_topology(NOT_NECESSARILY_CLOSED);
+    rows[i].mark_as_not_necessarily_closed();
   PPL_ASSERT(space_dimension() == old_space_dim - 1);
 }
 
@@ -274,17 +274,13 @@ Linear_System<Row>::set_topology(Topology t) {
   if (t == NECESSARILY_CLOSED) {
     --num_columns_;
     // Converting an NNC system into a C one.
-    for (dimension_type i = num_rows(); i-- > 0; ) {
+    for (dimension_type i = num_rows(); i-- > 0; )
       rows[i].set_topology(t);
-      rows[i].resize(rows[i].size() - 1);
-    }
   } else {
     ++num_columns_;
     // Converting a C system into an NNC one.
-    for (dimension_type i = num_rows(); i-- > 0; ) {
+    for (dimension_type i = num_rows(); i-- > 0; )
       rows[i].set_topology(t);
-      rows[i].resize(rows[i].size() + 1);
-    }
   }
   row_topology = t;
   PPL_ASSERT(OK());

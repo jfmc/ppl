@@ -383,6 +383,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     }
     else {
       Grid_Generator g;
+      g.set_topology(dest.topology());
       if (!recyclable_rows.empty()) {
         // Recycle a previous row.
         std::swap(recyclable_rows.back(), g);
@@ -410,7 +411,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         --source_index;
 	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
       }
-      g.set_topology(dest.topology());
       dest.insert_verbatim(g);
     }
   }

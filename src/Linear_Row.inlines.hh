@@ -172,6 +172,11 @@ Linear_Row::is_necessarily_closed() const {
   return flags().is_necessarily_closed();
 }
 
+inline bool
+Linear_Row::is_not_necessarily_closed() const {
+  return flags().is_not_necessarily_closed();
+}
+
 inline dimension_type
 Linear_Row::max_space_dimension() {
   // The first coefficient holds the inhomogeneous term or the divisor.
@@ -266,18 +271,39 @@ Linear_Row::set_is_ray_or_point_or_inequality() {
 }
 
 inline void
-Linear_Row::set_necessarily_closed() {
-  flags_.set_necessarily_closed();
-}
-
-inline void
 Linear_Row::set_topology(Topology x) {
+  if (topology() == x)
+    return;
+  if (topology() == NECESSARILY_CLOSED)
+    // Add a column for the epsilon dimension.
+    resize(size() + 1);
+  else {
+    PPL_ASSERT(size() > 0);
+    resize(size() - 1);
+  }
   flags_.set_topology(x);
 }
 
 inline void
+Linear_Row::mark_as_necessarily_closed() {
+  PPL_ASSERT(is_not_necessarily_closed());
+  flags_.set_topology(NECESSARILY_CLOSED);
+}
+
+inline void
+Linear_Row::mark_as_not_necessarily_closed() {
+  PPL_ASSERT(is_necessarily_closed());
+  flags_.set_topology(NOT_NECESSARILY_CLOSED);
+}
+
+inline void
+Linear_Row::set_necessarily_closed() {
+  set_topology(NECESSARILY_CLOSED);
+}
+
+inline void
 Linear_Row::set_not_necessarily_closed() {
-  flags_.set_not_necessarily_closed();
+  set_topology(NOT_NECESSARILY_CLOSED);
 }
 
 inline Coefficient_traits::const_reference

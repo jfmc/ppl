@@ -233,15 +233,15 @@ PPL::Generator_System::insert_recycled(Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      const dimension_type new_size = 2 + std::max(g.space_dimension(),
-						   space_dimension());
-      g.resize(new_size);
+      const dimension_type new_space_dim = std::max(g.space_dimension(),
+                                                    space_dimension());
+      g.set_not_necessarily_closed();
+      g.set_space_dimension(new_space_dim);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (!g.is_line_or_ray())
-	g[new_size - 1] = g[0];
-      g.set_not_necessarily_closed();
+	g[new_space_dim + 1] = g[0];
       // Inserting the new generator.
       sys.insert_recycled(g);
     }
@@ -264,15 +264,15 @@ PPL::Generator_System::insert_pending_recycled(Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      const dimension_type new_size = 2 + std::max(g.space_dimension(),
-						   space_dimension());
-      g.resize(new_size);
+      const dimension_type new_space_dim = std::max(g.space_dimension(),
+                                                    space_dimension());
+      g.set_topology(NOT_NECESSARILY_CLOSED);
+      g.set_space_dimension(new_space_dim);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (!g.is_line_or_ray())
-	g[new_size - 1] = g[0];
-      g.set_not_necessarily_closed();
+	g[new_space_dim + 1] = g[0];
       // Inserting the new generator.
       sys.insert_pending_recycled(g);
     }
@@ -838,7 +838,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
 
   Generator_System& x = *this;
   for (dimension_type i = 0; i < nrows; ++i) {
-    Generator gen(ncols, Linear_Row::Flags());
+    Generator gen(ncols, Linear_Row::Flags(sys.topology()));
     
     for (dimension_type j = 0; j < x.sys.num_columns(); ++j)
       if (!(s >> gen[j]))
@@ -852,8 +852,6 @@ PPL::Generator_System::ascii_load(std::istream& s) {
       gen.set_is_ray_or_point();
     else
       return false;
-
-    gen.set_topology(sys.topology());
 
     // Checking for equality of actual and declared types.
     switch (gen.type()) {

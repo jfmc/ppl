@@ -802,8 +802,8 @@ Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
   add_zero_columns(n);
   rows.resize(rows.size() + n);
   for (dimension_type i = old_n_rows; i < rows.size(); ++i) {
-    rows[i].resize(num_columns());
     rows[i].set_topology(row_topology);
+    rows[i].resize(num_columns());
   }
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )

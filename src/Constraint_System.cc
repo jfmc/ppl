@@ -135,7 +135,8 @@ PPL::Constraint_System::insert(const Constraint& c) {
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());
       Constraint tmp_c(c, new_size);
-      tmp_c.set_not_necessarily_closed();
+      // TODO: Avoid using the mark_as_*() methods if possible.
+      tmp_c.mark_as_not_necessarily_closed();
       sys.insert(tmp_c);
     }
   PPL_ASSERT(OK());
@@ -158,7 +159,8 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());
       Constraint tmp_c(c, new_size);
-      tmp_c.set_not_necessarily_closed();
+      // TODO: Avoid using the mark_as_*() methods if possible.
+      tmp_c.mark_as_not_necessarily_closed();
       sys.insert_pending(tmp_c);
     }
   PPL_ASSERT(OK());

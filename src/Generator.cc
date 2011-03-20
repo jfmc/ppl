@@ -86,7 +86,8 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   // A closure point is indeed a point in the higher dimension space.
   Generator g = point(ec, d);
   // Fix the topology.
-  g.set_not_necessarily_closed();
+  // TODO: Avoid the mark_as_*() methods if possible.
+  g.mark_as_not_necessarily_closed();
   // Enforce normalization.
   g.normalize();
   return g;

@@ -105,8 +105,8 @@ Polyhedron::minimize(const bool con_to_gen,
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
     dest_row_type dest_i;
-    dest_i.resize(dest_num_rows);
     dest_i.set_topology(dest.topology());
+    dest_i.resize(dest_num_rows);
     for (dimension_type j = dest_num_rows; j-- > 0; )
       dest_i[j] = (i == j) ? 1 : 0;
     dest_i.set_is_line_or_equality();

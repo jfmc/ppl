@@ -175,8 +175,7 @@ PPL::Grid_Generator::ascii_load(std::istream& s) {
   else
     return false;
 
-  set_necessarily_closed();
-
+  PPL_ASSERT(OK());
   return true;
 }
 
