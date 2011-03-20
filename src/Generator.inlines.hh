@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Generator::Generator()
-  : Linear_Row() {
+  : Linear_Row(1, Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
 }
 
 inline

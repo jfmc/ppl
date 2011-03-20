@@ -272,8 +272,7 @@ public:
 			 Coefficient_traits::const_reference d
 			 = Coefficient_one());
 
-  // TODO: check this.
-  //! Default constructor. Constructs an invalid Generator.
+  // TODO: document this.
   Generator();
 
   // TODO: Remove this.
