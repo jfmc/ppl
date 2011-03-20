@@ -252,17 +252,6 @@ Linear_System<Row>::insert_pending(const Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::increase_space_dimension(dimension_type n) {
-  add_zero_columns(n - num_columns());
-  if (!is_necessarily_closed() && num_rows() != 0)
-    // Move the epsilon coefficients to the last column
-    // (note: sorting is preserved).
-    swap_columns(num_columns() - 1, n - 1);
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
 Linear_System<Row>::insert_pending_recycled(Row& r) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
@@ -275,7 +264,7 @@ Linear_System<Row>::insert_pending_recycled(Row& r) {
 
   // Resize the system, if necessary.
   if (r_size > old_num_columns) {
-    increase_space_dimension(r_size);
+    set_space_dimension(r.space_dimension());
     add_recycled_pending_row(r);
   }
   else if (r_size < old_num_columns)
