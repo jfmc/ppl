@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.defs.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.defs.hh"
 #include "Congruence.defs.hh"
 #include <iostream>
 #include <sstream>
@@ -98,6 +99,34 @@ PPL::Constraint::Constraint(const Congruence& cg,
   c[0] = cg.inhomogeneous_term();
   
   PPL_ASSERT(OK());
+}
+
+bool
+PPL::Constraint::remove_space_dimensions(const Variables_Set& vars) {
+  PPL_ASSERT(vars.space_dimension() <= space_dimension());
+  // For each variable to be removed, replace the corresponding coefficient
+  // by shifting left the coefficient to the right that will be kept.
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst_col = *vsi+1;
+  dimension_type src_col = dst_col + 1;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_col = *vsi+1;
+    // Move all columns in between to the left.
+    while (src_col < vsi_col)
+      std::swap((*this)[dst_col++], (*this)[src_col++]);
+    ++src_col;
+  }
+  // Move any remaining columns.
+  const dimension_type sz = size();
+  while (src_col < sz)
+    std::swap((*this)[dst_col++], (*this)[src_col++]);
+
+  // The number of remaining coefficients is `dst_col'.
+  resize(dst_col);
+
+  PPL_ASSERT(OK());
+  return true;
 }
 
 bool

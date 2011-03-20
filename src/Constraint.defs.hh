@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 
 #include "Congruence.types.hh"
+#include "Variables_Set.types.hh"
 
 #include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
@@ -176,6 +177,18 @@ public:
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .
   void set_space_dimension(dimension_type space_dim);
+
+  // TODO: Consider making this private.
+  //! Removes all the specified dimensions from the constraint.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+
+    Always returns \p true. The return value is needed for compatibility with
+    the Generator class.
+  */
+  bool remove_space_dimensions(const Variables_Set& vars);
 
   //! The constraint type.
   enum Type {
