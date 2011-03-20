@@ -245,7 +245,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `sys[i]' is redundant.
       --num_rows;
-      sys.swap_rows(i, num_rows);
+      sys.remove_row(i);
       std::swap(sat[i], sat[num_rows]);
       std::swap(num_saturators[i], num_saturators[num_rows]);
     }
@@ -292,7 +292,8 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
 	    // generators. Then we can remove either one of the two
 	    // inequalities: we remove `sys[j]'.
 	    --num_rows;
-            sys.swap_rows(j, num_rows);
+            sys.remove_row(j);
+            PPL_ASSERT(sys.num_rows() == num_rows);
 	    std::swap(sat[j], sat[num_rows]);
 	    std::swap(num_saturators[j], num_saturators[num_rows]);
 	  }
@@ -306,7 +307,8 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
     if (redundant) {
       // The inequality `sys[i]' is redundant.
       --num_rows;
-      sys.swap_rows(i, num_rows);
+      sys.remove_row(i);
+      PPL_ASSERT(sys.num_rows() == num_rows);
       std::swap(sat[i], sat[num_rows]);
       std::swap(num_saturators[i], num_saturators[num_rows]);
     }
@@ -315,10 +317,10 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
       ++i;
   }
 
-  // Here we physically remove the redundant inequalities previously
-  // moved to the bottom of `sys' and the corresponding `sat' rows.
-  sys.remove_trailing_rows(old_num_rows - num_rows);
+  // Here we physically remove the `sat' rows corresponding to the redundant
+  // inequalities previously removed from `sys'.
   sat.remove_trailing_rows(old_num_rows - num_rows);
+
   // At this point the first `num_lines_or_equalities' rows of 'sys'
   // represent the irredundant equalities, while the remaining rows
   // (i.e., those having indexes from `num_lines_or_equalities' to
