@@ -551,10 +551,11 @@ public:
   dimension_type num_lines_or_equalities() const;
 
   // TODO: Consider removing this, or making it private.
-  //! Adds \p n rows and columns to the system.
+  //! Adds \p n rows and space dimensions to the system.
   /*!
     \param n
-    The number of rows and columns to be added: must be strictly positive.
+    The number of rows and space dimensions to be added: must be strictly
+    positive.
 
     Turns the system \f$M \in \Rset^r \times \Rset^c\f$ into
     the system \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
@@ -563,7 +564,7 @@ public:
     where \f$J\f$ is the specular image
     of the \f$n \times n\f$ identity matrix.
   */
-  void add_universe_rows_and_columns(dimension_type n);
+  void add_universe_rows_and_space_dimensions(dimension_type n);
 
   //! Initializes the class.
   static void initialize();

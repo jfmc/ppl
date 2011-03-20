@@ -73,7 +73,7 @@ public:
     \param topol
     The topology of the system that will be created;
 
-    \param n_columns
+    \param space_dim
     The number of space dimensions of the system that will be created.
 
     Creates a \p n_rows \f$\times\f$ \p space_dim system whose
@@ -124,9 +124,6 @@ public:
   //! Sets the space dimension of the rows in the system to \p space_dim .
   void set_space_dimension(dimension_type space_dim);
 
-  // TODO: Check if this should be removed.
-  dimension_type num_columns() const;
-
   //! Makes the system shrink by removing its \p n trailing rows.
   void remove_trailing_rows(dimension_type n);
 
@@ -160,8 +157,8 @@ public:
   */
   void remove_rows(const std::vector<dimension_type>& indexes);
 
-  //! Makes the system shrink by removing its \p n trailing columns.
-  void remove_trailing_columns(dimension_type n);
+  //! Makes the system shrink by removing its \p n trailing space dimensions.
+  void remove_trailing_space_dimensions(dimension_type n);
 
   // TODO: Remove this method.
   // It is needed to be able to remove columns from a Grid_Generator_System,
@@ -169,7 +166,7 @@ public:
   // parameters, whose representation is not normalized.
   //! Makes the system shrink by removing its \p n trailing columns.
   //! This method does not normalize the rows afterwards.
-  void remove_trailing_columns_without_normalizing(dimension_type n);
+  void remove_trailing_space_dimensions_without_normalizing(dimension_type n);
 
   //! Swaps \p row with the last row and then removes that row from the
   //! system.
@@ -198,7 +195,7 @@ public:
   /*
     \param cycle
     A vector representing a cycle of the permutation according to which the
-    columns must be rearranged.
+    space dimensions must be rearranged.
 
     The \p cycle vector represents a cycle of a permutation of space
     dimensions.
@@ -210,8 +207,6 @@ public:
 
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
-
-  void swap_columns(dimension_type i, dimension_type j);
 
   //! \name Subscript operators
   //@{
@@ -315,10 +310,11 @@ public:
   void resize_no_copy(dimension_type new_n_rows,
                       dimension_type new_space_dim);
 
-  //! Adds \p n rows and columns to the system.
+  //! Adds \p n rows and space dimensions to the system.
   /*!
     \param n
-    The number of rows and columns to be added: must be strictly positive.
+    The number of rows and space dimensions to be added: must be strictly
+    positive.
 
     Turns the system \f$M \in \Rset^r \times \Rset^c\f$ into
     the system \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
@@ -327,9 +323,7 @@ public:
     where \f$J\f$ is the specular image
     of the \f$n \times n\f$ identity matrix.
   */
-  void add_universe_rows_and_columns(dimension_type n);
-
-  void add_zero_columns(dimension_type n);
+  void add_universe_rows_and_space_dimensions(dimension_type n);
 
   /*! \brief
     Adds a copy of \p r to the system,
@@ -421,7 +415,7 @@ public:
     returns its rank, i.e., the number of linearly independent equalities.
     The result is an upper triangular subsystem of equalities:
     for each equality, the pivot is chosen starting from
-    the right-most columns.
+    the right-most space dimensions.
   */
   dimension_type gauss(dimension_type n_lines_or_equalities);
 
@@ -520,9 +514,9 @@ private:
   //! The vector that contains the rows.
   Swapping_Vector<Row> rows;
 
-  //! The number of columns of each row. All rows must have this number of
-  //! columns.
-  dimension_type num_columns_;
+  //! The space dimension of each row. All rows must have this number of
+  //! space dimensions.
+  dimension_type space_dimension_;
 
   //! The topological kind of the rows in the system. All rows must have this
   //! topology.

@@ -123,8 +123,8 @@ Generator_System::num_rows() const {
 }
 
 inline void
-Generator_System::add_universe_rows_and_columns(dimension_type n) {
-  sys.add_universe_rows_and_columns(n);
+Generator_System::add_universe_rows_and_space_dimensions(dimension_type n) {
+  sys.add_universe_rows_and_space_dimensions(n);
 }
 
 inline Topology

@@ -100,7 +100,8 @@ PPL::Grid_Generator_System
   PPL_ASSERT(expr.space_dimension() <= x.sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  const dimension_type num_columns = x.sys.num_columns();
+  // TODO: Avoid using the number of columns if possible.
+  const dimension_type num_columns = sys.space_dimension() + 2;
   const dimension_type num_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
@@ -154,7 +155,7 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
   const dimension_type num_rows = this->num_rows();
-  s << num_rows << " x " << sys.num_columns() << '\n';
+  s << num_rows << " x " << space_dimension() << '\n';
   for (dimension_type i = 0; i < num_rows; ++i)
     operator[](i).ascii_dump(s);
 }
@@ -162,23 +163,17 @@ PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   dimension_type num_rows;
-  dimension_type num_columns;
+  dimension_type space_dim;
   if (!(s >> num_rows))
     return false;
   std::string str;
   if (!(s >> str) || str != "x")
     return false;
-  if (!(s >> num_columns))
+  if (!(s >> space_dim))
       return false;
 
   sys.clear();
-  if (sys.topology() == NECESSARILY_CLOSED) {
-    PPL_ASSERT(num_columns >= 1);
-    sys.set_space_dimension(num_columns - 1);
-  } else {
-    PPL_ASSERT(num_columns >= 2);
-    sys.set_space_dimension(num_columns - 2);
-  }
+  sys.set_space_dimension(space_dim);
 
   set_sorted(false);
 
@@ -254,16 +249,16 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
-  PPL_ASSERT(sys.num_columns() > 0);
-  dimension_type col = sys.num_columns() - 1;
+  dimension_type col = sys.space_dimension() + 1;
 
   set_space_dimension(space_dimension() + dims);
 
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
-    Grid_Generator tmp(sys.num_columns(),
+    Grid_Generator tmp(2,
                        Linear_Row::Flags(NECESSARILY_CLOSED,
                                          Linear_Row::LINE_OR_EQUALITY));
+    tmp.set_space_dimension(space_dimension());
     tmp[col] = 1;
     ++col;
     sys.insert_recycled(tmp);
@@ -279,26 +274,7 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::set_space_dimension(const dimension_type new_dimension) {
-  dimension_type space_dim = space_dimension();
-
-  // The removal of no dimensions from any system is a no-op.  Note
-  // that this case also captures the only legal removal of dimensions
-  // from a system in a 0-dim space.
-  if (new_dimension == space_dim)
-    return;
-
-  if (new_dimension < space_dim) {
-    // Swap the parameter divisor column into the column that will
-    // become the last column.
-    sys.swap_columns(new_dimension + 1, space_dim + 1);
-    sys.remove_trailing_columns_without_normalizing(space_dim - new_dimension);
-  } else {
-    sys.add_zero_columns(new_dimension - space_dim);
-    // Swap the parameter divisor column into the column that will
-    // become the last column.
-    sys.swap_columns(new_dimension + 1, space_dim + 1);
-  }
-
+  sys.set_space_dimension(new_dimension);
   PPL_ASSERT(OK());
 }
 

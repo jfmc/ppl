@@ -54,7 +54,7 @@ Linear_System<Row>::num_lines_or_equalities() const {
 template <typename Row>
 void
 Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
-  PPL_ASSERT(num_columns() >= y.num_columns());
+  PPL_ASSERT(space_dimension() >= y.space_dimension());
   // Both systems have to be sorted and have no pending rows.
   PPL_ASSERT(check_sorted() && y.check_sorted());
   PPL_ASSERT(num_pending_rows() == 0 && y.num_pending_rows() == 0);
@@ -85,7 +85,10 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     else {
       // (comp > 0)
       tmp.resize(tmp.size() + 1);
-      Row copy(y[yi++], num_columns(), num_columns());
+      Row copy = y[yi++];
+      // TODO: Set the space dimension while constructing the copy, to
+      // increase efficiency.
+      copy.set_space_dimension(space_dimension());
       tmp.back().swap(copy);
     }
   }
@@ -98,7 +101,10 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
   else
     while (yi < y_num_rows) {
       tmp.resize(tmp.size() + 1);
-      Row copy(y[yi++], num_columns(), num_columns());
+      Row copy = y[yi++];
+      // TODO: Set the space dimension while constructing the copy, to
+      // increase efficiency.
+      copy.set_space_dimension(space_dimension());
       tmp.back().swap(copy);
     }
 
@@ -117,17 +123,14 @@ Linear_System<Row>::ascii_dump(std::ostream& s) const {
   // and the sorted flag.  The specialized methods provided by
   // Constraint_System and Generator_System take care of properly
   // printing the contents of the system.
-  const Linear_System& x = *this;
-  dimension_type x_num_rows = x.num_rows();
-  dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
-    << x_num_rows << " x " << x_num_columns
-    << (x.sorted ? "(sorted)" : "(not_sorted)")
+    << num_rows() << " x " << space_dimension()
+    << (sorted ? "(sorted)" : "(not_sorted)")
     << "\n"
-    << "index_first_pending " << x.first_pending_row()
+    << "index_first_pending " << first_pending_row()
     << "\n";
   for (dimension_type i = 0; i < rows.size(); ++i)
     rows[i].ascii_dump(s);
@@ -158,15 +161,15 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   set_topology(t);
 
   dimension_type nrows;
-  dimension_type ncols;
+  dimension_type space_dims;
   if (!(s >> nrows))
     return false;
   if (!(s >> str) || str != "x")
     return false;
-  if (!(s >> ncols))
+  if (!(s >> space_dims))
     return false;
 
-  num_columns_ = ncols;
+  space_dimension_ = space_dims;
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
@@ -201,42 +204,19 @@ Linear_System<Row>::insert(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::insert_recycled(Row& r) {
-  // TODO: A Grid_Generator_System may contain non-normalized lines that
-  // represent parameters, so this check is disabled. Consider re-enabling it
-  // when it's possibile.
-  /*
-    // The added row must be strongly normalized and have the same
-    // topology of the system.
-    PPL_ASSERT(r.check_strong_normalized());
-  */
   PPL_ASSERT(topology() == r.topology());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
-  const dimension_type old_num_rows = rows.size();
-  const dimension_type old_num_columns = num_columns_;
-  const dimension_type r_size = r.size();
-
-  // Resize the system, if necessary.
-  if (r_size > old_num_columns) {
-    add_zero_columns(r_size - old_num_columns);
-    if (!is_necessarily_closed() && old_num_rows != 0)
-      // Move the epsilon coefficients to the last column
-      // (note: sorting is preserved).
-      swap_columns(old_num_columns - 1, r_size - 1);
-    add_recycled_row(r);
-  }
-  else if (r_size < old_num_columns) {
-    // Resize the row.
-    r.resize(old_num_columns);
-    // If needed, move the epsilon coefficient to the last position.
-    if (!is_necessarily_closed())
-      std::swap(r[r_size - 1], r[old_num_columns - 1]);
-    add_recycled_row(r);
-  }
+  if (r.space_dimension() > space_dimension())
+    // Resize the system.
+    set_space_dimension(r.space_dimension());
   else
-    // Here r_size == old_num_columns.
-    add_recycled_row(r);
+    if (r.space_dimension() < space_dimension())
+      // Resize the row.
+      r.set_space_dimension(space_dimension());
+
+  add_recycled_row(r);
 
   // The added row was not a pending row.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -258,29 +238,15 @@ Linear_System<Row>::insert_pending_recycled(Row& r) {
   PPL_ASSERT(r.check_strong_normalized());
   PPL_ASSERT(topology() == r.topology());
 
-  const dimension_type old_num_rows = rows.size();
-  const dimension_type old_num_columns = num_columns();
-  const dimension_type r_size = r.size();
-
-  // Resize the system, if necessary.
-  if (r_size > old_num_columns) {
+  if (r.space_dimension() > space_dimension())
+    // Resize the system.
     set_space_dimension(r.space_dimension());
-    add_recycled_pending_row(r);
-  }
-  else if (r_size < old_num_columns)
-    if (is_necessarily_closed() || old_num_rows == 0) {
-      r.resize(old_num_columns);
-      add_recycled_pending_row(r);
-    } else {
-      // Resize the row (and move the epsilon coefficient to its last
-      // position).
-      r.resize(old_num_columns);
-      std::swap(r[r_size - 1], r[old_num_columns - 1]);
-      add_recycled_pending_row(r);
-    }
   else
-    // Here r_size == old_num_columns.
-    add_recycled_pending_row(r);
+    if (r.space_dimension() < space_dimension())
+      // Resize the row.
+      r.set_space_dimension(space_dimension());
+
+  add_recycled_pending_row(r);
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
@@ -298,7 +264,7 @@ template <typename Row>
 void
 Linear_System<Row>::insert_pending_recycled(Linear_System& y) {
   Linear_System& x = *this;
-  PPL_ASSERT(x.num_columns() == y.num_columns());
+  PPL_ASSERT(x.space_dimension() == y.space_dimension());
 
   // Steal the rows of `y'.
   // This loop must use an increasing index (instead of a decreasing one) to
@@ -376,7 +342,7 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
       ++i;
   }
 
-  num_columns_ -= vars.size();
+  space_dimension_ -= vars.size();
 
   PPL_ASSERT(OK());
 }
@@ -480,7 +446,7 @@ Linear_System<Row>::add_recycled_pending_row(Row& r) {
   PPL_ASSERT(r.topology() == topology());
 
   rows.resize(rows.size() + 1);
-  r.resize(num_columns());
+  r.set_space_dimension(space_dimension());
   rows.back().swap(r);
 
   PPL_ASSERT(OK());
@@ -496,7 +462,8 @@ Linear_System<Row>::add_pending_row(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::add_pending_row(const typename Row::Flags flags) {
-  Row new_row(num_columns(), num_columns(), flags);
+  Row new_row(flags);
+  new_row.set_space_dimension(space_dimension());
   add_recycled_pending_row(new_row);
 }
 
@@ -537,7 +504,7 @@ Linear_System<Row>::sign_normalize() {
 template <typename Row>
 bool
 operator==(const Linear_System<Row>& x, const Linear_System<Row>& y) {
-  if (x.num_columns() != y.num_columns())
+  if (x.space_dimension() != y.space_dimension())
     return false;
   const dimension_type x_num_rows = x.num_rows();
   const dimension_type y_num_rows = y.num_rows();
@@ -615,7 +582,10 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   dimension_type rank = 0;
   // Will keep track of the variations on the system of equalities.
   bool changed = false;
-  for (dimension_type j = num_columns(); j-- > 0; )
+  // TODO: Don't use the number of columns.
+  const dimension_type num_cols
+    = is_necessarily_closed() ? space_dimension() + 1 : space_dimension() + 2;
+  for (dimension_type j = num_cols; j-- > 0; )
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
@@ -655,7 +625,6 @@ Linear_System<Row>
   // This method is only applied to a system having no pending rows and
   // exactly `n_lines_or_equalities' lines or equalities, all of which occur
   // before the first ray or point or inequality.
-  PPL_ASSERT(num_columns() >= 1);
   PPL_ASSERT(num_pending_rows() == 0);
   PPL_ASSERT(n_lines_or_equalities <= num_lines_or_equalities());
 #ifndef NDEBUG
@@ -664,7 +633,9 @@ Linear_System<Row>
 #endif
 
   const dimension_type nrows = num_rows();
-  const dimension_type ncols = num_columns();
+  // TODO: Don't use the number of columns.
+  const dimension_type ncols
+    = is_necessarily_closed() ? space_dimension() + 1 : space_dimension() + 2;
   // Trying to keep sortedness.
   bool still_sorted = is_sorted();
   // This deque of Booleans will be used to flag those rows that,
@@ -789,16 +760,19 @@ Linear_System<Row>::simplify() {
 
 template <typename Row>
 void
-Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
+Linear_System<Row>
+::add_universe_rows_and_space_dimensions(const dimension_type n) {
   PPL_ASSERT(n > 0);
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = num_rows();
-  const dimension_type old_n_columns = num_columns();
-  add_zero_columns(n);
+  // TODO: Don't use the number of columns.
+  const dimension_type old_n_columns
+    = is_necessarily_closed() ? space_dimension() + 1 : space_dimension() + 2;
+  set_space_dimension(space_dimension() + n);
   rows.resize(rows.size() + n);
   for (dimension_type i = old_n_rows; i < rows.size(); ++i) {
     rows[i].set_topology(row_topology);
-    rows[i].resize(num_columns());
+    rows[i].set_space_dimension(space_dimension());
   }
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )
@@ -814,28 +788,20 @@ Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
   }
   // If the old system was empty, the last row added is either
   // a positivity constraint or a point.
-  if (old_n_columns == 0) {
-    rows[n-1].set_is_ray_or_point_or_inequality();
-    // Since ray, points and inequalities come after lines
-    // and equalities, this case implies the system is sorted.
-    sorted = true;
-  }
-  else if (was_sorted)
+  if (was_sorted)
     sorted = (compare(rows[n-1], rows[n]) <= 0);
 
   // If the system is not necessarily closed, move the epsilon coefficients to
   // the last column.
   if (!is_necessarily_closed()) {
     // Try to preserve sortedness of `gen_sys'.
-    if (!is_sorted())
-      swap_columns(old_n_columns - 1, old_n_columns - 1 + n);
-    else {
-      dimension_type old_eps_index = old_n_columns - 1;
-      dimension_type new_eps_index = old_eps_index + n;
-      for (dimension_type i = rows.size(); i-- > n; ) {
+    if (!is_sorted()) {
+      for (dimension_type i = n; i-- > 0; ) {
         Row& r = rows[i];
-        std::swap(r[old_eps_index], r[new_eps_index]);
+        std::swap(r[old_n_columns - 1], r[old_n_columns - 1 + n]);
       }
+    } else {
+      dimension_type old_eps_index = old_n_columns - 1;
       // The upper-right corner of `rows' contains the J matrix:
       // swap coefficients to preserve sortedness.
       for (dimension_type i = n; i-- > 0; ++old_eps_index) {
@@ -849,15 +815,6 @@ Linear_System<Row>::add_universe_rows_and_columns(const dimension_type n) {
 
   unset_pending_rows();
 
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_zero_columns(const dimension_type n) {
-  num_columns_ += n;
-  for (dimension_type i = rows.size(); i-- > 0; )
-    rows[i].resize(num_columns_);
   PPL_ASSERT(OK());
 }
 
@@ -935,9 +892,9 @@ Linear_System<Row>::OK() const {
 #endif
 
   for (dimension_type i = rows.size(); i-- > 0; )
-    if (rows[i].size() != num_columns()) {
+    if (rows[i].space_dimension() != space_dimension()) {
 #ifndef NDEBUG
-      cerr << "Linear_System has a row with the wrong number of columns!"
+      cerr << "Linear_System has a row with the wrong number of space dimensions!"
            << endl;
 #endif
       return false;
@@ -956,21 +913,6 @@ Linear_System<Row>::OK() const {
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
     cerr << "Linear_System has a negative number of pending rows!"
-	 << endl;
-#endif
-    return false;
-  }
-
-  // A system must have at least one column for the inhomogeneous
-  // term and, if it is NNC, another one for the epsilon coefficient.
-  const dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
-  if (num_columns() < min_cols) {
-#ifndef NDEBUG
-    cerr << "Linear_System has fewer columns than the minimum "
-	 << "allowed by its topology:"
-	 << endl
-	 << "num_columns is " << num_columns()
-	 << ", minimum is " << min_cols
 	 << endl;
 #endif
     return false;

@@ -69,23 +69,11 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol)
   : rows(),
-    num_columns_(0),
+    space_dimension_(0),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
 
-  switch (topology()) {
-  case NECESSARILY_CLOSED:
-    add_zero_columns(1);
-    break;
-
-  case NOT_NECESSARILY_CLOSED:
-    add_zero_columns(2);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
   PPL_ASSERT(OK());
 }
 
@@ -94,7 +82,7 @@ inline
 Linear_System<Row>::Linear_System(Topology topol,
                                   dimension_type space_dim)
   : rows(),
-    num_columns_(0),
+    space_dimension_(0),
     row_topology(topol),
     index_first_pending(0),
     sorted(true) {
@@ -133,7 +121,7 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(const Linear_System& y)
   : rows(y.rows),
-    num_columns_(y.num_columns_),
+    space_dimension_(y.space_dimension_),
     row_topology(y.row_topology) {
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
@@ -145,7 +133,7 @@ template <typename Row>
 inline
 Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
   : rows(y.rows),
-    num_columns_(y.num_columns_),
+    space_dimension_(y.space_dimension_),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
@@ -156,7 +144,7 @@ template <typename Row>
 inline Linear_System<Row>&
 Linear_System<Row>::operator=(const Linear_System& y) {
   rows = y.rows;
-  num_columns_ = y.num_columns_;
+  space_dimension_ = y.space_dimension_;
   row_topology = y.row_topology;
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
@@ -169,7 +157,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::assign_with_pending(const Linear_System& y) {
   rows = y.rows;
-  num_columns_ = y.num_columns_;
+  space_dimension_ = y.space_dimension_;
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
@@ -180,7 +168,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::swap(Linear_System& y) {
   rows.swap(y.rows);
-  std::swap(num_columns_, y.num_columns_);
+  std::swap(space_dimension_, y.space_dimension_);
   std::swap(row_topology, y.row_topology);
   std::swap(index_first_pending, y.index_first_pending);
   std::swap(sorted, y.sorted);
@@ -195,19 +183,8 @@ Linear_System<Row>::clear() {
   rows.clear();
   index_first_pending = 0;
   sorted = true;
+  space_dimension_ = 0;
 
-  switch (topology()) {
-  case NECESSARILY_CLOSED:
-    num_columns_ = 1;
-    break;
-
-  case NOT_NECESSARILY_CLOSED:
-    num_columns_ = 2;
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
   PPL_ASSERT(OK());
 }
 
@@ -216,19 +193,16 @@ inline void
 Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
                                    const dimension_type new_space_dim) {
   // TODO: Check if a rows.resize_no_copy() nethod could be more efficient.
-  if (topology() == NECESSARILY_CLOSED)
-    num_columns_ = new_space_dim + 1;
-  else
-    num_columns_ = new_space_dim + 2;
+  space_dimension_ = new_space_dim;
   for (dimension_type i = std::min(rows.size(), new_n_rows); i-- > 0; )
-    rows[i].resize(num_columns_);
+    rows[i].set_space_dimension(new_space_dim);
   const dimension_type old_n_rows = rows.size();
   rows.resize(new_n_rows);
   // NOTE: new_n_rows may be lower than old_n_rows, but this code works
   // nevertheless.
   for (dimension_type i = old_n_rows; i < new_n_rows; ++i) {
     rows[i].set_topology(row_topology);
-    rows[i].resize(num_columns_);
+    rows[i].set_space_dimension(new_space_dim);
   }
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
@@ -243,13 +217,10 @@ template <typename Row>
 inline void
 Linear_System<Row>::mark_as_necessarily_closed() {
   PPL_ASSERT(topology() == NOT_NECESSARILY_CLOSED);
-#ifndef NDEBUG
-  const dimension_type old_space_dim = space_dimension();
-#endif
   row_topology = NECESSARILY_CLOSED;
+  ++space_dimension_;
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].mark_as_necessarily_closed();
-  PPL_ASSERT(space_dimension() == old_space_dim + 1);
 }
 
 template <typename Row>
@@ -257,13 +228,10 @@ inline void
 Linear_System<Row>::mark_as_not_necessarily_closed() {
   PPL_ASSERT(topology() == NECESSARILY_CLOSED);
   PPL_ASSERT(space_dimension() > 0);
-#ifndef NDEBUG
-  const dimension_type old_space_dim = space_dimension();
-#endif
   row_topology = NOT_NECESSARILY_CLOSED;
+  --space_dimension_;
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].mark_as_not_necessarily_closed();
-  PPL_ASSERT(space_dimension() == old_space_dim - 1);
 }
 
 template <typename Row>
@@ -271,17 +239,8 @@ inline void
 Linear_System<Row>::set_topology(Topology t) {
   if (topology() == t)
     return;
-  if (t == NECESSARILY_CLOSED) {
-    --num_columns_;
-    // Converting an NNC system into a C one.
-    for (dimension_type i = num_rows(); i-- > 0; )
-      rows[i].set_topology(t);
-  } else {
-    ++num_columns_;
-    // Converting a C system into an NNC one.
-    for (dimension_type i = num_rows(); i-- > 0; )
-      rows[i].set_topology(t);
-  }
+  for (dimension_type i = num_rows(); i-- > 0; )
+    rows[i].set_topology(t);
   row_topology = t;
   PPL_ASSERT(OK());
 }
@@ -355,19 +314,13 @@ Linear_System<Row>::topology() const {
 template <typename Row>
 inline dimension_type
 Linear_System<Row>::max_space_dimension() {
-  // Column zero holds the inhomogeneous term or the divisor.
-  // In NNC linear systems, the last column holds the coefficient
-  // of the epsilon dimension.
-  return Row::max_num_columns() - 2;
+  return Row::max_space_dimension();
 }
 
 template <typename Row>
 inline dimension_type
 Linear_System<Row>::space_dimension() const {
-  const dimension_type n_columns = num_columns();
-  return (n_columns == 0)
-    ? 0
-    : n_columns - (is_necessarily_closed() ? 1 : 2);
+  return space_dimension_;
 }
 
 template <typename Row>
@@ -375,17 +328,8 @@ inline void
 Linear_System<Row>::set_space_dimension(dimension_type space_dim) {
   for (dimension_type i = rows.size(); i-- > 0; )
     rows[i].set_space_dimension(space_dim);
-  if (is_necessarily_closed())
-    num_columns_ = space_dim + 1;
-  else
-    num_columns_ = space_dim + 2;
+  space_dimension_ = space_dim;
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline dimension_type
-Linear_System<Row>::num_columns() const {
-  return num_columns_;
 }
 
 template <typename Row>
@@ -656,8 +600,8 @@ Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
 template <typename Row>
 inline void
 Linear_System<Row>
-::remove_trailing_columns(const dimension_type n) {
-  remove_trailing_columns_without_normalizing(n);
+::remove_trailing_space_dimensions(const dimension_type n) {
+  remove_trailing_space_dimensions_without_normalizing(n);
   // Have to re-normalize the rows of the system,
   // since we removed some coefficients.
   strong_normalize();
@@ -695,11 +639,11 @@ Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
 template <typename Row>
 inline void
 Linear_System<Row>
-::remove_trailing_columns_without_normalizing(const dimension_type n) {
-  PPL_ASSERT(num_columns_ >= n);
-  num_columns_ -= n;
+::remove_trailing_space_dimensions_without_normalizing(const dimension_type n) {
+  PPL_ASSERT(space_dimension() >= n);
+  space_dimension_ -= n;
   for (dimension_type i = rows.size(); i-- > 0; )
-    rows[i].resize(num_columns_);
+    rows[i].set_space_dimension(space_dimension_);
   PPL_ASSERT(OK());
 }
 
@@ -713,8 +657,7 @@ Linear_System<Row>
     return;
 
   if (n == 2) {
-    swap_columns(cycle[0].space_dimension(),
-                 cycle[1].space_dimension());
+    swap_space_dimensions(cycle[0], cycle[1]);
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
     for (dimension_type k = rows.size(); k-- > 0; ) {
@@ -741,15 +684,8 @@ Linear_System<Row>
 ::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
-  swap_columns(v1.space_dimension(), v2.space_dimension());
-}
-
-template <typename Row>
-inline void
-Linear_System<Row>::swap_columns(dimension_type i, dimension_type j) {
   for (dimension_type k = num_rows(); k-- > 0; )
-    rows[k].swap(i, j);
-  PPL_ASSERT(OK());
+    rows[k].swap(v1.space_dimension(), v2.space_dimension());
 }
 
 /*! \relates Linear_System */

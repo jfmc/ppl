@@ -408,8 +408,8 @@ Constraint_System::num_lines_or_equalities() const {
 }
 
 inline void
-Constraint_System::add_universe_rows_and_columns(dimension_type n) {
-  sys.add_universe_rows_and_columns(n);
+Constraint_System::add_universe_rows_and_space_dimensions(dimension_type n) {
+  sys.add_universe_rows_and_space_dimensions(n);
 }
 
 inline bool

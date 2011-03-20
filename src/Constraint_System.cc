@@ -103,7 +103,8 @@ bool
 PPL::Constraint_System::has_strict_inequalities() const {
   if (sys.is_necessarily_closed())
     return false;
-  const dimension_type eps_index = sys.num_columns() - 1;
+  // TODO: Avoid using the number of columns if possible.
+  const dimension_type eps_index = sys.space_dimension() + 1;
   // We verify if the system has strict inequalities
   // also in the pending part.
   for (dimension_type i = sys.num_rows(); i-- > 0; ) {
@@ -301,7 +302,10 @@ PPL::Constraint_System
   PPL_ASSERT(expr.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  const dimension_type n_columns = sys.num_columns();
+  // TODO: Avoid using the number of columns if possible.
+  const dimension_type n_columns
+    = sys.is_necessarily_closed() ? sys.space_dimension() + 1
+                                  : sys.space_dimension() + 2;
   const dimension_type n_rows = sys.num_rows();
   const dimension_type expr_size = expr.get_linear_row().size();
   const bool not_invertible = (v.space_dimension() >= expr_size
@@ -365,19 +369,17 @@ PPL::Constraint_System
 
 void
 PPL::Constraint_System::ascii_dump(std::ostream& s) const {
-  const dimension_type x_num_rows = sys.num_rows();
-  const dimension_type x_num_columns = sys.num_columns();
   s << "topology " << (sys.is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
-    << x_num_rows << " x " << x_num_columns << ' '
+    << num_rows() << " x " << space_dimension() << ' '
     << (sys.is_sorted() ? "(sorted)" : "(not_sorted)")
     << "\n"
     << "index_first_pending " << sys.first_pending_row()
     << "\n";
 
-  for (dimension_type i = 0; i < x_num_rows; ++i)
+  for (dimension_type i = 0; i < num_rows(); ++i)
     sys[i].ascii_dump(s);
 }
 
@@ -403,21 +405,15 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   }
 
   dimension_type nrows;
-  dimension_type ncols;
+  dimension_type space_dim;
   if (!(s >> nrows))
     return false;
   if (!(s >> str) || str != "x")
     return false;
-  if (!(s >> ncols))
+  if (!(s >> space_dim))
       return false;
 
-  if (sys.topology() == NECESSARILY_CLOSED) {
-    PPL_ASSERT(ncols >= 1);
-    sys.set_space_dimension(ncols - 1);
-  } else {
-    PPL_ASSERT(ncols >= 2);
-    sys.set_space_dimension(ncols - 2);
-  }
+  sys.set_space_dimension(space_dim);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;

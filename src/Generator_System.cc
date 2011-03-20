@@ -88,7 +88,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
   const dimension_type n_rows = gs.sys.num_rows();
-  const dimension_type eps_index = gs.sys.num_columns() - 1;
+  const dimension_type eps_index = gs.sys.space_dimension() + 1;
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Generator& g = gs[i];
     if (g[eps_index] > 0) {
@@ -115,7 +115,7 @@ PPL::Generator_System::add_corresponding_points() {
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
   const dimension_type n_rows = gs.sys.num_rows();
-  const dimension_type eps_index = gs.sys.num_columns() - 1;
+  const dimension_type eps_index = sys.space_dimension() + 1;
   for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
     if (!g.is_line_or_ray() && g[eps_index] == 0) {
@@ -149,7 +149,7 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   // (i.e., the epsilon coefficient is equal to the divisor);
   // rays and lines must have epsilon coefficient equal to 0.
   // Note: normalization is preserved.
-  const dimension_type eps_index = sys.num_columns();
+  const dimension_type eps_index = sys.space_dimension() + 1;
   sys.set_not_necessarily_closed();
   Generator_System& gs = *this;
 
@@ -178,7 +178,7 @@ PPL::Generator_System::has_points() const {
     }
   else {
     // !is_necessarily_closed()
-    const dimension_type eps_index = gs.sys.num_columns() - 1;
+    const dimension_type eps_index = gs.sys.space_dimension() + 1;
     for (dimension_type i = sys.num_rows(); i-- > 0; )
     if (gs[i][eps_index] != 0)
       return true;
@@ -536,7 +536,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
 	// Using the reduced scalar product operator to avoid
-	// both topology and num_columns mismatches.
+	// both topology and space dimension mismatches.
 	const int sp_sign = Scalar_Products::reduced_sign(c, g);
 	// Checking whether the generator saturates the strict inequality.
 	// If that is the case, then we have to do something
@@ -636,7 +636,7 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
   // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
-  // (which could also cause a mismatch in the number of columns).
+  // (which could also cause a mismatch in the number of space dimensions).
   Topology_Adjusted_Scalar_Product_Sign sps(c);
 
   const Generator_System& gs = *this;
@@ -702,7 +702,10 @@ PPL::Generator_System
   PPL_ASSERT(expr.space_dimension() <= x.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  const dimension_type n_columns = x.sys.num_columns();
+  // TODO: Avoid using the number of columns if possible.
+  const dimension_type n_columns
+    = sys.is_necessarily_closed() ? sys.space_dimension() + 1
+                                  : sys.space_dimension() + 2;
   const dimension_type n_rows = x.sys.num_rows();
 
   // TODO: Check if it's correct to arrive at this point with some pending

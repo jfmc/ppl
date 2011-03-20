@@ -43,7 +43,7 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
   PPL_ASSERT(add_dim != 0);
 
   sys1.set_space_dimension(sys1.space_dimension() + add_dim);
-  sys2.add_universe_rows_and_columns(add_dim);
+  sys2.add_universe_rows_and_space_dimensions(add_dim);
 
   // The resulting saturation matrix will be as follows:
   // from row    0    to      add_dim-1       : only zeroes
