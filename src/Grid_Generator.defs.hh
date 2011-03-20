@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_defs_hh 1
 
 #include "Grid_Generator.types.hh"
+#include "Variables_Set.types.hh"
+
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Grid.types.hh"
@@ -293,6 +295,18 @@ public:
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .
   void set_space_dimension(dimension_type space_dim);
+
+  // TODO: Consider making this private.
+  //! Removes all the specified dimensions from the grid generator.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+
+    Always returns \p true. The return value is needed for compatibility with
+    the Generator class.
+  */
+  bool remove_space_dimensions(const Variables_Set& vars);
 
   //! The generator type.
   enum Type {
