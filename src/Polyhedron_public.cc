@@ -2287,7 +2287,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       Constraint_System nonred_eq;
       dimension_type num_nonred_eq = 0;
       const dimension_type needed_nonred_eq = z_cs_num_eq - y_cs_num_eq;
-      Linear_System<Linear_Row> eqs(x.topology());
+      Linear_System<Constraint> eqs(x.topology());
       if (needed_nonred_eq > 0) {
         // Populate eqs with the equalities from y.
         for (dimension_type i = 0; i < y_cs_num_eq; ++i)
@@ -2344,7 +2344,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           // Iteration goes downwards, so the inequality comes from x_cs.
           PPL_ASSERT(i >= y_cs_num_ineq);
           // Check if the equality is independent in eqs.
-          Linear_Row masked_eq = Linear_Row(nonred_ineq_i);
+          Constraint masked_eq = nonred_ineq_i;
           masked_eq.set_is_line_or_equality();
           masked_eq.sign_normalize();
           if (add_to_system_and_check_independence(eqs, masked_eq)) {
