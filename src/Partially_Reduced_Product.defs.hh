@@ -1640,6 +1640,10 @@ protected:
     to each other and the reduction class.
   */
   bool reduced;
+
+private:
+  void throw_space_dimension_overflow(const char* method,
+                                      const char* reason);
 };
 
 namespace Parma_Polyhedra_Library {

@@ -45,7 +45,13 @@ inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(dimension_type num_dimensions,
 			    const Degenerate_Element kind)
-  : d1(num_dimensions, kind),
+  : d1(num_dimensions <= max_space_dimension()
+       ? num_dimensions
+       : (throw_space_dimension_overflow("Partially_Reduced_Product(n, k)",
+                                         "n exceeds the maximum "
+                                         "allowed space dimension"),
+          num_dimensions),
+       kind),
     d2(num_dimensions, kind) {
   set_reduced_flag();
 }

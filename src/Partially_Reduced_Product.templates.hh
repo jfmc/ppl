@@ -34,6 +34,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename D1, typename D2, typename R>
+void
+Partially_Reduced_Product<D1, D2, R>
+::throw_space_dimension_overflow(const char* method,
+                                 const char* reason) {
+  std::ostringstream s;
+  s << "PPL::Partially_Reduced_Product::" << method << ":" << std::endl
+    << reason << ".";
+  throw std::length_error(s.str());
+}
+
+template <typename D1, typename D2, typename R>
 Constraint_System
 Partially_Reduced_Product<D1, D2, R>::constraints() const {
   reduce();
