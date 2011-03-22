@@ -1989,44 +1989,42 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // compute their "mid-point" and check if it is both in `x' and `y'.
 
   // Note: reasoning at the polyhedral cone level.
-  // FIXME: This assumes that a Generator is a Linear_Row.
-  Linear_Row mid_row;
-  const Generator& mid_g = static_cast<const Generator&>(mid_row);
+  Generator mid_g;
 
   for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
     if (x_gs_red_in_y[i])
       continue;
-    const Linear_Row& x_row = static_cast<const Linear_Row&>(x_gs[i]);
-    const dimension_type row_sz = x_row.size();
-    const bool x_row_is_line = x_row.is_line_or_equality();
+    const Generator& x_g = x_gs[i];
+    const dimension_type row_sz = x_g.size();
+    const bool x_g_is_line = x_g.is_line_or_equality();
     for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
       if (y_gs_red_in_x[j])
         continue;
-      const Linear_Row& y_row = static_cast<const Linear_Row&>(y_gs[j]);
-      const bool y_row_is_line = y_row.is_line_or_equality();
+      const Generator& y_g = y_gs[j];
+      const bool y_g_is_line = y_g.is_line_or_equality();
 
-      // Step 6: compute mid_row = x_row + y_row.
+      // Step 6: compute mid_g = x_g + y_g.
       // NOTE: no need to actually compute the "mid-point",
       // since any strictly positive combination would do.
-      mid_row = x_row;
+      mid_g = x_g;
       for (dimension_type k = row_sz; k-- > 0; )
-        mid_row[k] += y_row[k];
+        mid_g[k] += y_g[k];
       // A zero ray is not a well formed generator.
       const bool illegal_ray
-        = (mid_row[0] == 0 && mid_row.all_homogeneous_terms_are_zero());
+        = (mid_g[0] == 0 && mid_g.all_homogeneous_terms_are_zero());
       // A zero ray cannot be generated from a line: this holds
       // because x_row (resp., y_row) is not subsumed by y (resp., x).
-      PPL_ASSERT(!(illegal_ray && (x_row_is_line || y_row_is_line)));
+      PPL_ASSERT(!(illegal_ray && (x_g_is_line || y_g_is_line)));
       if (illegal_ray)
         continue;
-      if (x_row_is_line) {
-        mid_row.normalize();
-        if (y_row_is_line)
+      if (x_g_is_line) {
+        mid_g.normalize();
+        if (y_g_is_line)
           // mid_row is a line too: sign normalization is needed.
-          mid_row.sign_normalize();
+          mid_g.sign_normalize();
         else
           // mid_row is a ray/point.
-          mid_row.set_is_ray_or_point_or_inequality();
+          mid_g.set_is_ray_or_point_or_inequality();
       }
 
       // Step 7: check if mid_g is in the union of x and y.
@@ -2034,26 +2032,26 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
           && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
         return false;
 
-      // If either x_row or y_row is a line, we should use its
+      // If either x_g or y_g is a line, we should use its
       // negation to produce another generator to be tested too.
       // NOTE: exclusive-or is meant.
-      if (!x_row_is_line && y_row_is_line) {
-        // Step 6.1: (re-)compute mid_row = x_row - y_row.
-        mid_row = x_row;
+      if (!x_g_is_line && y_g_is_line) {
+        // Step 6.1: (re-)compute mid_row = x_g - y_g.
+        mid_g = x_g;
         for (dimension_type k = row_sz; k-- > 0; )
-          mid_row[k] -= y_row[k];
-        mid_row.normalize();
+          mid_g[k] -= y_g[k];
+        mid_g.normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
           return false;
       }
-      else if (x_row_is_line && !y_row_is_line) {
+      else if (x_g_is_line && !y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = - x_row + y_row.
-        mid_row = y_row;
+        mid_g = y_g;
         for (dimension_type k = row_sz; k-- > 0; )
-          mid_row[k] -= x_row[k];
-        mid_row.normalize();
+          mid_g[k] -= x_g[k];
+        mid_g.normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
