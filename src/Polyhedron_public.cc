@@ -1936,9 +1936,9 @@ struct Ruled_Out_Less_Than {
   }
 };
 
-template <typename Row1, typename Row2>
+template <typename Linear_System1, typename Row2>
 bool
-add_to_system_and_check_independence(PPL::Linear_System<Row1>& eq_sys,
+add_to_system_and_check_independence(Linear_System1& eq_sys,
                                      const Row2& eq) {
   // Check if equality eqn is linear independent from eq_sys.
   PPL_ASSERT(eq.is_line_or_equality());
