@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
+#include "Linear_Row.defs.hh"
+
 #include "Grid.types.hh"
 #include <iosfwd>
 

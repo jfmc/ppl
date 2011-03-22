@@ -35,20 +35,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
-  : row(c.space_dimension() + 1, Linear_Row::Flags()) {
+  : row(c.space_dimension() + 1) {
   for (dimension_type i = row.size(); i-- > 0; )
     row[i] = c[i];
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
-  : row(g.space_dimension() + 1, Linear_Row::Flags()) {
+  : row(g.space_dimension() + 1) {
   // Do not copy the divisor of `g'.
   for (dimension_type i = row.size(); --i > 0; )
     row[i] = g[i];
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
-  : row(g.space_dimension() + 1, Linear_Row::Flags()) {
+  : row(g.space_dimension() + 1) {
   // Do not copy the divisor of `g'.
   for (dimension_type i = row.size(); --i > 0; )
     row[i] = g[i];
@@ -70,7 +70,7 @@ PPL::Linear_Expression::finalize() {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
-  : row(cg.space_dimension() + 1, Linear_Row::Flags()) {
+  : row(cg.space_dimension() + 1) {
   for (dimension_type i = row.size() - 1; i-- > 0; )
     row[i + 1] = cg.coefficient(Variable(i));
   row[0] = cg.inhomogeneous_term();
@@ -83,8 +83,7 @@ PPL::Linear_Expression::Linear_Expression(const Variable v)
 					  "Linear_Expression(v):\n"
 					  "v exceeds the maximum allowed "
 					  "space dimension."),
-		  v.space_dimension() + 1)
-	       , Linear_Row::Flags()) {
+		  v.space_dimension() + 1)) {
   ++(row[v.space_dimension()]);
 }
 

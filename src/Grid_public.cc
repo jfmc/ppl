@@ -1877,8 +1877,11 @@ affine_preimage(const Variable var,
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
       if (expr.get_row()[var_space_dim] > 0) {
+        PPL_ASSERT(expr.coefficient(var) > 0);
 	inverse = -expr;
+        PPL_ASSERT(expr.coefficient(var) > 0);
 	inverse.get_row()[var_space_dim] = denominator;
+        PPL_ASSERT(expr.coefficient(var) > 0);
 	gen_sys.affine_image(var, inverse, expr.coefficient(var));
       }
       else {

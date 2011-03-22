@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
-#include "Linear_Row.defs.hh"
+#include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Variable.defs.hh"
 #include <cstddef>
@@ -372,10 +372,10 @@ public:
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
   // FIXME: Remove this.
-  Linear_Row& get_row();
+  Dense_Row& get_row();
 
   // FIXME: Remove this.
-  const Linear_Row& get_row() const;
+  const Dense_Row& get_row() const;
 
 private:
   /*! \brief
@@ -384,7 +384,7 @@ private:
   */
   static const Linear_Expression* zero_p;
 
-  Linear_Row row;
+  Dense_Row row;
 
   //! Implementation sizing constructor.
   /*!

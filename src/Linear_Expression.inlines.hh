@@ -32,17 +32,17 @@ namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 Linear_Expression::max_space_dimension() {
-  return Linear_Row::max_space_dimension();
+  return Dense_Row::max_size() - 1;
 }
 
 inline
 Linear_Expression::Linear_Expression()
-  : row(1, Linear_Row::Flags()) {
+  : row(1) {
 }
 
 inline
 Linear_Expression::Linear_Expression(dimension_type sz, bool)
-  : row(sz, Linear_Row::Flags()) {
+  : row(sz) {
 }
 
 inline
@@ -62,16 +62,16 @@ Linear_Expression::Linear_Expression(const Linear_Expression& e,
 
 inline
 Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
-  : row(1, Linear_Row::Flags()) {
+  : row(1) {
   row[0] = n;
 }
 
-inline Linear_Row&
+inline Dense_Row&
 Linear_Expression::get_row() {
   return row;
 }
 
-inline const Linear_Row&
+inline const Dense_Row&
 Linear_Expression::get_row() const {
   return row;
 }
@@ -90,22 +90,30 @@ inline Coefficient_traits::const_reference
 Linear_Expression::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Coefficient_zero();
-  return row.coefficient(v.id());
+  return row[v.id() + 1];
 }
 
 inline Coefficient_traits::const_reference
 Linear_Expression::inhomogeneous_term() const {
-  return row.inhomogeneous_term();
+  return row[0];
 }
 
 inline bool
 Linear_Expression::is_zero() const {
-  return row.is_zero();
+  for (Dense_Row::const_iterator i = row.begin(), i_end = row.end();
+       i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  return true;
 }
 
 inline bool
 Linear_Expression::all_homogeneous_terms_are_zero() const {
-  return row.all_homogeneous_terms_are_zero();
+  for (Dense_Row::const_iterator i = row.lower_bound(1), i_end = row.end();
+       i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  return true;
 }
 
 inline const Linear_Expression&

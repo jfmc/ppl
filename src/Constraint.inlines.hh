@@ -43,7 +43,7 @@ Constraint::Constraint(dimension_type sz, dimension_type capacity, Flags flags)
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  Linear_Row::swap(e.get_row());
+  Dense_Row::swap(e.get_row());
   set_flags(Flags(topology, (type == EQUALITY
                             ? LINE_OR_EQUALITY
                             : RAY_OR_POINT_OR_INEQUALITY)));
