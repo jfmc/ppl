@@ -664,7 +664,9 @@ Linear_System<Row>
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
   for (dimension_type k = num_rows(); k-- > 0; )
-    rows[k].swap(v1.space_dimension(), v2.space_dimension());
+    rows[k].swap_space_dimensions(v1, v2);
+  sorted = false;
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Linear_System */
