@@ -310,6 +310,21 @@ public:
   */
   bool remove_space_dimensions(const Variables_Set& vars);
 
+  // TODO: Consider making this private.
+  //! Permutes the space dimensions of the grid generator.
+  /*
+    \param cycle
+    A vector representing a cycle of the permutation according to which the
+    space dimensions must be rearranged.
+
+    The \p cycle vector represents a cycle of a permutation of space
+    dimensions.
+    For example, the permutation
+    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
+    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
+  */
+  void permute_space_dimensions(const std::vector<Variable>& cycle);
+
   //! The generator type.
   enum Type {
     /*! The generator is a grid line. */

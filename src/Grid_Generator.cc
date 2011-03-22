@@ -153,6 +153,36 @@ PPL::Grid_Generator::remove_space_dimensions(const Variables_Set& vars) {
 }
 
 void
+PPL::Grid_Generator
+::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  const dimension_type n = cycle.size();
+  if (n < 2)
+    // No-op. No need to call sign_normalize().
+    return;
+
+  if (n == 2) {
+    swap(cycle[0].space_dimension(), cycle[1].space_dimension());
+  } else {
+    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+    tmp = Dense_Row::operator[](cycle.back().space_dimension());
+    for (dimension_type i = n - 1; i-- > 0; )
+      swap(cycle[i + 1].space_dimension(),
+           cycle[i].space_dimension());
+    if (tmp == 0)
+      reset(cycle[0].space_dimension());
+    else
+      std::swap(tmp, Dense_Row::operator[](cycle[0].space_dimension()));
+  }
+  // *this is still normalized but may be not strongly normalized: sign
+  // normalization is necessary.
+  // Sign-normalizing a parameter changes its meaning, so do nothing for
+  // parameters.
+  if (!is_parameter())
+    sign_normalize();
+  PPL_ASSERT(OK());
+}
+
+void
 PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
   const Grid_Generator& x = *this;
   const dimension_type x_size = x.size();
