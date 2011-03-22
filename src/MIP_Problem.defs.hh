@@ -729,7 +729,7 @@ private:
 
     Computes a linear combination of \p x and \p y having
     the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Linear_Row to \p x and normalizes it.
+    the resulting Row to \p x and normalizes it.
   */
   static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
@@ -749,7 +749,7 @@ private:
 
     Computes a linear combination of \p x and \p y having
     the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Linear_Row to \p x and normalizes it.
+    the resulting Dense_Row to \p x and normalizes it.
   */
   static void linear_combine(Dense_Row& x, const Sparse_Row& y,
                              const dimension_type k);

@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class implementing various scalar product functions.
 /*! \ingroup PPL_CXX_interface
-  When computing the scalar product of (Linear_Row or Constraint or
+  When computing the scalar product of (Dense_Row or Constraint or
   Generator) objects <CODE>x</CODE> and <CODE>y</CODE>, it is assumed
   that the space dimension of the first object <CODE>x</CODE> is less
   than or equal to the space dimension of the second object <CODE>y</CODE>.
