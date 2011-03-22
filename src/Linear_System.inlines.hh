@@ -651,30 +651,9 @@ template <typename Row>
 inline void
 Linear_System<Row>
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  const dimension_type n = cycle.size();
-  if (n < 2)
-    // No-op. No need to call sign_normalize().
-    return;
-
-  if (n == 2) {
-    swap_space_dimensions(cycle[0], cycle[1]);
-  } else {
-    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    for (dimension_type k = rows.size(); k-- > 0; ) {
-      Row& rows_k = rows[k];
-      tmp = rows_k.coefficient(cycle.back());
-      for (dimension_type i = n - 1; i-- > 0; )
-        rows_k.swap(cycle[i + 1].space_dimension(),
-                    cycle[i].space_dimension());
-      if (tmp == 0)
-        rows_k.reset(cycle[0].space_dimension());
-      else
-        std::swap(tmp, rows_k[cycle[0].space_dimension()]);
-    }
-  }
-  // The rows with permuted columns are still normalized but may
-  // be not strongly normalized: sign normalization is necessary.
-  sign_normalize();
+  for (dimension_type i = num_rows(); i-- > 0; )
+    rows[i].permute_space_dimensions(cycle);
+  sorted = false;
   PPL_ASSERT(OK());
 }
 
