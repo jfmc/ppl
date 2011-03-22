@@ -124,6 +124,17 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
   return gg;
 }
 
+void
+PPL::Grid_Generator::swap_space_dimensions(Variable v1, Variable v2) {
+  PPL_ASSERT(v1.space_dimension() <= space_dimension());
+  PPL_ASSERT(v2.space_dimension() <= space_dimension());
+  swap(v1.space_dimension(), v2.space_dimension());
+  // *this is still normalized but it may not be strongly normalized.
+  if (!is_parameter())
+    sign_normalize();
+  PPL_ASSERT(OK());
+}
+
 bool
 PPL::Grid_Generator::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
