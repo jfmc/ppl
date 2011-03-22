@@ -162,6 +162,33 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
   }
 }
 
+void
+PPL::Generator
+::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  const dimension_type n = cycle.size();
+  if (n < 2)
+    // No-op. No need to call sign_normalize().
+    return;
+
+  if (n == 2) {
+    swap(cycle[0].space_dimension(), cycle[1].space_dimension());
+  } else {
+    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+    tmp = Dense_Row::operator[](cycle.back().space_dimension());
+    for (dimension_type i = n - 1; i-- > 0; )
+      swap(cycle[i + 1].space_dimension(),
+           cycle[i].space_dimension());
+    if (tmp == 0)
+      reset(cycle[0].space_dimension());
+    else
+      std::swap(tmp, Dense_Row::operator[](cycle[0].space_dimension()));
+  }
+  // *this is still normalized but may be not strongly normalized: sign
+  // normalization is necessary.
+  sign_normalize();
+  PPL_ASSERT(OK());
+}
+
 bool
 PPL::Generator::is_equivalent_to(const Generator& y) const {
   const Generator& x = *this;
