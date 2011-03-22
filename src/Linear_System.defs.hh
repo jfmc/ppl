@@ -40,10 +40,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*! \ingroup PPL_CXX_interface
   An object of this class represents either a constraint system
   or a generator system. Each Linear_System object can be viewed
-  as a finite sequence of strong-normalized Linear_Row objects,
-  where each Linear_Row implements a constraint or a generator.
+  as a finite sequence of strong-normalized Row objects,
+  where each Row implements a constraint or a generator.
   Linear systems are characterized by the matrix of coefficients,
-  also encoding the number, size and capacity of Linear_row objects,
+  also encoding the number, size and capacity of Row objects,
   as well as a few additional information, including:
    - the topological kind of (all) the rows;
    - an indication of whether or not some of the rows in the Linear_System

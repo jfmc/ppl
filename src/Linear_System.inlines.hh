@@ -714,7 +714,6 @@ template <typename Row>
 inline bool
 Linear_System<Row>::Unique_Compare
 ::operator()(dimension_type i, dimension_type j) const {
-  // TODO: Remove the cast and avoid including Linear_Row.defs.hh.
   return container[base_index + i].is_equal_to(container[base_index + j]);
 }
 
