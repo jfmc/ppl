@@ -3566,8 +3566,7 @@ PPL::Polyhedron::topological_closure_assign() {
 
     // Transform all strict inequalities into non-strict ones.
     for (dimension_type i = rows.size(); i-- > 0; ) {
-      Linear_Row& row = rows[i];
-      Constraint& c = static_cast<Constraint&>(row);
+      Constraint& c = rows[i];
       if (c[eps_index] < 0 && !c.is_tautological()) {
 	c[eps_index] = 0;
 	// Enforce normalization.
