@@ -31,7 +31,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Linear_Row& x, const Linear_Row& y) {
+			     const Dense_Row& x, const Dense_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.size() <= y.size());
@@ -109,11 +109,10 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
-				     const Linear_Row& x,
-				     const Linear_Row& y) {
+				     const Dense_Row& x,
+				     const Dense_Row& y) {
   // The reduced scalar product is only defined
-  // if the topology of `x' is NNC and `y' has enough coefficients.
-  PPL_ASSERT(!x.is_necessarily_closed());
+  // if `y' has enough coefficients.
   PPL_ASSERT(x.size() - 1 <= y.size());
   z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
@@ -139,8 +138,8 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Linear_Row& x,
-					 const Linear_Row& y) {
+					 const Dense_Row& x,
+					 const Dense_Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.size() <= y.size());
