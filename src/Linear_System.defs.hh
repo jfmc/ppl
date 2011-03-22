@@ -157,17 +157,6 @@ public:
   */
   void remove_rows(const std::vector<dimension_type>& indexes);
 
-  //! Makes the system shrink by removing its \p n trailing space dimensions.
-  void remove_trailing_space_dimensions(dimension_type n);
-
-  // TODO: Remove this method.
-  // It is needed to be able to remove columns from a Grid_Generator_System,
-  // that should not be normalized afterwards because it may contain
-  // parameters, whose representation is not normalized.
-  //! Makes the system shrink by removing its \p n trailing columns.
-  //! This method does not normalize the rows afterwards.
-  void remove_trailing_space_dimensions_without_normalizing(dimension_type n);
-
   //! Swaps \p row with the last row and then removes that row from the
   //! system.
   void release_row(Row& row);

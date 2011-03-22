@@ -599,17 +599,6 @@ Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
 
 template <typename Row>
 inline void
-Linear_System<Row>
-::remove_trailing_space_dimensions(const dimension_type n) {
-  remove_trailing_space_dimensions_without_normalizing(n);
-  // Have to re-normalize the rows of the system,
-  // since we removed some coefficients.
-  strong_normalize();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
 Linear_System<Row>::release_row(Row& row) {
   row.swap(rows.back());
   remove_trailing_rows(1);
@@ -633,17 +622,6 @@ Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
   rows.swap(v);
   sorted = false;
   unset_pending_rows();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
-Linear_System<Row>
-::remove_trailing_space_dimensions_without_normalizing(const dimension_type n) {
-  PPL_ASSERT(space_dimension() >= n);
-  space_dimension_ -= n;
-  for (dimension_type i = rows.size(); i-- > 0; )
-    rows[i].set_space_dimension(space_dimension_);
   PPL_ASSERT(OK());
 }
 
