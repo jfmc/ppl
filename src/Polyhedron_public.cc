@@ -731,11 +731,10 @@ PPL::Polyhedron::constrains(const Variable var) const {
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
       const Generator& gen_sys_i = gen_sys[i];
       if (gen_sys_i.is_line_or_ray()) {
-	const Linear_Row& row = gen_sys_i;
-	const int sign = sgn(row.coefficient(var_id));
+	const int sign = sgn(gen_sys_i.coefficient(var));
 	if (sign != 0) {
 	  for (dimension_type j = space_dim+1; --j > 0; )
-	    if (j != var_id && row[j] != 0)
+	    if (j != var_id && gen_sys_i[j] != 0)
 	      goto next;
 	  if (gen_sys_i.is_line())
 	    return true;
