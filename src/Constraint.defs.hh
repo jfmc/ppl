@@ -178,6 +178,9 @@ public:
   //! \p space_dim .
   void set_space_dimension(dimension_type space_dim);
 
+  //! Swaps the coefficients of the variables \p v1 and \p v2 .
+  void swap_space_dimensions(Variable v1, Variable v2);
+
   // TODO: Consider making this private.
   //! Removes all the specified dimensions from the constraint.
   /*!
