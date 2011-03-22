@@ -234,11 +234,11 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
     Linear_Expression x_expr(x);
     Linear_Expression y_expr(y);
     // ... then, re-normalize ...
-    x_expr.get_linear_row().normalize();
-    y_expr.get_linear_row().normalize();
+    x_expr.get_row().normalize();
+    y_expr.get_row().normalize();
     // ... and finally check for syntactic equality.
     for (dimension_type i = x_space_dim + 1; i-- > 0; )
-      if (x_expr.get_linear_row()[i] != y_expr.get_linear_row()[i])
+      if (x_expr.get_row()[i] != y_expr.get_row()[i])
 	return false;
     return true;
   }

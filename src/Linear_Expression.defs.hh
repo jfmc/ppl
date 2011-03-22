@@ -372,10 +372,10 @@ public:
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
   // FIXME: Remove this.
-  Linear_Row& get_linear_row();
+  Linear_Row& get_row();
 
   // FIXME: Remove this.
-  const Linear_Row& get_linear_row() const;
+  const Linear_Row& get_row() const;
 
 private:
   /*! \brief

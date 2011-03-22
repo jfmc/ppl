@@ -67,12 +67,12 @@ Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
 }
 
 inline Linear_Row&
-Linear_Expression::get_linear_row() {
+Linear_Expression::get_row() {
   return row;
 }
 
 inline const Linear_Row&
-Linear_Expression::get_linear_row() const {
+Linear_Expression::get_row() const {
   return row;
 }
 

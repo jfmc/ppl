@@ -91,7 +91,7 @@ Scalar_Products::homogeneous_assign(Coefficient& z,
 				    const Linear_Expression& e,
 				    const Generator& g) {
   homogeneous_assign(z,
-		     static_cast<const Linear_Row&>(e.get_linear_row()),
+		     static_cast<const Linear_Row&>(e.get_row()),
 		     static_cast<const Linear_Row&>(g));
 }
 
@@ -100,21 +100,21 @@ Scalar_Products::homogeneous_assign(Coefficient& z,
 				    const Linear_Expression& e,
 				    const Grid_Generator& g) {
   homogeneous_assign(z,
-		     e.get_linear_row(),
+		     e.get_row(),
 		     static_cast<const Linear_Row&>(g));
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Generator& g) {
-  return homogeneous_sign(e.get_linear_row(),
+  return homogeneous_sign(e.get_row(),
 			  static_cast<const Linear_Row&>(g));
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Grid_Generator& g) {
-  return homogeneous_sign(e.get_linear_row(),
+  return homogeneous_sign(e.get_row(),
 			  static_cast<const Linear_Row&>(g));
 }
 

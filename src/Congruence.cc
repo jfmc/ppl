@@ -128,7 +128,7 @@ void
 PPL::Congruence
 ::affine_preimage(dimension_type v, const Linear_Expression& expr,
                   Coefficient_traits::const_reference denominator) {
-  const dimension_type expr_size = expr.get_linear_row().size();
+  const dimension_type expr_size = expr.get_row().size();
 
   Coefficient& row_v = row[v];
 
@@ -141,7 +141,7 @@ PPL::Congruence
     for (dimension_type j = expr_size; j-- > 0; )
       if (j != v)
         // row[j] = row[j] + row_v * expr[j]
-        add_mul_assign(row[j], row_v, expr.get_linear_row()[j]);
+        add_mul_assign(row[j], row_v, expr.get_row()[j]);
 
   } else {
     for (dimension_type j = row.size(); j-- > 0; )
@@ -149,15 +149,15 @@ PPL::Congruence
         Coefficient& row_j = row[j];
         row_j *= denominator;
         if (j < expr_size)
-          add_mul_assign(row_j, row_v, expr.get_linear_row()[j]);
+          add_mul_assign(row_j, row_v, expr.get_row()[j]);
       }
   }
 
-  if (v >= expr_size || expr.get_linear_row()[v] == 0)
+  if (v >= expr_size || expr.get_row()[v] == 0)
     // Not invertible
     row_v = 0;
   else
-    row_v *= expr.get_linear_row()[v];
+    row_v *= expr.get_row()[v];
 }
 
 PPL::Congruence

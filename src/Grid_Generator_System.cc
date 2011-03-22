@@ -121,7 +121,7 @@ PPL::Grid_Generator_System
   
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = rows[i];
-    Scalar_Products::assign(numerator, expr.get_linear_row(), row);
+    Scalar_Products::assign(numerator, expr.get_row(), row);
     std::swap(numerator, row[v_space_dim]);
   }
 

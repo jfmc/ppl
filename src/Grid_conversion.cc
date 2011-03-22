@@ -209,13 +209,13 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       le.set_space_dimension(dest.space_dimension() + 1);
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
-        le.get_linear_row()[dim] = 1;
+        le.get_row()[dim] = 1;
         Congruence cg(le, Coefficient_zero());
         dest.insert_verbatim_recycled(cg);
       } else {
 	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
 	--source_index;
-	exact_div_assign(le.get_linear_row()[dim], diagonal_lcm,
+	exact_div_assign(le.get_row()[dim], diagonal_lcm,
                          source[source_index][dim]);
         Congruence cg(le, Coefficient_one());
         dest.insert_verbatim_recycled(cg);

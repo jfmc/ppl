@@ -2569,21 +2569,21 @@ affine_image(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr.get_linear_row()[var_space_dim] > 0) {
+      if (expr.get_row()[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse.get_linear_row()[var_space_dim] = denominator;
+	inverse.get_row()[var_space_dim] = denominator;
 	con_sys.affine_preimage(var, inverse,
-                                expr.get_linear_row()[var_space_dim]);
+                                expr.get_row()[var_space_dim]);
       }
       else {
 	// The new denominator is negative: we negate everything once
 	// more, as Constraint_System::affine_preimage() requires the
 	// third argument to be positive.
 	inverse = expr;
-	inverse.get_linear_row()[var_space_dim] = denominator;
-	neg_assign(inverse.get_linear_row()[var_space_dim]);
+	inverse.get_row()[var_space_dim] = denominator;
+	neg_assign(inverse.get_row()[var_space_dim]);
 	con_sys.affine_preimage(var, inverse,
-                                -expr.get_linear_row()[var_space_dim]);
+                                -expr.get_row()[var_space_dim]);
       }
     }
   }
@@ -2650,21 +2650,21 @@ affine_preimage(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr.get_linear_row()[var_space_dim] > 0) {
+      if (expr.get_row()[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse.get_linear_row()[var_space_dim] = denominator;
+	inverse.get_row()[var_space_dim] = denominator;
 	gen_sys.affine_image(var, inverse,
-                             expr.get_linear_row()[var_space_dim]);
+                             expr.get_row()[var_space_dim]);
       }
       else {
 	// The new denominator is negative:
 	// we negate everything once more, as Generator_System::affine_image()
 	// requires the third argument to be positive.
 	inverse = expr;
-	inverse.get_linear_row()[var_space_dim] = denominator;
-	neg_assign(inverse.get_linear_row()[var_space_dim]);
+	inverse.get_row()[var_space_dim] = denominator;
+	neg_assign(inverse.get_row()[var_space_dim]);
 	gen_sys.affine_image(var, inverse,
-                             -expr.get_linear_row()[var_space_dim]);
+                             -expr.get_row()[var_space_dim]);
       }
     }
   }
