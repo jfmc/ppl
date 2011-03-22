@@ -364,8 +364,6 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   }
 
   sys.take_ownership_of_rows(rows);
-
-  PPL_ASSERT(sys.OK());
 }
 
 bool

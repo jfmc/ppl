@@ -945,10 +945,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 	goto fail;
       }
 
-      // Check if the system of generators is well-formed.
-      if (!gen_sys.OK())
-	goto fail;
-
       // Check each generator in the system.
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
 	const Grid_Generator& g = gen_sys[i];

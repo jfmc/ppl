@@ -348,10 +348,6 @@ public:
   //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
   bool is_equal_to(const Grid_Generator_System& y) const;
 
-  // FIXME: This is useless: it always returns true.
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -532,6 +528,10 @@ private:
   */
   void resize_no_copy(dimension_type new_num_rows,
                       dimension_type new_space_dim);
+
+  // FIXME: This is useless: it always returns true.
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.

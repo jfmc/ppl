@@ -85,9 +85,6 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
 
   typedef typename Linear_System1::row_type sys_row_type;
 
-  // This method is only applied to a well-formed system `sys'.
-  PPL_ASSERT(sys.OK());
-
   dimension_type num_rows = sys.num_rows();
   const dimension_type num_cols_sat = sat.num_columns();
 

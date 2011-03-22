@@ -792,12 +792,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     goto bomb;
   }
 
-  // Check whether the saturation matrices are well-formed.
-  if (!sat_c.OK())
-    goto bomb;
-  if (!sat_g.OK())
-    goto bomb;
-
   // Check whether the status information is legal.
   if (!status.OK())
     goto bomb;
@@ -954,10 +948,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
 
-    // Check if the system of generators is well-formed.
-    if (!gen_sys.OK())
-      goto bomb;
-
     if (gen_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
       cerr << "Up-to-date generator system with all rows pending!"
@@ -1068,10 +1058,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   if (constraints_are_up_to_date()) {
-    // Check if the system of constraints is well-formed.
-    if (!con_sys.OK())
-      goto bomb;
-
     if (con_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
       cerr << "Up-to-date constraint system with all rows pending!"

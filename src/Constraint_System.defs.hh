@@ -592,10 +592,6 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  // FIXME: This is useless: it always returns true.
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -634,6 +630,10 @@ private:
     dimension is added.
   */
   Constraint_System(Topology topol, dimension_type space_dim);
+
+  // FIXME: This is useless: it always returns true.
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 };
 
 //! An iterator over a system of constraints.

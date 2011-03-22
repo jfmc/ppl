@@ -466,10 +466,10 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+private:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-private:
   //! Makes the system shrink by removing its i-th row.
   /*!
     When \p keep_sorted is \p true and the system is sorted, sortedness will
