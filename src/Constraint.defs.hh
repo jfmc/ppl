@@ -337,9 +337,6 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! Checks if all the invariants are satisfied.
-  bool OK(dimension_type sz) const;
-
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
   
