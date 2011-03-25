@@ -67,8 +67,7 @@ PPL::Generator::point(const Linear_Expression& e,
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
-    for (dimension_type i = g.get_row().size(); i-- > 0; )
-      neg_assign(g.get_row()[i]);
+    neg_assign(static_cast<Linear_Expression&>(g));
 
   // Enforce normalization.
   g.get_row().normalize();
