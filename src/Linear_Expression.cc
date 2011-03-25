@@ -35,23 +35,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
-  : row(c.space_dimension() + 1) {
-  for (dimension_type i = row.size(); i-- > 0; )
-    row[i] = c.get_row()[i];
+  : row(c.row) {
+  // Do not copy the epsilon dimension (if any).
+  if (c.is_not_necessarily_closed())
+    row.resize(row.size() - 1);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
-  : row(g.space_dimension() + 1) {
+  : row(g.row) {
   // Do not copy the divisor of `g'.
-  for (dimension_type i = row.size(); --i > 0; )
-    row[i] = g.get_row()[i];
+  row[0] = 0;
+  // Do not copy the epsilon dimension (if any).
+  if (g.is_not_necessarily_closed())
+    row.resize(row.size() - 1);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
-  : row(g.space_dimension() + 1) {
+  : row(g.row) {
   // Do not copy the divisor of `g'.
-  for (dimension_type i = row.size(); --i > 0; )
-    row[i] = g.get_row()[i];
+  row[0] = 0;
+  // Do not copy the epsilon dimension (if any).
+  if (g.is_not_necessarily_closed())
+    row.resize(row.size() - 1);
 }
 
 const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
