@@ -31,14 +31,15 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Dense_Row& x, const Dense_Row& y) {
+			     const Linear_Expression& x,
+                             const Linear_Expression& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(x.get_row().size() <= y.get_row().size());
   z = 0;
-  for (dimension_type i = x.size(); i-- > 0; )
+  for (dimension_type i = x.get_row().size(); i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+    add_mul_assign(z, x.get_row()[i], y.get_row()[i]);
 }
 
 void
@@ -109,15 +110,15 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
-				     const Dense_Row& x,
-				     const Dense_Row& y) {
+				     const Linear_Expression& x,
+				     const Linear_Expression& y) {
   // The reduced scalar product is only defined
   // if `y' has enough coefficients.
-  PPL_ASSERT(x.size() - 1 <= y.size());
+  PPL_ASSERT(x.get_row().size() - 1 <= y.get_row().size());
   z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; )
+  for (dimension_type i = x.get_row().size() - 1; i-- > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+    add_mul_assign(z, x.get_row()[i], y.get_row()[i]);
 }
 
 void
@@ -138,16 +139,16 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Dense_Row& x,
-					 const Dense_Row& y) {
+					 const Linear_Expression& x,
+					 const Linear_Expression& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(x.get_row().size() <= y.get_row().size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
-  for (dimension_type i = x.size(); --i > 0; )
+  for (dimension_type i = x.get_row().size(); --i > 0; )
     // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+    add_mul_assign(z, x.get_row()[i], y.get_row()[i]);
 }
 
 void

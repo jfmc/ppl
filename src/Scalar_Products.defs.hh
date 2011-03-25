@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Scalar_Products_defs_hh 1
 
 #include "Scalar_Products.types.hh"
-#include "Dense_Row.types.hh"
 #include "Coefficient.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
@@ -36,7 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class implementing various scalar product functions.
 /*! \ingroup PPL_CXX_interface
-  When computing the scalar product of (Dense_Row or Constraint or
+  When computing the scalar product of (Linear_Expression or Constraint or
   Generator) objects <CODE>x</CODE> and <CODE>y</CODE>, it is assumed
   that the space dimension of the first object <CODE>x</CODE> is less
   than or equal to the space dimension of the second object <CODE>y</CODE>.
@@ -45,7 +44,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Scalar_Products {
 public:
   //! Computes the scalar product of \p x and \p y and assigns it to \p z.
-  static void assign(Coefficient& z, const Dense_Row& x, const Dense_Row& y);
+  static void assign(Coefficient& z, const Linear_Expression& x,
+                     const Linear_Expression& y);
   //! Computes the scalar product of \p c and \p g and assigns it to \p z.
   static void assign(Coefficient& z, const Constraint& c, const Generator& g);
   //! Computes the scalar product of \p g and \p c and assigns it to \p z.
@@ -61,7 +61,7 @@ public:
 		     const Congruence& cg, const Grid_Generator& g);
 
   //! Returns the sign of the scalar product between \p x and \p y.
-  static int sign(const Dense_Row& x, const Dense_Row& y);
+  static int sign(const Linear_Expression& x, const Linear_Expression& y);
   //! Returns the sign of the scalar product between \p c and \p g.
   static int sign(const Constraint& c, const Generator& g);
   //! Returns the sign of the scalar product between \p g and \p c.
@@ -75,7 +75,8 @@ public:
     and assigns the result to \p z.
   */
   static void reduced_assign(Coefficient& z,
-			     const Dense_Row& x, const Dense_Row& y);
+			     const Linear_Expression& x,
+                             const Linear_Expression& y);
   /*! \brief
     Computes the \e reduced scalar product of \p c and \p g,
     where the \f$\epsilon\f$ coefficient of \p c is ignored,
@@ -101,7 +102,8 @@ public:
     Returns the sign of the \e reduced scalar product of \p x and \p y,
     where the \f$\epsilon\f$ coefficient of \p x is ignored.
   */
-  static int reduced_sign(const Dense_Row& x, const Dense_Row& y);
+  static int reduced_sign(const Linear_Expression& x,
+                          const Linear_Expression& y);
   /*! \brief
     Returns the sign of the \e reduced scalar product of \p c and \p g,
     where the \f$\epsilon\f$ coefficient of \p c is ignored.
@@ -119,7 +121,8 @@ public:
     and assigns the result to \p z.
   */
   static void homogeneous_assign(Coefficient& z,
-				 const Dense_Row& x, const Dense_Row& y);
+				 const Linear_Expression& x,
+                                 const Linear_Expression& y);
   /*! \brief
     Computes the \e homogeneous scalar product of \p e and \p g,
     where the inhomogeneous terms are ignored,
@@ -152,7 +155,8 @@ public:
     Returns the sign of the \e homogeneous scalar product of \p x and \p y,
     where the inhomogeneous terms are ignored.
   */
-  static int homogeneous_sign(const Dense_Row& x, const Dense_Row& y);
+  static int homogeneous_sign(const Linear_Expression& x,
+                              const Linear_Expression& y);
   /*! \brief
     Returns the sign of the \e homogeneous scalar product of \p e and \p g,
     where the inhomogeneous terms are ignored.
@@ -187,7 +191,7 @@ public:
 
 private:
   //! The type of the scalar product sign function pointer.
-  typedef int (*SPS_type)(const Dense_Row&, const Dense_Row&);
+  typedef int (*SPS_type)(const Linear_Expression&, const Linear_Expression&);
 
   //! The scalar product sign function pointer.
   SPS_type sps_fp;

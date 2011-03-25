@@ -724,7 +724,7 @@ PPL::Generator_System
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = rows[i];
-    Scalar_Products::assign(numerator, expr.get_row(), row.get_row());
+    Scalar_Products::assign(numerator, expr, row);
     std::swap(numerator, row.get_row()[v.space_dimension()]);
   }
 

@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Scalar_Products_inlines_hh 1
 
 #include "Scalar_Products.defs.hh"
-#include "Dense_Row.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
@@ -35,21 +34,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline int
-Scalar_Products::sign(const Dense_Row& x, const Dense_Row& y) {
+Scalar_Products::sign(const Linear_Expression& x, const Linear_Expression& y) {
   PPL_DIRTY_TEMP_COEFFICIENT(z);
   assign(z, x, y);
   return sgn(z);
 }
 
 inline int
-Scalar_Products::reduced_sign(const Dense_Row& x, const Dense_Row& y) {
+Scalar_Products::reduced_sign(const Linear_Expression& x,
+                              const Linear_Expression& y) {
   PPL_DIRTY_TEMP_COEFFICIENT(z);
   reduced_assign(z, x, y);
   return sgn(z);
 }
 
 inline int
-Scalar_Products::homogeneous_sign(const Dense_Row& x, const Dense_Row& y) {
+Scalar_Products::homogeneous_sign(const Linear_Expression& x,
+                                  const Linear_Expression& y) {
   PPL_DIRTY_TEMP_COEFFICIENT(z);
   homogeneous_assign(z, x, y);
   return sgn(z);
@@ -57,12 +58,14 @@ Scalar_Products::homogeneous_sign(const Dense_Row& x, const Dense_Row& y) {
 
 inline int
 Scalar_Products::sign(const Constraint& c, const Generator& g) {
-  return sign(c.get_row(), g.get_row());
+  return sign(static_cast<const Linear_Expression&>(c),
+              static_cast<const Linear_Expression&>(g));
 }
 
 inline int
 Scalar_Products::sign(const Generator& g, const Constraint& c) {
-  return sign(g.get_row(), c.get_row());
+  return sign(static_cast<const Linear_Expression&>(g),
+              static_cast<const Linear_Expression&>(c));
 }
 
 inline int
@@ -77,7 +80,8 @@ Scalar_Products::reduced_sign(const Constraint& c, const Generator& g) {
   // The reduced scalar product is only defined if the topology of `c' is
   // NNC.
   PPL_ASSERT(!c.is_necessarily_closed());
-  return reduced_sign(c.get_row(), g.get_row());
+  return reduced_sign(static_cast<const Linear_Expression&>(c),
+                      static_cast<const Linear_Expression&>(g));
 }
 
 inline int
@@ -85,33 +89,34 @@ Scalar_Products::reduced_sign(const Generator& g, const Constraint& c) {
   // The reduced scalar product is only defined if the topology of `g' is
   // NNC.
   PPL_ASSERT(!c.is_necessarily_closed());
-  return reduced_sign(g.get_row(), c.get_row());
+  return reduced_sign(static_cast<const Linear_Expression&>(g),
+                      static_cast<const Linear_Expression&>(c));
 }
 
 inline void
 Scalar_Products::homogeneous_assign(Coefficient& z,
 				    const Linear_Expression& e,
 				    const Generator& g) {
-  homogeneous_assign(z, e.get_row(), g.get_row());
+  homogeneous_assign(z, e, static_cast<const Linear_Expression&>(g));
 }
 
 inline void
 Scalar_Products::homogeneous_assign(Coefficient& z,
 				    const Linear_Expression& e,
 				    const Grid_Generator& g) {
-  homogeneous_assign(z, e.get_row(), g.get_row());
+  homogeneous_assign(z, e, static_cast<const Linear_Expression&>(g));
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Generator& g) {
-  return homogeneous_sign(e.get_row(), g.get_row());
+  return homogeneous_sign(e, static_cast<const Linear_Expression&>(g));
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Grid_Generator& g) {
-  return homogeneous_sign(e.get_row(), g.get_row());
+  return homogeneous_sign(e, static_cast<const Linear_Expression&>(g));
 }
 
 inline int
@@ -145,7 +150,8 @@ Topology_Adjusted_Scalar_Product_Sign::operator()(const Constraint& c,
   PPL_ASSERT(sps_fp == (c.is_necessarily_closed()
 		    ? static_cast<SPS_type>(&Scalar_Products::sign)
 		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
-  return sps_fp(c.get_row(), g.get_row());
+  return sps_fp(static_cast<const Linear_Expression&>(c),
+                static_cast<const Linear_Expression&>(g));
 }
 
 inline int
@@ -155,7 +161,8 @@ Topology_Adjusted_Scalar_Product_Sign::operator()(const Generator& g,
   PPL_ASSERT(sps_fp == (g.is_necessarily_closed()
 		    ? static_cast<SPS_type>(&Scalar_Products::sign)
 		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
-  return sps_fp(g.get_row(), c.get_row());
+  return sps_fp(static_cast<const Linear_Expression&>(g),
+                static_cast<const Linear_Expression&>(c));
 }
 
 } // namespace Parma_Polyhedra_Library
