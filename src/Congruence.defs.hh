@@ -244,6 +244,12 @@ public:
   // TODO: Remove this.
   Coefficient& operator[](dimension_type i);
 
+  // TODO: Remove this.
+  Dense_Row& get_row();
+
+  // TODO: Remove this.
+  const Dense_Row& get_row() const;
+
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument thrown if the index of \p v
