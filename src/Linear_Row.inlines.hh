@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_Row_inlines_hh
 #define PPL_Linear_Row_inlines_hh 1
 
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Linear_Row.defs.hh"
+
 #include "globals.defs.hh"
 #include "assert.hh"
 #include "math_utilities.defs.hh"
@@ -181,17 +185,17 @@ inline dimension_type
 Linear_Row::max_space_dimension() {
   // The first coefficient holds the inhomogeneous term or the divisor.
   // In NNC rows, the last coefficient is for the epsilon dimension.
-  return max_size() - 2;
+  return Dense_Row::max_size() - 2;
 }
 
 inline dimension_type
 Linear_Row::max_num_columns() {
-  return max_size();
+  return Dense_Row::max_size();
 }
 
 inline dimension_type
 Linear_Row::space_dimension() const {
-  const dimension_type sz = size();
+  const dimension_type sz = get_row().size();
   return (sz == 0)
     ? 0
     : sz - (is_necessarily_closed() ? 1 : 2);
@@ -199,35 +203,39 @@ Linear_Row::space_dimension() const {
 
 inline
 Linear_Row::Linear_Row()
-  : Dense_Row() {
+  : Linear_Expression() {
 }
 
 inline
-Linear_Row::Linear_Row(const dimension_type sz, const dimension_type capacity,
+Linear_Row::Linear_Row(const dimension_type sz, const dimension_type /* capacity */,
                        const Flags f)
-  : Dense_Row(sz, capacity), flags_(f) {
+  : Linear_Expression(), flags_(f) {
+  get_row().resize(sz);
 }
 
 inline
 Linear_Row::Linear_Row(const dimension_type sz, const Flags f)
-  : Dense_Row(sz), flags_(f) {
+  : Linear_Expression(), flags_(f) {
+  get_row().resize(sz);
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y)
-  : Dense_Row(y), flags_(y.flags_) {
+  : Linear_Expression(y), flags_(y.flags_) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
                        const dimension_type size)
-  : Dense_Row(y, size, size), flags_(y.flags_) {
+  : Linear_Expression(y, size),
+    flags_(y.flags_) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
-		       const dimension_type sz, const dimension_type capacity)
-  : Dense_Row(y, sz, capacity), flags_(y.flags_) {
+		       const dimension_type sz, const dimension_type /* capacity */)
+  : Linear_Expression(y, sz),
+    flags_(y.flags_) {
 }
 
 inline
@@ -236,13 +244,13 @@ Linear_Row::~Linear_Row() {
 
 inline void
 Linear_Row::swap(Linear_Row& y) {
-  Dense_Row::swap(y);
+  Linear_Expression::swap(y);
   std::swap(flags_, y.flags_);
 }
 
 inline void
 Linear_Row::swap(dimension_type i, dimension_type j) {
-  Dense_Row::swap(i, j);
+  get_row().swap(i, j);
 }
 
 inline bool
@@ -276,10 +284,10 @@ Linear_Row::set_topology(Topology x) {
     return;
   if (topology() == NECESSARILY_CLOSED)
     // Add a column for the epsilon dimension.
-    resize(size() + 1);
+    get_row().resize(get_row().size() + 1);
   else {
-    PPL_ASSERT(size() > 0);
-    resize(size() - 1);
+    PPL_ASSERT(get_row().size() > 0);
+    get_row().resize(get_row().size() - 1);
   }
   flags_.set_topology(x);
 }
@@ -308,25 +316,24 @@ Linear_Row::set_not_necessarily_closed() {
 
 inline Coefficient_traits::const_reference
 Linear_Row::inhomogeneous_term() const {
-  return (*this)[0];
+  return get_row()[0];
 }
 
 inline Coefficient_traits::const_reference
 Linear_Row::coefficient(const dimension_type k) const {
-  return (*this)[k+1];
+  return get_row()[k+1];
 }
 
 inline void
 Linear_Row::strong_normalize() {
-  normalize();
+  get_row().normalize();
   sign_normalize();
 }
 
 /*! \relates Linear_Row */
 inline bool
 operator==(const Linear_Row& x, const Linear_Row& y) {
-  return x.flags() == y.flags()
-    && static_cast<const Dense_Row&>(x) == static_cast<const Dense_Row&>(y);
+  return x.flags() == y.flags() && x.get_row() == y.get_row();
 }
 
 /*! \relates Linear_Row */

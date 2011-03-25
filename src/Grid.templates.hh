@@ -94,7 +94,7 @@ Grid::Grid(const Box<Interval>& box,
 	    if (l_d < 0)
 	      neg_assign(u_n);
 	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
-	    point[k + 1] = l_n * u_n;
+	    point.get_row()[k + 1] = l_n * u_n;
 
             gen_sys.take_ownership_of_rows(rows);
 
@@ -271,7 +271,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
   typedef typename M::row_type M_row_type;
 
   const M_row_type& pivot = rows[pivot_index];
-  const Coefficient& pivot_dim = pivot[dim];
+  const Coefficient& pivot_dim = pivot.get_row()[dim];
 
   if (pivot_dim == 0)
     return;
@@ -307,7 +307,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
 	    && dim_kinds[kinds_index] == PARAMETER)) {
       M_row_type& row = rows[row_index];
 
-      const Coefficient& row_dim = row[dim];
+      const Coefficient& row_dim = row.get_row()[dim];
       // num_rows_to_subtract may be positive or negative.
       num_rows_to_subtract = row_dim / pivot_dim;
 
@@ -330,7 +330,8 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
       // added to row i.
       if (num_rows_to_subtract != 0)
 	for (dimension_type col = start; col <= end; ++col)
-	  sub_mul_assign(row[col], num_rows_to_subtract, pivot[col]);
+	  sub_mul_assign(row.get_row()[col], num_rows_to_subtract,
+                         pivot.get_row()[col]);
     }
   }
 }

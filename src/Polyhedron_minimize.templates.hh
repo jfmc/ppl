@@ -106,9 +106,9 @@ Polyhedron::minimize(const bool con_to_gen,
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
     dest_row_type dest_i;
     dest_i.set_topology(dest.topology());
-    dest_i.resize(dest_num_rows);
+    dest_i.get_row().resize(dest_num_rows);
     for (dimension_type j = dest_num_rows; j-- > 0; )
-      dest_i[j] = (i == j) ? 1 : 0;
+      dest_i.get_row()[j] = (i == j) ? 1 : 0;
     dest_i.set_is_line_or_equality();
     dest.insert_recycled(dest_i);
   }
@@ -159,7 +159,7 @@ Polyhedron::minimize(const bool con_to_gen,
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
        ++first_point)
-    if (dest[first_point][checking_index] > 0)
+    if (dest[first_point].get_row()[checking_index] > 0)
       break;
 
   if (first_point == dest_num_rows)
@@ -377,7 +377,7 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
        ++first_point)
-     if (dest[first_point][checking_index] > 0)
+     if (dest[first_point].get_row()[checking_index] > 0)
       break;
 
   if (first_point == dest_num_rows)

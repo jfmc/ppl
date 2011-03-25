@@ -36,10 +36,10 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence::Congruence(const Constraint& c)
   : row(c.is_equality()
-	? c
+	? c.get_row()
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
-	   c),
+	   c.get_row()),
 	c.space_dimension() + 2,
 	compute_capacity(c.space_dimension() + 2, Dense_Row::max_size())) {
   row[row.size() - 1] = 0;
@@ -48,10 +48,10 @@ PPL::Congruence::Congruence(const Constraint& c)
 PPL::Congruence::Congruence(const Constraint& c,
                             dimension_type new_space_dimension)
   : row(c.is_equality()
-        ? c
+        ? c.get_row()
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
-           c),
+           c.get_row()),
         new_space_dimension + 2,
         new_space_dimension + 2) {
   set_modulus(Coefficient_zero());
@@ -60,10 +60,10 @@ PPL::Congruence::Congruence(const Constraint& c,
 PPL::Congruence::Congruence(const Constraint& c,
                             dimension_type sz, dimension_type capacity)
   : row(c.is_equality()
-        ? c
+        ? c.get_row()
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
-           c),
+           c.get_row()),
         sz,
         capacity) {
   PPL_ASSERT(sz > 1);

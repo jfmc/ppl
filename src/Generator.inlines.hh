@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Generator_inlines_hh
 #define PPL_Generator_inlines_hh 1
 
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Generator.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -48,7 +52,7 @@ Generator::Generator(dimension_type num_columns,
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
-  Dense_Row::swap(e.get_row());
+  get_row().swap(e.get_row());
   set_flags(Flags(topology, (type == LINE
                              ? LINE_OR_EQUALITY
                              : RAY_OR_POINT_OR_INEQUALITY)));
@@ -94,15 +98,15 @@ Generator::space_dimension() const {
 inline void
 Generator::set_space_dimension(dimension_type space_dim) {
   if (topology() == NECESSARILY_CLOSED) {
-    resize(space_dim + 1);
+    get_row().resize(space_dim + 1);
   } else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
-      resize(space_dim + 2);
+      get_row().resize(space_dim + 2);
       Linear_Row::swap(space_dim + 1, old_space_dim + 1);
     } else {
       Linear_Row::swap(space_dim + 1, old_space_dim + 1);
-      resize(space_dim + 2);
+      get_row().resize(space_dim + 2);
     }
   }
 }
@@ -119,7 +123,7 @@ Generator::is_ray_or_point() const {
 
 inline bool
 Generator::is_line_or_ray() const {
-  return (*this)[0] == 0;
+  return get_row()[0] == 0;
 }
 
 inline bool
@@ -138,7 +142,7 @@ Generator::type() const {
   else {
     // Checking the value of the epsilon coefficient.
     const Generator& g = *this;
-    return (g[size() - 1] == 0) ? CLOSURE_POINT : POINT;
+    return (g.get_row()[get_row().size() - 1] == 0) ? CLOSURE_POINT : POINT;
   }
 }
 
@@ -239,9 +243,9 @@ operator!=(const Generator& x, const Generator& y) {
 
 inline void
 Generator::ascii_dump(std::ostream& s) const {
-  s << "size " << size() << " ";
-  for (dimension_type j = 0; j < size(); ++j)
-    s << (*this)[j] << ' ';
+  s << "size " << get_row().size() << " ";
+  for (dimension_type j = 0; j < get_row().size(); ++j)
+    s << get_row()[j] << ' ';
   switch (type()) {
   case Generator::LINE:
     s << "L ";
@@ -275,10 +279,10 @@ Generator::ascii_load(std::istream& s) {
   dimension_type sz;
   if (!(s >> sz))
     return false;
-  resize(sz);
+  get_row().resize(sz);
 
-  for (dimension_type j = 0; j < size(); ++j)
-    if (!(s >> (*this)[j]))
+  for (dimension_type j = 0; j < get_row().size(); ++j)
+    if (!(s >> get_row()[j]))
       return false;
 
   if (!(s >> str))

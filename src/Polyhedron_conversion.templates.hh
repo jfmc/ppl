@@ -453,7 +453,7 @@ Polyhedron::conversion(Source_Linear_System& source,
                                                   : dest.space_dimension() + 2;
 	neg_assign(scalar_prod[index_non_zero]);
 	for (dimension_type j = dest_num_columns; j-- > 0; )
-	  neg_assign(dest_rows[index_non_zero][j]);
+	  neg_assign(dest_rows[index_non_zero].get_row()[j]);
       }
       // Having changed a line to a ray, we set `dest_rows' to be a
       // non-sorted system, we decrement the number of lines of `dest_rows'
@@ -506,9 +506,9 @@ Polyhedron::conversion(Source_Linear_System& source,
             = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
                                                     : dest.space_dimension() + 2;
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    Coefficient& dest_i_c = dest_i[c];
+	    Coefficient& dest_i_c = dest_i.get_row()[c];
 	    dest_i_c *= normalized_sp_o;
-	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle[c]);
+	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle.get_row()[c]);
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
@@ -546,9 +546,9 @@ Polyhedron::conversion(Source_Linear_System& source,
             = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
                                                     : dest.space_dimension() + 2;
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    Coefficient& dest_i_c = dest_i[c];
+	    Coefficient& dest_i_c = dest_i.get_row()[c];
 	    dest_i_c *= normalized_sp_o;
-	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle[c]);
+	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle.get_row()[c]);
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
@@ -782,10 +782,10 @@ Polyhedron::conversion(Source_Linear_System& source,
                     = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
                                                             : dest.space_dimension() + 2;
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		    Coefficient& new_row_c = new_row[c];
-		    new_row_c = normalized_sp_i * dest_rows[j][c];
+		    Coefficient& new_row_c = new_row.get_row()[c];
+		    new_row_c = normalized_sp_i * dest_rows[j].get_row()[c];
 		    sub_mul_assign(new_row_c, normalized_sp_o,
-                                   dest_rows[i][c]);
+                                   dest_rows[i].get_row()[c]);
 		  }
                   WEIGHT_ADD_MUL(86, dest_num_columns);
 		  new_row.strong_normalize();

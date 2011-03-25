@@ -24,6 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Constraint_inlines_hh
 #define PPL_Constraint_inlines_hh 1
 
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Constraint.defs.hh"
+
 #include "Linear_Expression.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -43,7 +47,7 @@ Constraint::Constraint(dimension_type sz, dimension_type capacity, Flags flags)
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  Dense_Row::swap(e.get_row());
+  get_row().swap(e.get_row());
   set_flags(Flags(topology, (type == EQUALITY
                             ? LINE_OR_EQUALITY
                             : RAY_OR_POINT_OR_INEQUALITY)));
@@ -76,7 +80,7 @@ Constraint::~Constraint() {
 
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
-  Linear_Row::operator=(c);
+  static_cast<Linear_Row&>(*this) = static_cast<const Linear_Row&>(c);
   PPL_ASSERT(OK());
   
   return *this;
@@ -95,15 +99,15 @@ Constraint::space_dimension() const {
 inline void
 Constraint::set_space_dimension(dimension_type space_dim) {
   if (topology() == NECESSARILY_CLOSED) {
-    resize(space_dim + 1);
+    get_row().resize(space_dim + 1);
   } else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
-      resize(space_dim + 2);
+      get_row().resize(space_dim + 2);
       Linear_Row::swap(space_dim + 1, old_space_dim + 1);
     } else {
       Linear_Row::swap(space_dim + 1, old_space_dim + 1);
-      resize(space_dim + 2);
+      get_row().resize(space_dim + 2);
     }
   }
 }
@@ -125,7 +129,7 @@ Constraint::type() const {
   if (is_necessarily_closed())
     return NONSTRICT_INEQUALITY;
   else
-    return ((*this)[size() - 1] < 0)
+    return (get_row()[get_row().size() - 1] < 0)
       ? STRICT_INEQUALITY
       : NONSTRICT_INEQUALITY;
 }

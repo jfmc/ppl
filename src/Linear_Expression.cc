@@ -37,21 +37,21 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
   : row(c.space_dimension() + 1) {
   for (dimension_type i = row.size(); i-- > 0; )
-    row[i] = c[i];
+    row[i] = c.get_row()[i];
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
   : row(g.space_dimension() + 1) {
   // Do not copy the divisor of `g'.
   for (dimension_type i = row.size(); --i > 0; )
-    row[i] = g[i];
+    row[i] = g.get_row()[i];
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
   : row(g.space_dimension() + 1) {
   // Do not copy the divisor of `g'.
   for (dimension_type i = row.size(); --i > 0; )
-    row[i] = g[i];
+    row[i] = g.get_row()[i];
 }
 
 const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;

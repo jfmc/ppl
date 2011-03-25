@@ -481,10 +481,13 @@ PPL::Polyhedron::is_universe() const {
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
       const dimension_type eps_index = con_sys.space_dimension() + 1;
-      PPL_ASSERT(eps_leq_one[0] > 0 && eps_leq_one[eps_index] < 0
-	     && eps_geq_zero[0] == 0 && eps_geq_zero[eps_index] > 0);
+      PPL_ASSERT(eps_leq_one.get_row()[0] > 0
+                 && eps_leq_one.get_row()[eps_index] < 0
+                 && eps_geq_zero.get_row()[0] == 0
+                 && eps_geq_zero.get_row()[eps_index] > 0);
       for (dimension_type i = 1; i < eps_index; ++i)
-	PPL_ASSERT(eps_leq_one[i] == 0 && eps_geq_zero[i] == 0);
+	PPL_ASSERT(eps_leq_one.get_row()[i] == 0
+	           && eps_geq_zero.get_row()[i] == 0);
 #endif
       return true;
     }
@@ -734,7 +737,7 @@ PPL::Polyhedron::constrains(const Variable var) const {
 	const int sign = sgn(gen_sys_i.coefficient(var));
 	if (sign != 0) {
 	  for (dimension_type j = space_dim+1; --j > 0; )
-	    if (j != var_id && gen_sys_i[j] != 0)
+	    if (j != var_id && gen_sys_i.get_row()[j] != 0)
 	      goto next;
 	  if (gen_sys_i.is_line())
 	    return true;
@@ -1092,7 +1095,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       bool no_epsilon_geq_zero = true;
       const dimension_type eps_index = con_sys.space_dimension() + 1;
       for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-	if (con_sys[i][eps_index] > 0) {
+	if (con_sys[i].get_row()[eps_index] > 0) {
 	  no_epsilon_geq_zero = false;
 	  break;
 	}
@@ -1335,8 +1338,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// (normalized) closure point.
 	Generator cp;
         gen_sys.release_row(cp);
-	cp[space_dim + 1] = 0;
-	cp.normalize();
+	cp.get_row()[space_dim + 1] = 0;
+	cp.get_row().normalize();
         gen_sys.insert_recycled(cp);
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
@@ -1375,8 +1378,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// (normalized) closure point.
 	Generator cp;
         gen_sys.release_row(cp);
-	cp[space_dim + 1] = 0;
-	cp.normalize();
+	cp.get_row()[space_dim + 1] = 0;
+	cp.get_row().normalize();
         if (has_pending) {
           gen_sys.insert_pending_recycled(cp);
           // Re-insert the point (which is already normalized).
@@ -2901,12 +2904,12 @@ generalized_affine_image(const Variable var,
           rows.push_back(gen_i);
           Generator& new_gen = rows.back();
 	  if (relsym == GREATER_THAN)
-	    ++new_gen[var_space_dim];
+	    ++new_gen.get_row()[var_space_dim];
 	  else
-	    --new_gen[var_space_dim];
+	    --new_gen.get_row()[var_space_dim];
           
 	  // Transform gen_i' into a closure point.
-	  gen_i[eps_index] = 0;
+	  gen_i.get_row()[eps_index] = 0;
 	}
       }
 
@@ -3375,9 +3378,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
-	    g[0] = 0;
+	    g.get_row()[0] = 0;
 	    // Enforce normalization.
-	    g.normalize();
+	    g.get_row().normalize();
 	  }
 	}
 	break;
@@ -3400,9 +3403,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {
-	    g[0] = 0;
+	    g.get_row()[0] = 0;
 	    // Enforce normalization.
-	    g.normalize();
+	    g.get_row().normalize();
 	  }
 	}
 	break;
@@ -3505,7 +3508,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the value if there is a constant value.
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.get_row()[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
       if (first_candidate) {
 	// We have a (new) candidate value.
@@ -3567,10 +3570,10 @@ PPL::Polyhedron::topological_closure_assign() {
     // Transform all strict inequalities into non-strict ones.
     for (dimension_type i = rows.size(); i-- > 0; ) {
       Constraint& c = rows[i];
-      if (c[eps_index] < 0 && !c.is_tautological()) {
-	c[eps_index] = 0;
+      if (c.get_row()[eps_index] < 0 && !c.is_tautological()) {
+	c.get_row()[eps_index] = 0;
 	// Enforce normalization.
-	c.normalize();
+	c.get_row().normalize();
 	changed = true;
       }
     }

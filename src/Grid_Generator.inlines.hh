@@ -24,11 +24,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_Generator_inlines_hh
 #define PPL_Grid_Generator_inlines_hh 1
 
+// TODO: Remove this.
+// It was added to please KDevelop4.
+#include "Grid_Generator.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline
 Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
-  Dense_Row::swap(e.get_row());
+  get_row().swap(e.get_row());
   set_flags(Flags(NECESSARILY_CLOSED, (type == LINE
                                        ? LINE_OR_EQUALITY
                                        : RAY_OR_POINT_OR_INEQUALITY)));
@@ -80,11 +84,11 @@ inline void
 Grid_Generator::set_space_dimension(dimension_type space_dim) {
   const dimension_type old_space_dim = space_dimension();
   if (space_dim > old_space_dim) {
-    resize(space_dim + 2);
+    get_row().resize(space_dim + 2);
     Linear_Row::swap(space_dim + 1, old_space_dim + 1);
   } else {
     Linear_Row::swap(space_dim + 1, old_space_dim + 1);
-    resize(space_dim + 2);
+    get_row().resize(space_dim + 2);
   }
 }
 
@@ -107,7 +111,7 @@ Grid_Generator::is_parameter() const {
 
 inline bool
 Grid_Generator::is_line_or_parameter() const {
-  return (*this)[0] == 0;
+  return get_row()[0] == 0;
 }
 
 inline bool
@@ -125,9 +129,9 @@ Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
   PPL_ASSERT(!is_line());
   Linear_Row& x = *this;
   if (is_line_or_parameter())
-    x[size() - 1] = d;
+    x.get_row()[get_row().size() - 1] = d;
   else
-    x[0] = d;
+    x.get_row()[0] = d;
 }
 
 inline Coefficient_traits::const_reference
@@ -136,16 +140,16 @@ Grid_Generator::divisor() const {
     throw_invalid_argument("divisor()", "*this is a line");
   const Linear_Row& x = *this;
   if (is_line_or_parameter())
-    return x[size() - 1];
+    return x.get_row()[get_row().size() - 1];
   else
-    return x[0];
+    return x.get_row()[0];
 }
 
 inline bool
 Grid_Generator::is_equal_at_dimension(dimension_type dim,
 				      const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
-  return x[dim] * y.divisor() == y[dim] * x.divisor();
+  return x.get_row()[dim] * y.divisor() == y.get_row()[dim] * x.divisor();
 }
 
 inline void
@@ -168,7 +172,7 @@ inline void
 Grid_Generator::negate(dimension_type first, dimension_type last) {
   Linear_Row& x = *this;
   for ( ; first < last; ++first)
-    neg_assign(x[first]);
+    neg_assign(x.get_row()[first]);
 }
 
 inline Coefficient_traits::const_reference

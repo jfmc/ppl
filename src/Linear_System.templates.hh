@@ -473,7 +473,7 @@ Linear_System<Row>::normalize() {
   const dimension_type nrows = rows.size();
   // We normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
-    rows[i].normalize();
+    rows[i].get_row().normalize();
   sorted = (nrows <= 1);
   PPL_ASSERT(OK());
 }
@@ -589,7 +589,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
-      if ((*this)[i][j] == 0)
+      if ((*this)[i].get_row()[j] == 0)
 	continue;
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
@@ -602,7 +602,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // equalities following it, so that all the elements on the j-th
       // column in these rows become 0.
       for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k)
-	if (rows[k][j] != 0) {
+	if (rows[k].get_row()[j] != 0) {
 	  rows[k].linear_combine(rows[rank], j);
 	  changed = true;
 	}
@@ -650,13 +650,13 @@ Linear_System<Row>
     // `j' will be the index of such a element.
     Row& row_k = rows[k];
     dimension_type j = ncols - 1;
-    while (j != 0 && row_k[j] == 0)
+    while (j != 0 && row_k.get_row()[j] == 0)
       --j;
 
     // Go through the equalities above `row_k'.
     for (dimension_type i = k; i-- > 0; ) {
       Row& row_i = rows[i];
-      if (row_i[j] != 0) {
+      if (row_i.get_row()[j] != 0) {
 	// Combine linearly `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
 	row_i.linear_combine(row_k, j);
@@ -675,17 +675,17 @@ Linear_System<Row>
     // Since an inequality (or ray or point) cannot be multiplied
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
-    const bool have_to_negate = (row_k[j] < 0);
+    const bool have_to_negate = (row_k.get_row()[j] < 0);
     if (have_to_negate)
       for (dimension_type h = ncols; h-- > 0; )
-	neg_assign(row_k[h]);
+	neg_assign(row_k.get_row()[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
     // Go through all the other rows of the system.
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Row& row_i = rows[i];
-      if (row_i[j] != 0) {
+      if (row_i.get_row()[j] != 0) {
 	// Combine linearly the `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
 	row_i.linear_combine(row_k, j);
@@ -701,7 +701,7 @@ Linear_System<Row>
     if (have_to_negate)
       // Negate `row_k' to restore strong-normalization.
       for (dimension_type h = ncols; h-- > 0; )
-	neg_assign(row_k[h]);
+	neg_assign(row_k.get_row()[h]);
   }
 
   // Trying to keep sortedness.
@@ -782,7 +782,7 @@ Linear_System<Row>
     // rows and columns) is set to the specular image of the identity
     // matrix.
     Row& r = rows[i];
-    r[c++] = 1;
+    r.get_row()[c++] = 1;
     r.set_is_line_or_equality();
     // Note: `r' is strongly normalized.
   }
@@ -798,7 +798,8 @@ Linear_System<Row>
     if (!is_sorted()) {
       for (dimension_type i = n; i-- > 0; ) {
         Row& r = rows[i];
-        std::swap(r[old_n_columns - 1], r[old_n_columns - 1 + n]);
+        std::swap(r.get_row()[old_n_columns - 1],
+                  r.get_row()[old_n_columns - 1 + n]);
       }
     } else {
       dimension_type old_eps_index = old_n_columns - 1;
@@ -806,7 +807,8 @@ Linear_System<Row>
       // swap coefficients to preserve sortedness.
       for (dimension_type i = n; i-- > 0; ++old_eps_index) {
         Row& r = rows[i];
-        std::swap(r[old_eps_index], r[old_eps_index + 1]);
+        std::swap(r.get_row()[old_eps_index],
+                  r.get_row()[old_eps_index + 1]);
       }
 
       sorted = true;

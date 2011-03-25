@@ -67,11 +67,11 @@ PPL::Generator::point(const Linear_Expression& e,
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
-    for (dimension_type i = g.size(); i-- > 0; )
-      neg_assign(g[i]);
+    for (dimension_type i = g.get_row().size(); i-- > 0; )
+      neg_assign(g.get_row()[i]);
 
   // Enforce normalization.
-  g.normalize();
+  g.get_row().normalize();
   return g;
 }
 
@@ -90,7 +90,7 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   // TODO: Avoid the mark_as_*() methods if possible.
   g.mark_as_not_necessarily_closed();
   // Enforce normalization.
-  g.normalize();
+  g.get_row().normalize();
   return g;
 }
 
@@ -145,23 +145,23 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
     const dimension_type vsi_col = *vsi+1;
     // Move all columns in between to the left.
     while (src_col < vsi_col)
-      std::swap((*this)[dst_col++], (*this)[src_col++]);
+      std::swap(get_row()[dst_col++], get_row()[src_col++]);
     ++src_col;
   }
   // Move any remaining columns.
-  const dimension_type sz = size();
+  const dimension_type sz = get_row().size();
   while (src_col < sz)
-    std::swap((*this)[dst_col++], (*this)[src_col++]);
+    std::swap(get_row()[dst_col++], get_row()[src_col++]);
 
   // The number of remaining coefficients is `dst_col'.
-  resize(dst_col);
+  get_row().resize(dst_col);
 
   if (is_line_or_ray() && all_homogeneous_terms_are_zero()) {
     // Become a point.
     set_is_ray_or_point();
-    (*this)[0] = 1;
+    get_row()[0] = 1;
     if (is_not_necessarily_closed())
-      (*this)[size() - 1] = 1;
+      get_row()[get_row().size() - 1] = 1;
 
     PPL_ASSERT(OK());
     return false;
@@ -181,17 +181,17 @@ PPL::Generator
     return;
 
   if (n == 2) {
-    swap(cycle[0].space_dimension(), cycle[1].space_dimension());
+    get_row().swap(cycle[0].space_dimension(), cycle[1].space_dimension());
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    tmp = Dense_Row::operator[](cycle.back().space_dimension());
+    tmp = get_row()[cycle.back().space_dimension()];
     for (dimension_type i = n - 1; i-- > 0; )
-      swap(cycle[i + 1].space_dimension(),
-           cycle[i].space_dimension());
+      get_row().swap(cycle[i + 1].space_dimension(),
+                     cycle[i].space_dimension());
     if (tmp == 0)
-      reset(cycle[0].space_dimension());
+      get_row().reset(cycle[0].space_dimension());
     else
-      std::swap(tmp, Dense_Row::operator[](cycle[0].space_dimension()));
+      std::swap(tmp, get_row()[cycle[0].space_dimension()]);
   }
   // *this is still normalized but may be not strongly normalized: sign
   // normalization is necessary.
@@ -230,7 +230,7 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   // Here the epsilon-coefficient, if present, is zero.
   // It is sufficient to check for syntactic equality.
   for (dimension_type i = x_space_dim + 1; i-- > 0; )
-    if (x[i] != y[i])
+    if (x.get_row()[i] != y.get_row()[i])
       return false;
   return true;
 }
@@ -286,11 +286,11 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   case Generator::CLOSURE_POINT:
     s << "c(";
   any_point:
-    if (g[0] != 1) {
+    if (g.get_row()[0] != 1) {
       needed_divisor = true;
       dimension_type num_non_zero_coefficients = 0;
       for (dimension_type v = 0; v < num_variables; ++v)
-	if (g[v+1] != 0)
+	if (g.get_row()[v+1] != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
 	    s << "(";
@@ -303,7 +303,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   PPL_DIRTY_TEMP_COEFFICIENT(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    gv = g[v+1];
+    gv = g.get_row()[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -328,7 +328,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   if (extra_parentheses)
     s << ")";
   if (needed_divisor)
-    s << "/" << g[0];
+    s << "/" << g.get_row()[0];
   s << ")";
   return s;
 }
@@ -362,11 +362,11 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 	 && type() == CLOSURE_POINT
 	 && p.type() == POINT);
   const Generator& cp = *this;
-  if (cp[0] == p[0]) {
+  if (cp.get_row()[0] == p.get_row()[0]) {
     // Divisors are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
-    for (dimension_type i = cp.size() - 2; i > 0; --i)
-      if (cp[i] != p[i])
+    for (dimension_type i = cp.get_row().size() - 2; i > 0; --i)
+      if (cp.get_row()[i] != p.get_row()[i])
 	return false;
     return true;
   }
@@ -374,21 +374,21 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
     // Divisors are different: divide them by their GCD
     // to simplify the following computation.
     PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-    gcd_assign(gcd, cp[0], p[0]);
+    gcd_assign(gcd, cp.get_row()[0], p.get_row()[0]);
     const bool rel_prime = (gcd == 1);
     PPL_DIRTY_TEMP_COEFFICIENT(cp_0_scaled);
     PPL_DIRTY_TEMP_COEFFICIENT(p_0_scaled);
     if (!rel_prime) {
-      exact_div_assign(cp_0_scaled, cp[0], gcd);
-      exact_div_assign(p_0_scaled, p[0], gcd);
+      exact_div_assign(cp_0_scaled, cp.get_row()[0], gcd);
+      exact_div_assign(p_0_scaled, p.get_row()[0], gcd);
     }
-    const Coefficient& cp_div = rel_prime ? cp[0] : cp_0_scaled;
-    const Coefficient& p_div = rel_prime ? p[0] : p_0_scaled;
+    const Coefficient& cp_div = rel_prime ? cp.get_row()[0] : cp_0_scaled;
+    const Coefficient& p_div = rel_prime ? p.get_row()[0] : p_0_scaled;
     PPL_DIRTY_TEMP_COEFFICIENT(prod1);
     PPL_DIRTY_TEMP_COEFFICIENT(prod2);
-    for (dimension_type i = cp.size() - 2; i > 0; --i) {
-      prod1 = cp[i] * p_div;
-      prod2 = p[i] * cp_div;
+    for (dimension_type i = cp.get_row().size() - 2; i > 0; --i) {
+      prod1 = cp.get_row()[i] * p_div;
+      prod2 = p.get_row()[i] * cp_div;
       if (prod1 != prod2)
 	return false;
     }
@@ -406,12 +406,12 @@ PPL::Generator::OK() const {
 
   // Topology consistency check.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
-  if (size() < min_size) {
+  if (get_row().size() < min_size) {
 #ifndef NDEBUG
     std::cerr << "Generator has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
-	      << "size is " << size()
+	      << "size is " << get_row().size()
 	      << ", minimum is " << min_size << "."
 	      << std::endl;
 #endif
@@ -434,14 +434,14 @@ PPL::Generator::OK() const {
   case LINE:
     // Intentionally fall through.
   case RAY:
-    if (g[0] != 0) {
+    if (g.get_row()[0] != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines must have a zero inhomogeneous term!"
 		<< std::endl;
 #endif
       return false;
     }
-    if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
+    if (!g.is_necessarily_closed() && g.get_row()[get_row().size() - 1] != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines and rays must have a zero coefficient "
 		<< "for the epsilon dimension!"
@@ -461,7 +461,7 @@ PPL::Generator::OK() const {
     break;
 
   case POINT:
-    if (g[0] <= 0) {
+    if (g.get_row()[0] <= 0) {
 #ifndef NDEBUG
       std::cerr << "Points must have a positive divisor!"
 		<< std::endl;
@@ -469,7 +469,7 @@ PPL::Generator::OK() const {
       return false;
     }
     if (!g.is_necessarily_closed())
-      if (g[size() - 1] <= 0) {
+      if (g.get_row()[get_row().size() - 1] <= 0) {
 #ifndef NDEBUG
 	std::cerr << "In the NNC topology, points must have epsilon > 0"
 		  << std::endl;
@@ -479,7 +479,7 @@ PPL::Generator::OK() const {
     break;
 
   case CLOSURE_POINT:
-    if (g[0] <= 0) {
+    if (g.get_row()[0] <= 0) {
 #ifndef NDEBUG
       std::cerr << "Closure points must have a positive divisor!"
 		<< std::endl;

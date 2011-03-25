@@ -26,9 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.types.hh"
 #include "globals.defs.hh"
-#include "Dense_Row.defs.hh"
 #include "Topology.hh"
-#include "Linear_Expression.types.hh"
+#include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 
@@ -122,7 +121,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
-class Parma_Polyhedra_Library::Linear_Row : public Dense_Row {
+class Parma_Polyhedra_Library::Linear_Row : public Linear_Expression {
 public:
   //! The possible kinds of Linear_Row objects.
   enum Kind {
@@ -345,6 +344,8 @@ public:
 
   //! Returns the coefficient \f$a_n\f$.
   Coefficient_traits::const_reference coefficient(dimension_type n) const;
+
+  using Linear_Expression::coefficient;
 
   /*! \brief
     Normalizes the sign of the coefficients so that the first non-zero

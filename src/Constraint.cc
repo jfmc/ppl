@@ -72,8 +72,8 @@ PPL::Constraint::Constraint(const Congruence& cg)
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.
   for (dimension_type i = cg.space_dimension(); i-- > 0; )
-    c[i + 1] = cg.coefficient(Variable(i));
-  c[0] = cg.inhomogeneous_term();
+    c.get_row()[i + 1] = cg.coefficient(Variable(i));
+  c.get_row()[0] = cg.inhomogeneous_term();
   // Enforce normalization.
   strong_normalize();
   
@@ -95,8 +95,8 @@ PPL::Constraint::Constraint(const Congruence& cg,
   PPL_ASSERT(sz > 0);
   --sz;
   while (sz-- > 0)
-    c[sz + 1] = cg.coefficient(Variable(sz));
-  c[0] = cg.inhomogeneous_term();
+    c.get_row()[sz + 1] = cg.coefficient(Variable(sz));
+  c.get_row()[0] = cg.inhomogeneous_term();
   
   PPL_ASSERT(OK());
 }
@@ -124,16 +124,16 @@ PPL::Constraint::remove_space_dimensions(const Variables_Set& vars) {
     const dimension_type vsi_col = *vsi+1;
     // Move all columns in between to the left.
     while (src_col < vsi_col)
-      std::swap((*this)[dst_col++], (*this)[src_col++]);
+      std::swap(get_row()[dst_col++], get_row()[src_col++]);
     ++src_col;
   }
   // Move any remaining columns.
-  const dimension_type sz = size();
+  const dimension_type sz = get_row().size();
   while (src_col < sz)
-    std::swap((*this)[dst_col++], (*this)[src_col++]);
+    std::swap(get_row()[dst_col++], get_row()[src_col++]);
 
   // The number of remaining coefficients is `dst_col'.
-  resize(dst_col);
+  get_row().resize(dst_col);
 
   PPL_ASSERT(OK());
   return true;
@@ -148,17 +148,17 @@ PPL::Constraint
     return;
 
   if (n == 2) {
-    swap(cycle[0].space_dimension(), cycle[1].space_dimension());
+    get_row().swap(cycle[0].space_dimension(), cycle[1].space_dimension());
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    tmp = Dense_Row::operator[](cycle.back().space_dimension());
+    tmp = get_row()[cycle.back().space_dimension()];
     for (dimension_type i = n - 1; i-- > 0; )
-      swap(cycle[i + 1].space_dimension(),
-           cycle[i].space_dimension());
+     get_row().swap(cycle[i + 1].space_dimension(),
+                    cycle[i].space_dimension());
     if (tmp == 0)
-      reset(cycle[0].space_dimension());
+      get_row().reset(cycle[0].space_dimension());
     else
-      std::swap(tmp, Dense_Row::operator[](cycle[0].space_dimension()));
+      std::swap(tmp, get_row()[cycle[0].space_dimension()]);
   }
   // *this is still normalized but may be not strongly normalized: sign
   // normalization is necessary.
@@ -168,22 +168,22 @@ PPL::Constraint
 
 bool
 PPL::Constraint::is_tautological() const {
-  PPL_ASSERT(size() > 0);
+  PPL_ASSERT(get_row().size() > 0);
   const Constraint& x = *this;
   if (x.all_homogeneous_terms_are_zero())
     if (is_equality())
-      return x[0] == 0;
+      return x.get_row()[0] == 0;
     else
       // Non-strict inequality constraint.
-      return x[0] >= 0;
+      return x.get_row()[0] >= 0;
   else
     // There is a non-zero homogeneous coefficient.
     if (is_necessarily_closed())
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      const dimension_type eps_index = size() - 1;
-      const int eps_sign = sgn(x[eps_index]);
+      const dimension_type eps_index = get_row().size() - 1;
+      const int eps_sign = sgn(x.get_row()[eps_index]);
       if (eps_sign > 0)
 	// We have found the constraint epsilon >= 0.
 	return true;
@@ -192,13 +192,13 @@ PPL::Constraint::is_tautological() const {
 	return false;
       else {
 	// Here the epsilon coefficient is negative: strict inequality.
-	if (x[0] <= 0)
+	if (x.get_row()[0] <= 0)
 	  // A strict inequality such as `lhs - k > 0',
 	  // where k is a non negative integer, cannot be trivially true.
 	  return false;
 	// Checking for another non-zero coefficient.
 	for (dimension_type i = eps_index; --i > 0; )
-	  if (x[i] != 0)
+	  if (x.get_row()[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
 	// where k is a positive integer.
@@ -209,36 +209,36 @@ PPL::Constraint::is_tautological() const {
 
 bool
 PPL::Constraint::is_inconsistent() const {
-  PPL_ASSERT(size() > 0);
+  PPL_ASSERT(get_row().size() > 0);
   const Constraint& x = *this;
   if (x.all_homogeneous_terms_are_zero())
     // The inhomogeneous term is the only non-zero coefficient.
     if (is_equality())
-      return x[0] != 0;
+      return x.get_row()[0] != 0;
     else
       // Non-strict inequality constraint.
-      return x[0] < 0;
+      return x.get_row()[0] < 0;
   else
     // There is a non-zero homogeneous coefficient.
     if (is_necessarily_closed())
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      const dimension_type eps_index = size() - 1;
-      if (x[eps_index] >= 0)
+      const dimension_type eps_index = get_row().size() - 1;
+      if (x.get_row()[eps_index] >= 0)
 	// If positive, we have found the constraint epsilon >= 0.
 	// If zero, one of the `true' dimensions has a non-zero coefficient.
 	// In both cases, it is not trivially false.
 	return false;
       else {
 	// Here the epsilon coefficient is negative: strict inequality.
-	if (x[0] > 0)
+	if (x.get_row()[0] > 0)
 	  // A strict inequality such as `lhs + k > 0',
 	  // where k is a positive integer, cannot be trivially false.
 	  return false;
 	// Checking for another non-zero coefficient.
 	for (dimension_type i = eps_index; --i > 0; )
-	  if (x[i] != 0)
+	  if (x.get_row()[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
 	// where k is zero or a negative integer.
@@ -284,7 +284,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   // thus, the epsilon-coefficient, if present, is zero.
   // It is sufficient to check for syntactic equality.
   for (dimension_type i = x_space_dim + 1; i-- > 0; )
-    if (x[i] != y[i])
+    if (x.get_row()[i] != y.get_row()[i])
       return false;
   return true;
 }
@@ -340,9 +340,9 @@ PPL::Constraint::finalize() {
 
 void
 PPL::Constraint::ascii_dump(std::ostream& s) const {
-  s << "size " << size() << " ";
-  for (dimension_type j = 0; j < size(); ++j)
-    s << (*this)[j] << ' ';
+  s << "size " << get_row().size() << " ";
+  for (dimension_type j = 0; j < get_row().size(); ++j)
+    s << get_row()[j] << ' ';
   switch (type()) {
   case Constraint::EQUALITY:
     s << "=";
@@ -377,10 +377,10 @@ PPL::Constraint::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
-  resize(new_size);
+  get_row().resize(new_size);
 
   for (dimension_type j = 0; j < new_size; ++j)
-    if (!(s >> (*this)[j]))
+    if (!(s >> get_row()[j]))
       return false;
 
   if (!(s >> str))
@@ -498,19 +498,20 @@ PPL::Constraint::OK() const {
 
   // Topology consistency checks.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
-  if (size() < min_size) {
+  if (get_row().size() < min_size) {
 #ifndef NDEBUG
     std::cerr << "Constraint has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
-	      << "size is " << size()
+	      << "size is " << get_row().size()
 	      << ", minimum is " << min_size << "."
 	      << std::endl;
 #endif
     return false;
   }
 
-  if (is_equality() && !is_necessarily_closed() && (*this)[size() - 1] != 0) {
+  if (is_equality() && !is_necessarily_closed()
+      && get_row()[get_row().size() - 1] != 0) {
 #ifndef NDEBUG
     std::cerr << "Illegal constraint: an equality cannot be strict."
 	      << std::endl;

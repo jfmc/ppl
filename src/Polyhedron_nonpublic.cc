@@ -619,7 +619,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // We will add it to the extremum as soon as we find it.
       PPL_DIRTY_TEMP0(mpq_class, candidate);
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.get_row()[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
       const bool g_is_point = gen_sys_i.is_point();
       if (first_candidate
@@ -1152,11 +1152,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  const Constraint& c = cs[i];
 	  bool all_zeroes = true;
 	  for (dimension_type k = eps_index; k-- > 1; )
-	    if (c[k] != 0) {
+	    if (c.get_row()[k] != 0) {
 	      all_zeroes = false;
 	      break;
 	    }
-	  if (all_zeroes && (c[0] + c[eps_index] == 0)) {
+	  if (all_zeroes && (c.get_row()[0] + c.get_row()[eps_index] == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
@@ -1318,10 +1318,10 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       }
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	if (g[eps_index] != g[0]) {
-	  g[eps_index] = g[0];
+	if (g.get_row()[eps_index] != g.get_row()[0]) {
+	  g.get_row()[eps_index] = g.get_row()[0];
 	  // Enforce normalization.
-	  g.normalize();
+	  g.get_row().normalize();
 	  changed = true;
 	}
 	// Consider next generator.
@@ -1995,7 +1995,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (x_gs_red_in_y[i])
       continue;
     const Generator& x_g = x_gs[i];
-    const dimension_type row_sz = x_g.size();
+    const dimension_type row_sz = x_g.get_row().size();
     const bool x_g_is_line = x_g.is_line_or_equality();
     for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
       if (y_gs_red_in_x[j])
@@ -2008,17 +2008,17 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       // since any strictly positive combination would do.
       mid_g = x_g;
       for (dimension_type k = row_sz; k-- > 0; )
-        mid_g[k] += y_g[k];
+        mid_g.get_row()[k] += y_g.get_row()[k];
       // A zero ray is not a well formed generator.
       const bool illegal_ray
-        = (mid_g[0] == 0 && mid_g.all_homogeneous_terms_are_zero());
+        = (mid_g.get_row()[0] == 0 && mid_g.all_homogeneous_terms_are_zero());
       // A zero ray cannot be generated from a line: this holds
       // because x_row (resp., y_row) is not subsumed by y (resp., x).
       PPL_ASSERT(!(illegal_ray && (x_g_is_line || y_g_is_line)));
       if (illegal_ray)
         continue;
       if (x_g_is_line) {
-        mid_g.normalize();
+        mid_g.get_row().normalize();
         if (y_g_is_line)
           // mid_row is a line too: sign normalization is needed.
           mid_g.sign_normalize();
@@ -2039,8 +2039,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
         // Step 6.1: (re-)compute mid_row = x_g - y_g.
         mid_g = x_g;
         for (dimension_type k = row_sz; k-- > 0; )
-          mid_g[k] -= y_g[k];
-        mid_g.normalize();
+          mid_g.get_row()[k] -= y_g.get_row()[k];
+        mid_g.get_row().normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
@@ -2050,8 +2050,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
         // Step 6.1: (re-)compute mid_row = - x_row + y_row.
         mid_g = y_g;
         for (dimension_type k = row_sz; k-- > 0; )
-          mid_g[k] -= x_g[k];
-        mid_g.normalize();
+          mid_g.get_row()[k] -= x_g.get_row()[k];
+        mid_g.get_row().normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
@@ -2140,19 +2140,19 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 
     if (pvars != 0) {
       for (dimension_type i = space_dim; i-- > 0; )
-	if (c[i+1] != 0 && pvars->find(i) == pvars->end())
+	if (c.get_row()[i+1] != 0 && pvars->find(i) == pvars->end())
 	  goto next_constraint;
     }
 
     if (!is_necessarily_closed()) {
       // Transform all strict inequalities into non-strict ones,
       // with the inhomogeneous term incremented by 1.
-      if (c[eps_index] < 0) {
-	c[eps_index] = 0;
-	--c[0];
+      if (c.get_row()[eps_index] < 0) {
+	c.get_row()[eps_index] = 0;
+	--c.get_row()[0];
 	// Enforce normalization.
 	// FIXME: is this really necessary?
-	c.normalize();
+	c.get_row().normalize();
 	changed = true;
       }
     }
@@ -2161,7 +2161,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       // Compute the GCD of all the homogeneous terms.
       dimension_type i = space_dim+1;
       while (i > 1) {
-	const Coefficient& c_i = c[--i];
+	const Coefficient& c_i = c.get_row()[--i];
 	if (const int c_i_sign = sgn(c_i)) {
 	  gcd = c_i;
 	  if (c_i_sign < 0)
@@ -2176,7 +2176,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       if (gcd == 1)
 	goto next_constraint;
       while (i > 1) {
-	const Coefficient& c_i = c[--i];
+	const Coefficient& c_i = c.get_row()[--i];
 	if (c_i != 0) {
 	  // See the comment in Dense_Row::normalize().
 	  gcd_assign(gcd, c_i, gcd);
@@ -2185,7 +2185,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 	}
       }
       PPL_ASSERT(gcd != 1);
-      PPL_ASSERT(c[0] % gcd != 0);
+      PPL_ASSERT(c.get_row()[0] % gcd != 0);
 
       // If we have an equality, the polyhedron becomes empty.
       if (c.is_equality()) {
@@ -2195,10 +2195,10 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 
       // Divide the inhomogeneous coefficients by the GCD.
       for (dimension_type k = space_dim+1; --k > 0; ) {
-	Coefficient& c_k = c[k];
+	Coefficient& c_k = c.get_row()[k];
 	exact_div_assign(c_k, c_k, gcd);
       }
-      Coefficient& c_0 = c[0];
+      Coefficient& c_0 = c.get_row()[0];
       const int c_0_sign = sgn(c_0);
       c_0 /= gcd;
       if (c_0_sign < 0)
