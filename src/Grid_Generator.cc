@@ -68,8 +68,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter, so as to satisfy the invariant.
   if (d < 0)
-    for (dimension_type i = gg_size; i-- > 0; )
-      neg_assign(ec.get_row()[i]);
+    neg_assign(ec);
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
@@ -93,8 +92,7 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
   // If the divisor is negative, negate it and all the coefficients of
   // the point, so as to satisfy the invariant.
   if (d < 0)
-    for (dimension_type i = ec.get_row().size() - 1; i-- > 0; )
-      neg_assign(ec.get_row()[i]);
+    neg_assign(ec);
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
