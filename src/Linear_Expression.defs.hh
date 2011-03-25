@@ -160,6 +160,9 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 Linear_Expression&
 operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
+void
+neg_assign(Linear_Expression& e);
+
 //! Returns the linear expression \p e + \p n * \p v and assigns it to \p e.
 /*! \relates Linear_Expression */
 Linear_Expression&
@@ -451,6 +454,9 @@ private:
 
   friend Linear_Expression&
   operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend void
+  neg_assign(Linear_Expression& e);
 
   friend Linear_Expression&
   add_mul_assign(Linear_Expression& e,

@@ -357,6 +357,13 @@ PPL::operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
+void
+PPL::neg_assign(Linear_Expression& e) {
+  for (dimension_type i = e.row.size(); i-- > 0; )
+    neg_assign(e.row[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
 PPL::add_mul_assign(Linear_Expression& e,
                     Coefficient_traits::const_reference n,
