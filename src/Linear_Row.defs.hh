@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.types.hh"
 #include "globals.defs.hh"
-#include "Topology.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
@@ -35,9 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! The base class for linear expressions, constraints and generators.
 /*! \ingroup PPL_CXX_interface
   The class Linear_Row allows us to build objects of the form
-  \f$[b, a_0, \ldots, a_{d-1}]_{(t, k)}\f$,
-  i.e., a finite sequence of coefficients subscripted by a pair of flags,
-  which are both stored in a Linear_Row::Flags object.
+  \f$[b, a_0, \ldots, a_{d-1}]\f$,
+  i.e., a finite sequence of coefficients.
   The flag \f$t \in \{ \mathrm{c}, \mathrm{nnc} \}\f$ represents
   the <EM>topology</EM> and
   the flag \f$k \in \{\mathord{=}, \mathord{\geq} \}\f$ represents
@@ -123,115 +121,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Linear_Row : public Linear_Expression {
 public:
-  //! The possible kinds of Linear_Row objects.
-  enum Kind {
-    LINE_OR_EQUALITY = 0,
-    RAY_OR_POINT_OR_INEQUALITY = 1
-  };
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    The type of the object to which the coefficients refer to,
-    encoding both topology and kind.
-
-    \ingroup PPL_CXX_interface
-    This combines the information about the topology (necessarily closed
-    or not) and the kind (line/equality or ray/point/inequality)
-    of a Linear_Row object.
-  */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags {
-  public:
-    //! Default constructor: builds an object where all flags are invalid.
-    Flags();
-
-    //! Builds an object corresponding to the topology \p t.
-    explicit Flags(Topology t);
-
-    //! Builds an object corresponding to the topology \p t and kind \p k.
-    Flags(Topology t, Kind k);
-
-    //! \name Testing and setting the type
-    //@{
-    Topology topology() const;
-    bool is_necessarily_closed() const;
-    bool is_not_necessarily_closed() const;
-    bool is_line_or_equality() const;
-    bool is_ray_or_point_or_inequality() const;
-
-    void set_topology(Topology x);
-    void set_necessarily_closed();
-    void set_not_necessarily_closed();
-    void set_is_line_or_equality();
-    void set_is_ray_or_point_or_inequality();
-    //@} // Testing and setting the type
-
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
-    bool operator==(const Flags& y) const;
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if \p *this and \p y
-      are different.
-    */
-    bool operator!=(const Flags& y) const;
-
-    PPL_OUTPUT_DECLARATIONS
-
-    /*! \brief
-      Loads from \p s an ASCII representation (as produced by
-      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-      Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-    */
-    bool ascii_load(std::istream& s);
-
-  private:
-    //! A native integral type holding the bits that encode the flags.
-    typedef unsigned int base_type;
-
-    //! Builds the type from a bit-mask.
-    explicit Flags(base_type mask);
-    
-    //! \name The bits that are currently in use
-    //@{
-    // NB: ascii_load assumes that these are sequential.
-    static const unsigned rpi_validity_bit = 0;
-    static const unsigned rpi_bit = 1;
-    static const unsigned nnc_validity_bit = 2;
-    static const unsigned nnc_bit = 3;
-    //@}
-
-  protected:
-    //! Index of the first bit derived classes can use.
-    static const unsigned first_free_bit = 4;
-
-    //! Returns the integer encoding \p *this.
-    base_type get_bits() const;
-
-    //! Sets the bits in \p mask.
-    void set_bits(base_type mask);
-
-    //! Resets the bits in \p mask.
-    void reset_bits(base_type mask);
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if all the bits
-      in \p mask are set.
-    */
-    bool test_bits(base_type mask) const;
-
-    base_type bits;
-
-    friend class Parma_Polyhedra_Library::Linear_Row;
-  };
-
   //! Pre-constructs a row: construction must be completed by construct().
   Linear_Row();
 
   //! Tight constructor: resizing will require reallocation.
-  Linear_Row(dimension_type sz, Flags f);
+  Linear_Row(dimension_type sz);
 
   //! Sizing constructor with capacity.
-  Linear_Row(dimension_type sz, dimension_type capacity, Flags f);
+  Linear_Row(dimension_type sz, dimension_type capacity);
 
   //! Ordinary copy constructor.
   Linear_Row(const Linear_Row& y);
@@ -258,86 +155,9 @@ public:
   //! Swaps the i-th and j-th elements of the row.
   void swap(dimension_type i, dimension_type j);
 
-  //! \name Flags inspection methods
-  //@{
-  //! Returns the flags of \p *this.
-  const Flags flags() const;
-
-  //! Sets \p f as the flags of \p *this.
-  void set_flags(Flags f);
-
-  //! Returns the topological kind of \p *this.
-  Topology topology() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is not necessarily closed.
-  */
-  bool is_not_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is necessarily closed.
-  */
-  bool is_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a line or an equality.
-  */
-  bool is_line_or_equality() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a ray, a point or an inequality.
-  */
-  bool is_ray_or_point_or_inequality() const;
-  //@} // Flags inspection methods
-
-  //! \name Flags coercion methods
-  //@{
-
-  //! Sets to \p x the topological kind of \p *this row.
-  void set_topology(Topology x);
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the epsilon dimension as a standard dimension.
-  /*!
-    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is increased by 1.
-  */
-  void mark_as_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the last dimension as the epsilon dimension.
-  /*!
-    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is decreased by 1.
-  */
-  void mark_as_not_necessarily_closed();
-
-  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_necessarily_closed();
-
-  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_not_necessarily_closed();
-
-  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
-  void set_is_line_or_equality();
-
-  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
-  void set_is_ray_or_point_or_inequality();
-  //@} // Flags coercion methods
-
-  //! Returns the maximum space dimension a Linear_Row can handle.
-  static dimension_type max_space_dimension();
-
   // TODO: Should this be removed?
   //! Returns the maximum number of columns that a Linear_Row can handle.
   static dimension_type max_num_columns();
-
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
 
   //! Returns the inhomogeneous term.
   Coefficient_traits::const_reference inhomogeneous_term() const;
@@ -346,40 +166,6 @@ public:
   Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
   using Linear_Expression::coefficient;
-
-  /*! \brief
-    Normalizes the sign of the coefficients so that the first non-zero
-    (homogeneous) coefficient of a line-or-equality is positive.
-  */
-  void sign_normalize();
-
-  /*! \brief
-    Strong normalization: ensures that different Linear_Row objects
-    represent different hyperplanes or hyperspaces.
-
-    Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
-  */
-  void strong_normalize();
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the coefficients are
-    strongly normalized.
-  */
-  bool check_strong_normalized() const;
-
-  //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
-  /*!
-    \param y
-    The Linear_Row that will be combined with \p *this object;
-
-    \param k
-    The position of \p *this that have to be \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Linear_Row to \p *this and normalizes it.
-  */
-  void linear_combine(const Linear_Row& y, dimension_type k);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if all the
@@ -413,64 +199,10 @@ public:
 
 private:
 
-  Flags flags_;
-
   friend class Parma_Polyhedra_Library::Linear_Expression;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
 };
-
-namespace Parma_Polyhedra_Library {
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
-/*! \relates Linear_Row */
-bool operator==(const Linear_Row& x, const Linear_Row& y);
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
-/*! \relates Linear_Row */
-bool operator!=(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The basic comparison function.
-/*! \relates Linear_Row
-  \return
-  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
-
-  \param x
-  A row of coefficients;
-
-  \param y
-  Another row.
-
-  Compares \p x and \p y, where \p x and \p y may be of different size,
-  in which case the "missing" coefficients are assumed to be zero.
-  The comparison is such that:
-  -# equalities are smaller than inequalities;
-  -# lines are smaller than points and rays;
-  -# the ordering is lexicographic;
-  -# the positions compared are, in decreasing order of significance,
-     1, 2, ..., \p size(), 0;
-  -# the result is negative, zero, or positive if x is smaller than,
-     equal to, or greater than y, respectively;
-  -# when \p x and \p y are different, the absolute value of the
-     result is 1 if the difference is due to the coefficient in
-     position 0; it is 2 otherwise.
-
-  When \p x and \p y represent the hyper-planes associated
-  to two equality or inequality constraints, the coefficient
-  at 0 is the known term.
-  In this case, the return value can be characterized as follows:
-  - -2, if \p x is smaller than \p y and they are \e not parallel;
-  - -1, if \p x is smaller than \p y and they \e are parallel;
-  -  0, if \p x and y are equal;
-  - +1, if \p y is smaller than \p x and they \e are parallel;
-  - +2, if \p y is smaller than \p x and they are \e not parallel.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-int compare(const Linear_Row& x, const Linear_Row& y);
-
-} // namespace Parma_Polyhedra_Library
-
 
 namespace std {
 

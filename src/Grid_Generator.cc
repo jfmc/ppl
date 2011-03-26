@@ -263,6 +263,68 @@ PPL::Grid_Generator::set_is_parameter() {
   }
 }
 
+void
+PPL::Grid_Generator::linear_combine(const Grid_Generator& y,
+                                    const dimension_type k) {
+  Grid_Generator& x = *this;
+  // We can combine only vector of the same dimension.
+  PPL_ASSERT(x.get_row().size() == y.get_row().size());
+  PPL_ASSERT(y.get_row()[k] != 0 && x.get_row()[k] != 0);
+  // Let g be the GCD between `x[k]' and `y[k]'.
+  // For each i the following computes
+  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
+  normalize2(x.get_row()[k], y.get_row()[k], normalized_x_k, normalized_y_k);
+  for (dimension_type i = get_row().size(); i-- > 0; )
+    if (i != k) {
+      Coefficient& x_i = x.get_row()[i];
+      x_i *= normalized_y_k;
+      sub_mul_assign(x_i, y.get_row()[i], normalized_x_k);
+    }
+  x.get_row()[k] = 0;
+  x.strong_normalize();
+}
+
+/*! \relates Parma_Polyhedra_Library::Grid_Generator */
+int
+PPL::compare(const Grid_Generator& x, const Grid_Generator& y) {
+  const bool x_is_line_or_equality = x.is_line_or_equality();
+  const bool y_is_line_or_equality = y.is_line_or_equality();
+  if (x_is_line_or_equality != y_is_line_or_equality)
+    // Equalities (lines) precede inequalities (ray/point).
+    return y_is_line_or_equality ? 2 : -2;
+
+  // Compare all the coefficients of the row starting from position 1.
+  const dimension_type xsz = x.get_row().size();
+  const dimension_type ysz = y.get_row().size();
+  const dimension_type min_sz = std::min(xsz, ysz);
+  dimension_type i;
+  for (i = 1; i < min_sz; ++i)
+    if (const int comp = cmp(x.get_row()[i], y.get_row()[i]))
+      // There is at least a different coefficient.
+      return (comp > 0) ? 2 : -2;
+
+  // Handle the case where `x' and `y' are of different size.
+  if (xsz != ysz) {
+    for( ; i < xsz; ++i)
+      if (const int sign = sgn(x.get_row()[i]))
+        return (sign > 0) ? 2 : -2;
+    for( ; i < ysz; ++i)
+      if (const int sign = sgn(y.get_row()[i]))
+        return (sign < 0) ? 2 : -2;
+  }
+
+  // If all the coefficients in `x' equal all the coefficients in `y'
+  // (starting from position 1) we compare coefficients in position 0,
+  // i.e., inhomogeneous terms.
+  if (const int comp = cmp(x.get_row()[0], y.get_row()[0]))
+    return (comp > 0) ? 1 : -1;
+
+  // `x' and `y' are equal.
+  return 0;
+}
+
 bool
 PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
@@ -294,8 +356,9 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
-  return static_cast<const Linear_Row&>(*this)
-         == static_cast<const Linear_Row&>(y);
+  return static_cast<const Linear_Expression&>(*this)
+         .is_equal_to(static_cast<const Linear_Expression&>(y))
+         && flags_ == y.flags_;
 }
 
 bool
@@ -324,6 +387,37 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
     for (dimension_type i = x.get_row().size() - 2; i > 0; --i)
       x.get_row()[i] *= factor;
   }
+}
+
+void
+PPL::Grid_Generator::sign_normalize() {
+  if (is_line_or_equality()) {
+    Grid_Generator& x = *this;
+    const dimension_type sz = x.get_row().size();
+    // `first_non_zero' indicates the index of the first
+    // coefficient of the row different from zero, disregarding
+    // the very first coefficient (inhomogeneous term / divisor).
+    dimension_type first_non_zero;
+    for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
+      if (x.get_row()[first_non_zero] != 0)
+        break;
+    if (first_non_zero < sz)
+      // If the first non-zero coefficient of the row is negative,
+      // we negate the entire row.
+      if (x.get_row()[first_non_zero] < 0) {
+        for (dimension_type j = first_non_zero; j < sz; ++j)
+          neg_assign(x.get_row()[j]);
+        // Also negate the first coefficient.
+        neg_assign(x.get_row()[0]);
+      }
+  }
+}
+
+bool
+PPL::Grid_Generator::check_strong_normalized() const {
+  Grid_Generator tmp = *this;
+  tmp.strong_normalize();
+  return compare(*this, tmp) == 0;
 }
 
 const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
@@ -425,6 +519,52 @@ PPL::IO_Operators::operator<<(std::ostream& s,
   }
   s << n;
   return s;
+}
+
+namespace {
+
+// These are the keywords that indicate the individual assertions.
+const char* rpi_valid = "RPI_V";
+const char* is_rpi = "RPI";
+const char* nnc_valid = "NNC_V";
+const char* is_nnc = "NNC";
+const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
+
+} // namespace
+
+void
+PPL::Grid_Generator::Flags::ascii_dump(std::ostream& s) const {
+  s << (test_bits(1 << Flags::rpi_validity_bit) ? '+' : '-')
+    << rpi_valid << ' '
+    << (test_bits(1 << Flags::rpi_bit) ? '+' : '-')
+    << is_rpi << ' '
+    << ' '
+    << (test_bits(1 << Flags::nnc_validity_bit) ? '+' : '-')
+    << nnc_valid << ' '
+    << (test_bits(1 << Flags::nnc_bit) ? '+' : '-')
+    << is_nnc;
+}
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Grid_Generator::Flags)
+
+bool
+PPL::Grid_Generator::Flags::ascii_load(std::istream& s) {
+  std::string str;
+  // Assume that the bits are used in sequence.
+  reset_bits(std::numeric_limits<base_type>::max());
+  for (unsigned int bit = 0;
+       bit < (sizeof(bit_names) / sizeof(char*));
+       ++bit) {
+    if (!(s >> str))
+      return false;
+    if (str[0] == '+')
+      set_bits(1 << bit);
+    else if (str[0] != '-')
+      return false;
+    if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
+      return false;
+  }
+  return true;
 }
 
 bool

@@ -380,6 +380,10 @@ public:
   // FIXME: Remove this.
   const Dense_Row& get_row() const;
 
+  //! Returns \p true if *this is equal to \p x.
+  //! Note that (*this == x) has a completely different meaning.
+  bool is_equal_to(const Linear_Expression& x) const;
+
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to

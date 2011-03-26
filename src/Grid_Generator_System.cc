@@ -256,8 +256,8 @@ PPL::Grid_Generator_System
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
     Grid_Generator tmp(2,
-                       Linear_Row::Flags(NECESSARILY_CLOSED,
-                                         Linear_Row::LINE_OR_EQUALITY));
+                       Grid_Generator::Flags(NECESSARILY_CLOSED,
+                                             Grid_Generator::LINE_OR_EQUALITY));
     tmp.set_space_dimension(space_dimension());
     tmp.get_row()[col] = 1;
     ++col;

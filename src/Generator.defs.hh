@@ -39,6 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Checked_Number.defs.hh"
 #include "distances.defs.hh"
+#include "Topology.hh"
 
 #include <iosfwd>
 
@@ -246,6 +247,108 @@ void swap(Parma_Polyhedra_Library::Generator& x,
 */
 class Parma_Polyhedra_Library::Generator : public Linear_Row {
 public:
+
+  //! The possible kinds of Generator objects.
+  enum Kind {
+    LINE_OR_EQUALITY = 0,
+    RAY_OR_POINT_OR_INEQUALITY = 1
+  };
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    The type of the object to which the coefficients refer to,
+    encoding both topology and kind.
+
+    \ingroup PPL_CXX_interface
+    This combines the information about the topology (necessarily closed
+    or not) and the kind (line/equality or ray/point/inequality)
+    of a Generator object.
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  class Flags {
+  public:
+    //! Default constructor: builds an object where all flags are invalid.
+    Flags();
+
+    //! Builds an object corresponding to the topology \p t.
+    explicit Flags(Topology t);
+
+    //! Builds an object corresponding to the topology \p t and kind \p k.
+    Flags(Topology t, Kind k);
+
+    //! \name Testing and setting the type
+    //@{
+    Topology topology() const;
+    bool is_necessarily_closed() const;
+    bool is_not_necessarily_closed() const;
+    bool is_line_or_equality() const;
+    bool is_ray_or_point_or_inequality() const;
+
+    void set_topology(Topology x);
+    void set_necessarily_closed();
+    void set_not_necessarily_closed();
+    void set_is_line_or_equality();
+    void set_is_ray_or_point_or_inequality();
+    //@} // Testing and setting the type
+
+    //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
+    bool operator==(const Flags& y) const;
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y
+      are different.
+    */
+    bool operator!=(const Flags& y) const;
+
+    PPL_OUTPUT_DECLARATIONS
+
+    /*! \brief
+      Loads from \p s an ASCII representation (as produced by
+      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+    */
+    bool ascii_load(std::istream& s);
+
+  private:
+    //! A native integral type holding the bits that encode the flags.
+    typedef unsigned int base_type;
+
+    //! Builds the type from a bit-mask.
+    explicit Flags(base_type mask);
+
+    //! \name The bits that are currently in use
+    //@{
+    // NB: ascii_load assumes that these are sequential.
+    static const unsigned rpi_validity_bit = 0;
+    static const unsigned rpi_bit = 1;
+    static const unsigned nnc_validity_bit = 2;
+    static const unsigned nnc_bit = 3;
+    //@}
+
+  protected:
+    //! Index of the first bit derived classes can use.
+    static const unsigned first_free_bit = 4;
+
+    //! Returns the integer encoding \p *this.
+    base_type get_bits() const;
+
+    //! Sets the bits in \p mask.
+    void set_bits(base_type mask);
+
+    //! Resets the bits in \p mask.
+    void reset_bits(base_type mask);
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if all the bits
+      in \p mask are set.
+    */
+    bool test_bits(base_type mask) const;
+
+    base_type bits;
+
+    friend class Parma_Polyhedra_Library::Generator;
+  };
+
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument
@@ -309,6 +412,77 @@ public:
 
   //! Assignment operator.
   Generator& operator=(const Generator& g);
+
+  //! \name Flags inspection methods
+  //@{
+  //! Returns the flags of \p *this.
+  const Flags flags() const;
+
+  //! Sets \p f as the flags of \p *this.
+  void set_flags(Flags f);
+
+  //! Returns the topological kind of \p *this.
+  Topology topology() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is not necessarily closed.
+  */
+  bool is_not_necessarily_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is necessarily closed.
+  */
+  bool is_necessarily_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a line or an equality.
+  */
+  bool is_line_or_equality() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a ray, a point or an inequality.
+  */
+  bool is_ray_or_point_or_inequality() const;
+  //@} // Flags inspection methods
+
+  //! \name Flags coercion methods
+  //@{
+
+  //! Sets to \p x the topological kind of \p *this row.
+  void set_topology(Topology x);
+
+  // TODO: Consider removing this, or making it private.
+  //! Marks the epsilon dimension as a standard dimension.
+  /*!
+    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is increased by 1.
+  */
+  void mark_as_necessarily_closed();
+
+  // TODO: Consider removing this, or making it private.
+  //! Marks the last dimension as the epsilon dimension.
+  /*!
+    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is decreased by 1.
+  */
+  void mark_as_not_necessarily_closed();
+
+  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_necessarily_closed();
+
+  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_not_necessarily_closed();
+
+  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
+  void set_is_line_or_equality();
+
+  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
+  void set_is_ray_or_point_or_inequality();
+  //@} // Flags coercion methods
 
   //! Returns the maximum space dimension a Generator can handle.
   static dimension_type max_space_dimension();
@@ -437,6 +611,40 @@ public:
   */
   bool is_equal_to(const Generator& y) const;
 
+  /*! \brief
+    Normalizes the sign of the coefficients so that the first non-zero
+    (homogeneous) coefficient of a line-or-equality is positive.
+  */
+  void sign_normalize();
+
+  /*! \brief
+    Strong normalization: ensures that different Generator objects
+    represent different hyperplanes or hyperspaces.
+
+    Applies both Generator::normalize() and Generator::sign_normalize().
+  */
+  void strong_normalize();
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the coefficients are
+    strongly normalized.
+  */
+  bool check_strong_normalized() const;
+
+  //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
+  /*!
+    \param y
+    The Generator that will be combined with \p *this object;
+
+    \param k
+    The position of \p *this that have to be \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the element of index \p k equal to \f$0\f$. Then it assigns
+    the resulting Generator to \p *this and normalizes it.
+  */
+  void linear_combine(const Generator& y, dimension_type k);
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -460,6 +668,8 @@ public:
   void swap(dimension_type i, dimension_type j);
 
 private:
+  Flags flags_;
+
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the origin of the zero-dimensional space \f$\Rset^0\f$.
@@ -537,6 +747,45 @@ private:
 
 
 namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The basic comparison function.
+/*! \relates Linear_Row
+  \return
+  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
+
+  \param x
+  A row of coefficients;
+
+  \param y
+  Another row.
+
+  Compares \p x and \p y, where \p x and \p y may be of different size,
+  in which case the "missing" coefficients are assumed to be zero.
+  The comparison is such that:
+  -# equalities are smaller than inequalities;
+  -# lines are smaller than points and rays;
+  -# the ordering is lexicographic;
+  -# the positions compared are, in decreasing order of significance,
+     1, 2, ..., \p size(), 0;
+  -# the result is negative, zero, or positive if x is smaller than,
+     equal to, or greater than y, respectively;
+  -# when \p x and \p y are different, the absolute value of the
+     result is 1 if the difference is due to the coefficient in
+     position 0; it is 2 otherwise.
+
+  When \p x and \p y represent the hyper-planes associated
+  to two equality or inequality constraints, the coefficient
+  at 0 is the known term.
+  In this case, the return value can be characterized as follows:
+  - -2, if \p x is smaller than \p y and they are \e not parallel;
+  - -1, if \p x is smaller than \p y and they \e are parallel;
+  -  0, if \p x and y are equal;
+  - +1, if \p y is smaller than \p x and they \e are parallel;
+  - +2, if \p y is smaller than \p x and they are \e not parallel.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+int compare(const Generator& x, const Generator& y);
 
 //! Shorthand for Generator Generator::line(const Linear_Expression& e).
 /*! \relates Generator */

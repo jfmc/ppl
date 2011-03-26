@@ -31,13 +31,228 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Generator::Flags::Flags()
+  : bits(0) {
+  // Note that the constructed type has its validity bit unset.
+}
+
+inline
+Generator::Flags::Flags(const Topology t)
+  : bits(t << nnc_bit) {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+}
+
+inline
+Generator::Flags::Flags(const Topology t, const Kind k)
+  : bits((k << rpi_bit) | (t << nnc_bit)) {
+#ifndef NDEBUG
+  set_bits((1 << rpi_validity_bit)
+           | (1 << nnc_validity_bit));
+#endif
+}
+
+inline bool
+Generator::Flags::is_ray_or_point_or_inequality() const {
+  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
+  return test_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+}
+
+inline void
+Generator::Flags::set_is_ray_or_point_or_inequality() {
+#ifndef NDEBUG
+  set_bits(1 << rpi_validity_bit);
+#endif
+  set_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+}
+
+inline bool
+Generator::Flags::is_line_or_equality() const {
+  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
+  return !is_ray_or_point_or_inequality();
+}
+
+inline void
+Generator::Flags::set_is_line_or_equality() {
+#ifndef NDEBUG
+  set_bits(1 << rpi_validity_bit);
+#endif
+  reset_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+}
+
+inline bool
+Generator::Flags::is_not_necessarily_closed() const {
+  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
+  return test_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline bool
+Generator::Flags::is_necessarily_closed() const {
+  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
+  return !is_not_necessarily_closed();
+}
+
+inline void
+Generator::Flags::set_topology(Topology x) {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  if (x == NOT_NECESSARILY_CLOSED)
+    set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+  else
+    reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline void
+Generator::Flags::set_not_necessarily_closed() {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline void
+Generator::Flags::set_necessarily_closed() {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline Topology
+Generator::Flags::topology() const {
+  return is_necessarily_closed() ? NECESSARILY_CLOSED : NOT_NECESSARILY_CLOSED;
+}
+
+inline bool
+Generator::Flags::operator==(const Flags& y) const {
+  base_type mask = low_bits_mask<base_type>(first_free_bit);
+  return (get_bits() & mask) == (y.get_bits() & mask);
+}
+
+inline bool
+Generator::Flags::operator!=(const Flags& y) const {
+  return !operator==(y);
+}
+
+inline Generator::Flags::base_type
+Generator::Flags::get_bits() const {
+  return bits;
+}
+
+inline void
+Generator::Flags::set_bits(const base_type mask) {
+  bits |= mask;
+}
+
+inline void
+Generator::Flags::reset_bits(const base_type mask) {
+  bits &= ~mask;
+}
+
+inline bool
+Generator::Flags::test_bits(const base_type mask) const {
+  return (bits & mask) == mask;
+}
+
+inline const Generator::Flags
+Generator::flags() const {
+  return flags_;
+}
+
+inline void
+Generator::set_flags(Flags f) {
+  flags_ = f;
+}
+
+inline bool
+Generator::is_necessarily_closed() const {
+  return flags().is_necessarily_closed();
+}
+
+inline bool
+Generator::is_not_necessarily_closed() const {
+  return flags().is_not_necessarily_closed();
+}
+
+inline dimension_type
+Generator::space_dimension() const {
+  const dimension_type sz = get_row().size();
+  return (sz == 0)
+    ? 0
+    : sz - (is_necessarily_closed() ? 1 : 2);
+}
+
+inline bool
+Generator::is_line_or_equality() const {
+  return flags().is_line_or_equality();
+}
+
+inline bool
+Generator::is_ray_or_point_or_inequality() const {
+  return flags().is_ray_or_point_or_inequality();
+}
+
+inline Topology
+Generator::topology() const {
+  return flags().topology();
+}
+
+inline void
+Generator::set_is_line_or_equality() {
+  flags_.set_is_line_or_equality();
+}
+
+inline void
+Generator::set_is_ray_or_point_or_inequality() {
+  flags_.set_is_ray_or_point_or_inequality();
+}
+
+inline void
+Generator::set_topology(Topology x) {
+  if (topology() == x)
+    return;
+  if (topology() == NECESSARILY_CLOSED)
+    // Add a column for the epsilon dimension.
+    get_row().resize(get_row().size() + 1);
+  else {
+    PPL_ASSERT(get_row().size() > 0);
+    get_row().resize(get_row().size() - 1);
+  }
+  flags_.set_topology(x);
+}
+
+inline void
+Generator::mark_as_necessarily_closed() {
+  PPL_ASSERT(is_not_necessarily_closed());
+  flags_.set_topology(NECESSARILY_CLOSED);
+}
+
+inline void
+Generator::mark_as_not_necessarily_closed() {
+  PPL_ASSERT(is_necessarily_closed());
+  flags_.set_topology(NOT_NECESSARILY_CLOSED);
+}
+
+inline void
+Generator::set_necessarily_closed() {
+  set_topology(NECESSARILY_CLOSED);
+}
+
+inline void
+Generator::set_not_necessarily_closed() {
+  set_topology(NOT_NECESSARILY_CLOSED);
+}
+
+inline
 Generator::Generator()
-  : Linear_Row(1, Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  : Linear_Row(1), flags_(NECESSARILY_CLOSED, LINE_OR_EQUALITY) {
 }
 
 inline
 Generator::Generator(dimension_type num_columns, Flags flags)
-  : Linear_Row(num_columns, flags) {
+  : Linear_Row(num_columns), flags_(flags) {
   
 }
 
@@ -45,7 +260,7 @@ inline
 Generator::Generator(dimension_type num_columns,
                      dimension_type num_reserved_columns,
                      Flags flags)
-  : Linear_Row(num_columns, num_reserved_columns, flags) {
+  : Linear_Row(num_columns, num_reserved_columns), flags_(flags) {
 
 }
 
@@ -61,18 +276,18 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
 
 inline
 Generator::Generator(const Generator& g)
-  : Linear_Row(g) {
+  : Linear_Row(g), flags_(g.flags_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type dimension)
-  : Linear_Row(g, dimension, dimension) {
+  : Linear_Row(g, dimension, dimension), flags_(g.flags_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type num_columns,
                      dimension_type num_reserved_columns)
-  : Linear_Row(g, num_columns, num_reserved_columns) {
+  : Linear_Row(g, num_columns, num_reserved_columns), flags_(g.flags_) {
 }
 
 inline
@@ -82,17 +297,13 @@ Generator::~Generator() {
 inline Generator&
 Generator::operator=(const Generator& g) {
   Linear_Row::operator=(g);
+  flags_ = g.flags_;
   return *this;
 }
 
 inline dimension_type
 Generator::max_space_dimension() {
   return Linear_Row::max_space_dimension();
-}
-
-inline dimension_type
-Generator::space_dimension() const {
-  return Linear_Row::space_dimension();
 }
 
 inline void
@@ -109,6 +320,7 @@ Generator::set_space_dimension(dimension_type space_dim) {
       get_row().resize(space_dim + 2);
     }
   }
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline bool
@@ -190,6 +402,12 @@ Generator::external_memory_in_bytes() const {
 inline memory_size_type
 Generator::total_memory_in_bytes() const {
   return Linear_Row::total_memory_in_bytes();
+}
+
+inline void
+Generator::strong_normalize() {
+  get_row().normalize();
+  sign_normalize();
 }
 
 inline const Generator&
@@ -336,6 +554,7 @@ Generator::ascii_load(std::istream& s) {
 inline void
 Generator::swap(Generator& y) {
   Linear_Row::swap(y);
+  std::swap(flags_, y.flags_);
 }
 
 inline void

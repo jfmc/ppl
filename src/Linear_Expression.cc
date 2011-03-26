@@ -109,6 +109,11 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, const Variable w)
   }
 }
 
+bool
+PPL::Linear_Expression::is_equal_to(const Linear_Expression& x) const {
+  return row == x.row;
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {

@@ -751,7 +751,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		  if (recyclable_dest_rows.empty()) {
 		    // Create a new row.
 		    dest_row_type tmp(2, typename dest_row_type::Flags(dest.topology(),
-                                                                       Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                                                                       dest_row_type::RAY_OR_POINT_OR_INEQUALITY));
                     tmp.set_space_dimension(dest.space_dimension());
                     std::swap(new_row, tmp);
 		    sat.add_recycled_row(new_satrow);

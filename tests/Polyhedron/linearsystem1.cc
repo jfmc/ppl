@@ -50,8 +50,8 @@ test01() {
   Linear_System<Constraint> ls1(NOT_NECESSARILY_CLOSED);
   for (dimension_type rowi = 0; rowi < ROWS; ++rowi) {
     Constraint row(COLS,
-		   Linear_Row::Flags(NOT_NECESSARILY_CLOSED,
-				     Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                   Constraint::Flags(NOT_NECESSARILY_CLOSED,
+                                     Constraint::RAY_OR_POINT_OR_INEQUALITY));
     for (dimension_type col = 0; col < COLS; ++col) {
       rng.get(row.get_row()[col], 0);
       // The following workaround is to avoid trivial positive overflows

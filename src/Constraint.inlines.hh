@@ -33,14 +33,229 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Constraint::Flags::Flags()
+  : bits(0) {
+  // Note that the constructed type has its validity bit unset.
+}
+
+inline
+Constraint::Flags::Flags(const Topology t)
+  : bits(t << nnc_bit) {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+}
+
+inline
+Constraint::Flags::Flags(const Topology t, const Kind k)
+  : bits((k << rpi_bit) | (t << nnc_bit)) {
+#ifndef NDEBUG
+  set_bits((1 << rpi_validity_bit)
+           | (1 << nnc_validity_bit));
+#endif
+}
+
+inline bool
+Constraint::Flags::is_ray_or_point_or_inequality() const {
+  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
+  return test_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+}
+
+inline void
+Constraint::Flags::set_is_ray_or_point_or_inequality() {
+#ifndef NDEBUG
+  set_bits(1 << rpi_validity_bit);
+#endif
+  set_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+}
+
+inline bool
+Constraint::Flags::is_line_or_equality() const {
+  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
+  return !is_ray_or_point_or_inequality();
+}
+
+inline void
+Constraint::Flags::set_is_line_or_equality() {
+#ifndef NDEBUG
+  set_bits(1 << rpi_validity_bit);
+#endif
+  reset_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+}
+
+inline bool
+Constraint::Flags::is_not_necessarily_closed() const {
+  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
+  return test_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline bool
+Constraint::Flags::is_necessarily_closed() const {
+  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
+  return !is_not_necessarily_closed();
+}
+
+inline void
+Constraint::Flags::set_topology(Topology x) {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  if (x == NOT_NECESSARILY_CLOSED)
+    set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+  else
+    reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline void
+Constraint::Flags::set_not_necessarily_closed() {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline void
+Constraint::Flags::set_necessarily_closed() {
+#ifndef NDEBUG
+  set_bits(1 << nnc_validity_bit);
+#endif
+  reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+}
+
+inline Topology
+Constraint::Flags::topology() const {
+  return is_necessarily_closed() ? NECESSARILY_CLOSED : NOT_NECESSARILY_CLOSED;
+}
+
+inline bool
+Constraint::Flags::operator==(const Flags& y) const {
+  base_type mask = low_bits_mask<base_type>(first_free_bit);
+  return (get_bits() & mask) == (y.get_bits() & mask);
+}
+
+inline bool
+Constraint::Flags::operator!=(const Flags& y) const {
+  return !operator==(y);
+}
+
+inline Constraint::Flags::base_type
+Constraint::Flags::get_bits() const {
+  return bits;
+}
+
+inline void
+Constraint::Flags::set_bits(const base_type mask) {
+  bits |= mask;
+}
+
+inline void
+Constraint::Flags::reset_bits(const base_type mask) {
+  bits &= ~mask;
+}
+
+inline bool
+Constraint::Flags::test_bits(const base_type mask) const {
+  return (bits & mask) == mask;
+}
+
+inline const Constraint::Flags
+Constraint::flags() const {
+  return flags_;
+}
+
+inline void
+Constraint::set_flags(Flags f) {
+  flags_ = f;
+}
+
+inline bool
+Constraint::is_necessarily_closed() const {
+  return flags().is_necessarily_closed();
+}
+
+inline bool
+Constraint::is_not_necessarily_closed() const {
+  return flags().is_not_necessarily_closed();
+}
+
+inline dimension_type
+Constraint::space_dimension() const {
+  const dimension_type sz = get_row().size();
+  return (sz == 0)
+    ? 0
+    : sz - (is_necessarily_closed() ? 1 : 2);
+}
+
+inline bool
+Constraint::is_line_or_equality() const {
+  return flags().is_line_or_equality();
+}
+
+inline bool
+Constraint::is_ray_or_point_or_inequality() const {
+  return flags().is_ray_or_point_or_inequality();
+}
+
+inline Topology
+Constraint::topology() const {
+  return flags().topology();
+}
+
+inline void
+Constraint::set_is_line_or_equality() {
+  flags_.set_is_line_or_equality();
+}
+
+inline void
+Constraint::set_is_ray_or_point_or_inequality() {
+  flags_.set_is_ray_or_point_or_inequality();
+}
+
+inline void
+Constraint::set_topology(Topology x) {
+  if (topology() == x)
+    return;
+  if (topology() == NECESSARILY_CLOSED)
+    // Add a column for the epsilon dimension.
+    get_row().resize(get_row().size() + 1);
+  else {
+    PPL_ASSERT(get_row().size() > 0);
+    get_row().resize(get_row().size() - 1);
+  }
+  flags_.set_topology(x);
+}
+
+inline void
+Constraint::mark_as_necessarily_closed() {
+  PPL_ASSERT(is_not_necessarily_closed());
+  flags_.set_topology(NECESSARILY_CLOSED);
+}
+
+inline void
+Constraint::mark_as_not_necessarily_closed() {
+  PPL_ASSERT(is_necessarily_closed());
+  flags_.set_topology(NOT_NECESSARILY_CLOSED);
+}
+
+inline void
+Constraint::set_necessarily_closed() {
+  set_topology(NECESSARILY_CLOSED);
+}
+
+inline void
+Constraint::set_not_necessarily_closed() {
+  set_topology(NOT_NECESSARILY_CLOSED);
+}
+
+inline
 Constraint::Constraint(dimension_type sz, Flags flags)
-  : Linear_Row(sz, flags) {
+  : Linear_Row(sz), flags_(flags) {
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(dimension_type sz, dimension_type capacity, Flags flags)
-  : Linear_Row(sz, capacity, flags) {
+  : Linear_Row(sz, capacity), flags_(flags) {
   PPL_ASSERT(OK());
 }
 
@@ -57,20 +272,20 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
 
 inline
 Constraint::Constraint(const Constraint& c)
-  : Linear_Row(c) {
+  : Linear_Row(c), flags_(c.flags_) {
   // NOTE: This does not call PPL_ASSERT(OK()) because this is called by OK().
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
-  : Linear_Row(c, sz, sz) {
+  : Linear_Row(c, sz, sz), flags_(c.flags_) {
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz,
                        const dimension_type capacity)
-  : Linear_Row(c, sz, capacity) {
+  : Linear_Row(c, sz, capacity), flags_(c.flags_) {
   PPL_ASSERT(OK());
 }
 
@@ -81,6 +296,7 @@ Constraint::~Constraint() {
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
   static_cast<Linear_Row&>(*this) = static_cast<const Linear_Row&>(c);
+  flags_ = c.flags_;
   PPL_ASSERT(OK());
   
   return *this;
@@ -89,11 +305,6 @@ Constraint::operator=(const Constraint& c) {
 inline dimension_type
 Constraint::max_space_dimension() {
   return Linear_Row::max_space_dimension();
-}
-
-inline dimension_type
-Constraint::space_dimension() const {
-  return Linear_Row::space_dimension();
 }
 
 inline void
@@ -110,6 +321,7 @@ Constraint::set_space_dimension(dimension_type space_dim) {
       get_row().resize(space_dim + 2);
     }
   }
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline bool
@@ -174,6 +386,12 @@ Constraint::external_memory_in_bytes() const {
 inline memory_size_type
 Constraint::total_memory_in_bytes() const {
   return Linear_Row::total_memory_in_bytes();
+}
+
+inline void
+Constraint::strong_normalize() {
+  get_row().normalize();
+  sign_normalize();
 }
 
 /*! \relates Constraint */
@@ -374,6 +592,7 @@ Constraint::epsilon_leq_one() {
 inline void
 Constraint::swap(Constraint& y) {
   Linear_Row::swap(y);
+  std::swap(flags_, y.flags_);
 }
 
 } // namespace Parma_Polyhedra_Library
