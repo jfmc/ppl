@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
+#include "math_utilities.defs.hh"
+
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -492,23 +494,9 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 
 PPL_OUTPUT_DEFINITIONS(Generator)
 
-namespace {
-
-// These are the keywords that indicate the individual assertions.
-const char* rpi_valid = "RPI_V";
-const char* is_rpi = "RPI";
-const char* nnc_valid = "NNC_V";
-const char* is_nnc = "NNC";
-const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
-
-} // namespace
 
 bool
 PPL::Generator::OK() const {
-  // Check the underlying Linear_Row object.
-  if (!Linear_Row::OK())
-    return false;
-
   // Topology consistency check.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (get_row().size() < min_size) {

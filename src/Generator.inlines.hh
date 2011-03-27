@@ -111,36 +111,44 @@ Generator::set_not_necessarily_closed() {
 
 inline
 Generator::Generator()
-  : Linear_Row(1), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
+  : Linear_Expression(), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
 }
 
 inline
 Generator::Generator(dimension_type num_columns)
-  : Linear_Row(num_columns),
+  : Linear_Expression(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
+  PPL_ASSERT(num_columns != 0);
+  Linear_Expression::set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(dimension_type num_columns, Kind kind, Topology topology)
-  : Linear_Row(num_columns), kind_(kind), topology_(topology) {
+  : Linear_Expression(), kind_(kind), topology_(topology) {
+  PPL_ASSERT(num_columns != 0);
+  Linear_Expression::set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(dimension_type num_columns,
-                     dimension_type num_reserved_columns)
-  : Linear_Row(num_columns, num_reserved_columns),
+                     dimension_type /* num_reserved_columns */)
+  : Linear_Expression(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
+  PPL_ASSERT(num_columns != 0);
+  Linear_Expression::set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(dimension_type num_columns,
-                     dimension_type num_reserved_columns,
+                     dimension_type /* num_reserved_columns */,
                      Kind kind, Topology topology)
-  : Linear_Row(num_columns, num_reserved_columns),
+  : Linear_Expression(),
     kind_(kind),
     topology_(topology) {
+  PPL_ASSERT(num_columns != 0);
+  Linear_Expression::set_space_dimension(num_columns - 1);
 }
 
 inline
@@ -157,18 +165,18 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
 
 inline
 Generator::Generator(const Generator& g)
-  : Linear_Row(g), kind_(g.kind_), topology_(g.topology_) {
+  : Linear_Expression(static_cast<const Linear_Expression&>(g)), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type dimension)
-  : Linear_Row(g, dimension, dimension), kind_(g.kind_), topology_(g.topology_) {
+  : Linear_Expression(static_cast<const Linear_Expression&>(g), dimension), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type num_columns,
-                     dimension_type num_reserved_columns)
-  : Linear_Row(g, num_columns, num_reserved_columns), kind_(g.kind_), topology_(g.topology_) {
+                     dimension_type /* num_reserved_columns */)
+  : Linear_Expression(static_cast<const Linear_Expression&>(g), num_columns), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
@@ -177,7 +185,7 @@ Generator::~Generator() {
 
 inline Generator&
 Generator::operator=(const Generator& g) {
-  Linear_Row::operator=(g);
+  Linear_Expression::operator=(g);
   kind_ = g.kind_;
   topology_ = g.topology_;
   return *this;
@@ -185,7 +193,7 @@ Generator::operator=(const Generator& g) {
 
 inline dimension_type
 Generator::max_space_dimension() {
-  return Linear_Row::max_space_dimension();
+  return Linear_Expression::max_space_dimension();
 }
 
 inline void
@@ -269,7 +277,7 @@ Generator::coefficient(const Variable v) const {
 
 inline Coefficient_traits::const_reference
 Generator::divisor() const {
-  Coefficient_traits::const_reference d = Linear_Row::inhomogeneous_term();
+  Coefficient_traits::const_reference d = Linear_Expression::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("divisor()",
 			   "*this is neither a point nor a closure point");

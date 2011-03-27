@@ -34,7 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Grid_Generator_System.types.hh"
 
-#include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Checked_Number.defs.hh"
@@ -245,7 +244,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor of the (closure) point is 1.
 */
-class Parma_Polyhedra_Library::Generator : public Linear_Row {
+class Parma_Polyhedra_Library::Generator : public Linear_Expression {
 public:
 
   //! The possible kinds of Generator objects.
@@ -615,7 +614,7 @@ private:
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator;
-  // This is for access to Dense_Row and Linear_Row in `insert'.
+  // This is for access to Linear_Expression in `insert'.
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend
@@ -632,10 +631,10 @@ private:
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;
 
-  //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
+  //! Sets the Generator kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();
 
-  //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
+  //! Sets the Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
   /*! \brief
@@ -653,7 +652,7 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
-/*! \relates Linear_Row
+/*! \relates Generator
   \return
   The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
 
