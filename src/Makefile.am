@@ -429,7 +429,6 @@ Pointset_Powerset.cc \
 CO_Tree.cc \
 Sparse_Row.cc \
 Dense_Row.cc \
-Linear_Row.cc \
 Bit_Matrix.cc \
 Bit_Row.cc \
 Ph_Status.cc \

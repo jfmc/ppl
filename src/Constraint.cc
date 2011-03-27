@@ -107,7 +107,7 @@ void
 PPL::Constraint::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
-  swap(v1.space_dimension(), v2.space_dimension());
+  get_row().swap(v1.space_dimension(), v2.space_dimension());
   // *this is still normalized but it may not be strongly normalized.
   sign_normalize();
   PPL_ASSERT(OK());

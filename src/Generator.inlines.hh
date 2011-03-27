@@ -196,9 +196,9 @@ Generator::set_space_dimension(dimension_type space_dim) {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
       get_row().resize(space_dim + 2);
-      Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+      get_row().swap(space_dim + 1, old_space_dim + 1);
     } else {
-      Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+      get_row().swap(space_dim + 1, old_space_dim + 1);
       get_row().resize(space_dim + 2);
     }
   }
@@ -264,7 +264,7 @@ inline Coefficient_traits::const_reference
 Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Linear_Row::coefficient(v.id());
+  return Linear_Expression::coefficient(v);
 }
 
 inline Coefficient_traits::const_reference
@@ -278,12 +278,12 @@ Generator::divisor() const {
 
 inline memory_size_type
 Generator::external_memory_in_bytes() const {
-  return Linear_Row::external_memory_in_bytes();
+  return Linear_Expression::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Generator::total_memory_in_bytes() const {
-  return Linear_Row::total_memory_in_bytes();
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline void
@@ -435,19 +435,14 @@ Generator::ascii_load(std::istream& s) {
 
 inline void
 Generator::swap(Generator& y) {
-  Linear_Row::swap(y);
+  Linear_Expression::swap(y);
   std::swap(kind_, y.kind_);
   std::swap(topology_, y.topology_);
 }
 
 inline void
 Generator::swap(dimension_type i, dimension_type j) {
-  Linear_Row::swap(i, j);
-}
-
-inline bool
-Generator::OK(dimension_type expected_num_columns) const {
-  return Linear_Row::OK(expected_num_columns);
+  get_row().swap(i, j);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

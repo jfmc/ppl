@@ -201,9 +201,9 @@ Constraint::set_space_dimension(dimension_type space_dim) {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
       get_row().resize(space_dim + 2);
-      Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+      get_row().swap(space_dim + 1, old_space_dim + 1);
     } else {
-      Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+      get_row().swap(space_dim + 1, old_space_dim + 1);
       get_row().resize(space_dim + 2);
     }
   }
@@ -256,22 +256,22 @@ inline Coefficient_traits::const_reference
 Constraint::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Linear_Row::coefficient(v.id());
+  return Linear_Expression::coefficient(v);
 }
 
 inline Coefficient_traits::const_reference
 Constraint::inhomogeneous_term() const {
-  return Linear_Row::inhomogeneous_term();
+  return Linear_Expression::inhomogeneous_term();
 }
 
 inline memory_size_type
 Constraint::external_memory_in_bytes() const {
-  return Linear_Row::external_memory_in_bytes();
+  return Linear_Expression::external_memory_in_bytes();
 }
 
 inline memory_size_type
 Constraint::total_memory_in_bytes() const {
-  return Linear_Row::total_memory_in_bytes();
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline void

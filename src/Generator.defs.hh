@@ -562,10 +562,6 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! Checks if all the invariants are satisfied and that num_columns() equals
-  //! \p expected_num_columns .
-  bool OK(dimension_type expected_num_columns) const;
-
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
 

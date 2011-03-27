@@ -148,72 +148,7 @@ public:
 
   //! Destructor.
   ~Linear_Row();
-
-  //! Swaps \p *this with \p y .
-  void swap(Linear_Row& y);
-
-  //! Swaps the i-th and j-th elements of the row.
-  void swap(dimension_type i, dimension_type j);
-
-  // TODO: Should this be removed?
-  //! Returns the maximum number of columns that a Linear_Row can handle.
-  static dimension_type max_num_columns();
-
-  //! Returns the inhomogeneous term.
-  Coefficient_traits::const_reference inhomogeneous_term() const;
-
-  //! Returns the coefficient \f$a_n\f$.
-  Coefficient_traits::const_reference coefficient(dimension_type n) const;
-
-  using Linear_Expression::coefficient;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if all the
-    terms of \p *this are \f$0\f$.
-  */
-  bool is_zero() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if all the homogeneous
-    terms of \p *this are \f$0\f$.
-  */
-  bool all_homogeneous_terms_are_zero() const;
-
-  PPL_OUTPUT_DECLARATIONS
-
-  /*! \brief
-    Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  */
-  bool ascii_load(std::istream& s);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
-  /*! \brief
-    Checks if all the invariants are satisfied and that the actual
-    size matches the value provided as argument.
-  */
-  bool OK(dimension_type row_size) const;
-
-private:
-
-  friend class Parma_Polyhedra_Library::Linear_Expression;
-  friend class Parma_Polyhedra_Library::Constraint;
-  friend class Parma_Polyhedra_Library::Generator;
 };
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Linear_Row& x,
-	  Parma_Polyhedra_Library::Linear_Row& y);
-
-} // namespace std
 
 #include "Linear_Row.inlines.hh"
 

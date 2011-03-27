@@ -114,7 +114,7 @@ Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size,
 
 inline void
 Grid_Generator::swap(dimension_type i, dimension_type j) {
-  Linear_Row::swap(i, j);
+  get_row().swap(i, j);
 }
 
 inline
@@ -123,7 +123,7 @@ Grid_Generator::~Grid_Generator() {
 
 inline dimension_type
 Grid_Generator::max_space_dimension() {
-  return Linear_Row::max_space_dimension() - 1;
+  return Linear_Expression::max_space_dimension() - 1;
 }
 
 inline dimension_type
@@ -136,9 +136,9 @@ Grid_Generator::set_space_dimension(dimension_type space_dim) {
   const dimension_type old_space_dim = space_dimension();
   if (space_dim > old_space_dim) {
     get_row().resize(space_dim + 2);
-    Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+    swap(space_dim + 1, old_space_dim + 1);
   } else {
-    Linear_Row::swap(space_dim + 1, old_space_dim + 1);
+    swap(space_dim + 1, old_space_dim + 1);
     get_row().resize(space_dim + 2);
   }
   PPL_ASSERT(space_dimension() == space_dim);
@@ -232,17 +232,17 @@ inline Coefficient_traits::const_reference
 Grid_Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Linear_Row::coefficient(v.id());
+  return Linear_Expression::coefficient(v);
 }
 
 inline memory_size_type
 Grid_Generator::total_memory_in_bytes() const {
-  return Linear_Row::total_memory_in_bytes();
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline memory_size_type
 Grid_Generator::external_memory_in_bytes() const {
-  return Linear_Row::external_memory_in_bytes();
+  return Linear_Expression::external_memory_in_bytes();
 }
 
 inline const Grid_Generator&

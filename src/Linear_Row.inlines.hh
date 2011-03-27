@@ -73,38 +73,6 @@ inline
 Linear_Row::~Linear_Row() {
 }
 
-inline void
-Linear_Row::swap(Linear_Row& y) {
-  Linear_Expression::swap(y);
-}
-
-inline void
-Linear_Row::swap(dimension_type i, dimension_type j) {
-  get_row().swap(i, j);
-}
-
-inline Coefficient_traits::const_reference
-Linear_Row::inhomogeneous_term() const {
-  return get_row()[0];
-}
-
-inline Coefficient_traits::const_reference
-Linear_Row::coefficient(const dimension_type k) const {
-  return get_row()[k+1];
-}
-
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-inline void
-swap(Parma_Polyhedra_Library::Linear_Row& x,
-     Parma_Polyhedra_Library::Linear_Row& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Linear_Row_inlines_hh)
