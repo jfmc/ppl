@@ -113,7 +113,7 @@ Polyhedron::minimize(const bool con_to_gen,
     dest.insert_recycled(dest_i);
   }
   // The identity matrix `dest' is not sorted (see the sorting rules
-  // in Linear_Row.cc).
+  // in Constrant.cc and Generator.cc).
   dest.set_sorted(false);
 
   // NOTE: the system `dest', as it is now, is not a _legal_ system of
