@@ -737,7 +737,7 @@ PPL::Polyhedron::constrains(const Variable var) const {
 	const int sign = sgn(gen_sys_i.coefficient(var));
 	if (sign != 0) {
 	  for (dimension_type j = space_dim+1; --j > 0; )
-	    if (j != var_id && gen_sys_i.get_row()[j] != 0)
+	    if (j != var_id && gen_sys_i.expression().get_row()[j] != 0)
 	      goto next;
 	  if (gen_sys_i.is_line())
 	    return true;
@@ -1338,8 +1338,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// (normalized) closure point.
 	Generator cp;
         gen_sys.release_row(cp);
-	cp.get_row()[space_dim + 1] = 0;
-	cp.get_row().normalize();
+	cp.expression().get_row()[space_dim + 1] = 0;
+	cp.expression().get_row().normalize();
         gen_sys.insert_recycled(cp);
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
@@ -1378,8 +1378,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// (normalized) closure point.
 	Generator cp;
         gen_sys.release_row(cp);
-	cp.get_row()[space_dim + 1] = 0;
-	cp.get_row().normalize();
+	cp.expression().get_row()[space_dim + 1] = 0;
+	cp.expression().get_row().normalize();
         if (has_pending) {
           gen_sys.insert_pending_recycled(cp);
           // Re-insert the point (which is already normalized).
@@ -2904,12 +2904,12 @@ generalized_affine_image(const Variable var,
           rows.push_back(gen_i);
           Generator& new_gen = rows.back();
 	  if (relsym == GREATER_THAN)
-	    ++new_gen.get_row()[var_space_dim];
+	    ++new_gen.expression().get_row()[var_space_dim];
 	  else
-	    --new_gen.get_row()[var_space_dim];
+	    --new_gen.expression().get_row()[var_space_dim];
           
 	  // Transform gen_i' into a closure point.
-	  gen_i.get_row()[eps_index] = 0;
+	  gen_i.expression().get_row()[eps_index] = 0;
 	}
       }
 
@@ -3372,15 +3372,15 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       case Generator::CLOSURE_POINT:
 	{
 	  // If it is the origin, erase it.
-	  if (g.all_homogeneous_terms_are_zero()) {
+	  if (g.expression().all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
             std::swap(g, rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
-	    g.get_row()[0] = 0;
+	    g.expression().get_row()[0] = 0;
 	    // Enforce normalization.
-	    g.get_row().normalize();
+	    g.expression().get_row().normalize();
 	  }
 	}
 	break;
@@ -3397,15 +3397,15 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       case Generator::POINT:
 	{
 	  // If it is the origin, erase it.
-	  if (g.all_homogeneous_terms_are_zero()) {
+	  if (g.expression().all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
             std::swap(g, rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {
-	    g.get_row()[0] = 0;
+	    g.expression().get_row()[0] = 0;
 	    // Enforce normalization.
-	    g.get_row().normalize();
+	    g.expression().get_row().normalize();
 	  }
 	}
 	break;
@@ -3508,7 +3508,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the value if there is a constant value.
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i.get_row()[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.expression().get_row()[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
       if (first_candidate) {
 	// We have a (new) candidate value.

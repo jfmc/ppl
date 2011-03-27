@@ -612,28 +612,28 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	    if (!considered[k])
 	      for (dimension_type h = k + 1; h <= x.space_dim; ++h)
 		if (!considered[h]) {
-		  tmp = x_g.get_row()[k] * y_g.get_row()[h];
+		  tmp = x_g.expression().get_row()[k] * y_g.expression().get_row()[h];
 		  // The following line optimizes the computation of
 		  // tmp -= x_g[h] * y_g[k];
-		  sub_mul_assign(tmp, x_g.get_row()[h], y_g.get_row()[k]);
+		  sub_mul_assign(tmp, x_g.expression().get_row()[h], y_g.expression().get_row()[k]);
 		  const int clockwise
 		    = sgn(tmp);
 		  const int first_or_third_quadrant
-		    = sgn(x_g.get_row()[k]) * sgn(x_g.get_row()[h]);
+		    = sgn(x_g.expression().get_row()[k]) * sgn(x_g.expression().get_row()[h]);
 		  switch (clockwise * first_or_third_quadrant) {
 		  case -1:
-		    new_ray.get_row()[k] = 0;
+		    new_ray.expression().get_row()[k] = 0;
 		    considered[k] = true;
 		    break;
 		  case 1:
-		    new_ray.get_row()[h] = 0;
+		    new_ray.expression().get_row()[h] = 0;
 		    considered[h] = true;
 		    break;
 		  default:
 		    break;
 		  }
 		}
-	  new_ray.get_row().normalize();
+	  new_ray.expression().get_row().normalize();
 	  candidate_rays.insert(new_ray);
 	}
       }

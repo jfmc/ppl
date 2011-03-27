@@ -42,7 +42,7 @@ PPL::Linear_Expression::Linear_Expression(const Constraint& c)
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
-  : row(g.row) {
+  : row(g.expression().row) {
   // Do not copy the divisor of `g'.
   row[0] = 0;
   // Do not copy the epsilon dimension (if any).

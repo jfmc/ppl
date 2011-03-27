@@ -465,7 +465,7 @@ Linear_System<Row>::normalize() {
   const dimension_type nrows = rows.size();
   // We normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
-    rows[i].get_row().normalize();
+    rows[i].expression().get_row().normalize();
   sorted = (nrows <= 1);
   PPL_ASSERT(OK());
 }

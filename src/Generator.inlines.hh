@@ -42,7 +42,7 @@ Generator::is_not_necessarily_closed() const {
 
 inline dimension_type
 Generator::space_dimension() const {
-  const dimension_type sz = get_row().size();
+  const dimension_type sz = expr.get_row().size();
   return (sz == 0)
     ? 0
     : sz - (is_necessarily_closed() ? 1 : 2);
@@ -79,10 +79,10 @@ Generator::set_topology(Topology x) {
     return;
   if (topology() == NECESSARILY_CLOSED)
     // Add a column for the epsilon dimension.
-    get_row().resize(get_row().size() + 1);
+    expr.get_row().resize(expr.get_row().size() + 1);
   else {
-    PPL_ASSERT(get_row().size() > 0);
-    get_row().resize(get_row().size() - 1);
+    PPL_ASSERT(expr.get_row().size() > 0);
+    expr.get_row().resize(expr.get_row().size() - 1);
   }
   topology_ = x;
 }
@@ -111,51 +111,51 @@ Generator::set_not_necessarily_closed() {
 
 inline
 Generator::Generator()
-  : Linear_Expression(), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
+  : expr(), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
 }
 
 inline
 Generator::Generator(dimension_type num_columns)
-  : Linear_Expression(),
+  : expr(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
   PPL_ASSERT(num_columns != 0);
-  Linear_Expression::set_space_dimension(num_columns - 1);
+  expr.set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(dimension_type num_columns, Kind kind, Topology topology)
-  : Linear_Expression(), kind_(kind), topology_(topology) {
+  : expr(), kind_(kind), topology_(topology) {
   PPL_ASSERT(num_columns != 0);
-  Linear_Expression::set_space_dimension(num_columns - 1);
+  expr.set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(dimension_type num_columns,
                      dimension_type /* num_reserved_columns */)
-  : Linear_Expression(),
+  : expr(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
   PPL_ASSERT(num_columns != 0);
-  Linear_Expression::set_space_dimension(num_columns - 1);
+  expr.set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(dimension_type num_columns,
                      dimension_type /* num_reserved_columns */,
                      Kind kind, Topology topology)
-  : Linear_Expression(),
+  : expr(),
     kind_(kind),
     topology_(topology) {
   PPL_ASSERT(num_columns != 0);
-  Linear_Expression::set_space_dimension(num_columns - 1);
+  expr.set_space_dimension(num_columns - 1);
 }
 
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
-  get_row().swap(e.get_row());
+  expr.get_row().swap(e.get_row());
   if (type == LINE)
     kind_ = LINE_OR_EQUALITY;
   else
@@ -165,18 +165,18 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
 
 inline
 Generator::Generator(const Generator& g)
-  : Linear_Expression(static_cast<const Linear_Expression&>(g)), kind_(g.kind_), topology_(g.topology_) {
+  : expr(g.expr), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type dimension)
-  : Linear_Expression(static_cast<const Linear_Expression&>(g), dimension), kind_(g.kind_), topology_(g.topology_) {
+  : expr(g.expr, dimension), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type num_columns,
                      dimension_type /* num_reserved_columns */)
-  : Linear_Expression(static_cast<const Linear_Expression&>(g), num_columns), kind_(g.kind_), topology_(g.topology_) {
+  : expr(g.expr, num_columns), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
@@ -185,7 +185,7 @@ Generator::~Generator() {
 
 inline Generator&
 Generator::operator=(const Generator& g) {
-  Linear_Expression::operator=(g);
+  expr = g.expr;
   kind_ = g.kind_;
   topology_ = g.topology_;
   return *this;
@@ -193,12 +193,12 @@ Generator::operator=(const Generator& g) {
 
 inline Linear_Expression&
 Generator::expression() {
-  return *this;
+  return expr;
 }
 
 inline const Linear_Expression&
 Generator::expression() const {
-  return *this;
+  return expr;
 }
 
 inline dimension_type
@@ -209,15 +209,15 @@ Generator::max_space_dimension() {
 inline void
 Generator::set_space_dimension(dimension_type space_dim) {
   if (topology() == NECESSARILY_CLOSED) {
-    get_row().resize(space_dim + 1);
+    expr.get_row().resize(space_dim + 1);
   } else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
-      get_row().resize(space_dim + 2);
-      get_row().swap(space_dim + 1, old_space_dim + 1);
+      expr.get_row().resize(space_dim + 2);
+      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
     } else {
-      get_row().swap(space_dim + 1, old_space_dim + 1);
-      get_row().resize(space_dim + 2);
+      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
+      expr.get_row().resize(space_dim + 2);
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
@@ -235,7 +235,7 @@ Generator::is_ray_or_point() const {
 
 inline bool
 Generator::is_line_or_ray() const {
-  return get_row()[0] == 0;
+  return expr.get_row()[0] == 0;
 }
 
 inline bool
@@ -254,7 +254,7 @@ Generator::type() const {
   else {
     // Checking the value of the epsilon coefficient.
     const Generator& g = *this;
-    return (g.get_row()[get_row().size() - 1] == 0) ? CLOSURE_POINT : POINT;
+    return (g.expr.get_row()[expr.get_row().size() - 1] == 0) ? CLOSURE_POINT : POINT;
   }
 }
 
@@ -282,12 +282,12 @@ inline Coefficient_traits::const_reference
 Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Linear_Expression::coefficient(v);
+  return expr.coefficient(v);
 }
 
 inline Coefficient_traits::const_reference
 Generator::divisor() const {
-  Coefficient_traits::const_reference d = Linear_Expression::inhomogeneous_term();
+  Coefficient_traits::const_reference d = expr.inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("divisor()",
 			   "*this is neither a point nor a closure point");
@@ -296,7 +296,7 @@ Generator::divisor() const {
 
 inline memory_size_type
 Generator::external_memory_in_bytes() const {
-  return Linear_Expression::external_memory_in_bytes();
+  return expr.external_memory_in_bytes();
 }
 
 inline memory_size_type
@@ -306,7 +306,7 @@ Generator::total_memory_in_bytes() const {
 
 inline void
 Generator::strong_normalize() {
-  get_row().normalize();
+  expr.get_row().normalize();
   sign_normalize();
 }
 
@@ -361,9 +361,9 @@ operator!=(const Generator& x, const Generator& y) {
 
 inline void
 Generator::ascii_dump(std::ostream& s) const {
-  s << "size " << get_row().size() << " ";
-  for (dimension_type j = 0; j < get_row().size(); ++j)
-    s << get_row()[j] << ' ';
+  s << "size " << expr.get_row().size() << " ";
+  for (dimension_type j = 0; j < expr.get_row().size(); ++j)
+    s << expr.get_row()[j] << ' ';
   switch (type()) {
   case Generator::LINE:
     s << "L ";
@@ -397,10 +397,10 @@ Generator::ascii_load(std::istream& s) {
   dimension_type sz;
   if (!(s >> sz))
     return false;
-  get_row().resize(sz);
+  expr.get_row().resize(sz);
 
-  for (dimension_type j = 0; j < get_row().size(); ++j)
-    if (!(s >> get_row()[j]))
+  for (dimension_type j = 0; j < expr.get_row().size(); ++j)
+    if (!(s >> expr.get_row()[j]))
       return false;
 
   if (!(s >> str))
@@ -453,14 +453,14 @@ Generator::ascii_load(std::istream& s) {
 
 inline void
 Generator::swap(Generator& y) {
-  Linear_Expression::swap(y);
+  expr.swap(y.expr);
   std::swap(kind_, y.kind_);
   std::swap(topology_, y.topology_);
 }
 
 inline void
 Generator::swap(dimension_type i, dimension_type j) {
-  get_row().swap(i, j);
+  expr.get_row().swap(i, j);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

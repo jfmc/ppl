@@ -619,7 +619,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // We will add it to the extremum as soon as we find it.
       PPL_DIRTY_TEMP0(mpq_class, candidate);
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i.get_row()[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.expression().get_row()[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
       const bool g_is_point = gen_sys_i.is_point();
       if (first_candidate
@@ -1318,10 +1318,10 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       }
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	if (g.get_row()[eps_index] != g.get_row()[0]) {
-	  g.get_row()[eps_index] = g.get_row()[0];
+	if (g.expression().get_row()[eps_index] != g.expression().get_row()[0]) {
+	  g.expression().get_row()[eps_index] = g.expression().get_row()[0];
 	  // Enforce normalization.
-	  g.get_row().normalize();
+	  g.expression().get_row().normalize();
 	  changed = true;
 	}
 	// Consider next generator.
@@ -1995,7 +1995,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (x_gs_red_in_y[i])
       continue;
     const Generator& x_g = x_gs[i];
-    const dimension_type row_sz = x_g.get_row().size();
+    const dimension_type row_sz = x_g.expression().get_row().size();
     const bool x_g_is_line = x_g.is_line_or_equality();
     for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
       if (y_gs_red_in_x[j])
@@ -2008,17 +2008,17 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       // since any strictly positive combination would do.
       mid_g = x_g;
       for (dimension_type k = row_sz; k-- > 0; )
-        mid_g.get_row()[k] += y_g.get_row()[k];
+        mid_g.expression().get_row()[k] += y_g.expression().get_row()[k];
       // A zero ray is not a well formed generator.
       const bool illegal_ray
-        = (mid_g.get_row()[0] == 0 && mid_g.all_homogeneous_terms_are_zero());
+        = (mid_g.expression().get_row()[0] == 0 && mid_g.expression().all_homogeneous_terms_are_zero());
       // A zero ray cannot be generated from a line: this holds
       // because x_row (resp., y_row) is not subsumed by y (resp., x).
       PPL_ASSERT(!(illegal_ray && (x_g_is_line || y_g_is_line)));
       if (illegal_ray)
         continue;
       if (x_g_is_line) {
-        mid_g.get_row().normalize();
+        mid_g.expression().get_row().normalize();
         if (y_g_is_line)
           // mid_row is a line too: sign normalization is needed.
           mid_g.sign_normalize();
@@ -2039,8 +2039,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
         // Step 6.1: (re-)compute mid_row = x_g - y_g.
         mid_g = x_g;
         for (dimension_type k = row_sz; k-- > 0; )
-          mid_g.get_row()[k] -= y_g.get_row()[k];
-        mid_g.get_row().normalize();
+          mid_g.expression().get_row()[k] -= y_g.expression().get_row()[k];
+        mid_g.expression().get_row().normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
@@ -2050,8 +2050,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
         // Step 6.1: (re-)compute mid_row = - x_row + y_row.
         mid_g = y_g;
         for (dimension_type k = row_sz; k-- > 0; )
-          mid_g.get_row()[k] -= x_g.get_row()[k];
-        mid_g.get_row().normalize();
+          mid_g.expression().get_row()[k] -= x_g.expression().get_row()[k];
+        mid_g.expression().get_row().normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())

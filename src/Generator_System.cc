@@ -91,12 +91,12 @@ PPL::Generator_System::add_corresponding_closure_points() {
   const dimension_type eps_index = gs.sys.space_dimension() + 1;
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Generator& g = gs[i];
-    if (g.get_row()[eps_index] > 0) {
+    if (g.expression().get_row()[eps_index] > 0) {
       // `g' is a point: adding the closure point.
       Generator cp = g;
-      cp.get_row()[eps_index] = 0;
+      cp.expression().get_row()[eps_index] = 0;
       // Enforcing normalization.
-      cp.get_row().normalize();
+      cp.expression().get_row().normalize();
       gs.insert_pending_recycled(cp);
     }
   }
@@ -118,11 +118,11 @@ PPL::Generator_System::add_corresponding_points() {
   const dimension_type eps_index = sys.space_dimension() + 1;
   for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
-    if (!g.is_line_or_ray() && g.get_row()[eps_index] == 0) {
+    if (!g.is_line_or_ray() && g.expression().get_row()[eps_index] == 0) {
       // `g' is a closure point: adding the point.
       // Note: normalization is preserved.
       Generator p = g;
-      p.get_row()[eps_index] = p.get_row()[0];
+      p.expression().get_row()[eps_index] = p.expression().get_row()[0];
       gs.insert_pending_recycled(p);
     }
   }
@@ -160,7 +160,7 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   for (dimension_type i = rows.size(); i-- > 0; ) {
     Generator& gen = rows[i];
     if (!gen.is_line_or_ray())
-      gen.get_row()[eps_index] = gen.get_row()[0];
+      gen.expression().get_row()[eps_index] = gen.expression().get_row()[0];
   }
 
   // Put the rows back into the linear system.
@@ -180,7 +180,7 @@ PPL::Generator_System::has_points() const {
     // !is_necessarily_closed()
     const dimension_type eps_index = gs.sys.space_dimension() + 1;
     for (dimension_type i = sys.num_rows(); i-- > 0; )
-    if (gs[i].get_row()[eps_index] != 0)
+    if (gs[i].expression().get_row()[eps_index] != 0)
       return true;
   }
   return false;
@@ -241,7 +241,7 @@ PPL::Generator_System::insert_recycled(Generator& g) {
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (!g.is_line_or_ray())
-	g.get_row()[new_space_dim + 1] = g.get_row()[0];
+	g.expression().get_row()[new_space_dim + 1] = g.expression().get_row()[0];
       // Inserting the new generator.
       sys.insert_recycled(g);
     }
@@ -272,7 +272,7 @@ PPL::Generator_System::insert_pending_recycled(Generator& g) {
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (!g.is_line_or_ray())
-	g.get_row()[new_space_dim + 1] = g.get_row()[0];
+	g.expression().get_row()[new_space_dim + 1] = g.expression().get_row()[0];
       // Inserting the new generator.
       sys.insert_pending_recycled(g);
     }
@@ -724,8 +724,8 @@ PPL::Generator_System
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = rows[i];
-    Scalar_Products::assign(numerator, expr, row);
-    std::swap(numerator, row.get_row()[v.space_dimension()]);
+    Scalar_Products::assign(numerator, expr, row.expression());
+    std::swap(numerator, row.expression().get_row()[v.space_dimension()]);
   }
 
   if (denominator != 1) {
@@ -736,7 +736,7 @@ PPL::Generator_System
       Generator& row = rows[i];
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v.space_dimension())
-	  row.get_row()[j] *= denominator;
+	  row.expression().get_row()[j] *= denominator;
     }
   }
 
@@ -837,7 +837,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // remove_row().
   for (dimension_type i = 0; i < num_rows(); ) {
     const Generator& g = (*this)[i];
-    if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero())
+    if (g.is_line_or_ray() && g.expression().all_homogeneous_terms_are_zero())
       sys.remove_row(i, false);
     else
       ++i;
