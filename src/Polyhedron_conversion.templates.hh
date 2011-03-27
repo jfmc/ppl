@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include "Temp.defs.hh"
+#include "math_utilities.defs.hh"
+
 #include <cstddef>
 #include <climits>
 
