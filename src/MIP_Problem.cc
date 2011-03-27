@@ -32,6 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include "Scalar_Products.inlines.hh"
+#include "math_utilities.defs.hh"
+
 #include <stdexcept>
 #include <deque>
 #include <vector>
