@@ -191,6 +191,16 @@ Generator::operator=(const Generator& g) {
   return *this;
 }
 
+inline Linear_Expression&
+Generator::expression() {
+  return *this;
+}
+
+inline const Linear_Expression&
+Generator::expression() const {
+  return *this;
+}
+
 inline dimension_type
 Generator::max_space_dimension() {
   return Linear_Expression::max_space_dimension();

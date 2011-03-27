@@ -567,6 +567,12 @@ public:
   //! Swaps the i-th and j-th elements of the row.
   void swap(dimension_type i, dimension_type j);
 
+  // TODO: Remove this.
+  Linear_Expression& expression();
+
+  // TODO: Remove this.
+  const Linear_Expression& expression() const;
+
 private:
   Kind kind_;
 
