@@ -461,14 +461,6 @@ Linear_System<Row>::add_pending_row(const Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_pending_row(const typename Row::Flags flags) {
-  Row new_row(flags);
-  new_row.set_space_dimension(space_dimension());
-  add_recycled_pending_row(new_row);
-}
-
-template <typename Row>
-void
 Linear_System<Row>::normalize() {
   const dimension_type nrows = rows.size();
   // We normalize also the pending rows.

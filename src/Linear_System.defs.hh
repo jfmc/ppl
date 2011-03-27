@@ -491,9 +491,6 @@ private:
   //! Adds a the given row to the system, stealing its contents.
   void add_recycled_row(Row& r);
 
-  //! Adds a new empty row to the system, setting only its flags.
-  void add_pending_row(typename Row::Flags flags);
-
   //! Adds a copy of the given row to the pending part of the system.
   void add_pending_row(const Row& r);
 
