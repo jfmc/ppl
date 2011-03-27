@@ -43,15 +43,13 @@ PPL::Scalar_Products::assign(Coefficient& z,
 void
 PPL::Scalar_Products::assign(Coefficient& z,
                              const Constraint& x, const Generator& y) {
-  assign(z, static_cast<const Linear_Expression&>(x),
-            static_cast<const Linear_Expression&>(y));
+  assign(z, x.expression(), y.expression());
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
                              const Generator& x, const Constraint& y) {
-  assign(z, static_cast<const Linear_Expression&>(x),
-            static_cast<const Linear_Expression&>(y));
+  assign(z, x.expression(), y.expression());
 }
 
 void
@@ -65,8 +63,7 @@ void
 PPL::Scalar_Products::assign(Coefficient& z,
 			     const Constraint& x,
 			     const Grid_Generator& y) {
-  assign(z, static_cast<const Linear_Expression&>(x),
-            static_cast<const Linear_Expression&>(y));
+  assign(z, x.expression(), static_cast<const Linear_Expression&>(y));
 }
 
 void

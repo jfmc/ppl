@@ -72,7 +72,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     // Note that num_rows() is *not* constant, because it is decreased by
     // remove_row().
     for (dimension_type i = 0; i < num_rows(); )
-      if (sys[i].get_row()[eps_index] != 0)
+      if (sys[i].expression().get_row()[eps_index] != 0)
         sys.remove_row(i, false);
       else
         ++i;
@@ -113,7 +113,7 @@ PPL::Constraint_System::has_strict_inequalities() const {
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
     //       a strict inequality.
-    if (c.get_row()[eps_index] < 0 && !c.is_tautological())
+    if (c.expression().get_row()[eps_index] < 0 && !c.is_tautological())
       return true;
   }
   return false;
@@ -326,11 +326,11 @@ PPL::Constraint_System
   if (denominator != 1) {
     for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = rows[i];
-      Coefficient& row_v = row.get_row()[v.space_dimension()];
+      Coefficient& row_v = row.expression().get_row()[v.space_dimension()];
       if (row_v != 0) {
 	for (dimension_type j = n_columns; j-- > 0; )
 	  if (j != v.space_dimension()) {
-	    Coefficient& row_j = row.get_row()[j];
+	    Coefficient& row_j = row.expression().get_row()[j];
 	    row_j *= denominator;
 	    if (j < expr_size)
 	      add_mul_assign(row_j, row_v, expr.get_row()[j]);
@@ -346,11 +346,11 @@ PPL::Constraint_System
     // only considering columns having indexes < expr_size.
     for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = rows[i];
-      Coefficient& row_v = row.get_row()[v.space_dimension()];
+      Coefficient& row_v = row.expression().get_row()[v.space_dimension()];
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
 	  if (j != v.space_dimension())
-	    add_mul_assign(row.get_row()[j], row_v, expr.get_row()[j]);
+	    add_mul_assign(row.expression().get_row()[j], row_v, expr.get_row()[j]);
 	if (not_invertible)
 	  row_v = 0;
 	else

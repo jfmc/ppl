@@ -1152,11 +1152,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  const Constraint& c = cs[i];
 	  bool all_zeroes = true;
 	  for (dimension_type k = eps_index; k-- > 1; )
-	    if (c.get_row()[k] != 0) {
+	    if (c.expression().get_row()[k] != 0) {
 	      all_zeroes = false;
 	      break;
 	    }
-	  if (all_zeroes && (c.get_row()[0] + c.get_row()[eps_index] == 0)) {
+	  if (all_zeroes && (c.expression().get_row()[0] + c.expression().get_row()[eps_index] == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
@@ -2140,19 +2140,19 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 
     if (pvars != 0) {
       for (dimension_type i = space_dim; i-- > 0; )
-	if (c.get_row()[i+1] != 0 && pvars->find(i) == pvars->end())
+	if (c.expression().get_row()[i+1] != 0 && pvars->find(i) == pvars->end())
 	  goto next_constraint;
     }
 
     if (!is_necessarily_closed()) {
       // Transform all strict inequalities into non-strict ones,
       // with the inhomogeneous term incremented by 1.
-      if (c.get_row()[eps_index] < 0) {
-	c.get_row()[eps_index] = 0;
-	--c.get_row()[0];
+      if (c.expression().get_row()[eps_index] < 0) {
+	c.expression().get_row()[eps_index] = 0;
+	--c.expression().get_row()[0];
 	// Enforce normalization.
 	// FIXME: is this really necessary?
-	c.get_row().normalize();
+	c.expression().get_row().normalize();
 	changed = true;
       }
     }
@@ -2161,7 +2161,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       // Compute the GCD of all the homogeneous terms.
       dimension_type i = space_dim+1;
       while (i > 1) {
-	const Coefficient& c_i = c.get_row()[--i];
+	const Coefficient& c_i = c.expression().get_row()[--i];
 	if (const int c_i_sign = sgn(c_i)) {
 	  gcd = c_i;
 	  if (c_i_sign < 0)
@@ -2176,7 +2176,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       if (gcd == 1)
 	goto next_constraint;
       while (i > 1) {
-	const Coefficient& c_i = c.get_row()[--i];
+	const Coefficient& c_i = c.expression().get_row()[--i];
 	if (c_i != 0) {
 	  // See the comment in Dense_Row::normalize().
 	  gcd_assign(gcd, c_i, gcd);
@@ -2185,7 +2185,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 	}
       }
       PPL_ASSERT(gcd != 1);
-      PPL_ASSERT(c.get_row()[0] % gcd != 0);
+      PPL_ASSERT(c.expression().get_row()[0] % gcd != 0);
 
       // If we have an equality, the polyhedron becomes empty.
       if (c.is_equality()) {
@@ -2195,10 +2195,10 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
 
       // Divide the inhomogeneous coefficients by the GCD.
       for (dimension_type k = space_dim+1; --k > 0; ) {
-	Coefficient& c_k = c.get_row()[k];
+	Coefficient& c_k = c.expression().get_row()[k];
 	exact_div_assign(c_k, c_k, gcd);
       }
-      Coefficient& c_0 = c.get_row()[0];
+      Coefficient& c_0 = c.expression().get_row()[0];
       const int c_0_sign = sgn(c_0);
       c_0 /= gcd;
       if (c_0_sign < 0)

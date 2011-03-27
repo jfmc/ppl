@@ -31,7 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
-#include "Linear_Expression.defs.hh"
 #include "Topology.hh"
 
 #include <iosfwd>
@@ -134,7 +133,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   syntactically different from the (semantically equivalent)
   constraint considered.
 */
-class Parma_Polyhedra_Library::Constraint : public Linear_Expression {
+class Parma_Polyhedra_Library::Constraint {
 public:
 
   //! The possible kinds of Constraint objects.
@@ -342,8 +341,6 @@ public:
     is greater than or equal to the space dimension of \p *this.
   */
   Coefficient_traits::const_reference coefficient(Variable v) const;
-  
-  using Linear_Expression::coefficient;
 
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
@@ -482,7 +479,15 @@ public:
   */
   void set_is_inequality();
 
+  // TODO: Remove this.
+  Linear_Expression& expression();
+
+  // TODO: Remove this.
+  const Linear_Expression& expression() const;
+
 private:
+  Linear_Expression expr;
+
   Kind kind_;
 
   Topology topology_;

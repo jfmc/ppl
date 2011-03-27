@@ -44,7 +44,7 @@ Constraint::is_not_necessarily_closed() const {
 
 inline dimension_type
 Constraint::space_dimension() const {
-  const dimension_type sz = get_row().size();
+  const dimension_type sz = expr.get_row().size();
   return (sz == 0)
     ? 0
     : sz - (is_necessarily_closed() ? 1 : 2);
@@ -81,10 +81,10 @@ Constraint::set_topology(Topology x) {
     return;
   if (topology() == NECESSARILY_CLOSED)
     // Add a column for the epsilon dimension.
-    get_row().resize(get_row().size() + 1);
+    expr.get_row().resize(expr.get_row().size() + 1);
   else {
-    PPL_ASSERT(get_row().size() > 0);
-    get_row().resize(get_row().size() - 1);
+    PPL_ASSERT(expr.get_row().size() > 0);
+    expr.get_row().resize(expr.get_row().size() - 1);
   }
   topology_ = x;
 }
@@ -113,40 +113,40 @@ Constraint::set_not_necessarily_closed() {
 
 inline
 Constraint::Constraint(dimension_type sz)
-  : Linear_Expression(),
+  : expr(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
   PPL_ASSERT(sz != 0);
-  Linear_Expression::set_space_dimension(sz - 1);
+  expr.set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(dimension_type sz, Kind kind, Topology topology)
-  : Linear_Expression(), kind_(kind), topology_(topology) {
+  : expr(), kind_(kind), topology_(topology) {
   PPL_ASSERT(sz != 0);
-  Linear_Expression::set_space_dimension(sz - 1);
+  expr.set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(dimension_type sz, dimension_type /* capacity */)
-  : Linear_Expression(),
+  : expr(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
   PPL_ASSERT(sz != 0);
-  Linear_Expression::set_space_dimension(sz - 1);
+  expr.set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(dimension_type sz, dimension_type /* capacity */,
                        Kind kind, Topology topology)
-  : Linear_Expression(),
+  : expr(),
     kind_(kind),
     topology_(topology) {
   PPL_ASSERT(sz != 0);
-  Linear_Expression::set_space_dimension(sz - 1);
+  expr.set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
@@ -154,7 +154,7 @@ inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  get_row().swap(e.get_row());
+  expr.get_row().swap(e.get_row());
   if (type == EQUALITY)
     kind_ = LINE_OR_EQUALITY;
   else
@@ -165,20 +165,20 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
 
 inline
 Constraint::Constraint(const Constraint& c)
-  : Linear_Expression(static_cast<const Linear_Expression&>(c)), kind_(c.kind_), topology_(c.topology_) {
+  : expr(c.expr), kind_(c.kind_), topology_(c.topology_) {
   // NOTE: This does not call PPL_ASSERT(OK()) because this is called by OK().
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
-  : Linear_Expression(static_cast<const Linear_Expression&>(c), sz), kind_(c.kind_), topology_(c.topology_) {
+  : expr(c.expr, sz), kind_(c.kind_), topology_(c.topology_) {
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz,
                        const dimension_type /* capacity */)
-  : Linear_Expression(static_cast<const Linear_Expression&>(c), sz),
+  : expr(c.expr, sz),
     kind_(c.kind_),
     topology_(c.topology_) {
   PPL_ASSERT(OK());
@@ -190,12 +190,22 @@ Constraint::~Constraint() {
 
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
-  static_cast<Linear_Expression&>(*this) = static_cast<const Linear_Expression&>(c);
+  expr = c.expr;
   kind_ = c.kind_;
   topology_ = c.topology_;
   PPL_ASSERT(OK());
   
   return *this;
+}
+
+inline Linear_Expression&
+Constraint::expression() {
+  return expr;
+}
+
+inline const Linear_Expression&
+Constraint::expression() const {
+  return expr;
 }
 
 inline dimension_type
@@ -206,15 +216,15 @@ Constraint::max_space_dimension() {
 inline void
 Constraint::set_space_dimension(dimension_type space_dim) {
   if (topology() == NECESSARILY_CLOSED) {
-    get_row().resize(space_dim + 1);
+    expr.get_row().resize(space_dim + 1);
   } else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
-      get_row().resize(space_dim + 2);
-      get_row().swap(space_dim + 1, old_space_dim + 1);
+      expr.get_row().resize(space_dim + 2);
+      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
     } else {
-      get_row().swap(space_dim + 1, old_space_dim + 1);
-      get_row().resize(space_dim + 2);
+      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
+      expr.get_row().resize(space_dim + 2);
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
@@ -237,7 +247,7 @@ Constraint::type() const {
   if (is_necessarily_closed())
     return NONSTRICT_INEQUALITY;
   else
-    return (get_row()[get_row().size() - 1] < 0)
+    return (expr.get_row()[expr.get_row().size() - 1] < 0)
       ? STRICT_INEQUALITY
       : NONSTRICT_INEQUALITY;
 }
@@ -266,17 +276,17 @@ inline Coefficient_traits::const_reference
 Constraint::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Linear_Expression::coefficient(v);
+  return expr.coefficient(v);
 }
 
 inline Coefficient_traits::const_reference
 Constraint::inhomogeneous_term() const {
-  return Linear_Expression::inhomogeneous_term();
+  return expr.inhomogeneous_term();
 }
 
 inline memory_size_type
 Constraint::external_memory_in_bytes() const {
-  return Linear_Expression::external_memory_in_bytes();
+  return expr.external_memory_in_bytes();
 }
 
 inline memory_size_type
@@ -286,7 +296,7 @@ Constraint::total_memory_in_bytes() const {
 
 inline void
 Constraint::strong_normalize() {
-  get_row().normalize();
+  expr.get_row().normalize();
   sign_normalize();
 }
 
@@ -487,7 +497,7 @@ Constraint::epsilon_leq_one() {
 
 inline void
 Constraint::swap(Constraint& y) {
-  Linear_Expression::swap(y);
+  expr.swap(y.expr);
   std::swap(kind_, y.kind_);
   std::swap(topology_, y.topology_);
 }

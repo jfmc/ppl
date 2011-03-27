@@ -35,7 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
-  : row(c.row) {
+  : row(c.expression().row) {
   // Do not copy the epsilon dimension (if any).
   if (c.is_not_necessarily_closed())
     row.resize(row.size() - 1);

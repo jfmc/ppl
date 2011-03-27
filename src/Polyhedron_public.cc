@@ -481,13 +481,13 @@ PPL::Polyhedron::is_universe() const {
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
       const dimension_type eps_index = con_sys.space_dimension() + 1;
-      PPL_ASSERT(eps_leq_one.get_row()[0] > 0
-                 && eps_leq_one.get_row()[eps_index] < 0
-                 && eps_geq_zero.get_row()[0] == 0
-                 && eps_geq_zero.get_row()[eps_index] > 0);
+      PPL_ASSERT(eps_leq_one.expression().get_row()[0] > 0
+                 && eps_leq_one.expression().get_row()[eps_index] < 0
+                 && eps_geq_zero.expression().get_row()[0] == 0
+                 && eps_geq_zero.expression().get_row()[eps_index] > 0);
       for (dimension_type i = 1; i < eps_index; ++i)
-	PPL_ASSERT(eps_leq_one.get_row()[i] == 0
-	           && eps_geq_zero.get_row()[i] == 0);
+	PPL_ASSERT(eps_leq_one.expression().get_row()[i] == 0
+	           && eps_geq_zero.expression().get_row()[i] == 0);
 #endif
       return true;
     }
@@ -1095,7 +1095,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       bool no_epsilon_geq_zero = true;
       const dimension_type eps_index = con_sys.space_dimension() + 1;
       for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-	if (con_sys[i].get_row()[eps_index] > 0) {
+	if (con_sys[i].expression().get_row()[eps_index] > 0) {
 	  no_epsilon_geq_zero = false;
 	  break;
 	}
@@ -3570,10 +3570,10 @@ PPL::Polyhedron::topological_closure_assign() {
     // Transform all strict inequalities into non-strict ones.
     for (dimension_type i = rows.size(); i-- > 0; ) {
       Constraint& c = rows[i];
-      if (c.get_row()[eps_index] < 0 && !c.is_tautological()) {
-	c.get_row()[eps_index] = 0;
+      if (c.expression().get_row()[eps_index] < 0 && !c.is_tautological()) {
+	c.expression().get_row()[eps_index] = 0;
 	// Enforce normalization.
-	c.get_row().normalize();
+	c.expression().get_row().normalize();
 	changed = true;
       }
     }
