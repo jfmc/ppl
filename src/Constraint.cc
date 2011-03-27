@@ -68,7 +68,8 @@ PPL::Constraint::Constraint(const Congruence& cg)
 		  0),
 	       // Capacity also includes a column for the epsilon coefficient.
 	       compute_capacity(cg.space_dimension() + 2, Dense_Row::max_size())),
-	       flags_(NECESSARILY_CLOSED, LINE_OR_EQUALITY) {
+	       kind_(LINE_OR_EQUALITY),
+	       topology_(NECESSARILY_CLOSED) {
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.
   for (dimension_type i = cg.space_dimension(); i-- > 0; )
@@ -89,7 +90,8 @@ PPL::Constraint::Constraint(const Congruence& cg,
 					 "congruence cg must be an equality."),
 		  0),
 	       capacity),
-	       flags_(NECESSARILY_CLOSED, LINE_OR_EQUALITY) {
+	       kind_(LINE_OR_EQUALITY),
+               topology_(NECESSARILY_CLOSED) {
   Constraint& c = *this;
   // Copy coefficients.
   PPL_ASSERT(sz > 0);
@@ -355,7 +357,7 @@ bool
 PPL::Constraint::is_equal_to(const Constraint& y) const {
   return static_cast<const Linear_Expression&>(*this)
          .is_equal_to(static_cast<const Linear_Row&>(y))
-         && flags_ == y.flags_;
+         && kind_ == y.kind_ && topology() == y.topology();
 }
 
 void
@@ -594,41 +596,6 @@ const char* is_nnc = "NNC";
 const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 } // namespace
-
-void
-PPL::Constraint::Flags::ascii_dump(std::ostream& s) const {
-  s << (test_bits(1 << Flags::rpi_validity_bit) ? '+' : '-')
-    << rpi_valid << ' '
-    << (test_bits(1 << Flags::rpi_bit) ? '+' : '-')
-    << is_rpi << ' '
-    << ' '
-    << (test_bits(1 << Flags::nnc_validity_bit) ? '+' : '-')
-    << nnc_valid << ' '
-    << (test_bits(1 << Flags::nnc_bit) ? '+' : '-')
-    << is_nnc;
-}
-
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Constraint::Flags)
-
-bool
-PPL::Constraint::Flags::ascii_load(std::istream& s) {
-  std::string str;
-  // Assume that the bits are used in sequence.
-  reset_bits(std::numeric_limits<base_type>::max());
-  for (unsigned int bit = 0;
-       bit < (sizeof(bit_names) / sizeof(char*));
-       ++bit) {
-    if (!(s >> str))
-      return false;
-    if (str[0] == '+')
-      set_bits(1 << bit);
-    else if (str[0] != '-')
-      return false;
-    if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
-      return false;
-  }
-  return true;
-}
 
 bool
 PPL::Constraint::OK() const {
