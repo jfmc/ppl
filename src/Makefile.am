@@ -143,7 +143,6 @@ Init.types.hh \
 Dense_Row.types.hh \
 CO_Tree.types.hh \
 Sparse_Row.types.hh \
-Linear_Row.types.hh \
 Row.types.hh \
 Matrix.types.hh \
 Swapping_Vector.types.hh \
@@ -249,8 +248,6 @@ CO_Tree.templates.hh \
 Sparse_Row.defs.hh \
 Sparse_Row.inlines.hh \
 Sparse_Row.templates.hh \
-Linear_Row.defs.hh \
-Linear_Row.inlines.hh \
 Bit_Row.defs.hh \
 Bit_Row.inlines.hh \
 Linear_System.defs.hh \
