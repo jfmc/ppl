@@ -92,24 +92,26 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
 
 inline
 Grid_Generator::Grid_Generator()
-  : Linear_Row(), kind_(LINE_OR_EQUALITY) {
+  : Linear_Expression(), kind_(LINE_OR_EQUALITY) {
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
-  : Linear_Row(g), kind_(g.kind_) {
+  : Linear_Expression(static_cast<const Linear_Expression&>(g)), kind_(g.kind_) {
 }
 
 inline
 Grid_Generator::Grid_Generator(dimension_type size, Kind kind, Topology topology)
-  : Linear_Row(size), kind_(kind) {
+  : Linear_Expression(), kind_(kind) {
   PPL_ASSERT(topology == NECESSARILY_CLOSED);
+  PPL_ASSERT(size != 0);
+  Linear_Expression::set_space_dimension(size - 1);
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size,
-                               dimension_type capacity)
-  : Linear_Row(g, size, capacity), kind_(g.kind_) {
+                               dimension_type /* capacity */)
+  : Linear_Expression(g, size), kind_(g.kind_) {
 }
 
 inline void
@@ -179,7 +181,7 @@ Grid_Generator::is_parameter_or_point() const {
 inline void
 Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
   PPL_ASSERT(!is_line());
-  Linear_Row& x = *this;
+  Linear_Expression& x = *this;
   if (is_line_or_parameter())
     x.get_row()[get_row().size() - 1] = d;
   else
@@ -190,7 +192,7 @@ inline Coefficient_traits::const_reference
 Grid_Generator::divisor() const {
   if (is_line())
     throw_invalid_argument("divisor()", "*this is a line");
-  const Linear_Row& x = *this;
+  const Linear_Expression& x = *this;
   if (is_line_or_parameter())
     return x.get_row()[get_row().size() - 1];
   else
@@ -216,14 +218,14 @@ Grid_Generator::set_is_parameter_or_point() {
 
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
-  Linear_Row::operator=(g);
+  Linear_Expression::operator=(g);
   kind_ = g.kind_;
   return *this;
 }
 
 inline void
 Grid_Generator::negate(dimension_type first, dimension_type last) {
-  Linear_Row& x = *this;
+  Linear_Expression& x = *this;
   for ( ; first < last; ++first)
     neg_assign(x.get_row()[first]);
 }
@@ -260,7 +262,7 @@ Grid_Generator::strong_normalize() {
 
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
-  Linear_Row::swap(y);
+  Linear_Expression::swap(y);
   std::swap(kind_, y.kind_);
 }
 

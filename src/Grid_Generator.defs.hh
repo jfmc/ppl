@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include "Linear_Row.defs.hh"
 #include "Topology.hh"
 
 #include "Grid.types.hh"
@@ -229,7 +228,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor is 1.
 */
-class Parma_Polyhedra_Library::Grid_Generator : public Linear_Row {
+class Parma_Polyhedra_Library::Grid_Generator : public Linear_Expression {
 public:
 
   //! The possible kinds of Grid_Generator objects.
@@ -522,11 +521,11 @@ public:
   void set_divisor(Coefficient_traits::const_reference d);
 
   // TODO: Make this private.
-  //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
+  //! Sets the Grid_Generator kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();
 
   // TODO: Make this private.
-  //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
+  //! Sets the Grid_Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter_or_point();
 
   // TODO: Make this private.
@@ -617,7 +616,7 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
-/*! \relates Linear_Row
+/*! \relates Grid_Generator
   \return
   The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
 
