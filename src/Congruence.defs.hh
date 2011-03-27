@@ -32,7 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.types.hh"
 #include "Linear_Expression.types.hh"
-#include "Linear_Row.types.hh"
 
 #include <iosfwd>
 
