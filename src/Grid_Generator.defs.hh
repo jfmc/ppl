@@ -335,22 +335,6 @@ public:
   //! Sets to \p x the topological kind of \p *this row.
   void set_topology(Topology x);
 
-  // TODO: Consider removing this, or making it private.
-  //! Marks the epsilon dimension as a standard dimension.
-  /*!
-    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is increased by 1.
-  */
-  void mark_as_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the last dimension as the epsilon dimension.
-  /*!
-    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is decreased by 1.
-  */
-  void mark_as_not_necessarily_closed();
-
   //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_necessarily_closed();
 
@@ -592,8 +576,6 @@ public:
 
 private:
   Kind kind_;
-
-  Topology topology_;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to

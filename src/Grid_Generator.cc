@@ -358,7 +358,7 @@ bool
 PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
   return static_cast<const Linear_Expression&>(*this)
          .is_equal_to(static_cast<const Linear_Expression&>(y))
-         && kind_ == y.kind_ && topology_ == y.topology_;
+         && kind_ == y.kind_;
 }
 
 bool

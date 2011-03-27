@@ -32,12 +32,12 @@ namespace Parma_Polyhedra_Library {
 
 inline bool
 Grid_Generator::is_necessarily_closed() const {
-  return (topology() == NECESSARILY_CLOSED);
+  return true;
 }
 
 inline bool
 Grid_Generator::is_not_necessarily_closed() const {
-  return (topology() == NOT_NECESSARILY_CLOSED);
+  return false;
 }
 
 inline bool
@@ -52,7 +52,7 @@ Grid_Generator::is_ray_or_point_or_inequality() const {
 
 inline Topology
 Grid_Generator::topology() const {
-  return topology_;
+  return NECESSARILY_CLOSED;
 }
 
 inline void
@@ -67,28 +67,7 @@ Grid_Generator::set_is_ray_or_point_or_inequality() {
 
 inline void
 Grid_Generator::set_topology(Topology x) {
-  if (topology() == x)
-    return;
-  if (topology() == NECESSARILY_CLOSED)
-    // Add a column for the epsilon dimension.
-    get_row().resize(get_row().size() + 1);
-  else {
-    PPL_ASSERT(get_row().size() > 0);
-    get_row().resize(get_row().size() - 1);
-  }
-  topology_ = x;
-}
-
-inline void
-Grid_Generator::mark_as_necessarily_closed() {
-  PPL_ASSERT(is_not_necessarily_closed());
-  topology_ = NECESSARILY_CLOSED;
-}
-
-inline void
-Grid_Generator::mark_as_not_necessarily_closed() {
-  PPL_ASSERT(is_necessarily_closed());
-  topology_ = NOT_NECESSARILY_CLOSED;
+  PPL_ASSERT(x == NECESSARILY_CLOSED);
 }
 
 inline void
@@ -102,8 +81,7 @@ Grid_Generator::set_not_necessarily_closed() {
 }
 
 inline
-Grid_Generator::Grid_Generator(Linear_Expression& e, Type type)
-  : topology_(NECESSARILY_CLOSED) {
+Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
   get_row().swap(e.get_row());
   if (type == LINE)
     kind_ = LINE_OR_EQUALITY;
@@ -114,23 +92,24 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type)
 
 inline
 Grid_Generator::Grid_Generator()
-  : Linear_Row(), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
+  : Linear_Row(), kind_(LINE_OR_EQUALITY) {
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
-  : Linear_Row(g), kind_(g.kind_), topology_(g.topology_) {
+  : Linear_Row(g), kind_(g.kind_) {
 }
 
 inline
 Grid_Generator::Grid_Generator(dimension_type size, Kind kind, Topology topology)
-  : Linear_Row(size), kind_(kind), topology_(topology) {
+  : Linear_Row(size), kind_(kind) {
+  PPL_ASSERT(topology == NECESSARILY_CLOSED);
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size,
                                dimension_type capacity)
-  : Linear_Row(g, size, capacity), kind_(g.kind_), topology_(g.topology_) {
+  : Linear_Row(g, size, capacity), kind_(g.kind_) {
 }
 
 inline void
@@ -239,7 +218,6 @@ inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
   Linear_Row::operator=(g);
   kind_ = g.kind_;
-  topology_ = g.topology_;
   return *this;
 }
 
@@ -284,7 +262,6 @@ inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Linear_Row::swap(y);
   std::swap(kind_, y.kind_);
-  std::swap(topology_, y.topology_);
 }
 
 /*! \relates Grid_Generator */
