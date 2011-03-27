@@ -385,6 +385,9 @@ public:
   explicit Generator(dimension_type num_columns, Flags flags = Flags());
 
   // TODO: Remove this.
+  Generator(dimension_type num_columns, Kind kind, Topology topology);
+
+  // TODO: Remove this.
   Generator(dimension_type num_columns, dimension_type num_reserved_columns,
             Flags flags = Flags());
 

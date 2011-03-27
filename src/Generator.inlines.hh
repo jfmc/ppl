@@ -257,6 +257,12 @@ Generator::Generator(dimension_type num_columns, Flags flags)
 }
 
 inline
+Generator::Generator(dimension_type num_columns, Kind kind,
+                     Topology topology)
+  : Linear_Row(num_columns), flags_(topology, kind) {
+}
+
+inline
 Generator::Generator(dimension_type num_columns,
                      dimension_type num_reserved_columns,
                      Flags flags)
