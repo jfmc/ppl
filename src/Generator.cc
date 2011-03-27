@@ -301,7 +301,7 @@ bool
 PPL::Generator::is_equal_to(const Generator& y) const {
   return static_cast<const Linear_Expression&>(*this)
          .is_equal_to(static_cast<const Linear_Expression&>(y))
-         && flags() == y.flags();
+         && kind_ == y.kind_ && topology_ == y.topology_;
 }
 
 void
@@ -502,41 +502,6 @@ const char* is_nnc = "NNC";
 const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 } // namespace
-
-void
-PPL::Generator::Flags::ascii_dump(std::ostream& s) const {
-  s << (test_bits(1 << Flags::rpi_validity_bit) ? '+' : '-')
-    << rpi_valid << ' '
-    << (test_bits(1 << Flags::rpi_bit) ? '+' : '-')
-    << is_rpi << ' '
-    << ' '
-    << (test_bits(1 << Flags::nnc_validity_bit) ? '+' : '-')
-    << nnc_valid << ' '
-    << (test_bits(1 << Flags::nnc_bit) ? '+' : '-')
-    << is_nnc;
-}
-
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Generator::Flags)
-
-bool
-PPL::Generator::Flags::ascii_load(std::istream& s) {
-  std::string str;
-  // Assume that the bits are used in sequence.
-  reset_bits(std::numeric_limits<base_type>::max());
-  for (unsigned int bit = 0;
-       bit < (sizeof(bit_names) / sizeof(char*));
-       ++bit) {
-    if (!(s >> str))
-      return false;
-    if (str[0] == '+')
-      set_bits(1 << bit);
-    else if (str[0] != '-')
-      return false;
-    if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
-      return false;
-  }
-  return true;
-}
 
 bool
 PPL::Generator::OK() const {
