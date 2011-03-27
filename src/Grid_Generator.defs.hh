@@ -238,101 +238,6 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    The type of the object to which the coefficients refer to,
-    encoding both topology and kind.
-
-    \ingroup PPL_CXX_interface
-    This combines the information about the topology (necessarily closed
-    or not) and the kind (line/equality or ray/point/inequality)
-    of a Grid_Generator object.
-  */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-  class Flags {
-  public:
-    //! Default constructor: builds an object where all flags are invalid.
-    Flags();
-
-    //! Builds an object corresponding to the topology \p t.
-    explicit Flags(Topology t);
-
-    //! Builds an object corresponding to the topology \p t and kind \p k.
-    Flags(Topology t, Kind k);
-
-    //! \name Testing and setting the type
-    //@{
-    Topology topology() const;
-    bool is_necessarily_closed() const;
-    bool is_not_necessarily_closed() const;
-    bool is_line_or_equality() const;
-    bool is_ray_or_point_or_inequality() const;
-
-    void set_topology(Topology x);
-    void set_necessarily_closed();
-    void set_not_necessarily_closed();
-    void set_is_line_or_equality();
-    void set_is_ray_or_point_or_inequality();
-    //@} // Testing and setting the type
-
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
-    bool operator==(const Flags& y) const;
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if \p *this and \p y
-      are different.
-    */
-    bool operator!=(const Flags& y) const;
-
-    PPL_OUTPUT_DECLARATIONS
-
-    /*! \brief
-      Loads from \p s an ASCII representation (as produced by
-      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-      Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-    */
-    bool ascii_load(std::istream& s);
-
-  private:
-    //! A native integral type holding the bits that encode the flags.
-    typedef unsigned int base_type;
-
-    //! Builds the type from a bit-mask.
-    explicit Flags(base_type mask);
-
-    //! \name The bits that are currently in use
-    //@{
-    // NB: ascii_load assumes that these are sequential.
-    static const unsigned rpi_validity_bit = 0;
-    static const unsigned rpi_bit = 1;
-    static const unsigned nnc_validity_bit = 2;
-    static const unsigned nnc_bit = 3;
-    //@}
-
-  protected:
-    //! Index of the first bit derived classes can use.
-    static const unsigned first_free_bit = 4;
-
-    //! Returns the integer encoding \p *this.
-    base_type get_bits() const;
-
-    //! Sets the bits in \p mask.
-    void set_bits(base_type mask);
-
-    //! Resets the bits in \p mask.
-    void reset_bits(base_type mask);
-
-    /*! \brief
-      Returns <CODE>true</CODE> if and only if all the bits
-      in \p mask are set.
-    */
-    bool test_bits(base_type mask) const;
-
-    base_type bits;
-
-    friend class Parma_Polyhedra_Library::Grid_Generator;
-  };
-
   typedef Grid_Generator row_type;
 
   //! Returns the line of direction \p e.
@@ -373,8 +278,12 @@ public:
   Grid_Generator();
 
   // TODO: Remove this.
-  //! Constructs a Grid_Generator with the specified size and flags.
-  Grid_Generator(dimension_type size, Flags f);
+  //! Constructs a Grid_Generator with the specified size.
+  explicit Grid_Generator(dimension_type size);
+
+  // TODO: Remove this.
+  //! Constructs a Grid_Generator with the specified size, kind and topology.
+  Grid_Generator(dimension_type size, Kind kind, Topology topology);
 
   //! Ordinary copy constructor.
   Grid_Generator(const Grid_Generator& g);
@@ -392,12 +301,6 @@ public:
 
   //! \name Flags inspection methods
   //@{
-  //! Returns the flags of \p *this.
-  const Flags flags() const;
-
-  //! Sets \p f as the flags of \p *this.
-  void set_flags(Flags f);
-
   //! Returns the topological kind of \p *this.
   Topology topology() const;
 
@@ -688,7 +591,9 @@ public:
   void linear_combine(const Grid_Generator& y, dimension_type k);
 
 private:
-  Flags flags_;
+  Kind kind_;
+
+  Topology topology_;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to

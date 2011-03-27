@@ -30,175 +30,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline
-Grid_Generator::Flags::Flags()
-  : bits(0) {
-  // Note that the constructed type has its validity bit unset.
-}
-
-inline
-Grid_Generator::Flags::Flags(const Topology t)
-  : bits(t << nnc_bit) {
-#ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
-#endif
-}
-
-inline
-Grid_Generator::Flags::Flags(const Topology t, const Kind k)
-  : bits((k << rpi_bit) | (t << nnc_bit)) {
-#ifndef NDEBUG
-  set_bits((1 << rpi_validity_bit)
-           | (1 << nnc_validity_bit));
-#endif
-}
-
-inline bool
-Grid_Generator::Flags::is_ray_or_point_or_inequality() const {
-  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
-  return test_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
-}
-
-inline void
-Grid_Generator::Flags::set_is_ray_or_point_or_inequality() {
-#ifndef NDEBUG
-  set_bits(1 << rpi_validity_bit);
-#endif
-  set_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
-}
-
-inline bool
-Grid_Generator::Flags::is_line_or_equality() const {
-  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
-  return !is_ray_or_point_or_inequality();
-}
-
-inline void
-Grid_Generator::Flags::set_is_line_or_equality() {
-#ifndef NDEBUG
-  set_bits(1 << rpi_validity_bit);
-#endif
-  reset_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
-}
-
-inline bool
-Grid_Generator::Flags::is_not_necessarily_closed() const {
-  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
-  return test_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
-}
-
-inline bool
-Grid_Generator::Flags::is_necessarily_closed() const {
-  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
-  return !is_not_necessarily_closed();
-}
-
-inline void
-Grid_Generator::Flags::set_topology(Topology x) {
-#ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
-#endif
-  if (x == NOT_NECESSARILY_CLOSED)
-    set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
-  else
-    reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
-}
-
-inline void
-Grid_Generator::Flags::set_not_necessarily_closed() {
-#ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
-#endif
-  set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
-}
-
-inline void
-Grid_Generator::Flags::set_necessarily_closed() {
-#ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
-#endif
-  reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
-}
-
-inline Topology
-Grid_Generator::Flags::topology() const {
-  return is_necessarily_closed() ? NECESSARILY_CLOSED : NOT_NECESSARILY_CLOSED;
-}
-
-inline bool
-Grid_Generator::Flags::operator==(const Flags& y) const {
-  base_type mask = low_bits_mask<base_type>(first_free_bit);
-  return (get_bits() & mask) == (y.get_bits() & mask);
-}
-
-inline bool
-Grid_Generator::Flags::operator!=(const Flags& y) const {
-  return !operator==(y);
-}
-
-inline Grid_Generator::Flags::base_type
-Grid_Generator::Flags::get_bits() const {
-  return bits;
-}
-
-inline void
-Grid_Generator::Flags::set_bits(const base_type mask) {
-  bits |= mask;
-}
-
-inline void
-Grid_Generator::Flags::reset_bits(const base_type mask) {
-  bits &= ~mask;
-}
-
-inline bool
-Grid_Generator::Flags::test_bits(const base_type mask) const {
-  return (bits & mask) == mask;
-}
-
-inline const Grid_Generator::Flags
-Grid_Generator::flags() const {
-  return flags_;
-}
-
-inline void
-Grid_Generator::set_flags(Flags f) {
-  flags_ = f;
-}
-
 inline bool
 Grid_Generator::is_necessarily_closed() const {
-  return flags().is_necessarily_closed();
+  return (topology() == NECESSARILY_CLOSED);
 }
 
 inline bool
 Grid_Generator::is_not_necessarily_closed() const {
-  return flags().is_not_necessarily_closed();
+  return (topology() == NOT_NECESSARILY_CLOSED);
 }
 
 inline bool
 Grid_Generator::is_line_or_equality() const {
-  return flags().is_line_or_equality();
+  return (kind_ == LINE_OR_EQUALITY);
 }
 
 inline bool
 Grid_Generator::is_ray_or_point_or_inequality() const {
-  return flags().is_ray_or_point_or_inequality();
+  return (kind_ == RAY_OR_POINT_OR_INEQUALITY);
 }
 
 inline Topology
 Grid_Generator::topology() const {
-  return flags().topology();
+  return topology_;
 }
 
 inline void
 Grid_Generator::set_is_line_or_equality() {
-  flags_.set_is_line_or_equality();
+  kind_ = LINE_OR_EQUALITY;
 }
 
 inline void
 Grid_Generator::set_is_ray_or_point_or_inequality() {
-  flags_.set_is_ray_or_point_or_inequality();
+  kind_ = RAY_OR_POINT_OR_INEQUALITY;
 }
 
 inline void
@@ -212,19 +76,19 @@ Grid_Generator::set_topology(Topology x) {
     PPL_ASSERT(get_row().size() > 0);
     get_row().resize(get_row().size() - 1);
   }
-  flags_.set_topology(x);
+  topology_ = x;
 }
 
 inline void
 Grid_Generator::mark_as_necessarily_closed() {
   PPL_ASSERT(is_not_necessarily_closed());
-  flags_.set_topology(NECESSARILY_CLOSED);
+  topology_ = NECESSARILY_CLOSED;
 }
 
 inline void
 Grid_Generator::mark_as_not_necessarily_closed() {
   PPL_ASSERT(is_necessarily_closed());
-  flags_.set_topology(NOT_NECESSARILY_CLOSED);
+  topology_ = NOT_NECESSARILY_CLOSED;
 }
 
 inline void
@@ -238,34 +102,35 @@ Grid_Generator::set_not_necessarily_closed() {
 }
 
 inline
-Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
+Grid_Generator::Grid_Generator(Linear_Expression& e, Type type)
+  : topology_(NECESSARILY_CLOSED) {
   get_row().swap(e.get_row());
-  set_flags(Flags(NECESSARILY_CLOSED, (type == LINE
-                                       ? LINE_OR_EQUALITY
-                                       : RAY_OR_POINT_OR_INEQUALITY)));
+  if (type == LINE)
+    kind_ = LINE_OR_EQUALITY;
+  else
+    kind_ = RAY_OR_POINT_OR_INEQUALITY;
   PPL_ASSERT(OK());
 }
 
 inline
 Grid_Generator::Grid_Generator()
-  : Linear_Row() {
-  set_flags(Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY));
+  : Linear_Row(), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
-  : Linear_Row(g), flags_(g.flags_) {
+  : Linear_Row(g), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
-Grid_Generator::Grid_Generator(dimension_type size, Flags f)
-  : Linear_Row(size), flags_(f) {
+Grid_Generator::Grid_Generator(dimension_type size, Kind kind, Topology topology)
+  : Linear_Row(size), kind_(kind), topology_(topology) {
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size,
                                dimension_type capacity)
-  : Linear_Row(g, size, capacity), flags_(g.flags_) {
+  : Linear_Row(g, size, capacity), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline void
@@ -373,7 +238,8 @@ Grid_Generator::set_is_parameter_or_point() {
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
   Linear_Row::operator=(g);
-  flags_ = g.flags_;
+  kind_ = g.kind_;
+  topology_ = g.topology_;
   return *this;
 }
 
@@ -417,7 +283,8 @@ Grid_Generator::strong_normalize() {
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Linear_Row::swap(y);
-  std::swap(flags_, y.flags_);
+  std::swap(kind_, y.kind_);
+  std::swap(topology_, y.topology_);
 }
 
 /*! \relates Grid_Generator */
