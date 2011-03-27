@@ -249,6 +249,12 @@ public:
   // TODO: Remove this.
   const Dense_Row& get_row() const;
 
+  // TODO: Remove this.
+  Congruence& expression();
+
+  // TODO: Remove this.
+  const Congruence& expression() const;
+
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument thrown if the index of \p v

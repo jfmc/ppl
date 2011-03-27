@@ -65,6 +65,16 @@ Congruence::get_row() const {
   return row;
 }
 
+inline Congruence&
+Congruence::expression() {
+  return *this;
+}
+
+inline const Congruence&
+Congruence::expression() const {
+  return *this;
+}
+
 inline void
 Congruence::add_space_dimensions(dimension_type n) {
   const dimension_type old_size = row.size();
