@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 #include "Congruence.defs.hh"
+#include "math_utilities.defs.hh"
+
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -60,16 +62,13 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 }
 
 PPL::Constraint::Constraint(const Congruence& cg)
-  : Linear_Row(cg.is_equality()
-	       // Size includes extra column for the inhomogeneous term.
-	       ? cg.space_dimension() + 1
-	       : (throw_invalid_argument("Constraint(cg)",
-					 "congruence cg must be an equality."),
-		  0),
-	       // Capacity also includes a column for the epsilon coefficient.
-	       compute_capacity(cg.space_dimension() + 2, Dense_Row::max_size())),
-	       kind_(LINE_OR_EQUALITY),
-	       topology_(NECESSARILY_CLOSED) {
+  : Linear_Expression(),
+    kind_(LINE_OR_EQUALITY),
+    topology_(NECESSARILY_CLOSED) {
+  if (!cg.is_equality())
+    throw_invalid_argument("Constraint(cg)",
+                           "congruence cg must be an equality.");
+  Linear_Expression::set_space_dimension(cg.space_dimension());
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.
   for (dimension_type i = cg.space_dimension(); i-- > 0; )
@@ -83,15 +82,15 @@ PPL::Constraint::Constraint(const Congruence& cg)
 
 PPL::Constraint::Constraint(const Congruence& cg,
 			    dimension_type sz,
-			    dimension_type capacity)
-  : Linear_Row(cg.is_equality()
-	       ? sz
-	       : (throw_invalid_argument("Constraint(cg, sz, c)",
-					 "congruence cg must be an equality."),
-		  0),
-	       capacity),
-	       kind_(LINE_OR_EQUALITY),
-               topology_(NECESSARILY_CLOSED) {
+			    dimension_type /* capacity */)
+  : Linear_Expression(),
+    kind_(LINE_OR_EQUALITY),
+    topology_(NECESSARILY_CLOSED) {
+  PPL_ASSERT(sz != 0);
+  if (!cg.is_equality())
+    throw_invalid_argument("Constraint(cg)",
+                           "congruence cg must be an equality.");
+  Linear_Expression::set_space_dimension(sz - 1);
   Constraint& c = *this;
   // Copy coefficients.
   PPL_ASSERT(sz > 0);
@@ -356,7 +355,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
 bool
 PPL::Constraint::is_equal_to(const Constraint& y) const {
   return static_cast<const Linear_Expression&>(*this)
-         .is_equal_to(static_cast<const Linear_Row&>(y))
+         .is_equal_to(static_cast<const Linear_Expression&>(y))
          && kind_ == y.kind_ && topology() == y.topology();
 }
 
@@ -586,23 +585,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
 
 PPL_OUTPUT_DEFINITIONS(Constraint)
 
-namespace {
-
-// These are the keywords that indicate the individual assertions.
-const char* rpi_valid = "RPI_V";
-const char* is_rpi = "RPI";
-const char* nnc_valid = "NNC_V";
-const char* is_nnc = "NNC";
-const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
-
-} // namespace
-
 bool
 PPL::Constraint::OK() const {
-  // Check the underlying Linear_Row object.
-  if (!Linear_Row::OK())
-    return false;
-
   // Topology consistency checks.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (get_row().size() < min_size) {

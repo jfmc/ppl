@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Variables_Set.types.hh"
 
-#include "Linear_Row.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Topology.hh"
@@ -134,7 +134,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   syntactically different from the (semantically equivalent)
   constraint considered.
 */
-class Parma_Polyhedra_Library::Constraint : public Linear_Row {
+class Parma_Polyhedra_Library::Constraint : public Linear_Expression {
 public:
 
   //! The possible kinds of Constraint objects.
@@ -343,7 +343,7 @@ public:
   */
   Coefficient_traits::const_reference coefficient(Variable v) const;
   
-  using Linear_Row::coefficient;
+  using Linear_Expression::coefficient;
 
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
@@ -450,8 +450,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
-  
-  using Linear_Row::swap;
 
   /*! \brief
     Builds a constraint of type \p type and topology \p topology,
@@ -542,7 +540,7 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
-/*! \relates Linear_Row
+/*! \relates Constraint
   \return
   The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
 

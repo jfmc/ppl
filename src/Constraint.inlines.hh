@@ -113,32 +113,40 @@ Constraint::set_not_necessarily_closed() {
 
 inline
 Constraint::Constraint(dimension_type sz)
-  : Linear_Row(sz),
+  : Linear_Expression(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
+  PPL_ASSERT(sz != 0);
+  Linear_Expression::set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(dimension_type sz, Kind kind, Topology topology)
-  : Linear_Row(sz), kind_(kind), topology_(topology) {
+  : Linear_Expression(), kind_(kind), topology_(topology) {
+  PPL_ASSERT(sz != 0);
+  Linear_Expression::set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
 inline
-Constraint::Constraint(dimension_type sz, dimension_type capacity)
-  : Linear_Row(sz, capacity),
+Constraint::Constraint(dimension_type sz, dimension_type /* capacity */)
+  : Linear_Expression(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
+  PPL_ASSERT(sz != 0);
+  Linear_Expression::set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
 inline
-Constraint::Constraint(dimension_type sz, dimension_type capacity,
+Constraint::Constraint(dimension_type sz, dimension_type /* capacity */,
                        Kind kind, Topology topology)
-  : Linear_Row(sz, capacity),
+  : Linear_Expression(),
     kind_(kind),
     topology_(topology) {
+  PPL_ASSERT(sz != 0);
+  Linear_Expression::set_space_dimension(sz - 1);
   PPL_ASSERT(OK());
 }
 
@@ -157,20 +165,22 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
 
 inline
 Constraint::Constraint(const Constraint& c)
-  : Linear_Row(c), kind_(c.kind_), topology_(c.topology_) {
+  : Linear_Expression(static_cast<const Linear_Expression&>(c)), kind_(c.kind_), topology_(c.topology_) {
   // NOTE: This does not call PPL_ASSERT(OK()) because this is called by OK().
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
-  : Linear_Row(c, sz, sz), kind_(c.kind_), topology_(c.topology_) {
+  : Linear_Expression(static_cast<const Linear_Expression&>(c), sz), kind_(c.kind_), topology_(c.topology_) {
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz,
-                       const dimension_type capacity)
-  : Linear_Row(c, sz, capacity), kind_(c.kind_), topology_(c.topology_) {
+                       const dimension_type /* capacity */)
+  : Linear_Expression(static_cast<const Linear_Expression&>(c), sz),
+    kind_(c.kind_),
+    topology_(c.topology_) {
   PPL_ASSERT(OK());
 }
 
@@ -180,7 +190,7 @@ Constraint::~Constraint() {
 
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
-  static_cast<Linear_Row&>(*this) = static_cast<const Linear_Row&>(c);
+  static_cast<Linear_Expression&>(*this) = static_cast<const Linear_Expression&>(c);
   kind_ = c.kind_;
   topology_ = c.topology_;
   PPL_ASSERT(OK());
@@ -190,7 +200,7 @@ Constraint::operator=(const Constraint& c) {
 
 inline dimension_type
 Constraint::max_space_dimension() {
-  return Linear_Row::max_space_dimension();
+  return Linear_Expression::max_space_dimension();
 }
 
 inline void
@@ -477,7 +487,7 @@ Constraint::epsilon_leq_one() {
 
 inline void
 Constraint::swap(Constraint& y) {
-  Linear_Row::swap(y);
+  Linear_Expression::swap(y);
   std::swap(kind_, y.kind_);
   std::swap(topology_, y.topology_);
 }
