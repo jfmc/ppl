@@ -56,14 +56,14 @@ void
 PPL::Scalar_Products::assign(Coefficient& z,
 			     const Grid_Generator& x, const Congruence& y) {
   homogeneous_assign(z, x, y);
-  add_mul_assign(z, x.inhomogeneous_term(), y.inhomogeneous_term());
+  add_mul_assign(z, x.expression().inhomogeneous_term(), y.inhomogeneous_term());
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
 			     const Constraint& x,
 			     const Grid_Generator& y) {
-  assign(z, x.expression(), static_cast<const Linear_Expression&>(y));
+  assign(z, x.expression(), y.expression());
 }
 
 void
@@ -77,7 +77,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
     // The following line optimizes the computation of z += x[i] *
     // y[i].
     add_mul_assign(z, x.coefficient(Variable(i)), y.coefficient(Variable(i)));
-  add_mul_assign(z, x.inhomogeneous_term(), y.inhomogeneous_term());
+  add_mul_assign(z, x.inhomogeneous_term(), y.expression().inhomogeneous_term());
 }
 
 void
@@ -107,7 +107,7 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
     // The following line optimizes
     // z += x[i + 1] * y.coefficient(Variable(i))).
     add_mul_assign(z, x.coefficient(Variable(i)), y.coefficient(Variable(i)));
-  add_mul_assign(z, x.inhomogeneous_term(), y.inhomogeneous_term());
+  add_mul_assign(z, x.expression().inhomogeneous_term(), y.inhomogeneous_term());
 }
 
 void

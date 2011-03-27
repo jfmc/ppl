@@ -121,8 +121,8 @@ PPL::Grid_Generator_System
   
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = rows[i];
-    Scalar_Products::assign(numerator, expr, row);
-    std::swap(numerator, row.get_row()[v_space_dim]);
+    Scalar_Products::assign(numerator, expr, row.expression());
+    std::swap(numerator, row.expression().get_row()[v_space_dim]);
   }
 
   if (denominator != 1)
@@ -133,7 +133,7 @@ PPL::Grid_Generator_System
       Grid_Generator& row = rows[i];
       for (dimension_type j = num_columns; j-- > 0; )
 	if (j != v_space_dim)
-	  row.get_row()[j] *= denominator;
+	  row.expression().get_row()[j] *= denominator;
     }
 
   // Put the modified rows back into the linear system.
@@ -258,7 +258,7 @@ PPL::Grid_Generator_System
     Grid_Generator tmp(2, Grid_Generator::LINE_OR_EQUALITY,
                        NECESSARILY_CLOSED);
     tmp.set_space_dimension(space_dimension());
-    tmp.get_row()[col] = 1;
+    tmp.expression().get_row()[col] = 1;
     ++col;
     sys.insert_recycled(tmp);
   }

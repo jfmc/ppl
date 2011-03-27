@@ -100,7 +100,7 @@ inline void
 Scalar_Products::homogeneous_assign(Coefficient& z,
 				    const Linear_Expression& e,
 				    const Grid_Generator& g) {
-  homogeneous_assign(z, e, static_cast<const Linear_Expression&>(g));
+  homogeneous_assign(z, e, g.expression());
 }
 
 inline int
@@ -112,7 +112,7 @@ Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Grid_Generator& g) {
-  return homogeneous_sign(e, static_cast<const Linear_Expression&>(g));
+  return homogeneous_sign(e, g.expression());
 }
 
 inline int

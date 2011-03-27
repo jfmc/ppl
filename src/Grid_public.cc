@@ -649,8 +649,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	// parameter case.
 	gen.set_is_parameter();
 	const Grid_Generator& first = *first_point;
-	for (dimension_type i = gen.get_row().size() - 1; i-- > 0; )
-	  gen.get_row()[i] -= first.get_row()[i];
+	for (dimension_type i = gen.expression().get_row().size() - 1; i-- > 0; )
+	  gen.expression().get_row()[i] -= first.expression().get_row()[i];
       }
 
     case Grid_Generator::PARAMETER:
@@ -949,7 +949,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
 	const Grid_Generator& g = gen_sys[i];
 
-	if (g.get_row().size() < 1) {
+	if (g.expression().get_row().size() < 1) {
 #ifndef NDEBUG
 	  cerr << "Parameter should have coefficients." << endl;
 #endif

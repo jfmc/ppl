@@ -228,7 +228,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor is 1.
 */
-class Parma_Polyhedra_Library::Grid_Generator : public Linear_Expression {
+class Parma_Polyhedra_Library::Grid_Generator {
 public:
 
   //! The possible kinds of Grid_Generator objects.
@@ -573,7 +573,15 @@ public:
   */
   void linear_combine(const Grid_Generator& y, dimension_type k);
 
+  // TODO: Remove this.
+  Linear_Expression& expression();
+
+  // TODO: Remove this.
+  const Linear_Expression& expression() const;
+
 private:
+  Linear_Expression expr;
+
   Kind kind_;
 
   /*! \brief
