@@ -699,33 +699,37 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
   -max(|a|,|b|) < = OR(x,y) <=-1
   */
   else if ((xls >= 0 && yls <=0) || (xls <=0 && yls >= 0 )){
-    ru = Boundary_NS::assign(UPPER, upper(), to_info,
-                             UPPER, f_upper(Constant<-1>::value), f_info(Constant<-1>::value));
-
-    Boundary_NS::assign(LOWER, to_lower1, to_info1,
-                        LOWER, f_lower(x), f_info(x));
-
-    if (xls < 0)
-      Boundary_NS::neg_assign(LOWER, to_lower1, to_info1,
-                              LOWER, to_lower1, to_info1);
-
-    Boundary_NS::assign(LOWER, to_lower2, to_info2,
-                        LOWER, f_lower(y), f_info(y));
-
-    if (yls < 0)
-      Boundary_NS::neg_assign(LOWER, to_lower2, to_info2,
-                              LOWER, to_lower2, to_info2);
-
-    max_assign(LOWER, to_lower3, to_info3,
-               LOWER, to_lower2, to_info2,
-               LOWER, to_lower1, to_info1);
-
-    rl =  Boundary_NS::neg_assign(LOWER, lower(), to_info,
-                                  LOWER, to_lower3, to_info3);
     
+    if(f_lower(x) < INT_MIN || f_lower(y) < INT_MIN)
+      return assign(EMPTY);
+    
+    else if (f_lower(x) == INT_MIN || f_lower(y) == INT_MIN)
+      rl = Boundary_NS::assign(LOWER, lower(), to_info,
+                               LOWER, f_lower(Constant<INT_MIN>::value),f_info(Constant<INT_MIN>::value));
+    else {
+      Boundary_NS::assign(LOWER, to_lower1, to_info1,
+                          LOWER, f_lower(x), f_info(x));
+
+      if (xls < 0)
+        Boundary_NS::neg_assign(LOWER, to_lower1, to_info1,
+                                LOWER, to_lower1, to_info1);
+
+      Boundary_NS::assign(LOWER, to_lower2, to_info2,
+                          LOWER, f_lower(y), f_info(y));
+  
+      if (yls < 0)
+        Boundary_NS::neg_assign(LOWER, to_lower2, to_info2,
+                                LOWER, to_lower2, to_info2);
+ 
+      max_assign(LOWER, to_lower3, to_info3,
+                 LOWER, to_lower2, to_info2,
+                 LOWER, to_lower1, to_info1);
+  
+      rl =  Boundary_NS::neg_assign(LOWER, lower(), to_info,
+                                    LOWER, to_lower3, to_info3);
+    }   
     ru = Boundary_NS::assign(UPPER, upper(), to_info,
                              UPPER, f_upper(Constant<-1>::value), f_info(Constant<-1>::value));
-
   }
  
   /*
@@ -733,8 +737,8 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
   ((x+y)-(x-y))/2 <= OR(x,y) <= -1
   */ 
   else {
-    if ((f_lower(x) < -INT_MAX || f_lower(y) < -INT_MAX ||
-        (f_lower(x) - f_lower(y)) < -INT_MAX))
+    if ((f_lower(x) < INT_MIN || f_lower(y) < INT_MIN ||
+        (f_lower(x) + f_lower(y)) < INT_MIN))
       return assign(EMPTY);
 
     Boundary_NS::assign(LOWER, to_lower1,to_info1,
