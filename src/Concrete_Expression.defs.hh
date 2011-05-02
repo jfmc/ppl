@@ -180,6 +180,11 @@ class Integer_Constant_Common {
 };
 
 template <typename Target>
+class Int_Constant_Common {
+};
+
+
+template <typename Target>
 class Floating_Point_Constant_Common {
 };
 

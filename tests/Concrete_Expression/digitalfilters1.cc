@@ -43,6 +43,9 @@ public:
     return true;
   }
 
+  bool get_int_constant_value(const Int_Constant<C_Expr>& expr,
+                             FP_Interval& result) const { }
+
   bool get_integer_constant_value(const Integer_Constant<C_Expr>& expr,
                              FP_Interval& result) const { }
 

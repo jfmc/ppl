@@ -482,6 +482,15 @@ typedef Box<FP_Interval> FP_Interval_Abstract_Store;
 //! The type of a linear form abstract store.
 typedef std::map<dimension_type, FP_Linear_Form>
                                  FP_Linear_Form_Abstract_Store;
+//! The type of an interval linear form.
+typedef Linear_Form<Integer_Interval> Integer_Linear_Form;
+
+//! The type of an interval abstract store.
+typedef Box<Integer_Interval> Integer_Interval_Abstract_Store;
+
+//! The type of a linear form abstract store.
+typedef std::map<dimension_type, Integer_Linear_Form>
+                                 Integer_Linear_Form_Abstract_Store;
 
 /*! \brief
   The incarnation of BD_Shape under test for analyzing

@@ -33,6 +33,10 @@ class Cast_Operator;
 
 //! An integer constant concrete expression.
 template <typename Target>
+class Int_Constant;
+
+//! An integer constant concrete expression.
+template <typename Target>
 class Integer_Constant;
 
 //! A floating-point constant concrete expression.

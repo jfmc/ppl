@@ -74,6 +74,18 @@ public:
                      Interval_Type& result) const = 0;
 
   /*! \brief
+    Asks the external analyzer for an interval that correctly
+    approximates the value of integer constant \p expr.
+    Result is stored into \p result.
+
+    \return <CODE>true</CODE> if the analyzer was able to find a correct
+    approximation, <CODE>false</CODE> otherwise.
+  */
+  virtual bool get_int_constant_value(
+               const Int_Constant<Target>& expr,
+                     Interval_Type& result) const = 0;
+
+  /*! \brief
     Asks the external analyzer for an interval that correctly approximates
     the value of \p expr, which must be of integer type.
     Result is stored into \p result.

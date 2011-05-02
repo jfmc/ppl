@@ -649,6 +649,120 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
+                           && (Is_Singleton<From2>::value
+                               || Is_Interval<From2>::value)), I_Result>::type
+Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
+
+  PPL_DIRTY_TEMP(To_Info, to_info);
+
+  PPL_DIRTY_TEMP(To_Info, to_info1);
+  PPL_DIRTY_TEMP(To_Info, to_info2);
+  PPL_DIRTY_TEMP(To_Info, to_info3);
+  PPL_DIRTY_TEMP(To_Info, to_info4);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower1);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower2);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower3);
+  PPL_DIRTY_TEMP(To_Boundary, to_lower4);
+
+  to_info.clear();
+  to_info1.clear();
+  to_info2.clear();
+  to_info3.clear();
+  to_info4.clear();
+
+  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+
+  Result ru, rl;
+  
+  /*
+  Entrambi positivi
+  max(x,y) <= OR(x,y) <= x+y 
+  */
+  if (xls >= 0 && yls >=0) {
+    rl = max_assign(LOWER, lower(), to_info,
+                    LOWER, f_lower(x), f_info(x),
+                    LOWER, f_lower(y), f_info(y));
+    
+    ru = Boundary_NS::add_assign(UPPER, upper(), to_info,
+                                 UPPER, f_upper(x), f_info(x),
+                                 UPPER, f_upper(y), f_info(y));
+
+  }
+  /*
+  Segni discordi
+  -max(|a|,|b|) < = OR(x,y) <=-1
+  */
+  else if ((xls >= 0 && yls <=0) || (xls <=0 && yls >= 0 )){
+    ru = Boundary_NS::assign(UPPER, upper(), to_info,
+                             UPPER, f_upper(Constant<-1>::value), f_info(Constant<-1>::value));
+
+    Boundary_NS::assign(LOWER, to_lower1, to_info1,
+                        LOWER, f_lower(x), f_info(x));
+
+    if (xls < 0)//to_lower1 < 0)
+      Boundary_NS::neg_assign(LOWER, to_lower1, to_info1,
+                              LOWER, to_lower1, to_info1);
+
+    Boundary_NS::assign(LOWER, to_lower2, to_info2,
+                        LOWER, f_lower(y), f_info(y));
+
+    if (yls < 0)
+      Boundary_NS::neg_assign(LOWER, to_lower2, to_info2,
+                              LOWER, to_lower2, to_info2);
+
+    max_assign(LOWER, to_lower3, to_info3,
+               LOWER, to_lower2, to_info2,
+               LOWER, to_lower1, to_info1);
+
+    rl =  Boundary_NS::neg_assign(LOWER, lower(), to_info,
+                                  LOWER, to_lower3, to_info3);
+    
+    ru = Boundary_NS::assign(UPPER, upper(), to_info,
+                             UPPER, f_upper(Constant<-1>::value), f_info(Constant<-1>::value));
+
+  }
+ 
+  /*
+  Stesso Segno entrambi negativi
+  ((x+y)-(x-y))/2 <= OR(x,y) <= -1
+  */ 
+  else {
+    Boundary_NS::assign(LOWER,to_lower1,to_info1,
+                        LOWER, f_lower(Constant<2>::value),f_info(Constant<2>::value));
+
+    Boundary_NS::add_assign(LOWER, to_lower2, to_info2,
+                            LOWER, f_lower(x), f_info(x),
+                            LOWER, f_lower(y), f_info(y));
+    
+    Boundary_NS::sub_assign(LOWER, to_lower3, to_info3,
+                            LOWER, f_lower(x), f_info(x),
+                            LOWER, f_lower(y), f_info(y));
+
+    Boundary_NS::sub_assign(LOWER, to_lower4, to_info4,
+                            LOWER, to_lower2, to_info3,
+                            LOWER, to_lower3, to_info3);
+
+    rl = Boundary_NS::div_assign(LOWER, lower(), to_info,
+                                 LOWER, to_lower4, to_info4,
+                                 LOWER, to_lower1, to_info1);
+        
+    ru = Boundary_NS::assign(UPPER, upper(), to_info,
+                             UPPER, f_upper(Constant<-1>::value), f_info(Constant<-1>::value));
+
+  }
+
+  assign_or_swap(info(), to_info);
+  PPL_ASSERT(OK());
+  return combine(rl, ru);
+}
+
+template <typename To_Boundary, typename To_Info>
+template <typename From1, typename From2>
+inline typename Enable_If<((Is_Singleton<From1>::value
+                            || Is_Interval<From1>::value)
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
@@ -987,6 +1101,14 @@ inline Interval<B, Info>
 operator+(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   z.add_assign(x, y);
+  return z;
+}
+
+template <typename B, typename Info>
+inline Interval<B, Info>
+operator|(const Interval<B, Info>& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  z.or_assign(x, y);
   return z;
 }
 

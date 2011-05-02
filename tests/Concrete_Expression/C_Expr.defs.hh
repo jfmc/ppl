@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_C_Expr_defs_hh 1
 
 #include "Concrete_Expression.defs.hh"
-
+#include "check.cc"
 namespace Parma_Polyhedra_Library {
 
 struct C_Expr;
@@ -35,6 +35,7 @@ enum C_Expr_Kind {
   UOP,
   CAST,
   INT_CON,
+  INTEGER_CON,
   FP_CON,
   APPROX_REF
 };
@@ -199,6 +200,35 @@ public:
   //! An interval in which the value of the constant falls.
   Integer_Interval value;
 };
+
+template <>
+class Int_Constant<C_Expr>
+  : public Concrete_Expression<C_Expr>,
+    public Int_Constant_Common<C_Expr> {
+public:
+  //! Constructor from value.
+  Int_Constant<C_Expr>(//Concrete_Expression_Type type,
+		       const char* value_string,
+                       unsigned int string_size);
+
+  //! Do-nothing destructor.
+  ~Int_Constant<C_Expr>();
+
+  //! Returns the type of \p *this.
+  Concrete_Expression_Type type() const;
+  
+  //! Constant identifying floating constant nodes.
+  enum { KIND = INTEGER_CON };
+
+  //! The Integer constant as written.
+  //char* value_bin
+  char* value;
+  
+//  int value_dec;
+  
+};
+
+
 
 template <>
 class Floating_Point_Constant<C_Expr>
