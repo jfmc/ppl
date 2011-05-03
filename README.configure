@@ -357,7 +357,10 @@ For floating point computations, the option
 
 allows for selecting, on the IA32 and x86_64, the floating point instruction
 set.  The allowed values for INSTRUCTION_SET are `sse', `sse2', `387,
-`sse+387', and `sse2+387'.
+`sse+387', and `sse2+387', `default', and `no'.  The latter option, which
+is equivalent to specifying `--disable-fpmath', has the effect of disabling
+all floating point computation and, consequently, all the numerical
+abstractions based on floating point numbers.
 
 On the other hand, there are configure options to request lesser
 degrees of optimization for the sake of debugging.  These are,
