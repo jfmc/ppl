@@ -750,7 +750,7 @@ defining parametric integer programming problems.
    <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
 
 <P><CODE>
-  ppl_new_PIP_Problem(+Constraint_System, +Lin_Expr, +Vars_List,
+  ppl_new_PIP_Problem(+Dimension_Type, +Constraint_System, +Vars_List,
                       -Handle)
 </CODE><BR>
 
