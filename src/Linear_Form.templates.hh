@@ -316,6 +316,40 @@ operator&(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
+Linear_Form<C>
+operator^(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
+  dimension_type min_size;
+  dimension_type max_size;
+  const Linear_Form<C>* p_e_max;
+  if (f1_size > f2_size) {
+    min_size = f2_size;
+    max_size = f1_size;
+    p_e_max = &f1;
+  }
+  else {
+    min_size = f1_size;
+    max_size = f2_size;
+    p_e_max = &f2;
+  }
+
+  Linear_Form<C> r(max_size, false);
+  dimension_type i = max_size;
+  while (i > min_size) {
+    --i;
+    r[i] = p_e_max->vec[i];
+  }
+  while (i > 0) {
+    --i;
+    r[i] = f1[i];
+    r[i] ^= f2[i];
+  }
+  return r;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
+template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   dimension_type f1_size = f1.size();
@@ -415,6 +449,19 @@ operator&=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
     f1.extend(f2_size);
   for (dimension_type i = f2_size; i-- > 0; )
     f1[i] &= f2[i];
+  return f1;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
+  if (f1_size < f2_size)
+    f1.extend(f2_size);
+  for (dimension_type i = f2_size; i-- > 0; )
+    f1[i] ^= f2[i];
   return f1;
 }
 

@@ -882,6 +882,101 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
+                           && (Is_Singleton<From2>::value
+                               || Is_Interval<From2>::value)), I_Result>::type
+Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
+
+  PPL_DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
+  Result rl,ru;
+  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+  /*
+  Same sign.
+  1<= XOR(x,y) <= |x+y|
+  */
+  if ( ((xls>=0) && (yls >=0) ) || ((xls<0) && (yls<0)) ){
+    if (f_upper(x)+f_upper(y) > INT_MAX ||
+        f_upper(x)+f_upper(y) < -INT_MAX)
+      return assign(EMPTY);
+
+    rl = Boundary_NS::assign(LOWER, lower(),to_info,
+                                    LOWER, f_lower(Constant<1>::value),f_info(Constant<1>::value));
+
+    PPL_DIRTY_TEMP(To_Info, tmp_info);
+    tmp_info.clear();
+   
+    ru = Boundary_NS::add_assign(UPPER, upper(),   to_info,
+                                 UPPER, f_upper(x), f_info(x),
+                                 UPPER, f_upper(y), f_info(y));
+    if(upper()<0)
+      ru = Boundary_NS::neg_assign(UPPER, upper(), to_info,
+                                   UPPER, upper(), to_info);
+  }
+  /*
+  Signs of discord
+  -(|x|+|y|) <= XOR(x,y) <= 0
+  */
+  else {
+    if (f_lower(x) < -INT_MAX || f_lower(y) < -INT_MAX)
+      return assign(EMPTY);
+    if (xls < 0) {
+      if(-f_lower(x) + f_lower(y) > INT_MAX)
+        return assign(EMPTY);
+    }
+    if (yls < 0) {
+      if(f_lower(x) - f_lower(y) > INT_MAX)
+        return assign(EMPTY);
+    }
+    
+    PPL_DIRTY_TEMP(To_Boundary, tmp_lowerx);
+    PPL_DIRTY_TEMP(To_Boundary, tmp_lowery);
+    PPL_DIRTY_TEMP(To_Boundary, tmp_lower); 
+    
+
+    PPL_DIRTY_TEMP(To_Info, tmp_infox);
+    PPL_DIRTY_TEMP(To_Info, tmp_infoy);
+    PPL_DIRTY_TEMP(To_Info, tmp_info);
+
+    tmp_infox.clear();
+    tmp_infoy.clear();
+    tmp_info.clear();
+    
+    Boundary_NS::assign(LOWER, tmp_lowerx, tmp_infox,
+                        LOWER, f_lower(x), f_info(x));
+    
+    if (xls < 0)
+      Boundary_NS::neg_assign(LOWER, tmp_lowerx, tmp_infox,
+                              LOWER, tmp_lowerx, tmp_infox);
+    
+    Boundary_NS::assign(LOWER, tmp_lowery, tmp_infoy,
+                        LOWER, f_lower(y), f_info(y));
+
+    if (yls < 0)
+      Boundary_NS::neg_assign(LOWER, tmp_lowery, tmp_infoy,
+                              LOWER, tmp_lowery, tmp_infoy);
+    
+    Boundary_NS::add_assign(LOWER, tmp_lower, tmp_info,
+                            LOWER, tmp_lowerx, tmp_infox,
+                            LOWER, tmp_lowery, tmp_infoy);
+    rl = Boundary_NS::neg_assign(LOWER, lower(), to_info,
+                                 LOWER, tmp_lower, tmp_info);
+    
+    ru = Boundary_NS::assign(UPPER, upper(), to_info,
+                             UPPER, f_upper(Constant<0>::value), f_info(Constant<0>::value));
+ 
+  }
+  assign_or_swap(info(), to_info);
+  PPL_ASSERT(OK());
+  return combine(rl, ru);
+}
+
+template <typename To_Boundary, typename To_Info>
+template <typename From1, typename From2>
+inline typename Enable_If<((Is_Singleton<From1>::value
+                            || Is_Interval<From1>::value)
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
