@@ -529,12 +529,13 @@ defining mixed integer (linear) programming problems.
    <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.</EM>
 
 <P><CODE>
-  ppl_new_MIP_Problem(+Constraint_System, +Lin_Expr, +Optimization_Mode,
-                      -Handle)
+  ppl_new_MIP_Problem(+Dimension_Type, +Constraint_System, +Lin_Expr,
+                      +Optimization_Mode, -Handle)
 </CODE><BR>
 
    <EM>Creates an MIP Problem \f$\mathrm{MIP}\f$ with
-   the feasible region represented by <CODE>Constraint_System</CODE>,
+   the feasible region the vector space of dimension
+   <CODE>Dimension_Type</CODE>, represented by <CODE>Constraint_System</CODE>,
    objective function <CODE>Lin_Expr</CODE> and optimization mode
    <CODE>Optimization_Mode</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{MIP}\f$.</EM>
@@ -733,6 +734,14 @@ defining mixed integer (linear) programming problems.
    satisfies all its implementation invariants.
    Useful for debugging purposes.</EM>
 
+<P><CODE>
+  ppl_MIP_Problem_ascii_dump(+Handle)
+</CODE><BR>
+
+   <EM>Dumps an ascii representation of the PPL internal state for
+   the MIP problem referenced by <CODE>Handle</CODE> on
+   the standard output.</EM>
+
 <BR>
 
 \anchor pip_predicates
@@ -750,6 +759,13 @@ defining parametric integer programming problems.
    <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
 
 <P><CODE>
+  ppl_new_PIP_Problem_from_PIP_Problem(+Handle_1, -Handle_2)
+</CODE><BR>
+   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ from the PIP Problem
+   referenced by \c Handle_1.
+   \c Handle_2 is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
+
+<P><CODE>
   ppl_new_PIP_Problem(+Dimension_Type, +Constraint_System, +Vars_List,
                       -Handle)
 </CODE><BR>
@@ -759,13 +775,6 @@ defining parametric integer programming problems.
    <CODE>constraint_system</CODE> and parametric variables represented
    by <CODE>Vars_List</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
-
-<P><CODE>
-  ppl_new_PIP_Problem_from_PIP_Problem(+Handle_1, -Handle_2)
-</CODE><BR>
-   <EM>Creates a PIP Problem \f$\mathrm{PIP}\f$ from the PIP Problem
-   referenced by \c Handle_1.
-   \c Handle_2 is unified with the handle for \f$\mathrm{PIP}\f$.</EM>
 
 <P><CODE>
   ppl_PIP_Problem_swap(+Handle_1, +Handle_2)
@@ -801,6 +810,14 @@ defining parametric integer programming problems.
    the constraints in the constraints system
    representing the feasible region for the PIP Problem
    referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_get_control_parameter(+Handle, +Control_Parameter_Name,
+                                        ?Control_Parameter_Value)
+</CODE><BR>
+
+   <EM>Unifies \c Control_Parameter_Value with the value of the
+   control parameter \c Control_Parameter_Name.</EM>
 
 <P><CODE>
   ppl_PIP_Problem_clear(+Handle)
@@ -839,18 +856,12 @@ defining parametric integer programming problems.
    <CODE>Constraint_System</CODE>.</EM>
 
 <P><CODE>
-  ppl_PIP_Problem_set_big_parameter_dimension(+Handle, +Dimension_Type)
+  ppl_PIP_Problem_set_control_parameter(+Handle, +Control_Parameter_Value)
 </CODE><BR>
 
    <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
-       so that the dimension for the big parameter is \p Dimension_Type.</EM>
-
-<P><CODE>
-  ppl_PIP_Problem_has_big_parameter_dimension(+Handle, +Dimension_Type)
-</CODE><BR>
-   <EM>Succeeds if and only if the PIP Problem referenced by
-       <CODE>Handle</CODE> has a dimension \p dim for the big parameter
-       and \p Dimension_Type unifies with \p dim.</EM>
+   so that the value for the relevant control parameter name is
+   changed to <CODE>Control_Parameter_Value</CODE>.</EM>
 
 <P><CODE>
   ppl_PIP_Problem_is_satisfiable(+Handle)
@@ -883,9 +894,19 @@ defining parametric integer programming problems.
   solution if a solution exists and bottom otherwise
   \c Handle_2 is unified with the handle for \f$\mathrm{Sol}\f$.</EM>
 
-<P><CODE>ppl_PIP_Problem_ascii_dump(+Handle)</CODE><BR>
-  <EM>Dumps an ascii representation of the PPL internal state for
-  the PIP problem referenced by \c Handle on the standard output.</EM>
+<P><CODE>
+  ppl_PIP_Problem_has_big_parameter_dimension(+Handle, +Dimension_Type)
+</CODE><BR>
+   <EM>Succeeds if and only if the PIP Problem referenced by
+       <CODE>Handle</CODE> has a dimension \p dim for the big parameter
+       and \p Dimension_Type unifies with \p dim.</EM>
+
+<P><CODE>
+  ppl_PIP_Problem_set_big_parameter_dimension(+Handle, +Dimension_Type)
+</CODE><BR>
+
+   <EM>Updates the PIP Problem referenced by <CODE>Handle</CODE>
+       so that the dimension for the big parameter is \p Dimension_Type.</EM>
 
 <P><CODE>
   ppl_PIP_Problem_OK(+Handle)
@@ -895,23 +916,9 @@ defining parametric integer programming problems.
    satisfies all its implementation invariants.
    Useful for debugging purposes.</EM>
 
-<P><CODE>
-  ppl_PIP_Tree_Node_swap(+Handle_1, +Handle_2)
-</CODE><BR>
-   <EM>Swaps the PIP tree node referenced by <CODE>Handle_1</CODE>
-   with the one referenced by <CODE>Handle_2</CODE>.</EM>
-
-<P><CODE>ppl_PIP_Tree_Node_ascii_dump(+Handle)</CODE><BR>
+<P><CODE>ppl_PIP_Problem_ascii_dump(+Handle)</CODE><BR>
   <EM>Dumps an ascii representation of the PPL internal state for
-  the PIP tree node referenced by \c Handle on the standard output.</EM>
-
-<P><CODE>
-  ppl_PIP_Tree_Node_OK(+Handle)
-</CODE><BR>
-   <EM>Succeeds only if the PIP tree node referenced by
-   <CODE>Handle</CODE> is well formed, i.e., if it
-   satisfies all its implementation invariants.
-   Useful for debugging purposes.</EM>
+  the PIP problem referenced by \c Handle on the standard output.</EM>
 
 <P><CODE>
   ppl_PIP_Tree_Node_constraints(+Handle, ?Constraint_System)
@@ -921,16 +928,10 @@ defining parametric integer programming problems.
    referenced by <CODE>Handle</CODE>.</EM>
 
 <P><CODE>
-  ppl_PIP_Tree_Node_artificials(+Handle, ?Artificial_Parameter_List)
+  ppl_PIP_Tree_Node_is_solution(+Handle)
 </CODE><BR>
-   <EM>Unifies <CODE>Artificial_Parameter_List</CODE> with a list of
-   the artificial parameters in the PIP tree node
-   referenced by <CODE>Handle</CODE>.</EM>
-
-<P><CODE>
-  ppl_PIP_Tree_Node_is_bottom(+Handle)
-</CODE><BR>
-   <EM>Succeeds if and only if <CODE>handle</CODE> represents bottom.</EM>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents
+   a solution node.</EM>
 
 <P><CODE>
   ppl_PIP_Tree_Node_is_decision(+Handle)
@@ -939,10 +940,24 @@ defining parametric integer programming problems.
    a decision node.</EM>
 
 <P><CODE>
-  ppl_PIP_Tree_Node_is_solution(+Handle)
+  ppl_PIP_Tree_Node_is_bottom(+Handle)
 </CODE><BR>
-   <EM>Succeeds if and only if <CODE>handle</CODE> represents
-   a solution node.</EM>
+   <EM>Succeeds if and only if <CODE>handle</CODE> represents bottom.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_artificials(+Handle, ?Artificial_Parameter_List)
+</CODE><BR>
+   <EM>Unifies <CODE>Artificial_Parameter_List</CODE> with a list of
+   the artificial parameters in the PIP tree node
+   referenced by <CODE>Handle</CODE>.</EM>
+
+<P><CODE>
+  ppl_PIP_Tree_Node_OK(+Handle)
+</CODE><BR>
+   <EM>Succeeds only if the PIP tree node referenced by
+   <CODE>Handle</CODE> is well formed, i.e., if it
+   satisfies all its implementation invariants.
+   Useful for debugging purposes.</EM>
 
 <P><CODE>
   ppl_PIP_Tree_Node_parametric_values(+Handle, +Var, ?Lin_Expr)
