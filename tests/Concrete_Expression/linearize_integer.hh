@@ -7,6 +7,32 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Target, typename Integer_Interval>
 static bool
+and_linearize_int(const Binary_Operator<Target>& bop_expr,
+
+              const Oracle<Target,Integer_Interval>& oracle,
+              const std::map<dimension_type, Linear_Form<Integer_Interval> >& lf_store,
+              Linear_Form<Integer_Interval>& result) {
+  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::ADD);
+
+  typedef Linear_Form<Integer_Interval> Integer_Linear_Form;
+  typedef Box<Integer_Interval> Integer_Interval_Abstract_Store;
+  typedef std::map<dimension_type, Integer_Linear_Form> Integer_Linear_Form_Abstract_Store;
+
+  if (!linearize_int(*(bop_expr.left_hand_side()), oracle, lf_store, result))
+    return false;
+
+  Integer_Linear_Form linearized_second_operand;
+
+  if (!linearize_int(*(bop_expr.right_hand_side()), oracle, lf_store,
+                 linearized_second_operand))
+    return false;
+
+  result &= linearized_second_operand;
+  return true;
+}
+
+template <typename Target, typename Integer_Interval>
+static bool
 or_linearize_int(const Binary_Operator<Target>& bop_expr,
 
               const Oracle<Target,Integer_Interval>& oracle,
@@ -62,6 +88,10 @@ linearize_int(const Concrete_Expression<Target>& expr,
          case Binary_Operator<Target>::BOR:
            return or_linearize_int(*bop_expr, oracle, lf_store, result);
            break;
+         case Binary_Operator<Target>::BAND:
+           return and_linearize_int(*bop_expr, oracle, lf_store, result);
+           break;
+
        }
     }
   }

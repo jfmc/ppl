@@ -678,13 +678,14 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
   Result ru, rl;
   
   /*
-  Entrambi positivi
+  Both are positive.
   max(x,y) <= OR(x,y) <= x+y 
   */
   if (xls >= 0 && yls >=0) {
     if ((f_upper(x) > INT_MAX || f_upper(y) > INT_MAX || 
          (f_upper(x) + f_upper(y)) > INT_MAX))
       return assign(EMPTY);
+
     rl = max_assign(LOWER, lower(), to_info,
                     LOWER, f_lower(x), f_info(x),
                     LOWER, f_lower(y), f_info(y));
@@ -692,20 +693,19 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
     ru = Boundary_NS::add_assign(UPPER, upper(), to_info,
                                    UPPER, f_upper(x), f_info(x),
                                    UPPER, f_upper(y), f_info(y));
-
   }
   /*
-  Segni discordi
+  Signs of discord
   -max(|a|,|b|) < = OR(x,y) <=-1
   */
   else if ((xls >= 0 && yls <=0) || (xls <=0 && yls >= 0 )){
     
-    if(f_lower(x) < INT_MIN || f_lower(y) < INT_MIN)
+    if(f_lower(x) < -INT_MAX || f_lower(y) < -INT_MAX)
       return assign(EMPTY);
     
-    else if (f_lower(x) == INT_MIN || f_lower(y) == INT_MIN)
+    else if (f_lower(x) == -INT_MAX || f_lower(y) == -INT_MAX)
       rl = Boundary_NS::assign(LOWER, lower(), to_info,
-                               LOWER, f_lower(Constant<INT_MIN>::value),f_info(Constant<INT_MIN>::value));
+                               LOWER, f_lower(Constant<-INT_MAX>::value),f_info(Constant<-INT_MAX>::value));
     else {
       Boundary_NS::assign(LOWER, to_lower1, to_info1,
                           LOWER, f_lower(x), f_info(x));
@@ -733,7 +733,7 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
   }
  
   /*
-  Stesso Segno entrambi negativi
+  Both are negative.
   ((x+y)-(x-y))/2 <= OR(x,y) <= -1
   */ 
   else {
@@ -765,6 +765,114 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
 
   }
 
+  assign_or_swap(info(), to_info);
+  PPL_ASSERT(OK());
+  return combine(rl, ru);
+}
+
+template <typename To_Boundary, typename To_Info>
+template <typename From1, typename From2>
+inline typename Enable_If<((Is_Singleton<From1>::value
+                            || Is_Interval<From1>::value)
+                           && (Is_Singleton<From2>::value
+                               || Is_Interval<From2>::value)), I_Result>::type
+Interval<To_Boundary, To_Info>::and_assign(const From1& x, const From2& y) {
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
+  
+  PPL_DIRTY_TEMP(To_Info, to_info);
+
+  PPL_DIRTY_TEMP(To_Info, to_info1);
+  PPL_DIRTY_TEMP(To_Info, to_info2);
+  PPL_DIRTY_TEMP(To_Info, to_info3);
+  PPL_DIRTY_TEMP(To_Info, to_info4);
+  PPL_DIRTY_TEMP(To_Boundary, to_upper1);
+  PPL_DIRTY_TEMP(To_Boundary, to_upper2);
+  PPL_DIRTY_TEMP(To_Boundary, to_upper3);
+  PPL_DIRTY_TEMP(To_Boundary, to_upper4);
+
+  to_info.clear();
+  to_info1.clear();
+  to_info2.clear();
+  to_info3.clear();
+  to_info4.clear();
+  
+  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+ 
+  Result ru, rl;
+  /*
+  Both are positive.
+  0 <= AND(x,y) <= min(x,y)
+  */ 
+  if (xls >= 0 && yls >=0) {
+    if (f_upper(x) > INT_MAX || f_upper(y) > INT_MAX)
+      return assign(EMPTY);
+    
+    rl = Boundary_NS::assign(LOWER, lower(), to_info,
+                             LOWER, f_lower(Constant<0>::value), f_info(Constant<0>::value));
+    ru = min_assign(UPPER, upper(), to_info,
+                    UPPER, f_upper(x), f_info(x),
+                    UPPER, f_upper(y), f_info(y));
+  }
+  /*
+  Signs of discord
+  0 <= AND(x,y) <= |x| + |y| + 1
+  */
+  else if ((xls >= 0 && yls <0) || (xls <0 && yls >= 0 )){
+    if (f_upper(x) < -INT_MAX || f_upper(y) < -INT_MAX ||
+        f_upper(x) > INT_MAX   || f_upper(y) > INT_MAX ) 
+      return assign(EMPTY);
+    
+    if (xls < 0){
+      if ((-f_upper(x) + f_upper(y)) >= INT_MAX)
+        return assign(EMPTY);
+    }
+    if (yls < 0) {
+      if (f_upper(x)-f_upper(y) >= INT_MAX)
+        return assign(EMPTY);
+    }
+    
+    rl = Boundary_NS::assign(LOWER, lower(), to_info,
+                             LOWER, f_lower(Constant<0>::value), f_info(Constant<0>::value));
+
+    Boundary_NS::assign(UPPER, to_upper1, to_info1,
+                        UPPER, f_upper(x), f_info(x));
+
+    if (xls < 0)
+      Boundary_NS::neg_assign(UPPER, to_upper1, to_info1, 
+                              UPPER, to_upper1, to_info1);
+ 
+    Boundary_NS::assign(UPPER, to_upper2, to_info2,
+                        UPPER, f_upper(y), f_info(y));
+ 
+    if (yls < 0)
+      Boundary_NS::neg_assign(UPPER, to_upper2, to_info2, 
+                              UPPER, to_upper2, to_info2);
+
+    Boundary_NS::add_assign(UPPER, to_upper3, to_info3,
+                            UPPER, to_upper2, to_info2,
+                            UPPER, to_upper1, to_info1);
+    
+    Boundary_NS::assign(UPPER, to_upper4, to_info4,
+                        UPPER, f_upper(Constant<1>::value), f_info(Constant<1>::value));
+    
+    ru =  Boundary_NS::add_assign(UPPER, upper(), to_info,
+                                  UPPER, to_upper4, to_info4,
+                                  UPPER, to_upper3, to_info3);
+  }
+  /*
+  Both are negative.
+  -INT_MAX <= AND(x,y) <= -1
+  */
+  else { 
+    rl = Boundary_NS::assign(LOWER, lower(), to_info,
+                            LOWER, f_lower(Constant<-INT_MAX>::value), f_info(Constant<-INT_MAX>::value));
+    ru = Boundary_NS::assign(UPPER, upper(), to_info,
+                             UPPER, f_upper(Constant<-1>::value), f_info(Constant<-1>::value));
+
+  }
+       
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return combine(rl, ru);
@@ -1120,6 +1228,14 @@ inline Interval<B, Info>
 operator|(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   z.or_assign(x, y);
+  return z;
+}
+
+template <typename B, typename Info>
+inline Interval<B, Info>
+operator&(const Interval<B, Info>& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  z.and_assign(x, y);
   return z;
 }
 

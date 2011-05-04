@@ -166,7 +166,14 @@ public:
     or_assign(*this, x);
     return *this;
   }
-  
+
+  template <typename T>
+  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
+  operator&=(const T& x) {
+    and_assign(*this, x);
+    return *this;
+  }
+ 
 
   template <typename T>
   typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
@@ -828,6 +835,11 @@ public:
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
                       && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   or_assign(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
+  and_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
