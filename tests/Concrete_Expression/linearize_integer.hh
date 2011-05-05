@@ -2,7 +2,7 @@
 #define PPL_linearize_int_hh 1
 
 #include "Linear_Form.defs.hh"
-#include "Number_Convertion.cc"
+#include "Number_Conversion.cc"
 
 namespace Parma_Polyhedra_Library {
 
