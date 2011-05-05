@@ -977,6 +977,106 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
+                           && (Is_Singleton<From2>::value
+                               || Is_Interval<From2>::value)), I_Result>::type
+Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
+  PPL_DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
+
+  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+
+  Result rl,ru;
+
+  if (xls >= 0) {
+    if (f_upper(x) > INT_MAX)
+      return assign(EMPTY);
+    rl = Boundary_NS::assign(LOWER, lower() ,to_info,
+                             LOWER, f_lower(Constant<0>::value),f_info(Constant<0>::value));
+    /* xls >= 0, yls >= 0
+     0 <= x<<y <= x*y
+     */
+    if (yls >= 0) {
+      if (f_upper(y) > INT_MAX) 
+        return assign(EMPTY);
+      if (f_upper(x)*f_upper(y) > INT_MAX)
+        ru = Boundary_NS::assign(UPPER, upper() ,to_info,
+                                 UPPER, f_upper(Constant<0>::value),f_info(Constant<0>::value));
+      else
+        ru = Boundary_NS::mul_assign(UPPER, upper(), to_info,
+                                     UPPER, f_upper(x), f_info(x),
+                                     UPPER, f_upper(y), f_info(y));
+    }
+    /* xls >=0, yls < 0
+    0 <= x << y <= x/y
+    */
+    else {
+      if (f_upper(y) < INT_MIN)
+        return assign(EMPTY);
+      
+      PPL_DIRTY_TEMP(To_Boundary, tmp_upper);
+      PPL_DIRTY_TEMP(To_Info, tmp_info);
+      tmp_info.clear();
+      Boundary_NS::neg_assign(UPPER, tmp_upper, tmp_info,
+                                     UPPER, f_upper(y), f_info(y));
+      ru = Boundary_NS::div_assign(UPPER, upper(), to_info,
+                                   UPPER, f_upper(x), f_info(x),
+                                   UPPER, tmp_upper, tmp_info);
+    }
+  }
+  else {
+    if (f_lower(x) < INT_MIN)
+      return assign(EMPTY);
+    ru = Boundary_NS::assign(UPPER, upper() ,to_info,
+                             UPPER, f_upper(Constant<-1>::value),f_info(Constant<-1>::value));
+    /* xls < 0, yls >= 0
+    x*y <= x << y <= -1
+    */
+    if(yls >=0) {
+      if (f_lower(y) > INT_MAX)
+        assign(EMPTY);
+      if (f_lower(x)*f_lower(y) < -INT_MAX)
+        rl = Boundary_NS::assign(LOWER, lower() ,to_info,
+                                 LOWER, f_lower(Constant<-1>::value),f_info(Constant<-1>::value));
+      else
+        rl = Boundary_NS::mul_assign(LOWER, lower(), to_info,
+                                     LOWER, f_lower(x), f_info(x),
+                                     LOWER, f_lower(y), f_info(y));
+    }
+    /* xls < 0, yls < 0 
+    x/y <= x << y <= -1
+    */
+    else {
+      if(f_lower(y) < INT_MIN)
+        return assign(EMPTY);
+      if(f_lower(x)/(-f_lower(y)) <= -1) {
+        PPL_DIRTY_TEMP(To_Boundary, tmp_lower);
+        PPL_DIRTY_TEMP(To_Info, tmp_info);
+        tmp_info.clear();
+        Boundary_NS::neg_assign(LOWER, tmp_lower, tmp_info,
+                                LOWER, f_lower(y), f_info(y));
+        rl = Boundary_NS::div_assign(LOWER, lower(), to_info,
+                                     LOWER, f_lower(x), f_info(x),
+                                     LOWER, tmp_lower, tmp_info);
+      }
+      else 
+         rl = Boundary_NS::assign(LOWER, lower(), to_info,
+                                  LOWER, f_lower(Constant<-1>::value), f_info(Constant<-1>::value));
+
+    }
+
+  }
+  assign_or_swap(info(), to_info);
+  PPL_ASSERT(OK());
+  return combine(rl, ru);
+}
+
+template <typename To_Boundary, typename To_Info>
+template <typename From1, typename From2>
+inline typename Enable_If<((Is_Singleton<From1>::value
+                            || Is_Interval<From1>::value)
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {

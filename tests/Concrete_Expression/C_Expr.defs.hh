@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_C_Expr_defs_hh 1
 
 #include "Concrete_Expression.defs.hh"
-#include "check.cc"
 namespace Parma_Polyhedra_Library {
 
 struct C_Expr;
