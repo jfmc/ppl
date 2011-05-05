@@ -478,6 +478,19 @@ operator<<(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   return f1;
 }
 
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator>>(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
+  if (f1_size < f2_size)
+    f1.extend(f2_size);
+  for (dimension_type i = f2_size; i-- > 0; )
+    f1[i] >> f2[i];
+  return f1;
+}
+
 /*! \relates Linear_Row */
 template <typename C>
 inline bool
