@@ -157,7 +157,8 @@ enum Bounded_Integer_Type_Overflow {
   Floating point formats known to the library.
 
   The parameters of each format are defined by a specific struct
-  in file Float.defs.hh.
+  in file Float.defs.hh.  See the section on \ref floating_point
+  "Analysis of floating point computations" for more information.
 */
 enum Floating_Point_Format {
   IEEE754_HALF,
