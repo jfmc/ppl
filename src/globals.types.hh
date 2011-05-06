@@ -156,8 +156,9 @@ enum Bounded_Integer_Type_Overflow {
 /*! \brief \ingroup PPL_CXX_interface
   Floating point formats known to the library.
 
-  See the section on
-  \ref Approximating_Floating_Point_Computations "approximating floating point computations".
+  The parameters of each format are defined by a specific struct
+  in file Float.defs.hh.  See the section on \ref floating_point
+  "Analysis of floating point computations" for more information.
 */
 enum Floating_Point_Format {
   IEEE754_HALF,
