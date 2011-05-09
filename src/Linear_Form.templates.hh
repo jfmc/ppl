@@ -148,7 +148,7 @@ Linear_Form<C>
 operator-(const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
   for (dimension_type i = f.size(); i-- > 0; )
-    neg_assign(r[i]);
+    r[i].neg_assign(r[i]);
   return r;
 }
 
@@ -230,7 +230,7 @@ Linear_Form<C>
 operator-(const C& n, const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
   for (dimension_type i = f.size(); i-- > 0; )
-    neg_assign(r[i]);
+    r[i].neg_assign(r[i]);
   r[0] += n;
   return r;
 }
@@ -356,7 +356,7 @@ template <typename C>
 void
 Linear_Form<C>::negate() {
   for (dimension_type i = vec.size(); i-- > 0; )
-    neg_assign(vec[i]);
+    vec[i].neg_assign(vec[i]);
   return;
 }
 

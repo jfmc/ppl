@@ -26,17 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename From>
-typename Enable_If<Is_Interval<From>::value, I_Result>::type
-neg_assign(From& x) {
-  // FIXME: Avoid the creation of a temporary.
-  From y;
-  typename Enable_If<Is_Interval<From>::value, I_Result>::type res =
-                                                               y.neg_assign(x);
-  x = y;
-  return res;
-}
-
 template <typename Boundary, typename Info>
 inline memory_size_type
 Interval<Boundary, Info>::external_memory_in_bytes() const {
