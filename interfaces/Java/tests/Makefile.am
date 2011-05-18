@@ -51,6 +51,8 @@ Parma_Polyhedra_Library_test2.java \
 PPL_Test.java \
 ppl_java_tests_common
 
+if ENABLE_SHARED
+
 check_JAVA = \
 ppl_java_generated_tests.java \
 Test_Executor.java \
@@ -61,8 +63,6 @@ PIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 PPL_Test.java
-
-if ENABLE_SHARED
 
 CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
