@@ -28,19 +28,19 @@ ppl_interface_generator_java_test_java.m4 \
 ppl_interface_generator_java_test_java_code.m4
 
 interface_generator_dependencies = \
+$(interface_generator_files) \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_java_procedure_generators.m4 \
-ppl_interface_generator_java_test_java.m4 \
-ppl_interface_generator_java_test_java_code.m4 \
 ppl_java_tests_common
 
 # Even if the Java sources are not really needed, they are built by m4,
 # we need to include them to invoke the Automake Java build system.
 EXTRA_DIST = \
+$(interface_generator_files) \
 Test_Executor.java \
 C_Polyhedron_test1.java \
 NNC_Polyhedron_test1.java \
@@ -49,8 +49,6 @@ PIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 PPL_Test.java \
-ppl_interface_generator_java_test_java_code.m4 \
-ppl_interface_generator_java_test_java.m4 \
 ppl_java_tests_common
 
 check_JAVA = \
