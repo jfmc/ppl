@@ -48,15 +48,13 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_copyright \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
 ../ppl_interface_generator_ocaml_procedure_generators.m4 \
-ppl_interface_generator_ocaml_test_ml.m4 \
-ppl_interface_generator_ocaml_test_ml_code.m4 \
+$(interface_generator_files) \
 ppl_ocaml_tests_common
 
 # Even if the OCaml sources are not really needed, they are built by m4,
 # we need to include them to invoke the Automake OCaml build system.
 EXTRA_DIST = \
-ppl_interface_generator_ocaml_test_ml_code.m4 \
-ppl_interface_generator_ocaml_test_ml.m4 \
+$(interface_generator_files) \
 ppl_ocaml_tests_common
 
 OCAMLC_ENV = OCAMLRUNPARAM='l=1M'
