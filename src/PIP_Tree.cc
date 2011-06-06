@@ -578,7 +578,6 @@ compatibility_check_find_pivot_in_set(
       for (++i; i != i_end; ++i) {
         bool found_better_pivot = false;
 
-        const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
         Coefficient_traits::const_reference challenger_cost = i->second.cost;
         PPL_ASSERT(value > 0);
