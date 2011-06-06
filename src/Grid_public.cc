@@ -2735,7 +2735,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     PPL_DIRTY_TEMP_COEFFICIENT(v_n);
     PPL_DIRTY_TEMP_COEFFICIENT(v_d);
     for (Variables_Set::const_iterator i = vars.begin(),
-           vars_end = vars.end(); i != vars.end(); ++i) {
+           vars_end = vars.end(); i != vars_end; ++i) {
       const Variable x = Variable(*i);
       // Find the frequency and a value for `x' in `gr'.
       if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
@@ -2817,7 +2817,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   max_value *= div;
   min_value *= div;
   for (Variables_Set::const_iterator i = vars.begin(),
-         vars_end = vars.end(); i != vars.end(); ++i) {
+         vars_end = vars.end(); i != vars_end; ++i) {
     const Variable x = Variable(*i);
     if (!gr.bounds_no_check(x)) {
       // `x' is not a constant in `gr'.
@@ -2886,7 +2886,7 @@ PPL::Grid::drop_some_non_integer_points(const Variables_Set& vars,
   // in vars. All points in \p *this with non-integral coordinates for
   // the dimensions in vars are removed.
   for (Variables_Set::const_iterator i = vars.begin(),
-         vars_end = vars.end(); i != vars.end(); ++i)
+         vars_end = vars.end(); i != vars_end; ++i)
     add_congruence(Variable(*i) %= 0);
 
   PPL_ASSERT(OK());

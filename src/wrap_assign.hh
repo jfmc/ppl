@@ -124,7 +124,7 @@ wrap_assign_col(PSET& dest,
     if (pcs != 0)
       p.refine_with_constraints(*pcs);
     for (Variables_Set::const_iterator i = vars.begin(),
-           vars_end = vars.end(); i != vars.end(); ++i) {
+           vars_end = vars.end(); i != vars_end; ++i) {
       const Variable x = Variable(*i);
       p.refine_with_constraint(min_value <= x);
       p.refine_with_constraint(x <= max_value);

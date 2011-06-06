@@ -352,13 +352,12 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
   to_info.clear();
   if (!intersect_restriction(to_info, x, y))
     return assign(EMPTY);
-  Result rl, ru;
-  rl = max_assign(LOWER, lower(), to_info,
-		  LOWER, f_lower(x), f_info(x),
-		  LOWER, f_lower(y), f_info(y));
-  ru = min_assign(UPPER, upper(), to_info,
-		  UPPER, f_upper(x), f_info(x),
-		  UPPER, f_upper(y), f_info(y));
+  max_assign(LOWER, lower(), to_info,
+             LOWER, f_lower(x), f_info(x),
+             LOWER, f_lower(y), f_info(y));
+  min_assign(UPPER, upper(), to_info,
+             UPPER, f_upper(x), f_info(x),
+             UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return I_NOT_EMPTY;
