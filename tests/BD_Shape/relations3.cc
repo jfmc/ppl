@@ -81,6 +81,7 @@ test03() {
     // it is illegal to use a generator that is
     // dimensional incompatible with the BDS.
     Poly_Gen_Relation rel = bds.relation_with(ray(C));
+    (void) rel;
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
