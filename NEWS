@@ -16,6 +16,10 @@ NEWS for version 0.12  (release date to be decided)
 New and Changed Features
 ========================
 
+o  New configuration option `--disable-documentation'.  When specified
+   no new documentation is built: only the documentation already present
+   in the source tree is installed upon `make install'.
+
 o  The resolution process for PIP_Problem now better exploits the
    integrality of parameters to simplify the newly generated tautological
    constraints, the splitting constraints of decision nodes, and the

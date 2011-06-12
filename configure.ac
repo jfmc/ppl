@@ -860,6 +860,24 @@ esac
 build_ppl_pips=$enableval
 AM_CONDITIONAL(BUILD_PPL_PIPS, test x"$build_ppl_pips" = xyes)
 
+enableval=yes
+AC_MSG_CHECKING([whether to build the PPL documentation])
+AC_ARG_ENABLE(documentation,
+  AS_HELP_STRING([--enable-documentation], [build the PPL documentation]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-documentation, needs yes or no])
+  ;;
+esac
+build_documentation=$enableval
+AM_CONDITIONAL(BUILD_DOCUMENTATION, test x"$build_documentation" = xyes)
+
 # Define lists of available interfaces: lowercase and blank-separated.
 non_prolog_interfaces="cxx c ocaml java"
 prolog_interfaces="ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
