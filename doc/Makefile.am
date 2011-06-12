@@ -769,7 +769,10 @@ uninstall-pdf:
 	done
 
 # Installation and uninstallation of PostScript documentation.
-install-ps:
+# The PostScript documentation is obtained from the PDF one;
+# the dependency is needed so as to make sure the PDF documentation
+# is fully built before the conversion is performed.
+install-ps: install-pdf
 	$(mkinstalldirs) $(DESTDIR)$(psdir)
 	for file in $(INSTALL_PS_DOCS); do \
 	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
