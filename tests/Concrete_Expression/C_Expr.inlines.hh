@@ -145,22 +145,14 @@ Integer_Constant<C_Expr>::~Integer_Constant<C_Expr>() {
 
 inline
 Int_Constant<C_Expr>::
-Int_Constant(//Concrete_Expression_Type type,
-             const char* value_string,
-             const unsigned int string_size)
-  : Concrete_Expression<C_Expr>(Concrete_Expression_Type::bounded_integer(BITS_8, SIGNED_2_COMPLEMENT, OVERFLOW_WRAPS), INTEGER_CON),
-   value(new char[string_size]) {
-   strcpy(value, value_string);
+Int_Constant(Concrete_Expression_Type type,
+             const Intero_Interval& val)
+  : Concrete_Expression<C_Expr>(type, INTEGER_CON),
+  value(val) {
 }
 
 inline
 Int_Constant<C_Expr>::~Int_Constant<C_Expr>() {
-  delete[] value;
-}
-
-inline Concrete_Expression_Type
-Int_Constant<C_Expr>::type() const {
-  return expr_type;
 }
 
 inline

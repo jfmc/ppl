@@ -36,7 +36,7 @@ enum C_Expr_Kind {
   INT_CON,
   INTEGER_CON,
   FP_CON,
-  APPROX_REF
+  APPROX_REF,
 };
 
 //! Toy class for testing analysis of floating point computations.
@@ -185,7 +185,7 @@ class Integer_Constant<C_Expr>
 public:
   //! Constructor from type and value.
   Integer_Constant<C_Expr>(Concrete_Expression_Type type,
-                  const Integer_Interval& val);
+                           const Integer_Interval& val);
 
   //! Do-nothing destructor.
   ~Integer_Constant<C_Expr>();
@@ -206,9 +206,8 @@ class Int_Constant<C_Expr>
     public Int_Constant_Common<C_Expr> {
 public:
   //! Constructor from value.
-  Int_Constant<C_Expr>(//Concrete_Expression_Type type,
-		       const char* value_string,
-                       unsigned int string_size);
+  Int_Constant<C_Expr>(Concrete_Expression_Type type,
+                       const Intero_Interval& val);
 
   //! Do-nothing destructor.
   ~Int_Constant<C_Expr>();
@@ -220,10 +219,8 @@ public:
   enum { KIND = INTEGER_CON };
 
   //! The Integer constant as written.
-  //char* value_bin
-  char* value;
+  Intero_Interval value;
   
-//  int value_dec;
   
 };
 
