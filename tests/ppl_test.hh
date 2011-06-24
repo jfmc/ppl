@@ -482,11 +482,14 @@ typedef Box<FP_Interval> FP_Interval_Abstract_Store;
 //! The type of a linear form abstract store.
 typedef std::map<dimension_type, FP_Linear_Form>
                                  FP_Linear_Form_Abstract_Store;
+
+typedef Interval<int, Integer_Interval_Info> Intero_Interval;
+
 //! The type of an interval linear form.
-typedef Linear_Form<Integer_Interval> Integer_Linear_Form;
+typedef Linear_Form<Intero_Interval> Integer_Linear_Form;
 
 //! The type of an interval abstract store.
-typedef Box<Integer_Interval> Integer_Interval_Abstract_Store;
+typedef Box<Intero_Interval> Integer_Interval_Abstract_Store;
 
 //! The type of a linear form abstract store.
 typedef std::map<dimension_type, Integer_Linear_Form>
