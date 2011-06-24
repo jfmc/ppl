@@ -221,11 +221,30 @@ template <typename C>
 Linear_Form<C>&
 operator|=(Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
+//! Returns the linear form \p n | \p f and assigns it to \p f.
+/*! \relates Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator|=(Linear_Form<C>& f, const C& n);
+
+//! Returns the linear form \p n & \p f and assigns it to \p f.
+/*! \relates Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator&=(Linear_Form<C>& f, const C& n);
+
 //! Returns the linear form \p f1 ^ \p f2 and assigns it to \p e1.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2);
+
+
+//! Returns the linear form \p n ^ \p f and assigns it to \p f.
+/*! \relates Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator^=(Linear_Form<C>& f, const C& n);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Linear_Form */
@@ -238,6 +257,45 @@ operator==(const Linear_Form<C>& x, const Linear_Form<C>& y);
 template <typename C>
 bool
 operator!=(const Linear_Form<C>& x, const Linear_Form<C>& y);
+
+
+//! Returns <CODE>true</CODE> if and only if \p x >= \p y.
+/*! \relates Linear_Form */
+template <typename C>
+bool
+operator>=(const Linear_Form<C>& x, const Linear_Form<C>& y);
+
+
+//! Returns <CODE>true</CODE> if and only if \p x >= \p n.
+/*! \relates Linear_Form */
+template <typename C>
+bool
+operator>=(Linear_Form<C>& f, const C& n);
+
+//! Returns <CODE>true</CODE> if and only if \p x >= \p n.
+/*! \relates Linear_Form */
+template <typename C>
+bool
+operator>=(const Linear_Form<C>& f, const C& n);
+
+//! Returns <CODE>true</CODE> if and only if \p x < \p y.
+/*! \relates Linear_Form */
+template <typename C>
+bool
+operator<(const Linear_Form<C>& x, const Linear_Form<C>& y);
+
+
+//! Returns <CODE>true</CODE> if and only if \p x < \p n.
+/*! \relates Linear_Form */
+template <typename C>
+bool
+operator<(Linear_Form<C>& f, const C& n);
+
+//! Returns <CODE>true</CODE> if and only if \p x < \p n.
+/*! \relates Linear_Form */
+template <typename C>
+bool
+operator<(const Linear_Form<C>& f, const C& n);
 
 namespace IO_Operators {
 
@@ -542,6 +600,15 @@ private:
   operator*=<C>(Linear_Form<C>& f, const C& n);
 
   friend Linear_Form<C>&
+  operator|=<C>(Linear_Form<C>& f, const C& n);
+  
+  friend Linear_Form<C>&
+  operator&=<C>(Linear_Form<C>& f, const C& n);
+  
+  friend Linear_Form<C>&
+  operator^=<C>(Linear_Form<C>& f, const C& n);
+
+  friend Linear_Form<C>&
   operator/=<C>(Linear_Form<C>& f, const C& n);
 
   friend Linear_Form<C>&
@@ -557,6 +624,21 @@ private:
 
   friend bool
   operator==<C>(const Linear_Form<C>& x, const Linear_Form<C>& y);
+
+  friend bool
+  operator>=<C>(const Linear_Form<C>& x, const Linear_Form<C>& y);
+  friend bool
+  operator>=<C>(Linear_Form<C>& f, const C& n);
+  friend bool
+  operator>=<C>(const Linear_Form<C>& f, const C& n);
+
+  friend bool
+  operator< <C>(const Linear_Form<C>& x, const Linear_Form<C>& y);
+  friend bool
+  operator< <C>(Linear_Form<C>& f, const C& n);
+  friend bool
+  operator< <C>(const Linear_Form<C>& f, const C& n);
+
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
