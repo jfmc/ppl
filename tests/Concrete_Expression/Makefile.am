@@ -55,6 +55,7 @@ ORIGINAL_TESTS = \
 C_Expr \
 linearform1 \
 linearize \
+linearize_int \
 digitalfilters1 \
 bdshape1 \
 bdshape2 \
@@ -142,6 +143,8 @@ digitalfilters1_SOURCES = digitalfilters1.cc
 linearform1_SOURCES = linearform1.cc
 
 linearize_SOURCES = linearize.cc
+
+linearize_int_SOURCES = linearize_int.cc
 
 octagonalshape1_SOURCES = octagonalshape1.cc
 
