@@ -122,13 +122,11 @@ mul_linearize_int(const Binary_Operator<Target>& bop_expr,
   
   if (intervalize_first) {
     linearized_second_operand *= intervalized_first_operand;
-    result *= intervalized_first_operand;
-    result += linearized_second_operand;
+    result = linearized_second_operand;
   }
   else {
     linearized_first_operand *= intervalized_second_operand;
-    result *= intervalized_second_operand;
-    result += linearized_first_operand;
+    result = linearized_first_operand;
   }
   return true;
 }
@@ -349,7 +347,6 @@ linearize_int(const Concrete_Expression<Target>& expr,
         if (!oracle.get_associated_dimensions(*ref_expr, associated_dimensions)
           || associated_dimensions.empty())
           return false;
-      
       if (associated_dimensions.size() == 1) {
         dimension_type variable_index = *associated_dimensions.begin();
         PPL_ASSERT(variable_index != not_a_dimension());
@@ -360,28 +357,11 @@ linearize_int(const Concrete_Expression<Target>& expr,
           result = Linear_Form(Variable(variable_index));
           return true;
         }
-        /*
+        
         result = Linear_Form(variable_value->second);
   
-        return !result.overflows();*/
+        return !result.overflows();
       }
-  /*
-      PPL_ASSERT(associated_dimensions.size() > 1);
-      std::set<dimension_type>::const_iterator i = associated_dimensions.begin();
-      std::set<dimension_type>::const_iterator i_end =
-        associated_dimensions.end();
-      Interval_Type lub(EMPTY);
-      for (; i != i_end; ++i) {
-        Interval_Type curr_int;
-        PPL_ASSERT(*i != not_a_dimension());
-        if (!oracle.get_interval(*i, curr_int))
-          return false;
-
-        lub.join_assign(curr_int);
-      }
-      result = Linear_Form(lub);
-      return !result.overflows();
-    */
       break;
     }//end case Approx_Reference<Target>::KIND
     default:
