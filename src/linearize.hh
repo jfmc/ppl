@@ -680,7 +680,6 @@ linearize(const Concrete_Expression<Target>& expr,
   typedef std::map<dimension_type, Linear_Form> Linear_Form_Abstract_Store;
 
   PPL_ASSERT(expr.type().is_floating_point());
-  PPL_ASSERT(expr.type().is_bounded_integer());
   // Check that analyzer_format is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<analyzer_format>::is_exact,
       "linearize<Target, Interval_Type>:"
