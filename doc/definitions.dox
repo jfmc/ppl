@@ -2805,6 +2805,454 @@ linear forms and/or an interval abstract stores as their parameters.
 
 Please see the methods' documentation for more information.
 
+\section integer Analysis of integer computations
+
+In this section describes the PPL abstract domains that are used for 
+approximating integer computations in software analysis. As in the 
+previous section, we will denote by \f$\cV\f$ the set of all integer 
+variables in the analyzed program.
+
+\subsection integer Interval bitwise operators
+
+The interval bitwise operators are defined as follow:
+
+
+\f[
+
+  \left[a,b\right] \bandii\left[a',b'\right] \approx 
+  \begin{cases} 
+    \left[0,min\left(b,b'\right)\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 \\ 
+    \left[0,max\left(b,b'\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0
+                                          \mbox{, or }b \le 0\mbox{ and } a' \geq 0 \\ 
+    \left[a \asifp a' ,min\left(b,b'\right)\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\ 
+  \end{cases}
+
+\f]
+
+\f[
+
+  \left[a,b\right] \borii\left[a',b'\right] \approx 
+  \begin{cases} 
+    \left[max\left(a,a'\right),b \asifp b'\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 \\ 
+    \left[min\left(a,a'\right),-1\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0
+                                          \mbox{, or }b \le 0\mbox{ and } a' \geq 0 \\ 
+    \left[max\left(a,a'\right),-1\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\ 
+  \end{cases}
+
+\f]
+
+\f[
+
+  \left[a,b\right] \bxorii\left[a',b'\right] \approx 
+  \begin{cases} 
+    \left[0,\left|b \asifp b' \right|\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 
+                                          \mbox{, or }b \le 0\mbox{ and }b' \le 0\\\ 
+    \left[-\left(\left|a\right| \asifp \left|b\right|\right),-1\right] & \mbox{if }a \geq 0\mbox{ and }b' \le 0
+                                          \mbox{, or }b \le 0\mbox{ and } a' \geq 0 \\  
+  \end{cases}
+
+\f]
+
+\f[
+
+  \left[a,b\right] \olessthan ^{\#} \left[a',b'\right] \approx 
+  \begin{cases} 
+    \left[0, \left(b \amifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 \\
+    \left[0, \left(b \adivifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0 \\
+    \left[\left(a \amifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } a' \geq 0 \\
+    \left[\left(a \adivifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+
+  \end{cases}
+
+\f]
+
+
+\f[
+
+  \left[a,b\right] \ogreaterthan ^{\#} \left[a',b'\right] \approx 
+  \begin{cases} 
+    \left[0, \left(b \adivifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 \\
+    \left[0, \left(b \amifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0 \\
+    \left[\left(a \adivifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } a' \geq 0 \\
+    \left[\left(a \amifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+
+  \end{cases}
+
+\f]
+
+\subsection interval_linear_forms Linear forms with interval coefficients
+
+Also for a integer expression, the set of all its the possible values 
+at a given program point in a given abstract store can be overapproximated 
+by a <EM>linear form</EM> with interval coefficients, that is a linear 
+expression of this kind:
+
+\f[
+  i + \sum_{v \in \cV}i_{v}v,
+\f]
+
+where all \f$v\f$ are free integer variables and \f$i\f$ and all
+\f$i_{v}\f$ are elements of \f$\mathbb{I}_a\f$, defined as the set of all
+intervals with boundaries in set of integer numbers. This operation is called
+<EM>linearization</EM> and is performed by the method linearize of integer expression.
+
+The \link Parma_Polyhedra_Library::Linear_Form \c Linear_Form \endlink class
+provides common bitwise operations on linear forms: you can apply the bitwise 
+<EM>or</EM> or bitwise <EM>and</EM>, bitwise <EM>xor</EM>, bitwise <EM>left shift</EM>
+and bitwise <EM>right shift</EM> at two linear forms.
+We are writing only about interval linear forms in this section, so our
+scalars will always be intervals with integer boundaries.
+The operations on interval linear forms are intuitively defined as follows:
+
+\subsubsection bitwise_and Bitwise AND
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \bandlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  k + \sum_{v \in V}k_{v}v
+
+\f]
+
+If \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are both 
+greater than or equal to zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+ \f[
+
+  0 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \min\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
+
+\f]
+
+If instead, \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are
+discordant signs, the \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+ \f[
+
+  0
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right), 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right) 
+
+\f]
+
+Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are both
+less then zero, then \f$k + \sum_{v \in V}k_{v}v\f$  is approximated by:
+
+\f[
+
+  \left(i + \sum_{v \in \cV}i_{v}v \right) 
+  \aslf 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right) 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \min\left(\left(i + \sum_{v \in \cV}i_{v}v \right), 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right) 
+
+\f]
+
+\subsubsection bitwise_or Bitwise OR
+
+\f[
+
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \borlf
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+
+\f]
+  
+If \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are both greater 
+than or equal zero, then  \f$k + \sum_{v \in V}k_{v}v\f$  is approximated by:
+  
+\f[
+
+  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right), 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right) 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i + \sum_{v \in \cV}i_{v}v \right) 
+  \aslf
+  \left(i' + \sum_{V \in \cV}i'_{v}v \right).
+
+\f]  
+
+ 
+If \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ have discordant
+sign , then  \f$k + \sum_{v \in V}k_{v}v\f$  is approximated by:
+  
+\f[
+
+  \min\left(\left(i + \sum_{v \in \cV}i_{v}v \right), 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right) 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+
+\f]
+
+Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are both 
+less then zero, then \f$k + \sum_{v \in V}k_{v}v\f$  is approximated by:
+
+\f[
+
+  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right), 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right) 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+
+\f]
+
+
+\subsubsection bitwise_xor Bitwise XOR
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \bxorlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+
+\f]
+
+
+If \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ have same sign,
+then \f$k + \sum_{v \in V}k_{v}v\f$  is approximated by:
+  
+\f[
+
+  0
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left|\left(i + \sum_{v \in \cV}i_{v}v \right) 
+  \aslf 
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right|
+
+\f]
+
+
+Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ have 
+discordant signs, then \f$k + \sum_{v \in V}k_{v}v\f$  is approximated by:
+
+\f[
+
+  -\left(\left|i + \sum_{v \in \cV}i_{v}v \right| 
+  \aslf 
+  \left|i' + \sum_{v \in \cV}i'_{v}v \right|\right)
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+
+\f]
+
+\subsubsection bitwise_left_shift Bitwise LEFT SHIFT
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \blshiftlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+
+\f]
+
+If \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are
+both greater than or equal zero, then \f$k + \sum_{v \in V}k_{v}v\f$  
+is approximated by:
+
+\f[
+
+  0 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \amlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+
+\f]
+
+If instead, \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ 
+have discordand signs, with the first greater than or equal zero, then 
+\f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+\f[
+
+  0
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \adivlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  
+\f]
+
+If instead, \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ 
+have discordand signs, with the first less than zero, then 
+\f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+\f[
+
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \amlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+
+\f]
+
+Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are 
+both less than zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+\f[
+
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \adivlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+  
+\f]
+
+\subsubsection bitwise_right_shift Bitwise RIGHT SHIFT
+
+\f[
+
+  \left(i + \sum_{v \in V}i_{v}v\right)
+  \brshiftlf
+  \left(i' + \sum_{v \in V}i'_{v}v\right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+
+\f]
+
+If \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ 
+both greater than or equal zero then \f$k + \sum_{v \in V}k_{v}v\f$ 
+is approximated by:
+
+\f[
+
+  0 
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \adivlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+
+\f]
+
+If instead, \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ 
+have discordand signs, with the first greater than or equal zero, then 
+\f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+\f[
+
+  0
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \amlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+
+\f]
+
+If instead, \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ 
+have discordand signs, with the first less than zero, then 
+\f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+\f[
+
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \adivlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+
+\f]
+Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are 
+both less than zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
+
+\f[
+
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \amlf
+  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+
+\f]
+
+Where \f$\asifp, \adifp, \amifp,\f$ and \f$\adivifp\f$ are the corresponding
+operations on intervals. Note that these operations always round the
+interval's lower bound towards \f$-\infty\f$ and the upper bound towards
+\f$+\infty\f$ in order to obtain a correct overapproximation.
+
+A <EM>(composite) floating point abstract store</EM> is used to associate each
+floating point variable with its currently known approximation. The store is
+composed by two parts:
+  - an <EM>interval abstract store</EM>
+    \f$\fund{\rho^{\#}}{\cV}{\mathbb{I}_a}\f$
+    associating each variable with its current approximating interval, and
+  - a <EM>linear form abstract store</EM>
+    \f$\fund{\rho^{\#}_l}{\cV}{\mathbb{L}_a}\f$
+    associating each variable with its current approximating linear form.
+
+An interval abstract store is represented by a
+\link Parma_Polyhedra_Library::Box \c Box \endlink with floating point
+boundaries, while a linear form abstract store is a map
+of the Standard Template Library. The <CODE>linearize</CODE> method requires
+both stores as its arguments. Please see the documentation of floating point
+expression classes for more information.
+
+The linearization of a floating point expression \f$e\f$ in the composite
+abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right \rrbracket\f$ will
+be denoted by \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$. There are two ways a linearization attempt can fail:
+  - whenever an interval boundary overflows to \f$+\infty\f$ or \f$-\infty\f$,
+    and
+  - when we try to divide by an interval that contains \f$0\f$.
+
+\subsection fp_abstract_domains Use of other abstract domains for floating point analysis
+
+Three of the other abstract domains of the PPL (
+\link Parma_Polyhedra_Library::BD_Shape \c BD_Shape \endlink,
+\link Parma_Polyhedra_Library::Octagonal_Shape \c Octagonal_Shape \endlink,
+and \link Parma_Polyhedra_Library::Polyhedron \c Polyhedron \endlink)
+provide a few optimized methods to be used in the analysis of floating point
+computations. They are recognized by the fact that they take interval
+linear forms and/or an interval abstract stores as their parameters.
+
+Please see the methods' documentation for more information.
+
+
+
 \section use_of_library Using the Library
 
 \subsection A_Note_on_the_Implementation_of_the_Operators A Note on the Implementation of the Operators
