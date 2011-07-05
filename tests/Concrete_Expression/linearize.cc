@@ -48,6 +48,7 @@ public:
                      FP_Interval&) const{
     return false;
   }
+
   bool get_integer_expr_value(const Concrete_Expression<C_Expr>& expr,
                               FP_Interval& result) const {
     if (expr.kind() == INT_CON) {
