@@ -385,6 +385,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_Form.templates.hh \
                          @srcdir@/../src/Linear_Form.cc \
                          @srcdir@/../src/linearize.hh \
+                         @srcdir@/../src/linearize_integer.hh \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8
