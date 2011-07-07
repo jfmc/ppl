@@ -1107,7 +1107,7 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
       }
     }
     /* xls >= 0, yus < 0
-    0 <= x << y <= x/(2^y)
+    0 <= x << y <= x/(2^|y|)
     */
     else 
       if (yus < 0 ) {
@@ -1128,10 +1128,10 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
   else 
     if (xus < 0 ) {
       Boundary_NS::assign(UPPER, upper() , to_info,
-                          UPPER, f_upper(Constant<-1>::value),
-                                 f_info(Constant<-1>::value));
+                          UPPER, f_upper(Constant<0>::value),
+                                 f_info(Constant<0>::value));
     /* xus < 0, yls >= 0
-    x*(2^y) <= x << y <= -1
+    x*(2^y) <= x << y <= 0
     */
       if(yls >= 0) {
         mpz_class tmp_exp((int)ldexp(1.0, f_lower(y)));
@@ -1147,7 +1147,7 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
         }
       }
     /* xus < 0, yus < 0 
-    x/(2^y) <= x << y <= -1
+    x/(2^|y|) <= x << y <= 0
     */
       else 
         if (yus < 0) {
@@ -1165,8 +1165,8 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
                                   UPPER, f_upper(y), f_info(y));
           if (lower() > -1)
             Boundary_NS::assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(Constant<-1>::value), 
-                                       f_info(Constant<-1>::value));
+                                LOWER, f_lower(Constant<0>::value), 
+                                       f_info(Constant<0>::value));
 
         }
 
@@ -1209,7 +1209,7 @@ Interval<To_Boundary, To_Info>::rshift_assign(const From1& x, const From2& y) {
     else 
       if (yus < 0) {
       /* xls >= 0, yus < 0
-      0 <= x >> y <= x*(2^y)
+      0 <= x >> y <= x*(2^|y|)
       */
         PPL_DIRTY_TEMP(To_Boundary, tmp_upper);
         PPL_DIRTY_TEMP(To_Info, tmp_info);
@@ -1228,26 +1228,26 @@ Interval<To_Boundary, To_Info>::rshift_assign(const From1& x, const From2& y) {
   else 
     if (xus < 0) {
       Boundary_NS::assign(UPPER, upper() , to_info,
-                          UPPER, f_upper(Constant<-1>::value),
-                                 f_info(Constant<-1>::value));
+                          UPPER, f_upper(Constant<0>::value),
+                                 f_info(Constant<0>::value));
   
       if(yls >= 0) {
         /* xls < 0, yus >= 0
-        x/(2^y) <= x >> y <= -1
+        x/(2^y) <= x >> y <= 0
         */
         Boundary_NS::div_assign(LOWER, lower(), to_info,
                                 LOWER, f_lower(x), f_info(x),
                                 LOWER, f_lower(y), f_info(y));
         if (lower() > -1)
             Boundary_NS::assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(Constant<-1>::value), 
-                                       f_info(Constant<-1>::value));
+                                LOWER, f_lower(Constant<0>::value), 
+                                       f_info(Constant<0>::value));
         
       }
       else 
         if (yus < 0) {
       /* xus < 0, yus < 0
-      x*(2^y) <= x >> y <= -1
+      x*(2^|y|) <= x >> y <= 0
       */
         PPL_DIRTY_TEMP(To_Boundary, tmp_lower);
         PPL_DIRTY_TEMP(To_Info, tmp_info);
