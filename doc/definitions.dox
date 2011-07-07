@@ -2858,9 +2858,9 @@ The interval bitwise operators are defined as follow:
   \left[a,b\right] \olessthan ^{\#} \left[a',b'\right] \approx 
   \begin{cases} 
     \left[0, \left(b \amifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 \\
-    \left[0, \left(b \adivifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0 \\
-    \left[\left(a \amifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } a' \geq 0 \\
-    \left[\left(a \adivifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+    \left[0, \left(b \adivifp 2^{\left|b'\right|}\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0 \\
+    \left[\left(a \amifp 2^{a'}\right), 0\right] & \mbox{if }b \le 0\mbox{ and } a' \geq 0 \\
+    \left[\left(a \adivifp 2^{\left|a'\right|}\right), 0\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
 
   \end{cases}
 
@@ -2872,9 +2872,9 @@ The interval bitwise operators are defined as follow:
   \left[a,b\right] \ogreaterthan ^{\#} \left[a',b'\right] \approx 
   \begin{cases} 
     \left[0, \left(b \adivifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } a' \geq 0 \\
-    \left[0, \left(b \amifp 2^{b'}\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0 \\
-    \left[\left(a \adivifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } a' \geq 0 \\
-    \left[\left(a \amifp 2^{a'}\right), -1\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+    \left[0, \left(b \amifp 2^{\left|b'\right|}\right)\right] & \mbox{if }a \geq 0\mbox{ and } b' \le 0 \\
+    \left[\left(a \adivifp 2^{a'}\right), 0\right] & \mbox{if }b \le 0\mbox{ and } a' \geq 0 \\
+    \left[\left(a \amifp 2^{\left|a'\right|}\right), 0\right] & \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
 
   \end{cases}
 
@@ -3101,7 +3101,7 @@ have discordand signs, with the first greater than or equal zero, then
   \leq
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   
 \f]
 
@@ -3117,7 +3117,7 @@ have discordand signs, with the first less than zero, then
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
 
 \f]
 
@@ -3128,11 +3128,11 @@ both less than zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
   
 \f]
 
@@ -3176,7 +3176,7 @@ have discordand signs, with the first greater than or equal zero, then
   \leq
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
 
 \f]
 
@@ -3192,7 +3192,7 @@ have discordand signs, with the first less than zero, then
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
 
 \f]
 Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$ are 
@@ -3202,11 +3202,11 @@ both less than zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
 
 \f]
 

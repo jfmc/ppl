@@ -1413,7 +1413,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   x \ll y
   \leq
-  -1
+  0
   \f]
   
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1438,7 +1438,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
   \f]
 
   and we can define the elments of the linear form 
@@ -1449,7 +1449,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k
   \leq
-  -1
+  0
   \f] 
   
   \f[
@@ -1457,7 +1457,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k_{v}
   \leq
-  -1
+  0
   \f]
   
   then
@@ -1467,7 +1467,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i \amifp 2^{i'} \right)
   \bowtie
-  -1
+  0
   \f] 
   
   \f[
@@ -1475,7 +1475,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i_{v} \amifp 2^{i'_{v}} \right) 
   \bowtie
-  -1
+  0
   \f]
 
   Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less then zero, 
@@ -1486,7 +1486,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   x \ll y
   \leq
-  -1
+  0
   \f]
   
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1511,7 +1511,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
   \f]
 
   and we can define the elments of the linear form 
@@ -1522,7 +1522,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k
   \leq
-  -1
+  0
   \f] 
   
   \f[
@@ -1530,7 +1530,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k_{v}
   \leq
-  -1
+  0
   \f]
   
   then
@@ -1540,7 +1540,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i \adivifp 2^{i'} \right)
   \bowtie
-  -1
+  0
   \f] 
   
   \f[
@@ -1548,7 +1548,7 @@ xor_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i_{v} \adivifp 2^{i'_{v}} \right) 
   \bowtie
-  -1
+  0
   \f]
 
   Given an expression \f$e_{1} \leftslice e_{2}\f$ and a composite
@@ -1769,7 +1769,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   x \gg y
   \leq
-  -1
+  0
   \f]
   
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1794,7 +1794,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
   \f]
 
   and we can define the elments of the linear form 
@@ -1805,7 +1805,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k
   \leq
-  -1
+  0
   \f] 
   
   \f[
@@ -1813,7 +1813,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k_{v}
   \leq
-  -1
+  0
   \f]
   
   then
@@ -1823,7 +1823,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i \adivifp 2^{i'} \right)
   \bowtie
-  -1
+  0
   \f] 
   
   \f[
@@ -1831,7 +1831,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i_{v} \adivifp 2^{i'_{v}} \right) 
   \bowtie
-  -1
+  0
   \f]
 
   Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less 
@@ -1842,7 +1842,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   x \gg y
   \leq
-  -1
+  0
   \f]
   
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1867,7 +1867,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
-  -1
+  0
   \f]
 
   and we can define the elments of the linear form 
@@ -1878,7 +1878,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k
   \leq
-  -1
+  0
   \f] 
   
   \f[
@@ -1886,7 +1886,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \leq
   k_{v}
   \leq
-  -1
+  0
   \f]
   
   then
@@ -1896,7 +1896,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i \amifp 2^{i'} \right)
   \bowtie
-  -1
+  0
   \f] 
   
   \f[
@@ -1904,7 +1904,7 @@ lshift_linearize_int(const Binary_Operator<Target>& bop_expr,
   \approx
   \left(i_{v} \amifp 2^{i'_{v}} \right) 
   \bowtie
-  -1
+  0
   \f]
 
   Given an expression \f$e_{1} \rightslice e_{2}\f$ and a composite
