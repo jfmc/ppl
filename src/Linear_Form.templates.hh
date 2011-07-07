@@ -336,52 +336,49 @@ operator|=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   
   Linear_Form<C> r1(f1);
   Linear_Form<C> r2(f2);
-  
+ 
   if (f1 >= zero) {
     if (f2 >= zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
         r1[i].max(f2[i]);
         mpz_class t1(f1[i].upper());
         f1[i] += f2[i];
-        if (f1[i].upper() == t1)
+        if (f1[i].upper() == t1 && f2[i] != 0)
           f1[i].assign(std::numeric_limits<typename C::boundary_type>::max());
         f1[i].join_assign(r1[i]);
       } 
     } // f2 >= zero
     else if (f2 < zero) {
       for (dimension_type i = f2_size; i-- > 0; )
-        if (f1[i] != zero && f2[i] != zero) {
-          f1[i].min(f2[i]);
+        if (f1[i] != zero || f2[i] != zero) {
+          f1[i].assign(f2[i]);
           f1[i].join_assign(-1);
         }
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } // f1 >= zero
   else if (f1 < zero) {
     if (f2 >= zero) {
       for (dimension_type i = f2_size; i-- > 0; )
-        if (f1[i] != zero && f2[i] != zero) {
-          f1[i].min(f2[i]);
+        if (f1[i] != zero || f2[i] != zero)
           f1[i].join_assign(-1);
-        }
     } // f2 >= zero
     else if (f2 < zero) {
       for (dimension_type i = f2_size; i-- > 0; )
-        if (f1[i] != zero && f2[i] != zero) {
+        if (f1[i] != zero || f2[i] != zero) {
           f1[i].max(f2[i]);
           f1[i].join_assign(-1);
         }
     } // f2 < zero
     else 
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } // f1 < zero
   else 
     throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                        "are not completely lower or higher than zero");
-  
+                        "are not completely less or greater than zero");
   return f1;
 }
 
@@ -409,19 +406,17 @@ operator&=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
       }
     } // f2 >= zero
     else if (f2 < zero) {
-      for (dimension_type i = f2_size; i-- > 0; ) {
-        f1[i].max(f2[i]);
+      for (dimension_type i = f2_size; i-- > 0; )
         f1[i].join_assign(zero);
-      }
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } // f1 >= zero
   else if (f1 < zero) {
     if (f2 >= zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
-        f1[i].max(f2[i]);
+        f1[i].assign(f2[i]);
         f1[i].join_assign(zero);
       }
     } // f2 >= zero
@@ -429,7 +424,7 @@ operator&=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
       for (dimension_type i = f2_size; i-- > 0; ) {
         mpz_class t1(r1[i].lower());
         r1[i] += f2[i];
-        if (r1[i].lower() == t1)
+        if (r1[i].lower() == t1 && f2[i] != 0)
           r1[i].assign(std::numeric_limits<typename C::boundary_type>::min());
         f1[i].min(f2[i]);
         f1[i].join_assign(r1[i]);
@@ -437,11 +432,11 @@ operator&=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");  
+                          "are not completely less or greater than zero");  
   } // f1 < zero 
   else
         throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                        "are not completely lower or higher than zero");
+                        "are not completely less or greater than zero");
 
   return f1;
 }
@@ -466,18 +461,18 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
       for (dimension_type i = f2_size; i-- > 0; ) {
         mpz_class t1(f1[i].upper());
         f1[i] += f2[i];
-        if (f1[i].upper() == t1 )
+        if (f1[i].upper() == t1 && f2[i] != 0)
           f1[i].assign(std::numeric_limits<typename C::boundary_type>::max());
         f1[i].join_assign(zero);
       }
     } // f2 >= zero
     else if (f2 < zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
-        if (f1[i] != zero && f2[i] != zero) {
+        if (f1[i] != zero || f2[i] != zero) {
           r1[i].neg_assign(f1[i]);
           mpz_class t1(r1[i].lower());
           r1[i] += f2[i];
-          if (r1[i].lower() == t1)
+          if (r1[i].lower() == t1 && f2[i] != 0)
             r1[i].assign(std::numeric_limits<typename C::boundary_type>::min());
           r1[i].join_assign(-1);
           f1[i].assign(r1[i]);
@@ -486,7 +481,7 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } // f1 >= zero
   else if (f1 < zero) {
     if (f2 >= zero) {
@@ -495,7 +490,7 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
           r2[i].neg_assign(f2[i]);
           mpz_class t1(f1[i].lower());
           f1[i] += r2[i];
-          if (f1[i].lower() == t1)
+          if (f1[i].lower() == t1 && f2[i] != 0)
             f1[i].assign(std::numeric_limits<typename C::boundary_type>::min());
           f1[i].join_assign(-1);
         }
@@ -507,7 +502,7 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
         r2[i].neg_assign(f2[i]);
         mpz_class t1(r1[i].upper());
         r1[i] += r2[i];
-        if (r1[i].upper() == t1)
+        if (r1[i].upper() == t1 && r2[i] != 0)
           r1[i].assign(std::numeric_limits<typename C::boundary_type>::max());
         r1[i].join_assign(zero);
         f1[i].assign(r1[i]);
@@ -515,11 +510,11 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } //  f1 < zero 
   else
         throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                        "are not completely lower or higher than zero");
+                        "are not completely less or greater than zero");
   return f1;
 }
 
@@ -528,7 +523,6 @@ template <typename C>
 Linear_Form<C>&
 operator<<(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   C zero(0);
-  C neg_uno(-1);
 
   dimension_type f1_size = f1.size();
   dimension_type f2_size = f2.size();
@@ -542,46 +536,56 @@ operator<<(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   if (f1 >= zero) {
     if (f2 >= zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
+        mpz_class t1(f1[i].upper());
+        mpz_class t2(f2[i].upper());
         f1[i].join_assign(r1[i].upper()*(int)ldexp(1.0, f2[i].upper()));
-        f1[i].join_assign(zero);
+        if (f1[i].upper() == t1 && t1 != 0 && t2 != 0)
+          f1[i].assign(zero);
+        else
+          f1[i].join_assign(zero);
       }
     } // f2 >= zero
     else if (f2 < zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
+        r1[i].assign(zero);
         r2[i].neg_assign(f2[i]);
-        if (r1[i].upper() != 0 && r2[i].upper() != 0)
-          f1[i].join_assign(r1[i].upper()/(int)ldexp(1.0, r2[i].upper()));
-        f1[i].join_assign(zero);
+        if (f1[i].upper() != 0 || f2[i].upper() != 0)
+          r1[i].join_assign(f1[i].upper()/(int)ldexp(1.0, r2[i].upper()));
+        f1[i].assign(r1[i]);
       }
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } // f1 >= zero
   else if (f1 < zero) {
       if (f2 >= zero) {
         for (dimension_type i = f2_size; i-- > 0; ) {
-          if (f1[i] != zero && f2[i] != zero) {
+          if (f1[i] != zero || f2[i] != zero) {
             f1[i].join_assign(r1[i].upper()*(int)ldexp(1.0, f2[i].upper()));
-            f1[i].join_assign(neg_uno);
+            if (f1[i].upper() == 0)
+              f1[i].assign(zero);
+            else 
+              f1[i].join_assign(zero);
           }
         }
       } // f2 >= zero
       else if (f2 < zero) {
         for (dimension_type i = f2_size; i-- > 0; ) {
-          if (f1[i] != zero && f2[i] != zero) {
-            f1[i].join_assign(r1[i].upper()/(int)ldexp(1.0, -f2[i].lower()));
-            f1[i].join_assign(neg_uno);
+          if (f1[i] != zero || f2[i] != zero) {
+            r1[i].assign(zero);
+            r1[i].join_assign(f1[i].lower()/(int)ldexp(1.0, -f2[i].lower()));
+            f1[i].assign(r1[i]);
           }
         }
       } // f2 < zero
       else
         throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                            "are not completely lower or higher than zero");
+                            "are not completely less or greater than zero");
   } // f1 < zero
   else
         throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                        "are not completely lower or higher than zero");
+                        "are not completely less or greater than zero");
   return f1;
 }
 
@@ -590,7 +594,6 @@ template <typename C>
 Linear_Form<C>&
 operator>>(Linear_Form<C>& f1, const Linear_Form<C>& f2) {  
   C zero(0);
-  C neg_uno(-1);
   
   dimension_type f1_size = f1.size();
   dimension_type f2_size = f2.size();
@@ -604,45 +607,55 @@ operator>>(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   if (f1 >= zero) {
     if (f2 >= zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
-        f1[i].join_assign(r1[i].upper()/(int)ldexp(1.0, f2[i].upper()));
-        f1[i].join_assign(zero);
+        r1[i].assign(zero);
+        r1[i].join_assign(f1[i].upper()/(int)ldexp(1.0, f2[i].upper()));
+        f1[i].assign(r1[i]);
       }
     } // f2 >= zero
     else if (f2 < zero) {
       for (dimension_type i = f2_size; i-- > 0; ) {
         r2[i].neg_assign(f2[i]);
+        mpz_class t1(f1[i].upper());
         f1[i].join_assign(r1[i].upper()*(int)ldexp(1.0, r2[i].upper()));
-        f1[i].join_assign(zero);
+        if (f1[i].upper() == t1 && r2[i].upper() != 0)
+          f1[i].assign(zero);
+        else
+          f1[i].join_assign(zero);
       }
     } // f2 < zero
     else
       throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                          "are not completely lower or higher than zero");
+                          "are not completely less or greater than zero");
   } // f1 >= zero
   else if (f1 < zero) {
       if (f2 >= zero) {
         for (dimension_type i = f2_size; i-- > 0; ) {
-          if (f1[i] != zero && f2[i] != zero) {
-            f1[i].join_assign(r1[i].upper()/(int)ldexp(1.0, f2[i].upper()));
-            f1[i].join_assign(neg_uno);
+          if (f1[i] != zero || f2[i] != zero) {
+            r1[i].assign(zero);
+            r1[i].join_assign(f1[i].upper()/(int)ldexp(1.0, f2[i].upper()));
+            f1[i].assign(r1[i]);
           }
         }
       } // f2 >= zero
       else if (f2 < zero) {
         for (dimension_type i = f2_size; i-- > 0; ) {
-          if (f1[i] != zero && f2[i] != zero) {
-            f1[i].join_assign(r1[i].upper()*(int)ldexp(1.0, f2[i].upper()));
-            f1[i].join_assign(neg_uno);
+          if (f1[i] != zero || f2[i] != zero) {
+            mpz_class t1(f1[i].lower());
+            f1[i].join_assign(r1[i].upper()*(int)ldexp(1.0, -f2[i].lower()));
+            if (f1[i].lower() == t1 && f2[i].lower() != 0)
+              f1[i].assign(zero);
+            else
+              f1[i].join_assign(zero);
           }
         }
       } // f2 < zero
       else
         throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                            "are not completely lower or higher than zero");
+                            "are not completely less or greater than zero");
   } // f1 < zero
   else
         throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-                        "are not completely lower or higher than zero");
+                        "are not completely less or greater than zero");
   return f1;
 }
 
