@@ -440,7 +440,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     // invalidates all iterators.
     while (i != end()) {
       if (*i == 0) {
+#ifndef NDEBUG
         const dimension_type old_index = i.index();
+#endif
         i = reset(i);
         PPL_ASSERT(find(old_index) == end());
       } else
