@@ -49,7 +49,7 @@ public:
   }
 
   bool get_integer_constant_value(const Integer_Constant<C_Expr>&,
-                             FP_Interval&) const { 
+                             FP_Interval&) const {
     return false;
   }
 
@@ -76,7 +76,7 @@ public:
     result = expr.dimensions;
     return true;
   }
-  
+
   FP_Interval_Abstract_Store int_store;
 };
 
@@ -556,7 +556,7 @@ test05() {
     tmp.lower() = 0;
     tmp.upper() = 16;
     oracle.int_store.affine_form_image(D, FP_Linear_Form(tmp));
-    bd.affine_form_image(D, FP_Linear_Form(tmp));    
+    bd.affine_form_image(D, FP_Linear_Form(tmp));
     oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(bd));
 
     // S = Y;
@@ -765,7 +765,7 @@ test06() {
     tmp.lower() = 0;
     tmp.upper() = 16;
     oracle.int_store.affine_form_image(D, FP_Linear_Form(tmp));
-    oc.affine_form_image(D, FP_Linear_Form(tmp));    
+    oc.affine_form_image(D, FP_Linear_Form(tmp));
     oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(oc));
 
     // S = Y;
@@ -974,7 +974,7 @@ test07() {
     tmp.lower() = 0;
     tmp.upper() = 16;
     oracle.int_store.affine_form_image(D, FP_Linear_Form(tmp));
-    ph.affine_form_image(D, FP_Linear_Form(tmp));    
+    ph.affine_form_image(D, FP_Linear_Form(tmp));
     oracle.int_store.intersection_assign(FP_Interval_Abstract_Store(ph));
 
     // S = Y;
