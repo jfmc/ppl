@@ -146,7 +146,7 @@ Integer_Constant<C_Expr>::~Integer_Constant<C_Expr>() {
 inline
 Int_Constant<C_Expr>::
 Int_Constant(Concrete_Expression_Type type,
-             const Intero_Interval& val)
+             const Integer_Int_Interval& val)
   : Concrete_Expression<C_Expr>(type, INTEGER_CON),
   value(val) {
 }

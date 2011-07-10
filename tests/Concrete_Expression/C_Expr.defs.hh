@@ -207,21 +207,21 @@ class Int_Constant<C_Expr>
 public:
   //! Constructor from value.
   Int_Constant<C_Expr>(Concrete_Expression_Type type,
-                       const Intero_Interval& val);
+                       const Integer_Int_Interval& val);
 
   //! Do-nothing destructor.
   ~Int_Constant<C_Expr>();
 
   //! Returns the type of \p *this.
   Concrete_Expression_Type type() const;
-  
+
   //! Constant identifying floating constant nodes.
   enum { KIND = INTEGER_CON };
 
   //! The Integer constant as written.
-  Intero_Interval value;
-  
-  
+  Integer_Int_Interval value;
+
+
 };
 
 
