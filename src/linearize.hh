@@ -769,7 +769,7 @@ linearize(const Concrete_Expression<Target>& expr,
         linearization fails.
       */
       return false;
-    
+
     if (associated_dimensions.size() == 1) {
       /* If a linear form associated to the only referenced
          space dimension exists in lf_store, return that form.

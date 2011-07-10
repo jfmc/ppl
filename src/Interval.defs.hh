@@ -159,7 +159,7 @@ public:
     add_assign(*this, x);
     return *this;
   }
-  
+
   template <typename T>
   typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator|=(const T& x) {
@@ -173,7 +173,7 @@ public:
     and_assign(*this, x);
     return *this;
   }
- 
+
   template <typename T>
   typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
   operator^=(const T& x) {

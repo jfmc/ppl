@@ -196,7 +196,7 @@ operator>=(const T1& x, const T2& y) {
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
-  return ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y)) || 
+  return ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
          ge(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y)) ;
 }
 
@@ -287,10 +287,10 @@ Interval<To_Boundary, To_Info>::join_assign(const From& x) {
   if (check_empty_arg(*this)) {
     return assign(x);
   }
-  if (check_empty_arg(x)) { 
+  if (check_empty_arg(x)) {
     return combine(V_EQ, V_EQ);
   }
-  if (!join_restriction(info(), *this, x)) { 
+  if (!join_restriction(info(), *this, x)) {
     return assign(EMPTY);
   }
   Result rl, ru;
@@ -645,8 +645,10 @@ Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
     return assign(EMPTY);
   Result rl, ru;
   PPL_DIRTY_TEMP(To_Boundary, to_lower);
-  rl = Boundary_NS::neg_assign(LOWER, to_lower, to_info, UPPER, f_upper(x), f_info(x));
-  ru = Boundary_NS::neg_assign(UPPER, upper(), to_info, LOWER, f_lower(x), f_info(x));
+  rl = Boundary_NS::neg_assign(LOWER, to_lower, to_info,
+			       UPPER, f_upper(x), f_info(x));
+  ru = Boundary_NS::neg_assign(UPPER, upper(), to_info,
+			       LOWER, f_lower(x), f_info(x));
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
@@ -660,7 +662,7 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
-  
+
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
@@ -698,7 +700,7 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                            && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), void>::type
 Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
- 
+
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
 
@@ -707,44 +709,45 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
   PPL_DIRTY_TEMP(To_Info, to_info1);
   PPL_DIRTY_TEMP(To_Info, to_infox);
   PPL_DIRTY_TEMP(To_Info, to_infoy);
+  to_info.clear();
+  to_info1.clear();
+
   PPL_DIRTY_TEMP(To_Boundary, to_upper);
   PPL_DIRTY_TEMP(To_Boundary, to_upperx);
   PPL_DIRTY_TEMP(To_Boundary, to_uppery);
 
-  to_info.clear();
-  to_info1.clear();
-  
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
   bool odd = false;
-  
-  /*
-  Both are positive.
-  max(x,y) <= OR(x,y) <= x+y 
-  */
-   
+
   Boundary_NS::assign(UPPER, to_upperx, to_infox,
                       UPPER, f_upper(x), f_info(x));
 
   Boundary_NS::assign(UPPER, to_uppery, to_infoy,
                       UPPER, f_upper(y), f_info(y));
 
-  
+
   if ((f_upper(x)%2) && (f_upper(y)%2))
     odd = true;
   if (xls >= 0 && yls >= 0) {
+    /*
+      Both are positive.
+      0 <= xl <= xu, 0 <= yl <= xu
+      max(x,y) <= OR(x,y) <= x+y
+    */
     int bitux = (int)log2(f_upper(x)) + 1;
     int bituy = (int)log2(f_upper(y)) + 1;
-    if (x.is_singleton() && y.is_singleton() && (x == y)) {
-        Boundary_NS::assign(LOWER, lower(), to_info,
-                            LOWER, f_lower(x), f_info(x));
-        Boundary_NS::assign(UPPER, upper(), to_info,
-                            UPPER, f_upper(x), f_info(x));
 
-      
+    if (x.is_singleton() && y.is_singleton() && (x == y)) {
+      Boundary_NS::assign(LOWER, lower(), to_info,
+			  LOWER, f_lower(x), f_info(x));
+      Boundary_NS::assign(UPPER, upper(), to_info,
+			  UPPER, f_upper(x), f_info(x));
+
+
     }
     else {
       Boundary_NS::max_assign(LOWER, lower(), to_info,
@@ -754,13 +757,13 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
         Boundary_NS::add_assign(UPPER, upper(), to_info,
                                 UPPER, f_upper(x), f_info(x),
                                 UPPER, f_upper(y), f_info(y));
- 
+
         Boundary_NS::assign(UPPER, to_upper, to_info1,
-                            UPPER, f_upper(Constant<1>::value), 
-                                   f_info(Constant<1>::value));
+                            UPPER, f_upper(Constant<1>::value),
+			    f_info(Constant<1>::value));
         Boundary_NS::sub_assign(UPPER, upper(), to_info,
-                                 UPPER, upper(), to_info,
-                                 UPPER, to_upper, to_info1);
+				UPPER, upper(), to_info,
+				UPPER, to_upper, to_info1);
         if (bitux == bituy) {
           if ( (int)log2(upper())+1 > bitux ) {
             if (to_upperx > to_uppery)
@@ -772,7 +775,9 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
           }
         }
         else {
-          if ((int)log2(upper()) + 1 > bitux || (int)log2(upper()) + 1 > bituy) {
+          if ((int)log2(upper()) + 1 > bitux
+	      ||
+	      (int)log2(upper()) + 1 > bituy) {
             if (bitux > bituy)
               upper() = (int)ldexp(1.0, bitux) - 1;
             else
@@ -788,11 +793,11 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
         Boundary_NS::add_assign(UPPER, upper(), to_info,
                                 UPPER, f_upper(x), f_info(x),
                                 UPPER, f_upper(y), f_info(y));
-        
+
         if ((int)log2(upper()) + 1 > bitux || (int)log2(upper()) + 1 > bituy) {
           if (bitux >= bituy)
             upper() = (int)ldexp(1.0, bitux) - 1;
-          else 
+          else
             upper() = (int)ldexp(1.0, bituy) - 1;
         }
       }
@@ -800,44 +805,49 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
 
     if (to_info.get_boundary_property(UPPER, SPECIAL)) {
       upper() = std::numeric_limits<To_Boundary>::max();
-      to_info.clear();  
+      to_info.clear();
     }
   }
-  /*
-  Discordant sign
-  min(x,y) <= OR(x,y) <=-1
-  */
   else if ((xls >= 0 && yus < 0) || (xus < 0 && yls >= 0 )) {
-    if(f_lower(x) == std::numeric_limits<To_Boundary>::min() || 
-       f_lower(y) == std::numeric_limits<To_Boundary>::min()) {
+    /*
+      Discordant sign
+      0 <= xl <= xu, yl <= yu < 0
+      xl <= xu < 0, 0 <= yl <= yu
+      min(x,y) <= OR(x,y) <=-1
+    */
+    if (f_lower(x) == std::numeric_limits<To_Boundary>::min()
+	||
+	f_lower(y) == std::numeric_limits<To_Boundary>::min()) {
       lower() = std::numeric_limits<To_Boundary>::min();
       to_info.clear();
     }
-    else  
+    else
       Boundary_NS::min_assign(LOWER, lower(), to_info,
                               LOWER, f_lower(x), f_info(x),
                               LOWER, f_lower(y), f_info(y));
-      
-    Boundary_NS::assign(UPPER, upper(), to_info,
-                        UPPER, f_upper(Constant<-1>::value), 
-                               f_info(Constant<-1>::value));
-  }
- 
-  /*
-  Both are negative.
-  max(x,y) <= OR(x,y) <= -1
-  */ 
-  else 
-    if (xus < 0 && yus <0 ) {
-      max_assign(LOWER, lower(), to_info,
-                 LOWER, f_lower(x), to_info,
-                 LOWER, f_lower(y), to_info);
-        
-      Boundary_NS::assign(UPPER, upper(), to_info,
-                          UPPER, f_upper(Constant<-1>::value), 
-                                 f_info(Constant<-1>::value));
 
-    }
+    Boundary_NS::assign(UPPER, upper(), to_info,
+                        UPPER, f_upper(Constant<-1>::value),
+			f_info(Constant<-1>::value));
+  }
+  else if (xus < 0 && yus < 0 ) {
+    /*
+      Both are negative.
+      xl <= xu < 0, yl <= yu < 0
+      max(x,y) <= OR(x,y) <= -1
+    */
+    max_assign(LOWER, lower(), to_info,
+	       LOWER, f_lower(x), to_info,
+	       LOWER, f_lower(y), to_info);
+
+    Boundary_NS::assign(UPPER, upper(), to_info,
+			UPPER, f_upper(Constant<-1>::value),
+			f_info(Constant<-1>::value));
+  }
+  else
+    throw std::runtime_error("x and y are not completely"
+			     "less or greater than zero");
+
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
 }
@@ -849,81 +859,87 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                            && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), void>::type
 Interval<To_Boundary, To_Info>::and_assign(const From1& x, const From2& y) {
+
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
- 
-  PPL_DIRTY_TEMP(To_Info, to_info);
 
+  PPL_DIRTY_TEMP(To_Info, to_info);
   PPL_DIRTY_TEMP(To_Info, to_info1);
   to_info.clear();
   to_info1.clear();
-  
+
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  /*
-  Both are positive.
-  0 <= AND(x,y) <= min(x,y)
-  */ 
   if (xls >= 0 && yls >= 0) {
+    /*
+      Both are positive.
+      0 <= xl <= xu, 0 <= yl <= yu
+      0 <= AND(x,y) <= min(x,y)
+    */
     Boundary_NS::assign(LOWER, lower(), to_info,
-                        LOWER, f_lower(Constant<0>::value), 
-                               f_info(Constant<0>::value));
-   
-     Boundary_NS::min_assign(UPPER, upper(), to_info,
-                             UPPER, f_upper(x), f_info(x),
-                             UPPER, f_upper(y), f_info(y));
+                        LOWER, f_lower(Constant<0>::value),
+			info(Constant<0>::value));
+
+    Boundary_NS::min_assign(UPPER, upper(), to_info,
+			    UPPER, f_upper(x), f_info(x),
+			    UPPER, f_upper(y), f_info(y));
   }
-  /*
-  Discordant sign
-  0 <= AND(x,y) <= max(x,y)
-  */
   else if ((xls >= 0 && yus < 0) || (xus < 0 && yls >= 0 )) {
-    
+    /*
+      Discordant sign
+      0 <= xl <= xu, yl <= yu < 0
+      xl <= xu < 0 , 0 <= yl <= yu
+      0 <= AND(x,y) <= max(x,y)
+    */
     Boundary_NS::assign(LOWER, lower(), to_info,
-                        LOWER, f_lower(Constant<0>::value), 
-                               f_info(Constant<0>::value));
-    if (f_upper(x) == std::numeric_limits<To_Boundary>::min() ||
+                        LOWER, f_lower(Constant<0>::value),
+			f_info(Constant<0>::value));
+
+    if (f_upper(x) == std::numeric_limits<To_Boundary>::min()
+	||
         f_upper(y) == std::numeric_limits<To_Boundary>::min() ) {
       upper() = std::numeric_limits<To_Boundary>::max();
-    }      
-    else 
-        Boundary_NS::max_assign(UPPER, upper(), to_info,
-                                UPPER, f_upper(x), f_info(x),
-                                UPPER, f_upper(y), f_info(y));
-  }
-  /*
-  Both are negative.
-  x+y <= AND(x,y) <= min(x,y)
-  */
-  else 
-    if (xus < 0 && yus < 0) {
-      if (f_lower(x) == std::numeric_limits<To_Boundary>::min() ||
-          f_lower(y) == std::numeric_limits<To_Boundary>::min() ) {
-        lower() = std::numeric_limits<To_Boundary>::min();
-      }
-      else {
-        if (f_lower(x) == f_lower(y))
-          Boundary_NS::assign(LOWER, lower(), to_info,
-                              LOWER, f_lower(x), f_info(x));
-        else 
-          Boundary_NS::add_assign(LOWER, lower(), to_info,
-                                  LOWER, f_lower(x), f_info(x),
-                                  LOWER, f_lower(y), f_info(y));
-   
-          if (to_info.get_boundary_property(LOWER, SPECIAL)) {
-            lower() = std::numeric_limits<To_Boundary>::min();
-            to_info.clear();
-          }
-      }
-  
-      Boundary_NS::min_assign(UPPER, upper(), to_info,
-                              UPPER, f_upper(x), f_info(x),
-                              UPPER, f_upper(y), f_info(y));
-
     }
+    else
+      Boundary_NS::max_assign(UPPER, upper(), to_info,
+			      UPPER, f_upper(x), f_info(x),
+			      UPPER, f_upper(y), f_info(y));
+  }
+  else if (xus < 0 && yus < 0) {
+    /*
+      Both are negative.
+      x+y <= AND(x,y) <= min(x,y)
+    */
+    if (f_lower(x) == std::numeric_limits<To_Boundary>::min()
+	||
+	f_lower(y) == std::numeric_limits<To_Boundary>::min() ) {
+      lower() = std::numeric_limits<To_Boundary>::min();
+    }
+    else {
+      if (f_lower(x) == f_lower(y))
+	Boundary_NS::assign(LOWER, lower(), to_info,
+			    LOWER, f_lower(x), f_info(x));
+      else
+	Boundary_NS::add_assign(LOWER, lower(), to_info,
+				LOWER, f_lower(x), f_info(x),
+				LOWER, f_lower(y), f_info(y));
+
+      if (to_info.get_boundary_property(LOWER, SPECIAL)) {
+	lower() = std::numeric_limits<To_Boundary>::min();
+	to_info.clear();
+      }
+    }
+    Boundary_NS::min_assign(UPPER, upper(), to_info,
+			    UPPER, f_upper(x), f_info(x),
+			    UPPER, f_upper(y), f_info(y));
+  }
+  else
+    throw std::runtime_error("x and y are not completely"
+			     "less or greater than zero");
+
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
 }
@@ -935,52 +951,59 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                            && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), void>::type
 Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
+
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
 
   PPL_DIRTY_TEMP(To_Info, to_info);
   PPL_DIRTY_TEMP(To_Info, infox);
   PPL_DIRTY_TEMP(To_Info, infoy);
+  to_info.clear();
+
   PPL_DIRTY_TEMP(To_Boundary, upperx);
   PPL_DIRTY_TEMP(To_Boundary, uppery);
-  to_info.clear();
-  
+
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  /*
-  Same sign.
-  0 <= XOR(x,y) <= |x+y|
-  */
   if ( ((xls >= 0) && (yls >= 0)) || ((xus < 0) && (yus < 0)) ) {
-
+    /*
+      Same sign.
+      0 <= xl <= xu, 0 <= yl <= yu
+      xl <= xu < 0, yl <= yu < 0
+      0 <= XOR(x,y) <= |x+y|
+    */
     if (xls >= 0) {
       Boundary_NS::assign(LOWER, lower(), to_info,
                           LOWER, f_lower(Constant<0>::value),
-                                 f_info(Constant<0>::value));
-      if (f_upper(x) == std::numeric_limits<To_Boundary>::max() ||
+			  f_info(Constant<0>::value));
+
+      if (f_upper(x) == std::numeric_limits<To_Boundary>::max()
+	  ||
           f_upper(y) == std::numeric_limits<To_Boundary>::max())
         upper() = std::numeric_limits<To_Boundary>::max();
       else {
         if (f_upper(x) == f_upper(y))
           Boundary_NS::assign(UPPER, upper(), to_info,
                               UPPER, f_upper(Constant<0>::value),
-                                     f_info(Constant<0>::value));
+			      f_info(Constant<0>::value));
         else {
           Boundary_NS::add_assign(UPPER, upper(), to_info,
                                   UPPER, f_upper(x), f_info(x),
                                   UPPER, f_upper(y), f_info(y));
+
           if (to_info.get_boundary_property(UPPER,SPECIAL)) {
             upper() = std::numeric_limits<To_Boundary>::max();
             to_info.clear();
           }
         }
       }
-    }  
+    }
     else {
-      if (f_lower(x) <= -std::numeric_limits<To_Boundary>::max() ||
+      if (f_lower(x) <= -std::numeric_limits<To_Boundary>::max()
+	  ||
           f_lower(y) <= -std::numeric_limits<To_Boundary>::max())
         upper() = std::numeric_limits<To_Boundary>::max();
       else {
@@ -988,82 +1011,85 @@ Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
                                 LOWER, f_lower(x), f_info(x));
         Boundary_NS::neg_assign(UPPER, uppery, infoy,
                                 LOWER, f_lower(y), f_info(y));
-
         Boundary_NS::add_assign(UPPER, upper(), to_info,
                                 UPPER, upperx, infox,
                                 UPPER, uppery, infoy);
-        if (to_info.get_boundary_property(UPPER, SPECIAL)) {
-            upper() = std::numeric_limits<To_Boundary>::max();
-            to_info.clear();
+
+	if (to_info.get_boundary_property(UPPER, SPECIAL)) {
+	  upper() = std::numeric_limits<To_Boundary>::max();
+	  to_info.clear();
         }
-        
+
         Boundary_NS::assign(LOWER, lower(), to_info,
                             LOWER, f_lower(Constant<0>::value),
-                                   f_info(Constant<0>::value));
-        
+			    f_info(Constant<0>::value));
       }
     }
-    
+
     int bitux = (int)log2(upperx) + 1;
     int bituy = (int)log2(uppery) + 1;
     int bitres = (int)log2(upper()) + 1;
-    
+
     if (bitres > bitux || bitres > bituy) {
       if (bitux >= bituy)
         upper() = (int)ldexp(1.0, bitux) - 1;
-      else 
+      else
         upper() = (int)ldexp(1.0, bituy) - 1;
     }
 
   }
-  /*
-  Discordant sign
-  -(|x|+|y|) <= XOR(x,y) <= -1
-  */
-  else {
-    if (f_lower(x) == std::numeric_limits<To_Boundary>::min() || 
-        f_lower(y) == std::numeric_limits<To_Boundary>::min() ) {
+  else if ((xls >= 0 && yus < 0) || (xus < 0 && yls >= 0)) {
+    /*
+      Discordant sign
+      0 <= xl <= xu, yl <= yu < 0
+      xl <= xu < 0, 0 <= yl <= yu
+      -(|x|+|y|) <= XOR(x,y) <= -1
+    */
+    if (f_lower(x) == std::numeric_limits<To_Boundary>::min()
+	||
+	f_lower(y) == std::numeric_limits<To_Boundary>::min() ) {
       lower() = std::numeric_limits<To_Boundary>::min();
     }
-    else { 
+    else {
       PPL_DIRTY_TEMP(To_Boundary, tmp_lowerx);
       PPL_DIRTY_TEMP(To_Boundary, tmp_lowery);
-    
 
       PPL_DIRTY_TEMP(To_Info, tmp_infox);
       PPL_DIRTY_TEMP(To_Info, tmp_infoy);
-
       tmp_infox.clear();
       tmp_infoy.clear();
-    
+
       Boundary_NS::assign(LOWER, tmp_lowerx, tmp_infox,
-                          LOWER, f_lower(x), f_info(x));
-    
+			  LOWER, f_lower(x), f_info(x));
+
       if (xls > 0)
-        Boundary_NS::neg_assign(LOWER, tmp_lowerx, tmp_infox,
-                                LOWER, tmp_lowerx, tmp_infox);
-      
+	Boundary_NS::neg_assign(LOWER, tmp_lowerx, tmp_infox,
+				LOWER, tmp_lowerx, tmp_infox);
+
       Boundary_NS::assign(LOWER, tmp_lowery, tmp_infoy,
-                          LOWER, f_lower(y), f_info(y));
-  
+			  LOWER, f_lower(y), f_info(y));
+
       if (yls > 0)
-        Boundary_NS::neg_assign(LOWER, tmp_lowery, tmp_infoy,
-                                LOWER, tmp_lowery, tmp_infoy);
-      
+	Boundary_NS::neg_assign(LOWER, tmp_lowery, tmp_infoy,
+				LOWER, tmp_lowery, tmp_infoy);
+
       Boundary_NS::add_assign(LOWER, lower(), to_info,
-                              LOWER, tmp_lowerx, tmp_infox,
-                              LOWER, tmp_lowery, tmp_infoy);
+			      LOWER, tmp_lowerx, tmp_infox,
+			      LOWER, tmp_lowery, tmp_infoy);
 
       if (to_info.get_boundary_property(LOWER, SPECIAL)) {
-        lower() = std::numeric_limits<To_Boundary>::min();
-        to_info.clear();
-      } 
+	lower() = std::numeric_limits<To_Boundary>::min();
+	to_info.clear();
+      }
       Boundary_NS::assign(UPPER, upper(), to_info,
-                          UPPER, f_upper(Constant<-1>::value), 
-                                 f_info(Constant<-1>::value));
-       
+			  UPPER, f_upper(Constant<-1>::value),
+			  f_info(Constant<-1>::value));
     }
   }
+  else
+    throw std::runtime_error("x and y are not completely"
+			     "less or greater than zero");
+
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
 }
@@ -1075,8 +1101,10 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                            && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), void>::type
 Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
+
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
+
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
 
@@ -1088,12 +1116,13 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
   if (xls >= 0) {
     Boundary_NS::assign(LOWER, lower() , to_info,
                         LOWER, f_lower(Constant<0>::value),
-                               f_info(Constant<0>::value));
-    /* xls >= 0, yls >= 0
-     0 <= x<<y <= x*(2^y)
-     */
+			f_info(Constant<0>::value));
     if (yls >= 0) {
-      
+      /*
+	Both are positive
+	0 <= xl <= xu, 0 <= yl <= yu
+	0 <= x<<y <= x*(2^y)
+      */
       mpz_class tmp_exp((int)ldexp(1.0, f_upper(y)));
       y.join_assign(tmp_exp);
 
@@ -1103,76 +1132,100 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
 
       if (to_info.get_boundary_property(UPPER, SPECIAL)) {
         upper() = std::numeric_limits<To_Boundary>::max();
-        to_info.clear(); 
+        to_info.clear();
       }
     }
-    /* xls >= 0, yus < 0
-    0 <= x << y <= x/(2^|y|)
-    */
-    else 
+    else if (yus < 0) {
+      /*
+	Discordant sign
+	0 <= xl <= xu, yl <= yu < 0
+	0 <= x << y <= x/(2^|y|)
+      */
       if (yus < 0 ) {
         PPL_DIRTY_TEMP(To_Boundary, tmp_upper);
-        PPL_DIRTY_TEMP(To_Info, tmp_info);
+
+	PPL_DIRTY_TEMP(To_Info, tmp_info);
         tmp_info.clear();
-        Boundary_NS::neg_assign(UPPER, tmp_upper, tmp_info,
+
+	Boundary_NS::neg_assign(UPPER, tmp_upper, tmp_info,
                                 UPPER, f_upper(y), f_info(y));
-        
+
         mpz_class tmp_exp((int)ldexp(1.0, tmp_upper));
         y.join_assign(tmp_exp);
-        
+
         Boundary_NS::div_assign(UPPER, upper(), to_info,
                                 UPPER, f_upper(x), f_info(x),
                                 UPPER, f_upper(y), f_info(y));
       }
-  }
-  else 
-    if (xus < 0 ) {
-      Boundary_NS::assign(UPPER, upper() , to_info,
-                          UPPER, f_upper(Constant<0>::value),
-                                 f_info(Constant<0>::value));
-    /* xus < 0, yls >= 0
-    x*(2^y) <= x << y <= 0
-    */
-      if(yls >= 0) {
-        mpz_class tmp_exp((int)ldexp(1.0, f_lower(y)));
-        y.join_assign(tmp_exp);
-
-        Boundary_NS::mul_assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(x), f_info(x),
-                                UPPER, f_upper(y), f_info(y));
-        // Negative Overflow
-        if (to_info.get_boundary_property(LOWER, SPECIAL)) {
-          lower() = std::numeric_limits<To_Boundary>::min();
-          to_info.clear();
-        }
-      }
-    /* xus < 0, yus < 0 
-    x/(2^|y|) <= x << y <= 0
-    */
-      else 
-        if (yus < 0) {
-          PPL_DIRTY_TEMP(To_Boundary, tmp_lower);
-          PPL_DIRTY_TEMP(To_Info, tmp_info);
-          tmp_info.clear();
-          Boundary_NS::neg_assign(LOWER, tmp_lower, tmp_info,
-                                  LOWER, f_lower(y), f_info(y));
- 
-          mpz_class tmp_exp((int)ldexp(1.0, tmp_lower));
-          y.join_assign(tmp_exp);
-
-          Boundary_NS::div_assign(LOWER, lower(), to_info,
-                                  LOWER, f_lower(x), f_info(x),
-                                  UPPER, f_upper(y), f_info(y));
-          if (lower() > -1)
-            Boundary_NS::assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(Constant<0>::value), 
-                                       f_info(Constant<0>::value));
-
-        }
-
+      else
+	/*
+	  0 <= xl <= xs, yl < 0 < yu
+	*/
+	goto undefined;
     }
+  }
+  else if (xus < 0 ) {
+    Boundary_NS::assign(UPPER, upper() , to_info,
+			UPPER, f_upper(Constant<0>::value),
+			f_info(Constant<0>::value));
+    if (yls >= 0) {
+      /*
+	Discordant Sign
+	xl <= xu < 0, 0 <= yl <= yu
+	x*(2^y) <= x << y <= 0
+      */
+      mpz_class tmp_exp((int)ldexp(1.0, f_lower(y)));
+      y.join_assign(tmp_exp);
+
+      Boundary_NS::mul_assign(LOWER, lower(), to_info,
+			      LOWER, f_lower(x), f_info(x),
+			      UPPER, f_upper(y), f_info(y));
+      // Negative Overflow
+      if (to_info.get_boundary_property(LOWER, SPECIAL)) {
+	lower() = std::numeric_limits<To_Boundary>::min();
+	to_info.clear();
+      }
+    }
+    else if (yus < 0) {
+      /*
+	Both are negative
+	xl <= xu < 0, yl <= yus < 0
+	x/(2^|y|) <= x << y <= 0
+      */
+      PPL_DIRTY_TEMP(To_Boundary, tmp_lower);
+
+      PPL_DIRTY_TEMP(To_Info, tmp_info);
+      tmp_info.clear();
+
+      Boundary_NS::neg_assign(LOWER, tmp_lower, tmp_info,
+			      LOWER, f_lower(y), f_info(y));
+
+      mpz_class tmp_exp((int)ldexp(1.0, tmp_lower));
+      y.join_assign(tmp_exp);
+
+      Boundary_NS::div_assign(LOWER, lower(), to_info,
+			      LOWER, f_lower(x), f_info(x),
+			      UPPER, f_upper(y), f_info(y));
+      if (lower() > -1)
+	Boundary_NS::assign(LOWER, lower(), to_info,
+			    LOWER, f_lower(Constant<0>::value),
+			    f_info(Constant<0>::value));
+    }
+    else
+      /*
+	xl <= xu <= 0, yl < 0 < yu
+       */
+      goto undefined;
+  }
+  else
+    goto undefined;
+
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
+
+ undefined:
+  throw std::runtime_error("x and y are not completely"
+			   "less or greater than zero");
 }
 
 template <typename To_Boundary, typename To_Info>
@@ -1182,91 +1235,119 @@ inline typename Enable_If<((Is_Singleton<From1>::value
                            && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), void>::type
 Interval<To_Boundary, To_Info>::rshift_assign(const From1& x, const From2& y) {
+
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
+
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  
+
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
   mpz_class tmp_exp((int)ldexp(1.0, f_upper(y)));
-  y.join_assign(exp);
+  y.join_assign(tmp_exp);
+
   if (xls >= 0) {
     Boundary_NS::assign(LOWER, lower() , to_info,
                         LOWER, f_lower(Constant<0>::value),
-                               f_info(Constant<0>::value));
+			f_info(Constant<0>::value));
     if (yls >= 0) {
-      /*  xls >= 0, yls >= 0 
-       0 <= x>>y <= x/(2^y)
+      /*
+	Both are positive
+	0 <= xl <= xu, 0 <= yl <= yu
+	0 <= x>>y <= x/(2^y)
       */
       Boundary_NS::div_assign(UPPER, upper(), to_info,
                               UPPER, f_upper(x), f_info(x),
                               UPPER, f_upper(y), f_info(y));
     }
-    else 
-      if (yus < 0) {
-      /* xls >= 0, yus < 0
-      0 <= x >> y <= x*(2^|y|)
+    else if (yus < 0) {
+      /*
+	Discordant Sign
+	0 <= xl <= xu, yl <= yu < 0
+	0 <= x >> y <= x*(2^|y|)
       */
-        PPL_DIRTY_TEMP(To_Boundary, tmp_upper);
-        PPL_DIRTY_TEMP(To_Info, tmp_info);
-        tmp_info.clear();
-        Boundary_NS::neg_assign(UPPER, tmp_upper, tmp_info,
-                                UPPER, f_upper(y), f_info(y));
-        Boundary_NS::mul_assign(UPPER, upper(), to_info,
-                                UPPER, f_upper(x), f_info(x),
-                                UPPER, tmp_upper, tmp_info);
-        if (to_info.get_boundary_property(UPPER, SPECIAL)) {
-          upper() = std::numeric_limits<To_Boundary>::max();
-          to_info.clear();
-        }
+      PPL_DIRTY_TEMP(To_Boundary, tmp_upper);
+
+      PPL_DIRTY_TEMP(To_Info, tmp_info);
+      tmp_info.clear();
+
+      Boundary_NS::neg_assign(UPPER, tmp_upper, tmp_info,
+			      UPPER, f_upper(y), f_info(y));
+      Boundary_NS::mul_assign(UPPER, upper(), to_info,
+			      UPPER, f_upper(x), f_info(x),
+			      UPPER, tmp_upper, tmp_info);
+
+      if (to_info.get_boundary_property(UPPER, SPECIAL)) {
+	upper() = std::numeric_limits<To_Boundary>::max();
+	to_info.clear();
       }
+    }
+    else
+      /*
+	0 <= xl <= xu, yl < 0 <= yu
+       */
+      goto undefined;
   }
-  else 
-    if (xus < 0) {
-      Boundary_NS::assign(UPPER, upper() , to_info,
-                          UPPER, f_upper(Constant<0>::value),
-                                 f_info(Constant<0>::value));
-  
-      if(yls >= 0) {
-        /* xls < 0, yus >= 0
-        x/(2^y) <= x >> y <= 0
-        */
-        Boundary_NS::div_assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(x), f_info(x),
-                                LOWER, f_lower(y), f_info(y));
-        if (lower() > -1)
-            Boundary_NS::assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(Constant<0>::value), 
-                                       f_info(Constant<0>::value));
-        
-      }
-      else 
-        if (yus < 0) {
-      /* xus < 0, yus < 0
-      x*(2^|y|) <= x >> y <= 0
+  else if (xus < 0) {
+    Boundary_NS::assign(UPPER, upper() , to_info,
+			UPPER, f_upper(Constant<0>::value),
+			f_info(Constant<0>::value));
+    if (yls >= 0) {
+      /*
+	Discordant Sign
+	xl <= xs < 0, 0 <= yl < yu
+	x/(2^y) <= x >> y <= 0
       */
-        PPL_DIRTY_TEMP(To_Boundary, tmp_lower);
-        PPL_DIRTY_TEMP(To_Info, tmp_info);
-        tmp_info.clear();
-        Boundary_NS::neg_assign(LOWER, tmp_lower, tmp_info,
-                                LOWER, f_lower(y), f_info(y));
-  
-        Boundary_NS::mul_assign(LOWER, lower(), to_info,
-                                LOWER, f_lower(x), f_info(x),
-                                LOWER, tmp_lower, tmp_info);
-        
-        if (to_info.get_boundary_property(LOWER, SPECIAL)) {
-          lower() = std::numeric_limits<To_Boundary>::min();
-          to_info.clear();
-        }
+      Boundary_NS::div_assign(LOWER, lower(), to_info,
+			      LOWER, f_lower(x), f_info(x),
+			      LOWER, f_lower(y), f_info(y));
+      if (lower() > -1)
+	Boundary_NS::assign(LOWER, lower(), to_info,
+			    LOWER, f_lower(Constant<0>::value),
+			    f_info(Constant<0>::value));
+    }
+    else if (yus <= 0) {
+      /*
+	Both are negative
+	xl <= xus <= 0, yl <= yu < 0
+	x*(2^|y|) <= x >> y <= 0
+      */
+      PPL_DIRTY_TEMP(To_Boundary, tmp_lower);
+
+      PPL_DIRTY_TEMP(To_Info, tmp_info);
+      tmp_info.clear();
+
+      Boundary_NS::neg_assign(LOWER, tmp_lower, tmp_info,
+			      LOWER, f_lower(y), f_info(y));
+
+      Boundary_NS::mul_assign(LOWER, lower(), to_info,
+			      LOWER, f_lower(x), f_info(x),
+			      LOWER, tmp_lower, tmp_info);
+
+      if (to_info.get_boundary_property(LOWER, SPECIAL)) {
+	lower() = std::numeric_limits<To_Boundary>::min();
+	to_info.clear();
       }
+    }
+    else
+      /*
+	xl <= xu <= 0, yl < 0 <= yu
+       */
+      goto undefined;
   }
+  else
+    goto undefined;
+
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
+
+ undefined:
+  throw std::runtime_error("x and y are not completely"
+			   "less or greater than zero");
 }
 
 template <typename To_Boundary, typename To_Info>
