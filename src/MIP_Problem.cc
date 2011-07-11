@@ -314,7 +314,7 @@ PPL::MIP_Problem::solve() const{
           // NOTE: `relaxed' destroyed: relaxation automatically reset.
           return UNFEASIBLE_MIP_PROBLEM;
         }
-        PPL_DIRTY_TEMP0(mpq_class, incumbent_solution);
+        PPL_DIRTY_TEMP(mpq_class, incumbent_solution);
         bool have_incumbent_solution = false;
 
         MIP_Problem lp_copy(relaxed.lp, Inherit_Constraints());
@@ -1970,7 +1970,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   else
     return UNFEASIBLE_MIP_PROBLEM;
 
-  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
+  PPL_DIRTY_TEMP(mpq_class, tmp_rational);
 
   Generator p = point();
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
@@ -2149,7 +2149,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
     return false;
   }
 
-  PPL_DIRTY_TEMP0(mpq_class, tmp_rational);
+  PPL_DIRTY_TEMP(mpq_class, tmp_rational);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
   bool found_satisfiable_generator = true;

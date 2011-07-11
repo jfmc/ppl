@@ -302,7 +302,7 @@ assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
   // FIXME: this is an incredibly inefficient implementation!
   std::stringstream ss;
   output<From_Policy>(ss, from, Numeric_Format(), dir);
-  PPL_DIRTY_TEMP0(mpq_class, tmp);
+  PPL_DIRTY_TEMP(mpq_class, tmp);
 #ifndef NDEBUG
   Result r =
 #endif
@@ -598,7 +598,7 @@ sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
     to = sqrt(from);
     return V_GE;
   }
-  PPL_DIRTY_TEMP0(mpz_class, r);
+  PPL_DIRTY_TEMP(mpz_class, r);
   mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
   if (r == 0)
     return V_EQ;

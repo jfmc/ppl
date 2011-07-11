@@ -54,7 +54,7 @@ numer_denom(const T& from,
   PPL_ASSERT(!is_not_a_number(from)
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
-  PPL_DIRTY_TEMP0(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, q);
   assign_r(q, from, ROUND_NOT_NEEDED);
   num = q.get_num();
   den = q.get_den();
@@ -65,8 +65,8 @@ inline typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 div_round_up(T& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
-  PPL_DIRTY_TEMP0(mpq_class, qx);
-  PPL_DIRTY_TEMP0(mpq_class, qy);
+  PPL_DIRTY_TEMP(mpq_class, qx);
+  PPL_DIRTY_TEMP(mpq_class, qy);
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
   assign_r(qx, x, ROUND_NOT_NEEDED);
@@ -109,7 +109,7 @@ inline bool
 is_canonical(const mpq_class& x) {
   if (x.get_den() <= 0)
     return false;
-  PPL_DIRTY_TEMP0(mpq_class, temp);
+  PPL_DIRTY_TEMP(mpq_class, temp);
   temp = x;
   temp.canonicalize();
   return temp.get_num() == x.get_num();

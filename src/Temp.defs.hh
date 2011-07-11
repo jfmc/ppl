@@ -100,7 +100,7 @@ public:
   Temp_Value_Holder();
 
   //! Returns the value of the held item.
-  T item();
+  T& item();
 
 private:
   //! Copy constructor: private and intentionally not implemented.
@@ -114,32 +114,6 @@ private:
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A structure for handling temporaries with a global free list.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-struct Temp_From_Free_List {
-  //! The type of the temporaries.
-  typedef T& type;
-
-  //! The type of the holder.
-  typedef Temp_Reference_Holder<T> holder_type;
-
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A structure for handling temporaries with local variables.
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-struct Temp_From_Local_Variable {
-  //! The type of the temporaries.
-  typedef T type;
-
-  //! The type of the holder.
-  typedef Temp_Value_Holder<T> holder_type;
-
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A structure for the efficient handling of temporaries.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Enable = void>
@@ -150,7 +124,7 @@ class Dirty_Temp;
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value>::type>
-  : public Temp_From_Free_List<T> {
+  : public Temp_Reference_Holder<T> {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -158,7 +132,7 @@ class Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value>::type>
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Dirty_Temp<T, typename Enable_If<!Slow_Copy<T>::value>::type>
-  : public Temp_From_Local_Variable<T> {
+  : public Temp_Value_Holder<T> {
 };
 
 } // namespace Parma_Polyhedra_Library

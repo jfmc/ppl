@@ -53,19 +53,19 @@ bool have_sse_unit = true;
 void
 detect_sse_unit() {
   void (*old)(int);
+  // Install our own signal handler for SIGILL.
+  old = signal(SIGILL, illegal_instruction_catcher);
+
   if (setjmp(env)) {
     // We will end up here if sse_get_control() raises SIGILL.
     have_sse_unit = false;
-    goto restore_sigill_handler;
+  }
+  else {
+    (void) sse_get_control();
+    // sse_get_control() did not raise SIGILL: we have an SSE unit.
+    have_sse_unit = true;
   }
 
-  // Install our own signal handler for SIGILL.
-  old = signal(SIGILL, illegal_instruction_catcher);
-  (void) sse_get_control();
-  // sse_get_control() did not raise SIGILL: we have an SSE unit.
-  have_sse_unit = true;
-
- restore_sigill_handler:
   // Restore the previous signal handler for SIGILL.
   signal(SIGILL, old);
 }

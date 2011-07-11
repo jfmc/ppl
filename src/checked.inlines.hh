@@ -629,7 +629,7 @@ assign_nan(Type& to, Result r) {
 template <typename Policy, typename Type>
 inline Result
 input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
-  PPL_DIRTY_TEMP0(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, q);
   Result r = input_mpq(q, is);
   Result_Class c = result_class(r);
   switch (c) {

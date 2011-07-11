@@ -1566,12 +1566,12 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   // and `d1 == -c.inhomogeneous_term()/coeff'.
   // The following variables of mpq_class type are used to be precise
   // when the bds is defined by integer constraints.
-  PPL_DIRTY_TEMP0(mpq_class, q_x);
-  PPL_DIRTY_TEMP0(mpq_class, q_y);
-  PPL_DIRTY_TEMP0(mpq_class, d);
-  PPL_DIRTY_TEMP0(mpq_class, d1);
-  PPL_DIRTY_TEMP0(mpq_class, c_den);
-  PPL_DIRTY_TEMP0(mpq_class, q_den);
+  PPL_DIRTY_TEMP(mpq_class, q_x);
+  PPL_DIRTY_TEMP(mpq_class, q_y);
+  PPL_DIRTY_TEMP(mpq_class, d);
+  PPL_DIRTY_TEMP(mpq_class, d1);
+  PPL_DIRTY_TEMP(mpq_class, c_den);
+  PPL_DIRTY_TEMP(mpq_class, q_den);
   assign_r(c_den, coeff, ROUND_NOT_NEEDED);
   assign_r(d, c.inhomogeneous_term(), ROUND_NOT_NEEDED);
   neg_assign_r(d1, d, ROUND_NOT_NEEDED);
@@ -3260,13 +3260,13 @@ BD_Shape<T>
   // greater than zero. In particular:
   // if `q >= 1',    then `v - u <= ub_v - ub_u';
   // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
-  PPL_DIRTY_TEMP0(mpq_class, mpq_sc_den);
+  PPL_DIRTY_TEMP(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   const DB_Row<N>& dbm_0 = dbm[0];
   // Speculative allocation of temporaries to be used in the following loop.
-  PPL_DIRTY_TEMP0(mpq_class, minus_lb_u);
-  PPL_DIRTY_TEMP0(mpq_class, q);
-  PPL_DIRTY_TEMP0(mpq_class, ub_u);
+  PPL_DIRTY_TEMP(mpq_class, minus_lb_u);
+  PPL_DIRTY_TEMP(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, ub_u);
   PPL_DIRTY_TEMP(N, up_approx);
   // No need to consider indices greater than `last_v'.
   for (dimension_type u = last_v; u > 0; --u)
@@ -3321,14 +3321,14 @@ BD_Shape<T>
   // greater than zero. In particular:
   // if `q >= 1',    then `u - v <= lb_u - lb_v';
   // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-  PPL_DIRTY_TEMP0(mpq_class, mpq_sc_den);
+  PPL_DIRTY_TEMP(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
   // Speculative allocation of temporaries to be used in the following loop.
-  PPL_DIRTY_TEMP0(mpq_class, ub_u);
-  PPL_DIRTY_TEMP0(mpq_class, q);
-  PPL_DIRTY_TEMP0(mpq_class, minus_lb_u);
+  PPL_DIRTY_TEMP(mpq_class, ub_u);
+  PPL_DIRTY_TEMP(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, minus_lb_u);
   PPL_DIRTY_TEMP(N, up_approx);
   // No need to consider indices greater than `last_v'.
   for (dimension_type u = last_v; u > 0; --u)

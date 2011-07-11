@@ -594,7 +594,7 @@ PPL::Polyhedron::contains_integer_point() const {
 						    Variable(space_dim-1)));
   PPL_DIRTY_TEMP_COEFFICIENT(homogeneous_gcd);
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  PPL_DIRTY_TEMP0(mpq_class, rational_inhomogeneous);
+  PPL_DIRTY_TEMP(mpq_class, rational_inhomogeneous);
   PPL_DIRTY_TEMP_COEFFICIENT(tightened_inhomogeneous);
   for (Constraint_System::const_iterator cs_i = cs.begin(),
 	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
@@ -3494,13 +3494,13 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   // The polyhedron has updated, possibly pending generators.
   // The following loop will iterate through the generator
   // to see if `expr' has a constant value.
-  PPL_DIRTY_TEMP0(mpq_class, value);
+  PPL_DIRTY_TEMP(mpq_class, value);
 
   // True if we have no other candidate value to compare with.
   bool first_candidate = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(sp);
-  PPL_DIRTY_TEMP0(mpq_class, candidate);
+  PPL_DIRTY_TEMP(mpq_class, candidate);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& gen_sys_i = gen_sys[i];
     Scalar_Products::homogeneous_assign(sp, expr, gen_sys_i);
@@ -3530,7 +3530,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   }
 
   // Add in the constant term in `expr'.
-  PPL_DIRTY_TEMP0(mpz_class, n);
+  PPL_DIRTY_TEMP(mpz_class, n);
   assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   value += n;
   // FIXME: avoid these temporaries, if possible.

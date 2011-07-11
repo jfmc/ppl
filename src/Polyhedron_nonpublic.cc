@@ -589,7 +589,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   // The polyhedron has updated, possibly pending generators.
   // The following loop will iterate through the generator
   // to find the extremum.
-  PPL_DIRTY_TEMP0(mpq_class, extremum);
+  PPL_DIRTY_TEMP(mpq_class, extremum);
 
   // True if we have no other candidate extremum to compare with.
   bool first_candidate = true;
@@ -619,7 +619,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       PPL_ASSERT(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
-      PPL_DIRTY_TEMP0(mpq_class, candidate);
+      PPL_DIRTY_TEMP(mpq_class, candidate);
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
       assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
@@ -645,7 +645,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   }
 
   // Add in the constant term in `expr'.
-  PPL_DIRTY_TEMP0(mpz_class, n);
+  PPL_DIRTY_TEMP(mpz_class, n);
   assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   extremum += n;
 

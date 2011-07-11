@@ -699,7 +699,7 @@ inline Result
 assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
-  PPL_DIRTY_TEMP0(mpz_class, q);
+  PPL_DIRTY_TEMP(mpz_class, q);
   mpz_ptr _q = q.get_mpz_t();
   if (round_not_requested(dir)) {
     mpz_tdiv_q(_q, n, d);

@@ -237,10 +237,10 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     return true;
   }
 
-  PPL_DIRTY_TEMP0(mpq_class, x_coord);
-  PPL_DIRTY_TEMP0(mpq_class, y_coord);
-  PPL_DIRTY_TEMP0(mpq_class, x_div);
-  PPL_DIRTY_TEMP0(mpq_class, y_div);
+  PPL_DIRTY_TEMP(mpq_class, x_coord);
+  PPL_DIRTY_TEMP(mpq_class, y_coord);
+  PPL_DIRTY_TEMP(mpq_class, x_div);
+  PPL_DIRTY_TEMP(mpq_class, y_div);
   assign_r(x_div, x.divisor(), ROUND_NOT_NEEDED);
   assign_r(y_div, y.divisor(), ROUND_NOT_NEEDED);
 
