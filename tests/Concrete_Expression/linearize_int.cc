@@ -156,37 +156,46 @@ test01(){
   known_result_rshift = known_result_or;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << known_result << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << known_result << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= known_result;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= known_result;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= known_result;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
   nout << "*** " << known_result_lshift << " << " << known_result << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+       << endl << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << known_result;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " << " << known_result << " ***"
+       << endl << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> known_result;
-  nout << known_result_rshift << std::endl;
-
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -282,36 +291,46 @@ test02(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= known_result;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << known_result << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " ^ " << known_result << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= known_result;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= known_result;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
   nout << "*** " << known_result_lshift << " << " << known_result << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+       << endl << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << known_result;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+   nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
+	<< endl << "*** result_rshift *** " << endl
+	<< result_rshift << endl;
   known_result_rshift >> known_result;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -407,36 +426,46 @@ test03(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= lb1;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= lb1;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= lb1;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+       << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << lb1;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+       << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> lb1;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -532,36 +561,47 @@ test04(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= lb1;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= lb1;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
+
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= lb1;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+       << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << lb1;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+       << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> lb1;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -658,37 +698,46 @@ test05(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= lb1;
-  nout << known_result_and << std::endl;
-
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= lb1;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= lb1;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+       << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << lb1;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+       << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> lb1;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -744,36 +793,46 @@ test06(){
   known_result_rshift = known_result;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= known_result;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << known_result << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " ^ " << known_result << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= known_result;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= known_result;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
   nout << "*** " << known_result_lshift << " << " << known_result << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+       << endl << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << known_result;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
   nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+       << endl << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> known_result;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -829,37 +888,46 @@ test07(){
   Integer_Linear_Form lb = Integer_Linear_Form(B);
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << lb << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= lb;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << lb << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= lb;
-  nout << known_result_and << std::endl;
-
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << lb << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_and << endl;
   known_result_xor ^= lb;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+  nout << "*** " << known_result_lshift << " << " << lb << " ***" << endl
+       << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << lb;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " >> " << lb << " ***" << endl
+       << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> lb;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -967,36 +1035,45 @@ test08(){
   known_result_rshift = known_result_or;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << known_result << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " ^ " << known_result << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= known_result;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= known_result;
-  nout << known_result_and << std::endl;
-
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= known_result;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
   nout << "*** " << known_result_lshift << " << " << known_result << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+       << endl << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << known_result;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
   nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+       << endl << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> known_result;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -1098,36 +1175,47 @@ test09(){
   known_result_lshift = known_result_and;
   known_result_rshift = known_result_and;
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= lb1;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= lb1;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
+
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= lb1;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+       << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << lb1;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+       << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> lb1;
-  nout << known_result_rshift << std::endl;
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -1229,37 +1317,47 @@ test10(){
   known_result_lshift = known_result_and;
   known_result_rshift = known_result_and;
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***"
-       << std::endl << "*** known_result_and ***" << std::endl;
+  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+       << "*** result_and *** " << endl
+       << result_and << endl;
   known_result_and &= lb1;
-  nout << known_result_and << std::endl;
+  nout << "*** known_result_and ***" << endl
+       << known_result_and << endl << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***"
-       << std::endl << "*** known_result_or ***" << std::endl;
+  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
   known_result_or |= lb1;
-  nout << known_result_or << std::endl;
+  nout << "*** known_result_or ***" << endl
+       << known_result_or << endl << endl;
+
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***"
-       << std::endl << "*** known_result_xor ***" << std::endl;
+  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+       << "*** result_xor *** " << endl
+       << result_xor << endl;
   known_result_xor ^= lb1;
-  nout << known_result_xor << std::endl;
+  nout << "*** known_result_xor ***" << endl
+       << known_result_xor << endl << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***"
-       << std::endl << "*** known_result_lshift ***" << std::endl;
+  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+       << "*** result_lshift *** " << endl
+       << result_lshift << endl;
   known_result_lshift << lb1;
-  nout << known_result_lshift << std::endl;
+  nout << "*** known_result_lshift ***" << endl
+       << known_result_lshift << endl << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***"
-       << std::endl << "*** known_result_rshift ***" << std::endl;
+  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+       << "*** result_rshift *** " << endl
+       << result_rshift << endl;
   known_result_rshift >> lb1;
-  nout << known_result_rshift << std::endl;
-
+  nout << "*** known_result_rshift ***" << endl
+       << known_result_rshift << endl << endl;
 
   bool ok =
     (result_or == known_result_or)
