@@ -2817,79 +2817,79 @@ variables in the analyzed program.
 The interval bitwise operators are defined as follow:
 
 \f[
-  \left[a,b\right] \bandii\left[a',b'\right] \approx
+  [a,b] \bandii [a',b'] \approx
   \begin{cases}
-    \left[0, \min\left(b, b'\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } a' \geq 0
+    [0, \min(b, b')] &
+    \text{, if }a \geq 0\text{ and } a' \geq 0:
     \\
-    \left[0, \max\left(b, b'\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' < 0
-    \mbox{, or }b < 0\mbox{ and } a' \geq 0
+    [0, \max\(b, b')] &
+    \text{, if }a \geq 0\text{ and } b' < 0
+    \text{, or }b < 0\text{ and } a' \geq 0;
     \\
-    \left[a + a' , \min\left(b,b'\right)\right] &
-    \mbox{if }b < 0\mbox{ and } b' < 0 \\
+    [a + a' , \min(b,b')] &
+    \text{, if }b < 0\text{ and } b' < 0. \\
   \end{cases}
 \f]
 
 \f[
-  \left[a,b\right] \borii\left[a',b'\right] \approx
+  [a,b] \borii [a',b'] \approx
   \begin{cases}
-    \left[\max\left(a,a'\right),b + b'\right] &
-    \mbox{if }a \geq 0\mbox{ and } a' \geq 0
+    [\max(a,a'), b + b'] &
+    \text{, if }a \geq 0\text{ and } a' \geq 0;
     \\
-    \left[\min\left(a,a'\right),-1\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' < 0
-    \mbox{, or }b < 0\mbox{ and } a' \geq 0
+    [\min(a,a'),-1]} &
+    \text{, if }a \geq 0\text{ and } b' < 0
+    \text{, or }b < 0\text{ and } a' \geq 0;
     \\
-    \left[\max\left(a,a'\right),-1\right] &
-    \mbox{if }b < 0\mbox{ and } b' < 0 \\
+    [\max(a,a'),-1] &
+    \text{, if }b < 0\text{ and } b' < 0. \\
   \end{cases}
 \f]
 
 \f[
-  \left[a,b\right] \bxorii\left[a',b'\right] \approx
+  [a,b] \bxorii [a',b'] \approx
   \begin{cases}
-    \left[0,\left|b + b' \right|\right] &
-    \mbox{if }a \geq 0\mbox{ and } a' \geq 0
-    \mbox{, or }b < 0\mbox{ and }b' < 0
+    [0,|b + b'|] &
+    \text{, if }a \geq 0\text{ and } a' \geq 0
+    \text{, or }b < 0\text{ and }b' < 0;
     \\
-    \left[-\left(\left|a\right| + \left|b\right|\right),-1\right] &
-    \mbox{if }a \geq 0\mbox{ and }b' < 0
-    \mbox{, or }b < 0\mbox{ and } a' \geq 0 \\
+    [-(|a| + |a'|),-1] &
+    \text{, if }a \geq 0\text{ and }b' < 0
+    \text{, or }b < 0\text{ and } a' \geq 0. \\
   \end{cases}
 \f]
 
 \f[
-  \left[a,b\right] \olessthan ^{\#} \left[a',b'\right] \approx
+  [a,b] \olessthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \left[0, \left(b \times 2^{b'}\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } a' \geq 0
+    \bigl[0, \bigl(b \times 2^{b'}\bigl)\bigl] &
+    \text{, if }a \geq 0\text{ and } a' \geq 0;
     \\
-    \left[0, \left(b / 2^{\left|b'\right|}\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' < 0
+    \bigl[0, \bigl(b / 2^{\left|b'\right|}\bigl)\bigl] &
+    \text{, if }a \geq 0\text{ and } b' < 0;
     \\
-    \left[\left(a \times 2^{a'}\right), 0\right] &
-    \mbox{if }b < 0\mbox{ and } a' \geq 0
+    \bigl[\bigl(a \times 2^{a'}\bigl), 0\bigl] &
+    \text{, if }b < 0\text{ and } a' \geq 0;
     \\
-    \left[\left(a / 2^{\left|a'\right|}\right), 0\right] &
-    \mbox{if }b < 0\mbox{ and } b' < 0 \\
+    \bigl[\bigl(a / 2^{\left|a'\right|}\bigl), 0\bigl] &
+    \text{, if }b < 0\text{ and } b' < 0. \\
   \end{cases}
 \f]
 
 \f[
-  \left[a,b\right] \ogreaterthan ^{\#} \left[a',b'\right] \approx
+  [a,b] \ogreaterthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \left[0, \left(b / 2^{b'}\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } a' \geq 0
+    \bigl[0, \bigl(b / 2^{b'}\bigl)\bigl] &
+    \text{, if }a \geq 0\text{ and } a' \geq 0;
     \\
-    \left[0, \left(b \times 2^{\left|b'\right|}\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' < 0
+    \bigl[0, \bigl(b \times 2^{\left|b'\right|}\bigl)\bigl] &
+    \text{, if }a \geq 0\text{ and } b' < 0;
     \\
-    \left[\left(a / 2^{a'}\right), 0\right] &
-    \mbox{if }b < 0\mbox{ and } a' \geq 0
+    \bigl[\bigl(a / 2^{a'}\bigl), 0\bigl] &
+    \text{, if }b < 0\text{ and } a' \geq 0;
     \\
-    \left[\left(a \times 2^{\left|a'\right|}\right), 0\right] &
-    \mbox{if }b < 0\mbox{ and } b' < 0 \\
+    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigl), 0\bigl] &
+    \text{, if }b < 0\text{ and } b' < 0. \\
   \end{cases}
 
 \f]
