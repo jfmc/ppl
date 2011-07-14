@@ -2823,11 +2823,11 @@ The interval bitwise operators are defined as follow:
     \mbox{if }a \geq 0\mbox{ and } a' \geq 0
     \\
     \left[0, \max\left(b, b'\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' \le 0
-    \mbox{, or }b \le 0\mbox{ and } a' \geq 0
+    \mbox{if }a \geq 0\mbox{ and } b' < 0
+    \mbox{, or }b < 0\mbox{ and } a' \geq 0
     \\
     \left[a + a' , \min\left(b,b'\right)\right] &
-    \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+    \mbox{if }b < 0\mbox{ and } b' < 0 \\
   \end{cases}
 \f]
 
@@ -2838,11 +2838,11 @@ The interval bitwise operators are defined as follow:
     \mbox{if }a \geq 0\mbox{ and } a' \geq 0
     \\
     \left[\min\left(a,a'\right),-1\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' \le 0
-    \mbox{, or }b \le 0\mbox{ and } a' \geq 0
+    \mbox{if }a \geq 0\mbox{ and } b' < 0
+    \mbox{, or }b < 0\mbox{ and } a' \geq 0
     \\
     \left[\max\left(a,a'\right),-1\right] &
-    \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+    \mbox{if }b < 0\mbox{ and } b' < 0 \\
   \end{cases}
 \f]
 
@@ -2851,11 +2851,11 @@ The interval bitwise operators are defined as follow:
   \begin{cases}
     \left[0,\left|b + b' \right|\right] &
     \mbox{if }a \geq 0\mbox{ and } a' \geq 0
-    \mbox{, or }b \le 0\mbox{ and }b' \le 0
+    \mbox{, or }b < 0\mbox{ and }b' < 0
     \\
     \left[-\left(\left|a\right| + \left|b\right|\right),-1\right] &
-    \mbox{if }a \geq 0\mbox{ and }b' \le 0
-    \mbox{, or }b \le 0\mbox{ and } a' \geq 0 \\
+    \mbox{if }a \geq 0\mbox{ and }b' < 0
+    \mbox{, or }b < 0\mbox{ and } a' \geq 0 \\
   \end{cases}
 \f]
 
@@ -2866,13 +2866,13 @@ The interval bitwise operators are defined as follow:
     \mbox{if }a \geq 0\mbox{ and } a' \geq 0
     \\
     \left[0, \left(b / 2^{\left|b'\right|}\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' \le 0
+    \mbox{if }a \geq 0\mbox{ and } b' < 0
     \\
     \left[\left(a \times 2^{a'}\right), 0\right] &
-    \mbox{if }b \le 0\mbox{ and } a' \geq 0
+    \mbox{if }b < 0\mbox{ and } a' \geq 0
     \\
     \left[\left(a / 2^{\left|a'\right|}\right), 0\right] &
-    \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+    \mbox{if }b < 0\mbox{ and } b' < 0 \\
   \end{cases}
 \f]
 
@@ -2883,13 +2883,13 @@ The interval bitwise operators are defined as follow:
     \mbox{if }a \geq 0\mbox{ and } a' \geq 0
     \\
     \left[0, \left(b \times 2^{\left|b'\right|}\right)\right] &
-    \mbox{if }a \geq 0\mbox{ and } b' \le 0
+    \mbox{if }a \geq 0\mbox{ and } b' < 0
     \\
     \left[\left(a / 2^{a'}\right), 0\right] &
-    \mbox{if }b \le 0\mbox{ and } a' \geq 0
+    \mbox{if }b < 0\mbox{ and } a' \geq 0
     \\
     \left[\left(a \times 2^{\left|a'\right|}\right), 0\right] &
-    \mbox{if }b \le 0\mbox{ and } b' \le 0 \\
+    \mbox{if }b < 0\mbox{ and } b' < 0 \\
   \end{cases}
 
 \f]
@@ -3200,8 +3200,8 @@ composed by two parts:
     associating each variable with its current approximating linear form.
 
 An interval abstract store is represented by a
-\link Parma_Polyhedra_Library::Box \c Box \endlink with integer boundaries, 
-while a linear form abstract store is a map of the Standard Template Library. 
+\link Parma_Polyhedra_Library::Box \c Box \endlink with integer boundaries,
+while a linear form abstract store is a map of the Standard Template Library.
 The <CODE>linearize</CODE> method requires both stores as its arguments.
 
 \section use_of_library Using the Library

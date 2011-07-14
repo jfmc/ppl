@@ -1386,7 +1386,7 @@ xor_linearize_int
   \leq
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   \f]
 
   and we can define the elments of the linear form
@@ -1397,7 +1397,7 @@ xor_linearize_int
   \leq
   k
   \leq
-  \left(i \adivifp 2^{i'} \right)
+  \left(i \adivifp 2^\left|{i'}\right| \right)
   \f]
 
   \f[
@@ -1405,7 +1405,7 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \left(i_{v} \adivifp 2^{i'_{v}} \right)
+  \left(i_{v} \adivifp 2^\left|{i'_{v}}\right| \right)
   \f]
 
   then
@@ -1415,7 +1415,7 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \left(i \adivifp 2^{i'} \right)
+  \left(i \adivifp 2^\left|{i'}\right| \right)
   \f]
 
   \f[
@@ -1423,7 +1423,7 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \left(i_{v} \adivifp 2^{i'_{v}} \right)
+  \left(i_{v} \adivifp 2^\left|{i'_{v}}\right| \right)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1529,7 +1529,7 @@ xor_linearize_int
   \f[
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
@@ -1540,7 +1540,7 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \left(i \adivifp 2^{i'} \right)
+  \left(i \adivifp 2^\left|{i'}\right| \right)
   \leq
   k
   \leq
@@ -1548,7 +1548,7 @@ xor_linearize_int
   \f]
 
   \f[
-  \left(i_{v} \adivifp 2^{i'_{v}} \right)
+  \left(i_{v} \adivifp 2^\left|{i'_{v}}\right| \right)
   \leq
   k_{v}
   \leq
@@ -1560,7 +1560,7 @@ xor_linearize_int
   \f[
   k
   \approx
-  \left(i \adivifp 2^{i'} \right)
+  \left(i \adivifp 2^\left|{i'}\right| \right)
   \bowtie
   0
   \f]
@@ -1568,7 +1568,7 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \left(i_{v} \adivifp 2^{i'_{v}} \right)
+  \left(i_{v} \adivifp 2^\left|{i'_{v}}\right| \right)
   \bowtie
   0
   \f]
@@ -1744,7 +1744,7 @@ lshift_linearize_int
   \leq
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   \f]
 
   and we can define the elments of the linear form
@@ -1755,7 +1755,7 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \left(i \amifp 2^{i'} \right)
+  \left(i \amifp 2^\left|{i'}\right| \right)
   \f]
 
   \f[
@@ -1763,7 +1763,7 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \left(i_{v} \amifp 2^{i'_{v}} \right)
+  \left(i_{v} \amifp 2^\left|{i'_{v}}\right| \right)
   \f]
 
   then
@@ -1773,7 +1773,7 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \left(i \amifp 2^{i'} \right)
+  \left(i \amifp 2^\left|{i'}\right| \right)
   \f]
 
   \f[
@@ -1781,7 +1781,7 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \left(i_{v} \amifp 2^{i'_{v}} \right)
+  \left(i_{v} \amifp 2^\left|{i'_{v}}\right| \right)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1887,7 +1887,7 @@ lshift_linearize_int
   \f[
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
-  2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
+  2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
@@ -1898,7 +1898,7 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \left(i \amifp 2^{i'} \right)
+  \left(i \amifp 2^\left|{i'}\right| \right)
   \leq
   k
   \leq
@@ -1906,7 +1906,7 @@ lshift_linearize_int
   \f]
 
   \f[
-  \left(i_{v} \amifp 2^{i'_{v}} \right)
+  \left(i_{v} \amifp 2^\left|{i'_{v}}\right| \right)
   \leq
   k_{v}
   \leq
@@ -1918,7 +1918,7 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \left(i \amifp 2^{i'} \right)
+  \left(i \amifp 2^\left|{i'}\right| \right)
   \bowtie
   0
   \f]
@@ -1926,7 +1926,7 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \left(i_{v} \amifp 2^{i'_{v}} \right)
+  \left(i_{v} \amifp 2^\left|{i'_{v}}\right| \right)
   \bowtie
   0
   \f]
