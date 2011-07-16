@@ -41,7 +41,7 @@ namespace Parma_Polyhedra_Library {
   \aslf
   \left(i' + \sum_{v \in \cV}i'_{v}v \right)
   =
-  \left(i \asifp i'\right) + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
+  (i \asifp i') + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v.
   \f]
 
   Given an expression \f$e_{1} \oplus e_{2}\f$ and a composite
@@ -202,7 +202,7 @@ sub_linearize_int
   \aslf
   \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
-  \left(i \asifp i'\right) + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  (i \asifp i') + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
   \f]
 
   \f[
@@ -376,7 +376,7 @@ mul_linearize_int
   \aslf
   \left(i' + \sum_{v \in \cV}i'_{v}v\right)
   =
-  \left(i \asifp i'\right) + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
+  (i \asifp i') + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v}\right)v,
   \f]
 
   \f[
@@ -384,7 +384,7 @@ mul_linearize_int
   \adivlf
   i'
   =
-  (i \adivifp i') + \sum_{v \in \cV}\left(i_{v} \adivifp i')v.
+  (i \adivifp i') + \sum_{v \in \cV}\left(i_{v} \adivifp i'\right)v.
   \f]
 
   Given an expression \f$e_{1} \oslash [a;b]\f$ and a composite
@@ -482,12 +482,12 @@ div_linearize_int
   \par Linearization of or integer expressions
 
   Let \f$x\f$ and \f$y\f$ be two integer constants both greater than or equal
-  zero, then \f$x \mathrel{\mid} y\f$ is defined as follows:
+  zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
 
   \f[
-  \max(x, y)
+  \max \{ x, y \}
   \leq
-  x \mathrel{\mid} y
+  x \mathbin\mid} y
   \leq
   x + y
   \f]
@@ -527,7 +527,7 @@ div_linearize_int
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
   \left(i \asifp i'\right)
-  + \sum_{v \in \cV}\bigl(i_{v} \asifp i'_{v} \bigl)v.
+  + \sum_{v \in \cV}\bigl(i_{v} \asifp i'_{v} \bigr)v.
   \f]
 
   and we can define the elments of the linear form
@@ -546,7 +546,7 @@ div_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \asifp i'_{v} \bigl)
+  \bigl(i_{v} \asifp i'_{v} \bigr)
   \f]
 
   then
@@ -562,18 +562,18 @@ div_linearize_int
   \f[
   k_{v}
   \approx
-  \max\bigl(i_{v}, i'_{v} \bigl)
+  \max(i_v, i'_v)
   \bowtie
-  \bigl(i_{v} \asifp i'_{v} \bigl)
+  \bigl(i_{v} \asifp i'_{v} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with discordant
-  sign, then \f$x \mathrel{\mid} y\f$ is defined as follows:
+  sign, then \f$x \mathbin{\mid} y\f$ is defined as follows:
 
   \f[
-  \min(x, y)
+  \min \{ x, y \} 
   \leq
-  x \mathrel{\mid} y
+  x \mathbin{\mid} y
   \leq
   -1
   \f]
@@ -614,7 +614,7 @@ div_linearize_int
   \f]
 
   \f[
-  \min\bigl(i_{v}, i'_{v} \bigl)
+  \min(i_v, i'_v)
   \leq
   k_{v}
   \leq
@@ -634,18 +634,18 @@ div_linearize_int
   \f[
   k_{v}
   \approx
-  \min\bigl(i_{v}, i'_{v} \bigl)
+  \min(i_v, i'_v)
   \bowtie
   -1
   \f]
 
   Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less then
-  zero, then \f$x \mathrel{\mid} y\f$ is defined as follows:
+  zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
 
   \f[
-  \max(x, y)
+  \max \{ x, y \} 
   \leq
-  x \mathrel{\mid} y
+  x \mathbin{\mid} y
   \leq
   -1
   \f]
@@ -686,7 +686,7 @@ div_linearize_int
   \f]
 
   \f[
-  \max\bigl(i_{v}, i'_{v} \bigl)
+  \max(i_v, i'_v)
   \leq
   k_{v}
   \leq
@@ -706,7 +706,7 @@ div_linearize_int
   \f[
   k_{v}
   \approx
-  \max\bigl(i_{v}, i'_{v} \bigl)
+  \max(i_v, i'_v)
   \bowtie
   -1
   \f]
@@ -775,14 +775,14 @@ or_linearize_int
   \par Linearization of and integer expressions
 
   Let \f$x\f$ and \f$y\f$ be two integer constants both greater than
-  or equal zero, then \f$x \mathrel{\&} y\f$ is defined as follows:
+  or equal zero, then \f$x \mathbin{\&} y\f$ is defined as follows:
 
   \f[
   0
   \leq
-  x \mathrel{\&} y
+  x \mathbin{\&} y
   \leq
-  \min(x, y)
+  \min \{ x, y \} 
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -825,7 +825,7 @@ or_linearize_int
   \leq
   k_{v}
   \leq
-  \min\bigl(i_{v}, i'_{v} \bigl)
+  \min(i_v, i'_v)
   \f]
 
   then
@@ -843,18 +843,18 @@ or_linearize_int
   \approx
   0
   \bowtie
-  \min\bigl(i_{v}, i'_{v} \bigl)
+  \min(i_v, i'_v)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with discordant
-  sign, then \f$x \mathrel{\&} y\f$ is defined as follows:
+  sign, then \f$x \mathbin{\&} y\f$ is defined as follows:
 
   \f[
   0
   \leq
-  x \mathrel{\&} y
+  x \mathbin{\&} y
   \leq
-  \max(x, y)
+  \max \{ x, y \} 
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -897,7 +897,7 @@ or_linearize_int
   \leq
   k_{v}
   \leq
-  \max\bigl(i_{v}, i'_{v} \bigl)
+  \max(i_v, i'_v)
   \f]
 
   then
@@ -915,18 +915,18 @@ or_linearize_int
   \approx
   0
   \bowtie
-  \max\bigl(i_{v}, i'_{v} \bigl)
+  \max(i_v, i'_v)
   \f]
 
   Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less then
-  zero, then \f$x \mathrel{\&} y\f$ is defined as follows:
+  zero, then \f$x \mathbin{\&} y\f$ is defined as follows:
 
   \f[
   x + y
   \leq
-  x \mathrel{\&} y
+  x \mathbin{\&} y
   \leq
-  \min(x, y)
+  \min \{ x, y \} 
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -958,7 +958,7 @@ or_linearize_int
   then
 
   \f[
-  \left(i \asifp i'\right) + \sum_{v \in \cV}\bigl(i_{v} \asifp i'_{v} \bigl)v
+  (i \asifp i') + \sum_{v \in \cV}\left(i_{v} \asifp i'_{v} \right)v
   \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
   \leq
@@ -978,11 +978,11 @@ or_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \asifp i'_{v} \bigl)
+  \bigl(i_{v} \asifp i'_{v} \bigr)
   \leq
   k_{v}
   \leq
-  \min\bigl(i_{v}, i'_{v} \bigl)
+  \min(i_v, i'_v)
   \f]
 
   then
@@ -998,9 +998,9 @@ or_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \asifp i'_{v} \bigl)
+  \bigl(i_{v} \asifp i'_{v} \bigr)
   \bowtie
-  \min\bigl(i_{v}, i'_{v} \bigl)
+  \min(i_v, i'_v)
   \f]
 
   Given an expression \f$e_{1} \owedge e_{2}\f$ and a composite
@@ -1323,7 +1323,7 @@ xor_linearize_int
   \leq
   k
   \leq
-  \bigl(i \amifp 2^{i'} \bigl)
+  \bigl(i \amifp 2^{i'} \bigr)
   \f]
 
   \f[
@@ -1331,7 +1331,7 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \amifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
   \f]
 
   then
@@ -1341,7 +1341,7 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \amifp 2^{i'} \bigl)
+  \bigl(i \amifp 2^{i'} \bigr)
   \f]
 
   \f[
@@ -1349,7 +1349,7 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \amifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1397,7 +1397,7 @@ xor_linearize_int
   \leq
   k
   \leq
-  \bigl(i \adivifp 2^{|i'|} \bigl)
+  \bigl(i \adivifp 2^{|i'|} \bigr)
   \f]
 
   \f[
@@ -1405,7 +1405,7 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
   \f]
 
   then
@@ -1415,7 +1415,7 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \adivifp 2^{|i'|} \bigl)
+  \bigl(i \adivifp 2^{|i'|} \bigr)
   \f]
 
   \f[
@@ -1423,7 +1423,7 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1467,7 +1467,7 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{i'} \bigl)
+  \bigl(i \amifp 2^{i'} \bigr)
   \leq
   k
   \leq
@@ -1475,7 +1475,7 @@ xor_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \amifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
   \leq
   k_{v}
   \leq
@@ -1487,7 +1487,7 @@ xor_linearize_int
   \f[
   k
   \approx
-  \bigl(i \amifp 2^{i'} \bigl)
+  \bigl(i \amifp 2^{i'} \bigr)
   \bowtie
   0
   \f]
@@ -1495,7 +1495,7 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \amifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
   \bowtie
   0
   \f]
@@ -1540,7 +1540,7 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \adivifp 2^{|i'|} \bigl)
+  \bigl(i \adivifp 2^{|i'|} \bigr)
   \leq
   k
   \leq
@@ -1548,7 +1548,7 @@ xor_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
   \leq
   k_{v}
   \leq
@@ -1560,7 +1560,7 @@ xor_linearize_int
   \f[
   k
   \approx
-  \bigl(i \adivifp 2^{|i'|} \bigl)
+  \bigl(i \adivifp 2^{|i'|} \bigr)
   \bowtie
   0
   \f]
@@ -1568,7 +1568,7 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
   \bowtie
   0
   \f]
@@ -1681,7 +1681,7 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \bigl(i \adivifp 2^{i'}\bigl)
+  \bigl(i \adivifp 2^{i'}\bigr)
   \f]
 
   \f[
@@ -1689,7 +1689,7 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
   \f]
 
   then
@@ -1699,7 +1699,7 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \adivifp 2^{i'}\bigl)
+  \bigl(i \adivifp 2^{i'}\bigr)
   \f]
 
   \f[
@@ -1707,7 +1707,7 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1755,7 +1755,7 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \bigl(i \amifp 2^{|i'|} \bigl)
+  \bigl(i \amifp 2^{|i'|} \bigr)
   \f]
 
   \f[
@@ -1763,7 +1763,7 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
   \f]
 
   then
@@ -1773,7 +1773,7 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \amifp 2^{|i'|} \bigl)
+  \bigl(i \amifp 2^{|i'|} \bigr)
   \f]
 
   \f[
@@ -1781,7 +1781,7 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1825,7 +1825,7 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \adivifp 2^{i'}\bigl)
+  \bigl(i \adivifp 2^{i'}\bigr)
   \leq
   k
   \leq
@@ -1833,7 +1833,7 @@ lshift_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
   \leq
   k_{v}
   \leq
@@ -1845,7 +1845,7 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \bigl(i \adivifp 2^{i'}\bigl)
+  \bigl(i \adivifp 2^{i'}\bigr)
   \bowtie
   0
   \f]
@@ -1853,7 +1853,7 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigl)
+  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
   \bowtie
   0
   \f]
@@ -1898,7 +1898,7 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{|i'|} \bigl)
+  \bigl(i \amifp 2^{|i'|} \bigr)
   \leq
   k
   \leq
@@ -1906,7 +1906,7 @@ lshift_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
   \leq
   k_{v}
   \leq
@@ -1918,7 +1918,7 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \bigl(i \amifp 2^{|i'|} \bigl)
+  \bigl(i \amifp 2^{|i'|} \bigr)
   \bowtie
   0
   \f]
@@ -1926,7 +1926,7 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigl)
+  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
   \bowtie
   0
   \f]

@@ -2819,77 +2819,66 @@ The interval bitwise operators are defined as follow:
 \f[
   [a,b] \bandii [a',b'] \approx
   \begin{cases}
-    [0, \min(b, b')] &
-    \text{, if }a \geq 0\text{ and } a' \geq 0:
-    \\
-    [0, \max\(b, b')] &
-    \text{, if }a \geq 0\text{ and } b' < 0
-    \text{, or }b < 0\text{ and } a' \geq 0;
-    \\
-    [a + a' , \min(b,b')] &
-    \text{, if }b < 0\text{ and } b' < 0. \\
+    \bigl[0, \min(b, b')\bigr],
+      & \text{if $a \geq 0$ and $a' \geq 0$}; \\
+    \bigl[0, \max\(b, b')\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$,
+              or $b < 0$ and $a' \geq 0$}; \\
+    \bigl[a + a', \min(b,b')\bigr],
+      & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 \f]
 
 \f[
   [a,b] \borii [a',b'] \approx
   \begin{cases}
-    [\max(a,a'), b + b'] &
-    \text{, if }a \geq 0\text{ and } a' \geq 0;
-    \\
-    [\min(a,a'),-1]} &
-    \text{, if }a \geq 0\text{ and } b' < 0
-    \text{, or }b < 0\text{ and } a' \geq 0;
-    \\
-    [\max(a,a'),-1] &
-    \text{, if }b < 0\text{ and } b' < 0. \\
+    \bigl[\max(a,a'), b + b'\bigr],
+      & \text{if $a \geq 0$ and $a' \geq 0$}; \\
+    \bigl[\min(a,a'),-1\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$,
+              or $b < 0$ and $a' \geq 0$}; \\
+    \bigl[\max(a,a'),-1\bigr],
+      & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 \f]
 
 \f[
   [a,b] \bxorii [a',b'] \approx
   \begin{cases}
-    [0,|b + b'|] &
-    \text{, if }a \geq 0\text{ and } a' \geq 0
-    \text{, or }b < 0\text{ and }b' < 0;
-    \\
-    [-(|a| + |a'|),-1] &
-    \text{, if }a \geq 0\text{ and }b' < 0
-    \text{, or }b < 0\text{ and } a' \geq 0. \\
+    \bigl[0,|b + b'|\bigr],
+      & \text{if $a \geq 0$ and $a' \geq 0$,
+              or $b < 0$ and $b' < 0$}; \\
+    \bigl[-(|a| + |a'|),-1\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$,
+              or $b < 0$ and $a' \geq 0$}. \\
   \end{cases}
 \f]
 
 \f[
   [a,b] \olessthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \bigl[0, \bigl(b \times 2^{b'}\bigl)\bigl] &
-    \text{, if }a \geq 0\text{ and } a' \geq 0;
-    \\
-    \bigl[0, \bigl(b / 2^{\left|b'\right|}\bigl)\bigl] &
-    \text{, if }a \geq 0\text{ and } b' < 0;
-    \\
-    \bigl[\bigl(a \times 2^{a'}\bigl), 0\bigl] &
-    \text{, if }b < 0\text{ and } a' \geq 0;
-    \\
-    \bigl[\bigl(a / 2^{\left|a'\right|}\bigl), 0\bigl] &
-    \text{, if }b < 0\text{ and } b' < 0. \\
+    \bigl[0, \bigl(b \times 2^{b'}\bigr)\bigr],
+      & \text{if $a \geq 0$ and $a' \geq 0$}; \\
+    \bigl[0, \bigl(b / 2^{\left|b'\right|}\bigr)\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$}; \\
+    \bigl[\bigl(a \times 2^{a'}\bigr), 0\bigr],
+      & \text{if $b < 0$ and $a' \geq 0$}; \\
+    \bigl[\bigl(a / 2^{\left|a'\right|}\bigr), 0\bigr],
+      & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 \f]
 
 \f[
   [a,b] \ogreaterthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \bigl[0, \bigl(b / 2^{b'}\bigl)\bigl] &
-    \text{, if }a \geq 0\text{ and } a' \geq 0;
-    \\
-    \bigl[0, \bigl(b \times 2^{\left|b'\right|}\bigl)\bigl] &
-    \text{, if }a \geq 0\text{ and } b' < 0;
-    \\
-    \bigl[\bigl(a / 2^{a'}\bigl), 0\bigl] &
-    \text{, if }b < 0\text{ and } a' \geq 0;
-    \\
-    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigl), 0\bigl] &
-    \text{, if }b < 0\text{ and } b' < 0. \\
+    \bigl[0, \bigl(b / 2^{b'}\bigr)\bigr],
+      & \text{if $a \geq 0$ and $a' \geq 0$}; \\
+    \bigl[0, \bigl(b \times 2^{\left|b'\right|}\bigr)\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$}; \\
+    \bigl[\bigl(a / 2^{a'}\bigr), 0\bigr],
+      & \text{if $b < 0$ and $a' \geq 0$}; \\
+    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigr), 0\bigr],
+      & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 
 \f]
