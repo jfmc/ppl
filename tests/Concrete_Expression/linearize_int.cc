@@ -68,58 +68,43 @@ typedef Integer_Interval Int_Interval;
 
 /*
   Tests linearization 3*B + [2, 2147483639] op B + [1, 16]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where B in [2, 3].
 */
 bool
 test01(){
-  Integer_Int_Interval tmp(0);
-  tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
-  oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
-
-  Integer_Int_Interval a(2147483636);
-  a.join_assign(7);
 
   Integer_Int_Interval b(3);
 
   Integer_Int_Interval inh_term(2);
-  inh_term.join_assign(3);
-
-  Integer_Int_Interval a1(12);
-  a1.join_assign(5);
+  inh_term.join_assign(2147483639);
 
   Integer_Int_Interval b1(1);
-  b1.join_assign(7);
 
   Integer_Int_Interval inh_term1(1);
-  inh_term1.join_assign(4);
-  Approximable_Reference<C_Expr> var0(Integer_Type,
-				      Int_Interval(mpz_class(0)), 0);
+  inh_term1.join_assign(16);
+
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
-  Int_Constant<C_Expr> coeff_a(Integer_Type, a);
+
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
-  Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
-				 &var0, &coeff_a);
+
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var1, &coeff_b);
-  Binary_Operator<C_Expr> sum_a_b(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				  &term_a, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term,&sum_a_b);
-  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
-				  &var0, &coeff_a1);
-  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				    &term_a1, &var1);
+				&coeff_inh_term,&term_b);
+
+  Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				 &var1, &coeff_b1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &sum_a1_b1);
+				&coeff_inh_term1, &term_b1);
 
   Binary_Operator<C_Expr> bor(Integer_Type, Binary_Operator<C_Expr>::BOR,
                               &expr1, &expr2);
@@ -134,19 +119,14 @@ test01(){
   Integer_Linear_Form result_or, result_and,result_xor, result_lshift,
     result_rshift;
 
-  Variable A(0);
   Variable B(1);
-  Integer_Linear_Form known_result_or = Integer_Linear_Form(tmp);
-  known_result_or *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
-  known_result_or += lb;
+
+  Integer_Linear_Form known_result_or = B;
+  known_result_or *= b;
   known_result_or += inh_term;
-  Integer_Linear_Form known_result = Integer_Linear_Form(tmp);
-  known_result *= a1;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  known_result += lb1;
-  known_result += inh_term1;
+
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  lf += inh_term1;
 
   Integer_Linear_Form known_result_and, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -156,46 +136,43 @@ test01(){
   known_result_rshift = known_result_or;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << known_result << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= known_result;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= known_result;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= known_result;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << known_result << " ***"
+  nout << "*** " << known_result_lshift << " << " << lf << " ***"
        << endl << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << known_result;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " << " << known_result << " ***"
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***"
        << endl << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> known_result;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -209,12 +186,11 @@ test01(){
     (result_rshift == known_result_rshift);
 
   return ok;
-
 }
 
 /*
   Tests linearization A + 3*B + [2, 3] op B + [1, 9]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2, 3].
 */
 bool
 test02(){
@@ -222,6 +198,8 @@ test02(){
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
+
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -231,11 +209,9 @@ test02(){
   Integer_Int_Interval inh_term(2);
   inh_term.join_assign(3);
 
-  Integer_Int_Interval a1(3);
-  a1.join_assign(5);
-
   Integer_Int_Interval inh_term1(1);
-  inh_term1.join_assign(4);
+  inh_term1.join_assign(9);
+
   Approximable_Reference<C_Expr> var0(Integer_Type,
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
@@ -243,20 +219,16 @@ test02(){
 
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
+
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var1, &coeff_b);
   Binary_Operator<C_Expr> sum_a_b(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				  &var0, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				&coeff_inh_term,&sum_a_b);
-  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
-				  &var0, &coeff_a1);
-  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				    &term_a1, &var1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &sum_a1_b1);
+				&coeff_inh_term1, &var1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
 			       &expr1, &expr2);
@@ -268,20 +240,19 @@ test02(){
 				 &expr1, &expr2);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &expr1, &expr2);
+
   Integer_Linear_Form result_and,result_or, result_xor, result_lshift,
     result_rshift;
+
   Variable A(0);
   Variable B(1);
-  Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
-  known_result_and += lb;
+
+  Integer_Linear_Form known_result_and = A;
+  known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
-  Integer_Linear_Form known_result = Integer_Linear_Form(tmp);
-  known_result *= a1;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  known_result += lb1;
-  known_result += inh_term1;
+
+  Integer_Linear_Form lf = B;
+  lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -291,46 +262,43 @@ test02(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= known_result;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= known_result;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= known_result;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << known_result << " ***"
+  nout << "*** " << known_result_lshift << " << " << lf << " ***"
        << endl << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << known_result;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-   nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
+   nout << "*** " << known_result_rshift << " >> " << lf << " ***"
 	<< endl << "*** result_rshift *** " << endl
 	<< result_rshift << endl;
-  known_result_rshift >> known_result;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -348,7 +316,7 @@ test02(){
 
 /*
   Tests linearization -A + -3*B + [-3, -2] op -B + [-4, -1]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where A in [0, 1] and B in [2, 3].
 */
 bool
 test03(){
@@ -356,31 +324,34 @@ test03(){
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
 
   Integer_Int_Interval a(-1);
+
   Integer_Int_Interval b(-3);
 
   Integer_Int_Interval inh_term(-2);
   inh_term.join_assign(-3);
 
-  Integer_Int_Interval a1(-3);
-  a1.join_assign(-5);
   Integer_Int_Interval b1(-1);
+
   Integer_Int_Interval inh_term1(-1);
   inh_term1.join_assign(-4);
+
   Approximable_Reference<C_Expr> var0(Integer_Type,
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
+
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
+
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var0, &coeff_a);
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -404,19 +375,21 @@ test03(){
 				 &expr1, &expr2);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &expr1, &expr2);
+
   Integer_Linear_Form result_and, result_or, result_xor, result_lshift,
     result_rshift;
+
   Variable A(0);
   Variable B(1);
-  Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
+
+  Integer_Linear_Form known_result_and = A;
   known_result_and *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
-  known_result_and += lb;
+  known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  lb1 *= b1;
-  lb1 += inh_term1;
+
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  lf *= b1;
+  lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -426,46 +399,44 @@ test03(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= lb1;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= lb1;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= lb1;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  tmp1 *= b1;
+  inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
        << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << lb1;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
        << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> lb1;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -483,7 +454,7 @@ test03(){
 
 /*
   Tests linearization -A + -3*B + [-3, -2] op B + [1, 4]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2,3].
 */
 bool
 test04(){
@@ -491,31 +462,34 @@ test04(){
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
 
   Integer_Int_Interval a(-1);
+
   Integer_Int_Interval b(-3);
 
   Integer_Int_Interval inh_term(-2);
   inh_term.join_assign(-3);
 
-  Integer_Int_Interval a1(-3);
-  a1.join_assign(-5);
   Integer_Int_Interval b1(1);
+
   Integer_Int_Interval inh_term1(1);
   inh_term1.join_assign(4);
+
   Approximable_Reference<C_Expr> var0(Integer_Type,
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
+
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
+
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var0, &coeff_a);
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -539,19 +513,21 @@ test04(){
 				 &expr1, &expr2);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &expr1, &expr2);
+
   Integer_Linear_Form result_and ,result_or, result_xor, result_lshift,
     result_rshift;
+
   Variable A(0);
   Variable B(1);
-  Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
+
+  Integer_Linear_Form known_result_and = A;
   known_result_and *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
-  known_result_and += lb;
+  known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  lb1 *= b1;
-  lb1 += inh_term1;
+
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  lf *= b1;
+  lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -561,47 +537,43 @@ test04(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= lb1;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= lb1;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
-
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= lb1;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
        << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << lb1;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
        << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> lb1;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -619,7 +591,7 @@ test04(){
 
 /*
   Tests linearization A + 3*B + [2, 3] op -B + [-4, -1]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2,3].
 */
 bool
 test05(){
@@ -627,19 +599,20 @@ test05(){
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
 
   Integer_Int_Interval a(1);
+
   Integer_Int_Interval b(3);
 
   Integer_Int_Interval inh_term(2);
   inh_term.join_assign(3);
 
-  Integer_Int_Interval a1(-3);
-  a1.join_assign(-5);
   Integer_Int_Interval b1(-1);
+
   Integer_Int_Interval inh_term1(-1);
   inh_term1.join_assign(-4);
 
@@ -647,12 +620,13 @@ test05(){
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
+
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
+
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var0, &coeff_a);
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -676,19 +650,21 @@ test05(){
 				 &expr1, &expr2);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &expr1, &expr2);
+
   Integer_Linear_Form result_and, result_or, result_xor, result_lshift,
     result_rshift;
+
   Variable A(0);
   Variable B(1);
-  Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
+
+  Integer_Linear_Form known_result_and = A;
   known_result_and *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
-  known_result_and += lb;
+  known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  lb1 *= b1;
-  lb1 += inh_term1;
+
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  lf *= b1;
+  lf += inh_term1;
 
   Integer_Linear_Form  known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -698,46 +674,44 @@ test05(){
   known_result_rshift = known_result_and;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= lb1;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= lb1;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= lb1;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  b1 *= tmp1;
+  inh_term1 += b1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
        << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << lb1;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
        << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> lb1;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -755,11 +729,13 @@ test05(){
 
 /*
   Tests linearization A op A with op content {|, & , ^ , << , >> }
+  where A in [0,1].
 */
 bool
 test06(){
   Integer_Int_Interval tmp(0);
-  tmp.join_assign(1);
+  tmp.join_assign(5);
+  nout << "A in " << tmp << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(1));
   oracle.int_store.set_interval(Variable(0), tmp);
 
@@ -776,63 +752,58 @@ test06(){
 				 &var0, &var0);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &var0, &var0);
+
   Integer_Linear_Form result_and, result_or, result_xor, result_lshift,
     result_rshift;
 
   Variable A(0);
-  Variable B(1);
-  Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
+  Integer_Linear_Form known_result_and = A;
 
-  Integer_Linear_Form known_result = known_result_and;
+  Integer_Linear_Form lf = A;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
-  known_result_or = known_result;
-  known_result_xor = known_result;
-  known_result_lshift = known_result;
-  known_result_rshift = known_result;
+  known_result_or = A;
+  known_result_xor = A;
+  known_result_lshift = A;
+  known_result_rshift = A;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= known_result;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= known_result;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= known_result;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << known_result << " ***"
+  nout << "*** " << known_result_lshift << " << " << lf << " ***"
        << endl << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << known_result;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << tmp;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***"
        << endl << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> known_result;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> tmp;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -850,19 +821,24 @@ test06(){
 
 /*
   Tests linearization A + 3 op B with op content {|, & , ^ , << , >> }
+  where A in [1,1] and B in [5,5].
 */
 bool
 test07(){
   Integer_Int_Interval tmp(1);
   Integer_Int_Interval tmp1(5);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
+
   Approximable_Reference<C_Expr> var0(Integer_Type,
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
+
   Int_Constant<C_Expr> coeff(Integer_Type, Integer_Int_Interval(3));
+
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				&var0, &coeff);
   Binary_Operator<C_Expr> bor(Integer_Type, Binary_Operator<C_Expr>::BOR,
@@ -875,59 +851,57 @@ test07(){
 				 &expr1, &var1);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &expr1, &var1);
+
   Integer_Linear_Form result_and, result_or, result_xor, result_lshift,
     result_rshift;
   Variable A(0);
   Variable B(1);
-  Integer_Linear_Form known_result_or = Integer_Linear_Form(A);
+
+  Integer_Linear_Form known_result_or = A;
   known_result_or += Integer_Int_Interval(3);
+
   Integer_Linear_Form known_result_and = known_result_or;
   Integer_Linear_Form known_result_xor = known_result_or;
   Integer_Linear_Form known_result_lshift = known_result_or;
   Integer_Linear_Form known_result_rshift = known_result_or;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= lb;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= lb;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
-       << result_and << endl;
-  known_result_xor ^= lb;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+       << result_xor << endl;
+  known_result_xor ^= lf;
+  nout << endl;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb << " ***" << endl
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
        << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << lb;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << tmp1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb << " ***" << endl
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
        << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> lb;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> tmp1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -945,60 +919,42 @@ test07(){
 
 /*
   Tests linearization -3*B + [-2147483641, -2] op -B + [-9, -1]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where B in [2, 3].
 */
 bool
 test08(){
-  Integer_Int_Interval tmp(0);
-  tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
-  oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
-
-  Integer_Int_Interval a(-2147483638);
-  a.join_assign(-7);
 
   Integer_Int_Interval b(-3);
 
   Integer_Int_Interval inh_term(-2);
-  inh_term.join_assign(-3);
-
-  Integer_Int_Interval a1(-3);
-  a1.join_assign(-5);
+  inh_term.join_assign(-2147483641);
 
   Integer_Int_Interval b1(-1);
 
   Integer_Int_Interval inh_term1(-1);
-  inh_term1.join_assign(-4);
+  inh_term1.join_assign(-9);
 
-  Approximable_Reference<C_Expr> var0(Integer_Type,
-				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
-  Int_Constant<C_Expr> coeff_a(Integer_Type, a);
+
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
-  Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
-				 &var0, &coeff_a);
+
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var1, &coeff_b);
-  Binary_Operator<C_Expr> sum_a_b(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				  &term_a, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term,&sum_a_b);
-  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
-				  &var0, &coeff_a1);
+				&coeff_inh_term,&term_b);
   Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				  &var1, &coeff_b1);
-  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				    &term_a1, &term_b1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &sum_a1_b1);
+				&coeff_inh_term1, &term_b1);
 
   Binary_Operator<C_Expr> bor(Integer_Type, Binary_Operator<C_Expr>::BOR,
                               &expr1, &expr2);
@@ -1010,23 +966,20 @@ test08(){
 				 &expr1, &expr2);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &expr1, &expr2);
+
   Integer_Linear_Form result_or, result_and, result_xor, result_lshift,
     result_rshift;
-  Variable A(0);
+
   Variable B(1);
-  Integer_Linear_Form known_result_or = Integer_Linear_Form(tmp);
-  known_result_or *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
-  known_result_or += lb;
+
+  Integer_Linear_Form known_result_or = B;
+  known_result_or *= b;
   known_result_or += inh_term;
 
-  Integer_Linear_Form known_result = Integer_Linear_Form(tmp);
-  known_result *= a1;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  lb1 *= b1;
-  known_result += lb1;
-  known_result += inh_term1;
+  Integer_Linear_Form lf = B;
+  lf *= b1;
+  lf += inh_term1;
+
   Integer_Linear_Form known_result_and, known_result_xor, known_result_lshift,
     known_result_rshift;
   known_result_and = known_result_or;
@@ -1035,45 +988,44 @@ test08(){
   known_result_rshift = known_result_or;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= known_result;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << known_result << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= known_result;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
+
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << known_result << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= known_result;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  tmp1 *= b1;
+  inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << known_result << " ***"
+  nout << "*** " << known_result_lshift << " << " << lf << " ***"
        << endl << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << known_result;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << known_result << " ***"
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***"
        << endl << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> known_result;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -1091,7 +1043,7 @@ test08(){
 
 /*
   Tests linearization A + 12*B + [2, 3] op -2147483638*B + [-4, -1]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where A in [0, 1] and B in [2, 3].
 */
 bool
 test09(){
@@ -1099,11 +1051,13 @@ test09(){
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
 
   Integer_Int_Interval a(1);
+
   Integer_Int_Interval b(12);
 
   Integer_Int_Interval num(-4);
@@ -1113,13 +1067,17 @@ test09(){
 
   Integer_Int_Interval a1(-3);
   a1.join_assign(-2147483638);
+
   Integer_Int_Interval b1(-2147483638);
+
   Integer_Int_Interval inh_term1(-1);
   inh_term1.join_assign(-4);
+
   Approximable_Reference<C_Expr> var0(Integer_Type,
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
+
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeffnum(Integer_Type, num);
@@ -1127,6 +1085,7 @@ test09(){
   Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
+
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				 &var0, &coeff_a);
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -1157,16 +1116,16 @@ test09(){
     result_rshift;
   Variable A(0);
   Variable B(1);
+
   Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
   known_result_and *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
   num /= den;
-  known_result_and += lb;
+  known_result_and += b * Integer_Linear_Form(B);
   known_result_and -= num;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  lb1 *= b1;
-  lb1 += inh_term1;
+
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  lf *= b1;
+  lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -1175,47 +1134,44 @@ test09(){
   known_result_lshift = known_result_and;
   known_result_rshift = known_result_and;
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= lb1;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= lb1;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
-
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= lb1;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  b1 *= tmp1;
+  inh_term1 += b1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
        << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << lb1;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl ;//<< result_lshift << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
        << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> lb1;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl ;// << result_rshift << endl;
 
   bool ok =
     (result_or == known_result_or)
@@ -1233,7 +1189,7 @@ test09(){
 
 /*
   Tests linearization -A + -12*B + [-3, -2] op 2147483638*B + [1, 4]
-  with op content {|, & , ^ , << , >> }
+  with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2,3]
 */
 bool
 test10(){
@@ -1241,11 +1197,13 @@ test10(){
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
+  nout << "A in " << tmp << " and B in " << tmp1 << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
 
   Integer_Int_Interval a(-1);
+
   Integer_Int_Interval b(-12);
 
   Integer_Int_Interval num(4);
@@ -1255,13 +1213,17 @@ test10(){
 
   Integer_Int_Interval a1(3);
   a1.join_assign(2147483638);
+
   Integer_Int_Interval b1(2147483638);
+
   Integer_Int_Interval inh_term1(1);
   inh_term1.join_assign(4);
+
   Approximable_Reference<C_Expr> var0(Integer_Type,
 				      Int_Interval(mpz_class(0)), 0);
   Approximable_Reference<C_Expr> var1(Integer_Type,
 				      Int_Interval(mpz_class(0)), 1);
+
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeffnum(Integer_Type, num);
@@ -1269,6 +1231,7 @@ test10(){
   Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
+
   Binary_Operator<C_Expr> mul1(Integer_Type, Binary_Operator<C_Expr>::MUL,
 			       &var0, &coeff_a);
   Binary_Operator<C_Expr> mul2(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -1295,20 +1258,22 @@ test10(){
 				 &sub4, &sum8);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
 				 &sub4, &sum8);
+
   Integer_Linear_Form result_and, result_or, result_xor, result_lshift,
     result_rshift;
+
   Variable A(0);
   Variable B(1);
+
   Integer_Linear_Form known_result_and = Integer_Linear_Form(A);
   known_result_and *= a;
-  Integer_Linear_Form lb = Integer_Linear_Form(B);
-  lb *= b;
   num /= den;
-  known_result_and += lb;
+  known_result_and += b * Integer_Linear_Form(B);
   known_result_and -= num;
-  Integer_Linear_Form lb1 = Integer_Linear_Form(B);
-  lb1 *= b1;
-  lb1 += inh_term1;
+
+  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  lf *= b1;
+  lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
     known_result_rshift;
@@ -1316,48 +1281,46 @@ test10(){
   known_result_xor = known_result_and;
   known_result_lshift = known_result_and;
   known_result_rshift = known_result_and;
+
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lb1 << " ***" << endl
+  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
-  known_result_and &= lb1;
-  nout << "*** known_result_and ***" << endl
-       << known_result_and << endl << endl;
+  known_result_and &= lf;
+  nout << endl;
 
   linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lb1 << " ***" << endl
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
        << "*** result_or *** " << endl
        << result_or << endl;
-  known_result_or |= lb1;
-  nout << "*** known_result_or ***" << endl
-       << known_result_or << endl << endl;
-
+  known_result_or |= lf;
+  nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lb1 << " ***" << endl
+  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
        << "*** result_xor *** " << endl
        << result_xor << endl;
-  known_result_xor ^= lb1;
-  nout << "*** known_result_xor ***" << endl
-       << known_result_xor << endl << endl;
+  known_result_xor ^= lf;
+  nout << endl;
+
+  b1 *= tmp1;
+  inh_term1 += b1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lb1 << " ***" << endl
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
        << "*** result_lshift *** " << endl
        << result_lshift << endl;
-  known_result_lshift << lb1;
-  nout << "*** known_result_lshift ***" << endl
-       << known_result_lshift << endl << endl;
+  known_result_lshift << inh_term1;
+  nout << endl;
 
   linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lb1 << " ***" << endl
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
        << "*** result_rshift *** " << endl
        << result_rshift << endl;
-  known_result_rshift >> lb1;
-  nout << "*** known_result_rshift ***" << endl
-       << known_result_rshift << endl << endl;
+  known_result_rshift >> inh_term1;
+  nout << endl;
 
   bool ok =
     (result_or == known_result_or)
