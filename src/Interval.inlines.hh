@@ -186,8 +186,10 @@ operator!=(const T1& x, const T2& y) {
 
 template <typename T1, typename T2>
 inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
-                           && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
-                           && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
+                           && (Is_Singleton<T2>::value
+			       || Is_Interval<T2>::value)
+                           && (Is_Interval<T1>::value
+			       || Is_Interval<T2>::value)),
                           bool>::type
 operator>=(const T1& x, const T2& y) {
   PPL_ASSERT(f_OK(x));
@@ -196,8 +198,30 @@ operator>=(const T1& x, const T2& y) {
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
-  return ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y)) ||
-         ge(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y)) ;
+  return
+    ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y))
+    &&
+    ge(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y)) ;
+}
+
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
+                           && (Is_Singleton<T2>::value
+			       || Is_Interval<T2>::value)
+                           && (Is_Interval<T1>::value
+			       || Is_Interval<T2>::value)),
+                          bool>::type
+operator<=(const T1& x, const T2& y) {
+  PPL_ASSERT(f_OK(x));
+  PPL_ASSERT(f_OK(y));
+  if (check_empty_arg(x))
+    return check_empty_arg(y);
+  else if (check_empty_arg(y))
+    return false;
+  return
+    le(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y))
+    &&
+    le(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y)) ;
 }
 
 template <typename Boundary, typename Info>
@@ -993,13 +1017,13 @@ Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
       Same sign.
       0 <= xl <= xu, 0 <= yl <= yu
       xl <= xu < 0, yl <= yu < 0
-      0 <= XOR(x,y) <= |x+y|
+      0 <= XOR(x,y) <= |x + y|
     */
     if (xls >= 0) {
-        Boundary_NS::assign(UPPER, upperx, infox,
-                            UPPER, f_upper(x), f_info(x));
-        Boundary_NS::assign(UPPER, uppery, infoy,
-                            UPPER, f_upper(y), f_info(y));
+      Boundary_NS::assign(UPPER, upperx, infox,
+			  UPPER, f_upper(x), f_info(x));
+      Boundary_NS::assign(UPPER, uppery, infoy,
+			  UPPER, f_upper(y), f_info(y));
 
       Boundary_NS::assign(LOWER, lower(), to_info,
                           LOWER, f_lower(Constant<0>::value),
@@ -1026,9 +1050,9 @@ Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
         upper() = std::numeric_limits<To_Boundary>::max();
       else {
         Boundary_NS::neg_assign(UPPER, upperx, infox,
-                                LOWER, f_lower(x), f_info(x));
+                                UPPER, f_upper(x), f_info(x));
         Boundary_NS::neg_assign(UPPER, uppery, infoy,
-                                LOWER, f_lower(y), f_info(y));
+                                UPPER, f_upper(y), f_info(y));
         Boundary_NS::add_assign(UPPER, upper(), to_info,
                                 UPPER, upperx, infox,
                                 UPPER, uppery, infoy);
