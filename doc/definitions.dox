@@ -2821,7 +2821,7 @@ The interval bitwise operators are defined as follow:
   \begin{cases}
     \bigl[0, \min(b, b')\bigr],
       & \text{if $a \geq 0$ and $a' \geq 0$}; \\
-    \bigl[0, \max\(b, b')\bigr],
+    \bigl[0, \max(b, b')\bigr],
       & \text{if $a \geq 0$ and $b' < 0$,
               or $b < 0$ and $a' \geq 0$}; \\
     \bigl[a + a', \min(b,b')\bigr],
