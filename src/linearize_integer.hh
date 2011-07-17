@@ -571,7 +571,7 @@ div_linearize_int
   sign, then \f$x \mathbin{\mid} y\f$ is defined as follows:
 
   \f[
-  \min \{ x, y \} 
+  \min \{ x, y \}
   \leq
   x \mathbin{\mid} y
   \leq
@@ -643,7 +643,7 @@ div_linearize_int
   zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
 
   \f[
-  \max \{ x, y \} 
+  \max \{ x, y \}
   \leq
   x \mathbin{\mid} y
   \leq
@@ -782,7 +782,7 @@ or_linearize_int
   \leq
   x \mathbin{\&} y
   \leq
-  \min \{ x, y \} 
+  \min \{ x, y \}
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -854,7 +854,7 @@ or_linearize_int
   \leq
   x \mathbin{\&} y
   \leq
-  \max \{ x, y \} 
+  \max \{ x, y \}
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -926,7 +926,7 @@ or_linearize_int
   \leq
   x \mathbin{\&} y
   \leq
-  \min \{ x, y \} 
+  \min \{ x, y \}
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1145,7 +1145,7 @@ and_linearize_int
   discordant signs, then \f$x ^{\land} y\f$ is defined as follows:
 
   \f[
-  -(|x| + |y|) 
+  -(|x| + |y|)
   \leq
   x^{\land} y
   \leq
@@ -1323,7 +1323,8 @@ xor_linearize_int
   \leq
   k
   \leq
-  \bigl(i \amifp 2^{i'} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \f]
 
   \f[
@@ -1331,7 +1332,8 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \f]
 
   then
@@ -1341,7 +1343,8 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \amifp 2^{i'} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \f]
 
   \f[
@@ -1349,7 +1352,8 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1397,7 +1401,8 @@ xor_linearize_int
   \leq
   k
   \leq
-  \bigl(i \adivifp 2^{|i'|} \bigr)
+  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   \f[
@@ -1405,7 +1410,8 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   then
@@ -1415,7 +1421,8 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \adivifp 2^{|i'|} \bigr)
+  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   \f[
@@ -1423,7 +1430,8 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1467,7 +1475,8 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{i'} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \leq
   k
   \leq
@@ -1475,7 +1484,8 @@ xor_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \leq
   k_{v}
   \leq
@@ -1487,7 +1497,8 @@ xor_linearize_int
   \f[
   k
   \approx
-  \bigl(i \amifp 2^{i'} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \bowtie
   0
   \f]
@@ -1495,7 +1506,8 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \amifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \bowtie
   0
   \f]
@@ -1540,7 +1552,8 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \adivifp 2^{|i'|} \bigr)
+  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \leq
   k
   \leq
@@ -1548,7 +1561,8 @@ xor_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \leq
   k_{v}
   \leq
@@ -1560,7 +1574,8 @@ xor_linearize_int
   \f[
   k
   \approx
-  \bigl(i \adivifp 2^{|i'|} \bigr)
+  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \bowtie
   0
   \f]
@@ -1568,7 +1583,8 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \adivifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \bowtie
   0
   \f]
@@ -1582,10 +1598,13 @@ xor_linearize_int
   \f[
   \linexprenv{e_{1} \leftslice e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
-  \blshiftlf
-  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \leftslice \iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\rho^{\#}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
+
+  where \f$\iota(l)\rho^{\#}\f$ is the intervalization
+  of \f$l\f$ (see method <CODE>intervalize</CODE> of class Linear_Form).
+
 */
 template <typename Target, typename Integer_Int_Interval>
 static bool
@@ -1606,7 +1625,12 @@ lshift_linearize_int
 		     linearized_second_operand))
     return false;
 
-  result << linearized_second_operand;
+  Integer_Int_Interval intervalized_second_operand;
+  if (!linearized_second_operand.intervalize(oracle,
+					     intervalized_second_operand))
+    return false;
+
+  result << intervalized_second_operand;
 
   return true;
 }
@@ -1681,7 +1705,8 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \bigl(i \adivifp 2^{i'}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)}\bigr)
   \f]
 
   \f[
@@ -1689,7 +1714,8 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \f]
 
   then
@@ -1699,7 +1725,8 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \adivifp 2^{i'}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)}\bigr)
   \f]
 
   \f[
@@ -1707,7 +1734,8 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1755,7 +1783,8 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \bigl(i \amifp 2^{|i'|} \bigr)
+  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   \f[
@@ -1763,7 +1792,8 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   then
@@ -1773,7 +1803,8 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \amifp 2^{|i'|} \bigr)
+  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   \f[
@@ -1781,7 +1812,8 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1825,7 +1857,8 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \adivifp 2^{i'}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \leq
   k
   \leq
@@ -1833,7 +1866,8 @@ lshift_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \leq
   k_{v}
   \leq
@@ -1845,7 +1879,8 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \bigl(i \adivifp 2^{i'}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)}\bigr)
   \bowtie
   0
   \f]
@@ -1853,7 +1888,8 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \adivifp 2^{i'_v} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
   \bowtie
   0
   \f]
@@ -1898,7 +1934,8 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{|i'|} \bigr)
+  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \leq
   k
   \leq
@@ -1906,7 +1943,8 @@ lshift_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \leq
   k_{v}
   \leq
@@ -1918,7 +1956,8 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \bigl(i \amifp 2^{|i'|} \bigr)
+  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \bowtie
   0
   \f]
@@ -1926,7 +1965,8 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \amifp 2^{|i'_v|} \bigr)
+  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
   \bowtie
   0
   \f]
@@ -1940,10 +1980,11 @@ lshift_linearize_int
   \f[
   \linexprenv{e_{1} \rightslice e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
-  \brshiftlf
-  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \rightslice \iota\left(\linexprenv{e_{2}}
+  {\rho^{\#}}{\rho^{\#}_l}\right)\rho^{\#}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
+
+
 */
 template <typename Target, typename Integer_Int_Interval>
 static bool
@@ -1964,7 +2005,12 @@ rshift_linearize_int
 		     linearized_second_operand))
     return false;
 
-  result >> linearized_second_operand;
+  Integer_Int_Interval intervalized_second_operand;
+  if (!linearized_second_operand.intervalize(oracle,
+					     intervalized_second_operand))
+    return false;
+
+  result >> intervalized_second_operand;
 
   return true;
 }
