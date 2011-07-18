@@ -606,7 +606,9 @@ operator<<(Linear_Form<C>& f, const C& n) {
 
   dimension_type f_size = f.size();
 
-  if (f >= zero) {
+  if (n == zero)
+    return f = Linear_Form<C>(zero);
+  else  if (f >= zero) {
     if (n >= zero) {
       exp.assign((typename C::boundary_type)ldexp(1.0, n.lower()));
       exp.join_assign((typename C::boundary_type)ldexp(1.0, n.upper()));
@@ -682,7 +684,9 @@ operator>>(Linear_Form<C>& f, const C& n) {
 
   dimension_type f_size = f.size();
 
-  if (f >= zero) {
+  if (n == zero)
+    return f = Linear_Form<C>(zero);
+  else if (f >= zero) {
     if (n >= zero) {
       exp.assign((typename C::boundary_type)ldexp(1.0, n.lower()));
       exp.join_assign((typename C::boundary_type)ldexp(1.0, n.upper()));
