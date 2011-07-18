@@ -1323,8 +1323,9 @@ xor_linearize_int
   \leq
   k
   \leq
-  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
+
   \f]
 
   \f[
@@ -1332,8 +1333,8 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   then
@@ -1343,8 +1344,8 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   \f[
@@ -1352,8 +1353,8 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1401,8 +1402,11 @@ xor_linearize_int
   \leq
   k
   \leq
-  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   \f[
@@ -1410,8 +1414,11 @@ xor_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   then
@@ -1421,8 +1428,11 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   \f[
@@ -1430,8 +1440,11 @@ xor_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1475,8 +1488,8 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \leq
   k
   \leq
@@ -1484,8 +1497,8 @@ xor_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \leq
   k_{v}
   \leq
@@ -1497,8 +1510,8 @@ xor_linearize_int
   \f[
   k
   \approx
-  \bigl(i \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \bowtie
   0
   \f]
@@ -1506,8 +1519,8 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \bowtie
   0
   \f]
@@ -1552,8 +1565,11 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \leq
   k
   \leq
@@ -1561,8 +1577,11 @@ xor_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \leq
   k_{v}
   \leq
@@ -1574,8 +1593,11 @@ xor_linearize_int
   \f[
   k
   \approx
-  \bigl(i \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \bowtie
   0
   \f]
@@ -1583,8 +1605,11 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \adivifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \adivifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \bowtie
   0
   \f]
@@ -1705,8 +1730,8 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   \f[
@@ -1714,8 +1739,8 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   then
@@ -1725,8 +1750,8 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   \f[
@@ -1734,8 +1759,8 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1783,8 +1808,11 @@ lshift_linearize_int
   \leq
   k
   \leq
-  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   \f[
@@ -1792,8 +1820,11 @@ lshift_linearize_int
   \leq
   k_{v}
   \leq
-  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   then
@@ -1803,8 +1834,11 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   \f[
@@ -1812,8 +1846,11 @@ lshift_linearize_int
   \approx
   0
   \bowtie
-  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \f]
 
   If instead, let \f$x\f$ and \f$y\f$ be two integer constants with \f$x\f$
@@ -1857,8 +1894,8 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \leq
   k
   \leq
@@ -1866,8 +1903,8 @@ lshift_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \leq
   k_{v}
   \leq
@@ -1879,8 +1916,8 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \bigl(i \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)}\bigr)
+  \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \bowtie
   0
   \f]
@@ -1888,8 +1925,8 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)} \bigr)
+  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}} \bigr)
   \bowtie
   0
   \f]
@@ -1934,8 +1971,11 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \leq
   k
   \leq
@@ -1943,8 +1983,11 @@ lshift_linearize_int
   \f]
 
   \f[
-  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \leq
   k_{v}
   \leq
@@ -1956,8 +1999,11 @@ lshift_linearize_int
   \f[
   k
   \approx
-  \bigl(i \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \bowtie
   0
   \f]
@@ -1965,8 +2011,11 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  \bigl(i_{v} \amifp 2^{\left|\iota\left(\linexprenv{e_{2}}
-  {\rho^{\#}}{\rho^{\#}_l}\right)\right|} \bigr)
+  \bigl(i_{v}
+  \amifp
+  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
+  {\rho^{\#}}\right|}
+  \bigr)
   \bowtie
   0
   \f]
