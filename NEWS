@@ -16,6 +16,11 @@ NEWS for version 0.12  (release date to be decided)
 New and Changed Features
 ========================
 
+o  New configure options `--with-gmp=DIR', `--with-gmp-include=DIR' and
+   `--with-gmp-lib=DIR' supersede the (now removed) option
+   `--with-gmp-prefix'.  (The old option never really worked; hopefully
+   this is the last change in this area.)
+
 o  New configuration option `--disable-documentation'.  When specified
    no new documentation is built: only the documentation already present
    in the source tree is installed upon `make install'.
@@ -31,7 +36,7 @@ o  The implementations of the MIP and PIP solvers are based on a new
    show an improvement on the average case, that grows when the toughest
    tests in the benchmark suite are considered.
 
-o  When the --check option is used, the input data for demo ppl_lpsol
+o  When the `--check' option is used, the input data for demo ppl_lpsol
    is perturbed the same way as GLPK does, thereby allowing for a
    meaningful comparison of the results obtained.
 
@@ -225,8 +230,8 @@ o  When the PPL has been configured with
    procedure checks that the FPU can indeed be controlled and fails if
    that is not the case.
 
-o  New configure option --with-gmp-prefix supersedes the (now removed)
-   options --with-libgmp-prefix and --with-libgmpxx-prefix.
+o  New configure option `--with-gmp-prefix' supersedes the (now removed)
+   options `--with-libgmp-prefix' and `--with-libgmpxx-prefix'.
 
 o  New configuration option `--with-gmp-build=DIR' allows to use a
    non-installed build of GMP in DIR.
@@ -1431,9 +1436,9 @@ o  The type of output functions for the class Variable,
 
 o  Thanks to Bruno Haible, it is now possible to use versions of the
    GMP library installed into nonstandard places.  The new configure
-   options --with-libgmp-prefix[=DIR] and --with-libgmpxx-prefix[=DIR]
+   options `--with-libgmp-prefix[=DIR]' and `--with-libgmpxx-prefix[=DIR]'
    substitute the old (and not really working) options
-   --with-gmp-includes=DIR and --with-gmp-dir=DIR.
+   `--with-gmp-includes=DIR' and `--with-gmp-dir=DIR'.
 
 
 Bugfixes

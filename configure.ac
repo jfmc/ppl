@@ -777,8 +777,8 @@ then
 *** Please report this to ppl-devel@cs.unipr.it.])
 fi
 
-extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
-extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
+extra_includes="${extra_includes}${extra_includes:+ }${gmp_include_options}"
+extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_options}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])

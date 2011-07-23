@@ -23,41 +23,54 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 
 AC_DEFUN([AC_CHECK_GMP],
 [
-dnl Since libgmp and libgmpxx are usually installed in the same location,
-dnl let the prefixes default from each other.
-if test -n "$with_libgmpxx_prefix" && test -z "$with_libgmp_prefix"; then
-  with_libgmp_prefix="$with_libgmpxx_prefix"
-else
-  if test -n "$with_libgmp_prefix" && test -z "$with_libgmpxx_prefix"; then
-    with_libgmpxx_prefix="$with_libgmp_prefix"
-  fi
+AC_ARG_WITH(gmp,
+  AS_HELP_STRING([--with-gmp=DIR],
+		 [search for libgmp/libgmpxx in DIR/include and DIR/lib]))
+
+AC_ARG_WITH(gmp-include,
+  AS_HELP_STRING([--with-gmp-include=DIR],
+		 [search for libgmp/libgmpxx headers in DIR]))
+
+AC_ARG_WITH(gmp-lib,
+  AS_HELP_STRING([--with-gmp-lib=DIR],
+		 [search for libgmp/libgmpxx library objects in DIR]))
+
+if test -n "$with_gmp"
+then
+  gmp_include_options="-I$with_gmp/include"
+  gmp_library_options="-L$with_gmp/lib"
+fi
+
+if test -n "$with_gmp_include"
+then
+  gmp_include_options="-I$with_gmp_include"
+fi
+
+if test -n "$with_gmp_lib"
+then
+  gmp_library_options="-L$with_gmp_lib"
 fi
 
 AC_ARG_WITH(gmp-build,
   AS_HELP_STRING([--with-gmp-build=DIR],
                  [use a non-installed build of GMP in DIR]),
   gmp_build_dir=$with_gmp_build
-  if test -z "$with_libgmp_prefix"
+  if test -n "$with_gmp" \
+  || test -n "$with_gmp_include" || test -n "$with_gmp_lib"
   then
-    CPPFLAGS="$CPPFLAGS -I$gmp_build_dir -I$gmp_build_dir/tune"
-    LDFLAGS="$LDFLAGS -L$gmp_build_dir -L$gmp_build_dir/.libs"
-    LDFLAGS="$LDFLAGS -L$gmp_build_dir/tune"
+    gmp_include_options="-I$gmp_build_dir -I$gmp_build_dir/tune"
+    gmp_library_options="-L$gmp_build_dir -L$gmp_build_dir/.libs"
+    gmp_library_options="$gmp_library_options -L$gmp_build_dir/tune"
   else
-    AC_MSG_ERROR([cannot use --with-gmp-build and --with-gmp-prefix together])
+    AC_MSG_ERROR([cannot use --with-gmp-build and other --with-gmp* options together])
   fi)
 
-dnl Both libgmp and libbmpxx come from the gmp package.
-AC_LIB_FROMPACKAGE([gmp], [gmp])
-AC_LIB_FROMPACKAGE([gmpxx], [gmp])
+gmp_library_options="$gmp_library_options -lgmpxx -lgmp"
 
-dnl Check how to link with libgmp.
-AC_LIB_LINKFLAGS([gmp])
-
-dnl Check how to link with libgmpxx.
-AC_LIB_LINKFLAGS([gmpxx], [gmp])
-
+ac_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"
-LIBS="$LIBS $LIBGMPXX"
+LIBS="$LIBS $gmp_library_options"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
@@ -96,7 +109,7 @@ main() {
 
   if (header_version != library_version) {
     std::cerr
-      << "GMP header (gmp.h) and library (ligmp.*) version mismatch:\n"
+      << "GMP header (gmpxx.h) and library (ligmpxx.*) version mismatch:\n"
       << "header gives " << header_version << ";\n"
       << "library gives " << library_version << "." << std::endl;
     return 1;
@@ -105,7 +118,7 @@ main() {
   if (sizeof(mp_limb_t)*CHAR_BIT != BITS_PER_MP_LIMB
       || BITS_PER_MP_LIMB != mp_bits_per_limb) {
     std::cerr
-      << "GMP header (gmp.h) and library (ligmp.*) bits-per-limb mismatch:\n"
+      << "GMP header (gmpxx.h) and library (ligmpxx.*) bits-per-limb mismatch:\n"
       << "header gives " << BITS_PER_MP_LIMB << ";\n"
       << "library gives " << mp_bits_per_limb << ".\n"
       << "This probably means you are on a bi-arch system and\n"
@@ -198,7 +211,5 @@ fi
 
 AC_LANG_POP(C++)
 LIBS="$ac_save_LIBS"
-
-dnl We use libtool, therefore we take $LTLIBGMPXX, not $LIBGMPXX.
-gmp_library_option="$LTLIBGMPXX"
+CPPFLAGS="$ac_save_CPPFLAGS"
 ])
