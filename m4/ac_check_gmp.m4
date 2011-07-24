@@ -38,7 +38,8 @@ AC_ARG_WITH(gmp-lib,
 if test -n "$with_gmp"
 then
   gmp_include_options="-I$with_gmp/include"
-  gmp_library_options="-L$with_gmp/lib"
+  gmp_library_paths="$with_gmp/lib"
+  gmp_library_options="-L$gmp_library_paths"
 fi
 
 if test -n "$with_gmp_include"
@@ -48,7 +49,8 @@ fi
 
 if test -n "$with_gmp_lib"
 then
-  gmp_library_options="-L$with_gmp_lib"
+  gmp_library_paths="$with_gmp_lib/lib"
+  gmp_library_options="-L$gmp_library_paths"
 fi
 
 AC_ARG_WITH(gmp-build,
@@ -59,6 +61,7 @@ AC_ARG_WITH(gmp-build,
   || test -n "$with_gmp_include" || test -n "$with_gmp_lib"
   then
     gmp_include_options="-I$gmp_build_dir -I$gmp_build_dir/tune"
+    gmp_library_paths="$gmp_build_dir:$gmp_build_dir/.libs:$gmp_build_dir/tune"
     gmp_library_options="-L$gmp_build_dir -L$gmp_build_dir/.libs"
     gmp_library_options="$gmp_library_options -L$gmp_build_dir/tune"
   else
@@ -71,6 +74,9 @@ ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"
 LIBS="$LIBS $gmp_library_options"
+eval ac_save_shared_library_path_env_var="\$$shared_library_path_env_var"
+eval $shared_library_path_env_var=$gmp_library_paths
+
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
@@ -210,6 +216,7 @@ AC_DEFINE_UNQUOTED(PPL_GMP_SUPPORTS_EXCEPTIONS, $value,
 fi
 
 AC_LANG_POP(C++)
+eval $shared_library_path_env_var=$ac_save_shared_library_path_env_var
 LIBS="$ac_save_LIBS"
 CPPFLAGS="$ac_save_CPPFLAGS"
 ])

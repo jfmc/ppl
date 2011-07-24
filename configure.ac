@@ -501,23 +501,33 @@ case "${host_os}" in
 cygwin*)
   cygwin=yes
   no_undefined=yes
+  shared_library_path_env_var=PATH
   ;;
 darwin*)
   darwin=yes
+  shared_library_path_env_var=DYLD_LIBRARY_PATH
+  ;;
+hpux*)
+  hpux=yes
+  shared_library_path_env_var=SHLIB_PATH
   ;;
 mingw*)
   mingw=yes
   no_undefined=yes
+  shared_library_path_env_var=PATH
   ;;
 solaris*)
   solaris=yes
+  shared_library_path_env_var=LD_LIBRARY_PATH
   ;;
 *)
+  shared_library_path_env_var=LD_LIBRARY_PATH
   ;;
 esac
 
 AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
 AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_HPUX, test x$hpux = xyes)
 AM_CONDITIONAL(HOST_OS_MINGW, test x$mingw = xyes)
 AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
 
