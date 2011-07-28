@@ -30,6 +30,10 @@ AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether we can limit memory in C++ using setrlimit()])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#if !HAVE_DECL_SETRLIMIT
+# error "cannot limit memory without setrlimit()"
+#endif
+
 #include <stdexcept>
 
 #ifdef HAVE_SYS_TYPES_H

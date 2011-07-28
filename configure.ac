@@ -1491,7 +1491,7 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 #endif
                ])
 
-AC_CHECK_DECLS([getrusage],
+AC_CHECK_DECLS([getrusage, setrlimit],
                ,
                ,
                [
@@ -1502,6 +1502,7 @@ AC_CHECK_DECLS([getrusage],
 # include <sys/resource.h>
 #endif
 ])
+
 AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -1510,8 +1511,7 @@ AC_CHECK_TYPES([siginfo_t], [], [], [[
 #include <signal.h>
 ]])
 
-# Check whether the IEEE inexact flag is supported and available to
-# C++ programs.
+# Check whether we can limit memory in C and C++ using setrlimit().
 AC_CXX_SUPPORTS_LIMITING_MEMORY
 
 # Checks for library functions.

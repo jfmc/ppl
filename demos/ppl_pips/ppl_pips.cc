@@ -622,7 +622,7 @@ warning(const char* format, ...) {
   va_end(ap);
 }
 
-#if PPL_HAVE_DECL_RLIMIT_AS
+#if PPL_CXX_SUPPORTS_LIMITING_MEMORY && PPL_HAVE_DECL_RLIMIT_AS
 
 void
 limit_virtual_memory(const unsigned long bytes) {

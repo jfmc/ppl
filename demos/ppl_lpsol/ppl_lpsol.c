@@ -96,6 +96,7 @@ static const char* ppl_source_version = PPL_VERSION;
 #endif
 
 #if defined(PPL_HAVE_SYS_RESOURCE_H) \
+  && PPL_CXX_SUPPORTS_LIMITING_MEMORY \
   && (defined(SA_ONESHOT) || defined(SA_RESETHAND))
 # define PPL_LPSOL_SUPPORTS_LIMIT_ON_CPU_TIME
 #endif
@@ -524,7 +525,7 @@ set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
 
 #endif /* defined(PPL_LPSOL_SUPPORTS_LIMIT_ON_CPU_TIME) */
 
-#if PPL_HAVE_DECL_RLIMIT_AS
+#if PPL_CXX_SUPPORTS_LIMITING_MEMORY && PPL_HAVE_DECL_RLIMIT_AS
 
 void
 limit_virtual_memory(unsigned long bytes) {
