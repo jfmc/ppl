@@ -603,7 +603,7 @@ private:
       std::swap(i_vars, lp.i_variables);
     }
   };
-  friend class RAII_Temporary_Real_Relaxation;
+  friend struct RAII_Temporary_Real_Relaxation;
 
   //! A tag type to distinguish normal vs. inheriting copy constructor.
   struct Inherit_Constraints {};
