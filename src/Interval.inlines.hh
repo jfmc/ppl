@@ -518,7 +518,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-				      LOWER, f_lower(x), SCALAR_INFO, !is_open(LOWER, f_lower(x), f_info(x)));
+				      LOWER, f_lower(x), SCALAR_INFO,
+                                      !is_open(LOWER, f_lower(x), f_info(x)));
+      used(ru);
       normalize();
       return I_ANY;
     }
@@ -529,6 +531,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
 				      LOWER, f_lower(x), SCALAR_INFO);
+      used(ru);
       normalize();
       return I_ANY;
     }
@@ -538,7 +541,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-				      UPPER, f_upper(x), SCALAR_INFO, !is_open(UPPER, f_upper(x), f_info(x)));
+				      UPPER, f_upper(x), SCALAR_INFO,
+                                      !is_open(UPPER, f_upper(x), f_info(x)));
+      used(rl);
       normalize();
       return I_ANY;
     }
@@ -549,6 +554,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
 				      UPPER, f_upper(x), SCALAR_INFO);
+      used(rl);
       normalize();
       return I_ANY;
     }

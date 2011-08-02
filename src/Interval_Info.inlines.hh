@@ -35,12 +35,12 @@ Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>&) {
 
 template <typename Policy>
 inline void
-Interval_Info_Null<Policy>::ascii_dump(std::ostream& s) const {
+Interval_Info_Null<Policy>::ascii_dump(std::ostream&) const {
 }
 
 template <typename Policy>
 inline bool
-Interval_Info_Null<Policy>::ascii_load(std::istream& s) {
+Interval_Info_Null<Policy>::ascii_load(std::istream&) {
   return true;
 }
 

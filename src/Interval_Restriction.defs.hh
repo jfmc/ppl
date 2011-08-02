@@ -618,6 +618,9 @@ inline bool
 diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
 		 const From1& x, const From2& y) {
   // FIXME: to be written
+  used(to);
+  used(x);
+  used(y);
   return true;
 }
 
