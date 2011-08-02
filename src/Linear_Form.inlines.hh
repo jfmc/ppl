@@ -200,7 +200,7 @@ Linear_Form<C>::ascii_dump(std::ostream& s) const {
   const char separator = ' ';
   dimension_type space = space_dimension();
   s << space << "\n";
-  for (int i = 0; i <= space; ++i)
+  for (dimension_type i = 0; i <= space; ++i)
     s << vec[i] << separator;
   s << "\n";
 }
@@ -214,7 +214,7 @@ Linear_Form<C>::ascii_load(std::istream& s) {
     return false;
 
   vec.resize(new_dim + 1, zero);
-  for (int i = 0; i <= new_dim; ++i) {
+  for (dimension_type i = 0; i <= new_dim; ++i) {
     if (!(s >> vec[i]))
       return false;
   }
