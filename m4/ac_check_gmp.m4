@@ -75,7 +75,7 @@ CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"
 LIBS="$LIBS $gmp_library_options"
 eval ac_save_shared_library_path_env_var="\$$shared_library_path_env_var"
-eval $shared_library_path_env_var="$gmp_library_paths"
+eval $shared_library_path_env_var=\"$gmp_library_paths\"
 export $shared_library_path_env_var
 
 AC_LANG_PUSH(C++)
