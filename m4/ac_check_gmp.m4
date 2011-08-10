@@ -217,7 +217,7 @@ AC_DEFINE_UNQUOTED(PPL_GMP_SUPPORTS_EXCEPTIONS, $value,
 fi
 
 AC_LANG_POP(C++)
-eval $shared_library_path_env_var="$ac_save_shared_library_path_env_var"
+eval $shared_library_path_env_var=\"$ac_save_shared_library_path_env_var\"
 LIBS="$ac_save_LIBS"
 CPPFLAGS="$ac_save_CPPFLAGS"
 ])
