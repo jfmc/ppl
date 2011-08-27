@@ -57,6 +57,7 @@ namespace Parma_Polyhedra_Library {
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 add_linearize_int
@@ -142,6 +143,7 @@ add_linearize_int
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 sub_linearize_int
@@ -258,6 +260,7 @@ sub_linearize_int
   actual implementation utilizes an heuristics for choosing which of the two
   operands must be intervalized in order to obtain the most precise result.
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 mul_linearize_int
@@ -418,6 +421,7 @@ mul_linearize_int
   \right)\rho^{\#}}{\rho^{\#}}{\rho^{\#}_l},
   \f]
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 div_linearize_int
@@ -724,6 +728,7 @@ div_linearize_int
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 or_linearize_int
@@ -741,6 +746,9 @@ or_linearize_int
   Integer_Linear_Form linearized_second_operand;
   if (!linearize_int(*(bop_expr.right_hand_side()), oracle, lf_store,
 		     linearized_second_operand))
+    return false;
+
+  if (incomplete(result,linearized_second_operand))
     return false;
 
   result |= linearized_second_operand;
@@ -1017,6 +1025,7 @@ or_linearize_int
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 and_linearize_int
@@ -1036,6 +1045,9 @@ and_linearize_int
   Integer_Linear_Form linearized_second_operand;
   if (!linearize_int(*(bop_expr.right_hand_side()), oracle, lf_store,
 		     linearized_second_operand))
+    return false;
+
+  if (incomplete(result,linearized_second_operand))
     return false;
 
   result &= linearized_second_operand;
@@ -1228,6 +1240,7 @@ and_linearize_int
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 xor_linearize_int
@@ -1246,6 +1259,9 @@ xor_linearize_int
   Integer_Linear_Form linearized_second_operand;
   if (!linearize_int(*(bop_expr.right_hand_side()), oracle, lf_store,
 		     linearized_second_operand))
+    return false;
+
+  if (incomplete(result,linearized_second_operand))
     return false;
 
   result ^= linearized_second_operand;
@@ -1283,10 +1299,8 @@ xor_linearize_int
   or equal zero, then \f$x \ll y\f$ is defined as follows:
 
   \f[
-  0
-  \leq
   x \ll y
-  \leq
+  \approx
   (x \times 2^y)
   \f]
 
@@ -1306,10 +1320,8 @@ xor_linearize_int
   where
 
   \f[
-  \leq
-  0
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
@@ -1319,40 +1331,16 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  0
-  \leq
   k
-  \leq
+  \approx
   \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
 
   \f]
 
   \f[
-  0
-  \leq
-  k_{v}
-  \leq
-  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \f]
-
-  then
-
-  \f[
-  k
-  \approx
-  0
-  \bowtie
-  \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \f]
-
-  \f[
   k_{v}
   \approx
-  0
-  \bowtie
   \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
   \f]
@@ -1362,10 +1350,8 @@ xor_linearize_int
   then \f$x \ll y\f$ is defined as follows:
 
   \f[
-  0
-  \leq
   x \ll y
-  \leq
+  \approx
   (x \slash 2^y)
   \f]
 
@@ -1385,10 +1371,8 @@ xor_linearize_int
   where
 
   \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
@@ -1398,36 +1382,8 @@ xor_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  0
-  \leq
-  k
-  \leq
-  \bigl(i
-  \adivifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \f]
-
-  \f[
-  0
-  \leq
-  k_{v}
-  \leq
-  \bigl(i_{v}
-  \adivifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \f]
-
-  then
-
-  \f[
   k
   \approx
-  0
-  \bowtie
   \bigl(i
   \adivifp
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
@@ -1438,8 +1394,6 @@ xor_linearize_int
   \f[
   k_{v}
   \approx
-  0
-  \bowtie
   \bigl(i_{v}
   \adivifp
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
@@ -1452,11 +1406,9 @@ xor_linearize_int
   then \f$x \ll y\f$ is defined as follows:
 
   \f[
-  (x \times 2^y)
-  \leq
   x \ll y
-  \leq
-  0
+  \approx
+  (x \times 2^y)
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1475,45 +1427,21 @@ xor_linearize_int
   where
 
   \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
   \f]
 
   and we can define the elments of the linear form
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \leq
-  k
-  \leq
-  0
-  \f]
-
-  \f[
-  \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \leq
-  k_{v}
-  \leq
-  0
-  \f]
-
-  then
-
-  \f[
   k
   \approx
   \bigl(i \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
-  \bowtie
-  0
   \f]
 
   \f[
@@ -1521,19 +1449,15 @@ xor_linearize_int
   \approx
   \bigl(i_{v} \amifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
-  \bowtie
-  0
   \f]
 
   Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less then zero,
   then \f$x \ll y\f$ is defined as follows:
 
   \f[
-  (x \slash 2^y)
-  \leq
   x \ll y
-  \leq
-  0
+  \approx
+  (x \slash 2^y)
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1552,45 +1476,17 @@ xor_linearize_int
   where
 
   \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
   \f]
 
   and we can define the elments of the linear form
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i
-  \adivifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \leq
-  k
-  \leq
-  0
-  \f]
-
-  \f[
-  \bigl(i_{v}
-  \adivifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \leq
-  k_{v}
-  \leq
-  0
-  \f]
-
-  then
-
-  \f[
   k
   \approx
   \bigl(i
@@ -1598,8 +1494,6 @@ xor_linearize_int
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}\right|}
   \bigr)
-  \bowtie
-  0
   \f]
 
   \f[
@@ -1610,8 +1504,6 @@ xor_linearize_int
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}\right|}
   \bigr)
-  \bowtie
-  0
   \f]
 
   Given an expression \f$e_{1} \leftslice e_{2}\f$ and a composite
@@ -1629,8 +1521,8 @@ xor_linearize_int
 
   where \f$\iota(l)\rho^{\#}\f$ is the intervalization
   of \f$l\f$ (see method <CODE>intervalize</CODE> of class Linear_Form).
-
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 lshift_linearize_int
@@ -1653,6 +1545,11 @@ lshift_linearize_int
   Integer_Int_Interval intervalized_second_operand;
   if (!linearized_second_operand.intervalize(oracle,
 					     intervalized_second_operand))
+    return false;
+
+  if (intervalized_second_operand.upper_is_boundary_infinity()
+      ||
+      intervalized_second_operand.lower_is_boundary_infinity())
     return false;
 
   result << intervalized_second_operand;
@@ -1690,10 +1587,8 @@ lshift_linearize_int
   or equal zero, then \f$x \gg y\f$ is defined as follows:
 
   \f[
-  0
-  \leq
   x \gg y
-  \leq
+  \approx
   (x \slash 2^y)
   \f]
 
@@ -1713,10 +1608,8 @@ lshift_linearize_int
   where
 
   \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
@@ -1726,30 +1619,8 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  0
-  \leq
-  k
-  \leq
-  \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \f]
-
-  \f[
-  0
-  \leq
-  k_{v}
-  \leq
-  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \f]
-
-  then
-
-  \f[
   k
   \approx
-  0
-  \bowtie
   \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
   \f]
@@ -1757,8 +1628,6 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  0
-  \bowtie
   \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
   \f]
@@ -1768,10 +1637,8 @@ lshift_linearize_int
   then \f$x \gg y\f$ is defined as follows:
 
   \f[
-  0
-  \leq
   x \gg y
-  \leq
+  \approx
   (x \times 2^y)
   \f]
 
@@ -1791,10 +1658,8 @@ lshift_linearize_int
   where
 
   \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
@@ -1804,36 +1669,8 @@ lshift_linearize_int
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  0
-  \leq
-  k
-  \leq
-  \bigl(i
-  \amifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \f]
-
-  \f[
-  0
-  \leq
-  k_{v}
-  \leq
-  \bigl(i_{v}
-  \amifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \f]
-
-  then
-
-  \f[
   k
   \approx
-  0
-  \bowtie
   \bigl(i
   \amifp
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
@@ -1844,8 +1681,6 @@ lshift_linearize_int
   \f[
   k_{v}
   \approx
-  0
-  \bowtie
   \bigl(i_{v}
   \amifp
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
@@ -1858,11 +1693,9 @@ lshift_linearize_int
   then \f$x \gg y\f$ is defined as follows:
 
   \f[
-  (x \slash 2^y)
-  \leq
   x \gg y
-  \leq
-  0
+  \approx
+  (x \slash 2^y)
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1881,35 +1714,15 @@ lshift_linearize_int
   where
 
   \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
   \f]
 
   and we can define the elments of the linear form
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
-
-  \f[
-  \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \leq
-  k
-  \leq
-  0
-  \f]
-
-  \f[
-  \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}} \bigr)
-  \leq
-  k_{v}
-  \leq
-  0
-  \f]
 
   then
 
@@ -1918,8 +1731,6 @@ lshift_linearize_int
   \approx
   \bigl(i \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
-  \bowtie
-  0
   \f]
 
   \f[
@@ -1927,19 +1738,15 @@ lshift_linearize_int
   \approx
   \bigl(i_{v} \adivifp 2^{\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}} \bigr)
-  \bowtie
-  0
   \f]
 
   Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less
   then zero, then \f$x \gg y\f$ is defined as follows:
 
   \f[
-  (x \times 2^y)
-  \leq
   x \gg y
-  \leq
-  0
+  \approx
+  (x \times 2^y)
   \f]
 
   Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
@@ -1958,45 +1765,17 @@ lshift_linearize_int
   where
 
   \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
   \f]
 
   and we can define the elments of the linear form
   \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
 
   \f[
-  \bigl(i
-  \amifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \leq
-  k
-  \leq
-  0
-  \f]
-
-  \f[
-  \bigl(i_{v}
-  \amifp
-  2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
-  {\rho^{\#}}\right|}
-  \bigr)
-  \leq
-  k_{v}
-  \leq
-  0
-  \f]
-
-  then
-
-  \f[
   k
   \approx
   \bigl(i
@@ -2004,8 +1783,6 @@ lshift_linearize_int
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}\right|}
   \bigr)
-  \bowtie
-  0
   \f]
 
   \f[
@@ -2016,8 +1793,6 @@ lshift_linearize_int
   2^{\left|\iota\left(\linexprenvvar{i' + \sum_{v in \cV}i'_{v}v}{\right)}
   {\rho^{\#}}\right|}
   \bigr)
-  \bowtie
-  0
   \f]
 
   Given an expression \f$e_{1} \rightslice e_{2}\f$ and a composite
@@ -2033,8 +1808,10 @@ lshift_linearize_int
   {\rho^{\#}}{\rho^{\#}_l}\right)\rho^{\#}}{\rho^{\#}}{\rho^{\#}_l}
   \f]
 
-
+  where \f$\iota(l)\rho^{\#}\f$ is the intervalization
+  of \f$l\f$ (see method <CODE>intervalize</CODE> of class Linear_Form).
 */
+
 template <typename Target, typename Integer_Int_Interval>
 static bool
 rshift_linearize_int
@@ -2057,6 +1834,11 @@ rshift_linearize_int
   Integer_Int_Interval intervalized_second_operand;
   if (!linearized_second_operand.intervalize(oracle,
 					     intervalized_second_operand))
+    return false;
+
+  if (intervalized_second_operand.upper_is_boundary_infinity()
+      ||
+      intervalized_second_operand.lower_is_boundary_infinity())
     return false;
 
   result >> intervalized_second_operand;
@@ -2168,10 +1950,9 @@ linearize_int
     break;
   }// end case Approx_Reference<Target>::KIND
   default:
-    throw std::runtime_error("PPL internal error");
+    throw std::runtime_error("PPL internal error: unreachable code");
   }
 
-  // PPL internal error: unreachable code
   PPL_ASSERT(false);
 }
 
