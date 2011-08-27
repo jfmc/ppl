@@ -324,174 +324,79 @@ operator/=(Linear_Form<C>& f, const C& n) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
-Linear_Form<C>&
-operator|=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
+inline bool
+check_totaly(Linear_Form<C> x, const Linear_Form<C> y) {
   C zero(0);
 
-  dimension_type f1_size = f1.size();
-  dimension_type f2_size = f2.size();
-
-  if (f1_size < f2_size)
-    f1.extend(f2_size);
-
-  bool equal = false;
-  if (f1 == f2)
-    equal = true;
-
-  Linear_Form<C> r1(f1);
-  Linear_Form<C> r2(f2);
-
-  bool  not_totaly = false;
-  for (dimension_type i = f2_size; i-- > 0; )
-    if ((f1[i] != zero && f2[i] == zero)
-	||
-	(f1[i] == zero && f2[i] != zero))
-      not_totaly = true;
-
-  if (f1 >= zero) {
-    if (f2 >= zero) {
-      if (!equal) {
-        for (dimension_type i = f2_size; i-- > 0; ) {
-	  r1[i].max(f2[i]);
-	  mpz_class t1(f1[i].upper());
-	  f1[i] += f2[i];
-	  if (f1[i].upper() == t1 && f2[i] != 0)
-            f1[i].assign(std::numeric_limits<typename C::boundary_type>::max());
-          f1[i].join_assign(r1[i]);
-	  if (not_totaly)
-	    f1[i].join_assign(0);
-	}
-      }
-      return f1;
-    } // f2 >= zero
-    else if (f2 < zero) {
-      for (dimension_type i = f2_size; i-- > 0; ) {
-	f1[i].assign(f2[i]);
-	if (not_totaly)
-	  f1[i].join_assign(0);
-	else
-	  f1[i].join_assign(-1);
-      }
-      return f1;
-    } // f2 < zero
-    else
-      goto completely;
-  } // f1 >= zero
-  else if (f1 < zero) {
-    if (f2 >= zero) {
-      for (dimension_type i = f2_size; i-- > 0; ) {
-	if (not_totaly)
-	  f1[i].join_assign(0);
-	else
-	  f1[i].join_assign(-1);
-      }
-      return f1;
-    } // f2 >= zero
-    else if (f2 < zero) {
-      if (!equal)
-	for (dimension_type i = f2_size; i-- > 0; ) {
-	  if ((f1[i] != zero && f2[i] == 0)
-	      ||
-	      (f1[i] == zero && f2[i] != 0)) {
-	    f1[i].max(f2[i]);
-	    f1[i].join_assign(-1);
-	  }
-	  else {
-	    f1[i].max(f2[i]);
-	    f1[i].join_assign(0);
-	  }
-	}
-      return f1;
-    } // f2 < zero
-    else
-      goto completely;
-  } // f1 < zero
+  if ((x >= zero || x < zero)
+      &&
+      (y >= zero || y < zero))
+    return true;
   else
-    goto completely;
+    return false;
+}
 
- completely:
-  throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-			   "are not completely less or greater than zero");
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
+template <typename C>
+inline bool
+incomplete(Linear_Form<C> x, const Linear_Form<C> y) {
+  C zero(0);
+
+  dimension_type x_size = x.size();
+  dimension_type y_size = y.size();
+
+  if (x_size < y_size)
+    x.extend(y_size);
+  for (dimension_type i = y_size; i-- > 0; )
+    if ((x[i] != zero && y[i] == zero)
+	||
+	(x[i] == zero && y[i] != zero))
+      return true;
+  return false;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator&=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
-  C zero(0);
-  C one(1);
-
   dimension_type f1_size = f1.size();
   dimension_type f2_size = f2.size();
 
   if (f1_size < f2_size)
     f1.extend(f2_size);
 
-  bool equal = false;
   if (f1 == f2)
-    equal = true;
-
-  Linear_Form<C> r1(f1);
-  Linear_Form<C> r2(f2);
-
-  bool not_totaly = false;
-  for (dimension_type i = f2_size; i-- > 0; )
-    if ((f1[i] != zero && f2[i] == zero)
-	||
-	(f1[i] == zero && f2[i] != zero))
-      not_totaly = true;
-
-  if (f1 >= zero) {
-    if (f2 >= zero) {
-      if (!equal)
-	for (dimension_type i = f2_size; i-- > 0; ) {
-	  if (not_totaly)
-	    f1[i].max(f2[i]);
-	  else
-	    f1[i].min(f2[i]);
-	  f1[i].join_assign(zero);
-	}
-      return f1;
-    } // f2 >= zero
-    else if (f2 < zero) {
-      for (dimension_type i = f2_size; i-- > 0; )
-	f1[i].join_assign(zero);
-      return f1;
-    } // f2 < zero
-    else
-      goto completely;
-  } // f1 >= zero
-  else if (f1 < zero) {
-    if (f2 >= zero) {
-      for (dimension_type i = f2_size; i-- > 0; ) {
-	f1[i].assign(f2[i]);
-	f1[i].join_assign(zero);
-      }
-      return f1;
-    } // f2 >= zero
-    else if (f2 < zero) {
-      if (!equal)
-	for (dimension_type i = f2_size; i-- > 0; ) {
-	  mpz_class t1(r1[i].lower());
-	  f1[i].min(f2[i]);
-	  r1[i] += f2[i];
-	  if (r1[i].lower() == t1 && f2[i] != 0)
-	    r1[i].assign(std::numeric_limits<typename C::boundary_type>::min());
-	  f1[i].join_assign(r1[i]);
-	  if (not_totaly)
-	    f1[i].join_assign(0);
-	}
-      return f1;
-    } // f2 < zero
-    else
-      goto completely;
-  } // f1 < zero
+    return f1;
+  else if (check_totaly(f1, f2)) {
+    for (dimension_type i = f2_size; i-- > 0; )
+      f1[i] &= f2[i];
+    return f1;
+  }
   else
-    goto completely;
+    throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
+			     "are not completely less or greater than zero");
+}
 
- completely:
-  throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-			   "are not completely less or greater than zero");
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
+template <typename C>
+Linear_Form<C>&
+operator|=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
+  dimension_type f1_size = f1.size();
+  dimension_type f2_size = f2.size();
+
+  if (f1_size < f2_size)
+    f1.extend(f2_size);
+
+  if (f1 == f2)
+    return f1;
+  else if (check_totaly(f1, f2)) {
+    for (dimension_type i = f2_size; i-- > 0; )
+      f1[i] |= f2[i];
+    return f1;
+  }
+  else
+    throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
+			     "are not completely less or greater than zero");
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
@@ -499,7 +404,6 @@ template <typename C>
 Linear_Form<C>&
 operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   C zero(0);
-  C neg_uno(-1);
 
   dimension_type f1_size = f1.size();
   dimension_type f2_size = f2.size();
@@ -507,94 +411,19 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   if (f1_size < f2_size)
     f1.extend(f2_size);
 
-  bool equal = false;
-  if (f1 == f2)
-    equal = true;
-
-  Linear_Form<C> r1(f1);
-  Linear_Form<C> r2(f2);
-  Linear_Form<C> zero_lf(zero);
-
-  bool not_totaly = false;
-  for (dimension_type i = f2_size; i-- > 0; )
-    if ((f1[i] != zero && f2[i] == zero)
-	||
-	(f1[i] == zero && f2[i] != zero))
-      not_totaly = true;
-
-  if (f1 >= zero) {
-    if (f2 >= zero) {
-      if (equal)
-        return f1 = Linear_Form<C>(zero);
-      else {
-        for (dimension_type i = f2_size; i-- > 0; ) {
-          mpz_class t1(f1[i].upper());
-          f1[i] += f2[i];
-          if (f1[i].upper() == t1 && f2[i] != zero)
-            f1[i].assign(std::numeric_limits<typename C::boundary_type>::max());
-          f1[i].join_assign(zero);
-        }
-	return f1;
-      }
-    } // f2 >= zero
-    else if (f2 < zero) {
-      for (dimension_type i = f2_size; i-- > 0; ) {
-	r1[i].neg_assign(f1[i]);
-	r2[i].assign(r1[i].upper() + f2[i].lower());
-	if (r2[i].lower() > 0 && f2[i] != zero)
-	  r2[i].assign(std::numeric_limits<typename C::boundary_type>::min());
-	if (not_totaly)
-	  r2[i].join_assign(0);
-	else
-	  r2[i].join_assign(-1);
-	f1[i].assign(r2[i]);
-      }
-      return f1;
-    } // f2 < zero
-    else
-      goto completely;
-  } // f1 >= zero
-  else if (f1 < zero) {
-    if (f2 >= zero) {
-      for (dimension_type i = f2_size; i-- > 0; ) {
-	r2[i].neg_assign(f2[i]);
-	r1[i].assign(f1[i].lower() + r2[i].upper());
-	if (r1[i].upper() > 0 && r2[i] != zero)
-	  r1[i].assign(std::numeric_limits<typename C::boundary_type>::min());
-	if (not_totaly)
-	  r1[i].join_assign(0);
-	else
-	  r1[i].join_assign(-1);
-	f1[i].assign(r1[i]);
-      }
-      return f1;
-    } // f2 >= zero
-    else if (f2 < zero) {
-      if (equal)
-	return f1 = Linear_Form<C>(zero);
-      else {
-	for (dimension_type i = f2_size; i-- > 0; ) {
-	  r1[i].neg_assign(f1[i]);
-	  r2[i].neg_assign(f2[i]);
-	  mpz_class t1(r1[i].lower());
-	  r1[i].assign(r1[i].lower() + r2[i].lower());
-	  if (r1[i].lower() == t1 && r2[i] != zero)
-	    r1[i].assign(std::numeric_limits<typename C::boundary_type>::max());
-	  r1[i].join_assign(zero);
-	  f1[i].assign(r1[i]);
-	}
-	return f1;
-      }
-    } // f2 < zero
-    else
-      goto completely;
-  } //  f1 < zero
+  if (f1 == f2) {
+    f1 = Linear_Form<C>(zero);
+    return f1;
+  }
+  else if (check_totaly(f1, f2)) {
+    for (dimension_type i = f2_size; i-- > 0; ) {
+      f1[i] ^= f2[i];
+    }
+    return f1;
+  }
   else
-    goto completely;
-
- completely:
-  throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
-			   "are not completely less or greater than zero");
+    throw std::runtime_error("Linear_Form<C> f1 and Linear_Form<C> f2 "
+			     "are not completely less or greater than zero");
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
@@ -602,77 +431,21 @@ template <typename C>
 Linear_Form<C>&
 operator<<(Linear_Form<C>& f, const C& n) {
   C zero(0);
-  C exp;
 
   dimension_type f_size = f.size();
 
-  if (n == zero)
-    return f = Linear_Form<C>(zero);
-  else  if (f >= zero) {
-    if (n >= zero) {
-      exp.assign((typename C::boundary_type)ldexp(1.0, n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	mpz_class t1(f[i].upper());
-	f[i] *= exp;
-        if (f[i].upper() == t1 && t1 != 0 && exp != zero)
-          f[i].assign(std::numeric_limits<typename C::boundary_type>::max());
-	f[i].join_assign(zero);
-      }
-      return f;
-    } // n >= zero
-    else if (n <= zero) {
-      C neg_n;
-      neg_n.neg_assign(n);
-      exp.assign((typename C::boundary_type)ldexp(1.0, neg_n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, neg_n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	if (exp.lower() < 0)
-	  f[i].assign(std::numeric_limits<typename C::boundary_type>::min());
-	else
-	  f[i] /= exp;
-	f[i].join_assign(zero);
-      }
-      return f;
-    } // n < zero
-    else
-      goto completely;
-  } // f >= zero
-  else if (f < zero) {
-    if (n >= zero) {
-      exp.assign((typename C::boundary_type)ldexp(1.0, n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	if (f[i] != zero || n != zero) {
-	  mpz_class t1(f[i].lower());
-	  f[i] *= exp;
-	  if (f[i].lower() == t1 && t1 != zero && exp != zero)
-	    f[i].assign(std::numeric_limits<typename C::boundary_type>::min());
-	  f[i].join_assign(zero);
-	}
-      }
-      return f;
-    } // f >= zero
-    else if (n <= zero) {
-      C neg_n;
-      neg_n.neg_assign(n);
-      exp.assign((typename C::boundary_type)ldexp(1.0, neg_n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, neg_n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	f[i] /= exp;
-	f[1].join_assign(zero);
-      }
-      return f;
-    } // n2 < zero
-    else
-      goto completely;
-  } // f < zero
+  if (n == zero) {
+    f = Linear_Form<C>(zero);
+    return f;
+  }
+  else if (f >= zero || f < zero) {
+    for (dimension_type i = f_size; i-- > 0; )
+      f[i] << n;
+    return f;
+  }
   else
-    goto completely;
-
-  completely:
-    throw std::runtime_error("Linear_Form<C> f and C n are not "
-			     "completely less or greater than zero");
+    throw std::runtime_error("Linear_Form<C> f1 and C n are not completely "
+			     "less or greater than zero");
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
@@ -680,76 +453,21 @@ template <typename C>
 Linear_Form<C>&
 operator>>(Linear_Form<C>& f, const C& n) {
   C zero(0);
-  C exp;
 
   dimension_type f_size = f.size();
 
-  if (n == zero)
-    return f = Linear_Form<C>(zero);
-  else if (f >= zero) {
-    if (n >= zero) {
-      exp.assign((typename C::boundary_type)ldexp(1.0, n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	f[i] /= exp;
-	f[i].join_assign(zero);
-      }
-      return f;
-    } // n >= zero
-    else if (n <= zero) {
-      C neg_n;
-      neg_n.neg_assign(n);
-      exp.assign((int)ldexp(1.0, neg_n.lower()));
-      exp.join_assign((int)ldexp(1.0, neg_n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	if (exp.lower() < 0) {
-	  f[i].assign(std::numeric_limits<typename C::boundary_type>::min());
-	  f[i].join_assign(1);
-	}
-	else {
-	  f[i] *= exp;
-	  f[i].join_assign(zero);
-	}
-      }
-      return f;
-    } // n <= zero
-    else
-      goto completely;
-  } // f >= zero
-  else if (f < zero) {
-    if (n >= zero) {
-      exp.assign((typename C::boundary_type)ldexp(1.0, n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	if (f[i] != zero || n != zero) {
-	  f[i] /= exp;
- 	  f[i].join_assign(zero);
-	}
-      }
-      return f;
-    } // n >= zero
-    else if (n <= zero) {
-      C neg_n;
-      neg_n.neg_assign(n);
-      exp.assign((typename C::boundary_type)ldexp(1.0, neg_n.lower()));
-      exp.join_assign((typename C::boundary_type)ldexp(1.0, neg_n.upper()));
-      for (dimension_type i = f_size; i-- > 0; ) {
-	if (f[i] != zero || n != zero) {
-	  f[i] *= exp;
-	  f[i].join_assign(zero);
-	}
-      }
-      return f;
-    } // n <= zero
-    else
-      goto completely;
-  } // f < zero
+  if (n == zero) {
+    f = Linear_Form<C>(zero);
+    return f;
+  }
+  else if (f >= zero || f < zero) {
+    for (dimension_type i = f_size; i-- > 0; )
+      f[i] >> n;
+    return f;
+  }
   else
-    goto completely;
-
- completely:
-  throw std::runtime_error("Linear_Form<C> f and C n are not "
-			   "completely less or greater than zero");
+    throw std::runtime_error("Linear_Form<C> f1 and C n are not completely "
+			     "less or greater than zero");
 }
 
 /*! \relates Linear_Row */

@@ -179,19 +179,19 @@ template <typename C>
 Linear_Form<C>&
 operator/=(Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p f1 & \p f2 and assigns it to \p e1.
+//! Returns the linear form \p f1 & \p f2 and assigns it to \p f1.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator&=(Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p f1 | \p f2 and assigns it to \p e1.
+//! Returns the linear form \p f1 | \p f2 and assigns it to \p f1.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator|=(Linear_Form<C>& f1, const Linear_Form<C>& f2);
 
-//! Returns the linear form \p f1 ^ \p f2 and assigns it to \p e1.
+//! Returns the linear form \p f1 ^ \p f2 and assigns it to \p f1.
 /*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
@@ -259,6 +259,15 @@ operator<(Linear_Form<C>& f, const C& n);
 template <typename C>
 bool
 operator<(const Linear_Form<C>& f, const C& n);
+
+/*!
+  Returns <CODE>true</CODE> if and only if \p x and \p y
+  have a number of variables different.
+*/
+/*! \relates Linear_Form */
+template <typename C>
+bool
+incomplete(Linear_Form<C> x, const Linear_Form<C> y);
 
 namespace IO_Operators {
 
@@ -564,9 +573,9 @@ private:
   friend Linear_Form<C>&
   operator^=<C>(Linear_Form<C>& f1, const Linear_Form<C>& f2);
   friend Linear_Form<C>&
-  operator<<<C>(Linear_Form<C>& f, const C& n);
+  operator<< <C>(Linear_Form<C>& f, const C& n);
   friend Linear_Form<C>&
-  operator>><C>(Linear_Form<C>& f, const C& n);
+  operator>> <C>(Linear_Form<C>& f, const C& n);
 
   friend bool
   operator==<C>(const Linear_Form<C>& x, const Linear_Form<C>& y);
@@ -584,6 +593,9 @@ private:
   operator< <C>(Linear_Form<C>& f, const C& n);
   friend bool
   operator< <C>(const Linear_Form<C>& f, const C& n);
+
+  friend bool
+  incomplete<C>(Linear_Form<C> x, const Linear_Form<C> y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
