@@ -2821,9 +2821,10 @@ The interval bitwise operators are defined as follow:
   \begin{cases}
     \bigl[0, \min(b, b')\bigr],
       & \text{if $a \geq 0$ and $a' \geq 0$}; \\
-    \bigl[0, \max(b, b')\bigr],
-      & \text{if $a \geq 0$ and $b' < 0$,
-              or $b < 0$ and $a' \geq 0$}; \\
+    \bigl[0, b\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$}; \\
+    \bigl[0, b'\bigr],
+      & \text{if $b < 0$ and $a' \geq 0$}; \\
     \bigl[a + a', \min(b,b')\bigr],
       & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
@@ -2834,9 +2835,10 @@ The interval bitwise operators are defined as follow:
   \begin{cases}
     \bigl[\max(a,a'), b + b'\bigr],
       & \text{if $a \geq 0$ and $a' \geq 0$}; \\
-    \bigl[\min(a,a'),-1\bigr],
-      & \text{if $a \geq 0$ and $b' < 0$,
-              or $b < 0$ and $a' \geq 0$}; \\
+    \bigl[a',-1\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$}; \\
+    \bigl[a,-1\bigr],
+      & \text{if $b < 0$ and $a' \geq 0$}; \\
     \bigl[\max(a,a'),-1\bigr],
       & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
@@ -2845,25 +2847,31 @@ The interval bitwise operators are defined as follow:
 \f[
   [a,b] \bxorii [a',b'] \approx
   \begin{cases}
-    \bigl[0,|b + b'|\bigr],
-      & \text{if $a \geq 0$ and $a' \geq 0$,
-              or $b < 0$ and $b' < 0$}; \\
-    \bigl[-(|a| + |a'|),-1\bigr],
-      & \text{if $a \geq 0$ and $b' < 0$,
-              or $b < 0$ and $a' \geq 0$}. \\
+    \bigl[0,b + b'\bigr],
+      & \text{if $a \geq 0$ and $a' \geq 0$}; \\
+    \bigl[(-a + a'),-1\bigr],
+      & \text{if $a \geq 0$ and $b' < 0$}; \\
+    \bigl[(a - a'),-1\bigr],
+      & \text{if $b < 0$ and $a' \geq 0$}; \\
+    \bigl[0, |b + b'|\bigr],
+      & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 \f]
 
 \f[
   [a,b] \olessthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \bigl[0, \bigl(b \times 2^{b'}\bigr)\bigr],
+    \bigl[\bigl(a \times 2^{a'}\bigr), 
+          \bigl(b \times 2^{b'}\bigr)\bigr],
       & \text{if $a \geq 0$ and $a' \geq 0$}; \\
-    \bigl[0, \bigl(b / 2^{\left|b'\right|}\bigr)\bigr],
+    \bigl[\bigl(a / 2^{\left|a'\right|}\bigr, 
+          \bigl(b / 2^{\left|b'\right|}\bigr)\bigr],
       & \text{if $a \geq 0$ and $b' < 0$}; \\
-    \bigl[\bigl(a \times 2^{a'}\bigr), 0\bigr],
+    \bigl[\bigl(a \times 2^{a'}\bigr), 
+          \bigl(b \times 2^{b'}\bigr)\bigr],
       & \text{if $b < 0$ and $a' \geq 0$}; \\
-    \bigl[\bigl(a / 2^{\left|a'\right|}\bigr), 0\bigr],
+    \bigl[\bigl(a / 2^{\left|a'\right|}\bigr), 
+          \bigl(b / 2^{\left|b'\right|}\bigr)\bigr],
       & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 \f]
@@ -2871,13 +2879,17 @@ The interval bitwise operators are defined as follow:
 \f[
   [a,b] \ogreaterthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \bigl[0, \bigl(b / 2^{b'}\bigr)\bigr],
+    \bigl[\bigl(a / 2^{a'}\bigr), 
+          \bigl(b / 2^{b'}\bigr)\bigr],
       & \text{if $a \geq 0$ and $a' \geq 0$}; \\
-    \bigl[0, \bigl(b \times 2^{\left|b'\right|}\bigr)\bigr],
+    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigr), 
+          \bigl(b \times 2^{\left|b'\right|}\bigr)\bigr],
       & \text{if $a \geq 0$ and $b' < 0$}; \\
-    \bigl[\bigl(a / 2^{a'}\bigr), 0\bigr],
+    \bigl[\bigl(a / 2^{a'}\bigr), 
+          \bigl(b / 2^{b'}\bigr)\bigr],
       & \text{if $b < 0$ and $a' \geq 0$}; \\
-    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigr), 0\bigr],
+    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigr), 
+          \bigl(b \times 2^{\left|b'\right|}\bigr)\bigr],
       & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 
@@ -3060,10 +3072,8 @@ both greater than or equal zero, then \f$k + \sum_{v \in V}k_{v}v\f$
 is approximated by:
 
 \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
@@ -3074,10 +3084,8 @@ have discordand signs, with the first greater than or equal zero, then
 \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
 \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
@@ -3088,26 +3096,22 @@ have discordand signs, with the first less than zero, then
 \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
 \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
 \f]
 
 Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$
 are both less than zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
 \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
 \f]
 
 \subsubsection bitwise_right_shift Bitwise RIGHT SHIFT
@@ -3125,10 +3129,8 @@ both greater than or equal zero then \f$k + \sum_{v \in V}k_{v}v\f$
 is approximated by:
 
 \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
@@ -3139,10 +3141,8 @@ have discordand signs, with the first greater than or equal zero, then
 \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
 \f[
-  0
-  \leq
   \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
@@ -3153,26 +3153,22 @@ have discordand signs, with the first less than zero, then
 \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
 \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \adivlf
   2^{\left(i' + \sum_{v \in \cV}i'_{v}v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
 \f]
 
 Finally, if \f$i + \sum_{v \in V}i_{v}v\f$ and \f$i' + \sum_{v \in V}i'_{v}v\f$
 are both less than zero, then \f$k + \sum_{v \in V}k_{v}v\f$ is approximated by:
 
 \f[
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \approx
   \left(i + \sum_{v \in \cV}i_{v}v \right)
   \amlf
   2^{\left(\left|i'\right| + \sum_{v \in \cV}\left|i'_{v}\right|v \right)}
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  0
 \f]
 
 Where \f$\asifp, \adifp, \amifp,\f$ and \f$\adivifp\f$ are the corresponding
