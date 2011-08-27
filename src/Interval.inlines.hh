@@ -1089,6 +1089,16 @@ Interval<To_Boundary, To_Info>::and_assign(const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
 
+  int inf = Parma_Polyhedra_Library::is_infinity(x);
+  if (inf) {
+    if (Parma_Polyhedra_Library::is_infinity(y) == -inf)
+      return assign(NOT_A_NUMBER);
+  }
+  else
+    inf = Parma_Polyhedra_Library::is_infinity(y);
+  if (inf)
+    return assign(NOT_A_NUMBER);
+
   Interval<To_Boundary, To_Info> x1;
   Interval<To_Boundary, To_Info> x2;
   Interval<To_Boundary, To_Info> zero(0);
@@ -1183,6 +1193,16 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
 
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
+
+  int inf = Parma_Polyhedra_Library::is_infinity(x);
+  if (inf) {
+    if (Parma_Polyhedra_Library::is_infinity(y) == -inf)
+      return assign(NOT_A_NUMBER);
+  }
+  else
+    inf = Parma_Polyhedra_Library::is_infinity(y);
+  if (inf)
+    return assign(NOT_A_NUMBER);
 
   Interval<To_Boundary, To_Info> x1;
   Interval<To_Boundary, To_Info> x2;
@@ -1279,6 +1299,16 @@ Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
 
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
+
+  int inf = Parma_Polyhedra_Library::is_infinity(x);
+  if (inf) {
+    if (Parma_Polyhedra_Library::is_infinity(y) == -inf)
+      return assign(NOT_A_NUMBER);
+  }
+  else
+    inf = Parma_Polyhedra_Library::is_infinity(y);
+  if (inf)
+    return assign(NOT_A_NUMBER);
 
   Interval<To_Boundary, To_Info> x1;
   Interval<To_Boundary, To_Info> zero(0);
@@ -1378,6 +1408,10 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
 
+  int inf = Parma_Polyhedra_Library::is_infinity(x);
+  if (inf)
+    return assign(NOT_A_NUMBER);
+
   Interval<To_Boundary, To_Info> x1;
   Interval<To_Boundary, To_Info> z;
   Interval<To_Boundary, To_Info>
@@ -1458,6 +1492,10 @@ Interval<To_Boundary, To_Info>::rshift_assign(const From1& x, const From2& y) {
 
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
+
+  int inf = Parma_Polyhedra_Library::is_infinity(x);
+  if (inf)
+    return assign(NOT_A_NUMBER);
 
   Interval<To_Boundary, To_Info> x1;
   Interval<To_Boundary, To_Info> z;
