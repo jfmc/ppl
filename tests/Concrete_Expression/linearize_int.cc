@@ -58,7 +58,7 @@ public:
   Integer_Interval_Abstract_Store int_store;
 };
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+  using namespace Parma_Polyhedra_Library::IO_Operators;
 
 Concrete_Expression_Type Integer_Type =
   Concrete_Expression_Type::bounded_integer(BITS_32, SIGNED_2_COMPLEMENT,
@@ -189,7 +189,7 @@ test01(){
 }
 
 /*
-  Tests linearization A + 3*B + [2, 3] op B + [1, 9]
+  Tests linearization A + 3*B + [2, 3] op 2*A + B + [1, 9]
   with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2, 3].
 */
 bool
@@ -209,6 +209,7 @@ test02(){
   Integer_Int_Interval inh_term(2);
   inh_term.join_assign(3);
 
+  Integer_Int_Interval a1(2);
   Integer_Int_Interval inh_term1(1);
   inh_term1.join_assign(9);
 
@@ -219,6 +220,7 @@ test02(){
 
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
+  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
 
   Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -227,8 +229,13 @@ test02(){
 				  &var0, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				&coeff_inh_term,&sum_a_b);
+
+  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				  &var0, &coeff_a1);
+  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				  &term_a1, &var1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &var1);
+				&coeff_inh_term1, &sum_a1_b1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
 			       &expr1, &expr2);
@@ -251,7 +258,9 @@ test02(){
   known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
 
-  Integer_Linear_Form lf = B;
+  Integer_Linear_Form lf = A;
+  lf *= a1;
+  lf += Integer_Linear_Form(B);
   lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
@@ -283,6 +292,8 @@ test02(){
   nout << endl;
 
   inh_term1 += tmp1;
+  a1 *= tmp;
+  inh_term1 += a1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
@@ -302,7 +313,7 @@ test02(){
 
   bool ok =
     (result_or == known_result_or)
-    &&
+     &&
     (result_and == known_result_and)
     &&
     (result_xor == known_result_xor)
@@ -315,7 +326,7 @@ test02(){
 }
 
 /*
-  Tests linearization -A + -3*B + [-3, -2] op -B + [-4, -1]
+  Tests linearization -A + -3*B + [-3, -2] op -A -B + [-4, -1]
   with op content {|, & , ^ , << , >> } where A in [0, 1] and B in [2, 3].
 */
 bool
@@ -336,8 +347,6 @@ test03(){
   Integer_Int_Interval inh_term(-2);
   inh_term.join_assign(-3);
 
-  Integer_Int_Interval b1(-1);
-
   Integer_Int_Interval inh_term1(-1);
   inh_term1.join_assign(-4);
 
@@ -349,7 +358,8 @@ test03(){
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
+  Int_Constant<C_Expr> coeff_a1(Integer_Type, a);
+  Int_Constant<C_Expr> coeff_b1(Integer_Type, a);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
 
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -360,10 +370,15 @@ test03(){
 				  &term_a, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				&coeff_inh_term,&sum_a_b);
+
+  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				  &var0, &coeff_a1);
   Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				  &var1, &coeff_b1);
+  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				    &term_a1, &term_b1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &term_b1);
+				&coeff_inh_term1, &sum_a1_b1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
 			       &expr1, &expr2);
@@ -387,8 +402,9 @@ test03(){
   known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
 
-  Integer_Linear_Form lf = Integer_Linear_Form(B);
-  lf *= b1;
+  Integer_Linear_Form lf = Integer_Linear_Form(A);
+  lf *= a;
+  lf += a * Integer_Linear_Form(B);
   lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
@@ -419,7 +435,9 @@ test03(){
   known_result_xor ^= lf;
   nout << endl;
 
-  tmp1 *= b1;
+  tmp *= a;
+  tmp1 *= a;
+  inh_term1 += tmp;
   inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
@@ -453,7 +471,7 @@ test03(){
 }
 
 /*
-  Tests linearization -A + -3*B + [-3, -2] op B + [1, 4]
+  Tests linearization -A + -3*B + [-3, -2] op A + B + [1, 4]
   with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2,3].
 */
 bool
@@ -474,8 +492,6 @@ test04(){
   Integer_Int_Interval inh_term(-2);
   inh_term.join_assign(-3);
 
-  Integer_Int_Interval b1(1);
-
   Integer_Int_Interval inh_term1(1);
   inh_term1.join_assign(4);
 
@@ -487,7 +503,6 @@ test04(){
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
 
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -497,11 +512,12 @@ test04(){
   Binary_Operator<C_Expr> sum_a_b(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				  &term_a, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term,&sum_a_b);
-  Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
-				  &var1, &coeff_b1);
+				&coeff_inh_term, &sum_a_b);
+
+  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				    &var0, &var1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &term_b1);
+				&coeff_inh_term1, &sum_a1_b1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
 			       &expr1, &expr2);
@@ -525,8 +541,8 @@ test04(){
   known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
 
-  Integer_Linear_Form lf = Integer_Linear_Form(B);
-  lf *= b1;
+  Integer_Linear_Form lf = Integer_Linear_Form(A);
+  lf += Integer_Linear_Form(B);
   lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
@@ -557,6 +573,7 @@ test04(){
   known_result_xor ^= lf;
   nout << endl;
 
+  inh_term1 += tmp;
   inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
@@ -585,12 +602,12 @@ test04(){
     (result_lshift == known_result_lshift)
     &&
     (result_rshift == known_result_rshift);
-
+    ;
   return ok;
 }
 
 /*
-  Tests linearization A + 3*B + [2, 3] op -B + [-4, -1]
+  Tests linearization A + 3*B + [2, 3] op -A -B + [-4, -1]
   with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2,3].
 */
 bool
@@ -624,6 +641,7 @@ test05(){
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
+  Int_Constant<C_Expr> coeff_a1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
 
@@ -635,10 +653,15 @@ test05(){
 				  &term_a, &term_b);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::ADD,
 				&coeff_inh_term,&sum_a_b);
+
+  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				  &var0, &coeff_a1);
   Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				  &var1, &coeff_b1);
+  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				    &term_a1, &term_b1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &term_b1);
+				&coeff_inh_term1, &sum_a1_b1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
 			       &expr1, &expr2);
@@ -662,8 +685,9 @@ test05(){
   known_result_and += b * Integer_Linear_Form(B);
   known_result_and += inh_term;
 
-  Integer_Linear_Form lf = Integer_Linear_Form(B);
+  Integer_Linear_Form lf = Integer_Linear_Form(A);
   lf *= b1;
+  lf += b1 * Integer_Linear_Form(B);
   lf += inh_term1;
 
   Integer_Linear_Form  known_result_or, known_result_xor, known_result_lshift,
@@ -694,8 +718,10 @@ test05(){
   known_result_xor ^= lf;
   nout << endl;
 
-  b1 *= tmp1;
-  inh_term1 += b1;
+  tmp *=b1;
+  tmp1 *= b1;
+  inh_term1 += tmp;
+  inh_term1 += tmp1;
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
@@ -734,7 +760,7 @@ test05(){
 bool
 test06(){
   Integer_Int_Interval tmp(0);
-  tmp.join_assign(5);
+  tmp.join_assign(1);
   nout << "A in " << tmp << endl << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(1));
   oracle.int_store.set_interval(Variable(0), tmp);
@@ -866,26 +892,30 @@ test07(){
   Integer_Linear_Form known_result_rshift = known_result_or;
   Integer_Linear_Form lf = Integer_Linear_Form(B);
 
-  linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
-       << "*** result_or *** " << endl
-       << result_or << endl;
-  known_result_or |= lf;
-  nout << endl;
+  bool failed_and = false;
+  bool failed_or = false;
+  bool failed_xor = false;
 
-  linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
-  nout << "*** " << known_result_and << " & " << lf << " ***" << endl
-       << "*** result_and *** " << endl
-       << result_and << endl;
-  known_result_and &= lf;
-  nout << endl;
+  if (!linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_or)) {
+    nout << "*** Linearization failed, the two linear forms have "
+	 << "different size *** " << endl << endl;
+    failed_or = true;
+  }
 
-  linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
-  nout << "*** " << known_result_xor << " ^ " << lf << " ***" << endl
-       << "*** result_xor *** " << endl
-       << result_xor << endl;
-  known_result_xor ^= lf;
-  nout << endl;
+  if (!linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_and)) {
+    nout << "*** Linearization failed, the two linear forms have "
+	 << "different size *** " << endl << endl;
+    failed_and = true;
+  }
+
+  if (!linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_xor)) {
+    nout << "*** Linearization failed, the two linear forms have "
+	 << "different size *** " << endl << endl;
+    failed_xor = true;
+  }
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result_lshift);
@@ -904,11 +934,11 @@ test07(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
+    (failed_or)
     &&
-    (result_and == known_result_and)
+    (failed_and)
     &&
-    (result_xor == known_result_xor)
+    (failed_xor)
     &&
     (result_lshift == known_result_lshift)
     &&
@@ -1042,7 +1072,7 @@ test08(){
 }
 
 /*
-  Tests linearization A + 12*B + [2, 3] op -2147483638*B + [-4, -1]
+  Tests linearization A + 12*B + [2, 3] op -A -2147483638*B + [-4, -1]
   with op content {|, & , ^ , << , >> } where A in [0, 1] and B in [2, 3].
 */
 bool
@@ -1065,8 +1095,7 @@ test09(){
 
   Integer_Int_Interval den(2);
 
-  Integer_Int_Interval a1(-3);
-  a1.join_assign(-2147483638);
+  Integer_Int_Interval a1(-1);
 
   Integer_Int_Interval b1(-2147483638);
 
@@ -1096,10 +1125,15 @@ test09(){
                               &coeffnum, &coeffden);
   Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::SUB,
 				&sum_a_b,&div);
+
+  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				  &var0, &coeff_a1);
   Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
 				  &var1, &coeff_b1);
+  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				    &term_a1, &term_b1);
   Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
-				&coeff_inh_term1, &term_b1);
+				&coeff_inh_term1, &sum_a1_b1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
 			       &expr1, &expr2);
@@ -1123,8 +1157,9 @@ test09(){
   known_result_and += b * Integer_Linear_Form(B);
   known_result_and -= num;
 
-  Integer_Linear_Form lf = Integer_Linear_Form(B);
-  lf *= b1;
+  Integer_Linear_Form lf = Integer_Linear_Form(A);
+  lf *= a1;
+  lf += b1 * Integer_Linear_Form(B);
   lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
@@ -1154,24 +1189,27 @@ test09(){
   known_result_xor ^= lf;
   nout << endl;
 
-  b1 *= tmp1;
-  inh_term1 += b1;
+  //  b1 *= tmp1;
+  //inh_term1 += b1;
 
-  linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
-		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
-       << "*** result_lshift *** " << endl
-       << result_lshift << endl;
-  known_result_lshift << inh_term1;
-  nout << endl ;//<< result_lshift << endl;
+  bool failed_lshift = false;
+  bool failed_rshift = false;
 
-  linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
-		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
-       << "*** result_rshift *** " << endl
-       << result_rshift << endl;
-  known_result_rshift >> inh_term1;
-  nout << endl ;// << result_rshift << endl;
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl;
+  if (!linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_lshift)) {
+    nout << "*** Linearization failed, intervalize second linear form "
+	 << "contain infinity *** " << endl << endl;
+    failed_lshift = true;
+  }
+
+  nout << "*** " << known_result_rshift << " << " << lf << " ***" << endl;
+  if (!linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_rshift))  {
+    nout << "*** Linearization failed, intervalize second linear form "
+	 << "contain infinity *** " << endl << endl;
+    failed_rshift = true;
+  }
 
   bool ok =
     (result_or == known_result_or)
@@ -1180,15 +1218,15 @@ test09(){
     &&
     (result_xor == known_result_xor)
     &&
-    (result_lshift == known_result_lshift)
+    failed_lshift
     &&
-    (result_rshift == known_result_rshift);
+    failed_rshift;
 
   return ok;
 }
 
 /*
-  Tests linearization -A + -12*B + [-3, -2] op 2147483638*B + [1, 4]
+  Tests linearization -A + -12*B + [-3, -2] op 2*A + 2147483638*B + [1, 4]
   with op content {|, & , ^ , << , >> } where A in [0,1] and B in [2,3]
 */
 bool
@@ -1211,8 +1249,7 @@ test10(){
 
   Integer_Int_Interval den(2);
 
-  Integer_Int_Interval a1(3);
-  a1.join_assign(2147483638);
+  Integer_Int_Interval a1(2);
 
   Integer_Int_Interval b1(2147483638);
 
@@ -1232,32 +1269,36 @@ test10(){
   Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
 
-  Binary_Operator<C_Expr> mul1(Integer_Type, Binary_Operator<C_Expr>::MUL,
-			       &var0, &coeff_a);
-  Binary_Operator<C_Expr> mul2(Integer_Type, Binary_Operator<C_Expr>::MUL,
-			       &var1, &coeff_b);
-  Binary_Operator<C_Expr> sum3(Integer_Type, Binary_Operator<C_Expr>::ADD,
-			       &mul1, &mul2);
+  Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				 &var0, &coeff_a);
+  Binary_Operator<C_Expr> term_b(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				 &var1, &coeff_b);
+  Binary_Operator<C_Expr> sum_a_b(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				  &term_a, &term_b);
   Binary_Operator<C_Expr> div(Integer_Type, Binary_Operator<C_Expr>::DIV,
                               &coeffnum, &coeffden);
-  Binary_Operator<C_Expr> sub4(Integer_Type, Binary_Operator<C_Expr>::SUB,
-			       &sum3,&div);
-  Binary_Operator<C_Expr> mul6(Integer_Type, Binary_Operator<C_Expr>::MUL,
-			       &var1, &coeff_b1);
-  Binary_Operator<C_Expr> sum8(Integer_Type, Binary_Operator<C_Expr>::ADD,
-			       &coeff_inh_term1, &mul6);
+  Binary_Operator<C_Expr> expr1(Integer_Type, Binary_Operator<C_Expr>::SUB,
+				&sum_a_b,&div);
+  Binary_Operator<C_Expr> term_a1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				  &var0, &coeff_a1);
+  Binary_Operator<C_Expr> term_b1(Integer_Type, Binary_Operator<C_Expr>::MUL,
+				  &var1, &coeff_b1);
+  Binary_Operator<C_Expr> sum_a1_b1(Integer_Type, Binary_Operator<C_Expr>::ADD,
+				  &term_a1, &term_b1);
+  Binary_Operator<C_Expr> expr2(Integer_Type, Binary_Operator<C_Expr>::ADD,
+			       &coeff_inh_term1, &sum_a1_b1);
 
   Binary_Operator<C_Expr> band(Integer_Type, Binary_Operator<C_Expr>::BAND,
-			       &sub4, &sum8);
+			       &expr1, &expr2);
   Binary_Operator<C_Expr> bor(Integer_Type, Binary_Operator<C_Expr>::BOR,
-                              &sub4, &sum8);
+                              &expr1, &expr2);
 
   Binary_Operator<C_Expr> bxor(Integer_Type, Binary_Operator<C_Expr>::BXOR,
-			       &sub4, &sum8);
+			       &expr1, &expr2);
   Binary_Operator<C_Expr> lshift(Integer_Type, Binary_Operator<C_Expr>::LSHIFT,
-				 &sub4, &sum8);
+				 &expr1, &expr2);
   Binary_Operator<C_Expr> rshift(Integer_Type, Binary_Operator<C_Expr>::RSHIFT,
-				 &sub4, &sum8);
+				 &expr1, &expr2);
 
   Integer_Linear_Form result_and, result_or, result_xor, result_lshift,
     result_rshift;
@@ -1271,8 +1312,9 @@ test10(){
   known_result_and += b * Integer_Linear_Form(B);
   known_result_and -= num;
 
-  Integer_Linear_Form lf = Integer_Linear_Form(B);
-  lf *= b1;
+  Integer_Linear_Form lf = Integer_Linear_Form(A);
+  lf *= a1;
+  lf += b1 * Integer_Linear_Form(B);
   lf += inh_term1;
 
   Integer_Linear_Form known_result_or, known_result_xor, known_result_lshift,
@@ -1303,24 +1345,24 @@ test10(){
   known_result_xor ^= lf;
   nout << endl;
 
-  b1 *= tmp1;
-  inh_term1 += b1;
+  bool failed_lshift = false;
+  bool failed_rshift = false;
 
-  linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
-		result_lshift);
-  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl
-       << "*** result_lshift *** " << endl
-       << result_lshift << endl;
-  known_result_lshift << inh_term1;
-  nout << endl;
+  nout << "*** " << known_result_lshift << " << " << lf << " ***" << endl;
+  if (!linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_lshift)) {
+    nout << "*** Linearization failed, intervalize second linear form "
+	 << "contain infinity *** " << endl << endl;
+    failed_lshift = true;
+  }
 
-  linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
-		result_rshift);
-  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl
-       << "*** result_rshift *** " << endl
-       << result_rshift << endl;
-  known_result_rshift >> inh_term1;
-  nout << endl;
+  nout << "*** " << known_result_rshift << " >> " << lf << " ***" << endl;
+  if (!linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_rshift)) {
+    nout << "*** Linearization failed, intervalize second linear form "
+	 << "contain infinity *** " << endl << endl;
+    failed_rshift = true;
+  }
 
   bool ok =
     (result_or == known_result_or)
@@ -1329,9 +1371,9 @@ test10(){
     &&
     (result_xor == known_result_xor)
     &&
-    (result_lshift == known_result_lshift)
+    failed_lshift
     &&
-    (result_rshift == known_result_rshift);
+    failed_rshift;
 
   return ok;
 }
