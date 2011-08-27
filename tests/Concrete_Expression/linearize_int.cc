@@ -135,18 +135,18 @@ test01(){
   known_result_lshift = known_result_or;
   known_result_rshift = known_result_or;
 
-  linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
-       << "*** result_or *** " << endl
-       << result_or << endl;
-  known_result_or |= lf;
-  nout << endl;
-
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
   nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
   known_result_and &= lf;
+  nout << endl;
+
+  linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
+  known_result_or |= lf;
   nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
@@ -175,9 +175,9 @@ test01(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -312,9 +312,9 @@ test02(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-     &&
     (result_and == known_result_and)
+     &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -457,9 +457,9 @@ test03(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -593,9 +593,9 @@ test04(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -740,9 +740,9 @@ test05(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -832,9 +832,9 @@ test06(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -896,13 +896,7 @@ test07(){
   bool failed_or = false;
   bool failed_xor = false;
 
-  if (!linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(),
-		     result_or)) {
-    nout << "*** Linearization failed, the two linear forms have "
-	 << "different size *** " << endl << endl;
-    failed_or = true;
-  }
-
+  nout << "*** " << known_result_and << " << " << lf << " ***" << endl;
   if (!linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result_and)) {
     nout << "*** Linearization failed, the two linear forms have "
@@ -910,6 +904,15 @@ test07(){
     failed_and = true;
   }
 
+  nout << "*** " << known_result_or << " << " << lf << " ***" << endl;
+  if (!linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(),
+		     result_or)) {
+    nout << "*** Linearization failed, the two linear forms have "
+	 << "different size *** " << endl << endl;
+    failed_or = true;
+  }
+
+  nout << "*** " << known_result_xor << " << " << lf << " ***" << endl;
   if (!linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result_xor)) {
     nout << "*** Linearization failed, the two linear forms have "
@@ -934,9 +937,9 @@ test07(){
   nout << endl;
 
   bool ok =
-    (failed_or)
-    &&
     (failed_and)
+    &&
+    (failed_or)
     &&
     (failed_xor)
     &&
@@ -1017,18 +1020,18 @@ test08(){
   known_result_lshift = known_result_or;
   known_result_rshift = known_result_or;
 
-  linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
-  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
-       << "*** result_or *** " << endl
-       << result_or << endl;
-  known_result_or |= lf;
-  nout << endl;
-
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
   nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
        << result_and << endl;
   known_result_and &= lf;
+  nout << endl;
+
+  linearize_int(bor, oracle, Integer_Linear_Form_Abstract_Store(), result_or);
+  nout << "*** " << known_result_or << " | " << lf << " ***" << endl
+       << "*** result_or *** " << endl
+       << result_or << endl;
+  known_result_or |= lf;
   nout << endl;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result_xor);
@@ -1058,9 +1061,9 @@ test08(){
   nout << endl;
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
@@ -1168,6 +1171,7 @@ test09(){
   known_result_xor = known_result_and;
   known_result_lshift = known_result_and;
   known_result_rshift = known_result_and;
+
   linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(), result_and);
   nout << "*** " << known_result_and << " & " << lf << " ***" << endl
        << "*** result_and *** " << endl
@@ -1189,9 +1193,6 @@ test09(){
   known_result_xor ^= lf;
   nout << endl;
 
-  //  b1 *= tmp1;
-  //inh_term1 += b1;
-
   bool failed_lshift = false;
   bool failed_rshift = false;
 
@@ -1212,9 +1213,9 @@ test09(){
   }
 
   bool ok =
-    (result_or == known_result_or)
-    &&
     (result_and == known_result_and)
+    &&
+    (result_or == known_result_or)
     &&
     (result_xor == known_result_xor)
     &&
