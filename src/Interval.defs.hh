@@ -161,35 +161,40 @@ public:
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
-  operator|=(const T& x) {
-    or_assign(*this, x);
-    return *this;
-  }
-
-  template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value
+		     || Is_Interval<T>::value, Interval&>::type
   operator&=(const T& x) {
     and_assign(*this, x);
     return *this;
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value
+		     || Is_Interval<T>::value, Interval&>::type
+  operator|=(const T& x) {
+    or_assign(*this, x);
+    return *this;
+  }
+
+  template <typename T>
+  typename Enable_If<Is_Singleton<T>::value
+		     || Is_Interval<T>::value, Interval&>::type
   operator^=(const T& x) {
     xor_assign(*this, x);
     return *this;
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value
+		     || Is_Interval<T>::value, Interval&>::type
   operator<<(const T& x) {
     lshift_assign(*this, x);
     return *this;
   }
 
   template <typename T>
-  typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, Interval&>::type
+  typename Enable_If<Is_Singleton<T>::value
+		     || Is_Interval<T>::value, Interval&>::type
   operator>>(const T& x) {
     rshift_assign(*this, x);
     return *this;
@@ -853,31 +858,6 @@ public:
 
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), void>::type
-  or_assign(const From1& x, const From2& y);
-
-  template <typename From1, typename From2>
-  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), void>::type
-  and_assign(const From1& x, const From2& y);
-
-  template <typename From1, typename From2>
-  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), void>::type
-  xor_assign(const From1& x, const From2& y);
-
-  template <typename From1, typename From2>
-  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), void>::type
-  lshift_assign(const From1& x, const From2& y);
-
-  template <typename From1, typename From2>
-  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), void>::type
-  rshift_assign(const From1& x, const From2& y);
-
-  template <typename From1, typename From2>
-  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
 		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   sub_assign(const From1& x, const From2& y);
 
@@ -891,13 +871,60 @@ public:
 		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   div_assign(const From1& x, const From2& y);
 
-  template <typename From>
-  typename Enable_If<((Is_Singleton<From>::value || Is_Interval<From>::value)), void>::type
-  max(const From& x);
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value
+		       || Is_Interval<From1>::value)
+                      &&
+		      (Is_Singleton<From2>::value
+		       || Is_Interval<From2>::value)), I_Result>::type
+  and_assign(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+                      &&
+		      (Is_Singleton<From2>::value
+		       || Is_Interval<From2>::value)), I_Result>::type
+  or_assign(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+                      &&
+		      (Is_Singleton<From2>::value
+		       || Is_Interval<From2>::value)), I_Result>::type
+  xor_assign(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+                      &&
+		      (Is_Singleton<From2>::value
+		       || Is_Interval<From2>::value)), I_Result>::type
+  lshift_assign(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
+                      &&
+		      (Is_Singleton<From2>::value
+		       || Is_Interval<From2>::value)), I_Result>::type
+  rshift_assign(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value
+                       || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value
+                          || Is_Interval<From2>::value)), I_Result>::type
+  min(const From1& x, const From2& y);
+
+  template <typename From1, typename From2>
+  typename Enable_If<((Is_Singleton<From1>::value
+                       || Is_Interval<From1>::value)
+		      && (Is_Singleton<From2>::value
+                          || Is_Interval<From2>::value)), I_Result>::type
+  max(const From1& x, const From2& y);
 
   template <typename From>
-  typename Enable_If<((Is_Singleton<From>::value || Is_Interval<From>::value)), void>::type
-  min(const From& x);
+  typename Enable_If<((Is_Singleton<From>::value
+		       || Is_Interval<From>::value)), I_Result>::type
+  pow_assign(const From& y);
 
   template <typename From, typename Iterator>
   typename Enable_If<Is_Interval<From>::value, void>::type
