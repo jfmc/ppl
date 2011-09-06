@@ -1885,7 +1885,7 @@ linearize_int
   typedef std::map<dimension_type, Linear_Form> Linear_Form_Abstract_Store;
 
   PPL_ASSERT(expr.type().is_bounded_integer());
-  switch(expr.kind()){
+  switch(expr.kind()) {
   case Int_Constant<Target>::KIND: {
     const Int_Constant<Target>* intc_expr =
       expr.template as<Int_Constant>();
@@ -1896,7 +1896,7 @@ linearize_int
     return true;
   }
 
-  case Binary_Operator<Target>::KIND:{
+  case Binary_Operator<Target>::KIND: {
     const Binary_Operator<Target>* bop_expr =
       expr.template as<Binary_Operator>();
     switch (bop_expr->binary_operator()) {

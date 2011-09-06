@@ -1200,7 +1200,7 @@ test09(){
   if (!linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result_lshift)) {
     nout << "*** Linearization failed, intervalize second linear form "
-	 << "contain infinity *** " << endl << endl;
+	 << "is not bounded *** " << endl << endl;
     failed_lshift = true;
   }
 
@@ -1208,7 +1208,7 @@ test09(){
   if (!linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result_rshift))  {
     nout << "*** Linearization failed, intervalize second linear form "
-	 << "contain infinity *** " << endl << endl;
+	 << "is not bounded *** " << endl << endl;
     failed_rshift = true;
   }
 
@@ -1353,7 +1353,7 @@ test10(){
   if (!linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result_lshift)) {
     nout << "*** Linearization failed, intervalize second linear form "
-	 << "contain infinity *** " << endl << endl;
+	 << "is not bounded *** " << endl << endl;
     failed_lshift = true;
   }
 
@@ -1361,7 +1361,7 @@ test10(){
   if (!linearize_int(rshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result_rshift)) {
     nout << "*** Linearization failed, intervalize second linear form "
-	 << "contain infinity *** " << endl << endl;
+	 << "is not bounded *** " << endl << endl;
     failed_rshift = true;
   }
 
