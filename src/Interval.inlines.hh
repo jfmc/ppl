@@ -1116,14 +1116,7 @@ Interval<To_Boundary, To_Info>::and_assign(const From1& x, const From2& y) {
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  if (x == y) {
-    Boundary_NS::assign(LOWER, to_lower, to_info,
-			LOWER, f_lower(x), f_info(x));
-
-    Boundary_NS::assign(UPPER, upper(), info(),
-			UPPER, f_upper(x), f_info(x));
-  }
-  else if (xls >= 0 && yls >= 0) {
+  if (xls >= 0 && yls >= 0) {
     // 0 <= xl <= xu, 0 <= yl <= yu
     Boundary_NS::assign(LOWER, to_lower, to_info,
 			LOWER, f_lower(zero), f_info(zero));
@@ -1151,7 +1144,7 @@ Interval<To_Boundary, To_Info>::and_assign(const From1& x, const From2& y) {
     // xl <= xu < 0 , yl <= yu < 0
     r = x1.add_assign(x,y);
     x2.min(x,y);
-    if (r & V_LT_INF)
+    if (!x1.lower_is_boundary_infinity())
       Boundary_NS::assign(LOWER, to_lower, to_info,
 			  LOWER, f_lower(x1), f_info(x1));
     else
@@ -1221,21 +1214,14 @@ Interval<To_Boundary, To_Info>::or_assign(const From1& x, const From2& y) {
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  if (x == y) {
-    Boundary_NS::assign(LOWER, to_lower, to_info,
-			LOWER, f_lower(x), f_info(x));
-
-    Boundary_NS::assign(UPPER, upper(), info(),
-			UPPER, f_upper(x), f_info(x));
-  }
-  else if (xls >= 0 && yls >= 0) {
+  if (xls >= 0 && yls >= 0) {
     // 0 <= xl <= xu, 0 <= yl <= xu
     r = x1.add_assign(x,y);
     x2.max(x,y);
 
     Boundary_NS::assign(LOWER, to_lower, to_info,
 			LOWER, f_lower(x2), f_info(x2));
-    if (r & V_GT_SUP)
+    if (!x1.upper_is_boundary_infinity())
       Boundary_NS::assign(UPPER, upper(), info(),
 			  UPPER, f_upper(x1), f_info(x1));
     else
@@ -1329,51 +1315,73 @@ Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
   int xus = sgn_b(UPPER, f_upper(x), f_info(x));
   int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  if (x == y) {
-    Boundary_NS::assign(LOWER, to_lower, to_info,
-			LOWER, f_lower(zero), f_info(zero));
-
-    Boundary_NS::assign(UPPER, upper(), info(),
-			UPPER, f_upper(zero), f_info(zero));
-  }
-  else if( ((xls >= 0) && (yls >= 0)) || ((xus < 0) && (yus < 0)) ) {
+  if(xls >= 0 && yls >= 0) {
     /*
       0 <= xl <= xu, 0 <= yl <= yu
-      xl <= xu < 0, yl <= yu < 0
     */
     r = x1.add_assign(x, y);
-    if (xus < 0)
-      x1.neg_assign(x1);
 
     Boundary_NS::assign(LOWER, to_lower, to_info,
 			LOWER, f_lower(zero), f_info(zero));
 
-    if ((r & V_GT_SUP) | (r & V_LT_INF))
+    if (!x1.upper_is_boundary_infinity())
       Boundary_NS::assign(UPPER, upper(), info(),
-			  LOWER, f_lower(x1), f_info(x1));
+			  UPPER, f_upper(x1), f_info(x1));
     else
-      Boundary_NS::assign(LOWER, to_lower, to_info,
-			  LOWER, f_lower(max_value), f_info(max_value));
+      Boundary_NS::assign(UPPER, upper(), info(),
+			  UPPER, f_upper(max_value), f_info(max_value));
   }
   else if ((xls >= 0 && yus < 0) || (xus < 0 && yls >= 0)) {
     /*
       0 <= xl <= xu, yl <= yu < 0
       xl <= xu < 0, 0 <= yl <= yu
     */
-    if (xls >= 0)
-      r = x1.sub_assign(y, x);
-    else
-      r = x1.sub_assign(x, y);
+    Result rl, ru;
 
-    if (r & V_LT_INF)
-      Boundary_NS::assign(LOWER, to_lower, to_info,
-			  LOWER, f_lower(x1), f_info(x1));
-    else
+    if (xls >= 0) {
+      rl = Boundary_NS::sub_assign(LOWER, to_lower, to_info,
+				   LOWER, f_lower(y), f_info(y),
+				   LOWER, f_lower(x), f_info(x));
+      ru = Boundary_NS::sub_assign(UPPER, upper(), info(),
+				   UPPER, f_upper(y), f_info(y),
+				   UPPER, f_upper(x), f_info(x));
+    }
+    else {
+      rl = Boundary_NS::sub_assign(LOWER, to_lower, to_info,
+				   LOWER, f_lower(x), f_info(x),
+				   LOWER, f_lower(y), f_info(y));
+      ru = Boundary_NS::sub_assign(UPPER, upper(), info(),
+				   UPPER, f_upper(x), f_info(x),
+				   UPPER, f_upper(y), f_info(y));
+    }
+    r = combine(rl,ru);
+
+    if (Boundary_NS::is_boundary_infinity(LOWER, to_lower, to_info)) {
+      to_info.clear();
       Boundary_NS::assign(LOWER, to_lower, to_info,
 			  LOWER, f_lower(min_value), f_info(min_value));
-
+    }
     Boundary_NS::assign(UPPER, upper(), info(),
 			UPPER, f_upper(neg_one), f_info(neg_one));
+  }
+  else if (xus < 0 && yus < 0) {
+    /*
+      xl <= xu < 0, yl <= yu < 0
+    */
+    r = x1.add_assign(x, y);
+
+    Boundary_NS::assign(LOWER, to_lower, to_info,
+			LOWER, f_lower(zero), f_info(zero));
+
+    inf = -Parma_Polyhedra_Library::is_infinity(x1);
+    if (inf < 0)
+      Boundary_NS::assign(UPPER, upper(), info(),
+			  UPPER, f_upper(max_value), f_info(max_value));
+    else {
+      x1.neg_assign(x1);
+      Boundary_NS::assign(UPPER, upper(), info(),
+			  LOWER, f_lower(x1), f_info(x1));
+    }
   }
   else
     throw std::runtime_error("The two intervals are not completely "
@@ -1419,55 +1427,57 @@ Interval<To_Boundary, To_Info>::lshift_assign(const From1& x, const From2& y) {
 
   z.pow_assign(y);
 
-  I_Result r = I_NOT_EMPTY;
+  if (z.is_bounded()) {
+    I_Result r;
 
-  PPL_DIRTY_TEMP(To_Boundary, to_lower);
-  PPL_DIRTY_TEMP(To_Info, to_info);
-  to_info.clear();
+    PPL_DIRTY_TEMP(To_Boundary, to_lower);
+    PPL_DIRTY_TEMP(To_Info, to_info);
+    to_info.clear();
 
-  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
-  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
-  int xus = sgn_b(UPPER, f_upper(x), f_info(x));
-  int yus = sgn_b(UPPER, f_upper(y), f_info(y));
+    int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+    int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+    int xus = sgn_b(UPPER, f_upper(x), f_info(x));
+    int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  if ((xls >= 0 && yls >= 0) || (xus < 0 && yls >= 0)) {
-    /*
-      0 <= xl <= xu, 0 <= yl <= yu
-      xl <= xu < 0, 0 <= yl <= yu
-    */
-    r = x1.mul_assign(x, z);
-    if (r & V_GT_SUP) {
+    if ((xls >= 0 && yls >= 0) || (xus < 0 && yls >= 0)) {
+      /*
+	0 <= xl <= xu, 0 <= yl <= yu
+	xl <= xu < 0, 0 <= yl <= yu
+      */
+      r = x1.mul_assign(x, z);
+
+      Boundary_NS::assign(LOWER, to_lower, to_info,
+			  LOWER, f_lower(x1), f_info(x1));
+      if (x1.is_bounded())
+	Boundary_NS::assign(UPPER, upper(), info(),
+			    UPPER, f_upper(x1), f_info(x1));
+      else
+	Boundary_NS::assign(UPPER, upper(), info(),
+			    UPPER, f_upper(max_value), f_info(max_value));
+    }
+    else if ((xus < 0 && yus < 0) || ( xls >=0 && yus < 0)) {
+      /*
+	xl <= xu < 0, yl <= yu < 0
+	0 <= xl <= xu, yl <= yu < 0
+      */
+      r = x1.div_assign(x, z);
+
       Boundary_NS::assign(LOWER, to_lower, to_info,
 			  LOWER, f_lower(x1), f_info(x1));
       Boundary_NS::assign(UPPER, upper(), info(),
 			  UPPER, f_upper(x1), f_info(x1));
     }
-    else  {
-      Boundary_NS::assign(LOWER, to_lower, to_info,
-			  LOWER, f_lower(max_value), f_info(max_value));
-      Boundary_NS::assign(UPPER, upper(), info(),
-			  UPPER, f_upper(max_value), f_info(max_value));
-    }
-  }
-  else if ((xus < 0 && yus < 0) || ( xls >=0 && yus < 0)) {
-    /*
-      xls <= xus < 0, yl <= yu <0
-      0 <= xl <= xu, yl <= yu < 0
-    */
-    r = x1.div_assign(x, z);
-    Boundary_NS::assign(LOWER, to_lower, to_info,
-			LOWER, f_lower(x1), f_info(x1));
-    Boundary_NS::assign(UPPER, upper(), info(),
-			UPPER, f_upper(x1), f_info(x1));
+    else
+      throw std::runtime_error("The two intervals are not completely "
+			       "less or greater than zero");
+
+    assign_or_swap(lower(), to_lower);
+    assign_or_swap(info(), to_info);
+    PPL_ASSERT(OK());
+    return r;
   }
   else
-    throw std::runtime_error("The two intervals are not completely "
-			     "less or greater than zero");
-
-  assign_or_swap(lower(), to_lower);
-  assign_or_swap(info(), to_info);
-  PPL_ASSERT(OK());
-  return r;
+    throw std::runtime_error("The second operand is not bounded.");
 }
 
 /**
@@ -1504,55 +1514,57 @@ Interval<To_Boundary, To_Info>::rshift_assign(const From1& x, const From2& y) {
 
   z.pow_assign(y);
 
-  I_Result r = I_NOT_EMPTY;
+  if (z.is_bounded()) {
+    I_Result r = I_NOT_EMPTY;
 
-  PPL_DIRTY_TEMP(To_Boundary, to_lower);
-  PPL_DIRTY_TEMP(To_Info, to_info);
-  to_info.clear();
+    PPL_DIRTY_TEMP(To_Boundary, to_lower);
+    PPL_DIRTY_TEMP(To_Info, to_info);
+    to_info.clear();
 
-  int xls = sgn_b(LOWER, f_lower(x), f_info(x));
-  int yls = sgn_b(LOWER, f_lower(y), f_info(y));
-  int xus = sgn_b(UPPER, f_upper(x), f_info(x));
-  int yus = sgn_b(UPPER, f_upper(y), f_info(y));
+    int xls = sgn_b(LOWER, f_lower(x), f_info(x));
+    int yls = sgn_b(LOWER, f_lower(y), f_info(y));
+    int xus = sgn_b(UPPER, f_upper(x), f_info(x));
+    int yus = sgn_b(UPPER, f_upper(y), f_info(y));
 
-  if ((xls >= 0 && yls >=0) || (xus < 0 && yls >= 0)) {
-    /*
-      0 <= xl <= xu, 0 <= yl <= yu
-      xl <= xs < 0, 0 <= yl < yu
-    */
-    r = x1.div_assign(x, z);
-    Boundary_NS::assign(LOWER, to_lower, to_info,
-			LOWER, f_lower(x1), f_info(x1));
-    Boundary_NS::assign(UPPER, upper(), info(),
-			UPPER, f_upper(x1), f_info(x1));
-  }
-  else if ((xls >= 0 && yus < 0) || (xus < 0 && yus < 0)) {
-    /*
-      0 <= xl <= xu, yl <= yu < 0
-      xl <= xus <= 0, yl <= yu < 0
-    */
-    r = x1.mul_assign(x, z);
-    if (r & V_LT_INF) {
+    if ((xls >= 0 && yls >=0) || (xus < 0 && yls >= 0)) {
+      /*
+	0 <= xl <= xu, 0 <= yl <= yu
+	xl <= xs < 0, 0 <= yl < yu
+      */
+      r = x1.div_assign(x, z);
       Boundary_NS::assign(LOWER, to_lower, to_info,
 			  LOWER, f_lower(x1), f_info(x1));
       Boundary_NS::assign(UPPER, upper(), info(),
 			  UPPER, f_upper(x1), f_info(x1));
     }
-    else {
-      Boundary_NS::assign(LOWER, to_lower, to_info,
-			  LOWER, f_lower(min_value), f_info(min_value));
+    else if ((xls >= 0 && yus < 0) || (xus < 0 && yus < 0)) {
+      /*
+	0 <= xl <= xu, yl <= yu < 0
+	xl <= xu <= 0, yl <= yu < 0
+      */
+      r = x1.mul_assign(x, z);
+
+      if (x1.is_bounded())
+	Boundary_NS::assign(LOWER, to_lower, to_info,
+			    LOWER, f_lower(x1), f_info(x1));
+      else
+	Boundary_NS::assign(LOWER, to_lower, to_info,
+			    LOWER, f_lower(min_value), f_info(min_value));
+
       Boundary_NS::assign(UPPER, upper(), info(),
-			  UPPER, f_upper(min_value), f_info(min_value));
+			  UPPER, f_upper(x1), f_info(x1));
     }
-  }
-  else
-    throw std::runtime_error("The two intervals are not completely "
+    else
+      throw std::runtime_error("The two intervals are not completely "
 			     "less or greater than zero");
 
-  assign_or_swap(lower(), to_lower);
-  assign_or_swap(info(), to_info);
-  PPL_ASSERT(OK());
-  return r;
+    assign_or_swap(lower(), to_lower);
+    assign_or_swap(info(), to_info);
+    PPL_ASSERT(OK());
+    return r;
+  }
+  else
+        throw std::runtime_error("The second operand is not bounded.");
 }
 
 template <typename To_Boundary, typename To_Info>
