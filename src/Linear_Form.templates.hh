@@ -431,6 +431,7 @@ template <typename C>
 Linear_Form<C>&
 operator<<(Linear_Form<C>& f, const C& n) {
   C zero(0);
+  C one(1);
 
   dimension_type f_size = f.size();
 
@@ -438,6 +439,8 @@ operator<<(Linear_Form<C>& f, const C& n) {
     f = Linear_Form<C>(zero);
     return f;
   }
+  else if (n == one)
+    return f;
   else if (f >= zero || f < zero) {
     for (dimension_type i = f_size; i-- > 0; )
       f[i] << n;
@@ -453,6 +456,7 @@ template <typename C>
 Linear_Form<C>&
 operator>>(Linear_Form<C>& f, const C& n) {
   C zero(0);
+  C one(1);
 
   dimension_type f_size = f.size();
 
@@ -460,6 +464,8 @@ operator>>(Linear_Form<C>& f, const C& n) {
     f = Linear_Form<C>(zero);
     return f;
   }
+  if (n == one)
+    return f;
   else if (f >= zero || f < zero) {
     for (dimension_type i = f_size; i-- > 0; )
       f[i] >> n;
