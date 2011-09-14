@@ -2867,11 +2867,11 @@ The interval bitwise operators are defined as follow:
     \bigl[\bigl(a / 2^{\left|a'\right|}\bigr, 
           \bigl(b / 2^{\left|b'\right|}\bigr)\bigr],
       & \text{if $a \geq 0$ and $b' < 0$}; \\
-    \bigl[\bigl(a \times 2^{a'}\bigr), 
-          \bigl(b \times 2^{b'}\bigr)\bigr],
+    \bigl[\bigl(a \times 2^{b'}\bigr), 
+          \bigl(b \times 2^{a'}\bigr)\bigr],
       & \text{if $b < 0$ and $a' \geq 0$}; \\
-    \bigl[\bigl(a / 2^{\left|a'\right|}\bigr), 
-          \bigl(b / 2^{\left|b'\right|}\bigr)\bigr],
+    \bigl[\bigl(a / 2^{\left|b'\right|}\bigr), 
+          \bigl(b / 2^{\left|a'\right|}\bigr)\bigr],
       & \text{if $b < 0$ and $b' < 0$}. \\
   \end{cases}
 \f]
@@ -2879,11 +2879,11 @@ The interval bitwise operators are defined as follow:
 \f[
   [a,b] \ogreaterthan ^{\#} [a',b'] \approx
   \begin{cases}
-    \bigl[\bigl(a / 2^{a'}\bigr), 
-          \bigl(b / 2^{b'}\bigr)\bigr],
+    \bigl[\bigl(a / 2^{b'}\bigr), 
+          \bigl(b / 2^{a'}\bigr)\bigr],
       & \text{if $a \geq 0$ and $a' \geq 0$}; \\
-    \bigl[\bigl(a \times 2^{\left|a'\right|}\bigr), 
-          \bigl(b \times 2^{\left|b'\right|}\bigr)\bigr],
+    \bigl[\bigl(a \times 2^{\left|b'\right|}\bigr), 
+          \bigl(b \times 2^{\left|a'\right|}\bigr)\bigr],
       & \text{if $a \geq 0$ and $b' < 0$}; \\
     \bigl[\bigl(a / 2^{a'}\bigr), 
           \bigl(b / 2^{b'}\bigr)\bigr],
