@@ -461,303 +461,6 @@ div_linearize_int
 
 /*! \brief
   Helper function used by <CODE>linearize_int</CODE> to linearize a
-  \f$or\f$ of integer expressions.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p Integer_Int_Interval represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a integer type.
-
-  Makes \p result become the linearization of \p *this in the given
-  composite abstract store.
-
-  \param bop_expr The binary operator concrete expression to linearize.
-  Its binary operator type must be <CODE>BOR</CODE>.
-  \param oracle The Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result The modified linear form.
-
-  \return <CODE>true</CODE> if the linearization succeeded,
-  <CODE>false</CODE> otherwise.
-
-  \par Linearization of or integer expressions
-
-  Let \f$x\f$ and \f$y\f$ be two integer constants both greater than or equal
-  zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
-
-  \f[
-  \max \{ x, y \}
-  \leq
-  x \mathbin\mid} y
-  \leq
-  x + y
-  \f]
-
-  Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
-  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
-  be two linear forms and \f$\borlf\f$ a sound abstract operator on linear
-  forms such that:
-
-  \f[
-  \left(i + \sum_{v \in \cV}i_{v}v \right)
-  \borlf
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
-  =
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \f]
-
-  where:
-
-  \f[
-  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  \left(i + \sum_{v \in \cV}i_{v}v \right)
-  \aslf
-  \left(i' + \sum_{V \in \cV}i'_{v}v \right).
-  \f]
-
-  then:
-
-  \f[
-  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  \left(i \asifp i'\right)
-  + \sum_{v \in \cV}\bigl(i_{v} \asifp i'_{v} \bigr)v.
-  \f]
-
-  and we can define the elments of the linear form
-  \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
-
-  \f[
-  \max(i, i')
-  \leq
-  k
-  \leq
-  (i \asifp i')
-  \f]
-
-  \f[
-  \max\left(i_{v},i'_{v} \right)
-  \leq
-  k_{v}
-  \leq
-  \bigl(i_{v} \asifp i'_{v} \bigr)
-  \f]
-
-  then
-
-  \f[
-  k
-  \approx
-  \max(i, i')
-  \bowtie
-  (i \asifp i')
-  \f]
-
-  \f[
-  k_{v}
-  \approx
-  \max(i_v, i'_v)
-  \bowtie
-  \bigl(i_{v} \asifp i'_{v} \bigr)
-  \f]
-
-  If instead, let \f$x\f$ and \f$y\f$ be two integer constants with discordant
-  sign, then \f$x \mathbin{\mid} y\f$ is defined as follows:
-
-  \f[
-  \min \{ x, y \}
-  \leq
-  x \mathbin{\mid} y
-  \leq
-  -1
-  \f]
-
-  Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
-  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
-  be two linear forms and \f$\borlf\f$ a sound abstract operator on linear
-  forms such that:
-
-  \f[
-  \left(i + \sum_{v \in \cV}i_{v}v \right)
-  \borlf
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
-  =
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \f]
-
-  where
-
-  \f[
-  \min\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  -1
-  \f]
-
-  and we can define the elments of the linear form
-  \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
-
-  \f[
-  \min(i, i')
-  \leq
-  k
-  \leq
-  -1
-  \f]
-
-  \f[
-  \min(i_v, i'_v)
-  \leq
-  k_{v}
-  \leq
-  -1
-  \f]
-
-  then
-
-  \f[
-  k
-  \approx
-  \min(i, i')
-  \bowtie
-  -1
-  \f]
-
-  \f[
-  k_{v}
-  \approx
-  \min(i_v, i'_v)
-  \bowtie
-  -1
-  \f]
-
-  Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less then
-  zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
-
-  \f[
-  \max \{ x, y \}
-  \leq
-  x \mathbin{\mid} y
-  \leq
-  -1
-  \f]
-
-  Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
-  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
-  be two linear forms and \f$\borlf\f$ a sound abstract operator on linear
-  forms such that:
-
-  \f[
-  \left(i + \sum_{v \in \cV}i_{v}v \right)
-  \borlf
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
-  =
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \f]
-
-  where
-
-  \f[
-  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
-  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
-  \leq
-  \left(k + \sum_{v \in \cV}k_{v}v \right)
-  \leq
-  -1
-  \f]
-
-  and we can define the elments of the linear form
-  \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
-
-  \f[
-  \max(i, i')
-  \leq
-  k
-  \leq
-  -1
-  \f]
-
-  \f[
-  \max(i_v, i'_v)
-  \leq
-  k_{v}
-  \leq
-  -1
-  \f]
-
-  then
-
-  \f[
-  k
-  \approx
-  \max(i, i')
-  \bowtie
-  -1
-  \f]
-
-  \f[
-  k_{v}
-  \approx
-  \max(i_v, i'_v)
-  \bowtie
-  -1
-  \f]
-
-  Given an expression \f$e_{1} \ovee e_{2}\f$ and a composite
-  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
-  \rrbracket\f$, we construct the interval linear form
-  \f$\linexprenv{e_{1} \ovee e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
-  as follows:
-  \f[
-  \linexprenv{e_{1} \ovee e_{2}}{\rho^{\#}}{\rho^{\#}_l}
-  =
-  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
-  \borlf
-  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
-  \f]
-*/
-
-template <typename Target, typename Integer_Int_Interval>
-static bool
-or_linearize_int
-(const Binary_Operator<Target>& bop_expr,
- const Oracle<Target,Integer_Int_Interval>& oracle,
- const std::map<dimension_type, Linear_Form<Integer_Int_Interval> >& lf_store,
- Linear_Form<Integer_Int_Interval>& result) {
-  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::BOR);
-
-  typedef Linear_Form<Integer_Int_Interval> Integer_Linear_Form;
-
-  if (!linearize_int(*(bop_expr.left_hand_side()), oracle, lf_store,result))
-    return false;
-
-  Integer_Linear_Form linearized_second_operand;
-  if (!linearize_int(*(bop_expr.right_hand_side()), oracle, lf_store,
-		     linearized_second_operand))
-    return false;
-
-  if (incomplete(result,linearized_second_operand))
-    return false;
-
-  result |= linearized_second_operand;
-
-  return !result.overflows();
-}
-
-/*! \brief
-  Helper function used by <CODE>linearize_int</CODE> to linearize a
   \f$and\f$ of integer expressions.
 
   \par Template type parameters
@@ -1051,6 +754,303 @@ and_linearize_int
     return false;
 
   result &= linearized_second_operand;
+
+  return !result.overflows();
+}
+
+/*! \brief
+  Helper function used by <CODE>linearize_int</CODE> to linearize a
+  \f$or\f$ of integer expressions.
+
+  \par Template type parameters
+
+  - The class template parameter \p Target specifies the implementation
+  of Concrete_Expression to be used.
+  - The class template parameter \p Integer_Int_Interval represents the type
+  of the intervals used in the abstract domain. The interval bounds
+  should have a integer type.
+
+  Makes \p result become the linearization of \p *this in the given
+  composite abstract store.
+
+  \param bop_expr The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>BOR</CODE>.
+  \param oracle The Oracle to be queried.
+  \param lf_store The linear form abstract store.
+  \param result The modified linear form.
+
+  \return <CODE>true</CODE> if the linearization succeeded,
+  <CODE>false</CODE> otherwise.
+
+  \par Linearization of or integer expressions
+
+  Let \f$x\f$ and \f$y\f$ be two integer constants both greater than or equal
+  zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
+
+  \f[
+  \max \{ x, y \}
+  \leq
+  x \mathbin\mid} y
+  \leq
+  x + y
+  \f]
+
+  Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms and \f$\borlf\f$ a sound abstract operator on linear
+  forms such that:
+
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \borlf
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \f]
+
+  where:
+
+  \f[
+  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \aslf
+  \left(i' + \sum_{V \in \cV}i'_{v}v \right).
+  \f]
+
+  then:
+
+  \f[
+  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  \left(i \asifp i'\right)
+  + \sum_{v \in \cV}\bigl(i_{v} \asifp i'_{v} \bigr)v.
+  \f]
+
+  and we can define the elments of the linear form
+  \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
+
+  \f[
+  \max(i, i')
+  \leq
+  k
+  \leq
+  (i \asifp i')
+  \f]
+
+  \f[
+  \max\left(i_{v},i'_{v} \right)
+  \leq
+  k_{v}
+  \leq
+  \bigl(i_{v} \asifp i'_{v} \bigr)
+  \f]
+
+  then
+
+  \f[
+  k
+  \approx
+  \max(i, i')
+  \bowtie
+  (i \asifp i')
+  \f]
+
+  \f[
+  k_{v}
+  \approx
+  \max(i_v, i'_v)
+  \bowtie
+  \bigl(i_{v} \asifp i'_{v} \bigr)
+  \f]
+
+  If instead, let \f$x\f$ and \f$y\f$ be two integer constants with discordant
+  sign, then \f$x \mathbin{\mid} y\f$ is defined as follows:
+
+  \f[
+  \min \{ x, y \}
+  \leq
+  x \mathbin{\mid} y
+  \leq
+  -1
+  \f]
+
+  Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms and \f$\borlf\f$ a sound abstract operator on linear
+  forms such that:
+
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \borlf
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \f]
+
+  where
+
+  \f[
+  \min\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+  \f]
+
+  and we can define the elments of the linear form
+  \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
+
+  \f[
+  \min(i, i')
+  \leq
+  k
+  \leq
+  -1
+  \f]
+
+  \f[
+  \min(i_v, i'_v)
+  \leq
+  k_{v}
+  \leq
+  -1
+  \f]
+
+  then
+
+  \f[
+  k
+  \approx
+  \min(i, i')
+  \bowtie
+  -1
+  \f]
+
+  \f[
+  k_{v}
+  \approx
+  \min(i_v, i'_v)
+  \bowtie
+  -1
+  \f]
+
+  Finally, let \f$x\f$ and \f$y\f$ be two integer constants both less then
+  zero, then \f$x \mathbin{\mid} y\f$ is defined as follows:
+
+  \f[
+  \max \{ x, y \}
+  \leq
+  x \mathbin{\mid} y
+  \leq
+  -1
+  \f]
+
+  Then let \f$i + \sum_{v \in \cV}i_{v}v \f$ and
+  \f$i' + \sum_{v \in \cV}i'_{v}v \f$
+  be two linear forms and \f$\borlf\f$ a sound abstract operator on linear
+  forms such that:
+
+  \f[
+  \left(i + \sum_{v \in \cV}i_{v}v \right)
+  \borlf
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)
+  =
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \f]
+
+  where
+
+  \f[
+  \max\left(\left(i + \sum_{v \in \cV}i_{v}v \right),
+  \left(i' + \sum_{v \in \cV}i'_{v}v \right)\right)
+  \leq
+  \left(k + \sum_{v \in \cV}k_{v}v \right)
+  \leq
+  -1
+  \f]
+
+  and we can define the elments of the linear form
+  \f$k + \sum_{v \in \cV}k_{v}v\f$, as follows, \f$\forall v \in \cV\f$:
+
+  \f[
+  \max(i, i')
+  \leq
+  k
+  \leq
+  -1
+  \f]
+
+  \f[
+  \max(i_v, i'_v)
+  \leq
+  k_{v}
+  \leq
+  -1
+  \f]
+
+  then
+
+  \f[
+  k
+  \approx
+  \max(i, i')
+  \bowtie
+  -1
+  \f]
+
+  \f[
+  k_{v}
+  \approx
+  \max(i_v, i'_v)
+  \bowtie
+  -1
+  \f]
+
+  Given an expression \f$e_{1} \ovee e_{2}\f$ and a composite
+  abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
+  \rrbracket\f$, we construct the interval linear form
+  \f$\linexprenv{e_{1} \ovee e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  as follows:
+  \f[
+  \linexprenv{e_{1} \ovee e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  =
+  \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
+  \borlf
+  \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \f]
+*/
+
+template <typename Target, typename Integer_Int_Interval>
+static bool
+or_linearize_int
+(const Binary_Operator<Target>& bop_expr,
+ const Oracle<Target,Integer_Int_Interval>& oracle,
+ const std::map<dimension_type, Linear_Form<Integer_Int_Interval> >& lf_store,
+ Linear_Form<Integer_Int_Interval>& result) {
+  PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::BOR);
+
+  typedef Linear_Form<Integer_Int_Interval> Integer_Linear_Form;
+
+  if (!linearize_int(*(bop_expr.left_hand_side()), oracle, lf_store,result))
+    return false;
+
+  Integer_Linear_Form linearized_second_operand;
+  if (!linearize_int(*(bop_expr.right_hand_side()), oracle, lf_store,
+		     linearized_second_operand))
+    return false;
+
+  if (incomplete(result,linearized_second_operand))
+    return false;
+
+  result |= linearized_second_operand;
 
   return !result.overflows();
 }
