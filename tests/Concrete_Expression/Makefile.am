@@ -55,7 +55,11 @@ ORIGINAL_TESTS = \
 C_Expr \
 linearform1 \
 linearize \
-linearize_int \
+linearize_int_and \
+linearize_int_or \
+linearize_int_xor \
+linearize_int_lshift \
+linearize_int_rshift \
 digitalfilters1 \
 bdshape1 \
 bdshape2 \
@@ -144,7 +148,15 @@ linearform1_SOURCES = linearform1.cc
 
 linearize_SOURCES = linearize.cc
 
-linearize_int_SOURCES = linearize_int.cc
+linearize_int_and_SOURCES = linearize_int_and.cc
+
+linearize_int_or_SOURCES = linearize_int_or.cc
+
+linearize_int_xor_SOURCES = linearize_int_xor.cc
+
+linearize_int_lshift_SOURCES = linearize_int_lshift.cc
+
+linearize_int_rshift_SOURCES = linearize_int_rshift.cc
 
 octagonalshape1_SOURCES = octagonalshape1.cc
 
