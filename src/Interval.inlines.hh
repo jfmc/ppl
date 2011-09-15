@@ -1373,7 +1373,7 @@ Interval<To_Boundary, To_Info>::xor_assign(const From1& x, const From2& y) {
     Boundary_NS::assign(LOWER, to_lower, to_info,
 			LOWER, f_lower(zero), f_info(zero));
 
-    if (Boundary_NS::is_boundary_infinity(LOWER, f_lower(x1), f_info(x1)))
+    if (Boundary_NS::is_boundary_infinity(UPPER, f_upper(x1), f_info(x1)))
       Boundary_NS::assign(UPPER, upper(), info(),
 			  UPPER, f_upper(max_value), f_info(max_value));
     else {
