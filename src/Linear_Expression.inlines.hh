@@ -93,10 +93,30 @@ Linear_Expression::coefficient(Variable v) const {
   return row[v.id() + 1];
 }
 
+inline void
+Linear_Expression
+::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
+  assert(v.space_dimension() <= space_dimension());
+  row[v.id() + 1] = n;
+}
+
 inline Coefficient_traits::const_reference
 Linear_Expression::inhomogeneous_term() const {
   return row[0];
 }
+
+inline void
+Linear_Expression
+::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
+  row[0] = n;
+}
+
+inline void
+Linear_Expression::swap_space_dimensions(Variable v1, Variable v2) {
+  row.swap(v1.space_dimension(), v2.space_dimension());
+}
+
+void remove_space_dimensions(const Variables_Set& vars);
 
 inline bool
 Linear_Expression::is_zero() const {
@@ -185,6 +205,11 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 inline void
 Linear_Expression::swap(Linear_Expression& y) {
   row.swap(y.row);
+}
+
+inline void
+Linear_Expression::normalize() {
+  row.normalize();
 }
 
 inline void

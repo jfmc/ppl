@@ -114,6 +114,51 @@ PPL::Linear_Expression::is_equal_to(const Linear_Expression& x) const {
   return row == x.row;
 }
 
+void
+PPL::Linear_Expression::remove_space_dimensions(const Variables_Set& vars) {
+  PPL_ASSERT(vars.space_dimension() <= space_dimension());
+  // For each variable to be removed, replace the corresponding coefficient
+  // by shifting left the coefficient to the right that will be kept.
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst_col = *vsi+1;
+  dimension_type src_col = dst_col + 1;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_col = *vsi+1;
+    // Move all columns in between to the left.
+    while (src_col < vsi_col)
+      row.swap(dst_col++, src_col++);
+    ++src_col;
+  }
+  // Move any remaining columns.
+  const dimension_type sz = row.size();
+  while (src_col < sz)
+    row.swap(dst_col++, src_col++);
+
+  // The number of remaining coefficients is `dst_col'.
+  row.resize(dst_col);
+}
+
+void
+PPL::Linear_Expression::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  const dimension_type n = cycle.size();
+  if (n < 2)
+    return;
+
+  if (n == 2) {
+    row.swap(cycle[0].space_dimension(), cycle[1].space_dimension());
+  } else {
+    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+    tmp = row[cycle.back().space_dimension()];
+    for (dimension_type i = n - 1; i-- > 0; )
+     row.swap(cycle[i + 1].space_dimension(), cycle[i].space_dimension());
+    if (tmp == 0)
+      row.reset(cycle[0].space_dimension());
+    else
+      std::swap(tmp, row[cycle[0].space_dimension()]);
+  }
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {

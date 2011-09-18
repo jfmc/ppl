@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -325,9 +326,41 @@ public:
   //! Returns the coefficient of \p v in \p *this.
   Coefficient_traits::const_reference coefficient(Variable v) const;
 
+  //! Sets the coefficient of \p v in \p *this to \p n.
+  void set_coefficient(Variable v,
+                       Coefficient_traits::const_reference n);
+
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
+  //! Sets the inhomogeneous term of \p *this to \p n.
+  void set_inhomogeneous_term(Coefficient_traits::const_reference n);
+
+  //! Swaps the coefficients of the variables \p v1 and \p v2 .
+  void swap_space_dimensions(Variable v1, Variable v2);
+
+  //! Removes all the specified dimensions from the expression.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+  */
+  void remove_space_dimensions(const Variables_Set& vars);
+
+  //! Permutes the space dimensions of the expression.
+  /*!
+    \param cycle
+    A vector representing a cycle of the permutation according to which the
+    space dimensions must be rearranged.
+
+    The \p cycle vector represents a cycle of a permutation of space
+    dimensions.
+    For example, the permutation
+    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
+    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
+  */
+  void permute_space_dimensions(const std::vector<Variable>& cycle);
+  
   //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
   bool is_zero() const;
 
@@ -383,6 +416,14 @@ public:
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
   bool is_equal_to(const Linear_Expression& x) const;
+
+  //! Normalizes the modulo of the coefficients and of the inhomogeneous term
+  //! so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the coefficients
+    and the inhomogeneous term and normalizes them by the GCD itself.
+  */
+  void normalize();
 
 private:
   /*! \brief
