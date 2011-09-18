@@ -44,10 +44,12 @@ Constraint::is_not_necessarily_closed() const {
 
 inline dimension_type
 Constraint::space_dimension() const {
-  const dimension_type sz = expr.get_row().size();
-  return (sz == 0)
-    ? 0
-    : sz - (is_necessarily_closed() ? 1 : 2);
+  if (is_necessarily_closed())
+    return expr.space_dimension();
+  else {
+    assert(expr.space_dimension() != 0);
+    return expr.space_dimension() - 1;
+  }
 }
 
 inline bool
@@ -81,10 +83,10 @@ Constraint::set_topology(Topology x) {
     return;
   if (topology() == NECESSARILY_CLOSED)
     // Add a column for the epsilon dimension.
-    expr.get_row().resize(expr.get_row().size() + 1);
+    expr.set_space_dimension(expr.space_dimension() + 1);
   else {
-    PPL_ASSERT(expr.get_row().size() > 0);
-    expr.get_row().resize(expr.get_row().size() - 1);
+    PPL_ASSERT(expr.space_dimension() != 0);
+    expr.set_space_dimension(expr.space_dimension() - 1);
   }
   topology_ = x;
 }
@@ -154,7 +156,7 @@ inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  expr.get_row().swap(e.get_row());
+  expr.swap(e);
   if (type == EQUALITY)
     kind_ = LINE_OR_EQUALITY;
   else
@@ -216,18 +218,24 @@ Constraint::max_space_dimension() {
 inline void
 Constraint::set_space_dimension(dimension_type space_dim) {
   if (topology() == NECESSARILY_CLOSED) {
-    expr.get_row().resize(space_dim + 1);
+    expr.set_space_dimension(space_dim);
   } else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
-      expr.get_row().resize(space_dim + 2);
-      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
+      expr.set_space_dimension(space_dim + 1);
+      expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
     } else {
-      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
-      expr.get_row().resize(space_dim + 2);
+      expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
+      expr.set_space_dimension(space_dim + 1);
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
+}
+
+inline bool
+Constraint::remove_space_dimensions(const Variables_Set& vars) {
+  expr.remove_space_dimensions(vars);
+  return true;
 }
 
 inline bool
@@ -247,7 +255,7 @@ Constraint::type() const {
   if (is_necessarily_closed())
     return NONSTRICT_INEQUALITY;
   else
-    return (expr.get_row()[expr.get_row().size() - 1] < 0)
+    return (expr.coefficient(Variable(expr.space_dimension() - 1)) < 0)
       ? STRICT_INEQUALITY
       : NONSTRICT_INEQUALITY;
 }
@@ -296,7 +304,7 @@ Constraint::total_memory_in_bytes() const {
 
 inline void
 Constraint::strong_normalize() {
-  expr.get_row().normalize();
+  expr.normalize();
   sign_normalize();
 }
 

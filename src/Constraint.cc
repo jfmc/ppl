@@ -71,8 +71,8 @@ PPL::Constraint::Constraint(const Congruence& cg)
   expr.set_space_dimension(cg.space_dimension());
   // Copy coefficients and inhomogeneous term.
   for (dimension_type i = cg.space_dimension(); i-- > 0; )
-    expr.get_row()[i + 1] = cg.coefficient(Variable(i));
-  expr.get_row()[0] = cg.inhomogeneous_term();
+    expr.set_coefficient(Variable(i), cg.coefficient(Variable(i)));
+  expr.set_inhomogeneous_term(cg.inhomogeneous_term());
   // Enforce normalization.
   strong_normalize();
   
@@ -94,8 +94,8 @@ PPL::Constraint::Constraint(const Congruence& cg,
   PPL_ASSERT(sz > 0);
   --sz;
   while (sz-- > 0)
-    expr.get_row()[sz + 1] = cg.coefficient(Variable(sz));
-  expr.get_row()[0] = cg.inhomogeneous_term();
+    expr.set_coefficient(Variable(sz), cg.coefficient(Variable(sz)));
+  expr.set_inhomogeneous_term(cg.inhomogeneous_term());
   
   PPL_ASSERT(OK());
 }
@@ -104,61 +104,22 @@ void
 PPL::Constraint::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
-  expr.get_row().swap(v1.space_dimension(), v2.space_dimension());
+  expr.swap_space_dimensions(v1, v2);
   // *this is still normalized but it may not be strongly normalized.
   sign_normalize();
   PPL_ASSERT(OK());
 }
 
-bool
-PPL::Constraint::remove_space_dimensions(const Variables_Set& vars) {
-  PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  // For each variable to be removed, replace the corresponding coefficient
-  // by shifting left the coefficient to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      std::swap(expr.get_row()[dst_col++], expr.get_row()[src_col++]);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type sz = expr.get_row().size();
-  while (src_col < sz)
-    std::swap(expr.get_row()[dst_col++], expr.get_row()[src_col++]);
-
-  // The number of remaining coefficients is `dst_col'.
-  expr.get_row().resize(dst_col);
-
-  PPL_ASSERT(OK());
-  return true;
-}
-
 void
 PPL::Constraint
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  const dimension_type n = cycle.size();
-  if (n < 2)
+
+  if (cycle.size() < 2)
     // No-op. No need to call sign_normalize().
     return;
 
-  if (n == 2) {
-    expr.get_row().swap(cycle[0].space_dimension(), cycle[1].space_dimension());
-  } else {
-    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    tmp = expr.get_row()[cycle.back().space_dimension()];
-    for (dimension_type i = n - 1; i-- > 0; )
-     expr.get_row().swap(cycle[i + 1].space_dimension(),
-                         cycle[i].space_dimension());
-    if (tmp == 0)
-      expr.get_row().reset(cycle[0].space_dimension());
-    else
-      std::swap(tmp, expr.get_row()[cycle[0].space_dimension()]);
-  }
+  expr.permute_space_dimensions(cycle);
+  
   // *this is still normalized but may be not strongly normalized: sign
   // normalization is necessary.
   sign_normalize();
