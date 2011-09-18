@@ -96,7 +96,7 @@ Linear_Expression::coefficient(Variable v) const {
 inline void
 Linear_Expression
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
-  assert(v.space_dimension() <= space_dimension());
+  PPL_ASSERT(v.space_dimension() <= space_dimension());
   row[v.id() + 1] = n;
 }
 
