@@ -306,7 +306,6 @@ test02() {
   tmp2 *= a1;
   tmp2 += b1 * tmp3;
   tmp2 += inh_term1;
-  std::cout << "tmp2 vale " << tmp2 << std::endl;
 
   linearize_int(rshift, oracle1, Integer_Linear_Form_Abstract_Store(),
 		result );

@@ -1498,7 +1498,7 @@ test12() {
 }
 
 /*
-  Tests linearization A + 4*B + 3*C + [3, 9] >> 3*A + B + 2*C + [9, 12]
+  Tests linearization A + 4*B + 3*C + [3, 9] << 3*A + B + 2*C + [9, 12]
   where A in [1, 2], B in [3, 5] and C in [0, 2].
 */
 bool
@@ -1598,7 +1598,7 @@ test13() {
 
   linearize_int(lshift, oracle, Integer_Linear_Form_Abstract_Store(),
 		result);
-  nout << "*** " << known_result << " >> " << lf << " ***" << endl
+  nout << "*** " << known_result << " << " << lf << " ***" << endl
 	 << "*** result *** " << endl
 	 << result << endl;
   known_result << tmp;

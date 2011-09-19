@@ -554,11 +554,11 @@ test07() {
 
   bool failed_and = false;
 
-  nout << "*** " << known_result << " << " << lf << " ***" << endl;
+  nout << "*** " << known_result << " & " << lf << " ***" << endl;
   if (!linearize_int(band, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result)) {
-    nout << "*** Linearization failed, the two linear forms have "
-	 << "different size *** " << endl;
+    nout << "*** Linearization failed, the two linear forms "
+         << "do not have the same variables. *** " << endl;
     failed_and = true;
   }
 

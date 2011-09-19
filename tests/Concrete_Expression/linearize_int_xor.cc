@@ -161,7 +161,7 @@ test02() {
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
 
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
@@ -240,7 +240,7 @@ test03() {
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -326,7 +326,7 @@ test04() {
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -404,7 +404,7 @@ test05() {
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -526,7 +526,7 @@ bool
 test07() {
   Integer_Int_Interval tmp(1);
   Integer_Int_Interval tmp1(5);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -556,11 +556,11 @@ test07() {
 
   bool failed_xor = false;
 
-  nout << "*** " << known_result << " << " << lf << " ***" << endl;
+  nout << "*** " << known_result << " ^ " << lf << " ***" << endl;
   if (!linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(),
 		     result )) {
-    nout << "*** Linearization failed, the two linear forms have "
-	 << "different size *** " << endl;
+    nout << "*** Linearization failed, the two linear forms "
+         << "do not have the same variables. *** " << endl;
     failed_xor = true;
   }
 
@@ -645,7 +645,7 @@ test09() {
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -740,7 +740,7 @@ test10() {
   tmp.join_assign(1);
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
-  nout << "A in " << tmp << " xor B in " << tmp1 << endl;
+  nout << "A in " << tmp << " and B in " << tmp1 << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
