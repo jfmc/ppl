@@ -416,9 +416,8 @@ operator^=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
     return f1;
   }
   else if (check_totaly(f1, f2)) {
-    for (dimension_type i = f2_size; i-- > 0; ) {
+    for (dimension_type i = f2_size; i-- > 0; )
       f1[i] ^= f2[i];
-    }
     return f1;
   }
   else

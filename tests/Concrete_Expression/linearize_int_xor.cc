@@ -74,7 +74,7 @@ bool
 test01() {
   Integer_Int_Interval tmp(2);
   tmp.join_assign(3);
-  nout << "B in " << tmp << endl;
+  nout<< "B in " << tmp << endl;
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(1), tmp);
 
@@ -241,6 +241,7 @@ test03() {
   Integer_Int_Interval tmp1(2);
   tmp1.join_assign(3);
   nout << "A in " << tmp << " and B in " << tmp1 << endl;
+
   Test_Oracle oracle(Integer_Interval_Abstract_Store(2));
   oracle.int_store.set_interval(Variable(0), tmp);
   oracle.int_store.set_interval(Variable(1), tmp1);
@@ -251,6 +252,10 @@ test03() {
 
   Integer_Int_Interval inh_term(-2);
   inh_term.join_assign(-3);
+
+  Integer_Int_Interval a1(-1);
+
+  Integer_Int_Interval b1(-1);
 
   Integer_Int_Interval inh_term1(-1);
   inh_term1.join_assign(-4);
@@ -263,8 +268,8 @@ test03() {
   Int_Constant<C_Expr> coeff_a(Integer_Type, a);
   Int_Constant<C_Expr> coeff_b(Integer_Type, b);
   Int_Constant<C_Expr> coeff_inh_term(Integer_Type, inh_term);
-  Int_Constant<C_Expr> coeff_a1(Integer_Type, a);
-  Int_Constant<C_Expr> coeff_b1(Integer_Type, a);
+  Int_Constant<C_Expr> coeff_a1(Integer_Type, a1);
+  Int_Constant<C_Expr> coeff_b1(Integer_Type, b1);
   Int_Constant<C_Expr> coeff_inh_term1(Integer_Type, inh_term1);
 
   Binary_Operator<C_Expr> term_a(Integer_Type, Binary_Operator<C_Expr>::MUL,
@@ -299,9 +304,9 @@ test03() {
   known_result += b * Integer_Linear_Form(B);
   known_result += inh_term;
 
-  Integer_Linear_Form lf = Integer_Linear_Form(A);
-  lf *= a;
-  lf += a * Integer_Linear_Form(B);
+  Integer_Linear_Form lf = A;
+  lf *= a1;
+  lf += b1 * Integer_Linear_Form(B);
   lf += inh_term1;
 
   linearize_int(bxor, oracle, Integer_Linear_Form_Abstract_Store(), result);
@@ -390,7 +395,7 @@ test04() {
   nout << endl;
 
   bool ok = result == known_result ;
-    ;
+
   return ok;
 }
 
