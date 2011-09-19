@@ -226,6 +226,18 @@ PPL::Generator::linear_combine(const Generator& y,
   x.strong_normalize();
 }
 
+void
+PPL::Generator::linear_combine(const Generator& y, Variable v) {
+  expr.linear_combine(y.expr, v);
+  strong_normalize();
+}
+
+void
+PPL::Generator::linear_combine_inhomogeneous(const Generator& y) {
+  expr.linear_combine_inhomogeneous(y.expr);
+  strong_normalize();
+}
+
 /*! \relates Parma_Polyhedra_Library::Generator */
 int
 PPL::compare(const Generator& x, const Generator& y) {

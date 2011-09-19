@@ -549,6 +549,35 @@ public:
   */
   void linear_combine(const Generator& y, dimension_type k);
 
+  //! Linearly combines \p *this with \p y so that the coefficient of \p v
+  //! is 0.
+  /*!
+    \param y
+    The Generator that will be combined with \p *this object;
+
+    \param v
+    The variable whose coefficient has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the coefficient of variable \p v equal to \f$0\f$. Then it assigns
+    the resulting Generator to \p *this and normalizes it.
+  */
+  void linear_combine(const Generator& y, Variable v);
+
+  //! Linearly combines \p *this with \p y so that the inhomogeneous term
+  //! becomes 0.
+  /*!
+    \param y
+    The expression that will be combined with \p *this object;
+
+    Computes a linear combination of \p *this and \p y having
+    the inhomogeneous term equal to \f$0\f$. Then it assigns
+    the resulting generator to \p *this.
+
+    \p *this and \p y must have the same space dimension.
+  */
+  void linear_combine_inhomogeneous(const Generator& y);
+  
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
