@@ -232,6 +232,18 @@ PPL::Constraint::linear_combine(const Constraint& y,
   x.strong_normalize();
 }
 
+void
+PPL::Constraint::linear_combine(const Constraint& y, Variable v) {
+  expr.linear_combine(y.expr, v);
+  strong_normalize();
+}
+
+void
+PPL::Constraint::linear_combine_inhomogeneous(const Constraint& y) {
+  expr.linear_combine_inhomogeneous(y.expr);
+  strong_normalize();
+}
+
 /*! \relates Parma_Polyhedra_Library::Constraint */
 int
 PPL::compare(const Constraint& x, const Constraint& y) {
