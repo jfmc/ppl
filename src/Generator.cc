@@ -202,31 +202,6 @@ PPL::Generator
 }
 
 void
-PPL::Generator::linear_combine(const Generator& y,
-                               const dimension_type k) {
-  Generator& x = *this;
-  // We can combine only vector of the same dimension.
-  PPL_ASSERT(x.expr.get_row().size() == y.expr.get_row().size());
-  PPL_ASSERT(x.expr.get_row()[k] != 0);
-  PPL_ASSERT(y.expr.get_row()[k] != 0);
-  // Let g be the GCD between `x[k]' and `y[k]'.
-  // For each i the following computes
-  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
-  normalize2(x.expr.get_row()[k], y.expr.get_row()[k],
-             normalized_x_k, normalized_y_k);
-  for (dimension_type i = expr.get_row().size(); i-- > 0; )
-    if (i != k) {
-      Coefficient& x_i = x.expr.get_row()[i];
-      x_i *= normalized_y_k;
-      sub_mul_assign(x_i, y.expr.get_row()[i], normalized_x_k);
-    }
-  x.expr.get_row()[k] = 0;
-  x.strong_normalize();
-}
-
-void
 PPL::Generator::linear_combine(const Generator& y, Variable v) {
   expr.linear_combine(y.expr, v);
   strong_normalize();

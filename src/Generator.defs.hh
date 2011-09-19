@@ -535,20 +535,6 @@ public:
   */
   bool check_strong_normalized() const;
 
-  //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
-  /*!
-    \param y
-    The Generator that will be combined with \p *this object;
-
-    \param k
-    The position of \p *this that have to be \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the element of index \p k equal to \f$0\f$. Then it assigns
-    the resulting Generator to \p *this and normalizes it.
-  */
-  void linear_combine(const Generator& y, dimension_type k);
-
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
   /*!
