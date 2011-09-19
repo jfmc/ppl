@@ -336,6 +336,43 @@ public:
   //! Sets the inhomogeneous term of \p *this to \p n.
   void set_inhomogeneous_term(Coefficient_traits::const_reference n);
 
+  //! Linearly combines \p *this with \p y so that the coefficient of \p v
+  //! is 0.
+  /*!
+    \param y
+    The expression that will be combined with \p *this object;
+
+    \param v
+    The variable whose coefficient has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the coefficient of variable \p v equal to \f$0\f$. Then it assigns
+    the resulting expression to \p *this.
+
+    \p *this and \p y must have the same space dimension.
+  */
+  void linear_combine(const Linear_Expression& y, Variable v);
+
+  //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>, but assumes that
+  //! \p *this and \p y have the same space dimension.
+  void linear_combine(const Linear_Expression& y,
+                      Coefficient_traits::const_reference c1,
+                      Coefficient_traits::const_reference c2);
+
+  //! Linearly combines \p *this with \p y so that the inhomogeneous term
+  //! becomes 0.
+  /*!
+    \param y
+    The expression that will be combined with \p *this object;
+
+    Computes a linear combination of \p *this and \p y having
+    the inhomogeneous term equal to \f$0\f$. Then it assigns
+    the resulting expression to \p *this.
+
+    \p *this and \p y must have the same space dimension.
+  */
+  void linear_combine_inhomogeneous(const Linear_Expression& y);
+
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 

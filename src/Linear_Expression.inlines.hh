@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.defs.hh"
 #include "Coefficient.defs.hh"
+#include "math_utilities.defs.hh"
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
@@ -109,6 +110,48 @@ inline void
 Linear_Expression
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
   row[0] = n;
+}
+
+inline void
+Linear_Expression
+::linear_combine(const Linear_Expression& y, Variable v) {
+  Linear_Expression& x = *this;
+  // We can combine only vector of the same dimension.
+  PPL_ASSERT(x.space_dimension() == y.space_dimension());
+  PPL_ASSERT(x.coefficient(v) != 0);
+  PPL_ASSERT(y.coefficient(v) != 0);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_v);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_v);
+  normalize2(x.coefficient(v), y.coefficient(v),
+             normalized_x_v, normalized_y_v);
+  neg_assign(normalized_x_v);
+  x.row.linear_combine(y.row, normalized_y_v, normalized_x_v);
+  assert(x.coefficient(v) == 0);
+}
+
+inline void
+Linear_Expression
+::linear_combine(const Linear_Expression& y,
+                 Coefficient_traits::const_reference c1,
+                 Coefficient_traits::const_reference c2) {
+  row.linear_combine(y.row, c1, c2);
+}
+
+inline void
+Linear_Expression
+::linear_combine_inhomogeneous(const Linear_Expression& y) {
+  Linear_Expression& x = *this;
+  // We can combine only vector of the same dimension.
+  PPL_ASSERT(x.space_dimension() == y.space_dimension());
+  PPL_ASSERT(x.inhomogeneous_term() != 0);
+  PPL_ASSERT(y.inhomogeneous_term() != 0);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_0);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_0);
+  normalize2(x.inhomogeneous_term(), y.inhomogeneous_term(),
+             normalized_x_0, normalized_y_0);
+  neg_assign(normalized_x_0);
+  x.row.linear_combine(y.row, normalized_y_0, normalized_x_0);
+  assert(x.inhomogeneous_term() == 0);
 }
 
 inline void
