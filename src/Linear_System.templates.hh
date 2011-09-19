@@ -593,11 +593,21 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // Combine the row containing the pivot with all the lines or
       // equalities following it, so that all the elements on the j-th
       // column in these rows become 0.
-      for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k)
-	if (rows[k].expression().get_row()[j] != 0) {
-	  rows[k].linear_combine(rows[rank], j);
-	  changed = true;
-	}
+      // TODO: Optimize this.
+      for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k) {
+        // TODO: Improve this.
+        if (j == 0) {
+          if (rows[k].expression().inhomogeneous_term() != 0) {
+            rows[k].linear_combine_inhomogeneous(rows[rank]);
+            changed = true;
+          }
+        } else {
+          if (rows[k].expression().coefficient(Variable(j - 1)) != 0) {
+            rows[k].linear_combine(rows[rank], Variable(j - 1));
+            changed = true;
+          }
+        }
+      }
       // Already dealt with the rank-th row.
       ++rank;
       // Consider another column index `j'.
