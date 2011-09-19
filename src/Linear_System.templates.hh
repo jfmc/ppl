@@ -661,7 +661,11 @@ Linear_System<Row>
       if (row_i.expression().get_row()[j] != 0) {
 	// Combine linearly `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
-	row_i.linear_combine(row_k, j);
+	// TODO: Consider improving this.
+	if (j == 0)
+          row_i.linear_combine_inhomogeneous(row_k);
+        else
+          row_i.linear_combine(row_k, Variable(j - 1));
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
