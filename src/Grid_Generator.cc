@@ -286,6 +286,19 @@ PPL::Grid_Generator::linear_combine(const Grid_Generator& y,
   x.strong_normalize();
 }
 
+void
+PPL::Grid_Generator::linear_combine(const Grid_Generator& y,
+                                    Variable v) {
+  expr.linear_combine(y.expr, v);
+  strong_normalize();
+}
+
+void
+PPL::Grid_Generator::linear_combine_inhomogeneous(const Grid_Generator& y) {
+  expr.linear_combine_inhomogeneous(y.expr);
+  strong_normalize();
+}
+
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 int
 PPL::compare(const Grid_Generator& x, const Grid_Generator& y) {
