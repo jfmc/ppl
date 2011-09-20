@@ -386,8 +386,8 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   if (cp.expr.inhomogeneous_term() == p.expr.inhomogeneous_term()) {
     // Divisors are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
-    for (dimension_type i = cp.expr.get_row().size() - 2; i > 0; --i)
-      if (cp.expr.get_row()[i] != p.expr.get_row()[i])
+    for (dimension_type i = cp.expr.space_dimension() - 1; i-- > 0; )
+      if (cp.expr.coefficient(Variable(i)) != p.expr.coefficient(Variable(i)))
 	return false;
     return true;
   }
@@ -395,21 +395,21 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
     // Divisors are different: divide them by their GCD
     // to simplify the following computation.
     PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-    gcd_assign(gcd, cp.expr.get_row()[0], p.expr.get_row()[0]);
+    gcd_assign(gcd, cp.expr.inhomogeneous_term(), p.expr.inhomogeneous_term());
     const bool rel_prime = (gcd == 1);
     PPL_DIRTY_TEMP_COEFFICIENT(cp_0_scaled);
     PPL_DIRTY_TEMP_COEFFICIENT(p_0_scaled);
     if (!rel_prime) {
-      exact_div_assign(cp_0_scaled, cp.expr.get_row()[0], gcd);
-      exact_div_assign(p_0_scaled, p.expr.get_row()[0], gcd);
+      exact_div_assign(cp_0_scaled, cp.expr.inhomogeneous_term(), gcd);
+      exact_div_assign(p_0_scaled, p.expr.inhomogeneous_term(), gcd);
     }
-    const Coefficient& cp_div = rel_prime ? cp.expr.get_row()[0] : cp_0_scaled;
-    const Coefficient& p_div = rel_prime ? p.expr.get_row()[0] : p_0_scaled;
+    const Coefficient& cp_div = rel_prime ? cp.expr.inhomogeneous_term() : cp_0_scaled;
+    const Coefficient& p_div = rel_prime ? p.expr.inhomogeneous_term() : p_0_scaled;
     PPL_DIRTY_TEMP_COEFFICIENT(prod1);
     PPL_DIRTY_TEMP_COEFFICIENT(prod2);
-    for (dimension_type i = cp.expr.get_row().size() - 2; i > 0; --i) {
-      prod1 = cp.expr.get_row()[i] * p_div;
-      prod2 = p.expr.get_row()[i] * cp_div;
+    for (dimension_type i = cp.expr.space_dimension() - 1; i > 0; --i) {
+      prod1 = cp.expr.coefficient(Variable(i - 1)) * p_div;
+      prod2 = p.expr.coefficient(Variable(i - 1)) * cp_div;
       if (prod1 != prod2)
 	return false;
     }
@@ -423,14 +423,14 @@ PPL_OUTPUT_DEFINITIONS(Generator)
 bool
 PPL::Generator::OK() const {
   // Topology consistency check.
-  const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
-  if (expr.get_row().size() < min_size) {
+  const dimension_type min_space_dim = is_necessarily_closed() ? 0 : 1;
+  if (expr.space_dimension() < min_space_dim) {
 #ifndef NDEBUG
     std::cerr << "Generator has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
-	      << "size is " << expr.get_row().size()
-	      << ", minimum is " << min_size << "."
+	      << "size is " << expr.space_dimension()
+	      << ", minimum is " << min_space_dim << "."
 	      << std::endl;
 #endif
     return false;
@@ -451,14 +451,14 @@ PPL::Generator::OK() const {
   case LINE:
     // Intentionally fall through.
   case RAY:
-    if (expr.get_row()[0] != 0) {
+    if (expr.inhomogeneous_term() != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines must have a zero inhomogeneous term!"
 		<< std::endl;
 #endif
       return false;
     }
-    if (!is_necessarily_closed() && expr.get_row()[expr.get_row().size() - 1] != 0) {
+    if (!is_necessarily_closed() && expr.coefficient(Variable(expr.space_dimension() - 1)) != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines and rays must have a zero coefficient "
 		<< "for the epsilon dimension!"
@@ -478,7 +478,7 @@ PPL::Generator::OK() const {
     break;
 
   case POINT:
-    if (expr.get_row()[0] <= 0) {
+    if (expr.inhomogeneous_term() <= 0) {
 #ifndef NDEBUG
       std::cerr << "Points must have a positive divisor!"
 		<< std::endl;
@@ -486,7 +486,7 @@ PPL::Generator::OK() const {
       return false;
     }
     if (!is_necessarily_closed())
-      if (expr.get_row()[expr.get_row().size() - 1] <= 0) {
+      if (expr.coefficient(Variable(expr.space_dimension() - 1)) <= 0) {
 #ifndef NDEBUG
 	std::cerr << "In the NNC topology, points must have epsilon > 0"
 		  << std::endl;
@@ -496,7 +496,7 @@ PPL::Generator::OK() const {
     break;
 
   case CLOSURE_POINT:
-    if (expr.get_row()[0] <= 0) {
+    if (expr.inhomogeneous_term() <= 0) {
 #ifndef NDEBUG
       std::cerr << "Closure points must have a positive divisor!"
 		<< std::endl;

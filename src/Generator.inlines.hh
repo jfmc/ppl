@@ -305,7 +305,7 @@ Generator::total_memory_in_bytes() const {
 
 inline void
 Generator::strong_normalize() {
-  expr.get_row().normalize();
+  expr.normalize();
   sign_normalize();
 }
 
