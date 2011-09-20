@@ -711,6 +711,12 @@ private:
     and both topologies and space dimensions agree.
   */
   bool is_matching_closure_point(const Generator& p) const;
+
+  //! Returns the epsilon coefficient. The generator must be NNC.
+  Coefficient_traits::const_reference epsilon_coefficient() const;
+
+  //! Sets the epsilon coefficient to \p n. The generator must be NNC.
+  void set_epsilon_coefficient(Coefficient_traits::const_reference n);
 };
 
 
