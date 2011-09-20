@@ -42,10 +42,7 @@ Generator::is_not_necessarily_closed() const {
 
 inline dimension_type
 Generator::space_dimension() const {
-  const dimension_type sz = expr.get_row().size();
-  return (sz == 0)
-    ? 0
-    : sz - (is_necessarily_closed() ? 1 : 2);
+  return expr.space_dimension() - (is_necessarily_closed() ? 0 : 1);
 }
 
 inline bool
@@ -79,10 +76,10 @@ Generator::set_topology(Topology x) {
     return;
   if (topology() == NECESSARILY_CLOSED)
     // Add a column for the epsilon dimension.
-    expr.get_row().resize(expr.get_row().size() + 1);
+    expr.set_space_dimension(expr.space_dimension() + 1);
   else {
-    PPL_ASSERT(expr.get_row().size() > 0);
-    expr.get_row().resize(expr.get_row().size() - 1);
+    PPL_ASSERT(expr.space_dimension() > 0);
+    expr.set_space_dimension(expr.space_dimension() - 1);
   }
   topology_ = x;
 }
@@ -155,7 +152,7 @@ inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
-  expr.get_row().swap(e.get_row());
+  expr.swap(e);
   if (type == LINE)
     kind_ = LINE_OR_EQUALITY;
   else
@@ -209,15 +206,15 @@ Generator::max_space_dimension() {
 inline void
 Generator::set_space_dimension(dimension_type space_dim) {
   if (topology() == NECESSARILY_CLOSED) {
-    expr.get_row().resize(space_dim + 1);
+    expr.set_space_dimension(space_dim);
   } else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
-      expr.get_row().resize(space_dim + 2);
-      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
+      expr.set_space_dimension(space_dim + 1);
+      expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
     } else {
-      expr.get_row().swap(space_dim + 1, old_space_dim + 1);
-      expr.get_row().resize(space_dim + 2);
+      expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
+      expr.set_space_dimension(space_dim + 1);
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
@@ -235,7 +232,7 @@ Generator::is_ray_or_point() const {
 
 inline bool
 Generator::is_line_or_ray() const {
-  return expr.get_row()[0] == 0;
+  return expr.inhomogeneous_term() == 0;
 }
 
 inline bool
@@ -253,8 +250,10 @@ Generator::type() const {
     return POINT;
   else {
     // Checking the value of the epsilon coefficient.
-    const Generator& g = *this;
-    return (g.expr.get_row()[expr.get_row().size() - 1] == 0) ? CLOSURE_POINT : POINT;
+    if (expr.coefficient(Variable(expr.space_dimension() - 1)) == 0)
+      return CLOSURE_POINT;
+    else
+      return POINT;
   }
 }
 

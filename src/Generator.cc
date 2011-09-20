@@ -141,9 +141,9 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
   if (is_line_or_ray() && expr.all_homogeneous_terms_are_zero()) {
     // Become a point.
     set_is_ray_or_point();
-    expr.get_row()[0] = 1;
+    expr.set_inhomogeneous_term(1);
     if (is_not_necessarily_closed())
-      expr.get_row()[expr.get_row().size() - 1] = 1;
+      expr.set_coefficient(Variable(expr.space_dimension() - 1), 1);
 
     PPL_ASSERT(OK());
     return false;
@@ -212,21 +212,15 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
     Linear_Expression x_expr(x);
     Linear_Expression y_expr(y);
     // ... second, re-normalize ...
-    x_expr.get_row().normalize();
-    y_expr.get_row().normalize();
+    x_expr.normalize();
+    y_expr.normalize();
     // ... and finally check for syntactic equality.
-    for (dimension_type i = x_space_dim + 1; i-- > 0; )
-      if (x_expr.get_row()[i] != y_expr.get_row()[i])
-	return false;
-    return true;
+    return x_expr.is_equal_to(y_expr);
   }
 
   // Here the epsilon-coefficient, if present, is zero.
   // It is sufficient to check for syntactic equality.
-  for (dimension_type i = x_space_dim + 1; i-- > 0; )
-    if (x.expr.get_row()[i] != y.expr.get_row()[i])
-      return false;
-  return true;
+  return x.expr.is_equal_to(y.expr);
 }
 
 bool
@@ -238,22 +232,25 @@ PPL::Generator::is_equal_to(const Generator& y) const {
 void
 PPL::Generator::sign_normalize() {
   if (is_line_or_equality()) {
-    const dimension_type sz = expr.get_row().size();
+    // TODO: Use the space dimension instead of the size.
+    const dimension_type sz = expr.space_dimension() + 1;
     // `first_non_zero' indicates the index of the first
     // coefficient of the row different from zero, disregarding
     // the very first coefficient (inhomogeneous term / divisor).
     dimension_type first_non_zero;
+    // TODO: Optimize this.
     for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
-      if (expr.get_row()[first_non_zero] != 0)
+      if (expr.coefficient(Variable(first_non_zero - 1)) != 0)
         break;
     if (first_non_zero < sz)
       // If the first non-zero coefficient of the row is negative,
       // we negate the entire row.
-      if (expr.get_row()[first_non_zero] < 0) {
-        for (dimension_type j = first_non_zero; j < sz; ++j)
-          neg_assign(expr.get_row()[j]);
-        // Also negate the first coefficient.
-        neg_assign(expr.get_row()[0]);
+      if (expr.coefficient(Variable(first_non_zero - 1)) < 0) {
+        // TODO: Consider optimizing this.
+        // We know that the first `first_non_zero' elements are nonzero
+        // (except at most the inhomogeneous term), so we could exploit this
+        // and avoid some work.
+        neg_assign(expr);
       }
   }
 }
@@ -310,11 +307,11 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   case Generator::CLOSURE_POINT:
     s << "c(";
   any_point:
-    if (g.expr.get_row()[0] != 1) {
+    if (g.expr.inhomogeneous_term() != 1) {
       needed_divisor = true;
       dimension_type num_non_zero_coefficients = 0;
       for (dimension_type v = 0; v < num_variables; ++v)
-	if (g.expr.get_row()[v+1] != 0)
+	if (g.expr.coefficient(Variable(v)) != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
 	    s << "(";
@@ -327,7 +324,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   PPL_DIRTY_TEMP_COEFFICIENT(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    gv = g.expr.get_row()[v+1];
+    gv = g.expr.coefficient(Variable(v));
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -352,7 +349,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   if (extra_parentheses)
     s << ")";
   if (needed_divisor)
-    s << "/" << g.expr.get_row()[0];
+    s << "/" << g.expr.inhomogeneous_term();
   s << ")";
   return s;
 }
@@ -386,7 +383,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 	 && type() == CLOSURE_POINT
 	 && p.type() == POINT);
   const Generator& cp = *this;
-  if (cp.expr.get_row()[0] == p.expr.get_row()[0]) {
+  if (cp.expr.inhomogeneous_term() == p.expr.inhomogeneous_term()) {
     // Divisors are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
     for (dimension_type i = cp.expr.get_row().size() - 2; i > 0; --i)
