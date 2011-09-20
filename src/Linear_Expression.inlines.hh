@@ -257,12 +257,34 @@ Linear_Expression::normalize() {
 
 inline void
 Linear_Expression::ascii_dump(std::ostream& s) const {
-  row.ascii_dump(s);
+  s << "size " << (space_dimension() + 1) << " ";
+  for (dimension_type j = 0; j < row.size(); ++j) {
+    s << row[j];
+    if (j != row.size() - 1)
+      s << ' ';
+  }
 }
 
 inline bool
 Linear_Expression::ascii_load(std::istream& s) {
-  return row.ascii_load(s);
+  std::string str;
+
+  if (!(s >> str))
+    return false;
+  if (str != "size")
+    return false;
+
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  row.resize(new_size);
+
+  for (dimension_type j = 0; j < new_size; ++j)
+    if (!(s >> row[j]))
+      return false;
+
+  return true;
 }
 
 } // namespace Parma_Polyhedra_Library
