@@ -140,9 +140,7 @@ PPL::Constraint::is_tautological() const {
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      const dimension_type eps_index = expr.space_dimension();
-      PPL_ASSERT(eps_index != 0);
-      const int eps_sign = sgn(expr.coefficient(Variable(eps_index - 1)));
+      const int eps_sign = sgn(epsilon_coefficient());
       if (eps_sign > 0)
 	// We have found the constraint epsilon >= 0.
 	return true;
@@ -157,7 +155,7 @@ PPL::Constraint::is_tautological() const {
 	  return false;
 	// Checking for another non-zero coefficient.
         // TODO: Optimize this.
-	for (dimension_type i = eps_index - 1; i-- > 0; )
+	for (dimension_type i = expr.space_dimension() - 1; i-- > 0; )
 	  if (expr.coefficient(Variable(i)) != 0)
 	    return false;
 	// We have the inequality `k > 0',
@@ -182,9 +180,7 @@ PPL::Constraint::is_inconsistent() const {
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      const dimension_type eps_index = expr.space_dimension();
-      PPL_ASSERT(eps_index != 0);
-      if (expr.coefficient(Variable(eps_index - 1)) >= 0)
+      if (epsilon_coefficient() >= 0)
 	// If positive, we have found the constraint epsilon >= 0.
 	// If zero, one of the `true' dimensions has a non-zero coefficient.
 	// In both cases, it is not trivially false.
@@ -197,7 +193,7 @@ PPL::Constraint::is_inconsistent() const {
 	  return false;
 	// Checking for another non-zero coefficient.
         // TODO: Optimize this.
-	for (dimension_type i = eps_index - 1; i-- > 0; )
+	for (dimension_type i = expr.space_dimension() - 1; i-- > 0; )
 	  if (expr.coefficient(Variable(i)) != 0)
 	    return false;
 	// We have the inequality `k > 0',
@@ -518,7 +514,7 @@ PPL::Constraint::OK() const {
   }
 
   if (is_equality() && !is_necessarily_closed()
-      && expr.coefficient(Variable(expr.space_dimension() - 1)) != 0) {
+      && epsilon_coefficient() != 0) {
 #ifndef NDEBUG
     std::cerr << "Illegal constraint: an equality cannot be strict."
 	      << std::endl;
