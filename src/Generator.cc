@@ -143,7 +143,7 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
     set_is_ray_or_point();
     expr.set_inhomogeneous_term(1);
     if (is_not_necessarily_closed())
-      expr.set_coefficient(Variable(expr.space_dimension() - 1), 1);
+      set_epsilon_coefficient(1);
 
     PPL_ASSERT(OK());
     return false;
@@ -458,7 +458,7 @@ PPL::Generator::OK() const {
 #endif
       return false;
     }
-    if (!is_necessarily_closed() && expr.coefficient(Variable(expr.space_dimension() - 1)) != 0) {
+    if (!is_necessarily_closed() && epsilon_coefficient() != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines and rays must have a zero coefficient "
 		<< "for the epsilon dimension!"
@@ -486,7 +486,7 @@ PPL::Generator::OK() const {
       return false;
     }
     if (!is_necessarily_closed())
-      if (expr.coefficient(Variable(expr.space_dimension() - 1)) <= 0) {
+      if (epsilon_coefficient() <= 0) {
 #ifndef NDEBUG
 	std::cerr << "In the NNC topology, points must have epsilon > 0"
 		  << std::endl;

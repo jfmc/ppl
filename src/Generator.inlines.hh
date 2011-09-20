@@ -250,7 +250,7 @@ Generator::type() const {
     return POINT;
   else {
     // Checking the value of the epsilon coefficient.
-    if (expr.coefficient(Variable(expr.space_dimension() - 1)) == 0)
+    if (epsilon_coefficient() == 0)
       return CLOSURE_POINT;
     else
       return POINT;
