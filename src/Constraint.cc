@@ -275,7 +275,9 @@ PPL::Constraint::is_equal_to(const Constraint& y) const {
 void
 PPL::Constraint::sign_normalize() {
   if (is_line_or_equality()) {
-    const dimension_type sz = expr.get_row().size();
+    // TODO: Consider moving this code into a new method of Linear_Expression.
+    // TODO: Use the space dimension instead of the size.
+    const dimension_type sz = expr.space_dimension() + 1;
     // `first_non_zero' indicates the index of the first
     // coefficient of the row different from zero, disregarding
     // the very first coefficient (inhomogeneous term / divisor).
