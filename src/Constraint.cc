@@ -347,9 +347,10 @@ PPL::Constraint::finalize() {
 
 void
 PPL::Constraint::ascii_dump(std::ostream& s) const {
-  s << "size " << (expr.space_dimension() + 1) << " ";
-  for (dimension_type j = 0; j < expr.get_row().size(); ++j)
-    s << expr.get_row()[j] << ' ';
+  expr.ascii_dump(s);
+
+  s << " ";
+  
   switch (type()) {
   case Constraint::EQUALITY:
     s << "=";
@@ -375,20 +376,7 @@ PPL::Constraint::ascii_load(std::istream& s) {
   std::string str;
   std::string str2;
 
-  if (!(s >> str))
-    return false;
-  if (str != "size")
-    return false;
-
-  dimension_type new_size;
-  if (!(s >> new_size))
-    return false;
-
-  expr.get_row().resize(new_size);
-
-  for (dimension_type j = 0; j < new_size; ++j)
-    if (!(s >> expr.get_row()[j]))
-      return false;
+  expr.ascii_load(s);
 
   if (!(s >> str))
     return false;

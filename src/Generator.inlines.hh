@@ -374,9 +374,11 @@ operator!=(const Generator& x, const Generator& y) {
 
 inline void
 Generator::ascii_dump(std::ostream& s) const {
-  s << "size " << expr.get_row().size() << " ";
-  for (dimension_type j = 0; j < expr.get_row().size(); ++j)
-    s << expr.get_row()[j] << ' ';
+
+  expr.ascii_dump(s);
+
+  s << " ";
+  
   switch (type()) {
   case Generator::LINE:
     s << "L ";
@@ -402,19 +404,7 @@ inline bool
 Generator::ascii_load(std::istream& s) {
   std::string str;
 
-  if (!(s >> str))
-    return false;
-  if (str != "size")
-    return false;
-
-  dimension_type sz;
-  if (!(s >> sz))
-    return false;
-  expr.get_row().resize(sz);
-
-  for (dimension_type j = 0; j < expr.get_row().size(); ++j)
-    if (!(s >> expr.get_row()[j]))
-      return false;
+  expr.ascii_load(s);
 
   if (!(s >> str))
     return false;
