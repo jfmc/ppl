@@ -62,18 +62,17 @@ PPL::Generator::point(const Linear_Expression& e,
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
   Linear_Expression ec = e;
-  ec.get_row()[0] = d;
+  ec.set_inhomogeneous_term(d);
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
 
   // If the divisor is negative, we negate it as well as
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
-    for (dimension_type i = g.expr.get_row().size(); i-- > 0; )
-      neg_assign(g.expr.get_row()[i]);
+    neg_assign(g.expr);
 
   // Enforce normalization.
-  g.expr.get_row().normalize();
+  g.expr.normalize();
   return g;
 }
 
@@ -92,7 +91,7 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   // TODO: Avoid the mark_as_*() methods if possible.
   g.mark_as_not_necessarily_closed();
   // Enforce normalization.
-  g.expr.get_row().normalize();
+  g.expr.normalize();
   return g;
 }
 
@@ -104,7 +103,7 @@ PPL::Generator::ray(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a ray.");
 
   Linear_Expression ec = e;
-  ec.get_row()[0] = 0;
+  ec.set_inhomogeneous_term(0);
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
 
   return g;
@@ -118,7 +117,7 @@ PPL::Generator::line(const Linear_Expression& e) {
 				"e == 0, but the origin cannot be a line.");
 
   Linear_Expression ec = e;
-  ec.get_row()[0] = 0;
+  ec.set_inhomogeneous_term(0);
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
 
   return g;
