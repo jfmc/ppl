@@ -127,7 +127,7 @@ void
 PPL::Generator::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
-  swap(v1.space_dimension(), v2.space_dimension());
+  expr.swap_space_dimensions(v1, v2);
   // *this is still normalized but it may not be strongly normalized.
   sign_normalize();
   PPL_ASSERT(OK());

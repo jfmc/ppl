@@ -461,11 +461,6 @@ Generator::swap(Generator& y) {
   std::swap(topology_, y.topology_);
 }
 
-inline void
-Generator::swap(dimension_type i, dimension_type j) {
-  expr.get_row().swap(i, j);
-}
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Generator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
