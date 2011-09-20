@@ -88,15 +88,14 @@ PPL::Generator_System::add_corresponding_closure_points() {
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
   const dimension_type n_rows = gs.sys.num_rows();
-  const dimension_type eps_index = gs.sys.space_dimension() + 1;
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Generator& g = gs[i];
-    if (g.expression().get_row()[eps_index] > 0) {
+    if (g.epsilon_coefficient() > 0) {
       // `g' is a point: adding the closure point.
       Generator cp = g;
-      cp.expression().get_row()[eps_index] = 0;
+      cp.set_epsilon_coefficient(0);
       // Enforcing normalization.
-      cp.expression().get_row().normalize();
+      cp.expr.normalize();
       gs.insert_pending_recycled(cp);
     }
   }
@@ -115,14 +114,13 @@ PPL::Generator_System::add_corresponding_points() {
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
   const dimension_type n_rows = gs.sys.num_rows();
-  const dimension_type eps_index = sys.space_dimension() + 1;
   for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
-    if (!g.is_line_or_ray() && g.expression().get_row()[eps_index] == 0) {
+    if (!g.is_line_or_ray() && g.epsilon_coefficient() == 0) {
       // `g' is a closure point: adding the point.
       // Note: normalization is preserved.
       Generator p = g;
-      p.expression().get_row()[eps_index] = p.expression().get_row()[0];
+      p.set_epsilon_coefficient(p.expr.inhomogeneous_term());
       gs.insert_pending_recycled(p);
     }
   }
@@ -149,7 +147,6 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   // (i.e., the epsilon coefficient is equal to the divisor);
   // rays and lines must have epsilon coefficient equal to 0.
   // Note: normalization is preserved.
-  const dimension_type eps_index = sys.space_dimension() + 1;
   sys.set_not_necessarily_closed();
   Generator_System& gs = *this;
 
@@ -160,7 +157,7 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   for (dimension_type i = rows.size(); i-- > 0; ) {
     Generator& gen = rows[i];
     if (!gen.is_line_or_ray())
-      gen.expression().get_row()[eps_index] = gen.expression().get_row()[0];
+      gen.set_epsilon_coefficient(gen.expr.inhomogeneous_term());
   }
 
   // Put the rows back into the linear system.
@@ -178,9 +175,8 @@ PPL::Generator_System::has_points() const {
     }
   else {
     // !is_necessarily_closed()
-    const dimension_type eps_index = gs.sys.space_dimension() + 1;
     for (dimension_type i = sys.num_rows(); i-- > 0; )
-    if (gs[i].expression().get_row()[eps_index] != 0)
+    if (gs[i].epsilon_coefficient() != 0)
       return true;
   }
   return false;
@@ -241,7 +237,7 @@ PPL::Generator_System::insert_recycled(Generator& g) {
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (!g.is_line_or_ray())
-	g.expression().get_row()[new_space_dim + 1] = g.expression().get_row()[0];
+	g.set_epsilon_coefficient(g.expr.inhomogeneous_term());
       // Inserting the new generator.
       sys.insert_recycled(g);
     }
@@ -272,7 +268,7 @@ PPL::Generator_System::insert_pending_recycled(Generator& g) {
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (!g.is_line_or_ray())
-	g.expression().get_row()[new_space_dim + 1] = g.expression().get_row()[0];
+	g.set_epsilon_coefficient(g.expr.inhomogeneous_term());
       // Inserting the new generator.
       sys.insert_pending_recycled(g);
     }
@@ -725,7 +721,8 @@ PPL::Generator_System
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = rows[i];
     Scalar_Products::assign(numerator, expr, row.expression());
-    std::swap(numerator, row.expression().get_row()[v.space_dimension()]);
+    // TODO: Consider making this more efficient.
+    row.expr.set_coefficient(v, numerator);
   }
 
   if (denominator != 1) {
