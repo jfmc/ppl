@@ -35,6 +35,49 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iosfwd>
 
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The basic comparison function.
+/*! \relates Constraint
+  \return
+  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
+
+  \param x
+  A row of coefficients;
+
+  \param y
+  Another row.
+
+  Compares \p x and \p y, where \p x and \p y may be of different size,
+  in which case the "missing" coefficients are assumed to be zero.
+  The comparison is such that:
+  -# equalities are smaller than inequalities;
+  -# lines are smaller than points and rays;
+  -# the ordering is lexicographic;
+  -# the positions compared are, in decreasing order of significance,
+     1, 2, ..., \p size(), 0;
+  -# the result is negative, zero, or positive if x is smaller than,
+     equal to, or greater than y, respectively;
+  -# when \p x and \p y are different, the absolute value of the
+     result is 1 if the difference is due to the coefficient in
+     position 0; it is 2 otherwise.
+
+  When \p x and \p y represent the hyper-planes associated
+  to two equality or inequality constraints, the coefficient
+  at 0 is the known term.
+  In this case, the return value can be characterized as follows:
+  - -2, if \p x is smaller than \p y and they are \e not parallel;
+  - -1, if \p x is smaller than \p y and they \e are parallel;
+  -  0, if \p x and y are equal;
+  - +1, if \p y is smaller than \p x and they \e are parallel;
+  - +2, if \p y is smaller than \p x and they are \e not parallel.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+int compare(const Constraint& x, const Constraint& y);
+
+}
+
 //! A linear equality or inequality.
 /*! \ingroup PPL_CXX_interface
   An object of the class Constraint is either:
@@ -554,48 +597,12 @@ private:
     \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
   */
   static Constraint construct_epsilon_geq_zero();
+
+  friend int
+  compare(const Constraint& x, const Constraint& y);
 };
 
 namespace Parma_Polyhedra_Library {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The basic comparison function.
-/*! \relates Constraint
-  \return
-  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
-
-  \param x
-  A row of coefficients;
-
-  \param y
-  Another row.
-
-  Compares \p x and \p y, where \p x and \p y may be of different size,
-  in which case the "missing" coefficients are assumed to be zero.
-  The comparison is such that:
-  -# equalities are smaller than inequalities;
-  -# lines are smaller than points and rays;
-  -# the ordering is lexicographic;
-  -# the positions compared are, in decreasing order of significance,
-     1, 2, ..., \p size(), 0;
-  -# the result is negative, zero, or positive if x is smaller than,
-     equal to, or greater than y, respectively;
-  -# when \p x and \p y are different, the absolute value of the
-     result is 1 if the difference is due to the coefficient in
-     position 0; it is 2 otherwise.
-
-  When \p x and \p y represent the hyper-planes associated
-  to two equality or inequality constraints, the coefficient
-  at 0 is the known term.
-  In this case, the return value can be characterized as follows:
-  - -2, if \p x is smaller than \p y and they are \e not parallel;
-  - -1, if \p x is smaller than \p y and they \e are parallel;
-  -  0, if \p x and y are equal;
-  - +1, if \p y is smaller than \p x and they \e are parallel;
-  - +2, if \p y is smaller than \p x and they are \e not parallel.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-int compare(const Constraint& x, const Constraint& y);
 
 namespace IO_Operators {
 
