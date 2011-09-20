@@ -34,6 +34,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+int
+PPL::compare(const Linear_Expression& x, const Linear_Expression& y) {
+  // Compare all the coefficients of the row starting from position 1.
+  const dimension_type xsz = x.row.size();
+  const dimension_type ysz = y.row.size();
+  const dimension_type min_sz = std::min(xsz, ysz);
+  dimension_type i;
+  for (i = 1; i < min_sz; ++i)
+    if (const int comp = cmp(x.row[i], y.row[i]))
+      // There is at least a different coefficient.
+      return (comp > 0) ? 2 : -2;
+
+  // Handle the case where `x' and `y' are of different size.
+  if (xsz != ysz) {
+    for( ; i < xsz; ++i)
+      if (const int sign = sgn(x.row[i]))
+        return (sign > 0) ? 2 : -2;
+    for( ; i < ysz; ++i)
+      if (const int sign = sgn(y.row[i]))
+        return (sign < 0) ? 2 : -2;
+  }
+
+  // If all the coefficients in `x' equal all the coefficients in `y'
+  // (starting from position 1) we compare coefficients in position 0,
+  // i.e., inhomogeneous terms.
+  if (const int comp = cmp(x.row[0], y.row[0]))
+    return (comp > 0) ? 1 : -1;
+
+  // `x' and `y' are equal.
+  return 0;
+}
+
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
   : row(c.expression().row) {
   // Do not copy the epsilon dimension (if any).

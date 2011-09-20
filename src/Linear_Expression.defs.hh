@@ -176,6 +176,21 @@ Linear_Expression&
 sub_mul_assign(Linear_Expression& e,
                Coefficient_traits::const_reference n, Variable v);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The basic comparison function.
+/*! \relates Linear_Expression
+ 
+  \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
+           is greater. The absolute value of the result is 1 if the difference
+           is only in the inhomogeneous terms, 2 otherwise
+
+  The order is a lexicographic. It starts comparing the variables' coefficient,
+  starting from Variable(0), and at the end it compares the inhomogeneous
+  terms.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+int compare(const Linear_Expression& x, const Linear_Expression& y);
+
 namespace IO_Operators {
 
 //! Output operator.
@@ -546,6 +561,9 @@ private:
   friend Linear_Expression&
   sub_mul_assign(Linear_Expression& e,
                  Coefficient_traits::const_reference n, Variable v);
+
+  friend int
+  compare(const Linear_Expression& x, const Linear_Expression& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
