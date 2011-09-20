@@ -222,36 +222,7 @@ PPL::compare(const Generator& x, const Generator& y) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
 
-  // Compare all the coefficients of the row starting from position 1.
-  const dimension_type xsz = x.expression().get_row().size();
-  const dimension_type ysz = y.expression().get_row().size();
-  const dimension_type min_sz = std::min(xsz, ysz);
-  dimension_type i;
-  for (i = 1; i < min_sz; ++i)
-    if (const int comp = cmp(x.expression().get_row()[i],
-                             y.expression().get_row()[i]))
-      // There is at least a different coefficient.
-      return (comp > 0) ? 2 : -2;
-
-  // Handle the case where `x' and `y' are of different size.
-  if (xsz != ysz) {
-    for( ; i < xsz; ++i)
-      if (const int sign = sgn(x.expression().get_row()[i]))
-        return (sign > 0) ? 2 : -2;
-    for( ; i < ysz; ++i)
-      if (const int sign = sgn(y.expression().get_row()[i]))
-        return (sign < 0) ? 2 : -2;
-  }
-
-  // If all the coefficients in `x' equal all the coefficients in `y'
-  // (starting from position 1) we compare coefficients in position 0,
-  // i.e., inhomogeneous terms.
-  if (const int comp = cmp(x.expression().get_row()[0],
-                           y.expression().get_row()[0]))
-    return (comp > 0) ? 1 : -1;
-
-  // `x' and `y' are equal.
-  return 0;
+  return compare(x.expr, y.expr);
 }
 
 bool
