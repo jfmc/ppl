@@ -592,6 +592,12 @@ private:
 			       const char* name_var,
 			       Variable v) const;
 
+  //! Returns the epsilon coefficient. The constraint must be NNC.
+  Coefficient_traits::const_reference epsilon_coefficient() const;
+
+  //! Sets the epsilon coefficient to \p n. The constraint must be NNC.
+  void set_epsilon_coefficient(Coefficient_traits::const_reference n);
+
   /*! \brief
     Builds a new copy of the zero-dimension space constraint
     \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).

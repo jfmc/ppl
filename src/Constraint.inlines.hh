@@ -510,6 +510,18 @@ Constraint::swap(Constraint& y) {
   std::swap(topology_, y.topology_);
 }
 
+inline Coefficient_traits::const_reference
+Constraint::epsilon_coefficient() const {
+  PPL_ASSERT(is_not_necessarily_closed());
+  return expr.coefficient(Variable(expr.space_dimension() - 1));
+}
+
+inline void
+Constraint::set_epsilon_coefficient(Coefficient_traits::const_reference n) {
+  PPL_ASSERT(is_not_necessarily_closed());
+  expr.set_coefficient(Variable(expr.space_dimension() - 1), n);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
