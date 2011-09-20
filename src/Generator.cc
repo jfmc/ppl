@@ -136,26 +136,7 @@ PPL::Generator::swap_space_dimensions(Variable v1, Variable v2) {
 bool
 PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  // For each variable to be removed, replace the corresponding coefficient
-  // by shifting left the coefficient to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      std::swap(expr.get_row()[dst_col++], expr.get_row()[src_col++]);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type sz = expr.get_row().size();
-  while (src_col < sz)
-    std::swap(expr.get_row()[dst_col++], expr.get_row()[src_col++]);
-
-  // The number of remaining coefficients is `dst_col'.
-  expr.get_row().resize(dst_col);
+  expr.remove_space_dimensions(vars);
 
   if (is_line_or_ray() && expr.all_homogeneous_terms_are_zero()) {
     // Become a point.
