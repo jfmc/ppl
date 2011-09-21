@@ -67,12 +67,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     // epsilon column will only contain zeroes: as a consequence,
     // we just decrement the number of columns to be added.
     bool was_sorted = sys.is_sorted();
-    const dimension_type eps_index = space_dimension() + 1;
 
     // Note that num_rows() is *not* constant, because it is decreased by
     // remove_row().
     for (dimension_type i = 0; i < num_rows(); )
-      if (sys[i].expression().get_row()[eps_index] != 0)
+      if (sys[i].epsilon_coefficient() != 0)
         sys.remove_row(i, false);
       else
         ++i;

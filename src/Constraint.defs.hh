@@ -606,6 +606,8 @@ private:
 
   friend int
   compare(const Constraint& x, const Constraint& y);
+
+  friend class Constraint_System;
 };
 
 namespace Parma_Polyhedra_Library {
