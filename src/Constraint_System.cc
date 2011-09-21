@@ -102,8 +102,6 @@ bool
 PPL::Constraint_System::has_strict_inequalities() const {
   if (sys.is_necessarily_closed())
     return false;
-  // TODO: Avoid using the number of columns if possible.
-  const dimension_type eps_index = sys.space_dimension() + 1;
   // We verify if the system has strict inequalities
   // also in the pending part.
   for (dimension_type i = sys.num_rows(); i-- > 0; ) {
@@ -112,7 +110,7 @@ PPL::Constraint_System::has_strict_inequalities() const {
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
     //       a strict inequality.
-    if (c.expression().get_row()[eps_index] < 0 && !c.is_tautological())
+    if (c.epsilon_coefficient() < 0 && !c.is_tautological())
       return true;
   }
   return false;
