@@ -762,7 +762,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     ppl_delete_Constraint(ppl_c);
     break;
 
- default:
+  default:
     fatal("internal error");
     break;
   }

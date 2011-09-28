@@ -1168,7 +1168,7 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
   const Row_Iterator y_begin = y.matrix.row_begin();
 
   PPL_DIRTY_TEMP(N, neg_y_ci_cj);
-    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
     using namespace Implementation::Octagonal_Shapes;
     const dimension_type i = i_iter.index();
     const dimension_type ci = coherent_index(i);
@@ -3908,12 +3908,12 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   bool is_oct_changed = false;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-       matrix_element_end = matrix.element_end();
+         matrix_element_end = matrix.element_end();
        i != matrix_element_end;
        ++i, ++j) {
-     if (!is_plus_infinity(*i)
-         && !is_plus_infinity(*j)
-         && *i != *j) {
+    if (!is_plus_infinity(*i)
+        && !is_plus_infinity(*j)
+        && *i != *j) {
       *i = *j;
       is_oct_changed = true;
     }

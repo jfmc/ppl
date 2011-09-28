@@ -116,8 +116,8 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// we just decrement the number of columns to be added.
 	Constraint_System& cs = *this;
 	const dimension_type eps_index = old_space_dim + 1;
-  const dimension_type old_cs_num_rows = cs.num_rows();
-  dimension_type cs_num_rows = old_cs_num_rows;
+        const dimension_type old_cs_num_rows = cs.num_rows();
+        dimension_type cs_num_rows = old_cs_num_rows;
 	bool was_sorted = cs.is_sorted();
 	if (was_sorted)
 	  cs.set_sorted(false);

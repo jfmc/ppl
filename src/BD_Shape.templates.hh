@@ -3005,7 +3005,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 	      ls_x = d;
 	      ls_y = d1;
 	      changed = true;
-          }
+            }
         }
       }
     }
@@ -4311,7 +4311,7 @@ void BD_Shape<T>
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       reset_shortest_path_reduced();
-     if (is_w_coeff_one) {
+    if (is_w_coeff_one) {
       // Add the new constraints `var - w >= b_lb'
       // `and var - w <= b_ub'.
       add_dbm_constraint(w_id, var_id, b_ub);

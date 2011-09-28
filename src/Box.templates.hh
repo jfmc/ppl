@@ -783,7 +783,7 @@ Box<ITV>::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
 
-   if (space_dim == 0) {
+  if (space_dim == 0) {
     if (cg.is_inconsistent())
       return Poly_Con_Relation::is_disjoint();
     else
