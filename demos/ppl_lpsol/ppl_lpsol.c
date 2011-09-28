@@ -1001,9 +1001,10 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   return optimum_found;
 }
 
+extern void set_d_eps(mpq_t x, double val);
+
 static void
 set_mpq_t_from_double(mpq_t q, double d) {
-  void set_d_eps(mpq_t x, double val);
   if (check_results)
     set_d_eps(q, d);
   else
