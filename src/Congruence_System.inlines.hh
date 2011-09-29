@@ -41,7 +41,7 @@ Congruence_System::operator[](const dimension_type k) const {
 inline void
 Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
-  static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
+  (*this)[rows.size()-1].strong_normalize();
   PPL_ASSERT(OK());
 }
 
