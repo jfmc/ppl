@@ -566,10 +566,7 @@ Enable_If<(!Safe_Conversion<T1, T2>::value
            && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 le(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
-  Result r
-    = assign_r(tmp,
-               y,
-               static_cast<Rounding_Dir>(ROUND_UP | ROUND_STRICT_RELATION));
+  Result r = assign_r(tmp, y, (ROUND_UP | ROUND_STRICT_RELATION));
   if (!result_representable(r))
     return true;
   switch (result_relation(r)) {
