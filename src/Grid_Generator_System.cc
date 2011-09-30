@@ -54,7 +54,7 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   // of swapping each entire row.  This ensures that the added rows
   // have the same capacities as the existing rows.
   for (dimension_type i = gs_num_rows; i-- > 0; )
-    operator[](old_num_rows + i).coefficient_swap(gs[i]);
+    (*this)[old_num_rows + i].coefficient_swap(gs[i]);
 }
 
 void
@@ -78,7 +78,7 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
   // Swap one coefficient at a time into the newly added rows, instead
   // of swapping each entire row.  This ensures that the added rows
   // have the same capacities as the existing rows.
-  operator[](old_num_rows).coefficient_swap(g);
+  (*this)[old_num_rows].coefficient_swap(g);
 }
 
 void
@@ -206,10 +206,11 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
-  const dimension_type num_rows = this->num_rows();
-  s << num_rows << " x " << num_columns() << '\n';
+  const Grid_Generator_System& ggs = *this;
+  const dimension_type num_rows = ggs.num_rows();
+  s << num_rows << " x " << ggs.num_columns() << '\n';
   for (dimension_type i = 0; i < num_rows; ++i)
-    operator[](i).ascii_dump(s);
+    ggs[i].ascii_dump(s);
 }
 
 bool
@@ -320,7 +321,7 @@ PPL::Grid_Generator_System
   // Set the diagonal element of each added rows.
   dimension_type num_rows = this->num_rows();
   for (dimension_type row = num_rows - dims; row < num_rows; ++row, ++col)
-    const_cast<Coefficient&>(operator[](row)[col]) = 1;
+    const_cast<Coefficient&>((*this)[row][col]) = 1;
 }
 
 void

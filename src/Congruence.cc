@@ -185,7 +185,7 @@ PPL::Congruence::is_tautological() const {
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
     for (unsigned i = space_dimension(); i > 0; --i)
-      if (operator[](i) != 0)
+      if ((*this)[i] != 0)
 	return false;
     return true;
   }
@@ -199,7 +199,7 @@ PPL::Congruence::is_inconsistent() const {
 	  && ((inhomogeneous_term() % modulus()) == 0)))
     return false;
   for (unsigned i = space_dimension(); i > 0; --i)
-    if (operator[](i) != 0)
+    if ((*this)[i] != 0)
       return false;
   return true;
 }

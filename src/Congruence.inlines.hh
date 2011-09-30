@@ -195,7 +195,7 @@ Congruence::is_equality() const {
 inline bool
 Congruence::is_equal_at_dimension(dimension_type dim,
 				  const Congruence& cg) const {
-  return operator[](dim) * cg.modulus() == cg[dim] * modulus();
+  return (*this)[dim] * cg.modulus() == cg[dim] * modulus();
 }
 
 inline void
@@ -205,8 +205,10 @@ Congruence::set_is_equality() {
 
 inline void
 Congruence::negate(dimension_type start, dimension_type end) {
-  while (start <= end)
-    neg_assign(operator[](start++));
+  while (start <= end) {
+    neg_assign((*this)[start]);
+    ++start;
+  }
 }
 
 inline memory_size_type

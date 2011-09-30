@@ -112,21 +112,22 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
 
 void
 PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
+  Grid_Generator& x = *this;
   // Swap one coefficient at a time into *this.  Doing this instead of
   // swapping the entire row ensures that the row keeps the same
   // capacity.
   if (y.is_line())
-    set_is_line();
+    x.set_is_line();
   else
-    set_is_ray_or_point();
-  PPL_ASSERT(size() > 0);
+    x.set_is_ray_or_point();
+  PPL_ASSERT(x.size() > 0);
   PPL_ASSERT(y.size() > 0);
-  dimension_type sz = size() - 1;
+  dimension_type x_sz = x.size() - 1;
   dimension_type y_sz = y.size() - 1;
   // Swap parameter divisors.
-  std::swap(operator[](sz), y[y_sz]);
-  for (dimension_type j = (sz > y_sz ? y_sz : sz); j-- > 0; )
-    std::swap(operator[](j), y[j]);
+  std::swap(x[x_sz], y[y_sz]);
+  for (dimension_type j = (x_sz > y_sz ? y_sz : x_sz); j-- > 0; )
+    std::swap(x[j], y[j]);
 }
 
 void
@@ -192,8 +193,9 @@ PPL::Grid_Generator::set_is_parameter() {
     set_is_parameter_or_point();
   else if (!is_line_or_parameter()) {
     // The generator is a point.
-    Generator::operator[](size() - 1) = Generator::operator[](0);
-    Generator::operator[](0) = 0;
+    Grid_Generator& x = *this;
+    x[size() - 1] = x[0];
+    x[0] = 0;
   }
 }
 
@@ -228,11 +230,12 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
-  if (type() != y.type())
+  const Grid_Generator& x = *this;
+  if (x.type() != y.type())
     return false;
-  for (dimension_type col = (is_parameter() ? size() : size() - 1);
-       col-- > 0; )
-    if (Generator::operator[](col) != y.Generator::operator[](col))
+  for (dimension_type
+         col = x.size() - (x.is_parameter() ? 0 : 1); col-- > 0; )
+    if (x[col] != y[col])
       return false;
   return true;
 }
@@ -240,8 +243,9 @@ PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
 bool
 PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
   // Start at size() - 1 to avoid the extra grid generator column.
-  for (dimension_type i = size() - 1; --i > 0; )
-    if (operator[](i) != 0)
+  const Grid_Generator& gg = *this;
+  for (dimension_type i = gg.size() - 1; --i > 0; )
+    if (gg[i] != 0)
       return false;
   return true;
 }
@@ -259,7 +263,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
     PPL_ASSERT(factor > 0);
     if (factor > 1)
       for (dimension_type col = size() - 2; col >= 1; --col)
-	Generator::operator[](col) *= factor;
+	(*this)[col] *= factor;
   }
 }
 
@@ -387,7 +391,7 @@ PPL::Grid_Generator::OK() const {
 
   switch (type()) {
   case Grid_Generator::LINE:
-    if (operator[](0) != 0) {
+    if ((*this)[0] != 0) {
 #ifndef NDEBUG
       std::cerr << "Inhomogeneous terms of lines must be zero!"
 		<< std::endl;
@@ -397,7 +401,7 @@ PPL::Grid_Generator::OK() const {
     break;
 
   case Grid_Generator::PARAMETER:
-    if (operator[](0) != 0) {
+    if ((*this)[0] != 0) {
 #ifndef NDEBUG
       std::cerr << "Inhomogeneous terms of parameters must be zero!"
 		<< std::endl;

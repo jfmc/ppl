@@ -111,9 +111,9 @@ inline void
 Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
   PPL_ASSERT(!is_line());
   if (is_line_or_parameter())
-    Generator::operator[](size() - 1) = d;
+    (*this)[size() - 1] = d;
   else
-    Generator::operator[](0) = d;
+    (*this)[0] = d;
 }
 
 inline Coefficient_traits::const_reference
@@ -121,15 +121,15 @@ Grid_Generator::divisor() const {
   if (is_line())
     throw_invalid_argument("divisor()", "*this is a line");
   if (is_line_or_parameter())
-    return Generator::operator[](size() - 1);
+    return (*this)[size() - 1];
   else
-    return Generator::operator[](0);
+    return (*this)[0];
 }
 
 inline bool
 Grid_Generator::is_equal_at_dimension(dimension_type dim,
 				      const Grid_Generator& gg) const {
-  return operator[](dim) * gg.divisor() == gg[dim] * divisor();
+  return (*this)[dim] * gg.divisor() == gg[dim] * divisor();
 }
 
 inline void
@@ -156,8 +156,10 @@ Grid_Generator::operator=(const Generator& g) {
 
 inline void
 Grid_Generator::negate(dimension_type start, dimension_type end) {
-  while (start <= end)
-    neg_assign(operator[](start++));
+  while (start <= end) {
+    neg_assign((*this)[start]);
+    ++start;
+  }
 }
 
 inline Coefficient_traits::const_reference
