@@ -116,7 +116,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
     Congruence cg(c, cg_size, row_capacity);
     add_recycled_row(cg);
   }
-  operator[](rows.size()-1).strong_normalize();
+  (*this)[rows.size()-1].strong_normalize();
 
   PPL_ASSERT(OK());
 }
@@ -142,7 +142,7 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
     // Swap one coefficient at a time into the newly added rows, instead
     // of swapping each entire row.  This ensures that the added rows
     // have the same capacities as the existing rows.
-    Congruence& new_cg = operator[](old_num_rows + i);
+    Congruence& new_cg = (*this)[old_num_rows + i];
     Congruence& old_cg = cgs[i];
     for (dimension_type j = cgs_num_columns; j-- > 0; )
       std::swap(new_cg[j], old_cg[j]);
@@ -185,13 +185,15 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
 void
 PPL::Congruence_System::normalize_moduli() {
-  dimension_type row = num_rows();
+  Congruence_System& cgs = *this;
+  dimension_type row = cgs.num_rows();
   if (row > 0) {
     // Calculate the LCM of all the moduli.
     PPL_DIRTY_TEMP_COEFFICIENT(lcm);
     // Find last proper congruence.
     while (true) {
-      lcm = operator[](--row).modulus();
+      --row;
+      lcm = cgs[row].modulus();
       if (lcm > 0)
 	break;
       if (row == 0)
@@ -199,38 +201,45 @@ PPL::Congruence_System::normalize_moduli() {
 	return;
     }
     while (row > 0) {
-      const Coefficient& modulus = operator[](--row).modulus();
+      --row;
+      const Coefficient& modulus = cgs[row].modulus();
       if (modulus > 0)
 	lcm_assign(lcm, lcm, modulus);
     }
 
     // Represent every row using the LCM as the modulus.
     PPL_DIRTY_TEMP_COEFFICIENT(factor);
-    dimension_type row_size = operator[](0).size();
-    for (row = num_rows(); row-- > 0; ) {
-      const Coefficient& modulus = operator[](row).modulus();
+    dimension_type row_size = cgs[0].size();
+    for (row = cgs.num_rows(); row-- > 0; ) {
+      Congruence& cgs_row = cgs[row];
+      const Coefficient& modulus = cgs_row.modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
       exact_div_assign(factor, lcm, modulus);
-      for (dimension_type col = row_size; col-- > 0; )
-	operator[](row)[col] *= factor;
-      operator[](row)[row_size-1] = lcm;
+      for (dimension_type col = row_size; col-- > 0; ) {
+	cgs_row[col] *= factor;
+      }
+      cgs_row[row_size-1] = lcm;
     }
   }
   PPL_ASSERT(OK());
 }
 
 bool
-PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
-  if (num_rows() != cgs.num_rows())
+PPL::Congruence_System::is_equal_to(const Congruence_System& y) const {
+  const Congruence_System& x = *this;
+  if (x.num_rows() != y.num_rows())
     return false;
 
-  for (dimension_type row = cgs.num_rows(); row-- > 0; )
-    for (dimension_type col = cgs.num_columns(); col-- > 0; ) {
-      if (operator[](row)[col] == cgs[row][col])
+  for (dimension_type row = y.num_rows(); row-- > 0; ) {
+    const Congruence& x_row = x[row];
+    const Congruence& y_row = y[row];
+    for (dimension_type col = y.num_columns(); col-- > 0; ) {
+      if (x_row[col] == y_row[col])
 	continue;
       return false;
     }
+  }
   return true;
 }
 
@@ -311,7 +320,7 @@ PPL::Congruence_System::has_a_free_dimension() const {
   std::vector<bool> free_dim(space_dim, true);
   dimension_type free_dims = space_dim;
   for (dimension_type row = num_rows(); row-- > 0; ) {
-    const Congruence& cg = operator[](row);
+    const Congruence& cg = (*this)[row];
     for (dimension_type dim = space_dim; dim-- > 0; )
       if (free_dim[dim] && cg[dim+1] != 0) {
 	if (--free_dims == 0) {
@@ -514,14 +523,15 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   // Swap the modulus column into the new last column.
   swap_columns(col, col + dims);
 
+  Congruence_System& cgs = *this;
   // Swap the added columns to the front of the matrix.
   for (dimension_type row = old_num_rows; row-- > 0; )
-    std::swap(operator[](row), operator[](row + dims));
+    std::swap(cgs[row], cgs[row + dims]);
 
   col += dims - 1;
   // Set the diagonal element of each added row.
   for (dimension_type row = dims; row-- > 0; )
-    const_cast<Coefficient&>(operator[](row)[col - row]) = 1;
+    cgs[row][col - row] = 1;
 }
 
 void
@@ -543,7 +553,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
 
   // Swap the modulus and the new last column, in the old rows.
   for (dimension_type i = old_num_rows; i-- > 0; ) {
-    Congruence& cg = operator[](i);
+    Congruence& cg = (*this)[i];
     std::swap(cg[old_modi], cg[modi]);
   }
 
@@ -551,7 +561,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   // coefficients along into the appropriate columns.
   for (dimension_type i = added_rows; i-- > 0; ) {
     Congruence& cg_old = cgs[i];
-    Congruence& cg_new = operator[](old_num_rows + i);
+    Congruence& cg_new = (*this)[old_num_rows + i];
     // The inhomogeneous term is moved to the same column.
     std::swap(cg_new[0], cg_old[0]);
     // All homogeneous terms are shifted by `space_dim' columns.
