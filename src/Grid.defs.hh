@@ -1979,9 +1979,9 @@ private:
   dimension_type space_dim;
 
   enum Dimension_Kind {
-    PARAMETER,
-    LINE,
-    GEN_VIRTUAL,
+    PARAMETER = 0,
+    LINE = 1,
+    GEN_VIRTUAL = 2,
     PROPER_CONGRUENCE = PARAMETER,
     CON_VIRTUAL = LINE,
     EQUALITY = GEN_VIRTUAL
