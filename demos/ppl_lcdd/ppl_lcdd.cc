@@ -415,13 +415,16 @@ process_options(int argc, char* argv[]) {
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 
     case 'R':
-      l = strtol(optarg, &endptr, 10);
-      if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-R'");
-      else if (((unsigned long) l) > ULONG_MAX/(1024*1024))
-        max_bytes_of_virtual_memory = ULONG_MAX;
-      else
-	max_bytes_of_virtual_memory = l*1024*1024;
+      {
+        const int MEGA = 1024*1024;
+        l = strtol(optarg, &endptr, 10);
+        if (*endptr || l < 0)
+          fatal("a non-negative integer must follow `-R'");
+        else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)
+          max_bytes_of_virtual_memory = ULONG_MAX;
+        else
+          max_bytes_of_virtual_memory = l*MEGA;
+      }
       break;
 
     case 'o':
