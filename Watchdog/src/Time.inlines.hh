@@ -36,8 +36,9 @@ Time::Time()
 
 inline
 Time::Time(unsigned long hundredths_of_a_second)
-  : secs(hundredths_of_a_second / 100),
-    microsecs((hundredths_of_a_second % 100) * 10000) {
+  : secs(hundredths_of_a_second / HSECS_IN_SEC),
+    microsecs((hundredths_of_a_second % HSECS_IN_SEC)
+              * (MUSECS_IN_SEC/HSECS_IN_SEC)) {
   assert(OK());
 }
 
@@ -45,9 +46,9 @@ inline
 Time::Time(unsigned long s, unsigned long m)
   : secs(s),
     microsecs(m) {
-  if (microsecs >= 1000000) {
-    secs += microsecs / 1000000;
-    microsecs %= 1000000;
+  if (microsecs >= MUSECS_IN_SEC) {
+    secs += microsecs / MUSECS_IN_SEC;
+    microsecs %= MUSECS_IN_SEC;
   }
   assert(OK());
 }
@@ -66,9 +67,9 @@ inline Time&
 Time::operator+=(const Time& y) {
   unsigned long r_secs = secs + y.secs;
   unsigned long r_microsecs = microsecs + y.microsecs;
-  if (r_microsecs >= 1000000) {
+  if (r_microsecs >= MUSECS_IN_SEC) {
     ++r_secs;
-    r_microsecs %= 1000000;
+    r_microsecs %= MUSECS_IN_SEC;
   }
   secs = r_secs;
   microsecs = r_microsecs;
@@ -82,7 +83,7 @@ Time::operator-=(const Time& y) {
   long r_microsecs = microsecs - y.microsecs;
   if (r_microsecs < 0) {
     --r_secs;
-    r_microsecs += 1000000;
+    r_microsecs += MUSECS_IN_SEC;
   }
   if (r_secs < 0)
     r_secs = r_microsecs = 0;

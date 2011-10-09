@@ -29,5 +29,5 @@ namespace PWL = Parma_Watchdog_Library;
 
 bool
 PWL::Time::OK() const {
-  return microsecs < 1000000;
+  return microsecs < MUSECS_IN_SEC;
 }

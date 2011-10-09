@@ -100,6 +100,12 @@ public:
   bool OK() const;
 
 private:
+  //! Number of microseconds in a second.
+  static const unsigned long MUSECS_IN_SEC = 1000000UL;
+
+  //! Number of hundredths of a second in a second.
+  static const unsigned long HSECS_IN_SEC = 100UL;
+
   //! Number of seconds.
   unsigned long secs;
 
