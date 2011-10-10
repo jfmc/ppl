@@ -187,17 +187,26 @@ ppl-user-prolog-interface-@VERSION@-html
 DEVREF_PROLOG_INTERFACE_HTML_DIR = \
 ppl-devref-prolog-interface-@VERSION@-html
 
+
+PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES = \
+../interfaces/Prolog/Prolog_interface_sysindep.dox \
+../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
+../interfaces/Prolog/Prolog_interface_compilation.dox \
+../interfaces/Prolog/Prolog_interface_sysdep.dox
+
 USER_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 user-language-interface.tex \
 ppl.sty \
-../interfaces/Prolog/Prolog_interface.dox
+../interfaces/Prolog/Prolog_interface.dox \
+$(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES)
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox \
+$(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES) \
 ../interfaces/Prolog/ppl_prolog_common.defs.hh \
 ../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 ../interfaces/Prolog/ppl_prolog_common.cc
@@ -229,13 +238,15 @@ USER_CONFIGURED_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 user-language-interface.tex \
 ppl.sty \
-$(top_builddir)/interfaces/Prolog/Prolog_configured_interface.dox
+../interfaces/Prolog/Prolog_configured_interface.dox \
+$(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES)
 
 DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF = \
 $(DOX_LICENCE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
-$(top_builddir)/interfaces/Prolog/Prolog_configured_interface.dox \
+../interfaces/Prolog/Prolog_configured_interface.dox \
+$(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES) \
 ../interfaces/Prolog/ppl_prolog_common.defs.hh \
 ../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 ../interfaces/Prolog/ppl_prolog_common.cc \
@@ -981,10 +992,18 @@ SED_PROLOG_OPTION = \
 
 SED_PROLOG_INPUT_USER = \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_PROLOG_INPUT_DEVREF = \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc \
@@ -1319,11 +1338,19 @@ SED_CONFIGURED_PROLOG_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_PROLOG_INPUT_USER = \
-../interfaces/Prolog/Prolog_configured_interface.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_configured_interface.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
+../interfaces/Prolog/Prolog_configured_domains.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
 $(srcdir)/gpl.dox $(srcdir)/fdl.dox
 
 SED_CONFIGURED_PROLOG_INPUT_DEVREF = \
-../interfaces/Prolog/Prolog_configured_interface.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_configured_interface.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
+../interfaces/Prolog/Prolog_configured_domains.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc \

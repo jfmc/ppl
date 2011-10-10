@@ -1,4 +1,4 @@
-/* Configuration Independent Documentation for Prolog.
+/* Configuration Dependent Documentation for Prolog.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
@@ -43,8 +43,7 @@ The structure of the Prolog interface manual is as follows:
     - \ref di_predicates "Domain Independent Predicates"
     - \ref mip_predicates "Predicates for MIP_Problem"
     - \ref pip_predicates "Predicates for PIP_Problem"
-    - \ref c_polyhedron_predicates "Predicates for C Polyhedra"
-    - \ref other_domains_predicates "Ad hoc Predicates for Other Domains"
+    - \ref configured_domains_predicates "Predicates for Configured Domains"
 - \ref PI_Compilation "Compilation and Installation"
 - \ref PI_SD_Features "System-Dependent Features"
     - \ref GNU_Prolog "GNU Prolog"
