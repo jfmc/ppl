@@ -63,11 +63,10 @@ public:
 Timeout t;
 
 bool
-timed_compute_open_hypercube_generators(dimension_type dimension,
-					int hundredth_secs) {
+timed_compute_open_hypercube_generators(dimension_type dimension, int csecs) {
   try {
     Parma_Watchdog_Library::Watchdog
-      w(hundredth_secs, abandon_expensive_computations, t);
+      w(csecs, abandon_expensive_computations, t);
 
     start_clock();
 

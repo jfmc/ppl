@@ -33,27 +33,27 @@ namespace Parma_Watchdog_Library {
 #if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
-Watchdog::Watchdog(unsigned int units,
+Watchdog::Watchdog(unsigned int csecs,
 		   const Flag_Base* volatile& holder,
                    Flag& flag)
   : expired(false),
     handler(*new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
-  if (units == 0)
+  if (csecs == 0)
     throw std::invalid_argument("Watchdog constructor called with a"
-				" non-positive number of time units");
+				" non-positive number of centiseconds");
   in_critical_section = true;
-  pending_position = new_watchdog_event(units, handler, expired);
+  pending_position = new_watchdog_event(csecs, handler, expired);
   in_critical_section = false;
 }
 
 inline
-Watchdog::Watchdog(unsigned int units, void (*function)())
+Watchdog::Watchdog(unsigned int csecs, void (*function)())
   : expired(false), handler(*new Handler_Function(function)) {
-  if (units == 0)
+  if (csecs == 0)
     throw std::invalid_argument("Watchdog constructor called with a"
-				" non-positive number of time units");
+				" non-positive number of centiseconds");
   in_critical_section = true;
-  pending_position = new_watchdog_event(units, handler, expired);
+  pending_position = new_watchdog_event(csecs, handler, expired);
   in_critical_section = false;
 }
 
@@ -93,7 +93,7 @@ Init::~Init() {
 #else // !PWL_HAVE_DECL_SETITIMER !! !PWL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
-Watchdog::Watchdog(unsigned int /* units */,
+Watchdog::Watchdog(unsigned int /* csecs */,
 		   const Flag_Base* volatile& /* holder */,
                    Flag& /* flag */) {
   throw std::logic_error("PWL::Watchdog objects not supported:"
@@ -101,7 +101,7 @@ Watchdog::Watchdog(unsigned int /* units */,
 }
 
 inline
-Watchdog::Watchdog(unsigned int /* units */, void (* /* function */)()) {
+Watchdog::Watchdog(unsigned int /* csecs */, void (* /* function */)()) {
   throw std::logic_error("PWL::Watchdog objects not supported:"
                          " system does not provide setitimer()");
 }

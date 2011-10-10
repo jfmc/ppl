@@ -828,7 +828,7 @@ extern "C" Prolog_foreign_return_type
 ppl_timeout_exception_atom(Prolog_term_ref t);
 
 extern "C" Prolog_foreign_return_type
-ppl_set_timeout(Prolog_term_ref t_time);
+ppl_set_timeout(Prolog_term_ref t_csecs);
 
 extern "C" Prolog_foreign_return_type
 ppl_reset_timeout();

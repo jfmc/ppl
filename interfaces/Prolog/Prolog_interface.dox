@@ -449,13 +449,13 @@ that are included with all instantiations of the Prolog interfaces.
    <EM>The atom to be thrown by timeout exceptions
    is unified with <CODE>Atom</CODE>.</EM>
 
-<P><CODE> ppl_set_timeout(+Hsecs) </CODE><BR>
+<P><CODE> ppl_set_timeout(+Csecs) </CODE><BR>
 
    <EM>Computations taking exponential time will be interrupted
-   some time after <CODE>Hsecs</CODE> hundreths of seconds after that call.
+   some time after <CODE>Csecs</CODE> centiseconds after that call.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
-   <CODE>Hsecs</CODE> must be strictly greater than zero.</EM>
+   <CODE>Csecs</CODE> must be strictly greater than zero.</EM>
 
 <P><CODE> ppl_reset_timeout </CODE><BR>
 

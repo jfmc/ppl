@@ -388,7 +388,7 @@ that are included with all instantiations of the Prolog interfaces.
 <P><CODE> ppl_set_timeout(+C_unsigned) </CODE><BR>
 
    <EM>Computations taking exponential time will be interrupted
-   some time after <CODE>C_unsigned</CODE> ms after that call.
+   some time after <CODE>C_unsigned</CODE> centiseconds after that call.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
    <CODE>C_unsigned</CODE> must be strictly greater than zero.</EM>
@@ -399,7 +399,7 @@ that are included with all instantiations of the Prolog interfaces.
 
 <P><CODE> ppl_set_rounding_for_PPL </CODE><BR>
 
-   <EM>Sets the FPU rounding mode so that the PPL abstractions based on
+  <EM>Sets the FPU rounding mode so that the PPL abstractions based on
   floating point numbers work correctly.
   This is performed automatically at initialization-time.  Calling
   this function is needed only if restore_pre_PPL_rounding() has

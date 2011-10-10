@@ -76,25 +76,25 @@ print_clock(ostream& s) {
     time_t saved_secs = saved_ru_utime.tv_sec;
     time_t saved_usecs = saved_ru_utime.tv_usec;
     time_t secs;
-    time_t hsecs;
+    time_t csecs;
     secs = current_secs - saved_secs;
     if (current_usecs < saved_usecs) {
-      hsecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
-      if (hsecs < 100)
+      csecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
+      if (csecs < 100)
 	--secs;
       else
-	hsecs = 0;
+	csecs = 0;
     }
     else {
-      hsecs = ((current_usecs - saved_usecs) + 5000) / 10000;
-      if (hsecs == 100) {
+      csecs = ((current_usecs - saved_usecs) + 5000) / 10000;
+      if (csecs == 100) {
 	++secs;
-	hsecs = 0;
+	csecs = 0;
       }
     }
-    assert(hsecs >= 0 && hsecs < 100 && secs >= 0);
+    assert(csecs >= 0 && csecs < 100 && secs >= 0);
     int fill_char = s.fill();
-    s << secs << "." << setfill('0') << setw(2) << hsecs;
+    s << secs << "." << setfill('0') << setw(2) << csecs;
     s.fill(fill_char);
   }
 #else

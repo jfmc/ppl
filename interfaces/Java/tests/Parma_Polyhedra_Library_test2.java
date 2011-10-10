@@ -38,9 +38,9 @@ static {
 
     // This code tests the timeout functions.
     public static boolean test01() {
-        int hsecs = 50;
+        int csecs = 50;
         int max_dimension = 20;
-        return timed_compute_open_hypercube_generators(hsecs, max_dimension);
+        return timed_compute_open_hypercube_generators(csecs, max_dimension);
     }
 
     // This code tests the deterministic timeout functions.
@@ -83,14 +83,14 @@ static {
     }
 
     private static boolean
-        timed_compute_open_hypercube_generators(int hsecs,
+        timed_compute_open_hypercube_generators(int csecs,
                                                 int max_dimension) {
         for (int i = 0; i <= max_dimension; ++i) {
             Polyhedron ph = new NNC_Polyhedron(i, Degenerate_Element.UNIVERSE);
             open_hypercube(i, ph);
             PPL_Test.println_if_noisy("Hypercube of dimension " + i);
             try {
-                Parma_Polyhedra_Library.set_timeout(hsecs);
+                Parma_Polyhedra_Library.set_timeout(csecs);
                 try {
                     ph.generators();
                 } finally {

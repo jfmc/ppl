@@ -249,9 +249,9 @@ ppl_finalize(void) try {
 CATCH_ALL
 
 int
-ppl_set_timeout(unsigned time) try {
+ppl_set_timeout(unsigned csecs) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  used(time);
+  used(csecs);
   const char* what = "PPL C interface error:\n"
     "ppl_set_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
@@ -260,7 +260,7 @@ ppl_set_timeout(unsigned time) try {
   reset_timeout();
   static timeout_exception e;
   using Parma_Watchdog_Library::Watchdog;
-  p_timeout_object = new Watchdog(time, abandon_expensive_computations, e);
+  p_timeout_object = new Watchdog(csecs, abandon_expensive_computations, e);
   return 0;
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }

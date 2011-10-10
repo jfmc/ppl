@@ -165,12 +165,12 @@ PWL::PWL_handle_timeout(int signum) {
 }
 
 PWL::Watchdog::WD_Pending_List::Iterator
-PWL::Watchdog::new_watchdog_event(unsigned int units,
+PWL::Watchdog::new_watchdog_event(unsigned int csecs,
 				  const Handler& handler,
 				  bool& expired_flag) {
-  assert(units > 0);
+  assert(csecs > 0);
   WD_Pending_List::Iterator position;
-  Time deadline(units);
+  Time deadline(csecs);
   if (!alarm_clock_running) {
     position = pending.insert(deadline, handler, expired_flag);
     time_so_far = Time(0);

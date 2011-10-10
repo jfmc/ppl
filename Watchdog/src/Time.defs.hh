@@ -69,8 +69,8 @@ public:
   //! Zero seconds.
   Time();
 
-  //! Constructor taking a number of hundredths of a second.
-  explicit Time(unsigned long hundredths_of_a_second);
+  //! Constructor taking a number of centiseconds.
+  explicit Time(unsigned long centisecs);
 
   //! Constructor with seconds and microseconds.
   Time(unsigned long s, unsigned long m);
@@ -101,10 +101,10 @@ public:
 
 private:
   //! Number of microseconds in a second.
-  static const unsigned long MUSECS_IN_SEC = 1000000UL;
+  static const unsigned long USECS_PER_SEC = 1000000UL;
 
-  //! Number of hundredths of a second in a second.
-  static const unsigned long HSECS_IN_SEC = 100UL;
+  //! Number of centiseconds in a second.
+  static const unsigned long CSECS_PER_SEC = 100UL;
 
   //! Number of seconds.
   unsigned long secs;
