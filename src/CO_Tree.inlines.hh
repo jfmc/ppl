@@ -792,7 +792,7 @@ inline bool
 CO_Tree::tree_iterator::is_right_child() const {
   if (is_root())
     return false;
-  return ((i & 2*offset) != 0);
+  return (i & (2*offset)) != 0;
 }
 
 inline bool
