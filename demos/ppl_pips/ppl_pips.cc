@@ -168,7 +168,7 @@ pip_display_sol(std::ostream& out,
       out << "}" << endl;
       if (!constraints_empty) {
         out << setw(indent*2) << "" << "else" << endl;
-        out << setw(indent*2+2) << "" << "_|_" << endl;
+        out << setw(indent*2 + 2) << "" << "_|_" << endl;
       }
     }
   }
@@ -286,7 +286,7 @@ public:
       std::istringstream sin(line);
       sin >> ctx_type[i];
       for (PPL::dimension_type j = 0; j <= num_params; ++j) {
-        sin >> context[i * num_ctx_rows + j];
+        sin >> context[i*num_ctx_rows + j];
       }
     }
 
@@ -315,7 +315,7 @@ public:
       std::istringstream sin(line);
       sin >> constraint_type[i];
       for (PPL::dimension_type j = 0; j < constraint_width; ++j) {
-        sin >> constraints[i * constraint_width + j];
+        sin >> constraints[i*constraint_width + j];
       }
     }
 
