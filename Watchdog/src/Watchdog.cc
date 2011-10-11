@@ -25,8 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Watchdog.defs.hh"
 
-namespace PWL = Parma_Watchdog_Library;
-
 #if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 #include <csignal>
@@ -61,6 +59,8 @@ namespace PWL = Parma_Watchdog_Library;
 
 using std::cerr;
 using std::endl;
+
+namespace PWL = Parma_Watchdog_Library;
 
 // Pass this to getitimer().
 itimerval PWL::Watchdog::current_timer_status;
