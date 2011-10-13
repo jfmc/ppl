@@ -644,5 +644,24 @@ PPL::Linear_Expression::linear_combine(const Linear_Expression& y,
   row.linear_combine(y.row, c1, c2, start, end);
 }
 
+void
+PPL::Linear_Expression::sign_normalize() {
+  Dense_Row::iterator i = row.lower_bound(1);
+  Dense_Row::iterator i_end = row.end();
+  
+  for ( ; i != i_end; ++i)
+    if (*i != 0)
+      break;
+  
+  if (i != i_end && *i < 0) {
+    for ( ; i != i_end; ++i)
+      neg_assign(*i);
+    // Negate the first coefficient, too.
+    Dense_Row::iterator i = row.begin();
+    if (i != row.end() && i.index() == 0)
+      neg_assign(*i);
+  }
+}
+
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

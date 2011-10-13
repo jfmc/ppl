@@ -500,6 +500,10 @@ public:
   */
   void normalize();
 
+  //! Ensures that the first nonzero homogeneous coefficient is positive,
+  //! by negating the row if necessary.
+  void sign_normalize();
+  
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
