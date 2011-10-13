@@ -369,6 +369,13 @@ PPL::sub_mul_assign(Congruence& c1,
     sub_mul_assign(c1.row[i], factor, c2.row[i]);
 }
 
+PPL::Congruence&
+PPL::sub_mul_assign(Congruence& x, Coefficient_traits::const_reference n,
+                    const Congruence& y, dimension_type start, dimension_type end) {
+  for (dimension_type i = start; i < end; i++)
+    x.row[i] -= n*y.row[i];
+  return x;
+}
 
 const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
 const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
