@@ -649,8 +649,11 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	// parameter case.
 	gen.set_is_parameter();
 	const Grid_Generator& first = *first_point;
-	for (dimension_type i = gen.expression().get_row().size() - 1; i-- > 0; )
-	  gen.expression().get_row()[i] -= first.expression().get_row()[i];
+        
+        // TODO: Improve this.
+        Coefficient c = gen.divisor();
+        gen.expression() -= first.expression();
+        gen.set_divisor(c);
       }
 
     case Grid_Generator::PARAMETER:
@@ -943,18 +946,6 @@ PPL::Grid::OK(bool check_not_empty) const {
 	     << endl;
 #endif
 	goto fail;
-      }
-
-      // Check each generator in the system.
-      for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-	const Grid_Generator& g = gen_sys[i];
-
-	if (g.expression().get_row().size() < 1) {
-#ifndef NDEBUG
-	  cerr << "Parameter should have coefficients." << endl;
-#endif
-	  goto fail;
-	}
       }
 
       // A non-empty system of generators describing a grid is valid
@@ -1771,8 +1762,10 @@ PPL::Grid::affine_image(const Variable var,
   if (marked_empty())
     return;
 
+  Coefficient_traits::const_reference expr_var = expr.coefficient(var);
+
   if (var_space_dim <= expr_space_dim
-      && expr.get_row()[var_space_dim] != 0) {
+      && expr_var != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date()) {
       // Grid_Generator_System::affine_image() requires the third argument
@@ -1791,21 +1784,20 @@ PPL::Grid::affine_image(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr.get_row()[var_space_dim] > 0) {
+      if (expr_var > 0) {
 	inverse = -expr;
-	inverse.get_row()[var_space_dim] = denominator;
+	inverse.set_coefficient(var, denominator);
 	con_sys.affine_preimage(var_space_dim, inverse,
-                                expr.get_row()[var_space_dim]);
+                                expr_var);
       }
       else {
 	// The new denominator is negative: we negate everything once
 	// more, as Congruence_System::affine_preimage() requires the
 	// third argument to be positive.
 	inverse = expr;
-	inverse.get_row()[var_space_dim] = denominator;
-	neg_assign(inverse.get_row()[var_space_dim]);
+	inverse.set_coefficient(var, -denominator);
 	con_sys.affine_preimage(var_space_dim, inverse,
-                                -expr.get_row()[var_space_dim]);
+                                -expr_var);
       }
       clear_congruences_minimized();
     }
@@ -1856,7 +1848,9 @@ affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
-  if (var_space_dim <= expr_space_dim && expr.get_row()[var_space_dim] != 0) {
+  Coefficient_traits::const_reference expr_var = expr.coefficient(var);
+
+  if (var_space_dim <= expr_space_dim && expr_var != 0) {
     // The transformation is invertible.
     if (congruences_are_up_to_date()) {
       // Congruence_System::affine_preimage() requires the third argument
@@ -1872,22 +1866,18 @@ affine_preimage(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr.get_row()[var_space_dim] > 0) {
-        PPL_ASSERT(expr.coefficient(var) > 0);
+      if (expr_var > 0) {
 	inverse = -expr;
-        PPL_ASSERT(expr.coefficient(var) > 0);
-	inverse.get_row()[var_space_dim] = denominator;
-        PPL_ASSERT(expr.coefficient(var) > 0);
-	gen_sys.affine_image(var, inverse, expr.coefficient(var));
+	inverse.set_coefficient(var, denominator);
+	gen_sys.affine_image(var, inverse, expr_var);
       }
       else {
 	// The new denominator is negative: we negate everything once
 	// more, as Grid_Generator_System::affine_image() requires the
 	// third argument to be positive.
 	inverse = expr;
-	inverse.get_row()[var_space_dim] = denominator;
-	neg_assign(inverse.get_row()[var_space_dim]);
-	gen_sys.affine_image(var, inverse, -expr.coefficient(var));
+        inverse.set_coefficient(var, -denominator);
+	gen_sys.affine_image(var, inverse, -expr_var);
       }
       clear_generators_minimized();
     }
