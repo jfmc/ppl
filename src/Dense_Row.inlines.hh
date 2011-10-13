@@ -184,7 +184,16 @@ Dense_Row::swap(Dense_Row& y) {
 
 inline Dense_Row&
 Dense_Row::operator=(const Dense_Row& y) {
+
+  if (this != &y && size() == y.size()) {
+    // Avoid reallocation.
+
+    for (dimension_type i = size(); i-- > 0; )
+      (*this)[i] = y[i];
   
+    return *this;
+  }
+
   Dense_Row x(y);
   std::swap(*this, x);
 
