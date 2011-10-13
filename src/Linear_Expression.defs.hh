@@ -536,6 +536,15 @@ private:
     [start, end).
   */
   bool all_zeroes(dimension_type start, dimension_type end) const;
+
+  /*! \brief
+    Returns the gcd of the nonzero coefficients in [start,end). If all the
+    coefficients in this range are 0 returns 0.
+  */
+  Coefficient gcd(dimension_type start, dimension_type end) const;
+
+  void exact_div_assign(Coefficient_traits::const_reference c,
+                        dimension_type start, dimension_type end);
   
   friend class Grid;
   friend class Congruence;

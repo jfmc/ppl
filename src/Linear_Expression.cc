@@ -591,5 +591,46 @@ PPL::Linear_Expression::all_zeroes(dimension_type start, dimension_type end) con
   return true;
 }
 
+PPL::Coefficient
+PPL::Linear_Expression::gcd(dimension_type start, dimension_type end) const {
+  Dense_Row::const_iterator i = row.lower_bound(start);
+  Dense_Row::const_iterator i_end = row.lower_bound(end);
+
+  while (1) {
+    if (i == i_end)
+      return 0;
+
+    if (*i != 0)
+      break;
+
+    ++i;
+  }
+
+  PPL_ASSERT(*i != 0);
+
+  Coefficient result = *i;
+  ++i;
+
+  if (result < 0)
+    neg_assign(result);
+
+  for ( ; i != i_end; ++i) {
+    gcd_assign(result, *i, result);
+    if (result == 1)
+      return result;
+  }
+
+  return result;
+}
+
+void
+PPL::Linear_Expression
+::exact_div_assign(Coefficient_traits::const_reference c,
+                   dimension_type start, dimension_type end) {
+  for (dimension_type i = start; i < end; ++i) {
+    Coefficient& x = row[i];
+    PPL::exact_div_assign(x, x, c);
+  }
+}
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

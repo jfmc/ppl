@@ -874,19 +874,19 @@ PIP_Tree_Node::Artificial_Parameter
   PPL_ASSERT(gcd > 1);
   Linear_Expression normalized(0 * Variable(space_dim-1));
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-  exact_div_assign(coeff, param_expr.inhomogeneous_term(), gcd);
+  Parma_Polyhedra_Library::exact_div_assign(coeff, param_expr.inhomogeneous_term(), gcd);
   normalized += coeff;
   for (dimension_type i = space_dim; i-- > 0; ) {
     Coefficient_traits::const_reference
       e_i = param_expr.coefficient(Variable(i));
     if (e_i != 0) {
-      exact_div_assign(coeff, e_i, gcd);
+      Parma_Polyhedra_Library::exact_div_assign(coeff, e_i, gcd);
       add_mul_assign(normalized, coeff, Variable(i));
     }
   }
   // Replace the parameter expression with the normalized one.
   param_expr = normalized;
-  exact_div_assign(denom, denom, gcd);
+  Parma_Polyhedra_Library::exact_div_assign(denom, denom, gcd);
 
   PPL_ASSERT(OK());
 }
