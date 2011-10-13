@@ -2535,8 +2535,7 @@ private:
   static void multiply_grid(const Coefficient& multiplier,
 			    Grid_Generator& gen,
 			    Swapping_Vector<Grid_Generator>& dest,
-			    dimension_type num_rows,
-			    dimension_type num_dims);
+			    dimension_type num_rows);
 
   /*! \brief
     If \p sys is lower triangular return <CODE>true</CODE>, else

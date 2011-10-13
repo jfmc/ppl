@@ -88,13 +88,11 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
       continue;
     const Grid_Generator& gen = sys[--row];
     // Check diagonal.
-    if (gen.expression().get_row()[num_columns] <= 0)
+    if (gen.expression().get(num_columns) <= 0)
       return false;
     // Check elements preceding diagonal.
-    dimension_type col = num_columns;
-    while (col-- > 0)
-      if (gen.expression().get_row()[col] != 0)
-	return false;
+    if (!gen.expression().all_zeroes(0, num_columns))
+      return false;
   }
 
   // Check for squareness.
@@ -104,15 +102,13 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
 void
 Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
 		    Swapping_Vector<Grid_Generator>& dest_rows,
-                    const dimension_type num_rows,
-		    const dimension_type num_dims) {
+                    const dimension_type num_rows) {
   if (multiplier == 1)
     return;
 
   if (gen.is_line())
     // Multiply every element of the line.
-    for (dimension_type column = num_dims; column-- > 0; )
-      gen.expression().get_row()[column] *= multiplier;
+    gen.expression() *= multiplier;
   else {
     PPL_ASSERT(gen.is_parameter_or_point());
     // Multiply every element of every parameter.
@@ -120,8 +116,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
     for (dimension_type index = num_rows; index-- > 0; ) {
       Grid_Generator& generator = dest_rows[index];
       if (generator.is_parameter_or_point())
-	for (dimension_type column = num_dims; column-- > 0; )
-	  generator.expression().get_row()[column] *= multiplier;
+        generator.expression() *= multiplier;
     }
   }
 }
@@ -457,8 +452,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         // the result of the division that follows is a whole number.
 	gcd_assign(reduced_source_dim, g.expression().get_row()[dim], source_dim);
 	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
-	multiply_grid(reduced_source_dim, g, rows, dest_num_rows,
-		      dims + 1 /* parameter divisor */);
+	multiply_grid(reduced_source_dim, g, rows, dest_num_rows);
 
 	Coefficient& g_dim = g.expression().get_row()[dim];
 	exact_div_assign(g_dim, g_dim, source_dim);
