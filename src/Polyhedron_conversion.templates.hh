@@ -450,12 +450,8 @@ Polyhedron::conversion(Source_Linear_System& source,
       if (scalar_prod[index_non_zero] < 0) {
 	// The ray `dest_rows[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
-	const dimension_type dest_num_columns
-          = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
-                                                  : dest.space_dimension() + 2;
 	neg_assign(scalar_prod[index_non_zero]);
-	for (dimension_type j = dest_num_columns; j-- > 0; )
-	  neg_assign(dest_rows[index_non_zero].expression().get_row()[j]);
+        neg_assign(dest_rows[index_non_zero].expression());
       }
       // Having changed a line to a ray, we set `dest_rows' to be a
       // non-sorted system, we decrement the number of lines of `dest_rows'
@@ -504,14 +500,8 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_i,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
-          const dimension_type dest_num_columns
-            = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
-                                                    : dest.space_dimension() + 2;
-	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    Coefficient& dest_i_c = dest_i.expression().get_row()[c];
-	    dest_i_c *= normalized_sp_o;
-	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle.expression().get_row()[c]);
-	  }
+          neg_assign(normalized_sp_i);
+          dest_i.expression().linear_combine(dest_nle.expression(), normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // dest_sorted has already been set to false.
@@ -544,18 +534,12 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
-          const dimension_type dest_num_columns
-            = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
-                                                    : dest.space_dimension() + 2;
-	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    Coefficient& dest_i_c = dest_i.expression().get_row()[c];
-	    dest_i_c *= normalized_sp_o;
-	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle.expression().get_row()[c]);
-	  }
+          neg_assign(normalized_sp_i);
+          dest_i.expression().linear_combine(dest_nle.expression(), normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest_sorted' has already been set to false.
-          WEIGHT_ADD_MUL(41, dest_num_columns);
+          WEIGHT_ADD_MUL(41, dest.space_dimension());
 	}
         // Check if the client has requested abandoning all expensive
         // computations.  If so, the exception specified by the client
@@ -751,11 +735,6 @@ Polyhedron::conversion(Source_Linear_System& source,
 		  // saturation row to `sat'.
 		  dest_row_type new_row;
 		  if (recyclable_dest_rows.empty()) {
-		    // Create a new row.
-		    dest_row_type tmp(2, dest_row_type::RAY_OR_POINT_OR_INEQUALITY,
-                                      dest.topology());
-                    tmp.set_space_dimension(dest.space_dimension());
-                    std::swap(new_row, tmp);
 		    sat.add_recycled_row(new_satrow);
 		  }
 		  else {
@@ -780,16 +759,12 @@ Polyhedron::conversion(Source_Linear_System& source,
 			     normalized_sp_i,
 			     normalized_sp_o);
 		  WEIGHT_BEGIN();
-                  const dimension_type dest_num_columns
-                    = dest.topology() == NECESSARILY_CLOSED ? dest.space_dimension() + 1
-                                                            : dest.space_dimension() + 2;
-		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		    Coefficient& new_row_c = new_row.expression().get_row()[c];
-		    new_row_c = normalized_sp_i * dest_rows[j].expression().get_row()[c];
-		    sub_mul_assign(new_row_c, normalized_sp_o,
-                                   dest_rows[i].expression().get_row()[c]);
-		  }
-                  WEIGHT_ADD_MUL(86, dest_num_columns);
+                  
+                  neg_assign(normalized_sp_o);
+                  new_row = dest_rows[j];
+                  new_row.expression().linear_combine(dest_rows[i].expression(), normalized_sp_i, normalized_sp_o);
+                  
+                  WEIGHT_ADD_MUL(86, dest.space_dimension());
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest_rows',
 		  // we also add a new element to `scalar_prod';
