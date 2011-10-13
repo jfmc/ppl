@@ -333,9 +333,8 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
       // If num_rows_to_subtract is negative, these copies of pivot are
       // added to row i.
       if (num_rows_to_subtract != 0)
-	for (dimension_type col = start; col <= end; ++col)
-	  sub_mul_assign(row.expression().get_row()[col], num_rows_to_subtract,
-                         pivot.expression().get_row()[col]);
+        sub_mul_assign(row.expression(), num_rows_to_subtract,
+                       pivot.expression(), start, end + 1);
     }
   }
 }
