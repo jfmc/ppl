@@ -545,4 +545,20 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
   return s;
 }
 
+PPL::Coefficient&
+PPL::Linear_Expression::operator[](dimension_type i) {
+  return row[i];
+}
+
+const PPL::Coefficient&
+PPL::Linear_Expression::operator[](dimension_type i) const {
+  return row[i];
+}
+
+const PPL::Coefficient&
+PPL::Linear_Expression::get(dimension_type i) const {
+  return row.get(i);
+}
+
+
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

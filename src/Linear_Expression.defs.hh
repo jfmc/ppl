@@ -510,6 +510,11 @@ private:
   */
   Linear_Expression(Variable v, Variable w);
 
+  Coefficient& operator[](dimension_type i);
+  const Coefficient& operator[](dimension_type i) const;
+  //! Equivalent to the const version of operator[].
+  const Coefficient& get(dimension_type i) const;
+
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
