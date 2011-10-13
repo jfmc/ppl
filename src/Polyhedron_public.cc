@@ -481,13 +481,12 @@ PPL::Polyhedron::is_universe() const {
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
       const dimension_type eps_index = con_sys.space_dimension() + 1;
-      PPL_ASSERT(eps_leq_one.expression().get_row()[0] > 0
-                 && eps_leq_one.expression().get_row()[eps_index] < 0
-                 && eps_geq_zero.expression().get_row()[0] == 0
-                 && eps_geq_zero.expression().get_row()[eps_index] > 0);
-      for (dimension_type i = 1; i < eps_index; ++i)
-	PPL_ASSERT(eps_leq_one.expression().get_row()[i] == 0
-	           && eps_geq_zero.expression().get_row()[i] == 0);
+      PPL_ASSERT(eps_leq_one.inhomogeneous_term() > 0
+                 && eps_leq_one.epsilon_coefficient() < 0
+                 && eps_geq_zero.inhomogeneous_term() == 0
+                 && eps_geq_zero.epsilon_coefficient() > 0);
+      PPL_ASSERT(eps_leq_one.expression().all_zeroes(1, eps_index));
+      PPL_ASSERT(eps_geq_zero.expression().all_zeroes(1, eps_index));
 #endif
       return true;
     }
@@ -736,24 +735,23 @@ PPL::Polyhedron::constrains(const Variable var) const {
       if (gen_sys_i.is_line_or_ray()) {
 	const int sign = sgn(gen_sys_i.coefficient(var));
 	if (sign != 0) {
-	  for (dimension_type j = space_dim+1; --j > 0; )
-	    if (j != var_id && gen_sys_i.expression().get_row()[j] != 0)
-	      goto next;
-	  if (gen_sys_i.is_line())
-	    return true;
-	  if (sign > 0)
-	    if (have_negative_ray)
-	      return true;
-	    else
-	      have_positive_ray = true;
-	  else if (have_positive_ray)
-	    return true;
-	  else
-	    have_negative_ray = true;
+          if (gen_sys_i.expression().all_zeroes(1, var_id)
+              && gen_sys_i.expression().all_zeroes(var_id + 1, space_dim + 1)) {
+            
+            if (gen_sys_i.is_line())
+              return true;
+            if (sign > 0)
+              if (have_negative_ray)
+                return true;
+              else
+                have_positive_ray = true;
+            else if (have_positive_ray)
+              return true;
+            else
+              have_negative_ray = true;
+          }
 	}
       }
-    next:
-      ;
     }
 
     // We are still here: at least we know that, since generators are
@@ -1093,9 +1091,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // must also contain a (combination of) the constraint epsilon >= 0,
       // i.e., a constraint with a positive epsilon coefficient.
       bool no_epsilon_geq_zero = true;
-      const dimension_type eps_index = con_sys.space_dimension() + 1;
       for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-	if (con_sys[i].expression().get_row()[eps_index] > 0) {
+	if (con_sys[i].epsilon_coefficient() > 0) {
 	  no_epsilon_geq_zero = false;
 	  break;
 	}
@@ -1338,8 +1335,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// (normalized) closure point.
 	Generator cp;
         gen_sys.release_row(cp);
-	cp.expression().get_row()[space_dim + 1] = 0;
-	cp.expression().get_row().normalize();
+	cp.set_epsilon_coefficient(0);
+	cp.expression().normalize();
         gen_sys.insert_recycled(cp);
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
@@ -1378,8 +1375,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// (normalized) closure point.
 	Generator cp;
         gen_sys.release_row(cp);
-	cp.expression().get_row()[space_dim + 1] = 0;
-	cp.expression().get_row().normalize();
+	cp.set_epsilon_coefficient(0);
+	cp.expression().normalize();
         if (has_pending) {
           gen_sys.insert_pending_recycled(cp);
           // Re-insert the point (which is already normalized).
@@ -2557,21 +2554,19 @@ affine_image(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr.get_row()[var_space_dim] > 0) {
+      Coefficient_traits::const_reference c = expr.coefficient(var);
+      if (c > 0) {
 	inverse = -expr;
-	inverse.get_row()[var_space_dim] = denominator;
-	con_sys.affine_preimage(var, inverse,
-                                expr.get_row()[var_space_dim]);
+	inverse.set_coefficient(var, denominator);
+	con_sys.affine_preimage(var, inverse, c);
       }
       else {
 	// The new denominator is negative: we negate everything once
 	// more, as Constraint_System::affine_preimage() requires the
 	// third argument to be positive.
 	inverse = expr;
-	inverse.get_row()[var_space_dim] = denominator;
-	neg_assign(inverse.get_row()[var_space_dim]);
-	con_sys.affine_preimage(var, inverse,
-                                -expr.get_row()[var_space_dim]);
+        inverse.set_coefficient(var, -denominator);
+	con_sys.affine_preimage(var, inverse, -c);
       }
     }
   }
@@ -2638,21 +2633,19 @@ affine_preimage(const Variable var,
       // after copying and negating `expr',
       // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       Linear_Expression inverse;
-      if (expr.get_row()[var_space_dim] > 0) {
+      Coefficient_traits::const_reference c = expr.coefficient(var);
+      if (c > 0) {
 	inverse = -expr;
-	inverse.get_row()[var_space_dim] = denominator;
-	gen_sys.affine_image(var, inverse,
-                             expr.get_row()[var_space_dim]);
+	inverse.set_coefficient(var, denominator);
+	gen_sys.affine_image(var, inverse, c);
       }
       else {
 	// The new denominator is negative:
 	// we negate everything once more, as Generator_System::affine_image()
 	// requires the third argument to be positive.
 	inverse = expr;
-	inverse.get_row()[var_space_dim] = denominator;
-	neg_assign(inverse.get_row()[var_space_dim]);
-	gen_sys.affine_image(var, inverse,
-                             -expr.get_row()[var_space_dim]);
+        inverse.set_coefficient(var, -denominator);
+	gen_sys.affine_image(var, inverse, -c);
       }
     }
   }
@@ -2895,8 +2888,7 @@ generalized_affine_image(const Variable var,
       // and another point, having the same coordinates for all but the
       // `var' dimension, which is displaced along the direction of the
       // newly introduced ray.
-      const dimension_type eps_index = space_dim + 1;
-      for (dimension_type i =  rows.size(); i-- > 0; ) {
+      for (dimension_type i = rows.size(); i-- > 0; ) {
         Generator& gen_i = rows[i];
 	if (gen_i.is_point()) {
 	  // Add a `var'-displaced copy of `rows[i]' to the generator
@@ -2904,12 +2896,12 @@ generalized_affine_image(const Variable var,
           rows.push_back(gen_i);
           Generator& new_gen = rows.back();
 	  if (relsym == GREATER_THAN)
-	    ++new_gen.expression().get_row()[var_space_dim];
+            new_gen.expression() += var;
 	  else
-	    --new_gen.expression().get_row()[var_space_dim];
+            new_gen.expression() -= var;
           
 	  // Transform gen_i' into a closure point.
-	  gen_i.expression().get_row()[eps_index] = 0;
+	  gen_i.set_epsilon_coefficient(0);
 	}
       }
 
@@ -3378,9 +3370,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
-	    g.expression().get_row()[0] = 0;
+	    g.expression().set_inhomogeneous_term(0);
 	    // Enforce normalization.
-	    g.expression().get_row().normalize();
+	    g.expression().normalize();
 	  }
 	}
 	break;
@@ -3403,9 +3395,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {
-	    g.expression().get_row()[0] = 0;
+	    g.expression().set_inhomogeneous_term(0);
 	    // Enforce normalization.
-	    g.expression().get_row().normalize();
+	    g.expression().normalize();
 	  }
 	}
 	break;
@@ -3508,7 +3500,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the value if there is a constant value.
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i.expression().get_row()[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.expression().inhomogeneous_term(), ROUND_NOT_NEEDED);
       candidate.canonicalize();
       if (first_candidate) {
 	// We have a (new) candidate value.
@@ -3560,7 +3552,6 @@ PPL::Polyhedron::topological_closure_assign() {
   // Use constraints only if they are available and
   // there are no pending generators.
   if (!has_pending_generators() && constraints_are_up_to_date()) {
-    const dimension_type eps_index = space_dim + 1;
     bool changed = false;
 
     Swapping_Vector<Constraint> rows;
@@ -3570,10 +3561,10 @@ PPL::Polyhedron::topological_closure_assign() {
     // Transform all strict inequalities into non-strict ones.
     for (dimension_type i = rows.size(); i-- > 0; ) {
       Constraint& c = rows[i];
-      if (c.expression().get_row()[eps_index] < 0 && !c.is_tautological()) {
-	c.expression().get_row()[eps_index] = 0;
+      if (c.epsilon_coefficient() < 0 && !c.is_tautological()) {
+	c.set_epsilon_coefficient(0);
 	// Enforce normalization.
-	c.expression().get_row().normalize();
+	c.expression().normalize();
 	changed = true;
       }
     }
