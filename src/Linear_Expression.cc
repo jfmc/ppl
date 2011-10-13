@@ -615,6 +615,8 @@ PPL::Linear_Expression::gcd(dimension_type start, dimension_type end) const {
     neg_assign(result);
 
   for ( ; i != i_end; ++i) {
+    if (*i == 0)
+      continue;
     gcd_assign(result, *i, result);
     if (result == 1)
       return result;
