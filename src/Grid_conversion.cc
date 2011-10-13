@@ -175,7 +175,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Dimension `dim' has a parameter row at `source_index' in
 	// `source', so include in `diagonal_lcm' the `dim'th element
 	// of that row.
-	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_index].expression().get_row()[dim]);
+	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_index].expression().get(dim));
 	// Parameters map to proper congruences.
 	++dest_num_rows;
       }
@@ -204,14 +204,14 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       le.set_space_dimension(dest.space_dimension() + 1);
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
-        le.get_row()[dim] = 1;
+        le[dim] = 1;
         Congruence cg(le, Coefficient_zero());
         dest.insert_verbatim_recycled(cg);
       } else {
 	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
 	--source_index;
-	exact_div_assign(le.get_row()[dim], diagonal_lcm,
-                         source[source_index].expression().get_row()[dim]);
+	exact_div_assign(le[dim], diagonal_lcm,
+                         source[source_index].expression().get(dim));
         Congruence cg(le, Coefficient_one());
         dest.insert_verbatim_recycled(cg);
       }
@@ -235,7 +235,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       --source_index;
-      const Coefficient& source_dim = source[source_index].expression().get_row()[dim];
+      const Coefficient& source_dim = source[source_index].expression().get(dim);
 
       Swapping_Vector<Congruence> dest_rows;
       dest.release_rows(dest_rows);
@@ -271,7 +271,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     for (dimension_type dim_prec = dim; dim_prec-- > 0; ) {
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
 	--tmp_source_index;
-	const Coefficient& source_dim = source[tmp_source_index].expression().get_row()[dim];
+	const Coefficient& source_dim = source[tmp_source_index].expression().get(dim);
+        
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
@@ -357,9 +358,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     throw std::runtime_error("PPL internal error: Grid::conversion:"
 			     " source matrix is singular.");
 
-  Swapping_Vector<Grid_Generator> recyclable_rows;
-  dest.release_rows(recyclable_rows);
-
   dest.clear();
   PPL_ASSERT(dims > 0);
   dest.set_space_dimension(dims - 1);
@@ -379,32 +377,17 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     else {
       Grid_Generator g;
       g.set_topology(dest.topology());
-      if (!recyclable_rows.empty()) {
-        // Recycle a previous row.
-        std::swap(recyclable_rows.back(), g);
-        recyclable_rows.pop_back();
-
-        g.expression().get_row().resize(dims + 1);
-
-        for (dimension_type j = dim; j-- > 0; )
-          g.expression().get_row()[j] = 0;
-        for (dimension_type j = dim + 1; j <= dims; ++j)
-          g.expression().get_row()[j] = 0;
-      } else {
-        g.expression().get_row().resize(dims + 1);
-        // All the elements have been default-constructed, so they are zero.
-        // We don't need to explictly reset them.
-      }
+      g.expression().set_space_dimension(dims);
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
 	g.set_is_line();
-	g.expression().get_row()[dim] = 1;
+	g.expression()[dim] = 1;
       }
       else {
 	PPL_ASSERT(dim_kinds[dim] == PROPER_CONGRUENCE);
 	g.set_is_parameter_or_point();
         --source_index;
-	exact_div_assign(g.expression().get_row()[dim], diagonal_lcm,
+	exact_div_assign(g.expression()[dim], diagonal_lcm,
                          source[source_index][dim]);
       }
       dest.insert_verbatim(g);
@@ -447,14 +430,15 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       for (dimension_type i = dest_index; i-- > 0; ) {
         Grid_Generator& g = rows[i];
 
+        Coefficient& g_dim = g.expression()[dim];
+        
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	gcd_assign(reduced_source_dim, g.expression().get_row()[dim], source_dim);
+	gcd_assign(reduced_source_dim, g_dim, source_dim);
 	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
 	multiply_grid(reduced_source_dim, g, rows, dest_num_rows);
 
-	Coefficient& g_dim = g.expression().get_row()[dim];
 	exact_div_assign(g_dim, g_dim, source_dim);
       }
     }
@@ -484,8 +468,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         for (dimension_type i = dest_index; i-- > 0; ) {
 	  PPL_ASSERT(i < dest_num_rows);
           Grid_Generator& row = rows[i];
-	  sub_mul_assign(row.expression().get_row()[dim_fol], source_dim,
-                         row.expression().get_row()[dim]);
+	  sub_mul_assign(row.expression()[dim_fol], source_dim,
+                         row.expression().get(dim));
 	}
       }
     }
@@ -508,7 +492,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
-  const Coefficient& system_divisor = rows[0].expression().get_row()[0];
+  const Coefficient& system_divisor = rows[0].expression().inhomogeneous_term();
   
   for (dimension_type i = rows.size() - 1, dim = dims; dim-- > 1; ) {
     switch (dim_kinds[dim]) {
