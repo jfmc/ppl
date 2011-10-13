@@ -582,5 +582,14 @@ PPL::Linear_Expression::get(dimension_type i) const {
   return row.get(i);
 }
 
+bool
+PPL::Linear_Expression::all_zeroes(dimension_type start, dimension_type end) const {
+  for (Dense_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
+       i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  return true;
+}
+
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
+#include "Polyhedron.types.hh"
 #include "Grid.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
@@ -530,8 +531,15 @@ private:
   //! Equivalent to the const version of operator[].
   const Coefficient& get(dimension_type i) const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
+    [start, end).
+  */
+  bool all_zeroes(dimension_type start, dimension_type end) const;
+  
   friend class Grid;
   friend class Congruence;
+  friend class Polyhedron;
 
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);
