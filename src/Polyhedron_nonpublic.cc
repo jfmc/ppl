@@ -1989,7 +1989,6 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (x_gs_red_in_y[i])
       continue;
     const Generator& x_g = x_gs[i];
-    const dimension_type row_sz = x_g.expression().get_row().size();
     const bool x_g_is_line = x_g.is_line_or_equality();
     for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
       if (y_gs_red_in_x[j])
@@ -2001,18 +2000,17 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       // NOTE: no need to actually compute the "mid-point",
       // since any strictly positive combination would do.
       mid_g = x_g;
-      for (dimension_type k = row_sz; k-- > 0; )
-        mid_g.expression().get_row()[k] += y_g.expression().get_row()[k];
+      mid_g.expression() += y_g.expression();
       // A zero ray is not a well formed generator.
       const bool illegal_ray
-        = (mid_g.expression().get_row()[0] == 0 && mid_g.expression().all_homogeneous_terms_are_zero());
+        = (mid_g.expression().inhomogeneous_term() == 0 && mid_g.expression().all_homogeneous_terms_are_zero());
       // A zero ray cannot be generated from a line: this holds
       // because x_row (resp., y_row) is not subsumed by y (resp., x).
       PPL_ASSERT(!(illegal_ray && (x_g_is_line || y_g_is_line)));
       if (illegal_ray)
         continue;
       if (x_g_is_line) {
-        mid_g.expression().get_row().normalize();
+        mid_g.expression().normalize();
         if (y_g_is_line)
           // mid_row is a line too: sign normalization is needed.
           mid_g.sign_normalize();
@@ -2032,9 +2030,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       if (!x_g_is_line && y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = x_g - y_g.
         mid_g = x_g;
-        for (dimension_type k = row_sz; k-- > 0; )
-          mid_g.expression().get_row()[k] -= y_g.expression().get_row()[k];
-        mid_g.expression().get_row().normalize();
+        mid_g.expression() -= y_g.expression();
+        mid_g.expression().normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
@@ -2043,9 +2040,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       else if (x_g_is_line && !y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = - x_row + y_row.
         mid_g = y_g;
-        for (dimension_type k = row_sz; k-- > 0; )
-          mid_g.expression().get_row()[k] -= x_g.expression().get_row()[k];
-        mid_g.expression().get_row().normalize();
+        mid_g.expression() -= x_g.expression();
+        mid_g.expression().normalize();
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
