@@ -546,6 +546,13 @@ private:
   void exact_div_assign(Coefficient_traits::const_reference c,
                         dimension_type start, dimension_type end);
   
+  //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
+  //! for each i in [start, end).
+  void linear_combine(const Linear_Expression& y,
+                      Coefficient_traits::const_reference c1,
+                      Coefficient_traits::const_reference c2,
+                      dimension_type start, dimension_type end);
+
   friend class Grid;
   friend class Congruence;
   friend class Polyhedron;

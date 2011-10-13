@@ -635,4 +635,14 @@ PPL::Linear_Expression
   }
 }
 
+void
+PPL::Linear_Expression::linear_combine(const Linear_Expression& y,
+                                       Coefficient_traits::const_reference c1,
+                                       Coefficient_traits::const_reference c2,
+                                       dimension_type start,
+                                       dimension_type end) {
+  row.linear_combine(y.row, c1, c2, start, end);
+}
+
+
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)
