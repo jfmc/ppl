@@ -448,6 +448,64 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
 }
 
 void
+PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
+                                Coefficient_traits::const_reference coeff1,
+                                Coefficient_traits::const_reference coeff2,
+                                dimension_type start, dimension_type end) {
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+  PPL_ASSERT(this != &y);
+
+  if (coeff1 == 1) {
+    // Optimize for this special case.
+    iterator i = this->end();
+    for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
+      i = insert(i, j.index());
+      add_mul_assign(*i, *j, coeff2);
+      if (*i == 0)
+        i = reset(i);
+    }
+    return;
+  }
+
+  iterator i = lower_bound(start);
+  // This is a const reference to an internal iterator, that is kept valid.
+  // If we just stored a copy, that would be invalidated by the calls to
+  // reset() and insert().
+  const iterator& i_end = this->end();
+  const_iterator j = y.lower_bound(start);
+  const_iterator j_end = y.lower_bound(end);
+  while (i != i_end && i.index() < end && j != j_end) {
+    if (i.index() == j.index()) {
+      (*i) *= coeff1;
+      add_mul_assign(*i, *j, coeff2);
+      if (*i == 0)
+        i = reset(i);
+      else
+        ++i;
+      ++j;
+    } else
+      if (i.index() < j.index()) {
+        (*i) *= coeff1;
+        ++i;
+      } else {
+        PPL_ASSERT(i.index() > j.index());
+        i = insert(i, j.index(), *j);
+        (*i) *= coeff2;
+        ++i;
+        ++j;
+      }
+  }
+  PPL_ASSERT(i == i_end || j == j_end);
+  for ( ; i != i_end && i.index() < end; ++i)
+    (*i) *= coeff1;
+  for ( ; j != j_end; ++j) {
+    i = insert(i, j.index(), *j);
+    (*i) *= coeff2;
+  }
+}
+
+void
 PPL::Sparse_Row::ascii_dump(std::ostream& s) const {
   s << "size " << size_ << ' ';
   dimension_type n_elements = 0;
