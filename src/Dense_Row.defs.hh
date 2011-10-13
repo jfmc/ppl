@@ -333,6 +333,13 @@ public:
                       Coefficient_traits::const_reference coeff1,
                       Coefficient_traits::const_reference coeff2);
 
+  //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
+  //! for each i in [start, end).
+  void linear_combine(const Dense_Row& y,
+                      Coefficient_traits::const_reference c1,
+                      Coefficient_traits::const_reference c2,
+                      dimension_type start, dimension_type end);
+  
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief

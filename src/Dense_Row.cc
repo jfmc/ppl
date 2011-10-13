@@ -385,6 +385,24 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
 }
 
 void
+PPL::Dense_Row::linear_combine(const Dense_Row& y,
+                               Coefficient_traits::const_reference coeff1,
+                               Coefficient_traits::const_reference coeff2,
+                               dimension_type start, dimension_type end) {
+  Dense_Row& x = *this;
+  PPL_ASSERT(x.size() == y.size());
+  for (dimension_type i = start; i < end; ++i) {
+    Coefficient& x_i = x[i];
+    x_i *= coeff1;
+    // The test against 0 gives rise to a consistent speed up: see
+    // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+    Coefficient_traits::const_reference y_i = y[i];
+    if (y_i != 0)
+      add_mul_assign(x_i, y_i, coeff2);
+  }
+}
+
+void
 PPL::Dense_Row::ascii_dump(std::ostream& s) const {
   const Dense_Row& x = *this;
   const dimension_type x_size = x.size();
