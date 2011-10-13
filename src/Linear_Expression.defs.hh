@@ -549,6 +549,7 @@ private:
   friend class Grid;
   friend class Congruence;
   friend class Polyhedron;
+  friend class PIP_Tree_Node;
 
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);

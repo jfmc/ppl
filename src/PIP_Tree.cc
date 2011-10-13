@@ -850,42 +850,27 @@ PIP_Tree_Node::Artificial_Parameter
   Linear_Expression& param_expr = *this;
   if (denom < 0) {
     neg_assign(denom);
-    param_expr *= -1;
+    neg_assign(param_expr);
   }
 
   // Compute GCD of parameter expression and denum.
-  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
-  gcd = denom;
-  gcd_assign(gcd, param_expr.inhomogeneous_term(), gcd);
+
+  Coefficient gcd = param_expr.gcd(0, space_dimension() + 1);
+
   if (gcd == 1)
     return;
-  const dimension_type space_dim = param_expr.space_dimension();
-  for (dimension_type i = space_dim; i-- > 0; ) {
-    Coefficient_traits::const_reference
-      e_i = param_expr.coefficient(Variable(i));
-    if (e_i != 0) {
-      gcd_assign(gcd, e_i, gcd);
-      if (gcd == 1)
-        return;
-    }
-  }
+
+  if (gcd == 0)
+    gcd = denom;
+  else
+    gcd_assign(gcd, denom, gcd);
+  
+  if (gcd == 1)
+    return;
 
   // Divide coefficients and denominator by their (non-trivial) GCD.
   PPL_ASSERT(gcd > 1);
-  Linear_Expression normalized(0 * Variable(space_dim-1));
-  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-  Parma_Polyhedra_Library::exact_div_assign(coeff, param_expr.inhomogeneous_term(), gcd);
-  normalized += coeff;
-  for (dimension_type i = space_dim; i-- > 0; ) {
-    Coefficient_traits::const_reference
-      e_i = param_expr.coefficient(Variable(i));
-    if (e_i != 0) {
-      Parma_Polyhedra_Library::exact_div_assign(coeff, e_i, gcd);
-      add_mul_assign(normalized, coeff, Variable(i));
-    }
-  }
-  // Replace the parameter expression with the normalized one.
-  param_expr = normalized;
+  param_expr.exact_div_assign(gcd, 0, space_dimension() + 1);
   Parma_Polyhedra_Library::exact_div_assign(denom, denom, gcd);
 
   PPL_ASSERT(OK());
