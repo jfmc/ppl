@@ -619,7 +619,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // We will add it to the extremum as soon as we find it.
       PPL_DIRTY_TEMP0(mpq_class, candidate);
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i.expression().get_row()[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.expression().inhomogeneous_term(), ROUND_NOT_NEEDED);
       candidate.canonicalize();
       const bool g_is_point = gen_sys_i.is_point();
       if (first_candidate
@@ -1149,14 +1149,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	// It is saturated by no closure points.
 	if (!found_eps_leq_one) {
 	  // Check if it is the eps_leq_one constraint.
-	  const Constraint& c = cs[i];
-	  bool all_zeroes = true;
-	  for (dimension_type k = eps_index; k-- > 1; )
-	    if (c.expression().get_row()[k] != 0) {
-	      all_zeroes = false;
-	      break;
-	    }
-	  if (all_zeroes && (c.expression().get_row()[0] + c.expression().get_row()[eps_index] == 0)) {
+          const Constraint& c = cs[i];
+          const Linear_Expression& e = c.expression();
+	  if (e.all_zeroes(1, eps_index) && (e.inhomogeneous_term() + e[eps_index] == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
