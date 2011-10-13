@@ -63,14 +63,13 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   const dimension_type gg_size = 2 + e.space_dimension();
   Linear_Expression ec(e, gg_size);
 
-  ec.get_row()[0] = 0;
-  ec.get_row()[gg_size - 1] = d;
+  ec[0] = 0;
+  ec[gg_size - 1] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter, so as to satisfy the invariant.
   if (d < 0)
-    for (dimension_type i = gg_size; i-- > 0; )
-      neg_assign(ec.get_row()[i]);
+    neg_assign(ec);
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
@@ -89,20 +88,19 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
 				"d == 0.");
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 2 + e.space_dimension());
-  ec.get_row()[0] = d;
+  ec[0] = d;
 
   // If the divisor is negative, negate it and all the coefficients of
   // the point, so as to satisfy the invariant.
   if (d < 0)
-    for (dimension_type i = ec.get_row().size() - 1; i-- > 0; )
-      neg_assign(ec.get_row()[i]);
+    neg_assign(ec);
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
   Grid_Generator gg(ec, POINT);
 
   // Enforce normalization.
-  gg.expr.get_row().normalize();
+  gg.expr.normalize();
   return gg;
 }
 
@@ -115,7 +113,7 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
 
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 2 + e.space_dimension());
-  ec.get_row()[0] = 0;
+  ec[0] = 0;
   // Using this constructor saves reallocation when creating the
   // coefficients.
   Grid_Generator gg(ec, LINE);
@@ -139,26 +137,8 @@ PPL::Grid_Generator::swap_space_dimensions(Variable v1, Variable v2) {
 bool
 PPL::Grid_Generator::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  // For each variable to be removed, replace the corresponding coefficient
-  // by shifting left the coefficient to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      std::swap(expr.get_row()[dst_col++], expr.get_row()[src_col++]);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type sz = expr.get_row().size();
-  while (src_col < sz)
-    std::swap(expr.get_row()[dst_col++], expr.get_row()[src_col++]);
-
-  // The number of remaining coefficients is `dst_col'.
-  expr.get_row().resize(dst_col);
+  
+  expr.remove_space_dimensions(vars);
 
   PPL_ASSERT(OK());
   return true;
@@ -167,24 +147,12 @@ PPL::Grid_Generator::remove_space_dimensions(const Variables_Set& vars) {
 void
 PPL::Grid_Generator
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  const dimension_type n = cycle.size();
-  if (n < 2)
+  if (cycle.size() < 2)
     // No-op. No need to call sign_normalize().
     return;
 
-  if (n == 2) {
-    expr.get_row().swap(cycle[0].space_dimension(), cycle[1].space_dimension());
-  } else {
-    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    tmp = expr.get_row()[cycle.back().space_dimension()];
-    for (dimension_type i = n - 1; i-- > 0; )
-      expr.get_row().swap(cycle[i + 1].space_dimension(),
-                     cycle[i].space_dimension());
-    if (tmp == 0)
-      expr.get_row().reset(cycle[0].space_dimension());
-    else
-      std::swap(tmp, expr.get_row()[cycle[0].space_dimension()]);
-  }
+  expr.permute_space_dimensions(cycle);
+
   // *this is still normalized but may be not strongly normalized: sign
   // normalization is necessary.
   // Sign-normalizing a parameter changes its meaning, so do nothing for
@@ -196,10 +164,8 @@ PPL::Grid_Generator
 
 void
 PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
-  const dimension_type x_size = expr.get_row().size();
-  s << "size " << x_size << " ";
-  for (dimension_type i = 0; i < x_size; ++i)
-    s << expr.get_row()[i] << ' ';
+  expr.ascii_dump(s);
+  s << ' ';
   switch (type()) {
   case LINE:
     s << "L";
@@ -218,25 +184,11 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator)
 
 bool
 PPL::Grid_Generator::ascii_load(std::istream& s) {
+
+  if (!expr.ascii_load(s))
+    return false;
+
   std::string str;
-  if (!(s >> str) || str != "size")
-    return false;
-  dimension_type new_size;
-  if (!(s >> new_size))
-    return false;
-
-  Dense_Row& x = expr.get_row();
-  const dimension_type old_size = x.size();
-  if (new_size < old_size)
-    x.shrink(new_size);
-  else if (new_size > old_size) {
-    Dense_Row y(new_size);
-    x.swap(y);
-  }
-
-  for (dimension_type col = 0; col < new_size; ++col)
-    if (!(s >> x[col]))
-      return false;
 
   if (!(s >> str))
     return false;
@@ -257,8 +209,8 @@ PPL::Grid_Generator::set_is_parameter() {
     set_is_parameter_or_point();
   else if (!is_line_or_parameter()) {
     // The grid generator is a point.
-    expr.get_row()[expr.get_row().size() - 1] = expr.get_row()[0];
-    expr.get_row()[0] = 0;
+    expr[expr.space_dimension()] = expr[0];
+    expr[0] = 0;
   }
 }
 
@@ -284,36 +236,7 @@ PPL::compare(const Grid_Generator& x, const Grid_Generator& y) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
 
-  // Compare all the coefficients of the row starting from position 1.
-  const dimension_type xsz = x.expression().get_row().size();
-  const dimension_type ysz = y.expression().get_row().size();
-  const dimension_type min_sz = std::min(xsz, ysz);
-  dimension_type i;
-  for (i = 1; i < min_sz; ++i)
-    if (const int comp = cmp(x.expression().get_row()[i],
-                             y.expression().get_row()[i]))
-      // There is at least a different coefficient.
-      return (comp > 0) ? 2 : -2;
-
-  // Handle the case where `x' and `y' are of different size.
-  if (xsz != ysz) {
-    for( ; i < xsz; ++i)
-      if (const int sign = sgn(x.expression().get_row()[i]))
-        return (sign > 0) ? 2 : -2;
-    for( ; i < ysz; ++i)
-      if (const int sign = sgn(y.expression().get_row()[i]))
-        return (sign < 0) ? 2 : -2;
-  }
-
-  // If all the coefficients in `x' equal all the coefficients in `y'
-  // (starting from position 1) we compare coefficients in position 0,
-  // i.e., inhomogeneous terms.
-  if (const int comp = cmp(x.expression().get_row()[0],
-                           y.expression().get_row()[0]))
-    return (comp > 0) ? 1 : -1;
-
-  // `x' and `y' are equal.
-  return 0;
+  return compare(x.expression(), y.expression());
 }
 
 bool
@@ -329,20 +252,16 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
   Grid_Generator tmp_x = *this;
   Grid_Generator tmp_y = y;
-  dimension_type& last = x_space_dim;
-  ++last;
+  dimension_type last = x_space_dim + 1;
   if (x_type == POINT || x_type == LINE) {
-    tmp_x.expr.get_row()[last] = 0;
-    tmp_y.expr.get_row()[last] = 0;
+    tmp_x.expr[last] = 0;
+    tmp_y.expr[last] = 0;
   }
   // Normalize the copies, including the divisor column.
-  tmp_x.expr.get_row().normalize();
-  tmp_y.expr.get_row().normalize();
+  tmp_x.expr.normalize();
+  tmp_y.expr.normalize();
   // Check for equality.
-  while (last-- > 0)
-    if (tmp_x.expr.get_row()[last] != tmp_y.expr.get_row()[last])
-      return false;
-  return true;
+  return tmp_x.is_equal_to(tmp_y);
 }
 
 bool
@@ -352,12 +271,8 @@ PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
-  // Start at size() - 2 to avoid the extra grid generator column.
-  // Also avoid the point divisor column (0).
-  for (dimension_type i = expr.get_row().size() - 2; i > 0; --i)
-    if (expr.get_row()[i] != 0)
-      return false;
-  return true;
+  // This does not check neither the first nor the last coefficient.
+  return expr.all_zeroes(1, expr.space_dimension());
 }
 
 void
@@ -371,8 +286,12 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   set_divisor(d);
   PPL_ASSERT(factor > 0);
   if (factor > 1) {
-    for (dimension_type i = expr.get_row().size() - 2; i > 0; --i)
-      expr.get_row()[i] *= factor;
+    expr *= factor;
+    // Undo the multipication for the first and last coefficient.
+    Coefficient& first = expr[0];
+    exact_div_assign(first, first, factor);
+    Coefficient& last = expr[expr.space_dimension()];
+    exact_div_assign(last, last, factor);
   }
 }
 
