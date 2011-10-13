@@ -237,7 +237,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     cs.release_rows(cs_rows);
     PPL_ASSERT(cs_rows.size() == added_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
-      cs_rows[i].expression().get_row().add_zeroes_and_shift(space_dim, 1);
+      cs_rows[i].expression().shift_space_dimensions(Variable(0), space_dim);
       con_sys.insert_pending_recycled(cs_rows[i]);
     }
 
@@ -274,7 +274,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     Swapping_Vector<Constraint> cs_rows;
     cs.release_rows(cs_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
-      cs_rows[i].expression().get_row().add_zeroes_and_shift(space_dim, 1);
+      cs_rows[i].expression().shift_space_dimensions(Variable(0), space_dim);
       con_sys.insert_recycled(cs_rows[i]);
     }
 #if !BE_LAZY
