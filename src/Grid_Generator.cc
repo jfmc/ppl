@@ -378,25 +378,8 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
 
 void
 PPL::Grid_Generator::sign_normalize() {
-  if (is_line_or_equality()) {
-    const dimension_type sz = expr.get_row().size();
-    // `first_non_zero' indicates the index of the first
-    // coefficient of the row different from zero, disregarding
-    // the very first coefficient (inhomogeneous term / divisor).
-    dimension_type first_non_zero;
-    for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
-      if (expr.get_row()[first_non_zero] != 0)
-        break;
-    if (first_non_zero < sz)
-      // If the first non-zero coefficient of the row is negative,
-      // we negate the entire row.
-      if (expr.get_row()[first_non_zero] < 0) {
-        for (dimension_type j = first_non_zero; j < sz; ++j)
-          neg_assign(expr.get_row()[j]);
-        // Also negate the first coefficient.
-        neg_assign(expr.get_row()[0]);
-      }
-  }
+  if (is_line_or_equality())
+    expr.sign_normalize();
 }
 
 bool

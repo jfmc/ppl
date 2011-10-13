@@ -69,22 +69,10 @@ PPL::Congruence::Congruence(const Constraint& c,
 
 void
 PPL::Congruence::sign_normalize() {
-  const dimension_type space_dim = expr.space_dimension();
-  // `first_non_zero' indicates the index of the first
-  // coefficient of the row different from zero, disregarding
-  // the very first coefficient (inhomogeneous term).
-  dimension_type first_non_zero;
-  for (first_non_zero = 1; first_non_zero < space_dim; ++first_non_zero)
-    if (expr[first_non_zero] != 0)
-      break;
-  if (first_non_zero < space_dim && expr[first_non_zero] < 0) {
-    // TODO: Consider optimizing this: we know that the first `first_non_zero-1'
-    // homogeneous coefficients are zero.
-    // TODO: Optimize this when the modulus will be stored separatedly.
-    Coefficient m = modulus();
-    neg_assign(expr);
-    modulus() = m;
-  }
+  // TODO: Simplify this when the modulus will be stored separatedly.
+  Coefficient m = modulus();
+  expr.sign_normalize();
+  modulus() = m;
 }
 
 void

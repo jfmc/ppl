@@ -270,29 +270,8 @@ PPL::Constraint::is_equal_to(const Constraint& y) const {
 
 void
 PPL::Constraint::sign_normalize() {
-  if (is_line_or_equality()) {
-    // TODO: Consider moving this code into a new method of Linear_Expression.
-    // TODO: Use the space dimension instead of the size.
-    const dimension_type sz = expr.space_dimension() + 1;
-    // `first_non_zero' indicates the index of the first
-    // coefficient of the row different from zero, disregarding
-    // the very first coefficient (inhomogeneous term / divisor).
-    dimension_type first_non_zero;
-    // TODO: Optimize this.
-    for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
-      if (expr.coefficient(Variable(first_non_zero - 1)) != 0)
-        break;
-    if (first_non_zero < sz)
-      // If the first non-zero coefficient of the row is negative,
-      // we negate the entire row.
-      if (expr.coefficient(Variable(first_non_zero - 1)) < 0) {
-        // TODO: Consider optimizing this.
-        // We know that the first `first_non_zero' elements are nonzero
-        // (except at most the inhomogeneous term), so we could exploit this
-        // and avoid some work.
-        neg_assign(expr);
-      }
-  }
+  if (is_line_or_equality())
+    expr.sign_normalize();
 }
 
 bool
