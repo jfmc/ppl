@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Congruence.types.hh"
 #include "Variables_Set.types.hh"
+#include "Polyhedron.types.hh"
 
 #include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
@@ -608,6 +609,7 @@ private:
   compare(const Constraint& x, const Constraint& y);
 
   friend class Constraint_System;
+  friend class Polyhedron;
 };
 
 namespace Parma_Polyhedra_Library {

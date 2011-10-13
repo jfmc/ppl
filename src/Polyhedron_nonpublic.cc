@@ -1283,7 +1283,6 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   const dimension_type old_gs_rows = gs.num_rows();
   dimension_type gs_rows = old_gs_rows;
   const dimension_type n_lines = gs.num_lines();
-  const dimension_type eps_index = gs.space_dimension() + 1;
   bool gs_sorted = gs.is_sorted();
   Swapping_Vector<Generator> rows;
   gs.release_rows(rows);
@@ -1313,10 +1312,10 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       }
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	if (g.expression().get_row()[eps_index] != g.expression().get_row()[0]) {
-	  g.expression().get_row()[eps_index] = g.expression().get_row()[0];
+	if (g.epsilon_coefficient() != g.expression().inhomogeneous_term()) {
+	  g.set_epsilon_coefficient(g.expression().inhomogeneous_term());
 	  // Enforce normalization.
-	  g.expression().get_row().normalize();
+	  g.expression().normalize();
 	  changed = true;
 	}
 	// Consider next generator.
@@ -2113,7 +2112,6 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
   PPL_ASSERT(is_necessarily_closed() || !has_pending_constraints());
 
   bool changed = false;
-  const dimension_type eps_index = space_dim + 1;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
 
   const bool con_sys_was_sorted = con_sys.is_sorted();
@@ -2131,7 +2129,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
   for (dimension_type j = rows.size(); j-- > 0; ) {
     Constraint& c = rows[j];
     if (c.is_tautological())
-      goto next_constraint;
+      continue;
 
     if (pvars != 0) {
       for (dimension_type i = space_dim; i-- > 0; )
@@ -2142,45 +2140,21 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     if (!is_necessarily_closed()) {
       // Transform all strict inequalities into non-strict ones,
       // with the inhomogeneous term incremented by 1.
-      if (c.expression().get_row()[eps_index] < 0) {
-	c.expression().get_row()[eps_index] = 0;
-	--c.expression().get_row()[0];
+      if (c.epsilon_coefficient() < 0) {
+	c.set_epsilon_coefficient(0);
+	--c.expression()[0];
 	// Enforce normalization.
 	// FIXME: is this really necessary?
-	c.expression().get_row().normalize();
+	c.expression().normalize();
 	changed = true;
       }
     }
 
-    {
-      // Compute the GCD of all the homogeneous terms.
-      dimension_type i = space_dim+1;
-      while (i > 1) {
-	const Coefficient& c_i = c.expression().get_row()[--i];
-	if (const int c_i_sign = sgn(c_i)) {
-	  gcd = c_i;
-	  if (c_i_sign < 0)
-	    neg_assign(gcd);
-	  goto compute_gcd;
-	}
-      }
-      // We reach this point only if all the coefficients were zero.
-      goto next_constraint;
+    // Compute the GCD of all the homogeneous terms.
+    gcd = c.expression().gcd(1, space_dim + 1);
 
-    compute_gcd:
-      if (gcd == 1)
-	goto next_constraint;
-      while (i > 1) {
-	const Coefficient& c_i = c.expression().get_row()[--i];
-	if (c_i != 0) {
-	  // See the comment in Dense_Row::normalize().
-	  gcd_assign(gcd, c_i, gcd);
-	  if (gcd == 1)
-	    goto next_constraint;
-	}
-      }
-      PPL_ASSERT(gcd != 1);
-      PPL_ASSERT(c.expression().get_row()[0] % gcd != 0);
+    if (gcd != 0 && gcd != 1) {
+      PPL_ASSERT(c.expression().inhomogeneous_term() % gcd != 0);
 
       // If we have an equality, the polyhedron becomes empty.
       if (c.is_equality()) {
@@ -2189,11 +2163,9 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       }
 
       // Divide the inhomogeneous coefficients by the GCD.
-      for (dimension_type k = space_dim+1; --k > 0; ) {
-	Coefficient& c_k = c.expression().get_row()[k];
-	exact_div_assign(c_k, c_k, gcd);
-      }
-      Coefficient& c_0 = c.expression().get_row()[0];
+      c.expression().exact_div_assign(gcd, 1, space_dim + 1);
+
+      Coefficient& c_0 = c.expression()[0];
       const int c_0_sign = sgn(c_0);
       c_0 /= gcd;
       if (c_0_sign < 0)
@@ -2201,8 +2173,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       changed = true;
     }
 
-  next_constraint:
-    ;
+    next_constraint: ;
   }
 
   con_sys.take_ownership_of_rows(rows);
