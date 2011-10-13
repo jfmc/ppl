@@ -44,15 +44,11 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   row_column = 0;
+  neg_assign(reduced_row_col);
   // pivot.space_dimension() is the index for the parameter divisor so we
   // start reducing the line at index pivot.space_dimension() - 2.
-  for (dimension_type col = pivot.expression().space_dimension() - 1;
-       col > column;
-       --col) {
-    Coefficient& row_col = row.expression().get_row()[col];
-    row_col *= reduced_pivot_col;
-    sub_mul_assign(row_col, reduced_row_col, pivot.expression().get_row()[col]);
-  }
+  row.expression().linear_combine(pivot.expression(), reduced_pivot_col, reduced_row_col,
+                                  column + 1, pivot.expression().space_dimension());
 }
 
 void
@@ -75,11 +71,9 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   row_column = 0;
-  for (dimension_type col = column; col-- > 0; ) {
-    Coefficient& row_col = row.expression().get_row()[col];
-    row_col *= reduced_pivot_col;
-    sub_mul_assign(row_col, reduced_row_col, pivot.expression().get_row()[col]);
-  }
+  neg_assign(reduced_row_col);
+  row.expression().linear_combine(pivot.expression(), reduced_pivot_col, reduced_row_col,
+                                  0, column);
 }
 
 template <typename R>
@@ -110,16 +104,9 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   // the result in pivot[column] is the smallest possible positive
   // integer.
   row_column = 0;
-  PPL_DIRTY_TEMP_COEFFICIENT(old_pivot_col);
-  for (dimension_type col = start; col < end; ++col) {
-    Coefficient& pivot_col = pivot.expression().get_row()[col];
-    old_pivot_col = pivot_col;
-    pivot_col *= s;
-    Coefficient& row_col = row.expression().get_row()[col];
-    add_mul_assign(pivot_col, t, row_col);
-    row_col *= reduced_pivot_col;
-    sub_mul_assign(row_col, reduced_row_col, old_pivot_col);
-  }
+  R old_pivot = pivot;
+  pivot.expression().linear_combine(row.expression(), s, t, start, end);
+  row.expression().linear_combine(old_pivot.expression(), reduced_pivot_col, -reduced_row_col, start, end);
 }
 
 void
@@ -140,8 +127,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
   if (row_column == pivot_column) {
-    for (dimension_type col = num_columns; col-- > 0; )
-      row.expression().get_row()[col] -= pivot.expression().get_row()[col];
+    row.expression().linear_combine(pivot.expression(), 1, -1, 0, num_columns);
     return;
   }
 
@@ -168,17 +154,18 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // all other parameters to match.
   for (dimension_type index = rows.size(); index-- > 0; ) {
     Grid_Generator& gen = rows[index];
-    if (gen.is_parameter_or_point())
-      for (dimension_type col = num_columns; col-- > 0; )
-        gen.expression().get_row()[col] *= reduced_pivot_col;
+    if (gen.is_parameter_or_point()) {
+      gen.expression() *= reduced_pivot_col;
+      Coefficient& divisor = gen.expression()[num_columns];
+      exact_div_assign(divisor, divisor, reduced_pivot_col);
+    }
   }
 
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
   row_column = 0;
-  for (dimension_type col = num_columns - 1; col > column; --col)
-    sub_mul_assign(row.expression().get_row()[col], reduced_row_col,
-                   pivot.expression().get_row()[col]);
+  row.expression().linear_combine(pivot.expression(), 1, -reduced_row_col,
+                                  column + 1, num_columns);
 }
 
 void
