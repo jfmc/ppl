@@ -483,6 +483,14 @@ PPL::sub_mul_assign(Linear_Expression& e,
   return e;
 }
 
+PPL::Linear_Expression&
+PPL::sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,
+                    const Linear_Expression& y, dimension_type start, dimension_type end) {
+  for (dimension_type i = start; i < end; i++)
+    x.row[i] -= n*y.row[i];
+  return x;
+}
+
 bool
 PPL::Linear_Expression::OK() const {
   return row.OK();
