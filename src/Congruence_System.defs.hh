@@ -354,9 +354,8 @@ public:
   */
   void permute_space_dimensions(const std::vector<Variable>& cycle);
 
-  // TODO: Remove this, or make it private.
   //! Swaps the columns having indexes \p i and \p j.
-  void swap_columns(dimension_type i,  dimension_type j);
+  void swap_space_dimensions(Variable v1, Variable v2);
 
   // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing the rows in [first,last).

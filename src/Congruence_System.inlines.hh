@@ -82,7 +82,9 @@ Congruence_System::insert(const Congruence& cg) {
 
 inline void
 Congruence_System::insert_recycled(Congruence& cg) {
+  PPL_ASSERT(cg.OK());
   cg.strong_normalize();
+  PPL_ASSERT(cg.OK());
   insert_verbatim_recycled(cg);
   PPL_ASSERT(OK());
 }

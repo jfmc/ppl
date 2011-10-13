@@ -94,7 +94,7 @@ Grid::Grid(const Box<Interval>& box,
 	    if (l_d < 0)
 	      neg_assign(u_n);
 	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
-	    point.expression().set_coefficient(Variable(k), l_n * u_n);
+	    point.expression()[k+1] = l_n * u_n;
 
             gen_sys.take_ownership_of_rows(rows);
 
@@ -227,9 +227,9 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (dimension_type j = space_dim; j-- > 0; ) {
-      if (old_g.coefficient(Variable(j)) != 0
-	  && pfunc_maps[j] != not_a_dimension()) {
-	e += Variable(pfunc_maps[j]) * old_g.coefficient(Variable(j));
+      const Coefficient& c = old_g.coefficient(Variable(j));
+      if (c != 0 && pfunc_maps[j] != not_a_dimension()) {
+	e += Variable(pfunc_maps[j]) * c;
 	all_zeroes = false;
       }
     }
@@ -271,9 +271,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
   typedef typename M::row_type M_row_type;
 
   const M_row_type& pivot = rows[pivot_index];
-  const Coefficient& pivot_dim
-    = (dim == 0) ? pivot.expression().inhomogeneous_term()
-                 : pivot.expression().coefficient(Variable(dim - 1));
+  const Coefficient& pivot_dim = pivot.expression().get(dim);
 
   if (pivot_dim == 0)
     return;
@@ -309,9 +307,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
 	    && dim_kinds[kinds_index] == PARAMETER)) {
       M_row_type& row = rows[row_index];
 
-      const Coefficient& row_dim
-        = (dim == 0) ? row.expression().inhomogeneous_term()
-                     : row.expression().coefficient(Variable(dim - 1));
+      const Coefficient& row_dim = row.expression().get(dim);
       // num_rows_to_subtract may be positive or negative.
       num_rows_to_subtract = row_dim / pivot_dim;
 

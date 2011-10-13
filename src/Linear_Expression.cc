@@ -491,6 +491,28 @@ PPL::sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,
   return x;
 }
 
+void
+PPL::add_mul_assign(Linear_Expression& e1,
+                    Coefficient_traits::const_reference factor,
+                    const Linear_Expression& e2) {
+  if (e2.space_dimension() > e1.space_dimension())
+    e1.set_space_dimension(e2.space_dimension());
+  PPL_ASSERT(e1.space_dimension() >= e2.space_dimension());
+  for (dimension_type i = 0; i < e2.space_dimension(); i++)
+    e1[i] += factor * e2[i];
+}
+
+void
+PPL::sub_mul_assign(Linear_Expression& e1,
+                    Coefficient_traits::const_reference factor,
+                    const Linear_Expression& e2) {
+  if (e2.space_dimension() > e1.space_dimension())
+    e1.set_space_dimension(e2.space_dimension());
+  PPL_ASSERT(e1.space_dimension() >= e2.space_dimension());
+  for (dimension_type i = 0; i < e2.space_dimension(); i++)
+    e1[i] -= factor * e2[i];
+}
+
 bool
 PPL::Linear_Expression::OK() const {
   return row.OK();

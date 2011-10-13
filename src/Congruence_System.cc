@@ -56,16 +56,14 @@ PPL::Congruence_System
     return;
 
   if (n == 2) {
-    swap_columns(cycle[0].space_dimension(),
-                 cycle[1].space_dimension());
+    swap_space_dimensions(cycle[0], cycle[1]);
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
     for (dimension_type k = rows.size(); k-- > 0; ) {
       Congruence& rows_k = rows[k];
       tmp = rows_k.coefficient(cycle.back());
       for (dimension_type i = n - 1; i-- > 0; )
-        rows_k.swap(cycle[i + 1].space_dimension(),
-                    cycle[i].space_dimension());
+        rows_k.swap_space_dimensions(cycle[i + 1], cycle[i]);
       std::swap(tmp, rows_k[cycle[0].space_dimension()]);
     }
   }
@@ -112,15 +110,16 @@ PPL::Congruence_System
 }
 
 void
-PPL::Congruence_System::swap_columns(dimension_type i, dimension_type j) {
-  PPL_ASSERT(i < num_columns());
-  PPL_ASSERT(j < num_columns());
+PPL::Congruence_System::swap_space_dimensions(Variable v1, Variable v2) {
   for (dimension_type k = num_rows(); k-- > 0; )
-    rows[k].swap(i, j);
+    rows[k].swap_space_dimensions(v1, v2);
 }
 
 void
 PPL::Congruence_System::insert_verbatim_recycled(Congruence& cg) {
+  // TODO: Remove this.
+  PPL_ASSERT(cg.OK());
+  
   if (cg.space_dimension() >= space_dimension())
     set_space_dimension(cg.space_dimension());
   else

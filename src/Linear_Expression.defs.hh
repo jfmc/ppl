@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
+#include "Grid.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cstddef>
@@ -169,6 +170,16 @@ neg_assign(Linear_Expression& e);
 Linear_Expression&
 add_mul_assign(Linear_Expression& e,
                Coefficient_traits::const_reference n, Variable v);
+
+//! Sums \p e2 multiplied by \p factor into \p e1.
+void add_mul_assign(Linear_Expression& e1,
+                    Coefficient_traits::const_reference factor,
+                    const Linear_Expression& e2);
+
+//! Subtracts \p e2 multiplied by \p factor from \p e1.
+void sub_mul_assign(Linear_Expression& e1,
+                    Coefficient_traits::const_reference factor,
+                    const Linear_Expression& e2);
 
 //! Returns the linear expression \p e - \p n * \p v and assigns it to \p e.
 /*! \relates Linear_Expression */
@@ -515,6 +526,9 @@ private:
   //! Equivalent to the const version of operator[].
   const Coefficient& get(dimension_type i) const;
 
+  friend class Grid;
+  friend class Congruence;
+
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);
   friend Linear_Expression
@@ -573,6 +587,15 @@ private:
   friend Linear_Expression&
   sub_mul_assign(Linear_Expression& e,
                  Coefficient_traits::const_reference n, Variable v);
+
+  friend void
+  add_mul_assign(Linear_Expression& e1,
+                 Coefficient_traits::const_reference factor,
+                 const Linear_Expression& e2);
+  friend void
+  sub_mul_assign(Linear_Expression& e1,
+                 Coefficient_traits::const_reference factor,
+                 const Linear_Expression& e2);
 
   friend Linear_Expression&
   sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,

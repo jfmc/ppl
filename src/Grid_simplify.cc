@@ -61,8 +61,8 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Assume two equalities.
   PPL_ASSERT(row.modulus() == 0 && pivot.modulus() == 0);
 
-  const Coefficient& pivot_column = pivot.get_row()[column];
-  Coefficient& row_column = row.get_row()[column];
+  const Coefficient& pivot_column = pivot.expression().get_row()[column];
+  Coefficient& row_column = row.expression().get_row()[column];
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
   gcd_assign(reduced_row_col, pivot_column, row_column);
@@ -74,9 +74,9 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // the result in row[column] is zero.
   row_column = 0;
   for (dimension_type col = column; col-- > 0; ) {
-    Coefficient& row_col = row.get_row()[col];
+    Coefficient& row_col = row.expression().get_row()[col];
     row_col *= reduced_pivot_col;
-    sub_mul_assign(row_col, reduced_row_col, pivot.get_row()[col]);
+    sub_mul_assign(row_col, reduced_row_col, pivot.expression().get_row()[col]);
   }
 }
 
@@ -394,7 +394,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     dimension_type row_index = pivot_index;
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && sys[row_index].get_row()[dim] == 0)
+    while (row_index < num_rows && sys[row_index].expression().get_row()[dim] == 0)
       ++row_index;
 
     if (row_index == num_rows)
@@ -419,7 +419,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
 	Congruence& row = rows[row_index];
 
-	if (row.get_row()[dim] == 0)
+	if (row.expression().get_row()[dim] == 0)
 	  continue;
 
 	if (row.is_equality())
@@ -451,7 +451,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
-      if (pivot.get_row()[dim] < 0)
+      if (pivot.expression().get_row()[dim] < 0)
 	pivot.negate(0, dim + 1);
 
       // Factor this row out of the preceding ones.

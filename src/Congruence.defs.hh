@@ -28,12 +28,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include "Variable.defs.hh"
-#include "Dense_Row.defs.hh"
 
 #include "Constraint.types.hh"
-#include "Linear_Expression.types.hh"
+#include "Linear_Expression.defs.hh"
 
 #include <iosfwd>
+#include <vector>
 
 // These are declared here because they are friend of Congruence.
 namespace Parma_Polyhedra_Library {
@@ -242,7 +242,7 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  void permute_dimensions(const std::vector<dimension_type>& cycles);
+  void permute_space_dimensions(const std::vector<Variable>& cycles);
 
   // TODO: Remove this.
   Coefficient_traits::const_reference operator[](dimension_type i) const;
@@ -251,16 +251,10 @@ public:
   Coefficient& operator[](dimension_type i);
 
   // TODO: Remove this.
-  Dense_Row& get_row();
+  Linear_Expression& expression();
 
   // TODO: Remove this.
-  const Dense_Row& get_row() const;
-
-  // TODO: Remove this.
-  Congruence& expression();
-
-  // TODO: Remove this.
-  const Congruence& expression() const;
+  const Linear_Expression& expression() const;
 
   //! Returns the coefficient of \p v in \p *this.
   /*!
@@ -277,6 +271,9 @@ public:
 
   //! Returns a const reference to the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
+
+  //! Returns a reference to the modulus of \p *this.
+  Coefficient& modulus();
 
   //! Sets the modulus of \p *this to \p m .
   void set_modulus(Coefficient_traits::const_reference m);
@@ -435,14 +432,15 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Congruence& y);
 
-  //! Swaps the i-th and j-th coefficients.
-  void swap(dimension_type i, dimension_type j);
+  //! Swaps the coefficients of the variables \p v1 and \p v2 .
+  void swap_space_dimensions(Variable v1, Variable v2);
 
   // TODO: Make this private.
   //! Marks this congruence as a linear equality.
   void set_is_equality();
 
   // TODO: Make this private.
+  // TODO: Also consider removing it.
   /*! \brief
     Negates the elements from index \p first (included)
     to index \p last (excluded).
@@ -494,7 +492,7 @@ private:
   */
   static const Congruence* zero_dim_integrality_p;
 
-  Dense_Row row;
+  Linear_Expression expr;
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
