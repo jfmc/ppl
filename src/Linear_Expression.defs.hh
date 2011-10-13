@@ -417,6 +417,10 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& vars);
 
+  //! Shift by \p n positions the coefficients of variables, starting from
+  //! the coefficient of \p v. This increases the space dimension by \p n.
+  void shift_space_dimensions(Variable v, dimension_type n);
+
   //! Permutes the space dimensions of the expression.
   /*!
     \param cycle

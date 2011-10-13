@@ -159,7 +159,10 @@ Linear_Expression::swap_space_dimensions(Variable v1, Variable v2) {
   row.swap(v1.space_dimension(), v2.space_dimension());
 }
 
-void remove_space_dimensions(const Variables_Set& vars);
+inline void
+Linear_Expression::shift_space_dimensions(Variable v, dimension_type n) {
+  row.add_zeroes_and_shift(n, v.space_dimension());
+}
 
 inline bool
 Linear_Expression::is_zero() const {
