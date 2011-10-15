@@ -596,7 +596,6 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Candidate rays are kept in a temporary generator system.
   Generator_System candidate_rays;
-  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.
@@ -605,35 +604,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray()) {
 	  Generator new_ray(x_g);
-	  // Modify `new_ray' according to the evolution of `x_g' with
-	  // respect to `y_g'.
-	  std::deque<bool> considered(x.space_dim + 1);
-	  for (dimension_type k = 1; k < x.space_dim; ++k)
-	    if (!considered[k])
-	      for (dimension_type h = k + 1; h <= x.space_dim; ++h)
-		if (!considered[h]) {
-		  tmp = x_g.expression().get_row()[k] * y_g.expression().get_row()[h];
-		  // The following line optimizes the computation of
-		  // tmp -= x_g[h] * y_g[k];
-		  sub_mul_assign(tmp, x_g.expression().get_row()[h], y_g.expression().get_row()[k]);
-		  const int clockwise
-		    = sgn(tmp);
-		  const int first_or_third_quadrant
-		    = sgn(x_g.expression().get_row()[k]) * sgn(x_g.expression().get_row()[h]);
-		  switch (clockwise * first_or_third_quadrant) {
-		  case -1:
-		    new_ray.expression().get_row()[k] = 0;
-		    considered[k] = true;
-		    break;
-		  case 1:
-		    new_ray.expression().get_row()[h] = 0;
-		    considered[h] = true;
-		    break;
-		  default:
-		    break;
-		  }
-		}
-	  new_ray.expression().get_row().normalize();
+          new_ray.expression().modify_according_to_evolution(x_g.expression(), y_g.expression());
 	  candidate_rays.insert(new_ray);
 	}
       }
