@@ -28,26 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline dimension_type
-Linear_Expression::max_space_dimension() {
-  return Dense_Row::max_size() - 1;
-}
-
-inline
-Linear_Expression::Linear_Expression()
-  : impl(new Linear_Expression_Impl()) {
-}
-
-inline
-Linear_Expression::Linear_Expression(dimension_type sz, bool x)
-  : impl(new Linear_Expression_Impl(sz, x)) {
-}
-
-inline
-Linear_Expression::Linear_Expression(const Linear_Expression& e)
-  : impl(new Linear_Expression_Impl(*e.impl)) {
-}
-
 inline Linear_Expression&
 Linear_Expression::operator=(const Linear_Expression& e) {
   Linear_Expression tmp = e;
@@ -58,17 +38,6 @@ Linear_Expression::operator=(const Linear_Expression& e) {
 inline
 Linear_Expression::~Linear_Expression() {
   delete impl;
-}
-
-inline
-Linear_Expression::Linear_Expression(const Linear_Expression& e,
-				     dimension_type sz)
-  : impl(new Linear_Expression_Impl(*e.impl, sz)) {
-}
-
-inline
-Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
-  : impl(new Linear_Expression_Impl(n)) {
 }
 
 inline dimension_type
@@ -101,20 +70,6 @@ inline void
 Linear_Expression
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
   impl->set_inhomogeneous_term(n);
-}
-
-inline void
-Linear_Expression
-::linear_combine(const Linear_Expression& y, dimension_type i) {
-  impl->linear_combine(*y.impl, i);
-}
-
-inline void
-Linear_Expression
-::linear_combine(const Linear_Expression& y,
-                 Coefficient_traits::const_reference c1,
-                 Coefficient_traits::const_reference c2) {
-  impl->linear_combine(*y.impl, c1, c2);
 }
 
 inline void
@@ -247,6 +202,265 @@ inline bool
 Linear_Expression::ascii_load(std::istream& s) {
   return impl->ascii_load(s);
 }
+
+inline void
+Linear_Expression::remove_space_dimensions(const Variables_Set& vars) {
+  impl->remove_space_dimensions(vars);
+}
+
+inline void
+Linear_Expression::permute_space_dimensions(const std::vector<Variable>& cycle) {
+  impl->permute_space_dimensions(cycle);
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
+  if (e1.space_dimension() >= e2.space_dimension()) {
+    Linear_Expression e = e1;
+    e += e2;
+    return e;
+  } else {
+    Linear_Expression e = e2;
+    e += e1;
+    return e;
+  }
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Variable v, const Linear_Expression& e) {
+  return e + v;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator+(Coefficient_traits::const_reference n,
+               const Linear_Expression& e) {
+  return e + n;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Variable v, const Variable w) {
+  const dimension_type v_space_dim = v.space_dimension();
+  const dimension_type w_space_dim = w.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
+  if (space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator+(v, w):\n"
+                            "v or w exceed the maximum allowed "
+                            "space dimension.");
+  if (v_space_dim >= w_space_dim) {
+    Linear_Expression e(v);
+    e += w;
+    return e;
+  } else {
+    Linear_Expression e(w);
+    e += v;
+    return e;
+  }
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator-(const Linear_Expression& e) {
+  Linear_Expression r(e);
+  neg_assign(r);
+  return r;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
+  if (e1.space_dimension() >= e2.space_dimension()) {
+    Linear_Expression e = e1;
+    e -= e2;
+    return e;
+  } else {
+    Linear_Expression e = e2;
+    neg_assign(e);
+    e += e1;
+    return e;
+  }
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator-(const Variable v, const Linear_Expression& e) {
+  Linear_Expression result(e, std::max(v.space_dimension(), e.space_dimension()) + 1);
+  result.negate(0, e.space_dimension() + 1);
+  result += v;
+  return result;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Linear_Expression& e, const Variable v) {
+  Linear_Expression result(e, std::max(v.space_dimension(), e.space_dimension()) + 1);
+  result -= v;
+  return result;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator-(Coefficient_traits::const_reference n,
+               const Linear_Expression& e) {
+  Linear_Expression result(e);
+  neg_assign(result);
+  result += n;
+  return result;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression
+operator*(Coefficient_traits::const_reference n,
+               const Linear_Expression& e) {
+  return e * n;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
+  *e1.impl += *e2.impl;
+  return e1;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+operator+=(Linear_Expression& e, const Variable v) {
+  *e.impl += v;
+  return e;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
+  *e1.impl -= *e2.impl;
+  return e1;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+operator-=(Linear_Expression& e, const Variable v) {
+  *e.impl -= v;
+  return e;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
+  *e.impl *= n;
+  return e;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline void
+neg_assign(Linear_Expression& e) {
+  e.impl->negate();
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+add_mul_assign(Linear_Expression& e,
+                    Coefficient_traits::const_reference n,
+                    const Variable v) {
+  e.impl->add_mul_assign(n, v);
+  return e;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+sub_mul_assign(Linear_Expression& e,
+                    Coefficient_traits::const_reference n,
+                    const Variable v) {
+  e.impl->sub_mul_assign(n, v);
+  return e;
+}
+
+inline Linear_Expression&
+sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,
+                    const Linear_Expression& y, dimension_type start, dimension_type end) {
+  x.impl->sub_mul_assign(n, *y.impl, start, end);
+  return x;
+}
+
+inline void
+add_mul_assign(Linear_Expression& e1,
+                    Coefficient_traits::const_reference factor,
+                    const Linear_Expression& e2) {
+  e1.impl->add_mul_assign(factor, *e2.impl);
+}
+
+inline void
+sub_mul_assign(Linear_Expression& e1,
+                    Coefficient_traits::const_reference factor,
+                    const Linear_Expression& e2) {
+  e1.impl->sub_mul_assign(factor, *e2.impl);
+}
+
+inline Coefficient&
+Linear_Expression::operator[](dimension_type i) {
+  return (*impl)[i];
+}
+
+inline const Coefficient&
+Linear_Expression::operator[](dimension_type i) const {
+  return (*impl)[i];
+}
+
+inline const Coefficient&
+Linear_Expression::get(dimension_type i) const {
+  return impl->get(i);
+}
+
+inline bool
+Linear_Expression::all_zeroes(dimension_type start, dimension_type end) const {
+  return impl->all_zeroes(start, end);
+}
+
+inline Coefficient
+Linear_Expression::gcd(dimension_type start, dimension_type end) const {
+  return impl->gcd(start, end);
+}
+
+inline void
+Linear_Expression
+::exact_div_assign(Coefficient_traits::const_reference c,
+                   dimension_type start, dimension_type end) {
+  impl->exact_div_assign(c, start, end);
+}
+
+inline void
+Linear_Expression::sign_normalize() {
+  impl->sign_normalize();
+}
+
+inline void
+Linear_Expression::negate(dimension_type first, dimension_type last) {
+  impl->negate(first, last);
+}
+
+inline bool
+Linear_Expression::all_zeroes(const Variables_Set& vars) const {
+  return impl->all_zeroes(vars);
+}
+
+inline dimension_type
+Linear_Expression::last_nonzero() const {
+  return impl->last_nonzero();
+}
+
+namespace IO_Operators {
+  
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline std::ostream&
+operator<<(std::ostream& s, const Linear_Expression& e) {
+  *e.impl << s;
+  return s;
+}
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
