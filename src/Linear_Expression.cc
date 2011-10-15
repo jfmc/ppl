@@ -663,5 +663,13 @@ PPL::Linear_Expression::sign_normalize() {
   }
 }
 
+void
+PPL::Linear_Expression::negate(dimension_type first, dimension_type last) {
+  Dense_Row::iterator i = row.lower_bound(first);
+  Dense_Row::iterator i_end = row.lower_bound(last);
+  for ( ; i != i_end; ++i)
+    neg_assign(*i);
+}
+
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

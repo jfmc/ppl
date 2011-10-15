@@ -504,6 +504,12 @@ public:
   //! Ensures that the first nonzero homogeneous coefficient is positive,
   //! by negating the row if necessary.
   void sign_normalize();
+
+  /*! \brief
+    Negates the elements from index \p first (included)
+    to index \p last (excluded).
+  */
+  void negate(dimension_type first, dimension_type last);
   
 private:
   /*! \brief
