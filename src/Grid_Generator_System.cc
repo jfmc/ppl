@@ -100,8 +100,6 @@ PPL::Grid_Generator_System
   PPL_ASSERT(expr.space_dimension() <= x.sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  // TODO: Avoid using the number of columns if possible.
-  const dimension_type num_columns = sys.space_dimension() + 2;
   const dimension_type num_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
@@ -117,24 +115,19 @@ PPL::Grid_Generator_System
   // Release the rows from the linear system, so they can be modified.
   x.sys.release_rows(rows);
 
-  const dimension_type v_space_dim = v.space_dimension();
-  
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = rows[i];
     Scalar_Products::assign(numerator, expr, row.expression());
-    std::swap(numerator, row.expression().get_row()[v_space_dim]);
-  }
-
-  if (denominator != 1)
-    // Since we want integer elements in the matrix,
-    // we multiply by `denominator' all the columns of `*this'
-    // having an index different from `v'.
-    for (dimension_type i = num_rows; i-- > 0; ) {
-      Grid_Generator& row = rows[i];
-      for (dimension_type j = num_columns; j-- > 0; )
-	if (j != v_space_dim)
-	  row.expression().get_row()[j] *= denominator;
+    if (denominator != 1) {
+      // Since we want integer elements in the matrix,
+      // we multiply by `denominator' all the columns of `*this'
+      // having an index different from `v'.
+      // Note that this operation also modifies the coefficient of v, but
+      // it will be overwritten by the set_coefficient() below.
+      row.expression() *= denominator;
     }
+    row.expression().set_coefficient(v, numerator);
+  }
 
   // Put the modified rows back into the linear system.
   x.sys.take_ownership_of_rows(rows);
@@ -249,7 +242,7 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 void
 PPL::Grid_Generator_System
 ::add_universe_rows_and_columns(dimension_type dims) {
-  dimension_type col = sys.space_dimension() + 1;
+  dimension_type col = sys.space_dimension();
 
   set_space_dimension(space_dimension() + dims);
 
@@ -258,7 +251,7 @@ PPL::Grid_Generator_System
     Grid_Generator tmp(2, Grid_Generator::LINE_OR_EQUALITY,
                        NECESSARILY_CLOSED);
     tmp.set_space_dimension(space_dimension());
-    tmp.expression().get_row()[col] = 1;
+    tmp.expression() += Variable(col);
     ++col;
     sys.insert_recycled(tmp);
   }
