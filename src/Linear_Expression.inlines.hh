@@ -24,10 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_Expression_inlines_hh
 #define PPL_Linear_Expression_inlines_hh 1
 
-#include "Variable.defs.hh"
-#include "Coefficient.defs.hh"
-#include "math_utilities.defs.hh"
-#include <stdexcept>
+#include "Linear_Expression.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -38,93 +35,78 @@ Linear_Expression::max_space_dimension() {
 
 inline
 Linear_Expression::Linear_Expression()
-  : row(1) {
-  PPL_ASSERT(OK());
+  : impl(new Linear_Expression_Impl()) {
 }
 
 inline
-Linear_Expression::Linear_Expression(dimension_type sz, bool)
-  : row(sz) {
-  PPL_ASSERT(OK());
+Linear_Expression::Linear_Expression(dimension_type sz, bool x)
+  : impl(new Linear_Expression_Impl(sz, x)) {
 }
 
 inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e)
-  : row(e.row) {
-  PPL_ASSERT(OK());
+  : impl(new Linear_Expression_Impl(*e.impl)) {
+}
+
+inline Linear_Expression&
+Linear_Expression::operator=(const Linear_Expression& e) {
+  Linear_Expression tmp = e;
+  swap(tmp);
+  return *this;
 }
 
 inline
 Linear_Expression::~Linear_Expression() {
+  delete impl;
 }
 
 inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e,
 				     dimension_type sz)
-  : row(e.row, sz, sz) {
-  PPL_ASSERT(OK());
+  : impl(new Linear_Expression_Impl(*e.impl, sz)) {
 }
 
 inline
 Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
-  : row(1) {
-  row[0] = n;
-  PPL_ASSERT(OK());
+  : impl(new Linear_Expression_Impl(n)) {
 }
 
 inline dimension_type
 Linear_Expression::space_dimension() const {
-  return row.size() - 1;
+  return impl->space_dimension();
 }
 
 inline void
 Linear_Expression::set_space_dimension(dimension_type n) {
-  row.resize(n + 1);
-  PPL_ASSERT(OK());
+  impl->set_space_dimension(n);
 }
 
 inline Coefficient_traits::const_reference
 Linear_Expression::coefficient(Variable v) const {
-  if (v.space_dimension() > space_dimension())
-    return Coefficient_zero();
-  return row[v.id() + 1];
+  return impl->coefficient(v);
 }
 
 inline void
 Linear_Expression
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
-  PPL_ASSERT(v.space_dimension() <= space_dimension());
-  row[v.id() + 1] = n;
-  PPL_ASSERT(OK());
+  impl->set_coefficient(v, n);
 }
 
 inline Coefficient_traits::const_reference
 Linear_Expression::inhomogeneous_term() const {
-  return row[0];
+  return impl->inhomogeneous_term();
 }
 
 inline void
 Linear_Expression
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
-  row[0] = n;
-  PPL_ASSERT(OK());
+  impl->set_inhomogeneous_term(n);
 }
 
 inline void
 Linear_Expression
 ::linear_combine(const Linear_Expression& y, dimension_type i) {
-  Linear_Expression& x = *this;
-  // We can combine only vector of the same dimension.
-  PPL_ASSERT(x.space_dimension() == y.space_dimension());
-  PPL_ASSERT(x.row[i] != 0);
-  PPL_ASSERT(y.row[i] != 0);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_v);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_v);
-  normalize2(x.row[i], y.row[i], normalized_x_v, normalized_y_v);
-  neg_assign(normalized_x_v);
-  x.row.linear_combine(y.row, normalized_y_v, normalized_x_v);
-  assert(x.row[i] == 0);
-  PPL_ASSERT(OK());
+  impl->linear_combine(*y.impl, i);
 }
 
 inline void
@@ -132,38 +114,27 @@ Linear_Expression
 ::linear_combine(const Linear_Expression& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2) {
-  row.linear_combine(y.row, c1, c2);
-  PPL_ASSERT(OK());
+  impl->linear_combine(*y.impl, c1, c2);
 }
 
 inline void
 Linear_Expression::swap_space_dimensions(Variable v1, Variable v2) {
-  row.swap(v1.space_dimension(), v2.space_dimension());
-  PPL_ASSERT(OK());
+  impl->swap_space_dimensions(v1, v2);
 }
 
 inline void
 Linear_Expression::shift_space_dimensions(Variable v, dimension_type n) {
-  row.add_zeroes_and_shift(n, v.space_dimension());
-  PPL_ASSERT(OK());
+  impl->shift_space_dimensions(v, n);
 }
 
 inline bool
 Linear_Expression::is_zero() const {
-  for (Dense_Row::const_iterator i = row.begin(), i_end = row.end();
-       i != i_end; ++i)
-    if (*i != 0)
-      return false;
-  return true;
+  return impl->is_zero();
 }
 
 inline bool
 Linear_Expression::all_homogeneous_terms_are_zero() const {
-  for (Dense_Row::const_iterator i = row.lower_bound(1), i_end = row.end();
-       i != i_end; ++i)
-    if (*i != 0)
-      return false;
-  return true;
+  return impl->all_homogeneous_terms_are_zero();
 }
 
 inline const Linear_Expression&
@@ -174,7 +145,7 @@ Linear_Expression::zero() {
 
 inline memory_size_type
 Linear_Expression::external_memory_in_bytes() const {
-  return row.external_memory_in_bytes();
+  return impl->total_memory_in_bytes();
 }
 
 inline memory_size_type
@@ -191,88 +162,90 @@ operator+(const Linear_Expression& e) {
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  return n + e;
+  Linear_Expression x = e;
+  x += n;
+  return x;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator+(const Linear_Expression& e, const Variable v) {
-  return v + e;
+  Linear_Expression x = e;
+  x += v;
+  return x;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  return -n + e;
+  Linear_Expression x = e;
+  x -= n;
+  return x;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator-(const Variable v, const Variable w) {
-  return Linear_Expression(v, w);
+  const dimension_type v_space_dim = v.space_dimension();
+  const dimension_type w_space_dim = w.space_dimension();
+  const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
+  if (space_dim > Linear_Expression::max_space_dimension())
+    throw std::length_error("Linear_Expression "
+                            "PPL::operator+(v, w):\n"
+                            "v or w exceed the maximum allowed "
+                            "space dimension.");
+  if (v_space_dim >= w_space_dim) {
+    Linear_Expression e(v);
+    e -= w;
+    return e;
+  } else {
+    Linear_Expression e(w.space_dimension(), true);
+    e -= w;
+    e += v;
+    return e;
+  }
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator*(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  return n * e;
+  Linear_Expression x = e;
+  x *= n;
+  return x;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression&
 operator+=(Linear_Expression& e, Coefficient_traits::const_reference n) {
-  e.row[0] += n;
+  *e.impl += n;
   return e;
 }
 
 /*! \relates Linear_Expression */
 inline Linear_Expression&
 operator-=(Linear_Expression& e, Coefficient_traits::const_reference n) {
-  e.row[0] -= n;
+  *e.impl -= n;
   return e;
 }
 
 inline void
 Linear_Expression::swap(Linear_Expression& y) {
-  row.swap(y.row);
+  std::swap(impl, y.impl);
 }
 
 inline void
 Linear_Expression::normalize() {
-  row.normalize();
+  impl->normalize();
 }
 
 inline void
 Linear_Expression::ascii_dump(std::ostream& s) const {
-  s << "size " << (space_dimension() + 1) << " ";
-  for (dimension_type j = 0; j < row.size(); ++j) {
-    s << row[j];
-    if (j != row.size() - 1)
-      s << ' ';
-  }
+  impl->ascii_dump(s);
 }
 
 inline bool
 Linear_Expression::ascii_load(std::istream& s) {
-  std::string str;
-
-  if (!(s >> str))
-    return false;
-  if (str != "size")
-    return false;
-
-  dimension_type new_size;
-  if (!(s >> new_size))
-    return false;
-
-  row.resize(new_size);
-
-  for (dimension_type j = 0; j < new_size; ++j)
-    if (!(s >> row[j]))
-      return false;
-
-  PPL_ASSERT(OK());
-  return true;
+  return impl->ascii_load(s);
 }
 
 } // namespace Parma_Polyhedra_Library

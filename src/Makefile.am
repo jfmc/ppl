@@ -149,6 +149,7 @@ Swapping_Vector.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
+Linear_Expression_Impl.types.hh \
 Linear_System.types.hh \
 Bit_Row.types.hh \
 Bit_Matrix.types.hh \
@@ -261,6 +262,8 @@ Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
+Linear_Expression_Impl.defs.hh \
+Linear_Expression_Impl.inlines.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
@@ -400,6 +403,7 @@ Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
+Linear_Expression_Impl.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \

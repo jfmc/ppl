@@ -25,6 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Expression_defs_hh 1
 
 #include "Linear_Expression.types.hh"
+
+#include "Linear_Expression_Impl.defs.hh"
+
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Grid_Generator.types.hh"
@@ -32,14 +35,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
-#include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Polyhedron.types.hh"
 #include "Linear_System.types.hh"
 #include "Grid.types.hh"
-#include "Variable.defs.hh"
-#include "Variables_Set.defs.hh"
-#include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -289,6 +288,8 @@ public:
   //! Ordinary copy constructor.
   Linear_Expression(const Linear_Expression& e);
 
+  Linear_Expression& operator=(const Linear_Expression& e);
+
   //! Destructor.
   ~Linear_Expression();
 
@@ -462,9 +463,6 @@ public:
   */
   bool ascii_load(std::istream& s);
 
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
   //! Swaps \p *this with \p y.
   void swap(Linear_Expression& y);
 
@@ -501,7 +499,7 @@ private:
   */
   static const Linear_Expression* zero_p;
 
-  Dense_Row row;
+  Linear_Expression_Impl* impl;
 
   //! Implementation sizing constructor.
   /*!
@@ -509,16 +507,6 @@ private:
     the constructor Linear_Expression(Coefficient_traits::const_reference n).
   */
   Linear_Expression(dimension_type sz, bool);
-
-  /*! \brief
-    Builds the linear expression corresponding to the difference of
-    \p v and \p w.
-
-    \exception std::length_error
-    Thrown if the space dimension of \p v or the one of \p w exceed
-    <CODE>Linear_Expression::max_space_dimension()</CODE>.
-  */
-  Linear_Expression(Variable v, Variable w);
 
   Coefficient& operator[](dimension_type i);
   const Coefficient& operator[](dimension_type i) const;
@@ -579,6 +567,8 @@ private:
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   dimension_type last_nonzero() const;
+
+  friend class Linear_Expression_Impl;
 
   friend class Grid;
   friend class Congruence;

@@ -2258,7 +2258,7 @@ PPL::MIP_Problem::OK() const {
     if (!input_cs[i]->OK())
       return false;
 
-  if (!tableau.OK() || !input_obj_function.OK() || !last_generator.OK())
+  if (!tableau.OK() || !last_generator.OK())
     return false;
 
   // Constraint system should contain no strict inequalities.

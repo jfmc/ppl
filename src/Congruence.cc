@@ -264,11 +264,6 @@ PPL::Congruence::ascii_load(std::istream& s) {
 
 bool
 PPL::Congruence::OK() const {
-  // A Congruence must be a valid Linear_Row.
-  // TODO: Remove this.
-  if (!expr.OK())
-    return false;
-
   // Modulus check.
   if (modulus() < 0) {
 #ifndef NDEBUG
