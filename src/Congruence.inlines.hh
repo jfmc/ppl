@@ -94,7 +94,7 @@ Congruence::set_space_dimension(dimension_type n) {
 
 inline void
 Congruence::shift_coefficients(dimension_type n, dimension_type i) {
-  expr.get_row().add_zeroes_and_shift(n, i + 1);
+  expr.shift_space_dimensions(Variable(i), n);
 }
 
 inline
