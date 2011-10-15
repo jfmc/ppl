@@ -2128,9 +2128,8 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       continue;
 
     if (pvars != 0) {
-      for (dimension_type i = space_dim; i-- > 0; )
-	if (c.expression().get_row()[i+1] != 0 && pvars->find(i) == pvars->end())
-	  goto next_constraint;
+      if (!c.expression().all_zeroes(*pvars))
+        goto next_constraint;
     }
 
     if (!is_necessarily_closed()) {
