@@ -535,9 +535,8 @@ public:
   */
   void negate(dimension_type first, dimension_type last);
 
-  // TODO: Consider removing this or making this private.
-  //! Swaps the i-th and j-th elements of the row.
-  void swap(dimension_type i, dimension_type j);
+  //! Swaps the coefficients of \p v1 and \p v2.
+  void swap(Variable v1, Variable v2);
 
   /*! \brief
     Normalizes the sign of the coefficients so that the first non-zero

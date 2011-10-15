@@ -127,7 +127,7 @@ void
 PPL::Grid_Generator::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
-  swap(v1.space_dimension(), v2.space_dimension());
+  expr.swap_space_dimensions(v1, v2);
   // *this is still normalized but it may not be strongly normalized.
   if (!is_parameter())
     sign_normalize();
@@ -336,17 +336,17 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     break;
   case Grid_Generator::PARAMETER:
     s << "q(";
-    if (g.expr.get_row()[num_variables + 1] == 1)
+    if (g.expr.coefficient(Variable(num_variables)) == 1)
       break;
     goto any_point;
   case Grid_Generator::POINT:
     s << "p(";
-    if (g.expr.get_row()[0] > 1) {
+    if (g.expr.inhomogeneous_term() > 1) {
     any_point:
       need_divisor = true;
       dimension_type num_non_zero_coefficients = 0;
       for (dimension_type v = 0; v < num_variables; ++v)
-	if (g.expr.get_row()[v+1] != 0)
+	if (g.expr.coefficient(Variable(v)) != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
 	    s << "(";
@@ -359,7 +359,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
   PPL_DIRTY_TEMP_COEFFICIENT(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    gv = g.expr.get_row()[v+1];
+    gv = g.expr.coefficient(Variable(v));
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -421,18 +421,18 @@ PPL::Grid_Generator::OK() const {
     return false;
   }
 
-  if (x.expr.get_row().size() < 2) {
+  if (x.expr.space_dimension() < 1) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator has fewer coefficients than the minimum "
-	      << "allowed:\nsize is " << x.expr.get_row().size()
-              << ", minimum is 2.\n";
+	      << "allowed:\nspace dimension is " << x.expr.space_dimension()
+              << ", minimum is 1.\n";
 #endif
     return false;
   }
 
   switch (x.type()) {
   case Grid_Generator::LINE:
-    if (x.expr.get_row()[0] != 0) {
+    if (x.expr.inhomogeneous_term() != 0) {
 #ifndef NDEBUG
       std::cerr << "Inhomogeneous terms of lines must be zero!\n";
 #endif
@@ -441,7 +441,7 @@ PPL::Grid_Generator::OK() const {
     break;
 
   case Grid_Generator::PARAMETER:
-    if (x.expr.get_row()[0] != 0) {
+    if (x.expr.inhomogeneous_term() != 0) {
 #ifndef NDEBUG
       std::cerr << "Inhomogeneous terms of parameters must be zero!\n";
 #endif
@@ -456,13 +456,13 @@ PPL::Grid_Generator::OK() const {
     break;
 
   case Grid_Generator::POINT:
-    if (x.expr.get_row()[0] <= 0) {
+    if (x.expr.inhomogeneous_term() <= 0) {
 #ifndef NDEBUG
       std::cerr << "Points must have positive divisors!\n";
 #endif
       return false;
     }
-    if (x.expr.get_row()[expr.get_row().size() - 1] != 0) {
+    if (x.expr.coefficient(Variable(space_dimension())) != 0) {
 #ifndef NDEBUG
       std::cerr << "Points must have a zero parameter divisor!\n";
 #endif
