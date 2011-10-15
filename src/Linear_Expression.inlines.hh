@@ -67,16 +67,6 @@ Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
   row[0] = n;
 }
 
-inline Dense_Row&
-Linear_Expression::get_row() {
-  return row;
-}
-
-inline const Dense_Row&
-Linear_Expression::get_row() const {
-  return row;
-}
-
 inline dimension_type
 Linear_Expression::space_dimension() const {
   return row.size() - 1;

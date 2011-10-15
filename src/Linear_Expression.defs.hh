@@ -472,12 +472,6 @@ public:
   //! Copy constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
-  // FIXME: Remove this.
-  Dense_Row& get_row();
-
-  // FIXME: Remove this.
-  const Dense_Row& get_row() const;
-
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
   bool is_equal_to(const Linear_Expression& x) const;
