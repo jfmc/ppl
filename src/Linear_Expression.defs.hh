@@ -570,6 +570,11 @@ private:
 
   friend class Linear_Expression_Impl;
 
+  // NOTE: The following classes are friends of Linear_Expression in order
+  // to access its private methods.
+  // Since they are *not* friend of Linear_Expression_Impl, they can only
+  // access its public methods so they cannot break the class invariant of
+  // Linear_Expression_Impl.
   friend class Grid;
   friend class Congruence;
   friend class Polyhedron;
