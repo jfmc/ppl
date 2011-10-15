@@ -671,5 +671,23 @@ PPL::Linear_Expression::negate(dimension_type first, dimension_type last) {
     neg_assign(*i);
 }
 
+bool
+PPL::Linear_Expression::all_zeroes(const Variables_Set& vars) const {
+  Dense_Row::const_iterator i = row.begin();
+  Dense_Row::const_iterator i_end = row.end();
+  Variables_Set::const_iterator j = vars.begin();
+  Variables_Set::const_iterator j_end = vars.end();
+  
+  for ( ; j != j_end; j++) {
+    i = row.lower_bound(i, *j + 1);
+    if (i == i_end)
+      break;
+    if (i.index() == *j + 1 && *i != 0)
+      return false;
+  }
+  
+  return true;
+}
+
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

@@ -550,6 +550,12 @@ private:
   bool all_zeroes(dimension_type start, dimension_type end) const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if the coefficient of each variable in
+    \p vars[i] is \f$0\f$.
+  */
+  bool all_zeroes(const Variables_Set& vars) const;
+
+  /*! \brief
     Returns the gcd of the nonzero coefficients in [start,end). If all the
     coefficients in this range are 0 returns 0.
   */
