@@ -390,7 +390,9 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
                                Coefficient_traits::const_reference coeff2,
                                dimension_type start, dimension_type end) {
   Dense_Row& x = *this;
-  PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= x.size());
+  PPL_ASSERT(end <= y.size());
   for (dimension_type i = start; i < end; ++i) {
     Coefficient& x_i = x[i];
     x_i *= coeff1;
