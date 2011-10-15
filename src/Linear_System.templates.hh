@@ -465,7 +465,7 @@ Linear_System<Row>::normalize() {
   const dimension_type nrows = rows.size();
   // We normalize also the pending rows.
   for (dimension_type i = nrows; i-- > 0; )
-    rows[i].expression().get_row().normalize();
+    rows[i].expression().normalize();
   sorted = (nrows <= 1);
   PPL_ASSERT(OK());
 }
@@ -627,9 +627,6 @@ Linear_System<Row>
 #endif
 
   const dimension_type nrows = num_rows();
-  // TODO: Don't use the number of columns.
-  const dimension_type ncols
-    = is_necessarily_closed() ? space_dimension() + 1 : space_dimension() + 2;
   // Trying to keep sortedness.
   bool still_sorted = is_sorted();
   // This deque of Booleans will be used to flag those rows that,
@@ -648,7 +645,7 @@ Linear_System<Row>
     // Go through the equalities above `row_k'.
     for (dimension_type i = k; i-- > 0; ) {
       Row& row_i = rows[i];
-      if (row_i.expression().get_row()[j] != 0) {
+      if (row_i.expression().get(j) != 0) {
 	// Combine linearly `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
         row_i.linear_combine(row_k, j);
@@ -667,17 +664,16 @@ Linear_System<Row>
     // Since an inequality (or ray or point) cannot be multiplied
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
-    const bool have_to_negate = (row_k.expression().get_row()[j] < 0);
+    const bool have_to_negate = (row_k.expression().get(j) < 0);
     if (have_to_negate)
-      for (dimension_type h = ncols; h-- > 0; )
-	neg_assign(row_k.expression().get_row()[h]);
+	neg_assign(row_k.expression());
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
     // Go through all the other rows of the system.
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Row& row_i = rows[i];
-      if (row_i.expression().get_row()[j] != 0) {
+      if (row_i.expression().get(j) != 0) {
 	// Combine linearly the `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
         row_i.linear_combine(row_k, j);
@@ -692,8 +688,7 @@ Linear_System<Row>
     }
     if (have_to_negate)
       // Negate `row_k' to restore strong-normalization.
-      for (dimension_type h = ncols; h-- > 0; )
-	neg_assign(row_k.expression().get_row()[h]);
+      neg_assign(row_k.expression());
   }
 
   // Trying to keep sortedness.
@@ -757,9 +752,8 @@ Linear_System<Row>
   PPL_ASSERT(n > 0);
   const bool was_sorted = is_sorted();
   const dimension_type old_n_rows = num_rows();
-  // TODO: Don't use the number of columns.
-  const dimension_type old_n_columns
-    = is_necessarily_closed() ? space_dimension() + 1 : space_dimension() + 2;
+  const dimension_type old_space_dim
+    = is_necessarily_closed() ? space_dimension() : space_dimension() + 1;
   set_space_dimension(space_dimension() + n);
   rows.resize(rows.size() + n);
   for (dimension_type i = old_n_rows; i < rows.size(); ++i) {
@@ -769,12 +763,13 @@ Linear_System<Row>
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )
     rows[i].swap(rows[i + n]);
-  for (dimension_type i = n, c = old_n_columns; i-- > 0; ) {
+  for (dimension_type i = n, c = old_space_dim; i-- > 0; ) {
     // The top right-hand sub-system (i.e., the system made of new
     // rows and columns) is set to the specular image of the identity
     // matrix.
     Row& r = rows[i];
-    r.expression().get_row()[c++] = 1;
+    r.expression() += Variable(c);
+    c++;
     r.set_is_line_or_equality();
     // Note: `r' is strongly normalized.
   }
@@ -787,21 +782,18 @@ Linear_System<Row>
   // the last column.
   if (!is_necessarily_closed()) {
     // Try to preserve sortedness of `gen_sys'.
+    PPL_ASSERT(old_space_dim != 0);
     if (!is_sorted()) {
-      for (dimension_type i = n; i-- > 0; ) {
-        Row& r = rows[i];
-        std::swap(r.expression().get_row()[old_n_columns - 1],
-                  r.expression().get_row()[old_n_columns - 1 + n]);
-      }
+      for (dimension_type i = n; i-- > 0; )
+        rows[i].expression().swap_space_dimensions(Variable(old_space_dim - 1),
+                                                   Variable(old_space_dim - 1 + n));
     } else {
-      dimension_type old_eps_index = old_n_columns - 1;
+      dimension_type old_eps_index = old_space_dim - 1;
       // The upper-right corner of `rows' contains the J matrix:
       // swap coefficients to preserve sortedness.
-      for (dimension_type i = n; i-- > 0; ++old_eps_index) {
-        Row& r = rows[i];
-        std::swap(r.expression().get_row()[old_eps_index],
-                  r.expression().get_row()[old_eps_index + 1]);
-      }
+      for (dimension_type i = n; i-- > 0; ++old_eps_index)
+        rows[i].expression().swap_space_dimensions(Variable(old_eps_index),
+                                                   Variable(old_eps_index + 1));
 
       sorted = true;
     }
