@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Congruence.types.hh"
 #include "Grid_Generator.types.hh"
+#include "Constraint_System.types.hh"
 #include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Polyhedron.types.hh"
@@ -569,6 +570,7 @@ private:
   friend class Polyhedron;
   friend class PIP_Tree_Node;
   friend class Grid_Generator;
+  friend class Constraint_System;
 
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);

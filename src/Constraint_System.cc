@@ -299,13 +299,8 @@ PPL::Constraint_System
   PPL_ASSERT(expr.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  // TODO: Avoid using the number of columns if possible.
-  const dimension_type n_columns
-    = sys.is_necessarily_closed() ? sys.space_dimension() + 1
-                                  : sys.space_dimension() + 2;
   const dimension_type n_rows = sys.num_rows();
-  const dimension_type expr_size = expr.get_row().size();
-  const bool not_invertible = (v.space_dimension() >= expr_size
+  const bool not_invertible = (v.space_dimension() > expr.space_dimension()
                                || expr.coefficient(v) == 0);
 
   // TODO: Check if it is correct to arrive at this point with
@@ -320,39 +315,17 @@ PPL::Constraint_System
   // Release the rows from the linear system so they can be modified.
   sys.release_rows(rows);
 
-  if (denominator != 1) {
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      Constraint& row = rows[i];
-      Coefficient& row_v = row.expression().get_row()[v.space_dimension()];
-      if (row_v != 0) {
-	for (dimension_type j = n_columns; j-- > 0; )
-	  if (j != v.space_dimension()) {
-	    Coefficient& row_j = row.expression().get_row()[j];
-	    row_j *= denominator;
-	    if (j < expr_size)
-	      add_mul_assign(row_j, row_v, expr.get_row()[j]);
-	  }
-	if (not_invertible)
-	  row_v = 0;
-	else
-	  row_v *= expr.coefficient(v);
-      }
-    }
-  } else {
-    // Here `denominator' == 1: optimized computation
-    // only considering columns having indexes < expr_size.
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      Constraint& row = rows[i];
-      Coefficient& row_v = row.expression().get_row()[v.space_dimension()];
-      if (row_v != 0) {
-	for (dimension_type j = expr_size; j-- > 0; )
-	  if (j != v.space_dimension())
-	    add_mul_assign(row.expression().get_row()[j], row_v, expr.get_row()[j]);
-	if (not_invertible)
-	  row_v = 0;
-	else
-	  row_v *= expr.coefficient(v);
-      }
+  for (dimension_type i = n_rows; i-- > 0; ) {
+    Constraint& row = rows[i];
+    if (row.coefficient(v) != 0) {
+      Coefficient c = row.coefficient(v);
+      if (denominator != 1)
+        row.expression() *= denominator;
+      row.expression().linear_combine(expr, 1, c, 0, expr.space_dimension() + 1);
+      if (not_invertible)
+        row.expr.set_coefficient(v, Coefficient_zero());
+      else
+        row.expr.set_coefficient(v, c * expr.coefficient(v));
     }
   }
 
