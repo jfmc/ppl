@@ -114,36 +114,21 @@ void
 PPL::Congruence
 ::affine_preimage(dimension_type v, const Linear_Expression& e,
                   Coefficient_traits::const_reference denominator) {
-  const dimension_type expr_size = e.get_row().size();
+  Coefficient c = expr[v];
 
-  Coefficient& row_v = expr[v];
-
-  if (row_v == 0)
+  if (c == 0)
     return;
+
+  if (denominator != 1)
+    expr *= denominator;
   
-  if (denominator == 1) {
-    // Optimized computation only considering columns having indexes <
-    // expr_size.
-    for (dimension_type j = expr_size; j-- > 0; )
-      if (j != v)
-        // row[j] = row[j] + row_v * expr[j]
-        add_mul_assign(expr[j], row_v, e.get_row()[j]);
+  expr.linear_combine(e, 1, c, 0, e.space_dimension() + 1);
 
-  } else {
-    for (dimension_type j = expr.get_row().size(); j-- > 0; )
-      if (j != v) {
-        Coefficient& row_j = expr[j];
-        row_j *= denominator;
-        if (j < expr_size)
-          add_mul_assign(row_j, row_v, e.get_row()[j]);
-      }
-  }
-
-  if (v >= expr_size || e.get_row()[v] == 0)
+  if (v > e.space_dimension() || e.get(v) == 0)
     // Not invertible
-    row_v = 0;
+    expr[v] = 0;
   else
-    row_v *= e.get_row()[v];
+    expr[v] = c * e.get(v);
 }
 
 PPL::Congruence
@@ -245,13 +230,11 @@ PPL::Congruence::is_inconsistent() const {
 
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
-  const dimension_type row_size = expr.get_row().size();
-  s << "size " << row_size << " ";
-  if (row_size > 0) {
-    for (dimension_type i = 0; i < row_size - 1; ++i)
-      s << expr[i] << ' ';
-    s << "m " << expr[row_size - 1];
-  }
+  const dimension_type space_dim = expr.space_dimension();
+  s << "space_dim " << space_dim << " ";
+  for (dimension_type i = 0; i < space_dim; ++i)
+    s << expr[i] << ' ';
+  s << "m " << expr[space_dim];
   s << std::endl;
 }
 
@@ -260,24 +243,22 @@ PPL_OUTPUT_DEFINITIONS(Congruence)
 bool
 PPL::Congruence::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "size")
+  if (!(s >> str) || str != "space_dim")
     return false;
-  dimension_type new_size;
-  if (!(s >> new_size))
+  dimension_type new_space_dim;
+  if (!(s >> new_space_dim))
     return false;
 
-  PPL_ASSERT(new_size != 0);
-  expr.set_space_dimension(new_size - 1);
+  expr.set_space_dimension(new_space_dim);
 
-  if (new_size > 0) {
-    for (dimension_type col = 0; col < new_size - 1; ++col)
-      if (!(s >> expr[col]))
-	return false;
-    if (!(s >> str) || str != "m")
+  for (dimension_type col = 0; col < new_space_dim; ++col)
+    if (!(s >> expr[col]))
       return false;
-    if (!(s >> modulus()))
-      return false;
-  }
+  if (!(s >> str) || str != "m")
+    return false;
+  if (!(s >> modulus()))
+    return false;
+  
   return true;
 }
 
