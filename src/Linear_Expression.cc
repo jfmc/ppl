@@ -784,4 +784,18 @@ PPL::Linear_Expression
   normalize();
 }
 
+PPL::dimension_type
+PPL::Linear_Expression::last_nonzero() const {
+  Dense_Row::const_iterator i = row.begin();
+  Dense_Row::const_iterator i_end = row.end();
+
+  while (1) {
+    if (i == i_end)
+      return 0;
+    --i_end;
+    if (*i_end != 0)
+      return i_end.index();
+  }
+}
+
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

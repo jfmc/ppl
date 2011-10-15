@@ -643,9 +643,7 @@ Linear_System<Row>
     // looks for the last non-zero element.
     // `j' will be the index of such a element.
     Row& row_k = rows[k];
-    dimension_type j = ncols - 1;
-    while (j != 0 && row_k.expression().get_row()[j] == 0)
-      --j;
+    dimension_type j = row_k.expression().last_nonzero();
 
     // Go through the equalities above `row_k'.
     for (dimension_type i = k; i-- > 0; ) {

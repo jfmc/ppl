@@ -582,6 +582,10 @@ private:
   void modify_according_to_evolution(const Linear_Expression& x,
                                      const Linear_Expression& y);
 
+  //! Returns the index of the last nonzero element, or 0 if there are no
+  //! nonzero elements.
+  dimension_type last_nonzero() const;
+
   friend class Grid;
   friend class Congruence;
   friend class Polyhedron;
