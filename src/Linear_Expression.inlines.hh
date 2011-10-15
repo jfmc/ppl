@@ -39,16 +39,19 @@ Linear_Expression::max_space_dimension() {
 inline
 Linear_Expression::Linear_Expression()
   : row(1) {
+  PPL_ASSERT(OK());
 }
 
 inline
 Linear_Expression::Linear_Expression(dimension_type sz, bool)
   : row(sz) {
+  PPL_ASSERT(OK());
 }
 
 inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e)
   : row(e.row) {
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -59,12 +62,14 @@ inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e,
 				     dimension_type sz)
   : row(e.row, sz, sz) {
+  PPL_ASSERT(OK());
 }
 
 inline
 Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
   : row(1) {
   row[0] = n;
+  PPL_ASSERT(OK());
 }
 
 inline dimension_type
@@ -75,6 +80,7 @@ Linear_Expression::space_dimension() const {
 inline void
 Linear_Expression::set_space_dimension(dimension_type n) {
   row.resize(n + 1);
+  PPL_ASSERT(OK());
 }
 
 inline Coefficient_traits::const_reference
@@ -89,6 +95,7 @@ Linear_Expression
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   row[v.id() + 1] = n;
+  PPL_ASSERT(OK());
 }
 
 inline Coefficient_traits::const_reference
@@ -100,6 +107,7 @@ inline void
 Linear_Expression
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
   row[0] = n;
+  PPL_ASSERT(OK());
 }
 
 inline void
@@ -116,6 +124,7 @@ Linear_Expression
   neg_assign(normalized_x_v);
   x.row.linear_combine(y.row, normalized_y_v, normalized_x_v);
   assert(x.row[i] == 0);
+  PPL_ASSERT(OK());
 }
 
 inline void
@@ -124,16 +133,19 @@ Linear_Expression
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2) {
   row.linear_combine(y.row, c1, c2);
+  PPL_ASSERT(OK());
 }
 
 inline void
 Linear_Expression::swap_space_dimensions(Variable v1, Variable v2) {
   row.swap(v1.space_dimension(), v2.space_dimension());
+  PPL_ASSERT(OK());
 }
 
 inline void
 Linear_Expression::shift_space_dimensions(Variable v, dimension_type n) {
   row.add_zeroes_and_shift(n, v.space_dimension());
+  PPL_ASSERT(OK());
 }
 
 inline bool
@@ -259,6 +271,7 @@ Linear_Expression::ascii_load(std::istream& s) {
     if (!(s >> row[j]))
       return false;
 
+  PPL_ASSERT(OK());
   return true;
 }
 

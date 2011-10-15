@@ -72,6 +72,7 @@ PPL::Linear_Expression::Linear_Expression(const Constraint& c)
   // Do not copy the epsilon dimension (if any).
   if (c.is_not_necessarily_closed())
     row.resize(row.size() - 1);
+  PPL_ASSERT(OK());
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
@@ -81,6 +82,7 @@ PPL::Linear_Expression::Linear_Expression(const Generator& g)
   // Do not copy the epsilon dimension (if any).
   if (g.is_not_necessarily_closed())
     row.resize(row.size() - 1);
+  PPL_ASSERT(OK());
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
@@ -90,6 +92,7 @@ PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
   // Do not copy the epsilon dimension (if any).
   if (g.is_not_necessarily_closed())
     row.resize(row.size() - 1);
+  PPL_ASSERT(OK());
 }
 
 const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
@@ -112,6 +115,7 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
   for (dimension_type i = row.size() - 1; i-- > 0; )
     row[i + 1] = cg.coefficient(Variable(i));
   row[0] = cg.inhomogeneous_term();
+  PPL_ASSERT(OK());
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v)
@@ -123,6 +127,7 @@ PPL::Linear_Expression::Linear_Expression(const Variable v)
 					  "space dimension."),
 		  v.space_dimension() + 1)) {
   ++(row[v.space_dimension()]);
+  PPL_ASSERT(OK());
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v, const Variable w)
@@ -140,6 +145,7 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, const Variable w)
     ++(row[v_space_dim]);
     --(row[w_space_dim]);
   }
+  PPL_ASSERT(OK());
 }
 
 bool
@@ -170,6 +176,7 @@ PPL::Linear_Expression::remove_space_dimensions(const Variables_Set& vars) {
 
   // The number of remaining coefficients is `dst_col'.
   row.resize(dst_col);
+  PPL_ASSERT(OK());
 }
 
 void
@@ -190,6 +197,7 @@ PPL::Linear_Expression::permute_space_dimensions(const std::vector<Variable>& cy
     else
       std::swap(tmp, row[cycle[0].space_dimension()]);
   }
+  PPL_ASSERT(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
@@ -444,6 +452,7 @@ void
 PPL::neg_assign(Linear_Expression& e) {
   for (dimension_type i = e.row.size(); i-- > 0; )
     neg_assign(e.row[i]);
+  PPL_ASSERT(e.OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
@@ -516,7 +525,7 @@ PPL::sub_mul_assign(Linear_Expression& e1,
 
 bool
 PPL::Linear_Expression::OK() const {
-  return row.OK();
+  return row.size() != 0;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
