@@ -698,10 +698,6 @@ PPL::Generator_System
   PPL_ASSERT(expr.space_dimension() <= x.space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  // TODO: Avoid using the number of columns if possible.
-  const dimension_type n_columns
-    = sys.is_necessarily_closed() ? sys.space_dimension() + 1
-                                  : sys.space_dimension() + 2;
   const dimension_type n_rows = x.sys.num_rows();
 
   // TODO: Check if it's correct to arrive at this point with some pending
@@ -721,20 +717,15 @@ PPL::Generator_System
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = rows[i];
     Scalar_Products::assign(numerator, expr, row.expression());
-    // TODO: Consider making this more efficient.
-    row.expr.set_coefficient(v, numerator);
-  }
-
-  if (denominator != 1) {
-    // Since we want integer elements in the matrix,
-    // we multiply by `denominator' all the columns of `*this'
-    // having an index different from `v'.
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      Generator& row = rows[i];
-      for (dimension_type j = n_columns; j-- > 0; )
-	if (j != v.space_dimension())
-	  row.expression().get_row()[j] *= denominator;
+    if (denominator != 1) {
+      // Since we want integer elements in the matrix,
+      // we multiply by `denominator' all the columns of `*this'
+      // having an index different from `v'.
+      // Note that this operation also modifies the coefficient of v, but
+      // it will be overwritten by the set_coefficient() below.
+      row.expression() *= denominator;
     }
+    row.expr.set_coefficient(v, numerator);
   }
 
   // Put the modified rows back into the linear system.
