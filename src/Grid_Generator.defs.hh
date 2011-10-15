@@ -558,40 +558,26 @@ public:
   */
   bool check_strong_normalized() const;
 
-  //! Linearly combines \p *this with \p y so that the coefficient of \p v
-  //! is 0.
-  /*!
-    \param y
-    The Grid_Generator that will be combined with \p *this object;
-
-    \param v
-    The variable whose coefficient has to become \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the coefficient of variable \p v equal to \f$0\f$. Then it assigns
-    the resulting Grid_Generator to \p *this and normalizes it.
-  */
-  void linear_combine(const Grid_Generator& y, Variable v);
-
-  //! Linearly combines \p *this with \p y so that the inhomogeneous term
-  //! becomes 0.
-  /*!
-    \param y
-    The expression that will be combined with \p *this object;
-
-    Computes a linear combination of \p *this and \p y having
-    the inhomogeneous term equal to \f$0\f$. Then it assigns
-    the resulting generator to \p *this.
-
-    \p *this and \p y must have the same space dimension.
-  */
-  void linear_combine_inhomogeneous(const Grid_Generator& y);
-
   // TODO: Remove this.
   Linear_Expression& expression();
 
   // TODO: Remove this.
   const Linear_Expression& expression() const;
+
+  // FIXME: Consider making this private.
+  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
+  /*!
+    \param y
+    The Grid_Generator that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting Grid_Generator to \p *this and normalizes it.
+  */
+  void linear_combine(const Grid_Generator& y, dimension_type i);
 
 private:
   Linear_Expression expr;

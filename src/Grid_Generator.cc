@@ -216,14 +216,8 @@ PPL::Grid_Generator::set_is_parameter() {
 
 void
 PPL::Grid_Generator::linear_combine(const Grid_Generator& y,
-                                    Variable v) {
-  expr.linear_combine(y.expr, v);
-  strong_normalize();
-}
-
-void
-PPL::Grid_Generator::linear_combine_inhomogeneous(const Grid_Generator& y) {
-  expr.linear_combine_inhomogeneous(y.expr);
+                                    dimension_type i) {
+  expr.linear_combine(y.expr, i);
   strong_normalize();
 }
 

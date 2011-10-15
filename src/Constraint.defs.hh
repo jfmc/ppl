@@ -365,35 +365,6 @@ public:
   */
   bool is_strict_inequality() const;
 
-  //! Linearly combines \p *this with \p y so that the coefficient of \p v
-  //! is 0.
-  /*!
-    \param y
-    The Constraint that will be combined with \p *this object;
-
-    \param v
-    The variable whose coefficient has to become \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the coefficient of variable \p v equal to \f$0\f$. Then it assigns
-    the resulting Constraint to \p *this and normalizes it.
-  */
-  void linear_combine(const Constraint& y, Variable v);
-
-  //! Linearly combines \p *this with \p y so that the inhomogeneous term
-  //! becomes 0.
-  /*!
-    \param y
-    The expression that will be combined with \p *this object;
-
-    Computes a linear combination of \p *this and \p y having
-    the inhomogeneous term equal to \f$0\f$. Then it assigns
-    the resulting constraint to \p *this.
-
-    \p *this and \p y must have the same space dimension.
-  */
-  void linear_combine_inhomogeneous(const Constraint& y);
-  
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument thrown if the index of \p v
@@ -543,6 +514,21 @@ public:
 
   // TODO: Remove this.
   const Linear_Expression& expression() const;
+
+  // FIXME: Consider making this private.
+  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
+  /*!
+    \param y
+    The Constraint that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting Constraint to \p *this and normalizes it.
+  */
+  void linear_combine(const Constraint& y, dimension_type i);
 
 private:
   Linear_Expression expr;

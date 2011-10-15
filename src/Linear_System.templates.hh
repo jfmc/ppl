@@ -595,17 +595,9 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // column in these rows become 0.
       // TODO: Optimize this.
       for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k) {
-        // TODO: Improve this.
-        if (j == 0) {
-          if (rows[k].expression().inhomogeneous_term() != 0) {
-            rows[k].linear_combine_inhomogeneous(rows[rank]);
-            changed = true;
-          }
-        } else {
-          if (rows[k].expression().coefficient(Variable(j - 1)) != 0) {
-            rows[k].linear_combine(rows[rank], Variable(j - 1));
-            changed = true;
-          }
+        if (rows[k].expression().get(j) != 0) {
+          rows[k].linear_combine(rows[rank], j);
+          changed = true;
         }
       }
       // Already dealt with the rank-th row.
@@ -661,11 +653,7 @@ Linear_System<Row>
       if (row_i.expression().get_row()[j] != 0) {
 	// Combine linearly `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
-	// TODO: Consider improving this.
-	if (j == 0)
-          row_i.linear_combine_inhomogeneous(row_k);
-        else
-          row_i.linear_combine(row_k, Variable(j - 1));
+        row_i.linear_combine(row_k, j);
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
@@ -694,11 +682,7 @@ Linear_System<Row>
       if (row_i.expression().get_row()[j] != 0) {
 	// Combine linearly the `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
-	// TODO: Improve this
-	if (j == 0)
-          row_i.linear_combine_inhomogeneous(row_k);
-        else
-          row_i.linear_combine(row_k, Variable(j - 1));
+        row_i.linear_combine(row_k, j);
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.

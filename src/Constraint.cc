@@ -204,14 +204,8 @@ PPL::Constraint::is_inconsistent() const {
 }
 
 void
-PPL::Constraint::linear_combine(const Constraint& y, Variable v) {
-  expr.linear_combine(y.expr, v);
-  strong_normalize();
-}
-
-void
-PPL::Constraint::linear_combine_inhomogeneous(const Constraint& y) {
-  expr.linear_combine_inhomogeneous(y.expr);
+PPL::Constraint::linear_combine(const Constraint& y, dimension_type i) {
+  expr.linear_combine(y.expr, i);
   strong_normalize();
 }
 

@@ -29,11 +29,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Congruence.types.hh"
-#include "Grid_Generator.types.hh"
+#include "Generator.types.hh"
+#include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Dense_Row.defs.hh"
 #include "Coefficient.types.hh"
 #include "Polyhedron.types.hh"
+#include "Linear_System.types.hh"
 #include "Grid.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
@@ -395,20 +397,6 @@ public:
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2);
 
-  //! Linearly combines \p *this with \p y so that the inhomogeneous term
-  //! becomes 0.
-  /*!
-    \param y
-    The expression that will be combined with \p *this object;
-
-    Computes a linear combination of \p *this and \p y having
-    the inhomogeneous term equal to \f$0\f$. Then it assigns
-    the resulting expression to \p *this.
-
-    \p *this and \p y must have the same space dimension.
-  */
-  void linear_combine_inhomogeneous(const Linear_Expression& y);
-
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 
@@ -564,6 +552,23 @@ private:
   void exact_div_assign(Coefficient_traits::const_reference c,
                         dimension_type start, dimension_type end);
   
+  //! Linearly combines \p *this with \p y so that the coefficient of \p v
+  //! is 0.
+  /*!
+    \param y
+    The expression that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting expression to \p *this.
+
+    \p *this and \p y must have the same space dimension.
+  */
+  void linear_combine(const Linear_Expression& y, dimension_type i);
+
   //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
   //! for each i in [start, end).
   void linear_combine(const Linear_Expression& y,
@@ -582,7 +587,11 @@ private:
   friend class Polyhedron;
   friend class PIP_Tree_Node;
   friend class Grid_Generator;
+  friend class Generator;
+  friend class Constraint;
   friend class Constraint_System;
+  template <typename T>
+  friend class Linear_System;
 
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);

@@ -170,14 +170,8 @@ PPL::Generator
 }
 
 void
-PPL::Generator::linear_combine(const Generator& y, Variable v) {
-  expr.linear_combine(y.expr, v);
-  strong_normalize();
-}
-
-void
-PPL::Generator::linear_combine_inhomogeneous(const Generator& y) {
-  expr.linear_combine_inhomogeneous(y.expr);
+PPL::Generator::linear_combine(const Generator& y, dimension_type i) {
+  expr.linear_combine(y.expr, i);
   strong_normalize();
 }
 

@@ -547,7 +547,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 	    || (g2.is_closure_point() && !closed)) {
 	  PPL_ASSERT(compare(g1, g2) != 0);
 	  Generator ray_from_g2_to_g1 = g1;
-	  ray_from_g2_to_g1.linear_combine_inhomogeneous(g2);
+	  ray_from_g2_to_g1.linear_combine(g2, 0);
 	  candidate_rays.insert(ray_from_g2_to_g1);
 	}
       }
