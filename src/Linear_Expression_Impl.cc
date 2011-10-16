@@ -401,6 +401,17 @@ PPL::Linear_Expression_Impl::all_zeroes(dimension_type start, dimension_type end
   return true;
 }
 
+PPL::dimension_type
+PPL::Linear_Expression_Impl::num_zeroes(dimension_type start, dimension_type end) const {
+  PPL_ASSERT(start <= end);
+  dimension_type result = end - start;
+  for (Dense_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
+       i != i_end; ++i)
+    if (*i != 0)
+      --result;
+  return result;
+}
+
 PPL::Coefficient
 PPL::Linear_Expression_Impl::gcd(dimension_type start, dimension_type end) const {
   Dense_Row::const_iterator i = row.lower_bound(start);

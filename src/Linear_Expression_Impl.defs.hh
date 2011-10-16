@@ -387,6 +387,14 @@ public:
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   /*! \brief
+    Returns the number of zero coefficient in [start, end).
+  */
+  dimension_type num_zeroes(dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  /*! \brief
     Returns the gcd of the nonzero coefficients in [start,end). If all the
     coefficients in this range are 0 returns 0.
   */

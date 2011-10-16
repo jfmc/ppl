@@ -426,6 +426,11 @@ Linear_Expression::all_zeroes(dimension_type start, dimension_type end) const {
   return impl->all_zeroes(start, end);
 }
 
+inline dimension_type
+Linear_Expression::num_zeroes(dimension_type start, dimension_type end) const {
+  return impl->num_zeroes(start, end);
+}
+
 inline Coefficient
 Linear_Expression::gcd(dimension_type start, dimension_type end) const {
   return impl->gcd(start, end);

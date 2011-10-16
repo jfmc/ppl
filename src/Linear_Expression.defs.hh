@@ -532,6 +532,11 @@ private:
   bool all_zeroes(dimension_type start, dimension_type end) const;
 
   /*! \brief
+    Returns the number of zero coefficient in [start, end).
+  */
+  dimension_type num_zeroes(dimension_type start, dimension_type end) const;
+
+  /*! \brief
     Returns the gcd of the nonzero coefficients in [start,end). If all the
     coefficients in this range are 0 returns 0.
   */
