@@ -299,9 +299,11 @@ PPL::Constraint_System
   PPL_ASSERT(expr.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(denominator > 0);
 
+  Coefficient_traits::const_reference expr_v = expr.coefficient(v);
+
   const dimension_type n_rows = sys.num_rows();
   const bool not_invertible = (v.space_dimension() > expr.space_dimension()
-                               || expr.coefficient(v) == 0);
+                               || expr_v == 0);
 
   // TODO: Check if it is correct to arrive at this point with
   // num_pending_rows() != 0.
@@ -317,15 +319,16 @@ PPL::Constraint_System
 
   for (dimension_type i = n_rows; i-- > 0; ) {
     Constraint& row = rows[i];
-    if (row.coefficient(v) != 0) {
-      Coefficient c = row.coefficient(v);
+    Coefficient_traits::const_reference row_v = row.coefficient(v);
+    if (row_v != 0) {
+      Coefficient c = row_v;
       if (denominator != 1)
         row.expression() *= denominator;
       row.expression().linear_combine(expr, 1, c, 0, expr.space_dimension() + 1);
       if (not_invertible)
         row.expr.set_coefficient(v, Coefficient_zero());
       else
-        row.expr.set_coefficient(v, c * expr.coefficient(v));
+        row.expr.set_coefficient(v, c * expr_v);
     }
   }
 
