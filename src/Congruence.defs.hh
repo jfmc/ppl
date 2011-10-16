@@ -494,6 +494,8 @@ private:
 
   Linear_Expression expr;
 
+  Coefficient modulus_;
+
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
     error message \p message.

@@ -40,8 +40,8 @@ PPL::Congruence::Congruence(const Constraint& c)
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
 	   c.expression()),
-	c.space_dimension() + 2) {
-  modulus() = 0;
+	c.space_dimension() + 1),
+    modulus_(0) {
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
@@ -51,8 +51,8 @@ PPL::Congruence::Congruence(const Constraint& c,
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
            c.expression()),
-        new_space_dimension + 2) {
-  modulus() = 0;
+        new_space_dimension + 1),
+    modulus_(0) {
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
@@ -62,17 +62,14 @@ PPL::Congruence::Congruence(const Constraint& c,
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
            c.expression()),
-        sz) {
-  PPL_ASSERT(sz > 1);
-  modulus() = 0;
+        sz - 1),
+    modulus_(0) {
+  PPL_ASSERT(sz > 0);
 }
 
 void
 PPL::Congruence::sign_normalize() {
-  // TODO: Simplify this when the modulus will be stored separatedly.
-  Coefficient m = modulus();
   expr.sign_normalize();
-  modulus() = m;
 }
 
 void
@@ -80,20 +77,15 @@ PPL::Congruence::normalize() {
   PPL_ASSERT(OK());
   sign_normalize();
 
-  dimension_type sz = expr.space_dimension() + 1;
-  if (sz == 0)
-    return;
-
-  const Coefficient& mod = modulus();
-  if (mod == 0)
+  if (modulus_ == 0)
     return;
 
   Coefficient& row_0 = expr[0];
   // Factor the modulus out of the inhomogeneous term.
-  row_0 %= mod;
+  row_0 %= modulus_;
   if (row_0 < 0)
     // Make inhomogeneous term positive.
-    row_0 += mod;
+    row_0 += modulus_;
 
   PPL_ASSERT(OK());
 }
@@ -101,13 +93,28 @@ PPL::Congruence::normalize() {
 void
 PPL::Congruence::strong_normalize() {
   normalize();
-  expr.normalize();
+  
+  Coefficient gcd = expr.gcd(0, expr.space_dimension() + 1);
+  if (gcd == 0)
+    gcd = modulus_;
+  else
+    gcd_assign(gcd, modulus_, gcd);
+  
+  if (gcd != 0 && gcd != 1) {
+    expr /= gcd;
+    modulus_ /= gcd;
+  }
   PPL_ASSERT(OK());
 }
 
 void
 PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
+  if (factor == 1)
+    // Nothing to do.
+    return;
+  
   expr *= factor;
+  modulus_ *= factor;
 }
 
 void
@@ -119,9 +126,8 @@ PPL::Congruence
   if (c == 0)
     return;
 
-  if (denominator != 1)
-    expr *= denominator;
-  
+  scale(denominator);
+
   expr.linear_combine(e, 1, c, 0, e.space_dimension() + 1);
 
   if (v > e.space_dimension() || e.get(v) == 0)
@@ -134,19 +140,18 @@ PPL::Congruence
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
 			const Linear_Expression& e2) {
-  // Ensure that diff is created with capacity for the modulus.
-  dimension_type dim, e1_dim, e2_dim;
-  e1_dim = e1.space_dimension();
-  e2_dim = e2.space_dimension();
-  if (e1_dim > e2_dim)
-    dim = e1_dim;
-  else
-    dim = e2_dim;
-  Linear_Expression diff(e1_dim > e2_dim ? e1 : e2,
-			 dim + 2);
-  diff -= (e1_dim > e2_dim ? e2 : e1);
-  Congruence cg(diff, 1);
-  return cg;
+  // TODO: Improve this when changing the contract of the Congruence's
+  // constructor from a Linear_Expression.
+  if (e1.space_dimension() >= e2.space_dimension()) {
+    Linear_Expression e(e1, e1.space_dimension() + 2);
+    e -= e2;
+    return Congruence(e, 1);
+  } else {
+    Linear_Expression e(e2, e2.space_dimension() + 2);
+    neg_assign(e);
+    e += e1;
+    return Congruence(e, 1);
+  }
 }
 
 void
@@ -205,60 +210,40 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
 
 bool
 PPL::Congruence::is_tautological() const {
-  if ((is_equality() && inhomogeneous_term() == 0)
-      || (is_proper_congruence()
-	  && (inhomogeneous_term() % modulus() == 0))) {
-    for (unsigned i = space_dimension(); i > 0; --i)
-      if (expr[i] != 0)
-	return false;
-    return true;
-  }
-  return false;
+  if (is_equality())
+    return (inhomogeneous_term() == 0) && expr.all_homogeneous_terms_are_zero();
+  
+  return (inhomogeneous_term() % modulus() == 0) && expr.all_homogeneous_terms_are_zero();
 }
 
 bool
 PPL::Congruence::is_inconsistent() const {
-  if (inhomogeneous_term() == 0
-      || (is_proper_congruence()
-	  && ((inhomogeneous_term() % modulus()) == 0)))
-    return false;
-  for (unsigned i = space_dimension(); i > 0; --i)
-    if (expr[i] != 0)
-      return false;
-  return true;
+  if (is_equality())
+    return (inhomogeneous_term() != 0) && expr.all_homogeneous_terms_are_zero();
+  
+  return (inhomogeneous_term() % modulus() != 0) && expr.all_homogeneous_terms_are_zero();
 }
 
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
-  const dimension_type space_dim = expr.space_dimension();
-  s << "space_dim " << space_dim << " ";
-  for (dimension_type i = 0; i < space_dim; ++i)
-    s << expr[i] << ' ';
-  s << "m " << expr[space_dim];
-  s << std::endl;
+  expr.ascii_dump(s);
+  s << " m " << modulus_ << std::endl;
 }
 
 PPL_OUTPUT_DEFINITIONS(Congruence)
 
 bool
 PPL::Congruence::ascii_load(std::istream& s) {
+  expr.ascii_load(s);
+  
   std::string str;
-  if (!(s >> str) || str != "space_dim")
-    return false;
-  dimension_type new_space_dim;
-  if (!(s >> new_space_dim))
-    return false;
-
-  expr.set_space_dimension(new_space_dim);
-
-  for (dimension_type col = 0; col < new_space_dim; ++col)
-    if (!(s >> expr[col]))
-      return false;
   if (!(s >> str) || str != "m")
     return false;
-  if (!(s >> modulus()))
+
+  if (!(s >> modulus_))
     return false;
-  
+
+  PPL_ASSERT(OK());
   return true;
 }
 
@@ -279,18 +264,21 @@ PPL::Congruence::OK() const {
 
 PPL::Congruence&
 PPL::operator+=(Congruence& c1, const Congruence& c2) {
+  // TODO: Check this assertion. The contract seems different.
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
-  Coefficient m = c1.is_proper_congruence() ? c1.modulus() : c2.modulus();
   c1.expr += c2.expr;
-  c1.modulus() = m;
+  if (c1.is_equality())
+    c1.modulus() = c2.modulus();
   return c1;
 }
 
 PPL::Congruence&
 PPL::operator-=(Congruence& c1, const Congruence& c2) {
+  // TODO: Check this assertion. The contract seems different.
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
-  Coefficient m = c1.is_proper_congruence() ? c1.modulus() : c2.modulus();
   c1.expr -= c2.expr;
+  if (c1.modulus() == 0)
+    c1.modulus() = c2.modulus();
   return c1;
 }
 
@@ -298,20 +286,22 @@ void
 PPL::add_mul_assign(Congruence& c1,
                     Coefficient_traits::const_reference factor,
                     const Congruence& c2) {
+  // TODO: Check this assertion. The contract seems different.
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
-  Coefficient m = c1.is_proper_congruence() ? c1.modulus() : c2.modulus();
   add_mul_assign(c1.expr, factor, c2.expr);
-  c1.modulus() = m;
+  if (c1.modulus() == 0)
+    c1.modulus() = c2.modulus();
 }
 
 void
 PPL::sub_mul_assign(Congruence& c1,
                     Coefficient_traits::const_reference factor,
                     const Congruence& c2) {
+  // TODO: Check this assertion. The contract seems different.
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
-  Coefficient m = c1.is_proper_congruence() ? c1.modulus() : c2.modulus();
   sub_mul_assign(c1.expr, factor, c2.expr);
-  c1.modulus() = m;
+  if (c1.modulus() == 0)
+    c1.modulus() = c2.modulus();
 }
 
 PPL::Congruence&

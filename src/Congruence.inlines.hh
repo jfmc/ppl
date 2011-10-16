@@ -34,24 +34,19 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Congruence::Congruence(dimension_type n) {
-  expr.set_space_dimension(n + 1);
+  expr.set_space_dimension(n);
   PPL_ASSERT(OK());
 }
 
 inline
 Congruence::Congruence(const Congruence& cg)
-  : expr(cg.expr) {
+  : expr(cg.expr), modulus_(cg.modulus_) {
 }
 
 inline
 Congruence::Congruence(const Congruence& cg,
 		       dimension_type new_space_dimension)
-  : expr(cg.expr, new_space_dimension + 2) {
-  if (new_space_dimension >= cg.space_dimension())
-    // Swap the modulus to the correct place.
-    swap_space_dimensions(Variable(new_space_dimension), Variable(cg.space_dimension()));
-  else
-    set_modulus(cg.modulus());
+  : expr(cg.expr, new_space_dimension + 1), modulus_(cg.modulus_) {
   PPL_ASSERT(OK());
 }
 
@@ -67,20 +62,16 @@ Congruence::expression() const {
 
 inline void
 Congruence::add_space_dimensions(dimension_type n) {
-  const dimension_type old_space_dim = space_dimension();
-  const dimension_type new_space_dim = old_space_dim + n;
-  expr.set_space_dimension(new_space_dim + 1);
-  expr.swap_space_dimensions(Variable(old_space_dim), Variable(new_space_dim));
+  const dimension_type new_space_dim = space_dimension() + n;
+  expr.set_space_dimension(new_space_dim);
   PPL_ASSERT(OK());
 }
 
 inline void
 Congruence::remove_space_dimensions(dimension_type n) {
   PPL_ASSERT(space_dimension() >= n);
-  const dimension_type old_space_dim = space_dimension();
-  const dimension_type new_space_dim = old_space_dim - n;
-  expr.swap_space_dimensions(Variable(old_space_dim), Variable(new_space_dim));
-  expr.set_space_dimension(new_space_dim + 1);
+  const dimension_type new_space_dim = space_dimension() - n;
+  expr.set_space_dimension(new_space_dim);
   PPL_ASSERT(OK());
 }
 
@@ -103,17 +94,23 @@ Congruence::~Congruence() {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m) {
-  expr.swap(le);
+		       Coefficient_traits::const_reference m)
+  : modulus_(m) {
   PPL_ASSERT(m >= 0);
-  set_modulus(m);
+  expr.swap(le);
+
+  // TODO: Remove this when the constructor's contract is changed.
+  PPL_ASSERT(expr.space_dimension() != 0);
+  expr.set_space_dimension(expr.space_dimension() - 1);
+  
   PPL_ASSERT(OK());
 }
 
 inline Congruence
 Congruence::create(const Linear_Expression& e,
 		   Coefficient_traits::const_reference n) {
-  // Ensure that diff has capacity for the modulus.
+  // TODO: Improve this when changing the contract of the Congruence's
+  // constructor from a Linear_Expression.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
   Congruence cg(diff, 1);
@@ -123,7 +120,8 @@ Congruence::create(const Linear_Expression& e,
 inline Congruence
 Congruence::create(Coefficient_traits::const_reference n,
 		   const Linear_Expression& e) {
-  // Ensure that diff has capacity for the modulus.
+  // TODO: Improve this when changing the contract of the Congruence's
+  // constructor from a Linear_Expression.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
   Congruence cg(diff, 1);
@@ -146,11 +144,7 @@ operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 inline Congruence
 operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
   Congruence ret = cg;
-  Coefficient m = ret.modulus();
-  m *= k;
-  if (m < 0)
-    neg_assign(m);
-  ret.set_modulus(m);
+  ret /= k;
   return ret;
 }
 
@@ -167,6 +161,7 @@ Congruence::zero_dim_false() {
 inline Congruence&
 Congruence::operator=(const Congruence& c) {
   expr = c.expr;
+  modulus_ = c.modulus_;
   return *this;
 }
 
@@ -193,7 +188,7 @@ operator==(const Congruence& x, const Congruence& y) {
   Congruence y_temp(y);
   x_temp.strong_normalize();
   y_temp.strong_normalize();
-  return x_temp.expr.is_equal_to(y_temp.expr);
+  return x_temp.expr.is_equal_to(y_temp.expr) && x_temp.modulus() == y_temp.modulus();
 }
 
 /*! \relates Congruence */
@@ -204,13 +199,12 @@ operator!=(const Congruence& x, const Congruence& y) {
 
 inline dimension_type
 Congruence::max_space_dimension() {
-  // The last coefficient holds the modulus.
-  return Linear_Expression::max_space_dimension() - 1;
+  return Linear_Expression::max_space_dimension();
 }
 
 inline dimension_type
 Congruence::space_dimension() const {
-  return expr.space_dimension() - 1;
+  return expr.space_dimension();
 }
 
 inline Coefficient_traits::const_reference
@@ -247,14 +241,12 @@ Congruence::set_inhomogeneous_term(Coefficient_traits::const_reference c) {
 
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
-  PPL_ASSERT(expr.space_dimension() > 0);
-  return expr[expr.space_dimension()];
+  return modulus_;
 }
 
 inline Coefficient&
 Congruence::modulus() {
-  PPL_ASSERT(expr.space_dimension() > 0);
-  return expr[expr.space_dimension()];
+  return modulus_;
 }
 
 inline void
@@ -286,13 +278,13 @@ Congruence::set_is_equality() {
 
 inline void
 Congruence::negate(dimension_type first, dimension_type last) {
-  for ( ; first != last; ++first)
-    neg_assign(expr[first]);
+  expr.negate(first, last);
 }
 
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
-  return expr.external_memory_in_bytes();
+  return expr.external_memory_in_bytes()
+         + Parma_Polyhedra_Library::external_memory_in_bytes(modulus_);
 }
 
 inline memory_size_type
@@ -303,6 +295,7 @@ Congruence::total_memory_in_bytes() const {
 inline void
 Congruence::swap(Congruence& y) {
   std::swap(expr, y.expr);
+  std::swap(modulus_, y.modulus_);
 }
 
 inline void
