@@ -41,12 +41,8 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
       throw std::invalid_argument("Affine_Space::Affine_Space(gs):\n"
                                   "gs contains rays.");
     else if (g->is_point() || g->is_closure_point()) {
-      for (dimension_type i = space_dim; i-- > 0; ) {
-        const Variable v(i);
-        point_expr += g->coefficient(v) * v;
-        point_divisor = g->divisor();
-      }
-      ggs.insert(grid_point(point_expr, point_divisor));
+      point_expr = Linear_Expression(*g);
+      ggs.insert(grid_point(point_expr, g->divisor()));
       goto non_empty;
     }
   }
@@ -62,24 +58,15 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
   PPL_DIRTY_TEMP_COEFFICIENT(g_divisor);
   for (Generator_System::const_iterator g = gs.begin(),
          gs_end = gs.end(); g != gs_end; ++g) {
-    Linear_Expression e;
     if (g->is_point() || g->is_closure_point()) {
-      g_divisor = g->divisor();
-      for (dimension_type i = space_dim; i-- > 0; ) {
-        const Variable v(i);
-        coeff = point_expr.coefficient(v) * g_divisor;
-        coeff -= g->coefficient(v) * point_divisor;
-        e += coeff * v;
-      }
-      if (e.all_homogeneous_terms_are_zero())
-        continue;
+      Linear_Expression e = point_expr;
+      e.linear_combine(g->expression(), g->divisor(), -point_divisor,
+                       1, space_dim + 1);
+      if (!e.all_homogeneous_terms_are_zero())
+        ggs.insert(grid_line(e));
     }
     else
-      for (dimension_type i = space_dim; i-- > 0; ) {
-        const Variable v(i);
-        e += g->coefficient(v) * v;
-      }
-    ggs.insert(grid_line(e));
+      ggs.insert(grid_line(Linear_Expression(*g)));
   }
   Grid(ggs).swap(gr);
   PPL_ASSERT(OK());
