@@ -247,6 +247,14 @@ PPL::Linear_Expression_Impl::operator*=(Coefficient_traits::const_reference n) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
+PPL::Linear_Expression_Impl&
+PPL::Linear_Expression_Impl::operator/=(Coefficient_traits::const_reference n) {
+  for (dimension_type i = row.size(); i-- > 0; )
+    row[i] /= n;
+  return *this;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
 void
 PPL::Linear_Expression_Impl::negate() {
   for (dimension_type i = row.size(); i-- > 0; )

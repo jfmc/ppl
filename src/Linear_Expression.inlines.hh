@@ -355,6 +355,13 @@ operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
+inline Linear_Expression&
+operator/=(Linear_Expression& e, Coefficient_traits::const_reference n) {
+  *e.impl /= n;
+  return e;
+}
+
+/*! \relates Parma_Polyhedra_Library::Linear_Expression */
 inline void
 neg_assign(Linear_Expression& e) {
   e.impl->negate();

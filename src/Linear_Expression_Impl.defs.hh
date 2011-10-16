@@ -327,6 +327,7 @@ public:
   Linear_Expression_Impl& operator-=(const Linear_Expression_Impl& e2);
   Linear_Expression_Impl& operator-=(const Variable v);
   Linear_Expression_Impl& operator*=(Coefficient_traits::const_reference n);
+  Linear_Expression_Impl& operator/=(Coefficient_traits::const_reference n);
 
   void negate();
 

@@ -166,6 +166,11 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n);
 Linear_Expression&
 operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
+//! Returns the linear expression \p n / \p e and assigns it to \p e.
+/*! \relates Linear_Expression */
+Linear_Expression&
+operator/=(Linear_Expression& e, Coefficient_traits::const_reference n);
+
 void
 neg_assign(Linear_Expression& e);
 
@@ -634,6 +639,8 @@ private:
 
   friend Linear_Expression&
   operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
+  friend Linear_Expression&
+  operator/=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
   friend void
   neg_assign(Linear_Expression& e);
