@@ -246,6 +246,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     const Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
+    // TODO: This loop can be optimized more, if needed.
     for (dimension_type j = space_dim; j-- > 0; ) {
       if (old_g.coefficient(Variable(j)) != 0
 	  && pfunc_maps[j] != not_a_dimension()) {
