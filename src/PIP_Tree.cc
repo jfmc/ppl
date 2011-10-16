@@ -885,12 +885,7 @@ PIP_Tree_Node::Artificial_Parameter
     return false;
   if (x.denom != y.denom)
     return false;
-  if (x.inhomogeneous_term() != y.inhomogeneous_term())
-    return false;
-  for (dimension_type i = x.space_dimension(); i-- > 0; )
-    if (x.coefficient(Variable(i)) != y.coefficient(Variable(i)))
-      return false;
-  return true;
+  return x.is_equal_to(y);
 }
 
 bool
