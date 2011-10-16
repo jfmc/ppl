@@ -40,6 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.types.hh"
 #include "Grid.types.hh"
 #include "PIP_Problem.types.hh"
+#include "BHRZ03_Certificate.types.hh"
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -601,6 +602,7 @@ private:
   friend class Constraint;
   friend class Constraint_System;
   friend class PIP_Problem;
+  friend class BHRZ03_Certificate;
   template <typename T>
   friend class Linear_System;
 

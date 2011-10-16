@@ -75,14 +75,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
       // For each i such that 0 <= j < space_dim,
       // `num_rays_null_coord[j]' will be the number of rays
       // having exactly `j' coordinates equal to 0.
-      {
-	const Generator& r = *i;
-	dimension_type num_zeroes = 0;
-	for (dimension_type j = space_dim; j-- > 0; )
-	  if (r.coefficient(Variable(j)) == 0)
-	    ++num_zeroes;
-	++num_rays_null_coord[num_zeroes];
-      }
+      ++num_rays_null_coord[i->expression().num_zeroes(1, space_dim + 1)];
       break;
     case Generator::LINE:
       // Since the generator systems is minimized, the dimension of
@@ -230,14 +223,9 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
-    if (i->is_ray()) {
-      const Generator& r = *i;
-      dimension_type num_zeroes = 0;
-      for (dimension_type j = space_dim; j-- > 0; )
-	if (r.coefficient(Variable(j)) == 0)
-	  ++num_zeroes;
-      ++ph_num_rays_null_coord[num_zeroes];
-    }
+    if (i->is_ray())
+      ++ph_num_rays_null_coord[i->expression().num_zeroes(1, space_dim + 1)];
+
   // Compare (lexicographically) the two vectors:
   // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.
   for (dimension_type i = 0; i < space_dim; i++)
