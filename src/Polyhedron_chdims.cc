@@ -393,8 +393,6 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
 
 void
 PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
-  // TODO: this implementation is _really_ an executable specification.
-
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
@@ -417,30 +415,26 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);
 
-  const dimension_type src_d = var.id();
   const Constraint_System& cs = constraints();
-  Constraint_System new_constraints;
+  Constraint_System new_constraints(cs.topology());
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
 
+    Coefficient_traits::const_reference coeff = c.coefficient(var);
+
     // If `c' does not constrain `var', skip it.
-    if (c.coefficient(var) == 0)
+    if (coeff == 0)
       continue;
 
+    Constraint c_template = c;
+    c_template.expression().set_coefficient(var, Coefficient_zero());
+    
     // Each relevant constraint results in `m' new constraints.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
-      Linear_Expression e;
-      for (dimension_type j = old_dim; j-- > 0; )
-	e +=
-	  c.coefficient(Variable(j))
-	  * (j == src_d ? Variable(dst_d) : Variable(j));
-      e += c.inhomogeneous_term();
-      new_constraints.insert(c.is_equality()
-			     ? (e == 0)
-			     : (c.is_nonstrict_inequality()
-				? (e >= 0)
-				: (e > 0)));
+      Constraint new_c = c_template;
+      add_mul_assign(new_c.expression(), coeff, Variable(dst_d));
+      new_constraints.insert_recycled(new_c);
     }
   }
   add_recycled_constraints(new_constraints);
