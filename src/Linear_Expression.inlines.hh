@@ -453,6 +453,11 @@ Linear_Expression::all_zeroes(const Variables_Set& vars) const {
   return impl->all_zeroes(vars);
 }
 
+inline bool
+Linear_Expression::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
+  return impl->all_zeroes_except(vars, start, end);
+}
+
 inline dimension_type
 Linear_Expression::last_nonzero() const {
   return impl->last_nonzero();

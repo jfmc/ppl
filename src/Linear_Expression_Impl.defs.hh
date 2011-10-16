@@ -358,7 +358,6 @@ public:
   */
   bool all_zeroes(const Variables_Set& vars) const;
 
-
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
@@ -445,6 +444,15 @@ public:
   //! nonzero elements.
   dimension_type last_nonzero() const;
   
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  /*! \brief
+    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
+    \f$0\f$, disregarding coefficients of variables in \p vars.
+  */
+  bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with

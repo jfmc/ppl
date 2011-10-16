@@ -495,7 +495,29 @@ PPL::Linear_Expression_Impl::all_zeroes(const Variables_Set& vars) const {
     if (i.index() == *j + 1 && *i != 0)
       return false;
   }
-  
+
+  return true;
+}
+
+bool
+PPL::Linear_Expression_Impl
+::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
+  PPL_ASSERT(start <= end);
+  if (start == end)
+    return true;
+  if (start == 0) {
+    if (row.get(0) != 0)
+      return false;
+    
+    start = 1;
+  }
+
+  PPL_ASSERT(start != 0);
+  PPL_ASSERT(start <= end);
+  for (Dense_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; i++)
+    if (*i != 0 && vars.count(i.index() - 1) == 0)
+      return false;
+
   return true;
 }
 

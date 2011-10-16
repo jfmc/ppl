@@ -497,12 +497,12 @@ public:
   */
   void negate(dimension_type first, dimension_type last);
 
-    /*! \brief
+  /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in
     \p vars[i] is \f$0\f$.
   */
   bool all_zeroes(const Variables_Set& vars) const;
-  
+
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
@@ -572,6 +572,12 @@ private:
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   dimension_type last_nonzero() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
+    \f$0\f$, disregarding coefficients of variables in \p vars.
+  */
+  bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
 
   friend class Linear_Expression_Impl;
 
