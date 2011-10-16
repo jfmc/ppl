@@ -382,8 +382,6 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 
 void
 PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
-  // TODO: this implementation is _really_ an executable specification.
-
   // `var' must be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
@@ -404,26 +402,26 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);
 
-  const dimension_type src_d = var.id();
   const Congruence_System& cgs = congruences();
   Congruence_System new_congruences;
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i) {
     const Congruence& cg = *i;
 
+    Coefficient_traits::const_reference coeff = cg.coefficient(var);
+
     // Only consider congruences that constrain `var'.
-    if (cg.coefficient(var) == 0)
+    if (coeff == 0)
       continue;
+
+    Congruence cg_copy = cg;
+    cg_copy.expression().set_coefficient(var, Coefficient_zero());
 
     // Each relevant congruence results in `m' new congruences.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
-      Linear_Expression e;
-      for (dimension_type j = old_dim; j-- > 0; )
-	e +=
-	  cg.coefficient(Variable(j))
-	  * (j == src_d ? Variable(dst_d) : Variable(j));
-      Congruence c = (e + cg.inhomogeneous_term() %= 0) / cg.modulus();
-      new_congruences.insert_verbatim_recycled(c);
+      Congruence x = cg_copy;
+      add_mul_assign(x.expression(), coeff, Variable(dst_d));
+      new_congruences.insert_verbatim_recycled(x);
     }
   }
   add_recycled_congruences(new_congruences);
