@@ -26,52 +26,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
-PPL::extract_interval_constraint(const Constraint& c,
-				 const dimension_type c_space_dim,
-				 dimension_type& c_num_vars,
-				 dimension_type& c_only_var) {
+PPL::Box_Helpers::extract_interval_constraint(const Constraint& c,
+                                              dimension_type& c_num_vars,
+                                              dimension_type& c_only_var) {
   // Check for preconditions.
-  PPL_ASSERT(c.space_dimension() == c_space_dim);
   PPL_ASSERT(c_num_vars == 0 && c_only_var == 0);
-  // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0) {
-      if (c_num_vars == 0) {
-	c_only_var = i;
-	++c_num_vars;
-      }
-      else
-	// Constraint `c' is not an interval constraint.
-	return false;
-    }
-  return true;
+  
+  c_only_var = c.expression().first_nonzero(1, c.space_dimension() + 1);
+  if (c_only_var == c.space_dimension() + 1)
+    // All the inhomogeneous coefficients are zero.
+    return true;
+  
+  --c_only_var;
+  c_num_vars++;
+  return c.expression().all_zeroes(c_only_var + 2, c.space_dimension() + 1);
 }
 
 bool
-PPL::extract_interval_congruence(const Congruence& cg,
-			 	 const dimension_type cg_space_dim,
-				 dimension_type& cg_num_vars,
-				 dimension_type& cg_only_var) {
+PPL::Box_Helpers::extract_interval_congruence(const Congruence& cg,
+                                              dimension_type& cg_num_vars,
+                                              dimension_type& cg_only_var) {
   // Check for preconditions.
-  PPL_ASSERT(cg.space_dimension() == cg_space_dim);
   PPL_ASSERT(cg_num_vars == 0 && cg_only_var == 0);
   // Only equality congruences can be intervals.
   PPL_ASSERT(cg.is_equality());
 
-  // Collect the non-zero components of `cg'.
-  for (dimension_type i = cg_space_dim; i-- > 0; )
-    if (cg.coefficient(Variable(i)) != 0) {
-      if (cg_num_vars == 0) {
-	cg_only_var = i;
-	++cg_num_vars;
-      }
-      else
-	// Congruence `cg' is not an interval congruence.
-	return false;
-    }
-  return true;
+  cg_only_var = cg.expression().first_nonzero(1, cg.space_dimension() + 1);
+  if (cg_only_var == cg.space_dimension() + 1)
+    // All the inhomogeneous coefficients are zero.
+    return true;
+
+  --cg_only_var;
+  cg_num_vars++;
+  return cg.expression().all_zeroes(cg_only_var + 2, cg.space_dimension() + 1);
 }

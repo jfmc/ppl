@@ -18,6 +18,8 @@ namespace Parma_Polyhedra_Library {
 template <typename Interval>
 class Box;
 
+class Box_Helpers;
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Box_types_hh)

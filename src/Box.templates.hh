@@ -865,7 +865,7 @@ Box<ITV>::relation_with(const Constraint& c) const {
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
 
-  if (extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
+  if (Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var))
     if (c_num_vars == 0)
       // c is a trivial constraint.
       switch (sgn(c.inhomogeneous_term())) {
@@ -1609,8 +1609,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     const Constraint& c = *i;
     dimension_type c_num_vars = 0;
     dimension_type c_only_var = 0;
-    if (extract_interval_constraint(c, cs_space_dim,
-                                    c_num_vars, c_only_var)) {
+    if (Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var)) {
       if (c_num_vars == 1) {
         // An interval constraint on variable index `c_only_var'.
         PPL_ASSERT(c_only_var < space_dim);
@@ -2124,7 +2123,7 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Throw an exception if c is not an interval constraints.
-  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
+  if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var))
     throw_generic("add_constraint(c)", "c is not an interval constraint");
 
   // Throw an exception if c is a nontrivial strict constraint
@@ -2189,7 +2188,7 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
   dimension_type cg_num_vars = 0;
   dimension_type cg_only_var = 0;
   // Throw an exception if c is not an interval congruence.
-  if (!extract_interval_congruence(cg, cg_space_dim, cg_num_vars, cg_only_var))
+  if (!Box_Helpers::extract_interval_congruence(cg, cg_num_vars, cg_only_var))
     throw_generic("add_congruence(cg)", "cg is not an interval congruence");
 
   // Avoid doing useless work if the box is known to be empty.
@@ -2232,7 +2231,7 @@ Box<ITV>::refine_no_check(const Constraint& c) {
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Non-interval constraints are approximated.
-  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var)) {
+  if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var)) {
     propagate_constraint_no_check(c);
     return;
   }
@@ -3647,7 +3646,7 @@ Box<ITV>::get_limiting_box(const Constraint_System& cs,
     dimension_type c_num_vars = 0;
     dimension_type c_only_var = 0;
     // Constraints that are not interval constraints are ignored.
-    if (!extract_interval_constraint(c, cs_space_dim, c_num_vars, c_only_var))
+    if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var))
       continue;
     // Trivial constraints are ignored.
     if (c_num_vars != 0) {

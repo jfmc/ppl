@@ -2176,41 +2176,42 @@ interval_relation(const ITV& i,
                   Coefficient_traits::const_reference num,
                   Coefficient_traits::const_reference den = 1);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Decodes the constraint \p c as an interval constraint.
-/*! \relates Box
-  \return
-  <CODE>true</CODE> if the constraint \p c is an
-  \ref intervals "interval constraint";
-  <CODE>false</CODE> otherwise.
+class Box_Helpers {
+public:
+  // This is declared here so that Linear_Expression needs to be friend of
+  // Box_Helpers only, and doesn't need to be friend of this, too.
+  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Decodes the constraint \p c as an interval constraint.
+  /*! \relates Box
+    \return
+    <CODE>true</CODE> if the constraint \p c is an
+    \ref intervals "interval constraint";
+    <CODE>false</CODE> otherwise.
 
-  \param c
-  The constraint to be decoded.
+    \param c
+    The constraint to be decoded.
 
-  \param c_space_dim
-  The space dimension of the constraint \p c (it is <EM>assumed</EM>
-  to match the actual space dimension of \p c).
+    \param c_num_vars
+    If <CODE>true</CODE> is returned, then it will be set to the number
+    of variables having a non-zero coefficient. The only legal values
+    will therefore be 0 and 1.
 
-  \param c_num_vars
-  If <CODE>true</CODE> is returned, then it will be set to the number
-  of variables having a non-zero coefficient. The only legal values
-  will therefore be 0 and 1.
+    \param c_only_var
+    If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+    then it will be set to the index of the only variable having
+    a non-zero coefficient in \p c.
+  */
+  #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  static bool extract_interval_constraint(const Constraint& c,
+                                          dimension_type& c_num_vars,
+                                          dimension_type& c_only_var);
 
-  \param c_only_var
-  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
-  then it will be set to the index of the only variable having
-  a non-zero coefficient in \p c.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool extract_interval_constraint(const Constraint& c,
-				 dimension_type c_space_dim,
-				 dimension_type& c_num_vars,
-				 dimension_type& c_only_var);
-
-bool extract_interval_congruence(const Congruence& cg,
-				 dimension_type cg_space_dim,
-				 dimension_type& cg_num_vars,
-				 dimension_type& cg_only_var);
+  // This is declared here so that Linear_Expression needs to be friend of
+  // Box_Helpers only, and doesn't need to be friend of this, too.
+  static bool extract_interval_congruence(const Congruence& cg,
+                                          dimension_type& cg_num_vars,
+                                          dimension_type& cg_only_var);
+};
 
 } // namespace Parma_Polyhedra_Library
 

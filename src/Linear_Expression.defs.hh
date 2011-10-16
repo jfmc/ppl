@@ -45,6 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "Scalar_Products.types.hh"
 #include "MIP_Problem.types.hh"
+#include "Box.types.hh"
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -628,6 +629,7 @@ private:
   friend class BHRZ03_Certificate;
   friend class Scalar_Products;
   friend class MIP_Problem;
+  friend class Box_Helpers;
   template <typename T>
   friend class Linear_System;
 
