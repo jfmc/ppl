@@ -511,11 +511,7 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
   // It is assumed that cg is satisfied by all points in d1.
   PPL_ASSERT(d1.relation_with(cg) == Poly_Con_Relation::is_included());
 
-  // Build the linear expression for the congruence cg.
-  Linear_Expression e;
-  for (dimension_type i = cg.space_dimension(); i-- > 0; )
-    e += cg.coefficient(Variable(i)) * Variable(i);
-  e += cg.inhomogeneous_term();
+  Linear_Expression e(cg);
 
   // Find the maximum and minimum bounds for the domain element d with the
   // linear expression e.
