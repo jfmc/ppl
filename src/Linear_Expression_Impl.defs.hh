@@ -352,6 +352,12 @@ public:
   //! this must be a method and can't be a free function.
   std::ostream& operator<<(std::ostream& s) const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if the coefficient of each variable in
+    \p vars[i] is \f$0\f$.
+  */
+  bool all_zeroes(const Variables_Set& vars) const;
+
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
@@ -377,15 +383,6 @@ public:
     [start, end).
   */
   bool all_zeroes(dimension_type start, dimension_type end) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  /*! \brief
-    Returns <CODE>true</CODE> if the coefficient of each variable in
-    \p vars[i] is \f$0\f$.
-  */
-  bool all_zeroes(const Variables_Set& vars) const;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
