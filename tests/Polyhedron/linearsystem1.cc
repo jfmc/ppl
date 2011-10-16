@@ -52,11 +52,12 @@ test01() {
     Constraint row(COLS, Constraint::RAY_OR_POINT_OR_INEQUALITY,
                    NOT_NECESSARILY_CLOSED);
     for (dimension_type col = 0; col < COLS; ++col) {
-      rng.get(row.expression().get_row()[col], 0);
+      Coefficient c;
+      rng.get(c, 0);
       // The following workaround is to avoid trivial positive overflows
       // when using bounded coefficients.
       if (std::numeric_limits<Coefficient>::is_bounded
-	  && row.expression().get_row()[col] == std::numeric_limits<Coefficient>::min())
+	  && c == std::numeric_limits<Coefficient>::min())
 	// Here the randomly generated coefficients is equal to the
 	// allowed minimum value for a signed integer data type that
 	// might adopt the 2's complement representation
@@ -65,7 +66,12 @@ test01() {
 	// of the Linear_Row, because the GCD computation will try to negate
 	// such a coefficient.
 	// To avoid the problem, we simply increment the coefficient.
-	++row.expression().get_row()[col];
+	++c;
+      
+      if (col == 0)
+        row.expression() += c;
+      else
+        add_mul_assign(row.expression(), c, Variable(col - 1));
     }
 
     row.strong_normalize();
