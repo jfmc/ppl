@@ -138,18 +138,9 @@ PPL::PIP_Problem::solve() const {
         const dimension_type c_space_dim = c.space_dimension();
         PPL_ASSERT(external_space_dim >= c_space_dim);
 
-        // Check if constraint has a non-zero variable coefficient.
-        bool has_nonzero_variable_coefficient = false;
-        for (dimension_type i = c_space_dim; i-- > 0; ) {
-          if (c.coefficient(Variable(i)) != 0
-              && parameters.count(i) == 0) {
-            has_nonzero_variable_coefficient = true;
-            break;
-          }
-        }
         // Constraints having a non-zero variable coefficient
         // should not be inserted in context.
-        if (has_nonzero_variable_coefficient)
+        if (!c.expression().all_zeroes_except(parameters, 1, c_space_dim + 1))
           continue;
 
         check_feasible_context = true;
@@ -173,6 +164,7 @@ PPL::PIP_Problem::solve() const {
           }
           dimension_type i = 1;
 
+          // TODO: This loop may be optimized more, if needed.
           // itr may still be end(), but it can still be used as hint.
           for (Variables_Set::const_iterator
                pi = param_begin; pi != param_end; ++pi, ++i) {
