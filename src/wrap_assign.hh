@@ -60,7 +60,6 @@ wrap_assign_ind(PSET& pointset,
                 Coefficient& tmp1,
                 Coefficient& tmp2) {
   const dimension_type space_dim = pointset.space_dimension();
-  const dimension_type cs_space_dim = cs.space_dimension();
   for (Wrap_Translations::const_iterator i = first; i != end; ++i) {
     const Wrap_Dim_Translations& wrap_dim_translations = *i;
     const Variable& x = wrap_dim_translations.var;
@@ -85,19 +84,10 @@ wrap_assign_ind(PSET& pointset,
       else {
         Variables_Set::const_iterator vars_end = vars.end();
         for (Constraint_System::const_iterator j = cs.begin(),
-               cs_end = cs.end(); j != cs_end; ++j) {
-          const Constraint& c = *j;
-          for (dimension_type d = cs_space_dim; d-- > 0; ) {
-            if (c.coefficient(Variable(d)) != 0 && vars.find(d) != vars_end)
-              goto skip;
-          }
-          // If we are here it means `c' does not depend on variables
-          // in `vars'.
-          p.refine_with_constraint(c);
-
-        skip:
-          continue;
-        }
+               cs_end = cs.end(); j != cs_end; ++j)
+          if (j->expression().all_zeroes(vars))
+            // `*j' does not depend on variables in `vars'.
+            p.refine_with_constraint(*j);
       }
       p.refine_with_constraint(min_value <= x);
       p.refine_with_constraint(x <= max_value);
