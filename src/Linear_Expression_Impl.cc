@@ -98,10 +98,7 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Grid_Generator& g)
 }
 
 PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Congruence& cg)
-  : row(cg.space_dimension() + 1) {
-  for (dimension_type i = row.size() - 1; i-- > 0; )
-    row[i + 1] = cg.coefficient(Variable(i));
-  row[0] = cg.inhomogeneous_term();
+  : row(cg.expression().impl->row) {
   PPL_ASSERT(OK());
 }
 
