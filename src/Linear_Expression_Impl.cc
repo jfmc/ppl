@@ -304,7 +304,7 @@ PPL::Linear_Expression_Impl::add_mul_assign(Coefficient_traits::const_reference 
   if (e2.space_dimension() > e1.space_dimension())
     e1.set_space_dimension(e2.space_dimension());
   PPL_ASSERT(e1.space_dimension() >= e2.space_dimension());
-  for (dimension_type i = 0; i < e2.space_dimension(); i++)
+  for (dimension_type i = 0; i < e2.row.size(); i++)
     e1[i] += factor * e2[i];
 }
 
@@ -315,7 +315,7 @@ PPL::Linear_Expression_Impl::sub_mul_assign(Coefficient_traits::const_reference 
   if (e2.space_dimension() > e1.space_dimension())
     e1.set_space_dimension(e2.space_dimension());
   PPL_ASSERT(e1.space_dimension() >= e2.space_dimension());
-  for (dimension_type i = 0; i < e2.space_dimension(); i++)
+  for (dimension_type i = 0; i < e2.row.size(); i++)
     e1[i] -= factor * e2[i];
 }
 
