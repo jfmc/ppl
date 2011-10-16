@@ -430,12 +430,8 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     exact_div_assign(ext_d, ext_d, gcd);
 
     included = true;
-    if (point) {
-      Linear_Expression e;
-      for (dimension_type i = space_dim; i-- > 0; )
-	e += gen.coefficient(Variable(i)) * Variable(i);
-      *point = Generator::point(e, gen.divisor());
-    }
+    if (point)
+      *point = Generator::point(Linear_Expression(gen), gen.divisor());
     return true;
   }
   return false;
