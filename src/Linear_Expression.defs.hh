@@ -512,7 +512,7 @@ private:
   */
   static const Linear_Expression* zero_p;
 
-  Linear_Expression_Impl* impl;
+  Linear_Expression_Interface* impl;
 
   //! Implementation sizing constructor.
   /*!

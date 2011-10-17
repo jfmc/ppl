@@ -129,16 +129,16 @@ PPL::Linear_Expression_Impl::compare(const Linear_Expression_Impl& y) const {
   return 0;
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Constraint& c)
-  : row(c.expression().impl->row) {
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Constraint& c) {
+  construct(*(c.expression().impl));
   // Do not copy the epsilon dimension (if any).
   if (c.is_not_necessarily_closed())
     row.resize(row.size() - 1);
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Generator& g)
-  : row(g.expression().impl->row) {
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Generator& g) {
+  construct(*(g.expression().impl));
   // Do not copy the divisor of `g'.
   row[0] = 0;
   // Do not copy the epsilon dimension (if any).
@@ -147,17 +147,16 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Generator& g)
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Grid_Generator& g)
-  : row(g.expression().impl->row,
-        g.expression().impl->row.size() - 1,
-        g.expression().impl->row.size() - 1) {
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Grid_Generator& g) {
+  // NOTE: This does *not* copy the last coefficient.
+  construct(*(g.expression().impl), g.expression().space_dimension());
   // Do not copy the divisor of `g'.
   row[0] = 0;
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Congruence& cg)
-  : row(cg.expression().impl->row) {
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Congruence& cg) {
+  construct(*(cg.expression().impl));
   PPL_ASSERT(OK());
 }
 
