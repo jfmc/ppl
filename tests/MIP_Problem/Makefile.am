@@ -54,7 +54,8 @@ TESTS = \
 ascii_dump_load1 \
 exceptions1 \
 mipproblem1 \
-mipproblem3
+mipproblem3 \
+mipproblem4
 
 XFAIL_TESTS =
 
@@ -73,6 +74,8 @@ mipproblem1_SOURCES = mipproblem1.cc
 mipproblem2_SRCS = mipproblem2.cc
 
 mipproblem3_SOURCES = mipproblem3.cc
+
+mipproblem4_SOURCES = mipproblem4.cc
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = mipproblem2
