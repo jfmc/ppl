@@ -1701,6 +1701,13 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 // See page 55 of [PapadimitriouS98].
 void
 PPL::MIP_Problem::compute_generator() const {
+  // Early exit for 0-dimensional problems.
+  if (external_space_dim == 0) {
+    MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+    x.last_generator = point();
+    return;
+  }
+
   // We will store in num[] and in den[] the numerators and
   // the denominators of every variable of the original problem.
   std::vector<Coefficient> num(external_space_dim);
@@ -1772,6 +1779,7 @@ PPL::MIP_Problem::compute_generator() const {
   }
 
   // Compute the lcm of all denominators.
+  PPL_ASSERT(external_space_dim > 0);
   lcm = den[0];
   for (dimension_type i = 1; i < external_space_dim; ++i)
     lcm_assign(lcm, lcm, den[i]);
@@ -1794,7 +1802,8 @@ PPL::MIP_Problem::compute_generator() const {
 void
 PPL::MIP_Problem::second_phase() {
   // Second_phase requires that *this is satisfiable.
-  PPL_ASSERT(status == SATISFIABLE || status == UNBOUNDED
+  PPL_ASSERT(status == SATISFIABLE
+             || status == UNBOUNDED
              || status == OPTIMIZED);
   // In the following cases the problem is already solved.
   if (status == UNBOUNDED || status == OPTIMIZED)
