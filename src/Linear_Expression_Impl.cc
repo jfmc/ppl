@@ -36,6 +36,66 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
+  construct(e);
+}
+
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&e)) {
+    construct(*p);
+  } else {
+    // Add implementations for other derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Interface& e,
+                                                    dimension_type sz) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&e)) {
+    construct(*p, sz);
+  } else {
+    // Add implementations for other derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Impl& y, Variable i) {
+  linear_combine(y, i.space_dimension());
+}
+
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Impl& y, dimension_type i) {
+  Linear_Expression_Impl& x = *this;
+  // We can combine only vector of the same dimension.
+  PPL_ASSERT(x.space_dimension() == y.space_dimension());
+  PPL_ASSERT(x.row[i] != 0);
+  PPL_ASSERT(y.row[i] != 0);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_v);
+  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_v);
+  normalize2(x.row[i], y.row[i], normalized_x_v, normalized_y_v);
+  neg_assign(normalized_x_v);
+  x.row.linear_combine(y.row, normalized_y_v, normalized_x_v);
+  assert(x.row[i] == 0);
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Impl& y,
+                 Coefficient_traits::const_reference c1,
+                 Coefficient_traits::const_reference c2) {
+  row.linear_combine(y.row, c1, c2);
+  PPL_ASSERT(OK());
+}
+
+void
+PPL::Linear_Expression_Impl::swap(Linear_Expression_Impl& y) {
+  row.swap(y.row);
+}
+
 int
 PPL::Linear_Expression_Impl::compare(const Linear_Expression_Impl& y) const {
   const Linear_Expression_Impl& x = *this;
@@ -457,11 +517,11 @@ PPL::Linear_Expression_Impl
 }
 
 void
-PPL::Linear_Expression_Impl::linear_combine(const Linear_Expression_Impl& y,
-                                       Coefficient_traits::const_reference c1,
-                                       Coefficient_traits::const_reference c2,
-                                       dimension_type start,
-                                       dimension_type end) {
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Impl& y,
+                 Coefficient_traits::const_reference c1,
+                 Coefficient_traits::const_reference c2,
+                 dimension_type start, dimension_type end) {
   row.linear_combine(y.row, c1, c2, start, end);
 }
 
@@ -640,4 +700,175 @@ PPL::Linear_Expression_Impl::last_nonzero() const {
   }
 }
 
-PPL_OUTPUT_DEFINITIONS(Linear_Expression_Impl)
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Interface& y, Variable v) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    linear_combine(*p, v);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Interface& y,
+                 Coefficient_traits::const_reference c1,
+                 Coefficient_traits::const_reference c2) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    linear_combine(*p, c1, c2);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::swap(Linear_Expression_Interface& y) {
+  if (Linear_Expression_Impl* p = dynamic_cast<Linear_Expression_Impl*>(&y)) {
+    swap(*p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+bool
+PPL::Linear_Expression_Impl
+::is_equal_to(const Linear_Expression_Interface& y) const {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    return is_equal_to(*p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return false;
+  }
+}
+
+PPL::Linear_Expression_Impl&
+PPL::Linear_Expression_Impl
+::operator+=(const Linear_Expression_Interface& y) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    return operator+=(*p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return *this;
+  }
+}
+
+PPL::Linear_Expression_Impl&
+PPL::Linear_Expression_Impl
+::operator-=(const Linear_Expression_Interface& y) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    return operator-=(*p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return *this;
+  }
+}
+
+PPL::Linear_Expression_Impl&
+PPL::Linear_Expression_Impl
+::sub_mul_assign(Coefficient_traits::const_reference n,
+                 const Linear_Expression_Interface& y,
+                 dimension_type start, dimension_type end) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    return sub_mul_assign(n, *p, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return *this;
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::add_mul_assign(Coefficient_traits::const_reference factor,
+                 const Linear_Expression_Interface& y) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    add_mul_assign(factor, *p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::sub_mul_assign(Coefficient_traits::const_reference factor,
+                 const Linear_Expression_Interface& y) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    sub_mul_assign(factor, *p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Interface& y, dimension_type i) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    linear_combine(*p, i);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::linear_combine(const Linear_Expression_Interface& y,
+                 Coefficient_traits::const_reference c1,
+                 Coefficient_traits::const_reference c2,
+                 dimension_type start, dimension_type end) {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    linear_combine(*p, c1, c2, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl
+::modify_according_to_evolution(const Linear_Expression_Interface& x,
+                                const Linear_Expression_Interface& y) {
+  if (const Linear_Expression_Impl* p_x = dynamic_cast<const Linear_Expression_Impl*>(&x)) {
+    if (const Linear_Expression_Impl* p_y = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+      modify_according_to_evolution(*p_x, *p_y);
+    } else {
+      // Add implementations for new derived classes here.
+      PPL_ASSERT(false);
+    }
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression_Impl::construct(const Linear_Expression_Impl& e) {
+  row = e.row;
+}
+
+void
+PPL::Linear_Expression_Impl::construct(const Linear_Expression_Impl& e,
+                                       dimension_type sz) {
+  row = Dense_Row(e.row, sz, sz);
+}
+
+int
+PPL::Linear_Expression_Impl::compare(const Linear_Expression_Interface& y) const {
+  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+    return compare(*p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return 0;
+  }
+}

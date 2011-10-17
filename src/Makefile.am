@@ -150,6 +150,7 @@ Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_Expression_Impl.types.hh \
+Linear_Expression_Interface.types.hh \
 Linear_System.types.hh \
 Bit_Row.types.hh \
 Bit_Matrix.types.hh \
@@ -264,6 +265,7 @@ Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
 Linear_Expression_Impl.defs.hh \
 Linear_Expression_Impl.inlines.hh \
+Linear_Expression_Interface.defs.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
@@ -404,6 +406,7 @@ Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
 Linear_Expression_Impl.cc \
+Linear_Expression_Interface.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \

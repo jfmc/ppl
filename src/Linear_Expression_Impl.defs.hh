@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cstddef>
+#include "Linear_Expression_Interface.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -45,15 +46,6 @@ std::ostream& operator<<(std::ostream& s, const Linear_Expression_Impl& e);
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-void swap(Parma_Polyhedra_Library::Linear_Expression_Impl& x,
-	  Parma_Polyhedra_Library::Linear_Expression_Impl& y);
-
-} // namespace std
 
 //! A linear expression.
 /*! \ingroup PPL_CXX_interface
@@ -102,7 +94,7 @@ void swap(Parma_Polyhedra_Library::Linear_Expression_Impl& x,
   with space dimension zero and then extended to space dimension 3
   in the fifth line.
 */
-class Parma_Polyhedra_Library::Linear_Expression_Impl {
+class Parma_Polyhedra_Library::Linear_Expression_Impl : public Linear_Expression_Interface {
 public:
   //! Default constructor: returns a copy of Linear_Expression_Impl::zero().
   Linear_Expression_Impl();
@@ -110,8 +102,11 @@ public:
   //! Ordinary copy constructor.
   Linear_Expression_Impl(const Linear_Expression_Impl& e);
 
+  //! Copy constructor from any implementation of Linear_Expression_Interface.
+  Linear_Expression_Impl(const Linear_Expression_Interface& e);
+  
   //! Destructor.
-  ~Linear_Expression_Impl();
+  virtual ~Linear_Expression_Impl();
 
   /*! \brief
     Builds the linear expression corresponding
@@ -177,23 +172,297 @@ public:
   static dimension_type max_space_dimension();
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
+  virtual dimension_type space_dimension() const;
 
   //! Sets the dimension of the vector space enclosing \p *this to \p n .
-  void set_space_dimension(dimension_type n);
+  virtual void set_space_dimension(dimension_type n);
 
   //! Returns the coefficient of \p v in \p *this.
-  Coefficient_traits::const_reference coefficient(Variable v) const;
+  virtual Coefficient_traits::const_reference coefficient(Variable v) const;
 
   //! Sets the coefficient of \p v in \p *this to \p n.
-  void set_coefficient(Variable v,
-                       Coefficient_traits::const_reference n);
+  virtual void set_coefficient(Variable v,
+                               Coefficient_traits::const_reference n);
 
   //! Returns the inhomogeneous term of \p *this.
-  Coefficient_traits::const_reference inhomogeneous_term() const;
+  virtual Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! Sets the inhomogeneous term of \p *this to \p n.
-  void set_inhomogeneous_term(Coefficient_traits::const_reference n);
+  virtual void set_inhomogeneous_term(Coefficient_traits::const_reference n);
+
+  //! Linearly combines \p *this with \p y so that the coefficient of \p v
+  //! is 0.
+  /*!
+    \param y
+    The expression that will be combined with \p *this object;
+
+    \param v
+    The variable whose coefficient has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the coefficient of variable \p v equal to \f$0\f$. Then it assigns
+    the resulting expression to \p *this.
+
+    \p *this and \p y must have the same space dimension.
+  */
+  virtual void linear_combine(const Linear_Expression_Interface& y, Variable v);
+
+  //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>, but assumes that
+  //! \p *this and \p y have the same space dimension.
+  virtual void linear_combine(const Linear_Expression_Interface& y,
+                              Coefficient_traits::const_reference c1,
+                              Coefficient_traits::const_reference c2);
+
+  //! Swaps the coefficients of the variables \p v1 and \p v2 .
+  virtual void swap_space_dimensions(Variable v1, Variable v2);
+
+  //! Removes all the specified dimensions from the expression.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+  */
+  virtual void remove_space_dimensions(const Variables_Set& vars);
+
+  //! Shift by \p n positions the coefficients of variables, starting from
+  //! the coefficient of \p v. This increases the space dimension by \p n.
+  virtual void shift_space_dimensions(Variable v, dimension_type n);
+
+  //! Permutes the space dimensions of the expression.
+  /*!
+    \param cycle
+    A vector representing a cycle of the permutation according to which the
+    space dimensions must be rearranged.
+
+    The \p cycle vector represents a cycle of a permutation of space
+    dimensions.
+    For example, the permutation
+    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
+    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
+  */
+  virtual void permute_space_dimensions(const std::vector<Variable>& cycle);
+  
+  //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+  virtual bool is_zero() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous
+    terms of \p *this are \f$0\f$.
+  */
+  virtual bool all_homogeneous_terms_are_zero() const;
+
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
+  virtual memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  virtual memory_size_type external_memory_in_bytes() const;
+
+  //! Writes to \p s an ASCII representation of \p *this.
+  virtual void ascii_dump(std::ostream& s) const;
+  
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+  virtual bool ascii_load(std::istream& s);
+
+  //! Swaps \p *this with \p y.
+  virtual void swap(Linear_Expression_Interface& y);
+
+  // TODO: Make this private.
+  //! Copy constructor with a specified space dimension.
+  Linear_Expression_Impl(const Linear_Expression_Interface& e, dimension_type sz);
+
+  //! Returns \p true if *this is equal to \p x.
+  //! Note that (*this == x) has a completely different meaning.
+  virtual bool is_equal_to(const Linear_Expression_Interface& x) const;
+
+  //! Normalizes the modulo of the coefficients and of the inhomogeneous term
+  //! so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the coefficients
+    and the inhomogeneous term and normalizes them by the GCD itself.
+  */
+  virtual void normalize();
+
+  //! Ensures that the first nonzero homogeneous coefficient is positive,
+  //! by negating the row if necessary.
+  virtual void sign_normalize();
+
+  /*! \brief
+    Negates the elements from index \p first (included)
+    to index \p last (excluded).
+  */
+  virtual void negate(dimension_type first, dimension_type last);
+
+  virtual Linear_Expression_Impl& operator+=(Coefficient_traits::const_reference n);
+  virtual Linear_Expression_Impl& operator-=(Coefficient_traits::const_reference n);
+
+  //! The basic comparison function.
+  /*! \relates Linear_Expression_Impl
+
+    \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
+            is greater. The absolute value of the result is 1 if the difference
+            is only in the inhomogeneous terms, 2 otherwise
+
+    The order is a lexicographic. It starts comparing the variables' coefficient,
+    starting from Variable(0), and at the end it compares the inhomogeneous
+    terms.
+  */
+  virtual int compare(const Linear_Expression_Interface& y) const;
+
+  virtual Linear_Expression_Impl& operator+=(const Linear_Expression_Interface& e2);
+  virtual Linear_Expression_Impl& operator+=(const Variable v);
+  virtual Linear_Expression_Impl& operator-=(const Linear_Expression_Interface& e2);
+  virtual Linear_Expression_Impl& operator-=(const Variable v);
+  virtual Linear_Expression_Impl& operator*=(Coefficient_traits::const_reference n);
+  virtual Linear_Expression_Impl& operator/=(Coefficient_traits::const_reference n);
+
+  virtual void negate();
+
+  virtual Linear_Expression_Impl& add_mul_assign(Coefficient_traits::const_reference n,
+                                                 const Variable v);
+
+  virtual Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
+                                                 const Variable v);
+
+  virtual Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
+                                                 const Linear_Expression_Interface& y,
+                                                 dimension_type start, dimension_type end);
+
+  virtual void add_mul_assign(Coefficient_traits::const_reference factor,
+                              const Linear_Expression_Interface& e2);
+
+  virtual void sub_mul_assign(Coefficient_traits::const_reference factor,
+                              const Linear_Expression_Interface& e2);
+
+  //! NOTE: This can be used as <CODE>(*this) << s</CODE>, but it actually
+  //! means <CODE>s << *this</CODE>. This strange syntax is needed because
+  //! this must be a method and can't be a free function.
+  virtual std::ostream& operator<<(std::ostream& s) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if the coefficient of each variable in
+    \p vars[i] is \f$0\f$.
+  */
+  virtual bool all_zeroes(const Variables_Set& vars) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  virtual Coefficient& operator[](dimension_type i);
+  
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  virtual const Coefficient& operator[](dimension_type i) const;
+  
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Equivalent to the const version of operator[].
+  virtual const Coefficient& get(dimension_type i) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  /*! \brief
+    Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
+    [start, end).
+  */
+  virtual bool all_zeroes(dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  /*! \brief
+    Returns the number of zero coefficient in [start, end).
+  */
+  virtual dimension_type num_zeroes(dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  /*! \brief
+    Returns the gcd of the nonzero coefficients in [start,end). If all the
+    coefficients in this range are 0 returns 0.
+  */
+  virtual Coefficient gcd(dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  virtual void exact_div_assign(Coefficient_traits::const_reference c,
+                                dimension_type start, dimension_type end);
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Linearly combines \p *this with \p y so that the coefficient of \p v
+  //! is 0.
+  /*!
+    \param y
+    The expression that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting expression to \p *this.
+
+    \p *this and \p y must have the same space dimension.
+  */
+  virtual void linear_combine(const Linear_Expression_Interface& y, dimension_type i);
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
+  //! for each i in [start, end).
+  virtual void linear_combine(const Linear_Expression_Interface& y,
+                              Coefficient_traits::const_reference c1,
+                              Coefficient_traits::const_reference c2,
+                              dimension_type start, dimension_type end);
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Modify `new_ray' according to the evolution of `x_g' with
+  //! respect to `y_g'. This method is a code fragment used by Polyhedron.
+  //! Read the method implementation for more details.
+  virtual void modify_according_to_evolution(const Linear_Expression_Interface& x,
+                                             const Linear_Expression_Interface& y);
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns the index of the last nonzero element, or 0 if there are no
+  //! nonzero elements.
+  virtual dimension_type last_nonzero() const;
+  
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  /*! \brief
+    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
+    \f$0\f$, disregarding coefficients of variables in \p vars.
+  */
+  virtual bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+
+  //! Implementation sizing constructor.
+  /*!
+    The bool parameter is just to avoid problems with
+    the constructor Linear_Expression_Impl(Coefficient_traits::const_reference n).
+  */
+  Linear_Expression_Impl(dimension_type sz, bool);
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
@@ -218,124 +487,15 @@ public:
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2);
 
-  //! Swaps the coefficients of the variables \p v1 and \p v2 .
-  void swap_space_dimensions(Variable v1, Variable v2);
-
-  //! Removes all the specified dimensions from the expression.
-  /*!
-    The space dimension of the variable with the highest space
-    dimension in \p vars must be at most the space dimension
-    of \p this.
-  */
-  void remove_space_dimensions(const Variables_Set& vars);
-
-  //! Shift by \p n positions the coefficients of variables, starting from
-  //! the coefficient of \p v. This increases the space dimension by \p n.
-  void shift_space_dimensions(Variable v, dimension_type n);
-
-  //! Permutes the space dimensions of the expression.
-  /*!
-    \param cycle
-    A vector representing a cycle of the permutation according to which the
-    space dimensions must be rearranged.
-
-    The \p cycle vector represents a cycle of a permutation of space
-    dimensions.
-    For example, the permutation
-    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
-    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
-  */
-  void permute_space_dimensions(const std::vector<Variable>& cycle);
-  
-  //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
-  bool is_zero() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if all the homogeneous
-    terms of \p *this are \f$0\f$.
-  */
-  bool all_homogeneous_terms_are_zero() const;
-
-  /*! \brief
-    Returns a lower bound to the total size in bytes of the memory
-    occupied by \p *this.
-  */
-  memory_size_type total_memory_in_bytes() const;
-
-  //! Returns the size in bytes of the memory managed by \p *this.
-  memory_size_type external_memory_in_bytes() const;
-
-  PPL_OUTPUT_DECLARATIONS
-
-  /*! \brief
-    Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
-    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  */
-  bool ascii_load(std::istream& s);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
   //! Swaps \p *this with \p y.
   void swap(Linear_Expression_Impl& y);
-
-  // TODO: Make this private.
-  //! Copy constructor with a specified space dimension.
-  Linear_Expression_Impl(const Linear_Expression_Impl& e, dimension_type sz);
 
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
   bool is_equal_to(const Linear_Expression_Impl& x) const;
 
-  //! Normalizes the modulo of the coefficients and of the inhomogeneous term
-  //! so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the coefficients
-    and the inhomogeneous term and normalizes them by the GCD itself.
-  */
-  void normalize();
-
-  //! Ensures that the first nonzero homogeneous coefficient is positive,
-  //! by negating the row if necessary.
-  void sign_normalize();
-
-  /*! \brief
-    Negates the elements from index \p first (included)
-    to index \p last (excluded).
-  */
-  void negate(dimension_type first, dimension_type last);
-
-  Linear_Expression_Impl& operator+=(Coefficient_traits::const_reference n);
-  Linear_Expression_Impl& operator-=(Coefficient_traits::const_reference n);
-
-  //! The basic comparison function.
-  /*! \relates Linear_Expression_Impl
-
-    \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
-            is greater. The absolute value of the result is 1 if the difference
-            is only in the inhomogeneous terms, 2 otherwise
-
-    The order is a lexicographic. It starts comparing the variables' coefficient,
-    starting from Variable(0), and at the end it compares the inhomogeneous
-    terms.
-  */
-  int compare(const Linear_Expression_Impl& y) const;
-
   Linear_Expression_Impl& operator+=(const Linear_Expression_Impl& e2);
-  Linear_Expression_Impl& operator+=(const Variable v);
   Linear_Expression_Impl& operator-=(const Linear_Expression_Impl& e2);
-  Linear_Expression_Impl& operator-=(const Variable v);
-  Linear_Expression_Impl& operator*=(Coefficient_traits::const_reference n);
-  Linear_Expression_Impl& operator/=(Coefficient_traits::const_reference n);
-
-  void negate();
-
-  Linear_Expression_Impl& add_mul_assign(Coefficient_traits::const_reference n,
-                                         const Variable v);
-
-  Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
-                                         const Variable v);
 
   Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
                                          const Linear_Expression_Impl& y,
@@ -347,68 +507,6 @@ public:
   void sub_mul_assign(Coefficient_traits::const_reference factor,
                       const Linear_Expression_Impl& e2);
 
-  //! NOTE: This can be used as <CODE>(*this) << s</CODE>, but it actually
-  //! means <CODE>s << *this</CODE>. This strange syntax is needed because
-  //! this must be a method and can't be a free function.
-  std::ostream& operator<<(std::ostream& s) const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if the coefficient of each variable in
-    \p vars[i] is \f$0\f$.
-  */
-  bool all_zeroes(const Variables_Set& vars) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  Coefficient& operator[](dimension_type i);
-  
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  const Coefficient& operator[](dimension_type i) const;
-  
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  //! Equivalent to the const version of operator[].
-  const Coefficient& get(dimension_type i) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  /*! \brief
-    Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
-    [start, end).
-  */
-  bool all_zeroes(dimension_type start, dimension_type end) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  /*! \brief
-    Returns the number of zero coefficient in [start, end).
-  */
-  dimension_type num_zeroes(dimension_type start, dimension_type end) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  /*! \brief
-    Returns the gcd of the nonzero coefficients in [start,end). If all the
-    coefficients in this range are 0 returns 0.
-  */
-  Coefficient gcd(dimension_type start, dimension_type end) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  void exact_div_assign(Coefficient_traits::const_reference c,
-                        dimension_type start, dimension_type end);
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
   /*!
@@ -426,9 +524,6 @@ public:
   */
   void linear_combine(const Linear_Expression_Impl& y, dimension_type i);
 
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
   //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
   //! for each i in [start, end).
   void linear_combine(const Linear_Expression_Impl& y,
@@ -436,39 +531,30 @@ public:
                       Coefficient_traits::const_reference c2,
                       dimension_type start, dimension_type end);
 
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
   //! Modify `new_ray' according to the evolution of `x_g' with
   //! respect to `y_g'. This method is a code fragment used by Polyhedron.
   //! Read the method implementation for more details.
   void modify_according_to_evolution(const Linear_Expression_Impl& x,
                                      const Linear_Expression_Impl& y);
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  //! Returns the index of the last nonzero element, or 0 if there are no
-  //! nonzero elements.
-  dimension_type last_nonzero() const;
   
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  /*! \brief
-    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
-    \f$0\f$, disregarding coefficients of variables in \p vars.
-  */
-  bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+  //! The basic comparison function.
+  /*! \relates Linear_Expression_Impl
 
-  //! Implementation sizing constructor.
-  /*!
-    The bool parameter is just to avoid problems with
-    the constructor Linear_Expression_Impl(Coefficient_traits::const_reference n).
-  */
-  Linear_Expression_Impl(dimension_type sz, bool);
+    \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
+            is greater. The absolute value of the result is 1 if the difference
+            is only in the inhomogeneous terms, 2 otherwise
 
+    The order is a lexicographic. It starts comparing the variables' coefficient,
+    starting from Variable(0), and at the end it compares the inhomogeneous
+    terms.
+  */
+  int compare(const Linear_Expression_Impl& y) const;
+  
 private:
+
+  void construct(const Linear_Expression_Impl& e);
+  void construct(const Linear_Expression_Impl& e, dimension_type sz);
+  
   Dense_Row row;
 };
 

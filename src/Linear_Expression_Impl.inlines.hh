@@ -49,20 +49,7 @@ Linear_Expression_Impl::Linear_Expression_Impl(dimension_type sz, bool)
 }
 
 inline
-Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Impl& e)
-  : row(e.row) {
-  PPL_ASSERT(OK());
-}
-
-inline
 Linear_Expression_Impl::~Linear_Expression_Impl() {
-}
-
-inline
-Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Impl& e,
-				     dimension_type sz)
-  : row(e.row, sz, sz) {
-  PPL_ASSERT(OK());
 }
 
 inline
@@ -107,32 +94,6 @@ inline void
 Linear_Expression_Impl
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
   row[0] = n;
-  PPL_ASSERT(OK());
-}
-
-inline void
-Linear_Expression_Impl
-::linear_combine(const Linear_Expression_Impl& y, dimension_type i) {
-  Linear_Expression_Impl& x = *this;
-  // We can combine only vector of the same dimension.
-  PPL_ASSERT(x.space_dimension() == y.space_dimension());
-  PPL_ASSERT(x.row[i] != 0);
-  PPL_ASSERT(y.row[i] != 0);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_v);
-  PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_v);
-  normalize2(x.row[i], y.row[i], normalized_x_v, normalized_y_v);
-  neg_assign(normalized_x_v);
-  x.row.linear_combine(y.row, normalized_y_v, normalized_x_v);
-  assert(x.row[i] == 0);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Linear_Expression_Impl
-::linear_combine(const Linear_Expression_Impl& y,
-                 Coefficient_traits::const_reference c1,
-                 Coefficient_traits::const_reference c2) {
-  row.linear_combine(y.row, c1, c2);
   PPL_ASSERT(OK());
 }
 
@@ -189,11 +150,6 @@ Linear_Expression_Impl::operator-=(Coefficient_traits::const_reference n) {
 }
 
 inline void
-Linear_Expression_Impl::swap(Linear_Expression_Impl& y) {
-  row.swap(y.row);
-}
-
-inline void
 Linear_Expression_Impl::normalize() {
   row.normalize();
 }
@@ -241,17 +197,5 @@ operator<<(std::ostream& s, const Linear_Expression_Impl& e) {
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-inline void
-swap(Parma_Polyhedra_Library::Linear_Expression_Impl& x,
-     Parma_Polyhedra_Library::Linear_Expression_Impl& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Linear_Expression_Impl_inlines_hh)
