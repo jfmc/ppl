@@ -15,6 +15,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Row>
 class Linear_Expression_Impl;
 
 } // namespace Parma_Polyhedra_Library

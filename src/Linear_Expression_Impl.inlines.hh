@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_Expression_Impl_inlines_hh
 #define PPL_Linear_Expression_Impl_inlines_hh 1
 
+#include "Linear_Expression_Impl.defs.hh"
+
 #include "Variable.defs.hh"
 #include "Coefficient.defs.hh"
 #include "math_utilities.defs.hh"
@@ -31,131 +33,152 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Row>
 inline dimension_type
-Linear_Expression_Impl::max_space_dimension() {
-  return Dense_Row::max_size() - 1;
+Linear_Expression_Impl<Row>::max_space_dimension() {
+  return Row::max_size() - 1;
 }
 
+template <typename Row>
 inline
-Linear_Expression_Impl::Linear_Expression_Impl()
+Linear_Expression_Impl<Row>::Linear_Expression_Impl()
   : row(1) {
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline
-Linear_Expression_Impl::Linear_Expression_Impl(dimension_type sz, bool)
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(dimension_type sz, bool)
   : row(sz) {
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline
-Linear_Expression_Impl::~Linear_Expression_Impl() {
+Linear_Expression_Impl<Row>::~Linear_Expression_Impl() {
 }
 
+template <typename Row>
 inline
-Linear_Expression_Impl::Linear_Expression_Impl(Coefficient_traits::const_reference n)
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(Coefficient_traits::const_reference n)
   : row(1) {
   row[0] = n;
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline dimension_type
-Linear_Expression_Impl::space_dimension() const {
+Linear_Expression_Impl<Row>::space_dimension() const {
   return row.size() - 1;
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl::set_space_dimension(dimension_type n) {
+Linear_Expression_Impl<Row>::set_space_dimension(dimension_type n) {
   row.resize(n + 1);
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline Coefficient_traits::const_reference
-Linear_Expression_Impl::coefficient(Variable v) const {
+Linear_Expression_Impl<Row>::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Coefficient_zero();
   return row[v.id() + 1];
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   row[v.id() + 1] = n;
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline Coefficient_traits::const_reference
-Linear_Expression_Impl::inhomogeneous_term() const {
+Linear_Expression_Impl<Row>::inhomogeneous_term() const {
   return row[0];
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
   row[0] = n;
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl::swap_space_dimensions(Variable v1, Variable v2) {
+Linear_Expression_Impl<Row>::swap_space_dimensions(Variable v1, Variable v2) {
   row.swap(v1.space_dimension(), v2.space_dimension());
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl::shift_space_dimensions(Variable v, dimension_type n) {
+Linear_Expression_Impl<Row>::shift_space_dimensions(Variable v, dimension_type n) {
   row.add_zeroes_and_shift(n, v.space_dimension());
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 inline bool
-Linear_Expression_Impl::is_zero() const {
-  for (Dense_Row::const_iterator i = row.begin(), i_end = row.end();
+Linear_Expression_Impl<Row>::is_zero() const {
+  for (typename Row::const_iterator i = row.begin(), i_end = row.end();
        i != i_end; ++i)
     if (*i != 0)
       return false;
   return true;
 }
 
+template <typename Row>
 inline bool
-Linear_Expression_Impl::all_homogeneous_terms_are_zero() const {
-  for (Dense_Row::const_iterator i = row.lower_bound(1), i_end = row.end();
+Linear_Expression_Impl<Row>::all_homogeneous_terms_are_zero() const {
+  for (typename Row::const_iterator i = row.lower_bound(1), i_end = row.end();
        i != i_end; ++i)
     if (*i != 0)
       return false;
   return true;
 }
 
+template <typename Row>
 inline memory_size_type
-Linear_Expression_Impl::external_memory_in_bytes() const {
+Linear_Expression_Impl<Row>::external_memory_in_bytes() const {
   return row.external_memory_in_bytes();
 }
 
+template <typename Row>
 inline memory_size_type
-Linear_Expression_Impl::total_memory_in_bytes() const {
+Linear_Expression_Impl<Row>::total_memory_in_bytes() const {
   return external_memory_in_bytes() + sizeof(*this);
 }
 
-inline Linear_Expression_Impl&
-Linear_Expression_Impl::operator+=(Coefficient_traits::const_reference n) {
+template <typename Row>
+inline Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator+=(Coefficient_traits::const_reference n) {
   row[0] += n;
   return *this;
 }
 
-inline Linear_Expression_Impl&
-Linear_Expression_Impl::operator-=(Coefficient_traits::const_reference n) {
+template <typename Row>
+inline Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator-=(Coefficient_traits::const_reference n) {
   row[0] -= n;
   return *this;
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl::normalize() {
+Linear_Expression_Impl<Row>::normalize() {
   row.normalize();
 }
 
+template <typename Row>
 inline void
-Linear_Expression_Impl::ascii_dump(std::ostream& s) const {
+Linear_Expression_Impl<Row>::ascii_dump(std::ostream& s) const {
   s << "size " << (space_dimension() + 1) << " ";
   for (dimension_type j = 0; j < row.size(); ++j) {
     s << row[j];
@@ -164,8 +187,9 @@ Linear_Expression_Impl::ascii_dump(std::ostream& s) const {
   }
 }
 
+template <typename Row>
 inline bool
-Linear_Expression_Impl::ascii_load(std::istream& s) {
+Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
   std::string str;
 
   if (!(s >> str))
@@ -189,8 +213,9 @@ Linear_Expression_Impl::ascii_load(std::istream& s) {
 
 namespace IO_Operators {
 
+template <typename Row>
 inline std::ostream&
-operator<<(std::ostream& s, const Linear_Expression_Impl& e) {
+operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e) {
   return e << s;
 }
 

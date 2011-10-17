@@ -26,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Expression.defs.hh"
 
+#include "Linear_Expression_Impl.defs.hh"
+
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
@@ -49,44 +51,44 @@ PPL::Linear_Expression::finalize() {
 }
 
 PPL::Linear_Expression::Linear_Expression()
-  : impl(new Linear_Expression_Impl()) {
+  : impl(new Linear_Expression_Impl<Dense_Row>()) {
 }
 
 PPL::Linear_Expression::Linear_Expression(dimension_type sz, bool x)
-  : impl(new Linear_Expression_Impl(sz, x)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(sz, x)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e)
-  : impl(new Linear_Expression_Impl(*e.impl)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(*e.impl)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
                                      dimension_type sz)
-  : impl(new Linear_Expression_Impl(*e.impl, sz)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(*e.impl, sz)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
-  : impl(new Linear_Expression_Impl(n)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(n)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
-  : impl(new Linear_Expression_Impl(c)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(c)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
-  : impl(new Linear_Expression_Impl(g)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(g)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
-  : impl(new Linear_Expression_Impl(g)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(g)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
-  : impl(new Linear_Expression_Impl(cg)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(cg)) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v)
-  : impl(new Linear_Expression_Impl(v)) {
+  : impl(new Linear_Expression_Impl<Dense_Row>(v)) {
 }
 
 void

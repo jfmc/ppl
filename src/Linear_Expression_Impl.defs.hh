@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Congruence.types.hh"
-#include "Dense_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cstddef>
@@ -41,7 +40,8 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-std::ostream& operator<<(std::ostream& s, const Linear_Expression_Impl& e);
+template <typename Row>
+std::ostream& operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e);
 
 } // namespace IO_Operators
 
@@ -94,6 +94,7 @@ std::ostream& operator<<(std::ostream& s, const Linear_Expression_Impl& e);
   with space dimension zero and then extended to space dimension 3
   in the fifth line.
 */
+template <typename Row>
 class Parma_Polyhedra_Library::Linear_Expression_Impl : public Linear_Expression_Interface {
 public:
   //! Default constructor: returns a copy of Linear_Expression_Impl::zero().
@@ -101,6 +102,10 @@ public:
 
   //! Ordinary copy constructor.
   Linear_Expression_Impl(const Linear_Expression_Impl& e);
+
+  //! Copy constructor for other row types.
+  template <typename Row2>
+  Linear_Expression_Impl(const Linear_Expression_Impl<Row2>& e);
 
   //! Copy constructor from any implementation of Linear_Expression_Interface.
   Linear_Expression_Impl(const Linear_Expression_Interface& e);
@@ -479,33 +484,42 @@ public:
 
     \p *this and \p y must have the same space dimension.
   */
-  void linear_combine(const Linear_Expression_Impl& y, Variable v);
+  template <typename Row2>
+  void linear_combine(const Linear_Expression_Impl<Row2>& y, Variable v);
 
   //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>, but assumes that
   //! \p *this and \p y have the same space dimension.
-  void linear_combine(const Linear_Expression_Impl& y,
+  template <typename Row2>
+  void linear_combine(const Linear_Expression_Impl<Row2>& y,
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2);
 
   //! Swaps \p *this with \p y.
-  void swap(Linear_Expression_Impl& y);
+  template <typename Row2>
+  void swap(Linear_Expression_Impl<Row2>& y);
 
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
-  bool is_equal_to(const Linear_Expression_Impl& x) const;
+  template <typename Row2>
+  bool is_equal_to(const Linear_Expression_Impl<Row2>& x) const;
 
-  Linear_Expression_Impl& operator+=(const Linear_Expression_Impl& e2);
-  Linear_Expression_Impl& operator-=(const Linear_Expression_Impl& e2);
+  template <typename Row2>
+  Linear_Expression_Impl& operator+=(const Linear_Expression_Impl<Row2>& e2);
+  template <typename Row2>
+  Linear_Expression_Impl& operator-=(const Linear_Expression_Impl<Row2>& e2);
 
+  template <typename Row2>
   Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
-                                         const Linear_Expression_Impl& y,
+                                         const Linear_Expression_Impl<Row2>& y,
                                          dimension_type start, dimension_type end);
 
+  template <typename Row2>
   void add_mul_assign(Coefficient_traits::const_reference factor,
-                      const Linear_Expression_Impl& e2);
+                      const Linear_Expression_Impl<Row2>& e2);
 
+  template <typename Row2>
   void sub_mul_assign(Coefficient_traits::const_reference factor,
-                      const Linear_Expression_Impl& e2);
+                      const Linear_Expression_Impl<Row2>& e2);
 
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
@@ -522,11 +536,13 @@ public:
 
     \p *this and \p y must have the same space dimension.
   */
-  void linear_combine(const Linear_Expression_Impl& y, dimension_type i);
+  template <typename Row2>
+  void linear_combine(const Linear_Expression_Impl<Row2>& y, dimension_type i);
 
   //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
   //! for each i in [start, end).
-  void linear_combine(const Linear_Expression_Impl& y,
+  template <typename Row2>
+  void linear_combine(const Linear_Expression_Impl<Row2>& y,
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,
                       dimension_type start, dimension_type end);
@@ -534,8 +550,9 @@ public:
   //! Modify `new_ray' according to the evolution of `x_g' with
   //! respect to `y_g'. This method is a code fragment used by Polyhedron.
   //! Read the method implementation for more details.
-  void modify_according_to_evolution(const Linear_Expression_Impl& x,
-                                     const Linear_Expression_Impl& y);
+  template <typename Row2, typename Row3>
+  void modify_according_to_evolution(const Linear_Expression_Impl<Row2>& x,
+                                     const Linear_Expression_Impl<Row3>& y);
   
   //! The basic comparison function.
   /*! \relates Linear_Expression_Impl
@@ -548,16 +565,23 @@ public:
     starting from Variable(0), and at the end it compares the inhomogeneous
     terms.
   */
-  int compare(const Linear_Expression_Impl& y) const;
+  template <typename Row2>
+  int compare(const Linear_Expression_Impl<Row2>& y) const;
   
 private:
 
-  void construct(const Linear_Expression_Impl& e);
-  void construct(const Linear_Expression_Impl& e, dimension_type sz);
-  
-  Dense_Row row;
+  void construct(const Linear_Expression_Interface& e);
+  void construct(const Linear_Expression_Interface& e, dimension_type sz);
+
+  template <typename Row2>
+  void construct(const Linear_Expression_Impl<Row2>& e);
+  template <typename Row2>
+  void construct(const Linear_Expression_Impl<Row2>& e, dimension_type sz);
+
+  Row row;
 };
 
 #include "Linear_Expression_Impl.inlines.hh"
+#include "Linear_Expression_Impl.templates.hh"
 
 #endif // !defined(PPL_Linear_Expression_Impl_defs_hh)

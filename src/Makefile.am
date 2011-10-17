@@ -265,6 +265,7 @@ Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
 Linear_Expression_Impl.defs.hh \
 Linear_Expression_Impl.inlines.hh \
+Linear_Expression_Impl.templates.hh \
 Linear_Expression_Interface.defs.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
@@ -405,7 +406,6 @@ Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
-Linear_Expression_Impl.cc \
 Linear_Expression_Interface.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \

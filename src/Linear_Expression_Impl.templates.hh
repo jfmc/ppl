@@ -1,4 +1,4 @@
-/* Linear_Expression_Impl class implementation (non-inline functions).
+/* Linear_Expression_Impl class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
@@ -21,10 +21,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-
-#include <ppl-config.h>
+#ifndef PPL_Linear_Expression_Impl_templates_hh
+#define PPL_Linear_Expression_Impl_templates_hh 1
 
 #include "Linear_Expression_Impl.defs.hh"
+
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 #include "Grid_Generator.defs.hh"
@@ -33,14 +34,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <iostream>
 
+namespace Parma_Polyhedra_Library {
 
-namespace PPL = Parma_Polyhedra_Library;
-
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
   if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&e)) {
     construct(*p);
   } else {
@@ -49,7 +51,8 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Inte
   }
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Interface& e,
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Interface& e,
                                                     dimension_type sz) {
   if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&e)) {
     construct(*p, sz);
@@ -59,15 +62,19 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Linear_Expression_Inte
   }
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl
-::linear_combine(const Linear_Expression_Impl& y, Variable i) {
+Linear_Expression_Impl<Row>
+::linear_combine(const Linear_Expression_Impl<Row2>& y, Variable i) {
   linear_combine(y, i.space_dimension());
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl
-::linear_combine(const Linear_Expression_Impl& y, dimension_type i) {
+Linear_Expression_Impl<Row>
+::linear_combine(const Linear_Expression_Impl<Row2>& y, dimension_type i) {
   Linear_Expression_Impl& x = *this;
   // We can combine only vector of the same dimension.
   PPL_ASSERT(x.space_dimension() == y.space_dimension());
@@ -82,22 +89,28 @@ PPL::Linear_Expression_Impl
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl
-::linear_combine(const Linear_Expression_Impl& y,
+Linear_Expression_Impl<Row>
+::linear_combine(const Linear_Expression_Impl<Row2>& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2) {
   row.linear_combine(y.row, c1, c2);
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl::swap(Linear_Expression_Impl& y) {
+Linear_Expression_Impl<Row>::swap(Linear_Expression_Impl<Row2>& y) {
   row.swap(y.row);
 }
 
+template <typename Row>
+template <typename Row2>
 int
-PPL::Linear_Expression_Impl::compare(const Linear_Expression_Impl& y) const {
+Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) const {
   const Linear_Expression_Impl& x = *this;
   // Compare all the coefficients of the row starting from position 1.
   const dimension_type xsz = x.row.size();
@@ -129,7 +142,8 @@ PPL::Linear_Expression_Impl::compare(const Linear_Expression_Impl& y) const {
   return 0;
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Constraint& c) {
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Constraint& c) {
   construct(*(c.expression().impl));
   // Do not copy the epsilon dimension (if any).
   if (c.is_not_necessarily_closed())
@@ -137,7 +151,8 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Constraint& c) {
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Generator& g) {
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
   construct(*(g.expression().impl));
   // Do not copy the divisor of `g'.
   row[0] = 0;
@@ -147,7 +162,8 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Generator& g) {
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Grid_Generator& g) {
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Grid_Generator& g) {
   // NOTE: This does *not* copy the last coefficient.
   construct(*(g.expression().impl), g.expression().space_dimension());
   // Do not copy the divisor of `g'.
@@ -155,30 +171,35 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Grid_Generator& g) {
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Congruence& cg) {
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg) {
   construct(*(cg.expression().impl));
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Variable v)
+template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Variable v)
   : row(v.space_dimension() <= max_space_dimension()
-	       ? v.space_dimension() + 1
-	       : (throw std::length_error("PPL::Linear_Expression_Impl::"
-					  "Linear_Expression_Impl(v):\n"
-					  "v exceeds the maximum allowed "
-					  "space dimension."),
-		  v.space_dimension() + 1)) {
+               ? v.space_dimension() + 1
+               : (throw std::length_error("Linear_Expression_Impl::"
+                                          "Linear_Expression_Impl(v):\n"
+                                          "v exceeds the maximum allowed "
+                                          "space dimension."),
+                  v.space_dimension() + 1)) {
   ++(row[v.space_dimension()]);
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
+template <typename Row2>
 bool
-PPL::Linear_Expression_Impl::is_equal_to(const Linear_Expression_Impl& x) const {
+Linear_Expression_Impl<Row>::is_equal_to(const Linear_Expression_Impl<Row2>& x) const {
   return row == x.row;
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl::remove_space_dimensions(const Variables_Set& vars) {
+Linear_Expression_Impl<Row>::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
   // For each variable to be removed, replace the corresponding coefficient
   // by shifting left the coefficient to the right that will be kept.
@@ -203,8 +224,9 @@ PPL::Linear_Expression_Impl::remove_space_dimensions(const Variables_Set& vars) 
   PPL_ASSERT(OK());
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl::permute_space_dimensions(const std::vector<Variable>& cycle) {
+Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable>& cycle) {
   const dimension_type n = cycle.size();
   if (n < 2)
     return;
@@ -224,8 +246,10 @@ PPL::Linear_Expression_Impl::permute_space_dimensions(const std::vector<Variable
   PPL_ASSERT(OK());
 }
 
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::operator+=(const Linear_Expression_Impl& e2) {
+template <typename Row>
+template <typename Row2>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator+=(const Linear_Expression_Impl<Row2>& e2) {
   Linear_Expression_Impl& e1 = *this;
   dimension_type e1_size = e1.row.size();
   dimension_type e2_size = e2.row.size();
@@ -242,13 +266,14 @@ PPL::Linear_Expression_Impl::operator+=(const Linear_Expression_Impl& e2) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::operator+=(const Variable v) {
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator+=(const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
     throw std::length_error("Linear_Expression_Impl& "
-                            "PPL::operator+=(e, v):\n"
-			    "v exceeds the maximum allowed space dimension.");
+                            "operator+=(e, v):\n"
+                            "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = row.size();
   if (e_size <= v_space_dim) {
     Linear_Expression_Impl new_e(*this, v_space_dim+1);
@@ -259,8 +284,10 @@ PPL::Linear_Expression_Impl::operator+=(const Variable v) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::operator-=(const Linear_Expression_Impl& e2) {
+template <typename Row>
+template <typename Row2>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator-=(const Linear_Expression_Impl<Row2>& e2) {
   Linear_Expression_Impl& e1 = *this;
   dimension_type e1_size = e1.row.size();
   dimension_type e2_size = e2.row.size();
@@ -277,13 +304,14 @@ PPL::Linear_Expression_Impl::operator-=(const Linear_Expression_Impl& e2) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::operator-=(const Variable v) {
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator-=(const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
     throw std::length_error("Linear_Expression_Impl& "
-                            "PPL::operator-=(e, v):\n"
-			    "v exceeds the maximum allowed space dimension.");
+                            "operator-=(e, v):\n"
+                            "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = row.size();
   if (e_size <= v_space_dim) {
     Linear_Expression_Impl new_e(*this, v_space_dim+1);
@@ -294,38 +322,42 @@ PPL::Linear_Expression_Impl::operator-=(const Variable v) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::operator*=(Coefficient_traits::const_reference n) {
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator*=(Coefficient_traits::const_reference n) {
   for (dimension_type i = row.size(); i-- > 0; )
     row[i] *= n;
   return *this;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::operator/=(Coefficient_traits::const_reference n) {
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::operator/=(Coefficient_traits::const_reference n) {
   for (dimension_type i = row.size(); i-- > 0; )
     row[i] /= n;
   return *this;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
+template <typename Row>
 void
-PPL::Linear_Expression_Impl::negate() {
+Linear_Expression_Impl<Row>::negate() {
   for (dimension_type i = row.size(); i-- > 0; )
     neg_assign(row[i]);
   PPL_ASSERT(OK());
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::add_mul_assign(Coefficient_traits::const_reference n,
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference n,
                                             const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
     throw std::length_error("Linear_Expression_Impl& "
-                            "PPL::add_mul_assign(e, n, v):\n"
-			    "v exceeds the maximum allowed space dimension.");
+                            "add_mul_assign(e, n, v):\n"
+                            "v exceeds the maximum allowed space dimension.");
   if (row.size() <= v_space_dim) {
     Linear_Expression_Impl new_e(*this, v_space_dim+1);
     swap(new_e);
@@ -335,14 +367,15 @@ PPL::Linear_Expression_Impl::add_mul_assign(Coefficient_traits::const_reference 
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::sub_mul_assign(Coefficient_traits::const_reference n,
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference n,
                                             const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
     throw std::length_error("Linear_Expression_Impl& "
-                            "PPL::sub_mul_assign(e, n, v):\n"
-			    "v exceeds the maximum allowed space dimension.");
+                            "sub_mul_assign(e, n, v):\n"
+                            "v exceeds the maximum allowed space dimension.");
   if (row.size() <= v_space_dim) {
     Linear_Expression_Impl new_e(*this, v_space_dim+1);
     swap(new_e);
@@ -351,18 +384,22 @@ PPL::Linear_Expression_Impl::sub_mul_assign(Coefficient_traits::const_reference 
   return *this;
 }
 
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl::sub_mul_assign(Coefficient_traits::const_reference n,
-                                            const Linear_Expression_Impl& y,
+template <typename Row>
+template <typename Row2>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference n,
+                                            const Linear_Expression_Impl<Row2>& y,
                                             dimension_type start, dimension_type end) {
   for (dimension_type i = start; i < end; i++)
     row[i] -= n*y.row[i];
   return *this;
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl::add_mul_assign(Coefficient_traits::const_reference factor,
-                                            const Linear_Expression_Impl& e2) {
+Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference factor,
+                                            const Linear_Expression_Impl<Row2>& e2) {
   Linear_Expression_Impl& e1 = *this;
   if (e2.space_dimension() > e1.space_dimension())
     e1.set_space_dimension(e2.space_dimension());
@@ -371,9 +408,11 @@ PPL::Linear_Expression_Impl::add_mul_assign(Coefficient_traits::const_reference 
     e1[i] += factor * e2[i];
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl::sub_mul_assign(Coefficient_traits::const_reference factor,
-                                            const Linear_Expression_Impl& e2) {
+Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference factor,
+                                            const Linear_Expression_Impl<Row2>& e2) {
   Linear_Expression_Impl& e1 = *this;
   if (e2.space_dimension() > e1.space_dimension())
     e1.set_space_dimension(e2.space_dimension());
@@ -382,14 +421,16 @@ PPL::Linear_Expression_Impl::sub_mul_assign(Coefficient_traits::const_reference 
     e1[i] -= factor * e2[i];
 }
 
+template <typename Row>
 bool
-PPL::Linear_Expression_Impl::OK() const {
+Linear_Expression_Impl<Row>::OK() const {
   return row.size() != 0;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
+template <typename Row>
 std::ostream&
-PPL::Linear_Expression_Impl::operator<<(std::ostream& s) const {
+Linear_Expression_Impl<Row>::operator<<(std::ostream& s) const {
   const dimension_type num_variables = space_dimension();
   PPL_DIRTY_TEMP_COEFFICIENT(ev);
   bool first = true;
@@ -397,20 +438,20 @@ PPL::Linear_Expression_Impl::operator<<(std::ostream& s) const {
     ev = row[v+1];
     if (ev != 0) {
       if (!first) {
-	if (ev > 0)
-	  s << " + ";
-	else {
-	  s << " - ";
-	  neg_assign(ev);
-	}
+        if (ev > 0)
+          s << " + ";
+        else {
+          s << " - ";
+          neg_assign(ev);
+        }
       }
       else
-	first = false;
+        first = false;
       if (ev == -1)
-	s << "-";
+        s << "-";
       else if (ev != 1)
-	s << ev << "*";
-      PPL::IO_Operators::operator<<(s, Variable(v));
+        s << ev << "*";
+      IO_Operators::operator<<(s, Variable(v));
     }
   }
   // Inhomogeneous term.
@@ -419,10 +460,10 @@ PPL::Linear_Expression_Impl::operator<<(std::ostream& s) const {
   if (it != 0) {
     if (!first) {
       if (it > 0)
-	s << " + ";
+        s << " + ";
       else {
-	s << " - ";
-	neg_assign(it);
+        s << " - ";
+        neg_assign(it);
       }
     }
     else
@@ -436,45 +477,51 @@ PPL::Linear_Expression_Impl::operator<<(std::ostream& s) const {
   return s;
 }
 
-PPL::Coefficient&
-PPL::Linear_Expression_Impl::operator[](dimension_type i) {
+template <typename Row>
+Coefficient&
+Linear_Expression_Impl<Row>::operator[](dimension_type i) {
   return row[i];
 }
 
-const PPL::Coefficient&
-PPL::Linear_Expression_Impl::operator[](dimension_type i) const {
+template <typename Row>
+const Coefficient&
+Linear_Expression_Impl<Row>::operator[](dimension_type i) const {
   return row[i];
 }
 
-const PPL::Coefficient&
-PPL::Linear_Expression_Impl::get(dimension_type i) const {
+template <typename Row>
+const Coefficient&
+Linear_Expression_Impl<Row>::get(dimension_type i) const {
   return row.get(i);
 }
 
+template <typename Row>
 bool
-PPL::Linear_Expression_Impl::all_zeroes(dimension_type start, dimension_type end) const {
-  for (Dense_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
+Linear_Expression_Impl<Row>::all_zeroes(dimension_type start, dimension_type end) const {
+  for (typename Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
        i != i_end; ++i)
     if (*i != 0)
       return false;
   return true;
 }
 
-PPL::dimension_type
-PPL::Linear_Expression_Impl::num_zeroes(dimension_type start, dimension_type end) const {
+template <typename Row>
+dimension_type
+Linear_Expression_Impl<Row>::num_zeroes(dimension_type start, dimension_type end) const {
   PPL_ASSERT(start <= end);
   dimension_type result = end - start;
-  for (Dense_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
+  for (typename Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
        i != i_end; ++i)
     if (*i != 0)
       --result;
   return result;
 }
 
-PPL::Coefficient
-PPL::Linear_Expression_Impl::gcd(dimension_type start, dimension_type end) const {
-  Dense_Row::const_iterator i = row.lower_bound(start);
-  Dense_Row::const_iterator i_end = row.lower_bound(end);
+template <typename Row>
+Coefficient
+Linear_Expression_Impl<Row>::gcd(dimension_type start, dimension_type end) const {
+  typename Row::const_iterator i = row.lower_bound(start);
+  typename Row::const_iterator i_end = row.lower_bound(end);
 
   while (1) {
     if (i == i_end)
@@ -505,59 +552,65 @@ PPL::Linear_Expression_Impl::gcd(dimension_type start, dimension_type end) const
   return result;
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::exact_div_assign(Coefficient_traits::const_reference c,
                    dimension_type start, dimension_type end) {
   for (dimension_type i = start; i < end; ++i) {
     Coefficient& x = row[i];
-    PPL::exact_div_assign(x, x, c);
+    Parma_Polyhedra_Library::exact_div_assign(x, x, c);
   }
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl
-::linear_combine(const Linear_Expression_Impl& y,
+Linear_Expression_Impl<Row>
+::linear_combine(const Linear_Expression_Impl<Row2>& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2,
                  dimension_type start, dimension_type end) {
   row.linear_combine(y.row, c1, c2, start, end);
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl::sign_normalize() {
-  Dense_Row::iterator i = row.lower_bound(1);
-  Dense_Row::iterator i_end = row.end();
-  
+Linear_Expression_Impl<Row>::sign_normalize() {
+  typename Row::iterator i = row.lower_bound(1);
+  typename Row::iterator i_end = row.end();
+
   for ( ; i != i_end; ++i)
     if (*i != 0)
       break;
-  
+
   if (i != i_end && *i < 0) {
     for ( ; i != i_end; ++i)
       neg_assign(*i);
     // Negate the first coefficient, too.
-    Dense_Row::iterator i = row.begin();
+    typename Row::iterator i = row.begin();
     if (i != row.end() && i.index() == 0)
       neg_assign(*i);
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl::negate(dimension_type first, dimension_type last) {
-  Dense_Row::iterator i = row.lower_bound(first);
-  Dense_Row::iterator i_end = row.lower_bound(last);
+Linear_Expression_Impl<Row>::negate(dimension_type first, dimension_type last) {
+  typename Row::iterator i = row.lower_bound(first);
+  typename Row::iterator i_end = row.lower_bound(last);
   for ( ; i != i_end; ++i)
     neg_assign(*i);
 }
 
+template <typename Row>
 bool
-PPL::Linear_Expression_Impl::all_zeroes(const Variables_Set& vars) const {
-  Dense_Row::const_iterator i = row.begin();
-  Dense_Row::const_iterator i_end = row.end();
+Linear_Expression_Impl<Row>::all_zeroes(const Variables_Set& vars) const {
+  typename Row::const_iterator i = row.begin();
+  typename Row::const_iterator i_end = row.end();
   Variables_Set::const_iterator j = vars.begin();
   Variables_Set::const_iterator j_end = vars.end();
-  
+
   for ( ; j != j_end; j++) {
     i = row.lower_bound(i, *j + 1);
     if (i == i_end)
@@ -569,8 +622,9 @@ PPL::Linear_Expression_Impl::all_zeroes(const Variables_Set& vars) const {
   return true;
 }
 
+template <typename Row>
 bool
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
   PPL_ASSERT(start <= end);
   if (start == end)
@@ -578,38 +632,40 @@ PPL::Linear_Expression_Impl
   if (start == 0) {
     if (row.get(0) != 0)
       return false;
-    
+
     start = 1;
   }
 
   PPL_ASSERT(start != 0);
   PPL_ASSERT(start <= end);
-  for (Dense_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; i++)
+  for (typename Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; i++)
     if (*i != 0 && vars.count(i.index() - 1) == 0)
       return false;
 
   return true;
 }
 
+template <typename Row>
+template <typename Row2, typename Row3>
 void
-PPL::Linear_Expression_Impl
-::modify_according_to_evolution(const Linear_Expression_Impl& x,
-                                const Linear_Expression_Impl& y) {
+Linear_Expression_Impl<Row>
+::modify_according_to_evolution(const Linear_Expression_Impl<Row2>& x,
+                                const Linear_Expression_Impl<Row3>& y) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   std::deque<bool> considered(x.space_dimension() + 1);
 
   // The following loop is an optimized version of this loop:
-  // 
+  //
   // for (dimension_type k = 1; k < x.space_dimension(); ++k) {
   //   if (considered[k])
   //     continue;
-  // 
+  //
   //   for (dimension_type h = k + 1; h <= x.space_dimension(); ++h) {
   //     if (considered[h])
   //       continue;
-  // 
+  //
   //     tmp = (x[k] * y[h]) - (x[h] * y[k]);
-  //     
+  //
   //     const int clockwise = sgn(tmp);
   //     const int first_or_third_quadrant = sgn(x[k]) * sgn(x[h]);
   //     switch (clockwise * first_or_third_quadrant) {
@@ -626,11 +682,11 @@ PPL::Linear_Expression_Impl
   //     }
   //   }
   // }
-  
-  Dense_Row::const_iterator x_end = x.row.end();
-  Dense_Row::const_iterator y_end = y.row.end();
-  Dense_Row::const_iterator y_k = y.row.end();
-  for (Dense_Row::const_iterator x_k = x.row.begin(); x_k != x_end; ++x_k) {
+
+  typename Row::const_iterator x_end = x.row.end();
+  typename Row::const_iterator y_end = y.row.end();
+  typename Row::const_iterator y_k = y.row.end();
+  for (typename Row::const_iterator x_k = x.row.begin(); x_k != x_end; ++x_k) {
     const dimension_type k = x_k.index();
     if (considered[k])
       continue;
@@ -642,9 +698,9 @@ PPL::Linear_Expression_Impl
 
     // Note that y_k.index() may not be k.
 
-    Dense_Row::const_iterator y_h = y_k;
+    typename Row::const_iterator y_h = y_k;
 
-    Dense_Row::const_iterator x_h = x_k;
+    typename Row::const_iterator x_h = x_k;
     ++x_h;
     for ( ; x_h != x_end; ++x_h) {
       const dimension_type h = x_h.index();
@@ -663,7 +719,7 @@ PPL::Linear_Expression_Impl
       if (y_k.index() == k) {
         // The following line optimizes the computation of
         // tmp -= x[h] * y[k];
-        PPL::sub_mul_assign(tmp, *x_h, *y_k);
+        Parma_Polyhedra_Library::sub_mul_assign(tmp, *x_h, *y_k);
       }
 
       const int clockwise = sgn(tmp);
@@ -685,10 +741,11 @@ PPL::Linear_Expression_Impl
   normalize();
 }
 
-PPL::dimension_type
-PPL::Linear_Expression_Impl::last_nonzero() const {
-  Dense_Row::const_iterator i = row.begin();
-  Dense_Row::const_iterator i_end = row.end();
+template <typename Row>
+dimension_type
+Linear_Expression_Impl<Row>::last_nonzero() const {
+  typename Row::const_iterator i = row.begin();
+  typename Row::const_iterator i_end = row.end();
 
   while (1) {
     if (i == i_end)
@@ -699,10 +756,26 @@ PPL::Linear_Expression_Impl::last_nonzero() const {
   }
 }
 
+template <typename Row>
+template <typename Row2>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e) {
+  row = e.row;
+}
+
+template <typename Row>
+template <typename Row2>
+void
+Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e,
+                                       dimension_type sz) {
+  row = Row(e.row, sz, sz);
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     linear_combine(*p, v);
   } else {
     // Add implementations for new derived classes here.
@@ -710,12 +783,13 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     linear_combine(*p, c1, c2);
   } else {
     // Add implementations for new derived classes here.
@@ -723,10 +797,11 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::swap(Linear_Expression_Interface& y) {
-  if (Linear_Expression_Impl* p = dynamic_cast<Linear_Expression_Impl*>(&y)) {
+  if (Linear_Expression_Impl<Row>* p = dynamic_cast<Linear_Expression_Impl<Row>*>(&y)) {
     swap(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -734,10 +809,11 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 bool
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::is_equal_to(const Linear_Expression_Interface& y) const {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     return is_equal_to(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -746,10 +822,11 @@ PPL::Linear_Expression_Impl
   }
 }
 
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>
 ::operator+=(const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     return operator+=(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -758,10 +835,11 @@ PPL::Linear_Expression_Impl
   }
 }
 
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>
 ::operator-=(const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     return operator-=(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -770,12 +848,13 @@ PPL::Linear_Expression_Impl
   }
 }
 
-PPL::Linear_Expression_Impl&
-PPL::Linear_Expression_Impl
+template <typename Row>
+Linear_Expression_Impl<Row>&
+Linear_Expression_Impl<Row>
 ::sub_mul_assign(Coefficient_traits::const_reference n,
                  const Linear_Expression_Interface& y,
                  dimension_type start, dimension_type end) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     return sub_mul_assign(n, *p, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -784,11 +863,12 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::add_mul_assign(Coefficient_traits::const_reference factor,
                  const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     add_mul_assign(factor, *p);
   } else {
     // Add implementations for new derived classes here.
@@ -796,11 +876,12 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::sub_mul_assign(Coefficient_traits::const_reference factor,
                  const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     sub_mul_assign(factor, *p);
   } else {
     // Add implementations for new derived classes here.
@@ -808,10 +889,11 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, dimension_type i) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     linear_combine(*p, i);
   } else {
     // Add implementations for new derived classes here.
@@ -819,13 +901,14 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2,
                  dimension_type start, dimension_type end) {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     linear_combine(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -833,12 +916,13 @@ PPL::Linear_Expression_Impl
   }
 }
 
+template <typename Row>
 void
-PPL::Linear_Expression_Impl
+Linear_Expression_Impl<Row>
 ::modify_according_to_evolution(const Linear_Expression_Interface& x,
                                 const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl* p_x = dynamic_cast<const Linear_Expression_Impl*>(&x)) {
-    if (const Linear_Expression_Impl* p_y = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+  if (const Linear_Expression_Impl<Row>* p_x = dynamic_cast<const Linear_Expression_Impl<Row>*>(&x)) {
+    if (const Linear_Expression_Impl<Row>* p_y = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
       modify_according_to_evolution(*p_x, *p_y);
     } else {
       // Add implementations for new derived classes here.
@@ -850,20 +934,10 @@ PPL::Linear_Expression_Impl
   }
 }
 
-void
-PPL::Linear_Expression_Impl::construct(const Linear_Expression_Impl& e) {
-  row = e.row;
-}
-
-void
-PPL::Linear_Expression_Impl::construct(const Linear_Expression_Impl& e,
-                                       dimension_type sz) {
-  row = Dense_Row(e.row, sz, sz);
-}
-
+template <typename Row>
 int
-PPL::Linear_Expression_Impl::compare(const Linear_Expression_Interface& y) const {
-  if (const Linear_Expression_Impl* p = dynamic_cast<const Linear_Expression_Impl*>(&y)) {
+Linear_Expression_Impl<Row>::compare(const Linear_Expression_Interface& y) const {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
     return compare(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -871,3 +945,31 @@ PPL::Linear_Expression_Impl::compare(const Linear_Expression_Interface& y) const
     return 0;
   }
 }
+
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
+    return construct(*p);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
+                                       dimension_type sz) {
+  if (const Linear_Expression_Impl<Row>* p = dynamic_cast<const Linear_Expression_Impl<Row>*>(&y)) {
+    return construct(*p, sz);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+} // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Linear_Expression_Impl_templates_hh)

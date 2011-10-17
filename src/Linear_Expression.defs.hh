@@ -26,7 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Expression.types.hh"
 
-#include "Linear_Expression_Impl.defs.hh"
+#include "Linear_Expression_Interface.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Variable.defs.hh"
 
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
@@ -586,6 +588,7 @@ private:
   */
   bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
 
+  template <typename Row>
   friend class Linear_Expression_Impl;
 
   // NOTE: The following classes are friends of Linear_Expression in order
