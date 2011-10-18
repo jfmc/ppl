@@ -1382,31 +1382,12 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_k);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_k);
   normalize2(x_k, y_k, normalized_x_k, normalized_y_k);
-  Sparse_Row::const_iterator j = y.begin();
-  Sparse_Row::const_iterator j_end = y.end();
-  dimension_type i;
-  for (i = 0; j != j_end; ++i) {
-    PPL_ASSERT(i < x_size);
-    PPL_ASSERT(j.index() >= i);
-    if (j.index() == i) {
-      if (i != k) {
-        Coefficient& x_i = x[i];
-        x_i *= normalized_y_k;
-        Coefficient_traits::const_reference y_i = *j;
-        sub_mul_assign(x_i, y_i, normalized_x_k);
-      }
-      ++j;
-    } else {
-      if (i != k)
-        x[i] *= normalized_y_k;
-    }
-  }
-  PPL_ASSERT(j == j_end);
-  for ( ; i < x_size; ++i)
-    if (i != k)
-      x[i] *= normalized_y_k;
 
-  x[k] = 0;
+  neg_assign(normalized_y_k);
+  Parma_Polyhedra_Library::linear_combine(x, y, normalized_y_k, normalized_x_k);
+
+  PPL_ASSERT(x[k] == 0);
+
   x.normalize();
   WEIGHT_ADD_MUL(83, x_size);
 }
