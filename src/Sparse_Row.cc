@@ -101,10 +101,8 @@ PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
 
 PPL::Sparse_Row&
 PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
-  CO_Tree tmp_tree(Sparse_Row_from_Dense_Row_helper_iterator(row),
-                   Sparse_Row_from_Dense_Row_helper_function(row));
-  std::swap(tree, tmp_tree);
-  size_ = row.size();
+  Sparse_Row tmp(row);
+  swap(tmp);
   PPL_ASSERT(OK());
 
   return *this;
