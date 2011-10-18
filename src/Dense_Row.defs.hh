@@ -82,6 +82,12 @@ public:
   */
   Dense_Row(const Dense_Row& y, dimension_type sz, dimension_type capacity);
 
+  //! Copy constructor with specified size and capacity from a Sparse_Row.
+  /*!
+    It is assumed that \p sz is less than or equal to \p capacity.
+  */
+  Dense_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity);
+
   //! Destructor.
   ~Dense_Row();
 

@@ -33,6 +33,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::Dense_Row::Dense_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity) {
+  resize(sz, capacity);
+  for (Sparse_Row::const_iterator i = y.begin(), i_end = y.lower_bound(sz); i != i_end; ++i)
+    (*this)[i.index()] = *i;
+  PPL_ASSERT(OK());
+}
+
 void
 PPL::Dense_Row::resize(dimension_type new_size) {
   if (new_size <= size())
