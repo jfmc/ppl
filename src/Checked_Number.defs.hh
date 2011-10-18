@@ -1048,7 +1048,6 @@ int maybe_check_fpu_inexact();
 } // namespace Parma_Polyhedra_Library
 
 #include "Checked_Number.inlines.hh"
-#include "checked_numeric_limits.hh"
 #include "Checked_Number.templates.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)

@@ -32,6 +32,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <exception>
 #include <gmpxx.h>
 
+#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
+#include "Weight_Profiler.defs.hh"
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 //! Returns a value that does not designate a valid dimension.
@@ -466,10 +470,6 @@ FOK(mpz_class)
 FOK(mpq_class)
 
 } // namespace Parma_Polyhedra_Library
-
-#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
-#include "Weight_Profiler.defs.hh"
-#endif
 
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.
 #ifndef USE_PPL_SPARSE_MATRIX

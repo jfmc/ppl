@@ -836,7 +836,7 @@ bool operator!=(const Sparse_Row& x, const Sparse_Row& y);
 
 } // namespace Parma_Polyhedra_Library
 
-#include "Sparse_Row.templates.hh"
 #include "Sparse_Row.inlines.hh"
+#include "Sparse_Row.templates.hh"
 
 #endif // !defined(PPL_Sparse_Row_defs_hh)
