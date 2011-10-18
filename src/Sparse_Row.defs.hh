@@ -121,6 +121,12 @@ public:
   */
   explicit Sparse_Row(const Dense_Row& row);
 
+  //! Copy constructor from a Dense_Row with specified size and capacity.
+  /*!
+    It is assumed that \p sz is less than or equal to \p capacity.
+  */
+  Sparse_Row(const Dense_Row& y, dimension_type sz, dimension_type capacity);
+
   Sparse_Row& operator=(const Dense_Row& row);
 
   //! Swaps *this and x.

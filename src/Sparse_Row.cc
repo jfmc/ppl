@@ -32,16 +32,16 @@ namespace {
 
 class Sparse_Row_from_Dense_Row_helper_iterator {
 public:
-  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1)
-    : row(row1), i(0) {
+  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1, PPL::dimension_type sz)
+    : row(row1), sz(sz), i(0) {
     if (row.size() != 0 && row[0] == 0)
       ++(*this);
   }
 
   Sparse_Row_from_Dense_Row_helper_iterator& operator++() {
-    PPL_ASSERT(i < row.size());
+    PPL_ASSERT(i < sz);
     ++i;
-    while (i < row.size() && row[i] == 0)
+    while (i < sz && row[i] == 0)
       ++i;
     return *this;
   }
@@ -54,13 +54,13 @@ public:
 
   PPL::Coefficient_traits::const_reference
   operator*() const {
-    PPL_ASSERT(i < row.size());
+    PPL_ASSERT(i < sz);
     return row[i];
   }
 
   PPL::dimension_type
   index() const {
-    PPL_ASSERT(i < row.size());
+    PPL_ASSERT(i < sz);
     return i;
   }
 
@@ -77,14 +77,16 @@ public:
 
 private:
   const PPL::Dense_Row& row;
+  PPL::dimension_type sz;
   PPL::dimension_type i;
 };
 
 // Returns the number of nonzero elements in row.
 PPL::dimension_type
-Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row) {
+Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row,
+                                          PPL::dimension_type sz) {
   PPL::dimension_type count = 0;
-  for (PPL::dimension_type i = row.size(); i-- > 0; )
+  for (PPL::dimension_type i = sz; i-- > 0; )
     if (row[i] != 0)
       ++count;
   return count;
@@ -93,9 +95,18 @@ Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row) {
 } // namespace
 
 PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
-  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row),
-         Sparse_Row_from_Dense_Row_helper_function(row)),
+  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, row.size()),
+         Sparse_Row_from_Dense_Row_helper_function(row, row.size())),
     size_(row.size()) {
+  PPL_ASSERT(OK());
+}
+
+PPL::Sparse_Row::Sparse_Row(const Dense_Row& row, dimension_type sz,
+                            dimension_type capacity)
+  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, sz),
+         Sparse_Row_from_Dense_Row_helper_function(row, sz)),
+    size_(sz) {
+  (void)capacity;
   PPL_ASSERT(OK());
 }
 
