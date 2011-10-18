@@ -37,7 +37,7 @@ inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Element kind)
   : Polyhedron(NECESSARILY_CLOSED,
-	       num_dimensions <= max_space_dimension()
+	       (num_dimensions <= max_space_dimension())
 	       ? num_dimensions
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(n, k)",
@@ -50,7 +50,7 @@ C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 inline
 C_Polyhedron::C_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NECESSARILY_CLOSED,
-	       cs.space_dimension() <= max_space_dimension()
+	       (cs.space_dimension() <= max_space_dimension())
 	       ? cs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(cs)",
@@ -62,7 +62,7 @@ C_Polyhedron::C_Polyhedron(const Constraint_System& cs)
 inline
 C_Polyhedron::C_Polyhedron(Constraint_System& cs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
-	       cs.space_dimension() <= max_space_dimension()
+	       (cs.space_dimension() <= max_space_dimension())
 	       ? cs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(cs, recycle)",
@@ -75,7 +75,7 @@ C_Polyhedron::C_Polyhedron(Constraint_System& cs, Recycle_Input)
 inline
 C_Polyhedron::C_Polyhedron(const Generator_System& gs)
   : Polyhedron(NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
+	       (gs.space_dimension() <= max_space_dimension())
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(gs)",
@@ -87,7 +87,7 @@ C_Polyhedron::C_Polyhedron(const Generator_System& gs)
 inline
 C_Polyhedron::C_Polyhedron(Generator_System& gs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
+	       (gs.space_dimension() <= max_space_dimension())
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(gs, recycle)",

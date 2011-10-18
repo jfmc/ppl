@@ -438,17 +438,19 @@ bool
 PPL::MIP_Problem::is_satisfied(const Constraint& c, const Generator& g) {
   // Scalar_Products::sign() requires the second argument to be at least
   // as large as the first one.
-  int sp_sign = g.space_dimension() <= c.space_dimension()
+  int sp_sign
+    = (g.space_dimension() <= c.space_dimension())
     ? Scalar_Products::sign(g, c)
     : Scalar_Products::sign(c, g);
-  return c.is_inequality() ? sp_sign >= 0 : sp_sign == 0;
+  return c.is_inequality() ? (sp_sign >= 0) : (sp_sign == 0);
 }
 
 bool
 PPL::MIP_Problem::is_saturated(const Constraint& c, const Generator& g) {
   // Scalar_Products::sign() requires the space dimension of the second
   // argument to be at least as large as the one of the first one.
-  int sp_sign = g.space_dimension() <= c.space_dimension()
+  int sp_sign
+    = (g.space_dimension() <= c.space_dimension())
     ? Scalar_Products::sign(g, c)
     : Scalar_Products::sign(c, g);
   return sp_sign == 0;
@@ -783,8 +785,10 @@ PPL::MIP_Problem::process_pending_constraints() {
   // The first column index of the tableau that contains an
   // artificial variable. Encode with 0 the fact the there are not
   // artificial variables.
-  const dimension_type begin_artificials = additional_artificial_vars > 0
-    ? artificial_index : 0;
+  const dimension_type begin_artificials
+    = (additional_artificial_vars > 0)
+    ? artificial_index
+    : 0;
 
   typedef process_pending_constraints_helper_struct buffer_element_t;
 
@@ -2451,7 +2455,7 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\ninput_obj_function\n";
   input_obj_function.ascii_dump(s);
   s << "\nopt_mode "
-    << (opt_mode == MAXIMIZATION ? "MAXIMIZATION" : "MINIMIZATION") << "\n";
+    << ((opt_mode == MAXIMIZATION) ? "MAXIMIZATION" : "MINIMIZATION") << "\n";
 
   s << "\ninitialized: " << (initialized ? "YES" : "NO") << "\n";
   s << "\npricing: ";
@@ -2722,7 +2726,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
   s << "\nObjective function: "
     << lp.objective_function()
     << "\nOptimization mode: "
-    << (lp.optimization_mode() == MAXIMIZATION
+    << ((lp.optimization_mode() == MAXIMIZATION)
         ? "MAXIMIZATION"
         : "MINIMIZATION");
   s << "\nInteger variables: " << lp.integer_space_dimensions();

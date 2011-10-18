@@ -587,7 +587,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
       for (dimension_type j = old_dim; j-- > 0; )
 	e +=
 	  c.coefficient(Variable(j))
-	  * (j == src_d ? Variable(dst_d) : Variable(j));
+	  * ((j == src_d) ? Variable(dst_d) : Variable(j));
       e += c.inhomogeneous_term();
       new_constraints.insert(c.is_equality()
 			     ? (e == 0)

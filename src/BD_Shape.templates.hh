@@ -2591,7 +2591,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
         yy_dbm_ij = x_dbm_ij;
         yy.reset_shortest_path_closed();
         PPL_ASSERT(i > 0 || j > 0);
-        Variable var((i > 0 ? i : j) - 1);
+        Variable var(((i > 0) ? i : j) - 1);
         yy.incremental_shortest_path_closure_assign(var);
         if (target.contains(yy)) {
           // Target reached: swap `x' and `res' if needed.

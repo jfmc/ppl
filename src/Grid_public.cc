@@ -58,7 +58,7 @@ PPL::Grid::Grid(const Grid& y, Complexity_Class)
 }
 
 PPL::Grid::Grid(const Constraint_System& cs)
-  : con_sys(cs.space_dimension() > max_space_dimension()
+  : con_sys((cs.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(cs)",
 					     "the space dimension of cs "
 					     "exceeds the maximum allowed "
@@ -97,13 +97,13 @@ PPL::Grid::Grid(const Constraint_System& cs)
 }
 
 PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
- : con_sys(cs.space_dimension() > max_space_dimension()
-	   ? throw_space_dimension_overflow("Grid(cs, recycle)",
-					    "the space dimension of cs "
-					    "exceeds the maximum allowed "
-					    "space dimension"), 0
-	   : cs.space_dimension()),
-   gen_sys(cs.space_dimension()) {
+  : con_sys((cs.space_dimension() > max_space_dimension())
+            ? throw_space_dimension_overflow("Grid(cs, recycle)",
+                                             "the space dimension of cs "
+                                             "exceeds the maximum allowed "
+                                             "space dimension"), 0
+            : cs.space_dimension()),
+    gen_sys(cs.space_dimension()) {
   space_dim = cs.space_dimension();
 
   if (space_dim == 0) {
@@ -137,7 +137,7 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
 
 PPL::Grid::Grid(const Polyhedron& ph,
                 Complexity_Class complexity)
-  : con_sys(ph.space_dimension() > max_space_dimension()
+  : con_sys((ph.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(ph)",
 					     "the space dimension of ph "
 					     "exceeds the maximum allowed "

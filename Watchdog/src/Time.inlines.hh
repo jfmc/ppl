@@ -84,8 +84,10 @@ Time::operator-=(const Time& y) {
     --r_secs;
     r_microsecs += USECS_PER_SEC;
   }
-  if (r_secs < 0)
-    r_secs = r_microsecs = 0;
+  if (r_secs < 0) {
+    r_secs = 0;
+    r_microsecs = 0;
+  }
   secs = r_secs;
   microsecs = r_microsecs;
   assert(OK());

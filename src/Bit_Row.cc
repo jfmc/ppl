@@ -159,7 +159,7 @@ PPL::compare(const Bit_Row& x, const Bit_Row& y) {
   PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
-  mp_size_t size = (x_size > y_size ? y_size : x_size);
+  mp_size_t size = ((x_size > y_size) ? y_size : x_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   while (size > 0) {
@@ -176,7 +176,7 @@ PPL::compare(const Bit_Row& x, const Bit_Row& y) {
     ++yp;
     --size;
   }
-  return x_size == y_size ? 0 : (x_size > y_size ? 1 : -1);
+  return (x_size == y_size) ? 0 : ((x_size > y_size) ? 1 : -1);
 }
 
 /*! \relates Parma_Polyhedra_Library::Bit_Row */

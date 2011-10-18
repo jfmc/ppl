@@ -72,7 +72,7 @@ ascii_load(std::istream& s, T& t) {
         byte_value <<= 4;
         unsigned half_byte_value;
         // Interpret single hex character.
-        switch (str[2*i+j]) {
+        switch (str[2*i + j]) {
         case '0':
           half_byte_value = 0;
           break;

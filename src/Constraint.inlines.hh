@@ -32,9 +32,9 @@ inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
-  set_flags(Flags(topology, (type == EQUALITY
-                            ? LINE_OR_EQUALITY
-                            : RAY_OR_POINT_OR_INEQUALITY)));
+  set_flags(Flags(topology, ((type == EQUALITY)
+                             ? LINE_OR_EQUALITY
+                             : RAY_OR_POINT_OR_INEQUALITY)));
 }
 
 inline

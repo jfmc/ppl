@@ -41,7 +41,7 @@ Weightwatch_Traits::get() {
 
 inline bool
 Weightwatch_Traits::less_than(const Threshold& a, const Threshold& b) {
-  return b - a < 1ULL << (sizeof(Threshold)*8-1);
+  return b - a < (1ULL << (sizeof(Threshold)*8 - 1));
 }
 
 inline void
@@ -70,7 +70,7 @@ compute_capacity(const dimension_type requested_size,
 		 const dimension_type maximum_size) {
   assert(requested_size <= maximum_size);
   // Speculation factor 2.
-  return (requested_size < maximum_size / 2)
+  return (requested_size < maximum_size/2)
     ? 2*(requested_size + 1)
     : maximum_size;
   // Speculation factor 1.5.

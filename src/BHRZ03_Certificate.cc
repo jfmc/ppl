@@ -107,13 +107,13 @@ int
 PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   PPL_ASSERT(OK() && y.OK());
   if (affine_dim != y.affine_dim)
-    return affine_dim > y.affine_dim ? 1 : -1;
+    return (affine_dim > y.affine_dim) ? 1 : -1;
   if (lin_space_dim != y.lin_space_dim)
-    return lin_space_dim > y.lin_space_dim ? 1 : -1;
+    return (lin_space_dim > y.lin_space_dim) ? 1 : -1;
   if (num_constraints != y.num_constraints)
-    return num_constraints > y.num_constraints ? 1 : -1;
+    return (num_constraints > y.num_constraints) ? 1 : -1;
   if (num_points != y.num_points)
-    return num_points > y.num_points ? 1 : -1;
+    return (num_points > y.num_points) ? 1 : -1;
 
   const dimension_type space_dim = num_rays_null_coord.size();
   PPL_ASSERT(num_rays_null_coord.size() == y.num_rays_null_coord.size());
@@ -121,7 +121,7 @@ PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   // the number of rays having more NON-zero coordinates.
   for (dimension_type i = 0; i < space_dim; i++)
     if (num_rays_null_coord[i] != y.num_rays_null_coord[i])
-      return num_rays_null_coord[i] > y.num_rays_null_coord[i] ? 1 : -1;
+      return (num_rays_null_coord[i] > y.num_rays_null_coord[i]) ? 1 : -1;
   // All components are equal.
   return 0;
 }
@@ -217,13 +217,13 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // is stabilizing. If it is increasing, the chain is not stabilizing.
   // If they are equal, further investigation is needed.
   if (ph_num_constraints != num_constraints)
-    return ph_num_constraints < num_constraints ? 1 : -1;
+    return (ph_num_constraints < num_constraints) ? 1 : -1;
 
   // If the number of points of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.
   // If they are equal, further investigation is needed.
   if (ph_num_points != num_points)
-    return ph_num_points < num_points ? 1 : -1;
+    return (ph_num_points < num_points) ? 1 : -1;
 
   // The speculative optimization was not worth:
   // compute information about rays.
@@ -242,7 +242,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.
   for (dimension_type i = 0; i < space_dim; i++)
     if (ph_num_rays_null_coord[i] != num_rays_null_coord[i])
-      return ph_num_rays_null_coord[i] < num_rays_null_coord[i] ? 1 : -1;
+      return (ph_num_rays_null_coord[i] < num_rays_null_coord[i]) ? 1 : -1;
 
   // All components are equal.
   return 0;

@@ -475,7 +475,7 @@ sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   mul_2exp<To_Policy, To_Policy>(to_b, to_b,
                                  irrational_precision, ROUND_IGNORE);
   to.canonicalize();
-  return rdiv != V_EQ ? rdiv : rsqrt;
+  return (rdiv != V_EQ) ? rdiv : rsqrt;
 }
 
 PPL_SPECIALIZE_SQRT(sqrt_mpq, mpq_class, mpq_class)

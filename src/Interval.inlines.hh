@@ -703,9 +703,9 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
-  int xus = xls > 0 ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
+  int xus = (xls > 0) ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
-  int yus = yls > 0 ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
+  int yus = (yls > 0) ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
   int inf = Parma_Polyhedra_Library::is_infinity(x);
   int ls, us;
   if (inf) {
@@ -872,7 +872,7 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
-  int yus = yls > 0 ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
+  int yus = (yls > 0) ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
   if (yls == 0 && yus == 0)
     return assign(EMPTY);
   int inf = Parma_Polyhedra_Library::is_infinity(x);
@@ -889,7 +889,7 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
       return assign(PLUS_INFINITY);
   }
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
-  int xus = xls > 0 ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
+  int xus = (xls > 0) ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
 
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();

@@ -48,7 +48,7 @@ namespace Parma_Polyhedra_Library {
 template <typename ITV>
 inline
 Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
-  : seq(num_dimensions <= max_space_dimension()
+  : seq((num_dimensions <= max_space_dimension())
 	? num_dimensions
 	: (throw_space_dimension_overflow("Box(n, k)",
 					  "n exceeds the maximum "
@@ -70,7 +70,7 @@ Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
 template <typename ITV>
 inline
 Box<ITV>::Box(const Constraint_System& cs)
-  : seq(cs.space_dimension() <= max_space_dimension()
+  : seq((cs.space_dimension() <= max_space_dimension())
 	? cs.space_dimension()
 	: (throw_space_dimension_overflow("Box(cs)",
 					  "cs exceeds the maximum "
@@ -86,7 +86,7 @@ Box<ITV>::Box(const Constraint_System& cs)
 template <typename ITV>
 inline
 Box<ITV>::Box(const Congruence_System& cgs)
-  : seq(cgs.space_dimension() <= max_space_dimension()
+  : seq((cgs.space_dimension() <= max_space_dimension())
 	? cgs.space_dimension()
 	: (throw_space_dimension_overflow("Box(cgs)",
 					  "cgs exceeds the maximum "
@@ -119,7 +119,7 @@ Box<ITV>::Box(const Box<Other_ITV>& y, Complexity_Class)
 
 template <typename ITV>
 Box<ITV>::Box(const Generator_System& gs)
-  : seq(gs.space_dimension() <= max_space_dimension()
+  : seq((gs.space_dimension() <= max_space_dimension())
 	? gs.space_dimension()
 	: (throw_space_dimension_overflow("Box(gs)",
 					  "gs exceeds the maximum "
@@ -329,7 +329,7 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 
 template <typename ITV>
 Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
-  : seq(ph.space_dimension() <= max_space_dimension()
+  : seq((ph.space_dimension() <= max_space_dimension())
 	? ph.space_dimension()
 	: (throw_space_dimension_overflow("Box(ph)",
 					  "ph exceeds the maximum "
@@ -440,7 +440,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
 template <typename ITV>
 Box<ITV>::Box(const Grid& gr, Complexity_Class)
-  : seq(gr.space_dimension() <= max_space_dimension()
+  : seq((gr.space_dimension() <= max_space_dimension())
 	? gr.space_dimension()
 	: (throw_space_dimension_overflow("Box(gr)",
 					  "gr exceeds the maximum "
@@ -2427,7 +2427,10 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL, t_bound));
+      seq[k].add_constraint(i_constraint(((open == T_YES)
+                                          ? GREATER_THAN
+                                          : GREATER_OR_EQUAL),
+                                         t_bound));
       reset_empty_up_to_date();
     maybe_refine_upper_1:
       if (c_type != Constraint::EQUALITY)
@@ -2491,7 +2494,10 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? LESS_THAN : LESS_OR_EQUAL, t_bound));
+      seq[k].add_constraint(i_constraint(((open == T_YES)
+                                          ? LESS_THAN
+                                          : LESS_OR_EQUAL),
+                                         t_bound));
       reset_empty_up_to_date();
     }
     else {
@@ -2556,7 +2562,10 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? LESS_THAN : LESS_OR_EQUAL, t_bound));
+      seq[k].add_constraint(i_constraint(((open == T_YES)
+                                          ? LESS_THAN
+                                          : LESS_OR_EQUAL),
+                                         t_bound));
       reset_empty_up_to_date();
     maybe_refine_upper_2:
       if (c_type != Constraint::EQUALITY)
@@ -2620,7 +2629,10 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL, t_bound));
+      seq[k].add_constraint(i_constraint(((open == T_YES)
+                                          ? GREATER_THAN
+                                          : GREATER_OR_EQUAL),
+                                         t_bound));
       reset_empty_up_to_date();
     }
   next_k:

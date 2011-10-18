@@ -126,7 +126,7 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
   dimension_type y_sz = y.size() - 1;
   // Swap parameter divisors.
   std::swap(x[x_sz], y[y_sz]);
-  for (dimension_type j = (x_sz > y_sz ? y_sz : x_sz); j-- > 0; )
+  for (dimension_type j = ((x_sz > y_sz) ? y_sz : x_sz); j-- > 0; )
     std::swap(x[j], y[j]);
 }
 

@@ -148,7 +148,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   const dimension_type checking_index
     = dest.is_necessarily_closed()
     ? 0
-    : dest.num_columns() - 1;
+    : (dest.num_columns() - 1);
   dimension_type first_point;
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
@@ -363,7 +363,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   const dimension_type checking_index
     = dest.is_necessarily_closed()
     ? 0
-    : dest.num_columns() - 1;
+    : (dest.num_columns() - 1);
   dimension_type first_point;
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;

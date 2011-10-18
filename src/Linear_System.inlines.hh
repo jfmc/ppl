@@ -203,7 +203,7 @@ Linear_System::space_dimension() const {
   const dimension_type n_columns = num_columns();
   return (n_columns == 0)
     ? 0
-    : n_columns - (is_necessarily_closed() ? 1 : 2);
+    : (n_columns - (is_necessarily_closed() ? 1 : 2));
 }
 
 inline void

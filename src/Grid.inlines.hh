@@ -122,7 +122,7 @@ inline
 Grid::Grid(dimension_type num_dimensions,
 	   const Degenerate_Element kind)
   : con_sys(),
-    gen_sys(num_dimensions > max_space_dimension()
+    gen_sys((num_dimensions > max_space_dimension())
 	    ? (throw_space_dimension_overflow("Grid(n, k)",
 					      "n exceeds the maximum "
 					      "allowed space dimension"),
@@ -134,7 +134,7 @@ Grid::Grid(dimension_type num_dimensions,
 
 inline
 Grid::Grid(const Congruence_System& cgs)
-  : con_sys(cgs.space_dimension() > max_space_dimension()
+  : con_sys((cgs.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(cgs)",
 					     "the space dimension of cgs "
 					     "exceeds the maximum allowed "
@@ -147,7 +147,7 @@ Grid::Grid(const Congruence_System& cgs)
 
 inline
 Grid::Grid(Congruence_System& cgs, Recycle_Input)
-  : con_sys(cgs.space_dimension() > max_space_dimension()
+  : con_sys((cgs.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(cgs, recycle)",
 					     "the space dimension of cgs "
 					     "exceeds the maximum allowed "
@@ -159,7 +159,7 @@ Grid::Grid(Congruence_System& cgs, Recycle_Input)
 
 inline
 Grid::Grid(const Grid_Generator_System& ggs)
-  : con_sys(ggs.space_dimension() > max_space_dimension()
+  : con_sys((ggs.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(ggs)",
 					     "the space dimension of ggs "
 					     "exceeds the maximum allowed "
@@ -172,7 +172,7 @@ Grid::Grid(const Grid_Generator_System& ggs)
 
 inline
 Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
-  : con_sys(ggs.space_dimension() > max_space_dimension()
+  : con_sys((ggs.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(ggs, recycle)",
 					     "the space dimension of ggs "
 					     "exceeds the maximum allowed "
@@ -186,7 +186,7 @@ template <typename U>
 inline
 Grid::Grid(const BD_Shape<U>& bd,
            Complexity_Class)
-  : con_sys(bd.space_dimension() > max_space_dimension()
+  : con_sys((bd.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(bd)",
 					     "the space dimension of bd "
 					     "exceeds the maximum allowed "
@@ -201,7 +201,7 @@ template <typename U>
 inline
 Grid::Grid(const Octagonal_Shape<U>& os,
            Complexity_Class)
-  : con_sys(os.space_dimension() > max_space_dimension()
+  : con_sys((os.space_dimension() > max_space_dimension())
 	    ? throw_space_dimension_overflow("Grid(os)",
 					     "the space dimension of os "
 					     "exceeds the maximum allowed "

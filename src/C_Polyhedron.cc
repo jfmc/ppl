@@ -43,7 +43,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
 
 PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
   : Polyhedron(NECESSARILY_CLOSED,
-	       cgs.space_dimension() <= max_space_dimension()
+	       (cgs.space_dimension() <= max_space_dimension())
 	       ? cgs.space_dimension()
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(cgs)",
@@ -56,7 +56,7 @@ PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
 
 PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
-	       cgs.space_dimension() <= max_space_dimension()
+	       (cgs.space_dimension() <= max_space_dimension())
 	       ? cgs.space_dimension()
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "NNC_Polyhedron"
@@ -70,7 +70,7 @@ PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
 
 PPL::C_Polyhedron::C_Polyhedron(const Grid& grid, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
-	       grid.space_dimension() <= max_space_dimension()
+	       (grid.space_dimension() <= max_space_dimension())
 	       ? grid.space_dimension()
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
 						 "C_Polyhedron(grid)",

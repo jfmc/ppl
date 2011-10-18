@@ -62,7 +62,7 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 PPL::Constraint::Constraint(const Congruence& cg)
   : Linear_Row(cg.is_equality()
 	       // Size includes extra column for the inhomogeneous term.
-	       ? cg.space_dimension() + 1
+	       ? (cg.space_dimension() + 1)
 	       : (throw_invalid_argument("Constraint(cg)",
 					 "congruence cg must be an equality."),
 		  0),

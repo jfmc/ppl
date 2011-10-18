@@ -38,7 +38,7 @@ wrap_string(const std::string& src_string,
   std::string dst_string;
   const char *src = src_string.c_str();
   for (int line = 0; ; ++line) {
-    int linelen = (line == 0
+    int linelen = ((line == 0)
                    ? preferred_first_line_length
                    : preferred_line_length);
     int last_comma = -1;

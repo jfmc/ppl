@@ -118,9 +118,9 @@ PPL::Congruence::create(const Linear_Expression& e1,
     dim = e1_dim;
   else
     dim = e2_dim;
-  Linear_Expression diff(e1_dim > e2_dim ? e1 : e2,
+  Linear_Expression diff((e1_dim > e2_dim) ? e1 : e2,
 			 dim + 2);
-  diff -= (e1_dim > e2_dim ? e2 : e1);
+  diff -= ((e1_dim > e2_dim) ? e2 : e1);
   Congruence cg(diff, 1);
   return cg;
 }

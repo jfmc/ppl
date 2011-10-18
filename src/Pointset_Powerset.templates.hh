@@ -1199,7 +1199,8 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
 	  continue;
 	const PSET& pj = sj->pointset();
 	if (pi.upper_bound_assign_if_exact(pj)) {
-	  marked[si_index] = marked[sj_index] = true;
+	  marked[si_index] = true;
+          marked[sj_index] = true;
 	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
 	  ++deleted;
 	  goto next;

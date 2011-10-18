@@ -573,7 +573,7 @@ idiv_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (r == V_EQ || to != temp)
     return r1;
   // FIXME: Prove that it's impossibile to return a strict relation
-  return dir == ROUND_UP ? V_LE : V_GE;
+  return (dir == ROUND_UP) ? V_LE : V_GE;
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,

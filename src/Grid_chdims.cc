@@ -432,7 +432,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
       for (dimension_type j = old_dim; j-- > 0; )
 	e +=
 	  cg.coefficient(Variable(j))
-	  * (j == src_d ? Variable(dst_d) : Variable(j));
+	  * ((j == src_d) ? Variable(dst_d) : Variable(j));
       new_congruences.insert_verbatim((e + cg.inhomogeneous_term() %= 0)
 				      / cg.modulus());
     }

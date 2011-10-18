@@ -92,9 +92,9 @@ PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
     if (num_proper_congruences == y.num_proper_congruences)
       return 0;
     else
-      return num_proper_congruences > y.num_proper_congruences ? 1 : -1;
+      return (num_proper_congruences > y.num_proper_congruences) ? 1 : -1;
   }
-  return num_equalities > y.num_equalities ? 1 : -1;
+  return (num_equalities > y.num_equalities) ? 1 : -1;
 }
 
 int

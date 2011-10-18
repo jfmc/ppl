@@ -36,7 +36,7 @@ inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 			       Degenerate_Element kind)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       num_dimensions <= max_space_dimension()
+	       (num_dimensions <= max_space_dimension())
 	       ? num_dimensions
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
 						 "NNC_Polyhedron(n, k)",
@@ -49,7 +49,7 @@ NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       cs.space_dimension() <= max_space_dimension()
+	       (cs.space_dimension() <= max_space_dimension())
 	       ? cs
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
 						 "NNC_Polyhedron(cs)",
@@ -61,7 +61,7 @@ NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs)
 inline
 NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs, Recycle_Input)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       cs.space_dimension() <= max_space_dimension()
+	       (cs.space_dimension() <= max_space_dimension())
 	       ? cs
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
 						 "NNC_Polyhedron(cs, recycle)",
@@ -74,7 +74,7 @@ NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs, Recycle_Input)
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Generator_System& gs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
+	       (gs.space_dimension() <= max_space_dimension())
 	       ? gs
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
 						 "NNC_Polyhedron(gs)",
@@ -86,7 +86,7 @@ NNC_Polyhedron::NNC_Polyhedron(const Generator_System& gs)
 inline
 NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs, Recycle_Input)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       gs.space_dimension() <= max_space_dimension()
+	       (gs.space_dimension() <= max_space_dimension())
 	       ? gs
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
 						 "NNC_Polyhedron(gs, recycle)",
