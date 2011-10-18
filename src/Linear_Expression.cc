@@ -81,7 +81,7 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
 
 PPL::Linear_Expression::Linear_Expression(const Variable v)
   : Linear_Row((v.space_dimension() <= max_space_dimension())
-	       ? v.space_dimension() + 1
+	       ? (v.space_dimension() + 1)
 	       : (throw std::length_error("PPL::Linear_Expression::"
 					  "Linear_Expression(v):\n"
 					  "v exceeds the maximum allowed "

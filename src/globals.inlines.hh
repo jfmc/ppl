@@ -71,7 +71,7 @@ compute_capacity(const dimension_type requested_size,
   assert(requested_size <= maximum_size);
   // Speculation factor 2.
   return (requested_size < maximum_size/2)
-    ? 2*(requested_size + 1)
+    ? (2*(requested_size + 1))
     : maximum_size;
   // Speculation factor 1.5.
   // return (maximum_size - requested_size > requested_size/2)

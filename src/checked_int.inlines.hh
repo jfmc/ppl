@@ -72,18 +72,19 @@ template <typename Policy, typename Type>
 struct Extended_Int {
   static const Type plus_infinity = C_Integer<Type>::max;
   static const Type minus_infinity = ((C_Integer<Type>::min >= 0)
-				      ? C_Integer<Type>::max - 1
+				      ? (C_Integer<Type>::max - 1)
 				      : C_Integer<Type>::min);
   static const Type not_a_number
   = ((C_Integer<Type>::min >= 0)
-     ? C_Integer<Type>::max - Policy::has_infinity * 2
-     : C_Integer<Type>::min + Policy::has_infinity);
+     ? (C_Integer<Type>::max - Policy::has_infinity * 2)
+     : (C_Integer<Type>::min + Policy::has_infinity));
   static const Type min = (C_Integer<Type>::min
-			   + (C_Integer<Type>::min >= 0 ? 0
+			   + ((C_Integer<Type>::min >= 0)
+                              ? 0
 			      : (Policy::has_infinity + Policy::has_nan)));
   static const Type max = (C_Integer<Type>::max
 			   - ((C_Integer<Type>::min >= 0)
-			      ? (2 * Policy::has_infinity + Policy::has_nan)
+			      ? (2*Policy::has_infinity + Policy::has_nan)
 			      : Policy::has_infinity));
 };
 
@@ -640,7 +641,7 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       }
     }
   }
-  return ::sgn(from) < 0
+  return (::sgn(from) < 0)
     ? set_neg_overflow_int<To_Policy>(to, dir)
     : set_pos_overflow_int<To_Policy>(to, dir);
 }
@@ -1369,7 +1370,7 @@ smod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
   if (exp > sizeof(Type)*CHAR_BIT)
     to = x;
   else {
-    Type v = exp == sizeof(Type)*CHAR_BIT ? x : (x & ((Type(1) << exp) - 1));
+    Type v = (exp == sizeof(Type)*CHAR_BIT ? x : (x & ((Type(1) << exp) - 1)));
     if (v >= Type(1) << (exp - 1))
       return set_neg_overflow_int<To_Policy>(to, dir);
     else
