@@ -86,7 +86,7 @@ PPL::Linear_Expression::Linear_Expression(const Variable v)
 					  "Linear_Expression(v):\n"
 					  "v exceeds the maximum allowed "
 					  "space dimension."),
-		  v.space_dimension() + 1),
+		  (v.space_dimension() + 1)),
                Linear_Row::Flags()) {
   ++((*this)[v.space_dimension()]);
 }

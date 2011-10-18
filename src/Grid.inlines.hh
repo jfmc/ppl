@@ -187,10 +187,10 @@ inline
 Grid::Grid(const BD_Shape<U>& bd,
            Complexity_Class)
   : con_sys((bd.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(bd)",
-					     "the space dimension of bd "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
+	    ? (throw_space_dimension_overflow("Grid(bd)",
+                                              "the space dimension of bd "
+                                              "exceeds the maximum allowed "
+                                              "space dimension"), 0)
 	    : bd.space_dimension()),
     gen_sys(bd.space_dimension()) {
   Congruence_System cgs = bd.congruences();
@@ -202,10 +202,10 @@ inline
 Grid::Grid(const Octagonal_Shape<U>& os,
            Complexity_Class)
   : con_sys((os.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(os)",
-					     "the space dimension of os "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
+	    ? (throw_space_dimension_overflow("Grid(os)",
+                                              "the space dimension of os "
+                                              "exceeds the maximum allowed "
+                                              "space dimension"), 0)
 	    : os.space_dimension()),
     gen_sys(os.space_dimension()) {
   Congruence_System cgs = os.congruences();
