@@ -819,6 +819,45 @@ bool operator==(const Sparse_Row& x, const Sparse_Row& y);
 /*! \relates Sparse_Row */
 bool operator!=(const Sparse_Row& x, const Sparse_Row& y);
 
+bool operator==(const Dense_Row& x, const Sparse_Row& y);
+bool operator!=(const Dense_Row& x, const Sparse_Row& y);
+
+bool operator==(const Sparse_Row& x, const Dense_Row& y);
+bool operator!=(const Sparse_Row& x, const Dense_Row& y);
+
+void linear_combine(Sparse_Row& x, const Dense_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2);
+
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
+void linear_combine(Sparse_Row& x, const Dense_Row& y,
+                    Coefficient_traits::const_reference c1,
+                    Coefficient_traits::const_reference c2,
+                    dimension_type start, dimension_type end);
+
+void linear_combine(Dense_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2);
+
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
+void linear_combine(Dense_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference c1,
+                    Coefficient_traits::const_reference c2,
+                    dimension_type start, dimension_type end);
+
+void linear_combine(Sparse_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2);
+
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
+void linear_combine(Sparse_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference c1,
+                    Coefficient_traits::const_reference c2,
+                    dimension_type start, dimension_type end);
+
 } // namespace Parma_Polyhedra_Library
 
 #include "Sparse_Row.templates.hh"

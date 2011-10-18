@@ -606,3 +606,166 @@ bool
 PPL::operator!=(const Sparse_Row& x, const Sparse_Row& y) {
   return !(x == y);
 }
+
+bool
+PPL::operator==(const Dense_Row& x, const Sparse_Row& y) {
+  if (x.size() != y.size())
+    return false;
+  Sparse_Row::const_iterator itr = y.end();
+  for (dimension_type i = 0; i < x.size(); i++) {
+    itr = y.lower_bound(itr, i);
+    if (itr != y.end() && itr.index() == i) {
+      if (x[i] != *itr)
+        return false;
+    } else {
+      if (x[i] != 0)
+        return false;
+    }
+  }
+  return true;
+}
+
+bool
+PPL::operator!=(const Dense_Row& x, const Sparse_Row& y) {
+  return !(x == y);
+}
+
+bool
+PPL::operator==(const Sparse_Row& x, const Dense_Row& y) {
+  return y == x;
+}
+
+bool
+PPL::operator!=(const Sparse_Row& x, const Dense_Row& y) {
+  return !(x == y);
+}
+
+void
+PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2) {
+  PPL_ASSERT(x.size() == y.size());
+  
+  if (coeff2 == 0) {
+    for (Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
+      (*i) *= coeff1;
+    return;
+  }
+  
+  Sparse_Row::iterator itr = x.end();
+
+  for (dimension_type i = 0; i < y.size(); i++) {
+    itr = x.lower_bound(itr, i);
+    if (itr == x.end() || itr.index() != i) {
+      if (x[i] == 0)
+        continue;
+      itr = x.insert(itr, i, y[i]);
+      (*itr) *= coeff2;
+      PPL_ASSERT((*itr) != 0);
+    } else {
+      PPL_ASSERT(itr.index() == i);
+      (*itr) *= coeff1;
+      add_mul_assign(*itr, y[i], coeff2);
+      if (*itr == 0)
+        itr = x.reset(itr);
+    }
+  }
+}
+
+void
+PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2,
+                    dimension_type start, dimension_type end) {
+
+  if (coeff2 == 0) {
+    for (Sparse_Row::iterator i = x.lower_bound(start), i_end = x.lower_bound(end); i != i_end; ++i)
+      (*i) *= coeff1;
+    return;
+  }
+
+  Sparse_Row::iterator itr = x.end();
+
+  for (dimension_type i = start; i < end; i++) {
+    itr = x.lower_bound(itr, i);
+    if (itr == x.end() || itr.index() != i) {
+      if (x[i] == 0)
+        continue;
+      itr = x.insert(itr, i, y[i]);
+      (*itr) *= coeff2;
+      PPL_ASSERT((*itr) != 0);
+    } else {
+      PPL_ASSERT(itr.index() == i);
+      (*itr) *= coeff1;
+      add_mul_assign(*itr, y[i], coeff2);
+      if (*itr == 0)
+        itr = x.reset(itr);
+    }
+  }
+}
+
+void
+PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2) {
+  PPL_ASSERT(x.size() == y.size());
+  if (coeff1 == 1) {
+    for (Sparse_Row::const_iterator i = y.begin(), i_end = y.end(); i != i_end; ++i)
+      add_mul_assign(x[i.index()], *i, coeff2);
+    return;
+  }
+
+  Sparse_Row::const_iterator itr = y.end();
+
+  for (dimension_type i = 0; i < x.size(); i++) {
+    x[i] *= coeff1;
+    
+    itr = y.lower_bound(itr, i);
+    
+    if (itr == y.end() || itr.index() != i)
+      continue;
+
+    add_mul_assign(x[i], *itr, coeff2);
+  }
+}
+
+void
+PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2,
+                    dimension_type start, dimension_type end) {
+  PPL_ASSERT(x.size() == y.size());
+  if (coeff1 == 1) {
+    for (Sparse_Row::const_iterator i = y.lower_bound(start), i_end = y.lower_bound(end); i != i_end; ++i)
+      add_mul_assign(x[i.index()], *i, coeff2);
+    return;
+  }
+
+  Sparse_Row::const_iterator itr = y.end();
+
+  for (dimension_type i = start; i < end; i++) {
+    x[i] *= coeff1;
+
+    itr = y.lower_bound(itr, i);
+
+    if (itr == y.end() || itr.index() != i)
+      continue;
+
+    add_mul_assign(x[i], *itr, coeff2);
+  }
+}
+
+void
+PPL::linear_combine(Sparse_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2) {
+  x.linear_combine(y, coeff1, coeff2);
+}
+
+void
+PPL::linear_combine(Sparse_Row& x, const Sparse_Row& y,
+                    Coefficient_traits::const_reference c1,
+                    Coefficient_traits::const_reference c2,
+                    dimension_type start, dimension_type end) {
+  x.linear_combine(y, c1, c2, start, end);
+}

@@ -507,6 +507,17 @@ bool operator==(const Dense_Row& x, const Dense_Row& y);
 /*! \relates Dense_Row */
 bool operator!=(const Dense_Row& x, const Dense_Row& y);
 
+void linear_combine(Dense_Row& x, const Dense_Row& y,
+                    Coefficient_traits::const_reference coeff1,
+                    Coefficient_traits::const_reference coeff2);
+
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
+void linear_combine(Dense_Row& x, const Dense_Row& y,
+                    Coefficient_traits::const_reference c1,
+                    Coefficient_traits::const_reference c2,
+                    dimension_type start, dimension_type end);
+
 } // namespace Parma_Polyhedra_Library
 
 

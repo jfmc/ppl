@@ -501,6 +501,21 @@ Dense_Row::const_iterator::OK() const {
   return (i <= row->size());
 }
 
+inline void
+linear_combine(Dense_Row& x, const Dense_Row& y,
+               Coefficient_traits::const_reference coeff1,
+               Coefficient_traits::const_reference coeff2) {
+  x.linear_combine(y, coeff1, coeff2);
+}
+
+inline void
+linear_combine(Dense_Row& x, const Dense_Row& y,
+               Coefficient_traits::const_reference c1,
+               Coefficient_traits::const_reference c2,
+               dimension_type start, dimension_type end) {
+  x.linear_combine(y, c1, c2, start, end);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
