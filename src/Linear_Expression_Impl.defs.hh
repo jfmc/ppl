@@ -579,6 +579,9 @@ private:
   void construct(const Linear_Expression_Impl<Row2>& e, dimension_type sz);
 
   Row row;
+
+  template <typename Row2>
+  friend class Linear_Expression_Impl;
 };
 
 #include "Linear_Expression_Impl.inlines.hh"
