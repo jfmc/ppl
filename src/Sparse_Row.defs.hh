@@ -807,6 +807,12 @@ namespace std {
 void swap(Parma_Polyhedra_Library::Sparse_Row& x,
           Parma_Polyhedra_Library::Sparse_Row& y);
 
+void swap(Parma_Polyhedra_Library::Sparse_Row& x,
+          Parma_Polyhedra_Library::Dense_Row& y);
+
+void swap(Parma_Polyhedra_Library::Dense_Row& x,
+          Parma_Polyhedra_Library::Sparse_Row& y);
+
 } // namespace std
 
 namespace Parma_Polyhedra_Library {
