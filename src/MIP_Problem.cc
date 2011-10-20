@@ -523,26 +523,21 @@ PPL::MIP_Problem
   //  - count the number of new slack variables.
   for (dimension_type i = cs_num_rows; i-- > first_pending_constraint; ) {
     const Constraint& cs_i = *(input_cs[i]);
-    bool found_a_nonzero_coeff = false;
-    bool found_many_nonzero_coeffs = false;
-    dimension_type nonzero_coeff_column_index = 0;
-    for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
-      if (cs_i.coefficient(Variable(sd)) != 0) {
-        if (found_a_nonzero_coeff) {
-          found_many_nonzero_coeffs = true;
-          if (cs_i.is_inequality())
-            ++additional_slack_variables;
-          break;
-        }
-        else {
-          nonzero_coeff_column_index = sd + 1;
-          found_a_nonzero_coeff = true;
-        }
-      }
-    }
+    const dimension_type cs_i_end = cs_i.space_dimension() + 1;
+
+    dimension_type nonzero_coeff_column_index
+      = cs_i.expression().first_nonzero(1, cs_i_end);
+    bool found_a_nonzero_coeff = (nonzero_coeff_column_index != cs_i_end);
+    bool found_many_nonzero_coeffs
+      = (found_a_nonzero_coeff
+         && !cs_i.expression().all_zeroes(nonzero_coeff_column_index + 1,
+                                          cs_i_end));
+
     // If more than one coefficient is nonzero,
     // continue with next constraint.
     if (found_many_nonzero_coeffs) {
+      if (cs_i.is_inequality())
+        ++additional_slack_variables;
       // CHECKME: Is it true that in the first phase we can apply
       // `is_satisfied()' with the generator `point()'?  If so, the following
       // code works even if we do not have a feasible point.
