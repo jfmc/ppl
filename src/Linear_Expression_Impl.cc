@@ -88,12 +88,11 @@ PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Generator& g)
 }
 
 PPL::Linear_Expression_Impl::Linear_Expression_Impl(const Grid_Generator& g)
-  : row(g.expression().impl->row) {
+  : row(g.expression().impl->row,
+        g.expression().impl->row.size() - 1,
+        g.expression().impl->row.size() - 1) {
   // Do not copy the divisor of `g'.
   row[0] = 0;
-  // Do not copy the epsilon dimension (if any).
-  if (g.is_not_necessarily_closed())
-    row.resize(row.size() - 1);
   PPL_ASSERT(OK());
 }
 
