@@ -468,6 +468,32 @@ Linear_Expression::last_nonzero() const {
   return impl->last_nonzero();
 }
 
+inline void
+Linear_Expression
+::scalar_product_assign(Coefficient& result, const Linear_Expression& y) const {
+  scalar_product_assign(result, y, 0, space_dimension() + 1);
+}
+
+inline void
+Linear_Expression
+::scalar_product_assign(Coefficient& result, const Linear_Expression& y,
+                        dimension_type start, dimension_type end) const {
+  impl->scalar_product_assign(result, *(y.impl), start, end);
+}
+
+inline int
+Linear_Expression
+::scalar_product_sign(const Linear_Expression& y) const {
+  return scalar_product_sign(y, 0, space_dimension() + 1);
+}
+
+inline int
+Linear_Expression
+::scalar_product_sign(const Linear_Expression& y,
+                      dimension_type start, dimension_type end) const {
+  return impl->scalar_product_sign(*(y.impl), start, end);
+}
+
 namespace IO_Operators {
   
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */

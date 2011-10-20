@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "PIP_Problem.types.hh"
 #include "BHRZ03_Certificate.types.hh"
+#include "Scalar_Products.types.hh"
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -588,6 +589,20 @@ private:
   */
   bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
 
+  //! Sets results to the sum of (*this)[i]*y[i], for each i.
+  void scalar_product_assign(Coefficient& result, const Linear_Expression& y) const;
+
+  //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
+  void scalar_product_assign(Coefficient& result, const Linear_Expression& y,
+                             dimension_type start, dimension_type end) const;
+
+  //! Computes the sign of the sum of (*this)[i]*y[i], for each i.
+  int scalar_product_sign(const Linear_Expression& y) const;
+
+  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
+  int scalar_product_sign(const Linear_Expression& y,
+                          dimension_type start, dimension_type end) const;
+
   template <typename Row>
   friend class Linear_Expression_Impl;
 
@@ -606,6 +621,7 @@ private:
   friend class Constraint_System;
   friend class PIP_Problem;
   friend class BHRZ03_Certificate;
+  friend class Scalar_Products;
   template <typename T>
   friend class Linear_System;
 

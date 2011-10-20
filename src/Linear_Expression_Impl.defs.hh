@@ -459,6 +459,20 @@ public:
   */
   virtual bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
 
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
+  virtual void scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
+                                     dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
+  virtual int scalar_product_sign(const Linear_Expression_Interface& y,
+                                  dimension_type start, dimension_type end) const;
+  
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with
@@ -568,6 +582,15 @@ public:
   template <typename Row2>
   int compare(const Linear_Expression_Impl<Row2>& y) const;
   
+  //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
+  template <typename Row2>
+  void scalar_product_assign(Coefficient& result, const Linear_Expression_Impl<Row2>& y,
+                             dimension_type start, dimension_type end) const;
+
+  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
+  template <typename Row2>
+  int scalar_product_sign(const Linear_Expression_Impl<Row2>& y,
+                          dimension_type start, dimension_type end) const;
 private:
 
   void construct(const Linear_Expression_Interface& e);

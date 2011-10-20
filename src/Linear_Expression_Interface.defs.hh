@@ -324,6 +324,20 @@ public:
     \f$0\f$, disregarding coefficients of variables in \p vars.
   */
   virtual bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const = 0;
+  
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
+  virtual void scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
+                                     dimension_type start, dimension_type end) const = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
+  virtual int scalar_product_sign(const Linear_Expression_Interface& y,
+                                  dimension_type start, dimension_type end) const = 0;
 };
 
 #endif // !defined(PPL_Linear_Expression_Interface_defs_hh)

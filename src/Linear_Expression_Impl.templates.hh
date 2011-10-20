@@ -785,6 +785,52 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e,
 }
 
 template <typename Row>
+template <typename Row2>
+void
+Linear_Expression_Impl<Row>
+::scalar_product_assign(Coefficient& result, const Linear_Expression_Impl<Row2>& y,
+                        dimension_type start, dimension_type end) const {
+  const Linear_Expression_Impl<Row>& x = *this;
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= x.row.size());
+  PPL_ASSERT(end <= y.row.size());
+  result = 0;
+  typename Row ::const_iterator x_i = x.row.lower_bound(start);
+  typename Row ::const_iterator x_end = x.row.lower_bound(end);
+  typename Row2::const_iterator y_i = y.row.lower_bound(start);
+  typename Row2::const_iterator y_end = y.row.lower_bound(end);
+  while (x_i != x_end && y_i != y_end) {
+    if (x_i.index() == y_i.index()) {
+      Parma_Polyhedra_Library::add_mul_assign(result, *x_i, *y_i);
+      ++x_i;
+      ++y_i;
+    } else {
+      if (x_i.index() < y_i.index()) {
+        PPL_ASSERT(x.row.get(y_i.index()) == 0);
+        // (*x_i) * 0 == 0, nothing to do.
+        ++x_i;
+      } else {
+        // 0 * (*y_i) == 0, nothing to do.
+        ++y_i;
+      }
+    }
+  }
+  // In the remaining positions (if any) at most one row is nonzero, so
+  // there's nothing left to do.
+}
+
+template <typename Row>
+template <typename Row2>
+int
+Linear_Expression_Impl<Row>
+::scalar_product_sign(const Linear_Expression_Impl<Row2>& y,
+                      dimension_type start, dimension_type end) const {
+  PPL_DIRTY_TEMP_COEFFICIENT(result);
+  scalar_product_assign(result, y, start, end);
+  return sgn(result);
+}
+
+template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {
@@ -1019,6 +1065,37 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);
+  }
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>
+::scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
+                        dimension_type start, dimension_type end) const {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    scalar_product_assign(result, *p, start, end);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    scalar_product_assign(result, *p, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+template <typename Row>
+int
+Linear_Expression_Impl<Row>
+::scalar_product_sign(const Linear_Expression_Interface& y,
+                      dimension_type start, dimension_type end) const {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    return scalar_product_sign(*p, start, end);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    return scalar_product_sign(*p, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return 0;
   }
 }
 
