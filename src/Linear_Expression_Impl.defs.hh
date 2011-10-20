@@ -472,6 +472,13 @@ public:
   //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
   virtual int scalar_product_sign(const Linear_Expression_Interface& y,
                                   dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns the index of the first nonzero element, or \p last if there are no
+  //! nonzero elements, considering only elements in [first,last).
+  virtual dimension_type first_nonzero(dimension_type first, dimension_type last) const;
   
   //! Implementation sizing constructor.
   /*!

@@ -319,6 +319,13 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
+  //! Returns the index of the first nonzero element, or \p last if there are no
+  //! nonzero elements, considering only elements in [first,last).
+  virtual dimension_type first_nonzero(dimension_type first, dimension_type last) const = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
   /*! \brief
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.

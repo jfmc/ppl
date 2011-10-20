@@ -831,6 +831,21 @@ Linear_Expression_Impl<Row>
 }
 
 template <typename Row>
+dimension_type
+Linear_Expression_Impl<Row>
+::first_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  typename Row::const_iterator i = row.lower_bound(first);
+  typename Row::const_iterator i_end = row.lower_bound(last);
+  for ( ; i != i_end; ++i)
+    if (*i != 0)
+      return i.index();
+
+  return last;
+}
+
+template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {

@@ -494,6 +494,13 @@ Linear_Expression
   return impl->scalar_product_sign(*(y.impl), start, end);
 }
 
+inline dimension_type
+Linear_Expression
+::first_nonzero(dimension_type first, dimension_type last) const {
+  return impl->first_nonzero(first, last);
+}
+
+
 namespace IO_Operators {
   
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */

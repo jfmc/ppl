@@ -44,6 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "PIP_Problem.types.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "Scalar_Products.types.hh"
+#include "MIP_Problem.types.hh"
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -583,6 +584,10 @@ private:
   //! nonzero elements.
   dimension_type last_nonzero() const;
 
+  //! Returns the index of the first nonzero element, or \p last if there are no
+  //! nonzero elements, considering only elements in [first,last).
+  dimension_type first_nonzero(dimension_type first, dimension_type last) const;
+  
   /*! \brief
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.
@@ -622,6 +627,7 @@ private:
   friend class PIP_Problem;
   friend class BHRZ03_Certificate;
   friend class Scalar_Products;
+  friend class MIP_Problem;
   template <typename T>
   friend class Linear_System;
 
