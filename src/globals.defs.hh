@@ -158,11 +158,11 @@ extern unsigned int in_assert;
 #define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
-    Weightwatch_Traits::weight += delta;        \
+    Weightwatch_Traits::weight += (delta);      \
   } while(0)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
-    Weightwatch_Traits::weight += delta * factor;       \
+    Weightwatch_Traits::weight += (delta)*(factor);     \
   } while(0)
 #endif
 #else
