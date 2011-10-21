@@ -115,7 +115,8 @@ template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
+    (check_result(Checked::assign_ext<Policy,                           \
+                                      Checked_Number_Transparent_Policy<type> > \
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }									\
@@ -124,7 +125,8 @@ inline									\
 Checked_Number<T, Policy>::Checked_Number(const type x) {		\
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
+    (check_result(Checked::assign_ext<Policy,                           \
+                                      Checked_Number_Transparent_Policy<type> > \
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }
