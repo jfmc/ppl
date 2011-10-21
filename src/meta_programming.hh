@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_bool_nodef(name, value)		\
-  enum anonymous_enum_ ## name { name = (value) }
+  enum anonymous_enum_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -54,7 +54,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_int_nodef(name, value) \
-  enum anonymous_enum_ ## name { name = (value) }
+  enum anonymous_enum_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -86,7 +86,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_ref_nodef(type, name, value)				\
-  static const type& name() {						\
+  static const type& PPL_U(name)() {                                    \
     static type name(value);						\
     return name;							\
   }

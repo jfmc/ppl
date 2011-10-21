@@ -116,7 +116,7 @@ inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
   Policy::handle_result							\
     (check_result(Checked::assign_ext<Policy,                           \
-                                      Checked_Number_Transparent_Policy<type> > \
+                                      Checked_Number_Transparent_Policy<PPL_U(type)> > \
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }									\
@@ -126,7 +126,7 @@ Checked_Number<T, Policy>::Checked_Number(const type x) {		\
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
     (check_result(Checked::assign_ext<Policy,                           \
-                                      Checked_Number_Transparent_Policy<type> > \
+                                      Checked_Number_Transparent_Policy<PPL_U(type)> > \
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }
@@ -539,7 +539,8 @@ PPL_DEFINE_BINARY_OP_ASSIGN(operator %=, rem_assign_r)
 #define PPL_DEFINE_BINARY_OP(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
-f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
+PPL_U(f)(const Checked_Number<T, Policy>& x, \
+         const Checked_Number<T, Policy>& y) {  \
   Checked_Number<T, Policy> r; \
   Policy::handle_result(fun(r, x, y, Policy::ROUND_DEFAULT_OPERATOR)); \
   return r; \

@@ -66,7 +66,8 @@ struct Suppress_Uninitialized_Warnings_Type {
 };
 
 #define PPL_UNINITIALIZED(type, name)                                   \
-  type name = Suppress_Uninitialized_Warnings_Type<type>::synonym ()
+  type PPL_U(name)                                                      \
+  = Suppress_Uninitialized_Warnings_Type<PPL_U(type)>::synonym ()
 #else
 #define PPL_UNINITIALIZED(type, name)           \
   type name

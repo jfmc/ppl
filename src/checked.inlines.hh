@@ -49,8 +49,9 @@ template <typename T>
 struct Safe_Conversion<T, T> : public True {
 };
 
-#define PPL_SAFE_CONVERSION(To, From)					\
-  template <> struct Safe_Conversion<To, From> : public True { }
+#define PPL_SAFE_CONVERSION(To, From)                        \
+  template <> struct Safe_Conversion<PPL_U(To), PPL_U(From)> \
+    : public True { }
 
 #if PPL_CXX_PLAIN_CHAR_IS_SIGNED
 PPL_SAFE_CONVERSION(signed short, char);

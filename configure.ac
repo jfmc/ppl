@@ -120,6 +120,8 @@ AH_BOTTOM([
 # include <inttypes.h>
 #endif
 
+#define PPL_U(x) x
+
 /* END ppl-config.h */
 ])
 
