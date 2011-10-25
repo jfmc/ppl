@@ -60,7 +60,7 @@ See the file NEWS for recent project news.
 See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people, projects and organizations
 that made the PPL a reality.
-See http://www.cs.unipr.it/ppl/ for more information on the PPL.
+See http://bugseng.com/products/ppl/ for more information on the PPL.
 For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
@@ -1734,4 +1734,4 @@ licenses along with the PPL, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ .
+site: http://bugseng.com/products/ppl/ .

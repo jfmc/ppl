@@ -20,7 +20,7 @@
 //  for more details.
 //
 //  For the most up-to-date information see the Parma Polyhedra Library
-//  site: http://www.cs.unipr.it/ppl/
+//  site: http://bugseng.com/products/ppl/
 
 /*!
   \defgroup PPL_CXX_interface C++ Language Interface
@@ -3084,7 +3084,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
  Extended abstract. Contribution to the <em>International workshop
   on &ldquo;Numerical &amp; Symbolic Abstract Domains&rdquo;</em> (NSAD'05, Paris, January 21,
   2005). Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
-  <a href="http://www.cs.unipr.it/ppl/">http://www.cs.unipr.it/ppl/</a>.
+  <a href="http://bugseng.com/products/ppl/">http://bugseng.com/products/ppl/</a>.
 
 
 </DD>
@@ -3375,7 +3375,7 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   abstractions.
  Report <tt>arXiv:cs.CG/0904.1783</tt>, 2009.
  Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
-  <a href="http://www.cs.unipr.it/ppl/">http://www.cs.unipr.it/ppl/</a>.
+  <a href="http://bugseng.com/products/ppl/">http://bugseng.com/products/ppl/</a>.
 
 
 </DD>

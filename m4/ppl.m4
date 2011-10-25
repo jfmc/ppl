@@ -21,7 +21,7 @@ dnl along with this program; if not, write to the Free Software Foundation,
 dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
-dnl site: http://www.cs.unipr.it/ppl/ .
+dnl site: http://bugseng.com/products/ppl/ .
 
 dnl AM_PATH_PPL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for PPL, and define PPL_CPPFLAGS, PPL_LDFLAGS, ... what else?

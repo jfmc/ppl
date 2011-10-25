@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 #include <ppl-config.h>
 #include "version.hh"
@@ -54,7 +54,7 @@ const char banner_string[] =
 "\n"
 "Report bugs to "PPL_PACKAGE_BUGREPORT"."
 "  For the most up-to-date information\n"
-"see the Parma Polyhedra Library site: http://www.cs.unipr.it/ppl/ .\n"
+"see the Parma Polyhedra Library site: http://bugseng.com/products/ppl/ .\n"
 "\n"
 "Contributors:\n"
 "Roberto Bagnara, Patricia M. Hill, Enea Zaffanella, Elisa Ricci,\n"

@@ -7,7 +7,7 @@ Release:        4%{?dist}
 Summary:        The Parma Polyhedra Library: a library of numerical abstractions
 Group:          Development/Libraries
 License:        GPLv3+
-URL:            http://www.cs.unipr.it/ppl/
+URL:            http://bugseng.com/products/ppl/
 Source0:        ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
 Source1:        ppl.hh
 Source2:        ppl_c.h

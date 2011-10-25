@@ -83,7 +83,7 @@ Enhancements for PPL 0.13 or later versions
   solutions (as is the case, e.g., in many program analyses).  Then
   cutting-plane methods (Gomory, Chvatal, ...) allow to shrink polyhedra
   still not losing any integral solution.
-  See http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
+  See http://bugseng.com/products/ppl/Documentation/bibliography#NemhauserW88
   Check the work by Kent Andersen and Gerard Cornuejols on
   reduce-and-split cuts.
 - Consider the addition of "constraint-only" methods (e.g., computing
