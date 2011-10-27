@@ -875,7 +875,6 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
   // lambda_2 corresponds to space dimensions m, ..., 2*m-1.
   Variables_Set lambda1(Variable(0), Variable(m-1));
   ph.remove_space_dimensions(lambda1);
-  //ph.remove_higher_space_dimensions(m);
 
 #if PRINT_DEBUG_INFO
   std::cout << "*** ph ***" << std::endl;
