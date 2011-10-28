@@ -4347,10 +4347,6 @@ void BD_Shape<T>
 ::two_variables_affine_form_image(const dimension_type& var_id,
            const Linear_Form< Interval<T, Interval_Info> >& lf,
                              const dimension_type& space_dim) {
-
-  // Remove all constraints on 'var'.
-  //forget_all_dbm_constraints(var_id);
-
   // Shortest-path closure is maintained, but not reduction.
   if (marked_shortest_path_reduced())
     reset_shortest_path_reduced();
