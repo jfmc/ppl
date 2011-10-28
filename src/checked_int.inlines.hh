@@ -702,9 +702,9 @@ assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
   PPL_DIRTY_TEMP(mpz_class, q);
-  mpz_ptr _q = q.get_mpz_t();
+  mpz_ptr q_z = q.get_mpz_t();
   if (round_not_requested(dir)) {
-    mpz_tdiv_q(_q, n, d);
+    mpz_tdiv_q(q_z, n, d);
     Result r = assign<To_Policy, void>(to, q, dir);
     if (r != V_EQ)
       return r;
@@ -713,7 +713,7 @@ assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_t rem;
   int sign;
   mpz_init(rem);
-  mpz_tdiv_qr(_q, rem, n, d);
+  mpz_tdiv_qr(q_z, rem, n, d);
   sign = mpz_sgn(rem);
   mpz_clear(rem);
   Result r = assign<To_Policy, void>(to, q, dir);

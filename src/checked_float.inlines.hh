@@ -800,31 +800,30 @@ set_pos_overflow_float(T& to, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename T>
 inline Result
-assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
-{
-  mpz_srcptr from = _from.get_mpz_t();
-  int sign = mpz_sgn(from);
+assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
+  mpz_srcptr from_z = from.get_mpz_t();
+  int sign = mpz_sgn(from_z);
   if (sign == 0) {
     to = 0;
     return V_EQ;
   }
-  size_t exponent = mpz_sizeinbase(from, 2) - 1;
+  size_t exponent = mpz_sizeinbase(from_z, 2) - 1;
   if (exponent > size_t(Float<T>::Binary::EXPONENT_MAX)) {
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
     else
       return set_pos_overflow_float<To_Policy>(to, dir);
   }
-  unsigned long zeroes = mpn_scan1(from->_mp_d, 0);
+  unsigned long zeroes = mpn_scan1(from_z->_mp_d, 0);
   size_t meaningful_bits = exponent - zeroes;
   mpz_t mantissa;
   mpz_init(mantissa);
   if (exponent > Float<T>::Binary::MANTISSA_BITS)
     mpz_tdiv_q_2exp(mantissa,
-		    from,
+		    from_z,
 		    exponent - Float<T>::Binary::MANTISSA_BITS);
   else
-    mpz_mul_2exp(mantissa, from, Float<T>::Binary::MANTISSA_BITS - exponent);
+    mpz_mul_2exp(mantissa, from_z, Float<T>::Binary::MANTISSA_BITS - exponent);
   Float<T> f;
   f.u.binary.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
@@ -840,16 +839,15 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
 
 template <typename To_Policy, typename From_Policy, typename T>
 inline Result
-assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
-{
-  const mpz_class& _num = from.get_num();
-  const mpz_class& _den = from.get_den();
-  if (_den == 1)
-    return assign_float_mpz<To_Policy, From_Policy>(to, _num, dir);
-  mpz_srcptr num = _num.get_mpz_t();
-  mpz_srcptr den = _den.get_mpz_t();
-  int sign = mpz_sgn(num);
-  signed long exponent = mpz_sizeinbase(num, 2) - mpz_sizeinbase(den, 2);
+assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
+  const mpz_class& num = from.get_num();
+  const mpz_class& den = from.get_den();
+  if (den == 1)
+    return assign_float_mpz<To_Policy, From_Policy>(to, num, dir);
+  mpz_srcptr num_z = num.get_mpz_t();
+  mpz_srcptr den_z = den.get_mpz_t();
+  int sign = mpz_sgn(num_z);
+  signed long exponent = mpz_sizeinbase(num_z, 2) - mpz_sizeinbase(den_z, 2);
   if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
   inexact:
@@ -872,16 +870,16 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   mpz_init(mantissa);
   signed long shift = needed_bits - exponent;
   if (shift > 0) {
-    mpz_mul_2exp(mantissa, num, shift);
-    num = mantissa;
+    mpz_mul_2exp(mantissa, num_z, shift);
+    num_z = mantissa;
   }
   else if (shift < 0) {
-    mpz_mul_2exp(mantissa, den, -shift);
-    den = mantissa;
+    mpz_mul_2exp(mantissa, den_z, -shift);
+    den_z = mantissa;
   }
   mpz_t r;
   mpz_init(r);
-  mpz_tdiv_qr(mantissa, r, num, den);
+  mpz_tdiv_qr(mantissa, r, num_z, den_z);
   size_t bits = mpz_sizeinbase(mantissa, 2);
   bool inexact = (mpz_sgn(r) != 0);
   mpz_clear(r);
