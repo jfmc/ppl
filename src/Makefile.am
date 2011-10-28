@@ -498,7 +498,7 @@ Weight_Profiler.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
-swapping_sort.icc \
+swapping_sort.templates.hh \
 termination.cc \
 wrap_string.cc
 #Pointset_Ask_Tell.cc

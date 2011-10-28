@@ -28,12 +28,11 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Dense_Row.defs.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "swapping_sort.templates.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
 #include <deque>
-
-#include "swapping_sort.icc"
 
 namespace PPL = Parma_Polyhedra_Library;
 

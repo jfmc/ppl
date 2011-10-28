@@ -25,11 +25,10 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Bit_Matrix.defs.hh"
 #include "globals.defs.hh"
+#include "swapping_sort.templates.hh"
 #include <iostream>
 #include <string>
 #include <climits>
-
-#include "swapping_sort.icc"
 
 namespace PPL = Parma_Polyhedra_Library;
 
