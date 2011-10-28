@@ -75,7 +75,7 @@ namespace Parma_Polyhedra_Library {
   available caches.
 
   Assuming \p n is the number of elements in the tree and \p B is the number
-  of &lt;dimension_type,Coefficient&gt; pairs that fit in a cache line, the
+  of (dimension_type, Coefficient) pairs that fit in a cache line, the
   time and cache misses complexities are the following:
 
   - Insertions/Queries/Deletions: \f$O(\log^2 n)\f$ time,
