@@ -46,9 +46,9 @@ PPL::Bit_Matrix::sort_rows() {
   // Sorting without removing duplicates.
   Iter first = rows.begin();
   Iter last = rows.end();
-  swapping_sort(first, last, Bit_Row_Less_Than());
+  Implementation::swapping_sort(first, last, Bit_Row_Less_Than());
   // Moving all the duplicate elements at the end of the vector.
-  Iter new_last = swapping_unique(first, last);
+  Iter new_last = Implementation::swapping_unique(first, last);
   // Removing duplicates.
   rows.erase(new_last, last);
   PPL_ASSERT(OK());

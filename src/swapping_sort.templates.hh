@@ -27,7 +27,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include <iterator>
 #include <algorithm>
 
-namespace {
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
 /*
   This sorting algorithm avoids (almost all) copies of objects
   by performing more iter_swap's: it is meant to be used when
@@ -137,6 +140,8 @@ swapping_unique(Iter first, Iter last) {
   return ++current;
 }
 
-} // namespace
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_swapping_sort_icc)

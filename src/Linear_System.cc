@@ -334,9 +334,10 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   // First sort without removing duplicates.
   std::vector<Dense_Row>::iterator first = rows.begin() + first_row;
   std::vector<Dense_Row>::iterator last = rows.begin() + last_row;
-  swapping_sort(first, last, Row_Less_Than());
+  Implementation::swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
-  std::vector<Dense_Row>::iterator new_last = swapping_unique(first, last);
+  std::vector<Dense_Row>::iterator new_last
+    = Implementation::swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
   // NOTE: we cannot check all invariants of the system here,
@@ -512,9 +513,10 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
   With_Bit_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
   With_Bit_Matrix_iterator last = first + sat.num_rows();
-  swapping_sort(first, last, Row_Less_Than());
+  Implementation::swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_Bit_Matrix_iterator new_last = swapping_unique(first, last);
+  With_Bit_Matrix_iterator new_last
+    = Implementation::swapping_unique(first, last);
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row
