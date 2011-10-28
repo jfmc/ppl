@@ -37,8 +37,10 @@ void (*Weightwatch_Traits::check_function)(void) = 0;
 
 #ifndef NDEBUG
 namespace Implementation {
+
 unsigned int in_assert = 0;
-}
+
+} // namespace Implementation
 #endif
 
 } // namespace Parma_Polyhedra_Library
