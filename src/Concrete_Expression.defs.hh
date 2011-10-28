@@ -66,8 +66,7 @@ public:
     The behavior is undefined if \p *this does not encode a bounded
     integer type.
   */
-  Bounded_Integer_Type_Width
-  bounded_integer_type_width() const;
+  Bounded_Integer_Type_Width bounded_integer_type_width() const;
 
   /*! \brief
     Returns the representation of the bounded integer type encoded by
@@ -104,10 +103,10 @@ private:
   //! A 32-bit word encoding the type.
   struct Implementation {
     unsigned int bounded_integer:1;
-    Bounded_Integer_Type_Width bounded_integer_type_width:23;
-    Bounded_Integer_Type_Representation bounded_integer_type_representation:2;
-    Bounded_Integer_Type_Overflow bounded_integer_type_overflow:2;
-    Floating_Point_Format floating_point_format:4;
+    unsigned int bounded_integer_type_width:23;
+    unsigned int bounded_integer_type_representation:2;
+    unsigned int bounded_integer_type_overflow:2;
+    unsigned int floating_point_format:4;
   };
 
   //! Constructor from \p implementation.
