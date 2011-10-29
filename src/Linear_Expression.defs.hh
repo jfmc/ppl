@@ -610,6 +610,9 @@ private:
   int scalar_product_sign(const Linear_Expression& y,
                           dimension_type start, dimension_type end) const;
 
+  //! Removes from the set x all the indexes of nonzero elements of *this.
+  void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
+
   template <typename Row>
   friend class Linear_Expression_Impl;
 

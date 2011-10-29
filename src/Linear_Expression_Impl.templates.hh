@@ -848,6 +848,23 @@ Linear_Expression_Impl<Row>
 template <typename Row>
 void
 Linear_Expression_Impl<Row>
+::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
+  std::set<dimension_type> result;
+  typename Row::const_iterator itr = row.end();
+  typename Row::const_iterator itr_end = row.end();
+  std::set<dimension_type>::const_iterator i = x.begin();
+  std::set<dimension_type>::const_iterator i_end = x.end();
+  for ( ; i != i_end; ++i) {
+    itr = row.lower_bound(itr, *i);
+    if (itr == itr_end || itr.index() != *i || *itr == 0)
+      result.insert(*i);
+  }
+  std::swap(x, result);
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {
   if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
     linear_combine(*p, v);

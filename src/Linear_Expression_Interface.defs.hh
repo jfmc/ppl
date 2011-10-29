@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.types.hh"
 #include "Variables_Set.types.hh"
 #include <vector>
+#include <set>
 
 //! A linear expression.
 /*! \ingroup PPL_CXX_interface
@@ -345,6 +346,9 @@ public:
   //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
   virtual int scalar_product_sign(const Linear_Expression_Interface& y,
                                   dimension_type start, dimension_type end) const = 0;
+
+  //! Removes from the set x all the indexes of nonzero elements of *this.
+  virtual void has_a_free_dimension_helper(std::set<dimension_type>& x) const = 0;
 };
 
 #endif // !defined(PPL_Linear_Expression_Interface_defs_hh)

@@ -500,6 +500,12 @@ Linear_Expression
   return impl->first_nonzero(first, last);
 }
 
+inline void
+Linear_Expression
+::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
+  return impl->has_a_free_dimension_helper(x);
+}
+
 
 namespace IO_Operators {
   
