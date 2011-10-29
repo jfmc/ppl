@@ -360,10 +360,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   if (cp.expr.inhomogeneous_term() == p.expr.inhomogeneous_term()) {
     // Divisors are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
-    for (dimension_type i = cp.expr.space_dimension() - 1; i-- > 0; )
-      if (cp.expr.coefficient(Variable(i)) != p.expr.coefficient(Variable(i)))
-	return false;
-    return true;
+    return cp.expr.is_equal_to(p.expr, 1, cp.expr.space_dimension());
   }
   else {
     // Divisors are different: divide them by their GCD
@@ -379,15 +376,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
     }
     const Coefficient& cp_div = rel_prime ? cp.expr.inhomogeneous_term() : cp_0_scaled;
     const Coefficient& p_div = rel_prime ? p.expr.inhomogeneous_term() : p_0_scaled;
-    PPL_DIRTY_TEMP_COEFFICIENT(prod1);
-    PPL_DIRTY_TEMP_COEFFICIENT(prod2);
-    for (dimension_type i = cp.expr.space_dimension() - 1; i > 0; --i) {
-      prod1 = cp.expr.coefficient(Variable(i - 1)) * p_div;
-      prod2 = p.expr.coefficient(Variable(i - 1)) * cp_div;
-      if (prod1 != prod2)
-	return false;
-    }
-    return true;
+    return cp.expr.is_equal_to(p.expr, p_div, cp_div, 1, cp.expr.space_dimension());
   }
 }
 
