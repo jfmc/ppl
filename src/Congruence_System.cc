@@ -297,31 +297,17 @@ bool
 PPL::Congruence_System::has_a_free_dimension() const {
   // Search for a dimension that is free of any congruence or equality
   // constraint.  Assumes a minimized system.
-  dimension_type space_dim = space_dimension();
-  std::vector<bool> free_dim(space_dim, true);
-  dimension_type free_dims = space_dim;
-  for (dimension_type row = num_rows(); row-- > 0; ) {
-    const Congruence& cg = operator[](row);
-    for (dimension_type dim = space_dim; dim-- > 0; )
-      if (free_dim[dim] && cg.coefficient(Variable(dim)) != 0) {
-	if (--free_dims == 0) {
-	  // All dimensions are constrained.
-#ifndef NDEBUG
-	  free_dim[dim] = false;
-	  // Check that there are free_dims dimensions marked free
-	  // in free_dim.
-	  dimension_type count = 0;
-	  for (dimension_type i = space_dim; i-- > 0; )
-	    count += free_dim[i];
-	  PPL_ASSERT(count == free_dims);
-#endif
-	  return true;
-	}
-	free_dim[dim] = false;
-      }
+
+  std::set<dimension_type> candidates;
+  for (dimension_type i = space_dimension(); i-- > 0; )
+    candidates.insert(i + 1);
+
+  for (dimension_type i = num_rows(); i-- > 0; ) {
+    rows[i].expression().has_a_free_dimension_helper(candidates);
+    if (candidates.empty())
+      return false;
   }
-  // At least one dimension is free of constraint.
-  return false;
+  return !candidates.empty();
 }
 
 void
