@@ -247,48 +247,53 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                                 Temp& tmp1,
                                 Temp& tmp2);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Decodes the constraint \p c as a bounded difference.
-/*! \relates BD_Shape
-  \return
-  <CODE>true</CODE> if the constraint \p c is a
-  \ref Bounded_Difference_Shapes "bounded difference";
-  <CODE>false</CODE> otherwise.
+// This class contains some helper functions that need to be friends of
+// Linear_Expression.
+class BD_Shape_Helpers {
+public:
+  #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Decodes the constraint \p c as a bounded difference.
+  /*! \relates BD_Shape
+    \return
+    <CODE>true</CODE> if the constraint \p c is a
+    \ref Bounded_Difference_Shapes "bounded difference";
+    <CODE>false</CODE> otherwise.
 
-  \param c
-  The constraint to be decoded.
+    \param c
+    The constraint to be decoded.
 
-  \param c_space_dim
-  The space dimension of the constraint \p c (it is <EM>assumed</EM>
-  to match the actual space dimension of \p c).
+    \param c_space_dim
+    The space dimension of the constraint \p c (it is <EM>assumed</EM>
+    to match the actual space dimension of \p c).
 
-  \param c_num_vars
-  If <CODE>true</CODE> is returned, then it will be set to the number
-  of variables having a non-zero coefficient. The only legal values
-  will therefore be 0, 1 and 2.
+    \param c_num_vars
+    If <CODE>true</CODE> is returned, then it will be set to the number
+    of variables having a non-zero coefficient. The only legal values
+    will therefore be 0, 1 and 2.
 
-  \param c_first_var
-  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
-  then it will be set to the index of the first variable having
-  a non-zero coefficient in \p c.
+    \param c_first_var
+    If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+    then it will be set to the index of the first variable having
+    a non-zero coefficient in \p c.
 
-  \param c_second_var
-  If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
-  then it will be set to the index of the second variable having
-  a non-zero coefficient in \p c.
+    \param c_second_var
+    If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
+    then it will be set to the index of the second variable having
+    a non-zero coefficient in \p c.
 
-  \param c_coeff
-  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
-  then it will be set to the value of the first non-zero coefficient
-  in \p c.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-bool extract_bounded_difference(const Constraint& c,
-                                dimension_type c_space_dim,
-                                dimension_type& c_num_vars,
-                                dimension_type& c_first_var,
-                                dimension_type& c_second_var,
-                                Coefficient& c_coeff);
+    \param c_coeff
+    If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+    then it will be set to the value of the first non-zero coefficient
+    in \p c.
+  */
+  #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  static bool extract_bounded_difference(const Constraint& c,
+                                         dimension_type c_space_dim,
+                                         dimension_type& c_num_vars,
+                                         dimension_type& c_first_var,
+                                         dimension_type& c_second_var,
+                                         Coefficient& c_coeff);
+};
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.

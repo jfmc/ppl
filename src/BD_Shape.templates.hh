@@ -394,7 +394,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are not allowed.
-  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     throw_generic("add_constraint(c)",
                   "c is not a bounded difference constraint");
 
@@ -481,7 +481,7 @@ BD_Shape<T>::refine_no_check(const Constraint& c) {
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are ignored.
-  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
     return;
 
   const Coefficient& inhomo = c.inhomogeneous_term();
@@ -1148,7 +1148,7 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Check if `c' is a BD constraint.
-  if (extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+  if (BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     if (num_vars == 0)
       // Dealing with a trivial constraint.
       return true;
@@ -1206,7 +1206,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Check if `c' is a BD constraint.
-  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     Optimization_Mode mode_max_min
       = maximize ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
@@ -1442,7 +1442,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type i = 0;
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     // Constraints that are not bounded differences.
     // Use maximize() and minimize() to do much of the work.
 
@@ -2974,7 +2974,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
     dimension_type i = 0;
     dimension_type j = 0;
     // Constraints that are not bounded differences are ignored.
-    if (extract_bounded_difference(c, cs_space_dim, num_vars, i, j, coeff)) {
+    if (BD_Shape_Helpers::extract_bounded_difference(c, cs_space_dim, num_vars, i, j, coeff)) {
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `coeff' to the absolute value of itself.
       const bool negative = (coeff < 0);

@@ -30,53 +30,51 @@ namespace PPL = Parma_Polyhedra_Library;
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
-PPL::extract_bounded_difference(const Constraint& c,
-				const dimension_type c_space_dim,
-				dimension_type& c_num_vars,
-				dimension_type& c_first_var,
-				dimension_type& c_second_var,
-				Coefficient& c_coeff) {
+PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
+                                                  const dimension_type c_space_dim,
+                                                  dimension_type& c_num_vars,
+                                                  dimension_type& c_first_var,
+                                                  dimension_type& c_second_var,
+                                                  Coefficient& c_coeff) {
   // Check for preconditions.
+  const dimension_type space_dim = c.space_dimension();
   PPL_ASSERT(c.space_dimension() == c_space_dim);
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
-  // Store the indices of the non-zero components of `c',
-  dimension_type non_zero_index[2] = { 0, 0 };
-  // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0) {
-      if (c_num_vars <= 1)
-	non_zero_index[c_num_vars++] = i + 1;
-      else
-	// Constraint `c' is not a bounded difference.
-	return false;
-    }
 
-  // Make sure that `c' is indeed a bounded difference,
-  // i.e., it has one of the following forms:
-  //           0 <=/= b, if c_num_vars == 0;
-  //   a*x       <=/= b, if c_num_vars == 1;
-  //   a*x - a*y <=/= b, if c_num_vars == 2.
-  switch (c_num_vars) {
-  case 2:
-    {
-      const Coefficient& c0 = c.coefficient(Variable(non_zero_index[0]-1));
-      const Coefficient& c1 = c.coefficient(Variable(non_zero_index[1]-1));
-      if (sgn(c0) == sgn(c1) || c0 != -c1)
-	// Constraint `c' is not a bounded difference.
-	return false;
-      c_coeff = c1;
-    }
-    c_first_var = non_zero_index[0];
-    c_second_var = non_zero_index[1];
-    break;
-  case 1:
-    c_coeff = -c.coefficient(Variable(non_zero_index[0]-1));
-    c_first_var = non_zero_index[0];
-    break;
-  default:
-    PPL_ASSERT(c_num_vars == 0);
-    break;
+  c_first_var = c.expression().first_nonzero(1, space_dim + 1);
+  if (c_first_var == space_dim + 1)
+    // All the inhomogeneous coefficients are zero.
+    return true;
+
+  ++c_num_vars;
+
+  c_second_var = c.expression().first_nonzero(c_first_var + 1, space_dim + 1);
+  if (c_second_var == space_dim + 1) {
+    // c_first_var is the only inhomogeneous coefficient different from zero.
+    c_coeff = -c.expression()[c_first_var];
+
+    // TODO: Check if this is needed.
+    c_second_var = 0;
+    return true;
   }
+
+  ++c_num_vars;
+
+  if (!c.expression().all_zeroes(c_second_var + 1, space_dim + 1))
+    // The constraint `c' is not a bounded difference.
+    return false;
+
+  // Make sure that `c' is indeed a bounded difference, i.e., it is of the
+  // form:
+  // a*x - a*y <=/= b.
+  Coefficient_traits::const_reference c0 = c.expression()[c_first_var];
+  Coefficient_traits::const_reference c1 = c.expression()[c_second_var];
+  if (sgn(c0) == sgn(c1) || c0 != -c1)
+    // Constraint `c' is not a bounded difference.
+    return false;
+
+  c_coeff = c1;
+  
   return true;
 }
 
