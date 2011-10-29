@@ -24,11 +24,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_termination_defs_hh
 #define PPL_termination_defs_hh 1
 
+#include "termination.types.hh"
+
 #include "Generator.types.hh"
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
+#include "Constraint_System.types.hh"
 
 namespace Parma_Polyhedra_Library {
+
+class Termination_Helpers {
+public:
+  static void all_affine_ranking_functions_PR(const Constraint_System& cs_before,
+                                              const Constraint_System& cs_after,
+                                              NNC_Polyhedron& mu_space);
+  static bool one_affine_ranking_function_PR(const Constraint_System& cs_before,
+                                             const Constraint_System& cs_after,
+                                             Generator& mu);
+  static bool one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                                      Generator& mu);
+  static void all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                                       NNC_Polyhedron& mu_space);
+};
 
 /*! \brief
   Termination test using an improvement of the method by Mesnard and

@@ -125,6 +125,7 @@ Temp.inlines.hh \
 Temp.templates.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
+termination.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 stdiobuf.types.hh \

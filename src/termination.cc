@@ -86,22 +86,7 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
 
 void
 shift_unprimed_variables(Constraint_System& cs) {
-  const dimension_type cs_space_dim = cs.space_dimension();
-  Constraint_System cs_shifted;
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
-    const Constraint& c_i = *i;
-    Linear_Expression le_i_shifted;
-    for (dimension_type j = cs_space_dim; j-- > 0; ) {
-      Coefficient_traits::const_reference a_i_j
-	= c_i.coefficient(Variable(j));
-      if (a_i_j != 0)
-	add_mul_assign(le_i_shifted, a_i_j, Variable(cs_space_dim + j));
-    }
-    le_i_shifted += c_i.inhomogeneous_term();
-    cs_shifted.insert(le_i_shifted >= 0);
-  }
-  cs.swap(cs_shifted);
+  cs.shift_space_dimensions(Variable(0), cs.space_dimension());
 }
 
 /*! \brief
@@ -506,12 +491,8 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
 
   Generator fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
-  Linear_Expression le;
   const dimension_type n = cs.space_dimension() / 2;
-  for (dimension_type i = n+1; i-- > 0; ) {
-    Variable vi(i);
-    add_mul_assign(le, fp.coefficient(vi), vi);
-  }
+  Linear_Expression le(fp.expression(), n + 2);
   mu = point(le, fp.divisor());
   return true;
 }
@@ -648,9 +629,39 @@ bool
 one_affine_ranking_function_PR(const Constraint_System& cs_before,
 			       const Constraint_System& cs_after,
 			       Generator& mu) {
+  return Termination_Helpers::one_affine_ranking_function_PR(cs_before, cs_after, mu);
+}
+                                          
+bool
+one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                        Generator& mu) {
+  return Termination_Helpers::one_affine_ranking_function_PR_original(cs, mu);
+}
+
+void
+all_affine_ranking_functions_PR(const Constraint_System& cs_before,
+				const Constraint_System& cs_after,
+				NNC_Polyhedron& mu_space) {
+  Termination_Helpers::all_affine_ranking_functions_PR(cs_before, cs_after, mu_space);
+}
+
+void
+all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                         NNC_Polyhedron& mu_space) {
+  Termination_Helpers::all_affine_ranking_functions_PR_original(cs, mu_space);
+}
+
+} // namespace Termination
+
+} // namespace Implementation
+
+bool
+Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_before,
+                                                    const Constraint_System& cs_after,
+                                                    Generator& mu) {
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
-  fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
@@ -686,19 +697,12 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
   le += 0*Variable(n);
   // Multiply u_3 by E'_C to obtain mu_1, ..., mu_n.
   dimension_type row_index = 0;
-  PPL_DIRTY_TEMP_COEFFICIENT(k);
   for (Constraint_System::const_iterator i = cs_after.begin(),
          cs_after_end = cs_after.end();
        i != cs_after_end;
        ++i, ++row_index) {
-    Variable vi(row_index);
-    Coefficient_traits::const_reference fp_i = fp.coefficient(vi);
-    const Constraint& c_i = *i;
-    for (dimension_type j = n; j-- > 0; ) {
-      Variable vj(j);
-      k = fp_i * c_i.coefficient(vj);
-      sub_mul_assign(le, k, vj);
-    }
+    Coefficient_traits::const_reference fp_i = fp.coefficient(Variable(row_index));
+    le.linear_combine(i->expression(), 1, -fp_i, 1, n + 1);
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
@@ -706,15 +710,15 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
 }
 
 bool
-one_affine_ranking_function_PR_original(const Constraint_System& cs,
-                                        Generator& mu) {
+Termination_Helpers::one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                                             Generator& mu) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = std::distance(cs.begin(), cs.end());
 
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
-  fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
 
 #if PRINT_DEBUG_INFO
   std::cout << "*** cs_mip ***" << std::endl;
@@ -739,20 +743,12 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
   // Multiply -lambda_2 by A' to obtain mu_1, ..., mu_n.
   // lambda_2 corresponds to space dimensions m, ..., 2*m - 1.
   dimension_type row_index = m;
-  PPL_DIRTY_TEMP_COEFFICIENT(k);
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
     Variable lambda_2(row_index);
     Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
-    if (fp_i != 0) {
-      const Constraint& c_i = *i;
-      for (dimension_type j = n; j-- > 0; ) {
-        Variable vj(j);
-        Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
-        k = fp_i * Ap_ij;
-        sub_mul_assign(le, k, vj);
-      }
-    }
+    if (fp_i != 0)
+      le.linear_combine(i->expression(), 1, -fp_i, 1, n + 1);
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
@@ -760,12 +756,12 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
 }
 
 void
-all_affine_ranking_functions_PR(const Constraint_System& cs_before,
-				const Constraint_System& cs_after,
-				NNC_Polyhedron& mu_space) {
+Termination_Helpers::all_affine_ranking_functions_PR(const Constraint_System& cs_before,
+                                                     const Constraint_System& cs_after,
+                                                     NNC_Polyhedron& mu_space) {
   Constraint_System cs_eqs;
   Linear_Expression le_ineq;
-  fill_constraint_system_PR(cs_before, cs_after, cs_eqs, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR(cs_before, cs_after, cs_eqs, le_ineq);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
@@ -808,41 +804,34 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
     for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
       const Generator& g = *gs_in_it;
       Linear_Expression le;
+      le.set_space_dimension(n);
       // Set le to the multiplication of Linear_Expression(g) by E'_C.
       dimension_type row_index = 0;
-      PPL_DIRTY_TEMP_COEFFICIENT(k);
       for (Constraint_System::const_iterator i = cs_after.begin(),
-	     cs_after_end = cs_after.end();
-	   i != cs_after_end;
-	   ++i, ++row_index) {
-	Variable vi(row_index);
-	Coefficient_traits::const_reference g_i = g.coefficient(vi);
-	if (g_i != 0) {
-	  const Constraint& c_i = *i;
-	  for (dimension_type j = n; j-- > 0; ) {
-	    Variable vj(j);
-	    k = g_i * c_i.coefficient(vj);
-	    sub_mul_assign(le, k, vj);
-	  }
-	}
+             cs_after_end = cs_after.end();
+           i != cs_after_end;
+           ++i, ++row_index) {
+        Coefficient_traits::const_reference g_i = g.coefficient(Variable(row_index));
+        if (g_i != 0)
+          le.linear_combine(i->expression(), 1, -g_i, 1, n + 1);
       }
 
       // Add to gs_out the transformed generator.
       switch (g.type()) {
       case Generator::LINE:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(line(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(line(le));
+        break;
       case Generator::RAY:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(ray(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(ray(le));
+        break;
       case Generator::POINT:
-	gs_out.insert(point(le, g.divisor()));
-	break;
+        gs_out.insert(point(le, g.divisor()));
+        break;
       case Generator::CLOSURE_POINT:
-	gs_out.insert(closure_point(le, g.divisor()));
-	break;
+        gs_out.insert(closure_point(le, g.divisor()));
+        break;
       }
     }
 
@@ -853,8 +842,8 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 }
 
 void
-all_affine_ranking_functions_PR_original(const Constraint_System& cs,
-                                         NNC_Polyhedron& mu_space) {
+Termination_Helpers::all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                                              NNC_Polyhedron& mu_space) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = distance(cs.begin(), cs.end());
@@ -868,7 +857,7 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
 
   Constraint_System cs_eqs;
   Linear_Expression le_ineq;
-  fill_constraint_system_PR_original(cs, cs_eqs, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR_original(cs, cs_eqs, le_ineq);
 
   NNC_Polyhedron ph(cs_eqs);
   ph.add_constraint(le_ineq < 0);
@@ -895,40 +884,33 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
     for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
       const Generator& g = *gs_in_it;
       Linear_Expression le;
+      le.set_space_dimension(n);
       // Set le to the multiplication of Linear_Expression(g) by E'_C.
       dimension_type row_index = 0;
-      PPL_DIRTY_TEMP_COEFFICIENT(k);
       for (Constraint_System::const_iterator i = cs.begin(),
-	     cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-	Variable lambda2_i(row_index);
-	Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
-	if (g_i != 0) {
-	  const Constraint& c_i = *i;
-	  for (dimension_type j = n; j-- > 0; ) {
-	    Variable vj(j);
-	    Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
-	    k = g_i * Ap_ij;
-	    sub_mul_assign(le, k, vj);
-	  }
-	}
+             cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+        Variable lambda2_i(row_index);
+        Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
+        if (g_i != 0)
+          le.linear_combine(i->expression(), 1, -g_i, 1, n + 1);
       }
 
       // Add to gs_out the transformed generator.
       switch (g.type()) {
       case Generator::LINE:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(line(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(line(le));
+        break;
       case Generator::RAY:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(ray(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(ray(le));
+        break;
       case Generator::POINT:
-	gs_out.insert(point(le, g.divisor()));
-	break;
+        gs_out.insert(point(le, g.divisor()));
+        break;
       case Generator::CLOSURE_POINT:
-	gs_out.insert(closure_point(le, g.divisor()));
-	break;
+        gs_out.insert(closure_point(le, g.divisor()));
+        break;
       }
     }
 
@@ -937,9 +919,5 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
     mu_space.add_space_dimensions_and_embed(1);
   }
 }
-
-} // namespace Termination
-
-} // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
