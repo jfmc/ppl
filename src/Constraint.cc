@@ -62,41 +62,32 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 }
 
 PPL::Constraint::Constraint(const Congruence& cg)
-  : expr(),
+  : expr(cg),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
   if (!cg.is_equality())
     throw_invalid_argument("Constraint(cg)",
                            "congruence cg must be an equality.");
-  expr.set_space_dimension(cg.space_dimension());
-  // Copy coefficients and inhomogeneous term.
-  for (dimension_type i = cg.space_dimension(); i-- > 0; )
-    expr.set_coefficient(Variable(i), cg.coefficient(Variable(i)));
-  expr.set_inhomogeneous_term(cg.inhomogeneous_term());
+
   // Enforce normalization.
   strong_normalize();
-  
+
   PPL_ASSERT(OK());
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
 			    dimension_type sz,
 			    dimension_type /* capacity */)
-  : expr(),
+  : expr(cg, sz),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
   PPL_ASSERT(sz != 0);
   if (!cg.is_equality())
     throw_invalid_argument("Constraint(cg)",
                            "congruence cg must be an equality.");
-  expr.set_space_dimension(sz - 1);
-  // Copy coefficients.
-  PPL_ASSERT(sz > 0);
-  --sz;
-  while (sz-- > 0)
-    expr.set_coefficient(Variable(sz), cg.coefficient(Variable(sz)));
-  expr.set_inhomogeneous_term(cg.inhomogeneous_term());
-  
+
+  // FIXME: normalize cg here.
+
   PPL_ASSERT(OK());
 }
 
