@@ -623,6 +623,17 @@ private:
   //! Removes from the set x all the indexes of nonzero elements of *this.
   void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
 
+  //! Returns \p true if (*this)[i] is equal to x[i], for each i in [start,end).
+  bool is_equal_to(const Linear_Expression& x,
+                   dimension_type start, dimension_type end) const;
+
+  //! Returns \p true if (*this)[i]*c1 is equal to x[i]*c2, for each i in
+  //! [start,end).
+  bool is_equal_to(const Linear_Expression& x,
+                   Coefficient_traits::const_reference c1,
+                   Coefficient_traits::const_reference c2,
+                   dimension_type start, dimension_type end) const;
+
   template <typename Row>
   friend class Linear_Expression_Impl;
 

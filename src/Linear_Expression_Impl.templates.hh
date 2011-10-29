@@ -868,6 +868,106 @@ Linear_Expression_Impl<Row>
 }
 
 template <typename Row>
+template <typename Row2>
+bool
+Linear_Expression_Impl<Row>
+::is_equal_to(const Linear_Expression_Impl<Row2>& y,
+              dimension_type start, dimension_type end) const {
+  const Linear_Expression_Impl<Row>& x = *this;
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= x.row.size());
+  PPL_ASSERT(end <= y.row.size());
+
+  typename Row::const_iterator i = x.row.lower_bound(start);
+  typename Row::const_iterator i_end = x.row.lower_bound(end);
+  typename Row2::const_iterator j = y.row.lower_bound(start);
+  typename Row2::const_iterator j_end = y.row.lower_bound(end);
+  while (i != i_end && j != j_end) {
+    if (i.index() == j.index()) {
+      if (*i != *j)
+        return false;
+      ++i;
+      ++j;
+    } else {
+      if (i.index() < j.index()) {
+        if (*i != 0)
+          return false;
+        ++i;
+      } else {
+        PPL_ASSERT(i.index() > j.index());
+        if (*j != 0)
+          return false;
+        ++j;
+      }
+    }
+  }
+  for ( ; i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  for ( ; j != j_end; ++j)
+    if (*j != 0)
+      return false;
+  return true;
+}
+
+template <typename Row>
+template <typename Row2>
+bool
+Linear_Expression_Impl<Row>
+::is_equal_to(const Linear_Expression_Impl<Row2>& y,
+              Coefficient_traits::const_reference c1,
+              Coefficient_traits::const_reference c2,
+              dimension_type start, dimension_type end) const {
+  const Linear_Expression_Impl<Row>& x = *this;
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= x.row.size());
+  PPL_ASSERT(end <= y.row.size());
+
+  // Deal with trivial cases.
+  if (c1 == 0) {
+    if (c2 == 0)
+      return true;
+    else
+      return y.all_zeroes(start, end);
+  }
+  if (c2 == 0)
+    return x.all_zeroes(start, end);
+
+  PPL_ASSERT(c1 != 0);
+  PPL_ASSERT(c2 != 0);
+  typename Row::const_iterator i = x.row.lower_bound(start);
+  typename Row::const_iterator i_end = x.row.lower_bound(end);
+  typename Row2::const_iterator j = y.row.lower_bound(start);
+  typename Row2::const_iterator j_end = y.row.lower_bound(end);
+  while (i != i_end && j != j_end) {
+    if (i.index() == j.index()) {
+      if ((*i) * c1 != (*j) * c2)
+        return false;
+      ++i;
+      ++j;
+    } else {
+      if (i.index() < j.index()) {
+        if (*i != 0)
+          return false;
+        ++i;
+      } else {
+        PPL_ASSERT(i.index() > j.index());
+        if (*j != 0)
+          return false;
+        ++j;
+      }
+    }
+  }
+  for ( ; i != i_end; ++i)
+    if (*i != 0)
+      return false;
+  for ( ; j != j_end; ++j)
+    if (*j != 0)
+      return false;
+  return true;
+}
+
+template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {
@@ -1129,6 +1229,40 @@ Linear_Expression_Impl<Row>
     return scalar_product_sign(*p, start, end);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
     return scalar_product_sign(*p, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return 0;
+  }
+}
+
+template <typename Row>
+bool
+Linear_Expression_Impl<Row>
+::is_equal_to(const Linear_Expression_Interface& y,
+              dimension_type start, dimension_type end) const {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    return is_equal_to(*p, start, end);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    return is_equal_to(*p, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return 0;
+  }
+}
+
+template <typename Row>
+bool
+Linear_Expression_Impl<Row>
+::is_equal_to(const Linear_Expression_Interface& y,
+              Coefficient_traits::const_reference c1,
+              Coefficient_traits::const_reference c2,
+              dimension_type start, dimension_type end) const {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    return is_equal_to(*p, c1, c2, start, end);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    return is_equal_to(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);

@@ -486,6 +486,23 @@ public:
   //! Removes from the set x all the indexes of nonzero elements of *this.
   virtual void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
   
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns \p true if (*this)[i] is equal to x[i], for each i in [start,end).
+  virtual bool is_equal_to(const Linear_Expression_Interface& x,
+                           dimension_type start, dimension_type end) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns \p true if (*this)[i]*c1 is equal to x[i]*c2, for each i in
+  //! [start,end).
+  virtual bool is_equal_to(const Linear_Expression_Interface& x,
+                           Coefficient_traits::const_reference c1,
+                           Coefficient_traits::const_reference c2,
+                           dimension_type start, dimension_type end) const;
+
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with
@@ -613,6 +630,19 @@ public:
   template <typename Row2>
   int scalar_product_sign(const Linear_Expression_Impl<Row2>& y,
                           dimension_type start, dimension_type end) const;
+
+  //! Returns \p true if (*this)[i] is equal to x[i], for each i in [start,end).
+  template <typename Row2>
+  bool is_equal_to(const Linear_Expression_Impl<Row2>& x,
+                   dimension_type start, dimension_type end) const;
+
+  //! Returns \p true if (*this)[i]*c1 is equal to x[i]*c2, for each i in
+  //! [start,end).
+  template <typename Row2>
+  bool is_equal_to(const Linear_Expression_Impl<Row2>& x,
+                   Coefficient_traits::const_reference c1,
+                   Coefficient_traits::const_reference c2,
+                   dimension_type start, dimension_type end) const;
 private:
 
   void construct(const Linear_Expression_Interface& e);

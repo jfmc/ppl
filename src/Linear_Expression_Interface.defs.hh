@@ -347,8 +347,28 @@ public:
   virtual int scalar_product_sign(const Linear_Expression_Interface& y,
                                   dimension_type start, dimension_type end) const = 0;
 
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
   //! Removes from the set x all the indexes of nonzero elements of *this.
   virtual void has_a_free_dimension_helper(std::set<dimension_type>& x) const = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns \p true if (*this)[i] is equal to x[i], for each i in [start,end).
+  virtual bool is_equal_to(const Linear_Expression_Interface& x,
+                           dimension_type start, dimension_type end) const = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns \p true if (*this)[i]*c1 is equal to x[i]*c2, for each i in
+  //! [start,end).
+  virtual bool is_equal_to(const Linear_Expression_Interface& x,
+                           Coefficient_traits::const_reference c1,
+                           Coefficient_traits::const_reference c2,
+                           dimension_type start, dimension_type end) const = 0;
 };
 
 #endif // !defined(PPL_Linear_Expression_Interface_defs_hh)

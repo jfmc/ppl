@@ -506,6 +506,21 @@ Linear_Expression
   return impl->has_a_free_dimension_helper(x);
 }
 
+inline bool
+Linear_Expression
+::is_equal_to(const Linear_Expression& x,
+              dimension_type start, dimension_type end) const {
+  return impl->is_equal_to(*(x.impl), start, end);
+}
+
+inline bool
+Linear_Expression
+::is_equal_to(const Linear_Expression& x,
+              Coefficient_traits::const_reference c1,
+              Coefficient_traits::const_reference c2,
+              dimension_type start, dimension_type end) const {
+  return impl->is_equal_to(*(x.impl), c1, c2, start, end);
+}
 
 namespace IO_Operators {
   
