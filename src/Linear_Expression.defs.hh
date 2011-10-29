@@ -528,6 +528,15 @@ private:
   */
   Linear_Expression(dimension_type sz, bool);
 
+  //! Builds the linear expression corresponding to congruence \p cg, and
+  //! with the specified size.
+  /*!
+    Given the congruence
+    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
+    this builds the linear expression \f$\sum_{i=0}^{sz-1} a_i x_i + b\f$.
+  */
+  Linear_Expression(const Congruence& cg, dimension_type sz);
+
   Coefficient& operator[](dimension_type i);
   const Coefficient& operator[](dimension_type i) const;
   //! Equivalent to the const version of operator[].

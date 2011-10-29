@@ -58,6 +58,10 @@ PPL::Linear_Expression::Linear_Expression(dimension_type sz, bool x)
   : impl(new Linear_Expression_Impl<Dense_Row>(sz, x)) {
 }
 
+PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz)
+  : impl(new Linear_Expression_Impl<Dense_Row>(c, sz)) {
+}
+
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e)
   : impl(new Linear_Expression_Impl<Dense_Row>(*e.impl)) {
 }

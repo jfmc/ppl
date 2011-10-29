@@ -76,6 +76,11 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Inte
 }
 
 template <typename Row>
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg, dimension_type sz) {
+  construct(*(cg.expression().impl), sz);
+}
+
+template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>
