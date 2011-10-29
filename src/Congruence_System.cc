@@ -203,26 +203,7 @@ PPL::Congruence_System::normalize_moduli() {
 
 bool
 PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
-  if (num_rows() != cgs.num_rows())
-    return false;
-
-  PPL_ASSERT(num_columns() >= 2);
-  PPL_ASSERT(cgs.num_columns() >= 2);
-
-  // FIXME: What happens when num_columns() != cgs.num_columns()?
-
-  for (dimension_type row = cgs.num_rows(); row-- > 0; ) {
-    for (dimension_type col = cgs.num_columns() - 2; col-- > 0; )
-      if ((*this)[row].coefficient(Variable(col))
-          != cgs[row].coefficient(Variable(col)))
-        return false;
-
-    if ((*this)[row].inhomogeneous_term() != cgs[row].inhomogeneous_term())
-      return false;
-    if ((*this)[row].modulus() != cgs[row].modulus())
-      return false;
-  }
-  return true;
+  return (*this) == cgs;
 }
 
 bool
@@ -430,18 +411,14 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
 /*! \relates Parma_Polyhedra_Library::Congruence_System */
 bool
 PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
-  if (x.num_columns() == y.num_columns()) {
-    dimension_type num_rows = x.num_rows();
-    if (num_rows == y.num_rows()) {
-      while (num_rows--) {
-	if (x[num_rows] == y[num_rows])
-	  continue;
-	return false;
-      }
-      return true;
-    }
-  }
-  return false;
+  if (x.num_rows() != y.num_rows())
+    return false;
+
+  for (dimension_type i = x.num_rows(); i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+
+  return true;
 }
 
 void
