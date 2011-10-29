@@ -106,7 +106,8 @@ private:
   //! This is used for node heights and depths in the tree.
   typedef unsigned height_t;
 
-  PPL_COMPILE_TIME_CHECK(C_Integer<height_t>::max >= CHAR_BITS*sizeof(dimension_type),
+  PPL_COMPILE_TIME_CHECK(C_Integer<height_t>::max
+                         >= CHAR_BITS*sizeof(dimension_type),
                          "height_t is too small to store depths.");
 
   class tree_iterator;
