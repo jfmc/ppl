@@ -286,6 +286,12 @@ Constraint_System
 
 inline void
 Constraint_System
+::shift_space_dimensions(Variable v, dimension_type n) {
+  sys.shift_space_dimensions(v, n);
+}
+
+inline void
+Constraint_System
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   sys.permute_space_dimensions(cycle);
 }

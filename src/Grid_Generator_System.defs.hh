@@ -443,6 +443,11 @@ public:
   void remove_space_dimensions(const Variables_Set& vars);
 
   // TODO: Consider making this private.
+  //! Shift by \p n positions the coefficients of variables, starting from
+  //! the coefficient of \p v. This increases the space dimension by \p n.
+  void shift_space_dimensions(Variable v, dimension_type n);
+
+  // TODO: Consider making this private.
   //! Sets the index to indicate that the system has no pending rows.
   void unset_pending_rows();
 

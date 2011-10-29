@@ -265,6 +265,12 @@ PPL::Grid_Generator_System
 
 void
 PPL::Grid_Generator_System
+::shift_space_dimensions(Variable v, dimension_type n) {
+  sys.shift_space_dimensions(v, n);
+}
+
+void
+PPL::Grid_Generator_System
 ::set_space_dimension(const dimension_type new_dimension) {
   sys.set_space_dimension(new_dimension);
   PPL_ASSERT(OK());

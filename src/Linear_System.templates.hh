@@ -349,6 +349,16 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
 
 template <typename Row>
 void
+Linear_System<Row>::shift_space_dimensions(Variable v, dimension_type n) {
+  PPL_ASSERT(v.space_dimension() <= space_dimension());
+  for (dimension_type i = rows.size(); i-- > 0; )
+    rows[i].expression().shift_space_dimensions(v, n);
+  space_dimension_ += n;
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+void
 Linear_System<Row>::sort_rows() {
   // We sort the non-pending rows only.
   sort_rows(0, first_pending_row());

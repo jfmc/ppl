@@ -107,6 +107,12 @@ Generator_System
 
 inline void
 Generator_System
+::shift_space_dimensions(Variable v, dimension_type n) {
+  sys.shift_space_dimensions(v, n);
+}
+
+inline void
+Generator_System
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   sys.permute_space_dimensions(cycle);
 }
