@@ -99,7 +99,7 @@ CO_Tree::size() const {
 
 inline dimension_type
 CO_Tree::max_size() {
-  return (-dimension_type(1))/100;
+  return C_Integer<dimension_type>::max/100;
 }
 
 inline void
