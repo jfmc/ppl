@@ -84,7 +84,7 @@ Dense_Row::Dense_Row()
 inline
 Dense_Row::Dense_Row(Flags f)
   : impl() {
-  
+
   impl.flags = f;
 
   PPL_ASSERT(OK());
@@ -154,7 +154,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
       ++impl.size;
     }
   }
-  
+
   PPL_ASSERT(size() == y.size());
   PPL_ASSERT(impl.capacity = capacity);
   PPL_ASSERT(OK());
@@ -169,13 +169,13 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(sz <= capacity);
   PPL_ASSERT(capacity <= max_size());
   PPL_ASSERT(capacity != 0);
-  
+
   impl.flags = y.flags();
-  
+
   impl.vec = static_cast<Coefficient*>(
       operator new(sizeof(Coefficient) * capacity));
   impl.capacity = capacity;
-  
+
   dimension_type n = std::min(sz, y.size());
   while (impl.size != n) {
     new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
@@ -185,7 +185,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
     new (&impl.vec[impl.size]) Coefficient();
     ++impl.size;
   }
-  
+
   PPL_ASSERT(size() == sz);
   PPL_ASSERT(impl.capacity = capacity);
   PPL_ASSERT(OK());
@@ -214,7 +214,7 @@ Dense_Row::swap(Dense_Row& y) {
 
 inline Dense_Row&
 Dense_Row::operator=(const Dense_Row& y) {
-  
+
   Dense_Row x(y);
   std::swap(*this, x);
 

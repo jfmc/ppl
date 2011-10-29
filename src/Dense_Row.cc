@@ -45,13 +45,13 @@ PPL::Dense_Row::resize(dimension_type new_size) {
       dimension_type new_capacity = new_size;
       Coefficient* new_vec = static_cast<Coefficient*>(
           operator new(sizeof(Coefficient) * new_capacity));
-      
+
       if (impl.vec != 0) {
         memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
-        
+
         operator delete(impl.vec);
       }
-      
+
       impl.vec = new_vec;
       impl.capacity = new_capacity;
     }
@@ -69,56 +69,56 @@ PPL::Dense_Row::resize(dimension_type new_size) {
 void
 PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
   PPL_ASSERT(new_size <= new_capacity);
-  
+
   if (new_capacity == 0) {
     destroy();
     impl.vec = 0;
     impl.size = 0;
     impl.capacity = 0;
-    
+
     PPL_ASSERT(size() == new_size);
     PPL_ASSERT(capacity() == new_capacity);
     PPL_ASSERT(OK());
-    
+
     return;
   }
-  
+
   if (new_capacity < capacity()) {
-    
+
     shrink(new_size);
-    
+
     PPL_ASSERT(impl.size == new_size);
-    
+
     Coefficient* new_vec = static_cast<Coefficient*>(
         operator new(sizeof(Coefficient) * new_capacity));
-    
+
     PPL_ASSERT(impl.vec != 0);
-    
+
     memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
-    
+
     operator delete(impl.vec);
-    
+
     impl.vec = new_vec;
     impl.capacity = new_capacity;
   } else {
     if (new_capacity > capacity()) {
-      
+
       Coefficient* new_vec = static_cast<Coefficient*>(
           operator new(sizeof(Coefficient) * new_capacity));
-      
+
       if (impl.vec != 0) {
         memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
-        
+
         operator delete(impl.vec);
       }
-      
+
       impl.vec = new_vec;
       impl.capacity = new_capacity;
-      
+
       resize(new_size);
     }
   }
-  
+
   PPL_ASSERT(size() == new_size);
   PPL_ASSERT(capacity() == new_capacity);
   PPL_ASSERT(OK());
@@ -147,7 +147,7 @@ PPL::Dense_Row::shrink(dimension_type new_size) {
     --impl.size;
     impl.vec[impl.size].~Coefficient();
   }
-  
+
   PPL_ASSERT(size() == new_size);
   PPL_ASSERT(OK());
 }
@@ -387,7 +387,7 @@ PPL::Dense_Row::OK() const {
 #endif
     is_broken = true;
   }
-  
+
   if (capacity() == 0) {
     if (impl.vec != 0)
       is_broken = true;
@@ -434,7 +434,7 @@ bool
 PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   const dimension_type x_size = x.size();
   const dimension_type y_size = y.size();
-  
+
   if (x_size != y_size)
     return false;
 
