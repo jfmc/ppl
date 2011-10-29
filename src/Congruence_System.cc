@@ -50,22 +50,9 @@ PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
 void
 PPL::Congruence_System
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  const dimension_type n = cycle.size();
-  if (n < 2)
-    // No-op.
-    return;
-
-  if (n == 2) {
-    swap_space_dimensions(cycle[0], cycle[1]);
-  } else {
-    PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    for (dimension_type k = rows.size(); k-- > 0; ) {
-      Congruence& rows_k = rows[k];
-      tmp = rows_k.coefficient(cycle.back());
-      for (dimension_type i = n - 1; i-- > 0; )
-        rows_k.swap_space_dimensions(cycle[i + 1], cycle[i]);
-      std::swap(tmp, rows_k[cycle[0].space_dimension()]);
-    }
+  for (dimension_type k = rows.size(); k-- > 0; ) {
+    Congruence& rows_k = rows[k];
+    rows_k.expression().permute_space_dimensions(cycle);
   }
   PPL_ASSERT(OK());
 }
