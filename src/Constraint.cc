@@ -145,13 +145,9 @@ PPL::Constraint::is_tautological() const {
 	  // where k is a non negative integer, cannot be trivially true.
 	  return false;
 	// Checking for another non-zero coefficient.
-        // TODO: Optimize this.
-	for (dimension_type i = expr.space_dimension() - 1; i-- > 0; )
-	  if (expr.coefficient(Variable(i)) != 0)
-	    return false;
-	// We have the inequality `k > 0',
-	// where k is a positive integer.
-	return true;
+        // If the check succeeds, we have the inequality `k > 0',
+        // where k is a positive integer.
+        return expr.all_zeroes(1, expr.space_dimension());
       }
     }
 }
@@ -182,14 +178,10 @@ PPL::Constraint::is_inconsistent() const {
 	  // A strict inequality such as `lhs + k > 0',
 	  // where k is a positive integer, cannot be trivially false.
 	  return false;
-	// Checking for another non-zero coefficient.
-        // TODO: Optimize this.
-	for (dimension_type i = expr.space_dimension() - 1; i-- > 0; )
-	  if (expr.coefficient(Variable(i)) != 0)
-	    return false;
-	// We have the inequality `k > 0',
-	// where k is zero or a negative integer.
-	return true;
+        // Checking for another non-zero coefficient.
+        // If the check succeeds, we have the inequality `k > 0',
+        // where k is a positive integer.
+        return expr.all_zeroes(1, expr.space_dimension());
       }
     }
 }
