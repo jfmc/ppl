@@ -496,6 +496,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   assign_r(y_div, y.divisor(), ROUND_NOT_NEEDED);
 
   assign_r(tmp0, 0, ROUND_NOT_NEEDED);
+  // TODO: This loop can be optimized more, if needed.
   for (dimension_type i = x_space_dim; i-- > 0; ) {
     assign_r(x_coord, x.coefficient(Variable(i)), ROUND_NOT_NEEDED);
     div_assign_r(x_coord, x_coord, x_div, ROUND_NOT_NEEDED);

@@ -227,6 +227,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (dimension_type j = space_dim; j-- > 0; ) {
+      // TODO: This code could be optimized more (if it's useful).
       const Coefficient& c = old_g.coefficient(Variable(j));
       if (c != 0 && pfunc_maps[j] != not_a_dimension()) {
 	e += Variable(pfunc_maps[j]) * c;
