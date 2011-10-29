@@ -48,6 +48,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Box.types.hh"
 #include "Congruence_System.types.hh"
 #include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -657,6 +658,7 @@ private:
   friend class Box_Helpers;
   friend class Congruence_System;
   friend class BD_Shape_Helpers;
+  friend class Octagonal_Shape_Helper;
   template <typename T>
   friend class Linear_System;
 

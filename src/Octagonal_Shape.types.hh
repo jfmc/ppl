@@ -18,6 +18,8 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class Octagonal_Shape;
 
+class Octagonal_Shape_Helper;
+
 }
 
 #endif // !defined(PPL_Octagonal_Shape_types_hh)

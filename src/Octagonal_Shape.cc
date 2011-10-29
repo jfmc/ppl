@@ -31,71 +31,73 @@ namespace PPL = Parma_Polyhedra_Library;
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
-PPL::extract_octagonal_difference(const Constraint& c,
-				  const dimension_type c_space_dim,
-				  dimension_type& c_num_vars,
-				  dimension_type& c_first_var,
-				  dimension_type& c_second_var,
-				  Coefficient& c_coeff,
-				  Coefficient& c_term) {
+PPL::Octagonal_Shape_Helper
+::extract_octagonal_difference(const Constraint& c,
+                               const dimension_type c_space_dim,
+                               dimension_type& c_num_vars,
+                               dimension_type& c_first_var,
+                               dimension_type& c_second_var,
+                               Coefficient& c_coeff,
+                               Coefficient& c_term) {
   // Check for preconditions.
   PPL_ASSERT(c.space_dimension() == c_space_dim);
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
-  // Store the indices of the non-zero components of `c',
-  dimension_type non_zero_index[2] = { 0, 0 };
-  // Collect the non-zero components of `c'.
-  for (dimension_type i = c_space_dim; i-- > 0; )
-    if (c.coefficient(Variable(i)) != 0) {
-      if (c_num_vars <= 1)
-	non_zero_index[c_num_vars++] = i;
-      else
-	// Constraint `c' is not an octagonal difference.
-	return false;
+
+  c_first_var = c.expression().first_nonzero(1, c_space_dim + 1);
+
+  if (c_first_var == c_space_dim + 1) {
+    c_term = c.inhomogeneous_term();
+    return true;
+  }
+  
+  c_num_vars++;
+  --c_first_var;
+
+  c_second_var = c.expression().first_nonzero(c_first_var + 2, c_space_dim + 1);
+
+  if (c_second_var == c_space_dim + 1) {
+    c_term = c.inhomogeneous_term();
+    const Coefficient& c0 = c.coefficient(Variable(c_first_var));
+    c_term *= 2;
+    c_first_var *= 2;
+    if (sgn(c0) < 0) {
+      c_second_var = c_first_var;
+      ++c_first_var;
     }
+    else
+      c_second_var = c_first_var + 1;
+    c_coeff = c0;
+    return true;
+  }
+
+  c_num_vars++;
+  --c_second_var;
+
+  if (!c.expression().all_zeroes(c_second_var + 2, c_space_dim + 1))
+    return false;
+
+  // FIXME: The calling code expects c_first_var > c_second_var, when
+  // c_num_vars==2, but it shouldn't.
+  std::swap(c_first_var, c_second_var);
 
   // Make sure that `c' is indeed an octagonal difference,
-  // i.e., it has one of the following forms:
-  //           0           <=/= b, if c_num_vars == 0;
-  //   (+/-) a*x           <=/= b, if c_num_vars == 1;
-  //   (+/-) a*x (+/-) a*y <=/= b, if c_num_vars == 2.
+  // i.e., it is of this form:
+  //   (+/-) a*x (+/-) a*y <=/= b.
   c_term = c.inhomogeneous_term();
-  switch (c_num_vars) {
-  case 2:
-    {
-      const Coefficient& c0 = c.coefficient(Variable(non_zero_index[0]));
-      const Coefficient& c1 = c.coefficient(Variable(non_zero_index[1]));
-      if (c0 != c1 && c0 != -c1)
-	// Constraint `c' is not an octagonal difference.
-	return false;
-      c_first_var = non_zero_index[0];
-      c_second_var = non_zero_index[1];
-      c_first_var *= 2;
-      if (sgn(c0) < 0)
-	++c_first_var;
-      c_second_var *= 2;
-      if (sgn(c1) > 0)
-	++c_second_var;
-      c_coeff = c0;
-    }
-    break;
-  case 1:
-    {
-      c_term *= 2;
-      c_first_var = non_zero_index[0];
-      c_first_var *= 2;
-      if (sgn(c.coefficient(Variable(non_zero_index[0]))) < 0) {
-	c_second_var = c_first_var;
-	++c_first_var;
-      }
-      else
-	c_second_var = c_first_var + 1;
-      c_coeff = c.coefficient(Variable(non_zero_index[0]));
-    }
-    break;
-  default:
-    PPL_ASSERT(c_num_vars == 0);
-    break;
-  }
+  const Coefficient& c0 = c.coefficient(Variable(c_first_var));
+  const Coefficient& c1 = c.coefficient(Variable(c_second_var));
+  if (c0 != c1 && c0 != -c1)
+    // Constraint `c' is not an octagonal difference.
+    return false;
+  
+  c_first_var *= 2;
+  c_second_var *= 2;
+  if (sgn(c0) < 0)
+    ++c_first_var;
+  if (sgn(c1) > 0)
+    ++c_second_var;
+  c_coeff = c0;
+  
   return true;
 }
 

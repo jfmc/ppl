@@ -393,8 +393,9 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(term);
   // Constraints that are not octagonal differences are not allowed.
-  if (!extract_octagonal_difference(c, c_space_dim, num_vars,
-                                    i, j, coeff, term))
+  if (!Octagonal_Shape_Helper
+    ::extract_octagonal_difference(c, c_space_dim, num_vars,
+                                   i, j, coeff, term))
     throw_generic("add_constraint(c)",
                   "c is not an octagonal constraint");
 
@@ -489,8 +490,9 @@ Octagonal_Shape<T>::refine_no_check(const Constraint& c) {
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(term);
   // Constraints that are not octagonal differences are ignored.
-  if (!extract_octagonal_difference(c, c_space_dim, num_vars,
-                                    i, j, coeff, term))
+  if (!Octagonal_Shape_Helper
+    ::extract_octagonal_difference(c, c_space_dim, num_vars,
+                                   i, j, coeff, term))
     return;
 
   if (num_vars == 0) {
@@ -1167,7 +1169,8 @@ Octagonal_Shape<T>::bounds(const Linear_Expression& expr,
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(term);
-  if (extract_octagonal_difference(c, c.space_dimension(), num_vars,
+  if (Octagonal_Shape_Helper
+    ::extract_octagonal_difference(c, c.space_dimension(), num_vars,
                                    i, j, coeff, term)) {
     if (num_vars == 0)
       return true;
@@ -1223,8 +1226,9 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(term);
-  if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
-                                    i, j, coeff, term)) {
+  if (!Octagonal_Shape_Helper
+    ::extract_octagonal_difference(c, c.space_dimension(), num_vars,
+                                   i, j, coeff, term)) {
     // `c' is not an octagonal constraint: use the MIP solver.
     Optimization_Mode max_min = (maximize) ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, max_min);
@@ -1468,8 +1472,9 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(c_term);
-  if (!extract_octagonal_difference(c, c_space_dim, num_vars,
-                                    i, j, coeff, c_term)) {
+  if (!Octagonal_Shape_Helper
+    ::extract_octagonal_difference(c, c_space_dim, num_vars,
+                                   i, j, coeff, c_term)) {
     // Constraints that are not octagonal differences.
     // Use maximize() and minimize() to do much of the work.
 
@@ -3263,8 +3268,9 @@ Octagonal_Shape<T>
     dimension_type i = 0;
     dimension_type j = 0;
     // Constraints that are not octagonal differences are ignored.
-    if (!extract_octagonal_difference(c, cs_space_dim, num_vars, i, j,
-                                      coeff, term))
+    if (!Octagonal_Shape_Helper
+      ::extract_octagonal_difference(c, cs_space_dim, num_vars, i, j,
+                                     coeff, term))
       continue;
 
     typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
