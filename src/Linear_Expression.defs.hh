@@ -664,6 +664,8 @@ private:
   template <typename T>
   friend class BD_Shape;
   template <typename T>
+  friend class Octagonal_Shape;
+  template <typename T>
   friend class Linear_System;
 
   friend Linear_Expression
