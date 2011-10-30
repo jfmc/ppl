@@ -272,7 +272,7 @@ parse_number_part(std::istream& is, number_struct& num) {
   {
   ok:
     is.unget();
-    unsigned int n = num.mantissa.size();
+    std::string::size_type n = num.mantissa.size();
     while (n > 0 && num.mantissa[n - 1] == '0') {
       --n;
       ++exponent_offset;
