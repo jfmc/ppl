@@ -489,7 +489,7 @@ void
 normalize(const std::vector<mpq_class>& source,
 	  std::vector<mpz_class>& dest,
 	  mpz_class& denominator) {
-  typedef std::vector<mpq_class> size_type;
+  typedef std::vector<mpq_class>::size_type size_type;
   size_type n = source.size();
   denominator = 1;
   for (size_type i = 0; i < n; ++i)
