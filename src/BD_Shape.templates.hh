@@ -4890,7 +4890,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     // Approximate the inhomogeneous term.
     assign_r(sum, minus_sc_b, ROUND_UP);
     // Approximate the homogeneous part of `-sc_expr'.
-    for (dimension_type i = expr_space_dim + 1; i > 0; --i) {
+    for (dimension_type i = expr_space_dim; i > 0; --i) {
       const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
       const int sign_i = sgn(sc_i);
       if (sign_i == 0)
