@@ -203,7 +203,8 @@ Checked_Number<T, Policy>::Checked_Number(const From&, typename Enable_If<Is_Spe
 }
 
 template <typename To, typename From>
-inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Special<From>::value, Result>::type
+inline typename Enable_If<Is_Native_Or_Checked<To>::value
+                          && Is_Special<From>::value, Result>::type
 assign_r(To& to, const From&, Rounding_Dir dir) {
   return check_result(Checked::assign_special<typename Native_Checked_To_Wrapper<To>
 		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),

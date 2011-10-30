@@ -507,7 +507,8 @@ assign(Boundary_Type to_type, To& to, To_Info& to_info,
   }
   shrink = shrink || normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+		|| (!shrink && (To_Info::store_open
+                                || to_info.has_restriction())));
   Result r = assign_r(to, x, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
