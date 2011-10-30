@@ -1977,6 +1977,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   Coefficient_traits::const_reference p_divisor = p.divisor();
   dimension_type nonint_dim = lp.space_dimension();
+  // TODO: This can be optimized more, if needed, exploiting the (possible)
+  // sparseness of p.
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
@@ -2060,6 +2062,8 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
     = last_generator.divisor();
   Variables_Set candidate_variables;
 
+  // TODO: This can be optimized more, if needed, exploiting the (possible)
+  // sparseness of last_generator.
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_it = i_vars.begin(),
          v_end = i_vars.end(); v_it != v_end; ++v_it) {
@@ -2142,6 +2146,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    // TODO: This can be optimized more, if needed, exploiting the (possible)
+    // sparseness of p.
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
       nonint_dim = *v_begin;
@@ -2292,6 +2298,8 @@ PPL::MIP_Problem::OK() const {
     // in the solution found.
     if (!i_variables.empty()) {
       PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+      // TODO: This can be optimized more, if needed, exploiting the (possible)
+      // sparseness of last_generator.
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
             v_end = i_variables.end(); v_it != v_end; ++v_it) {
         gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),

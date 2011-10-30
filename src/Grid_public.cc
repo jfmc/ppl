@@ -660,6 +660,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
     case Grid_Generator::LINE:
       Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
       if (gen.is_line_or_parameter())
+        // TODO: This loop can be optimized more, if needed, exploiting the
+        // (possible) sparseness of c and gen.
 	for (dimension_type i = c.space_dimension(); i-- > 0; ) {
 	  Variable v(i);
 	  if (c.coefficient(v) != 0 && gen.coefficient(v) != 0)
@@ -2113,6 +2115,8 @@ generalized_affine_image(const Linear_Expression& lhs,
     if (marked_empty())
       return;
 
+    // TODO: This loop can be optimized more, if needed, exploiting the
+    // (possible) sparseness of lhs.
     for (dimension_type i = space_dim; i-- > 0; )
       if (lhs.coefficient(Variable(i)) != 0)
 	add_grid_generator(grid_line(Variable(i)));
@@ -2145,6 +2149,8 @@ generalized_affine_image(const Linear_Expression& lhs,
   // `rhs'.
   Grid_Generator_System new_lines;
   bool lhs_vars_intersect_rhs_vars = false;
+  // TODO: This can be optimized more, if needed, exploiting the (possible)
+  // sparseness of lhs and rhs.
   for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(grid_line(Variable(i)));
@@ -2245,6 +2251,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     if (marked_empty())
       return;
 
+    // TODO: This can be optimized more, if needed, exploiting the (possible)
+    // sparseness of lhs.
     for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
       if (lhs.coefficient(Variable(i)) != 0)
 	add_grid_generator(grid_line(Variable(i)));
@@ -2278,6 +2286,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // occurring in both `lhs' and `rhs'.
   Grid_Generator_System new_lines;
   bool lhs_vars_intersect_rhs_vars = false;
+  // TODO: This can be optimized more, if needed, exploiting the (possible)
+  // sparseness of lhs and rhs.
   for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(grid_line(Variable(i)));

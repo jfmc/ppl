@@ -3092,6 +3092,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
   bool lhs_vars_intersects_rhs_vars = false;
+  // TODO: This can be optimized more, if needed, exploiting the (possible)
+  // sparseness of lhs and rhs.
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(line(Variable(i)));
@@ -3228,6 +3230,8 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
   bool lhs_vars_intersects_rhs_vars = false;
+  // TODO: This can be optimized more, if needed, exploiting the (possible)
+  // sparseness of lhs and rhs.
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(line(Variable(i)));

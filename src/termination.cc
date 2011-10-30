@@ -177,6 +177,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
       sub_mul_assign(y_le, b_i, vy);
       sub_mul_assign(z_le, b_i, vz);
     }
+    // TODO: This can be optimized more, if needed, exploiting the (possible)
+    // sparseness of c_i.
     for (dimension_type j = 2*n; j-- > 0; ) {
       Coefficient_traits::const_reference a_i_j = c_i.coefficient(Variable(j));
       if (a_i_j != 0) {
@@ -365,6 +367,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     Variable u1_i(m + row_index);
     Variable u2_i(s + row_index);
     const Constraint& c_i = *i;
+    // TODO: This can be optimized more, if needed, exploiting the (possible)
+    // sparseness of c_i.
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference A_ij_B = c_i.coefficient(Variable(j));
       if (A_ij_B != 0) {
@@ -388,6 +392,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        ++i, ++row_index) {
     Variable u3_i(row_index);
     const Constraint& c_i = *i;
+    // TODO: This can be optimized more, if needed, exploiting the (possible)
+    // sparseness of c_i.
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference
         A_ij_C = c_i.coefficient(Variable(j + n));
@@ -438,6 +444,8 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
     const Constraint& c_i = *i;
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
+    // TODO: This can be optimized more, if needed, exploiting the (possible)
+    // sparseness of c_i.
     for (dimension_type j = n; j-- > 0; ) {
       Coefficient_traits::const_reference Ap_ij = c_i.coefficient(Variable(j));
       if (Ap_ij != 0) {

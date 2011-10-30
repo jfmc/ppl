@@ -181,11 +181,15 @@ Box<ITV>::Box(const Generator_System& gs)
     const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
+      // TODO: This loop can be optimized more, if needed, exploiting the
+      // (possible) sparseness of g.
       for (dimension_type i = space_dim; i-- > 0; )
 	if (g.coefficient(Variable(i)) != 0)
 	  seq[i].assign(UNIVERSE);
       break;
     case Generator::RAY:
+      // TODO: This loop can be optimized more, if needed, exploiting the
+      // (possible) sparseness of g.
       for (dimension_type i = space_dim; i-- > 0; )
 	switch (sgn(g.coefficient(Variable(i)))) {
 	case 1:
@@ -201,6 +205,8 @@ Box<ITV>::Box(const Generator_System& gs)
     case Generator::CLOSURE_POINT:
       {
 	const Coefficient& d = g.divisor();
+        // TODO: This loop can be optimized more, if needed, exploiting the
+        // (possible) sparseness of g.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -562,6 +568,8 @@ Box<ITV>::bounds(const Linear_Expression& expr, const bool from_above) const {
     return true;
 
   const int from_above_sign = from_above ? 1 : -1;
+  // TODO: This loop can be optimized more, if needed, exploiting the
+  // (possible) sparseness of expr.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     switch (sgn(expr.coefficient(Variable(i))) * from_above_sign) {
     case 1:
@@ -798,6 +806,8 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   PPL_DIRTY_TEMP0(Rational_Interval, t);
   PPL_DIRTY_TEMP0(mpq_class, m);
   r = 0;
+  // TODO: This loop can be optimized more, if needed, exploiting the
+  // (possible) sparseness of cg.
   for (dimension_type i = cg.space_dimension(); i-- > 0; ) {
     const Coefficient& cg_i = cg.coefficient(Variable(i));
     if (sgn(cg_i) != 0) {
@@ -894,6 +904,8 @@ Box<ITV>::relation_with(const Constraint& c) const {
     PPL_DIRTY_TEMP0(Rational_Interval, t);
     PPL_DIRTY_TEMP0(mpq_class, m);
     r = 0;
+    // TODO: This loop can be optimized more, if needed, exploiting the
+    // (possible) sparseness of c.
     for (dimension_type i = c.space_dimension(); i-- > 0; ) {
       const Coefficient& c_i = c.coefficient(Variable(i));
       if (sgn(c_i) != 0) {
@@ -934,6 +946,8 @@ Box<ITV>::relation_with(const Generator& g) const {
 
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
+      // TODO: This loop can be optimized more, if needed, exploiting the
+      // (possible) sparseness of g.
       for (dimension_type i = g_space_dim; i-- > 0; )
 	if (g.coefficient(Variable(i)) != 0 && !seq[i].is_universe())
 	  return Poly_Gen_Relation::nothing();
@@ -941,6 +955,8 @@ Box<ITV>::relation_with(const Generator& g) const {
     }
     else {
       PPL_ASSERT(g.is_ray());
+      // TODO: This loop can be optimized more, if needed, exploiting the
+      // (possible) sparseness of g.
       for (dimension_type i = g_space_dim; i-- > 0; )
 	switch (sgn(g.coefficient(Variable(i)))) {
 	case 1:
@@ -1395,6 +1411,8 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(val_den);
   val_den = 1;
 
+  // TODO: This loop can be optimized more, if needed, exploiting the
+  // (possible) sparseness of le.
   for (dimension_type i = space_dim; i-- > 0; ) {
     const Variable v(i);
     coeff = le.coefficient(v);
@@ -2336,6 +2354,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 
   // Find a space dimension having a non-zero coefficient (if any).
   dimension_type last_k = c_space_dim;
+  // TODO: This loop can be optimized more, if needed, exploiting the
+  // (possible) sparseness of c.
   for (dimension_type k = c_space_dim; k-- > 0; ) {
     if (c.coefficient(Variable(k)) != 0) {
       last_k = k;
@@ -3574,6 +3594,8 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
   // to generalized_affine_image/3.
   Linear_Expression revised_lhs = lhs;
   Linear_Expression revised_rhs = rhs;
+  // TODO: This loop can be optimized more, if needed, exploiting the
+  // (possible) sparseness of lhs and rhs.
   for (dimension_type d = lhs_space_dim; d-- > 0; ) {
     const Variable& var = Variable(d);
     if (lhs.coefficient(var) != 0) {
