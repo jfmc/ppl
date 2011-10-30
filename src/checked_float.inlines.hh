@@ -986,7 +986,7 @@ output_float(std::ostream& os, const Type from, const Numeric_Format&,
   else if (is_nan<Policy>(from))
     os << "nan";
   else {
-    int old_precision = os.precision(10000);
+    std::streamsize old_precision = os.precision(10000);
     // FIXME: here correctness depends on the behavior of the standard
     // output operator which, in turn, may depend on the behavior
     // of printf().  The C99 standard, 7.19.16.1#13, does not give

@@ -37,7 +37,7 @@ Concrete_Expression_Type
                   const Bounded_Integer_Type_Representation representation,
                   const Bounded_Integer_Type_Overflow overflow) {
   Implementation impl;
-  impl.bounded_integer = 1;
+  impl.bounded_integer = 1U;
   impl.bounded_integer_type_width = width;
   impl.bounded_integer_type_representation = representation;
   impl.bounded_integer_type_overflow = overflow;

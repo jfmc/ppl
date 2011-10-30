@@ -301,7 +301,7 @@ warning(const char* format, ...) {
 extern "C" typedef void (*sig_handler_type)(int);
 
 void
-set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
+set_alarm_on_cpu_time(const unsigned long seconds, sig_handler_type handler) {
   sigset_t mask;
   sigemptyset(&mask);
 
@@ -489,13 +489,14 @@ void
 normalize(const std::vector<mpq_class>& source,
 	  std::vector<mpz_class>& dest,
 	  mpz_class& denominator) {
-  unsigned n = source.size();
+  typedef std::vector<mpq_class> size_type;
+  size_type n = source.size();
   denominator = 1;
-  for (unsigned i = 0; i < n; ++i)
+  for (size_type i = 0; i < n; ++i)
     mpz_lcm(denominator.get_mpz_t(),
 	    denominator.get_mpz_t(),
 	    source[i].get_den().get_mpz_t());
-  for (unsigned i = 0; i < n; ++i)
+  for (size_type i = 0; i < n; ++i)
     dest[i] = denominator*source[i];
 }
 
@@ -545,7 +546,8 @@ read_coefficients(std::istream& in,
 		  const Number_Type number_type,
 		  std::vector<mpz_class>& coefficients,
 		  mpz_class& denominator) {
-  unsigned num_coefficients = coefficients.size();
+  typedef std::vector<mpz_class>::size_type size_type;
+  size_type num_coefficients = coefficients.size();
   switch (number_type) {
   case INTEGER:
     {

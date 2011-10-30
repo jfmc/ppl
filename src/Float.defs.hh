@@ -215,10 +215,10 @@ struct float_intel_double_extended {
   static const uint32_t MSP_NEG_INF = 0x0000ffff;
   static const uint32_t MSP_POS_ZERO = 0x00000000;
   static const uint32_t MSP_NEG_ZERO = 0x00008000;
-  static const uint64_t LSP_INF = 0x8000000000000000ULL;
+  static const uint64_t LSP_INF = (uint64_t)0x8000000000000000ULL;
   static const uint64_t LSP_ZERO = 0;
-  static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
-  static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
+  static const uint64_t LSP_DMAX = (uint64_t)0x7fffffffffffffffULL;
+  static const uint64_t LSP_NMAX = (uint64_t)0xffffffffffffffffULL;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 63;
@@ -252,14 +252,14 @@ struct float_ieee754_quad {
   uint64_t lsp;
   uint64_t msp;
 #endif
-  static const uint64_t MSP_SGN_MASK = 0x8000000000000000ULL;
-  static const uint64_t MSP_POS_INF = 0x7fff000000000000ULL;
-  static const uint64_t MSP_NEG_INF = 0xffff000000000000ULL;
-  static const uint64_t MSP_POS_ZERO = 0x0000000000000000ULL;
-  static const uint64_t MSP_NEG_ZERO = 0x8000000000000000ULL;
+  static const uint64_t MSP_SGN_MASK = (uint64_t)0x8000000000000000ULL;
+  static const uint64_t MSP_POS_INF = (uint64_t)0x7fff000000000000ULL;
+  static const uint64_t MSP_NEG_INF = (uint64_t)0xffff000000000000ULL;
+  static const uint64_t MSP_POS_ZERO = (uint64_t)0x0000000000000000ULL;
+  static const uint64_t MSP_NEG_ZERO = (uint64_t)0x8000000000000000ULL;
   static const uint64_t LSP_INF = 0;
   static const uint64_t LSP_ZERO = 0;
-  static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
+  static const uint64_t LSP_MAX = (uint64_t)0xffffffffffffffffULL;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 112;
