@@ -2242,7 +2242,6 @@ Box<ITV>::add_congruences_no_check(const Congruence_System& cgs) {
 template <typename ITV>
 void
 Box<ITV>::refine_no_check(const Constraint& c) {
-  const dimension_type c_space_dim = c.space_dimension();
   PPL_ASSERT(c.space_dimension() <= space_dimension());
   PPL_ASSERT(!marked_empty());
 
