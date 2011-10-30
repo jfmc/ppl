@@ -1296,7 +1296,7 @@ Box<ITV>::check_empty() const {
       x.set_empty();
       return true;
     }
-  x.set_nonempty();;
+  x.set_nonempty();
   return false;
 }
 

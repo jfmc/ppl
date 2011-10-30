@@ -233,12 +233,12 @@ Grid::hash_code() const {
 
 inline Constraint_System
 Grid::constraints() const {
-  return Constraint_System(congruences());;
+  return Constraint_System(congruences());
 }
 
 inline Constraint_System
 Grid::minimized_constraints() const {
-  return Constraint_System(minimized_congruences());;
+  return Constraint_System(minimized_congruences());
 }
 
 inline void
