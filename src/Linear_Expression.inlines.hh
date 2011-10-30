@@ -522,6 +522,18 @@ Linear_Expression
   return impl->is_equal_to(*(x.impl), c1, c2, start, end);
 }
 
+inline void
+Linear_Expression
+::get_row(Dense_Row& row) const {
+  return impl->get_row(row);
+}
+
+inline void
+Linear_Expression
+::get_row(Sparse_Row& row) const {
+  return impl->get_row(row);
+}
+
 namespace IO_Operators {
   
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */

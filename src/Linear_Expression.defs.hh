@@ -636,6 +636,12 @@ private:
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
 
+  //! Sets `row' to a copy of the row that implements *this.
+  void get_row(Dense_Row& row) const;
+
+  //! Sets `row' to a copy of the row that implements *this.
+  void get_row(Sparse_Row& row) const;
+
   template <typename Row>
   friend class Linear_Expression_Impl;
 

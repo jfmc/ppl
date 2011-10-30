@@ -503,6 +503,18 @@ public:
                            Coefficient_traits::const_reference c2,
                            dimension_type start, dimension_type end) const;
 
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets `row' to a copy of the row that implements *this.
+  virtual void get_row(Dense_Row& row) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets `row' to a copy of the row that implements *this.
+  virtual void get_row(Sparse_Row& row) const;
+
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with

@@ -217,6 +217,18 @@ Linear_Expression_Impl<Row>::is_equal_to(const Linear_Expression_Impl<Row2>& x) 
 
 template <typename Row>
 void
+Linear_Expression_Impl<Row>::get_row(Dense_Row& row) const {
+  row = this->row;
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>::get_row(Sparse_Row& row) const {
+  row = this->row;
+}
+
+template <typename Row>
+void
 Linear_Expression_Impl<Row>::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
   // For each variable to be removed, replace the corresponding coefficient
