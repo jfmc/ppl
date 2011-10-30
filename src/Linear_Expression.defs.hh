@@ -662,6 +662,8 @@ private:
   friend class Octagonal_Shape_Helper;
   friend class Termination_Helpers;
   template <typename T>
+  friend class BD_Shape;
+  template <typename T>
   friend class Linear_System;
 
   friend Linear_Expression

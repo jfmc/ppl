@@ -1445,11 +1445,9 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     // Find the linear expression for the constraint and use that to
     // find if the expression is bounded from above or below and if it
     // is, find the maximum and minimum values.
-    Linear_Expression le;
-    for (dimension_type k = c_space_dim; k-- > 0; ) {
-      Variable vk(k);
-      le += c.coefficient(vk) * vk;
-    }
+    Linear_Expression le(c);
+    le.set_inhomogeneous_term(Coefficient_zero());
+
     PPL_DIRTY_TEMP(Coefficient, max_num);
     PPL_DIRTY_TEMP(Coefficient, max_den);
     bool max_included;
