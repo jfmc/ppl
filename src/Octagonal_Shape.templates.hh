@@ -225,6 +225,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         // When handling the first (closure) point, we initialize the matrix.
         mat_initialized = true;
         const Coefficient& d = g.divisor();
+        // TODO: This can be optimized more, if needed, exploiting the
+        // (possible) sparseness of g.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -252,6 +254,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         // This is not the first point: the matrix already contains
         // valid values and we must compute maxima.
         const Coefficient& d = g.divisor();
+        // TODO: This can be optimized more, if needed, exploiting the
+        // (possible) sparseness of g.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -298,6 +302,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
     const Generator& g = *k;
     switch (g.type()) {
     case Generator::LINE:
+        // TODO: This can be optimized more, if needed, exploiting the
+        // (possible) sparseness of g.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -326,6 +332,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         }
       break;
     case Generator::RAY:
+        // TODO: This can be optimized more, if needed, exploiting the
+        // (possible) sparseness of g.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -5499,6 +5507,8 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // Compute the set of variables occurring in `lhs'.
     bool lhs_vars_intersects_rhs_vars = false;
     std::vector<Variable> lhs_vars;
+    // TODO: This loop can be optimized more, if needed, exploiting the
+    // (possible) sparseness of lhs and rhs.
     for (dimension_type i = lhs_space_dim; i-- > 0; )
       if (lhs.coefficient(Variable(i)) != 0) {
         lhs_vars.push_back(Variable(i));
@@ -6035,6 +6045,8 @@ Octagonal_Shape<T>
     // Compute the set of variables occurring in `lhs'.
     bool lhs_vars_intersects_rhs_vars = false;
     std::vector<Variable> lhs_vars;
+    // TODO: This loop can be optimized more, if needed, exploiting the
+    // (possible) sparseness of lhs and rhs.
     for (dimension_type i = lhs_space_dim; i-- > 0; )
       if (lhs.coefficient(Variable(i)) != 0) {
         lhs_vars.push_back(Variable(i));
