@@ -3458,15 +3458,13 @@ BD_Shape<T>::refine(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `expr', if any.
-  dimension_type w = 0;
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w = i+1;
-    }
+  dimension_type w = expr.last_nonzero();
+
+  if (w != 0) {
+    t++;
+    if (!expr.all_zeroes(1, w))
+      t++;
+  }
 
   // Since we are only able to record bounded differences, we can
   // precisely deal with the case of a single variable only if its
@@ -3857,15 +3855,13 @@ BD_Shape<T>::affine_image(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `expr', if any.
-  dimension_type w = 0;
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w = i+1;
-    }
+  dimension_type w = expr.last_nonzero();
+
+  if (w != 0) {
+    t++;
+    if (!expr.all_zeroes(1, w))
+      t++;
+  }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
@@ -4189,15 +4185,13 @@ BD_Shape<T>::affine_preimage(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `expr', if any.
-  dimension_type j = 0;
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        j = i;
-    }
+  dimension_type j = expr.last_nonzero();
+
+  if (j != 0) {
+    ++t;
+    if (!expr.all_zeroes(1, j))
+      t++;
+  }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr = b, with `b' a constant;
@@ -4218,10 +4212,10 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& a = expr.coefficient(Variable(j));
+    const Coefficient& a = expr.get(j);
     if (a == denominator || a == -denominator) {
       // Case 2: expr = a*w + b, with a = +/- denominator.
-      if (j == var.id())
+      if (j == var.space_dimension())
         // Apply affine_image() on the inverse of this transformation.
         affine_image(var, denominator*var - b, a);
       else {
@@ -4297,15 +4291,13 @@ BD_Shape<T>
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `ub_expr', if any.
-  dimension_type w = 0;
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = ub_space_dim; i-- > 0; )
-    if (ub_expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w = i+1;
-    }
+  dimension_type w = ub_expr.last_nonzero();
+
+  if (w != 0) {
+    ++t;
+    if (!ub_expr.all_zeroes(1, w))
+      ++t;
+  }
 
   // Now we know the form of `ub_expr':
   // - If t == 0, then ub_expr == b, with `b' a constant;
@@ -4623,15 +4615,13 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Index of the last non-zero coefficient in `expr', if any.
-  dimension_type w = 0;
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w = i+1;
-    }
+  dimension_type w = expr.last_nonzero();
+
+  if (w != 0) {
+    ++t;
+    if (!expr.all_zeroes(1, w))
+      ++t;
+  }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
@@ -5006,15 +4996,14 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t_lhs = 0;
   // Index of the last non-zero coefficient in `lhs', if any.
-  dimension_type j_lhs = 0;
-  // Compute the number of the non-zero components of `lhs'.
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      if (t_lhs++ == 1)
-        break;
-      else
-        j_lhs = i;
-    }
+  dimension_type j_lhs = lhs.last_nonzero();
+
+  if (j_lhs != 0) {
+    ++t_lhs;
+    if (!lhs.all_zeroes(1, j_lhs))
+      ++t_lhs;
+    --j_lhs;
+  }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
 
@@ -5270,15 +5259,14 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t_lhs = 0;
   // Index of the last non-zero coefficient in `lhs', if any.
-  dimension_type j_lhs = 0;
-  // Compute the number of the non-zero components of `lhs'.
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      if (t_lhs++ == 1)
-        break;
-      else
-        j_lhs = i;
-    }
+  dimension_type j_lhs = lhs.last_nonzero();
+
+  if (j_lhs != 0) {
+    ++t_lhs;
+    if (!lhs.all_zeroes(1, j_lhs))
+      ++t_lhs;
+    --j_lhs;
+  }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
 
