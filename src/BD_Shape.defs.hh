@@ -262,10 +262,6 @@ public:
     \param c
     The constraint to be decoded.
 
-    \param c_space_dim
-    The space dimension of the constraint \p c (it is <EM>assumed</EM>
-    to match the actual space dimension of \p c).
-
     \param c_num_vars
     If <CODE>true</CODE> is returned, then it will be set to the number
     of variables having a non-zero coefficient. The only legal values
@@ -288,7 +284,6 @@ public:
   */
   #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   static bool extract_bounded_difference(const Constraint& c,
-                                         dimension_type c_space_dim,
                                          dimension_type& c_num_vars,
                                          dimension_type& c_first_var,
                                          dimension_type& c_second_var,

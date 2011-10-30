@@ -31,14 +31,12 @@ namespace PPL = Parma_Polyhedra_Library;
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
-                                                  const dimension_type c_space_dim,
                                                   dimension_type& c_num_vars,
                                                   dimension_type& c_first_var,
                                                   dimension_type& c_second_var,
                                                   Coefficient& c_coeff) {
   // Check for preconditions.
   const dimension_type space_dim = c.space_dimension();
-  PPL_ASSERT(c.space_dimension() == c_space_dim);
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
 
   c_first_var = c.expression().first_nonzero(1, space_dim + 1);

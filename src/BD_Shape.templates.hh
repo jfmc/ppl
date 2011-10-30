@@ -372,9 +372,8 @@ BD_Shape<T>::minimized_congruences() const {
 template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
-  const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
+  if (c.space_dimension() > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
 
   // Get rid of strict inequalities.
@@ -394,7 +393,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are not allowed.
-  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, num_vars, i, j, coeff))
     throw_generic("add_constraint(c)",
                   "c is not a bounded difference constraint");
 
@@ -473,15 +472,14 @@ template <typename T>
 void
 BD_Shape<T>::refine_no_check(const Constraint& c) {
   PPL_ASSERT(!marked_empty());
-  const dimension_type c_space_dim = c.space_dimension();
-  PPL_ASSERT(c_space_dim <= space_dimension());
+  PPL_ASSERT(c.space_dimension() <= space_dimension());
 
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are ignored.
-  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, num_vars, i, j, coeff))
     return;
 
   const Coefficient& inhomo = c.inhomogeneous_term();
@@ -1142,13 +1140,12 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
   // The constraint `c' is used to check if `expr' is a difference
   // bounded and, in this case, to select the cell.
   const Constraint& c = from_above ? expr <= 0 : expr >= 0;
-  const dimension_type c_space_dim = c.space_dimension();
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Check if `c' is a BD constraint.
-  if (BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+  if (BD_Shape_Helpers::extract_bounded_difference(c, num_vars, i, j, coeff)) {
     if (num_vars == 0)
       // Dealing with a trivial constraint.
       return true;
@@ -1200,13 +1197,12 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   // The constraint `c' is used to check if `expr' is a difference
   // bounded and, in this case, to select the cell.
   const Constraint& c = maximize ? expr <= 0 : expr >= 0;
-  const dimension_type c_space_dim = c.space_dimension();
   dimension_type num_vars = 0;
   dimension_type i = 0;
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Check if `c' is a BD constraint.
-  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, num_vars, i, j, coeff)) {
     Optimization_Mode mode_max_min
       = maximize ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
@@ -1442,7 +1438,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type i = 0;
   dimension_type j = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-  if (!BD_Shape_Helpers::extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+  if (!BD_Shape_Helpers::extract_bounded_difference(c, num_vars, i, j, coeff)) {
     // Constraints that are not bounded differences.
     // Use maximize() and minimize() to do much of the work.
 
@@ -2974,7 +2970,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
     dimension_type i = 0;
     dimension_type j = 0;
     // Constraints that are not bounded differences are ignored.
-    if (BD_Shape_Helpers::extract_bounded_difference(c, cs_space_dim, num_vars, i, j, coeff)) {
+    if (BD_Shape_Helpers::extract_bounded_difference(c, num_vars, i, j, coeff)) {
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `coeff' to the absolute value of itself.
       const bool negative = (coeff < 0);
