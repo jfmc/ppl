@@ -1277,7 +1277,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
         assign_r(coeff_expr, coeff_i, ROUND_UP);
       else {
         PPL_DIRTY_TEMP_COEFFICIENT(minus_coeff_i);
-        neg_assign(minus_coeff_i, expr.coefficient(Variable(i/2)));
+        neg_assign(minus_coeff_i, coeff_i);
         assign_r(coeff_expr, minus_coeff_i, ROUND_UP);
       }
       // Approximating the maximum/minimum of `expr'.
