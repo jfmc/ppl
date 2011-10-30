@@ -3892,16 +3892,14 @@ Octagonal_Shape<T>::refine(const Variable var,
   dimension_type t = 0;
 
   // Variable index of the last non-zero coefficient in `expr', if any.
-  dimension_type w_id = 0;
+  dimension_type w_id = expr.last_nonzero();
 
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w_id = i;
-    }
+  if (w_id != 0) {
+    t++;
+    if (!expr.all_zeroes(1, w_id))
+      t++;
+    --w_id;
+  }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
@@ -4457,17 +4455,14 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Variable-index of the last non-zero coefficient in `expr', if any.
-  dimension_type w_id = 0;
+  dimension_type w_id = expr.last_nonzero();
 
-  // Get information about the number of non-zero coefficients in `expr'.
-  // The `expr' must not be in two or plus variables.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w_id = i;
-    }
+  if (w_id != 0) {
+    t++;
+    if (!expr.all_zeroes(1, w_id))
+      t++;
+    --w_id;
+  }
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
@@ -4849,16 +4844,14 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   dimension_type t = 0;
 
   // Variable-index of the last non-zero coefficient in `expr', if any.
-  dimension_type w_id = 0;
+  dimension_type w_id = expr.last_nonzero();
 
-  // Get information about the number of the non-zero coefficients of `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w_id = i;
-    }
+  if (w_id != 0) {
+    t++;
+    if (!expr.all_zeroes(1, w_id))
+      t++;
+    --w_id;
+  }
 
   // `w' is the variable with index `w_id'.
   // Now we know the form of `expr':
@@ -4969,17 +4962,14 @@ Octagonal_Shape<T>
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Variable-index of the last non-zero coefficient in `expr', if any.
-  dimension_type w_id = 0;
+  dimension_type w_id = expr.last_nonzero();
 
-  // Get information about the number of non-zero coefficients in `expr'.
-  // The `expr' must not be in two or plus variables.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w_id = i;
-    }
+  if (w_id != 0) {
+    t++;
+    if (!expr.all_zeroes(1, w_id))
+      t++;
+    --w_id;
+  }
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
@@ -5447,16 +5437,14 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t_lhs = 0;
   // Index of the last non-zero coefficient in `lhs', if any.
-  dimension_type j_lhs = 0;
+  dimension_type j_lhs = lhs.last_nonzero();
 
-  // Compute the number of the non-zero components of `lhs'.
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      if (t_lhs++ == 1)
-        break;
-      else
-        j_lhs = i;
-    }
+  if (j_lhs != 0) {
+    t_lhs++;
+    if (!lhs.all_zeroes(1, j_lhs))
+      t_lhs++;
+    --j_lhs;
+  }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
 
@@ -5639,17 +5627,14 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Variable-index of the last non-zero coefficient in `lb_expr', if any.
-  dimension_type w_id = 0;
+  dimension_type w_id = lb_expr.last_nonzero();
 
-  // Get information about the number of non-zero coefficients in `lb_expr'.
-  // The `expr' must not be in two or plus variables.
-  for (dimension_type i = lb_space_dim; i-- > 0; )
-    if (lb_expr.coefficient(Variable(i)) != 0) {
-      if (t++ == 1)
-        break;
-      else
-        w_id = i;
-    }
+  if (w_id != 0) {
+    t++;
+    if (!lb_expr.all_zeroes(1, w_id))
+      t++;
+    --w_id;
+  }
 
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
@@ -6002,16 +5987,14 @@ Octagonal_Shape<T>
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t_lhs = 0;
   // Index of the last non-zero coefficient in `lhs', if any.
-  dimension_type j_lhs = 0;
+  dimension_type j_lhs = lhs.last_nonzero();
 
-  // Compute the number of the non-zero components of `lhs'.
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      if (t_lhs++ == 1)
-        break;
-      else
-        j_lhs = i;
-    }
+  if (j_lhs != 0) {
+    t_lhs++;
+    if (!lhs.all_zeroes(1, j_lhs))
+      t_lhs++;
+    j_lhs--;
+  }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
 
