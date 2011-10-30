@@ -288,9 +288,8 @@ public:
   Grid_Generator(const Grid_Generator& g);
 
   // TODO: Remove this.
-  //! Copy constructor with specified size and capacity.
-  Grid_Generator(const Grid_Generator& g, dimension_type size,
-                 dimension_type capacity);
+  //! Copy constructor with specified size.
+  Grid_Generator(const Grid_Generator& g, dimension_type size);
 
   //! Destructor.
   ~Grid_Generator();

@@ -109,8 +109,7 @@ Grid_Generator::Grid_Generator(dimension_type size, Kind kind, Topology topology
 }
 
 inline
-Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size,
-                               dimension_type /* capacity */)
+Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size)
   : expr(g.expr, size), kind_(g.kind_) {
 }
 

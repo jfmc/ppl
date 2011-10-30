@@ -132,27 +132,6 @@ Constraint::Constraint(dimension_type sz, Kind kind, Topology topology)
 }
 
 inline
-Constraint::Constraint(dimension_type sz, dimension_type /* capacity */)
-  : expr(),
-    kind_(RAY_OR_POINT_OR_INEQUALITY),
-    topology_(NOT_NECESSARILY_CLOSED) {
-  PPL_ASSERT(sz != 0);
-  expr.set_space_dimension(sz - 1);
-  PPL_ASSERT(OK());
-}
-
-inline
-Constraint::Constraint(dimension_type sz, dimension_type /* capacity */,
-                       Kind kind, Topology topology)
-  : expr(),
-    kind_(kind),
-    topology_(topology) {
-  PPL_ASSERT(sz != 0);
-  expr.set_space_dimension(sz - 1);
-  PPL_ASSERT(OK());
-}
-
-inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
@@ -174,15 +153,6 @@ Constraint::Constraint(const Constraint& c)
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type sz)
   : expr(c.expr, sz), kind_(c.kind_), topology_(c.topology_) {
-  PPL_ASSERT(OK());
-}
-
-inline
-Constraint::Constraint(const Constraint& c, const dimension_type sz,
-                       const dimension_type /* capacity */)
-  : expr(c.expr, sz),
-    kind_(c.kind_),
-    topology_(c.topology_) {
   PPL_ASSERT(OK());
 }
 

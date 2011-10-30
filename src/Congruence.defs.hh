@@ -406,12 +406,6 @@ public:
   Congruence(const Constraint& cg, dimension_type new_space_dimension);
 
   // TODO: Make this private.
-  //! Constructs from a constraint, with specified size and capacity.
-  Congruence(const Constraint& c,
-             dimension_type sz,
-             dimension_type capacity);
-
-  // TODO: Make this private.
   // FIXME: This constructs a Congruence with space dimension
   // `le.space_dimension() - 1', but it probably should construct a Congruence
   // with space dimension `le.space_dimension()'.

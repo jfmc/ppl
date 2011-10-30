@@ -76,8 +76,7 @@ PPL::Constraint::Constraint(const Congruence& cg)
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
-			    dimension_type sz,
-			    dimension_type /* capacity */)
+			    dimension_type sz)
   : expr(cg, sz),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {

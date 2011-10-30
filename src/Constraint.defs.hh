@@ -203,22 +203,11 @@ public:
   //! Constructs the \f$0<0\f$ constraint.
   Constraint(dimension_type sz, Kind kind, Topology topology);
 
-  //! Constructs the \f$0<0\f$ constraint.
-  Constraint(dimension_type sz, dimension_type capacity);
-
-  // TODO: Update the documentation of this method.
-  //! Constructs the \f$0<0\f$ constraint.
-  Constraint(dimension_type sz, dimension_type capacity, Kind kind,
-             Topology topology);
-
   //! Ordinary copy constructor.
   Constraint(const Constraint& c);
 
   //! Copy constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);
-  
-  //! Copy constructor with given size and capacity.
-  Constraint(const Constraint& c, dimension_type sz, dimension_type capacity);
   
   //! Copy-constructs from equality congruence \p cg.
   /*!
@@ -484,8 +473,8 @@ public:
   */
   Constraint(Linear_Expression& e, Type type, Topology topology);
 
-  //! Constructs from a congruence, with specified size and capacity.
-  Constraint(const Congruence& cg, dimension_type sz, dimension_type capacity);
+  //! Constructs from a congruence, with specified size.
+  Constraint(const Congruence& cg, dimension_type sz);
 
   //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();

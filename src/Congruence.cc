@@ -55,18 +55,6 @@ PPL::Congruence::Congruence(const Constraint& c,
     modulus_(0) {
 }
 
-PPL::Congruence::Congruence(const Constraint& c,
-                            dimension_type sz, dimension_type capacity)
-  : expr(c.is_equality()
-        ? c.expression()
-        : (throw_invalid_argument("Congruence(c)",
-                                  "constraint c must be an equality."),
-           c.expression()),
-        sz - 1),
-    modulus_(0) {
-  PPL_ASSERT(sz > 0);
-}
-
 void
 PPL::Congruence::sign_normalize() {
   expr.sign_normalize();
