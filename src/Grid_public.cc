@@ -639,11 +639,11 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	// parameter case.
 	gen.set_is_parameter();
 	const Grid_Generator& first = *first_point;
-        
-        // TODO: Improve this.
-        Coefficient c = gen.divisor();
-        gen.expression() -= first.expression();
-        gen.set_divisor(c);
+
+        // Note that this skips the last column (the divisor column).
+        gen.expression().linear_combine(first.expression(),
+                                        Coefficient_one(), -1,
+                                        0, gen.space_dimension() + 1);
       }
 
     case Grid_Generator::PARAMETER:
