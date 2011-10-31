@@ -192,15 +192,14 @@ PPL::Grid::Grid(const Polyhedron& ph,
     const Generator_System& gs = ph.generators();
     Grid_Generator_System ggs(space_dim);
     Linear_Expression point_expr;
+    point_expr.set_space_dimension(space_dim);
     PPL_DIRTY_TEMP_COEFFICIENT(point_divisor);
     for (Generator_System::const_iterator g = gs.begin(),
            gs_end = gs.end(); g != gs_end; ++g) {
       if (g->is_point() || g->is_closure_point()) {
-        for (dimension_type i = space_dim; i-- > 0; ) {
-          const Variable v(i);
-          point_expr += g->coefficient(v) * v;
-          point_divisor = g->divisor();
-        }
+        point_expr.linear_combine(g->expression(), Coefficient_one(), Coefficient_one(),
+                                  1, space_dim + 1);
+        point_divisor = g->divisor();
         ggs.insert(grid_point(point_expr, point_divisor));
         break;
       }
@@ -209,27 +208,22 @@ PPL::Grid::Grid(const Polyhedron& ph,
     // If the polyhedron's generator is a (closure) point, the grid line must
     // have the direction given by a line that joins the grid point already
     // inserted and the new point.
-    PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-    PPL_DIRTY_TEMP_COEFFICIENT(g_divisor);
     for (Generator_System::const_iterator g = gs.begin(),
            gs_end = gs.end(); g != gs_end; ++g) {
       Linear_Expression e;
+      e.set_space_dimension(space_dim);
       if (g->is_point() || g->is_closure_point()) {
-        g_divisor = g->divisor();
-        for (dimension_type i = space_dim; i-- > 0; ) {
-          const Variable v(i);
-          coeff = point_expr.coefficient(v) * g_divisor;
-          coeff -= g->coefficient(v) * point_divisor;
-          e += coeff * v;
-        }
+        e.linear_combine(point_expr, Coefficient_one(), g->divisor(),
+                         1, space_dim + 1);
+        e.linear_combine(g->expression(), Coefficient_one(), -point_divisor,
+                         1, space_dim + 1);
         if (e.all_homogeneous_terms_are_zero())
           continue;
       }
-      else
-        for (dimension_type i = space_dim; i-- > 0; ) {
-          const Variable v(i);
-          e += g->coefficient(v) * v;
-        }
+      else {
+        e.linear_combine(g->expression(), Coefficient_one(), Coefficient_one(),
+                         1, space_dim + 1);
+      }
       ggs.insert(grid_line(e));
     }
     construct(ggs);
