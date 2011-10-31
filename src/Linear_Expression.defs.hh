@@ -673,6 +673,8 @@ private:
   friend class Octagonal_Shape;
   template <typename T>
   friend class Linear_System;
+  template <typename T>
+  friend class Box;
 
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);

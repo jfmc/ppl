@@ -3395,32 +3395,26 @@ Box<ITV>
   // intervals to be unbounded for all other dimensions with non-zero
   // coefficients in the lhs.
   bool has_var = false;
-  bool has_more_than_one_var = false;
-  // Initialization is just to avoid an annoying warning.
-  dimension_type has_var_id = 0;
-  for ( ; lhs_space_dim > 0; --lhs_space_dim)
-    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0) {
-      if (has_var) {
-        ITV& seq_i = seq[lhs_space_dim - 1];
-        seq_i.assign(UNIVERSE);
-        has_more_than_one_var = true;
-      }
-      else {
-        has_var = true;
-        has_var_id = lhs_space_dim - 1;
-      }
-    }
+  dimension_type has_var_id = lhs.last_nonzero();
 
-  if (has_more_than_one_var) {
-    // There is more than one dimension with non-zero coefficient, so
-    // we cannot have any information about the dimensions in the lhs.
-    // Since all but the highest dimension with non-zero coefficient
-    // in the lhs have been set unbounded, it remains to set the
-    // highest dimension in the lhs unbounded.
-    ITV& seq_var = seq[has_var_id];
-    seq_var.assign(UNIVERSE);
-    PPL_ASSERT(OK());
-    return;
+  if (has_var_id != 0) {
+    has_var = true;
+    --has_var_id;
+    dimension_type other_var = lhs.first_nonzero(1, has_var_id + 1);
+    --other_var;
+    if (other_var != has_var_id) {
+      // There is more than one dimension with non-zero coefficient, so
+      // we cannot have any information about the dimensions in the lhs.
+      ITV& seq_var = seq[has_var_id];
+      seq_var.assign(UNIVERSE);
+      // Since all but the highest dimension with non-zero coefficient
+      // in the lhs have been set unbounded, it remains to set the
+      // highest dimension in the lhs unbounded.
+      ITV& seq_i = seq[other_var];
+      seq_i.assign(UNIVERSE);
+      PPL_ASSERT(OK());
+      return;
+    }
   }
 
   if (has_var) {
