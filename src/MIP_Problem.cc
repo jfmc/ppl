@@ -1767,21 +1767,8 @@ PPL::MIP_Problem::second_phase() {
     return;
 
   // Build the objective function for the second phase.
-  const dimension_type input_obj_function_sd
-    = input_obj_function.space_dimension();
-  Row new_cost(input_obj_function_sd + 1);
-  {
-    // This will be used as a hint.
-    Row::iterator itr = new_cost.end();
-    for (dimension_type i = input_obj_function_sd; i-- > 0; ) {
-      Coefficient_traits::const_reference c
-        = input_obj_function.coefficient(Variable(i));
-      if (c != 0)
-        itr = new_cost.insert(itr, i + 1, c);
-    }
-    if (input_obj_function.inhomogeneous_term() != 0)
-      itr = new_cost.insert(itr, 0, input_obj_function.inhomogeneous_term());
-  }
+  Row new_cost;
+  input_obj_function.get_row(new_cost);
 
   // Negate the cost function if we are minimizing.
   if (opt_mode == MINIMIZATION)
