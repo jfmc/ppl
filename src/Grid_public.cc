@@ -549,11 +549,7 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (!congruences_are_up_to_date())
     update_congruences();
 
-  Linear_Expression expr;
-  for (dimension_type i = g_space_dim; i-- > 0; ) {
-    const Variable v(i);
-    expr += g.coefficient(v) * v;
-  }
+  Linear_Expression expr(g);
   Grid_Generator gg(grid_point());
   if (g.is_point() || g.is_closure_point())
     // Points and closure points are converted to grid points.
