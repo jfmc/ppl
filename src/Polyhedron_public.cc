@@ -3049,9 +3049,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
-  for ( ; lhs_space_dim > 0; lhs_space_dim--)
-    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
-      break;
+  lhs_space_dim = lhs.last_nonzero();
+
   // If all variables have a zero coefficient, then `lhs' is a constant:
   // we can simply add the constraint `lhs relsym rhs'.
   if (lhs_space_dim == 0) {
