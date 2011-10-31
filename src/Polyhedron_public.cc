@@ -608,21 +608,16 @@ PPL::Polyhedron::contains_integer_point() const {
       // CHECKME: should we change the behavior of Linear_Expression(c) ?
       // Compute the GCD of the coefficients of c
       // (disregarding the inhomogeneous term and the espilon dimension).
-      homogeneous_gcd = 0;
-      for (dimension_type i = space_dim; i-- > 0; )
-	gcd_assign(homogeneous_gcd,
-		   homogeneous_gcd, c.coefficient(Variable(i)));
+      homogeneous_gcd = c.expression().gcd(1, space_dim + 1);
       if (homogeneous_gcd == 0) {
         // NOTE: since tautological constraints are already filtered away
         // by iterators, here we must have an inconsistent constraint.
         PPL_ASSERT(c.is_inconsistent());
         return false;
       }
-      Linear_Expression le;
-      for (dimension_type i = space_dim; i-- > 0; )
-	le += (c.coefficient(Variable(i)) / homogeneous_gcd) * Variable(i);
-      // Add the integer part of `inhomogeneous'.
-      le += (inhomogeneous / homogeneous_gcd);
+      Linear_Expression le(c);
+      if (homogeneous_gcd != 1)
+        le /= homogeneous_gcd;
       // Further tighten the constraint if the inhomogeneous term
       // was integer, i.e., if `homogeneous_gcd' divides `inhomogeneous'.
       gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
