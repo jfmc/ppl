@@ -699,6 +699,15 @@ public:
   */
   void increase_keys_from(dimension_type key, dimension_type n);
 
+  //! Sets to \p i the key of *itr. Assumes that i<=itr.index() and that there
+  //! are no elements with keys in [i,itr.index()).
+  /*!
+    All existing iterators remain valid.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  void fast_shift(dimension_type i, iterator itr);
+
   //! Swaps x with *this.
   /*!
     \param x

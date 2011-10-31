@@ -269,6 +269,14 @@ CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
 }
 
 inline void
+CO_Tree::fast_shift(dimension_type i, iterator itr) {
+  PPL_ASSERT(itr != end());
+  PPL_ASSERT(i <= itr.index());
+  indexes[dfs_index(itr)] = i;
+  PPL_ASSERT(OK());
+}
+
+inline void
 CO_Tree::insert_in_empty_tree(dimension_type key1,
                               data_type_const_reference data1) {
   PPL_ASSERT(empty());
