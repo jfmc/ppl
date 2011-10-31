@@ -528,6 +528,16 @@ public:
   */
   void swap(dimension_type i, dimension_type j);
 
+  //! Equivalent to swap(i,itr.index()), but it assumes that
+  //! lower_bound(i)==itr.
+  /*!
+    Iterators that pointed to the itr.index()-th element remain valid
+    but now point to the i-th element. Other iterators are unaffected.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  void fast_swap(dimension_type i, iterator itr);
+
   //! Swaps the element pointed to by i with the element pointed to by j.
   /*!
     \param i

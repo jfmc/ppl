@@ -318,6 +318,14 @@ Sparse_Row::swap(iterator i, iterator j) {
   PPL_ASSERT(OK());
 }
 
+inline void
+Sparse_Row::fast_swap(dimension_type i, iterator itr) {
+  PPL_ASSERT(lower_bound(i) == itr);
+  PPL_ASSERT(itr != end());
+  tree.fast_shift(i, itr);
+  PPL_ASSERT(OK());
+}
+
 inline Sparse_Row::iterator
 Sparse_Row::reset(iterator i) {
   iterator res = tree.erase(i);
