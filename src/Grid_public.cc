@@ -2119,15 +2119,15 @@ generalized_affine_image(const Linear_Expression& lhs,
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
-  do {
-    if (lhs_space_dim == 0) {
-      // All variables have zero coefficients, so `lhs' is a constant.
-      add_congruence_no_check((lhs %= rhs) / tmp_modulus);
-      return;
-    }
-  }
-  while (lhs.coefficient(Variable(--lhs_space_dim)) == 0);
 
+  lhs_space_dim = lhs.last_nonzero();
+  if (lhs_space_dim == 0) {
+    // All variables have zero coefficients, so `lhs' is a constant.
+    add_congruence_no_check((lhs %= rhs) / tmp_modulus);
+    return;
+  }
+  --lhs_space_dim;
+  
   // Gather in `new_lines' the collections of all the lines having the
   // direction of variables occurring in `lhs'.  While at it, check
   // whether there exists a variable occurring in both `lhs' and
