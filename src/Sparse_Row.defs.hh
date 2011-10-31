@@ -546,8 +546,6 @@ public:
     \param j
     An %iterator pointing to another element.
 
-    This operation invalidates existing iterators.
-
     This method takes \f$O(1)\f$ time.
   */
   void swap(iterator i, iterator j);
