@@ -912,25 +912,12 @@ PPL::MIP_Problem::process_pending_constraints() {
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
   if (tableau_num_rows == 0) {
-    const dimension_type input_obj_function_size
-      = input_obj_function.space_dimension();
-    for (dimension_type i = input_obj_function_size; i-- > 0; )
-      // If a the value of a variable in the objective function is
-      // different from zero, the final status is unbounded.
-      // In the first part the variable is constrained to be greater or equal
-      // than zero.
-      if ((((input_obj_function.coefficient(Variable(i)) > 0
-             && opt_mode == MAXIMIZATION)
-            || (input_obj_function.coefficient(Variable(i)) < 0
-        && opt_mode == MINIMIZATION)) && mapping[i].second == 0)
-          // In the following case the variable is unconstrained.
-          || (input_obj_function.coefficient(Variable(i)) != 0
-              && mapping[i].second != 0)) {
-        // Ensure the right space dimension is obtained.
-        last_generator = point(0 * Variable(space_dimension() - 1));
-        status = UNBOUNDED;
-        return true;
-      }
+    if (input_obj_function.is_unbounded_obj_function(mapping, opt_mode)) {
+      // Ensure the right space dimension is obtained.
+      last_generator = point(0 * Variable(space_dimension() - 1));
+      status = UNBOUNDED;
+      return true;
+    }
 
     // The problem is neither trivially unfeasible nor trivially unbounded.
     // The tableau was successful computed and the caller has to figure
