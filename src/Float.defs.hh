@@ -27,14 +27,14 @@ site: http://bugseng.com/products/ppl/ . */
 #include "globals.types.hh"
 #include "meta_programming.hh"
 #include "compiler.hh"
-#include <gmp.h>
 #include "assert.hh"
-#include <cmath>
-#include <map>
 #include "Concrete_Expression.types.hh"
 #include "Variable.types.hh"
 #include "Linear_Form.types.hh"
 #include <set>
+#include <cmath>
+#include <map>
+#include <gmp.h>
 
 #ifdef NAN
 #define PPL_NAN NAN
