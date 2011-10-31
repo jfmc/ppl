@@ -825,19 +825,16 @@ PPL::Grid::constrains(const Variable var) const {
     }
 
     // Scan generators: perhaps we will find line(var).
-    const dimension_type var_id = var.id();
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
       const Grid_Generator& g_i = gen_sys[i];
-      if (g_i.is_line()) {
-	if (sgn(g_i.coefficient(var)) != 0) {
-	  for (dimension_type j = 0; j < space_dim; ++j)
-	    if (g_i.coefficient(Variable(j)) != 0 && j != var_id)
-	      goto next;
+      if (!g_i.is_line())
+        continue;
+      if (sgn(g_i.coefficient(var)) != 0) {
+        if (g_i.expression().all_zeroes(1, var.space_dimension())
+            && g_i.expression().all_zeroes(var.space_dimension() + 1, space_dim + 1))
+          // The only nonzero coefficient in g_i is the one of var.
           return true;
-	}
       }
-    next:
-      ;
     }
 
     // We are still here: at least we know that the grid is not empty.
