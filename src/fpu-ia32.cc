@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#include <ppl-config.h>
+#include "ppl-config.h"
 
 #if PPL_CAN_CONTROL_FPU && defined(PPL_FPMATH_MAY_USE_SSE) \
   && defined(__i386__) \
