@@ -3300,23 +3300,20 @@ Box<ITV>
     = (denominator > 0) ? relsym : reversed_relsym;
   // Revise the expression to take into account the denominator of the
   // maximum/minimim value for `var'.
-  PPL_DIRTY_TEMP(Linear_Expression, revised_expr);
-  dimension_type dim = space_dim;
+  Linear_Expression revised_expr;
   PPL_DIRTY_TEMP_COEFFICIENT(d);
   if (corrected_relsym == LESS_THAN || corrected_relsym == LESS_OR_EQUAL) {
     if (bound_below) {
-      for ( ; dim > 0; dim--) {
-        d = min_den * expr.coefficient(Variable(dim - 1));
-        revised_expr += d * Variable(dim - 1);
-      }
+      revised_expr = expr;
+      revised_expr.set_inhomogeneous_term(Coefficient_zero());
+      revised_expr *= d;
     }
   }
   else {
     if (bound_above) {
-      for ( ; dim > 0; dim--) {
-        d = max_den * expr.coefficient(Variable(dim - 1));
-        revised_expr += d * Variable(dim - 1);
-      }
+      revised_expr = expr;
+      revised_expr.set_inhomogeneous_term(Coefficient_zero());
+      revised_expr *= max_den;
     }
   }
 
