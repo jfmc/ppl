@@ -2332,6 +2332,8 @@ propagate_constraint_check_result(Result r, Ternary& open) {
 template <typename ITV>
 void
 Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
+  using namespace Implementation::Boxes;
+
   PPL_ASSERT(c.space_dimension() <= space_dimension());
 
   typedef
