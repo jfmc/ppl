@@ -2304,8 +2304,6 @@ private:
 
   void throw_generic(const char* method, const char* reason) const;
   //@} // Exception Throwers
-
-  static T default_stop_points[];
 };
 
 namespace std {
