@@ -2296,9 +2296,7 @@ Box<ITV>::refine_no_check(const Congruence_System& cgs) {
 }
 
 #if 1 // Alternative implementations for propagate_constraint_no_check.
-namespace Implementation {
-
-namespace Boxes {
+namespace {
 
 inline bool
 propagate_constraint_check_result(Result r, Ternary& open) {
@@ -2324,10 +2322,7 @@ propagate_constraint_check_result(Result r, Ternary& open) {
   }
 }
 
-} // namespace Boxes
-
-} // namespace Implementation
-
+} // namespace
 
 template <typename ITV>
 void
