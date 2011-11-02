@@ -283,8 +283,11 @@ CO_Tree::insert_in_empty_tree(dimension_type key1,
   rebuild_bigger_tree();
   tree_iterator itr(*this);
   PPL_ASSERT(itr.index() == unused_index);
-  itr.index() = key1;
+
   new (&(*itr)) data_type(data1);
+  // Set the index afterwards, so that if the constructor above throws
+  // the tree's structure is consistent.
+  itr.index() = key1;
   size_++;
 
   PPL_ASSERT(OK());
