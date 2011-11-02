@@ -1135,13 +1135,34 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
     return;
   }
 
-  for (dimension_type i = x.reserved_size; i > 0; --i)
-    if (x.indexes[i] != unused_index) {
-      indexes[i] = x.indexes[i];
-      new (&(data[i])) data_type(x.data[i]);
-    } else {
-      PPL_ASSERT(indexes[i] == unused_index);
-    }
+  dimension_type i;
+  try {
+    for (i = x.reserved_size; i > 0; --i)
+      if (x.indexes[i] != unused_index) {
+        indexes[i] = x.indexes[i];
+        new (&(data[i])) data_type(x.data[i]);
+      } else {
+        PPL_ASSERT(indexes[i] == unused_index);
+      }
+  } catch (...) {
+    // The (used) data elements in [x.reserved_size,i) has been constructed
+    // successfully.
+    // The constructor of data[i] has thrown an exception, so data[i] has not
+    // been constructed.
+
+    // 1. Destroy the data elements that have been constructed successfully.
+    for (dimension_type j = x.reserved_size; j > i; --j)
+      if (indexes[j] != unused_index)
+        data[j].~data_type();
+
+    // 2. Deallocate index[] and data[]
+    delete [] indexes;
+    operator delete(static_cast<void*>(data));
+
+    // 3. Set the tree to an empty tree.
+    init(0);
+    throw;
+  }
 
   size_ = x.size_;
   PPL_ASSERT(OK());
