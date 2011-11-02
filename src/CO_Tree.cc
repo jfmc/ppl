@@ -1002,7 +1002,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
-  static std::pair<dimension_type,char>
+  static std::pair<dimension_type, signed char>
     stack[5*CHAR_BIT*sizeof(dimension_type)];
 
   dimension_type stack_first_empty = 0;
@@ -1025,7 +1025,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     // top_n         = stack.top().first;
     // top_operation = stack.top().second;
     const dimension_type top_n = stack[stack_first_empty - 1].first;
-    const char top_operation = stack[stack_first_empty - 1].second;
+    const signed char top_operation = stack[stack_first_empty - 1].second;
 
     switch (top_operation) {
 
