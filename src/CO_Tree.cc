@@ -541,18 +541,27 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     reserved_size = 0;
     max_depth = 0;
   } else {
-    max_depth = integer_log2(reserved_size1) + 1;
 
-    size_ = 0;
-    reserved_size = ((dimension_type)1 << max_depth) - 1;
-    indexes = new dimension_type[reserved_size + 2];
+    init(0);
+
+    const dimension_type new_max_depth = integer_log2(reserved_size1) + 1;
+    const dimension_type new_reserved_size = ((dimension_type)1 << new_max_depth) - 1;
+
+    // If this throws, *this will be the empty tree.
+    indexes = new dimension_type[new_reserved_size + 2];
+
     try {
       data = static_cast<data_type*>(operator new(sizeof(data_type)
-                                                  * (reserved_size + 1)));
+                                                  * (new_reserved_size + 1)));
     } catch (...) {
       delete [] indexes;
+      indexes = 0;
+      PPL_ASSERT(OK());
       throw;
     }
+    max_depth = new_max_depth;
+    reserved_size = new_reserved_size;
+    
     // Mark all pairs as unused.
     for (dimension_type i = 1; i <= reserved_size; ++i)
       indexes[i] = unused_index;
