@@ -51,17 +51,51 @@ struct number_struct {
   association; returns \f$-1\f$ otherwise.
 */
 inline int
-get_digit(int c, int base = 10) {
-  if (c >= '0' && c < '0' + ((base > 10) ? 10 : base))
-    return c - '0';
-  if (base > 10) {
-    base -= 10;
-    if (c >= 'A' && c < 'A' + base)
-      return c - 'A' + 10;
-    if (c >= 'a' && c < 'a' + base)
-      return c - 'a' + 10;
+get_digit(char c, int base = 10) {
+  int n;
+  switch (c) {
+  case '0': n = 0; break;
+  case '1': n = 1; break;
+  case '2': n = 2; break;
+  case '3': n = 3; break;
+  case '4': n = 4; break;
+  case '5': n = 5; break;
+  case '6': n = 6; break;
+  case '7': n = 7; break;
+  case '8': n = 8; break;
+  case '9': n = 9; break;
+  case 'a': case 'A': n = 10; break;
+  case 'b': case 'B': n = 11; break;
+  case 'c': case 'C': n = 12; break;
+  case 'd': case 'D': n = 13; break;
+  case 'e': case 'E': n = 14; break;
+  case 'f': case 'F': n = 15; break;
+  case 'g': case 'G': n = 16; break;
+  case 'h': case 'H': n = 17; break;
+  case 'i': case 'I': n = 18; break;
+  case 'j': case 'J': n = 19; break;
+  case 'k': case 'K': n = 20; break;
+  case 'l': case 'L': n = 21; break;
+  case 'm': case 'M': n = 22; break;
+  case 'n': case 'N': n = 23; break;
+  case 'o': case 'O': n = 24; break;
+  case 'p': case 'P': n = 25; break;
+  case 'q': case 'Q': n = 26; break;
+  case 'r': case 'R': n = 27; break;
+  case 's': case 'S': n = 28; break;
+  case 't': case 'T': n = 29; break;
+  case 'u': case 'U': n = 30; break;
+  case 'v': case 'V': n = 31; break;
+  case 'w': case 'W': n = 32; break;
+  case 'x': case 'X': n = 33; break;
+  case 'y': case 'Y': n = 34; break;
+  case 'z': case 'Z': n = 35; break;
+  default:
+    return -1;
   }
-  return -1;
+  if (n >= base)
+    return -1;
+  return n;
 }
 
 /*! \brief
@@ -73,7 +107,7 @@ get_digit(int c, int base = 10) {
 */
 inline bool
 sum_sign(bool& a_neg, unsigned long& a_mod,
-	 bool b_neg, unsigned long b_mod) {
+         bool b_neg, unsigned long b_mod) {
   if (a_neg == b_neg) {
     if (a_mod > ULONG_MAX - b_mod)
       return false;
@@ -109,16 +143,18 @@ parse_number_part(std::istream& is, number_struct& num) {
   num.neg_exponent = false;
   num.mantissa.erase();
   num.exponent = 0;
-  int c;
+  char c;
   do {
-    c = is.get();
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
   } while (isspace(c));
   switch (c) {
   case '-':
     num.neg_mantissa = true;
     // Fall through.
   case '+':
-    c = is.get();
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
     if (c == 'i' || c == 'I')
       goto inf;
     if (c != '.')
@@ -126,103 +162,103 @@ parse_number_part(std::istream& is, number_struct& num) {
     // Fall through.
   case '.':
     state = FRACTIONAL;
-    c = is.get();
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
     break;
   case 'n':
   case 'N':
-    c = is.get();
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
     if (c != 'a' && c != 'A')
-      goto error;
-    c = is.get();
+      goto unexpected;
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
     if (c != 'n' && c != 'N')
-      goto error;
+      goto unexpected;
     return V_NAN;
   inf:
   case 'i':
   case 'I':
-    c = is.get();
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
     if (c != 'n' && c != 'n')
-      goto error;
-    c = is.get();
+      goto unexpected;
+    if (!is.get(c))
+      return V_CVT_STR_UNK;
     if (c != 'f' && c != 'F')
-      goto error;
+      goto unexpected;
     return num.neg_mantissa ? V_EQ_MINUS_INFINITY : V_EQ_PLUS_INFINITY;
   }
   if (state != FRACTIONAL) {
     if (get_digit(c, 10) < 0)
-      goto error;
-    if (c == '0') {
-      int d = is.get();
+      goto unexpected;
+    char d;
+    if (c == '0' && is.get(d)) {
       if (d == 'x' || d == 'X') {
         num.base = 16;
         num.base_for_exponent = 16;
         state = INTEGER;
-        c = is.get();
+        if (!is.get(c))
+          return V_CVT_STR_UNK;
       }
-      else {
-        c = d;
-        empty_mantissa = false;
-      }
-    }
-    else {
-      num.mantissa += (char) c;
-      empty_mantissa = false;
-      c = is.get();
+      else
+        is.unget();
     }
   }
-  while (true) {
+  do {
     switch (state) {
     case BASE:
       if (get_digit(c, 10) >= 0) {
-	if (c != '0' || !num.mantissa.empty())
-	  num.mantissa += (char) c;
-	empty_mantissa = false;
-	break;
+        if (c != '0' || !num.mantissa.empty())
+          num.mantissa += (char) c;
+        empty_mantissa = false;
+        break;
       }
       if (c == '^') {
-	c = is.get();
-	if (c != '^')
-	  goto error;
-	std::string::const_iterator i;
-	num.base = 0;
-	for (i = num.mantissa.begin(); i != num.mantissa.end(); i++) {
-	  num.base = num.base * 10 + (*i - '0');
-	  if (num.base > 36)
-	    goto error;
-	}
-	if (num.base < 2)
-	  goto error;
+        if (!is.get(c))
+          return V_CVT_STR_UNK;
+        if (c != '^')
+          goto unexpected;
+        std::string::const_iterator i;
+        num.base = 0;
+        for (i = num.mantissa.begin(); i != num.mantissa.end(); i++) {
+          num.base = num.base * 10 + (*i - '0');
+          if (num.base > 36)
+            goto unexpected;
+        }
+        if (num.base < 2)
+          goto unexpected;
         num.base_for_exponent = num.base;
-	num.mantissa.erase();
-	empty_mantissa = true;
-	state = INTEGER;
-	break;
+        num.mantissa.erase();
+        empty_mantissa = true;
+        state = INTEGER;
+        break;
       }
       goto integer;
     case INTEGER:
       if (get_digit(c, num.base) >= 0) {
-	if (c != '0' || !num.mantissa.empty())
-	  num.mantissa += (char) c;
-	empty_mantissa = false;
-	break;
+        if (c != '0' || !num.mantissa.empty())
+          num.mantissa += (char) c;
+        empty_mantissa = false;
+        break;
       }
     integer:
       if (c == '.') {
-	state = FRACTIONAL;
-	break;
+        state = FRACTIONAL;
+        break;
       }
       goto fractional;
     case FRACTIONAL:
       if (get_digit(c, num.base) >= 0) {
-	--exponent_offset;
-	if (c != '0' || !num.mantissa.empty())
-	  num.mantissa += (char) c;
-	empty_mantissa = false;
-	break;
+        --exponent_offset;
+        if (c != '0' || !num.mantissa.empty())
+          num.mantissa += (char) c;
+        empty_mantissa = false;
+        break;
       }
     fractional:
       if (empty_mantissa)
-	goto error;
+        goto unexpected;
       if (c == 'e' || c == 'E')
         goto exp;
       if (c == 'p' || c == 'P') {
@@ -232,46 +268,52 @@ parse_number_part(std::istream& is, number_struct& num) {
           goto exp;
         }
         else
-          goto error;
+          goto unexpected;
       }
       if (c == '*') {
-	c = is.get();
-	if (c != '^')
-	  goto error;
+        if (!is.get(c))
+          return V_CVT_STR_UNK;
+        if (c != '^')
+          goto unexpected;
       exp:
-	state = EXPONENT;
-	max_exp_div = LONG_MAX / num.base;
-	max_exp_rem = LONG_MAX % num.base;
-	c = is.get();
-	if (c == '-') {
-	  num.neg_exponent = true;
-	  break;
-	}
-	if (c == '+')
-	  break;
-	continue;
+        state = EXPONENT;
+        max_exp_div = LONG_MAX / num.base;
+        max_exp_rem = LONG_MAX % num.base;
+        if (!is.get(c))
+          return V_CVT_STR_UNK;
+        if (c == '-') {
+          num.neg_exponent = true;
+          break;
+        }
+        if (c == '+')
+          break;
+        continue;
       }
+      is.unget();
       goto ok;
     case EXPONENT:
       int d = get_digit(c, 10);
       if (d >= 0) {
-	empty_exponent = false;
-	if (num.exponent > max_exp_div
-	    || (num.exponent == max_exp_div && d > max_exp_rem))
-	  return V_CVT_STR_UNK;
-	num.exponent = 10*num.exponent + d;
-	break;
+        empty_exponent = false;
+        if (num.exponent > max_exp_div
+            || (num.exponent == max_exp_div && d > max_exp_rem))
+          return V_CVT_STR_UNK;
+        num.exponent = 10*num.exponent + d;
+        break;
       }
       if (empty_exponent)
-	goto error;
+        goto unexpected;
+      is.unget();
       goto ok;
     }
-    c = is.get();
-  }
+    is.get(c);
+  } while (is);
 
+  if (empty_mantissa || is.bad())
+    return V_CVT_STR_UNK;
+
+ ok:
   {
-  ok:
-    is.unget();
     std::string::size_type n = num.mantissa.size();
     while (n > 0 && num.mantissa[n - 1] == '0') {
       --n;
@@ -286,11 +328,11 @@ parse_number_part(std::istream& is, number_struct& num) {
     else
       neg = false;
     sum_sign(num.neg_exponent, num.exponent,
-	     neg, exponent_offset * exponent_offset_scale);
+             neg, exponent_offset * exponent_offset_scale);
     return V_EQ;
   }
 
- error:
+ unexpected:
   is.unget();
   return V_CVT_STR_UNK;
 }
@@ -306,7 +348,15 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
   Result r = parse_number_part(is, num);
   if (r != V_EQ)
     return r;
-  if (is.get() != '/') {
+  char c;
+  is.get(c);
+  if (is.bad())
+    return V_CVT_STR_UNK;
+  if (!is) {
+    den.base = 0;
+    return r;
+  }
+  if (c != '/') {
     is.unget();
     den.base = 0;
     return r;
@@ -318,14 +368,14 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
   if (num.base == den.base
       && num.base_for_exponent == den.base_for_exponent) {
     if (sum_sign(num.neg_exponent, num.exponent,
-		 !den.neg_exponent, den.exponent)) {
+                 !den.neg_exponent, den.exponent)) {
       if (num.neg_exponent) {
-	den.neg_exponent = false;
-	den.exponent = num.exponent;
-	num.exponent = 0;
+        den.neg_exponent = false;
+        den.exponent = num.exponent;
+        num.exponent = 0;
       }
       else
-	den.exponent = 0;
+        den.exponent = 0;
     }
   }
   return V_EQ;
@@ -363,17 +413,17 @@ input_mpq(mpq_class& to, std::istream& is) {
       mpz_init(z);
       if (num_struct.exponent) {
         mpz_ui_pow_ui(z, num_struct.base_for_exponent, num_struct.exponent);
-	if (num_struct.neg_exponent)
-	  mpz_mul(den, den, z);
-	else
-	  mpz_mul(num, num, z);
+        if (num_struct.neg_exponent)
+          mpz_mul(den, den, z);
+        else
+          mpz_mul(num, num, z);
       }
       if (den_struct.exponent) {
         mpz_ui_pow_ui(z, den_struct.base_for_exponent, den_struct.exponent);
-	if (den_struct.neg_exponent)
-	  mpz_mul(num, num, z);
-	else
-	  mpz_mul(den, den, z);
+        if (den_struct.neg_exponent)
+          mpz_mul(num, num, z);
+        else
+          mpz_mul(den, den, z);
       }
       mpz_clear(z);
     }
@@ -383,9 +433,9 @@ input_mpq(mpq_class& to, std::istream& is) {
       mpz_neg(num, num);
     if (num_struct.exponent) {
       if (num_struct.neg_exponent) {
-	// Add the negative exponent as a denominator.
+        // Add the negative exponent as a denominator.
         mpz_ui_pow_ui(den, num_struct.base_for_exponent, num_struct.exponent);
-	goto end;
+        goto end;
       }
       // Multiply the exponent into the numerator.
       mpz_t z;
