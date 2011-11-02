@@ -368,6 +368,33 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
     return itr;
   }
 
+  if (data <= &data1 && &data1 < data + reserved_size + 1) {
+    // data1 is a coefficient of this row.
+    // Avoid invalidating it.
+    data_type x = data1;
+
+#ifndef NDEBUG
+    dimension_type i = &data1 - data;
+    dimension_type key2 = indexes[i];
+    PPL_ASSERT(key2 != unused_index);
+    // This is true since key1 is not in the tree.
+    PPL_ASSERT(key2 != key1);
+#endif
+
+    // Insert a dummy coefficient.
+    // NOTE: This may invalidate data1, because it may reallocate the tree
+    // and/or move coefficients during rebalancing).
+    itr = insert_precise(key1, Coefficient_zero(), itr);
+
+    PPL_ASSERT(itr.index() == key1);
+
+    // Swap the correct coefficient in place.
+    std::swap(*itr, x);
+    
+    PPL_ASSERT(OK());
+    return itr;
+  }
+
   if (is_greater_than_ratio(size_ + 1, reserved_size, max_density_percent)) {
 
     rebuild_bigger_tree();
