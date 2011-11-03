@@ -317,15 +317,14 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg) {
 }
 
 template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Variable v)
-  : row(v.space_dimension() <= max_space_dimension()
-               ? v.space_dimension() + 1
-               : (throw std::length_error("Linear_Expression_Impl::"
-                                          "Linear_Expression_Impl(v):\n"
-                                          "v exceeds the maximum allowed "
-                                          "space dimension."),
-                  v.space_dimension() + 1)) {
-  ++(row[v.space_dimension()]);
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Variable v) {
+  if (v.space_dimension() > max_space_dimension())
+    throw std::length_error("Linear_Expression_Impl::"
+                            "Linear_Expression_Impl(v):\n"
+                            "v exceeds the maximum allowed "
+                            "space dimension.");
+  set_space_dimension(v.space_dimension());
+  (*this) += v;
   PPL_ASSERT(OK());
 }
 
