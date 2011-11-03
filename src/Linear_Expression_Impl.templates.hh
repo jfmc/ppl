@@ -211,7 +211,7 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Grid_Generator& g) {
   // NOTE: This does *not* copy the last coefficient.
   construct(*(g.expression().impl), g.expression().space_dimension());
   // Do not copy the divisor of `g'.
-  row[0] = 0;
+  row.reset(0);
   PPL_ASSERT(OK());
 }
 
@@ -491,7 +491,7 @@ Linear_Expression_Impl<Row>::operator<<(std::ostream& s) const {
   PPL_DIRTY_TEMP_COEFFICIENT(ev);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    ev = row[v+1];
+    ev = row.get(v+1);
     if (ev != 0) {
       if (!first) {
         if (ev > 0)
@@ -845,6 +845,8 @@ Linear_Expression_Impl<Row>
   //   }
   // }
 
+  typename Row::iterator itr = row.end();
+
   typename Row2::const_iterator x_end = x.row.end();
   typename Row3::const_iterator y_end = y.row.end();
   typename Row3::const_iterator y_k = y.row.end();
@@ -888,11 +890,17 @@ Linear_Expression_Impl<Row>
       const int first_or_third_quadrant = sgn(*x_k) * sgn(*x_h);
       switch (clockwise * first_or_third_quadrant) {
       case -1:
-        row[k] = 0;
+        // Optimized version of row.reset(k)
+        itr = row.lower_bound(itr, k);
+        if (itr != row.end() && itr.index() == k)
+          itr = row.reset(itr);
         considered[k] = true;
         break;
       case 1:
-        row[h] = 0;
+        // Optimized version of row.reset(h)
+        itr = row.lower_bound(itr, h);
+        if (itr != row.end() && itr.index() == h)
+          itr = row.reset(itr);
         considered[h] = true;
         break;
       default:

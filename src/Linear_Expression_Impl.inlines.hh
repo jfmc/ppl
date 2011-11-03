@@ -86,7 +86,7 @@ inline Coefficient_traits::const_reference
 Linear_Expression_Impl<Row>::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Coefficient_zero();
-  return row[v.id() + 1];
+  return row.get(v.id() + 1);
 }
 
 template <typename Row>
@@ -94,21 +94,28 @@ inline void
 Linear_Expression_Impl<Row>
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
-  row[v.id() + 1] = n;
+  dimension_type i = v.space_dimension();
+  if (n == 0)
+    row.reset(i);
+  else
+    row.insert(i, n);
   PPL_ASSERT(OK());
 }
 
 template <typename Row>
 inline Coefficient_traits::const_reference
 Linear_Expression_Impl<Row>::inhomogeneous_term() const {
-  return row[0];
+  return row.get(0);
 }
 
 template <typename Row>
 inline void
 Linear_Expression_Impl<Row>
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
-  row[0] = n;
+  if (n == 0)
+    row.reset(0);
+  else
+    row.insert(0, n);
   PPL_ASSERT(OK());
 }
 
@@ -161,14 +168,22 @@ Linear_Expression_Impl<Row>::total_memory_in_bytes() const {
 template <typename Row>
 inline Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator+=(Coefficient_traits::const_reference n) {
-  row[0] += n;
+  typename Row::iterator itr = row.insert(0);
+  (*itr) += n;
+  if (*itr == 0)
+    row.reset(itr);
+  PPL_ASSERT(OK());
   return *this;
 }
 
 template <typename Row>
 inline Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator-=(Coefficient_traits::const_reference n) {
-  row[0] -= n;
+  typename Row::iterator itr = row.insert(0);
+  (*itr) -= n;
+  if (*itr == 0)
+    row.reset(itr);
+  PPL_ASSERT(OK());
   return *this;
 }
 
@@ -183,9 +198,9 @@ template <typename Row>
 inline void
 Linear_Expression_Impl<Row>::ascii_dump(std::ostream& s) const {
   s << "size " << (space_dimension() + 1) << " ";
-  for (dimension_type j = 0; j < row.size(); ++j) {
-    s << row[j];
-    if (j != row.size() - 1)
+  for (dimension_type i = 0; i < row.size(); ++i) {
+    s << row.get(i);
+    if (i != row.size() - 1)
       s << ' ';
   }
 }
@@ -204,11 +219,17 @@ Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
   if (!(s >> new_size))
     return false;
 
+  row.resize(0);
   row.resize(new_size);
 
-  for (dimension_type j = 0; j < new_size; ++j)
-    if (!(s >> row[j]))
+  PPL_DIRTY_TEMP_COEFFICIENT(c);
+
+  for (dimension_type j = 0; j < new_size; ++j) {
+    if (!(s >> c))
       return false;
+    if (c != 0)
+      row.insert(j, c);
+  }
 
   PPL_ASSERT(OK());
   return true;
