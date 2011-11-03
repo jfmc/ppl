@@ -52,13 +52,10 @@ Grid::lower_triangular(const Congruence_System& sys,
     const Congruence& cg = sys[row];
     ++row;
     // Check diagonal.
-    if (cg[dim] <= 0)
+    if (cg.expression().get(dim) <= 0)
       return false;
-    // Check elements following diagonal.
-    dimension_type col = dim;
-    while (++col < num_columns)
-      if (cg[col] != 0)
-	return false;
+    if (!cg.expression().all_zeroes(dim + 1, num_columns))
+      return false;
   }
 
   // Check squareness.
