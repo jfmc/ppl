@@ -409,7 +409,7 @@ public:
   void linear_combine(const Linear_Expression& y, Variable v);
 
   //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>, but assumes that
-  //! \p *this and \p y have the same space dimension.
+  //! c1 and c2 are not 0.
   void linear_combine(const Linear_Expression& y,
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2);
@@ -598,7 +598,7 @@ private:
   void linear_combine(const Linear_Expression& y, dimension_type i);
 
   //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
-  //! for each i in [start, end).
+  //! for each i in [start, end). It assumes that c1 and c2 are nonzero.
   void linear_combine(const Linear_Expression& y,
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,
