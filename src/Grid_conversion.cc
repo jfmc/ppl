@@ -251,8 +251,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	exact_div_assign(multiplier, source_dim, multiplier);
 	multiply_grid(multiplier, cg, dest_rows, dest_num_rows);
 
-	Coefficient& cg_dim = cg[dim];
-	exact_div_assign(cg_dim, cg_dim, source_dim);
+        cg.expression().exact_div_assign(source_dim, dim, dim + 1);
       }
 
       dest.take_ownership_of_rows(dest_rows);
