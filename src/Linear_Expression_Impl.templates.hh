@@ -358,7 +358,7 @@ Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable
     row.swap(cycle[0].space_dimension(), cycle[1].space_dimension());
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-    tmp = row[cycle.back().space_dimension()];
+    tmp = row.get(cycle.back().space_dimension());
     for (dimension_type i = n - 1; i-- > 0; )
      row.swap(cycle[i + 1].space_dimension(), cycle[i].space_dimension());
     if (tmp == 0)
