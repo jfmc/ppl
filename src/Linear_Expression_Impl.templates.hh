@@ -161,6 +161,21 @@ Linear_Expression_Impl<Dense_Row>::all_homogeneous_terms_are_zero() const {
   return true;
 }
 
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::all_zeroes(dimension_type start, dimension_type end) const {
+  return row.lower_bound(start) == row.lower_bound(end);
+}
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::all_zeroes(dimension_type start, dimension_type end) const {
+  for (dimension_type i = start; i < end; ++i)
+    if (row[i] != 0)
+      return false;
+  return true;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -637,16 +652,6 @@ Linear_Expression_Impl<Row>
   else
     row.insert(i, n);
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-bool
-Linear_Expression_Impl<Row>::all_zeroes(dimension_type start, dimension_type end) const {
-  for (typename Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
-       i != i_end; ++i)
-    if (*i != 0)
-      return false;
-  return true;
 }
 
 template <typename Row>
