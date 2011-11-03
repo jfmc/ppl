@@ -710,7 +710,8 @@ Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_
        i != cs_after_end;
        ++i, ++row_index) {
     Coefficient_traits::const_reference fp_i = fp.coefficient(Variable(row_index));
-    le.linear_combine(i->expression(), 1, -fp_i, 1, n + 1);
+    if (fp_i != 0)
+      le.linear_combine(i->expression(), 1, -fp_i, 1, n + 1);
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
