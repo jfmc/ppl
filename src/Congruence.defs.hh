@@ -100,13 +100,6 @@ void sub_mul_assign(Congruence& c1,
                     Coefficient_traits::const_reference factor,
                     const Congruence& c2);
 
-// TODO: this documentation breaks encapsulation, improve it.
-//! Executes <CODE>x[i] -= n*y[i]</CODE> for all \p i in [start,end).
-/*! \relates Congruence */
-Congruence&
-sub_mul_assign(Congruence& x, Coefficient_traits::const_reference n,
-               const Congruence& y, dimension_type start, dimension_type end);
-
 } // namespace Parma_Polyhedra_Library
 
 

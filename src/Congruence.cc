@@ -297,13 +297,6 @@ PPL::sub_mul_assign(Congruence& c1,
     c1.modulus() = c2.modulus();
 }
 
-PPL::Congruence&
-PPL::sub_mul_assign(Congruence& x, Coefficient_traits::const_reference n,
-                    const Congruence& y, dimension_type start, dimension_type end) {
-  sub_mul_assign(x.expr, n, y.expr, start, end);
-  return x;
-}
-
 const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
 const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
 
