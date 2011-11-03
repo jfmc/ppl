@@ -208,16 +208,6 @@ Congruence::space_dimension() const {
 }
 
 inline Coefficient_traits::const_reference
-Congruence::operator[](dimension_type i) const {
-  return expr[i];
-}
-
-inline Coefficient&
-Congruence::operator[](dimension_type i) {
-  return expr[i];
-}
-
-inline Coefficient_traits::const_reference
 Congruence::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);

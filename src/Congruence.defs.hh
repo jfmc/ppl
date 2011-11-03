@@ -238,12 +238,6 @@ public:
   void permute_space_dimensions(const std::vector<Variable>& cycles);
 
   // TODO: Remove this.
-  Coefficient_traits::const_reference operator[](dimension_type i) const;
-
-  // TODO: Remove this.
-  Coefficient& operator[](dimension_type i);
-
-  // TODO: Remove this.
   Linear_Expression& expression();
 
   // TODO: Remove this.
