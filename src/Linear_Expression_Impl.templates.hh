@@ -194,6 +194,63 @@ Linear_Expression_Impl<Sparse_Row>::num_zeroes(dimension_type start, dimension_t
   return (end - start) - std::distance(row.lower_bound(start), row.lower_bound(end));
 }
 
+template <>
+Coefficient
+Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start, dimension_type end) const {
+  dimension_type i;
+
+  for (i = start; i < end; i++)
+    if (row[i] != 0)
+      break;
+
+  if (i == end)
+    return 0;
+
+  PPL_ASSERT(row[i] != 0);
+
+  Coefficient result = row[i];
+  ++i;
+
+  if (result < 0)
+    neg_assign(result);
+
+  for ( ; i < end; ++i) {
+    if (row[i] == 0)
+      continue;
+    gcd_assign(result, row[i], result);
+    if (result == 1)
+      return result;
+  }
+
+  return result;
+}
+
+template <>
+Coefficient
+Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start, dimension_type end) const {
+  Sparse_Row::const_iterator i = row.lower_bound(start);
+  Sparse_Row::const_iterator i_end = row.lower_bound(end);
+
+  if (i == i_end)
+    return 0;
+
+  PPL_ASSERT(*i != 0);
+
+  Coefficient result = *i;
+  ++i;
+
+  if (result < 0)
+    neg_assign(result);
+
+  for ( ; i != i_end; ++i) {
+    gcd_assign(result, *i, result);
+    if (result == 1)
+      return result;
+  }
+
+  return result;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -670,41 +727,6 @@ Linear_Expression_Impl<Row>
   else
     row.insert(i, n);
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-Coefficient
-Linear_Expression_Impl<Row>::gcd(dimension_type start, dimension_type end) const {
-  typename Row::const_iterator i = row.lower_bound(start);
-  typename Row::const_iterator i_end = row.lower_bound(end);
-
-  while (1) {
-    if (i == i_end)
-      return 0;
-
-    if (*i != 0)
-      break;
-
-    ++i;
-  }
-
-  PPL_ASSERT(*i != 0);
-
-  Coefficient result = *i;
-  ++i;
-
-  if (result < 0)
-    neg_assign(result);
-
-  for ( ; i != i_end; ++i) {
-    if (*i == 0)
-      continue;
-    gcd_assign(result, *i, result);
-    if (result == 1)
-      return result;
-  }
-
-  return result;
 }
 
 template <typename Row>
