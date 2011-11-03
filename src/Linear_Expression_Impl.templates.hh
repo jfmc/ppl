@@ -687,10 +687,13 @@ void
 Linear_Expression_Impl<Row>
 ::exact_div_assign(Coefficient_traits::const_reference c,
                    dimension_type start, dimension_type end) {
-  for (dimension_type i = start; i < end; ++i) {
-    Coefficient& x = row[i];
-    Parma_Polyhedra_Library::exact_div_assign(x, x, c);
-  }
+  // NOTE: Since all coefficients in [start,end) are multiple of c,
+  // each of the resulting coefficients will be nonzero iff the initial
+  // coefficient was.
+  for (typename Row::iterator
+    i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; ++i)
+    Parma_Polyhedra_Library::exact_div_assign(*i, *i, c);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
