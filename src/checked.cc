@@ -278,7 +278,7 @@ parse_number_part(std::istream& is, number_struct& num) {
       exp:
         state = EXPONENT;
         max_exp_div = LONG_MAX / num.base;
-        max_exp_rem = LONG_MAX % num.base;
+        max_exp_rem = static_cast<int>(LONG_MAX % num.base);
         if (!is.get(c))
           return V_CVT_STR_UNK;
         if (c == '-') {
