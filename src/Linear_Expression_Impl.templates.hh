@@ -321,6 +321,25 @@ Linear_Expression_Impl<Sparse_Row>
   return true;
 }
 
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>::last_nonzero() const {
+  for (dimension_type i = row.size(); i-- > 0; )
+    if (row[i] != 0)
+      return i;
+  return 0;
+}
+
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>::last_nonzero() const {
+  if (row.num_stored_elements() == 0)
+    return 0;
+  Sparse_Row::const_iterator i = row.end();
+  --i;
+  return i.index();
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -1051,21 +1070,6 @@ Linear_Expression_Impl<Row>
   }
   normalize();
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-dimension_type
-Linear_Expression_Impl<Row>::last_nonzero() const {
-  typename Row::const_iterator i = row.begin();
-  typename Row::const_iterator i_end = row.end();
-
-  while (1) {
-    if (i == i_end)
-      return 0;
-    --i_end;
-    if (*i_end != 0)
-      return i_end.index();
-  }
 }
 
 template <typename Row>
