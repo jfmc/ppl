@@ -443,8 +443,16 @@ Linear_Expression_Impl<Row>::operator*=(Coefficient_traits::const_reference n) {
 template <typename Row>
 Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator/=(Coefficient_traits::const_reference n) {
-  for (dimension_type i = row.size(); i-- > 0; )
-    row[i] /= n;
+  typename Row::iterator i = row.begin();
+  const typename Row::iterator& i_end = row.end();
+  while (i != i_end) {
+    (*i) /= n;
+    if (*i == 0)
+      i = row.reset(i);
+    else
+      ++i;
+  }
+  PPL_ASSERT(OK());
   return *this;
 }
 
