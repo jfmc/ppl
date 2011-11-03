@@ -460,8 +460,8 @@ Linear_Expression_Impl<Row>::operator/=(Coefficient_traits::const_reference n) {
 template <typename Row>
 void
 Linear_Expression_Impl<Row>::negate() {
-  for (dimension_type i = row.size(); i-- > 0; )
-    neg_assign(row[i]);
+  for (typename Row::iterator i = row.begin(), i_end = row.end(); i != i_end; ++i)
+    neg_assign(*i);
   PPL_ASSERT(OK());
 }
 
