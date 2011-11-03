@@ -367,6 +367,40 @@ Linear_Expression_Impl<Sparse_Row>
     return last;
 }
 
+template <>
+void
+Linear_Expression_Impl<Dense_Row>
+::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
+  typedef std::set<dimension_type> set_t;
+  set_t result;
+  for (set_t::const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
+    if (row[*i] == 0)
+      result.insert(*i);
+  std::swap(x, result);
+}
+
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>
+::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
+  typedef std::set<dimension_type> set_t;
+  set_t result;
+  Sparse_Row::const_iterator itr = row.end();
+  Sparse_Row::const_iterator itr_end = row.end();
+  set_t::const_iterator i = x.begin();
+  set_t::const_iterator i_end = x.end();
+  for ( ; i != i_end; ++i) {
+    itr = row.lower_bound(itr, *i);
+    if (itr == itr_end)
+      break;
+    if (itr.index() != *i)
+      result.insert(*i);
+  }
+  for ( ; i != i_end; ++i)
+    result.insert(*i);
+  std::swap(x, result);
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -1161,23 +1195,6 @@ Linear_Expression_Impl<Row>
   PPL_DIRTY_TEMP_COEFFICIENT(result);
   scalar_product_assign(result, y, start, end);
   return sgn(result);
-}
-
-template <typename Row>
-void
-Linear_Expression_Impl<Row>
-::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
-  std::set<dimension_type> result;
-  typename Row::const_iterator itr = row.end();
-  typename Row::const_iterator itr_end = row.end();
-  std::set<dimension_type>::const_iterator i = x.begin();
-  std::set<dimension_type>::const_iterator i_end = x.end();
-  for ( ; i != i_end; ++i) {
-    itr = row.lower_bound(itr, *i);
-    if (itr == itr_end || itr.index() != *i || *itr == 0)
-      result.insert(*i);
-  }
-  std::swap(x, result);
 }
 
 template <typename Row>
