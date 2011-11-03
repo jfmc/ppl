@@ -537,6 +537,63 @@ Linear_Expression::is_unbounded_obj_function(
   return impl->is_unbounded_obj_function(mapping, optimization_mode);
 }
 
+inline void
+Linear_Expression
+::linear_combine(const Linear_Expression& y, dimension_type i) {
+  impl->linear_combine(*y.impl, i);
+}
+
+inline void
+Linear_Expression
+::linear_combine(const Linear_Expression& y,
+                 Coefficient_traits::const_reference c1,
+                 Coefficient_traits::const_reference c2) {
+  impl->linear_combine(*y.impl, c1, c2);
+}
+
+inline void
+Linear_Expression
+::linear_combine_lax(const Linear_Expression& y,
+                     Coefficient_traits::const_reference c1,
+                     Coefficient_traits::const_reference c2) {
+  impl->linear_combine_lax(*y.impl, c1, c2);
+}
+
+inline int
+compare(const Linear_Expression& x, const Linear_Expression& y) {
+  return x.impl->compare(*y.impl);
+}
+
+inline bool
+Linear_Expression::is_equal_to(const Linear_Expression& x) const {
+  return impl->is_equal_to(*x.impl);
+}
+
+inline void
+Linear_Expression::linear_combine(const Linear_Expression& y,
+                                  Coefficient_traits::const_reference c1,
+                                  Coefficient_traits::const_reference c2,
+                                  dimension_type start,
+                                  dimension_type end) {
+  impl->linear_combine(*y.impl, c1, c2, start, end);
+}
+
+inline void
+Linear_Expression::linear_combine_lax(const Linear_Expression& y,
+                                      Coefficient_traits::const_reference c1,
+                                      Coefficient_traits::const_reference c2,
+                                      dimension_type start,
+                                      dimension_type end) {
+  impl->linear_combine_lax(*y.impl, c1, c2, start, end);
+}
+
+inline void
+Linear_Expression
+::modify_according_to_evolution(const Linear_Expression& x,
+                                const Linear_Expression& y) {
+  impl->modify_according_to_evolution(*x.impl, *y.impl);
+}
+
 namespace IO_Operators {
   
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
