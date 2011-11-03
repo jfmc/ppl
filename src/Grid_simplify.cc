@@ -161,11 +161,9 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // all other parameters to match.
   for (dimension_type index = rows.size(); index-- > 0; ) {
     Grid_Generator& gen = rows[index];
-    if (gen.is_parameter_or_point()) {
-      gen.expression() *= reduced_pivot_col;
-      Coefficient& divisor = gen.expression()[num_columns];
-      exact_div_assign(divisor, divisor, reduced_pivot_col);
-    }
+    if (gen.is_parameter_or_point())
+      // Do not scale the last coefficient.
+      gen.expression().mul_assign(reduced_pivot_col, 0, num_columns);
   }
 
   // Subtract from row a multiple of pivot such that the result in
