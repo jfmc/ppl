@@ -219,9 +219,10 @@ parse_number_part(std::istream& is, number_struct& num) {
           return V_CVT_STR_UNK;
         if (c != '^')
           goto unexpected;
-        std::string::const_iterator i;
         num.base = 0;
-        for (i = num.mantissa.begin(); i != num.mantissa.end(); i++) {
+        for (std::string::const_iterator i = num.mantissa.begin();
+             i != num.mantissa.end();
+             i++) {
           num.base = num.base * 10 + get_digit(*i, 10);
           if (num.base > 36)
             goto unexpected;
