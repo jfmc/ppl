@@ -296,7 +296,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // Set the modulus in every congruence.
   Swapping_Vector<Congruence> dest_rows;
   dest.release_rows(dest_rows);
-  const Coefficient& modulus = dest_rows[dest_num_rows - 1][0];
+  Coefficient_traits::const_reference modulus
+    = dest_rows[dest_num_rows - 1].inhomogeneous_term();
   for (dimension_type row = dest_num_rows; row-- > 0; ) {
     Congruence& cg = dest_rows[row];
     if (cg.is_proper_congruence())
@@ -434,16 +435,14 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       for (dimension_type i = dest_index; i-- > 0; ) {
         Grid_Generator& g = rows[i];
 
-        Coefficient& g_dim = g.expression()[dim];
-        
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	gcd_assign(reduced_source_dim, g_dim, source_dim);
+	gcd_assign(reduced_source_dim, g.expression().get(dim), source_dim);
 	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
 	multiply_grid(reduced_source_dim, g, rows, dest_num_rows);
 
-	exact_div_assign(g_dim, g_dim, source_dim);
+        g.expression().exact_div_assign(source_dim, dim, dim + 1);
       }
     }
 
