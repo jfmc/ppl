@@ -131,6 +131,21 @@ Linear_Expression_Impl<Sparse_Row>::remove_space_dimensions(const Variables_Set&
   PPL_ASSERT(OK());
 }
 
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::is_zero() const {
+  return row.num_stored_elements() == 0;
+}
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::is_zero() const {
+  for (dimension_type i = row.size(); i-- > 0; )
+    if (row[i] != 0)
+      return false;
+  return true;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);

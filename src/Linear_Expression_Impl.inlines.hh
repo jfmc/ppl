@@ -135,16 +135,6 @@ Linear_Expression_Impl<Row>::shift_space_dimensions(Variable v, dimension_type n
 
 template <typename Row>
 inline bool
-Linear_Expression_Impl<Row>::is_zero() const {
-  for (typename Row::const_iterator i = row.begin(), i_end = row.end();
-       i != i_end; ++i)
-    if (*i != 0)
-      return false;
-  return true;
-}
-
-template <typename Row>
-inline bool
 Linear_Expression_Impl<Row>::all_homogeneous_terms_are_zero() const {
   for (typename Row::const_iterator i = row.lower_bound(1), i_end = row.end();
        i != i_end; ++i)
