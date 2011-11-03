@@ -520,26 +520,18 @@ template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference factor,
-                                            const Linear_Expression_Impl<Row2>& e2) {
-  Linear_Expression_Impl& e1 = *this;
-  if (e2.space_dimension() > e1.space_dimension())
-    e1.set_space_dimension(e2.space_dimension());
-  PPL_ASSERT(e1.space_dimension() >= e2.space_dimension());
-  for (dimension_type i = 0; i < e2.row.size(); i++)
-    e1[i] += factor * e2[i];
+                                            const Linear_Expression_Impl<Row2>& y) {
+  if (factor != 0)
+    linear_combine(y, Coefficient_one(), factor);
 }
 
 template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference factor,
-                                            const Linear_Expression_Impl<Row2>& e2) {
-  Linear_Expression_Impl& e1 = *this;
-  if (e2.space_dimension() > e1.space_dimension())
-    e1.set_space_dimension(e2.space_dimension());
-  PPL_ASSERT(e1.space_dimension() >= e2.space_dimension());
-  for (dimension_type i = 0; i < e2.row.size(); i++)
-    e1[i] -= factor * e2[i];
+                                            const Linear_Expression_Impl<Row2>& y) {
+  if (factor != 0)
+    linear_combine(y, Coefficient_one(), -factor);
 }
 
 template <typename Row>
