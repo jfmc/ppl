@@ -341,10 +341,6 @@ public:
   virtual Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
                                                  const Variable v);
 
-  virtual Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
-                                                 const Linear_Expression_Interface& y,
-                                                 dimension_type start, dimension_type end);
-
   virtual void add_mul_assign(Coefficient_traits::const_reference factor,
                               const Linear_Expression_Interface& e2);
 

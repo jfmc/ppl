@@ -385,13 +385,6 @@ sub_mul_assign(Linear_Expression& e,
   return e;
 }
 
-inline Linear_Expression&
-sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,
-                    const Linear_Expression& y, dimension_type start, dimension_type end) {
-  x.impl->sub_mul_assign(n, *y.impl, start, end);
-  return x;
-}
-
 inline void
 add_mul_assign(Linear_Expression& e1,
                     Coefficient_traits::const_reference factor,

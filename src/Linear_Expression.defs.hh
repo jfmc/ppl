@@ -207,13 +207,6 @@ Linear_Expression&
 sub_mul_assign(Linear_Expression& e,
                Coefficient_traits::const_reference n, Variable v);
 
-// TODO: this documentation breaks encapsulation, improve it.
-//! Executes <CODE>x[i] -= n*y[i]</CODE> for all \p i in [start,end).
-/*! \relates Linear_Expression */
-Linear_Expression&
-sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,
-               const Linear_Expression& y, dimension_type start, dimension_type end);
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Linear_Expression
@@ -778,10 +771,6 @@ private:
   sub_mul_assign(Linear_Expression& e1,
                  Coefficient_traits::const_reference factor,
                  const Linear_Expression& e2);
-
-  friend Linear_Expression&
-  sub_mul_assign(Linear_Expression& x, Coefficient_traits::const_reference n,
-                 const Linear_Expression& y, dimension_type start, dimension_type end);
 
   friend int
   compare(const Linear_Expression& x, const Linear_Expression& y);

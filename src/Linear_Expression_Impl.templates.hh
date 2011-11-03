@@ -507,17 +507,6 @@ Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference 
 
 template <typename Row>
 template <typename Row2>
-Linear_Expression_Impl<Row>&
-Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference n,
-                                            const Linear_Expression_Impl<Row2>& y,
-                                            dimension_type start, dimension_type end) {
-  for (dimension_type i = start; i < end; i++)
-    row[i] -= n*y.row[i];
-  return *this;
-}
-
-template <typename Row>
-template <typename Row2>
 void
 Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference factor,
                                             const Linear_Expression_Impl<Row2>& y) {
@@ -1337,23 +1326,6 @@ Linear_Expression_Impl<Row>
     return operator-=(*p);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
     return operator-=(*p);
-  } else {
-    // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
-    return *this;
-  }
-}
-
-template <typename Row>
-Linear_Expression_Impl<Row>&
-Linear_Expression_Impl<Row>
-::sub_mul_assign(Coefficient_traits::const_reference n,
-                 const Linear_Expression_Interface& y,
-                 dimension_type start, dimension_type end) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
-    return sub_mul_assign(n, *p, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
-    return sub_mul_assign(n, *p, start, end);
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);
