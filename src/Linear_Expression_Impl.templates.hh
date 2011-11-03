@@ -495,11 +495,13 @@ Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference 
     throw std::length_error("Linear_Expression_Impl& "
                             "sub_mul_assign(e, n, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (row.size() <= v_space_dim) {
-    Linear_Expression_Impl new_e(*this, v_space_dim+1);
-    swap(new_e);
-  }
-  row[v_space_dim] -= n;
+  if (space_dimension() < v_space_dim)
+    set_space_dimension(v_space_dim);
+  typename Row::iterator itr = row.insert(v_space_dim);
+  (*itr) -= n;
+  if (*itr == 0)
+    row.reset(itr);
+  PPL_ASSERT(OK());
   return *this;
 }
 
