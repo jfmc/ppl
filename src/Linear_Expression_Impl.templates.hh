@@ -146,6 +146,21 @@ Linear_Expression_Impl<Dense_Row>::is_zero() const {
   return true;
 }
 
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::all_homogeneous_terms_are_zero() const {
+  return row.lower_bound(1) == row.end();
+}
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::all_homogeneous_terms_are_zero() const {
+  for (dimension_type i = 1; i < row.size(); ++i)
+    if (row[i] != 0)
+      return false;
+  return true;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
