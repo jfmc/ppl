@@ -222,7 +222,7 @@ parse_number_part(std::istream& is, number_struct& num) {
         std::string::const_iterator i;
         num.base = 0;
         for (i = num.mantissa.begin(); i != num.mantissa.end(); i++) {
-          num.base = num.base * 10 + (*i - '0');
+          num.base = num.base * 10 + get_digit(*i, 10);
           if (num.base > 36)
             goto unexpected;
         }
