@@ -538,9 +538,6 @@ private:
   */
   Linear_Expression(const Congruence& cg, dimension_type sz);
 
-  Coefficient& operator[](dimension_type i);
-  const Coefficient& operator[](dimension_type i) const;
-
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.

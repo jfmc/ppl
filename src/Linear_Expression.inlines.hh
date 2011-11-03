@@ -399,16 +399,6 @@ sub_mul_assign(Linear_Expression& e1,
   e1.impl->sub_mul_assign(factor, *e2.impl);
 }
 
-inline Coefficient&
-Linear_Expression::operator[](dimension_type i) {
-  return (*impl)[i];
-}
-
-inline const Coefficient&
-Linear_Expression::operator[](dimension_type i) const {
-  return (*impl)[i];
-}
-
 inline Coefficient_traits::const_reference
 Linear_Expression::get(dimension_type i) const {
   return impl->get(i);

@@ -580,18 +580,6 @@ Linear_Expression_Impl<Row>::operator<<(std::ostream& s) const {
 }
 
 template <typename Row>
-Coefficient&
-Linear_Expression_Impl<Row>::operator[](dimension_type i) {
-  return row[i];
-}
-
-template <typename Row>
-const Coefficient&
-Linear_Expression_Impl<Row>::operator[](dimension_type i) const {
-  return row[i];
-}
-
-template <typename Row>
 Coefficient_traits::const_reference
 Linear_Expression_Impl<Row>::get(dimension_type i) const {
   return row.get(i);

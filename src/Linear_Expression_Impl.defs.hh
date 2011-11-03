@@ -361,16 +361,6 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
-  virtual Coefficient& operator[](dimension_type i);
-  
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  virtual const Coefficient& operator[](dimension_type i) const;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
   //! Returns the i-th coefficient.
   virtual Coefficient_traits::const_reference get(dimension_type i) const;
 
