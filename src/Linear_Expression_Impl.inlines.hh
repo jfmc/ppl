@@ -50,6 +50,7 @@ template <typename Row>
 inline
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(dimension_type sz, bool)
   : row(sz) {
+  PPL_ASSERT(sz != 0);
   PPL_ASSERT(OK());
 }
 
@@ -174,6 +175,7 @@ template <typename Row>
 inline void
 Linear_Expression_Impl<Row>::normalize() {
   row.normalize();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>

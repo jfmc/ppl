@@ -77,6 +77,7 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Inte
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg, dimension_type sz) {
+  PPL_ASSERT(sz != 0);
   construct(*(cg.expression().impl), sz);
 }
 
@@ -85,6 +86,8 @@ template <typename Row2>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Impl<Row2>& y, Variable i) {
+  PPL_ASSERT(space_dimension() == y.space_dimension());
+  PPL_ASSERT(i.space_dimension() <= space_dimension());
   linear_combine(y, i.space_dimension());
 }
 
@@ -144,6 +147,8 @@ template <typename Row2>
 void
 Linear_Expression_Impl<Row>::swap(Linear_Expression_Impl<Row2>& y) {
   std::swap(row, y.row);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(y.OK());
 }
 
 template <typename Row>
@@ -745,15 +750,19 @@ Linear_Expression_Impl<Row>::sign_normalize() {
     if (i != row.end() && i.index() == 0)
       neg_assign(*i);
   }
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
 void
 Linear_Expression_Impl<Row>::negate(dimension_type first, dimension_type last) {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
   typename Row::iterator i = row.lower_bound(first);
   typename Row::iterator i_end = row.lower_bound(last);
   for ( ; i != i_end; ++i)
     neg_assign(*i);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -892,6 +901,7 @@ Linear_Expression_Impl<Row>
     }
   }
   normalize();
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -914,6 +924,7 @@ template <typename Row2>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e) {
   row = e.row;
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -922,6 +933,7 @@ void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e,
                                        dimension_type sz) {
   row = Row(e.row, sz, sz);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
