@@ -40,6 +40,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <>
+bool Linear_Expression_Impl<Dense_Row>::OK() const {
+  return (row.size() != 0);
+}
+
+template <>
+bool Linear_Expression_Impl<Sparse_Row>::OK() const {
+  if (row.size() == 0)
+    return false;
+  for (Sparse_Row::const_iterator i = row.begin(), i_end = row.end(); i != i_end; ++i)
+    if (*i == 0) {
+      std::cout << "Linear_Expression_Impl<Sparse_Row>::OK() failed. row was:" << std::endl;
+      row.ascii_dump();
+      // Found a stored zero.
+      return false;
+    }
+  return true;
+}
+
+template <>
 void
 Linear_Expression_Impl<Dense_Row>::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
@@ -521,12 +540,6 @@ Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference 
                                             const Linear_Expression_Impl<Row2>& y) {
   if (factor != 0)
     linear_combine(y, Coefficient_one(), -factor);
-}
-
-template <typename Row>
-bool
-Linear_Expression_Impl<Row>::OK() const {
-  return row.size() != 0;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
