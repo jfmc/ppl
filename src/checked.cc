@@ -210,7 +210,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     case BASE:
       if (get_digit(c, 10) >= 0) {
         if (c != '0' || !num.mantissa.empty())
-          num.mantissa += (char) c;
+          num.mantissa += c;
         empty_mantissa = false;
         break;
       }
@@ -238,7 +238,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     case INTEGER:
       if (get_digit(c, num.base) >= 0) {
         if (c != '0' || !num.mantissa.empty())
-          num.mantissa += (char) c;
+          num.mantissa += c;
         empty_mantissa = false;
         break;
       }
@@ -252,7 +252,7 @@ parse_number_part(std::istream& is, number_struct& num) {
       if (get_digit(c, num.base) >= 0) {
         --exponent_offset;
         if (c != '0' || !num.mantissa.empty())
-          num.mantissa += (char) c;
+          num.mantissa += c;
         empty_mantissa = false;
         break;
       }
