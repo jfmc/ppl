@@ -39,6 +39,79 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <>
+void
+Linear_Expression_Impl<Dense_Row>::remove_space_dimensions(const Variables_Set& vars) {
+  PPL_ASSERT(vars.space_dimension() <= space_dimension());
+  if (vars.empty())
+    return;
+
+  // For each variable to be removed, replace the corresponding coefficient
+  // by shifting left the coefficient to the right that will be kept.
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  dimension_type dst_col = *vsi+1;
+  dimension_type src_col = dst_col + 1;
+  for (++vsi; vsi != vsi_end; ++vsi) {
+    const dimension_type vsi_col = *vsi+1;
+    // Move all columns in between to the left.
+    while (src_col < vsi_col)
+      row.swap(dst_col++, src_col++);
+    ++src_col;
+  }
+  // Move any remaining columns.
+  const dimension_type sz = row.size();
+  while (src_col < sz)
+    row.swap(dst_col++, src_col++);
+
+  // The number of remaining coefficients is `dst_col'.
+  row.resize(dst_col);
+  PPL_ASSERT(OK());
+}
+
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>::remove_space_dimensions(const Variables_Set& vars) {
+  PPL_ASSERT(vars.space_dimension() <= space_dimension());
+  if (vars.empty())
+    return;
+
+  // For each variable to be removed, replace the corresponding coefficient
+  // by shifting left the coefficient to the right that will be kept.
+  Variables_Set::const_iterator vsi = vars.begin();
+  Variables_Set::const_iterator vsi_end = vars.end();
+  Sparse_Row::iterator src = row.lower_bound(*vsi + 1);
+  const Sparse_Row::iterator& row_end = row.end();
+  dimension_type num_removed = 0;
+  while (vsi != vsi_end) {
+    // Delete the element.
+    if (src != row_end && src.index() == *vsi + 1)
+      src = row.reset(src);
+    num_removed++;
+    vsi++;
+    if (vsi != vsi_end) {
+      // Shift left the coefficients in [src.index(), *vsi + 1) by num_removed
+      // positions.
+      while (src != row_end && src.index() < *vsi + 1) {
+        row.fast_swap(src.index() - num_removed, src);
+        ++src;
+      }
+    } else {
+      // Shift left the coefficients in [src.index(), row.size()) by
+      // num_removed positions.
+      while (src != row_end) {
+        row.fast_swap(src.index() - num_removed, src);
+        ++src;
+      }
+    }
+  }
+
+  PPL_ASSERT(num_removed == vars.size());
+
+  row.resize(row.size() - num_removed);
+  PPL_ASSERT(OK());
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -251,33 +324,6 @@ template <typename Row>
 void
 Linear_Expression_Impl<Row>::get_row(Sparse_Row& row) const {
   row = this->row;
-}
-
-template <typename Row>
-void
-Linear_Expression_Impl<Row>::remove_space_dimensions(const Variables_Set& vars) {
-  PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  // For each variable to be removed, replace the corresponding coefficient
-  // by shifting left the coefficient to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      row.swap(dst_col++, src_col++);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type sz = row.size();
-  while (src_col < sz)
-    row.swap(dst_col++, src_col++);
-
-  // The number of remaining coefficients is `dst_col'.
-  row.resize(dst_col);
-  PPL_ASSERT(OK());
 }
 
 template <typename Row>
