@@ -319,9 +319,10 @@ PPL::Grid_Generator_System
   // Swap the parameter divisor column into the new last column.
   swap_columns(col, col + dims);
   // Set the diagonal element of each added rows.
-  dimension_type num_rows = this->num_rows();
+  Grid_Generator_System& x = *this;
+  const dimension_type num_rows = x.num_rows();
   for (dimension_type row = num_rows - dims; row < num_rows; ++row, ++col)
-    const_cast<Coefficient&>((*this)[row][col]) = 1;
+    x[row][col] = 1;
 }
 
 void
