@@ -372,20 +372,9 @@ Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable
 template <typename Row>
 template <typename Row2>
 Linear_Expression_Impl<Row>&
-Linear_Expression_Impl<Row>::operator+=(const Linear_Expression_Impl<Row2>& e2) {
-  Linear_Expression_Impl& e1 = *this;
-  dimension_type e1_size = e1.row.size();
-  dimension_type e2_size = e2.row.size();
-  if (e1_size >= e2_size)
-    for (dimension_type i = e2_size; i-- > 0; )
-      e1.row[i] += e2.row[i];
-  else {
-    Linear_Expression_Impl new_e(e2);
-    for (dimension_type i = e1_size; i-- > 0; )
-      new_e.row[i] += e1.row[i];
-    e1.swap(new_e);
-  }
-  return e1;
+Linear_Expression_Impl<Row>::operator+=(const Linear_Expression_Impl<Row2>& e) {
+  linear_combine(e, Coefficient_one(), Coefficient_one());
+  return *this;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
@@ -411,19 +400,8 @@ template <typename Row>
 template <typename Row2>
 Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator-=(const Linear_Expression_Impl<Row2>& e2) {
-  Linear_Expression_Impl& e1 = *this;
-  dimension_type e1_size = e1.row.size();
-  dimension_type e2_size = e2.row.size();
-  if (e1_size >= e2_size)
-    for (dimension_type i = e2_size; i-- > 0; )
-      e1.row[i] -= e2.row[i];
-  else {
-    Linear_Expression_Impl new_e(e1, e2_size);
-    for (dimension_type i = e2_size; i-- > 0; )
-      new_e.row[i] -= e2.row[i];
-    e1.swap(new_e);
-  }
-  return e1;
+  linear_combine(e2, Coefficient_one(), -1);
+  return *this;
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
