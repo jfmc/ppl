@@ -281,10 +281,13 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// times the entry `dim' from the entry at `dim_prec'.
         Swapping_Vector<Congruence> dest_rows;
         dest.release_rows(dest_rows);
+        PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  PPL_ASSERT(row < dest_num_rows);
 	  Congruence& cg = dest_rows[row];
-	  sub_mul_assign(cg[dim_prec], source_dim, cg[dim]);
+          tmp = cg.expression().get(dim_prec);
+	  sub_mul_assign(tmp, source_dim, cg.expression().get(dim));
+          cg.expression().set(dim_prec, tmp);
 	}
 	dest.take_ownership_of_rows(dest_rows);
       }
