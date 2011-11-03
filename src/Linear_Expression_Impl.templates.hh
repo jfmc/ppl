@@ -340,6 +340,33 @@ Linear_Expression_Impl<Sparse_Row>::last_nonzero() const {
   return i.index();
 }
 
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>
+::first_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  for (dimension_type i = first; i < last; ++i)
+    if (row[i] != 0)
+      return i;
+
+  return last;
+}
+
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>
+::first_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  typename Sparse_Row::const_iterator i = row.lower_bound(first);
+
+  if (i != row.end() && i.index() < last)
+    return i.index();
+  else
+    return last;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -1134,21 +1161,6 @@ Linear_Expression_Impl<Row>
   PPL_DIRTY_TEMP_COEFFICIENT(result);
   scalar_product_assign(result, y, start, end);
   return sgn(result);
-}
-
-template <typename Row>
-dimension_type
-Linear_Expression_Impl<Row>
-::first_nonzero(dimension_type first, dimension_type last) const {
-  PPL_ASSERT(first <= last);
-  PPL_ASSERT(last <= row.size());
-  typename Row::const_iterator i = row.lower_bound(first);
-  typename Row::const_iterator i_end = row.lower_bound(last);
-  for ( ; i != i_end; ++i)
-    if (*i != 0)
-      return i.index();
-
-  return last;
 }
 
 template <typename Row>
