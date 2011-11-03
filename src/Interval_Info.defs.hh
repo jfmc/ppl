@@ -178,7 +178,7 @@ public:
   const_int_nodef(upper_open_bit, upper_special_bit + store_special);
   const_int_nodef(upper_normalized_bit, upper_open_bit + store_open);
   const_int_nodef(cardinality_is_bit, upper_normalized_bit + cache_normalized);
-  const_int_nodef(cardinality_0_bit, cardinality_is_bit + (cache_empty || cache_singleton));
+  const_int_nodef(cardinality_0_bit, cardinality_is_bit + ((cache_empty || cache_singleton) ? 1 : 0));
   const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
   const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
   Interval_Info_Bitset() {

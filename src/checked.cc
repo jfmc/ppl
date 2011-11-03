@@ -404,7 +404,7 @@ input_mpq(mpq_class& to, std::istream& is) {
   mpz_ptr den = to.get_den().get_mpz_t();
   mpz_set_str(num, num_struct.mantissa.c_str(), num_struct.base);
   if (den_struct.base) {
-    if (num_struct.neg_mantissa ^ den_struct.neg_mantissa)
+    if (num_struct.neg_mantissa != den_struct.neg_mantissa)
       mpz_neg(num, num);
     mpz_set_str(den, den_struct.mantissa.c_str(), den_struct.base);
     if (num_struct.exponent || den_struct.exponent) {
