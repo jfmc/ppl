@@ -78,8 +78,8 @@ struct C_Integer<char> : public True {
 #else
   typedef signed char other_type;
 #endif
-  static const char min = CHAR_MIN;
-  static const char max = CHAR_MAX;
+  static const char min = static_cast<char>(CHAR_MIN);
+  static const char max = static_cast<char>(CHAR_MAX);
 };
 
 template <>
