@@ -279,14 +279,9 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   exact_div_assign(factor, d, divisor());
   set_divisor(d);
   PPL_ASSERT(factor > 0);
-  if (factor > 1) {
-    expr *= factor;
-    // Undo the multipication for the first and last coefficient.
-    Coefficient& first = expr[0];
-    exact_div_assign(first, first, factor);
-    Coefficient& last = expr[expr.space_dimension()];
-    exact_div_assign(last, last, factor);
-  }
+  if (factor > 1)
+    // Don't scale the first and last coefficients.
+    expr.mul_assign(factor, 1, expr.space_dimension());
 }
 
 void
