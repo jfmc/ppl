@@ -33,6 +33,8 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
   Coefficient_traits::const_reference row_column = row.expression().get(column);
+  PPL_ASSERT(pivot_column != 0);
+  PPL_ASSERT(row_column != 0);
   
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
@@ -60,6 +62,8 @@ Grid::reduce_equality_with_equality(Congruence& row,
 
   Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
   Coefficient_traits::const_reference row_column = row.expression().get(column);
+  PPL_ASSERT(pivot_column != 0);
+  PPL_ASSERT(row_column != 0);
   
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
@@ -91,6 +95,8 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   
   Coefficient_traits::const_reference pivot_column = pivot_e.get(column);
   Coefficient_traits::const_reference row_column = row_e.get(column);
+  PPL_ASSERT(pivot_column != 0);
+  PPL_ASSERT(row_column != 0);
 
   PPL_DIRTY_TEMP_COEFFICIENT(s);
   PPL_DIRTY_TEMP_COEFFICIENT(t);
@@ -127,6 +133,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
   Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
   Coefficient_traits::const_reference row_column = row.expression().get(column);
+  PPL_ASSERT(pivot_column != 0);
+  PPL_ASSERT(row_column != 0);
 
   // Subtract one to allow for the parameter divisor column
   const dimension_type num_columns = total_num_columns - 1;

@@ -482,6 +482,7 @@ Polyhedron::conversion(Source_Linear_System& source,
       // the old line.
 
       Coefficient& scalar_prod_nle = scalar_prod[num_lines_or_equalities];
+      PPL_ASSERT(scalar_prod_nle != 0);
       for (dimension_type
 	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
@@ -762,6 +763,9 @@ Polyhedron::conversion(Source_Linear_System& source,
                   
                   neg_assign(normalized_sp_o);
                   new_row = dest_rows[j];
+                  // TODO: Check if the following assertions hold.
+                  PPL_ASSERT(normalized_sp_i != 0);
+                  PPL_ASSERT(normalized_sp_o != 0);
                   new_row.expression().linear_combine(dest_rows[i].expression(), normalized_sp_i, normalized_sp_o);
                   
                   WEIGHT_ADD_MUL(86, dest.space_dimension());
