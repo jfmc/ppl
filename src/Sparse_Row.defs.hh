@@ -144,6 +144,14 @@ public:
   */
   dimension_type size() const;
 
+  //! Returns the number of elements explicitly stored in the row.
+  /*!
+    This is equivalent to std::distance(begin(), end()), but it's much faster.
+
+    This method takes \f$O(1)\f$ time.
+  */
+  dimension_type num_stored_elements() const;
+
   //! Resizes the row to the specified size.
   /*!
     \param n

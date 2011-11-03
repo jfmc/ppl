@@ -69,6 +69,11 @@ Sparse_Row::size() const {
   return size_;
 }
 
+inline dimension_type
+Sparse_Row::num_stored_elements() const {
+  return tree.size();
+}
+
 inline void
 Sparse_Row::resize(dimension_type n) {
   if (n < size_)
