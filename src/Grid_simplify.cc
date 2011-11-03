@@ -82,31 +82,38 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
 			const dimension_type column,
 			const dimension_type start,
 			const dimension_type end) {
-  Coefficient& pivot_column = pivot.expression()[column];
-  Coefficient& row_column = row.expression()[column];
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(start <= column);
+  PPL_ASSERT(column < end);
+
+  Linear_Expression& row_e = row.expression();
+  Linear_Expression& pivot_e = pivot.expression();
+  
+  Coefficient_traits::const_reference pivot_column = pivot_e.get(column);
+  Coefficient_traits::const_reference row_column = row_e.get(column);
 
   PPL_DIRTY_TEMP_COEFFICIENT(s);
   PPL_DIRTY_TEMP_COEFFICIENT(t);
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
-  // Use reduced_row_col temporarily to hold the gcd.
-  gcdext_assign(reduced_row_col, s, t, pivot_column, row_column);
-  // Now pivot[column] * s + row[column] * t == gcd.
+  PPL_DIRTY_TEMP_COEFFICIENT(gcd);
+  gcdext_assign(gcd, s, t, pivot_column, row_column);
+  PPL_ASSERT(pivot_e.get(column) * s + row_e.get(column) * t == gcd);
 
   // Store the reduced ratio between pivot[column] and row[column].
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_pivot_col);
-  exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
-  pivot_column = reduced_row_col /* gcd */;
-  exact_div_assign(reduced_row_col, row_column, reduced_row_col);
+  exact_div_assign(reduced_pivot_col, pivot_column, gcd);
+  exact_div_assign(reduced_row_col, row_column, gcd);
 
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.  Afterward, multiply pivot,
   // then add to it a (possibly negative) multiple of row such that
   // the result in pivot[column] is the smallest possible positive
   // integer.
-  row_column = 0;
-  R old_pivot = pivot;
-  pivot.expression().linear_combine(row.expression(), s, t, start, end);
-  row.expression().linear_combine(old_pivot.expression(), reduced_pivot_col, -reduced_row_col, start, end);
+  Linear_Expression old_pivot_e = pivot_e;
+  pivot_e.linear_combine_lax(row_e, s, t, start, end);
+  PPL_ASSERT(pivot_e.get(column) == gcd);
+  row_e.linear_combine(old_pivot_e, reduced_pivot_col, -reduced_row_col, start, end);
+  PPL_ASSERT(row_e.get(column) == 0);
 }
 
 void
@@ -295,7 +302,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_parameter_with_line(row, pivot, dim, rows, num_columns + 1);
 	  else {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
-	    reduce_pc_with_pc(row, pivot, dim, dim + 1, num_columns);
+	    reduce_pc_with_pc(row, pivot, dim, dim, num_columns);
 	  }
 	}
       }
@@ -426,7 +433,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_congruence_with_equality(row, pivot, dim, rows);
 	  else {
 	    PPL_ASSERT(pivot.is_proper_congruence());
-	    reduce_pc_with_pc(row, pivot, dim, 0, dim);
+	    reduce_pc_with_pc(row, pivot, dim, 0, dim + 1);
 	  }
 	}
       }

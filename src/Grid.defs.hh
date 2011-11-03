@@ -2456,6 +2456,7 @@ private:
     congruence at \p row so that the element at index \p col of \p row
     is zero.  Only elements from index \p start to index \p end are
     modified (i.e. it is assumed that all other elements are zero).
+    This means that \p col must be in [start,end).
   */
   // Part of Grid for access to Matrix<Dense_Row>::rows.
   template <typename R>
