@@ -325,9 +325,11 @@ public:
 
     \param coeff1
     The coefficient used for elements of *this.
+    It must not be 0.
 
     \param coeff2
     The coefficient used for elements of y.
+    It must not be 0.
 
     This method takes \f$O(n)\f$ time.
 
@@ -344,6 +346,8 @@ public:
   /*!
     This method detects when coeff1==1 and/or coeff2==1 or coeff2==-1 in
     order to save some work.
+
+    coeff1 and coeff2 must not be 0.
   */
   void linear_combine(const Dense_Row& y,
                       Coefficient_traits::const_reference c1,
