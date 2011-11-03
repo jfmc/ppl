@@ -43,12 +43,12 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
-  row.expression().set(column, Coefficient_zero());
   neg_assign(reduced_row_col);
   // pivot.space_dimension() is the index for the parameter divisor so we
   // start reducing the line at index pivot.space_dimension() - 2.
   row.expression().linear_combine(pivot.expression(), reduced_pivot_col, reduced_row_col,
-                                  column + 1, pivot.expression().space_dimension());
+                                  column, pivot.expression().space_dimension());
+  PPL_ASSERT(row.expression().get(column) == 0);
 }
 
 void
@@ -70,10 +70,10 @@ Grid::reduce_equality_with_equality(Congruence& row,
   exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
-  row.expression().set(column, Coefficient_zero());
   neg_assign(reduced_row_col);
   row.expression().linear_combine(pivot.expression(), reduced_pivot_col, reduced_row_col,
-                                  0, column);
+                                  0, column + 1);
+  PPL_ASSERT(row.expression().get(column) == 0);
 }
 
 template <typename R>
@@ -170,9 +170,9 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  row.expression().set(column, Coefficient_zero());
   row.expression().linear_combine(pivot.expression(), 1, -reduced_row_col,
-                                  column + 1, num_columns);
+                                  column, num_columns);
+  PPL_ASSERT(row.expression().get(column) == 0);
 }
 
 void
