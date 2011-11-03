@@ -94,16 +94,20 @@ void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Impl<Row2>& y, dimension_type i) {
   Linear_Expression_Impl& x = *this;
-  // We can combine only vector of the same dimension.
+  PPL_ASSERT(i < x.space_dimension() + 1);
   PPL_ASSERT(x.space_dimension() == y.space_dimension());
-  PPL_ASSERT(x.row[i] != 0);
-  PPL_ASSERT(y.row[i] != 0);
+  Coefficient_traits::const_reference x_i = x.row.get(i);
+  Coefficient_traits::const_reference y_i = y.row.get(i);
+  PPL_ASSERT(x_i != 0);
+  PPL_ASSERT(y_i != 0);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_x_v);
   PPL_DIRTY_TEMP_COEFFICIENT(normalized_y_v);
-  normalize2(x.row[i], y.row[i], normalized_x_v, normalized_y_v);
+  normalize2(x_i, y_i, normalized_x_v, normalized_y_v);
   neg_assign(normalized_x_v);
-  Parma_Polyhedra_Library::linear_combine(x.row, y.row, normalized_y_v, normalized_x_v);
-  assert(x.row[i] == 0);
+  linear_combine(y, normalized_y_v, normalized_x_v);
+  // We cannot use x_i here because it may have been invalidated by
+  // linear_combine().
+  assert(x.row.get(i) == 0);
   PPL_ASSERT(OK());
 }
 
