@@ -94,7 +94,7 @@ Grid::Grid(const Box<Interval>& box,
 	    if (l_d < 0)
 	      neg_assign(u_n);
 	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
-	    point.expression()[k+1] = l_n * u_n;
+	    point.expression().set(k+1, l_n * u_n);
 
             gen_sys.take_ownership_of_rows(rows);
 

@@ -204,14 +204,16 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       le.set_space_dimension(dest.space_dimension() + 1);
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
-        le[dim] = 1;
+        le.set(dim, Coefficient_one());
         Congruence cg(le, Coefficient_zero());
         dest.insert_verbatim_recycled(cg);
       } else {
 	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
 	--source_index;
-	exact_div_assign(le[dim], diagonal_lcm,
+        PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+	exact_div_assign(tmp, diagonal_lcm,
                          source[source_index].expression().get(dim));
+        le.set(dim, tmp);
         Congruence cg(le, Coefficient_one());
         dest.insert_verbatim_recycled(cg);
       }
@@ -248,7 +250,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	gcd_assign(multiplier, cg[dim], source_dim);
+	gcd_assign(multiplier, cg.expression().get(dim), source_dim);
 	exact_div_assign(multiplier, source_dim, multiplier);
 	multiply_grid(multiplier, cg, dest_rows, dest_num_rows);
 
@@ -345,7 +347,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// Dimension `dim' has a proper congruence row at
 	// `source_num_rows' in `source', so include in `diagonal_lcm'
 	// the `dim'th element of that row.
-	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_num_rows][dim]);
+	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_num_rows].expression().get(dim));
 	// Proper congruences map to parameters.
 	++dest_num_rows;
       }
@@ -381,14 +383,16 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
 	g.set_is_line();
-	g.expression()[dim] = 1;
+	g.expression().set(dim, Coefficient_one());
       }
       else {
 	PPL_ASSERT(dim_kinds[dim] == PROPER_CONGRUENCE);
 	g.set_is_parameter_or_point();
         --source_index;
-	exact_div_assign(g.expression()[dim], diagonal_lcm,
-                         source[source_index][dim]);
+        PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+	exact_div_assign(tmp, diagonal_lcm,
+                         source[source_index].expression().get(dim));
+        g.expression().set(dim, tmp);
       }
       dest.insert_verbatim(g);
     }
@@ -422,7 +426,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   for (dimension_type dim = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
-      const Coefficient& source_dim = source[source_index][dim];
+      Coefficient_traits::const_reference source_dim
+        = source[source_index].expression().get(dim);
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
@@ -455,7 +460,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     for (dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
 	--tmp_source_index;
-	const Coefficient& source_dim = source[tmp_source_index][dim];
+	Coefficient_traits::const_reference source_dim
+          = source[tmp_source_index].expression().get(dim);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
@@ -465,11 +471,14 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_fol'.
 
+        PPL_DIRTY_TEMP_COEFFICIENT(tmp);
         for (dimension_type i = dest_index; i-- > 0; ) {
 	  PPL_ASSERT(i < dest_num_rows);
           Grid_Generator& row = rows[i];
-	  sub_mul_assign(row.expression()[dim_fol], source_dim,
+          tmp = row.expression().get(dim_fol);
+	  sub_mul_assign(tmp, source_dim,
                          row.expression().get(dim));
+          row.expression().set(dim_fol, tmp);
 	}
       }
     }

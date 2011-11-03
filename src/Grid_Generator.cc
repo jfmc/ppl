@@ -63,8 +63,8 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   const dimension_type gg_size = 2 + e.space_dimension();
   Linear_Expression ec(e, gg_size);
 
-  ec[0] = 0;
-  ec[gg_size - 1] = d;
+  ec.set_inhomogeneous_term(Coefficient_zero());
+  ec.set(gg_size - 1, d);
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter, so as to satisfy the invariant.
@@ -88,7 +88,7 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
 				"d == 0.");
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 2 + e.space_dimension());
-  ec[0] = d;
+  ec.set_inhomogeneous_term(d);
 
   // If the divisor is negative, negate it and all the coefficients of
   // the point, so as to satisfy the invariant.
@@ -113,7 +113,7 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
 
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 2 + e.space_dimension());
-  ec[0] = 0;
+  ec.set_inhomogeneous_term(Coefficient_zero());
   // Using this constructor saves reallocation when creating the
   // coefficients.
   Grid_Generator gg(ec, LINE);
@@ -209,8 +209,8 @@ PPL::Grid_Generator::set_is_parameter() {
     set_is_parameter_or_point();
   else if (!is_line_or_parameter()) {
     // The grid generator is a point.
-    expr[expr.space_dimension()] = expr[0];
-    expr[0] = 0;
+    expr.set(expr.space_dimension(), expr.inhomogeneous_term());
+    expr.set_inhomogeneous_term(Coefficient_zero());
   }
 }
 
@@ -248,8 +248,8 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   Grid_Generator tmp_y = y;
   dimension_type last = x_space_dim + 1;
   if (x_type == POINT || x_type == LINE) {
-    tmp_x.expr[last] = 0;
-    tmp_y.expr[last] = 0;
+    tmp_x.expr.set(last, Coefficient_zero());
+    tmp_y.expr.set(last, Coefficient_zero());
   }
   // Normalize the copies, including the divisor column.
   tmp_x.expr.normalize();

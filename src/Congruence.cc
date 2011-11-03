@@ -68,12 +68,14 @@ PPL::Congruence::normalize() {
   if (modulus_ == 0)
     return;
 
-  Coefficient& row_0 = expr[0];
+  PPL_DIRTY_TEMP_COEFFICIENT(c);
+  c = expr.get(0);
   // Factor the modulus out of the inhomogeneous term.
-  row_0 %= modulus_;
-  if (row_0 < 0)
+  c %= modulus_;
+  if (c < 0)
     // Make inhomogeneous term positive.
-    row_0 += modulus_;
+    c += modulus_;
+  expr.set(0, c);
 
   PPL_ASSERT(OK());
 }
@@ -109,7 +111,8 @@ void
 PPL::Congruence
 ::affine_preimage(dimension_type v, const Linear_Expression& e,
                   Coefficient_traits::const_reference denominator) {
-  Coefficient c = expr[v];
+  PPL_DIRTY_TEMP_COEFFICIENT(c);
+  c = expr.get(v);
 
   if (c == 0)
     return;
@@ -120,9 +123,11 @@ PPL::Congruence
 
   if (v > e.space_dimension() || e.get(v) == 0)
     // Not invertible
-    expr[v] = 0;
-  else
-    expr[v] = c * e.get(v);
+    expr.set(v, Coefficient_zero());
+  else {
+    c *= e.get(v);
+    expr.set(v, c);
+  }
 }
 
 PPL::Congruence

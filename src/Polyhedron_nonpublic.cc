@@ -1151,7 +1151,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  // Check if it is the eps_leq_one constraint.
           const Constraint& c = cs[i];
           const Linear_Expression& e = c.expression();
-	  if (e.all_zeroes(1, eps_index) && (e.inhomogeneous_term() + e[eps_index] == 0)) {
+	  if (e.all_zeroes(1, eps_index) && (e.inhomogeneous_term() + e.get(eps_index) == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
@@ -2136,11 +2136,12 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       // Transform all strict inequalities into non-strict ones,
       // with the inhomogeneous term incremented by 1.
       if (c.epsilon_coefficient() < 0) {
+        Linear_Expression& e = c.expression();
 	c.set_epsilon_coefficient(0);
-	--c.expression()[0];
+        e.set_inhomogeneous_term(e.inhomogeneous_term() - 1);
 	// Enforce normalization.
 	// FIXME: is this really necessary?
-	c.expression().normalize();
+	e.normalize();
 	changed = true;
       }
     }
@@ -2160,11 +2161,13 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       // Divide the inhomogeneous coefficients by the GCD.
       c.expression().exact_div_assign(gcd, 1, space_dim + 1);
 
-      Coefficient& c_0 = c.expression()[0];
+      PPL_DIRTY_TEMP_COEFFICIENT(c_0);
+      c_0 = c.expression().inhomogeneous_term();
       const int c_0_sign = sgn(c_0);
       c_0 /= gcd;
       if (c_0_sign < 0)
 	--c_0;
+      c.expression().set_inhomogeneous_term(c_0);
       changed = true;
     }
 
