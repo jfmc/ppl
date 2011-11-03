@@ -386,12 +386,13 @@ Linear_Expression_Impl<Row>::operator+=(const Variable v) {
     throw std::length_error("Linear_Expression_Impl& "
                             "operator+=(e, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  const dimension_type e_size = row.size();
-  if (e_size <= v_space_dim) {
-    Linear_Expression_Impl new_e(*this, v_space_dim+1);
-    swap(new_e);
-  }
-  ++(row[v_space_dim]);
+  if (space_dimension() < v_space_dim)
+    set_space_dimension(v_space_dim);
+  typename Row::iterator itr = row.insert(v_space_dim);
+  ++(*itr);
+  if (*itr == 0)
+    row.reset(itr);
+  PPL_ASSERT(OK());
   return *this;
 }
 
@@ -413,12 +414,13 @@ Linear_Expression_Impl<Row>::operator-=(const Variable v) {
     throw std::length_error("Linear_Expression_Impl& "
                             "operator-=(e, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  const dimension_type e_size = row.size();
-  if (e_size <= v_space_dim) {
-    Linear_Expression_Impl new_e(*this, v_space_dim+1);
-    swap(new_e);
-  }
-  --row[v_space_dim];
+  if (space_dimension() < v_space_dim)
+    set_space_dimension(v_space_dim);
+  typename Row::iterator itr = row.insert(v_space_dim);
+  --(*itr);
+  if (*itr == 0)
+    row.reset(itr);
+  PPL_ASSERT(OK());
   return *this;
 }
 
