@@ -251,6 +251,38 @@ Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start, dimension_type end
   return result;
 }
 
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::all_zeroes(const Variables_Set& vars) const {
+  Variables_Set::const_iterator j = vars.begin();
+  Variables_Set::const_iterator j_end = vars.end();
+
+  for ( ; j != j_end; ++j)
+    if (row[*j + 1] != 0)
+      return false;
+
+  return true;
+}
+
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::all_zeroes(const Variables_Set& vars) const {
+  Sparse_Row::const_iterator i = row.begin();
+  Sparse_Row::const_iterator i_end = row.end();
+  Variables_Set::const_iterator j = vars.begin();
+  Variables_Set::const_iterator j_end = vars.end();
+
+  for ( ; j != j_end; ++j) {
+    i = row.lower_bound(i, *j + 1);
+    if (i == i_end)
+      break;
+    if (i.index() == *j + 1)
+      return false;
+  }
+
+  return true;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -876,25 +908,6 @@ Linear_Expression_Impl<Row>::negate(dimension_type first, dimension_type last) {
   for ( ; i != i_end; ++i)
     neg_assign(*i);
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-bool
-Linear_Expression_Impl<Row>::all_zeroes(const Variables_Set& vars) const {
-  typename Row::const_iterator i = row.begin();
-  typename Row::const_iterator i_end = row.end();
-  Variables_Set::const_iterator j = vars.begin();
-  Variables_Set::const_iterator j_end = vars.end();
-
-  for ( ; j != j_end; j++) {
-    i = row.lower_bound(i, *j + 1);
-    if (i == i_end)
-      break;
-    if (i.index() == *j + 1 && *i != 0)
-      return false;
-  }
-
-  return true;
 }
 
 template <typename Row>
