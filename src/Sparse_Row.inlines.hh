@@ -50,10 +50,10 @@ Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type capacity)
 inline
 Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
                        dimension_type capacity)
-  : tree(y.tree), size_(sz) {
-  if (y.size() > sz)
-    reset_after(sz);
+  : tree(y.begin(), std::distance(y.begin(), y.lower_bound(std::min(y.size(), sz)))),
+    size_(sz) {
   (void)capacity;
+  PPL_ASSERT(OK());
 }
 
 inline void
