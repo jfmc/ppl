@@ -44,7 +44,7 @@ template <typename T>
 inline T
 low_bits_mask(const unsigned n) {
   PPL_ASSERT(n < unsigned(std::numeric_limits<T>::digits));
-  return (n == 0) ? 0 : ~(~(T(0u)) << n);
+  return ~((~static_cast<T>(0)) << n);
 }
 
 template <typename T>
