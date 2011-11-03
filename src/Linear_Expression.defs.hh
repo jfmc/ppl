@@ -547,8 +547,18 @@ private:
 
   Coefficient& operator[](dimension_type i);
   const Coefficient& operator[](dimension_type i) const;
-  //! Equivalent to the const version of operator[].
-  const Coefficient& get(dimension_type i) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns the i-th coefficient.
+  Coefficient_traits::const_reference get(dimension_type i) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets the i-th coefficient to n.
+  void set(dimension_type i, Coefficient_traits::const_reference n);
 
   /*! \brief
     Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in

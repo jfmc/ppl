@@ -240,12 +240,18 @@ public:
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   virtual const Coefficient& operator[](dimension_type i) const = 0;
-  
+
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
-  //! Equivalent to the const version of operator[].
-  virtual const Coefficient& get(dimension_type i) const = 0;
+  //! Returns the i-th coefficient.
+  virtual Coefficient_traits::const_reference get(dimension_type i) const = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets the i-th coefficient to n.
+  virtual void set(dimension_type i, Coefficient_traits::const_reference n) = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of

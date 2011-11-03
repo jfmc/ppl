@@ -416,9 +416,15 @@ Linear_Expression::operator[](dimension_type i) const {
   return (*impl)[i];
 }
 
-inline const Coefficient&
+inline Coefficient_traits::const_reference
 Linear_Expression::get(dimension_type i) const {
   return impl->get(i);
+}
+
+inline void
+Linear_Expression::set(dimension_type i,
+                       Coefficient_traits::const_reference n) {
+  impl->set(i, n);
 }
 
 inline bool

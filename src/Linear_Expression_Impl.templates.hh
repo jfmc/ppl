@@ -537,9 +537,20 @@ Linear_Expression_Impl<Row>::operator[](dimension_type i) const {
 }
 
 template <typename Row>
-const Coefficient&
+Coefficient_traits::const_reference
 Linear_Expression_Impl<Row>::get(dimension_type i) const {
   return row.get(i);
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>
+::set(dimension_type i, Coefficient_traits::const_reference n) {
+  if (n == 0)
+    row.reset(i);
+  else
+    row.insert(i, n);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
