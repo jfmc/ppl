@@ -287,21 +287,17 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) cons
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Constraint& c) {
-  construct(*(c.expression().impl));
   // Do not copy the epsilon dimension (if any).
-  if (c.is_not_necessarily_closed())
-    row.resize(row.size() - 1);
+  construct(*(c.expression().impl), c.space_dimension() + 1);
   PPL_ASSERT(OK());
 }
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
-  construct(*(g.expression().impl));
-  // Do not copy the divisor of `g'.
-  row[0] = 0;
   // Do not copy the epsilon dimension (if any).
-  if (g.is_not_necessarily_closed())
-    row.resize(row.size() - 1);
+  construct(*(g.expression().impl), g.space_dimension() + 1);
+  // Do not copy the divisor of `g'.
+  row.reset(0);
   PPL_ASSERT(OK());
 }
 
