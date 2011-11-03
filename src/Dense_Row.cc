@@ -381,27 +381,7 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
   Dense_Row& x = *this;
   PPL_ASSERT(x.size() == y.size());
 
-  if (coeff1 == 1) {
-    // Optimized implementation.
-    for (dimension_type i = x.size(); i-- > 0; ) {
-      Coefficient& x_i = x[i];
-      // The test against 0 gives rise to a consistent speed up: see
-      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      Coefficient_traits::const_reference y_i = y[i];
-      if (y_i != 0)
-        add_mul_assign(x_i, y_i, coeff2);
-    }
-  } else {
-    for (dimension_type i = x.size(); i-- > 0; ) {
-      Coefficient& x_i = x[i];
-      x_i *= coeff1;
-      // The test against 0 gives rise to a consistent speed up: see
-      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      Coefficient_traits::const_reference y_i = y[i];
-      if (y_i != 0)
-        add_mul_assign(x_i, y_i, coeff2);
-    }
-  }
+  x.linear_combine(y, coeff1, coeff2, 0, x.size());
 }
 
 void
@@ -413,9 +393,28 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
   PPL_ASSERT(start <= end);
   PPL_ASSERT(end <= x.size());
   PPL_ASSERT(end <= y.size());
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+
+  // If coeff1 is 1 and/or coeff2 is 1 or -1, we use an optimized
+  // implementation.
 
   if (coeff1 == 1) {
-    // Optimized implementation.
+    if (coeff2 == 1) {
+      // Optimized implementation for coeff1==1, coeff2==1.
+      for (dimension_type i = start; i < end; ++i)
+        if (y[i] != 0)
+          x[i] += y[i];
+      return;
+    }
+    if (coeff2 == -1) {
+      // Optimized implementation for coeff1==1, coeff2==-1.
+      for (dimension_type i = start; i < end; ++i)
+        if (y[i] != 0)
+          x[i] -= y[i];
+      return;
+    }
+    // Optimized implementation for coeff1==1.
     for (dimension_type i = start; i < end; ++i) {
       Coefficient& x_i = x[i];
       // The test against 0 gives rise to a consistent speed up: see
@@ -424,16 +423,36 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
       if (y_i != 0)
         add_mul_assign(x_i, y_i, coeff2);
     }
-  } else {
+    return;
+  }
+
+  if (coeff2 == 1) {
+    // Optimized implementation for coeff2==1.
     for (dimension_type i = start; i < end; ++i) {
-      Coefficient& x_i = x[i];
-      x_i *= coeff1;
-      // The test against 0 gives rise to a consistent speed up: see
-      // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
-      Coefficient_traits::const_reference y_i = y[i];
-      if (y_i != 0)
-        add_mul_assign(x_i, y_i, coeff2);
+      x[i] *= coeff1;
+      if (y[i] != 0)
+        x[i] += y[i];
     }
+    return;
+  }
+  if (coeff2 == -1) {
+    // Optimized implementation for coeff2==-1.
+    for (dimension_type i = start; i < end; ++i) {
+      x[i] *= coeff1;
+      if (y[i] != 0)
+        x[i] -= y[i];
+    }
+    return;
+  }
+  // General case.
+  for (dimension_type i = start; i < end; ++i) {
+    Coefficient& x_i = x[i];
+    x[i] *= coeff1;
+    // The test against 0 gives rise to a consistent speed up: see
+    // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
+    Coefficient_traits::const_reference y_i = y[i];
+    if (y_i != 0)
+      add_mul_assign(x_i, y_i, coeff2);
   }
 }
 

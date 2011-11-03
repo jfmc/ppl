@@ -466,13 +466,112 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
   PPL_ASSERT(this != &y);
 
   if (coeff1 == 1) {
-    // Optimize for this special case.
+    if (coeff2 == 1) {
+      // Optimized implementation for coeff1==1, coeff2==1.
+      iterator i = this->end();
+      for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
+        i = insert(i, j.index());
+        *i += *j;
+        if (*i == 0)
+          i = reset(i);
+      }
+      return;
+    }
+    if (coeff2 == -1) {
+      // Optimized implementation for coeff1==1, coeff2==-1.
+      iterator i = this->end();
+      for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
+        i = insert(i, j.index());
+        *i -= *j;
+        if (*i == 0)
+          i = reset(i);
+      }
+      return;
+    }
+    // Optimized implementation for coeff1==1.
     iterator i = this->end();
     for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
       i = insert(i, j.index());
       add_mul_assign(*i, *j, coeff2);
       if (*i == 0)
         i = reset(i);
+    }
+    return;
+  }
+
+  if (coeff2 == 1) {
+    // Optimized implementation for coeff2==1.
+    iterator i = lower_bound(start);
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset() and insert().
+    const iterator& i_end = this->end();
+    const_iterator j = y.lower_bound(start);
+    const_iterator j_end = y.lower_bound(end);
+    while (i != i_end && i.index() < end && j != j_end) {
+      if (i.index() == j.index()) {
+        (*i) *= coeff1;
+        *i += *j;
+        if (*i == 0)
+          i = reset(i);
+        else
+          ++i;
+        ++j;
+      } else
+        if (i.index() < j.index()) {
+          (*i) *= coeff1;
+          ++i;
+        } else {
+          PPL_ASSERT(i.index() > j.index());
+          i = insert(i, j.index(), *j);
+          ++i;
+          ++j;
+        }
+    }
+    PPL_ASSERT(i == i_end || j == j_end);
+    for ( ; i != i_end && i.index() < end; ++i)
+      (*i) *= coeff1;
+    for ( ; j != j_end; ++j)
+      i = insert(i, j.index(), *j);
+    return;
+  }
+
+  if (coeff2 == -1) {
+    // Optimized implementation for coeff2==-1.
+    iterator i = lower_bound(start);
+    // This is a const reference to an internal iterator, that is kept valid.
+    // If we just stored a copy, that would be invalidated by the calls to
+    // reset() and insert().
+    const iterator& i_end = this->end();
+    const_iterator j = y.lower_bound(start);
+    const_iterator j_end = y.lower_bound(end);
+    while (i != i_end && i.index() < end && j != j_end) {
+      if (i.index() == j.index()) {
+        (*i) *= coeff1;
+        *i -= *j;
+        if (*i == 0)
+          i = reset(i);
+        else
+          ++i;
+        ++j;
+      } else
+        if (i.index() < j.index()) {
+          (*i) *= coeff1;
+          ++i;
+        } else {
+          PPL_ASSERT(i.index() > j.index());
+          i = insert(i, j.index(), *j);
+          neg_assign(*i);
+          ++i;
+          ++j;
+        }
+    }
+    PPL_ASSERT(i == i_end || j == j_end);
+    for ( ; i != i_end && i.index() < end; ++i)
+      (*i) *= coeff1;
+    for ( ; j != j_end; ++j) {
+      i = insert(i, j.index(), *j);
+      neg_assign(*i);
     }
     return;
   }
@@ -654,13 +753,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2) {
   PPL_ASSERT(x.size() == y.size());
-  
-  if (coeff2 == 0) {
-    for (Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
-      (*i) *= coeff1;
-    return;
-  }
-  
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+
   Sparse_Row::iterator itr = x.end();
 
   for (dimension_type i = 0; i < y.size(); i++) {
@@ -686,14 +781,120 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2,
                     dimension_type start, dimension_type end) {
-
-  if (coeff2 == 0) {
-    for (Sparse_Row::iterator i = x.lower_bound(start), i_end = x.lower_bound(end); i != i_end; ++i)
-      (*i) *= coeff1;
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= x.size());
+  PPL_ASSERT(end <= y.size());
+  
+  Sparse_Row::iterator itr = x.lower_bound(start);
+  
+  if (coeff1 == 1) {
+    if (coeff2 == 1) {
+      for (dimension_type i = start; i < end; i++) {
+        PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
+        if (itr != x.end() && itr.index() < i)
+          ++itr;
+        PPL_ASSERT(itr == x.end() || itr.index() >= i);
+        if (itr == x.end() || itr.index() != i) {
+          if (y[i] == 0)
+            continue;
+          itr = x.insert(itr, i, y[i]);
+          PPL_ASSERT((*itr) != 0);
+        } else {
+          PPL_ASSERT(itr.index() == i);
+          (*itr) += y[i];
+          if (*itr == 0)
+            itr = x.reset(itr);
+        }
+      }
+      return;
+    }
+    if (coeff2 == -1) {
+      for (dimension_type i = start; i < end; i++) {
+        PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
+        if (itr != x.end() && itr.index() < i)
+          ++itr;
+        PPL_ASSERT(itr == x.end() || itr.index() >= i);
+        if (itr == x.end() || itr.index() != i) {
+          if (y[i] == 0)
+            continue;
+          itr = x.insert(itr, i, y[i]);
+          neg_assign(*itr);
+          PPL_ASSERT((*itr) != 0);
+        } else {
+          PPL_ASSERT(itr.index() == i);
+          (*itr) -= y[i];
+          if (*itr == 0)
+            itr = x.reset(itr);
+        }
+      }
+      return;
+    }
+    for (dimension_type i = start; i < end; i++) {
+      PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
+      if (itr != x.end() && itr.index() < i)
+        ++itr;
+      PPL_ASSERT(itr == x.end() || itr.index() >= i);
+      if (itr == x.end() || itr.index() != i) {
+        if (y[i] == 0)
+          continue;
+        itr = x.insert(itr, i, y[i]);
+        (*itr) *= coeff2;
+        PPL_ASSERT((*itr) != 0);
+      } else {
+        PPL_ASSERT(itr.index() == i);
+        add_mul_assign(*itr, y[i], coeff2);
+        if (*itr == 0)
+          itr = x.reset(itr);
+      }
+    }
     return;
   }
 
-  Sparse_Row::iterator itr = x.end();
+  if (coeff2 == 1) {
+    for (dimension_type i = start; i < end; i++) {
+      PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
+      if (itr != x.end() && itr.index() < i)
+        ++itr;
+      PPL_ASSERT(itr == x.end() || itr.index() >= i);
+      if (itr == x.end() || itr.index() != i) {
+        if (y[i] == 0)
+          continue;
+        itr = x.insert(itr, i, y[i]);
+        PPL_ASSERT((*itr) != 0);
+      } else {
+        PPL_ASSERT(itr.index() == i);
+        (*itr) *= coeff1;
+        (*itr) += y[i];
+        if (*itr == 0)
+          itr = x.reset(itr);
+      }
+    }
+    return;
+  }
+  if (coeff2 == -1) {
+    for (dimension_type i = start; i < end; i++) {
+      PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
+      if (itr != x.end() && itr.index() < i)
+        ++itr;
+      PPL_ASSERT(itr == x.end() || itr.index() >= i);
+      if (itr == x.end() || itr.index() != i) {
+        if (y[i] == 0)
+          continue;
+        itr = x.insert(itr, i, y[i]);
+        neg_assign(*itr);
+        PPL_ASSERT((*itr) != 0);
+      } else {
+        PPL_ASSERT(itr.index() == i);
+        (*itr) *= coeff1;
+        (*itr) -= y[i];
+        if (*itr == 0)
+          itr = x.reset(itr);
+      }
+    }
+    return;
+  }
 
   for (dimension_type i = start; i < end; i++) {
     itr = x.lower_bound(itr, i);
@@ -744,13 +945,60 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference coeff2,
                     dimension_type start, dimension_type end) {
   PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(coeff1 != 0);
+  PPL_ASSERT(coeff2 != 0);
+
+  Sparse_Row::const_iterator itr = y.lower_bound(start);
+
   if (coeff1 == 1) {
-    for (Sparse_Row::const_iterator i = y.lower_bound(start), i_end = y.lower_bound(end); i != i_end; ++i)
-      add_mul_assign(x[i.index()], *i, coeff2);
+    Sparse_Row::const_iterator itr_end = y.lower_bound(end);
+    if (coeff2 == 1) {
+      for ( ; itr != itr_end; ++itr)
+        x[itr.index()] += *itr;
+      return;
+    }
+    if (coeff2 == -1) {
+      for ( ; itr != itr_end; ++itr)
+        x[itr.index()] -= *itr;
+      return;
+    }
+    for ( ; itr != itr_end; ++itr)
+      add_mul_assign(x[itr.index()], *itr, coeff2);
     return;
   }
 
-  Sparse_Row::const_iterator itr = y.end();
+  if (coeff2 == 1) {
+    for (dimension_type i = start; i < end; i++) {
+      x[i] *= coeff1;
+      
+      PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
+      if (itr != y.end() && itr.index() < i)
+        ++itr;
+      PPL_ASSERT(itr == y.end() || itr.index() >= i);
+      
+      if (itr == y.end() || itr.index() != i)
+        continue;
+      
+      x[i] += *itr;
+    }
+    return;
+  }
+  if (coeff2 == -1) {
+    for (dimension_type i = start; i < end; i++) {
+      x[i] *= coeff1;
+      
+      PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
+      if (itr != y.end() && itr.index() < i)
+        ++itr;
+      PPL_ASSERT(itr == y.end() || itr.index() >= i);
+      
+      if (itr == y.end() || itr.index() != i)
+        continue;
+      
+      x[i] -= *itr;
+    }
+    return;
+  }
 
   for (dimension_type i = start; i < end; i++) {
     x[i] *= coeff1;

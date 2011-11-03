@@ -341,6 +341,10 @@ public:
 
   //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
   //! for each i in [start, end).
+  /*!
+    This method detects when coeff1==1 and/or coeff2==1 or coeff2==-1 in
+    order to save some work.
+  */
   void linear_combine(const Dense_Row& y,
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,

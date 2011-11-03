@@ -739,6 +739,10 @@ public:
 
   //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
   //! for each i in [start, end).
+  /*!
+    This method, unlike the other linear_combine() method, detects when
+    coeff1==1 and/or coeff2==1 or coeff2==-1 in order to save some work.
+  */
   void linear_combine(const Sparse_Row& y,
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,
@@ -845,34 +849,52 @@ bool operator!=(const Dense_Row& x, const Sparse_Row& y);
 bool operator==(const Sparse_Row& x, const Dense_Row& y);
 bool operator!=(const Sparse_Row& x, const Dense_Row& y);
 
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
 void linear_combine(Sparse_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2);
 
 //! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
 //! for each i in [start, end).
+/*!
+  This function detects when coeff1==1 and/or coeff2==1 or coeff2==-1 in
+  order to save some work.
+*/
 void linear_combine(Sparse_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference c1,
                     Coefficient_traits::const_reference c2,
                     dimension_type start, dimension_type end);
 
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
 void linear_combine(Dense_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2);
 
 //! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
 //! for each i in [start, end).
+/*!
+  This function detects when coeff1==1 and/or coeff2==1 or coeff2==-1 in
+  order to save some work.
+*/
 void linear_combine(Dense_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference c1,
                     Coefficient_traits::const_reference c2,
                     dimension_type start, dimension_type end);
 
+//! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
+//! for each i in [start, end).
 void linear_combine(Sparse_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2);
 
 //! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
 //! for each i in [start, end).
+/*!
+  This function detects when coeff1==1 and/or coeff2==1 or coeff2==-1 in
+  order to save some work.
+*/
 void linear_combine(Sparse_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference c1,
                     Coefficient_traits::const_reference c2,
