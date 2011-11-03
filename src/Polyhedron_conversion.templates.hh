@@ -502,7 +502,8 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
           neg_assign(normalized_sp_i);
-          dest_i.expression().linear_combine(dest_nle.expression(), normalized_sp_o, normalized_sp_i);
+          dest_i.expression().linear_combine(dest_nle.expression(),
+                                             normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // dest_sorted has already been set to false.
@@ -536,7 +537,8 @@ Polyhedron::conversion(Source_Linear_System& source,
           dest_row_type& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
           neg_assign(normalized_sp_i);
-          dest_i.expression().linear_combine(dest_nle.expression(), normalized_sp_o, normalized_sp_i);
+          dest_i.expression().linear_combine(dest_nle.expression(),
+                                             normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest_sorted' has already been set to false.

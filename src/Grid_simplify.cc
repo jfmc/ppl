@@ -48,7 +48,8 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   neg_assign(reduced_row_col);
   // pivot.space_dimension() is the index for the parameter divisor so we
   // start reducing the line at index pivot.space_dimension() - 2.
-  row.expression().linear_combine(pivot.expression(), reduced_pivot_col, reduced_row_col,
+  row.expression().linear_combine(pivot.expression(),
+                                  reduced_pivot_col, reduced_row_col,
                                   column, pivot.expression().space_dimension());
   PPL_ASSERT(row.expression().get(column) == 0);
 }
@@ -75,7 +76,8 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   neg_assign(reduced_row_col);
-  row.expression().linear_combine(pivot.expression(), reduced_pivot_col, reduced_row_col,
+  row.expression().linear_combine(pivot.expression(),
+                                  reduced_pivot_col, reduced_row_col,
                                   0, column + 1);
   PPL_ASSERT(row.expression().get(column) == 0);
 }
@@ -176,7 +178,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  row.expression().linear_combine(pivot.expression(), 1, -reduced_row_col,
+  row.expression().linear_combine(pivot.expression(),
+                                  Coefficient_one(), -reduced_row_col,
                                   column, num_columns);
   PPL_ASSERT(row.expression().get(column) == 0);
 }
