@@ -114,7 +114,24 @@ Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Impl<Row2>& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2) {
-  Parma_Polyhedra_Library::linear_combine(row, y.row, c1, c2);
+  PPL_ASSERT(c1 != 0);
+  PPL_ASSERT(c2 != 0);
+  if (space_dimension() < y.space_dimension())
+    set_space_dimension(y.space_dimension());
+  linear_combine(y, c1, c2, 0, y.space_dimension() + 1);
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+template <typename Row2>
+void
+Linear_Expression_Impl<Row>
+::linear_combine_lax(const Linear_Expression_Impl<Row2>& y,
+                     Coefficient_traits::const_reference c1,
+                     Coefficient_traits::const_reference c2) {
+  if (space_dimension() < y.space_dimension())
+    set_space_dimension(y.space_dimension());
+  linear_combine_lax(y, c1, c2, 0, y.space_dimension() + 1);
   PPL_ASSERT(OK());
 }
 
@@ -602,6 +619,79 @@ Linear_Expression_Impl<Row>
                  Coefficient_traits::const_reference c2,
                  dimension_type start, dimension_type end) {
   Parma_Polyhedra_Library::linear_combine(row, y.row, c1, c2, start, end);
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+template <typename Row2>
+void
+Linear_Expression_Impl<Row>
+::linear_combine_lax(const Linear_Expression_Impl<Row2>& y,
+                     Coefficient_traits::const_reference c1,
+                     Coefficient_traits::const_reference c2,
+                     dimension_type start, dimension_type end) {
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= row.size());
+  PPL_ASSERT(end <= y.row.size());
+  if (c1 == 0) {
+    if (c2 == 0) {
+      PPL_ASSERT(c1 == 0);
+      PPL_ASSERT(c2 == 0);
+      typename Row::iterator i = row.lower_bound(start);
+      const typename Row::iterator& i_end = row.end();
+      while (i != i_end && i.index() < end)
+        i = row.reset(i);
+    } else {
+      PPL_ASSERT(c1 == 0);
+      PPL_ASSERT(c2 != 0);
+
+      typename Row::iterator i = row.lower_bound(start);
+      const typename Row::iterator& i_end = row.end();
+      typename Row2::const_iterator j = y.row.lower_bound(start);
+      typename Row2::const_iterator j_last = y.row.lower_bound(end);
+
+      while (i != i_end && i.index() < end && j != j_last) {
+        if (i.index() < j.index()) {
+          i = row.reset(i);
+          continue;
+        }
+        if (i.index() > j.index()) {
+          i = row.insert(i, j.index(), *j);
+          (*i) *= c2;
+          ++i;
+          ++j;
+          continue;
+        }
+        PPL_ASSERT(i.index() == j.index());
+        (*i) = (*j);
+        (*i) *= c2;
+        ++i;
+        ++j;
+      }
+      while (i != i_end && i.index() < end)
+        i = row.reset(i);
+      while (j != j_last) {
+        i = row.insert(i, j.index(), *j);
+        (*i) *= c2;
+        // No need to increment i here.
+        ++j;
+      }
+    }
+  } else {
+    if (c2 == 0) {
+      PPL_ASSERT(c1 != 0);
+      PPL_ASSERT(c2 == 0);
+      for (typename Row::iterator i = row.lower_bound(start),
+                                  i_end = row.lower_bound(end);
+          i != i_end; ++i)
+        (*i) *= c1;
+    } else {
+      PPL_ASSERT(c1 != 0);
+      PPL_ASSERT(c2 != 0);
+      Parma_Polyhedra_Library::linear_combine(row, y.row, c1, c2, start, end);
+    }
+  }
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
@@ -1069,6 +1159,22 @@ Linear_Expression_Impl<Row>
 template <typename Row>
 void
 Linear_Expression_Impl<Row>
+::linear_combine_lax(const Linear_Expression_Interface& y,
+                     Coefficient_traits::const_reference c1,
+                     Coefficient_traits::const_reference c2) {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    linear_combine_lax(*p, c1, c2);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    linear_combine_lax(*p, c1, c2);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>
 ::swap(Linear_Expression_Interface& y) {
   if (Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<Linear_Expression_Impl<Dense_Row>*>(&y)) {
     swap(*p);
@@ -1197,6 +1303,23 @@ Linear_Expression_Impl<Row>
     linear_combine(*p, c1, c2, start, end);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
     linear_combine(*p, c1, c2, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+  }
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>
+::linear_combine_lax(const Linear_Expression_Interface& y,
+                     Coefficient_traits::const_reference c1,
+                     Coefficient_traits::const_reference c2,
+                     dimension_type start, dimension_type end) {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    linear_combine_lax(*p, c1, c2, start, end);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    linear_combine_lax(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);

@@ -218,6 +218,12 @@ public:
                               Coefficient_traits::const_reference c1,
                               Coefficient_traits::const_reference c2);
 
+  //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>.
+  //! c1 and c2 may be 0.
+  virtual void linear_combine_lax(const Linear_Expression_Interface& y,
+                                  Coefficient_traits::const_reference c1,
+                                  Coefficient_traits::const_reference c2);
+
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   virtual void swap_space_dimensions(Variable v1, Variable v2);
 
@@ -437,6 +443,16 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
+  //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
+  //! for each i in [start, end). c1 and c2 may be zero.
+  virtual void linear_combine_lax(const Linear_Expression_Interface& y,
+                                  Coefficient_traits::const_reference c1,
+                                  Coefficient_traits::const_reference c2,
+                                  dimension_type start, dimension_type end);
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
   //! Modify `new_ray' according to the evolution of `x_g' with
   //! respect to `y_g'. This method is a code fragment used by Polyhedron.
   //! Read the method implementation for more details.
@@ -568,6 +584,13 @@ public:
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2);
 
+  //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>.
+  //! c1 and c2 may be 0.
+  template <typename Row2>
+  void linear_combine_lax(const Linear_Expression_Impl<Row2>& y,
+                          Coefficient_traits::const_reference c1,
+                          Coefficient_traits::const_reference c2);
+
   //! Swaps \p *this with \p y.
   template <typename Row2>
   void swap(Linear_Expression_Impl<Row2>& y);
@@ -620,6 +643,14 @@ public:
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,
                       dimension_type start, dimension_type end);
+
+  //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
+  //! for each i in [start, end). c1 and c2 may be zero.
+  template <typename Row2>
+  void linear_combine_lax(const Linear_Expression_Impl<Row2>& y,
+                          Coefficient_traits::const_reference c1,
+                          Coefficient_traits::const_reference c2,
+                          dimension_type start, dimension_type end);
 
   //! Modify `new_ray' according to the evolution of `x_g' with
   //! respect to `y_g'. This method is a code fragment used by Polyhedron.

@@ -109,6 +109,14 @@ PPL::Linear_Expression
   impl->linear_combine(*y.impl, c1, c2);
 }
 
+void
+PPL::Linear_Expression
+::linear_combine_lax(const Linear_Expression& y,
+                     Coefficient_traits::const_reference c1,
+                     Coefficient_traits::const_reference c2) {
+  impl->linear_combine_lax(*y.impl, c1, c2);
+}
+
 int
 PPL::compare(const Linear_Expression& x, const Linear_Expression& y) {
   return x.impl->compare(*y.impl);
@@ -126,6 +134,15 @@ PPL::Linear_Expression::linear_combine(const Linear_Expression& y,
                                        dimension_type start,
                                        dimension_type end) {
   impl->linear_combine(*y.impl, c1, c2, start, end);
+}
+
+void
+PPL::Linear_Expression::linear_combine_lax(const Linear_Expression& y,
+                                           Coefficient_traits::const_reference c1,
+                                           Coefficient_traits::const_reference c2,
+                                           dimension_type start,
+                                           dimension_type end) {
+  impl->linear_combine_lax(*y.impl, c1, c2, start, end);
 }
 
 void

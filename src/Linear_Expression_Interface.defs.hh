@@ -91,6 +91,12 @@ public:
                               Coefficient_traits::const_reference c1,
                               Coefficient_traits::const_reference c2) = 0;
 
+  //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>.
+  //! c1 and c2 may be 0.
+  virtual void linear_combine_lax(const Linear_Expression_Interface& y,
+                                  Coefficient_traits::const_reference c1,
+                                  Coefficient_traits::const_reference c2) = 0;
+
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   virtual void swap_space_dimensions(Variable v1, Variable v2) = 0;
 
@@ -302,6 +308,16 @@ public:
                               Coefficient_traits::const_reference c1,
                               Coefficient_traits::const_reference c2,
                               dimension_type start, dimension_type end) = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Equivalent to <CODE>(*this)[i] = (*this)[i] * c1 + y[i] * c2</CODE>,
+  //! for each i in [start, end). c1 and c2 may be zero.
+  virtual void linear_combine_lax(const Linear_Expression_Interface& y,
+                                  Coefficient_traits::const_reference c1,
+                                  Coefficient_traits::const_reference c2,
+                                  dimension_type start, dimension_type end) = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
