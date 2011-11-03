@@ -55,7 +55,7 @@ c_streambuf::xsgetn(char_type* s, std::streamsize n) {
   if (traits_type::eq_int_type(nextc_buf, eof))
     a = 0;
   else {
-    s[0] = static_cast<char_type>(nextc_buf);
+    s[0] = nextc_buf;
     a = 1;
   }
   std::streamsize r = cb_read(s + a, n - a) + a;
@@ -85,7 +85,7 @@ c_streambuf::overflow(int_type c) {
   if (traits_type::eq_int_type(c, eof))
     return sync() ? eof : traits_type::not_eof(c);
   else {
-    char buf = static_cast<char>(c);
+    char buf = c;
     if (cb_write(&buf, 1) == 1)
       return c;
     else

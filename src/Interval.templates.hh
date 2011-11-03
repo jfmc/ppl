@@ -221,14 +221,10 @@ Interval<Boundary, Info>::Interval(const char* s) {
 template <typename Boundary, typename Info>
 inline std::istream&
 operator>>(std::istream& is, Interval<Boundary, Info>& x) {
-  Boundary lower_bound;
-  Boundary upper_bound;
-
   // Eat leading white space.
-  char c;
+  int c;
   do {
-    if (!is.get(c))
-      goto fail;
+    c = is.get();
   } while (isspace(c));
 
   // Get the opening parenthesis and handle the empty interval case.
@@ -236,8 +232,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   if (c == '(')
     lower_open = true;
   else if (c == '[') {
-    if (!is.get(c))
-      goto fail;
+    c = is.get();
     if (c == ']') {
       // Empty interval.
       x.assign(EMPTY);
@@ -246,41 +241,49 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     else
       is.unget();
   }
-  else
-    goto unexpected;
+  else {
+    is.unget();
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
 
   // Get the lower bound.
+  Boundary lower_bound;
   Result lower_r = input(lower_bound, is, ROUND_DOWN);
-  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN)
-    goto fail;
+  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
   lower_r = result_relation_class(lower_r);
 
   // Match the comma separating the lower and upper bounds.
   do {
-    if (!is.get(c))
-      goto fail;
+    c = is.get();
   } while (isspace(c));
-  if (c != ',')
-    goto unexpected;
+  if (c != ',') {
+    is.unget();
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
 
   // Get the upper bound.
+  Boundary upper_bound;
   Result upper_r = input(upper_bound, is, ROUND_UP);
-  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN)
-    goto fail;
+  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN) {
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
   upper_r = result_relation_class(upper_r);
 
   // Get the closing parenthesis.
   do {
-    if (!is.get(c))
-      goto fail;
+    c = is.get();
   } while (isspace(c));
   bool upper_open = false;
   if (c == ')')
     upper_open = true;
   else if (c != ']') {
-  unexpected:
     is.unget();
-  fail:
     is.setstate(std::ios_base::failbit);
     return is;
   }
