@@ -801,12 +801,12 @@ set_pos_overflow_float(T& to, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename T>
 inline Result
 assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
-  mpz_srcptr from_z = from.get_mpz_t();
-  int sign = mpz_sgn(from_z);
+  int sign = sgn(from);
   if (sign == 0) {
     to = 0;
     return V_EQ;
   }
+  mpz_srcptr from_z = from.get_mpz_t();
   size_t exponent = mpz_sizeinbase(from_z, 2) - 1;
   if (exponent > size_t(Float<T>::Binary::EXPONENT_MAX)) {
     if (sign < 0)
@@ -846,7 +846,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
     return assign_float_mpz<To_Policy, From_Policy>(to, num, dir);
   mpz_srcptr num_z = num.get_mpz_t();
   mpz_srcptr den_z = den.get_mpz_t();
-  int sign = mpz_sgn(num_z);
+  int sign = sgn(num);
   signed long exponent = mpz_sizeinbase(num_z, 2) - mpz_sizeinbase(den_z, 2);
   if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
