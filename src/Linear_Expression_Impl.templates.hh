@@ -230,30 +230,56 @@ int
 Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) const {
   const Linear_Expression_Impl& x = *this;
   // Compare all the coefficients of the row starting from position 1.
-  const dimension_type xsz = x.row.size();
-  const dimension_type ysz = y.row.size();
-  const dimension_type min_sz = std::min(xsz, ysz);
-  dimension_type i;
-  for (i = 1; i < min_sz; ++i)
-    if (const int comp = cmp(x.row[i], y.row[i]))
-      // There is at least a different coefficient.
-      return (comp > 0) ? 2 : -2;
-
-  // Handle the case where `x' and `y' are of different size.
-  if (xsz != ysz) {
-    for( ; i < xsz; ++i)
-      if (const int sign = sgn(x.row[i]))
-        return (sign > 0) ? 2 : -2;
-    for( ; i < ysz; ++i)
-      if (const int sign = sgn(y.row[i]))
-        return (sign < 0) ? 2 : -2;
+  // NOTE: x and y may be of different size.
+  typename Row::const_iterator i = x.row.lower_bound(1);
+  typename Row::const_iterator i_end = x.row.end();
+  typename Row2::const_iterator j = y.row.lower_bound(1);
+  typename Row2::const_iterator j_end = y.row.end();
+  while (i != i_end && j != j_end) {
+    if (i.index() < j.index()) {
+      int s = sgn(*i);
+      if (s != 0)
+        return 2*s;
+      ++i;
+      continue;
+    }
+    if (i.index() > j.index()) {
+      int s = sgn(*j);
+      if (s != 0)
+        return -2*s;
+      ++j;
+      continue;
+    }
+    PPL_ASSERT(i.index() == j.index());
+    int s = cmp(*i, *j);
+    if (s < 0)
+      return -2;
+    if (s > 0)
+      return 2;
+    PPL_ASSERT(s == 0);
+    ++i;
+    ++j;
+  }
+  for ( ; i != i_end; ++i) {
+    int s = sgn(*i);
+    if (s != 0)
+      return 2*s;
+  }
+  for ( ; j != j_end; ++j) {
+    int s = sgn(*j);
+    if (s != 0)
+      return -2*s;
   }
 
   // If all the coefficients in `x' equal all the coefficients in `y'
   // (starting from position 1) we compare coefficients in position 0,
   // i.e., inhomogeneous terms.
-  if (const int comp = cmp(x.row[0], y.row[0]))
-    return (comp > 0) ? 1 : -1;
+  const int comp = cmp(x.row.get(0), y.row.get(0));
+  if (comp > 0)
+    return 1;
+  if (comp < 0)
+    return -1;
+  PPL_ASSERT(comp == 0);
 
   // `x' and `y' are equal.
   return 0;
