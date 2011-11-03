@@ -823,10 +823,11 @@ Linear_Expression_Impl<Row>
       ++y_i;
     } else {
       if (x_i.index() < y_i.index()) {
-        PPL_ASSERT(x.row.get(y_i.index()) == 0);
+        PPL_ASSERT(y.row.get(x_i.index()) == 0);
         // (*x_i) * 0 == 0, nothing to do.
         ++x_i;
       } else {
+        PPL_ASSERT(x.row.get(y_i.index()) == 0);
         // 0 * (*y_i) == 0, nothing to do.
         ++y_i;
       }
