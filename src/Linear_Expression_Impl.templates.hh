@@ -283,6 +283,44 @@ Linear_Expression_Impl<Sparse_Row>::all_zeroes(const Variables_Set& vars) const 
   return true;
 }
 
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
+  if (start == 0) {
+    if (row[0] != 0)
+      return false;
+    ++start;
+  }
+  for (dimension_type i = start; i < end; ++i)
+    if (row[i] != 0 && vars.count(i - 1) == 0)
+      return false;
+  return true;
+}
+
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
+  PPL_ASSERT(start <= end);
+  if (start == end)
+    return true;
+  if (start == 0) {
+    if (row.find(0) != row.end())
+      return false;
+
+    start = 1;
+  }
+
+  PPL_ASSERT(start != 0);
+  PPL_ASSERT(start <= end);
+  for (Sparse_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; i++)
+    if (vars.count(i.index() - 1) == 0)
+      return false;
+
+  return true;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -908,29 +946,6 @@ Linear_Expression_Impl<Row>::negate(dimension_type first, dimension_type last) {
   for ( ; i != i_end; ++i)
     neg_assign(*i);
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-bool
-Linear_Expression_Impl<Row>
-::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
-  PPL_ASSERT(start <= end);
-  if (start == end)
-    return true;
-  if (start == 0) {
-    if (row.get(0) != 0)
-      return false;
-
-    start = 1;
-  }
-
-  PPL_ASSERT(start != 0);
-  PPL_ASSERT(start <= end);
-  for (typename Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; i++)
-    if (*i != 0 && vars.count(i.index() - 1) == 0)
-      return false;
-
-  return true;
 }
 
 template <typename Row>
