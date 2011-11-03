@@ -515,6 +515,15 @@ public:
   //! Sets `row' to a copy of the row that implements *this.
   virtual void get_row(Sparse_Row& row) const;
 
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Checks if *this, interpreted as an objective function of a linear
+  //! problem, is unbounded.
+  virtual bool is_unbounded_obj_function(
+    const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
+    Optimization_Mode optimization_mode) const;
+
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with

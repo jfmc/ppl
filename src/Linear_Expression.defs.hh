@@ -642,6 +642,12 @@ private:
   //! Sets `row' to a copy of the row that implements *this.
   void get_row(Sparse_Row& row) const;
 
+  //! Checks if *this, interpreted as an objective function of a linear
+  //! problem, is unbounded.
+  bool is_unbounded_obj_function(
+    const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
+    Optimization_Mode optimization_mode) const;
+
   template <typename Row>
   friend class Linear_Expression_Impl;
 

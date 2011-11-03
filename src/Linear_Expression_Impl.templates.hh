@@ -980,6 +980,62 @@ Linear_Expression_Impl<Row>
   return true;
 }
 
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::is_unbounded_obj_function(
+  const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
+  Optimization_Mode optimization_mode) const {
+
+  for (dimension_type i = 1; i < row.size(); ++i) {
+    // If a the value of a variable in the objective function is
+    // different from zero, the final status is unbounded.
+    // In the first part the variable is constrained to be greater or equal
+    // than zero.
+    Coefficient_traits::const_reference c = row[i];
+    if (mapping[i].second != 0) {
+      if (c != 0)
+        return true;
+    } else {
+      PPL_ASSERT(mapping[i].second == 0);
+      if (optimization_mode == MAXIMIZATION) {
+        if (c > 0)
+          return true;
+      } else {
+        PPL_ASSERT(optimization_mode == MINIMIZATION);
+        if (c < 0)
+          return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::is_unbounded_obj_function(
+  const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
+  Optimization_Mode optimization_mode) const {
+
+  for (Sparse_Row::const_iterator i = row.lower_bound(1), i_end = row.end(); i != i_end; ++i) {
+    // If a the value of a variable in the objective function is
+    // different from zero, the final status is unbounded.
+    // In the first part the variable is constrained to be greater or equal
+    // than zero.
+    if (mapping[i.index()].second != 0)
+      return true;
+    if (optimization_mode == MAXIMIZATION) {
+      if (*i > 0)
+        return true;
+    } else {
+      PPL_ASSERT(optimization_mode == MINIMIZATION);
+      if (*i < 0)
+        return true;
+    }
+  }
+  return false;
+}
+
 template <typename Row>
 void
 Linear_Expression_Impl<Row>
