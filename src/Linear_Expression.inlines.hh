@@ -450,6 +450,13 @@ Linear_Expression
 }
 
 inline void
+Linear_Expression
+::mul_assign(Coefficient_traits::const_reference c,
+             dimension_type start, dimension_type end) {
+  impl->mul_assign(c, start, end);
+}
+
+inline void
 Linear_Expression::sign_normalize() {
   impl->sign_normalize();
 }

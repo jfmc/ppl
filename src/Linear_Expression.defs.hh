@@ -611,6 +611,10 @@ private:
                           Coefficient_traits::const_reference c2,
                           dimension_type start, dimension_type end);
 
+  //! Equivalent to <CODE>(*this)[i] *= n</CODE>, for each i in [start, end).
+  void mul_assign(Coefficient_traits::const_reference n,
+                  dimension_type start, dimension_type end);
+
   //! Modify `new_ray' according to the evolution of `x_g' with
   //! respect to `y_g'. This method is a code fragment used by Polyhedron.
   //! Read the method implementation for more details.

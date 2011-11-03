@@ -622,6 +622,24 @@ Linear_Expression_Impl<Row>
 }
 
 template <typename Row>
+void
+Linear_Expression_Impl<Row>
+::mul_assign(Coefficient_traits::const_reference c,
+                   dimension_type start, dimension_type end) {
+  if (c == 0) {
+    typename Row::iterator i = row.lower_bound(start);
+    const typename Row::iterator& i_end = row.end();
+    while (i != i_end && i.index() < end)
+      i = row.reset(i);
+  } else {
+    for (typename Row::iterator
+      i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; ++i)
+      (*i) *= c;
+  }
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>

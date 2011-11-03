@@ -419,6 +419,13 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
+  //! Equivalent to <CODE>(*this)[i] *= n</CODE>, for each i in [start, end).
+  virtual void mul_assign(Coefficient_traits::const_reference n,
+                          dimension_type start, dimension_type end);
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
   /*!
