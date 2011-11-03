@@ -228,9 +228,8 @@ Grid::rows_are_zero(M& system, dimension_type first,
 		    dimension_type last, dimension_type row_size) {
   while (first <= last) {
     const R& row = system[first++];
-    for (dimension_type col = 0; col < row_size; ++col)
-      if (row.expression()[col] != 0)
-	return false;
+    if (!row.expression().all_zeroes(0, row_size))
+      return false;
   }
   return true;
 }
