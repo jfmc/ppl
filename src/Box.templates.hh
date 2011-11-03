@@ -1618,7 +1618,6 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
   PPL_ASSERT(pcs != 0);
   const Constraint_System& cs = *pcs;
-  const dimension_type cs_space_dim = cs.space_dimension();
   // A map associating interval constraints to variable indexes.
   typedef std::map<dimension_type, std::vector<const Constraint*> > map_type;
   map_type var_cs_map;
