@@ -176,6 +176,24 @@ Linear_Expression_Impl<Dense_Row>::all_zeroes(dimension_type start, dimension_ty
   return true;
 }
 
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>::num_zeroes(dimension_type start, dimension_type end) const {
+  PPL_ASSERT(start <= end);
+  dimension_type result = 0;
+  for (dimension_type i = start; i < end; ++i)
+    if (row[i] == 0)
+      ++result;
+  return result;
+}
+
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>::num_zeroes(dimension_type start, dimension_type end) const {
+  PPL_ASSERT(start <= end);
+  return (end - start) - std::distance(row.lower_bound(start), row.lower_bound(end));
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -652,18 +670,6 @@ Linear_Expression_Impl<Row>
   else
     row.insert(i, n);
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-dimension_type
-Linear_Expression_Impl<Row>::num_zeroes(dimension_type start, dimension_type end) const {
-  PPL_ASSERT(start <= end);
-  dimension_type result = end - start;
-  for (typename Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end);
-       i != i_end; ++i)
-    if (*i != 0)
-      --result;
-  return result;
 }
 
 template <typename Row>
