@@ -897,7 +897,10 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
   }
 
   for (dimension_type i = start; i < end; i++) {
-    itr = x.lower_bound(itr, i);
+    PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
+    if (itr != x.end() && itr.index() < i)
+      ++itr;
+    PPL_ASSERT(itr == x.end() || itr.index() >= i);
     if (itr == x.end() || itr.index() != i) {
       if (y[i] == 0)
         continue;
@@ -1003,7 +1006,10 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
   for (dimension_type i = start; i < end; i++) {
     x[i] *= coeff1;
 
-    itr = y.lower_bound(itr, i);
+    PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
+    if (itr != y.end() && itr.index() < i)
+      ++itr;
+    PPL_ASSERT(itr == y.end() || itr.index() >= i);
 
     if (itr == y.end() || itr.index() != i)
       continue;
