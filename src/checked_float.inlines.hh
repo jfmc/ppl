@@ -34,30 +34,30 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 inline float
-fma(float x, float y, float z) {
+multiply_add(float x, float y, float z) {
 #if PPL_HAVE_DECL_FMAF && defined(FP_FAST_FMAF) \
   && !defined(__alpha) && !defined(__FreeBSD__)
-  return ::fmaf(x, y, z);
+  return fmaf(x, y, z);
 #else
   return x*y + z;
 #endif
 }
 
 inline double
-fma(double x, double y, double z) {
+multiply_add(double x, double y, double z) {
 #if PPL_HAVE_DECL_FMA && defined(FP_FAST_FMA) \
   && !defined(__alpha) && !defined(__FreeBSD__)
-  return ::fma(x, y, z);
+  return fma(x, y, z);
 #else
   return x*y + z;
 #endif
 }
 
 inline long double
-fma(long double x, long double y, long double z) {
+multiply_add(long double x, long double y, long double z) {
 #if PPL_HAVE_DECL_FMAL && defined(FP_FAST_FMAL) \
   && !defined(__alpha) && !defined(__FreeBSD__)
-  return ::fmal(x, y, z);
+  return fmal(x, y, z);
 #else
   return x*y + z;
 #endif
@@ -919,9 +919,9 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   // FIXME: missing check_inf_add_inf
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = fma(x, y, to);
+    to = multiply_add(x, y, to);
   else if (fpu_inverse_rounding(dir)) {
-    to = fma(-x, y, -to);
+    to = multiply_add(-x, y, -to);
     limit_precision(to);
     to = -to;
   }
@@ -931,7 +931,7 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     limit_precision(x);
     limit_precision(y);
     limit_precision(to);
-    to = fma(x, y, to);
+    to = multiply_add(x, y, to);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
@@ -952,9 +952,9 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   // FIXME: missing check_inf_add_inf
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = fma(x, -y, to);
+    to = multiply_add(x, -y, to);
   else if (fpu_inverse_rounding(dir)) {
-    to = fma(x, y, -to);
+    to = multiply_add(x, y, -to);
     limit_precision(to);
     to = -to;
   }
@@ -964,7 +964,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     limit_precision(x);
     limit_precision(y);
     limit_precision(to);
-    to = fma(x, -y, to);
+    to = multiply_add(x, -y, to);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
