@@ -3756,7 +3756,7 @@ BD_Shape<T>::refine(const Variable var,
       if (expr.coefficient(Variable(pinf_index-1)) == denominator)
         // Add the constraint `v - pinf_index <= sum'.
         add_dbm_constraint(pinf_index, v, sum);
-      break;
+    break;
 
   case GREATER_OR_EQUAL:
     // Compute an upper approximation for `-sc_expr' into `sum'.
@@ -4460,7 +4460,7 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
       return;
     }
   }
-  else if (left_t == 1){
+  else if (left_t == 1) {
     if (left_w_coeff == 1 || left_w_coeff == -1) {
       if (right_t == 0 || (right_w_coeff == 1 || right_w_coeff == -1)) {
 	left_one_var_refine(left_w_id, right_t, right_w_id, left, right);
@@ -4660,7 +4660,7 @@ BD_Shape<T>
           add_assign_r(ub, ub, a_plus_minus_b_minus, ROUND_UP);
           add_dbm_constraint(right_w_id + 1, 0, ub);
         }
-	    return;
+        return;
       }
       if (is_left_coeff_one && is_right_coeff_minus_one) {
         // over-approximate (if is it possible) the inequality

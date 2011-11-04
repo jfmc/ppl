@@ -2267,7 +2267,8 @@ PIP_Solution_Node::update_tableau(
           // Transform (expr > 0) into (expr - 1 >= 0).
           --p_row0;
         p_row0 *= denom;
-      } else
+      }
+      else
         if (constraint.is_strict_inequality())
           // Transform (expr > 0) into (expr - 1 >= 0).
           neg_assign(p_row[0], denom);

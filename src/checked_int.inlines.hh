@@ -985,7 +985,7 @@ add_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 	return set_pos_overflow_int<To_Policy>(to, dir);
     }
     else if (x < Extended_Int<To_Policy, Type>::min - y)
-	return set_neg_overflow_int<To_Policy>(to, dir);
+      return set_neg_overflow_int<To_Policy>(to, dir);
   }
   to = x + y;
   return V_EQ;
@@ -1014,7 +1014,7 @@ sub_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 	return set_neg_overflow_int<To_Policy>(to, dir);
     }
     else if (x > Extended_Int<To_Policy, Type>::max + y)
-	return set_pos_overflow_int<To_Policy>(to, dir);
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = x - y;
   return V_EQ;
