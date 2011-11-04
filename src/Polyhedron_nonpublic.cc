@@ -1181,8 +1181,6 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // Now we check if there exists another strict inequality
       // constraint having a superset of its saturators,
       // when disregarding points.
-      /* FIXME: what is this clear for? */
-      sat_ci.clear();
       sat_ci.union_assign(sat[i], sat_all_but_points);
       bool eps_redundant = false;
       for (dimension_type j = 0; j < cs_rows; ++j)
