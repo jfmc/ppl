@@ -85,24 +85,6 @@ bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool strict_subset(const Bit_Row& x, const Bit_Row& y);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Set-theoretic union.
-/*! \relates Bit_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Set-theoretic intersection.
-/*! \relates Bit_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Set-theoretic difference.
-/*! \relates Bit_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
-
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -150,6 +132,16 @@ public:
   //! Clears all the bits of the row.
   void clear();
 
+  //! Assigns to \p *this the set-theoretic union of \p x and \p y.
+  void union_assign(const Bit_Row& x, const Bit_Row& y);
+
+  //! Assigns to \p *this the set-theoretic intersection of \p x and \p y.
+  void intersection_assign(const Bit_Row& x, const Bit_Row& y);
+
+  //! Assigns to \p *this the set-theoretic difference of \p x and \p y.
+  void difference_assign(const Bit_Row& x, const Bit_Row& y);
+
+
   friend int compare(const Bit_Row& x, const Bit_Row& y);
   friend bool operator==(const Bit_Row& x, const Bit_Row& y);
   friend bool operator!=(const Bit_Row& x, const Bit_Row& y);
@@ -157,9 +149,6 @@ public:
   friend bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 			      bool& strict_subset);
   friend bool strict_subset(const Bit_Row& x, const Bit_Row& y);
-  friend void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
-  friend void set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
-  friend void set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
   unsigned long first() const;

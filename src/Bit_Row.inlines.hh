@@ -126,39 +126,36 @@ Bit_Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-/*! \relates Bit_Row */
 inline void
-set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
+Bit_Row::union_assign(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_size = x.vec->_mp_size;
   PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
   if (x_size < y_size) {
     PPL_ASSERT(static_cast<unsigned long>(y_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
-    mpz_realloc2(z.vec, y_size * PPL_BITS_PER_GMP_LIMB);
-    z.union_helper(x, y);
+               <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+    mpz_realloc2(vec, y_size * PPL_BITS_PER_GMP_LIMB);
+    union_helper(x, y);
   }
   else {
     PPL_ASSERT(static_cast<unsigned long>(x_size)
            <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
-    mpz_realloc2(z.vec, x_size * PPL_BITS_PER_GMP_LIMB);
-    z.union_helper(y, x);
+    mpz_realloc2(vec, x_size * PPL_BITS_PER_GMP_LIMB);
+    union_helper(y, x);
   }
 }
 
-/*! \relates Bit_Row */
 inline void
-set_intersection(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
-  mpz_and(z.vec, x.vec, y.vec);
+Bit_Row::intersection_assign(const Bit_Row& x, const Bit_Row& y) {
+  mpz_and(vec, x.vec, y.vec);
 }
 
-/*! \relates Bit_Row */
 inline void
-set_difference(const Bit_Row& x, const Bit_Row& y, Bit_Row& z) {
+Bit_Row::difference_assign(const Bit_Row& x, const Bit_Row& y) {
   PPL_DIRTY_TEMP(mpz_class, complement_y);
   mpz_com(complement_y.get_mpz_t(), y.vec);
-  mpz_and(z.vec, x.vec, complement_y.get_mpz_t());
+  mpz_and(vec, x.vec, complement_y.get_mpz_t());
 }
 
 namespace Implementation {

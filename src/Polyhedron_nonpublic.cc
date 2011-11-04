@@ -1145,7 +1145,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
       Bit_Row sat_ci;
-      set_union(sat[i], sat_lines_and_closure_points, sat_ci);
+      sat_ci.union_assign(sat[i], sat_lines_and_closure_points);
       if (sat_ci == sat_lines) {
 	// It is saturated by no closure points.
 	if (!found_eps_leq_one) {
@@ -1181,8 +1181,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // Now we check if there exists another strict inequality
       // constraint having a superset of its saturators,
       // when disregarding points.
+      /* FIXME: what is this clear for? */
       sat_ci.clear();
-      set_union(sat[i], sat_all_but_points, sat_ci);
+      sat_ci.union_assign(sat[i], sat_all_but_points);
       bool eps_redundant = false;
       for (dimension_type j = 0; j < cs_rows; ++j)
 	if (i != j && cs[j].is_strict_inequality()
@@ -1531,7 +1532,7 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
     const bool included
       = y.relation_with(x_cs[i]).implies(Poly_Con_Relation::is_included());
     if (!included) {
-      set_union(x_gs_red_in_y, x_sat[i], row_union);
+      row_union.union_assign(x_gs_red_in_y, x_sat[i]);
       if (row_union != all_ones)
         return false;
     }
@@ -1610,8 +1611,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     return true;
 
   Bit_Row x_nonpoints_nonred_in_y;
-  set_difference(x_gs_nonred_in_y, x_points_nonred_in_y,
-                 x_nonpoints_nonred_in_y);
+  x_nonpoints_nonred_in_y.difference_assign(x_gs_nonred_in_y,
+                                            x_points_nonred_in_y);
 
   const Constraint_System& x_cs = x.con_sys;
   const Constraint_System& y_cs = y.con_sys;
@@ -1655,20 +1656,20 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     // Skip constraint if it is not violated by `y'.
     if (y.relation_with(x_c).implies(Poly_Con_Relation::is_included()))
       continue;
-    set_difference(all_ones, x_sat[i], saturators);
+    saturators.difference_assign(all_ones, x_sat[i]);
     // Check condition 1.
-    set_intersection(x_nonpoints_nonred_in_y, saturators, tmp_set);
+    tmp_set.intersection_assign(x_nonpoints_nonred_in_y, saturators);
     if (!tmp_set.empty())
       return false;
     if (x_c.is_strict_inequality()) {
       // Postpone check for condition 3.
       x_cs_condition_3.set(i);
-      set_intersection(x_closure_points, saturators, tmp_set);
-      set_union(x_gs_condition_3, tmp_set, x_gs_condition_3);
+      tmp_set.intersection_assign(x_closure_points, saturators);
+      x_gs_condition_3.union_assign(x_gs_condition_3, tmp_set);
     }
     else {
       // Check condition 2.
-      set_intersection(x_points_nonred_in_y_closure, saturators, tmp_set);
+      tmp_set.intersection_assign(x_points_nonred_in_y_closure, saturators);
       if (!tmp_set.empty())
         return false;
     }
@@ -1678,8 +1679,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   // (the statement of the NNC theorem in BHZ09 is symmetric).
 
   Bit_Row y_nonpoints_nonred_in_x;
-  set_difference(y_gs_nonred_in_x, y_points_nonred_in_x,
-                 y_nonpoints_nonred_in_x);
+  y_nonpoints_nonred_in_x.difference_assign(y_gs_nonred_in_x,
+                                            y_points_nonred_in_x);
 
   // Filter away the points of `y_gs' that would be redundant
   // in the topological closure of `x'.
@@ -1714,20 +1715,20 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     // Skip constraint if it is not violated by `x'.
     if (x.relation_with(y_c).implies(Poly_Con_Relation::is_included()))
       continue;
-    set_difference(all_ones, y_sat[i], saturators);
+    saturators.difference_assign(all_ones, y_sat[i]);
     // Check condition 1.
-    set_intersection(y_nonpoints_nonred_in_x, saturators, tmp_set);
+    tmp_set.intersection_assign(y_nonpoints_nonred_in_x, saturators);
     if (!tmp_set.empty())
       return false;
     if (y_c.is_strict_inequality()) {
       // Postpone check for condition 3.
       y_cs_condition_3.set(i);
-      set_intersection(y_closure_points, saturators, tmp_set);
-      set_union(y_gs_condition_3, tmp_set, y_gs_condition_3);
+      tmp_set.intersection_assign(y_closure_points, saturators);
+      y_gs_condition_3.union_assign(y_gs_condition_3, tmp_set);
     }
     else {
       // Check condition 2.
-      set_intersection(y_points_nonred_in_x_closure, saturators, tmp_set);
+      tmp_set.intersection_assign(y_points_nonred_in_x_closure, saturators);
       if (!tmp_set.empty())
         return false;
     }
