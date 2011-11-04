@@ -65,33 +65,33 @@ multiply_add(long double x, long double y, long double z) {
 
 #if PPL_HAVE_DECL_RINTF
 inline float
-rint(float x) {
-  return ::rintf(x);
+round_to_integer(float x) {
+  return rintf(x);
 }
 #endif
 
 inline double
-rint(double x) {
-  return ::rint(x);
+round_to_integer(double x) {
+  return rint(x);
 }
 
 #if PPL_HAVE_DECL_RINTL
 inline long double
-rint(long double x) {
-  return ::rintl(x);
+round_to_integer(long double x) {
+  return rintl(x);
 }
 #elif !PPL_CXX_PROVIDES_PROPER_LONG_DOUBLE
 // If proper long doubles are not provided, this is most likely
 // because long double and double are the same type: use rint().
 inline long double
-rint(long double x) {
-  return ::rint(x);
+round_to_integer(long double x) {
+  return rint(x);
 }
 #elif defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 // On Cygwin, we have proper long doubles but rintl() is not defined:
 // luckily, one machine instruction is enough to save the day.
 inline long double
-rint(long double x) {
+round_to_integer(long double x) {
   long double i;
   __asm__ ("frndint" : "=t" (i) : "0" (x));
   return i;
@@ -198,7 +198,7 @@ is_pinf_float(const T v) {
 template <typename Policy, typename T>
 inline bool
 is_int_float(const T v) {
-  return rint(v) == v;
+  return round_to_integer(v) == v;
 }
 
 template <typename Policy, typename T>
@@ -371,9 +371,9 @@ floor_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_DOWN))
-    to = rint(from);
+    to = round_to_integer(from);
   else if (fpu_inverse_rounding(ROUND_DOWN)) {
-    to = rint(-from);
+    to = round_to_integer(-from);
     limit_precision(to);
     to = -to;
   }
@@ -381,7 +381,7 @@ floor_float(Type& to, const Type from, Rounding_Dir) {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(ROUND_DOWN));
     limit_precision(from);
-    to = rint(from);
+    to = round_to_integer(from);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
@@ -394,9 +394,9 @@ ceil_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_UP))
-    to = rint(from);
+    to = round_to_integer(from);
   else if (fpu_inverse_rounding(ROUND_UP)) {
-    to = rint(-from);
+    to = round_to_integer(-from);
     limit_precision(to);
     to = -to;
   }
@@ -404,7 +404,7 @@ ceil_float(Type& to, const Type from, Rounding_Dir) {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(ROUND_UP));
     limit_precision(from);
-    to = rint(from);
+    to = round_to_integer(from);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
