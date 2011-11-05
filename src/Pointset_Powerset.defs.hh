@@ -114,10 +114,10 @@ public:
     This will be created as a single disjunct of type PSET that
     approximates the product.
   */
-   template <typename QH1, typename QH2, typename R>
-   explicit
-     Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
-                       Complexity_Class complexity = ANY_COMPLEXITY);
+  template <typename QH1, typename QH2, typename R>
+  explicit
+  Pointset_Powerset(const Partially_Reduced_Product<QH1, QH2, R>& prp,
+                    Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Creates a Pointset_Powerset with a single disjunct approximating
@@ -693,7 +693,7 @@ public:
     Currently there is no optimality guarantee, not even if
     \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
   */
-   void drop_some_non_integer_points(Complexity_Class complexity
+  void drop_some_non_integer_points(Complexity_Class complexity
                                     = ANY_COMPLEXITY);
 
   /*! \brief

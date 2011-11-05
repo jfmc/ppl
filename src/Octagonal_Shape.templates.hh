@@ -177,7 +177,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
         if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
           g = lp.optimizing_point();
           lp.evaluate_objective_function(g, num, den);
-           div_round_up(matrix[2*i][2*j + 1], num, den);
+          div_round_up(matrix[2*i][2*j + 1], num, den);
         }
       }
       // Evaluate optimal upper bound for `-x <= ub'.
@@ -1935,7 +1935,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
         case -1:
           return  Poly_Con_Relation::strictly_intersects();
         }
-     case 0:
+      case 0:
         if (min_num == 0) {
           if (c.is_strict_inequality())
             return  Poly_Con_Relation::is_disjoint()
@@ -6418,7 +6418,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
     const Coefficient& w_coeff = lb_expr.coefficient(Variable(w_id));
     if (w_coeff == denominator || w_coeff == minus_den) {
       // Case 2: lb_expr = w_coeff*w + b, with w_coeff = +/- denominator.
-     if (w_id == var_id) {
+      if (w_id == var_id) {
         // Here `var' occurs in `lb_expr'.
         // To ease the computation, we add an additional dimension.
         const Variable new_var = Variable(space_dim);

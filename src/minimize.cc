@@ -368,7 +368,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   for (first_point = num_lines_or_equalities;
        first_point < dest_num_rows;
        ++first_point)
-     if (dest[first_point][checking_index] > 0)
+    if (dest[first_point][checking_index] > 0)
       break;
 
   if (first_point == dest_num_rows)

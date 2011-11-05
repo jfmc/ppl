@@ -519,7 +519,7 @@ PPL::Polyhedron::is_topologically_closed() const {
   if (marked_empty()
       || space_dim == 0
       || (has_something_pending() && !process_pending()))
-     return true;
+    return true;
 
   // At this point there are no pending constraints or generators.
   PPL_ASSERT(!has_something_pending());

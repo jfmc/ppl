@@ -1513,7 +1513,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
         case -1:
           return  Poly_Con_Relation::strictly_intersects();
         }
-     case 0:
+      case 0:
         if (min_num == 0) {
           if (c.is_strict_inequality())
             return  Poly_Con_Relation::is_disjoint()
@@ -4285,7 +4285,7 @@ void BD_Shape<T>
         }
         // Both shortest-path closure and reduction are preserved.
       }
-     }
+    }
     else {
       // Here `w_coeff = [-1;-1].
       // Remove the binary constraints on `var'.
