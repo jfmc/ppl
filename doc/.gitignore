@@ -5,6 +5,7 @@
 *.latex-dir
 *.log
 *.pdf
+!ppl_logo*.pdf
 *.pdf-dir
 *.ps
 *.ps-dir
