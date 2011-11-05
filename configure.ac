@@ -81,6 +81,9 @@ AC_SUBST(ISODATE)
 AH_TOP([
 /* BEGIN ppl-config.h */
 
+#ifndef PPL_ppl_config_h
+#define PPL_ppl_config_h 1
+
 /* Unique (nonzero) code for the IEEE 754 Single Precision
    floating point format.  */
 #define PPL_FLOAT_IEEE754_SINGLE 1
@@ -121,6 +124,8 @@ AH_BOTTOM([
 #endif
 
 #define PPL_U(x) x
+
+#endif /* !defined(PPL_ppl_config_h) */
 
 /* END ppl-config.h */
 ])
