@@ -770,7 +770,7 @@ custom_MIP_Problem_finalize(value v) {
 }
 
 static struct custom_operations MIP_Problem_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "MIP_Problem",
+  "com.bugseng.ppl" "." PPL_VERSION "." "MIP_Problem",
   custom_MIP_Problem_finalize,
   custom_compare_default,
   custom_hash_default,
@@ -798,7 +798,7 @@ custom_PIP_Problem_finalize(value v) {
 }
 
 static struct custom_operations PIP_Problem_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "PIP_Problem",
+  "com.bugseng.ppl" "." PPL_VERSION "." "PIP_Problem",
   custom_PIP_Problem_finalize,
   custom_compare_default,
   custom_hash_default,
@@ -820,7 +820,7 @@ unregistered_value_p_PIP_Problem(const PIP_Problem& ph) {
 // In principle, we could directly store a PIP_Tree_Node* in a Caml 'value':
 // the use of a Custom_tag block is anyway recommended by Caml manual.
 static struct custom_operations PIP_Tree_Node_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "PIP_Tree_Node",
+  "com.bugseng.ppl" "." PPL_VERSION "." "PIP_Tree_Node",
   custom_finalize_default,
   custom_compare_default,
   custom_hash_default,
