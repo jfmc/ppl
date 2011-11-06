@@ -1,4 +1,4 @@
-TOTAL_COUNT	589263
+TOTAL_COUNT	590824
 a	5311
 ab	1
 abandon	18
@@ -16,6 +16,7 @@ absolutely	1
 abstract	56
 abstraction	4
 abstractions	4
+accept	1
 acceptable	1
 accepted	4
 accepts	2
@@ -282,6 +283,7 @@ belong	9
 belongs	13
 below	121
 bemporad	2
+benchmark	1
 benchmarks	1
 beneficial	1
 benefits	2
@@ -305,6 +307,7 @@ big	68
 bigendian	6
 bigger	7
 biggest	3
+bignum	15
 binary	188
 bind	2
 binds	1
@@ -408,6 +411,7 @@ causes	4
 causing	1
 cb	17
 cc	81
+cddlib	2
 ceil	44
 cell	36
 cells	5
@@ -445,6 +449,7 @@ checked	823
 checking	42
 checkme	18
 checks	144
+chernikova	1
 chi	38
 child	164
 children	2
@@ -457,6 +462,7 @@ chop	2
 chosen	10
 chunk	4
 ci	242
+cin	4
 circles	1
 ck	68
 cl	4
@@ -526,6 +532,7 @@ come	10
 comeau	3
 comes	11
 comma	5
+commands	1
 comment	13
 commented	2
 comments	3
@@ -823,6 +830,7 @@ delta	40
 den	950
 denominator	950
 denominators	35
+denormalized	1
 denote	5
 denoted	3
 denotes	7
@@ -872,6 +880,7 @@ determining	1
 determinism	2
 deterministic	3
 detriment	4
+devel	5
 developed	4
 developers	1
 dfs	30
@@ -920,6 +929,7 @@ disjunct	92
 disjuncts	61
 displaced	4
 displacement	2
+display	4
 disregard	10
 disregarded	11
 disregarding	7
@@ -994,6 +1004,7 @@ eat	1
 ec	15
 eclair	1
 ed	1
+edg	4
 edge	32
 edition	3
 effect	18
@@ -1075,6 +1086,7 @@ entry	19
 enum	78
 enumerated	2
 enumeration	3
+env	15
 envelope	1
 eof	36
 epsilon	146
@@ -1096,11 +1108,13 @@ errno	3
 error	286
 errors	5
 es	1
+especially	2
 essence	1
 established	1
 establishes	1
 estimate	1
 etc	6
+eth	2
 euclidean	75
 ev	8
 evaluate	31
@@ -1142,11 +1156,13 @@ exclusive	3
 executable	19
 executed	1
 executes	3
+executing	1
 execution	6
 exhausted	4
 exist	14
 existed	1
 existential	4
+existentiallly	1
 existentially	15
 existing	51
 exists	57
@@ -1158,6 +1174,7 @@ expanded	25
 expanding	3
 expands	3
 expansion	1
+expect	6
 expected	13
 expects	1
 expense	1
@@ -1316,11 +1333,13 @@ found	170
 foundation	576
 four	8
 fourth	8
+fprintf	18
 fpu	240
 fraction	15
 fractional	10
 fractions	2
 fragment	3
+frames	3
 framework	3
 franklin	282
 fread	1
@@ -1336,6 +1355,7 @@ friends	1
 friendship	1
 from	2466
 front	4
+fstream	2
 fukuda	2
 fulfill	2
 full	24
@@ -1380,6 +1400,8 @@ geq	98
 get	770
 getc	2
 getitimer	5
+getline	9
+getopt	22
 getrusage	4
 gets	12
 getting	7
@@ -1422,11 +1444,14 @@ guarantee	14
 guaranteed	4
 guarantees	7
 guard	7
+guarded	67
 guess	2
 guidelines	1
 h	387
 had	3
 half	146
+halfspace	6
+halfspaces	1
 hand	123
 handle	154
 handled	4
@@ -1515,6 +1540,7 @@ ieeefp	3
 if	11371
 ifdef	303
 ifndef	584
+ifstream	2
 ignore	73
 ignored	114
 ignores	3
@@ -1734,6 +1760,7 @@ irrational	16
 irredundant	8
 is	9825
 iso	15
+isqrt	2
 isspace	8
 issue	5
 issues	6
@@ -1750,6 +1777,7 @@ iteration	33
 iterations	30
 iterator	2640
 iterators	67
+itimer	5
 itimerval	7
 its	251
 itself	16
@@ -1803,6 +1831,7 @@ lazily	4
 laziness	2
 lazy	17
 lb	438
+lcdd	13
 lcm	154
 ldexp	1
 le	256
@@ -1862,6 +1891,7 @@ lin	23
 line	451
 lineality	9
 linear	2415
+linearity	30
 linearization	2
 linearize	2
 linearized	1
@@ -1907,9 +1937,11 @@ low	65
 lower	897
 lowest	1
 lp	179
+lpsol	2
 lr	7
 ls	34
 lt	151
+lub	2
 luckily	1
 lying	4
 m	1346
@@ -1917,6 +1949,7 @@ ma	288
 machine	1
 macro	4
 made	29
+magic	2
 main	22
 maintain	1
 maintained	16
@@ -1979,6 +2012,7 @@ measured	2
 mechanism	6
 median	2
 meet	26
+mega	6
 member	106
 members	5
 memcpy	4
@@ -2026,8 +2060,10 @@ miscellaneous	6
 mislead	1
 mismatch	18
 mismatches	4
+misplaced	1
 misses	5
 missing	13
+mit	1
 mix	2
 mixed	54
 mk	19
@@ -2070,6 +2106,7 @@ msg	1
 mu	180
 much	12
 mul	570
+multi	3
 multiple	31
 multiples	1
 multiplication	6
@@ -2084,6 +2121,7 @@ must	392
 mutable	4
 mutate	3
 mutually	5
+mv	4
 my	7
 n	3364
 name	387
@@ -2153,6 +2191,7 @@ nonetheless	2
 nonnegative	22
 nonnegativity	2
 nonpositive	1
+nonstrict	35
 nontrivial	10
 nonzero	40
 nor	22
@@ -2223,6 +2262,7 @@ of	7575
 off	7
 offers	1
 offset	70
+ofstream	2
 ok	984
 old	486
 oldest	1
@@ -2249,6 +2289,7 @@ opposed	2
 opposing	2
 opposite	2
 opt	19
+optarg	8
 optimal	33
 optimality	19
 optimally	36
@@ -2260,6 +2301,7 @@ optimized	68
 optimizes	17
 optimizing	34
 optimum	6
+optind	6
 option	289
 optional	83
 optionally	2
@@ -2282,6 +2324,7 @@ others	2
 otherwise	275
 our	18
 ours	1
+ourselves	1
 out	214
 outcome	3
 outcomes	3
@@ -2327,6 +2370,7 @@ parentheses	6
 parenthesis	2
 parma	1771
 parse	9
+parser	23
 parses	1
 parsing	1
 part	396
@@ -2343,6 +2387,7 @@ passing	11
 past	43
 path	362
 pay	1
+pbackfail	4
 pc	10
 pcs	93
 pd	20
@@ -2371,6 +2416,7 @@ physically	1
 pi	81
 pip	631
 pipermail	5
+piplib	12
 pity	1
 pivot	381
 pivoting	10
@@ -2399,12 +2445,14 @@ points	467
 pointset	570
 pointsets	2
 policy	2124
+polka	42
 poly	737
 polygons	1
 polyhedra	1782
 polyhedral	7
 polyhedron	1507
 polyhedrons	2
+polylib	33
 polynomial	40
 pomerance	1
 pool	1
@@ -2465,6 +2513,7 @@ prelims	5
 prep	48
 preparation	1
 prepare	12
+prepared	2
 preparing	2
 preprocessor	1
 presence	3
@@ -2546,6 +2595,7 @@ providing	12
 provisional	2
 provisos	1
 ps	29
+pset	668
 pseudo	41
 pt	25
 ptrdiff	8
@@ -2588,6 +2638,7 @@ quotients	9
 r	2634
 race	1
 radix	4
+raii	7
 raise	7
 raises	2
 random	3
@@ -3150,6 +3201,7 @@ straight	1
 strategy	59
 stream	9
 streambuf	41
+streamsize	23
 street	282
 strerror	3
 strict	362
@@ -3171,6 +3223,8 @@ style	17
 sub	339
 subdivided	1
 subject	46
+submatrix	3
+subproblem	1
 subscript	16
 subscripted	1
 subsequently	1
@@ -3181,6 +3235,7 @@ substituted	10
 substitutes	8
 substituting	2
 substitution	13
+substr	7
 subsume	7
 subsumed	2
 subsumes	40
@@ -3253,6 +3308,8 @@ systematically	1
 systems	98
 sz	154
 t	4356
+tab	4
+table	1
 tableau	471
 tag	30
 tailored	2
@@ -3273,6 +3330,7 @@ tells	1
 temp	1295
 template	2702
 templates	75
+templatic	1
 temple	6
 temporaries	23
 temporarily	34
@@ -3340,6 +3398,7 @@ time	484
 timeout	8
 timer	31
 times	55
+timeval	4
 timings	5
 tininess	4
 tmp	878
@@ -3352,6 +3411,7 @@ token	2
 tokens	116
 tonearest	4
 too	94
+tools	1
 top	73
 topol	93
 topological	42
@@ -3452,11 +3512,13 @@ understanding	1
 unexpected	2
 unfeasible	59
 unfolding	1
+unget	7
 ungetc	16
 uniform	1
 unimplemented	7
 uninitialized	31
 union	54
+unipr	368
 unique	13
 uniquely	3
 unit	16
@@ -3475,6 +3537,7 @@ unpredictable	1
 unprimed	15
 unreachable	15
 unreferenced	1
+unregisters	1
 unrepresentable	19
 unrestricted	16
 unsatisfiability	3
@@ -3518,6 +3581,7 @@ usual	14
 usually	1
 utilities	10
 utility	6
+utime	10
 v	2644
 va	3
 val	211
@@ -3540,6 +3604,7 @@ vect	309
 vector	529
 vectors	7
 verbatim	9
+verbose	12
 verbosely	1
 verbs	1
 verifiers	4
@@ -3655,6 +3720,8 @@ x	7318
 xi	111
 xl	42
 xs	6
+xsgetn	4
+xsputn	4
 xv	10
 xx	7
 y	6158
