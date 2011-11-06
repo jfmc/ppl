@@ -57,7 +57,7 @@ AC_ARG_WITH(gmp-build,
   AS_HELP_STRING([--with-gmp-build=DIR],
                  [use a non-installed build of GMP in DIR]),
   gmp_build_dir=$with_gmp_build
-  if test -n "$with_gmp"
+  if test -n "$with_gmp" \
   || test -n "$with_gmp_include" || test -n "$with_gmp_lib"
   then
     AC_MSG_ERROR([cannot use --with-gmp-build and other --with-gmp* options together])
