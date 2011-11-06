@@ -57,15 +57,16 @@ AC_ARG_WITH(gmp-build,
   AS_HELP_STRING([--with-gmp-build=DIR],
                  [use a non-installed build of GMP in DIR]),
   gmp_build_dir=$with_gmp_build
-  if test -n "$with_gmp" \
+  if test -n "$with_gmp"
   || test -n "$with_gmp_include" || test -n "$with_gmp_lib"
   then
-    gmp_include_options="-I$gmp_build_dir -I$gmp_build_dir/tune"
+    AC_MSG_ERROR([cannot use --with-gmp-build and other --with-gmp* options together])
+  else
     gmp_library_paths="$gmp_build_dir$PATH_SEPARATOR$gmp_build_dir/.libs:$gmp_build_dir/tune"
     gmp_library_options="-L$gmp_build_dir -L$gmp_build_dir/.libs"
     gmp_library_options="$gmp_library_options -L$gmp_build_dir/tune"
-  else
-    AC_MSG_ERROR([cannot use --with-gmp-build and other --with-gmp* options together])
+    gmp_srcdir=`echo @abs_srcdir@ | $gmp_build_dir/config.status --file=-`
+    gmp_include_options="-I$gmp_build_dir -I$gmp_build_dir/tune -I$gmp_srcdir"
   fi)
 
 gmp_library_options="$gmp_library_options -lgmpxx -lgmp"
