@@ -6,13 +6,14 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.1"
-   width="200.599"
-   height="259.91901"
-   viewBox="0 0 200.599 259.919"
+   width="800"
+   height="1035.373"
+   viewBox="0 0 800 1035.373"
    id="Livello_1"
    xml:space="preserve"><defs
    id="defs4585" />
 <g
+   transform="matrix(3.9834449,0,0,3.9834449,0.34731503,1.5625e-5)"
    id="g4521">
 	<defs
    id="defs4523"><rect
@@ -110,6 +111,7 @@
 	</g>
 </g>
 <g
+   transform="matrix(3.9834449,0,0,3.9834449,0.34731503,1.5625e-5)"
    id="g4569">
 	<g
    id="g4571">

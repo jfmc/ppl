@@ -36,8 +36,7 @@
 \usepackage{alltt}
 \usepackage{times}
 \usepackage{tocloft}
-\usepackage{sectsty}
-\allsectionsfont{\sffamily}\usepackage{ifpdf}
+\usepackage{ifpdf}
 \ifpdf
 \usepackage[pdftex,
             pagebackref=true,
@@ -108,7 +107,7 @@ Enea Zaffanella\thanks{zaffanella@cs.unipr.it,
 Abramo Bagnara\thanks{abramo.bagnara@bugseng.com,
   BUGSENG srl.} \\
 }
-\maketitle
+{\sffamily\maketitle}
 \thispagestyle{empty}
 \clearpage{\pagestyle{empty}\cleardoublepage}
 
@@ -144,8 +143,18 @@ site:
 \begin{center}
 \href{http://bugseng.com/products/ppl/}{\tt http://bugseng.com/products/ppl/}
 \end{center}
+\vfill
+\begin{center}
+\includegraphics[width=5cm]{bugseng_logo.pdf}
+\end{center}
+\vfill
 \clearpage{\pagestyle{empty}\cleardoublepage}
 
+% The following command is needed to have the right footer on
+% the first page of the TOC.
+\addtocontents{toc}{\protect\thispagestyle{fancy}}
+
+% Make sure there is enough space in the TOC for long subsection numbers.
 \addtolength{\cftsubsecnumwidth}{1em}
 
 \pagenumbering{roman}
