@@ -1,4 +1,4 @@
-TOTAL_COUNT	590824
+TOTAL_COUNT	593525
 a	5311
 ab	1
 abandon	18
@@ -57,6 +57,8 @@ adding	171
 addition	19
 additional	67
 additive	28
+addmod	4
+addmul	2
 address	1
 addressed	1
 adds	125
@@ -94,6 +96,7 @@ alias	17
 aliasing	1
 aligned	4
 all	1053
+alloc	10
 allocate	16
 allocated	29
 allocates	3
@@ -171,9 +174,11 @@ architectures	4
 are	2188
 areas	1
 arg	126
+argc	14
 args	3
 argument	758
 arguments	18
+argv	16
 arise	1
 arises	1
 arithmetic	13
@@ -322,12 +327,14 @@ black	2
 block	2
 blocks	2
 bmpz	28
+bnot	1
 body	28
 bomb	38
 bool	2597
 boolean	24
 booleans	2
 bop	2
+bor	1
 boston	288
 both	191
 bother	2
@@ -364,6 +371,7 @@ builtin	7
 bump	10
 but	538
 bx	1
+bxor	1
 by	1674
 byte	23
 bytes	413
@@ -532,6 +540,7 @@ come	10
 comeau	3
 comes	11
 comma	5
+command	8
 commands	1
 comment	13
 commented	2
@@ -738,6 +747,7 @@ csecs	29
 csetjmp	1
 csignal	2
 cst	12
+cstdarg	2
 cstddef	15
 cstdio	1
 cstdlib	5
@@ -813,6 +823,7 @@ definite	1
 definitely	45
 definition	22
 definitions	48
+defs	258
 degenerate	26
 del	5
 delay	35
@@ -830,6 +841,7 @@ delta	40
 den	950
 denominator	950
 denominators	35
+denorm	25
 denormalized	1
 denote	5
 denoted	3
@@ -1241,6 +1253,7 @@ far	28
 farkas	5
 fast	69
 faster	24
+fatal	30
 favor	1
 favored	1
 fe	12
@@ -1263,6 +1276,7 @@ fields	5
 fifth	283
 figure	1
 file	382
+files	6
 fill	35
 filled	2
 filter	27
@@ -1402,6 +1416,7 @@ getc	2
 getitimer	5
 getline	9
 getopt	22
+getrlimit	3
 getrusage	4
 gets	12
 getting	7
@@ -1486,6 +1501,7 @@ heuristically	1
 heuristics	32
 hex	8
 hexadecimal	3
+hh	883
 hi	9
 hidden	1
 hiding	1
@@ -1525,6 +1541,7 @@ ia	1
 ibm	28
 icc	3
 id	581
+idefs	16
 idempotent	2
 identical	18
 identified	9
@@ -1816,6 +1833,7 @@ lack	1
 lacks	2
 lambda	52
 land	1
+langle	23
 language	3
 languages	1
 large	3
@@ -1860,12 +1878,14 @@ les	26
 less	257
 lesser	1
 let	68
+letters	14
 letting	3
 level	97
 lexicographic	12
 lexicographically	3
 lhs	554
 li	36
+lib	6
 libraries	1
 library	1792
 license	1152
@@ -1873,6 +1893,7 @@ licensing	1
 lie	6
 lies	9
 life	1
+lift	4
 lifted	1
 lifter	9
 lifts	1
@@ -1955,6 +1976,7 @@ maintain	1
 maintained	16
 major	2
 make	75
+makefile	1
 makes	22
 making	6
 managed	52
@@ -2031,6 +2053,7 @@ message	15
 messages	2
 met	4
 meta	3
+metaprogramming	1
 method	661
 methods	52
 mi	6
@@ -2318,6 +2341,8 @@ origin	48
 original	61
 originally	1
 os	176
+ostream	300
+ostringstream	96
 ot	1
 other	200
 others	2
@@ -2332,6 +2357,10 @@ output	339
 outside	6
 over	30
 overall	5
+overapproximate	8
+overapproximated	4
+overapproximates	3
+overapproximation	1
 overcome	1
 overflow	314
 overflowed	4
@@ -2457,6 +2486,7 @@ polynomial	40
 pomerance	1
 pool	1
 pop	1
+popcount	1
 populate	4
 populated	1
 populates	1
@@ -2477,6 +2507,7 @@ possibility	2
 possible	116
 possibly	88
 post	3
+postdecrement	1
 postfix	16
 postincrement	1
 postpone	2
@@ -2611,6 +2642,7 @@ put	35
 putc	1
 puts	2
 putting	1
+pwl	218
 px	12
 q	430
 qr	2
@@ -2657,6 +2689,7 @@ ratios	3
 raw	64
 ray	296
 rays	163
+rbegin	11
 rc	4
 rd	1
 re	25
@@ -2869,6 +2902,7 @@ revision	2
 revived	2
 rewrite	1
 rho	11
+rhs	411
 rid	8
 right	480
 rightmost	9
@@ -2876,6 +2910,7 @@ rint	18
 rintf	2
 rintl	3
 rise	3
+rlimit	13
 rm	3
 roberto	361
 role	9
@@ -2994,6 +3029,7 @@ set	1839
 setfill	2
 setitimer	17
 setjmp	1
+setrlimit	3
 sets	133
 setters	4
 setting	22
@@ -3030,6 +3066,7 @@ si	222
 side	121
 sides	3
 sigaction	17
+sigalrm	1
 sigemptyset	1
 sigill	6
 sign	579
@@ -3042,6 +3079,9 @@ signedness	4
 significance	1
 significant	3
 signs	9
+signum	6
+sigprof	1
+sigset	2
 silence	1
 silent	11
 silently	1
@@ -3147,10 +3187,12 @@ square	39
 squared	7
 squareness	2
 sr	4
+src	57
 srivastava	1
 srl	361
 ss	10
 sse	10
+sstream	15
 ssum	1
 st	15
 stabilization	12
@@ -3176,6 +3218,8 @@ stats	1
 status	609
 stay	4
 std	2815
+stderr	22
+stdexcept	32
 stdio	1
 stdiobuf	28
 stdout	2
@@ -3199,6 +3243,7 @@ storing	42
 str	513
 straight	1
 strategy	59
+strcmp	2
 stream	9
 streambuf	41
 streamsize	23
@@ -3214,6 +3259,8 @@ strlen	1
 strong	238
 stronger	2
 strongly	159
+strtoll	2
+strtoull	2
 struct	300
 structure	44
 structures	30
@@ -3521,6 +3568,7 @@ union	54
 unipr	368
 unique	13
 uniquely	3
+unistd	4
 unit	16
 units	2
 univ	155
@@ -3598,8 +3646,10 @@ variant	6
 variants	2
 variation	1
 variations	3
+varid	7
 various	1
 vars	725
+vc	143
 vect	309
 vector	529
 vectors	7
@@ -3616,6 +3666,7 @@ versions	6
 vertex	3
 vertices	5
 very	15
+vfprintf	6
 vi	16
 via	5
 vice	17
