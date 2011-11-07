@@ -514,6 +514,7 @@ PPL::Sparse_Row::OK(dimension_type /* capacity */) const {
   return OK();
 }
 
+/*! \relates Parma_Polyhedra_Library::Sparse_Row */
 bool
 PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
   if (x.size() != y.size())
@@ -550,6 +551,7 @@ PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Sparse_Row */
 bool
 PPL::operator!=(const Sparse_Row& x, const Sparse_Row& y) {
   return !(x == y);

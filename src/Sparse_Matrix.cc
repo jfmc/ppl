@@ -173,6 +173,7 @@ PPL::Sparse_Matrix::OK() const {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Sparse_Matrix */
 bool
 PPL::operator==(const Sparse_Matrix& x, const Sparse_Matrix& y) {
   if (x.num_rows() != y.num_rows())
@@ -185,6 +186,7 @@ PPL::operator==(const Sparse_Matrix& x, const Sparse_Matrix& y) {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Sparse_Matrix */
 bool
 PPL::operator!=(const Sparse_Matrix& x, const Sparse_Matrix& y) {
   return !(x == y);
