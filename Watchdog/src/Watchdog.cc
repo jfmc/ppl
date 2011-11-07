@@ -98,15 +98,15 @@ my_getitimer(int which, struct itimerval* value) {
 
 void
 my_setitimer(int which,
-	     const struct itimerval* value, struct itimerval* ovalue) {
-  if (setitimer(which, value, ovalue) != 0)
+	     const struct itimerval* value, struct itimerval* old_value) {
+  if (setitimer(which, value, old_value) != 0)
     throw_syscall_error("setitimer");
 }
 
 void
 my_sigaction(int signum,
-	     const struct sigaction* act, struct sigaction* oldact) {
-  if (sigaction(signum, act, oldact) != 0)
+	     const struct sigaction* act, struct sigaction* old_action) {
+  if (sigaction(signum, act, old_action) != 0)
     throw_syscall_error("sigaction");
 }
 

@@ -308,7 +308,7 @@ inline
 BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os,
                       Complexity_Class)
   : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
-  // Check for emptyness for maximum precision.
+  // Check for emptiness for maximum precision.
   if (os.is_empty())
     set_empty();
   else if (os.space_dimension() > 0) {
@@ -671,13 +671,13 @@ template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 				const dimension_type j,
-				Coefficient_traits::const_reference num,
-				Coefficient_traits::const_reference den) {
+				Coefficient_traits::const_reference numer,
+				Coefficient_traits::const_reference denom) {
   // Private method: the caller has to ensure the following.
   PPL_ASSERT(i <= space_dimension() && j <= space_dimension() && i != j);
-  PPL_ASSERT(den != 0);
+  PPL_ASSERT(denom != 0);
   PPL_DIRTY_TEMP(N, k);
-  div_round_up(k, num, den);
+  div_round_up(k, numer, denom);
   add_dbm_constraint(i, j, k);
 }
 
@@ -841,8 +841,8 @@ template <typename T>
 template <typename Interval_Info>
 inline void
 BD_Shape<T>::generalized_refine_with_linear_form_inequality(
-	     const Linear_Form< Interval<T, Interval_Info> >& left,
-	     const Linear_Form< Interval<T, Interval_Info> >& right,
+	     const Linear_Form<Interval<T, Interval_Info> >& left,
+	     const Linear_Form<Interval<T, Interval_Info> >& right,
              const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:
@@ -868,8 +868,9 @@ BD_Shape<T>::generalized_refine_with_linear_form_inequality(
 template <typename T>
 template <typename Interval_Info>
 inline void
-BD_Shape<T>::refine_fp_interval_abstract_store(
-	            Box< Interval<T, Interval_Info> >& store) const {
+BD_Shape<T>
+::refine_fp_interval_abstract_store(Box<Interval<T, Interval_Info> >&
+                                    store) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
@@ -878,7 +879,6 @@ BD_Shape<T>::refine_fp_interval_abstract_store(
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
   store.intersection_assign(Box<FP_Interval_Type>(*this));
-
 }
 
 template <typename T>

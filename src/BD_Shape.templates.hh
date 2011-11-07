@@ -1034,7 +1034,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // the variable with the selected variable is connected:
   // we check the row of each variable:
   // a- each leader could be connected with only zero-equivalent one,
-  // b- each no-leader with only another zero-equivalent one.
+  // b- each non-leader with only another zero-equivalent one.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     // It count with how many variables the selected variable is
     // connected.
@@ -1049,11 +1049,11 @@ BD_Shape<T>::is_shortest_path_reduced() const {
         if (j != ld_j)
           if (!redundancy_dbm[i][j]) {
             if (t == 1)
-              // Two no-leaders couldn't connected with the same leader.
+              // Two non-leaders cannot be connected with the same leader.
               return false;
             else
               if (ld_j != i)
-                // The variables isn't in the same equivalence class.
+                // The variables are not in the same equivalence class.
                 return false;
               else {
                 ++t;
@@ -1062,24 +1062,24 @@ BD_Shape<T>::is_shortest_path_reduced() const {
           }
       }
     }
-    // Case b: no-leader.
+    // Case b: non-leader.
     else {
       for (dimension_type j = 0; j <= space_dim; ++j) {
         if (!redundancy_dbm[i][j]) {
           dimension_type ld_j = leader[j];
           if (ld_i != ld_j)
-            // The variables isn't in the same equivalence class.
+            // The variables are not in the same equivalence class.
             return false;
           else {
             if (t == 1)
-              // Two variables couldn't connected with the same leader.
+              // The variables cannot be connected with the same leader.
               return false;
             else {
               ++t;
               var_conn[i] = j;
             }
           }
-          // A no-leader must be connected with
+          // A non-leader must be connected with
           // another variable.
           if (t == 0)
             return false;
@@ -1347,10 +1347,10 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   // Find the lower bound for a hyperplane with direction
   // defined by the congruence.
   Linear_Expression le = Linear_Expression(cg);
-  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
   bool min_included;
-  bool bounded_below = minimize(le, min_num, min_den, min_included);
+  bool bounded_below = minimize(le, min_numer, min_denom, min_included);
 
   // If there is no lower bound, then some of the hyperplanes defined by
   // the congruence will strictly intersect the shape.
@@ -1363,10 +1363,10 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
 
   // Find the upper bound for a hyperplane with direction
   // defined by the congruence.
-  PPL_DIRTY_TEMP_COEFFICIENT(max_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(max_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_denom);
   bool max_included;
-  bool bounded_above = maximize(le, max_num, max_den, max_included);
+  bool bounded_above = maximize(le, max_numer, max_denom, max_included);
 
   // If there is no upper bound, then some of the hyperplanes defined by
   // the congruence will strictly intersect the shape.
@@ -1378,20 +1378,20 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
   // Find the position value for the hyperplane that satisfies the congruence
   // and is above the lower bound for the shape.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
-  min_value = min_num / min_den;
+  min_value = min_numer / min_denom;
   const Coefficient& modulus = cg.modulus();
   signed_distance = min_value % modulus;
   min_value -= signed_distance;
-  if (min_value * min_den < min_num)
+  if (min_value * min_denom < min_numer)
     min_value += modulus;
 
   // Find the position value for the hyperplane that satisfies the congruence
   // and is below the upper bound for the shape.
   PPL_DIRTY_TEMP_COEFFICIENT(max_value);
-  max_value = max_num / max_den;
+  max_value = max_numer / max_denom;
   signed_distance = max_value % modulus;
   max_value += signed_distance;
-  if (max_value * max_den > max_num)
+  if (max_value * max_denom > max_numer)
     max_value -= modulus;
 
   // If the upper bound value is less than the lower bound value,
@@ -1456,19 +1456,19 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       Variable vk(k);
       le += c.coefficient(vk) * vk;
     }
-    PPL_DIRTY_TEMP(Coefficient, max_num);
-    PPL_DIRTY_TEMP(Coefficient, max_den);
+    PPL_DIRTY_TEMP(Coefficient, max_numer);
+    PPL_DIRTY_TEMP(Coefficient, max_denom);
     bool max_included;
-    PPL_DIRTY_TEMP(Coefficient, min_num);
-    PPL_DIRTY_TEMP(Coefficient, min_den);
+    PPL_DIRTY_TEMP(Coefficient, min_numer);
+    PPL_DIRTY_TEMP(Coefficient, min_denom);
     bool min_included;
-    bool bounded_above = maximize(le, max_num, max_den, max_included);
-    bool bounded_below = minimize(le, min_num, min_den, min_included);
+    bool bounded_above = maximize(le, max_numer, max_denom, max_included);
+    bool bounded_below = minimize(le, min_numer, min_denom, min_included);
     if (!bounded_above) {
       if (!bounded_below)
         return Poly_Con_Relation::strictly_intersects();
-      min_num += c.inhomogeneous_term() * min_den;
-      switch (sgn(min_num)) {
+      min_numer += c.inhomogeneous_term() * min_denom;
+      switch (sgn(min_numer)) {
       case 1:
         if (c.is_equality())
           return  Poly_Con_Relation::is_disjoint();
@@ -1482,8 +1482,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       }
     }
     if (!bounded_below) {
-      max_num += c.inhomogeneous_term() * max_den;
-      switch (sgn(max_num)) {
+      max_numer += c.inhomogeneous_term() * max_denom;
+      switch (sgn(max_numer)) {
       case 1:
         return  Poly_Con_Relation::strictly_intersects();
       case 0:
@@ -1495,11 +1495,11 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       }
     }
     else {
-      max_num += c.inhomogeneous_term() * max_den;
-      min_num += c.inhomogeneous_term() * min_den;
-      switch (sgn(max_num)) {
+      max_numer += c.inhomogeneous_term() * max_denom;
+      min_numer += c.inhomogeneous_term() * min_denom;
+      switch (sgn(max_numer)) {
       case 1:
-        switch (sgn(min_num)) {
+        switch (sgn(min_numer)) {
         case 1:
           if (c.is_equality())
             return  Poly_Con_Relation::is_disjoint();
@@ -1514,7 +1514,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
           return  Poly_Con_Relation::strictly_intersects();
         }
       case 0:
-        if (min_num == 0) {
+        if (min_numer == 0) {
           if (c.is_strict_inequality())
             return  Poly_Con_Relation::is_disjoint()
               && Poly_Con_Relation::saturates();
@@ -1678,8 +1678,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   // all the constraints in the BDS.
 
   // Allocation of temporaries done once and for all.
-  PPL_DIRTY_TEMP_COEFFICIENT(num);
-  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
   PPL_DIRTY_TEMP_COEFFICIENT(product);
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
@@ -1692,28 +1692,29 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       const N& dbm_ij = dbm_i[j];
       const N& dbm_ji = dbm[j][i];
       if (is_additive_inverse(dbm_ji, dbm_ij)) {
-        // We have one equality constraint: den*x - den*y = num.
+        // We have one equality constraint: denom*x - denom*y = numer.
         // Compute the scalar product.
-        numer_denom(dbm_ij, num, den);
+        numer_denom(dbm_ij, numer, denom);
         product = 0;
-        add_mul_assign(product, den, g_coeff_y);
-        add_mul_assign(product, -den, g_coeff_x);
+        add_mul_assign(product, denom, g_coeff_y);
+        add_mul_assign(product, -denom, g_coeff_x);
         if (!is_line_or_ray)
-          add_mul_assign(product, num, g.divisor());
+          add_mul_assign(product, numer, g.divisor());
         if (product != 0)
           return Poly_Gen_Relation::nothing();
       }
       else {
         // We have 0, 1 or 2 binary inequality constraint/s.
         if (!is_plus_infinity(dbm_ij)) {
-          // We have the binary inequality constraint: den*x - den*y <= num.
+          // We have the binary inequality constraint:
+          // denom*x - denom*y <= numer.
           // Compute the scalar product.
-          numer_denom(dbm_ij, num, den);
+          numer_denom(dbm_ij, numer, denom);
           product = 0;
-          add_mul_assign(product, den, g_coeff_y);
-          add_mul_assign(product, -den, g_coeff_x);
+          add_mul_assign(product, denom, g_coeff_y);
+          add_mul_assign(product, -denom, g_coeff_x);
           if (!is_line_or_ray)
-            add_mul_assign(product, num, g.divisor());
+            add_mul_assign(product, numer, g.divisor());
           if (is_line) {
             if (product != 0)
               // Lines must saturate all constraints.
@@ -1726,14 +1727,14 @@ BD_Shape<T>::relation_with(const Generator& g) const {
         }
 
         if (!is_plus_infinity(dbm_ji)) {
-          // We have the binary inequality constraint: den*y - den*x <= b.
+          // We have the binary inequality constraint: denom*y - denom*x <= b.
           // Compute the scalar product.
-          numer_denom(dbm_ji, num, den);
+          numer_denom(dbm_ji, numer, denom);
           product = 0;
-          add_mul_assign(product, den, g_coeff_x);
-          add_mul_assign(product, -den, g_coeff_y);
+          add_mul_assign(product, denom, g_coeff_x);
+          add_mul_assign(product, -denom, g_coeff_y);
           if (!is_line_or_ray)
-            add_mul_assign(product, num, g.divisor());
+            add_mul_assign(product, numer, g.divisor());
           if (is_line) {
             if (product != 0)
               // Lines must saturate all constraints.
