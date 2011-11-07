@@ -279,7 +279,7 @@ descriptors since they are also used in <EM>generic</EM> PPL operations.
     <CODE>intersection_assign()</CODE>,
     <CODE>upper_bound_assign()</CODE>, <CODE>difference_assign()</CODE>,
     <CODE>time_elapse_assign()</CODE>, <CODE>widening_assign()</CODE>,
-    <CODE>concatenate_assign()</CODE>, <CODE>%swap()</CODE>
+    <CODE>concatenate_assign()</CODE>, <CODE>m_swap()</CODE>
 
     modify the semantic GD, possibly with an argument semantic GD of
     the same class.
