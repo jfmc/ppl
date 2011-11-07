@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
 
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
 #include <vector>
 #include <algorithm>
@@ -612,7 +612,7 @@ BEGIN_MAIN
   DO_TEST(test09);
 END_MAIN
 
-#else // !USE_PPL_SPARSE_MATRIX
+#else // !PPL_USE_SPARSE_MATRIX
 
 // A dummy test to avoid compiler warnings in BEGIN_MAIN.
 bool test01() {
@@ -623,4 +623,4 @@ BEGIN_MAIN
   DO_TEST(test01);
 END_MAIN
 
-#endif // !USE_PPL_SPARSE_MATRIX
+#endif // !PPL_USE_SPARSE_MATRIX

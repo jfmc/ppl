@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Matrix.types.hh"
 
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 #include "Sparse_Matrix.defs.hh"
 #else
 #include "Dense_Matrix.defs.hh"

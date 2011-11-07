@@ -39,14 +39,14 @@ site: http://bugseng.com/products/ppl/ . */
 #include <iosfwd>
 
 // TODO: Remove this when the sparse working cost has been tested enough.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
 // These are needed for the linear_combine() method that takes a Dense_Row and
 // a Sparse_Row.
 #include "Dense_Row.types.hh"
 #include "Sparse_Row.types.hh"
 
-#endif // defined(USE_PPL_SPARSE_MATRIX)
+#endif // defined(PPL_USE_SPARSE_MATRIX)
 
 namespace Parma_Polyhedra_Library {
 
@@ -740,7 +740,7 @@ private:
   static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
   // TODO: Remove this when the sparse working cost has been tested enough.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
@@ -760,7 +760,7 @@ private:
   static void linear_combine(Dense_Row& x, const Sparse_Row& y,
                              const dimension_type k);
 
-#endif // defined(USE_PPL_SPARSE_MATRIX)
+#endif // defined(PPL_USE_SPARSE_MATRIX)
 
   /*! \brief
     Performs the pivoting operation on the tableau.

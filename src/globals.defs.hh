@@ -476,8 +476,8 @@ FOK(mpq_class)
 } // namespace Parma_Polyhedra_Library
 
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.
-#ifndef USE_PPL_SPARSE_MATRIX
-#define USE_PPL_SPARSE_MATRIX 1
+#ifndef PPL_USE_SPARSE_MATRIX
+#define PPL_USE_SPARSE_MATRIX 1
 #endif
 
 #include "globals.inlines.hh"

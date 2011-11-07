@@ -38,14 +38,14 @@ site: http://bugseng.com/products/ppl/ . */
 #include <cmath>
 
 // TODO: Remove this when the sparse working cost has been tested enough.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
 // These are needed for the linear_combine() method that takes a Dense_Row and
 // a Sparse_Row.
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
 
-#endif // USE_PPL_SPARSE_MATRIX
+#endif // PPL_USE_SPARSE_MATRIX
 
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
@@ -1016,7 +1016,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // However, when using sparse matrices the first one is fast and the second
   // one is slow, and when using dense matrices the first one is slow and
   // the second one is fast.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   // This is static to improve performance.
@@ -1078,7 +1078,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     }
   }
 
-#else // !USE_PPL_SPARSE_MATRIX
+#else // !PPL_USE_SPARSE_MATRIX
 
   double challenger_num = 0.0;
   double challenger_den = 0.0;
@@ -1115,7 +1115,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     }
   }
 
-#endif // !USE_PPL_SPARSE_MATRIX
+#endif // !PPL_USE_SPARSE_MATRIX
 
   return entering_index;
 }
@@ -1160,7 +1160,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   // However, when using sparse matrices the first one is fast and the second
   // one is slow, and when using dense matrices the first one is slow and
   // the second one is fast.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
   const dimension_type tableau_num_columns = tableau.num_columns();
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
@@ -1202,7 +1202,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       else {
         Coefficient_traits::const_reference tableau_ij = *j;
         WEIGHT_BEGIN();
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
         scalar_value = tableau_ij * norm_factor[i];
         add_mul_assign(k->second, scalar_value, scalar_value);
 #else
@@ -1262,7 +1262,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     }
   }
 
-#else // !USE_PPL_SPARSE_MATRIX
+#else // !PPL_USE_SPARSE_MATRIX
 
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
@@ -1304,7 +1304,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     }
   }
 
-#endif // !USE_PPL_SPARSE_MATRIX
+#endif // !PPL_USE_SPARSE_MATRIX
 
   return entering_index;
 }
@@ -1357,7 +1357,7 @@ PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
 
   PPL_ASSERT(x.get(k) == 0);
 
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
   PPL_ASSERT(x.find(k) == x.end());
 #endif
 
@@ -1366,7 +1366,7 @@ PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
 }
 
 // TODO: Remove this when the sparse working cost has been tested enough.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
 void
 PPL::MIP_Problem::linear_combine(Dense_Row& x,
@@ -1413,7 +1413,7 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
   WEIGHT_ADD_MUL(83, x_size);
 }
 
-#endif // defined(USE_PPL_SPARSE_MATRIX)
+#endif // defined(PPL_USE_SPARSE_MATRIX)
 
 // See pages 42-43 of [PapadimitriouS98].
 void
