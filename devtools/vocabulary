@@ -1,4 +1,4 @@
-TOTAL_COUNT	593525
+TOTAL_COUNT	600795
 a	5311
 ab	1
 abandon	18
@@ -142,6 +142,7 @@ anyway	6
 ap	29
 apart	4
 api	6
+app	2
 apparently	2
 appear	4
 appearances	8
@@ -433,6 +434,7 @@ certificates	19
 certified	2
 certify	2
 cg	608
+cgs	632
 ch	21
 chain	14
 chains	1
@@ -779,6 +781,7 @@ data	315
 date	1033
 day	1
 db	482
+dbm	819
 dbm	820
 dd	19
 deadline	40
@@ -796,6 +799,7 @@ dec	31
 decide	4
 decided	2
 decision	100
+decl	37
 declaration	94
 declarations	53
 declare	120
@@ -839,6 +843,7 @@ delimited	1
 delimiter	2
 delta	40
 den	950
+denom	123
 denominator	950
 denominators	35
 denorm	25
@@ -901,6 +906,7 @@ diagonal	54
 diagonals	1
 dictated	13
 did	2
+dies	1
 diff	88
 differ	1
 difference	249
@@ -1349,6 +1355,7 @@ four	8
 fourth	8
 fprintf	18
 fpu	240
+frac	98
 fraction	15
 fractional	10
 fractions	2
@@ -1563,6 +1570,7 @@ ignored	114
 ignores	3
 ignoring	7
 ii	136
+ij	138
 illegal	13
 image	272
 images	5
@@ -1655,6 +1663,7 @@ info	1277
 informally	1
 information	352
 infty	44
+ingroup	151
 inherit	6
 inheritance	1
 inherited	22
@@ -1801,6 +1810,7 @@ itself	16
 iv	13
 ix	5
 j	2621
+ji	8
 jmp	1
 job	4
 join	19
@@ -1883,6 +1893,7 @@ letting	3
 level	97
 lexicographic	12
 lexicographically	3
+lf	299
 lhs	554
 li	36
 lib	6
@@ -1960,6 +1971,7 @@ lowest	1
 lp	179
 lpsol	2
 lr	7
+lrs	1
 ls	34
 lt	151
 lub	2
@@ -2238,11 +2250,13 @@ nr	10
 ns	69
 nu	6
 null	102
+num	3166
 numb	2
 number	1117
 numbered	1
 numbering	1
 numbers	35
+numer	79
 numerator	129
 numerators	30
 numeric	143
@@ -2296,6 +2310,7 @@ on	473
 once	38
 one	660
 ones	44
+oneshot	4
 only	975
 onto	49
 onward	1
@@ -2439,6 +2454,7 @@ perspective	3
 pf	10
 pg	5
 ph	395
+ph	480
 phase	21
 phi	3
 physically	1
@@ -2450,6 +2466,7 @@ pity	1
 pivot	381
 pivoting	10
 pivots	1
+pkint	23
 pl	10
 place	59
 placed	3
@@ -2629,6 +2646,7 @@ ps	29
 pset	668
 pseudo	41
 pt	25
+ptr	37
 ptrdiff	8
 public	1128
 published	288
@@ -2801,6 +2819,7 @@ releases	1
 relevant	30
 reliable	1
 relies	2
+relsym	423
 rem	95
 remain	11
 remainder	75
@@ -2856,6 +2875,7 @@ reschedule	7
 reserve	35
 reserved	120
 reset	346
+resethand	3
 resets	13
 residues	8
 resize	121
@@ -2910,6 +2930,7 @@ rint	18
 rintf	2
 rintl	3
 rise	3
+rlim	6
 rlimit	13
 rm	3
 roberto	361
@@ -3065,6 +3086,7 @@ shuffle	1
 si	222
 side	121
 sides	3
+sig	2
 sigaction	17
 sigalrm	1
 sigemptyset	1
@@ -3082,6 +3104,7 @@ signs	9
 signum	6
 sigprof	1
 sigset	2
+sigxcpu	1
 silence	1
 silent	11
 silently	1
@@ -3246,6 +3269,7 @@ strategy	59
 strcmp	2
 stream	9
 streambuf	41
+streams	2
 streamsize	23
 street	282
 strerror	3
@@ -3259,6 +3283,7 @@ strlen	1
 strong	238
 stronger	2
 strongly	159
+strtol	4
 strtoll	2
 strtoull	2
 struct	300
@@ -3349,6 +3374,7 @@ syntactic	17
 syntactically	24
 syntax	7
 sys	1251
+syscall	6
 system	2750
 systematic	1
 systematically	1
@@ -3471,6 +3497,7 @@ toward	4
 towards	30
 towardzero	4
 tp	162
+tparam	9
 tr	118
 traces	1
 track	14
@@ -3536,7 +3563,9 @@ typeof	2
 types	246
 typically	4
 u	1039
+ub	659
 ul	13
+ulong	42
 un	8
 unaffected	4
 unaltered	5
@@ -3687,6 +3716,7 @@ vs	25
 w	710
 want	33
 wanted	8
+warn	1
 warned	3
 warning	44
 warnings	8
@@ -3758,6 +3788,7 @@ wrapped	59
 wrapper	68
 wrapping	48
 wraps	15
+wrd	14
 writable	1
 write	307
 writes	21
