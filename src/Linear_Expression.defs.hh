@@ -42,6 +42,11 @@ site: http://bugseng.com/products/ppl/ . */
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
+
+//! Swaps \p x with \p y.
+/*! \relates Linear_Expression */
+void swap(Linear_Expression& x, Linear_Expression& y);
+
 // Put them in the namespace here to declare them friend later.
 
 //! Returns the linear expression \p e1 + \p e2.
@@ -188,16 +193,6 @@ std::ostream& operator<<(std::ostream& s, const Linear_Expression& e);
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Expression */
-void swap(Parma_Polyhedra_Library::Linear_Expression& x,
-	  Parma_Polyhedra_Library::Linear_Expression& y);
-
-} // namespace std
 
 //! A linear expression.
 /*! \ingroup PPL_CXX_interface
@@ -369,7 +364,7 @@ public:
   bool OK() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Linear_Expression& y);
+  void m_swap(Linear_Expression& y);
 
 private:
   /*! \brief

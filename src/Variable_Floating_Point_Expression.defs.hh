@@ -31,19 +31,13 @@ site: http://bugseng.com/products/ppl/ . */
 #include <map>
 #include <utility>
 
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Variable_Floating_Point_Expression */
-template<typename FP_Interval_Type, typename FP_Format>
-void swap(Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
-                                   FP_Interval_Type, FP_Format>& x,
-          Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
-                                   FP_Interval_Type, FP_Format>& y);
-
-} // namespace std
-
 namespace Parma_Polyhedra_Library {
+
+//! Swaps \p x with \p y.
+/*! \relates Variable_Floating_Point_Expression */
+template<typename FP_Interval_Type, typename FP_Format>
+void swap(Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+          Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
 
 /*! \brief
   A generic Variable Floating Point Expression.
@@ -161,7 +155,7 @@ public:
                                 FP_Linear_Form_Abstract_Store& lf_store) const;
 
   //! Swaps \p *this with \p y.
-  void swap(Variable_Floating_Point_Expression& y);
+  void m_swap(Variable_Floating_Point_Expression& y);
 
 private:
 

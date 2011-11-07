@@ -111,8 +111,8 @@ test01() {
   if (ps2 != ps_empty)
     return false;
 
-  ps3.swap(ps2);
-  ps3.swap(ps2);
+  swap(ps3, ps2);
+  swap(ps3, ps2);
   if (ps3 != ps1 || ps2 != ps_empty)
     return false;
 

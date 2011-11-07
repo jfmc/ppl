@@ -45,22 +45,16 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator_System& gs);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Grid_Generator_System */
+void swap(Grid_Generator_System& x, Grid_Generator_System& y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Grid_Generator_System */
 bool operator==(const Grid_Generator_System& x,
 		const Grid_Generator_System& y);
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
-void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
-	  Parma_Polyhedra_Library::Grid_Generator_System& y);
-
-} // namespace std
-
 
 //! A system of grid generators.
 /*! \ingroup PPL_CXX_interface
@@ -373,7 +367,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Grid_Generator_System& y);
+  void m_swap(Grid_Generator_System& y);
 
 private:
   /*! \brief

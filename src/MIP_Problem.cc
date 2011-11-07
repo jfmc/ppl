@@ -1122,6 +1122,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 
 PPL::dimension_type
 PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
+  using std::swap;
   const dimension_type tableau_num_rows = tableau.num_rows();
   PPL_ASSERT(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
@@ -1141,7 +1142,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // Compute the square of `lcm_basis', exploiting the fact that
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
-    std::swap(squared_lcm_basis, lcm_basis);
+    swap(squared_lcm_basis, lcm_basis);
     WEIGHT_ADD_MUL(444, tableau_num_rows);
   }
 
@@ -1230,8 +1231,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       challenger_num = (*itr) * (*itr);
       // Initialization during the first loop.
       if (entering_index == 0) {
-        std::swap(current_num, challenger_num);
-        std::swap(current_den, k->second);
+        swap(current_num, challenger_num);
+        swap(current_den, k->second);
         entering_index = k->first;
         continue;
       }
@@ -1239,8 +1240,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       current_value = current_num * k->second;
       // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
-        std::swap(current_num, challenger_num);
-        std::swap(current_den, k->second);
+        swap(current_num, challenger_num);
+        swap(current_den, k->second);
         entering_index = k->first;
       }
     } else {
@@ -1248,14 +1249,14 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       // Initialization during the first loop.
       if (entering_index == 0) {
         current_num = 0;
-        std::swap(current_den, k->second);
+        swap(current_den, k->second);
         entering_index = k->first;
         continue;
       }
       // Update the values, if the challenger wins.
       if (0 > sgn(current_num) * sgn(k->second)) {
         current_num = 0;
-        std::swap(current_den, k->second);
+        swap(current_den, k->second);
         entering_index = k->first;
       }
     }
@@ -1286,8 +1287,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       }
       // Initialization during the first loop.
       if (entering_index == 0) {
-        std::swap(current_num, challenger_num);
-        std::swap(current_den, challenger_den);
+        swap(current_num, challenger_num);
+        swap(current_den, challenger_den);
         entering_index = j;
         continue;
       }
@@ -1295,8 +1296,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       current_value = current_num * challenger_den;
       // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
-        std::swap(current_num, challenger_num);
-        std::swap(current_den, challenger_den);
+        swap(current_num, challenger_num);
+        swap(current_den, challenger_den);
         entering_index = j;
       }
       WEIGHT_ADD_MUL(47, tableau_num_rows);
@@ -1661,7 +1662,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
         if (i < tableau_n_rows) {
           // Replace the redundant row with the last one,
           // taking care of adjusting the iteration index.
-          tableau_i.swap(tableau[tableau_n_rows]);
+          tableau_i.m_swap(tableau[tableau_n_rows]);
           base[i] = base[tableau_n_rows];
           --i;
         }
@@ -1842,7 +1843,7 @@ PPL::MIP_Problem::second_phase() {
   {
     working_cost_type tmp_cost
       = working_cost_type(cost_zero_size, cost_zero_size, new_cost.flags());
-    tmp_cost.swap(working_cost);
+    tmp_cost.m_swap(working_cost);
   }
 
   {

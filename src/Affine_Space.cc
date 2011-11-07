@@ -50,7 +50,7 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
     }
   }
   // No (closure) point was found.
-  Grid(EMPTY).swap(gr);
+  Grid(EMPTY).m_swap(gr);
   return;
 
  non_empty:
@@ -80,7 +80,7 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
       }
     ggs.insert(grid_line(e));
   }
-  Grid(ggs).swap(gr);
+  Grid(ggs).m_swap(gr);
   PPL_ASSERT(OK());
 }
 
@@ -232,7 +232,7 @@ PPL::Affine_Space::upper_bound_assign(const Affine_Space& y) {
   // FIXME: horrible kludge to filter congruences away.
   gr.upper_bound_assign(y.gr);
   Affine_Space a(gr.constraints());
-  swap(a);
+  m_swap(a);
 }
 
 bool

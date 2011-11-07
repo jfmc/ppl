@@ -113,10 +113,11 @@ Dense_Matrix::end() const {
 }
 
 inline void
-Dense_Matrix::swap(Dense_Matrix& y) {
-  std::swap(rows, y.rows);
-  std::swap(row_size, y.row_size);
-  std::swap(row_capacity, y.row_capacity);
+Dense_Matrix::m_swap(Dense_Matrix& y) {
+  using std::swap;
+  swap(rows, y.rows);
+  swap(row_size, y.row_size);
+  swap(row_capacity, y.row_capacity);
 }
 
 inline
@@ -196,23 +197,20 @@ Dense_Matrix::remove_trailing_rows(const dimension_type n) {
 inline void
 Dense_Matrix::clear() {
   // Clear `rows' and minimize its capacity.
-  std::vector<Dense_Row>().swap(rows);
+  std::vector<Dense_Row> tmp;
+  using std::swap;
+  swap(rows, tmp);
   row_size = 0;
   row_capacity = 0;
   PPL_ASSERT(OK());
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Dense_Matrix */
+/*! \relates Dense_Matrix */
 inline void
-swap(Parma_Polyhedra_Library::Dense_Matrix& x,
-     Parma_Polyhedra_Library::Dense_Matrix& y) {
-  x.swap(y);
+swap(Dense_Matrix& x, Dense_Matrix& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Dense_Matrix_inlines_hh)

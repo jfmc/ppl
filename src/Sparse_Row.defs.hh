@@ -143,7 +143,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void swap(Sparse_Row& x);
+  void m_swap(Sparse_Row& x);
 
   //! Returns the size of the row.
   /*!
@@ -539,7 +539,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  void swap(dimension_type i, dimension_type j);
+  void m_swap(dimension_type i, dimension_type j);
 
   //! Swaps the element pointed to by i with the element pointed to by j.
   /*!
@@ -553,7 +553,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void swap(iterator i, iterator j);
+  void m_swap(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
   /*!
@@ -813,18 +813,13 @@ private:
 
 } // namespace Parma_Polyhedra_Library
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Sparse_Row */
+//! Swaps \p x with \p y.
+/*! \relates Sparse_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Sparse_Row& x,
-          Parma_Polyhedra_Library::Sparse_Row& y);
-
-} // namespace std
-
-namespace Parma_Polyhedra_Library {
+void swap(Sparse_Row& x, Sparse_Row& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Sparse_Row */

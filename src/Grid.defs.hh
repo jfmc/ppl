@@ -65,6 +65,10 @@ operator<<(std::ostream& s, const Grid& gr);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Grid */
+void swap(Grid& x, Grid& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if \p x and \p y are the same
   grid.
@@ -1933,7 +1937,7 @@ public:
     Swaps \p *this with grid \p y.  (\p *this and \p y can be
     dimension-incompatible.)
   */
-  void swap(Grid& y);
+  void m_swap(Grid& y);
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -2622,16 +2626,6 @@ protected:
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 };
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Grid */
-void swap(Parma_Polyhedra_Library::Grid& x,
-	  Parma_Polyhedra_Library::Grid& y);
-
-} // namespace std
 
 #include "Grid_Status.inlines.hh"
 #include "Grid.inlines.hh"

@@ -149,7 +149,7 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
   }
   else
     // No tokens.
-    std::swap(x, result);
+    x.m_swap(result);
 
   PPL_ASSERT(x.OK(true));
 }
@@ -351,7 +351,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   }
   else
     // No tokens.
-    std::swap(x, result);
+    x.m_swap(result);
 
   PPL_ASSERT(x.OK(true));
 }

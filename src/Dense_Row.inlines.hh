@@ -203,21 +203,20 @@ Dense_Row::destroy() {
 }
 
 inline void
-Dense_Row::swap(Dense_Row& y) {
-  std::swap(impl.size, y.impl.size);
-  std::swap(impl.capacity, y.impl.capacity);
-  std::swap(impl.flags, y.impl.flags);
-  std::swap(impl.vec, y.impl.vec);
+Dense_Row::m_swap(Dense_Row& y) {
+  using std::swap;
+  swap(impl.size, y.impl.size);
+  swap(impl.capacity, y.impl.capacity);
+  swap(impl.flags, y.impl.flags);
+  swap(impl.vec, y.impl.vec);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());
 }
 
 inline Dense_Row&
 Dense_Row::operator=(const Dense_Row& y) {
-
-  Dense_Row x(y);
-  std::swap(*this, x);
-
+  Dense_Row tmp(y);
+  m_swap(tmp);
   return *this;
 }
 
@@ -236,13 +235,15 @@ Dense_Row::operator[](const dimension_type k) const {
 }
 
 inline void
-Dense_Row::swap(dimension_type i, dimension_type j) {
-  std::swap((*this)[i], (*this)[j]);
+Dense_Row::m_swap(dimension_type i, dimension_type j) {
+  using std::swap;
+  swap((*this)[i], (*this)[j]);
 }
 
 inline void
-Dense_Row::swap(iterator i, iterator j) {
-  std::swap(*i, *j);
+Dense_Row::m_swap(iterator i, iterator j) {
+  using std::swap;
+  swap(*i, *j);
 }
 
 inline void
@@ -522,25 +523,19 @@ Dense_Row::const_iterator::OK() const {
   return (i <= row->size());
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Dense_Row */
+/*! \relates Dense_Row */
 inline void
-swap(Parma_Polyhedra_Library::Dense_Row& x,
-     Parma_Polyhedra_Library::Dense_Row& y) {
-  x.swap(y);
+swap(Dense_Row& x, Dense_Row& y) {
+  x.m_swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::Dense_Row */
+/*! \relates Dense_Row */
 inline void
-iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
-          std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y) {
+iter_swap(std::vector<Dense_Row>::iterator x,
+          std::vector<Dense_Row>::iterator y) {
   swap(*x, *y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Dense_Row_inlines_hh)

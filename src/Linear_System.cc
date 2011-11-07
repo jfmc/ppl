@@ -53,6 +53,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   PPL_ASSERT(check_sorted() && y.check_sorted());
   PPL_ASSERT(num_pending_rows() == 0 && y.num_pending_rows() == 0);
 
+  using std::swap;
   Linear_System& x = *this;
 
   // A temporary vector of rows...
@@ -69,7 +70,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
     const int comp = compare(x[xi], y[yi]);
     if (comp <= 0) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
-      std::swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
+      swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
       if (comp == 0)
 	// A duplicate element.
 	++yi;
@@ -77,21 +78,23 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
     else {
       // (comp > 0)
       Linear_Row copy(y[yi++], row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Linear_Row()));
+      swap(copy, *tmp.insert(tmp.end(), Linear_Row()));
     }
   }
   // Insert what is left.
-  if (xi < x_num_rows)
+  if (xi < x_num_rows) {
     while (xi < x_num_rows)
-      std::swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
-  else
+      swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
+  }
+  else {
     while (yi < y_num_rows) {
       Linear_Row copy(y[yi++], row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Linear_Row()));
+      swap(copy, *tmp.insert(tmp.end(), Linear_Row()));
     }
+  }
 
   // We get the result vector and let the old one be destroyed.
-  std::swap(tmp, rows);
+  swap(tmp, rows);
   // There are no pending rows.
   unset_pending_rows();
   PPL_ASSERT(check_sorted());
@@ -186,6 +189,7 @@ PPL::Linear_System::insert(const Linear_Row& r) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
+  using std::swap;
   const dimension_type old_num_rows = num_rows();
   const dimension_type old_num_columns = num_columns();
   const dimension_type r_size = r.size();
@@ -204,7 +208,7 @@ PPL::Linear_System::insert(const Linear_Row& r) {
     Linear_Row tmp_row(r, old_num_columns, row_capacity);
     // If needed, move the epsilon coefficient to the last position.
     if (!is_necessarily_closed())
-      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
+      swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
     add_row(tmp_row);
   }
   else
@@ -244,8 +248,9 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
     else {
       // Create a resized copy of the row (and move the epsilon
       // coefficient to its last position).
+      using std::swap;
       Linear_Row tmp_row(r, old_num_columns, row_capacity);
-      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
+      swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
       add_pending_row(tmp_row);
     }
   else
@@ -274,7 +279,8 @@ PPL::Linear_System::add_pending_rows(const Linear_System& y) {
   // Copy the rows of `y', forcing size and capacity.
   for (dimension_type i = y_n_rows; i-- > 0; ) {
     Dense_Row copy(y[i], x.row_size, x.row_capacity);
-    std::swap(copy, x[x_n_rows+i]);
+    using std::swap;
+    swap(copy, x[x_n_rows+i]);
   }
   // Do not check for strong normalization,
   // because no modification of rows has occurred.
@@ -388,6 +394,8 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   PPL_ASSERT(r.check_strong_normalized());
   PPL_ASSERT(r.size() == row_size);
 
+  using std::swap;
+
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -397,19 +405,19 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
     // Put the new row in place.
     Dense_Row new_row(r, row_capacity);
     dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
+    swap(new_rows[i], new_row);
     // Steal the old rows.
     while (i-- > 0)
-      new_rows[i].swap(rows[i]);
+      new_rows[i].m_swap(rows[i]);
     // Put the new rows into place.
-    std::swap(rows, new_rows);
+    swap(rows, new_rows);
   }
   else {
     // Reallocation will NOT take place.
     // Inserts a new empty row at the end, then substitutes it with a
     // copy of the given row.
     Dense_Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Dense_Row()), tmp);
+    swap(*rows.insert(rows.end(), Dense_Row()), tmp);
   }
 
   // The added row was a pending row.
@@ -421,6 +429,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
 
 void
 PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
+  using std::swap;
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -430,12 +439,12 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
     // Put the new row in place.
     Linear_Row new_row(row_size, row_capacity, flags);
     dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
+    swap(new_rows[i], new_row);
     // Steal the old rows.
     while (i-- > 0)
-      new_rows[i].swap(rows[i]);
+      new_rows[i].m_swap(rows[i]);
     // Put the new vector into place.
-    std::swap(rows, new_rows);
+    swap(rows, new_rows);
   }
   else {
     // Reallocation will NOT take place.
@@ -523,9 +532,10 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
 
   if (sys.num_pending_rows() > 0) {
     // In this case, we must put the duplicates after the pending rows.
+    using std::swap;
     const dimension_type n_rows = sys.num_rows() - 1;
     for (dimension_type i = 0; i < num_duplicates; ++i)
-      std::swap(sys[new_first_pending_row + i], sys[n_rows - i]);
+      swap(sys[new_first_pending_row + i], sys[n_rows - i]);
   }
   // Erasing the duplicated rows...
   sys.remove_trailing_rows(num_duplicates);
@@ -564,7 +574,8 @@ PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
       if (i > rank) {
-	std::swap(x[i], x[rank]);
+        using std::swap;
+	swap(x[i], x[rank]);
 	// After swapping the system is no longer sorted.
 	changed = true;
       }
@@ -702,7 +713,8 @@ PPL::Linear_System::simplify() {
   for (dimension_type i = 0; i < nrows; ++i)
     if (x[i].is_line_or_equality()) {
       if (n_lines_or_equalities < i) {
-	std::swap(x[i], x[n_lines_or_equalities]);
+        using std::swap;
+	swap(x[i], x[n_lines_or_equalities]);
 	// The system was not sorted.
 	PPL_ASSERT(!x.sorted);
       }
@@ -717,8 +729,9 @@ PPL::Linear_System::simplify() {
     const dimension_type
       num_swaps = std::min(n_lines_or_equalities - rank,
 			   n_rays_or_points_or_inequalities);
+    using std::swap;
     for (dimension_type i = num_swaps; i-- > 0; )
-      std::swap(x[--nrows], x[rank + i]);
+      swap(x[--nrows], x[rank + i]);
     x.remove_trailing_rows(old_nrows - nrows);
     x.unset_pending_rows();
     if (n_rays_or_points_or_inequalities > num_swaps)
@@ -740,8 +753,9 @@ PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
   add_zero_rows_and_columns(n, n, Linear_Row::Flags(row_topology));
   Linear_System& x = *this;
   // The old system is moved to the bottom.
+  using std::swap;
   for (dimension_type i = old_n_rows; i-- > 0; )
-    std::swap(x[i], x[i + n]);
+    swap(x[i], x[i + n]);
   for (dimension_type i = n, c = old_n_columns; i-- > 0; ) {
     // The top right-hand sub-system (i.e., the system made of new
     // rows and columns) is set to the specular image of the identity
@@ -786,6 +800,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
   dimension_type num_duplicates = 0;
   // In order to erase them, put at the end of the system
   // those pending rows that also occur in the non-pending part.
+  using std::swap;
   while (k1 < first_pending && k2 < num_rows) {
     const int cmp = compare(x[k1], x[k2]);
     if (cmp == 0) {
@@ -796,7 +811,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
       ++k1;
       // Do not increment `k2'; instead, swap there the next pending row.
       if (k2 < num_rows)
-	std::swap(x[k2], x[k2 + num_duplicates]);
+	swap(x[k2], x[k2 + num_duplicates]);
     }
     else if (cmp < 0)
       // By initial sortedness, we can increment `k1'.
@@ -807,7 +822,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
       // swap the next pending row in position `k2'.
       ++k2;
       if (num_duplicates > 0 && k2 < num_rows)
-	std::swap(x[k2], x[k2 + num_duplicates]);
+        swap(x[k2], x[k2 + num_duplicates]);
     }
   }
   // If needed, swap any duplicates found past the pending rows
@@ -815,7 +830,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
   if (num_duplicates > 0) {
     if (k2 < num_rows)
       for (++k2; k2 < num_rows; ++k2)
-	std::swap(x[k2], x[k2 + num_duplicates]);
+	swap(x[k2], x[k2 + num_duplicates]);
     x.remove_trailing_rows(old_num_rows - num_rows);
   }
   // Do not check for strong normalization,

@@ -48,21 +48,15 @@ std::ostream& operator<<(std::ostream& s, const Constraint_System& cs);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Constraint_System */
+void swap(Constraint_System& x, Constraint_System& y);
+
 // Put it in the namespace here to declare it friend later.
 /*! \relates Polyhedron */
 bool operator==(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Constraint_System */
-void swap(Parma_Polyhedra_Library::Constraint_System& x,
-	  Parma_Polyhedra_Library::Constraint_System& y);
-
-} // namespace std
 
 //! A system of constraints.
 /*! \ingroup PPL_CXX_interface
@@ -299,7 +293,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Constraint_System& y);
+  void m_swap(Constraint_System& y);
 
 private:
   /*! \brief

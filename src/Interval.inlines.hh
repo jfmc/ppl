@@ -41,10 +41,11 @@ Interval<Boundary, Info>::total_memory_in_bytes() const {
 
 template <typename Boundary, typename Info>
 inline void
-Interval<Boundary, Info>::swap(Interval<Boundary, Info>& y) {
-  std::swap(lower(), y.lower());
-  std::swap(upper(), y.upper());
-  std::swap(info(), y.info());
+Interval<Boundary, Info>::m_swap(Interval<Boundary, Info>& y) {
+  using std::swap;
+  swap(lower(), y.lower());
+  swap(upper(), y.upper());
+  swap(info(), y.info());
 }
 
 template <typename Boundary, typename Info>
@@ -1181,18 +1182,13 @@ struct Select_Temp_Boundary_Type<unsigned long long> {
   typedef signed long long type;
 };
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Interval */
+/*! \relates Interval */
 template <typename Boundary, typename Info>
 inline void
-swap(Parma_Polyhedra_Library::Interval<Boundary, Info>& x,
-     Parma_Polyhedra_Library::Interval<Boundary, Info>& y) {
-  x.swap(y);
+swap(Interval<Boundary, Info>& x, Interval<Boundary, Info>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Interval_inlines_hh)

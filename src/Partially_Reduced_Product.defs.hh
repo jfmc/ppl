@@ -62,6 +62,12 @@ operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& dp);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Partially_Reduced_Product */
+template <typename D1, typename D2, typename R>
+void swap(Partially_Reduced_Product<D1, D2, R>& x,
+	  Partially_Reduced_Product<D1, D2, R>& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if the components of \p x and \p y
   are pairwise equal.
@@ -1577,7 +1583,7 @@ public:
     Swaps \p *this with product \p y.  (\p *this and \p y can be
     dimension-incompatible.)
   */
-  void swap(Partially_Reduced_Product& y);
+  void m_swap(Partially_Reduced_Product& y);
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -1672,16 +1678,6 @@ public:
 };
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
-  template <typename D1, typename D2, typename R>
-void swap(Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& x,
-	  Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& y);
-
-} // namespace std
 
 #include "Partially_Reduced_Product.inlines.hh"
 #include "Partially_Reduced_Product.templates.hh"

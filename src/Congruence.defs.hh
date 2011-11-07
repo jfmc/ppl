@@ -55,6 +55,10 @@ operator<<(std::ostream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Congruence */
+void swap(Congruence& x, Congruence& y);
+
 // Put these in the namespace here to declare them friend later.
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
@@ -93,16 +97,6 @@ Congruence
 operator/(const Constraint& c, Coefficient_traits::const_reference m);
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Congruence */
-void
-swap(Parma_Polyhedra_Library::Congruence& x,
-     Parma_Polyhedra_Library::Congruence& y);
-
-} // namespace std
 
 //! A linear congruence.
 /*! \ingroup PPL_CXX_interface
@@ -344,6 +338,9 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  //! Swaps \p *this with \p y.
+  void m_swap(Congruence& y);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -426,9 +423,6 @@ private:
   Congruence(Linear_Expression& le,
 	     Coefficient_traits::const_reference m);
 
-  //! Swaps \p *this with \p y.
-  void swap(Congruence& y);
-
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
     error message \p message.
@@ -469,10 +463,6 @@ private:
   //        operator[] access in Grid::conversion.
   friend class Parma_Polyhedra_Library::Grid;
   friend class Parma_Polyhedra_Library::Linear_Expression;
-
-  friend void
-  std::swap(Parma_Polyhedra_Library::Congruence& x,
-	    Parma_Polyhedra_Library::Congruence& y);
 };
 
 #include "Congruence.inlines.hh"

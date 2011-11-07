@@ -1132,7 +1132,7 @@ public:
   Pointset_Powerset& operator=(const Pointset_Powerset<QH>& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Pointset_Powerset& y);
+  void m_swap(Pointset_Powerset& y);
 
   /*! \brief
     Adds \p m new dimensions to the vector space containing \p *this
@@ -1304,6 +1304,11 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+//! Swaps \p x with \p y.
+/*! \relates Pointset_Powerset */
+template <typename PSET>
+void swap(Pointset_Powerset<PSET>& x, Pointset_Powerset<PSET>& y);
+
 //! Partitions \p q with respect to \p p.
 /*! \relates Pointset_Powerset
   Let \p p and \p q be two polyhedra.
@@ -1438,17 +1443,6 @@ Pointset_Powerset<Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const;
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
-template <typename PSET>
-void swap(Parma_Polyhedra_Library::Pointset_Powerset<PSET>& x,
-	  Parma_Polyhedra_Library::Pointset_Powerset<PSET>& y);
-
-} // namespace std
 
 #include "Pointset_Powerset.inlines.hh"
 #include "Pointset_Powerset.templates.hh"

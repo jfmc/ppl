@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Policy>
 inline void
-Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>&) {
+Interval_Info_Null<Policy>::m_swap(Interval_Info_Null<Policy>&) {
 }
 
 template <typename Policy>
@@ -69,8 +69,9 @@ Interval_Info_Null_Open<Policy>::ascii_load(std::istream& s) {
 
 template <typename T, typename Policy>
 inline void
-Interval_Info_Bitset<T, Policy>::swap(Interval_Info_Bitset<T, Policy>& y) {
-  std::swap(bitset, y.bitset);
+Interval_Info_Bitset<T, Policy>::m_swap(Interval_Info_Bitset<T, Policy>& y) {
+  using std::swap;
+  swap(bitset, y.bitset);
 }
 
 template <typename T, typename Policy>
@@ -93,30 +94,24 @@ Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
     return false;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::Interval_Info_Null */
+/*! \relates Interval_Info_Null */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 inline void
-swap(Parma_Polyhedra_Library::Interval_Info_Null<Policy>& x,
-     Parma_Polyhedra_Library::Interval_Info_Null<Policy>& y) {
-  x.swap(y);
+swap(Interval_Info_Null<Policy>& x, Interval_Info_Null<Policy>& y) {
+  x.m_swap(y);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::Interval_Info_Bitset */
+/*! \relates Interval_Info_Bitset */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
 inline void
-swap(Parma_Polyhedra_Library::Interval_Info_Bitset<T, Policy>& x,
-     Parma_Polyhedra_Library::Interval_Info_Bitset<T, Policy>& y) {
-  x.swap(y);
+swap(Interval_Info_Bitset<T, Policy>& x, Interval_Info_Bitset<T, Policy>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Interval_Info_inlines_hh)

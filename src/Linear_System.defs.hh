@@ -102,7 +102,7 @@ public:
   void assign_with_pending(const Linear_System& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Linear_System& y);
+  void m_swap(Linear_System& y);
 
   //! Returns the maximum space dimension a Linear_System can handle.
   static dimension_type max_space_dimension();
@@ -396,18 +396,13 @@ private:
   };
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_System */
+//! Swaps \p x with \p y.
+/*! \relates Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Linear_System& x,
-	  Parma_Polyhedra_Library::Linear_System& y);
-
-} // namespace std
-
-namespace Parma_Polyhedra_Library {
+void swap(Linear_System& x, Linear_System& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
@@ -494,23 +489,21 @@ public:
   pointer operator->() const;
 
   //! Swaps the pointed Dense_Row objects while keeping Bit_Matrix consistent.
-  void iter_swap(const With_Bit_Matrix_iterator& y) const;
+  void m_iter_swap(const With_Bit_Matrix_iterator& y) const;
 
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
+//! Swaps \p x with \p y.
+/*! \relates Linear_System::With_Bit_Matrix_iterator */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
-iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator x,
-	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator y);
+iter_swap(Linear_System::With_Bit_Matrix_iterator x,
+	  Linear_System::With_Bit_Matrix_iterator y);
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #include "Linear_System.inlines.hh"
 

@@ -2013,7 +2013,8 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   // Even though shortest-path reduction is not going to change the BDS,
   // it might change its internal representation.
   BD_Shape<T>& x = const_cast<BD_Shape<T>&>(*this);
-  std::swap(x.redundancy_dbm, redundancy);
+  using std::swap;
+  swap(x.redundancy_dbm, redundancy);
   x.set_shortest_path_reduced();
 
   PPL_ASSERT(is_shortest_path_reduced());
@@ -2310,7 +2311,7 @@ BD_Shape<T>::BHZ09_upper_bound_assign_if_exact(const BD_Shape& y) {
     }
   }
   // The upper bound of x and y is indeed exact.
-  swap(ub);
+  m_swap(ub);
   PPL_ASSERT(OK());
   return true;
 }
@@ -2409,7 +2410,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
   y.shortest_path_closure_assign();
   if (x.contains(y)) {
     BD_Shape<T> res(dim, UNIVERSE);
-    x.swap(res);
+    x.m_swap(res);
     return false;
   }
 
@@ -2461,7 +2462,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     PPL_ASSERT(!is_plus_infinity(tmp));
     // CHECKME: round down is really meant.
     neg_assign_r(res.dbm[j][i], tmp, ROUND_DOWN);
-    x.swap(res);
+    x.m_swap(res);
     return false;
   }
 
@@ -2527,7 +2528,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
         // Target reached: swap `x' and `res' if needed.
         if (res_num_nonredundant < x_num_nonredundant) {
           res.reset_shortest_path_closed();
-          x.swap(res);
+          x.m_swap(res);
         }
         return bool_result;
       }
@@ -2564,7 +2565,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
         // Target reached: swap `x' and `res' if needed.
         if (res_num_nonredundant < x_num_nonredundant) {
           res.reset_shortest_path_closed();
-          x.swap(res);
+          x.m_swap(res);
         }
         return bool_result;
       }
@@ -2598,7 +2599,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
           // Target reached: swap `x' and `res' if needed.
           if (res_num_nonredundant < x_num_nonredundant) {
             res.reset_shortest_path_closed();
-            x.swap(res);
+            x.m_swap(res);
           }
           return bool_result;
         }
@@ -2741,7 +2742,8 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
     // All other columns and rows are moved respectively to the left
     // and above.
     while (src < vsi_next) {
-      std::swap(dbm[dst], dbm[src]);
+      using std::swap;
+      swap(dbm[dst], dbm[src]);
       for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
         DB_Row<N>& dbm_i = dbm[i];
         assign_or_swap(dbm_i[dst], dbm_i[src]);
@@ -2754,7 +2756,8 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
 
   // Moving the remaining rows and columns.
   while (src <= old_space_dim) {
-    std::swap(dbm[dst], dbm[src]);
+    using std::swap;
+    swap(dbm[dst], dbm[src]);
     for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
       DB_Row<N>& dbm_i = dbm[i];
       assign_or_swap(dbm_i[dst], dbm_i[src]);
@@ -2833,7 +2836,8 @@ BD_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
     }
   }
 
-  std::swap(dbm, x);
+  using std::swap;
+  swap(dbm, x);
   PPL_ASSERT(OK());
 }
 
@@ -3923,7 +3927,8 @@ BD_Shape<T>::affine_image(const Variable var,
           // Remove the binary constraints on `var'.
           forget_binary_dbm_constraints(v);
           // Swap the unary constraints on `var'.
-          std::swap(dbm[v][0], dbm[0][v]);
+          using std::swap;
+          swap(dbm[v][0], dbm[0][v]);
           // Shortest-path closure is not preserved.
           reset_shortest_path_closed();
           if (b != 0) {
@@ -4291,7 +4296,8 @@ void BD_Shape<T>
       // Here `w_coeff = [-1;-1].
       // Remove the binary constraints on `var'.
       forget_binary_dbm_constraints(var_id);
-      std::swap(dbm[var_id][0], dbm[0][var_id]);
+      using std::swap;
+      swap(dbm[var_id][0], dbm[0][var_id]);
       // Shortest-path closure is not preserved.
       reset_shortest_path_closed();
       if (!is_b_zero) {

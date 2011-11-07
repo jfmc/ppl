@@ -70,9 +70,10 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
-	  new_rows[i].swap(rows[i]);
+	  swap(new_rows[i], rows[i]);
 	// Put the new vector into place.
-	std::swap(rows, new_rows);
+        using std::swap;
+	swap(rows, new_rows);
       }
       else {
 	// Reallocation will NOT take place.
@@ -101,10 +102,10 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
 	DB_Row<T> new_row(rows[i],
 			  new_matrix.row_size,
 			  new_matrix.row_capacity);
-	std::swap(new_matrix.rows[i], new_row);
+	swap(new_matrix.rows[i], new_row);
       }
       // Put the new vector into place.
-      swap(new_matrix);
+      m_swap(new_matrix);
       return;
     }
   }
@@ -123,7 +124,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	// FIXME: copying may be unnecessarily costly.
 	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
-	std::swap(rows[i], new_row);
+	swap(rows[i], new_row);
       }
       row_capacity = new_row_capacity;
     }
@@ -154,9 +155,10 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
-	  new_rows[i].swap(rows[i]);
+	  swap(new_rows[i], rows[i]);
 	// Put the new vector into place.
-	std::swap(rows, new_rows);
+        using std::swap;
+	swap(rows, new_rows);
       }
       else {
 	// Reallocation (of vector `rows') will NOT take place.
@@ -170,7 +172,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
       DB_Matrix new_matrix(new_n_rows);
-      swap(new_matrix);
+      m_swap(new_matrix);
       return;
     }
   }
@@ -196,7 +198,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
 	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
 	DB_Row<T> new_row(new_n_rows, new_row_capacity);
-	std::swap(rows[i], new_row);
+	swap(rows[i], new_row);
       }
       row_capacity = new_row_capacity;
     }

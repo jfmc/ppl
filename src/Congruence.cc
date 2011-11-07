@@ -232,7 +232,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     x.shrink(new_size);
   else if (new_size > old_size) {
     Dense_Row y(new_size, Dense_Row::Flags());
-    x.swap(y);
+    x.m_swap(y);
   }
 
   if (new_size > 0) {

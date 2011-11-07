@@ -30,6 +30,16 @@ site: http://bugseng.com/products/ppl/ . */
 #include <vector>
 #include <iosfwd>
 
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates Bit_Matrix */
+void swap(Bit_Matrix& x, Bit_Matrix& y);
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+} // namespace Parma_Polyhedra_Library
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A matrix of bits.
 /*! \ingroup PPL_CXX_interface */
@@ -52,7 +62,7 @@ public:
   Bit_Matrix& operator=(const Bit_Matrix& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Bit_Matrix& y);
+  void m_swap(Bit_Matrix& y);
 
   //! Subscript operator.
   Bit_Row& operator[](dimension_type k);
@@ -174,17 +184,6 @@ bool operator==(const Bit_Matrix& x, const Bit_Matrix& y);
 bool operator!=(const Bit_Matrix& x, const Bit_Matrix& y);
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Bit_Matrix */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Bit_Matrix& x,
-	  Parma_Polyhedra_Library::Bit_Matrix& y);
-
-} // namespace std
 
 #include "Bit_Matrix.inlines.hh"
 

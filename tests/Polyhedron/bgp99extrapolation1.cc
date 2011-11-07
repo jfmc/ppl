@@ -147,7 +147,7 @@ test01() {
     if (Sn.definitely_entails(T))
       converged = true;
     else
-      std::swap(Sn, T);
+      swap(Sn, T);
   }
 
   return !converged;

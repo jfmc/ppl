@@ -105,9 +105,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	for (dimension_type i = 0; i < gs_end; ) {
 	  // All the closure points seen so far have consecutive
 	  // indices starting from `i'.
-	  if (num_closure_points > 0)
+	  if (num_closure_points > 0) {
 	    // Let next generator have index `i'.
-	    std::swap(gs[i], gs[i+num_closure_points]);
+            using std::swap;
+	    swap(gs[i], gs[i+num_closure_points]);
+          }
 	  if (gs[i].is_closure_point()) {
 	    ++num_closure_points;
 	    --gs_end;
@@ -804,7 +806,8 @@ PPL::Generator_System
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
-    std::swap(numerator, row[v]);
+    using std::swap;
+    swap(numerator, row[v]);
   }
 
   if (denominator != 1) {
@@ -951,6 +954,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // NOTE: the following swaps will mix generators without even trying
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
+  using std::swap;
   Generator_System& gs = *this;
   const dimension_type old_n_rows = gs.num_rows();
   dimension_type n_rows = old_n_rows;
@@ -960,7 +964,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
       if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
-	std::swap(g, gs[n_rows]);
+	swap(g, gs[n_rows]);
 	gs.set_sorted(false);
       }
     }
@@ -981,7 +985,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
       if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--first_pending;
-	std::swap(g, gs[first_pending]);
+	swap(g, gs[first_pending]);
 	gs.set_sorted(false);
       }
     }
@@ -989,14 +993,14 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
       = first_pending_row() - first_pending;
     set_index_first_pending_row(first_pending);
     for (dimension_type i = 0; i < num_invalid_rows; ++i)
-      std::swap(gs[n_rows - i], gs[first_pending + i]);
+      swap(gs[n_rows - i], gs[first_pending + i]);
     n_rows -= num_invalid_rows;
     for (dimension_type i = n_rows; i-- > first_pending; ) {
       Generator& g = gs[i];
       if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
-	std::swap(g, gs[n_rows]);
+	swap(g, gs[n_rows]);
 	gs.set_sorted(false);
       }
     }

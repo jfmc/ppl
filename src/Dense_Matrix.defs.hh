@@ -175,7 +175,7 @@ protected:
 
 public:
   //! Swaps \p *this with \p y.
-  void swap(Dense_Matrix& y);
+  void m_swap(Dense_Matrix& y);
 
   //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
@@ -353,19 +353,13 @@ public:
   bool OK() const;
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Specializes <CODE>std::swap</CODE>.
-  /*! \relates Parma_Polyhedra_Library::Dense_Matrix */
+//! Swaps \p x with \p y.
+/*! \relates Dense_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Dense_Matrix& x,
-          Parma_Polyhedra_Library::Dense_Matrix& y);
-
-} // namespace std
-
-
-namespace Parma_Polyhedra_Library {
+void swap(Dense_Matrix& x, Dense_Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.

@@ -138,7 +138,7 @@ Polyhedron::Polyhedron(Topology topol,
   con_sys.add_low_level_constraints();
   // Now removing the dummy constraint inserted before.
   dimension_type n_rows = con_sys.num_rows() - 1;
-  con_sys[0].swap(con_sys[n_rows]);
+  con_sys[0].m_swap(con_sys[n_rows]);
   con_sys.set_sorted(false);
   // NOTE: here there are no pending constraints.
   con_sys.set_index_first_pending_row(n_rows);
@@ -248,7 +248,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   if (old_gensys.has_no_rows()) {
     // The polyhedron is empty.
     Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
-    std::swap(*this, new_polyhedron);
+    m_swap(new_polyhedron);
     PPL_ASSERT_HEAVY(OK());
     return;
   }
@@ -294,7 +294,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     }
   }
   Polyhedron new_polyhedron(topology(), new_gensys);
-  std::swap(*this, new_polyhedron);
+  m_swap(new_polyhedron);
   PPL_ASSERT_HEAVY(OK(true));
 }
 

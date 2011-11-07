@@ -338,10 +338,11 @@ BD_Shape<T>::~BD_Shape() {
 
 template <typename T>
 inline void
-BD_Shape<T>::swap(BD_Shape& y) {
-  std::swap(dbm, y.dbm);
-  std::swap(status, y.status);
-  std::swap(redundancy_dbm, y.redundancy_dbm);
+BD_Shape<T>::m_swap(BD_Shape& y) {
+  using std::swap;
+  swap(dbm, y.dbm);
+  swap(status, y.status);
+  swap(redundancy_dbm, y.redundancy_dbm);
 }
 
 template <typename T>
@@ -692,7 +693,7 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   C_Polyhedron py(y.constraints());
   px.time_elapse_assign(py);
   BD_Shape<T> x(px);
-  swap(x);
+  m_swap(x);
   PPL_ASSERT(OK());
 }
 
@@ -801,7 +802,7 @@ BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
   C_Polyhedron py(y.constraints());
   px.H79_widening_assign(py, tp);
   BD_Shape x(px);
-  swap(x);
+  m_swap(x);
   PPL_ASSERT(OK());
 }
 
@@ -821,7 +822,7 @@ BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
   C_Polyhedron py(y.constraints());
   px.limited_H79_extrapolation_assign(py, cs, tp);
   BD_Shape x(px);
-  swap(x);
+  m_swap(x);
   PPL_ASSERT(OK());
 }
 
@@ -892,18 +893,13 @@ BD_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
   }
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
+/*! \relates BD_Shape */
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
-     Parma_Polyhedra_Library::BD_Shape<T>& y) {
-  x.swap(y);
+swap(BD_Shape<T>& x, BD_Shape<T>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_BD_Shape_inlines_hh)

@@ -426,7 +426,8 @@ find_lexico_minimum_column_in_set(std::vector<dimension_type>& candidates,
           }
       }
     }
-    std::swap(candidates, new_candidates);
+    using std::swap;
+    swap(candidates, new_candidates);
   }
 }
 
@@ -693,7 +694,8 @@ compatibility_check_find_pivot_in_set(
         }
       }
     }
-    std::swap(candidates, new_candidates);
+    using std::swap;
+    swap(candidates, new_candidates);
   }
 }
 
@@ -1381,7 +1383,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     // Test all constraints for redundancy with the context, and eliminate
     // them if not necessary.
     Constraint_System cs;
-    cs.swap(constraints_);
+    swap(cs, constraints_);
     for (Constraint_System::const_iterator
          ci = cs.begin(), ci_end = cs.end(); ci != ci_end; ++ci) {
       Matrix ctx_copy(context);
@@ -2109,7 +2111,8 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
     pivot[pj] = 1;
 
     // Swap identity row with the pivot row previously found.
-    std::swap(pivot, s[pi]);
+    using std::swap;
+    swap(pivot, s[pi]);
     // Save original pivot scaling factor in a temporary,
     // then reset scaling factor for identity row.
     pivot_den = scaling[pi];
@@ -2571,8 +2574,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // 2. swap the rows just added with empty ones.
       Row s_pivot(0, Row_Flags());
       Row t_pivot(0, Row_Flags());
-      s_pivot.swap(tableau.s[num_rows]);
-      t_pivot.swap(tableau.t[num_rows]);
+      s_pivot.m_swap(tableau.s[num_rows]);
+      t_pivot.m_swap(tableau.t[num_rows]);
       // 3. drop rows previously added at end of tableau.
       tableau.s.remove_trailing_rows(1);
       tableau.t.remove_trailing_rows(1);
@@ -2584,8 +2587,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       s_pivot[pj] = pivot_den;
 
       // Swap identity row with the pivot row previously found.
-      s_pivot.swap(tableau.s[pi]);
-      t_pivot.swap(tableau.t[pi]);
+      s_pivot.m_swap(tableau.s[pi]);
+      t_pivot.m_swap(tableau.t[pi]);
       sign[pi] = ZERO;
 
       PPL_DIRTY_TEMP_COEFFICIENT(s_pivot_pj);
@@ -2854,8 +2857,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // (these will be later restored if needed).
       Constraint_System cs;
       Artificial_Parameter_Sequence aps;
-      cs.swap(f_node->constraints_);
-      aps.swap(f_node->artificial_parameters);
+      swap(cs, f_node->constraints_);
+      swap(aps, f_node->artificial_parameters);
       // Compute the complement of the constraint used for the "true" node.
       Row& f_test = context[context.num_rows() - 1];
       complement_assign(f_test, t_test, 1);
@@ -2882,8 +2885,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           // t_node unfeasible, f_node feasible:
           // restore cs and aps into f_node (i.e., this).
           PPL_ASSERT(f_node == this);
-          f_node->constraints_.swap(cs);
-          f_node->artificial_parameters.swap(aps);
+          swap(f_node->constraints_, cs);
+          swap(f_node->artificial_parameters, aps);
           // Add f_test to constraints.
           f_node->add_constraint(f_test, all_params);
 #ifdef NOISY_PIP_TREE_STRUCTURE
@@ -2914,8 +2917,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           wrapped_node.release();
           wrapped_node.reset(parent);
           // Restore into parent `cs' and `aps'.
-          parent->constraints_.swap(cs);
-          parent->artificial_parameters.swap(aps);
+          swap(parent->constraints_, cs);
+          swap(parent->artificial_parameters, aps);
           // Add t_test to parent's constraints.
           parent->add_constraint(t_test, all_params);
           // It is now safe to release previously wrapped parent pointer
@@ -2934,8 +2937,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                      t_node->artificial_parameters.begin(),
                      t_node->artificial_parameters.end());
           // c) swap the updated `cs' and `aps' into t_node.
-          cs.swap(t_node->constraints_);
-          aps.swap(t_node->artificial_parameters);
+          swap(cs, t_node->constraints_);
+          swap(aps, t_node->artificial_parameters);
           // d) add t_test to t_nodes's constraints.
           t_node->add_constraint(t_test, all_params);
           // It is now safe to release previously wrapped t_node pointer
@@ -2974,9 +2977,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // and protect new 'parent' node from exception safety issues.
         wrapped_node.release();
         wrapped_node.reset(parent);
-        parent->constraints_.swap(cs);
+        swap(parent->constraints_, cs);
       }
-      parent->artificial_parameters.swap(aps);
+      swap(parent->artificial_parameters, aps);
       // It is now safe to release previously wrapped decision node
       // and return it to the caller.
       return wrapped_node.release();

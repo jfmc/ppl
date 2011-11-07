@@ -33,6 +33,7 @@ void
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 ::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
+  using std::swap;
   // Ensure omega-reduction.
   x.omega_reduce();
   y.omega_reduce();
@@ -48,9 +49,9 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
     }
-    std::swap(tmp_sequence, new_sequence);
+    swap(tmp_sequence, new_sequence);
   }
-  std::swap(x.sequence, new_sequence);
+  swap(x.sequence, new_sequence);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -257,6 +258,7 @@ void
 PPL::Pointset_Powerset<PPL::Grid>
 ::difference_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
+  using std::swap;
   // Ensure omega-reduction.
   x.omega_reduce();
   y.omega_reduce();
@@ -273,9 +275,9 @@ PPL::Pointset_Powerset<PPL::Grid>
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
     }
-    std::swap(tmp_sequence, new_sequence);
+    swap(tmp_sequence, new_sequence);
   }
-  std::swap(x.sequence, new_sequence);
+  swap(x.sequence, new_sequence);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }

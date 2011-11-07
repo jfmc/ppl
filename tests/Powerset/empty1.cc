@@ -56,7 +56,7 @@ test02() {
   c_ps.add_disjunct(C_Polyhedron(cs));
 
   Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
-  c_ps.swap(c_ps1);
+  swap(c_ps, c_ps1);
 
   bool ok = (c_ps.empty() && !c_ps1.empty());
   return ok;
@@ -124,7 +124,7 @@ test06() {
   pps_box.add_disjunct(TBox(cs));
 
   Pointset_Powerset<TBox> pps_box1(1, EMPTY);
-  pps_box.swap(pps_box1);
+  swap(pps_box, pps_box1);
 
   bool ok = (pps_box.empty() && !pps_box1.empty());
   return ok;

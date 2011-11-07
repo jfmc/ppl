@@ -49,18 +49,11 @@ operator<<(std::ostream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Congruence_System */
+void swap(Congruence_System& x, Congruence_System& y);
+
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Congruence_System */
-void
-swap(Parma_Polyhedra_Library::Congruence_System& x,
-     Parma_Polyhedra_Library::Congruence_System& y);
-
-} // namespace std
 
 //! A system of congruences.
 /*! \ingroup PPL_CXX_interface
@@ -337,7 +330,7 @@ public:
   dimension_type num_proper_congruences() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Congruence_System& cgs);
+  void m_swap(Congruence_System& cgs);
 
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
@@ -407,9 +400,6 @@ private:
   friend class const_iterator;
   friend class Grid;
   friend class Grid_Certificate;
-
-  friend void std::swap(Parma_Polyhedra_Library::Congruence_System& x,
-			Parma_Polyhedra_Library::Congruence_System& y);
 
   friend bool
   operator==(const Congruence_System& x, const Congruence_System& y);

@@ -130,7 +130,7 @@ public:
   }
 
   //! Swaps \p *this with \p y.
-  void swap(Interval_Info_Null& y);
+  void m_swap(Interval_Info_Null& y);
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);
@@ -284,7 +284,7 @@ public:
   }
 
   //! Swaps \p *this with \p y.
-  void swap(Interval_Info_Bitset& y);
+  void m_swap(Interval_Info_Bitset& y);
 
   void ascii_dump(std::ostream& s) const;
   bool ascii_load(std::istream& s);

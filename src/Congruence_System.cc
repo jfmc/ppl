@@ -85,7 +85,8 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
     // Create a resized copy of `cg'.
     Congruence rc(cg, old_num_columns, row_capacity);
     // Move the modulus to its place.
-    std::swap(rc[cg_size - 1], rc[old_num_columns - 1]);
+    using std::swap;
+    swap(rc[cg_size - 1], rc[old_num_columns - 1]);
     add_recycled_row(rc);
   }
   else
@@ -141,11 +142,12 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
     // Swap one coefficient at a time into the newly added rows, instead
     // of swapping each entire row.  This ensures that the added rows
     // have the same capacities as the existing rows.
+    using std::swap;
     Congruence& new_cg = (*this)[old_num_rows + i];
     Congruence& old_cg = cgs[i];
     for (dimension_type j = cgs_num_columns; j-- > 0; )
-      std::swap(new_cg[j], old_cg[j]);
-    std::swap(new_cg[mod_index], old_cg[cgs_num_columns]); // Modulus.
+      swap(new_cg[j], old_cg[j]);
+    swap(new_cg[mod_index], old_cg[cgs_num_columns]); // Modulus.
   }
 
   PPL_ASSERT(OK());
@@ -176,8 +178,9 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   for (dimension_type i = y_num_rows; i-- > 0; ) {
     Dense_Row copy(y[i], x.row_size, x.row_capacity);
     // Swap the modulus to the correct column.
-    std::swap(copy[x_mod_index], copy[y_mod_index]);
-    std::swap(copy, x[x_num_rows+i]);
+    using std::swap;
+    swap(copy[x_mod_index], copy[y_mod_index]);
+    swap(copy, x[x_num_rows+i]);
   }
   PPL_ASSERT(OK());
 }
@@ -524,8 +527,9 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
 
   Congruence_System& cgs = *this;
   // Swap the added columns to the front of the matrix.
+  using std::swap;
   for (dimension_type row = old_num_rows; row-- > 0; )
-    std::swap(cgs[row], cgs[row + dims]);
+    swap(cgs[row], cgs[row + dims]);
 
   col += dims - 1;
   // Set the diagonal element of each added row.
@@ -553,7 +557,8 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   // Swap the modulus and the new last column, in the old rows.
   for (dimension_type i = old_num_rows; i-- > 0; ) {
     Congruence& cg = (*this)[i];
-    std::swap(cg[old_modi], cg[modi]);
+    using std::swap;
+    swap(cg[old_modi], cg[modi]);
   }
 
   // Move the congruences into *this from `cgs', shifting the
@@ -561,11 +566,12 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   for (dimension_type i = added_rows; i-- > 0; ) {
     Congruence& cg_old = cgs[i];
     Congruence& cg_new = (*this)[old_num_rows + i];
+    using std::swap;
     // The inhomogeneous term is moved to the same column.
-    std::swap(cg_new[0], cg_old[0]);
+    swap(cg_new[0], cg_old[0]);
     // All homogeneous terms are shifted by `space_dim' columns.
     for (dimension_type j = cgs_num_columns; j-- > 1; )
-      std::swap(cg_old[j], cg_new[old_space_dim + j]);
+      swap(cg_old[j], cg_new[old_space_dim + j]);
   }
 }
 

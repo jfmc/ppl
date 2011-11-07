@@ -101,8 +101,9 @@ PPL::Polyhedron
   dimension_type num_rows = old_num_rows;
   for (dimension_type i = 0; i < num_rows; ++i)
     if (y_cs[i].is_tautological()) {
+      using std::swap;
       --num_rows;
-      std::swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
+      swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
     }
   tmp_sat_g.remove_trailing_rows(old_num_rows - num_rows);
   tmp_sat_g.sort_rows();
@@ -231,7 +232,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
       }
       else
 	// No tokens.
-	std::swap(x, CH78);
+	x.m_swap(CH78);
       PPL_ASSERT_HEAVY(x.OK(true));
       return;
     }
@@ -279,7 +280,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     }
     else
       // No tokens.
-      std::swap(x, H79);
+      x.m_swap(H79);
     PPL_ASSERT_HEAVY(x.OK(true));
   }
 }
@@ -494,7 +495,7 @@ PPL::Polyhedron
   // over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-    std::swap(x, result);
+    x.m_swap(result);
     PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
@@ -564,7 +565,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-    std::swap(x, result);
+    x.m_swap(result);
     PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
@@ -653,7 +654,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // Check for stabilization with respect to `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-    std::swap(x, result);
+    x.m_swap(result);
     PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
@@ -749,7 +750,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   // No previous technique was successful: fall back to the H79 widening.
-  std::swap(x, H79);
+  x.m_swap(H79);
   PPL_ASSERT_HEAVY(x.OK(true));
 
 #ifndef NDEBUG

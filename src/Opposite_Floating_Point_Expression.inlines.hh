@@ -47,9 +47,10 @@ Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
-	 Opposite_Floating_Point_Expression& y) {
-  std::swap(operand, y.operand);
+Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::m_swap(Opposite_Floating_Point_Expression& y) {
+  using std::swap;
+  swap(operand, y.operand);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -65,20 +66,14 @@ Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   return true;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Opposite_Floating_Point_Expression */
+/*! \relates Opposite_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-swap(Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
-                              FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library::Opposite_Floating_Point_Expression<
-                              FP_Interval_Type, FP_Format>& y) {
-  x.swap(y);
+swap(Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Opposite_Floating_Point_Expression_inlines_hh)

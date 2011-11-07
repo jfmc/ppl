@@ -55,14 +55,15 @@ assign_or_swap(T& to, T& from) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface
-  If there is no assign_or_swap() and copies are slow, delegate to std::swap().
+  If there is no assign_or_swap() and copies are slow, delegate to swap().
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
                           && Slow_Copy<T>::value, void>::type
 assign_or_swap(T& to, T& from) {
-  std::swap(to, from);
+  using std::swap;
+  swap(to, from);
 }
 
 } // namespace Parma_Polyhedra_Library

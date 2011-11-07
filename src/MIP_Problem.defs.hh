@@ -59,6 +59,10 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates MIP_Problem */
+void swap(MIP_Problem& x, MIP_Problem& y);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A Mixed Integer (linear) Programming problem.
@@ -463,7 +467,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(MIP_Problem& y);
+  void m_swap(MIP_Problem& y);
 
   //! Names of MIP problems' control parameters.
   enum Control_Parameter_Name {
@@ -595,12 +599,14 @@ private:
     RAII_Temporary_Real_Relaxation(MIP_Problem& mip)
       : lp(mip), i_vars() {
       // Turn mip into an LP problem (saving i_variables in i_vars).
-      std::swap(i_vars, lp.i_variables);
+      using std::swap;
+      swap(i_vars, lp.i_variables);
     }
 
     ~RAII_Temporary_Real_Relaxation() {
       // Restore the original set of integer variables.
-      std::swap(i_vars, lp.i_variables);
+      using std::swap;
+      swap(i_vars, lp.i_variables);
     }
   };
   friend struct RAII_Temporary_Real_Relaxation;
@@ -953,15 +959,6 @@ private:
                                         const Variables_Set& i_vars,
                                         dimension_type& branching_index);
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::MIP_Problem */
-void swap(Parma_Polyhedra_Library::MIP_Problem& x,
-          Parma_Polyhedra_Library::MIP_Problem& y);
-
-} // namespace std
 
 #include "MIP_Problem.inlines.hh"
 #include "MIP_Problem.templates.hh"

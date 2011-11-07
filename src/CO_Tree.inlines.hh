@@ -174,13 +174,13 @@ CO_Tree::erase(iterator itr) {
 }
 
 inline void
-CO_Tree::swap(CO_Tree& x) {
-
-  std::swap(max_depth, x.max_depth);
-  std::swap(indexes, x.indexes);
-  std::swap(data, x.data);
-  std::swap(reserved_size, x.reserved_size);
-  std::swap(size_, x.size_);
+CO_Tree::m_swap(CO_Tree& x) {
+  using std::swap;
+  swap(max_depth, x.max_depth);
+  swap(indexes, x.indexes);
+  swap(data, x.data);
+  swap(reserved_size, x.reserved_size);
+  swap(size_, x.size_);
   // Cached iterators have been invalidated by the swap, they must be
   // refreshed here.
   refresh_cached_iterators();
@@ -310,7 +310,7 @@ CO_Tree::rebuild_smaller_tree() {
   CO_Tree new_tree;
   new_tree.init(reserved_size / 2);
   new_tree.move_data_from(*this);
-  swap(new_tree);
+  m_swap(new_tree);
   PPL_ASSERT(new_tree.structure_OK());
   PPL_ASSERT(structure_OK());
 }
@@ -381,11 +381,12 @@ CO_Tree::const_iterator::const_iterator(const iterator& itr2) {
 }
 
 inline void
-CO_Tree::const_iterator::swap(const_iterator& itr) {
-  std::swap(current_data, itr.current_data);
-  std::swap(current_index, itr.current_index);
+CO_Tree::const_iterator::m_swap(const_iterator& itr) {
+  using std::swap;
+  swap(current_data, itr.current_data);
+  swap(current_index, itr.current_index);
 #if PPL_CO_TREE_EXTRA_DEBUG
-  std::swap(tree, itr.tree);
+  swap(tree, itr.tree);
 #endif
   PPL_ASSERT(OK());
   PPL_ASSERT(itr.OK());
@@ -542,11 +543,12 @@ CO_Tree::iterator::iterator(const iterator& itr2) {
 }
 
 inline void
-CO_Tree::iterator::swap(iterator& itr) {
-  std::swap(current_data, itr.current_data);
-  std::swap(current_index, itr.current_index);
+CO_Tree::iterator::m_swap(iterator& itr) {
+  using std::swap;
+  swap(current_data, itr.current_data);
+  swap(current_index, itr.current_index);
 #if PPL_CO_TREE_EXTRA_DEBUG
-  std::swap(tree, itr.tree);
+  swap(tree, itr.tree);
 #endif
   PPL_ASSERT(OK());
   PPL_ASSERT(itr.OK());
@@ -837,30 +839,21 @@ CO_Tree::tree_iterator::depth() const {
   return integer_log2((tree.reserved_size + 1) / offset);
 }
 
+inline void
+swap(CO_Tree& x, CO_Tree& y) {
+  x.m_swap(y);
+}
+
+inline void
+swap(CO_Tree::const_iterator& x, CO_Tree::const_iterator& y) {
+  x.m_swap(y);
+}
+
+inline void
+swap(CO_Tree::iterator& x, CO_Tree::iterator& y) {
+  x.m_swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-inline void
-swap(Parma_Polyhedra_Library::CO_Tree& x,
-     Parma_Polyhedra_Library::CO_Tree& y) {
-  x.swap(y);
-}
-
-inline void
-swap(Parma_Polyhedra_Library::CO_Tree::const_iterator& x,
-     Parma_Polyhedra_Library::CO_Tree::const_iterator& y) {
-  x.swap(y);
-}
-
-inline void
-swap(Parma_Polyhedra_Library::CO_Tree::iterator& x,
-     Parma_Polyhedra_Library::CO_Tree::iterator& y) {
-  x.swap(y);
-}
-
-} // namespace std
-
 
 #endif // !defined(PPL_CO_Tree_inlines_hh)

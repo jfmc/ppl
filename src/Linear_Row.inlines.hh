@@ -269,25 +269,19 @@ operator!=(const Linear_Row& x, const Linear_Row& y) {
   return !(x == y);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
+/*! \relates Linear_Row */
 inline void
-swap(Parma_Polyhedra_Library::Linear_Row& x,
-     Parma_Polyhedra_Library::Linear_Row& y) {
-  x.swap(y);
+swap(Linear_Row& x, Linear_Row& y) {
+  x.m_swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
+/*! \relates Linear_Row */
 inline void
-iter_swap(std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator y) {
+iter_swap(std::vector<Linear_Row>::iterator x,
+	  std::vector<Linear_Row>::iterator y) {
   swap(*x, *y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Row_inlines_hh)

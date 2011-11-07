@@ -124,9 +124,10 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
   dimension_type x_sz = x.size() - 1;
   dimension_type y_sz = y.size() - 1;
   // Swap parameter divisors.
-  std::swap(x[x_sz], y[y_sz]);
+  using std::swap;
+  swap(x[x_sz], y[y_sz]);
   for (dimension_type j = ((x_sz > y_sz) ? y_sz : x_sz); j-- > 0; )
-    std::swap(x[j], y[j]);
+    swap(x[j], y[j]);
 }
 
 void
@@ -167,7 +168,7 @@ PPL::Grid_Generator::ascii_load(std::istream& s) {
     x.shrink(new_size);
   else if (new_size > old_size) {
     Dense_Row y(new_size, Dense_Row::Flags());
-    x.swap(y);
+    x.m_swap(y);
   }
 
   for (dimension_type col = 0; col < new_size; ++col)

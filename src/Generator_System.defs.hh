@@ -48,21 +48,15 @@ std::ostream& operator<<(std::ostream& s, const Generator_System& gs);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Generator_System */
+void swap(Generator_System& x, Generator_System& y);
+
 // Put it in the namespace here to declare it friend later.
 /*! \relates Polyhedron */
 bool operator==(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Generator_System */
-void swap(Parma_Polyhedra_Library::Generator_System& x,
-	  Parma_Polyhedra_Library::Generator_System& y);
-
-} // namespace std
 
 //! A system of generators.
 /*! \ingroup PPL_CXX_interface
@@ -350,7 +344,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Generator_System& y);
+  void m_swap(Generator_System& y);
 
 private:
   /*! \brief

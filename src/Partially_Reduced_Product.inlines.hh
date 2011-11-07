@@ -154,7 +154,7 @@ Partially_Reduced_Product<D1, D2, R>
   Partially_Reduced_Product<D1, D2, R> pg1(y.domain1(), complexity);
   Partially_Reduced_Product<D1, D2, R> pg2(y.domain2(), complexity);
   pg1.intersection_assign(pg2);
-  swap(pg1);
+  m_swap(pg1);
   /* Even if y is reduced, the built product may not be reduced as
      the reduction method may have changed (i.e., S != R). */
   clear_reduced_flag();
@@ -253,7 +253,8 @@ Partially_Reduced_Product<D1, D2, R>
   ub_exact = d2.upper_bound_assign_if_exact(y.d2);
   if (!ub_exact)
     return false;
-  std::swap(d1,d1_copy);
+  using std::swap;
+  swap(d1, d1_copy);
   return true;
 }
 
@@ -370,10 +371,11 @@ Partially_Reduced_Product<D1, D2, R>::topological_closure_assign() {
 
 template <typename D1, typename D2, typename R>
 inline void
-Partially_Reduced_Product<D1, D2, R>::swap(Partially_Reduced_Product& y) {
-  std::swap(d1, y.d1);
-  std::swap(d2, y.d2);
-  std::swap(reduced, y.reduced);
+Partially_Reduced_Product<D1, D2, R>::m_swap(Partially_Reduced_Product& y) {
+  using std::swap;
+  swap(d1, y.d1);
+  swap(d2, y.d2);
+  swap(reduced, y.reduced);
 }
 
 template <typename D1, typename D2, typename R>
@@ -796,14 +798,14 @@ inline
 Shape_Preserving_Reduction<D1, D2>::~Shape_Preserving_Reduction() {
 }
 
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
+/*! \relates Partially_Reduced_Product */
 template <typename D1, typename D2, typename R>
 inline void
-std::swap(Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& x,
-	  Parma_Polyhedra_Library::Partially_Reduced_Product<D1, D2, R>& y) {
-  x.swap(y);
+swap(Partially_Reduced_Product<D1, D2, R>& x,
+     Partially_Reduced_Product<D1, D2, R>& y) {
+  x.m_swap(y);
 }
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Partially_Reduced_Product_inlines_hh)

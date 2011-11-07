@@ -70,6 +70,11 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates BD_Shape */
+template <typename T>
+void swap(BD_Shape<T>& x, BD_Shape<T>& y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same BDS.
 /*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
@@ -581,7 +586,7 @@ public:
     Swaps \p *this with \p y
     (\p *this and \p y can be dimension-incompatible).
   */
-  void swap(BD_Shape& y);
+  void m_swap(BD_Shape& y);
 
   //! Destructor.
   ~BD_Shape();
@@ -2351,17 +2356,6 @@ private:
   static void throw_generic(const char* method, const char* reason);
   //@} // Exception Throwers
 };
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-template <typename T>
-void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
-          Parma_Polyhedra_Library::BD_Shape<T>& y);
-
-} // namespace std
 
 #include "BDS_Status.inlines.hh"
 #include "BD_Shape.inlines.hh"

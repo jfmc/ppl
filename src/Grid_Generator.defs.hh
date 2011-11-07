@@ -43,16 +43,11 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator& g);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Grid_Generator */
+void swap(Grid_Generator& x, Grid_Generator& y);
+
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Grid_Generator */
-void swap(Parma_Polyhedra_Library::Grid_Generator& x,
-	  Parma_Polyhedra_Library::Grid_Generator& y);
-
-} // namespace std
 
 //! A grid line, parameter or grid point.
 /*! \ingroup PPL_CXX_interface
@@ -383,7 +378,7 @@ public:
   bool OK() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Grid_Generator& y);
+  void m_swap(Grid_Generator& y);
 
   /*! \brief
     Swaps \p *this with \p y, leaving \p *this with the original

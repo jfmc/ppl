@@ -40,6 +40,7 @@ PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
   PPL_ASSERT(sys1.topology() == sys2.topology());
   PPL_ASSERT(sys1.num_columns() == sys2.num_columns());
   PPL_ASSERT(add_dim != 0);
+  using std::swap;
 
   sys1.add_zero_columns(add_dim);
   dimension_type old_index = sys2.first_pending_row();
@@ -56,7 +57,7 @@ PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
   sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
   // The old matrix is moved to the end of the new matrix.
   for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; )
-    std::swap(sat1[i], sat1[i+add_dim]);
+    swap(sat1[i], sat1[i+add_dim]);
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 
@@ -73,13 +74,13 @@ PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
     else {
       for (dimension_type i = sys2.num_rows(); i-- > add_dim; ) {
 	Linear_Row& r = sys2[i];
-	std::swap(r[old_eps_index], r[new_eps_index]);
+	swap(r[old_eps_index], r[new_eps_index]);
       }
       // The upper-right corner of `sys2' contains the J matrix:
       // swap coefficients to preserve sortedness.
       for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
 	Linear_Row& r = sys2[i];
-	std::swap(r[old_eps_index], r[old_eps_index + 1]);
+	swap(r[old_eps_index], r[old_eps_index + 1]);
       }
     }
     // NOTE: since we swapped columns in both `sys1' and `sys2',
@@ -117,7 +118,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
     // We swap `*this' with a newly created
     // universe polyhedron of dimension `m'.
     Polyhedron ph(topology(), m, UNIVERSE);
-    swap(ph);
+    m_swap(ph);
     return;
   }
 
@@ -160,17 +161,18 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
       if (!gen_sys.is_sorted())
 	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
+        using std::swap;
 	dimension_type old_eps_index = space_dim + 1;
 	dimension_type new_eps_index = old_eps_index + m;
 	for (dimension_type i = gen_sys.num_rows(); i-- > m; ) {
 	  Generator& r = gen_sys[i];
-	  std::swap(r[old_eps_index], r[new_eps_index]);
+	  swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `gen_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
 	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
 	  Generator& r = gen_sys[i];
-	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
+	  swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
       }
     }
@@ -251,17 +253,18 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
 	if (!con_sys.is_sorted())
 	  con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
 	else {
+          using std::swap;
 	  dimension_type old_eps_index = space_dim + 1;
 	  dimension_type new_eps_index = old_eps_index + m;
 	  for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
 	    Constraint& r = con_sys[i];
-	    std::swap(r[old_eps_index], r[new_eps_index]);
+	    swap(r[old_eps_index], r[new_eps_index]);
 	  }
 	  // The upper-right corner of `con_sys' contains the J matrix:
 	  // swap coefficients to preserve sortedness.
 	  for (dimension_type i = m; i-- > 0; ++old_eps_index) {
 	    Constraint& r = con_sys[i];
-	    std::swap(r[old_eps_index], r[old_eps_index + 1]);
+	    swap(r[old_eps_index], r[old_eps_index + 1]);
 	  }
 	}
       }
@@ -353,11 +356,12 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     if (c_old.is_equality())
       c_new.set_is_equality();
     // The inhomogeneous term is not displaced.
-    std::swap(c_new[0], c_old[0]);
+    using std::swap;
+    swap(c_new[0], c_old[0]);
     // All homogeneous terms (included the epsilon coefficient,
     // if present) are displaced by `space_dim' columns.
     for (dimension_type j = 1; j < cs_num_columns; ++j)
-      std::swap(c_old[j], c_new[space_dim + j]);
+      swap(c_old[j], c_new[space_dim + j]);
   }
 
   if (can_have_something_pending()) {
@@ -386,8 +390,9 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // The old saturation rows are copied at the end of the matrix.
     // The newly introduced lines saturate all the non-pending constraints,
     // thus their saturation rows are made of zeroes.
+    using std::swap;
     for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
-      std::swap(sat_c[i], sat_c[i+added_columns]);
+      swap(sat_c[i], sat_c[i+added_columns]);
     // Since `added_rows > 0', we now have pending constraints.
     set_constraints_pending();
   }

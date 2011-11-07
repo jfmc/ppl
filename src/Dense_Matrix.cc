@@ -70,9 +70,10 @@ PPL::Dense_Matrix::add_zero_rows(const dimension_type n,
     // Steal the old rows.
     ++i;
     while (i-- > 0)
-      new_rows[i].swap(rows[i]);
+      new_rows[i].m_swap(rows[i]);
     // Put the new vector into place.
-    std::swap(rows, new_rows);
+    using std::swap;
+    swap(rows, new_rows);
   }
   else {
     // Reallocation will NOT take place.
@@ -102,7 +103,8 @@ PPL::Dense_Matrix::add_zero_columns(const dimension_type n) {
     PPL_ASSERT(new_row_capacity <= max_num_columns());
     for (dimension_type i = num_rows; i-- > 0; ) {
       Dense_Row new_row(rows[i], new_num_columns, new_row_capacity);
-      std::swap(rows[i], new_row);
+      using std::swap;
+      swap(rows[i], new_row);
     }
     row_capacity = new_row_capacity;
   }
@@ -133,7 +135,7 @@ PPL::Dense_Matrix::add_zero_columns(dimension_type n, dimension_type i) {
     swaps.push_back(0);
   }
   permute_columns(swaps);
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -164,10 +166,11 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
       ++i;
       while (i-- > 0) {
 	rows[i].expand_within_capacity(new_num_columns);
-	new_rows[i].swap(rows[i]);
+	new_rows[i].m_swap(rows[i]);
       }
       // Put the new vector into place.
-      std::swap(rows, new_rows);
+      using std::swap;
+      swap(rows, new_rows);
     }
     else {
       // Reallocation will NOT take place.
@@ -187,7 +190,8 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
     // We cannot even recycle the old rows.
     Dense_Matrix new_matrix;
     new_matrix.rows.reserve(compute_capacity(new_num_rows, max_num_rows()));
-    new_matrix.rows.insert(new_matrix.rows.end(), new_num_rows, Dense_Row(row_flags));
+    new_matrix.rows.insert(new_matrix.rows.end(), new_num_rows,
+                           Dense_Row(row_flags));
     // Construct the new rows.
     new_matrix.row_size = new_num_columns;
     new_matrix.row_capacity = compute_capacity(new_num_columns,
@@ -199,14 +203,15 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
     ++i;
     while (i-- > 0) {
       Dense_Row new_row(rows[i],
-		  new_matrix.row_size,
-		  new_matrix.row_capacity);
-      std::swap(new_matrix.rows[i], new_row);
+                        new_matrix.row_size,
+                        new_matrix.row_capacity);
+      using std::swap;
+      swap(new_matrix.rows[i], new_row);
     }
     // Put the new vector into place.
-    swap(new_matrix);
+    m_swap(new_matrix);
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -215,6 +220,7 @@ PPL::Dense_Matrix::add_recycled_row(Dense_Row& y) {
   // The added row must have the same size and capacity as the
   // existing rows of the system.
   PPL_ASSERT(y.OK(row_size, row_capacity));
+  using std::swap;
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -223,18 +229,18 @@ PPL::Dense_Matrix::add_recycled_row(Dense_Row& y) {
     new_rows.insert(new_rows.end(), new_rows_size, Dense_Row());
     // Put the new row in place.
     dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], y);
+    swap(new_rows[i], y);
     // Steal the old rows.
     while (i-- > 0)
-      new_rows[i].swap(rows[i]);
+      new_rows[i].m_swap(rows[i]);
     // Put the new rows into place.
-    std::swap(rows, new_rows);
+    swap(rows, new_rows);
   }
   else
     // Reallocation will NOT take place.
     // Inserts a new empty row at the end,
     // then substitutes it with a copy of the given row.
-    std::swap(*rows.insert(rows.end(), Dense_Row()), y);
+    swap(*rows.insert(rows.end(), Dense_Row()), y);
 
   PPL_ASSERT(OK());
 }
@@ -265,9 +271,10 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
-	  new_rows[i].swap(rows[i]);
+	  new_rows[i].m_swap(rows[i]);
 	// Put the new vector into place.
-	std::swap(rows, new_rows);
+        using std::swap;
+	swap(rows, new_rows);
       }
       else {
         // Reallocation (of vector `rows') will NOT take place.
@@ -281,7 +288,7 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
       Dense_Matrix new_matrix(new_n_rows, new_n_columns, row_flags);
-      swap(new_matrix);
+      m_swap(new_matrix);
       return;
     }
   }
@@ -310,14 +317,15 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
 	  = compute_capacity(new_n_columns, max_num_columns());
 	for (dimension_type i = old_n_rows; i-- > 0; ) {
 	  Dense_Row new_row(new_n_columns, new_row_capacity, row_flags);
-	  std::swap(rows[i], new_row);
+          using std::swap;
+	  swap(rows[i], new_row);
 	}
 	row_capacity = new_row_capacity;
       }
     // Rows have grown or shrunk.
     row_size = new_n_columns;
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -358,13 +366,15 @@ PPL::Dense_Matrix::ascii_load(std::istream& s) {
 }
 
 void
-PPL::Dense_Matrix::swap_columns(const dimension_type i, const dimension_type j) {
+PPL::Dense_Matrix::swap_columns(const dimension_type i,
+                                const dimension_type j) {
   PPL_ASSERT(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Dense_Row& rows_k = rows[k];
-    std::swap(rows_k[i], rows_k[j]);
+    using std::swap;
+    swap(rows_k[i], rows_k[j]);
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -400,6 +410,7 @@ PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
   const dimension_type n = cycles.size();
   PPL_ASSERT(cycles[n - 1] == 0);
+  using std::swap;
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Dense_Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
@@ -410,13 +421,13 @@ PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
       PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
 	// For cycles of length 2 no temporary is needed, just a swap.
-	std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
+	swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
       else {
 	// Longer cycles need a temporary.
-	std::swap(rows_k[cycles[j-1]], tmp);
+	swap(rows_k[cycles[j-1]], tmp);
 	for (dimension_type l = j-1; l > i; --l)
-	  std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
-	std::swap(tmp, rows_k[cycles[i]]);
+	  swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
+	swap(tmp, rows_k[cycles[i]]);
       }
     }
   }

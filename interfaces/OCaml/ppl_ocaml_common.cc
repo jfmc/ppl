@@ -1180,7 +1180,7 @@ ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
   CAMLparam2(caml_mip1, caml_mip2);
   MIP_Problem& ppl_mip1 = *p_MIP_Problem_val(caml_mip1);
   MIP_Problem& ppl_mip2 = *p_MIP_Problem_val(caml_mip2);
-  ppl_mip1.swap(ppl_mip2);
+  swap(ppl_mip1, ppl_mip2);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL
@@ -1469,7 +1469,7 @@ ppl_PIP_Problem_swap(value caml_pip1, value caml_pip2) try{
   CAMLparam2(caml_pip1, caml_pip2);
   PIP_Problem& ppl_pip1 = *p_PIP_Problem_val(caml_pip1);
   PIP_Problem& ppl_pip2 = *p_PIP_Problem_val(caml_pip2);
-  ppl_pip1.swap(ppl_pip2);
+  swap(ppl_pip1, ppl_pip2);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL

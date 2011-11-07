@@ -36,6 +36,10 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Swaps \p x with \p y.
+/*! \relates Constraint */
+void swap(Constraint& x, Constraint& y);
+
 // Put them in the namespace here to declare them friend later.
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
@@ -149,16 +153,6 @@ Constraint
 operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Constraint */
-void swap(Parma_Polyhedra_Library::Constraint& x,
-	  Parma_Polyhedra_Library::Constraint& y);
-
-} // namespace std
 
 //! A linear equality or inequality.
 /*! \ingroup PPL_CXX_interface
@@ -403,7 +397,7 @@ public:
   bool OK() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Constraint& y);
+  void m_swap(Constraint& y);
 
 private:
   /*! \brief

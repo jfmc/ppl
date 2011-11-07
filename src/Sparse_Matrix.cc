@@ -87,16 +87,18 @@ PPL::Sparse_Matrix
       PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
         // For cycles of length 2 no temporary is needed, just a swap.
-        rows_k.swap(cycles[i], cycles[i + 1]);
+        rows_k.m_swap(cycles[i], cycles[i + 1]);
       else {
         // Longer cycles need a temporary.
         tmp = rows_k.get(cycles[j - 1]);
         for (dimension_type l = (j - 1); l > i; --l)
-          rows_k.swap(cycles[l-1], cycles[l]);
+          rows_k.m_swap(cycles[l-1], cycles[l]);
         if (tmp == 0)
           rows_k.reset(cycles[i]);
-        else
-          std::swap(tmp, rows_k[cycles[i]]);
+        else {
+          using std::swap;
+          swap(tmp, rows_k[cycles[i]]);
+        }
       }
     }
   }

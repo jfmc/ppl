@@ -50,6 +50,10 @@ operator<<(std::ostream& s, const Any_Pointset& ph);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Any_Pointset */
+void swap(Any_Pointset& x, Any_Pointset& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if
   \p x and \p y are the same pointset.
@@ -1111,7 +1115,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p x and \p y are topology-incompatible.
   */
-  void swap(Any_Pointset& y);
+  void m_swap(Any_Pointset& y);
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -1138,16 +1142,6 @@ public:
 
   //@} // Miscellaneous Member Functions
 };
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Any_Pointset */
-void swap(Parma_Polyhedra_Library::Any_Pointset& x,
-	  Parma_Polyhedra_Library::Any_Pointset& y);
-
-} // namespace std
 
 #define PPL_ANY_POINTSET_WRAPPER_CLASS(TEMPLATE, WRAPPER_NAME, BASE_CLASS) \
 TEMPLATE								\

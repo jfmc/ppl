@@ -125,13 +125,13 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
       for (++yi; yi != y_end; ++yi)
 	yph.upper_bound_assign(yi->pointset());
       xph.concatenate_assign(yph);
-      x.swap(new_x);
+      swap(x, new_x);
       x.add_disjunct(xph);
       PPL_ASSERT_HEAVY(x.OK());
       return;
     }
   }
-  x.swap(new_x);
+  swap(x, new_x);
   PPL_ASSERT_HEAVY(x.OK());
 }
 
@@ -529,7 +529,7 @@ Pointset_Powerset<PSET>::is_universe() const {
       if (x.size() > 1) {
         Pointset_Powerset<PSET> universe(x.space_dimension(), UNIVERSE);
         Pointset_Powerset& xx = const_cast<Pointset_Powerset&>(x);
-        xx.swap(universe);
+        swap(xx, universe);
       }
       return true;
     }
@@ -679,7 +679,7 @@ Pointset_Powerset<PSET>
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }
-  dest.swap(enlarged);
+  swap(dest, enlarged);
   return nonempty_intersection;
 }
 
@@ -1218,7 +1218,8 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
 	nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
 								    nx_begin,
 								    nx_end);
-    std::swap(x.sequence, new_x.sequence);
+    using std::swap;
+    swap(x.sequence, new_x.sequence);
     n -= deleted;
   } while (deleted > 0);
   PPL_ASSERT_HEAVY(x.OK());
@@ -1267,7 +1268,8 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
 								  nx_begin,
 								  nx_end);
-  std::swap(x.sequence, new_x.sequence);
+  using std::swap;
+  swap(x.sequence, new_x.sequence);
   PPL_ASSERT_HEAVY(x.OK());
   PPL_ASSERT(x.is_omega_reduced());
 }
@@ -1433,7 +1435,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   hull_stabilization = y_hull_cert.compare(bgp99_heuristics_hull);
   if (hull_stabilization == 1) {
     // The poly-hull is stabilizing.
-    std::swap(x, bgp99_heuristics);
+    swap(x, bgp99_heuristics);
     return;
   }
   else if (hull_stabilization == 0 && y_is_not_a_singleton) {
@@ -1443,7 +1445,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
       y_cert_ms_computed = true;
     }
     if (bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
-      std::swap(x, bgp99_heuristics);
+      swap(x, bgp99_heuristics);
       return;
     }
     // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
@@ -1453,7 +1455,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
     Pointset_Powerset<PSET> reduced_bgp99_heuristics(bgp99_heuristics);
     reduced_bgp99_heuristics.pairwise_reduce();
     if (reduced_bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
-      std::swap(x, reduced_bgp99_heuristics);
+      swap(x, reduced_bgp99_heuristics);
       return;
     }
   }
@@ -1473,7 +1475,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   // Fall back to the computation of the poly-hull.
   Pointset_Powerset<PSET> x_hull_singleton(x.space_dim, EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
-  std::swap(x, x_hull_singleton);
+  swap(x, x_hull_singleton);
 }
 
 template <typename PSET>
@@ -1516,7 +1518,7 @@ Pointset_Powerset<PSET>::ascii_load(std::istream& s) {
       return false;
     new_x.add_disjunct(ph);
   }
-  x.swap(new_x);
+  swap(x, new_x);
 
   // Check invariants.
   PPL_ASSERT_HEAVY(x.OK());

@@ -103,7 +103,8 @@ PPL::Sparse_Row&
 PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
   CO_Tree tmp_tree(Sparse_Row_from_Dense_Row_helper_iterator(row),
                    Sparse_Row_from_Dense_Row_helper_function(row));
-  std::swap(tree, tmp_tree);
+  using std::swap;
+  swap(tree, tmp_tree);
   size_ = row.size();
   flags_ = row.flags();
   PPL_ASSERT(OK());
@@ -112,37 +113,39 @@ PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
 }
 
 void
-PPL::Sparse_Row::swap(dimension_type i, dimension_type j) {
+PPL::Sparse_Row::m_swap(dimension_type i, dimension_type j) {
   PPL_ASSERT(i < size_);
   PPL_ASSERT(j < size_);
 
   if (tree.empty())
     return;
 
+  using std::swap;
+
   iterator itr_i = tree.bisect(i);
   iterator itr_j = tree.bisect(j);
   if (itr_i.index() == i)
     if (itr_j.index() == j)
       // Both elements are in the tree
-      std::swap(*itr_i, *itr_j);
+      swap(*itr_i, *itr_j);
     else {
       // i is in the tree, j isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(*itr_i, tmp);
+      swap(*itr_i, tmp);
       tree.erase(itr_i);
       // Now both iterators have been invalidated.
       itr_j = tree.insert(j);
-      std::swap(*itr_j, tmp);
+      swap(*itr_j, tmp);
     }
   else
     if (itr_j.index() == j) {
       // j is in the tree, i isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(*itr_j, tmp);
+      swap(*itr_j, tmp);
       // Now both iterators have been invalidated.
       tree.erase(itr_j);
       itr_i = tree.insert(i);
-      std::swap(*itr_i, tmp);
+      swap(*itr_i, tmp);
     } else {
       // Do nothing, elements are both unstored zeroes.
     }
@@ -431,7 +434,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
                                                                 coeff1,
                                                                 coeff2),
                      counter + tree.size());
-    std::swap(tree, new_tree);
+    tree.m_swap(new_tree);
 
     // Now remove stored zeroes.
     iterator i = begin();

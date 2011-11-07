@@ -63,17 +63,18 @@ PPL::Bit_Matrix::add_recycled_row(Bit_Row& row) {
     new_rows.insert(new_rows.end(), new_rows_size, Bit_Row());
     // Put the new row in place.
     dimension_type i = new_rows_size-1;
-    new_rows[i].swap(row);
+    new_rows[i].m_swap(row);
     // Steal the old rows.
     while (i-- > 0)
-      new_rows[i].swap(rows[i]);
+      new_rows[i].m_swap(rows[i]);
     // Put the new rows into place.
-    std::swap(rows, new_rows);
+    using std::swap;
+    swap(rows, new_rows);
   }
   else
     // Reallocation will NOT take place: append an empty row
     // and swap it with the new row.
-    rows.insert(rows.end(), Bit_Row())->swap(row);
+    rows.insert(rows.end(), Bit_Row())->m_swap(row);
   PPL_ASSERT(OK());
 }
 
@@ -86,7 +87,7 @@ PPL::Bit_Matrix::transpose() {
   for (dimension_type i = nrows; i-- > 0; )
     for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
       tmp[j].set(i);
-  swap(tmp);
+  m_swap(tmp);
   PPL_ASSERT(OK());
 }
 
@@ -98,7 +99,7 @@ PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
   for (dimension_type i = y_nrows; i-- > 0; )
     for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
       tmp[j].set(i);
-  swap(tmp);
+  m_swap(tmp);
   PPL_ASSERT(OK());
 }
 
@@ -123,9 +124,10 @@ PPL::Bit_Matrix::resize(dimension_type new_n_rows,
       new_rows.insert(new_rows.end(), new_n_rows, Bit_Row());
       // Steal the old rows.
       for (dimension_type i = old_num_rows; i-- > 0; )
-	new_rows[i].swap(rows[i]);
+	new_rows[i].m_swap(rows[i]);
       // Put the new vector into place.
-      std::swap(rows, new_rows);
+      using std::swap;
+      swap(rows, new_rows);
     }
     else
       // Reallocation will NOT take place.

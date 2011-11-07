@@ -50,6 +50,10 @@ operator<<(std::ostream& s, const PIP_Problem& p);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates PIP_Problem */
+void swap(PIP_Problem& x, PIP_Problem& y);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A Parametric Integer (linear) Programming problem.
@@ -700,7 +704,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(PIP_Problem& y);
+  void m_swap(PIP_Problem& y);
 
   //! Possible names for PIP_Problem control parameters.
   enum Control_Parameter_Name {
@@ -818,15 +822,6 @@ private:
 
   friend class PIP_Solution_Node;
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::PIP_Problem */
-void swap(Parma_Polyhedra_Library::PIP_Problem& x,
-	  Parma_Polyhedra_Library::PIP_Problem& y);
-
-} // namespace std
 
 #include "PIP_Problem.inlines.hh"
 #include "PIP_Problem.templates.hh"

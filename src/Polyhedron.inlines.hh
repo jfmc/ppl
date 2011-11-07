@@ -97,22 +97,28 @@ Polyhedron::~Polyhedron() {
 }
 
 inline void
-Polyhedron::swap(Polyhedron& y) {
+Polyhedron::m_swap(Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("swap(y)", "y", y);
-  std::swap(con_sys, y.con_sys);
-  std::swap(gen_sys, y.gen_sys);
-  std::swap(sat_c, y.sat_c);
-  std::swap(sat_g, y.sat_g);
-  std::swap(status, y.status);
-  std::swap(space_dim, y.space_dim);
+  using std::swap;
+  swap(con_sys, y.con_sys);
+  swap(gen_sys, y.gen_sys);
+  swap(sat_c, y.sat_c);
+  swap(sat_g, y.sat_g);
+  swap(status, y.status);
+  swap(space_dim, y.space_dim);
+}
+
+/*! \relates Polyhedron */
+inline void
+swap(Polyhedron& x, Polyhedron& y) {
+  x.m_swap(y);
 }
 
 inline bool
 Polyhedron::can_recycle_constraint_systems() {
   return true;
 }
-
 
 inline bool
 Polyhedron::can_recycle_congruence_systems() {
@@ -455,16 +461,5 @@ is_necessarily_closed_for_interfaces(const Polyhedron& ph) {
 } // namespace Interfaces
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-inline void
-swap(Parma_Polyhedra_Library::Polyhedron& x,
-     Parma_Polyhedra_Library::Polyhedron& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)

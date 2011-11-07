@@ -375,6 +375,19 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates Linear_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Linear_Row& x, Linear_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps the objects referred by \p x and \p y.
+/*! \relates Linear_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void iter_swap(std::vector<Linear_Row>::iterator x,
+	       std::vector<Linear_Row>::iterator y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Linear_Row */
 bool operator==(const Linear_Row& x, const Linear_Row& y);
@@ -423,25 +436,6 @@ bool operator!=(const Linear_Row& x, const Linear_Row& y);
 int compare(const Linear_Row& x, const Linear_Row& y);
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Linear_Row& x,
-	  Parma_Polyhedra_Library::Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void iter_swap(std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator x,
-	       std::vector<Parma_Polyhedra_Library::Linear_Row>::iterator y);
-
-} // namespace std
 
 #include "Linear_Row.inlines.hh"
 

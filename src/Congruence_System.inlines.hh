@@ -192,8 +192,8 @@ Congruence_System::empty() const {
 }
 
 inline void
-Congruence_System::swap(Congruence_System& y) {
-  Dense_Matrix::swap(y);
+Congruence_System::m_swap(Congruence_System& y) {
+  Dense_Matrix::m_swap(y);
 }
 
 inline memory_size_type
@@ -206,18 +206,12 @@ Congruence_System::total_memory_in_bytes() const {
   return Dense_Matrix::total_memory_in_bytes();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Congruence_System */
+/*! \relates Congruence_System */
 inline void
-swap(Parma_Polyhedra_Library::Congruence_System& x,
-     Parma_Polyhedra_Library::Congruence_System& y) {
-  x.swap(y);
+swap(Congruence_System& x, Congruence_System& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Congruence_System_inlines_hh)

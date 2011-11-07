@@ -1049,7 +1049,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 
     // Clear the generators in tmp_gr.
     Grid_Generator_System gs(space_dim);
-    std::swap(tmp_gr.gen_sys, gs);
+    tmp_gr.gen_sys.m_swap(gs);
     tmp_gr.clear_generators_up_to_date();
 
     if (!tmp_gr.update_generators()) {
@@ -1274,7 +1274,7 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
   // Adjust `gs' to the right dimension.
   gs.insert(parameter(0*Variable(space_dim-1)));
 
-  std::swap(gen_sys, gs);
+  gen_sys.m_swap(gs);
 
   normalize_divisors(gen_sys);
 
@@ -1584,7 +1584,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
   // If `y' is empty, the biggest enlargement for `x' is the universe.
   if (!y.minimize()) {
     Grid gr(x.space_dim, UNIVERSE);
-    swap(gr);
+    m_swap(gr);
     return false;
   }
 
@@ -1619,7 +1619,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
         }
       }
     }
-    swap(gr);
+    m_swap(gr);
     PPL_ASSERT(OK());
     return false;
   }
@@ -1735,7 +1735,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	  || (!empty_intersection && w.is_included_in(z))) {
 	Grid result_gr(x.space_dim, UNIVERSE);
 	result_gr.add_congruences(result_cs);
-	x.swap(result_gr);
+	x.m_swap(result_gr);
 	PPL_ASSERT(x.OK());
 	return !empty_intersection;
       }
@@ -1747,7 +1747,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
   // All the congruences are redundant so that the simplified grid
   // is the universe.
   Grid result_gr(x.space_dim, UNIVERSE);
-  x.swap(result_gr);
+  x.m_swap(result_gr);
   PPL_ASSERT(x.OK());
   return true;
 }

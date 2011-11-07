@@ -54,6 +54,11 @@ namespace Parma_Polyhedra_Library {
 
 struct Interval_Base;
 
+//! Swaps \p x with \p y.
+/*! \relates Box */
+template <typename ITV>
+void swap(Box<ITV>& x, Box<ITV>& y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
 /*! \relates Box
   Note that \p x and \p y may be dimension-incompatible boxes:
@@ -476,7 +481,7 @@ public:
     Swaps \p *this with \p y
     (\p *this and \p y can be dimension-incompatible).
   */
-  void swap(Box& y);
+  void m_swap(Box& y);
 
   //@} Constructors, Assignment, Swap and Destructor
 

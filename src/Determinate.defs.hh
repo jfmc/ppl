@@ -34,6 +34,11 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Swaps \p x with \p y.
+/*! \relates Determinate */
+template <typename PSET>
+void swap(Determinate<PSET>& x, Determinate<PSET>& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if \p x and \p y are the same
   COW-wrapped pointset.
@@ -191,7 +196,7 @@ public:
   Determinate& operator=(const Determinate& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Determinate& y);
+  void m_swap(Determinate& y);
 
   //@} // Member Functions that May Modify the Domain Element
 
@@ -320,17 +325,6 @@ private:
   friend bool
   operator!=<PSET>(const Determinate<PSET>& x, const Determinate<PSET>& y);
 };
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Determinate */
-template <typename PSET>
-void swap(Parma_Polyhedra_Library::Determinate<PSET>& x,
-	  Parma_Polyhedra_Library::Determinate<PSET>& y);
-
-} // namespace std
 
 #include "Determinate.inlines.hh"
 

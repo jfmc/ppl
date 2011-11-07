@@ -280,8 +280,10 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       // Element in column `dim' is zero in all rows from the pivot.
       dim_kinds[dim] = GEN_VIRTUAL;
     else {
-      if (row_index != pivot_index)
-	std::swap(sys[row_index], sys[pivot_index]);
+      if (row_index != pivot_index) {
+        using std::swap;
+	swap(sys[row_index], sys[pivot_index]);
+      }
       Grid_Generator& pivot = sys[pivot_index];
       bool pivot_is_line = pivot.is_line();
 
@@ -300,7 +302,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_line_with_line(row, pivot, dim);
 	  else {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
-	    std::swap(row, pivot);
+            using std::swap;
+	    swap(row, pivot);
 	    pivot_is_line = true;
 	    reduce_parameter_with_line(row, pivot, dim, sys);
 	  }
@@ -407,8 +410,10 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       dim_kinds[dim] = CON_VIRTUAL;
     else {
       // row_index != num_rows
-      if (row_index != pivot_index)
-	std::swap(sys[row_index], sys[pivot_index]);
+      if (row_index != pivot_index) {
+        using std::swap;
+	swap(sys[row_index], sys[pivot_index]);
+      }
       Congruence& pivot = sys[pivot_index];
       bool pivot_is_equality = pivot.is_equality();
 
@@ -427,7 +432,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_equality_with_equality(row, pivot, dim);
 	  else {
 	    PPL_ASSERT(pivot.is_proper_congruence());
-	    std::swap(row, pivot);
+            using std::swap;
+	    swap(row, pivot);
 	    pivot_is_equality = true;
 	    reduce_congruence_with_equality(row, pivot, dim, sys);
 	  }
@@ -483,7 +489,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     return_empty:
       last_row[0] = 1;
       dim_kinds.resize(1);
-      std::swap(sys.rows[0], sys.rows.back());
+      using std::swap;
+      swap(sys.rows[0], sys.rows.back());
       sys.remove_trailing_rows(num_rows - 1);
 
       PPL_ASSERT(sys.OK());

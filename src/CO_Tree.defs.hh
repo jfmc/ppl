@@ -217,7 +217,7 @@ public:
 
       This method takes \f$O(1)\f$ time.
     */
-    void swap(const_iterator& itr);
+    void m_swap(const_iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
@@ -375,7 +375,7 @@ public:
 
       This method takes \f$O(1)\f$ time.
     */
-    void swap(iterator& itr);
+    void m_swap(iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
@@ -709,7 +709,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void swap(CO_Tree& x);
+  void m_swap(CO_Tree& x);
 
   //! Returns an iterator that points at the first element.
   /*!
@@ -1509,34 +1509,25 @@ private:
   dimension_type offset;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates CO_Tree */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(CO_Tree& x, CO_Tree& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates CO_Tree::const_iterator */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(CO_Tree::const_iterator& x, CO_Tree::const_iterator& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates CO_Tree::iterator */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(CO_Tree::iterator& x, CO_Tree::iterator& y);
+
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::CO_Tree */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::CO_Tree& x,
-          Parma_Polyhedra_Library::CO_Tree& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::CO_Tree::const_iterator */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::CO_Tree::const_iterator& x,
-          Parma_Polyhedra_Library::CO_Tree::const_iterator& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::CO_Tree::iterator */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::CO_Tree::iterator& x,
-          Parma_Polyhedra_Library::CO_Tree::iterator& y);
-
-
-} // namespace std
 
 #include "CO_Tree.inlines.hh"
 #include "CO_Tree.templates.hh"

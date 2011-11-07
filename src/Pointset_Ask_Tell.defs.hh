@@ -339,7 +339,7 @@ public:
   Pointset_Ask_Tell& operator=(const Pointset_Ask_Tell<QH>& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Pointset_Ask_Tell& y);
+  void m_swap(Pointset_Ask_Tell& y);
 
   /*! \brief
     Adds \p m new dimensions to the vector space containing \p *this
@@ -450,6 +450,11 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+//! Swaps \p x with \p y.
+/*! \relates Pointset_Ask_Tell */
+template <typename PSET>
+void swap(Pointset_Ask_Tell<PSET>& x, Pointset_Ask_Tell<PSET>& y);
+
 // CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
 // before the declaration of the corresponding full specialization
@@ -491,17 +496,6 @@ Pointset_Ask_Tell<NNC_Polyhedron>
 ::geometrically_covers(const Pointset_Ask_Tell& y) const;
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Pointset_Ask_Tell */
-template <typename PSET>
-void swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& x,
-	  Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& y);
-
-} // namespace std
 
 #include "Pointset_Ask_Tell.inlines.hh"
 #include "Pointset_Ask_Tell.templates.hh"

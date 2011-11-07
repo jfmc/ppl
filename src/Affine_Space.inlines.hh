@@ -62,7 +62,7 @@ Affine_Space::Affine_Space(const Polyhedron& ph,
 inline
 Affine_Space::Affine_Space(Generator_System& gs, Recycle_Input)
   : gr(EMPTY) {
-  Affine_Space(gs).swap(*this);
+  Affine_Space(gs).m_swap(*this);
 }
 
 template <typename U>
@@ -109,8 +109,8 @@ Affine_Space::minimized_constraints() const {
 }
 
 inline void
-Affine_Space::swap(Affine_Space& y) {
-  std::swap(gr, y.gr);
+Affine_Space::m_swap(Affine_Space& y) {
+  swap(gr, y.gr);
 }
 
 inline void
@@ -213,17 +213,12 @@ inline void
 Affine_Space::topological_closure_assign() {
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Affine_Space */
+/*! \relates Affine_Space */
 inline void
-swap(Parma_Polyhedra_Library::Affine_Space& x,
-     Parma_Polyhedra_Library::Affine_Space& y) {
-  x.swap(y);
+swap(Affine_Space& x, Affine_Space& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Affine_Space_inlines_hh)

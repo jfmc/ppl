@@ -3084,7 +3084,7 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
   // (this subsumes the case when `y' is empty).
   if (x.contains(y)) {
     Octagonal_Shape<T> res(dim, UNIVERSE);
-    x.swap(res);
+    x.m_swap(res);
     return false;
   }
 
@@ -3140,7 +3140,7 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
     // CHECKME: round down is really meant.
     neg_assign_r(res.matrix_at(j, i), tmp, ROUND_DOWN);
     PPL_ASSERT(!is_plus_infinity(res.matrix_at(j, i)));
-    x.swap(res);
+    x.m_swap(res);
     return false;
   }
 
@@ -3222,7 +3222,7 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
         // Target reached: swap `x' and `res' if needed.
         if (res_num_nonred < x_num_nonred) {
           res.reset_strongly_closed();
-          x.swap(res);
+          x.m_swap(res);
         }
         return bool_result;
       }
@@ -3262,7 +3262,7 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
         // Target reached: swap `x' and `res' if needed.
         if (res_num_nonred < x_num_nonred) {
           res.reset_strongly_closed();
-          x.swap(res);
+          x.m_swap(res);
         }
         return bool_result;
       }
@@ -3299,7 +3299,7 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
           // Target reached: swap `x' and `res' if needed.
           if (res_num_nonred < x_num_nonred) {
             res.reset_strongly_closed();
-            x.swap(res);
+            x.m_swap(res);
           }
           return bool_result;
         }
@@ -3515,7 +3515,8 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
     }
   }
 
-  std::swap(matrix, x);
+  using std::swap;
+  swap(matrix, x);
   space_dim = new_space_dim;
   PPL_ASSERT(OK());
 }
@@ -4856,6 +4857,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+  using std::swap;
 
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = expr.inhomogeneous_term();
@@ -4902,7 +4904,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         PPL_DIRTY_TEMP(N, minus_d);
         div_round_up(minus_d, b, minus_den);
         if (sign_symmetry)
-          std::swap(d, minus_d);
+          swap(d, minus_d);
         const Row_Iterator m_begin = matrix.row_begin();
         const Row_Iterator m_end = matrix.row_end();
         Row_Iterator m_iter = m_begin + n_var;
@@ -4917,7 +4919,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
           N& m_cv_j = m_cv[j];
           add_assign_r(m_cv_j, m_cv_j, d, ROUND_UP);
           if (sign_symmetry)
-            std::swap(m_v_j, m_cv_j);
+            swap(m_v_j, m_cv_j);
         }
         for ( ; m_iter != m_end; ++m_iter) {
           Row_Reference m_i = *m_iter;
@@ -4926,7 +4928,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
           N& m_i_cv = m_i[n_var + 1];
           add_assign_r(m_i_cv, m_i_cv, minus_d, ROUND_UP);
           if (sign_symmetry)
-            std::swap(m_i_v, m_i_cv);
+            swap(m_i_v, m_i_cv);
         }
         // Now update unary constraints on var.
         mul_2exp_assign_r(d, d, 1, ROUND_UP);
@@ -4936,7 +4938,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         N& m_v_cv = m_v[n_var + 1];
         add_assign_r(m_v_cv, m_v_cv, minus_d, ROUND_UP);
         if (sign_symmetry)
-          std::swap(m_cv_v, m_v_cv);
+          swap(m_cv_v, m_v_cv);
         // Note: strong closure is preserved.
       }
       else {
@@ -5202,7 +5204,6 @@ template <typename Interval_Info>
 void
 Octagonal_Shape<T>::affine_form_image(const Variable var,
                     const Linear_Form< Interval<T, Interval_Info> >& lf) {
-
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
     "Octagonal_Shape<T>::affine_form_image(Variable, Linear_Form):"
@@ -5245,6 +5246,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
+  using std::swap;
 
   const dimension_type n_var = 2*var_id;
   const FP_Interval_Type& b = lf.inhomogeneous_term();
@@ -5293,7 +5295,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
         // Translate all the constraints on `var' by adding the value
         // `b_ub' or subtracting the value `b_lb'.
         if (is_w_coeff_minus_one)
-          std::swap(b_ub, b_mlb);
+          swap(b_ub, b_mlb);
         const Row_Iterator m_begin = matrix.row_begin();
         const Row_Iterator m_end = matrix.row_end();
         Row_Iterator m_iter = m_begin + n_var;
@@ -5308,7 +5310,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
           N& m_cv_j = m_cv[j];
           add_assign_r(m_cv_j, m_cv_j, b_ub, ROUND_UP);
           if (is_w_coeff_minus_one)
-            std::swap(m_v_j, m_cv_j);
+            swap(m_v_j, m_cv_j);
         }
         for ( ; m_iter != m_end; ++m_iter) {
           Row_Reference m_i = *m_iter;
@@ -5317,7 +5319,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
           N& m_i_cv = m_i[n_var + 1];
           add_assign_r(m_i_cv, m_i_cv, b_mlb, ROUND_UP);
           if (is_w_coeff_minus_one)
-            std::swap(m_i_v, m_i_cv);
+            swap(m_i_v, m_i_cv);
         }
         // Now update unary constraints on var.
         mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
@@ -5327,7 +5329,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
         N& m_v_cv = m_v[n_var + 1];
         add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
         if (is_w_coeff_minus_one)
-          std::swap(m_cv_v, m_v_cv);
+          swap(m_cv_v, m_v_cv);
         // Note: strong closure is preserved.
       }
       else {
@@ -7344,7 +7346,7 @@ Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
   }
 
   // The upper bound of x and y is indeed exact.
-  swap(ub);
+  m_swap(ub);
   PPL_ASSERT(OK());
   return true;
 }
@@ -7534,7 +7536,7 @@ Octagonal_Shape<T>
   }
 
   // The upper bound of x and y is indeed exact.
-  swap(ub);
+  m_swap(ub);
   PPL_ASSERT(OK());
   return true;
 }

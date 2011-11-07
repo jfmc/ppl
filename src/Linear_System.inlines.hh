@@ -129,11 +129,12 @@ Linear_System::assign_with_pending(const Linear_System& y) {
 }
 
 inline void
-Linear_System::swap(Linear_System& y) {
-  Dense_Matrix::swap(y);
-  std::swap(row_topology, y.row_topology);
-  std::swap(index_first_pending, y.index_first_pending);
-  std::swap(sorted, y.sorted);
+Linear_System::m_swap(Linear_System& y) {
+  Dense_Matrix::m_swap(y);
+  using std::swap;
+  swap(row_topology, y.row_topology);
+  swap(index_first_pending, y.index_first_pending);
+  swap(sorted, y.sorted);
 }
 
 inline void
@@ -235,21 +236,11 @@ Linear_System::Row_Less_Than::operator()(const Dense_Row& x,
 		 static_cast<const Linear_Row&>(y)) < 0;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_System */
+/*! \relates Linear_System */
 inline void
-swap(Parma_Polyhedra_Library::Linear_System& x,
-     Parma_Polyhedra_Library::Linear_System& y) {
-  x.swap(y);
+swap(Linear_System& x, Linear_System& y) {
+  x.m_swap(y);
 }
-
-} // namespace std
-
-
-namespace Parma_Polyhedra_Library {
 
 inline
 Linear_System::With_Bit_Matrix_iterator::
@@ -370,26 +361,21 @@ Linear_System::With_Bit_Matrix_iterator::operator->() const {
 
 inline void
 Linear_System::With_Bit_Matrix_iterator::
-iter_swap(const With_Bit_Matrix_iterator& y) const {
-  std::iter_swap(i1, y.i1);
-  std::iter_swap(i2, y.i2);
+m_iter_swap(const With_Bit_Matrix_iterator& y) const {
+  using std::iter_swap;
+  iter_swap(i1, y.i1);
+  iter_swap(i2, y.i2);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Linear_System::With_Bit_Matrix_iterator */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+inline void
+iter_swap(Linear_System::With_Bit_Matrix_iterator x,
+	  Linear_System::With_Bit_Matrix_iterator y) {
+  x.m_iter_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-inline void
-iter_swap(Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator x,
-	  Parma_Polyhedra_Library
-	  ::Linear_System::With_Bit_Matrix_iterator y) {
-  x.iter_swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Linear_System_inlines_hh)

@@ -115,9 +115,9 @@ Ask_Tell<D>::operator=(const Ask_Tell& y) {
 
 template <typename D>
 inline void
-Ask_Tell<D>::swap(Ask_Tell& y) {
-  std::swap(sequence, y.sequence);
-  std::swap(normalized, y.normalized);
+Ask_Tell<D>::m_swap(Ask_Tell& y) {
+  swap(sequence, y.sequence);
+  swap(normalized, y.normalized);
 }
 
 template <typename D>
@@ -314,19 +314,13 @@ Ask_Tell<D>::probe(const D& tell, const D& ask) const {
   return false;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Ask_Tell */
+/*! \relates Ask_Tell */
 template <typename D>
 inline void
-swap(Parma_Polyhedra_Library::Ask_Tell<D>& x,
-     Parma_Polyhedra_Library::Ask_Tell<D>& y) {
-  x.swap(y);
+swap(Ask_Tell<D>& x, Ask_Tell<D>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Ask_Tell_inlines_hh)

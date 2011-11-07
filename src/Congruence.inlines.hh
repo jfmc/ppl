@@ -59,7 +59,7 @@ Congruence::~Congruence() {
 inline
 Congruence::Congruence(Linear_Expression& le,
 		       Coefficient_traits::const_reference m) {
-  Dense_Row::swap(static_cast<Dense_Row&>(le));
+  Dense_Row::m_swap(static_cast<Dense_Row&>(le));
   PPL_ASSERT(m >= 0);
   (*this)[size()-1] = m;
 }
@@ -222,21 +222,16 @@ Congruence::total_memory_in_bytes() const {
 }
 
 inline void
-Congruence::swap(Congruence& y) {
-  Dense_Row::swap(y);
+Congruence::m_swap(Congruence& y) {
+  Dense_Row::m_swap(y);
+}
+
+/*! \relates Congruence */
+inline void
+swap(Congruence& x, Congruence& y) {
+  x.m_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Congruence */
-inline void
-swap(Parma_Polyhedra_Library::Congruence& x,
-     Parma_Polyhedra_Library::Congruence& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Congruence_inlines_hh)

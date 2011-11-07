@@ -192,7 +192,7 @@ public:
   DB_Row& operator=(const DB_Row& y);
 
   //! Swaps \p *this with \p y.
-  void swap(DB_Row& y);
+  void m_swap(DB_Row& y);
 
   //! Assigns the implementation of \p y to \p *this.
   void assign(DB_Row& y);
@@ -306,6 +306,21 @@ private:
 };
 
 namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates DB_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
+void swap(DB_Row<T>& x, DB_Row<T>& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps objects referred by \p x and \p y.
+/*! \relates DB_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
+void iter_swap(typename std::vector<DB_Row<T> >::iterator x,
+	       typename std::vector<DB_Row<T> >::iterator y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \name Classical comparison operators.
@@ -448,28 +463,6 @@ private:
   //! Exception-safe copy construction mechanism.
   void copy_construct(const Impl& y);
 };
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::DB_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-void swap(Parma_Polyhedra_Library::DB_Row<T>& x,
-	  Parma_Polyhedra_Library::DB_Row<T>& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::DB_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename T>
-void iter_swap(typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
-	       ::iterator x,
-	       typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
-	       ::iterator y);
-
-} // namespace std
 
 #include "DB_Row.inlines.hh"
 #include "DB_Row.templates.hh"

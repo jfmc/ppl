@@ -29,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
-  Linear_Row::swap(e);
+  Linear_Row::m_swap(e);
   set_flags(Flags(topology, ((type == LINE)
                              ? LINE_OR_EQUALITY
                              : RAY_OR_POINT_OR_INEQUALITY)));
@@ -206,8 +206,8 @@ Generator::ascii_load(std::istream& s) {
 }
 
 inline void
-Generator::swap(Generator& y) {
-  Linear_Row::swap(y);
+Generator::m_swap(Generator& y) {
+  Linear_Row::m_swap(y);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -384,17 +384,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign<To, To>(r, x, y, dir);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Generator */
+/*! \relates Generator */
 inline void
-swap(Parma_Polyhedra_Library::Generator& x,
-     Parma_Polyhedra_Library::Generator& y) {
-  x.swap(y);
+swap(Generator& x, Generator& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Generator_inlines_hh)

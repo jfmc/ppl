@@ -181,8 +181,8 @@ Generator_System::zero_dim_univ() {
 }
 
 inline void
-Generator_System::swap(Generator_System& y) {
-  Linear_System::swap(y);
+Generator_System::m_swap(Generator_System& y) {
+  Linear_System::m_swap(y);
 }
 
 inline memory_size_type
@@ -201,18 +201,12 @@ Generator_System::simplify() {
   remove_invalid_lines_and_rays();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Constraint_System */
+/*! \relates Generator_System */
 inline void
-swap(Parma_Polyhedra_Library::Generator_System& x,
-     Parma_Polyhedra_Library::Generator_System& y) {
-  x.swap(y);
+swap(Generator_System& x, Generator_System& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Generator_System_inlines_hh)

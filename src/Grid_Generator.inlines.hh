@@ -38,7 +38,7 @@ Grid_Generator::~Grid_Generator() {
 inline
 Grid_Generator::Grid_Generator(Generator g)
   : Generator(Generator::point()) {
-  Generator::swap(g);
+  Generator::m_swap(g);
 }
 
 inline dimension_type
@@ -191,8 +191,8 @@ Grid_Generator::strong_normalize() {
 }
 
 inline void
-Grid_Generator::swap(Grid_Generator& y) {
-  Generator::swap(y);
+Grid_Generator::m_swap(Grid_Generator& y) {
+  Generator::m_swap(y);
 }
 
 /*! \relates Grid_Generator */
@@ -227,17 +227,12 @@ grid_point(const Linear_Expression& e,
   return Grid_Generator::grid_point(e, d);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Grid_Generator */
+/*! \relates Grid_Generator */
 inline void
-swap(Parma_Polyhedra_Library::Grid_Generator& x,
-     Parma_Polyhedra_Library::Grid_Generator& y) {
-  x.swap(y);
+swap(Grid_Generator& x, Grid_Generator& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Grid_Generator_inlines_hh)

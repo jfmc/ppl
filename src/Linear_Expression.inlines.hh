@@ -160,8 +160,8 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 }
 
 inline void
-Linear_Expression::swap(Linear_Expression& y) {
-  Linear_Row::swap(y);
+Linear_Expression::m_swap(Linear_Expression& y) {
+  Linear_Row::m_swap(y);
 }
 
 inline void
@@ -174,18 +174,12 @@ Linear_Expression::ascii_load(std::istream& s) {
   return Linear_Row::ascii_load(s);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_Expression */
+/*! \relates Linear_Expression */
 inline void
-swap(Parma_Polyhedra_Library::Linear_Expression& x,
-     Parma_Polyhedra_Library::Linear_Expression& y) {
-  x.swap(y);
+swap(Linear_Expression& x, Linear_Expression& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Expression_inlines_hh)

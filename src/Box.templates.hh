@@ -354,7 +354,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
   // c) the polyhedron is already described by a generator system.
   if (ph.generators_are_up_to_date() && !ph.has_pending_constraints()) {
     Box tmp(ph.generators());
-    swap(tmp);
+    m_swap(tmp);
     return;
   }
 
@@ -433,7 +433,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
       set_empty();
     else {
       Box tmp(ph.generators());
-      swap(tmp);
+      m_swap(tmp);
     }
   }
 }
@@ -504,7 +504,7 @@ Box<ITV>::Box(const Partially_Reduced_Product<D1, D2, R>& dp,
   Box tmp1(dp.domain1(), complexity);
   Box tmp2(dp.domain2(), complexity);
   tmp1.intersection_assign(tmp2);
-  swap(tmp1);
+  m_swap(tmp1);
 }
 
 template <typename ITV>
@@ -2014,12 +2014,12 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
     const dimension_type vsi_next = *vsi;
     // All intervals in between are moved to the left.
     while (src < vsi_next)
-      seq[dst++].swap(seq[src++]);
+      swap(seq[dst++], seq[src++]);
     ++src;
   }
   // Moving the remaining intervals.
   while (src < old_space_dim)
-    seq[dst++].swap(seq[src++]);
+    swap(seq[dst++], seq[src++]);
 
   PPL_ASSERT(dst == new_space_dim);
   seq.resize(new_space_dim);
@@ -2076,9 +2076,9 @@ Box<ITV>::map_space_dimensions(const Partial_Function& pfunc) {
   for (dimension_type i = 0; i < space_dim; ++i) {
     dimension_type new_i;
     if (pfunc.maps(i, new_i))
-      seq[i].swap(tmp.seq[new_i]);
+      swap(seq[i], tmp.seq[new_i]);
   }
-  swap(tmp);
+  m_swap(tmp);
   PPL_ASSERT(OK());
 }
 

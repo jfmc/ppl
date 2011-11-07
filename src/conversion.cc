@@ -354,6 +354,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
   const dimension_type source_num_columns = source.num_columns();
   const dimension_type dest_num_columns = dest.num_columns();
 
+  using std::swap;
+
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
   // is the same as the number of rows of `dest'.
@@ -383,7 +385,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
     if (source_num_redundant > 0)
       // Let the next constraint have index `k'.
       // There is no need to swap the columns of `sat' (all zeroes).
-      std::swap(source[k], source[k+source_num_redundant]);
+      swap(source[k], source[k+source_num_redundant]);
 
     Linear_Row& source_k = source[k];
 
@@ -455,10 +457,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
       dest.set_sorted(false);
       --num_lines_or_equalities;
       if (index_non_zero != num_lines_or_equalities) {
-	std::swap(dest[index_non_zero],
-		  dest[num_lines_or_equalities]);
-	std::swap(scalar_prod[index_non_zero],
-		  scalar_prod[num_lines_or_equalities]);
+	swap(dest[index_non_zero],
+             dest[num_lines_or_equalities]);
+	swap(scalar_prod[index_non_zero],
+             scalar_prod[num_lines_or_equalities]);
       }
       Linear_Row& dest_nle = dest[num_lines_or_equalities];
 
@@ -560,9 +562,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // removed from `dest'.
       else {
 	--dest_num_rows;
-	std::swap(dest_nle, dest[dest_num_rows]);
-	std::swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
-	std::swap(sat_nle, sat[dest_num_rows]);
+	swap(dest_nle, dest[dest_num_rows]);
+	swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
+	swap(sat_nle, sat[dest_num_rows]);
 	// `dest' has already been set as non-sorted.
       }
       // We continue with the next constraint.
@@ -595,9 +597,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	const int sp_sign = sgn(scalar_prod[sup_bound]);
 	if (sp_sign == 0) {
 	  // This generator has to be moved in Q=.
-	  std::swap(dest[sup_bound], dest[lines_or_equal_bound]);
-	  std::swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
-	  std::swap(sat[sup_bound], sat[lines_or_equal_bound]);
+	  swap(dest[sup_bound], dest[lines_or_equal_bound]);
+	  swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
+	  swap(sat[sup_bound], sat[lines_or_equal_bound]);
 	  ++lines_or_equal_bound;
 	  ++sup_bound;
 	  dest.set_sorted(false);
@@ -605,9 +607,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	else if (sp_sign < 0) {
 	  // This generator has to be moved in Q-.
 	  --inf_bound;
-	  std::swap(dest[sup_bound], dest[inf_bound]);
-	  std::swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
-	  std::swap(sat[sup_bound], sat[inf_bound]);
+	  swap(dest[sup_bound], dest[inf_bound]);
+	  swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
+	  swap(sat[sup_bound], sat[inf_bound]);
 	  dest.set_sorted(false);
 	}
 	else
@@ -727,7 +729,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		    sat.add_recycled_row(new_satrow);
 		  }
 		  else
-                    sat[dest_num_rows].swap(new_satrow);
+                    sat[dest_num_rows].m_swap(new_satrow);
 
 		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
@@ -796,9 +798,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	  dimension_type i = dest_num_rows;
 	  while (j < bound && i > bound) {
 	    --i;
-	    std::swap(dest[i], dest[j]);
-	    std::swap(scalar_prod[i], scalar_prod[j]);
-	    std::swap(sat[i], sat[j]);
+	    swap(dest[i], dest[j]);
+	    swap(scalar_prod[i], scalar_prod[j]);
+	    swap(sat[i], sat[j]);
 	    ++j;
 	    dest.set_sorted(false);
 	  }

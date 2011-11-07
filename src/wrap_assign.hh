@@ -103,7 +103,7 @@ wrap_assign_ind(PSET& pointset,
       p.refine_with_constraint(x <= max_value);
       hull.upper_bound_assign(p);
     }
-    pointset.swap(hull);
+    pointset.m_swap(hull);
   }
 }
 
@@ -351,7 +351,7 @@ wrap_assign(PSET& pointset,
         p.refine_with_constraint(x <= max_value);
         hull.upper_bound_assign(p);
       }
-      pointset.swap(hull);
+      pointset.m_swap(hull);
     }
     else if (wrap_individually || !collective_wrap_too_complex) {
       PPL_ASSERT(!wrap_individually || pcs != 0);
@@ -373,7 +373,7 @@ wrap_assign(PSET& pointset,
       wrap_assign_col(hull, pointset, dimensions_to_be_translated,
                       translations.begin(), translations.end(),
                       w, min_value, max_value, pcs, ln);
-      pointset.swap(hull);
+      pointset.m_swap(hull);
     }
   }
 

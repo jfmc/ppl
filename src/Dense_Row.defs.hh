@@ -102,7 +102,7 @@ public:
   Dense_Row& operator=(const Sparse_Row& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Dense_Row& y);
+  void m_swap(Dense_Row& y);
 
   //! Resizes the row to \p sz.
   void resize(dimension_type sz);
@@ -157,11 +157,11 @@ public:
 
   //! Swaps the i-th element with the j-th element.
   //! Provided for compatibility with Sparse_Row
-  void swap(dimension_type i, dimension_type j);
+  void m_swap(dimension_type i, dimension_type j);
 
   //! Swaps the element pointed to by i with the element pointed to by j.
   //! Provided for compatibility with Sparse_Row
-  void swap(iterator i, iterator j);
+  void m_swap(iterator i, iterator j);
 
   iterator begin();
   const_iterator begin() const;
@@ -487,6 +487,19 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void swap(Dense_Row& x, Dense_Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps objects referred by \p x and \p y.
+/*! \relates Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void iter_swap(std::vector<Dense_Row>::iterator x,
+               std::vector<Dense_Row>::iterator y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Dense_Row */
 bool operator==(const Dense_Row& x, const Dense_Row& y);
@@ -496,25 +509,6 @@ bool operator==(const Dense_Row& x, const Dense_Row& y);
 bool operator!=(const Dense_Row& x, const Dense_Row& y);
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Dense_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Dense_Row& x,
-          Parma_Polyhedra_Library::Dense_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Dense_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
-               std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y);
-
-} // namespace std
 
 #include "Dense_Row.inlines.hh"
 #include "Dense_Row.templates.hh"

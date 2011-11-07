@@ -37,9 +37,10 @@ Sparse_Matrix::max_num_columns() {
 }
 
 inline void
-Sparse_Matrix::swap(Sparse_Matrix& x) {
-  std::swap(rows, x.rows);
-  std::swap(num_columns_, x.num_columns_);
+Sparse_Matrix::m_swap(Sparse_Matrix& x) {
+  using std::swap;
+  swap(rows, x.rows);
+  swap(num_columns_, x.num_columns_);
 }
 
 inline dimension_type
@@ -87,14 +88,14 @@ Sparse_Matrix::add_row(const Sparse_Row& x) {
   Sparse_Row row(x);
   add_zero_rows(1, Flags());
   // Now x may have been invalidated, if it was a row of this matrix.
-  rows.back().swap(row);
+  rows.back().m_swap(row);
   PPL_ASSERT(OK());
 }
 
 inline void
 Sparse_Matrix::add_recycled_row(Sparse_Row& x) {
   add_zero_rows(1, Flags());
-  rows.back().swap(x);
+  rows.back().m_swap(x);
   PPL_ASSERT(OK());
 }
 
@@ -156,16 +157,11 @@ Sparse_Matrix::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
 inline void
-swap(Parma_Polyhedra_Library::Sparse_Matrix& x,
-     Parma_Polyhedra_Library::Sparse_Matrix& y) {
-  x.swap(y);
+swap(Sparse_Matrix& x, Sparse_Matrix& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Sparse_Matrix_inlines_hh)

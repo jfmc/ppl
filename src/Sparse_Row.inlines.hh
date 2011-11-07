@@ -62,10 +62,11 @@ Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
 }
 
 inline void
-Sparse_Row::swap(Sparse_Row& x) {
-  tree.swap(x.tree);
-  std::swap(size_, x.size_);
-  std::swap(flags_, x.flags_);
+Sparse_Row::m_swap(Sparse_Row& x) {
+  using std::swap;
+  tree.m_swap(x.tree);
+  swap(size_, x.size_);
+  swap(flags_, x.flags_);
   PPL_ASSERT(OK());
   PPL_ASSERT(x.OK());
 }
@@ -327,10 +328,11 @@ Sparse_Row::insert(iterator itr, dimension_type i) {
 }
 
 inline void
-Sparse_Row::swap(iterator i, iterator j) {
+Sparse_Row::m_swap(iterator i, iterator j) {
   PPL_ASSERT(i != end());
   PPL_ASSERT(j != end());
-  std::swap(*i, *j);
+  using std::swap;
+  swap(*i, *j);
   PPL_ASSERT(OK());
 }
 
@@ -369,17 +371,11 @@ Sparse_Row::total_memory_in_bytes(dimension_type /* capacity */) const {
   return total_memory_in_bytes();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
 inline void
-swap(Parma_Polyhedra_Library::Sparse_Row& x,
-     Parma_Polyhedra_Library::Sparse_Row& y) {
-  x.swap(y);
+swap(Sparse_Row& x, Sparse_Row& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Sparse_Row_inlines_hh)

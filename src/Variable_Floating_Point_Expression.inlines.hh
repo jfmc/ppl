@@ -41,9 +41,10 @@ Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
-	 Variable_Floating_Point_Expression& y) {
-  std::swap(variable_index, y.variable_index);
+Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::m_swap(Variable_Floating_Point_Expression& y) {
+  using std::swap;
+  swap(variable_index, y.variable_index);
 }
 
 template <typename FP_Interval_Type, typename FP_Format>
@@ -83,20 +84,14 @@ Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   return;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Variable_Floating_Point_Expression */
+/*! \relates Variable_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-swap(Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
-                              FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library::Variable_Floating_Point_Expression<
-                              FP_Interval_Type, FP_Format>& y) {
-  x.swap(y);
+swap(Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_Floating_Point_Expression_inlines_hh)

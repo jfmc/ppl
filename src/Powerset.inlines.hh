@@ -123,9 +123,10 @@ Powerset<D>::operator=(const Powerset& y) {
 
 template <typename D>
 inline void
-Powerset<D>::swap(Powerset& y) {
-  std::swap(sequence, y.sequence);
-  std::swap(reduced, y.reduced);
+Powerset<D>::m_swap(Powerset& y) {
+  using std::swap;
+  swap(sequence, y.sequence);
+  swap(reduced, y.reduced);
 }
 
 template <typename D>
@@ -218,19 +219,13 @@ Powerset<D>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Powerset */
+/*! \relates Powerset */
 template <typename D>
 inline void
-swap(Parma_Polyhedra_Library::Powerset<D>& x,
-     Parma_Polyhedra_Library::Powerset<D>& y) {
-  x.swap(y);
+swap(Powerset<D>& x, Powerset<D>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Powerset_inlines_hh)

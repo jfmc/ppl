@@ -60,6 +60,10 @@ operator<<(std::ostream& s, const Affine_Space& gr);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Affine_Space */
+void swap(Affine_Space& x, Affine_Space& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if \p x and \p y are the same
   affine space.
@@ -1641,7 +1645,7 @@ public:
     Swaps \p *this with affine space \p y.  (\p *this and \p y can be
     dimension-incompatible.)
   */
-  void swap(Affine_Space& y);
+  void m_swap(Affine_Space& y);
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -1706,16 +1710,6 @@ protected:
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 };
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Affine_Space */
-void swap(Parma_Polyhedra_Library::Affine_Space& x,
-	  Parma_Polyhedra_Library::Affine_Space& y);
-
-} // namespace std
 
 #include "Affine_Space.inlines.hh"
 

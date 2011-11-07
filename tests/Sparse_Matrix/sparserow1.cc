@@ -187,7 +187,7 @@ test04() {
   if (row.find(0) != row.end())
     return false;
 
-  row.swap(0, 1);
+  row.m_swap(0, 1);
 
   if (row.get(0) != 2)
     return false;
@@ -195,7 +195,7 @@ test04() {
   if (row.find(1) != row.end())
     return false;
 
-  row.swap(0, 1);
+  row.m_swap(0, 1);
 
   if (row.get(1) != 2)
     return false;
@@ -211,7 +211,7 @@ test04() {
   if (row.get(0) != 3)
     return false;
 
-  row.swap(0, 1);
+  row.m_swap(0, 1);
 
   if (row.get(1) != 3)
     return false;
@@ -227,7 +227,7 @@ test04() {
   if (row.find(0) != row.end())
     return false;
 
-  row.swap(0, 1);
+  row.m_swap(0, 1);
 
   if (row.find(1) != row.end())
     return false;

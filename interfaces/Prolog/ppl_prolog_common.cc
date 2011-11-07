@@ -2109,7 +2109,7 @@ ppl_MIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
     MIP_Problem* rhs = term_to_handle<MIP_Problem>(t_rhs, where);
     PPL_CHECK(lhs);
     PPL_CHECK(rhs);
-    lhs->swap(*rhs);
+    swap(*lhs, *rhs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2610,7 +2610,7 @@ ppl_PIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
     PIP_Problem* rhs = term_to_handle<PIP_Problem>(t_rhs, where);
     PPL_CHECK(lhs);
     PPL_CHECK(rhs);
-    lhs->swap(*rhs);
+    swap(*lhs, *rhs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

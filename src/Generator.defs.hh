@@ -51,16 +51,11 @@ std::ostream& operator<<(std::ostream& s, const Generator& g);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Generator */
+void swap(Generator& x, Generator& y);
+
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Generator */
-void swap(Parma_Polyhedra_Library::Generator& x,
-	  Parma_Polyhedra_Library::Generator& y);
-
-} // namespace std
 
 
 //! A line, ray, point or closure point.
@@ -391,7 +386,7 @@ public:
   bool OK() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Generator& y);
+  void m_swap(Generator& y);
 
 private:
   /*! \brief

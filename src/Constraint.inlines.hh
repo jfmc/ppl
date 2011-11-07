@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  Linear_Row::swap(e);
+  Linear_Row::m_swap(e);
   set_flags(Flags(topology, ((type == EQUALITY)
                              ? LINE_OR_EQUALITY
                              : RAY_OR_POINT_OR_INEQUALITY)));
@@ -360,21 +360,16 @@ Constraint::ascii_load(std::istream& s) {
 }
 
 inline void
-Constraint::swap(Constraint& y) {
-  Linear_Row::swap(y);
+Constraint::m_swap(Constraint& y) {
+  Linear_Row::m_swap(y);
+}
+
+/*! \relates Constraint */
+inline void
+swap(Constraint& x, Constraint& y) {
+  x.m_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Constraint */
-inline void
-swap(Parma_Polyhedra_Library::Constraint& x,
-     Parma_Polyhedra_Library::Constraint& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Constraint_inlines_hh)

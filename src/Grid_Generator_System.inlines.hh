@@ -131,8 +131,8 @@ Grid_Generator_System::clear() {
 }
 
 inline void
-Grid_Generator_System::swap(Grid_Generator_System& y) {
-  Generator_System::swap(y);
+Grid_Generator_System::m_swap(Grid_Generator_System& y) {
+  Generator_System::m_swap(y);
 }
 
 inline memory_size_type
@@ -263,18 +263,12 @@ operator==(const Grid_Generator_System& x,
   return x.is_equal_to(y);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Constraint_System */
+/*! \relates Grid_Generator_System */
 inline void
-swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
-     Parma_Polyhedra_Library::Grid_Generator_System& y) {
-  x.swap(y);
+swap(Grid_Generator_System& x, Grid_Generator_System& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Grid_Generator_System_inlines_hh)

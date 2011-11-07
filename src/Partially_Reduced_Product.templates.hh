@@ -452,15 +452,16 @@ Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
 
 template <typename D1, typename D2>
 void Smash_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+  using std::swap;
   if (d2.is_empty()) {
     if (!d1.is_empty()) {
       D1 new_d1(d1.space_dimension(), EMPTY);
-      std::swap(d1, new_d1);
+      swap(d1, new_d1);
     }
   }
   else if (d1.is_empty()) {
     D2 new_d2(d2.space_dimension(), EMPTY);
-    std::swap(d2, new_d2);
+    swap(d2, new_d2);
   }
 }
 
@@ -473,17 +474,18 @@ void Constraints_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
     return;
   }
   else {
+    using std::swap;
     dimension_type space_dim = d1.space_dimension();
     d1.refine_with_constraints(d2.minimized_constraints());
     if (d1.is_empty()) {
       D2 new_d2(space_dim, EMPTY);
-      std::swap(d2, new_d2);
+      swap(d2, new_d2);
       return;
     }
     d2.refine_with_constraints(d1.minimized_constraints());
     if (d2.is_empty()) {
       D1 new_d1(space_dim, EMPTY);
-      std::swap(d1, new_d1);
+      swap(d1, new_d1);
     }
   }
 }
@@ -559,12 +561,13 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
           }
           else {
             if (max_decreased < min_increased) {
+              using std::swap;
               // In this case, d intersects no hyperplanes defined by cg,
               // so set d to empty and return false.
               D1 new_d1(d1.space_dimension(), EMPTY);
-              std::swap(d1, new_d1);
+              swap(d1, new_d1);
               D2 new_d2(d2.space_dimension(), EMPTY);
-              std::swap(d2, new_d2);
+              swap(d2, new_d2);
               return false;
             }
           }

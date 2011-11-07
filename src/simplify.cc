@@ -90,6 +90,8 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   const dimension_type num_columns = sys.num_columns();
   const dimension_type num_cols_sat = sat.num_columns();
 
+  using std::swap;
+
   // Looking for the first inequality in `sys'.
   dimension_type num_lines_or_equalities = 0;
   while (num_lines_or_equalities < num_rows
@@ -124,9 +126,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
       // We also move it just after all the other equalities,
       // so that system `sys' keeps its partial sortedness.
       if (i != num_lines_or_equalities) {
-	std::swap(sys[i], sys[num_lines_or_equalities]);
-	std::swap(sat[i], sat[num_lines_or_equalities]);
-	std::swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
+	swap(sys[i], sys[num_lines_or_equalities]);
+	swap(sat[i], sat[num_lines_or_equalities]);
+	swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
       }
       ++num_lines_or_equalities;
       // `sys' is no longer sorted.
@@ -168,9 +170,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
 	   && erasing > num_lines_or_equalities;
 	 ) {
       --erasing;
-      std::swap(sys[redundant], sys[erasing]);
-      std::swap(sat[redundant], sat[erasing]);
-      std::swap(num_saturators[redundant], num_saturators[erasing]);
+      swap(sys[redundant], sys[erasing]);
+      swap(sat[redundant], sat[erasing]);
+      swap(num_saturators[redundant], num_saturators[erasing]);
       sys.set_sorted(false);
       ++redundant;
     }
@@ -218,9 +220,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `sys[i]' is redundant.
       --num_rows;
-      std::swap(sys[i], sys[num_rows]);
-      std::swap(sat[i], sat[num_rows]);
-      std::swap(num_saturators[i], num_saturators[num_rows]);
+      swap(sys[i], sys[num_rows]);
+      swap(sat[i], sat[num_rows]);
+      swap(num_saturators[i], num_saturators[num_rows]);
       sys.set_sorted(false);
     }
     else
@@ -266,9 +268,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
 	    // generators. Then we can remove either one of the two
 	    // inequalities: we remove `sys[j]'.
 	    --num_rows;
-	    std::swap(sys[j], sys[num_rows]);
-	    std::swap(sat[j], sat[num_rows]);
-	    std::swap(num_saturators[j], num_saturators[num_rows]);
+	    swap(sys[j], sys[num_rows]);
+	    swap(sat[j], sat[num_rows]);
+	    swap(num_saturators[j], num_saturators[num_rows]);
 	    sys.set_sorted(false);
 	  }
 	else
@@ -281,9 +283,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
     if (redundant) {
       // The inequality `sys[i]' is redundant.
       --num_rows;
-      std::swap(sys[i], sys[num_rows]);
-      std::swap(sat[i], sat[num_rows]);
-      std::swap(num_saturators[i], num_saturators[num_rows]);
+      swap(sys[i], sys[num_rows]);
+      swap(sat[i], sat[num_rows]);
+      swap(num_saturators[i], num_saturators[num_rows]);
       sys.set_sorted(false);
     }
     else

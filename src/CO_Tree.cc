@@ -276,7 +276,8 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
       else
         if (indexes[new_hint] < key) {
           // The searched element is in (new_hint,hint)
-          std::swap(hint, new_hint);
+          using std::swap;
+          swap(hint, new_hint);
           // The searched element is now in (hint,new_hint).
           break;
         }
@@ -467,7 +468,8 @@ PPL::CO_Tree::erase(tree_iterator itr) {
         break;
       }
     }
-    std::swap(current_key, itr.index());
+    using std::swap;
+    swap(current_key, itr.index());
     move_data_element(current_data, *itr);
   }
 

@@ -308,7 +308,7 @@ public:
   Coefficient_traits::const_reference denominator() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Artificial_Parameter& y);
+  void m_swap(Artificial_Parameter& y);
 
   //! Returns \c true if and only if \p *this and \p y are equal.
   /*!
@@ -340,6 +340,13 @@ private:
   //! The normalized (i.e., positive) denominator.
   Coefficient denom;
 }; // class PIP_Tree_Node::Artificial_Parameter
+
+
+//! Swaps \p x with \p y.
+/* \relates PIP_Tree_Node::Artificial_Parameter */
+void
+swap(PIP_Tree_Node::Artificial_Parameter& x,
+     PIP_Tree_Node::Artificial_Parameter& y);
 
 
 //! A tree node representing part of the space of solutions.

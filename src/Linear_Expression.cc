@@ -289,7 +289,7 @@ PPL::operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
     Linear_Expression new_e(e2);
     for (dimension_type i = e1_size; i-- > 0; )
       new_e[i] += e1[i];
-    e1.swap(new_e);
+    e1.m_swap(new_e);
   }
   return e1;
 }
@@ -305,7 +305,7 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    e.swap(new_e);
+    e.m_swap(new_e);
   }
   ++e[v_space_dim];
   return e;
@@ -323,7 +323,7 @@ PPL::operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
     Linear_Expression new_e(e1, e2_size);
     for (dimension_type i = e2_size; i-- > 0; )
       new_e[i] -= e2[i];
-    e1.swap(new_e);
+    e1.m_swap(new_e);
   }
   return e1;
 }
@@ -339,7 +339,7 @@ PPL::operator-=(Linear_Expression& e, const Variable v) {
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    e.swap(new_e);
+    e.m_swap(new_e);
   }
   --e[v_space_dim];
   return e;
@@ -367,7 +367,7 @@ PPL::add_mul_assign(Linear_Expression& e,
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    e.swap(new_e);
+    e.m_swap(new_e);
   }
   e[v_space_dim] += n;
   return e;
@@ -386,7 +386,7 @@ PPL::sub_mul_assign(Linear_Expression& e,
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
-    e.swap(new_e);
+    e.m_swap(new_e);
   }
   e[v_space_dim] -= n;
   return e;

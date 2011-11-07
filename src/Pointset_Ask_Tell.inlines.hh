@@ -97,10 +97,11 @@ Pointset_Ask_Tell<PSET>::operator=(const Pointset_Ask_Tell& y) {
 
 template <typename PSET>
 inline void
-Pointset_Ask_Tell<PSET>::swap(Pointset_Ask_Tell& y) {
+Pointset_Ask_Tell<PSET>::m_swap(Pointset_Ask_Tell& y) {
   Pointset_Ask_Tell& x = *this;
-  x.Base::swap(y);
-  std::swap(x.space_dim, y.space_dim);
+  x.Base::m_swap(y);
+  using std::swap;
+  swap(x.space_dim, y.space_dim);
 }
 
 template <typename PSET>
@@ -109,7 +110,7 @@ inline Pointset_Ask_Tell<PSET>&
 Pointset_Ask_Tell<PSET>::operator=(const Pointset_Ask_Tell<QH>& y) {
   Pointset_Ask_Tell& x = *this;
   Pointset_Ask_Tell<PSET> pps(y);
-  x.swap(pps);
+  swap(x, pps);
   return x;
 }
 
@@ -203,19 +204,13 @@ check_containment(const C_Polyhedron& ph,
 			   Pointset_Ask_Tell<NNC_Polyhedron>(ps));
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Pointset_Ask_Tell */
+/*! \relates Pointset_Ask_Tell */
 template <typename PSET>
 inline void
-swap(Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& x,
-     Parma_Polyhedra_Library::Pointset_Ask_Tell<PSET>& y) {
-  x.swap(y);
+swap(Pointset_Ask_Tell<PSET>& x, Pointset_Ask_Tell<PSET>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Pointset_Ask_Tell_inlines_hh)

@@ -36,11 +36,11 @@ namespace Implementation {
   by performing more iter_swap's: it is meant to be used when
   object copying costs much more than object swapping.
 
-  Moreover, the algorithm always uses std:iter_swap() instead of
-  std::swap() so as to behave as expected when instantiated on
+  Moreover, the algorithm always uses iter_swap() instead of
+  swap() so as to behave as expected when instantiated on
   Linear_System::With_Bit_Matrix_iterator. Namely, using a sorting
   routine that either copies objects or directly swaps them
-  (i.e., without calling std::iter_swap) would not be correct
+  (i.e., without calling iter_swap) would not be correct
   when using Linear_System::With_Bit_Matrix_iterator.
 */
 
@@ -64,7 +64,8 @@ swapping_partition(Iter first, Iter last, const Value_Type& pivot,
     while (comp(pivot, *last))
       --last;
     if (first < last) {
-      std::iter_swap(first, last);
+      using std::iter_swap;
+      iter_swap(first, last);
       ++first;
     }
     else
@@ -78,16 +79,17 @@ swapping_insertion_sort(Iter first, Iter last, Compare comp) {
   if (first == last)
     return;
   for (Iter i = first + 1; i != last; ++i) {
+    using std::iter_swap;
     Iter current = i;
     if (comp(*current, *first)) {
       Iter next = current + 1;
       while (current != first)
-	std::iter_swap(--current, --next);
+	iter_swap(--current, --next);
     }
     else {
       Iter previous = current - 1;
       while (comp(*current, *previous))
-	std::iter_swap(current--, previous--);
+	iter_swap(current--, previous--);
     }
   }
 }
@@ -133,8 +135,10 @@ swapping_unique(Iter first, Iter last) {
     return last;
   ++next;
   while (next != last) {
-    if (*current != *next)
-      std::iter_swap(++current, next);
+    if (*current != *next) {
+      using std::iter_swap;
+      iter_swap(++current, next);
+    }
     ++next;
   }
   return ++current;

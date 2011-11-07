@@ -136,8 +136,9 @@ Determinate<PSET>::operator=(const Determinate& y) {
 
 template <typename PSET>
 inline void
-Determinate<PSET>::swap(Determinate& y) {
-  std::swap(prep, y.prep);
+Determinate<PSET>::m_swap(Determinate& y) {
+  using std::swap;
+  swap(prep, y.prep);
 }
 
 template <typename PSET>
@@ -292,19 +293,13 @@ Determinate<PSET>::lift_op_assign(Binary_Operator_Assign op_assign) {
   return Binary_Operator_Assign_Lifter<Binary_Operator_Assign>(op_assign);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Determinate */
+/*! \relates Determinate */
 template <typename PSET>
 inline void
-swap(Parma_Polyhedra_Library::Determinate<PSET>& x,
-     Parma_Polyhedra_Library::Determinate<PSET>& y) {
-  x.swap(y);
+swap(Determinate<PSET>& x, Determinate<PSET>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Determinate_inlines_hh)

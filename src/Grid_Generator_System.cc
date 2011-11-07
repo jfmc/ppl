@@ -143,7 +143,8 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 	// Create a resized copy of the row (and move the parameter
 	// divisor coefficient to its last position).
 	Linear_Row tmp_row(g, old_num_columns, row_capacity);
-	std::swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
+        using std::swap;
+	swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
 	Dense_Matrix::add_row(tmp_row);
       }
     else
@@ -181,7 +182,8 @@ PPL::Grid_Generator_System
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
-    std::swap(numerator, row[v]);
+    using std::swap;
+    swap(numerator, row[v]);
   }
 
   if (denominator != 1)

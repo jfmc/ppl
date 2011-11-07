@@ -171,36 +171,37 @@ MIP_Problem::set_control_parameter(Control_Parameter_Value value) {
 }
 
 inline void
-MIP_Problem::swap(MIP_Problem& y) {
-  std::swap(external_space_dim, y.external_space_dim);
-  std::swap(internal_space_dim, y.internal_space_dim);
-  std::swap(tableau, y.tableau);
-  std::swap(working_cost, y.working_cost);
-  std::swap(mapping, y.mapping);
-  std::swap(initialized, y.initialized);
-  std::swap(base, y.base);
-  std::swap(status, y.status);
-  std::swap(pricing, y.pricing);
-  std::swap(input_cs, y.input_cs);
-  std::swap(inherited_constraints, y.inherited_constraints);
-  std::swap(first_pending_constraint, y.first_pending_constraint);
-  std::swap(input_obj_function, y.input_obj_function);
-  std::swap(opt_mode, y.opt_mode);
-  std::swap(last_generator, y.last_generator);
-  std::swap(i_variables, y.i_variables);
+MIP_Problem::m_swap(MIP_Problem& y) {
+  using std::swap;
+  swap(external_space_dim, y.external_space_dim);
+  swap(internal_space_dim, y.internal_space_dim);
+  swap(tableau, y.tableau);
+  swap(working_cost, y.working_cost);
+  swap(mapping, y.mapping);
+  swap(initialized, y.initialized);
+  swap(base, y.base);
+  swap(status, y.status);
+  swap(pricing, y.pricing);
+  swap(input_cs, y.input_cs);
+  swap(inherited_constraints, y.inherited_constraints);
+  swap(first_pending_constraint, y.first_pending_constraint);
+  swap(input_obj_function, y.input_obj_function);
+  swap(opt_mode, y.opt_mode);
+  swap(last_generator, y.last_generator);
+  swap(i_variables, y.i_variables);
 }
 
 inline MIP_Problem&
 MIP_Problem::operator=(const MIP_Problem& y) {
   MIP_Problem tmp(y);
-  swap(tmp);
+  m_swap(tmp);
   return *this;
 }
 
 inline void
 MIP_Problem::clear() {
   MIP_Problem tmp;
-  swap(tmp);
+  m_swap(tmp);
 }
 
 
@@ -310,17 +311,12 @@ MIP_Problem::const_iterator::operator!=(const const_iterator& y) const {
   return itr != y.itr;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::MIP_Problem */
+/*! \relates MIP_Problem */
 inline void
-swap(Parma_Polyhedra_Library::MIP_Problem& x,
-     Parma_Polyhedra_Library::MIP_Problem& y) {
-  x.swap(y);
+swap(MIP_Problem& x, MIP_Problem& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_MIP_Problem_inlines_hh)

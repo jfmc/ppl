@@ -71,6 +71,10 @@ operator<<(std::ostream& s, const Polyhedron& ph);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Polyhedron */
+void swap(Polyhedron& x, Polyhedron& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if
   \p x and \p y are the same polyhedron.
@@ -1988,7 +1992,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p x and \p y are topology-incompatible.
   */
-  void swap(Polyhedron& y);
+  void m_swap(Polyhedron& y);
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -2800,15 +2804,6 @@ protected:
               Coefficient& denominator);
 
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-void swap(Parma_Polyhedra_Library::Polyhedron& x,
-	  Parma_Polyhedra_Library::Polyhedron& y);
-
-} // namespace std
 
 #include "Ph_Status.inlines.hh"
 #include "Polyhedron.inlines.hh"

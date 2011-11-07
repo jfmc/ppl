@@ -99,6 +99,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   }
 
   // Here the constraint system is not empty.
+  using std::swap;
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
@@ -127,7 +128,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  for (dimension_type i = cs_num_rows; i-- > 0; )
 	    if (cs[i][eps_index] != 0) {
 	      --cs_num_rows;
-	      std::swap(cs[i], cs[cs_num_rows]);
+	      swap(cs[i], cs[cs_num_rows]);
 	    }
 	  cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
 	  cs.unset_pending_rows();
@@ -142,20 +143,20 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	  for (dimension_type i = new_first_pending; i-- > 0; )
 	    if (cs[i][eps_index] != 0) {
 	      --new_first_pending;
-	      std::swap(cs[i], cs[new_first_pending]);
+	      swap(cs[i], cs[new_first_pending]);
 	    }
 	  const dimension_type num_swaps
 	    = old_first_pending - new_first_pending;
           cs.set_index_first_pending_row(new_first_pending);
 	  // Move the swapped rows to the real end of the matrix.
 	  for (dimension_type i = num_swaps; i-- > 0; )
-	    std::swap(cs[old_first_pending - i], cs[cs_num_rows - i]);
+	    swap(cs[old_first_pending - i], cs[cs_num_rows - i]);
 	  cs_num_rows -= num_swaps;
 	  // Now iterate through the pending rows.
 	  for (dimension_type i = cs_num_rows; i-- > new_first_pending; )
 	    if (cs[i][eps_index] != 0) {
 	      --cs_num_rows;
-	      std::swap(cs[i], cs[cs_num_rows]);
+	      swap(cs[i], cs[cs_num_rows]);
 	    }
 	  cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
 	}
