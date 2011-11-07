@@ -1,4 +1,4 @@
-/* Sorting objects for which copies cost more than swaps.  -*- C++ -*-
+/* Sorting objects for which copies cost more than swaps.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
@@ -21,8 +21,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#ifndef PPL_swapping_sort_icc
-#define PPL_swapping_sort_icc 1
+#ifndef PPL_swapping_sort_templates_hh
+#define PPL_swapping_sort_templates_hh 1
 
 #include <iterator>
 #include <algorithm>
@@ -148,4 +148,4 @@ swapping_unique(Iter first, Iter last) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_swapping_sort_icc)
+#endif // !defined(PPL_swapping_sort_templates_hh)

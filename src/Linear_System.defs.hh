@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
 #include "Dense_Matrix.defs.hh"
-#include "Topology.hh"
+#include "Topology.types.hh"
 #include "Linear_Row.defs.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

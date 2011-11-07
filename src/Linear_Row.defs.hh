@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Linear_Row.types.hh"
 #include "globals.defs.hh"
 #include "Dense_Row.defs.hh"
-#include "Topology.hh"
+#include "Topology.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"

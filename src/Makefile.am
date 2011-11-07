@@ -247,7 +247,7 @@ Variables_Set.inlines.hh \
 Init.defs.hh \
 Init.inlines.hh \
 initializer.hh \
-Topology.hh \
+Topology.types.hh \
 Row_Flags.defs.hh \
 Row_Flags.inlines.hh \
 Dense_Row.defs.hh \

@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "Grid.defs.hh"
-#include "Topology.hh"
+#include "Topology.types.hh"
 #include "Scalar_Products.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "assert.hh"
