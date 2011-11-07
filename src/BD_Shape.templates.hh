@@ -2357,7 +2357,7 @@ BD_Shape<T>::difference_assign(const BD_Shape& y) {
 
   // We take a constraint of the system y at the time and we
   // consider its complementary. Then we intersect the union
-  // of these complementaries with the system x.
+  // of these complementary constraints with the system x.
   const Constraint_System& y_cs = y.constraints();
   for (Constraint_System::const_iterator i = y_cs.begin(),
          y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
@@ -2427,15 +2427,15 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
       if (!is_plus_infinity(y_dbm_0[j]))
         // FIXME: if N is a float or bounded integer type, then
         // we also need to check that we are actually able to construct
-        // a constraint inconsistent wrt this one.
+        // a constraint inconsistent with respect to this one.
         goto found;
     }
     j = 0;
     for (i = 1; i <= dim; ++i) {
       if (!is_plus_infinity(y.dbm[i][0]))
-        // FIXME: if N is a float or bounded intefer type, then
+        // FIXME: if N is a float or bounded integer type, then
         // we also need to check that we are actually able to construct
-        // a constraint inconsistent wrt this one.
+        // a constraint inconsistent with respect to this one.
         goto found;
     }
     // Then search binary constraints.
@@ -2443,9 +2443,9 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
       const DB_Row<N>& y_dbm_i = y.dbm[i];
       for (j = 1; j <= dim; ++j)
         if (!is_plus_infinity(y_dbm_i[j]))
-          // FIXME: if N is a float or bounded intefer type, then
+          // FIXME: if N is a float or bounded integer type, then
           // we also need to check that we are actually able to construct
-          // a constraint inconsistent wrt this one.
+          // a constraint inconsistent with respect to this one.
           goto found;
     }
     // Not found: we were not able to build a constraint contradicting
@@ -2476,10 +2476,10 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
   // Compute a reduced dbm for `x' and ...
   x.shortest_path_reduction_assign();
   // ... count the non-redundant constraints.
-  dimension_type x_num_nonredundant = (dim+1)*(dim+1);
+  dimension_type x_num_non_redundant = (dim+1)*(dim+1);
   for (dimension_type i = dim + 1; i-- > 0; )
-    x_num_nonredundant -= x.redundancy_dbm[i].count_ones();
-  PPL_ASSERT(x_num_nonredundant > 0);
+    x_num_non_redundant -= x.redundancy_dbm[i].count_ones();
+  PPL_ASSERT(x_num_non_redundant > 0);
 
   // Let `yy' be a copy of `y': we will keep adding to `yy'
   // the non-redundant constraints of `x',
@@ -2489,7 +2489,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
   // The constraints added to `yy' will be recorded in `res' ...
   BD_Shape<T> res(dim, UNIVERSE);
   // ... and we will count them too.
-  dimension_type res_num_nonredundant = 0;
+  dimension_type res_num_non_redundant = 0;
 
   // Compute leader information for `x'.
   std::vector<dimension_type> x_leaders;
@@ -2507,7 +2507,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     PPL_ASSERT(!is_plus_infinity(x_dbm_0[j]));
     if (x_dbm_0[j] < yy_dbm_0[j]) {
       res_dbm_0[j] = x_dbm_0[j];
-      ++res_num_nonredundant;
+      ++res_num_non_redundant;
       // Tighten context `yy' using the newly added constraint.
       yy_dbm_0[j] = x_dbm_0[j];
       yy.reset_shortest_path_closed();
@@ -2515,7 +2515,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     PPL_ASSERT(!is_plus_infinity(x.dbm[j][0]));
     if (x.dbm[j][0] < yy.dbm[j][0]) {
       res.dbm[j][0] = x.dbm[j][0];
-      ++res_num_nonredundant;
+      ++res_num_non_redundant;
       // Tighten context `yy' using the newly added constraint.
       yy.dbm[j][0] = x.dbm[j][0];
       yy.reset_shortest_path_closed();
@@ -2526,7 +2526,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
       yy.incremental_shortest_path_closure_assign(var_j);
       if (target.contains(yy)) {
         // Target reached: swap `x' and `res' if needed.
-        if (res_num_nonredundant < x_num_nonredundant) {
+        if (res_num_non_redundant < x_num_non_redundant) {
           res.reset_shortest_path_closed();
           x.m_swap(res);
         }
@@ -2544,7 +2544,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     PPL_ASSERT(!is_plus_infinity(x.dbm[i][j]));
     if (x.dbm[i][j] < yy.dbm[i][j]) {
       res.dbm[i][j] = x.dbm[i][j];
-      ++res_num_nonredundant;
+      ++res_num_non_redundant;
       // Tighten context `yy' using the newly added constraint.
       yy.dbm[i][j] = x.dbm[i][j];
       yy.reset_shortest_path_closed();
@@ -2552,7 +2552,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     PPL_ASSERT(!is_plus_infinity(x.dbm[j][i]));
     if (x.dbm[j][i] < yy.dbm[j][i]) {
       res.dbm[j][i] = x.dbm[j][i];
-      ++res_num_nonredundant;
+      ++res_num_non_redundant;
       // Tighten context `yy' using the newly added constraint.
       yy.dbm[j][i] = x.dbm[j][i];
       yy.reset_shortest_path_closed();
@@ -2563,7 +2563,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
       yy.incremental_shortest_path_closure_assign(var_j);
       if (target.contains(yy)) {
         // Target reached: swap `x' and `res' if needed.
-        if (res_num_nonredundant < x_num_nonredundant) {
+        if (res_num_non_redundant < x_num_non_redundant) {
           res.reset_shortest_path_closed();
           x.m_swap(res);
         }
@@ -2588,7 +2588,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
       const N& x_dbm_ij = x_dbm_i[j];
       if (x_dbm_ij < yy_dbm_ij) {
         res_dbm_i[j] = x_dbm_ij;
-        ++res_num_nonredundant;
+        ++res_num_non_redundant;
         // Tighten context `yy' using the newly added constraint.
         yy_dbm_ij = x_dbm_ij;
         yy.reset_shortest_path_closed();
@@ -2597,7 +2597,7 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
         yy.incremental_shortest_path_closure_assign(var);
         if (target.contains(yy)) {
           // Target reached: swap `x' and `res' if needed.
-          if (res_num_nonredundant < x_num_nonredundant) {
+          if (res_num_non_redundant < x_num_non_redundant) {
             res.reset_shortest_path_closed();
             x.m_swap(res);
           }
@@ -3417,7 +3417,7 @@ BD_Shape<T>::unconstrain(const Variable var) {
 template <typename T>
 void
 BD_Shape<T>::unconstrain(const Variables_Set& vars) {
-  // The cylindrification wrt no dimensions is a no-op.
+  // The cylindrification with respect to no dimensions is a no-op.
   // This case captures the only legal cylindrification in a 0-dim space.
   if (vars.empty())
     return;
@@ -4234,8 +4234,9 @@ BD_Shape<T>::affine_form_image(const Variable var,
 template <typename T>
 template <typename Interval_Info>
 void
-BD_Shape<T>::inhomogeneous_affine_form_image(const dimension_type& var_id,
-					                const Interval<T, Interval_Info>& b) {
+BD_Shape<T>
+::inhomogeneous_affine_form_image(const dimension_type& var_id,
+                                  const Interval<T, Interval_Info>& b) {
   PPL_DIRTY_TEMP(N, b_ub);
   assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
   PPL_DIRTY_TEMP(N, b_mlb);

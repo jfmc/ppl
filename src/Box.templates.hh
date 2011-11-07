@@ -297,8 +297,8 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   if (space_dim == 0)
     return;
 
-  PPL_DIRTY_TEMP(mpq_class, lbound);
-  PPL_DIRTY_TEMP(mpq_class, ubound);
+  PPL_DIRTY_TEMP(mpq_class, lower_bound);
+  PPL_DIRTY_TEMP(mpq_class, upper_bound);
   for (dimension_type i = space_dim; i-- > 0; ) {
     typedef typename Octagonal_Shape<T>::coefficient_type Coeff;
     I_Constraint<mpq_class> lower;
@@ -310,18 +310,18 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
     // Set the upper bound.
     const Coeff& twice_ub = oct.matrix[cii][ii];
     if (!is_plus_infinity(twice_ub)) {
-      assign_r(ubound, twice_ub, ROUND_NOT_NEEDED);
-      div_2exp_assign_r(ubound, ubound, 1, ROUND_NOT_NEEDED);
-      upper.set(LESS_OR_EQUAL, ubound);
+      assign_r(upper_bound, twice_ub, ROUND_NOT_NEEDED);
+      div_2exp_assign_r(upper_bound, upper_bound, 1, ROUND_NOT_NEEDED);
+      upper.set(LESS_OR_EQUAL, upper_bound);
     }
 
     // Set the lower bound.
     const Coeff& twice_lb = oct.matrix[ii][cii];
     if (!is_plus_infinity(twice_lb)) {
-      assign_r(lbound, twice_lb, ROUND_NOT_NEEDED);
-      neg_assign_r(lbound, lbound, ROUND_NOT_NEEDED);
-      div_2exp_assign_r(lbound, lbound, 1, ROUND_NOT_NEEDED);
-      lower.set(GREATER_OR_EQUAL, lbound);
+      assign_r(lower_bound, twice_lb, ROUND_NOT_NEEDED);
+      neg_assign_r(lower_bound, lower_bound, ROUND_NOT_NEEDED);
+      div_2exp_assign_r(lower_bound, lower_bound, 1, ROUND_NOT_NEEDED);
+      lower.set(GREATER_OR_EQUAL, lower_bound);
     }
     seq_i.build(lower, upper);
   }
@@ -395,10 +395,10 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
     }
     // Get all the bounds for the space dimensions.
     Generator g(point());
-    PPL_DIRTY_TEMP(mpq_class, lbound);
-    PPL_DIRTY_TEMP(mpq_class, ubound);
-    PPL_DIRTY_TEMP(Coefficient, bound_num);
-    PPL_DIRTY_TEMP(Coefficient, bound_den);
+    PPL_DIRTY_TEMP(mpq_class, lower_bound);
+    PPL_DIRTY_TEMP(mpq_class, upper_bound);
+    PPL_DIRTY_TEMP(Coefficient, bound_numer);
+    PPL_DIRTY_TEMP(Coefficient, bound_denom);
     for (dimension_type i = space_dim; i-- > 0; ) {
       I_Constraint<mpq_class> lower;
       I_Constraint<mpq_class> upper;
@@ -408,21 +408,21 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
       lp.set_optimization_mode(MAXIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
-	lp.evaluate_objective_function(g, bound_num, bound_den);
-	assign_r(ubound.get_num(), bound_num, ROUND_NOT_NEEDED);
-	assign_r(ubound.get_den(), bound_den, ROUND_NOT_NEEDED);
-	PPL_ASSERT(is_canonical(ubound));
-	upper.set(LESS_OR_EQUAL, ubound);
+	lp.evaluate_objective_function(g, bound_numer, bound_denom);
+	assign_r(upper_bound.get_num(), bound_numer, ROUND_NOT_NEEDED);
+	assign_r(upper_bound.get_den(), bound_denom, ROUND_NOT_NEEDED);
+	PPL_ASSERT(is_canonical(upper_bound));
+	upper.set(LESS_OR_EQUAL, upper_bound);
       }
       // Evaluate optimal lower bound.
       lp.set_optimization_mode(MINIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
-	lp.evaluate_objective_function(g, bound_num, bound_den);
-	assign_r(lbound.get_num(), bound_num, ROUND_NOT_NEEDED);
-	assign_r(lbound.get_den(), bound_den, ROUND_NOT_NEEDED);
-	PPL_ASSERT(is_canonical(lbound));
-	lower.set(GREATER_OR_EQUAL, lbound);
+	lp.evaluate_objective_function(g, bound_numer, bound_denom);
+	assign_r(lower_bound.get_num(), bound_numer, ROUND_NOT_NEEDED);
+	assign_r(lower_bound.get_den(), bound_denom, ROUND_NOT_NEEDED);
+	PPL_ASSERT(is_canonical(lower_bound));
+	lower.set(GREATER_OR_EQUAL, lower_bound);
       }
       seq_i.build(lower, upper);
     }
@@ -475,15 +475,15 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
   // of the interval to the value of the associated coefficient in a
   // generator point.
   PPL_DIRTY_TEMP(mpq_class, bound);
-  PPL_DIRTY_TEMP(Coefficient, bound_num);
-  PPL_DIRTY_TEMP(Coefficient, bound_den);
+  PPL_DIRTY_TEMP(Coefficient, bound_numer);
+  PPL_DIRTY_TEMP(Coefficient, bound_denom);
   for (dimension_type i = space_dim; i-- > 0; ) {
     ITV& seq_i = seq[i];
     Variable var(i);
     bool max;
-    if (gr.maximize(var, bound_num, bound_den, max)) {
-      assign_r(bound.get_num(), bound_num, ROUND_NOT_NEEDED);
-      assign_r(bound.get_den(), bound_den, ROUND_NOT_NEEDED);
+    if (gr.maximize(var, bound_numer, bound_denom, max)) {
+      assign_r(bound.get_num(), bound_numer, ROUND_NOT_NEEDED);
+      assign_r(bound.get_den(), bound_denom, ROUND_NOT_NEEDED);
       bound.canonicalize();
       seq_i.build(i_constraint(EQUAL, bound));
     }
@@ -585,18 +585,18 @@ template <typename ITV>
 Poly_Con_Relation
 interval_relation(const ITV& i,
 		  const Constraint::Type constraint_type,
-		  Coefficient_traits::const_reference num,
-		  Coefficient_traits::const_reference den) {
+		  Coefficient_traits::const_reference numer,
+		  Coefficient_traits::const_reference denom) {
 
   if (i.is_universe())
     return Poly_Con_Relation::strictly_intersects();
 
   PPL_DIRTY_TEMP(mpq_class, bound);
-  assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
-  assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
+  assign_r(bound.get_num(), numer, ROUND_NOT_NEEDED);
+  assign_r(bound.get_den(), denom, ROUND_NOT_NEEDED);
   bound.canonicalize();
   neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
-  const bool is_lower_bound = (den > 0);
+  const bool is_lower_bound = (denom > 0);
 
   PPL_DIRTY_TEMP(mpq_class, bound_diff);
   if (constraint_type == Constraint::EQUALITY) {
@@ -1084,8 +1084,8 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   g_divisor = 1;
   const int maximize_sign = maximize ? 1 : -1;
   PPL_DIRTY_TEMP(mpq_class, g_coord);
-  PPL_DIRTY_TEMP(Coefficient, num);
-  PPL_DIRTY_TEMP(Coefficient, den);
+  PPL_DIRTY_TEMP(Coefficient, numer);
+  PPL_DIRTY_TEMP(Coefficient, denom);
   PPL_DIRTY_TEMP(Coefficient, lcm);
   PPL_DIRTY_TEMP(Coefficient, factor);
   for (dimension_type i = space_dimension(); i-- > 0; ) {
@@ -1136,14 +1136,14 @@ Box<ITV>::max_min(const Linear_Expression& expr,
       break;
     }
     // Add g_coord * Variable(i) to the generator.
-    assign_r(den, g_coord.get_den(), ROUND_NOT_NEEDED);
-    lcm_assign(lcm, g_divisor, den);
+    assign_r(denom, g_coord.get_den(), ROUND_NOT_NEEDED);
+    lcm_assign(lcm, g_divisor, denom);
     exact_div_assign(factor, lcm, g_divisor);
     g_expr *= factor;
-    exact_div_assign(factor, lcm, den);
-    assign_r(num, g_coord.get_num(), ROUND_NOT_NEEDED);
-    num *= factor;
-    g_expr += num * Variable(i);
+    exact_div_assign(factor, lcm, denom);
+    assign_r(numer, g_coord.get_num(), ROUND_NOT_NEEDED);
+    numer *= factor;
+    g_expr += numer * Variable(i);
     g_divisor = lcm;
   }
   g = Generator::point(g_expr, g_divisor);
@@ -1389,13 +1389,13 @@ Box<ITV>::frequency(const Linear_Expression& expr,
 
   // The Box has at least 1 dimension and is not empty.
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-  PPL_DIRTY_TEMP_COEFFICIENT(num);
-  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
   PPL_DIRTY_TEMP(mpq_class, tmp);
   Linear_Expression le = expr;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(val_den);
-  val_den = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(val_denom);
+  val_denom = 1;
 
   for (dimension_type i = space_dim; i-- > 0; ) {
     const Variable v(i);
@@ -1409,12 +1409,12 @@ Box<ITV>::frequency(const Linear_Expression& expr,
     if (seq_i.is_singleton()) {
       // If `v' is constant, replace it in `le' by the value.
       assign_r(tmp, seq_i.lower(), ROUND_NOT_NEEDED);
-      num = tmp.get_num();
-      den = tmp.get_den();
+      numer = tmp.get_num();
+      denom = tmp.get_den();
       le -= coeff*v;
-      le *= den;
-      le += num*coeff;
-      val_den *= den;
+      le *= denom;
+      le += numer*coeff;
+      val_denom *= denom;
       continue;
     }
     // The expression `expr' is not constant.
@@ -1426,7 +1426,7 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   freq_d = 1;
 
   // Reduce `val_n' and `val_d'.
-  normalize2(le.inhomogeneous_term(), val_den, val_n, val_d);
+  normalize2(le.inhomogeneous_term(), val_denom, val_n, val_d);
   return true;
 }
 
@@ -2948,29 +2948,29 @@ Box<ITV>
     // can only use the non-relational constraints, we find the
     // maximum/minimum values `ub_expr' and `lb_expr' obtain with the
     // box and use these instead of the `ub-expr' and `lb-expr'.
-    PPL_DIRTY_TEMP(Coefficient, max_num);
-    PPL_DIRTY_TEMP(Coefficient, max_den);
+    PPL_DIRTY_TEMP(Coefficient, max_numer);
+    PPL_DIRTY_TEMP(Coefficient, max_denom);
     bool max_included;
-    PPL_DIRTY_TEMP(Coefficient, min_num);
-    PPL_DIRTY_TEMP(Coefficient, min_den);
+    PPL_DIRTY_TEMP(Coefficient, min_numer);
+    PPL_DIRTY_TEMP(Coefficient, min_denom);
     bool min_included;
     ITV& seq_v = seq[var.id()];
-    if (maximize(ub_expr, max_num, max_den, max_included)) {
-      if (minimize(lb_expr, min_num, min_den, min_included)) {
+    if (maximize(ub_expr, max_numer, max_denom, max_included)) {
+      if (minimize(lb_expr, min_numer, min_denom, min_included)) {
 	// The `ub_expr' has a maximum value and the `lb_expr'
 	// has a minimum value for the box.
 	// Set the bounds for `var' using the minimum for `lb_expr'.
-	min_den *= denominator;
+	min_denom *= denominator;
 	PPL_DIRTY_TEMP(mpq_class, q1);
 	PPL_DIRTY_TEMP(mpq_class, q2);
-	assign_r(q1.get_num(), min_num, ROUND_NOT_NEEDED);
-	assign_r(q1.get_den(), min_den, ROUND_NOT_NEEDED);
+	assign_r(q1.get_num(), min_numer, ROUND_NOT_NEEDED);
+	assign_r(q1.get_den(), min_denom, ROUND_NOT_NEEDED);
 	q1.canonicalize();
 	// Now make the maximum of lb_expr the upper bound.  If the
 	// maximum is not at a box point, then inequality is strict.
-	max_den *= denominator;
-	assign_r(q2.get_num(), max_num, ROUND_NOT_NEEDED);
-	assign_r(q2.get_den(), max_den, ROUND_NOT_NEEDED);
+	max_denom *= denominator;
+	assign_r(q2.get_num(), max_numer, ROUND_NOT_NEEDED);
+	assign_r(q2.get_den(), max_denom, ROUND_NOT_NEEDED);
 	q2.canonicalize();
 	if (denominator > 0)
 	  seq_v.build(i_constraint(min_included ? GREATER_OR_EQUAL : GREATER_THAN, q1),
@@ -2984,9 +2984,9 @@ Box<ITV>
 	// has no minimum value for the box.
 	// Set the bounds for `var' using the maximum for `lb_expr'.
 	PPL_DIRTY_TEMP(mpq_class, q);
-	max_den *= denominator;
-	assign_r(q.get_num(), max_num, ROUND_NOT_NEEDED);
-	assign_r(q.get_den(), max_den, ROUND_NOT_NEEDED);
+	max_denom *= denominator;
+	assign_r(q.get_num(), max_numer, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), max_denom, ROUND_NOT_NEEDED);
 	q.canonicalize();
 	if (denominator > 0)
 	  seq_v.build(i_constraint(max_included ? LESS_OR_EQUAL : LESS_THAN, q));
@@ -2994,14 +2994,14 @@ Box<ITV>
 	  seq_v.build(i_constraint(max_included ? GREATER_OR_EQUAL : GREATER_THAN, q));
       }
     }
-    else if (minimize(lb_expr, min_num, min_den, min_included)) {
+    else if (minimize(lb_expr, min_numer, min_denom, min_included)) {
 	// The `ub_expr' has no maximum value but the `lb_expr'
 	// has a minimum value for the box.
 	// Set the bounds for `var' using the minimum for `lb_expr'.
-	min_den *= denominator;
+	min_denom *= denominator;
 	PPL_DIRTY_TEMP(mpq_class, q);
-	assign_r(q.get_num(), min_num, ROUND_NOT_NEEDED);
-	assign_r(q.get_den(), min_den, ROUND_NOT_NEEDED);
+	assign_r(q.get_num(), min_numer, ROUND_NOT_NEEDED);
+	assign_r(q.get_den(), min_denom, ROUND_NOT_NEEDED);
 	q.canonicalize();
 	if (denominator > 0)
 	  seq_v.build(i_constraint(min_included ? GREATER_OR_EQUAL : GREATER_THAN, q));
@@ -3326,14 +3326,14 @@ Box<ITV>
   // First, compute the maximum and minimum value reached by
   // `denominator*var' on the box as we need to use non-relational
   // expressions.
-  PPL_DIRTY_TEMP(Coefficient, max_num);
-  PPL_DIRTY_TEMP(Coefficient, max_den);
+  PPL_DIRTY_TEMP(Coefficient, max_numer);
+  PPL_DIRTY_TEMP(Coefficient, max_denom);
   bool max_included;
-  bool bound_above = maximize(denominator*var, max_num, max_den, max_included);
-  PPL_DIRTY_TEMP(Coefficient, min_num);
-  PPL_DIRTY_TEMP(Coefficient, min_den);
+  bool bound_above = maximize(denominator*var, max_numer, max_denom, max_included);
+  PPL_DIRTY_TEMP(Coefficient, min_numer);
+  PPL_DIRTY_TEMP(Coefficient, min_denom);
   bool min_included;
-  bool bound_below = minimize(denominator*var, min_num, min_den, min_included);
+  bool bound_below = minimize(denominator*var, min_numer, min_denom, min_included);
   // Use the correct relation symbol
   const Relation_Symbol corrected_relsym
     = (denominator > 0) ? relsym : reversed_relsym;
@@ -3345,7 +3345,7 @@ Box<ITV>
   if (corrected_relsym == LESS_THAN || corrected_relsym == LESS_OR_EQUAL) {
     if (bound_below) {
       for ( ; dim > 0; dim--) {
-        d = min_den * expr.coefficient(Variable(dim - 1));
+        d = min_denom * expr.coefficient(Variable(dim - 1));
         revised_expr += d * Variable(dim - 1);
       }
     }
@@ -3353,7 +3353,7 @@ Box<ITV>
   else {
     if (bound_above) {
       for ( ; dim > 0; dim--) {
-        d = max_den * expr.coefficient(Variable(dim - 1));
+        d = max_denom * expr.coefficient(Variable(dim - 1));
         revised_expr += d * Variable(dim - 1);
       }
     }
@@ -3362,23 +3362,23 @@ Box<ITV>
   switch (corrected_relsym) {
   case LESS_THAN:
     if (bound_below)
-      refine_with_constraint(min_num < revised_expr);
+      refine_with_constraint(min_numer < revised_expr);
     break;
   case LESS_OR_EQUAL:
     if (bound_below)
       (min_included)
-        ? refine_with_constraint(min_num <= revised_expr)
-        : refine_with_constraint(min_num < revised_expr);
+        ? refine_with_constraint(min_numer <= revised_expr)
+        : refine_with_constraint(min_numer < revised_expr);
     break;
   case GREATER_OR_EQUAL:
     if (bound_above)
       (max_included)
-        ? refine_with_constraint(max_num >= revised_expr)
-        : refine_with_constraint(max_num > revised_expr);
+        ? refine_with_constraint(max_numer >= revised_expr)
+        : refine_with_constraint(max_numer > revised_expr);
     break;
   case GREATER_THAN:
     if (bound_above)
-      refine_with_constraint(max_num > revised_expr);
+      refine_with_constraint(max_numer > revised_expr);
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
@@ -3423,14 +3423,14 @@ Box<ITV>
     return;
 
   // Compute the maximum and minimum value reached by the rhs on the box.
-  PPL_DIRTY_TEMP(Coefficient, max_num);
-  PPL_DIRTY_TEMP(Coefficient, max_den);
+  PPL_DIRTY_TEMP(Coefficient, max_numer);
+  PPL_DIRTY_TEMP(Coefficient, max_denom);
   bool max_included;
-  bool max_rhs = maximize(rhs, max_num, max_den, max_included);
-  PPL_DIRTY_TEMP(Coefficient, min_num);
-  PPL_DIRTY_TEMP(Coefficient, min_den);
+  bool max_rhs = maximize(rhs, max_numer, max_denom, max_included);
+  PPL_DIRTY_TEMP(Coefficient, min_numer);
+  PPL_DIRTY_TEMP(Coefficient, min_denom);
   bool min_included;
-  bool min_rhs = minimize(rhs, min_num, min_den, min_included);
+  bool min_rhs = minimize(rhs, min_numer, min_denom, min_included);
 
   // Check whether there is 0, 1 or more than one variable in the lhs
   // and record the variable with the highest dimension; set the box
@@ -3476,17 +3476,17 @@ Box<ITV>
     PPL_DIRTY_TEMP(mpq_class, q_max);
     PPL_DIRTY_TEMP(mpq_class, q_min);
     if (max_rhs) {
-      max_num -= inhomo * max_den;
-      max_den *= coeff;
-      assign_r(q_max.get_num(), max_num, ROUND_NOT_NEEDED);
-      assign_r(q_max.get_den(), max_den, ROUND_NOT_NEEDED);
+      max_numer -= inhomo * max_denom;
+      max_denom *= coeff;
+      assign_r(q_max.get_num(), max_numer, ROUND_NOT_NEEDED);
+      assign_r(q_max.get_den(), max_denom, ROUND_NOT_NEEDED);
       q_max.canonicalize();
     }
     if (min_rhs) {
-      min_num -= inhomo * min_den;
-      min_den *= coeff;
-      assign_r(q_min.get_num(), min_num, ROUND_NOT_NEEDED);
-      assign_r(q_min.get_den(), min_den, ROUND_NOT_NEEDED);
+      min_numer -= inhomo * min_denom;
+      min_denom *= coeff;
+      assign_r(q_min.get_num(), min_numer, ROUND_NOT_NEEDED);
+      assign_r(q_min.get_den(), min_denom, ROUND_NOT_NEEDED);
       q_min.canonicalize();
     }
 

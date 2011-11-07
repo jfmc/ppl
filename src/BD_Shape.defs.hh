@@ -1233,7 +1233,7 @@ public:
 
     \param lf
     The linear form on intervals with floating point coefficients that
-    defines the affine expression. ALL of its coefficients MUST be boundend.
+    defines the affine expression. ALL of its coefficients MUST be bounded.
 
     \exception std::invalid_argument
     Thrown if \p lf and \p *this are dimension-incompatible or if \p var

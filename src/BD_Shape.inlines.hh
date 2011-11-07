@@ -280,7 +280,7 @@ inline
 BD_Shape<T>::BD_Shape(const Box<Interval>& box,
                       Complexity_Class)
   : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
-  // Check for emptyness for maximum precision.
+  // Check emptiness for maximum precision.
   if (box.is_empty())
     set_empty();
   else if (box.space_dimension() > 0) {
@@ -688,11 +688,12 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("time_elapse_assign(y)", y);
-  // See the polyhedra documentation.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.time_elapse_assign(py);
-  BD_Shape<T> x(px);
+  // Compute time-elapse on polyhedra.
+  // TODO: provide a direct implementation.
+  C_Polyhedron ph_x(constraints());
+  C_Polyhedron ph_y(y.constraints());
+  ph_x.time_elapse_assign(ph_y);
+  BD_Shape<T> x(ph_x);
   m_swap(x);
   PPL_ASSERT(OK());
 }
@@ -797,12 +798,22 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp) {
 template <typename T>
 inline void
 BD_Shape<T>::H79_widening_assign(const BD_Shape& y, unsigned* tp) {
+<<<<<<< HEAD
   // See the documentation for polyhedra.
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
   px.H79_widening_assign(py, tp);
   BD_Shape x(px);
   m_swap(x);
+=======
+  // Compute the H79 widening on polyhedra.
+  // TODO: provide a direct implementation.
+  C_Polyhedron ph_x(constraints());
+  C_Polyhedron ph_y(y.constraints());
+  ph_x.H79_widening_assign(ph_y, tp);
+  BD_Shape x(ph_x);
+  swap(x);
+>>>>>>> Project vocabulary fixes.
   PPL_ASSERT(OK());
 }
 
@@ -817,12 +828,22 @@ inline void
 BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
 					      const Constraint_System& cs,
 					      unsigned* tp) {
+<<<<<<< HEAD
   // See the documentation for polyhedra.
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
   px.limited_H79_extrapolation_assign(py, cs, tp);
   BD_Shape x(px);
   m_swap(x);
+=======
+  // Compute the limited H79 extrapolation on polyhedra.
+  // TODO: provide a direct implementation.
+  C_Polyhedron ph_x(constraints());
+  C_Polyhedron ph_y(y.constraints());
+  ph_x.limited_H79_extrapolation_assign(ph_y, cs, tp);
+  BD_Shape x(ph_x);
+  swap(x);
+>>>>>>> Project vocabulary fixes.
   PPL_ASSERT(OK());
 }
 
