@@ -519,7 +519,8 @@ SEARCH_INCLUDES        = YES
 INCLUDE_PATH           =
 INCLUDE_FILE_PATTERNS  =
 PREDEFINED             = PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-EXPAND_AS_DEFINED      = PPL_OUTPUT_DECLARATIONS
+EXPAND_AS_DEFINED      = PPL_OUTPUT_DECLARATIONS \
+                         PPL_USE_SPARSE_MATRIX
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references

@@ -223,7 +223,8 @@ PREDEFINED             = <PPL_SED_CONFIGURED_MANUAL> \
                          PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS \
                          PPL_PROTO(protos):=protos
 EXPAND_AS_DEFINED      = DECLARE_CONVERSIONS \
-                         CATCH_ALL
+                         CATCH_ALL \
+                         PPL_USE_SPARSE_MATRIX
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references
