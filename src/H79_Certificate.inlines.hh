@@ -47,7 +47,7 @@ inline bool
 H79_Certificate::Compare::operator()(const H79_Certificate& x,
 				     const H79_Certificate& y) const {
   // For an efficient evaluation of the multiset ordering based
-  // on this lgo relation, we want larger elements to come first.
+  // on this LGO relation, we want larger elements to come first.
   return x.compare(y) == 1;
 }
 

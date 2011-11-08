@@ -1,5 +1,4 @@
-/* BHRZ03_Certificate class implementation
-   (non-inline member functions).
+/* BHRZ03_Certificate class implementation (non-inline member functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 

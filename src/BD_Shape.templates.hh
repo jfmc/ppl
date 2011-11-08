@@ -247,16 +247,16 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     *this = BD_Shape<T>(num_dimensions, UNIVERSE);
     // Get all the upper bounds.
     Generator g(point());
-    PPL_DIRTY_TEMP_COEFFICIENT(num);
-    PPL_DIRTY_TEMP_COEFFICIENT(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(denom);
     for (dimension_type i = 1; i <= num_dimensions; ++i) {
       Variable x(i-1);
       // Evaluate optimal upper bound for `x <= ub'.
       lp.set_objective_function(x);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
         g = lp.optimizing_point();
-        lp.evaluate_objective_function(g, num, den);
-        div_round_up(dbm[0][i], num, den);
+        lp.evaluate_objective_function(g, numer, denom);
+        div_round_up(dbm[0][i], numer, denom);
       }
       // Evaluate optimal upper bound for `x - y <= ub'.
       for (dimension_type j = 1; j <= num_dimensions; ++j) {
@@ -266,16 +266,16 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
         lp.set_objective_function(x - y);
         if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
           g = lp.optimizing_point();
-          lp.evaluate_objective_function(g, num, den);
-          div_round_up(dbm[j][i], num, den);
+          lp.evaluate_objective_function(g, numer, denom);
+          div_round_up(dbm[j][i], numer, denom);
         }
       }
       // Evaluate optimal upper bound for `-x <= ub'.
       lp.set_objective_function(-x);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
         g = lp.optimizing_point();
-        lp.evaluate_objective_function(g, num, den);
-        div_round_up(dbm[i][0], num, den);
+        lp.evaluate_objective_function(g, numer, denom);
+        div_round_up(dbm[i][0], numer, denom);
       }
     }
     set_shortest_path_closed();
@@ -340,8 +340,8 @@ BD_Shape<T>::minimized_congruences() const {
     // For the time being, we force the dimension with the following line.
     cgs.insert(0*Variable(space_dim-1) == 0);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(num);
-    PPL_DIRTY_TEMP_COEFFICIENT(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(denom);
 
     // Compute leader information.
     std::vector<dimension_type> leaders;
@@ -356,14 +356,14 @@ BD_Shape<T>::minimized_congruences() const {
         if (leader == 0) {
           // A unary equality has to be generated.
           PPL_ASSERT(!is_plus_infinity(dbm_0[i]));
-          numer_denom(dbm_0[i], num, den);
-          cgs.insert(den*Variable(i-1) == num);
+          numer_denom(dbm_0[i], numer, denom);
+          cgs.insert(denom*Variable(i-1) == numer);
         }
         else {
           // A binary equality has to be generated.
           PPL_ASSERT(!is_plus_infinity(dbm[i][leader]));
-          numer_denom(dbm[i][leader], num, den);
-          cgs.insert(den*Variable(leader-1) - den*Variable(i-1) == num);
+          numer_denom(dbm[i][leader], numer, denom);
+          cgs.insert(denom*Variable(leader-1) - denom*Variable(i-1) == numer);
         }
       }
     }
@@ -800,8 +800,8 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
 
   // The BD shape has at least 1 dimension and is not empty.
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
-  PPL_DIRTY_TEMP_COEFFICIENT(num);
-  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
   PPL_DIRTY_TEMP(N, tmp);
   Linear_Expression le = expr;
   // Boolean to keep track of a variable `v' in expression `le'.
@@ -809,8 +809,8 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   // than `v' and are already in `le', then this is set to true.
   bool constant_v = false;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(val_den);
-  val_den = 1;
+  PPL_DIRTY_TEMP_COEFFICIENT(val_denom);
+  val_denom = 1;
 
   for (dimension_type i = dbm.num_rows(); i-- > 1; ) {
     constant_v = false;
@@ -826,11 +826,11 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
     assign_r(tmp, dbm_i[0], ROUND_NOT_NEEDED);
     if (is_additive_inverse(dbm[0][i], tmp)) {
       // If `v' is constant, replace it in `le' by the value.
-      numer_denom(tmp, num, den);
+      numer_denom(tmp, numer, denom);
       le -= coeff*v;
-      le *= den;
-      le -= num*coeff;
-      val_den *= den;
+      le *= denom;
+      le -= numer*coeff;
+      val_denom *= denom;
       constant_v = true;
       continue;
     }
@@ -848,11 +848,11 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
           // The coefficient for `vj' in `le' is not 0
           // and the difference with `v' in the BD shape is constant.
           // So apply this equality to eliminate `v' in `le'.
-          numer_denom(tmp, num, den);
+          numer_denom(tmp, numer, denom);
           le -= coeff*v - coeff*vj;
-          le *= den;
-          le -= num*coeff;
-          val_den *= den;
+          le *= denom;
+          le -= numer*coeff;
+          val_denom *= denom;
           constant_v = true;
           break;
         }
@@ -871,7 +871,7 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   freq_d = 1;
 
   // Reduce `val_n' and `val_d'.
-  normalize2(le.inhomogeneous_term(), val_den, val_n, val_d);
+  normalize2(le.inhomogeneous_term(), val_denom, val_n, val_d);
   return true;
 }
 
@@ -913,13 +913,13 @@ BD_Shape<T>
   // immediately precedes a given one in the corresponding equivalence class.
   // The `leader' of an equivalence class is the element having minimum
   // index: leaders are their own predecessors.
-  const dimension_type pred_size = dbm.num_rows();
+  const dimension_type predecessor_size = dbm.num_rows();
   // Initially, each variable is leader of its own zero-equivalence class.
-  predecessor.reserve(pred_size);
-  for (dimension_type i = 0; i < pred_size; ++i)
+  predecessor.reserve(predecessor_size);
+  for (dimension_type i = 0; i < predecessor_size; ++i)
     predecessor.push_back(i);
   // Now compute actual predecessors.
-  for (dimension_type i = pred_size; i-- > 1; )
+  for (dimension_type i = predecessor_size; i-- > 1; )
     if (i == predecessor[i]) {
       const DB_Row<N>& dbm_i = dbm[i];
       for (dimension_type j = i; j-- > 0; )
@@ -942,12 +942,12 @@ BD_Shape<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
   // Flatten the predecessor chains so as to obtain leaders.
   PPL_ASSERT(leaders[0] == 0);
   for (dimension_type i = 1, l_size = leaders.size(); i != l_size; ++i) {
-    const dimension_type l_i = leaders[i];
-    PPL_ASSERT(l_i <= i);
-    if (l_i != i) {
-      const dimension_type ll_i = leaders[l_i];
-      PPL_ASSERT(ll_i == leaders[ll_i]);
-      leaders[i] = ll_i;
+    const dimension_type leaders_i = leaders[i];
+    PPL_ASSERT(leaders_i <= i);
+    if (leaders_i != i) {
+      const dimension_type leaders_leaders_i = leaders[leaders_i];
+      PPL_ASSERT(leaders_leaders_i == leaders[leaders_leaders_i]);
+      leaders[i] = leaders_leaders_i;
     }
   }
 }
@@ -1039,20 +1039,20 @@ BD_Shape<T>::is_shortest_path_reduced() const {
     // It count with how many variables the selected variable is
     // connected.
     dimension_type t = 0;
-    dimension_type ld_i = leader[i];
+    dimension_type leader_i = leader[i];
     // Case a: leader.
-    if (ld_i == i) {
+    if (leader_i == i) {
       for (dimension_type j = 0; j <= space_dim; ++j) {
-        dimension_type ld_j = leader[j];
+        dimension_type leader_j = leader[j];
         // Only the connectedness with equivalent variables
         // is considered.
-        if (j != ld_j)
+        if (j != leader_j)
           if (!redundancy_dbm[i][j]) {
             if (t == 1)
               // Two non-leaders cannot be connected with the same leader.
               return false;
             else
-              if (ld_j != i)
+              if (leader_j != i)
                 // The variables are not in the same equivalence class.
                 return false;
               else {
@@ -1066,8 +1066,8 @@ BD_Shape<T>::is_shortest_path_reduced() const {
     else {
       for (dimension_type j = 0; j <= space_dim; ++j) {
         if (!redundancy_dbm[i][j]) {
-          dimension_type ld_j = leader[j];
-          if (ld_i != ld_j)
+          dimension_type leader_j = leader[j];
+          if (leader_i != leader_j)
             // The variables are not in the same equivalence class.
             return false;
           else {
@@ -1097,9 +1097,8 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // Step 4: we check if there are single cycles that
   // connected all the zero-equivalent variables between them.
   for (dimension_type i = 0; i <= space_dim; ++i) {
-    bool jc_i = just_checked[i];
     // We do not re-check the already considered single cycles.
-    if (!jc_i) {
+    if (!just_checked[i]) {
       dimension_type v_con = var_conn[i];
       // We consider only the equivalence classes with
       // 2 or plus variables.
@@ -1453,8 +1452,8 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     // is, find the maximum and minimum values.
     Linear_Expression le;
     for (dimension_type k = c_space_dim; k-- > 0; ) {
-      Variable vk(k);
-      le += c.coefficient(vk) * vk;
+      Variable v_k(k);
+      le += c.coefficient(v_k) * v_k;
     }
     PPL_DIRTY_TEMP(Coefficient, max_numer);
     PPL_DIRTY_TEMP(Coefficient, max_denom);
@@ -1570,13 +1569,13 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   PPL_DIRTY_TEMP(mpq_class, q_y);
   PPL_DIRTY_TEMP(mpq_class, d);
   PPL_DIRTY_TEMP(mpq_class, d1);
-  PPL_DIRTY_TEMP(mpq_class, c_den);
-  PPL_DIRTY_TEMP(mpq_class, q_den);
-  assign_r(c_den, coeff, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(mpq_class, c_denom);
+  PPL_DIRTY_TEMP(mpq_class, q_denom);
+  assign_r(c_denom, coeff, ROUND_NOT_NEEDED);
   assign_r(d, c.inhomogeneous_term(), ROUND_NOT_NEEDED);
   neg_assign_r(d1, d, ROUND_NOT_NEEDED);
-  div_assign_r(d, d, c_den, ROUND_NOT_NEEDED);
-  div_assign_r(d1, d1, c_den, ROUND_NOT_NEEDED);
+  div_assign_r(d, d, c_denom, ROUND_NOT_NEEDED);
+  div_assign_r(d1, d1, c_denom, ROUND_NOT_NEEDED);
 
   if (is_plus_infinity(x)) {
     if (!is_plus_infinity(y)) {
@@ -1588,9 +1587,9 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       PPL_DIRTY_TEMP_COEFFICIENT(numer);
       PPL_DIRTY_TEMP_COEFFICIENT(denom);
       numer_denom(y, numer, denom);
-      assign_r(q_den, denom, ROUND_NOT_NEEDED);
+      assign_r(q_denom, denom, ROUND_NOT_NEEDED);
       assign_r(q_y, numer, ROUND_NOT_NEEDED);
-      div_assign_r(q_y, q_y, q_den, ROUND_NOT_NEEDED);
+      div_assign_r(q_y, q_y, q_denom, ROUND_NOT_NEEDED);
       if (q_y < d1)
         return Poly_Con_Relation::is_disjoint();
       if (q_y == d1 && c.is_strict_inequality())
@@ -1605,15 +1604,15 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
   numer_denom(x, numer, denom);
-  assign_r(q_den, denom, ROUND_NOT_NEEDED);
+  assign_r(q_denom, denom, ROUND_NOT_NEEDED);
   assign_r(q_x, numer, ROUND_NOT_NEEDED);
-  div_assign_r(q_x, q_x, q_den, ROUND_NOT_NEEDED);
+  div_assign_r(q_x, q_x, q_denom, ROUND_NOT_NEEDED);
 
   if (!is_plus_infinity(y)) {
     numer_denom(y, numer, denom);
-    assign_r(q_den, denom, ROUND_NOT_NEEDED);
+    assign_r(q_denom, denom, ROUND_NOT_NEEDED);
     assign_r(q_y, numer, ROUND_NOT_NEEDED);
-    div_assign_r(q_y, q_y, q_den, ROUND_NOT_NEEDED);
+    div_assign_r(q_y, q_y, q_denom, ROUND_NOT_NEEDED);
     if (q_x == d && q_y == d1) {
       if (c.is_strict_inequality())
         return Poly_Con_Relation::saturates()
@@ -1993,20 +1992,20 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
     if (i != predecessor[i] && !dealt_with[i]) {
       dimension_type j = i;
       while (true) {
-        const dimension_type pred_j = predecessor[j];
-        if (j == pred_j) {
+        const dimension_type predecessor_j = predecessor[j];
+        if (j == predecessor_j) {
           // We finally found the leader of `i'.
           PPL_ASSERT(redundancy[i][j]);
           redundancy[i].clear(j);
-          // Here we dealt with `j' (i.e., `pred_j'), but it is useless
+          // Here we dealt with `j' (i.e., `predecessor_j'), but it is useless
           // to update `dealt_with' because `j' is a leader.
           break;
         }
         // We haven't found the leader of `i' yet.
-        PPL_ASSERT(redundancy[pred_j][j]);
-        redundancy[pred_j].clear(j);
-        dealt_with[pred_j] = true;
-        j = pred_j;
+        PPL_ASSERT(redundancy[predecessor_j][j]);
+        redundancy[predecessor_j].clear(j);
+        dealt_with[predecessor_j] = true;
+        j = predecessor_j;
       }
     }
 
@@ -2090,16 +2089,16 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
   // Implementation based on Algorithm 4.1 (page 6) in [BemporadFT00TR],
   // tailored to the special case of BD shapes.
 
-  Variable eps(x_space_dim);
-  Linear_Expression zero_expr = 0*eps;
+  Variable epsilon(x_space_dim);
+  Linear_Expression zero_expr = 0*epsilon;
   Linear_Expression db_expr;
-  PPL_DIRTY_TEMP_COEFFICIENT(num);
-  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
 
   // Step 1: compute the constraint system for the envelope env(x,y)
   // and put into x_cs_removed and y_cs_removed those non-redundant
   // constraints that are not in the constraint system for env(x,y).
-  // While at it, also add the additional space dimension (eps).
+  // While at it, also add the additional space dimension (epsilon).
   Constraint_System env_cs;
   Constraint_System x_cs_removed;
   Constraint_System y_cs_removed;
@@ -2116,20 +2115,20 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
       if (!x_red_i[j]) {
         const N& x_dbm_ij = x_dbm_i[j];
         PPL_ASSERT(!is_plus_infinity(x_dbm_ij));
-        numer_denom(x_dbm_ij, num, den);
+        numer_denom(x_dbm_ij, numer, denom);
         // Build skeleton DB constraint (having the right space dimension).
         db_expr = zero_expr;
         if (i > 0)
           db_expr += Variable(i-1);
         if (j > 0)
           db_expr -= Variable(j-1);
-        if (den != 1)
-          db_expr *= den;
-        db_expr += num;
+        if (denom != 1)
+          db_expr *= denom;
+        db_expr += numer;
         if (x_dbm_ij >= y_dbm_i[j])
           env_cs.insert(db_expr >= 0);
         else {
-          db_expr += eps;
+          db_expr += epsilon;
           x_cs_removed.insert(db_expr == 0);
         }
       }
@@ -2137,16 +2136,16 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
         const N& y_dbm_ij = y_dbm_i[j];
         const N& x_dbm_ij = x_dbm_i[j];
         PPL_ASSERT(!is_plus_infinity(y_dbm_ij));
-        numer_denom(y_dbm_ij, num, den);
+        numer_denom(y_dbm_ij, numer, denom);
         // Build skeleton DB constraint (having the right space dimension).
         db_expr = zero_expr;
         if (i > 0)
           db_expr += Variable(i-1);
         if (j > 0)
           db_expr -= Variable(j-1);
-        if (den != 1)
-          db_expr *= den;
-        db_expr += num;
+        if (denom != 1)
+          db_expr *= denom;
+        db_expr += numer;
         if (y_dbm_ij >= x_dbm_ij) {
           // Check if same constraint was added when considering x_dbm_ij.
           if (!x_red_i[j] && x_dbm_ij == y_dbm_ij)
@@ -2154,7 +2153,7 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
           env_cs.insert(db_expr >= 0);
         }
         else {
-          db_expr += eps;
+          db_expr += epsilon;
           y_cs_removed.insert(db_expr == 0);
         }
       }
@@ -2172,8 +2171,8 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
 
   // In preparation to Step 4: build the common part of LP problems,
   // i.e., the constraints corresponding to env(x,y),
-  // where the additional space dimension (eps) has to be maximised.
-  MIP_Problem env_lp(x_space_dim + 1, env_cs, eps, MAXIMIZATION);
+  // where the additional space dimension (epsilon) has to be maximized.
+  MIP_Problem env_lp(x_space_dim + 1, env_cs, epsilon, MAXIMIZATION);
   // Pre-solve `env_lp' to later exploit incrementality.
   env_lp.solve();
   PPL_ASSERT(env_lp.solve() != UNFEASIBLE_MIP_PROBLEM);
@@ -2198,8 +2197,8 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
       case UNBOUNDED_MIP_PROBLEM:
         return false;
       case OPTIMIZED_MIP_PROBLEM:
-        lp_ij.optimal_value(num, den);
-        if (num > 0)
+        lp_ij.optimal_value(numer, denom);
+        if (numer > 0)
           return false;
         break;
       }
@@ -3253,20 +3252,20 @@ BD_Shape<T>
 ::deduce_v_minus_u_bounds(const dimension_type v,
                           const dimension_type last_v,
                           const Linear_Expression& sc_expr,
-                          Coefficient_traits::const_reference sc_den,
+                          Coefficient_traits::const_reference sc_denom,
                           const N& ub_v) {
-  PPL_ASSERT(sc_den > 0);
+  PPL_ASSERT(sc_denom > 0);
   PPL_ASSERT(!is_plus_infinity(ub_v));
   // Deduce constraints of the form `v - u', where `u != v'.
   // Note: the shortest-path closure is able to deduce the constraint
   // `v - u <= ub_v - lb_u'. We can be more precise if variable `u'
   // played an active role in the computation of the upper bound for `v',
-  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // i.e., if the corresponding coefficient `q == expr_u/denom' is
   // greater than zero. In particular:
   // if `q >= 1',    then `v - u <= ub_v - ub_u';
   // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
-  PPL_DIRTY_TEMP(mpq_class, mpq_sc_den);
-  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(mpq_class, mpq_sc_denom);
+  assign_r(mpq_sc_denom, sc_denom, ROUND_NOT_NEEDED);
   const DB_Row<N>& dbm_0 = dbm[0];
   // Speculative allocation of temporaries to be used in the following loop.
   PPL_DIRTY_TEMP(mpq_class, minus_lb_u);
@@ -3278,7 +3277,7 @@ BD_Shape<T>
     if (u != v) {
       const Coefficient& expr_u = sc_expr.coefficient(Variable(u-1));
       if (expr_u > 0) {
-        if (expr_u >= sc_den)
+        if (expr_u >= sc_denom)
           // Deducing `v - u <= ub_v - ub_u'.
           sub_assign_r(dbm[u][v], ub_v, dbm_0[u], ROUND_UP);
         else {
@@ -3286,14 +3285,14 @@ BD_Shape<T>
           const N& dbm_u0 = dbm_u[0];
           if (!is_plus_infinity(dbm_u0)) {
             // Let `ub_u' and `lb_u' be the known upper and lower bound
-            // for `u', respectively. Letting `q = expr_u/sc_den' be the
-            // rational coefficient of `u' in `sc_expr/sc_den',
+            // for `u', respectively. Letting `q = expr_u/sc_denom' be the
+            // rational coefficient of `u' in `sc_expr/sc_denom',
             // the upper bound for `v - u' is computed as
             // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
             // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
             assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
             assign_r(q, expr_u, ROUND_NOT_NEEDED);
-            div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+            div_assign_r(q, q, mpq_sc_denom, ROUND_NOT_NEEDED);
             assign_r(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
             // Compute `ub_u - lb_u'.
             add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
@@ -3314,20 +3313,20 @@ BD_Shape<T>
 ::deduce_u_minus_v_bounds(const dimension_type v,
                           const dimension_type last_v,
                           const Linear_Expression& sc_expr,
-                          Coefficient_traits::const_reference sc_den,
+                          Coefficient_traits::const_reference sc_denom,
                           const N& minus_lb_v) {
-  PPL_ASSERT(sc_den > 0);
+  PPL_ASSERT(sc_denom > 0);
   PPL_ASSERT(!is_plus_infinity(minus_lb_v));
   // Deduce constraints of the form `u - v', where `u != v'.
   // Note: the shortest-path closure is able to deduce the constraint
   // `u - v <= ub_u - lb_v'. We can be more precise if variable `u'
   // played an active role in the computation of the lower bound for `v',
-  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // i.e., if the corresponding coefficient `q == expr_u/denom' is
   // greater than zero. In particular:
   // if `q >= 1',    then `u - v <= lb_u - lb_v';
   // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-  PPL_DIRTY_TEMP(mpq_class, mpq_sc_den);
-  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  PPL_DIRTY_TEMP(mpq_class, mpq_sc_denom);
+  assign_r(mpq_sc_denom, sc_denom, ROUND_NOT_NEEDED);
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
   // Speculative allocation of temporaries to be used in the following loop.
@@ -3340,7 +3339,7 @@ BD_Shape<T>
     if (u != v) {
       const Coefficient& expr_u = sc_expr.coefficient(Variable(u-1));
       if (expr_u > 0) {
-        if (expr_u >= sc_den)
+        if (expr_u >= sc_denom)
           // Deducing `u - v <= lb_u - lb_v',
           // i.e., `u - v <= (-lb_v) - (-lb_u)'.
           sub_assign_r(dbm_v[u], minus_lb_v, dbm[u][0], ROUND_UP);
@@ -3348,14 +3347,14 @@ BD_Shape<T>
           const N& dbm_0u = dbm_0[u];
           if (!is_plus_infinity(dbm_0u)) {
             // Let `ub_u' and `lb_u' be the known upper and lower bound
-            // for `u', respectively. Letting `q = expr_u/sc_den' be the
-            // rational coefficient of `u' in `sc_expr/sc_den',
+            // for `u', respectively. Letting `q = expr_u/sc_denom' be the
+            // rational coefficient of `u' in `sc_expr/sc_denom',
             // the upper bound for `u - v' is computed as
             // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
             // `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
             assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
             assign_r(q, expr_u, ROUND_NOT_NEEDED);
-            div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+            div_assign_r(q, q, mpq_sc_denom, ROUND_NOT_NEEDED);
             assign_r(minus_lb_u, dbm[u][0], ROUND_NOT_NEEDED);
             // Compute `ub_u - lb_u'.
             add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
@@ -3485,8 +3484,8 @@ BD_Shape<T>::refine(const Variable var,
   // - If t == 1, then expr == a*w + b, where `w != v' and `a == denominator';
   // - If t == 2, the `expr' is of the general form.
   const DB_Row<N>& dbm_0 = dbm[0];
-  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
-  neg_assign(minus_den, denominator);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
+  neg_assign(minus_denom, denominator);
 
   if (t == 0) {
     // Case 1: expr == b.
@@ -3494,7 +3493,7 @@ BD_Shape<T>::refine(const Variable var,
     case EQUAL:
       // Add the constraint `var == b/denominator'.
       add_dbm_constraint(0, v, b, denominator);
-      add_dbm_constraint(v, 0, b, minus_den);
+      add_dbm_constraint(v, 0, b, minus_denom);
       break;
     case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
@@ -3503,7 +3502,7 @@ BD_Shape<T>::refine(const Variable var,
     case GREATER_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
-      add_dbm_constraint(v, 0, b, minus_den);
+      add_dbm_constraint(v, 0, b, minus_denom);
       break;
     default:
       // We already dealt with the other cases.
@@ -3523,7 +3522,7 @@ BD_Shape<T>::refine(const Variable var,
       add_dbm_constraint(w, v, d);
       // Add the new constraint `v - w >= b/denominator',
       // i.e., `w - v <= -b/denominator'.
-      div_round_up(d, b, minus_den);
+      div_round_up(d, b, minus_denom);
       add_dbm_constraint(v, w, d);
       break;
     case LESS_OR_EQUAL:
@@ -3534,7 +3533,7 @@ BD_Shape<T>::refine(const Variable var,
     case GREATER_OR_EQUAL:
       // Add the new constraint `v - w >= b/denominator',
       // i.e., `w - v <= -b/denominator'.
-      div_round_up(d, b, minus_den);
+      div_round_up(d, b, minus_denom);
       add_dbm_constraint(v, w, d);
       break;
     default:
@@ -3552,8 +3551,8 @@ BD_Shape<T>::refine(const Variable var,
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-  const Coefficient& sc_den = is_sc ? denominator : minus_den;
-  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  const Coefficient& sc_denom = is_sc ? denominator : minus_denom;
+  const Coefficient& minus_sc_denom = is_sc ? minus_denom : denominator;
   // NOTE: here, for optimization purposes, `minus_expr' is only assigned
   // when `denominator' is negative. Do not use it unless you are sure
   // it has been correctly assigned.
@@ -3656,29 +3655,29 @@ BD_Shape<T>::refine(const Variable var,
       reset_shortest_path_closed();
 
       // Before computing quotients, the denominator should be approximated
-      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // towards zero. Since `sc_denom' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+      // `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
 
       // Exploit the upper approximation, if possible.
       if (pinf_count <= 1) {
         // Compute quotient (if needed).
-        if (down_sc_den != 1)
-          div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+        if (down_sc_denom != 1)
+          div_assign_r(sum, sum, down_sc_denom, ROUND_UP);
         // Add the upper bound constraint, if meaningful.
         if (pinf_count == 0) {
           // Add the constraint `v <= sum'.
           dbm[0][v] = sum;
           // Deduce constraints of the form `v - u', where `u != v'.
-          deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
+          deduce_v_minus_u_bounds(v, w, sc_expr, sc_denom, sum);
         }
         else
           // Here `pinf_count == 1'.
           if (pinf_index != v
-              && sc_expr.coefficient(Variable(pinf_index-1)) == sc_den)
+              && sc_expr.coefficient(Variable(pinf_index-1)) == sc_denom)
             // Add the constraint `v - pinf_index <= sum'.
             dbm[pinf_index][v] = sum;
       }
@@ -3686,20 +3685,20 @@ BD_Shape<T>::refine(const Variable var,
       // Exploit the lower approximation, if possible.
       if (neg_pinf_count <= 1) {
         // Compute quotient (if needed).
-        if (down_sc_den != 1)
-          div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+        if (down_sc_denom != 1)
+          div_assign_r(neg_sum, neg_sum, down_sc_denom, ROUND_UP);
         // Add the lower bound constraint, if meaningful.
         if (neg_pinf_count == 0) {
           // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
           DB_Row<N>& dbm_v = dbm[v];
           dbm_v[0] = neg_sum;
           // Deduce constraints of the form `u - v', where `u != v'.
-          deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
+          deduce_u_minus_v_bounds(v, w, sc_expr, sc_denom, neg_sum);
         }
         else
           // Here `neg_pinf_count == 1'.
           if (neg_pinf_index != v
-              && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
+              && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_denom)
             // Add the constraint `v - neg_pinf_index >= -neg_sum',
             // i.e., `neg_pinf_index - v <= neg_sum'.
             dbm[v][neg_pinf_index] = neg_sum;
@@ -3740,22 +3739,22 @@ BD_Shape<T>::refine(const Variable var,
     }
 
     // Divide by the (sign corrected) denominator (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing the quotient, the denominator should be
-      // approximated towards zero. Since `sc_den' is known to be
+      // approximated towards zero. Since `sc_denom' is known to be
       // positive, this amounts to rounding downwards, which is achieved
-      // by rounding upwards `minus_sc-den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+      // by rounding upwards `minus_sc - denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(sum, sum, down_sc_denom, ROUND_UP);
     }
 
     if (pinf_count == 0) {
       // Add the constraint `v <= sum'.
       add_dbm_constraint(0, v, sum);
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_denom, sum);
     }
     else if (pinf_count == 1)
       if (expr.coefficient(Variable(pinf_index-1)) == denominator)
@@ -3795,22 +3794,22 @@ BD_Shape<T>::refine(const Variable var,
     }
 
     // Divide by the (sign corrected) denominator (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing the quotient, the denominator should be
-      // approximated towards zero. Since `sc_den' is known to be positive,
+      // approximated towards zero. Since `sc_denom' is known to be positive,
       // this amounts to rounding downwards, which is achieved by rounding
-      // upwards `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+      // upwards `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(sum, sum, down_sc_denom, ROUND_UP);
     }
 
     if (pinf_count == 0) {
       // Add the constraint `v >= -sum', i.e., `-v <= sum'.
       add_dbm_constraint(v, 0, sum);
       // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, sum);
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_denom, sum);
     }
     else if (pinf_count == 1)
       if (pinf_index != v
@@ -3877,8 +3876,8 @@ BD_Shape<T>::affine_image(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `expr' is of the general form.
-  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
-  neg_assign(minus_den, denominator);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
+  neg_assign(minus_denom, denominator);
 
   if (t == 0) {
     // Case 1: expr == b.
@@ -3889,7 +3888,7 @@ BD_Shape<T>::affine_image(const Variable var,
       reset_shortest_path_reduced();
     // Add the constraint `var == b/denominator'.
     add_dbm_constraint(0, v, b, denominator);
-    add_dbm_constraint(v, 0, b, minus_den);
+    add_dbm_constraint(v, 0, b, minus_denom);
     PPL_ASSERT(OK());
     return;
   }
@@ -3897,7 +3896,7 @@ BD_Shape<T>::affine_image(const Variable var,
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& a = expr.coefficient(Variable(w-1));
-    if (a == denominator || a == minus_den) {
+    if (a == denominator || a == minus_denom) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       if (w == v) {
         // `expr' is of the form: a*v + b.
@@ -3911,7 +3910,7 @@ BD_Shape<T>::affine_image(const Variable var,
             PPL_DIRTY_TEMP(N, d);
             div_round_up(d, b, denominator);
             PPL_DIRTY_TEMP(N, c);
-            div_round_up(c, b, minus_den);
+            div_round_up(c, b, minus_denom);
             DB_Row<N>& dbm_v = dbm[v];
             for (dimension_type i = space_dim + 1; i-- > 0; ) {
               N& dbm_vi = dbm_v[i];
@@ -3935,7 +3934,7 @@ BD_Shape<T>::affine_image(const Variable var,
             // Translate the unary constraints on `var',
             // adding or subtracting the value `b/denominator'.
             PPL_DIRTY_TEMP(N, c);
-            div_round_up(c, b, minus_den);
+            div_round_up(c, b, minus_denom);
             N& dbm_v0 = dbm[v][0];
             add_assign_r(dbm_v0, dbm_v0, c, ROUND_UP);
             PPL_DIRTY_TEMP(N, d);
@@ -3956,7 +3955,7 @@ BD_Shape<T>::affine_image(const Variable var,
         if (a == denominator) {
           // Add the new constraint `v - w == b/denominator'.
           add_dbm_constraint(w, v, b, denominator);
-          add_dbm_constraint(v, w, b, minus_den);
+          add_dbm_constraint(v, w, b, minus_denom);
         }
         else {
           // Here a == -denominator, so that we should be adding
@@ -3974,7 +3973,7 @@ BD_Shape<T>::affine_image(const Variable var,
           if (!is_plus_infinity(dbm_0w)) {
             // Add the constraint `v >= b/denominator - upper_w'.
             PPL_DIRTY_TEMP(N, c);
-            div_round_up(c, b, minus_den);
+            div_round_up(c, b, minus_denom);
             add_assign_r(dbm[v][0], dbm_0w, c, ROUND_UP);
             reset_shortest_path_closed();
           }
@@ -4002,8 +4001,8 @@ BD_Shape<T>::affine_image(const Variable var,
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-  const Coefficient& sc_den = is_sc ? denominator : minus_den;
-  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  const Coefficient& sc_denom = is_sc ? denominator : minus_denom;
+  const Coefficient& minus_sc_denom = is_sc ? minus_denom : denominator;
   // NOTE: here, for optimization purposes, `minus_expr' is only assigned
   // when `denominator' is negative. Do not use it unless you are sure
   // it has been correctly assigned.
@@ -4102,27 +4101,27 @@ BD_Shape<T>::affine_image(const Variable var,
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing quotients, the denominator should be approximated
-      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // towards zero. Since `sc_denom' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+      // `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(pos_sum, pos_sum, down_sc_denom, ROUND_UP);
     }
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
       dbm[0][v] = pos_sum;
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_denom, pos_sum);
     }
     else
       // Here `pos_pinf_count == 1'.
       if (pos_pinf_index != v
-          && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
+          && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_denom)
         // Add the constraint `v - pos_pinf_index <= pos_sum'.
         dbm[pos_pinf_index][v] = pos_sum;
   }
@@ -4130,15 +4129,15 @@ BD_Shape<T>::affine_image(const Variable var,
   // Exploit the lower approximation, if possible.
   if (neg_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing quotients, the denominator should be approximated
-      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // towards zero. Since `sc_denom' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+      // `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(neg_sum, neg_sum, down_sc_denom, ROUND_UP);
     }
     // Add the lower bound constraint, if meaningful.
     if (neg_pinf_count == 0) {
@@ -4146,12 +4145,12 @@ BD_Shape<T>::affine_image(const Variable var,
       DB_Row<N>& dbm_v = dbm[v];
       dbm_v[0] = neg_sum;
       // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_denom, neg_sum);
     }
     else
       // Here `neg_pinf_count == 1'.
       if (neg_pinf_index != v
-          && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
+          && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_denom)
         // Add the constraint `v - neg_pinf_index >= -neg_sum',
         // i.e., `neg_pinf_index - v <= neg_sum'.
         dbm[v][neg_pinf_index] = neg_sum;
@@ -4598,9 +4597,8 @@ BD_Shape<T>
         add_dbm_constraint(left_w_id+1, 0, a_plus_minus_b_minus);
         return;
       }
-    } // fi right_t == 0
-
-    if (right_t == 1) {
+    }
+    else if (right_t == 1) {
       // The constraint has the form:
       // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
       // Reduce it to the constraint +/-x +/-y <= c+ - a-
@@ -5063,8 +5061,8 @@ BD_Shape<T>
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `ub_expr' is of the general form.
-  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
-  neg_assign(minus_den, denominator);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
+  neg_assign(minus_denom, denominator);
 
   if (t == 0) {
     // Case 1: ub_expr == b.
@@ -5081,7 +5079,7 @@ BD_Shape<T>
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `ub_expr'.
     const Coefficient& a = ub_expr.coefficient(Variable(w-1));
-    if (a == denominator || a == minus_den) {
+    if (a == denominator || a == minus_denom) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       if (w == v) {
         // Here `var' occurs in `ub_expr'.
@@ -5148,8 +5146,8 @@ BD_Shape<T>
   PPL_DIRTY_TEMP_COEFFICIENT(minus_b);
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
-  const Coefficient& sc_den = is_sc ? denominator : minus_den;
-  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  const Coefficient& sc_denom = is_sc ? denominator : minus_denom;
+  const Coefficient& minus_sc_denom = is_sc ? minus_denom : denominator;
   // NOTE: here, for optimization purposes, `minus_expr' is only assigned
   // when `denominator' is negative. Do not use it unless you are sure
   // it has been correctly assigned.
@@ -5222,27 +5220,27 @@ BD_Shape<T>
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing quotients, the denominator should be approximated
-      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // towards zero. Since `sc_denom' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+      // `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(pos_sum, pos_sum, down_sc_denom, ROUND_UP);
     }
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
       dbm[0][v] = pos_sum;
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_denom, pos_sum);
     }
     else
       // Here `pos_pinf_count == 1'.
       if (pos_pinf_index != v
-          && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
+          && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_denom)
         // Add the constraint `v - pos_pinf_index <= pos_sum'.
         dbm[pos_pinf_index][v] = pos_sum;
   }
@@ -5303,14 +5301,14 @@ BD_Shape<T>
   add_space_dimensions_and_embed(1);
   const Linear_Expression lb_inverse
     = lb_expr - (lb_expr_v + denominator)*var;
-  PPL_DIRTY_TEMP_COEFFICIENT(lb_inverse_den);
-  neg_assign(lb_inverse_den, lb_expr_v);
-  affine_image(new_var, lb_inverse, lb_inverse_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(lb_inverse_denom);
+  neg_assign(lb_inverse_denom, lb_expr_v);
+  affine_image(new_var, lb_inverse, lb_inverse_denom);
   shortest_path_closure_assign();
   PPL_ASSERT(!marked_empty());
   generalized_affine_preimage(var, LESS_OR_EQUAL,
                               ub_expr, denominator);
-  if (sgn(denominator) == sgn(lb_inverse_den))
+  if (sgn(denominator) == sgn(lb_inverse_denom))
     add_constraint(var >= new_var);
   else
     add_constraint(var <= new_var);
@@ -5391,8 +5389,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   // - If t == 2, the `expr' is of the general form.
   DB_Row<N>& dbm_0 = dbm[0];
   DB_Row<N>& dbm_v = dbm[v];
-  PPL_DIRTY_TEMP_COEFFICIENT(minus_den);
-  neg_assign(minus_den, denominator);
+  PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
+  neg_assign(minus_denom, denominator);
 
   if (t == 0) {
     // Case 1: expr == b.
@@ -5408,7 +5406,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     case GREATER_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
-      add_dbm_constraint(v, 0, b, minus_den);
+      add_dbm_constraint(v, 0, b, minus_denom);
       break;
     default:
       // We already dealt with the other cases.
@@ -5421,7 +5419,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& a = expr.coefficient(Variable(w-1));
-    if (a == denominator || a == minus_den) {
+    if (a == denominator || a == minus_denom) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       PPL_DIRTY_TEMP(N, d);
       switch (relsym) {
@@ -5479,7 +5477,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
         break;
 
       case GREATER_OR_EQUAL:
-        div_round_up(d, b, minus_den);
+        div_round_up(d, b, minus_denom);
         if (w == v) {
           // `expr' is of the form: a*w + b.
           // Shortest-path closure and reduction are not preserved.
@@ -5554,8 +5552,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   neg_assign(minus_b, b);
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-  const Coefficient& sc_den = is_sc ? denominator : minus_den;
-  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  const Coefficient& sc_denom = is_sc ? denominator : minus_denom;
+  const Coefficient& minus_sc_denom = is_sc ? minus_denom : denominator;
   // NOTE: here, for optimization purposes, `minus_expr' is only assigned
   // when `denominator' is negative. Do not use it unless you are sure
   // it has been correctly assigned.
@@ -5617,22 +5615,22 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     }
 
     // Divide by the (sign corrected) denominator (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing the quotient, the denominator should be approximated
-      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // towards zero. Since `sc_denom' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+      // `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(sum, sum, down_sc_denom, ROUND_UP);
     }
 
     if (pinf_count == 0) {
       // Add the constraint `v <= sum'.
       add_dbm_constraint(0, v, sum);
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_denom, sum);
     }
     else if (pinf_count == 1)
       if (pinf_index != v
@@ -5683,22 +5681,22 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     }
 
     // Divide by the (sign corrected) denominator (if needed).
-    if (sc_den != 1) {
+    if (sc_denom != 1) {
       // Before computing the quotient, the denominator should be approximated
-      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // towards zero. Since `sc_denom' is known to be positive, this amounts to
       // rounding downwards, which is achieved as usual by rounding upwards
-      // `minus_sc_den' and negating again the result.
-      PPL_DIRTY_TEMP(N, down_sc_den);
-      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-      div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+      // `minus_sc_denom' and negating again the result.
+      PPL_DIRTY_TEMP(N, down_sc_denom);
+      assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
+      neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
+      div_assign_r(sum, sum, down_sc_denom, ROUND_UP);
     }
 
     if (pinf_count == 0) {
       // Add the constraint `v >= -sum', i.e., `-v <= sum'.
       add_dbm_constraint(v, 0, sum);
       // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, sum);
+      deduce_u_minus_v_bounds(v, w, sc_expr, sc_denom, sum);
     }
     else if (pinf_count == 1)
       if (pinf_index != v
@@ -5797,16 +5795,16 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // method computing generalized affine images for a single variable.
     Variable v(j_lhs);
     // Compute a sign-corrected relation symbol.
-    const Coefficient& den = lhs.coefficient(v);
+    const Coefficient& denom = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
-    if (den < 0) {
+    if (denom < 0) {
       if (relsym == LESS_OR_EQUAL)
         new_relsym = GREATER_OR_EQUAL;
       else if (relsym == GREATER_OR_EQUAL)
         new_relsym = LESS_OR_EQUAL;
     }
     Linear_Expression expr = rhs - b_lhs;
-    generalized_affine_image(v, new_relsym, expr, den);
+    generalized_affine_image(v, new_relsym, expr, denom);
   }
   else {
     // Here `lhs' is of the general form, having at least two variables.
@@ -5957,11 +5955,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
     const Linear_Expression inverse
       = expr - (expr_v + denominator)*var;
-    PPL_DIRTY_TEMP_COEFFICIENT(inverse_den);
-    neg_assign(inverse_den, expr_v);
+    PPL_DIRTY_TEMP_COEFFICIENT(inverse_denom);
+    neg_assign(inverse_denom, expr_v);
     const Relation_Symbol inverse_relsym
-      = (sgn(denominator) == sgn(inverse_den)) ? relsym : reversed_relsym;
-    generalized_affine_image(var, inverse_relsym, inverse, inverse_den);
+      = (sgn(denominator) == sgn(inverse_denom)) ? relsym : reversed_relsym;
+    generalized_affine_image(var, inverse_relsym, inverse, inverse_denom);
     return;
   }
 
@@ -6043,16 +6041,16 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
     // method computing generalized affine preimages for a single variable.
     Variable v(j_lhs);
     // Compute a sign-corrected relation symbol.
-    const Coefficient& den = lhs.coefficient(v);
+    const Coefficient& denom = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
-    if (den < 0) {
+    if (denom < 0) {
       if (relsym == LESS_OR_EQUAL)
         new_relsym = GREATER_OR_EQUAL;
       else if (relsym == GREATER_OR_EQUAL)
         new_relsym = LESS_OR_EQUAL;
     }
     Linear_Expression expr = rhs - b_lhs;
-    generalized_affine_preimage(v, new_relsym, expr, den);
+    generalized_affine_preimage(v, new_relsym, expr, denom);
   }
   else {
     // Here `lhs' is of the general form, having at least two variables.
@@ -6233,8 +6231,8 @@ BD_Shape<T>::minimized_constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(num);
-    PPL_DIRTY_TEMP_COEFFICIENT(den);
+    PPL_DIRTY_TEMP_COEFFICIENT(numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(denom);
 
     // Compute leader information.
     std::vector<dimension_type> leaders;
@@ -6252,14 +6250,14 @@ BD_Shape<T>::minimized_constraints() const {
         if (leader == 0) {
           // A unary equality has to be generated.
           PPL_ASSERT(!is_plus_infinity(dbm_0[i]));
-          numer_denom(dbm_0[i], num, den);
-          cs.insert(den*Variable(i-1) == num);
+          numer_denom(dbm_0[i], numer, denom);
+          cs.insert(denom*Variable(i-1) == numer);
         }
         else {
           // A binary equality has to be generated.
           PPL_ASSERT(!is_plus_infinity(dbm[i][leader]));
-          numer_denom(dbm[i][leader], num, den);
-          cs.insert(den*Variable(leader-1) - den*Variable(i-1) == num);
+          numer_denom(dbm[i][leader], numer, denom);
+          cs.insert(denom*Variable(leader-1) - denom*Variable(i-1) == numer);
         }
       }
     }
@@ -6270,12 +6268,12 @@ BD_Shape<T>::minimized_constraints() const {
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
       const dimension_type i = leader_indices[l_i];
       if (!red_0[i]) {
-        numer_denom(dbm_0[i], num, den);
-        cs.insert(den*Variable(i-1) <= num);
+        numer_denom(dbm_0[i], numer, denom);
+        cs.insert(denom*Variable(i-1) <= numer);
       }
       if (!redundancy_dbm[i][0]) {
-        numer_denom(dbm[i][0], num, den);
-        cs.insert(-den*Variable(i-1) <= num);
+        numer_denom(dbm[i][0], numer, denom);
+        cs.insert(-denom*Variable(i-1) <= numer);
       }
     }
     // Then generate all the binary inequalities.
@@ -6286,12 +6284,12 @@ BD_Shape<T>::minimized_constraints() const {
       for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
         const dimension_type j = leader_indices[l_j];
         if (!red_i[j]) {
-          numer_denom(dbm_i[j], num, den);
-          cs.insert(den*Variable(j-1) - den*Variable(i-1) <= num);
+          numer_denom(dbm_i[j], numer, denom);
+          cs.insert(denom*Variable(j-1) - denom*Variable(i-1) <= numer);
         }
         if (!redundancy_dbm[j][i]) {
-          numer_denom(dbm[j][i], num, den);
-          cs.insert(den*Variable(i-1) - den*Variable(j-1) <= num);
+          numer_denom(dbm[j][i], numer, denom);
+          cs.insert(denom*Variable(i-1) - denom*Variable(j-1) <= numer);
         }
       }
     }
@@ -6376,11 +6374,11 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
     DB_Row<N>& dbm_v = dbm[v_id];
     for (Variables_Set::const_iterator i = vars.begin(),
            vs_end = vars.end(); i != vs_end; ++i) {
-      const dimension_type tbf_id = *i + 1;
-      const DB_Row<N>& dbm_tbf = dbm[tbf_id];
+      const dimension_type to_be_folded_id = *i + 1;
+      const DB_Row<N>& dbm_to_be_folded_id = dbm[to_be_folded_id];
       for (dimension_type j = space_dim + 1; j-- > 0; ) {
-        max_assign(dbm[j][v_id], dbm[j][tbf_id]);
-        max_assign(dbm_v[j], dbm_tbf[j]);
+        max_assign(dbm[j][v_id], dbm[j][to_be_folded_id]);
+        max_assign(dbm_v[j], dbm_to_be_folded_id[j]);
       }
     }
   }

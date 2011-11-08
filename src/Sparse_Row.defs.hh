@@ -206,7 +206,7 @@ public:
   //! Adds \p n zeroes before index i.
   /*!
     \param n
-    The number of unstored zeroes that will be added to the row.
+    The number of non-stored zeroes that will be added to the row.
 
     \param i
     The index of the element before which the zeroes will be added.

@@ -160,7 +160,7 @@ const std::string empty = "EM";
 const std::string universe = "UN";
 const char yes = '+';
 const char no = '-';
-const char sep = ' ';
+const char separator = ' ';
 
 /*! \relates Parma_Polyhedra_Library::Box::Status
   Reads a keyword and its associated on/off flag from \p s.
@@ -188,9 +188,9 @@ template <typename ITV>
 void
 Box<ITV>::Status::ascii_dump(std::ostream& s) const {
   using namespace Implementation::Boxes;
-  s << (test_empty_up_to_date() ? yes : no) << empty_up_to_date << sep
-    << (test_empty() ? yes : no) << empty << sep
-    << (test_universe() ? yes : no) << universe << sep;
+  s << (test_empty_up_to_date() ? yes : no) << empty_up_to_date << separator
+    << (test_empty() ? yes : no) << empty << separator
+    << (test_universe() ? yes : no) << universe << separator;
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(ITV, Box<ITV>::Status)

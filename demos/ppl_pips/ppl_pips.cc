@@ -148,23 +148,23 @@ pip_display_sol(std::ostream& out,
         out << ((i == cs_begin) ? "" : " and ") << *i;
       out << " then" << endl;
     }
-    const PIP_Decision_Node* dn = pip->as_decision();
-    if (dn) {
-      pip_display_sol(out, dn->child_node(true), parameters, vars,
-                      space_dimension, indent+1);
+    const PIP_Decision_Node* decision_node_p = pip->as_decision();
+    if (decision_node_p) {
+      pip_display_sol(out, decision_node_p->child_node(true),
+                      parameters, vars, space_dimension, indent+1);
       out << setw(indent*2) << "" << "else" << endl;
-      pip_display_sol(out, dn->child_node(false), parameters, vars,
-                      space_dimension, indent+1);
+      pip_display_sol(out, decision_node_p->child_node(false),
+                      parameters, vars, space_dimension, indent+1);
     }
     else {
-      const PIP_Solution_Node* sn = pip->as_solution();
+      const PIP_Solution_Node* solution_node_p = pip->as_solution();
       out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
       for (Variables_Set::const_iterator
              v_begin = vars.begin(),
              v_end = vars.end(),
              i = v_begin; i != v_end; ++i)
         out << ((i == v_begin) ? "" : " ; ")
-            << sn->parametric_values(Variable(*i));
+            << solution_node_p->parametric_values(Variable(*i));
       out << "}" << endl;
       if (!constraints_empty) {
         out << setw(indent*2) << "" << "else" << endl;
@@ -273,8 +273,8 @@ public:
     PPL::dimension_type num_params;
     getline_no_comment(in, line);
     {
-      std::istringstream sin(line);
-      sin >> num_ctx_rows >> num_params;
+      std::istringstream iss(line);
+      iss >> num_ctx_rows >> num_params;
     }
     PPL_ASSERT(num_params >= 2);
     num_params -= 2;
@@ -283,18 +283,18 @@ public:
     Int_Vector ctx_type(num_ctx_rows);
     for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
       getline_no_comment(in, line);
-      std::istringstream sin(line);
-      sin >> ctx_type[i];
+      std::istringstream iss(line);
+      iss >> ctx_type[i];
       for (PPL::dimension_type j = 0; j <= num_params; ++j) {
-        sin >> context[i*num_ctx_rows + j];
+        iss >> context[i*num_ctx_rows + j];
       }
     }
 
     int bignum_column_coding;
     getline_no_comment(in, line);
     {
-      std::istringstream sin(line);
-      sin >> bignum_column_coding;
+      std::istringstream iss(line);
+      iss >> bignum_column_coding;
     }
 
     PPL::dimension_type num_constraints;
@@ -302,8 +302,8 @@ public:
     PPL::dimension_type num_vars;
     getline_no_comment(in, line);
     {
-      std::istringstream sin(line);
-      sin >> num_constraints >> constraint_width;
+      std::istringstream iss(line);
+      iss >> num_constraints >> constraint_width;
     }
     constraint_width -= 1;
     num_vars = constraint_width - num_params - 1;
@@ -312,10 +312,10 @@ public:
     Int_Vector constraint_type(num_constraints);
     for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
       getline_no_comment(in, line);
-      std::istringstream sin(line);
-      sin >> constraint_type[i];
+      std::istringstream iss(line);
+      iss >> constraint_type[i];
       for (PPL::dimension_type j = 0; j < constraint_width; ++j) {
-        sin >> constraints[i*constraint_width + j];
+        iss >> constraints[i*constraint_width + j];
       }
     }
 
@@ -822,11 +822,11 @@ main(int argc, char* argv[]) try {
     parser->output_solution_tree(*output_stream_p);
   }
   else {
-    std::auto_ptr<PPL::PIP_Problem> pipp;
+    std::auto_ptr<PPL::PIP_Problem> pip_p;
     // Perform a time benchmark loop executing the resolution several times.
     for (long i = 0; i < loop_iterations; ++i) {
-      pipp.reset(new PPL::PIP_Problem(pip));
-      pipp->solve();
+      pip_p.reset(new PPL::PIP_Problem(pip));
+      pip_p->solve();
     }
   }
 

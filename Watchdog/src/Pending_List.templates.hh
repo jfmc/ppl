@@ -39,18 +39,19 @@ Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
          && Traits::less_than(position->deadline(), deadline);
        ++position)
     ;
-  Iterator ppe;
+  Iterator pending_element_p;
   // Only allocate a new element if the free list is empty.
   if (free_list.empty())
-    ppe = new Pending_Element<typename Traits::Threshold>(deadline,
-                                                          handler,
-                                                          expired_flag);
+    pending_element_p
+      = new Pending_Element<typename Traits::Threshold>(deadline,
+                                                        handler,
+                                                        expired_flag);
   else {
-    ppe = free_list.begin();
-    free_list.erase(ppe);
-    ppe->assign(deadline, handler, expired_flag);
+    pending_element_p = free_list.begin();
+    free_list.erase(pending_element_p);
+    pending_element_p->assign(deadline, handler, expired_flag);
   }
-  Iterator r = active_list.insert(position, *ppe);
+  Iterator r = active_list.insert(position, *pending_element_p);
   assert(OK());
   return r;
 }

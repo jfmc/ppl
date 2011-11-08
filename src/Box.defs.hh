@@ -915,9 +915,9 @@ public:
     The constraints to be used for constraint propagation.
 
     \param max_iterations
-    The maximum number of propagation steps for each constraint in \p cs.
-    If zero (the default), the number of propagations will be unbounded,
-    possibly resulting in an infinite loop.
+    The maximum number of propagation steps for each constraint in
+    \p cs.  If zero (the default), the number of propagation steps
+    will be unbounded, possibly resulting in an infinite loop.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1779,8 +1779,8 @@ private:
   static I_Result
   refine_interval_no_check(ITV& itv,
                            Constraint::Type type,
-                           Coefficient_traits::const_reference num,
-                           Coefficient_traits::const_reference den);
+                           Coefficient_traits::const_reference numer,
+                           Coefficient_traits::const_reference denom);
 
   /*! \brief
     WRITE ME.
@@ -1788,8 +1788,8 @@ private:
   void
   add_interval_constraint_no_check(dimension_type var_id,
                                    Constraint::Type type,
-                                   Coefficient_traits::const_reference num,
-                                   Coefficient_traits::const_reference den);
+                                   Coefficient_traits::const_reference numer,
+                                   Coefficient_traits::const_reference denom);
 
   /*! \brief
     WRITE ME.

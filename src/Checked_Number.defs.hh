@@ -861,7 +861,7 @@ template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 output(std::ostream& os,
        const T& x,
-       const Numeric_Format& fmt,
+       const Numeric_Format& format,
        Rounding_Dir dir);
 
 //! Output operator.

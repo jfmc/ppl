@@ -380,7 +380,7 @@ unsigned int ld2(unsigned long long a);
 
 /*! \brief
   An abstract class to be implemented by an external analyzer such
-  as eCLAIR in order to provide to the PPL the necessary information
+  as ECLAIR in order to provide to the PPL the necessary information
   for performing the analysis of floating point computations.
 
   \par Template type parameters

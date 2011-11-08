@@ -2691,7 +2691,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     seq[i].add_constraint(i_constraint(rel, q));
     // FIXME: could/should we exploit the return value of add_constraint
     //        in case it is available?
-    // FIMXE: should we instead be lazy and do not even bother about
+    // FIXME: should we instead be lazy and do not even bother about
     //        the possibility the interval becomes empty apart from setting
     //        empty_up_to_date = false?
     if (seq[i].is_empty()) {
@@ -3077,29 +3077,29 @@ Box<ITV>
     bool open_lower = seq_var.lower_is_open();
     bool unbounded_lower = seq_var.lower_is_boundary_infinity();
     PPL_DIRTY_TEMP(mpq_class, q_seq_var_lower);
-    PPL_DIRTY_TEMP(Coefficient, num_lower);
-    PPL_DIRTY_TEMP(Coefficient, den_lower);
+    PPL_DIRTY_TEMP(Coefficient, numer_lower);
+    PPL_DIRTY_TEMP(Coefficient, denom_lower);
     if (!unbounded_lower) {
       assign_r(q_seq_var_lower, seq_var.lower(), ROUND_NOT_NEEDED);
-      assign_r(num_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
-      assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
+      assign_r(numer_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
+      assign_r(denom_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
       if (negative_denom)
-        neg_assign(den_lower, den_lower);
-      num_lower *= pos_denominator;
+        neg_assign(denom_lower, denom_lower);
+      numer_lower *= pos_denominator;
       seq_var.lower_extend();
     }
     bool open_upper = seq_var.upper_is_open();
     bool unbounded_upper = seq_var.upper_is_boundary_infinity();
     PPL_DIRTY_TEMP(mpq_class, q_seq_var_upper);
-    PPL_DIRTY_TEMP(Coefficient, num_upper);
-    PPL_DIRTY_TEMP(Coefficient, den_upper);
+    PPL_DIRTY_TEMP(Coefficient, numer_upper);
+    PPL_DIRTY_TEMP(Coefficient, denom_upper);
     if (!unbounded_upper) {
       assign_r(q_seq_var_upper, seq_var.upper(), ROUND_NOT_NEEDED);
-      assign_r(num_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
-      assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
+      assign_r(numer_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
+      assign_r(denom_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
       if (negative_denom)
-        neg_assign(den_upper, den_upper);
-      num_upper *= pos_denominator;
+        neg_assign(denom_upper, denom_upper);
+      numer_upper *= pos_denominator;
       seq_var.upper_extend();
     }
 
@@ -3110,19 +3110,19 @@ Box<ITV>
       Linear_Expression revised_lb_expr(ub_expr);
       revised_lb_expr -= ub_var_coeff * var;
       PPL_DIRTY_TEMP(Coefficient, d);
-      neg_assign(d, den_lower);
+      neg_assign(d, denom_lower);
       revised_lb_expr *= d;
-      revised_lb_expr += num_lower;
+      revised_lb_expr += numer_lower;
 
       // Find the minimum value for the revised lower bound expression
       // and use this to refine the appropriate bound.
       bool included;
-      PPL_DIRTY_TEMP(Coefficient, den);
-      if (minimize(revised_lb_expr, num_lower, den, included)) {
-        den_lower *= (den * ub_var_coeff);
+      PPL_DIRTY_TEMP(Coefficient, denom);
+      if (minimize(revised_lb_expr, numer_lower, denom, included)) {
+        denom_lower *= (denom * ub_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
-        assign_r(q.get_num(), num_lower, ROUND_NOT_NEEDED);
-        assign_r(q.get_den(), den_lower, ROUND_NOT_NEEDED);
+        assign_r(q.get_num(), numer_lower, ROUND_NOT_NEEDED);
+        assign_r(q.get_den(), denom_lower, ROUND_NOT_NEEDED);
         q.canonicalize();
         open_lower |= !included;
         if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom)
@@ -3143,19 +3143,19 @@ Box<ITV>
       Linear_Expression revised_ub_expr(lb_expr);
       revised_ub_expr -= lb_var_coeff * var;
       PPL_DIRTY_TEMP(Coefficient, d);
-      neg_assign(d, den_upper);
+      neg_assign(d, denom_upper);
       revised_ub_expr *= d;
-      revised_ub_expr += num_upper;
+      revised_ub_expr += numer_upper;
 
       // Find the maximum value for the revised upper bound expression
       // and use this to refine the appropriate bound.
       bool included;
       PPL_DIRTY_TEMP(Coefficient, den);
-      if (maximize(revised_ub_expr, num_upper, den, included)) {
-        den_upper *= (den * lb_var_coeff);
+      if (maximize(revised_ub_expr, numer_upper, den, included)) {
+        denom_upper *= (den * lb_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
-        assign_r(q.get_num(), num_upper, ROUND_NOT_NEEDED);
-        assign_r(q.get_den(), den_upper, ROUND_NOT_NEEDED);
+        assign_r(q.get_num(), numer_upper, ROUND_NOT_NEEDED);
+        assign_r(q.get_den(), denom_upper, ROUND_NOT_NEEDED);
         q.canonicalize();
         open_upper |= !included;
         if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom)

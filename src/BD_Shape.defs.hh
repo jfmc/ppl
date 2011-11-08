@@ -2201,7 +2201,7 @@ private:
     <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
     \p u played an active role in the computation of the upper bound for
     \p v, i.e., if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero. In particular:
+    <CODE>q == sc_expr[u]/sc_denom</CODE> is greater than zero. In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
       - if <CODE>0 \< q \< 1</CODE>, then
         <CODE>v - u \<= ub_v - (q*ub_u + (1-q)*lb_u)</CODE>.
@@ -2209,7 +2209,7 @@ private:
   void deduce_v_minus_u_bounds(dimension_type v,
                                dimension_type last_v,
                                const Linear_Expression& sc_expr,
-                               Coefficient_traits::const_reference sc_den,
+                               Coefficient_traits::const_reference sc_denom,
                                const N& ub_v);
 
   /* \brief
@@ -2286,7 +2286,7 @@ private:
     <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
     \p u played an active role in the computation of the lower bound for
     \p v, i.e., if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero.
+    <CODE>q == sc_expr[u]/sc_denom</CODE> is greater than zero.
     In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
       - if <CODE>0 \< q \< 1</CODE>, then
@@ -2295,7 +2295,7 @@ private:
   void deduce_u_minus_v_bounds(dimension_type v,
                                dimension_type last_v,
                                const Linear_Expression& sc_expr,
-                               Coefficient_traits::const_reference sc_den,
+                               Coefficient_traits::const_reference sc_denom,
                                const N& minus_lb_v);
 
   /*! \brief

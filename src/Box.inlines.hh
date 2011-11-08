@@ -375,21 +375,22 @@ Box<ITV>::minimized_congruences() const {
 
 template <typename ITV>
 inline I_Result
-Box<ITV>::refine_interval_no_check(ITV& itv,
-                                   const Constraint::Type type,
-                                   Coefficient_traits::const_reference num,
-                                   Coefficient_traits::const_reference den) {
-  PPL_ASSERT(den != 0);
+Box<ITV>
+::refine_interval_no_check(ITV& itv,
+                           const Constraint::Type type,
+                           Coefficient_traits::const_reference numer,
+                           Coefficient_traits::const_reference denom) {
+  PPL_ASSERT(denom != 0);
   // The interval constraint is of the form
-  // `var + num / den rel 0',
+  // `var + numer / denom rel 0',
   // where `rel' is either the relation `==', `>=', or `>'.
   // For the purpose of refining the interval, this is
-  // (morally) turned into `var rel -num/den'.
+  // (morally) turned into `var rel -numer/denom'.
   PPL_DIRTY_TEMP(mpq_class, q);
-  assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
+  assign_r(q.get_num(), numer, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), denom, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // Turn `num/den' into `-num/den'.
+  // Turn `numer/denom' into `-numer/denom'.
   q = -q;
 
   I_Result res;
@@ -398,12 +399,12 @@ Box<ITV>::refine_interval_no_check(ITV& itv,
     res = itv.add_constraint(i_constraint(EQUAL, q));
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    res = itv.add_constraint(i_constraint(den > 0
+    res = itv.add_constraint(i_constraint(denom > 0
                                           ? GREATER_OR_EQUAL
                                           : LESS_OR_EQUAL, q));
     break;
   case Constraint::STRICT_INEQUALITY:
-    res = itv.add_constraint(i_constraint(den > 0
+    res = itv.add_constraint(i_constraint(denom > 0
                                           ? GREATER_THAN
                                           : LESS_THAN, q));
     break;
@@ -421,12 +422,12 @@ inline void
 Box<ITV>
 ::add_interval_constraint_no_check(const dimension_type var_id,
                                    const Constraint::Type type,
-                                   Coefficient_traits::const_reference num,
-                                   Coefficient_traits::const_reference den) {
+                                   Coefficient_traits::const_reference numer,
+                                   Coefficient_traits::const_reference denom) {
   PPL_ASSERT(!marked_empty());
   PPL_ASSERT(var_id < space_dimension());
-  PPL_ASSERT(den != 0);
-  refine_interval_no_check(seq[var_id], type, num, den);
+  PPL_ASSERT(denom != 0);
+  refine_interval_no_check(seq[var_id], type, numer, denom);
   // FIXME: do check the value returned and set `empty' and
   // `empty_up_to_date' as appropriate.
   // This has to be done after reimplementation of intervals.

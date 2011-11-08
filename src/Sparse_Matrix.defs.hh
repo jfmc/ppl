@@ -68,7 +68,7 @@ public:
 
   /*!
     \brief Constructs a square matrix with the given size, filled with
-           unstored zeroes.
+           non-stored zeroes.
 
     \param n
     The size of the new square matrix.
@@ -82,8 +82,8 @@ public:
   explicit Sparse_Matrix(dimension_type n = 0, Flags row_flags = Flags());
 
   /*!
-    \brief Constructs a matrix with the given dimensions, filled with unstored
-           zeroes.
+    \brief Constructs a matrix with the given dimensions, filled with
+           non-stored zeroes.
 
     \param num_rows
     The number of rows in the new matrix.
@@ -214,7 +214,7 @@ public:
 
   //! Adds to the matrix \p n rows of zeroes with flags set to \p row_flags.
   /*!
-    Provided for compatibilty with Dense_Matrix.
+    Provided for compatibility with Dense_Matrix.
 
     \param n
     The number of rows to be added: must be strictly positive.
@@ -277,7 +277,7 @@ public:
 
   //! Permutes the columns of the matrix.
   /*!
-    This method is provided for compatibilty with Dense_Matrix but it is slow
+    This method is provided for compatibility with Dense_Matrix but it is slow
     and should be avoided if possible.
 
     \param cycles
@@ -309,7 +309,7 @@ public:
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
-    Provided for compatibilty with Dense_Matrix.
+    Provided for compatibility with Dense_Matrix.
 
     \param n
     The number of columns to be added: must be strictly positive.
