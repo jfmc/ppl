@@ -418,8 +418,9 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
       itr.get_right_child();
     PPL_ASSERT(itr.index() == unused_index);
 
-    itr.index() = key1;
     new (&(*itr)) data_type(data1);
+    // Set the index only if the construction was successful.
+    itr.index() = key1;
 
   } else {
 
@@ -884,8 +885,9 @@ PPL::CO_Tree
             || last_index_in_subtree != first_unused_index) {
           PPL_ASSERT(first_unused_index != indexes);
           PPL_ASSERT(*first_unused_index == unused_index);
-          *first_unused_index = key;
           new (first_unused_data) data_type(value);
+          // Set the index only if the construction was successful.
+          *first_unused_index = key;
           --first_unused_index;
           --first_unused_data;
         }
@@ -977,8 +979,9 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
         PPL_ASSERT(last_used != top_i);
         PPL_ASSERT(indexes[top_i] == unused_index);
         add_element = false;
-        indexes[top_i] = key;
         new (&(data[top_i])) data_type(value);
+        // Set the index only if the construction was successful.
+        indexes[top_i] = key;
       } else {
         if (last_used != top_i) {
           PPL_ASSERT(indexes[top_i] == unused_index);
