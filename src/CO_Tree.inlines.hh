@@ -82,8 +82,6 @@ CO_Tree::clear() {
 inline
 CO_Tree::~CO_Tree() {
 
-  PPL_ASSERT(structure_OK());
-
   destroy();
 }
 
