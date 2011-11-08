@@ -155,12 +155,14 @@ fma
 fmaf
 fmal
 fmod
+fmtflags
 forall
 fprintf
 frac
 fread
 fstream
 fwrite
+genfrac
 get_den
 get_num
 getc
@@ -252,6 +254,7 @@ ru_utime'
 rusage
 scriptstyle
 setdiff
+setf
 setfill
 setitimer
 setjmp
