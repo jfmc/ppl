@@ -1148,7 +1148,7 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
         PPL_ASSERT(indexes[i] == unused_index);
       }
   } catch (...) {
-    // The (used) data elements in [x.reserved_size,i) has been constructed
+    // The (used) data elements in (i,x.reserved_size] have been constructed
     // successfully.
     // The constructor of data[i] has thrown an exception, so data[i] has not
     // been constructed.
