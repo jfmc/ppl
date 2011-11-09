@@ -967,15 +967,15 @@ number	: NAN					INF	: 'inf'
 	| num DIV num					;
 	;
 						SIGN	: '-'
-num     : unum						| '+'
-        | SIGN unum					;
+num     : u_num						| '+'
+        | SIGN u_num					;
 
-unum	: unum1					EXP	: 'e'
-	| HEX unum1					| 'p'
-	| base BASE unum1				| '*^'
+u_num	: u_num1				EXP	: 'e'
+	| HEX u_num1					| 'p'
+	| base BASE u_num1				| '*^'
 	;                                               ;
 						POINT	: '.'
-unum1	: mantissa					;
+u_num1	: mantissa					;
 	| mantissa EXP exponent
 	;					DIV	: '/'
 							;

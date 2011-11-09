@@ -67,8 +67,8 @@ namespace Parma_Polyhedra_Library {
 
   B-trees are cache-friendly too, but the cache size is fixed (usually at
   compile-time). This raises two problems: firstly the cache size must be
-  known in advance and those data structures don't perform well with other
-  cache sizes and secondly, even if the cache size is known, the
+  known in advance and those data structures do not perform well with other
+  cache sizes and, secondly, even if the cache size is known, the
   optimizations target only one level of cache. This kind of data structures
   are called cache aware. This implementation, instead, is cache oblivious:
   it performs well with every cache size, and thus exploits all of the
@@ -87,7 +87,7 @@ namespace Parma_Polyhedra_Library {
     searched element (or the position where it would have been).
 
   The binary search tree is embedded in a (slightly bigger) complete tree,
-  that is enlarged and shrunk when needed. The complete tree is layed out
+  that is enlarged and shrunk when needed. The complete tree is laid out
   in an in-order DFS layout in two arrays: one for the keys and one for the
   associated data.
   The indexes and values are stored in different arrays to reduce
@@ -1219,7 +1219,7 @@ private:
     After the move, \p from becomes a non-constructed chunk of memory and
     \p to gets the value previously stored by \p from.
 
-    The implementation of this method assumes that data_type values don't
+    The implementation of this method assumes that data_type values do not
     keep pointers to themselves nor to their fields.
 
     This method takes \f$O(1)\f$ time.

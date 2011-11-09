@@ -155,7 +155,7 @@ const std::string empty = "EM";
 const std::string strong_closed = "SC";
 const char yes = '+';
 const char no = '-';
-const char sep = ' ';
+const char separator = ' ';
 
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape::Status
   Reads a keyword and its associated on/off flag from \p s.
@@ -184,12 +184,12 @@ inline void
 Octagonal_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   using namespace Implementation::Octagonal_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ
-    << sep
+    << separator
     << (test_empty() ? yes : no) << empty
-    << sep
-    << sep
+    << separator
+    << separator
     << (test_strongly_closed() ? yes : no) << strong_closed
-    << sep;
+    << separator;
 }
 
 template <typename T>

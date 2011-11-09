@@ -1918,7 +1918,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Implementation based on Algorithm 8.1 (page 15) in [BemporadFT00TR],
   // generalized so as to also allow for unbounded polyhedra.
   // The extension to unbounded polyhedra is obtained by mimicking
-  // what done in Algorithm 8.2 (page 19) wrt Algorithm 6.2 (page 13).
+  // what done in Algorithm 8.2 (page 19) with respect to
+  // Algorithm 6.2 (page 13).
   // We also apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
   // so as to quickly handle special cases and avoid the splitting
   // of equalities/lines into pairs of inequalities/rays.

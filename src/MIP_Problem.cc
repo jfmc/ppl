@@ -223,7 +223,7 @@ PPL::MIP_Problem::optimizing_point() const {
     return last_generator;
   else
     throw std::domain_error("PPL::MIP_Problem::optimizing_point():\n"
-                           "*this doesn't have an optimizing point.");
+                            "*this does not have an optimizing point.");
 }
 
 bool
@@ -2088,7 +2088,8 @@ bool
 PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
                                             const Variables_Set& i_vars,
                                             dimension_type& branching_index) {
-  // Insert here the variables that don't satisfy the integrality condition.
+  // Insert here the variables that do not satisfy the integrality
+  // condition.
   const std::vector<Constraint*>& input_cs = lp.input_cs;
   const Generator& last_generator = lp.last_generator;
   Coefficient_traits::const_reference last_generator_divisor

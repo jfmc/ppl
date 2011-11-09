@@ -372,7 +372,7 @@ public:
     \param oracle The FP_Oracle to be queried.
     \param result The linear form that will store the result.
 
-    \return <CODE>true</CODE> if the operation was succesful,
+    \return <CODE>true</CODE> if the operation was successful,
     <CODE>false</CODE> otherwise (the possibility of failure
     depends on the oracle's implementation).
 

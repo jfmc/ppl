@@ -1862,7 +1862,7 @@ PPL::Polyhedron::unconstrain(const Variable var) {
 
 void
 PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
-  // The cylindrification wrt no dimensions is a no-op.
+  // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a polyhedron in a 0-dim space.
   if (vars.empty())

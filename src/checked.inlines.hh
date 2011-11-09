@@ -32,8 +32,8 @@ site: http://bugseng.com/products/ppl/ . */
 /*! \brief
   Performs the test <CODE>a < b</CODE> avoiding the warning about the
   comparison being always false due to limited range of data type.
-  FIXME: we don't have found a working solution. gcc option
-  -Wno-type-limits suppress the warning
+  FIXME: we have not found a working solution. The GCC option
+  -Wno-type-limits suppresses the warning
 */
 #define PPL_LT_SILENT(a, b) ((a) < (b))
 #define PPL_GT_SILENT(a, b) ((a) > (b))

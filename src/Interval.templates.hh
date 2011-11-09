@@ -148,7 +148,7 @@ Interval<Boundary, Info>::Interval(const char* s) {
   PPL_ASSERT(upper_r != V_CVT_STR_UNK && upper_r != V_NAN);
   upper_r = result_relation_class(upper_r);
 
-  // Buld the interval.
+  // Build the interval.
   bool lower_open = false;
   bool upper_open = false;
   bool lower_boundary_infinity = false;
@@ -289,7 +289,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     return is;
   }
 
-  // Buld interval.
+  // Build interval.
   switch (lower_r) {
   case V_EQ:
   case V_GE:

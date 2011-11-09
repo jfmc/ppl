@@ -403,8 +403,9 @@ public:
   MIP_Problem_Status solve() const;
 
   /*! \brief
-    Sets \p num and \p den so that \f$\frac{num}{den}\f$ is the result
-    of evaluating the objective function on \p evaluating_point.
+    Sets \p num and \p denom so that
+    \f$\frac{\mathtt{numer}}{\mathtt{denom}}\f$ is the result of
+    evaluating the objective function on \p evaluating_point.
 
     \param evaluating_point
     The point on which the objective function will be evaluated.
@@ -444,7 +445,7 @@ public:
     optimization problem.
 
     \exception std::domain_error
-    Thrown if \p *this doesn't not have an optimizing point, i.e.,
+    Thrown if \p *this does not not have an optimizing point, i.e.,
     if the MIP problem is unbounded or not satisfiable.
   */
   void optimal_value(Coefficient& numer, Coefficient& denom) const;

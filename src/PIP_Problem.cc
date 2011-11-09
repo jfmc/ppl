@@ -163,11 +163,11 @@ PPL::PIP_Problem::solve() const {
 
           if (c.inhomogeneous_term() != 0) {
             itr = row.insert(0, c.inhomogeneous_term());
-            // Adjust inhomogenous term if strict.
+            // Adjust inhomogeneous term if strict.
             if (c.is_strict_inequality())
               --(*itr);
           } else {
-            // Adjust inhomogenous term if strict.
+            // Adjust inhomogeneous term if strict.
             if (c.is_strict_inequality())
               itr = row.insert(0, -1);
           }

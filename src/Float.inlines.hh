@@ -467,35 +467,39 @@ is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
 }
 
 #if defined(__GNUC__)
-inline unsigned int ld2(unsigned long long a) {
-  return __builtin_clzll(a) ^ (sizeof(a)*8 - 1);
+inline unsigned int
+msb_position(unsigned long long v) {
+  PPL_ASSERT(v != 0);
+  return __builtin_clzll(v) ^ (sizeof(v)*8 - 1);
 }
 #else
-unsigned int ld2(unsigned long long v) {
- unsigned r = 0;
- if (v >= 0x100000000ULL) {
-   v >>= 32;
-   r += 32;
- }
- if (v >= 0x10000) {
-   v >>= 16;
-   r += 16;
- }
- if (v >= 0x100) {
-   v >>= 8;
-   r += 8;
- }
- if (v >= 0x10) {
-   v >>= 4;
-   r += 4;
- }
- if (v >= 4) {
-   v >>= 2;
-   r += 2;
- }
- if (v >= 2)
-   r++;
- return r;
+unsigned int
+msb_position(unsigned long long v) {
+  PPL_ASSERT(v != 0);
+  unsigned r = 0;
+  if (v >= 0x100000000ULL) {
+    v >>= 32;
+    r += 32;
+  }
+  if (v >= 0x10000) {
+    v >>= 16;
+    r += 16;
+  }
+  if (v >= 0x100) {
+    v >>= 8;
+    r += 8;
+  }
+  if (v >= 0x10) {
+    v >>= 4;
+    r += 4;
+  }
+  if (v >= 4) {
+    v >>= 2;
+    r += 2;
+  }
+  if (v >= 2)
+    r++;
+  return r;
 }
 #endif
 

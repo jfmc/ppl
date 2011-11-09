@@ -283,23 +283,23 @@ public:
 
   //! Constructor.
   /*!
-    Builds artificial parameter \f$\frac{\mathit{expr}}{\mathit{den}}\f$.
+    Builds artificial parameter \f$\frac{\mathtt{expr}}{\mathtt{d}}\f$.
 
     \param expr
     The expression that, after normalization, will form the numerator of
     the artificial parameter.
 
-    \param den
+    \param d
     The integer constant thatm after normalization, will form the
     denominator of the artificial parameter.
 
     \exception std::invalid_argument
-    Thrown if \p den is zero.
+    Thrown if \p d is zero.
 
     Normalization will ensure that the denominator is positive.
   */
   Artificial_Parameter(const Linear_Expression& expr,
-                       Coefficient_traits::const_reference den);
+                       Coefficient_traits::const_reference d);
 
   //! Copy constructor.
   Artificial_Parameter(const Artificial_Parameter& y);
@@ -515,18 +515,18 @@ private:
   /*! \brief
     A boolean vector for identifying the basic variables.
 
-    Variable identifiers are numbered from 0 to <tt>n+m-1</tt>, where \p n
+    Variable identifiers are numbered from 0 to <CODE>n+m-1</CODE>, where \p n
     is the number of columns in the simplex tableau corresponding to variables,
     and \p m is the number of rows.
 
-    Indices from 0 to <tt>n-1</tt> correspond to the original variables.
+    Indices from 0 to <CODE>n-1</CODE> correspond to the original variables.
 
-    Indices from \p n to <tt>n+m-1</tt> correspond to the slack variables
+    Indices from \p n to <CODE>n+m-1</CODE> correspond to the slack variables
     associated to the internal constraints, which do not strictly correspond
     to original constraints, since these may have been transformed to fit the
     standard form of the dual simplex.
 
-    The value for <tt>basis[i]</tt> is:
+    The value for <CODE>basis[i]</CODE> is:
      - \b true if variable \p i is basic,
      - \b false if variable \p i is nonbasic.
   */
@@ -535,11 +535,11 @@ private:
   /*! \brief
     A mapping between the tableau rows/columns and the original variables.
 
-    The value of <tt>mapping[i]</tt> depends of the value of <tt>basis[i]</tt>.
+    The value of <CODE>mapping[i]</CODE> depends of the value of <CODE>basis[i]</CODE>.
 
-     - If <tt>basis[i]</tt> is \b true, <tt>mapping[i]</tt> encodes the column
+     - If <CODE>basis[i]</CODE> is \b true, <CODE>mapping[i]</CODE> encodes the column
        index of variable \p i in the \p s matrix of the tableau.
-     - If <tt>basis[i]</tt> is \b false, <tt>mapping[i]</tt> encodes the row
+     - If <CODE>basis[i]</CODE> is \b false, <CODE>mapping[i]</CODE> encodes the row
        index of variable \p i in the tableau.
   */
   std::vector<dimension_type> mapping;
@@ -561,7 +561,7 @@ private:
     The subset of equality constraints in a specific problem can be expressed
     as: \f$f_i(x,p) = 0 ; 1 \leq i \leq n\f$. As the dual simplex standard form
     requires constraints to be inequalities, the following constraints can be
-    modelized the following way:
+    modeled as follows:
 
      - \f$f_i(x,p) \geq 0 ; 1 \leq i \leq n\f$
 

@@ -374,9 +374,14 @@ public:
 
 // FIXME: is this the right place for this function?
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns the position of the most significant bit in \p a.
+/*! \brief
+  If \p v is nonzero, returns the position of the most significant bit
+  in \p a.
+
+  The behavior is undefined if \p v is zero.
+*/
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-unsigned int ld2(unsigned long long a);
+unsigned int msb_position(unsigned long long v);
 
 /*! \brief
   An abstract class to be implemented by an external analyzer such

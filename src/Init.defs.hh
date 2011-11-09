@@ -76,7 +76,7 @@ private:
   /*! \brief
     Default precision parameter used for irrational calculations.
 
-    The default is choosen to have a precision greater than most
+    The default is chosen to have a precision greater than most
     precise IEC 559 floating point (112 bits of mantissa).
   */
   static const unsigned DEFAULT_IRRATIONAL_PRECISION = 128U;

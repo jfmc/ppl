@@ -303,7 +303,7 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& sup_n,
 	   Coefficient& sup_d,
 	   bool& maximum,
-	   Generator& pnt) const {
+	   Generator& g) const {
   reduce();
 
   if (is_empty())
@@ -316,10 +316,10 @@ Partially_Reduced_Product<D1, D2, R>
   PPL_DIRTY_TEMP_COEFFICIENT(sup2_d);
   bool maximum1;
   bool maximum2;
-  Generator pnt1(point());
-  Generator pnt2(point());
-  bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1, pnt1);
-  bool r2 = d2.maximize(expr, sup2_n, sup2_d, maximum2, pnt2);
+  Generator g1(point());
+  Generator g2(point());
+  bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1, g1);
+  bool r2 = d2.maximize(expr, sup2_n, sup2_d, maximum2, g2);
   // If neither is bounded from above, return false.
   if (!r1 && !r2)
     return false;
@@ -328,7 +328,7 @@ Partially_Reduced_Product<D1, D2, R>
     sup_n = sup2_n;
     sup_d = sup2_d;
     maximum = maximum2;
-    pnt = pnt2;
+    g = g2;
     return true;
   }
   // If only d1 is bounded from above, then use the values for d1.
@@ -336,7 +336,7 @@ Partially_Reduced_Product<D1, D2, R>
     sup_n = sup1_n;
     sup_d = sup1_d;
     maximum = maximum1;
-    pnt = pnt1;
+    g = g1;
     return true;
   }
   // If both d1 and d2 are bounded from above, then use the minimum values.
@@ -344,13 +344,13 @@ Partially_Reduced_Product<D1, D2, R>
     sup_n = sup1_n;
     sup_d = sup1_d;
     maximum = maximum1;
-    pnt = pnt1;
+    g = g1;
   }
   else {
     sup_n = sup2_n;
     sup_d = sup2_d;
     maximum = maximum2;
-    pnt = pnt2;
+    g = g2;
   }
   return true;
 }
@@ -362,7 +362,7 @@ Partially_Reduced_Product<D1, D2, R>
 	   Coefficient& inf_n,
 	   Coefficient& inf_d,
 	   bool& minimum,
-	   Generator& pnt) const {
+	   Generator& g) const {
   reduce();
 
   if (is_empty())
@@ -375,10 +375,10 @@ Partially_Reduced_Product<D1, D2, R>
   PPL_DIRTY_TEMP_COEFFICIENT(inf2_d);
   bool minimum1;
   bool minimum2;
-  Generator pnt1(point());
-  Generator pnt2(point());
-  bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1, pnt1);
-  bool r2 = d2.minimize(expr, inf2_n, inf2_d, minimum2, pnt2);
+  Generator g1(point());
+  Generator g2(point());
+  bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1, g1);
+  bool r2 = d2.minimize(expr, inf2_n, inf2_d, minimum2, g2);
   // If neither is bounded from below, return false.
   if (!r1 && !r2)
     return false;
@@ -387,7 +387,7 @@ Partially_Reduced_Product<D1, D2, R>
     inf_n = inf2_n;
     inf_d = inf2_d;
     minimum = minimum2;
-    pnt = pnt2;
+    g = g2;
     return true;
   }
   // If only d1 is bounded from below, then use the values for d1.
@@ -395,7 +395,7 @@ Partially_Reduced_Product<D1, D2, R>
     inf_n = inf1_n;
     inf_d = inf1_d;
     minimum = minimum1;
-    pnt = pnt1;
+    g = g1;
     return true;
   }
   // If both d1 and d2 are bounded from below, then use the minimum values.
@@ -403,13 +403,13 @@ Partially_Reduced_Product<D1, D2, R>
     inf_n = inf1_n;
     inf_d = inf1_d;
     minimum = minimum1;
-    pnt = pnt1;
+    g = g1;
   }
   else {
     inf_n = inf2_n;
     inf_d = inf2_d;
     minimum = minimum2;
-    pnt = pnt2;
+    g = g2;
   }
   return true;
 }
@@ -510,51 +510,51 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
 
   // Find the maximum and minimum bounds for the domain element d with the
   // linear expression e.
-  PPL_DIRTY_TEMP_COEFFICIENT(max_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(max_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_denom);
   bool max_included;
-  PPL_DIRTY_TEMP_COEFFICIENT(min_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(min_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
   bool min_included;
-  if (d2.maximize(e, max_num, max_den, max_included)) {
-    if (d2.minimize(e, min_num, min_den, min_included)) {
-      // Adjust values to allow for the denominators max_den and min_den.
-      max_num *= min_den;
-      min_num *= max_den;
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
+  if (d2.maximize(e, max_numer, max_denom, max_included)) {
+    if (d2.minimize(e, min_numer, min_denom, min_included)) {
+      // Adjust values to allow for the denominators max_denom and min_denom.
+      max_numer *= min_denom;
+      min_numer *= max_denom;
+      PPL_DIRTY_TEMP_COEFFICIENT(denom);
       PPL_DIRTY_TEMP_COEFFICIENT(mod);
-      den = max_den * min_den;
-      mod = cg.modulus() * den;
+      denom = max_denom * min_denom;
+      mod = cg.modulus() * denom;
       // If the difference between the maximum and minimum bounds is more than
       // twice the modulus, then there will be two neighboring hyperplanes
       // defined by cg that are intersected by the domain element d;
       // there is no possible reduction in this case.
       PPL_DIRTY_TEMP_COEFFICIENT(mod2);
       mod2 = 2 * mod;
-      if (max_num - min_num < mod2
-          || (max_num - min_num == mod2 && (!max_included || !min_included)))
+      if (max_numer - min_numer < mod2
+          || (max_numer - min_numer == mod2 && (!max_included || !min_included)))
         {
           PPL_DIRTY_TEMP_COEFFICIENT(shrink_amount);
           PPL_DIRTY_TEMP_COEFFICIENT(max_decreased);
           PPL_DIRTY_TEMP_COEFFICIENT(min_increased);
           // Find the amount by which the maximum value may be decreased.
-          shrink_amount = max_num % mod;
+          shrink_amount = max_numer % mod;
           if (!max_included && shrink_amount == 0)
             shrink_amount = mod;
           if (shrink_amount < 0)
             shrink_amount += mod;
-          max_decreased = max_num - shrink_amount;
+          max_decreased = max_numer - shrink_amount;
           // Find the amount by which the minimum value may be increased.
-          shrink_amount = min_num % mod;
+          shrink_amount = min_numer % mod;
           if (!min_included && shrink_amount == 0)
             shrink_amount = - mod;
           if (shrink_amount > 0)
             shrink_amount -= mod;
-          min_increased = min_num - shrink_amount;
+          min_increased = min_numer - shrink_amount;
           if (max_decreased == min_increased) {
             // The domain element d2 intersects exactly one hyperplane
             // defined by cg, so add the equality to d1 and d2.
-            Constraint new_c(den * e == min_increased);
+            Constraint new_c(denom * e == min_increased);
             d1.refine_with_constraint(new_c);
             d2.refine_with_constraint(new_c);
             return true;
@@ -664,7 +664,7 @@ void
          cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
     if (c.is_equality())
-      // Equalities aleady shared.
+      // Equalities already shared.
       continue;
     // Check the frequency and value of the linear expression for
     // the constraint `c'.

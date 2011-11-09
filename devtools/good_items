@@ -30,6 +30,7 @@ Farkas'
 Floyd-Warshall
 Fukuda
 Gomory
+HREF
 Hurd
 IEC
 ITIMER_PROF
@@ -108,6 +109,8 @@ __gnu_hurd__
 addmod
 amifp
 anonymous_enum
+aps
+aps'
 arg
 argc
 argv
@@ -121,11 +124,13 @@ biggr
 bigl
 bigm
 bigoplus
+bigoplus_
 bigr
 bool
 buf
 cassert
 cbegin
+ccgs
 cdot
 cend
 cerr
@@ -153,6 +158,7 @@ dbm_vw'
 defeq
 deque
 dim_prec
+dim_prec'
 downarrow
 elif
 endcode
@@ -165,6 +171,7 @@ eof
 eq
 errno
 extern
+fcp
 feclearexcept
 fegetround
 fenv
@@ -202,9 +209,9 @@ ifdef
 iff
 ifndef
 ifstream
+ik
 ine
 ingroup
-inhomo
 inline
 int64_t
 iomanip
@@ -232,6 +239,7 @@ mathord
 mathrel
 mathrm
 mathtt
+mem_fun_ref
 memcpy
 mp_ptr
 mp_srcptr
@@ -252,10 +260,12 @@ mulmod
 nbrows
 ncols
 notin
+npi
 nrows
 ofstream
 optarg
 optind
+org
 ostream
 ostream_iterator
 ostringstream
@@ -267,9 +277,11 @@ pkint_set_si
 pkint_sgn
 pkint_t
 pmod
+ppi
 ppl_setround_function
 ppl_setround_function_p
 printf
+prp
 ptr
 ptrdiff
 ptrdiff_t
@@ -323,6 +335,7 @@ strtoull
 struct
 submod
 substr
+tcp
 textrm
 timeval
 tmp
@@ -343,8 +356,10 @@ unipr
 unistd
 unum
 uparrow
+uplus
 utime
 varepsilon
+varepsilon_
 vclass
 vfprintf
 xi
@@ -359,6 +374,7 @@ xu
 xus
 xv
 xx
+xyz
 yi
 yl
 yls

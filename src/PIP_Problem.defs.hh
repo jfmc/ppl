@@ -247,7 +247,7 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   assignment, the ``spanning'' of the PIP problem solution tree refers
   to the process whereby the solution tree is navigated, starting from
   the root node: the value of artificial parameters is computed according
-  to the parameter assignment and the node's contraints are evaluated,
+  to the parameter assignment and the node's constraints are evaluated,
   thereby descending in either the true or the false subtree of decision
   nodes and eventually reaching a solution node or a bottom node.
   If a solution node is found, each of the problem variables is provided
@@ -720,16 +720,16 @@ public:
 
   //! Possible values for PIP_Problem control parameters.
   enum Control_Parameter_Value {
-    //! Choose the first non-integer row
+    //! Choose the first non-integer row.
     CUTTING_STRATEGY_FIRST,
-    //! Choose row which generates the deepest cut
+    //! Choose row which generates the deepest cut.
     CUTTING_STRATEGY_DEEPEST,
-    //! Always generate all possible cuts
+    //! Always generate all possible cuts.
     CUTTING_STRATEGY_ALL,
 
-    //! Choose the first row with negative parameter sign
+    //! Choose the first row with negative parameter sign.
     PIVOT_ROW_STRATEGY_FIRST,
-    //! Choose the row which generates the lexico-maximal pivot column
+    //! Choose a row that generates a lexicographically maximal pivot column.
     PIVOT_ROW_STRATEGY_MAX_COLUMN,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

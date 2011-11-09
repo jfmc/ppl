@@ -39,12 +39,12 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   y.omega_reduce();
   Sequence new_sequence = x.sequence;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    const NNC_Polyhedron& py = yi->pointset();
+    const NNC_Polyhedron& ph_yi = yi->pointset();
     Sequence tmp_sequence;
-    for (Sequence_const_iterator nsi = new_sequence.begin(),
-	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
+    for (Sequence_const_iterator itr = new_sequence.begin(),
+	   ns_end = new_sequence.end(); itr != ns_end; ++itr) {
       std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> > partition
-	= linear_partition(py, nsi->pointset());
+	= linear_partition(ph_yi, itr->pointset());
       const Pointset_Powerset<NNC_Polyhedron>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -113,49 +113,49 @@ PPL::check_containment(const NNC_Polyhedron& ph,
 namespace {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Uses the congruence \p c to approximately partition the grid \p qq.
+//! Uses the congruence \p c to approximately partition the grid \p gr.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p qq and congruence \p c is stored
-  in \p qq, whereas a finite set of grids whose set-theoretic union
-  contains the intersection of \p qq with the negation of \p c
+  On exit, the intersection of \p gr and congruence \p c is stored
+  in \p gr, whereas a finite set of grids whose set-theoretic union
+  contains the intersection of \p gr with the negation of \p c
   is added, as a set of new disjuncts, to the powerset \p r.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 approximate_partition_aux(const PPL::Congruence& c,
-			  PPL::Grid& qq,
+			  PPL::Grid& gr,
 			  PPL::Pointset_Powerset<PPL::Grid>& r) {
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
-  Grid qq_copy(qq);
-  qq.add_congruence(c);
-  if (qq.is_empty()) {
-    r.add_disjunct(qq_copy);
+  Grid gr_copy(gr);
+  gr.add_congruence(c);
+  if (gr.is_empty()) {
+    r.add_disjunct(gr_copy);
     return true;
   }
 
-  Congruence_System cgs = qq.congruences();
-  Congruence_System cgs_copy = qq_copy.congruences();
-  // When c is an equality, not satisfied by Grid qq
-  // then add qq to the set r. There is no finite
+  Congruence_System cgs = gr.congruences();
+  Congruence_System cgs_copy = gr_copy.congruences();
+  // When c is an equality, not satisfied by Grid gr
+  // then add gr to the set r. There is no finite
   // partition in this case.
   if (c_modulus == 0) {
     if (cgs.num_equalities() != cgs_copy.num_equalities()) {
-      r.add_disjunct(qq_copy);
+      r.add_disjunct(gr_copy);
       return false;
     }
     return true;
   }
 
-  // When c is a proper congruence but, in qq, this direction has
-  // no congruence, then add qq to the set r. There is no finite
+  // When c is a proper congruence but, in gr, this direction has
+  // no congruence, then add gr to the set r. There is no finite
   // partition in this case.
   if (cgs.num_proper_congruences() != cgs_copy.num_proper_congruences()) {
-    r.add_disjunct(qq_copy);
+    r.add_disjunct(gr_copy);
     return false;
   }
 
-  // When  c is a proper congruence and qq also is discrete
+  // When  c is a proper congruence and gr also is discrete
   // in this direction, then there is a finite partition and that
   // is added to r.
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
@@ -168,10 +168,10 @@ approximate_partition_aux(const PPL::Congruence& c,
   PPL_DIRTY_TEMP_COEFFICIENT(i);
   for (i = c_modulus; i-- > 0; )
     if (i != n) {
-      Grid qqq(qq_copy);
-      qqq.add_congruence((le+i %= 0) / c_modulus);
-      if (!qqq.is_empty())
-	r.add_disjunct(qqq);
+      Grid gr_tmp(gr_copy);
+      gr_tmp.add_congruence((le+i %= 0) / c_modulus);
+      if (!gr_tmp.is_empty())
+	r.add_disjunct(gr_tmp);
     }
   return true;
 }
@@ -188,16 +188,16 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   // Ensure that the congruence system of q is minimized
   // before copying and calling approximate_partition_aux().
   (void) q.minimized_congruences();
-  Grid qq = q;
+  Grid gr = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
 	 pcs_end = pcs.end(); i != pcs_end; ++i)
-    if (!approximate_partition_aux(*i, qq, r)) {
+    if (!approximate_partition_aux(*i, gr, r)) {
       finite_partition = false;
       Pointset_Powerset<Grid> s(q);
-      return std::make_pair(qq, s);
+      return std::make_pair(gr, s);
     }
-  return std::make_pair(qq, r);
+  return std::make_pair(gr, r);
 }
 
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
@@ -240,7 +240,7 @@ PPL::check_containment(const Grid& ph,
           // specification of approximate_partition(), we can
           // ignore checking the remaining temporary disjuncts as they
           // will all have the same lines and equalities and therefore
-          // also not have a finite partition wrt pi.
+          // also not have a finite partition with respect to pi.
           if (!finite_partition)
             break;
 	  new_disjuncts.upper_bound_assign(partition.second);
@@ -266,11 +266,11 @@ PPL::Pointset_Powerset<PPL::Grid>
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
     const Grid& py = yi->pointset();
     Sequence tmp_sequence;
-    for (Sequence_const_iterator nsi = new_sequence.begin(),
-	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
+    for (Sequence_const_iterator itr = new_sequence.begin(),
+	   ns_end = new_sequence.end(); itr != ns_end; ++itr) {
       bool finite_partition;
       std::pair<Grid, Pointset_Powerset<Grid> > partition
-	= approximate_partition(py, nsi->pointset(), finite_partition);
+	= approximate_partition(py, itr->pointset(), finite_partition);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
