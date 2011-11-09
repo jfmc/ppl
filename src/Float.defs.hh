@@ -374,7 +374,7 @@ public:
 
 // FIXME: is this the right place for this function?
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns the position of the most significative bit in \p a.
+//! Returns the position of the most significant bit in \p a.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 unsigned int ld2(unsigned long long a);
 

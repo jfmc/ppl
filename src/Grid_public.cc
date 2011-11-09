@@ -1011,11 +1011,11 @@ PPL::Grid::OK(bool check_not_empty) const {
 
 	// A reduced generator system must be the same as a temporary
 	// reduced copy.
-	Dimension_Kinds dk = dim_kinds;
+	Dimension_Kinds dim_kinds_copy = dim_kinds;
 	// `gs' is minimized and marked_empty returned false, so `gs'
 	// should contain rows.
 	PPL_ASSERT(!gs.has_no_rows());
-	simplify(gs, dk);
+	simplify(gs, dim_kinds_copy);
 	// gs contained rows before being reduced, so it should
 	// contain at least a single point afterward.
 	PPL_ASSERT(!gs.has_no_rows());
@@ -1336,7 +1336,7 @@ PPL::Grid::unconstrain(const Variable var) {
 
 void
 PPL::Grid::unconstrain(const Variables_Set& vars) {
-  // The cylindrification wrt no dimensions is a no-op.
+  // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a grid in a 0-dim space.
   if (vars.empty())
@@ -1725,8 +1725,8 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
     // Add the congruences in the "ruled out" order to `w'
     // until the result is the intersection.
     for (std::vector<Ruled_Out_Pair>::const_iterator
-	   j = ruled_out_vec.begin(), rov_end = ruled_out_vec.end();
-	 j != rov_end;
+	   j = ruled_out_vec.begin(), ruled_out_vec_end = ruled_out_vec.end();
+	 j != ruled_out_vec_end;
 	 ++j) {
       const Congruence& c = x_cs[j->congruence_index];
       result_cs.insert(c);

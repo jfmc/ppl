@@ -173,8 +173,8 @@ PPL::Init::Init() {
 
 #endif // PPL_CAN_CONTROL_FPU
 
-    // The default is choosen to have a precision greater than most
-    // precise IEC559 floating point (112 bits of mantissa).
+    // The default is chosen to have a precision greater than most
+    // precise IEC 559 floating point (112 bits of mantissa).
     set_irrational_precision(DEFAULT_IRRATIONAL_PRECISION);
   }
 }

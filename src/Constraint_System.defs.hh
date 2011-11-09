@@ -249,7 +249,7 @@ public:
 
     //! Constructor.
     const_iterator(const Linear_System::const_iterator& iter,
-		   const Constraint_System& csys);
+		   const Constraint_System& cs);
 
     //! \p *this skips to the next non-trivial constraint.
     void skip_forward();

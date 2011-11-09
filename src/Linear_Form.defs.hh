@@ -174,7 +174,7 @@ template <typename C>
 Linear_Form<C>&
 operator*=(Linear_Form<C>& f, const C& n);
 
-//! Returns the linear form \p f / \p n and addigns it to \p f.
+//! Returns the linear form \p f / \p n and assigns it to \p f.
 /*!
    \relates Linear_Form
    Performs the division of a linear form by a scalar. It is up to the user to
@@ -248,13 +248,14 @@ std::ostream& operator<<(std::ostream& s, const Linear_Form<C>& f);
   Linear_Form<T> lf(x2);
   lf = -lf;
   lf += Linear_Form<T>(x2);
-  Linear_Form<T> lx5(x5);
-  lx5 *= x5_coefficient;
-  lf += lx5;
+  Linear_Form<T> lf_x5(x5);
+  lf_x5 *= x5_coefficient;
+  lf += lf_x5;
   \endcode
-  Note that \p lx5 is created with space dimension 6, while \p lf is created
-  with space dimension 0 and then extended first to space dimension 2 when x2
-  is subtracted and finally to space dimension 6 when lx5 is added.
+  Note that \c lf_x5 is created with space dimension 6, while \c lf is
+  created with space dimension 0 and then extended first to space
+  dimension 2 when \c x2 is subtracted and finally to space dimension
+  6 when \c lf_x5 is added.
 */
 template <typename C>
 class Parma_Polyhedra_Library::Linear_Form {

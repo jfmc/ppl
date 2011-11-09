@@ -2193,14 +2193,14 @@ namespace Parma_Polyhedra_Library {
   \param constraint_type
   The constraint type;
 
-  \param num
+  \param numer
   The numerator of the constraint bound;
 
-  \param den
+  \param denom
   The denominator of the constraint bound
 
   The interval constraint has the form
-  <CODE>den * Variable(0) relsym num</CODE>
+  <CODE>denom * Variable(0) relsym numer</CODE>
   where relsym is  <CODE>==</CODE>,  <CODE>></CODE> or  <CODE>>=</CODE>
   depending on the <CODE>constraint_type</CODE>.
 */
@@ -2209,8 +2209,8 @@ template <typename ITV>
 Poly_Con_Relation
 interval_relation(const ITV& i,
                   const Constraint::Type constraint_type,
-                  Coefficient_traits::const_reference num,
-                  Coefficient_traits::const_reference den = 1);
+                  Coefficient_traits::const_reference numer,
+                  Coefficient_traits::const_reference denom = 1);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an interval constraint.

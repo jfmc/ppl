@@ -151,8 +151,8 @@ Generator_System::const_iterator::operator!=(const const_iterator& y) const {
 inline
 Generator_System::const_iterator::
 const_iterator(const Linear_System::const_iterator& iter,
-	       const Generator_System& gsys)
-  : i(iter), gsp(&gsys) {
+	       const Generator_System& gs)
+  : i(iter), gsp(&gs) {
 }
 
 inline bool

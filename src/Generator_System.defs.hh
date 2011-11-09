@@ -295,7 +295,7 @@ public:
 
     //! Constructor.
     const_iterator(const Linear_System::const_iterator& iter,
-		   const Generator_System& gsys);
+		   const Generator_System& gs);
 
     /*! \brief
       \p *this skips to the next generator, skipping those

@@ -409,10 +409,10 @@ public:
     \param evaluating_point
     The point on which the objective function will be evaluated.
 
-    \param num
+    \param numer
     On exit will contain the numerator of the evaluated value.
 
-    \param den
+    \param denom
     On exit will contain the denominator of the evaluated value.
 
     \exception std::invalid_argument
@@ -420,8 +420,8 @@ public:
     or if the generator \p evaluating_point is not a point.
   */
   void evaluate_objective_function(const Generator& evaluating_point,
-                                   Coefficient& num,
-                                   Coefficient& den) const;
+                                   Coefficient& numer,
+                                   Coefficient& denom) const;
 
   //! Returns a feasible point for \p *this, if it exists.
   /*!
@@ -433,20 +433,21 @@ public:
   //! Returns an optimal point for \p *this, if it exists.
   /*!
     \exception std::domain_error
-    Thrown if \p *this doesn't not have an optimizing point, i.e.,
+    Thrown if \p *this does not not have an optimizing point, i.e.,
     if the MIP problem is unbounded or not satisfiable.
   */
   const Generator& optimizing_point() const;
 
   /*! \brief
-    Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
-    the solution of the optimization problem.
+    Sets \p numer and \p denom so that
+    \f$\frac{\mathtt{numer}}{\mathtt{denom}}\f$ is the solution of the
+    optimization problem.
 
     \exception std::domain_error
     Thrown if \p *this doesn't not have an optimizing point, i.e.,
     if the MIP problem is unbounded or not satisfiable.
   */
-  void optimal_value(Coefficient& num, Coefficient& den) const;
+  void optimal_value(Coefficient& numer, Coefficient& denom) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -804,7 +805,7 @@ private:
           \right)^{\frac{1}{2}}.
     \f]
     Recall that, due to the exact integer implementation of the algorithm,
-    our tableau doesn't contain the ``real'' \f$\alpha\f$ values, but these
+    our tableau does not contain the ``real'' \f$\alpha\f$ values, but these
     can be computed dividing the value of the coefficient by the value of
     the variable in base. Obviously the result may not be an integer, so
     we will proceed in another way: we compute the lcm of all the variables
@@ -880,7 +881,7 @@ private:
 
     \return
     If the negative part of \p var_index was in base, the index of
-    the corresponding tableau row (which has become nonfeasible);
+    the corresponding tableau row (which has become non-feasible);
     otherwise \c not_a_dimension().
 
     \param var_index
@@ -943,7 +944,7 @@ private:
 
   /*! \brief
     Returns \c true if and if only \c mip.last_generator satisfies all the
-    integrality coditions implicitly stated using by \p i_vars.
+    integrality conditions implicitly stated using by \p i_vars.
 
     \param lp
     The LP problem. This is assumed to have no integral space dimension.

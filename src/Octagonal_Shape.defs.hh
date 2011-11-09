@@ -1149,7 +1149,7 @@ public:
 
     \note
     This operator is only available when the class template parameter
-    \c T is bound to an integer datatype.
+    \c T is bound to an integer data type.
 
     \note
     The integer upper bound of two rational OS is the smallest
@@ -2006,11 +2006,11 @@ private:
                                 dimension_type j,
                                 const N& k);
 
-  //! Adds the constraint <CODE>matrix[i][j] <= num/den</CODE>.
+  //! Adds the constraint <CODE>matrix[i][j] <= numer/denom</CODE>.
   void add_octagonal_constraint(dimension_type i,
                                 dimension_type j,
-                                Coefficient_traits::const_reference num,
-                                Coefficient_traits::const_reference den);
+                                Coefficient_traits::const_reference numer,
+                                Coefficient_traits::const_reference denom);
 
   /*! \brief
     Adds to the Octagonal_Shape the constraint
@@ -2036,7 +2036,7 @@ private:
     and different from \p v_id), deduce constraints of the form
     <CODE>v - u \<= k</CODE> and <CODE>v + u \<= k</CODE>,
     starting from \p ub_v, which is an upper bound for \c v
-    computed according to \p sc_expr and \p sc_den.
+    computed according to \p sc_expr and \p sc_denom.
 
     Strong-closure will be able to deduce the constraints
     <CODE>v - u \<= ub_v - lb_u</CODE> and <CODE>v + u \<= ub_v + ub_u</CODE>.
@@ -2044,7 +2044,7 @@ private:
     computation of the upper bound for \c v.
 
     Namely, if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> of \c u in \p sc_expr
+    <CODE>q == sc_expr[u]/sc_denom</CODE> of \c u in \p sc_expr
     is greater than zero, we can improve the bound for <CODE>v - u</CODE>.
     In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
@@ -2060,7 +2060,7 @@ private:
   void deduce_v_pm_u_bounds(dimension_type v_id,
                             dimension_type last_id,
                             const Linear_Expression& sc_expr,
-                            Coefficient_traits::const_reference sc_den,
+                            Coefficient_traits::const_reference sc_denom,
                             const N& ub_v);
 
   //! An helper function for the computation of affine relations.
@@ -2069,7 +2069,7 @@ private:
     and different from \p v_id), deduce constraints of the form
     <CODE>-v + u \<= k</CODE> and <CODE>-v - u \<= k</CODE>,
     starting from \p minus_lb_v, which is the negation of a lower bound
-    for \c v computed according to \p sc_expr and \p sc_den.
+    for \c v computed according to \p sc_expr and \p sc_denom.
 
     Strong-closure will be able to deduce the constraints
     <CODE>-v - u \<= -lb_v - lb_u</CODE> and
@@ -2078,7 +2078,7 @@ private:
     computation of (the negation of) the lower bound for \c v.
 
     Namely, if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> of \c u in \p sc_expr
+    <CODE>q == sc_expr[u]/sc_denom</CODE> of \c u in \p sc_expr
     is greater than zero, we can improve the bound for <CODE>-v + u</CODE>.
     In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>-v + u \<= -lb_v + lb_u</CODE>;
@@ -2094,7 +2094,7 @@ private:
   void deduce_minus_v_pm_u_bounds(dimension_type v,
                                   dimension_type last_v,
                                   const Linear_Expression& sc_expr,
-                                  Coefficient_traits::const_reference sc_den,
+                                  Coefficient_traits::const_reference sc_denom,
                                   const N& minus_lb_v);
 
   /*! \brief
@@ -2168,7 +2168,7 @@ private:
     This is \e not marked as a <code>const</code> method,
     as it may modify the rational-valued geometric shape by cutting away
     non-integral points. The method is only available if the template
-    parameter \c T is bound to an integer datatype.
+    parameter \c T is bound to an integer data type.
   */
   void tight_closure_assign();
 

@@ -285,23 +285,23 @@ CO_Tree::insert_in_empty_tree(dimension_type key1,
 }
 
 inline bool
-CO_Tree::is_less_than_ratio(dimension_type num, dimension_type den,
+CO_Tree::is_less_than_ratio(dimension_type numer, dimension_type denom,
                             dimension_type ratio) {
   PPL_ASSERT(ratio <= 100);
   // If these are true, no overflows are possible.
-  PPL_ASSERT(den <= (-(dimension_type)1)/100);
-  PPL_ASSERT(num <= (-(dimension_type)1)/100);
-  return 100*num < ratio*den;
+  PPL_ASSERT(denom <= (-(dimension_type)1)/100);
+  PPL_ASSERT(numer <= (-(dimension_type)1)/100);
+  return 100*numer < ratio*denom;
 }
 
 inline bool
-CO_Tree::is_greater_than_ratio(dimension_type num, dimension_type den,
+CO_Tree::is_greater_than_ratio(dimension_type numer, dimension_type denom,
                                dimension_type ratio) {
   PPL_ASSERT(ratio <= 100);
   // If these are true, no overflows are possible.
-  PPL_ASSERT(den <= (-(dimension_type)1)/100);
-  PPL_ASSERT(num <= (-(dimension_type)1)/100);
-  return 100*num > ratio*den;
+  PPL_ASSERT(denom <= (-(dimension_type)1)/100);
+  PPL_ASSERT(numer <= (-(dimension_type)1)/100);
+  return 100*numer > ratio*denom;
 }
 
 inline void
@@ -760,7 +760,7 @@ CO_Tree::tree_iterator::get_parent() {
 }
 
 inline void
-CO_Tree::tree_iterator::follow_left_childs_with_value() {
+CO_Tree::tree_iterator::follow_left_children_with_value() {
   PPL_ASSERT(index() != unused_index);
   dimension_type* p = tree.indexes;
   p += i;
@@ -773,7 +773,7 @@ CO_Tree::tree_iterator::follow_left_childs_with_value() {
 }
 
 inline void
-CO_Tree::tree_iterator::follow_right_childs_with_value() {
+CO_Tree::tree_iterator::follow_right_children_with_value() {
   PPL_ASSERT(index() != unused_index);
   dimension_type* p = tree.indexes;
   p += i;

@@ -138,9 +138,9 @@ MIP_Problem::optimization_mode() const {
 }
 
 inline void
-MIP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
+MIP_Problem::optimal_value(Coefficient& numer, Coefficient& denom) const {
   const Generator& g = optimizing_point();
-  evaluate_objective_function(g, num, den);
+  evaluate_objective_function(g, numer, denom);
 }
 
 inline MIP_Problem::const_iterator

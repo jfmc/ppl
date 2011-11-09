@@ -761,11 +761,11 @@ cmp(const From1& x, const From2& y) {
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 output(std::ostream& os, const T& x,
-       const Numeric_Format& fmt, Rounding_Dir dir) {
+       const Numeric_Format& format, Rounding_Dir dir) {
   return check_result(Checked::output_ext<typename Native_Checked_From_Wrapper<T>::Policy>
 		      (os,
 		       Native_Checked_From_Wrapper<T>::raw_value(x),
-		       fmt,
+		       format,
 		       rounding_dir(dir)),
 		      dir);
 }

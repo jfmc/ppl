@@ -170,7 +170,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box,
   : matrix(box.space_dimension()),
     space_dim(box.space_dimension()),
     status() {
-  // Check for emptyness for maximum precision.
+  // Check for emptiness for maximum precision.
   if (box.is_empty())
     set_empty();
   else if (box.space_dimension() > 0) {
@@ -202,7 +202,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd,
   : matrix(bd.space_dimension()),
     space_dim(bd.space_dimension()),
     status() {
-  // Check for emptyness for maximum precision.
+  // Check for emptiness for maximum precision.
   if (bd.is_empty())
     set_empty();
   else if (bd.space_dimension() > 0) {
@@ -405,17 +405,17 @@ inline void
 Octagonal_Shape<T>
 ::add_octagonal_constraint(const dimension_type i,
 			   const dimension_type j,
-			   Coefficient_traits::const_reference num,
-			   Coefficient_traits::const_reference den) {
+			   Coefficient_traits::const_reference numer,
+			   Coefficient_traits::const_reference denom) {
 #ifndef NDEBUG
   // Private method: the caller has to ensure the following.
   PPL_ASSERT(i < 2*space_dim && j < 2*space_dim && i != j);
   typename OR_Matrix<N>::row_iterator m_i = matrix.row_begin() + i;
   PPL_ASSERT(j < m_i.row_size());
-  PPL_ASSERT(den != 0);
+  PPL_ASSERT(denom != 0);
 #endif
   PPL_DIRTY_TEMP(N, k);
-  div_round_up(k, num, den);
+  div_round_up(k, numer, denom);
   add_octagonal_constraint(i, j, k);
 }
 
@@ -597,11 +597,12 @@ Octagonal_Shape<T>::time_elapse_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("time_elapse_assign(y)", y);
-  // See the polyhedra documentation.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.time_elapse_assign(py);
-  Octagonal_Shape<T> x(px);
+  // Compute time-elapse on polyhedra.
+  // TODO: provide a direct implementation.
+  C_Polyhedron ph_x(constraints());
+  C_Polyhedron ph_y(y.constraints());
+  ph_x.time_elapse_assign(ph_y);
+  Octagonal_Shape<T> x(ph_x);
   m_swap(x);
   PPL_ASSERT(OK());
 }

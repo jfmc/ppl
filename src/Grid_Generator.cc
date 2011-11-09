@@ -316,25 +316,25 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     break;
   }
 
-  PPL_DIRTY_TEMP_COEFFICIENT(gv);
+  PPL_DIRTY_TEMP_COEFFICIENT(g_v);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    gv = g[v+1];
-    if (gv != 0) {
+    g_v = g[v+1];
+    if (g_v != 0) {
       if (!first) {
-	if (gv > 0)
+	if (g_v > 0)
 	  s << " + ";
 	else {
 	  s << " - ";
-	  neg_assign(gv);
+	  neg_assign(g_v);
 	}
       }
       else
 	first = false;
-      if (gv == -1)
+      if (g_v == -1)
 	s << "-";
-      else if (gv != 1)
-	s << gv << "*";
+      else if (g_v != 1)
+	s << g_v << "*";
       s << PPL::Variable(v);
     }
   }

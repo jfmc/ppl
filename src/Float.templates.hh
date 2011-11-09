@@ -142,7 +142,7 @@ void discard_occurrences(std::map<dimension_type,
   }
 }
 
-/* FIXME: improve efficiency by adding the list of potentially conficting
+/* FIXME: improve efficiency by adding the list of potentially conflicting
    variables as an argument. */
 template <typename FP_Interval_Type>
 void upper_bound_assign(std::map<dimension_type,

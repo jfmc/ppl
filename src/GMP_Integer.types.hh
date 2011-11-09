@@ -26,7 +26,7 @@ namespace Parma_Polyhedra_Library {
   \ingroup PPL_CXX_interface
   GMP_Integer is an alias for the <CODE>mpz_class</CODE> type
   defined in the C++ interface of the GMP library.
-  For more information, see <CODE>http://www.swox.com/gmp/</CODE>
+  For more information, see <CODE>http://gmplib.org/</CODE>
 */
 typedef mpz_class GMP_Integer;
 

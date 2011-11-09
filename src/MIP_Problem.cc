@@ -396,13 +396,13 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
   const dimension_type removing_column = mapping[1+var_index].second;
 
   // Check if the negative part of the split variable is in base:
-  // if so, the corresponding tableau row becomes nonfeasible.
+  // if so, the corresponding row of the tableau becomes non-feasible.
   {
     dimension_type base_index;
     if (is_in_base(removing_column, base_index)) {
       // Set the return value.
       unfeasible_tableau_row = base_index;
-      // Reset base[base_index] to zero to remember nonfeasibility.
+      // Reset base[base_index] to zero to remember non-feasibility.
       base[base_index] = 0;
 #ifndef NDEBUG
       // Since the negative part of the variable is in base,
@@ -505,7 +505,7 @@ PPL::MIP_Problem
                                  internal_space_dim, false);
 
   // Check for variables that are already known to be nonnegative
-  // due to nonpending constraints.
+  // due to non-pending constraints.
   const dimension_type mapping_size = mapping.size();
   if (mapping_size > 0) {
     // Note: mapping[0] is associated to the cost function.
@@ -742,9 +742,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   //   by `last_generator'
   //     plus
   // * number of non-pending constraints that are no longer satisfied
-  //   due to re-merging of splitted variables.
+  //   due to re-merging of split variables.
 
-  dimension_type num_satisfied_ineqs
+  dimension_type num_satisfied_inequalities
     = std::count(is_satisfied_inequality.begin(),
                  is_satisfied_inequality.end(),
                  true);
@@ -752,7 +752,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     = unfeasible_tableau_rows.size();
 
   const dimension_type additional_artificial_vars
-    = (additional_tableau_rows - num_satisfied_ineqs)
+    = (additional_tableau_rows - num_satisfied_inequalities)
     + unfeasible_tableau_rows_size;
 
   const dimension_type additional_tableau_columns
@@ -863,7 +863,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // This is used as a hint for insertions in working_cost.
   working_cost_type::iterator cost_itr = working_cost.end();
 
-  // First go through nonpending constraints that became unfeasible
+  // First go through non-pending constraints that became unfeasible
   // due to re-merging of split variables.
   for (dimension_type i = 0; i < unfeasible_tableau_rows_size; ++i) {
     tableau[unfeasible_tableau_rows[i]].insert(artificial_index,
@@ -949,7 +949,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Now we are ready to solve the first phase.
-  bool first_phase_succesful
+  bool first_phase_successful
     = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
     ? compute_simplex_using_steepest_edge_float()
     : compute_simplex_using_exact_pricing();
@@ -960,7 +960,7 @@ PPL::MIP_Problem::process_pending_constraints() {
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
 
-  if (!first_phase_succesful || working_cost.get(0) != 0) {
+  if (!first_phase_successful || working_cost.get(0) != 0) {
     // The feasible region is empty.
     status = UNSATISFIABLE;
     return false;
@@ -1008,7 +1008,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // Due to our integer implementation, the `1' term in the denominator
   // of the original formula has to be replaced by `squared_lcm_basis'.
   double float_tableau_value;
-  double float_tableau_denum;
+  double float_tableau_denom;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
 
@@ -1020,7 +1020,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 
   const dimension_type tableau_num_columns_minus_1 = tableau_num_columns - 1;
   // This is static to improve performance.
-  // A vector of <column_index, challenger_den> pairs, ordered by
+  // A vector of <column_index, challenger_denom> pairs, ordered by
   // column_index.
   static std::vector<std::pair<dimension_type, double> > columns;
   columns.clear();
@@ -1037,7 +1037,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const Row& tableau_i = tableau[i];
-    assign(float_tableau_denum, tableau_i.get(base[i]));
+    assign(float_tableau_denom, tableau_i.get(base[i]));
     Row::const_iterator j = tableau_i.begin();
     Row::const_iterator j_end = tableau_i.end();
     std::vector<std::pair<dimension_type, double> >::iterator k
@@ -1057,7 +1057,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         WEIGHT_BEGIN();
         PPL_ASSERT(tableau_i.get(base[i]) != 0);
         assign(float_tableau_value, *j);
-        float_tableau_value /= float_tableau_denum;
+        float_tableau_value /= float_tableau_denom;
         float_tableau_value *= float_tableau_value;
         k->second += float_tableau_value;
         WEIGHT_ADD_MUL(338, tableau_num_rows);
@@ -1071,7 +1071,6 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   for (std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
        i = columns.rbegin(), i_end = columns.rend(); i != i_end; ++i) {
     double challenger_value = sqrt(i->second);
-    // challenger_dens[*k] is the square of the challenger value.
     if (entering_index == 0 || challenger_value > current_value) {
       current_value = challenger_value;
       entering_index = i->first;
@@ -1080,31 +1079,31 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
 
 #else // !PPL_USE_SPARSE_MATRIX
 
-  double challenger_num = 0.0;
-  double challenger_den = 0.0;
+  double challenger_numer = 0.0;
+  double challenger_denom = 0.0;
   for (dimension_type j = tableau_num_columns - 1; j-- > 1; ) {
     Coefficient_traits::const_reference cost_j = working_cost.get(j);
     if (sgn(cost_j) == cost_sign) {
       WEIGHT_BEGIN();
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      assign(challenger_num, cost_j);
-      challenger_num = std::abs(challenger_num);
+      assign(challenger_numer, cost_j);
+      challenger_numer = std::abs(challenger_numer);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_den = 1.0;
+      challenger_denom = 1.0;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
         const Row& tableau_i = tableau[i];
         Coefficient_traits::const_reference tableau_ij = tableau_i[j];
         if (tableau_ij != 0) {
           PPL_ASSERT(tableau_i[base[i]] != 0);
           assign(float_tableau_value, tableau_ij);
-          assign(float_tableau_denum, tableau_i[base[i]]);
-          float_tableau_value /= float_tableau_denum;
-          challenger_den += float_tableau_value * float_tableau_value;
+          assign(float_tableau_denom, tableau_i[base[i]]);
+          float_tableau_value /= float_tableau_denom;
+          challenger_denom += float_tableau_value * float_tableau_value;
         }
       }
-      double challenger_value = sqrt(challenger_den);
+      double challenger_value = sqrt(challenger_denom);
       // Initialize `current_value' during the first iteration.
       // Otherwise update if the challenger wins.
       if (entering_index == 0 || challenger_value > current_value) {
@@ -1146,13 +1145,13 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     WEIGHT_ADD_MUL(444, tableau_num_rows);
   }
 
-  PPL_DIRTY_TEMP_COEFFICIENT(challenger_num);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_numer);
   PPL_DIRTY_TEMP_COEFFICIENT(scalar_value);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger_value);
   PPL_DIRTY_TEMP_COEFFICIENT(current_value);
 
-  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_denom);
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost.get(working_cost.size() - 1));
 
@@ -1228,35 +1227,35 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     if (itr != working_cost.end() && itr.index() == k->first) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      challenger_num = (*itr) * (*itr);
+      challenger_numer = (*itr) * (*itr);
       // Initialization during the first loop.
       if (entering_index == 0) {
-        swap(current_num, challenger_num);
-        swap(current_den, k->second);
+        swap(current_numer, challenger_numer);
+        swap(current_denom, k->second);
         entering_index = k->first;
         continue;
       }
-      challenger_value = challenger_num * current_den;
-      current_value = current_num * k->second;
+      challenger_value = challenger_numer * current_denom;
+      current_value = current_numer * k->second;
       // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
-        swap(current_num, challenger_num);
-        swap(current_den, k->second);
+        swap(current_numer, challenger_numer);
+        swap(current_denom, k->second);
         entering_index = k->first;
       }
     } else {
       PPL_ASSERT(working_cost.get(k->first) == 0);
       // Initialization during the first loop.
       if (entering_index == 0) {
-        current_num = 0;
-        swap(current_den, k->second);
+        current_numer = 0;
+        swap(current_denom, k->second);
         entering_index = k->first;
         continue;
       }
       // Update the values, if the challenger wins.
-      if (0 > sgn(current_num) * sgn(k->second)) {
-        current_num = 0;
-        swap(current_den, k->second);
+      if (0 > sgn(current_numer) * sgn(k->second)) {
+        current_numer = 0;
+        swap(current_denom, k->second);
         entering_index = k->first;
       }
     }
@@ -1264,17 +1263,17 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
 
 #else // !PPL_USE_SPARSE_MATRIX
 
-  PPL_DIRTY_TEMP_COEFFICIENT(challenger_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(challenger_denom);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     Coefficient_traits::const_reference cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
       WEIGHT_BEGIN();
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      challenger_num = cost_j * cost_j;
+      challenger_numer = cost_j * cost_j;
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_den = squared_lcm_basis;
+      challenger_denom = squared_lcm_basis;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
         Coefficient_traits::const_reference tableau_ij = tableau[i][j];
         // The test against 0 gives rise to a consistent speed up: see
@@ -1282,22 +1281,22 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
         // 014000.html
         if (tableau_ij != 0) {
           scalar_value = tableau_ij * norm_factor[i];
-          add_mul_assign(challenger_den, scalar_value, scalar_value);
+          add_mul_assign(challenger_denom, scalar_value, scalar_value);
         }
       }
       // Initialization during the first loop.
       if (entering_index == 0) {
-        swap(current_num, challenger_num);
-        swap(current_den, challenger_den);
+        swap(current_numer, challenger_numer);
+        swap(current_denom, challenger_denom);
         entering_index = j;
         continue;
       }
-      challenger_value = challenger_num * current_den;
-      current_value = current_num * challenger_den;
+      challenger_value = challenger_numer * current_denom;
+      current_value = current_numer * challenger_denom;
       // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
-        swap(current_num, challenger_num);
-        swap(current_den, challenger_den);
+        swap(current_numer, challenger_numer);
+        swap(current_denom, challenger_denom);
         entering_index = j;
       }
       WEIGHT_ADD_MUL(47, tableau_num_rows);
@@ -1501,16 +1500,16 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
   bool textbook_pricing = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(cost_sgn_coeff);
-  PPL_DIRTY_TEMP_COEFFICIENT(current_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(current_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(current_denom);
   PPL_DIRTY_TEMP_COEFFICIENT(challenger);
   PPL_DIRTY_TEMP_COEFFICIENT(current);
 
   cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
-  current_num = working_cost.get(0);
+  current_numer = working_cost.get(0);
   if (cost_sgn_coeff < 0)
-    neg_assign(current_num);
-  abs_assign(current_den, cost_sgn_coeff);
+    neg_assign(current_numer);
+  abs_assign(current_denom, cost_sgn_coeff);
   PPL_ASSERT(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
 
@@ -1550,9 +1549,9 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     challenger = working_cost.get(0);
     if (cost_sgn_coeff < 0)
       neg_assign(challenger);
-    challenger *= current_den;
+    challenger *= current_denom;
     abs_assign(current, cost_sgn_coeff);
-    current *= current_num;
+    current *= current_numer;
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
@@ -1576,10 +1575,10 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       non_increased_times = 0;
       textbook_pricing = false;
     }
-    current_num = working_cost.get(0);
+    current_numer = working_cost.get(0);
     if (cost_sgn_coeff < 0)
-      neg_assign(current_num);
-    abs_assign(current_den, cost_sgn_coeff);
+      neg_assign(current_numer);
+    abs_assign(current_denom, cost_sgn_coeff);
     WEIGHT_ADD(566);
   }
 }
@@ -1713,21 +1712,21 @@ PPL::MIP_Problem::compute_generator() const {
     return;
   }
 
-  // We will store in num[] and in den[] the numerators and
+  // We will store in numer[] and in denom[] the numerators and
   // the denominators of every variable of the original problem.
-  std::vector<Coefficient> num(external_space_dim);
-  std::vector<Coefficient> den(external_space_dim);
+  std::vector<Coefficient> numer(external_space_dim);
+  std::vector<Coefficient> denom(external_space_dim);
   dimension_type row = 0;
 
   PPL_DIRTY_TEMP_COEFFICIENT(lcm);
   // Speculatively allocate temporaries out of loop.
-  PPL_DIRTY_TEMP_COEFFICIENT(split_num);
-  PPL_DIRTY_TEMP_COEFFICIENT(split_den);
+  PPL_DIRTY_TEMP_COEFFICIENT(split_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(split_denom);
 
-  // We start to compute num[] and den[].
+  // We start to compute numer[] and denom[].
   for (dimension_type i = external_space_dim; i-- > 0; ) {
-    Coefficient& num_i = num[i];
-    Coefficient& den_i = den[i];
+    Coefficient& numer_i = numer[i];
+    Coefficient& denom_i = denom[i];
     // Get the value of the variable from the tableau
     // (if it is not a basic variable, the value is 0).
     const dimension_type original_var = mapping[i+1].first;
@@ -1736,17 +1735,17 @@ PPL::MIP_Problem::compute_generator() const {
       Coefficient_traits::const_reference t_row_original_var
         = t_row.get(original_var);
       if (t_row_original_var > 0) {
-        neg_assign(num_i, t_row.get(0));
-        den_i = t_row_original_var;
+        neg_assign(numer_i, t_row.get(0));
+        denom_i = t_row_original_var;
       }
       else {
-        num_i = t_row.get(0);
-        neg_assign(den_i, t_row_original_var);
+        numer_i = t_row.get(0);
+        neg_assign(denom_i, t_row_original_var);
       }
     }
     else {
-      num_i = 0;
-      den_i = 1;
+      numer_i = 0;
+      denom_i = 1;
     }
     // Check whether the variable was split.
     const dimension_type split_var = mapping[i+1].second;
@@ -1759,24 +1758,24 @@ PPL::MIP_Problem::compute_generator() const {
         Coefficient_traits::const_reference t_row_split_var
           = t_row.get(split_var);
         if (t_row_split_var > 0) {
-          neg_assign(split_num, t_row.get(0));
-          split_den = t_row_split_var;
+          neg_assign(split_numer, t_row.get(0));
+          split_denom = t_row_split_var;
         }
         else {
-          split_num = t_row.get(0);
-          neg_assign(split_den, t_row_split_var);
+          split_numer = t_row.get(0);
+          neg_assign(split_denom, t_row_split_var);
         }
         // We compute the lcm to compute subsequently the difference
         // between the 2 variables.
-        lcm_assign(lcm, den_i, split_den);
-        exact_div_assign(den_i, lcm, den_i);
-        exact_div_assign(split_den, lcm, split_den);
-        num_i *= den_i;
-        sub_mul_assign(num_i, split_num, split_den);
-        if (num_i == 0)
-          den_i = 1;
+        lcm_assign(lcm, denom_i, split_denom);
+        exact_div_assign(denom_i, lcm, denom_i);
+        exact_div_assign(split_denom, lcm, split_denom);
+        numer_i *= denom_i;
+        sub_mul_assign(numer_i, split_numer, split_denom);
+        if (numer_i == 0)
+          denom_i = 1;
         else
-          den_i = lcm;
+          denom_i = lcm;
       }
       // Note: if the negative component was not in base, then
       // it has value zero and there is nothing left to do.
@@ -1785,20 +1784,20 @@ PPL::MIP_Problem::compute_generator() const {
 
   // Compute the lcm of all denominators.
   PPL_ASSERT(external_space_dim > 0);
-  lcm = den[0];
+  lcm = denom[0];
   for (dimension_type i = 1; i < external_space_dim; ++i)
-    lcm_assign(lcm, lcm, den[i]);
+    lcm_assign(lcm, lcm, denom[i]);
   // Use the denominators to store the numerators' multipliers
   // and then compute the normalized numerators.
   for (dimension_type i = external_space_dim; i-- > 0; ) {
-    exact_div_assign(den[i], lcm, den[i]);
-    num[i] *= den[i];
+    exact_div_assign(denom[i], lcm, denom[i]);
+    numer[i] *= denom[i];
   }
 
   // Finally, build the generator.
   Linear_Expression expr;
   for (dimension_type i = external_space_dim; i-- > 0; )
-    add_mul_assign(expr, num[i], Variable(i));
+    add_mul_assign(expr, numer[i], Variable(i));
 
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   x.last_generator = point(expr, lcm);
@@ -2012,12 +2011,12 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   bool found_satisfiable_generator = true;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   Coefficient_traits::const_reference p_divisor = p.divisor();
-  dimension_type nonint_dim = lp.space_dimension();
+  dimension_type non_int_dim = lp.space_dimension();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
-      nonint_dim = *v_begin;
+      non_int_dim = *v_begin;
       found_satisfiable_generator = false;
       break;
     }
@@ -2039,20 +2038,20 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
       incumbent_solution_point = p;
       have_incumbent_solution = true;
 #if PPL_NOISY_SIMPLEX
-      PPL_DIRTY_TEMP_COEFFICIENT(num);
-      PPL_DIRTY_TEMP_COEFFICIENT(den);
-      lp.evaluate_objective_function(p, num, den);
+      PPL_DIRTY_TEMP_COEFFICIENT(numer);
+      PPL_DIRTY_TEMP_COEFFICIENT(denom);
+      lp.evaluate_objective_function(p, numer, denom);
       std::cout << "MIP_Problem::solve_mip(): "
-                << "new value found: " << num << "/" << den
+                << "new value found: " << numer << "/" << denom
                 << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
     }
     return lp_status;
   }
 
-  PPL_ASSERT(nonint_dim < lp.space_dimension());
+  PPL_ASSERT(non_int_dim < lp.space_dimension());
 
-  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
 	   ROUND_NOT_NEEDED);
   assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
   tmp_rational.canonicalize();
@@ -2060,24 +2059,24 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
     MIP_Problem lp_aux(lp, Inherit_Constraints());
-    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    lp_aux.add_constraint(Variable(non_int_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
     std::cout << "MIP_Problem::solve_mip(): "
               << "descending with: "
-              << (Variable(nonint_dim) <= tmp_coeff1)
+              << (Variable(non_int_dim) <= tmp_coeff1)
               << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
     solve_mip(have_incumbent_solution, incumbent_solution_value,
 	      incumbent_solution_point, lp_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
-  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  lp.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
   std::cout << "MIP_Problem::solve_mip(): "
             << "descending with: "
-            << (Variable(nonint_dim) >= tmp_coeff2)
+            << (Variable(non_int_dim) >= tmp_coeff2)
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
   solve_mip(have_incumbent_solution, incumbent_solution_value,
@@ -2167,20 +2166,20 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
   bool found_satisfiable_generator = true;
-  dimension_type nonint_dim;
+  dimension_type non_int_dim;
   p = lp.last_generator;
   Coefficient_traits::const_reference p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
   found_satisfiable_generator
-    = choose_branching_variable(lp, i_vars, nonint_dim);
+    = choose_branching_variable(lp, i_vars, non_int_dim);
 #else
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
-      nonint_dim = *v_begin;
+      non_int_dim = *v_begin;
       found_satisfiable_generator = false;
       break;
     }
@@ -2190,9 +2189,9 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   if (found_satisfiable_generator)
     return true;
 
-  PPL_ASSERT(nonint_dim < lp.space_dimension());
+  PPL_ASSERT(non_int_dim < lp.space_dimension());
 
-  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
 	   ROUND_NOT_NEEDED);
   assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
   tmp_rational.canonicalize();
@@ -2200,12 +2199,12 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
     MIP_Problem lp_aux(lp, Inherit_Constraints());
-    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    lp_aux.add_constraint(Variable(non_int_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
     std::cout << "MIP_Problem::is_mip_satisfiable(): "
               << "descending with: "
-              << (Variable(nonint_dim) <= tmp_coeff1)
+              << (Variable(non_int_dim) <= tmp_coeff1)
               << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
     if (is_mip_satisfiable(lp_aux, i_vars, p)) {
@@ -2218,12 +2217,12 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
       return true;
     }
   }
-  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  lp.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
             << "descending with: "
-            << (Variable(nonint_dim) >= tmp_coeff2)
+            << (Variable(non_int_dim) >= tmp_coeff2)
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
   bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
@@ -2337,11 +2336,11 @@ PPL::MIP_Problem::OK() const {
       }
     }
 
-    const dimension_type tableau_nrows = tableau.num_rows();
-    const dimension_type tableau_ncols = tableau.num_columns();
+    const dimension_type tableau_num_rows = tableau.num_rows();
+    const dimension_type tableau_num_columns = tableau.num_columns();
 
     // The number of rows in the tableau and base should be equal.
-    if (tableau_nrows != base.size()) {
+    if (tableau_num_rows != base.size()) {
 #ifndef NDEBUG
       cerr << "tableau and base have incompatible sizes" << endl;
       ascii_dump(cerr);
@@ -2359,7 +2358,7 @@ PPL::MIP_Problem::OK() const {
     }
 
     // The number of columns in the tableau and working_cost should be equal.
-    if (tableau_ncols != working_cost.size()) {
+    if (tableau_num_columns != working_cost.size()) {
 #ifndef NDEBUG
       cerr << "tableau and working_cost have incompatible sizes" << endl;
       ascii_dump(cerr);
@@ -2369,7 +2368,7 @@ PPL::MIP_Problem::OK() const {
 
     // The vector base should contain indices of tableau's columns.
     for (dimension_type i = base.size(); i-- > 0; ) {
-      if (base[i] > tableau_ncols) {
+      if (base[i] > tableau_num_columns) {
 #ifndef NDEBUG
         cerr << "base contains an invalid column index" << endl;
         ascii_dump(cerr);
@@ -2387,7 +2386,7 @@ PPL::MIP_Problem::OK() const {
 
       std::sort(vars_in_base.begin(),vars_in_base.end());
 
-      for (dimension_type j = tableau_nrows; j-- > 0; ) {
+      for (dimension_type j = tableau_num_rows; j-- > 0; ) {
         const Row& tableau_j = tableau[j];
         pair_vector_t::iterator i = vars_in_base.begin();
         pair_vector_t::iterator i_end = vars_in_base.end();
@@ -2420,8 +2419,8 @@ PPL::MIP_Problem::OK() const {
     }
 
     // The last column of the tableau must contain only zeroes.
-    for (dimension_type i = tableau_nrows; i-- > 0; )
-      if (tableau[i].get(tableau_ncols-1) != 0) {
+    for (dimension_type i = tableau_num_rows; i-- > 0; )
+      if (tableau[i].get(tableau_num_columns - 1) != 0) {
 #ifndef NDEBUG
         cerr << "the last column of the tableau must contain only"
           "zeroes"<< endl;

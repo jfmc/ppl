@@ -454,16 +454,16 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     itr.get_left_child();
     if (itr.index() != unused_index)
       // The left child has a value.
-      itr.follow_right_childs_with_value();
+      itr.follow_right_children_with_value();
     else {
-      // The left child hasn't a value, try the right child.
+      // The left child has not a value, try the right child.
       itr.get_parent();
       itr.get_right_child();
       if (itr.index() != unused_index)
         // The right child has a value.
-        itr.follow_left_childs_with_value();
+        itr.follow_left_children_with_value();
       else {
-        // The right child hasn't a value, too.
+        // The right child has not a value, too.
         itr.get_parent();
         break;
       }

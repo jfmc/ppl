@@ -1002,7 +1002,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible
-    or if \p cs contains a constraint whcih is not optimally supported
+    or if \p cs contains a constraint which is not optimally supported
     by the grid domain.
   */
   void add_constraints(const Constraint_System& cs);
@@ -1015,7 +1015,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible
-    or if \p cs contains a constraint whcih is not optimally supported
+    or if \p cs contains a constraint which is not optimally supported
     by the grid domain.
 
     \warning

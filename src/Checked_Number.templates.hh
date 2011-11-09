@@ -34,10 +34,10 @@ template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 ascii_dump(std::ostream& s, const T& t) {
   if (std::numeric_limits<T>::is_exact)
-    // An exact datatype: pretty printer is accurate.
+    // An exact data type: pretty printer is accurate.
     s << t;
   else {
-    // An inexact datatype (probably floating point):
+    // An inexact data type (probably floating point):
     // first dump its hexadecimal representation ...
     const std::ios_base::fmtflags old_flags = s.flags();
     s << std::hex;
@@ -56,10 +56,10 @@ template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(std::istream& s, T& t) {
   if (std::numeric_limits<T>::is_exact)
-    // An exact datatype: input from pretty printed version is accurate.
+    // An exact data type: input from pretty printed version is accurate.
     return s >> t;
   else {
-    // An inexact datatype (probably floating point):
+    // An inexact data type (probably floating point):
     // first load its hexadecimal representation ...
     std::string str;
     if (!(s >> str) || str.size() != 2*sizeof(T))

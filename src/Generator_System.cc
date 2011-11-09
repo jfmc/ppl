@@ -85,7 +85,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     return true;
   }
 
-  // Here the generator systen is not empty.
+  // Here the generator system is not empty.
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {

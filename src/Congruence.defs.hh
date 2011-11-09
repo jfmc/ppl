@@ -364,7 +364,7 @@ protected:
   //! Calls normalize, then divides out common factors.
   /*!
     Strongly normalized Congruences have equivalent semantics if and
-    only if their syntaxes (as output by operator<<) are equal.
+    only if they have the same syntax (as output by operator<<).
   */
   void strong_normalize();
 

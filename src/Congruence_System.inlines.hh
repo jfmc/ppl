@@ -169,8 +169,8 @@ Congruence_System::const_iterator::operator!=(const const_iterator& y) const {
 inline
 Congruence_System::const_iterator::
 const_iterator(const Dense_Matrix::const_iterator& iter,
-	       const Congruence_System& csys)
-  : i(iter), csp(&csys) {
+	       const Congruence_System& cgs)
+  : i(iter), csp(&cgs) {
 }
 
 inline Congruence_System::const_iterator

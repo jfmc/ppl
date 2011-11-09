@@ -93,10 +93,10 @@ PPL::Bit_Matrix::transpose() {
 
 void
 PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
-  const dimension_type y_nrows = y.num_rows();
-  const dimension_type y_ncols = y.num_columns();
-  Bit_Matrix tmp(y_ncols, y_nrows);
-  for (dimension_type i = y_nrows; i-- > 0; )
+  const dimension_type y_num_rows = y.num_rows();
+  const dimension_type y_num_columns = y.num_columns();
+  Bit_Matrix tmp(y_num_columns, y_num_rows);
+  for (dimension_type i = y_num_rows; i-- > 0; )
     for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
       tmp[j].set(i);
   m_swap(tmp);

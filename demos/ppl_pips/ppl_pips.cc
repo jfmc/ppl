@@ -190,21 +190,7 @@ public:
 
   virtual bool read(std::istream& in) = 0;
 
-  // output the solution in PipLib-like format
-  /* void output_solution_piplib(std::ostream& out) {
-    const PPL::Variables_Set& params = pip.parameter_space_dimensions();
-    PPL::Variables_Set vars;
-    for (PPL::dimension_type i = 0; i < pip.space_dimension(); ++i) {
-      if (params.count(i) == 0)
-        vars.insert(i);
-    }
-    const PPL::PIP_Tree solution = pip.solution();
-    out << "((" << comment << ")\n(";
-    pip_disp_sol_mat(out, solution, params, vars, pip.space_dimension());
-    out << "))" << std::endl;
-  } */
-
-  // output the solution in "if-then-else" format
+  //! Output the solution in "if-then-else" format.
   void output_solution_tree(std::ostream& out) {
     const PPL::Variables_Set& params = pip.parameter_space_dimensions();
     PPL::Variables_Set vars;
@@ -257,7 +243,7 @@ public:
   }
 
 protected:
-  // The problem object
+  //! The problem object.
   PPL::PIP_Problem pip;
 }; // class PIP_Parser
 

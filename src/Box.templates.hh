@@ -1447,7 +1447,7 @@ Box<ITV>::constrains(Variable var) const {
 template <typename ITV>
 void
 Box<ITV>::unconstrain(const Variables_Set& vars) {
-  // The cylindrification wrt no dimensions is a no-op.
+  // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a box in a 0-dim space.
   if (vars.empty())
@@ -3150,9 +3150,9 @@ Box<ITV>
       // Find the maximum value for the revised upper bound expression
       // and use this to refine the appropriate bound.
       bool included;
-      PPL_DIRTY_TEMP(Coefficient, den);
-      if (maximize(revised_ub_expr, numer_upper, den, included)) {
-        denom_upper *= (den * lb_var_coeff);
+      PPL_DIRTY_TEMP(Coefficient, denom);
+      if (maximize(revised_ub_expr, numer_upper, denom, included)) {
+        denom_upper *= (denom * lb_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
         assign_r(q.get_num(), numer_upper, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_upper, ROUND_NOT_NEEDED);
@@ -3338,7 +3338,7 @@ Box<ITV>
   const Relation_Symbol corrected_relsym
     = (denominator > 0) ? relsym : reversed_relsym;
   // Revise the expression to take into account the denominator of the
-  // maximum/minimim value for `var'.
+  // maximum/minimum value for `var'.
   PPL_DIRTY_TEMP(Linear_Expression, revised_expr);
   dimension_type dim = space_dim;
   PPL_DIRTY_TEMP_COEFFICIENT(d);
@@ -3493,7 +3493,7 @@ Box<ITV>
     // The choice as to which bounds should be set depends on the sign
     // of the coefficient of the dimension `has_var_id' in the lhs.
     if (coeff > 0)
-      // The coefficient of the dimension in the lhs is +ve.
+      // The coefficient of the dimension in the lhs is positive.
       switch (relsym) {
       case LESS_OR_EQUAL:
         max_rhs
@@ -3531,7 +3531,7 @@ Box<ITV>
         throw std::runtime_error("PPL internal error");
       }
     else
-      // The coefficient of the dimension in the lhs is -ve.
+      // The coefficient of the dimension in the lhs is negative.
       switch (relsym) {
       case GREATER_OR_EQUAL:
         min_rhs
