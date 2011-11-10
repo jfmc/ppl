@@ -290,7 +290,7 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   have consecutive indices starting from <code>dim+1</code>, where the value
   of \c dim is computed as follows:
    - for the tree root node, \c dim is the space dimension of the PIP_Problem;
-   - for any other node of the tree, it is recusrively obtained by adding
+   - for any other node of the tree, it is recursively obtained by adding
      the value of \c dim computed for the parent node to the number of
      artificial parameters defined in the parent node.
   \par

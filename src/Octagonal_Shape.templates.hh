@@ -3396,7 +3396,7 @@ Octagonal_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
 
   // We consider each variable and we check if it has to be removed.
   // If it has to be removed, we pass to the next one, then we will
-  // overwrite its representation in the matrix
+  // overwrite its representation in the matrix.
   dimension_type first = *vars.begin();
   dimension_type first_size = 2*first*(first + 1);
   typename OR_Matrix<N>::element_iterator
@@ -3494,9 +3494,9 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
             assign_or_swap(x_i[double_new_j + 1], r_i[dj + 1]);
           }
           else {
-            Row_Iterator xj_iter = m_begin + double_new_j;
-            Row_Reference x_j = *xj_iter;
-            Row_Reference x_jj = *(xj_iter + 1);
+            Row_Iterator x_j_iter = m_begin + double_new_j;
+            Row_Reference x_j = *x_j_iter;
+            Row_Reference x_jj = *(x_j_iter + 1);
             assign_or_swap(x_jj[double_new_i + 1], r_i[dj]);
             assign_or_swap(x_jj[double_new_i], r_ii[dj]);
             assign_or_swap(x_j[double_new_i + 1], r_i[dj + 1]);

@@ -117,16 +117,16 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
     ++xi;
     if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
       // Hurry up!
-      PSET xph = xi->pointset();
+      PSET x_ph = xi->pointset();
       for (++xi; xi != x_end; ++xi)
-	xph.upper_bound_assign(xi->pointset());
+	x_ph.upper_bound_assign(xi->pointset());
       const_iterator yi = y_begin;
-      PSET yph = yi->pointset();
+      PSET y_ph = yi->pointset();
       for (++yi; yi != y_end; ++yi)
-	yph.upper_bound_assign(yi->pointset());
-      xph.concatenate_assign(yph);
+	y_ph.upper_bound_assign(yi->pointset());
+      x_ph.concatenate_assign(y_ph);
       swap(x, new_x);
-      x.add_disjunct(xph);
+      x.add_disjunct(x_ph);
       PPL_ASSERT_HEAVY(x.OK());
       return;
     }
@@ -1209,15 +1209,16 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
     next:
       ;
     }
-    iterator nx_begin = new_x.begin();
-    iterator nx_end = new_x.end();
+    iterator new_x_begin = new_x.begin();
+    iterator new_x_end = new_x.end();
     unsigned xi_index = 0;
     for (const_iterator xi = x.begin(),
 	   x_end = x.end(); xi != x_end; ++xi, ++xi_index)
       if (!marked[xi_index])
-	nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
-								    nx_begin,
-								    nx_end);
+	new_x_begin
+          = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
+                                                             new_x_begin,
+                                                             new_x_end);
     using std::swap;
     swap(x.sequence, new_x.sequence);
     n -= deleted;
@@ -1229,7 +1230,7 @@ template <typename PSET>
 template <typename Widening>
 void
 Pointset_Powerset<PSET>::
-BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
+BGP99_heuristics_assign(const Pointset_Powerset& y, Widening widen_fun) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
 
@@ -1255,19 +1256,20 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       const PSET& pj = j->pointset();
       if (pi.contains(pj)) {
 	PSET pi_copy = pi;
-	wf(pi_copy, pj);
+	widen_fun(pi_copy, pj);
 	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;
       }
     }
-  iterator nx_begin = new_x.begin();
-  iterator nx_end = new_x.end();
+  iterator new_x_begin = new_x.begin();
+  iterator new_x_end = new_x.end();
   i_index = 0;
   for (const_iterator i = x_begin; i != x_end; ++i, ++i_index)
     if (!marked[i_index])
-      nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
-								  nx_begin,
-								  nx_end);
+      new_x_begin
+        = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
+                                                           new_x_begin,
+                                                           new_x_end);
   using std::swap;
   swap(x.sequence, new_x.sequence);
   PPL_ASSERT_HEAVY(x.OK());
@@ -1279,7 +1281,7 @@ template <typename Widening>
 void
 Pointset_Powerset<PSET>::
 BGP99_extrapolation_assign(const Pointset_Powerset& y,
-			   Widening wf,
+			   Widening widen_fun,
 			   unsigned max_disjuncts) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
@@ -1296,7 +1298,7 @@ BGP99_extrapolation_assign(const Pointset_Powerset& y,
   x.pairwise_reduce();
   if (max_disjuncts != 0)
     x.collapse(max_disjuncts);
-  x.BGP99_heuristics_assign(y, wf);
+  x.BGP99_heuristics_assign(y, widen_fun);
 }
 
 template <typename PSET>
@@ -1365,7 +1367,7 @@ template <typename PSET>
 template <typename Cert, typename Widening>
 void
 Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
-                                               Widening wf) {
+                                               Widening widen_fun) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
 
@@ -1422,7 +1424,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
 
   // Second widening technique: try the BGP99 powerset heuristics.
   Pointset_Powerset<PSET> bgp99_heuristics = x;
-  bgp99_heuristics.BGP99_heuristics_assign(y, wf);
+  bgp99_heuristics.BGP99_heuristics_assign(y, widen_fun);
 
   // Compute the poly-hull of `bgp99_heuristics'.
   PSET bgp99_heuristics_hull(x.space_dim, EMPTY);
@@ -1465,7 +1467,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
     // Compute (y_hull \widen bgp99_heuristics_hull).
     PSET ph = bgp99_heuristics_hull;
-    wf(ph, y_hull);
+    widen_fun(ph, y_hull);
     // Compute the difference between `ph' and `bgp99_heuristics_hull'.
     ph.difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);

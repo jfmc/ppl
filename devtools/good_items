@@ -20,6 +20,7 @@ Cousot
 CousotH78
 Crandall
 Cygwin
+Det_PSET
 ECLAIR
 EOF
 ETH
@@ -131,6 +132,7 @@ buf
 cassert
 cbegin
 ccgs
+ccs
 cdot
 cend
 cerr
@@ -146,6 +148,7 @@ cout
 cplusplus
 csetjmp
 csignal
+csr
 css_normalized
 cstdarg
 cstddef
@@ -203,6 +206,7 @@ getrusage
 gg
 ggs
 gmplib
+gsr
 hideinitializer
 ieeefp
 ifdef
@@ -271,6 +275,7 @@ ostream_iterator
 ostringstream
 overline
 pbackfail
+perp
 pipermail
 pkint_set
 pkint_set_si
@@ -289,6 +294,7 @@ putc
 rangle
 rbegin
 rdir
+rdstate
 realloc
 rfloor
 rightarrow
@@ -362,7 +368,6 @@ varepsilon
 varepsilon_
 vclass
 vfprintf
-xi
 xl
 xls
 xp
@@ -375,7 +380,6 @@ xus
 xv
 xx
 xyz
-yi
 yl
 yls
 yp

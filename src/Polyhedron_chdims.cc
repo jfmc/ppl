@@ -379,7 +379,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     gen_sys.unset_pending_rows();
     // Since we added new lines at the beginning of `x.gen_sys',
     // we also have to adjust the saturation matrix `sat_c'.
-    // FIXME: if `sat_c' is not up-to-date, couldn't we directly update
+    // FIXME: if `sat_c' is not up-to-date, could not we directly update
     // `sat_g' by resizing it and shifting its columns?
     if (!sat_c_is_up_to_date()) {
       sat_c.transpose_assign(sat_g);
@@ -629,7 +629,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& vars,
 			   "v should not occur in vs");
 
   // All of the affine images we are going to compute are not invertible,
-  // hence we will need to compute the generators of the polyehdron.
+  // hence we will need to compute the generators of the polyhedron.
   // Since we keep taking copies, make sure that a single conversion
   // from constraints to generators is computed.
   (void) generators();

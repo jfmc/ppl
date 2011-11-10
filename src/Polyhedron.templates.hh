@@ -420,10 +420,10 @@ const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
 
 template <typename FP_Format, typename Interval_Info>
 void
-Polyhedron::overapproximate_linear_form(
-  const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-  const dimension_type lf_dimension,
-  Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
+Polyhedron::overapproximate_linear_form
+(const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+ const dimension_type lf_dimension,
+ Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
@@ -435,7 +435,7 @@ Polyhedron::overapproximate_linear_form(
 
   // Build a Box from the Polyhedron so that we can extract upper and
   // lower bounds of variables easily.
-  Box<FP_Interval_Type> polybox(*this);
+  Box<FP_Interval_Type> box(*this);
 
   result = FP_Linear_Form(lf.inhomogeneous_term());
   // FIXME: this may not be policy-neutral.
@@ -450,7 +450,7 @@ Polyhedron::overapproximate_linear_form(
     FP_Format curr_lb = curr_coeff.lower();
     FP_Format curr_ub = curr_coeff.upper();
     if (curr_lb != 0 || curr_ub != 0) {
-      const FP_Interval_Type& curr_int = polybox.get_interval(curr_var);
+      const FP_Interval_Type& curr_int = box.get_interval(curr_var);
       FP_Interval_Type curr_addend(curr_ub - curr_lb);
       curr_addend *= aux_divisor2;
       curr_addend *= curr_int;

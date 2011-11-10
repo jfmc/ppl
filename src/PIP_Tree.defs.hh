@@ -290,7 +290,7 @@ public:
     the artificial parameter.
 
     \param d
-    The integer constant thatm after normalization, will form the
+    The integer constant that, after normalization, will form the
     denominator of the artificial parameter.
 
     \exception std::invalid_argument
@@ -555,7 +555,7 @@ private:
   std::vector<dimension_type> var_column;
 
   /*! \brief
-    The variable number of the special inequality used for modelling
+    The variable number of the special inequality used for modeling
     equality constraints.
 
     The subset of equality constraints in a specific problem can be expressed
@@ -568,7 +568,7 @@ private:
      - \f$\sum\limits_{i=1}^n f_i(x,p) \leq 0\f$
 
     The \p special_equality_row value stores the variable number of the
-    specific constraint which is used to modelize the latter sum of
+    specific constraint which is used to model the latter sum of
     constraints. If no such constraint exists, the value is set to \p 0.
   */
   dimension_type special_equality_row;

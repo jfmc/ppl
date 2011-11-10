@@ -264,13 +264,13 @@ PPL::Pointset_Powerset<PPL::Grid>
   y.omega_reduce();
   Sequence new_sequence = x.sequence;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
-    const Grid& py = yi->pointset();
+    const Grid& gr_yi = yi->pointset();
     Sequence tmp_sequence;
     for (Sequence_const_iterator itr = new_sequence.begin(),
 	   ns_end = new_sequence.end(); itr != ns_end; ++itr) {
       bool finite_partition;
       std::pair<Grid, Pointset_Powerset<Grid> > partition
-	= approximate_partition(py, itr->pointset(), finite_partition);
+	= approximate_partition(gr_yi, itr->pointset(), finite_partition);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));

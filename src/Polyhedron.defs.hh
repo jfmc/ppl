@@ -2705,11 +2705,11 @@ protected:
 
   /*! \brief
     Possibly tightens \p *this by dropping some points with non-integer
-    coordinates for the space dimensions corresponding to \p *pvars.
+    coordinates for the space dimensions corresponding to \p *vars_p.
 
-    \param pvars
+    \param vars_p
     When nonzero, points with non-integer coordinates for the
-    variables/space-dimensions contained in \p *pvars can be discarded.
+    variables/space-dimensions contained in \p *vars_p can be discarded.
 
     \param complexity
     The maximal complexity of any algorithms used.
@@ -2718,7 +2718,7 @@ protected:
     Currently there is no optimality guarantee, not even if
     \p complexity is <CODE>ANY_COMPLEXITY</CODE>.
   */
-  void drop_some_non_integer_points(const Variables_Set* pvars,
+  void drop_some_non_integer_points(const Variables_Set* vars_p,
                                     Complexity_Class complexity);
 
   //! Helper function that overapproximates an interval linear form.
@@ -2736,7 +2736,7 @@ protected:
     This function makes \p result become a linear form that is a correct
     approximation of \p lf under the constraints specified by \p *this.
     The resulting linear form has the property that all of its variable
-    coefficients have a non-significative upper bound and can thus be
+    coefficients have a non-significant upper bound and can thus be
     considered as singletons.
   */
   template <typename FP_Format, typename Interval_Info>
@@ -2750,7 +2750,7 @@ protected:
     by normalizing the denominators in \p lf.
 
     \param lf
-    The linear form on intervals with floating point boundarie to normalize.
+    The linear form on intervals with floating point boundaries to normalize.
     It should be the result of an application of static method
     <CODE>overapproximate_linear_form</CODE>.
 

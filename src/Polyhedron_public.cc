@@ -1980,41 +1980,41 @@ struct Ruled_Out_Less_Than {
 };
 
 bool
-add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
-                                     const PPL::Linear_Row& eq) {
-  // Check if equality eqn is linear independent from eq_sys.
-  PPL_ASSERT(eq.is_line_or_equality());
-  eq_sys.insert(eq);
-  const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
-  const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
-  if (rank == eq_sys_num_rows)
-    // eq is linear independent.
+add_to_system_and_check_independence(PPL::Linear_System& eqn_sys,
+                                     const PPL::Linear_Row& eqn) {
+  // Check if eqn is linearly independent from eqn_sys.
+  PPL_ASSERT(eqn.is_line_or_equality());
+  eqn_sys.insert(eqn);
+  const PPL::dimension_type eqn_sys_num_rows = eqn_sys.num_rows();
+  const PPL::dimension_type rank = eqn_sys.gauss(eqn_sys_num_rows);
+  if (rank == eqn_sys_num_rows)
+    // eqn is linearly independent from eqn_sys.
     return true;
   else {
-    // eq is not linear independent.
-    PPL_ASSERT(rank == eq_sys_num_rows - 1);
-    eq_sys.remove_trailing_rows(1);
+    // eqn is not linearly independent from eqn_sys.
+    PPL_ASSERT(rank == eqn_sys_num_rows - 1);
+    eqn_sys.remove_trailing_rows(1);
     return false;
   }
 }
 
 /*
-  Modifies the vector of pointers \p p_ineqs, setting to 0 those entries
+  Modifies the vector of pointers \p ineqs_p, setting to 0 those entries
   that point to redundant inequalities or masked equalities.
   The redundancy test is based on saturation matrix \p sat and
-  on knowing that there exists \p rank nonredundant equalities
-  (they are implicit, i.e., not explicitly listed in \p p_ineqs).
+  on knowing that there exists \p rank non-redundant equalities
+  (they are implicit, i.e., not explicitly listed in \p ineqs_p).
 */
 void
-drop_redundant_inequalities(std::vector<const PPL::Constraint*>& p_ineqs,
+drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
                             const PPL::Topology topology,
                             const PPL::Bit_Matrix& sat,
                             const PPL::dimension_type rank) {
   using namespace Parma_Polyhedra_Library;
-  const dimension_type num_rows = p_ineqs.size();
+  const dimension_type num_rows = ineqs_p.size();
   PPL_ASSERT(num_rows > 0);
   // `rank' is the rank of the (implicit) system of equalities.
-  const dimension_type space_dim = p_ineqs[0]->space_dimension();
+  const dimension_type space_dim = ineqs_p[0]->space_dimension();
   PPL_ASSERT(space_dim > 0 && space_dim >= rank);
   const dimension_type num_coefficients
     = space_dim + ((topology == NECESSARILY_CLOSED) ? 0 : 1);
@@ -2025,29 +2025,29 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& p_ineqs,
   for (dimension_type i = num_rows; i-- > 0; ) {
     if (sat[i].empty())
       // Masked equalities are redundant.
-      p_ineqs[i] = 0;
+      ineqs_p[i] = 0;
     else {
       const dimension_type num_sat = num_cols_sat - sat[i].count_ones();
       if (num_sat < min_sat)
-        p_ineqs[i] = 0;
+        ineqs_p[i] = 0;
     }
   }
 
   // Re-examine remaining inequalities.
   // Iteration index `i' is _intentionally_ increasing.
   for (dimension_type i = 0; i < num_rows; ++i) {
-    if (p_ineqs[i]) {
+    if (ineqs_p[i]) {
       for (dimension_type j = 0; j < num_rows; ++j) {
         bool strict_subset;
-        if (p_ineqs[j] && i != j
+        if (ineqs_p[j] && i != j
             && subset_or_equal(sat[j], sat[i], strict_subset)) {
           if (strict_subset) {
-            p_ineqs[i] = 0;
+            ineqs_p[i] = 0;
             break;
           }
           else
             // Here `sat[j] == sat[i]'.
-            p_ineqs[j] = 0;
+            ineqs_p[j] = 0;
         }
       }
     }

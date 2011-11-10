@@ -125,11 +125,11 @@ sum_sign(bool& a_neg, unsigned long& a_mod,
 
 /*! \brief
   Helper function for parse_number(): reads the numerator or
-  denominator part of a number from \p is into \p num, returning the
+  denominator part of a number from \p is into \p numer, returning the
   appropriate Result value.
 */
 Result
-parse_number_part(std::istream& is, number_struct& num) {
+parse_number_part(std::istream& is, number_struct& numer) {
   enum anonymous_enum { BASE, INTEGER, FRACTIONAL, EXPONENT } state = BASE;
   PPL_UNINITIALIZED(unsigned long, max_exp_div);
   PPL_UNINITIALIZED(int, max_exp_rem);
@@ -137,12 +137,12 @@ parse_number_part(std::istream& is, number_struct& num) {
   bool empty_mantissa = true;
   long exponent_offset = 0;
   long exponent_offset_scale = 1;
-  num.base = 10;
-  num.base_for_exponent = 10;
-  num.neg_mantissa = false;
-  num.neg_exponent = false;
-  num.mantissa.erase();
-  num.exponent = 0;
+  numer.base = 10;
+  numer.base_for_exponent = 10;
+  numer.neg_mantissa = false;
+  numer.neg_exponent = false;
+  numer.mantissa.erase();
+  numer.exponent = 0;
   char c;
   do {
     if (!is.get(c))
@@ -150,7 +150,7 @@ parse_number_part(std::istream& is, number_struct& num) {
   } while (isspace(c));
   switch (c) {
   case '-':
-    num.neg_mantissa = true;
+    numer.neg_mantissa = true;
     // Fall through.
   case '+':
     if (!is.get(c))
@@ -187,7 +187,7 @@ parse_number_part(std::istream& is, number_struct& num) {
       return V_CVT_STR_UNK;
     if (c != 'f' && c != 'F')
       goto unexpected;
-    return num.neg_mantissa ? V_EQ_MINUS_INFINITY : V_EQ_PLUS_INFINITY;
+    return numer.neg_mantissa ? V_EQ_MINUS_INFINITY : V_EQ_PLUS_INFINITY;
   }
   if (state != FRACTIONAL) {
     if (get_digit(c, 10) < 0)
@@ -195,8 +195,8 @@ parse_number_part(std::istream& is, number_struct& num) {
     char d;
     if (c == '0' && is.get(d)) {
       if (d == 'x' || d == 'X') {
-        num.base = 16;
-        num.base_for_exponent = 16;
+        numer.base = 16;
+        numer.base_for_exponent = 16;
         state = INTEGER;
         if (!is.get(c))
           return V_CVT_STR_UNK;
@@ -209,8 +209,8 @@ parse_number_part(std::istream& is, number_struct& num) {
     switch (state) {
     case BASE:
       if (get_digit(c, 10) >= 0) {
-        if (c != '0' || !num.mantissa.empty())
-          num.mantissa += c;
+        if (c != '0' || !numer.mantissa.empty())
+          numer.mantissa += c;
         empty_mantissa = false;
         break;
       }
@@ -219,27 +219,27 @@ parse_number_part(std::istream& is, number_struct& num) {
           return V_CVT_STR_UNK;
         if (c != '^')
           goto unexpected;
-        num.base = 0;
-        for (std::string::const_iterator i = num.mantissa.begin();
-             i != num.mantissa.end();
+        numer.base = 0;
+        for (std::string::const_iterator i = numer.mantissa.begin();
+             i != numer.mantissa.end();
              i++) {
-          num.base = num.base * 10 + get_digit(*i, 10);
-          if (num.base > 36)
+          numer.base = numer.base * 10 + get_digit(*i, 10);
+          if (numer.base > 36)
             goto unexpected;
         }
-        if (num.base < 2)
+        if (numer.base < 2)
           goto unexpected;
-        num.base_for_exponent = num.base;
-        num.mantissa.erase();
+        numer.base_for_exponent = numer.base;
+        numer.mantissa.erase();
         empty_mantissa = true;
         state = INTEGER;
         break;
       }
       goto integer;
     case INTEGER:
-      if (get_digit(c, num.base) >= 0) {
-        if (c != '0' || !num.mantissa.empty())
-          num.mantissa += c;
+      if (get_digit(c, numer.base) >= 0) {
+        if (c != '0' || !numer.mantissa.empty())
+          numer.mantissa += c;
         empty_mantissa = false;
         break;
       }
@@ -250,10 +250,10 @@ parse_number_part(std::istream& is, number_struct& num) {
       }
       goto fractional;
     case FRACTIONAL:
-      if (get_digit(c, num.base) >= 0) {
+      if (get_digit(c, numer.base) >= 0) {
         --exponent_offset;
-        if (c != '0' || !num.mantissa.empty())
-          num.mantissa += c;
+        if (c != '0' || !numer.mantissa.empty())
+          numer.mantissa += c;
         empty_mantissa = false;
         break;
       }
@@ -263,8 +263,8 @@ parse_number_part(std::istream& is, number_struct& num) {
       if (c == 'e' || c == 'E')
         goto exp;
       if (c == 'p' || c == 'P') {
-        if (num.base == 16) {
-          num.base_for_exponent = 2;
+        if (numer.base == 16) {
+          numer.base_for_exponent = 2;
           exponent_offset_scale = 4;
           goto exp;
         }
@@ -278,12 +278,12 @@ parse_number_part(std::istream& is, number_struct& num) {
           goto unexpected;
       exp:
         state = EXPONENT;
-        max_exp_div = LONG_MAX / num.base;
-        max_exp_rem = static_cast<int>(LONG_MAX % num.base);
+        max_exp_div = LONG_MAX / numer.base;
+        max_exp_rem = static_cast<int>(LONG_MAX % numer.base);
         if (!is.get(c))
           return V_CVT_STR_UNK;
         if (c == '-') {
-          num.neg_exponent = true;
+          numer.neg_exponent = true;
           break;
         }
         if (c == '+')
@@ -296,10 +296,10 @@ parse_number_part(std::istream& is, number_struct& num) {
       int d = get_digit(c, 10);
       if (d >= 0) {
         empty_exponent = false;
-        if (num.exponent > max_exp_div
-            || (num.exponent == max_exp_div && d > max_exp_rem))
+        if (numer.exponent > max_exp_div
+            || (numer.exponent == max_exp_div && d > max_exp_rem))
           return V_CVT_STR_UNK;
-        num.exponent = 10*num.exponent + d;
+        numer.exponent = 10*numer.exponent + d;
         break;
       }
       if (empty_exponent)
@@ -315,12 +315,12 @@ parse_number_part(std::istream& is, number_struct& num) {
 
  ok:
   {
-    std::string::size_type n = num.mantissa.size();
-    while (n > 0 && num.mantissa[n - 1] == '0') {
+    std::string::size_type n = numer.mantissa.size();
+    while (n > 0 && numer.mantissa[n - 1] == '0') {
       --n;
       ++exponent_offset;
     }
-    num.mantissa.erase(n);
+    numer.mantissa.erase(n);
     bool neg;
     if (exponent_offset < 0) {
       neg = true;
@@ -328,7 +328,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     }
     else
       neg = false;
-    sum_sign(num.neg_exponent, num.exponent,
+    sum_sign(numer.neg_exponent, numer.exponent,
              neg, exponent_offset * exponent_offset_scale);
     return V_EQ;
   }
@@ -339,14 +339,14 @@ parse_number_part(std::istream& is, number_struct& num) {
 }
 
 /* \brief
-   Reads a number from \p is writing it into \p num, the numerator,
-   and \p den, the denominator; the appropriate Result value is
+   Reads a number from \p is writing it into \p numer, the numerator,
+   and \p denom, the denominator; the appropriate Result value is
    returned.
 */
 Result
-parse_number(std::istream& is, number_struct& num, number_struct& den) {
+parse_number(std::istream& is, number_struct& numer, number_struct& denom) {
   // Read the numerator.
-  Result r = parse_number_part(is, num);
+  Result r = parse_number_part(is, numer);
   if (r != V_EQ)
     return r;
   char c;
@@ -354,29 +354,29 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
   if (is.bad())
     return V_CVT_STR_UNK;
   if (!is) {
-    den.base = 0;
+    denom.base = 0;
     return r;
   }
   if (c != '/') {
     is.unget();
-    den.base = 0;
+    denom.base = 0;
     return r;
   }
   // Read the denominator.
-  r = parse_number_part(is, den);
+  r = parse_number_part(is, denom);
   if (r != V_EQ)
     return V_CVT_STR_UNK;
-  if (num.base == den.base
-      && num.base_for_exponent == den.base_for_exponent) {
-    if (sum_sign(num.neg_exponent, num.exponent,
-                 !den.neg_exponent, den.exponent)) {
-      if (num.neg_exponent) {
-        den.neg_exponent = false;
-        den.exponent = num.exponent;
-        num.exponent = 0;
+  if (numer.base == denom.base
+      && numer.base_for_exponent == denom.base_for_exponent) {
+    if (sum_sign(numer.neg_exponent, numer.exponent,
+                 !denom.neg_exponent, denom.exponent)) {
+      if (numer.neg_exponent) {
+        denom.neg_exponent = false;
+        denom.exponent = numer.exponent;
+        numer.exponent = 0;
       }
       else
-        den.exponent = 0;
+        denom.exponent = 0;
     }
   }
   return V_EQ;
@@ -385,9 +385,9 @@ parse_number(std::istream& is, number_struct& num, number_struct& den) {
 
 Result
 input_mpq(mpq_class& to, std::istream& is) {
-  number_struct num_struct;
-  number_struct den_struct;
-  Result r = parse_number(is, num_struct, den_struct);
+  number_struct numer_struct;
+  number_struct denom_struct;
+  Result r = parse_number(is, numer_struct, denom_struct);
   if (r == V_CVT_STR_UNK) {
     is.setstate(is.failbit);
     return r;
@@ -395,57 +395,61 @@ input_mpq(mpq_class& to, std::istream& is) {
   is.clear(is.rdstate() & ~is.failbit);
   if (r != V_EQ)
     return r;
-  if (den_struct.base && den_struct.mantissa.empty())
+  if (denom_struct.base && denom_struct.mantissa.empty())
       return V_NAN;
-  if (num_struct.mantissa.empty()) {
+  if (numer_struct.mantissa.empty()) {
     to = 0;
     return V_EQ;
   }
-  mpz_ptr num = to.get_num().get_mpz_t();
-  mpz_ptr den = to.get_den().get_mpz_t();
-  mpz_set_str(num, num_struct.mantissa.c_str(), num_struct.base);
-  if (den_struct.base) {
-    if (num_struct.neg_mantissa != den_struct.neg_mantissa)
-      mpz_neg(num, num);
-    mpz_set_str(den, den_struct.mantissa.c_str(), den_struct.base);
-    if (num_struct.exponent || den_struct.exponent) {
+  mpz_ptr numer = to.get_num().get_mpz_t();
+  mpz_ptr denom = to.get_den().get_mpz_t();
+  mpz_set_str(numer, numer_struct.mantissa.c_str(), numer_struct.base);
+  if (denom_struct.base) {
+    if (numer_struct.neg_mantissa != denom_struct.neg_mantissa)
+      mpz_neg(numer, numer);
+    mpz_set_str(denom, denom_struct.mantissa.c_str(), denom_struct.base);
+    if (numer_struct.exponent || denom_struct.exponent) {
       // Multiply the exponents into the numerator and denominator.
       mpz_t z;
       mpz_init(z);
-      if (num_struct.exponent) {
-        mpz_ui_pow_ui(z, num_struct.base_for_exponent, num_struct.exponent);
-        if (num_struct.neg_exponent)
-          mpz_mul(den, den, z);
+      if (numer_struct.exponent) {
+        mpz_ui_pow_ui(z,
+                      numer_struct.base_for_exponent, numer_struct.exponent);
+        if (numer_struct.neg_exponent)
+          mpz_mul(denom, denom, z);
         else
-          mpz_mul(num, num, z);
+          mpz_mul(numer, numer, z);
       }
-      if (den_struct.exponent) {
-        mpz_ui_pow_ui(z, den_struct.base_for_exponent, den_struct.exponent);
-        if (den_struct.neg_exponent)
-          mpz_mul(num, num, z);
+      if (denom_struct.exponent) {
+        mpz_ui_pow_ui(z,
+                      denom_struct.base_for_exponent, denom_struct.exponent);
+        if (denom_struct.neg_exponent)
+          mpz_mul(numer, numer, z);
         else
-          mpz_mul(den, den, z);
+          mpz_mul(denom, denom, z);
       }
       mpz_clear(z);
     }
   }
   else {
-    if (num_struct.neg_mantissa)
-      mpz_neg(num, num);
-    if (num_struct.exponent) {
-      if (num_struct.neg_exponent) {
+    if (numer_struct.neg_mantissa)
+      mpz_neg(numer, numer);
+    if (numer_struct.exponent) {
+      if (numer_struct.neg_exponent) {
         // Add the negative exponent as a denominator.
-        mpz_ui_pow_ui(den, num_struct.base_for_exponent, num_struct.exponent);
+        mpz_ui_pow_ui(denom,
+                      numer_struct.base_for_exponent, numer_struct.exponent);
         goto end;
       }
       // Multiply the exponent into the numerator.
       mpz_t z;
       mpz_init(z);
-      mpz_ui_pow_ui(z, num_struct.base_for_exponent, num_struct.exponent);
-      mpz_mul(num, num, z);
+      mpz_ui_pow_ui(z,
+                    numer_struct.base_for_exponent, numer_struct.exponent);
+      mpz_mul(numer, numer, z);
       mpz_clear(z);
     }
-    mpz_set_ui(den, 1);
+    mpz_set_ui(denom, 1);
     return V_EQ;
   }
  end:

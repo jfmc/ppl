@@ -201,8 +201,8 @@ template <typename QH>
 inline Pointset_Powerset<PSET>&
 Pointset_Powerset<PSET>::operator=(const Pointset_Powerset<QH>& y) {
   Pointset_Powerset& x = *this;
-  Pointset_Powerset<PSET> pps(y);
-  swap(x, pps);
+  Pointset_Powerset<PSET> ps(y);
+  swap(x, ps);
   return x;
 }
 
@@ -294,9 +294,9 @@ template <typename PSET>
 inline bool
 check_containment(const PSET& ph, const Pointset_Powerset<PSET>& ps) {
   // This code is only used when PSET is an abstraction of NNC_Polyhedron.
-  const NNC_Polyhedron pph = NNC_Polyhedron(ph.constraints());
-  const Pointset_Powerset<NNC_Polyhedron> pps(ps);
-  return check_containment(pph, pps);
+  const NNC_Polyhedron ph_nnc = NNC_Polyhedron(ph.constraints());
+  const Pointset_Powerset<NNC_Polyhedron> ps_nnc(ps);
+  return check_containment(ph_nnc, ps_nnc);
 }
 
 /*! \relates Pointset_Powerset */

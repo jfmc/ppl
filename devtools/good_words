@@ -12,6 +12,7 @@ dmax
 ee
 ep
 eps
+eqn
 gc
 gg
 ggs
@@ -19,6 +20,7 @@ gsp
 idiv
 impl
 ineq
+ineqs
 inhomo
 itc
 ite
@@ -30,15 +32,18 @@ lexico
 lj
 lk
 minf
+modeled
 modi
 msb
 nmax
 nonsaturating
 nrows
+overwrite
 pcount
 pfunc
 pj
 qh
+qual
 rebalancing
 remergeable
 repr
@@ -48,4 +53,6 @@ struct
 tbf
 uop
 upd
+xi
+yi
 yy
