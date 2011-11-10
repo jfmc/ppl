@@ -612,10 +612,10 @@ bool
 Pointset_Powerset<PSET>::is_disjoint_from(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
-         xs_end = x.sequence.end(); si != xs_end; ++si) {
+         x_s_end = x.sequence.end(); si != x_s_end; ++si) {
     const PSET& pi = si->pointset();
     for (Sequence_const_iterator sj = y.sequence.begin(),
-           ys_end = y.sequence.end(); sj != ys_end; ++sj) {
+           y_s_end = y.sequence.end(); sj != y_s_end; ++sj) {
       const PSET& pj = sj->pointset();
       if (!pi.is_disjoint_from(pj))
         return false;
@@ -737,12 +737,13 @@ bool
 Pointset_Powerset<PSET>::contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = y.sequence.begin(),
-         ys_end = y.sequence.end(); si != ys_end; ++si) {
+         y_s_end = y.sequence.end(); si != y_s_end; ++si) {
     const PSET& pi = si->pointset();
     bool pi_is_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
-           xs_end = x.sequence.end();
-         (sj != xs_end && !pi_is_contained); ++sj) {
+           x_s_end = x.sequence.end();
+         (sj != x_s_end && !pi_is_contained);
+         ++sj) {
       const PSET& pj = sj->pointset();
       if (pj.contains(pi))
         pi_is_contained = true;
@@ -762,12 +763,12 @@ Pointset_Powerset<PSET>::strictly_contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
   for (Sequence_const_iterator si = y.sequence.begin(),
-         ys_end = y.sequence.end(); si != ys_end; ++si) {
+         y_s_end = y.sequence.end(); si != y_s_end; ++si) {
     const PSET& pi = si->pointset();
     bool pi_is_strictly_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
-           xs_end = x.sequence.end();
-         (sj != xs_end && !pi_is_strictly_contained); ++sj) {
+           x_s_end = x.sequence.end();
+         (sj != x_s_end && !pi_is_strictly_contained); ++sj) {
       const PSET& pj = sj->pointset();
       if (pj.strictly_contains(pi))
         pi_is_strictly_contained = true;
@@ -1160,13 +1161,13 @@ Pointset_Powerset<PSET>::wrap_assign(const Variables_Set& vars,
                                      Bounded_Integer_Type_Width w,
                                      Bounded_Integer_Type_Representation r,
                                      Bounded_Integer_Type_Overflow o,
-                                     const Constraint_System* pcs,
+                                     const Constraint_System* cs_p,
                                      unsigned complexity_threshold,
                                      bool wrap_individually) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->pointset().wrap_assign(vars, w, r, o, pcs,
+    si->pointset().wrap_assign(vars, w, r, o, cs_p,
                                complexity_threshold, wrap_individually);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
@@ -1429,7 +1430,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   // Compute the poly-hull of `bgp99_heuristics'.
   PSET bgp99_heuristics_hull(x.space_dim, EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
-	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
+	 b_h_end = bgp99_heuristics.end(); i != b_h_end; ++i)
     bgp99_heuristics_hull.upper_bound_assign(i->pointset());
 
   // Check for stabilization and, if successful,
@@ -1585,9 +1586,11 @@ linear_partition(const PSET& p, const PSET& q) {
 
   Pointset_Powerset<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
   PSET qq = q;
-  const Constraint_System& pcs = p.constraints();
-  for (Constraint_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i) {
+  const Constraint_System& p_constraints = p.constraints();
+  for (Constraint_System::const_iterator i = p_constraints.begin(),
+	 p_constraints_end = p_constraints.end();
+       i != p_constraints_end;
+       ++i) {
     const Constraint& c = *i;
     if (c.is_equality()) {
       Linear_Expression le(c);

@@ -1494,12 +1494,12 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
                       Bounded_Integer_Type_Width w,
                       Bounded_Integer_Type_Representation r,
                       Bounded_Integer_Type_Overflow o,
-                      const Constraint_System* pcs,
+                      const Constraint_System* cs_p,
                       unsigned complexity_threshold,
                       bool wrap_individually) {
 #if 0 // Generic implementation commented out.
   Implementation::wrap_assign(*this,
-                              vars, w, r, o, pcs,
+                              vars, w, r, o, cs_p,
                               complexity_threshold, wrap_individually,
                               "Box");
 #else // Specialized implementation.
@@ -1507,21 +1507,21 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   used(complexity_threshold);
   Box& x = *this;
 
-  // Dimension-compatibility check for `*pcs', if any.
+  // Dimension-compatibility check for `*cs_p', if any.
   const dimension_type vars_space_dim = vars.space_dimension();
-  if (pcs != 0 && pcs->space_dimension() > vars_space_dim) {
+  if (cs_p != 0 && cs_p->space_dimension() > vars_space_dim) {
     std::ostringstream s;
-    s << "PPL::Box<ITV>::wrap_assign(vars, w, r, o, pcs, ...):"
+    s << "PPL::Box<ITV>::wrap_assign(vars, w, r, o, cs_p, ...):"
       << std::endl
       << "vars.space_dimension() == " << vars_space_dim
-      << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
+      << ", cs_p->space_dimension() == " << cs_p->space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
 
-  // Wrapping no variable only requires refining with *pcs, if any.
+  // Wrapping no variable only requires refining with *cs_p, if any.
   if (vars.empty()) {
-    if (pcs != 0)
-      refine_with_constraints(*pcs);
+    if (cs_p != 0)
+      refine_with_constraints(*cs_p);
     return;
   }
 
@@ -1574,7 +1574,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
   const Variables_Set::const_iterator vs_end = vars.end();
 
-  if (pcs == 0) {
+  if (cs_p == 0) {
     // No constraint refinement is needed here.
     switch (o) {
     case OVERFLOW_WRAPS:
@@ -1600,8 +1600,8 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     return;
   }
 
-  PPL_ASSERT(pcs != 0);
-  const Constraint_System& cs = *pcs;
+  PPL_ASSERT(cs_p != 0);
+  const Constraint_System& cs = *cs_p;
   const dimension_type cs_space_dim = cs.space_dimension();
   // A map associating interval constraints to variable indexes.
   typedef std::map<dimension_type, std::vector<const Constraint*> > map_type;

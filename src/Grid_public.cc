@@ -2677,15 +2677,15 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
                        Bounded_Integer_Type_Width w,
                        Bounded_Integer_Type_Representation r,
                        Bounded_Integer_Type_Overflow o,
-                       const Constraint_System* pcs,
+                       const Constraint_System* cs_p,
                        unsigned /* complexity_threshold */,
                        bool /* wrap_individually */) {
 
-  // Dimension-compatibility check of `*pcs', if any.
-  if (pcs != 0) {
-    const dimension_type pcs_space_dim  = pcs->space_dimension();
-    if (pcs->space_dimension() > space_dim)
-      throw_dimension_incompatible("wrap_assign(vs, ...)", pcs_space_dim);
+  // Dimension-compatibility check of `*cs_p', if any.
+  if (cs_p != 0) {
+    const dimension_type cs_p_space_dim  = cs_p->space_dimension();
+    if (cs_p->space_dimension() > space_dim)
+      throw_dimension_incompatible("wrap_assign(vs, ...)", cs_p_space_dim);
   }
 
   // Wrapping no variable is a no-op.

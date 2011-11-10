@@ -1535,7 +1535,7 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param pcs
+    \param cs_p
     Possibly null pointer to a constraint system.
     This argument is for compatibility with wrap_assign()
     for the other domains and only checked for dimension-compatibility.
@@ -1552,7 +1552,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+    Variable objects contained in \p vars or with <CODE>*cs_p</CODE>.
 
     \warning
     It is assumed that variables in \p Vars represent integers.  Thus,
@@ -1564,7 +1564,7 @@ public:
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
-                   const Constraint_System* pcs = 0,
+                   const Constraint_System* cs_p = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 

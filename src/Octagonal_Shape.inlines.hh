@@ -558,11 +558,11 @@ Octagonal_Shape<T>::wrap_assign(const Variables_Set& vars,
                                 Bounded_Integer_Type_Width w,
                                 Bounded_Integer_Type_Representation r,
                                 Bounded_Integer_Type_Overflow o,
-                                const Constraint_System* pcs,
+                                const Constraint_System* cs_p,
                                 unsigned complexity_threshold,
                                 bool wrap_individually) {
   Implementation::wrap_assign(*this,
-                              vars, w, r, o, pcs,
+                              vars, w, r, o, cs_p,
                               complexity_threshold, wrap_individually,
                               "Octagonal_Shape");
 }

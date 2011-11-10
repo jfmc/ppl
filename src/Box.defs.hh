@@ -1272,7 +1272,7 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param pcs
+    \param cs_p
     Possibly null pointer to a constraint system.  When non-null,
     the pointed-to constraint system is assumed to represent the
     conditional or looping construct guard with respect to which
@@ -1280,7 +1280,7 @@ public:
     of upper bounds and due to non-distributivity of constraint
     refinement over upper bounds, passing a constraint system in this
     way can be more precise than refining the result of the wrapping
-    operation with the constraints in <CODE>*pcs</CODE>.
+    operation with the constraints in <CODE>*cs_p</CODE>.
 
     \param complexity_threshold
     A precision parameter which is ignored for the Box domain.
@@ -1290,13 +1290,13 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+    Variable objects contained in \p vars or with <CODE>*cs_p</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
-                   const Constraint_System* pcs = 0,
+                   const Constraint_System* cs_p = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 

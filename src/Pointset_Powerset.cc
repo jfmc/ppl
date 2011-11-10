@@ -189,9 +189,9 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   // before copying and calling approximate_partition_aux().
   (void) q.minimized_congruences();
   Grid gr = q;
-  const Congruence_System& pcs = p.congruences();
-  for (Congruence_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i)
+  const Congruence_System& p_congruences = p.congruences();
+  for (Congruence_System::const_iterator i = p_congruences.begin(),
+	 p_congruences_end = p_congruences.end(); i != p_congruences_end; ++i)
     if (!approximate_partition_aux(*i, gr, r)) {
       finite_partition = false;
       Pointset_Powerset<Grid> s(q);

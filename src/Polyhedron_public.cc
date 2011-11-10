@@ -2270,8 +2270,9 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
                 Ruled_Out_Less_Than());
 
       for (std::vector<Ruled_Out_Pair>::const_iterator
-             j = ruled_out_vec.begin(), rov_end = ruled_out_vec.end();
-           j != rov_end;
+             j = ruled_out_vec.begin(),
+             ruled_out_vec_end = ruled_out_vec.end();
+           j != ruled_out_vec_end;
            ++j) {
         const Constraint& c = x_cs[j->constraint_index];
         result_cs.insert(c);
@@ -3766,17 +3767,17 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
                              Bounded_Integer_Type_Width w,
                              Bounded_Integer_Type_Representation r,
                              Bounded_Integer_Type_Overflow o,
-                             const Constraint_System* pcs,
+                             const Constraint_System* cs_p,
                              unsigned complexity_threshold,
                              bool wrap_individually) {
   if (is_necessarily_closed())
     Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
-                                vars, w, r, o, pcs,
+                                vars, w, r, o, cs_p,
                                 complexity_threshold, wrap_individually,
                                 "C_Polyhedron");
   else
     Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
-                                vars, w, r, o, pcs,
+                                vars, w, r, o, cs_p,
                                 complexity_threshold, wrap_individually,
                                 "NNC_Polyhedron");
 }

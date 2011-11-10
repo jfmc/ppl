@@ -1615,8 +1615,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   if (num_y_gs_non_redundant_in_x == 0)
     return true;
 
-  Bit_Row x_nonpoints_non_redundant_in_y;
-  x_nonpoints_non_redundant_in_y
+  Bit_Row x_non_points_non_redundant_in_y;
+  x_non_points_non_redundant_in_y
     .difference_assign(x_gs_non_redundant_in_y,
                        x_points_non_redundant_in_y);
 
@@ -1665,7 +1665,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       continue;
     saturators.difference_assign(all_ones, x_sat[i]);
     // Check condition 1.
-    tmp_set.intersection_assign(x_nonpoints_non_redundant_in_y, saturators);
+    tmp_set.intersection_assign(x_non_points_non_redundant_in_y, saturators);
     if (!tmp_set.empty())
       return false;
     if (x_c.is_strict_inequality()) {
@@ -1686,8 +1686,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Now exchange the roles of `x' and `y'
   // (the statement of the NNC theorem in BHZ09 is symmetric).
 
-  Bit_Row y_nonpoints_non_redundant_in_x;
-  y_nonpoints_non_redundant_in_x
+  Bit_Row y_non_points_non_redundant_in_x;
+  y_non_points_non_redundant_in_x
     .difference_assign(y_gs_non_redundant_in_x,
                        y_points_non_redundant_in_x);
 
@@ -1727,7 +1727,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       continue;
     saturators.difference_assign(all_ones, y_sat[i]);
     // Check condition 1.
-    tmp_set.intersection_assign(y_nonpoints_non_redundant_in_x, saturators);
+    tmp_set.intersection_assign(y_non_points_non_redundant_in_x, saturators);
     if (!tmp_set.empty())
       return false;
     if (y_c.is_strict_inequality()) {

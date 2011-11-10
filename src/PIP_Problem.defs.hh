@@ -384,16 +384,16 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   \endverbatim
   Under the notations above, the solution is:
   \f[ \left\{\begin{array}{l}
-    x'=M-\left\lfloor\frac{p+1}{3}\right\rfloor-1\\
-    y'=M-p+\left\lfloor\frac{p+1}{3}\right\rfloor+1
+    x' = M - \left\lfloor\frac{p+1}{3}\right\rfloor - 1 \\
+    y' = M - p + \left\lfloor\frac{p+1}{3}\right\rfloor + 1
   \end{array}\right.
   \f]
   \par
   Performing substitution again provides us with the values of the original
   variables:
   \f[ \left\{\begin{array}{l}
-    x=\left\lfloor\frac{p+1}{3}\right\rfloor+1\\
-    y=p-\left\lfloor\frac{p+1}{3}\right\rfloor-1
+    x = \left\lfloor\frac{p+1}{3}\right\rfloor + 1 \\
+    y = p - \left\lfloor\frac{p+1}{3}\right\rfloor - 1
   \end{array}\right.
   \f]
 
@@ -458,16 +458,16 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   \endverbatim
   Under the notations above, the solution is:
   \f[ \left\{\begin{array}{l}
-    x'=M-\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
-    y'=M+2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
+    x' = M - \left\lfloor\frac{2p+3}{5}\right\rfloor - 1 \\
+    y' = M + 2\left\lfloor\frac{2p+3}{5}\right\rfloor - 2
   \end{array}\right.
   \f]
   \par
   Performing substitution again provides us with the values of the original
   variables:
   \f[ \left\{\begin{array}{l}
-    x=-\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
-    y=2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
+    x = -\left\lfloor\frac{2p+3}{5}\right\rfloor - 1 \\
+    y = 2\left\lfloor\frac{2p+3}{5}\right\rfloor - 2
   \end{array}\right.
   \f]
 
