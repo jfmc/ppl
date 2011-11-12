@@ -1,4 +1,3 @@
-modeling
 ABI
 AUT00-13
 BAND
@@ -172,7 +171,6 @@ endptr
 endverbatim
 enum
 eof
-eq
 errno
 extern
 fcp
@@ -246,6 +244,7 @@ mathrm
 mathtt
 mem_fun_ref
 memcpy
+modeling
 mp_ptr
 mp_srcptr
 mpn_popcount
@@ -254,6 +253,7 @@ mpz_clrbit
 mpz_divexact
 mpz_get_ui
 mpz_getlimbn
+mpz_ptr
 mpz_realloc2
 mpz_set_ui
 mpz_setbit
@@ -261,6 +261,7 @@ mpz_submul
 mpz_tdiv_q_2exp
 mpz_tdiv_r
 mpz_tdiv_r_2exp
+mpz_ui_pow_ui
 mulmod
 nbrows
 ncols

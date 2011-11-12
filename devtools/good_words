@@ -12,7 +12,8 @@ dmax
 ee
 ep
 eps
-eqn
+eq
+eqs
 gc
 gg
 ggs
@@ -49,8 +50,10 @@ remergeable
 repr
 rpi
 sij
+streambuf
 struct
 tbf
+unsat
 uop
 upd
 xi

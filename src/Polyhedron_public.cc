@@ -344,7 +344,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
 
   Poly_Con_Relation first_rels = relation_with(first_halfspace);
   PPL_ASSERT(!first_rels.implies(Poly_Con_Relation::saturates())
-	 && !first_rels.implies(Poly_Con_Relation::is_disjoint()));
+             && !first_rels.implies(Poly_Con_Relation::is_disjoint()));
   if (first_rels.implies(Poly_Con_Relation::strictly_intersects()))
     return Poly_Con_Relation::strictly_intersects();
 
@@ -358,7 +358,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   PPL_ASSERT(first_rels == Poly_Con_Relation::is_included());
   Poly_Con_Relation second_rels = relation_with(second_halfspace);
   PPL_ASSERT(!second_rels.implies(Poly_Con_Relation::saturates())
-	 && !second_rels.implies(Poly_Con_Relation::is_disjoint()));
+             && !second_rels.implies(Poly_Con_Relation::is_disjoint()));
   if (second_rels.implies(Poly_Con_Relation::strictly_intersects()))
     return Poly_Con_Relation::strictly_intersects();
 
@@ -530,19 +530,19 @@ PPL::Polyhedron::is_topologically_closed() const {
     const dimension_type n_rows = gen_sys.num_rows();
     const dimension_type n_lines = gen_sys.num_lines();
     for (dimension_type i = n_rows; i-- > n_lines; ) {
-      const Generator& gi = gen_sys[i];
-      if (gi.is_closure_point()) {
-	bool gi_has_no_matching_point = true;
+      const Generator& gen_sys_i = gen_sys[i];
+      if (gen_sys_i.is_closure_point()) {
+	bool gen_sys_i_has_no_matching_point = true;
 	for (dimension_type j = n_rows; j-- > n_lines; ) {
-	  const Generator& gj = gen_sys[j];
+	  const Generator& gen_sys_j = gen_sys[j];
 	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
+	      && gen_sys_j.is_point()
+	      && gen_sys_i.is_matching_closure_point(gen_sys_j)) {
+	    gen_sys_i_has_no_matching_point = false;
 	    break;
 	  }
 	}
-	if (gi_has_no_matching_point)
+	if (gen_sys_i_has_no_matching_point)
 	  return false;
       }
     }
@@ -604,7 +604,7 @@ PPL::Polyhedron::contains_integer_point() const {
     if (c_type == Constraint::STRICT_INEQUALITY) {
       // CHECKME: should we change the behavior of Linear_Expression(c) ?
       // Compute the GCD of the coefficients of c
-      // (disregarding the inhomogeneous term and the espilon dimension).
+      // (disregarding the inhomogeneous term and the epsilon dimension).
       homogeneous_gcd = 0;
       for (dimension_type i = space_dim; i-- > 0; )
 	gcd_assign(homogeneous_gcd,
@@ -1980,20 +1980,20 @@ struct Ruled_Out_Less_Than {
 };
 
 bool
-add_to_system_and_check_independence(PPL::Linear_System& eqn_sys,
-                                     const PPL::Linear_Row& eqn) {
-  // Check if eqn is linearly independent from eqn_sys.
-  PPL_ASSERT(eqn.is_line_or_equality());
-  eqn_sys.insert(eqn);
-  const PPL::dimension_type eqn_sys_num_rows = eqn_sys.num_rows();
-  const PPL::dimension_type rank = eqn_sys.gauss(eqn_sys_num_rows);
-  if (rank == eqn_sys_num_rows)
-    // eqn is linearly independent from eqn_sys.
+add_to_system_and_check_independence(PPL::Linear_System& eq_sys,
+                                     const PPL::Linear_Row& eq) {
+  // Check if eq is linearly independent from eq_sys.
+  PPL_ASSERT(eq.is_line_or_equality());
+  eq_sys.insert(eq);
+  const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
+  const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
+  if (rank == eq_sys_num_rows)
+    // eq is linearly independent from eq_sys.
     return true;
   else {
-    // eqn is not linearly independent from eqn_sys.
-    PPL_ASSERT(rank == eqn_sys_num_rows - 1);
-    eqn_sys.remove_trailing_rows(1);
+    // eq is not linearly independent from eq_sys.
+    PPL_ASSERT(rank == eq_sys_num_rows - 1);
+    eq_sys.remove_trailing_rows(1);
     return false;
   }
 }
@@ -2312,89 +2312,93 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       PPL_ASSERT(x_cs_num_eq <= z_cs_num_eq && y_cs_num_eq <= z_cs_num_eq);
 
       // Identify non-redundant equalities.
-      Constraint_System nonred_eq;
-      dimension_type num_nonred_eq = 0;
-      const dimension_type needed_nonred_eq = z_cs_num_eq - y_cs_num_eq;
+      Constraint_System non_redundant_eq;
+      dimension_type num_non_redundant_eq = 0;
+      const dimension_type needed_non_redundant_eq = z_cs_num_eq - y_cs_num_eq;
       Linear_System eqs(x.topology());
-      if (needed_nonred_eq > 0) {
+      if (needed_non_redundant_eq > 0) {
         // Populate eqs with the equalities from y.
         for (dimension_type i = 0; i < y_cs_num_eq; ++i)
           eqs.insert(y_cs[i]);
-        // Try to find another `needed_nonred_eq' linear independent
+        // Try to find another `needed_non_redundant_eq' linear independent
         // equalities among those from x.
         for (dimension_type i = 0; i < x_cs_num_eq; ++i) {
           const Constraint& x_cs_i = x_cs[i];
           if (add_to_system_and_check_independence(eqs, x_cs_i)) {
             // x_cs_i is linear independent.
-            nonred_eq.insert(x_cs_i);
-            ++num_nonred_eq;
-            if (num_nonred_eq == needed_nonred_eq)
+            non_redundant_eq.insert(x_cs_i);
+            ++num_non_redundant_eq;
+            if (num_non_redundant_eq == needed_non_redundant_eq)
               // Already found all the needed equalities.
               break;
           }
         }
-        // NOTE: if num_nonred_eq < needed_nonred_eq
+        // NOTE: if num_non_redundant_eq < needed_non_redundant_eq
         // then we haven't found all the needed equalities yet:
         // this means that some inequalities from x actually holds
         // as "masked" equalities in the context of y.
         PPL_ASSERT(eqs.num_rows() <= z_cs_num_eq);
-        PPL_ASSERT(num_nonred_eq <= needed_nonred_eq);
+        PPL_ASSERT(num_non_redundant_eq <= needed_non_redundant_eq);
         PPL_ASSERT(z_cs_num_eq - eqs.num_rows()
-               == needed_nonred_eq - num_nonred_eq);
+               == needed_non_redundant_eq - num_non_redundant_eq);
       }
 
       // Identify non-redundant inequalities.
       // Avoid useless copies (no modifications are needed).
-      std::vector<const Constraint*> p_nonred_ineq;
-      // Fill p_nonred_ineq with (pointers to) inequalities from y_cs ...
+      std::vector<const Constraint*> non_redundant_ineq_p;
+      // Fill non_redundant_ineq_p with (pointers to) inequalities
+      // from y_cs ...
       for (dimension_type i = y_cs_num_eq; i < y_cs_num_rows; ++i)
-        p_nonred_ineq.push_back(&y_cs[i]);
+        non_redundant_ineq_p.push_back(&y_cs[i]);
       // ... and (pointers to) non-redundant inequalities from x_cs.
       for (dimension_type i = x_cs_num_eq; i < x_cs_num_rows; ++i)
         if (!redundant_by_y[i])
-          p_nonred_ineq.push_back(&x_cs[i]);
+          non_redundant_ineq_p.push_back(&x_cs[i]);
 
-      const dimension_type p_nonred_ineq_size = p_nonred_ineq.size();
+      const dimension_type non_redundant_ineq_p_size
+        = non_redundant_ineq_p.size();
       const dimension_type y_cs_num_ineq = y_cs_num_rows - y_cs_num_eq;
 
       // Compute saturation info.
-      const dimension_type sat_num_rows = p_nonred_ineq_size;
+      const dimension_type sat_num_rows = non_redundant_ineq_p_size;
       Bit_Matrix sat(sat_num_rows, z_gs_num_rows);
       for (dimension_type i = sat_num_rows; i-- > 0; ) {
-        const Constraint& nonred_ineq_i = *(p_nonred_ineq[i]);
+        const Constraint& non_redundant_ineq_i = *(non_redundant_ineq_p[i]);
         Bit_Row& sat_i = sat[i];
         for (dimension_type j = z_gs_num_rows; j-- > 0; )
-          if (Scalar_Products::sign(nonred_ineq_i, z_gs[j]))
+          if (Scalar_Products::sign(non_redundant_ineq_i, z_gs[j]))
             sat_i.set(j);
-        if (sat_i.empty() && num_nonred_eq < needed_nonred_eq) {
-          // `nonred_ineq_i' is actually masking an equality
+        if (sat_i.empty() && num_non_redundant_eq < needed_non_redundant_eq) {
+          // `non_redundant_ineq_i' is actually masking an equality
           // and we are still looking for some masked inequalities.
           // Iteration goes downwards, so the inequality comes from x_cs.
           PPL_ASSERT(i >= y_cs_num_ineq);
           // Check if the equality is independent in eqs.
-          Linear_Row masked_eq = Linear_Row(nonred_ineq_i);
+          Linear_Row masked_eq = Linear_Row(non_redundant_ineq_i);
           masked_eq.set_is_line_or_equality();
           masked_eq.sign_normalize();
           if (add_to_system_and_check_independence(eqs, masked_eq)) {
-            // It is independent: add the _inequality_ to nonred_eq.
-            nonred_eq.insert(nonred_ineq_i);
-            ++num_nonred_eq;
+            // It is independent: add the _inequality_ to non_redundant_eq.
+            non_redundant_eq.insert(non_redundant_ineq_i);
+            ++num_non_redundant_eq;
           }
         }
       }
       // Here we have already found all the needed (masked) equalities.
-      PPL_ASSERT(num_nonred_eq == needed_nonred_eq);
+      PPL_ASSERT(num_non_redundant_eq == needed_non_redundant_eq);
 
-      drop_redundant_inequalities(p_nonred_ineq, x.topology(),
+      drop_redundant_inequalities(non_redundant_ineq_p, x.topology(),
                                   sat, z_cs_num_eq);
 
-      // Place the nonredundant (masked) equalities into result_cs.
-      result_cs.m_swap(nonred_eq);
-      // Add to result_cs the nonredundant inequalities from x_cs,
+      // Place the non-redundant (masked) equalities into result_cs.
+      result_cs.m_swap(non_redundant_eq);
+      // Add to result_cs the non-redundant inequalities from x_cs,
       // i.e., those having indices no smaller than y_cs_num_ineq.
-      for (dimension_type i = y_cs_num_ineq; i < p_nonred_ineq_size; ++i)
-        if (p_nonred_ineq[i])
-          result_cs.insert(*p_nonred_ineq[i]);
+      for (dimension_type i = y_cs_num_ineq;
+           i < non_redundant_ineq_p_size;
+           ++i)
+        if (non_redundant_ineq_p[i])
+          result_cs.insert(*non_redundant_ineq_p[i]);
     }
   }
 

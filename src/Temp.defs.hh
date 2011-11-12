@@ -35,7 +35,7 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class Temp_Item {
 public:
-  //! Obtains a refeence to a temporary item.
+  //! Obtains a reference to a temporary item.
   static Temp_Item& obtain();
 
   //! Releases the temporary item \p p.

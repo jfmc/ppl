@@ -147,7 +147,7 @@ PPL::Sparse_Row::m_swap(dimension_type i, dimension_type j) {
       itr_i = tree.insert(i);
       swap(*itr_i, tmp);
     } else {
-      // Do nothing, elements are both unstored zeroes.
+      // Do nothing, elements are both non-stored zeroes.
     }
 }
 

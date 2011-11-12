@@ -165,7 +165,7 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   branch above. These \e artificial parameters are only meaningful
   inside the subtree where they are defined and are used to define
   the parametric values of the problem variables in solution nodes
-  (e.g., the <tt>{i,j}</tt> vector in the textually third \c then branch).
+  (e.g., the <CODE>{i,j}</CODE> vector in the textually third \c then branch).
 
   \par Context restriction
   The above solution is correct in an unrestricted initial context,
