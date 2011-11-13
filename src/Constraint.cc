@@ -381,25 +381,24 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   const dimension_type num_variables = c.space_dimension();
   PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
-  for (dimension_type v = 0; v < num_variables; ++v) {
-    cv = c.coefficient(Variable(v));
-    if (cv != 0) {
-      if (!first) {
-	if (cv > 0)
-	  s << " + ";
-	else {
-	  s << " - ";
-	  neg_assign(cv);
-	}
+  for (Linear_Expression::const_iterator i = c.expression().begin(),
+        i_end = c.expression().lower_bound(Variable(num_variables)); i != i_end; ++i) {
+    cv = *i;
+    if (!first) {
+      if (cv > 0)
+        s << " + ";
+      else {
+        s << " - ";
+        neg_assign(cv);
       }
-      else
-	first = false;
-      if (cv == -1)
-	s << "-";
-      else if (cv != 1)
-	s << cv << "*";
-      s << PPL::Variable(v);
     }
+    else
+      first = false;
+    if (cv == -1)
+      s << "-";
+    else if (cv != 1)
+      s << cv << "*";
+    s << i.variable();
   }
   if (first)
     s << Coefficient_zero();
