@@ -2755,14 +2755,12 @@ Box<ITV>::affine_image(const Variable var,
 
   Tmp_Interval_Type expr_value, temp0, temp1;
   expr_value.assign(expr.inhomogeneous_term());
-  for (dimension_type i = expr_space_dim; i-- > 0; ) {
-    const Coefficient& coeff = expr.coefficient(Variable(i));
-    if (coeff != 0) {
-      temp0.assign(coeff);
-      temp1.assign(seq[i]);
-      temp0.mul_assign(temp0, temp1);
-      expr_value.add_assign(expr_value, temp0);
-    }
+  for (Linear_Expression::const_iterator i = expr.begin(),
+          i_end = expr.end(); i != i_end; ++i) {
+    temp0.assign(*i);
+    temp1.assign(seq[i.variable().id()]);
+    temp0.mul_assign(temp0, temp1);
+    expr_value.add_assign(expr_value, temp0);
   }
   if (denominator != 1) {
     temp0.assign(denominator);
@@ -2801,14 +2799,12 @@ Box<ITV>::affine_preimage(const Variable var,
   if (!invertible) {
     Tmp_Interval_Type expr_value, temp0, temp1;
     expr_value.assign(expr.inhomogeneous_term());
-    for (dimension_type i = expr_space_dim; i-- > 0; ) {
-      const Coefficient& coeff = expr.coefficient(Variable(i));
-      if (coeff != 0) {
-	temp0.assign(coeff);
-	temp1.assign(seq[i]);
-	temp0.mul_assign(temp0, temp1);
-	expr_value.add_assign(expr_value, temp0);
-      }
+    for (Linear_Expression::const_iterator i = expr.begin(),
+            i_end = expr.end(); i != i_end; ++i) {
+      temp0.assign(*i);
+      temp1.assign(seq[i.variable().id()]);
+      temp0.mul_assign(temp0, temp1);
+      expr_value.add_assign(expr_value, temp0);
     }
     if (denominator != 1) {
       temp0.assign(denominator);
