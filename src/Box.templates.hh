@@ -2346,15 +2346,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
 
   // Find a space dimension having a non-zero coefficient (if any).
-  dimension_type last_k = c_space_dim;
-  // TODO: This loop can be optimized more, if needed, exploiting the
-  // (possible) sparseness of c.
-  for (dimension_type k = c_space_dim; k-- > 0; ) {
-    if (c.coefficient(Variable(k)) != 0) {
-      last_k = k;
-      break;
-    }
-  }
+  dimension_type last_k = c.expression().last_nonzero(1, c_space_dim + 1);
+  --last_k;
   if (last_k == c_space_dim) {
     // Constraint c is trivial: check if it is inconsistent.
     if (c_inhomogeneous_term < 0
