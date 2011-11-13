@@ -2641,24 +2641,28 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   dimension_type c_space_dim = c.space_dimension();
   ITV k[c_space_dim];
   ITV p[c_space_dim];
-  for (dimension_type i = c_space_dim; i-- > 0; ) {
-    k[i] = c.coefficient(Variable(i));
-    ITV& p_i = p[i];
-    p_i = seq[i];
-    p_i.mul_assign(p_i, k[i]);
+  for (Linear_Expression::const_iterator i = c_e.begin(),
+        i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
+    const Variable i_var = i.variable();
+    k[i_var.id()] = *i;
+    ITV& p_i = p[i_var.id()];
+    p_i = seq[i_var.id()];
+    p_i.mul_assign(p_i, k[i_var.id()]);
   }
   const Coefficient& inhomogeneous_term = c.inhomogeneous_term();
-  for (dimension_type i = c_space_dim; i-- > 0; ) {
-    int sgn_coefficient_i = sgn(c.coefficient(Variable(i)));
-    if (sgn_coefficient_i == 0)
-      continue;
+  for (Linear_Expression::const_iterator i = c_e.begin(),
+        i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
+    const Variable i_var = i.variable();
+    int sgn_coefficient_i = sgn(*i);
     ITV q(inhomogeneous_term);
-    for (dimension_type j = c_space_dim; j-- > 0; ) {
-      if (i == j)
+    for (Linear_Expression::const_iterator j = c_e.begin(),
+          j_end = c_e.lower_bound(Variable(c_space_dim)); j != j_end; ++j) {
+      const Variable j_var = j.variable();
+      if (i_var == j_var)
 	continue;
-      q.add_assign(q, p[j]);
+      q.add_assign(q, p[j_var.id()]);
     }
-    q.div_assign(q, k[i]);
+    q.div_assign(q, k[i_var.id()]);
     q.neg_assign(q);
     Relation_Symbol rel;
     switch (c.type()) {
@@ -2672,13 +2676,13 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       rel = (sgn_coefficient_i > 0) ? GREATER_THAN : LESS_THAN;
       break;
     }
-    seq[i].add_constraint(i_constraint(rel, q));
+    seq[i_var.id()].add_constraint(i_constraint(rel, q));
     // FIXME: could/should we exploit the return value of add_constraint
     //        in case it is available?
     // FIMXE: should we instead be lazy and do not even bother about
     //        the possibility the interval becomes empty apart from setting
     //        empty_up_to_date = false?
-    if (seq[i].is_empty()) {
+    if (seq[i_var.id()].is_empty()) {
       set_empty();
       break;
     }
