@@ -3574,14 +3574,13 @@ Octagonal_Shape<T>
   PPL_DIRTY_TEMP(N, up_approx);
   PPL_DIRTY_TEMP_COEFFICIENT(minus_expr_u);
 
-  for (dimension_type u_id = last_id+1; u_id-- > 0; ) {
+  for (Linear_Expression::const_iterator u = sc_expr.begin(),
+      u_end = sc_expr.lower_bound(Variable(last_id + 1)); u != u_end; ++u) {
+    const dimension_type u_id = u.variable().id();
     // Skip the case when `u_id == v_id'.
     if (u_id == v_id)
       continue;
-    const Coefficient& expr_u = sc_expr.coefficient(Variable(u_id));
-    // Skip the case when `expr_u == 0'.
-    if (expr_u == 0)
-      continue;
+    const Coefficient& expr_u = *u;
 
     const dimension_type n_u = u_id*2;
     // If `expr_u' is positive, we can improve `v - u'.
@@ -3691,14 +3690,13 @@ Octagonal_Shape<T>
   PPL_DIRTY_TEMP(N, up_approx);
   PPL_DIRTY_TEMP_COEFFICIENT(minus_expr_u);
 
-  for (dimension_type u_id = last_id+1; u_id-- > 0; ) {
+  for (Linear_Expression::const_iterator u = sc_expr.begin(),
+      u_end = sc_expr.lower_bound(Variable(last_id + 1)); u != u_end; ++u) {
+    const dimension_type u_id = u.variable().id();
     // Skip the case when `u_id == v_id'.
     if (u_id == v_id)
       continue;
-    const Coefficient& expr_u = sc_expr.coefficient(Variable(u_id));
-    // Skip the case when `expr_u == 0'.
-    if (expr_u == 0)
-      continue;
+    const Coefficient& expr_u = *u;
 
     const dimension_type n_u = u_id*2;
     // If `expr_u' is positive, we can improve `-v + u'.
