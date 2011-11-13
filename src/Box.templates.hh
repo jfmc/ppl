@@ -3571,16 +3571,14 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
   // to generalized_affine_image/3.
   Linear_Expression revised_lhs = lhs;
   Linear_Expression revised_rhs = rhs;
-  // TODO: This loop can be optimized more, if needed, exploiting the
-  // (possible) sparseness of lhs and rhs.
-  for (dimension_type d = lhs_space_dim; d-- > 0; ) {
-    const Variable& var = Variable(d);
-    if (lhs.coefficient(var) != 0) {
-      PPL_DIRTY_TEMP(Coefficient, temp);
-      temp = rhs.coefficient(var) + lhs.coefficient(var);
-      revised_rhs -= temp * var;
-      revised_lhs -= temp * var;
-    }
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+  for (Linear_Expression::const_iterator i = lhs.begin(),
+      i_end = lhs.end(); i != i_end; ++i) {
+    const Variable var = i.variable();
+    tmp = *i;
+    tmp += rhs.coefficient(var);
+    sub_mul_assign(revised_rhs, tmp, var);
+    sub_mul_assign(revised_lhs, tmp, var);
   }
   generalized_affine_image(revised_lhs, relsym, revised_rhs);
   PPL_ASSERT(OK());
