@@ -355,7 +355,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   // Ensure that the parameter divisors are the same as the system
   // divisor.
-  const Coefficient& system_divisor = rows[0].expression().get(0);
+  const Coefficient& system_divisor = rows[0].expression().inhomogeneous_term();
   for (dimension_type i = rows.size() - 1, dim = num_columns - 1;
        dim > 0; --dim) {
     switch (dim_kinds[dim]) {
