@@ -364,20 +364,18 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        ++i, ++row_index) {
     Variable u1_i(m + row_index);
     Variable u2_i(s + row_index);
-    const Constraint& c_i = *i;
-    // TODO: This can be optimized more, if needed, exploiting the (possible)
-    // sparseness of c_i.
-    for (dimension_type j = n; j-- > 0; ) {
-      Coefficient_traits::const_reference A_ij_B = c_i.coefficient(Variable(j));
-      if (A_ij_B != 0) {
-        // (u1 - u2) A_B, in the context of j-th constraint.
-        add_mul_assign(les_eq[j], A_ij_B, u1_i);
-        sub_mul_assign(les_eq[j], A_ij_B, u2_i);
-        // u2 A_B, in the context of (j+n)-th constraint.
-        add_mul_assign(les_eq[j + n], A_ij_B, u2_i);
-      }
+    const Linear_Expression& e_i = i->expression();
+    for (Linear_Expression::const_iterator j = e_i.begin(),
+          j_end = e_i.lower_bound(Variable(n)); j != j_end; ++j) {
+      Coefficient_traits::const_reference A_ij_B = *j;
+      const Variable v = j.variable();
+      // (u1 - u2) A_B, in the context of j-th constraint.
+      add_mul_assign(les_eq[v.id()], A_ij_B, u1_i);
+      sub_mul_assign(les_eq[v.id()], A_ij_B, u2_i);
+      // u2 A_B, in the context of (j+n)-th constraint.
+      add_mul_assign(les_eq[v.id() + n], A_ij_B, u2_i);
     }
-    Coefficient_traits::const_reference b_B = c_i.inhomogeneous_term();
+    Coefficient_traits::const_reference b_B = e_i.inhomogeneous_term();
     if (b_B != 0)
       // u2 b_B, in the context of the strict inequality constraint.
       add_mul_assign(le_out, b_B, u2_i);
