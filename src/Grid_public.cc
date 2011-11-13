@@ -645,18 +645,16 @@ PPL::Grid::relation_with(const Constraint& c) const {
                                         Coefficient_one(), -1,
                                         0, gen.space_dimension() + 1);
       }
+      // NOTE: no break!
 
     case Grid_Generator::PARAMETER:
     case Grid_Generator::LINE:
       Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
-      if (gen.is_line_or_parameter())
-        // TODO: This loop can be optimized more, if needed, exploiting the
-        // (possible) sparseness of c and gen.
-	for (dimension_type i = c.space_dimension(); i-- > 0; ) {
-	  Variable v(i);
-	  if (c.coefficient(v) != 0 && gen.coefficient(v) != 0)
-	    return Poly_Con_Relation::strictly_intersects();
-	}
+      if (gen.is_line_or_parameter()
+          && c.expression().have_a_common_variable(g->expression(),
+                                                   Variable(0),
+                                                   Variable(c.space_dimension())))
+        return Poly_Con_Relation::strictly_intersects();
       break;
     }
 
