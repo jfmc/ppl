@@ -69,13 +69,13 @@ PPL::Congruence::normalize() {
     return;
 
   PPL_DIRTY_TEMP_COEFFICIENT(c);
-  c = expr.get(0);
+  c = expr.inhomogeneous_term();
   // Factor the modulus out of the inhomogeneous term.
   c %= modulus_;
   if (c < 0)
     // Make inhomogeneous term positive.
     c += modulus_;
-  expr.set(0, c);
+  expr.set_inhomogeneous_term(c);
 
   PPL_ASSERT(OK());
 }
