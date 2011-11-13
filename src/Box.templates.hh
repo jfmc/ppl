@@ -1051,9 +1051,10 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   const int maximize_sign = maximize ? 1 : -1;
   PPL_DIRTY_TEMP0(mpq_class, bound_i);
   PPL_DIRTY_TEMP0(mpq_class, expr_i);
-  for (dimension_type i = expr_space_dim; i-- > 0; ) {
-    const ITV& seq_i = seq[i];
-    assign_r(expr_i, expr.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+  for (Linear_Expression::const_iterator i = expr.begin(),
+          i_end = expr.end(); i != i_end; ++i) {
+    const ITV& seq_i = seq[i.variable().id()];
+    assign_r(expr_i, *i, ROUND_NOT_NEEDED);
     switch (sgn(expr_i) * maximize_sign) {
     case 1:
       if (seq_i.upper_is_boundary_infinity())
@@ -1064,7 +1065,7 @@ Box<ITV>::max_min(const Linear_Expression& expr,
 	is_included = false;
       break;
     case 0:
-      // Nothing to do.
+      PPL_ASSERT(false);
       break;
     case -1:
       if (seq_i.lower_is_boundary_infinity())
