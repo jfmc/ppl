@@ -261,13 +261,12 @@ PPL::Generator::finalize() {
   zero_dim_closure_point_p = 0;
 }
 
-/*! \relates Parma_Polyhedra_Library::Generator */
-std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
-  bool needed_divisor = false;
+void
+PPL::Generator::fancy_print(std::ostream& s) const {
+    bool needed_divisor = false;
   bool extra_parentheses = false;
-  const dimension_type num_variables = g.space_dimension();
-  Generator::Type t = g.type();
+  const dimension_type num_variables = space_dimension();
+  Generator::Type t = type();
   switch (t) {
   case Generator::LINE:
     s << "l(";
@@ -281,41 +280,36 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   case Generator::CLOSURE_POINT:
     s << "c(";
   any_point:
-    if (g.expr.inhomogeneous_term() != 1) {
+    if (expr.inhomogeneous_term() != 1) {
       needed_divisor = true;
-      dimension_type num_non_zero_coefficients = 0;
-      for (dimension_type v = 0; v < num_variables; ++v)
-	if (g.expr.coefficient(Variable(v)) != 0)
-	  if (++num_non_zero_coefficients > 1) {
-	    extra_parentheses = true;
-	    s << "(";
-	    break;
-	  }
+      if (!expr.all_zeroes(1, num_variables + 1)) {
+        extra_parentheses = true;
+        s << "(";
+      }
     }
     break;
   }
 
-  PPL_DIRTY_TEMP_COEFFICIENT(gv);
+  PPL_DIRTY_TEMP_COEFFICIENT(c);
   bool first = true;
-  for (dimension_type v = 0; v < num_variables; ++v) {
-    gv = g.expr.coefficient(Variable(v));
-    if (gv != 0) {
-      if (!first) {
-	if (gv > 0)
-	  s << " + ";
-	else {
-	  s << " - ";
-	  neg_assign(gv);
-	}
+  for (Linear_Expression::const_iterator i = expr.begin(),
+          i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
+    c = *i;
+    if (!first) {
+      if (c > 0)
+        s << " + ";
+      else {
+        s << " - ";
+        neg_assign(c);
       }
-      else
-	first = false;
-      if (gv == -1)
-	s << "-";
-      else if (gv != 1)
-	s << gv << "*";
-      s << PPL::Variable(v);
     }
+    else
+      first = false;
+    if (c == -1)
+      s << "-";
+    else if (c != 1)
+      s << c << "*";
+    IO_Operators::operator<<(s, i.variable());
   }
   if (first)
     // A point or closure point in the origin.
@@ -323,8 +317,14 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   if (extra_parentheses)
     s << ")";
   if (needed_divisor)
-    s << "/" << g.expr.inhomogeneous_term();
+    s << "/" << expr.inhomogeneous_term();
   s << ")";
+}
+
+/*! \relates Parma_Polyhedra_Library::Generator */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
+  g.fancy_print(s);
   return s;
 }
 

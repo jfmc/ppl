@@ -576,6 +576,10 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
+  //! Another print functions, with fancy output, more human-friendly.
+  //! This is used by operator<<();
+  void fancy_print(std::ostream& s) const;
+
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
