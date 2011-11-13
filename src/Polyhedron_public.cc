@@ -2313,7 +2313,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         const Constraint& nonred_ineq_i = *(p_nonred_ineq[i]);
         Bit_Row& sat_i = sat[i];
         for (dimension_type j = z_gs_num_rows; j-- > 0; )
-          if (Scalar_Products::sign(nonred_ineq_i, z_gs[j]))
+          if (Scalar_Products::sign(nonred_ineq_i, z_gs[j]) != 0)
             sat_i.set(j);
         if (sat_i.empty() && num_nonred_eq < needed_nonred_eq) {
           // `nonred_ineq_i' is actually masking an equality
