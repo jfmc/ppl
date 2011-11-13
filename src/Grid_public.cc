@@ -2124,24 +2124,16 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_congruence_no_check((lhs %= rhs) / tmp_modulus);
     return;
   }
-  --lhs_space_dim;
-  
-  // Gather in `new_lines' the collections of all the lines having the
-  // direction of variables occurring in `lhs'.  While at it, check
-  // whether there exists a variable occurring in both `lhs' and
-  // `rhs'.
-  Grid_Generator_System new_lines;
-  bool lhs_vars_intersect_rhs_vars = false;
-  // TODO: This can be optimized more, if needed, exploiting the (possible)
-  // sparseness of lhs and rhs.
-  for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(grid_line(Variable(i)));
-      if (rhs.coefficient(Variable(i)) != 0)
-	lhs_vars_intersect_rhs_vars = true;
-    }
 
-  if (lhs_vars_intersect_rhs_vars) {
+  // Gather in `new_lines' the collections of all the lines having the
+  // direction of variables occurring in `lhs'.
+  Grid_Generator_System new_lines;
+  for (Linear_Expression::const_iterator i = lhs.begin(),
+        i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i)
+    new_lines.insert(grid_line(i.variable()));
+
+  dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
+  if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
     const Variable new_var = Variable(space_dim);
@@ -2260,24 +2252,16 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     add_congruence_no_check((lhs %= rhs) / tmp_modulus);
     return;
   }
-  --lhs_space_dim;
 
   // Gather in `new_lines' the collections of all the lines having
   // the direction of variables occurring in `lhs'.
-  // While at it, check whether or not there exists a variable
-  // occurring in both `lhs' and `rhs'.
   Grid_Generator_System new_lines;
-  bool lhs_vars_intersect_rhs_vars = false;
-  // TODO: This can be optimized more, if needed, exploiting the (possible)
-  // sparseness of lhs and rhs.
-  for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(grid_line(Variable(i)));
-      if (rhs.coefficient(Variable(i)) != 0)
-	lhs_vars_intersect_rhs_vars = true;
-    }
+  for (Linear_Expression::const_iterator i = lhs.begin(),
+        i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i)
+      new_lines.insert(grid_line(i.variable()));
 
-  if (lhs_vars_intersect_rhs_vars) {
+  dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
+  if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
     const Variable new_var = Variable(space_dim);
