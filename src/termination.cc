@@ -435,29 +435,29 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-    const Constraint& c_i = *i;
+    const Linear_Expression& e_i = i->expression();
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
-    // TODO: This can be optimized more, if needed, exploiting the (possible)
-    // sparseness of c_i.
-    for (dimension_type j = n; j-- > 0; ) {
-      Coefficient_traits::const_reference Ap_ij = c_i.coefficient(Variable(j));
-      if (Ap_ij != 0) {
-        // lambda_1 A'
-        add_mul_assign(les_eq[j], Ap_ij, lambda1_i);
-        // lambda_2 A'
-        add_mul_assign(les_eq[j+n+n], Ap_ij, lambda2_i);
-      }
-      Coefficient_traits::const_reference A_ij = c_i.coefficient(Variable(j+n));
-      if (A_ij != 0) {
-        // (lambda_1 - lambda_2) A
-        add_mul_assign(les_eq[j+n], A_ij, lambda1_i);
-        sub_mul_assign(les_eq[j+n], A_ij, lambda2_i);
-        // lambda_2 A
-        add_mul_assign(les_eq[j+n+n], A_ij, lambda2_i);
-      }
+    for (Linear_Expression::const_iterator i = e_i.begin(),
+          i_end = e_i.lower_bound(Variable(n)); i != i_end; ++i) {
+      Coefficient_traits::const_reference Ap_ij = *i;
+      const Variable v = i.variable();
+      // lambda_1 A'
+      add_mul_assign(les_eq[v.id()], Ap_ij, lambda1_i);
+      // lambda_2 A'
+      add_mul_assign(les_eq[v.id()+n+n], Ap_ij, lambda2_i);
     }
-    Coefficient_traits::const_reference b = c_i.inhomogeneous_term();
+    for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
+          i_end = e_i.lower_bound(Variable(2*n)); i != i_end; ++i) {
+      Coefficient_traits::const_reference A_ij = *i;
+      const Variable v = i.variable();
+      // (lambda_1 - lambda_2) A
+      add_mul_assign(les_eq[v.id()], A_ij, lambda1_i);
+      sub_mul_assign(les_eq[v.id()], A_ij, lambda2_i);
+      // lambda_2 A
+      add_mul_assign(les_eq[v.id()+n], A_ij, lambda2_i);
+    }
+    Coefficient_traits::const_reference b = e_i.inhomogeneous_term();
     if (b != 0)
       // lambda2 b
       add_mul_assign(le_out, b, lambda2_i);
