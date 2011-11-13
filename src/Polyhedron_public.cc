@@ -3082,17 +3082,13 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   // While at it, check whether or not there exists a variable
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
-  bool lhs_vars_intersects_rhs_vars = false;
-  // TODO: This can be optimized more, if needed, exploiting the (possible)
-  // sparseness of lhs and rhs.
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(line(Variable(i)));
-      if (rhs.coefficient(Variable(i)) != 0)
-	lhs_vars_intersects_rhs_vars = true;
-    }
+  for (Linear_Expression::const_iterator
+      i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i)
+    new_lines.insert(line(i.variable()));
 
-  if (lhs_vars_intersects_rhs_vars) {
+  const dimension_type num_common_dims
+    = std::min(lhs.space_dimension(), rhs.space_dimension());
+  if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add an additional dimension.
     const Variable new_var = Variable(space_dim);
@@ -3218,17 +3214,13 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
   // While at it, check whether or not there exists a variable
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
-  bool lhs_vars_intersects_rhs_vars = false;
-  // TODO: This can be optimized more, if needed, exploiting the (possible)
-  // sparseness of lhs and rhs.
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(line(Variable(i)));
-      if (rhs.coefficient(Variable(i)) != 0)
-	lhs_vars_intersects_rhs_vars = true;
-    }
+  for (Linear_Expression::const_iterator
+      i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i)
+    new_lines.insert(line(i.variable()));
 
-  if (lhs_vars_intersects_rhs_vars) {
+  const dimension_type num_common_dims
+    = std::min(lhs.space_dimension(), rhs.space_dimension());
+  if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add an additional dimension.
     const Variable new_var = Variable(space_dim);
