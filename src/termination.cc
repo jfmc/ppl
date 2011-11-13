@@ -387,25 +387,23 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        i != cs_after_end;
        ++i, ++row_index) {
     Variable u3_i(row_index);
-    const Constraint& c_i = *i;
-    // TODO: This can be optimized more, if needed, exploiting the (possible)
-    // sparseness of c_i.
-    for (dimension_type j = n; j-- > 0; ) {
-      Coefficient_traits::const_reference
-        A_ij_C = c_i.coefficient(Variable(j + n));
-      if (A_ij_C != 0) {
-        // - u3 A_C, in the context of the j-th constraint.
-        sub_mul_assign(les_eq[j], A_ij_C, u3_i);
-        // u3 A_C, in the context of the (j+n)-th constraint.
-        add_mul_assign(les_eq[j+n], A_ij_C, u3_i);
-      }
-      Coefficient_traits::const_reference
-        Ap_ij_C = c_i.coefficient(Variable(j));
-      if (Ap_ij_C != 0)
-        // u3 Ap_C, in the context of the (j+n)-th constraint.
-        add_mul_assign(les_eq[j+n], Ap_ij_C, u3_i);
+    const Linear_Expression& e_i = i->expression();
+    for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
+           i_end = e_i.lower_bound(Variable(2*n)); i != i_end; ++i) {
+      Coefficient_traits::const_reference A_ij_C = *i;
+      const Variable v = i.variable();
+      // - u3 A_C, in the context of the j-th constraint.
+      sub_mul_assign(les_eq[v.id() - n], A_ij_C, u3_i);
+      // u3 A_C, in the context of the (j+n)-th constraint.
+      add_mul_assign(les_eq[v.id()], A_ij_C, u3_i);
     }
-    Coefficient_traits::const_reference b_C = c_i.inhomogeneous_term();
+    for (Linear_Expression::const_iterator i = e_i.begin(),
+           i_end = e_i.lower_bound(Variable(n)); i != i_end; ++i) {
+      Coefficient_traits::const_reference Ap_ij_C = *i;
+      // u3 Ap_C, in the context of the (j+n)-th constraint.
+      add_mul_assign(les_eq[i.variable().id() + n], Ap_ij_C, u3_i);
+    }
+    Coefficient_traits::const_reference b_C = e_i.inhomogeneous_term();
     if (b_C != 0)
       // u3 b_C, in the context of the strict inequality constraint.
       add_mul_assign(le_out, b_C, u3_i);
