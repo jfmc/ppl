@@ -5493,16 +5493,12 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // Compute the set of variables occurring in `lhs'.
     bool lhs_vars_intersects_rhs_vars = false;
     std::vector<Variable> lhs_vars;
-    // TODO: This loop can be optimized more, if needed, exploiting the
-    // (possible) sparseness of lhs and rhs.
-    for (dimension_type i = lhs_space_dim; i-- > 0; )
-      if (lhs.coefficient(Variable(i)) != 0) {
-        lhs_vars.push_back(Variable(i));
-        if (rhs.coefficient(Variable(i)) != 0)
-          lhs_vars_intersects_rhs_vars = true;
-      }
+    for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
+          i != i_end; ++i)
+      lhs_vars.push_back(i.variable());
 
-    if (!lhs_vars_intersects_rhs_vars) {
+    const dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
+    if (!lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
       // `lhs' and `rhs' variables are disjoint.
       // Existentially quantify all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
@@ -6026,16 +6022,12 @@ Octagonal_Shape<T>
     // Compute the set of variables occurring in `lhs'.
     bool lhs_vars_intersects_rhs_vars = false;
     std::vector<Variable> lhs_vars;
-    // TODO: This loop can be optimized more, if needed, exploiting the
-    // (possible) sparseness of lhs and rhs.
-    for (dimension_type i = lhs_space_dim; i-- > 0; )
-      if (lhs.coefficient(Variable(i)) != 0) {
-        lhs_vars.push_back(Variable(i));
-        if (rhs.coefficient(Variable(i)) != 0)
-          lhs_vars_intersects_rhs_vars = true;
-      }
+    for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
+          i != i_end; ++i)
+      lhs_vars.push_back(i.variable());
 
-    if (!lhs_vars_intersects_rhs_vars) {
+    const dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
+    if (!lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
       // `lhs' and `rhs' variables are disjoint.
       // Constrain the left hand side expression so that it is related to
       // the right hand side expression as dictated by `relsym'.
