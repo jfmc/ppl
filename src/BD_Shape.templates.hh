@@ -82,7 +82,8 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // When handling the first (closure) point, we initialize the DBM.
         dbm_initialized = true;
         const Coefficient& d = g.divisor();
-        // TODO: These two loops can be optimized more, if needed.
+        // TODO: Check if the following loop can be optimized used
+        // Linear_Expression::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
           const Coefficient& g_i = g.expression().get(i);
           DB_Row<N>& dbm_i = dbm[i];
@@ -99,6 +100,8 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // This is not the first point: the DBM already contains
         // valid values and we must compute maxima.
         const Coefficient& d = g.divisor();
+        // TODO: Check if the following loop can be optimized used
+        // Linear_Expression::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
           const Coefficient& g_i = g.expression().get(i);
           DB_Row<N>& dbm_i = dbm[i];
@@ -133,7 +136,8 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
     const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
-      // TODO: This loop can be optimized more, if needed.
+      // TODO: Check if the following loop can be optimized used
+      // Linear_Expression::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
         const Coefficient& g_i = g.expression().get(i);
         DB_Row<N>& dbm_i = dbm[i];
@@ -150,7 +154,8 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
                  PLUS_INFINITY, ROUND_NOT_NEEDED);
       break;
     case Generator::RAY:
-      // TODO: This loop can be optimized more, if needed.
+      // TODO: Check if the following loop can be optimized used
+      // Linear_Expression::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
         const Coefficient& g_i = g.expression().get(i);
         DB_Row<N>& dbm_i = dbm[i];
@@ -814,6 +819,8 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(val_den);
   val_den = 1;
 
+  // TODO: This loop can probably be optimized a lot using
+  // Linear_Expression::const_iterator.
   for (dimension_type i = dbm.num_rows(); i-- > 1; ) {
     constant_v = false;
     const Variable v(i-1);

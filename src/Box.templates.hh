@@ -146,6 +146,9 @@ Box<ITV>::Box(const Generator_System& gs)
       const Coefficient& d = g.divisor();
       if (point_seen) {
 	// This is not the first point: `seq' already contains valid values.
+	// TODO: If the variables in the expression that have coefficient 0
+        // have no effect on seq[i], this loop can be optimized using
+        // Linear_Expression::const_iterator.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -158,6 +161,9 @@ Box<ITV>::Box(const Generator_System& gs)
       else {
 	// This is the first point seen: initialize `seq'.
 	point_seen = true;
+        // TODO: If the variables in the expression that have coefficient 0
+        // have no effect on seq[i], this loop can be optimized using
+        // Linear_Expression::const_iterator.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -205,8 +211,9 @@ Box<ITV>::Box(const Generator_System& gs)
     case Generator::CLOSURE_POINT:
       {
 	const Coefficient& d = g.divisor();
-        // TODO: This loop can be optimized more, if needed, exploiting the
-        // (possible) sparseness of g.
+        // TODO: If the variables in the expression that have coefficient 0
+        // have no effect on seq[i], this loop can be optimized using
+        // Linear_Expression::const_iterator.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -980,6 +987,9 @@ Box<ITV>::relation_with(const Generator& g) const {
   const Coefficient& g_divisor = g.divisor();
   PPL_DIRTY_TEMP0(mpq_class, g_coord);
   PPL_DIRTY_TEMP0(mpq_class, bound);
+  // TODO: If the variables in the expression that have coefficient 0
+  // have no effect on seq[i], this loop can be optimized using
+  // Linear_Expression::const_iterator.
   for (dimension_type i = g_space_dim; i-- > 0; ) {
     const ITV& seq_i = seq[i];
     if (seq_i.is_universe())
@@ -1105,6 +1115,8 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   PPL_DIRTY_TEMP(Coefficient, den);
   PPL_DIRTY_TEMP(Coefficient, lcm);
   PPL_DIRTY_TEMP(Coefficient, factor);
+  // TODO: Check if the following loop can be optimized to exploit the
+  // (possible) sparseness of expr.
   for (dimension_type i = space_dimension(); i-- > 0; ) {
     const ITV& seq_i = seq[i];
     switch (sgn(expr.coefficient(Variable(i))) * maximize_sign) {
