@@ -945,30 +945,33 @@ Box<ITV>::relation_with(const Generator& g) const {
 
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
-      // TODO: This loop can be optimized more, if needed, exploiting the
-      // (possible) sparseness of g.
-      for (dimension_type i = g_space_dim; i-- > 0; )
-	if (g.coefficient(Variable(i)) != 0 && !seq[i].is_universe())
+      const Linear_Expression& e = g.expression();
+      for (Linear_Expression::const_iterator i = e.begin(),
+            i_end = e.lower_bound(Variable(g_space_dim)); i != i_end; ++i)
+	if (!seq[i.variable().id()].is_universe())
 	  return Poly_Gen_Relation::nothing();
       return Poly_Gen_Relation::subsumes();
     }
     else {
       PPL_ASSERT(g.is_ray());
-      // TODO: This loop can be optimized more, if needed, exploiting the
-      // (possible) sparseness of g.
-      for (dimension_type i = g_space_dim; i-- > 0; )
-	switch (sgn(g.coefficient(Variable(i)))) {
+      const Linear_Expression& e = g.expression();
+      for (Linear_Expression::const_iterator i = e.begin(),
+            i_end = e.lower_bound(Variable(g_space_dim)); i != i_end; ++i) {
+        const Variable v = i.variable();
+	switch (sgn(*i)) {
 	case 1:
-	  if (!seq[i].upper_is_boundary_infinity())
+	  if (!seq[v.id()].upper_is_boundary_infinity())
 	    return Poly_Gen_Relation::nothing();
 	  break;
 	case 0:
+          PPL_ASSERT(false);
 	  break;
 	case -1:
-	  if (!seq[i].lower_is_boundary_infinity())
+	  if (!seq[v.id()].lower_is_boundary_infinity())
 	    return Poly_Gen_Relation::nothing();
 	  break;
 	}
+      }
       return Poly_Gen_Relation::subsumes();
     }
   }
