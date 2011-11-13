@@ -289,6 +289,11 @@ public:
   */
   virtual bool all_zeroes(const Variables_Set& vars) const = 0;
 
+  //! Returns true if there is a variable in [first,last) whose coefficient
+  //! is nonzero in both *this and x.
+  virtual bool have_a_common_variable(const Linear_Expression_Interface& x,
+                                      Variable first, Variable last) const = 0;
+
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.

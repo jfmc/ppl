@@ -594,6 +594,13 @@ Linear_Expression
   impl->modify_according_to_evolution(*x.impl, *y.impl);
 }
 
+inline bool
+Linear_Expression
+::have_a_common_variable(const Linear_Expression& x,
+                         Variable first, Variable last) const {
+  return impl->have_a_common_variable(*(x.impl), first, last);
+}
+
 inline
 Linear_Expression::const_iterator
 ::const_iterator()

@@ -773,6 +773,11 @@ private:
     const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
     Optimization_Mode optimization_mode) const;
 
+  //! Returns true if there is a variable in [first,last) whose coefficient
+  //! is nonzero in both *this and x.
+  bool have_a_common_variable(const Linear_Expression& x,
+                              Variable first, Variable last) const;
+
   template <typename Row>
   friend class Linear_Expression_Impl;
 

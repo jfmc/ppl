@@ -422,6 +422,11 @@ public:
   */
   virtual bool all_zeroes(const Variables_Set& vars) const;
 
+  //! Returns true if there is a variable in [first,last) whose coefficient
+  //! is nonzero in both *this and x.
+  virtual bool have_a_common_variable(const Linear_Expression_Interface& x,
+                                      Variable first, Variable last) const;
+
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
@@ -758,6 +763,13 @@ public:
                    Coefficient_traits::const_reference c1,
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
+
+  //! Returns true if there is a variable in [first,last) whose coefficient
+  //! is nonzero in both *this and x.
+  template <typename Row2>
+  bool have_a_common_variable(const Linear_Expression_Impl<Row2>& x,
+                              Variable first, Variable last) const;
+
 private:
 
   void construct(const Linear_Expression_Interface& e);

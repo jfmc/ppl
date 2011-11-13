@@ -1298,6 +1298,76 @@ Linear_Expression_Impl<Row>
 }
 
 template <>
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Dense_Row>& y,
+                         Variable first, Variable last) const {
+  const dimension_type start = first.space_dimension();
+  const dimension_type end = last.space_dimension();
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= row.size());
+  PPL_ASSERT(end <= y.row.size());
+  for (dimension_type i = start; i < end; ++i)
+    if (row[i] != 0 && y.row[i] != 0)
+      return true;
+  return false;
+}
+
+template <>
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Dense_Row>& y,
+                         Variable first, Variable last) const {
+  const dimension_type start = first.space_dimension();
+  const dimension_type end = last.space_dimension();
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= row.size());
+  PPL_ASSERT(end <= y.row.size());
+  for (Sparse_Row::const_iterator i = row.lower_bound(start),
+        i_end = row.lower_bound(end); i != i_end; ++i)
+    if (y.row[i.index()] != 0)
+      return true;
+  return false;
+}
+
+template <>
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Sparse_Row>& y,
+                         Variable first, Variable last) const {
+  return y.have_a_common_variable(*this, first, last);
+}
+
+template <>
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Sparse_Row>& y,
+                         Variable first, Variable last) const {
+  const dimension_type start = first.space_dimension();
+  const dimension_type end = last.space_dimension();
+  PPL_ASSERT(start <= end);
+  PPL_ASSERT(end <= row.size());
+  PPL_ASSERT(end <= y.row.size());
+  Sparse_Row::const_iterator i = row.lower_bound(start);
+  Sparse_Row::const_iterator i_end = row.lower_bound(end);
+  Sparse_Row::const_iterator j = y.row.lower_bound(start);
+  Sparse_Row::const_iterator j_end = y.row.lower_bound(end);
+  while (i != i_end && j != j_end) {
+    if (i.index() == j.index())
+      return true;
+    if (i.index() < j.index())
+      ++i;
+    else
+      ++j;
+  }
+  return false;
+}
+
+template <>
 bool
 Linear_Expression_Impl<Dense_Row>::is_unbounded_obj_function(
   const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
@@ -1665,6 +1735,22 @@ Linear_Expression_Impl<Row>
     return is_equal_to(*p, c1, c2, start, end);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
+  } else {
+    // Add implementations for new derived classes here.
+    PPL_ASSERT(false);
+    return 0;
+  }
+}
+
+template <typename Row>
+bool
+Linear_Expression_Impl<Row>
+::have_a_common_variable(const Linear_Expression_Interface& y,
+                         Variable first, Variable last) const {
+  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+    return have_a_common_variable(*p, first, last);
+  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+    return have_a_common_variable(*p, first, last);
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);
