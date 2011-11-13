@@ -905,17 +905,15 @@ Box<ITV>::relation_with(const Constraint& c) const {
     PPL_DIRTY_TEMP0(Rational_Interval, t);
     PPL_DIRTY_TEMP0(mpq_class, m);
     r = 0;
-    // TODO: This loop can be optimized more, if needed, exploiting the
-    // (possible) sparseness of c.
-    for (dimension_type i = c.space_dimension(); i-- > 0; ) {
-      const Coefficient& c_i = c.coefficient(Variable(i));
-      if (sgn(c_i) != 0) {
-        assign_r(m, c_i, ROUND_NOT_NEEDED);
-	// FIXME: an add_mul_assign() method would come handy here.
-	t.build(seq[i].lower_constraint(), seq[i].upper_constraint());
-	t *= m;
-	r += t;
-      }
+    const Linear_Expression& e = c.expression();
+    for (Linear_Expression::const_iterator i = e.begin(),
+            i_end = e.lower_bound(Variable(c.space_dimension())); i != i_end; ++i) {
+      assign_r(m, *i, ROUND_NOT_NEEDED);
+      const Variable v = i.variable();
+      // FIXME: an add_mul_assign() method would come handy here.
+      t.build(seq[v.id()].lower_constraint(), seq[v.id()].upper_constraint());
+      t *= m;
+      r += t;
     }
     return interval_relation(r,
 			     c.type(),
