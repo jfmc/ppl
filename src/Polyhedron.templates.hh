@@ -244,13 +244,14 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   for (Generator_System::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
+    const Linear_Expression& old_e = old_g.expression();
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
-    // TODO: This loop can be optimized more, if needed.
-    for (dimension_type j = space_dim; j-- > 0; ) {
-      if (old_g.coefficient(Variable(j)) != 0
-	  && pfunc_maps[j] != not_a_dimension()) {
-	e += Variable(pfunc_maps[j]) * old_g.coefficient(Variable(j));
+    for (Linear_Expression::const_iterator j = old_e.begin(),
+          j_end = old_e.lower_bound(Variable(space_dim)); j != j_end; ++j) {
+      const dimension_type mapped_id = pfunc_maps[j.variable().id()];
+      if (mapped_id != not_a_dimension()) {
+        add_mul_assign(e, *j, Variable(mapped_id));
 	all_zeroes = false;
       }
     }
