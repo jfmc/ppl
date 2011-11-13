@@ -1672,6 +1672,115 @@ Linear_Expression_Impl<Row>
   }
 }
 
+template <typename Row>
+Linear_Expression_Interface::const_iterator_interface*
+Linear_Expression_Impl<Row>::begin() const {
+  return new const_iterator(row, 1);
+}
+
+template <typename Row>
+Linear_Expression_Interface::const_iterator_interface*
+Linear_Expression_Impl<Row>::end() const {
+  return new const_iterator(row, row.size());
+}
+
+template <typename Row>
+Linear_Expression_Interface::const_iterator_interface*
+Linear_Expression_Impl<Row>::lower_bound(Variable v) const {
+  return new const_iterator(row, v.space_dimension());
+}
+
+template <typename Row>
+Linear_Expression_Impl<Row>::const_iterator
+::const_iterator(const Row& row1, dimension_type i)
+  : row(&row1), itr(row1.lower_bound(i)) {
+  skip_zeroes_forward();
+}
+
+template <typename Row>
+Linear_Expression_Interface::const_iterator_interface*
+Linear_Expression_Impl<Row>::const_iterator
+::clone() const {
+  return new const_iterator(*this);
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>::const_iterator
+::operator++() {
+  ++itr;
+  skip_zeroes_forward();
+}
+
+template <typename Row>
+void
+Linear_Expression_Impl<Row>::const_iterator
+::operator--() {
+  --itr;
+  skip_zeroes_backward();
+}
+
+template <typename Row>
+typename Linear_Expression_Impl<Row>::const_iterator::reference
+Linear_Expression_Impl<Row>::const_iterator
+::operator*() const {
+  return *itr;
+}
+
+template <typename Row>
+Variable
+Linear_Expression_Impl<Row>::const_iterator
+::variable() const {
+  const dimension_type i = itr.index();
+  PPL_ASSERT(i != 0);
+  return Variable(i - 1);
+}
+
+template <typename Row>
+bool
+Linear_Expression_Impl<Row>::const_iterator
+::operator==(const const_iterator_interface& x) const {
+  const const_iterator* p
+    = dynamic_cast<const const_iterator*>(&x);
+  // Comparing iterators belonging to different rows is forbidden.
+  PPL_ASSERT(p != 0);
+  PPL_ASSERT(row == p->row);
+  return itr == p->itr;
+}
+
+template <>
+void
+Linear_Expression_Impl<Dense_Row>::const_iterator
+::skip_zeroes_forward() {
+  while (itr != row->end() && *itr == 0)
+    ++itr;
+}
+
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>::const_iterator
+::skip_zeroes_forward() {
+  // Nothing to do.
+}
+
+template <>
+void
+Linear_Expression_Impl<Dense_Row>::const_iterator
+::skip_zeroes_backward() {
+  PPL_ASSERT(itr.index() > 0);
+  while (*itr == 0) {
+    PPL_ASSERT(itr.index() > 1);
+    --itr;
+  }
+}
+
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>::const_iterator
+::skip_zeroes_backward() {
+  // Nothing to do.
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Expression_Impl_templates_hh)

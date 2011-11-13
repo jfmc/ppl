@@ -49,6 +49,68 @@ class Parma_Polyhedra_Library::Linear_Expression_Interface {
 public:
   virtual ~Linear_Expression_Interface();
 
+  //! An interface for const iterators on the expression (homogeneous)
+  //! coefficients that are nonzero.
+  /*!
+    These iterators are invalidated by operations that modify the expression.
+  */
+  class const_iterator_interface {
+  public:
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef const Coefficient value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef Coefficient_traits::const_reference reference;
+
+    //! Returns a copy of *this.
+    //! This returns a pointer to dynamic-allocated memory. The caller has the
+    //! duty to free the memory when it's not needed anymore.
+    virtual const_iterator_interface* clone() const = 0;
+
+    virtual ~const_iterator_interface();
+
+    //! Navigates to the next nonzero coefficient.
+    //! Note that this method does *not* return a reference, to increase
+    //! efficiency since it's virtual.
+    virtual void operator++() = 0;
+
+    //! Navigates to the previous nonzero coefficient.
+    //! Note that this method does *not* return a reference, to increase
+    //! efficiency since it's virtual.
+    virtual void operator--() = 0;
+
+    //! Returns the current element.
+    virtual reference operator*() const = 0;
+
+    //! Returns the variable of the coefficient pointed to by \c *this.
+    /*!
+      \returns the variable of the coefficient pointed to by \c *this.
+    */
+    virtual Variable variable() const = 0;
+
+    //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
+    virtual bool operator==(const const_iterator_interface& x) const = 0;
+  };
+
+  //! This returns a pointer to dynamic-allocated memory. The caller has the
+  //! duty to free the memory when it's not needed anymore.
+  virtual const_iterator_interface* begin() const = 0;
+
+  //! This returns a pointer to dynamic-allocated memory. The caller has the
+  //! duty to free the memory when it's not needed anymore.
+  virtual const_iterator_interface* end() const = 0;
+
+  //! This returns a pointer to dynamic-allocated memory. The caller has the
+  //! duty to free the memory when it's not needed anymore.
+  //! Returns (a pointer to) an iterator that points to the first nonzero
+  //! coefficient of a variable greater than or equal to v, or at end if no
+  //! such coefficient exists.
+  virtual const_iterator_interface* lower_bound(Variable v) const = 0;
+
   //! Returns the dimension of the vector space enclosing \p *this.
   virtual dimension_type space_dimension() const = 0;
 

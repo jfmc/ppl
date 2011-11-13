@@ -594,6 +594,108 @@ Linear_Expression
   impl->modify_according_to_evolution(*x.impl, *y.impl);
 }
 
+inline
+Linear_Expression::const_iterator
+::const_iterator()
+  : itr(NULL) {
+}
+
+inline
+Linear_Expression::const_iterator
+::const_iterator(const const_iterator& x)
+  : itr(x.itr->clone()) {
+}
+
+inline
+Linear_Expression::const_iterator
+::~const_iterator() {
+  // Note that this does nothing if itr==NULL.
+  delete itr;
+}
+
+inline void
+Linear_Expression::const_iterator
+::swap(const_iterator& x) {
+  std::swap(itr, x.itr);
+}
+
+inline Linear_Expression::const_iterator&
+Linear_Expression::const_iterator
+::operator=(const const_iterator& itr) {
+  const_iterator tmp = itr;
+  swap(tmp);
+  return *this;
+}
+
+inline Linear_Expression::const_iterator&
+Linear_Expression::const_iterator
+::operator++() {
+  PPL_ASSERT(itr != NULL);
+  ++(*itr);
+  return *this;
+}
+
+inline Linear_Expression::const_iterator&
+Linear_Expression::const_iterator
+::operator--() {
+  PPL_ASSERT(itr != NULL);
+  --(*itr);
+  return *this;
+}
+
+inline Linear_Expression::const_iterator::reference
+Linear_Expression::const_iterator
+::operator*() const {
+  PPL_ASSERT(itr != NULL);
+  return *(*itr);
+}
+
+inline Variable
+Linear_Expression::const_iterator
+::variable() const {
+  PPL_ASSERT(itr != NULL);
+  return itr->variable();
+}
+
+inline bool
+Linear_Expression::const_iterator
+::operator==(const const_iterator& x) const {
+  PPL_ASSERT(itr != NULL);
+  PPL_ASSERT(x.itr != NULL);
+  return *itr == *(x.itr);
+}
+
+inline bool
+Linear_Expression::const_iterator
+::operator!=(const const_iterator& x) const {
+  return !(*this == x);
+}
+
+inline
+Linear_Expression::const_iterator
+::const_iterator(Linear_Expression_Interface::const_iterator_interface* itr)
+  : itr(itr) {
+  PPL_ASSERT(itr != NULL);
+}
+
+inline Linear_Expression::const_iterator
+Linear_Expression
+::begin() const {
+  return const_iterator(impl->begin());
+}
+
+inline Linear_Expression::const_iterator
+Linear_Expression
+::end() const {
+  return const_iterator(impl->end());
+}
+
+inline Linear_Expression::const_iterator
+Linear_Expression
+::lower_bound(Variable v) const {
+  return const_iterator(impl->lower_bound(v));
+}
+
 namespace IO_Operators {
   
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */

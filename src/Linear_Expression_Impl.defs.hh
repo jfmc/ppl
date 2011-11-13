@@ -173,6 +173,70 @@ public:
   */
   explicit Linear_Expression_Impl(const Congruence& cg);
 
+  //! An interface for const iterators on the expression (homogeneous)
+  //! coefficients that are nonzero.
+  /*!
+    These iterators are invalidated by operations that modify the expression.
+  */
+  class const_iterator: public const_iterator_interface {
+  public:
+    explicit const_iterator(const Row& row, dimension_type i);
+
+    //! Returns a copy of *this.
+    //! This returns a pointer to dynamic-allocated memory. The caller has the
+    //! duty to free the memory when it's not needed anymore.
+    virtual const_iterator_interface* clone() const;
+
+    //! Navigates to the next nonzero coefficient.
+    //! Note that this method does *not* return a reference, to increase
+    //! efficiency since it's virtual.
+    virtual void operator++();
+
+    //! Navigates to the previous nonzero coefficient.
+    //! Note that this method does *not* return a reference, to increase
+    //! efficiency since it's virtual.
+    virtual void operator--();
+
+    //! Returns the current element.
+    virtual reference operator*() const;
+
+    //! Returns the variable of the coefficient pointed to by \c *this.
+    /*!
+      \returns the variable of the coefficient pointed to by \c *this.
+    */
+    virtual Variable variable() const;
+
+    //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
+    virtual bool operator==(const const_iterator_interface& x) const;
+
+  private:
+
+    void skip_zeroes_forward();
+    void skip_zeroes_backward();
+
+    const Row* row;
+    typename Row::const_iterator itr;
+  };
+
+  //! This returns a pointer to dynamic-allocated memory. The caller has the
+  //! duty to free the memory when it's not needed anymore.
+  virtual const_iterator_interface* begin() const;
+
+  //! This returns a pointer to dynamic-allocated memory. The caller has the
+  //! duty to free the memory when it's not needed anymore.
+  virtual const_iterator_interface* end() const;
+
+  //! This returns a pointer to dynamic-allocated memory. The caller has the
+  //! duty to free the memory when it's not needed anymore.
+  //! Returns (a pointer to) an iterator that points to the first nonzero
+  //! coefficient of a variable greater than or equal to v, or at end if no
+  //! such coefficient exists.
+  virtual const_iterator_interface* lower_bound(Variable v) const;
+
   //! Returns the maximum space dimension a Linear_Expression_Impl can handle.
   static dimension_type max_space_dimension();
 

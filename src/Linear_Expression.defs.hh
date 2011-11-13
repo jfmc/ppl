@@ -362,6 +362,114 @@ public:
   */
   explicit Linear_Expression(const Congruence& cg);
 
+  //! A const %iterator on the expression (homogeneous) coefficient that are
+  //! nonzero.
+  /*!
+    These iterators are invalidated by operations that modify the expression.
+  */
+  class const_iterator {
+  private:
+  public:
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef const Coefficient value_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type* pointer;
+    typedef Coefficient_traits::const_reference reference;
+
+    //! Constructs an invalid const_iterator.
+    /*!
+      This constructor takes \f$O(1)\f$ time.
+    */
+    explicit const_iterator();
+
+    //! The copy constructor.
+    /*!
+      \param itr
+      The %iterator that will be copied.
+
+      This constructor takes \f$O(1)\f$ time.
+    */
+    const_iterator(const const_iterator& itr);
+
+    ~const_iterator();
+
+    //! Swaps itr with *this.
+    /*!
+      \param itr
+      The %iterator that will be swapped with *this.
+
+      This method takes \f$O(1)\f$ time.
+    */
+    void swap(const_iterator& itr);
+
+    //! Assigns \p itr to *this .
+    /*!
+      \param itr
+      The %iterator that will be assigned into *this.
+
+      This method takes \f$O(1)\f$ time.
+    */
+    const_iterator& operator=(const const_iterator& itr);
+
+    //! Navigates to the next nonzero coefficient.
+    /*!
+      This method takes \f$O(n)\f$ time for dense expressions, and
+      \f$O(1)\f$ time for sparse expressions.
+    */
+    const_iterator& operator++();
+
+    //! Navigates to the previous nonzero coefficient.
+    /*!
+      This method takes \f$O(n)\f$ time for dense expressions, and
+      \f$O(1)\f$ time for sparse expressions.
+    */
+    const_iterator& operator--();
+
+    //! Returns the current element.
+    reference operator*() const;
+
+    //! Returns the variable of the coefficient pointed to by \c *this.
+    /*!
+      \returns the variable of the coefficient pointed to by \c *this.
+    */
+    Variable variable() const;
+
+    //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
+    bool operator==(const const_iterator& x) const;
+
+    //! Compares \p *this with x .
+    /*!
+      \param x
+      The %iterator that will be compared with *this.
+    */
+    bool operator!=(const const_iterator& x) const;
+
+  private:
+    //! Constructor from a const_iterator_interface*.
+    //! The new object takes ownership of the dynamic object.
+    const_iterator(Linear_Expression_Interface::const_iterator_interface* itr);
+
+    Linear_Expression_Interface::const_iterator_interface* itr;
+
+    friend class Linear_Expression;
+  };
+
+  //! Returns an iterator that points to the first nonzero coefficient in the
+  //! expression.
+  const_iterator begin() const;
+
+  //! Returns an iterator that points to the last nonzero coefficient in the
+  //! expression.
+  const_iterator end() const;
+
+  //! Returns an iterator that points to the first nonzero coefficient of a
+  //! variable bigger than or equal to v.
+  const_iterator lower_bound(Variable v) const;
+
   //! Returns the maximum space dimension a Linear_Expression can handle.
   static dimension_type max_space_dimension();
 

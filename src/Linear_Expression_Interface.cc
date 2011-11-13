@@ -32,3 +32,8 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Linear_Expression_Interface::~Linear_Expression_Interface() {
   
 }
+
+PPL::Linear_Expression_Interface::const_iterator_interface
+::~const_iterator_interface() {
+
+}
