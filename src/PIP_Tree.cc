@@ -2256,20 +2256,24 @@ PIP_Solution_Node::update_tableau(
         if (constraint.is_strict_inequality())
           // Transform (expr > 0) into (expr - 1 >= 0).
           neg_assign(p_row[0], denom);
-      for (dimension_type i = 0, i_end = constraint.space_dimension();
-           i != i_end; ++i) {
-        const bool is_parameter = (1 == parameters.count(i));
-        Coefficient_traits::const_reference coeff_i
-          = constraint.coefficient(Variable(i));
-        if (coeff_i == 0) {
-          // Optimize computation below: only update p/v index.
-          if (is_parameter)
-            ++p_index;
-          else
-            ++v_index;
-          // Jump to next iteration.
-          continue;
+      dimension_type last_dim = 0;
+      const Linear_Expression& e = constraint.expression();
+      for (Linear_Expression::const_iterator
+          i = e.begin(), i_end = e.lower_bound(Variable(constraint.space_dimension()));
+          i != i_end; ++i) {
+        const dimension_type dim = i.variable().space_dimension();
+        if (dim != last_dim + 1) {
+          // We have skipped some zero coefficients.
+          // Update p_index and v_index accordingly.
+          dimension_type n = std::distance(parameters.lower_bound(last_dim),
+                                           parameters.lower_bound(dim - 1));
+          dimension_type num_skipped = dim - last_dim - 1;
+          p_index += n;
+          v_index += (num_skipped - n);
         }
+        PPL_ASSERT(p_index + v_index == i.variable().id() + 1);
+        const bool is_parameter = (1 == parameters.count(dim - 1));
+        Coefficient_traits::const_reference coeff_i = *i;
 
         if (is_parameter) {
           p_row.insert(p_index, coeff_i * denom);
@@ -2287,7 +2291,9 @@ PIP_Solution_Node::update_tableau(
           }
           ++v_index;
         }
-      }      
+
+        last_dim = dim;
+      }
     }
 
     if (row_sign(v_row, not_a_dimension()) == ZERO) {
