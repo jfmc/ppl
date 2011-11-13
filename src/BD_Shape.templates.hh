@@ -161,10 +161,11 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         if (g_i < 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
-      // TODO: This loop can be optimized more, if needed.
-      for (dimension_type j = space_dim; j > 0; --j)
-        if (g.expression().get(j) > 0)
-          assign_r(dbm_0[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+            i_end = g.expression().lower_bound(Variable(space_dim)); i != i_end; ++i)
+        if (*i > 0)
+          assign_r(dbm_0[i.variable().space_dimension()],
+                   PLUS_INFINITY, ROUND_NOT_NEEDED);
       break;
     default:
       // Points and closure points already dealt with.
