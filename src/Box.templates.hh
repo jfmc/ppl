@@ -570,20 +570,23 @@ Box<ITV>::bounds(const Linear_Expression& expr, const bool from_above) const {
   const int from_above_sign = from_above ? 1 : -1;
   // TODO: This loop can be optimized more, if needed, exploiting the
   // (possible) sparseness of expr.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    switch (sgn(expr.coefficient(Variable(i))) * from_above_sign) {
+  for (Linear_Expression::const_iterator i = expr.begin(),
+          i_end = expr.end(); i != i_end; ++i) {
+    const Variable v = i.variable();
+    switch (sgn(*i) * from_above_sign) {
     case 1:
-      if (seq[i].upper_is_boundary_infinity())
+      if (seq[v.id()].upper_is_boundary_infinity())
 	return false;
       break;
     case 0:
-      // Nothing to do.
+      PPL_ASSERT(false);
       break;
     case -1:
-      if (seq[i].lower_is_boundary_infinity())
+      if (seq[v.id()].lower_is_boundary_infinity())
 	return false;
       break;
     }
+  }
   return true;
 }
 
