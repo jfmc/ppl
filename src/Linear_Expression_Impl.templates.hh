@@ -368,6 +368,35 @@ Linear_Expression_Impl<Sparse_Row>
 }
 
 template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>
+::last_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  for (dimension_type i = last; i-- > first; )
+    if (row[i] != 0)
+      return i;
+
+  return last;
+}
+
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>
+::last_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  typename Sparse_Row::const_iterator itr1 = row.lower_bound(first);
+  typename Sparse_Row::const_iterator itr2 = row.lower_bound(last);
+
+  if (itr1 == itr2)
+    return last;
+
+  --itr2;
+  return itr2.index();
+}
+
+template <>
 void
 Linear_Expression_Impl<Dense_Row>
 ::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
@@ -816,28 +845,28 @@ Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference 
 template <typename Row>
 std::ostream&
 Linear_Expression_Impl<Row>::operator<<(std::ostream& s) const {
-  const dimension_type num_variables = space_dimension();
   PPL_DIRTY_TEMP_COEFFICIENT(ev);
   bool first = true;
-  for (dimension_type v = 0; v < num_variables; ++v) {
-    ev = row.get(v+1);
-    if (ev != 0) {
-      if (!first) {
-        if (ev > 0)
-          s << " + ";
-        else {
-          s << " - ";
-          neg_assign(ev);
-        }
+  for (typename Row::const_iterator i = row.lower_bound(1), i_end = row.end();
+       i != i_end; ++i) {
+    ev = *i;
+    if (ev == 0)
+      continue;
+    if (!first) {
+      if (ev > 0)
+        s << " + ";
+      else {
+        s << " - ";
+        neg_assign(ev);
       }
-      else
-        first = false;
-      if (ev == -1)
-        s << "-";
-      else if (ev != 1)
-        s << ev << "*";
-      IO_Operators::operator<<(s, Variable(v));
     }
+    else
+      first = false;
+    if (ev == -1)
+      s << "-";
+    else if (ev != 1)
+      s << ev << "*";
+    IO_Operators::operator<<(s, Variable(i.index() - 1));
   }
   // Inhomogeneous term.
   PPL_DIRTY_TEMP_COEFFICIENT(it);

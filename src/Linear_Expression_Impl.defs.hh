@@ -567,6 +567,13 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
+  //! Returns the index of the last nonzero element in [first,last), or last
+  //! if there are no nonzero elements.
+  virtual dimension_type last_nonzero(dimension_type first, dimension_type last) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
   //! Removes from the set x all the indexes of nonzero elements of *this.
   virtual void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
   

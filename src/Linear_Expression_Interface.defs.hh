@@ -400,10 +400,14 @@ public:
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   virtual dimension_type last_nonzero() const = 0;
-  
+
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
+  //! Returns the index of the last nonzero element in [first,last), or last
+  //! if there are no nonzero elements.
+  virtual dimension_type last_nonzero(dimension_type first, dimension_type last) const = 0;
+
   //! Returns the index of the first nonzero element, or \p last if there are no
   //! nonzero elements, considering only elements in [first,last).
   virtual dimension_type first_nonzero(dimension_type first, dimension_type last) const = 0;

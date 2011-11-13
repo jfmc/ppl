@@ -723,6 +723,10 @@ private:
   //! nonzero elements.
   dimension_type last_nonzero() const;
 
+  //! Returns the index of the last nonzero element in [first,last), or last
+  //! if there are no nonzero elements.
+  dimension_type last_nonzero(dimension_type first, dimension_type last) const;
+
   //! Returns the index of the first nonzero element, or \p last if there are no
   //! nonzero elements, considering only elements in [first,last).
   dimension_type first_nonzero(dimension_type first, dimension_type last) const;

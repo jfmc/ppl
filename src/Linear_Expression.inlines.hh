@@ -496,6 +496,12 @@ Linear_Expression
   return impl->first_nonzero(first, last);
 }
 
+inline dimension_type
+Linear_Expression
+::last_nonzero(dimension_type first, dimension_type last) const {
+  return impl->last_nonzero(first, last);
+}
+
 inline void
 Linear_Expression
 ::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
