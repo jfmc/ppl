@@ -796,16 +796,18 @@ PPL::MIP_Problem::process_pending_constraints() {
     Row::iterator itr = tableau_k.end();
 
     const Constraint& c = *(input_cs[i + first_pending_constraint]);
-    for (dimension_type sd = c.space_dimension(); sd-- > 0; ) {
-      Coefficient_traits::const_reference coeff_sd
-        = c.coefficient(Variable(sd));
-      if (coeff_sd != 0) {
-        itr = tableau_k.insert(itr, mapping[sd+1].first, coeff_sd);
-        // Split if needed.
-        if (mapping[sd+1].second != 0) {
-          itr = tableau_k.insert(itr, mapping[sd+1].second);
-          neg_assign(*itr, coeff_sd);
-        }
+    const Linear_Expression& c_e = c.expression();
+    for (Linear_Expression::const_iterator j = c_e.begin(),
+        j_end = c_e.lower_bound(Variable(c.space_dimension()));
+        j != j_end; ++j) {
+      Coefficient_traits::const_reference coeff_sd = *j;
+      const std::pair<dimension_type, dimension_type> mapped
+        = mapping[j.variable().space_dimension()];
+      itr = tableau_k.insert(itr, mapped.first, coeff_sd);
+      // Split if needed.
+      if (mapped.second != 0) {
+        itr = tableau_k.insert(itr, mapped.second);
+        neg_assign(*itr, coeff_sd);
       }
     }
     Coefficient_traits::const_reference inhomo
