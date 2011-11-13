@@ -1409,30 +1409,22 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(num);
   PPL_DIRTY_TEMP_COEFFICIENT(den);
   PPL_DIRTY_TEMP0(mpq_class, tmp);
-  Linear_Expression le = expr;
+  Coefficient c = expr.inhomogeneous_term();
 
   PPL_DIRTY_TEMP_COEFFICIENT(val_den);
   val_den = 1;
 
-  // TODO: This loop can be optimized more, if needed, exploiting the
-  // (possible) sparseness of le.
-  for (dimension_type i = space_dim; i-- > 0; ) {
-    const Variable v(i);
-    coeff = le.coefficient(v);
-    if (coeff == 0) {
-      continue;
-    }
-
-    const ITV& seq_i = seq[i];
+  for (Linear_Expression::const_iterator i = expr.begin(), i_end = expr.end();
+       i != i_end; ++i) {
+    const ITV& seq_i = seq[i.variable().id()];
     // Check if `v' is constant in the BD shape.
     if (seq_i.is_singleton()) {
       // If `v' is constant, replace it in `le' by the value.
       assign_r(tmp, seq_i.lower(), ROUND_NOT_NEEDED);
       num = tmp.get_num();
       den = tmp.get_den();
-      le -= coeff*v;
-      le *= den;
-      le += num*coeff;
+      c *= den;
+      c += num * val_den * (*i);
       val_den *= den;
       continue;
     }
@@ -1445,7 +1437,7 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   freq_d = 1;
 
   // Reduce `val_n' and `val_d'.
-  normalize2(le.inhomogeneous_term(), val_den, val_n, val_d);
+  normalize2(c, val_den, val_n, val_d);
   return true;
 }
 
