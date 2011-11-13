@@ -1695,9 +1695,9 @@ BD_Shape<T>::relation_with(const Generator& g) const {
         // We have one equality constraint: den*x - den*y = num.
         // Compute the scalar product.
         numer_denom(dbm_ij, num, den);
-        product = 0;
-        add_mul_assign(product, den, g_coeff_y);
-        add_mul_assign(product, -den, g_coeff_x);
+        product = g_coeff_y;
+        product -= g_coeff_x;
+        product *= den;
         if (!is_line_or_ray)
           add_mul_assign(product, num, g.divisor());
         if (product != 0)
@@ -1709,9 +1709,9 @@ BD_Shape<T>::relation_with(const Generator& g) const {
           // We have the binary inequality constraint: den*x - den*y <= num.
           // Compute the scalar product.
           numer_denom(dbm_ij, num, den);
-          product = 0;
-          add_mul_assign(product, den, g_coeff_y);
-          add_mul_assign(product, -den, g_coeff_x);
+          product = g_coeff_y;
+          product -= g_coeff_x;
+          product *= den;
           if (!is_line_or_ray)
             add_mul_assign(product, num, g.divisor());
           if (is_line) {
