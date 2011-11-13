@@ -140,7 +140,9 @@ merge_assign(Matrix<Row>& x, const Constraint_System& y,
     if (inhomogeneous_term != 0)
       itr = x_i.insert(0, inhomogeneous_term);
     // itr may still be end() but it can still be used as a hint.
-    // TODO: This code could be optimized more (if it's useful).
+    // TODO: This code could be optimized more (if it's expected that the
+    // size of `parameters' will be greater than the number of nonzero
+    // coefficients in y_i).
     for ( ; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
