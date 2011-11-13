@@ -587,6 +587,9 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   // TODO: Don't use the number of columns.
   const dimension_type num_cols
     = is_necessarily_closed() ? space_dimension() + 1 : space_dimension() + 2;
+  // TODO: Consider exploiting the row (possible) sparseness of rows in the
+  // following loop, if needed. It would probably make it more cache-efficient
+  // for dense rows, too.
   for (dimension_type j = num_cols; j-- > 0; )
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Search for the first row having a non-zero coefficient
