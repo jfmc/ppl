@@ -226,7 +226,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         mat_initialized = true;
         const Coefficient& d = g.divisor();
         // TODO: This can be optimized more, if needed, exploiting the
-        // (possible) sparseness of g.
+        // (possible) sparseness of g. Also consider if OR_Matrix should be
+        // sparse, too.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -255,7 +256,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         // valid values and we must compute maxima.
         const Coefficient& d = g.divisor();
         // TODO: This can be optimized more, if needed, exploiting the
-        // (possible) sparseness of g.
+        // (possible) sparseness of g. Also consider if OR_Matrix should be
+        // sparse, too.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -303,7 +305,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
     switch (g.type()) {
     case Generator::LINE:
         // TODO: This can be optimized more, if needed, exploiting the
-        // (possible) sparseness of g.
+        // (possible) sparseness of g. Also consider if OR_Matrix should be
+        // sparse, too.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
@@ -333,7 +336,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
       break;
     case Generator::RAY:
         // TODO: This can be optimized more, if needed, exploiting the
-        // (possible) sparseness of g.
+        // (possible) sparseness of g. Also consider if OR_Matrix should be
+        // sparse, too.
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
