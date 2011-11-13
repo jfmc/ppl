@@ -181,11 +181,10 @@ Box<ITV>::Box(const Generator_System& gs)
     const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
-      // TODO: This loop can be optimized more, if needed, exploiting the
-      // (possible) sparseness of g.
-      for (dimension_type i = space_dim; i-- > 0; )
-	if (g.coefficient(Variable(i)) != 0)
-	  seq[i].assign(UNIVERSE);
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+              i_end = g.expression().lower_bound(Variable(space_dim));
+              i != i_end; ++i)
+	  seq[i.variable().id()].assign(UNIVERSE);
       break;
     case Generator::RAY:
       // TODO: This loop can be optimized more, if needed, exploiting the
