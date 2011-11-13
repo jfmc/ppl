@@ -187,17 +187,18 @@ Box<ITV>::Box(const Generator_System& gs)
 	  seq[i.variable().id()].assign(UNIVERSE);
       break;
     case Generator::RAY:
-      // TODO: This loop can be optimized more, if needed, exploiting the
-      // (possible) sparseness of g.
-      for (dimension_type i = space_dim; i-- > 0; )
-	switch (sgn(g.coefficient(Variable(i)))) {
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+              i_end = g.expression().lower_bound(Variable(space_dim));
+              i != i_end; ++i)
+	switch (sgn(*i)) {
 	case 1:
-	  seq[i].upper_extend();
+	  seq[i.variable().id()].upper_extend();
 	  break;
 	case -1:
-	  seq[i].lower_extend();
+	  seq[i.variable().id()].lower_extend();
 	  break;
 	default:
+          PPL_ASSERT(false);
 	  break;
 	}
       break;
