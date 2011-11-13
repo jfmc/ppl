@@ -2063,21 +2063,32 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
         || is_saturated(*(input_cs[i]), last_generator))
       satisfiable_constraints[i] = true;
 
-  dimension_type current_num_appearances = 0;
   dimension_type winning_num_appearances = 0;
+
+  std::vector<dimension_type>
+    num_appearances(candidate_variables.space_dimension(), 0);
 
   // For every candidate variable, check how many times this appear in the
   // active constraints.
+  for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
+    if (!satisfiable_constraints[i])
+      continue;
+    // TODO: This can be optimized more, exploiting the (possible)
+    // sparseness of input_cs, if the size of candidate_variables is expected
+    // to be greater than the number of nonzeroes of most rows.
+    for (Variables_Set::const_iterator v_it = candidate_variables.begin(),
+            v_end = candidate_variables.end(); v_it != v_end; ++v_it) {
+      if (*v_it >= input_cs[i]->space_dimension())
+        break;
+      if (input_cs[i]->coefficient(Variable(*v_it)) != 0)
+        ++num_appearances[*v_it];
+    }
+  }
   for (Variables_Set::const_iterator v_it = candidate_variables.begin(),
          v_end = candidate_variables.end(); v_it != v_end; ++v_it) {
-    current_num_appearances = 0;
-    for (dimension_type i = input_cs_num_rows; i-- > 0; )
-      if (satisfiable_constraints[i]
-          && *v_it < input_cs[i]->space_dimension()
-          && input_cs[i]->coefficient(Variable(*v_it)) != 0)
-        ++current_num_appearances;
-    if (current_num_appearances >= winning_num_appearances) {
-      winning_num_appearances = current_num_appearances;
+    const dimension_type n = num_appearances[*v_it];
+    if (n >= winning_num_appearances) {
+      winning_num_appearances = n;
       branching_index = *v_it;
     }
   }
