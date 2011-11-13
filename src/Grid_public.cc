@@ -2098,11 +2098,9 @@ generalized_affine_image(const Linear_Expression& lhs,
     if (marked_empty())
       return;
 
-    // TODO: This loop can be optimized more, if needed, exploiting the
-    // (possible) sparseness of lhs.
-    for (dimension_type i = space_dim; i-- > 0; )
-      if (lhs.coefficient(Variable(i)) != 0)
-	add_grid_generator(grid_line(Variable(i)));
+    for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
+          i != i_end; ++i)
+      add_grid_generator(grid_line(i.variable()));
 
     PPL_ASSERT(OK());
     return;
@@ -2226,11 +2224,9 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     if (marked_empty())
       return;
 
-    // TODO: This can be optimized more, if needed, exploiting the (possible)
-    // sparseness of lhs.
-    for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
-      if (lhs.coefficient(Variable(i)) != 0)
-	add_grid_generator(grid_line(Variable(i)));
+    for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
+          i != i_end; ++i)
+      add_grid_generator(grid_line(i.variable()));
 
     PPL_ASSERT(OK());
     return;
