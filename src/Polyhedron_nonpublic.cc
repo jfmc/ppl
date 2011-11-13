@@ -1306,13 +1306,13 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (gs[i].is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      Bit_Row sat_gi(sat[i], sat_all_but_strict_ineq);
+      Bit_Row sat_gs_i(sat[i], sat_all_but_strict_ineq);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
       for (dimension_type j = n_lines; j < gs_rows; ++j)
-	if (i != j && gs[j].is_point() && subset_or_equal(sat[j], sat_gi)) {
+	if (i != j && gs[j].is_point() && subset_or_equal(sat[j], sat_gs_i)) {
 	  // Point `gs[i]' is eps-redundant:
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' consistent.
@@ -1326,11 +1326,11 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	}
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	Generator& gi = gs[i];
-	if (gi[eps_index] != gi[0]) {
-	  gi[eps_index] = gi[0];
+	Generator& gs_i = gs[i];
+	if (gs_i[eps_index] != gs_i[0]) {
+	  gs_i[eps_index] = gs_i[0];
 	  // Enforce normalization.
-	  gi.normalize();
+	  gs_i.normalize();
 	  changed = true;
 	}
 	// Consider next generator.

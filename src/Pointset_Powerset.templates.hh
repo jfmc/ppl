@@ -982,20 +982,21 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   best_sup_n = 0;
   best_sup_d = 1;
   bool best_max = 0;
-  Generator gt = point();
+  Generator best_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
   iter_sup_n = 0;
   iter_sup_d = 1;
   bool iter_max = 0;
-  Generator gi = point();
+  Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().maximize(expr, iter_sup_n, iter_sup_d, iter_max, gi))
+    if (!si->pointset().maximize(expr,
+                                 iter_sup_n, iter_sup_d, iter_max, iter_g))
       return false;
     else
       if (first) {
@@ -1003,7 +1004,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
         best_sup_n = iter_sup_n;
         best_sup_d = iter_sup_d;
         best_max = iter_max;
-        gt = gi;
+        best_g = iter_g;
       }
       else {
         tmp = (best_sup_n * iter_sup_d) - (iter_sup_n * best_sup_d);
@@ -1011,18 +1012,18 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_sup_n = iter_sup_n;
           best_sup_d = iter_sup_d;
           best_max = iter_max;
-          gt = gi;
+          best_g = iter_g;
         }
         else if (tmp == 0) {
           best_max = best_max || iter_max;
-          gt = gi;
+          best_g = iter_g;
         }
       }
   }
   sup_n = best_sup_n;
   sup_d = best_sup_d;
   maximum = best_max;
-  g = gt;
+  g = best_g;
   return true;
 }
 
@@ -1100,20 +1101,21 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   best_inf_n = 0;
   best_inf_d = 1;
   bool best_min = 0;
-  Generator gt = point();
+  Generator best_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
   iter_inf_n = 0;
   iter_inf_d = 1;
   bool iter_min = 0;
-  Generator gi = point();
+  Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().minimize(expr, iter_inf_n, iter_inf_d, iter_min, gi))
+    if (!si->pointset().minimize(expr,
+                                 iter_inf_n, iter_inf_d, iter_min, iter_g))
       return false;
     else
       if (first) {
@@ -1121,7 +1123,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
         best_inf_n = iter_inf_n;
         best_inf_d = iter_inf_d;
         best_min = iter_min;
-        gt = gi;
+        best_g = iter_g;
       }
       else {
         tmp = (best_inf_n * iter_inf_d) - (iter_inf_n * best_inf_d);
@@ -1129,18 +1131,18 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_inf_n = iter_inf_n;
           best_inf_d = iter_inf_d;
           best_min = iter_min;
-          gt = gi;
+          best_g = iter_g;
         }
         else if (tmp == 0) {
           best_min = best_min || iter_min;
-          gt = gi;
+          best_g = iter_g;
         }
       }
   }
   inf_n = best_inf_n;
   inf_d = best_inf_d;
   minimum = best_min;
-  g = gt;
+  g = best_g;
   return true;
 }
 
