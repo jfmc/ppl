@@ -3588,60 +3588,61 @@ BD_Shape<T>::refine(const Variable var,
       assign_r(sum, sc_b, ROUND_UP);
       assign_r(neg_sum, minus_sc_b, ROUND_UP);
 
-      // TODO: This loop can be optimized more, if needed.
       // Approximate the homogeneous part of `sc_expr'.
       // Note: indices above `w' can be disregarded, as they all have
       // a zero coefficient in `expr'.
-      for (dimension_type i = w; i > 0; --i) {
-        const Coefficient& sc_i = sc_expr.get(i);
+      for (Linear_Expression::const_iterator i = sc_expr.begin(),
+            i_end = sc_expr.lower_bound(Variable(w)); i != i_end; ++i) {
+        const dimension_type i_dim = i.variable().space_dimension();
+        const Coefficient& sc_i = *i;
         const int sign_i = sgn(sc_i);
-        if (sign_i == 0)
-          continue;
+        PPL_ASSERT(sign_i != 0);
         if (sign_i > 0) {
           assign_r(coeff_i, sc_i, ROUND_UP);
           // Approximating `sc_expr'.
           if (pinf_count <= 1) {
-            const N& approx_i = dbm_0[i];
+            const N& approx_i = dbm_0[i_dim];
             if (!is_plus_infinity(approx_i))
               add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
             else {
               ++pinf_count;
-              pinf_index = i;
+              pinf_index = i_dim;
             }
           }
           // Approximating `-sc_expr'.
           if (neg_pinf_count <= 1) {
-            const N& approx_minus_i = dbm[i][0];
+            const N& approx_minus_i = dbm[i_dim][0];
             if (!is_plus_infinity(approx_minus_i))
               add_mul_assign_r(neg_sum, coeff_i, approx_minus_i, ROUND_UP);
             else {
               ++neg_pinf_count;
-              neg_pinf_index = i;
+              neg_pinf_index = i_dim;
             }
           }
         }
-        else if (sign_i < 0) {
+        else {
+          PPL_ASSERT(sign_i < 0);
           neg_assign(minus_sc_i, sc_i);
           // Note: using temporary named `coeff_i' to store -coeff_i.
           assign_r(coeff_i, minus_sc_i, ROUND_UP);
           // Approximating `sc_expr'.
           if (pinf_count <= 1) {
-            const N& approx_minus_i = dbm[i][0];
+            const N& approx_minus_i = dbm[i_dim][0];
             if (!is_plus_infinity(approx_minus_i))
               add_mul_assign_r(sum, coeff_i, approx_minus_i, ROUND_UP);
             else {
               ++pinf_count;
-              pinf_index = i;
+              pinf_index = i_dim;
             }
           }
           // Approximating `-sc_expr'.
           if (neg_pinf_count <= 1) {
-            const N& approx_i = dbm_0[i];
+            const N& approx_i = dbm_0[i_dim];
             if (!is_plus_infinity(approx_i))
               add_mul_assign_r(neg_sum, coeff_i, approx_i, ROUND_UP);
             else {
               ++neg_pinf_count;
-              neg_pinf_index = i;
+              neg_pinf_index = i_dim;
             }
           }
         }
