@@ -809,17 +809,15 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   PPL_DIRTY_TEMP0(Rational_Interval, t);
   PPL_DIRTY_TEMP0(mpq_class, m);
   r = 0;
-  // TODO: This loop can be optimized more, if needed, exploiting the
-  // (possible) sparseness of cg.
-  for (dimension_type i = cg.space_dimension(); i-- > 0; ) {
-    const Coefficient& cg_i = cg.coefficient(Variable(i));
-    if (sgn(cg_i) != 0) {
-      assign_r(m, cg_i, ROUND_NOT_NEEDED);
-      // FIXME: an add_mul_assign() method would come handy here.
-      t.build(seq[i].lower_constraint(), seq[i].upper_constraint());
-      t *= m;
-      r += t;
-    }
+  for (Linear_Expression::const_iterator i = cg.expression().begin(),
+      i_end = cg.expression().lower_bound(Variable(cg.space_dimension())); i != i_end; ++i) {
+    const Coefficient& cg_i = *i;
+    const Variable v = i.variable();
+    assign_r(m, cg_i, ROUND_NOT_NEEDED);
+    // FIXME: an add_mul_assign() method would come handy here.
+    t.build(seq[v.id()].lower_constraint(), seq[v.id()].upper_constraint());
+    t *= m;
+    r += t;
   }
 
   if (r.lower_is_boundary_infinity() || r.upper_is_boundary_infinity())
