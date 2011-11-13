@@ -177,14 +177,12 @@ fill_constraint_systems_MS(const Constraint_System& cs,
       sub_mul_assign(y_le, b_i, vy);
       sub_mul_assign(z_le, b_i, vz);
     }
-    // TODO: This can be optimized more, if needed, exploiting the (possible)
-    // sparseness of c_i.
-    for (dimension_type j = 2*n; j-- > 0; ) {
-      Coefficient_traits::const_reference a_i_j = c_i.coefficient(Variable(j));
-      if (a_i_j != 0) {
-        add_mul_assign(y_les[j], a_i_j, vy);
-        add_mul_assign(z_les[j], a_i_j, vz);
-      }
+    for (Linear_Expression::const_iterator j = c_i.expression().begin(),
+          j_end = c_i.expression().lower_bound(Variable(2*n)); j != j_end; ++j) {
+      Coefficient_traits::const_reference a_i_j = *j;
+      const Variable v = j.variable();
+      add_mul_assign(y_les[v.id()], a_i_j, vy);
+      add_mul_assign(z_les[v.id()], a_i_j, vz);
     }
   }
   z_le += Variable(z);
