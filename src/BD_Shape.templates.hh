@@ -3771,19 +3771,19 @@ BD_Shape<T>::refine(const Variable var,
     // Approximate the inhomogeneous term.
     assign_r(sum, minus_sc_b, ROUND_UP);
 
-    // TODO: This loop can be optimized more, if needed.
     // Approximate the homogeneous part of `-sc_expr'.
-    for (dimension_type i = w; i > 0; --i) {
-      const Coefficient& sc_i = sc_expr.get(i);
+    for (Linear_Expression::const_iterator i = sc_expr.begin(),
+          i_end = sc_expr.lower_bound(Variable(w)); i != i_end; ++i) {
+      const Coefficient& sc_i = *i;
+      const dimension_type i_dim = i.variable().space_dimension();
       const int sign_i = sgn(sc_i);
-      if (sign_i == 0)
-        continue;
+      PPL_ASSERT(sign_i != 0);
       // Choose carefully: we are approximating `-sc_expr'.
-      const N& approx_i = (sign_i > 0) ? dbm[i][0] : dbm_0[i];
+      const N& approx_i = (sign_i > 0) ? dbm[i_dim][0] : dbm_0[i_dim];
       if (is_plus_infinity(approx_i)) {
         if (++pinf_count > 1)
           break;
-        pinf_index = i;
+        pinf_index = i_dim;
         continue;
       }
       if (sign_i > 0)
