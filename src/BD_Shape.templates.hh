@@ -814,21 +814,17 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   // Boolean to keep track of a variable `v' in expression `le'.
   // If we can replace `v' by an expression using variables other
   // than `v' and are already in `le', then this is set to true.
-  bool constant_v = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(val_den);
   val_den = 1;
 
-  // TODO: This loop can probably be optimized a lot using
-  // Linear_Expression::const_iterator.
+  // TODO: This loop can be optimized more, if needed, exploiting the
+  // (possible) sparseness of le.
   for (dimension_type i = dbm.num_rows(); i-- > 1; ) {
-    constant_v = false;
     const Variable v(i-1);
     coeff = le.coefficient(v);
-    if (coeff == 0) {
-      constant_v = true;
+    if (coeff == 0)
       continue;
-    }
 
     const DB_Row<N>& dbm_i = dbm[i];
     // Check if `v' is constant in the BD shape.
@@ -836,30 +832,30 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
     if (is_additive_inverse(dbm[0][i], tmp)) {
       // If `v' is constant, replace it in `le' by the value.
       numer_denom(tmp, num, den);
-      le -= coeff*v;
+      sub_mul_assign(le, coeff, v);
       le *= den;
       le -= num*coeff;
       val_den *= den;
-      constant_v = true;
       continue;
     }
     // Check the bounded differences with the other dimensions that
     // have non-zero coefficient in `le'.
     else {
-      PPL_ASSERT(!constant_v);
-      // TODO: This loop can be optimized more, if needed.
-      for (dimension_type j = i; j-- > 1; ) {
-        const Variable vj(j-1);
-        if (le.coefficient(vj) == 0)
-          // The coefficient in `le' is 0, so do nothing.
-          continue;
-        assign_r(tmp, dbm_i[j], ROUND_NOT_NEEDED);
-        if (is_additive_inverse(dbm[j][i], tmp)) {
+      bool constant_v = false;
+      for (Linear_Expression::const_iterator j = le.begin(),
+            j_end = le.lower_bound(Variable(i - 1)); j != j_end; ++j) {
+        const Variable vj = j.variable();
+        const dimension_type j_dim = vj.space_dimension();
+        assign_r(tmp, dbm_i[j_dim], ROUND_NOT_NEEDED);
+        if (is_additive_inverse(dbm[j_dim][i], tmp)) {
           // The coefficient for `vj' in `le' is not 0
           // and the difference with `v' in the BD shape is constant.
           // So apply this equality to eliminate `v' in `le'.
           numer_denom(tmp, num, den);
-          le -= coeff*v - coeff*vj;
+          // Modifying le invalidates the iterators, but it's not a problem
+          // since we are going to exit the loop.
+          sub_mul_assign(le, coeff, v);
+          add_mul_assign(le, coeff, vj);
           le *= den;
           le -= num*coeff;
           val_den *= den;
@@ -872,9 +868,6 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
         return false;
     }
   }
-  if (!constant_v)
-    // The expression `expr' is not constant.
-    return false;
 
   // The expression `expr' is constant.
   freq_n = 0;
