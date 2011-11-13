@@ -1,4 +1,4 @@
-TOTAL_COUNT	593634
+TOTAL_COUNT	593644
 a	5311
 ab	1
 abandon	18
@@ -60,12 +60,12 @@ additive	28
 address	1
 addressed	1
 adds	125
-adj	4
 adjacency	3
 adjacent	10
 adjust	56
 adjusted	37
 adjusting	7
+adjustment	6
 adjusts	3
 admitted	8
 adopt	1
@@ -3148,6 +3148,7 @@ sqrt	79
 square	39
 squared	7
 squareness	2
+squares	5
 sr	4
 src	57
 srl	361
@@ -3588,6 +3589,7 @@ vanish	5
 var	1994
 variable	1506
 variables	702
+variance	3
 variant	6
 variants	2
 variation	1
