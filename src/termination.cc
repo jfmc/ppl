@@ -689,7 +689,7 @@ Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_
   if (!mip.is_satisfiable())
     return false;
 
-  Generator fp = mip.feasible_point();
+  const Generator& fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
 
   // u_3 corresponds to space dimensions 0, ..., s - 1.
@@ -738,7 +738,7 @@ Termination_Helpers::one_affine_ranking_function_PR_original(const Constraint_Sy
   if (!mip.is_satisfiable())
     return false;
 
-  Generator fp = mip.feasible_point();
+  const Generator& fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
   Linear_Expression le;
   // mu_0 is zero: do this first to avoid reallocations.
