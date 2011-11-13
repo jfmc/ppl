@@ -215,7 +215,7 @@ struct Is_Same<T, T> : public True {
 
   template <typename T> struct B : public B_Base;
   \endcode
-  This enables us to enquire
+  This enables us to inquire
   <CODE>Is_Same_Or_Derived<B_Base, Type>:: anonymous_enum:: value</CODE>.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

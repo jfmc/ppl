@@ -33,11 +33,11 @@ namespace Parma_Polyhedra_Library {
 inline void
 normalize2(Coefficient_traits::const_reference x,
 	   Coefficient_traits::const_reference y,
-	   Coefficient& nx, Coefficient& ny) {
+	   Coefficient& n_x, Coefficient& n_y) {
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd_assign(gcd, x, y);
-  exact_div_assign(nx, x, gcd);
-  exact_div_assign(ny, y, gcd);
+  exact_div_assign(n_x, x, gcd);
+  exact_div_assign(n_y, y, gcd);
 }
 
 template <typename T>
@@ -50,14 +50,14 @@ low_bits_mask(const unsigned n) {
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 numer_denom(const T& from,
-	    Coefficient& num, Coefficient& den) {
+	    Coefficient& numer, Coefficient& denom) {
   PPL_ASSERT(!is_not_a_number(from)
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   PPL_DIRTY_TEMP(mpq_class, q);
   assign_r(q, from, ROUND_NOT_NEEDED);
-  num = q.get_num();
-  den = q.get_den();
+  numer = q.get_num();
+  denom = q.get_den();
 }
 
 template <typename T>
@@ -65,14 +65,14 @@ inline typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 div_round_up(T& to,
 	     Coefficient_traits::const_reference x,
 	     Coefficient_traits::const_reference y) {
-  PPL_DIRTY_TEMP(mpq_class, qx);
-  PPL_DIRTY_TEMP(mpq_class, qy);
+  PPL_DIRTY_TEMP(mpq_class, q_x);
+  PPL_DIRTY_TEMP(mpq_class, q_y);
   // Note: this code assumes that a Coefficient is always convertible
   // to an mpq_class without loss of precision.
-  assign_r(qx, x, ROUND_NOT_NEEDED);
-  assign_r(qy, y, ROUND_NOT_NEEDED);
-  div_assign_r(qx, qx, qy, ROUND_NOT_NEEDED);
-  assign_r(to, qx, ROUND_UP);
+  assign_r(q_x, x, ROUND_NOT_NEEDED);
+  assign_r(q_y, y, ROUND_NOT_NEEDED);
+  div_assign_r(q_x, q_x, q_y, ROUND_NOT_NEEDED);
+  assign_r(to, q_x, ROUND_UP);
 }
 
 template <typename N>

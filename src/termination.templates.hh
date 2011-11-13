@@ -61,7 +61,7 @@ static dimension_type output_function_MS_m;
 static int output_function_MS_which = -1;
 
 /*
-  Debuggin output function.  See the documentation of
+  Debugging output function.  See the documentation of
   fill_constraint_systems_MS() for the allocation of variable indices.
 */
 inline void
@@ -120,7 +120,7 @@ static dimension_type output_function_PR_s;
 static dimension_type output_function_PR_r;
 
 /*
-  Debuggin output function.  See the documentation of
+  Debugging output function.  See the documentation of
   fill_constraint_system_PR() for the allocation of variable indices.
 */
 inline void

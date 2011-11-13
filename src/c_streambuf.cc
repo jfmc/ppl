@@ -29,21 +29,21 @@ namespace Parma_Polyhedra_Library {
 c_streambuf::int_type
 c_streambuf::uflow() {
   int_type c = underflow();
-  nextc_buf = traits_type::eof();
+  next_char_buf = traits_type::eof();
   return c;
 }
 
 c_streambuf::int_type
 c_streambuf::underflow() {
   const int_type eof = traits_type::eof();
-  if (traits_type::eq_int_type(nextc_buf, eof)) {
+  if (traits_type::eq_int_type(next_char_buf, eof)) {
     char buf;
     if (cb_read(&buf, 1) == 1)
-      nextc_buf = buf;
+      next_char_buf = buf;
     else
-      nextc_buf = eof;
+      next_char_buf = eof;
   }
-  return nextc_buf;
+  return next_char_buf;
 }
 
 std::streamsize
@@ -52,26 +52,26 @@ c_streambuf::xsgetn(char_type* s, std::streamsize n) {
     return n;
   const int_type eof = traits_type::eof();
   int a;
-  if (traits_type::eq_int_type(nextc_buf, eof))
+  if (traits_type::eq_int_type(next_char_buf, eof))
     a = 0;
   else {
-    s[0] = static_cast<char_type>(nextc_buf);
+    s[0] = static_cast<char_type>(next_char_buf);
     a = 1;
   }
   std::streamsize r = cb_read(s + a, n - a) + a;
   if (r > 0)
-    ungetc_buf = traits_type::to_int_type(s[r - 1]);
+    unget_char_buf = traits_type::to_int_type(s[r - 1]);
   else
-    ungetc_buf = traits_type::eof();
+    unget_char_buf = traits_type::eof();
   return r;
 }
 
 c_streambuf::int_type
 c_streambuf::pbackfail(int_type c) {
   const int_type eof = traits_type::eof();
-  nextc_buf = traits_type::eq_int_type(c, eof) ? ungetc_buf : c;
-  ungetc_buf = eof;
-  return nextc_buf;
+  next_char_buf = traits_type::eq_int_type(c, eof) ? unget_char_buf : c;
+  unget_char_buf = eof;
+  return next_char_buf;
 }
 
 std::streamsize

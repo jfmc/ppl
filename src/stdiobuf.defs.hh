@@ -103,7 +103,7 @@ private:
   FILE* fp;
 
   //! Buffer for the last character read.
-  int_type ungetc_buf;
+  int_type unget_char_buf;
 };
 
 #include "stdiobuf.inlines.hh"

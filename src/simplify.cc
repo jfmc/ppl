@@ -193,9 +193,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // a sufficient condition for identifying redundant inequalities).
   // Let
   //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_points[i];
-  //   dim_lin_space = num_irred_lines;
+  //   dim_lin_space = num_irredundant_lines;
   //   dim_ray_space
-  //     = dim_vector_space - num_irred_equalities - dim_lin_space
+  //     = dim_vector_space - num_irredundant_equalities - dim_lin_space
   //     = num_columns - 1 - num_lines_or_equalities - dim_lin_space;
   //   min_sat_rays_or_points = dim_ray_space.
   //

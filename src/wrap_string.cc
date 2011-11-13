@@ -37,19 +37,19 @@ wrap_string(const std::string& src_string,
   std::string dst_string;
   const char *src = src_string.c_str();
   for (int line = 0; ; ++line) {
-    int linelen = ((line == 0)
-                   ? preferred_first_line_length
-                   : preferred_line_length);
+    int line_length = ((line == 0)
+                       ? preferred_first_line_length
+                       : preferred_line_length);
     int last_comma = -1;
     int last_space = -1;
     int split_pos = -1;
     int i;
-    for (i = 0; i <= linelen; ++i) {
+    for (i = 0; i <= line_length; ++i) {
       if (src[i] == '\0' || src[i] == '\n') {
 	split_pos = i;
 	break;
       }
-      if (src[i] == ',' && i < linelen)
+      if (src[i] == ',' && i < line_length)
 	last_comma = i;
       if (isspace(src[i]) && (i == 0 || !isspace(src[i-1])))
 	last_space = i;

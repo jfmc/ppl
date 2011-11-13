@@ -102,10 +102,10 @@ private:
   typedef traits_type::int_type int_type;
 
   //! Buffer for the last character read.
-  int_type ungetc_buf;
+  int_type unget_char_buf;
 
   //! Buffer for next character
-  int_type nextc_buf;
+  int_type next_char_buf;
 
   virtual size_t cb_read(char *, size_t) {
     return 0;

@@ -261,10 +261,10 @@ wrap_assign(PSET& pointset,
   // this delay does not negatively affect precision.
   Constraint_System full_range_bounds;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(ln);
-  PPL_DIRTY_TEMP_COEFFICIENT(ld);
-  PPL_DIRTY_TEMP_COEFFICIENT(un);
-  PPL_DIRTY_TEMP_COEFFICIENT(ud);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(l_d);
+  PPL_DIRTY_TEMP_COEFFICIENT(u_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(u_d);
 
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars_end; ++i) {
@@ -273,7 +273,7 @@ wrap_assign(PSET& pointset,
 
     bool extremum;
 
-    if (!pointset.minimize(x, ln, ld, extremum)) {
+    if (!pointset.minimize(x, l_n, l_d, extremum)) {
     set_full_range:
       pointset.unconstrain(x);
       full_range_bounds.insert(min_value <= x);
@@ -281,17 +281,17 @@ wrap_assign(PSET& pointset,
       continue;
     }
 
-    if (!pointset.maximize(x, un, ud, extremum))
+    if (!pointset.maximize(x, u_n, u_d, extremum))
       goto set_full_range;
 
-    div_assign_r(ln, ln, ld, ROUND_DOWN);
-    div_assign_r(un, un, ud, ROUND_DOWN);
-    ln -= min_value;
-    un -= min_value;
-    div_2exp_assign_r(ln, ln, w, ROUND_DOWN);
-    div_2exp_assign_r(un, un, w, ROUND_DOWN);
-    Coefficient& first_quadrant = ln;
-    Coefficient& last_quadrant = un;
+    div_assign_r(l_n, l_n, l_d, ROUND_DOWN);
+    div_assign_r(u_n, u_n, u_d, ROUND_DOWN);
+    l_n -= min_value;
+    u_n -= min_value;
+    div_2exp_assign_r(l_n, l_n, w, ROUND_DOWN);
+    div_2exp_assign_r(u_n, u_n, w, ROUND_DOWN);
+    Coefficient& first_quadrant = l_n;
+    Coefficient& last_quadrant = u_n;
 
     // Special case: this variable does not need wrapping.
     if (first_quadrant == 0 && last_quadrant == 0)
@@ -309,7 +309,7 @@ wrap_assign(PSET& pointset,
     if (o == OVERFLOW_UNDEFINED || collective_wrap_too_complex)
       goto set_full_range;
 
-    Coefficient& quadrants = ud;
+    Coefficient& quadrants = u_d;
     quadrants = last_quadrant - first_quadrant + 1;
 
     unsigned extension;
@@ -326,7 +326,9 @@ wrap_assign(PSET& pointset,
       if (collective_wrap_too_complex) {
         // Set all the dimensions in `translations' to full range.
         for (Wrap_Translations::const_iterator j = translations.begin(),
-               tend = translations.end(); j != tend; ++j) {
+               translations_end = translations.end();
+             j != translations_end;
+             ++j) {
           const Variable& y = j->var;
           pointset.unconstrain(y);
           full_range_bounds.insert(min_value <= y);
@@ -339,7 +341,7 @@ wrap_assign(PSET& pointset,
       Coefficient& quadrant = first_quadrant;
       // Temporary variable holding the shifts to be applied in order
       // to implement the translations.
-      Coefficient& shift = ld;
+      Coefficient& shift = l_d;
       PSET hull(space_dim, EMPTY);
       for ( ; quadrant <= last_quadrant; ++quadrant) {
         PSET p(pointset);
@@ -366,13 +368,13 @@ wrap_assign(PSET& pointset,
       PPL_ASSERT(cs_p != 0);
       wrap_assign_ind(pointset, dimensions_to_be_translated,
                       translations.begin(), translations.end(),
-                      w, min_value, max_value, *cs_p, ln, ld);
+                      w, min_value, max_value, *cs_p, l_n, l_d);
     }
     else {
       PSET hull(space_dim, EMPTY);
       wrap_assign_col(hull, pointset, dimensions_to_be_translated,
                       translations.begin(), translations.end(),
-                      w, min_value, max_value, cs_p, ln);
+                      w, min_value, max_value, cs_p, l_n);
       pointset.m_swap(hull);
     }
   }

@@ -50,11 +50,11 @@ poly_hull_assign_if_exact(PH& p, const PH& q);
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q) {
-  PH phull = p;
+  PH poly_hull = p;
   NNC_Polyhedron nnc_p(p);
-  phull.poly_hull_assign(q);
+  poly_hull.poly_hull_assign(q);
   std::pair<PH, Pointset_Powerset<NNC_Polyhedron> >
-    partition = linear_partition(q, phull);
+    partition = linear_partition(q, poly_hull);
   const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i)
@@ -63,7 +63,7 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
     // respect to `q' are included in `p'
     if (!nnc_p.contains(i->pointset()))
       return false;
-  p = phull;
+  p = poly_hull;
   return true;
 }
 

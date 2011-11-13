@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 c_streambuf::c_streambuf()
-  : ungetc_buf(traits_type::eof()), nextc_buf(traits_type::eof()) {
+  : unget_char_buf(traits_type::eof()), next_char_buf(traits_type::eof()) {
 }
 
 inline

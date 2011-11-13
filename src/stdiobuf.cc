@@ -28,8 +28,8 @@ namespace Parma_Polyhedra_Library {
 
 stdiobuf::int_type
 stdiobuf::uflow() {
-  ungetc_buf = getc(fp);
-  return ungetc_buf;
+  unget_char_buf = getc(fp);
+  return unget_char_buf;
 }
 
 stdiobuf::int_type
@@ -42,17 +42,17 @@ std::streamsize
 stdiobuf::xsgetn(char_type* s, std::streamsize n) {
   std::streamsize r = fread(s, 1, n, fp);
   if (r > 0)
-    ungetc_buf = traits_type::to_int_type(s[r - 1]);
+    unget_char_buf = traits_type::to_int_type(s[r - 1]);
   else
-    ungetc_buf = traits_type::eof();
+    unget_char_buf = traits_type::eof();
   return r;
 }
 
 stdiobuf::int_type
 stdiobuf::pbackfail(int_type c) {
   const int_type eof = traits_type::eof();
-  int_type u = traits_type::eq_int_type(c, eof) ? ungetc_buf : c;
-  ungetc_buf = eof;
+  int_type u = traits_type::eq_int_type(c, eof) ? unget_char_buf : c;
+  unget_char_buf = eof;
   return traits_type::eq_int_type(u, eof) ? eof : ungetc(u, fp);
 }
 

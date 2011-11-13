@@ -112,7 +112,7 @@ struct Weightwatch_Traits {
   //! Compares the two weights \p a and \p b.
   static bool less_than(const Threshold& a, const Threshold& b);
 
-  //! Sets \p threshold to be \p delta units bigger than the current weigth.
+  //! Sets \p threshold to be \p delta units bigger than the current weight.
   static void from_delta(Threshold& threshold, const Delta& delta);
 
   //! The current computational weight.

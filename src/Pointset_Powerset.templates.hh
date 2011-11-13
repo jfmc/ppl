@@ -1552,25 +1552,25 @@ namespace Implementation {
 namespace Pointset_Powersets {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Partitions polyhedron \p qq according to constraint \p c.
+//! Partitions polyhedron \p pset according to constraint \p c.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p qq and constraint \p c is stored
-  in \p qq, whereas the intersection of \p qq with the negation of \p c
+  On exit, the intersection of \p pset and constraint \p c is stored
+  in \p pset, whereas the intersection of \p pset with the negation of \p c
   is added as a new disjunct of the powerset \p r.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PSET>
 void
 linear_partition_aux(const Constraint& c,
-		     PSET& qq,
+		     PSET& pset,
 		     Pointset_Powerset<NNC_Polyhedron>& r) {
   Linear_Expression le(c);
   const Constraint& neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
-  NNC_Polyhedron qqq(qq);
-  qqq.add_constraint(neg_c);
-  if (!qqq.is_empty())
-    r.add_disjunct(qqq);
-  qq.add_constraint(c);
+  NNC_Polyhedron nnc_ph_pset(pset);
+  nnc_ph_pset.add_constraint(neg_c);
+  if (!nnc_ph_pset.is_empty())
+    r.add_disjunct(nnc_ph_pset);
+  pset.add_constraint(c);
 }
 
 } // namespace Pointset_Powersets
@@ -1585,7 +1585,7 @@ linear_partition(const PSET& p, const PSET& q) {
   using Implementation::Pointset_Powersets::linear_partition_aux;
 
   Pointset_Powerset<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
-  PSET qq = q;
+  PSET pset = q;
   const Constraint_System& p_constraints = p.constraints();
   for (Constraint_System::const_iterator i = p_constraints.begin(),
 	 p_constraints_end = p_constraints.end();
@@ -1594,13 +1594,13 @@ linear_partition(const PSET& p, const PSET& q) {
     const Constraint& c = *i;
     if (c.is_equality()) {
       Linear_Expression le(c);
-      linear_partition_aux(le <= 0, qq, r);
-      linear_partition_aux(le >= 0, qq, r);
+      linear_partition_aux(le <= 0, pset, r);
+      linear_partition_aux(le >= 0, pset, r);
     }
     else
-      linear_partition_aux(c, qq, r);
+      linear_partition_aux(c, pset, r);
   }
-  return std::make_pair(qq, r);
+  return std::make_pair(pset, r);
 }
 
 } // namespace Parma_Polyhedra_Library

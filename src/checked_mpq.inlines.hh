@@ -468,14 +468,14 @@ sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   Rounding_Dir rdir = gt1 ? dir : inverse(dir);
   mul_2exp<To_Policy, From_Policy>(to_a, from_a,
                                    2*irrational_precision, ROUND_IGNORE);
-  Result rdiv
+  Result r_div
     = div<To_Policy, To_Policy, To_Policy>(to_a, to_a, from_b, rdir);
-  Result rsqrt = sqrt<To_Policy, To_Policy>(to_a, to_a, rdir);
+  Result r_sqrt = sqrt<To_Policy, To_Policy>(to_a, to_a, rdir);
   to_b = 1;
   mul_2exp<To_Policy, To_Policy>(to_b, to_b,
                                  irrational_precision, ROUND_IGNORE);
   to.canonicalize();
-  return (rdiv != V_EQ) ? rdiv : rsqrt;
+  return (r_div != V_EQ) ? r_div : r_sqrt;
 }
 
 PPL_SPECIALIZE_SQRT(sqrt_mpq, mpq_class, mpq_class)

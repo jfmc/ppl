@@ -51,27 +51,27 @@ static struct timeval saved_ru_utime;
 void
 start_clock() {
 #if PPL_HAVE_DECL_GETRUSAGE && defined(PPL_HAVE_TIMEVAL)
-  struct rusage rsg;
-  if (getrusage(RUSAGE_SELF, &rsg) != 0) {
+  struct rusage usage;
+  if (getrusage(RUSAGE_SELF, &usage) != 0) {
     cerr << "getrusage failed: " << strerror(errno) << endl;
     exit(1);
   }
   else
-    saved_ru_utime = rsg.ru_utime;
+    saved_ru_utime = usage.ru_utime;
 #endif
 }
 
 void
 print_clock(ostream& s) {
 #if PPL_HAVE_DECL_GETRUSAGE && defined(PPL_HAVE_TIMEVAL)
-  struct rusage rsg;
-  if (getrusage(RUSAGE_SELF, &rsg) != 0) {
+  struct rusage usage;
+  if (getrusage(RUSAGE_SELF, &usage) != 0) {
     cerr << "getrusage failed: " << strerror(errno) << endl;
     exit(1);
   }
   else {
-    time_t current_secs = rsg.ru_utime.tv_sec;
-    time_t current_usecs = rsg.ru_utime.tv_usec;
+    time_t current_secs = usage.ru_utime.tv_sec;
+    time_t current_usecs = usage.ru_utime.tv_usec;
     time_t saved_secs = saved_ru_utime.tv_sec;
     time_t saved_usecs = saved_ru_utime.tv_usec;
     time_t secs;

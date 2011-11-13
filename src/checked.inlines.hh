@@ -295,26 +295,27 @@ abs_generic(To& to, const From& from, Rounding_Dir dir) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From>
 inline void
-gcd_exact_noabs(To& to, const From& x, const From& y) {
-  To nx = x;
-  To ny = y;
-  To rm;
-  while (ny != 0) {
-    // The following is derived from the assumption that x % y
+gcd_exact_no_abs(To& to, const From& x, const From& y) {
+  To w_x = x;
+  To w_y = y;
+  To remainder;
+  while (w_y != 0) {
+    // The following is derived from the assumption that w_x % w_y
     // is always representable. This is true for both native integers
     // and IEC 559 floating point numbers.
-    rem<To_Policy, From1_Policy, From2_Policy>(rm, nx, ny, ROUND_NOT_NEEDED);
-    nx = ny;
-    ny = rm;
+    rem<To_Policy, From1_Policy, From2_Policy>(remainder, w_x, w_y,
+                                               ROUND_NOT_NEEDED);
+    w_x = w_y;
+    w_y = remainder;
   }
-  to = nx;
+  to = w_x;
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
 gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
-  gcd_exact_noabs<To_Policy, From1_Policy, From2_Policy>(to, x, y);
+  gcd_exact_no_abs<To_Policy, From1_Policy, From2_Policy>(to, x, y);
   return abs<To_Policy, To_Policy>(to, to, dir);
 }
 
@@ -355,8 +356,8 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
   if (r != V_EQ)
     return r;
 
-  From2 ay;
-  r = abs<To1_Policy, From2_Policy>(ay, y, dir);
+  From2 a_y;
+  r = abs<To1_Policy, From2_Policy>(a_y, y, dir);
   if (r != V_EQ)
     return r;
 
@@ -366,14 +367,14 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
   // way round.  This is to match the behavior of GMP.
 #define PPL_MATCH_GMP_GCDEXT 1
 #ifdef PPL_MATCH_GMP_GCDEXT
-  if (to == ay)
+  if (to == a_y)
     goto sign_check;
 #endif
 
   {
     To2 v1 = 0;
     To3 v2 = 1;
-    To1 v3 = static_cast<To1>(ay);
+    To1 v3 = static_cast<To1>(a_y);
     while (true) {
       To1 q = to / v3;
       // Remainder, next candidate GCD.
@@ -413,21 +414,22 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     to = 0;
     return V_EQ;
   }
-  To nx, ny;
+  To a_x;
+  To a_y;
   Result r;
-  r = abs<From1_Policy, From1_Policy>(nx, x, dir);
+  r = abs<From1_Policy, From1_Policy>(a_x, x, dir);
   if (r != V_EQ)
     return r;
-  r = abs<From2_Policy, From2_Policy>(ny, y, dir);
+  r = abs<From2_Policy, From2_Policy>(a_y, y, dir);
   if (r != V_EQ)
     return r;
   To gcd;
-  gcd_exact_noabs<To_Policy, From1_Policy, From2_Policy>(gcd, nx, ny);
-  // The following is derived from the assumption that x / gcd(x, y)
+  gcd_exact_no_abs<To_Policy, From1_Policy, From2_Policy>(gcd, a_x, a_y);
+  // The following is derived from the assumption that a_x / gcd(a_x, a_y)
   // is always representable. This is true for both native integers
   // and IEC 559 floating point numbers.
-  div<To_Policy, From1_Policy, To_Policy>(to, nx, gcd, ROUND_NOT_NEEDED);
-  return mul<To_Policy, To_Policy, From2_Policy>(to, to, ny, dir);
+  div<To_Policy, From1_Policy, To_Policy>(to, a_x, gcd, ROUND_NOT_NEEDED);
+  return mul<To_Policy, To_Policy, From2_Policy>(to, to, a_y, dir);
 }
 
 template <typename Policy, typename Type>

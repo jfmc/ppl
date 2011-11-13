@@ -193,16 +193,16 @@ operator==(const Powerset<D>& x, const Powerset<D>& y) {
   if (x.size() != y.size())
     return false;
   // Take a copy of `y' and work with it.
-  Powerset<D> yy = y;
+  Powerset<D> z = y;
   for (typename Powerset<D>::const_iterator xi = x.begin(),
 	 x_end = x.end(); xi != x_end; ++xi) {
-    typename Powerset<D>::iterator yyi = yy.begin();
-    typename Powerset<D>::iterator yy_end = yy.end();
-    yyi = std::find(yyi, yy_end, *xi);
-    if (yyi == yy_end)
+    typename Powerset<D>::iterator zi = z.begin();
+    typename Powerset<D>::iterator z_end = z.end();
+    zi = std::find(zi, z_end, *xi);
+    if (zi == z_end)
       return false;
     else
-      yy.drop_disjunct(yyi);
+      z.drop_disjunct(zi);
   }
   return true;
 }
