@@ -572,7 +572,6 @@ compatibility_check_find_pivot_in_set(
     candidates_t::const_iterator i = candidates.begin();
     candidates_t::const_iterator i_end = candidates.end();
     PPL_ASSERT(i != i_end);
-    dimension_type pi = i->second.row_index;
     dimension_type pj = i->first;
     Coefficient cost = i->second.cost;
     Coefficient value = i->second.value;
@@ -582,7 +581,6 @@ compatibility_check_find_pivot_in_set(
       for (++i; i != i_end; ++i) {
         bool found_better_pivot = false;
 
-        const dimension_type challenger_i = i->second.row_index;
         const dimension_type challenger_j = i->first;
         Coefficient_traits::const_reference challenger_cost = i->second.cost;
         PPL_ASSERT(value > 0);
@@ -613,7 +611,6 @@ compatibility_check_find_pivot_in_set(
             new_candidates.push_back(*i);
         }
         if (found_better_pivot) {
-          pi = challenger_i;
           pj = challenger_j;
           cost = challenger_cost;
           value = i->second.value;
@@ -663,7 +660,6 @@ compatibility_check_find_pivot_in_set(
 
         if (lhs_sign != rhs_sign) {
           if (lhs_sign > rhs_sign) {
-            pi = i->second.row_index;
             pj = challenger_j;
             cost = challenger_cost;
             value = challenger_value;
@@ -690,7 +686,6 @@ compatibility_check_find_pivot_in_set(
             new_candidates.push_back(*i);
           else {
             if (lhs > rhs) {
-              pi = i->second.row_index;
               pj = challenger_j;
               cost = challenger_cost;
               value = challenger_value;
