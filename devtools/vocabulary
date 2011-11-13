@@ -1,8 +1,9 @@
-TOTAL_COUNT	589666
+TOTAL_COUNT	593634
 a	5311
 ab	1
 abandon	18
 abandoning	9
+abi	9
 ability	4
 able	22
 abort	1
@@ -93,6 +94,7 @@ alias	17
 aliasing	1
 aligned	4
 all	1053
+alloc	10
 allocate	16
 allocated	29
 allocates	3
@@ -192,6 +194,7 @@ ascii	429
 aside	2
 ask	6
 asks	4
+asm	2
 assert	2146
 asserted	2
 assertion	34
@@ -294,6 +297,7 @@ between	258
 beware	1
 beyond	3
 bft	9
+bgp	35
 bhmz	24
 bhrz	81
 bhz	54
@@ -349,6 +353,7 @@ brief	1098
 broken	20
 brother	2
 bsd	3
+buf	31
 buffer	15
 bug	9
 bugseng	722
@@ -453,8 +458,11 @@ choosing	1
 chop	2
 chosen	10
 chunk	4
+ci	241
 ci	242
 circles	1
+cj	135
+cjj	2
 ck	68
 cl	4
 clang	1
@@ -596,6 +604,7 @@ cone	8
 config	72
 configuration	3
 configure	1
+conflicting	1
 confuse	2
 congruence	1182
 congruences	595
@@ -711,6 +720,7 @@ couple	1
 course	9
 covers	15
 cow	5
+cp	55
 cpu	2
 cr	2
 create	24
@@ -722,7 +732,9 @@ criteria	23
 critical	9
 cs	2544
 csecs	29
+csp	20
 cst	12
+ctbf	6
 ctor	18
 ctx	57
 cu	21
@@ -936,6 +948,7 @@ division	11
 divisor	359
 divisors	42
 dj	29
+dmax	7
 do	274
 document	1
 documentation	9
@@ -990,6 +1003,7 @@ ed	1
 edg	4
 edge	32
 edition	3
+ee	4
 effect	18
 efficiency	12
 efficient	19
@@ -1062,12 +1076,16 @@ entities	4
 entity	2
 entries	18
 entry	19
+enum	81
 enumerated	2
 enumeration	3
 env	15
 envelope	1
+ep	3
+eps	128
 epsilon	146
 eq	486
+eqs	15
 equal	595
 equalities	238
 equality	424
@@ -1338,6 +1356,7 @@ gather	5
 gathered	2
 gauss	10
 gaussian	4
+gc	2
 gcc	9
 gcd	324
 gcdext	53
@@ -1363,6 +1382,8 @@ getitimer	5
 getline	9
 gets	12
 getting	7
+gg	32
+ggs	54
 give	2
 given	101
 gives	84
@@ -1395,6 +1416,7 @@ growing	2
 grown	3
 growth	2
 gs	803
+gsp	12
 gt	159
 guarantee	14
 guaranteed	4
@@ -1490,6 +1512,7 @@ identifies	1
 identify	10
 identifying	5
 identity	26
+idiv	41
 ie	11
 ieee	125
 if	11371
@@ -1503,6 +1526,7 @@ illegal	13
 image	272
 images	5
 immediately	24
+impl	321
 implement	10
 implementation	807
 implementations	8
@@ -1578,6 +1602,8 @@ induced	6
 induction	2
 inefficiencies	1
 inefficient	9
+ineq	48
+ineqs	13
 inequalities	144
 inequality	376
 inexact	97
@@ -1597,6 +1623,7 @@ inherited	22
 inheriting	2
 inherits	70
 inhibit	1
+inhomo	28
 inhomogeneous	356
 init	80
 initial	43
@@ -1613,6 +1640,7 @@ inlined	1
 inlines	266
 inner	7
 input	286
+inquire	1
 insensitive	1
 insert	629
 inserted	51
@@ -1713,6 +1741,8 @@ isqrt	2
 issue	5
 issues	6
 it	2709
+itc	1
+ite	18
 item	46
 items	1
 iter	463
@@ -1730,7 +1760,10 @@ itv	534
 iv	13
 ix	5
 j	2621
+ja	16
+jb	17
 ji	8
+jj	37
 job	4
 join	19
 joined	5
@@ -1759,6 +1792,7 @@ knuth	2
 l	293
 lack	1
 lacks	2
+laid	2
 lambda	52
 land	1
 language	3
@@ -1807,6 +1841,7 @@ let	68
 letters	14
 letting	3
 level	97
+lexico	11
 lexicographic	12
 lexicographically	3
 lf	299
@@ -1856,6 +1891,8 @@ listed	3
 lists	1
 literal	1
 little	2
+lj	4
+lk	4
 ln	10
 lo	20
 load	160
@@ -1992,6 +2029,7 @@ middle	3
 might	19
 mimicking	1
 min	467
+minf	132
 mingw	1
 mini	10
 minimal	60
@@ -2021,7 +2059,9 @@ mlb	31
 mod	135
 mode	140
 model	9
+modeled	1
 modes	1
+modi	4
 modifiable	2
 modification	10
 modifications	79
@@ -2053,6 +2093,7 @@ mpq	454
 mpz	734
 mr	2
 ms	119
+msb	5
 msg	1
 msp	101
 mu	180
@@ -2128,6 +2169,8 @@ nf	10
 nicer	3
 nifty	1
 nl	14
+nle	21
+nmax	3
 nnc	304
 no	814
 node	527
@@ -2143,6 +2186,7 @@ nonetheless	2
 nonnegative	22
 nonnegativity	2
 nonpositive	1
+nonsaturating	24
 nonstrict	35
 nontrivial	10
 nonzero	40
@@ -2164,6 +2208,7 @@ notice	80
 notion	5
 now	117
 nr	10
+nrows	58
 ns	69
 nu	6
 null	102
@@ -2295,6 +2340,7 @@ overload	1
 overloaded	2
 overloading	2
 overloads	1
+overwrite	1
 overwritten	4
 own	7
 owned	9
@@ -2342,6 +2388,7 @@ past	43
 path	362
 pay	1
 pc	10
+pcount	21
 pd	20
 pending	1089
 per	35
@@ -2360,6 +2407,7 @@ permuted	1
 permutes	4
 perspective	3
 pf	10
+pfunc	76
 pg	5
 ph	480
 phase	21
@@ -2373,6 +2421,7 @@ pity	1
 pivot	381
 pivoting	10
 pivots	1
+pj	128
 pl	10
 place	59
 placed	3
@@ -2450,6 +2499,7 @@ precisely	17
 precision	114
 precondition	1
 preconditions	4
+pred	13
 predecessor	29
 predecessors	7
 predecrement	1
@@ -2563,11 +2613,13 @@ putting	1
 pwl	218
 px	12
 q	430
+qh	27
 qr	2
 quad	46
 quadrant	60
 quadrants	3
 quadratic	3
+qual	84
 qualification	7
 qualifiers	1
 quantify	16
@@ -2637,6 +2689,7 @@ reasons	1
 rebalance	4
 rebalanced	4
 rebalances	1
+rebalancing	1
 rebuild	8
 recall	6
 recalling	1
@@ -2727,6 +2780,7 @@ remap	1
 remaps	7
 remarks	10
 remember	5
+remergeable	12
 removal	28
 remove	286
 removed	71
@@ -2753,6 +2807,7 @@ replicas	7
 replicated	7
 report	2
 reported	1
+repr	24
 represent	61
 representable	15
 representation	160
@@ -2838,6 +2893,7 @@ rounding	731
 routine	1
 row	4290
 rows	2514
+rpi	19
 rs	35
 rsv	10
 ru	64
@@ -2868,6 +2924,8 @@ satisfied	127
 satisfies	48
 satisfy	33
 satisfying	15
+satrow	6
+satur	2
 saturate	59
 saturated	29
 saturates	125
@@ -2983,6 +3041,7 @@ signedness	4
 significance	1
 significant	3
 signs	9
+sij	25
 silence	1
 silent	11
 silently	1
@@ -3139,6 +3198,7 @@ str	513
 straight	1
 strategy	59
 stream	9
+streambuf	41
 streams	2
 street	282
 strict	362
@@ -3149,6 +3209,7 @@ strip	3
 strong	238
 stronger	2
 strongly	159
+struct	306
 structure	44
 structures	30
 studying	2
@@ -3180,6 +3241,7 @@ subtracting	12
 subtraction	2
 subtracts	1
 subtree	120
+succ	2
 succeeded	2
 succeeding	8
 succeeds	20
@@ -3255,6 +3317,7 @@ target	66
 tautological	36
 tautologies	10
 tautology	20
+tbf	30
 technical	2
 technique	49
 techniques	2
@@ -3441,8 +3504,10 @@ understanding	1
 unexpected	2
 unfeasible	59
 unfolding	1
+unget	7
 uniform	1
 unimplemented	7
+uninit	2
 uninitialized	31
 union	54
 unique	13
@@ -3466,6 +3531,7 @@ unreferenced	1
 unregisters	1
 unrepresentable	19
 unrestricted	16
+unsat	3
 unsatisfiability	3
 unsatisfiable	54
 unset	47
@@ -3478,7 +3544,9 @@ until	13
 untouched	43
 unused	125
 unusual	2
+uop	2
 up	1632
+upd	24
 update	263
 updated	38
 updates	10
@@ -3507,6 +3575,7 @@ usual	14
 usually	1
 utilities	10
 utility	6
+utime	10
 v	2644
 va	3
 val	211
@@ -3647,13 +3716,17 @@ wrongly	1
 wv	3
 www	295
 x	7318
+xi	111
+xstr	8
 y	6158
 yes	44
 yet	29
+yi	69
 yield	1
 yields	4
 you	596
 your	288
+yy	97
 z	566
 zero	1529
 zeroes	60
