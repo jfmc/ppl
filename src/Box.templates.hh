@@ -2347,8 +2347,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 
   // Find a space dimension having a non-zero coefficient (if any).
   dimension_type last_k = c.expression().last_nonzero(1, c_space_dim + 1);
-  --last_k;
-  if (last_k == c_space_dim) {
+  if (last_k == c_space_dim + 1) {
     // Constraint c is trivial: check if it is inconsistent.
     if (c_inhomogeneous_term < 0
         || (c_inhomogeneous_term == 0
@@ -2358,17 +2357,18 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   }
 
   // Here constraint c is non-trivial.
-  PPL_ASSERT(last_k < c_space_dim);
+  PPL_ASSERT(last_k <= c_space_dim);
   Result r;
   Temp_Boundary_Type t_bound;
   Temp_Boundary_Type t_a;
   Temp_Boundary_Type t_x;
   Ternary open;
-  for (dimension_type k = last_k+1; k-- > 0; ) {
-    const Coefficient& a_k = c.coefficient(Variable(k));
+  const Linear_Expression& c_e = c.expression();
+  for (Linear_Expression::const_iterator k = c_e.begin(),
+    k_end = c_e.lower_bound(Variable(last_k)); k != k_end; ++k) {
+    const Coefficient& a_k = *k;
+    const Variable k_var = k.variable();
     int sgn_a_k = sgn(a_k);
-    if (sgn_a_k == 0)
-      continue;
     if (sgn_a_k > 0) {
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
       if (open == T_NO)
@@ -2379,14 +2379,14 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
       if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_1;
-      for (dimension_type i = last_k+1; i-- > 0; ) {
-	if (i == k)
+      for (Linear_Expression::const_iterator i = c_e.begin(),
+            i_end = c_e.lower_bound(Variable(last_k)); i != i_end; ++i) {
+        const Variable i_var = i.variable();
+	if (i_var.id() == k_var.id())
 	  continue;
-	const Coefficient& a_i = c.coefficient(Variable(i));
+	const Coefficient& a_i = *i;
 	int sgn_a_i = sgn(a_i);
-	if (sgn_a_i == 0)
-	  continue;
-	ITV& x_i = seq[i];
+	ITV& x_i = seq[i_var.id()];
 	if (sgn_a_i < 0) {
 	  if (x_i.lower_is_boundary_infinity())
 	    goto maybe_refine_upper_1;
@@ -2430,7 +2430,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL, t_bound));
+      seq[k_var.id()].add_constraint(i_constraint(open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL, t_bound));
       reset_empty_up_to_date();
     maybe_refine_upper_1:
       if (c_type != Constraint::EQUALITY)
@@ -2443,14 +2443,14 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
       if (propagate_constraint_check_result(r, open))
 	goto next_k;
-      for (dimension_type i = c_space_dim; i-- > 0; ) {
-	if (i == k)
+      for (Linear_Expression::const_iterator i = c_e.begin(),
+            i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
+        const Variable i_var = i.variable();
+	if (i_var.id() == k_var.id())
 	  continue;
-	const Coefficient& a_i = c.coefficient(Variable(i));
+	const Coefficient& a_i = *i;
 	int sgn_a_i = sgn(a_i);
-	if (sgn_a_i == 0)
-	  continue;
-	ITV& x_i = seq[i];
+	ITV& x_i = seq[i_var.id()];
 	if (sgn_a_i < 0) {
 	  if (x_i.upper_is_boundary_infinity())
 	    goto next_k;
@@ -2494,7 +2494,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? LESS_THAN : LESS_OR_EQUAL, t_bound));
+      seq[k_var.id()].add_constraint(i_constraint(open == T_YES ? LESS_THAN : LESS_OR_EQUAL, t_bound));
       reset_empty_up_to_date();
     }
     else {
@@ -2508,14 +2508,14 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
       if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_2;
-      for (dimension_type i = c_space_dim; i-- > 0; ) {
-	if (i == k)
+      for (Linear_Expression::const_iterator i = c_e.begin(),
+            i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
+        const Variable i_var = i.variable();
+	if (i_var.id() == k_var.id())
 	  continue;
-	const Coefficient& a_i = c.coefficient(Variable(i));
+	const Coefficient& a_i = *i;
 	int sgn_a_i = sgn(a_i);
-	if (sgn_a_i == 0)
-	  continue;
-	ITV& x_i = seq[i];
+	ITV& x_i = seq[i_var.id()];
 	if (sgn_a_i < 0) {
 	  if (x_i.lower_is_boundary_infinity())
 	    goto maybe_refine_upper_2;
@@ -2559,7 +2559,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? LESS_THAN : LESS_OR_EQUAL, t_bound));
+      seq[k_var.id()].add_constraint(i_constraint(open == T_YES ? LESS_THAN : LESS_OR_EQUAL, t_bound));
       reset_empty_up_to_date();
     maybe_refine_upper_2:
       if (c_type != Constraint::EQUALITY)
@@ -2572,14 +2572,14 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
       if (propagate_constraint_check_result(r, open))
 	goto next_k;
-      for (dimension_type i = c_space_dim; i-- > 0; ) {
-	if (i == k)
+      for (Linear_Expression::const_iterator i = c_e.begin(),
+            i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
+        const Variable i_var = i.variable();
+	if (i_var.id() == k_var.id())
 	  continue;
-	const Coefficient& a_i = c.coefficient(Variable(i));
+	const Coefficient& a_i = *i;
 	int sgn_a_i = sgn(a_i);
-	if (sgn_a_i == 0)
-	  continue;
-	ITV& x_i = seq[i];
+	ITV& x_i = seq[i_var.id()];
 	if (sgn_a_i < 0) {
 	  if (x_i.upper_is_boundary_infinity())
 	    goto next_k;
@@ -2623,7 +2623,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL, t_bound));
+      seq[k_var.id()].add_constraint(i_constraint(open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL, t_bound));
       reset_empty_up_to_date();
     }
   next_k:
