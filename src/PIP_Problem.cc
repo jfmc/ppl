@@ -165,6 +165,9 @@ PPL::PIP_Problem::solve() const {
           dimension_type i = 1;
 
           // TODO: This loop may be optimized more, if needed.
+          // If the size of param_end is expected to be greater than the
+          // number of nonzeroes of c in most cases, then this implementation
+          // can't be optimized further.
           // itr may still be end(), but it can still be used as hint.
           for (Variables_Set::const_iterator
                pi = param_begin; pi != param_end; ++pi, ++i) {
