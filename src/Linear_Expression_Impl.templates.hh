@@ -795,6 +795,8 @@ Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference 
                             "v exceeds the maximum allowed space dimension.");
   if (space_dimension() < v_space_dim)
     set_space_dimension(v_space_dim);
+  if (n == 0)
+    return *this;
   typename Row::iterator itr = row.insert(v_space_dim);
   (*itr) += n;
   if (*itr == 0)
@@ -815,6 +817,8 @@ Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference 
                             "v exceeds the maximum allowed space dimension.");
   if (space_dimension() < v_space_dim)
     set_space_dimension(v_space_dim);
+  if (n == 0)
+    return *this;
   typename Row::iterator itr = row.insert(v_space_dim);
   (*itr) -= n;
   if (*itr == 0)
