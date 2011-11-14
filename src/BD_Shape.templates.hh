@@ -3268,40 +3268,42 @@ BD_Shape<T>
   PPL_DIRTY_TEMP0(mpq_class, q);
   PPL_DIRTY_TEMP0(mpq_class, ub_u);
   PPL_DIRTY_TEMP(N, up_approx);
-  // TODO: This loop can be optimized more if needed.
-  // No need to consider indices greater than `last_v'.
-  for (dimension_type u = last_v; u > 0; --u)
-    if (u != v) {
-      const Coefficient& expr_u = sc_expr.get(u);
-      if (expr_u > 0) {
-        if (expr_u >= sc_den)
-          // Deducing `v - u <= ub_v - ub_u'.
-          sub_assign_r(dbm[u][v], ub_v, dbm_0[u], ROUND_UP);
-        else {
-          DB_Row<N>& dbm_u = dbm[u];
-          const N& dbm_u0 = dbm_u[0];
-          if (!is_plus_infinity(dbm_u0)) {
-            // Let `ub_u' and `lb_u' be the known upper and lower bound
-            // for `u', respectively. Letting `q = expr_u/sc_den' be the
-            // rational coefficient of `u' in `sc_expr/sc_den',
-            // the upper bound for `v - u' is computed as
-            // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
-            // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
-            assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
-            assign_r(q, expr_u, ROUND_NOT_NEEDED);
-            div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-            assign_r(ub_u, dbm_0[u], ROUND_NOT_NEEDED);
-            // Compute `ub_u - lb_u'.
-            add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
-            // Compute `(-lb_u) - q * (ub_u - lb_u)'.
-            sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
-            assign_r(up_approx, minus_lb_u, ROUND_UP);
-            // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
-            add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
-          }
-        }
+  for (Linear_Expression::const_iterator u = sc_expr.begin(),
+        u_end = sc_expr.lower_bound(Variable(last_v)); u != u_end; ++u) {
+    const dimension_type u_dim = u.variable().space_dimension();
+    if (u_dim == v)
+      continue;
+    const Coefficient& expr_u = *u;
+    if (expr_u < 0)
+      continue;
+    PPL_ASSERT(expr_u > 0);
+    if (expr_u >= sc_den)
+      // Deducing `v - u <= ub_v - ub_u'.
+      sub_assign_r(dbm[u_dim][v], ub_v, dbm_0[u_dim], ROUND_UP);
+    else {
+      DB_Row<N>& dbm_u = dbm[u_dim];
+      const N& dbm_u0 = dbm_u[0];
+      if (!is_plus_infinity(dbm_u0)) {
+        // Let `ub_u' and `lb_u' be the known upper and lower bound
+        // for `u', respectively. Letting `q = expr_u/sc_den' be the
+        // rational coefficient of `u' in `sc_expr/sc_den',
+        // the upper bound for `v - u' is computed as
+        // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
+        // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
+        assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
+        assign_r(q, expr_u, ROUND_NOT_NEEDED);
+        div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+        assign_r(ub_u, dbm_0[u_dim], ROUND_NOT_NEEDED);
+        // Compute `ub_u - lb_u'.
+        add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+        // Compute `(-lb_u) - q * (ub_u - lb_u)'.
+        sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
+        assign_r(up_approx, minus_lb_u, ROUND_UP);
+        // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
+        add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
       }
     }
+  }
 }
 
 template <typename T>
