@@ -535,15 +535,6 @@ Linear_Expression_Impl<Row>
 
 template <typename Row>
 template <typename Row2>
-void
-Linear_Expression_Impl<Row>::swap(Linear_Expression_Impl<Row2>& y) {
-  std::swap(row, y.row);
-  PPL_ASSERT(OK());
-  PPL_ASSERT(y.OK());
-}
-
-template <typename Row>
-template <typename Row2>
 int
 Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) const {
   const Linear_Expression_Impl& x = *this;
@@ -1496,20 +1487,6 @@ Linear_Expression_Impl<Row>
     linear_combine_lax(*p, c1, c2);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
     linear_combine_lax(*p, c1, c2);
-  } else {
-    // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
-  }
-}
-
-template <typename Row>
-void
-Linear_Expression_Impl<Row>
-::swap(Linear_Expression_Interface& y) {
-  if (Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<Linear_Expression_Impl<Dense_Row>*>(&y)) {
-    swap(*p);
-  } else if (Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<Linear_Expression_Impl<Sparse_Row>*>(&y)) {
-    swap(*p);
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);

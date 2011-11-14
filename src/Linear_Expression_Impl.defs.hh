@@ -345,9 +345,6 @@ public:
   */
   virtual bool ascii_load(std::istream& s);
 
-  //! Swaps \p *this with \p y.
-  virtual void swap(Linear_Expression_Interface& y);
-
   // TODO: Make this private.
   //! Copy constructor with a specified space dimension.
   Linear_Expression_Impl(const Linear_Expression_Interface& e, dimension_type sz);
@@ -665,10 +662,6 @@ public:
   void linear_combine_lax(const Linear_Expression_Impl<Row2>& y,
                           Coefficient_traits::const_reference c1,
                           Coefficient_traits::const_reference c2);
-
-  //! Swaps \p *this with \p y.
-  template <typename Row2>
-  void swap(Linear_Expression_Impl<Row2>& y);
 
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.

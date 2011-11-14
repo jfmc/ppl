@@ -216,9 +216,6 @@ public:
   */
   virtual bool ascii_load(std::istream& s) = 0;
 
-  //! Swaps \p *this with \p y.
-  virtual void swap(Linear_Expression_Interface& y) = 0;
-
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
   virtual bool is_equal_to(const Linear_Expression_Interface& x) const = 0;
