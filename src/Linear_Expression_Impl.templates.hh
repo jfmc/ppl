@@ -430,6 +430,18 @@ Linear_Expression_Impl<Sparse_Row>
   std::swap(x, result);
 }
 
+template <>
+Representation
+Linear_Expression_Impl<Dense_Row>::representation() const {
+  return DENSE;
+}
+
+template <>
+Representation
+Linear_Expression_Impl<Sparse_Row>::representation() const {
+  return SPARSE;
+}
+
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);

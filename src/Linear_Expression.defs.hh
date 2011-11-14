@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 
 #include "Linear_Expression_Interface.defs.hh"
-#include "Dense_Row.defs.hh"
 #include "Variable.defs.hh"
 
 #include "Constraint.types.hh"
@@ -291,11 +290,20 @@ void swap(Parma_Polyhedra_Library::Linear_Expression& x,
 */
 class Parma_Polyhedra_Library::Linear_Expression {
 public:
+
+  static const Representation default_representation = DENSE;
+
   //! Default constructor: returns a copy of Linear_Expression::zero().
-  Linear_Expression();
+  explicit Linear_Expression(Representation r = default_representation);
 
   //! Ordinary copy constructor.
+  //! Note that the representation of the new expression will be e's
+  //! representation and not necessarily default_representation, so that
+  //! the copy and e are indistinguishable.
   Linear_Expression(const Linear_Expression& e);
+
+  //! Copy constructor that takes also a Representation.
+  Linear_Expression(const Linear_Expression& e, Representation r);
 
   Linear_Expression& operator=(const Linear_Expression& e);
 
@@ -306,7 +314,8 @@ public:
     Builds the linear expression corresponding
     to the inhomogeneous term \p n.
   */
-  explicit Linear_Expression(Coefficient_traits::const_reference n);
+  explicit Linear_Expression(Coefficient_traits::const_reference n,
+                             Representation r = default_representation);
 
   //! Builds the linear expression corresponding to the variable \p v.
   /*!
@@ -314,7 +323,21 @@ public:
     Thrown if the space dimension of \p v exceeds
     <CODE>Linear_Expression::max_space_dimension()</CODE>.
   */
-  Linear_Expression(Variable v);
+  Linear_Expression(Variable v, Representation r = default_representation);
+
+  //! Builds the linear expression corresponding to constraint \p c.
+  /*!
+    Given the constraint
+    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relsym 0\bigr)\f$,
+    where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+    If \p c is an inequality (resp., equality) constraint, then
+    the built linear expression is unique up to a positive
+    (resp., non-zero) factor.
+
+    The constructed Linear_Expression has the same representation as \p c.
+  */
+  explicit Linear_Expression(const Constraint& c);
 
   //! Builds the linear expression corresponding to constraint \p c.
   /*!
@@ -326,7 +349,24 @@ public:
     the built linear expression is unique up to a positive
     (resp., non-zero) factor.
   */
-  explicit Linear_Expression(const Constraint& c);
+  explicit Linear_Expression(const Constraint& c, Representation r);
+
+  /*! \brief
+    Builds the linear expression corresponding to generator \p g
+    (for points and closure points, the divisor is not copied).
+
+    Given the generator
+    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
+    (where, for lines and rays, we have \f$d = 1\f$),
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
+    The inhomogeneous term of the linear expression will always be 0.
+    If \p g is a ray, point or closure point (resp., a line), then
+    the linear expression is unique up to a positive
+    (resp., non-zero) factor.
+
+    The constructed Linear_Expression has the same representation as \p g.
+  */
+  explicit Linear_Expression(const Generator& g);
 
   /*! \brief
     Builds the linear expression corresponding to generator \p g
@@ -341,7 +381,20 @@ public:
     the linear expression is unique up to a positive
     (resp., non-zero) factor.
   */
-  explicit Linear_Expression(const Generator& g);
+  explicit Linear_Expression(const Generator& g, Representation r);
+
+  /*! \brief
+    Builds the linear expression corresponding to grid generator \p g
+    (for points, parameters and lines the divisor is not copied).
+
+    Given the grid generator
+    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
+    The inhomogeneous term of the linear expression is always 0.
+
+    The constructed Linear_Expression has the same representation as \p g.
+  */
+  explicit Linear_Expression(const Grid_Generator& g);
 
   /*! \brief
     Builds the linear expression corresponding to grid generator \p g
@@ -352,7 +405,17 @@ public:
     this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
     The inhomogeneous term of the linear expression is always 0.
   */
-  explicit Linear_Expression(const Grid_Generator& g);
+  explicit Linear_Expression(const Grid_Generator& g, Representation r);
+
+  //! Builds the linear expression corresponding to congruence \p cg.
+  /*!
+    Given the congruence
+    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+
+    The constructed Linear_Expression has the same representation as \p cg.
+  */
+  explicit Linear_Expression(const Congruence& cg);
 
   //! Builds the linear expression corresponding to congruence \p cg.
   /*!
@@ -360,7 +423,13 @@ public:
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
     this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
   */
-  explicit Linear_Expression(const Congruence& cg);
+  explicit Linear_Expression(const Congruence& cg, Representation r);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! A const %iterator on the expression (homogeneous) coefficient that are
   //! nonzero.
@@ -593,6 +662,11 @@ public:
   //! Copy constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
+  // TODO: Make this private.
+  //! Copy constructor with a specified space dimension and representation.
+  Linear_Expression(const Linear_Expression& e, dimension_type sz,
+                    Representation r);
+
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
   bool is_equal_to(const Linear_Expression& x) const;
@@ -635,7 +709,19 @@ private:
     The bool parameter is just to avoid problems with
     the constructor Linear_Expression(Coefficient_traits::const_reference n).
   */
-  Linear_Expression(dimension_type sz, bool);
+  Linear_Expression(dimension_type sz, bool,
+                    Representation r = default_representation);
+
+  //! Builds the linear expression corresponding to congruence \p cg, and
+  //! with the specified size.
+  /*!
+    Given the congruence
+    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
+    this builds the linear expression \f$\sum_{i=0}^{sz-1} a_i x_i + b\f$.
+
+    The constructed Linear_Expression has the same representation as \p cg.
+  */
+  Linear_Expression(const Congruence& cg, dimension_type sz);
 
   //! Builds the linear expression corresponding to congruence \p cg, and
   //! with the specified size.
@@ -644,7 +730,8 @@ private:
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
     this builds the linear expression \f$\sum_{i=0}^{sz-1} a_i x_i + b\f$.
   */
-  Linear_Expression(const Congruence& cg, dimension_type sz);
+  Linear_Expression(const Congruence& cg, dimension_type sz,
+                    Representation r);
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of

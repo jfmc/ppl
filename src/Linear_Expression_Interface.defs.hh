@@ -49,6 +49,9 @@ class Parma_Polyhedra_Library::Linear_Expression_Interface {
 public:
   virtual ~Linear_Expression_Interface();
 
+  //! Returns the current representation of this linear expression.
+  virtual Representation representation() const = 0;
+
   //! An interface for const iterators on the expression (homogeneous)
   //! coefficients that are nonzero.
   /*!

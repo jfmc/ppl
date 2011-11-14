@@ -173,6 +173,9 @@ public:
   */
   explicit Linear_Expression_Impl(const Congruence& cg);
 
+  //! Returns the current representation of this linear expression.
+  virtual Representation representation() const;
+
   //! An interface for const iterators on the expression (homogeneous)
   //! coefficients that are nonzero.
   /*!

@@ -40,6 +40,11 @@ Linear_Expression::~Linear_Expression() {
   delete impl;
 }
 
+inline Representation
+Linear_Expression::representation() const {
+  return impl->representation();
+}
+
 inline dimension_type
 Linear_Expression::space_dimension() const {
   return impl->space_dimension();

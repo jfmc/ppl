@@ -27,6 +27,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 
 #include "Linear_Expression_Impl.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Sparse_Row.defs.hh"
+#include "Congruence.defs.hh"
+#include "Grid_Generator.defs.hh"
+#include "Generator.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -50,49 +55,292 @@ PPL::Linear_Expression::finalize() {
   zero_p = 0;
 }
 
-PPL::Linear_Expression::Linear_Expression()
-  : impl(new Linear_Expression_Impl<Dense_Row>()) {
+PPL::Linear_Expression::Linear_Expression(Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>();
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>();
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(dimension_type sz, bool x)
-  : impl(new Linear_Expression_Impl<Dense_Row>(sz, x)) {
+PPL::Linear_Expression::Linear_Expression(dimension_type sz, bool x,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(sz, x);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(sz, x);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz)
-  : impl(new Linear_Expression_Impl<Dense_Row>(c, sz)) {
+PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz) {
+  switch (c.expression().representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(c, sz);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(c, sz);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e)
-  : impl(new Linear_Expression_Impl<Dense_Row>(*e.impl)) {
+PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(c, sz);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(c, sz);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e) {
+  switch (e.representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
-                                     dimension_type sz)
-  : impl(new Linear_Expression_Impl<Dense_Row>(*e.impl, sz)) {
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n)
-  : impl(new Linear_Expression_Impl<Dense_Row>(n)) {
+PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
+                                          dimension_type sz) {
+  switch (e.representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, sz);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, sz);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Constraint& c)
-  : impl(new Linear_Expression_Impl<Dense_Row>(c)) {
+PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
+                                          dimension_type sz,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, sz);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, sz);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Generator& g)
-  : impl(new Linear_Expression_Impl<Dense_Row>(g)) {
+PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(n);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(n);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
-  : impl(new Linear_Expression_Impl<Dense_Row>(g)) {
+PPL::Linear_Expression::Linear_Expression(const Constraint& c) {
+  switch (c.expression().representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(c);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(c);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
-  : impl(new Linear_Expression_Impl<Dense_Row>(cg)) {
+PPL::Linear_Expression::Linear_Expression(const Constraint& c,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(c);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(c);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Variable v)
-  : impl(new Linear_Expression_Impl<Dense_Row>(v)) {
+PPL::Linear_Expression::Linear_Expression(const Generator& g) {
+  switch (g.expression().representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(g);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(g);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Generator& g, Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(g);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(g);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g) {
+  switch (g.expression().representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(g);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(g);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(g);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(g);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Congruence& cg) {
+  switch (cg.expression().representation()) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(cg);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(cg);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Congruence& cg,
+                                          Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(cg);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(cg);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
+  switch (r) {
+  case DENSE:
+    impl = new Linear_Expression_Impl<Dense_Row>(v);
+    break;
+
+  case SPARSE:
+    impl = new Linear_Expression_Impl<Sparse_Row>(v);
+    break;
+
+  default:
+    PPL_ASSERT(false);
+  }
+}
+
+void
+PPL::Linear_Expression::set_representation(Representation r) {
+  if (representation() == r)
+    return;
+  Linear_Expression tmp(*this, r);
+  swap(tmp);
 }
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

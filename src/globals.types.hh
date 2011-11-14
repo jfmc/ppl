@@ -153,6 +153,30 @@ enum Bounded_Integer_Type_Overflow {
   OVERFLOW_IMPOSSIBLE
 };
 
+/*! \brief \ingroup PPL_CXX_interface
+  Possible representations of coefficient sequences (i.e. linear expressions
+  and more complex objects containing linear expressions, e.g. Constraints,
+  Generators, etc.).
+*/
+enum Representation {
+  /*! \brief
+    Dense representation: the coefficient sequence is represented as a vector
+    of coefficients, including the zero coefficients.
+    If there are only a few nonzero coefficients, this representation is
+    faster and also uses a bit less memory.
+  */
+  DENSE,
+
+  /*! \brief
+    Sparse representation: only the nonzero coefficient are stored.
+    If there are many nonzero coefficients, this improves memory consumption
+    and run time (both because there is less data to process in O(n)
+    operations and because finding zeroes/nonzeroes is much faster since
+    zeroes are not stored at all, so any stored coefficient is nonzero).
+  */
+  SPARSE
+};
+
 struct Weightwatch_Traits;
 
 } // namespace Parma_Polyhedra_Library
