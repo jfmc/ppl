@@ -743,6 +743,18 @@ private:
   //! Sets the i-th coefficient to n.
   void set(dimension_type i, Coefficient_traits::const_reference n);
 
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Returns the coefficient of v.
+  Coefficient_traits::const_reference get(Variable v) const;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Sets the coefficient of v to n.
+  void set(Variable v, Coefficient_traits::const_reference n);
+
   /*! \brief
     Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
     [start, end).

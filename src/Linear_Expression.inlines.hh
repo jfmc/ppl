@@ -415,6 +415,17 @@ Linear_Expression::set(dimension_type i,
   impl->set(i, n);
 }
 
+inline Coefficient_traits::const_reference
+Linear_Expression::get(Variable v) const {
+  return impl->get(v.space_dimension());
+}
+
+inline void
+Linear_Expression::set(Variable v,
+                       Coefficient_traits::const_reference n) {
+  impl->set(v.space_dimension(), n);
+}
+
 inline bool
 Linear_Expression::all_zeroes(dimension_type start, dimension_type end) const {
   return impl->all_zeroes(start, end);
