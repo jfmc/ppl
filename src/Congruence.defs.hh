@@ -265,12 +265,10 @@ public:
   //! Sets the modulus of \p *this to \p m .
   void set_modulus(Coefficient_traits::const_reference m);
 
-  // TODO: Check if this should be removed or made private.
   //! Multiplies all the coefficients, including the modulus, by \p factor .
   void scale(Coefficient_traits::const_reference factor);
 
-  // TODO: Check if this should be removed or made private.
-  // TODO: Consider improving the API and document it.
+  // TODO: Document this.
   void affine_preimage(Variable v,
                        const Linear_Expression& expr,
                        Coefficient_traits::const_reference denominator);
