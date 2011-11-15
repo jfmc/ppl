@@ -259,11 +259,6 @@ Congruence::set_is_equality() {
   modulus() = 0;
 }
 
-inline void
-Congruence::negate(dimension_type first, dimension_type last) {
-  expr.negate(first, last);
-}
-
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
   return expr.external_memory_in_bytes()
