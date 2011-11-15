@@ -256,6 +256,7 @@ public:
   //! \name Flags coercion methods
   //@{
 
+  // TODO: Consider setting the epsilon dimension in this method.
   //! Sets to \p x the topological kind of \p *this row.
   void set_topology(Topology x);
 
