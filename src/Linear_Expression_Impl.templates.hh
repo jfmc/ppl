@@ -466,12 +466,13 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Inte
 }
 
 template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Interface& e,
-                                                    dimension_type sz) {
+Linear_Expression_Impl<Row>
+::Linear_Expression_Impl(const Linear_Expression_Interface& e,
+                         dimension_type space_dim) {
   if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&e)) {
-    construct(*p, sz);
+    construct(*p, space_dim);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&e)) {
-    construct(*p, sz);
+    construct(*p, space_dim);
   } else {
     // Add implementations for other derived classes here.
     PPL_ASSERT(false);
@@ -479,9 +480,9 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Inte
 }
 
 template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg, dimension_type sz) {
-  PPL_ASSERT(sz != 0);
-  construct(*(cg.expression().impl), sz);
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg,
+                                                    dimension_type space_dim) {
+  construct(*(cg.expression().impl), space_dim);
 }
 
 template <typename Row>
@@ -609,14 +610,14 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) cons
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Constraint& c) {
   // Do not copy the epsilon dimension (if any).
-  construct(*(c.expression().impl), c.space_dimension() + 1);
+  construct(*(c.expression().impl), c.space_dimension());
   PPL_ASSERT(OK());
 }
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
   // Do not copy the epsilon dimension (if any).
-  construct(*(g.expression().impl), g.space_dimension() + 1);
+  construct(*(g.expression().impl), g.space_dimension());
   // Do not copy the divisor of `g'.
   row.reset(0);
   PPL_ASSERT(OK());
@@ -624,8 +625,8 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Grid_Generator& g) {
-  // NOTE: This does *not* copy the last coefficient.
-  construct(*(g.expression().impl), g.expression().space_dimension());
+  // This does not copy the last coefficient.
+  construct(*(g.expression().impl), g.space_dimension());
   // Do not copy the divisor of `g'.
   row.reset(0);
   PPL_ASSERT(OK());
@@ -1181,8 +1182,9 @@ template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e,
-                                       dimension_type sz) {
-  row = Row(e.row, sz, sz);
+                                       dimension_type space_dim) {
+  // TODO: Optimize this using swap().
+  row = Row(e.row, space_dim + 1, space_dim + 1);
   PPL_ASSERT(OK());
 }
 
@@ -1688,11 +1690,11 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y) {
 template <typename Row>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
-                                       dimension_type sz) {
+                                       dimension_type space_dim) {
   if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
-    return construct(*p, sz);
+    return construct(*p, space_dim);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
-    return construct(*p, sz);
+    return construct(*p, space_dim);
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);

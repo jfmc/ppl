@@ -324,11 +324,9 @@ public:
   // TODO: document this.
   Generator();
 
-  // TODO: Remove this.
-  explicit Generator(dimension_type num_columns);
+  explicit Generator(dimension_type space_dim);
 
-  // TODO: Remove this.
-  Generator(dimension_type num_columns, Kind kind, Topology topology);
+  Generator(dimension_type space_dim, Kind kind, Topology topology);
 
   // TODO: Remove this.
   Generator(dimension_type num_columns, dimension_type num_reserved_columns);
@@ -679,7 +677,7 @@ private:
   compare(const Generator& x, const Generator& y);
 
   //! Copy constructor with given space dimension.
-  Generator(const Generator& g, dimension_type dimension);
+  Generator(const Generator& g, dimension_type space_dim);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;

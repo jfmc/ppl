@@ -46,7 +46,7 @@ Congruence::Congruence(const Congruence& cg)
 inline
 Congruence::Congruence(const Congruence& cg,
 		       dimension_type new_space_dimension)
-  : expr(cg.expr, new_space_dimension + 1), modulus_(cg.modulus_) {
+  : expr(cg.expr, new_space_dimension), modulus_(cg.modulus_) {
   PPL_ASSERT(OK());
 }
 
@@ -111,7 +111,7 @@ Congruence::create(const Linear_Expression& e,
 		   Coefficient_traits::const_reference n) {
   // TODO: Improve this when changing the contract of the Congruence's
   // constructor from a Linear_Expression.
-  Linear_Expression diff(e, e.space_dimension() + 2);
+  Linear_Expression diff(e, e.space_dimension() + 1);
   diff -= n;
   Congruence cg(diff, 1);
   return cg;
@@ -122,7 +122,7 @@ Congruence::create(Coefficient_traits::const_reference n,
 		   const Linear_Expression& e) {
   // TODO: Improve this when changing the contract of the Congruence's
   // constructor from a Linear_Expression.
-  Linear_Expression diff(e, e.space_dimension() + 2);
+  Linear_Expression diff(e, e.space_dimension() + 1);
   diff -= n;
   Congruence cg(diff, 1);
   return cg;

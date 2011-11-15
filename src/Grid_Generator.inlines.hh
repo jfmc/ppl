@@ -101,16 +101,15 @@ Grid_Generator::Grid_Generator(const Grid_Generator& g)
 }
 
 inline
-Grid_Generator::Grid_Generator(dimension_type size, Kind kind, Topology topology)
+Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind, Topology topology)
   : expr(), kind_(kind) {
   PPL_ASSERT(topology == NECESSARILY_CLOSED);
-  PPL_ASSERT(size != 0);
-  expr.set_space_dimension(size - 1);
+  expr.set_space_dimension(space_dim);
 }
 
 inline
-Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type size)
-  : expr(g.expr, size), kind_(g.kind_) {
+Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type space_dim)
+  : expr(g.expr, space_dim), kind_(g.kind_) {
 }
 
 inline

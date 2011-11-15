@@ -70,15 +70,15 @@ PPL::Linear_Expression::Linear_Expression(Representation r) {
   }
 }
 
-PPL::Linear_Expression::Linear_Expression(dimension_type sz, bool x,
+PPL::Linear_Expression::Linear_Expression(dimension_type space_dim, bool x,
                                           Representation r) {
   switch (r) {
   case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(sz, x);
+    impl = new Linear_Expression_Impl<Dense_Row>(space_dim, x);
     break;
 
   case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(sz, x);
+    impl = new Linear_Expression_Impl<Sparse_Row>(space_dim, x);
     break;
 
   default:
@@ -86,14 +86,15 @@ PPL::Linear_Expression::Linear_Expression(dimension_type sz, bool x,
   }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz) {
+PPL::Linear_Expression::Linear_Expression(const Congruence& c,
+                                          dimension_type space_dim) {
   switch (c.expression().representation()) {
   case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(c, sz);
+    impl = new Linear_Expression_Impl<Dense_Row>(c, space_dim);
     break;
 
   case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(c, sz);
+    impl = new Linear_Expression_Impl<Sparse_Row>(c, space_dim);
     break;
 
   default:
@@ -101,15 +102,16 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz
   }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Congruence& c, dimension_type sz,
+PPL::Linear_Expression::Linear_Expression(const Congruence& c,
+                                          dimension_type space_dim,
                                           Representation r) {
   switch (r) {
   case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(c, sz);
+    impl = new Linear_Expression_Impl<Dense_Row>(c, space_dim);
     break;
 
   case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(c, sz);
+    impl = new Linear_Expression_Impl<Sparse_Row>(c, space_dim);
     break;
 
   default:
@@ -149,14 +151,14 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
-                                          dimension_type sz) {
+                                          dimension_type space_dim) {
   switch (e.representation()) {
   case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, sz);
+    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, space_dim);
     break;
 
   case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, sz);
+    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, space_dim);
     break;
 
   default:
@@ -165,15 +167,15 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
-                                          dimension_type sz,
+                                          dimension_type space_dim,
                                           Representation r) {
   switch (r) {
   case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, sz);
+    impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, space_dim);
     break;
 
   case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, sz);
+    impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, space_dim);
     break;
 
   default:

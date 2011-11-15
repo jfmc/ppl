@@ -293,7 +293,7 @@ operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 inline Linear_Expression
 operator-(const Variable v, const Linear_Expression& e) {
-  Linear_Expression result(e, std::max(v.space_dimension(), e.space_dimension()) + 1);
+  Linear_Expression result(e, std::max(v.space_dimension(), e.space_dimension()));
   result.negate(0, e.space_dimension() + 1);
   result += v;
   return result;
@@ -302,7 +302,7 @@ operator-(const Variable v, const Linear_Expression& e) {
 /*! \relates Linear_Expression */
 inline Linear_Expression
 operator-(const Linear_Expression& e, const Variable v) {
-  Linear_Expression result(e, std::max(v.space_dimension(), e.space_dimension()) + 1);
+  Linear_Expression result(e, std::max(v.space_dimension(), e.space_dimension()));
   result -= v;
   return result;
 }

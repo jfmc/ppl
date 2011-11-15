@@ -76,11 +76,10 @@ PPL::Constraint::Constraint(const Congruence& cg)
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
-			    dimension_type sz)
-  : expr(cg, sz),
+			    dimension_type space_dim)
+  : expr(cg, space_dim),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
-  PPL_ASSERT(sz != 0);
   if (!cg.is_equality())
     throw_invalid_argument("Constraint(cg)",
                            "congruence cg must be an equality.");

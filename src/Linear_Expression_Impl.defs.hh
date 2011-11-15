@@ -348,9 +348,9 @@ public:
   */
   virtual bool ascii_load(std::istream& s);
 
-  // TODO: Make this private.
   //! Copy constructor with a specified space dimension.
-  Linear_Expression_Impl(const Linear_Expression_Interface& e, dimension_type sz);
+  Linear_Expression_Impl(const Linear_Expression_Interface& e,
+                         dimension_type space_dim);
 
   //! Returns \p true if *this is equal to \p x.
   //! Note that (*this == x) has a completely different meaning.
@@ -620,16 +620,16 @@ public:
     The bool parameter is just to avoid problems with
     the constructor Linear_Expression_Impl(Coefficient_traits::const_reference n).
   */
-  Linear_Expression_Impl(dimension_type sz, bool);
+  Linear_Expression_Impl(dimension_type space_dim, bool);
 
   //! Builds the linear expression corresponding to congruence \p cg, and
-  //! with the specified size.
+  //! with the specified space dimension.
   /*!
     Given the congruence
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{sz-1} a_i x_i + b\f$.
+    this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
   */
-  Linear_Expression_Impl(const Congruence& cg, dimension_type sz);
+  Linear_Expression_Impl(const Congruence& cg, dimension_type space_dim);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -776,12 +776,12 @@ public:
 private:
 
   void construct(const Linear_Expression_Interface& e);
-  void construct(const Linear_Expression_Interface& e, dimension_type sz);
+  void construct(const Linear_Expression_Interface& e, dimension_type space_dim);
 
   template <typename Row2>
   void construct(const Linear_Expression_Impl<Row2>& e);
   template <typename Row2>
-  void construct(const Linear_Expression_Impl<Row2>& e, dimension_type sz);
+  void construct(const Linear_Expression_Impl<Row2>& e, dimension_type space_dim);
 
   Row row;
 

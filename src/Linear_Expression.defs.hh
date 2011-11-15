@@ -658,13 +658,11 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Linear_Expression& y);
 
-  // TODO: Make this private.
   //! Copy constructor with a specified space dimension.
-  Linear_Expression(const Linear_Expression& e, dimension_type sz);
+  Linear_Expression(const Linear_Expression& e, dimension_type space_dim);
 
-  // TODO: Make this private.
   //! Copy constructor with a specified space dimension and representation.
-  Linear_Expression(const Linear_Expression& e, dimension_type sz,
+  Linear_Expression(const Linear_Expression& e, dimension_type space_dim,
                     Representation r);
 
   //! Returns \p true if *this is equal to \p x.
@@ -709,28 +707,28 @@ private:
     The bool parameter is just to avoid problems with
     the constructor Linear_Expression(Coefficient_traits::const_reference n).
   */
-  Linear_Expression(dimension_type sz, bool,
+  Linear_Expression(dimension_type space_dim, bool,
                     Representation r = default_representation);
 
   //! Builds the linear expression corresponding to congruence \p cg, and
-  //! with the specified size.
+  //! with the specified space dimension.
   /*!
     Given the congruence
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{sz-1} a_i x_i + b\f$.
+    this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
 
     The constructed Linear_Expression has the same representation as \p cg.
   */
-  Linear_Expression(const Congruence& cg, dimension_type sz);
+  Linear_Expression(const Congruence& cg, dimension_type space_dim);
 
   //! Builds the linear expression corresponding to congruence \p cg, and
-  //! with the specified size.
+  //! with the specified space dimension.
   /*!
     Given the congruence
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{sz-1} a_i x_i + b\f$.
+    this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
   */
-  Linear_Expression(const Congruence& cg, dimension_type sz,
+  Linear_Expression(const Congruence& cg, dimension_type space_dim,
                     Representation r);
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,

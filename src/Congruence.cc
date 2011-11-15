@@ -40,7 +40,7 @@ PPL::Congruence::Congruence(const Constraint& c)
 	: (throw_invalid_argument("Congruence(c)",
 				  "constraint c must be an equality."),
 	   c.expression()),
-	c.space_dimension() + 1),
+	c.space_dimension()),
     modulus_(0) {
 }
 
@@ -51,7 +51,7 @@ PPL::Congruence::Congruence(const Constraint& c,
         : (throw_invalid_argument("Congruence(c)",
                                   "constraint c must be an equality."),
            c.expression()),
-        new_space_dimension + 1),
+        new_space_dimension),
     modulus_(0) {
 }
 
@@ -136,11 +136,11 @@ PPL::Congruence::create(const Linear_Expression& e1,
   // TODO: Improve this when changing the contract of the Congruence's
   // constructor from a Linear_Expression.
   if (e1.space_dimension() >= e2.space_dimension()) {
-    Linear_Expression e(e1, e1.space_dimension() + 2);
+    Linear_Expression e(e1, e1.space_dimension() + 1);
     e -= e2;
     return Congruence(e, 1);
   } else {
-    Linear_Expression e(e2, e2.space_dimension() + 2);
+    Linear_Expression e(e2, e2.space_dimension() + 1);
     neg_assign(e);
     e += e1;
     return Congruence(e, 1);

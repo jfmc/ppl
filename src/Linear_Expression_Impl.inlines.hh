@@ -48,9 +48,8 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl()
 
 template <typename Row>
 inline
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(dimension_type sz, bool)
-  : row(sz) {
-  PPL_ASSERT(sz != 0);
+Linear_Expression_Impl<Row>::Linear_Expression_Impl(dimension_type space_dim, bool)
+  : row(space_dim + 1) {
   PPL_ASSERT(OK());
 }
 

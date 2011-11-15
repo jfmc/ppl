@@ -276,20 +276,18 @@ public:
   //! Constructs an invalid Grid_Generator.
   Grid_Generator();
 
-  // TODO: Remove this.
-  //! Constructs a Grid_Generator with the specified size.
-  explicit Grid_Generator(dimension_type size);
+  //! Constructs a Grid_Generator with the specified space dimension.
+  explicit Grid_Generator(dimension_type space_dim);
 
-  // TODO: Remove this.
-  //! Constructs a Grid_Generator with the specified size, kind and topology.
-  Grid_Generator(dimension_type size, Kind kind, Topology topology);
+  //! Constructs a Grid_Generator with the specified space dimension, kind
+  //! and topology.
+  Grid_Generator(dimension_type space_dim, Kind kind, Topology topology);
 
   //! Ordinary copy constructor.
   Grid_Generator(const Grid_Generator& g);
 
-  // TODO: Remove this.
-  //! Copy constructor with specified size.
-  Grid_Generator(const Grid_Generator& g, dimension_type size);
+  //! Copy constructor with specified space dimension.
+  Grid_Generator(const Grid_Generator& g, dimension_type space_dim);
 
   //! Destructor.
   ~Grid_Generator();

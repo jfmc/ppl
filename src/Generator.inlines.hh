@@ -112,19 +112,17 @@ Generator::Generator()
 }
 
 inline
-Generator::Generator(dimension_type num_columns)
+Generator::Generator(dimension_type space_dim)
   : expr(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
-  PPL_ASSERT(num_columns != 0);
-  expr.set_space_dimension(num_columns - 1);
+  expr.set_space_dimension(space_dim);
 }
 
 inline
-Generator::Generator(dimension_type num_columns, Kind kind, Topology topology)
+Generator::Generator(dimension_type space_dim, Kind kind, Topology topology)
   : expr(), kind_(kind), topology_(topology) {
-  PPL_ASSERT(num_columns != 0);
-  expr.set_space_dimension(num_columns - 1);
+  expr.set_space_dimension(space_dim);
 }
 
 inline
@@ -166,14 +164,14 @@ Generator::Generator(const Generator& g)
 }
 
 inline
-Generator::Generator(const Generator& g, dimension_type dimension)
-  : expr(g.expr, dimension), kind_(g.kind_), topology_(g.topology_) {
+Generator::Generator(const Generator& g, dimension_type space_dim)
+  : expr(g.expr, space_dim), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline
-Generator::Generator(const Generator& g, dimension_type num_columns,
+Generator::Generator(const Generator& g, dimension_type space_dim,
                      dimension_type /* num_reserved_columns */)
-  : expr(g.expr, num_columns), kind_(g.kind_), topology_(g.topology_) {
+  : expr(g.expr, space_dim), kind_(g.kind_), topology_(g.topology_) {
 }
 
 inline

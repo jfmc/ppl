@@ -114,20 +114,27 @@ Constraint::set_not_necessarily_closed() {
 }
 
 inline
-Constraint::Constraint(dimension_type sz)
+Constraint::Constraint(dimension_type space_dim)
   : expr(),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
-  PPL_ASSERT(sz != 0);
-  expr.set_space_dimension(sz - 1);
+  expr.set_space_dimension(space_dim);
   PPL_ASSERT(OK());
 }
 
 inline
-Constraint::Constraint(dimension_type sz, Kind kind, Topology topology)
+Constraint::Constraint()
+  : expr(),
+    kind_(RAY_OR_POINT_OR_INEQUALITY),
+    topology_(NOT_NECESSARILY_CLOSED) {
+  expr.set_space_dimension(1);
+  PPL_ASSERT(OK());
+}
+
+inline
+Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology)
   : expr(), kind_(kind), topology_(topology) {
-  PPL_ASSERT(sz != 0);
-  expr.set_space_dimension(sz - 1);
+  expr.set_space_dimension(space_dim);
   PPL_ASSERT(OK());
 }
 
@@ -151,8 +158,8 @@ Constraint::Constraint(const Constraint& c)
 }
 
 inline
-Constraint::Constraint(const Constraint& c, const dimension_type sz)
-  : expr(c.expr, sz), kind_(c.kind_), topology_(c.topology_) {
+Constraint::Constraint(const Constraint& c, const dimension_type space_dim)
+  : expr(c.expr, space_dim), kind_(c.kind_), topology_(c.topology_) {
   PPL_ASSERT(OK());
 }
 
