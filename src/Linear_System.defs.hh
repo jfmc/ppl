@@ -432,12 +432,6 @@ public:
   */
   void simplify();
 
-  /*! \brief
-    Normalizes the system by dividing each row for the GCD of the
-    row's elements.
-  */
-  void normalize();
-
   //! Clears the system deallocating all its rows.
   void clear();
 

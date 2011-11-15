@@ -503,17 +503,6 @@ Linear_System<Row>::add_pending_row(const Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::normalize() {
-  const dimension_type nrows = rows.size();
-  // We normalize also the pending rows.
-  for (dimension_type i = nrows; i-- > 0; )
-    rows[i].expression().normalize();
-  sorted = (nrows <= 1);
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
 Linear_System<Row>::strong_normalize() {
   const dimension_type nrows = rows.size();
   // We strongly normalize also the pending rows.
