@@ -60,11 +60,11 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
     throw std::invalid_argument("PPL::parameter(e, d):\n"
 				"d == 0.");
   // Add 1 to space dimension to allow for parameter divisor column.
-  const dimension_type gg_dim = 1 + e.space_dimension();
-  Linear_Expression ec(e, gg_dim);
+  Linear_Expression ec(e, e.space_dimension() + 1);
 
   ec.set_inhomogeneous_term(Coefficient_zero());
-  ec.set(gg_dim, d);
+  const Variable divisor_var(e.space_dimension());
+  ec.set(divisor_var, d);
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter, so as to satisfy the invariant.
@@ -209,7 +209,7 @@ PPL::Grid_Generator::set_is_parameter() {
     set_is_parameter_or_point();
   else if (!is_line_or_parameter()) {
     // The grid generator is a point.
-    expr.set(expr.space_dimension(), expr.inhomogeneous_term());
+    expr.set(Variable(expr.space_dimension() - 1), expr.inhomogeneous_term());
     expr.set_inhomogeneous_term(Coefficient_zero());
   }
 }
@@ -246,10 +246,10 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
   Grid_Generator tmp_x = *this;
   Grid_Generator tmp_y = y;
-  dimension_type last = x_space_dim + 1;
+  Variable last_var(x_space_dim);
   if (x_type == POINT || x_type == LINE) {
-    tmp_x.expr.set(last, Coefficient_zero());
-    tmp_y.expr.set(last, Coefficient_zero());
+    tmp_x.expr.set(last_var, Coefficient_zero());
+    tmp_y.expr.set(last_var, Coefficient_zero());
   }
   // Normalize the copies, including the divisor column.
   tmp_x.expr.normalize();

@@ -607,7 +607,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // equalities following it, so that all the elements on the j-th
       // column in these rows become 0.
       for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k) {
-        if (rows[k].expression().get(j) != 0) {
+        if (rows[k].expression().get(Variable(j - 1)) != 0) {
           rows[k].linear_combine(rows[rank], j);
           changed = true;
         }
@@ -653,11 +653,13 @@ Linear_System<Row>
     // `j' will be the index of such a element.
     Row& row_k = rows[k];
     dimension_type j = row_k.expression().last_nonzero();
+    // TODO: Check this.
+    PPL_ASSERT(j != 0);
 
     // Go through the equalities above `row_k'.
     for (dimension_type i = k; i-- > 0; ) {
       Row& row_i = rows[i];
-      if (row_i.expression().get(j) != 0) {
+      if (row_i.expression().get(Variable(j - 1)) != 0) {
 	// Combine linearly `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
         row_i.linear_combine(row_k, j);
@@ -676,7 +678,7 @@ Linear_System<Row>
     // Since an inequality (or ray or point) cannot be multiplied
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
-    const bool have_to_negate = (row_k.expression().get(j) < 0);
+    const bool have_to_negate = (row_k.expression().get(Variable(j - 1)) < 0);
     if (have_to_negate)
 	neg_assign(row_k.expression());
     // Note: we do not mark index `k' in `check_for_sortedness',
@@ -685,7 +687,7 @@ Linear_System<Row>
     // Go through all the other rows of the system.
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Row& row_i = rows[i];
-      if (row_i.expression().get(j) != 0) {
+      if (row_i.expression().get(Variable(j - 1)) != 0) {
 	// Combine linearly the `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
         row_i.linear_combine(row_k, j);

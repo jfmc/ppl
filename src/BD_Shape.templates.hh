@@ -85,15 +85,15 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // TODO: Check if the following loop can be optimized used
         // Linear_Expression::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
-          const Coefficient& g_i = g.expression().get(i);
+          const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
           for (dimension_type j = space_dim; j > 0; --j)
             if (i != j)
-              div_round_up(dbm_i[j], g.expression().get(j) - g_i, d);
+              div_round_up(dbm_i[j], g.expression().get(Variable(j - 1)) - g_i, d);
           div_round_up(dbm_i[0], -g_i, d);
         }
         for (dimension_type j = space_dim; j > 0; --j)
-          div_round_up(dbm_0[j], g.expression().get(j), d);
+          div_round_up(dbm_0[j], g.expression().get(Variable(j - 1)), d);
         // Note: no need to initialize the first element of the main diagonal.
       }
       else {
@@ -103,18 +103,18 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // TODO: Check if the following loop can be optimized used
         // Linear_Expression::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
-          const Coefficient& g_i = g.expression().get(i);
+          const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
           // The loop correctly handles the case when i == j.
           for (dimension_type j = space_dim; j > 0; --j) {
-            div_round_up(tmp, g.expression().get(j) - g_i, d);
+            div_round_up(tmp, g.expression().get(Variable(j - 1)) - g_i, d);
             max_assign(dbm_i[j], tmp);
           }
           div_round_up(tmp, -g_i, d);
           max_assign(dbm_i[0], tmp);
         }
         for (dimension_type j = space_dim; j > 0; --j) {
-          div_round_up(tmp, g.expression().get(j), d);
+          div_round_up(tmp, g.expression().get(Variable(j - 1)), d);
           max_assign(dbm_0[j], tmp);
         }
       }
@@ -139,11 +139,11 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
       // TODO: Check if the following loop can be optimized used
       // Linear_Expression::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
-        const Coefficient& g_i = g.expression().get(i);
+        const Coefficient& g_i = g.expression().get(Variable(i - 1));
         DB_Row<N>& dbm_i = dbm[i];
         // The loop correctly handles the case when i == j.
         for (dimension_type j = space_dim; j > 0; --j)
-          if (g_i != g.expression().get(j))
+          if (g_i != g.expression().get(Variable(j - 1)))
             assign_r(dbm_i[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
         if (g_i != 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
@@ -157,11 +157,11 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
       // TODO: Check if the following loop can be optimized used
       // Linear_Expression::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
-        const Coefficient& g_i = g.expression().get(i);
+        const Coefficient& g_i = g.expression().get(Variable(i - 1));
         DB_Row<N>& dbm_i = dbm[i];
         // The loop correctly handles the case when i == j.
         for (dimension_type j = space_dim; j > 0; --j)
-          if (g_i < g.expression().get(j))
+          if (g_i < g.expression().get(Variable(j - 1)))
             assign_r(dbm_i[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
         if (g_i < 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
@@ -1245,7 +1245,8 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       // Set `coeff_expr' to the absolute value of coefficient of
       // a variable in `expr'.
       PPL_DIRTY_TEMP(N, coeff_expr);
-      const Coefficient& coeff_i = expr.get(i);
+      PPL_ASSERT(i != 0);
+      const Coefficient& coeff_i = expr.get(Variable(i - 1));
       const int sign_i = sgn(coeff_i);
       if (sign_i > 0)
         assign_r(coeff_expr, coeff_i, ROUND_UP);
@@ -3478,7 +3479,7 @@ BD_Shape<T>::refine(const Variable var,
   // coefficient (taking into account the denominator) is 1.
   // If this is not the case, we fall back to the general case
   // so as to over-approximate the constraint.
-  if (t == 1 && expr.get(w) != denominator)
+  if (t == 1 && expr.get(Variable(w - 1)) != denominator)
     t = 2;
 
   // Now we know the form of `expr':
@@ -3515,7 +3516,7 @@ BD_Shape<T>::refine(const Variable var,
 
   if (t == 1) {
     // Case 2: expr == a*w + b, w != v, a == denominator.
-    PPL_ASSERT(expr.get(w) == denominator);
+    PPL_ASSERT(expr.get(Variable(w - 1)) == denominator);
     PPL_DIRTY_TEMP(N, d);
     switch (relsym) {
     case EQUAL:
@@ -3680,7 +3681,7 @@ BD_Shape<T>::refine(const Variable var,
         }
         else
           // Here `pinf_count == 1'.
-          if (pinf_index != v && sc_expr.get(pinf_index) == sc_den)
+          if (pinf_index != v && sc_expr.get(Variable(pinf_index - 1)) == sc_den)
             // Add the constraint `v - pinf_index <= sum'.
             dbm[pinf_index][v] = sum;
       }
@@ -3700,7 +3701,7 @@ BD_Shape<T>::refine(const Variable var,
         }
         else
           // Here `neg_pinf_count == 1'.
-          if (neg_pinf_index != v && sc_expr.get(neg_pinf_index) == sc_den)
+          if (neg_pinf_index != v && sc_expr.get(Variable(neg_pinf_index - 1)) == sc_den)
             // Add the constraint `v - neg_pinf_index >= -neg_sum',
             // i.e., `neg_pinf_index - v <= neg_sum'.
             dbm[v][neg_pinf_index] = neg_sum;
@@ -3760,7 +3761,7 @@ BD_Shape<T>::refine(const Variable var,
       deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
     }
     else if (pinf_count == 1)
-      if (expr.get(pinf_index) == denominator)
+      if (expr.get(Variable(pinf_index - 1)) == denominator)
         // Add the constraint `v - pinf_index <= sum'.
         add_dbm_constraint(pinf_index, v, sum);
       break;
@@ -3817,7 +3818,7 @@ BD_Shape<T>::refine(const Variable var,
     }
     else if (pinf_count == 1)
       if (pinf_index != v
-          && expr.get(pinf_index) == denominator)
+          && expr.get(Variable(pinf_index)) == denominator)
         // Add the constraint `v - pinf_index >= -sum',
         // i.e., `pinf_index - v <= sum'.
         add_dbm_constraint(v, pinf_index, sum);
@@ -3897,7 +3898,7 @@ BD_Shape<T>::affine_image(const Variable var,
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& a = expr.get(w);
+    const Coefficient& a = expr.get(Variable(w - 1));
     if (a == denominator || a == minus_den) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       if (w == v) {
@@ -4125,7 +4126,7 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     else
       // Here `pos_pinf_count == 1'.
-      if (pos_pinf_index != v && sc_expr.get(pos_pinf_index) == sc_den)
+      if (pos_pinf_index != v && sc_expr.get(Variable(pos_pinf_index - 1)) == sc_den)
         // Add the constraint `v - pos_pinf_index <= pos_sum'.
         dbm[pos_pinf_index][v] = pos_sum;
   }
@@ -4153,7 +4154,7 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     else
       // Here `neg_pinf_count == 1'.
-      if (neg_pinf_index != v && sc_expr.get(neg_pinf_index) == sc_den)
+      if (neg_pinf_index != v && sc_expr.get(Variable(neg_pinf_index - 1)) == sc_den)
         // Add the constraint `v - neg_pinf_index >= -neg_sum',
         // i.e., `neg_pinf_index - v <= neg_sum'.
         dbm[v][neg_pinf_index] = neg_sum;
@@ -4222,7 +4223,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& a = expr.get(j);
+    const Coefficient& a = expr.get(Variable(j - 1));
     if (a == denominator || a == -denominator) {
       // Case 2: expr = a*w + b, with a = +/- denominator.
       if (j == var.space_dimension())
@@ -4333,7 +4334,7 @@ BD_Shape<T>
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `ub_expr'.
-    const Coefficient& a = ub_expr.get(w);
+    const Coefficient& a = ub_expr.get(Variable(w - 1));
     if (a == denominator || a == minus_den) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       if (w == v) {
@@ -4497,7 +4498,7 @@ BD_Shape<T>
     }
     else
       // Here `pos_pinf_count == 1'.
-      if (pos_pinf_index != v && sc_expr.get(pos_pinf_index) == sc_den)
+      if (pos_pinf_index != v && sc_expr.get(Variable(pos_pinf_index - 1)) == sc_den)
         // Add the constraint `v - pos_pinf_index <= pos_sum'.
         dbm[pos_pinf_index][v] = pos_sum;
   }
@@ -4673,7 +4674,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& a = expr.get(w);
+    const Coefficient& a = expr.get(Variable(w - 1));
     if (a == denominator || a == minus_den) {
       // Case 2: expr == a*w + b, with a == +/- denominator.
       PPL_DIRTY_TEMP(N, d);
@@ -4890,7 +4891,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, sum);
     }
     else if (pinf_count == 1)
-      if (pinf_index != v && expr.get(pinf_index) == denominator)
+      if (pinf_index != v && expr.get(Variable(pinf_index - 1)) == denominator)
         // Add the constraint `v - pinf_index <= sum'.
         add_dbm_constraint(pinf_index, v, sum);
     break;
@@ -4957,7 +4958,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, sum);
     }
     else if (pinf_count == 1)
-      if (pinf_index != v && expr.get(pinf_index) == denominator)
+      if (pinf_index != v && expr.get(Variable(pinf_index - 1)) == denominator)
         // Add the constraint `v - pinf_index >= -sum',
         // i.e., `pinf_index - v <= sum'.
         add_dbm_constraint(v, pinf_index, sum);

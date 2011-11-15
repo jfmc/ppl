@@ -153,16 +153,20 @@ Polyhedron::minimize(const bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
-  const dimension_type checking_index
-    = dest.is_necessarily_closed()
-    ? 0
-    : dest.space_dimension() + 1;
   dimension_type first_point;
-  for (first_point = num_lines_or_equalities;
-       first_point < dest_num_rows;
-       ++first_point)
-    if (dest[first_point].expression().get(checking_index) > 0)
-      break;
+  if (dest.is_necessarily_closed()) {
+    for (first_point = num_lines_or_equalities;
+        first_point < dest_num_rows;
+        ++first_point)
+      if (dest[first_point].expression().inhomogeneous_term() > 0)
+        break;
+  } else {
+    for (first_point = num_lines_or_equalities;
+        first_point < dest_num_rows;
+        ++first_point)
+      if (dest[first_point].expression().get(Variable(dest.space_dimension())) > 0)
+        break;
+  }
 
   if (first_point == dest_num_rows)
     if (con_to_gen)
@@ -371,16 +375,20 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
-  const dimension_type checking_index
-    = dest.is_necessarily_closed()
-    ? 0
-    : dest.space_dimension() + 1;
   dimension_type first_point;
-  for (first_point = num_lines_or_equalities;
-       first_point < dest_num_rows;
-       ++first_point)
-     if (dest[first_point].expression().get(checking_index) > 0)
-      break;
+  if (dest.is_necessarily_closed()) {
+    for (first_point = num_lines_or_equalities;
+        first_point < dest_num_rows;
+        ++first_point)
+      if (dest[first_point].expression().inhomogeneous_term() > 0)
+        break;
+  } else {
+    for (first_point = num_lines_or_equalities;
+        first_point < dest_num_rows;
+        ++first_point)
+      if (dest[first_point].expression().get(Variable(dest.space_dimension())) > 0)
+        break;
+  }
 
   if (first_point == dest_num_rows)
     if (con_to_gen)

@@ -1137,7 +1137,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // system.
   Constraint_System& cs = x.con_sys;
   Bit_Matrix& sat = x.sat_g;
-  const dimension_type eps_index = cs.space_dimension() + 1;
+  const Variable eps_var(cs.space_dimension());
   // Note that cs.num_rows() is *not* constant because the calls to
   // cs.remove_row() decrease it.
   for (dimension_type i = 0; i < cs.num_rows(); )
@@ -1151,7 +1151,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  // Check if it is the eps_leq_one constraint.
           const Constraint& c = cs[i];
           const Linear_Expression& e = c.expression();
-	  if (e.all_zeroes(1, eps_index) && (e.inhomogeneous_term() + e.get(eps_index) == 0)) {
+	  if (e.all_zeroes(1, eps_var.space_dimension())
+              && (e.inhomogeneous_term() + e.get(eps_var) == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
