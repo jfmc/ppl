@@ -376,14 +376,6 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  // TODO: Make this private.
-  //! Calls normalize, then divides out common factors.
-  /*!
-    Strongly normalized Congruences have equivalent semantics if and
-    only if their syntaxes (as output by operator<<) are equal.
-  */
-  void strong_normalize();
-
   //! Copy-constructs with the specified space dimension.
   Congruence(const Congruence& cg, dimension_type new_space_dimension);
 
@@ -424,8 +416,6 @@ public:
   //! index greater than \p i . The space dimension is increased by \p n .
   void shift_coefficients(dimension_type n, dimension_type i);
 
-protected:
-
   //! Normalizes the signs.
   /*!
     The signs of the coefficients and the inhomogeneous term are
@@ -440,6 +430,13 @@ protected:
     smallest possible positive number.
   */
   void normalize();
+
+  //! Calls normalize, then divides out common factors.
+  /*!
+    Strongly normalized Congruences have equivalent semantics if and
+    only if their syntaxes (as output by operator<<) are equal.
+  */
+  void strong_normalize();
 
 private:
   /*! \brief
