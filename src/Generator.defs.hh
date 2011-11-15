@@ -343,6 +343,9 @@ public:
   //! Ordinary copy constructor.
   Generator(const Generator& g);
 
+  //! Copy constructor with given space dimension.
+  Generator(const Generator& g, dimension_type space_dim);
+
   //! Destructor.
   ~Generator();
 
@@ -385,22 +388,6 @@ public:
   //! Sets to \p x the topological kind of \p *this row.
   void set_topology(Topology x);
 
-  // TODO: Consider removing this, or making it private.
-  //! Marks the epsilon dimension as a standard dimension.
-  /*!
-    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is increased by 1.
-  */
-  void mark_as_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the last dimension as the epsilon dimension.
-  /*!
-    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is decreased by 1.
-  */
-  void mark_as_not_necessarily_closed();
-
   //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_necessarily_closed();
 
@@ -427,7 +414,6 @@ public:
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 
-  // TODO: Consider making this private.
   //! Removes all the specified dimensions from the generator.
   /*!
     The space dimension of the variable with the highest space
@@ -440,9 +426,8 @@ public:
   */
   bool remove_space_dimensions(const Variables_Set& vars);
 
-  // TODO: Consider making this private.
   //! Permutes the space dimensions of the generator.
-  /*
+  /*!
     \param cycle
     A vector representing a cycle of the permutation according to which the
     space dimensions must be rearranged.
@@ -587,23 +572,7 @@ public:
   // TODO: Remove this.
   const Linear_Expression& expression() const;
 
-  // FIXME: Consider making this private.
-  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
-  /*!
-    \param y
-    The Generator that will be combined with \p *this object;
-
-    \param i
-    The index of the coefficient that has to become \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the i-th coefficient equal to \f$0\f$. Then it assigns
-    the resulting Generator to \p *this and normalizes it.
-  */
-  void linear_combine(const Generator& y, dimension_type i);
-
 private:
-
   Linear_Expression expr;
 
   Kind kind_;
@@ -633,6 +602,34 @@ private:
 
   Generator(Linear_Expression& e, Kind kind, Topology topology);
 
+  //! Marks the epsilon dimension as a standard dimension.
+  /*!
+    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is increased by 1.
+  */
+  void mark_as_necessarily_closed();
+
+  //! Marks the last dimension as the epsilon dimension.
+  /*!
+    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is decreased by 1.
+  */
+  void mark_as_not_necessarily_closed();
+
+  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
+  /*!
+    \param y
+    The Generator that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting Generator to \p *this and normalizes it.
+  */
+  void linear_combine(const Generator& y, dimension_type i);
+
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .
   //! Sets the space dimension of the rows in the system to \p space_dim .
@@ -658,32 +655,6 @@ private:
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
-  friend class Linear_System<Generator>;
-  friend class Parma_Polyhedra_Library::Scalar_Products;
-  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
-  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;
-  friend class Parma_Polyhedra_Library::Generator_System;
-  friend class Parma_Polyhedra_Library::Generator_System_const_iterator;
-  // FIXME: the following friend declaration should be avoided.
-  friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::Grid_Generator;
-  // This is for access to Linear_Expression in `insert'.
-  friend class Parma_Polyhedra_Library::Grid_Generator_System;
-
-  friend
-  Parma_Polyhedra_Library
-  ::Linear_Expression::Linear_Expression(const Generator& g);
-
-  friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Generator& g);
-
-  friend int
-  compare(const Generator& x, const Generator& y);
-
-  //! Copy constructor with given space dimension.
-  Generator(const Generator& g, dimension_type space_dim);
-
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;
 
@@ -707,6 +678,29 @@ private:
 
   //! Sets the epsilon coefficient to \p n. The generator must be NNC.
   void set_epsilon_coefficient(Coefficient_traits::const_reference n);
+
+  friend class Linear_System<Generator>;
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;
+  friend class Parma_Polyhedra_Library::Generator_System;
+  friend class Parma_Polyhedra_Library::Generator_System_const_iterator;
+  // FIXME: the following friend declaration should be avoided.
+  friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid_Generator;
+  // This is for access to Linear_Expression in `insert'.
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
+
+  friend
+  Parma_Polyhedra_Library
+  ::Linear_Expression::Linear_Expression(const Generator& g);
+
+  friend std::ostream&
+  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+						    const Generator& g);
+
+  friend int
+  compare(const Generator& x, const Generator& y);
 };
 
 
