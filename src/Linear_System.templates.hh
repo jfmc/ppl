@@ -374,7 +374,7 @@ void
 Linear_System<Row>::shift_space_dimensions(Variable v, dimension_type n) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   for (dimension_type i = rows.size(); i-- > 0; )
-    rows[i].expression().shift_space_dimensions(v, n);
+    rows[i].shift_space_dimensions(v, n);
   space_dimension_ += n;
   PPL_ASSERT(OK());
 }
