@@ -843,16 +843,20 @@ Linear_System<Row>
     // Try to preserve sortedness of `gen_sys'.
     PPL_ASSERT(old_space_dim != 0);
     if (!is_sorted()) {
-      for (dimension_type i = n; i-- > 0; )
-        rows[i].expression().swap_space_dimensions(Variable(old_space_dim - 1),
-                                                   Variable(old_space_dim - 1 + n));
+      for (dimension_type i = n; i-- > 0; ) {
+        rows[i].expr.swap_space_dimensions(Variable(old_space_dim - 1),
+                                           Variable(old_space_dim - 1 + n));
+        PPL_ASSERT(rows[i].OK());
+      }
     } else {
       dimension_type old_eps_index = old_space_dim - 1;
       // The upper-right corner of `rows' contains the J matrix:
       // swap coefficients to preserve sortedness.
-      for (dimension_type i = n; i-- > 0; ++old_eps_index)
-        rows[i].expression().swap_space_dimensions(Variable(old_eps_index),
-                                                   Variable(old_eps_index + 1));
+      for (dimension_type i = n; i-- > 0; ++old_eps_index) {
+        rows[i].expr.swap_space_dimensions(Variable(old_eps_index),
+                                           Variable(old_eps_index + 1));
+        PPL_ASSERT(rows[i].OK());
+      }
 
       sorted = true;
     }
