@@ -144,6 +144,18 @@ Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology)
 }
 
 inline
+Constraint::Constraint(Linear_Expression& e, Kind kind, Topology topology)
+  : kind_(kind), topology_(topology) {
+  PPL_ASSERT(kind != RAY_OR_POINT_OR_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
+  expr.swap(e);
+  if (topology == NOT_NECESSARILY_CLOSED)
+    // Add the epsilon dimension.
+    expr.set_space_dimension(expr.space_dimension() + 1);
+  strong_normalize();
+  PPL_ASSERT(OK());
+}
+
+inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);

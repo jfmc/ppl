@@ -486,6 +486,8 @@ public:
   */
   Constraint(Linear_Expression& e, Type type, Topology topology);
 
+  Constraint(Linear_Expression& e, Kind kind, Topology topology);
+
   //! Constructs from a congruence, with specified size.
   Constraint(const Congruence& cg, dimension_type space_dim);
 
