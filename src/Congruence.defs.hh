@@ -393,9 +393,6 @@ public:
   Congruence(const Constraint& cg, dimension_type new_space_dimension);
 
   // TODO: Make this private.
-  // FIXME: This constructs a Congruence with space dimension
-  // `le.space_dimension() - 1', but it probably should construct a Congruence
-  // with space dimension `le.space_dimension()'.
   //! Constructs from Linear_Expression \p le, using modulus \p m.
   /*!
     Builds a congruence with modulus \p m, stealing the coefficients

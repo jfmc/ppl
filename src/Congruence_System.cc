@@ -438,8 +438,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   // Set the space dimension and the diagonal element of each added row.
   for (dimension_type row = dims; row-- > 0; ) {
     Linear_Expression expr;
-    // FIXME: The `+1' is needed by the current API, but it shouldn't be.
-    expr.set_space_dimension(space_dimension() + 1);
+    expr.set_space_dimension(space_dimension());
     PPL_ASSERT(col >= row + 1);
     expr += Variable(col - row - 1);
     // This constructor steals the contents of `expr'.

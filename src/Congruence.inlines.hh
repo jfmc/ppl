@@ -99,19 +99,13 @@ Congruence::Congruence(Linear_Expression& le,
   PPL_ASSERT(m >= 0);
   expr.swap(le);
 
-  // TODO: Remove this when the constructor's contract is changed.
-  PPL_ASSERT(expr.space_dimension() != 0);
-  expr.set_space_dimension(expr.space_dimension() - 1);
-  
   PPL_ASSERT(OK());
 }
 
 inline Congruence
 Congruence::create(const Linear_Expression& e,
 		   Coefficient_traits::const_reference n) {
-  // TODO: Improve this when changing the contract of the Congruence's
-  // constructor from a Linear_Expression.
-  Linear_Expression diff(e, e.space_dimension() + 1);
+  Linear_Expression diff = e;
   diff -= n;
   Congruence cg(diff, 1);
   return cg;
@@ -120,9 +114,7 @@ Congruence::create(const Linear_Expression& e,
 inline Congruence
 Congruence::create(Coefficient_traits::const_reference n,
 		   const Linear_Expression& e) {
-  // TODO: Improve this when changing the contract of the Congruence's
-  // constructor from a Linear_Expression.
-  Linear_Expression diff(e, e.space_dimension() + 1);
+  Linear_Expression diff = e;
   diff -= n;
   Congruence cg(diff, 1);
   return cg;

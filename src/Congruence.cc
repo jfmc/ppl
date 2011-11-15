@@ -133,14 +133,12 @@ PPL::Congruence
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
 			const Linear_Expression& e2) {
-  // TODO: Improve this when changing the contract of the Congruence's
-  // constructor from a Linear_Expression.
   if (e1.space_dimension() >= e2.space_dimension()) {
-    Linear_Expression e(e1, e1.space_dimension() + 1);
+    Linear_Expression e(e1, e1.space_dimension());
     e -= e2;
     return Congruence(e, 1);
   } else {
-    Linear_Expression e(e2, e2.space_dimension() + 1);
+    Linear_Expression e(e2, e2.space_dimension());
     neg_assign(e);
     e += e1;
     return Congruence(e, 1);

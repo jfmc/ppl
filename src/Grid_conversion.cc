@@ -196,9 +196,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       --source_index;
     else {
       Linear_Expression le;
-      // The `+ 1' is needed because the Congruence constructor that takes
-      // a Linear_Expression currently reduces the space dimension by 1.
-      le.set_space_dimension(dest.space_dimension() + 1);
+      le.set_space_dimension(dest.space_dimension());
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
         le.set(dim, Coefficient_one());
