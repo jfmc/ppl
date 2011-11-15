@@ -525,13 +525,6 @@ public:
   //! Sets the Grid_Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter_or_point();
 
-  // TODO: Make this private.
-  /*! \brief
-    Negates the elements from index \p first (included)
-    to index \p last (excluded).
-  */
-  void negate(dimension_type first, dimension_type last);
-
   //! Swaps the coefficients of \p v1 and \p v2.
   void swap(Variable v1, Variable v2);
 

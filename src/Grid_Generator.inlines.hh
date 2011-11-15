@@ -224,11 +224,6 @@ Grid_Generator::operator=(const Grid_Generator& g) {
   return *this;
 }
 
-inline void
-Grid_Generator::negate(dimension_type first, dimension_type last) {
-  expr.negate(first, last);
-}
-
 inline Coefficient_traits::const_reference
 Grid_Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
