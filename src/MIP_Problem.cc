@@ -914,7 +914,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
   if (tableau_num_rows == 0) {
-    if (input_obj_function.is_unbounded_obj_function(mapping, opt_mode)) {
+    if (is_unbounded_obj_function(input_obj_function, mapping, opt_mode)) {
       // Ensure the right space dimension is obtained.
       last_generator = point(0 * Variable(space_dimension() - 1));
       status = UNBOUNDED;
@@ -1377,6 +1377,32 @@ PPL::MIP_Problem::linear_combine(Dense_Row& x,
 }
 
 #endif // defined(USE_PPL_SPARSE_MATRIX)
+
+bool
+PPL::MIP_Problem::is_unbounded_obj_function(
+  const Linear_Expression& x,
+  const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
+  Optimization_Mode optimization_mode) {
+
+  for (Linear_Expression::const_iterator i = x.begin(), i_end = x.end();
+        i != i_end; ++i) {
+    // If a the value of a variable in the objective function is
+    // different from zero, the final status is unbounded.
+    // In the first part the variable is constrained to be greater or equal
+    // than zero.
+    if (mapping[i.variable().space_dimension()].second != 0)
+      return true;
+    if (optimization_mode == MAXIMIZATION) {
+      if (*i > 0)
+        return true;
+    } else {
+      PPL_ASSERT(optimization_mode == MINIMIZATION);
+      if (*i < 0)
+        return true;
+    }
+  }
+  return false;
+}
 
 // See pages 42-43 of [PapadimitriouS98].
 void

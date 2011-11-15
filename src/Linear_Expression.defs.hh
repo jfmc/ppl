@@ -850,12 +850,6 @@ private:
   //! Sets `row' to a copy of the row that implements *this.
   void get_row(Sparse_Row& row) const;
 
-  //! Checks if *this, interpreted as an objective function of a linear
-  //! problem, is unbounded.
-  bool is_unbounded_obj_function(
-    const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
-    Optimization_Mode optimization_mode) const;
-
   //! Returns true if there is a variable in [first,last) whose coefficient
   //! is nonzero in both *this and x.
   bool have_a_common_variable(const Linear_Expression& x,

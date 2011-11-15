@@ -753,6 +753,11 @@ private:
 
 #endif // defined(USE_PPL_SPARSE_MATRIX)
 
+  static bool is_unbounded_obj_function(
+    const Linear_Expression& obj_function,
+    const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
+    Optimization_Mode optimization_mode);
+
   /*! \brief
     Performs the pivoting operation on the tableau.
 

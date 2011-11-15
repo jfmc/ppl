@@ -541,13 +541,6 @@ Linear_Expression
   return impl->get_row(row);
 }
 
-inline bool
-Linear_Expression::is_unbounded_obj_function(
-  const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
-  Optimization_Mode optimization_mode) const {
-  return impl->is_unbounded_obj_function(mapping, optimization_mode);
-}
-
 inline void
 Linear_Expression
 ::linear_combine(const Linear_Expression& y, dimension_type i) {
