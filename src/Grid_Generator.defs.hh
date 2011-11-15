@@ -557,9 +557,6 @@ public:
   bool check_strong_normalized() const;
 
   // TODO: Remove this.
-  Linear_Expression& expression();
-
-  // TODO: Remove this.
   const Linear_Expression& expression() const;
 
   //! Linearly combines \p *this with \p y so that i-th coefficient is 0.

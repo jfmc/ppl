@@ -553,9 +553,6 @@ public:
   void set_is_inequality();
 
   // TODO: Remove this.
-  Linear_Expression& expression();
-
-  // TODO: Remove this.
   const Linear_Expression& expression() const;
 
   // FIXME: Consider making this private.

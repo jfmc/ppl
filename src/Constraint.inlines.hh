@@ -196,11 +196,6 @@ Constraint::operator=(const Constraint& c) {
   return *this;
 }
 
-inline Linear_Expression&
-Constraint::expression() {
-  return expr;
-}
-
 inline const Linear_Expression&
 Constraint::expression() const {
   return expr;

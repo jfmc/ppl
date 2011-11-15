@@ -116,11 +116,6 @@ inline
 Grid_Generator::~Grid_Generator() {
 }
 
-inline Linear_Expression&
-Grid_Generator::expression() {
-  return expr;
-}
-
 inline const Linear_Expression&
 Grid_Generator::expression() const {
   return expr;
