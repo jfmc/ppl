@@ -417,7 +417,7 @@ test14() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = check_result(bds, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
+  bool ok = check_result(bds, known_result, "1.0e-5", "1.0e-5", "1.0e-5");
 
   print_constraints(bds,
                     "*** bds.generalized_affine_preimage(B, "
