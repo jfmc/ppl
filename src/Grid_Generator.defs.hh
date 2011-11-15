@@ -357,7 +357,6 @@ public:
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 
-  // TODO: Consider making this private.
   //! Removes all the specified dimensions from the grid generator.
   /*!
     The space dimension of the variable with the highest space
@@ -369,7 +368,6 @@ public:
   */
   bool remove_space_dimensions(const Variables_Set& vars);
 
-  // TODO: Consider making this private.
   //! Permutes the space dimensions of the grid generator.
   /*
     \param cycle
@@ -498,7 +496,6 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Grid_Generator& y);
 
-  // TODO: Make this private.
   /*! \brief
     Scales \p *this to be represented with a divisor of \p d (if
     \*this is a parameter or point). Does nothing at all on lines.
@@ -513,7 +510,6 @@ public:
   //! Converts the Grid_Generator into a parameter.
   void set_is_parameter();
 
-  // TODO: Make this private.
   //! Sets the divisor of \p *this to \p d.
   /*!
     \exception std::invalid_argument
@@ -565,7 +561,6 @@ public:
   // TODO: Remove this.
   const Linear_Expression& expression() const;
 
-  // FIXME: Consider making this private.
   //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
   /*!
     \param y
