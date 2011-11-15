@@ -263,6 +263,7 @@ public:
   Coefficient& modulus();
 
   //! Sets the modulus of \p *this to \p m .
+  //! If \p m is 0, the congruence becomes an equality.
   void set_modulus(Coefficient_traits::const_reference m);
 
   //! Multiplies all the coefficients, including the modulus, by \p factor .
@@ -408,10 +409,6 @@ public:
 
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
-
-  // TODO: Make this private.
-  //! Marks this congruence as a linear equality.
-  void set_is_equality();
 
   //! Adds \p n to the space dimension.
   void add_space_dimensions(dimension_type n);

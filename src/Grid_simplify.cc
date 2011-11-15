@@ -497,7 +497,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
         break;
       
       // The last row is a false proper congruence.
-      last_row.set_is_equality();
+      last_row.set_modulus(Coefficient_zero());
       dim_kinds[0] = EQUALITY;
 
       // No break!

@@ -254,11 +254,6 @@ Congruence::is_equal_at_dimension(dimension_type dim,
   return expr.get(dim) * cg.modulus() == cg.expr.get(dim) * modulus();
 }
 
-inline void
-Congruence::set_is_equality() {
-  modulus() = 0;
-}
-
 inline memory_size_type
 Congruence::external_memory_in_bytes() const {
   return expr.external_memory_in_bytes()
