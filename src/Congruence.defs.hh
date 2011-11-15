@@ -391,7 +391,6 @@ public:
   //! Copy-constructs from a constraint, with the specified space dimension.
   Congruence(const Constraint& cg, dimension_type new_space_dimension);
 
-  // TODO: Make this private.
   //! Constructs from Linear_Expression \p le, using modulus \p m.
   /*!
     Builds a congruence with modulus \p m, stealing the coefficients
@@ -404,7 +403,7 @@ public:
     The modulus for the congruence, which must be zero or greater.
   */
   Congruence(Linear_Expression& le,
-             Coefficient_traits::const_reference m);
+             Coefficient_traits::const_reference m, Recycle_Input);
 
   //! Swaps \p *this with \p y.
   void swap(Congruence& y);

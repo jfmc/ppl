@@ -94,7 +94,8 @@ Congruence::~Congruence() {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m)
+		       Coefficient_traits::const_reference m,
+                       Recycle_Input)
   : modulus_(m) {
   PPL_ASSERT(m >= 0);
   expr.swap(le);
@@ -107,7 +108,7 @@ Congruence::create(const Linear_Expression& e,
 		   Coefficient_traits::const_reference n) {
   Linear_Expression diff = e;
   diff -= n;
-  Congruence cg(diff, 1);
+  Congruence cg(diff, 1, Recycle_Input());
   return cg;
 }
 
@@ -116,7 +117,7 @@ Congruence::create(Coefficient_traits::const_reference n,
 		   const Linear_Expression& e) {
   Linear_Expression diff = e;
   diff -= n;
-  Congruence cg(diff, 1);
+  Congruence cg(diff, 1, Recycle_Input());
   return cg;
 }
 

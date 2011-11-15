@@ -200,7 +200,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
         le.set(dim, Coefficient_one());
-        Congruence cg(le, Coefficient_zero());
+        Congruence cg(le, Coefficient_zero(), Recycle_Input());
         dest.insert_verbatim_recycled(cg);
       } else {
 	PPL_ASSERT(dim_kinds[dim] == PARAMETER);
@@ -209,7 +209,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	exact_div_assign(tmp, diagonal_lcm,
                          source[source_index].expression().get(dim));
         le.set(dim, tmp);
-        Congruence cg(le, Coefficient_one());
+        Congruence cg(le, Coefficient_one(), Recycle_Input());
         dest.insert_verbatim_recycled(cg);
       }
     }

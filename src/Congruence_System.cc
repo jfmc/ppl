@@ -442,7 +442,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
     PPL_ASSERT(col >= row + 1);
     expr += Variable(col - row - 1);
     // This constructor steals the contents of `expr'.
-    Congruence cg(expr, Coefficient_zero());
+    Congruence cg(expr, Coefficient_zero(), Recycle_Input());
     std::swap(rows[row], cg);
   }
 
