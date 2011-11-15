@@ -328,17 +328,6 @@ public:
 
   Generator(dimension_type space_dim, Kind kind, Topology topology);
 
-  // TODO: Remove this.
-  Generator(dimension_type num_columns, dimension_type num_reserved_columns);
-
-  // TODO: Remove this.
-  Generator(dimension_type num_columns, dimension_type num_reserved_columns,
-            Kind kind, Topology topology);
-
-  // TODO: Remove this.
-  Generator(const Generator& g, dimension_type num_columns,
-            dimension_type num_reserved_columns);
-
   //! Returns the closure point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
