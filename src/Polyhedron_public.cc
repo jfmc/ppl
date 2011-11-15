@@ -3554,7 +3554,8 @@ PPL::Polyhedron::topological_closure_assign() {
       if (c.epsilon_coefficient() < 0 && !c.is_tautological()) {
 	c.set_epsilon_coefficient(0);
 	// Enforce normalization.
-	c.expression().normalize();
+	c.expr.normalize();
+        PPL_ASSERT(c.OK());
 	changed = true;
       }
     }

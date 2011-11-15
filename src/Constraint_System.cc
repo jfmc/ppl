@@ -323,12 +323,14 @@ PPL::Constraint_System
     if (row_v != 0) {
       Coefficient c = row_v;
       if (denominator != 1)
-        row.expression() *= denominator;
-      row.expression().linear_combine(expr, 1, c, 0, expr.space_dimension() + 1);
+        row.expr *= denominator;
+      row.expr.linear_combine(expr, 1, c, 0, expr.space_dimension() + 1);
       if (not_invertible)
         row.expr.set_coefficient(v, Coefficient_zero());
       else
         row.expr.set_coefficient(v, c * expr_v);
+      row.strong_normalize();
+      PPL_ASSERT(row.OK());
     }
   }
 

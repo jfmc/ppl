@@ -2148,12 +2148,13 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       // Transform all strict inequalities into non-strict ones,
       // with the inhomogeneous term incremented by 1.
       if (c.epsilon_coefficient() < 0) {
-        Linear_Expression& e = c.expression();
 	c.set_epsilon_coefficient(0);
+        Linear_Expression& e = c.expr;
         e.set_inhomogeneous_term(e.inhomogeneous_term() - 1);
 	// Enforce normalization.
 	// FIXME: is this really necessary?
 	e.normalize();
+        PPL_ASSERT(c.OK());
 	changed = true;
       }
     }
@@ -2171,7 +2172,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       }
 
       // Divide the inhomogeneous coefficients by the GCD.
-      c.expression().exact_div_assign(gcd, 1, space_dim + 1);
+      c.expr.exact_div_assign(gcd, 1, space_dim + 1);
 
       PPL_DIRTY_TEMP_COEFFICIENT(c_0);
       c_0 = c.expression().inhomogeneous_term();
@@ -2179,7 +2180,8 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       c_0 /= gcd;
       if (c_0_sign < 0)
 	--c_0;
-      c.expression().set_inhomogeneous_term(c_0);
+      c.expr.set_inhomogeneous_term(c_0);
+      PPL_ASSERT(c.OK());
       changed = true;
     }
 
