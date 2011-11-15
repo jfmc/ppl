@@ -35,24 +35,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence::Congruence(const Constraint& c)
-  : expr(c.is_equality()
-	? c.expression()
-	: (throw_invalid_argument("Congruence(c)",
-				  "constraint c must be an equality."),
-	   c.expression()),
-	c.space_dimension()),
+  : expr(c.expression(), c.space_dimension()),
     modulus_(0) {
+  if (!c.is_equality())
+    throw_invalid_argument("Congruence(c)",
+                           "constraint c must be an equality.");
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
                             dimension_type new_space_dimension)
-  : expr(c.is_equality()
-        ? c.expression()
-        : (throw_invalid_argument("Congruence(c)",
-                                  "constraint c must be an equality."),
-           c.expression()),
-        new_space_dimension),
+  : expr(c.expression(), new_space_dimension),
     modulus_(0) {
+  if (!c.is_equality())
+    throw_invalid_argument("Congruence(c, space_dim)",
+                           "constraint c must be an equality.");
 }
 
 void
