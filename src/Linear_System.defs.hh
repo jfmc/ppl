@@ -32,8 +32,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 
+#include "Polyhedron.types.hh"
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
+#include "Generator_System.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for systems of constraints and generators.
@@ -476,6 +478,36 @@ private:
   */
   void remove_row_no_ok(dimension_type i, bool keep_sorted = false);
 
+  /*! \brief
+    Adds \p r to the system, stealing its contents and
+    automatically resizing the system or the row, if needed.
+
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid systems.
+  */
+  void insert_recycled_no_ok(Row& r);
+
+  //! Sets the space dimension of the rows in the system to \p space_dim .
+  /*!
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid systems.
+  */
+  void set_space_dimension_no_ok(dimension_type space_dim);
+
+  //! Adds a the given row to the system, stealing its contents.
+  /*!
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid systems.
+  */
+  void add_recycled_row_no_ok(Row& r);
+
+  //! Adds a copy of the given row to the pending part of the system.
+  /*!
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid systems.
+  */
+  void add_recycled_pending_row_no_ok(Row& r);
+
   //! Swaps the [first,last) row interval with the
   //! [first + offset, last + offset) interval.
   /*!
@@ -537,6 +569,9 @@ private:
     const Swapping_Vector<Row>& container;
     const dimension_type base_index;
   };
+
+  friend class Polyhedron;
+  friend class Generator_System;
 };
 
 namespace std {

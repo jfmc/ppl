@@ -212,7 +212,8 @@ Constraint::max_space_dimension() {
 }
 
 inline void
-Constraint::set_space_dimension(dimension_type space_dim) {
+Constraint::set_space_dimension_no_ok(dimension_type space_dim) {
+  const dimension_type old_expr_space_dim = expr.space_dimension();
   if (topology() == NECESSARILY_CLOSED) {
     expr.set_space_dimension(space_dim);
   } else {
@@ -226,6 +227,14 @@ Constraint::set_space_dimension(dimension_type space_dim) {
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
+  if (expr.space_dimension() < old_expr_space_dim)
+    strong_normalize();
+}
+
+inline void
+Constraint::set_space_dimension(dimension_type space_dim) {
+  set_space_dimension_no_ok(space_dim);
+  PPL_ASSERT(OK());
 }
 
 inline bool

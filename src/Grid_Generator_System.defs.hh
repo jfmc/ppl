@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Variables_Set.types.hh"
+#include "Polyhedron.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -537,6 +538,8 @@ private:
   // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  friend class Polyhedron;
 };
 
 // Grid_Generator_System.inlines.hh is not included here on purpose.

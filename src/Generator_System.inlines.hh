@@ -82,11 +82,18 @@ Generator_System::space_dimension() const {
 inline void
 Generator_System::set_space_dimension(dimension_type space_dim) {
   const dimension_type old_space_dim = space_dimension();
-  sys.set_space_dimension(space_dim);
+  sys.set_space_dimension_no_ok(space_dim);
 
   if (space_dim < old_space_dim)
     // We may have invalid lines and rays now.
     remove_invalid_lines_and_rays();
+
+#ifndef NDEBUG
+  for (dimension_type i = 0; i < sys.num_rows(); ++i)
+    PPL_ASSERT(sys[i].OK());
+#endif
+  PPL_ASSERT(sys.OK());
+  PPL_ASSERT(OK());
 }
 
 inline void

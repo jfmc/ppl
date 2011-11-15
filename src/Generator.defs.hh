@@ -636,6 +636,15 @@ private:
 
   Generator(Linear_Expression& e, Kind kind, Topology topology);
 
+  //! Sets the dimension of the vector space enclosing \p *this to
+  //! \p space_dim .
+  //! Sets the space dimension of the rows in the system to \p space_dim .
+  /*!
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid objects.
+  */
+  void set_space_dimension_no_ok(dimension_type space_dim);
+
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception
     containing the appropriate error message.

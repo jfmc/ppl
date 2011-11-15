@@ -325,10 +325,16 @@ Linear_System<Row>::space_dimension() const {
 
 template <typename Row>
 inline void
-Linear_System<Row>::set_space_dimension(dimension_type space_dim) {
+Linear_System<Row>::set_space_dimension_no_ok(dimension_type space_dim) {
   for (dimension_type i = rows.size(); i-- > 0; )
-    rows[i].set_space_dimension(space_dim);
+    rows[i].set_space_dimension_no_ok(space_dim);
   space_dimension_ = space_dim;
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::set_space_dimension(dimension_type space_dim) {
+  set_space_dimension_no_ok(space_dim);
   PPL_ASSERT(OK());
 }
 

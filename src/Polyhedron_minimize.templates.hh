@@ -112,7 +112,7 @@ Polyhedron::minimize(const bool con_to_gen,
     else
       dest_i.expr += Variable(i - 1);
     dest_i.set_is_line_or_equality();
-    dest.insert_recycled(dest_i);
+    dest.sys.insert_recycled_no_ok(dest_i);
   }
   // The identity matrix `dest' is not sorted (see the sorting rules
   // in Constrant.cc and Generator.cc).

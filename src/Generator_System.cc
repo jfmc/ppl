@@ -42,8 +42,6 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 				    const dimension_type new_space_dim) {
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
-  const dimension_type old_space_dim = space_dimension();
-
   if (sys.topology() != new_topology) {
     if (new_topology == NECESSARILY_CLOSED) {
       // A NOT_NECESSARILY_CLOSED generator system
@@ -63,15 +61,13 @@ adjust_topology_and_space_dimension(const Topology new_topology,
         else
           ++i;
       sys.set_necessarily_closed();
-      if (new_space_dim > old_space_dim)
-        sys.normalize();
     } else {
       convert_into_non_necessarily_closed();
     }
   }
 
   sys.set_space_dimension(new_space_dim);
-  
+
   // We successfully adjusted dimensions and topology.
   PPL_ASSERT(OK());
   return true;

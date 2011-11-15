@@ -150,6 +150,11 @@ Grid_Generator::set_space_dimension(dimension_type space_dim) {
 }
 
 inline void
+Grid_Generator::set_space_dimension_no_ok(dimension_type space_dim) {
+  set_space_dimension(space_dim);
+}
+
+inline void
 Grid_Generator::shift_space_dimensions(Variable v, dimension_type n) {
   expr.shift_space_dimensions(v, n);
 }

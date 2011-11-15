@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include "Constraint.types.hh"
 #include "Poly_Con_Relation.defs.hh"
+#include "Polyhedron.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -725,6 +726,8 @@ private:
   // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  friend class Polyhedron;
 };
 
 //! An iterator over a system of generators

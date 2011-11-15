@@ -749,7 +749,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		  else {
                     std::swap(new_row, recyclable_dest_rows.back());
                     recyclable_dest_rows.pop_back();
-                    new_row.set_space_dimension(dest.space_dimension());
+                    new_row.set_space_dimension_no_ok(dest.space_dimension());
                     sat[dest_num_rows].swap(new_satrow);
                   }
 
@@ -779,6 +779,8 @@ Polyhedron::conversion(Source_Linear_System& source,
                   
                   WEIGHT_ADD_MUL(86, dest.space_dimension());
 		  new_row.strong_normalize();
+                  // Don't assert new_row.OK() here, because it may fail if
+                  // the parameter `dest' contained a row that wasn't ok.
 		  // Since we added a new generator to `dest_rows',
 		  // we also add a new element to `scalar_prod';
 		  // by construction, the new ray lies on the hyper-plane

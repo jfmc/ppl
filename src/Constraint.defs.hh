@@ -606,6 +606,15 @@ private:
   */
   static const Constraint* epsilon_leq_one_p;
 
+  //! Sets the dimension of the vector space enclosing \p *this to
+  //! \p space_dim .
+  //! Sets the space dimension of the rows in the system to \p space_dim .
+  /*!
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid objects.
+  */
+  void set_space_dimension_no_ok(dimension_type space_dim);
+
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
     error message \p message.

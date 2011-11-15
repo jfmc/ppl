@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Congruence_System.types.hh"
+#include "Polyhedron.types.hh"
 #include <iterator>
 #include <iosfwd>
 
@@ -639,6 +640,8 @@ private:
   // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  friend class Polyhedron;
 };
 
 //! An iterator over a system of constraints.

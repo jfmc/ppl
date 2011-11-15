@@ -226,6 +226,27 @@ Linear_System<Row>::insert_recycled(Row& r) {
 
 template <typename Row>
 void
+Linear_System<Row>::insert_recycled_no_ok(Row& r) {
+  PPL_ASSERT(topology() == r.topology());
+  // This method is only used when the system has no pending rows.
+  PPL_ASSERT(num_pending_rows() == 0);
+
+  if (r.space_dimension() > space_dimension())
+    // Resize the system.
+    set_space_dimension_no_ok(r.space_dimension());
+  else
+    if (r.space_dimension() < space_dimension())
+      // Resize the row.
+      r.set_space_dimension_no_ok(space_dimension());
+
+  add_recycled_row_no_ok(r);
+
+  // The added row was not a pending row.
+  PPL_ASSERT(num_pending_rows() == 0);
+}
+
+template <typename Row>
+void
 Linear_System<Row>::insert_pending(const Row& r) {
   Row tmp = r;
   insert_pending_recycled(tmp);
@@ -417,12 +438,19 @@ Linear_System<Row>::add_row(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::add_recycled_row(Row& r) {
+  add_recycled_row_no_ok(r);
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+void
+Linear_System<Row>::add_recycled_row_no_ok(Row& r) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
   const bool was_sorted = is_sorted();
 
-  add_recycled_pending_row(r);
+  add_recycled_pending_row_no_ok(r);
 
   if (was_sorted) {
     const dimension_type nrows = num_rows();
@@ -439,13 +467,11 @@ Linear_System<Row>::add_recycled_row(Row& r) {
   }
 
   unset_pending_rows();
-  
-  PPL_ASSERT(OK());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_pending_row(Row& r) {
+Linear_System<Row>::add_recycled_pending_row_no_ok(Row& r) {
   // TODO: A Grid_Generator_System may contain non-normalized lines that
   // represent parameters, so this check is disabled. Consider re-enabling it
   // when it's possibile.
@@ -457,9 +483,14 @@ Linear_System<Row>::add_recycled_pending_row(Row& r) {
   PPL_ASSERT(r.topology() == topology());
 
   rows.resize(rows.size() + 1);
-  r.set_space_dimension(space_dimension());
+  r.set_space_dimension_no_ok(space_dimension());
   rows.back().swap(r);
+}
 
+template <typename Row>
+void
+Linear_System<Row>::add_recycled_pending_row(Row& r) {
+  add_recycled_pending_row_no_ok(r);
   PPL_ASSERT(OK());
 }
 

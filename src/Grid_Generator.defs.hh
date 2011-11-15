@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variables_Set.types.hh"
 #include "Grid_Generator_System.types.hh"
+#include "Linear_System.types.hh"
 
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
@@ -595,6 +596,15 @@ private:
   */
   Grid_Generator(Linear_Expression& e, Type t);
 
+  //! Sets the dimension of the vector space enclosing \p *this to
+  //! \p space_dim .
+  //! Sets the space dimension of the rows in the system to \p space_dim .
+  /*!
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid objects.
+  */
+  void set_space_dimension_no_ok(dimension_type space_dim);
+
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception containing
     the appropriate error message.
@@ -616,6 +626,7 @@ private:
 
   friend class Grid_Generator_System;
   friend class Grid;
+  friend class Linear_System<Grid_Generator>;
 };
 
 
