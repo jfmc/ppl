@@ -1328,7 +1328,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	Generator cp;
         gen_sys.release_row(cp);
 	cp.set_epsilon_coefficient(0);
-	cp.expression().normalize();
+	cp.expr.normalize();
+        PPL_ASSERT(cp.OK());
         gen_sys.insert_recycled(cp);
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
@@ -1368,7 +1369,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	Generator cp;
         gen_sys.release_row(cp);
 	cp.set_epsilon_coefficient(0);
-	cp.expression().normalize();
+	cp.expr.normalize();
+        PPL_ASSERT(cp.OK());
         if (has_pending) {
           gen_sys.insert_pending_recycled(cp);
           // Re-insert the point (which is already normalized).
@@ -2888,12 +2890,13 @@ generalized_affine_image(const Variable var,
           rows.push_back(gen_i);
           Generator& new_gen = rows.back();
 	  if (relsym == GREATER_THAN)
-            new_gen.expression() += var;
+            new_gen.expr += var;
 	  else
-            new_gen.expression() -= var;
+            new_gen.expr -= var;
           
 	  // Transform gen_i' into a closure point.
 	  gen_i.set_epsilon_coefficient(0);
+          PPL_ASSERT(gen_i.OK());
 	}
       }
 
@@ -3355,9 +3358,10 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
-	    g.expression().set_inhomogeneous_term(0);
+	    g.expr.set_inhomogeneous_term(0);
 	    // Enforce normalization.
-	    g.expression().normalize();
+	    g.expr.normalize();
+            PPL_ASSERT(g.OK());
 	  }
 	}
 	break;
@@ -3380,9 +3384,10 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {
-	    g.expression().set_inhomogeneous_term(0);
+	    g.expr.set_inhomogeneous_term(0);
 	    // Enforce normalization.
-	    g.expression().normalize();
+	    g.expr.normalize();
+            PPL_ASSERT(g.OK());
 	  }
 	}
 	break;

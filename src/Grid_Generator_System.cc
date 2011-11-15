@@ -124,9 +124,11 @@ PPL::Grid_Generator_System
       // having an index different from `v'.
       // Note that this operation also modifies the coefficient of v, but
       // it will be overwritten by the set_coefficient() below.
-      row.expression() *= denominator;
+      row.expr *= denominator;
     }
-    row.expression().set_coefficient(v, numerator);
+    row.expr.set_coefficient(v, numerator);
+    // Check that the row is stll OK after fiddling with its internal data.
+    PPL_ASSERT(row.OK());
   }
 
   // Put the modified rows back into the linear system.
@@ -251,7 +253,8 @@ PPL::Grid_Generator_System
     Grid_Generator tmp(1, Grid_Generator::LINE_OR_EQUALITY,
                        NECESSARILY_CLOSED);
     tmp.set_space_dimension(space_dimension());
-    tmp.expression() += Variable(col);
+    tmp.expr += Variable(col);
+    PPL_ASSERT(tmp.OK());
     ++col;
     sys.insert_recycled(tmp);
   }

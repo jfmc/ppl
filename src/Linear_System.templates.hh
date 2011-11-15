@@ -680,7 +680,10 @@ Linear_System<Row>
     // forced to be positive.
     const bool have_to_negate = (row_k.expression().get(Variable(j - 1)) < 0);
     if (have_to_negate)
-	neg_assign(row_k.expression());
+      neg_assign(row_k.expr);
+
+    // NOTE: Here row_k will *not* be ok if we have negated it.
+
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
@@ -702,7 +705,9 @@ Linear_System<Row>
     }
     if (have_to_negate)
       // Negate `row_k' to restore strong-normalization.
-      neg_assign(row_k.expression());
+      neg_assign(row_k.expr);
+
+    PPL_ASSERT(row_k.OK());
   }
 
   // Trying to keep sortedness.

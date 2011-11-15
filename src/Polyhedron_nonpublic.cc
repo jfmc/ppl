@@ -1316,7 +1316,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	if (g.epsilon_coefficient() != g.expression().inhomogeneous_term()) {
 	  g.set_epsilon_coefficient(g.expression().inhomogeneous_term());
 	  // Enforce normalization.
-	  g.expression().normalize();
+	  g.expr.normalize();
+          PPL_ASSERT(g.OK());
 	  changed = true;
 	}
 	// Consider next generator.
@@ -2001,7 +2002,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       // NOTE: no need to actually compute the "mid-point",
       // since any strictly positive combination would do.
       mid_g = x_g;
-      mid_g.expression() += y_g.expression();
+      mid_g.expr += y_g.expression();
       // A zero ray is not a well formed generator.
       const bool illegal_ray
         = (mid_g.expression().inhomogeneous_term() == 0 && mid_g.expression().all_homogeneous_terms_are_zero());
@@ -2039,8 +2040,9 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       if (!x_g_is_line && y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = x_g - y_g.
         mid_g = x_g;
-        mid_g.expression() -= y_g.expression();
-        mid_g.expression().normalize();
+        mid_g.expr -= y_g.expression();
+        mid_g.expr.normalize();
+        PPL_ASSERT(mid_g.OK());
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())
@@ -2049,8 +2051,9 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       else if (x_g_is_line && !y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = - x_row + y_row.
         mid_g = y_g;
-        mid_g.expression() -= x_g.expression();
-        mid_g.expression().normalize();
+        mid_g.expr -= x_g.expression();
+        mid_g.expr.normalize();
+        PPL_ASSERT(mid_g.OK());
         // Step 7.1: check if mid_g is in the union of x and y.
         if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
             && y.relation_with(mid_g) == Poly_Gen_Relation::nothing())

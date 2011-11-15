@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 
 #include "Constraint.types.hh"
+#include "Grid.types.hh"
 #include "Linear_Expression.defs.hh"
 
 #include <iosfwd>
@@ -502,6 +503,8 @@ private:
   friend Congruence&
   sub_mul_assign(Congruence& x, Coefficient_traits::const_reference n,
                  const Congruence& y, dimension_type start, dimension_type end);
+
+  friend class Grid;
 };
 
 namespace Parma_Polyhedra_Library {

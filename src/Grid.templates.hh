@@ -331,9 +331,9 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
       // If num_rows_to_subtract is negative, these copies of pivot are
       // added to row i.
       if (num_rows_to_subtract != 0)
-        row.expression().linear_combine(pivot.expression(),
-                                        Coefficient_one(), -num_rows_to_subtract,
-                                        start, end + 1);
+        row.expr.linear_combine(pivot.expression(),
+                                Coefficient_one(), -num_rows_to_subtract,
+                                start, end + 1);
     }
   }
 }

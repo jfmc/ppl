@@ -641,9 +641,9 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	const Grid_Generator& first = *first_point;
 
         // Note that this skips the last column (the divisor column).
-        gen.expression().linear_combine(first.expression(),
-                                        Coefficient_one(), -1,
-                                        0, gen.space_dimension() + 1);
+        gen.expr.linear_combine(first.expression(),
+                                Coefficient_one(), -1,
+                                0, gen.space_dimension() + 1);
       }
       // NOTE: no break!
 

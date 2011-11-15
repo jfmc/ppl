@@ -451,7 +451,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 	// The ray `dest_rows[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
 	neg_assign(scalar_prod[index_non_zero]);
-        neg_assign(dest_rows[index_non_zero].expression());
+        neg_assign(dest_rows[index_non_zero].expr);
+        // The modified row may still not be OK(), so don't assert OK here.
+        // They are all checked at the end of this function.
       }
       // Having changed a line to a ray, we set `dest_rows' to be a
       // non-sorted system, we decrement the number of lines of `dest_rows'
@@ -502,9 +504,11 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
           neg_assign(normalized_sp_i);
-          dest_i.expression().linear_combine(dest_nle.expression(),
-                                             normalized_sp_o, normalized_sp_i);
+          dest_i.expr.linear_combine(dest_nle.expression(),
+                                     normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
+          // The modified row may still not be OK(), so don't assert OK here.
+          // They are all checked at the end of this function.
 	  scalar_prod[i] = 0;
 	  // dest_sorted has already been set to false.
 	}
@@ -537,9 +541,11 @@ Polyhedron::conversion(Source_Linear_System& source,
           dest_row_type& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
           neg_assign(normalized_sp_i);
-          dest_i.expression().linear_combine(dest_nle.expression(),
-                                             normalized_sp_o, normalized_sp_i);
+          dest_i.expr.linear_combine(dest_nle.expression(),
+                                     normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
+          // The modified row may still not be OK(), so don't assert OK here.
+          // They are all checked at the end of this function.
 	  scalar_prod[i] = 0;
 	  // `dest_sorted' has already been set to false.
           WEIGHT_ADD_MUL(41, dest.space_dimension());
@@ -768,7 +774,8 @@ Polyhedron::conversion(Source_Linear_System& source,
                   // TODO: Check if the following assertions hold.
                   PPL_ASSERT(normalized_sp_i != 0);
                   PPL_ASSERT(normalized_sp_o != 0);
-                  new_row.expression().linear_combine(dest_rows[i].expression(), normalized_sp_i, normalized_sp_o);
+                  new_row.expr.linear_combine(dest_rows[i].expression(),
+                                              normalized_sp_i, normalized_sp_o);
                   
                   WEIGHT_ADD_MUL(86, dest.space_dimension());
 		  new_row.strong_normalize();
@@ -884,6 +891,13 @@ Polyhedron::conversion(Source_Linear_System& source,
 	dest_sorted = false;
 	break;
       }
+
+#ifndef NDEBUG
+  // The previous code can modify the rows' fields, exploiting the friendness.
+  // Check that all rows are OK now.
+  for (dimension_type i = dest_rows.size(); i-- > 0; )
+    PPL_ASSERT(dest_rows[i].OK());
+#endif
 
   dest.take_ownership_of_rows(dest_rows);
 

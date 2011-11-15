@@ -433,7 +433,8 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
     // Each relevant constraint results in `m' new constraints.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       Constraint new_c = c_template;
-      add_mul_assign(new_c.expression(), coeff, Variable(dst_d));
+      add_mul_assign(new_c.expr, coeff, Variable(dst_d));
+      PPL_ASSERT(new_c.OK());
       new_constraints.insert_recycled(new_c);
     }
   }

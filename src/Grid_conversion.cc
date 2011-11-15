@@ -103,17 +103,17 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
   if (multiplier == 1)
     return;
 
-  if (gen.is_line())
+  if (gen.is_line()) {
     // Multiply every element of the line.
-    gen.expression() *= multiplier;
-  else {
+    gen.expr *= multiplier;
+  } else {
     PPL_ASSERT(gen.is_parameter_or_point());
     // Multiply every element of every parameter.
 
     for (dimension_type index = num_rows; index-- > 0; ) {
       Grid_Generator& generator = dest_rows[index];
       if (generator.is_parameter_or_point())
-        generator.expression() *= multiplier;
+        generator.expr *= multiplier;
     }
   }
 }
@@ -319,6 +319,11 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   dest.take_ownership_of_rows(rows);
 
+#ifndef NDEBUG
+  // Make sure that all the rows are now OK.
+  for (dimension_type i = dest.num_rows(); i-- > 0; )
+    PPL_ASSERT(dest[i].OK());
+#endif
   PPL_ASSERT(dest.OK());
 }
 
@@ -377,11 +382,11 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     else {
       Grid_Generator g;
       g.set_topology(dest.topology());
-      g.expression().set_space_dimension(dims);
+      g.expr.set_space_dimension(dims);
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
 	g.set_is_line();
-	g.expression().set(dim, Coefficient_one());
+	g.expr.set(dim, Coefficient_one());
       }
       else {
 	PPL_ASSERT(dim_kinds[dim] == PROPER_CONGRUENCE);
@@ -390,8 +395,10 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 	exact_div_assign(tmp, diagonal_lcm,
                          source[source_index].expression().get(dim));
-        g.expression().set(dim, tmp);
+        g.expr.set(dim, tmp);
       }
+      // Don't assert g.OK() here, because it may fail.
+      // All the rows in `dest' are checked at the end of this function.
       dest.insert_verbatim(g);
     }
   }
@@ -440,7 +447,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
 	multiply_grid(reduced_source_dim, g, rows, dest_num_rows);
 
-        g.expression().exact_div_assign(source_dim, dim, dim + 1);
+        g.expr.exact_div_assign(source_dim, dim, dim + 1);
+        // Don't assert g.OK() here, because it may fail.
+        // All the rows in `dest' are checked at the end of this function.
       }
     }
 
@@ -474,7 +483,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
           tmp = row.expression().get(dim_fol);
 	  sub_mul_assign(tmp, source_dim,
                          row.expression().get(dim));
-          row.expression().set(dim_fol, tmp);
+          row.expr.set(dim_fol, tmp);
+          // Don't assert row.OK() here, because it may fail.
+          // All the rows in `dest' are checked at the end of this function.
 	}
       }
     }
@@ -509,6 +520,13 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       break;
     }
   }
+
+#ifndef NDEBUG
+  // The previous code can modify the rows' fields, exploiting the friendness.
+  // Check that all rows are OK now.
+  for (dimension_type i = rows.size(); i-- > 0; )
+    PPL_ASSERT(rows[i].OK());
+#endif
 
   // Put the rows back into the linear system.
   dest.take_ownership_of_rows(rows);

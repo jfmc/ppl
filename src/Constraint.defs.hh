@@ -592,6 +592,7 @@ private:
   friend int
   compare(const Constraint& x, const Constraint& y);
 
+  friend class Linear_System<Constraint>;
   friend class Constraint_System;
   friend class Polyhedron;
 };

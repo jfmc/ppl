@@ -2457,6 +2457,9 @@ private:
     is zero.  Only elements from index \p start to index \p end are
     modified (i.e. it is assumed that all other elements are zero).
     This means that \p col must be in [start,end).
+
+    NOTE: This may invalidate the rows, since it messes with the divisors.
+    Client code has to fix that (if needed) and assert OK().
   */
   // Part of Grid for access to Matrix<Dense_Row>::rows.
   template <typename R>
@@ -2474,6 +2477,8 @@ private:
   */
   // This takes a parameter with type Swapping_Vector<Grid_Generator> (instead
   // of Grid_Generator_System) to simplify the implementation of `simplify()'.
+  // NOTE: This may invalidate `row' and the rows in `sys'. Client code must
+  // fix/check this.
   static void reduce_parameter_with_line(Grid_Generator& row,
 					 const Grid_Generator& pivot,
 					 dimension_type col,
@@ -2513,6 +2518,8 @@ private:
   template <typename M>
   // This takes a parameter with type `Swapping_Vector<M::row_type>'
   // instead of `M' to simplify the implementation of simplify().
+  // NOTE: This may invalidate the rows in `sys'. Client code must
+  // fix/check this.
   static void reduce_reduced(Swapping_Vector<typename M::row_type>& sys,
                              dimension_type dim,
 			     dimension_type pivot_index,
@@ -2533,6 +2540,8 @@ private:
   // A member of Grid for access to Grid_Generator::operator[].
   // The type of `dest' is Swapping_Vector<Grid_Generator> instead of
   // Grid_Generator_System to simplify the implementation of conversion().
+  // NOTE: This does not check whether the rows are OK(). Client code
+  // should do that.
   static void multiply_grid(const Coefficient& multiplier,
 			    Grid_Generator& gen,
 			    Swapping_Vector<Grid_Generator>& dest,

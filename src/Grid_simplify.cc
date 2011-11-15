@@ -48,9 +48,10 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   neg_assign(reduced_row_col);
   // pivot.space_dimension() is the index for the parameter divisor so we
   // start reducing the line at index pivot.space_dimension() - 2.
-  row.expression().linear_combine(pivot.expression(),
-                                  reduced_pivot_col, reduced_row_col,
-                                  column, pivot.expression().space_dimension());
+  row.expr.linear_combine(pivot.expression(),
+                          reduced_pivot_col, reduced_row_col,
+                          column, pivot.expression().space_dimension());
+  PPL_ASSERT(row.OK());
   PPL_ASSERT(row.expression().get(column) == 0);
 }
 
@@ -76,9 +77,10 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   neg_assign(reduced_row_col);
-  row.expression().linear_combine(pivot.expression(),
-                                  reduced_pivot_col, reduced_row_col,
-                                  0, column + 1);
+  row.expr.linear_combine(pivot.expression(),
+                          reduced_pivot_col, reduced_row_col,
+                          0, column + 1);
+  PPL_ASSERT(row.OK());
   PPL_ASSERT(row.expression().get(column) == 0);
 }
 
@@ -92,8 +94,8 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   PPL_ASSERT(start <= column);
   PPL_ASSERT(column < end);
 
-  Linear_Expression& row_e = row.expression();
-  Linear_Expression& pivot_e = pivot.expression();
+  Linear_Expression& row_e = row.expr;
+  Linear_Expression& pivot_e = pivot.expr;
   
   Coefficient_traits::const_reference pivot_column = pivot_e.get(column);
   Coefficient_traits::const_reference row_column = row_e.get(column);
@@ -144,7 +146,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
   if (row_column == pivot_column) {
-    row.expression().linear_combine(pivot.expression(), 1, -1, 0, num_columns);
+    row.expr.linear_combine(pivot.expression(), 1, -1, 0, num_columns);
     return;
   }
 
@@ -173,14 +175,14 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
     Grid_Generator& gen = rows[index];
     if (gen.is_parameter_or_point())
       // Do not scale the last coefficient.
-      gen.expression().mul_assign(reduced_pivot_col, 0, num_columns);
+      gen.expr.mul_assign(reduced_pivot_col, 0, num_columns);
   }
 
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  row.expression().linear_combine(pivot.expression(),
-                                  Coefficient_one(), -reduced_row_col,
-                                  column, num_columns);
+  row.expr.linear_combine(pivot.expression(),
+                          Coefficient_one(), -reduced_row_col,
+                          column, num_columns);
   PPL_ASSERT(row.expression().get(column) == 0);
 }
 
@@ -325,7 +327,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
       if (pivot.expression().get(dim) < 0)
-        pivot.expression().negate(dim, num_columns);
+        pivot.expr.negate(dim, num_columns);
 
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System>
@@ -362,11 +364,18 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     case PARAMETER:
       rows[i].set_divisor(system_divisor);
     case LINE:
+      PPL_ASSERT(rows[i].OK());
       --i;
     case GEN_VIRTUAL:
       break;
     }
   }
+
+#ifndef NDEBUG
+  // Make sure that all the rows are now OK.
+  for (dimension_type i = rows.size(); i-- > 0; )
+    PPL_ASSERT(rows[i].OK());
+#endif
 
   sys.take_ownership_of_rows(rows);
 }
@@ -512,6 +521,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       sys.insert_verbatim_recycled(last_row);
 
       PPL_ASSERT(sys.OK());
+#ifndef NDEBUG
+      // Make sure that all the rows are now OK.
+      for (dimension_type i = sys.num_rows(); i-- > 0; )
+        PPL_ASSERT(sys[i].OK());
+#endif
+
       return true;
 
     default:
@@ -549,6 +564,11 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       sys.insert_verbatim_recycled(cg);
 
       PPL_ASSERT(sys.OK());
+#ifndef NDEBUG
+      // Make sure that all the rows are now OK.
+      for (dimension_type i = sys.num_rows(); i-- > 0; )
+        PPL_ASSERT(sys[i].OK());
+#endif
       return false;
     }
 
@@ -591,6 +611,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // factor the modified integrality congruence out of the other rows;
   reduce_reduced<Congruence_System>
     (rows, 0, rows.size() - 1, 0, 0, dim_kinds, false);
+
+#ifndef NDEBUG
+  // Make sure that all the rows are now OK.
+  for (dimension_type i = rows.size(); i-- > 0; )
+    PPL_ASSERT(rows[i].OK());
+#endif
 
   sys.take_ownership_of_rows(rows);
 

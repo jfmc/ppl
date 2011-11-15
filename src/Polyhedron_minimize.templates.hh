@@ -106,11 +106,11 @@ Polyhedron::minimize(const bool con_to_gen,
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
     dest_row_type dest_i;
     dest_i.set_topology(dest.topology());
-    dest_i.expression().set_space_dimension(dest_num_rows - 1);
+    dest_i.expr.set_space_dimension(dest_num_rows - 1);
     if (i == 0)
-      dest_i.expression() += 1;
+      dest_i.expr += 1;
     else
-      dest_i.expression() += Variable(i - 1);
+      dest_i.expr += Variable(i - 1);
     dest_i.set_is_line_or_equality();
     dest.insert_recycled(dest_i);
   }
@@ -146,6 +146,11 @@ Polyhedron::minimize(const bool con_to_gen,
     = conversion(source, 0, dest, tmp_sat, dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
+
+#ifndef NDEBUG
+  for (dimension_type i = dest.num_rows(); i-- > 0; )
+    PPL_ASSERT(dest[i].OK());
+#endif
 
   // Checking if the generators in `dest' represent an empty polyhedron:
   // the polyhedron is empty if there are no points

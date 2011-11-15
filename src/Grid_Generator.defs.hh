@@ -25,7 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_defs_hh 1
 
 #include "Grid_Generator.types.hh"
+#include "Grid.types.hh"
+
 #include "Variables_Set.types.hh"
+#include "Grid_Generator_System.types.hh"
 
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
@@ -610,6 +613,9 @@ private:
 
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
+
+  friend class Grid_Generator_System;
+  friend class Grid;
 };
 
 

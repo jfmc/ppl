@@ -647,6 +647,7 @@ private:
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
+  friend class Linear_System<Generator>;
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;

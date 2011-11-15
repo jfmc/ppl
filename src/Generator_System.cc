@@ -723,7 +723,7 @@ PPL::Generator_System
       // having an index different from `v'.
       // Note that this operation also modifies the coefficient of v, but
       // it will be overwritten by the set_coefficient() below.
-      row.expression() *= denominator;
+      row.expr *= denominator;
     }
     row.expr.set_coefficient(v, numerator);
   }
@@ -741,8 +741,16 @@ PPL::Generator_System
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
 
+  // TODO: Consider normalizing individual rows in the loop above.
   // Strong normalization also resets the sortedness flag.
   x.sys.strong_normalize();
+
+#ifndef NDEBUG
+  // Make sure that the (remaining) generators are still OK after fiddling
+  // with their internal data.
+  for (dimension_type i = x.num_rows(); i-- > 0; )
+    PPL_ASSERT(x.sys[i].OK());
+#endif
 }
 
 void

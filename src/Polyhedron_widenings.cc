@@ -675,8 +675,9 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	  Generator new_ray(x_g);
           // Modify `new_ray' according to the evolution of `x_g' with
           // respect to `y_g'.
-          modify_according_to_evolution(new_ray.expression(),
+          modify_according_to_evolution(new_ray.expr,
                                         x_g.expression(), y_g.expression());
+          PPL_ASSERT(new_ray.OK());
 	  candidate_rays.insert(new_ray);
 	}
       }
