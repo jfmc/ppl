@@ -625,9 +625,13 @@ private:
   */
   static const Generator* zero_dim_closure_point_p;
 
+  // TODO: Avoid reducing the space dimension.
   /*! \brief
     Builds a generator of type \p type and topology \p topology,
     stealing the coefficients from \p e.
+
+    If the topology is NNC, the last dimension of \p e is used as the epsilon
+    coefficient.
   */
   Generator(Linear_Expression& e, Type type, Topology topology);
 
