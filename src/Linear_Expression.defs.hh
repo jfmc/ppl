@@ -798,12 +798,6 @@ private:
   void mul_assign(Coefficient_traits::const_reference n,
                   dimension_type start, dimension_type end);
 
-  //! Modify `new_ray' according to the evolution of `x_g' with
-  //! respect to `y_g'. This method is a code fragment used by Polyhedron.
-  //! Read the method implementation for more details.
-  void modify_according_to_evolution(const Linear_Expression& x,
-                                     const Linear_Expression& y);
-
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   dimension_type last_nonzero() const;

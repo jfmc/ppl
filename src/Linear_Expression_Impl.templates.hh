@@ -33,7 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Congruence.defs.hh"
-#include <deque>
 #include <stdexcept>
 #include <iostream>
 
@@ -1066,111 +1065,6 @@ Linear_Expression_Impl<Row>::negate(dimension_type first, dimension_type last) {
 }
 
 template <typename Row>
-template <typename Row2, typename Row3>
-void
-Linear_Expression_Impl<Row>
-::modify_according_to_evolution(const Linear_Expression_Impl<Row2>& x,
-                                const Linear_Expression_Impl<Row3>& y) {
-  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-  std::deque<bool> considered(x.space_dimension() + 1);
-
-  // The following loop is an optimized version of this loop:
-  //
-  // for (dimension_type k = 1; k < x.space_dimension(); ++k) {
-  //   if (considered[k])
-  //     continue;
-  //
-  //   for (dimension_type h = k + 1; h <= x.space_dimension(); ++h) {
-  //     if (considered[h])
-  //       continue;
-  //
-  //     tmp = (x[k] * y[h]) - (x[h] * y[k]);
-  //
-  //     const int clockwise = sgn(tmp);
-  //     const int first_or_third_quadrant = sgn(x[k]) * sgn(x[h]);
-  //     switch (clockwise * first_or_third_quadrant) {
-  //     case -1:
-  //       row[k] = 0;
-  //       considered[k] = true;
-  //       break;
-  //     case 1:
-  //       row[h] = 0;
-  //       considered[h] = true;
-  //       break;
-  //     default:
-  //       break;
-  //     }
-  //   }
-  // }
-
-  typename Row::iterator itr = row.end();
-
-  typename Row2::const_iterator x_end = x.row.end();
-  typename Row3::const_iterator y_end = y.row.end();
-  typename Row3::const_iterator y_k = y.row.end();
-  for (typename Row2::const_iterator x_k = x.row.begin(); x_k != x_end; ++x_k) {
-    const dimension_type k = x_k.index();
-    if (considered[k])
-      continue;
-
-    y_k = y.row.lower_bound(y_k, k);
-
-    if (y_k == y.row.end())
-      break;
-
-    // Note that y_k.index() may not be k.
-
-    typename Row3::const_iterator y_h = y_k;
-
-    typename Row2::const_iterator x_h = x_k;
-    ++x_h;
-    for ( ; x_h != x_end; ++x_h) {
-      const dimension_type h = x_h.index();
-      if (considered[h])
-        continue;
-
-      y_h = y.row.lower_bound(y_h, h);
-
-      // Note that y_k may be y_end, and y_k.index() may not be k.
-
-      if (y_h != y_end && y_h.index() == h)
-        tmp = (*x_k) * (*y_h);
-      else
-        tmp = 0;
-
-      if (y_k.index() == k) {
-        // The following line optimizes the computation of
-        // tmp -= x[h] * y[k];
-        Parma_Polyhedra_Library::sub_mul_assign(tmp, *x_h, *y_k);
-      }
-
-      const int clockwise = sgn(tmp);
-      const int first_or_third_quadrant = sgn(*x_k) * sgn(*x_h);
-      switch (clockwise * first_or_third_quadrant) {
-      case -1:
-        // Optimized version of row.reset(k)
-        itr = row.lower_bound(itr, k);
-        if (itr != row.end() && itr.index() == k)
-          itr = row.reset(itr);
-        considered[k] = true;
-        break;
-      case 1:
-        // Optimized version of row.reset(h)
-        itr = row.lower_bound(itr, h);
-        if (itr != row.end() && itr.index() == h)
-          itr = row.reset(itr);
-        considered[h] = true;
-        break;
-      default:
-        break;
-      }
-    }
-  }
-  normalize();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e) {
@@ -1624,35 +1518,6 @@ Linear_Expression_Impl<Row>
     linear_combine_lax(*p, c1, c2, start, end);
   } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
-  } else {
-    // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
-  }
-}
-
-template <typename Row>
-void
-Linear_Expression_Impl<Row>
-::modify_according_to_evolution(const Linear_Expression_Interface& x,
-                                const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl<Dense_Row>* p_x = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&x)) {
-    if (const Linear_Expression_Impl<Dense_Row>* p_y = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
-      modify_according_to_evolution(*p_x, *p_y);
-    } else if (const Linear_Expression_Impl<Sparse_Row>* p_y = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
-      modify_according_to_evolution(*p_x, *p_y);
-    } else {
-      // Add implementations for new derived classes here.
-      PPL_ASSERT(false);
-    }
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p_x = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&x)) {
-    if (const Linear_Expression_Impl<Dense_Row>* p_y = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
-      modify_according_to_evolution(*p_x, *p_y);
-    } else if (const Linear_Expression_Impl<Sparse_Row>* p_y = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
-      modify_according_to_evolution(*p_x, *p_y);
-    } else {
-      // Add implementations for new derived classes here.
-      PPL_ASSERT(false);
-    }
   } else {
     // Add implementations for new derived classes here.
     PPL_ASSERT(false);

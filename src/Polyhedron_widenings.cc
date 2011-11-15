@@ -574,6 +574,75 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
     return false;
 }
 
+void
+PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
+                                               const Linear_Expression& x,
+                                               const Linear_Expression& y) {
+  PPL_DIRTY_TEMP_COEFFICIENT(tmp);
+  std::deque<bool> considered(x.space_dimension());
+  Linear_Expression::const_iterator x_end = x.end();
+  Linear_Expression::const_iterator y_end = y.end();
+  Linear_Expression::const_iterator y_k = y.begin();
+  for (Linear_Expression::const_iterator x_k = x.begin(); x_k != x_end; ++x_k) {
+    const Variable k_var = x_k.variable();
+    const dimension_type k = k_var.id();
+    if (considered[k])
+      continue;
+
+    while (y_k != y_end && y_k.variable().id() < k)
+      ++y_k;
+
+    if (y_k == y_end)
+      break;
+
+    const Variable y_k_var = y_k.variable();
+
+    // Note that y_k_var.id() may be greater than k.
+
+    Linear_Expression::const_iterator y_h = y_k;
+    // Do *not* increment y_h, since it may be after k already.
+    Linear_Expression::const_iterator x_h = x_k;
+    ++x_h;
+    for ( ; x_h != x_end; ++x_h) {
+      const dimension_type h = x_h.variable().id();
+      if (considered[h])
+        continue;
+
+      while (y_h != y_end && y_h.variable().id() < h)
+        ++y_h;
+
+      // Note that y_h may be y_end, and y_h.variable().id() may not be k.
+
+      if (y_h != y_end && y_h.variable().id() == h)
+        tmp = (*x_k) * (*y_h);
+      else
+        tmp = 0;
+
+      if (y_k_var.id() == k) {
+        // The following line optimizes the computation of
+        // tmp -= x[h] * y[k];
+        Parma_Polyhedra_Library::sub_mul_assign(tmp, *x_h, *y_k);
+      }
+
+      const int clockwise = sgn(tmp);
+      const int first_or_third_quadrant = sgn(*x_k) * sgn(*x_h);
+      switch (clockwise * first_or_third_quadrant) {
+      case -1:
+        ray.set_coefficient(k_var, Coefficient_zero());
+        considered[k] = true;
+        break;
+      case 1:
+        ray.set_coefficient(Variable(h), Coefficient_zero());
+        considered[h] = true;
+        break;
+      default:
+        break;
+      }
+    }
+  }
+  ray.normalize();
+}
+
 bool
 PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 				      const BHRZ03_Certificate& y_cert,
@@ -604,7 +673,10 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray()) {
 	  Generator new_ray(x_g);
-          new_ray.expression().modify_according_to_evolution(x_g.expression(), y_g.expression());
+          // Modify `new_ray' according to the evolution of `x_g' with
+          // respect to `y_g'.
+          modify_according_to_evolution(new_ray.expression(),
+                                        x_g.expression(), y_g.expression());
 	  candidate_rays.insert(new_ray);
 	}
       }

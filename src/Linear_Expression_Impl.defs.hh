@@ -521,15 +521,6 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
-  //! Modify `new_ray' according to the evolution of `x_g' with
-  //! respect to `y_g'. This method is a code fragment used by Polyhedron.
-  //! Read the method implementation for more details.
-  virtual void modify_according_to_evolution(const Linear_Expression_Interface& x,
-                                             const Linear_Expression_Interface& y);
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   virtual dimension_type last_nonzero() const;
@@ -723,13 +714,6 @@ public:
                           Coefficient_traits::const_reference c2,
                           dimension_type start, dimension_type end);
 
-  //! Modify `new_ray' according to the evolution of `x_g' with
-  //! respect to `y_g'. This method is a code fragment used by Polyhedron.
-  //! Read the method implementation for more details.
-  template <typename Row2, typename Row3>
-  void modify_according_to_evolution(const Linear_Expression_Impl<Row2>& x,
-                                     const Linear_Expression_Impl<Row3>& y);
-  
   //! The basic comparison function.
   /*! \relates Linear_Expression_Impl
 

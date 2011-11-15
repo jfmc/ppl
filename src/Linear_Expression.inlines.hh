@@ -598,13 +598,6 @@ Linear_Expression::linear_combine_lax(const Linear_Expression& y,
   impl->linear_combine_lax(*y.impl, c1, c2, start, end);
 }
 
-inline void
-Linear_Expression
-::modify_according_to_evolution(const Linear_Expression& x,
-                                const Linear_Expression& y) {
-  impl->modify_according_to_evolution(*x.impl, *y.impl);
-}
-
 inline bool
 Linear_Expression
 ::have_a_common_variable(const Linear_Expression& x,

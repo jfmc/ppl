@@ -2392,6 +2392,10 @@ private:
 			    const BHRZ03_Certificate& y_cert,
 			    const Polyhedron& H79);
 
+  static void modify_according_to_evolution(Linear_Expression& ray,
+                                            const Linear_Expression& x,
+                                            const Linear_Expression& y);
+
   //@} // Widening- and Extrapolation-Related Functions
 
   //! Adds new space dimensions to the given matrices.

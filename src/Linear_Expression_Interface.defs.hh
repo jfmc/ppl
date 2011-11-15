@@ -388,15 +388,6 @@ public:
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
-  //! Modify `new_ray' according to the evolution of `x_g' with
-  //! respect to `y_g'. This method is a code fragment used by Polyhedron.
-  //! Read the method implementation for more details.
-  virtual void modify_according_to_evolution(const Linear_Expression_Interface& x,
-                                             const Linear_Expression_Interface& y) = 0;
-
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   virtual dimension_type last_nonzero() const = 0;
