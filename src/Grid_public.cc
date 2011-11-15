@@ -1772,8 +1772,7 @@ PPL::Grid::affine_image(const Variable var,
       if (expr_var > 0) {
 	inverse = -expr;
 	inverse.set_coefficient(var, denominator);
-	con_sys.affine_preimage(var_space_dim, inverse,
-                                expr_var);
+	con_sys.affine_preimage(var, inverse, expr_var);
       }
       else {
 	// The new denominator is negative: we negate everything once
@@ -1781,8 +1780,7 @@ PPL::Grid::affine_image(const Variable var,
 	// third argument to be positive.
 	inverse = expr;
 	inverse.set_coefficient(var, -denominator);
-	con_sys.affine_preimage(var_space_dim, inverse,
-                                -expr_var);
+	con_sys.affine_preimage(var, inverse, -expr_var);
       }
       clear_congruences_minimized();
     }
@@ -1841,9 +1839,9 @@ affine_preimage(const Variable var,
       // Congruence_System::affine_preimage() requires the third argument
       // to be a positive Coefficient.
       if (denominator > 0)
-	con_sys.affine_preimage(var_space_dim, expr, denominator);
+	con_sys.affine_preimage(var, expr, denominator);
       else
-	con_sys.affine_preimage(var_space_dim, -expr, -denominator);
+	con_sys.affine_preimage(var, -expr, -denominator);
       clear_congruences_minimized();
     }
     if (generators_are_up_to_date()) {
@@ -1875,9 +1873,9 @@ affine_preimage(const Variable var,
     // Congruence_System::affine_preimage() requires the third argument
     // to be a positive Coefficient.
     if (denominator > 0)
-      con_sys.affine_preimage(var_space_dim, expr, denominator);
+      con_sys.affine_preimage(var, expr, denominator);
     else
-      con_sys.affine_preimage(var_space_dim, -expr, -denominator);
+      con_sys.affine_preimage(var, -expr, -denominator);
 
     clear_generators_up_to_date();
     clear_congruences_minimized();

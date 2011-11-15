@@ -440,7 +440,7 @@ public:
 
     \p expr is a constant parameter and unaltered by this computation.
   */
-  void affine_preimage(dimension_type v,
+  void affine_preimage(Variable v,
                        const Linear_Expression& expr,
                        Coefficient_traits::const_reference denominator);
 

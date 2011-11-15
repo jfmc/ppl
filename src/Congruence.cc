@@ -105,7 +105,7 @@ PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
 
 void
 PPL::Congruence
-::affine_preimage(dimension_type v, const Linear_Expression& e,
+::affine_preimage(Variable v, const Linear_Expression& e,
                   Coefficient_traits::const_reference denominator) {
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   c = expr.get(v);
@@ -117,7 +117,7 @@ PPL::Congruence
 
   expr.linear_combine(e, 1, c, 0, e.space_dimension() + 1);
 
-  if (v > e.space_dimension() || e.get(v) == 0)
+  if (v.space_dimension() > e.space_dimension() || e.get(v) == 0)
     // Not invertible
     expr.set(v, Coefficient_zero());
   else {

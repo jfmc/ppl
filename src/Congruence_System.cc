@@ -293,12 +293,10 @@ PPL::Congruence_System::has_a_free_dimension() const {
 
 void
 PPL::Congruence_System::
-affine_preimage(dimension_type v,
+affine_preimage(Variable v,
 		const Linear_Expression& expr,
 		Coefficient_traits::const_reference denominator) {
-  // `v' is the index of a column corresponding to a "user" variable
-  // (i.e., it cannot be the inhomogeneous term).
-  PPL_ASSERT(v > 0 && v <= space_dimension());
+  PPL_ASSERT(v.space_dimension() <= space_dimension());
   PPL_ASSERT(expr.space_dimension() <= space_dimension());
   PPL_ASSERT(denominator > 0);
 
