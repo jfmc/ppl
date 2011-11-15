@@ -1077,8 +1077,8 @@ template <typename Row2>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e,
                                        dimension_type space_dim) {
-  // TODO: Optimize this using swap().
-  row = Row(e.row, space_dim + 1, space_dim + 1);
+  Row x(e.row, space_dim + 1, space_dim + 1);
+  std::swap(row, x);
   PPL_ASSERT(OK());
 }
 
