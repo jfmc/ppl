@@ -138,6 +138,16 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
 }
 
 inline
+Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
+  : kind_(kind), topology_(topology) {
+  expr.swap(e);
+  if (topology == NOT_NECESSARILY_CLOSED)
+    expr.set_space_dimension(expr.space_dimension() + 1);
+  strong_normalize();
+  PPL_ASSERT(OK());
+}
+
+inline
 Generator::Generator(const Generator& g)
   : expr(g.expr), kind_(g.kind_), topology_(g.topology_) {
 }

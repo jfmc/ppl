@@ -635,6 +635,8 @@ private:
   */
   Generator(Linear_Expression& e, Type type, Topology topology);
 
+  Generator(Linear_Expression& e, Kind kind, Topology topology);
+
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception
     containing the appropriate error message.
