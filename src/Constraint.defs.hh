@@ -332,6 +332,10 @@ public:
   */
   void permute_space_dimensions(const std::vector<Variable>& cycle);
 
+  //! Shift by \p n positions the coefficients of variables, starting from
+  //! the coefficient of \p v. This increases the space dimension by \p n.
+  void shift_space_dimensions(Variable v, dimension_type n);
+
   //! Returns the constraint type of \p *this.
   Type type() const;
 

@@ -84,6 +84,11 @@ Congruence::set_space_dimension(dimension_type n) {
 }
 
 inline void
+Congruence::shift_space_dimensions(Variable v, dimension_type n) {
+  expr.shift_space_dimensions(v, n);
+}
+
+inline void
 Congruence::shift_coefficients(dimension_type n, dimension_type i) {
   expr.shift_space_dimensions(Variable(i), n);
 }

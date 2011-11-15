@@ -149,6 +149,11 @@ Grid_Generator::set_space_dimension(dimension_type space_dim) {
   PPL_ASSERT(space_dimension() == space_dim);
 }
 
+inline void
+Grid_Generator::shift_space_dimensions(Variable v, dimension_type n) {
+  expr.shift_space_dimensions(v, n);
+}
+
 inline Grid_Generator::Type
 Grid_Generator::type() const {
   if (is_line())

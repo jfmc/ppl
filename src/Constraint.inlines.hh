@@ -52,6 +52,11 @@ Constraint::space_dimension() const {
   }
 }
 
+inline void
+Constraint::shift_space_dimensions(Variable v, dimension_type n) {
+  expr.shift_space_dimensions(v, n);
+}
+
 inline bool
 Constraint::is_line_or_equality() const {
   return (kind_ == LINE_OR_EQUALITY);

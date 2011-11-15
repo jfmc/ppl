@@ -191,6 +191,11 @@ Generator::set_space_dimension(dimension_type space_dim) {
   PPL_ASSERT(space_dimension() == space_dim);
 }
 
+inline void
+Generator::shift_space_dimensions(Variable v, dimension_type n) {
+  expr.shift_space_dimensions(v, n);
+}
+
 inline bool
 Generator::is_line() const {
   return is_line_or_equality();

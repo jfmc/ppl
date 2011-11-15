@@ -412,6 +412,11 @@ public:
   //! needed.
   void set_space_dimension(dimension_type n);
 
+  //! Shift by \p n positions the coefficients of variables, starting from
+  //! the coefficient of \p v. This increases the space dimension by \p n.
+  void shift_space_dimensions(Variable v, dimension_type n);
+
+  // TODO: Remove this.
   //! Shifts to the right by \p n positions the coefficients of variables with
   //! index greater than \p i . The space dimension is increased by \p n .
   void shift_coefficients(dimension_type n, dimension_type i);
