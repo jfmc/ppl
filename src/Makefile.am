@@ -149,6 +149,8 @@ Swapping_Vector.types.hh \
 Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
+Expression_Hide_Last.types.hh \
+Expression_Hide_Inhomo.types.hh \
 Linear_Expression_Impl.types.hh \
 Linear_Expression_Interface.types.hh \
 Linear_System.types.hh \
@@ -263,6 +265,10 @@ Grid_Generator_System.defs.hh \
 Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
+Expression_Hide_Last.defs.hh \
+Expression_Hide_Last.inlines.hh \
+Expression_Hide_Inhomo.defs.hh \
+Expression_Hide_Inhomo.inlines.hh \
 Linear_Expression_Impl.defs.hh \
 Linear_Expression_Impl.inlines.hh \
 Linear_Expression_Impl.templates.hh \
