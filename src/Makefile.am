@@ -144,7 +144,6 @@ Init.types.hh \
 Dense_Row.types.hh \
 CO_Tree.types.hh \
 Sparse_Row.types.hh \
-Row.types.hh \
 Matrix.types.hh \
 Swapping_Vector.types.hh \
 Variable.types.hh \
@@ -282,7 +281,6 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
-Row.defs.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
 Matrix.templates.hh \

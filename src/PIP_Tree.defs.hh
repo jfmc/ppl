@@ -34,8 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "PIP_Problem.defs.hh"
 
-#include "Row.defs.hh"
 #include "Matrix.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Sparse_Row.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -67,6 +68,12 @@ protected:
   virtual bool check_ownership(const PIP_Problem* owner) const = 0;
 
 public:
+#if USE_PPL_SPARSE_MATRIX
+  typedef Sparse_Row Row;
+#else
+  typedef Dense_Row Row;
+#endif
+
   //! Returns a pointer to a dynamically-allocated copy of \p *this.
   virtual PIP_Tree_Node* clone() const = 0;
 

@@ -36,7 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 #include <iosfwd>
 
-#include "Row.defs.hh"
 #include "Matrix.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -798,6 +797,12 @@ private:
     interpreted as problem parameters.
   */
   Variables_Set parameters;
+
+#if USE_PPL_SPARSE_MATRIX
+  typedef Sparse_Row Row;
+#else
+  typedef Dense_Row Row;
+#endif
 
   /*! \brief
     The initial context

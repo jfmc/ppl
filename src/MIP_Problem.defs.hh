@@ -26,27 +26,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "MIP_Problem.types.hh"
 #include "globals.types.hh"
-#include "Row.defs.hh"
 #include "Matrix.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
 #include "Variables_Set.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Sparse_Row.defs.hh"
 #include <vector>
 #include <deque>
 #include <iterator>
 #include <iosfwd>
-
-// TODO: Remove this when the sparse working cost has been tested enough.
-#if USE_PPL_SPARSE_MATRIX
-
-// These are needed for the linear_combine() method that takes a Dense_Row and
-// a Sparse_Row.
-#include "Dense_Row.types.hh"
-#include "Sparse_Row.types.hh"
-
-#endif // defined(USE_PPL_SPARSE_MATRIX)
 
 namespace Parma_Polyhedra_Library {
 
@@ -497,6 +488,12 @@ private:
     MIP problem; it may be smaller than \p external_space_dim.
   */
   dimension_type internal_space_dim;
+
+#if USE_PPL_SPARSE_MATRIX
+  typedef Sparse_Row Row;
+#else
+  typedef Dense_Row Row;
+#endif
 
   //! The matrix encoding the current feasible region in tableau form.
   Matrix<Row> tableau;
