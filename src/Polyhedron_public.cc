@@ -726,8 +726,8 @@ PPL::Polyhedron::constrains(const Variable var) const {
       if (gen_sys_i.is_line_or_ray()) {
 	const int sign = sgn(gen_sys_i.coefficient(var));
 	if (sign != 0) {
-          if (gen_sys_i.expr.all_zeroes(1, var_id)
-              && gen_sys_i.expr.all_zeroes(var_id + 1, space_dim + 1)) {
+          if (gen_sys_i.expression().all_zeroes(1, var_id)
+              && gen_sys_i.expression().all_zeroes(var_id + 1, space_dim + 1)) {
             
             if (gen_sys_i.is_line())
               return true;
