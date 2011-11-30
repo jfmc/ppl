@@ -199,127 +199,55 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
   }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Constraint& c) {
-  switch (c.expr.representation()) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(c);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(c);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+PPL::Linear_Expression::Linear_Expression(const Constraint& c)
+  : impl(NULL) {
+  Linear_Expression tmp(c.expression());
+  std::swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c,
-                                          Representation r) {
-  switch (r) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(c);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(c);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+                                          Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(c.expression(), r);
+  std::swap(impl, tmp.impl);
 }
 
-PPL::Linear_Expression::Linear_Expression(const Generator& g) {
-  switch (g.expr.representation()) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(g);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(g);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+PPL::Linear_Expression::Linear_Expression(const Generator& g)
+  : impl(NULL) {
+  Linear_Expression tmp(g.expression());
+  std::swap(impl, tmp.impl);
 }
 
-PPL::Linear_Expression::Linear_Expression(const Generator& g, Representation r) {
-  switch (r) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(g);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(g);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+PPL::Linear_Expression::Linear_Expression(const Generator& g, Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(g.expression(), r);
+  std::swap(impl, tmp.impl);
 }
 
-PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g) {
-  switch (g.expr.representation()) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(g);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(g);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
+  : impl(NULL) {
+  Linear_Expression tmp(g.expression());
+  std::swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g,
-                                          Representation r) {
-  switch (r) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(g);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(g);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+                                          Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(g.expression(), r);
+  std::swap(impl, tmp.impl);
 }
 
-PPL::Linear_Expression::Linear_Expression(const Congruence& cg) {
-  switch (cg.expression().representation()) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(cg);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(cg);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
+  : impl(NULL) {
+  Linear_Expression tmp(cg.expression());
+  std::swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg,
-                                          Representation r) {
-  switch (r) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(cg);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(cg);
-    break;
-
-  default:
-    PPL_ASSERT(false);
-  }
+                                          Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(cg.expression(), r);
+  std::swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
