@@ -42,7 +42,7 @@ Generator::is_not_necessarily_closed() const {
 
 inline dimension_type
 Generator::space_dimension() const {
-  return expr.space_dimension() - (is_necessarily_closed() ? 0 : 1);
+  return wrapped_expr.space_dimension();
 }
 
 inline bool
