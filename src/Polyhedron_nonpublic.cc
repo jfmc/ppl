@@ -2139,7 +2139,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       continue;
 
     if (pvars != 0) {
-      if (!c.expr.all_zeroes(*pvars))
+      if (!c.expression().all_zeroes(*pvars))
         goto next_constraint;
     }
 
@@ -2159,7 +2159,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     }
 
     // Compute the GCD of all the homogeneous terms.
-    gcd = c.expr.gcd(1, space_dim + 1);
+    gcd = c.expression().gcd(1, space_dim + 1);
 
     if (gcd != 0 && gcd != 1) {
       PPL_ASSERT(c.expr.inhomogeneous_term() % gcd != 0);
