@@ -197,7 +197,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
     for (Generator_System::const_iterator g = gs.begin(),
            gs_end = gs.end(); g != gs_end; ++g) {
       if (g->is_point() || g->is_closure_point()) {
-        point_expr.linear_combine(g->expression(), Coefficient_one(), Coefficient_one(),
+        point_expr.linear_combine(g->expr, Coefficient_one(), Coefficient_one(),
                                   1, space_dim + 1);
         point_divisor = g->divisor();
         ggs.insert(grid_point(point_expr, point_divisor));
@@ -215,13 +215,13 @@ PPL::Grid::Grid(const Polyhedron& ph,
       if (g->is_point() || g->is_closure_point()) {
         e.linear_combine(point_expr, Coefficient_one(), g->divisor(),
                          1, space_dim + 1);
-        e.linear_combine(g->expression(), Coefficient_one(), -point_divisor,
+        e.linear_combine(g->expr, Coefficient_one(), -point_divisor,
                          1, space_dim + 1);
         if (e.all_homogeneous_terms_are_zero())
           continue;
       }
       else {
-        e.linear_combine(g->expression(), Coefficient_one(), Coefficient_one(),
+        e.linear_combine(g->expr, Coefficient_one(), Coefficient_one(),
                          1, space_dim + 1);
       }
       ggs.insert(grid_line(e));
@@ -641,7 +641,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	const Grid_Generator& first = *first_point;
 
         // Note that this skips the last column (the divisor column).
-        gen.expr.linear_combine(first.expression(),
+        gen.expr.linear_combine(first.expr,
                                 Coefficient_one(), -1,
                                 0, gen.space_dimension() + 1);
       }
@@ -651,9 +651,9 @@ PPL::Grid::relation_with(const Constraint& c) const {
     case Grid_Generator::LINE:
       Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
       if (gen.is_line_or_parameter()
-          && c.expression().have_a_common_variable(g->expression(),
-                                                   Variable(0),
-                                                   Variable(c.space_dimension())))
+          && c.expr.have_a_common_variable(g->expr,
+                                           Variable(0),
+                                           Variable(c.space_dimension())))
         return Poly_Con_Relation::strictly_intersects();
       break;
     }
@@ -828,8 +828,8 @@ PPL::Grid::constrains(const Variable var) const {
       if (!g_i.is_line())
         continue;
       if (sgn(g_i.coefficient(var)) != 0) {
-        if (g_i.expression().all_zeroes(1, var.space_dimension())
-            && g_i.expression().all_zeroes(var.space_dimension() + 1, space_dim + 1))
+        if (g_i.expr.all_zeroes(1, var.space_dimension())
+            && g_i.expr.all_zeroes(var.space_dimension() + 1, space_dim + 1))
           // The only nonzero coefficient in g_i is the one of var.
           return true;
       }

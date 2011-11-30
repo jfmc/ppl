@@ -526,11 +526,11 @@ PPL::MIP_Problem
     const dimension_type cs_i_end = cs_i.space_dimension() + 1;
 
     dimension_type nonzero_coeff_column_index
-      = cs_i.expression().first_nonzero(1, cs_i_end);
+      = cs_i.expr.first_nonzero(1, cs_i_end);
     bool found_a_nonzero_coeff = (nonzero_coeff_column_index != cs_i_end);
     bool found_many_nonzero_coeffs
       = (found_a_nonzero_coeff
-         && !cs_i.expression().all_zeroes(nonzero_coeff_column_index + 1,
+         && !cs_i.expr.all_zeroes(nonzero_coeff_column_index + 1,
                                           cs_i_end));
 
     // If more than one coefficient is nonzero,
@@ -796,7 +796,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     Row::iterator itr = tableau_k.end();
 
     const Constraint& c = *(input_cs[i + first_pending_constraint]);
-    const Linear_Expression& c_e = c.expression();
+    const Linear_Expression& c_e = c.expr;
     for (Linear_Expression::const_iterator j = c_e.begin(),
         j_end = c_e.lower_bound(Variable(c.space_dimension()));
         j != j_end; ++j) {
@@ -1880,7 +1880,7 @@ PPL::MIP_Problem
   const dimension_type working_space_dim
     = std::min(ep_space_dim, input_obj_function.space_dimension());
   input_obj_function.scalar_product_assign(ext_n,
-                                           evaluating_point.expression(),
+                                           evaluating_point.expr,
                                            0, working_space_dim + 1);
 
   // Numerator and denominator should be coprime.

@@ -569,12 +569,10 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
 
-  // TODO: Remove this.
-  const Linear_Expression& expression() const;
-
-private:
+  // TODO: Make this private.
   Linear_Expression expr;
 
+private:
   Kind kind_;
 
   Topology topology_;

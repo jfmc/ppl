@@ -60,7 +60,7 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
          gs_end = gs.end(); g != gs_end; ++g) {
     if (g->is_point() || g->is_closure_point()) {
       Linear_Expression e = point_expr;
-      e.linear_combine(g->expression(), g->divisor(), -point_divisor,
+      e.linear_combine(g->expr, g->divisor(), -point_divisor,
                        1, space_dim + 1);
       if (!e.all_homogeneous_terms_are_zero())
         ggs.insert(grid_line(e));

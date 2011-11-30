@@ -52,9 +52,9 @@ Grid::lower_triangular(const Congruence_System& sys,
     const Congruence& cg = sys[row];
     ++row;
     // Check diagonal.
-    if (cg.expression().get(dim) <= 0)
+    if (cg.expr.get(dim) <= 0)
       return false;
-    if (!cg.expression().all_zeroes(dim + 1, num_columns))
+    if (!cg.expr.all_zeroes(dim + 1, num_columns))
       return false;
   }
 
@@ -85,10 +85,10 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
       continue;
     const Grid_Generator& gen = sys[--row];
     // Check diagonal.
-    if (gen.expression().get(num_columns) <= 0)
+    if (gen.expr.get(num_columns) <= 0)
       return false;
     // Check elements preceding diagonal.
-    if (!gen.expression().all_zeroes(0, num_columns))
+    if (!gen.expr.all_zeroes(0, num_columns))
       return false;
   }
 
@@ -172,7 +172,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Dimension `dim' has a parameter row at `source_index' in
 	// `source', so include in `diagonal_lcm' the `dim'th element
 	// of that row.
-	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_index].expression().get(dim));
+	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_index].expr.get(dim));
 	// Parameters map to proper congruences.
 	++dest_num_rows;
       }
@@ -207,7 +207,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	--source_index;
         PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 	exact_div_assign(tmp, diagonal_lcm,
-                         source[source_index].expression().get(dim));
+                         source[source_index].expr.get(dim));
         le.set(dim, tmp);
         Congruence cg(le, Coefficient_one(), Recycle_Input());
         dest.insert_verbatim_recycled(cg);
@@ -232,7 +232,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       --source_index;
-      const Coefficient& source_dim = source[source_index].expression().get(dim);
+      const Coefficient& source_dim = source[source_index].expr.get(dim);
 
       Swapping_Vector<Congruence> dest_rows;
       dest.release_rows(dest_rows);
@@ -245,11 +245,11 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	gcd_assign(multiplier, cg.expression().get(dim), source_dim);
+	gcd_assign(multiplier, cg.expr.get(dim), source_dim);
 	exact_div_assign(multiplier, source_dim, multiplier);
 	multiply_grid(multiplier, cg, dest_rows, dest_num_rows);
 
-        cg.expression().exact_div_assign(source_dim, dim, dim + 1);
+        cg.expr.exact_div_assign(source_dim, dim, dim + 1);
       }
 
       dest.take_ownership_of_rows(dest_rows);
@@ -267,7 +267,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     for (dimension_type dim_prec = dim; dim_prec-- > 0; ) {
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
 	--tmp_source_index;
-	const Coefficient& source_dim = source[tmp_source_index].expression().get(dim);
+	const Coefficient& source_dim = source[tmp_source_index].expr.get(dim);
         
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tmp_source_index][dim] times the
@@ -283,9 +283,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  PPL_ASSERT(row < dest_num_rows);
 	  Congruence& cg = dest_rows[row];
-          tmp = cg.expression().get(dim_prec);
-	  sub_mul_assign(tmp, source_dim, cg.expression().get(dim));
-          cg.expression().set(dim_prec, tmp);
+          tmp = cg.expr.get(dim_prec);
+	  sub_mul_assign(tmp, source_dim, cg.expr.get(dim));
+          cg.expr.set(dim_prec, tmp);
 	}
 	dest.take_ownership_of_rows(dest_rows);
       }
@@ -350,7 +350,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// Dimension `dim' has a proper congruence row at
 	// `source_num_rows' in `source', so include in `diagonal_lcm'
 	// the `dim'th element of that row.
-	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_num_rows].expression().get(dim));
+	lcm_assign(diagonal_lcm, diagonal_lcm, source[source_num_rows].expr.get(dim));
 	// Proper congruences map to parameters.
 	++dest_num_rows;
       }
@@ -394,7 +394,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         --source_index;
         PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 	exact_div_assign(tmp, diagonal_lcm,
-                         source[source_index].expression().get(dim));
+                         source[source_index].expr.get(dim));
         g.expr.set(dim, tmp);
       }
       // Don't assert g.OK() here, because it may fail.
@@ -432,7 +432,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
       Coefficient_traits::const_reference source_dim
-        = source[source_index].expression().get(dim);
+        = source[source_index].expr.get(dim);
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
@@ -443,7 +443,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	gcd_assign(reduced_source_dim, g.expression().get(dim), source_dim);
+	gcd_assign(reduced_source_dim, g.expr.get(dim), source_dim);
 	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
 	multiply_grid(reduced_source_dim, g, rows, dest_num_rows);
 
@@ -466,7 +466,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
 	--tmp_source_index;
 	Coefficient_traits::const_reference source_dim
-          = source[tmp_source_index].expression().get(dim);
+          = source[tmp_source_index].expr.get(dim);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
@@ -480,9 +480,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         for (dimension_type i = dest_index; i-- > 0; ) {
 	  PPL_ASSERT(i < dest_num_rows);
           Grid_Generator& row = rows[i];
-          tmp = row.expression().get(dim_fol);
+          tmp = row.expr.get(dim_fol);
 	  sub_mul_assign(tmp, source_dim,
-                         row.expression().get(dim));
+                         row.expr.get(dim));
           row.expr.set(dim_fol, tmp);
           // Don't assert row.OK() here, because it may fail.
           // All the rows in `dest' are checked at the end of this function.
@@ -508,7 +508,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
-  const Coefficient& system_divisor = rows[0].expression().inhomogeneous_term();
+  const Coefficient& system_divisor = rows[0].expr.inhomogeneous_term();
   
   for (dimension_type i = rows.size() - 1, dim = dims; dim-- > 1; ) {
     switch (dim_kinds[dim]) {

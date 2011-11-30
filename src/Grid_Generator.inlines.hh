@@ -116,11 +116,6 @@ inline
 Grid_Generator::~Grid_Generator() {
 }
 
-inline const Linear_Expression&
-Grid_Generator::expression() const {
-  return expr;
-}
-
 inline dimension_type
 Grid_Generator::max_space_dimension() {
   return Linear_Expression::max_space_dimension() - 1;

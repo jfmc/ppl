@@ -504,7 +504,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		     normalized_sp_o);
           dest_row_type& dest_i = dest_rows[i];
           neg_assign(normalized_sp_i);
-          dest_i.expr.linear_combine(dest_nle.expression(),
+          dest_i.expr.linear_combine(dest_nle.expr,
                                      normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
           // The modified row may still not be OK(), so don't assert OK here.
@@ -541,7 +541,7 @@ Polyhedron::conversion(Source_Linear_System& source,
           dest_row_type& dest_i = dest_rows[i];
           WEIGHT_BEGIN();
           neg_assign(normalized_sp_i);
-          dest_i.expr.linear_combine(dest_nle.expression(),
+          dest_i.expr.linear_combine(dest_nle.expr,
                                      normalized_sp_o, normalized_sp_i);
 	  dest_i.strong_normalize();
           // The modified row may still not be OK(), so don't assert OK here.
@@ -774,7 +774,7 @@ Polyhedron::conversion(Source_Linear_System& source,
                   // TODO: Check if the following assertions hold.
                   PPL_ASSERT(normalized_sp_i != 0);
                   PPL_ASSERT(normalized_sp_o != 0);
-                  new_row.expr.linear_combine(dest_rows[i].expression(),
+                  new_row.expr.linear_combine(dest_rows[i].expr,
                                               normalized_sp_i, normalized_sp_o);
                   
                   WEIGHT_ADD_MUL(86, dest.space_dimension());

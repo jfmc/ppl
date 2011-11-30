@@ -117,7 +117,7 @@ PPL::Grid_Generator_System
 
   for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = rows[i];
-    Scalar_Products::assign(numerator, expr, row.expression());
+    Scalar_Products::assign(numerator, expr, row.expr);
     if (denominator != 1) {
       // Since we want integer elements in the matrix,
       // we multiply by `denominator' all the columns of `*this'

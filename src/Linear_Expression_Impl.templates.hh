@@ -609,14 +609,14 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) cons
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Constraint& c) {
   // Do not copy the epsilon dimension (if any).
-  construct(*(c.expression().impl), c.space_dimension());
+  construct(*(c.expr.impl), c.space_dimension());
   PPL_ASSERT(OK());
 }
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
   // Do not copy the epsilon dimension (if any).
-  construct(*(g.expression().impl), g.space_dimension());
+  construct(*(g.expr.impl), g.space_dimension());
   // Do not copy the divisor of `g'.
   row.reset(0);
   PPL_ASSERT(OK());
@@ -625,7 +625,7 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Grid_Generator& g) {
   // This does not copy the last coefficient.
-  construct(*(g.expression().impl), g.space_dimension());
+  construct(*(g.expr.impl), g.space_dimension());
   // Do not copy the divisor of `g'.
   row.reset(0);
   PPL_ASSERT(OK());

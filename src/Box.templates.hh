@@ -187,14 +187,14 @@ Box<ITV>::Box(const Generator_System& gs)
     const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
-      for (Linear_Expression::const_iterator i = g.expression().begin(),
-              i_end = g.expression().lower_bound(Variable(space_dim));
+      for (Linear_Expression::const_iterator i = g.expr.begin(),
+              i_end = g.expr.lower_bound(Variable(space_dim));
               i != i_end; ++i)
 	  seq[i.variable().id()].assign(UNIVERSE);
       break;
     case Generator::RAY:
-      for (Linear_Expression::const_iterator i = g.expression().begin(),
-              i_end = g.expression().lower_bound(Variable(space_dim));
+      for (Linear_Expression::const_iterator i = g.expr.begin(),
+              i_end = g.expr.lower_bound(Variable(space_dim));
               i != i_end; ++i)
 	switch (sgn(*i)) {
 	case 1:
@@ -816,8 +816,8 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   PPL_DIRTY_TEMP0(Rational_Interval, t);
   PPL_DIRTY_TEMP0(mpq_class, m);
   r = 0;
-  for (Linear_Expression::const_iterator i = cg.expression().begin(),
-      i_end = cg.expression().lower_bound(Variable(cg.space_dimension())); i != i_end; ++i) {
+  for (Linear_Expression::const_iterator i = cg.expr.begin(),
+      i_end = cg.expr.lower_bound(Variable(cg.space_dimension())); i != i_end; ++i) {
     const Coefficient& cg_i = *i;
     const Variable v = i.variable();
     assign_r(m, cg_i, ROUND_NOT_NEEDED);
@@ -912,7 +912,7 @@ Box<ITV>::relation_with(const Constraint& c) const {
     PPL_DIRTY_TEMP0(Rational_Interval, t);
     PPL_DIRTY_TEMP0(mpq_class, m);
     r = 0;
-    const Linear_Expression& e = c.expression();
+    const Linear_Expression& e = c.expr;
     for (Linear_Expression::const_iterator i = e.begin(),
             i_end = e.lower_bound(Variable(c.space_dimension())); i != i_end; ++i) {
       assign_r(m, *i, ROUND_NOT_NEEDED);
@@ -952,7 +952,7 @@ Box<ITV>::relation_with(const Generator& g) const {
 
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
-      const Linear_Expression& e = g.expression();
+      const Linear_Expression& e = g.expr;
       for (Linear_Expression::const_iterator i = e.begin(),
             i_end = e.lower_bound(Variable(g_space_dim)); i != i_end; ++i)
 	if (!seq[i.variable().id()].is_universe())
@@ -961,7 +961,7 @@ Box<ITV>::relation_with(const Generator& g) const {
     }
     else {
       PPL_ASSERT(g.is_ray());
-      const Linear_Expression& e = g.expression();
+      const Linear_Expression& e = g.expr;
       for (Linear_Expression::const_iterator i = e.begin(),
             i_end = e.lower_bound(Variable(g_space_dim)); i != i_end; ++i) {
         const Variable v = i.variable();
@@ -2358,7 +2358,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
 
   // Find a space dimension having a non-zero coefficient (if any).
-  dimension_type last_k = c.expression().last_nonzero(1, c_space_dim + 1);
+  dimension_type last_k = c.expr.last_nonzero(1, c_space_dim + 1);
   if (last_k == c_space_dim + 1) {
     // Constraint c is trivial: check if it is inconsistent.
     if (c_inhomogeneous_term < 0
@@ -2375,7 +2375,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   Temp_Boundary_Type t_a;
   Temp_Boundary_Type t_x;
   Ternary open;
-  const Linear_Expression& c_e = c.expression();
+  const Linear_Expression& c_e = c.expr;
   for (Linear_Expression::const_iterator k = c_e.begin(),
     k_end = c_e.lower_bound(Variable(last_k)); k != k_end; ++k) {
     const Coefficient& a_k = *k;

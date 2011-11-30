@@ -1495,7 +1495,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
     // is, find the maximum and minimum values.
     Linear_Expression le;
     le.set_space_dimension(c.space_dimension());
-    le.linear_combine(c.expression(), Coefficient_one(), Coefficient_one(),
+    le.linear_combine(c.expr, Coefficient_one(), Coefficient_one(),
                       1, c_space_dim + 1);
 
     PPL_DIRTY_TEMP(Coefficient, max_num);

@@ -177,8 +177,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
       sub_mul_assign(y_le, b_i, vy);
       sub_mul_assign(z_le, b_i, vz);
     }
-    for (Linear_Expression::const_iterator j = c_i.expression().begin(),
-          j_end = c_i.expression().lower_bound(Variable(2*n)); j != j_end; ++j) {
+    for (Linear_Expression::const_iterator j = c_i.expr.begin(),
+          j_end = c_i.expr.lower_bound(Variable(2*n)); j != j_end; ++j) {
       Coefficient_traits::const_reference a_i_j = *j;
       const Variable v = j.variable();
       add_mul_assign(y_les[v.id()], a_i_j, vy);
@@ -364,7 +364,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        ++i, ++row_index) {
     Variable u1_i(m + row_index);
     Variable u2_i(s + row_index);
-    const Linear_Expression& e_i = i->expression();
+    const Linear_Expression& e_i = i->expr;
     for (Linear_Expression::const_iterator j = e_i.begin(),
           j_end = e_i.lower_bound(Variable(n)); j != j_end; ++j) {
       Coefficient_traits::const_reference A_ij_B = *j;
@@ -387,7 +387,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        i != cs_after_end;
        ++i, ++row_index) {
     Variable u3_i(row_index);
-    const Linear_Expression& e_i = i->expression();
+    const Linear_Expression& e_i = i->expr;
     for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
            i_end = e_i.lower_bound(Variable(2*n)); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij_C = *i;
@@ -435,7 +435,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-    const Linear_Expression& e_i = i->expression();
+    const Linear_Expression& e_i = i->expr;
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
     for (Linear_Expression::const_iterator i = e_i.begin(),
@@ -494,7 +494,7 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
   Generator fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
   const dimension_type n = cs.space_dimension() / 2;
-  Linear_Expression le(fp.expression(), n + 1);
+  Linear_Expression le(fp.expr, n + 1);
   mu = point(le, fp.divisor());
   return true;
 }
@@ -705,7 +705,7 @@ Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_
        ++i, ++row_index) {
     Coefficient_traits::const_reference fp_i = fp.coefficient(Variable(row_index));
     if (fp_i != 0)
-      le.linear_combine(i->expression(), 1, -fp_i, 1, n + 1);
+      le.linear_combine(i->expr, 1, -fp_i, 1, n + 1);
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
@@ -751,7 +751,7 @@ Termination_Helpers::one_affine_ranking_function_PR_original(const Constraint_Sy
     Variable lambda_2(row_index);
     Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
     if (fp_i != 0)
-      le.linear_combine(i->expression(), 1, -fp_i, 1, n + 1);
+      le.linear_combine(i->expr, 1, -fp_i, 1, n + 1);
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
@@ -816,7 +816,7 @@ Termination_Helpers::all_affine_ranking_functions_PR(const Constraint_System& cs
            ++i, ++row_index) {
         Coefficient_traits::const_reference g_i = g.coefficient(Variable(row_index));
         if (g_i != 0)
-          le.linear_combine(i->expression(), 1, -g_i, 1, n + 1);
+          le.linear_combine(i->expr, 1, -g_i, 1, n + 1);
       }
 
       // Add to gs_out the transformed generator.
@@ -895,7 +895,7 @@ Termination_Helpers::all_affine_ranking_functions_PR_original(const Constraint_S
         Variable lambda2_i(row_index);
         Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
         if (g_i != 0)
-          le.linear_combine(i->expression(), 1, -g_i, 1, n + 1);
+          le.linear_combine(i->expr, 1, -g_i, 1, n + 1);
       }
 
       // Add to gs_out the transformed generator.

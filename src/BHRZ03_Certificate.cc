@@ -75,7 +75,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
       // For each i such that 0 <= j < space_dim,
       // `num_rays_null_coord[j]' will be the number of rays
       // having exactly `j' coordinates equal to 0.
-      ++num_rays_null_coord[i->expression().num_zeroes(1, space_dim + 1)];
+      ++num_rays_null_coord[i->expr.num_zeroes(1, space_dim + 1)];
       break;
     case Generator::LINE:
       // Since the generator systems is minimized, the dimension of
@@ -224,7 +224,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     if (i->is_ray())
-      ++ph_num_rays_null_coord[i->expression().num_zeroes(1, space_dim + 1)];
+      ++ph_num_rays_null_coord[i->expr.num_zeroes(1, space_dim + 1)];
 
   // Compare (lexicographically) the two vectors:
   // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.

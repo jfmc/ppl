@@ -552,9 +552,6 @@ public:
   */
   void set_is_inequality();
 
-  // TODO: Remove this.
-  const Linear_Expression& expression() const;
-
   // FIXME: Consider making this private.
   //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
   /*!
@@ -570,9 +567,10 @@ public:
   */
   void linear_combine(const Constraint& y, dimension_type i);
 
-private:
+  // TODO: Make this private.
   Linear_Expression expr;
 
+private:
   Kind kind_;
 
   Topology topology_;

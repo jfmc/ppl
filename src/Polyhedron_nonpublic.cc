@@ -619,7 +619,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // We will add it to the extremum as soon as we find it.
       PPL_DIRTY_TEMP0(mpq_class, candidate);
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i.expression().inhomogeneous_term(), ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
       candidate.canonicalize();
       const bool g_is_point = gen_sys_i.is_point();
       if (first_candidate
@@ -1150,7 +1150,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	if (!found_eps_leq_one) {
 	  // Check if it is the eps_leq_one constraint.
           const Constraint& c = cs[i];
-          const Linear_Expression& e = c.expression();
+          const Linear_Expression& e = c.expr;
 	  if (e.all_zeroes(1, eps_var.space_dimension())
               && (e.inhomogeneous_term() + e.get(eps_var) == 0)) {
 	    // We found the eps_leq_one constraint.
@@ -1313,8 +1313,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       }
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	if (g.epsilon_coefficient() != g.expression().inhomogeneous_term()) {
-	  g.set_epsilon_coefficient(g.expression().inhomogeneous_term());
+	if (g.epsilon_coefficient() != g.expr.inhomogeneous_term()) {
+	  g.set_epsilon_coefficient(g.expr.inhomogeneous_term());
 	  // Enforce normalization.
 	  g.expr.normalize();
           PPL_ASSERT(g.OK());
@@ -2002,10 +2002,10 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       // NOTE: no need to actually compute the "mid-point",
       // since any strictly positive combination would do.
       mid_g = x_g;
-      mid_g.expr += y_g.expression();
+      mid_g.expr += y_g.expr;
       // A zero ray is not a well formed generator.
       const bool illegal_ray
-        = (mid_g.expression().inhomogeneous_term() == 0 && mid_g.expression().all_homogeneous_terms_are_zero());
+        = (mid_g.expr.inhomogeneous_term() == 0 && mid_g.expr.all_homogeneous_terms_are_zero());
       // A zero ray cannot be generated from a line: this holds
       // because x_row (resp., y_row) is not subsumed by y (resp., x).
       PPL_ASSERT(!(illegal_ray && (x_g_is_line || y_g_is_line)));
@@ -2040,7 +2040,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       if (!x_g_is_line && y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = x_g - y_g.
         mid_g = x_g;
-        mid_g.expr -= y_g.expression();
+        mid_g.expr -= y_g.expr;
         mid_g.expr.normalize();
         PPL_ASSERT(mid_g.OK());
         // Step 7.1: check if mid_g is in the union of x and y.
@@ -2051,7 +2051,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       else if (x_g_is_line && !y_g_is_line) {
         // Step 6.1: (re-)compute mid_row = - x_row + y_row.
         mid_g = y_g;
-        mid_g.expr -= x_g.expression();
+        mid_g.expr -= x_g.expr;
         mid_g.expr.normalize();
         PPL_ASSERT(mid_g.OK());
         // Step 7.1: check if mid_g is in the union of x and y.
@@ -2140,7 +2140,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       continue;
 
     if (pvars != 0) {
-      if (!c.expression().all_zeroes(*pvars))
+      if (!c.expr.all_zeroes(*pvars))
         goto next_constraint;
     }
 
@@ -2160,10 +2160,10 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     }
 
     // Compute the GCD of all the homogeneous terms.
-    gcd = c.expression().gcd(1, space_dim + 1);
+    gcd = c.expr.gcd(1, space_dim + 1);
 
     if (gcd != 0 && gcd != 1) {
-      PPL_ASSERT(c.expression().inhomogeneous_term() % gcd != 0);
+      PPL_ASSERT(c.expr.inhomogeneous_term() % gcd != 0);
 
       // If we have an equality, the polyhedron becomes empty.
       if (c.is_equality()) {
@@ -2175,7 +2175,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
       c.expr.exact_div_assign(gcd, 1, space_dim + 1);
 
       PPL_DIRTY_TEMP_COEFFICIENT(c_0);
-      c_0 = c.expression().inhomogeneous_term();
+      c_0 = c.expr.inhomogeneous_term();
       const int c_0_sign = sgn(c_0);
       c_0 /= gcd;
       if (c_0_sign < 0)

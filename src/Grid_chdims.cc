@@ -415,12 +415,12 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
       continue;
 
     Congruence cg_copy = cg;
-    cg_copy.expression().set_coefficient(var, Coefficient_zero());
+    cg_copy.expr.set_coefficient(var, Coefficient_zero());
 
     // Each relevant congruence results in `m' new congruences.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       Congruence x = cg_copy;
-      add_mul_assign(x.expression(), coeff, Variable(dst_d));
+      add_mul_assign(x.expr, coeff, Variable(dst_d));
       new_congruences.insert_verbatim_recycled(x);
     }
   }

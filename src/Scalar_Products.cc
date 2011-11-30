@@ -39,26 +39,26 @@ PPL::Scalar_Products::assign(Coefficient& z,
 void
 PPL::Scalar_Products::assign(Coefficient& z,
                              const Constraint& x, const Generator& y) {
-  assign(z, x.expression(), y.expression());
+  assign(z, x.expr, y.expr);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
                              const Generator& x, const Constraint& y) {
-  assign(z, x.expression(), y.expression());
+  assign(z, x.expr, y.expr);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
 			     const Grid_Generator& x, const Congruence& y) {
-  x.expression().scalar_product_assign(z, y.expression(), 0, x.space_dimension() + 1);
+  x.expr.scalar_product_assign(z, y.expression(), 0, x.space_dimension() + 1);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
 			     const Constraint& x,
 			     const Grid_Generator& y) {
-  assign(z, x.expression(), y.expression());
+  assign(z, x.expr, y.expr);
 }
 
 void
@@ -67,7 +67,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.space_dimension() <= y.space_dimension());
-  x.expression().scalar_product_assign(z, y.expression());
+  x.expression().scalar_product_assign(z, y.expr);
 }
 
 void
@@ -87,7 +87,7 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
   // The reduced scalar product is only defined if the topology of `x'
   // is NNC and `y' has enough coefficients.
   PPL_ASSERT(x.space_dimension() <= y.space_dimension());
-  x.expression().scalar_product_assign(z, y.expression(), 0, x.space_dimension());
+  x.expr.scalar_product_assign(z, y.expression(), 0, x.space_dimension());
 }
 
 void
@@ -107,7 +107,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.space_dimension() <= y.space_dimension());
-  x.expression().scalar_product_assign(z, y.expression(), 1, x.space_dimension() + 1);
+  x.expr.scalar_product_assign(z, y.expression(), 1, x.space_dimension() + 1);
 }
 
 void
@@ -117,5 +117,5 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.space_dimension() <= y.space_dimension());
-  x.expression().scalar_product_assign(z, y.expression(), 1, x.space_dimension() + 1);
+  x.expr.scalar_product_assign(z, y.expr, 1, x.space_dimension() + 1);
 }

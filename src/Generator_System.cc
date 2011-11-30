@@ -712,7 +712,7 @@ PPL::Generator_System
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = rows[i];
-    Scalar_Products::assign(numerator, expr, row.expression());
+    Scalar_Products::assign(numerator, expr, row.expr);
     if (denominator != 1) {
       // Since we want integer elements in the matrix,
       // we multiply by `denominator' all the columns of `*this'
@@ -829,7 +829,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // remove_row().
   for (dimension_type i = 0; i < num_rows(); ) {
     const Generator& g = (*this)[i];
-    if (g.is_line_or_ray() && g.expression().all_homogeneous_terms_are_zero())
+    if (g.is_line_or_ray() && g.expr.all_homogeneous_terms_are_zero())
       sys.remove_row(i, false);
     else
       ++i;

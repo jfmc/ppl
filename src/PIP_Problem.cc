@@ -140,7 +140,7 @@ PPL::PIP_Problem::solve() const {
 
         // Constraints having a non-zero variable coefficient
         // should not be inserted in context.
-        if (!c.expression().all_zeroes_except(parameters, 1, c_space_dim + 1))
+        if (!c.expr.all_zeroes_except(parameters, 1, c_space_dim + 1))
           continue;
 
         check_feasible_context = true;

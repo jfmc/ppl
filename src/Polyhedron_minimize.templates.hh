@@ -163,13 +163,13 @@ Polyhedron::minimize(const bool con_to_gen,
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point)
-      if (dest[first_point].expression().inhomogeneous_term() > 0)
+      if (dest[first_point].expr.inhomogeneous_term() > 0)
         break;
   } else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point)
-      if (dest[first_point].expression().get(Variable(dest.space_dimension())) > 0)
+      if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0)
         break;
   }
 
@@ -385,13 +385,13 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point)
-      if (dest[first_point].expression().inhomogeneous_term() > 0)
+      if (dest[first_point].expr.inhomogeneous_term() > 0)
         break;
   } else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point)
-      if (dest[first_point].expression().get(Variable(dest.space_dimension())) > 0)
+      if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0)
         break;
   }
 

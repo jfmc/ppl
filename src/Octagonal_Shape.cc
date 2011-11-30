@@ -43,7 +43,7 @@ PPL::Octagonal_Shape_Helper
   PPL_ASSERT(c.space_dimension() == c_space_dim);
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
 
-  c_first_var = c.expression().first_nonzero(1, c_space_dim + 1);
+  c_first_var = c.expr.first_nonzero(1, c_space_dim + 1);
 
   if (c_first_var == c_space_dim + 1) {
     c_term = c.inhomogeneous_term();
@@ -53,7 +53,7 @@ PPL::Octagonal_Shape_Helper
   c_num_vars++;
   --c_first_var;
 
-  c_second_var = c.expression().first_nonzero(c_first_var + 2, c_space_dim + 1);
+  c_second_var = c.expr.first_nonzero(c_first_var + 2, c_space_dim + 1);
 
   if (c_second_var == c_space_dim + 1) {
     c_term = c.inhomogeneous_term();
@@ -73,7 +73,7 @@ PPL::Octagonal_Shape_Helper
   c_num_vars++;
   --c_second_var;
 
-  if (!c.expression().all_zeroes(c_second_var + 2, c_space_dim + 1))
+  if (!c.expr.all_zeroes(c_second_var + 2, c_space_dim + 1))
     return false;
 
   // FIXME: The calling code expects c_first_var > c_second_var, when

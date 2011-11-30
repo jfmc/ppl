@@ -200,7 +200,7 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
 }
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c) {
-  switch (c.expression().representation()) {
+  switch (c.expr.representation()) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(c);
     break;
@@ -231,7 +231,7 @@ PPL::Linear_Expression::Linear_Expression(const Constraint& c,
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g) {
-  switch (g.expression().representation()) {
+  switch (g.expr.representation()) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(g);
     break;
@@ -261,7 +261,7 @@ PPL::Linear_Expression::Linear_Expression(const Generator& g, Representation r) 
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g) {
-  switch (g.expression().representation()) {
+  switch (g.expr.representation()) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(g);
     break;

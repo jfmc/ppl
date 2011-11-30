@@ -230,7 +230,7 @@ PPL::compare(const Grid_Generator& x, const Grid_Generator& y) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
 
-  return compare(x.expression(), y.expression());
+  return compare(x.expr, y.expr);
 }
 
 bool

@@ -556,9 +556,6 @@ public:
   */
   bool check_strong_normalized() const;
 
-  // TODO: Remove this.
-  const Linear_Expression& expression() const;
-
   //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
   /*!
     \param y
@@ -573,8 +570,10 @@ public:
   */
   void linear_combine(const Grid_Generator& y, dimension_type i);
 
-private:
+  // TODO: Make this private.
   Linear_Expression expr;
+
+private:
 
   Kind kind_;
 

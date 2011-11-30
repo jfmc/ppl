@@ -2260,7 +2260,7 @@ PIP_Solution_Node::update_tableau(
           // Transform (expr > 0) into (expr - 1 >= 0).
           neg_assign(p_row[0], denom);
       dimension_type last_dim = 0;
-      const Linear_Expression& e = constraint.expression();
+      const Linear_Expression& e = constraint.expr;
       for (Linear_Expression::const_iterator
           i = e.begin(), i_end = e.lower_bound(Variable(constraint.space_dimension()));
           i != i_end; ++i) {

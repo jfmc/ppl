@@ -31,8 +31,8 @@ namespace Parma_Polyhedra_Library {
 void
 Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
-  Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
-  Coefficient_traits::const_reference row_column = row.expression().get(column);
+  Coefficient_traits::const_reference pivot_column = pivot.expr.get(column);
+  Coefficient_traits::const_reference row_column = row.expr.get(column);
   PPL_ASSERT(pivot_column != 0);
   PPL_ASSERT(row_column != 0);
   
@@ -48,11 +48,11 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   neg_assign(reduced_row_col);
   // pivot.space_dimension() is the index for the parameter divisor so we
   // start reducing the line at index pivot.space_dimension() - 2.
-  row.expr.linear_combine(pivot.expression(),
+  row.expr.linear_combine(pivot.expr,
                           reduced_pivot_col, reduced_row_col,
-                          column, pivot.expression().space_dimension());
+                          column, pivot.expr.space_dimension());
   PPL_ASSERT(row.OK());
-  PPL_ASSERT(row.expression().get(column) == 0);
+  PPL_ASSERT(row.expr.get(column) == 0);
 }
 
 void
@@ -62,8 +62,8 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Assume two equalities.
   PPL_ASSERT(row.modulus() == 0 && pivot.modulus() == 0);
 
-  Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
-  Coefficient_traits::const_reference row_column = row.expression().get(column);
+  Coefficient_traits::const_reference pivot_column = pivot.expr.get(column);
+  Coefficient_traits::const_reference row_column = row.expr.get(column);
   PPL_ASSERT(pivot_column != 0);
   PPL_ASSERT(row_column != 0);
   
@@ -77,11 +77,11 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   neg_assign(reduced_row_col);
-  row.expr.linear_combine(pivot.expression(),
+  row.expr.linear_combine(pivot.expr,
                           reduced_pivot_col, reduced_row_col,
                           0, column + 1);
   PPL_ASSERT(row.OK());
-  PPL_ASSERT(row.expression().get(column) == 0);
+  PPL_ASSERT(row.expr.get(column) == 0);
 }
 
 template <typename R>
@@ -135,8 +135,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
 
-  Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
-  Coefficient_traits::const_reference row_column = row.expression().get(column);
+  Coefficient_traits::const_reference pivot_column = pivot.expr.get(column);
+  Coefficient_traits::const_reference row_column = row.expr.get(column);
   PPL_ASSERT(pivot_column != 0);
   PPL_ASSERT(row_column != 0);
 
@@ -146,7 +146,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
   if (row_column == pivot_column) {
-    row.expr.linear_combine(pivot.expression(), 1, -1, 0, num_columns);
+    row.expr.linear_combine(pivot.expr, 1, -1, 0, num_columns);
     return;
   }
 
@@ -180,10 +180,10 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  row.expr.linear_combine(pivot.expression(),
+  row.expr.linear_combine(pivot.expr,
                           Coefficient_one(), -reduced_row_col,
                           column, num_columns);
-  PPL_ASSERT(row.expression().get(column) == 0);
+  PPL_ASSERT(row.expr.get(column) == 0);
 }
 
 void
@@ -195,8 +195,8 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // here may be needed there too.
   PPL_ASSERT(row.modulus() > 0 && pivot.modulus() == 0);
 
-  Coefficient_traits::const_reference pivot_column = pivot.expression().get(column);
-  Coefficient_traits::const_reference row_column = row.expression().get(column);
+  Coefficient_traits::const_reference pivot_column = pivot.expr.get(column);
+  Coefficient_traits::const_reference row_column = row.expr.get(column);
 
   // If the elements at `column' in row and pivot are the same, then
   // just subtract `pivot' from `row'.
@@ -229,7 +229,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
   sub_mul_assign(row, reduced_row_col, pivot);
-  PPL_ASSERT(row.expression().get(column) == 0);
+  PPL_ASSERT(row.expr.get(column) == 0);
 }
 
 #ifndef NDEBUG
@@ -239,7 +239,7 @@ Grid::rows_are_zero(M& system, dimension_type first,
 		    dimension_type last, dimension_type row_size) {
   while (first <= last) {
     const R& row = system[first++];
-    if (!row.expression().all_zeroes(0, row_size))
+    if (!row.expr.all_zeroes(0, row_size))
       return false;
   }
   return true;
@@ -275,7 +275,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     dimension_type row_index = pivot_index;
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && rows[row_index].expression().get(dim) == 0)
+    while (row_index < num_rows && rows[row_index].expr.get(dim) == 0)
       ++row_index;
 
     if (row_index == num_rows)
@@ -294,7 +294,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
         Grid_Generator& row = rows[row_index];
 
-	if (row.expression().get(dim) == 0)
+	if (row.expr.get(dim) == 0)
 	  continue;
 
 	if (row.is_line())
@@ -326,7 +326,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
-      if (pivot.expression().get(dim) < 0)
+      if (pivot.expr.get(dim) < 0)
         pivot.expr.negate(dim, num_columns);
 
       // Factor this row out of the preceding rows.
@@ -357,7 +357,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
   // Ensure that the parameter divisors are the same as the system
   // divisor.
-  const Coefficient& system_divisor = rows[0].expression().inhomogeneous_term();
+  const Coefficient& system_divisor = rows[0].expr.inhomogeneous_term();
   for (dimension_type i = rows.size() - 1, dim = num_columns - 1;
        dim > 0; --dim) {
     switch (dim_kinds[dim]) {
@@ -407,7 +407,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     dimension_type row_index = pivot_index;
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && sys[row_index].expression().get(dim) == 0)
+    while (row_index < num_rows && sys[row_index].expr.get(dim) == 0)
       ++row_index;
 
     if (row_index == num_rows)
@@ -432,7 +432,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
 	Congruence& row = rows[row_index];
 
-	if (row.expression().get(dim) == 0)
+	if (row.expr.get(dim) == 0)
 	  continue;
 
 	if (row.is_equality())
@@ -464,8 +464,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
-      if (pivot.expression().get(dim) < 0)
-	pivot.expression().negate(0, dim + 1);
+      if (pivot.expr.get(dim) < 0)
+	pivot.expr.negate(0, dim + 1);
 
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System>

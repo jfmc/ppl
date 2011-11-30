@@ -244,7 +244,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   for (Generator_System::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
-    const Linear_Expression& old_e = old_g.expression();
+    const Linear_Expression& old_e = old_g.expr;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (Linear_Expression::const_iterator j = old_e.begin(),

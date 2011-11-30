@@ -196,11 +196,6 @@ Constraint::operator=(const Constraint& c) {
   return *this;
 }
 
-inline const Linear_Expression&
-Constraint::expression() const {
-  return expr;
-}
-
 inline dimension_type
 Constraint::max_space_dimension() {
   return Linear_Expression::max_space_dimension();

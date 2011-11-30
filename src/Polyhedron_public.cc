@@ -485,8 +485,8 @@ PPL::Polyhedron::is_universe() const {
                  && eps_leq_one.epsilon_coefficient() < 0
                  && eps_geq_zero.inhomogeneous_term() == 0
                  && eps_geq_zero.epsilon_coefficient() > 0);
-      PPL_ASSERT(eps_leq_one.expression().all_zeroes(1, eps_index));
-      PPL_ASSERT(eps_geq_zero.expression().all_zeroes(1, eps_index));
+      PPL_ASSERT(eps_leq_one.expr.all_zeroes(1, eps_index));
+      PPL_ASSERT(eps_geq_zero.expr.all_zeroes(1, eps_index));
 #endif
       return true;
     }
@@ -608,7 +608,7 @@ PPL::Polyhedron::contains_integer_point() const {
       // CHECKME: should we change the behavior of Linear_Expression(c) ?
       // Compute the GCD of the coefficients of c
       // (disregarding the inhomogeneous term and the espilon dimension).
-      homogeneous_gcd = c.expression().gcd(1, space_dim + 1);
+      homogeneous_gcd = c.expr.gcd(1, space_dim + 1);
       if (homogeneous_gcd == 0) {
         // NOTE: since tautological constraints are already filtered away
         // by iterators, here we must have an inconsistent constraint.
@@ -635,7 +635,7 @@ PPL::Polyhedron::contains_integer_point() const {
 	// Compute the GCD of the coefficients of c
 	// (disregarding the inhomogeneous term)
 	// to see whether or not the inhomogeneous term can be tightened.
-	homogeneous_gcd = c.expression().gcd(1, space_dim + 1);
+	homogeneous_gcd = c.expr.gcd(1, space_dim + 1);
         if (homogeneous_gcd == 0) {
           // NOTE: since tautological constraints are already filtered away
           // by iterators, here we must have an inconsistent constraint.
@@ -727,8 +727,8 @@ PPL::Polyhedron::constrains(const Variable var) const {
       if (gen_sys_i.is_line_or_ray()) {
 	const int sign = sgn(gen_sys_i.coefficient(var));
 	if (sign != 0) {
-          if (gen_sys_i.expression().all_zeroes(1, var_id)
-              && gen_sys_i.expression().all_zeroes(var_id + 1, space_dim + 1)) {
+          if (gen_sys_i.expr.all_zeroes(1, var_id)
+              && gen_sys_i.expr.all_zeroes(var_id + 1, space_dim + 1)) {
             
             if (gen_sys_i.is_line())
               return true;
@@ -3352,7 +3352,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       case Generator::CLOSURE_POINT:
 	{
 	  // If it is the origin, erase it.
-	  if (g.expression().all_homogeneous_terms_are_zero()) {
+	  if (g.expr.all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
             std::swap(g, rows[gs_num_rows]);
 	  }
@@ -3378,7 +3378,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       case Generator::POINT:
 	{
 	  // If it is the origin, erase it.
-	  if (g.expression().all_homogeneous_terms_are_zero()) {
+	  if (g.expr.all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
             std::swap(g, rows[gs_num_rows]);
 	  }
@@ -3490,7 +3490,7 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the value if there is a constant value.
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), gen_sys_i.expression().inhomogeneous_term(), ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i.expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
       candidate.canonicalize();
       if (first_candidate) {
 	// We have a (new) candidate value.
