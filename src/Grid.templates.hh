@@ -95,6 +95,7 @@ Grid::Grid(const Box<Interval>& box,
 	      neg_assign(u_n);
 	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
 	    point.expr.set(Variable(k), l_n * u_n);
+            PPL_ASSERT(point.OK());
 
             gen_sys.take_ownership_of_rows(rows);
 
