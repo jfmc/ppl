@@ -619,10 +619,9 @@ public:
   */
   void linear_combine(const Grid_Generator& y, dimension_type i);
 
-  // TODO: Make this private.
+private:
   Linear_Expression expr;
 
-private:
   Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
 
   Expression wrapped_expr;

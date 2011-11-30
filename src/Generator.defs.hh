@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Grid_Generator.types.hh"
 #include "Grid_Generator_System.types.hh"
+#include "MIP_Problem.types.hh"
+#include "Grid.types.hh"
 
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
@@ -579,10 +581,9 @@ public:
   //! is a different type, not all operations are allowed).
   const Expression& expression() const;
 
-  // TODO: Make this private.
+private:
   Linear_Expression expr;
 
-private:
   Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
 
   Expression wrapped_expr;
@@ -702,6 +703,8 @@ private:
   friend class Parma_Polyhedra_Library::Grid_Generator;
   // This is for access to Linear_Expression in `insert'.
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
+  friend class Parma_Polyhedra_Library::MIP_Problem;
+  friend class Parma_Polyhedra_Library::Grid;
 
   friend
   Parma_Polyhedra_Library

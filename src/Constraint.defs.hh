@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.types.hh"
 #include "Variables_Set.types.hh"
 #include "Polyhedron.types.hh"
+#include "termination.types.hh"
+#include "Octagonal_Shape.types.hh"
 
 #include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
@@ -576,10 +578,9 @@ public:
   */
   void linear_combine(const Constraint& y, dimension_type i);
 
-  // TODO: Make this private.
+private:
   Linear_Expression expr;
 
-private:
   Expression wrapped_expr;
 
   Kind kind_;
@@ -655,6 +656,11 @@ private:
   friend class Linear_System<Constraint>;
   friend class Constraint_System;
   friend class Polyhedron;
+  friend class Scalar_Products;
+  friend class Topology_Adjusted_Scalar_Product_Sign;
+  friend class Termination_Helpers;
+  template <typename T>
+  friend class Octagonal_Shape;
 
   friend Constraint
   operator<(const Linear_Expression& e1, const Linear_Expression& e2);
