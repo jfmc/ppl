@@ -364,9 +364,9 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        ++i, ++row_index) {
     Variable u1_i(m + row_index);
     Variable u2_i(s + row_index);
-    const Linear_Expression& e_i = i->expr;
-    for (Linear_Expression::const_iterator j = e_i.begin(),
-          j_end = e_i.lower_bound(Variable(n)); j != j_end; ++j) {
+    const Constraint::Expression& e_i = i->expression();
+    for (Linear_Expression::const_iterator j = e_i.begin(), j_end = e_i.end();
+          j != j_end; ++j) {
       Coefficient_traits::const_reference A_ij_B = *j;
       const Variable v = j.variable();
       // (u1 - u2) A_B, in the context of j-th constraint.
@@ -387,9 +387,9 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        i != cs_after_end;
        ++i, ++row_index) {
     Variable u3_i(row_index);
-    const Linear_Expression& e_i = i->expr;
+    const Constraint::Expression& e_i = i->expression();
     for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
-           i_end = e_i.lower_bound(Variable(2*n)); i != i_end; ++i) {
+           i_end = e_i.end(); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij_C = *i;
       const Variable v = i.variable();
       // - u3 A_C, in the context of the j-th constraint.
