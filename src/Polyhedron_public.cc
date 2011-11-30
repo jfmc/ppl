@@ -480,13 +480,12 @@ PPL::Polyhedron::is_universe() const {
       obtain_sorted_constraints();
       const Constraint& eps_leq_one = con_sys[0];
       const Constraint& eps_geq_zero = con_sys[1];
-      const dimension_type eps_index = con_sys.space_dimension() + 1;
       PPL_ASSERT(eps_leq_one.inhomogeneous_term() > 0
                  && eps_leq_one.epsilon_coefficient() < 0
                  && eps_geq_zero.inhomogeneous_term() == 0
                  && eps_geq_zero.epsilon_coefficient() > 0);
-      PPL_ASSERT(eps_leq_one.expr.all_zeroes(1, eps_index));
-      PPL_ASSERT(eps_geq_zero.expr.all_zeroes(1, eps_index));
+      PPL_ASSERT(eps_leq_one.expression().all_homogeneous_terms_are_zero());
+      PPL_ASSERT(eps_geq_zero.expression().all_homogeneous_terms_are_zero());
 #endif
       return true;
     }
