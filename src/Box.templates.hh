@@ -187,14 +187,14 @@ Box<ITV>::Box(const Generator_System& gs)
     const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
-      for (Linear_Expression::const_iterator i = g.expr.begin(),
-              i_end = g.expr.lower_bound(Variable(space_dim));
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+              i_end = g.expression().end();
               i != i_end; ++i)
 	  seq[i.variable().id()].assign(UNIVERSE);
       break;
     case Generator::RAY:
-      for (Linear_Expression::const_iterator i = g.expr.begin(),
-              i_end = g.expr.lower_bound(Variable(space_dim));
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+              i_end = g.expression().end();
               i != i_end; ++i)
 	switch (sgn(*i)) {
 	case 1:
