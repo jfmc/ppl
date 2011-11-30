@@ -952,18 +952,18 @@ Box<ITV>::relation_with(const Generator& g) const {
 
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
-      const Linear_Expression& e = g.expr;
-      for (Linear_Expression::const_iterator i = e.begin(),
-            i_end = e.lower_bound(Variable(g_space_dim)); i != i_end; ++i)
+      const Generator::Expression& e = g.expression();
+      for (Linear_Expression::const_iterator i = e.begin(), i_end = e.end();
+           i != i_end; ++i)
 	if (!seq[i.variable().id()].is_universe())
 	  return Poly_Gen_Relation::nothing();
       return Poly_Gen_Relation::subsumes();
     }
     else {
       PPL_ASSERT(g.is_ray());
-      const Linear_Expression& e = g.expr;
-      for (Linear_Expression::const_iterator i = e.begin(),
-            i_end = e.lower_bound(Variable(g_space_dim)); i != i_end; ++i) {
+      const Generator::Expression& e = g.expression();
+      for (Linear_Expression::const_iterator i = e.begin(), i_end = e.end();
+           i != i_end; ++i) {
         const Variable v = i.variable();
 	switch (sgn(*i)) {
 	case 1:
