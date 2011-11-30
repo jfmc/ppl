@@ -85,15 +85,15 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // TODO: Check if the following loop can be optimized used
         // Linear_Expression::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
-          const Coefficient& g_i = g.expr.get(Variable(i - 1));
+          const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
           for (dimension_type j = space_dim; j > 0; --j)
             if (i != j)
-              div_round_up(dbm_i[j], g.expr.get(Variable(j - 1)) - g_i, d);
+              div_round_up(dbm_i[j], g.expression().get(Variable(j - 1)) - g_i, d);
           div_round_up(dbm_i[0], -g_i, d);
         }
         for (dimension_type j = space_dim; j > 0; --j)
-          div_round_up(dbm_0[j], g.expr.get(Variable(j - 1)), d);
+          div_round_up(dbm_0[j], g.expression().get(Variable(j - 1)), d);
         // Note: no need to initialize the first element of the main diagonal.
       }
       else {
@@ -103,18 +103,18 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // TODO: Check if the following loop can be optimized used
         // Linear_Expression::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
-          const Coefficient& g_i = g.expr.get(Variable(i - 1));
+          const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
           // The loop correctly handles the case when i == j.
           for (dimension_type j = space_dim; j > 0; --j) {
-            div_round_up(tmp, g.expr.get(Variable(j - 1)) - g_i, d);
+            div_round_up(tmp, g.expression().get(Variable(j - 1)) - g_i, d);
             max_assign(dbm_i[j], tmp);
           }
           div_round_up(tmp, -g_i, d);
           max_assign(dbm_i[0], tmp);
         }
         for (dimension_type j = space_dim; j > 0; --j) {
-          div_round_up(tmp, g.expr.get(Variable(j - 1)), d);
+          div_round_up(tmp, g.expression().get(Variable(j - 1)), d);
           max_assign(dbm_0[j], tmp);
         }
       }
@@ -139,17 +139,17 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
       // TODO: Check if the following loop can be optimized used
       // Linear_Expression::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
-        const Coefficient& g_i = g.expr.get(Variable(i - 1));
+        const Coefficient& g_i = g.expression().get(Variable(i - 1));
         DB_Row<N>& dbm_i = dbm[i];
         // The loop correctly handles the case when i == j.
         for (dimension_type j = space_dim; j > 0; --j)
-          if (g_i != g.expr.get(Variable(j - 1)))
+          if (g_i != g.expression().get(Variable(j - 1)))
             assign_r(dbm_i[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
         if (g_i != 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
-      for (Linear_Expression::const_iterator i = g.expr.begin(),
-            i_end = g.expr.lower_bound(Variable(space_dim)); i != i_end; ++i)
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+            i_end = g.expression().end(); i != i_end; ++i)
         assign_r(dbm_0[i.variable().space_dimension()],
                  PLUS_INFINITY, ROUND_NOT_NEEDED);
       break;
@@ -157,17 +157,17 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
       // TODO: Check if the following loop can be optimized used
       // Linear_Expression::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
-        const Coefficient& g_i = g.expr.get(Variable(i - 1));
+        const Coefficient& g_i = g.expression().get(Variable(i - 1));
         DB_Row<N>& dbm_i = dbm[i];
         // The loop correctly handles the case when i == j.
         for (dimension_type j = space_dim; j > 0; --j)
-          if (g_i < g.expr.get(Variable(j - 1)))
+          if (g_i < g.expression().get(Variable(j - 1)))
             assign_r(dbm_i[j], PLUS_INFINITY, ROUND_NOT_NEEDED);
         if (g_i < 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
-      for (Linear_Expression::const_iterator i = g.expr.begin(),
-            i_end = g.expr.lower_bound(Variable(space_dim)); i != i_end; ++i)
+      for (Linear_Expression::const_iterator i = g.expression().begin(),
+            i_end = g.expression().end(); i != i_end; ++i)
         if (*i > 0)
           assign_r(dbm_0[i.variable().space_dimension()],
                    PLUS_INFINITY, ROUND_NOT_NEEDED);
