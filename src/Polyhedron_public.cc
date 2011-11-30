@@ -3377,7 +3377,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       case Generator::POINT:
 	{
 	  // If it is the origin, erase it.
-	  if (g.expr.all_homogeneous_terms_are_zero()) {
+	  if (g.expression().all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
             std::swap(g, rows[gs_num_rows]);
 	  }
