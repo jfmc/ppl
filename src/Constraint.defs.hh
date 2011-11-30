@@ -38,6 +38,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Returns the constraint \p e1 \< \p e2.
+/*! \relates Constraint */
+Constraint
+operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \< \p v2.
+/*! \relates Constraint */
+Constraint
+operator<(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \< \p n.
+/*! \relates Constraint */
+Constraint
+operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \< \p e.
+/*! \relates Constraint */
+Constraint
+operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \> \p e2.
+/*! \relates Constraint */
+Constraint
+operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \> \p v2.
+/*! \relates Constraint */
+Constraint
+operator>(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \> \p n.
+/*! \relates Constraint */
+Constraint
+operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \> \p e.
+/*! \relates Constraint */
+Constraint
+operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Constraint
@@ -476,7 +516,6 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
 
-  // TODO: Avoid reducing the space dimension.
   /*! \brief
     Builds a constraint of type \p type and topology \p topology,
     stealing the coefficients from \p e.
@@ -601,6 +640,30 @@ private:
   friend class Linear_System<Constraint>;
   friend class Constraint_System;
   friend class Polyhedron;
+
+  friend Constraint
+  operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+
+  friend Constraint
+  operator<(Variable v1, Variable v2);
+
+  friend Constraint
+  operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend Constraint
+  operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+  friend Constraint
+  operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
+  friend Constraint
+  operator>(Variable v1, Variable v2);
+
+  friend Constraint
+  operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend Constraint
+  operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 };
 
 namespace Parma_Polyhedra_Library {
@@ -687,45 +750,6 @@ operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 Constraint
 operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
-//! Returns the constraint \p e1 \< \p e2.
-/*! \relates Constraint */
-Constraint
-operator<(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \< \p v2.
-/*! \relates Constraint */
-Constraint
-operator<(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \< \p n.
-/*! \relates Constraint */
-Constraint
-operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \< \p e.
-/*! \relates Constraint */
-Constraint
-operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \> \p e2.
-/*! \relates Constraint */
-Constraint
-operator>(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \> \p v2.
-/*! \relates Constraint */
-Constraint
-operator>(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \> \p n.
-/*! \relates Constraint */
-Constraint
-operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \> \p e.
-/*! \relates Constraint */
-Constraint
-operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 } // namespace Parma_Polyhedra_Library
 

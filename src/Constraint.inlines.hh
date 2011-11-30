@@ -160,6 +160,8 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   expr.swap(e);
+  if (topology == NOT_NECESSARILY_CLOSED)
+    expr.set_space_dimension(expr.space_dimension() + 1);
   if (type == EQUALITY)
     kind_ = LINE_OR_EQUALITY;
   else
@@ -346,29 +348,26 @@ operator>=(const Variable v1, const Variable v2) {
 /*! \relates Constraint */
 inline Constraint
 operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
-  Linear_Expression diff;
-  // Setting the epsilon coefficient to -1.
-  // NOTE: this also enforces normalization.
-  const dimension_type e1_dim = e1.space_dimension();
-  const dimension_type e2_dim = e2.space_dimension();
-  if (e1_dim > e2_dim)
-    diff -= Variable(e1_dim);
-  else
-    diff -= Variable(e2_dim);
-  diff += e1;
-  diff -= e2;
+  Linear_Expression diff = e1 - e2;
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
-  return Constraint(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
+  // NOTE: this also enforces normalization.
+  c.set_epsilon_coefficient(-1);
+  PPL_ASSERT(c.OK());
+
+  return c;
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>(const Variable v1, const Variable v2) {
   Linear_Expression diff = v1-v2;
-  diff -= Variable(std::max(v1.space_dimension(), v2.space_dimension()));
-  return Constraint(diff,
-                    Constraint::STRICT_INEQUALITY,
-                    NOT_NECESSARILY_CLOSED);
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
+
+  c.set_epsilon_coefficient(-1);
+  PPL_ASSERT(c.OK());
+
+  return c;
 }
 
 /*! \relates Constraint */
@@ -388,14 +387,14 @@ operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
 /*! \relates Constraint */
 inline Constraint
 operator>(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  Linear_Expression diff;
-  // Setting the epsilon coefficient to -1.
-  // NOTE: this also enforces normalization.
-  diff -= Variable(e.space_dimension());
-  diff += n;
-  diff -= e;
+  Linear_Expression diff = n - e;
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
-  return Constraint(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
+  // NOTE: this also enforces normalization.
+  c.set_epsilon_coefficient(-1);
+  PPL_ASSERT(c.OK());
+
+  return c;
 }
 
 /*! \relates Constraint */
@@ -415,14 +414,14 @@ operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 /*! \relates Constraint */
 inline Constraint
 operator>(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  Linear_Expression diff;
-  // Setting the epsilon coefficient to -1.
-  // NOTE: this also enforces normalization.
-  diff -= Variable(e.space_dimension());
-  diff += e;
-  diff -= n;
+  Linear_Expression diff = e - n;
+  Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
-  return Constraint(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
+  // NOTE: this also enforces normalization.
+  c.set_epsilon_coefficient(-1);
+  PPL_ASSERT(c.OK());
+
+  return c;
 }
 
 /*! \relates Constraint */
