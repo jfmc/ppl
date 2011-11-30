@@ -49,8 +49,8 @@ test01() {
 
   Linear_System<Constraint> ls1(NOT_NECESSARILY_CLOSED);
   for (dimension_type rowi = 0; rowi < ROWS; ++rowi) {
-    Constraint row(COLS, Constraint::RAY_OR_POINT_OR_INEQUALITY,
-                   NOT_NECESSARILY_CLOSED);
+    Linear_Expression e;
+    e.set_space_dimension(COLS - 1);
     for (dimension_type col = 0; col < COLS; ++col) {
       Coefficient c;
       rng.get(c, 0);
@@ -69,12 +69,13 @@ test01() {
 	++c;
       
       if (col == 0)
-        row.expression() += c;
+        e += c;
       else
-        add_mul_assign(row.expression(), c, Variable(col - 1));
+        add_mul_assign(e, c, Variable(col - 1));
     }
+    Constraint row(e, Constraint::RAY_OR_POINT_OR_INEQUALITY,
+                   NOT_NECESSARILY_CLOSED);
 
-    row.strong_normalize();
     ls1.insert(row);
 
     using std::fstream;
