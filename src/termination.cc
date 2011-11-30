@@ -435,7 +435,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-    const Linear_Expression& e_i = i->expr;
+    const Constraint::Expression& e_i = i->expression();
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
     for (Linear_Expression::const_iterator i = e_i.begin(),
@@ -448,7 +448,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
       add_mul_assign(les_eq[v.id()+n+n], Ap_ij, lambda2_i);
     }
     for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
-          i_end = e_i.lower_bound(Variable(2*n)); i != i_end; ++i) {
+          i_end = e_i.end(); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij = *i;
       const Variable v = i.variable();
       // (lambda_1 - lambda_2) A
