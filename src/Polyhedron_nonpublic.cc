@@ -1150,9 +1150,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	if (!found_eps_leq_one) {
 	  // Check if it is the eps_leq_one constraint.
           const Constraint& c = cs[i];
-          const Linear_Expression& e = c.expr;
-	  if (e.all_zeroes(1, eps_var.space_dimension())
-              && (e.inhomogeneous_term() + e.get(eps_var) == 0)) {
+	  if (c.expression().all_homogeneous_terms_are_zero()
+              && (c.expression().inhomogeneous_term() + c.epsilon_coefficient() == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
