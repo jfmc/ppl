@@ -82,14 +82,17 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   if (d == 0)
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
 				"d == 0.");
-  // Adding the epsilon dimension with coefficient 0.
-  Linear_Expression ec = 0 * Variable(e.space_dimension());
-  ec += e;
-  // A closure point is indeed a point in the higher dimension space.
-  Generator g = point(ec, d);
-  // Fix the topology.
-  // TODO: Avoid the mark_as_*() methods if possible.
-  g.mark_as_not_necessarily_closed();
+  Linear_Expression ec = e;
+  ec.set_inhomogeneous_term(d);
+
+  Generator g(ec, Generator::POINT, NOT_NECESSARILY_CLOSED);
+
+  // If the divisor is negative, we negate it as well as
+  // all the coefficients of the point, because we want to preserve
+  // the invariant: the divisor of a point is strictly positive.
+  if (d < 0)
+    neg_assign(g.expr);
+
   // Enforce normalization.
   g.expr.normalize();
   return g;

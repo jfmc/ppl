@@ -130,6 +130,8 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   expr.swap(e);
+  if (topology == NOT_NECESSARILY_CLOSED)
+    expr.set_space_dimension(expr.space_dimension() + 1);
   if (type == LINE)
     kind_ = LINE_OR_EQUALITY;
   else

@@ -625,7 +625,6 @@ private:
   */
   static const Generator* zero_dim_closure_point_p;
 
-  // TODO: Avoid reducing the space dimension.
   /*! \brief
     Builds a generator of type \p type and topology \p topology,
     stealing the coefficients from \p e.
