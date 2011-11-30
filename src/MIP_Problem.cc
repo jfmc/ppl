@@ -526,12 +526,12 @@ PPL::MIP_Problem
     const dimension_type cs_i_end = cs_i.space_dimension() + 1;
 
     dimension_type nonzero_coeff_column_index
-      = cs_i.expr.first_nonzero(1, cs_i_end);
+      = cs_i.expression().first_nonzero(1, cs_i_end);
     bool found_a_nonzero_coeff = (nonzero_coeff_column_index != cs_i_end);
     bool found_many_nonzero_coeffs
       = (found_a_nonzero_coeff
-         && !cs_i.expr.all_zeroes(nonzero_coeff_column_index + 1,
-                                          cs_i_end));
+         && !cs_i.expression().all_zeroes(nonzero_coeff_column_index + 1,
+                                               cs_i_end));
 
     // If more than one coefficient is nonzero,
     // continue with next constraint.
