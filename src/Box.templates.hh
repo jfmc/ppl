@@ -816,8 +816,8 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   PPL_DIRTY_TEMP0(Rational_Interval, t);
   PPL_DIRTY_TEMP0(mpq_class, m);
   r = 0;
-  for (Linear_Expression::const_iterator i = cg.expr.begin(),
-      i_end = cg.expr.lower_bound(Variable(cg.space_dimension())); i != i_end; ++i) {
+  for (Linear_Expression::const_iterator i = cg.expression().begin(),
+      i_end = cg.expression().end(); i != i_end; ++i) {
     const Coefficient& cg_i = *i;
     const Variable v = i.variable();
     assign_r(m, cg_i, ROUND_NOT_NEEDED);
