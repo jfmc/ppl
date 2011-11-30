@@ -607,37 +607,6 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) cons
 }
 
 template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Constraint& c) {
-  // Do not copy the epsilon dimension (if any).
-  construct(*(c.expr.impl), c.space_dimension());
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Generator& g) {
-  // Do not copy the epsilon dimension (if any).
-  construct(*(g.expr.impl), g.space_dimension());
-  // Do not copy the divisor of `g'.
-  row.reset(0);
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Grid_Generator& g) {
-  // This does not copy the last coefficient.
-  construct(*(g.expr.impl), g.space_dimension());
-  // Do not copy the divisor of `g'.
-  row.reset(0);
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg) {
-  construct(*(cg.expression().impl));
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Variable v) {
   if (v.space_dimension() > max_space_dimension())
     throw std::length_error("Linear_Expression_Impl::"

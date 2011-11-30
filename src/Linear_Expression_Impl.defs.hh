@@ -25,10 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Expression_Impl_defs_hh 1
 
 #include "Linear_Expression_Impl.types.hh"
-#include "Generator.types.hh"
-#include "Grid_Generator.types.hh"
-#include "Constraint.types.hh"
-#include "Congruence.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cstddef>
@@ -126,52 +122,6 @@ public:
     <CODE>Linear_Expression_Impl::max_space_dimension()</CODE>.
   */
   Linear_Expression_Impl(Variable v);
-
-  //! Builds the linear expression corresponding to constraint \p c.
-  /*!
-    Given the constraint
-    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relsym 0\bigr)\f$,
-    where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-    If \p c is an inequality (resp., equality) constraint, then
-    the built linear expression is unique up to a positive
-    (resp., non-zero) factor.
-  */
-  explicit Linear_Expression_Impl(const Constraint& c);
-
-  /*! \brief
-    Builds the linear expression corresponding to generator \p g
-    (for points and closure points, the divisor is not copied).
-
-    Given the generator
-    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
-    (where, for lines and rays, we have \f$d = 1\f$),
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
-    The inhomogeneous term of the linear expression will always be 0.
-    If \p g is a ray, point or closure point (resp., a line), then
-    the linear expression is unique up to a positive
-    (resp., non-zero) factor.
-  */
-  explicit Linear_Expression_Impl(const Generator& g);
-
-  /*! \brief
-    Builds the linear expression corresponding to grid generator \p g
-    (for points, parameters and lines the divisor is not copied).
-
-    Given the grid generator
-    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
-    The inhomogeneous term of the linear expression is always 0.
-  */
-  explicit Linear_Expression_Impl(const Grid_Generator& g);
-
-  //! Builds the linear expression corresponding to congruence \p cg.
-  /*!
-    Given the congruence
-    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-  */
-  explicit Linear_Expression_Impl(const Congruence& cg);
 
   //! Returns the current representation of this linear expression.
   virtual Representation representation() const;
