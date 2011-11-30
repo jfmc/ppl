@@ -224,11 +224,11 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   const Coefficient& system_divisor = i->divisor();
   for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
     const Grid_Generator& old_g = *i;
-    const Linear_Expression& old_g_e = old_g.expr;
+    const Grid_Generator::Expression& old_g_e = old_g.expression();
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (Linear_Expression::const_iterator j = old_g_e.begin(),
-          j_end = old_g_e.lower_bound(Variable(space_dim)); j != j_end; ++j) {
+          j_end = old_g_e.end(); j != j_end; ++j) {
       const dimension_type mapped_id = pfunc_maps[j.variable().id()];
       if (mapped_id != not_a_dimension()) {
         add_mul_assign(e, *j, Variable(mapped_id));
