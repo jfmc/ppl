@@ -26,6 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Expression.defs.hh"
 
+#include "Expression_Hide_Inhomo.defs.hh"
+#include "Expression_Hide_Last.defs.hh"
+
+
 namespace Parma_Polyhedra_Library {
 
 inline Linear_Expression&
@@ -709,6 +713,138 @@ inline Linear_Expression::const_iterator
 Linear_Expression
 ::lower_bound(Variable v) const {
   return const_iterator(impl->lower_bound(v));
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e)
+  : impl(NULL) {
+  Linear_Expression tmp(e.representation());
+  tmp.set_space_dimension(e.space_dimension());
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
+  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
+    add_mul_assign(tmp, i.variable(), *i);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e, Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(r);
+  tmp.set_space_dimension(e.space_dimension());
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
+  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
+    add_mul_assign(tmp, i.variable(), *i);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
+                    dimension_type space_dim)
+  : impl(NULL) {
+  Linear_Expression tmp(e.representation());
+  tmp.set_space_dimension(e.space_dimension());
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
+  itr_t i_end;
+  if (space_dim <= e.space_dimension())
+    i_end = e.lower_bound(Variable(space_dim));
+  else
+    i_end = e.end();
+  for (itr_t i = e.begin(); i != i_end; ++i)
+    add_mul_assign(tmp, i.variable(), *i);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
+                    dimension_type space_dim, Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(r);
+  tmp.set_space_dimension(e.space_dimension());
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
+  itr_t i_end;
+  if (space_dim <= e.space_dimension())
+    i_end = e.lower_bound(Variable(space_dim));
+  else
+    i_end = e.end();
+  for (itr_t i = e.begin(); i != i_end; ++i)
+    add_mul_assign(tmp, i.variable(), *i);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Last<Expression>& e)
+  : impl(NULL) {
+  Linear_Expression tmp(e.representation());
+  tmp.set_space_dimension(e.space_dimension());
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
+  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
+    add_mul_assign(tmp, *i, i.variable());
+  std::swap(impl, tmp.impl);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Last<Expression>& e, Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(r);
+  tmp.set_space_dimension(e.space_dimension());
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
+  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
+    add_mul_assign(tmp, *i, i.variable());
+  std::swap(impl, tmp.impl);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Last<Expression>& e,
+                    dimension_type space_dim)
+  : impl(NULL) {
+  Linear_Expression tmp(e.representation());
+  tmp.set_space_dimension(space_dim);
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
+  itr_t i_end;
+  if (space_dim <= e.space_dimension())
+    i_end = e.lower_bound(Variable(space_dim));
+  else
+    i_end = e.end();
+  for (itr_t i = e.begin(); i != i_end; ++i)
+    add_mul_assign(tmp, *i, i.variable());
+  std::swap(impl, tmp.impl);
+}
+
+template <typename Expression>
+inline
+Linear_Expression
+::Linear_Expression(const Expression_Hide_Last<Expression>& e,
+                    dimension_type space_dim, Representation r)
+  : impl(NULL) {
+  Linear_Expression tmp(r);
+  tmp.set_space_dimension(space_dim);
+  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
+  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
+  itr_t i_end;
+  if (space_dim <= e.space_dimension())
+    i_end = e.lower_bound(Variable(space_dim));
+  else
+    i_end = e.end();
+  for (itr_t i = e.begin(); i != i_end; ++i)
+    add_mul_assign(tmp, *i, i.variable());
+  std::swap(impl, tmp.impl);
 }
 
 namespace IO_Operators {

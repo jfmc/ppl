@@ -49,6 +49,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include "termination.types.hh"
+#include "Expression_Hide_Inhomo.types.hh"
+#include "Expression_Hide_Last.types.hh"
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
@@ -304,6 +306,59 @@ public:
 
   //! Copy constructor that takes also a Representation.
   Linear_Expression(const Linear_Expression& e, Representation r);
+
+  //! Copy constructor from a Expression_Hide_Inhomo.
+  //! Note that the representation of the new expression will be e's
+  //! representation and not necessarily default_representation, so that
+  //! the copy and e are indistinguishable.
+  template <typename Expression>
+  explicit Linear_Expression(const Expression_Hide_Inhomo<Expression>& e);
+
+  //! Copy constructor from a Expression_Hide_Inhomo that takes a
+  //! Representation.
+  template <typename Expression>
+  Linear_Expression(const Expression_Hide_Inhomo<Expression>& e, Representation r);
+
+  //! Copy constructor from a Expression_Hide_Inhomo that takes a space
+  //! dimension.
+  //! Note that the representation of the new expression will be e's
+  //! representation and not necessarily default_representation, so that
+  //! the copy and e are indistinguishable.
+  template <typename Expression>
+  explicit Linear_Expression(const Expression_Hide_Inhomo<Expression>& e, dimension_type space_dim);
+
+  //! Copy constructor from a Expression_Hide_Inhomo that takes a
+  //! space dimension and a Representation.
+  template <typename Expression>
+  Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
+                    dimension_type space_dim, Representation r);
+
+  //! Copy constructor from a Expression_Hide_Last.
+  //! Note that the representation of the new expression will be e's
+  //! representation and not necessarily default_representation, so that
+  //! the copy and e are indistinguishable.
+  template <typename Expression>
+  explicit Linear_Expression(const Expression_Hide_Last<Expression>& e);
+
+  //! Copy constructor from a Expression_Hide_Last that takes a
+  //! Representation.
+  template <typename Expression>
+  Linear_Expression(const Expression_Hide_Last<Expression>& e, Representation r);
+
+  //! Copy constructor from a Expression_Hide_Last that takes a space
+  //! dimension.
+  //! Note that the representation of the new expression will be e's
+  //! representation and not necessarily default_representation, so that
+  //! the copy and e are indistinguishable.
+  template <typename Expression>
+  explicit Linear_Expression(const Expression_Hide_Last<Expression>& e,
+                             dimension_type space_dim);
+
+  //! Copy constructor from a Expression_Hide_Last that takes a
+  //! space dimension and a Representation.
+  template <typename Expression>
+  Linear_Expression(const Expression_Hide_Last<Expression>& e,
+                    dimension_type space_dim, Representation r);
 
   Linear_Expression& operator=(const Linear_Expression& e);
 
@@ -900,6 +955,10 @@ private:
   friend class Linear_System;
   template <typename T>
   friend class Box;
+  template <typename T>
+  friend class Expression_Hide_Inhomo;
+  template <typename T>
+  friend class Expression_Hide_Last;
 
   friend Linear_Expression
   operator+(const Linear_Expression& e1, const Linear_Expression& e2);
