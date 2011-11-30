@@ -224,7 +224,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     if (i->is_ray())
-      ++ph_num_rays_null_coord[i->expr.num_zeroes(1, space_dim + 1)];
+      ++ph_num_rays_null_coord[i->expression().num_zeroes(1, space_dim + 1)];
 
   // Compare (lexicographically) the two vectors:
   // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.
