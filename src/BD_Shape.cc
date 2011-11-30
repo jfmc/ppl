@@ -39,17 +39,17 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
   const dimension_type space_dim = c.space_dimension();
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
 
-  c_first_var = c.expr.first_nonzero(1, space_dim + 1);
+  c_first_var = c.expression().first_nonzero(1, space_dim + 1);
   if (c_first_var == space_dim + 1)
     // All the inhomogeneous coefficients are zero.
     return true;
 
   ++c_num_vars;
 
-  c_second_var = c.expr.first_nonzero(c_first_var + 1, space_dim + 1);
+  c_second_var = c.expression().first_nonzero(c_first_var + 1, space_dim + 1);
   if (c_second_var == space_dim + 1) {
     // c_first_var is the only inhomogeneous coefficient different from zero.
-    c_coeff = -c.expr.get(Variable(c_first_var - 1));
+    c_coeff = -c.expression().get(Variable(c_first_var - 1));
 
     // TODO: Check if this is needed.
     c_second_var = 0;
@@ -58,15 +58,15 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
 
   ++c_num_vars;
 
-  if (!c.expr.all_zeroes(c_second_var + 1, space_dim + 1))
+  if (!c.expression().all_zeroes(c_second_var + 1, space_dim + 1))
     // The constraint `c' is not a bounded difference.
     return false;
 
   // Make sure that `c' is indeed a bounded difference, i.e., it is of the
   // form:
   // a*x - a*y <=/= b.
-  Coefficient_traits::const_reference c0 = c.expr.get(Variable(c_first_var - 1));
-  Coefficient_traits::const_reference c1 = c.expr.get(Variable(c_second_var - 1));
+  Coefficient_traits::const_reference c0 = c.expression().get(Variable(c_first_var - 1));
+  Coefficient_traits::const_reference c1 = c.expression().get(Variable(c_second_var - 1));
   if (sgn(c0) == sgn(c1) || c0 != -c1)
     // Constraint `c' is not a bounded difference.
     return false;
