@@ -34,6 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Topology.hh"
+#include "Expression_Hide_Inhomo.defs.hh"
+#include "Expression_Hide_Last.defs.hh"
 
 #include "Grid.types.hh"
 #include <iosfwd>
@@ -41,6 +43,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put these in the namespace here to declare them friend later.
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The basic comparison function.
+/*! \relates Grid_Generator
+  \return
+  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
+
+  \param x
+  A row of coefficients;
+
+  \param y
+  Another row.
+
+  Compares \p x and \p y, where \p x and \p y may be of different size,
+  in which case the "missing" coefficients are assumed to be zero.
+  The comparison is such that:
+  -# equalities are smaller than inequalities;
+  -# lines are smaller than points and rays;
+  -# the ordering is lexicographic;
+  -# the positions compared are, in decreasing order of significance,
+     1, 2, ..., \p size(), 0;
+  -# the result is negative, zero, or positive if x is smaller than,
+     equal to, or greater than y, respectively;
+  -# when \p x and \p y are different, the absolute value of the
+     result is 1 if the difference is due to the coefficient in
+     position 0; it is 2 otherwise.
+
+  When \p x and \p y represent the hyper-planes associated
+  to two equality or inequality constraints, the coefficient
+  at 0 is the known term.
+  In this case, the return value can be characterized as follows:
+  - -2, if \p x is smaller than \p y and they are \e not parallel;
+  - -1, if \p x is smaller than \p y and they \e are parallel;
+  -  0, if \p x and y are equal;
+  - +1, if \p y is smaller than \p x and they \e are parallel;
+  - +2, if \p y is smaller than \p x and they are \e not parallel.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+int compare(const Grid_Generator& x, const Grid_Generator& y);
 
 namespace IO_Operators {
 
@@ -556,6 +597,14 @@ public:
   */
   bool check_strong_normalized() const;
 
+  //! The type returned by the expression() method, that provides most
+  //! of the const methods in Linear_Expression.
+  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Linear_Expression> > Expression;
+
+  //! Allows user code to read the internal expression (but note that this
+  //! is a different type, not all operations are allowed).
+  const Expression& expression() const;
+
   //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
   /*!
     \param y
@@ -574,6 +623,9 @@ public:
   Linear_Expression expr;
 
 private:
+  Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
+
+  Expression wrapped_expr;
 
   Kind kind_;
 
@@ -620,52 +672,18 @@ private:
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
 
+  friend int
+  compare(const Grid_Generator& x, const Grid_Generator& y);
+
   friend class Grid_Generator_System;
   friend class Grid;
   friend class Linear_System<Grid_Generator>;
+  friend class Scalar_Products;
+  friend class Topology_Adjusted_Scalar_Product_Sign;
 };
 
 
 namespace Parma_Polyhedra_Library {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The basic comparison function.
-/*! \relates Grid_Generator
-  \return
-  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
-
-  \param x
-  A row of coefficients;
-
-  \param y
-  Another row.
-
-  Compares \p x and \p y, where \p x and \p y may be of different size,
-  in which case the "missing" coefficients are assumed to be zero.
-  The comparison is such that:
-  -# equalities are smaller than inequalities;
-  -# lines are smaller than points and rays;
-  -# the ordering is lexicographic;
-  -# the positions compared are, in decreasing order of significance,
-     1, 2, ..., \p size(), 0;
-  -# the result is negative, zero, or positive if x is smaller than,
-     equal to, or greater than y, respectively;
-  -# when \p x and \p y are different, the absolute value of the
-     result is 1 if the difference is due to the coefficient in
-     position 0; it is 2 otherwise.
-
-  When \p x and \p y represent the hyper-planes associated
-  to two equality or inequality constraints, the coefficient
-  at 0 is the known term.
-  In this case, the return value can be characterized as follows:
-  - -2, if \p x is smaller than \p y and they are \e not parallel;
-  - -1, if \p x is smaller than \p y and they \e are parallel;
-  -  0, if \p x and y are equal;
-  - +1, if \p y is smaller than \p x and they \e are parallel;
-  - +2, if \p y is smaller than \p x and they are \e not parallel.
-*/
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-int compare(const Grid_Generator& x, const Grid_Generator& y);
 
 /*! \brief
   Shorthand for Grid_Generator

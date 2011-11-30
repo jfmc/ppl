@@ -81,7 +81,8 @@ Grid_Generator::set_not_necessarily_closed() {
 }
 
 inline
-Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
+Grid_Generator::Grid_Generator(Linear_Expression& e, Type type)
+  : semi_wrapped_expr(expr), wrapped_expr(semi_wrapped_expr, true) {
   expr.swap(e);
   if (type == LINE)
     kind_ = LINE_OR_EQUALITY;
@@ -92,28 +93,45 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
 
 inline
 Grid_Generator::Grid_Generator()
-  : expr(), kind_(LINE_OR_EQUALITY) {
+  : expr(),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
+    kind_(LINE_OR_EQUALITY) {
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g)
-  : expr(g.expr), kind_(g.kind_) {
+  : expr(g.expr),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
+    kind_(g.kind_) {
 }
 
 inline
 Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind, Topology topology)
-  : expr(), kind_(kind) {
+  : expr(),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
+    kind_(kind) {
   PPL_ASSERT(topology == NECESSARILY_CLOSED);
   expr.set_space_dimension(space_dim);
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type space_dim)
-  : expr(g.expr, space_dim), kind_(g.kind_) {
+  : expr(g.expr, space_dim),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
+    kind_(g.kind_) {
 }
 
 inline
 Grid_Generator::~Grid_Generator() {
+}
+
+inline const Grid_Generator::Expression&
+Grid_Generator::expression() const {
+  return wrapped_expr;
 }
 
 inline dimension_type
@@ -123,7 +141,7 @@ Grid_Generator::max_space_dimension() {
 
 inline dimension_type
 Grid_Generator::space_dimension() const {
-  return expr.space_dimension() - 1;
+  return wrapped_expr.space_dimension();
 }
 
 inline void
@@ -221,6 +239,7 @@ inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
   expr = g.expr;
   kind_ = g.kind_;
+  // No need to modify wrapped_expr here.
   return *this;
 }
 
@@ -258,6 +277,7 @@ inline void
 Grid_Generator::swap(Grid_Generator& y) {
   expr.swap(y.expr);
   std::swap(kind_, y.kind_);
+  // No need to modify wrapped_expr here.
 }
 
 /*! \relates Grid_Generator */
