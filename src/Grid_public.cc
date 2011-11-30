@@ -651,9 +651,9 @@ PPL::Grid::relation_with(const Constraint& c) const {
     case Grid_Generator::LINE:
       Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
       if (gen.is_line_or_parameter()
-          && c.expr.have_a_common_variable(g->expr,
-                                           Variable(0),
-                                           Variable(c.space_dimension())))
+          && c.expression().have_a_common_variable(g->expression(),
+                                                   Variable(0),
+                                                   Variable(c.space_dimension())))
         return Poly_Con_Relation::strictly_intersects();
       break;
     }
