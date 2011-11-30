@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
 #include "Topology.hh"
+#include "Expression_Hide_Last.defs.hh"
 
 #include <iosfwd>
 
@@ -552,6 +553,14 @@ public:
   */
   void set_is_inequality();
 
+  //! The type returned by the expression() method, that provides most
+  //! of the const methods in Linear_Expression.
+  typedef Expression_Hide_Last<Linear_Expression> Expression;
+
+  //! Allows user code to read the internal expression (but note that this
+  //! is a different type, not all operations are allowed).
+  const Expression& expression() const;
+
   // FIXME: Consider making this private.
   //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
   /*!
@@ -571,6 +580,8 @@ public:
   Linear_Expression expr;
 
 private:
+  Expression wrapped_expr;
+
   Kind kind_;
 
   Topology topology_;

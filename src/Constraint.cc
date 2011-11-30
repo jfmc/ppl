@@ -66,6 +66,7 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 
 PPL::Constraint::Constraint(const Congruence& cg)
   : expr(cg),
+    wrapped_expr(expr, false),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
   if (!cg.is_equality())
@@ -81,6 +82,7 @@ PPL::Constraint::Constraint(const Congruence& cg)
 PPL::Constraint::Constraint(const Congruence& cg,
 			    dimension_type space_dim)
   : expr(cg, space_dim),
+    wrapped_expr(expr, false),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
   if (!cg.is_equality())
