@@ -828,8 +828,8 @@ PPL::Grid::constrains(const Variable var) const {
       if (!g_i.is_line())
         continue;
       if (sgn(g_i.coefficient(var)) != 0) {
-        if (g_i.expr.all_zeroes(1, var.space_dimension())
-            && g_i.expr.all_zeroes(var.space_dimension() + 1, space_dim + 1))
+        if (g_i.expression().all_zeroes(1, var.space_dimension())
+            && g_i.expression().all_zeroes(var.space_dimension() + 1, space_dim + 1))
           // The only nonzero coefficient in g_i is the one of var.
           return true;
       }
