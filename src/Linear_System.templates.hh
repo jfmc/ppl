@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 
 #include "Bit_Matrix.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <algorithm>
 #include <iostream>
@@ -775,10 +776,6 @@ Linear_System<Row>
     = is_necessarily_closed() ? space_dimension() : space_dimension() + 1;
   set_space_dimension(space_dimension() + n);
   rows.resize(rows.size() + n);
-  for (dimension_type i = old_n_rows; i < rows.size(); ++i) {
-    rows[i].set_topology(row_topology);
-    rows[i].set_space_dimension(space_dimension());
-  }
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )
     rows[i].swap(rows[i + n]);
@@ -786,11 +783,23 @@ Linear_System<Row>
     // The top right-hand sub-system (i.e., the system made of new
     // rows and columns) is set to the specular image of the identity
     // matrix.
-    Row& r = rows[i];
-    r.expression() += Variable(c);
+    if (Variable(c).space_dimension() <= space_dimension()) {
+      // Variable(c) is a user variable.
+      Linear_Expression le;
+      le.set_space_dimension(space_dimension());
+      le += Variable(c);
+      Row r(le, Row::LINE_OR_EQUALITY, row_topology);
+      std::swap(r, rows[i]);
+    } else {
+      // Variable(c) is the epsilon dimension.
+      PPL_ASSERT(row_topology == NOT_NECESSARILY_CLOSED);
+      Linear_Expression le = Variable(c);
+      Row r(le, Row::LINE_OR_EQUALITY, NECESSARILY_CLOSED);
+      r.mark_as_not_necessarily_closed();
+      std::swap(r, rows[i]);
+      // Note: `r' is strongly normalized.
+    }
     c++;
-    r.set_is_line_or_equality();
-    // Note: `r' is strongly normalized.
   }
   // If the old system was empty, the last row added is either
   // a positivity constraint or a point.
