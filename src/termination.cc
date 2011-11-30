@@ -494,7 +494,7 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
   Generator fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
   const dimension_type n = cs.space_dimension() / 2;
-  Linear_Expression le(fp.expr, n + 1);
+  Linear_Expression le(fp.expression(), n + 1);
   mu = point(le, fp.divisor());
   return true;
 }
