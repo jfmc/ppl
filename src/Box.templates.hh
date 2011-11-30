@@ -2358,7 +2358,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
 
   // Find a space dimension having a non-zero coefficient (if any).
-  dimension_type last_k = c.expr.last_nonzero(1, c_space_dim + 1);
+  dimension_type last_k = c.expression().last_nonzero(1, c_space_dim + 1);
   if (last_k == c_space_dim + 1) {
     // Constraint c is trivial: check if it is inconsistent.
     if (c_inhomogeneous_term < 0
@@ -2375,7 +2375,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   Temp_Boundary_Type t_a;
   Temp_Boundary_Type t_x;
   Ternary open;
-  const Linear_Expression& c_e = c.expr;
+  const Constraint::Expression& c_e = c.expression();
   for (Linear_Expression::const_iterator k = c_e.begin(),
     k_end = c_e.lower_bound(Variable(last_k)); k != k_end; ++k) {
     const Coefficient& a_k = *k;
