@@ -912,9 +912,9 @@ Box<ITV>::relation_with(const Constraint& c) const {
     PPL_DIRTY_TEMP0(Rational_Interval, t);
     PPL_DIRTY_TEMP0(mpq_class, m);
     r = 0;
-    const Linear_Expression& e = c.expr;
-    for (Linear_Expression::const_iterator i = e.begin(),
-            i_end = e.lower_bound(Variable(c.space_dimension())); i != i_end; ++i) {
+    const Constraint::Expression& e = c.expression();
+    for (Linear_Expression::const_iterator i = e.begin(), i_end = e.end();
+          i != i_end; ++i) {
       assign_r(m, *i, ROUND_NOT_NEEDED);
       const Variable v = i.variable();
       // FIXME: an add_mul_assign() method would come handy here.
