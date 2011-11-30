@@ -245,11 +245,11 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	gcd_assign(multiplier, cg.expr.get(dim), source_dim);
+	gcd_assign(multiplier, cg.expression().get(dim), source_dim);
 	exact_div_assign(multiplier, source_dim, multiplier);
 	multiply_grid(multiplier, cg, dest_rows, dest_num_rows);
 
-        cg.expr.exact_div_assign(source_dim, dim, dim + 1);
+        cg.expression().exact_div_assign(source_dim, dim, dim + 1);
       }
 
       dest.take_ownership_of_rows(dest_rows);
@@ -283,9 +283,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  PPL_ASSERT(row < dest_num_rows);
 	  Congruence& cg = dest_rows[row];
-          tmp = cg.expr.get(dim_prec);
-	  sub_mul_assign(tmp, source_dim, cg.expr.get(dim));
-          cg.expr.set(dim_prec, tmp);
+          tmp = cg.expression().get(dim_prec);
+	  sub_mul_assign(tmp, source_dim, cg.expression().get(dim));
+          cg.expression().set(dim_prec, tmp);
 	}
 	dest.take_ownership_of_rows(dest_rows);
       }
