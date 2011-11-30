@@ -2260,10 +2260,9 @@ PIP_Solution_Node::update_tableau(
           // Transform (expr > 0) into (expr - 1 >= 0).
           neg_assign(p_row[0], denom);
       dimension_type last_dim = 0;
-      const Linear_Expression& e = constraint.expr;
+      const Constraint::Expression& e = constraint.expression();
       for (Linear_Expression::const_iterator
-          i = e.begin(), i_end = e.lower_bound(Variable(constraint.space_dimension()));
-          i != i_end; ++i) {
+          i = e.begin(), i_end = e.end(); i != i_end; ++i) {
         const dimension_type dim = i.variable().space_dimension();
         if (dim != last_dim + 1) {
           // We have skipped some zero coefficients.
