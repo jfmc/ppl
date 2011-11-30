@@ -607,7 +607,7 @@ PPL::Polyhedron::contains_integer_point() const {
       // CHECKME: should we change the behavior of Linear_Expression(c) ?
       // Compute the GCD of the coefficients of c
       // (disregarding the inhomogeneous term and the espilon dimension).
-      homogeneous_gcd = c.expr.gcd(1, space_dim + 1);
+      homogeneous_gcd = c.expression().gcd(1, space_dim + 1);
       if (homogeneous_gcd == 0) {
         // NOTE: since tautological constraints are already filtered away
         // by iterators, here we must have an inconsistent constraint.
@@ -634,7 +634,7 @@ PPL::Polyhedron::contains_integer_point() const {
 	// Compute the GCD of the coefficients of c
 	// (disregarding the inhomogeneous term)
 	// to see whether or not the inhomogeneous term can be tightened.
-	homogeneous_gcd = c.expr.gcd(1, space_dim + 1);
+	homogeneous_gcd = c.expression().gcd(1, space_dim + 1);
         if (homogeneous_gcd == 0) {
           // NOTE: since tautological constraints are already filtered away
           // by iterators, here we must have an inconsistent constraint.
