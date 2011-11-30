@@ -74,12 +74,14 @@ inline void
 Generator::set_topology(Topology x) {
   if (topology() == x)
     return;
-  if (topology() == NECESSARILY_CLOSED)
+  if (topology() == NECESSARILY_CLOSED) {
     // Add a column for the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
-  else {
+    wrapped_expr.set_hide_last(true);
+  } else {
     PPL_ASSERT(expr.space_dimension() > 0);
     expr.set_space_dimension(expr.space_dimension() - 1);
+    wrapped_expr.set_hide_last(false);
   }
   topology_ = x;
 }
@@ -88,12 +90,14 @@ inline void
 Generator::mark_as_necessarily_closed() {
   PPL_ASSERT(is_not_necessarily_closed());
   topology_ = NECESSARILY_CLOSED;
+  wrapped_expr.set_hide_last(false);
 }
 
 inline void
 Generator::mark_as_not_necessarily_closed() {
   PPL_ASSERT(is_necessarily_closed());
   topology_ = NOT_NECESSARILY_CLOSED;
+  wrapped_expr.set_hide_last(true);
 }
 
 inline void
@@ -108,12 +112,18 @@ Generator::set_not_necessarily_closed() {
 
 inline
 Generator::Generator()
-  : expr(), kind_(LINE_OR_EQUALITY), topology_(NECESSARILY_CLOSED) {
+  : expr(),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, false),
+    kind_(LINE_OR_EQUALITY),
+    topology_(NECESSARILY_CLOSED) {
 }
 
 inline
 Generator::Generator(dimension_type space_dim)
   : expr(),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
   expr.set_space_dimension(space_dim);
@@ -121,13 +131,19 @@ Generator::Generator(dimension_type space_dim)
 
 inline
 Generator::Generator(dimension_type space_dim, Kind kind, Topology topology)
-  : expr(), kind_(kind), topology_(topology) {
+  : expr(),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
+    kind_(kind),
+    topology_(topology) {
   expr.set_space_dimension(space_dim);
 }
 
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology)
-  : topology_(topology) {
+  : semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
+    topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   expr.swap(e);
   if (topology == NOT_NECESSARILY_CLOSED)
@@ -141,7 +157,10 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
 
 inline
 Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
-  : kind_(kind), topology_(topology) {
+  : semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
+    kind_(kind),
+    topology_(topology) {
   expr.swap(e);
   if (topology == NOT_NECESSARILY_CLOSED)
     expr.set_space_dimension(expr.space_dimension() + 1);
@@ -151,12 +170,20 @@ Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
 
 inline
 Generator::Generator(const Generator& g)
-  : expr(g.expr), kind_(g.kind_), topology_(g.topology_) {
+  : expr(g.expr),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
+    kind_(g.kind_),
+    topology_(g.topology_) {
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type space_dim)
-  : expr(g.expr, space_dim), kind_(g.kind_), topology_(g.topology_) {
+  : expr(g.expr, space_dim),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
+    kind_(g.kind_),
+    topology_(g.topology_) {
 }
 
 inline
@@ -168,7 +195,13 @@ Generator::operator=(const Generator& g) {
   expr = g.expr;
   kind_ = g.kind_;
   topology_ = g.topology_;
+  wrapped_expr.set_hide_last(is_not_necessarily_closed());
   return *this;
+}
+
+inline const Generator::Expression&
+Generator::expression() const {
+  return wrapped_expr;
 }
 
 inline dimension_type
@@ -446,6 +479,8 @@ Generator::swap(Generator& y) {
   expr.swap(y.expr);
   std::swap(kind_, y.kind_);
   std::swap(topology_, y.topology_);
+  wrapped_expr.set_hide_last(is_not_necessarily_closed());
+  y.wrapped_expr.set_hide_last(y.is_not_necessarily_closed());
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

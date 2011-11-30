@@ -39,6 +39,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "distances.defs.hh"
 #include "Topology.hh"
+#include "Expression_Hide_Last.defs.hh"
+#include "Expression_Hide_Inhomo.defs.hh"
 
 #include <iosfwd>
 
@@ -569,10 +571,22 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
 
+  //! The type returned by the expression() method, that provides most
+  //! of the const methods in Linear_Expression.
+  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Linear_Expression> > Expression;
+
+  //! Allows user code to read the internal expression (but note that this
+  //! is a different type, not all operations are allowed).
+  const Expression& expression() const;
+
   // TODO: Make this private.
   Linear_Expression expr;
 
 private:
+  Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
+
+  Expression wrapped_expr;
+
   Kind kind_;
 
   Topology topology_;
