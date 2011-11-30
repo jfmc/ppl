@@ -177,8 +177,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
       sub_mul_assign(y_le, b_i, vy);
       sub_mul_assign(z_le, b_i, vz);
     }
-    for (Linear_Expression::const_iterator j = c_i.expr.begin(),
-          j_end = c_i.expr.lower_bound(Variable(2*n)); j != j_end; ++j) {
+    for (Linear_Expression::const_iterator j = c_i.expression().begin(),
+          j_end = c_i.expression().end(); j != j_end; ++j) {
       Coefficient_traits::const_reference a_i_j = *j;
       const Variable v = j.variable();
       add_mul_assign(y_les[v.id()], a_i_j, vy);
