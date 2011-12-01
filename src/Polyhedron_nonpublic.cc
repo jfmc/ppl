@@ -2010,8 +2010,15 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       PPL_ASSERT(!(illegal_ray && (x_g_is_line || y_g_is_line)));
       if (illegal_ray)
         continue;
+      if (mid_g.expr.inhomogeneous_term() == 0)
+        mid_g.expr.normalize();
+      else {
+        // TODO: Consider avoiding the normalization in this case, with
+        // something like the next statement:
+        // mid_g.expr.set_inhomogeneous_term(Coefficient_one());
+        mid_g.expr.normalize();
+      }
       if (x_g_is_line) {
-        mid_g.expression().normalize();
         if (y_g_is_line)
           // mid_row is a line too: sign normalization is needed.
           mid_g.sign_normalize();
@@ -2019,6 +2026,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
           // mid_row is a ray/point.
           mid_g.set_is_ray_or_point_or_inequality();
       }
+      PPL_ASSERT(mid_g.OK());
 
       // Step 7: check if mid_g is in the union of x and y.
       if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
