@@ -623,53 +623,70 @@ PPL::Grid::relation_with(const Constraint& c) const {
 
   bool point_is_included = false;
   bool point_saturates = false;
-  const Grid_Generator* first_point = NULL;
+  const Grid_Generator* first_point = 0;
 
-  for (Grid_Generator_System::const_iterator g = gen_sys.begin(),
-         gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g)
-    switch (g->type()) {
-
+  for (Grid_Generator_System::const_iterator i = gen_sys.begin(),
+         i_end = gen_sys.end(); i != i_end; ++i) {
+    const Grid_Generator& g = *i;
+    switch (g.type()) {
     case Grid_Generator::POINT:
       {
-	Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
-	if (first_point == NULL) {
-	  first_point = &gen;
-	  const int sign = Scalar_Products::sign(c, gen);
-	  Constraint::Type type = c.type();
-	  if ((type == Constraint::NONSTRICT_INEQUALITY && sign == 0)) {
-	    point_saturates = true;
-	  }
+	if (first_point == 0) {
+	  first_point = &g;
+	  const int sign = Scalar_Products::sign(c, g);
+	  if (sign == 0)
+            point_saturates = !c.is_strict_inequality();
 	  else if (sign > 0)
-	    point_is_included = true;
+            point_is_included = !c.is_equality();
 	  break;
 	}
-	// Else convert g to a parameter, and continue into the
-	// parameter case.
+	// Not the first point: convert `g' to be a parameter ...
+	Grid_Generator& gen = const_cast<Grid_Generator&>(g);
+	const Grid_Generator& point = *first_point;
+        const Coefficient& p_div = g[0];
+        if (p_div != Coefficient_one()) {
+          for (dimension_type j = gen.size() - 1; j-- > 1; )
+            gen[j] *= p_div;
+        }
+        const Coefficient& g_div = gen[0];
+        if (g_div == Coefficient_one()) {
+          for (dimension_type j = gen.size() - 1; j-- > 1; )
+            gen[j] -= point[j];
+        }
+        else {
+          for (dimension_type j = gen.size() - 1; j-- > 1; )
+            sub_mul_assign(gen[j], g_div, point[j]);
+        }
+        gen[0] *= p_div;
+        gen.strong_normalize();
 	gen.set_is_parameter();
-	const Grid_Generator& first = *first_point;
-	for (dimension_type i = gen.size() - 1; i-- > 0; )
-	  gen[i] -= first[i];
+        PPL_ASSERT(gen.OK());
+	// ... and fall through into the parameter case.
       }
 
     case Grid_Generator::PARAMETER:
     case Grid_Generator::LINE:
-      Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
-      if (gen.is_line_or_parameter())
-	for (dimension_type i = c.space_dimension(); i-- > 0; ) {
-	  Variable v(i);
-	  if (c.coefficient(v) != 0 && gen.coefficient(v) != 0)
-	    return Poly_Con_Relation::strictly_intersects();
-	}
+      {
+        const int sign = c.is_strict_inequality()
+          ? Scalar_Products::reduced_sign(c, g)
+          : Scalar_Products::sign(c, g);
+        if (sign != 0)
+          return Poly_Con_Relation::strictly_intersects();
+      }
       break;
-    }
+    } // switch
+  }
 
+  // If this program point is reached, then all lines and parameters
+  // saturate the constraint. Hence, the result is determined by
+  // the previosly computed relation with the point.
   if (point_saturates)
-    // Any parameters and lines are also included.
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included();
+
   if (point_is_included)
-    // Any parameters and lines are also included.
     return Poly_Con_Relation::is_included();
+
   return Poly_Con_Relation::is_disjoint();
 }
 
