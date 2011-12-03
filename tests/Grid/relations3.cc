@@ -438,6 +438,29 @@ test19() {
   return ok;
 }
 
+// A variant of test06.
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2, EMPTY);
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A + 5*B));
+  // Force minimization.
+  (void) gr.minimized_grid_generators();
+  print_generators(gr, "*** gr ***");
+
+  bool ok = (gr.relation_with(5*A - 2*B == 1)
+	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(5*A - 2*B > 1)
+	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(5*A - 2*B >= 1)
+	     == Poly_Con_Relation::is_disjoint());
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -460,4 +483,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

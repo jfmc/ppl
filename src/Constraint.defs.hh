@@ -31,6 +31,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "termination.types.hh"
 #include "Octagonal_Shape.types.hh"
+#include "Grid.types.hh"
 
 #include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
@@ -659,6 +660,7 @@ private:
   friend class Scalar_Products;
   friend class Topology_Adjusted_Scalar_Product_Sign;
   friend class Termination_Helpers;
+  friend class Grid;
   template <typename T>
   friend class Octagonal_Shape;
 
