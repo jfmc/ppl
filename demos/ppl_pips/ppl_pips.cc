@@ -168,7 +168,7 @@ pip_display_sol(std::ostream& out,
       out << "}" << endl;
       if (!constraints_empty) {
         out << setw(indent*2) << "" << "else" << endl;
-        out << setw(indent*2+2) << "" << "_|_" << endl;
+        out << setw(indent*2 + 2) << "" << "_|_" << endl;
       }
     }
   }
@@ -286,7 +286,7 @@ public:
       std::istringstream sin(line);
       sin >> ctx_type[i];
       for (PPL::dimension_type j = 0; j <= num_params; ++j) {
-        sin >> context[i * num_ctx_rows + j];
+        sin >> context[i*num_ctx_rows + j];
       }
     }
 
@@ -315,7 +315,7 @@ public:
       std::istringstream sin(line);
       sin >> constraint_type[i];
       for (PPL::dimension_type j = 0; j < constraint_width; ++j) {
-        sin >> constraints[i * constraint_width + j];
+        sin >> constraints[i*constraint_width + j];
       }
     }
 
@@ -673,13 +673,16 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'R':
-      l = strtol(optarg, &endptr, 10);
-      if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-R'");
-      else if (((unsigned long) l) > ULONG_MAX/(1024*1024))
-        max_bytes_of_virtual_memory = ULONG_MAX;
-      else
-	max_bytes_of_virtual_memory = l*1024*1024;
+      {
+        const int MEGA = 1024*1024;
+        l = strtol(optarg, &endptr, 10);
+        if (*endptr || l < 0)
+          fatal("a non-negative integer must follow `-R'");
+        else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)
+          max_bytes_of_virtual_memory = ULONG_MAX;
+        else
+          max_bytes_of_virtual_memory = l*MEGA;
+      }
       break;
 
     case 'o':

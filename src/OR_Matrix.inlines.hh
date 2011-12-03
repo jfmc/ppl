@@ -30,8 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "distances.defs.hh"
 #include "assert.hh"
-#include <algorithm>
 #include "checked.defs.hh"
+#include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
@@ -405,11 +405,12 @@ OR_Matrix<T>::swap(OR_Matrix& y) {
 }
 
 //! Returns the integer square root of \p x.
-inline unsigned long
-isqrt(unsigned long x) {
-  unsigned long r = 0;
-  for (unsigned long t = 0x40000000; t; t >>= 2) {
-    unsigned long s = r + t;
+inline dimension_type
+isqrt(dimension_type x) {
+  dimension_type r = 0;
+  const dimension_type FIRST_BIT_MASK = 0x40000000U;
+  for (dimension_type t = FIRST_BIT_MASK; t; t >>= 2) {
+    dimension_type s = r + t;
     if (s <= x) {
       x -= s;
       r = s + t;

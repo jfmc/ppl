@@ -1982,13 +1982,13 @@ build_hypercube_constraints(Dim, [V|Vars], [V >= 0, V =< 1|CS]) :-
 
 % Find the dimension and constraints for
 % a hypercube that causes a timeout exception.
-compute_timeout_hypercube(Hsecs, T, Dim_in, Dim_out, CS_out) :-
+compute_timeout_hypercube(Csecs, T, Dim_in, Dim_out, CS_out) :-
     Dim_in =< 100,
     clean_ppl_new_Polyhedron_from_space_dimension(T, Dim_in, universe, P),
     make_vars(Dim_in, Vars),
     build_hypercube_constraints(Dim_in, Vars, CS),
     ppl_timeout_exception_atom(Time_Out_Atom),
-    catch((ppl_set_timeout(Hsecs),
+    catch((ppl_set_timeout(Csecs),
            add_constraints_and_get_minimized_constraints(P, CS)),
           Time_Out_Atom, Catch_Exception = ok),
     ppl_reset_timeout,
@@ -1999,7 +1999,7 @@ compute_timeout_hypercube(Hsecs, T, Dim_in, Dim_out, CS_out) :-
     ;
         Dim1 is Dim_in+1,
         ppl_delete_Polyhedron(P),
-        compute_timeout_hypercube(Hsecs, T, Dim1, Dim_out, CS_out)
+        compute_timeout_hypercube(Csecs, T, Dim1, Dim_out, CS_out)
     ).
 
 time_out(T) :-

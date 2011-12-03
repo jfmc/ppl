@@ -25,8 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Watchdog.defs.hh"
 
-namespace PWL = Parma_Watchdog_Library;
-
 #if PWL_HAVE_DECL_SETITIMER && PWL_HAVE_DECL_SIGACTION
 
 #include <csignal>
@@ -61,6 +59,8 @@ namespace PWL = Parma_Watchdog_Library;
 
 using std::cerr;
 using std::endl;
+
+namespace PWL = Parma_Watchdog_Library;
 
 // Pass this to getitimer().
 itimerval PWL::Watchdog::current_timer_status;
@@ -165,12 +165,12 @@ PWL::PWL_handle_timeout(int signum) {
 }
 
 PWL::Watchdog::WD_Pending_List::Iterator
-PWL::Watchdog::new_watchdog_event(unsigned int units,
+PWL::Watchdog::new_watchdog_event(unsigned int csecs,
 				  const Handler& handler,
 				  bool& expired_flag) {
-  assert(units > 0);
+  assert(csecs > 0);
   WD_Pending_List::Iterator position;
-  Time deadline(units);
+  Time deadline(csecs);
   if (!alarm_clock_running) {
     position = pending.insert(deadline, handler, expired_flag);
     time_so_far = Time(0);

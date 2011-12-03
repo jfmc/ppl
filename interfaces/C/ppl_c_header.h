@@ -367,12 +367,12 @@ ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
   Sets the timeout for computations whose completion could require
   an exponential amount of time.
 
-  \param time
-  The number of hundreths of seconds.
-  It must be strictly greater than zero.
+  \param csecs
+  The number of centiseconds sometimes after which a timeout will occur;
+  it must be strictly greater than zero.
 
   Computations taking exponential time will be interrupted some time
-  after \p time hundreths of seconds have elapsed since the call to
+  after \p csecs centiseconds have elapsed since the call to
   the timeout setting function. If the computation is interrupted that
   way, the interrupted function will return error code
   <code>PPL_TIMEOUT_EXCEPTION</code>.
@@ -381,7 +381,7 @@ ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
   <code>ppl_reset_timeout()</code>.
 */
 int
-ppl_set_timeout PPL_PROTO((unsigned time));
+ppl_set_timeout PPL_PROTO((unsigned csecs));
 
 /*! \brief
   Resets the timeout time so that the computation is not interrupted.
@@ -394,8 +394,8 @@ ppl_reset_timeout PPL_PROTO((void));
   an exponential amount of time.
 
   \param weight
-  The maximum computational weight allowed.
-  It must be strictly greater than zero.
+  The maximum computational weight allowed; it must be strictly
+  greater than zero.
 
   Computations taking exponential time will be interrupted some time
   after reaching the \p weight complexity threshold. If the computation

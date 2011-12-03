@@ -102,8 +102,7 @@ open_hypercube(int dimension, ppl_Polyhedron_t ph) {
 }
 
 void
-timed_compute_open_hypercube_generators(int hundredth_secs,
-                                        int max_dimension) {
+timed_compute_open_hypercube_generators(int csecs, int max_dimension) {
   int i;
   int result;
   ppl_const_Generator_System_t gs;
@@ -112,7 +111,7 @@ timed_compute_open_hypercube_generators(int hundredth_secs,
   for (i = 0; i <= max_dimension; ++i) {
     ppl_new_NNC_Polyhedron_from_space_dimension(&ph, i, 0);
     open_hypercube(i, ph);
-    ppl_set_timeout(hundredth_secs);
+    ppl_set_timeout(csecs);
     result = ppl_Polyhedron_get_generators(ph, &gs);
     ppl_reset_timeout();
     ppl_delete_Polyhedron(ph);

@@ -794,7 +794,7 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1irrational_1precis
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
-(JNIEnv* env, jclass, jint hsecs) {
+(JNIEnv* env, jclass, jint csecs) {
   try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
     const char* what = "PPL Java interface error:\n"
@@ -804,13 +804,13 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
 #else
     // In case a timeout was already set.
     reset_timeout();
-    assert(hsecs > 0);
-    unsigned cxx_hsecs = jtype_to_unsigned<unsigned>(hsecs);
-    assert(cxx_hsecs > 0);
+    assert(csecs > 0);
+    unsigned cxx_csecs = jtype_to_unsigned<unsigned>(csecs);
+    assert(cxx_csecs > 0);
     static timeout_exception e;
     using Parma_Watchdog_Library::Watchdog;
     p_timeout_object
-      = new Watchdog(cxx_hsecs, abandon_expensive_computations, e);
+      = new Watchdog(cxx_csecs, abandon_expensive_computations, e);
 #endif // PPL_WATCHDOG_LIBRARY_ENABLED
   }
   CATCH_ALL;

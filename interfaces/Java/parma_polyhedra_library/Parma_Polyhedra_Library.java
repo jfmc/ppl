@@ -240,19 +240,19 @@ public class Parma_Polyhedra_Library {
       Sets the timeout for computations whose completion could require
       an exponential amount of time.
 
-      \param hsecs
-      The number of hundreths of seconds.
-      It must be strictly greater than zero.
+      \param csecs
+      The number of centiseconds sometimes after which a timeout will occur;
+      it must be strictly greater than zero.
 
       Computations taking exponential time will be interrupted some time
-      after \p hsecs hundreths of seconds have elapsed since the call to
+      after \p csecs centiseconds have elapsed since the call to
       the timeout setting function, by throwing a
       <CODE>Timeout_Exception</CODE> object.
       Otherwise, if the computation completes without being interrupted,
       then the timeout should be reset by calling
       <CODE>reset_timeout()</CODE>.
     */
-    public static native void set_timeout(int hsecs);
+    public static native void set_timeout(int csecs);
 
     /*! \brief
       Resets the timeout time so that the computation is not interrupted.
@@ -264,8 +264,8 @@ public class Parma_Polyhedra_Library {
       an exponential amount of time.
 
       \param weight
-      The maximum computational weight allowed.
-      It must be strictly greater than zero.
+      The maximum computational weight allowed; it must be strictly
+      greater than zero.
 
       Computations taking exponential time will be interrupted some time
       after reaching the \p weight complexity threshold, by throwing a

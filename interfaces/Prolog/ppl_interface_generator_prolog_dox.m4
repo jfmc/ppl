@@ -1,8 +1,7 @@
 m4_define(`dnl', `m4_dnl')`'dnl
 m4_divert(-1)
 
-dnl This m4 file generates the file Prolog_configured_interface.dox
-dnl and Prolog_interface.dox
+dnl This m4 file generates the file Prolog_configured_domains.dox
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
@@ -24,7 +23,7 @@ dnl along with this program; if not, write to the Free Software Foundation,
 dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
-dnl site: http://www.cs.unipr.it/ppl/ .
+dnl site: http://bugseng.com/ppl/ .
 
 dnl FIXME: This should be in the main m4 generator file.
 
@@ -34,95 +33,21 @@ dnl -----------------------------------------------------------------
 m4_include(`ppl_interface_generator_prolog_procedure_generators.m4')
 m4_include(`ppl_interface_generator_prolog_dox_code.m4')
 
-dnl Check if this build is configuration independent
-dnl - if so, we are building the configuration independent Prolog manual.
-dnl - otherwise, we are building the configuration dependent Prolog manual.
-m4_ifdef(`m4_configuration_independent',
-  `m4_define(`m4_prolog_ci_documentation', `')`'dnl
-')
-
-dnl The classes are fixed for the configuration independent manual.
-m4_ifdef(`m4_prolog_ci_documentation', `dnl
-m4_define(`m4_interface_classes_names',
- `Polyhedron@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron')
-m4_define(`m4_cplusplus_classes_names',
- `Polyhedron@Pointset_Powerset<C_Polyhedron>@Pointset_Powerset<NNC_Polyhedron>')')
-
-
 dnl =================================================================
 dnl Description of file and copyright notice
 dnl =================================================================
 m4_divert`'dnl
-/* m4_ifdef(`m4_prolog_ci_documentation',
-  Configuration Independent Documentation for Prolog.,
-  Configuration Dependent Documentation for Prolog.)
+/* Configuration Dependent Documentation for Prolog.
 m4_include(`ppl_interface_generator_copyright')*/
 
-dnl =================================================================
-dnl The Preamble.
-dnl =================================================================
-/*!
-  \defgroup PPL_Prolog_interface Prolog Language Interface
-
-  The Parma Polyhedra Library comes equipped with an interface
-  for the Prolog language.
-*/
-
-/*! \mainpage Prolog Language Interface
-
-The Parma Polyhedra Library comes equipped with a Prolog interface.
-Despite the lack of standardization of Prolog's foreign language interfaces,
-the PPL Prolog interface supports several Prolog systems and, to the
-extent this is possible, provides a uniform view of the library from
-each such system.
-
-The system-independent features of the library are described in
-Section \ref PI_SI_Features "System-Independent Features".
-Section \ref PI_Compilation "Compilation and Installation"
-explains how the Prolog interface is compiled and installed.
-Section \ref PI_SD_Features "System-Dependent Features"
-illustrates the system-dependent features of the interface
-for all the supported systems.
+/*! \page configured_domains_predicates Predicates for Configured Domains
 
 The structure of this section is as follows:
-- \ref PI_SI_Features "System-Independent Features"
-    - \ref Prolog_Interface_Overview "Overview"
-    - \ref Predicate_Specifications "Predicate Specifications"
-    - \ref predicate_descriptions "Predicate Descriptions"
-        - \ref di_predicates "Domain Independent Predicates"
-        - \ref mip_predicates "MIP Predicates"
-m4_ifdef(`m4_prolog_ci_documentation',`dnl
-dnl For the configuration independent manual we just have these sections.
-        - \ref Polyhedron_predicates "Predicates for C Polyhedra"
-        - \ref other_domains "Ad hoc Predicates for Other Domains"
-',
-dnl For the configured manual: we need a section name for each included class.
-`dnl
 m4_pushdef(`m4_one_class_code',`dnl
-        - \ref m4_interface_class$1`'_predicates "Predicates for the m4_interface_class$1 Domain"
+  - \ref m4_interface_class$1`'_predicates "Predicates for the m4_interface_class$1 Domain"
 ')`'dnl
 m4_all_code`'dnl
 m4_popdef(`m4_one_class_code')`'dnl
-')`'dnl
-- \ref PI_Compilation "Compilation and Installation"
-- \ref PI_SD_Features "System-Dependent Features"
-    - \ref GNU_Prolog "GNU Prolog"
-    - \ref CIAO_Prolog "CIAO Prolog"
-    - \ref SICStus_Prolog "SICStus Prolog"
-    - \ref SWI_Prolog "SWI Prolog"
-    - \ref XSB_Prolog "XSB"
-    - \ref YAP_Prolog "YAP"
-
-In the sequel, <CODE>prefix</CODE> is the prefix under which
-you have installed the library (typically <CODE>/usr</CODE>
-or <CODE>/usr/local</CODE>).
-m4_divert(-1)
-
-dnl =================================================================
-dnl SYSTEM and DOMAIN INDEPENDENT DOCUMENTATION.
-dnl =================================================================
-m4_divert`'dnl
-m4_include(`ppl_prolog_sysindep_dox')
 m4_divert(-1)
 
 dnl =================================================================
@@ -364,10 +289,7 @@ m4_ifdef(`m4_prolog_ci_documentation', `',
 ')`'dnl
 m4_divert(-1)
 
-dnl =================================================================
-dnl SYSTEM DEPENDENT DOCUMENTATION.
-dnl =================================================================
 m4_divert`'dnl
-m4_include(ppl_prolog_sysdep_dox)
+*/ /* \page configured_domains_predicates */
 dnl
 dnl End of file generation.

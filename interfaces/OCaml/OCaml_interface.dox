@@ -203,12 +203,12 @@ included with all instantiations of the OCaml interfaces.
   preferred length for all the other lines, respecively; it returns a
   string containing the wrapped text.
 
-<H2><CODE> ppl_set_timeout hsecs </CODE></H2>
+<H2><CODE> ppl_set_timeout csecs </CODE></H2>
    Computations taking exponential time will be interrupted some time
-   after <CODE>hsecs</CODE> hundreths of seconds after that call.
+   after <CODE>csecs</CODE> centiseconds after that call.
    If the computation is interrupted that way, a timeout exception
    will be thrown.
-   An exception is immediately thrown if <CODE>hsecs</CODE> is not strictly
+   An exception is immediately thrown if <CODE>csecs</CODE> is not strictly
    greater than zero, or if the PPL Watchdog library is not enabled.
 
 <H2><CODE> ppl_reset_timeout </CODE></H2>
@@ -220,7 +220,7 @@ included with all instantiations of the OCaml interfaces.
    after reaching the <CODE>weight</CODE> complexity threshold.
    If the computation is interrupted that way, a timeout exception
    will be thrown.
-   An exception is immediately thrown if <CODE>hsecs</CODE> is not strictly
+   An exception is immediately thrown if <CODE>weight</CODE> is not strictly
    greater than zero, or if the PPL Watchdog library is not enabled.
    <EM>NOTE:</EM> This "timeout" checking functionality is said to be
    <EM>deterministic</EM> because it is not based on actual elapsed time.

@@ -64,17 +64,22 @@ ppl_interface_generator_prolog_systems.m4
 
 interface_generator_dox_files = \
 ppl_interface_generator_prolog_dox.m4 \
-ppl_interface_generator_prolog_dox_code.m4 \
-ppl_prolog_sysdep_dox \
-ppl_prolog_sysindep_dox
+ppl_interface_generator_prolog_dox_code.m4
+
 
 EXTRA_DIST = \
 $(interface_generator_files) \
 ppl_prolog_common.defs.hh \
 ppl_prolog_common.inlines.hh \
 ppl_prolog_common.cc \
+Prolog_configured_interface.dox \
 $(interface_generator_dox_files) \
-Prolog_interface.dox
+Prolog_interface.dox \
+Prolog_interface_sysindep.dox \
+Prolog_interface_sysindep_domains.dox \
+Prolog_interface_compilation.dox \
+Prolog_interface_sysdep.dox
+
 
 interface_generator_dox_dependencies = \
 ../ppl_interface_generator_common.m4 \
@@ -83,21 +88,19 @@ interface_generator_dox_dependencies = \
 ../ppl_interface_generator_common_procedure_generators.m4 \
 ppl_interface_generator_prolog_procedure_generators.m4 \
 ppl_interface_generator_prolog_dox.m4 \
-ppl_interface_generator_prolog_dox_code.m4 \
-ppl_prolog_sysdep_dox \
-ppl_prolog_sysindep_dox
+ppl_interface_generator_prolog_dox_code.m4
 
-Prolog_configured_interface.dox: \
+Prolog_configured_domains.dox: \
 $(interface_generator_dox_dependencies) Makefile
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_dox.m4 \
-                > Prolog_configured_interface.dox
+                > Prolog_configured_domains.dox
 
 BUILT_SOURCES = \
 ppl_prolog_domains.hh \
 ppl_prolog_domains.cc.stamp
 
-nodist_noinst_DATA = Prolog_configured_interface.dox
+nodist_noinst_DATA = Prolog_configured_domains.dox
 
 interface_generator_dependencies = \
 $(interface_generator_files) \
@@ -130,7 +133,7 @@ CLEANFILES = \
 @required_instantiations_prolog_cxx_sources@ \
 ppl_prolog_domains.cc.stamp \
 ppl_prolog_domains.hh \
-Prolog_configured_interface.dox
+Prolog_configured_domains.dox
 
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/interfaces ppl_interface_instantiations.m4

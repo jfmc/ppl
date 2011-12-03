@@ -64,7 +64,8 @@ PPL::Bit_Row::next(unsigned long position) const {
   mp_srcptr p = vec->_mp_d + li;
 
   // Mask off any bits before `position' in the first limb.
-  mp_limb_t limb = *p & (~(mp_limb_t) 0) << (position % PPL_BITS_PER_GMP_LIMB);
+  mp_limb_t limb
+    = *p & ((~(mp_limb_t) 0) << (position % PPL_BITS_PER_GMP_LIMB));
 
   while (true) {
     if (limb != 0)

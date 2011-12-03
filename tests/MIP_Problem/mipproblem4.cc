@@ -1,15 +1,14 @@
-/* Time class implementation (non-inline functions).
+/* Test the MIP_Problem class.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 
-This file is part of the Parma Watchdog Library (PWL).
+This file is part of the Parma Polyhedra Library (PPL).
 
-The PWL is free software; you can redistribute it and/or modify it
+The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
 
-The PWL is distributed in the hope that it will be useful, but WITHOUT
+The PPL is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
@@ -21,13 +20,21 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <pwl-config.h>
+#include "ppl_test.hh"
 
-#include "Time.defs.hh"
-
-namespace PWL = Parma_Watchdog_Library;
+namespace {
 
 bool
-PWL::Time::OK() const {
-  return microsecs < USECS_PER_SEC;
+test01() {
+  MIP_Problem mip(0);
+  mip.is_satisfiable();
+  mip.set_optimization_mode(MINIMIZATION);
+  mip.solve();
+  return true;
 }
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

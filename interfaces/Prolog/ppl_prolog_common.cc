@@ -1909,21 +1909,20 @@ ppl_timeout_exception_atom(Prolog_term_ref t) {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_set_timeout(Prolog_term_ref t_time) {
+ppl_set_timeout(Prolog_term_ref t_csecs) {
   try {
 #ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     // In case a timeout was already set.
     reset_timeout();
     static timeout_exception e;
-    unsigned hundredth_secs = term_to_unsigned<unsigned>(t_time,
-							 "ppl_set_timeout/1");
+    unsigned csecs = term_to_unsigned<unsigned>(t_csecs, "ppl_set_timeout/1");
     p_timeout_object =
-      new Parma_Watchdog_Library::Watchdog(hundredth_secs,
+      new Parma_Watchdog_Library::Watchdog(csecs,
 					   abandon_expensive_computations,
 					   e);
     return PROLOG_SUCCESS;
 #else
-    used(t_time);
+    used(t_csecs);
     return PROLOG_FAILURE;
 #endif
   }

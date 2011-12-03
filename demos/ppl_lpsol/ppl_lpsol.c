@@ -474,17 +474,17 @@ print_clock(FILE* f) {
     time_t saved_secs = saved_ru_utime.tv_sec;
     time_t saved_usecs = saved_ru_utime.tv_usec;
     int secs;
-    int hsecs;
+    int csecs;
     if (current_usecs < saved_usecs) {
-      hsecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
+      csecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
       secs = (current_secs - saved_secs) -1;
     }
     else {
-      hsecs = ((current_usecs - saved_usecs) + 5000) / 10000;
+      csecs = ((current_usecs - saved_usecs) + 5000) / 10000;
       secs = current_secs - saved_secs;
     }
-    assert(hsecs >= 0 && hsecs < 100 && secs >= 0);
-    fprintf(f, "%d.%.2d", secs, hsecs);
+    assert(csecs >= 0 && csecs < 100 && secs >= 0);
+    fprintf(f, "%d.%.2d", secs, csecs);
   }
 }
 
