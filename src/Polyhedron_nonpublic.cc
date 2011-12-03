@@ -2034,8 +2034,9 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       PPL_ASSERT(!(illegal_ray && (x_row_is_line || y_row_is_line)));
       if (illegal_ray)
         continue;
+      // Normalize mid_row (strongly, if needed).
+      mid_row.normalize();
       if (x_row_is_line) {
-        mid_row.normalize();
         if (y_row_is_line)
           // mid_row is a line too: sign normalization is needed.
           mid_row.sign_normalize();
@@ -2043,6 +2044,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
           // mid_row is a ray/point.
           mid_row.set_is_ray_or_point_or_inequality();
       }
+      PPL_ASSERT(mid_g.OK());
 
       // Step 7: check if mid_g is in the union of x and y.
       if (x.relation_with(mid_g) == Poly_Gen_Relation::nothing()
