@@ -493,7 +493,7 @@ private:
   */
   dimension_type internal_space_dim;
 
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
   typedef Sparse_Row Row;
 #else
   typedef Dense_Row Row;
@@ -737,7 +737,7 @@ private:
   static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
   // TODO: Remove this when the sparse working cost has been tested enough.
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
   //! Linearly combines \p x with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
@@ -757,7 +757,7 @@ private:
   static void linear_combine(Dense_Row& x, const Sparse_Row& y,
                              const dimension_type k);
 
-#endif // defined(USE_PPL_SPARSE_MATRIX)
+#endif // defined(PPL_USE_SPARSE_MATRIX)
 
   static bool is_unbounded_obj_function(
     const Linear_Expression& obj_function,

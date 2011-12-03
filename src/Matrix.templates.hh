@@ -179,6 +179,7 @@ Matrix<Row>::OK() const {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Matrix */
 template <typename Row>
 bool
 operator==(const Matrix<Row>& x, const Matrix<Row>& y) {
@@ -192,6 +193,7 @@ operator==(const Matrix<Row>& x, const Matrix<Row>& y) {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::Matrix */
 template <typename Row>
 bool
 operator!=(const Matrix<Row>& x, const Matrix<Row>& y) {

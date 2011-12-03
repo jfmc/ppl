@@ -153,7 +153,7 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
   }
 }
 
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
 
 // Assigns to row x the negation of row y.
 inline void
@@ -163,7 +163,7 @@ neg_assign_row(PIP_Tree_Node::Row& x, const PIP_Tree_Node::Row& y) {
     neg_assign(*i);
 }
 
-#else // !USE_PPL_SPARSE_MATRIX
+#else // !PPL_USE_SPARSE_MATRIX
 
 inline void
 neg_assign_row(PIP_Tree_Node::Row& x, const PIP_Tree_Node::Row& y) {
@@ -171,7 +171,7 @@ neg_assign_row(PIP_Tree_Node::Row& x, const PIP_Tree_Node::Row& y) {
     neg_assign(x[i], y[i]);
 }
 
-#endif // !USE_PPL_SPARSE_MATRIX
+#endif // !PPL_USE_SPARSE_MATRIX
 
 // Given context row \p y and denominator \p den,
 // to be interpreted as expression expr = y / den,

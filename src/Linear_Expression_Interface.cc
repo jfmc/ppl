@@ -26,7 +26,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Linear_Expression_Interface.defs.hh"
 
-
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Linear_Expression_Interface::~Linear_Expression_Interface() {

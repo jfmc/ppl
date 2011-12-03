@@ -802,7 +802,7 @@ private:
   */
   Variables_Set parameters;
 
-#if USE_PPL_SPARSE_MATRIX
+#if PPL_USE_SPARSE_MATRIX
   typedef Sparse_Row Row;
 #else
   typedef Dense_Row Row;
