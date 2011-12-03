@@ -1968,7 +1968,7 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& p_ineqs,
   const dimension_type space_dim = p_ineqs[0]->space_dimension();
   PPL_ASSERT(space_dim > 0 && space_dim >= rank);
   const dimension_type num_coefficients
-    = space_dim + (topology == NECESSARILY_CLOSED ? 0 : 1);
+    = space_dim + ((topology == NECESSARILY_CLOSED) ? 0 : 1);
   const dimension_type min_sat = num_coefficients - rank;
   const dimension_type num_cols_sat = sat.num_columns();
 
@@ -2869,7 +2869,7 @@ generalized_affine_image(const Variable var,
       PPL_ASSERT(!is_necessarily_closed());
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
-      add_generator(ray(relsym == GREATER_THAN ? var : -var));
+      add_generator(ray((relsym == GREATER_THAN) ? var : -var));
       minimize();
 
       Swapping_Vector<Generator> rows;

@@ -48,7 +48,7 @@ namespace Octagonal_Shapes {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline dimension_type
 coherent_index(const dimension_type i) {
-  return (i % 2 != 0) ? i-1 : i+1;
+  return (i % 2 != 0) ? (i-1) : (i+1);
 }
 
 } // namespace Octagonal_Shapes

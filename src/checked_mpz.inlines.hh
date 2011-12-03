@@ -611,7 +611,7 @@ template <typename Policy, typename Type>
 inline Result_Relation
 sgn_mp(const Type& x) {
   int i = ::sgn(x);
-  return i > 0 ? VR_GT : i < 0 ? VR_LT : VR_EQ;
+  return (i > 0) ? VR_GT : ((i < 0) ? VR_LT : VR_EQ);
 }
 
 PPL_SPECIALIZE_SGN(sgn_mp, mpz_class)
@@ -621,7 +621,7 @@ template <typename Policy1, typename Policy2, typename Type>
 inline Result_Relation
 cmp_mp(const Type& x, const Type& y) {
   int i = ::cmp(x, y);
-  return i > 0 ? VR_GT : i < 0 ? VR_LT : VR_EQ;
+  return (i > 0) ? VR_GT : ((i < 0) ? VR_LT : VR_EQ);
 }
 
 PPL_SPECIALIZE_CMP(cmp_mp, mpz_class, mpz_class)

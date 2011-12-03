@@ -15,6 +15,10 @@ PURPOSE. */
 
 #include "Checked_Number.defs.hh"
 
+#ifdef PPL_GMP_INTEGERS
+#include "GMP_Integer.types.hh"
+#endif
+
 #if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 
 namespace Parma_Polyhedra_Library {
@@ -144,10 +148,6 @@ struct Coefficient_traits_template<Checked_Number<int64_t, Policy> > {
 } // namespace Parma_Polyhedra_Library
 
 #endif // defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
-
-#ifdef PPL_GMP_INTEGERS
-#include "GMP_Integer.types.hh"
-#endif
 
 namespace Parma_Polyhedra_Library {
 

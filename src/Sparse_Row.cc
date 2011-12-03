@@ -1037,15 +1037,15 @@ PPL::linear_combine(Sparse_Row& x, const Sparse_Row& y,
 
 void
 std::swap(PPL::Sparse_Row& x, PPL::Dense_Row& y) {
-  Dense_Row new_dense(x.size(), x.size());
+  PPL::Dense_Row new_dense(x.size(), x.size());
   
-  for (Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
+  for (PPL::Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
     std::swap(new_dense[i.index()], *i);
 
   // NOTE: This copies the coefficients, but it could steal them.
   // Implementing a stealing-based algorithm takes a lot of time and it's
   // probably not worth it.
-  Sparse_Row new_sparse(y);
+  PPL::Sparse_Row new_sparse(y);
 
   std::swap(new_dense, y);
   std::swap(new_sparse, x);

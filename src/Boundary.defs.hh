@@ -299,9 +299,9 @@ template <typename T, typename Info>
 inline int
 is_infinity(Boundary_Type type, const T& x, const Info& info) {
   if (is_boundary_infinity(type, x, info))
-    return type == LOWER ? -1 : 1;
+    return (type == LOWER) ? -1 : 1;
   else if (is_reverse_infinity(type, x, info))
-    return type == UPPER ? -1 : 1;
+    return (type == UPPER) ? -1 : 1;
   else
     return 0;
 }
@@ -325,7 +325,7 @@ template <typename T, typename Info>
 inline int
 sgn_b(Boundary_Type type, const T& x, const Info& info) {
   if (info.get_boundary_property(type, SPECIAL))
-    return type == LOWER ? -1 : 1;
+    return (type == LOWER) ? -1 : 1;
   else
     // The following Parma_Polyhedra_Library:: qualification is to work
     // around a bug of GCC 4.0.x.
@@ -337,7 +337,7 @@ inline int
 sgn(Boundary_Type type, const T& x, const Info& info) {
   int sign = sgn_b(type, x, info);
   if (x == 0 && info.get_boundary_property(type, OPEN))
-    return type == LOWER ? -1 : 1;
+    return (type == LOWER) ? -1 : 1;
   else
     return sign;
 }

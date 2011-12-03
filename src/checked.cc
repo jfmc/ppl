@@ -52,7 +52,7 @@ struct number_struct {
 */
 inline int
 get_digit(int c, int base = 10) {
-  if (c >= '0' && c < '0' + (base > 10 ? 10 : base))
+  if (c >= '0' && c < '0' + ((base > 10) ? 10 : base))
     return c - '0';
   if (base > 10) {
     base -= 10;
@@ -259,7 +259,7 @@ parse_number_part(std::istream& is, number_struct& num) {
 	if (num.exponent > max_exp_div
 	    || (num.exponent == max_exp_div && d > max_exp_rem))
 	  return V_CVT_STR_UNK;
-	num.exponent = num.exponent * 10 + d;
+	num.exponent = 10*num.exponent + d;
 	break;
       }
       if (empty_exponent)

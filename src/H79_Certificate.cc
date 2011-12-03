@@ -65,9 +65,9 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
 int
 PPL::H79_Certificate::compare(const H79_Certificate& y) const {
   if (affine_dim != y.affine_dim)
-    return affine_dim > y.affine_dim ? 1 : -1;
+    return (affine_dim > y.affine_dim) ? 1 : -1;
   if (num_constraints != y.num_constraints)
-    return num_constraints > y.num_constraints ? 1 : -1;
+    return (num_constraints > y.num_constraints) ? 1 : -1;
   // All components are equal.
   return 0;
 }
@@ -112,7 +112,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   // If the number of constraints of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.
   if (ph_num_constraints != num_constraints)
-    return ph_num_constraints < num_constraints ? 1 : -1;
+    return (ph_num_constraints < num_constraints) ? 1 : -1;
 
   // All components are equal.
   return 0;

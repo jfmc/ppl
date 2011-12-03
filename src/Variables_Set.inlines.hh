@@ -53,7 +53,7 @@ Variables_Set::max_space_dimension() {
 inline dimension_type
 Variables_Set::space_dimension() const {
   reverse_iterator i = rbegin();
-  return i == rend() ? 0 : *i+1;
+  return (i == rend()) ? 0 : (*i + 1);
 }
 
 inline memory_size_type

@@ -332,7 +332,7 @@ inline void
 float_intel_double_extended::dec() {
   if ((lsp & LSP_DMAX) == 0) {
     --msp;
-    lsp = (msp & MSP_NEG_INF) == 0 ? LSP_DMAX : LSP_NMAX;
+    lsp = ((msp & MSP_NEG_INF) == 0) ? LSP_DMAX : LSP_NMAX;
   }
   else
     --lsp;

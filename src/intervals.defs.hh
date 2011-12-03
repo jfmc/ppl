@@ -299,7 +299,7 @@ public:
       if (is_integer(to)) {
 	rel = sub_assign_r(to, to, T(1), (ROUND_UP | ROUND_STRICT_RELATION));
 	rel = result_relation_class(rel);
-	return rel == V_EQ ? V_LE : rel;
+	return (rel == V_EQ) ? V_LE : rel;
       }
       /* Fall through */
     case V_LE:
@@ -311,7 +311,7 @@ public:
       if (is_integer(to)) {
 	rel = add_assign_r(to, to, T(1), (ROUND_DOWN | ROUND_STRICT_RELATION));
 	rel = result_relation_class(rel);
-	return rel == V_EQ ? V_GE : rel;
+	return (rel == V_EQ) ? V_GE : rel;
       }
       /* Fall through */
     case V_GE:
