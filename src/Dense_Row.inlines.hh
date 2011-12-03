@@ -215,12 +215,12 @@ Dense_Row::operator[](const dimension_type k) const {
 }
 
 inline void
-Dense_Row::swap(dimension_type i, dimension_type j) {
+Dense_Row::swap_coefficients(dimension_type i, dimension_type j) {
   std::swap((*this)[i], (*this)[j]);
 }
 
 inline void
-Dense_Row::swap(iterator i, iterator j) {
+Dense_Row::swap_coefficients(iterator i, iterator j) {
   std::swap(*i, *j);
 }
 

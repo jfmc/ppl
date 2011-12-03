@@ -119,7 +119,7 @@ PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
 }
 
 void
-PPL::Sparse_Row::swap(dimension_type i, dimension_type j) {
+PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
   PPL_ASSERT(i < size_);
   PPL_ASSERT(j < size_);
 

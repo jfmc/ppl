@@ -316,7 +316,7 @@ Sparse_Row::insert(iterator itr, dimension_type i) {
 }
 
 inline void
-Sparse_Row::swap(iterator i, iterator j) {
+Sparse_Row::swap_coefficients(iterator i, iterator j) {
   PPL_ASSERT(i != end());
   PPL_ASSERT(j != end());
   std::swap(*i, *j);

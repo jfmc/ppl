@@ -121,7 +121,7 @@ Linear_Expression_Impl<Row>
 template <typename Row>
 inline void
 Linear_Expression_Impl<Row>::swap_space_dimensions(Variable v1, Variable v2) {
-  row.swap(v1.space_dimension(), v2.space_dimension());
+  row.swap_coefficients(v1.space_dimension(), v2.space_dimension());
   PPL_ASSERT(OK());
 }
 

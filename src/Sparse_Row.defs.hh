@@ -534,7 +534,7 @@ public:
 
     This method takes \f$O(\log^2 n)\f$ amortized time.
   */
-  void swap(dimension_type i, dimension_type j);
+  void swap_coefficients(dimension_type i, dimension_type j);
 
   //! Equivalent to swap(i,itr.index()), but it assumes that
   //! lower_bound(i)==itr.
@@ -556,7 +556,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void swap(iterator i, iterator j);
+  void swap_coefficients(iterator i, iterator j);
 
   //! Resets to zero the value pointed to by i.
   /*!

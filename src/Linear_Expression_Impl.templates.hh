@@ -74,13 +74,13 @@ Linear_Expression_Impl<Dense_Row>::remove_space_dimensions(const Variables_Set& 
     const dimension_type vsi_col = *vsi+1;
     // Move all columns in between to the left.
     while (src_col < vsi_col)
-      row.swap(dst_col++, src_col++);
+      row.swap_coefficients(dst_col++, src_col++);
     ++src_col;
   }
   // Move any remaining columns.
   const dimension_type sz = row.size();
   while (src_col < sz)
-    row.swap(dst_col++, src_col++);
+    row.swap_coefficients(dst_col++, src_col++);
 
   // The number of remaining coefficients is `dst_col'.
   row.resize(dst_col);
@@ -645,12 +645,12 @@ Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable
     return;
 
   if (n == 2) {
-    row.swap(cycle[0].space_dimension(), cycle[1].space_dimension());
+    row.swap_coefficients(cycle[0].space_dimension(), cycle[1].space_dimension());
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
     tmp = row.get(cycle.back().space_dimension());
     for (dimension_type i = n - 1; i-- > 0; )
-     row.swap(cycle[i + 1].space_dimension(), cycle[i].space_dimension());
+     row.swap_coefficients(cycle[i + 1].space_dimension(), cycle[i].space_dimension());
     if (tmp == 0)
       row.reset(cycle[0].space_dimension());
     else
