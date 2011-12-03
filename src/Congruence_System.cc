@@ -169,13 +169,15 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
 void
 PPL::Congruence_System::normalize_moduli() {
-  dimension_type row = num_rows();
+  Congruence_System& cgs = *this;
+  dimension_type row = cgs.num_rows();
   if (row > 0) {
     // Calculate the LCM of all the moduli.
     PPL_DIRTY_TEMP_COEFFICIENT(lcm);
     // Find last proper congruence.
     while (true) {
-      lcm = operator[](--row).modulus();
+      --row;
+      lcm = cgs[row].modulus();
       if (lcm > 0)
 	break;
       if (row == 0)
@@ -183,7 +185,8 @@ PPL::Congruence_System::normalize_moduli() {
 	return;
     }
     while (row > 0) {
-      const Coefficient& modulus = operator[](--row).modulus();
+      --row;
+      const Coefficient& modulus = cgs[row].modulus();
       if (modulus > 0)
 	lcm_assign(lcm, lcm, modulus);
     }
@@ -191,7 +194,7 @@ PPL::Congruence_System::normalize_moduli() {
     // Represent every row using the LCM as the modulus.
     PPL_DIRTY_TEMP_COEFFICIENT(factor);
     for (row = num_rows(); row-- > 0; ) {
-      const Coefficient& modulus = operator[](row).modulus();
+      const Coefficient& modulus = cgs[row].modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
       exact_div_assign(factor, lcm, modulus);

@@ -152,7 +152,7 @@ PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
   const dimension_type num_rows = this->num_rows();
   s << num_rows << " x " << space_dimension() << '\n';
   for (dimension_type i = 0; i < num_rows; ++i)
-    operator[](i).ascii_dump(s);
+    sys[i].ascii_dump(s);
 }
 
 bool
