@@ -70,7 +70,7 @@ bool
 PPL::Variables_Set::ascii_load(std::istream& s) {
   clear();
   std::string str;
- if (!(s >> str) || str != "variables(")
+  if (!(s >> str) || str != "variables(")
     return false;
 
   dimension_type size;

@@ -253,7 +253,7 @@ Partially_Reduced_Product<D1, D2, R>
     maximum = maximum2;
   }
   return true;
- }
+}
 
 template <typename D1, typename D2, typename R>
 bool
@@ -305,7 +305,7 @@ Partially_Reduced_Product<D1, D2, R>
     minimum = minimum2;
   }
   return true;
- }
+}
 
 template <typename D1, typename D2, typename R>
 bool
@@ -364,7 +364,7 @@ Partially_Reduced_Product<D1, D2, R>
     pnt = pnt2;
   }
   return true;
- }
+}
 
 template <typename D1, typename D2, typename R>
 bool
@@ -423,7 +423,7 @@ Partially_Reduced_Product<D1, D2, R>
     pnt = pnt2;
   }
   return true;
- }
+}
 
 template <typename D1, typename D2, typename R>
 inline bool

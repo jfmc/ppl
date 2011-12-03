@@ -688,11 +688,11 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two OSs is empty, then they are equal if and only if
   // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-   if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
-   return true;
+    return true;
   }
 
   return rectilinear_distance_assign(r, x.matrix, y.matrix, dir,
@@ -753,11 +753,11 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two OSs is empty, then they are equal if and only if
   // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-   if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
-   return true;
+    return true;
   }
 
   return euclidean_distance_assign(r, x.matrix, y.matrix, dir,
@@ -818,11 +818,11 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two OSs is empty, then they are equal if and only if
   // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-   if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
     else
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
-   return true;
+    return true;
   }
 
   return l_infinity_distance_assign(r, x.matrix, y.matrix, dir,

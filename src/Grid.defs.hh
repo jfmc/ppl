@@ -1572,7 +1572,7 @@ public:
     This argument is ignored as the algorithm used has polynomial
     complexity.
   */
-   void drop_some_non_integer_points(Complexity_Class complexity
+  void drop_some_non_integer_points(Complexity_Class complexity
                                     = ANY_COMPLEXITY);
 
   /*! \brief
