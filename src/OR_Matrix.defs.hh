@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ .  */
+site: http://bugseng.com/products/ppl/ .  */
 
 #ifndef PPL_OR_Matrix_defs_hh
 #define PPL_OR_Matrix_defs_hh 1

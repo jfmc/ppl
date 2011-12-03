@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 #ifndef PPL_Temp_inlines_hh
 #define PPL_Temp_inlines_hh 1
@@ -91,7 +91,7 @@ Temp_Value_Holder<T>::item() {
 } // namespace Parma_Polyhedra_Library
 
 #define PPL_DIRTY_TEMP(T, id)						\
-  Parma_Polyhedra_Library::Dirty_Temp<T> holder_ ## id;     \
-  T& id = holder_ ## id.item()
+  Parma_Polyhedra_Library::Dirty_Temp<PPL_U(T)> holder_ ## id;          \
+  PPL_U(T)& PPL_U(id) = holder_ ## id.item()
 
 #endif // !defined(PPL_Temp_inlines_hh)

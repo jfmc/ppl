@@ -19,7 +19,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
-# site: http://www.cs.unipr.it/ppl/ .
+# site: http://bugseng.com/products/ppl/ .
 
 # Process this file with Autoconf to produce a configure script.
 
@@ -119,6 +119,8 @@ AH_BOTTOM([
 #ifdef PPL_HAVE_INTTYPES_H
 # include <inttypes.h>
 #endif
+
+#define PPL_U(x) x
 
 /* END ppl-config.h */
 ])

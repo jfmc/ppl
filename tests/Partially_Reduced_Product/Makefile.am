@@ -20,7 +20,7 @@
 # USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
-# site: http://www.cs.unipr.it/ppl/ .
+# site: http://bugseng.com/products/ppl/ .
 
 if VALGRIND_TESTS_ENABLED
 

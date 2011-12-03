@@ -3,7 +3,7 @@ Polyhedra Library (PPL): a C++ library for the manipulation of
 numerical abstractions.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/
+site: http://bugseng.com/products/ppl/
 
 
 Sources: this package was put together by the PPL developers
@@ -16,7 +16,7 @@ or, for prereleases, from the anonymously accessible CVS repository
   :pserver:anoncvs@cvs.cs.unipr.it:/cvs/ppl
 
 
-Authors: see the CREDITS file or http://www.cs.unipr.it/ppl/Credits
+Authors: see the CREDITS file or http://bugseng.com/products/ppl/Credits
 for the complete list of authors.
 
 

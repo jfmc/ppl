@@ -20,7 +20,7 @@ Description: Parma Polyhedra Library: base package
  limitation to the dimension of anything), written in standard C++,
  exception-safe, rather efficient and thoroughly documented.
  .
- Homepage: http://www.cs.unipr.it/ppl/
+ Homepage: http://bugseng.com/products/ppl/
 
 Package: libppl-dev
 Architecture: any
@@ -42,7 +42,7 @@ Description: Parma Polyhedra Library: C++ interface
  This package provides C++ header files, the static library and
  various formats of the developer documentation.
  .
- Homepage: http://www.cs.unipr.it/ppl/
+ Homepage: http://bugseng.com/products/ppl/
 
 Package: libppl-c
 Architecture: any
@@ -60,7 +60,7 @@ Description: Parma Polyhedra Library: C interface
  .
  This package provides the C interface.
  .
- Homepage: http://www.cs.unipr.it/ppl/
+ Homepage: http://bugseng.com/products/ppl/
 
 Package: libppl-pwl
 Architecture: any
@@ -71,4 +71,4 @@ Description: Parma Watchdog Library: C++ library for watchdog timers
  PWL is currently distributed with the Parma Polyhedra Library (PPL),
  but is totally independent from it.
  .
- Homepage: http://www.cs.unipr.it/ppl/
+ Homepage: http://bugseng.com/products/ppl/

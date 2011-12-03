@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 #ifndef PPL_Checked_Number_inlines_hh
 #define PPL_Checked_Number_inlines_hh 1
@@ -115,7 +115,8 @@ template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
+    (check_result(Checked::assign_ext<Policy,                           \
+                                      Checked_Number_Transparent_Policy<PPL_U(type)> > \
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }									\
@@ -124,7 +125,8 @@ inline									\
 Checked_Number<T, Policy>::Checked_Number(const type x) {		\
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
+    (check_result(Checked::assign_ext<Policy,                           \
+                                      Checked_Number_Transparent_Policy<PPL_U(type)> > \
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }
@@ -537,7 +539,8 @@ PPL_DEFINE_BINARY_OP_ASSIGN(operator %=, rem_assign_r)
 #define PPL_DEFINE_BINARY_OP(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
-f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
+PPL_U(f)(const Checked_Number<T, Policy>& x, \
+         const Checked_Number<T, Policy>& y) {  \
   Checked_Number<T, Policy> r; \
   Policy::handle_result(fun(r, x, y, Policy::ROUND_DEFAULT_OPERATOR)); \
   return r; \

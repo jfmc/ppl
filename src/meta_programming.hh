@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 #ifndef PPL_meta_programming_hh
 #define PPL_meta_programming_hh 1
@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_bool_nodef(name, value)		\
-  enum anonymous_enum_ ## name { name = (value) }
+  enum anonymous_enum_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -54,7 +54,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_int_nodef(name, value) \
-  enum anonymous_enum_ ## name { name = (value) }
+  enum anonymous_enum_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -86,7 +86,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_ref_nodef(type, name, value)				\
-  static const type& name() {						\
+  static const type& PPL_U(name)() {                                    \
     static type name(value);						\
     return name;							\
   }

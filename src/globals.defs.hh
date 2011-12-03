@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 #ifndef PPL_globals_defs_hh
 #define PPL_globals_defs_hh 1
@@ -158,11 +158,11 @@ extern unsigned int in_assert;
 #define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
-    Weightwatch_Traits::weight += delta;        \
+    Weightwatch_Traits::weight += (delta);      \
   } while(0)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
-    Weightwatch_Traits::weight += delta * factor;       \
+    Weightwatch_Traits::weight += (delta)*(factor);     \
   } while(0)
 #endif
 #else
@@ -278,13 +278,13 @@ struct Recycle_Input {
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS(type_symbol, class_prefix)	\
   template <typename type_symbol>					\
   void									\
-  class_prefix::ascii_dump() const {					\
+  PPL_U(class_prefix)::ascii_dump() const {                             \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol>					\
   void									\
-  class_prefix::print() const {						\
+  PPL_U(class_prefix)::print() const {                                  \
     using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
@@ -294,13 +294,15 @@ struct Recycle_Input {
 						class_prefix)		\
   template <typename type_symbol1, typename type_symbol2>		\
   void									\
-  class_prefix<type_symbol1, type_symbol2>::ascii_dump() const {	\
+  PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2)>         \
+  ::ascii_dump() const {                                                \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol1, typename type_symbol2>		\
   void									\
-  class_prefix<type_symbol1, type_symbol2>::print() const {		\
+  PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2)>         \
+  ::print() const {                                                     \
     using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
@@ -312,7 +314,8 @@ struct Recycle_Input {
   template <typename type_symbol1, typename type_symbol2,		\
             typename type_symbol3>					\
   void									\
-  class_prefix<type_symbol1, type_symbol2, type_symbol3>::ascii_dump()	\
+  PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2),         \
+                      PPL_U(type_symbol3)>::ascii_dump()                \
     const {								\
     ascii_dump(std::cerr);						\
   }									\
@@ -320,7 +323,8 @@ struct Recycle_Input {
     template <typename type_symbol1, typename type_symbol2,		\
               typename type_symbol3>					\
     void								\
-    class_prefix<type_symbol1, type_symbol2, type_symbol3>::print()	\
+    PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2),       \
+                        PPL_U(type_symbol3)>::print()                   \
       const {								\
       using IO_Operators::operator<<;					\
       std::cerr << *this;						\
@@ -329,13 +333,13 @@ struct Recycle_Input {
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
   template <typename type_symbol>					\
   void									\
-  class_prefix::ascii_dump() const {					\
+  PPL_U(class_prefix)::ascii_dump() const {                             \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol>					\
   void									\
-  class_prefix::print() const {						\
+  PPL_U(class_prefix)::print() const {                                  \
     std::cerr << "No user level output operator defined "		\
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }

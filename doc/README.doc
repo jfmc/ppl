@@ -50,7 +50,7 @@ The Documentation You May Download
 
 If you are using the latest released version of the library, you will
 find all the documentation in all formats at
-http://www.cs.unipr.it/ppl/Documentation/ .
+http://bugseng.com/products/ppl/Documentation/ .
 
 
 The Documentation You May Build Yourself
@@ -127,7 +127,7 @@ command should be used to configure TeX system-wide).
 
 --------
 
-[1] http://www.cs.unipr.it/ppl/Download/Git
+[1] http://bugseng.com/products/ppl/Download/Git
 [2] http://www.doxygen.org/
 [3] http://www.research.att.com/sw/tools/graphviz/
 
@@ -163,4 +163,4 @@ licenses along with the PPL, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ .
+site: http://bugseng.com/products/ppl/ .

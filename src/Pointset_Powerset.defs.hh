@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 #ifndef PPL_Pointset_Powerset_defs_hh
 #define PPL_Pointset_Powerset_defs_hh
@@ -1320,7 +1320,7 @@ namespace Parma_Polyhedra_Library {
   \if Include_Implementation_Details
 
   See
-  <A HREF="http://www.cs.unipr.it/ppl/Documentation/bibliography#Srivastava93">
+  <A HREF="http://bugseng.com/products/ppl/Documentation/bibliography#Srivastava93">
   this paper</A> for more information about the implementation.
   \endif
 */

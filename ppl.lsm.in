@@ -24,7 +24,7 @@ Primary-site:	metlab.unc.edu /pub/linux/libs
 		5850k ppl-@VERSION@.tar.gz
 		800 ppl.lsm
 Alternate-site:	
-Original-site:	http://www.cs.unipr.it/ppl/
+Original-site:	http://bugseng.com/products/ppl/
 Platforms:      Portable; tested on Linux, FreeBSD, OpenBSD, Solaris,
                 IRIX64, Mac OS X, Cygwin, DEC OSF/1.
 Copying-policy:	GPL
