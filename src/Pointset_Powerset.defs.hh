@@ -229,7 +229,7 @@ public:
     This argument is ignored.
 
     \exception std::length_error
-    Thrown if the space dimension of \p bdss exceeds the maximum
+    Thrown if the space dimension of \p bds exceeds the maximum
     allowed space dimension.
   */
   template <typename T>
@@ -275,7 +275,7 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
-    is the top element of the powerser lattice.
+    is the top element of the powerset lattice.
   */
   bool is_universe() const;
 
@@ -1005,9 +1005,9 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param pcs
+    \param cs_p
     Possibly null pointer to a constraint system whose variables
-    are contained in \p vars.  If <CODE>*pcs</CODE> depends on
+    are contained in \p vars.  If <CODE>*cs_p</CODE> depends on
     variables not in \p vars, the behavior is undefined.
     When non-null, the pointed-to constraint system is assumed to
     represent the conditional or looping construct guard with respect
@@ -1015,7 +1015,7 @@ public:
     computation of upper bounds and due to non-distributivity of
     constraint refinement over upper bounds, passing a constraint
     system in this way can be more precise than refining the result of
-    the wrapping operation with the constraints in <CODE>*pcs</CODE>.
+    the wrapping operation with the constraints in <CODE>*cs_p</CODE>.
 
     \param complexity_threshold
     A precision parameter of the \ref Wrapping_Operator "wrapping operator":
@@ -1027,15 +1027,15 @@ public:
     precision).
 
     \exception std::invalid_argument
-    Thrown if <CODE>*pcs</CODE> is dimension-incompatible with
+    Thrown if <CODE>*cs_p</CODE> is dimension-incompatible with
     \p vars, or if \p *this is dimension-incompatible \p vars or with
-    <CODE>*pcs</CODE>.
+    <CODE>*cs_p</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
-                   const Constraint_System* pcs = 0,
+                   const Constraint_System* cs_p = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 
@@ -1052,13 +1052,13 @@ public:
   /*! \brief
     Assigns to \p *this the result of applying the
     \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
-    to \p *this and \p y, using the widening function \p wf
+    to \p *this and \p y, using the widening function \p widen_fun
     and the cardinality threshold \p max_disjuncts.
 
     \param y
     A powerset that <EM>must</EM> definitely entail \p *this;
 
-    \param wf
+    \param widen_fun
     The widening function to be used on polyhedra objects. It is obtained
     from the corresponding widening method by using the helper function
     Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
@@ -1078,20 +1078,20 @@ public:
   */
   template <typename Widening>
   void BGP99_extrapolation_assign(const Pointset_Powerset& y,
-				  Widening wf,
+				  Widening widen_fun,
 				  unsigned max_disjuncts);
 
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref pps_certificate_widening "BHZ03-widening"
-    between \p *this and \p y, using the widening function \p wf
+    between \p *this and \p y, using the widening function \p widen_fun
     certified by the convergence certificate \p Cert.
 
     \param y
     The finite powerset computed in the previous iteration step.
     It <EM>must</EM> definitely entail \p *this;
 
-    \param wf
+    \param widen_fun
     The widening function to be used on disjuncts.
     It is obtained from the corresponding widening method by using
     the helper function widen_fun_ref. Legal values are, e.g.,
@@ -1104,13 +1104,13 @@ public:
     \warning
     In order to obtain a proper widening operator, the template parameter
     \p Cert should be a finite convergence certificate for the base-level
-    widening function \p wf; otherwise, an extrapolation operator is
+    widening function \p widen_fun; otherwise, an extrapolation operator is
     obtained.
     For a description of the methods that should be provided
     by \p Cert, see BHRZ03_Certificate or H79_Certificate.
   */
   template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening wf);
+  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening widen_fun);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -1276,10 +1276,10 @@ private:
 
   /*! \brief
     Assigns to \p *this the result of applying the BGP99 heuristics
-    to \p *this and \p y, using the widening function \p wf.
+    to \p *this and \p y, using the widening function \p widen_fun.
   */
   template <typename Widening>
-  void BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf);
+  void BGP99_heuristics_assign(const Pointset_Powerset& y, Widening widen_fun);
 
   //! Records in \p cert_ms the certificates for this set of disjuncts.
   template <typename Cert>
@@ -1287,7 +1287,7 @@ private:
 			             typename Cert::Compare>& cert_ms) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if the current set of dijsuncts
+    Returns <CODE>true</CODE> if and only if the current set of disjuncts
     is stabilizing with respect to the multiset of certificates \p y_cert_ms.
   */
   template <typename Cert>
@@ -1354,7 +1354,7 @@ check_containment(const NNC_Polyhedron& ph,
   <CODE>std::pair\<PSET, Pointset_Powerset\<Grid\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
-  - If there is a finite partition of \p q wrt \p p
+  - If there is a finite partition of \p q with respect to \p p
     the Boolean <CODE>finite_partition</CODE> is set to true and
     <CODE>r.second</CODE> has the property that all its elements are
     pairwise disjoint and disjoint from \p p and the set-theoretical

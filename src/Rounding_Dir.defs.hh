@@ -62,7 +62,7 @@ enum Rounding_Dir {
 
   /*! \hideinitializer
     The client code is willing to pay an extra price to know the exact
-    relation beetwen the exact result and the computed one.
+    relation between the exact result and the computed one.
    */
   ROUND_STRICT_RELATION = 8,
 

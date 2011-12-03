@@ -572,7 +572,7 @@ idiv_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   PPL_ASSERT(r1 == V_EQ);
   if (r == V_EQ || to != temp)
     return r1;
-  // FIXME: Prove that it's impossibile to return a strict relation
+  // FIXME: Prove that it is impossible to return a strict relation
   return (dir == ROUND_UP) ? V_LE : V_GE;
 }
 
@@ -840,14 +840,15 @@ assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename T>
 inline Result
 assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
-  const mpz_class& num = from.get_num();
-  const mpz_class& den = from.get_den();
-  if (den == 1)
-    return assign_float_mpz<To_Policy, From_Policy>(to, num, dir);
-  mpz_srcptr num_z = num.get_mpz_t();
-  mpz_srcptr den_z = den.get_mpz_t();
-  int sign = sgn(num);
-  signed long exponent = mpz_sizeinbase(num_z, 2) - mpz_sizeinbase(den_z, 2);
+  const mpz_class& numer = from.get_num();
+  const mpz_class& denom = from.get_den();
+  if (denom == 1)
+    return assign_float_mpz<To_Policy, From_Policy>(to, numer, dir);
+  mpz_srcptr numer_z = numer.get_mpz_t();
+  mpz_srcptr denom_z = denom.get_mpz_t();
+  int sign = sgn(numer);
+  signed long exponent
+    = mpz_sizeinbase(numer_z, 2) - mpz_sizeinbase(denom_z, 2);
   if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
   inexact:
@@ -870,16 +871,16 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_init(mantissa);
   signed long shift = needed_bits - exponent;
   if (shift > 0) {
-    mpz_mul_2exp(mantissa, num_z, shift);
-    num_z = mantissa;
+    mpz_mul_2exp(mantissa, numer_z, shift);
+    numer_z = mantissa;
   }
   else if (shift < 0) {
-    mpz_mul_2exp(mantissa, den_z, -shift);
-    den_z = mantissa;
+    mpz_mul_2exp(mantissa, denom_z, -shift);
+    denom_z = mantissa;
   }
   mpz_t r;
   mpz_init(r);
-  mpz_tdiv_qr(mantissa, r, num_z, den_z);
+  mpz_tdiv_qr(mantissa, r, numer_z, denom_z);
   size_t bits = mpz_sizeinbase(mantissa, 2);
   bool inexact = (mpz_sgn(r) != 0);
   mpz_clear(r);

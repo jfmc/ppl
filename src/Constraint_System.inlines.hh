@@ -158,8 +158,8 @@ Constraint_System_const_iterator::operator!=(const Constraint_System_const_itera
 inline
 Constraint_System_const_iterator::
 Constraint_System_const_iterator(const Linear_System<Constraint>::const_iterator& iter,
-	       const Constraint_System& csys)
-  : i(iter), csp(&csys.sys) {
+	       const Constraint_System& cs)
+  : i(iter), csp(&cs.sys) {
 }
 
 inline Constraint_System_const_iterator

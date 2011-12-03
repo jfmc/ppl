@@ -114,7 +114,7 @@ const FP_Interval_Type& compute_absolute_error(
 
   // We assume that f_base is a power of 2.
   analyzer_format omega;
-  int power = ld2(f_base) * (1 - f_exponent_bias - f_mantissa_bits);
+  int power = msb_position(f_base) * (1 - f_exponent_bias - f_mantissa_bits);
   omega = std::max(static_cast<analyzer_format>(ldexp(1.0, power)),
                    std::numeric_limits<analyzer_format>::denorm_min());
 
@@ -142,7 +142,7 @@ void discard_occurrences(std::map<dimension_type,
   }
 }
 
-/* FIXME: improve efficiency by adding the list of potentially conficting
+/* FIXME: improve efficiency by adding the list of potentially conflicting
    variables as an argument. */
 template <typename FP_Interval_Type>
 void upper_bound_assign(std::map<dimension_type,

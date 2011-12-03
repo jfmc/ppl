@@ -117,16 +117,16 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
     ++xi;
     if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
       // Hurry up!
-      PSET xph = xi->pointset();
+      PSET x_ph = xi->pointset();
       for (++xi; xi != x_end; ++xi)
-	xph.upper_bound_assign(xi->pointset());
+	x_ph.upper_bound_assign(xi->pointset());
       const_iterator yi = y_begin;
-      PSET yph = yi->pointset();
+      PSET y_ph = yi->pointset();
       for (++yi; yi != y_end; ++yi)
-	yph.upper_bound_assign(yi->pointset());
-      xph.concatenate_assign(yph);
+	y_ph.upper_bound_assign(yi->pointset());
+      x_ph.concatenate_assign(y_ph);
       swap(x, new_x);
-      x.add_disjunct(xph);
+      x.add_disjunct(x_ph);
       PPL_ASSERT_HEAVY(x.OK());
       return;
     }
@@ -612,10 +612,10 @@ bool
 Pointset_Powerset<PSET>::is_disjoint_from(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
-         xs_end = x.sequence.end(); si != xs_end; ++si) {
+         x_s_end = x.sequence.end(); si != x_s_end; ++si) {
     const PSET& pi = si->pointset();
     for (Sequence_const_iterator sj = y.sequence.begin(),
-           ys_end = y.sequence.end(); sj != ys_end; ++sj) {
+           y_s_end = y.sequence.end(); sj != y_s_end; ++sj) {
       const PSET& pj = sj->pointset();
       if (!pi.is_disjoint_from(pj))
         return false;
@@ -737,12 +737,13 @@ bool
 Pointset_Powerset<PSET>::contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = y.sequence.begin(),
-         ys_end = y.sequence.end(); si != ys_end; ++si) {
+         y_s_end = y.sequence.end(); si != y_s_end; ++si) {
     const PSET& pi = si->pointset();
     bool pi_is_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
-           xs_end = x.sequence.end();
-         (sj != xs_end && !pi_is_contained); ++sj) {
+           x_s_end = x.sequence.end();
+         (sj != x_s_end && !pi_is_contained);
+         ++sj) {
       const PSET& pj = sj->pointset();
       if (pj.contains(pi))
         pi_is_contained = true;
@@ -762,12 +763,12 @@ Pointset_Powerset<PSET>::strictly_contains(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
   for (Sequence_const_iterator si = y.sequence.begin(),
-         ys_end = y.sequence.end(); si != ys_end; ++si) {
+         y_s_end = y.sequence.end(); si != y_s_end; ++si) {
     const PSET& pi = si->pointset();
     bool pi_is_strictly_contained = false;
     for (Sequence_const_iterator sj = x.sequence.begin(),
-           xs_end = x.sequence.end();
-         (sj != xs_end && !pi_is_strictly_contained); ++sj) {
+           x_s_end = x.sequence.end();
+         (sj != x_s_end && !pi_is_strictly_contained); ++sj) {
       const PSET& pj = sj->pointset();
       if (pj.strictly_contains(pi))
         pi_is_strictly_contained = true;
@@ -920,45 +921,45 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 
   bool first = true;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(supt_d);
-  supt_n = 0;
-  supt_d = 1;
-  bool maxt = 0;
+  PPL_DIRTY_TEMP_COEFFICIENT(best_sup_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(best_sup_d);
+  best_sup_n = 0;
+  best_sup_d = 1;
+  bool best_max = 0;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(supi_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(supi_d);
-  supi_n = 0;
-  supi_d = 1;
-  bool maxi = 0;
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
+  iter_sup_n = 0;
+  iter_sup_d = 1;
+  bool iter_max = 0;
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().maximize(expr, supi_n, supi_d, maxi))
+    if (!si->pointset().maximize(expr, iter_sup_n, iter_sup_d, iter_max))
       return false;
     else
       if (first) {
         first = false;
-        supt_n = supi_n;
-        supt_d = supi_d;
-        maxt = maxi;
+        best_sup_n = iter_sup_n;
+        best_sup_d = iter_sup_d;
+        best_max = iter_max;
       }
       else {
-        tmp = (supt_n * supi_d) - (supi_n * supt_d);
+        tmp = (best_sup_n * iter_sup_d) - (iter_sup_n * best_sup_d);
         if (tmp < 0) {
-          supt_n = supi_n;
-          supt_d = supi_d;
-          maxt = maxi;
+          best_sup_n = iter_sup_n;
+          best_sup_d = iter_sup_d;
+          best_max = iter_max;
         }
         else if (tmp == 0)
-          maxt = maxt || maxi;
+          best_max = best_max || iter_max;
       }
   }
-  sup_n = supt_n;
-  sup_d = supt_d;
-  maximum = maxt;
+  sup_n = best_sup_n;
+  sup_d = best_sup_d;
+  maximum = best_max;
   return true;
 }
 
@@ -976,52 +977,53 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 
   bool first = true;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(supt_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(supt_d);
-  supt_n = 0;
-  supt_d = 1;
-  bool maxt = 0;
-  Generator gt = point();
+  PPL_DIRTY_TEMP_COEFFICIENT(best_sup_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(best_sup_d);
+  best_sup_n = 0;
+  best_sup_d = 1;
+  bool best_max = 0;
+  Generator best_g = point();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(supi_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(supi_d);
-  supi_n = 0;
-  supi_d = 1;
-  bool maxi = 0;
-  Generator gi = point();
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
+  iter_sup_n = 0;
+  iter_sup_d = 1;
+  bool iter_max = 0;
+  Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().maximize(expr, supi_n, supi_d, maxi, gi))
+    if (!si->pointset().maximize(expr,
+                                 iter_sup_n, iter_sup_d, iter_max, iter_g))
       return false;
     else
       if (first) {
         first = false;
-        supt_n = supi_n;
-        supt_d = supi_d;
-        maxt = maxi;
-        gt = gi;
+        best_sup_n = iter_sup_n;
+        best_sup_d = iter_sup_d;
+        best_max = iter_max;
+        best_g = iter_g;
       }
       else {
-        tmp = (supt_n * supi_d) - (supi_n * supt_d);
+        tmp = (best_sup_n * iter_sup_d) - (iter_sup_n * best_sup_d);
         if (tmp < 0) {
-          supt_n = supi_n;
-          supt_d = supi_d;
-          maxt = maxi;
-          gt = gi;
+          best_sup_n = iter_sup_n;
+          best_sup_d = iter_sup_d;
+          best_max = iter_max;
+          best_g = iter_g;
         }
         else if (tmp == 0) {
-          maxt = maxt || maxi;
-          gt = gi;
+          best_max = best_max || iter_max;
+          best_g = iter_g;
         }
       }
   }
-  sup_n = supt_n;
-  sup_d = supt_d;
-  maximum = maxt;
-  g = gt;
+  sup_n = best_sup_n;
+  sup_d = best_sup_d;
+  maximum = best_max;
+  g = best_g;
   return true;
 }
 
@@ -1038,45 +1040,45 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
 
   bool first = true;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(inft_d);
-  inft_n = 0;
-  inft_d = 1;
-  bool mint = 0;
+  PPL_DIRTY_TEMP_COEFFICIENT(best_inf_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(best_inf_d);
+  best_inf_n = 0;
+  best_inf_d = 1;
+  bool best_min = 0;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(infi_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(infi_d);
-  infi_n = 0;
-  infi_d = 1;
-  bool mini = 0;
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
+  iter_inf_n = 0;
+  iter_inf_d = 1;
+  bool iter_min = 0;
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().minimize(expr, infi_n, infi_d, mini))
+    if (!si->pointset().minimize(expr, iter_inf_n, iter_inf_d, iter_min))
       return false;
     else
       if (first) {
         first = false;
-        inft_n = infi_n;
-        inft_d = infi_d;
-        mint = mini;
+        best_inf_n = iter_inf_n;
+        best_inf_d = iter_inf_d;
+        best_min = iter_min;
       }
       else {
-        tmp = (inft_n * infi_d) - (infi_n * inft_d);
+        tmp = (best_inf_n * iter_inf_d) - (iter_inf_n * best_inf_d);
         if (tmp > 0) {
-          inft_n = infi_n;
-          inft_d = infi_d;
-          mint = mini;
+          best_inf_n = iter_inf_n;
+          best_inf_d = iter_inf_d;
+          best_min = iter_min;
         }
         else if (tmp == 0)
-          mint = mint || mini;
+          best_min = best_min || iter_min;
       }
   }
-  inf_n = inft_n;
-  inf_d = inft_d;
-  minimum = mint;
+  inf_n = best_inf_n;
+  inf_d = best_inf_d;
+  minimum = best_min;
   return true;
 }
 
@@ -1094,52 +1096,53 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
 
   bool first = true;
 
-  PPL_DIRTY_TEMP_COEFFICIENT(inft_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(inft_d);
-  inft_n = 0;
-  inft_d = 1;
-  bool mint = 0;
-  Generator gt = point();
+  PPL_DIRTY_TEMP_COEFFICIENT(best_inf_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(best_inf_d);
+  best_inf_n = 0;
+  best_inf_d = 1;
+  bool best_min = 0;
+  Generator best_g = point();
 
-  PPL_DIRTY_TEMP_COEFFICIENT(infi_n);
-  PPL_DIRTY_TEMP_COEFFICIENT(infi_d);
-  infi_n = 0;
-  infi_d = 1;
-  bool mini = 0;
-  Generator gi = point();
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
+  PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
+  iter_inf_n = 0;
+  iter_inf_d = 1;
+  bool iter_min = 0;
+  Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().minimize(expr, infi_n, infi_d, mini, gi))
+    if (!si->pointset().minimize(expr,
+                                 iter_inf_n, iter_inf_d, iter_min, iter_g))
       return false;
     else
       if (first) {
         first = false;
-        inft_n = infi_n;
-        inft_d = infi_d;
-        mint = mini;
-        gt = gi;
+        best_inf_n = iter_inf_n;
+        best_inf_d = iter_inf_d;
+        best_min = iter_min;
+        best_g = iter_g;
       }
       else {
-        tmp = (inft_n * infi_d) - (infi_n * inft_d);
+        tmp = (best_inf_n * iter_inf_d) - (iter_inf_n * best_inf_d);
         if (tmp > 0) {
-          inft_n = infi_n;
-          inft_d = infi_d;
-          mint = mini;
-          gt = gi;
+          best_inf_n = iter_inf_n;
+          best_inf_d = iter_inf_d;
+          best_min = iter_min;
+          best_g = iter_g;
         }
         else if (tmp == 0) {
-          mint = mint || mini;
-          gt = gi;
+          best_min = best_min || iter_min;
+          best_g = iter_g;
         }
       }
   }
-  inf_n = inft_n;
-  inf_d = inft_d;
-  minimum = mint;
-  g = gt;
+  inf_n = best_inf_n;
+  inf_d = best_inf_d;
+  minimum = best_min;
+  g = best_g;
   return true;
 }
 
@@ -1160,13 +1163,13 @@ Pointset_Powerset<PSET>::wrap_assign(const Variables_Set& vars,
                                      Bounded_Integer_Type_Width w,
                                      Bounded_Integer_Type_Representation r,
                                      Bounded_Integer_Type_Overflow o,
-                                     const Constraint_System* pcs,
+                                     const Constraint_System* cs_p,
                                      unsigned complexity_threshold,
                                      bool wrap_individually) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->pointset().wrap_assign(vars, w, r, o, pcs,
+    si->pointset().wrap_assign(vars, w, r, o, cs_p,
                                complexity_threshold, wrap_individually);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
@@ -1209,15 +1212,16 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
     next:
       ;
     }
-    iterator nx_begin = new_x.begin();
-    iterator nx_end = new_x.end();
+    iterator new_x_begin = new_x.begin();
+    iterator new_x_end = new_x.end();
     unsigned xi_index = 0;
     for (const_iterator xi = x.begin(),
 	   x_end = x.end(); xi != x_end; ++xi, ++xi_index)
       if (!marked[xi_index])
-	nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
-								    nx_begin,
-								    nx_end);
+	new_x_begin
+          = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
+                                                             new_x_begin,
+                                                             new_x_end);
     using std::swap;
     swap(x.sequence, new_x.sequence);
     n -= deleted;
@@ -1229,7 +1233,7 @@ template <typename PSET>
 template <typename Widening>
 void
 Pointset_Powerset<PSET>::
-BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
+BGP99_heuristics_assign(const Pointset_Powerset& y, Widening widen_fun) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
 
@@ -1255,19 +1259,20 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf) {
       const PSET& pj = j->pointset();
       if (pi.contains(pj)) {
 	PSET pi_copy = pi;
-	wf(pi_copy, pj);
+	widen_fun(pi_copy, pj);
 	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;
       }
     }
-  iterator nx_begin = new_x.begin();
-  iterator nx_end = new_x.end();
+  iterator new_x_begin = new_x.begin();
+  iterator new_x_end = new_x.end();
   i_index = 0;
   for (const_iterator i = x_begin; i != x_end; ++i, ++i_index)
     if (!marked[i_index])
-      nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
-								  nx_begin,
-								  nx_end);
+      new_x_begin
+        = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
+                                                           new_x_begin,
+                                                           new_x_end);
   using std::swap;
   swap(x.sequence, new_x.sequence);
   PPL_ASSERT_HEAVY(x.OK());
@@ -1279,7 +1284,7 @@ template <typename Widening>
 void
 Pointset_Powerset<PSET>::
 BGP99_extrapolation_assign(const Pointset_Powerset& y,
-			   Widening wf,
+			   Widening widen_fun,
 			   unsigned max_disjuncts) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
@@ -1296,7 +1301,7 @@ BGP99_extrapolation_assign(const Pointset_Powerset& y,
   x.pairwise_reduce();
   if (max_disjuncts != 0)
     x.collapse(max_disjuncts);
-  x.BGP99_heuristics_assign(y, wf);
+  x.BGP99_heuristics_assign(y, widen_fun);
 }
 
 template <typename PSET>
@@ -1365,7 +1370,7 @@ template <typename PSET>
 template <typename Cert, typename Widening>
 void
 Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
-                                               Widening wf) {
+                                               Widening widen_fun) {
   // `x' is the current iteration value.
   Pointset_Powerset& x = *this;
 
@@ -1422,12 +1427,12 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
 
   // Second widening technique: try the BGP99 powerset heuristics.
   Pointset_Powerset<PSET> bgp99_heuristics = x;
-  bgp99_heuristics.BGP99_heuristics_assign(y, wf);
+  bgp99_heuristics.BGP99_heuristics_assign(y, widen_fun);
 
   // Compute the poly-hull of `bgp99_heuristics'.
   PSET bgp99_heuristics_hull(x.space_dim, EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
-	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
+	 b_h_end = bgp99_heuristics.end(); i != b_h_end; ++i)
     bgp99_heuristics_hull.upper_bound_assign(i->pointset());
 
   // Check for stabilization and, if successful,
@@ -1465,7 +1470,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
     // Compute (y_hull \widen bgp99_heuristics_hull).
     PSET ph = bgp99_heuristics_hull;
-    wf(ph, y_hull);
+    widen_fun(ph, y_hull);
     // Compute the difference between `ph' and `bgp99_heuristics_hull'.
     ph.difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);
@@ -1549,25 +1554,25 @@ namespace Implementation {
 namespace Pointset_Powersets {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Partitions polyhedron \p qq according to constraint \p c.
+//! Partitions polyhedron \p pset according to constraint \p c.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p qq and constraint \p c is stored
-  in \p qq, whereas the intersection of \p qq with the negation of \p c
+  On exit, the intersection of \p pset and constraint \p c is stored
+  in \p pset, whereas the intersection of \p pset with the negation of \p c
   is added as a new disjunct of the powerset \p r.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PSET>
 void
 linear_partition_aux(const Constraint& c,
-		     PSET& qq,
+		     PSET& pset,
 		     Pointset_Powerset<NNC_Polyhedron>& r) {
   Linear_Expression le(c);
   const Constraint& neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
-  NNC_Polyhedron qqq(qq);
-  qqq.add_constraint(neg_c);
-  if (!qqq.is_empty())
-    r.add_disjunct(qqq);
-  qq.add_constraint(c);
+  NNC_Polyhedron nnc_ph_pset(pset);
+  nnc_ph_pset.add_constraint(neg_c);
+  if (!nnc_ph_pset.is_empty())
+    r.add_disjunct(nnc_ph_pset);
+  pset.add_constraint(c);
 }
 
 } // namespace Pointset_Powersets
@@ -1582,20 +1587,22 @@ linear_partition(const PSET& p, const PSET& q) {
   using Implementation::Pointset_Powersets::linear_partition_aux;
 
   Pointset_Powerset<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
-  PSET qq = q;
-  const Constraint_System& pcs = p.constraints();
-  for (Constraint_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i) {
+  PSET pset = q;
+  const Constraint_System& p_constraints = p.constraints();
+  for (Constraint_System::const_iterator i = p_constraints.begin(),
+	 p_constraints_end = p_constraints.end();
+       i != p_constraints_end;
+       ++i) {
     const Constraint& c = *i;
     if (c.is_equality()) {
       Linear_Expression le(c);
-      linear_partition_aux(le <= 0, qq, r);
-      linear_partition_aux(le >= 0, qq, r);
+      linear_partition_aux(le <= 0, pset, r);
+      linear_partition_aux(le >= 0, pset, r);
     }
     else
-      linear_partition_aux(c, qq, r);
+      linear_partition_aux(c, pset, r);
   }
-  return std::make_pair(qq, r);
+  return std::make_pair(pset, r);
 }
 
 } // namespace Parma_Polyhedra_Library

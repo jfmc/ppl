@@ -132,10 +132,10 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
   iterator itr_j = tree.bisect(j);
   if (itr_i.index() == i)
     if (itr_j.index() == j)
-      // Both elements are in the tree
+      // Both elements are in the tree.
       swap(*itr_i, *itr_j);
     else {
-      // i is in the tree, j isn't
+      // i is in the tree, j is not.
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
       swap(*itr_i, tmp);
       tree.erase(itr_i);
@@ -145,7 +145,7 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
     }
   else
     if (itr_j.index() == j) {
-      // j is in the tree, i isn't
+      // j is in the tree, i is not.
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
       swap(*itr_j, tmp);
       // Now both iterators have been invalidated.
@@ -153,7 +153,7 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
       itr_i = tree.insert(i);
       swap(*itr_i, tmp);
     } else {
-      // Do nothing, elements are both unstored zeroes.
+      // Do nothing, elements are both non-stored zeroes.
     }
 }
 

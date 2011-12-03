@@ -1290,14 +1290,14 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (g.is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      Bit_Row sat_gi(sat[i], sat_all_but_strict_ineq);
+      Bit_Row sat_gs_i(sat[i], sat_all_but_strict_ineq);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
       for (dimension_type j = n_lines; j < gs_rows; ++j) {
         Generator& g2 = rows[j];
-	if (i != j && g2.is_point() && subset_or_equal(sat[j], sat_gi)) {
+	if (i != j && g2.is_point() && subset_or_equal(sat[j], sat_gs_i)) {
 	  // Point `g' is eps-redundant:
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' consistent.
@@ -1560,52 +1560,53 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   const dimension_type y_gs_num_rows = y_gs.num_rows();
 
   // Compute generators of `x' that are non-redundant in `y' ...
-  Bit_Row x_gs_nonred_in_y;
-  Bit_Row x_points_nonred_in_y;
+  Bit_Row x_gs_non_redundant_in_y;
+  Bit_Row x_points_non_redundant_in_y;
   Bit_Row x_closure_points;
-  dimension_type num_x_gs_nonred_in_y = 0;
+  dimension_type num_x_gs_non_redundant_in_y = 0;
   for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
     const Generator& x_gs_i = x_gs[i];
     if (x_gs_i.is_closure_point())
       x_closure_points.set(i);
     if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes()))
       continue;
-    x_gs_nonred_in_y.set(i);
-    ++num_x_gs_nonred_in_y;
+    x_gs_non_redundant_in_y.set(i);
+    ++num_x_gs_non_redundant_in_y;
     if (x_gs_i.is_point())
-      x_points_nonred_in_y.set(i);
+      x_points_non_redundant_in_y.set(i);
   }
 
   // If `x' is included into `y', the upper bound `y' is exact.
-  if (num_x_gs_nonred_in_y == 0) {
+  if (num_x_gs_non_redundant_in_y == 0) {
     *this = y;
     return true;
   }
 
   // ... and vice versa, generators of `y' that are non-redundant in `x'.
-  Bit_Row y_gs_nonred_in_x;
-  Bit_Row y_points_nonred_in_x;
+  Bit_Row y_gs_non_redundant_in_x;
+  Bit_Row y_points_non_redundant_in_x;
   Bit_Row y_closure_points;
-  dimension_type num_y_gs_nonred_in_x = 0;
+  dimension_type num_y_gs_non_redundant_in_x = 0;
   for (dimension_type i = y_gs_num_rows; i-- > 0; ) {
     const Generator& y_gs_i = y_gs[i];
     if (y_gs_i.is_closure_point())
       y_closure_points.set(i);
     if (x.relation_with(y_gs_i).implies(Poly_Gen_Relation::subsumes()))
       continue;
-    y_gs_nonred_in_x.set(i);
-    ++num_y_gs_nonred_in_x;
+    y_gs_non_redundant_in_x.set(i);
+    ++num_y_gs_non_redundant_in_x;
     if (y_gs_i.is_point())
-      y_points_nonred_in_x.set(i);
+      y_points_non_redundant_in_x.set(i);
   }
 
   // If `y' is included into `x', the upper bound `x' is exact.
-  if (num_y_gs_nonred_in_x == 0)
+  if (num_y_gs_non_redundant_in_x == 0)
     return true;
 
-  Bit_Row x_nonpoints_nonred_in_y;
-  x_nonpoints_nonred_in_y.difference_assign(x_gs_nonred_in_y,
-                                            x_points_nonred_in_y);
+  Bit_Row x_non_points_non_redundant_in_y;
+  x_non_points_non_redundant_in_y
+    .difference_assign(x_gs_non_redundant_in_y,
+                       x_points_non_redundant_in_y);
 
   const Constraint_System& x_cs = x.con_sys;
   const Constraint_System& y_cs = y.con_sys;
@@ -1614,9 +1615,10 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Filter away the points of `x_gs' that would be redundant
   // in the topological closure of `y'.
-  Bit_Row x_points_nonred_in_y_closure;
-  for (dimension_type i = x_points_nonred_in_y.first();
-       i != ULONG_MAX; i = x_points_nonred_in_y.next(i)) {
+  Bit_Row x_points_non_redundant_in_y_closure;
+  for (dimension_type i = x_points_non_redundant_in_y.first();
+       i != ULONG_MAX;
+       i = x_points_non_redundant_in_y.next(i)) {
     const Generator& x_p = x_gs[i];
     PPL_ASSERT(x_p.is_point());
     // NOTE: we cannot use Constraint_System::relation_with()
@@ -1625,7 +1627,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       const Constraint& y_c = y_cs[j];
       const int sp_sign = Scalar_Products::reduced_sign(y_c, x_p);
       if (sp_sign < 0 || (y_c.is_equality() && sp_sign > 0)) {
-        x_points_nonred_in_y_closure.set(i);
+        x_points_non_redundant_in_y_closure.set(i);
         break;
       }
     }
@@ -1651,7 +1653,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       continue;
     saturators.difference_assign(all_ones, x_sat[i]);
     // Check condition 1.
-    tmp_set.intersection_assign(x_nonpoints_nonred_in_y, saturators);
+    tmp_set.intersection_assign(x_non_points_non_redundant_in_y, saturators);
     if (!tmp_set.empty())
       return false;
     if (x_c.is_strict_inequality()) {
@@ -1662,7 +1664,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     }
     else {
       // Check condition 2.
-      tmp_set.intersection_assign(x_points_nonred_in_y_closure, saturators);
+      tmp_set.intersection_assign(x_points_non_redundant_in_y_closure,
+                                  saturators);
       if (!tmp_set.empty())
         return false;
     }
@@ -1671,15 +1674,17 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Now exchange the roles of `x' and `y'
   // (the statement of the NNC theorem in BHZ09 is symmetric).
 
-  Bit_Row y_nonpoints_nonred_in_x;
-  y_nonpoints_nonred_in_x.difference_assign(y_gs_nonred_in_x,
-                                            y_points_nonred_in_x);
+  Bit_Row y_non_points_non_redundant_in_x;
+  y_non_points_non_redundant_in_x
+    .difference_assign(y_gs_non_redundant_in_x,
+                       y_points_non_redundant_in_x);
 
   // Filter away the points of `y_gs' that would be redundant
   // in the topological closure of `x'.
-  Bit_Row y_points_nonred_in_x_closure;
-  for (dimension_type i = y_points_nonred_in_x.first();
-       i != ULONG_MAX; i = y_points_nonred_in_x.next(i)) {
+  Bit_Row y_points_non_redundant_in_x_closure;
+  for (dimension_type i = y_points_non_redundant_in_x.first();
+       i != ULONG_MAX;
+       i = y_points_non_redundant_in_x.next(i)) {
     const Generator& y_p = y_gs[i];
     PPL_ASSERT(y_p.is_point());
     // NOTE: we cannot use Constraint_System::relation_with()
@@ -1688,7 +1693,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       const Constraint& x_c = x_cs[j];
       const int sp_sign = Scalar_Products::reduced_sign(x_c, y_p);
       if (sp_sign < 0 || (x_c.is_equality() && sp_sign > 0)) {
-        y_points_nonred_in_x_closure.set(i);
+        y_points_non_redundant_in_x_closure.set(i);
         break;
       }
     }
@@ -1710,7 +1715,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
       continue;
     saturators.difference_assign(all_ones, y_sat[i]);
     // Check condition 1.
-    tmp_set.intersection_assign(y_nonpoints_nonred_in_x, saturators);
+    tmp_set.intersection_assign(y_non_points_non_redundant_in_x, saturators);
     if (!tmp_set.empty())
       return false;
     if (y_c.is_strict_inequality()) {
@@ -1721,7 +1726,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     }
     else {
       // Check condition 2.
-      tmp_set.intersection_assign(y_points_nonred_in_x_closure, saturators);
+      tmp_set.intersection_assign(y_points_non_redundant_in_x_closure,
+                                  saturators);
       if (!tmp_set.empty())
         return false;
     }
@@ -1733,7 +1739,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     // No test for condition 3 is needed.
     // The hull is exact: compute it.
     for (dimension_type j = y_gs_num_rows; j-- > 0; )
-      if (y_gs_nonred_in_x[j])
+      if (y_gs_non_redundant_in_x[j])
         add_generator(y_gs[j]);
     return true;
   }
@@ -1741,7 +1747,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   // We have anyway to compute the upper bound and its constraints too.
   Polyhedron ub(x);
   for (dimension_type j = y_gs_num_rows; j-- > 0; )
-    if (y_gs_nonred_in_x[j])
+    if (y_gs_non_redundant_in_x[j])
       ub.add_generator(y_gs[j]);
   (void) ub.minimize();
   PPL_ASSERT(!ub.is_empty());
@@ -1906,7 +1912,8 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Implementation based on Algorithm 8.1 (page 15) in [BemporadFT00TR],
   // generalized so as to also allow for unbounded polyhedra.
   // The extension to unbounded polyhedra is obtained by mimicking
-  // what done in Algorithm 8.2 (page 19) wrt Algorithm 6.2 (page 13).
+  // what done in Algorithm 8.2 (page 19) with respect to
+  // Algorithm 6.2 (page 13).
   // We also apply a couple of improvements (see steps 2.1, 3.1, 6.1, 7.1)
   // so as to quickly handle special cases and avoid the splitting
   // of equalities/lines into pairs of inequalities/rays.
@@ -1961,7 +1968,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (y.relation_with(x_cs_i).implies(Poly_Con_Relation::is_included()))
       x_cs_red_in_y[i] = true;
     else if (x_cs_i.is_equality())
-      // Step 3.1: `x' has an equality not satified by `y':
+      // Step 3.1: `x' has an equality not satisfied by `y':
       // union is not convex (recall that `y' does not contain `x').
       // NOTE: this would be false for NNC polyhedra.
       // Example: x = { A == 0 }, y = { 0 < A <= 1 }.
@@ -1974,7 +1981,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (x.relation_with(y_cs_i).implies(Poly_Con_Relation::is_included()))
       y_cs_red_in_x[i] = true;
     else if (y_cs_i.is_equality())
-      // Step 3.1: `y' has an equality not satified by `x':
+      // Step 3.1: `y' has an equality not satisfied by `x':
       // union is not convex (see explanation above).
       return false;
   }
@@ -2061,7 +2068,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   }
 
   // Here we know that the union of x and y is convex.
-  // TODO: exploit knowledge on the cardinality of non-redudnant
+  // TODO: exploit knowledge on the cardinality of non-redundant
   // constraints/generators to improve the convex-hull computation.
   // Using generators allows for exploiting incrementality.
   for (dimension_type j = 0; j < y_gs_num_rows; ++j) {
@@ -2073,10 +2080,10 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
 }
 
 void
-PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
+PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
 					      Complexity_Class complexity) {
   // There is nothing to do for an empty set of variables.
-  if (pvars != 0 && pvars->empty())
+  if (vars_p != 0 && vars_p->empty())
     return;
 
   // Any empty polyhedron does not contain integer points.
@@ -2137,8 +2144,8 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* pvars,
     if (c.is_tautological())
       continue;
 
-    if (pvars != 0) {
-      if (!c.expression().all_zeroes(*pvars))
+    if (vars_p != 0) {
+      if (!c.expression().all_zeroes(*vars_p))
         goto next_constraint;
     }
 

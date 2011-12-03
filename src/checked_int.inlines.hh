@@ -1419,7 +1419,7 @@ umod_2exp_signed_int(Type& to, const Type x, unsigned int exp,
 
 template <typename Type>
 inline void
-isqrtrem(Type& q, Type& r, const Type from) {
+isqrt_rem(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
   Type t(1);
@@ -1437,7 +1437,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 sqrt_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   Type rem;
-  isqrtrem(to, rem, from);
+  isqrt_rem(to, rem, from);
   if (round_not_requested(dir))
     return V_GE;
   if (rem == 0)

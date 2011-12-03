@@ -1466,9 +1466,9 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param pcs
+    \param cs_p
     Possibly null pointer to a constraint system whose variables
-    are contained in \p vars.  If <CODE>*pcs</CODE> depends on
+    are contained in \p vars.  If <CODE>*cs_p</CODE> depends on
     variables not in \p vars, the behavior is undefined.
     When non-null, the pointed-to constraint system is assumed to
     represent the conditional or looping construct guard with respect
@@ -1476,7 +1476,7 @@ public:
     computation of upper bounds and due to non-distributivity of
     constraint refinement over upper bounds, passing a constraint
     system in this way can be more precise than refining the result of
-    the wrapping operation with the constraints in <CODE>*pcs</CODE>.
+    the wrapping operation with the constraints in <CODE>*cs_p</CODE>.
 
     \param complexity_threshold
     A precision parameter of the \ref Wrapping_Operator "wrapping operator":
@@ -1488,15 +1488,15 @@ public:
     precision).
 
     \exception std::invalid_argument
-    Thrown if <CODE>*pcs</CODE> is dimension-incompatible with
+    Thrown if <CODE>*cs_p</CODE> is dimension-incompatible with
     \p vars, or if \p *this is dimension-incompatible \p vars or with
-    <CODE>*pcs</CODE>.
+    <CODE>*cs_p</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
-                   const Constraint_System* pcs = 0,
+                   const Constraint_System* cs_p = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 
@@ -2202,7 +2202,7 @@ private:
     <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
     \p u played an active role in the computation of the upper bound for
     \p v, i.e., if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero. In particular:
+    <CODE>q == sc_expr[u]/sc_denom</CODE> is greater than zero. In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
       - if <CODE>0 \< q \< 1</CODE>, then
         <CODE>v - u \<= ub_v - (q*ub_u + (1-q)*lb_u)</CODE>.
@@ -2210,7 +2210,7 @@ private:
   void deduce_v_minus_u_bounds(dimension_type v,
                                dimension_type last_v,
                                const Linear_Expression& sc_expr,
-                               Coefficient_traits::const_reference sc_den,
+                               Coefficient_traits::const_reference sc_denom,
                                const N& ub_v);
 
   /* \brief
@@ -2287,7 +2287,7 @@ private:
     <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
     \p u played an active role in the computation of the lower bound for
     \p v, i.e., if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero.
+    <CODE>q == sc_expr[u]/sc_denom</CODE> is greater than zero.
     In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
       - if <CODE>0 \< q \< 1</CODE>, then
@@ -2296,7 +2296,7 @@ private:
   void deduce_u_minus_v_bounds(dimension_type v,
                                dimension_type last_v,
                                const Linear_Expression& sc_expr,
-                               Coefficient_traits::const_reference sc_den,
+                               Coefficient_traits::const_reference sc_denom,
                                const N& minus_lb_v);
 
   /*! \brief

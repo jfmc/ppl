@@ -162,26 +162,26 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   dimension_type z = z_begin;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
-    Variable vy(y);
-    Variable vz(z);
+    Variable v_y(y);
+    Variable v_z(z);
     ++y;
     ++z;
-    cs_out1.insert(vy >= 0);
-    cs_out2.insert(vz >= 0);
+    cs_out1.insert(v_y >= 0);
+    cs_out2.insert(v_z >= 0);
     const Constraint& c_i = *i;
     Coefficient_traits::const_reference b_i = c_i.inhomogeneous_term();
     if (b_i != 0) {
       // Note that b_i is to the left ot the relation sign, hence here
       // we have -= and not += just to avoid negating b_i.
-      sub_mul_assign(y_le, b_i, vy);
-      sub_mul_assign(z_le, b_i, vz);
+      sub_mul_assign(y_le, b_i, v_y);
+      sub_mul_assign(z_le, b_i, v_z);
     }
     for (Linear_Expression::const_iterator j = c_i.expression().begin(),
           j_end = c_i.expression().end(); j != j_end; ++j) {
       Coefficient_traits::const_reference a_i_j = *j;
       const Variable v = j.variable();
-      add_mul_assign(y_les[v.id()], a_i_j, vy);
-      add_mul_assign(z_les[v.id()], a_i_j, vz);
+      add_mul_assign(y_les[v.id()], a_i_j, v_y);
+      add_mul_assign(z_les[v.id()], a_i_j, v_z);
     }
   }
   z_le += Variable(z);

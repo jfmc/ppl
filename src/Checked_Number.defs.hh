@@ -861,7 +861,7 @@ template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 output(std::ostream& os,
        const T& x,
-       const Numeric_Format& fmt,
+       const Numeric_Format& format,
        Rounding_Dir dir);
 
 //! Output operator.
@@ -967,15 +967,15 @@ number	: NAN					INF	: 'inf'
 	| num DIV num					;
 	;
 						SIGN	: '-'
-num     : unum						| '+'
-        | SIGN unum					;
+num     : u_num						| '+'
+        | SIGN u_num					;
 
-unum	: unum1					EXP	: 'e'
-	| HEX unum1					| 'p'
-	| base BASE unum1				| '*^'
+u_num	: u_num1				EXP	: 'e'
+	| HEX u_num1					| 'p'
+	| base BASE u_num1				| '*^'
 	;                                               ;
 						POINT	: '.'
-unum1	: mantissa					;
+u_num1	: mantissa					;
 	| mantissa EXP exponent
 	;					DIV	: '/'
 							;

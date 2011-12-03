@@ -1154,7 +1154,7 @@ public:
 
     \note
     This operator is only available when the class template parameter
-    \c T is bound to an integer datatype.
+    \c T is bound to an integer data type.
 
     \note
     The integer upper bound of two rational OS is the smallest
@@ -1457,9 +1457,9 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param pcs
+    \param cs_p
     Possibly null pointer to a constraint system whose variables
-    are contained in \p vars.  If <CODE>*pcs</CODE> depends on
+    are contained in \p vars.  If <CODE>*cs_p</CODE> depends on
     variables not in \p vars, the behavior is undefined.
     When non-null, the pointed-to constraint system is assumed to
     represent the conditional or looping construct guard with respect
@@ -1467,7 +1467,7 @@ public:
     computation of upper bounds and due to non-distributivity of
     constraint refinement over upper bounds, passing a constraint
     system in this way can be more precise than refining the result of
-    the wrapping operation with the constraints in <CODE>*pcs</CODE>.
+    the wrapping operation with the constraints in <CODE>*cs_p</CODE>.
 
     \param complexity_threshold
     A precision parameter of the \ref Wrapping_Operator "wrapping operator":
@@ -1479,15 +1479,15 @@ public:
     precision).
 
     \exception std::invalid_argument
-    Thrown if <CODE>*pcs</CODE> is dimension-incompatible with
+    Thrown if <CODE>*cs_p</CODE> is dimension-incompatible with
     \p vars, or if \p *this is dimension-incompatible \p vars or with
-    <CODE>*pcs</CODE>.
+    <CODE>*cs_p</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
-                   const Constraint_System* pcs = 0,
+                   const Constraint_System* cs_p = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 
@@ -2011,11 +2011,11 @@ private:
                                 dimension_type j,
                                 const N& k);
 
-  //! Adds the constraint <CODE>matrix[i][j] <= num/den</CODE>.
+  //! Adds the constraint <CODE>matrix[i][j] <= numer/denom</CODE>.
   void add_octagonal_constraint(dimension_type i,
                                 dimension_type j,
-                                Coefficient_traits::const_reference num,
-                                Coefficient_traits::const_reference den);
+                                Coefficient_traits::const_reference numer,
+                                Coefficient_traits::const_reference denom);
 
   /*! \brief
     Adds to the Octagonal_Shape the constraint
@@ -2041,7 +2041,7 @@ private:
     and different from \p v_id), deduce constraints of the form
     <CODE>v - u \<= k</CODE> and <CODE>v + u \<= k</CODE>,
     starting from \p ub_v, which is an upper bound for \c v
-    computed according to \p sc_expr and \p sc_den.
+    computed according to \p sc_expr and \p sc_denom.
 
     Strong-closure will be able to deduce the constraints
     <CODE>v - u \<= ub_v - lb_u</CODE> and <CODE>v + u \<= ub_v + ub_u</CODE>.
@@ -2049,7 +2049,7 @@ private:
     computation of the upper bound for \c v.
 
     Namely, if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> of \c u in \p sc_expr
+    <CODE>q == sc_expr[u]/sc_denom</CODE> of \c u in \p sc_expr
     is greater than zero, we can improve the bound for <CODE>v - u</CODE>.
     In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
@@ -2065,7 +2065,7 @@ private:
   void deduce_v_pm_u_bounds(dimension_type v_id,
                             dimension_type last_id,
                             const Linear_Expression& sc_expr,
-                            Coefficient_traits::const_reference sc_den,
+                            Coefficient_traits::const_reference sc_denom,
                             const N& ub_v);
 
   //! An helper function for the computation of affine relations.
@@ -2074,7 +2074,7 @@ private:
     and different from \p v_id), deduce constraints of the form
     <CODE>-v + u \<= k</CODE> and <CODE>-v - u \<= k</CODE>,
     starting from \p minus_lb_v, which is the negation of a lower bound
-    for \c v computed according to \p sc_expr and \p sc_den.
+    for \c v computed according to \p sc_expr and \p sc_denom.
 
     Strong-closure will be able to deduce the constraints
     <CODE>-v - u \<= -lb_v - lb_u</CODE> and
@@ -2083,7 +2083,7 @@ private:
     computation of (the negation of) the lower bound for \c v.
 
     Namely, if the corresponding coefficient
-    <CODE>q == sc_expr[u]/sc_den</CODE> of \c u in \p sc_expr
+    <CODE>q == sc_expr[u]/sc_denom</CODE> of \c u in \p sc_expr
     is greater than zero, we can improve the bound for <CODE>-v + u</CODE>.
     In particular:
       - if <CODE>q \>= 1</CODE>, then <CODE>-v + u \<= -lb_v + lb_u</CODE>;
@@ -2099,7 +2099,7 @@ private:
   void deduce_minus_v_pm_u_bounds(dimension_type v,
                                   dimension_type last_v,
                                   const Linear_Expression& sc_expr,
-                                  Coefficient_traits::const_reference sc_den,
+                                  Coefficient_traits::const_reference sc_denom,
                                   const N& minus_lb_v);
 
   /*! \brief
@@ -2173,7 +2173,7 @@ private:
     This is \e not marked as a <code>const</code> method,
     as it may modify the rational-valued geometric shape by cutting away
     non-integral points. The method is only available if the template
-    parameter \c T is bound to an integer datatype.
+    parameter \c T is bound to an integer data type.
   */
   void tight_closure_assign();
 

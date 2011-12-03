@@ -37,42 +37,43 @@ void Weight_Profiler::output_stats() {
     std::cout << "never reached.";
   else {
     if (stat[VALID].samples > 0) {
-      double avg = stat[VALID].sum / stat[VALID].count;
-      double var = stat[VALID].ssum / stat[VALID].count - avg * avg;
+      double average
+        = stat[VALID].sum / stat[VALID].count;
+      double variance
+        = stat[VALID].squares_sum / stat[VALID].count - average * average;
       std::cout << " samples(" << stat[VALID].samples << ")"
 		<< " count(" << stat[VALID].count << ")"
 		<< " min( " << stat[VALID].min << ")"
 		<< " max( " << stat[VALID].max << ")"
-		<< " avg(" << avg << ")";
-      std::cout << " var( " << var << ")"
+		<< " average(" << average << ")";
+      std::cout << " variance( " << variance << ")"
 		<< " stddev( " << sqrt(var) << ")";
     }
     if (stat[DISCARDED].samples > 0) {
-      std::cout << " tmin( " << tmin << ")"
-		<< " tmax( " << tmax << ")";
-      double avg = stat[DISCARDED].sum / stat[DISCARDED].count;
+      std::cout << " min_threshold( " << min_threshold << ")"
+		<< " max_threshold( " << max_threshold << ")";
+      double average = stat[DISCARDED].sum / stat[DISCARDED].count;
       std::cout << " samples(" << stat[DISCARDED].samples << ")"
 		<< " count(" << stat[DISCARDED].count << ")"
 		<< " min( " << stat[DISCARDED].min << ")"
 		<< " max( " << stat[DISCARDED].max << ")"
-		<< " avg(" << avg << ")";
+		<< " average(" << average << ")";
     }
   }
   std::cout << std::endl;
 }
 
-double Weight_Profiler::tune_adj() {
+double Weight_Profiler::tune_adjustment() {
   begin();
-  adj = 0;
-  static Weight_Profiler adjtc(__FILE__, __LINE__, 0, 0, 0);
+  adjustment = 0;
+  static Weight_Profiler weight_profiler(__FILE__, __LINE__, 0, 0, 0);
   for (int i = 0; i < 1000; ++i)
-    adjtc.end(1);
-  //    return adjtc.stat[VALID].sum / adjtc.stat[VALID].count;
-  return adjtc.stat[VALID].min;
+    weight_profiler.end(1);
+  return weight_profiler.stat[VALID].min;
 }
 
 struct timespec Weight_Profiler::stamp;
-double Weight_Profiler::adj = Weight_Profiler::tune_adj();
+double Weight_Profiler::adjustment = Weight_Profiler::tune_adjustment();
 
 } // namespace Parma_Polyhedra_Library
 

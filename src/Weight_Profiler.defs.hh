@@ -29,18 +29,20 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 class Weight_Profiler {
+private:
   enum { DISCARDED = 0, VALID = 1 };
+
 public:
   Weight_Profiler(const char* file, int line,
 		  Weightwatch_Traits::Delta delta,
-		  double tmin = 0, double tmax = 0)
+		  double min_threshold = 0, double max_threshold = 0)
     : file(file), line(line), delta(delta),
-      tmin(tmin), tmax(tmax) {
+      min_threshold(min_threshold), max_threshold(max_threshold) {
     for (int i = 0; i < 2; ++i) {
       stat[i].samples = 0;
       stat[i].count = 0;
       stat[i].sum = 0;
-      stat[i].ssum = 0;
+      stat[i].squares_sum = 0;
       stat[i].min = 0;
       stat[i].max = 0;
     }
@@ -75,9 +77,10 @@ public:
       elapsed = (1000000000 - start.tv_nsec + stamp.tv_nsec )
 	+ (stamp.tv_sec - start.tv_sec - 1) * 1e9;
     }
-    elapsed -= adj;
+    elapsed -= adjustment;
     double elapsed1 = elapsed / factor;
-    int i = (elapsed1 < tmin || (tmax > 0 && elapsed1 > tmax))
+    int i = (elapsed1 < min_threshold
+             || (max_threshold > 0 && elapsed1 > max_threshold))
       ? DISCARDED
       : VALID;
     ++stat[i].samples;
@@ -88,30 +91,62 @@ public:
     else if (stat[i].max < elapsed1)
       stat[i].max = elapsed1;
     stat[i].sum += elapsed;
-    stat[i].ssum += elapsed * elapsed1;
+    stat[i].squares_sum += elapsed * elapsed1;
     stat[i].count += factor;
   }
 
-  static double tune_adj();
+  static double tune_adjustment();
 
  private:
+  //! File of this profiling point.
   const char *file;
-  int line;
-  Weightwatch_Traits::Delta delta;
-  double tmin;
-  double tmax;
 
+  //! Line of this profiling point.
+  int line;
+
+  //! Computational weight to be added at each iteration.
+  Weightwatch_Traits::Delta delta;
+
+  //! Times less than this value are discarded.
+  double min_threshold;
+
+  //! Times greater than this value are discarded.
+  double max_threshold;
+
+  //! Statistical data for samples (both DISCARDED and VALID)
   struct {
+    //! Number of collected samples.
     unsigned int samples;
+
+    /*! \brief
+      Number of collected iterations.
+
+      \note
+      Multiple iterations are possibly collected for each sample.
+    */
     unsigned int count;
+
+    //! Sum of the measured times.
     double sum;
-    double ssum;
+
+    //! Sum of the squares of the measured times (to compute variance).
+    double squares_sum;
+
+    //! Minimum measured time.
     double min;
+
+    //! Maximum measured time.
     double max;
   } stat[2];
 
+  //! Holds the time corresponding to last time begin() was called.
   static struct timespec stamp;
-  static double adj;
+
+  /*! \brief
+    Time quantity used to adjust the elapsed times so as not to take
+    into account the time spent by the measurement infrastructure.
+  */
+  static double adjustment;
 };
 
 }

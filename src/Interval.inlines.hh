@@ -423,7 +423,8 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
   }
   else if (nu) {
     ru = complement(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y));
-    rl = Boundary_NS::assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
+    rl = Boundary_NS::assign(LOWER, lower(), info(),
+                             LOWER, f_lower(x), f_info(x));
   }
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());

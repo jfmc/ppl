@@ -241,8 +241,8 @@ public:
   For each of the constraints, it checks the frequency and value for the same
   linear expression in the other component. If the constraint does not satisfy
   the implied congruence, the inhomogeneous term is adjusted so that it does.
-  Note that unless the congruences reduction adds equalitites
-  the shapes of the domains are unaltered.
+  Note that, unless the congruences reduction adds equalities, the
+  shapes of the domains are unaltered.
 
 */
 template <typename D1, typename D2>

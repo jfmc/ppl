@@ -191,7 +191,7 @@ const std::string sp_closed = "SPC";
 const std::string sp_reduced = "SPR";
 const char yes = '+';
 const char no = '-';
-const char sep = ' ';
+const char separator = ' ';
 
 /*! \relates Parma_Polyhedra_Library::BD_Shape::Status
   Reads a keyword and its associated on/off flag from \p s.
@@ -219,11 +219,11 @@ template <typename T>
 void
 BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   using namespace Implementation::BD_Shapes;
-  s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
-    << (test_empty() ? yes : no) << empty << sep
-    << sep
-    << (test_shortest_path_closed() ? yes : no) << sp_closed << sep
-    << (test_shortest_path_reduced() ? yes : no) << sp_reduced << sep;
+  s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << separator
+    << (test_empty() ? yes : no) << empty << separator
+    << separator
+    << (test_shortest_path_closed() ? yes : no) << sp_closed << separator
+    << (test_shortest_path_reduced() ? yes : no) << sp_reduced << separator;
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(T, BD_Shape<T>::Status)

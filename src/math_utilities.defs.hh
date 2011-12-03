@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 numer_denom(const T& from,
-	    Coefficient& num, Coefficient& den);
+	    Coefficient& numer, Coefficient& denom);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
@@ -78,17 +78,17 @@ is_additive_inverse(const T& x, const T& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
-  divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
+  divided by \f$g\f$ are assigned to \p n_x and \p n_y, respectively.
 
   \note
-  \p x and \p nx may be the same object and likewise for
-  \p y and \p ny.  Any other aliasing results in undefined behavior.
+  \p x and \p n_x may be the same object and likewise for
+  \p y and \p n_y.  Any other aliasing results in undefined behavior.
 */
 #endif
 void
 normalize2(Coefficient_traits::const_reference x,
 	   Coefficient_traits::const_reference y,
-	   Coefficient& nx, Coefficient& ny);
+	   Coefficient& n_x, Coefficient& n_y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x is in canonical form.

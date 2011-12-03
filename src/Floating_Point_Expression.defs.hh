@@ -57,7 +57,7 @@ class Floating_Point_Expression {
 
 public:
 
-  //! Alias for a linear form with template argument \p FP_Iterval_Type.
+  //! Alias for a linear form with template argument \p FP_Interval_Type.
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
   //! Alias for a map that associates a variable index to an interval.
@@ -107,7 +107,7 @@ public:
     \f$\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}\f$
     if the linearization succeeds.
 
-    All variables occuring in the floating point expression MUST have
+    All variables occurring in the floating point expression MUST have
     an associated interval in \p int_store.
     If this precondition is not met, calling the method causes an
     undefined behavior.

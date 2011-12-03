@@ -986,11 +986,11 @@ PPL::Grid::OK(bool check_not_empty) const {
 
 	// A reduced generator system must be the same as a temporary
 	// reduced copy.
-	Dimension_Kinds dk = dim_kinds;
+	Dimension_Kinds dim_kinds_copy = dim_kinds;
 	// `gs' is minimized and marked_empty returned false, so `gs'
 	// should contain rows.
 	PPL_ASSERT(!gs.has_no_rows());
-	simplify(gs, dk);
+	simplify(gs, dim_kinds_copy);
 	// gs contained rows before being reduced, so it should
 	// contain at least a single point afterward.
 	PPL_ASSERT(!gs.has_no_rows());
@@ -1311,7 +1311,7 @@ PPL::Grid::unconstrain(const Variable var) {
 
 void
 PPL::Grid::unconstrain(const Variables_Set& vars) {
-  // The cylindrification wrt no dimensions is a no-op.
+  // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a grid in a 0-dim space.
   if (vars.empty())
@@ -1698,8 +1698,8 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
     // Add the congruences in the "ruled out" order to `w'
     // until the result is the intersection.
     for (std::vector<Ruled_Out_Pair>::const_iterator
-	   j = ruled_out_vec.begin(), rov_end = ruled_out_vec.end();
-	 j != rov_end;
+	   j = ruled_out_vec.begin(), ruled_out_vec_end = ruled_out_vec.end();
+	 j != ruled_out_vec_end;
 	 ++j) {
       const Congruence& c = x_cs[j->congruence_index];
       result_cs.insert(c);
@@ -2647,15 +2647,15 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
                        Bounded_Integer_Type_Width w,
                        Bounded_Integer_Type_Representation r,
                        Bounded_Integer_Type_Overflow o,
-                       const Constraint_System* pcs,
+                       const Constraint_System* cs_p,
                        unsigned /* complexity_threshold */,
                        bool /* wrap_individually */) {
 
-  // Dimension-compatibility check of `*pcs', if any.
-  if (pcs != 0) {
-    const dimension_type pcs_space_dim  = pcs->space_dimension();
-    if (pcs->space_dimension() > space_dim)
-      throw_dimension_incompatible("wrap_assign(vs, ...)", pcs_space_dim);
+  // Dimension-compatibility check of `*cs_p', if any.
+  if (cs_p != 0) {
+    const dimension_type cs_p_space_dim  = cs_p->space_dimension();
+    if (cs_p->space_dimension() > space_dim)
+      throw_dimension_incompatible("wrap_assign(vs, ...)", cs_p_space_dim);
   }
 
   // Wrapping no variable is a no-op.

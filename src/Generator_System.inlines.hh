@@ -352,8 +352,8 @@ Generator_System_const_iterator::operator!=(const Generator_System_const_iterato
 inline
 Generator_System_const_iterator::
 Generator_System_const_iterator(const Linear_System<Generator>::const_iterator& iter,
-                                const Generator_System& gsys)
-  : i(iter), gsp(&gsys.sys) {
+                                const Generator_System& gs)
+  : i(iter), gsp(&gs.sys) {
 }
 
 inline bool

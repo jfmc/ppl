@@ -72,7 +72,7 @@ AC_ARG_WITH(gmp-build,
 gmp_library_options="$gmp_library_options $gmp_libs"
 
 ac_save_CXX="$CXX"
-CXX="libtool --mode=link $CXX"
+CXX="libtool --mode=link --tag=CXX $CXX"
 ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"

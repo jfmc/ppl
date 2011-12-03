@@ -639,8 +639,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   if (!guarded_read(in, s))
     error("missing number of rows");
   if (s != "*****") {
-    std::istringstream istr(s);
-    if (!guarded_read(istr, num_rows))
+    std::istringstream iss(s);
+    if (!guarded_read(iss, num_rows))
       error("illegal number of rows `%s' (\"*****\" would be accepted)",
 	    s.c_str());
     has_num_rows = true;
@@ -710,8 +710,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 	  error("missing vertex marker");
 	if (s == "end")
 	  break;
-	std::istringstream istr(s);
-	if (!guarded_read(istr, vertex_marker)
+	std::istringstream iss(s);
+	if (!guarded_read(iss, vertex_marker)
 	    || vertex_marker < 0 || vertex_marker > 1)
 	  error("illegal vertex marker `%s'", s.c_str());
       }
@@ -837,8 +837,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 		"for coefficients or `end'");
 	if (s.substr(0, 2) == "end")
 	  break;
-	std::istringstream istr(s);
-	read_coefficients(istr, number_type, coefficients, denominator);
+	std::istringstream iss(s);
+	read_coefficients(iss, number_type, coefficients, denominator);
       }
       else
 	read_coefficients(in, number_type, coefficients, denominator);

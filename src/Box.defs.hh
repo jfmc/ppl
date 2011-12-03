@@ -915,9 +915,9 @@ public:
     The constraints to be used for constraint propagation.
 
     \param max_iterations
-    The maximum number of propagation steps for each constraint in \p cs.
-    If zero (the default), the number of propagations will be unbounded,
-    possibly resulting in an infinite loop.
+    The maximum number of propagation steps for each constraint in
+    \p cs.  If zero (the default), the number of propagation steps
+    will be unbounded, possibly resulting in an infinite loop.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1272,7 +1272,7 @@ public:
     The overflow behavior of the bounded integer type corresponding to
     all the dimensions to be wrapped.
 
-    \param pcs
+    \param cs_p
     Possibly null pointer to a constraint system.  When non-null,
     the pointed-to constraint system is assumed to represent the
     conditional or looping construct guard with respect to which
@@ -1280,7 +1280,7 @@ public:
     of upper bounds and due to non-distributivity of constraint
     refinement over upper bounds, passing a constraint system in this
     way can be more precise than refining the result of the wrapping
-    operation with the constraints in <CODE>*pcs</CODE>.
+    operation with the constraints in <CODE>*cs_p</CODE>.
 
     \param complexity_threshold
     A precision parameter which is ignored for the Box domain.
@@ -1290,13 +1290,13 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p vars or with <CODE>*pcs</CODE>.
+    Variable objects contained in \p vars or with <CODE>*cs_p</CODE>.
   */
   void wrap_assign(const Variables_Set& vars,
                    Bounded_Integer_Type_Width w,
                    Bounded_Integer_Type_Representation r,
                    Bounded_Integer_Type_Overflow o,
-                   const Constraint_System* pcs = 0,
+                   const Constraint_System* cs_p = 0,
                    unsigned complexity_threshold = 16,
                    bool wrap_individually = true);
 
@@ -1779,8 +1779,8 @@ private:
   static I_Result
   refine_interval_no_check(ITV& itv,
                            Constraint::Type type,
-                           Coefficient_traits::const_reference num,
-                           Coefficient_traits::const_reference den);
+                           Coefficient_traits::const_reference numer,
+                           Coefficient_traits::const_reference denom);
 
   /*! \brief
     WRITE ME.
@@ -1788,8 +1788,8 @@ private:
   void
   add_interval_constraint_no_check(dimension_type var_id,
                                    Constraint::Type type,
-                                   Coefficient_traits::const_reference num,
-                                   Coefficient_traits::const_reference den);
+                                   Coefficient_traits::const_reference numer,
+                                   Coefficient_traits::const_reference denom);
 
   /*! \brief
     WRITE ME.
@@ -2193,14 +2193,14 @@ namespace Parma_Polyhedra_Library {
   \param constraint_type
   The constraint type;
 
-  \param num
+  \param numer
   The numerator of the constraint bound;
 
-  \param den
+  \param denom
   The denominator of the constraint bound
 
   The interval constraint has the form
-  <CODE>den * Variable(0) relsym num</CODE>
+  <CODE>denom * Variable(0) relsym numer</CODE>
   where relsym is  <CODE>==</CODE>,  <CODE>></CODE> or  <CODE>>=</CODE>
   depending on the <CODE>constraint_type</CODE>.
 */
@@ -2209,8 +2209,8 @@ template <typename ITV>
 Poly_Con_Relation
 interval_relation(const ITV& i,
                   const Constraint::Type constraint_type,
-                  Coefficient_traits::const_reference num,
-                  Coefficient_traits::const_reference den = 1);
+                  Coefficient_traits::const_reference numer,
+                  Coefficient_traits::const_reference denom = 1);
 
 class Box_Helpers {
 public:

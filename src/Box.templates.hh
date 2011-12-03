@@ -1472,7 +1472,7 @@ Box<ITV>::constrains(Variable var) const {
 template <typename ITV>
 void
 Box<ITV>::unconstrain(const Variables_Set& vars) {
-  // The cylindrification wrt no dimensions is a no-op.
+  // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a box in a 0-dim space.
   if (vars.empty())
@@ -1519,12 +1519,12 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
                       Bounded_Integer_Type_Width w,
                       Bounded_Integer_Type_Representation r,
                       Bounded_Integer_Type_Overflow o,
-                      const Constraint_System* pcs,
+                      const Constraint_System* cs_p,
                       unsigned complexity_threshold,
                       bool wrap_individually) {
 #if 0 // Generic implementation commented out.
   Implementation::wrap_assign(*this,
-                              vars, w, r, o, pcs,
+                              vars, w, r, o, cs_p,
                               complexity_threshold, wrap_individually,
                               "Box");
 #else // Specialized implementation.
@@ -1532,21 +1532,21 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   used(complexity_threshold);
   Box& x = *this;
 
-  // Dimension-compatibility check for `*pcs', if any.
+  // Dimension-compatibility check for `*cs_p', if any.
   const dimension_type vars_space_dim = vars.space_dimension();
-  if (pcs != 0 && pcs->space_dimension() > vars_space_dim) {
+  if (cs_p != 0 && cs_p->space_dimension() > vars_space_dim) {
     std::ostringstream s;
-    s << "PPL::Box<ITV>::wrap_assign(vars, w, r, o, pcs, ...):"
+    s << "PPL::Box<ITV>::wrap_assign(vars, w, r, o, cs_p, ...):"
       << std::endl
       << "vars.space_dimension() == " << vars_space_dim
-      << ", pcs->space_dimension() == " << pcs->space_dimension() << ".";
+      << ", cs_p->space_dimension() == " << cs_p->space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
 
-  // Wrapping no variable only requires refining with *pcs, if any.
+  // Wrapping no variable only requires refining with *cs_p, if any.
   if (vars.empty()) {
-    if (pcs != 0)
-      refine_with_constraints(*pcs);
+    if (cs_p != 0)
+      refine_with_constraints(*cs_p);
     return;
   }
 
@@ -1599,7 +1599,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
   const Variables_Set::const_iterator vs_end = vars.end();
 
-  if (pcs == 0) {
+  if (cs_p == 0) {
     // No constraint refinement is needed here.
     switch (o) {
     case OVERFLOW_WRAPS:
@@ -1625,8 +1625,8 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     return;
   }
 
-  PPL_ASSERT(pcs != 0);
-  const Constraint_System& cs = *pcs;
+  PPL_ASSERT(cs_p != 0);
+  const Constraint_System& cs = *cs_p;
   // A map associating interval constraints to variable indexes.
   typedef std::map<dimension_type, std::vector<const Constraint*> > map_type;
   map_type var_cs_map;
@@ -2712,7 +2712,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     seq[i_var.id()].add_constraint(i_constraint(rel, q));
     // FIXME: could/should we exploit the return value of add_constraint
     //        in case it is available?
-    // FIMXE: should we instead be lazy and do not even bother about
+    // FIXME: should we instead be lazy and do not even bother about
     //        the possibility the interval becomes empty apart from setting
     //        empty_up_to_date = false?
     if (seq[i_var.id()].is_empty()) {
@@ -3094,29 +3094,29 @@ Box<ITV>
     bool open_lower = seq_var.lower_is_open();
     bool unbounded_lower = seq_var.lower_is_boundary_infinity();
     PPL_DIRTY_TEMP(mpq_class, q_seq_var_lower);
-    PPL_DIRTY_TEMP(Coefficient, num_lower);
-    PPL_DIRTY_TEMP(Coefficient, den_lower);
+    PPL_DIRTY_TEMP(Coefficient, numer_lower);
+    PPL_DIRTY_TEMP(Coefficient, denom_lower);
     if (!unbounded_lower) {
       assign_r(q_seq_var_lower, seq_var.lower(), ROUND_NOT_NEEDED);
-      assign_r(num_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
-      assign_r(den_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
+      assign_r(numer_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
+      assign_r(denom_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
       if (negative_denom)
-        neg_assign(den_lower, den_lower);
-      num_lower *= pos_denominator;
+        neg_assign(denom_lower, denom_lower);
+      numer_lower *= pos_denominator;
       seq_var.lower_extend();
     }
     bool open_upper = seq_var.upper_is_open();
     bool unbounded_upper = seq_var.upper_is_boundary_infinity();
     PPL_DIRTY_TEMP(mpq_class, q_seq_var_upper);
-    PPL_DIRTY_TEMP(Coefficient, num_upper);
-    PPL_DIRTY_TEMP(Coefficient, den_upper);
+    PPL_DIRTY_TEMP(Coefficient, numer_upper);
+    PPL_DIRTY_TEMP(Coefficient, denom_upper);
     if (!unbounded_upper) {
       assign_r(q_seq_var_upper, seq_var.upper(), ROUND_NOT_NEEDED);
-      assign_r(num_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
-      assign_r(den_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
+      assign_r(numer_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
+      assign_r(denom_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
       if (negative_denom)
-        neg_assign(den_upper, den_upper);
-      num_upper *= pos_denominator;
+        neg_assign(denom_upper, denom_upper);
+      numer_upper *= pos_denominator;
       seq_var.upper_extend();
     }
 
@@ -3127,19 +3127,19 @@ Box<ITV>
       Linear_Expression revised_lb_expr(ub_expr);
       revised_lb_expr -= ub_var_coeff * var;
       PPL_DIRTY_TEMP(Coefficient, d);
-      neg_assign(d, den_lower);
+      neg_assign(d, denom_lower);
       revised_lb_expr *= d;
-      revised_lb_expr += num_lower;
+      revised_lb_expr += numer_lower;
 
       // Find the minimum value for the revised lower bound expression
       // and use this to refine the appropriate bound.
       bool included;
-      PPL_DIRTY_TEMP(Coefficient, den);
-      if (minimize(revised_lb_expr, num_lower, den, included)) {
-        den_lower *= (den * ub_var_coeff);
+      PPL_DIRTY_TEMP(Coefficient, denom);
+      if (minimize(revised_lb_expr, numer_lower, denom, included)) {
+        denom_lower *= (denom * ub_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
-        assign_r(q.get_num(), num_lower, ROUND_NOT_NEEDED);
-        assign_r(q.get_den(), den_lower, ROUND_NOT_NEEDED);
+        assign_r(q.get_num(), numer_lower, ROUND_NOT_NEEDED);
+        assign_r(q.get_den(), denom_lower, ROUND_NOT_NEEDED);
         q.canonicalize();
         open_lower |= !included;
         if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom)
@@ -3160,19 +3160,19 @@ Box<ITV>
       Linear_Expression revised_ub_expr(lb_expr);
       revised_ub_expr -= lb_var_coeff * var;
       PPL_DIRTY_TEMP(Coefficient, d);
-      neg_assign(d, den_upper);
+      neg_assign(d, denom_upper);
       revised_ub_expr *= d;
-      revised_ub_expr += num_upper;
+      revised_ub_expr += numer_upper;
 
       // Find the maximum value for the revised upper bound expression
       // and use this to refine the appropriate bound.
       bool included;
-      PPL_DIRTY_TEMP(Coefficient, den);
-      if (maximize(revised_ub_expr, num_upper, den, included)) {
-        den_upper *= (den * lb_var_coeff);
+      PPL_DIRTY_TEMP(Coefficient, denom);
+      if (maximize(revised_ub_expr, numer_upper, denom, included)) {
+        denom_upper *= (denom * lb_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
-        assign_r(q.get_num(), num_upper, ROUND_NOT_NEEDED);
-        assign_r(q.get_den(), den_upper, ROUND_NOT_NEEDED);
+        assign_r(q.get_num(), numer_upper, ROUND_NOT_NEEDED);
+        assign_r(q.get_den(), denom_upper, ROUND_NOT_NEEDED);
         q.canonicalize();
         open_upper |= !included;
         if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom)
@@ -3355,7 +3355,7 @@ Box<ITV>
   const Relation_Symbol corrected_relsym
     = (denominator > 0) ? relsym : reversed_relsym;
   // Revise the expression to take into account the denominator of the
-  // maximum/minimim value for `var'.
+  // maximum/minimum value for `var'.
   Linear_Expression revised_expr;
   PPL_DIRTY_TEMP_COEFFICIENT(d);
   if (corrected_relsym == LESS_THAN || corrected_relsym == LESS_OR_EQUAL) {
@@ -3501,7 +3501,7 @@ Box<ITV>
     // The choice as to which bounds should be set depends on the sign
     // of the coefficient of the dimension `has_var_id' in the lhs.
     if (coeff > 0)
-      // The coefficient of the dimension in the lhs is +ve.
+      // The coefficient of the dimension in the lhs is positive.
       switch (relsym) {
       case LESS_OR_EQUAL:
         max_rhs
@@ -3539,7 +3539,7 @@ Box<ITV>
         throw std::runtime_error("PPL internal error");
       }
     else
-      // The coefficient of the dimension in the lhs is -ve.
+      // The coefficient of the dimension in the lhs is negative.
       switch (relsym) {
       case GREATER_OR_EQUAL:
         min_rhs

@@ -164,7 +164,7 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   branch above. These \e artificial parameters are only meaningful
   inside the subtree where they are defined and are used to define
   the parametric values of the problem variables in solution nodes
-  (e.g., the <tt>{i,j}</tt> vector in the textually third \c then branch).
+  (e.g., the <CODE>{i,j}</CODE> vector in the textually third \c then branch).
 
   \par Context restriction
   The above solution is correct in an unrestricted initial context,
@@ -246,7 +246,7 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   assignment, the ``spanning'' of the PIP problem solution tree refers
   to the process whereby the solution tree is navigated, starting from
   the root node: the value of artificial parameters is computed according
-  to the parameter assignment and the node's contraints are evaluated,
+  to the parameter assignment and the node's constraints are evaluated,
   thereby descending in either the true or the false subtree of decision
   nodes and eventually reaching a solution node or a bottom node.
   If a solution node is found, each of the problem variables is provided
@@ -289,7 +289,7 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   have consecutive indices starting from <code>dim+1</code>, where the value
   of \c dim is computed as follows:
    - for the tree root node, \c dim is the space dimension of the PIP_Problem;
-   - for any other node of the tree, it is recusrively obtained by adding
+   - for any other node of the tree, it is recursively obtained by adding
      the value of \c dim computed for the parent node to the number of
      artificial parameters defined in the parent node.
   \par
@@ -383,16 +383,16 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   \endverbatim
   Under the notations above, the solution is:
   \f[ \left\{\begin{array}{l}
-    x'=M-\left\lfloor\frac{p+1}{3}\right\rfloor-1\\
-    y'=M-p+\left\lfloor\frac{p+1}{3}\right\rfloor+1
+    x' = M - \left\lfloor\frac{p+1}{3}\right\rfloor - 1 \\
+    y' = M - p + \left\lfloor\frac{p+1}{3}\right\rfloor + 1
   \end{array}\right.
   \f]
   \par
   Performing substitution again provides us with the values of the original
   variables:
   \f[ \left\{\begin{array}{l}
-    x=\left\lfloor\frac{p+1}{3}\right\rfloor+1\\
-    y=p-\left\lfloor\frac{p+1}{3}\right\rfloor-1
+    x = \left\lfloor\frac{p+1}{3}\right\rfloor + 1 \\
+    y = p - \left\lfloor\frac{p+1}{3}\right\rfloor - 1
   \end{array}\right.
   \f]
 
@@ -457,16 +457,16 @@ void swap(PIP_Problem& x, PIP_Problem& y);
   \endverbatim
   Under the notations above, the solution is:
   \f[ \left\{\begin{array}{l}
-    x'=M-\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
-    y'=M+2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
+    x' = M - \left\lfloor\frac{2p+3}{5}\right\rfloor - 1 \\
+    y' = M + 2\left\lfloor\frac{2p+3}{5}\right\rfloor - 2
   \end{array}\right.
   \f]
   \par
   Performing substitution again provides us with the values of the original
   variables:
   \f[ \left\{\begin{array}{l}
-    x=-\left\lfloor\frac{2p+3}{5}\right\rfloor-1\\
-    y=2\left\lfloor\frac{2p+3}{5}\right\rfloor-2
+    x = -\left\lfloor\frac{2p+3}{5}\right\rfloor - 1 \\
+    y = 2\left\lfloor\frac{2p+3}{5}\right\rfloor - 2
   \end{array}\right.
   \f]
 
@@ -719,16 +719,16 @@ public:
 
   //! Possible values for PIP_Problem control parameters.
   enum Control_Parameter_Value {
-    //! Choose the first non-integer row
+    //! Choose the first non-integer row.
     CUTTING_STRATEGY_FIRST,
-    //! Choose row which generates the deepest cut
+    //! Choose row which generates the deepest cut.
     CUTTING_STRATEGY_DEEPEST,
-    //! Always generate all possible cuts
+    //! Always generate all possible cuts.
     CUTTING_STRATEGY_ALL,
 
-    //! Choose the first row with negative parameter sign
+    //! Choose the first row with negative parameter sign.
     PIVOT_ROW_STRATEGY_FIRST,
-    //! Choose the row which generates the lexico-maximal pivot column
+    //! Choose a row that generates a lexicographically maximal pivot column.
     PIVOT_ROW_STRATEGY_MAX_COLUMN,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

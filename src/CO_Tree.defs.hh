@@ -52,8 +52,8 @@ namespace Parma_Polyhedra_Library {
 
 //! A cache-oblivious binary search tree of pairs.
 /*!
-  This class implements a bynary search tree with keys of dimension_type type
-  and data of Coefficient type, layed out in a dynamic-sized array.
+  This class implements a binary search tree with keys of dimension_type type
+  and data of Coefficient type, laid out in a dynamically-sized array.
 
   The array-based layout saves calls to new/delete (to insert n elements
   only \f$O(\log n)\f$ allocations are performed) and, more importantly, is
@@ -67,8 +67,8 @@ namespace Parma_Polyhedra_Library {
 
   B-trees are cache-friendly too, but the cache size is fixed (usually at
   compile-time). This raises two problems: firstly the cache size must be
-  known in advance and those data structures don't perform well with other
-  cache sizes and secondly, even if the cache size is known, the
+  known in advance and those data structures do not perform well with other
+  cache sizes and, secondly, even if the cache size is known, the
   optimizations target only one level of cache. This kind of data structures
   are called cache aware. This implementation, instead, is cache oblivious:
   it performs well with every cache size, and thus exploits all of the
@@ -87,7 +87,7 @@ namespace Parma_Polyhedra_Library {
     searched element (or the position where it would have been).
 
   The binary search tree is embedded in a (slightly bigger) complete tree,
-  that is enlarged and shrunk when needed. The complete tree is layed out
+  that is enlarged and shrunk when needed. The complete tree is laid out
   in an in-order DFS layout in two arrays: one for the keys and one for the
   associated data.
   The indexes and values are stored in different arrays to reduce
@@ -139,7 +139,7 @@ public:
   //! The type of the data elements associated with keys.
   /*!
     If this is changed, occurrences of Coefficient_zero() in the CO_Tree
-    implementation have to be replaced with consts of the correct type.
+    implementation have to be replaced with constants of the correct type.
   */
   typedef Coefficient data_type;
   typedef Coefficient_traits::const_reference data_type_const_reference;
@@ -359,7 +359,7 @@ public:
     */
     explicit iterator(const tree_iterator& itr);
 
-    //! The copy contructor.
+    //! The copy constructor.
     /*!
       \param itr
       The %iterator that will be copied.
@@ -1019,43 +1019,43 @@ private:
   */
   static unsigned integer_log2(dimension_type n);
 
-  //! Compares the fractions num/den with ratio/100.
+  //! Compares the fractions numer/denom with ratio/100.
   /*!
     \returns
-    Returns true if the fraction num/den is less than the fraction ratio/100.
+    Returns true if the fraction numer/denom is less than the fraction ratio/100.
 
     \param ratio
     It must be less than or equal to 100.
 
-    \param num
+    \param numer
     The numerator of the fraction.
 
-    \param den
+    \param denom
     The denominator of the fraction.
 
     This method takes \f$O(1)\f$ time.
   */
-  static bool is_less_than_ratio(dimension_type num, dimension_type den,
+  static bool is_less_than_ratio(dimension_type numer, dimension_type denom,
                                  dimension_type ratio);
 
-  //! Compares the fractions num/den with ratio/100.
+  //! Compares the fractions numer/denom with ratio/100.
   /*!
     \returns
-    Returns true if the fraction num/den is greater than the fraction
+    Returns true if the fraction numer/denom is greater than the fraction
     ratio/100.
 
     \param ratio
     It must be less than or equal to 100.
 
-    \param num
+    \param numer
     The numerator of the fraction.
 
-    \param den
+    \param denom
     The denominator of the fraction.
 
     This method takes \f$O(1)\f$ time.
   */
-  static bool is_greater_than_ratio(dimension_type num, dimension_type den,
+  static bool is_greater_than_ratio(dimension_type numer, dimension_type denom,
                                     dimension_type ratio);
 
   //! Dumps the subtree rooted at \p itr to stdout, for debugging purposes.
@@ -1228,7 +1228,7 @@ private:
     After the move, \p from becomes a non-constructed chunk of memory and
     \p to gets the value previously stored by \p from.
 
-    The implementation of this method assumes that data_type values don't
+    The implementation of this method assumes that data_type values do not
     keep pointers to themselves nor to their fields.
 
     This method takes \f$O(1)\f$ time.
@@ -1253,7 +1253,7 @@ private:
 
     Increasing the value is safe but leads to time inefficiencies
     (measured against ppl_lpsol on 24 August 2010), because it forces trees to
-    be more balanced, increasing the rebalancement const.
+    be more balanced, increasing the cost of rebalancing.
   */
   static const dimension_type min_leaf_density_percent = 1;
 
@@ -1417,20 +1417,20 @@ public:
   void go_down_searching_key(dimension_type key);
 
   /*!
-    \brief Follows left childs with a value, until it arrives at a leaf or at
+    \brief Follows left children with a value, until it arrives at a leaf or at
            a node with no value.
 
     This method takes \f$O(1)\f$ time.
   */
-  void follow_left_childs_with_value();
+  void follow_left_children_with_value();
 
   /*!
-    \brief Follows right childs with a value, until it arrives at a leaf or at
+    \brief Follows right children with a value, until it arrives at a leaf or at
            a node with no value.
 
     This method takes \f$O(1)\f$ time.
   */
-  void follow_right_childs_with_value();
+  void follow_right_children_with_value();
 
   //! Returns true if the pointed node is the root node.
   /*!

@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 stdiobuf::stdiobuf(FILE* file)
-  : fp(file), ungetc_buf(traits_type::eof()) {
+  : fp(file), unget_char_buf(traits_type::eof()) {
 }
 
 } // namespace Parma_Polyhedra_Library
