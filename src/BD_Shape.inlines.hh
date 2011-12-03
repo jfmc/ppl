@@ -838,6 +838,50 @@ BD_Shape<T>::hash_code() const {
 }
 
 template <typename T>
+template <typename Interval_Info>
+inline void
+BD_Shape<T>::generalized_refine_with_linear_form_inequality(
+	     const Linear_Form< Interval<T, Interval_Info> >& left,
+	     const Linear_Form< Interval<T, Interval_Info> >& right,
+             const Relation_Symbol relsym) {
+  switch (relsym) {
+  case EQUAL:
+    // TODO: see if we can handle this case more efficiently.
+    refine_with_linear_form_inequality(left, right);
+    refine_with_linear_form_inequality(right, left);
+    break;
+  case LESS_THAN:
+  case LESS_OR_EQUAL:
+    refine_with_linear_form_inequality(left, right);
+    break;
+  case GREATER_THAN:
+  case GREATER_OR_EQUAL:
+    refine_with_linear_form_inequality(right, left);
+    break;
+  case NOT_EQUAL:
+    break;
+  default:
+    throw std::runtime_error("PPL internal error");
+  }
+}
+
+template <typename T>
+template <typename Interval_Info>
+inline void
+BD_Shape<T>::refine_fp_interval_abstract_store(
+	            Box< Interval<T, Interval_Info> >& store) const {
+
+  // Check that T is a floating point type.
+  PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
+                     "BD_Shape<T>::refine_fp_interval_abstract_store:"
+                     " T not a floating point type.");
+
+  typedef Interval<T, Interval_Info> FP_Interval_Type;
+  store.intersection_assign(Box<FP_Interval_Type>(*this));
+
+}
+
+template <typename T>
 inline void
 BD_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
   if (!is_integer(elem)) {

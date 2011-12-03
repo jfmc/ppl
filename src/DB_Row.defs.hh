@@ -432,7 +432,9 @@ private:
 
   //! The vector of coefficients.
   T vec_[
-#if !PPL_CXX_SUPPORTS_FLEXIBLE_ARRAYS
+#if PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
+	       0
+#else
 	       1
 #endif
   ];

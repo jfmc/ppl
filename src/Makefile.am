@@ -56,10 +56,11 @@
 #	    0.10.1		    8:0:1
 #	    0.10.2		    8:0:1
 #	    0.11		    9:0:0
+#	    0.12		   10:0:0
 
-LIBPPL_LT_CURRENT =  9
-LIBPPL_LT_REVISION = 0
-LIBPPL_LT_AGE =      0
+LIBPPL_LT_CURRENT =  10
+LIBPPL_LT_REVISION =  0
+LIBPPL_LT_AGE =       0
 
 AM_CPPFLAGS = \
 -I$(top_builddir) \
@@ -120,6 +121,9 @@ Has_Assign_Or_Swap.hh \
 assign_or_swap.hh \
 mp_std_bits.defs.hh \
 mp_std_bits.inlines.hh \
+Concrete_Expression.types.hh \
+Concrete_Expression.defs.hh \
+Concrete_Expression.inlines.hh \
 Temp.defs.hh \
 Temp.inlines.hh \
 Temp.templates.hh \
@@ -154,6 +158,7 @@ Expression_Hide_Inhomo.types.hh \
 Linear_Expression_Impl.types.hh \
 Linear_Expression_Interface.types.hh \
 Linear_System.types.hh \
+Linear_Form.types.hh \
 Bit_Row.types.hh \
 Bit_Matrix.types.hh \
 Constraint_System.types.hh \
@@ -182,6 +187,7 @@ Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
+Float.templates.hh \
 C_Integer.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
@@ -233,6 +239,7 @@ Box.defs.hh \
 Box_Status.inlines.hh \
 Box.inlines.hh \
 Box.templates.hh \
+Integer_Interval.hh \
 Rational_Interval.hh \
 Rational_Box.hh \
 Variable.defs.hh \
@@ -273,6 +280,10 @@ Linear_Expression_Impl.defs.hh \
 Linear_Expression_Impl.inlines.hh \
 Linear_Expression_Impl.templates.hh \
 Linear_Expression_Interface.defs.hh \
+Linear_Form.defs.hh \
+Linear_Form.inlines.hh \
+Linear_Form.templates.hh \
+linearize.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 Constraint_System.inlines.hh \
@@ -374,7 +385,40 @@ algorithms.hh \
 termination.defs.hh \
 termination.templates.hh \
 wrap_assign.hh \
-wrap_string.hh
+wrap_string.hh \
+Floating_Point_Expression.types.hh \
+Floating_Point_Expression.defs.hh \
+Floating_Point_Expression.inlines.hh \
+Floating_Point_Expression.templates.hh \
+Cast_Floating_Point_Expression.types.hh \
+Cast_Floating_Point_Expression.defs.hh \
+Cast_Floating_Point_Expression.inlines.hh \
+Cast_Floating_Point_Expression.templates.hh \
+Constant_Floating_Point_Expression.types.hh \
+Constant_Floating_Point_Expression.defs.hh \
+Constant_Floating_Point_Expression.inlines.hh \
+Variable_Floating_Point_Expression.types.hh \
+Variable_Floating_Point_Expression.defs.hh \
+Variable_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.types.hh \
+Sum_Floating_Point_Expression.defs.hh \
+Sum_Floating_Point_Expression.inlines.hh \
+Sum_Floating_Point_Expression.templates.hh \
+Difference_Floating_Point_Expression.types.hh \
+Difference_Floating_Point_Expression.defs.hh \
+Difference_Floating_Point_Expression.inlines.hh \
+Difference_Floating_Point_Expression.templates.hh \
+Multiplication_Floating_Point_Expression.types.hh \
+Multiplication_Floating_Point_Expression.defs.hh \
+Multiplication_Floating_Point_Expression.inlines.hh \
+Multiplication_Floating_Point_Expression.templates.hh \
+Division_Floating_Point_Expression.types.hh \
+Division_Floating_Point_Expression.defs.hh \
+Division_Floating_Point_Expression.inlines.hh \
+Division_Floating_Point_Expression.templates.hh \
+Opposite_Floating_Point_Expression.types.hh \
+Opposite_Floating_Point_Expression.defs.hh \
+Opposite_Floating_Point_Expression.inlines.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -400,6 +444,7 @@ checked.cc \
 Checked_Number.cc \
 Float.cc \
 fpu-ia32.cc \
+Concrete_Expression.cc \
 Constraint.cc \
 Constraint_System.cc \
 Congruence.cc \
@@ -412,6 +457,7 @@ Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
 Linear_Expression_Interface.cc \
+Linear_Form.cc \
 Scalar_Products.cc \
 MIP_Problem.cc \
 PIP_Tree.cc \

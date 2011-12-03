@@ -3,10 +3,10 @@ Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.11)
+Parma Polyhedra Library (Release 0.12)
 ======================================
 
-This is the release 0.11 of the Parma Polyhedra Library:
+This is the release 0.12 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -64,10 +64,10 @@ See http://www.cs.unipr.it/ppl/ for more information on the PPL.
 For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 0.11 source distribution
+Here is the contents of the PPL 0.12 source distribution
 (44 directories, 1589 files):
 
-ppl-0.11
+ppl-0.12
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -444,21 +444,21 @@ ppl-0.11
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.11pre25-html.tar.gz
-|   |-- ppl-user-0.11pre25.pdf
-|   |-- ppl-user-0.11pre25.ps.gz
-|   |-- ppl-user-c-interface-0.11pre25-html.tar.gz
-|   |-- ppl-user-c-interface-0.11pre25.pdf
-|   |-- ppl-user-c-interface-0.11pre25.ps.gz
-|   |-- ppl-user-java-interface-0.11pre25-html.tar.gz
-|   |-- ppl-user-java-interface-0.11pre25.pdf
-|   |-- ppl-user-java-interface-0.11pre25.ps.gz
-|   |-- ppl-user-ocaml-interface-0.11pre25-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.11pre25.pdf
-|   |-- ppl-user-ocaml-interface-0.11pre25.ps.gz
-|   |-- ppl-user-prolog-interface-0.11pre25-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.11pre25.pdf
-|   |-- ppl-user-prolog-interface-0.11pre25.ps.gz
+|   |-- ppl-user-0.12-html.tar.gz
+|   |-- ppl-user-0.12.pdf
+|   |-- ppl-user-0.12.ps.gz
+|   |-- ppl-user-c-interface-0.12-html.tar.gz
+|   |-- ppl-user-c-interface-0.12.pdf
+|   |-- ppl-user-c-interface-0.12.ps.gz
+|   |-- ppl-user-java-interface-0.12-html.tar.gz
+|   |-- ppl-user-java-interface-0.12.pdf
+|   |-- ppl-user-java-interface-0.12.ps.gz
+|   |-- ppl-user-ocaml-interface-0.12-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.12.pdf
+|   |-- ppl-user-ocaml-interface-0.12.ps.gz
+|   |-- ppl-user-prolog-interface-0.12-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.12.pdf
+|   |-- ppl-user-prolog-interface-0.12.ps.gz
 |   |-- ppl.sty
 |   |-- user-language-interface.doxyconf.in
 |   |-- user-language-interface.tex

@@ -23,6 +23,7 @@
 
 SUBDIRS = \
 . \
+Concrete_Expression \
 CO_Tree \
 PIP_Problem \
 Powerset \

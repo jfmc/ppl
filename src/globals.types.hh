@@ -177,6 +177,22 @@ enum Representation {
   SPARSE
 };
 
+/*! \brief \ingroup PPL_CXX_interface
+  Floating point formats known to the library.
+
+  The parameters of each format are defined by a specific struct
+  in file Float.defs.hh.  See the section on \ref floating_point
+  "Analysis of floating point computations" for more information.
+*/
+enum Floating_Point_Format {
+  IEEE754_HALF,
+  IEEE754_SINGLE,
+  IEEE754_DOUBLE,
+  IBM_SINGLE,
+  IEEE754_QUAD,
+  INTEL_DOUBLE_EXTENDED
+};
+
 struct Weightwatch_Traits;
 
 } // namespace Parma_Polyhedra_Library

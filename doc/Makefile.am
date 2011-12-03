@@ -875,6 +875,7 @@ $(SED_LATEX_OPTION) \
 # C Language Interface Targets
 
 SED_C_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>//' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/C/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/c-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
@@ -955,6 +956,7 @@ $(DEVREF_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 # (System Independent) Prolog Language Interface Targets
 
 SED_PROLOG_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>//' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Prolog/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/prolog-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
@@ -1031,6 +1033,7 @@ $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 # OCaml Language Interface Targets
 
 SED_OCAML_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>//' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/OCaml/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/ocaml-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
@@ -1124,6 +1127,7 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 # Java Language Interface Targets
 
 SED_JAVA_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>//' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Java/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/java-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
@@ -1206,6 +1210,7 @@ $(DEVREF_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 if BUILD_C_INTERFACE
 
 SED_CONFIGURED_C_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>/PPL_DOXYGEN_CONFIGURED_MANUAL/' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured C/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-c-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
@@ -1290,6 +1295,7 @@ endif BUILD_C_INTERFACE
 if BUILD_SOME_PROLOG_INTERFACES
 
 SED_CONFIGURED_PROLOG_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>/PPL_DOXYGEN_CONFIGURED_MANUAL/' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured Prolog/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-prolog-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
@@ -1372,6 +1378,7 @@ endif BUILD_SOME_PROLOG_INTERFACES
 if BUILD_OCAML_INTERFACE
 
 SED_CONFIGURED_OCAML_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>/PPL_DOXYGEN_CONFIGURED_MANUAL/' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured OCaml/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-ocaml-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
@@ -1463,6 +1470,7 @@ endif BUILD_OCAML_INTERFACE
 if BUILD_JAVA_INTERFACE
 
 SED_CONFIGURED_JAVA_OPTION = \
+  -e 's/<PPL_SED_CONFIGURED_MANUAL>/PPL_DOXYGEN_CONFIGURED_MANUAL/' \
   -e 's/<PPL_SED_LANGUAGE_NAME>/Configured Java/' \
   -e 's/<PPL_SED_INTERFACE_NAME>/configured-java-interface/' \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'

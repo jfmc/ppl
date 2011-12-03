@@ -219,7 +219,8 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           =
 INCLUDE_FILE_PATTERNS  =
-PREDEFINED             = PPL_PROTO(protos):=protos
+PREDEFINED             = <PPL_SED_CONFIGURED_MANUAL> \
+                         PPL_PROTO(protos):=protos
 EXPAND_AS_DEFINED      = PPL_TYPE_DECLARATION \
                          PPL_DECLARE_PRINT_FUNCTIONS \
                          PPL_DECLARE_ASCII_DUMP_LOAD_FUNCTIONS \

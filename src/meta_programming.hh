@@ -207,8 +207,8 @@ struct Is_Same<T, T> : public True {
   template <typename T> struct B;
   template <typename T> struct D : public B<T>;
   \endcode
-  Of course, we cannot test if, for some type variable <CODE>U</CODE>,
-  we have <CODE>Is_Same_Or_Derived<B<U>, Type>::value == true</CODE>.
+  Of course, we cannot test if, for some type variable <CODE>U</CODE>, we have
+  <CODE>Is_Same_Or_Derived<B<U>, Type>:: anonymous_enum:: value == true</CODE>.
   But we can do as follows:
   \code
   struct B_Base {
@@ -217,7 +217,7 @@ struct Is_Same<T, T> : public True {
   template <typename T> struct B : public B_Base;
   \endcode
   This enables us to enquire
-  <CODE>Is_Same_Or_Derived<B_Base, Type>::value</CODE>.
+  <CODE>Is_Same_Or_Derived<B_Base, Type>:: anonymous_enum:: value</CODE>.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Base, typename Derived>
@@ -248,9 +248,10 @@ struct Is_Same_Or_Derived {
   enum anonymous_enum {
     /*!
       Assuming <CODE>sizeof(char) != sizeof(double)</CODE>, the C++
-      overload resolution mechanism guarantees that \p value evaluates
-      to <CODE>true</CODE> if and only if \p Base is the same type
-      as \p Derived or \p Derived is a class derived from \p Base.
+      overload resolution mechanism guarantees that <CODE>value</CODE>
+      evaluates to <CODE>true</CODE> if and only if <CODE>Base</CODE>
+      is the same type as <CODE>Derived</CODE> or <CODE>Derived</CODE>
+      is a class derived from <CODE>Base</CODE>.
     */
     value = (sizeof(func(derived_object())) == sizeof(char))
   };

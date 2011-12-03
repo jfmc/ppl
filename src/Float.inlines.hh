@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Float_inlines_hh 1
 
 #include <climits>
+#include "Variable.defs.hh"
+#include "Linear_Form.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -445,6 +447,56 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
     << (MANTISSA_BITS - 64);
 }
 
+inline bool
+is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
+  return f1 < f2;
+}
+
+#if defined(__GNUC__)
+inline unsigned int ld2(unsigned long long a) {
+ return __builtin_clzll(a) ^ (sizeof(a)*8 - 1);
+}
+#else
+unsigned int ld2(unsigned long long v) {
+ unsigned r = 0;
+ if (v >= 0x100000000ULL) {
+   v >>= 32;
+   r += 32;
+ }
+ if (v >= 0x10000) {
+   v >>= 16;
+   r += 16;
+ }
+ if (v >= 0x100) {
+   v >>= 8;
+   r += 8;
+ }
+ if (v >= 0x10) {
+   v >>= 4;
+   r += 4;
+ }
+ if (v >= 4) {
+   v >>= 2;
+   r += 2;
+ }
+ if (v >= 2)
+   r++;
+ return r;
+}
+#endif
+
+template <typename FP_Interval_Type>
+inline void
+affine_form_image(std::map<dimension_type,
+                           Linear_Form<FP_Interval_Type> >& lf_store,
+                  const Variable var,
+                  const Linear_Form<FP_Interval_Type>& lf) {
+  // Assign the new linear form for var.
+  lf_store[var.id()] = lf;
+  // Now invalidate all linear forms in which var occurs.
+  discard_occurrences(lf_store, var);
+}
+
 #if PPL_SUPPORTED_FLOAT
 inline
 Float<float>::Float() {
@@ -492,7 +544,6 @@ Float<long double>::value() {
   return u.number;
 }
 #endif
-
 
 } // namespace Parma_Polyhedra_Library
 

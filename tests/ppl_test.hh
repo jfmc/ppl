@@ -466,6 +466,37 @@ typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 //! The incarnation of Octagonal_Shape under test.
 typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
 
+// For floating point analysis.
+#ifdef ANALYZER_FP_FORMAT
+#ifdef ANALYZED_FP_FORMAT
+//! The type of an interval with floating point boundaries.
+typedef Interval<ANALYZER_FP_FORMAT,
+                 Floating_Real_Open_Interval_Info> FP_Interval;
+
+//! The type of an interval linear form.
+typedef Linear_Form<FP_Interval> FP_Linear_Form;
+
+//! The type of an interval abstract store.
+typedef Box<FP_Interval> FP_Interval_Abstract_Store;
+
+//! The type of a linear form abstract store.
+typedef std::map<dimension_type, FP_Linear_Form>
+                                 FP_Linear_Form_Abstract_Store;
+
+/*! \brief
+  The incarnation of BD_Shape under test for analyzing
+  floating point computations.
+*/
+typedef BD_Shape<ANALYZER_FP_FORMAT> FP_BD_Shape;
+
+/*! \brief
+  The incarnation of Octagonal_Shape under test for analyzing
+  floating point computations.
+*/
+typedef Octagonal_Shape<ANALYZER_FP_FORMAT> FP_Octagonal_Shape;
+#endif
+#endif
+
 template <typename Shape>
 inline bool
 has_exact_coefficient_type(const Shape&) {

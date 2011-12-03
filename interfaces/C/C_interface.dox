@@ -39,11 +39,15 @@ site: http://www.cs.unipr.it/ppl/ . */
   space-dimension compatible.
 */
 
+#if !defined(PPL_DOXYGEN_CONFIGURED_MANUAL)
+
 /*! \brief Opaque pointer \ingroup Datatypes */
 typedef struct ppl_Polyhedron_tag* ppl_Polyhedron_t;
 
 /*! \brief Opaque pointer to const object \ingroup Datatypes */
 typedef struct ppl_Polyhedron_tag const* ppl_const_Polyhedron_t;
+
+#endif /* !defined(PPL_DOXYGEN_CONFIGURED_MANUAL) */
 
 /*! \brief \name Constructors and Assignment for C_Polyhedron */
 /*@{*/
@@ -1456,6 +1460,8 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign
   manipulation of the collection of disjuncts.
 */
 
+#if !defined(PPL_DOXYGEN_CONFIGURED_MANUAL)
+
 /*! \brief Opaque pointer \ingroup Datatypes */
 typedef struct ppl_Pointset_Powerset_C_Polyhedron_tag*
         ppl_Pointset_Powerset_C_Polyhedron_t;
@@ -1491,6 +1497,8 @@ typedef struct ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag*
 /*! \brief Opaque pointer to const object \ingroup Datatypes */
 typedef struct ppl_Pointset_Powerset_C_Polyhedron_const_iterator_tag const*
         ppl_const_Pointset_Powerset_C_Polyhedron_const_iterator_t;
+
+#endif /* !defined(PPL_DOXYGEN_CONFIGURED_MANUAL) */
 
 /*! \brief \name Construction, Initialization and Destruction */
 /*@{*/
