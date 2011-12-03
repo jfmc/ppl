@@ -574,9 +574,6 @@ public:
   //! Sets the Grid_Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter_or_point();
 
-  //! Swaps the coefficients of \p v1 and \p v2.
-  void swap(Variable v1, Variable v2);
-
   /*! \brief
     Normalizes the sign of the coefficients so that the first non-zero
     (homogeneous) coefficient of a line-or-equality is positive.
