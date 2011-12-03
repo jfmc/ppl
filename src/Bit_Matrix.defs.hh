@@ -118,7 +118,6 @@ public:
 
   //! Removes the last \p n columns.
   /*!
-    \pre
     The last \p n columns of the matrix are all made of zeros.
     If such an assumption is not met, the behavior is undefined.
   */

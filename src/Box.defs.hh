@@ -67,7 +67,7 @@ void swap(Box<ITV>& x, Box<ITV>& y);
 template <typename ITV>
 bool operator==(const Box<ITV>& x, const Box<ITV>& y);
 
-//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same box.
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not the same box.
 /*! \relates Box
   Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>true</CODE> is returned.
@@ -909,7 +909,7 @@ public:
   void propagate_constraint(const Constraint& c);
 
   /*! \brief
-    Use the constraints in \p cs for constraint propagagion on \p *this.
+    Use the constraints in \p cs for constraint propagation on \p *this.
 
     \param cs
     The constraints to be used for constraint propagation.
@@ -2033,7 +2033,7 @@ private:
 
     \param max_iterations
     The maximum number of propagation steps for each constraint in \p cs.
-    If zero, the number of propagations will be unbounded, possibly
+    If zero, the number of propagation steps will be unbounded, possibly
     resulting in an infinite loop.
 
     \warning
