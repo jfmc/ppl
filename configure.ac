@@ -24,7 +24,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.12pre2], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.12pre3], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -81,6 +81,9 @@ AC_SUBST(ISODATE)
 AH_TOP([
 /* BEGIN ppl-config.h */
 
+#ifndef PPL_ppl_config_h
+#define PPL_ppl_config_h 1
+
 /* Unique (nonzero) code for the IEEE 754 Single Precision
    floating point format.  */
 #define PPL_FLOAT_IEEE754_SINGLE 1
@@ -121,6 +124,8 @@ AH_BOTTOM([
 #endif
 
 #define PPL_U(x) x
+
+#endif /* !defined(PPL_ppl_config_h) */
 
 /* END ppl-config.h */
 ])

@@ -45,7 +45,7 @@ namespace Interfaces {
 namespace OCaml {
 
 struct custom_operations m4_current_interface`'_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "m4_current_interface"|COMMA|
+  "com.bugseng.ppl" "." PPL_VERSION "." "m4_current_interface"|COMMA|
   custom_`'m4_current_interface`'_finalize|COMMA|
   custom_compare_default|COMMA|
   custom_hash_default|COMMA|
@@ -1057,7 +1057,7 @@ custom_@CLASS@_iterator_finalize(value v) {
 }
 
 struct custom_operations @CLASS@_iterator_custom_operations = {
-  "it.unipr.cs.ppl" "." PPL_VERSION "." "@CLASS@_iterator"|COMMA|
+  "com.bugseng.ppl" "." PPL_VERSION "." "@CLASS@_iterator"|COMMA|
   custom_@CLASS@_iterator_finalize|COMMA|
   custom_compare_default|COMMA|
   custom_hash_default|COMMA|

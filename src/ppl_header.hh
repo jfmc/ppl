@@ -114,4 +114,4 @@ site: http://bugseng.com/products/ppl/ . */
  #undef PPL_NO_AUTOMATIC_INITIALIZATION
 #endif
 
-#endif
+#endif // !defined(PPL_ppl_hh)

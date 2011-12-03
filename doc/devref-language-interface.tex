@@ -35,6 +35,7 @@
 \usepackage{textcomp}
 \usepackage{alltt}
 \usepackage{times}
+\usepackage{tocloft}
 \usepackage{ifpdf}
 \ifpdf
 \usepackage[pdftex,
@@ -58,22 +59,23 @@
 \usepackage{ppl}
 \makeindex
 \setcounter{tocdepth}{2}
-\renewcommand{\footrulewidth}{0.4pt}
 
-\rfoot[\fancyplain{}{\scriptsize The Parma Polyhedra Library <PPL_SED_LANGUAGE_NAME> Language Interface Developer's Manual (version $projectnumber). See \url{http://bugseng.com/products/ppl/} for more information.}]{}
-\lfoot[]{\fancyplain{}{\scriptsize The Parma Polyhedra Library <PPL_SED_LANGUAGE_NAME> Language Interface Developer's Manual (version $projectnumber). See \url{http://bugseng.com/products/ppl/} for more information.}}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\includegraphics[height=0.4cm]{ppl_logo_no_ppl.pdf}}
+\fancyfoot[RE,LO]{\scriptsize The PPL <PPL_SED_LANGUAGE_NAME> Language Interface Developer's Manual (version $projectnumber). See \url{http://bugseng.com} for more information.}
 
 \setlength{\headheight}{24pt}
 
-%% This only applies to the title: it avoids a pdf duplicate link error.
-\pagenumbering{Alph}
-
 \begin{document}
 \title{
+\includegraphics[height=9cm]{ppl_logo.pdf} \\
+\ \\
 The Parma Polyhedra Library \\
 <PPL_SED_LANGUAGE_NAME> Language Interface \\
-Developer's Manual\thanks{This work
-  has been partly supported by:
+Developer's Manual\thanks{This work is based on previous work also by
+Elisa Ricci, Sara Bonini, Andrea Pescetti, Angela Stazzone, Tatiana Zolo.
+This work has been partly supported by:
   University of Parma's FIL scientific research project (ex 60\%)
     ``Pure and Applied Mathematics'';
   MURST project
@@ -97,16 +99,24 @@ Developer's Manual\thanks{This work
 }
 \author{
 Roberto Bagnara\thanks{bagnara@cs.unipr.it,
-  Department of Mathematics, University of Parma, Italy.} \\
-Patricia M. Hill\thanks{hill@comp.leeds.ac.uk,
-  School of Computing, University of Leeds, U.K.} \\
+  Department of Mathematics, University of Parma, Italy,
+  and BUGSENG srl.} \\
+Patricia M. Hill\thanks{patricia.hill@bugseng.com,
+  BUGSENG srl.} \\
 Enea Zaffanella\thanks{zaffanella@cs.unipr.it,
-  Department of Mathematics, University of Parma, Italy.}
+  Department of Mathematics, University of Parma, Italy,
+  and BUGSENG srl.} \\
+Abramo Bagnara\thanks{abramo.bagnara@bugseng.com,
+  BUGSENG srl.} \\
 }
-\maketitle
+{\sffamily\maketitle}
+\thispagestyle{empty}
+\clearpage{\pagestyle{empty}\cleardoublepage}
 
 \newpage
-Copyright \copyright\ 2001--2010 Roberto Bagnara (bagnara@cs.unipr.it).
+Copyright \copyright\ 2001--2010 Roberto Bagnara (bagnara@cs.unipr.it) \\
+Copyright \copyright\ 2010--2011 BUGSENG srl (http://bugseng.com)
+
 
 This document describes the Parma Polyhedra Library (PPL).
 
@@ -135,7 +145,22 @@ site:
 \begin{center}
 \href{http://bugseng.com/products/ppl/}{\tt http://bugseng.com/products/ppl/}
 \end{center}
+\vfill
+\begin{center}
+\includegraphics[width=5cm]{bugseng_logo.pdf}
+\end{center}
+\vfill
+\clearpage{\pagestyle{empty}\cleardoublepage}
+
+% The following command is needed to have the right footer on
+% the first page of the TOC.
+\addtocontents{toc}{\protect\thispagestyle{fancy}}
+
+% Make sure there is enough space in the TOC for long subsection numbers.
+\addtolength{\cftsubsecnumwidth}{1em}
 
 \pagenumbering{roman}
 \tableofcontents
+\clearpage{\pagestyle{empty}\cleardoublepage}
+
 \pagenumbering{arabic}

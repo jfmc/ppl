@@ -81,6 +81,7 @@ ppl-config.cc \
 ppl.hh
 
 ppl_config_LDADD = \
+@extra_libraries@ \
 libppl.la
 
 if USE_NATIVE_INTEGERS

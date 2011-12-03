@@ -271,7 +271,7 @@ public:
 
     PPL::dimension_type num_ctx_rows;
     PPL::dimension_type num_params;
-    getline_nocomment(in, line);
+    getline_no_comment(in, line);
     {
       std::istringstream sin(line);
       sin >> num_ctx_rows >> num_params;
@@ -282,7 +282,7 @@ public:
     Coeff_Vector context(num_ctx_rows * (1+num_params));
     Int_Vector ctx_type(num_ctx_rows);
     for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
-      getline_nocomment(in, line);
+      getline_no_comment(in, line);
       std::istringstream sin(line);
       sin >> ctx_type[i];
       for (PPL::dimension_type j = 0; j <= num_params; ++j) {
@@ -291,7 +291,7 @@ public:
     }
 
     int bignum_column_coding;
-    getline_nocomment(in, line);
+    getline_no_comment(in, line);
     {
       std::istringstream sin(line);
       sin >> bignum_column_coding;
@@ -300,7 +300,7 @@ public:
     PPL::dimension_type num_constraints;
     PPL::dimension_type constraint_width;
     PPL::dimension_type num_vars;
-    getline_nocomment(in, line);
+    getline_no_comment(in, line);
     {
       std::istringstream sin(line);
       sin >> num_constraints >> constraint_width;
@@ -311,7 +311,7 @@ public:
     Coeff_Vector constraints(num_constraints * constraint_width);
     Int_Vector constraint_type(num_constraints);
     for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
-      getline_nocomment(in, line);
+      getline_no_comment(in, line);
       std::istringstream sin(line);
       sin >> constraint_type[i];
       for (PPL::dimension_type j = 0; j < constraint_width; ++j) {
@@ -332,7 +332,7 @@ public:
   }
 
 protected:
-  static void getline_nocomment(std::istream& in, std::string& s) {
+  static void getline_no_comment(std::istream& in, std::string& s) {
     do {
       getline(in, s);
     } while (s.size() == 0 || s[0] == '\r' || s[0] == '#');

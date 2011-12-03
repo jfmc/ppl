@@ -53,6 +53,8 @@ then
   gmp_library_options="-L$gmp_library_paths"
 fi
 
+gmp_libs="-lgmpxx -lgmp"
+
 AC_ARG_WITH(gmp-build,
   AS_HELP_STRING([--with-gmp-build=DIR],
                  [use a non-installed build of GMP in DIR]),
@@ -60,16 +62,17 @@ AC_ARG_WITH(gmp-build,
   if test -n "$with_gmp" \
   || test -n "$with_gmp_include" || test -n "$with_gmp_lib"
   then
-    gmp_include_options="-I$gmp_build_dir -I$gmp_build_dir/tune"
-    gmp_library_paths="$gmp_build_dir$PATH_SEPARATOR$gmp_build_dir/.libs:$gmp_build_dir/tune"
-    gmp_library_options="-L$gmp_build_dir -L$gmp_build_dir/.libs"
-    gmp_library_options="$gmp_library_options -L$gmp_build_dir/tune"
-  else
     AC_MSG_ERROR([cannot use --with-gmp-build and other --with-gmp* options together])
+  else
+    gmp_srcdir=`echo @abs_srcdir@ | $gmp_build_dir/config.status --file=-`
+    gmp_include_options="-I$gmp_build_dir -I$gmp_build_dir/tune -I$gmp_srcdir"
+    gmp_libs="$gmp_build_dir/libgmp.la $gmp_build_dir/libgmpxx.la"
   fi)
 
-gmp_library_options="$gmp_library_options -lgmpxx -lgmp"
+gmp_library_options="$gmp_library_options $gmp_libs"
 
+ac_save_CXX="$CXX"
+CXX="libtool --mode=link $CXX"
 ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"
@@ -220,4 +223,5 @@ AC_LANG_POP(C++)
 eval $shared_library_path_env_var=\"$ac_save_shared_library_path\"
 LIBS="$ac_save_LIBS"
 CPPFLAGS="$ac_save_CPPFLAGS"
+CXX="$ac_save_CXX"
 ])

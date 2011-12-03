@@ -79,7 +79,7 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
-//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not the same BDS.
 /*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>true</CODE> is returned.
@@ -1036,8 +1036,8 @@ public:
   */
   template <typename Interval_Info>
   void refine_with_linear_form_inequality(
-                   const Linear_Form< Interval<T, Interval_Info> >& left,
-                   const Linear_Form< Interval<T, Interval_Info> >& right);
+                   const Linear_Form<Interval<T, Interval_Info> >& left,
+                   const Linear_Form<Interval<T, Interval_Info> >& right);
 
   /*! \brief
     Refines the system of BD_Shape constraints defining \p *this using
@@ -1069,8 +1069,8 @@ public:
   */
   template <typename Interval_Info>
   void generalized_refine_with_linear_form_inequality(
-                   const Linear_Form< Interval<T, Interval_Info> >& left,
-                   const Linear_Form< Interval<T, Interval_Info> >& right,
+                   const Linear_Form<Interval<T, Interval_Info> >& left,
+                   const Linear_Form<Interval<T, Interval_Info> >& right,
                    Relation_Symbol relsym);
 
   //! Applies to \p dest the interval constraints embedded in \p *this.
@@ -1237,7 +1237,7 @@ public:
   */
   template <typename Interval_Info>
   void affine_form_image(Variable var,
-                        const Linear_Form< Interval<T, Interval_Info> >& lf);
+                        const Linear_Form<Interval<T, Interval_Info> >& lf);
 
   /*! \brief
     Assigns to \p *this the
@@ -1876,8 +1876,8 @@ public:
     The interval floating point abstract store to refine.
   */
   template <typename Interval_Info>
-  void refine_fp_interval_abstract_store(
-                          Box< Interval<T, Interval_Info> >& store) const;
+  void refine_fp_interval_abstract_store(Box<Interval<T, Interval_Info> >&
+                                         store) const;
 
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
@@ -2132,7 +2132,7 @@ private:
     if the assumption does not hold, the behavior is undefined.
 
     \note
-    The integer case is only enabled if T is an integer datatype.
+    The integer case is only enabled if T is an integer data type.
   */
   template <bool integer_upper_bound>
   bool BHZ09_upper_bound_assign_if_exact(const BD_Shape& y);
@@ -2166,10 +2166,10 @@ private:
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j, const N& k);
 
-  //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
+  //! Adds the constraint <CODE>dbm[i][j] \<= numer/denom</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j,
-                          Coefficient_traits::const_reference num,
-                          Coefficient_traits::const_reference den);
+                          Coefficient_traits::const_reference numer,
+                          Coefficient_traits::const_reference denom);
 
   /*! \brief
     Adds to the BDS the constraint
@@ -2233,7 +2233,7 @@ private:
   */
   template <typename Interval_Info>
   void two_variables_affine_form_image(const dimension_type& var_id,
-                 const Linear_Form< Interval<T,Interval_Info> >& lf,
+                 const Linear_Form<Interval<T,Interval_Info> >& lf,
                                    const dimension_type& space_dim);
 
   /* \brief
@@ -2243,8 +2243,8 @@ private:
   template <typename Interval_Info>
   void left_inhomogeneous_refine(const dimension_type& right_t,
 				 const dimension_type& right_w_id,
-		   const Linear_Form< Interval<T, Interval_Info> >& left,
-                   const Linear_Form< Interval<T, Interval_Info> >& right);
+		   const Linear_Form<Interval<T, Interval_Info> >& left,
+                   const Linear_Form<Interval<T, Interval_Info> >& right);
 
   /* \brief
     Auxiliary function for refine with linear form that handle
@@ -2254,8 +2254,8 @@ private:
   void left_one_var_refine(const dimension_type& left_w_id,
 			   const dimension_type& right_t,
 			   const dimension_type& right_w_id,
-		   const Linear_Form< Interval<T, Interval_Info> >& left,
-                   const Linear_Form< Interval<T, Interval_Info> >& right);
+		   const Linear_Form<Interval<T, Interval_Info> >& left,
+                   const Linear_Form<Interval<T, Interval_Info> >& right);
 
 /* \brief
     Auxiliary function for refine with linear form that handle
@@ -2264,13 +2264,13 @@ private:
   template <typename Interval_Info>
   void general_refine(const dimension_type& left_w_id,
 			   const dimension_type& right_w_id,
-		   const Linear_Form< Interval<T, Interval_Info> >& left,
-                   const Linear_Form< Interval<T, Interval_Info> >& right);
+		   const Linear_Form<Interval<T, Interval_Info> >& left,
+                   const Linear_Form<Interval<T, Interval_Info> >& right);
 
   template <typename Interval_Info>
-  void linear_form_upper_bound(
-             const Linear_Form< Interval<T, Interval_Info> >& lf,
-                                                       N& result) const;
+  void linear_form_upper_bound(const Linear_Form<Interval<T, Interval_Info> >&
+                               lf,
+                               N& result) const;
 
   //! An helper function for the computation of affine relations.
   /*!
@@ -2343,7 +2343,7 @@ private:
   template<typename Interval_Info>
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
-				    const Linear_Form< Interval<T,
+				    const Linear_Form<Interval<T,
 				    Interval_Info> >& lf) const;
 
   static void throw_expression_too_complex(const char* method,

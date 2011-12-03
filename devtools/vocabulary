@@ -1,4 +1,4 @@
-TOTAL_COUNT	589263
+TOTAL_COUNT	600795
 a	5311
 ab	1
 abandon	18
@@ -16,6 +16,7 @@ absolutely	1
 abstract	56
 abstraction	4
 abstractions	4
+accept	1
 acceptable	1
 accepted	4
 accepts	2
@@ -56,6 +57,8 @@ adding	171
 addition	19
 additional	67
 additive	28
+addmod	4
+addmul	2
 address	1
 addressed	1
 adds	125
@@ -93,6 +96,7 @@ alias	17
 aliasing	1
 aligned	4
 all	1053
+alloc	10
 allocate	16
 allocated	29
 allocates	3
@@ -138,6 +142,7 @@ anyway	6
 ap	29
 apart	4
 api	6
+app	2
 apparently	2
 appear	4
 appearances	8
@@ -170,9 +175,11 @@ architectures	4
 are	2188
 areas	1
 arg	126
+argc	14
 args	3
 argument	758
 arguments	18
+argv	16
 arise	1
 arises	1
 arithmetic	13
@@ -282,6 +289,7 @@ belong	9
 belongs	13
 below	121
 bemporad	2
+benchmark	1
 benchmarks	1
 beneficial	1
 benefits	2
@@ -305,6 +313,7 @@ big	68
 bigendian	6
 bigger	7
 biggest	3
+bignum	15
 binary	188
 bind	2
 binds	1
@@ -319,12 +328,14 @@ black	2
 block	2
 blocks	2
 bmpz	28
+bnot	1
 body	28
 bomb	38
 bool	2597
 boolean	24
 booleans	2
 bop	2
+bor	1
 boston	288
 both	191
 bother	2
@@ -361,6 +372,7 @@ builtin	7
 bump	10
 but	538
 bx	1
+bxor	1
 by	1674
 byte	23
 bytes	413
@@ -408,6 +420,7 @@ causes	4
 causing	1
 cb	17
 cc	81
+cddlib	2
 ceil	44
 cell	36
 cells	5
@@ -421,6 +434,7 @@ certificates	19
 certified	2
 certify	2
 cg	608
+cgs	632
 ch	21
 chain	14
 chains	1
@@ -445,6 +459,7 @@ checked	823
 checking	42
 checkme	18
 checks	144
+chernikova	1
 chi	38
 child	164
 children	2
@@ -457,6 +472,7 @@ chop	2
 chosen	10
 chunk	4
 ci	242
+cin	4
 circles	1
 ck	68
 cl	4
@@ -526,6 +542,8 @@ come	10
 comeau	3
 comes	11
 comma	5
+command	8
+commands	1
 comment	13
 commented	2
 comments	3
@@ -731,6 +749,7 @@ csecs	29
 csetjmp	1
 csignal	2
 cst	12
+cstdarg	2
 cstddef	15
 cstdio	1
 cstdlib	5
@@ -762,6 +781,7 @@ data	315
 date	1033
 day	1
 db	482
+dbm	819
 dbm	820
 dd	19
 deadline	40
@@ -779,6 +799,7 @@ dec	31
 decide	4
 decided	2
 decision	100
+decl	37
 declaration	94
 declarations	53
 declare	120
@@ -806,6 +827,7 @@ definite	1
 definitely	45
 definition	22
 definitions	48
+defs	258
 degenerate	26
 del	5
 delay	35
@@ -821,8 +843,11 @@ delimited	1
 delimiter	2
 delta	40
 den	950
+denom	123
 denominator	950
 denominators	35
+denorm	25
+denormalized	1
 denote	5
 denoted	3
 denotes	7
@@ -872,6 +897,7 @@ determining	1
 determinism	2
 deterministic	3
 detriment	4
+devel	5
 developed	4
 developers	1
 dfs	30
@@ -880,6 +906,7 @@ diagonal	54
 diagonals	1
 dictated	13
 did	2
+dies	1
 diff	88
 differ	1
 difference	249
@@ -920,6 +947,7 @@ disjunct	92
 disjuncts	61
 displaced	4
 displacement	2
+display	4
 disregard	10
 disregarded	11
 disregarding	7
@@ -994,6 +1022,7 @@ eat	1
 ec	15
 eclair	1
 ed	1
+edg	4
 edge	32
 edition	3
 effect	18
@@ -1075,6 +1104,7 @@ entry	19
 enum	78
 enumerated	2
 enumeration	3
+env	15
 envelope	1
 eof	36
 epsilon	146
@@ -1096,11 +1126,13 @@ errno	3
 error	286
 errors	5
 es	1
+especially	2
 essence	1
 established	1
 establishes	1
 estimate	1
 etc	6
+eth	2
 euclidean	75
 ev	8
 evaluate	31
@@ -1142,11 +1174,13 @@ exclusive	3
 executable	19
 executed	1
 executes	3
+executing	1
 execution	6
 exhausted	4
 exist	14
 existed	1
 existential	4
+existentiallly	1
 existentially	15
 existing	51
 exists	57
@@ -1158,6 +1192,7 @@ expanded	25
 expanding	3
 expands	3
 expansion	1
+expect	6
 expected	13
 expects	1
 expense	1
@@ -1224,6 +1259,7 @@ far	28
 farkas	5
 fast	69
 faster	24
+fatal	30
 favor	1
 favored	1
 fe	12
@@ -1246,6 +1282,7 @@ fields	5
 fifth	283
 figure	1
 file	382
+files	6
 fill	35
 filled	2
 filter	27
@@ -1316,11 +1353,14 @@ found	170
 foundation	576
 four	8
 fourth	8
+fprintf	18
 fpu	240
+frac	98
 fraction	15
 fractional	10
 fractions	2
 fragment	3
+frames	3
 framework	3
 franklin	282
 fread	1
@@ -1336,6 +1376,7 @@ friends	1
 friendship	1
 from	2466
 front	4
+fstream	2
 fukuda	2
 fulfill	2
 full	24
@@ -1380,6 +1421,9 @@ geq	98
 get	770
 getc	2
 getitimer	5
+getline	9
+getopt	22
+getrlimit	3
 getrusage	4
 gets	12
 getting	7
@@ -1422,11 +1466,14 @@ guarantee	14
 guaranteed	4
 guarantees	7
 guard	7
+guarded	67
 guess	2
 guidelines	1
 h	387
 had	3
 half	146
+halfspace	6
+halfspaces	1
 hand	123
 handle	154
 handled	4
@@ -1461,6 +1508,7 @@ heuristically	1
 heuristics	32
 hex	8
 hexadecimal	3
+hh	883
 hi	9
 hidden	1
 hiding	1
@@ -1500,6 +1548,7 @@ ia	1
 ibm	28
 icc	3
 id	581
+idefs	16
 idempotent	2
 identical	18
 identified	9
@@ -1515,11 +1564,13 @@ ieeefp	3
 if	11371
 ifdef	303
 ifndef	584
+ifstream	2
 ignore	73
 ignored	114
 ignores	3
 ignoring	7
 ii	136
+ij	138
 illegal	13
 image	272
 images	5
@@ -1612,6 +1663,7 @@ info	1277
 informally	1
 information	352
 infty	44
+ingroup	151
 inherit	6
 inheritance	1
 inherited	22
@@ -1734,6 +1786,7 @@ irrational	16
 irredundant	8
 is	9825
 iso	15
+isqrt	2
 isspace	8
 issue	5
 issues	6
@@ -1750,12 +1803,14 @@ iteration	33
 iterations	30
 iterator	2640
 iterators	67
+itimer	5
 itimerval	7
 its	251
 itself	16
 iv	13
 ix	5
 j	2621
+ji	8
 jmp	1
 job	4
 join	19
@@ -1788,6 +1843,7 @@ lack	1
 lacks	2
 lambda	52
 land	1
+langle	23
 language	3
 languages	1
 large	3
@@ -1803,6 +1859,7 @@ lazily	4
 laziness	2
 lazy	17
 lb	438
+lcdd	13
 lcm	154
 ldexp	1
 le	256
@@ -1831,12 +1888,15 @@ les	26
 less	257
 lesser	1
 let	68
+letters	14
 letting	3
 level	97
 lexicographic	12
 lexicographically	3
+lf	299
 lhs	554
 li	36
+lib	6
 libraries	1
 library	1792
 license	1152
@@ -1844,6 +1904,7 @@ licensing	1
 lie	6
 lies	9
 life	1
+lift	4
 lifted	1
 lifter	9
 lifts	1
@@ -1862,6 +1923,7 @@ lin	23
 line	451
 lineality	9
 linear	2415
+linearity	30
 linearization	2
 linearize	2
 linearized	1
@@ -1907,9 +1969,12 @@ low	65
 lower	897
 lowest	1
 lp	179
+lpsol	2
 lr	7
+lrs	1
 ls	34
 lt	151
+lub	2
 luckily	1
 lying	4
 m	1346
@@ -1917,11 +1982,13 @@ ma	288
 machine	1
 macro	4
 made	29
+magic	2
 main	22
 maintain	1
 maintained	16
 major	2
 make	75
+makefile	1
 makes	22
 making	6
 managed	52
@@ -1979,6 +2046,7 @@ measured	2
 mechanism	6
 median	2
 meet	26
+mega	6
 member	106
 members	5
 memcpy	4
@@ -1997,6 +2065,7 @@ message	15
 messages	2
 met	4
 meta	3
+metaprogramming	1
 method	661
 methods	52
 mi	6
@@ -2026,8 +2095,10 @@ miscellaneous	6
 mislead	1
 mismatch	18
 mismatches	4
+misplaced	1
 misses	5
 missing	13
+mit	1
 mix	2
 mixed	54
 mk	19
@@ -2070,6 +2141,7 @@ msg	1
 mu	180
 much	12
 mul	570
+multi	3
 multiple	31
 multiples	1
 multiplication	6
@@ -2084,6 +2156,7 @@ must	392
 mutable	4
 mutate	3
 mutually	5
+mv	4
 my	7
 n	3364
 name	387
@@ -2153,6 +2226,7 @@ nonetheless	2
 nonnegative	22
 nonnegativity	2
 nonpositive	1
+nonstrict	35
 nontrivial	10
 nonzero	40
 nor	22
@@ -2176,11 +2250,13 @@ nr	10
 ns	69
 nu	6
 null	102
+num	3166
 numb	2
 number	1117
 numbered	1
 numbering	1
 numbers	35
+numer	79
 numerator	129
 numerators	30
 numeric	143
@@ -2223,6 +2299,7 @@ of	7575
 off	7
 offers	1
 offset	70
+ofstream	2
 ok	984
 old	486
 oldest	1
@@ -2233,6 +2310,7 @@ on	473
 once	38
 one	660
 ones	44
+oneshot	4
 only	975
 onto	49
 onward	1
@@ -2249,6 +2327,7 @@ opposed	2
 opposing	2
 opposite	2
 opt	19
+optarg	8
 optimal	33
 optimality	19
 optimally	36
@@ -2260,6 +2339,7 @@ optimized	68
 optimizes	17
 optimizing	34
 optimum	6
+optind	6
 option	289
 optional	83
 optionally	2
@@ -2276,12 +2356,15 @@ origin	48
 original	61
 originally	1
 os	176
+ostream	300
+ostringstream	96
 ot	1
 other	200
 others	2
 otherwise	275
 our	18
 ours	1
+ourselves	1
 out	214
 outcome	3
 outcomes	3
@@ -2289,6 +2372,10 @@ output	339
 outside	6
 over	30
 overall	5
+overapproximate	8
+overapproximated	4
+overapproximates	3
+overapproximation	1
 overcome	1
 overflow	314
 overflowed	4
@@ -2327,6 +2414,7 @@ parentheses	6
 parenthesis	2
 parma	1771
 parse	9
+parser	23
 parses	1
 parsing	1
 part	396
@@ -2343,6 +2431,7 @@ passing	11
 past	43
 path	362
 pay	1
+pbackfail	4
 pc	10
 pcs	93
 pd	20
@@ -2365,16 +2454,19 @@ perspective	3
 pf	10
 pg	5
 ph	395
+ph	480
 phase	21
 phi	3
 physically	1
 pi	81
 pip	631
 pipermail	5
+piplib	12
 pity	1
 pivot	381
 pivoting	10
 pivots	1
+pkint	23
 pl	10
 place	59
 placed	3
@@ -2399,16 +2491,19 @@ points	467
 pointset	570
 pointsets	2
 policy	2124
+polka	42
 poly	737
 polygons	1
 polyhedra	1782
 polyhedral	7
 polyhedron	1507
 polyhedrons	2
+polylib	33
 polynomial	40
 pomerance	1
 pool	1
 pop	1
+popcount	1
 populate	4
 populated	1
 populates	1
@@ -2429,6 +2524,7 @@ possibility	2
 possible	116
 possibly	88
 post	3
+postdecrement	1
 postfix	16
 postincrement	1
 postpone	2
@@ -2465,6 +2561,7 @@ prelims	5
 prep	48
 preparation	1
 prepare	12
+prepared	2
 preparing	2
 preprocessor	1
 presence	3
@@ -2546,8 +2643,10 @@ providing	12
 provisional	2
 provisos	1
 ps	29
+pset	668
 pseudo	41
 pt	25
+ptr	37
 ptrdiff	8
 public	1128
 published	288
@@ -2561,6 +2660,7 @@ put	35
 putc	1
 puts	2
 putting	1
+pwl	218
 px	12
 q	430
 qr	2
@@ -2588,6 +2688,7 @@ quotients	9
 r	2634
 race	1
 radix	4
+raii	7
 raise	7
 raises	2
 random	3
@@ -2606,6 +2707,7 @@ ratios	3
 raw	64
 ray	296
 rays	163
+rbegin	11
 rc	4
 rd	1
 re	25
@@ -2717,6 +2819,7 @@ releases	1
 relevant	30
 reliable	1
 relies	2
+relsym	423
 rem	95
 remain	11
 remainder	75
@@ -2772,6 +2875,7 @@ reschedule	7
 reserve	35
 reserved	120
 reset	346
+resethand	3
 resets	13
 residues	8
 resize	121
@@ -2818,6 +2922,7 @@ revision	2
 revived	2
 rewrite	1
 rho	11
+rhs	411
 rid	8
 right	480
 rightmost	9
@@ -2825,6 +2930,8 @@ rint	18
 rintf	2
 rintl	3
 rise	3
+rlim	6
+rlimit	13
 rm	3
 roberto	361
 role	9
@@ -2943,6 +3050,7 @@ set	1839
 setfill	2
 setitimer	17
 setjmp	1
+setrlimit	3
 sets	133
 setters	4
 setting	22
@@ -2978,7 +3086,9 @@ shuffle	1
 si	222
 side	121
 sides	3
+sig	2
 sigaction	17
+sigalrm	1
 sigemptyset	1
 sigill	6
 sign	579
@@ -2991,6 +3101,10 @@ signedness	4
 significance	1
 significant	3
 signs	9
+signum	6
+sigprof	1
+sigset	2
+sigxcpu	1
 silence	1
 silent	11
 silently	1
@@ -3096,10 +3210,12 @@ square	39
 squared	7
 squareness	2
 sr	4
+src	57
 srivastava	1
 srl	361
 ss	10
 sse	10
+sstream	15
 ssum	1
 st	15
 stabilization	12
@@ -3125,6 +3241,8 @@ stats	1
 status	609
 stay	4
 std	2815
+stderr	22
+stdexcept	32
 stdio	1
 stdiobuf	28
 stdout	2
@@ -3148,8 +3266,11 @@ storing	42
 str	513
 straight	1
 strategy	59
+strcmp	2
 stream	9
 streambuf	41
+streams	2
+streamsize	23
 street	282
 strerror	3
 strict	362
@@ -3162,6 +3283,9 @@ strlen	1
 strong	238
 stronger	2
 strongly	159
+strtol	4
+strtoll	2
+strtoull	2
 struct	300
 structure	44
 structures	30
@@ -3171,6 +3295,8 @@ style	17
 sub	339
 subdivided	1
 subject	46
+submatrix	3
+subproblem	1
 subscript	16
 subscripted	1
 subsequently	1
@@ -3181,6 +3307,7 @@ substituted	10
 substitutes	8
 substituting	2
 substitution	13
+substr	7
 subsume	7
 subsumed	2
 subsumes	40
@@ -3247,12 +3374,15 @@ syntactic	17
 syntactically	24
 syntax	7
 sys	1251
+syscall	6
 system	2750
 systematic	1
 systematically	1
 systems	98
 sz	154
 t	4356
+tab	4
+table	1
 tableau	471
 tag	30
 tailored	2
@@ -3273,6 +3403,7 @@ tells	1
 temp	1295
 template	2702
 templates	75
+templatic	1
 temple	6
 temporaries	23
 temporarily	34
@@ -3340,6 +3471,7 @@ time	484
 timeout	8
 timer	31
 times	55
+timeval	4
 timings	5
 tininess	4
 tmp	878
@@ -3352,6 +3484,7 @@ token	2
 tokens	116
 tonearest	4
 too	94
+tools	1
 top	73
 topol	93
 topological	42
@@ -3364,6 +3497,7 @@ toward	4
 towards	30
 towardzero	4
 tp	162
+tparam	9
 tr	118
 traces	1
 track	14
@@ -3429,7 +3563,9 @@ typeof	2
 types	246
 typically	4
 u	1039
+ub	659
 ul	13
+ulong	42
 un	8
 unaffected	4
 unaltered	5
@@ -3452,13 +3588,16 @@ understanding	1
 unexpected	2
 unfeasible	59
 unfolding	1
+unget	7
 ungetc	16
 uniform	1
 unimplemented	7
 uninitialized	31
 union	54
+unipr	368
 unique	13
 uniquely	3
+unistd	4
 unit	16
 units	2
 univ	155
@@ -3475,6 +3614,7 @@ unpredictable	1
 unprimed	15
 unreachable	15
 unreferenced	1
+unregisters	1
 unrepresentable	19
 unrestricted	16
 unsatisfiability	3
@@ -3518,6 +3658,7 @@ usual	14
 usually	1
 utilities	10
 utility	6
+utime	10
 v	2644
 va	3
 val	211
@@ -3534,12 +3675,15 @@ variant	6
 variants	2
 variation	1
 variations	3
+varid	7
 various	1
 vars	725
+vc	143
 vect	309
 vector	529
 vectors	7
 verbatim	9
+verbose	12
 verbosely	1
 verbs	1
 verifiers	4
@@ -3551,6 +3695,7 @@ versions	6
 vertex	3
 vertices	5
 very	15
+vfprintf	6
 vi	16
 via	5
 vice	17
@@ -3571,6 +3716,7 @@ vs	25
 w	710
 want	33
 wanted	8
+warn	1
 warned	3
 warning	44
 warnings	8
@@ -3642,6 +3788,7 @@ wrapped	59
 wrapper	68
 wrapping	48
 wraps	15
+wrd	14
 writable	1
 write	307
 writes	21
@@ -3655,6 +3802,8 @@ x	7318
 xi	111
 xl	42
 xs	6
+xsgetn	4
+xsputn	4
 xv	10
 xx	7
 y	6158
