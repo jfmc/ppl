@@ -33,7 +33,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Coefficient.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include "Topology.hh"
+#include "Topology.types.hh"
 #include "Expression_Hide_Inhomo.defs.hh"
 #include "Expression_Hide_Last.defs.hh"
 

@@ -28,7 +28,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Swapping_Vector.defs.hh"
 #include "globals.defs.hh"
-#include "Topology.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 
@@ -36,6 +35,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Bit_Row.types.hh"
 #include "Bit_Matrix.types.hh"
 #include "Generator_System.types.hh"
+#include "Topology.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for systems of constraints and generators.

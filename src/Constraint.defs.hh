@@ -34,7 +34,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Linear_Expression.defs.hh"
 #include "Variable.defs.hh"
-#include "Topology.hh"
+#include "Topology.types.hh"
 #include "Expression_Hide_Last.defs.hh"
 
 #include <iosfwd>

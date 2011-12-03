@@ -250,7 +250,7 @@ Variables_Set.inlines.hh \
 Init.defs.hh \
 Init.inlines.hh \
 initializer.hh \
-Topology.hh \
+Topology.types.hh \
 Dense_Row.defs.hh \
 Dense_Row.inlines.hh \
 Dense_Row.templates.hh \
