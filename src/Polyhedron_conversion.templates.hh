@@ -400,7 +400,7 @@ Polyhedron::conversion(Source_Linear_System& source,
     // constraint `source_k' and the generator `dest_rows[i]'.  This
     // product is 0 if and only if the generator saturates the
     // constraint.
-    PPL_DIRTY_TEMP0(std::vector<Coefficient>, scalar_prod);
+    PPL_DIRTY_TEMP(std::vector<Coefficient>, scalar_prod);
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());

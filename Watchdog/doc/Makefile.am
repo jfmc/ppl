@@ -144,10 +144,23 @@ uninstall-pdf \
 uninstall-ps \
 uninstall-txt
 
+
+if BUILD_DOCUMENTATION
+
+CONTINUE_IF_NO_DOC = true
+
+else !BUILD_DOCUMENTATION
+
+CONTINUE_IF_NO_DOC = continue
+
+endif !BUILD_DOCUMENTATION
+
+
 # Installation and uninstallation of HTML documentation.
 install-html:
 	for ball in $(DIST_HTML_DOCS); do \
-	  test -f $$ball || test -f $(srcdir)/$$ball || $(MAKE) $$ball; \
+	  test -f $$ball || test -f $(srcdir)/$$ball \
+	    || $(CONTINUE_IF_NO_DOC) || $(MAKE) $$ball; \
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
 	  gunzip -c `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball | tar xf - ; \
@@ -172,7 +185,8 @@ uninstall-html:
 install-pdf:
 	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
 	for file in $(DIST_PDF_DOCS); do \
-	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
+	  test -f $$file || test -f $(srcdir)/$$file \
+	    || $(CONTINUE_IF_NO_DOC) || $(MAKE) $$file; \
 	  $(INSTALL_DATA) `if test -f $$file; then echo .; else echo $(srcdir); fi`/$$file $(DESTDIR)$(pdfdir)/$$file; \
 	done
 
@@ -183,10 +197,14 @@ uninstall-pdf:
 	rm -f $(DESTDIR)$(pdfdir)/*.pdf
 
 # Installation and uninstallation of PostScript documentation.
-install-ps:
+# The PostScript documentation is obtained from the PDF one;
+# the dependency is needed so as to make sure the PDF documentation
+# is fully built before the conversion is performed.
+install-ps: install-pdf
 	$(mkinstalldirs) $(DESTDIR)$(psdir)
 	for file in $(DIST_PS_DOCS); do \
-	  test -f $$file || test -f $(srcdir)/$$file || $(MAKE) $$file; \
+	  test -f $$file || test -f $(srcdir)/$$file \
+	    || $(CONTINUE_IF_NO_DOC) || $(MAKE) $$file; \
 	  $(INSTALL_DATA) `if test -f $$file; then echo .; else echo $(srcdir); fi`/$$file $(DESTDIR)$(psdir)/$$file; \
 	done
 

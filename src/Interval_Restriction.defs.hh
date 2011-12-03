@@ -618,6 +618,9 @@ inline bool
 diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
 		 const From1& x, const From2& y) {
   // FIXME: to be written
+  used(to);
+  used(x);
+  used(y);
   return true;
 }
 
@@ -771,8 +774,8 @@ inline void
 mulmod(T& to, const T& x, const T& y, const T& to_m) {
   Result r;
   if (std::numeric_limits<T>::is_bounded) {
-    PPL_DIRTY_TEMP0(mpz_class, a);
-    PPL_DIRTY_TEMP0(mpz_class, b);
+    PPL_DIRTY_TEMP(mpz_class, a);
+    PPL_DIRTY_TEMP(mpz_class, b);
     r = assign_r(a, x, ROUND_NOT_NEEDED);
     PPL_ASSERT(r == V_EQ);
     r = assign_r(b, y, ROUND_NOT_NEEDED);

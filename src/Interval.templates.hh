@@ -37,6 +37,8 @@ Interval<Boundary, Info>::lower_extend(const C& c) {
   switch (c.rel()) {
   case V_LGE:
     return lower_extend();
+  default:
+    PPL_ASSERT(false);
   case V_NAN:
     return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   case V_GT:
@@ -46,8 +48,6 @@ Interval<Boundary, Info>::lower_extend(const C& c) {
   case V_EQ:
     open = false;
     break;
-  default:
-    PPL_ASSERT(false);
   }
   min_assign(LOWER, lower(), info(), LOWER, c.value(), f_info(c.value(), open));
   PPL_ASSERT(OK());
@@ -63,6 +63,8 @@ Interval<Boundary, Info>::upper_extend(const C& c) {
   switch (c.rel()) {
   case V_LGE:
     return lower_extend();
+  default:
+    PPL_ASSERT(false);
   case V_NAN:
     return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   case V_LT:
@@ -72,8 +74,6 @@ Interval<Boundary, Info>::upper_extend(const C& c) {
   case V_EQ:
     open = false;
     break;
-  default:
-    PPL_ASSERT(false);
   }
   max_assign(UPPER, upper(), info(), UPPER, c.value(), f_info(c.value(), open));
   PPL_ASSERT(OK());

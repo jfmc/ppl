@@ -96,6 +96,7 @@ static const char* ppl_source_version = PPL_VERSION;
 #endif
 
 #if defined(PPL_HAVE_SYS_RESOURCE_H) \
+  && PPL_CXX_SUPPORTS_LIMITING_MEMORY \
   && (defined(SA_ONESHOT) || defined(SA_RESETHAND))
 # define PPL_LPSOL_SUPPORTS_LIMIT_ON_CPU_TIME
 #endif
@@ -524,7 +525,7 @@ set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
 
 #endif /* defined(PPL_LPSOL_SUPPORTS_LIMIT_ON_CPU_TIME) */
 
-#if PPL_HAVE_DECL_RLIMIT_AS
+#if PPL_CXX_SUPPORTS_LIMITING_MEMORY && PPL_HAVE_DECL_RLIMIT_AS
 
 void
 limit_virtual_memory(unsigned long bytes) {
@@ -761,7 +762,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     ppl_delete_Constraint(ppl_c);
     break;
 
- default:
+  default:
     fatal("internal error");
     break;
   }
@@ -1000,9 +1001,10 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   return optimum_found;
 }
 
+extern void set_d_eps(mpq_t x, double val);
+
 static void
 set_mpq_t_from_double(mpq_t q, double d) {
-  void set_d_eps(mpq_t x, double val);
   if (check_results)
     set_d_eps(q, d);
   else

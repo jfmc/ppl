@@ -432,6 +432,7 @@ test19() {
   try {
     // This tests the space dimension exception..
    Poly_Con_Relation rel = box.relation_with((A + B %= 1) / 9);
+   (void) rel;
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

@@ -60,7 +60,7 @@ swap(T&, T&) {
   in decreased memory allocation overhead and in better locality.
 */
 #define PPL_DIRTY_TEMP_COEFFICIENT(id) \
-PPL_DIRTY_TEMP0(Parma_Polyhedra_Library::Coefficient, id)
+PPL_DIRTY_TEMP(Parma_Polyhedra_Library::Coefficient, id)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.

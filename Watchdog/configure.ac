@@ -355,6 +355,25 @@ esac
 AC_MSG_RESULT($build_watchdog_library)
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 
+enableval=yes
+AC_MSG_CHECKING([whether to build the PWL documentation])
+AC_ARG_ENABLE(documentation,
+  AS_HELP_STRING([--enable-documentation], [build the PWL documentation]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-documentation, needs yes or no])
+  ;;
+esac
+build_documentation=$enableval
+AM_CONDITIONAL(BUILD_DOCUMENTATION, test x"$build_documentation" = xyes)
+
+
 if test x"$build_watchdog_library" = xyes
 then
   # Checks for header files.

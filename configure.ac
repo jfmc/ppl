@@ -501,23 +501,33 @@ case "${host_os}" in
 cygwin*)
   cygwin=yes
   no_undefined=yes
+  shared_library_path_env_var=PATH
   ;;
 darwin*)
   darwin=yes
+  shared_library_path_env_var=DYLD_LIBRARY_PATH
+  ;;
+hpux*)
+  hpux=yes
+  shared_library_path_env_var=SHLIB_PATH
   ;;
 mingw*)
   mingw=yes
   no_undefined=yes
+  shared_library_path_env_var=PATH
   ;;
 solaris*)
   solaris=yes
+  shared_library_path_env_var=LD_LIBRARY_PATH
   ;;
 *)
+  shared_library_path_env_var=LD_LIBRARY_PATH
   ;;
 esac
 
 AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
 AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_HPUX, test x$hpux = xyes)
 AM_CONDITIONAL(HOST_OS_MINGW, test x$mingw = xyes)
 AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
 
@@ -777,8 +787,8 @@ then
 *** Please report this to ppl-devel@cs.unipr.it.])
 fi
 
-extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
-extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
+extra_includes="${extra_includes}${extra_includes:+ }${gmp_include_options}"
+extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_options}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
@@ -859,6 +869,24 @@ no)
 esac
 build_ppl_pips=$enableval
 AM_CONDITIONAL(BUILD_PPL_PIPS, test x"$build_ppl_pips" = xyes)
+
+enableval=yes
+AC_MSG_CHECKING([whether to build the PPL documentation])
+AC_ARG_ENABLE(documentation,
+  AS_HELP_STRING([--enable-documentation], [build the PPL documentation]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-documentation, needs yes or no])
+  ;;
+esac
+build_documentation=$enableval
+AM_CONDITIONAL(BUILD_DOCUMENTATION, test x"$build_documentation" = xyes)
 
 # Define lists of available interfaces: lowercase and blank-separated.
 non_prolog_interfaces="cxx c ocaml java"
@@ -1463,7 +1491,7 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 #endif
                ])
 
-AC_CHECK_DECLS([getrusage],
+AC_CHECK_DECLS([getrusage, setrlimit],
                ,
                ,
                [
@@ -1474,6 +1502,7 @@ AC_CHECK_DECLS([getrusage],
 # include <sys/resource.h>
 #endif
 ])
+
 AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -1482,8 +1511,7 @@ AC_CHECK_TYPES([siginfo_t], [], [], [[
 #include <signal.h>
 ]])
 
-# Check whether the IEEE inexact flag is supported and available to
-# C++ programs.
+# Check whether we can limit memory in C and C++ using setrlimit().
 AC_CXX_SUPPORTS_LIMITING_MEMORY
 
 # Checks for library functions.

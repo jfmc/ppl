@@ -212,9 +212,9 @@ void swap(Parma_Polyhedra_Library::Linear_Form<C>& x,
 
 } // namespace std
 
-//! A linear form.
+//! A linear form with interval coefficients.
 /*! \ingroup PPL_CXX_interface
-  An object of the class Linear_Form represents the linear form
+  An object of the class Linear_Form represents the interval linear form
   \f[
     \sum_{i=0}^{n-1} a_i x_i + b
   \f]
@@ -222,43 +222,44 @@ void swap(Parma_Polyhedra_Library::Linear_Form<C>& x,
   each \f$a_i\f$ is the coefficient
   of the \f$i\f$-th variable \f$x_i\f$
   and \f$b\f$ is the inhomogeneous term.
-  The coefficiens and the inhomogeneous terms of the linear form
-  are element of the template parameter \p C.
+  The coefficients and the inhomogeneous term of the linear form
+  have the template parameter \p C as their type. \p C must be the
+  type of an Interval.
 
-  \par How to build a linear form.
-
-  A full set of functions is defined to provide a convenient interface
-  for building complex linear forms starting from simpler ones
-  and from objects of the classes Variable and \p C:
-  available operators include unary negation,
-  binary addition and subtraction,
-  as well as multiplication by a Coefficient.
-  The space dimension of a linear form is defined as the maximum
-  space dimension of the arguments used to build it:
-  in particular, the space dimension of a Variable <CODE>x</CODE>
-  is defined as <CODE>x.id()+1</CODE>,
-  whereas all the objects of the class \p C have space dimension zero.
-
-  FIXME: the following needs rewriting.
+  \par How to build a linear form. 
+  A full set of functions is defined in order to provide a convenient
+  interface for building complex linear forms starting from simpler ones
+  and from objects of the classes Variable and \p C. Available operators
+  include binary addition and subtraction, as well as multiplication and
+  division by a coefficient.
+  The space dimension of a linear form is defined as
+  the highest variable dimension among variables that have a nonzero
+  coefficient in the linear form, or zero if no such variable exists.
+  The space dimension for each variable \f$x_i\f$ is given by \f$i + 1\f$.
 
   \par Example
-  The following code builds the linear form \f$4x - 2y - z + 14\f$,
-  having space dimension \f$3\f$:
+  Given the type \p T of an Interval with floating point coefficients (though
+  any integral type may also be used), the following code builds the interval
+  linear form \f$lf = x_5 - x_2 + 1\f$ with space dimension 6:
   \code
-  Linear_Form e = 4*x - 2*y - z + 14;
+  Variable x5(5);
+  Variable x2(2);
+  T x5_coefficient;
+  x5_coefficient.lower() = 2.0;
+  x5_coefficient.upper() = 3.0;
+  T inhomogeneous_term;
+  inhomogeneous_term.lower() = 4.0;
+  inhomogeneous_term.upper() = 8.0;
+  Linear_Form<T> lf(x2);
+  lf = -lf;
+  lf += Linear_Form<T>(x2);
+  Linear_Form<T> lx5(x5);
+  lx5 *= x5_coefficient;
+  lf += lx5;
   \endcode
-  Another way to build the same linear form is:
-  \code
-  Linear_Form e1 = 4*x;
-  Linear_Form e2 = 2*y;
-  Linear_Form e3 = z;
-  Linear_Form e = Linear_Form(14);
-  e += e1 - e2 - e3;
-  \endcode
-  Note that \p e1, \p e2 and \p e3 have space dimension 1, 2 and 3,
-  respectively; also, in the fourth line of code, \p e is created
-  with space dimension zero and then extended to space dimension 3
-  in the fifth line.
+  Note that \p lx5 is created with space dimension 6, while \p lf is created
+  with space dimension 0 and then extended first to space dimension 2 when x2
+  is subtracted and finally to space dimension 6 when lx5 is added.
 */
 template <typename C>
 class Parma_Polyhedra_Library::Linear_Form {

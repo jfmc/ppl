@@ -234,7 +234,7 @@ LIBPPL_SWIPROLOG_LINK_OPTIONS = -L.libs -lppl_swiprolog
 endif !ENABLE_STATIC
 
 ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
-	$(SWI_PROLOG_LD) -pl $(SWI_PROLOG) -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+	$(SWI_PROLOG_LD) -pl $(SWI_PROLOG) -cc "$(CC)" -c++ "$(CXX)" -ld "$(CXX)" \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $(LIBPPL_SWIPROLOG_LINK_OPTIONS) ppl_pl.o \
 		-L$(top_builddir)/src/.libs \

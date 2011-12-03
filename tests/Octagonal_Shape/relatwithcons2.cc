@@ -306,6 +306,7 @@ test14() {
     // it is illegal to use a constraint that is not dimension-compatible
     // with the octagon.
     Poly_Con_Relation rel = oc.relation_with(-C - B <= 2);
+    (void) rel;
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << e.what() << endl;

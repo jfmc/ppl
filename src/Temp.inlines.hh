@@ -83,7 +83,7 @@ Temp_Value_Holder<T>::Temp_Value_Holder() {
 }
 
 template <typename T>
-inline T
+inline T&
 Temp_Value_Holder<T>::item() {
   return item_;
 }
@@ -91,13 +91,7 @@ Temp_Value_Holder<T>::item() {
 } // namespace Parma_Polyhedra_Library
 
 #define PPL_DIRTY_TEMP(T, id)						\
-  typename                                                              \
-  Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder_ ## id;     \
-  typename                                                              \
-  Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder_ ## id.item()
-
-#define PPL_DIRTY_TEMP0(T, id)						\
-  Parma_Polyhedra_Library::Dirty_Temp<T>::holder_type holder_ ## id;	\
-  Parma_Polyhedra_Library::Dirty_Temp<T>::type id = holder_ ## id.item()
+  Parma_Polyhedra_Library::Dirty_Temp<T> holder_ ## id;     \
+  T& id = holder_ ## id.item()
 
 #endif // !defined(PPL_Temp_inlines_hh)

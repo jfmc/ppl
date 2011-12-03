@@ -26,17 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename From>
-typename Enable_If<Is_Interval<From>::value, I_Result>::type
-neg_assign(From& x) {
-  // FIXME: Avoid the creation of a temporary.
-  From y;
-  typename Enable_If<Is_Interval<From>::value, I_Result>::type res =
-                                                               y.neg_assign(x);
-  x = y;
-  return res;
-}
-
 template <typename Boundary, typename Info>
 inline memory_size_type
 Interval<Boundary, Info>::external_memory_in_bytes() const {
@@ -342,9 +331,8 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From& x) {
   PPL_ASSERT(f_OK(x));
   if (!intersect_restriction(info(), *this, x))
     return assign(EMPTY);
-  Result rl, ru;
-  rl = max_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
-  ru = min_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
+  max_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
+  min_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
   PPL_ASSERT(OK());
   return I_ANY;
 }
@@ -363,13 +351,12 @@ Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
   to_info.clear();
   if (!intersect_restriction(to_info, x, y))
     return assign(EMPTY);
-  Result rl, ru;
-  rl = max_assign(LOWER, lower(), to_info,
-		  LOWER, f_lower(x), f_info(x),
-		  LOWER, f_lower(y), f_info(y));
-  ru = min_assign(UPPER, upper(), to_info,
-		  UPPER, f_upper(x), f_info(x),
-		  UPPER, f_upper(y), f_info(y));
+  max_assign(LOWER, lower(), to_info,
+             LOWER, f_lower(x), f_info(x),
+             LOWER, f_lower(y), f_info(y));
+  min_assign(UPPER, upper(), to_info,
+             UPPER, f_upper(x), f_info(x),
+             UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return I_NOT_EMPTY;
@@ -531,7 +518,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-				      LOWER, f_lower(x), SCALAR_INFO, !is_open(LOWER, f_lower(x), f_info(x)));
+				      LOWER, f_lower(x), SCALAR_INFO,
+                                      !is_open(LOWER, f_lower(x), f_info(x)));
+      used(ru);
       normalize();
       return I_ANY;
     }
@@ -542,6 +531,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
 				      LOWER, f_lower(x), SCALAR_INFO);
+      used(ru);
       normalize();
       return I_ANY;
     }
@@ -551,7 +541,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
 	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-				      UPPER, f_upper(x), SCALAR_INFO, !is_open(UPPER, f_upper(x), f_info(x)));
+				      UPPER, f_upper(x), SCALAR_INFO,
+                                      !is_open(UPPER, f_upper(x), f_info(x)));
+      used(rl);
       normalize();
       return I_ANY;
     }
@@ -562,6 +554,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
 				      UPPER, f_upper(x), SCALAR_INFO);
+      used(rl);
       normalize();
       return I_ANY;
     }

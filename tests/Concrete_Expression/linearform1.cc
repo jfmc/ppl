@@ -307,6 +307,25 @@ test09() {
   return ok1 && ok2 && ok3;
 }
 
+bool
+test10() {
+  Variable x5(5);
+  Variable x2(2);
+  FP_Interval x5_coefficient;
+  x5_coefficient.lower() = 2.0;
+  x5_coefficient.upper() = 3.0;
+  FP_Interval inhomogeneous_term;
+  inhomogeneous_term.lower() = 4.0;
+  inhomogeneous_term.upper() = 8.0;
+  FP_Linear_Form lf(x2);
+  lf = -lf;
+  lf += FP_Linear_Form(x2);
+  FP_Linear_Form lx5(x5);
+  lx5 *= x5_coefficient;
+  lf += lx5;
+  return lf.space_dimension() == 6;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -319,4 +338,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

@@ -31,31 +31,30 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Prolog_term_ref t_nd,
                                                Prolog_term_ref t_uoe,
-                                               Prolog_term_ref t_ph)
-{
- static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3";
- try {
-      @TOPOLOGY@@CPP_CLASS@* ph;
-      Prolog_atom uoe = term_to_universe_or_empty(t_uoe, where);
+                                               Prolog_term_ref t_ph) {
+  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3";
+  try {
+    @TOPOLOGY@@CPP_CLASS@* ph;
+    Prolog_atom uoe = term_to_universe_or_empty(t_uoe, where);
 
-      if (uoe == a_empty)
-     ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd,
-                                                                     where),
-                                    EMPTY);
+    if (uoe == a_empty)
+      ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd,
+                                                                      where),
+                                     EMPTY);
     else
-     ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd,
-                                                                     where),
-                                    UNIVERSE);
+      ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd,
+                                                                      where),
+                                     UNIVERSE);
 
       Prolog_term_ref tmp = Prolog_new_term_ref();
       Prolog_put_address(tmp, ph);
       if (Prolog_unify(t_ph, tmp)) {
-                                    PPL_REGISTER(ph);
-                                    return PROLOG_SUCCESS;
-                                    }
-     else
-      delete ph;
+        PPL_REGISTER(ph);
+        return PROLOG_SUCCESS;
       }
+      else
+        delete ph;
+  }
   CATCH_ALL;
 }
 

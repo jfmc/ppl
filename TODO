@@ -12,8 +12,8 @@ Enhancements for PPL 0.12 or later versions
 - Make the library thread-safe.
 - Modify the Makefile.am's to extend silent mode to our own rules.
 - Reduce the number of FIXMEs to no more than 20.
-- Consider switching to MLGMPIDL for the OCaml interface
-  (see https://bugzilla.redhat.com/show_bug.cgi?id=491712).
+- Base the OCaml interface on Zarith
+  (http://forge.ocamlcore.org/projects/zarith/) instead of MLGMP.
 - Improve the OCaml interface by supporting dynamic loading.
 - Enhance the support for systems not providing support for the IEEE
   inexact flag.

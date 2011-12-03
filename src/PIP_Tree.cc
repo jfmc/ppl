@@ -134,7 +134,7 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
     PIP_Tree_Node::Row& x_i = x[i];
     Coefficient_traits::const_reference inhomogeneous_term
       = y_i->inhomogeneous_term();
-    Variables_Set::const_iterator pj = parameters.begin();
+    Variables_Set::const_iterator pj = param_begin;
     dimension_type j = 1;
     PIP_Tree_Node::Row::iterator itr = x_i.end();
     if (inhomogeneous_term != 0)

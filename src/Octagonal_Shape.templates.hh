@@ -1182,7 +1182,7 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
   const Row_Iterator y_begin = y.matrix.row_begin();
 
   PPL_DIRTY_TEMP(N, neg_y_ci_cj);
-    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
     using namespace Implementation::Octagonal_Shapes;
     const dimension_type i = i_iter.index();
     const dimension_type ci = coherent_index(i);
@@ -2006,12 +2006,12 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
   // The following variables of mpq_class type are used to be precise
   // when the octagon is defined by integer constraints.
-  PPL_DIRTY_TEMP0(mpq_class, q_x);
-  PPL_DIRTY_TEMP0(mpq_class, q_y);
-  PPL_DIRTY_TEMP0(mpq_class, d);
-  PPL_DIRTY_TEMP0(mpq_class, d1);
-  PPL_DIRTY_TEMP0(mpq_class, c_den);
-  PPL_DIRTY_TEMP0(mpq_class, q_den);
+  PPL_DIRTY_TEMP(mpq_class, q_x);
+  PPL_DIRTY_TEMP(mpq_class, q_y);
+  PPL_DIRTY_TEMP(mpq_class, d);
+  PPL_DIRTY_TEMP(mpq_class, d1);
+  PPL_DIRTY_TEMP(mpq_class, c_den);
+  PPL_DIRTY_TEMP(mpq_class, q_den);
   assign_r(c_den, coeff, ROUND_NOT_NEEDED);
   assign_r(d, c_term, ROUND_NOT_NEEDED);
   neg_assign_r(d1, d, ROUND_NOT_NEEDED);
@@ -3926,12 +3926,12 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   bool is_oct_changed = false;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-       matrix_element_end = matrix.element_end();
+         matrix_element_end = matrix.element_end();
        i != matrix_element_end;
        ++i, ++j) {
-     if (!is_plus_infinity(*i)
-         && !is_plus_infinity(*j)
-         && *i != *j) {
+    if (!is_plus_infinity(*i)
+        && !is_plus_infinity(*j)
+        && *i != *j) {
       *i = *j;
       is_oct_changed = true;
     }
@@ -3954,7 +3954,7 @@ Octagonal_Shape<T>
   PPL_ASSERT(sc_den > 0);
   PPL_ASSERT(!is_plus_infinity(ub_v));
 
-  PPL_DIRTY_TEMP0(mpq_class, mpq_sc_den);
+  PPL_DIRTY_TEMP(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
 
   // No need to consider indices greater than `last_id'.
@@ -3963,11 +3963,11 @@ Octagonal_Shape<T>
 
   // Speculatively allocate temporaries out of the loop.
   PPL_DIRTY_TEMP(N, half);
-  PPL_DIRTY_TEMP0(mpq_class, minus_lb_u);
-  PPL_DIRTY_TEMP0(mpq_class, q);
-  PPL_DIRTY_TEMP0(mpq_class, minus_q);
-  PPL_DIRTY_TEMP0(mpq_class, ub_u);
-  PPL_DIRTY_TEMP0(mpq_class, lb_u);
+  PPL_DIRTY_TEMP(mpq_class, minus_lb_u);
+  PPL_DIRTY_TEMP(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, minus_q);
+  PPL_DIRTY_TEMP(mpq_class, ub_u);
+  PPL_DIRTY_TEMP(mpq_class, lb_u);
   PPL_DIRTY_TEMP(N, up_approx);
   PPL_DIRTY_TEMP_COEFFICIENT(minus_expr_u);
 
@@ -4072,7 +4072,7 @@ Octagonal_Shape<T>
   PPL_ASSERT(sc_den > 0);
   PPL_ASSERT(!is_plus_infinity(minus_lb_v));
 
-  PPL_DIRTY_TEMP0(mpq_class, mpq_sc_den);
+  PPL_DIRTY_TEMP(mpq_class, mpq_sc_den);
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
 
   // No need to consider indices greater than `last_id'.
@@ -4081,9 +4081,9 @@ Octagonal_Shape<T>
 
   // Speculatively allocate temporaries out of the loop.
   PPL_DIRTY_TEMP(N, half);
-  PPL_DIRTY_TEMP0(mpq_class, ub_u);
-  PPL_DIRTY_TEMP0(mpq_class, q);
-  PPL_DIRTY_TEMP0(mpq_class, minus_lb_u);
+  PPL_DIRTY_TEMP(mpq_class, ub_u);
+  PPL_DIRTY_TEMP(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, minus_lb_u);
   PPL_DIRTY_TEMP(N, up_approx);
   PPL_DIRTY_TEMP_COEFFICIENT(minus_expr_u);
 

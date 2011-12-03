@@ -201,13 +201,13 @@ $(fixed_java_sources) \
 $(srcdir)/Fake_Class_for_Doxygen.java
 
 interface_generator_dependencies = \
+$(interface_generator_files) \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
 ../../ppl_interface_generator_common_dat.m4 \
 ../../ppl_interface_generator_copyright \
 ../../ppl_interface_generator_common_procedure_generators.m4 \
-../ppl_interface_generator_java_procedure_generators.m4 \
-$(interface_generator_files)
+../ppl_interface_generator_java_procedure_generators.m4
 
 BUILT_SOURCES = \
 java_classes.stamp \

@@ -66,6 +66,7 @@ main() try {                                             \
   set_handlers();                                        \
   bool succeeded = false;                                \
   bool overflow = false;                                 \
+  (void) overflow;                                       \
   std::list<std::string> failed_tests;                   \
   std::list<std::string> unexpectedly_succeeded_tests;
 

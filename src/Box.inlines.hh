@@ -267,7 +267,7 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
 
   closed = !seq_k.lower_is_open();
 
-  PPL_DIRTY_TEMP0(mpq_class, lr);
+  PPL_DIRTY_TEMP(mpq_class, lr);
   assign_r(lr, seq_k.lower(), ROUND_NOT_NEEDED);
   n = lr.get_num();
   d = lr.get_den();
@@ -287,7 +287,7 @@ Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
 
   closed = !seq_k.upper_is_open();
 
-  PPL_DIRTY_TEMP0(mpq_class, ur);
+  PPL_DIRTY_TEMP(mpq_class, ur);
   assign_r(ur, seq_k.upper(), ROUND_NOT_NEEDED);
   n = ur.get_num();
   d = ur.get_den();
@@ -384,7 +384,7 @@ Box<ITV>::refine_interval_no_check(ITV& itv,
   // where `rel' is either the relation `==', `>=', or `>'.
   // For the purpose of refining the interval, this is
   // (morally) turned into `var rel -num/den'.
-  PPL_DIRTY_TEMP0(mpq_class, q);
+  PPL_DIRTY_TEMP(mpq_class, q);
   assign_r(q.get_num(), num, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), den, ROUND_NOT_NEEDED);
   q.canonicalize();

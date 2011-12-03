@@ -54,9 +54,6 @@ ac_prog_java.m4 \
 ac_prog_javac.m4 \
 ac_prog_javah.m4 \
 ac_text_md5sum.m4 \
-lib-ld.m4 \
-lib-link.m4 \
-lib-prefix.m4 \
 libtool.m4 \
 ltoptions.m4 \
 ltsugar.m4 \

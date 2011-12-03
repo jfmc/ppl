@@ -735,7 +735,17 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_version_1beta
 JNIEXPORT jstring JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_version
 (JNIEnv* env, jclass) {
+#if defined(__sun) || defined(__sun__)
+
+  // Some versions of Solaris declare a version() function that causes
+  // the following function call to be ambiguous.
+  return env->NewStringUTF(Parma_Polyhedra_Library::version());
+
+#else // !(defined(__sun) || defined(__sun__))
+
   return env->NewStringUTF(version());
+
+#endif // !(defined(__sun) || defined(__sun__))
 }
 
 JNIEXPORT jstring JNICALL

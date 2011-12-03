@@ -23,6 +23,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
+#if defined(__sun) || defined(__sun__)
+
+// Some versions of Solaris define R1 in /usr/include/ia32/sys/reg.h.
+// This conflicts with the use or R1 being made in this proram.
+# undef R1
+
+#endif // defined(__sun) || defined(__sun__)
+
 namespace {
 
 bool

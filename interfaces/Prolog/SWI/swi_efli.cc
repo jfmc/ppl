@@ -52,7 +52,7 @@ int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
   assert(Prolog_is_integer(t));
   // FIXME: avoid the temporary when Coefficient is mpz_class.
-  PPL_DIRTY_TEMP0(mpz_class, tmp);
+  PPL_DIRTY_TEMP(mpz_class, tmp);
   int r;
 #if PLVERSION >= 50800
   r = PL_get_mpz(t, tmp.get_mpz_t());
@@ -66,7 +66,7 @@ Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
 
 int
 Prolog_unify_Coefficient(Prolog_term_ref t, const Coefficient& n) {
-  PPL_DIRTY_TEMP0(mpz_class, tmp);
+  PPL_DIRTY_TEMP(mpz_class, tmp);
   assign_r(tmp, n, ROUND_NOT_NEEDED);
   return PL_unify_mpz(t, tmp.get_mpz_t());
 }

@@ -56,11 +56,6 @@ struct Is_Singleton : public Is_Native_Or_Checked<T> {};
 template <typename T>
 struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
 
-// FIXME: This has been added as a workaraound.
-template <typename From>
-typename Enable_If<Is_Interval<From>::value, I_Result>::type
-neg_assign(From& x);
-
 //! A generic, not necessarily closed, possibly restricted interval.
 /*! \ingroup PPL_CXX_interface
   The class template type parameter \p Boundary represents the type
