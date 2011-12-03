@@ -34,30 +34,30 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 inline float
-fma(float x, float y, float z) {
+multiply_add(float x, float y, float z) {
 #if PPL_HAVE_DECL_FMAF && defined(FP_FAST_FMAF) \
   && !defined(__alpha) && !defined(__FreeBSD__)
-  return ::fmaf(x, y, z);
+  return fmaf(x, y, z);
 #else
   return x*y + z;
 #endif
 }
 
 inline double
-fma(double x, double y, double z) {
+multiply_add(double x, double y, double z) {
 #if PPL_HAVE_DECL_FMA && defined(FP_FAST_FMA) \
   && !defined(__alpha) && !defined(__FreeBSD__)
-  return ::fma(x, y, z);
+  return fma(x, y, z);
 #else
   return x*y + z;
 #endif
 }
 
 inline long double
-fma(long double x, long double y, long double z) {
+multiply_add(long double x, long double y, long double z) {
 #if PPL_HAVE_DECL_FMAL && defined(FP_FAST_FMAL) \
   && !defined(__alpha) && !defined(__FreeBSD__)
-  return ::fmal(x, y, z);
+  return fmal(x, y, z);
 #else
   return x*y + z;
 #endif
@@ -65,33 +65,33 @@ fma(long double x, long double y, long double z) {
 
 #if PPL_HAVE_DECL_RINTF
 inline float
-rint(float x) {
-  return ::rintf(x);
+round_to_integer(float x) {
+  return rintf(x);
 }
 #endif
 
 inline double
-rint(double x) {
-  return ::rint(x);
+round_to_integer(double x) {
+  return rint(x);
 }
 
 #if PPL_HAVE_DECL_RINTL
 inline long double
-rint(long double x) {
-  return ::rintl(x);
+round_to_integer(long double x) {
+  return rintl(x);
 }
 #elif !PPL_CXX_PROVIDES_PROPER_LONG_DOUBLE
 // If proper long doubles are not provided, this is most likely
 // because long double and double are the same type: use rint().
 inline long double
-rint(long double x) {
-  return ::rint(x);
+round_to_integer(long double x) {
+  return rint(x);
 }
 #elif defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 // On Cygwin, we have proper long doubles but rintl() is not defined:
 // luckily, one machine instruction is enough to save the day.
 inline long double
-rint(long double x) {
+round_to_integer(long double x) {
   long double i;
   __asm__ ("frndint" : "=t" (i) : "0" (x));
   return i;
@@ -198,7 +198,7 @@ is_pinf_float(const T v) {
 template <typename Policy, typename T>
 inline bool
 is_int_float(const T v) {
-  return rint(v) == v;
+  return round_to_integer(v) == v;
 }
 
 template <typename Policy, typename T>
@@ -371,9 +371,9 @@ floor_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_DOWN))
-    to = rint(from);
+    to = round_to_integer(from);
   else if (fpu_inverse_rounding(ROUND_DOWN)) {
-    to = rint(-from);
+    to = round_to_integer(-from);
     limit_precision(to);
     to = -to;
   }
@@ -381,7 +381,7 @@ floor_float(Type& to, const Type from, Rounding_Dir) {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(ROUND_DOWN));
     limit_precision(from);
-    to = rint(from);
+    to = round_to_integer(from);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
@@ -394,9 +394,9 @@ ceil_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   if (fpu_direct_rounding(ROUND_UP))
-    to = rint(from);
+    to = round_to_integer(from);
   else if (fpu_inverse_rounding(ROUND_UP)) {
-    to = rint(-from);
+    to = round_to_integer(-from);
     limit_precision(to);
     to = -to;
   }
@@ -404,7 +404,7 @@ ceil_float(Type& to, const Type from, Rounding_Dir) {
     fpu_rounding_control_word_type old
       = fpu_save_rounding_direction(round_fpu_dir(ROUND_UP));
     limit_precision(from);
-    to = rint(from);
+    to = round_to_integer(from);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
@@ -801,12 +801,12 @@ set_pos_overflow_float(T& to, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename T>
 inline Result
 assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
-  mpz_srcptr from_z = from.get_mpz_t();
-  int sign = mpz_sgn(from_z);
+  int sign = sgn(from);
   if (sign == 0) {
     to = 0;
     return V_EQ;
   }
+  mpz_srcptr from_z = from.get_mpz_t();
   size_t exponent = mpz_sizeinbase(from_z, 2) - 1;
   if (exponent > size_t(Float<T>::Binary::EXPONENT_MAX)) {
     if (sign < 0)
@@ -846,7 +846,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
     return assign_float_mpz<To_Policy, From_Policy>(to, num, dir);
   mpz_srcptr num_z = num.get_mpz_t();
   mpz_srcptr den_z = den.get_mpz_t();
-  int sign = mpz_sgn(num_z);
+  int sign = sgn(num);
   signed long exponent = mpz_sizeinbase(num_z, 2) - mpz_sizeinbase(den_z, 2);
   if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
@@ -919,9 +919,9 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   // FIXME: missing check_inf_add_inf
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = fma(x, y, to);
+    to = multiply_add(x, y, to);
   else if (fpu_inverse_rounding(dir)) {
-    to = fma(-x, y, -to);
+    to = multiply_add(-x, y, -to);
     limit_precision(to);
     to = -to;
   }
@@ -931,7 +931,7 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     limit_precision(x);
     limit_precision(y);
     limit_precision(to);
-    to = fma(x, y, to);
+    to = multiply_add(x, y, to);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }
@@ -952,9 +952,9 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   // FIXME: missing check_inf_add_inf
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
-    to = fma(x, -y, to);
+    to = multiply_add(x, -y, to);
   else if (fpu_inverse_rounding(dir)) {
-    to = fma(x, y, -to);
+    to = multiply_add(x, y, -to);
     limit_precision(to);
     to = -to;
   }
@@ -964,7 +964,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     limit_precision(x);
     limit_precision(y);
     limit_precision(to);
-    to = fma(x, -y, to);
+    to = multiply_add(x, -y, to);
     limit_precision(to);
     fpu_restore_rounding_direction(old);
   }

@@ -120,8 +120,7 @@ struct Compile_Time_Check<true> {
   enum anonymous_enum_compile_time_check_ ## suffix {			\
     /* If e evaluates to false, then the sizeof cannot be compiled. */  \
     PPL_COMPILE_TIME_CHECK_NAME(suffix)					\
-    = sizeof(Parma_Polyhedra_Library::					\
-	     Compile_Time_Check<static_cast<bool>(e)>)			\
+    = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<e>)            \
   }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

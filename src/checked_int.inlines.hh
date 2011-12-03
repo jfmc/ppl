@@ -662,14 +662,14 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     return set_neg_overflow_int<To_Policy>(to, dir);
   if (sizeof(To) <= sizeof(unsigned long)) {
     if (!To_Policy::check_overflow) {
-      to = from.get_ui();
+      to = static_cast<To>(from.get_ui());
       return V_EQ;
     }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
       if (PPL_GT_SILENT(v, (Extended_Int<To_Policy, To>::max)))
 	return set_pos_overflow_int<To_Policy>(to, dir);
-      to = v;
+      to = static_cast<To>(v);
       return V_EQ;
     }
   }
@@ -985,7 +985,7 @@ add_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 	return set_pos_overflow_int<To_Policy>(to, dir);
     }
     else if (x < Extended_Int<To_Policy, Type>::min - y)
-	return set_neg_overflow_int<To_Policy>(to, dir);
+      return set_neg_overflow_int<To_Policy>(to, dir);
   }
   to = x + y;
   return V_EQ;
@@ -1014,7 +1014,7 @@ sub_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 	return set_neg_overflow_int<To_Policy>(to, dir);
     }
     else if (x > Extended_Int<To_Policy, Type>::max + y)
-	return set_pos_overflow_int<To_Policy>(to, dir);
+      return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = x - y;
   return V_EQ;

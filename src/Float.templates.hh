@@ -158,8 +158,8 @@ void upper_bound_assign(std::map<dimension_type,
   typename FP_Linear_Form_Abstract_Store::iterator i1_end = ls1.end();
   typename FP_Linear_Form_Abstract_Store::const_iterator i2_end = ls2.end();
   while (i1 != i1_end) {
-    typename FP_Linear_Form_Abstract_Store::const_iterator i2 =
-                                            ls2.find(i1->first);
+    typename FP_Linear_Form_Abstract_Store::const_iterator
+      i2 = ls2.find(i1->first);
     if ((i2 == i2_end) || (i1->second != i2->second))
       ls1.erase(i1++);
     else

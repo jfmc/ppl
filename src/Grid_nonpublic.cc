@@ -63,7 +63,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     // dimension and then store it in `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_false());
     cgs.set_space_dimension(space_dim);
-    const_cast<Congruence_System&>(con_sys).swap(cgs);
+    con_sys.swap(cgs);
 
     PPL_ASSERT(OK());
     return;
@@ -457,7 +457,7 @@ PPL::Grid::set_empty() {
   // dimension and then swap it with `con_sys'.
   Congruence_System cgs(Congruence::zero_dim_false());
   cgs.set_space_dimension(space_dim);
-  std::swap(con_sys, cgs);
+  con_sys.swap(cgs);
 }
 
 void

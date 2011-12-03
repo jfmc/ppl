@@ -197,10 +197,10 @@ template <typename C>
 inline void
 Linear_Form<C>::ascii_dump(std::ostream& s) const {
   using namespace IO_Operators;
+  dimension_type space_dim = space_dimension();
+  s << space_dim << "\n";
   const char separator = ' ';
-  dimension_type space = space_dimension();
-  s << space << "\n";
-  for (dimension_type i = 0; i <= space; ++i)
+  for (dimension_type i = 0; i <= space_dim; ++i)
     s << vec[i] << separator;
   s << "\n";
 }
@@ -230,8 +230,7 @@ Linear_Form<C>::overflows() const {
   if (!inhomogeneous_term().is_bounded())
     return true;
 
-  dimension_type dimension = space_dimension();
-  for (dimension_type i = 0; i < dimension; ++i) {
+  for (dimension_type i = space_dimension(); i-- > 0; ) {
     if (!coefficient(Variable(i)).is_bounded())
       return true;
   }

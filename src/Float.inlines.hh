@@ -39,7 +39,7 @@ float_ieee754_half::is_inf() const {
   return 0;
 }
 
-inline int
+inline bool
 float_ieee754_half::is_nan() const {
   return (word & ~SGN_MASK) > POS_INF;
 }
@@ -58,7 +58,7 @@ float_ieee754_half::negate() {
   word ^= SGN_MASK;
 }
 
-inline int
+inline bool
 float_ieee754_half::sign_bit() const {
   return !!(word & SGN_MASK);
 }
@@ -100,7 +100,7 @@ float_ieee754_single::is_inf() const {
   return 0;
 }
 
-inline int
+inline bool
 float_ieee754_single::is_nan() const {
   return (word & ~SGN_MASK) > POS_INF;
 }
@@ -119,7 +119,7 @@ float_ieee754_single::negate() {
   word ^= SGN_MASK;
 }
 
-inline int
+inline bool
 float_ieee754_single::sign_bit() const {
   return !!(word & SGN_MASK);
 }
@@ -163,7 +163,7 @@ float_ieee754_double::is_inf() const {
   return 0;
 }
 
-inline int
+inline bool
 float_ieee754_double::is_nan() const {
   uint32_t a = msp & ~MSP_SGN_MASK;
   return a > MSP_POS_INF || (a == MSP_POS_INF && lsp != LSP_INF);
@@ -185,7 +185,7 @@ float_ieee754_double::negate() {
   msp ^= MSP_SGN_MASK;
 }
 
-inline int
+inline bool
 float_ieee754_double::sign_bit() const {
   return !!(msp & MSP_SGN_MASK);
 }
@@ -247,7 +247,7 @@ float_ibm_single::is_inf() const {
   return 0;
 }
 
-inline int
+inline bool
 float_ibm_single::is_nan() const {
   return (word & ~SGN_MASK) > POS_INF;
 }
@@ -266,7 +266,7 @@ float_ibm_single::negate() {
   word ^= SGN_MASK;
 }
 
-inline int
+inline bool
 float_ibm_single::sign_bit() const {
   return !!(word & SGN_MASK);
 }
@@ -311,7 +311,7 @@ float_intel_double_extended::is_inf() const {
   return 0;
 }
 
-inline int
+inline bool
 float_intel_double_extended::is_nan() const {
   return (msp & MSP_POS_INF) == MSP_POS_INF
     && lsp != LSP_INF;
@@ -334,7 +334,7 @@ float_intel_double_extended::negate() {
   msp ^= MSP_SGN_MASK;
 }
 
-inline int
+inline bool
 float_intel_double_extended::sign_bit() const {
   return !!(msp & MSP_SGN_MASK);
 }
@@ -392,7 +392,7 @@ float_ieee754_quad::is_inf() const {
   return 0;
 }
 
-inline int
+inline bool
 float_ieee754_quad::is_nan() const {
   return (msp & ~MSP_SGN_MASK) == MSP_POS_INF
     && lsp != LSP_INF;
@@ -414,7 +414,7 @@ float_ieee754_quad::negate() {
   msp ^= MSP_SGN_MASK;
 }
 
-inline int
+inline bool
 float_ieee754_quad::sign_bit() const {
   return !!(msp & MSP_SGN_MASK);
 }

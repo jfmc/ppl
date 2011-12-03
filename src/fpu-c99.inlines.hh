@@ -87,7 +87,7 @@ fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
 inline int
 fpu_check_inexact() {
 #if PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG
-  return fetestexcept(FE_INEXACT) != 0;
+  return fetestexcept(FE_INEXACT) != 0 ? 1 : 0;
 #else
   return -1;
 #endif

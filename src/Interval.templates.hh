@@ -221,18 +221,28 @@ Interval<Boundary, Info>::Interval(const char* s) {
 template <typename Boundary, typename Info>
 inline std::istream&
 operator>>(std::istream& is, Interval<Boundary, Info>& x) {
+  Boundary lower_bound;
+  Boundary upper_bound;
+  bool lower_boundary_infinity = false;
+  bool upper_boundary_infinity = false;
+  bool lower_open = false;
+  bool upper_open = false;
+  Result lower_r;
+  Result upper_r;
+
   // Eat leading white space.
-  int c;
+  char c;
   do {
-    c = is.get();
+    if (!is.get(c))
+      goto fail;
   } while (isspace(c));
 
   // Get the opening parenthesis and handle the empty interval case.
-  bool lower_open = false;
   if (c == '(')
     lower_open = true;
   else if (c == '[') {
-    c = is.get();
+    if (!is.get(c))
+      goto fail;
     if (c == ']') {
       // Empty interval.
       x.assign(EMPTY);
@@ -241,56 +251,45 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     else
       is.unget();
   }
-  else {
-    is.unget();
-    is.setstate(std::ios_base::failbit);
-    return is;
-  }
+  else
+    goto unexpected;
 
   // Get the lower bound.
-  Boundary lower_bound;
-  Result lower_r = input(lower_bound, is, ROUND_DOWN);
-  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
-    is.setstate(std::ios_base::failbit);
-    return is;
-  }
+  lower_r = input(lower_bound, is, ROUND_DOWN);
+  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN)
+    goto fail;
   lower_r = result_relation_class(lower_r);
 
   // Match the comma separating the lower and upper bounds.
   do {
-    c = is.get();
+    if (!is.get(c))
+      goto fail;
   } while (isspace(c));
-  if (c != ',') {
-    is.unget();
-    is.setstate(std::ios_base::failbit);
-    return is;
-  }
+  if (c != ',')
+    goto unexpected;
 
   // Get the upper bound.
-  Boundary upper_bound;
-  Result upper_r = input(upper_bound, is, ROUND_UP);
-  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN) {
-    is.setstate(std::ios_base::failbit);
-    return is;
-  }
+  upper_r = input(upper_bound, is, ROUND_UP);
+  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN)
+    goto fail;
   upper_r = result_relation_class(upper_r);
 
   // Get the closing parenthesis.
   do {
-    c = is.get();
+    if (!is.get(c))
+      goto fail;
   } while (isspace(c));
-  bool upper_open = false;
   if (c == ')')
     upper_open = true;
   else if (c != ']') {
+  unexpected:
     is.unget();
+  fail:
     is.setstate(std::ios_base::failbit);
     return is;
   }
 
   // Buld interval.
-  bool lower_boundary_infinity = false;
-  bool upper_boundary_infinity = false;
   switch (lower_r) {
   case V_EQ:
   case V_GE:
