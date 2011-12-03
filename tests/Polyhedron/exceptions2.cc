@@ -840,7 +840,7 @@ test30() {
     // `Polyhedron::swap(Polyhedron&)': it is illegal
     // to apply this function to a closed and a
     // not necessarily closed polyhedron.
-    ph1.swap(ph2);
+    swap(ph1, ph2);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

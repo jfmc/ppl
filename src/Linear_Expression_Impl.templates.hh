@@ -404,7 +404,8 @@ Linear_Expression_Impl<Dense_Row>
   for (set_t::const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
     if (row[*i] == 0)
       result.insert(*i);
-  std::swap(x, result);
+  using std::swap;
+  swap(x, result);
 }
 
 template <>
@@ -426,7 +427,8 @@ Linear_Expression_Impl<Sparse_Row>
   }
   for ( ; i != i_end; ++i)
     result.insert(*i);
-  std::swap(x, result);
+  using std::swap;
+  swap(x, result);
 }
 
 template <>
@@ -640,6 +642,9 @@ Linear_Expression_Impl<Row>::get_row(Sparse_Row& row) const {
 template <typename Row>
 void
 Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable>& cycle) {
+
+  using std::swap;
+
   const dimension_type n = cycle.size();
   if (n < 2)
     return;
@@ -654,7 +659,7 @@ Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable
     if (tmp == 0)
       row.reset(cycle[0].space_dimension());
     else
-      std::swap(tmp, row[cycle[0].space_dimension()]);
+      swap(tmp, row[cycle[0].space_dimension()]);
   }
   PPL_ASSERT(OK());
 }
@@ -1047,7 +1052,7 @@ void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Impl<Row2>& e,
                                        dimension_type space_dim) {
   Row x(e.row, space_dim + 1, space_dim + 1);
-  std::swap(row, x);
+  swap(row, x);
   PPL_ASSERT(OK());
 }
 

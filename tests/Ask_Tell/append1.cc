@@ -57,7 +57,8 @@ remove_dimensions(DEF_Formula& f, const Variables_Set& to_remove) {
       g.add_pair(projected_ask, projected_tell);
     }
   }
-  std::swap(f, g);
+  using std::swap;
+  swap(f, g);
 }
 
 } // namespace

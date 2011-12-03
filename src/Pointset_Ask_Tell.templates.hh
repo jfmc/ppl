@@ -288,7 +288,7 @@ Pointset_Ask_Tell<PSET>::ascii_load(std::istream& s) {
       return false;
     new_x.add_disjunct(ph);
   }
-  x.swap(new_x);
+  swap(x, new_x);
 
   // Check invariants.
   PPL_ASSERT_HEAVY(x.OK());

@@ -174,8 +174,7 @@ private:
 
 public:
   //! Swaps \p *this with \p y.
-  void swap(DB_Matrix& y);
-
+  void m_swap(DB_Matrix& y);
 
   //! Makes the matrix grow by adding more rows and more columns.
   /*!
@@ -229,20 +228,14 @@ public:
   bool OK() const;
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::DB_Matrix */
+//! Swaps \p x with \p y.
+/*! \relates DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-void swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,
-	  Parma_Polyhedra_Library::DB_Matrix<T>& y);
-
-} // namespace std
-
-
-namespace Parma_Polyhedra_Library {
+void swap(DB_Matrix<T>& x, DB_Matrix<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.

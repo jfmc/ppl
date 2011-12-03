@@ -112,7 +112,7 @@ PPL::Sparse_Row::Sparse_Row(const Dense_Row& row, dimension_type sz,
 PPL::Sparse_Row&
 PPL::Sparse_Row::operator=(const PPL::Dense_Row& row) {
   Sparse_Row tmp(row);
-  swap(tmp);
+  swap(*this, tmp);
   PPL_ASSERT(OK());
 
   return *this;
@@ -126,30 +126,32 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
   if (tree.empty())
     return;
 
+  using std::swap;
+
   iterator itr_i = tree.bisect(i);
   iterator itr_j = tree.bisect(j);
   if (itr_i.index() == i)
     if (itr_j.index() == j)
       // Both elements are in the tree
-      std::swap(*itr_i, *itr_j);
+      swap(*itr_i, *itr_j);
     else {
       // i is in the tree, j isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(*itr_i, tmp);
+      swap(*itr_i, tmp);
       tree.erase(itr_i);
       // Now both iterators have been invalidated.
       itr_j = tree.insert(j);
-      std::swap(*itr_j, tmp);
+      swap(*itr_j, tmp);
     }
   else
     if (itr_j.index() == j) {
       // j is in the tree, i isn't
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
-      std::swap(*itr_j, tmp);
+      swap(*itr_j, tmp);
       // Now both iterators have been invalidated.
       tree.erase(itr_j);
       itr_i = tree.insert(i);
-      std::swap(*itr_i, tmp);
+      swap(*itr_i, tmp);
     } else {
       // Do nothing, elements are both unstored zeroes.
     }
@@ -438,7 +440,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
                                                                 coeff1,
                                                                 coeff2),
                      counter + tree.size());
-    std::swap(tree, new_tree);
+    tree.m_swap(new_tree);
 
     // Now remove stored zeroes.
     iterator i = begin();
@@ -1035,22 +1037,22 @@ PPL::linear_combine(Sparse_Row& x, const Sparse_Row& y,
 }
 
 void
-std::swap(PPL::Sparse_Row& x, PPL::Dense_Row& y) {
-  PPL::Dense_Row new_dense(x.size(), x.size());
-  
-  for (PPL::Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
-    std::swap(new_dense[i.index()], *i);
+PPL::swap(Sparse_Row& x, Dense_Row& y) {
+  Dense_Row new_dense(x.size(), x.size());
+
+  for (Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
+    swap(new_dense[i.index()], *i);
 
   // NOTE: This copies the coefficients, but it could steal them.
   // Implementing a stealing-based algorithm takes a lot of time and it's
   // probably not worth it.
-  PPL::Sparse_Row new_sparse(y);
+  Sparse_Row new_sparse(y);
 
-  std::swap(new_dense, y);
-  std::swap(new_sparse, x);
+  swap(new_dense, y);
+  swap(new_sparse, x);
 }
 
 void
-std::swap(PPL::Dense_Row& x, PPL::Sparse_Row& y) {
+PPL::swap(Dense_Row& x, Sparse_Row& y) {
   swap(y, x);
 }

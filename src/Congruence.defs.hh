@@ -374,6 +374,9 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  //! Swaps \p *this with \p y.
+  void m_swap(Congruence& y);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -396,9 +399,6 @@ public:
   */
   Congruence(Linear_Expression& le,
              Coefficient_traits::const_reference m, Recycle_Input);
-
-  //! Swaps \p *this with \p y.
-  void swap(Congruence& y);
 
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
@@ -544,17 +544,11 @@ operator/(const Congruence& cg, Coefficient_traits::const_reference k);
 Congruence
 operator/(const Constraint& c, Coefficient_traits::const_reference m);
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Congruence */
+/*! \relates Congruence */
 void
-swap(Parma_Polyhedra_Library::Congruence& x,
-     Parma_Polyhedra_Library::Congruence& y);
+swap(Congruence& x, Congruence& y);
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #include "Congruence.inlines.hh"
 

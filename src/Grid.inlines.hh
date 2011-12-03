@@ -242,12 +242,13 @@ Grid::minimized_constraints() const {
 }
 
 inline void
-Grid::swap(Grid& y) {
-  std::swap(con_sys, y.con_sys);
-  std::swap(gen_sys, y.gen_sys);
-  std::swap(status, y.status);
-  std::swap(space_dim, y.space_dim);
-  std::swap(dim_kinds, y.dim_kinds);
+Grid::m_swap(Grid& y) {
+  using std::swap;
+  swap(con_sys, y.con_sys);
+  swap(gen_sys, y.gen_sys);
+  swap(status, y.status);
+  swap(space_dim, y.space_dim);
+  swap(dim_kinds, y.dim_kinds);
 }
 
 inline void
@@ -367,17 +368,12 @@ inline void
 Grid::topological_closure_assign() {
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Grid */
+/*! \relates Grid */
 inline void
-swap(Parma_Polyhedra_Library::Grid& x,
-     Parma_Polyhedra_Library::Grid& y) {
-  x.swap(y);
+swap(Grid& x, Grid& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Grid_inlines_hh)

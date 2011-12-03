@@ -178,7 +178,8 @@ test04() {
   large[0][4] = 10;
   tall[4][0] = 20;
 
-  std::swap(large, tall);
+  using std::swap;
+  swap(large, tall);
 
   if (large.num_columns() != 3)
     return false;

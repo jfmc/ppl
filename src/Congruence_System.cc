@@ -69,11 +69,11 @@ PPL::Congruence_System::remove_rows(const dimension_type first,
 
   if (keep_sorted) {
     for (dimension_type i = last; i < rows.size(); i++)
-      rows[i].swap(rows[i - n]);
+      swap(rows[i], rows[i - n]);
   } else {
     const dimension_type offset = rows.size() - n - first;
     for (dimension_type i = first; i < last; i++)
-      rows[i].swap(rows[i + offset]);
+      swap(rows[i], rows[i + offset]);
   }
 
   rows.resize(rows.size() - n);
@@ -112,7 +112,8 @@ PPL::Congruence_System::insert_verbatim_recycled(Congruence& cg) {
     cg.set_space_dimension(space_dimension());
 
   rows.resize(num_rows() + 1);
-  std::swap(cg, rows.back());
+
+  swap(cg, rows.back());
 
   PPL_ASSERT(OK());
 }
@@ -124,7 +125,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
   Congruence cg(c, space_dimension());
   cg.strong_normalize();
   rows.resize(num_rows() + 1);
-  std::swap(cg, rows.back());
+
+  swap(cg, rows.back());
 
   PPL_ASSERT(OK());
 }
@@ -138,7 +140,7 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
   rows.resize(old_num_rows + cgs_num_rows);
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
     cgs.rows[i].set_space_dimension(space_dimension());
-    std::swap(cgs.rows[i], rows[old_num_rows + i]);
+    swap(cgs.rows[i], rows[old_num_rows + i]);
   }
   cgs.clear();
 
@@ -161,7 +163,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   // Copy the rows of `y', with the new space dimension.
   for (dimension_type i = y_num_rows; i-- > 0; ) {
     Congruence copy(y[i], space_dimension());
-    std::swap(copy, x.rows[x_num_rows+i]);
+    swap(copy, x.rows[x_num_rows+i]);
   }
   PPL_ASSERT(OK());
 }
@@ -431,7 +433,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
 
   // Swap the added rows to the front of the vector.
   for (dimension_type row = old_num_rows; row-- > 0; )
-    std::swap(rows[row], rows[row + dims]);
+    swap(rows[row], rows[row + dims]);
 
   PPL_ASSERT(num_columns() >= 2);
   const dimension_type col = num_columns() - 2;
@@ -443,7 +445,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
     expr += Variable(col - row - 1);
     // This constructor steals the contents of `expr'.
     Congruence cg(expr, Coefficient_zero(), Recycle_Input());
-    std::swap(rows[row], cg);
+    swap(rows[row], cg);
   }
 
   PPL_ASSERT(OK());
@@ -470,6 +472,6 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
     Congruence& cg_old = cgs.rows[i];
     Congruence& cg_new = rows[old_num_rows + i];
     cg_old.shift_coefficients(old_space_dim, 0);
-    std::swap(cg_old, cg_new);
+    swap(cg_old, cg_new);
   }
 }

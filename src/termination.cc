@@ -539,7 +539,7 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(p_default_output_function);
 #endif
 
-  mu_space.swap(ph1);
+  mu_space.m_swap(ph1);
 }
 
 void
@@ -576,8 +576,8 @@ all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(p_default_output_function);
 #endif
 
-  decreasing_mu_space.swap(ph1);
-  bounded_mu_space.swap(ph2);
+  decreasing_mu_space.m_swap(ph1);
+  bounded_mu_space.m_swap(ph2);
 }
 
 bool

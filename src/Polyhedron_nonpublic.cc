@@ -109,7 +109,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
 
   if (space_dim > 0) {
     // Stealing the rows from `cs'.
-    std::swap(con_sys, cs);
+    swap(con_sys, cs);
     if (con_sys.num_pending_rows() > 0) {
       // Even though `cs' has pending constraints, since the generators
       // of the polyhedron are not up-to-date, the polyhedron cannot
@@ -155,7 +155,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
 
   if (space_dim > 0) {
     // Stealing the rows from `cs'.
-    std::swap(con_sys, cs);
+    swap(con_sys, cs);
     if (con_sys.num_pending_rows() > 0) {
       // Even though `cs' has pending constraints, since the generators
       // of the polyhedron are not up-to-date, the polyhedron cannot
@@ -215,7 +215,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
 
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
-    std::swap(gen_sys, gs);
+    swap(gen_sys, gs);
     // In a generator system describing a NNC polyhedron,
     // for each point we must also have the corresponding closure point.
     if (topol == NOT_NECESSARILY_CLOSED)
@@ -277,7 +277,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
 
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
-    std::swap(gen_sys, gs);
+    swap(gen_sys, gs);
     // In a generator system describing a NNC polyhedron,
     // for each point we must also have the corresponding closure point.
     if (topol == NOT_NECESSARILY_CLOSED)
@@ -1163,7 +1163,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	// so it is eps-redundant.
 	// Remove it, while keeping `sat_g' consistent.
 	cs.remove_row(i, false);
-	std::swap(sat[i], sat[cs.num_rows()]);
+	swap(sat[i], sat[cs.num_rows()]);
 	// The constraint system is changed.
 	changed = true;
 	// Continue by considering next constraint,
@@ -1181,7 +1181,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  // Constraint `cs[i]' is eps-redundant:
 	  // remove it, while keeping `sat_g' consistent.
 	  cs.remove_row(i, false);
-	  std::swap(sat[i], sat[cs.num_rows()]);
+	  swap(sat[i], sat[cs.num_rows()]);
 	  eps_redundant = true;
 	  // The constraint system is changed.
 	  changed = true;
@@ -1302,8 +1302,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' consistent.
 	  --gs_rows;
-          std::swap(g, rows[gs_rows]);
-	  std::swap(sat[i], sat[gs_rows]);
+          swap(g, rows[gs_rows]);
+	  swap(sat[i], sat[gs_rows]);
 	  eps_redundant = true;
 	  changed = true;
 	  break;
@@ -1871,7 +1871,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   }
 
   // The hull is exact.
-  swap(ub);
+  m_swap(ub);
   return true;
 }
 

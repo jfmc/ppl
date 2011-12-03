@@ -2368,7 +2368,7 @@ test15() {
   CO_Tree::iterator itr1 = tree.bisect(1);
   CO_Tree::iterator itr2 = tree.bisect(2);
 
-  itr1.swap(itr2);
+  swap(itr1, itr2);
 
   if (itr2.index() != 1)
     return false;
@@ -2385,7 +2385,7 @@ test15() {
   CO_Tree::const_iterator itr3 = tree.bisect(1);
   CO_Tree::const_iterator itr4 = tree.bisect(2);
 
-  itr3.swap(itr4);
+  swap(itr3, itr4);
 
   if (itr4.index() != 1)
     return false;

@@ -189,10 +189,11 @@ Pointset_Powerset<PSET>::operator=(const Pointset_Powerset& y) {
 
 template <typename PSET>
 inline void
-Pointset_Powerset<PSET>::swap(Pointset_Powerset& y) {
+Pointset_Powerset<PSET>::m_swap(Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
-  x.Base::swap(y);
-  std::swap(x.space_dim, y.space_dim);
+  x.Base::m_swap(y);
+  using std::swap;
+  swap(x.space_dim, y.space_dim);
 }
 
 template <typename PSET>
@@ -201,7 +202,7 @@ inline Pointset_Powerset<PSET>&
 Pointset_Powerset<PSET>::operator=(const Pointset_Powerset<QH>& y) {
   Pointset_Powerset& x = *this;
   Pointset_Powerset<PSET> pps(y);
-  x.swap(pps);
+  swap(x, pps);
   return x;
 }
 
@@ -307,19 +308,13 @@ check_containment(const C_Polyhedron& ph,
 			   Pointset_Powerset<NNC_Polyhedron>(ps));
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
+/*! \relates Pointset_Powerset */
 template <typename PSET>
 inline void
-swap(Parma_Polyhedra_Library::Pointset_Powerset<PSET>& x,
-     Parma_Polyhedra_Library::Pointset_Powerset<PSET>& y) {
-  x.swap(y);
+swap(Pointset_Powerset<PSET>& x, Pointset_Powerset<PSET>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Pointset_Powerset_inlines_hh)

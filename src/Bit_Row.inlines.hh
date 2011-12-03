@@ -107,7 +107,7 @@ Bit_Row::empty() const {
 }
 
 inline void
-Bit_Row::swap(Bit_Row& y) {
+Bit_Row::m_swap(Bit_Row& y) {
   mpz_swap(vec, y.vec);
 }
 
@@ -316,25 +316,19 @@ last_one(mp_limb_t w) {
 
 } // namespace Implementation
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Bit_Row */
+/*! \relates Bit_Row */
 inline void
-swap(Parma_Polyhedra_Library::Bit_Row& x,
-     Parma_Polyhedra_Library::Bit_Row& y) {
-  x.swap(y);
+swap(Bit_Row& x, Bit_Row& y) {
+  x.m_swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::Bit_Row */
+/*! \relates Bit_Row */
 inline void
-iter_swap(std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator y) {
+iter_swap(std::vector<Bit_Row>::iterator x,
+          std::vector<Bit_Row>::iterator y) {
   swap(*x, *y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Bit_Row_inlines_hh)

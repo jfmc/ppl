@@ -46,25 +46,19 @@ Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>::
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
-Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>::swap(
-	 Cast_Floating_Point_Expression& y) {
-  std::swap(expr, y.expr);
+Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>
+::m_swap(Cast_Floating_Point_Expression& y) {
+  swap(expr, y.expr);
+}
+
+/*! \relates Cast_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+inline void
+swap(Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+  x.m_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Cast_Floating_Point_Expression */
-template <typename FP_Interval_Type, typename FP_Format>
-inline void
-swap(Parma_Polyhedra_Library::Cast_Floating_Point_Expression<
-                              FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library::Cast_Floating_Point_Expression<
-                              FP_Interval_Type, FP_Format>& y) {
-  x.swap(y);
-}
-
-} // namespace std
 
 #endif // !defined(PPL_Cast_Floating_Point_Expression_inlines_hh)

@@ -362,6 +362,8 @@ Polyhedron::conversion(Source_Linear_System& source,
   // can be recycled if needed.
   std::vector<dest_row_type> recyclable_dest_rows;
 
+  using std::swap;
+
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
   // is the same as the number of rows of `dest'.
@@ -461,10 +463,10 @@ Polyhedron::conversion(Source_Linear_System& source,
       dest_sorted = false;
       --num_lines_or_equalities;
       if (index_non_zero != num_lines_or_equalities) {
-        std::swap(dest_rows[index_non_zero],
-                  dest_rows[num_lines_or_equalities]);
-	std::swap(scalar_prod[index_non_zero],
-		  scalar_prod[num_lines_or_equalities]);
+        swap(dest_rows[index_non_zero],
+             dest_rows[num_lines_or_equalities]);
+	swap(scalar_prod[index_non_zero],
+             scalar_prod[num_lines_or_equalities]);
       }
       const dest_row_type& dest_nle = dest_rows[num_lines_or_equalities];
 
@@ -567,15 +569,15 @@ Polyhedron::conversion(Source_Linear_System& source,
       // removed from `dest_rows'.
       else {
 	--dest_num_rows;
-        std::swap(dest_rows[num_lines_or_equalities],
-                  dest_rows[dest_num_rows]);
+        swap(dest_rows[num_lines_or_equalities],
+             dest_rows[dest_num_rows]);
         recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-        std::swap(dest_rows.back(), recyclable_dest_rows.back());
+        swap(dest_rows.back(), recyclable_dest_rows.back());
         dest_rows.pop_back();
         PPL_ASSERT(dest_num_rows == dest_rows.size());
 
-	std::swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
-	std::swap(sat_nle, sat[dest_num_rows]);
+	swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
+	swap(sat_nle, sat[dest_num_rows]);
 	// dest_sorted has already been set to false.
       }
     }
@@ -606,9 +608,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 	const int sp_sign = sgn(scalar_prod[sup_bound]);
 	if (sp_sign == 0) {
 	  // This generator has to be moved in Q=.
-	  std::swap(dest_rows[sup_bound], dest_rows[lines_or_equal_bound]);
-	  std::swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
-	  std::swap(sat[sup_bound], sat[lines_or_equal_bound]);
+	  swap(dest_rows[sup_bound], dest_rows[lines_or_equal_bound]);
+	  swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
+	  swap(sat[sup_bound], sat[lines_or_equal_bound]);
 	  ++lines_or_equal_bound;
 	  ++sup_bound;
           dest_sorted = false;
@@ -616,9 +618,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 	else if (sp_sign < 0) {
 	  // This generator has to be moved in Q-.
 	  --inf_bound;
-          std::swap(dest_rows[sup_bound], dest_rows[inf_bound]);
-	  std::swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
-	  std::swap(sat[sup_bound], sat[inf_bound]);
+          swap(dest_rows[sup_bound], dest_rows[inf_bound]);
+	  swap(sat[sup_bound], sat[inf_bound]);
+	  swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
           dest_sorted = false;
 	}
 	else
@@ -641,7 +643,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 	  PPL_ASSERT(dest_num_rows >= lines_or_equal_bound);
           while (dest_num_rows != lines_or_equal_bound) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-            std::swap(dest_rows.back(), recyclable_dest_rows.back());
+            swap(dest_rows.back(), recyclable_dest_rows.back());
             dest_rows.pop_back();
             --dest_num_rows;
           }
@@ -659,7 +661,7 @@ Polyhedron::conversion(Source_Linear_System& source,
           PPL_ASSERT(dest_num_rows >= sup_bound);
           while (dest_num_rows != sup_bound) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-            std::swap(dest_rows.back(), recyclable_dest_rows.back());
+            swap(dest_rows.back(), recyclable_dest_rows.back());
             dest_rows.pop_back();
             --dest_num_rows;
           }
@@ -747,10 +749,10 @@ Polyhedron::conversion(Source_Linear_System& source,
 		    sat.add_recycled_row(new_satrow);
 		  }
 		  else {
-                    std::swap(new_row, recyclable_dest_rows.back());
+                    swap(new_row, recyclable_dest_rows.back());
                     recyclable_dest_rows.pop_back();
                     new_row.set_space_dimension_no_ok(dest.space_dimension());
-                    sat[dest_num_rows].swap(new_satrow);
+                    swap(sat[dest_num_rows], new_satrow);
                   }
 
 		  // The following fragment optimizes the computation of
@@ -793,7 +795,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		    scalar_prod[dest_num_rows] = Coefficient_zero();
 
                   dest_rows.resize(dest_rows.size() + 1);
-                  std::swap(dest_rows.back(), new_row);
+                  swap(dest_rows.back(), new_row);
 		  // Increment the number of generators.
 		  ++dest_num_rows;
 		} // if (!redundant)
@@ -832,9 +834,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 	  dimension_type i = dest_num_rows;
 	  while (j < bound && i > bound) {
 	    --i;
-            std::swap(dest_rows[i], dest_rows[j]);
-	    std::swap(scalar_prod[i], scalar_prod[j]);
-	    std::swap(sat[i], sat[j]);
+            swap(dest_rows[i], dest_rows[j]);
+	    swap(scalar_prod[i], scalar_prod[j]);
+	    swap(sat[i], sat[j]);
 	    ++j;
 	    dest_sorted = false;
 	  }
@@ -849,7 +851,7 @@ Polyhedron::conversion(Source_Linear_System& source,
           PPL_ASSERT(dest_num_rows >= new_num_rows);
           while (dest_num_rows != new_num_rows) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
-            std::swap(dest_rows.back(), recyclable_dest_rows.back());
+            swap(dest_rows.back(), recyclable_dest_rows.back());
             dest_rows.pop_back();
             --dest_num_rows;
           }

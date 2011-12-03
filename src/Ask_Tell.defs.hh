@@ -32,6 +32,11 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Swaps \p x with \p y.
+/*! \relates Ask_Tell */
+template <typename D>
+void swap(Ask_Tell<D>& x, Ask_Tell<D>& y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
 /*! \relates Ask_Tell */
 template <typename D>
@@ -314,7 +319,7 @@ public:
   Ask_Tell& operator=(const Ask_Tell& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Ask_Tell& y);
+  void m_swap(Ask_Tell& y);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const Ask_Tell& y);
@@ -362,17 +367,6 @@ protected:
 protected:
   bool probe(const D& tellv, const D& askv) const;
 };
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Ask_Tell */
-template <typename D>
-void swap(Parma_Polyhedra_Library::Ask_Tell<D>& x,
-	  Parma_Polyhedra_Library::Ask_Tell<D>& y);
-
-} // namespace std
 
 #include "Ask_Tell.inlines.hh"
 #include "Ask_Tell.templates.hh"

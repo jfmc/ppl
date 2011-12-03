@@ -32,6 +32,12 @@ site: http://bugseng.com/products/ppl/ . */
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
+
+//! Swaps \p x with \p y.
+/*! \relates Linear_Form */
+template <typename C>
+void swap(Linear_Form<C>& x, Linear_Form<C>& y);
+
 // Put them in the namespace here to declare them friend later.
 
 //! Returns the linear form \p f1 + \p f2.
@@ -201,17 +207,6 @@ std::ostream& operator<<(std::ostream& s, const Linear_Form<C>& f);
 
 } // namespace Parma_Polyhedra_Library
 
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
-template <typename C>
-void swap(Parma_Polyhedra_Library::Linear_Form<C>& x,
-	  Parma_Polyhedra_Library::Linear_Form<C>& y);
-
-} // namespace std
-
 //! A linear form with interval coefficients.
 /*! \ingroup PPL_CXX_interface
   An object of the class Linear_Form represents the interval linear form
@@ -324,7 +319,7 @@ public:
   bool OK() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Linear_Form& y);
+  void m_swap(Linear_Form& y);
 
   // Floating point analysis related methods.
 

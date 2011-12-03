@@ -51,28 +51,21 @@ Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 template <typename FP_Interval_Type, typename FP_Format>
 inline void
 Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
-::swap(Multiplication_Floating_Point_Expression<FP_Interval_Type,
-                                                FP_Format>& y) {
-  std::swap(first_operand, y.first_operand);
-  std::swap(second_operand, y.second_operand);
+::m_swap(Multiplication_Floating_Point_Expression<FP_Interval_Type,
+                                                  FP_Format>& y) {
+  using std::swap;
+  swap(first_operand, y.first_operand);
+  swap(second_operand, y.second_operand);
+}
+
+/*! \relates Multiplication_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+inline void
+swap(Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y) {
+  x.m_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression */
-template <typename FP_Interval_Type, typename FP_Format>
-inline void
-swap(Parma_Polyhedra_Library
-     ::Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
-     Parma_Polyhedra_Library
-     ::Multiplication_Floating_Point_Expression<FP_Interval_Type,
-                                                FP_Format>& y) {
-  x.swap(y);
-}
-
-} // namespace std
-
 
 #endif // !defined(PPL_Multiplication_Floating_Point_Expression_inlines_hh)

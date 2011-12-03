@@ -35,7 +35,7 @@ namespace Parma_Polyhedra_Library {
 inline Linear_Expression&
 Linear_Expression::operator=(const Linear_Expression& e) {
   Linear_Expression tmp = e;
-  swap(tmp);
+  swap(*this, tmp);
   return *this;
 }
 
@@ -193,8 +193,9 @@ operator-=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 }
 
 inline void
-Linear_Expression::swap(Linear_Expression& y) {
-  std::swap(impl, y.impl);
+Linear_Expression::m_swap(Linear_Expression& y) {
+  using std::swap;
+  swap(impl, y.impl);
 }
 
 inline void
@@ -633,16 +634,17 @@ Linear_Expression::const_iterator
 }
 
 inline void
-Linear_Expression::const_iterator
-::swap(const_iterator& x) {
-  std::swap(itr, x.itr);
+Linear_Expression::const_iterator::m_swap(const_iterator& x) {
+  using std::swap;
+  swap(itr, x.itr);
 }
 
 inline Linear_Expression::const_iterator&
 Linear_Expression::const_iterator
 ::operator=(const const_iterator& itr) {
   const_iterator tmp = itr;
-  swap(tmp);
+  using std::swap;
+  swap(*this, tmp);
   return *this;
 }
 
@@ -784,13 +786,14 @@ inline
 Linear_Expression
 ::Linear_Expression(const Expression_Hide_Last<Expression>& e)
   : impl(NULL) {
+  using std::swap;
   Linear_Expression tmp(e.representation());
   tmp.set_space_dimension(e.space_dimension());
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
   typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
   for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
-  std::swap(impl, tmp.impl);
+  swap(impl, tmp.impl);
 }
 
 template <typename Expression>
@@ -798,13 +801,14 @@ inline
 Linear_Expression
 ::Linear_Expression(const Expression_Hide_Last<Expression>& e, Representation r)
   : impl(NULL) {
+  using std::swap;
   Linear_Expression tmp(r);
   tmp.set_space_dimension(e.space_dimension());
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
   typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
   for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
-  std::swap(impl, tmp.impl);
+  swap(impl, tmp.impl);
 }
 
 template <typename Expression>
@@ -813,6 +817,7 @@ Linear_Expression
 ::Linear_Expression(const Expression_Hide_Last<Expression>& e,
                     dimension_type space_dim)
   : impl(NULL) {
+  using std::swap;
   Linear_Expression tmp(e.representation());
   tmp.set_space_dimension(space_dim);
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
@@ -824,7 +829,7 @@ Linear_Expression
     i_end = e.end();
   for (itr_t i = e.begin(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
-  std::swap(impl, tmp.impl);
+  swap(impl, tmp.impl);
 }
 
 template <typename Expression>
@@ -833,6 +838,7 @@ Linear_Expression
 ::Linear_Expression(const Expression_Hide_Last<Expression>& e,
                     dimension_type space_dim, Representation r)
   : impl(NULL) {
+  using std::swap;
   Linear_Expression tmp(r);
   tmp.set_space_dimension(space_dim);
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
@@ -844,7 +850,7 @@ Linear_Expression
     i_end = e.end();
   for (itr_t i = e.begin(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
-  std::swap(impl, tmp.impl);
+  swap(impl, tmp.impl);
 }
 
 namespace IO_Operators {
@@ -858,18 +864,19 @@ operator<<(std::ostream& s, const Linear_Expression& e) {
 
 } // namespace IO_Operators
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 inline void
-swap(Parma_Polyhedra_Library::Linear_Expression& x,
-     Parma_Polyhedra_Library::Linear_Expression& y) {
-  x.swap(y);
+swap(Linear_Expression& x, Linear_Expression& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+/*! \relates Linear_Expression::const_iterator */
+inline void
+swap(Linear_Expression::const_iterator& x,
+     Linear_Expression::const_iterator& y) {
+  x.m_swap(y);
+}
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Expression_inlines_hh)

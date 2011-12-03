@@ -122,9 +122,17 @@ PIP_Tree_Node::Artificial_Parameter::denominator() const {
 }
 
 inline void
-PIP_Tree_Node::Artificial_Parameter::swap(Artificial_Parameter& y) {
-  Linear_Expression::swap(y);
-  std::swap(denom, y.denom);
+PIP_Tree_Node::Artificial_Parameter::m_swap(Artificial_Parameter& y) {
+  Linear_Expression::m_swap(y);
+  using std::swap;
+  swap(denom, y.denom);
+}
+
+/*! \relates PIP_Tree_Node::Artificial_Parameter */
+inline void
+swap(PIP_Tree_Node::Artificial_Parameter& x,
+     PIP_Tree_Node::Artificial_Parameter& y) {
+  x.m_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

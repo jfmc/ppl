@@ -67,16 +67,6 @@ bool operator!=(const Constraint_System& x, const Constraint_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Constraint_System */
-void swap(Parma_Polyhedra_Library::Constraint_System& x,
-	  Parma_Polyhedra_Library::Constraint_System& y);
-
-} // namespace std
-
 //! A system of constraints.
 /*! \ingroup PPL_CXX_interface
     An object of the class Constraint_System is a system of constraints,
@@ -614,7 +604,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Constraint_System& y);
+  void m_swap(Constraint_System& y);
 
 private:
   Linear_System<Constraint> sys;

@@ -78,7 +78,7 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     if (comp <= 0) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
       tmp.resize(tmp.size() + 1);
-      tmp.back().swap(x.rows[xi++]);
+      swap(tmp.back(), x.rows[xi++]);
       if (comp == 0)
 	// A duplicate element.
 	++yi;
@@ -90,14 +90,14 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
       // TODO: Set the space dimension while constructing the copy, to
       // increase efficiency.
       copy.set_space_dimension(space_dimension());
-      tmp.back().swap(copy);
+      swap(tmp.back(), copy);
     }
   }
   // Insert what is left.
   if (xi < x_num_rows)
     while (xi < x_num_rows) {
       tmp.resize(tmp.size() + 1);
-      tmp.back().swap(x.rows[xi++]);
+      swap(tmp.back(), x.rows[xi++]);
     }
   else
     while (yi < y_num_rows) {
@@ -106,11 +106,11 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
       // TODO: Set the space dimension while constructing the copy, to
       // increase efficiency.
       copy.set_space_dimension(space_dimension());
-      tmp.back().swap(copy);
+      swap(tmp.back(), copy);
     }
 
   // We get the result matrix and let the old one be destroyed.
-  tmp.swap(rows);
+  swap(tmp, rows);
   // There are no pending rows.
   unset_pending_rows();
   PPL_ASSERT(check_sorted());
@@ -484,7 +484,7 @@ Linear_System<Row>::add_recycled_pending_row_no_ok(Row& r) {
 
   rows.resize(rows.size() + 1);
   r.set_space_dimension_no_ok(space_dimension());
-  rows.back().swap(r);
+  swap(rows.back(), r);
 }
 
 template <typename Row>
@@ -574,7 +574,7 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
     // In this case, we must put the duplicates after the pending rows.
     const dimension_type n_rows = num_rows() - 1;
     for (dimension_type i = 0; i < num_duplicates; ++i)
-      rows[new_first_pending_row + i].swap(rows[n_rows - i]);
+      swap(rows[new_first_pending_row + i], rows[n_rows - i]);
   }
 
   // Erasing the duplicated rows...
@@ -620,7 +620,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
       if (i > rank) {
-	rows[i].swap(rows[rank]);
+	swap(rows[i], rows[rank]);
 	// After swapping the system is no longer sorted.
 	changed = true;
       }
@@ -756,7 +756,7 @@ Linear_System<Row>::simplify() {
   for (dimension_type i = 0; i < nrows; ++i)
     if ((*this)[i].is_line_or_equality()) {
       if (n_lines_or_equalities < i) {
-	rows[i].swap(rows[n_lines_or_equalities]);
+	swap(rows[i], rows[n_lines_or_equalities]);
 	// The system was not sorted.
 	PPL_ASSERT(!sorted);
       }
@@ -772,7 +772,7 @@ Linear_System<Row>::simplify() {
       num_swaps = std::min(n_lines_or_equalities - rank,
 			   n_rays_or_points_or_inequalities);
     for (dimension_type i = num_swaps; i-- > 0; )
-      rows[--nrows].swap(rows[rank + i]);
+      swap(rows[--nrows], rows[rank + i]);
     remove_trailing_rows(old_nrows - nrows);
     if (n_rays_or_points_or_inequalities > num_swaps)
       set_sorted(false);
@@ -798,7 +798,7 @@ Linear_System<Row>
   rows.resize(rows.size() + n);
   // The old system is moved to the bottom.
   for (dimension_type i = old_n_rows; i-- > 0; )
-    rows[i].swap(rows[i + n]);
+    swap(rows[i], rows[i + n]);
   for (dimension_type i = n, c = old_space_dim; i-- > 0; ) {
     // The top right-hand sub-system (i.e., the system made of new
     // rows and columns) is set to the specular image of the identity
@@ -809,14 +809,14 @@ Linear_System<Row>
       le.set_space_dimension(space_dimension());
       le += Variable(c);
       Row r(le, Row::LINE_OR_EQUALITY, row_topology);
-      std::swap(r, rows[i]);
+      swap(r, rows[i]);
     } else {
       // Variable(c) is the epsilon dimension.
       PPL_ASSERT(row_topology == NOT_NECESSARILY_CLOSED);
       Linear_Expression le = Variable(c);
       Row r(le, Row::LINE_OR_EQUALITY, NECESSARILY_CLOSED);
       r.mark_as_not_necessarily_closed();
-      std::swap(r, rows[i]);
+      swap(r, rows[i]);
       // Note: `r' is strongly normalized.
     }
     c++;
@@ -886,7 +886,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
       ++k1;
       // Do not increment `k2'; instead, swap there the next pending row.
       if (k2 < num_rows)
-        rows[k2].swap(rows[k2 + num_duplicates]);
+        swap(rows[k2], rows[k2 + num_duplicates]);
     }
     else if (cmp < 0)
       // By initial sortedness, we can increment `k1'.
@@ -897,7 +897,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
       // swap the next pending row in position `k2'.
       ++k2;
       if (num_duplicates > 0 && k2 < num_rows)
-        rows[k2].swap(rows[k2 + num_duplicates]);
+        swap(rows[k2], rows[k2 + num_duplicates]);
     }
   }
   // If needed, swap any duplicates found past the pending rows
@@ -905,7 +905,7 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
   if (num_duplicates > 0) {
     if (k2 < num_rows)
       for (++k2; k2 < num_rows; ++k2)
-        rows[k2].swap(rows[k2 + num_duplicates]);
+        swap(rows[k2], rows[k2 + num_duplicates]);
     rows.resize(num_rows);
   }
   sorted = true;

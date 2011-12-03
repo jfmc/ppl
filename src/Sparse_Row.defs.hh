@@ -136,7 +136,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void swap(Sparse_Row& x);
+  void m_swap(Sparse_Row& x);
 
   //! Returns the size of the row.
   /*!
@@ -824,11 +824,11 @@ private:
 
 } // namespace Parma_Polyhedra_Library
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Sparse_Row */
+//! Swaps \p x with \p y.
+/*! \relates Sparse_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Sparse_Row& x,
           Parma_Polyhedra_Library::Sparse_Row& y);

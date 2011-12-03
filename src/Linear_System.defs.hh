@@ -107,7 +107,7 @@ public:
   void assign_with_pending(const Linear_System& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Linear_System& y);
+  void m_swap(Linear_System& y);
 
   //! Returns the maximum space dimension a Linear_System can handle.
   static dimension_type max_space_dimension();
@@ -568,11 +568,11 @@ private:
   friend class Generator_System;
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_System */
+//! Swaps \p x with \p y.
+/*! \relates Linear_System */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Row>
 void swap(Parma_Polyhedra_Library::Linear_System<Row>& x,

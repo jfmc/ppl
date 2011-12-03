@@ -153,7 +153,7 @@ Constraint::Constraint(Linear_Expression& e, Kind kind, Topology topology)
     kind_(kind),
     topology_(topology) {
   PPL_ASSERT(kind != RAY_OR_POINT_OR_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  expr.swap(e);
+  swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
     // Add the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
@@ -166,7 +166,7 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : wrapped_expr(expr, topology == NOT_NECESSARILY_CLOSED),
     topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
-  expr.swap(e);
+  swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
     expr.set_space_dimension(expr.space_dimension() + 1);
   if (type == EQUALITY)
@@ -514,10 +514,11 @@ Constraint::epsilon_leq_one() {
 }
 
 inline void
-Constraint::swap(Constraint& y) {
-  expr.swap(y.expr);
-  std::swap(kind_, y.kind_);
-  std::swap(topology_, y.topology_);
+Constraint::m_swap(Constraint& y) {
+  using std::swap;
+  swap(expr, y.expr);
+  swap(kind_, y.kind_);
+  swap(topology_, y.topology_);
   wrapped_expr.set_hide_last(is_not_necessarily_closed());
   y.wrapped_expr.set_hide_last(y.is_not_necessarily_closed());
 }
@@ -534,18 +535,12 @@ Constraint::set_epsilon_coefficient(Coefficient_traits::const_reference n) {
   expr.set_coefficient(Variable(expr.space_dimension() - 1), n);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Constraint */
-template <>
+/*! \relates Constraint */
 inline void
-swap(Parma_Polyhedra_Library::Constraint& x,
-     Parma_Polyhedra_Library::Constraint& y) {
-  x.swap(y);
+swap(Constraint& x, Constraint& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Constraint_inlines_hh)

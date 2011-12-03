@@ -166,12 +166,13 @@ Linear_System<Row>::assign_with_pending(const Linear_System& y) {
 
 template <typename Row>
 inline void
-Linear_System<Row>::swap(Linear_System& y) {
-  rows.swap(y.rows);
-  std::swap(space_dimension_, y.space_dimension_);
-  std::swap(row_topology, y.row_topology);
-  std::swap(index_first_pending, y.index_first_pending);
-  std::swap(sorted, y.sorted);
+Linear_System<Row>::m_swap(Linear_System& y) {
+  using std::swap;
+  swap(rows, y.rows);
+  swap(space_dimension_, y.space_dimension_);
+  swap(row_topology, y.row_topology);
+  swap(index_first_pending, y.index_first_pending);
+  swap(sorted, y.sorted);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());
 }
@@ -346,7 +347,7 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i, bool keep_sorted) {
 
   if (is_sorted() && keep_sorted && !was_pending) {
     for (dimension_type j = i + 1; j < rows.size(); ++j)
-      rows[j].swap(rows[j-1]);
+      swap(rows[j], rows[j-1]);
     rows.pop_back();
   } else {
     if (!was_pending)
@@ -354,18 +355,18 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i, bool keep_sorted) {
     bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
     if (was_pending == last_row_is_pending)
       // Either both rows are pending or both rows are not pending.
-      rows[i].swap(rows.back());
+      swap(rows[i], rows.back());
     else {
       // Pending rows are stored after the non-pending ones.
       PPL_ASSERT(!was_pending);
       PPL_ASSERT(last_row_is_pending);
 
       // Swap the row with the last non-pending row.
-      rows[i].swap(rows[index_first_pending - 1]);
+      swap(rows[i], rows[index_first_pending - 1]);
 
       // Now the (not-pending) row that has to be deleted is between the
       // not-pending and the pending rows.
-      rows[i].swap(rows.back());
+      swap(rows[i], rows.back());
     }
     rows.pop_back();
   }
@@ -404,7 +405,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   if (is_sorted() && keep_sorted && !were_pending) {
     // Preserve the row ordering.
     for (dimension_type i = last; i < rows.size(); ++i)
-      rows[i].swap(rows[i - n]);
+      swap(rows[i], rows[i - n]);
 
     rows.resize(rows.size() - n);
 
@@ -504,7 +505,7 @@ Linear_System<Row>::swap_row_intervals(dimension_type first,
     return;
 
   for (dimension_type i = first; i < last; i++)
-    rows[i].swap(rows[i + offset]);
+    swap(rows[i], rows[i + offset]);
 
   if (first < index_first_pending)
     // The swaps involved not pending rows, so they may not be sorted anymore.
@@ -551,7 +552,7 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
       ++itr;
     } else {
       // The current row must not be removed, swap it after the last used row.
-      rows[last_unused_row].swap(rows[i]);
+      swap(rows[last_unused_row], rows[i]);
       ++last_unused_row;
     }
     ++i;
@@ -559,7 +560,7 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
 
   // Move up the remaining rows, if any.
   for ( ; i < rows_size; ++i) {
-    rows[last_unused_row].swap(rows[i]);
+    swap(rows[last_unused_row], rows[i]);
     ++last_unused_row;
   }
 
@@ -606,7 +607,7 @@ Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
 template <typename Row>
 inline void
 Linear_System<Row>::release_row(Row& row) {
-  row.swap(rows.back());
+  swap(row, rows.back());
   remove_trailing_rows(1);
   PPL_ASSERT(OK());
 }
@@ -616,7 +617,7 @@ inline void
 Linear_System<Row>::release_rows(Swapping_Vector<Row>& v) {
   PPL_ASSERT(v.empty());
   PPL_ASSERT(num_pending_rows() == 0);
-  rows.swap(v);
+  swap(rows, v);
   unset_pending_rows();
   PPL_ASSERT(OK());
 }
@@ -625,7 +626,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
   PPL_ASSERT(num_rows() == 0);
-  rows.swap(v);
+  swap(rows, v);
   sorted = false;
   unset_pending_rows();
   PPL_ASSERT(OK());
@@ -682,18 +683,13 @@ Linear_System<Row>::Unique_Compare
   return container[base_index + i].is_equal_to(container[base_index + j]);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_System */
+/*! \relates Linear_System */
 template <typename Row>
 inline void
-swap(Parma_Polyhedra_Library::Linear_System<Row>& x,
-     Parma_Polyhedra_Library::Linear_System<Row>& y) {
-  x.swap(y);
+swap(Linear_System<Row>& x, Linear_System<Row>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_System_inlines_hh)

@@ -44,9 +44,10 @@ Matrix<Row>::max_num_columns() {
 
 template <typename Row>
 inline void
-Matrix<Row>::swap(Matrix& x) {
-  std::swap(rows, x.rows);
-  std::swap(num_columns_, x.num_columns_);
+Matrix<Row>::m_swap(Matrix& x) {
+  using std::swap;
+  swap(rows, x.rows);
+  swap(num_columns_, x.num_columns_);
 }
 
 template <typename Row>
@@ -114,7 +115,7 @@ Matrix<Row>::add_row(const Row& x) {
   Row row(x);
   add_zero_rows(1);
   // Now x may have been invalidated, if it was a row of this matrix.
-  rows.back().swap(row);
+  swap(rows.back(), row);
   PPL_ASSERT(OK());
 }
 
@@ -122,7 +123,7 @@ template <typename Row>
 inline void
 Matrix<Row>::add_recycled_row(Row& x) {
   add_zero_rows(1);
-  rows.back().swap(x);
+  swap(rows.back(), x);
   PPL_ASSERT(OK());
 }
 
@@ -201,17 +202,12 @@ Matrix<Row>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
 template <typename Row>
 inline void
-swap(Parma_Polyhedra_Library::Matrix<Row>& x,
-     Parma_Polyhedra_Library::Matrix<Row>& y) {
-  x.swap(y);
+swap(Matrix<Row>& x, Matrix<Row>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Matrix_inlines_hh)

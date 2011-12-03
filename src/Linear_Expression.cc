@@ -201,52 +201,60 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
 PPL::Linear_Expression::Linear_Expression(const Constraint& c)
   : impl(NULL) {
   Linear_Expression tmp(c.expression());
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Constraint& c,
                                           Representation r)
   : impl(NULL) {
   Linear_Expression tmp(c.expression(), r);
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
   : impl(NULL) {
   Linear_Expression tmp(g.expression());
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g, Representation r)
   : impl(NULL) {
   Linear_Expression tmp(g.expression(), r);
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
   : impl(NULL) {
   Linear_Expression tmp(g.expression());
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g,
                                           Representation r)
   : impl(NULL) {
   Linear_Expression tmp(g.expression(), r);
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
   : impl(NULL) {
   Linear_Expression tmp(cg.expression());
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Congruence& cg,
                                           Representation r)
   : impl(NULL) {
   Linear_Expression tmp(cg.expression(), r);
-  std::swap(impl, tmp.impl);
+  using std::swap;
+  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
@@ -269,7 +277,7 @@ PPL::Linear_Expression::set_representation(Representation r) {
   if (representation() == r)
     return;
   Linear_Expression tmp(*this, r);
-  swap(tmp);
+  swap(*this, tmp);
 }
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)

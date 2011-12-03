@@ -361,7 +361,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_swap
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
   @CPP_CLASS@* y_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_y));
-  this_ptr->swap(*y_ptr);
+  swap(*this_ptr, *y_ptr);
 }
 CATCH_ALL
 
@@ -1289,8 +1289,8 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_linear_1@PARTITION@
       = new @TOPOLOGY@@CPP_CLASS@(0, EMPTY);
     Pointset_Powerset<NNC_Polyhedron>* r2
       = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-    r1->swap(r.first);
-    r2->swap(r.second);
+    swap(*r1, r.first);
+    swap(*r2, r.second);
 
     jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
     CHECK_RESULT_ASSERT(env, j_pair_class);
@@ -1340,8 +1340,8 @@ Java_parma_1polyhedra_1library_@1CLASS@_approximate_1@PARTITION@
 
     @CPP_CLASS@* r1 = new @CPP_CLASS@(0, EMPTY);
     Pointset_Powerset<Grid>* r2 = new Pointset_Powerset<Grid>(0, EMPTY);
-    r1->swap(r.first);
-    r2->swap(r.second);
+    swap(*r1, r.first);
+    swap(*r2, r.second);
 
     jclass j_pair_class = env->FindClass("parma_polyhedra_library/Pair");
     CHECK_RESULT_ASSERT(env, j_pair_class);

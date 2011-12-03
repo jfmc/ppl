@@ -947,7 +947,8 @@ FCAIBVP::upper_bound_assign(const FCAIBVP& y) {
   std::set_intersection(x.set.begin(), x.set.end(),
 			y.set.begin(), y.set.end(),
 			std::inserter(z.set, z.set.begin()));
-  std::swap(x, z);
+  using std::swap;
+  swap(x, z);
 }
 
 inline void
@@ -957,7 +958,8 @@ FCAIBVP::difference_assign(const FCAIBVP& y) {
   std::set_difference(x.set.begin(), x.set.end(),
 		      y.set.begin(), y.set.end(),
 		      std::inserter(z.set, z.set.begin()));
-  std::swap(x, z);
+  using std::swap;
+  swap(x, z);
 }
 
 inline void

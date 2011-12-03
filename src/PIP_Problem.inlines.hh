@@ -52,24 +52,25 @@ PIP_Problem::parameter_space_dimensions() const {
 }
 
 inline void
-PIP_Problem::swap(PIP_Problem& y) {
-  std::swap(external_space_dim, y.external_space_dim);
-  std::swap(internal_space_dim, y.internal_space_dim);
-  std::swap(status, y.status);
-  std::swap(current_solution, y.current_solution);
-  std::swap(input_cs, y.input_cs);
-  std::swap(first_pending_constraint, y.first_pending_constraint);
-  std::swap(parameters, y.parameters);
-  std::swap(initial_context, y.initial_context);
+PIP_Problem::m_swap(PIP_Problem& y) {
+  using std::swap;
+  swap(external_space_dim, y.external_space_dim);
+  swap(internal_space_dim, y.internal_space_dim);
+  swap(status, y.status);
+  swap(current_solution, y.current_solution);
+  swap(input_cs, y.input_cs);
+  swap(first_pending_constraint, y.first_pending_constraint);
+  swap(parameters, y.parameters);
+  swap(initial_context, y.initial_context);
   for (dimension_type i = CONTROL_PARAMETER_NAME_SIZE; i-- > 0; )
-    std::swap(control_parameters[i], y.control_parameters[i]);
-  std::swap(big_parameter_dimension, y.big_parameter_dimension);
+    swap(control_parameters[i], y.control_parameters[i]);
+  swap(big_parameter_dimension, y.big_parameter_dimension);
 }
 
 inline PIP_Problem&
 PIP_Problem::operator=(const PIP_Problem& y) {
   PIP_Problem tmp(y);
-  swap(tmp);
+  m_swap(tmp);
   return *this;
 }
 
@@ -84,17 +85,12 @@ PIP_Problem::get_big_parameter_dimension() const {
   return big_parameter_dimension;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::PIP_Problem */
+/*! \relates PIP_Problem */
 inline void
-swap(Parma_Polyhedra_Library::PIP_Problem& x,
-     Parma_Polyhedra_Library::PIP_Problem& y) {
-  x.swap(y);
+swap(PIP_Problem& x, PIP_Problem& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_PIP_Problem_inlines_hh)

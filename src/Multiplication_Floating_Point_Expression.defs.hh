@@ -30,21 +30,14 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Multiplication_Floating_Point_Expression.types.hh"
 #include <map>
 
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Multiplication_Floating_Point_Expression */
-template <typename FP_Interval_Type, typename FP_Format>
-void swap(Parma_Polyhedra_Library
-	  ::Multiplication_Floating_Point_Expression<FP_Interval_Type,
-	                                             FP_Format>& x,
-	  Parma_Polyhedra_Library
-	  ::Multiplication_Floating_Point_Expression<FP_Interval_Type,
-	                                             FP_Format>& y);
-
-} // namespace std
-
 namespace Parma_Polyhedra_Library {
+
+//! Swaps \p x with \p y.
+/*! \relates Multiplication_Floating_Point_Expression */
+template <typename FP_Interval_Type, typename FP_Format>
+void
+swap(Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
+     Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
 
 /*! \brief
   A generic Multiplication Floating Point Expression.
@@ -219,8 +212,8 @@ public:
                        FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
-  void swap(Multiplication_Floating_Point_Expression<FP_Interval_Type,
-	                                             FP_Format>& y);
+  void m_swap(Multiplication_Floating_Point_Expression<FP_Interval_Type,
+                                                       FP_Format>& y);
 
 private:
 

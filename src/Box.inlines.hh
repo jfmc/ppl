@@ -81,10 +81,11 @@ Box<ITV>::operator=(const Box& y) {
 
 template <typename ITV>
 inline void
-Box<ITV>::swap(Box& y) {
+Box<ITV>::m_swap(Box& y) {
   Box& x = *this;
-  std::swap(x.seq, y.seq);
-  std::swap(x.status, y.status);
+  using std::swap;
+  swap(x.seq, y.seq);
+  swap(x.status, y.status);
 }
 
 template <typename ITV>
@@ -92,7 +93,7 @@ inline
 Box<ITV>::Box(const Constraint_System& cs, Recycle_Input) {
   // Recycling is useless: just delegate.
   Box<ITV> tmp(cs);
-  this->swap(tmp);
+  this->m_swap(tmp);
 }
 
 template <typename ITV>
@@ -100,7 +101,7 @@ inline
 Box<ITV>::Box(const Generator_System& gs, Recycle_Input) {
   // Recycling is useless: just delegate.
   Box<ITV> tmp(gs);
-  this->swap(tmp);
+  this->m_swap(tmp);
 }
 
 template <typename ITV>
@@ -108,7 +109,7 @@ inline
 Box<ITV>::Box(const Congruence_System& cgs, Recycle_Input) {
   // Recycling is useless: just delegate.
   Box<ITV> tmp(cgs);
-  this->swap(tmp);
+  this->m_swap(tmp);
 }
 
 template <typename ITV>
@@ -665,6 +666,13 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // in the Intel C/C++ compiler version 10.1.x.
   return Parma_Polyhedra_Library
     ::l_infinity_distance_assign<To, To, ITV>(r, x, y, dir);
+}
+
+/*! \relates Box */
+template <typename ITV>
+inline void
+swap(Box<ITV>& x, Box<ITV>& y) {
+  x.m_swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -230,7 +230,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   if (old_gensys.has_no_rows()) {
     // The polyhedron is empty.
     Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
-    std::swap(*this, new_polyhedron);
+    m_swap(new_polyhedron);
     PPL_ASSERT_HEAVY(OK());
     return;
   }
@@ -278,7 +278,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     }
   }
   Polyhedron new_polyhedron(topology(), new_gensys);
-  std::swap(*this, new_polyhedron);
+  m_swap(new_polyhedron);
   PPL_ASSERT_HEAVY(OK(true));
 }
 

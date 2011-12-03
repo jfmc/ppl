@@ -173,7 +173,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
     @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
     PPL_CHECK(lhs);
     PPL_CHECK(rhs);
-    lhs->swap(*rhs);
+    swap(*lhs, *rhs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -504,8 +504,8 @@ m4_define(`m4_linear_partition_for_polyhedron_domains',
         r = linear_partition(*ph, *qh);
       rfh = new C_Polyhedron(0, EMPTY);
       rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-      rfh->swap(r.first);
-      rsh->swap(r.second);
+      swap(*rfh, r.first);
+      swap(*rsh, r.second);
     }
     else {
       const NNC_Polyhedron* ph = term_to_handle<NNC_Polyhedron>(t_ph, where);
@@ -516,8 +516,8 @@ m4_define(`m4_linear_partition_for_polyhedron_domains',
         r = linear_partition(*ph, *qh);
       rfh = new NNC_Polyhedron(0, EMPTY);
       rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-      rfh->swap(r.first);
-      rsh->swap(r.second);
+      swap(*rfh, r.first);
+      swap(*rsh, r.second);
     }
 ')
 
@@ -530,8 +530,8 @@ m4_define(`m4_linear_partition_for_non_polyhedron_domains',
     r = linear_partition(*ph, *qh);
   rfh = new @CPP_CLASS@(0, EMPTY);
   rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-  rfh->swap(r.first);
-  rsh->swap(r.second);
+  swap(*rfh, r.first);
+  swap(*rsh, r.second);
 ')
 
 m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
@@ -556,11 +556,11 @@ m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code',
       approximate_partition(*ph, *qh, finite);
 
     @CLASS@* rfh = new @CLASS@(EMPTY);
-    rfh->swap(r.first);
+    swap(*rfh, r.first);
 
     Pointset_Powerset<Grid>* rsh =
       new Pointset_Powerset<Grid>(EMPTY);
-    rsh->swap(r.second);
+    swap(*rsh, r.second);
 
     Prolog_term_ref t_b = Prolog_new_term_ref();
     Prolog_term_ref t_r_first = Prolog_new_term_ref();

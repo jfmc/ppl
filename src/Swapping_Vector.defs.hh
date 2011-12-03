@@ -55,7 +55,7 @@ public:
   dimension_type capacity() const;
   bool empty() const;
 
-  void swap(Swapping_Vector& v);
+  void m_swap(Swapping_Vector& v);
 
   T& operator[](dimension_type i);
   const T& operator[](dimension_type i) const;
@@ -83,20 +83,13 @@ private:
   std::vector<T> impl;
 };
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Swapping_Vector<T> */
+/*! \relates Swapping_Vector<T> */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-void swap(Parma_Polyhedra_Library::Swapping_Vector<T>& x,
-          Parma_Polyhedra_Library::Swapping_Vector<T>& y);
+void swap(Swapping_Vector<T>& x, Swapping_Vector<T>& y);
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #include "Swapping_Vector.inlines.hh"
 

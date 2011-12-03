@@ -174,10 +174,11 @@ Dense_Row::destroy() {
 }
 
 inline void
-Dense_Row::swap(Dense_Row& y) {
-  std::swap(impl.size, y.impl.size);
-  std::swap(impl.capacity, y.impl.capacity);
-  std::swap(impl.vec, y.impl.vec);
+Dense_Row::m_swap(Dense_Row& y) {
+  using std::swap;
+  swap(impl.size, y.impl.size);
+  swap(impl.capacity, y.impl.capacity);
+  swap(impl.vec, y.impl.vec);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());
 }
@@ -195,7 +196,7 @@ Dense_Row::operator=(const Dense_Row& y) {
   }
 
   Dense_Row x(y);
-  std::swap(*this, x);
+  swap(*this, x);
 
   return *this;
 }
@@ -516,25 +517,19 @@ linear_combine(Dense_Row& x, const Dense_Row& y,
   x.linear_combine(y, c1, c2, start, end);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Dense_Row */
+/*! \relates Dense_Row */
 inline void
-swap(Parma_Polyhedra_Library::Dense_Row& x,
-     Parma_Polyhedra_Library::Dense_Row& y) {
-  x.swap(y);
+swap(Dense_Row& x, Dense_Row& y) {
+  x.m_swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::Dense_Row */
+/*! \relates Dense_Row */
 inline void
-iter_swap(std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator x,
-          std::vector<Parma_Polyhedra_Library::Dense_Row>::iterator y) {
+iter_swap(std::vector<Dense_Row>::iterator x,
+          std::vector<Dense_Row>::iterator y) {
   swap(*x, *y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Dense_Row_inlines_hh)

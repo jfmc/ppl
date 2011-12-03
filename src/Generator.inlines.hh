@@ -145,7 +145,7 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
     wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
     topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
-  expr.swap(e);
+  swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
     expr.set_space_dimension(expr.space_dimension() + 1);
   if (type == LINE)
@@ -161,7 +161,7 @@ Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
     wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
     topology_(topology) {
-  expr.swap(e);
+  swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
     expr.set_space_dimension(expr.space_dimension() + 1);
   strong_normalize();
@@ -475,10 +475,11 @@ Generator::ascii_load(std::istream& s) {
 }
 
 inline void
-Generator::swap(Generator& y) {
-  expr.swap(y.expr);
-  std::swap(kind_, y.kind_);
-  std::swap(topology_, y.topology_);
+Generator::m_swap(Generator& y) {
+  using std::swap;
+  swap(expr, y.expr);
+  swap(kind_, y.kind_);
+  swap(topology_, y.topology_);
   wrapped_expr.set_hide_last(is_not_necessarily_closed());
   y.wrapped_expr.set_hide_last(y.is_not_necessarily_closed());
 }
@@ -658,17 +659,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign<To, To>(r, x, y, dir);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Generator */
+/*! \relates Generator */
 inline void
-swap(Parma_Polyhedra_Library::Generator& x,
-     Parma_Polyhedra_Library::Generator& y) {
-  x.swap(y);
+swap(Generator& x, Generator& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Generator_inlines_hh)

@@ -398,10 +398,11 @@ OR_Matrix<T>::element_end() const {
 
 template <typename T>
 inline void
-OR_Matrix<T>::swap(OR_Matrix& y) {
-  std::swap(vec, y.vec);
-  std::swap(space_dim, y.space_dim);
-  std::swap(vec_capacity, y.vec_capacity);
+OR_Matrix<T>::m_swap(OR_Matrix& y) {
+  using std::swap;
+  swap(vec, y.vec);
+  swap(space_dim, y.space_dim);
+  swap(vec_capacity, y.vec_capacity);
 }
 
 //! Returns the integer square root of \p x.
@@ -483,7 +484,7 @@ OR_Matrix<T>::num_rows() const {
 template <typename T>
 inline void
 OR_Matrix<T>::clear() {
-  OR_Matrix<T>(0).swap(*this);
+  OR_Matrix<T>(0).m_swap(*this);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -552,7 +553,7 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
       for (element_iterator i = element_begin(),
 	     mend = element_end(); i != mend; ++i, ++j)
 	assign_or_swap(*j, *i);
-      swap(new_matrix);
+      m_swap(new_matrix);
     }
   }
 }
@@ -579,7 +580,7 @@ OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
     else {
       // We cannot recycle the old vec.
       OR_Matrix<T> new_matrix(new_dim);
-      swap(new_matrix);
+      m_swap(new_matrix);
     }
   }
   else if (new_dim < space_dim)
@@ -699,19 +700,13 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 								   tmp2);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::OR_Matrix */
+/*! \relates OR_Matrix */
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::OR_Matrix<T>& x,
-     Parma_Polyhedra_Library::OR_Matrix<T>& y) {
-  x.swap(y);
+swap(OR_Matrix<T>& x, OR_Matrix<T>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
-
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_OR_Matrix_inlines_hh)

@@ -70,6 +70,11 @@ operator<<(std::ostream& s, const Octagonal_Shape<T>& oct);
 
 } // namespace IO_Operators
 
+//! Swaps \p x with \p y.
+/*! \relates Octagonal_Shape */
+template <typename T>
+void swap(Octagonal_Shape<T>& x, Octagonal_Shape<T>& y);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if \p x and \p y are the same octagon.
 
@@ -592,7 +597,7 @@ public:
     Swaps \p *this with octagon \p y.
     (\p *this and \p y can be dimension-incompatible.)
   */
-  void swap(Octagonal_Shape& y);
+  void m_swap(Octagonal_Shape& y);
 
   //! Destructor.
   ~Octagonal_Shape();
@@ -2310,16 +2315,6 @@ private:
   void throw_generic(const char* method, const char* reason) const;
   //@} // Exception Throwers
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
-template <typename T>
-void swap(Parma_Polyhedra_Library::Octagonal_Shape<T>& x,
-          Parma_Polyhedra_Library::Octagonal_Shape<T>& y);
-
-} // namespace std
 
 #include "Og_Status.inlines.hh"
 #include "Octagonal_Shape.inlines.hh"

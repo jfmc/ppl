@@ -235,10 +235,11 @@ Octagonal_Shape<T>::~Octagonal_Shape() {
 
 template <typename T>
 inline void
-Octagonal_Shape<T>::swap(Octagonal_Shape& y) {
-  std::swap(matrix, y.matrix);
-  std::swap(space_dim, y.space_dim);
-  std::swap(status, y.status);
+Octagonal_Shape<T>::m_swap(Octagonal_Shape& y) {
+  using std::swap;
+  swap(matrix, y.matrix);
+  swap(space_dim, y.space_dim);
+  swap(status, y.status);
 }
 
 template <typename T>
@@ -602,7 +603,7 @@ Octagonal_Shape<T>::time_elapse_assign(const Octagonal_Shape& y) {
   C_Polyhedron py(y.constraints());
   px.time_elapse_assign(py);
   Octagonal_Shape<T> x(px);
-  swap(x);
+  m_swap(x);
   PPL_ASSERT(OK());
 }
 
@@ -878,18 +879,13 @@ Octagonal_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
   }
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
+/*! \relates Octagonal_Shape */
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::Octagonal_Shape<T>& x,
-     Parma_Polyhedra_Library::Octagonal_Shape<T>& y) {
-  x.swap(y);
+swap(Octagonal_Shape<T>& x, Octagonal_Shape<T>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Octagonal_Shape_inlines_hh)

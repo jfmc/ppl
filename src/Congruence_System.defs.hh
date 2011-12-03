@@ -320,7 +320,7 @@ public:
   dimension_type num_proper_congruences() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Congruence_System& cgs);
+  void m_swap(Congruence_System& cgs);
 
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
@@ -534,18 +534,11 @@ operator<<(std::ostream& s, const Congruence_System& cgs);
 bool
 operator==(const Congruence_System& x, const Congruence_System& y);
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Congruence_System */
+/*! \relates Congruence_System */
 void
-swap(Parma_Polyhedra_Library::Congruence_System& x,
-     Parma_Polyhedra_Library::Congruence_System& y);
+swap(Congruence_System& x, Congruence_System& y);
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 // Congruence_System.inlines.hh is not included here on purpose.
 

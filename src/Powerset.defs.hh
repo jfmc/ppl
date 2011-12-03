@@ -33,6 +33,11 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Swaps \p x with \p y.
+/*! \relates Powerset */
+template <typename D>
+void swap(Powerset<D>& x, Powerset<D>& y);
+
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
 /*! \relates Powerset */
 template <typename D>
@@ -341,7 +346,7 @@ public:
   Powerset& operator=(const Powerset& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Powerset& y);
+  void m_swap(Powerset& y);
 
   //! Assigns to \p *this the least upper bound of \p *this and \p y.
   void least_upper_bound_assign(const Powerset& y);
@@ -438,16 +443,6 @@ private:
   */
   void collapse(Sequence_iterator sink);
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Powerset */
-template <typename D>
-void swap(Parma_Polyhedra_Library::Powerset<D>& x,
-	  Parma_Polyhedra_Library::Powerset<D>& y);
-
-} // namespace std
 
 #include "Powerset.inlines.hh"
 #include "Powerset.templates.hh"

@@ -830,7 +830,7 @@ ppl_@CLASS@_swap(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  pph1.swap(pph2);
+  swap(pph1, pph2);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL
@@ -1212,8 +1212,8 @@ m4_define(`m4_linear_partition_for_polyhedron_domains',
       r = linear_partition(pph1, pph2);
     rfh = new C_Polyhedron(0, EMPTY);
     rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-    rfh->swap(r.first);
-    rsh->swap(r.second);
+    swap(*rfh, r.first);
+    swap(*rsh, r.second);
   }
   else {
     NNC_Polyhedron& pph1
@@ -1224,8 +1224,8 @@ m4_define(`m4_linear_partition_for_polyhedron_domains',
       r = linear_partition(pph1, pph2);
     rfh = new NNC_Polyhedron(0, EMPTY);
     rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-    rfh->swap(r.first);
-    rsh->swap(r.second);
+    swap(*rfh, r.first);
+    swap(*rsh, r.second);
   }
 ')
 
@@ -1239,8 +1239,8 @@ m4_define(`m4_linear_partition_for_non_polyhedron_domains',
     r = linear_partition(pph1, pph2);
   rfh = new @CPP_CLASS@(0, EMPTY);
   rsh = new Pointset_Powerset<NNC_Polyhedron>(0, EMPTY);
-  rfh->swap(r.first);
-  rsh->swap(r.second);
+  swap(*rfh, r.first);
+  swap(*rsh, r.second);
 ')
 
 m4_define(`ppl_@CLASS@_approximate_@PARTITION@_code', `
@@ -1258,8 +1258,8 @@ ppl_@CLASS@_approximate_@PARTITION@(value ph1, value ph2) try {
     r = approximate_partition(pph1, pph2, is_finite);
   @CPP_CLASS@* rfh = new @CPP_CLASS@(0, EMPTY);
   Pointset_Powerset<Grid>* rsh = new Pointset_Powerset<Grid>(0, EMPTY);
-  rfh->swap(r.first);
-  rsh->swap(r.second);
+  swap(*rfh, r.first);
+  swap(*rsh, r.second);
   caml_return_value = caml_alloc(3, 0);
   Store_field(caml_return_value, 0,
               unregistered_value_p_@CLASS@(*rfh));

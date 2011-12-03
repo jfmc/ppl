@@ -193,8 +193,8 @@ Constraint_System::add_low_level_constraints() {
 }
 
 inline void
-Constraint_System::swap(Constraint_System& y) {
-  std::swap(sys, y.sys);
+Constraint_System::m_swap(Constraint_System& y) {
+  swap(sys, y.sys);
 }
 
 inline memory_size_type
@@ -428,18 +428,12 @@ operator!=(const Constraint_System& x, const Constraint_System& y) {
   return !(x == y);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Constraint_System */
+/*! \relates Constraint_System */
 inline void
-swap(Parma_Polyhedra_Library::Constraint_System& x,
-     Parma_Polyhedra_Library::Constraint_System& y) {
-  x.swap(y);
+swap(Constraint_System& x, Constraint_System& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Constraint_System_inlines_hh)

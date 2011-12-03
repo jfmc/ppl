@@ -77,9 +77,10 @@ Bit_Matrix::remove_trailing_columns(const dimension_type n) {
 }
 
 inline void
-Bit_Matrix::swap(Bit_Matrix& y) {
-  std::swap(row_size, y.row_size);
-  std::swap(rows, y.rows);
+Bit_Matrix::m_swap(Bit_Matrix& y) {
+  using std::swap;
+  swap(row_size, y.row_size);
+  swap(rows, y.rows);
 }
 
 inline Bit_Row&
@@ -107,7 +108,9 @@ Bit_Matrix::num_rows() const {
 inline void
 Bit_Matrix::clear() {
   // Clear `rows' and minimize its capacity.
-  std::vector<Bit_Row>().swap(rows);
+  std::vector<Bit_Row> tmp;
+  using std::swap;
+  swap(tmp, rows);
   row_size = 0;
 }
 
@@ -135,18 +138,12 @@ operator!=(const Bit_Matrix& x, const Bit_Matrix& y) {
   return !(x == y);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Bit_Matrix */
+/*! \relates Bit_Matrix */
 inline void
-swap(Parma_Polyhedra_Library::Bit_Matrix& x,
-     Parma_Polyhedra_Library::Bit_Matrix& y) {
-  x.swap(y);
+swap(Bit_Matrix& x, Bit_Matrix& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Bit_Matrix_inlines_hh)

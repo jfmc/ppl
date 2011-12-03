@@ -68,12 +68,14 @@ Swapping_Vector<T>::reserve(dimension_type new_capacity) {
     new_impl.reserve(compute_capacity(new_capacity, max_num_rows()));
     new_impl.resize(impl.size());
 
-    // Steal the old rows.
+    using std::swap;
+
+    // Steal the old elements.
     for (dimension_type i = impl.size(); i-- > 0; )
-      new_impl[i].swap(impl[i]);
+      swap(new_impl[i], impl[i]);
 
     // Put the new vector into place.
-    impl.swap(new_impl);
+    swap(impl, new_impl);
   }
 }
 
@@ -111,8 +113,9 @@ Swapping_Vector<T>::empty() const {
 
 template <typename T>
 inline void
-Swapping_Vector<T>::swap(Swapping_Vector& v) {
-  std::swap(impl, v.impl);
+Swapping_Vector<T>::m_swap(Swapping_Vector& v) {
+  using std::swap;
+  swap(impl, v.impl);
 }
 
 template <typename T>
@@ -195,7 +198,7 @@ Swapping_Vector<T>::erase(iterator itr) {
   dimension_type i = old_i;
   ++i;
   while (i != size())
-    impl[i-1].swap(impl[i]);
+    swap(impl[i-1], impl[i]);
   impl.pop_back();
   return begin() + old_i;
 }
@@ -209,8 +212,9 @@ Swapping_Vector<T>::erase(iterator first, iterator last) {
   const iterator old_first = first;
   const dimension_type k = last - first;
   const dimension_type n = end() - last;
+  using std::swap;
   for (dimension_type i = 0; i < n; ++i, ++first)
-    (*first).swap(*(first + k));
+    swap(*first, *(first + k));
   impl.erase(end() - k, end());
   return old_first;
 }
@@ -221,19 +225,13 @@ Swapping_Vector<T>::max_num_rows() {
   return impl.max_size();
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::Swapping_Vector<T>& vec1,
-     Parma_Polyhedra_Library::Swapping_Vector<T>& vec2) {
-  vec1.swap(vec2);
+swap(Swapping_Vector<T>& vec1, Swapping_Vector<T>& vec2) {
+  vec1.m_swap(vec2);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 
 #endif // !defined(PPL_Swapping_Vector_inlines_hh)

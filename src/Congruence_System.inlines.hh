@@ -58,20 +58,20 @@ Congruence_System::remove_trailing_rows(dimension_type n) {
 inline void
 Congruence_System::release_row(Congruence& c) {
   PPL_ASSERT(!rows.empty());
-  std::swap(rows.back(), c);
+  swap(rows.back(), c);
   rows.pop_back();
 }
 
 inline void
 Congruence_System::release_rows(Swapping_Vector<Congruence>& v) {
   PPL_ASSERT(v.empty());
-  std::swap(rows, v);
+  swap(rows, v);
 }
 
 inline void
 Congruence_System::take_ownership_of_rows(Swapping_Vector<Congruence>& v) {
   PPL_ASSERT(rows.size() == 0);
-  std::swap(rows, v);
+  swap(rows, v);
 }
 
 inline void
@@ -245,9 +245,10 @@ Congruence_System::empty() const {
 }
 
 inline void
-Congruence_System::swap(Congruence_System& y) {
-  std::swap(rows, y.rows);
-  std::swap(num_columns_, y.num_columns_);
+Congruence_System::m_swap(Congruence_System& y) {
+  using std::swap;
+  swap(rows, y.rows);
+  swap(num_columns_, y.num_columns_);
 }
 
 inline memory_size_type
@@ -260,18 +261,12 @@ Congruence_System::total_memory_in_bytes() const {
   return rows.external_memory_in_bytes() + sizeof(*this);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Congruence_System */
+/*! \relates Congruence_System */
 inline void
-swap(Parma_Polyhedra_Library::Congruence_System& x,
-     Parma_Polyhedra_Library::Congruence_System& y) {
-  x.swap(y);
+swap(Congruence_System& x, Congruence_System& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Congruence_System_inlines_hh)

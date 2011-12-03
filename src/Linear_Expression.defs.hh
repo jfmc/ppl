@@ -53,6 +53,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Expression_Hide_Last.types.hh"
 
 namespace Parma_Polyhedra_Library {
+
 // Put them in the namespace here to declare them friend later.
 
 //! Returns the linear expression \p e1 + \p e2.
@@ -232,16 +233,6 @@ std::ostream& operator<<(std::ostream& s, const Linear_Expression& e);
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_Expression */
-void swap(Parma_Polyhedra_Library::Linear_Expression& x,
-	  Parma_Polyhedra_Library::Linear_Expression& y);
-
-} // namespace std
 
 //! A linear expression.
 /*! \ingroup PPL_CXX_interface
@@ -524,7 +515,7 @@ public:
 
       This method takes \f$O(1)\f$ time.
     */
-    void swap(const_iterator& itr);
+    void m_swap(const_iterator& itr);
 
     //! Assigns \p itr to *this .
     /*!
@@ -711,7 +702,7 @@ public:
   bool ascii_load(std::istream& s);
 
   //! Swaps \p *this with \p y.
-  void swap(Linear_Expression& y);
+  void m_swap(Linear_Expression& y);
 
   //! Copy constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type space_dim);
@@ -1037,6 +1028,19 @@ private:
   Parma_Polyhedra_Library::IO_Operators
   ::operator<<(std::ostream& s, const Linear_Expression& e);
 };
+
+namespace Parma_Polyhedra_Library {
+
+//! Swaps \p x with \p y.
+/*! \relates Linear_Expression */
+void swap(Linear_Expression& x, Linear_Expression& y);
+
+//! Swaps \p x with \p y.
+/*! \relates Linear_Expression::const_iterator */
+void swap(Linear_Expression::const_iterator& x,
+          Linear_Expression::const_iterator& y);
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Linear_Expression.inlines.hh"
 

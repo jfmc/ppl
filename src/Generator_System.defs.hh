@@ -64,16 +64,6 @@ bool operator!=(const Generator_System& x, const Generator_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Generator_System */
-void swap(Parma_Polyhedra_Library::Generator_System& x,
-	  Parma_Polyhedra_Library::Generator_System& y);
-
-} // namespace std
-
 //! A system of generators.
 /*! \ingroup PPL_CXX_interface
     An object of the class Generator_System is a system of generators,
@@ -285,7 +275,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Generator_System& y);
+  void m_swap(Generator_System& y);
 
   // TODO: Consider making this private.
   //! Removes all the specified dimensions from the generator system.

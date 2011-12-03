@@ -103,7 +103,7 @@ Congruence::Congruence(Linear_Expression& le,
                        Recycle_Input)
   : modulus_(m) {
   PPL_ASSERT(m >= 0);
-  expr.swap(le);
+  swap(expr, le);
 
   PPL_ASSERT(OK());
 }
@@ -271,9 +271,10 @@ Congruence::total_memory_in_bytes() const {
 }
 
 inline void
-Congruence::swap(Congruence& y) {
-  std::swap(expr, y.expr);
-  std::swap(modulus_, y.modulus_);
+Congruence::m_swap(Congruence& y) {
+  using std::swap;
+  swap(expr, y.expr);
+  swap(modulus_, y.modulus_);
 }
 
 inline void
@@ -281,17 +282,12 @@ Congruence::swap_space_dimensions(Variable v1, Variable v2) {
   expr.swap_space_dimensions(v1, v2);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Congruence */
+/*! \relates Congruence */
 inline void
-swap(Parma_Polyhedra_Library::Congruence& x,
-     Parma_Polyhedra_Library::Congruence& y) {
-  x.swap(y);
+swap(Congruence& x, Congruence& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Congruence_inlines_hh)

@@ -225,7 +225,8 @@ Powerset<D>::pairwise_apply_assign(const Powerset& y,
 	new_sequence.push_back(zi);
     }
   // Put the new sequence in place.
-  std::swap(sequence, new_sequence);
+  using std::swap;
+  swap(sequence, new_sequence);
   reduced = false;
   PPL_ASSERT_HEAVY(OK());
 }

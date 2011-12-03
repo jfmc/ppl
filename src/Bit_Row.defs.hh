@@ -32,6 +32,20 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+/*! \relates Bit_Row */
+void swap(Bit_Row& x, Bit_Row& y);
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps objects referred by \p x and \p y.
+/*! \relates Bit_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void
+iter_swap(std::vector<Bit_Row>::iterator x,
+          std::vector<Bit_Row>::iterator y);
+
 // Put them in the namespace here to declare them friends later.
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -112,7 +126,7 @@ public:
   Bit_Row& operator=(const Bit_Row& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Bit_Row& y);
+  void m_swap(Bit_Row& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
   bool operator[](unsigned long k) const;
@@ -194,25 +208,6 @@ private:
   */
   void union_helper(const Bit_Row& x, const Bit_Row& y);
 };
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Bit_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void swap(Parma_Polyhedra_Library::Bit_Row& x,
-	  Parma_Polyhedra_Library::Bit_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Bit_Row */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void
-iter_swap(std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator y);
-
-} // namespace std
 
 #include "Bit_Row.inlines.hh"
 

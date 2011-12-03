@@ -302,11 +302,12 @@ DB_Row<T>::shrink(const dimension_type new_size) {
 
 template <typename T>
 inline void
-DB_Row<T>::swap(DB_Row& y) {
+DB_Row<T>::m_swap(DB_Row& y) {
+  using std::swap;
   DB_Row<T>& x = *this;
-  std::swap(x.impl, y.impl);
+  swap(x.impl, y.impl);
 #if PPL_DB_ROW_EXTRA_DEBUG
-  std::swap(x.capacity_, y.capacity_);
+  swap(x.capacity_, y.capacity_);
 #endif
 }
 
@@ -323,11 +324,8 @@ DB_Row<T>::assign(DB_Row& y) {
 template <typename T>
 inline DB_Row<T>&
 DB_Row<T>::operator=(const DB_Row& y) {
-  // Copy-construct `tmp' from `y'.
   DB_Row tmp(y);
-  // Swap the implementation of `*this' with the one of `tmp'.
-  swap(tmp);
-  // Now `tmp' goes out of scope, so the old `*this' will be destroyed.
+  m_swap(tmp);
   return *this;
 }
 
@@ -410,29 +408,21 @@ operator!=(const DB_Row<T>& x, const DB_Row<T>& y) {
   return !(x == y);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::DB_Row */
+/*! \relates DB_Row */
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::DB_Row<T>& x,
-     Parma_Polyhedra_Library::DB_Row<T>& y) {
-  x.swap(y);
+swap(DB_Row<T>& x, DB_Row<T>& y) {
+  x.m_swap(y);
 }
 
-/*! \relates Parma_Polyhedra_Library::DB_Row */
+/*! \relates DB_Row */
 template <typename T>
 inline void
-iter_swap(typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
-	  ::iterator x,
-	  typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
-	  ::iterator y) {
+iter_swap(typename std::vector<DB_Row<T> >::iterator x,
+	  typename std::vector<DB_Row<T> >::iterator y) {
   swap(*x, *y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_DB_Row_inlines_hh)

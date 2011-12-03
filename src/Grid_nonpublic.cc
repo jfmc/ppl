@@ -63,7 +63,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     // dimension and then store it in `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_false());
     cgs.set_space_dimension(space_dim);
-    con_sys.swap(cgs);
+    swap(con_sys, cgs);
 
     PPL_ASSERT(OK());
     return;
@@ -87,7 +87,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     cgs.release_rows(cgs_rows);
     cgs_rows[0].set_inhomogeneous_term(Coefficient_one());
     cgs.take_ownership_of_rows(cgs_rows);
-    con_sys.swap(cgs);
+    swap(con_sys, cgs);
 
     dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
 
@@ -120,7 +120,7 @@ PPL::Grid::construct(Congruence_System& cgs) {
 
   if (space_dim > 0) {
     // Stealing the rows from `cgs'.
-    std::swap(con_sys, cgs);
+    con_sys.m_swap(cgs);
     con_sys.normalize_moduli();
     set_congruences_up_to_date();
   }
@@ -173,7 +173,7 @@ PPL::Grid::construct(Grid_Generator_System& ggs) {
     set_zero_dim_univ();
   else {
     // Steal the rows from `ggs'.
-    std::swap(gen_sys, ggs);
+    gen_sys.m_swap(ggs);
     normalize_divisors(gen_sys);
     // Generators are now up-to-date.
     set_generators_up_to_date();
@@ -451,13 +451,13 @@ PPL::Grid::set_empty() {
 
   // Replace gen_sys with an empty system of the right dimension.
   Grid_Generator_System gs(space_dim);
-  gen_sys.swap(gs);
+  gen_sys.m_swap(gs);
 
   // Extend the zero dim false congruence system to the appropriate
   // dimension and then swap it with `con_sys'.
   Congruence_System cgs(Congruence::zero_dim_false());
   cgs.set_space_dimension(space_dim);
-  con_sys.swap(cgs);
+  swap(con_sys, cgs);
 }
 
 void

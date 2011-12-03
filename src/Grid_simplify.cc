@@ -282,7 +282,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       dim_kinds[dim] = GEN_VIRTUAL;
     else {
       if (row_index != pivot_index)
-        std::swap(rows[row_index], rows[pivot_index]);
+        swap(rows[row_index], rows[pivot_index]);
       Grid_Generator& pivot = rows[pivot_index];
       bool pivot_is_line = pivot.is_line();
 
@@ -301,7 +301,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_line_with_line(row, pivot, dim);
 	  else {
 	    PPL_ASSERT(pivot.is_parameter_or_point());
-	    std::swap(row, pivot);
+	    swap(row, pivot);
 	    pivot_is_line = true;
 	    reduce_parameter_with_line(row, pivot, dim, rows, num_columns + 1);
 	  }
@@ -419,7 +419,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       sys.release_rows(rows);
 
       if (row_index != pivot_index)
-	std::swap(rows[row_index], rows[pivot_index]);
+	swap(rows[row_index], rows[pivot_index]);
 
       Congruence& pivot = rows[pivot_index];
       bool pivot_is_equality = pivot.is_equality();
@@ -439,7 +439,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	    reduce_equality_with_equality(row, pivot, dim);
 	  else {
 	    PPL_ASSERT(pivot.is_proper_congruence());
-	    std::swap(row, pivot);
+	    swap(row, pivot);
 	    pivot_is_equality = true;
 	    reduce_congruence_with_equality(row, pivot, dim, rows);
 	  }

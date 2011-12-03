@@ -391,8 +391,7 @@ public:
   static dimension_type row_size(dimension_type k);
 
   //! Swaps \p *this with \p y.
-  void swap(OR_Matrix& y);
-
+  void m_swap(OR_Matrix& y);
 
   //! Makes the matrix grow by adding more space dimensions.
   /*!
@@ -512,20 +511,14 @@ public:
   bool OK() const;
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::OR_Matrix */
+//! Swaps \p x with \p y.
+/*! \relates OR_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-void swap(Parma_Polyhedra_Library::OR_Matrix<T>& x,
-	  Parma_Polyhedra_Library::OR_Matrix<T>& y);
-
-} // namespace std
-
-
-namespace Parma_Polyhedra_Library {
+void swap(OR_Matrix<T>& x, OR_Matrix<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.

@@ -189,8 +189,9 @@ operator!=(const Linear_Form<C>& x, const Linear_Form<C>& y) {
 
 template <typename C>
 inline void
-Linear_Form<C>::swap(Linear_Form& y) {
-  std::swap(vec, y.vec);
+Linear_Form<C>::m_swap(Linear_Form& y) {
+  using std::swap;
+  swap(vec, y.vec);
 }
 
 template <typename C>
@@ -238,19 +239,13 @@ Linear_Form<C>::overflows() const {
   return false;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 inline void
-swap(Parma_Polyhedra_Library::Linear_Form<C>& x,
-     Parma_Polyhedra_Library::Linear_Form<C>& y) {
-  x.swap(y);
+swap(Linear_Form<C>& x, Linear_Form<C>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Form_inlines_hh)

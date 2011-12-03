@@ -99,7 +99,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
     PPL_ASSERT(status.test_zero_dim_univ());
     // Swap *this with a newly created `m'-dimensional universe grid.
     Grid gr(m, UNIVERSE);
-    swap(gr);
+    m_swap(gr);
     return;
   }
 
@@ -167,7 +167,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
     PPL_ASSERT(status.test_zero_dim_univ());
     // Swap *this with a newly created `n'-dimensional universe grid.
     Grid gr(m, UNIVERSE);
-    swap(gr);
+    m_swap(gr);
     return;
   }
 
@@ -353,7 +353,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     Congruence_System cgs(Congruence::zero_dim_false());
     // Extra 2 columns for inhomogeneous term and modulus.
     cgs.set_space_dimension(new_dimension + 2);
-    con_sys.swap(cgs);
+    swap(con_sys, cgs);
   }
   else {
     PPL_ASSERT(congruences_are_minimized());
@@ -370,7 +370,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     // Replace gen_sys with an empty system of the right dimension.
     // Extra 2 columns for inhomogeneous term and modulus.
     Grid_Generator_System gs(new_dimension + 2);
-    gen_sys.swap(gs);
+    gen_sys.m_swap(gs);
   }
 
   // Update the space dimension.

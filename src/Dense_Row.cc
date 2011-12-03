@@ -171,9 +171,10 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
     memcpy(new_row.impl.vec, impl.vec, sizeof(Coefficient) * i);
     memcpy(&(new_row.impl.vec[i + n]), &impl.vec[i],
            sizeof(Coefficient) * (impl.size - i));
-    
-    std::swap(impl.vec, new_row.impl.vec);
-    std::swap(impl.capacity, new_row.impl.capacity);
+
+    using std::swap;
+    swap(impl.vec, new_row.impl.vec);
+    swap(impl.capacity, new_row.impl.capacity);
     
     // *this now owns all coefficients, including the newly-added zeroes.
     impl.size = new_size;

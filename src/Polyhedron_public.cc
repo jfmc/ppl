@@ -81,7 +81,7 @@ PPL::Polyhedron::constraints() const {
       // the appropriate dimension and then stored in `con_sys'.
       Constraint_System unsat_cs = Constraint_System::zero_dim_empty();
       unsat_cs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<Constraint_System&>(con_sys).swap(unsat_cs);
+      swap(const_cast<Constraint_System&>(con_sys), unsat_cs);
     }
     else {
       // Checking that `con_sys' contains the right thing.
@@ -136,7 +136,7 @@ PPL::Polyhedron::generators() const {
     if (gen_sys.space_dimension() != space_dim) {
       Generator_System gs;
       gs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<Generator_System&>(gen_sys).swap(gs);
+      swap(const_cast<Generator_System&>(gen_sys), gs);
     }
     return gen_sys;
   }
@@ -158,7 +158,7 @@ PPL::Polyhedron::generators() const {
     if (gen_sys.space_dimension() != space_dim) {
       Generator_System gs;
       gs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<Generator_System&>(gen_sys).swap(gs);
+      swap(const_cast<Generator_System&>(gen_sys), gs);
     }
     return gen_sys;
   }
@@ -1549,7 +1549,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     if (!gs.has_points())
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
     // The polyhedron is no longer empty and generators are up-to-date.
-    std::swap(gen_sys, gs);
+    swap(gen_sys, gs);
     if (gen_sys.num_pending_rows() > 0) {
       // Even though `gs' has pending generators, since the constraints
       // of the polyhedron are not up-to-date, the polyhedron cannot
@@ -2030,7 +2030,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   // If `y' is empty, the biggest enlargement for `x' is the universe.
   if (!y.minimize()) {
     Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
-    swap(ph);
+    m_swap(ph);
     return false;
   }
 
@@ -2057,7 +2057,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           ph.refine_no_check(le == 0);
           break;
         }
-        swap(ph);
+        m_swap(ph);
         PPL_ASSERT_HEAVY(OK());
 	return false;
       }
@@ -2231,7 +2231,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         if (status == UNFEASIBLE_MIP_PROBLEM) {
           Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
           result_ph.add_constraints(result_cs);
-          x.swap(result_ph);
+          swap(x, result_ph);
           PPL_ASSERT_HEAVY(x.OK());
           return false;
         }
@@ -2339,7 +2339,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
                                   sat, z_cs_num_eq);
 
       // Place the nonredundant (masked) equalities into result_cs.
-      result_cs.swap(nonred_eq);
+      swap(result_cs, nonred_eq);
       // Add to result_cs the nonredundant inequalities from x_cs,
       // i.e., those having indices no smaller than y_cs_num_ineq.
       for (dimension_type i = y_cs_num_ineq; i < p_nonred_ineq_size; ++i)
@@ -2350,7 +2350,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
 
   Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
   result_ph.add_recycled_constraints(result_cs);
-  x.swap(result_ph);
+  swap(x, result_ph);
   PPL_ASSERT_HEAVY(x.OK());
   return true;
 }
@@ -3346,14 +3346,14 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	// The points of `gs' can be erased,
 	// since their role can be played by closure points.
 	--gs_num_rows;
-        std::swap(g, rows[gs_num_rows]);
+        swap(g, rows[gs_num_rows]);
 	break;
       case Generator::CLOSURE_POINT:
 	{
 	  // If it is the origin, erase it.
 	  if (g.expr.all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
-            std::swap(g, rows[gs_num_rows]);
+            swap(g, rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
@@ -3379,7 +3379,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  // If it is the origin, erase it.
 	  if (g.expression().all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
-            std::swap(g, rows[gs_num_rows]);
+            swap(g, rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {

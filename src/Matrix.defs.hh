@@ -77,7 +77,7 @@ public:
 
     This method takes \f$O(1)\f$ time.
   */
-  void swap(Matrix& x);
+  void m_swap(Matrix& x);
 
   //! Returns the number of rows in the matrix.
   /*!
@@ -418,19 +418,13 @@ private:
   dimension_type num_columns_;
 };
 
-namespace std {
+namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Matrix */
+/*! \relates Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Row>
-void swap(Parma_Polyhedra_Library::Matrix<Row>& x,
-          Parma_Polyhedra_Library::Matrix<Row>& y);
-
-} // namespace std
-
-namespace Parma_Polyhedra_Library {
+void swap(Matrix<Row>& x, Matrix<Row>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.

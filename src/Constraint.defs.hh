@@ -517,7 +517,7 @@ public:
   bool OK() const;
 
   //! Swaps \p *this with \p y.
-  void swap(Constraint& y);
+  void m_swap(Constraint& y);
 
   /*! \brief
     Builds a constraint of type \p type and topology \p topology,
@@ -771,19 +771,10 @@ operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 Constraint
 operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
+/*! \relates Constraint */
+void swap(Constraint& x, Constraint& y);
 
 } // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Constraint */
-template <>
-void swap(Parma_Polyhedra_Library::Constraint& x,
-          Parma_Polyhedra_Library::Constraint& y);
-
-} // namespace std
 
 
 #include "Constraint.inlines.hh"

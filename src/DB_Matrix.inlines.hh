@@ -34,10 +34,11 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T>
 inline void
-DB_Matrix<T>::swap(DB_Matrix& y) {
-  std::swap(rows, y.rows);
-  std::swap(row_size, y.row_size);
-  std::swap(row_capacity, y.row_capacity);
+DB_Matrix<T>::m_swap(DB_Matrix& y) {
+  using std::swap;
+  swap(rows, y.rows);
+  swap(row_size, y.row_size);
+  swap(row_capacity, y.row_capacity);
 }
 
 template <typename T>
@@ -315,20 +316,15 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 								   tmp2);
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::DB_Matrix */
+/*! \relates DB_Matrix */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,
-     Parma_Polyhedra_Library::DB_Matrix<T>& y) {
-  x.swap(y);
+swap(DB_Matrix<T>& x, DB_Matrix<T>& y) {
+  x.m_swap(y);
 }
 
-} // namespace std
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_DB_Matrix_inlines_hh)

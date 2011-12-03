@@ -64,7 +64,7 @@ test02() {
   Variables_Set params(Variable(1));
   pip_2.add_to_parameter_space_dimensions(params);
 
-  std::swap(pip_1, pip_2);
+  swap(pip_1, pip_2);
 
   bool ok = (pip_1.space_dimension() == 2
              && pip_2.space_dimension() == 2
@@ -264,7 +264,7 @@ test14() {
   ok &= (ap0 != ap1) && (ap1 == ap2);
   ok &= (ap0.denominator() == 1) && (ap1.denominator() == 5);
 
-  ap0.swap(ap2);
+  swap(ap0, ap2);
   ok &= (ap0 == ap1) && (ap2.denominator() == 1);
 
   using namespace IO_Operators;

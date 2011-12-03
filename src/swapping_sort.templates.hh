@@ -75,7 +75,8 @@ struct Indirect_Swapper {
   }
 
   void operator()(size_type i, size_type j) const {
-    std::swap(container[base_index + i], container[base_index + j]);
+    using std::swap;
+    swap(container[base_index + i], container[base_index + j]);
   }
 
   RA_Container& container;
@@ -91,8 +92,9 @@ struct Indirect_Swapper2 {
   }
 
   void operator()(size_type i, size_type j) const {
-    std::swap(container1[i], container1[j]);
-    std::swap(container2[i], container2[j]);
+    using std::swap;
+    swap(container1[i], container1[j]);
+    swap(container2[i], container2[j]);
   }
 
   RA_Container1& container1;

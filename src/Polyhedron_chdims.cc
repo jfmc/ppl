@@ -61,7 +61,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
     // We swap `*this' with a newly created
     // universe polyhedron of dimension `m'.
     Polyhedron ph(topology(), m, UNIVERSE);
-    swap(ph);
+    m_swap(ph);
     return;
   }
 
@@ -259,8 +259,9 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // The old saturation rows are copied at the end of the matrix.
     // The newly introduced lines saturate all the non-pending constraints,
     // thus their saturation rows are made of zeroes.
+    using std::swap;
     for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
-      std::swap(sat_c[i], sat_c[i+added_columns]);
+      swap(sat_c[i], sat_c[i+added_columns]);
     // Since `added_rows > 0', we now have pending constraints.
     set_constraints_pending();
   }

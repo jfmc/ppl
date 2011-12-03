@@ -199,7 +199,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   if (old_gensys.has_no_rows()) {
     // The grid is empty.
     Grid new_grid(new_space_dimension, EMPTY);
-    std::swap(*this, new_grid);
+    m_swap(new_grid);
     PPL_ASSERT(OK());
     return;
   }
@@ -254,7 +254,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   }
 
   Grid new_grid(new_gensys);
-  std::swap(*this, new_grid);
+  m_swap(new_grid);
 
   PPL_ASSERT(OK(true));
 }

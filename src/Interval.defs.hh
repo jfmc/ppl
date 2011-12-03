@@ -174,7 +174,7 @@ public:
   }
 
   //! Swaps \p *this with \p y.
-  void swap(Interval& y);
+  void m_swap(Interval& y);
 
   Info& info() {
     return *this;
@@ -833,6 +833,10 @@ private:
   Boundary lower_;
   Boundary upper_;
 };
+
+//! Swaps \p x with \p y.
+template <typename Boundary, typename Info>
+void swap(Interval<Boundary, Info>& x, Interval<Boundary, Info>& y);
 
 } // namespace Parma_Polyhedra_Library
 
