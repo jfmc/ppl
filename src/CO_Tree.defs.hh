@@ -75,7 +75,7 @@ namespace Parma_Polyhedra_Library {
   available caches.
 
   Assuming \p n is the number of elements in the tree and \p B is the number
-  of &lt;dimension_type,Coefficient&gt; pairs that fit in a cache line, the
+  of (dimension_type, Coefficient) pairs that fit in a cache line, the
   time and cache misses complexities are the following:
 
   - Insertions/Queries/Deletions: \f$O(\log^2 n)\f$ time,
@@ -106,7 +106,8 @@ private:
   //! This is used for node heights and depths in the tree.
   typedef unsigned height_t;
 
-  PPL_COMPILE_TIME_CHECK(-(height_t)1 >= CHAR_BITS*sizeof(dimension_type),
+  PPL_COMPILE_TIME_CHECK(C_Integer<height_t>::max
+                         >= CHAR_BITS*sizeof(dimension_type),
                          "height_t is too small to store depths.");
 
   class tree_iterator;
@@ -1260,7 +1261,7 @@ private:
   /*!
     This must not be used as a key.
   */
-  static const dimension_type unused_index = -(dimension_type)1;
+  static const dimension_type unused_index = C_Integer<dimension_type>::max;
 
   //! The %iterator returned by end().
   /*!

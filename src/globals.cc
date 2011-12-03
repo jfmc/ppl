@@ -21,8 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#include <ppl-config.h>
-
+#include "ppl-config.h"
 #include "globals.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
@@ -37,8 +36,10 @@ void (*Weightwatch_Traits::check_function)(void) = 0;
 
 #ifndef NDEBUG
 namespace Implementation {
+
 unsigned int in_assert = 0;
-}
+
+} // namespace Implementation
 #endif
 
 } // namespace Parma_Polyhedra_Library

@@ -21,8 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#include <ppl-config.h>
-
+#include "ppl-config.h"
 #include "termination.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 
@@ -867,7 +866,6 @@ Termination_Helpers::all_affine_ranking_functions_PR_original(const Constraint_S
   // lambda_2 corresponds to space dimensions m, ..., 2*m-1.
   Variables_Set lambda1(Variable(0), Variable(m-1));
   ph.remove_space_dimensions(lambda1);
-  //ph.remove_higher_space_dimensions(m);
 
 #if PRINT_DEBUG_INFO
   std::cout << "*** ph ***" << std::endl;

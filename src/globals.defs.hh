@@ -356,13 +356,13 @@ struct Fit<T, v, typename Enable_If<C_Integer<T>::value>::type>  {
   };
 };
 
-template <typename T, long long v>
+template <typename T, T v>
 struct TConstant {
   static const T value = v;
 };
 
 
-template <typename T, long long v>
+template <typename T, T v>
 const T TConstant<T, v>::value;
 
 template <typename T, long long v, bool prefer_signed = true,

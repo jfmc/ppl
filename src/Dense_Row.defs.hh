@@ -46,7 +46,7 @@ public:
   Dense_Row();
 
   explicit Dense_Row(const Sparse_Row& row);
-  
+
   //! Tight constructor: resizing may require reallocation.
   /*!
     Constructs a row with size and capacity \p sz.
@@ -99,7 +99,7 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Dense_Row& y);
-  
+
   //! Resizes the row to \p sz.
   void resize(dimension_type sz);
 
@@ -398,18 +398,18 @@ public:
 
 private:
   void init(const Sparse_Row& row);
-  
+
   void destroy();
-  
+
   struct Impl {
-    
+
     Impl();
-    
+
     ~Impl();
-    
+
     //! The number of coefficients in the row.
     dimension_type size;
-    
+
     //! The capacity of the row.
     dimension_type capacity;
 
@@ -417,7 +417,7 @@ private:
     //! An empty vector may be stored as NULL instead of using a valid pointer.
     Coefficient* vec;
   };
-  
+
   Impl impl;
 
   //! Returns the capacity of the row.

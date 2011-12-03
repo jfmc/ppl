@@ -36,7 +36,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include <string>
 #include <deque>
 
-#include "swapping_sort.icc"
+#include "swapping_sort.templates.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -407,12 +407,12 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
   typedef Swapping_Vector<Row> Cont;
-  Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows, first_row);
+  Implementation::Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows, first_row);
   Unique_Compare unique_cmp(rows, first_row);
-  Indirect_Swapper<Cont> swapper(rows, first_row);
+  Implementation::Indirect_Swapper<Cont> swapper(rows, first_row);
 
   const dimension_type num_duplicates
-    = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+    = Implementation::indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
 
   if (num_duplicates > 0)
     rows.erase(rows.begin() + (last_row - num_duplicates),
@@ -560,12 +560,12 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
   typedef Swapping_Vector<Row> Cont;
-  Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows);
+  Implementation::Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows);
   Unique_Compare unique_cmp(rows);
-  Indirect_Swapper2<Cont, Bit_Matrix> swapper(rows, sat);
+  Implementation::Indirect_Swapper2<Cont, Bit_Matrix> swapper(rows, sat);
 
   const dimension_type num_duplicates
-    = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+    = Implementation::indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
 
   const dimension_type new_first_pending_row
     = first_pending_row() - num_duplicates;

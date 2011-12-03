@@ -113,7 +113,7 @@ PPL::PIP_Problem::Control_Parameter_Value cutting_strategy
 PPL::PIP_Problem::Control_Parameter_Value pivot_row_strategy
     = PPL::PIP_Problem::PIVOT_ROW_STRATEGY_FIRST;
 
-int loop_iterations = 1;
+long loop_iterations = 1;
 
 void
 pip_display_sol(std::ostream& out,
@@ -824,7 +824,7 @@ main(int argc, char* argv[]) try {
   else {
     std::auto_ptr<PPL::PIP_Problem> pipp;
     // Perform a time benchmark loop executing the resolution several times.
-    for (int i = 0; i < loop_iterations; ++i) {
+    for (long i = 0; i < loop_iterations; ++i) {
       pipp.reset(new PPL::PIP_Problem(pip));
       pipp->solve();
     }

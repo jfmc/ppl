@@ -27,7 +27,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include <vector>
 #include <algorithm>
 
-namespace {
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
 
 template <typename RA_Container, typename Compare>
 struct Indirect_Sort_Compare {
@@ -168,6 +170,8 @@ swapping_unique(Iter first, Iter last) {
   return swapping_unique(first, last, std::iter_swap<Iter, Iter>);
 }
 
-} // namespace
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_swapping_sort_icc)

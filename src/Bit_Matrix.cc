@@ -21,16 +21,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#include <ppl-config.h>
-
+#include "ppl-config.h"
 #include "Bit_Matrix.defs.hh"
 #include "Dense_Row.defs.hh"
 #include "globals.defs.hh"
+#include "swapping_sort.templates.hh"
 #include <iostream>
 #include <string>
 #include <climits>
-
-#include "swapping_sort.icc"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -51,12 +49,12 @@ PPL::Bit_Matrix::sort_rows() {
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
   typedef std::vector<Bit_Row> Cont;
-  Indirect_Sort_Compare<Cont, Bit_Row_Less_Than> sort_cmp(rows);
-  Indirect_Unique_Compare<Cont> unique_cmp(rows);
-  Indirect_Swapper<Cont> swapper(rows);
+  Implementation::Indirect_Sort_Compare<Cont, Bit_Row_Less_Than> sort_cmp(rows);
+  Implementation::Indirect_Unique_Compare<Cont> unique_cmp(rows);
+  Implementation::Indirect_Swapper<Cont> swapper(rows);
 
   const dimension_type num_duplicates
-    = indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+    = Implementation::indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
 
   if (num_duplicates > 0)
     rows.erase(rows.end() - num_duplicates, rows.end());
