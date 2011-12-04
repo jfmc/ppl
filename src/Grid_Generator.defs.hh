@@ -277,8 +277,6 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
-  typedef Grid_Generator row_type;
-
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument
