@@ -509,23 +509,12 @@ public:
   bool is_equal_to(const Grid_Generator& y) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if \p *this is equal to \p gg in
-    dimension \p dim.
-  */
-  bool is_equal_at_dimension(dimension_type dim,
-			     const Grid_Generator& gg) const;
-
-  /*! \brief
     Returns <CODE>true</CODE> if and only if all the homogeneous terms
     of \p *this are \f$0\f$.
   */
   bool all_homogeneous_terms_are_zero() const;
 
   PPL_OUTPUT_DECLARATIONS
-
-  //! Another print functions, with fancy output, more human-friendly.
-  //! This is used by operator<<();
-  void fancy_print(std::ostream& s) const;
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
@@ -550,44 +539,12 @@ public:
   */
   void scale_to_divisor(Coefficient_traits::const_reference d);
 
-  // TODO: Make this private.
-  //! Converts the Grid_Generator into a parameter.
-  void set_is_parameter();
-
   //! Sets the divisor of \p *this to \p d.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this is a line.
   */
   void set_divisor(Coefficient_traits::const_reference d);
-
-  // TODO: Make this private.
-  //! Sets the Grid_Generator kind to <CODE>LINE_OR_EQUALITY</CODE>.
-  void set_is_line();
-
-  // TODO: Make this private.
-  //! Sets the Grid_Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
-  void set_is_parameter_or_point();
-
-  /*! \brief
-    Normalizes the sign of the coefficients so that the first non-zero
-    (homogeneous) coefficient of a line-or-equality is positive.
-  */
-  void sign_normalize();
-
-  /*! \brief
-    Strong normalization: ensures that different Grid_Generator objects
-    represent different hyperplanes or hyperspaces.
-
-    Applies both Grid_Generator::normalize() and Grid_Generator::sign_normalize().
-  */
-  void strong_normalize();
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the coefficients are
-    strongly normalized.
-  */
-  bool check_strong_normalized() const;
 
   //! The type returned by the expression() method, that provides most
   //! of the const methods in Linear_Expression.
@@ -596,20 +553,6 @@ public:
   //! Allows user code to read the internal expression (but note that this
   //! is a different type, not all operations are allowed).
   const Expression& expression() const;
-
-  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
-  /*!
-    \param y
-    The Grid_Generator that will be combined with \p *this object;
-
-    \param i
-    The index of the coefficient that has to become \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the i-th coefficient equal to \f$0\f$. Then it assigns
-    the resulting Grid_Generator to \p *this and normalizes it.
-  */
-  void linear_combine(const Grid_Generator& y, dimension_type i);
 
 private:
   Linear_Expression expr;
@@ -643,6 +586,60 @@ private:
     so it can be used for invalid objects.
   */
   void set_space_dimension_no_ok(dimension_type space_dim);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if \p *this is equal to \p gg in
+    dimension \p dim.
+  */
+  bool is_equal_at_dimension(dimension_type dim,
+                             const Grid_Generator& gg) const;
+
+  //! Another print functions, with fancy output, more human-friendly.
+  //! This is used by operator<<();
+  void fancy_print(std::ostream& s) const;
+
+  //! Converts the Grid_Generator into a parameter.
+  void set_is_parameter();
+
+  //! Sets the Grid_Generator kind to <CODE>LINE_OR_EQUALITY</CODE>.
+  void set_is_line();
+
+  //! Sets the Grid_Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
+  void set_is_parameter_or_point();
+
+  /*! \brief
+    Normalizes the sign of the coefficients so that the first non-zero
+    (homogeneous) coefficient of a line-or-equality is positive.
+  */
+  void sign_normalize();
+
+  /*! \brief
+    Strong normalization: ensures that different Grid_Generator objects
+    represent different hyperplanes or hyperspaces.
+
+    Applies both Grid_Generator::normalize() and Grid_Generator::sign_normalize().
+  */
+  void strong_normalize();
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the coefficients are
+    strongly normalized.
+  */
+  bool check_strong_normalized() const;
+
+  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
+  /*!
+    \param y
+    The Grid_Generator that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting Grid_Generator to \p *this and normalizes it.
+  */
+  void linear_combine(const Grid_Generator& y, dimension_type i);
 
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception containing
