@@ -1419,7 +1419,6 @@ Box<ITV>::frequency(const Linear_Expression& expr,
     return false;
 
   // The Box has at least 1 dimension and is not empty.
-  PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
   PPL_DIRTY_TEMP(mpq_class, tmp);
