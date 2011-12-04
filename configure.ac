@@ -494,9 +494,16 @@ then
     # lots of warnings.
     if test x"$CLANGXX" = xyes
     then
-      AC_MSG_WARN([DISABLING -frounding-math:
-*** clang++ detected, disabling -frounding-math.
-*** NOTE THAT THIS CAN GIVE WRONG RESULTS!])
+      if test x"$use_fpmath" = xyes
+      then
+        AC_MSG_WARN([CANNOT RELY ON DIRECTED ROUNDING:
+*** DISABLED ALL ABSTRACTIONS BASED ON MACHINE FLOATING-POINT NUMBERS.
+*** clang++ has been detected, which does not provide support for
+*** -frounding-math (or any other option with the same semantics).
+*** Hence, we cannot rely on floating-point computations to happen
+*** in agreement with the rounding direction(s) used by the PPL.])
+        use_fpmath=no
+      fi
     else
       OPT_FLAGS="$OPT_FLAGS -frounding-math"
     fi
