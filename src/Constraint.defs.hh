@@ -304,22 +304,6 @@ public:
   //! Sets to \p x the topological kind of \p *this row.
   void set_topology(Topology x);
 
-  // TODO: Consider removing this, or making it private.
-  //! Marks the epsilon dimension as a standard dimension.
-  /*!
-    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is increased by 1.
-  */
-  void mark_as_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the last dimension as the epsilon dimension.
-  /*!
-    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is decreased by 1.
-  */
-  void mark_as_not_necessarily_closed();
-
   //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_necessarily_closed();
 
@@ -349,7 +333,6 @@ public:
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 
-  // TODO: Consider making this private.
   //! Removes all the specified dimensions from the constraint.
   /*!
     The space dimension of the variable with the highest space
@@ -361,7 +344,6 @@ public:
   */
   bool remove_space_dimensions(const Variables_Set& vars);
 
-  // TODO: Consider making this private.
   //! Permutes the space dimensions of the constraint.
   /*
     \param cycle
@@ -416,26 +398,6 @@ public:
 
   //! Returns the inhomogeneous term of \p *this.
   Coefficient_traits::const_reference inhomogeneous_term() const;
-
-  /*! \brief
-    Normalizes the sign of the coefficients so that the first non-zero
-    (homogeneous) coefficient of a line-or-equality is positive.
-  */
-  void sign_normalize();
-
-  /*! \brief
-    Strong normalization: ensures that different Constraint objects
-    represent different hyperplanes or hyperspaces.
-
-    Applies both Constraint::normalize() and Constraint::sign_normalize().
-  */
-  void strong_normalize();
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the coefficients are
-    strongly normalized.
-  */
-  bool check_strong_normalized() const;
 
   //! Initializes the class.
   static void initialize();
@@ -514,9 +476,6 @@ public:
   */
   bool ascii_load(std::istream& s);
 
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
   //! Swaps \p *this with \p y.
   void m_swap(Constraint& y);
 
@@ -543,41 +502,13 @@ public:
   */
   static const Constraint& epsilon_leq_one();
 
-  // TODO: Make this private.
-  //! Sets the constraint type to <CODE>EQUALITY</CODE>.
-  void set_is_equality();
-
-  // TODO: Make this private.
-  //! Sets the constraint to be an inequality.
-  /*!
-    Whether the constraint type will become <CODE>NONSTRICT_INEQUALITY</CODE>
-    or <CODE>STRICT_INEQUALITY</CODE> depends on the topology and the value
-    of the low-level coefficients of the constraint.
-  */
-  void set_is_inequality();
-
   //! The type returned by the expression() method, that provides most
   //! of the const methods in Linear_Expression.
   typedef Expression_Hide_Last<Linear_Expression> Expression;
 
-  //! Allows user code to read the internal expression (but note that this
-  //! is a different type, not all operations are allowed).
+  //! Allows user code to read the constraint's expression (but note that the
+  //! return type is not Linear_Expression, not all operations are allowed).
   const Expression& expression() const;
-
-  // FIXME: Consider making this private.
-  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
-  /*!
-    \param y
-    The Constraint that will be combined with \p *this object;
-
-    \param i
-    The index of the coefficient that has to become \f$0\f$.
-
-    Computes a linear combination of \p *this and \p y having
-    the i-th coefficient equal to \f$0\f$. Then it assigns
-    the resulting Constraint to \p *this and normalizes it.
-  */
-  void linear_combine(const Constraint& y, dimension_type i);
 
 private:
   Linear_Expression expr;
@@ -644,6 +575,68 @@ private:
 
   //! Sets the epsilon coefficient to \p n. The constraint must be NNC.
   void set_epsilon_coefficient(Coefficient_traits::const_reference n);
+
+  //! Marks the epsilon dimension as a standard dimension.
+  /*!
+    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is increased by 1.
+  */
+  void mark_as_necessarily_closed();
+
+  //! Marks the last dimension as the epsilon dimension.
+  /*!
+    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is decreased by 1.
+  */
+  void mark_as_not_necessarily_closed();
+
+  //! Sets the constraint type to <CODE>EQUALITY</CODE>.
+  void set_is_equality();
+
+  //! Sets the constraint to be an inequality.
+  /*!
+    Whether the constraint type will become <CODE>NONSTRICT_INEQUALITY</CODE>
+    or <CODE>STRICT_INEQUALITY</CODE> depends on the topology and the value
+    of the low-level coefficients of the constraint.
+  */
+  void set_is_inequality();
+
+  //! Linearly combines \p *this with \p y so that i-th coefficient is 0.
+  /*!
+    \param y
+    The Constraint that will be combined with \p *this object;
+
+    \param i
+    The index of the coefficient that has to become \f$0\f$.
+
+    Computes a linear combination of \p *this and \p y having
+    the i-th coefficient equal to \f$0\f$. Then it assigns
+    the resulting Constraint to \p *this and normalizes it.
+  */
+  void linear_combine(const Constraint& y, dimension_type i);
+
+  /*! \brief
+    Normalizes the sign of the coefficients so that the first non-zero
+    (homogeneous) coefficient of a line-or-equality is positive.
+  */
+  void sign_normalize();
+
+  /*! \brief
+    Strong normalization: ensures that different Constraint objects
+    represent different hyperplanes or hyperspaces.
+
+    Applies both Constraint::normalize() and Constraint::sign_normalize().
+  */
+  void strong_normalize();
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the coefficients are
+    strongly normalized.
+  */
+  bool check_strong_normalized() const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 
   /*! \brief
     Builds a new copy of the zero-dimension space constraint
