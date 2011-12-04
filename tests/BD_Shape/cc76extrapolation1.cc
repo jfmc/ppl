@@ -176,7 +176,7 @@ test03() {
   bds2.add_constraint(D - C <= 1);
 
   // Force the closure of `bds1'.
-  bds1 == bds2;
+  (void) (bds1 == bds2);
 
   BD_Shape<mpq_class> known_widening(4);
   known_widening.add_constraint(A >= 0);
@@ -200,7 +200,7 @@ test03() {
   print_constraints(bds1, "*** bds1.CC76_extrapolation_assign(bds2) ***");
 
   // Force the closure of `bds1'.
-  bds1 == bds2;
+  (void) (bds1 == bds2);
 
   bool ok = (BD_Shape<mpq_class>(bds1) == known_widening);
 
