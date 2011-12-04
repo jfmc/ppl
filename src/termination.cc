@@ -176,7 +176,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
       sub_mul_assign(y_le, b_i, v_y);
       sub_mul_assign(z_le, b_i, v_z);
     }
-    for (Linear_Expression::const_iterator j = c_i.expression().begin(),
+    for (Constraint::Expression::const_iterator j = c_i.expression().begin(),
           j_end = c_i.expression().end(); j != j_end; ++j) {
       Coefficient_traits::const_reference a_i_j = *j;
       const Variable v = j.variable();
@@ -364,7 +364,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     Variable u1_i(m + row_index);
     Variable u2_i(s + row_index);
     const Constraint::Expression& e_i = i->expression();
-    for (Linear_Expression::const_iterator j = e_i.begin(), j_end = e_i.end();
+    for (Constraint::Expression::const_iterator j = e_i.begin(), j_end = e_i.end();
           j != j_end; ++j) {
       Coefficient_traits::const_reference A_ij_B = *j;
       const Variable v = j.variable();
@@ -387,7 +387,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        ++i, ++row_index) {
     Variable u3_i(row_index);
     const Constraint::Expression& e_i = i->expression();
-    for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
+    for (Constraint::Expression::const_iterator i = e_i.lower_bound(Variable(n)),
            i_end = e_i.end(); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij_C = *i;
       const Variable v = i.variable();
@@ -396,7 +396,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
       // u3 A_C, in the context of the (j+n)-th constraint.
       add_mul_assign(les_eq[v.id()], A_ij_C, u3_i);
     }
-    for (Linear_Expression::const_iterator i = e_i.begin(),
+    for (Constraint::Expression::const_iterator i = e_i.begin(),
            i_end = e_i.lower_bound(Variable(n)); i != i_end; ++i) {
       Coefficient_traits::const_reference Ap_ij_C = *i;
       // u3 Ap_C, in the context of the (j+n)-th constraint.
@@ -437,7 +437,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
     const Constraint::Expression& e_i = i->expression();
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
-    for (Linear_Expression::const_iterator i = e_i.begin(),
+    for (Constraint::Expression::const_iterator i = e_i.begin(),
           i_end = e_i.lower_bound(Variable(n)); i != i_end; ++i) {
       Coefficient_traits::const_reference Ap_ij = *i;
       const Variable v = i.variable();
@@ -446,7 +446,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
       // lambda_2 A'
       add_mul_assign(les_eq[v.id()+n+n], Ap_ij, lambda2_i);
     }
-    for (Linear_Expression::const_iterator i = e_i.lower_bound(Variable(n)),
+    for (Constraint::Expression::const_iterator i = e_i.lower_bound(Variable(n)),
           i_end = e_i.end(); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij = *i;
       const Variable v = i.variable();

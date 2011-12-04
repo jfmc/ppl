@@ -228,7 +228,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     const Grid_Generator::Expression& old_g_e = old_g.expression();
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
-    for (Linear_Expression::const_iterator j = old_g_e.begin(),
+    for (Grid_Generator::Expression::const_iterator j = old_g_e.begin(),
           j_end = old_g_e.end(); j != j_end; ++j) {
       const dimension_type mapped_id = pfunc_maps[j.variable().id()];
       if (mapped_id != not_a_dimension()) {

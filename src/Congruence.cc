@@ -165,7 +165,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
   const dimension_type num_variables = c.space_dimension();
   PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
-  for (Linear_Expression::const_iterator i = c.expression().begin(),
+  for (Congruence::Expression::const_iterator i = c.expression().begin(),
         i_end = c.expression().lower_bound(Variable(num_variables)); i != i_end; ++i) {
     cv = *i;
     if (!first) {

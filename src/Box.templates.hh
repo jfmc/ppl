@@ -150,7 +150,7 @@ Box<ITV>::Box(const Generator_System& gs)
 	// This is not the first point: `seq' already contains valid values.
 	// TODO: If the variables in the expression that have coefficient 0
         // have no effect on seq[i], this loop can be optimized using
-        // Linear_Expression::const_iterator.
+        // Generator::Expression::const_iterator.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -165,7 +165,7 @@ Box<ITV>::Box(const Generator_System& gs)
 	point_seen = true;
         // TODO: If the variables in the expression that have coefficient 0
         // have no effect on seq[i], this loop can be optimized using
-        // Linear_Expression::const_iterator.
+        // Generator::Expression::const_iterator.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -189,13 +189,13 @@ Box<ITV>::Box(const Generator_System& gs)
     const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
-      for (Linear_Expression::const_iterator i = g.expression().begin(),
+      for (Generator::Expression::const_iterator i = g.expression().begin(),
               i_end = g.expression().end();
               i != i_end; ++i)
 	  seq[i.variable().id()].assign(UNIVERSE);
       break;
     case Generator::RAY:
-      for (Linear_Expression::const_iterator i = g.expression().begin(),
+      for (Generator::Expression::const_iterator i = g.expression().begin(),
               i_end = g.expression().end();
               i != i_end; ++i)
 	switch (sgn(*i)) {
@@ -215,7 +215,7 @@ Box<ITV>::Box(const Generator_System& gs)
 	const Coefficient& d = g.divisor();
         // TODO: If the variables in the expression that have coefficient 0
         // have no effect on seq[i], this loop can be optimized using
-        // Linear_Expression::const_iterator.
+        // Generator::Expression::const_iterator.
 	for (dimension_type i = space_dim; i-- > 0; ) {
 	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
 	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
@@ -818,7 +818,7 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   PPL_DIRTY_TEMP(Rational_Interval, t);
   PPL_DIRTY_TEMP(mpq_class, m);
   r = 0;
-  for (Linear_Expression::const_iterator i = cg.expression().begin(),
+  for (Congruence::Expression::const_iterator i = cg.expression().begin(),
       i_end = cg.expression().end(); i != i_end; ++i) {
     const Coefficient& cg_i = *i;
     const Variable v = i.variable();
@@ -915,7 +915,7 @@ Box<ITV>::relation_with(const Constraint& c) const {
     PPL_DIRTY_TEMP(mpq_class, m);
     r = 0;
     const Constraint::Expression& e = c.expression();
-    for (Linear_Expression::const_iterator i = e.begin(), i_end = e.end();
+    for (Constraint::Expression::const_iterator i = e.begin(), i_end = e.end();
           i != i_end; ++i) {
       assign_r(m, *i, ROUND_NOT_NEEDED);
       const Variable v = i.variable();
@@ -955,7 +955,7 @@ Box<ITV>::relation_with(const Generator& g) const {
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
       const Generator::Expression& e = g.expression();
-      for (Linear_Expression::const_iterator i = e.begin(), i_end = e.end();
+      for (Generator::Expression::const_iterator i = e.begin(), i_end = e.end();
            i != i_end; ++i)
 	if (!seq[i.variable().id()].is_universe())
 	  return Poly_Gen_Relation::nothing();
@@ -964,7 +964,7 @@ Box<ITV>::relation_with(const Generator& g) const {
     else {
       PPL_ASSERT(g.is_ray());
       const Generator::Expression& e = g.expression();
-      for (Linear_Expression::const_iterator i = e.begin(), i_end = e.end();
+      for (Generator::Expression::const_iterator i = e.begin(), i_end = e.end();
            i != i_end; ++i) {
         const Variable v = i.variable();
 	switch (sgn(*i)) {
@@ -991,7 +991,7 @@ Box<ITV>::relation_with(const Generator& g) const {
   PPL_DIRTY_TEMP(mpq_class, bound);
   // TODO: If the variables in the expression that have coefficient 0
   // have no effect on seq[i], this loop can be optimized using
-  // Linear_Expression::const_iterator.
+  // Generator::Expression::const_iterator.
   for (dimension_type i = g_space_dim; i-- > 0; ) {
     const ITV& seq_i = seq[i];
     if (seq_i.is_universe())
@@ -2384,7 +2384,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   Temp_Boundary_Type t_x;
   Ternary open;
   const Constraint::Expression& c_e = c.expression();
-  for (Linear_Expression::const_iterator k = c_e.begin(),
+  for (Constraint::Expression::const_iterator k = c_e.begin(),
     k_end = c_e.lower_bound(Variable(last_k)); k != k_end; ++k) {
     const Coefficient& a_k = *k;
     const Variable k_var = k.variable();
@@ -2399,7 +2399,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
       if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_1;
-      for (Linear_Expression::const_iterator i = c_e.begin(),
+      for (Constraint::Expression::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(last_k)); i != i_end; ++i) {
         const Variable i_var = i.variable();
 	if (i_var.id() == k_var.id())
@@ -2466,7 +2466,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
       if (propagate_constraint_check_result(r, open))
 	goto next_k;
-      for (Linear_Expression::const_iterator i = c_e.begin(),
+      for (Constraint::Expression::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
         const Variable i_var = i.variable();
 	if (i_var.id() == k_var.id())
@@ -2534,7 +2534,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
       if (propagate_constraint_check_result(r, open))
 	goto maybe_refine_upper_2;
-      for (Linear_Expression::const_iterator i = c_e.begin(),
+      for (Constraint::Expression::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
         const Variable i_var = i.variable();
 	if (i_var.id() == k_var.id())
@@ -2601,7 +2601,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
       if (propagate_constraint_check_result(r, open))
 	goto next_k;
-      for (Linear_Expression::const_iterator i = c_e.begin(),
+      for (Constraint::Expression::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
         const Variable i_var = i.variable();
 	if (i_var.id() == k_var.id())
@@ -2673,7 +2673,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   dimension_type c_space_dim = c.space_dimension();
   ITV k[c_space_dim];
   ITV p[c_space_dim];
-  for (Linear_Expression::const_iterator i = c_e.begin(),
+  for (Constraint::Expression::const_iterator i = c_e.begin(),
         i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
     const Variable i_var = i.variable();
     k[i_var.id()] = *i;
@@ -2682,12 +2682,12 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     p_i.mul_assign(p_i, k[i_var.id()]);
   }
   const Coefficient& inhomogeneous_term = c.inhomogeneous_term();
-  for (Linear_Expression::const_iterator i = c_e.begin(),
+  for (Constraint::Expression::const_iterator i = c_e.begin(),
         i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
     const Variable i_var = i.variable();
     int sgn_coefficient_i = sgn(*i);
     ITV q(inhomogeneous_term);
-    for (Linear_Expression::const_iterator j = c_e.begin(),
+    for (Constraint::Expression::const_iterator j = c_e.begin(),
           j_end = c_e.lower_bound(Variable(c_space_dim)); j != j_end; ++j) {
       const Variable j_var = j.variable();
       if (i_var == j_var)

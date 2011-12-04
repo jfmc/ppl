@@ -2268,7 +2268,7 @@ PIP_Solution_Node::update_tableau(
           neg_assign(p_row[0], denom);
       dimension_type last_dim = 0;
       const Constraint::Expression& e = constraint.expression();
-      for (Linear_Expression::const_iterator
+      for (Constraint::Expression::const_iterator
           i = e.begin(), i_end = e.end(); i != i_end; ++i) {
         const dimension_type dim = i.variable().space_dimension();
         if (dim != last_dim + 1) {
