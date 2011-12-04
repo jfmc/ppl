@@ -2263,10 +2263,6 @@ PPL::MIP_Problem::OK() const {
     return false;
   }
 
-  for (dimension_type i = input_cs_num_rows; i-- > 0; )
-    if (!input_cs[i]->OK())
-      return false;
-
   if (!tableau.OK() || !last_generator.OK())
     return false;
 

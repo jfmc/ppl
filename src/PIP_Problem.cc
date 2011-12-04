@@ -272,13 +272,8 @@ PPL::PIP_Problem::OK() const {
       return false;
     }
 
-  // Constraint system should be OK.
-  const dimension_type input_cs_num_rows = input_cs.size();
-  for (dimension_type i = input_cs_num_rows; i-- > 0; )
-    if (!input_cs[i].OK())
-      return false;
-
   // Constraint system should be space dimension compatible.
+  const dimension_type input_cs_num_rows = input_cs.size();
   for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
     if (input_cs[i].space_dimension() > external_space_dim) {
 #ifndef NDEBUG
