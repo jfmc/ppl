@@ -219,13 +219,13 @@ public:
     Inserts into \p *this the generator \p g, increasing the number of
     space dimensions if needed.
   */
-  void recycling_insert(Grid_Generator& g);
+  void insert(Grid_Generator& g, Recycle_Input);
 
   /*! \brief
     Inserts into \p *this the generators in \p gs, increasing the
     number of space dimensions if needed.
   */
-  void recycling_insert(Grid_Generator_System& gs);
+  void insert(Grid_Generator_System& gs, Recycle_Input);
 
   //! Initializes the class.
   static void initialize();

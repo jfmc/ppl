@@ -1192,7 +1192,7 @@ PPL::Grid::add_recycled_congruences(Congruence_System& cgs) {
 
   // Swap (instead of copying) the coefficients of `cgs' (which is
   // writable).
-  con_sys.recycling_insert(cgs);
+  con_sys.insert(cgs, Recycle_Input());
 
   // Congruences may not be minimized and generators are out of date.
   clear_congruences_minimized();
@@ -1232,7 +1232,7 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
       update_generators();
     normalize_divisors(gs, gen_sys);
 
-    gen_sys.recycling_insert(gs);
+    gen_sys.insert(gs, Recycle_Input());
 
     // Congruences are out of date and generators are not minimized.
     clear_congruences_up_to_date();
@@ -1304,7 +1304,7 @@ PPL::Grid::unconstrain(const Variable var) {
 
   PPL_ASSERT(generators_are_up_to_date());
   Grid_Generator l = grid_line(var);
-  gen_sys.recycling_insert(l);
+  gen_sys.insert(l, Recycle_Input());
   // With the added generator, congruences are out of date.
   clear_congruences_up_to_date();
   clear_generators_minimized();
@@ -1336,7 +1336,7 @@ PPL::Grid::unconstrain(const Variables_Set& vars) {
   for (Variables_Set::const_iterator vsi = vars.begin(),
          vsi_end = vars.end(); vsi != vsi_end; ++vsi) {
     Grid_Generator l = grid_line(Variable(*vsi));
-    gen_sys.recycling_insert(l);
+    gen_sys.insert(l, Recycle_Input());
   }
   // Constraints are no longer up-to-date.
   clear_generators_minimized();
@@ -1414,7 +1414,7 @@ PPL::Grid::upper_bound_assign(const Grid& y) {
   // Match the divisors of the x and y generator systems.
   Grid_Generator_System gs(y.gen_sys);
   normalize_divisors(x.gen_sys, gs);
-  x.gen_sys.recycling_insert(gs);
+  x.gen_sys.insert(gs, Recycle_Input());
   // Congruences may be out of date and generators may have lost
   // minimal form.
   x.clear_congruences_up_to_date();
@@ -2150,7 +2150,7 @@ generalized_affine_image(const Linear_Expression& lhs,
       new_lines.insert(parameter(0*Variable(space_dim-1)));
       // Add the lines to `gen_sys' (first make sure they are up-to-date).
       update_generators();
-      gen_sys.recycling_insert(new_lines);
+      gen_sys.insert(new_lines, Recycle_Input());
       normalize_divisors(gen_sys);
       // Update the flags.
       clear_congruences_up_to_date();
@@ -2276,7 +2276,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       new_lines.insert(parameter(0*Variable(space_dim-1)));
       // Add the lines to `gen_sys' (first make sure they are up-to-date).
       update_generators();
-      gen_sys.recycling_insert(new_lines);
+      gen_sys.insert(new_lines, Recycle_Input());
       normalize_divisors(gen_sys);
       // Update the flags.
       clear_congruences_up_to_date();
@@ -2446,7 +2446,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   // Append `gs' to the generators of `x'.
 
-  gen_sys.recycling_insert(gs);
+  gen_sys.insert(gs, Recycle_Input());
 
   x.clear_congruences_up_to_date();
   x.clear_generators_minimized();

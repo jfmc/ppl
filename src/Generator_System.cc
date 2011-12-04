@@ -91,7 +91,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
       cp.set_epsilon_coefficient(0);
       // Enforcing normalization.
       cp.expr.normalize();
-      gs.insert_pending_recycled(cp);
+      gs.insert_pending(cp, Recycle_Input());
     }
   }
   PPL_ASSERT(OK());
@@ -116,7 +116,7 @@ PPL::Generator_System::add_corresponding_points() {
       // Note: normalization is preserved.
       Generator p = g;
       p.set_epsilon_coefficient(p.expr.inhomogeneous_term());
-      gs.insert_pending_recycled(p);
+      gs.insert_pending(p, Recycle_Input());
     }
   }
   PPL_ASSERT(OK());
@@ -197,28 +197,28 @@ PPL::Generator_System_const_iterator::skip_forward() {
 void
 PPL::Generator_System::insert(const Generator& g) {
   Generator tmp = g;
-  insert_recycled(tmp);
+  insert(tmp, Recycle_Input());
 }
 
 void
 PPL::Generator_System::insert_pending(const Generator& g) {
   Generator tmp = g;
-  insert_pending_recycled(tmp);
+  insert_pending(tmp, Recycle_Input());
 }
 
 void
-PPL::Generator_System::insert_recycled(Generator& g) {
+PPL::Generator_System::insert(Generator& g, Recycle_Input) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   PPL_ASSERT(sys.num_pending_rows() == 0);
   if (sys.topology() == g.topology())
-    sys.insert_recycled(g);
+    sys.insert(g, Recycle_Input());
   else
     // `*this' and `g' have different topologies.
     if (sys.is_necessarily_closed()) {
       convert_into_non_necessarily_closed();
       // Inserting the new generator.
-      sys.insert_recycled(g);
+      sys.insert(g, Recycle_Input());
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -234,22 +234,22 @@ PPL::Generator_System::insert_recycled(Generator& g) {
       if (!g.is_line_or_ray())
 	g.set_epsilon_coefficient(g.expr.inhomogeneous_term());
       // Inserting the new generator.
-      sys.insert_recycled(g);
+      sys.insert(g, Recycle_Input());
     }
   PPL_ASSERT(OK());
 }
 
 void
-PPL::Generator_System::insert_pending_recycled(Generator& g) {
+PPL::Generator_System::insert_pending(Generator& g, Recycle_Input) {
   if (sys.topology() == g.topology())
-    sys.insert_pending_recycled(g);
+    sys.insert_pending(g, Recycle_Input());
   else
     // `*this' and `g' have different topologies.
     if (sys.is_necessarily_closed()) {
       convert_into_non_necessarily_closed();
 
       // Inserting the new generator.
-      sys.insert_pending_recycled(g);
+      sys.insert_pending(g, Recycle_Input());
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -265,7 +265,7 @@ PPL::Generator_System::insert_pending_recycled(Generator& g) {
       if (!g.is_line_or_ray())
 	g.set_epsilon_coefficient(g.expr.inhomogeneous_term());
       // Inserting the new generator.
-      sys.insert_pending_recycled(g);
+      sys.insert_pending(g, Recycle_Input());
     }
   PPL_ASSERT(OK());
 }
@@ -808,7 +808,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < nrows; ++i) {
     Generator gen;
     gen.ascii_load(s);
-    sys.insert_pending_recycled(gen);
+    sys.insert_pending(gen, Recycle_Input());
   }
   sys.set_index_first_pending_row(pending_index);
 

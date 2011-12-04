@@ -160,7 +160,7 @@ public:
 
     \p cg will be strongly normalized.
   */
-  void insert_recycled(Congruence& cg);
+  void insert(Congruence& cg, Recycle_Input);
 
   /*! \brief
     Inserts in \p *this a copy of the equality constraint \p c, seen
@@ -175,7 +175,7 @@ public:
   */
   void insert(const Constraint& c);
 
-  // TODO: Consider adding a recycling_insert(cg).
+  // TODO: Consider adding a insert(cg, Recycle_Input).
 
   /*! \brief
     Inserts in \p *this a copy of the congruences in \p cgs,
@@ -189,7 +189,7 @@ public:
     Inserts into \p *this the congruences in \p cgs, increasing the
     number of space dimensions if needed.
   */
-  void recycling_insert(Congruence_System& cgs);
+  void insert(Congruence_System& cgs, Recycle_Input);
 
   //! Initializes the class.
   static void initialize();
@@ -467,7 +467,7 @@ public:
     This method inserts \p cg in the given form, instead of first strong
     normalizing \p cg as \ref insert would do.
   */
-  void insert_verbatim_recycled(Congruence& cg);
+  void insert_verbatim(Congruence& cg, Recycle_Input);
 
   // TODO: Remove this.
   typedef Congruence internal_row_type;

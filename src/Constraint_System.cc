@@ -42,7 +42,7 @@ PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())
-      // TODO: Consider adding a recycling_insert to save the extra copy here.
+      // TODO: Consider adding a recycling method to save the extra copy here.
       insert(Constraint(*i));
 }
 
@@ -392,8 +392,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
 
-  // Set sortedness later, so insert_pending_recycled() will have no effect on
-  // it.
+  // Set sortedness later, so insert_pending() will have no effect on it.
   bool sorted = (str == "(sorted)");
   set_sorted(false);
   dimension_type pending_index;
@@ -407,7 +406,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     if (!c.ascii_load(s))
       return false;
 
-    sys.insert_pending_recycled(c);
+    sys.insert_pending(c, Recycle_Input());
   }
   sys.set_index_first_pending_row(pending_index);
   sys.set_sorted(sorted);

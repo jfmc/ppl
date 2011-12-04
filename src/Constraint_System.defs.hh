@@ -400,26 +400,26 @@ public:
     Adds the given row to the pending part of the system, stealing its
     contents and automatically resizing the system or the row, if needed.
   */
-  void insert_pending_recycled(Constraint& r);
+  void insert_pending(Constraint& r, Recycle_Input);
 
   // TODO: Consider removing this, or making it private.
   //! Adds the rows of `y' to the pending part of `*this', stealing them from
   //! `y'.
-  void insert_pending_recycled(Constraint_System& r);
+  void insert_pending(Constraint_System& r, Recycle_Input);
 
   // TODO: Consider removing this, or making it private.
   /*! \brief
     Adds \p r to the system, stealing its contents and
     automatically resizing the system or the row, if needed.
   */
-  void insert_recycled(Constraint& r);
+  void insert(Constraint& r, Recycle_Input);
 
   // TODO: Consider removing this, or making it private.
   //! Adds to \p *this a the rows of `y', stealing them from `y'.
   /*!
     It is assumed that \p *this has no pending rows.
   */
-  void insert_recycled(Constraint_System& r);
+  void insert(Constraint_System& r, Recycle_Input);
 
   // TODO: Consider removing this, or making it private.
   //! Adds a copy of the rows of `y' to the pending part of `*this'.

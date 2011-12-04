@@ -318,23 +318,23 @@ Constraint_System::sort_rows() {
 }
 
 inline void
-Constraint_System::insert_pending_recycled(Constraint& r) {
-  sys.insert_pending_recycled(r);
+Constraint_System::insert_pending(Constraint& r, Recycle_Input) {
+  sys.insert_pending(r, Recycle_Input());
 }
 
 inline void
-Constraint_System::insert_pending_recycled(Constraint_System& r) {
-  sys.insert_pending_recycled(r.sys);
+Constraint_System::insert_pending(Constraint_System& r, Recycle_Input) {
+  sys.insert_pending(r.sys, Recycle_Input());
 }
 
 inline void
-Constraint_System::insert_recycled(Constraint& r) {
-  sys.insert_recycled(r);
+Constraint_System::insert(Constraint& r, Recycle_Input) {
+  sys.insert(r, Recycle_Input());
 }
 
 inline void
-Constraint_System::insert_recycled(Constraint_System& r) {
-  sys.insert_recycled(r.sys);
+Constraint_System::insert(Constraint_System& r, Recycle_Input) {
+  sys.insert(r.sys, Recycle_Input());
 }
 
 inline void

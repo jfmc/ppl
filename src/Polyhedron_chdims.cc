@@ -237,7 +237,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     PPL_ASSERT(cs_rows.size() == added_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
       cs_rows[i].shift_space_dimensions(Variable(0), space_dim);
-      con_sys.insert_pending_recycled(cs_rows[i]);
+      con_sys.insert_pending(cs_rows[i], Recycle_Input());
     }
 
     // If `*this' can support pending constraints, then, since we have
@@ -275,7 +275,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     cs.release_rows(cs_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
       cs_rows[i].shift_space_dimensions(Variable(0), space_dim);
-      con_sys.insert_recycled(cs_rows[i]);
+      con_sys.insert(cs_rows[i], Recycle_Input());
     }
 #if !BE_LAZY
     con_sys.sort_rows();
@@ -435,7 +435,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
       Constraint new_c = c_template;
       add_mul_assign(new_c.expr, coeff, Variable(dst_d));
       PPL_ASSERT(new_c.OK());
-      new_constraints.insert_recycled(new_c);
+      new_constraints.insert(new_c, Recycle_Input());
     }
   }
   add_recycled_constraints(new_constraints);

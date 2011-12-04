@@ -1329,7 +1329,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	cp.set_epsilon_coefficient(0);
 	cp.expr.normalize();
         PPL_ASSERT(cp.OK());
-        gen_sys.insert_recycled(cp);
+        gen_sys.insert(cp, Recycle_Input());
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
       }
@@ -1371,11 +1371,11 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	cp.expr.normalize();
         PPL_ASSERT(cp.OK());
         if (has_pending) {
-          gen_sys.insert_pending_recycled(cp);
+          gen_sys.insert_pending(cp, Recycle_Input());
           // Re-insert the point (which is already normalized).
           gen_sys.insert_pending(g);
         } else {
-          gen_sys.insert_recycled(cp);
+          gen_sys.insert(cp, Recycle_Input());
           // Re-insert the point (which is already normalized).
           gen_sys.insert(g);
         }
@@ -1485,11 +1485,11 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // also, we _swap_ (instead of copying) the coefficients of `cs'
   // (which is not a const).
   if (adding_pending) {
-    con_sys.insert_pending_recycled(cs);
+    con_sys.insert_pending(cs, Recycle_Input());
 
     set_constraints_pending();
   } else {
-    con_sys.insert_recycled(cs);
+    con_sys.insert(cs, Recycle_Input());
 
     // Constraints are not minimized and generators are not up-to-date.
     clear_constraints_minimized();
@@ -1572,7 +1572,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       gs.release_row(tmp);
       tmp.set_topology(topology());
-      gen_sys.insert_pending_recycled(tmp);
+      gen_sys.insert_pending(tmp, Recycle_Input());
     }
     
     set_generators_pending();
@@ -1584,7 +1584,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       gs.release_row(tmp);
       tmp.set_topology(topology());
-      gen_sys.insert_recycled(tmp);
+      gen_sys.insert(tmp, Recycle_Input());
     }
 
     // Constraints are not up-to-date and generators are not minimized.

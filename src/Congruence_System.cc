@@ -102,7 +102,7 @@ PPL::Congruence_System::swap_space_dimensions(Variable v1, Variable v2) {
 }
 
 void
-PPL::Congruence_System::insert_verbatim_recycled(Congruence& cg) {
+PPL::Congruence_System::insert_verbatim(Congruence& cg, Recycle_Input) {
   // TODO: Remove this.
   PPL_ASSERT(cg.OK());
   
@@ -132,7 +132,7 @@ PPL::Congruence_System::insert(const Constraint& c) {
 }
 
 void
-PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
+PPL::Congruence_System::insert(Congruence_System& cgs, Recycle_Input) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type cgs_num_rows = cgs.num_rows();
   if (space_dimension() < cgs.space_dimension())
@@ -340,7 +340,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < num_rows; ++i) {
     if (!c.ascii_load(s))
       return false;
-    insert_verbatim_recycled(c);
+    insert_verbatim(c, Recycle_Input());
   }
 
   // Check invariants.

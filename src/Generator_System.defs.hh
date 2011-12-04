@@ -224,7 +224,7 @@ public:
     Inserts in \p *this the generator \p g, stealing its contents and
     increasing the number of space dimensions if needed.
   */
-  void insert_recycled(Generator& g);
+  void insert(Generator& g, Recycle_Input);
 
   //! Initializes the class.
   static void initialize();
@@ -705,7 +705,7 @@ public:
     increasing the number of space dimensions if needed.
     It is a pending generator.
   */
-  void insert_pending_recycled(Generator& g);
+  void insert_pending(Generator& g, Recycle_Input);
 
 private:
   Linear_System<Generator> sys;

@@ -77,15 +77,15 @@ Congruence_System::take_ownership_of_rows(Swapping_Vector<Congruence>& v) {
 inline void
 Congruence_System::insert(const Congruence& cg) {
   Congruence tmp = cg;
-  insert_recycled(tmp);
+  insert(tmp, Recycle_Input());
 }
 
 inline void
-Congruence_System::insert_recycled(Congruence& cg) {
+Congruence_System::insert(Congruence& cg, Recycle_Input) {
   PPL_ASSERT(cg.OK());
   cg.strong_normalize();
   PPL_ASSERT(cg.OK());
-  insert_verbatim_recycled(cg);
+  insert_verbatim(cg, Recycle_Input());
   PPL_ASSERT(OK());
 }
 

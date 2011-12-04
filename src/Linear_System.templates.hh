@@ -185,7 +185,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < nrows; ++i) {
     if (!row.ascii_load(s))
       return false;
-    add_recycled_row(row);
+    add_row(row, Recycle_Input());
   }
   index_first_pending = index;
   sorted = sortedness;
@@ -199,12 +199,12 @@ template <typename Row>
 void
 Linear_System<Row>::insert(const Row& r) {
   Row tmp = r;
-  insert_recycled(tmp);
+  insert(tmp, Recycle_Input());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::insert_recycled(Row& r) {
+Linear_System<Row>::insert(Row& r, Recycle_Input) {
   PPL_ASSERT(topology() == r.topology());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -217,7 +217,7 @@ Linear_System<Row>::insert_recycled(Row& r) {
       // Resize the row.
       r.set_space_dimension(space_dimension());
 
-  add_recycled_row(r);
+  add_row(r, Recycle_Input());
 
   // The added row was not a pending row.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -226,7 +226,7 @@ Linear_System<Row>::insert_recycled(Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::insert_recycled_no_ok(Row& r) {
+Linear_System<Row>::insert_no_ok(Row& r, Recycle_Input) {
   PPL_ASSERT(topology() == r.topology());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -239,7 +239,7 @@ Linear_System<Row>::insert_recycled_no_ok(Row& r) {
       // Resize the row.
       r.set_space_dimension_no_ok(space_dimension());
 
-  add_recycled_row_no_ok(r);
+  add_row_no_ok(r, Recycle_Input());
 
   // The added row was not a pending row.
   PPL_ASSERT(num_pending_rows() == 0);
@@ -249,12 +249,12 @@ template <typename Row>
 void
 Linear_System<Row>::insert_pending(const Row& r) {
   Row tmp = r;
-  insert_pending_recycled(tmp);
+  insert_pending(tmp, Recycle_Input());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::insert_pending_recycled(Row& r) {
+Linear_System<Row>::insert_pending(Row& r, Recycle_Input) {
   // The added row must be strongly normalized and have the same
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
@@ -268,7 +268,7 @@ Linear_System<Row>::insert_pending_recycled(Row& r) {
       // Resize the row.
       r.set_space_dimension(space_dimension());
 
-  add_recycled_pending_row(r);
+  add_pending_row(r, Recycle_Input());
 
   // The added row was a pending row.
   PPL_ASSERT(num_pending_rows() > 0);
@@ -279,12 +279,12 @@ template <typename Row>
 void
 Linear_System<Row>::insert_pending(const Linear_System& y) {
   Linear_System tmp(y, With_Pending());
-  insert_pending_recycled(tmp);
+  insert_pending(tmp, Recycle_Input());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::insert_pending_recycled(Linear_System& y) {
+Linear_System<Row>::insert_pending(Linear_System& y, Recycle_Input) {
   Linear_System& x = *this;
   PPL_ASSERT(x.space_dimension() == y.space_dimension());
 
@@ -292,7 +292,7 @@ Linear_System<Row>::insert_pending_recycled(Linear_System& y) {
   // This loop must use an increasing index (instead of a decreasing one) to
   // preserve the row ordering.
   for (dimension_type i = 0; i < y.num_rows(); i++)
-    insert_pending_recycled(y.rows[i]);
+    insert_pending(y.rows[i], Recycle_Input());
 
   y.clear();
 
@@ -303,12 +303,12 @@ template <typename Row>
 void
 Linear_System<Row>::insert(const Linear_System& y) {
   Linear_System tmp(y, With_Pending());
-  insert_recycled(tmp);
+  insert(tmp, Recycle_Input());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::insert_recycled(Linear_System& y) {
+Linear_System<Row>::insert(Linear_System& y, Recycle_Input) {
   PPL_ASSERT(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
@@ -328,7 +328,7 @@ Linear_System<Row>::insert_recycled(Linear_System& y) {
   }
 
   // Add the rows of `y' as if they were pending.
-  insert_pending_recycled(y);
+  insert_pending(y, Recycle_Input());
 
   // TODO: May y have pending rows? Should they remain pending?
 
@@ -432,25 +432,25 @@ template <typename Row>
 void
 Linear_System<Row>::add_row(const Row& r) {
   Row tmp = r;
-  add_recycled_row(tmp);
+  add_row(tmp, Recycle_Input());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_row(Row& r) {
-  add_recycled_row_no_ok(r);
+Linear_System<Row>::add_row(Row& r, Recycle_Input) {
+  add_row_no_ok(r, Recycle_Input());
   PPL_ASSERT(OK());
 }
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_row_no_ok(Row& r) {
+Linear_System<Row>::add_row_no_ok(Row& r, Recycle_Input) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
   const bool was_sorted = is_sorted();
 
-  add_recycled_pending_row_no_ok(r);
+  add_pending_row_no_ok(r, Recycle_Input());
 
   if (was_sorted) {
     const dimension_type nrows = num_rows();
@@ -471,7 +471,7 @@ Linear_System<Row>::add_recycled_row_no_ok(Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_pending_row_no_ok(Row& r) {
+Linear_System<Row>::add_pending_row_no_ok(Row& r, Recycle_Input) {
   // TODO: A Grid_Generator_System may contain non-normalized lines that
   // represent parameters, so this check is disabled. Consider re-enabling it
   // when it's possibile.
@@ -489,8 +489,8 @@ Linear_System<Row>::add_recycled_pending_row_no_ok(Row& r) {
 
 template <typename Row>
 void
-Linear_System<Row>::add_recycled_pending_row(Row& r) {
-  add_recycled_pending_row_no_ok(r);
+Linear_System<Row>::add_pending_row(Row& r, Recycle_Input) {
+  add_pending_row_no_ok(r, Recycle_Input());
   PPL_ASSERT(OK());
 }
 
@@ -498,7 +498,7 @@ template <typename Row>
 void
 Linear_System<Row>::add_pending_row(const Row& r) {
   Row tmp = r;
-  add_recycled_pending_row(tmp);
+  add_pending_row(tmp, Recycle_Input());
 }
 
 template <typename Row>

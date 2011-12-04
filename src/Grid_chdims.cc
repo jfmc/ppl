@@ -420,7 +420,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       Congruence x = cg_copy;
       add_mul_assign(x.expression(), coeff, Variable(dst_d));
-      new_congruences.insert_verbatim_recycled(x);
+      new_congruences.insert_verbatim(x, Recycle_Input());
     }
   }
   add_recycled_congruences(new_congruences);

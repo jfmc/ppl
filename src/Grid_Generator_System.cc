@@ -32,7 +32,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
+PPL::Grid_Generator_System::insert(Grid_Generator_System& gs, Recycle_Input) {
   const dimension_type gs_num_rows = gs.num_rows();
 
   if (space_dimension() < gs.space_dimension())
@@ -43,14 +43,14 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   Swapping_Vector<Grid_Generator> rows;
   gs.sys.release_rows(rows);
   for (dimension_type i = 0; i < gs_num_rows; ++i)
-    sys.insert_recycled(rows[i]);
+    sys.insert(rows[i], Recycle_Input());
 
   unset_pending_rows();
 }
 
 void
-PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
-  sys.insert_recycled(g);
+PPL::Grid_Generator_System::insert(Grid_Generator& g, Recycle_Input) {
+  sys.insert(g, Recycle_Input());
 }
 
 void
@@ -79,7 +79,7 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     // Insert a resized copy of the row.
     Grid_Generator tmp = g;
     tmp.set_space_dimension(space_dimension());
-    sys.insert_recycled(tmp);
+    sys.insert(tmp, Recycle_Input());
   }
   else
     // Here r_size == old_num_columns.
@@ -176,7 +176,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     Grid_Generator tmp;
     if (!tmp.ascii_load(s))
       return false;
-    sys.insert_recycled(tmp);
+    sys.insert(tmp, Recycle_Input());
   }
 
   set_index_first_pending_row(num_rows);
@@ -256,7 +256,7 @@ PPL::Grid_Generator_System
     tmp.expr += Variable(col);
     PPL_ASSERT(tmp.OK());
     ++col;
-    sys.insert_recycled(tmp);
+    sys.insert(tmp, Recycle_Input());
   }
 }
 

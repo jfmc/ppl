@@ -336,13 +336,13 @@ public:
     Adds \p r to the system, stealing its contents and
     automatically resizing the system or the row, if needed.
   */
-  void insert_recycled(Row& r);
+  void insert(Row& r, Recycle_Input);
 
   /*! \brief
     Adds the given row to the pending part of the system, stealing its
     contents and automatically resizing the system or the row, if needed.
   */
-  void insert_pending_recycled(Row& r);
+  void insert_pending(Row& r, Recycle_Input);
 
   //! Adds to \p *this a copy of  the rows of \p y.
   /*!
@@ -357,11 +357,11 @@ public:
   /*!
     It is assumed that \p *this has no pending rows.
   */
-  void insert_recycled(Linear_System& r);
+  void insert(Linear_System& r, Recycle_Input);
 
   //! Adds the rows of `y' to the pending part of `*this', stealing them from
   //! `y'.
-  void insert_pending_recycled(Linear_System& r);
+  void insert_pending(Linear_System& r, Recycle_Input);
 
   /*! \brief
     Sorts the non-pending rows (in growing order) and eliminates
@@ -479,7 +479,7 @@ private:
     This method is for internal use, it does *not* assert OK() at the end,
     so it can be used for invalid systems.
   */
-  void insert_recycled_no_ok(Row& r);
+  void insert_no_ok(Row& r, Recycle_Input);
 
   //! Sets the space dimension of the rows in the system to \p space_dim .
   /*!
@@ -493,14 +493,14 @@ private:
     This method is for internal use, it does *not* assert OK() at the end,
     so it can be used for invalid systems.
   */
-  void add_recycled_row_no_ok(Row& r);
+  void add_row_no_ok(Row& r, Recycle_Input);
 
   //! Adds a copy of the given row to the pending part of the system.
   /*!
     This method is for internal use, it does *not* assert OK() at the end,
     so it can be used for invalid systems.
   */
-  void add_recycled_pending_row_no_ok(Row& r);
+  void add_pending_row_no_ok(Row& r, Recycle_Input);
 
   //! Swaps the [first,last) row interval with the
   //! [first + offset, last + offset) interval.
@@ -519,13 +519,13 @@ private:
   void add_row(const Row& r);
 
   //! Adds a the given row to the system, stealing its contents.
-  void add_recycled_row(Row& r);
+  void add_row(Row& r, Recycle_Input);
 
   //! Adds a copy of the given row to the pending part of the system.
   void add_pending_row(const Row& r);
 
   //! Adds a copy of the given row to the pending part of the system.
-  void add_recycled_pending_row(Row& r);
+  void add_pending_row(Row& r, Recycle_Input);
 
   //! The vector that contains the rows.
   Swapping_Vector<Row> rows;

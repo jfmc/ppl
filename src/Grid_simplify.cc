@@ -517,7 +517,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       last_row.set_inhomogeneous_term(Coefficient_one());
       dim_kinds.resize(1);
       sys.remove_trailing_rows(sys.num_rows());
-      sys.insert_verbatim_recycled(last_row);
+      sys.insert_verbatim(last_row, Recycle_Input());
 
       PPL_ASSERT(sys.OK());
 #ifndef NDEBUG
@@ -532,7 +532,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       break;
     }
 
-    sys.insert_verbatim_recycled(last_row);
+    sys.insert_verbatim(last_row, Recycle_Input());
   }
   else {
     // Either sys is empty (it defines the universe) or every column
@@ -560,7 +560,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       Congruence cg(sys.space_dimension());
       cg.set_modulus(Coefficient_one());
       cg.set_inhomogeneous_term(Coefficient_one());
-      sys.insert_verbatim_recycled(cg);
+      sys.insert_verbatim(cg, Recycle_Input());
 
       PPL_ASSERT(sys.OK());
 #ifndef NDEBUG
@@ -575,7 +575,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     sys.release_row(cg);
     PPL_ASSERT(sys.num_rows() == 0);
     cg.set_modulus(Coefficient_one());
-    sys.insert_verbatim_recycled(cg);
+    sys.insert_verbatim(cg, Recycle_Input());
   }
 
   // Ensure that the last row is the integrality congruence.
@@ -594,13 +594,13 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       }
     }
     new_last_row.set_inhomogeneous_term(new_last_row.modulus());
-    sys.insert_verbatim_recycled(new_last_row);
+    sys.insert_verbatim(new_last_row, Recycle_Input());
   }
   else {
     Congruence last_row;
     sys.release_row(last_row);
     last_row.set_inhomogeneous_term(last_row.modulus());
-    sys.insert_verbatim_recycled(last_row);
+    sys.insert_verbatim(last_row, Recycle_Input());
   }
 
   Swapping_Vector<Congruence> rows;
