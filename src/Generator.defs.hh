@@ -529,31 +529,7 @@ public:
   */
   bool is_equal_to(const Generator& y) const;
 
-  /*! \brief
-    Normalizes the sign of the coefficients so that the first non-zero
-    (homogeneous) coefficient of a line-or-equality is positive.
-  */
-  void sign_normalize();
-
-  /*! \brief
-    Strong normalization: ensures that different Generator objects
-    represent different hyperplanes or hyperspaces.
-
-    Applies both Generator::normalize() and Generator::sign_normalize().
-  */
-  void strong_normalize();
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the coefficients are
-    strongly normalized.
-  */
-  bool check_strong_normalized() const;
-
   PPL_OUTPUT_DECLARATIONS
-
-  //! Another print functions, with fancy output, more human-friendly.
-  //! This is used by operator<<();
-  void fancy_print(std::ostream& s) const;
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
@@ -561,9 +537,6 @@ public:
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   //! Swaps \p *this with \p y.
   void m_swap(Generator& y);
@@ -686,6 +659,33 @@ private:
 
   //! Sets the epsilon coefficient to \p n. The generator must be NNC.
   void set_epsilon_coefficient(Coefficient_traits::const_reference n);
+
+  /*! \brief
+    Normalizes the sign of the coefficients so that the first non-zero
+    (homogeneous) coefficient of a line-or-equality is positive.
+  */
+  void sign_normalize();
+
+  /*! \brief
+    Strong normalization: ensures that different Generator objects
+    represent different hyperplanes or hyperspaces.
+
+    Applies both Generator::normalize() and Generator::sign_normalize().
+  */
+  void strong_normalize();
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the coefficients are
+    strongly normalized.
+  */
+  bool check_strong_normalized() const;
+
+  //! Another print functions, with fancy output, more human-friendly.
+  //! This is used by operator<<();
+  void fancy_print(std::ostream& s) const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 
   friend class Linear_System<Generator>;
   friend class Parma_Polyhedra_Library::Scalar_Products;
