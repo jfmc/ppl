@@ -238,11 +238,11 @@ public:
 
   void permute_space_dimensions(const std::vector<Variable>& cycles);
 
-  // TODO: Remove this.
-  Linear_Expression& expression();
+  //! The type returned by the expression() method, that provides most
+  //! of the const methods in Linear_Expression.
+  typedef Linear_Expression Expression;
 
-  // TODO: Remove this.
-  const Linear_Expression& expression() const;
+  const Expression& expression() const;
 
   //! Returns the coefficient of \p v in \p *this.
   /*!

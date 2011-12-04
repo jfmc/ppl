@@ -51,7 +51,7 @@ PPL::Congruence_System
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   for (dimension_type k = rows.size(); k-- > 0; ) {
     Congruence& rows_k = rows[k];
-    rows_k.expression().permute_space_dimensions(cycle);
+    rows_k.permute_space_dimensions(cycle);
   }
   PPL_ASSERT(OK());
 }

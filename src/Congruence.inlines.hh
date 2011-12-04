@@ -50,11 +50,6 @@ Congruence::Congruence(const Congruence& cg,
   PPL_ASSERT(OK());
 }
 
-inline Linear_Expression&
-Congruence::expression() {
-  return expr;
-}
-
 inline const Linear_Expression&
 Congruence::expression() const {
   return expr;
