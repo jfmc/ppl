@@ -6234,7 +6234,6 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   else {
     // Here `lhs' is of the general form, having at least two variables.
     // Compute the set of variables occurring in `lhs'.
-    bool lhs_vars_intersects_rhs_vars = false;
     std::vector<Variable> lhs_vars;
     for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
           i != i_end; ++i)
@@ -6763,7 +6762,6 @@ Octagonal_Shape<T>
   else {
     // Here `lhs' is of the general form, having at least two variables.
     // Compute the set of variables occurring in `lhs'.
-    bool lhs_vars_intersects_rhs_vars = false;
     std::vector<Variable> lhs_vars;
     for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
           i != i_end; ++i)
