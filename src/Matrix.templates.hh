@@ -84,12 +84,12 @@ Matrix<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
       PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
         // For cycles of length 2 no temporary is needed, just a swap.
-        rows_k.m_swap(cycles[i], cycles[i + 1]);
+        rows_k.swap_coefficients(cycles[i], cycles[i + 1]);
       else {
         // Longer cycles need a temporary.
         tmp = rows_k.get(cycles[j - 1]);
         for (dimension_type l = (j - 1); l > i; --l)
-          rows_k.m_swap(cycles[l-1], cycles[l]);
+          rows_k.swap_coefficients(cycles[l-1], cycles[l]);
         if (tmp == 0)
           rows_k.reset(cycles[i]);
         else {
@@ -105,7 +105,7 @@ template <typename Row>
 void
 Matrix<Row>::swap_columns(dimension_type i, dimension_type j) {
   for (dimension_type k = num_rows(); k-- > 0; )
-    (*this)[k].swap(i, j);
+    (*this)[k].swap_coefficients(i, j);
 }
 
 template <typename Row>
