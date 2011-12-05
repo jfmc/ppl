@@ -277,15 +277,25 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
+  //! The representation used for new Grid_Generators.
+  /*!
+    \note The copy constructor and the copy constructor with specified size
+          use the representation of the original object, so that it is
+          indistinguishable from the original object.
+  */
+  static const Representation default_representation = DENSE;
+
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument
     Thrown if the homogeneous part of \p e represents the origin of
     the vector space.
   */
-  static Grid_Generator grid_line(const Linear_Expression& e);
+  static Grid_Generator grid_line(const Linear_Expression& e,
+                                  Representation r = default_representation);
 
-  //! Returns the parameter of direction \p e and size \p e/d.
+  //! Returns the parameter of direction \p e and size \p e/d, with the same
+  //! representation as e.
   /*!
     Both \p e and \p d are optional arguments, with default values
     Linear_Expression::zero() and Coefficient_one(), respectively.
@@ -294,9 +304,18 @@ public:
     Thrown if \p d is zero.
   */
   static Grid_Generator parameter(const Linear_Expression& e
-				  = Linear_Expression::zero(),
-				  Coefficient_traits::const_reference d
-				  = Coefficient_one());
+                                  = Linear_Expression::zero(),
+                                  Coefficient_traits::const_reference d
+                                  = Coefficient_one(),
+                                  Representation r = default_representation);
+
+  // TODO: Improve the documentation of this method.
+  //! Returns the parameter of direction and size \p Linear_Expression::zero() .
+  static Grid_Generator parameter(Representation r);
+
+  //! Returns the parameter of direction and size \p e .
+  static Grid_Generator parameter(const Linear_Expression& e,
+                                  Representation r);
 
   //! Returns the point at \p e / \p d.
   /*!
@@ -307,31 +326,56 @@ public:
     Thrown if \p d is zero.
   */
   static Grid_Generator grid_point(const Linear_Expression& e
-				   = Linear_Expression::zero(),
-				   Coefficient_traits::const_reference d
-				   = Coefficient_one());
+                                   = Linear_Expression::zero(),
+                                   Coefficient_traits::const_reference d
+                                   = Coefficient_one(),
+                                   Representation r = default_representation);
+
+  //! Returns the point at \p e .
+  static Grid_Generator grid_point(Representation r);
+
+  //! Returns the point at \p e .
+  static Grid_Generator grid_point(const Linear_Expression& e,
+                                   Representation r);
 
   //! Constructs an invalid Grid_Generator.
-  Grid_Generator();
+  explicit Grid_Generator(Representation r = default_representation);
 
   //! Constructs a Grid_Generator with the specified space dimension.
-  explicit Grid_Generator(dimension_type space_dim);
+  explicit Grid_Generator(dimension_type space_dim,
+                          Representation r = default_representation);
 
   //! Constructs a Grid_Generator with the specified space dimension, kind
   //! and topology.
-  Grid_Generator(dimension_type space_dim, Kind kind, Topology topology);
+  Grid_Generator(dimension_type space_dim, Kind kind, Topology topology,
+                 Representation r = default_representation);
 
   //! Ordinary copy constructor.
+  //! The new Grid_Generator will have the same representation as g.
   Grid_Generator(const Grid_Generator& g);
 
+  //! Copy constructor with specified representation.
+  Grid_Generator(const Grid_Generator& g, Representation r);
+
   //! Copy constructor with specified space dimension.
+  //! The new Grid_Generator will have the same representation as g.
   Grid_Generator(const Grid_Generator& g, dimension_type space_dim);
+
+  //! Copy constructor with specified space dimension and representation.
+  Grid_Generator(const Grid_Generator& g, dimension_type space_dim,
+                 Representation r);
 
   //! Destructor.
   ~Grid_Generator();
 
   //! Assignment operator.
   Grid_Generator& operator=(const Grid_Generator& g);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! \name Flags inspection methods
   //@{
@@ -567,12 +611,15 @@ private:
   */
   static const Grid_Generator* zero_dim_point_p;
 
+  // TODO: Avoid reducing the space dimension.
   /*! \brief
     Constructs a grid generator of type \p t from linear expression \p e,
     stealing the underlying data structures from \p e.
 
     The last column in \p e becomes the parameter divisor column of
     the new Grid_Generator.
+
+    \note The new Grid_Generator will have the same representation as `e'.
   */
   Grid_Generator(Linear_Expression& e, Type t);
 
@@ -673,30 +720,70 @@ namespace Parma_Polyhedra_Library {
 
 /*! \brief
   Shorthand for Grid_Generator
-  Grid_Generator::grid_line(const Linear_Expression& e).
+  Grid_Generator::grid_line(const Linear_Expression& e, Representation r).
 */
 /*! \relates Grid_Generator */
-Grid_Generator grid_line(const Linear_Expression& e);
+Grid_Generator
+grid_line(const Linear_Expression& e,
+          Representation r = Grid_Generator::default_representation);
 
 /*! \brief
   Shorthand for Grid_Generator
   Grid_Generator::parameter(const Linear_Expression& e,
-  Coefficient_traits::const_reference d).
+                            Coefficient_traits::const_reference d,
+                            Representation r).
 */
 /*! \relates Grid_Generator */
 Grid_Generator
 parameter(const Linear_Expression& e = Linear_Expression::zero(),
-	  Coefficient_traits::const_reference d = Coefficient_one());
+          Coefficient_traits::const_reference d = Coefficient_one(),
+          Representation r = Grid_Generator::default_representation);
+
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::parameter(Representation r).
+*/
+/*! \relates Grid_Generator */
+Grid_Generator
+parameter(Representation r);
+
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::parameter(const Linear_Expression& e,
+                            Representation r).
+*/
+/*! \relates Grid_Generator */
+Grid_Generator
+parameter(const Linear_Expression& e, Representation r);
 
 /*! \brief
   Shorthand for Grid_Generator
   Grid_Generator::grid_point(const Linear_Expression& e,
-  Coefficient_traits::const_reference d).
+                             Coefficient_traits::const_reference d,
+                             Representation r).
 */
 /*! \relates Grid_Generator */
 Grid_Generator
 grid_point(const Linear_Expression& e = Linear_Expression::zero(),
-	   Coefficient_traits::const_reference d = Coefficient_one());
+           Coefficient_traits::const_reference d = Coefficient_one(),
+           Representation r = Grid_Generator::default_representation);
+
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::grid_point(Representation r).
+*/
+/*! \relates Grid_Generator */
+Grid_Generator
+grid_point(Representation r);
+
+/*! \brief
+  Shorthand for Grid_Generator
+  Grid_Generator::grid_point(const Linear_Expression& e,
+                             Representation r).
+*/
+/*! \relates Grid_Generator */
+Grid_Generator
+grid_point(const Linear_Expression& e, Representation r);
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
 /*! \relates Grid_Generator */

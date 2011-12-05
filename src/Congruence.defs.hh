@@ -211,24 +211,50 @@ void sub_mul_assign(Congruence& c1,
 class Parma_Polyhedra_Library::Congruence {
 public:
 
+  //! The representation used for new Congruences.
+  /*!
+    \note The copy constructor and the copy constructor with specified size
+          use the representation of the original object, so that it is
+          indistinguishable from the original object.
+  */
+  static const Representation default_representation = DENSE;
+
   //! Constructs the 0 = 0 congruence with space dimension \p n .
-  explicit Congruence(dimension_type n = 0);
+  explicit Congruence(dimension_type n = 0,
+                      Representation r = default_representation);
+
+  //! Constructs the 0 = 0 congruence with space dimension \p 0 .
+  explicit Congruence(Representation r);
 
   //! Ordinary copy constructor.
+  /*!
+    \note The new Congruence will have the same representation as `cg',
+          not default_representation, so that they are indistinguishable.
+  */
   Congruence(const Congruence& cg);
+
+  //! Copy constructor with specified representation.
+  Congruence(const Congruence& cg, Representation r);
 
   //! Copy-constructs (modulo 0) from equality constraint \p c.
   /*!
     \exception std::invalid_argument
     Thrown if \p c is an inequality.
   */
-  explicit Congruence(const Constraint& c);
+  explicit Congruence(const Constraint& c,
+                      Representation r = default_representation);
 
   //! Destructor.
   ~Congruence();
 
   //! Assignment operator.
   Congruence& operator=(const Congruence& cg);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! Returns the maximum space dimension a Congruence can handle.
   static dimension_type max_space_dimension();
@@ -347,15 +373,18 @@ public:
 
   //! Returns the congruence \f$e1 = e2 \pmod{1}\f$.
   static Congruence
-  create(const Linear_Expression& e1, const Linear_Expression& e2);
+  create(const Linear_Expression& e1, const Linear_Expression& e2,
+         Representation r = default_representation);
 
   //! Returns the congruence \f$e = n \pmod{1}\f$.
   static Congruence
-  create(const Linear_Expression& e, Coefficient_traits::const_reference n);
+  create(const Linear_Expression& e, Coefficient_traits::const_reference n,
+         Representation r = default_representation);
 
   //! Returns the congruence \f$n = e \pmod{1}\f$.
   static Congruence
-  create(Coefficient_traits::const_reference n, const Linear_Expression& e);
+  create(Coefficient_traits::const_reference n, const Linear_Expression& e,
+         Representation r = default_representation);
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
@@ -381,15 +410,28 @@ public:
   bool OK() const;
 
   //! Copy-constructs with the specified space dimension.
+  /*!
+    \note The new Congruence will have the same representation as `cg',
+          not default_representation, for consistency with the copy
+          constructor.
+  */
   Congruence(const Congruence& cg, dimension_type new_space_dimension);
 
-  //! Copy-constructs from a constraint, with the specified space dimension.
-  Congruence(const Constraint& cg, dimension_type new_space_dimension);
+  //! Copy-constructs with the specified space dimension and representation.
+  Congruence(const Congruence& cg, dimension_type new_space_dimension,
+             Representation r);
+
+  //! Copy-constructs from a constraint, with the specified space dimension
+  //! and (optional) representation.
+  Congruence(const Constraint& cg, dimension_type new_space_dimension,
+             Representation r = default_representation);
 
   //! Constructs from Linear_Expression \p le, using modulus \p m.
   /*!
     Builds a congruence with modulus \p m, stealing the coefficients
     from \p le.
+
+    \note The new Congruence will have the same representation as `le'.
 
     \param le
     The Linear_Expression holding the coefficients.

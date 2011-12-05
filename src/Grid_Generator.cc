@@ -54,12 +54,13 @@ PPL::Grid_Generator::throw_invalid_argument(const char* method,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::parameter(const Linear_Expression& e,
-			       Coefficient_traits::const_reference d) {
+			       Coefficient_traits::const_reference d,
+                               Representation r) {
   if (d == 0)
     throw std::invalid_argument("PPL::parameter(e, d):\n"
 				"d == 0.");
   // Add 1 to space dimension to allow for parameter divisor column.
-  Linear_Expression ec(e, e.space_dimension() + 1);
+  Linear_Expression ec(e, e.space_dimension() + 1, r);
 
   ec.set_inhomogeneous_term(Coefficient_zero());
   const Variable divisor_var(e.space_dimension());
@@ -81,12 +82,13 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
-				Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference d,
+                                Representation r) {
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
 				"d == 0.");
   // Add 1 to space dimension to allow for parameter divisor column.
-  Linear_Expression ec(e, 1 + e.space_dimension());
+  Linear_Expression ec(e, 1 + e.space_dimension(), r);
   ec.set_inhomogeneous_term(d);
 
   // If the divisor is negative, negate it and all the coefficients of
@@ -104,14 +106,25 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
 }
 
 PPL::Grid_Generator
-PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
+PPL::Grid_Generator::grid_point(Representation r) {
+  return grid_point(Linear_Expression::zero(), Coefficient_one(), r);
+}
+
+PPL::Grid_Generator
+PPL::Grid_Generator::grid_point(const Linear_Expression& e,
+                                Representation r) {
+  return grid_point(e, Coefficient_one(), r);
+}
+
+PPL::Grid_Generator
+PPL::Grid_Generator::grid_line(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::grid_line(e):\n"
 				"e == 0, but the origin cannot be a line.");
 
   // Add 1 to space dimension to allow for parameter divisor column.
-  Linear_Expression ec(e, 1 + e.space_dimension());
+  Linear_Expression ec(e, 1 + e.space_dimension(), r);
   ec.set_inhomogeneous_term(Coefficient_zero());
   // Using this constructor saves reallocation when creating the
   // coefficients.

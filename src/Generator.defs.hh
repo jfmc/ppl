@@ -291,13 +291,22 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
+  //! The representation used for new Generators.
+  /*!
+    \note The copy constructor and the copy constructor with specified size
+          use the representation of the original object, so that it is
+          indistinguishable from the original object.
+  */
+  static const Representation default_representation = DENSE;
+
   //! Returns the line of direction \p e.
   /*!
     \exception std::invalid_argument
     Thrown if the homogeneous part of \p e represents the origin of
     the vector space.
   */
-  static Generator line(const Linear_Expression& e);
+  static Generator line(const Linear_Expression& e,
+                        Representation r = default_representation);
 
   //! Returns the ray of direction \p e.
   /*!
@@ -305,7 +314,8 @@ public:
     Thrown if the homogeneous part of \p e represents the origin of
     the vector space.
   */
-  static Generator ray(const Linear_Expression& e);
+  static Generator ray(const Linear_Expression& e,
+                       Representation r = default_representation);
 
   //! Returns the point at \p e / \p d.
   /*!
@@ -316,16 +326,26 @@ public:
     Thrown if \p d is zero.
   */
   static Generator point(const Linear_Expression& e
-			 = Linear_Expression::zero(),
-			 Coefficient_traits::const_reference d
-			 = Coefficient_one());
+                         = Linear_Expression::zero(),
+                         Coefficient_traits::const_reference d
+                         = Coefficient_one(),
+                         Representation r = default_representation);
+
+  //! Returns the origin.
+  static Generator point(Representation r);
+
+  //! Returns the point at \p e.
+  static Generator point(const Linear_Expression& e,
+                         Representation r);
 
   // TODO: document this.
-  Generator();
+  explicit Generator(Representation r = default_representation);
 
-  explicit Generator(dimension_type space_dim);
+  explicit Generator(dimension_type space_dim,
+                     Representation r = default_representation);
 
-  Generator(dimension_type space_dim, Kind kind, Topology topology);
+  Generator(dimension_type space_dim, Kind kind, Topology topology,
+            Representation r = default_representation);
 
   //! Returns the closure point at \p e / \p d.
   /*!
@@ -337,19 +357,42 @@ public:
   */
   static Generator
   closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-		Coefficient_traits::const_reference d = Coefficient_one());
+                Coefficient_traits::const_reference d = Coefficient_one(),
+                Representation r = default_representation);
+
+  //! Returns the closure point at the origin.
+  static Generator
+  closure_point(Representation r);
+
+  //! Returns the closure point at \p e.
+  static Generator
+  closure_point(const Linear_Expression& e, Representation r);
 
   //! Ordinary copy constructor.
+  //! The representation of the new Generator will be the same as g.
   Generator(const Generator& g);
 
+  //! Copy constructor with given representation.
+  Generator(const Generator& g, Representation r);
+
   //! Copy constructor with given space dimension.
+  //! The representation of the new Generator will be the same as g.
   Generator(const Generator& g, dimension_type space_dim);
+
+  //! Copy constructor with given representation and space dimension.
+  Generator(const Generator& g, dimension_type space_dim, Representation r);
 
   //! Destructor.
   ~Generator();
 
   //! Assignment operator.
   Generator& operator=(const Generator& g);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! \name Flags inspection methods
   //@{
@@ -716,33 +759,79 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! Shorthand for Generator Generator::line(const Linear_Expression& e).
+//! Shorthand for Generator Generator::line(const Linear_Expression& e,
+//!                                         Representation r).
 /*! \relates Generator */
-Generator line(const Linear_Expression& e);
+Generator line(const Linear_Expression& e,
+               Representation r = Generator::default_representation);
 
-//! Shorthand for Generator Generator::ray(const Linear_Expression& e).
+//! Shorthand for Generator Generator::ray(const Linear_Expression& e,
+//!                                        Representation r).
 /*! \relates Generator */
-Generator ray(const Linear_Expression& e);
+Generator ray(const Linear_Expression& e,
+              Representation r = Generator::default_representation);
 
 /*! \brief
   Shorthand for Generator
-  Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+  Generator::point(const Linear_Expression& e,
+                   Coefficient_traits::const_reference d,
+                   Representation r).
 
   \relates Generator
 */
 Generator
 point(const Linear_Expression& e = Linear_Expression::zero(),
-      Coefficient_traits::const_reference d = Coefficient_one());
+      Coefficient_traits::const_reference d = Coefficient_one(),
+      Representation r = Generator::default_representation);
 
 /*! \brief
   Shorthand for Generator
-  Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+  Generator::point(Representation r).
+
+  \relates Generator
+*/
+Generator
+point(Representation r);
+
+/*! \brief
+  Shorthand for Generator
+  Generator::point(const Linear_Expression& e, Representation r).
+
+  \relates Generator
+*/
+Generator
+point(const Linear_Expression& e, Representation r);
+
+/*! \brief
+  Shorthand for Generator
+  Generator::closure_point(const Linear_Expression& e,
+                           Coefficient_traits::const_reference d,
+                           Representation r).
 
   \relates Generator
 */
 Generator
 closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-	      Coefficient_traits::const_reference d = Coefficient_one());
+              Coefficient_traits::const_reference d = Coefficient_one(),
+              Representation r = Generator::default_representation);
+
+/*! \brief
+  Shorthand for Generator
+  Generator::closure_point(Representation r).
+
+  \relates Generator
+*/
+Generator
+closure_point(Representation r);
+
+/*! \brief
+  Shorthand for Generator
+  Generator::closure_point(const Linear_Expression& e, Representation r).
+
+  \relates Generator
+*/
+Generator
+closure_point(const Linear_Expression& e, Representation r);
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
 /*! \relates Generator */

@@ -240,32 +240,64 @@ public:
     STRICT_INEQUALITY
   };
 
-  // TODO: Update the documentation of this method.
-  //! Constructs the \f$0<0\f$ constraint.
-  explicit Constraint();
+  //! The representation used for new Constraints.
+  /*!
+    \note The copy constructor and the copy constructor with specified size
+          use the representation of the original object, so that it is
+          indistinguishable from the original object.
+  */
+  static const Representation default_representation = DENSE;
 
   // TODO: Update the documentation of this method.
   //! Constructs the \f$0<0\f$ constraint.
-  explicit Constraint(dimension_type space_dim);
+  explicit Constraint(Representation r = default_representation);
+
+  // TODO: Update the documentation of this method.
+  //! Constructs the \f$0<0\f$ constraint.
+  explicit Constraint(dimension_type space_dim,
+                      Representation r = default_representation);
 
   //! Constructs the \f$0<0\f$ constraint.
-  Constraint(dimension_type space_dim, Kind kind, Topology topology);
+  Constraint(dimension_type space_dim, Kind kind, Topology topology,
+             Representation r = default_representation);
 
   //! Ordinary copy constructor.
+  /*!
+    \note The new Constraint will have the same representation as `c',
+          not default_representation, so that they are indistinguishable.
+  */
   Constraint(const Constraint& c);
 
   //! Copy constructor with given size.
+  /*!
+    \note The new Constraint will have the same representation as `c',
+          not default_representation, so that they are indistinguishable.
+  */
   Constraint(const Constraint& c, dimension_type space_dim);
-  
+
+  //! Copy constructor with given representation.
+  Constraint(const Constraint& c, Representation r);
+
+  //! Copy constructor with given size and representation.
+  Constraint(const Constraint& c, dimension_type space_dim,
+             Representation r);
+
   //! Copy-constructs from equality congruence \p cg.
   /*!
     \exception std::invalid_argument
     Thrown if \p cg is a proper congruence.
   */
-  explicit Constraint(const Congruence& cg);
+  explicit Constraint(const Congruence& cg,
+                      Representation r = default_representation);
 
   //! Destructor.
   ~Constraint();
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! \name Flags inspection methods
   //@{
@@ -483,15 +515,22 @@ public:
     Builds a constraint of type \p type and topology \p topology,
     stealing the coefficients from \p e.
 
-    If the topology is NNC, the last dimension of \p e is used as the epsilon
-    coefficient.
+    \note The new Constraint will have the same representation as `e'.
   */
   Constraint(Linear_Expression& e, Type type, Topology topology);
 
+  /*! \brief
+    Builds a constraint of kind \p kind and topology \p topology,
+    stealing the coefficients from \p e.
+
+    \note The new Constraint will have the same representation as `e'.
+  */
   Constraint(Linear_Expression& e, Kind kind, Topology topology);
 
-  //! Constructs from a congruence, with specified size.
-  Constraint(const Congruence& cg, dimension_type space_dim);
+  //! Constructs from a congruence, with specified size and (optional)
+  //! representation.
+  Constraint(const Congruence& cg, dimension_type space_dim,
+             Representation r = default_representation);
 
   //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();

@@ -118,8 +118,8 @@ Constraint::set_not_necessarily_closed() {
 }
 
 inline
-Constraint::Constraint(dimension_type space_dim)
-  : expr(),
+Constraint::Constraint(dimension_type space_dim, Representation r)
+  : expr(r),
     wrapped_expr(expr, true),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
@@ -128,8 +128,8 @@ Constraint::Constraint(dimension_type space_dim)
 }
 
 inline
-Constraint::Constraint()
-  : expr(),
+Constraint::Constraint(Representation r)
+  : expr(r),
     wrapped_expr(expr, true),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NOT_NECESSARILY_CLOSED) {
@@ -138,8 +138,9 @@ Constraint::Constraint()
 }
 
 inline
-Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology)
-  : expr(),
+Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology,
+                       Representation r)
+  : expr(r),
     wrapped_expr(expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
     topology_(topology) {
@@ -187,8 +188,26 @@ Constraint::Constraint(const Constraint& c)
 }
 
 inline
+Constraint::Constraint(const Constraint& c, Representation r)
+  : expr(c.expr, r),
+    wrapped_expr(expr, c.is_not_necessarily_closed()),
+    kind_(c.kind_),
+    topology_(c.topology_) {
+  PPL_ASSERT(OK());
+}
+
+inline
 Constraint::Constraint(const Constraint& c, const dimension_type space_dim)
   : expr(c.expr, space_dim),
+    wrapped_expr(expr, c.is_not_necessarily_closed()),
+    kind_(c.kind_), topology_(c.topology_) {
+  PPL_ASSERT(OK());
+}
+
+inline
+Constraint::Constraint(const Constraint& c, const dimension_type space_dim,
+                       Representation r)
+  : expr(c.expr, space_dim, r),
     wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_), topology_(c.topology_) {
   PPL_ASSERT(OK());
@@ -200,6 +219,8 @@ Constraint::~Constraint() {
 
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
+
+  // TODO: Use the copy-and-swap idiom here.
   expr = c.expr;
   kind_ = c.kind_;
   topology_ = c.topology_;
@@ -336,36 +357,49 @@ operator!=(const Constraint& x, const Constraint& y) {
 /*! \relates Constraint */
 inline Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
-  Linear_Expression diff = e1 - e2;
+  Linear_Expression diff(e1, Constraint::default_representation);
+  diff -= e2;
   return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator==(const Variable v1, const Variable v2) {
-  Linear_Expression diff
-    = (v1.space_dimension() < v2.space_dimension()) ? v1-v2 : v2-v1;
-  return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
+operator==(Variable v1, Variable v2) {
+  if (v1.space_dimension() < v2.space_dimension()) {
+    Linear_Expression diff(v1, Constraint::default_representation);
+    diff -= v2;
+    return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
+  } else {
+    Linear_Expression diff(v2, Constraint::default_representation);
+    diff -= v1;
+    return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
+  }
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
-  Linear_Expression diff = e1 - e2;
+  Linear_Expression diff(e1, Constraint::default_representation);
+  diff -= e2;
   return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Variable v1, const Variable v2) {
-  Linear_Expression diff = v1-v2;
+  Linear_Expression diff(Constraint::default_representation);
+  diff.set_space_dimension(std::max(v1.space_dimension(),
+                                    v2.space_dimension()));
+  diff += v1;
+  diff -= v2;
   return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
-  Linear_Expression diff = e1 - e2;
+  Linear_Expression diff(e1, Constraint::default_representation);
+  diff -= e2;
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
   // NOTE: this also enforces normalization.
@@ -378,7 +412,11 @@ operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator>(const Variable v1, const Variable v2) {
-  Linear_Expression diff = v1-v2;
+  Linear_Expression diff(Constraint::default_representation);
+  diff.set_space_dimension(std::max(v1.space_dimension(),
+                                    v2.space_dimension()));
+  diff += v1;
+  diff -= v2;
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
   c.set_epsilon_coefficient(-1);
@@ -390,21 +428,27 @@ operator>(const Variable v1, const Variable v2) {
 /*! \relates Constraint */
 inline Constraint
 operator==(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  Linear_Expression diff = n - e;
+  Linear_Expression diff(e, Constraint::default_representation);
+  neg_assign(diff);
+  diff += n;
   return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  Linear_Expression diff = n - e;
+  Linear_Expression diff(e, Constraint::default_representation);
+  neg_assign(diff);
+  diff += n;
   return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  Linear_Expression diff = n - e;
+  Linear_Expression diff(e, Constraint::default_representation);
+  neg_assign(diff);
+  diff += n;
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
   // NOTE: this also enforces normalization.
@@ -417,21 +461,24 @@ operator>(Coefficient_traits::const_reference n, const Linear_Expression& e) {
 /*! \relates Constraint */
 inline Constraint
 operator==(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  Linear_Expression diff = e - n;
+  Linear_Expression diff(e, Constraint::default_representation);
+  diff -= n;
   return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  Linear_Expression diff = e - n;
+  Linear_Expression diff(e, Constraint::default_representation);
+  diff -= n;
   return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */
 inline Constraint
 operator>(const Linear_Expression& e, Coefficient_traits::const_reference n) {
-  Linear_Expression diff = e - n;
+  Linear_Expression diff(e, Constraint::default_representation);
+  diff -= n;
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
 
   // NOTE: this also enforces normalization.

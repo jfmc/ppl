@@ -111,8 +111,8 @@ Generator::set_not_necessarily_closed() {
 }
 
 inline
-Generator::Generator()
-  : expr(),
+Generator::Generator(Representation r)
+  : expr(r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, false),
     kind_(LINE_OR_EQUALITY),
@@ -120,8 +120,8 @@ Generator::Generator()
 }
 
 inline
-Generator::Generator(dimension_type space_dim)
-  : expr(),
+Generator::Generator(dimension_type space_dim, Representation r)
+  : expr(r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
@@ -130,8 +130,9 @@ Generator::Generator(dimension_type space_dim)
 }
 
 inline
-Generator::Generator(dimension_type space_dim, Kind kind, Topology topology)
-  : expr(),
+Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
+                     Representation r)
+  : expr(r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
@@ -178,8 +179,18 @@ Generator::Generator(const Generator& g)
 }
 
 inline
-Generator::Generator(const Generator& g, dimension_type space_dim)
-  : expr(g.expr, space_dim),
+Generator::Generator(const Generator& g, Representation r)
+  : expr(g.expr, r),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
+    kind_(g.kind_),
+    topology_(g.topology_) {
+}
+
+inline
+Generator::Generator(const Generator& g, dimension_type space_dim,
+                     Representation r)
+  : expr(g.expr, space_dim, r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
@@ -192,6 +203,8 @@ Generator::~Generator() {
 
 inline Generator&
 Generator::operator=(const Generator& g) {
+
+  // TODO: Use the copy-and-swap idiom here.
   expr = g.expr;
   kind_ = g.kind_;
   topology_ = g.topology_;
@@ -357,27 +370,54 @@ Generator::zero_dim_closure_point() {
 
 /*! \relates Generator */
 inline Generator
-line(const Linear_Expression& e) {
-  return Generator::line(e);
+line(const Linear_Expression& e, Representation r) {
+  return Generator::line(e, r);
 }
 
 /*! \relates Generator */
 inline Generator
-ray(const Linear_Expression& e) {
-  return Generator::ray(e);
+ray(const Linear_Expression& e, Representation r) {
+  return Generator::ray(e, r);
 }
 
 /*! \relates Generator */
 inline Generator
-point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
-  return Generator::point(e, d);
+point(const Linear_Expression& e, Coefficient_traits::const_reference d,
+      Representation r) {
+  return Generator::point(e, d, r);
+}
+
+/*! \relates Generator */
+inline Generator
+point(Representation r) {
+  return Generator::point(r);
+}
+
+/*! \relates Generator */
+inline Generator
+point(const Linear_Expression& e, Representation r) {
+  return Generator::point(e, r);
 }
 
 /*! \relates Generator */
 inline Generator
 closure_point(const Linear_Expression& e,
-	      Coefficient_traits::const_reference d) {
-  return Generator::closure_point(e, d);
+              Coefficient_traits::const_reference d,
+              Representation r) {
+  return Generator::closure_point(e, d, r);
+}
+
+/*! \relates Generator */
+inline Generator
+closure_point(Representation r) {
+  return Generator::closure_point(r);
+}
+
+/*! \relates Generator */
+inline Generator
+closure_point(const Linear_Expression& e,
+              Representation r) {
+  return Generator::closure_point(e, r);
 }
 
 /*! \relates Generator */

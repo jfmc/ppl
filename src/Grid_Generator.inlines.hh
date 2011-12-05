@@ -92,8 +92,8 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type)
 }
 
 inline
-Grid_Generator::Grid_Generator()
-  : expr(),
+Grid_Generator::Grid_Generator(Representation r)
+  : expr(r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(LINE_OR_EQUALITY) {
@@ -108,8 +108,17 @@ Grid_Generator::Grid_Generator(const Grid_Generator& g)
 }
 
 inline
-Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind, Topology topology)
-  : expr(),
+Grid_Generator::Grid_Generator(const Grid_Generator& g, Representation r)
+  : expr(g.expr, r),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
+    kind_(g.kind_) {
+}
+
+inline
+Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind,
+                               Topology topology, Representation r)
+  : expr(r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(kind) {
@@ -118,8 +127,18 @@ Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind, Topology top
 }
 
 inline
-Grid_Generator::Grid_Generator(const Grid_Generator& g, dimension_type space_dim)
+Grid_Generator::Grid_Generator(const Grid_Generator& g,
+                               dimension_type space_dim)
   : expr(g.expr, space_dim),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, true),
+    kind_(g.kind_) {
+}
+
+inline
+Grid_Generator::Grid_Generator(const Grid_Generator& g,
+                               dimension_type space_dim, Representation r)
+  : expr(g.expr, space_dim, r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(g.kind_) {
@@ -237,6 +256,8 @@ Grid_Generator::set_is_parameter_or_point() {
 
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
+
+  // TODO: Use the copy-and-swap idiom here.
   expr = g.expr;
   kind_ = g.kind_;
   // No need to modify wrapped_expr here.
@@ -295,22 +316,46 @@ operator!=(const Grid_Generator& x, const Grid_Generator& y) {
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-grid_line(const Linear_Expression& e) {
-  return Grid_Generator::grid_line(e);
+grid_line(const Linear_Expression& e, Representation r) {
+  return Grid_Generator::grid_line(e, r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
 parameter(const Linear_Expression& e,
-	  Coefficient_traits::const_reference d) {
-  return Grid_Generator::parameter(e, d);
+          Coefficient_traits::const_reference d, Representation r) {
+  return Grid_Generator::parameter(e, d, r);
+}
+
+/*! \relates Grid_Generator */
+inline Grid_Generator
+parameter(Representation r) {
+  return Grid_Generator::parameter(r);
+}
+
+/*! \relates Grid_Generator */
+inline Grid_Generator
+parameter(const Linear_Expression& e, Representation r) {
+  return Grid_Generator::parameter(e, r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
 grid_point(const Linear_Expression& e,
-	   Coefficient_traits::const_reference d) {
-  return Grid_Generator::grid_point(e, d);
+           Coefficient_traits::const_reference d, Representation r) {
+  return Grid_Generator::grid_point(e, d, r);
+}
+
+/*! \relates Grid_Generator */
+inline Grid_Generator
+grid_point(Representation r) {
+  return Grid_Generator::grid_point(r);
+}
+
+/*! \relates Grid_Generator */
+inline Grid_Generator
+grid_point(const Linear_Expression& e, Representation r) {
+  return Grid_Generator::grid_point(e, r);
 }
 
 /*! \relates Grid_Generator */

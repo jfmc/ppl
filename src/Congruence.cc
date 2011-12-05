@@ -32,20 +32,21 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Congruence::Congruence(const Constraint& c)
-  : expr(c.expression(), c.space_dimension()),
+PPL::Congruence::Congruence(const Constraint& c, Representation r)
+  : expr(c.expression(), c.space_dimension(), r),
     modulus_(0) {
   if (!c.is_equality())
-    throw_invalid_argument("Congruence(c)",
+    throw_invalid_argument("Congruence(c, r)",
                            "constraint c must be an equality.");
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
-                            dimension_type new_space_dimension)
-  : expr(c.expression(), new_space_dimension),
+                            dimension_type new_space_dimension,
+                            Representation r)
+  : expr(c.expression(), new_space_dimension, r),
     modulus_(0) {
   if (!c.is_equality())
-    throw_invalid_argument("Congruence(c, space_dim)",
+    throw_invalid_argument("Congruence(c, space_dim, r)",
                            "constraint c must be an equality.");
 }
 
@@ -126,13 +127,14 @@ PPL::Congruence
 
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
-			const Linear_Expression& e2) {
+			const Linear_Expression& e2,
+                        Representation r) {
   if (e1.space_dimension() >= e2.space_dimension()) {
-    Linear_Expression e(e1, e1.space_dimension());
+    Linear_Expression e(e1, e1.space_dimension(), r);
     e -= e2;
     return Congruence(e, 1, Recycle_Input());
   } else {
-    Linear_Expression e(e2, e2.space_dimension());
+    Linear_Expression e(e2, e2.space_dimension(), r);
     neg_assign(e);
     e += e1;
     return Congruence(e, 1, Recycle_Input());

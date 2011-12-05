@@ -63,8 +63,8 @@ PPL::Constraint::construct_epsilon_geq_zero() {
   return c;
 }
 
-PPL::Constraint::Constraint(const Congruence& cg)
-  : expr(cg),
+PPL::Constraint::Constraint(const Congruence& cg, Representation r)
+  : expr(cg, r),
     wrapped_expr(expr, false),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
@@ -79,8 +79,9 @@ PPL::Constraint::Constraint(const Congruence& cg)
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
-			    dimension_type space_dim)
-  : expr(cg, space_dim),
+			    dimension_type space_dim,
+                            Representation r)
+  : expr(cg, space_dim, r),
     wrapped_expr(expr, false),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {

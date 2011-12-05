@@ -55,11 +55,12 @@ PPL::Generator::throw_invalid_argument(const char* method,
 
 PPL::Generator
 PPL::Generator::point(const Linear_Expression& e,
-		      Coefficient_traits::const_reference d) {
+                      Coefficient_traits::const_reference d,
+                      Representation r) {
   if (d == 0)
     throw std::invalid_argument("PPL::point(e, d):\n"
-				"d == 0.");
-  Linear_Expression ec = e;
+                                "d == 0.");
+  Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(d);
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
 
@@ -75,12 +76,24 @@ PPL::Generator::point(const Linear_Expression& e,
 }
 
 PPL::Generator
+PPL::Generator::point(const Linear_Expression& e,
+                      Representation r) {
+  return point(e, Coefficient_one(), r);
+}
+
+PPL::Generator
+PPL::Generator::point(Representation r) {
+  return point(Linear_Expression::zero(), Coefficient_one(), r);
+}
+
+PPL::Generator
 PPL::Generator::closure_point(const Linear_Expression& e,
-			      Coefficient_traits::const_reference d) {
+			      Coefficient_traits::const_reference d,
+                              Representation r) {
   if (d == 0)
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
 				"d == 0.");
-  Linear_Expression ec = e;
+  Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(d);
 
   Generator g(ec, Generator::POINT, NOT_NECESSARILY_CLOSED);
@@ -97,13 +110,24 @@ PPL::Generator::closure_point(const Linear_Expression& e,
 }
 
 PPL::Generator
-PPL::Generator::ray(const Linear_Expression& e) {
+PPL::Generator::closure_point(const Linear_Expression& e,
+                              Representation r) {
+  return closure_point(e, Coefficient_one(), r);
+}
+
+PPL::Generator
+PPL::Generator::closure_point(Representation r) {
+  return closure_point(Linear_Expression::zero(), Coefficient_one(), r);
+}
+
+PPL::Generator
+PPL::Generator::ray(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::ray(e):\n"
 				"e == 0, but the origin cannot be a ray.");
 
-  Linear_Expression ec = e;
+  Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
 
@@ -111,13 +135,13 @@ PPL::Generator::ray(const Linear_Expression& e) {
 }
 
 PPL::Generator
-PPL::Generator::line(const Linear_Expression& e) {
+PPL::Generator::line(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::line(e):\n"
 				"e == 0, but the origin cannot be a line.");
 
-  Linear_Expression ec = e;
+  Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
 

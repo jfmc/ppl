@@ -371,6 +371,7 @@ public:
   */
   Linear_Expression(Variable v, Representation r = default_representation);
 
+  // TODO: Consider removing this.
   //! Builds the linear expression corresponding to constraint \p c.
   /*!
     Given the constraint
@@ -385,6 +386,7 @@ public:
   */
   explicit Linear_Expression(const Constraint& c);
 
+  // TODO: Consider removing this.
   //! Builds the linear expression corresponding to constraint \p c.
   /*!
     Given the constraint
@@ -397,6 +399,7 @@ public:
   */
   explicit Linear_Expression(const Constraint& c, Representation r);
 
+  // TODO: Consider removing this.
   /*! \brief
     Builds the linear expression corresponding to generator \p g
     (for points and closure points, the divisor is not copied).
@@ -414,6 +417,7 @@ public:
   */
   explicit Linear_Expression(const Generator& g);
 
+  // TODO: Consider removing this.
   /*! \brief
     Builds the linear expression corresponding to generator \p g
     (for points and closure points, the divisor is not copied).
@@ -429,6 +433,7 @@ public:
   */
   explicit Linear_Expression(const Generator& g, Representation r);
 
+  // TODO: Consider removing this.
   /*! \brief
     Builds the linear expression corresponding to grid generator \p g
     (for points, parameters and lines the divisor is not copied).
@@ -442,6 +447,7 @@ public:
   */
   explicit Linear_Expression(const Grid_Generator& g);
 
+  // TODO: Consider removing this.
   /*! \brief
     Builds the linear expression corresponding to grid generator \p g
     (for points, parameters and lines the divisor is not copied).
@@ -453,6 +459,7 @@ public:
   */
   explicit Linear_Expression(const Grid_Generator& g, Representation r);
 
+  // TODO: Consider removing this.
   //! Builds the linear expression corresponding to congruence \p cg.
   /*!
     Given the congruence
@@ -463,6 +470,7 @@ public:
   */
   explicit Linear_Expression(const Congruence& cg);
 
+  // TODO: Consider removing this.
   //! Builds the linear expression corresponding to congruence \p cg.
   /*!
     Given the congruence

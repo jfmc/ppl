@@ -33,7 +33,8 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Congruence::Congruence(dimension_type n) {
+Congruence::Congruence(dimension_type n, Representation r)
+  : expr(r) {
   expr.set_space_dimension(n);
   PPL_ASSERT(OK());
 }
@@ -44,13 +45,26 @@ Congruence::Congruence(const Congruence& cg)
 }
 
 inline
+Congruence::Congruence(const Congruence& cg, Representation r)
+  : expr(cg.expr, r), modulus_(cg.modulus_) {
+}
+
+inline
 Congruence::Congruence(const Congruence& cg,
-		       dimension_type new_space_dimension)
+                       dimension_type new_space_dimension)
   : expr(cg.expr, new_space_dimension), modulus_(cg.modulus_) {
   PPL_ASSERT(OK());
 }
 
-inline const Linear_Expression&
+inline
+Congruence::Congruence(const Congruence& cg,
+                       dimension_type new_space_dimension,
+                       Representation r)
+  : expr(cg.expr, new_space_dimension, r), modulus_(cg.modulus_) {
+  PPL_ASSERT(OK());
+}
+
+inline const Congruence::Expression&
 Congruence::expression() const {
   return expr;
 }
@@ -105,8 +119,9 @@ Congruence::Congruence(Linear_Expression& le,
 
 inline Congruence
 Congruence::create(const Linear_Expression& e,
-		   Coefficient_traits::const_reference n) {
-  Linear_Expression diff = e;
+		   Coefficient_traits::const_reference n,
+                   Representation r) {
+  Linear_Expression diff(e, r);
   diff -= n;
   Congruence cg(diff, 1, Recycle_Input());
   return cg;
@@ -114,8 +129,9 @@ Congruence::create(const Linear_Expression& e,
 
 inline Congruence
 Congruence::create(Coefficient_traits::const_reference n,
-		   const Linear_Expression& e) {
-  Linear_Expression diff = e;
+		   const Linear_Expression& e,
+                   Representation r) {
+  Linear_Expression diff(e, r);
   diff -= n;
   Congruence cg(diff, 1, Recycle_Input());
   return cg;
@@ -153,6 +169,7 @@ Congruence::zero_dim_false() {
 
 inline Congruence&
 Congruence::operator=(const Congruence& c) {
+  // TODO: Use copy-and-swap here.
   expr = c.expr;
   modulus_ = c.modulus_;
   return *this;
@@ -162,7 +179,8 @@ Congruence::operator=(const Congruence& c) {
 inline Congruence
 operator/(const Constraint& c, Coefficient_traits::const_reference m) {
   Congruence ret(c);
-  return ret / m;
+  ret /= m;
+  return ret;
 }
 
 inline Congruence&
