@@ -64,6 +64,16 @@ Congruence::Congruence(const Congruence& cg,
   PPL_ASSERT(OK());
 }
 
+inline Representation
+Congruence::representation() const {
+  return expr.representation();
+}
+
+inline void
+Congruence::set_representation(Representation r) {
+  expr.set_representation(r);
+}
+
 inline const Congruence::Expression&
 Congruence::expression() const {
   return expr;

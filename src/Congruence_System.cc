@@ -37,9 +37,11 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
+PPL::Congruence_System::Congruence_System(const Constraint_System& cs,
+                                          Representation r)
   : rows(),
-    num_columns_(cs.space_dimension() + 2) {
+    num_columns_(cs.space_dimension() + 2),
+    representation_(r) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
@@ -105,7 +107,9 @@ void
 PPL::Congruence_System::insert_verbatim(Congruence& cg, Recycle_Input) {
   // TODO: Remove this.
   PPL_ASSERT(cg.OK());
-  
+
+  cg.set_representation(representation());
+
   if (cg.space_dimension() >= space_dimension())
     set_space_dimension(cg.space_dimension());
   else
@@ -122,7 +126,7 @@ void
 PPL::Congruence_System::insert(const Constraint& c) {
   if (c.space_dimension() > space_dimension())
     set_space_dimension(c.space_dimension());
-  Congruence cg(c, space_dimension());
+  Congruence cg(c, space_dimension(), representation());
   cg.strong_normalize();
   rows.resize(num_rows() + 1);
 
@@ -140,6 +144,7 @@ PPL::Congruence_System::insert(Congruence_System& cgs, Recycle_Input) {
   rows.resize(old_num_rows + cgs_num_rows);
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
     cgs.rows[i].set_space_dimension(space_dimension());
+    cgs.rows[i].set_representation(representation());
     swap(cgs.rows[i], rows[old_num_rows + i]);
   }
   cgs.clear();
@@ -162,7 +167,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
   // Copy the rows of `y', with the new space dimension.
   for (dimension_type i = y_num_rows; i-- > 0; ) {
-    Congruence copy(y[i], space_dimension());
+    Congruence copy(y[i], space_dimension(), representation());
     swap(copy, x.rows[x_num_rows+i]);
   }
   PPL_ASSERT(OK());
@@ -313,8 +318,9 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   const Congruence_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns
-    << std::endl;
+  s << x_num_rows << " x " << x_num_columns << " ";
+  Parma_Polyhedra_Library::ascii_dump(s, representation());
+  s << std::endl;
   if (x_num_rows && x_num_columns)
     for (dimension_type i = 0; i < x_num_rows; ++i)
       x[i].ascii_dump(s);
@@ -335,6 +341,9 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
     return false;
   clear();
   num_columns_ = num_columns;
+
+  if (!Parma_Polyhedra_Library::ascii_load(s, representation_))
+    return false;
 
   Congruence c;
   for (dimension_type i = 0; i < num_rows; ++i) {
@@ -366,10 +375,14 @@ PPL::Congruence_System::finalize() {
 
 bool
 PPL::Congruence_System::OK() const {
-  // All rows must have space dimension `space_dimension()'.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  // All rows must have space dimension `space_dimension()' and representation
+  // `representation()'.
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     if (rows[i].space_dimension() != space_dimension())
       return false;
+    if (rows[i].representation() != representation())
+      return false;
+  }
 
   if (num_rows() != 0) {
     if (num_columns() < 2) {
@@ -439,7 +452,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   const dimension_type col = num_columns() - 2;
   // Set the space dimension and the diagonal element of each added row.
   for (dimension_type row = dims; row-- > 0; ) {
-    Linear_Expression expr;
+    Linear_Expression expr(representation());
     expr.set_space_dimension(space_dimension());
     PPL_ASSERT(col >= row + 1);
     expr += Variable(col - row - 1);
@@ -471,6 +484,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   for (dimension_type i = added_rows; i-- > 0; ) {
     Congruence& cg_old = cgs.rows[i];
     Congruence& cg_new = rows[old_num_rows + i];
+    cg_old.set_representation(representation());
     cg_old.shift_coefficients(old_space_dim, 0);
     swap(cg_old, cg_new);
   }

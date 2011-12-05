@@ -96,11 +96,14 @@ public:
 
   typedef Congruence row_type;
 
+  static const Representation default_representation = DENSE;
+
   //! Default constructor: builds an empty system of congruences.
-  Congruence_System();
+  Congruence_System(Representation r = default_representation);
 
   //! Builds the singleton system containing only congruence \p cg.
-  explicit Congruence_System(const Congruence& cg);
+  explicit Congruence_System(const Congruence& cg,
+                             Representation r = default_representation);
 
   /*! \brief
     If \p c represents the constraint \f$ e_1 = e_2 \f$, builds the
@@ -110,19 +113,34 @@ public:
     \exception std::invalid_argument
     Thrown if \p c is not an equality constraint.
   */
-  explicit Congruence_System(const Constraint& c);
+  explicit Congruence_System(const Constraint& c,
+                             Representation r = default_representation);
 
   //! Builds a system containing copies of any equalities in \p cs.
-  explicit Congruence_System(const Constraint_System& cs);
+  explicit Congruence_System(const Constraint_System& cs,
+                             Representation r = default_representation);
 
   //! Ordinary copy constructor.
+  /*!
+    \note The new Congruence_System will have the same Representation as `cgs'
+          so that it's indistinguishable from `cgs'.
+  */
   Congruence_System(const Congruence_System& cgs);
+
+  //! Copy constructor with specified representation.
+  Congruence_System(const Congruence_System& cgs, Representation r);
 
   //! Destructor.
   ~Congruence_System();
 
   //! Assignment operator.
   Congruence_System& operator=(const Congruence_System& cgs);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! Returns the maximum space dimension a Congruence_System can handle.
   static dimension_type max_space_dimension();
@@ -380,7 +398,8 @@ public:
 
   // TODO: Consider making this private.
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
-  explicit Congruence_System(dimension_type d);
+  explicit Congruence_System(dimension_type d,
+                             Representation r = default_representation);
 
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
@@ -503,6 +522,8 @@ private:
   Swapping_Vector<Congruence> rows;
   
   dimension_type num_columns_;
+
+  Representation representation_;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if any of the dimensions in

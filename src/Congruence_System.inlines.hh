@@ -90,35 +90,51 @@ Congruence_System::insert(Congruence& cg, Recycle_Input) {
 }
 
 inline
-Congruence_System::Congruence_System()
+Congruence_System::Congruence_System(Representation r)
   : rows(),
-    num_columns_(2) {
+    num_columns_(2),
+    representation_(r) {
 }
 
 inline
-Congruence_System::Congruence_System(const Congruence& cg)
+Congruence_System::Congruence_System(const Congruence& cg, Representation r)
   : rows(),
-    num_columns_(2) {
+    num_columns_(2),
+    representation_(r) {
   insert(cg);
 }
 
 inline
-Congruence_System::Congruence_System(const Constraint& c)
+Congruence_System::Congruence_System(const Constraint& c, Representation r)
   : rows(),
-    num_columns_(2) {
+    num_columns_(2),
+    representation_(r) {
   insert(c);
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence_System& cs)
   : rows(cs.rows),
-    num_columns_(cs.num_columns_) {
+    num_columns_(cs.num_columns_),
+    representation_(cs.representation_) {
 }
 
 inline
-Congruence_System::Congruence_System(const dimension_type d)
+Congruence_System::Congruence_System(const Congruence_System& cs, Representation r)
+  : rows(cs.rows),
+    num_columns_(cs.num_columns_),
+    representation_(r) {
+  if (cs.representation() != r) {
+    for (dimension_type i = 0; i < num_rows(); i++)
+      rows[i].set_representation(representation());
+  }
+}
+
+inline
+Congruence_System::Congruence_System(const dimension_type d, Representation r)
   : rows(),
-    num_columns_(d + 2) {
+    num_columns_(d + 2),
+    representation_(r) {
 }
 
 inline
@@ -127,9 +143,27 @@ Congruence_System::~Congruence_System() {
 
 inline Congruence_System&
 Congruence_System::operator=(const Congruence_System& y) {
+
+  // TODO: Use the copy-and-swap idiom here.
   rows = y.rows;
   num_columns_ = y.num_columns_;
+  representation_ = y.representation_;
   return *this;
+}
+
+inline Representation
+Congruence_System::representation() const {
+  return representation_;
+}
+
+inline void
+Congruence_System::set_representation(Representation r) {
+  if (representation_ == r)
+    return;
+  representation_ = r;
+  for (dimension_type i = 0; i < num_rows(); i++)
+    rows[i].set_representation(r);
+  PPL_ASSERT(OK());
 }
 
 inline dimension_type
@@ -249,6 +283,9 @@ Congruence_System::m_swap(Congruence_System& y) {
   using std::swap;
   swap(rows, y.rows);
   swap(num_columns_, y.num_columns_);
+  swap(representation_, y.representation_);
+  PPL_ASSERT(OK());
+  PPL_ASSERT(y.OK());
 }
 
 inline memory_size_type
