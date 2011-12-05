@@ -235,6 +235,16 @@ Constraint::expression() const {
   return wrapped_expr;
 }
 
+inline Representation
+Constraint::representation() const {
+  return expr.representation();
+}
+
+inline void
+Constraint::set_representation(Representation r) {
+  expr.set_representation(r);
+}
+
 inline dimension_type
 Constraint::max_space_dimension() {
   return Linear_Expression::max_space_dimension();

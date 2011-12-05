@@ -217,6 +217,16 @@ Generator::expression() const {
   return wrapped_expr;
 }
 
+inline Representation
+Generator::representation() const {
+  return expr.representation();
+}
+
+inline void
+Generator::set_representation(Representation r) {
+  expr.set_representation(r);
+}
+
 inline dimension_type
 Generator::max_space_dimension() {
   return Linear_Expression::max_space_dimension();

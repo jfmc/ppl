@@ -153,6 +153,16 @@ Grid_Generator::expression() const {
   return wrapped_expr;
 }
 
+inline Representation
+Grid_Generator::representation() const {
+  return expr.representation();
+}
+
+inline void
+Grid_Generator::set_representation(Representation r) {
+  expr.set_representation(r);
+}
+
 inline dimension_type
 Grid_Generator::max_space_dimension() {
   return Linear_Expression::max_space_dimension() - 1;
