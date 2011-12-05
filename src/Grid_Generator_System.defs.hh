@@ -514,21 +514,6 @@ private:
   */
   void remove_invalid_lines_and_parameters();
 
-  //! Resizes the system without worrying about the old contents.
-  /*!
-    \param new_num_rows
-    The number of rows of the resized system;
-
-    \param new_space_dim
-    The number of space dimensions of the resized system.
-
-    The system is expanded to the specified dimensions avoiding
-    reallocation whenever possible.
-    The contents of the original system is lost.
-  */
-  void resize_no_copy(dimension_type new_num_rows,
-                      dimension_type new_space_dim);
-
   // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.
   bool OK() const;

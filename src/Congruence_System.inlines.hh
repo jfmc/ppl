@@ -176,15 +176,6 @@ Congruence_System::clear() {
   space_dimension_ = 0;
 }
 
-inline void
-Congruence_System::resize_no_copy(const dimension_type new_num_rows,
-				  const dimension_type new_space_dim) {
-  rows.resize(new_num_rows);
-  for (dimension_type i = new_num_rows; i-- > 0; )
-    rows[i].set_space_dimension(new_space_dim);
-  space_dimension_ = new_space_dim;
-}
-
 inline const Congruence_System&
 Congruence_System::zero_dim_empty() {
   PPL_ASSERT(zero_dim_empty_p != 0);

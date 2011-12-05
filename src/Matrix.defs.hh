@@ -143,20 +143,6 @@ public:
   */
   void resize(dimension_type num_rows, dimension_type num_columns);
 
-  //! Resizes the matrix without worrying about the old contents.
-  /*!
-    \param new_n_rows
-    The number of rows of the resized matrix;
-
-    \param new_n_columns
-    The number of columns of the resized matrix.
-
-    The matrix is expanded to the specified dimensions avoiding
-    reallocation whenever possible.
-    The contents of the original matrix is lost.
-  */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
-
   //! Adds \p n rows and \p m columns of zeroes to the matrix.
   /*!
     \param n

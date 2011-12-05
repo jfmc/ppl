@@ -416,22 +416,6 @@ public:
   */
   dimension_type num_lines_or_equalities() const;
 
-  // TODO: Consider removing this.
-  //! Resizes the system without worrying about the old contents.
-  /*!
-    \param new_n_rows
-    The number of rows of the resized system;
-
-    \param new_space_dim
-    The number of space dimensions of the resized system.
-
-    The system is expanded to the specified dimensions avoiding
-    reallocation whenever possible.
-    The contents of the original system is lost.
-  */
-  void resize_no_copy(dimension_type new_n_rows,
-                      dimension_type new_space_dim);
-
   // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing its i-th row.
   /*!

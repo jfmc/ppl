@@ -89,15 +89,6 @@ Matrix<Row>::reserve_rows(dimension_type requested_capacity) {
 
 template <typename Row>
 inline void
-Matrix<Row>::resize_no_copy(dimension_type new_n_rows,
-                            dimension_type new_n_columns) {
-  // FIXME: Optimize this method.
-  clear();
-  resize(new_n_rows, new_n_columns);
-}
-
-template <typename Row>
-inline void
 Matrix<Row>::add_zero_rows_and_columns(dimension_type n, dimension_type m) {
   resize(num_rows() + n, num_columns() + m);
 }

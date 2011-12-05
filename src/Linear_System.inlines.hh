@@ -191,31 +191,6 @@ Linear_System<Row>::clear() {
 
 template <typename Row>
 inline void
-Linear_System<Row>::resize_no_copy(const dimension_type new_n_rows,
-                                   const dimension_type new_space_dim) {
-  // TODO: Check if a rows.resize_no_copy() nethod could be more efficient.
-  space_dimension_ = new_space_dim;
-  for (dimension_type i = std::min(rows.size(), new_n_rows); i-- > 0; )
-    rows[i].set_space_dimension(new_space_dim);
-  const dimension_type old_n_rows = rows.size();
-  rows.resize(new_n_rows);
-  // NOTE: new_n_rows may be lower than old_n_rows, but this code works
-  // nevertheless.
-  for (dimension_type i = old_n_rows; i < new_n_rows; ++i) {
-    rows[i].set_topology(row_topology);
-    rows[i].set_space_dimension(new_space_dim);
-  }
-  // Even though `*this' may happen to keep its sortedness, we believe
-  // that checking such a property is not worth the effort.  In fact,
-  // it is very likely that the system will be overwritten as soon as
-  // we return.
-  sorted = false;
-  unset_pending_rows();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
 Linear_System<Row>::mark_as_necessarily_closed() {
   PPL_ASSERT(topology() == NOT_NECESSARILY_CLOSED);
   row_topology = NECESSARILY_CLOSED;

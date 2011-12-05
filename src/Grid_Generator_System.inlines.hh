@@ -44,12 +44,6 @@ Grid_Generator_System::set_index_first_pending_row(const dimension_type i) {
 }
 
 inline void
-Grid_Generator_System::resize_no_copy(const dimension_type new_num_rows,
-                                      const dimension_type new_space_dim) {
-  sys.resize_no_copy(new_num_rows, new_space_dim);
-}
-
-inline void
 Grid_Generator_System
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   return sys.permute_space_dimensions(cycle);

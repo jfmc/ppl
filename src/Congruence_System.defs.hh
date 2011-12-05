@@ -493,22 +493,6 @@ public:
   void release_rows(Swapping_Vector<Congruence>& v);
   void take_ownership_of_rows(Swapping_Vector<Congruence>& v);
 
-  // TODO: Remove this.
-  //! Resizes the system without worrying about the old contents.
-  /*!
-    \param new_num_rows
-    The number of rows of the resized system;
-
-    \param new_num_columns
-    The number of columns of the resized system.
-
-    The system is expanded to the specified dimensions avoiding
-    reallocation whenever possible.
-    The contents of the original system is lost.
-  */
-  void resize_no_copy(dimension_type new_num_rows,
-                      dimension_type new_space_dim);
-
 private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
