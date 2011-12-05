@@ -79,6 +79,7 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
       tmp.resize(tmp.size() + 1);
       swap(tmp.back(), x.rows[xi++]);
+      tmp.back().set_representation(representation());
       if (comp == 0)
 	// A duplicate element.
 	++yi;
@@ -86,7 +87,7 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     else {
       // (comp > 0)
       tmp.resize(tmp.size() + 1);
-      Row copy = y[yi++];
+      Row copy(y[yi++], representation());
       // TODO: Set the space dimension while constructing the copy, to
       // increase efficiency.
       copy.set_space_dimension(space_dimension());
@@ -98,11 +99,12 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     while (xi < x_num_rows) {
       tmp.resize(tmp.size() + 1);
       swap(tmp.back(), x.rows[xi++]);
+      tmp.back().set_representation(representation());
     }
   else
     while (yi < y_num_rows) {
       tmp.resize(tmp.size() + 1);
-      Row copy = y[yi++];
+      Row copy(y[yi++], representation());
       // TODO: Set the space dimension while constructing the copy, to
       // increase efficiency.
       copy.set_space_dimension(space_dimension());
@@ -128,8 +130,9 @@ Linear_System<Row>::ascii_dump(std::ostream& s) const {
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
-    << num_rows() << " x " << space_dimension() << " "
-    << (sorted ? "(sorted)" : "(not_sorted)")
+    << num_rows() << " x " << space_dimension() << " ";
+  Parma_Polyhedra_Library::ascii_dump(s, representation());
+  s << " " << (sorted ? "(sorted)" : "(not_sorted)")
     << "\n"
     << "index_first_pending " << first_pending_row()
     << "\n";
@@ -172,6 +175,9 @@ Linear_System<Row>::ascii_load(std::istream& s) {
 
   space_dimension_ = space_dims;
 
+  if (!Parma_Polyhedra_Library::ascii_load(s, representation_))
+    return false;
+
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
     return false;
   bool sortedness = (str == "(sorted)");
@@ -198,7 +204,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
 template <typename Row>
 void
 Linear_System<Row>::insert(const Row& r) {
-  Row tmp = r;
+  Row tmp(r, representation());
   insert(tmp, Recycle_Input());
 }
 
@@ -248,7 +254,7 @@ Linear_System<Row>::insert_no_ok(Row& r, Recycle_Input) {
 template <typename Row>
 void
 Linear_System<Row>::insert_pending(const Row& r) {
-  Row tmp = r;
+  Row tmp(r, representation());
   insert_pending(tmp, Recycle_Input());
 }
 
@@ -278,7 +284,7 @@ Linear_System<Row>::insert_pending(Row& r, Recycle_Input) {
 template <typename Row>
 void
 Linear_System<Row>::insert_pending(const Linear_System& y) {
-  Linear_System tmp(y, With_Pending());
+  Linear_System tmp(y, representation(), With_Pending());
   insert_pending(tmp, Recycle_Input());
 }
 
@@ -302,7 +308,7 @@ Linear_System<Row>::insert_pending(Linear_System& y, Recycle_Input) {
 template <typename Row>
 void
 Linear_System<Row>::insert(const Linear_System& y) {
-  Linear_System tmp(y, With_Pending());
+  Linear_System tmp(y, representation(), With_Pending());
   insert(tmp, Recycle_Input());
 }
 
@@ -431,7 +437,7 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
 template <typename Row>
 void
 Linear_System<Row>::add_row(const Row& r) {
-  Row tmp = r;
+  Row tmp(r, representation());
   add_row(tmp, Recycle_Input());
 }
 
@@ -484,6 +490,7 @@ Linear_System<Row>::add_pending_row_no_ok(Row& r, Recycle_Input) {
 
   rows.resize(rows.size() + 1);
   r.set_space_dimension_no_ok(space_dimension());
+  r.set_representation(representation());
   swap(rows.back(), r);
 }
 
@@ -497,7 +504,7 @@ Linear_System<Row>::add_pending_row(Row& r, Recycle_Input) {
 template <typename Row>
 void
 Linear_System<Row>::add_pending_row(const Row& r) {
-  Row tmp = r;
+  Row tmp(r, representation());
   add_pending_row(tmp, Recycle_Input());
 }
 
@@ -805,7 +812,7 @@ Linear_System<Row>
     // matrix.
     if (Variable(c).space_dimension() <= space_dimension()) {
       // Variable(c) is a user variable.
-      Linear_Expression le;
+      Linear_Expression le(representation());
       le.set_space_dimension(space_dimension());
       le += Variable(c);
       Row r(le, Row::LINE_OR_EQUALITY, row_topology);
@@ -813,7 +820,7 @@ Linear_System<Row>
     } else {
       // Variable(c) is the epsilon dimension.
       PPL_ASSERT(row_topology == NOT_NECESSARILY_CLOSED);
-      Linear_Expression le = Variable(c);
+      Linear_Expression le(Variable(c), representation());
       Row r(le, Row::LINE_OR_EQUALITY, NECESSARILY_CLOSED);
       r.mark_as_not_necessarily_closed();
       swap(r, rows[i]);
@@ -929,7 +936,14 @@ Linear_System<Row>::OK() const {
   using std::cerr;
 #endif
 
-  for (dimension_type i = rows.size(); i-- > 0; )
+  for (dimension_type i = rows.size(); i-- > 0; ) {
+    if (rows[i].representation() != representation()) {
+#ifndef NDEBUG
+      cerr << "Linear_System has a row with the wrong representation!"
+           << endl;
+#endif
+      return false;
+    }
     if (rows[i].space_dimension() != space_dimension()) {
 #ifndef NDEBUG
       cerr << "Linear_System has a row with the wrong number of space dimensions!"
@@ -937,6 +951,7 @@ Linear_System<Row>::OK() const {
 #endif
       return false;
     }
+  }
 
   for (dimension_type i = rows.size(); i-- > 0; )
     if (rows[i].topology() != topology()) {

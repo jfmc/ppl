@@ -33,13 +33,13 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Generator_System::Generator_System()
-  : sys(NECESSARILY_CLOSED) {
+Generator_System::Generator_System(Representation r)
+  : sys(NECESSARILY_CLOSED, r) {
 }
 
 inline
-Generator_System::Generator_System(const Generator& g)
-  : sys(g.topology()) {
+Generator_System::Generator_System(const Generator& g, Representation r)
+  : sys(g.topology(), r) {
   sys.insert(g);
 }
 
@@ -49,14 +49,21 @@ Generator_System::Generator_System(const Generator_System& gs)
 }
 
 inline
-Generator_System::Generator_System(const Topology topol)
-  : sys(topol) {
+Generator_System::Generator_System(const Generator_System& gs,
+                                   Representation r)
+  : sys(gs.sys, r) {
+}
+
+inline
+Generator_System::Generator_System(const Topology topol, Representation r)
+  : sys(topol, r) {
 }
 
 inline
 Generator_System::Generator_System(const Topology topol,
-				   const dimension_type space_dim)
-  : sys(topol, space_dim) {
+				   const dimension_type space_dim,
+                                   Representation r)
+  : sys(topol, space_dim, r) {
 }
 
 inline
@@ -67,6 +74,16 @@ inline Generator_System&
 Generator_System::operator=(const Generator_System& y) {
   sys = y.sys;
   return *this;
+}
+
+inline Representation
+Generator_System::representation() const {
+  return sys.representation();
+}
+
+inline void
+Generator_System::set_representation(Representation r) {
+  sys.set_representation(r);
 }
 
 inline dimension_type

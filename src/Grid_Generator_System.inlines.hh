@@ -55,8 +55,8 @@ Grid_Generator_System::is_equal_to(const Grid_Generator_System& y) const {
 }
 
 inline
-Grid_Generator_System::Grid_Generator_System()
-  : sys(NECESSARILY_CLOSED) {
+Grid_Generator_System::Grid_Generator_System(Representation r)
+  : sys(NECESSARILY_CLOSED, r) {
   sys.set_sorted(false);
   PPL_ASSERT(space_dimension() == 0);
 }
@@ -67,16 +67,24 @@ Grid_Generator_System::Grid_Generator_System(const Grid_Generator_System& gs)
 }
 
 inline
-Grid_Generator_System::Grid_Generator_System(dimension_type dim)
-  : sys(NECESSARILY_CLOSED) {
+Grid_Generator_System::Grid_Generator_System(const Grid_Generator_System& gs,
+                                             Representation r)
+  : sys(gs.sys, r) {
+}
+
+inline
+Grid_Generator_System::Grid_Generator_System(dimension_type dim,
+                                             Representation r)
+  : sys(NECESSARILY_CLOSED, r) {
   sys.set_space_dimension(dim);
   sys.set_sorted(false);
   PPL_ASSERT(space_dimension() == dim);
 }
 
 inline
-Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
-  : sys(NECESSARILY_CLOSED) {
+Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g,
+                                             Representation r)
+  : sys(NECESSARILY_CLOSED, r) {
   sys.insert(g);
   sys.set_sorted(false);
 }
@@ -89,6 +97,16 @@ inline Grid_Generator_System&
 Grid_Generator_System::operator=(const Grid_Generator_System& y) {
   sys = y.sys;
   return *this;
+}
+
+inline Representation
+Grid_Generator_System::representation() const {
+  return sys.representation();
+}
+
+inline void
+Grid_Generator_System::set_representation(Representation r) {
+  sys.set_representation(r);
 }
 
 inline dimension_type

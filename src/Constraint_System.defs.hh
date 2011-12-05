@@ -132,26 +132,44 @@ class Parma_Polyhedra_Library::Constraint_System {
 public:
   typedef Constraint row_type;
 
+  static const Representation default_representation = DENSE;
+
   //! Default constructor: builds an empty system of constraints.
-  Constraint_System();
+  explicit Constraint_System(Representation r = default_representation);
 
   //! Builds the singleton system containing only constraint \p c.
-  explicit Constraint_System(const Constraint& c);
+  explicit Constraint_System(const Constraint& c,
+                             Representation r = default_representation);
 
   //! Builds a system containing copies of any equalities in \p cgs.
-  explicit Constraint_System(const Congruence_System& cgs);
+  explicit Constraint_System(const Congruence_System& cgs,
+                             Representation r = default_representation);
 
   //! Ordinary copy constructor.
+  /*!
+    \note The copy will have the same representation as `cs', to make it
+          indistinguishable from `cs'.
+  */
   Constraint_System(const Constraint_System& cs);
 
+  //! Copy constructor with specified representation.
+  Constraint_System(const Constraint_System& cs, Representation r);
+
   //! Builds an empty system of constraints having the specified topology.
-  explicit Constraint_System(Topology topol);
+  explicit Constraint_System(Topology topol,
+                             Representation r = default_representation);
 
   //! Destructor.
   ~Constraint_System();
 
   //! Assignment operator.
   Constraint_System& operator=(const Constraint_System& y);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! Returns the maximum space dimension a Constraint_System can handle.
   static dimension_type max_space_dimension();
@@ -609,7 +627,8 @@ private:
     \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE> the \f$\epsilon\f$
     dimension is added.
   */
-  Constraint_System(Topology topol, dimension_type space_dim);
+  Constraint_System(Topology topol, dimension_type space_dim,
+                    Representation r = default_representation);
 
   // FIXME: This is useless: it always returns true.
   //! Checks if all the invariants are satisfied.

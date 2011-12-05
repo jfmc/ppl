@@ -33,13 +33,13 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Constraint_System::Constraint_System()
-  : sys(NECESSARILY_CLOSED) {
+Constraint_System::Constraint_System(Representation r)
+  : sys(NECESSARILY_CLOSED, r) {
 }
 
 inline
-Constraint_System::Constraint_System(const Constraint& c)
-  : sys(c.topology()) {
+Constraint_System::Constraint_System(const Constraint& c, Representation r)
+  : sys(c.topology(), r) {
   sys.insert(c);
 }
 
@@ -49,14 +49,21 @@ Constraint_System::Constraint_System(const Constraint_System& cs)
 }
 
 inline
-Constraint_System::Constraint_System(const Topology topol)
-  : sys(topol) {
+Constraint_System::Constraint_System(const Constraint_System& cs,
+                                     Representation r)
+  : sys(cs.sys, r) {
+}
+
+inline
+Constraint_System::Constraint_System(const Topology topol, Representation r)
+  : sys(topol, r) {
 }
 
 inline
 Constraint_System::Constraint_System(const Topology topol,
-				     const dimension_type space_dim)
-  : sys(topol, space_dim) {
+				     const dimension_type space_dim,
+                                     Representation r)
+  : sys(topol, space_dim, r) {
 }
 
 inline
@@ -72,6 +79,16 @@ Constraint_System::operator=(const Constraint_System& y) {
 inline const Constraint&
 Constraint_System::operator[](const dimension_type k) const {
   return static_cast<const Constraint&>(sys[k]);
+}
+
+inline Representation
+Constraint_System::representation() const {
+  return sys.representation();
+}
+
+inline void
+Constraint_System::set_representation(Representation r) {
+  sys.set_representation(r);
 }
 
 inline dimension_type

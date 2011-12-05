@@ -63,12 +63,12 @@ public:
   // NOTE: `iterator' is actually a const_iterator.
   typedef typename Swapping_Vector<Row>::const_iterator iterator;
   typedef typename Swapping_Vector<Row>::const_iterator const_iterator;
-  
+
   //! Builds an empty linear system with specified topology.
   /*!
     Rows size and capacity are initialized to \f$0\f$.
   */
-  Linear_System(Topology topol);
+  Linear_System(Topology topol, Representation r);
 
   //! Builds a system with specified topology and dimensions.
   /*!
@@ -81,7 +81,7 @@ public:
     Creates a \p n_rows \f$\times\f$ \p space_dim system whose
     coefficients are all zero and with the given topology.
   */
-  Linear_System(Topology topol, dimension_type space_dim);
+  Linear_System(Topology topol, dimension_type space_dim, Representation r);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A tag class.
@@ -97,8 +97,15 @@ public:
   //! Copy constructor: pending rows are transformed into non-pending ones.
   Linear_System(const Linear_System& y);
 
+  //! Copy constructor with specified representation. Pending rows are
+  //! transformed into non-pending ones.
+  Linear_System(const Linear_System& y, Representation r);
+
   //! Full copy constructor: pending rows are copied as pending.
   Linear_System(const Linear_System& y, With_Pending);
+
+  //! Full copy constructor: pending rows are copied as pending.
+  Linear_System(const Linear_System& y, Representation r, With_Pending);
 
   //! Assignment operator: pending rows are transformed into non-pending ones.
   Linear_System& operator=(const Linear_System& y);
@@ -108,6 +115,12 @@ public:
 
   //! Swaps \p *this with \p y.
   void m_swap(Linear_System& y);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! Returns the maximum space dimension a Linear_System can handle.
   static dimension_type max_space_dimension();
@@ -529,6 +542,8 @@ private:
     If <CODE>false</CODE> may not be sorted.
   */
   bool sorted;
+
+  Representation representation_;
 
   //! Ordering predicate (used when implementing the sort algorithm).
   struct Row_Less_Than {

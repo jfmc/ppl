@@ -175,23 +175,37 @@ class Parma_Polyhedra_Library::Grid_Generator_System {
 public:
   typedef Grid_Generator row_type;
 
+  static const Representation default_representation = DENSE;
+
   //! Default constructor: builds an empty system of generators.
-  Grid_Generator_System();
+  explicit Grid_Generator_System(Representation r = DENSE);
 
   //! Builds the singleton system containing only generator \p g.
-  explicit Grid_Generator_System(const Grid_Generator& g);
+  explicit Grid_Generator_System(const Grid_Generator& g,
+                                 Representation r = DENSE);
 
   //! Builds an empty system of generators of dimension \p dim.
-  explicit Grid_Generator_System(dimension_type dim);
+  explicit Grid_Generator_System(dimension_type dim,
+                                 Representation r = DENSE);
 
   //! Ordinary copy constructor.
+  //! The new Grid_Generator_System will have the same representation as `gs'.
   Grid_Generator_System(const Grid_Generator_System& gs);
+
+  //! Copy constructor with specified representation.
+  Grid_Generator_System(const Grid_Generator_System& gs, Representation r);
 
   //! Destructor.
   ~Grid_Generator_System();
 
   //! Assignment operator.
   Grid_Generator_System& operator=(const Grid_Generator_System& y);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! Returns the maximum space dimension a Grid_Generator_System can handle.
   static dimension_type max_space_dimension();

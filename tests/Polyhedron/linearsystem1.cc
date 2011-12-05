@@ -47,7 +47,7 @@ test01() {
 #define ROWS 7
 #define COLS 3
 
-  Linear_System<Constraint> ls1(NOT_NECESSARILY_CLOSED);
+  Linear_System<Constraint> ls1(NOT_NECESSARILY_CLOSED, DENSE);
   for (dimension_type rowi = 0; rowi < ROWS; ++rowi) {
     Linear_Expression e;
     e.set_space_dimension(COLS - 1);
@@ -86,7 +86,7 @@ test01() {
     close(f);
 
     open(f, data_file, ios_base::in);
-    Linear_System<Constraint> ls2(NECESSARILY_CLOSED);
+    Linear_System<Constraint> ls2(NECESSARILY_CLOSED, DENSE);
     ls2.ascii_load(f);
     close(f);
 

@@ -67,12 +67,13 @@ Linear_System<Row>::set_sorted(const bool b) {
 
 template <typename Row>
 inline
-Linear_System<Row>::Linear_System(Topology topol)
+Linear_System<Row>::Linear_System(Topology topol, Representation r)
   : rows(),
     space_dimension_(0),
     row_topology(topol),
     index_first_pending(0),
-    sorted(true) {
+    sorted(true),
+    representation_(r) {
 
   PPL_ASSERT(OK());
 }
@@ -80,12 +81,14 @@ Linear_System<Row>::Linear_System(Topology topol)
 template <typename Row>
 inline
 Linear_System<Row>::Linear_System(Topology topol,
-                                  dimension_type space_dim)
+                                  dimension_type space_dim,
+                                  Representation r)
   : rows(),
     space_dimension_(0),
     row_topology(topol),
     index_first_pending(0),
-    sorted(true) {
+    sorted(true),
+    representation_(r) {
   set_space_dimension(space_dim);
   PPL_ASSERT(OK());
 }
@@ -122,7 +125,27 @@ inline
 Linear_System<Row>::Linear_System(const Linear_System& y)
   : rows(y.rows),
     space_dimension_(y.space_dimension_),
-    row_topology(y.row_topology) {
+    row_topology(y.row_topology),
+    representation_(y.representation_) {
+  // Previously pending rows may violate sortedness.
+  sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
+  unset_pending_rows();
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline
+Linear_System<Row>::Linear_System(const Linear_System& y, Representation r)
+  : rows(),
+    space_dimension_(y.space_dimension_),
+    row_topology(y.row_topology),
+    representation_(r) {
+  rows.resize(y.num_rows());
+  for (dimension_type i = 0; i < y.num_rows(); i++) {
+    // Create the copies with the right representation.
+    Row row(y.rows[i], r);
+    swap(rows[i], row);
+  }
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
   unset_pending_rows();
@@ -136,18 +159,40 @@ Linear_System<Row>::Linear_System(const Linear_System& y, With_Pending)
     space_dimension_(y.space_dimension_),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
-    sorted(y.sorted) {
+    sorted(y.sorted),
+    representation_(y.representation_) {
+  PPL_ASSERT(OK());
+}
+
+template <typename Row>
+inline
+Linear_System<Row>::Linear_System(const Linear_System& y, Representation r,
+                                  With_Pending)
+  : rows(),
+    space_dimension_(y.space_dimension_),
+    row_topology(y.row_topology),
+    index_first_pending(y.index_first_pending),
+    sorted(y.sorted),
+    representation_(r) {
+  rows.resize(y.num_rows());
+  for (dimension_type i = 0; i < y.num_rows(); i++) {
+    // Create the copies with the right representation.
+    Row row(y.rows[i], r);
+    swap(rows[i], row);
+  }
   PPL_ASSERT(OK());
 }
 
 template <typename Row>
 inline Linear_System<Row>&
 Linear_System<Row>::operator=(const Linear_System& y) {
+  // TODO: Use the copy-and-swap idiom here.
   rows = y.rows;
   space_dimension_ = y.space_dimension_;
   row_topology = y.row_topology;
   // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
+  representation_ = y.representation_;
   unset_pending_rows();
   PPL_ASSERT(OK());
   return *this;
@@ -156,11 +201,13 @@ Linear_System<Row>::operator=(const Linear_System& y) {
 template <typename Row>
 inline void
 Linear_System<Row>::assign_with_pending(const Linear_System& y) {
+  // TODO: Use the copy-and-swap idiom here.
   rows = y.rows;
   space_dimension_ = y.space_dimension_;
   row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
+  representation_ = y.representation_;
   PPL_ASSERT(OK());
 }
 
@@ -173,6 +220,7 @@ Linear_System<Row>::m_swap(Linear_System& y) {
   swap(row_topology, y.row_topology);
   swap(index_first_pending, y.index_first_pending);
   swap(sorted, y.sorted);
+  swap(representation_, y.representation_);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());
 }
@@ -180,7 +228,7 @@ Linear_System<Row>::m_swap(Linear_System& y) {
 template <typename Row>
 inline void
 Linear_System<Row>::clear() {
-  // Note: do NOT modify the value of `row_topology'.
+  // Note: do NOT modify the value of `row_topology' and `representation'.
   rows.clear();
   index_first_pending = 0;
   sorted = true;
@@ -285,6 +333,18 @@ template <typename Row>
 inline Topology
 Linear_System<Row>::topology() const {
   return row_topology;
+}
+
+template <typename Row>
+inline Representation
+Linear_System<Row>::representation() const {
+  return representation_;
+}
+
+template <typename Row>
+inline void
+Linear_System<Row>::set_representation(Representation r) {
+  representation_ = r;
 }
 
 template <typename Row>

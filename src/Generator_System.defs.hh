@@ -184,20 +184,33 @@ class Parma_Polyhedra_Library::Generator_System {
 public:
   typedef Generator row_type;
 
+  static const Representation default_representation = DENSE;
+
   //! Default constructor: builds an empty system of generators.
-  Generator_System();
+  Generator_System(Representation r = default_representation);
 
   //! Builds the singleton system containing only generator \p g.
-  explicit Generator_System(const Generator& g);
+  explicit Generator_System(const Generator& g,
+                            Representation r = default_representation);
 
   //! Ordinary copy constructor.
+  //! The new Generator_System will have the same representation as `gs'.
   Generator_System(const Generator_System& gs);
+
+  //! Copy constructor with specified representation.
+  Generator_System(const Generator_System& gs, Representation r);
 
   //! Destructor.
   ~Generator_System();
 
   //! Assignment operator.
   Generator_System& operator=(const Generator_System& y);
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Converts *this to the specified representation.
+  void set_representation(Representation r);
 
   //! Returns the maximum space dimension a Generator_System can handle.
   static dimension_type max_space_dimension();
@@ -518,7 +531,8 @@ private:
 public:
   // TODO: Consider making this private.
   //! Builds an empty system of generators having the specified topology.
-  explicit Generator_System(Topology topol);
+  explicit Generator_System(Topology topol,
+                            Representation r = default_representation);
 
 private:
   /*! \brief
@@ -526,7 +540,8 @@ private:
     \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE> the \f$\epsilon\f$
     dimension is added.
   */
-  Generator_System(Topology topol, dimension_type space_dim);
+  Generator_System(Topology topol, dimension_type space_dim,
+                   Representation r = default_representation);
 
 public:
   // TODO: Make this private.

@@ -77,7 +77,7 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
   }
   else if (g.space_dimension() < space_dimension()) {
     // Insert a resized copy of the row.
-    Grid_Generator tmp = g;
+    Grid_Generator tmp(g, representation());
     tmp.set_space_dimension(space_dimension());
     sys.insert(tmp, Recycle_Input());
   }
@@ -226,7 +226,7 @@ PPL::Grid_Generator_System
   // Add the new rows and set their diagonal element.
   for (dimension_type i = 0; i < dims; ++i) {
     Grid_Generator tmp(1, Grid_Generator::LINE_OR_EQUALITY,
-                       NECESSARILY_CLOSED);
+                       NECESSARILY_CLOSED, representation());
     tmp.set_space_dimension(space_dimension());
     tmp.expr += Variable(col);
     PPL_ASSERT(tmp.OK());

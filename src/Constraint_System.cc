@@ -37,8 +37,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
-  : sys(NECESSARILY_CLOSED, cgs.space_dimension()) {
+PPL::Constraint_System::Constraint_System(const Congruence_System& cgs,
+                                          Representation r)
+  : sys(NECESSARILY_CLOSED, cgs.space_dimension(), r) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())
@@ -131,7 +132,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
     else {
       const dimension_type new_dim = 1 + std::max(c.space_dimension(),
                                                   space_dimension());
-      Constraint tmp_c(c, new_dim);
+      Constraint tmp_c(c, new_dim, representation());
       // TODO: Avoid using the mark_as_*() methods if possible.
       tmp_c.mark_as_not_necessarily_closed();
       sys.insert(tmp_c);
@@ -155,7 +156,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       // and the missing space dimensions, if any.
       const dimension_type new_dim = 1 + std::max(c.space_dimension(),
                                                   space_dimension());
-      Constraint tmp_c(c, new_dim);
+      Constraint tmp_c(c, new_dim, representation());
       // TODO: Avoid using the mark_as_*() methods if possible.
       tmp_c.mark_as_not_necessarily_closed();
       sys.insert_pending(tmp_c);
