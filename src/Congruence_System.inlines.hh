@@ -43,12 +43,6 @@ Congruence_System::has_no_rows() const {
   return num_rows() == 0;
 }
 
-
-inline dimension_type
-Congruence_System::num_columns() const {
-  return num_columns_;
-}
-
 inline void
 Congruence_System::remove_trailing_rows(dimension_type n) {
   PPL_ASSERT(num_rows() >= n);
@@ -92,14 +86,14 @@ Congruence_System::insert(Congruence& cg, Recycle_Input) {
 inline
 Congruence_System::Congruence_System(Representation r)
   : rows(),
-    num_columns_(2),
+    space_dimension_(0),
     representation_(r) {
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence& cg, Representation r)
   : rows(),
-    num_columns_(2),
+    space_dimension_(0),
     representation_(r) {
   insert(cg);
 }
@@ -107,7 +101,7 @@ Congruence_System::Congruence_System(const Congruence& cg, Representation r)
 inline
 Congruence_System::Congruence_System(const Constraint& c, Representation r)
   : rows(),
-    num_columns_(2),
+    space_dimension_(0),
     representation_(r) {
   insert(c);
 }
@@ -115,14 +109,14 @@ Congruence_System::Congruence_System(const Constraint& c, Representation r)
 inline
 Congruence_System::Congruence_System(const Congruence_System& cs)
   : rows(cs.rows),
-    num_columns_(cs.num_columns_),
+    space_dimension_(cs.space_dimension_),
     representation_(cs.representation_) {
 }
 
 inline
 Congruence_System::Congruence_System(const Congruence_System& cs, Representation r)
   : rows(cs.rows),
-    num_columns_(cs.num_columns_),
+    space_dimension_(cs.space_dimension_),
     representation_(r) {
   if (cs.representation() != r) {
     for (dimension_type i = 0; i < num_rows(); i++)
@@ -133,7 +127,7 @@ Congruence_System::Congruence_System(const Congruence_System& cs, Representation
 inline
 Congruence_System::Congruence_System(const dimension_type d, Representation r)
   : rows(),
-    num_columns_(d + 2),
+    space_dimension_(d),
     representation_(r) {
 }
 
@@ -146,7 +140,7 @@ Congruence_System::operator=(const Congruence_System& y) {
 
   // TODO: Use the copy-and-swap idiom here.
   rows = y.rows;
-  num_columns_ = y.num_columns_;
+  space_dimension_ = y.space_dimension_;
   representation_ = y.representation_;
   return *this;
 }
@@ -173,23 +167,22 @@ Congruence_System::max_space_dimension() {
 
 inline dimension_type
 Congruence_System::space_dimension() const {
-  return num_columns() - 2;
+  return space_dimension_;
 }
 
 inline void
 Congruence_System::clear() {
   rows.clear();
-  num_columns_ = 2;		// Modulus and constant term.
+  space_dimension_ = 0;
 }
 
 inline void
 Congruence_System::resize_no_copy(const dimension_type new_num_rows,
-				  const dimension_type new_num_columns) {
-  PPL_ASSERT(new_num_columns >= 2);
+				  const dimension_type new_space_dim) {
   rows.resize(new_num_rows);
   for (dimension_type i = new_num_rows; i-- > 0; )
-    rows[i].set_space_dimension(new_num_columns - 2);
-  num_columns_ = new_num_columns;
+    rows[i].set_space_dimension(new_space_dim);
+  space_dimension_ = new_space_dim;
 }
 
 inline const Congruence_System&
@@ -282,7 +275,7 @@ inline void
 Congruence_System::m_swap(Congruence_System& y) {
   using std::swap;
   swap(rows, y.rows);
-  swap(num_columns_, y.num_columns_);
+  swap(space_dimension_, y.space_dimension_);
   swap(representation_, y.representation_);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());

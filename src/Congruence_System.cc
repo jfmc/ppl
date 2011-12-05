@@ -40,7 +40,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs,
                                           Representation r)
   : rows(),
-    num_columns_(cs.space_dimension() + 2),
+    space_dimension_(cs.space_dimension()),
     representation_(r) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
@@ -88,7 +88,7 @@ PPL::Congruence_System
 ::set_space_dimension(const dimension_type new_space_dim) {
 
   if (space_dimension() != new_space_dim) {
-    num_columns_ = new_space_dim + 2;
+    space_dimension_ = new_space_dim;
     for (dimension_type i = num_rows(); i-- > 0; )
       rows[i].set_space_dimension(new_space_dim);
   }
@@ -317,13 +317,12 @@ void
 PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   const Congruence_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
-  dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns << " ";
+  dimension_type x_space_dim = x.space_dimension();
+  s << x_num_rows << " x " << x_space_dim << " ";
   Parma_Polyhedra_Library::ascii_dump(s, representation());
   s << std::endl;
-  if (x_num_rows && x_num_columns)
-    for (dimension_type i = 0; i < x_num_rows; ++i)
-      x[i].ascii_dump(s);
+  for (dimension_type i = 0; i < x_num_rows; ++i)
+    x[i].ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(Congruence_System)
@@ -332,15 +331,15 @@ bool
 PPL::Congruence_System::ascii_load(std::istream& s) {
   std::string str;
   dimension_type num_rows;
-  dimension_type num_columns;
+  dimension_type space_dim;
   if (!(s >> num_rows))
     return false;
   if (!(s >> str) || str != "x")
     return false;
-  if (!(s >> num_columns))
+  if (!(s >> space_dim))
     return false;
   clear();
-  num_columns_ = num_columns;
+  space_dimension_ = space_dim;
 
   if (!Parma_Polyhedra_Library::ascii_load(s, representation_))
     return false;
@@ -382,16 +381,6 @@ PPL::Congruence_System::OK() const {
       return false;
     if (rows[i].representation() != representation())
       return false;
-  }
-
-  if (num_rows() != 0) {
-    if (num_columns() < 2) {
-#ifndef NDEBUG
-      std::cerr << "Congruence_System has rows and fewer than two columns."
-		<< std::endl;
-#endif
-      return false;
-    }
   }
 
   // Checking each congruence in the system.
@@ -437,8 +426,7 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
 }
 
 void
-PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
-  PPL_ASSERT(num_columns() > 0);
+PPL::Congruence_System::add_unit_rows_and_space_dimensions(dimension_type dims) {
   dimension_type old_num_rows = num_rows();
   set_space_dimension(space_dimension() + dims);
 
@@ -448,14 +436,13 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   for (dimension_type row = old_num_rows; row-- > 0; )
     swap(rows[row], rows[row + dims]);
 
-  PPL_ASSERT(num_columns() >= 2);
-  const dimension_type col = num_columns() - 2;
+  const dimension_type dim = space_dimension();
   // Set the space dimension and the diagonal element of each added row.
   for (dimension_type row = dims; row-- > 0; ) {
     Linear_Expression expr(representation());
     expr.set_space_dimension(space_dimension());
-    PPL_ASSERT(col >= row + 1);
-    expr += Variable(col - row - 1);
+    PPL_ASSERT(dim >= row + 1);
+    expr += Variable(dim - row - 1);
     // This constructor steals the contents of `expr'.
     Congruence cg(expr, Coefficient_zero(), Recycle_Input());
     swap(rows[row], cg);

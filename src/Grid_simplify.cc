@@ -381,7 +381,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 
 bool
 Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
-  PPL_ASSERT(sys.num_columns() > 2);
+  PPL_ASSERT(sys.space_dimension() != 0);
 
   // Changes here may also be required in the generator version above.
 
@@ -389,7 +389,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   //       added to con_sys.
   sys.normalize_moduli();
 
-  const dimension_type num_columns = sys.num_columns() - 1 /* modulus */;
+  const dimension_type num_columns = sys.space_dimension() + 1 /* inhomogeneous term */;
 
   if (dim_kinds.size() != num_columns)
     dim_kinds.resize(num_columns);

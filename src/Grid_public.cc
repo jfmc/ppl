@@ -276,7 +276,7 @@ PPL::Grid::congruences() const {
 
   if (space_dim == 0) {
     // Zero-dimensional universe.
-    PPL_ASSERT(con_sys.num_rows() == 0 && con_sys.num_columns() == 2);
+    PPL_ASSERT(con_sys.num_rows() == 0 && con_sys.space_dimension() == 0);
     return con_sys;
   }
 
@@ -919,7 +919,7 @@ PPL::Grid::OK(bool check_not_empty) const {
     // `con_sys' : number of congruences x poly_num_columns
     // `gen_sys' : number of generators  x poly_num_columns
     if (congruences_are_up_to_date())
-      if (con_sys.num_columns() != num_columns + 1 /* moduli */) {
+      if (con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
 	cerr << "Incompatible size! (con_sys and space_dim)"
 	     << endl;
@@ -928,7 +928,7 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
     if (generators_are_up_to_date()) {
-      if (gen_sys.space_dimension() + 1 != num_columns) {
+      if (gen_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
 	cerr << "Incompatible size! (gen_sys and space_dim)"
 	     << endl;
@@ -1066,7 +1066,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	goto fail;
       }
 
-      if (dim_kinds.size() != con_sys.num_columns() - 1 /* modulus */) {
+      if (dim_kinds.size() != con_sys.space_dimension() + 1 /* inhomogeneous term */) {
 #ifndef NDEBUG
 	cerr << "Size of dim_kinds should equal the number of columns."
 	     << endl;

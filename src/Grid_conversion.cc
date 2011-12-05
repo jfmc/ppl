@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
 bool
 Grid::lower_triangular(const Congruence_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
-  const dimension_type num_columns = sys.num_columns() - 1;
+  const dimension_type num_columns = sys.space_dimension() + 1;
 
   // Check for easy square failure case.
   if (sys.num_rows() > num_columns)
@@ -339,7 +339,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   dimension_type source_num_rows = 0, dest_num_rows = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
-  dimension_type dims = source.num_columns() - 1;
+  dimension_type dims = source.space_dimension() + 1;
   for (dimension_type dim = dims; dim-- > 0; )
     if (dim_kinds[dim] == CON_VIRTUAL)
       // Virtual congruences map to lines.

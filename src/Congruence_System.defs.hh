@@ -309,9 +309,9 @@ public:
   //! Checks if all the invariants are satisfied.
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
-    Returns <CODE>true</CODE> if and only if all rows have num_columns_
-    columns, each row in the system is a valid Congruence and the
-    number of columns is consistent with the number of congruences.
+    Returns <CODE>true</CODE> if and only if all rows have space dimension
+    space_dimension_, each row in the system is a valid Congruence and the
+    space dimension is consistent with the number of congruences.
   */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool OK() const;
@@ -341,11 +341,11 @@ public:
   void m_swap(Congruence_System& cgs);
 
   /*! \brief
-    Adds \p dims rows and \p dims columns of zeroes to the matrix,
+    Adds \p dims rows and \p dims space dimensions to the matrix,
     initializing the added rows as in the unit congruence system.
 
     \param dims
-    The number of rows and columns to be added: must be strictly
+    The number of rows and space dimensions to be added: must be strictly
     positive.
 
     Turns the \f$r \times c\f$ matrix \f$A\f$ into the \f$(r+dims) \times
@@ -355,7 +355,7 @@ public:
     \f$\bigl(\genfrac{}{}{0pt}{}{0}{1} \genfrac{}{}{0pt}{}{1}{0}\bigr)\f$.
     The matrix is expanded avoiding reallocation whenever possible.
   */
-  void add_unit_rows_and_columns(dimension_type dims);
+  void add_unit_rows_and_space_dimensions(dimension_type dims);
 
   // TODO: Consider making this private.
   //! Permutes the space dimensions of the matrix.
@@ -392,9 +392,6 @@ public:
 
   //! Returns \c true if num_rows()==0.
   bool has_no_rows() const;
-
-  //! Returns the number of columns of the system.
-  dimension_type num_columns() const;
 
   // TODO: Consider making this private.
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
@@ -510,7 +507,7 @@ public:
     The contents of the original system is lost.
   */
   void resize_no_copy(dimension_type new_num_rows,
-                      dimension_type new_num_columns);
+                      dimension_type new_space_dim);
 
 private:
   /*! \brief
@@ -521,7 +518,7 @@ private:
 
   Swapping_Vector<Congruence> rows;
   
-  dimension_type num_columns_;
+  dimension_type space_dimension_;
 
   Representation representation_;
 

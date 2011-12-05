@@ -34,10 +34,10 @@ void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 				Grid_Generator_System& gs,
 				const dimension_type dims) {
-  PPL_ASSERT(cgs.num_columns() - 1 == gs.space_dimension() + 1);
+  PPL_ASSERT(cgs.space_dimension() == gs.space_dimension());
   PPL_ASSERT(dims > 0);
 
-  const dimension_type old_modulus_index = cgs.num_columns() - 1;
+  const dimension_type old_modulus_index = cgs.space_dimension() + 1;
   cgs.set_space_dimension(space_dimension() + dims);
 
   if (congruences_are_minimized() || generators_are_minimized())
@@ -51,17 +51,17 @@ void
 PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 				Congruence_System& cgs,
 				const dimension_type dims) {
-  PPL_ASSERT(cgs.num_columns() - 1 == gs.space_dimension() + 1);
+  PPL_ASSERT(cgs.space_dimension() == gs.space_dimension());
   PPL_ASSERT(dims > 0);
 
-  cgs.add_unit_rows_and_columns(dims);
+  cgs.add_unit_rows_and_space_dimensions(dims);
 
   // Add `dims' zero columns onto gs.
   gs.insert(parameter(0*Variable(space_dim + dims - 1)));
 
   normalize_divisors(gs);
 
-  dim_kinds.resize(cgs.num_columns() - 1, EQUALITY /* a.k.a GEN_VIRTUAL */);
+  dim_kinds.resize(cgs.space_dimension() + 1, EQUALITY /* a.k.a GEN_VIRTUAL */);
 }
 
 // (o is a point)       y
@@ -118,7 +118,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       // Only congruences are up-to-date, so modify only them.
       con_sys.set_space_dimension(con_sys.space_dimension() + m);
       if (congruences_are_minimized())
-	dim_kinds.resize(con_sys.num_columns() - 1, CON_VIRTUAL);
+	dim_kinds.resize(con_sys.space_dimension() + 1, CON_VIRTUAL);
     }
   else {
     // Only generators are up-to-date, so modify only them.
@@ -184,9 +184,9 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
       add_space_dimensions(gen_sys, con_sys, m);
     else {
       // Only congruences are up-to-date so modify only them.
-      con_sys.add_unit_rows_and_columns(m);
+      con_sys.add_unit_rows_and_space_dimensions(m);
       if (congruences_are_minimized())
-	dim_kinds.resize(con_sys.num_columns() - 1, EQUALITY);
+	dim_kinds.resize(con_sys.space_dimension() + 1, EQUALITY);
     }
   else {
     // Only generators are up-to-date so modify only them.
