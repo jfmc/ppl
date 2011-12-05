@@ -101,6 +101,10 @@ public:
   //! Default constructor: builds an empty system of congruences.
   Congruence_System(Representation r = default_representation);
 
+  //! Builds an empty (i.e. zero rows) system of dimension \p d.
+  explicit Congruence_System(dimension_type d,
+                             Representation r = default_representation);
+
   //! Builds the singleton system containing only congruence \p cg.
   explicit Congruence_System(const Congruence& cg,
                              Representation r = default_representation);
@@ -357,9 +361,8 @@ public:
   */
   void add_unit_rows_and_space_dimensions(dimension_type dims);
 
-  // TODO: Consider making this private.
-  //! Permutes the space dimensions of the matrix.
-  /*
+  //! Permutes the space dimensions of the system.
+  /*!
     \param cycle
     A vector representing a cycle of the permutation according to which the
     columns must be rearranged.
@@ -375,37 +378,18 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_space_dimensions(Variable v1, Variable v2);
 
-  // TODO: Consider removing this, or making it private.
-  //! Makes the system shrink by removing the rows in [first,last).
-  /*!
-    If \p keep_sorted is <CODE>true</CODE>, the ordering of the remaining rows
-    will be preserved.
-  */
-  void remove_rows(dimension_type first, dimension_type last,
-                   bool keep_sorted);
-
-  // TODO: Remove this, or make it private.
-  void remove_trailing_rows(dimension_type n);
-
   //! Returns the number of rows in the system.
   dimension_type num_rows() const;
 
   //! Returns \c true if num_rows()==0.
   bool has_no_rows() const;
 
-  // TODO: Consider making this private.
-  //! Builds an empty (i.e. zero rows) system of dimension \p d.
-  explicit Congruence_System(dimension_type d,
-                             Representation r = default_representation);
-
   //! Returns a constant reference to the \p k- th congruence of the system.
   const Congruence& operator[](dimension_type k) const;
 
-  // TODO: Make this private.
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
 
-  // TODO: Consider making this private.
   //! Sets the number of space dimensions to \p new_space_dim.
   /*!
     If \p new_space_dim is lower than the current space dimension, the
@@ -413,11 +397,9 @@ public:
   */
   bool set_space_dimension(dimension_type new_space_dim);
 
-  // TODO: Consider making this private.
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
   bool satisfies_all_congruences(const Grid_Generator& g) const;
 
-  // TODO: Consider making this private.
   /*! \brief
     Substitutes a given column of coefficients by a given affine
     expression.
@@ -475,7 +457,6 @@ public:
   */
   void concatenate(const Congruence_System& cgs);
 
-  // TODO: Consider making this private.
   /*! \brief
     Inserts in \p *this the congruence \p cg, stealing its contents and
     increasing the number of space dimensions if needed.
@@ -491,6 +472,16 @@ public:
   void take_ownership_of_rows(Swapping_Vector<Congruence>& v);
 
 private:
+  //! Makes the system shrink by removing the rows in [first,last).
+  /*!
+    If \p keep_sorted is <CODE>true</CODE>, the ordering of the remaining rows
+    will be preserved.
+  */
+  void remove_rows(dimension_type first, dimension_type last,
+                   bool keep_sorted);
+
+  void remove_trailing_rows(dimension_type n);
+
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the singleton system containing only Congruence::zero_dim_false().
@@ -513,6 +504,8 @@ private:
     This method assumes the system is in minimal form.
   */
   bool has_a_free_dimension() const;
+
+  friend class Grid;
 };
 
 namespace Parma_Polyhedra_Library {
