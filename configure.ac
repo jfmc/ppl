@@ -173,6 +173,25 @@ choke me
   AC_LANG_POP(C)
 fi
 
+# The clang compiler masquerades as gcc, but we want to know.
+if test x"$GCC" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using Clang])
+  AC_LANG_PUSH(C)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#ifndef __clang__
+choke me
+#endif
+]])],
+  AC_MSG_RESULT(yes)
+  CLANG=yes,
+  AC_MSG_RESULT(no)
+  CLANG=no,
+  AC_MSG_RESULT(no)
+  CLANG=no)
+  AC_LANG_POP(C)
+fi
+
 save_CXXFLAGS="$CXXFLAGS"
 AC_PROG_CXX
 CXXFLAGS="$save_CXXFLAGS"
@@ -193,6 +212,25 @@ choke me
   ICPC=no,
   AC_MSG_RESULT(no)
   ICPC=no)
+  AC_LANG_POP(C++)
+fi
+
+# The clang++ compiler masquerades as g++, but we want to know.
+if test x"$GXX" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using clang++])
+  AC_LANG_PUSH(C++)
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#ifndef __clang__
+choke me
+#endif
+]])],
+  AC_MSG_RESULT(yes)
+  CLANGXX=yes,
+  AC_MSG_RESULT(no)
+  CLANGXX=no,
+  AC_MSG_RESULT(no)
+  CLANGXX=no)
   AC_LANG_POP(C++)
 fi
 
@@ -452,7 +490,23 @@ then
   then
     OPT_FLAGS="$OPT_FLAGS -fp-model strict -fp-speculation off"
   else
-    OPT_FLAGS="$OPT_FLAGS -frounding-math"
+    # -frounding-math is not yet supported in clang++, if we use it we get
+    # lots of warnings.
+    if test x"$CLANGXX" = xyes
+    then
+      if test x"$use_fpmath" = xyes
+      then
+        AC_MSG_WARN([CANNOT RELY ON DIRECTED ROUNDING:
+*** DISABLED ALL ABSTRACTIONS BASED ON MACHINE FLOATING-POINT NUMBERS.
+*** clang++ has been detected, which does not provide support for
+*** -frounding-math (or any other option with the same semantics).
+*** Hence, we cannot rely on floating-point computations to happen
+*** in agreement with the rounding direction(s) used by the PPL.])
+        use_fpmath=no
+      fi
+    else
+      OPT_FLAGS="$OPT_FLAGS -frounding-math"
+    fi
   fi
 fi
 

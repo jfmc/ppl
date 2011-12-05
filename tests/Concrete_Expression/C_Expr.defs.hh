@@ -85,12 +85,12 @@ public:
   const Concrete_Expression<C_Expr>* right_hand_side() const;
 
   //! Constant identifying binary operator nodes.
-  enum {
+  enum Kind {
     KIND = BOP
   };
 
   //! Constants encoding the different binary operators.
-  enum {
+  enum Operation {
     ADD,
     SUB,
     MUL,
@@ -135,12 +135,12 @@ public:
   const Concrete_Expression<C_Expr>* argument() const;
 
   //! Constant identifying unary operator nodes.
-  enum {
+  enum Kind {
     KIND = UOP
   };
 
   //! Constants encoding the different unary operators.
-  enum {
+  enum Operation {
     UPLUS,
     UMINUS,
     BNOT
@@ -172,7 +172,7 @@ public:
   const Concrete_Expression<C_Expr>* argument() const;
 
   //! Constant identifying cast nodes.
-  enum { KIND = CAST };
+  enum Kind { KIND = CAST };
 
   //! The casted expression.
   const Concrete_Expression<C_Expr>* arg;
@@ -194,7 +194,7 @@ public:
   Concrete_Expression_Type type() const;
 
   //! Constant identifying integer constant nodes.
-  enum { KIND = INT_CON };
+  enum Kind { KIND = INT_CON };
 
   //! An interval in which the value of the constant falls.
   Integer_Interval value;
@@ -216,7 +216,7 @@ public:
   Concrete_Expression_Type type() const;
 
   //! Constant identifying floating constant nodes.
-  enum { KIND = FP_CON };
+  enum Kind { KIND = FP_CON };
 
   //! The floating point constant as written.
   char* value;
@@ -240,7 +240,7 @@ public:
   Concrete_Expression_Type type() const;
 
   //! Constant identifying approximable reference nodes.
-  enum { KIND = APPROX_REF };
+  enum Kind { KIND = APPROX_REF };
 
   //! An interval in which the referenced entity's value falls.
   Integer_Interval value;

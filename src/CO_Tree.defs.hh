@@ -1308,6 +1308,8 @@ private:
 
   //! The number of values stored in the tree.
   dimension_type size_;
+
+  std::allocator<Coefficient> coefficient_allocator;
 };
 
 class CO_Tree::tree_iterator {
