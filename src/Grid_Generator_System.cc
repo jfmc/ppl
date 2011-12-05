@@ -149,40 +149,15 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
-  const dimension_type num_rows = this->num_rows();
-  s << num_rows << " x " << space_dimension() << '\n';
-  for (dimension_type i = 0; i < num_rows; ++i)
-    sys[i].ascii_dump(s);
+  sys.ascii_dump(s);
 }
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  dimension_type num_rows;
-  dimension_type space_dim;
-  if (!(s >> num_rows))
+  if (!sys.ascii_load(s))
     return false;
-  std::string str;
-  if (!(s >> str) || str != "x")
-    return false;
-  if (!(s >> space_dim))
-      return false;
 
-  sys.clear();
-  sys.set_space_dimension(space_dim);
-
-  set_sorted(false);
-
-  for (dimension_type i = 0; i < num_rows; ++i) {
-    Grid_Generator tmp;
-    if (!tmp.ascii_load(s))
-      return false;
-    sys.insert(tmp, Recycle_Input());
-  }
-
-  set_index_first_pending_row(num_rows);
-  // Check invariants.
   PPL_ASSERT(OK());
-
   return true;
 }
 

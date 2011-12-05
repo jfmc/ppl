@@ -750,69 +750,16 @@ PPL::Generator_System
 
 void
 PPL::Generator_System::ascii_dump(std::ostream& s) const {
-  const dimension_type num_rows = sys.num_rows();
-  const dimension_type space_dims = sys.space_dimension();
-  s << "topology " << (sys.is_necessarily_closed()
-		       ? "NECESSARILY_CLOSED"
-		       : "NOT_NECESSARILY_CLOSED")
-    << "\n"
-    << num_rows << " x " << space_dims << ' '
-    << (sys.is_sorted() ? "(sorted)" : "(not_sorted)")
-    << "\n"
-    << "index_first_pending " << sys.first_pending_row()
-    << "\n";
-  for (dimension_type i = 0; i < num_rows; ++i)
-    sys[i].ascii_dump(s);
+  sys.ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(Generator_System)
 
 bool
 PPL::Generator_System::ascii_load(std::istream& s) {
-  std::string str;
-  if (!(s >> str) || str != "topology")
-    return false;
-  if (!(s >> str))
+  if (!sys.ascii_load(s))
     return false;
 
-  sys.clear();
-
-  if (str == "NECESSARILY_CLOSED")
-    sys.set_necessarily_closed();
-  else {
-    if (str != "NOT_NECESSARILY_CLOSED")
-      return false;
-    sys.set_not_necessarily_closed();
-  }
-
-  dimension_type nrows;
-  dimension_type space_dims;
-  if (!(s >> nrows))
-    return false;
-  if (!(s >> str) || str != "x")
-    return false;
-  if (!(s >> space_dims))
-      return false;
-
-  sys.set_space_dimension(space_dims);
-
-  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
-    return false;
-  sys.set_sorted(str == "(sorted)");
-  dimension_type pending_index;
-  if (!(s >> str) || str != "index_first_pending")
-    return false;
-  if (!(s >> pending_index))
-    return false;
-
-  for (dimension_type i = 0; i < nrows; ++i) {
-    Generator gen;
-    gen.ascii_load(s);
-    sys.insert_pending(gen, Recycle_Input());
-  }
-  sys.set_index_first_pending_row(pending_index);
-
-  // Check invariants.
   PPL_ASSERT(OK());
   return true;
 }

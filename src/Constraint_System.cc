@@ -343,74 +343,16 @@ PPL::Constraint_System
 
 void
 PPL::Constraint_System::ascii_dump(std::ostream& s) const {
-  s << "topology " << (sys.is_necessarily_closed()
-		       ? "NECESSARILY_CLOSED"
-		       : "NOT_NECESSARILY_CLOSED")
-    << "\n"
-    << num_rows() << " x " << space_dimension() << ' '
-    << (sys.is_sorted() ? "(sorted)" : "(not_sorted)")
-    << "\n"
-    << "index_first_pending " << sys.first_pending_row()
-    << "\n";
-
-  for (dimension_type i = 0; i < num_rows(); ++i)
-    sys[i].ascii_dump(s);
+  sys.ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(Constraint_System)
 
 bool
 PPL::Constraint_System::ascii_load(std::istream& s) {
-  std::string str;
-  std::string str2;
-  if (!(s >> str) || str != "topology")
-    return false;
-  if (!(s >> str))
+  if (!sys.ascii_load(s))
     return false;
 
-  sys.clear();
-
-  if (str == "NECESSARILY_CLOSED")
-    sys.set_necessarily_closed();
-  else {
-    if (str != "NOT_NECESSARILY_CLOSED")
-      return false;
-    sys.set_not_necessarily_closed();
-  }
-
-  dimension_type nrows;
-  dimension_type space_dim;
-  if (!(s >> nrows))
-    return false;
-  if (!(s >> str) || str != "x")
-    return false;
-  if (!(s >> space_dim))
-      return false;
-
-  sys.set_space_dimension(space_dim);
-
-  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
-    return false;
-
-  // Set sortedness later, so insert_pending() will have no effect on it.
-  bool sorted = (str == "(sorted)");
-  set_sorted(false);
-  dimension_type pending_index;
-  if (!(s >> str) || str != "index_first_pending")
-    return false;
-  if (!(s >> pending_index))
-    return false;
-
-  for (dimension_type i = 0; i < nrows; ++i) {
-    Constraint c;
-    if (!c.ascii_load(s))
-      return false;
-
-    sys.insert_pending(c, Recycle_Input());
-  }
-  sys.set_index_first_pending_row(pending_index);
-  sys.set_sorted(sorted);
-  // Check invariants.
   PPL_ASSERT(OK());
   return true;
 }
