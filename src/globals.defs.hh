@@ -473,6 +473,9 @@ FOK(long double)
 FOK(mpz_class)
 FOK(mpq_class)
 
+void ascii_dump(std::ostream& s, Representation r);
+bool ascii_load(std::istream& s, Representation& r);
+
 } // namespace Parma_Polyhedra_Library
 
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.

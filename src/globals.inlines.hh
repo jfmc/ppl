@@ -26,6 +26,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include <limits>
 #include "assert.hh"
+#include <istream>
+#include <ostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -112,6 +114,33 @@ external_memory_in_bytes(const mpq_class& x) {
 inline memory_size_type
 total_memory_in_bytes(const mpq_class& x) {
   return sizeof(x) + external_memory_in_bytes(x);
+}
+
+inline void
+ascii_dump(std::ostream& s, Representation r) {
+  if (r == DENSE)
+    s << "DENSE";
+  else
+    s << "SPARSE";
+}
+
+inline bool
+ascii_load(std::istream& is, Representation& r) {
+  std::string s;
+  if (!(is >> s))
+    return false;
+
+  if (s == "DENSE")  {
+    r = DENSE;
+    return true;
+  }
+
+  if (s == "SPARSE")  {
+    r = SPARSE;
+    return true;
+  }
+
+  return false;
 }
 
 } // namespace Parma_Polyhedra_Library
