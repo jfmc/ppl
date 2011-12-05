@@ -169,9 +169,6 @@ public:
   //! Swaps the vector of rows with \p v. \p *this must have no rows.
   void take_ownership_of_rows(Swapping_Vector<Row>& v);
 
-  // TODO: Remove this.
-  typedef Row internal_row_type;
-
   // TODO: Consider making this private.
   //! Removes all the specified dimensions from the system.
   /*!

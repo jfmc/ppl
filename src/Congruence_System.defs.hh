@@ -485,9 +485,6 @@ public:
   */
   void insert_verbatim(Congruence& cg, Recycle_Input);
 
-  // TODO: Remove this.
-  typedef Congruence internal_row_type;
-
   // TODO: Check if these methods should be improved.
   void release_row(Congruence& c);
   void release_rows(Swapping_Vector<Congruence>& v);
