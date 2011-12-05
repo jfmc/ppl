@@ -352,19 +352,6 @@ public:
   void unset_pending_rows();
 
   // TODO: Consider removing this.
-  //! Swaps \p row with the last row and then removes that row from the
-  //! system.
-  void release_row(Generator& row);
-
-  // TODO: Consider removing this.
-  //! Swaps the vector of rows with \p v. \p v must be empty.
-  void release_rows(Swapping_Vector<Generator>& v);
-
-  // TODO: Consider removing this.
-  //! Swaps the vector of rows with \p v. \p *this must have no rows.
-  void take_ownership_of_rows(Swapping_Vector<Generator>& v);
-
-  // TODO: Consider removing this.
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
 

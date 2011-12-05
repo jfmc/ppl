@@ -1324,12 +1324,10 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// a corresponding closure point:
 	// turn the just inserted point into the corresponding
 	// (normalized) closure point.
-	Generator cp;
-        gen_sys.release_row(cp);
-	cp.set_epsilon_coefficient(0);
-	cp.expr.normalize();
-        PPL_ASSERT(cp.OK());
-        gen_sys.insert(cp, Recycle_Input());
+	gen_sys.sys.rows.back().set_epsilon_coefficient(0);
+	gen_sys.sys.rows.back().expr.normalize();
+        PPL_ASSERT(gen_sys.sys.rows.back().OK());
+        PPL_ASSERT(gen_sys.sys.OK());
 	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
       }
@@ -1365,17 +1363,14 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// a corresponding closure point:
 	// turn the just inserted point into the corresponding
 	// (normalized) closure point.
-	Generator cp;
-        gen_sys.release_row(cp);
-	cp.set_epsilon_coefficient(0);
-	cp.expr.normalize();
-        PPL_ASSERT(cp.OK());
+	gen_sys.sys.rows.back().set_epsilon_coefficient(0);
+	gen_sys.sys.rows.back().expr.normalize();
+        PPL_ASSERT(gen_sys.sys.rows.back().OK());
+        PPL_ASSERT(gen_sys.sys.OK());
         if (has_pending) {
-          gen_sys.insert_pending(cp, Recycle_Input());
           // Re-insert the point (which is already normalized).
           gen_sys.insert_pending(g);
         } else {
-          gen_sys.insert(cp, Recycle_Input());
           // Re-insert the point (which is already normalized).
           gen_sys.insert(g);
         }
@@ -1555,7 +1550,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
       // of the polyhedron are not up-to-date, the polyhedron cannot
       // have pending generators. By integrating the pending part
       // of `gen_sys' we may loose sortedness.
-      gen_sys.unset_pending_rows();
+      gen_sys.sys.index_first_pending = gen_sys.num_rows();
       gen_sys.set_sorted(false);
     }
     set_generators_up_to_date();
@@ -1568,24 +1563,22 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     // Here we do not require `gen_sys' to be sorted.
     // also, we _remove_ (instead of copying) the rows of `gs'
     // (which is not a const).
-    Generator tmp;
-    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
-      gs.release_row(tmp);
-      tmp.set_topology(topology());
-      gen_sys.insert_pending(tmp, Recycle_Input());
+    for (dimension_type i = 0; i < gs.num_rows(); i++) {
+      gs.sys.rows[i].set_topology(topology());
+      gen_sys.insert_pending(gs.sys.rows[i], Recycle_Input());
     }
-    
+    gs.clear();
+
     set_generators_pending();
   } else {
     // Here we do not require `gen_sys' to be sorted.
     // also, we _remove_ (instead of copying) the coefficients of `gs'
     // (which is not a const).
-    Generator tmp;
-    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
-      gs.release_row(tmp);
-      tmp.set_topology(topology());
-      gen_sys.insert(tmp, Recycle_Input());
+    for (dimension_type i = 0; i < gs.num_rows(); i++) {
+      gs.sys.rows[i].set_topology(topology());
+      gen_sys.insert(gs.sys.rows[i], Recycle_Input());
     }
+    gs.clear();
 
     // Constraints are not up-to-date and generators are not minimized.
     clear_constraints_up_to_date();
@@ -2877,22 +2870,18 @@ generalized_affine_image(const Variable var,
       add_generator(ray((relsym == GREATER_THAN) ? var : -var));
       minimize();
 
-      Swapping_Vector<Generator> rows;
-      // Release the rows from the generator system, so they can be modified.
-      gen_sys.release_rows(rows);
-
       // We split each point of the generator system into two generators:
       // a closure point, having the same coordinates of the given point,
       // and another point, having the same coordinates for all but the
       // `var' dimension, which is displaced along the direction of the
       // newly introduced ray.
-      for (dimension_type i = rows.size(); i-- > 0; ) {
-        Generator& gen_i = rows[i];
+      for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+        Generator& gen_i = gen_sys.sys.rows[i];
 	if (gen_i.is_point()) {
 	  // Add a `var'-displaced copy of `rows[i]' to the generator
           // system.
-          rows.push_back(gen_i);
-          Generator& new_gen = rows.back();
+          gen_sys.sys.rows.push_back(gen_i);
+          Generator& new_gen = gen_sys.sys.rows.back();
 	  if (relsym == GREATER_THAN)
             new_gen.expr += var;
 	  else
@@ -2904,8 +2893,7 @@ generalized_affine_image(const Variable var,
 	}
       }
 
-      // Put the modified rows back into the generator system.
-      gen_sys.take_ownership_of_rows(rows);
+      PPL_ASSERT(gen_sys.sys.OK());
 
       clear_constraints_up_to_date();
       clear_generators_minimized();
@@ -3335,30 +3323,23 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   const dimension_type old_gs_num_rows = gs.num_rows();
   dimension_type gs_num_rows = old_gs_num_rows;
 
-  // release_rows() does not support pending rows.
-  gs.unset_pending_rows();
-
-  Swapping_Vector<Generator> rows;
-  // Release the rows from the generator system, so they can be modified.
-  gs.release_rows(rows);
-
   if (!x.is_necessarily_closed())
     // `x' and `y' are NNC polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      Generator& g = rows[i];
+      Generator& g = gs.sys.rows[i];
       switch (g.type()) {
       case Generator::POINT:
 	// The points of `gs' can be erased,
 	// since their role can be played by closure points.
 	--gs_num_rows;
-        swap(g, rows[gs_num_rows]);
+        swap(g, gs.sys.rows[gs_num_rows]);
 	break;
       case Generator::CLOSURE_POINT:
 	{
 	  // If it is the origin, erase it.
 	  if (g.expr.all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
-            swap(g, rows[gs_num_rows]);
+            swap(g, gs.sys.rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the closure point into a ray.
 	  else {
@@ -3377,14 +3358,14 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   else
     // `x' and `y' are C polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      Generator& g = rows[i];
+      Generator& g = gs.sys.rows[i];
       switch (g.type()) {
       case Generator::POINT:
 	{
 	  // If it is the origin, erase it.
 	  if (g.expression().all_homogeneous_terms_are_zero()) {
 	    --gs_num_rows;
-            swap(g, rows[gs_num_rows]);
+            swap(g, gs.sys.rows[gs_num_rows]);
 	  }
 	  // Otherwise, transform the point into a ray.
 	  else {
@@ -3406,10 +3387,10 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // For NNC polyhedra, also erase all the points of `gs',
   // whose role can be played by the closure points.
   // These have been previously moved to the end of `gs'.
-  rows.resize(gs_num_rows);
+  gs.sys.rows.resize(gs_num_rows);
 
-  // Put the modified rows back into the generator system.
-  gs.take_ownership_of_rows(rows);
+  gs.unset_pending_rows();
+  PPL_ASSERT(gs.sys.OK());
 
   // `gs' may now have no rows.
   // Namely, this happens when `y' was the singleton polyhedron
@@ -3548,13 +3529,9 @@ PPL::Polyhedron::topological_closure_assign() {
   if (!has_pending_generators() && constraints_are_up_to_date()) {
     bool changed = false;
 
-    Swapping_Vector<Constraint> rows;
-    // Release the rows from the constraint system so they can be modified.
-    con_sys.release_rows(rows);
-
     // Transform all strict inequalities into non-strict ones.
-    for (dimension_type i = rows.size(); i-- > 0; ) {
-      Constraint& c = rows[i];
+    for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
+      Constraint& c = con_sys.sys.rows[i];
       if (c.epsilon_coefficient() < 0 && !c.is_tautological()) {
 	c.set_epsilon_coefficient(0);
 	// Enforce normalization.
@@ -3564,8 +3541,7 @@ PPL::Polyhedron::topological_closure_assign() {
       }
     }
 
-    // Put the modified rows back into the constraint system.
-    con_sys.take_ownership_of_rows(rows);
+    PPL_ASSERT(con_sys.sys.OK());
 
     if (changed) {
       con_sys.insert(Constraint::epsilon_leq_one());

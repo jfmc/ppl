@@ -379,16 +379,6 @@ Constraint_System::mark_as_not_necessarily_closed() {
   sys.mark_as_not_necessarily_closed();
 }
 
-inline void
-Constraint_System::release_rows(Swapping_Vector<Constraint>& v) {
-  sys.release_rows(v);
-}
-
-inline void
-Constraint_System::take_ownership_of_rows(Swapping_Vector<Constraint>& v) {
-  sys.take_ownership_of_rows(v);
-}
-
 inline dimension_type
 Constraint_System::gauss(dimension_type n_lines_or_equalities) {
   return sys.gauss(n_lines_or_equalities);

@@ -1283,10 +1283,9 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   dimension_type gs_rows = old_gs_rows;
   const dimension_type n_lines = gs.num_lines();
   bool gs_sorted = gs.is_sorted();
-  Swapping_Vector<Generator> rows;
-  gs.release_rows(rows);
+
   for (dimension_type i = n_lines; i < gs_rows; ) {
-    Generator& g = rows[i];
+    Generator& g = gs.sys.rows[i];
     if (g.is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
@@ -1296,13 +1295,13 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
       for (dimension_type j = n_lines; j < gs_rows; ++j) {
-        Generator& g2 = rows[j];
+        Generator& g2 = gs.sys.rows[j];
 	if (i != j && g2.is_point() && subset_or_equal(sat[j], sat_gs_i)) {
 	  // Point `g' is eps-redundant:
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' consistent.
 	  --gs_rows;
-          swap(g, rows[gs_rows]);
+          swap(g, gs.sys.rows[gs_rows]);
 	  swap(sat[i], sat[gs_rows]);
 	  eps_redundant = true;
 	  changed = true;
@@ -1329,9 +1328,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 
   // If needed, erase the eps-redundant generators.
   if (gs_rows < old_gs_rows)
-    rows.resize(gs_rows);
-
-  gs.take_ownership_of_rows(rows);
+    gs.sys.rows.resize(gs_rows);
 
   if (changed) {
     // The generator system is no longer sorted.
@@ -1340,8 +1337,15 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     x.clear_constraints_up_to_date();
   }
 
+  gs.sys.index_first_pending = gs.num_rows();
+
+  /* FIXME: Check why the following does not work anymore.
   if (gs_sorted)
     gs.set_sorted(true);
+  */
+  gs.set_sorted(false);
+
+  PPL_ASSERT(gs.sys.OK());
 
   PPL_ASSERT_HEAVY(OK());
   return true;
@@ -2121,19 +2125,9 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
 
   const bool con_sys_was_sorted = con_sys.is_sorted();
-  const dimension_type first_pending_index = con_sys.first_pending_row();
 
-  // This avoids triggering assertions in unset_pending_rows().
-  con_sys.set_sorted(false);
-
-  // This avoids triggering assertions in release_rows().
-  con_sys.unset_pending_rows();
-
-  Swapping_Vector<Constraint> rows;
-  con_sys.release_rows(rows);
-
-  for (dimension_type j = rows.size(); j-- > 0; ) {
-    Constraint& c = rows[j];
+  for (dimension_type j = con_sys.sys.rows.size(); j-- > 0; ) {
+    Constraint& c = con_sys.sys.rows[j];
     if (c.is_tautological())
       continue;
 
@@ -2186,12 +2180,8 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
     next_constraint: ;
   }
 
-  con_sys.take_ownership_of_rows(rows);
-
-  con_sys.set_index_first_pending_row(first_pending_index);
-
-  if (!changed && con_sys_was_sorted)
-    con_sys.set_sorted(true);
+  con_sys.set_sorted(!changed && con_sys_was_sorted);
+  PPL_ASSERT(con_sys.sys.OK());
 
   if (changed) {
     if (!is_necessarily_closed())

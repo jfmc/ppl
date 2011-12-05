@@ -641,34 +641,6 @@ Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
 
 template <typename Row>
 inline void
-Linear_System<Row>::release_row(Row& row) {
-  swap(row, rows.back());
-  remove_trailing_rows(1);
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
-Linear_System<Row>::release_rows(Swapping_Vector<Row>& v) {
-  PPL_ASSERT(v.empty());
-  PPL_ASSERT(num_pending_rows() == 0);
-  swap(rows, v);
-  unset_pending_rows();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
-Linear_System<Row>::take_ownership_of_rows(Swapping_Vector<Row>& v) {
-  PPL_ASSERT(num_rows() == 0);
-  swap(rows, v);
-  sorted = false;
-  unset_pending_rows();
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-inline void
 Linear_System<Row>
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   for (dimension_type i = num_rows(); i-- > 0; )

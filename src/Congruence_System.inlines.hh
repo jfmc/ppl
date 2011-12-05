@@ -50,25 +50,6 @@ Congruence_System::remove_trailing_rows(dimension_type n) {
 }
 
 inline void
-Congruence_System::release_row(Congruence& c) {
-  PPL_ASSERT(!rows.empty());
-  swap(rows.back(), c);
-  rows.pop_back();
-}
-
-inline void
-Congruence_System::release_rows(Swapping_Vector<Congruence>& v) {
-  PPL_ASSERT(v.empty());
-  swap(rows, v);
-}
-
-inline void
-Congruence_System::take_ownership_of_rows(Swapping_Vector<Congruence>& v) {
-  PPL_ASSERT(rows.size() == 0);
-  swap(rows, v);
-}
-
-inline void
 Congruence_System::insert(const Congruence& cg) {
   Congruence tmp = cg;
   insert(tmp, Recycle_Input());

@@ -143,20 +143,14 @@ PPL::Generator_System::convert_into_non_necessarily_closed() {
   // rays and lines must have epsilon coefficient equal to 0.
   // Note: normalization is preserved.
   sys.set_not_necessarily_closed();
-  Generator_System& gs = *this;
 
-  Swapping_Vector<Generator> rows;
-  // Release the rows from the linear system, so they can be modified.
-  gs.sys.release_rows(rows);
-
-  for (dimension_type i = rows.size(); i-- > 0; ) {
-    Generator& gen = rows[i];
+  for (dimension_type i = sys.rows.size(); i-- > 0; ) {
+    Generator& gen = sys.rows[i];
     if (!gen.is_line_or_ray())
       gen.set_epsilon_coefficient(gen.expr.inhomogeneous_term());
   }
 
-  // Put the rows back into the linear system.
-  gs.sys.take_ownership_of_rows(rows);
+  PPL_ASSERT(sys.OK());
 }
 
 bool
@@ -695,22 +689,11 @@ PPL::Generator_System
 
   const dimension_type n_rows = x.sys.num_rows();
 
-  // TODO: Check if it's correct to arrive at this point with some pending
-  // rows.
-  const dimension_type pending_row_index = sys.first_pending_row();
-
-  // Avoid triggering assertions in release_rows().
-  sys.unset_pending_rows();
-
-  Swapping_Vector<Generator> rows;
-  // Release the rows from the linear system, so they can be modified.
-  x.sys.release_rows(rows);
-
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
-    Generator& row = rows[i];
+    Generator& row = sys.rows[i];
     Scalar_Products::assign(numerator, expr, row.expr);
     if (denominator != 1) {
       // Since we want integer elements in the matrix,
@@ -723,11 +706,7 @@ PPL::Generator_System
     row.expr.set_coefficient(v, numerator);
   }
 
-  // Put the modified rows back into the linear system.
-  x.sys.take_ownership_of_rows(rows);
-
-  // Restore the pending row index.
-  x.sys.set_index_first_pending_row(pending_row_index);
+  set_sorted(false);
 
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
@@ -746,6 +725,8 @@ PPL::Generator_System
   for (dimension_type i = x.num_rows(); i-- > 0; )
     PPL_ASSERT(x.sys[i].OK());
 #endif
+
+  PPL_ASSERT(sys.OK());
 }
 
 void
@@ -775,9 +756,10 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // remove_row().
   for (dimension_type i = 0; i < num_rows(); ) {
     const Generator& g = (*this)[i];
-    if (g.is_line_or_ray() && g.expr.all_homogeneous_terms_are_zero())
+    if (g.is_line_or_ray() && g.expr.all_homogeneous_terms_are_zero()) {
       sys.remove_row(i, false);
-    else
+      set_sorted(false);
+    } else
       ++i;
   }
 }

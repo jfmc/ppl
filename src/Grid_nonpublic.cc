@@ -82,11 +82,11 @@ PPL::Grid::construct(dimension_type num_dimensions,
     // appropriate dimension and then store it in `con_sys'.
     Congruence_System cgs(Congruence::zero_dim_integrality());
     cgs.set_space_dimension(space_dim);
+
     // Recover minimal form after cgs(zdi) normalization.
-    Swapping_Vector<Congruence> cgs_rows;
-    cgs.release_rows(cgs_rows);
-    cgs_rows[0].set_inhomogeneous_term(Coefficient_one());
-    cgs.take_ownership_of_rows(cgs_rows);
+    cgs.rows[0].set_inhomogeneous_term(Coefficient_one());
+    PPL_ASSERT(cgs.OK());
+
     swap(con_sys, cgs);
 
     dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
@@ -635,17 +635,13 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       }
     }
 
-    Swapping_Vector<Grid_Generator> rows;
-    // Release the rows from the linear system, so they can be modified.
-    sys.release_rows(rows);
-
     // Represent every point and every parameter using the newly
     // calculated divisor.
     for (dimension_type i = num_rows; i-- > 0; )
-      rows[i].scale_to_divisor(divisor);
+      sys.sys.rows[i].scale_to_divisor(divisor);
 
     // Put the rows back into the linear system.
-    sys.take_ownership_of_rows(rows);
+    PPL_ASSERT(sys.sys.OK());
   }
 }
 

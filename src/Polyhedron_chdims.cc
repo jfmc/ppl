@@ -227,18 +227,13 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   con_sys.set_space_dimension(con_sys.space_dimension() + added_columns);
 
   if (can_have_something_pending()) {
-    // release_rows() does not support pending rows.
-    cs.unset_pending_rows();
-
     // Steal the constraints from `cs' and put them in `con_sys'
     // using the right displacement for coefficients.
-    Swapping_Vector<Constraint> cs_rows;
-    cs.release_rows(cs_rows);
-    PPL_ASSERT(cs_rows.size() == added_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
-      cs_rows[i].shift_space_dimensions(Variable(0), space_dim);
-      con_sys.insert_pending(cs_rows[i], Recycle_Input());
+      cs.sys.rows[i].shift_space_dimensions(Variable(0), space_dim);
+      con_sys.insert_pending(cs.sys.rows[i], Recycle_Input());
     }
+    cs.clear();
 
     // If `*this' can support pending constraints, then, since we have
     // resized the system of constraints, we must also add to the generator
@@ -266,16 +261,11 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     set_constraints_pending();
   }
   else {
-    // release_rows() does not support pending rows.
-    cs.unset_pending_rows();
-
     // Steal the constraints from `cs' and put them in `con_sys'
     // using the right displacement for coefficients.
-    Swapping_Vector<Constraint> cs_rows;
-    cs.release_rows(cs_rows);
     for (dimension_type i = 0; i < added_rows; ++i) {
-      cs_rows[i].shift_space_dimensions(Variable(0), space_dim);
-      con_sys.insert(cs_rows[i], Recycle_Input());
+      cs.sys.rows[i].shift_space_dimensions(Variable(0), space_dim);
+      con_sys.insert(cs.sys.rows[i], Recycle_Input());
     }
 #if !BE_LAZY
     con_sys.sort_rows();

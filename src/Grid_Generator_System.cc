@@ -40,10 +40,10 @@ PPL::Grid_Generator_System::insert(Grid_Generator_System& gs, Recycle_Input) {
   else
     gs.set_space_dimension(space_dimension());
 
-  Swapping_Vector<Grid_Generator> rows;
-  gs.sys.release_rows(rows);
   for (dimension_type i = 0; i < gs_num_rows; ++i)
-    sys.insert(rows[i], Recycle_Input());
+    sys.insert(gs.sys.rows[i], Recycle_Input());
+
+  gs.clear();
 
   unset_pending_rows();
 }
@@ -106,17 +106,8 @@ PPL::Grid_Generator_System
   // to the column of `*this' indexed by `v'.
   PPL_DIRTY_TEMP_COEFFICIENT(numerator);
 
-  const dimension_type pending_row_index = sys.first_pending_row();
-
-  // Avoid triggering assertions in release_rows().
-  unset_pending_rows();
-
-  Swapping_Vector<Grid_Generator> rows;
-  // Release the rows from the linear system, so they can be modified.
-  x.sys.release_rows(rows);
-
   for (dimension_type i = num_rows; i-- > 0; ) {
-    Grid_Generator& row = rows[i];
+    Grid_Generator& row = sys.rows[i];
     Scalar_Products::assign(numerator, expr, row.expr);
     if (denominator != 1) {
       // Since we want integer elements in the matrix,
@@ -131,11 +122,7 @@ PPL::Grid_Generator_System
     PPL_ASSERT(row.OK());
   }
 
-  // Put the modified rows back into the linear system.
-  x.sys.take_ownership_of_rows(rows);
-
-  // Restore the number of pending rows.
-  x.set_index_first_pending_row(pending_row_index);
+  PPL_ASSERT(sys.OK());
 
   // If the mapping is not invertible we may have transformed valid
   // lines and rays into the origin of the space.

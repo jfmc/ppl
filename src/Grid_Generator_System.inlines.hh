@@ -235,21 +235,6 @@ Grid_Generator_System::operator[](const dimension_type k) const {
   return static_cast<const Grid_Generator&>(sys[k]);
 }
 
-inline void
-Grid_Generator_System::release_row(Grid_Generator& row) {
-  sys.release_row(row);
-}
-
-inline void
-Grid_Generator_System::release_rows(Swapping_Vector<Grid_Generator>& v) {
-  sys.release_rows(v);
-}
-
-inline void
-Grid_Generator_System::take_ownership_of_rows(Swapping_Vector<Grid_Generator>& v) {
-  sys.take_ownership_of_rows(v);
-}
-
 inline bool
 Grid_Generator_System::has_no_rows() const {
   return sys.has_no_rows();

@@ -112,12 +112,6 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
 
   bool sys_sorted = sys.is_sorted();
 
-  // release_rows() does not support pending rows.
-  sys.unset_pending_rows();
-
-  Swapping_Vector<sys_row_type> sys_rows;
-  sys.release_rows(sys_rows);
-
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be
   // equalities (see Proposition above).
@@ -126,13 +120,13 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
       // The constraint `sys_rows[i]' is saturated by all the generators.
       // Thus, either it is already an equality or it can be transformed
       // to an equality (see Proposition above).
-      sys_rows[i].set_is_line_or_equality();
+      sys.sys.rows[i].set_is_line_or_equality();
       // Note: simple normalization already holds.
-      sys_rows[i].sign_normalize();
+      sys.sys.rows[i].sign_normalize();
       // We also move it just after all the other equalities,
       // so that system `sys_rows' keeps its partial sortedness.
       if (i != num_lines_or_equalities) {
-        sys_rows[i].m_swap(sys_rows[num_lines_or_equalities]);
+        sys.sys.rows[i].m_swap(sys.sys.rows[num_lines_or_equalities]);
 	swap(sat[i], sat[num_lines_or_equalities]);
 	swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
       }
@@ -147,10 +141,8 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
   }
 
-  sys.take_ownership_of_rows(sys_rows);
-
-  if (sys_sorted)
-    sys.set_sorted(true);
+  sys.set_sorted(sys_sorted);
+  PPL_ASSERT(sys.OK());
 
   // At this point, all the equalities of `sys' (included those
   // inequalities that we just transformed to equalities) have

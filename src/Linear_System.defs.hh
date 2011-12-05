@@ -37,6 +37,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Generator_System.types.hh"
 #include "Topology.types.hh"
 
+// TODO: Check how much of this description is still true.
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for systems of constraints and generators.
 /*! \ingroup PPL_CXX_interface
@@ -171,16 +172,6 @@ public:
                    It must be sorted.
   */
   void remove_rows(const std::vector<dimension_type>& indexes);
-
-  //! Swaps \p row with the last row and then removes that row from the
-  //! system.
-  void release_row(Row& row);
-
-  //! Swaps the vector of rows with \p v. \p v must be empty.
-  void release_rows(Swapping_Vector<Row>& v);
-
-  //! Swaps the vector of rows with \p v. \p *this must have no rows.
-  void take_ownership_of_rows(Swapping_Vector<Row>& v);
 
   // TODO: Consider making this private.
   //! Removes all the specified dimensions from the system.
@@ -450,10 +441,17 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-private:
+  //! The vector that contains the rows.
+  /*!
+    \note This is public for convenience. Clients that modify if must preserve
+          the class invariant.
+  */
+  Swapping_Vector<Row> rows;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+private:
   //! Makes the system shrink by removing its i-th row.
   /*!
     When \p keep_sorted is \p true and the system is sorted, sortedness will
@@ -521,9 +519,6 @@ private:
 
   //! Adds a copy of the given row to the pending part of the system.
   void add_pending_row(Row& r, Recycle_Input);
-
-  //! The vector that contains the rows.
-  Swapping_Vector<Row> rows;
 
   //! The space dimension of each row. All rows must have this number of
   //! space dimensions.

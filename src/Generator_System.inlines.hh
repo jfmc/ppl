@@ -173,21 +173,6 @@ Generator_System::unset_pending_rows() {
 }
 
 inline void
-Generator_System::release_row(Generator& row) {
-  sys.release_row(row);
-}
-
-inline void
-Generator_System::release_rows(Swapping_Vector<Generator>& v) {
-  sys.release_rows(v);
-}
-
-inline void
-Generator_System::take_ownership_of_rows(Swapping_Vector<Generator>& v) {
-  sys.take_ownership_of_rows(v);
-}
-
-inline void
 Generator_System::set_sorted(bool b) {
   sys.set_sorted(b);
 }

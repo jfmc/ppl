@@ -466,11 +466,6 @@ public:
   */
   void insert_verbatim(Congruence& cg, Recycle_Input);
 
-  // TODO: Check if these methods should be improved.
-  void release_row(Congruence& c);
-  void release_rows(Swapping_Vector<Congruence>& v);
-  void take_ownership_of_rows(Swapping_Vector<Congruence>& v);
-
 private:
   //! Makes the system shrink by removing the rows in [first,last).
   /*!

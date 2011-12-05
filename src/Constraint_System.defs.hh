@@ -478,14 +478,6 @@ public:
   void mark_as_not_necessarily_closed();
 
   // TODO: Consider removing this, or making it private.
-  //! Swaps the vector of rows with \p v. \p v must be empty.
-  void release_rows(Swapping_Vector<Constraint>& v);
-
-  // TODO: Consider removing this, or making it private.
-  //! Swaps the vector of rows with \p v. \p *this must have no rows.
-  void take_ownership_of_rows(Swapping_Vector<Constraint>& v);
-
-  // TODO: Consider removing this, or making it private.
   //! Minimizes the subsystem of equations contained in \p *this.
   /*!
     This method works only on the equalities of the system:

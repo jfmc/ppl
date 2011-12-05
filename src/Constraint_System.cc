@@ -305,20 +305,8 @@ PPL::Constraint_System
   const bool not_invertible = (v.space_dimension() > expr.space_dimension()
                                || expr_v == 0);
 
-  // TODO: Check if it is correct to arrive at this point with
-  // num_pending_rows() != 0.
-  const dimension_type pending_index = first_pending_row();
-
-  // Avoid triggering assertions in x.release_rows().
-  sys.set_sorted(false);
-  sys.unset_pending_rows();
-  
-  Swapping_Vector<Constraint> rows;
-  // Release the rows from the linear system so they can be modified.
-  sys.release_rows(rows);
-
   for (dimension_type i = n_rows; i-- > 0; ) {
-    Constraint& row = rows[i];
+    Constraint& row = sys.rows[i];
     Coefficient_traits::const_reference row_v = row.coefficient(v);
     if (row_v != 0) {
       Coefficient c = row_v;
@@ -334,12 +322,10 @@ PPL::Constraint_System
     }
   }
 
-  // Put the rows back in the Linear_System.
-  sys.take_ownership_of_rows(rows);
-  sys.set_index_first_pending_row(pending_index);
-
   // Strong normalization also resets the sortedness flag.
   sys.strong_normalize();
+
+  PPL_ASSERT(sys.OK());
 }
 
 void
