@@ -631,8 +631,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
 	// Not the first point: convert `g' to be a parameter ...
 	Grid_Generator& gen = const_cast<Grid_Generator&>(g);
 	const Grid_Generator& point = *first_point;
-        const Coefficient& p_div = point.expression().inhomogeneous_term();
-        const Coefficient& g_div = gen.expression().inhomogeneous_term();
+        const Coefficient& p_div = point.divisor();
+        const Coefficient& g_div = gen.divisor();
         gen.expr.linear_combine(point.expr, p_div, -g_div,
                                 1, gen.expr.space_dimension());
         gen.expr.set_inhomogeneous_term(g_div * p_div);
