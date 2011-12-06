@@ -254,7 +254,7 @@ PPL::operator+=(Congruence& c1, const Congruence& c2) {
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
   c1.expr += c2.expr;
   if (c1.is_equality())
-    c1.modulus() = c2.modulus();
+    c1.modulus_ = c2.modulus_;
   return c1;
 }
 
@@ -264,7 +264,7 @@ PPL::operator-=(Congruence& c1, const Congruence& c2) {
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
   c1.expr -= c2.expr;
   if (c1.modulus() == 0)
-    c1.modulus() = c2.modulus();
+    c1.modulus_ = c2.modulus_;
   return c1;
 }
 
@@ -276,7 +276,7 @@ PPL::add_mul_assign(Congruence& c1,
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
   add_mul_assign(c1.expr, factor, c2.expr);
   if (c1.modulus() == 0)
-    c1.modulus() = c2.modulus();
+    c1.modulus_ = c2.modulus_;
 }
 
 void
@@ -287,7 +287,7 @@ PPL::sub_mul_assign(Congruence& c1,
   PPL_ASSERT(c1.is_proper_congruence() || c2.is_proper_congruence());
   sub_mul_assign(c1.expr, factor, c2.expr);
   if (c1.modulus() == 0)
-    c1.modulus() = c2.modulus();
+    c1.modulus_ = c2.modulus_;
 }
 
 const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;

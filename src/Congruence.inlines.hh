@@ -196,9 +196,9 @@ operator/(const Constraint& c, Coefficient_traits::const_reference m) {
 inline Congruence&
 Congruence::operator/=(Coefficient_traits::const_reference k) {
   if (k >= 0)
-    modulus() *= k;
+    modulus_ *= k;
   else
-    modulus() *= -k;
+    modulus_ *= -k;
   return *this;
 }
 
@@ -255,14 +255,9 @@ Congruence::modulus() const {
   return modulus_;
 }
 
-inline Coefficient&
-Congruence::modulus() {
-  return modulus_;
-}
-
 inline void
 Congruence::set_modulus(Coefficient_traits::const_reference m) {
-  modulus() = m;
+  modulus_ = m;
   PPL_ASSERT(OK());
 }
 

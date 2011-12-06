@@ -286,9 +286,6 @@ public:
   //! Returns a const reference to the modulus of \p *this.
   Coefficient_traits::const_reference modulus() const;
 
-  //! Returns a reference to the modulus of \p *this.
-  Coefficient& modulus();
-
   //! Sets the modulus of \p *this to \p m .
   //! If \p m is 0, the congruence becomes an equality.
   void set_modulus(Coefficient_traits::const_reference m);
