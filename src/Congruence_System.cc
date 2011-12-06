@@ -472,7 +472,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
     Congruence& cg_old = cgs.rows[i];
     Congruence& cg_new = rows[old_num_rows + i];
     cg_old.set_representation(representation());
-    cg_old.shift_coefficients(old_space_dim, 0);
+    cg_old.shift_space_dimensions(Variable(0), old_space_dim);
     swap(cg_old, cg_new);
   }
 }

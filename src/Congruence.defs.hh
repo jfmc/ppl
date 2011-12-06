@@ -450,11 +450,6 @@ public:
   //! the coefficient of \p v. This increases the space dimension by \p n.
   void shift_space_dimensions(Variable v, dimension_type n);
 
-  // TODO: Remove this.
-  //! Shifts to the right by \p n positions the coefficients of variables with
-  //! index greater than \p i . The space dimension is increased by \p n .
-  void shift_coefficients(dimension_type n, dimension_type i);
-
   //! Normalizes the signs.
   /*!
     The signs of the coefficients and the inhomogeneous term are
