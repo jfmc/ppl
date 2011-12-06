@@ -285,12 +285,6 @@ void swap(Generator& x, Generator& y);
 class Parma_Polyhedra_Library::Generator {
 public:
 
-  //! The possible kinds of Generator objects.
-  enum Kind {
-    LINE_OR_EQUALITY = 0,
-    RAY_OR_POINT_OR_INEQUALITY = 1
-  };
-
   //! The representation used for new Generators.
   /*!
     \note The copy constructor and the copy constructor with specified size
@@ -343,9 +337,6 @@ public:
 
   explicit Generator(dimension_type space_dim,
                      Representation r = default_representation);
-
-  Generator(dimension_type space_dim, Kind kind, Topology topology,
-            Representation r = default_representation);
 
   //! Returns the closure point at \p e / \p d.
   /*!
@@ -410,18 +401,6 @@ public:
     of \p *this row is necessarily closed.
   */
   bool is_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a line or an equality.
-  */
-  bool is_line_or_equality() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a ray, a point or an inequality.
-  */
-  bool is_ray_or_point_or_inequality() const;
   //@} // Flags inspection methods
 
   //! \name Flags coercion methods
@@ -435,12 +414,6 @@ public:
 
   //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_not_necessarily_closed();
-
-  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
-  void set_is_line_or_equality();
-
-  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
-  void set_is_ray_or_point_or_inequality();
   //@} // Flags coercion methods
 
   //! Returns the maximum space dimension a Generator can handle.
@@ -593,6 +566,12 @@ public:
   const Expression& expression() const;
 
 private:
+  //! The possible kinds of Generator objects.
+  enum Kind {
+    LINE_OR_EQUALITY = 0,
+    RAY_OR_POINT_OR_INEQUALITY = 1
+  };
+
   Linear_Expression expr;
 
   Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
@@ -625,6 +604,27 @@ private:
   Generator(Linear_Expression& e, Type type, Topology topology);
 
   Generator(Linear_Expression& e, Kind kind, Topology topology);
+
+  Generator(dimension_type space_dim, Kind kind, Topology topology,
+            Representation r = default_representation);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a line or an equality.
+  */
+  bool is_line_or_equality() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a ray, a point or an inequality.
+  */
+  bool is_ray_or_point_or_inequality() const;
+
+  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
+  void set_is_line_or_equality();
+
+  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
+  void set_is_ray_or_point_or_inequality();
 
   //! Marks the epsilon dimension as a standard dimension.
   /*!
