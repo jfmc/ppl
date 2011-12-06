@@ -80,26 +80,9 @@ Congruence::expression() const {
 }
 
 inline void
-Congruence::add_space_dimensions(dimension_type n) {
-  const dimension_type new_space_dim = space_dimension() + n;
-  expr.set_space_dimension(new_space_dim);
-  PPL_ASSERT(OK());
-}
-
-inline void
-Congruence::remove_space_dimensions(dimension_type n) {
-  PPL_ASSERT(space_dimension() >= n);
-  const dimension_type new_space_dim = space_dimension() - n;
-  expr.set_space_dimension(new_space_dim);
-  PPL_ASSERT(OK());
-}
-
-inline void
 Congruence::set_space_dimension(dimension_type n) {
-  if (n > space_dimension())
-    add_space_dimensions(n - space_dimension());
-  else
-    remove_space_dimensions(space_dimension() - n);
+  expr.set_space_dimension(n);
+  PPL_ASSERT(OK());
 }
 
 inline void

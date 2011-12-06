@@ -442,12 +442,6 @@ public:
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 
-  //! Adds \p n to the space dimension.
-  void add_space_dimensions(dimension_type n);
-
-  //! Decreases the space dimension by \p n .
-  void remove_space_dimensions(dimension_type n);
-
   //! Sets the space dimension by \p n , adding or removing coefficients as
   //! needed.
   void set_space_dimension(dimension_type n);
