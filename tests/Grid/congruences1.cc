@@ -213,7 +213,7 @@ test09() {
   cgs1.insert((A %= 0) / 2);
   cgs.insert(cgs1);
   cgs1.insert((A + B %= 0) / 2);
-  cgs.recycling_insert(cgs1);
+  cgs.insert(cgs1, Recycle_Input());
 
   Grid gr(2);
 

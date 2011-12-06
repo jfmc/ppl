@@ -307,7 +307,7 @@ test13() {
   gs1.insert(grid_point(5*A + 2*B, 3));
   gs1.insert(parameter(11*C, 2));
 
-  gs.recycling_insert(gs1);
+  gs.insert(gs1, Recycle_Input());
 
   Grid gr(gs);
 
@@ -403,7 +403,7 @@ test17() {
   ggs1.insert(grid_point(3*B));
 
   Grid_Generator_System ggs;
-  ggs.recycling_insert(ggs1);
+  ggs.insert(ggs1, Recycle_Input());
   print_generators(ggs, "*** ggs ***");
 
   Grid gr(ggs);

@@ -36,7 +36,7 @@ test01() {
 
   Grid_Generator g = grid_point(A + B);
 
-  gs.recycling_insert(g);
+  gs.insert(g, Recycle_Input());
 
   print_generators(gs, "*** gs ***");
 
