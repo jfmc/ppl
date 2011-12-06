@@ -224,12 +224,6 @@ int compare(const Constraint& x, const Constraint& y);
 class Parma_Polyhedra_Library::Constraint {
 public:
 
-  //! The possible kinds of Constraint objects.
-  enum Kind {
-    LINE_OR_EQUALITY = 0,
-    RAY_OR_POINT_OR_INEQUALITY = 1
-  };
-
   //! The constraint type.
   enum Type {
     /*! The constraint is an equality. */
@@ -256,10 +250,6 @@ public:
   //! Constructs the \f$0<0\f$ constraint.
   explicit Constraint(dimension_type space_dim,
                       Representation r = default_representation);
-
-  //! Constructs the \f$0<0\f$ constraint.
-  Constraint(dimension_type space_dim, Kind kind, Topology topology,
-             Representation r = default_representation);
 
   //! Ordinary copy constructor.
   /*!
@@ -519,14 +509,6 @@ public:
   */
   Constraint(Linear_Expression& e, Type type, Topology topology);
 
-  /*! \brief
-    Builds a constraint of kind \p kind and topology \p topology,
-    stealing the coefficients from \p e.
-
-    \note The new Constraint will have the same representation as `e'.
-  */
-  Constraint(Linear_Expression& e, Kind kind, Topology topology);
-
   //! Constructs from a congruence, with specified size and (optional)
   //! representation.
   Constraint(const Congruence& cg, dimension_type space_dim,
@@ -550,6 +532,13 @@ public:
   const Expression& expression() const;
 
 private:
+
+  //! The possible kinds of Constraint objects.
+  enum Kind {
+    LINE_OR_EQUALITY = 0,
+    RAY_OR_POINT_OR_INEQUALITY = 1
+  };
+
   Linear_Expression expr;
 
   Expression wrapped_expr;
@@ -583,6 +572,18 @@ private:
     (used to implement NNC polyhedra).
   */
   static const Constraint* epsilon_leq_one_p;
+
+  //! Constructs the \f$0<0\f$ constraint.
+  Constraint(dimension_type space_dim, Kind kind, Topology topology,
+             Representation r = default_representation);
+
+  /*! \brief
+    Builds a constraint of kind \p kind and topology \p topology,
+    stealing the coefficients from \p e.
+
+    \note The new Constraint will have the same representation as `e'.
+  */
+  Constraint(Linear_Expression& e, Kind kind, Topology topology);
 
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .
