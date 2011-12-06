@@ -84,7 +84,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
     cgs.set_space_dimension(space_dim);
 
     // Recover minimal form after cgs(zdi) normalization.
-    cgs.rows[0].set_inhomogeneous_term(Coefficient_one());
+    cgs.rows[0].expr.set_inhomogeneous_term(Coefficient_one());
     PPL_ASSERT(cgs.OK());
 
     swap(con_sys, cgs);

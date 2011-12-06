@@ -223,11 +223,6 @@ Congruence::inhomogeneous_term() const {
   return expr.inhomogeneous_term();
 }
 
-inline void
-Congruence::set_inhomogeneous_term(Coefficient_traits::const_reference c) {
-  expr.set_inhomogeneous_term(c);
-}
-
 inline Coefficient_traits::const_reference
 Congruence::modulus() const {
   return modulus_;

@@ -505,7 +505,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // The last row is a false equality, as all the coefficient terms
       // are zero while the inhomogeneous term (as a result of the
       // reduced form) is some other value.
-      last_row.set_inhomogeneous_term(Coefficient_one());
+      last_row.expr.set_inhomogeneous_term(Coefficient_one());
       dim_kinds.resize(1);
       swap(sys.rows[0], last_row);
       sys.remove_trailing_rows(sys.num_rows() - 1);
@@ -548,7 +548,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     if (num_rows == 0) {
       Congruence cg(sys.space_dimension());
       cg.set_modulus(Coefficient_one());
-      cg.set_inhomogeneous_term(Coefficient_one());
+      cg.expr.set_inhomogeneous_term(Coefficient_one());
       sys.insert_verbatim(cg, Recycle_Input());
 
       PPL_ASSERT(sys.OK());
@@ -579,11 +579,11 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 	break;
       }
     }
-    new_last_row.set_inhomogeneous_term(new_last_row.modulus());
+    new_last_row.expr.set_inhomogeneous_term(new_last_row.modulus());
     sys.insert_verbatim(new_last_row, Recycle_Input());
   }
   else {
-    sys.rows.back().set_inhomogeneous_term(sys.rows.back().modulus());
+    sys.rows.back().expr.set_inhomogeneous_term(sys.rows.back().modulus());
   }
 
   // Since we are reducing the system to "strong minimal form",
