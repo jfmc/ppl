@@ -736,12 +736,6 @@ public:
   void sign_normalize();
 
   /*! \brief
-    Negates the elements from index \p first (included)
-    to index \p last (excluded).
-  */
-  void negate(dimension_type first, dimension_type last);
-
-  /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in
     \p vars[i] is \f$0\f$.
   */
@@ -920,6 +914,12 @@ private:
   //! is nonzero in both *this and x.
   bool have_a_common_variable(const Linear_Expression& x,
                               Variable first, Variable last) const;
+
+  /*! \brief
+    Negates the elements from index \p first (included)
+    to index \p last (excluded).
+  */
+  void negate(dimension_type first, dimension_type last);
 
   template <typename Row>
   friend class Linear_Expression_Impl;
