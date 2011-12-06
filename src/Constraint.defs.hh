@@ -280,6 +280,19 @@ public:
   explicit Constraint(const Congruence& cg,
                       Representation r = default_representation);
 
+  /*! \brief
+    Builds a constraint of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+
+    \note The new Constraint will have the same representation as `e'.
+  */
+  Constraint(Linear_Expression& e, Type type, Topology topology);
+
+  //! Constructs from a congruence, with specified size and (optional)
+  //! representation.
+  Constraint(const Congruence& cg, dimension_type space_dim,
+             Representation r = default_representation);
+
   //! Destructor.
   ~Constraint();
 
@@ -482,19 +495,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void m_swap(Constraint& y);
-
-  /*! \brief
-    Builds a constraint of type \p type and topology \p topology,
-    stealing the coefficients from \p e.
-
-    \note The new Constraint will have the same representation as `e'.
-  */
-  Constraint(Linear_Expression& e, Type type, Topology topology);
-
-  //! Constructs from a congruence, with specified size and (optional)
-  //! representation.
-  Constraint(const Congruence& cg, dimension_type space_dim,
-             Representation r = default_representation);
 
   //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();
