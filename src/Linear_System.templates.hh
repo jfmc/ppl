@@ -128,7 +128,7 @@ Linear_System<Row>::ascii_dump(std::ostream& s) const {
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
-    << num_rows() << " x " << space_dimension()
+    << num_rows() << " x " << space_dimension() << " "
     << (sorted ? "(sorted)" : "(not_sorted)")
     << "\n"
     << "index_first_pending " << first_pending_row()
