@@ -82,6 +82,66 @@ operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
 Constraint
 operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
+//! Returns the constraint \p e1 = \p e2.
+/*! \relates Constraint */
+Constraint
+operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 = \p v2.
+/*! \relates Constraint */
+Constraint
+operator==(Variable v1, Variable v2);
+
+//! Returns the constraint \p e = \p n.
+/*! \relates Constraint */
+Constraint
+operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n = \p e.
+/*! \relates Constraint */
+Constraint
+operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \<= \p e2.
+/*! \relates Constraint */
+Constraint
+operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \<= \p v2.
+/*! \relates Constraint */
+Constraint
+operator<=(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \<= \p n.
+/*! \relates Constraint */
+Constraint
+operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \<= \p e.
+/*! \relates Constraint */
+Constraint
+operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+//! Returns the constraint \p e1 \>= \p e2.
+/*! \relates Constraint */
+Constraint
+operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \>= \p v2.
+/*! \relates Constraint */
+Constraint
+operator>=(Variable v1, Variable v2);
+
+//! Returns the constraint \p e \>= \p n.
+/*! \relates Constraint */
+Constraint
+operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+//! Returns the constraint \p n \>= \p e.
+/*! \relates Constraint */
+Constraint
+operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Constraint
@@ -280,14 +340,6 @@ public:
   explicit Constraint(const Congruence& cg,
                       Representation r = default_representation);
 
-  /*! \brief
-    Builds a constraint of type \p type and topology \p topology,
-    stealing the coefficients from \p e.
-
-    \note The new Constraint will have the same representation as `e'.
-  */
-  Constraint(Linear_Expression& e, Type type, Topology topology);
-
   //! Constructs from a congruence, with specified size and (optional)
   //! representation.
   Constraint(const Congruence& cg, dimension_type space_dim,
@@ -301,38 +353,6 @@ public:
 
   //! Converts *this to the specified representation.
   void set_representation(Representation r);
-
-  //! \name Flags inspection methods
-  //@{
-  //! Returns the topological kind of \p *this.
-  Topology topology() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is not necessarily closed.
-  */
-  bool is_not_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is necessarily closed.
-  */
-  bool is_necessarily_closed() const;
-  //@} // Flags inspection methods
-
-  //! \name Flags coercion methods
-  //@{
-
-  // TODO: Consider setting the epsilon dimension in this method.
-  //! Sets to \p x the topological kind of \p *this row.
-  void set_topology(Topology x);
-
-  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_necessarily_closed();
-
-  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_not_necessarily_closed();
-  //@} // Flags coercion methods
 
   //! Assignment operator.
   Constraint& operator=(const Constraint& c);
@@ -568,6 +588,14 @@ private:
   Constraint(Linear_Expression& e, Kind kind, Topology topology);
 
   /*! \brief
+    Builds a constraint of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+
+    \note The new Constraint will have the same representation as `e'.
+  */
+  Constraint(Linear_Expression& e, Type type, Topology topology);
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this row
     represents a line or an equality.
   */
@@ -584,6 +612,38 @@ private:
 
   //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
   void set_is_ray_or_point_or_inequality();
+
+  //! \name Flags inspection methods
+  //@{
+  //! Returns the topological kind of \p *this.
+  Topology topology() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is not necessarily closed.
+  */
+  bool is_not_necessarily_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is necessarily closed.
+  */
+  bool is_necessarily_closed() const;
+  //@} // Flags inspection methods
+
+  //! \name Flags coercion methods
+  //@{
+
+  // TODO: Consider setting the epsilon dimension in this method.
+  //! Sets to \p x the topological kind of \p *this row.
+  void set_topology(Topology x);
+
+  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_necessarily_closed();
+
+  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_not_necessarily_closed();
+  //@} // Flags coercion methods
 
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .
@@ -720,6 +780,42 @@ private:
 
   friend Constraint
   operator>(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+  friend Constraint
+  operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+
+  friend Constraint
+  operator==(Variable v1, Variable v2);
+
+  friend Constraint
+  operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend Constraint
+  operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+  friend Constraint
+  operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+  friend Constraint
+  operator<=(Variable v1, Variable v2);
+
+  friend Constraint
+  operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend Constraint
+  operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
+  friend Constraint
+  operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+  friend Constraint
+  operator>=(Variable v1, Variable v2);
+
+  friend Constraint
+  operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  friend Constraint
+  operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 };
 
 namespace Parma_Polyhedra_Library {
@@ -745,66 +841,6 @@ operator==(const Constraint& x, const Constraint& y);
 /*! \relates Constraint */
 bool
 operator!=(const Constraint& x, const Constraint& y);
-
-//! Returns the constraint \p e1 = \p e2.
-/*! \relates Constraint */
-Constraint
-operator==(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 = \p v2.
-/*! \relates Constraint */
-Constraint
-operator==(Variable v1, Variable v2);
-
-//! Returns the constraint \p e = \p n.
-/*! \relates Constraint */
-Constraint
-operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n = \p e.
-/*! \relates Constraint */
-Constraint
-operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \<= \p e2.
-/*! \relates Constraint */
-Constraint
-operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \<= \p v2.
-/*! \relates Constraint */
-Constraint
-operator<=(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \<= \p n.
-/*! \relates Constraint */
-Constraint
-operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \<= \p e.
-/*! \relates Constraint */
-Constraint
-operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
-//! Returns the constraint \p e1 \>= \p e2.
-/*! \relates Constraint */
-Constraint
-operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the constraint \p v1 \>= \p v2.
-/*! \relates Constraint */
-Constraint
-operator>=(Variable v1, Variable v2);
-
-//! Returns the constraint \p e \>= \p n.
-/*! \relates Constraint */
-Constraint
-operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the constraint \p n \>= \p e.
-/*! \relates Constraint */
-Constraint
-operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 /*! \relates Constraint */
 void swap(Constraint& x, Constraint& y);

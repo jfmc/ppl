@@ -345,11 +345,6 @@ public:
   explicit Grid_Generator(dimension_type space_dim,
                           Representation r = default_representation);
 
-  //! Constructs a Grid_Generator with the specified space dimension, kind
-  //! and topology.
-  Grid_Generator(dimension_type space_dim, Kind kind, Topology topology,
-                 Representation r = default_representation);
-
   //! Ordinary copy constructor.
   //! The new Grid_Generator will have the same representation as g.
   Grid_Generator(const Grid_Generator& g);
@@ -376,55 +371,6 @@ public:
 
   //! Converts *this to the specified representation.
   void set_representation(Representation r);
-
-  //! \name Flags inspection methods
-  //@{
-  //! Returns the topological kind of \p *this.
-  Topology topology() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is not necessarily closed.
-  */
-  bool is_not_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is necessarily closed.
-  */
-  bool is_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a line or an equality.
-  */
-  bool is_line_or_equality() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a ray, a point or an inequality.
-  */
-  bool is_ray_or_point_or_inequality() const;
-  //@} // Flags inspection methods
-
-  //! \name Flags coercion methods
-  //@{
-
-  //! Sets to \p x the topological kind of \p *this row.
-  void set_topology(Topology x);
-
-  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_necessarily_closed();
-
-  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_not_necessarily_closed();
-
-  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
-  void set_is_line_or_equality();
-
-  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
-  void set_is_ray_or_point_or_inequality();
-  //@} // Flags coercion methods
 
   //! Returns the maximum space dimension a Grid_Generator can handle.
   static dimension_type max_space_dimension();
@@ -611,6 +557,11 @@ private:
   */
   static const Grid_Generator* zero_dim_point_p;
 
+  //! Constructs a Grid_Generator with the specified space dimension, kind
+  //! and topology.
+  Grid_Generator(dimension_type space_dim, Kind kind, Topology topology,
+                 Representation r = default_representation);
+
   // TODO: Avoid reducing the space dimension.
   /*! \brief
     Constructs a grid generator of type \p t from linear expression \p e,
@@ -651,6 +602,55 @@ private:
 
   //! Sets the Grid_Generator kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter_or_point();
+
+  //! \name Flags inspection methods
+  //@{
+  //! Returns the topological kind of \p *this.
+  Topology topology() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is not necessarily closed.
+  */
+  bool is_not_necessarily_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is necessarily closed.
+  */
+  bool is_necessarily_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a line or an equality.
+  */
+  bool is_line_or_equality() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a ray, a point or an inequality.
+  */
+  bool is_ray_or_point_or_inequality() const;
+  //@} // Flags inspection methods
+
+  //! \name Flags coercion methods
+  //@{
+
+  //! Sets to \p x the topological kind of \p *this row.
+  void set_topology(Topology x);
+
+  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_necessarily_closed();
+
+  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_not_necessarily_closed();
+
+  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
+  void set_is_line_or_equality();
+
+  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
+  void set_is_ray_or_point_or_inequality();
+  //@} // Flags coercion methods
 
   /*! \brief
     Normalizes the sign of the coefficients so that the first non-zero

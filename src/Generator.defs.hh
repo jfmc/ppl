@@ -385,37 +385,6 @@ public:
   //! Converts *this to the specified representation.
   void set_representation(Representation r);
 
-  //! \name Flags inspection methods
-  //@{
-  //! Returns the topological kind of \p *this.
-  Topology topology() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is not necessarily closed.
-  */
-  bool is_not_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if the topology
-    of \p *this row is necessarily closed.
-  */
-  bool is_necessarily_closed() const;
-  //@} // Flags inspection methods
-
-  //! \name Flags coercion methods
-  //@{
-
-  //! Sets to \p x the topological kind of \p *this row.
-  void set_topology(Topology x);
-
-  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_necessarily_closed();
-
-  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
-  void set_not_necessarily_closed();
-  //@} // Flags coercion methods
-
   //! Returns the maximum space dimension a Generator can handle.
   static dimension_type max_space_dimension();
 
@@ -625,6 +594,37 @@ private:
 
   //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
   void set_is_ray_or_point_or_inequality();
+
+  //! \name Flags inspection methods
+  //@{
+  //! Returns the topological kind of \p *this.
+  Topology topology() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is not necessarily closed.
+  */
+  bool is_not_necessarily_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is necessarily closed.
+  */
+  bool is_necessarily_closed() const;
+  //@} // Flags inspection methods
+
+  //! \name Flags coercion methods
+  //@{
+
+  //! Sets to \p x the topological kind of \p *this row.
+  void set_topology(Topology x);
+
+  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_necessarily_closed();
+
+  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_not_necessarily_closed();
+  //@} // Flags coercion methods
 
   //! Marks the epsilon dimension as a standard dimension.
   /*!
