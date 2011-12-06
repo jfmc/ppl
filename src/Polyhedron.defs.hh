@@ -2814,6 +2814,10 @@ protected:
               Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
               Coefficient& denominator);
 
+  template <typename Linear_System1, typename Row2>
+  static bool
+  add_to_system_and_check_independence(Linear_System1& eq_sys,
+                                       const Row2& eq);
 };
 
 #include "Ph_Status.inlines.hh"

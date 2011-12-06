@@ -305,18 +305,6 @@ public:
     of \p *this row is necessarily closed.
   */
   bool is_necessarily_closed() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a line or an equality.
-  */
-  bool is_line_or_equality() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this row
-    represents a ray, a point or an inequality.
-  */
-  bool is_ray_or_point_or_inequality() const;
   //@} // Flags inspection methods
 
   //! \name Flags coercion methods
@@ -331,12 +319,6 @@ public:
 
   //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
   void set_not_necessarily_closed();
-
-  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
-  void set_is_line_or_equality();
-
-  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
-  void set_is_ray_or_point_or_inequality();
   //@} // Flags coercion methods
 
   //! Assignment operator.
@@ -584,6 +566,24 @@ private:
     \note The new Constraint will have the same representation as `e'.
   */
   Constraint(Linear_Expression& e, Kind kind, Topology topology);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a line or an equality.
+  */
+  bool is_line_or_equality() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a ray, a point or an inequality.
+  */
+  bool is_ray_or_point_or_inequality() const;
+
+  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
+  void set_is_line_or_equality();
+
+  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
+  void set_is_ray_or_point_or_inequality();
 
   //! Sets the dimension of the vector space enclosing \p *this to
   //! \p space_dim .

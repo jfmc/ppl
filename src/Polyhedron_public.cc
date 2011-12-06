@@ -1922,26 +1922,6 @@ struct Ruled_Out_Less_Than {
   }
 };
 
-template <typename Linear_System1, typename Row2>
-bool
-add_to_system_and_check_independence(Linear_System1& eq_sys,
-                                     const Row2& eq) {
-  // Check if eq is linearly independent from eq_sys.
-  PPL_ASSERT(eq.is_line_or_equality());
-  eq_sys.insert(eq);
-  const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
-  const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
-  if (rank == eq_sys_num_rows)
-    // eq is linearly independent from eq_sys.
-    return true;
-  else {
-    // eq is not linearly independent from eq_sys.
-    PPL_ASSERT(rank == eq_sys_num_rows - 1);
-    eq_sys.remove_trailing_rows(1);
-    return false;
-  }
-}
-
 /*
   Modifies the vector of pointers \p ineqs_p, setting to 0 those entries
   that point to redundant inequalities or masked equalities.
@@ -1999,6 +1979,26 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
 }
 
 } // namespace
+
+template <typename Linear_System1, typename Row2>
+bool
+PPL::Polyhedron::add_to_system_and_check_independence(Linear_System1& eq_sys,
+                                                      const Row2& eq) {
+  // Check if eq is linearly independent from eq_sys.
+  PPL_ASSERT(eq.is_line_or_equality());
+  eq_sys.insert(eq);
+  const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
+  const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
+  if (rank == eq_sys_num_rows)
+    // eq is linearly independent from eq_sys.
+    return true;
+  else {
+    // eq is not linearly independent from eq_sys.
+    PPL_ASSERT(rank == eq_sys_num_rows - 1);
+    eq_sys.remove_trailing_rows(1);
+    return false;
+  }
+}
 
 bool
 PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
