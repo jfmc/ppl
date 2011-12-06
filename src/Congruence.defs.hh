@@ -344,9 +344,9 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if \p *this is equal to \p cg in
-    dimension \p dim.
+    dimension \p v.
   */
-  bool is_equal_at_dimension(dimension_type dim,
+  bool is_equal_at_dimension(Variable v,
 			     const Congruence& cg) const;
 
   //! Initializes the class.

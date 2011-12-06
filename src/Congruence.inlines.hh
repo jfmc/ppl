@@ -272,9 +272,9 @@ Congruence::is_equality() const {
 }
 
 inline bool
-Congruence::is_equal_at_dimension(dimension_type dim,
+Congruence::is_equal_at_dimension(Variable v,
 				  const Congruence& cg) const {
-  return expr.get(dim) * cg.modulus() == cg.expr.get(dim) * modulus();
+  return coefficient(v) * cg.modulus() == cg.coefficient(v) * modulus();
 }
 
 inline memory_size_type
