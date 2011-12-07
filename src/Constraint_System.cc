@@ -117,48 +117,45 @@ PPL::Constraint_System::has_strict_inequalities() const {
 }
 
 void
-PPL::Constraint_System::insert(const Constraint& c) {
+PPL::Constraint_System::insert(const Constraint& r) {
+  Constraint tmp = r;
+  insert(tmp, Recycle_Input());
+}
+
+void
+PPL::Constraint_System::insert(Constraint& c, Recycle_Input) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending constraint.
   PPL_ASSERT(sys.num_pending_rows() == 0);
-  if (sys.topology() == c.topology())
-    sys.insert(c);
-  else
-    // `*this' and `c' have different topologies.
-    if (sys.is_necessarily_closed()) {
-      sys.set_not_necessarily_closed();
-      sys.insert(c);
-    }
-    else {
-      Constraint tmp_c(c, 1 + std::max(c.space_dimension(), space_dimension()),
-                       representation());
-      // TODO: Avoid using the mark_as_*() methods if possible.
-      tmp_c.mark_as_not_necessarily_closed();
-      sys.insert(tmp_c);
-    }
+
+  if (sys.topology() != c.topology()) {
+    if (sys.topology() == NECESSARILY_CLOSED)
+      sys.set_topology(NOT_NECESSARILY_CLOSED);
+    else
+      c.set_topology(NOT_NECESSARILY_CLOSED);
+  }
+
+  sys.insert(c, Recycle_Input());
+
   PPL_ASSERT(OK());
 }
 
 void
-PPL::Constraint_System::insert_pending(const Constraint& c) {
-  if (sys.topology() == c.topology())
-    sys.insert_pending(c);
-  else
-    // `*this' and `c' have different topologies.
-    if (sys.is_necessarily_closed()) {
-      sys.set_not_necessarily_closed();
-      sys.insert_pending(c);
-    }
-    else {
-      // Here `*this' is NNC and `c' is necessarily closed.
-      // Copying the constraint adding the epsilon coefficient
-      // and the missing space dimensions, if any.
-      Constraint tmp_c(c, 1 + std::max(c.space_dimension(), space_dimension()),
-                       representation());
-      // TODO: Avoid using the mark_as_*() methods if possible.
-      tmp_c.mark_as_not_necessarily_closed();
-      sys.insert_pending(tmp_c);
-    }
+PPL::Constraint_System::insert_pending(const Constraint& r) {
+  Constraint tmp = r;
+  insert_pending(tmp, Recycle_Input());
+}
+
+void
+PPL::Constraint_System::insert_pending(Constraint& c, Recycle_Input) {
+  if (sys.topology() != c.topology()) {
+    if (sys.topology() == NECESSARILY_CLOSED)
+      sys.set_topology(NOT_NECESSARILY_CLOSED);
+    else
+      c.set_topology(NOT_NECESSARILY_CLOSED);
+  }
+
+  sys.insert_pending(c, Recycle_Input());
   PPL_ASSERT(OK());
 }
 
