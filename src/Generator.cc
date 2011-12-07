@@ -411,14 +411,12 @@ PPL_OUTPUT_DEFINITIONS(Generator)
 bool
 PPL::Generator::OK() const {
   // Topology consistency check.
-  const dimension_type min_space_dim = is_necessarily_closed() ? 0 : 1;
-  if (expr.space_dimension() < min_space_dim) {
+  if (is_not_necessarily_closed() && expr.space_dimension() == 0) {
 #ifndef NDEBUG
     std::cerr << "Generator has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
-	      << "size is " << expr.space_dimension()
-	      << ", minimum is " << min_space_dim << "."
+	      << "space dimension is 0, minimum is 1."
 	      << std::endl;
 #endif
     return false;
