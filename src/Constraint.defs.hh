@@ -302,8 +302,7 @@ public:
   */
   static const Representation default_representation = DENSE;
 
-  // TODO: Update the documentation of this method.
-  //! Constructs the \f$0<0\f$ constraint.
+  //! Constructs the \f$0<=0\f$ constraint.
   explicit Constraint(Representation r = default_representation);
 
   //! Ordinary copy constructor.

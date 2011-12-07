@@ -332,7 +332,7 @@ public:
   static Generator point(const Linear_Expression& e,
                          Representation r);
 
-  // TODO: document this.
+  //! Constructs the point at the origin.
   explicit Generator(Representation r = default_representation);
 
   //! Returns the closure point at \p e / \p d.

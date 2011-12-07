@@ -120,10 +120,9 @@ Constraint::set_not_necessarily_closed() {
 inline
 Constraint::Constraint(Representation r)
   : expr(r),
-    wrapped_expr(expr, true),
+    wrapped_expr(expr, false),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
-    topology_(NOT_NECESSARILY_CLOSED) {
-  expr.set_space_dimension(1);
+    topology_(NECESSARILY_CLOSED) {
   PPL_ASSERT(OK());
 }
 
@@ -134,7 +133,8 @@ Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology,
     wrapped_expr(expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
     topology_(topology) {
-  expr.set_space_dimension(space_dim);
+  expr.set_space_dimension(space_dim + 1);
+  PPL_ASSERT(space_dimension() == space_dim);
   PPL_ASSERT(OK());
 }
 
@@ -188,18 +188,20 @@ Constraint::Constraint(const Constraint& c, Representation r)
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type space_dim)
-  : expr(c.expr, space_dim),
+  : expr(c.expr, c.is_necessarily_closed() ? space_dim : (space_dim + 1)),
     wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_), topology_(c.topology_) {
+  PPL_ASSERT(space_dimension() == space_dim);
   PPL_ASSERT(OK());
 }
 
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type space_dim,
                        Representation r)
-  : expr(c.expr, space_dim, r),
+  : expr(c.expr, c.is_necessarily_closed() ? space_dim : (space_dim + 1), r),
     wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_), topology_(c.topology_) {
+  PPL_ASSERT(space_dimension() == space_dim);
   PPL_ASSERT(OK());
 }
 

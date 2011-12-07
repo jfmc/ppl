@@ -93,10 +93,12 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type)
 
 inline
 Grid_Generator::Grid_Generator(Representation r)
-  : expr(r),
+  : expr(Coefficient_one(), r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
-    kind_(LINE_OR_EQUALITY) {
+    kind_(RAY_OR_POINT_OR_INEQUALITY) {
+  expr.set_space_dimension(1);
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -123,25 +125,30 @@ Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind,
     wrapped_expr(semi_wrapped_expr, true),
     kind_(kind) {
   PPL_ASSERT(topology == NECESSARILY_CLOSED);
-  expr.set_space_dimension(space_dim);
+  expr.set_space_dimension(space_dim + 1);
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g,
                                dimension_type space_dim)
-  : expr(g.expr, space_dim),
+  : expr(g.expr, space_dim + 1),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(g.kind_) {
+  PPL_ASSERT(OK());
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g,
                                dimension_type space_dim, Representation r)
-  : expr(g.expr, space_dim, r),
+  : expr(g.expr, space_dim + 1, r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(g.kind_) {
+  PPL_ASSERT(OK());
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline

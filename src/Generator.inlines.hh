@@ -115,8 +115,11 @@ Generator::Generator(Representation r)
   : expr(r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, false),
-    kind_(LINE_OR_EQUALITY),
+    kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NECESSARILY_CLOSED) {
+  expr.set_inhomogeneous_term(Coefficient_one());
+  PPL_ASSERT(space_dimension() == 0);
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -127,7 +130,12 @@ Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
     wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
     topology_(topology) {
-  expr.set_space_dimension(space_dim);
+  if (is_necessarily_closed())
+    expr.set_space_dimension(space_dim);
+  else
+    expr.set_space_dimension(space_dim + 1);
+  PPL_ASSERT(space_dimension() == space_dim);
+  PPL_ASSERT(OK());
 }
 
 inline
@@ -156,7 +164,6 @@ Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
   if (topology == NOT_NECESSARILY_CLOSED)
     expr.set_space_dimension(expr.space_dimension() + 1);
   strong_normalize();
-  PPL_ASSERT(OK());
 }
 
 inline
@@ -175,16 +182,31 @@ Generator::Generator(const Generator& g, Representation r)
     wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
     topology_(g.topology_) {
+  // This does not assert OK() because it's called by OK().
+  PPL_ASSERT(OK());
+}
+
+inline
+Generator::Generator(const Generator& g, dimension_type space_dim)
+  : expr(g.expr, g.is_necessarily_closed() ? space_dim : (space_dim + 1)),
+    semi_wrapped_expr(expr),
+    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
+    kind_(g.kind_),
+    topology_(g.topology_) {
+  PPL_ASSERT(OK());
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline
 Generator::Generator(const Generator& g, dimension_type space_dim,
                      Representation r)
-  : expr(g.expr, space_dim, r),
+  : expr(g.expr, g.is_necessarily_closed() ? space_dim : (space_dim + 1), r),
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
     topology_(g.topology_) {
+  PPL_ASSERT(OK());
+  PPL_ASSERT(space_dimension() == space_dim);
 }
 
 inline

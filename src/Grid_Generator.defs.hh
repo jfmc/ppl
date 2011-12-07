@@ -338,7 +338,7 @@ public:
   static Grid_Generator grid_point(const Linear_Expression& e,
                                    Representation r);
 
-  //! Constructs an invalid Grid_Generator.
+  //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   explicit Grid_Generator(Representation r = default_representation);
 
   //! Ordinary copy constructor.

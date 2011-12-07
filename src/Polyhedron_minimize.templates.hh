@@ -104,14 +104,15 @@ Polyhedron::minimize(const bool con_to_gen,
 
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
-    dest_row_type dest_i;
-    dest_i.set_topology(dest.topology());
-    dest_i.expr.set_space_dimension(dest_num_rows - 1);
+    Linear_Expression expr;
+    expr.set_space_dimension(dest_num_rows - 1);
     if (i == 0)
-      dest_i.expr += 1;
+      expr += 1;
     else
-      dest_i.expr += Variable(i - 1);
-    dest_i.set_is_line_or_equality();
+      expr += Variable(i - 1);
+    dest_row_type dest_i(expr, dest_row_type::LINE_OR_EQUALITY, NECESSARILY_CLOSED);
+    if (dest.topology() == NOT_NECESSARILY_CLOSED)
+      dest_i.mark_as_not_necessarily_closed();
     dest.sys.insert_no_ok(dest_i, Recycle_Input());
   }
   // The identity matrix `dest' is not sorted (see the sorting rules

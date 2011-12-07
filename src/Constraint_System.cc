@@ -130,9 +130,8 @@ PPL::Constraint_System::insert(const Constraint& c) {
       sys.insert(c);
     }
     else {
-      const dimension_type new_dim = 1 + std::max(c.space_dimension(),
-                                                  space_dimension());
-      Constraint tmp_c(c, new_dim, representation());
+      Constraint tmp_c(c, 1 + std::max(c.space_dimension(), space_dimension()),
+                       representation());
       // TODO: Avoid using the mark_as_*() methods if possible.
       tmp_c.mark_as_not_necessarily_closed();
       sys.insert(tmp_c);
@@ -154,9 +153,8 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing space dimensions, if any.
-      const dimension_type new_dim = 1 + std::max(c.space_dimension(),
-                                                  space_dimension());
-      Constraint tmp_c(c, new_dim, representation());
+      Constraint tmp_c(c, 1 + std::max(c.space_dimension(), space_dimension()),
+                       representation());
       // TODO: Avoid using the mark_as_*() methods if possible.
       tmp_c.mark_as_not_necessarily_closed();
       sys.insert_pending(tmp_c);

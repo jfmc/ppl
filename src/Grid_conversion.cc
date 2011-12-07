@@ -364,13 +364,14 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       --source_index;
     }
     else {
-      Grid_Generator g;
+      Grid_Generator g(dest.representation());
       g.set_topology(dest.topology());
       g.expr.set_space_dimension(dims);
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
 	g.set_is_line();
-	g.expr.set(dim, Coefficient_one());
+        g.expr.set(0, Coefficient_zero());
+        g.expr.set(dim, Coefficient_one());
       }
       else {
 	PPL_ASSERT(dim_kinds[dim] == PROPER_CONGRUENCE);
@@ -379,6 +380,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 	exact_div_assign(tmp, diagonal_lcm,
                          source[source_index].expr.get(dim));
+        g.expr.set(0, Coefficient_zero());
         g.expr.set(dim, tmp);
       }
       // Don't assert g.OK() here, because it may fail.
