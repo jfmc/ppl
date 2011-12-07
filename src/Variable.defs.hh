@@ -45,6 +45,10 @@ operator<<(std::ostream& s, const Variable& v);
 /*! \relates Variable */
 bool less(Variable v, Variable w);
 
+/*! \relates Variable */
+void
+swap(Variable& x, Variable& y);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A dimension of the vector space.
@@ -125,6 +129,9 @@ public:
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(Variable x, Variable y) const;
   };
+
+  //! Swaps *this and v.
+  void m_swap(Variable& v);
 
 private:
   //! The index of the Cartesian axis.

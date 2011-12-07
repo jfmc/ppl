@@ -84,6 +84,17 @@ Variable::Compare::operator()(const Variable x, const Variable y) const {
   return less(x, y);
 }
 
+inline void
+Variable::m_swap(Variable& v) {
+  using std::swap;
+  swap(varid, v.varid);
+}
+
+inline void
+swap(Variable& x, Variable& y) {
+  x.m_swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_inlines_hh)
