@@ -102,8 +102,8 @@ PPL::Sparse_Row::Sparse_Row(const PPL::Dense_Row& row)
 
 PPL::Sparse_Row::Sparse_Row(const Dense_Row& row, dimension_type sz,
                             dimension_type capacity)
-  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, sz),
-         Sparse_Row_from_Dense_Row_helper_function(row, sz)),
+  : tree(Sparse_Row_from_Dense_Row_helper_iterator(row, row.size()),
+         Sparse_Row_from_Dense_Row_helper_function(row, row.size())),
     size_(sz) {
   (void)capacity;
   PPL_ASSERT(OK());
