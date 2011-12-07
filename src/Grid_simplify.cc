@@ -200,7 +200,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // If the elements at `column' in row and pivot are the same, then
   // just subtract `pivot' from `row'.
   if (row_column == pivot_column) {
-    row -= pivot;
+    row.expr -= pivot.expr;
     return;
   }
 
@@ -227,7 +227,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   }
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  sub_mul_assign(row, reduced_row_col, pivot);
+  sub_mul_assign(row.expr, reduced_row_col, pivot.expr);
   PPL_ASSERT(row.expr.get(column) == 0);
 }
 
