@@ -167,12 +167,8 @@ public:
   */
   static const Representation default_representation = DENSE;
 
-  //! Constructs the 0 = 0 congruence with space dimension \p n .
-  explicit Congruence(dimension_type n = 0,
-                      Representation r = default_representation);
-
   //! Constructs the 0 = 0 congruence with space dimension \p 0 .
-  explicit Congruence(Representation r);
+  explicit Congruence(Representation r = default_representation);
 
   //! Ordinary copy constructor.
   /*!

@@ -546,8 +546,9 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // Set up the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
     if (num_rows == 0) {
-      Congruence cg(sys.space_dimension());
+      Congruence cg;
       cg.set_modulus(Coefficient_one());
+      cg.set_space_dimension(sys.space_dimension());
       cg.expr.set_inhomogeneous_term(Coefficient_one());
       sys.insert_verbatim(cg, Recycle_Input());
 
@@ -568,7 +569,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds[0] == CON_VIRTUAL) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
-    Congruence new_last_row(sys.space_dimension());
+    Congruence new_last_row;
+    new_last_row.set_space_dimension(sys.space_dimension());
     new_last_row.set_modulus(Coefficient_one());
     // Try use an existing modulus.
     dimension_type row_index = sys.num_rows();

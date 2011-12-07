@@ -120,16 +120,6 @@ Generator::Generator(Representation r)
 }
 
 inline
-Generator::Generator(dimension_type space_dim, Representation r)
-  : expr(r),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, true),
-    kind_(RAY_OR_POINT_OR_INEQUALITY),
-    topology_(NOT_NECESSARILY_CLOSED) {
-  expr.set_space_dimension(space_dim);
-}
-
-inline
 Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
                      Representation r)
   : expr(r),

@@ -341,10 +341,6 @@ public:
   //! Constructs an invalid Grid_Generator.
   explicit Grid_Generator(Representation r = default_representation);
 
-  //! Constructs a Grid_Generator with the specified space dimension.
-  explicit Grid_Generator(dimension_type space_dim,
-                          Representation r = default_representation);
-
   //! Ordinary copy constructor.
   //! The new Grid_Generator will have the same representation as g.
   Grid_Generator(const Grid_Generator& g);

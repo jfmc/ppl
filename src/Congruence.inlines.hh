@@ -30,9 +30,8 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Congruence::Congruence(dimension_type n, Representation r)
+Congruence::Congruence(Representation r)
   : expr(r) {
-  expr.set_space_dimension(n);
   PPL_ASSERT(OK());
 }
 

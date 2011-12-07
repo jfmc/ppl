@@ -118,16 +118,6 @@ Constraint::set_not_necessarily_closed() {
 }
 
 inline
-Constraint::Constraint(dimension_type space_dim, Representation r)
-  : expr(r),
-    wrapped_expr(expr, true),
-    kind_(RAY_OR_POINT_OR_INEQUALITY),
-    topology_(NOT_NECESSARILY_CLOSED) {
-  expr.set_space_dimension(space_dim);
-  PPL_ASSERT(OK());
-}
-
-inline
 Constraint::Constraint(Representation r)
   : expr(r),
     wrapped_expr(expr, true),

@@ -306,11 +306,6 @@ public:
   //! Constructs the \f$0<0\f$ constraint.
   explicit Constraint(Representation r = default_representation);
 
-  // TODO: Update the documentation of this method.
-  //! Constructs the \f$0<0\f$ constraint.
-  explicit Constraint(dimension_type space_dim,
-                      Representation r = default_representation);
-
   //! Ordinary copy constructor.
   /*!
     \note The new Constraint will have the same representation as `c',

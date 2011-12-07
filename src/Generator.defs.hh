@@ -335,9 +335,6 @@ public:
   // TODO: document this.
   explicit Generator(Representation r = default_representation);
 
-  explicit Generator(dimension_type space_dim,
-                     Representation r = default_representation);
-
   //! Returns the closure point at \p e / \p d.
   /*!
     Both \p e and \p d are optional arguments, with default values
