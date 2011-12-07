@@ -73,10 +73,8 @@ test01() {
       else
         add_mul_assign(e, c, Variable(col - 1));
     }
-    Constraint row(e, Constraint::RAY_OR_POINT_OR_INEQUALITY,
-                   NOT_NECESSARILY_CLOSED);
 
-    ls1.insert(row);
+    ls1.insert(e > 0);
 
     using std::fstream;
     using std::ios_base;
