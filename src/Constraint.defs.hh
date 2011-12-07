@@ -340,11 +340,6 @@ public:
   explicit Constraint(const Congruence& cg,
                       Representation r = default_representation);
 
-  //! Constructs from a congruence, with specified size and (optional)
-  //! representation.
-  Constraint(const Congruence& cg, dimension_type space_dim,
-             Representation r = default_representation);
-
   //! Destructor.
   ~Constraint();
 

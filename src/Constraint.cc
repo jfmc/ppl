@@ -78,22 +78,6 @@ PPL::Constraint::Constraint(const Congruence& cg, Representation r)
   PPL_ASSERT(OK());
 }
 
-PPL::Constraint::Constraint(const Congruence& cg,
-			    dimension_type space_dim,
-                            Representation r)
-  : expr(cg, space_dim, r),
-    wrapped_expr(expr, false),
-    kind_(LINE_OR_EQUALITY),
-    topology_(NECESSARILY_CLOSED) {
-  if (!cg.is_equality())
-    throw_invalid_argument("Constraint(cg)",
-                           "congruence cg must be an equality.");
-
-  // FIXME: normalize cg here.
-
-  PPL_ASSERT(OK());
-}
-
 void
 PPL::Constraint::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
