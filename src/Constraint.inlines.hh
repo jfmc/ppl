@@ -293,10 +293,10 @@ Constraint::type() const {
     return EQUALITY;
   if (is_necessarily_closed())
     return NONSTRICT_INEQUALITY;
+  if (epsilon_coefficient() < 0)
+    return STRICT_INEQUALITY;
   else
-    return (expr.coefficient(Variable(expr.space_dimension() - 1)) < 0)
-      ? STRICT_INEQUALITY
-      : NONSTRICT_INEQUALITY;
+    return NONSTRICT_INEQUALITY;
 }
 
 inline bool
@@ -370,15 +370,13 @@ operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator==(Variable v1, Variable v2) {
-  if (v1.space_dimension() < v2.space_dimension()) {
-    Linear_Expression diff(v1, Constraint::default_representation);
-    diff -= v2;
-    return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
-  } else {
-    Linear_Expression diff(v2, Constraint::default_representation);
-    diff -= v1;
-    return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
-  }
+  if (v1.space_dimension() > v2.space_dimension())
+    swap(v1, v2);
+  PPL_ASSERT(v1.space_dimension() <= v2.space_dimension());
+
+  Linear_Expression diff(v1, Constraint::default_representation);
+  diff -= v2;
+  return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
 
 /*! \relates Constraint */

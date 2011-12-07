@@ -134,7 +134,7 @@ PPL::Constraint::is_tautological() const {
 	// Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
-        return expr.all_zeroes(1, expr.space_dimension());
+        return wrapped_expr.all_homogeneous_terms_are_zero();
       }
     }
 }
@@ -168,7 +168,7 @@ PPL::Constraint::is_inconsistent() const {
         // Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
-        return expr.all_zeroes(1, expr.space_dimension());
+        return wrapped_expr.all_homogeneous_terms_are_zero();
       }
     }
 }
@@ -429,20 +429,19 @@ PPL_OUTPUT_DEFINITIONS(Constraint)
 bool
 PPL::Constraint::OK() const {
   // Topology consistency checks.
-  const dimension_type min_space_dim = is_necessarily_closed() ? 0 : 1;
-  if (expr.space_dimension() < min_space_dim) {
+  if (is_not_necessarily_closed() && expr.space_dimension() == 0) {
 #ifndef NDEBUG
     std::cerr << "Constraint has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
 	      << "space dimension is " << expr.space_dimension()
-	      << ", minimum is " << min_space_dim << "."
+	      << ", minimum is 1."
 	      << std::endl;
 #endif
     return false;
   }
 
-  if (is_equality() && !is_necessarily_closed()
+  if (is_equality() && is_not_necessarily_closed()
       && epsilon_coefficient() != 0) {
 #ifndef NDEBUG
     std::cerr << "Illegal constraint: an equality cannot be strict."
