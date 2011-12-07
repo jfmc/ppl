@@ -282,7 +282,8 @@ public:
     \param c_second_var
     If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
     then it will be set to the index of the second variable having
-    a non-zero coefficient in \p c.
+    a non-zero coefficient in \p c. If \p c_num_vars is set to 1, this must be
+    0.
 
     \param c_coeff
     If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,

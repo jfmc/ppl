@@ -51,7 +51,6 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
     // c_first_var is the only inhomogeneous coefficient different from zero.
     c_coeff = -c.expression().get(Variable(c_first_var - 1));
 
-    // TODO: Check if this is needed.
     c_second_var = 0;
     return true;
   }
