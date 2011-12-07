@@ -129,16 +129,11 @@ PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
 			const Linear_Expression& e2,
                         Representation r) {
-  if (e1.space_dimension() >= e2.space_dimension()) {
-    Linear_Expression e(e1, e1.space_dimension(), r);
-    e -= e2;
-    return Congruence(e, 1, Recycle_Input());
-  } else {
-    Linear_Expression e(e2, e2.space_dimension(), r);
-    neg_assign(e);
-    e += e1;
-    return Congruence(e, 1, Recycle_Input());
-  }
+  Linear_Expression e(e1,
+                      std::max(e1.space_dimension(), e2.space_dimension()),
+                      r);
+  e -= e2;
+  return Congruence(e, 1, Recycle_Input());
 }
 
 void
