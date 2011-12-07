@@ -25,9 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Congruence_inlines_hh 1
 
 #include "Congruence.defs.hh"
-
-#include "Constraint.defs.hh"
-
 #include <sstream>
 
 namespace Parma_Polyhedra_Library {

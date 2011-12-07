@@ -24,6 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "Congruence.defs.hh"
 #include "Variable.defs.hh"
+#include "Constraint.defs.hh"
 #include "assert.hh"
 #include <iostream>
 #include <sstream>
