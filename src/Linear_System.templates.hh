@@ -211,22 +211,7 @@ Linear_System<Row>::insert(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::insert(Row& r, Recycle_Input) {
-  PPL_ASSERT(topology() == r.topology());
-  // This method is only used when the system has no pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
-
-  if (r.space_dimension() > space_dimension())
-    // Resize the system.
-    set_space_dimension(r.space_dimension());
-  else
-    if (r.space_dimension() < space_dimension())
-      // Resize the row.
-      r.set_space_dimension(space_dimension());
-
-  add_row(r, Recycle_Input());
-
-  // The added row was not a pending row.
-  PPL_ASSERT(num_pending_rows() == 0);
+  insert_no_ok(r, Recycle_Input());
   PPL_ASSERT(OK());
 }
 
@@ -236,14 +221,6 @@ Linear_System<Row>::insert_no_ok(Row& r, Recycle_Input) {
   PPL_ASSERT(topology() == r.topology());
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
-
-  if (r.space_dimension() > space_dimension())
-    // Resize the system.
-    set_space_dimension_no_ok(r.space_dimension());
-  else
-    if (r.space_dimension() < space_dimension())
-      // Resize the row.
-      r.set_space_dimension_no_ok(space_dimension());
 
   add_row_no_ok(r, Recycle_Input());
 
@@ -265,14 +242,6 @@ Linear_System<Row>::insert_pending(Row& r, Recycle_Input) {
   // topology of the system.
   PPL_ASSERT(r.check_strong_normalized());
   PPL_ASSERT(topology() == r.topology());
-
-  if (r.space_dimension() > space_dimension())
-    // Resize the system.
-    set_space_dimension(r.space_dimension());
-  else
-    if (r.space_dimension() < space_dimension())
-      // Resize the row.
-      r.set_space_dimension(space_dimension());
 
   add_pending_row(r, Recycle_Input());
 
@@ -488,9 +457,14 @@ Linear_System<Row>::add_pending_row_no_ok(Row& r, Recycle_Input) {
   */
   PPL_ASSERT(r.topology() == topology());
 
-  rows.resize(rows.size() + 1);
-  r.set_space_dimension_no_ok(space_dimension());
   r.set_representation(representation());
+
+  if (space_dimension() < r.space_dimension())
+    set_space_dimension_no_ok(r.space_dimension());
+  else
+    r.set_space_dimension_no_ok(space_dimension());
+
+  rows.resize(rows.size() + 1);
   swap(rows.back(), r);
 }
 
