@@ -287,13 +287,6 @@ public:
   */
   bool is_equality() const;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if \p *this is equal to \p cg in
-    dimension \p v.
-  */
-  bool is_equal_at_dimension(Variable v,
-			     const Congruence& cg) const;
-
   //! Initializes the class.
   static void initialize();
 
@@ -434,6 +427,13 @@ private:
   Linear_Expression expr;
 
   Coefficient modulus_;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if \p *this is equal to \p cg in
+    dimension \p v.
+  */
+  bool is_equal_at_dimension(Variable v,
+                             const Congruence& cg) const;
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
