@@ -379,11 +379,10 @@ public:
   //! Swaps \p *this with \p y.
   void m_swap(Grid_Generator_System& y);
 
-  // TODO: Consider making this private.
+private:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Grid_Generator& operator[](dimension_type k) const;
 
-  // TODO: Consider making this private.
   //! Assigns to a given variable an affine expression.
   /*!
     \param v
@@ -417,11 +416,9 @@ public:
                     const Linear_Expression& expr,
                     Coefficient_traits::const_reference denominator);
 
-  // TODO: Consider making this private.
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
 
-  // TODO: Consider making this private.
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
     initializing the added rows as in the universe system.
@@ -442,7 +439,6 @@ public:
   //! Resizes the system to the specified space dimension.
   void set_space_dimension(dimension_type space_dim);
 
-  // TODO: Consider making this private.
   //! Removes all the specified dimensions from the generator system.
   /*!
     The space dimension of the variable with the highest space
@@ -451,16 +447,13 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& vars);
 
-  // TODO: Consider making this private.
   //! Shift by \p n positions the coefficients of variables, starting from
   //! the coefficient of \p v. This increases the space dimension by \p n.
   void shift_space_dimensions(Variable v, dimension_type n);
 
-  // TODO: Consider making this private.
   //! Sets the index to indicate that the system has no pending rows.
   void unset_pending_rows();
 
-  // TODO: Consider making this private.
   //! Permutes the space dimensions of the matrix.
   /*
     \param cycle
@@ -475,25 +468,19 @@ public:
   */
   void permute_space_dimensions(const std::vector<Variable>& cycle);
 
-  // TODO: Consider removing this or making it private.
   bool has_no_rows() const;
 
-  // TODO: Consider removing this or making it private.
   //! Makes the system shrink by removing its \p n trailing rows.
   void remove_trailing_rows(dimension_type n);
 
-  // TODO: Consider removing this or making it private.
   void insert_verbatim(const Grid_Generator& g);
 
-  // TODO: Consider removing this or making it private.
   //! Returns the system topology.
   Topology topology() const;
 
-  // TODO: Consider removing this or making it private.
   //! Returns the index of the first pending row.
   dimension_type first_pending_row() const;
 
-private:
   Linear_System<Grid_Generator> sys;
 
   /*! \brief

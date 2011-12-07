@@ -34,6 +34,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Constraint.types.hh"
 #include "Congruence_System.types.hh"
 #include "Polyhedron.types.hh"
+#include "termination.types.hh"
 #include <iterator>
 #include <iosfwd>
 
@@ -159,10 +160,6 @@ public:
   //! Copy constructor with specified representation.
   Constraint_System(const Constraint_System& cs, Representation r);
 
-  //! Builds an empty system of constraints having the specified topology.
-  explicit Constraint_System(Topology topol,
-                             Representation r = default_representation);
-
   //! Destructor.
   ~Constraint_System();
 
@@ -196,369 +193,11 @@ public:
   */
   bool has_strict_inequalities() const;
 
-  // TODO: Consider making this private.
-  //! Returns the number of equality constraints.
-  dimension_type num_equalities() const;
-
-  // TODO: Consider making this private.
-  //! Returns the number of inequality constraints.
-  dimension_type num_inequalities() const;
-
-  // TODO: Consider making this private.
-  /*! \brief
-    Applies Gaussian elimination and back-substitution so as
-    to provide a partial simplification of the system of constraints.
-
-    It is assumed that the system has no pending constraints.
-  */
-  void simplify();
-
-  // TODO: Consider making this private.
-  /*! \brief
-    Adjusts \p *this so that it matches the topology and
-    the number of space dimensions given as parameters
-    (adding or removing columns if needed).
-    Returns <CODE>false</CODE> if and only if \p topol is
-    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-    contains strict inequalities.
-  */
-  bool adjust_topology_and_space_dimension(Topology topol,
-                                           dimension_type num_dimensions);
-
-  // TODO: Consider making this private.
-  //! Returns a constant reference to the \p k- th constraint of the system.
-  const Constraint& operator[](dimension_type k) const;
-
-  // TODO: Consider making this private.
-  //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
-  bool satisfies_all_constraints(const Generator& g) const;
-
-  // TODO: Consider making this private.
-  //! Substitutes a given column of coefficients by a given affine expression.
-  /*!
-    \param v
-    The variable to which the affine transformation is substituted.
-
-    \param expr
-    The numerator of the affine transformation:
-    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
-
-    \param denominator
-    The denominator of the affine transformation.
-
-    We want to allow affine transformations
-    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
-    having any rational coefficients. Since the coefficients of the
-    constraints are integers we must also provide an integer \p
-    denominator that will be used as denominator of the affine
-    transformation.
-    The denominator is required to be a positive integer.
-
-    The affine transformation substitutes the matrix of constraints
-    by a new matrix whose elements \f${a'}_{ij}\f$ are built from
-    the old one \f$a_{ij}\f$ as follows:
-    \f[
-      {a'}_{ij} =
-        \begin{cases}
-          a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
-            \quad \text{for } j \neq v; \\
-          \mathrm{expr}[v] * a_{iv}
-            \quad \text{for } j = v.
-        \end{cases}
-    \f]
-
-    \p expr is a constant parameter and unaltered by this computation.
-  */
-  void affine_preimage(Variable v,
-                       const Linear_Expression& expr,
-                       Coefficient_traits::const_reference denominator);
-
-  // TODO: Consider making this private.
-  /*! \brief
-    Inserts in \p *this a copy of the constraint \p c,
-    increasing the number of space dimensions if needed.
-    It is a pending constraint.
-  */
-  void insert_pending(const Constraint& c);
-
-  // TODO: Consider making this private.
-  //! Adds low-level constraints to the constraint system.
-  void add_low_level_constraints();
-
-  /*! \brief
-    Removes all the constraints from the constraint system
-    and sets its space dimension to 0.
-  */
-  void clear();
-
   /*! \brief
     Inserts in \p *this a copy of the constraint \p c,
     increasing the number of space dimensions if needed.
   */
   void insert(const Constraint& c);
-
-  // TODO: Consider removing this, or making it private.
-  //! Returns the system topology.
-  Topology topology() const;
-
-  // TODO: Consider removing this, or making it private.
-  dimension_type num_rows() const;
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if
-    the system topology is <CODE>NECESSARILY_CLOSED</CODE>.
-  */
-  bool is_necessarily_closed() const;
-
-  // TODO: Consider removing this, or making it private.
-  //! Returns the number of rows that are in the pending part of the system.
-  dimension_type num_pending_rows() const;
-
-  // TODO: Consider removing this, or making it private.
-  //! Returns the index of the first pending row.
-  dimension_type first_pending_row() const;
-
-  // TODO: Consider removing this, or making it private.
-  //! Returns the value of the sortedness flag.
-  bool is_sorted() const;
-
-  // TODO: Consider removing this, or making it private.
-  //! Sets the index to indicate that the system has no pending rows.
-  void unset_pending_rows();
-
-  // TODO: Consider removing this, or making it private.
-  //! Sets the index of the first pending row to \p i.
-  void set_index_first_pending_row(dimension_type i);
-
-  // TODO: Consider removing this, or making it private.
-  //! Sets the sortedness flag of the system to \p b.
-  void set_sorted(bool b);
-
-  // TODO: Consider removing this, or making it private.
-  //! Makes the system shrink by removing its i-th row.
-  /*!
-    When \p keep_sorted is \p true and the system is sorted, sortedness will
-    be preserved, but this method costs O(n).
-
-    Otherwise, this method just swaps the i-th row with the last and then
-    removes it, so it costs O(1).
-  */
-  void remove_row(dimension_type i, bool keep_sorted = false);
-
-  // TODO: Consider removing this.
-  //! Removes the specified rows. The row ordering of remaining rows is
-  //! preserved.
-  /*!
-    \param indexes specifies a list of row indexes.
-                   It must be sorted.
-  */
-  void remove_rows(const std::vector<dimension_type>& indexes);
-
-  // TODO: Consider removing this, or making it private.
-  //! Makes the system shrink by removing the rows in [first,last).
-  /*!
-    When \p keep_sorted is \p true and the system is sorted, sortedness will
-    be preserved, but this method costs O(num_rows()).
-
-    Otherwise, this method just swaps the rows with the last ones and then
-    removes them, so it costs O(last - first).
-  */
-  void remove_rows(dimension_type first, dimension_type last,
-                   bool keep_sorted = false);
-
-  // TODO: Consider removing this, or making it private.
-  //! Makes the system shrink by removing its \p n trailing rows.
-  void remove_trailing_rows(dimension_type n);
-
-  // TODO: Consider making this private.
-  //! Removes all the specified dimensions from the constraint system.
-  /*!
-    The space dimension of the variable with the highest space
-    dimension in \p vars must be at most the space dimension
-    of \p this.
-  */
-  void remove_space_dimensions(const Variables_Set& vars);
-
-  // TODO: Consider making this private.
-  //! Shift by \p n positions the coefficients of variables, starting from
-  //! the coefficient of \p v. This increases the space dimension by \p n.
-  void shift_space_dimensions(Variable v, dimension_type n);
-
-  // TODO: Consider making this private.
-  //! Permutes the space dimensions of the matrix.
-  /*
-    \param cycle
-    A vector representing a cycle of the permutation according to which the
-    columns must be rearranged.
-
-    The \p cycle vector represents a cycle of a permutation of space
-    dimensions.
-    For example, the permutation
-    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
-    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
-  */
-  void permute_space_dimensions(const std::vector<Variable>& cycle);
-
-  //! Swaps the coefficients of the variables \p v1 and \p v2 .
-  void swap_space_dimensions(Variable v1, Variable v2);
-
-  // TODO: Consider removing this, or making it private.
-  bool has_no_rows() const;
-
-  // TODO: Consider removing this, or making it private.
-  //! Strongly normalizes the system.
-  void strong_normalize();
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Sorts the non-pending rows (in growing order) and eliminates
-    duplicated ones.
-  */
-  void sort_rows();
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Adds the given row to the pending part of the system, stealing its
-    contents and automatically resizing the system or the row, if needed.
-  */
-  void insert_pending(Constraint& r, Recycle_Input);
-
-  // TODO: Consider removing this, or making it private.
-  //! Adds the rows of `y' to the pending part of `*this', stealing them from
-  //! `y'.
-  void insert_pending(Constraint_System& r, Recycle_Input);
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Adds \p r to the system, stealing its contents and
-    automatically resizing the system or the row, if needed.
-  */
-  void insert(Constraint& r, Recycle_Input);
-
-  // TODO: Consider removing this, or making it private.
-  //! Adds to \p *this a the rows of `y', stealing them from `y'.
-  /*!
-    It is assumed that \p *this has no pending rows.
-  */
-  void insert(Constraint_System& r, Recycle_Input);
-
-  // TODO: Consider removing this, or making it private.
-  //! Adds a copy of the rows of `y' to the pending part of `*this'.
-  void insert_pending(const Constraint_System& r);
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Assigns to \p *this the result of merging its rows with
-    those of \p y, obtaining a sorted system.
-
-    Duplicated rows will occur only once in the result.
-    On entry, both systems are assumed to be sorted and have
-    no pending rows.
-  */
-  void merge_rows_assign(const Constraint_System& y);
-
-  // TODO: Consider removing this, or making it private.
-  //! Adds to \p *this a copy of  the rows of \p y.
-  /*!
-    It is assumed that \p *this has no pending rows.
-  */
-  void insert(const Constraint_System& y);
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the epsilon dimension as a standard dimension.
-  /*!
-    The system topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is increased by 1.
-  */
-  void mark_as_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Marks the last dimension as the epsilon dimension.
-  /*!
-    The system topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
-    the number of space dimensions is decreased by 1.
-  */
-  void mark_as_not_necessarily_closed();
-
-  // TODO: Consider removing this, or making it private.
-  //! Minimizes the subsystem of equations contained in \p *this.
-  /*!
-    This method works only on the equalities of the system:
-    the system is required to be partially sorted, so that
-    all the equalities are grouped at its top; it is assumed that
-    the number of equalities is exactly \p n_lines_or_equalities.
-    The method finds a minimal system for the equalities and
-    returns its rank, i.e., the number of linearly independent equalities.
-    The result is an upper triangular subsystem of equalities:
-    for each equality, the pivot is chosen starting from
-    the right-most columns.
-  */
-  dimension_type gauss(dimension_type n_lines_or_equalities);
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Back-substitutes the coefficients to reduce
-    the complexity of the system.
-
-    Takes an upper triangular system having \p n_lines_or_equalities rows.
-    For each row, starting from the one having the minimum number of
-    coefficients different from zero, computes the expression of an element
-    as a function of the remaining ones and then substitutes this expression
-    in all the other rows.
-  */
-  void back_substitute(dimension_type n_lines_or_equalities);
-
-  // TODO: Consider removing this, or making it private.
-  //! Full assignment operator: pending rows are copied as pending.
-  void assign_with_pending(const Constraint_System& y);
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Sorts the pending rows and eliminates those that also occur
-    in the non-pending part of the system.
-  */
-  void sort_pending_and_remove_duplicates();
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Sorts the system, removing duplicates, keeping the saturation
-    matrix consistent.
-
-    \param sat
-    Bit matrix with rows corresponding to the rows of \p *this.
-  */
-  void sort_and_remove_with_sat(Bit_Matrix& sat);
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this is sorted,
-    without checking for duplicates.
-  */
-  bool check_sorted() const;
-
-  // TODO: Consider removing this, or making it private.
-  /*! \brief
-    Returns the number of rows in the system
-    that represent either lines or equalities.
-  */
-  dimension_type num_lines_or_equalities() const;
-
-  // TODO: Consider removing this, or making it private.
-  //! Adds \p n rows and space dimensions to the system.
-  /*!
-    \param n
-    The number of rows and space dimensions to be added: must be strictly
-    positive.
-
-    Turns the system \f$M \in \Rset^r \times \Rset^c\f$ into
-    the system \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
-    such that
-    \f$N = \bigl(\genfrac{}{}{0pt}{}{0}{M}\genfrac{}{}{0pt}{}{J}{o}\bigr)\f$,
-    where \f$J\f$ is the specular image
-    of the \f$n \times n\f$ identity matrix.
-  */
-  void add_universe_rows_and_space_dimensions(dimension_type n);
 
   //! Initializes the class.
   static void initialize();
@@ -575,6 +214,12 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this has no constraints.
   bool empty() const;
+
+  /*! \brief
+    Removes all the constraints from the constraint system
+    and sets its space dimension to 0.
+  */
+  void clear();
 
   /*! \brief
     Returns the const_iterator pointing to the first constraint,
@@ -618,6 +263,10 @@ private:
   friend bool operator==(const Constraint_System& x,
                          const Constraint_System& y);
 
+  //! Builds an empty system of constraints having the specified topology.
+  explicit Constraint_System(Topology topol,
+                             Representation r = default_representation);
+
   /*! \brief
     Builds a system of constraints on a \p space_dim dimensional space. If
     \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE> the \f$\epsilon\f$
@@ -626,11 +275,318 @@ private:
   Constraint_System(Topology topol, dimension_type space_dim,
                     Representation r = default_representation);
 
-  // FIXME: This is useless: it always returns true.
+  //! Returns the number of equality constraints.
+  dimension_type num_equalities() const;
+
+  //! Returns the number of inequality constraints.
+  dimension_type num_inequalities() const;
+
+  /*! \brief
+    Applies Gaussian elimination and back-substitution so as
+    to provide a partial simplification of the system of constraints.
+
+    It is assumed that the system has no pending constraints.
+  */
+  void simplify();
+
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains strict inequalities.
+  */
+  bool adjust_topology_and_space_dimension(Topology topol,
+                                           dimension_type num_dimensions);
+
+  //! Returns a constant reference to the \p k- th constraint of the system.
+  const Constraint& operator[](dimension_type k) const;
+
+  //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
+  bool satisfies_all_constraints(const Generator& g) const;
+
+  //! Substitutes a given column of coefficients by a given affine expression.
+  /*!
+    \param v
+    The variable to which the affine transformation is substituted.
+
+    \param expr
+    The numerator of the affine transformation:
+    \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$;
+
+    \param denominator
+    The denominator of the affine transformation.
+
+    We want to allow affine transformations
+    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
+    having any rational coefficients. Since the coefficients of the
+    constraints are integers we must also provide an integer \p
+    denominator that will be used as denominator of the affine
+    transformation.
+    The denominator is required to be a positive integer.
+
+    The affine transformation substitutes the matrix of constraints
+    by a new matrix whose elements \f${a'}_{ij}\f$ are built from
+    the old one \f$a_{ij}\f$ as follows:
+    \f[
+      {a'}_{ij} =
+        \begin{cases}
+          a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
+            \quad \text{for } j \neq v; \\
+          \mathrm{expr}[v] * a_{iv}
+            \quad \text{for } j = v.
+        \end{cases}
+    \f]
+
+    \p expr is a constant parameter and unaltered by this computation.
+  */
+  void affine_preimage(Variable v,
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator);
+
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+    It is a pending constraint.
+  */
+  void insert_pending(const Constraint& c);
+
+  //! Adds low-level constraints to the constraint system.
+  void add_low_level_constraints();
+
+  //! Returns the system topology.
+  Topology topology() const;
+
+  dimension_type num_rows() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    the system topology is <CODE>NECESSARILY_CLOSED</CODE>.
+  */
+  bool is_necessarily_closed() const;
+
+  //! Returns the number of rows that are in the pending part of the system.
+  dimension_type num_pending_rows() const;
+
+  //! Returns the index of the first pending row.
+  dimension_type first_pending_row() const;
+
+  //! Returns the value of the sortedness flag.
+  bool is_sorted() const;
+
+  //! Sets the index to indicate that the system has no pending rows.
+  void unset_pending_rows();
+
+  //! Sets the index of the first pending row to \p i.
+  void set_index_first_pending_row(dimension_type i);
+
+  //! Sets the sortedness flag of the system to \p b.
+  void set_sorted(bool b);
+
+  //! Makes the system shrink by removing its i-th row.
+  /*!
+    When \p keep_sorted is \p true and the system is sorted, sortedness will
+    be preserved, but this method costs O(n).
+
+    Otherwise, this method just swaps the i-th row with the last and then
+    removes it, so it costs O(1).
+  */
+  void remove_row(dimension_type i, bool keep_sorted = false);
+
+  //! Removes the specified rows. The row ordering of remaining rows is
+  //! preserved.
+  /*!
+    \param indexes specifies a list of row indexes.
+                   It must be sorted.
+  */
+  void remove_rows(const std::vector<dimension_type>& indexes);
+
+  //! Makes the system shrink by removing the rows in [first,last).
+  /*!
+    When \p keep_sorted is \p true and the system is sorted, sortedness will
+    be preserved, but this method costs O(num_rows()).
+
+    Otherwise, this method just swaps the rows with the last ones and then
+    removes them, so it costs O(last - first).
+  */
+  void remove_rows(dimension_type first, dimension_type last,
+                   bool keep_sorted = false);
+
+  //! Makes the system shrink by removing its \p n trailing rows.
+  void remove_trailing_rows(dimension_type n);
+
+  //! Removes all the specified dimensions from the constraint system.
+  /*!
+    The space dimension of the variable with the highest space
+    dimension in \p vars must be at most the space dimension
+    of \p this.
+  */
+  void remove_space_dimensions(const Variables_Set& vars);
+
+  //! Shift by \p n positions the coefficients of variables, starting from
+  //! the coefficient of \p v. This increases the space dimension by \p n.
+  void shift_space_dimensions(Variable v, dimension_type n);
+
+  //! Permutes the space dimensions of the matrix.
+  /*
+    \param cycle
+    A vector representing a cycle of the permutation according to which the
+    columns must be rearranged.
+
+    The \p cycle vector represents a cycle of a permutation of space
+    dimensions.
+    For example, the permutation
+    \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
+    represented by the vector containing \f$ x_1, x_2, x_3 \f$.
+  */
+  void permute_space_dimensions(const std::vector<Variable>& cycle);
+
+  //! Swaps the coefficients of the variables \p v1 and \p v2 .
+  void swap_space_dimensions(Variable v1, Variable v2);
+
+  bool has_no_rows() const;
+
+  //! Strongly normalizes the system.
+  void strong_normalize();
+
+  /*! \brief
+    Sorts the non-pending rows (in growing order) and eliminates
+    duplicated ones.
+  */
+  void sort_rows();
+
+  /*! \brief
+    Adds the given row to the pending part of the system, stealing its
+    contents and automatically resizing the system or the row, if needed.
+  */
+  void insert_pending(Constraint& r, Recycle_Input);
+
+  //! Adds the rows of `y' to the pending part of `*this', stealing them from
+  //! `y'.
+  void insert_pending(Constraint_System& r, Recycle_Input);
+
+  /*! \brief
+    Adds \p r to the system, stealing its contents and
+    automatically resizing the system or the row, if needed.
+  */
+  void insert(Constraint& r, Recycle_Input);
+
+  //! Adds to \p *this a the rows of `y', stealing them from `y'.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void insert(Constraint_System& r, Recycle_Input);
+
+  //! Adds a copy of the rows of `y' to the pending part of `*this'.
+  void insert_pending(const Constraint_System& r);
+
+  /*! \brief
+    Assigns to \p *this the result of merging its rows with
+    those of \p y, obtaining a sorted system.
+
+    Duplicated rows will occur only once in the result.
+    On entry, both systems are assumed to be sorted and have
+    no pending rows.
+  */
+  void merge_rows_assign(const Constraint_System& y);
+
+  //! Adds to \p *this a copy of  the rows of \p y.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void insert(const Constraint_System& y);
+
+  //! Marks the epsilon dimension as a standard dimension.
+  /*!
+    The system topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is increased by 1.
+  */
+  void mark_as_necessarily_closed();
+
+  //! Marks the last dimension as the epsilon dimension.
+  /*!
+    The system topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
+    the number of space dimensions is decreased by 1.
+  */
+  void mark_as_not_necessarily_closed();
+
+  //! Minimizes the subsystem of equations contained in \p *this.
+  /*!
+    This method works only on the equalities of the system:
+    the system is required to be partially sorted, so that
+    all the equalities are grouped at its top; it is assumed that
+    the number of equalities is exactly \p n_lines_or_equalities.
+    The method finds a minimal system for the equalities and
+    returns its rank, i.e., the number of linearly independent equalities.
+    The result is an upper triangular subsystem of equalities:
+    for each equality, the pivot is chosen starting from
+    the right-most columns.
+  */
+  dimension_type gauss(dimension_type n_lines_or_equalities);
+
+  /*! \brief
+    Back-substitutes the coefficients to reduce
+    the complexity of the system.
+
+    Takes an upper triangular system having \p n_lines_or_equalities rows.
+    For each row, starting from the one having the minimum number of
+    coefficients different from zero, computes the expression of an element
+    as a function of the remaining ones and then substitutes this expression
+    in all the other rows.
+  */
+  void back_substitute(dimension_type n_lines_or_equalities);
+
+  //! Full assignment operator: pending rows are copied as pending.
+  void assign_with_pending(const Constraint_System& y);
+
+  /*! \brief
+    Sorts the pending rows and eliminates those that also occur
+    in the non-pending part of the system.
+  */
+  void sort_pending_and_remove_duplicates();
+
+  /*! \brief
+    Sorts the system, removing duplicates, keeping the saturation
+    matrix consistent.
+
+    \param sat
+    Bit matrix with rows corresponding to the rows of \p *this.
+  */
+  void sort_and_remove_with_sat(Bit_Matrix& sat);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is sorted,
+    without checking for duplicates.
+  */
+  bool check_sorted() const;
+
+  /*! \brief
+    Returns the number of rows in the system
+    that represent either lines or equalities.
+  */
+  dimension_type num_lines_or_equalities() const;
+
+  //! Adds \p n rows and space dimensions to the system.
+  /*!
+    \param n
+    The number of rows and space dimensions to be added: must be strictly
+    positive.
+
+    Turns the system \f$M \in \Rset^r \times \Rset^c\f$ into
+    the system \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
+    such that
+    \f$N = \bigl(\genfrac{}{}{0pt}{}{0}{M}\genfrac{}{}{0pt}{}{J}{o}\bigr)\f$,
+    where \f$J\f$ is the specular image
+    of the \f$n \times n\f$ identity matrix.
+  */
+  void add_universe_rows_and_space_dimensions(dimension_type n);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
   friend class Polyhedron;
+  friend class Termination_Helpers;
 };
 
 //! An iterator over a system of constraints.

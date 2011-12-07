@@ -259,9 +259,6 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
   bool empty() const;
 
-  // TODO: Consider making this private.
-  bool has_no_rows() const;
-
   /*! \brief
     Returns the const_iterator pointing to the first generator,
     if \p *this is not empty;
@@ -294,7 +291,10 @@ public:
   //! Swaps \p *this with \p y.
   void m_swap(Generator_System& y);
 
-  // TODO: Consider making this private.
+private:
+
+  bool has_no_rows() const;
+
   //! Removes all the specified dimensions from the generator system.
   /*!
     The space dimension of the variable with the highest space
@@ -303,12 +303,10 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& vars);
 
-  // TODO: Consider making this private.
   //! Shift by \p n positions the coefficients of variables, starting from
   //! the coefficient of \p v. This increases the space dimension by \p n.
   void shift_space_dimensions(Variable v, dimension_type n);
 
-  // TODO: Consider making this private.
   //! Permutes the space dimensions of the matrix.
   /*
     \param cycle
@@ -326,10 +324,8 @@ public:
   //! Swaps the coefficients of the variables \p v1 and \p v2 .
   void swap_space_dimensions(Variable v1, Variable v2);
 
-  // TODO: Consider making this private.
   dimension_type num_rows() const;
 
-  // TODO: Consider making this private.
   //! Adds \p n rows and space dimensions to the system.
   /*!
     \param n
@@ -347,49 +343,39 @@ public:
 
   Topology topology() const;
 
-  // TODO: Consider removing this.
   //! Returns the index of the first pending row.
   dimension_type first_pending_row() const;
 
-  // TODO: Consider removing this.
   //! Sets the index to indicate that the system has no pending rows.
   void unset_pending_rows();
 
-  // TODO: Consider removing this.
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
 
-  // TODO: Consider removing this.
   //! Returns the value of the sortedness flag.
   bool is_sorted() const;
 
-  // TODO: Consider removing this.
   //! Sets the index of the first pending row to \p i.
   void set_index_first_pending_row(dimension_type i);
 
-  // TODO: Consider removing this.
   /*! \brief
     Returns <CODE>true</CODE> if and only if
     the system topology is <CODE>NECESSARILY_CLOSED</CODE>.
   */
   bool is_necessarily_closed() const;
 
-  // TODO: Consider removing this.
   //! Full assignment operator: pending rows are copied as pending.
   void assign_with_pending(const Generator_System& y);
 
-  // TODO: Consider removing this.
   //! Returns the number of rows that are in the pending part of the system.
   dimension_type num_pending_rows() const;
 
-  // TODO: Consider removing this.
   /*! \brief
     Sorts the pending rows and eliminates those that also occur
     in the non-pending part of the system.
   */
   void sort_pending_and_remove_duplicates();
 
-  // TODO: Consider removing this.
   /*! \brief
     Sorts the system, removing duplicates, keeping the saturation
     matrix consistent.
@@ -399,28 +385,24 @@ public:
   */
   void sort_and_remove_with_sat(Bit_Matrix& sat);
 
-  // TODO: Consider removing this.
   /*! \brief
     Sorts the non-pending rows (in growing order) and eliminates
     duplicated ones.
   */
   void sort_rows();
 
-  // TODO: Consider removing this.
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is sorted,
     without checking for duplicates.
   */
   bool check_sorted() const;
 
-  // TODO: Consider removing this.
   /*! \brief
     Returns the number of rows in the system
     that represent either lines or equalities.
   */
   dimension_type num_lines_or_equalities() const;
 
-  // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing its i-th row.
   /*!
     When \p keep_sorted is \p true and the system is sorted, sortedness will
@@ -431,7 +413,6 @@ public:
   */
   void remove_row(dimension_type i, bool keep_sorted = false);
 
-  // TODO: Consider removing this, or making it private.
   //! Makes the system shrink by removing the rows in [first,last).
   /*!
     When \p keep_sorted is \p true and the system is sorted, sortedness will
@@ -443,7 +424,6 @@ public:
   void remove_rows(dimension_type first, dimension_type last,
                    bool keep_sorted = false);
 
-  // TODO: Consider removing this.
   //! Removes the specified rows. The row ordering of remaining rows is
   //! preserved.
   /*!
@@ -452,11 +432,9 @@ public:
   */
   void remove_rows(const std::vector<dimension_type>& indexes);
 
-  // TODO: Consider removing this.
   //! Makes the system shrink by removing its \p n trailing rows.
   void remove_trailing_rows(dimension_type n);
 
-  // TODO: Consider removing this.
   //! Minimizes the subsystem of equations contained in \p *this.
   /*!
     This method works only on the equalities of the system:
@@ -471,7 +449,6 @@ public:
   */
   dimension_type gauss(dimension_type n_lines_or_equalities);
 
-  // TODO: Consider removing this.
   /*! \brief
     Back-substitutes the coefficients to reduce
     the complexity of the system.
@@ -484,11 +461,9 @@ public:
   */
   void back_substitute(dimension_type n_lines_or_equalities);
 
-  // TODO: Consider removing this.
   //! Strongly normalizes the system.
   void strong_normalize();
 
-  // TODO: Consider removing this.
   /*! \brief
     Assigns to \p *this the result of merging its rows with
     those of \p y, obtaining a sorted system.
@@ -499,18 +474,15 @@ public:
   */
   void merge_rows_assign(const Generator_System& y);
 
-  // TODO: Consider removing this.
   //! Adds to \p *this a copy of  the rows of \p y.
   /*!
     It is assumed that \p *this has no pending rows.
   */
   void insert(const Generator_System& y);
 
-  // TODO: Consider removing this.
   //! Adds a copy of the rows of `y' to the pending part of `*this'.
   void insert_pending(const Generator_System& r);
 
-private:
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the singleton system containing only Generator::zero_dim_point().
@@ -519,13 +491,10 @@ private:
 
   friend class Generator_System_const_iterator;
 
-public:
-  // TODO: Consider making this private.
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol,
                             Representation r = default_representation);
 
-private:
   /*! \brief
     Builds a system of rays/points on a \p space_dim dimensional space. If
     \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE> the \f$\epsilon\f$
@@ -534,8 +503,6 @@ private:
   Generator_System(Topology topol, dimension_type space_dim,
                    Representation r = default_representation);
 
-public:
-  // TODO: Make this private.
   /*! \brief
     Adjusts \p *this so that it matches the topology and
     the number of space dimensions given as parameters
@@ -547,7 +514,6 @@ public:
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
-  // TODO: Make this private.
   /*! \brief
     For each unmatched closure point in \p *this, adds the
     corresponding point.
@@ -557,14 +523,12 @@ public:
   */
   void add_corresponding_points();
 
-  // TODO: Make this private.
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains one or more points.
   */
   bool has_points() const;
 
-  // TODO: Make this private.
   /*! \brief
     For each unmatched point in \p *this, adds the corresponding
     closure point.
@@ -574,7 +538,6 @@ public:
   */
   void add_corresponding_closure_points();
 
-  // TODO: Consider making this private.
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains one or more closure points.
@@ -591,12 +554,9 @@ public:
   //! system.
   void convert_into_non_necessarily_closed();
 
-public:
-  // TODO: Consider making this private.
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](dimension_type k) const;
 
-  // TODO: Consider making this private.
   /*! \brief
     Returns the relations holding between the generator system
     and the constraint \p c.
@@ -604,11 +564,9 @@ public:
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c) const;
 
-  // TODO: Make this private.
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   bool satisfied_by_all_generators(const Constraint& c) const;
 
-private:
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   /*!
     It is assumed that <CODE>c.is_necessarily_closed()</CODE> holds.
@@ -621,8 +579,6 @@ private:
   */
   bool satisfied_by_all_generators_NNC(const Constraint& c) const;
 
-public:
-  // TODO: Consider making this private.
   //! Assigns to a given variable an affine expression.
   /*!
     \param v
@@ -654,23 +610,18 @@ public:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator);
 
-  // TODO: Consider making this private.
   //! Returns the number of lines of the system.
   dimension_type num_lines() const;
 
-  // TODO: Consider making this private.
   //! Returns the number of rays of the system.
   dimension_type num_rays() const;
 
-  // TODO: Make this private.
   //! Removes all the invalid lines and rays.
   /*!
     The invalid lines and rays are those with all
     the homogeneous terms set to zero.
   */
   void remove_invalid_lines_and_rays();
-
-private:
 
   /*! \brief
     Applies Gaussian elimination and back-substitution so as
@@ -680,8 +631,6 @@ private:
   */
   void simplify();
 
-public:
-  // TODO: Consider making this private.
   /*! \brief
     Inserts in \p *this a copy of the generator \p g,
     increasing the number of space dimensions if needed.
@@ -689,7 +638,6 @@ public:
   */
   void insert_pending(const Generator& g);
 
-  // TODO: Consider making this private.
   /*! \brief
     Inserts in \p *this the generator \p g, stealing its contents and
     increasing the number of space dimensions if needed.
@@ -697,7 +645,6 @@ public:
   */
   void insert_pending(Generator& g, Recycle_Input);
 
-private:
   Linear_System<Generator> sys;
 
   friend bool
