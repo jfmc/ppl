@@ -34,6 +34,14 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Constraint_System.types.hh"
 #include <iosfwd>
 
+namespace Parma_Polyhedra_Library {
+
+/*! \relates Congruence_System */
+bool
+operator==(const Congruence_System& x, const Congruence_System& y);
+
+}
+
 //! A system of congruences.
 /*! \ingroup PPL_CXX_interface
     An object of the class Congruence_System is a system of congruences,
@@ -99,7 +107,7 @@ public:
   static const Representation default_representation = DENSE;
 
   //! Default constructor: builds an empty system of congruences.
-  Congruence_System(Representation r = default_representation);
+  explicit Congruence_System(Representation r = default_representation);
 
   //! Builds an empty (i.e. zero rows) system of dimension \p d.
   explicit Congruence_System(dimension_type d,
@@ -378,6 +386,21 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_space_dimensions(Variable v1, Variable v2);
 
+  //! Sets the number of space dimensions to \p new_space_dim.
+  /*!
+    If \p new_space_dim is lower than the current space dimension, the
+    coefficients referring to the removed space dimensions are lost.
+  */
+  bool set_space_dimension(dimension_type new_space_dim);
+
+protected:
+
+  // This is protected to allow tests/Grid/congruences2 to call this method,
+  // using a derived class.
+  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  bool satisfies_all_congruences(const Grid_Generator& g) const;
+
+private:
   //! Returns the number of rows in the system.
   dimension_type num_rows() const;
 
@@ -389,16 +412,6 @@ public:
 
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
-
-  //! Sets the number of space dimensions to \p new_space_dim.
-  /*!
-    If \p new_space_dim is lower than the current space dimension, the
-    coefficients referring to the removed space dimensions are lost.
-  */
-  bool set_space_dimension(dimension_type new_space_dim);
-
-  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  bool satisfies_all_congruences(const Grid_Generator& g) const;
 
   /*! \brief
     Substitutes a given column of coefficients by a given affine
@@ -466,7 +479,6 @@ public:
   */
   void insert_verbatim(Congruence& cg, Recycle_Input);
 
-private:
   //! Makes the system shrink by removing the rows in [first,last).
   /*!
     If \p keep_sorted is <CODE>true</CODE>, the ordering of the remaining rows
@@ -501,6 +513,9 @@ private:
   bool has_a_free_dimension() const;
 
   friend class Grid;
+
+  friend bool
+  operator==(const Congruence_System& x, const Congruence_System& y);
 };
 
 namespace Parma_Polyhedra_Library {
@@ -517,9 +532,6 @@ std::ostream&
 operator<<(std::ostream& s, const Congruence_System& cgs);
 
 } // namespace IO_Operators
-
-bool
-operator==(const Congruence_System& x, const Congruence_System& y);
 
 /*! \relates Congruence_System */
 void
