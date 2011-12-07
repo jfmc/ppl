@@ -42,9 +42,11 @@ PPL::Constraint_System::Constraint_System(const Congruence_System& cgs,
   : sys(NECESSARILY_CLOSED, cgs.space_dimension(), r) {
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); i != cgs_end; ++i)
-    if (i->is_equality())
-      // TODO: Consider adding a recycling method to save the extra copy here.
-      insert(Constraint(*i));
+    if (i->is_equality()) {
+      Constraint tmp(*i);
+      insert(tmp, Recycle_Input());
+    }
+  PPL_ASSERT(OK());
 }
 
 bool
