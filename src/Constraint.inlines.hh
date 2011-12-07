@@ -362,7 +362,9 @@ operator!=(const Constraint& x, const Constraint& y) {
 /*! \relates Constraint */
 inline Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
-  Linear_Expression diff(e1, Constraint::default_representation);
+  Linear_Expression diff(e1,
+                         std::max(e1.space_dimension(), e2.space_dimension()),
+                         Constraint::default_representation);
   diff -= e2;
   return Constraint(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
 }
@@ -382,7 +384,9 @@ operator==(Variable v1, Variable v2) {
 /*! \relates Constraint */
 inline Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
-  Linear_Expression diff(e1, Constraint::default_representation);
+  Linear_Expression diff(e1,
+                         std::max(e1.space_dimension(), e2.space_dimension()),
+                         Constraint::default_representation);
   diff -= e2;
   return Constraint(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
 }
