@@ -186,29 +186,17 @@ Linear_System<Row>::Linear_System(const Linear_System& y, Representation r,
 template <typename Row>
 inline Linear_System<Row>&
 Linear_System<Row>::operator=(const Linear_System& y) {
-  // TODO: Use the copy-and-swap idiom here.
-  rows = y.rows;
-  space_dimension_ = y.space_dimension_;
-  row_topology = y.row_topology;
-  // Previously pending rows may violate sortedness.
-  sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
-  representation_ = y.representation_;
-  unset_pending_rows();
-  PPL_ASSERT(OK());
+  // NOTE: Pending rows are transformed into non-pending ones.
+  Linear_System<Row> tmp = y;
+  swap(*this, tmp);
   return *this;
 }
 
 template <typename Row>
 inline void
 Linear_System<Row>::assign_with_pending(const Linear_System& y) {
-  // TODO: Use the copy-and-swap idiom here.
-  rows = y.rows;
-  space_dimension_ = y.space_dimension_;
-  row_topology = y.row_topology;
-  index_first_pending = y.index_first_pending;
-  sorted = y.sorted;
-  representation_ = y.representation_;
-  PPL_ASSERT(OK());
+  Linear_System<Row> tmp(y, With_Pending());
+  swap(*this, tmp);
 }
 
 template <typename Row>

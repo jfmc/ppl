@@ -203,12 +203,9 @@ Generator::~Generator() {
 
 inline Generator&
 Generator::operator=(const Generator& g) {
+  Generator tmp = g;
+  swap(*this, tmp);
 
-  // TODO: Use the copy-and-swap idiom here.
-  expr = g.expr;
-  kind_ = g.kind_;
-  topology_ = g.topology_;
-  wrapped_expr.set_hide_last(is_not_necessarily_closed());
   return *this;
 }
 

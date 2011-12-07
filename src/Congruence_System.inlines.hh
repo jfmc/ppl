@@ -118,11 +118,8 @@ Congruence_System::~Congruence_System() {
 
 inline Congruence_System&
 Congruence_System::operator=(const Congruence_System& y) {
-
-  // TODO: Use the copy-and-swap idiom here.
-  rows = y.rows;
-  space_dimension_ = y.space_dimension_;
-  representation_ = y.representation_;
+  Congruence_System tmp = y;
+  swap(*this, tmp);
   return *this;
 }
 

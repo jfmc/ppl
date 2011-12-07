@@ -157,9 +157,9 @@ Congruence::zero_dim_false() {
 
 inline Congruence&
 Congruence::operator=(const Congruence& c) {
-  // TODO: Use copy-and-swap here.
-  expr = c.expr;
-  modulus_ = c.modulus_;
+  Congruence tmp = c;
+  swap(*this, tmp);
+
   return *this;
 }
 

@@ -266,11 +266,9 @@ Grid_Generator::set_is_parameter_or_point() {
 
 inline Grid_Generator&
 Grid_Generator::operator=(const Grid_Generator& g) {
+  Grid_Generator tmp = g;
+  swap(*this, tmp);
 
-  // TODO: Use the copy-and-swap idiom here.
-  expr = g.expr;
-  kind_ = g.kind_;
-  // No need to modify wrapped_expr here.
   return *this;
 }
 

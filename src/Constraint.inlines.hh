@@ -219,14 +219,9 @@ Constraint::~Constraint() {
 
 inline Constraint&
 Constraint::operator=(const Constraint& c) {
+  Constraint tmp = c;
+  swap(*this, tmp);
 
-  // TODO: Use the copy-and-swap idiom here.
-  expr = c.expr;
-  kind_ = c.kind_;
-  topology_ = c.topology_;
-  wrapped_expr.set_hide_last(is_not_necessarily_closed());
-  PPL_ASSERT(OK());
-  
   return *this;
 }
 

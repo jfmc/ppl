@@ -95,7 +95,8 @@ Grid_Generator_System::~Grid_Generator_System() {
 
 inline Grid_Generator_System&
 Grid_Generator_System::operator=(const Grid_Generator_System& y) {
-  sys = y.sys;
+  Grid_Generator_System tmp = y;
+  swap(*this, tmp);
   return *this;
 }
 

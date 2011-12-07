@@ -72,7 +72,8 @@ Constraint_System::~Constraint_System() {
 
 inline Constraint_System&
 Constraint_System::operator=(const Constraint_System& y) {
-  sys = y.sys;
+  Constraint_System tmp = y;
+  swap(*this, tmp);
   return *this;
 }
 

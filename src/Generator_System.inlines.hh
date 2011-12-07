@@ -72,7 +72,8 @@ Generator_System::~Generator_System() {
 
 inline Generator_System&
 Generator_System::operator=(const Generator_System& y) {
-  sys = y.sys;
+  Generator_System tmp = y;
+  swap(*this, tmp);
   return *this;
 }
 
