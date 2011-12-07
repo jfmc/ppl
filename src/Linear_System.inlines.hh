@@ -333,6 +333,9 @@ template <typename Row>
 inline void
 Linear_System<Row>::set_representation(Representation r) {
   representation_ = r;
+  for (dimension_type i = 0; i < rows.size(); i++)
+    rows[i].set_representation(r);
+  PPL_ASSERT(OK());
 }
 
 template <typename Row>
