@@ -5661,8 +5661,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     assign_r(sum, minus_sc_b, ROUND_UP);
     // Approximate the homogeneous part of `-sc_expr'.
     for (Linear_Expression::const_iterator i = sc_expr.begin(),
-          i_end = sc_expr.lower_bound(Variable(expr_space_dim));
-          i != i_end; ++i) {
+        i_end = sc_expr.lower_bound(Variable(w)); i != i_end; ++i) {
       const Coefficient& sc_i = *i;
       const int sign_i = sgn(sc_i);
       PPL_ASSERT(sign_i != 0);
