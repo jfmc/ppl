@@ -83,11 +83,6 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
     cs = ph_cs;
 }
 
-void
-shift_unprimed_variables(Constraint_System& cs) {
-  cs.shift_space_dimensions(Variable(0), cs.space_dimension());
-}
-
 /*! \brief
   Fill the constraint system(s) for the application of the
   Mesnard and Serebrenik improved termination tests.

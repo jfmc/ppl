@@ -45,6 +45,12 @@ public:
                                                       Generator& mu);
   static void all_affine_ranking_functions_PR_original(const Constraint_System& cs,
                                                        NNC_Polyhedron& mu_space);
+
+  template <typename PSET>
+  static void
+  assign_all_inequalities_approximation(const PSET& pset_before,
+                                        const PSET& pset_after,
+                                        Constraint_System& cs);
 };
 
 /*! \brief

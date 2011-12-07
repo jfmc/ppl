@@ -153,24 +153,6 @@ void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
 				      Constraint_System& cs);
 
-void
-shift_unprimed_variables(Constraint_System& cs);
-
-template <typename PSET>
-void
-assign_all_inequalities_approximation(const PSET& pset_before,
-				      const PSET& pset_after,
-				      Constraint_System& cs) {
-  assign_all_inequalities_approximation(pset_before, cs);
-  shift_unprimed_variables(cs);
-  Constraint_System cs_after;
-  assign_all_inequalities_approximation(pset_after, cs_after);
-  // FIXME: provide an "append" for constraint systems.
-  for (Constraint_System::const_iterator i = cs_after.begin(),
-	 cs_after_end = cs_after.end(); i != cs_after_end; ++i)
-    cs.insert(*i);
-}
-
 bool
 termination_test_MS(const Constraint_System& cs);
 
@@ -217,6 +199,24 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
 } // namespace Implementation
 
 template <typename PSET>
+void
+Termination_Helpers
+::assign_all_inequalities_approximation(const PSET& pset_before,
+                                        const PSET& pset_after,
+                                        Constraint_System& cs) {
+  Implementation::Termination
+    ::assign_all_inequalities_approximation(pset_before, cs);
+  cs.shift_space_dimensions(Variable(0), cs.space_dimension());
+  Constraint_System cs_after;
+  Implementation::Termination
+    ::assign_all_inequalities_approximation(pset_after, cs_after);
+  // FIXME: provide an "append" for constraint systems.
+  for (Constraint_System::const_iterator i = cs_after.begin(),
+         cs_after_end = cs_after.end(); i != cs_after_end; ++i)
+    cs.insert(*i);
+}
+
+template <typename PSET>
 bool
 termination_test_MS(const PSET& pset) {
   const dimension_type space_dim = pset.space_dimension();
@@ -250,7 +250,8 @@ termination_test_MS_2(const PSET& pset_before, const PSET& pset_after) {
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, pset_after, cs);
+  Termination_Helpers
+    ::assign_all_inequalities_approximation(pset_before, pset_after, cs);
   return termination_test_MS(cs);
 }
 
@@ -290,7 +291,8 @@ one_affine_ranking_function_MS_2(const PSET& pset_before,
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, pset_after, cs);
+  Termination_Helpers
+    ::assign_all_inequalities_approximation(pset_before, pset_after, cs);
   return one_affine_ranking_function_MS(cs, mu);
 }
 
@@ -341,7 +343,8 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, pset_after, cs);
+  Termination_Helpers
+    ::assign_all_inequalities_approximation(pset_before, pset_after, cs);
   all_affine_ranking_functions_MS(cs, mu_space);
 }
 
