@@ -549,12 +549,6 @@ set_input(const char* file_name) {
   }
 }
 
-std::istream&
-input() {
-  assert(input_stream_p);
-  return *input_stream_p;
-}
-
 const char* output_file_name = 0;
 std::ostream* output_stream_p = 0;
 
@@ -575,12 +569,6 @@ set_output(const char* file_name) {
     output_stream_p = &std::cout;
     output_file_name = "<cout>";
   }
-}
-
-std::ostream&
-output() {
-  assert(output_stream_p);
-  return *output_stream_p;
 }
 
 bool piplib_format = false;
