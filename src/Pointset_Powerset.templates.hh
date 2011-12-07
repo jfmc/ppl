@@ -1496,7 +1496,7 @@ Pointset_Powerset<PSET>::ascii_dump(std::ostream& s) const {
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(PSET, Pointset_Powerset<PSET>)
 
-  template <typename PSET>
+template <typename PSET>
 bool
 Pointset_Powerset<PSET>::ascii_load(std::istream& s) {
   Pointset_Powerset& x = *this;
