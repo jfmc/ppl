@@ -49,12 +49,13 @@ PPL::Grid_Generator_System::insert(Grid_Generator_System& gs, Recycle_Input) {
 }
 
 void
-PPL::Grid_Generator_System::insert(Grid_Generator& g, Recycle_Input) {
-  sys.insert(g, Recycle_Input());
+PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
+  Grid_Generator tmp(g, representation());
+  insert(tmp, Recycle_Input());
 }
 
 void
-PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
+PPL::Grid_Generator_System::insert(Grid_Generator& g, Recycle_Input) {
   if (g.is_parameter() && g.all_homogeneous_terms_are_zero()) {
     // There is no need to add the origin as a parameter,
     // as it will be immediately flagged as redundant.
@@ -64,26 +65,7 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     return;
   }
 
-  // Note: we can not call sys.insert(g),
-  // because that would check for strong normalization of g.
-  PPL_ASSERT(sys.is_necessarily_closed() && sys.topology() == g.topology());
-  // This method is only used when the system has no pending rows.
-  PPL_ASSERT(sys.num_pending_rows() == 0);
-
-  // Resize the system, if necessary.
-  if (g.space_dimension() > space_dimension()) {
-    set_space_dimension(g.space_dimension());
-    sys.insert(g);
-  }
-  else if (g.space_dimension() < space_dimension()) {
-    // Insert a resized copy of the row.
-    Grid_Generator tmp(g, representation());
-    tmp.set_space_dimension(space_dimension());
-    sys.insert(tmp, Recycle_Input());
-  }
-  else
-    // Here r_size == old_num_columns.
-    sys.insert(g);
+  sys.insert(g, Recycle_Input());
 
   PPL_ASSERT(OK());
 }
