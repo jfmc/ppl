@@ -65,6 +65,10 @@ bool operator==(const Constraint_System& x, const Constraint_System& y);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Constraint_System& x, const Constraint_System& y);
 
+/*! \relates Constraint_System */
+void
+swap(Constraint_System& x, Constraint_System& y);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A system of constraints.

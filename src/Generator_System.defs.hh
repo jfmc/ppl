@@ -62,6 +62,10 @@ bool operator==(const Generator_System& x, const Generator_System& y);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Generator_System& x, const Generator_System& y);
 
+/*! \relates Generator_System */
+void
+swap(Generator_System& x, Generator_System& y);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A system of generators.
