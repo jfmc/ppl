@@ -87,10 +87,7 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     else {
       // (comp > 0)
       tmp.resize(tmp.size() + 1);
-      Row copy(y[yi++], representation());
-      // TODO: Set the space dimension while constructing the copy, to
-      // increase efficiency.
-      copy.set_space_dimension(space_dimension());
+      Row copy(y[yi++], space_dimension(), representation());
       swap(tmp.back(), copy);
     }
   }
@@ -104,10 +101,7 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
   else
     while (yi < y_num_rows) {
       tmp.resize(tmp.size() + 1);
-      Row copy(y[yi++], representation());
-      // TODO: Set the space dimension while constructing the copy, to
-      // increase efficiency.
-      copy.set_space_dimension(space_dimension());
+      Row copy(y[yi++], space_dimension(), representation());
       swap(tmp.back(), copy);
     }
 
