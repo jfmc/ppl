@@ -185,7 +185,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < nrows; ++i) {
     if (!row.ascii_load(s))
       return false;
-    add_row(row, Recycle_Input());
+    insert(row, Recycle_Input());
   }
   index_first_pending = index;
   sorted = sortedness;
@@ -216,10 +216,49 @@ Linear_System<Row>::insert_no_ok(Row& r, Recycle_Input) {
   // This method is only used when the system has no pending rows.
   PPL_ASSERT(num_pending_rows() == 0);
 
-  add_row_no_ok(r, Recycle_Input());
+  const bool was_sorted = is_sorted();
 
-  // The added row was not a pending row.
-  PPL_ASSERT(num_pending_rows() == 0);
+  insert_pending_no_ok(r, Recycle_Input());
+
+  if (was_sorted) {
+    const dimension_type nrows = num_rows();
+    // The added row may have caused the system to be not sorted anymore.
+    if (nrows > 1) {
+      // If the system is not empty and the inserted row is the
+      // greatest one, the system is set to be sorted.
+      // If it is not the greatest one then the system is no longer sorted.
+      sorted = (compare(rows[nrows-2], rows[nrows-1]) <= 0);
+    }
+    else
+      // A system having only one row is sorted.
+      sorted = true;
+  }
+
+  unset_pending_rows();
+}
+
+template <typename Row>
+void
+Linear_System<Row>::insert_pending_no_ok(Row& r, Recycle_Input) {
+  // TODO: A Grid_Generator_System may contain non-normalized lines that
+  // represent parameters, so this check is disabled. Consider re-enabling it
+  // when it's possibile.
+  /*
+    // The added row must be strongly normalized and have the same
+    // number of elements as the existing rows of the system.
+    PPL_ASSERT(r.check_strong_normalized());
+  */
+  PPL_ASSERT(r.topology() == topology());
+
+  r.set_representation(representation());
+
+  if (space_dimension() < r.space_dimension())
+    set_space_dimension_no_ok(r.space_dimension());
+  else
+    r.set_space_dimension_no_ok(space_dimension());
+
+  rows.resize(rows.size() + 1);
+  swap(rows.back(), r);
 }
 
 template <typename Row>
@@ -232,15 +271,7 @@ Linear_System<Row>::insert_pending(const Row& r) {
 template <typename Row>
 void
 Linear_System<Row>::insert_pending(Row& r, Recycle_Input) {
-  // The added row must be strongly normalized and have the same
-  // topology of the system.
-  PPL_ASSERT(r.check_strong_normalized());
-  PPL_ASSERT(topology() == r.topology());
-
-  add_pending_row(r, Recycle_Input());
-
-  // The added row was a pending row.
-  PPL_ASSERT(num_pending_rows() > 0);
+  insert_pending_no_ok(r, Recycle_Input());
   PPL_ASSERT(OK());
 }
 
@@ -395,85 +426,6 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   }
 
   PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_row(const Row& r) {
-  Row tmp(r, representation());
-  add_row(tmp, Recycle_Input());
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_row(Row& r, Recycle_Input) {
-  add_row_no_ok(r, Recycle_Input());
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_row_no_ok(Row& r, Recycle_Input) {
-  // This method is only used when the system has no pending rows.
-  PPL_ASSERT(num_pending_rows() == 0);
-
-  const bool was_sorted = is_sorted();
-
-  add_pending_row_no_ok(r, Recycle_Input());
-
-  if (was_sorted) {
-    const dimension_type nrows = num_rows();
-    // The added row may have caused the system to be not sorted anymore.
-    if (nrows > 1) {
-      // If the system is not empty and the inserted row is the
-      // greatest one, the system is set to be sorted.
-      // If it is not the greatest one then the system is no longer sorted.
-      sorted = (compare(rows[nrows-2], rows[nrows-1]) <= 0);
-    }
-    else
-      // A system having only one row is sorted.
-      sorted = true;
-  }
-
-  unset_pending_rows();
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_pending_row_no_ok(Row& r, Recycle_Input) {
-  // TODO: A Grid_Generator_System may contain non-normalized lines that
-  // represent parameters, so this check is disabled. Consider re-enabling it
-  // when it's possibile.
-  /*
-    // The added row must be strongly normalized and have the same
-    // number of elements as the existing rows of the system.
-    PPL_ASSERT(r.check_strong_normalized());
-  */
-  PPL_ASSERT(r.topology() == topology());
-
-  r.set_representation(representation());
-
-  if (space_dimension() < r.space_dimension())
-    set_space_dimension_no_ok(r.space_dimension());
-  else
-    r.set_space_dimension_no_ok(space_dimension());
-
-  rows.resize(rows.size() + 1);
-  swap(rows.back(), r);
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_pending_row(Row& r, Recycle_Input) {
-  add_pending_row_no_ok(r, Recycle_Input());
-  PPL_ASSERT(OK());
-}
-
-template <typename Row>
-void
-Linear_System<Row>::add_pending_row(const Row& r) {
-  Row tmp(r, representation());
-  add_pending_row(tmp, Recycle_Input());
 }
 
 template <typename Row>

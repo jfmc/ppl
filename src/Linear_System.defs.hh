@@ -466,6 +466,15 @@ private:
   void remove_row_no_ok(dimension_type i, bool keep_sorted = false);
 
   /*! \brief
+    Adds \p r to the pending part of the system, stealing its contents and
+    automatically resizing the system or the row, if needed.
+
+    This method is for internal use, it does *not* assert OK() at the end,
+    so it can be used for invalid systems.
+  */
+  void insert_pending_no_ok(Row& r, Recycle_Input);
+
+  /*! \brief
     Adds \p r to the system, stealing its contents and
     automatically resizing the system or the row, if needed.
 
@@ -481,20 +490,6 @@ private:
   */
   void set_space_dimension_no_ok(dimension_type space_dim);
 
-  //! Adds a the given row to the system, stealing its contents.
-  /*!
-    This method is for internal use, it does *not* assert OK() at the end,
-    so it can be used for invalid systems.
-  */
-  void add_row_no_ok(Row& r, Recycle_Input);
-
-  //! Adds a copy of the given row to the pending part of the system.
-  /*!
-    This method is for internal use, it does *not* assert OK() at the end,
-    so it can be used for invalid systems.
-  */
-  void add_pending_row_no_ok(Row& r, Recycle_Input);
-
   //! Swaps the [first,last) row interval with the
   //! [first + offset, last + offset) interval.
   /*!
@@ -507,18 +502,6 @@ private:
   */
   void swap_row_intervals(dimension_type first, dimension_type last,
                           dimension_type offset);
-  
-  //! Adds a copy of the given row to the system.
-  void add_row(const Row& r);
-
-  //! Adds a the given row to the system, stealing its contents.
-  void add_row(Row& r, Recycle_Input);
-
-  //! Adds a copy of the given row to the pending part of the system.
-  void add_pending_row(const Row& r);
-
-  //! Adds a copy of the given row to the pending part of the system.
-  void add_pending_row(Row& r, Recycle_Input);
 
   //! The space dimension of each row. All rows must have this number of
   //! space dimensions.
