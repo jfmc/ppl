@@ -82,8 +82,9 @@ round_fpu_dir(Rounding_Dir dir) {
     return static_cast<fpu_rounding_direction_type>(PPL_FPU_UPWARD);
   case ROUND_DOWN:
     return static_cast<fpu_rounding_direction_type>(PPL_FPU_DOWNWARD);
+  case ROUND_IGNORE: // Fall through.
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return static_cast<fpu_rounding_direction_type>(PPL_FPU_UPWARD);
   }
 }
@@ -106,10 +107,10 @@ inverse(Rounding_Dir dir) {
   case ROUND_DOWN:
     d = ROUND_UP;
     break;
-  default:
-    PPL_ASSERT(false);
-    /* Fall through */
   case ROUND_IGNORE:
+    return dir;
+  default:
+    PPL_UNREACHABLE;
     return dir;
   }
   return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
