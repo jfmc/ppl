@@ -249,12 +249,13 @@ build_ppl_Complexity_Class(value cc) {
 }
 
 MIP_Problem::Control_Parameter_Name
-build_ppl_control_parameter_name(value caml_cp_name) {
+build_ppl_mip_problem_control_parameter_name(value caml_cp_name) {
   assert(Is_long(caml_cp_name));
   if (Int_val(caml_cp_name) == 0)
     return MIP_Problem::PRICING;
   else
-    PPL_OCAML_UNEXPECTED_MSG("build_ppl_control_parameter_name(cpn)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_mip_problem_"
+                             "control_parameter_name(cpn)");
 }
 
 MIP_Problem::Control_Parameter_Value
@@ -1022,7 +1023,7 @@ ppl_MIP_Problem_get_control_parameter(value caml_mip,
   CAMLparam2(caml_mip, caml_cp_name);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   MIP_Problem::Control_Parameter_Name ppl_cp_name
-    = build_ppl_control_parameter_name(caml_cp_name);
+    = build_ppl_mip_problem_control_parameter_name(caml_cp_name);
   MIP_Problem::Control_Parameter_Value ppl_cp_value
     = ppl_mip.get_control_parameter(ppl_cp_name);
   switch (ppl_cp_value) {
@@ -1377,8 +1378,10 @@ ppl_PIP_Problem_get_control_parameter(value caml_pip,
     CAMLreturn(Val_int(3));
   case PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN:
     CAMLreturn(Val_int(4));
+  default:
+    PPL_UNREACHABLE;
+    CAMLreturn(Val_int(5));
   }
-  PPL_UNREACHABLE;
  }
 CATCH_ALL
 
