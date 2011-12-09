@@ -252,8 +252,6 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     case Grid_Generator::POINT:
       new_gensys.insert(grid_point(e, old_g.divisor()));
       break;
-    default:
-      PPL_ASSERT(0);
     }
   }
 
