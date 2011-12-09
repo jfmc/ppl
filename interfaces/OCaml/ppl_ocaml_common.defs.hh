@@ -31,6 +31,13 @@ site: http://bugseng.com/products/ppl/ . */
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 
+// Note: throw exception if the error is at the OCaml interface level.
+#define PPL_OCAML_UNREACHABLE \
+  throw std::runtime_error("PPL OCaml interface internal error")
+#define PPL_OCAML_UNREACHABLE_MSG(msg) \
+  throw std::runtime_error("PPL OCaml interface internal error:\n" msg)
+
+
 // OCaml include files.
 extern "C" {
 
