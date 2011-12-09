@@ -3380,7 +3380,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   const dimension_type old_gs_num_rows = gs.num_rows();
   dimension_type gs_num_rows = old_gs_num_rows;
 
-  if (!x.is_necessarily_closed())
+  if (!x.is_necessarily_closed()) {
     // `x' and `y' are NNC polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; )
       switch (gs[i].type()) {
@@ -3408,35 +3408,33 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	}
 	break;
-      default:
+      case Generator::RAY:
+      case Generator::LINE:
 	// For rays and lines, nothing to be done.
 	break;
       }
-  else
+  }
+  else {
     // `x' and `y' are C polyhedra.
-    for (dimension_type i = gs_num_rows; i-- > 0; )
-      switch (gs[i].type()) {
-      case Generator::POINT:
-	{
-	  Generator& p = gs[i];
-	  // If it is the origin, erase it.
-	  if (p.all_homogeneous_terms_are_zero()) {
-	    --gs_num_rows;
-            using std::swap;
-	    swap(p, gs[gs_num_rows]);
-	  }
-	  // Otherwise, transform the point into a ray.
-	  else {
-	    p[0] = 0;
-	    // Enforce normalization.
-	    p.normalize();
-	  }
-	}
-	break;
-      default:
-	// For rays and lines, nothing to be done.
-	break;
+    for (dimension_type i = gs_num_rows; i-- > 0; ) {
+      // For rays and lines, nothing to be done.
+      if (gs[i].is_point()) {
+        Generator& p = gs[i];
+        // If it is the origin, erase it.
+        if (p.all_homogeneous_terms_are_zero()) {
+          --gs_num_rows;
+          using std::swap;
+          swap(p, gs[gs_num_rows]);
+        }
+        // Otherwise, transform the point into a ray.
+        else {
+          p[0] = 0;
+          // Enforce normalization.
+          p.normalize();
+        }
       }
+    }
+  }
   // If it was present, erase the origin point or closure point,
   // which cannot be transformed into a valid ray or line.
   // For NNC polyhedra, also erase all the points of `gs',
