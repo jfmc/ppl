@@ -637,12 +637,10 @@ build_cxx_control_parameter_name(JNIEnv* env, jobject j_cp_name) {
   CHECK_RESULT_ASSERT(env, cp_name_ordinal_id);
   jint cp_name = env->CallIntMethod(j_cp_name, cp_name_ordinal_id);
   CHECK_EXCEPTION_ASSERT(env);
-  switch (cp_name) {
-  case 0:
+  if (cp_name == 0)
     return MIP_Problem::PRICING;
-  default:
+  else
     PPL_JAVA_UNREACHABLE;
-  }
 }
 
 jobject
@@ -655,13 +653,11 @@ build_java_control_parameter_name
     = env->GetStaticFieldID(j_cp_name_class, "PRICING",
 			    "Lparma_polyhedra_library/Control_Parameter_Name;");
   CHECK_RESULT_ASSERT(env, cp_name_pricing_get_id);
-  switch (cp_name) {
-  case MIP_Problem::PRICING:
+  if (cp_name == MIP_Problem::PRICING)
     return env->GetStaticObjectField(j_cp_name_class,
 				     cp_name_pricing_get_id);
-  default:
+  else
     PPL_JAVA_UNREACHABLE;
-  }
 }
 
 MIP_Problem::Control_Parameter_Value

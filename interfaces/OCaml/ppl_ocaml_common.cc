@@ -251,12 +251,10 @@ build_ppl_Complexity_Class(value cc) {
 MIP_Problem::Control_Parameter_Name
 build_ppl_control_parameter_name(value caml_cp_name) {
   assert(Is_long(caml_cp_name));
-  switch (Int_val(caml_cp_name)) {
-  case 0:
-    return  MIP_Problem::PRICING;
-  default:
+  if (Int_val(caml_cp_name) == 0)
+    return MIP_Problem::PRICING;
+  else
     PPL_OCAML_UNREACHABLE_MSG("build_ppl_control_parameter_name(cpn)");
-  }
 }
 
 MIP_Problem::Control_Parameter_Value
@@ -279,9 +277,9 @@ build_ppl_pip_problem_control_parameter_name(value caml_cp_name) {
   assert(Is_long(caml_cp_name));
   switch (Int_val(caml_cp_name)) {
   case 0:
-    return  PIP_Problem::CUTTING_STRATEGY;
+    return PIP_Problem::CUTTING_STRATEGY;
   case 1:
-    return  PIP_Problem::PIVOT_ROW_STRATEGY;
+    return PIP_Problem::PIVOT_ROW_STRATEGY;
   default:
     PPL_OCAML_UNREACHABLE_MSG("build_ppl_pip_problem_"
                               "control_parameter_name(cpn)");
