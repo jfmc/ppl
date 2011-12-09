@@ -35,6 +35,12 @@ site: http://bugseng.com/products/ppl/ . */
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 
+// Note: throw exception if the error is at the Java interface level.
+// The assert(false) is to simplify debugging.
+#define PPL_JAVA_UNREACHABLE \
+  assert(false); \
+  throw std::runtime_error("PPL Java interface internal error")
+
 #define CATCH_ALL \
   catch(const Java_ExceptionOccurred& e) { \
   } \

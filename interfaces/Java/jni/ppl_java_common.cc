@@ -501,8 +501,7 @@ build_cxx_bounded_overflow(JNIEnv* env, jobject j_bounded_overflow) {
   case 2:
     return OVERFLOW_IMPOSSIBLE;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -517,8 +516,7 @@ build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep) {
   case 1:
     return SIGNED_2_COMPLEMENT;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -539,8 +537,7 @@ build_cxx_bounded_width(JNIEnv* env, jobject j_bounded_width) {
   case 4:
     return BITS_128;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -561,8 +558,7 @@ build_cxx_relsym(JNIEnv* env, jobject j_relsym) {
   case 4:
     return GREATER_THAN;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -577,8 +573,7 @@ build_cxx_optimization_mode(JNIEnv* env, jobject j_opt_mode) {
   case 1:
     return MAXIMIZATION;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -596,8 +591,7 @@ build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status) {
     fID = cached_FMIDs.MIP_Problem_Status_OPTIMIZED_MIP_PROBLEM_ID;
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   return env->GetStaticObjectField(cached_classes.MIP_Problem_Status, fID);
 }
@@ -613,8 +607,7 @@ build_java_pip_status(JNIEnv* env, const PIP_Problem_Status& pip_status) {
     fID = cached_FMIDs.PIP_Problem_Status_OPTIMIZED_PIP_PROBLEM_ID;
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   return env->GetStaticObjectField(cached_classes.PIP_Problem_Status, fID);
 }
@@ -630,8 +623,7 @@ build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode) {
     fID = cached_FMIDs.Optimization_Mode_MAXIMIZATION_ID;
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   return env->GetStaticObjectField(cached_classes.Optimization_Mode, fID);
 }
@@ -649,8 +641,7 @@ build_cxx_control_parameter_name(JNIEnv* env, jobject j_cp_name) {
   case 0:
     return MIP_Problem::PRICING;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -669,8 +660,7 @@ build_java_control_parameter_name
     return env->GetStaticObjectField(j_cp_name_class,
 				     cp_name_pricing_get_id);
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -691,8 +681,7 @@ build_cxx_control_parameter_value(JNIEnv* env, jobject j_cp_value) {
   case 2:
     return MIP_Problem::PRICING_TEXTBOOK;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -714,8 +703,7 @@ build_java_control_parameter_value
     field_name = "PRICING_TEXTBOOK";
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   jfieldID fID = env->GetStaticFieldID(j_cp_value_class, field_name,
                                        "Lparma_polyhedra_library/Control_Parameter_Value;");
@@ -738,8 +726,7 @@ build_cxx_pip_problem_control_parameter_name(JNIEnv* env, jobject j_cp_name) {
   case 1:
     return PIP_Problem::PIVOT_ROW_STRATEGY;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -765,8 +752,7 @@ build_pip_problem_java_control_parameter_name
     return env->GetStaticObjectField(j_cp_name_class,
 				     cp_name_pivot_row_strategy_get_id);
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -791,8 +777,7 @@ build_cxx_pip_problem_control_parameter_value(JNIEnv* env, jobject j_cp_value) {
   case 4:
     return PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -820,8 +805,7 @@ build_java_pip_problem_control_parameter_value
     field_name = "PIVOT_ROW_STRATEGY_MAX_COLUMN";
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   jfieldID fID = env->GetStaticFieldID(j_cp_value_class, field_name,
                                        "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Value;");
@@ -854,8 +838,7 @@ build_cxx_constraint(JNIEnv* env, jobject j_constraint) {
   case 4:
     return Constraint(first_le > second_le);
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -914,8 +897,8 @@ build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
     jobject le_value = env->GetObjectField(j_le, fID);
     return -build_cxx_linear_expression(env, le_value);
   }
-  assert(false);
-  throw std::runtime_error("PPL Java interface internal error");
+  // All cases dealt with above.
+  PPL_JAVA_UNREACHABLE;
 }
 
 Generator
@@ -948,8 +931,7 @@ build_cxx_generator(JNIEnv* env, jobject j_generator) {
                            build_cxx_coeff(env, j_div));
     }
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -981,8 +963,7 @@ build_cxx_grid_generator(JNIEnv* env, jobject j_grid_generator) {
                         build_cxx_coeff(env, j_div));
     }
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -1017,9 +998,7 @@ set_pair_element(JNIEnv* env, jobject dst_pair, int arg, jobject src) {
     env->SetObjectField(dst_pair, cached_FMIDs.Pair_second_ID, src);
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error: "
-                             "pair value not allowed");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -1031,9 +1010,7 @@ get_pair_element(JNIEnv* env, int arg, jobject j_pair) {
   case 1:
     return env->GetObjectField(j_pair, cached_FMIDs.Pair_second_ID);
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error: "
-                             "pair value not allowed");
+    PPL_JAVA_UNREACHABLE;
   }
 }
 
@@ -1054,8 +1031,7 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
     fID = cached_FMIDs.Relation_Symbol_GREATER_THAN_ID;
     break;
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   jobject relation
     = env->GetStaticObjectField(cached_classes.Relation_Symbol, fID);
@@ -1113,8 +1089,7 @@ build_java_generator(JNIEnv* env, const Generator& g) {
       break;
     }
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   CHECK_EXCEPTION_THROW(env);
   return ret;
@@ -1149,8 +1124,7 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
       break;
     }
   default:
-    assert(false);
-    throw std::runtime_error("PPL Java interface internal error");
+    PPL_JAVA_UNREACHABLE;
   }
   CHECK_EXCEPTION_THROW(env);
   return ret;
