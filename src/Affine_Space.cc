@@ -402,14 +402,8 @@ PPL::Affine_Space::widening_assign(const Affine_Space& y, unsigned*) {
   if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-#ifndef NDEBUG
-  {
-    // Assume y is contained in or equal to x.
-    const Affine_Space x_copy = x;
-    const Affine_Space y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 }
 
 void
@@ -422,14 +416,8 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
   if (x.space_dimension() != y.space_dimension())
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-#ifndef NDEBUG
-  {
-    // Assume y is contained in or equal to x.
-    const Affine_Space x_copy = x;
-    const Affine_Space y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 }
 
 /*! \relates Parma_Polyhedra_Library::Affine_Space */

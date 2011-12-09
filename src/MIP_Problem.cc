@@ -406,11 +406,9 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
       unfeasible_tableau_row = base_index;
       // Reset base[base_index] to zero to remember non-feasibility.
       base[base_index] = 0;
-#ifndef NDEBUG
       // Since the negative part of the variable is in base,
       // the positive part can not be in base too.
       PPL_ASSERT(!is_in_base(mapping[1+var_index].first, base_index));
-#endif
     }
   }
 

@@ -3750,14 +3750,8 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
   if (space_dim == 0)
     return;
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const Box x_copy = *this;
-    const Box y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -3789,14 +3783,8 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `*this' is contained in or equal to `y'.
-    const Box x_copy = *this;
-    const Box y_copy = y;
-    PPL_ASSERT(y_copy.contains(x_copy));
-  }
-#endif
+  // Assume `*this' is contained in or equal to `y'.
+  PPL_EXPECT_HEAVY(copy_contains(y, *this));
 
   // If both boxes are zero-dimensional,
   // since `y' contains `*this', we simply return `*this'.

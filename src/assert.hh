@@ -66,4 +66,27 @@ site: http://bugseng.com/products/ppl/ . */
 
 #endif // !defined(NDEBUG)
 
+
+#define PPL_EXPECT_HEAVY(cond__) PPL_ASSERT_HEAVY(cond__)
+
+
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Returns \c true if and only if \p x_copy contains \p y_copy.
+
+  \note
+  This is a helper function for debugging purposes, to be used in assertions.
+  The two arguments are meant to be passed by value, i.e., <em>copied</em>,
+  so that their representations will not be affected by the containment check.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename T>
+bool copy_contains(T x_copy, T y_copy) {
+  return x_copy.contains(y_copy);
+}
+
+} // namespace Parma_Polyhedra_Library
+
 #endif // !defined(PPL_assert_hh)

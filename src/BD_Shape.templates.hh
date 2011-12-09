@@ -2899,14 +2899,8 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_extrapolation_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If both bounded difference shapes are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
@@ -3052,14 +3046,8 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   if (space_dim == 0)
     return;
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -3083,14 +3071,8 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("BHMZ05_widening_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // Compute the affine dimension of `y'.
   const dimension_type y_affine_dim = y.affine_dimension();
@@ -3172,14 +3154,8 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   if (space_dim == 0)
     return;
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -3203,14 +3179,8 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `*this' is contained in or equal to `y'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(y_copy.contains(x_copy));
-  }
-#endif
+  // We assume that `*this' is contained in or equal to `y'.
+  PPL_EXPECT_HEAVY(copy_contains(y, *this));
 
   // If both bounded difference shapes are zero-dimensional,
   // since `y' contains `*this', we simply return `*this'.
