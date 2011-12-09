@@ -32,9 +32,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl_c.h"
 #include <stdexcept>
 
-#define PPL_C_UNREACHABLE_MSG(msg) \
-  throw std::runtime_error("PPL C interface internal error:\n" msg)
-
 namespace Parma_Polyhedra_Library {
 
 namespace Interfaces {

@@ -153,7 +153,7 @@ build_ppl_relsym(value caml_relsym) {
   case 4:
     return GREATER_THAN;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_relsym(rel)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_relsym(rel)");
   }
 }
 
@@ -172,8 +172,8 @@ build_ppl_bounded_integer_type_width(value caml_width) {
   case 4:
     return BITS_128;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_bounded_integer_type_"
-                              "width(width)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_bounded_integer_type_"
+                             "width(width)");
   }
 }
 
@@ -186,8 +186,8 @@ build_ppl_bounded_integer_type_representation(value caml_rep) {
   case 1:
     return SIGNED_2_COMPLEMENT;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_bounded_integer_type_"
-                              "representation(rep)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_bounded_integer_type_"
+                             "representation(rep)");
   }
 }
 
@@ -202,8 +202,8 @@ build_ppl_bounded_integer_type_overflow(value caml_oflow) {
   case 2:
     return OVERFLOW_IMPOSSIBLE;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_bounded_integer_type_"
-                              "overflow(oflow)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_bounded_integer_type_"
+                             "overflow(oflow)");
   }
 }
 
@@ -216,7 +216,7 @@ build_ppl_opt_mode(value caml_opt_mode) {
   case 1:
     return MAXIMIZATION;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_opt_mode(opt)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_opt_mode(opt)");
   }
 }
 
@@ -229,7 +229,7 @@ build_ppl_Degenerate_Element(value de) {
   case 1:
     return EMPTY;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_Degenerate_Element(de)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_Degenerate_Element(de)");
   }
 }
 
@@ -244,7 +244,7 @@ build_ppl_Complexity_Class(value cc) {
   case 2:
     return ANY_COMPLEXITY;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_Complexity_Class(cc)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_Complexity_Class(cc)");
   }
 }
 
@@ -254,7 +254,7 @@ build_ppl_control_parameter_name(value caml_cp_name) {
   if (Int_val(caml_cp_name) == 0)
     return MIP_Problem::PRICING;
   else
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_control_parameter_name(cpn)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_control_parameter_name(cpn)");
 }
 
 MIP_Problem::Control_Parameter_Value
@@ -268,7 +268,7 @@ build_ppl_control_parameter_value(value caml_cp_value) {
   case 2:
     return MIP_Problem::PRICING_TEXTBOOK;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_control_parameter_value(cpv)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_control_parameter_value(cpv)");
   }
 }
 
@@ -281,8 +281,8 @@ build_ppl_pip_problem_control_parameter_name(value caml_cp_name) {
   case 1:
     return PIP_Problem::PIVOT_ROW_STRATEGY;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_pip_problem_"
-                              "control_parameter_name(cpn)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_pip_problem_"
+                             "control_parameter_name(cpn)");
   }
 }
 
@@ -301,8 +301,8 @@ build_ppl_pip_problem_control_parameter_value(value caml_cp_value) {
   case 4:
     return PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
   default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ppl_pip_problem_"
-                              "control_parameter_value(cpv)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_pip_problem_"
+                             "control_parameter_value(cpv)");
   }
 }
 
@@ -439,9 +439,8 @@ build_ocaml_generator(const Generator& ppl_generator) {
     Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
     CAMLreturn(caml_generator);
   }
-  default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ocaml_generator(g)");
-  }
+  } // switch (ppl_generator.type())
+  PPL_UNREACHABLE;
 }
 
 value
@@ -472,9 +471,8 @@ build_ocaml_grid_generator(const Grid_Generator& ppl_grid_generator) {
     Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
     CAMLreturn(caml_generator);
   }
-  default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ocaml_grid_generator(g)");
-  }
+  } // switch (ppl_grid_generator.type())
+  PPL_UNREACHABLE;
 }
 
 value
@@ -500,9 +498,8 @@ build_ocaml_constraint(const Constraint& ppl_constraint) {
     Store_field(caml_constraint, 1, get_inhomogeneous_term(ppl_constraint));
     CAMLreturn(caml_constraint);
   }
-  default:
-    PPL_OCAML_UNREACHABLE_MSG("build_ocaml_constraint(c)");
-  }
+  } // switch (ppl_constraint.type())
+  PPL_UNREACHABLE;
 }
 
 value
@@ -984,10 +981,8 @@ ppl_MIP_Problem_solve(value caml_mip) try {
     CAMLreturn(Val_int(1));
   case OPTIMIZED_MIP_PROBLEM:
     CAMLreturn(Val_int(2));
-  default:
-    ;
   }
-  PPL_OCAML_UNREACHABLE;
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1002,10 +997,8 @@ ppl_MIP_Problem_optimization_mode(value caml_mip) try {
     CAMLreturn(Val_int(0));
   case MAXIMIZATION:
     CAMLreturn(Val_int(1));
-  default:
-    ;
   }
-  PPL_OCAML_UNREACHABLE;
+  PPL_UNREACHABLE;
  }
 CATCH_ALL
 
@@ -1039,10 +1032,8 @@ ppl_MIP_Problem_get_control_parameter(value caml_mip,
     CAMLreturn(Val_int(1));
   case MIP_Problem::PRICING_TEXTBOOK:
     CAMLreturn(Val_int(2));
-  default:
-    ;
   }
-  PPL_OCAML_UNREACHABLE;
+  PPL_UNREACHABLE;
  }
 CATCH_ALL
 
@@ -1347,10 +1338,8 @@ ppl_PIP_Problem_solve(value caml_pip) try {
     CAMLreturn(Val_int(0));
   case OPTIMIZED_PIP_PROBLEM:
     CAMLreturn(Val_int(1));
-  default:
-    ;
   }
-  PPL_OCAML_UNREACHABLE;
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1388,10 +1377,8 @@ ppl_PIP_Problem_get_control_parameter(value caml_pip,
     CAMLreturn(Val_int(3));
   case PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN:
     CAMLreturn(Val_int(4));
-  default:
-    ;
   }
-  PPL_OCAML_UNREACHABLE;
+  PPL_UNREACHABLE;
  }
 CATCH_ALL
 

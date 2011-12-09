@@ -35,10 +35,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 
-// Note: throw exception if the error is at the Java interface level.
-// The assert(false) is to simplify debugging.
-#define PPL_JAVA_UNREACHABLE \
-  assert(false); \
+#define PPL_JAVA_UNEXPECTED \
   throw std::runtime_error("PPL Java interface internal error")
 
 #define CATCH_ALL \
@@ -504,21 +501,24 @@ build_cxx_relsym(JNIEnv* env, jobject j_relsym);
 
 /*! \brief
   Builds a C++ Bounded_Integer_Type_Overflow
-  from Java parma_polyhedra_library::Bounded_Integer_Type_Overflow \p j_bounded_overflow.
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Overflow
+  \p j_bounded_overflow.
 */
 Bounded_Integer_Type_Overflow
 build_cxx_bounded_overflow(JNIEnv* env, jobject j_bounded_overflow);
 
 /*! \brief
   Builds a C++ Bounded_Integer_Type_Width
-  from Java parma_polyhedra_library::Bounded_Integer_Type_Width \p j_bounded_width.
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Width
+  \p j_bounded_width.
 */
 Bounded_Integer_Type_Width
 build_cxx_bounded_width(JNIEnv* env, jobject j_bounded_width);
 
 /*! \brief
   Builds a C++ Bounded_Integer_Type_Representation
-  from Java parma_polyhedra_library::Bounded_Integer_Type_Representation \p j_bounded_rep.
+  from Java parma_polyhedra_library::Bounded_Integer_Type_Representation
+  \p j_bounded_rep.
 */
 Bounded_Integer_Type_Representation
 build_cxx_bounded_rep(JNIEnv* env, jobject j_bounded_rep);
@@ -569,7 +569,8 @@ build_java_control_parameter_value
 
 /*! \brief
   Builds a C++ PIP_Problem::Control_Parameter_Name
-  from Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Name \p j_cp_name.
+  from Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Name
+  \p j_cp_name.
 */
 PIP_Problem::Control_Parameter_Name
 build_cxx_pip_problem_control_parameter_name(JNIEnv* env, jobject j_cp_name);
@@ -584,7 +585,8 @@ build_java_pip_problem_control_parameter_name
 
 /*! \brief
   Builds a C++ PIP_Problem::Control_Parameter_Value
-  from Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Value \p j_cp_value.
+  from Java parma_polyhedra_library::PIP_Problem_Control_Parameter_Value
+  \p j_cp_value.
 */
 PIP_Problem::Control_Parameter_Value
 build_cxx_pip_problem_control_parameter_value(JNIEnv* env, jobject j_cp_value);
@@ -772,8 +774,8 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
   from C++ Artificial_Parameter_Sequence \p aps.
 */
 jobject
-build_java_artificial_parameter_sequence(JNIEnv* env,
-                                         const PIP_Tree_Node::Artificial_Parameter_Sequence& aps);
+build_java_artificial_parameter_sequence
+(JNIEnv* env, const PIP_Tree_Node::Artificial_Parameter_Sequence& aps);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Grid_Generator_System

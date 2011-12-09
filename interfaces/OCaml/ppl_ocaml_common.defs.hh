@@ -32,9 +32,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "marked_pointers.hh"
 
 // Note: throw exception if the error is at the OCaml interface level.
-#define PPL_OCAML_UNREACHABLE \
+#define PPL_OCAML_UNEXPECTED \
   throw std::runtime_error("PPL OCaml interface internal error")
-#define PPL_OCAML_UNREACHABLE_MSG(msg) \
+#define PPL_OCAML_UNEXPECTED_MSG(msg) \
   throw std::runtime_error("PPL OCaml interface internal error:\n" msg)
 
 

@@ -720,9 +720,8 @@ ppl_Constraint_type(ppl_const_Constraint_t c) try {
     return PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL;
   case Constraint::STRICT_INEQUALITY:
     return PPL_CONSTRAINT_TYPE_GREATER_THAN;
-  default:
-    PPL_C_UNREACHABLE_MSG("ppl_Constraint_type()");
   }
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1041,9 +1040,8 @@ ppl_Generator_type(ppl_const_Generator_t g) try {
     return PPL_GENERATOR_TYPE_POINT;
   case Generator::CLOSURE_POINT:
     return PPL_GENERATOR_TYPE_CLOSURE_POINT;
-  default:
-    PPL_C_UNREACHABLE_MSG("ppl_Generator_type()");
   }
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1631,9 +1629,8 @@ ppl_Grid_Generator_type(ppl_const_Grid_Generator_t g) try {
     return PPL_GRID_GENERATOR_TYPE_PARAMETER;
   case Grid_Generator::POINT:
     return PPL_GRID_GENERATOR_TYPE_POINT;
-  default:
-    PPL_C_UNREACHABLE_MSG("ppl_Grid_Generator_type()");
   }
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
