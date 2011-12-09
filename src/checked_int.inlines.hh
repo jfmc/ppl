@@ -304,6 +304,7 @@ PPL_SPECIALIZE_IS_INT(is_int_int, unsigned long long)
 template <typename Policy, typename Type>
 inline Result
 assign_special_int(Type& v, Result_Class c, Rounding_Dir dir) {
+  PPL_ASSERT(c == VC_MINUS_INFINITY || c == VC_PLUS_INFINITY || c == VC_NAN);
   switch (c) {
   case VC_NAN:
     if (Policy::has_nan) {
@@ -332,7 +333,7 @@ assign_special_int(Type& v, Result_Class c, Rounding_Dir dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    PPL_ASSERT(0);
+    PPL_UNREACHABLE;
     return V_NAN | V_UNREPRESENTABLE;
   }
 }
