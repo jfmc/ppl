@@ -267,7 +267,8 @@ PPL::MIP_Problem::is_satisfiable() const {
     }
   }
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 PPL::MIP_Problem_Status
@@ -345,7 +346,8 @@ PPL::MIP_Problem::solve() const{
     }
   }
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return UNFEASIBLE_MIP_PROBLEM;
 }
 
 void
@@ -1964,7 +1966,8 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
     }
   }
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 PPL::MIP_Problem_Status

@@ -3310,7 +3310,8 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
     }
   }
   // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 template <typename T>
@@ -4324,7 +4325,8 @@ Octagonal_Shape<T>::refine(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   else if (t == 1) {
@@ -4404,7 +4406,8 @@ Octagonal_Shape<T>::refine(const Variable var,
 
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   else {
@@ -4798,7 +4801,8 @@ Octagonal_Shape<T>::refine(const Variable var,
 
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
 }
@@ -5747,7 +5751,8 @@ Octagonal_Shape<T>
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     PPL_ASSERT(OK());
     return;
@@ -5902,7 +5907,8 @@ Octagonal_Shape<T>
 
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       PPL_ASSERT(OK());
       return;
@@ -6131,7 +6137,8 @@ Octagonal_Shape<T>
 
   default:
     // We already dealt with the other cases.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   incremental_strong_closure_assign(var);
   PPL_ASSERT(OK());
@@ -6206,7 +6213,8 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
 
@@ -6262,7 +6270,8 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     else {
@@ -6314,7 +6323,8 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
@@ -6793,7 +6803,8 @@ Octagonal_Shape<T>
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
 
       // Any image of an empty octagon is empty.
@@ -6846,7 +6857,8 @@ Octagonal_Shape<T>
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);

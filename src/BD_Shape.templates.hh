@@ -2193,7 +2193,8 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
       switch (lp_ij.solve()) {
       case UNFEASIBLE_MIP_PROBLEM:
         // CHECKME: is the following actually impossible?
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        return false;
       case UNBOUNDED_MIP_PROBLEM:
         return false;
       case OPTIMIZED_MIP_PROBLEM:
@@ -2606,7 +2607,8 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     }
   }
   // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 template <typename T>
@@ -3506,7 +3508,8 @@ BD_Shape<T>::refine(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     return;
   }
@@ -3538,7 +3541,8 @@ BD_Shape<T>::refine(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     return;
   }
@@ -3821,7 +3825,8 @@ BD_Shape<T>::refine(const Variable var,
 
   default:
     // We already dealt with the other cases.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 
   PPL_ASSERT(OK());
@@ -5410,7 +5415,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     PPL_ASSERT(OK());
     return;
@@ -5533,7 +5539,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       PPL_ASSERT(OK());
       return;
@@ -5708,7 +5715,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   default:
     // We already dealt with the other cases.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   PPL_ASSERT(OK());
 }
@@ -5786,7 +5794,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   else if (t_lhs == 1) {
@@ -5839,7 +5848,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     else {
@@ -5887,7 +5897,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
@@ -6083,7 +6094,8 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
 
       // If the shrunk BD_Shape is empty, its preimage is empty too; ...
@@ -6129,7 +6141,8 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(bds_space_dim);

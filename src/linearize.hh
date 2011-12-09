@@ -698,7 +698,6 @@ linearize(const Concrete_Expression<Target>& expr,
       return false;
     result = FP_Linear_Form(constant_value);
     return true;
-    break;
   }
   case Unary_Operator<Target>::KIND:
   {
@@ -707,14 +706,12 @@ linearize(const Concrete_Expression<Target>& expr,
     switch (uop_expr->unary_operator()) {
     case Unary_Operator<Target>::UPLUS:
       return linearize(*(uop_expr->argument()), oracle, lf_store, result);
-      break;
     case Unary_Operator<Target>::UMINUS:
       if (!linearize(*(uop_expr->argument()), oracle, lf_store, result))
         return false;
 
       result.negate();
       return true;
-      break;
     case Unary_Operator<Target>::BNOT:
       throw std::runtime_error("PPL internal error: unimplemented");
       break;
@@ -731,16 +728,12 @@ linearize(const Concrete_Expression<Target>& expr,
     switch (bop_expr->binary_operator()) {
     case Binary_Operator<Target>::ADD:
       return add_linearize(*bop_expr, oracle, lf_store, result);
-      break;
     case Binary_Operator<Target>::SUB:
       return sub_linearize(*bop_expr, oracle, lf_store, result);
-      break;
     case Binary_Operator<Target>::MUL:
       return mul_linearize(*bop_expr, oracle, lf_store, result);
-      break;
     case Binary_Operator<Target>::DIV:
       return div_linearize(*bop_expr, oracle, lf_store, result);
-      break;
     case Binary_Operator<Target>::REM:
     case Binary_Operator<Target>::BAND:
     case Binary_Operator<Target>::BOR:
@@ -749,9 +742,9 @@ linearize(const Concrete_Expression<Target>& expr,
     case Binary_Operator<Target>::RSHIFT:
       // FIXME: can we do better?
       return false;
-      break;
     default:
-      throw std::runtime_error("PPL internal error: unreachable");
+      PPL_UNREACHABLE;
+      return false;
     }
     break;
   }
@@ -808,15 +801,12 @@ linearize(const Concrete_Expression<Target>& expr,
 
     result = FP_Linear_Form(lub);
     return !result.overflows();
-
-    break;
   }
   case Cast_Operator<Target>::KIND:
   {
     const Cast_Operator<Target>* cast_expr =
       expr.template as<Cast_Operator>();
     return cast_linearize(*cast_expr, oracle, lf_store, result);
-    break;
   }
   default:
     PPL_UNREACHABLE;

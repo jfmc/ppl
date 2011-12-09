@@ -406,7 +406,8 @@ Polyhedron::generalized_refine_with_linear_form_inequality(
   case NOT_EQUAL:
     break;
   default:
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 }
 

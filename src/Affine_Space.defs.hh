@@ -1682,7 +1682,6 @@ private:
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 protected:
 #if 0
-  void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
 #endif
   void throw_dimension_incompatible(const char* method,

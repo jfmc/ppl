@@ -765,7 +765,8 @@ interval_relation(const ITV& i,
   }
 
   // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return Poly_Con_Relation::nothing();
 }
 
 template <typename ITV>
@@ -912,7 +913,8 @@ Box<ITV>::relation_with(const Constraint& c) const {
   }
 
   // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return Poly_Con_Relation::nothing();
 }
 
 template <typename ITV>
@@ -3242,7 +3244,8 @@ Box<ITV>
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   PPL_ASSERT(OK());
 }
@@ -3300,7 +3303,8 @@ Box<ITV>
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 
   // Check whether the preimage of this affine relation can be easily
@@ -3382,7 +3386,8 @@ Box<ITV>
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   // If the shrunk box is empty, its preimage is empty too.
   if (is_empty())
@@ -3528,7 +3533,8 @@ Box<ITV>
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     else
       // The coefficient of the dimension in the lhs is negative.
@@ -3566,7 +3572,8 @@ Box<ITV>
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
   }
 
@@ -3592,7 +3599,8 @@ Box<ITV>
       break;
     default:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   PPL_ASSERT(OK());

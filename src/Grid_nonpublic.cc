@@ -704,13 +704,6 @@ PPL::Grid::refine_no_check(const Constraint& c) {
 }
 
 void
-PPL::Grid::throw_runtime_error(const char* method) const {
-  std::ostringstream s;
-  s << "PPL::Grid::" << method << "." << std::endl;
-  throw std::runtime_error(s.str());
-}
-
-void
 PPL::Grid::throw_invalid_argument(const char* method,
 				  const char* reason) const {
   std::ostringstream s;

@@ -1428,8 +1428,9 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	else
 	  gen_sys.insert(Generator::point(nc_expr, g.divisor()));
 	break;
-      default:
-	throw_runtime_error("add_generator(const Generator& g)");
+      case Generator::CLOSURE_POINT:
+        PPL_UNREACHABLE;
+	break;
       }
     }
 
@@ -2953,7 +2954,8 @@ generalized_affine_image(const Variable var,
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -3014,7 +3016,8 @@ generalized_affine_preimage(const Variable var,
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 
   // Check whether the preimage of this affine relation can be easily
@@ -3054,7 +3057,8 @@ generalized_affine_preimage(const Variable var,
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   unconstrain(var);
   PPL_ASSERT_HEAVY(OK());
@@ -3118,7 +3122,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     return;
   }
@@ -3170,7 +3175,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
-	throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     // Remove the temporarily added dimension.
@@ -3208,7 +3214,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   PPL_ASSERT_HEAVY(OK());
@@ -3305,7 +3312,8 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
-	throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     // Remove the temporarily added dimension.
@@ -3335,7 +3343,8 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     // Any image of an empty polyhedron is empty.
     // Note: DO check for emptiness here, as we will add lines.
