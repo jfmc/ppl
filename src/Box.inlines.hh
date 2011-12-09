@@ -409,9 +409,10 @@ Box<ITV>
                                           : LESS_THAN, q));
     break;
   default:
-    // Silence an annoying GCC warning (should never reach this point).
-    PPL_ASSERT(false);
+    // Silence compiler warning.
+    PPL_UNREACHABLE;
     res = I_ANY;
+    break;
   }
   PPL_ASSERT(itv.OK());
   return res;

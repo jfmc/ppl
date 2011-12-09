@@ -149,7 +149,7 @@ assign_special_mpz(mpz_class& v, Result_Class c, Rounding_Dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return V_NAN;
   }
 }
@@ -283,7 +283,7 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     return round_lt_mpz<To_Policy>(to, dir);
   if (from > i_from)
     return round_gt_mpz<To_Policy>(to, dir);
-  PPL_ASSERT(false);
+  PPL_UNREACHABLE;
   return V_NAN;
 }
 

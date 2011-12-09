@@ -687,7 +687,7 @@ linearize(const Concrete_Expression<Target>& expr,
 
   switch(expr.kind()) {
   case Integer_Constant<Target>::KIND:
-    throw std::runtime_error("PPL internal error: unreachable");
+    PPL_UNREACHABLE;
     break;
   case Floating_Point_Constant<Target>::KIND:
   {
@@ -719,7 +719,8 @@ linearize(const Concrete_Expression<Target>& expr,
       throw std::runtime_error("PPL internal error: unimplemented");
       break;
     default:
-      throw std::runtime_error("PPL internal error: unreachable");
+      PPL_UNREACHABLE;
+      break;
     }
     break;
   }
@@ -766,7 +767,7 @@ linearize(const Concrete_Expression<Target>& expr,
         linearization fails.
       */
       return false;
-    
+
     if (associated_dimensions.size() == 1) {
       /* If a linear form associated to the only referenced
          space dimension exists in lf_store, return that form.
@@ -818,10 +819,12 @@ linearize(const Concrete_Expression<Target>& expr,
     break;
   }
   default:
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 
-  PPL_ASSERT(false);
+  PPL_UNREACHABLE;
+  return false;
 }
 
 } // namespace Parma_Polyhedra_Library

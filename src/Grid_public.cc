@@ -1650,12 +1650,12 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
   // redundancies found.
   std::vector<bool> redundant_by_y(x_cs_num_rows, false);
   dimension_type num_redundant_by_y = 0;
-  for (dimension_type i = 0; i < x_cs_num_rows; ++i)
-    if (y.relation_with(x_cs[i])
-	.implies(Poly_Con_Relation::is_included())) {
+  for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
+    if (y.relation_with(x_cs[i]).implies(Poly_Con_Relation::is_included())) {
       redundant_by_y[i] = true;
       ++num_redundant_by_y;
     }
+  }
 
   if (num_redundant_by_y < x_cs_num_rows) {
 
@@ -1754,8 +1754,8 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	return !empty_intersection;
       }
     }
-      // Cannot exit from here.
-    PPL_ASSERT(false);
+    // Cannot exit from here.
+    PPL_UNREACHABLE;
   }
 
   // All the congruences are redundant so that the simplified grid

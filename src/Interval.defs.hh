@@ -536,7 +536,7 @@ public:
 		       UPPER, upper(), info(), w);
       break;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       break;
     }
     if (le(LOWER, lower(), info(), UPPER, upper(), info()))

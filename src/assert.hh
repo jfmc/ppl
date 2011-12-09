@@ -31,6 +31,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 #define PPL_ASSERT(cond__)
 #define PPL_ASSERT_HEAVY(cond__)
+// Try to force a segmentation fault (volatile null pointer deref).
+#define PPL_UNREACHABLE (*(volatile int*)0)
 
 #else
 
@@ -59,6 +61,9 @@ site: http://bugseng.com/products/ppl/ . */
       assert(cond__);						\
       --Parma_Polyhedra_Library::Implementation::in_assert;	\
     } while (0)
-#endif
+
+#define PPL_UNREACHABLE PPL_ASSERT(false)
+
+#endif // !defined(NDEBUG)
 
 #endif // !defined(PPL_assert_hh)

@@ -2319,7 +2319,7 @@ propagate_constraint_check_result(Result r, Ternary& open) {
   case V_EQ:
     return false;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return true;
   }
 }

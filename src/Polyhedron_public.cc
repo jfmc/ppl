@@ -2287,7 +2287,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         }
       }
       // Cannot exit from here.
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
     }
     else {
       // Here `z' is not empty and minimized.

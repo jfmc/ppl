@@ -98,7 +98,7 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
 
     default:
       // We should not be here
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
 #endif
     }
 

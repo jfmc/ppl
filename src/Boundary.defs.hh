@@ -444,7 +444,7 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
       // FIXME: what to return?
       return r;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       return V_NAN;
     }
   }
@@ -469,7 +469,7 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
       // FIXME: what to return?
       return r;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       return V_NAN;
     }
   }
