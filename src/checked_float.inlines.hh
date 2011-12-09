@@ -204,6 +204,7 @@ is_int_float(const T v) {
 template <typename Policy, typename T>
 inline Result
 assign_special_float(T& v, Result_Class c, Rounding_Dir) {
+  PPL_ASSERT(c == VC_MINUS_INFINITY || c == VC_PLUS_INFINITY || c == VC_NAN);
   switch (c) {
   case VC_MINUS_INFINITY:
     v = -HUGE_VAL;
@@ -215,7 +216,7 @@ assign_special_float(T& v, Result_Class c, Rounding_Dir) {
     v = PPL_NAN;
     return V_NAN;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return V_NAN | V_UNREPRESENTABLE;
   }
 }
@@ -775,8 +776,12 @@ set_neg_overflow_float(T& to, Rounding_Dir dir) {
       to = f.value();
       return V_LT_INF;
     }
-  default:
+  case ROUND_DOWN: // Fall through.
+  case ROUND_IGNORE:
     to = -HUGE_VAL;
+    return V_GT_MINUS_INFINITY;
+  default:
+    PPL_UNREACHABLE;
     return V_GT_MINUS_INFINITY;
   }
 }
@@ -792,8 +797,12 @@ set_pos_overflow_float(T& to, Rounding_Dir dir) {
       to = f.value();
       return V_GT_SUP;
     }
-  default:
+  case ROUND_UP: // Fall through.
+  case ROUND_IGNORE:
     to = HUGE_VAL;
+    return V_LT_PLUS_INFINITY;
+  default:
+    PPL_UNREACHABLE;
     return V_LT_PLUS_INFINITY;
   }
 }
