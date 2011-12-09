@@ -570,6 +570,11 @@ Enable_If<(!Safe_Conversion<T1, T2>::value
 le(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, (ROUND_UP | ROUND_STRICT_RELATION));
+  // FIXME: We can do this also without fpu inexact check using a
+  // conversion back and forth and then testing equality.  We should
+  // code this in checked_float.inlines.hh, probably it's faster also
+  // if fpu supports inexact check.
+  PPL_ASSERT(r != V_LE && r != V_GE && r != V_LGE);
   if (!result_representable(r))
     return true;
   switch (result_relation(r)) {
@@ -580,8 +585,9 @@ le(const T1& x, const T2& y) {
   case VR_LE:
   case VR_GE:
   case VR_LGE:
-    // FIXME: See comment above.
-    PPL_ASSERT(0);
+    // See comment above.
+    PPL_UNREACHABLE;
+    return false;
   default:
     return false;
   }
