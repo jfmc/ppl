@@ -697,13 +697,8 @@ main(int argc, char* argv[]) try {
       if (s.length() > 0)
 	s += ' ';
       s += "-lppl";
-      switch (required_interface) {
-      case C:
+      if (required_interface == C)
 	s += " -lppl_c";
-	break;
-      default:
-	break;
-      }
       s += " -lgmpxx -lgmp";
     }
     portray("LDFLAGS", s);
