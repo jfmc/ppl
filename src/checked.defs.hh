@@ -24,6 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_checked_defs_hh
 #define PPL_checked_defs_hh 1
 
+#include <cassert>
 #include <iostream>
 #include <gmpxx.h>
 #include "mp_std_bits.defs.hh"

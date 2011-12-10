@@ -92,6 +92,8 @@ INPUT                  = @srcdir@/definitions.dox \
                          ../src/version.hh \
                          @srcdir@/../src/version.cc \
                          @srcdir@/../src/meta_programming.hh \
+                         @srcdir@/../src/assert.hh \
+                         @srcdir@/../src/assert.cc \
                          @srcdir@/../src/Float.defs.hh \
                          @srcdir@/../src/Float.inlines.hh \
                          @srcdir@/../src/Float.cc \
