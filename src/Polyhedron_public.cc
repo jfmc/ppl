@@ -3017,6 +3017,7 @@ generalized_affine_preimage(const Variable var,
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
     PPL_UNREACHABLE;
+    reversed_relsym = GREATER_OR_EQUAL;
     break;
   }
 
