@@ -1045,11 +1045,11 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 #ifndef NDEBUG
     case 3:
       break;
-#endif
 
     default:
       PPL_UNREACHABLE;
       break;
+#endif
     }
 
     // We now visit the current tree
