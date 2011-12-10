@@ -139,7 +139,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/termination.defs.hh \
                          @srcdir@/../src/termination.templates.hh \
                          @srcdir@/../src/termination.cc \
-                         @srcdir@/../src/Topology.hh \
+                         @srcdir@/../src/Topology.types.hh \
                          @srcdir@/../src/Sparse_Row.types.hh \
                          @srcdir@/../src/Sparse_Row.defs.hh \
                          @srcdir@/../src/Sparse_Row.inlines.hh \
