@@ -25,6 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Linear_Expression_Impl_defs_hh 1
 
 #include "Linear_Expression_Impl.types.hh"
+#include "Congruence.types.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cstddef>
