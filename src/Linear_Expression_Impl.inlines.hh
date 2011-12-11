@@ -26,6 +26,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Variable.defs.hh"
 #include "Coefficient.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Sparse_Row.defs.hh"
 #include "math_utilities.defs.hh"
 #include <stdexcept>
 
@@ -46,7 +48,8 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl()
 
 template <typename Row>
 inline
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(dimension_type space_dim, bool)
+Linear_Expression_Impl<Row>
+::Linear_Expression_Impl(dimension_type space_dim, bool)
   : row(space_dim + 1) {
   PPL_ASSERT(OK());
 }
@@ -58,7 +61,8 @@ Linear_Expression_Impl<Row>::~Linear_Expression_Impl() {
 
 template <typename Row>
 inline
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(Coefficient_traits::const_reference n)
+Linear_Expression_Impl<Row>
+::Linear_Expression_Impl(Coefficient_traits::const_reference n)
   : row(1) {
   if (n != 0)
     row.insert(0, n);
@@ -125,7 +129,8 @@ Linear_Expression_Impl<Row>::swap_space_dimensions(Variable v1, Variable v2) {
 
 template <typename Row>
 inline void
-Linear_Expression_Impl<Row>::shift_space_dimensions(Variable v, dimension_type n) {
+Linear_Expression_Impl<Row>::shift_space_dimensions(Variable v,
+                                                    dimension_type n) {
   row.add_zeroes_and_shift(n, v.space_dimension());
   PPL_ASSERT(OK());
 }
@@ -171,45 +176,98 @@ Linear_Expression_Impl<Row>::normalize() {
   PPL_ASSERT(OK());
 }
 
-template <typename Row>
-inline void
-Linear_Expression_Impl<Row>::ascii_dump(std::ostream& s) const {
-  s << "size " << (space_dimension() + 1) << " ";
-  for (dimension_type i = 0; i < row.size(); ++i) {
-    s << row.get(i);
-    if (i != row.size() - 1)
-      s << ' ';
-  }
+template <>
+inline bool
+Linear_Expression_Impl<Sparse_Row>::is_zero() const {
+  return row.num_stored_elements() == 0;
 }
 
-template <typename Row>
+template <>
 inline bool
-Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
-  std::string str;
+Linear_Expression_Impl<Sparse_Row>::all_homogeneous_terms_are_zero() const {
+  return row.lower_bound(1) == row.end();
+}
 
-  if (!(s >> str))
-    return false;
-  if (str != "size")
-    return false;
+template <>
+inline bool
+Linear_Expression_Impl<Sparse_Row>::all_zeroes(dimension_type start,
+                                               dimension_type end) const {
+  return row.lower_bound(start) == row.lower_bound(end);
+}
 
-  dimension_type new_size;
-  if (!(s >> new_size))
-    return false;
+template <>
+inline dimension_type
+Linear_Expression_Impl<Sparse_Row>::num_zeroes(dimension_type start,
+                                               dimension_type end) const {
+  PPL_ASSERT(start <= end);
+  return (end - start)
+    - std::distance(row.lower_bound(start), row.lower_bound(end));
+}
 
-  row.resize(0);
-  row.resize(new_size);
+template <>
+inline dimension_type
+Linear_Expression_Impl<Sparse_Row>::last_nonzero() const {
+  if (row.num_stored_elements() == 0)
+    return 0;
+  Sparse_Row::const_iterator i = row.end();
+  --i;
+  return i.index();
+}
 
-  PPL_DIRTY_TEMP_COEFFICIENT(c);
+template <>
+inline dimension_type
+Linear_Expression_Impl<Sparse_Row>
+::first_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  Sparse_Row::const_iterator i = row.lower_bound(first);
 
-  for (dimension_type j = 0; j < new_size; ++j) {
-    if (!(s >> c))
-      return false;
-    if (c != 0)
-      row.insert(j, c);
-  }
+  if (i != row.end() && i.index() < last)
+    return i.index();
+  else
+    return last;
+}
 
-  PPL_ASSERT(OK());
-  return true;
+template <>
+inline dimension_type
+Linear_Expression_Impl<Sparse_Row>
+::last_nonzero(dimension_type first, dimension_type last) const {
+  PPL_ASSERT(first <= last);
+  PPL_ASSERT(last <= row.size());
+  Sparse_Row::const_iterator itr1 = row.lower_bound(first);
+  Sparse_Row::const_iterator itr2 = row.lower_bound(last);
+
+  if (itr1 == itr2)
+    return last;
+
+  --itr2;
+  return itr2.index();
+}
+
+template <>
+inline Representation
+Linear_Expression_Impl<Dense_Row>::representation() const {
+  return DENSE;
+}
+
+template <>
+inline Representation
+Linear_Expression_Impl<Sparse_Row>::representation() const {
+  return SPARSE;
+}
+
+template <>
+inline void
+Linear_Expression_Impl<Sparse_Row>::const_iterator
+::skip_zeroes_forward() {
+  // Nothing to do.
+}
+
+template <>
+inline void
+Linear_Expression_Impl<Sparse_Row>::const_iterator
+::skip_zeroes_backward() {
+  // Nothing to do.
 }
 
 namespace IO_Operators {
@@ -217,7 +275,8 @@ namespace IO_Operators {
 template <typename Row>
 inline std::ostream&
 operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e) {
-  return e << s;
+  e.print(s);
+  return s;
 }
 
 } // namespace IO_Operators

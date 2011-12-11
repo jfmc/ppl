@@ -458,6 +458,7 @@ Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Linear_Expression.cc \
+Linear_Expression_Impl.cc \
 Linear_Expression_Interface.cc \
 Linear_Form.cc \
 Scalar_Products.cc \

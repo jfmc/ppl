@@ -38,7 +38,8 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
 template <typename Row>
-std::ostream& operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e);
+std::ostream&
+operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e);
 
 } // namespace IO_Operators
 
@@ -362,10 +363,7 @@ public:
   virtual void sub_mul_assign(Coefficient_traits::const_reference factor,
                               const Linear_Expression_Interface& e2);
 
-  //! NOTE: This can be used as <CODE>(*this) << s</CODE>, but it actually
-  //! means <CODE>s << *this</CODE>. This strange syntax is needed because
-  //! this must be a method and can't be a free function.
-  virtual std::ostream& operator<<(std::ostream& s) const;
+  virtual void print(std::ostream& s) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in

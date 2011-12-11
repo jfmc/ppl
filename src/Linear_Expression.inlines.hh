@@ -852,11 +852,11 @@ Linear_Expression
 }
 
 namespace IO_Operators {
-  
+
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 inline std::ostream&
 operator<<(std::ostream& s, const Linear_Expression& e) {
-  *e.impl << s;
+  e.impl->print(s);
   return s;
 }
 

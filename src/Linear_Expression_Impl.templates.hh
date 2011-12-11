@@ -36,411 +36,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <>
-bool Linear_Expression_Impl<Dense_Row>::OK() const {
-  return (row.size() != 0);
-}
-
-template <>
-bool Linear_Expression_Impl<Sparse_Row>::OK() const {
-  if (row.size() == 0)
-    return false;
-  for (Sparse_Row::const_iterator i = row.begin(), i_end = row.end(); i != i_end; ++i)
-    if (*i == 0) {
-      std::cout << "Linear_Expression_Impl<Sparse_Row>::OK() failed. row was:" << std::endl;
-      row.ascii_dump();
-      // Found a stored zero.
-      return false;
-    }
-  return true;
-}
-
-template <>
-void
-Linear_Expression_Impl<Dense_Row>::remove_space_dimensions(const Variables_Set& vars) {
-  PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  if (vars.empty())
-    return;
-
-  // For each variable to be removed, replace the corresponding coefficient
-  // by shifting left the coefficient to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  dimension_type dst_col = *vsi+1;
-  dimension_type src_col = dst_col + 1;
-  for (++vsi; vsi != vsi_end; ++vsi) {
-    const dimension_type vsi_col = *vsi+1;
-    // Move all columns in between to the left.
-    while (src_col < vsi_col)
-      row.swap_coefficients(dst_col++, src_col++);
-    ++src_col;
-  }
-  // Move any remaining columns.
-  const dimension_type sz = row.size();
-  while (src_col < sz)
-    row.swap_coefficients(dst_col++, src_col++);
-
-  // The number of remaining coefficients is `dst_col'.
-  row.resize(dst_col);
-  PPL_ASSERT(OK());
-}
-
-template <>
-void
-Linear_Expression_Impl<Sparse_Row>::remove_space_dimensions(const Variables_Set& vars) {
-  PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  if (vars.empty())
-    return;
-
-  // For each variable to be removed, replace the corresponding coefficient
-  // by shifting left the coefficient to the right that will be kept.
-  Variables_Set::const_iterator vsi = vars.begin();
-  Variables_Set::const_iterator vsi_end = vars.end();
-  Sparse_Row::iterator src = row.lower_bound(*vsi + 1);
-  const Sparse_Row::iterator& row_end = row.end();
-  dimension_type num_removed = 0;
-  while (vsi != vsi_end) {
-    // Delete the element.
-    if (src != row_end && src.index() == *vsi + 1)
-      src = row.reset(src);
-    num_removed++;
-    vsi++;
-    if (vsi != vsi_end) {
-      // Shift left the coefficients in [src.index(), *vsi + 1) by num_removed
-      // positions.
-      while (src != row_end && src.index() < *vsi + 1) {
-        row.fast_swap(src.index() - num_removed, src);
-        ++src;
-      }
-    } else {
-      // Shift left the coefficients in [src.index(), row.size()) by
-      // num_removed positions.
-      while (src != row_end) {
-        row.fast_swap(src.index() - num_removed, src);
-        ++src;
-      }
-    }
-  }
-
-  PPL_ASSERT(num_removed == vars.size());
-
-  row.resize(row.size() - num_removed);
-  PPL_ASSERT(OK());
-}
-
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>::is_zero() const {
-  return row.num_stored_elements() == 0;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>::is_zero() const {
-  for (dimension_type i = row.size(); i-- > 0; )
-    if (row[i] != 0)
-      return false;
-  return true;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>::all_homogeneous_terms_are_zero() const {
-  return row.lower_bound(1) == row.end();
-}
-
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>::all_homogeneous_terms_are_zero() const {
-  for (dimension_type i = 1; i < row.size(); ++i)
-    if (row[i] != 0)
-      return false;
-  return true;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>::all_zeroes(dimension_type start, dimension_type end) const {
-  return row.lower_bound(start) == row.lower_bound(end);
-}
-
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>::all_zeroes(dimension_type start, dimension_type end) const {
-  for (dimension_type i = start; i < end; ++i)
-    if (row[i] != 0)
-      return false;
-  return true;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Dense_Row>::num_zeroes(dimension_type start, dimension_type end) const {
-  PPL_ASSERT(start <= end);
-  dimension_type result = 0;
-  for (dimension_type i = start; i < end; ++i)
-    if (row[i] == 0)
-      ++result;
-  return result;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Sparse_Row>::num_zeroes(dimension_type start, dimension_type end) const {
-  PPL_ASSERT(start <= end);
-  return (end - start) - std::distance(row.lower_bound(start), row.lower_bound(end));
-}
-
-template <>
-Coefficient
-Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start, dimension_type end) const {
-  dimension_type i;
-
-  for (i = start; i < end; i++)
-    if (row[i] != 0)
-      break;
-
-  if (i == end)
-    return 0;
-
-  PPL_ASSERT(row[i] != 0);
-
-  Coefficient result = row[i];
-  ++i;
-
-  if (result < 0)
-    neg_assign(result);
-
-  for ( ; i < end; ++i) {
-    if (row[i] == 0)
-      continue;
-    gcd_assign(result, row[i], result);
-    if (result == 1)
-      return result;
-  }
-
-  return result;
-}
-
-template <>
-Coefficient
-Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start, dimension_type end) const {
-  Sparse_Row::const_iterator i = row.lower_bound(start);
-  Sparse_Row::const_iterator i_end = row.lower_bound(end);
-
-  if (i == i_end)
-    return 0;
-
-  PPL_ASSERT(*i != 0);
-
-  Coefficient result = *i;
-  ++i;
-
-  if (result < 0)
-    neg_assign(result);
-
-  for ( ; i != i_end; ++i) {
-    gcd_assign(result, *i, result);
-    if (result == 1)
-      return result;
-  }
-
-  return result;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>::all_zeroes(const Variables_Set& vars) const {
-  Variables_Set::const_iterator j = vars.begin();
-  Variables_Set::const_iterator j_end = vars.end();
-
-  for ( ; j != j_end; ++j)
-    if (row[*j + 1] != 0)
-      return false;
-
-  return true;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>::all_zeroes(const Variables_Set& vars) const {
-  Sparse_Row::const_iterator i = row.begin();
-  Sparse_Row::const_iterator i_end = row.end();
-  Variables_Set::const_iterator j = vars.begin();
-  Variables_Set::const_iterator j_end = vars.end();
-
-  for ( ; j != j_end; ++j) {
-    i = row.lower_bound(i, *j + 1);
-    if (i == i_end)
-      break;
-    if (i.index() == *j + 1)
-      return false;
-  }
-
-  return true;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>
-::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
-  if (start == 0) {
-    if (row[0] != 0)
-      return false;
-    ++start;
-  }
-  for (dimension_type i = start; i < end; ++i)
-    if (row[i] != 0 && vars.count(i - 1) == 0)
-      return false;
-  return true;
-}
-
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>
-::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
-  PPL_ASSERT(start <= end);
-  if (start == end)
-    return true;
-  if (start == 0) {
-    if (row.find(0) != row.end())
-      return false;
-
-    start = 1;
-  }
-
-  PPL_ASSERT(start != 0);
-  PPL_ASSERT(start <= end);
-  for (Sparse_Row::const_iterator i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; i++)
-    if (vars.count(i.index() - 1) == 0)
-      return false;
-
-  return true;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Dense_Row>::last_nonzero() const {
-  for (dimension_type i = row.size(); i-- > 0; )
-    if (row[i] != 0)
-      return i;
-  return 0;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Sparse_Row>::last_nonzero() const {
-  if (row.num_stored_elements() == 0)
-    return 0;
-  Sparse_Row::const_iterator i = row.end();
-  --i;
-  return i.index();
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Dense_Row>
-::first_nonzero(dimension_type first, dimension_type last) const {
-  PPL_ASSERT(first <= last);
-  PPL_ASSERT(last <= row.size());
-  for (dimension_type i = first; i < last; ++i)
-    if (row[i] != 0)
-      return i;
-
-  return last;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Sparse_Row>
-::first_nonzero(dimension_type first, dimension_type last) const {
-  PPL_ASSERT(first <= last);
-  PPL_ASSERT(last <= row.size());
-  Sparse_Row::const_iterator i = row.lower_bound(first);
-
-  if (i != row.end() && i.index() < last)
-    return i.index();
-  else
-    return last;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Dense_Row>
-::last_nonzero(dimension_type first, dimension_type last) const {
-  PPL_ASSERT(first <= last);
-  PPL_ASSERT(last <= row.size());
-  for (dimension_type i = last; i-- > first; )
-    if (row[i] != 0)
-      return i;
-
-  return last;
-}
-
-template <>
-dimension_type
-Linear_Expression_Impl<Sparse_Row>
-::last_nonzero(dimension_type first, dimension_type last) const {
-  PPL_ASSERT(first <= last);
-  PPL_ASSERT(last <= row.size());
-  Sparse_Row::const_iterator itr1 = row.lower_bound(first);
-  Sparse_Row::const_iterator itr2 = row.lower_bound(last);
-
-  if (itr1 == itr2)
-    return last;
-
-  --itr2;
-  return itr2.index();
-}
-
-template <>
-void
-Linear_Expression_Impl<Dense_Row>
-::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
-  typedef std::set<dimension_type> set_t;
-  set_t result;
-  for (set_t::const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
-    if (row[*i] == 0)
-      result.insert(*i);
-  using std::swap;
-  swap(x, result);
-}
-
-template <>
-void
-Linear_Expression_Impl<Sparse_Row>
-::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
-  typedef std::set<dimension_type> set_t;
-  set_t result;
-  Sparse_Row::const_iterator itr = row.end();
-  Sparse_Row::const_iterator itr_end = row.end();
-  set_t::const_iterator i = x.begin();
-  set_t::const_iterator i_end = x.end();
-  for ( ; i != i_end; ++i) {
-    itr = row.lower_bound(itr, *i);
-    if (itr == itr_end)
-      break;
-    if (itr.index() != *i)
-      result.insert(*i);
-  }
-  for ( ; i != i_end; ++i)
-    result.insert(*i);
-  using std::swap;
-  swap(x, result);
-}
-
-template <>
-Representation
-Linear_Expression_Impl<Dense_Row>::representation() const {
-  return DENSE;
-}
-
-template <>
-Representation
-Linear_Expression_Impl<Sparse_Row>::representation() const {
-  return SPARSE;
-}
-
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
@@ -454,9 +49,11 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&e)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
     construct(*p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&e)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
     construct(*p);
   } else {
     // Add implementations for other derived classes here.
@@ -468,9 +65,11 @@ template <typename Row>
 Linear_Expression_Impl<Row>
 ::Linear_Expression_Impl(const Linear_Expression_Interface& e,
                          dimension_type space_dim) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&e)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
     construct(*p, space_dim);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&e)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
     construct(*p, space_dim);
   } else {
     // Add implementations for other derived classes here.
@@ -783,8 +382,9 @@ Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
 template <typename Row>
 Linear_Expression_Impl<Row>&
-Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference n,
-                                            const Variable v) {
+Linear_Expression_Impl<Row>
+::sub_mul_assign(Coefficient_traits::const_reference n,
+                 const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
   if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
     throw std::length_error("Linear_Expression_Impl& "
@@ -805,8 +405,9 @@ Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference 
 template <typename Row>
 template <typename Row2>
 void
-Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference factor,
-                                            const Linear_Expression_Impl<Row2>& y) {
+Linear_Expression_Impl<Row>
+::add_mul_assign(Coefficient_traits::const_reference factor,
+                 const Linear_Expression_Impl<Row2>& y) {
   if (factor != 0)
     linear_combine(y, Coefficient_one(), factor);
 }
@@ -814,16 +415,16 @@ Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference 
 template <typename Row>
 template <typename Row2>
 void
-Linear_Expression_Impl<Row>::sub_mul_assign(Coefficient_traits::const_reference factor,
-                                            const Linear_Expression_Impl<Row2>& y) {
+Linear_Expression_Impl<Row>
+::sub_mul_assign(Coefficient_traits::const_reference factor,
+                 const Linear_Expression_Impl<Row2>& y) {
   if (factor != 0)
     linear_combine(y, Coefficient_one(), -factor);
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
 template <typename Row>
-std::ostream&
-Linear_Expression_Impl<Row>::operator<<(std::ostream& s) const {
+void
+Linear_Expression_Impl<Row>::print(std::ostream& s) const {
   PPL_DIRTY_TEMP_COEFFICIENT(ev);
   bool first = true;
   for (typename Row::const_iterator i = row.lower_bound(1), i_end = row.end();
@@ -867,7 +468,6 @@ Linear_Expression_Impl<Row>::operator<<(std::ostream& s) const {
   if (first)
     // The null linear expression.
     s << Coefficient_zero();
-  return s;
 }
 
 template <typename Row>
@@ -1201,83 +801,15 @@ Linear_Expression_Impl<Row>
   return true;
 }
 
-template <>
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>
-::have_a_common_variable(const Linear_Expression_Impl<Dense_Row>& y,
-                         Variable first, Variable last) const {
-  const dimension_type start = first.space_dimension();
-  const dimension_type end = last.space_dimension();
-  PPL_ASSERT(start <= end);
-  PPL_ASSERT(end <= row.size());
-  PPL_ASSERT(end <= y.row.size());
-  for (dimension_type i = start; i < end; ++i)
-    if (row[i] != 0 && y.row[i] != 0)
-      return true;
-  return false;
-}
-
-template <>
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>
-::have_a_common_variable(const Linear_Expression_Impl<Dense_Row>& y,
-                         Variable first, Variable last) const {
-  const dimension_type start = first.space_dimension();
-  const dimension_type end = last.space_dimension();
-  PPL_ASSERT(start <= end);
-  PPL_ASSERT(end <= row.size());
-  PPL_ASSERT(end <= y.row.size());
-  for (Sparse_Row::const_iterator i = row.lower_bound(start),
-        i_end = row.lower_bound(end); i != i_end; ++i)
-    if (y.row[i.index()] != 0)
-      return true;
-  return false;
-}
-
-template <>
-template <>
-bool
-Linear_Expression_Impl<Dense_Row>
-::have_a_common_variable(const Linear_Expression_Impl<Sparse_Row>& y,
-                         Variable first, Variable last) const {
-  return y.have_a_common_variable(*this, first, last);
-}
-
-template <>
-template <>
-bool
-Linear_Expression_Impl<Sparse_Row>
-::have_a_common_variable(const Linear_Expression_Impl<Sparse_Row>& y,
-                         Variable first, Variable last) const {
-  const dimension_type start = first.space_dimension();
-  const dimension_type end = last.space_dimension();
-  PPL_ASSERT(start <= end);
-  PPL_ASSERT(end <= row.size());
-  PPL_ASSERT(end <= y.row.size());
-  Sparse_Row::const_iterator i = row.lower_bound(start);
-  Sparse_Row::const_iterator i_end = row.lower_bound(end);
-  Sparse_Row::const_iterator j = y.row.lower_bound(start);
-  Sparse_Row::const_iterator j_end = y.row.lower_bound(end);
-  while (i != i_end && j != j_end) {
-    if (i.index() == j.index())
-      return true;
-    if (i.index() < j.index())
-      ++i;
-    else
-      ++j;
-  }
-  return false;
-}
-
 template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, v);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, v);
   } else {
     // Add implementations for new derived classes here.
@@ -1291,9 +823,11 @@ Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y,
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, c1, c2);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, c1, c2);
   } else {
     // Add implementations for new derived classes here.
@@ -1307,9 +841,11 @@ Linear_Expression_Impl<Row>
 ::linear_combine_lax(const Linear_Expression_Interface& y,
                      Coefficient_traits::const_reference c1,
                      Coefficient_traits::const_reference c2) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2);
   } else {
     // Add implementations for new derived classes here.
@@ -1321,9 +857,11 @@ template <typename Row>
 bool
 Linear_Expression_Impl<Row>
 ::is_equal_to(const Linear_Expression_Interface& y) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -1336,9 +874,11 @@ template <typename Row>
 Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>
 ::operator+=(const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return operator+=(*p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return operator+=(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -1351,9 +891,11 @@ template <typename Row>
 Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>
 ::operator-=(const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return operator-=(*p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return operator-=(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -1367,9 +909,11 @@ void
 Linear_Expression_Impl<Row>
 ::add_mul_assign(Coefficient_traits::const_reference factor,
                  const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     add_mul_assign(factor, *p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     add_mul_assign(factor, *p);
   } else {
     // Add implementations for new derived classes here.
@@ -1382,9 +926,11 @@ void
 Linear_Expression_Impl<Row>
 ::sub_mul_assign(Coefficient_traits::const_reference factor,
                  const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     sub_mul_assign(factor, *p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     sub_mul_assign(factor, *p);
   } else {
     // Add implementations for new derived classes here.
@@ -1396,9 +942,11 @@ template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, dimension_type i) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, i);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, i);
   } else {
     // Add implementations for new derived classes here.
@@ -1413,9 +961,11 @@ Linear_Expression_Impl<Row>
                  Coefficient_traits::const_reference c1,
                  Coefficient_traits::const_reference c2,
                  dimension_type start, dimension_type end) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, c1, c2, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -1430,9 +980,11 @@ Linear_Expression_Impl<Row>
                      Coefficient_traits::const_reference c1,
                      Coefficient_traits::const_reference c2,
                      dimension_type start, dimension_type end) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -1442,10 +994,13 @@ Linear_Expression_Impl<Row>
 
 template <typename Row>
 int
-Linear_Expression_Impl<Row>::compare(const Linear_Expression_Interface& y) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+Linear_Expression_Impl<Row>
+::compare(const Linear_Expression_Interface& y) const {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return compare(*p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return compare(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -1458,9 +1013,11 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Interface& y) const
 template <typename Row>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return construct(*p);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return construct(*p);
   } else {
     // Add implementations for new derived classes here.
@@ -1472,9 +1029,11 @@ template <typename Row>
 void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
                                        dimension_type space_dim) {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return construct(*p, space_dim);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return construct(*p, space_dim);
   } else {
     // Add implementations for new derived classes here.
@@ -1487,9 +1046,11 @@ void
 Linear_Expression_Impl<Row>
 ::scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
                         dimension_type start, dimension_type end) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     scalar_product_assign(result, *p, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     scalar_product_assign(result, *p, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -1502,9 +1063,11 @@ int
 Linear_Expression_Impl<Row>
 ::scalar_product_sign(const Linear_Expression_Interface& y,
                       dimension_type start, dimension_type end) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return scalar_product_sign(*p, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return scalar_product_sign(*p, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -1518,9 +1081,11 @@ bool
 Linear_Expression_Impl<Row>
 ::is_equal_to(const Linear_Expression_Interface& y,
               dimension_type start, dimension_type end) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -1536,9 +1101,11 @@ Linear_Expression_Impl<Row>
               Coefficient_traits::const_reference c1,
               Coefficient_traits::const_reference c2,
               dimension_type start, dimension_type end) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
@@ -1552,9 +1119,11 @@ bool
 Linear_Expression_Impl<Row>
 ::have_a_common_variable(const Linear_Expression_Interface& y,
                          Variable first, Variable last) const {
-  if (const Linear_Expression_Impl<Dense_Row>* p = dynamic_cast<const Linear_Expression_Impl<Dense_Row>*>(&y)) {
+  typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
+  typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
+  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return have_a_common_variable(*p, first, last);
-  } else if (const Linear_Expression_Impl<Sparse_Row>* p = dynamic_cast<const Linear_Expression_Impl<Sparse_Row>*>(&y)) {
+  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return have_a_common_variable(*p, first, last);
   } else {
     // Add implementations for new derived classes here.
@@ -1639,37 +1208,45 @@ Linear_Expression_Impl<Row>::const_iterator
   return itr == p->itr;
 }
 
-template <>
+template <typename Row>
 void
-Linear_Expression_Impl<Dense_Row>::const_iterator
-::skip_zeroes_forward() {
-  while (itr != row->end() && *itr == 0)
-    ++itr;
-}
-
-template <>
-void
-Linear_Expression_Impl<Sparse_Row>::const_iterator
-::skip_zeroes_forward() {
-  // Nothing to do.
-}
-
-template <>
-void
-Linear_Expression_Impl<Dense_Row>::const_iterator
-::skip_zeroes_backward() {
-  PPL_ASSERT(itr.index() > 0);
-  while (*itr == 0) {
-    PPL_ASSERT(itr.index() > 1);
-    --itr;
+Linear_Expression_Impl<Row>::ascii_dump(std::ostream& s) const {
+  s << "size " << (space_dimension() + 1) << " ";
+  for (dimension_type i = 0; i < row.size(); ++i) {
+    s << row.get(i);
+    if (i != row.size() - 1)
+      s << ' ';
   }
 }
 
-template <>
-void
-Linear_Expression_Impl<Sparse_Row>::const_iterator
-::skip_zeroes_backward() {
-  // Nothing to do.
+template <typename Row>
+bool
+Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
+  std::string str;
+
+  if (!(s >> str))
+    return false;
+  if (str != "size")
+    return false;
+
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  row.resize(0);
+  row.resize(new_size);
+
+  PPL_DIRTY_TEMP_COEFFICIENT(c);
+
+  for (dimension_type j = 0; j < new_size; ++j) {
+    if (!(s >> c))
+      return false;
+    if (c != 0)
+      row.insert(j, c);
+  }
+
+  PPL_ASSERT(OK());
+  return true;
 }
 
 } // namespace Parma_Polyhedra_Library

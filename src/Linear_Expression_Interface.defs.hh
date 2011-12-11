@@ -278,10 +278,7 @@ public:
   virtual void sub_mul_assign(Coefficient_traits::const_reference factor,
                               const Linear_Expression_Interface& e2) = 0;
 
-  //! NOTE: This can be used as <CODE>(*this) << s</CODE>, but it actually
-  //! means <CODE>s << *this</CODE>. This strange syntax is needed because
-  //! this must be a method and can't be a free function.
-  virtual std::ostream& operator<<(std::ostream& s) const = 0;
+  virtual void print(std::ostream& s) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in
