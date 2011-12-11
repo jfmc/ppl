@@ -24,8 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Linear_Expression_Impl_templates_hh
 #define PPL_Linear_Expression_Impl_templates_hh 1
 
-#include "Linear_Expression_Impl.defs.hh"
-
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
 

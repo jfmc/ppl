@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Dense_Row_inlines_hh
 #define PPL_Dense_Row_inlines_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Dense_Row.defs.hh"
-
 #include "assert.hh"
 #include <cstddef>
 #include <limits>

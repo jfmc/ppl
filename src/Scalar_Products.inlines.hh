@@ -24,7 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Scalar_Products_inlines_hh
 #define PPL_Scalar_Products_inlines_hh 1
 
-#include "Scalar_Products.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"

@@ -24,8 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Expression_Hide_Inhomo_inlines_hh
 #define PPL_Expression_Hide_Inhomo_inlines_hh 1
 
-#include "Expression_Hide_Inhomo.defs.hh"
-
 #include "Variables_Set.defs.hh"
 #include "Linear_Expression.defs.hh"
 

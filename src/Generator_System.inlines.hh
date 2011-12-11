@@ -26,10 +26,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Generator.defs.hh"
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Generator_System.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 inline

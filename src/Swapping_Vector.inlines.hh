@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Swapping_Vector_inlines_hh
 #define PPL_Swapping_Vector_inlines_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Swapping_Vector.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 template <typename T>

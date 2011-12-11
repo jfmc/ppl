@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Grid_Generator_inlines_hh
 #define PPL_Grid_Generator_inlines_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Grid_Generator.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 inline bool

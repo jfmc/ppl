@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Constraint_System_inlines_hh
 #define PPL_Constraint_System_inlines_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Constraint_System.defs.hh"
-
 #include "Constraint.defs.hh"
 
 namespace Parma_Polyhedra_Library {

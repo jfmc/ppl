@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Linear_System_inlines_hh
 #define PPL_Linear_System_inlines_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Linear_System.defs.hh"
-
 #include "Bit_Row.defs.hh"
 #include "Coefficient.defs.hh"
 
