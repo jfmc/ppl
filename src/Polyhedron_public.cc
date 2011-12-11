@@ -1403,8 +1403,9 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	else
 	  gen_sys.insert(Generator::point(nc_expr, g.divisor()));
 	break;
-      default:
-	throw_runtime_error("add_generator(const Generator& g)");
+      case Generator::CLOSURE_POINT:
+        PPL_UNREACHABLE;
+	break;
       }
     }
 
@@ -2231,7 +2232,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         }
       }
       // Cannot exit from here.
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
     }
     else {
       // Here `z' is not empty and minimized.
@@ -2903,7 +2904,8 @@ generalized_affine_image(const Variable var,
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -2964,7 +2966,8 @@ generalized_affine_preimage(const Variable var,
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    return;
   }
 
   // Check whether the preimage of this affine relation can be easily
@@ -3004,7 +3007,8 @@ generalized_affine_preimage(const Variable var,
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   unconstrain(var);
   PPL_ASSERT_HEAVY(OK());
@@ -3067,7 +3071,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     return;
   }
@@ -3117,7 +3122,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
-	throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     // Remove the temporarily added dimension.
@@ -3155,7 +3161,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   PPL_ASSERT_HEAVY(OK());
@@ -3248,7 +3255,8 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
 	break;
       case NOT_EQUAL:
 	// The NOT_EQUAL case has been already dealt with.
-	throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     // Remove the temporarily added dimension.
@@ -3278,7 +3286,8 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       break;
     case NOT_EQUAL:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     // Any image of an empty polyhedron is empty.
     // Note: DO check for emptiness here, as we will add lines.
@@ -3323,7 +3332,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   const dimension_type old_gs_num_rows = gs.num_rows();
   dimension_type gs_num_rows = old_gs_num_rows;
 
-  if (!x.is_necessarily_closed())
+  if (!x.is_necessarily_closed()) {
     // `x' and `y' are NNC polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
       Generator& g = gs.sys.rows[i];
@@ -3350,38 +3359,34 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	  }
 	}
 	break;
-      default:
+      case Generator::RAY:
+      case Generator::LINE:
 	// For rays and lines, nothing to be done.
 	break;
       }
     }
-  else
+  }
+  else {
     // `x' and `y' are C polyhedra.
     for (dimension_type i = gs_num_rows; i-- > 0; ) {
-      Generator& g = gs.sys.rows[i];
-      switch (g.type()) {
-      case Generator::POINT:
-	{
-	  // If it is the origin, erase it.
-	  if (g.expression().all_homogeneous_terms_are_zero()) {
-	    --gs_num_rows;
-            swap(g, gs.sys.rows[gs_num_rows]);
-	  }
-	  // Otherwise, transform the point into a ray.
-	  else {
-	    g.expr.set_inhomogeneous_term(0);
-	    // Enforce normalization.
-	    g.expr.normalize();
-            PPL_ASSERT(g.OK());
-	  }
-	}
-	break;
-      default:
-	// For rays and lines, nothing to be done.
-	break;
+      // For rays and lines, nothing to be done.
+      if (gs[i].is_point()) {
+        Generator& p = gs.sys.rows[i];
+        // If it is the origin, erase it.
+        if (p.expression().all_homogeneous_terms_are_zero()) {
+          --gs_num_rows;
+          swap(p, gs.sys.rows[gs_num_rows]);
+        }
+        // Otherwise, transform the point into a ray.
+        else {
+          p.expr.set_inhomogeneous_term(0);
+          // Enforce normalization.
+          p.expr.normalize();
+          PPL_ASSERT(p.OK());
+        }
       }
     }
-
+  }
   // If it was present, erase the origin point or closure point,
   // which cannot be transformed into a valid ray or line.
   // For NNC polyhedra, also erase all the points of `gs',

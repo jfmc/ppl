@@ -153,9 +153,7 @@ build_ppl_relsym(value caml_relsym) {
   case 4:
     return GREATER_THAN;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error\n:"
-                             "build_ppl_relsym(rel)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_relsym(rel)");
   }
 }
 
@@ -174,9 +172,8 @@ build_ppl_bounded_integer_type_width(value caml_width) {
   case 4:
     return BITS_128;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error\n:"
-                             "build_ppl_bounded_integer_type_width(width)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_bounded_integer_type_"
+                             "width(width)");
   }
 }
 
@@ -189,9 +186,8 @@ build_ppl_bounded_integer_type_representation(value caml_rep) {
   case 1:
     return SIGNED_2_COMPLEMENT;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error\n:"
-                             "build_ppl_bounded_integer_type_representation(rep)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_bounded_integer_type_"
+                             "representation(rep)");
   }
 }
 
@@ -206,9 +202,8 @@ build_ppl_bounded_integer_type_overflow(value caml_oflow) {
   case 2:
     return OVERFLOW_IMPOSSIBLE;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error\n:"
-                             "build_ppl_bounded_integer_type_overflow(oflow)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_bounded_integer_type_"
+                             "overflow(oflow)");
   }
 }
 
@@ -221,9 +216,7 @@ build_ppl_opt_mode(value caml_opt_mode) {
   case 1:
     return MAXIMIZATION;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error\n:"
-                             "build_ppl_opt_mode(opt)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_opt_mode(opt)");
   }
 }
 
@@ -236,9 +229,7 @@ build_ppl_Degenerate_Element(value de) {
   case 1:
     return EMPTY;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ppl_Degenerate_Element(de)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_Degenerate_Element(de)");
   }
 }
 
@@ -253,23 +244,18 @@ build_ppl_Complexity_Class(value cc) {
   case 2:
     return ANY_COMPLEXITY;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ppl_Complexity_Class(cc)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_Complexity_Class(cc)");
   }
 }
 
 MIP_Problem::Control_Parameter_Name
-build_ppl_control_parameter_name(value caml_cp_name) {
+build_ppl_mip_problem_control_parameter_name(value caml_cp_name) {
   assert(Is_long(caml_cp_name));
-  switch (Int_val(caml_cp_name)) {
-  case 0:
-    return  MIP_Problem::PRICING;
-  default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ppl_control_parameter_name(cpn)");
-  }
+  if (Int_val(caml_cp_name) == 0)
+    return MIP_Problem::PRICING;
+  else
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_mip_problem_"
+                             "control_parameter_name(cpn)");
 }
 
 MIP_Problem::Control_Parameter_Value
@@ -283,9 +269,7 @@ build_ppl_control_parameter_value(value caml_cp_value) {
   case 2:
     return MIP_Problem::PRICING_TEXTBOOK;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ppl_control_parameter_value(cpv)");
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_control_parameter_value(cpv)");
   }
 }
 
@@ -294,13 +278,11 @@ build_ppl_pip_problem_control_parameter_name(value caml_cp_name) {
   assert(Is_long(caml_cp_name));
   switch (Int_val(caml_cp_name)) {
   case 0:
-    return  PIP_Problem::CUTTING_STRATEGY;
+    return PIP_Problem::CUTTING_STRATEGY;
   case 1:
-    return  PIP_Problem::PIVOT_ROW_STRATEGY;
+    return PIP_Problem::PIVOT_ROW_STRATEGY;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ppl_pip_problem_"
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_pip_problem_"
                              "control_parameter_name(cpn)");
   }
 }
@@ -320,9 +302,7 @@ build_ppl_pip_problem_control_parameter_value(value caml_cp_value) {
   case 4:
     return PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN;
   default:
-    // We should not be here!
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ppl_pip_problem_"
+    PPL_OCAML_UNEXPECTED_MSG("build_ppl_pip_problem_"
                              "control_parameter_value(cpv)");
   }
 }
@@ -460,10 +440,8 @@ build_ocaml_generator(const Generator& ppl_generator) {
     Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
     CAMLreturn(caml_generator);
   }
-  default:
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ocaml_generator(g)");
-  }
+  } // switch (ppl_generator.type())
+  PPL_UNREACHABLE;
 }
 
 value
@@ -494,10 +472,8 @@ build_ocaml_grid_generator(const Grid_Generator& ppl_grid_generator) {
     Store_field(caml_generator, 1, build_ocaml_coefficient(divisor));
     CAMLreturn(caml_generator);
   }
-  default:
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ocaml_grid_generator(g)");
-  }
+  } // switch (ppl_grid_generator.type())
+  PPL_UNREACHABLE;
 }
 
 value
@@ -523,10 +499,8 @@ build_ocaml_constraint(const Constraint& ppl_constraint) {
     Store_field(caml_constraint, 1, get_inhomogeneous_term(ppl_constraint));
     CAMLreturn(caml_constraint);
   }
-  default:
-    throw std::runtime_error("PPL OCaml interface internal error:\n"
-                             "build_ocaml_constraint(c)");
-  }
+  } // switch (ppl_constraint.type())
+  PPL_UNREACHABLE;
 }
 
 value
@@ -1008,11 +982,8 @@ ppl_MIP_Problem_solve(value caml_mip) try {
     CAMLreturn(Val_int(1));
   case OPTIMIZED_MIP_PROBLEM:
     CAMLreturn(Val_int(2));
-  default:
-    ;
   }
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1027,11 +998,8 @@ ppl_MIP_Problem_optimization_mode(value caml_mip) try {
     CAMLreturn(Val_int(0));
   case MAXIMIZATION:
     CAMLreturn(Val_int(1));
-  default:
-    ;
   }
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
+  PPL_UNREACHABLE;
  }
 CATCH_ALL
 
@@ -1055,7 +1023,7 @@ ppl_MIP_Problem_get_control_parameter(value caml_mip,
   CAMLparam2(caml_mip, caml_cp_name);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   MIP_Problem::Control_Parameter_Name ppl_cp_name
-    = build_ppl_control_parameter_name(caml_cp_name);
+    = build_ppl_mip_problem_control_parameter_name(caml_cp_name);
   MIP_Problem::Control_Parameter_Value ppl_cp_value
     = ppl_mip.get_control_parameter(ppl_cp_name);
   switch (ppl_cp_value) {
@@ -1065,11 +1033,8 @@ ppl_MIP_Problem_get_control_parameter(value caml_mip,
     CAMLreturn(Val_int(1));
   case MIP_Problem::PRICING_TEXTBOOK:
     CAMLreturn(Val_int(2));
-  default:
-    ;
   }
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
+  PPL_UNREACHABLE;
  }
 CATCH_ALL
 
@@ -1374,11 +1339,8 @@ ppl_PIP_Problem_solve(value caml_pip) try {
     CAMLreturn(Val_int(0));
   case OPTIMIZED_PIP_PROBLEM:
     CAMLreturn(Val_int(1));
-  default:
-    ;
   }
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1417,10 +1379,9 @@ ppl_PIP_Problem_get_control_parameter(value caml_pip,
   case PIP_Problem::PIVOT_ROW_STRATEGY_MAX_COLUMN:
     CAMLreturn(Val_int(4));
   default:
-    ;
+    PPL_UNREACHABLE;
+    CAMLreturn(Val_int(5));
   }
-  // We should not be here!
-  throw std::runtime_error("PPL OCaml interface internal error");
  }
 CATCH_ALL
 
@@ -1832,8 +1793,9 @@ CAMLprim value
 ppl_reset_timeout(value unit) try {
   CAMLparam1(unit);
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  throw std::runtime_error("PPL OCaml interface error:\n"
-                           "the PPL Watchdog library is not enabled.");
+  const char* what = "PPL OCaml interface usage error:\n"
+    "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
 #else
   reset_timeout();
   CAMLreturn(Val_unit);
@@ -1866,8 +1828,9 @@ CAMLprim value
 ppl_reset_deterministic_timeout(value unit) try {
   CAMLparam1(unit);
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  throw std::runtime_error("PPL OCaml interface error:\n"
-                           "the PPL Watchdog library is not enabled.");
+  const char* what = "PPL OCaml interface usage error:\n"
+    "ppl_reset_deterministic_timeout: the PPL Watchdog library is not enabled.";
+  throw std::runtime_error(what);
 #else
   reset_deterministic_timeout();
   CAMLreturn(Val_unit);

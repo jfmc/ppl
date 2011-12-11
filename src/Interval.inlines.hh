@@ -498,7 +498,7 @@ Interval<To_Boundary, To_Info>
       return I_ANY;
     }
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return I_EMPTY;
   }
 }
@@ -576,7 +576,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       return I_ANY;
     }
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return I_EMPTY;
   }
 }

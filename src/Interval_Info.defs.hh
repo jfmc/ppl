@@ -143,13 +143,12 @@ public:
   Interval_Info_Null_Open(bool o)
     : open(o) {
   }
-  bool get_boundary_property(Boundary_Type, const Boundary_NS::Property& p) const {
-    switch (p.type) {
-    case Boundary_NS::Property::OPEN_:
+  bool get_boundary_property(Boundary_Type,
+                             const Boundary_NS::Property& p) const {
+    if (p.type == Boundary_NS::Property::OPEN_)
       return open;
-    default:
+    else
       return Boundary_NS::Property::unsupported_value;
-    }
   }
 
   void ascii_dump(std::ostream& s) const;

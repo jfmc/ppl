@@ -1082,13 +1082,14 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     case 2:
       root.get_right_child();
       break;
+
 #ifndef NDEBUG
     case 3:
       break;
 
     default:
-      // We should not be here
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
+      break;
 #endif
     }
 

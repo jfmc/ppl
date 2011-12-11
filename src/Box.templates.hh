@@ -783,7 +783,8 @@ interval_relation(const ITV& i,
   }
 
   // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return Poly_Con_Relation::nothing();
 }
 
 template <typename ITV>
@@ -930,7 +931,8 @@ Box<ITV>::relation_with(const Constraint& c) const {
   }
 
   // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return Poly_Con_Relation::nothing();
 }
 
 template <typename ITV>
@@ -2340,7 +2342,7 @@ propagate_constraint_check_result(Result r, Ternary& open) {
   case V_EQ:
     return false;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return true;
   }
 }
@@ -3258,7 +3260,8 @@ Box<ITV>
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   PPL_ASSERT(OK());
 }
@@ -3316,7 +3319,8 @@ Box<ITV>
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 
   // Check whether the preimage of this affine relation can be easily
@@ -3395,7 +3399,8 @@ Box<ITV>
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   // If the shrunk box is empty, its preimage is empty too.
   if (is_empty())
@@ -3535,7 +3540,8 @@ Box<ITV>
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     else
       // The coefficient of the dimension in the lhs is negative.
@@ -3573,7 +3579,8 @@ Box<ITV>
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
   }
 
@@ -3599,7 +3606,8 @@ Box<ITV>
       break;
     default:
       // The NOT_EQUAL case has been already dealt with.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   PPL_ASSERT(OK());
@@ -3749,14 +3757,8 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
   if (space_dim == 0)
     return;
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const Box x_copy = *this;
-    const Box y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -3788,14 +3790,8 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `*this' is contained in or equal to `y'.
-    const Box x_copy = *this;
-    const Box y_copy = y;
-    PPL_ASSERT(y_copy.contains(x_copy));
-  }
-#endif
+  // Assume `*this' is contained in or equal to `y'.
+  PPL_EXPECT_HEAVY(copy_contains(y, *this));
 
   // If both boxes are zero-dimensional,
   // since `y' contains `*this', we simply return `*this'.

@@ -321,7 +321,8 @@ column_lower(const Matrix<PIP_Tree_Node::Row>& tableau,
     }
   }
   // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 /* Find the column j in revised simplex tableau such that
@@ -2164,7 +2165,8 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
   }
 
   // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 void
@@ -3125,7 +3127,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
   } // Main loop of the simplex algorithm
 
   // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return 0;
 }
 
 void

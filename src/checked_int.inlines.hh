@@ -304,6 +304,7 @@ PPL_SPECIALIZE_IS_INT(is_int_int, unsigned long long)
 template <typename Policy, typename Type>
 inline Result
 assign_special_int(Type& v, Result_Class c, Rounding_Dir dir) {
+  PPL_ASSERT(c == VC_MINUS_INFINITY || c == VC_PLUS_INFINITY || c == VC_NAN);
   switch (c) {
   case VC_NAN:
     if (Policy::has_nan) {
@@ -332,7 +333,7 @@ assign_special_int(Type& v, Result_Class c, Rounding_Dir dir) {
     }
     return V_EQ_PLUS_INFINITY | V_UNREPRESENTABLE;
   default:
-    PPL_ASSERT(0);
+    PPL_UNREACHABLE;
     return V_NAN | V_UNREPRESENTABLE;
   }
 }
@@ -556,10 +557,8 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
     return round_gt_int<To_Policy>(to, dir);
   if (from < i_from)
     return round_lt_int<To_Policy>(to, dir);
-  if (from > i_from)
-    return round_gt_int<To_Policy>(to, dir);
-  PPL_ASSERT(false);
-  return V_NAN;
+  PPL_ASSERT(from > i_from);
+  return round_gt_int<To_Policy>(to, dir);
 }
 
 PPL_SPECIALIZE_ASSIGN(assign_int_float, char, float)
@@ -1471,7 +1470,7 @@ add_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
       return set_pos_overflow_int<To_Policy>(to, dir);
     return assign_nan<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW);
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return V_NAN;
   }
 }
@@ -1493,7 +1492,7 @@ sub_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
       return set_neg_overflow_int<To_Policy>(to, dir);
     return assign_nan<To_Policy>(to, V_UNKNOWN_POS_OVERFLOW);
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return V_NAN;
   }
 }

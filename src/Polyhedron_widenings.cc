@@ -166,14 +166,8 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("H79_widening_assign(y)", "y", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that y is contained in or equal to x.
-    const Polyhedron x_copy = x;
-    const Polyhedron y_copy = y;
-    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // If any argument is zero-dimensional or empty,
   // the H79-widening behaves as the identity function.
@@ -322,14 +316,8 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
 				 "cs", cs);
 
-#ifndef NDEBUG
-  {
-    // We assume that y is contained in or equal to x.
-    const Polyhedron x_copy = x;
-    const Polyhedron y_copy = y;
-    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   if (y.marked_empty())
     return;
@@ -718,14 +706,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("BHRZ03_widening_assign(y)", "y", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that y is contained in or equal to x.
-    const Polyhedron x_copy = x;
-    const Polyhedron y_copy = y;
-    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // If any argument is zero-dimensional or empty,
   // the BHRZ03-widening behaves as the identity function.
@@ -798,10 +780,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   x.m_swap(H79);
   PPL_ASSERT_HEAVY(x.OK(true));
 
-#ifndef NDEBUG
   // The H79 widening is always stabilizing.
   PPL_ASSERT(y_cert.is_stabilizing(x));
-#endif
 }
 
 void
@@ -840,14 +820,8 @@ PPL::Polyhedron
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
 				 "cs", cs);
 
-#ifndef NDEBUG
-  {
-    // We assume that y is contained in or equal to x.
-    const Polyhedron x_copy = x;
-    const Polyhedron y_copy = y;
-    PPL_ASSERT_HEAVY(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   if (y.marked_empty())
     return;

@@ -179,7 +179,7 @@ public:
     case V_LE:
       return floor_assign_r(x, x, rdir);
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       return dir;
     }
   }
@@ -386,7 +386,7 @@ public:
       else
 	return V_EQ;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       return dir;
     }
   }

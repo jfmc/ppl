@@ -270,7 +270,8 @@ PPL::MIP_Problem::is_satisfiable() const {
     }
   }
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 PPL::MIP_Problem_Status
@@ -348,7 +349,8 @@ PPL::MIP_Problem::solve() const{
     }
   }
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return UNFEASIBLE_MIP_PROBLEM;
 }
 
 void
@@ -407,11 +409,9 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
       unfeasible_tableau_row = base_index;
       // Reset base[base_index] to zero to remember non-feasibility.
       base[base_index] = 0;
-#ifndef NDEBUG
       // Since the negative part of the variable is in base,
       // the positive part can not be in base too.
       PPL_ASSERT(!is_in_base(mapping[1+var_index].first, base_index));
-#endif
     }
   }
 
@@ -1941,7 +1941,8 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
     }
   }
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 PPL::MIP_Problem_Status

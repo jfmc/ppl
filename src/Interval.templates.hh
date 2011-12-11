@@ -37,17 +37,18 @@ Interval<Boundary, Info>::lower_extend(const C& c) {
   switch (c.rel()) {
   case V_LGE:
     return lower_extend();
-  default:
-    PPL_ASSERT(false);
   case V_NAN:
     return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   case V_GT:
     open = true;
     break;
-  case V_GE:
+  case V_GE: // Fall through.
   case V_EQ:
     open = false;
     break;
+  default:
+    PPL_UNREACHABLE;
+    return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   }
   min_assign(LOWER, lower(), info(), LOWER, c.value(), f_info(c.value(), open));
   PPL_ASSERT(OK());
@@ -63,17 +64,18 @@ Interval<Boundary, Info>::upper_extend(const C& c) {
   switch (c.rel()) {
   case V_LGE:
     return lower_extend();
-  default:
-    PPL_ASSERT(false);
   case V_NAN:
     return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   case V_LT:
     open = true;
     break;
-  case V_LE:
+  case V_LE: // Fall through.
   case V_EQ:
     open = false;
     break;
+  default:
+    PPL_UNREACHABLE;
+    return I_NOT_EMPTY | I_EXACT | I_UNCHANGED;
   }
   max_assign(UPPER, upper(), info(), UPPER, c.value(), f_info(c.value(), open));
   PPL_ASSERT(OK());
@@ -154,7 +156,7 @@ Interval<Boundary, Info>::Interval(const char* s) {
   bool lower_boundary_infinity = false;
   bool upper_boundary_infinity = false;
   switch (lower_r) {
-  case V_EQ:
+  case V_EQ: // Fall through.
   case V_GE:
     break;
   case V_GT:
@@ -162,10 +164,11 @@ Interval<Boundary, Info>::Interval(const char* s) {
     break;
   case V_GT_MINUS_INFINITY:
     lower_open = true;
+    // Fall through.
   case V_EQ_MINUS_INFINITY:
     lower_boundary_infinity = true;
     break;
-  case V_EQ_PLUS_INFINITY:
+  case V_EQ_PLUS_INFINITY: // Fall through.
   case V_LT_PLUS_INFINITY:
     if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY)
       assign(UNIVERSE);
@@ -173,16 +176,17 @@ Interval<Boundary, Info>::Interval(const char* s) {
       assign(EMPTY);
     break;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
+    break;
   }
   switch (upper_r) {
-  case V_EQ:
+  case V_EQ: // Fall through.
   case V_LE:
     break;
   case V_LT:
     upper_open = true;
     break;
-  case V_EQ_MINUS_INFINITY:
+  case V_EQ_MINUS_INFINITY: // Fall through.
   case V_GT_MINUS_INFINITY:
     if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
       assign(UNIVERSE);
@@ -191,11 +195,13 @@ Interval<Boundary, Info>::Interval(const char* s) {
     break;
   case V_LT_PLUS_INFINITY:
     upper_open = true;
+    // Fall through.
   case V_EQ_PLUS_INFINITY:
     upper_boundary_infinity = true;
     break;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
+    break;
   }
 
   if (!lower_boundary_infinity
@@ -291,7 +297,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
 
   // Build interval.
   switch (lower_r) {
-  case V_EQ:
+  case V_EQ: // Fall through.
   case V_GE:
     break;
   case V_GT:
@@ -299,10 +305,11 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     break;
   case V_GT_MINUS_INFINITY:
     lower_open = true;
+    // Fall through.
   case V_EQ_MINUS_INFINITY:
     lower_boundary_infinity = true;
     break;
-  case V_EQ_PLUS_INFINITY:
+  case V_EQ_PLUS_INFINITY: // Fall through.
   case V_LT_PLUS_INFINITY:
     if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY)
       x.assign(UNIVERSE);
@@ -310,10 +317,11 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
       x.assign(EMPTY);
     return is;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
+    break;
   }
   switch (upper_r) {
-  case V_EQ:
+  case V_EQ: // Fall through.
   case V_LE:
     break;
   case V_LT:
@@ -321,18 +329,20 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     break;
   case V_GT_MINUS_INFINITY:
     upper_open = true;
+    // Fall through.
   case V_EQ_MINUS_INFINITY:
     if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
       x.assign(UNIVERSE);
     else
       x.assign(EMPTY);
     return is;
-  case V_EQ_PLUS_INFINITY:
+  case V_EQ_PLUS_INFINITY: // Fall through.
   case V_LT_PLUS_INFINITY:
     upper_boundary_infinity = true;
     break;
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
+    break;
   }
 
   if (!lower_boundary_infinity

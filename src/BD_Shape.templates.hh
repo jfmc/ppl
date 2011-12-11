@@ -2196,7 +2196,8 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
       switch (lp_ij.solve()) {
       case UNFEASIBLE_MIP_PROBLEM:
         // CHECKME: is the following actually impossible?
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        return false;
       case UNBOUNDED_MIP_PROBLEM:
         return false;
       case OPTIMIZED_MIP_PROBLEM:
@@ -2609,7 +2610,8 @@ BD_Shape<T>::simplify_using_context_assign(const BD_Shape& y) {
     }
   }
   // This point should be unreachable.
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return false;
 }
 
 template <typename T>
@@ -2900,14 +2902,8 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_extrapolation_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If both bounded difference shapes are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
@@ -3053,14 +3049,8 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   if (space_dim == 0)
     return;
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -3084,14 +3074,8 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("BHMZ05_widening_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // Compute the affine dimension of `y'.
   const dimension_type y_affine_dim = y.affine_dimension();
@@ -3173,14 +3157,8 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   if (space_dim == 0)
     return;
 
-#ifndef NDEBUG
-  {
-    // We assume that `y' is contained in or equal to `*this'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // We assume that `y' is contained in or equal to `*this'.
+  PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -3204,14 +3182,8 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that `*this' is contained in or equal to `y'.
-    const BD_Shape x_copy = *this;
-    const BD_Shape y_copy = y;
-    PPL_ASSERT(y_copy.contains(x_copy));
-  }
-#endif
+  // We assume that `*this' is contained in or equal to `y'.
+  PPL_EXPECT_HEAVY(copy_contains(y, *this));
 
   // If both bounded difference shapes are zero-dimensional,
   // since `y' contains `*this', we simply return `*this'.
@@ -3515,7 +3487,8 @@ BD_Shape<T>::refine(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     return;
   }
@@ -3547,7 +3520,8 @@ BD_Shape<T>::refine(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     return;
   }
@@ -3834,7 +3808,8 @@ BD_Shape<T>::refine(const Variable var,
 
   default:
     // We already dealt with the other cases.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
 
   PPL_ASSERT(OK());
@@ -5422,7 +5397,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
     PPL_ASSERT(OK());
     return;
@@ -5545,7 +5521,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       PPL_ASSERT(OK());
       return;
@@ -5721,7 +5698,8 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   default:
     // We already dealt with the other cases.
-    throw std::runtime_error("PPL internal error");
+    PPL_UNREACHABLE;
+    break;
   }
   PPL_ASSERT(OK());
 }
@@ -5798,7 +5776,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       break;
     default:
       // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      break;
     }
   }
   else if (t_lhs == 1) {
@@ -5848,7 +5827,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
     }
     else {
@@ -5896,7 +5876,8 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(space_dim-1);
@@ -6088,7 +6069,8 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
 
       // If the shrunk BD_Shape is empty, its preimage is empty too; ...
@@ -6134,7 +6116,8 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
         break;
       default:
         // We already dealt with the other cases.
-        throw std::runtime_error("PPL internal error");
+        PPL_UNREACHABLE;
+        break;
       }
       // Remove the temporarily added dimension.
       remove_higher_space_dimensions(bds_space_dim);

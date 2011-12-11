@@ -1117,10 +1117,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     case Generator::CLOSURE_POINT:
       sat_all_but_closure_points.set(i);
       break;
-    default:
-      // Found a line with index i >= n_lines.
-      throw std::runtime_error("PPL internal error: "
-			       "strongly_minimize_constraints.");
+    case Generator::LINE:
+      // Found a line with index i >= n_lines !
+      PPL_UNREACHABLE;
+      break;
     }
   Bit_Row sat_lines_and_rays(sat_all_but_points, sat_all_but_closure_points);
   Bit_Row sat_lines_and_closure_points(sat_all_but_rays, sat_all_but_points);
@@ -2198,18 +2198,6 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
     clear_constraints_minimized();
   }
   PPL_ASSERT_HEAVY(OK());
-}
-
-void
-PPL::Polyhedron::throw_runtime_error(const char* method) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << "." << std::endl;
-  throw std::runtime_error(s.str());
 }
 
 void

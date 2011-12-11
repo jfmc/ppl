@@ -233,7 +233,7 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLparma_1
     this_ptr = new @TOPOLOGY@@CPP_CLASS@(ppl_dim, EMPTY);
     break;
   default:
-    assert(false);
+    PPL_JAVA_UNEXPECTED;
     break;
   }
   set_ptr(env, j_this, this_ptr);
@@ -279,7 +279,7 @@ Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lparma_1p
     this_ptr = new @TOPOLOGY@@CPP_CLASS@(*y_ptr, ANY_COMPLEXITY);
     break;
   default:
-    assert(false);
+    PPL_JAVA_UNEXPECTED;
     break;
   }
   set_ptr(env, j_this, this_ptr);
@@ -1160,7 +1160,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1
     this_ptr->drop_some_non_integer_points(ANY_COMPLEXITY);
     break;
   default:
-    assert(false);
+    PPL_JAVA_UNEXPECTED;
     break;
   }
 }
@@ -1190,7 +1190,7 @@ JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1
     this_ptr->drop_some_non_integer_points(v_set, ANY_COMPLEXITY);
     break;
   default:
-    assert(false);
+    PPL_JAVA_UNEXPECTED;
     break;
   }
 }

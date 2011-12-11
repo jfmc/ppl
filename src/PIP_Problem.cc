@@ -238,7 +238,8 @@ PPL::PIP_Problem::solve() const {
   } // End of switch.
 
   // We should not be here!
-  throw std::runtime_error("PPL internal error");
+  PPL_UNREACHABLE;
+  return UNFEASIBLE_PIP_PROBLEM;
 }
 
 PPL::PIP_Tree

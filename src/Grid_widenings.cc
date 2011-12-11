@@ -78,16 +78,8 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // Stable behavior is only guaranteed if y is contained in or equal
-  // to x.
-#ifndef NDEBUG
-  {
-    // Assume y is contained in or equal to x.
-    const Grid x_copy = x;
-    const Grid y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // Leave `x' the same if `x' or `y' is zero-dimensional or empty.
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
@@ -177,14 +169,8 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
     return;
   }
 
-#ifndef NDEBUG
-  {
-    // Assume that y is contained in or equal to x.
-    const Grid x_copy = x;
-    const Grid y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   if (y.marked_empty())
     return;
@@ -276,16 +262,8 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("generator_widening_assign(y)", "y", y);
 
-  // Stable behavior is only guaranteed if y is contained in or equal
-  // to x.
-#ifndef NDEBUG
-  {
-    // Assume y is contained in or equal to x.
-    const Grid x_copy = x;
-    const Grid y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // Leave `x' the same if `x' or `y' is zero-dimensional or empty.
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
@@ -375,14 +353,8 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
     return;
   }
 
-#ifndef NDEBUG
-  {
-    // Assume that y is contained in or equal to x.
-    const Grid x_copy = x;
-    const Grid y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   if (y.marked_empty())
     return;
@@ -430,16 +402,8 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // Stable behavior is only guaranteed if y is contained in or equal
-  // to x.
-#ifndef NDEBUG
-  {
-    // Assume y is contained in or equal to x.
-    const Grid x_copy = x;
-    const Grid y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // If the `x' congruences are up to date and `y' congruences are up
   // to date use the congruence widening.
@@ -481,14 +445,8 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     return;
   }
 
-#ifndef NDEBUG
-  {
-    // Assume that y is contained in or equal to x.
-    const Grid x_copy = x;
-    const Grid y_copy = y;
-    PPL_ASSERT(x_copy.contains(y_copy));
-  }
-#endif
+  // Assume `y' is contained in or equal to `x'.
+  PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   if (y.marked_empty())
     return;

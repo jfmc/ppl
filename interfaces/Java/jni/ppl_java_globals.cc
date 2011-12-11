@@ -797,7 +797,7 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
 (JNIEnv* env, jclass, jint csecs) {
   try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-    const char* what = "PPL Java interface error:\n"
+    const char* what = "PPL Java interface usage error:\n"
       "Parma_Polyhedra_Library::set_timeout: "
       "the PPL Watchdog library is not enabled.";
     throw std::runtime_error(what);
@@ -821,7 +821,7 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1timeout
 (JNIEnv* env, jclass) {
   try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-    const char* what = "PPL Java interface error:\n"
+    const char* what = "PPL Java interface usage error:\n"
       "Parma_Polyhedra_Library.reset_timeout(): "
       "the PPL Watchdog library is not enabled.";
     throw std::runtime_error(what);
@@ -837,7 +837,7 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1deterministic_1tim
 (JNIEnv* env, jclass, jint weight) {
   try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-    const char* what = "PPL Java interface error:\n"
+    const char* what = "PPL Java interface usage error:\n"
       "Parma_Polyhedra_Library::set_deterministic_timeout: "
       "the PPL Watchdog library is not enabled.";
     throw std::runtime_error(what);
@@ -860,7 +860,7 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1deterministic_1t
 (JNIEnv* env, jclass) {
   try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-    const char* what = "PPL Java interface error:\n"
+    const char* what = "PPL Java interface usage error:\n"
       "Parma_Polyhedra_Library.reset_deterministic_timeout(): "
       "the PPL Watchdog library is not enabled.";
     throw std::runtime_error(what);

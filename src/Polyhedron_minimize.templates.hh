@@ -178,7 +178,7 @@ Polyhedron::minimize(const bool con_to_gen,
     if (con_to_gen)
       // No point has been found: the polyhedron is empty.
       return true;
-    else
+    else {
       // Here `con_to_gen' is false: `dest' is a system of constraints.
       // In this case the condition `first_point == dest_num_rows'
       // actually means that all the constraints in `dest' have their
@@ -187,7 +187,9 @@ Polyhedron::minimize(const bool con_to_gen,
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      return false;
+    }
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
@@ -400,7 +402,7 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
     if (con_to_gen)
       // No point has been found: the polyhedron is empty.
       return true;
-    else
+    else {
       // Here `con_to_gen' is false: `dest' is a system of constraints.
       // In this case the condition `first_point == dest_num_rows'
       // actually means that all the constraints in `dest' have their
@@ -409,7 +411,9 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      throw std::runtime_error("PPL internal error");
+      PPL_UNREACHABLE;
+      return false;
+    }
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking `simplify()' to remove all the redundant constraints

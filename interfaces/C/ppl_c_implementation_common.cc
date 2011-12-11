@@ -252,7 +252,7 @@ int
 ppl_set_timeout(unsigned csecs) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
   used(csecs);
-  const char* what = "PPL C interface error:\n"
+  const char* what = "PPL C interface usage error:\n"
     "ppl_set_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
 #else
@@ -269,7 +269,7 @@ CATCH_ALL
 int
 ppl_reset_timeout(void) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL C interface error:\n"
+  const char* what = "PPL C interface usage error:\n"
     "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
 #else
@@ -283,7 +283,7 @@ int
 ppl_set_deterministic_timeout(unsigned weight) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
   used(weight);
-  const char* what = "PPL C interface error:\n"
+  const char* what = "PPL C interface usage error:\n"
     "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
 #else
@@ -300,7 +300,7 @@ CATCH_ALL
 int
 ppl_reset_deterministic_timeout(void) try {
 #ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL C interface error:\n"
+  const char* what = "PPL C interface usage error:\n"
     "ppl_reset_deterministic_timeout: the PPL Watchdog library is not enabled.";
   throw std::runtime_error(what);
 #else
@@ -720,9 +720,8 @@ ppl_Constraint_type(ppl_const_Constraint_t c) try {
     return PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL;
   case Constraint::STRICT_INEQUALITY:
     return PPL_CONSTRAINT_TYPE_GREATER_THAN;
-  default:
-    throw std::runtime_error("ppl_Constraint_type()");
   }
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -975,8 +974,7 @@ ppl_new_Generator(ppl_Generator_t* pg,
     ppg = new Generator(Generator::line(lle));
     break;
   default:
-    throw std::invalid_argument("ppl_new_Generator(pg, le, t, d): "
-				"t invalid");
+    throw std::invalid_argument("ppl_new_Generator(pg, le, t, d): t invalid");
   }
   *pg = to_nonconst(ppg);
   return 0;
@@ -1042,9 +1040,8 @@ ppl_Generator_type(ppl_const_Generator_t g) try {
     return PPL_GENERATOR_TYPE_POINT;
   case Generator::CLOSURE_POINT:
     return PPL_GENERATOR_TYPE_CLOSURE_POINT;
-  default:
-    throw std::runtime_error("ppl_Generator_type()");
   }
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 
@@ -1632,9 +1629,8 @@ ppl_Grid_Generator_type(ppl_const_Grid_Generator_t g) try {
     return PPL_GRID_GENERATOR_TYPE_PARAMETER;
   case Grid_Generator::POINT:
     return PPL_GRID_GENERATOR_TYPE_POINT;
-  default:
-    throw std::runtime_error("ppl_Grid_Generator_type()");
   }
+  PPL_UNREACHABLE;
 }
 CATCH_ALL
 

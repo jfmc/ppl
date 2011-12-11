@@ -370,9 +370,6 @@ public:
     I_Result r;
     info().clear();
     switch (e) {
-    default:
-      PPL_ASSERT(0);
-      /* Fall through */
     case EMPTY:
       lower_ = 1;
       upper_ = 0;
@@ -403,9 +400,10 @@ public:
       ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
       break;
     default:
-      PPL_ASSERT(0);
+      PPL_UNREACHABLE;
       rl = V_NAN;
       ru = V_NAN;
+      break;
     }
     PPL_ASSERT(OK());
     return combine(rl, ru);
@@ -536,7 +534,7 @@ public:
 		       UPPER, upper(), info(), w);
       break;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       break;
     }
     if (le(LOWER, lower(), info(), UPPER, upper(), info()))

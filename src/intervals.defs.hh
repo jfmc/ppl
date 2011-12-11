@@ -236,7 +236,7 @@ public:
     default:
       break;
     }
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return V_EMPTY;
   }
   template <typename T>
@@ -278,7 +278,7 @@ public:
     case V_GT_MINUS_INFINITY:
       return rel1;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       return V_EMPTY;
     }
     switch (rel2) {
@@ -287,7 +287,7 @@ public:
     case V_LT_PLUS_INFINITY:
       return rel1;
     default:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       return V_EMPTY;
     }
   }

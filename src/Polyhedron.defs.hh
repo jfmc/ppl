@@ -2644,7 +2644,6 @@ protected:
   //@{
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 protected:
-  void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
 
   void throw_topology_incompatible(const char* method,
