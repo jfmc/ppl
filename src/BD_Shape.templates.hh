@@ -3431,8 +3431,7 @@ BD_Shape<T>::refine(const Variable var,
                     const Linear_Expression& expr,
                     Coefficient_traits::const_reference denominator) {
   PPL_ASSERT(denominator != 0);
-  const dimension_type expr_space_dim = expr.space_dimension();
-  PPL_ASSERT(space_dimension() >= expr_space_dim);
+  PPL_ASSERT(space_dimension() >= expr.space_dimension());
   const dimension_type v = var.id() + 1;
   PPL_ASSERT(v <= space_dimension());
   PPL_ASSERT(expr.coefficient(var) == 0);

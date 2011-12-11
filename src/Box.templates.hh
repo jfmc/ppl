@@ -2144,8 +2144,7 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
 template <typename ITV>
 void
 Box<ITV>::add_constraint_no_check(const Constraint& c) {
-  const dimension_type c_space_dim = c.space_dimension();
-  PPL_ASSERT(c_space_dim <= space_dimension());
+  PPL_ASSERT(c.space_dimension() <= space_dimension());
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
@@ -2194,8 +2193,7 @@ Box<ITV>::add_constraints_no_check(const Constraint_System& cs) {
 template <typename ITV>
 void
 Box<ITV>::add_congruence_no_check(const Congruence& cg) {
-  const dimension_type cg_space_dim = cg.space_dimension();
-  PPL_ASSERT(cg_space_dim <= space_dimension());
+  PPL_ASSERT(cg.space_dimension() <= space_dimension());
 
   // Set aside the case of proper congruences.
   if (cg.is_proper_congruence()) {

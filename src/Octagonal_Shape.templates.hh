@@ -4243,8 +4243,7 @@ Octagonal_Shape<T>::refine(const Variable var,
                            const Linear_Expression& expr,
                            Coefficient_traits::const_reference denominator) {
   PPL_ASSERT(denominator != 0);
-  const dimension_type expr_space_dim = expr.space_dimension();
-  PPL_ASSERT(space_dim >= expr_space_dim);
+  PPL_ASSERT(space_dim >= expr.space_dimension());
   const dimension_type var_id = var.id();
   PPL_ASSERT(var_id <= space_dim);
   PPL_ASSERT(expr.coefficient(var) == 0);
