@@ -403,7 +403,8 @@ all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_before, pset_after, cs);
+  Termination_Helpers
+    ::assign_all_inequalities_approximation(pset_before, pset_after, cs);
   all_affine_quasi_ranking_functions_MS(cs,
                                         decreasing_mu_space,
                                         bounded_mu_space);

@@ -35,23 +35,27 @@ namespace Parma_Polyhedra_Library {
 
 class Termination_Helpers {
 public:
-  static void all_affine_ranking_functions_PR(const Constraint_System& cs_before,
-                                              const Constraint_System& cs_after,
-                                              NNC_Polyhedron& mu_space);
-  static bool one_affine_ranking_function_PR(const Constraint_System& cs_before,
-                                             const Constraint_System& cs_after,
-                                             Generator& mu);
-  static bool one_affine_ranking_function_PR_original(const Constraint_System& cs,
-                                                      Generator& mu);
-  static void all_affine_ranking_functions_PR_original(const Constraint_System& cs,
-                                                       NNC_Polyhedron& mu_space);
+  static void
+  all_affine_ranking_functions_PR(const Constraint_System& cs_before,
+                                  const Constraint_System& cs_after,
+                                  NNC_Polyhedron& mu_space);
+  static bool
+  one_affine_ranking_function_PR(const Constraint_System& cs_before,
+                                 const Constraint_System& cs_after,
+                                 Generator& mu);
+  static bool
+  one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                          Generator& mu);
+  static void
+  all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                           NNC_Polyhedron& mu_space);
 
   template <typename PSET>
   static void
   assign_all_inequalities_approximation(const PSET& pset_before,
                                         const PSET& pset_after,
                                         Constraint_System& cs);
-};
+}; // class Termination_Helpers
 
 /*! \brief
   Termination test using an improvement of the method by Mesnard and
