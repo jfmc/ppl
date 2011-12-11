@@ -26,9 +26,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Linear_Expression.types.hh"
 
-#include "Linear_Expression_Interface.defs.hh"
-#include "Variable.defs.hh"
-
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Grid_Generator.types.hh"
@@ -51,6 +48,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "termination.types.hh"
 #include "Expression_Hide_Inhomo.types.hh"
 #include "Expression_Hide_Last.types.hh"
+
+#include "Linear_Expression_Interface.defs.hh"
+#include "Variable.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
