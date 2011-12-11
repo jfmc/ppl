@@ -2962,9 +2962,8 @@ template <typename T>
 void
 BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
                                 BD_Shape& limiting_shape) const {
-  const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
-  PPL_ASSERT(cs_space_dim <= space_dimension());
+  PPL_ASSERT(cs.space_dimension() <= space_dimension());
 
   shortest_path_closure_assign();
   bool changed = false;
