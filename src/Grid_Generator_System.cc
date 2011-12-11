@@ -25,6 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "Variables_Set.defs.hh"
 #include "assert.hh"
 #include <iostream>

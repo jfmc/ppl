@@ -27,6 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "BHRZ03_Certificate.defs.hh"
 #include "Rational_Box.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "assert.hh"
 #include <iostream>
 #include <stdexcept>

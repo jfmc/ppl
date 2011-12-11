@@ -29,6 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Congruence.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "assert.hh"
 #include <string>
 #include <vector>

@@ -31,6 +31,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Bit_Matrix.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>

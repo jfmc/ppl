@@ -28,6 +28,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Scalar_Products.inlines.hh"
 #include "Temp.defs.hh"
 #include "math_utilities.defs.hh"
 
