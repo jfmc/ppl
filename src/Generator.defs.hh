@@ -511,6 +511,9 @@ public:
   */
   bool is_equal_to(const Generator& y) const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -723,9 +726,6 @@ private:
   //! Another print functions, with fancy output, more human-friendly.
   //! This is used by operator<<();
   void fancy_print(std::ostream& s) const;
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   friend class Linear_System<Generator>;
   friend class Parma_Polyhedra_Library::Scalar_Products;

@@ -231,6 +231,9 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -581,9 +584,6 @@ private:
     of the \f$n \times n\f$ identity matrix.
   */
   void add_universe_rows_and_space_dimensions(dimension_type n);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   friend class Polyhedron;
   friend class Termination_Helpers;

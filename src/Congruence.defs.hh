@@ -326,6 +326,9 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -336,9 +339,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void m_swap(Congruence& y);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   //! Copy-constructs with the specified space dimension.
   /*!

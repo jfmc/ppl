@@ -1249,6 +1249,12 @@ Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
   return true;
 }
 
+template <typename Row>
+bool
+Linear_Expression_Impl<Row>::OK() const {
+  return row.OK();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Linear_Expression_Impl_templates_hh)

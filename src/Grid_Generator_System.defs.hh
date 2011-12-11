@@ -357,6 +357,9 @@ public:
   //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
   bool is_equal_to(const Grid_Generator_System& y) const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -501,10 +504,6 @@ private:
     the homogeneous terms set to zero.
   */
   void remove_invalid_lines_and_parameters();
-
-  // FIXME: This is useless: it always returns true.
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   friend class Polyhedron;
   friend class Grid;

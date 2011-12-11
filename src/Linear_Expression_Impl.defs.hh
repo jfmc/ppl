@@ -107,9 +107,12 @@ public:
 
   //! Copy constructor from any implementation of Linear_Expression_Interface.
   Linear_Expression_Impl(const Linear_Expression_Interface& e);
-  
+
   //! Destructor.
   virtual ~Linear_Expression_Impl();
+
+  //! Checks if all the invariants are satisfied.
+  virtual bool OK() const;
 
   /*! \brief
     Builds the linear expression corresponding
@@ -561,9 +564,6 @@ public:
     this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
   */
   Linear_Expression_Impl(const Congruence& cg, dimension_type space_dim);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.

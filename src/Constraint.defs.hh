@@ -493,6 +493,9 @@ public:
   */
   bool is_equal_to(const Constraint& y) const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -723,9 +726,6 @@ private:
     strongly normalized.
   */
   bool check_strong_normalized() const;
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   /*! \brief
     Builds a new copy of the zero-dimension space constraint

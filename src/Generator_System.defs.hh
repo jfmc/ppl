@@ -269,6 +269,9 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -649,10 +652,6 @@ private:
 
   friend bool
   operator==(const Generator_System& x, const Generator_System& y);
-
-  // FIXME: This is useless: it always returns true.
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   friend class Polyhedron;
 };

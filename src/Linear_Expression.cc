@@ -281,3 +281,8 @@ PPL::Linear_Expression::set_representation(Representation r) {
 }
 
 PPL_OUTPUT_DEFINITIONS(Linear_Expression)
+
+bool
+PPL::Linear_Expression::OK() const {
+  return impl->OK();
+}

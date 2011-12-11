@@ -49,6 +49,8 @@ class Parma_Polyhedra_Library::Linear_Expression_Interface {
 public:
   virtual ~Linear_Expression_Interface();
 
+  virtual bool OK() const = 0;
+
   //! Returns the current representation of this linear expression.
   virtual Representation representation() const = 0;
 

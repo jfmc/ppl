@@ -498,6 +498,9 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
@@ -506,9 +509,6 @@ public:
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   //! Swaps \p *this with \p y.
   void m_swap(Grid_Generator& y);

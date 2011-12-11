@@ -217,7 +217,7 @@ PPL_OUTPUT_DEFINITIONS(Congruence)
 bool
 PPL::Congruence::ascii_load(std::istream& s) {
   expr.ascii_load(s);
-  
+
   std::string str;
   if (!(s >> str) || str != "m")
     return false;
