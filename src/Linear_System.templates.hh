@@ -292,11 +292,11 @@ Linear_System<Row>::insert_pending(Linear_System& y, Recycle_Input) {
   // This loop must use an increasing index (instead of a decreasing one) to
   // preserve the row ordering.
   for (dimension_type i = 0; i < y.num_rows(); i++)
-    insert_pending(y.rows[i], Recycle_Input());
+    x.insert_pending(y.rows[i], Recycle_Input());
 
   y.clear();
 
-  PPL_ASSERT(OK());
+  PPL_ASSERT(x.OK());
 }
 
 template <typename Row>
