@@ -358,7 +358,7 @@ Linear_Expression_Impl<Sparse_Row>
 ::first_nonzero(dimension_type first, dimension_type last) const {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= row.size());
-  typename Sparse_Row::const_iterator i = row.lower_bound(first);
+  Sparse_Row::const_iterator i = row.lower_bound(first);
 
   if (i != row.end() && i.index() < last)
     return i.index();
@@ -385,8 +385,8 @@ Linear_Expression_Impl<Sparse_Row>
 ::last_nonzero(dimension_type first, dimension_type last) const {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= row.size());
-  typename Sparse_Row::const_iterator itr1 = row.lower_bound(first);
-  typename Sparse_Row::const_iterator itr2 = row.lower_bound(last);
+  Sparse_Row::const_iterator itr1 = row.lower_bound(first);
+  Sparse_Row::const_iterator itr2 = row.lower_bound(last);
 
   if (itr1 == itr2)
     return last;
