@@ -393,7 +393,7 @@ public:
     dimension.
   */
   explicit Grid(dimension_type num_dimensions = 0,
-		Degenerate_Element kind = UNIVERSE);
+                Degenerate_Element kind = UNIVERSE);
 
   //! Builds a grid, copying a system of congruences.
   /*!
@@ -762,7 +762,7 @@ public:
     maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -796,8 +796,8 @@ public:
     and \p point are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -827,7 +827,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -861,8 +861,8 @@ public:
     and \p point are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -1215,14 +1215,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
-	   = a_\mathrm{var} x_\mathrm{var}
-	     + \sum_{i \neq var} a_i x_i + b,
+         \mathrm{denominator} * {x'}_\mathrm{var}
+           = \sum_{i = 0}^{n - 1} a_i x_i + b
+           = a_\mathrm{var} x_\mathrm{var}
+             + \sum_{i \neq var} a_i x_i + b,
        \f]
        so that the inverse transformation is
        \f[
-	 a_\mathrm{var} x_\mathrm{var}
+         a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
              - \sum_{i \neq j} a_i x_i - b.
        \f]
@@ -1234,9 +1234,9 @@ public:
     \endif
   */
   void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		    = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator
+                    = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the \ref Grid_Affine_Transformation
@@ -1279,14 +1279,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+         \mathrm{denominator} * {x'}_\mathrm{var}
+           = \sum_{i = 0}^{n - 1} a_i x_i + b
            = a_\mathrm{var} x_\mathrm{var}
                + \sum_{i \neq \mathrm{var}} a_i x_i + b,
        \f],
        the inverse transformation is
        \f[
-	 a_\mathrm{var} x_\mathrm{var}
+         a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
                - \sum_{i \neq j} a_i x_i - b.
        \f].
@@ -1298,9 +1298,9 @@ public:
     \endif
   */
   void affine_preimage(Variable var,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator
-		         = Coefficient_one());
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator
+                         = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1334,12 +1334,12 @@ public:
   */
   void
   generalized_affine_image(Variable var,
-			   Relation_Symbol relsym,
-			   const Linear_Expression& expr,
-			   Coefficient_traits::const_reference denominator
-			   = Coefficient_one(),
-			   Coefficient_traits::const_reference modulus
-			   = Coefficient_zero());
+                           Relation_Symbol relsym,
+                           const Linear_Expression& expr,
+                           Coefficient_traits::const_reference denominator
+                           = Coefficient_one(),
+                           Coefficient_traits::const_reference modulus
+                           = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1373,12 +1373,12 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      Relation_Symbol relsym,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator
-			      = Coefficient_one(),
-			      Coefficient_traits::const_reference modulus
-			      = Coefficient_zero());
+                              Relation_Symbol relsym,
+                              const Linear_Expression& expr,
+                              Coefficient_traits::const_reference denominator
+                              = Coefficient_one(),
+                              Coefficient_traits::const_reference modulus
+                              = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1406,10 +1406,10 @@ public:
   */
   void
   generalized_affine_image(const Linear_Expression& lhs,
-			   Relation_Symbol relsym,
-			   const Linear_Expression& rhs,
-			   Coefficient_traits::const_reference modulus
-			   = Coefficient_zero());
+                           Relation_Symbol relsym,
+                           const Linear_Expression& rhs,
+                           Coefficient_traits::const_reference modulus
+                           = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1437,10 +1437,10 @@ public:
   */
   void
   generalized_affine_preimage(const Linear_Expression& lhs,
-			      Relation_Symbol relsym,
-			      const Linear_Expression& rhs,
-			      Coefficient_traits::const_reference modulus
-			      = Coefficient_zero());
+                              Relation_Symbol relsym,
+                              const Linear_Expression& rhs,
+                              Coefficient_traits::const_reference modulus
+                              = Coefficient_zero());
 
   /*!
     \brief
@@ -1469,10 +1469,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+                            const Linear_Expression& lb_expr,
+                            const Linear_Expression& ub_expr,
+                            Coefficient_traits::const_reference denominator
+                            = Coefficient_one());
 
   /*!
     \brief
@@ -1501,10 +1501,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+                               const Linear_Expression& lb_expr,
+                               const Linear_Expression& ub_expr,
+                               Coefficient_traits::const_reference denominator
+                               = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Grid_Time_Elapse
@@ -1674,8 +1674,8 @@ public:
     Thrown if \p *this, \p y and \p cgs are dimension-incompatible.
   */
   void limited_congruence_extrapolation_assign(const Grid& y,
-					       const Congruence_System& cgs,
-					       unsigned* tp = NULL);
+                                               const Congruence_System& cgs,
+                                               unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the generator variant of the
@@ -1698,8 +1698,8 @@ public:
     Thrown if \p *this, \p y and \p cgs are dimension-incompatible.
   */
   void limited_generator_extrapolation_assign(const Grid& y,
-					      const Congruence_System& cgs,
-					      unsigned* tp = NULL);
+                                              const Congruence_System& cgs,
+                                              unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the \ref Grid_Widening "Grid widening"
@@ -1721,8 +1721,8 @@ public:
     Thrown if \p *this, \p y and \p cgs are dimension-incompatible.
   */
   void limited_extrapolation_assign(const Grid& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+                                    const Congruence_System& cgs,
+                                    unsigned* tp = NULL);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -2204,9 +2204,9 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       const char* method_call,
-	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator* point = NULL) const;
+               const char* method_call,
+               Coefficient& ext_n, Coefficient& ext_d, bool& included,
+               Generator* point = NULL) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -2241,8 +2241,8 @@ private:
     empty, then the behavior is undefined.
   */
   bool frequency_no_check(const Linear_Expression& expr,
-		Coefficient& freq_n, Coefficient& freq_d,
-		Coefficient& val_n, Coefficient& val_d) const;
+                Coefficient& freq_n, Coefficient& freq_d,
+                Coefficient& val_n, Coefficient& val_d) const;
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
@@ -2299,7 +2299,7 @@ private:
 
   //! Copies a widened selection of congruences from \p y to \p selected_cgs.
   void select_wider_congruences(const Grid& y,
-				Congruence_System& selected_cgs) const;
+                                Congruence_System& selected_cgs) const;
 
   //! Copies widened generators from \p y to \p widened_ggs.
   void select_wider_generators(const Grid& y,
@@ -2322,8 +2322,8 @@ private:
     <CODE>add_space_dimensions_and_embed()</CODE>.
   */
   void add_space_dimensions(Congruence_System& cgs,
-			    Grid_Generator_System& gs,
-			    dimension_type dims);
+                            Grid_Generator_System& gs,
+                            dimension_type dims);
 
   //! Adds new space dimensions to the given systems.
   /*!
@@ -2340,8 +2340,8 @@ private:
     <CODE>add_space_dimensions_and_project()</CODE>.
   */
   void add_space_dimensions(Grid_Generator_System& gs,
-			    Congruence_System& cgs,
-			    dimension_type dims);
+                            Congruence_System& cgs,
+                            dimension_type dims);
 
   //! \name Minimization-related Static Member Functions
   //@{
@@ -2366,8 +2366,8 @@ private:
   */
   static void
   normalize_divisors(Grid_Generator_System& sys,
-		     Coefficient& divisor,
-		     const Grid_Generator* first_point = NULL);
+                     Coefficient& divisor,
+                     const Grid_Generator* first_point = NULL);
 
   //! Normalizes the divisors in \p sys.
   /*!
@@ -2399,23 +2399,23 @@ private:
     Thrown if all rows in \p gen_sys are lines and/or parameters.
   */
   static void normalize_divisors(Grid_Generator_System& sys,
-				 Grid_Generator_System& gen_sys);
+                                 Grid_Generator_System& gen_sys);
 
   /*! \brief
     Converts generator system \p dest to be equivalent to congruence
     system \p source.
   */
   static void conversion(Congruence_System& source,
-			 Grid_Generator_System& dest,
-			 Dimension_Kinds& dim_kinds);
+                         Grid_Generator_System& dest,
+                         Dimension_Kinds& dim_kinds);
 
   /*! \brief
     Converts congruence system \p dest to be equivalent to generator
     system \p source.
   */
   static void conversion(Grid_Generator_System& source,
-			 Congruence_System& dest,
-			 Dimension_Kinds& dim_kinds);
+                         Congruence_System& dest,
+                         Dimension_Kinds& dim_kinds);
 
   //! Converts \p cgs to upper triangular (i.e. minimized) form.
   /*!
@@ -2423,14 +2423,14 @@ private:
     otherwise returns <CODE>false</CODE>.
   */
   static bool simplify(Congruence_System& cgs,
-		       Dimension_Kinds& dim_kinds);
+                       Dimension_Kinds& dim_kinds);
 
   //! Converts \p gs to lower triangular (i.e. minimized) form.
   /*!
     Expects \p gs to contain at least one point.
   */
   static void simplify(Grid_Generator_System& gs,
-		       Dimension_Kinds& dim_kinds);
+                       Dimension_Kinds& dim_kinds);
 
   //! Reduces the line \p row using the line \p pivot.
   /*!
@@ -2439,8 +2439,8 @@ private:
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_line_with_line(Grid_Generator& row,
-				    Grid_Generator& pivot,
-				    dimension_type col);
+                                    Grid_Generator& pivot,
+                                    dimension_type col);
 
   //! Reduces the equality \p row using the equality \p pivot.
   /*!
@@ -2450,8 +2450,8 @@ private:
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_equality_with_equality(Congruence& row,
-					    const Congruence& pivot,
-					    dimension_type col);
+                                            const Congruence& pivot,
+                                            dimension_type col);
 
   //! Reduces \p row using \p pivot.
   /*!
@@ -2464,10 +2464,10 @@ private:
   // Part of Grid for access to Dense_Matrix::rows.
   template <typename R>
   static void reduce_pc_with_pc(R& row,
-				R& pivot,
-				dimension_type col,
-				dimension_type start,
-				dimension_type end);
+                                R& pivot,
+                                dimension_type col,
+                                dimension_type start,
+                                dimension_type end);
 
   //! Reduce \p row using \p pivot.
   /*!
@@ -2477,9 +2477,9 @@ private:
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_parameter_with_line(Grid_Generator& row,
-					 const Grid_Generator& pivot,
-					 dimension_type col,
-					 Grid_Generator_System& sys);
+                                         const Grid_Generator& pivot,
+                                         dimension_type col,
+                                         Grid_Generator_System& sys);
 
   //! Reduce \p row using \p pivot.
   /*!
@@ -2489,9 +2489,9 @@ private:
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_congruence_with_equality(Congruence& row,
-					      const Congruence& pivot,
-					      dimension_type col,
-					      Congruence_System& sys);
+                                              const Congruence& pivot,
+                                              dimension_type col,
+                                              Congruence_System& sys);
 
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
   /*!
@@ -2511,39 +2511,39 @@ private:
   */
   template <typename M, typename R>
   static void reduce_reduced(M& sys, dimension_type dim,
-			     dimension_type pivot_index,
-			     dimension_type start, dimension_type end,
-			     const Dimension_Kinds& dim_kinds,
-			     bool generators = true);
+                             dimension_type pivot_index,
+                             dimension_type start, dimension_type end,
+                             const Dimension_Kinds& dim_kinds,
+                             bool generators = true);
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Dense_Matrix::rows and cgs::operator[].
   static void multiply_grid(const Coefficient& multiplier,
-			    Congruence& cg, Congruence_System& dest,
-			    dimension_type num_rows,
-			    dimension_type num_dims);
+                            Congruence& cg, Congruence_System& dest,
+                            dimension_type num_rows,
+                            dimension_type num_dims);
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Grid_Generator::operator[].
   static void multiply_grid(const Coefficient& multiplier,
-			    Grid_Generator& gen,
-			    Grid_Generator_System& dest,
-			    dimension_type num_rows,
-			    dimension_type num_dims);
+                            Grid_Generator& gen,
+                            Grid_Generator_System& dest,
+                            dimension_type num_rows,
+                            dimension_type num_dims);
 
   /*! \brief
     If \p sys is lower triangular return <CODE>true</CODE>, else
     return <CODE>false</CODE>.
   */
   static bool lower_triangular(const Congruence_System& sys,
-			       const Dimension_Kinds& dim_kinds);
+                               const Dimension_Kinds& dim_kinds);
 
   /*! \brief
     If \p sys is upper triangular return <CODE>true</CODE>, else
     return <CODE>false</CODE>.
   */
   static bool upper_triangular(const Grid_Generator_System& sys,
-			       const Dimension_Kinds& dim_kinds);
+                               const Dimension_Kinds& dim_kinds);
 
 #ifndef NDEBUG
   //! Checks that trailing rows contain only zero terms.
@@ -2557,9 +2557,9 @@ private:
   */
   template <typename M, typename R>
   static bool rows_are_zero(M& system,
-			    dimension_type first,
-			    dimension_type last,
-			    dimension_type row_size);
+                            dimension_type first,
+                            dimension_type last,
+                            dimension_type row_size);
 #endif
 
   //@} // Minimization-Related Static Member Functions
@@ -2572,54 +2572,54 @@ protected:
   void throw_invalid_argument(const char* method, const char* reason) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const char* other_name,
-				    dimension_type other_dim) const;
+                                    const char* other_name,
+                                    dimension_type other_dim) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* gr_name,
-				    const Grid& gr) const;
+                                    const char* gr_name,
+                                    const Grid& gr) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* e_name,
-				    const Linear_Expression& e) const;
+                                    const char* e_name,
+                                    const Linear_Expression& e) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* cg_name,
-				    const Congruence& cg) const;
+                                    const char* cg_name,
+                                    const Congruence& cg) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* c_name,
-				    const Constraint& c) const;
+                                    const char* c_name,
+                                    const Constraint& c) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* g_name,
-				    const Grid_Generator& g) const;
+                                    const char* g_name,
+                                    const Grid_Generator& g) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* g_name,
-				    const Generator& g) const;
+                                    const char* g_name,
+                                    const Generator& g) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* cgs_name,
-				    const Congruence_System& cgs) const;
+                                    const char* cgs_name,
+                                    const Congruence_System& cgs) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* cs_name,
-				    const Constraint_System& cs) const;
+                                    const char* cs_name,
+                                    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* gs_name,
-				    const Grid_Generator_System& gs) const;
+                                    const char* gs_name,
+                                    const Grid_Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* var_name,
-				    Variable var) const;
+                                    const char* var_name,
+                                    Variable var) const;
   void throw_dimension_incompatible(const char* method,
-				    dimension_type required_space_dim) const;
+                                    dimension_type required_space_dim) const;
 
   // Note: it has to be a static method, because it can be called inside
   // constructors (before actually constructing the grid object).
   static void throw_space_dimension_overflow(const char* method,
-					     const char* reason);
+                                             const char* reason);
 
   void throw_invalid_constraint(const char* method,
                                 const char* c_name) const;
   void throw_invalid_constraints(const char* method,
                                  const char* cs_name) const;
   void throw_invalid_generator(const char* method,
-			       const char* g_name) const;
+                               const char* g_name) const;
   void throw_invalid_generators(const char* method,
-				const char* gs_name) const;
+                                const char* gs_name) const;
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

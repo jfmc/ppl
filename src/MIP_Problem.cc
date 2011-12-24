@@ -356,9 +356,9 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dimension())
     throw std::length_error("PPL::MIP_Problem::"
-			    "add_space_dimensions_and_embed(m):\n"
-			    "adding m new space dimensions exceeds "
-			    "the maximum allowed space dimension.");
+                            "add_space_dimensions_and_embed(m):\n"
+                            "adding m new space dimensions exceeds "
+                            "the maximum allowed space dimension.");
   external_space_dim += m;
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
@@ -681,8 +681,8 @@ PPL::MIP_Problem::process_pending_constraints() {
                          additional_slack_vars,
                          is_tableau_constraint,
                          is_satisfied_inequality,
-			 is_nonnegative_variable,
-			 is_remergeable_variable)) {
+                         is_nonnegative_variable,
+                         is_remergeable_variable)) {
     status = UNSATISFIABLE;
     return false;
   };
@@ -1886,7 +1886,7 @@ PPL::MIP_Problem::second_phase() {
   compute_generator();
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::second_phase(): 2nd phase ended at iteration "
-	    << num_iterations
+            << num_iterations
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
   status = second_phase_successful ? OPTIMIZED : UNBOUNDED;
@@ -1901,12 +1901,12 @@ PPL::MIP_Problem
   const dimension_type ep_space_dim = evaluating_point.space_dimension();
   if (space_dimension() < ep_space_dim)
     throw std::invalid_argument("PPL::MIP_Problem::"
-				"evaluate_objective_function(p, n, d):\n"
-				"*this and p are dimension incompatible.");
+                                "evaluate_objective_function(p, n, d):\n"
+                                "*this and p are dimension incompatible.");
   if (!evaluating_point.is_point())
     throw std::invalid_argument("PPL::MIP_Problem::"
-				"evaluate_objective_function(p, n, d):\n"
-				"p is not a point.");
+                                "evaluate_objective_function(p, n, d):\n"
+                                "p is not a point.");
 
   // Compute the smallest space dimension  between `input_obj_function'
   // and `evaluating_point'.
@@ -2003,7 +2003,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
     if (have_incumbent_solution
         && ((lp.optimization_mode() == MAXIMIZATION
               && tmp_rational <= incumbent_solution_value)
- 	    || (lp.optimization_mode() == MINIMIZATION
+            || (lp.optimization_mode() == MINIMIZATION
                 && tmp_rational >= incumbent_solution_value)))
       // Abandon this path.
       return lp_status;
@@ -2014,7 +2014,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   Coefficient_traits::const_reference p_divisor = p.divisor();
   dimension_type non_int_dim = lp.space_dimension();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
-	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+         v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
       non_int_dim = *v_begin;
@@ -2053,7 +2053,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   PPL_ASSERT(non_int_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
-	   ROUND_NOT_NEEDED);
+           ROUND_NOT_NEEDED);
   assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
   tmp_rational.canonicalize();
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
@@ -2069,7 +2069,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
               << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
     solve_mip(have_incumbent_solution, incumbent_solution_value,
-	      incumbent_solution_point, lp_aux, i_vars);
+              incumbent_solution_point, lp_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
@@ -2081,7 +2081,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
   solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp, i_vars);
+            incumbent_solution_point, lp, i_vars);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
@@ -2178,7 +2178,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
 #else
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
-	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+         v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
       non_int_dim = *v_begin;
@@ -2194,7 +2194,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   PPL_ASSERT(non_int_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
-	   ROUND_NOT_NEEDED);
+           ROUND_NOT_NEEDED);
   assign_r(tmp_rational.get_den(), p_divisor, ROUND_NOT_NEEDED);
   tmp_rational.canonicalize();
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
@@ -2723,7 +2723,7 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
   s << "Constraints:";
   for (MIP_Problem::const_iterator i = lp.constraints_begin(),
-	 i_end = lp.constraints_end(); i != i_end; ++i)
+         i_end = lp.constraints_end(); i != i_end; ++i)
     s << "\n" << *i;
   s << "\nObjective function: "
     << lp.objective_function()

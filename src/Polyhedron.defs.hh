@@ -406,8 +406,8 @@ protected:
     Specifies whether the universe or the empty polyhedron has to be built.
   */
   Polyhedron(Topology topol,
-	     dimension_type num_dimensions,
-	     Degenerate_Element kind);
+             dimension_type num_dimensions,
+             Degenerate_Element kind);
 
   //! Ordinary copy constructor.
   /*!
@@ -676,7 +676,7 @@ public:
     and \p maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -707,8 +707,8 @@ public:
     and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& g) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -735,7 +735,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -766,8 +766,8 @@ public:
     and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& g) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if there exist a
@@ -1205,14 +1205,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
-	   = a_\mathrm{var} x_\mathrm{var}
-	     + \sum_{i \neq var} a_i x_i + b,
+         \mathrm{denominator} * {x'}_\mathrm{var}
+           = \sum_{i = 0}^{n - 1} a_i x_i + b
+           = a_\mathrm{var} x_\mathrm{var}
+             + \sum_{i \neq var} a_i x_i + b,
        \f]
        so that the inverse transformation is
        \f[
-	 a_\mathrm{var} x_\mathrm{var}
+         a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
              - \sum_{i \neq j} a_i x_i - b.
        \f]
@@ -1229,9 +1229,9 @@ public:
             \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
           \bigm|
             \vect{x} = \vect{\lambda} R + \vect{\mu} V,
-	    \vect{\lambda} \in \Rset^{m_1}_+,
-	    \vect{\mu} \in \Rset^{m_2}_+,
-	    \sum_{i = 0}^{m_2 - 1} \mu_i = 1
+            \vect{\lambda} \in \Rset^{m_1}_+,
+            \vect{\mu} \in \Rset^{m_2}_+,
+            \sum_{i = 0}^{m_2 - 1} \mu_i = 1
           \,\bigr\}
     \f]
     and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
@@ -1252,9 +1252,9 @@ public:
     \endif
   */
   void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		      = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator
+                      = Coefficient_one());
 
   // FIXME: To be completed.
   /*!
@@ -1323,14 +1323,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+         \mathrm{denominator} * {x'}_\mathrm{var}
+           = \sum_{i = 0}^{n - 1} a_i x_i + b
            = a_\mathrm{var} x_\mathrm{var}
                + \sum_{i \neq \mathrm{var}} a_i x_i + b,
        \f],
        the inverse transformation is
        \f[
-	 a_\mathrm{var} x_\mathrm{var}
+         a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
                - \sum_{i \neq j} a_i x_i - b.
        \f].
@@ -1370,9 +1370,9 @@ public:
     \endif
   */
   void affine_preimage(Variable var,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator
-		         = Coefficient_one());
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator
+                         = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1401,10 +1401,10 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one());
+                                Relation_Symbol relsym,
+                                const Linear_Expression& expr,
+                                Coefficient_traits::const_reference denominator
+                                = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1434,10 +1434,10 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      Relation_Symbol relsym,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator
-			      = Coefficient_one());
+                              Relation_Symbol relsym,
+                              const Linear_Expression& expr,
+                              Coefficient_traits::const_reference denominator
+                              = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1460,8 +1460,8 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				Relation_Symbol relsym,
-				const Linear_Expression& rhs);
+                                Relation_Symbol relsym,
+                                const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1484,8 +1484,8 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& rhs);
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& rhs);
 
   /*!
     \brief
@@ -1514,10 +1514,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+                            const Linear_Expression& lb_expr,
+                            const Linear_Expression& ub_expr,
+                            Coefficient_traits::const_reference denominator
+                            = Coefficient_one());
 
   /*!
     \brief
@@ -1546,10 +1546,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+                               const Linear_Expression& lb_expr,
+                               const Linear_Expression& ub_expr,
+                               Coefficient_traits::const_reference denominator
+                               = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1691,8 +1691,8 @@ public:
     dimension-incompatible.
   */
   void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const Constraint_System& cs,
-					   unsigned* tp = 0);
+                                           const Constraint_System& cs,
+                                           unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1716,8 +1716,8 @@ public:
     dimension-incompatible.
   */
   void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const Constraint_System& cs,
-					   unsigned* tp = 0);
+                                           const Constraint_System& cs,
+                                           unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1762,8 +1762,8 @@ public:
     dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const Polyhedron& y,
-					const Constraint_System& cs,
-					unsigned* tp = 0);
+                                        const Constraint_System& cs,
+                                        unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1787,8 +1787,8 @@ public:
     dimension-incompatible.
   */
   void bounded_H79_extrapolation_assign(const Polyhedron& y,
-					const Constraint_System& cs,
-					unsigned* tp = 0);
+                                        const Constraint_System& cs,
+                                        unsigned* tp = 0);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -2463,9 +2463,9 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-	       bool maximize,
-	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& g) const;
+               bool maximize,
+               Coefficient& ext_n, Coefficient& ext_d, bool& included,
+               Generator& g) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2475,7 +2475,7 @@ private:
     to the definition of the CH78-widening of \p *this and \p y.
   */
   void select_CH78_constraints(const Polyhedron& y,
-			       Constraint_System& cs_selected) const;
+                               Constraint_System& cs_selected) const;
 
   /*! \brief
     Splits the constraints of `x' into two subsets, depending on whether
@@ -2483,21 +2483,21 @@ private:
     of \p *this and \p y.
   */
   void select_H79_constraints(const Polyhedron& y,
-			      Constraint_System& cs_selected,
-			      Constraint_System& cs_not_selected) const;
+                              Constraint_System& cs_selected,
+                              Constraint_System& cs_not_selected) const;
 
   bool BHRZ03_combining_constraints(const Polyhedron& y,
-				    const BHRZ03_Certificate& y_cert,
- 				    const Polyhedron& H79,
-				    const Constraint_System& x_minus_H79_con_sys);
+                                    const BHRZ03_Certificate& y_cert,
+                                    const Polyhedron& H79,
+                                    const Constraint_System& x_minus_H79_con_sys);
 
   bool BHRZ03_evolving_points(const Polyhedron& y,
-			      const BHRZ03_Certificate& y_cert,
-			      const Polyhedron& H79);
+                              const BHRZ03_Certificate& y_cert,
+                              const Polyhedron& H79);
 
   bool BHRZ03_evolving_rays(const Polyhedron& y,
-			    const BHRZ03_Certificate& y_cert,
-			    const Polyhedron& H79);
+                            const BHRZ03_Certificate& y_cert,
+                            const Polyhedron& H79);
 
   //@} // Widening- and Extrapolation-Related Functions
 
@@ -2528,10 +2528,10 @@ private:
     matrices) in different order (see those methods for details).
   */
   static void add_space_dimensions(Linear_System& mat1,
-				   Linear_System& mat2,
-				   Bit_Matrix& sat1,
-				   Bit_Matrix& sat2,
-				   dimension_type add_dim);
+                                   Linear_System& mat2,
+                                   Bit_Matrix& sat1,
+                                   Bit_Matrix& sat2,
+                                   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
   //@{
@@ -2539,9 +2539,9 @@ private:
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen,
-		       Linear_System& source,
-		       Linear_System& dest,
-		       Bit_Matrix& sat);
+                       Linear_System& source,
+                       Linear_System& dest,
+                       Bit_Matrix& sat);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
@@ -2549,10 +2549,10 @@ private:
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System& source1,
-			       Linear_System& dest,
-			       Bit_Matrix& sat,
-			       const Linear_System& source2);
+                               Linear_System& source1,
+                               Linear_System& dest,
+                               Bit_Matrix& sat,
+                               const Linear_System& source2);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
@@ -2560,17 +2560,17 @@ private:
   */
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			       Linear_System& source,
-			       Linear_System& dest,
-			       Bit_Matrix& sat);
+                               Linear_System& source,
+                               Linear_System& dest,
+                               Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Linear_System& source,
-				   dimension_type start,
-				   Linear_System& dest,
-				   Bit_Matrix& sat,
-				   dimension_type num_lines_or_equalities);
+                                   dimension_type start,
+                                   Linear_System& dest,
+                                   Bit_Matrix& sat,
+                                   dimension_type num_lines_or_equalities);
 
   /*! \brief
     Uses Gauss' elimination method to simplify the result of
@@ -2636,68 +2636,68 @@ protected:
   void throw_invalid_argument(const char* method, const char* reason) const;
 
   void throw_topology_incompatible(const char* method,
-				   const char* ph_name,
-				   const Polyhedron& ph) const;
+                                   const char* ph_name,
+                                   const Polyhedron& ph) const;
   void throw_topology_incompatible(const char* method,
-				   const char* c_name,
-				   const Constraint& c) const;
+                                   const char* c_name,
+                                   const Constraint& c) const;
   void throw_topology_incompatible(const char* method,
-				   const char* g_name,
-				   const Generator& g) const;
+                                   const char* g_name,
+                                   const Generator& g) const;
   void throw_topology_incompatible(const char* method,
-				   const char* cs_name,
-				   const Constraint_System& cs) const;
+                                   const char* cs_name,
+                                   const Constraint_System& cs) const;
   void throw_topology_incompatible(const char* method,
-				   const char* gs_name,
-				   const Generator_System& gs) const;
+                                   const char* gs_name,
+                                   const Generator_System& gs) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const char* other_name,
-				    dimension_type other_dim) const;
+                                    const char* other_name,
+                                    dimension_type other_dim) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* ph_name,
-				    const Polyhedron& ph) const;
+                                    const char* ph_name,
+                                    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* e_name,
-				    const Linear_Expression& e) const;
+                                    const char* e_name,
+                                    const Linear_Expression& e) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* c_name,
-				    const Constraint& c) const;
+                                    const char* c_name,
+                                    const Constraint& c) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* g_name,
-				    const Generator& g) const;
+                                    const char* g_name,
+                                    const Generator& g) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* cg_name,
-				    const Congruence& cg) const;
+                                    const char* cg_name,
+                                    const Congruence& cg) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* cs_name,
-				    const Constraint_System& cs) const;
+                                    const char* cs_name,
+                                    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* gs_name,
-				    const Generator_System& gs) const;
+                                    const char* gs_name,
+                                    const Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* cgs_name,
-				    const Congruence_System& cgs) const;
+                                    const char* cgs_name,
+                                    const Congruence_System& cgs) const;
   template <typename C>
   void throw_dimension_incompatible(const char* method,
-				    const char* lf_name,
-				    const Linear_Form<C>& lf) const;
+                                    const char* lf_name,
+                                    const Linear_Form<C>& lf) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* var_name,
-				    Variable var) const;
+                                    const char* var_name,
+                                    Variable var) const;
   void throw_dimension_incompatible(const char* method,
-				    dimension_type required_space_dim) const;
+                                    dimension_type required_space_dim) const;
 
   // Note: it has to be a static method, because it can be called inside
   // constructors (before actually constructing the polyhedron object).
   static void throw_space_dimension_overflow(Topology topol,
-					     const char* method,
-					     const char* reason);
+                                             const char* method,
+                                             const char* reason);
 
   void throw_invalid_generator(const char* method,
-			       const char* g_name) const;
+                               const char* g_name) const;
   void throw_invalid_generators(const char* method,
-				const char* gs_name) const;
+                                const char* gs_name) const;
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
@@ -2765,7 +2765,7 @@ protected:
   */
   template <typename FP_Format, typename Interval_Info>
   static void convert_to_integer_expression(
-	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+              const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
               const dimension_type lf_dimension,
               Linear_Expression& result);
 
@@ -2797,7 +2797,7 @@ protected:
   */
   template <typename FP_Format, typename Interval_Info>
   static void convert_to_integer_expressions(
-	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+              const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
               const dimension_type lf_dimension, Linear_Expression& res,
               Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
               Coefficient& denominator);

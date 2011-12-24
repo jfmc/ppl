@@ -386,7 +386,7 @@ void swap(Linear_Row& x, Linear_Row& y);
 /*! \relates Linear_Row */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void iter_swap(std::vector<Linear_Row>::iterator x,
-	       std::vector<Linear_Row>::iterator y);
+               std::vector<Linear_Row>::iterator y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Linear_Row */

@@ -202,7 +202,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
 /*! \relates Parma_Polyhedra_Library::Bit_Row */
 bool
 PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
-		     bool& strict_subset) {
+                     bool& strict_subset) {
   mp_size_t x_size = x.vec->_mp_size;
   PPL_ASSERT(x_size >= 0);
   mp_size_t y_size = y.vec->_mp_size;
@@ -219,7 +219,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
       xl = *xp;
       yl = *yp;
       if (xl & ~yl)
-	return false;
+        return false;
     strict_subset_next:
       ++xp;
       ++yp;
@@ -231,10 +231,10 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
       xl = *xp;
       yl = *yp;
       if (xl != yl) {
-	if (xl & ~yl)
-	  return false;
-	strict_subset = true;
-	goto strict_subset_next;
+        if (xl & ~yl)
+          return false;
+        strict_subset = true;
+        goto strict_subset_next;
       }
       ++xp;
       ++yp;

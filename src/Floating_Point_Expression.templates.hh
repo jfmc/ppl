@@ -96,10 +96,10 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   boundary_type omega = std::max(
   static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::boundary_type>(pow(FP_Format::BASE, static_cast<typename
-		       Floating_Point_Expression<FP_Interval_Type, FP_Format>
-		       ::boundary_type>(1) - FP_Format
-		       ::EXPONENT_BIAS - FP_Format
-		       ::MANTISSA_BITS)),
+                       Floating_Point_Expression<FP_Interval_Type, FP_Format>
+                       ::boundary_type>(1) - FP_Format
+                       ::EXPONENT_BIAS - FP_Format
+                       ::MANTISSA_BITS)),
   std::numeric_limits<typename
                       Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::boundary_type>::denorm_min());

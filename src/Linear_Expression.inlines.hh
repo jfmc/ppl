@@ -56,7 +56,7 @@ Linear_Expression::~Linear_Expression() {
 
 inline
 Linear_Expression::Linear_Expression(const Linear_Expression& e,
-				     dimension_type sz)
+                                     dimension_type sz)
   : Linear_Row(e, sz, sz) {
 }
 

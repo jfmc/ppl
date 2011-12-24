@@ -32,8 +32,8 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Generator::throw_dimension_incompatible(const char* method,
-					     const char* name_var,
-					     const Variable v) const {
+                                             const char* name_var,
+                                             const Variable v) const {
   std::ostringstream s;
   s << "PPL::Generator::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -43,7 +43,7 @@ PPL::Generator::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Generator::throw_invalid_argument(const char* method,
-				       const char* reason) const {
+                                       const char* reason) const {
   std::ostringstream s;
   s << "PPL::Generator::" << method << ":" << std::endl
     << reason << ".";
@@ -52,10 +52,10 @@ PPL::Generator::throw_invalid_argument(const char* method,
 
 PPL::Generator
 PPL::Generator::point(const Linear_Expression& e,
-		      Coefficient_traits::const_reference d) {
+                      Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::point(e, d):\n"
-				"d == 0.");
+                                "d == 0.");
   Linear_Expression ec = e;
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   g[0] = d;
@@ -74,10 +74,10 @@ PPL::Generator::point(const Linear_Expression& e,
 
 PPL::Generator
 PPL::Generator::closure_point(const Linear_Expression& e,
-			      Coefficient_traits::const_reference d) {
+                              Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
-				"d == 0.");
+                                "d == 0.");
   // Adding the epsilon dimension with coefficient 0.
   Linear_Expression ec = 0 * Variable(e.space_dimension());
   ec += e;
@@ -95,7 +95,7 @@ PPL::Generator::ray(const Linear_Expression& e) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::ray(e):\n"
-				"e == 0, but the origin cannot be a ray.");
+                                "e == 0, but the origin cannot be a ray.");
 
   Linear_Expression ec = e;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
@@ -110,7 +110,7 @@ PPL::Generator::line(const Linear_Expression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::line(e):\n"
-				"e == 0, but the origin cannot be a line.");
+                                "e == 0, but the origin cannot be a line.");
 
   Linear_Expression ec = e;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
@@ -144,7 +144,7 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
     // ... and finally check for syntactic equality.
     for (dimension_type i = x_space_dim + 1; i-- > 0; )
       if (x_expr[i] != y_expr[i])
-	return false;
+        return false;
     return true;
   }
 
@@ -205,12 +205,12 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
       needed_divisor = true;
       dimension_type num_non_zero_coefficients = 0;
       for (dimension_type v = 0; v < num_variables; ++v)
-	if (g[v+1] != 0)
-	  if (++num_non_zero_coefficients > 1) {
-	    extra_parentheses = true;
-	    s << "(";
-	    break;
-	  }
+        if (g[v+1] != 0)
+          if (++num_non_zero_coefficients > 1) {
+            extra_parentheses = true;
+            s << "(";
+            break;
+          }
     }
     break;
   }
@@ -221,19 +221,19 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
     g_v = g[v+1];
     if (g_v != 0) {
       if (!first) {
-	if (g_v > 0)
-	  s << " + ";
-	else {
-	  s << " - ";
-	  neg_assign(g_v);
-	}
+        if (g_v > 0)
+          s << " + ";
+        else {
+          s << " - ";
+          neg_assign(g_v);
+        }
       }
       else
-	first = false;
+        first = false;
       if (g_v == -1)
-	s << "-";
+        s << "-";
       else if (g_v != 1)
-	s << g_v << "*";
+        s << g_v << "*";
       s << PPL::Variable(v);
     }
   }
@@ -273,16 +273,16 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
 bool
 PPL::Generator::is_matching_closure_point(const Generator& p) const {
   PPL_ASSERT(topology() == p.topology()
-	 && space_dimension() == p.space_dimension()
-	 && type() == CLOSURE_POINT
-	 && p.type() == POINT);
+         && space_dimension() == p.space_dimension()
+         && type() == CLOSURE_POINT
+         && p.type() == POINT);
   const Generator& cp = *this;
   if (cp[0] == p[0]) {
     // Divisors are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
     for (dimension_type i = cp.size() - 2; i > 0; --i)
       if (cp[i] != p[i])
-	return false;
+        return false;
     return true;
   }
   else {
@@ -305,7 +305,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
       prod1 = cp[i] * p_div;
       prod2 = p[i] * cp_div;
       if (prod1 != prod2)
-	return false;
+        return false;
     }
     return true;
   }
@@ -324,11 +324,11 @@ PPL::Generator::OK() const {
   if (size() < min_size) {
 #ifndef NDEBUG
     std::cerr << "Generator has fewer coefficients than the minimum "
-	      << "allowed by its topology:"
-	      << std::endl
-	      << "size is " << size()
-	      << ", minimum is " << min_size << "."
-	      << std::endl;
+              << "allowed by its topology:"
+              << std::endl
+              << "size is " << size()
+              << ", minimum is " << min_size << "."
+              << std::endl;
 #endif
     return false;
   }
@@ -340,7 +340,7 @@ PPL::Generator::OK() const {
   if (tmp != g) {
 #ifndef NDEBUG
     std::cerr << "Generators should be strongly normalized!"
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -352,15 +352,15 @@ PPL::Generator::OK() const {
     if (g[0] != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines must have a zero inhomogeneous term!"
-		<< std::endl;
+                << std::endl;
 #endif
       return false;
     }
     if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
 #ifndef NDEBUG
       std::cerr << "Lines and rays must have a zero coefficient "
-		<< "for the epsilon dimension!"
-		<< std::endl;
+                << "for the epsilon dimension!"
+                << std::endl;
 #endif
       return false;
     }
@@ -369,7 +369,7 @@ PPL::Generator::OK() const {
     if (g.all_homogeneous_terms_are_zero()) {
 #ifndef NDEBUG
       std::cerr << "The origin of the vector space cannot be a line or a ray!"
-		<< std::endl;
+                << std::endl;
 #endif
       return false;
     }
@@ -379,17 +379,17 @@ PPL::Generator::OK() const {
     if (g[0] <= 0) {
 #ifndef NDEBUG
       std::cerr << "Points must have a positive divisor!"
-		<< std::endl;
+                << std::endl;
 #endif
       return false;
     }
     if (!g.is_necessarily_closed())
       if (g[size() - 1] <= 0) {
 #ifndef NDEBUG
-	std::cerr << "In the NNC topology, points must have epsilon > 0"
-		  << std::endl;
+        std::cerr << "In the NNC topology, points must have epsilon > 0"
+                  << std::endl;
 #endif
-	return false;
+        return false;
       }
     break;
 
@@ -397,7 +397,7 @@ PPL::Generator::OK() const {
     if (g[0] <= 0) {
 #ifndef NDEBUG
       std::cerr << "Closure points must have a positive divisor!"
-		<< std::endl;
+                << std::endl;
 #endif
       return false;
     }

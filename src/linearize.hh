@@ -777,7 +777,7 @@ linearize(const Concrete_Expression<Target>& expr,
 
       result = FP_Linear_Form(variable_value->second);
       /* FIXME: do we really need to contemplate the possibility
-	 that an unbounded linear form was saved into lf_store? */
+         that an unbounded linear form was saved into lf_store? */
       return !result.overflows();
     }
 

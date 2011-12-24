@@ -54,7 +54,7 @@ Linear_Row::Flags::Flags(const Topology t, const Kind k)
   : Dense_Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
 #ifndef NDEBUG
   set_bits((1 << rpi_validity_bit)
-	   | (1 << nnc_validity_bit));
+           | (1 << nnc_validity_bit));
 #endif
 }
 
@@ -183,13 +183,13 @@ Linear_Row::Linear_Row(const Linear_Row& y)
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
-		       const dimension_type capacity)
+                       const dimension_type capacity)
   : Dense_Row(y, capacity) {
 }
 
 inline
 Linear_Row::Linear_Row(const Linear_Row& y,
-		       const dimension_type sz, const dimension_type capacity)
+                       const dimension_type sz, const dimension_type capacity)
   : Dense_Row(y, sz, capacity) {
 }
 
@@ -278,7 +278,7 @@ swap(Linear_Row& x, Linear_Row& y) {
 /*! \relates Linear_Row */
 inline void
 iter_swap(std::vector<Linear_Row>::iterator x,
-	  std::vector<Linear_Row>::iterator y) {
+          std::vector<Linear_Row>::iterator y) {
   swap(*x, *y);
 }
 

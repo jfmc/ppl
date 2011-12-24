@@ -66,7 +66,7 @@ operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& dp);
 /*! \relates Partially_Reduced_Product */
 template <typename D1, typename D2, typename R>
 void swap(Partially_Reduced_Product<D1, D2, R>& x,
-	  Partially_Reduced_Product<D1, D2, R>& y);
+          Partially_Reduced_Product<D1, D2, R>& y);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the components of \p x and \p y
@@ -78,7 +78,7 @@ void swap(Partially_Reduced_Product<D1, D2, R>& x,
 */
 template <typename D1, typename D2, typename R>
 bool operator==(const Partially_Reduced_Product<D1, D2, R>& x,
-		const Partially_Reduced_Product<D1, D2, R>& y);
+                const Partially_Reduced_Product<D1, D2, R>& y);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the components of \p x and \p y
@@ -90,7 +90,7 @@ bool operator==(const Partially_Reduced_Product<D1, D2, R>& x,
 */
 template <typename D1, typename D2, typename R>
 bool operator!=(const Partially_Reduced_Product<D1, D2, R>& x,
-		const Partially_Reduced_Product<D1, D2, R>& y);
+                const Partially_Reduced_Product<D1, D2, R>& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -436,7 +436,7 @@ public:
     dimension.
   */
   explicit Partially_Reduced_Product(dimension_type num_dimensions = 0,
-				     Degenerate_Element kind = UNIVERSE);
+                                     Degenerate_Element kind = UNIVERSE);
 
   //! Builds a pair, copying a system of congruences.
   /*!
@@ -802,7 +802,7 @@ public:
     maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -833,8 +833,8 @@ public:
     and \p point are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -861,7 +861,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -892,8 +892,8 @@ public:
     and \p point are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if each component of \p *this
@@ -1114,9 +1114,9 @@ public:
 
   */
   void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		    = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator
+                    = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the \ref  Single_Update_Affine_Functions
@@ -1139,9 +1139,9 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p *this.
   */
   void affine_preimage(Variable var,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator
-		         = Coefficient_one());
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator
+                         = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1171,10 +1171,10 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one());
+                                Relation_Symbol relsym,
+                                const Linear_Expression& expr,
+                                Coefficient_traits::const_reference denominator
+                                = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1205,10 +1205,10 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      Relation_Symbol relsym,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator
-			      = Coefficient_one());
+                              Relation_Symbol relsym,
+                              const Linear_Expression& expr,
+                              Coefficient_traits::const_reference denominator
+                              = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1232,8 +1232,8 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				Relation_Symbol relsym,
-				const Linear_Expression& rhs);
+                                Relation_Symbol relsym,
+                                const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1257,8 +1257,8 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& rhs);
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& rhs);
 
   /*!
     \brief
@@ -1287,10 +1287,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+                            const Linear_Expression& lb_expr,
+                            const Linear_Expression& ub_expr,
+                            Coefficient_traits::const_reference denominator
+                            = Coefficient_one());
 
   /*!
     \brief
@@ -1319,10 +1319,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+                               const Linear_Expression& lb_expr,
+                               const Linear_Expression& ub_expr,
+                               Coefficient_traits::const_reference denominator
+                               = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Time_Elapse_Operator
@@ -1567,7 +1567,7 @@ public:
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   friend bool operator==<>(const Partially_Reduced_Product<D1, D2, R>& x,
-			   const Partially_Reduced_Product<D1, D2, R>& y);
+                           const Partially_Reduced_Product<D1, D2, R>& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::

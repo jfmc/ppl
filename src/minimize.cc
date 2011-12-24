@@ -68,9 +68,9 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 bool
 PPL::Polyhedron::minimize(const bool con_to_gen,
-			  Linear_System& source,
-			  Linear_System& dest,
-			  Bit_Matrix& sat) {
+                          Linear_System& source,
+                          Linear_System& dest,
+                          Bit_Matrix& sat) {
   // Topologies have to agree.
   PPL_ASSERT(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -234,10 +234,10 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 */
 bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System& source1,
-				  Linear_System& dest,
-				  Bit_Matrix& sat,
-				  const Linear_System& source2) {
+                                  Linear_System& source1,
+                                  Linear_System& dest,
+                                  Bit_Matrix& sat,
+                                  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
   PPL_ASSERT(!source1.has_no_rows() && !source2.has_no_rows());
   // `source1' and `source2' must have the same number of columns
@@ -335,9 +335,9 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 */
 bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Linear_System& source,
-				  Linear_System& dest,
-				  Bit_Matrix& sat) {
+                                  Linear_System& source,
+                                  Linear_System& dest,
+                                  Bit_Matrix& sat) {
   PPL_ASSERT(source.num_pending_rows() > 0);
   PPL_ASSERT(source.num_columns() == dest.num_columns());
   PPL_ASSERT(source.is_sorted());
@@ -350,8 +350,8 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   // Parameter `start' is set to the index of the first pending constraint.
   const dimension_type num_lines_or_equalities
     = conversion(source, source.first_pending_row(),
-		 dest, sat,
-		 dest.num_lines_or_equalities());
+                 dest, sat,
+                 dest.num_lines_or_equalities());
 
   // conversion() may have modified the number of rows in `dest'.
   const dimension_type dest_num_rows = dest.num_rows();

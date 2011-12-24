@@ -158,7 +158,7 @@ public:
   */
   template <typename U>
   void construct_upward_approximation(const DB_Row<U>& y,
-				      dimension_type capacity);
+                                      dimension_type capacity);
 
   //@}
 
@@ -320,7 +320,7 @@ void swap(DB_Row<T>& x, DB_Row<T>& y);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void iter_swap(typename std::vector<DB_Row<T> >::iterator x,
-	       typename std::vector<DB_Row<T> >::iterator y);
+               typename std::vector<DB_Row<T> >::iterator y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \name Classical comparison operators.

@@ -52,7 +52,7 @@ void swap(Grid_Generator_System& x, Grid_Generator_System& y);
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Grid_Generator_System */
 bool operator==(const Grid_Generator_System& x,
-		const Grid_Generator_System& y);
+                const Grid_Generator_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -260,10 +260,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-			   Grid_Generator,
-			   ptrdiff_t,
-			   const Grid_Generator*,
-			   const Grid_Generator&>,
+                           Grid_Generator,
+                           ptrdiff_t,
+                           const Grid_Generator*,
+                           const Grid_Generator&>,
       private Generator_System::const_iterator {
   public:
     //! Default constructor.
@@ -426,8 +426,8 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_image(dimension_type v,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator);
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator);
 
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
@@ -476,7 +476,7 @@ private:
     The contents of the original system is lost.
   */
   void resize_no_copy(dimension_type new_num_rows,
-		      dimension_type new_num_columns);
+                      dimension_type new_num_columns);
 
   /*! \brief
     Returns the number of columns of the matrix (i.e., the size of the

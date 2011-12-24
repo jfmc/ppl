@@ -162,16 +162,15 @@ private:
     Inhibited copy constructor.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  Cast_Floating_Point_Expression(
-			  const Cast_Floating_Point_Expression& y);
+  Cast_Floating_Point_Expression(const Cast_Floating_Point_Expression& y);
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Inhibited assignment operator.
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAIL
-  Cast_Floating_Point_Expression& operator=(
-		          const Cast_Floating_Point_Expression& y);
+  Cast_Floating_Point_Expression&
+  operator=(const Cast_Floating_Point_Expression& y);
 
 }; // class Cast_Floating_Point_Expression
 

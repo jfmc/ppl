@@ -197,10 +197,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-			   Constraint,
-			   ptrdiff_t,
-			   const Constraint*,
-			   const Constraint&> {
+                           Constraint,
+                           ptrdiff_t,
+                           const Constraint*,
+                           const Constraint&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -249,7 +249,7 @@ public:
 
     //! Constructor.
     const_iterator(const Linear_System::const_iterator& iter,
-		   const Constraint_System& cs);
+                   const Constraint_System& cs);
 
     //! \p *this skips to the next non-trivial constraint.
     void skip_forward();
@@ -316,7 +316,7 @@ private:
     \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   */
   Constraint_System(Topology topol,
-		    dimension_type n_rows, dimension_type n_columns);
+                    dimension_type n_rows, dimension_type n_columns);
 
   /*! \brief
     Adjusts \p *this so that it matches the topology and
@@ -327,7 +327,7 @@ private:
     contains strict inequalities.
   */
   bool adjust_topology_and_space_dimension(Topology topol,
-					   dimension_type num_dimensions);
+                                           dimension_type num_dimensions);
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](dimension_type k);
@@ -374,8 +374,8 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_preimage(dimension_type v,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator);
+                       const Linear_Expression& expr,
+                       Coefficient_traits::const_reference denominator);
 
   //! Returns the number of equality constraints.
   dimension_type num_equalities() const;

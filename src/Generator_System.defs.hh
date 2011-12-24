@@ -243,10 +243,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-			   Generator,
-			   ptrdiff_t,
-			   const Generator*,
-			   const Generator&> {
+                           Generator,
+                           ptrdiff_t,
+                           const Generator*,
+                           const Generator&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -295,7 +295,7 @@ public:
 
     //! Constructor.
     const_iterator(const Linear_System::const_iterator& iter,
-		   const Generator_System& gs);
+                   const Generator_System& gs);
 
     /*! \brief
       \p *this skips to the next generator, skipping those
@@ -368,7 +368,7 @@ private:
     \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   */
   Generator_System(Topology topol,
-		   dimension_type n_rows, dimension_type n_columns);
+                   dimension_type n_rows, dimension_type n_columns);
 
   /*! \brief
     Adjusts \p *this so that it matches the topology and
@@ -379,7 +379,7 @@ private:
     contains closure points.
   */
   bool adjust_topology_and_space_dimension(Topology topol,
-					   dimension_type num_dimensions);
+                                           dimension_type num_dimensions);
 
   /*! \brief
     For each unmatched closure point in \p *this, adds the
@@ -473,8 +473,8 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_image(dimension_type v,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator);
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator);
 
   //! Returns the number of lines of the system.
   dimension_type num_lines() const;

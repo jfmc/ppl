@@ -31,11 +31,11 @@ namespace PPL = Parma_Polyhedra_Library;
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 PPL::extract_bounded_difference(const Constraint& c,
-				const dimension_type c_space_dim,
-				dimension_type& c_num_vars,
-				dimension_type& c_first_var,
-				dimension_type& c_second_var,
-				Coefficient& c_coeff) {
+                                const dimension_type c_space_dim,
+                                dimension_type& c_num_vars,
+                                dimension_type& c_first_var,
+                                dimension_type& c_second_var,
+                                Coefficient& c_coeff) {
   // Check for preconditions.
   PPL_ASSERT(c.space_dimension() == c_space_dim);
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
@@ -45,10 +45,10 @@ PPL::extract_bounded_difference(const Constraint& c,
   for (dimension_type i = c_space_dim; i-- > 0; )
     if (c.coefficient(Variable(i)) != 0) {
       if (c_num_vars <= 1)
-	non_zero_index[c_num_vars++] = i + 1;
+        non_zero_index[c_num_vars++] = i + 1;
       else
-	// Constraint `c' is not a bounded difference.
-	return false;
+        // Constraint `c' is not a bounded difference.
+        return false;
     }
 
   // Make sure that `c' is indeed a bounded difference,
@@ -62,8 +62,8 @@ PPL::extract_bounded_difference(const Constraint& c,
       const Coefficient& c0 = c.coefficient(Variable(non_zero_index[0]-1));
       const Coefficient& c1 = c.coefficient(Variable(non_zero_index[1]-1));
       if (sgn(c0) == sgn(c1) || c0 != -c1)
-	// Constraint `c' is not a bounded difference.
-	return false;
+        // Constraint `c' is not a bounded difference.
+        return false;
       c_coeff = c1;
     }
     c_first_var = non_zero_index[0];
@@ -85,7 +85,7 @@ PPL::extract_bounded_difference(const Constraint& c,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 PPL::compute_leader_indices(const std::vector<dimension_type>& predecessor,
-			    std::vector<dimension_type>& indices) {
+                            std::vector<dimension_type>& indices) {
   // The vector `indices' contains one entry for each equivalence
   // class, storing the index of the corresponding leader in
   // increasing order: it is used to avoid repeated tests for leadership.

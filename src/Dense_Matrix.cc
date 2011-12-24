@@ -165,8 +165,8 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
       // Expand and steal the old rows.
       ++i;
       while (i-- > 0) {
-	rows[i].expand_within_capacity(new_num_columns);
-	new_rows[i].m_swap(rows[i]);
+        rows[i].expand_within_capacity(new_num_columns);
+        new_rows[i].m_swap(rows[i]);
       }
       // Put the new vector into place.
       using std::swap;
@@ -182,7 +182,7 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
       // Expand the old rows.
       ++i;
       while (i-- > 0)
-	rows[i].expand_within_capacity(new_num_columns);
+        rows[i].expand_within_capacity(new_num_columns);
     }
     row_size = new_num_columns;
   }
@@ -195,7 +195,7 @@ PPL::Dense_Matrix::add_zero_rows_and_columns(const dimension_type n,
     // Construct the new rows.
     new_matrix.row_size = new_num_columns;
     new_matrix.row_capacity = compute_capacity(new_num_columns,
-					       max_num_columns());
+                                               max_num_columns());
     dimension_type i = new_num_rows;
     while (i-- > old_num_rows)
       new_matrix.rows[i].resize(new_matrix.row_size, new_matrix.row_capacity);
@@ -259,22 +259,22 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
     if (new_n_columns <= row_capacity) {
       // We can recycle the old rows.
       if (rows.capacity() < new_n_rows) {
-	// Reallocation (of vector `rows') will take place.
-	std::vector<Dense_Row> new_rows;
-	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
-	new_rows.insert(new_rows.end(), new_n_rows, Dense_Row(row_flags));
-	// Construct the new rows (be careful: each new row must have
-	// the same capacity as each one of the old rows).
-	dimension_type i = new_n_rows;
-	while (i-- > old_n_rows)
-	  new_rows[i].resize(new_n_columns, row_capacity);
-	// Steal the old rows.
-	++i;
-	while (i-- > 0)
-	  new_rows[i].m_swap(rows[i]);
-	// Put the new vector into place.
+        // Reallocation (of vector `rows') will take place.
+        std::vector<Dense_Row> new_rows;
+        new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
+        new_rows.insert(new_rows.end(), new_n_rows, Dense_Row(row_flags));
+        // Construct the new rows (be careful: each new row must have
+        // the same capacity as each one of the old rows).
+        dimension_type i = new_n_rows;
+        while (i-- > old_n_rows)
+          new_rows[i].resize(new_n_columns, row_capacity);
+        // Steal the old rows.
+        ++i;
+        while (i-- > 0)
+          new_rows[i].m_swap(rows[i]);
+        // Put the new vector into place.
         using std::swap;
-	swap(rows, new_rows);
+        swap(rows, new_rows);
       }
       else {
         // Reallocation (of vector `rows') will NOT take place.
@@ -302,25 +302,25 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
     if (new_n_columns < row_size) {
       // Shrink the existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; )
-	rows[i].shrink(new_n_columns);
+        rows[i].shrink(new_n_columns);
     }
     else
       // We need more columns.
       if (new_n_columns <= row_capacity)
-	// But we have enough capacity: we resize existing rows.
-	for (dimension_type i = old_n_rows; i-- > 0; )
-	  rows[i].expand_within_capacity(new_n_columns);
+        // But we have enough capacity: we resize existing rows.
+        for (dimension_type i = old_n_rows; i-- > 0; )
+          rows[i].expand_within_capacity(new_n_columns);
       else {
-	// Capacity exhausted: we must reallocate the rows and
-	// make sure all the rows have the same capacity.
-	const dimension_type new_row_capacity
-	  = compute_capacity(new_n_columns, max_num_columns());
-	for (dimension_type i = old_n_rows; i-- > 0; ) {
-	  Dense_Row new_row(new_n_columns, new_row_capacity, row_flags);
+        // Capacity exhausted: we must reallocate the rows and
+        // make sure all the rows have the same capacity.
+        const dimension_type new_row_capacity
+          = compute_capacity(new_n_columns, max_num_columns());
+        for (dimension_type i = old_n_rows; i-- > 0; ) {
+          Dense_Row new_row(new_n_columns, new_row_capacity, row_flags);
           using std::swap;
-	  swap(rows[i], new_row);
-	}
-	row_capacity = new_row_capacity;
+          swap(rows[i], new_row);
+        }
+        row_capacity = new_row_capacity;
       }
     // Rows have grown or shrunk.
     row_size = new_n_columns;
@@ -416,18 +416,18 @@ PPL::Dense_Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
       // Make `j' be the index of the next cycle terminator.
       while (cycles[j] != 0)
-	++j;
+        ++j;
       // Cycles of length less than 2 are not allowed.
       PPL_ASSERT(j - i >= 2);
       if (j - i == 2)
-	// For cycles of length 2 no temporary is needed, just a swap.
-	swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
+        // For cycles of length 2 no temporary is needed, just a swap.
+        swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
       else {
-	// Longer cycles need a temporary.
-	swap(rows_k[cycles[j-1]], tmp);
-	for (dimension_type l = j-1; l > i; --l)
-	  swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
-	swap(tmp, rows_k[cycles[i]]);
+        // Longer cycles need a temporary.
+        swap(rows_k[cycles[j-1]], tmp);
+        for (dimension_type l = j-1; l > i; --l)
+          swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
+        swap(tmp, rows_k[cycles[i]]);
       }
     }
   }
@@ -462,9 +462,9 @@ PPL::Dense_Matrix::OK() const {
   if (row_size > row_capacity) {
 #ifndef NDEBUG
     std::cerr << "Dense_Matrix completely broken: "
-	      << "row_capacity is " << row_capacity
-	      << ", row_size is " << row_size
-	      << std::endl;
+              << "row_capacity is " << row_capacity
+              << ", row_size is " << row_size
+              << std::endl;
 #endif
     return false;
   }

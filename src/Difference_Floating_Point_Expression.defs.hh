@@ -148,7 +148,7 @@ public:
     expression corresponding to \p x \f$\ominus\f$ \p y.
   */
   Difference_Floating_Point_Expression(
-	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
+           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y);
 
   //! Destructor.
@@ -208,7 +208,7 @@ private:
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
   operator=(const Difference_Floating_Point_Expression<FP_Interval_Type,
-	                                               FP_Format>& e);
+                                                       FP_Format>& e);
 
 
 }; // class Difference_Floating_Point_Expression

@@ -2218,7 +2218,7 @@ private:
   */
   template <typename Interval_Info>
   void inhomogeneous_affine_form_image(const dimension_type& var_id,
-				                       const Interval<T, Interval_Info>& b);
+                                                       const Interval<T, Interval_Info>& b);
 
   /* \brief
     Auxiliary function for \ref affine_form_relation "affine form image" that
@@ -2246,8 +2246,8 @@ private:
   */
   template <typename Interval_Info>
   void left_inhomogeneous_refine(const dimension_type& right_t,
-				 const dimension_type& right_w_id,
-		   const Linear_Form<Interval<T, Interval_Info> >& left,
+                                 const dimension_type& right_w_id,
+                   const Linear_Form<Interval<T, Interval_Info> >& left,
                    const Linear_Form<Interval<T, Interval_Info> >& right);
 
   /* \brief
@@ -2256,9 +2256,9 @@ private:
   */
   template <typename Interval_Info>
   void left_one_var_refine(const dimension_type& left_w_id,
-			   const dimension_type& right_t,
-			   const dimension_type& right_w_id,
-		   const Linear_Form<Interval<T, Interval_Info> >& left,
+                           const dimension_type& right_t,
+                           const dimension_type& right_w_id,
+                   const Linear_Form<Interval<T, Interval_Info> >& left,
                    const Linear_Form<Interval<T, Interval_Info> >& right);
 
 /* \brief
@@ -2267,8 +2267,8 @@ private:
   */
   template <typename Interval_Info>
   void general_refine(const dimension_type& left_w_id,
-			   const dimension_type& right_w_id,
-		   const Linear_Form<Interval<T, Interval_Info> >& left,
+                           const dimension_type& right_w_id,
+                   const Linear_Form<Interval<T, Interval_Info> >& left,
                    const Linear_Form<Interval<T, Interval_Info> >& right);
 
   template <typename Interval_Info>
@@ -2346,9 +2346,9 @@ private:
 
   template<typename Interval_Info>
   void throw_dimension_incompatible(const char* method,
-				    const char* name_row,
-				    const Linear_Form<Interval<T,
-				    Interval_Info> >& lf) const;
+                                    const char* name_row,
+                                    const Linear_Form<Interval<T,
+                                    Interval_Info> >& lf) const;
 
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& e);

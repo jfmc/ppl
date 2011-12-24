@@ -82,12 +82,12 @@ void abs_assign(GMP_Integer& x, const GMP_Integer& y);
 //! Assigns to \p x the remainder of the division of \p y by \p z.
 /*! \relates GMP_Integer */
 void rem_assign(GMP_Integer& x,
-		const GMP_Integer& y, const GMP_Integer& z);
+                const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x,
-		const GMP_Integer& y, const GMP_Integer& z);
+                const GMP_Integer& y, const GMP_Integer& z);
 
 //! Extended GCD.
 /*! \relates GMP_Integer
@@ -95,22 +95,22 @@ void gcd_assign(GMP_Integer& x,
   \p s and \p t the values such that \p y * \p s + \p z * \p t = \p x.
 */
 void gcdext_assign(GMP_Integer& x, GMP_Integer& s, GMP_Integer& t,
-		   const GMP_Integer& y, const GMP_Integer& z);
+                   const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates GMP_Integer */
 void lcm_assign(GMP_Integer& x,
-		const GMP_Integer& y, const GMP_Integer& z);
+                const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates GMP_Integer */
 void add_mul_assign(GMP_Integer& x,
-		    const GMP_Integer& y, const GMP_Integer& z);
+                    const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the value <CODE>x - y * z</CODE>.
 /*! \relates GMP_Integer */
 void sub_mul_assign(GMP_Integer& x,
-		    const GMP_Integer& y, const GMP_Integer& z);
+                    const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the value \f$ y \cdot 2^\mathtt{exp} \f$.
 /*! \relates GMP_Integer */
@@ -128,7 +128,7 @@ void div_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp);
   The behavior is undefined if \p z does not divide \p y.
 */
 void exact_div_assign(GMP_Integer& x,
-		      const GMP_Integer& y, const GMP_Integer& z);
+                      const GMP_Integer& y, const GMP_Integer& z);
 
 //! Assigns to \p x the integer square root of \p y.
 /*! \relates GMP_Integer */

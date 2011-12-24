@@ -40,15 +40,15 @@ PPL::Linear_Row::sign_normalize() {
     dimension_type first_non_zero;
     for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
       if (x[first_non_zero] != 0)
-	break;
+        break;
     if (first_non_zero < sz)
       // If the first non-zero coefficient of the row is negative,
       // we negate the entire row.
       if (x[first_non_zero] < 0) {
-	for (dimension_type j = first_non_zero; j < sz; ++j)
-	  neg_assign(x[j]);
-	// Also negate the first coefficient.
-	neg_assign(x[0]);
+        for (dimension_type j = first_non_zero; j < sz; ++j)
+          neg_assign(x[j]);
+        // Also negate the first coefficient.
+        neg_assign(x[0]);
       }
   }
 }
@@ -83,10 +83,10 @@ PPL::compare(const Linear_Row& x, const Linear_Row& y) {
   if (xsz != ysz) {
     for( ; i < xsz; ++i)
       if (const int sign = sgn(x[i]))
-	return (sign > 0) ? 2 : -2;
+        return (sign > 0) ? 2 : -2;
     for( ; i < ysz; ++i)
       if (const int sign = sgn(y[i]))
-	return (sign < 0) ? 2 : -2;
+        return (sign < 0) ? 2 : -2;
   }
 
   // If all the coefficients in `x' equal all the coefficients in `y'
@@ -222,12 +222,12 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
       return false;
   if (!(s >> str) || str != "f")
     return false;
-  
+
   Flags f;
   if (!f.ascii_load(s))
     return false;
   set_flags(f);
-  
+
   return true;
 }
 
@@ -238,6 +238,6 @@ PPL::Linear_Row::OK() const {
 
 bool
 PPL::Linear_Row::OK(const dimension_type row_size,
-		    const dimension_type row_capacity) const {
+                    const dimension_type row_capacity) const {
   return Dense_Row::OK(row_size, row_capacity);
 }

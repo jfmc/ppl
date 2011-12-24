@@ -77,7 +77,7 @@ site: http://bugseng.com/products/ppl/ . */
   do {                                                          \
     ++Parma_Polyhedra_Library::Implementation::in_assert;       \
     PPL_ASSERT_IMPL_(cond__);                                   \
-    --Parma_Polyhedra_Library::Implementation::in_assert;	\
+    --Parma_Polyhedra_Library::Implementation::in_assert;       \
   } while (0)
 #endif // !defined(NDEBUG)
 

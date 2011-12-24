@@ -197,26 +197,26 @@ public:
     switch (p.type) {
     case Boundary_NS::Property::SPECIAL_:
       if (store_special) {
-	if (t == LOWER)
-	  set_bit(bitset, lower_special_bit, value);
-	else
-	  set_bit(bitset, upper_special_bit, value);
+        if (t == LOWER)
+          set_bit(bitset, lower_special_bit, value);
+        else
+          set_bit(bitset, upper_special_bit, value);
       }
       break;
     case Boundary_NS::Property::OPEN_:
       if (store_open) {
-	if (t == LOWER)
-	  set_bit(bitset, lower_open_bit, value);
-	else
-	  set_bit(bitset, upper_open_bit, value);
+        if (t == LOWER)
+          set_bit(bitset, lower_open_bit, value);
+        else
+          set_bit(bitset, upper_open_bit, value);
       }
       break;
     case Boundary_NS::Property::NORMALIZED_:
       if (cache_normalized) {
-	if (t == LOWER)
-	  set_bit(bitset, lower_normalized_bit, value);
-	else
-	  set_bit(bitset, upper_normalized_bit, value);
+        if (t == LOWER)
+          set_bit(bitset, lower_normalized_bit, value);
+        else
+          set_bit(bitset, upper_normalized_bit, value);
       }
       break;
     default:
@@ -227,25 +227,25 @@ public:
     switch (p.type) {
     case Boundary_NS::Property::SPECIAL_:
       if (!store_special)
-	return false;
+        return false;
       if (t == LOWER)
-	return get_bit(bitset, lower_special_bit);
+        return get_bit(bitset, lower_special_bit);
       else
-	return get_bit(bitset, upper_special_bit);
+        return get_bit(bitset, upper_special_bit);
     case Boundary_NS::Property::OPEN_:
       if (!store_open)
-	return false;
+        return false;
       else if (t == LOWER)
-	return get_bit(bitset, lower_open_bit);
+        return get_bit(bitset, lower_open_bit);
       else
-	return get_bit(bitset, upper_open_bit);
+        return get_bit(bitset, upper_open_bit);
     case Boundary_NS::Property::NORMALIZED_:
       if (!cache_normalized)
-	return false;
+        return false;
       else if (t == LOWER)
-	return get_bit(bitset, lower_normalized_bit);
+        return get_bit(bitset, lower_normalized_bit);
       else
-	return get_bit(bitset, upper_normalized_bit);
+        return get_bit(bitset, upper_normalized_bit);
     default:
       return false;
     }
@@ -254,15 +254,15 @@ public:
     switch (p.type) {
     case Interval_NS::Property::CARDINALITY_0_:
       if (cache_empty)
-	set_bit(bitset, cardinality_0_bit, value);
+        set_bit(bitset, cardinality_0_bit, value);
       break;
     case Interval_NS::Property::CARDINALITY_1_:
       if (cache_singleton)
-	set_bit(bitset, cardinality_1_bit, value);
+        set_bit(bitset, cardinality_1_bit, value);
       break;
     case Interval_NS::Property::CARDINALITY_IS_:
       if (cache_empty || cache_singleton)
-	set_bit(bitset, cardinality_is_bit, value);
+        set_bit(bitset, cardinality_is_bit, value);
       break;
     default:
       break;

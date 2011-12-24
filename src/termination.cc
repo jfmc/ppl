@@ -33,7 +33,7 @@ namespace Termination {
 
 void
 assign_all_inequalities_approximation(const Constraint_System& cs_in,
-				      Constraint_System& cs_out) {
+                                      Constraint_System& cs_out) {
   if (cs_in.has_strict_inequalities() || cs_in.has_equalities()) {
     // Here we have some strict inequality and/or equality constraints:
     // translate them into non-strict inequality constraints.
@@ -61,21 +61,21 @@ assign_all_inequalities_approximation(const Constraint_System& cs_in,
 template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
-				      Constraint_System& cs) {
+                                      Constraint_System& cs) {
   const Constraint_System& ph_cs = ph.minimized_constraints();
   if (ph_cs.has_equalities()) {
     // Translate equalities into inequalities.
     for (Constraint_System::const_iterator i = ph_cs.begin(),
-	   i_end = ph_cs.end(); i != i_end; ++i) {
+           i_end = ph_cs.end(); i != i_end; ++i) {
       const Constraint& c = *i;
       if (c.is_equality()) {
-	// Insert the two corresponding opposing inequalities.
-	cs.insert(Linear_Expression(c) >= 0);
-	cs.insert(Linear_Expression(c) <= 0);
+        // Insert the two corresponding opposing inequalities.
+        cs.insert(Linear_Expression(c) >= 0);
+        cs.insert(Linear_Expression(c) <= 0);
       }
       else
-	// Insert as is.
-	cs.insert(c);
+        // Insert as is.
+        cs.insert(c);
     }
   }
   else
@@ -88,14 +88,14 @@ shift_unprimed_variables(Constraint_System& cs) {
   const dimension_type cs_space_dim = cs.space_dimension();
   Constraint_System cs_shifted;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+         cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c_i = *i;
     Linear_Expression le_i_shifted;
     for (dimension_type j = cs_space_dim; j-- > 0; ) {
       Coefficient_traits::const_reference a_i_j
-	= c_i.coefficient(Variable(j));
+        = c_i.coefficient(Variable(j));
       if (a_i_j != 0)
-	add_mul_assign(le_i_shifted, a_i_j, Variable(cs_space_dim + j));
+        add_mul_assign(le_i_shifted, a_i_j, Variable(cs_space_dim + j));
     }
     le_i_shifted += c_i.inhomogeneous_term();
     cs_shifted.insert(le_i_shifted >= 0);
@@ -144,8 +144,8 @@ shift_unprimed_variables(Constraint_System& cs) {
 */
 void
 fill_constraint_systems_MS(const Constraint_System& cs,
-			   Constraint_System& cs_out1,
-			   Constraint_System& cs_out2) {
+                           Constraint_System& cs_out1,
+                           Constraint_System& cs_out2) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = std::distance(cs.begin(), cs.end());
@@ -176,7 +176,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   dimension_type y = y_begin;
   dimension_type z = z_begin;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+         cs_end = cs.end(); i != cs_end; ++i) {
     Variable v_y(y);
     Variable v_z(z);
     ++y;
@@ -356,9 +356,9 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 */
 void
 fill_constraint_system_PR(const Constraint_System& cs_before,
-			  const Constraint_System& cs_after,
-			  Constraint_System& cs_out,
-			  Linear_Expression& le_out) {
+                          const Constraint_System& cs_after,
+                          Constraint_System& cs_out,
+                          Linear_Expression& le_out) {
   PPL_ASSERT(cs_after.space_dimension() % 2 == 0);
   PPL_ASSERT(2*cs_before.space_dimension() == cs_after.space_dimension());
   const dimension_type n = cs_before.space_dimension();
@@ -373,7 +373,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs_before.begin(),
-	 cs_before_end = cs_before.end();
+         cs_before_end = cs_before.end();
        i != cs_before_end;
        ++i, ++row_index) {
     Variable u1_i(m + row_index);
@@ -397,7 +397,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 
   row_index = 0;
   for (Constraint_System::const_iterator i = cs_after.begin(),
-	 cs_after_end = cs_after.end();
+         cs_after_end = cs_after.end();
        i != cs_after_end;
        ++i, ++row_index) {
     Variable u3_i(row_index);
@@ -448,7 +448,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
 
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+         cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
     const Constraint& c_i = *i;
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
@@ -517,7 +517,7 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
 
 void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
-				C_Polyhedron& mu_space) {
+                                C_Polyhedron& mu_space) {
   Constraint_System cs_out1;
   Constraint_System cs_out2;
   fill_constraint_systems_MS(cs, cs_out1, cs_out2);
@@ -614,7 +614,7 @@ termination_test_PR_original(const Constraint_System& cs) {
 
 bool
 termination_test_PR(const Constraint_System& cs_before,
-		    const Constraint_System& cs_after) {
+                    const Constraint_System& cs_after) {
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
   fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
@@ -645,8 +645,8 @@ termination_test_PR(const Constraint_System& cs_before,
 
 bool
 one_affine_ranking_function_PR(const Constraint_System& cs_before,
-			       const Constraint_System& cs_after,
-			       Generator& mu) {
+                               const Constraint_System& cs_after,
+                               Generator& mu) {
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
   fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
@@ -760,8 +760,8 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
 
 void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
-				const Constraint_System& cs_after,
-				NNC_Polyhedron& mu_space) {
+                                const Constraint_System& cs_after,
+                                NNC_Polyhedron& mu_space) {
   Constraint_System cs_eqs;
   Linear_Expression le_ineq;
   fill_constraint_system_PR(cs_before, cs_after, cs_eqs, le_ineq);
@@ -811,37 +811,37 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
       dimension_type row_index = 0;
       PPL_DIRTY_TEMP_COEFFICIENT(k);
       for (Constraint_System::const_iterator i = cs_after.begin(),
-	     cs_after_end = cs_after.end();
-	   i != cs_after_end;
-	   ++i, ++row_index) {
-	Variable vi(row_index);
-	Coefficient_traits::const_reference g_i = g.coefficient(vi);
-	if (g_i != 0) {
-	  const Constraint& c_i = *i;
-	  for (dimension_type j = n; j-- > 0; ) {
-	    Variable vj(j);
-	    k = g_i * c_i.coefficient(vj);
-	    sub_mul_assign(le, k, vj);
-	  }
-	}
+             cs_after_end = cs_after.end();
+           i != cs_after_end;
+           ++i, ++row_index) {
+        Variable vi(row_index);
+        Coefficient_traits::const_reference g_i = g.coefficient(vi);
+        if (g_i != 0) {
+          const Constraint& c_i = *i;
+          for (dimension_type j = n; j-- > 0; ) {
+            Variable vj(j);
+            k = g_i * c_i.coefficient(vj);
+            sub_mul_assign(le, k, vj);
+          }
+        }
       }
 
       // Add to gs_out the transformed generator.
       switch (g.type()) {
       case Generator::LINE:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(line(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(line(le));
+        break;
       case Generator::RAY:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(ray(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(ray(le));
+        break;
       case Generator::POINT:
-	gs_out.insert(point(le, g.divisor()));
-	break;
+        gs_out.insert(point(le, g.divisor()));
+        break;
       case Generator::CLOSURE_POINT:
-	gs_out.insert(closure_point(le, g.divisor()));
-	break;
+        gs_out.insert(closure_point(le, g.divisor()));
+        break;
       }
     }
 
@@ -897,36 +897,36 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
       dimension_type row_index = 0;
       PPL_DIRTY_TEMP_COEFFICIENT(k);
       for (Constraint_System::const_iterator i = cs.begin(),
-	     cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-	Variable lambda2_i(row_index);
-	Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
-	if (g_i != 0) {
-	  const Constraint& c_i = *i;
-	  for (dimension_type j = n; j-- > 0; ) {
-	    Variable vj(j);
-	    Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
-	    k = g_i * Ap_ij;
-	    sub_mul_assign(le, k, vj);
-	  }
-	}
+             cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+        Variable lambda2_i(row_index);
+        Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
+        if (g_i != 0) {
+          const Constraint& c_i = *i;
+          for (dimension_type j = n; j-- > 0; ) {
+            Variable vj(j);
+            Coefficient_traits::const_reference Ap_ij = c_i.coefficient(vj);
+            k = g_i * Ap_ij;
+            sub_mul_assign(le, k, vj);
+          }
+        }
       }
 
       // Add to gs_out the transformed generator.
       switch (g.type()) {
       case Generator::LINE:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(line(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(line(le));
+        break;
       case Generator::RAY:
-	if (!le.all_homogeneous_terms_are_zero())
-	  gs_out.insert(ray(le));
-	break;
+        if (!le.all_homogeneous_terms_are_zero())
+          gs_out.insert(ray(le));
+        break;
       case Generator::POINT:
-	gs_out.insert(point(le, g.divisor()));
-	break;
+        gs_out.insert(point(le, g.divisor()));
+        break;
       case Generator::CLOSURE_POINT:
-	gs_out.insert(closure_point(le, g.divisor()));
-	break;
+        gs_out.insert(closure_point(le, g.divisor()));
+        break;
       }
     }
 

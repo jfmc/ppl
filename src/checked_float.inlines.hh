@@ -433,7 +433,7 @@ neg_float(Type& to, const Type from, Rounding_Dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_add_inf
@@ -463,7 +463,7 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_sub_inf
@@ -493,13 +493,13 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
       && ((x == 0 && is_inf_float<From2_Policy>(y))
           ||
-	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
+          (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
   prepare_inexact<To_Policy>(dir);
@@ -525,7 +525,7 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_div_inf
@@ -558,7 +558,7 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 idiv_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   Type temp;
@@ -578,7 +578,7 @@ idiv_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From1_Policy>(x)) {
@@ -829,8 +829,8 @@ assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
   mpz_init(mantissa);
   if (exponent > Float<T>::Binary::MANTISSA_BITS)
     mpz_tdiv_q_2exp(mantissa,
-		    from_z,
-		    exponent - Float<T>::Binary::MANTISSA_BITS);
+                    from_z,
+                    exponent - Float<T>::Binary::MANTISSA_BITS);
   else
     mpz_mul_2exp(mantissa, from_z, Float<T>::Binary::MANTISSA_BITS - exponent);
   Float<T> f;
@@ -917,13 +917,13 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-	  typename Type>
+          typename Type>
 inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
       && ((x == 0 && is_inf_float<From2_Policy>(y))
           ||
-	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
+          (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
   // FIXME: missing check_inf_add_inf
@@ -956,7 +956,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (To_Policy::check_inf_mul_zero
       && ((x == 0 && is_inf_float<From2_Policy>(y))
           ||
-	  (y == 0 && is_inf_float<From1_Policy>(x)))) {
+          (y == 0 && is_inf_float<From1_Policy>(x)))) {
     return assign_nan<To_Policy>(to, V_INF_MUL_ZERO);
   }
   // FIXME: missing check_inf_add_inf
@@ -986,7 +986,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 output_float(std::ostream& os, const Type from, const Numeric_Format&,
-	     Rounding_Dir) {
+             Rounding_Dir) {
   if (from == 0)
     os << "0";
   else if (is_minf<Policy>(from))
@@ -1170,7 +1170,7 @@ PPL_SPECIALIZE_UMOD_2EXP(umod_2exp_float, long double, long double)
 PPL_SPECIALIZE_SQRT(sqrt_float, long double, long double)
 PPL_SPECIALIZE_GCD(gcd_exact, long double, long double, long double)
 PPL_SPECIALIZE_GCDEXT(gcdext_exact, long double, long double, long double,
-		  long double, long double)
+                  long double, long double)
 PPL_SPECIALIZE_LCM(lcm_gcd_exact, long double, long double, long double)
 PPL_SPECIALIZE_SGN(sgn_float, long double)
 PPL_SPECIALIZE_CMP(cmp_float, long double, long double)

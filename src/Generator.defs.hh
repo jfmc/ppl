@@ -263,9 +263,9 @@ public:
     Thrown if \p d is zero.
   */
   static Generator point(const Linear_Expression& e
-			 = Linear_Expression::zero(),
-			 Coefficient_traits::const_reference d
-			 = Coefficient_one());
+                         = Linear_Expression::zero(),
+                         Coefficient_traits::const_reference d
+                         = Coefficient_one());
 
   //! Returns the closure point at \p e / \p d.
   /*!
@@ -277,7 +277,7 @@ public:
   */
   static Generator
   closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-		Coefficient_traits::const_reference d = Coefficient_one());
+                Coefficient_traits::const_reference d = Coefficient_one());
 
   //! Ordinary copy constructor.
   Generator(const Generator& g);
@@ -413,8 +413,8 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-			       const char* name_var,
-			       Variable v) const;
+                               const char* name_var,
+                               Variable v) const;
 
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception
@@ -440,7 +440,7 @@ private:
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Generator& g);
+                                                    const Generator& g);
 
   //! Copy constructor with given space dimension.
   Generator(const Generator& g, dimension_type dimension);
@@ -496,7 +496,7 @@ point(const Linear_Expression& e = Linear_Expression::zero(),
 */
 Generator
 closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-	      Coefficient_traits::const_reference d = Coefficient_one());
+              Coefficient_traits::const_reference d = Coefficient_one());
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
 /*! \relates Generator */

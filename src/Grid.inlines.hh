@@ -112,22 +112,22 @@ Grid::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return std::min(std::numeric_limits<dimension_type>::max() - 1,
-		  std::min(Congruence_System::max_space_dimension(),
-			   Grid_Generator_System::max_space_dimension()
-			   )
-		  );
+                  std::min(Congruence_System::max_space_dimension(),
+                           Grid_Generator_System::max_space_dimension()
+                           )
+                  );
 }
 
 inline
 Grid::Grid(dimension_type num_dimensions,
-	   const Degenerate_Element kind)
+           const Degenerate_Element kind)
   : con_sys(),
     gen_sys((num_dimensions > max_space_dimension())
-	    ? (throw_space_dimension_overflow("Grid(n, k)",
-					      "n exceeds the maximum "
-					      "allowed space dimension"),
-	       0)
-	    : num_dimensions) {
+            ? (throw_space_dimension_overflow("Grid(n, k)",
+                                              "n exceeds the maximum "
+                                              "allowed space dimension"),
+               0)
+            : num_dimensions) {
   construct(num_dimensions, kind);
   PPL_ASSERT(OK());
 }
@@ -135,11 +135,11 @@ Grid::Grid(dimension_type num_dimensions,
 inline
 Grid::Grid(const Congruence_System& cgs)
   : con_sys((cgs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(cgs)",
-					     "the space dimension of cgs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : cgs.space_dimension()),
+            ? throw_space_dimension_overflow("Grid(cgs)",
+                                             "the space dimension of cgs "
+                                             "exceeds the maximum allowed "
+                                             "space dimension"), 0
+            : cgs.space_dimension()),
     gen_sys(cgs.space_dimension()) {
   Congruence_System cgs_copy(cgs);
   construct(cgs_copy);
@@ -148,11 +148,11 @@ Grid::Grid(const Congruence_System& cgs)
 inline
 Grid::Grid(Congruence_System& cgs, Recycle_Input)
   : con_sys((cgs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(cgs, recycle)",
-					     "the space dimension of cgs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : cgs.space_dimension()),
+            ? throw_space_dimension_overflow("Grid(cgs, recycle)",
+                                             "the space dimension of cgs "
+                                             "exceeds the maximum allowed "
+                                             "space dimension"), 0
+            : cgs.space_dimension()),
     gen_sys(cgs.space_dimension()) {
   construct(cgs);
 }
@@ -160,11 +160,11 @@ Grid::Grid(Congruence_System& cgs, Recycle_Input)
 inline
 Grid::Grid(const Grid_Generator_System& ggs)
   : con_sys((ggs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(ggs)",
-					     "the space dimension of ggs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : ggs.space_dimension()),
+            ? throw_space_dimension_overflow("Grid(ggs)",
+                                             "the space dimension of ggs "
+                                             "exceeds the maximum allowed "
+                                             "space dimension"), 0
+            : ggs.space_dimension()),
     gen_sys(ggs.space_dimension()) {
   Grid_Generator_System ggs_copy(ggs);
   construct(ggs_copy);
@@ -173,11 +173,11 @@ Grid::Grid(const Grid_Generator_System& ggs)
 inline
 Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
   : con_sys((ggs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(ggs, recycle)",
-					     "the space dimension of ggs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : ggs.space_dimension()),
+            ? throw_space_dimension_overflow("Grid(ggs, recycle)",
+                                             "the space dimension of ggs "
+                                             "exceeds the maximum allowed "
+                                             "space dimension"), 0
+            : ggs.space_dimension()),
     gen_sys(ggs.space_dimension()) {
   construct(ggs);
 }
@@ -187,11 +187,11 @@ inline
 Grid::Grid(const BD_Shape<U>& bd,
            Complexity_Class)
   : con_sys((bd.space_dimension() > max_space_dimension())
-	    ? (throw_space_dimension_overflow("Grid(bd)",
+            ? (throw_space_dimension_overflow("Grid(bd)",
                                               "the space dimension of bd "
                                               "exceeds the maximum allowed "
                                               "space dimension"), 0)
-	    : bd.space_dimension()),
+            : bd.space_dimension()),
     gen_sys(bd.space_dimension()) {
   Congruence_System cgs = bd.congruences();
   construct(cgs);
@@ -202,11 +202,11 @@ inline
 Grid::Grid(const Octagonal_Shape<U>& os,
            Complexity_Class)
   : con_sys((os.space_dimension() > max_space_dimension())
-	    ? (throw_space_dimension_overflow("Grid(os)",
+            ? (throw_space_dimension_overflow("Grid(os)",
                                               "the space dimension of os "
                                               "exceeds the maximum allowed "
                                               "space dimension"), 0)
-	    : os.space_dimension()),
+            : os.space_dimension()),
     gen_sys(os.space_dimension()) {
   Congruence_System cgs = os.congruences();
   construct(cgs);
@@ -321,27 +321,27 @@ Grid::bounds_from_below(const Linear_Expression& expr) const {
 
 inline bool
 Grid::maximize(const Linear_Expression& expr,
-	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
+               Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
   return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum);
 }
 
 inline bool
 Grid::maximize(const Linear_Expression& expr,
-	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-	       Generator& point) const {
+               Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+               Generator& point) const {
   return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum, &point);
 }
 
 inline bool
 Grid::minimize(const Linear_Expression& expr,
-	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
+               Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum);
 }
 
 inline bool
 Grid::minimize(const Linear_Expression& expr,
-	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-	       Generator& point) const {
+               Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+               Generator& point) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
 }
 

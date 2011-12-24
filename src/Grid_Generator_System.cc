@@ -39,13 +39,13 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   const dimension_type gs_num_columns = gs.num_columns();
   if (old_num_columns >= gs_num_columns)
     add_zero_rows(gs_num_rows,
-		  Linear_Row::Flags(NECESSARILY_CLOSED,
-				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                  Linear_Row::Flags(NECESSARILY_CLOSED,
+                                    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   else {
     add_zero_rows_and_columns(gs_num_rows,
-			      gs_num_columns - old_num_columns,
-			      Linear_Row::Flags(NECESSARILY_CLOSED,
-						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                              gs_num_columns - old_num_columns,
+                              Linear_Row::Flags(NECESSARILY_CLOSED,
+                                                Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     // Swap the parameter divisor column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
@@ -64,13 +64,13 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
   const dimension_type g_num_columns = g.size();
   if (old_num_columns >= g_num_columns)
     add_zero_rows(1,
-		  Linear_Row::Flags(NECESSARILY_CLOSED,
-				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                  Linear_Row::Flags(NECESSARILY_CLOSED,
+                                    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   else {
     add_zero_rows_and_columns(1,
-			      g_num_columns - old_num_columns,
-			      Linear_Row::Flags(NECESSARILY_CLOSED,
-						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+                              g_num_columns - old_num_columns,
+                              Linear_Row::Flags(NECESSARILY_CLOSED,
+                                                Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     // Swap the parameter divisor column into the new last column.
     swap_columns(old_num_columns - 1, num_columns() - 1);
   }
@@ -89,11 +89,11 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     if (g.all_homogeneous_terms_are_zero()) {
       dimension_type initial_space_dim = space_dimension();
       if (initial_space_dim < g_space_dim) {
-	// Adjust the space dimension.
-	add_zero_columns(g_space_dim - initial_space_dim);
-	// Swap the parameter divisor column into the new last column.
-	swap_columns(g_space_dim + 1, initial_space_dim + 1);
-	PPL_ASSERT(OK());
+        // Adjust the space dimension.
+        add_zero_columns(g_space_dim - initial_space_dim);
+        // Swap the parameter divisor column into the new last column.
+        swap_columns(g_space_dim + 1, initial_space_dim + 1);
+        PPL_ASSERT(OK());
       }
       return;
     }
@@ -131,21 +131,21 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
     if (g_size > old_num_columns) {
       add_zero_columns(g_size - old_num_columns);
       if (old_num_rows > 0)
-	// Swap the existing parameter divisor column into the new
-	// last column.
-	swap_columns(old_num_columns - 1, g_size - 1);
+        // Swap the existing parameter divisor column into the new
+        // last column.
+        swap_columns(old_num_columns - 1, g_size - 1);
       Dense_Matrix::add_row(g);
     }
     else if (g_size < old_num_columns)
       if (old_num_rows == 0)
-	Dense_Matrix::add_row(Linear_Row(g, old_num_columns, row_capacity));
+        Dense_Matrix::add_row(Linear_Row(g, old_num_columns, row_capacity));
       else {
-	// Create a resized copy of the row (and move the parameter
-	// divisor coefficient to its last position).
-	Linear_Row tmp_row(g, old_num_columns, row_capacity);
+        // Create a resized copy of the row (and move the parameter
+        // divisor coefficient to its last position).
+        Linear_Row tmp_row(g, old_num_columns, row_capacity);
         using std::swap;
-	swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
-	Dense_Matrix::add_row(tmp_row);
+        swap(tmp_row[g_size - 1], tmp_row[old_num_columns - 1]);
+        Dense_Matrix::add_row(tmp_row);
       }
     else
       // Here r_size == old_num_columns.
@@ -162,8 +162,8 @@ PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
 void
 PPL::Grid_Generator_System
 ::affine_image(dimension_type v,
-	       const Linear_Expression& expr,
-	       Coefficient_traits::const_reference denominator) {
+               const Linear_Expression& expr,
+               Coefficient_traits::const_reference denominator) {
   // This is mostly a copy of Generator_System::affine_image.
 
   Grid_Generator_System& x = *this;
@@ -193,8 +193,8 @@ PPL::Grid_Generator_System
     for (dimension_type i = num_rows; i-- > 0; ) {
       Grid_Generator& row = x[i];
       for (dimension_type j = num_columns; j-- > 0; )
-	if (j != v)
-	  row[j] *= denominator;
+        if (j != v)
+          row[j] *= denominator;
     }
 
   // If the mapping is not invertible we may have transformed valid
@@ -264,7 +264,7 @@ PPL::Grid_Generator_System::OK() const {
   if (topology() == NOT_NECESSARILY_CLOSED) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator_System is NOT_NECESSARILY_CLOSED"
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -272,7 +272,7 @@ PPL::Grid_Generator_System::OK() const {
   if (is_sorted()) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator_System is marked as sorted."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -296,7 +296,7 @@ PPL::Grid_Generator_System::OK() const {
 /*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s,
-			      const Grid_Generator_System& gs) {
+                              const Grid_Generator_System& gs) {
   Grid_Generator_System::const_iterator i = gs.begin();
   const Grid_Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
@@ -315,8 +315,8 @@ PPL::Grid_Generator_System
   PPL_ASSERT(num_columns() > 0);
   dimension_type col = num_columns() - 1;
   add_zero_rows_and_columns(dims, dims,
-			    Linear_Row::Flags(NECESSARILY_CLOSED,
-					      Linear_Row::LINE_OR_EQUALITY));
+                            Linear_Row::Flags(NECESSARILY_CLOSED,
+                                              Linear_Row::LINE_OR_EQUALITY));
   unset_pending_rows();
   // Swap the parameter divisor column into the new last column.
   swap_columns(col, col + dims);

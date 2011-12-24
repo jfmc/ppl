@@ -37,10 +37,10 @@ Variable::max_space_dimension() {
 inline
 Variable::Variable(dimension_type i)
   : varid((i < max_space_dimension())
-	  ? i
-	  : (throw std::length_error("PPL::Variable::Variable(i):\n"
-				     "i exceeds the maximum allowed "
-				     "variable identifier."), i)) {
+          ? i
+          : (throw std::length_error("PPL::Variable::Variable(i):\n"
+                                     "i exceeds the maximum allowed "
+                                     "variable identifier."), i)) {
 }
 
 inline dimension_type

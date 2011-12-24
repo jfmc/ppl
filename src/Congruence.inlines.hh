@@ -38,13 +38,13 @@ Congruence::Congruence(const Congruence& cg)
 
 inline
 Congruence::Congruence(const Congruence& cg,
-		       dimension_type sz, dimension_type capacity)
+                       dimension_type sz, dimension_type capacity)
   : Dense_Row(cg, sz, capacity) {
 }
 
 inline
 Congruence::Congruence(const Congruence& cg,
-		       Coefficient_traits::const_reference k)
+                       Coefficient_traits::const_reference k)
   : Dense_Row(cg) {
   if (k >= 0)
     (*this)[size()-1] *= k;
@@ -58,7 +58,7 @@ Congruence::~Congruence() {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m) {
+                       Coefficient_traits::const_reference m) {
   Dense_Row::m_swap(static_cast<Dense_Row&>(le));
   PPL_ASSERT(m >= 0);
   (*this)[size()-1] = m;
@@ -66,7 +66,7 @@ Congruence::Congruence(Linear_Expression& le,
 
 inline Congruence
 Congruence::create(const Linear_Expression& e,
-		   Coefficient_traits::const_reference n) {
+                   Coefficient_traits::const_reference n) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
@@ -76,7 +76,7 @@ Congruence::create(const Linear_Expression& e,
 
 inline Congruence
 Congruence::create(Coefficient_traits::const_reference n,
-		   const Linear_Expression& e) {
+                   const Linear_Expression& e) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
@@ -194,7 +194,7 @@ Congruence::is_equality() const {
 
 inline bool
 Congruence::is_equal_at_dimension(dimension_type dim,
-				  const Congruence& cg) const {
+                                  const Congruence& cg) const {
   return (*this)[dim] * cg.modulus() == cg[dim] * modulus();
 }
 

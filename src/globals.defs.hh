@@ -248,100 +248,100 @@ struct Recycle_Input {
   void ascii_dump() const;                                              \
   /*! \brief Writes to \p s an ASCII representation of \p *this. */     \
   void ascii_dump(std::ostream& s) const;                               \
-  /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
+  /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */    \
   void print() const;
 
-#define PPL_OUTPUT_DEFINITIONS(class_name)			\
-  void								\
-  Parma_Polyhedra_Library::class_name::ascii_dump() const {	\
-    ascii_dump(std::cerr);					\
-  }								\
-								\
-  void								\
-  Parma_Polyhedra_Library::class_name::print() const {		\
-    using IO_Operators::operator<<;				\
-    std::cerr << *this;						\
+#define PPL_OUTPUT_DEFINITIONS(class_name)                      \
+  void                                                          \
+  Parma_Polyhedra_Library::class_name::ascii_dump() const {     \
+    ascii_dump(std::cerr);                                      \
+  }                                                             \
+                                                                \
+  void                                                          \
+  Parma_Polyhedra_Library::class_name::print() const {          \
+    using IO_Operators::operator<<;                             \
+    std::cerr << *this;                                         \
   }
 
-#define PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(class_name)			\
-  void									\
-  Parma_Polyhedra_Library::class_name::ascii_dump() const {		\
-    ascii_dump(std::cerr);						\
-  }									\
-									\
-  void									\
-  Parma_Polyhedra_Library::class_name::print() const {			\
-    std::cerr << "No user level output operator defined "		\
-	      << "for class " PPL_XSTR(class_name) << "." << std::endl; \
+#define PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(class_name)                   \
+  void                                                                  \
+  Parma_Polyhedra_Library::class_name::ascii_dump() const {             \
+    ascii_dump(std::cerr);                                              \
+  }                                                                     \
+                                                                        \
+  void                                                                  \
+  Parma_Polyhedra_Library::class_name::print() const {                  \
+    std::cerr << "No user level output operator defined "               \
+              << "for class " PPL_XSTR(class_name) << "." << std::endl; \
   }
 
-#define PPL_OUTPUT_TEMPLATE_DEFINITIONS(type_symbol, class_prefix)	\
-  template <typename type_symbol>					\
-  void									\
+#define PPL_OUTPUT_TEMPLATE_DEFINITIONS(type_symbol, class_prefix)      \
+  template <typename type_symbol>                                       \
+  void                                                                  \
   PPL_U(class_prefix)::ascii_dump() const {                             \
-    ascii_dump(std::cerr);						\
-  }									\
-									\
-  template <typename type_symbol>					\
-  void									\
+    ascii_dump(std::cerr);                                              \
+  }                                                                     \
+                                                                        \
+  template <typename type_symbol>                                       \
+  void                                                                  \
   PPL_U(class_prefix)::print() const {                                  \
-    using IO_Operators::operator<<;					\
-    std::cerr << *this;							\
+    using IO_Operators::operator<<;                                     \
+    std::cerr << *this;                                                 \
   }
 
-#define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
-						type_symbol2,		\
-						class_prefix)		\
-  template <typename type_symbol1, typename type_symbol2>		\
-  void									\
+#define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,           \
+                                                type_symbol2,           \
+                                                class_prefix)           \
+  template <typename type_symbol1, typename type_symbol2>               \
+  void                                                                  \
   PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2)>         \
   ::ascii_dump() const {                                                \
-    ascii_dump(std::cerr);						\
-  }									\
-									\
-  template <typename type_symbol1, typename type_symbol2>		\
-  void									\
+    ascii_dump(std::cerr);                                              \
+  }                                                                     \
+                                                                        \
+  template <typename type_symbol1, typename type_symbol2>               \
+  void                                                                  \
   PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2)>         \
   ::print() const {                                                     \
-    using IO_Operators::operator<<;					\
-    std::cerr << *this;							\
+    using IO_Operators::operator<<;                                     \
+    std::cerr << *this;                                                 \
   }
 
-#define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
-						type_symbol2,		\
-						type_symbol3,		\
-						class_prefix)		\
-  template <typename type_symbol1, typename type_symbol2,		\
-            typename type_symbol3>					\
-  void									\
+#define PPL_OUTPUT_3_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,           \
+                                                type_symbol2,           \
+                                                type_symbol3,           \
+                                                class_prefix)           \
+  template <typename type_symbol1, typename type_symbol2,               \
+            typename type_symbol3>                                      \
+  void                                                                  \
   PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2),         \
                       PPL_U(type_symbol3)>::ascii_dump()                \
-    const {								\
-    ascii_dump(std::cerr);						\
-  }									\
-                                                                     	\
-    template <typename type_symbol1, typename type_symbol2,		\
-              typename type_symbol3>					\
-    void								\
+    const {                                                             \
+    ascii_dump(std::cerr);                                              \
+  }                                                                     \
+                                                                        \
+    template <typename type_symbol1, typename type_symbol2,             \
+              typename type_symbol3>                                    \
+    void                                                                \
     PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2),       \
                         PPL_U(type_symbol3)>::print()                   \
-      const {								\
-      using IO_Operators::operator<<;					\
-      std::cerr << *this;						\
+      const {                                                           \
+      using IO_Operators::operator<<;                                   \
+      std::cerr << *this;                                               \
     }
 
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
-  template <typename type_symbol>					\
-  void									\
+  template <typename type_symbol>                                       \
+  void                                                                  \
   PPL_U(class_prefix)::ascii_dump() const {                             \
-    ascii_dump(std::cerr);						\
-  }									\
-									\
-  template <typename type_symbol>					\
-  void									\
+    ascii_dump(std::cerr);                                              \
+  }                                                                     \
+                                                                        \
+  template <typename type_symbol>                                       \
+  void                                                                  \
   PPL_U(class_prefix)::print() const {                                  \
-    std::cerr << "No user level output operator defined "		\
-	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
+    std::cerr << "No user level output operator defined "               \
+              << "for " PPL_XSTR(class_prefix) << "." << std::endl;     \
   }
 
 template <typename T, long long v, typename Enable = void>
@@ -366,22 +366,22 @@ template <typename T, T v>
 const T TConstant<T, v>::value;
 
 template <typename T, long long v, bool prefer_signed = true,
-	  typename Enable = void>
+          typename Enable = void>
 struct Constant_ : public TConstant<T, v> {
 };
 
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
-		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
-				     && (prefer_signed
+                 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
+                                     && (prefer_signed
                                          || !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_signed_type, v, prefer_signed> {
 };
 
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
-		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
-				     && (!prefer_signed
+                 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
+                                     && (!prefer_signed
                                          || !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
 };

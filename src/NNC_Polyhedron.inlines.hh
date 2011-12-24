@@ -34,92 +34,92 @@ NNC_Polyhedron::~NNC_Polyhedron() {
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
-			       Degenerate_Element kind)
+                               Degenerate_Element kind)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       (num_dimensions <= max_space_dimension())
-	       ? num_dimensions
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(n, k)",
-						 "n exceeds the maximum "
-						 "allowed space dimension"),
-		  num_dimensions),
-	       kind) {
+               (num_dimensions <= max_space_dimension())
+               ? num_dimensions
+               : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(n, k)",
+                                                 "n exceeds the maximum "
+                                                 "allowed space dimension"),
+                  num_dimensions),
+               kind) {
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       (cs.space_dimension() <= max_space_dimension())
-	       ? cs
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(cs)",
-						 "the space dimension of cs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), cs)) {
+               (cs.space_dimension() <= max_space_dimension())
+               ? cs
+               : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(cs)",
+                                                 "the space dimension of cs "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), cs)) {
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs, Recycle_Input)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       (cs.space_dimension() <= max_space_dimension())
-	       ? cs
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(cs, recycle)",
-						 "the space dimension of cs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), cs),
-	       Recycle_Input()) {
+               (cs.space_dimension() <= max_space_dimension())
+               ? cs
+               : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(cs, recycle)",
+                                                 "the space dimension of cs "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), cs),
+               Recycle_Input()) {
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Generator_System& gs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       (gs.space_dimension() <= max_space_dimension())
-	       ? gs
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(gs)",
-						 "the space dimension of gs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), gs)) {
+               (gs.space_dimension() <= max_space_dimension())
+               ? gs
+               : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(gs)",
+                                                 "the space dimension of gs "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), gs)) {
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs, Recycle_Input)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       (gs.space_dimension() <= max_space_dimension())
-	       ? gs
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(gs, recycle)",
-						 "the space dimension of gs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), gs),
-	       Recycle_Input()) {
+               (gs.space_dimension() <= max_space_dimension())
+               ? gs
+               : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(gs, recycle)",
+                                                 "the space dimension of gs "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), gs),
+               Recycle_Input()) {
 }
 
 template <typename Interval>
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>& box, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       box.space_dimension() <= max_space_dimension()
-	       ? box
-	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(box)",
-						 "the space dimension of box "
-						 "exceeds the maximum allowed "
-						 "space dimension"), box)) {
+               box.space_dimension() <= max_space_dimension()
+               ? box
+               : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(box)",
+                                                 "the space dimension of box "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), box)) {
 }
 
 template <typename U>
 inline
 NNC_Polyhedron::NNC_Polyhedron(const BD_Shape<U>& bd, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       bd.space_dimension() <= max_space_dimension()
-	       ? bd.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(bd): ",
-						 "the space dimension of bd "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+               bd.space_dimension() <= max_space_dimension()
+               ? bd.space_dimension()
+               : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(bd): ",
+                                                 "the space dimension of bd "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), 0),
                UNIVERSE) {
   add_constraints(bd.constraints());
 }
@@ -128,13 +128,13 @@ template <typename U>
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
-	       os.space_dimension() <= max_space_dimension()
-	       ? os.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(os): ",
-						 "the space dimension of os "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+               os.space_dimension() <= max_space_dimension()
+               ? os.space_dimension()
+               : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+                                                 "NNC_Polyhedron(os): ",
+                                                 "the space dimension of os "
+                                                 "exceeds the maximum allowed "
+                                                 "space dimension"), 0),
                UNIVERSE) {
   add_constraints(os.constraints());
 }

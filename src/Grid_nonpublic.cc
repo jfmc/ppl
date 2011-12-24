@@ -49,7 +49,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid::construct(dimension_type num_dimensions,
-		     const Degenerate_Element kind) {
+                     const Degenerate_Element kind) {
   space_dim = num_dimensions;
 
   if (kind == EMPTY) {
@@ -124,15 +124,15 @@ PPL::Grid::construct(Congruence_System& cgs) {
     if (cgs.num_columns() > 1)
       // See if an inconsistent congruence has been passed.
       for (dimension_type i = cgs.num_rows(); i-- > 0; )
-	if (cgs[i].is_inconsistent()) {
-	  // Inconsistent congruence found: the grid is empty.
-	  status.set_empty();
-	  // Insert the zero dim false congruence system into `con_sys'.
-	  // `gen_sys' is already in empty form.
-	  con_sys.insert(Congruence::zero_dim_false());
-	  PPL_ASSERT(OK());
-	  return;
-	}
+        if (cgs[i].is_inconsistent()) {
+          // Inconsistent congruence found: the grid is empty.
+          status.set_empty();
+          // Insert the zero dim false congruence system into `con_sys'.
+          // `gen_sys' is already in empty form.
+          con_sys.insert(Congruence::zero_dim_false());
+          PPL_ASSERT(OK());
+          return;
+        }
     set_zero_dim_univ();
   }
   PPL_ASSERT(OK());
@@ -214,9 +214,9 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
     if (x_num_lines == 0) {
       // Check for syntactic identity.
       if (x.gen_sys == y.gen_sys)
-	return Grid::TVB_TRUE;
+        return Grid::TVB_TRUE;
       else
-	return Grid::TVB_FALSE;
+        return Grid::TVB_FALSE;
     }
   }
 
@@ -272,7 +272,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
 
 bool
 PPL::Grid::bounds(const Linear_Expression& expr,
-		  const char* method_call) const {
+                  const char* method_call) const {
   // The dimension of `expr' must be at most the dimension of *this.
   if (space_dim < expr.space_dimension())
     throw_dimension_incompatible(method_call, "e", expr);
@@ -303,8 +303,8 @@ PPL::Grid::bounds_no_check(const Linear_Expression& expr) const {
     if (g.is_line_or_parameter()) {
       const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
       if (sp_sign != 0)
-	// `*this' does not bound `expr'.
-	return false;
+        // `*this' does not bound `expr'.
+        return false;
     }
   }
   return true;
@@ -391,9 +391,9 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
 
 bool
 PPL::Grid::max_min(const Linear_Expression& expr,
-		   const char* method_call,
-		   Coefficient& ext_n, Coefficient& ext_d, bool& included,
-		   Generator* point) const {
+                   const char* method_call,
+                   Coefficient& ext_n, Coefficient& ext_d, bool& included,
+                   Generator* point) const {
   if (bounds(expr, method_call)) {
     if (marked_empty())
       return false;
@@ -402,7 +402,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       ext_d = 1;
       included = true;
       if (point)
-	*point = Generator::point();
+        *point = Generator::point();
       return true;
     }
     // Grid::bounds above ensures the generators are up to date.
@@ -427,7 +427,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     if (point) {
       Linear_Expression e;
       for (dimension_type i = space_dim; i-- > 0; )
-	e += gen.coefficient(Variable(i)) * Variable(i);
+        e += gen.coefficient(Variable(i)) * Variable(i);
       *point = Generator::point(e, gen.divisor());
     }
     return true;
@@ -530,25 +530,25 @@ PPL::Grid::minimize() const {
       Grid& gr = const_cast<Grid&>(*this);
       // Only one of the systems can be minimized here.
       if (congruences_are_minimized()) {
-	// Minimize the generator system.
-	gr.simplify(gr.gen_sys, gr.dim_kinds);
-	gr.set_generators_minimized();
+        // Minimize the generator system.
+        gr.simplify(gr.gen_sys, gr.dim_kinds);
+        gr.set_generators_minimized();
       }
       else {
 #ifndef NDEBUG
-	// Both systems are up to date, and the empty case is handled
-	// above, so the grid should contain points.
-	bool empty = simplify(gr.con_sys, gr.dim_kinds);
-	PPL_ASSERT(!empty);
+        // Both systems are up to date, and the empty case is handled
+        // above, so the grid should contain points.
+        bool empty = simplify(gr.con_sys, gr.dim_kinds);
+        PPL_ASSERT(!empty);
 #else
-	simplify(gr.con_sys, gr.dim_kinds);
+        simplify(gr.con_sys, gr.dim_kinds);
 #endif
-	gr.set_congruences_minimized();
-	if (!generators_are_minimized()) {
-	  // Minimize the generator system.
-	  gr.simplify(gr.gen_sys, gr.dim_kinds);
-	  gr.set_generators_minimized();
-	}
+        gr.set_congruences_minimized();
+        if (!generators_are_minimized()) {
+          // Minimize the generator system.
+          gr.simplify(gr.gen_sys, gr.dim_kinds);
+          gr.set_generators_minimized();
+        }
       }
     }
     else {
@@ -568,7 +568,7 @@ PPL::Grid::minimize() const {
 
 void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
-			      Grid_Generator_System& gen_sys) {
+                              Grid_Generator_System& gen_sys) {
 #ifndef NDEBUG
   const dimension_type num_rows = gen_sys.num_rows();
 #endif
@@ -608,8 +608,8 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 
 void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
-			      Coefficient& divisor,
-			      const Grid_Generator* first_point) {
+                              Coefficient& divisor,
+                              const Grid_Generator* first_point) {
   PPL_ASSERT(divisor >= 0);
   if (sys.space_dimension() > 0 && divisor > 0) {
     dimension_type row = 0;
@@ -621,17 +621,17 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       PPL_ASSERT(num_rows > 0);
       // Move to the first point or parameter.
       while (sys[row].is_line())
-	if (++row == num_rows)
-	  // All rows are lines.
-	  return;
+        if (++row == num_rows)
+          // All rows are lines.
+          return;
 
       // Calculate the LCM of the given divisor and the divisor of
       // every point or parameter.
       while (row < num_rows) {
-	const Grid_Generator& g = sys[row];
-	if (g.is_parameter_or_point())
-	  lcm_assign(divisor, divisor, g.divisor());
-	++row;
+        const Grid_Generator& g = sys[row];
+        if (g.is_parameter_or_point())
+          lcm_assign(divisor, divisor, g.divisor());
+        ++row;
       }
     }
 
@@ -705,7 +705,7 @@ PPL::Grid::refine_no_check(const Constraint& c) {
 
 void
 PPL::Grid::throw_invalid_argument(const char* method,
-				  const char* reason) const {
+                                  const char* reason) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << reason << ".";
@@ -714,8 +714,8 @@ PPL::Grid::throw_invalid_argument(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* other_name,
-					dimension_type other_dim) const {
+                                        const char* other_name,
+                                        dimension_type other_dim) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -725,71 +725,71 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* gr_name,
-					const Grid& gr) const {
+                                        const char* gr_name,
+                                        const Grid& gr) const {
   throw_dimension_incompatible(method, gr_name, gr.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* e_name,
-					const Linear_Expression& e) const {
+                                        const char* e_name,
+                                        const Linear_Expression& e) const {
   throw_dimension_incompatible(method, e_name, e.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* cg_name,
-					const Congruence& cg) const {
+                                        const char* cg_name,
+                                        const Congruence& cg) const {
   throw_dimension_incompatible(method, cg_name, cg.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* c_name,
-					const Constraint& c) const {
+                                        const char* c_name,
+                                        const Constraint& c) const {
   throw_dimension_incompatible(method, c_name, c.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* g_name,
-					const Grid_Generator& g) const {
+                                        const char* g_name,
+                                        const Grid_Generator& g) const {
   throw_dimension_incompatible(method, g_name, g.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* g_name,
-					const Generator& g) const {
+                                        const char* g_name,
+                                        const Generator& g) const {
   throw_dimension_incompatible(method, g_name, g.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* cgs_name,
-					const Congruence_System& cgs) const {
+                                        const char* cgs_name,
+                                        const Congruence_System& cgs) const {
   throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* cs_name,
-					const Constraint_System& cs) const {
+                                        const char* cs_name,
+                                        const Constraint_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* gs_name,
-					const Grid_Generator_System& gs) const {
+                                        const char* gs_name,
+                                        const Grid_Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* var_name,
-					const Variable var) const {
+                                        const char* var_name,
+                                        const Variable var) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -800,7 +800,7 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 void
 PPL::Grid::
 throw_dimension_incompatible(const char* method,
-			     dimension_type required_space_dim) const {
+                             dimension_type required_space_dim) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
@@ -810,7 +810,7 @@ throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_space_dimension_overflow(const char* method,
-					  const char* reason) {
+                                          const char* reason) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << reason << ".";
@@ -819,7 +819,7 @@ PPL::Grid::throw_space_dimension_overflow(const char* method,
 
 void
 PPL::Grid::throw_invalid_constraint(const char* method,
-				    const char* c_name) const {
+                                    const char* c_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << c_name << " is not an equality constraint.";
@@ -828,7 +828,7 @@ PPL::Grid::throw_invalid_constraint(const char* method,
 
 void
 PPL::Grid::throw_invalid_constraints(const char* method,
-				    const char* cs_name) const {
+                                    const char* cs_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "the constraint system " << cs_name
@@ -838,7 +838,7 @@ PPL::Grid::throw_invalid_constraints(const char* method,
 
 void
 PPL::Grid::throw_invalid_generator(const char* method,
-				   const char* g_name) const {
+                                   const char* g_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty grid and "
@@ -848,7 +848,7 @@ PPL::Grid::throw_invalid_generator(const char* method,
 
 void
 PPL::Grid::throw_invalid_generators(const char* method,
-				    const char* gs_name) const {
+                                    const char* gs_name) const {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty grid and" << std::endl

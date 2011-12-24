@@ -40,7 +40,7 @@ Partially_Reduced_Product<D1, D2, R>::constraints() const {
   Constraint_System cs = d2.constraints();
   const Constraint_System& cs1 = d1.constraints();
   for (Constraint_System::const_iterator i = cs1.begin(),
-	 cs_end = cs1.end(); i != cs_end; ++i)
+         cs_end = cs1.end(); i != cs_end; ++i)
     cs.insert(*i);
   return cs;
 }
@@ -52,7 +52,7 @@ Partially_Reduced_Product<D1, D2, R>::minimized_constraints() const {
   Constraint_System cs = d2.constraints();
   const Constraint_System& cs1 = d1.constraints();
   for (Constraint_System::const_iterator i = cs1.begin(),
-	 cs_end = cs1.end(); i != cs_end; ++i)
+         cs_end = cs1.end(); i != cs_end; ++i)
     cs.insert(*i);
   if (cs.has_strict_inequalities()) {
     NNC_Polyhedron ph(cs);
@@ -71,7 +71,7 @@ Partially_Reduced_Product<D1, D2, R>::congruences() const {
   Congruence_System cgs = d2.congruences();
   const Congruence_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
-	 cgs_end = cgs1.end(); i != cgs_end; ++i)
+         cgs_end = cgs1.end(); i != cgs_end; ++i)
     cgs.insert(*i);
   return cgs;
 }
@@ -83,7 +83,7 @@ Partially_Reduced_Product<D1, D2, R>::minimized_congruences() const {
   Congruence_System cgs = d2.congruences();
   const Congruence_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
-	 cgs_end = cgs1.end(); i != cgs_end; ++i)
+         cgs_end = cgs1.end(); i != cgs_end; ++i)
     cgs.insert(*i);
   Grid gr(cgs);
   return gr.minimized_congruences();
@@ -197,9 +197,9 @@ template <typename D1, typename D2, typename R>
 bool
 Partially_Reduced_Product<D1, D2, R>
 ::maximize(const Linear_Expression& expr,
-	   Coefficient& sup_n,
-	   Coefficient& sup_d,
-	   bool& maximum) const {
+           Coefficient& sup_n,
+           Coefficient& sup_d,
+           bool& maximum) const {
   reduce();
 
   if (is_empty())
@@ -248,9 +248,9 @@ template <typename D1, typename D2, typename R>
 bool
 Partially_Reduced_Product<D1, D2, R>
 ::minimize(const Linear_Expression& expr,
-	   Coefficient& inf_n,
-	   Coefficient& inf_d,
-	   bool& minimum) const {
+           Coefficient& inf_n,
+           Coefficient& inf_d,
+           bool& minimum) const {
   reduce();
 
   if (is_empty())
@@ -300,10 +300,10 @@ template <typename D1, typename D2, typename R>
 bool
 Partially_Reduced_Product<D1, D2, R>
 ::maximize(const Linear_Expression& expr,
-	   Coefficient& sup_n,
-	   Coefficient& sup_d,
-	   bool& maximum,
-	   Generator& g) const {
+           Coefficient& sup_n,
+           Coefficient& sup_d,
+           bool& maximum,
+           Generator& g) const {
   reduce();
 
   if (is_empty())
@@ -359,10 +359,10 @@ template <typename D1, typename D2, typename R>
 bool
 Partially_Reduced_Product<D1, D2, R>
 ::minimize(const Linear_Expression& expr,
-	   Coefficient& inf_n,
-	   Coefficient& inf_d,
-	   bool& minimum,
-	   Generator& g) const {
+           Coefficient& inf_n,
+           Coefficient& inf_d,
+           bool& minimum,
+           Generator& g) const {
   reduce();
 
   if (is_empty())
@@ -444,10 +444,10 @@ Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
   reduced = (str[0] == yes);
   return ((s >> str) && str == "Domain"
           && (s >> str) && str == "1:"
-	  && d1.ascii_load(s)
-	  && (s >> str) && str == "Domain"
-	  && (s >> str) && str == "2:"
-	  && d2.ascii_load(s));
+          && d1.ascii_load(s)
+          && (s >> str) && str == "Domain"
+          && (s >> str) && str == "2:"
+          && d2.ascii_load(s));
 }
 
 template <typename D1, typename D2>

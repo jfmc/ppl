@@ -80,15 +80,15 @@ print_clock(ostream& s) {
     if (current_usecs < saved_usecs) {
       csecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
       if (csecs < 100)
-	--secs;
+        --secs;
       else
-	csecs = 0;
+        csecs = 0;
     }
     else {
       csecs = ((current_usecs - saved_usecs) + 5000) / 10000;
       if (csecs == 100) {
-	++secs;
-	csecs = 0;
+        ++secs;
+        csecs = 0;
       }
     }
     assert(csecs >= 0 && csecs < 100 && secs >= 0);

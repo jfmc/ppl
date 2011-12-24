@@ -127,7 +127,7 @@ Grid_Generator::divisor() const {
 
 inline bool
 Grid_Generator::is_equal_at_dimension(dimension_type dim,
-				      const Grid_Generator& gg) const {
+                                      const Grid_Generator& gg) const {
   return (*this)[dim] * gg.divisor() == gg[dim] * divisor();
 }
 
@@ -215,14 +215,14 @@ grid_line(const Linear_Expression& e) {
 /*! \relates Grid_Generator */
 inline Grid_Generator
 parameter(const Linear_Expression& e,
-	  Coefficient_traits::const_reference d) {
+          Coefficient_traits::const_reference d) {
   return Grid_Generator::parameter(e, d);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
 grid_point(const Linear_Expression& e,
-	   Coefficient_traits::const_reference d) {
+           Coefficient_traits::const_reference d) {
   return Grid_Generator::grid_point(e, d);
 }
 

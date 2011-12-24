@@ -197,8 +197,8 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu);
 template <typename PSET>
 bool
 one_affine_ranking_function_MS_2(const PSET& pset_before,
-				 const PSET& pset_after,
-				 Generator& mu);
+                                 const PSET& pset_after,
+                                 Generator& mu);
 
 /*! \brief
   Termination test with ranking function space using an improvement
@@ -292,8 +292,8 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space);
 template <typename PSET>
 void
 all_affine_ranking_functions_MS_2(const PSET& pset_before,
-				  const PSET& pset_after,
-				  C_Polyhedron& mu_space);
+                                  const PSET& pset_after,
+                                  C_Polyhedron& mu_space);
 
 /*! \brief
   Computes the spaces of affine \e quasi ranking functions
@@ -441,8 +441,8 @@ one_affine_ranking_function_PR(const PSET& pset, Generator& mu);
 template <typename PSET>
 bool
 one_affine_ranking_function_PR_2(const PSET& pset_before,
-				 const PSET& pset_after,
-				 Generator& mu);
+                                 const PSET& pset_after,
+                                 Generator& mu);
 
 /*! \brief
   Like all_affine_ranking_functions_MS() but using the method by Podelski
@@ -460,8 +460,8 @@ all_affine_ranking_functions_PR(const PSET& pset, NNC_Polyhedron& mu_space);
 template <typename PSET>
 void
 all_affine_ranking_functions_PR_2(const PSET& pset_before,
-				  const PSET& pset_after,
-				  NNC_Polyhedron& mu_space);
+                                  const PSET& pset_after,
+                                  NNC_Polyhedron& mu_space);
 
 } // namespace Parma_Polyhedra_Library
 

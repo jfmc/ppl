@@ -50,8 +50,8 @@ fpu_initialize_control_functions() {
       || fesetround(PPL_FPU_UPWARD) != 0
       || fesetround(old) != 0)
     throw std::logic_error("PPL configuration error:"
-			   " PPL_CAN_CONTROL_FPU evaluates to true,"
-			   " but fesetround() returns nonzero.");
+                           " PPL_CAN_CONTROL_FPU evaluates to true,"
+                           " but fesetround() returns nonzero.");
 }
 
 inline fpu_rounding_direction_type

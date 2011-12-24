@@ -63,7 +63,7 @@ Linear_System::Linear_System(Topology topol)
 
 inline
 Linear_System::Linear_System(Topology topol,
-			     dimension_type n_rows, dimension_type n_columns)
+                             dimension_type n_rows, dimension_type n_columns)
   : Dense_Matrix(n_rows, n_columns, Linear_Row::Flags(topol)),
     row_topology(topol),
     index_first_pending(n_rows),
@@ -147,9 +147,9 @@ Linear_System::clear() {
 
 inline void
 Linear_System::resize_no_copy(const dimension_type new_n_rows,
-			      const dimension_type new_n_columns) {
+                              const dimension_type new_n_columns) {
   Dense_Matrix::resize_no_copy(new_n_rows, new_n_columns,
-			 Linear_Row::Flags(row_topology));
+                         Linear_Row::Flags(row_topology));
   // Even though `*this' may happen to keep its sortedness, we believe
   // that checking such a property is not worth the effort.  In fact,
   // it is very likely that the system will be overwritten as soon as
@@ -233,7 +233,7 @@ inline bool
 Linear_System::Row_Less_Than::operator()(const Dense_Row& x,
                                          const Dense_Row& y) const {
   return compare(static_cast<const Linear_Row&>(x),
-		 static_cast<const Linear_Row&>(y)) < 0;
+                 static_cast<const Linear_Row&>(y)) < 0;
 }
 
 /*! \relates Linear_System */
@@ -372,7 +372,7 @@ m_iter_swap(const With_Bit_Matrix_iterator& y) const {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline void
 iter_swap(Linear_System::With_Bit_Matrix_iterator x,
-	  Linear_System::With_Bit_Matrix_iterator y) {
+          Linear_System::With_Bit_Matrix_iterator y) {
   x.m_iter_swap(y);
 }
 

@@ -33,7 +33,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& pip) {
   s << "Space dimension: " << pip.space_dimension();
   s << "\nConstraints:";
   for (PIP_Problem::const_iterator i = pip.constraints_begin(),
-	 i_end = pip.constraints_end(); i != i_end; ++i)
+         i_end = pip.constraints_end(); i != i_end; ++i)
     s << "\n" << *i;
   s << "\nProblem parameters: " << pip.parameter_space_dimensions();
   if (pip.get_big_parameter_dimension() == not_a_dimension())
@@ -271,8 +271,8 @@ PPL::PIP_Problem::OK() const {
   if (external_space_dim < internal_space_dim) {
 #ifndef NDEBUG
       cerr << "The internal space dimension of the PIP_Problem is "
-	   << "greater than its external space dimension."
-	   << endl;
+           << "greater than its external space dimension."
+           << endl;
       ascii_dump(cerr);
 #endif
       return false;
@@ -290,7 +290,7 @@ PPL::PIP_Problem::OK() const {
 #ifndef NDEBUG
       cerr << "The space dimension of the PIP_Problem is smaller than "
            << "the space dimension of one of its constraints."
-	   << endl;
+           << endl;
       ascii_dump(cerr);
 #endif
       return false;
@@ -304,7 +304,7 @@ PPL::PIP_Problem::OK() const {
       && strategy != CUTTING_STRATEGY_ALL) {
 #ifndef NDEBUG
     cerr << "Invalid value for the CUTTING_STRATEGY control parameter."
-	 << endl;
+         << endl;
     ascii_dump(cerr);
 #endif
     return false;
@@ -745,4 +745,3 @@ PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
                            "the PIP problem has not been solved.");
   }
 }
-

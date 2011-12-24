@@ -33,7 +33,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Constraint::throw_invalid_argument(const char* method,
-					const char* message) const {
+                                        const char* message) const {
   std::ostringstream s;
   s << "PPL::Constraint::" << method << ":" << std::endl
     << message;
@@ -42,8 +42,8 @@ PPL::Constraint::throw_invalid_argument(const char* method,
 
 void
 PPL::Constraint::throw_dimension_incompatible(const char* method,
-					      const char* name_var,
-					      const Variable v) const {
+                                              const char* name_var,
+                                              const Variable v) const {
   std::ostringstream s;
   s << "PPL::Constraint::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -60,14 +60,14 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 
 PPL::Constraint::Constraint(const Congruence& cg)
   : Linear_Row(cg.is_equality()
-	       // Size includes extra column for the inhomogeneous term.
-	       ? (cg.space_dimension() + 1)
-	       : (throw_invalid_argument("Constraint(cg)",
-					 "congruence cg must be an equality."),
-		  0),
-	       // Capacity also includes a column for the epsilon coefficient.
-	       compute_capacity(cg.space_dimension() + 2, Dense_Row::max_size()),
-	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+               // Size includes extra column for the inhomogeneous term.
+               ? (cg.space_dimension() + 1)
+               : (throw_invalid_argument("Constraint(cg)",
+                                         "congruence cg must be an equality."),
+                  0),
+               // Capacity also includes a column for the epsilon coefficient.
+               compute_capacity(cg.space_dimension() + 2, Dense_Row::max_size()),
+               Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.
   for (dimension_type i = cg.space_dimension() + 1; i-- > 0; )
@@ -77,15 +77,15 @@ PPL::Constraint::Constraint(const Congruence& cg)
 }
 
 PPL::Constraint::Constraint(const Congruence& cg,
-			    dimension_type sz,
-			    dimension_type capacity)
+                            dimension_type sz,
+                            dimension_type capacity)
   : Linear_Row(cg.is_equality()
-	       ? sz
-	       : (throw_invalid_argument("Constraint(cg, sz, c)",
-					 "congruence cg must be an equality."),
-		  0),
-	       capacity,
-	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+               ? sz
+               : (throw_invalid_argument("Constraint(cg, sz, c)",
+                                         "congruence cg must be an equality."),
+                  0),
+               capacity,
+               Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
   // Copy coefficients.
   PPL_ASSERT(sz > 0);
@@ -112,24 +112,24 @@ PPL::Constraint::is_tautological() const {
       const dimension_type eps_index = size() - 1;
       const int eps_sign = sgn(x[eps_index]);
       if (eps_sign > 0)
-	// We have found the constraint epsilon >= 0.
-	return true;
+        // We have found the constraint epsilon >= 0.
+        return true;
       if (eps_sign == 0)
-	// One of the `true' dimensions has a non-zero coefficient.
-	return false;
+        // One of the `true' dimensions has a non-zero coefficient.
+        return false;
       else {
-	// Here the epsilon coefficient is negative: strict inequality.
-	if (x[0] <= 0)
-	  // A strict inequality such as `lhs - k > 0',
-	  // where k is a non negative integer, cannot be trivially true.
-	  return false;
-	// Checking for another non-zero coefficient.
-	for (dimension_type i = eps_index; --i > 0; )
-	  if (x[i] != 0)
-	    return false;
-	// We have the inequality `k > 0',
-	// where k is a positive integer.
-	return true;
+        // Here the epsilon coefficient is negative: strict inequality.
+        if (x[0] <= 0)
+          // A strict inequality such as `lhs - k > 0',
+          // where k is a non negative integer, cannot be trivially true.
+          return false;
+        // Checking for another non-zero coefficient.
+        for (dimension_type i = eps_index; --i > 0; )
+          if (x[i] != 0)
+            return false;
+        // We have the inequality `k > 0',
+        // where k is a positive integer.
+        return true;
       }
     }
 }
@@ -153,23 +153,23 @@ PPL::Constraint::is_inconsistent() const {
       // The constraint is NOT necessarily closed.
       const dimension_type eps_index = size() - 1;
       if (x[eps_index] >= 0)
-	// If positive, we have found the constraint epsilon >= 0.
-	// If zero, one of the `true' dimensions has a non-zero coefficient.
-	// In both cases, it is not trivially false.
-	return false;
+        // If positive, we have found the constraint epsilon >= 0.
+        // If zero, one of the `true' dimensions has a non-zero coefficient.
+        // In both cases, it is not trivially false.
+        return false;
       else {
-	// Here the epsilon coefficient is negative: strict inequality.
-	if (x[0] > 0)
-	  // A strict inequality such as `lhs + k > 0',
-	  // where k is a positive integer, cannot be trivially false.
-	  return false;
-	// Checking for another non-zero coefficient.
-	for (dimension_type i = eps_index; --i > 0; )
-	  if (x[i] != 0)
-	    return false;
-	// We have the inequality `k > 0',
-	// where k is zero or a negative integer.
-	return true;
+        // Here the epsilon coefficient is negative: strict inequality.
+        if (x[0] > 0)
+          // A strict inequality such as `lhs + k > 0',
+          // where k is a positive integer, cannot be trivially false.
+          return false;
+        // Checking for another non-zero coefficient.
+        for (dimension_type i = eps_index; --i > 0; )
+          if (x[i] != 0)
+            return false;
+        // We have the inequality `k > 0',
+        // where k is zero or a negative integer.
+        return true;
       }
     }
 }
@@ -203,7 +203,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
     // ... and finally check for syntactic equality.
     for (dimension_type i = x_space_dim + 1; i-- > 0; )
       if (x_expr[i] != y_expr[i])
-	return false;
+        return false;
     return true;
   }
 
@@ -269,19 +269,19 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
     cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
-	if (cv > 0)
-	  s << " + ";
-	else {
-	  s << " - ";
-	  neg_assign(cv);
-	}
+        if (cv > 0)
+          s << " + ";
+        else {
+          s << " - ";
+          neg_assign(cv);
+        }
       }
       else
-	first = false;
+        first = false;
       if (cv == -1)
-	s << "-";
+        s << "-";
       else if (cv != 1)
-	s << cv << "*";
+        s << cv << "*";
       s << PPL::Variable(v);
     }
   }
@@ -335,11 +335,11 @@ PPL::Constraint::OK() const {
   if (size() < min_size) {
 #ifndef NDEBUG
     std::cerr << "Constraint has fewer coefficients than the minimum "
-	      << "allowed by its topology:"
-	      << std::endl
-	      << "size is " << size()
-	      << ", minimum is " << min_size << "."
-	      << std::endl;
+              << "allowed by its topology:"
+              << std::endl
+              << "size is " << size()
+              << ", minimum is " << min_size << "."
+              << std::endl;
 #endif
     return false;
   }
@@ -347,7 +347,7 @@ PPL::Constraint::OK() const {
   if (is_equality() && !is_necessarily_closed() && (*this)[size() - 1] != 0) {
 #ifndef NDEBUG
     std::cerr << "Illegal constraint: an equality cannot be strict."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -358,7 +358,7 @@ PPL::Constraint::OK() const {
   if (tmp != *this) {
 #ifndef NDEBUG
     std::cerr << "Constraint is not strongly normalized as it should be."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }

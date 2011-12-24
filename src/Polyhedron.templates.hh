@@ -158,9 +158,9 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
     if (marked_empty()
-	|| (has_pending_constraints()
-	    && !remove_pending_to_obtain_generators())
-	|| (!generators_are_up_to_date() && !update_generators())) {
+        || (has_pending_constraints()
+            && !remove_pending_to_obtain_generators())
+        || (!generators_are_up_to_date() && !update_generators())) {
       // Removing all dimensions from the empty polyhedron.
       space_dim = 0;
       con_sys.clear();
@@ -199,26 +199,26 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 
     for (dimension_type i = space_dim; i-- > 0; ) {
       if (!visited[i]) {
-	dimension_type j = i;
-	do {
-	  visited[j] = true;
-	  // The following initialization is only to make the compiler happy.
-	  dimension_type k = 0;
-	  if (!pfunc.maps(j, k))
-	    throw_invalid_argument("map_space_dimensions(pfunc)",
-				   " pfunc is inconsistent");
-	  if (k == j)
-	    // Cycle of length 1: skip it.
-	    goto skip;
+        dimension_type j = i;
+        do {
+          visited[j] = true;
+          // The following initialization is only to make the compiler happy.
+          dimension_type k = 0;
+          if (!pfunc.maps(j, k))
+            throw_invalid_argument("map_space_dimensions(pfunc)",
+                                   " pfunc is inconsistent");
+          if (k == j)
+            // Cycle of length 1: skip it.
+            goto skip;
 
-	  cycles.push_back(j+1);
-	  // Go along the cycle.
-	  j = k;
-	} while (!visited[j]);
-	// End of cycle: mark it.
-	cycles.push_back(0);
+          cycles.push_back(j+1);
+          // Go along the cycle.
+          j = k;
+        } while (!visited[j]);
+        // End of cycle: mark it.
+        cycles.push_back(0);
       skip:
-	;
+        ;
       }
     }
 
@@ -263,25 +263,25 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 
   Generator_System new_gensys;
   for (Generator_System::const_iterator i = old_gensys.begin(),
-	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
+         old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (dimension_type j = space_dim; j-- > 0; ) {
       if (old_g.coefficient(Variable(j)) != 0
-	  && pfunc_maps[j] != not_a_dimension()) {
-	e += Variable(pfunc_maps[j]) * old_g.coefficient(Variable(j));
-	all_zeroes = false;
+          && pfunc_maps[j] != not_a_dimension()) {
+        e += Variable(pfunc_maps[j]) * old_g.coefficient(Variable(j));
+        all_zeroes = false;
       }
     }
     switch (old_g.type()) {
     case Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(line(e));
+        new_gensys.insert(line(e));
       break;
     case Generator::RAY:
       if (!all_zeroes)
-	new_gensys.insert(ray(e));
+        new_gensys.insert(ray(e));
       break;
     case Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
@@ -513,7 +513,7 @@ Polyhedron::convert_to_integer_expression(
 template <typename FP_Format, typename Interval_Info>
 void
 Polyhedron::convert_to_integer_expressions(
-	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension, Linear_Expression& res,
                 Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
                 Coefficient& lcm) {
@@ -574,8 +574,8 @@ Polyhedron::convert_to_integer_expressions(
 template <typename C>
 void
 Polyhedron::throw_dimension_incompatible(const char* method,
-				         const char* lf_name,
-				         const Linear_Form<C>& lf) const {
+                                         const char* lf_name,
+                                         const Linear_Form<C>& lf) const {
   throw_dimension_incompatible(method, lf_name, lf.space_dimension());
 }
 
