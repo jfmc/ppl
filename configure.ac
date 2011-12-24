@@ -40,7 +40,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip dist-lzma tar-ustar silent-rules 1.11])
+AM_INIT_AUTOMAKE([foreign no-define dist-bzip2 dist-zip dist-xz tar-ustar silent-rules 1.11])
 
 AC_SUBST(VERSION)
 
