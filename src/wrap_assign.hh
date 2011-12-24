@@ -82,7 +82,6 @@ wrap_assign_ind(PSET& pointset,
       if (vars.empty())
         p.refine_with_constraints(cs);
       else {
-        Variables_Set::const_iterator vars_end = vars.end();
         for (Constraint_System::const_iterator j = cs.begin(),
                cs_end = cs.end(); j != cs_end; ++j)
           if (j->expression().all_zeroes(vars))
