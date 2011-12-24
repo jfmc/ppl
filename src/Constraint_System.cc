@@ -39,7 +39,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
   : Linear_System(NECESSARILY_CLOSED, 0, cgs.space_dimension() + 1) {
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
+	 cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality())
       // TODO: Consider adding a recycling_insert to save the extra copy here.
       insert(Constraint(*i));
@@ -48,7 +48,7 @@ PPL::Constraint_System::Constraint_System(const Congruence_System& cgs)
 bool
 PPL::Constraint_System::
 adjust_topology_and_space_dimension(const Topology new_topology,
-                                    const dimension_type new_space_dim) {
+				    const dimension_type new_space_dim) {
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
   const dimension_type old_space_dim = space_dimension();
@@ -59,40 +59,40 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   if (num_rows() == 0) {
     if (num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
-        add_zero_columns(++cols_to_be_added);
-        set_necessarily_closed();
+	add_zero_columns(++cols_to_be_added);
+	set_necessarily_closed();
       }
       else {
-        cols_to_be_added += 2;
-        add_zero_columns(cols_to_be_added);
-        set_not_necessarily_closed();
+	cols_to_be_added += 2;
+	add_zero_columns(cols_to_be_added);
+	set_not_necessarily_closed();
       }
     else
       // Here `num_columns() > 0'.
       if (old_topology != new_topology)
-        if (new_topology == NECESSARILY_CLOSED) {
-          switch (cols_to_be_added) {
-          case 0:
-            remove_trailing_columns(1);
-            break;
-          case 1:
-            // Nothing to do.
-            break;
-          default:
-            add_zero_columns(--cols_to_be_added);
-          }
-          set_necessarily_closed();
-        }
-        else {
-          // Here old_topology == NECESSARILY_CLOSED
-          //  and new_topology == NOT_NECESSARILY_CLOSED.
-          add_zero_columns(++cols_to_be_added);
-          set_not_necessarily_closed();
-        }
+	if (new_topology == NECESSARILY_CLOSED) {
+	  switch (cols_to_be_added) {
+	  case 0:
+	    remove_trailing_columns(1);
+	    break;
+	  case 1:
+	    // Nothing to do.
+	    break;
+	  default:
+	    add_zero_columns(--cols_to_be_added);
+	  }
+	  set_necessarily_closed();
+	}
+	else {
+	  // Here old_topology == NECESSARILY_CLOSED
+	  //  and new_topology == NOT_NECESSARILY_CLOSED.
+	  add_zero_columns(++cols_to_be_added);
+	  set_not_necessarily_closed();
+	}
       else {
-        // Here topologies agree.
-        if (cols_to_be_added > 0)
-          add_zero_columns(cols_to_be_added);
+	// Here topologies agree.
+	if (cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
       }
     PPL_ASSERT(OK());
     return true;
@@ -103,77 +103,77 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
-        // A NOT_NECESSARILY_CLOSED constraint system
-        // can be converted to a NECESSARILY_CLOSED one
-        // only if it does not contain strict inequalities.
-        if (has_strict_inequalities())
-          return false;
-        // Since there were no strict inequalities,
-        // the only constraints that may have a non-zero epsilon coefficient
-        // are the eps-leq-one and the eps-geq-zero constraints.
-        // If they are present, we erase these rows, so that the
-        // epsilon column will only contain zeroes: as a consequence,
-        // we just decrement the number of columns to be added.
-        Constraint_System& cs = *this;
-        const dimension_type eps_index = old_space_dim + 1;
+	// A NOT_NECESSARILY_CLOSED constraint system
+	// can be converted to a NECESSARILY_CLOSED one
+	// only if it does not contain strict inequalities.
+	if (has_strict_inequalities())
+	  return false;
+	// Since there were no strict inequalities,
+	// the only constraints that may have a non-zero epsilon coefficient
+	// are the eps-leq-one and the eps-geq-zero constraints.
+	// If they are present, we erase these rows, so that the
+	// epsilon column will only contain zeroes: as a consequence,
+	// we just decrement the number of columns to be added.
+	Constraint_System& cs = *this;
+	const dimension_type eps_index = old_space_dim + 1;
         const dimension_type old_cs_num_rows = cs.num_rows();
         dimension_type cs_num_rows = old_cs_num_rows;
-        bool was_sorted = cs.is_sorted();
-        if (was_sorted)
-          cs.set_sorted(false);
+	bool was_sorted = cs.is_sorted();
+	if (was_sorted)
+	  cs.set_sorted(false);
 
-        // If we have no pending rows, we only check if
-        // we must erase some rows.
-        if (cs.num_pending_rows() == 0) {
-          for (dimension_type i = cs_num_rows; i-- > 0; )
-            if (cs[i][eps_index] != 0) {
-              --cs_num_rows;
-              swap(cs[i], cs[cs_num_rows]);
-            }
-          cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
-          cs.unset_pending_rows();
-        }
-        else {
-          // There are pending rows, and we cannot swap them
-          // into the non-pending part of the matrix.
-          // Thus, we first work on the non-pending part as if it was
-          // an independent matrix; then we work on the pending part.
-          const dimension_type old_first_pending = cs.first_pending_row();
-          dimension_type new_first_pending = old_first_pending;
-          for (dimension_type i = new_first_pending; i-- > 0; )
-            if (cs[i][eps_index] != 0) {
-              --new_first_pending;
-              swap(cs[i], cs[new_first_pending]);
-            }
-          const dimension_type num_swaps
-            = old_first_pending - new_first_pending;
+	// If we have no pending rows, we only check if
+	// we must erase some rows.
+	if (cs.num_pending_rows() == 0) {
+	  for (dimension_type i = cs_num_rows; i-- > 0; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_num_rows;
+	      swap(cs[i], cs[cs_num_rows]);
+	    }
+	  cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
+	  cs.unset_pending_rows();
+	}
+	else {
+	  // There are pending rows, and we cannot swap them
+	  // into the non-pending part of the matrix.
+	  // Thus, we first work on the non-pending part as if it was
+	  // an independent matrix; then we work on the pending part.
+	  const dimension_type old_first_pending = cs.first_pending_row();
+	  dimension_type new_first_pending = old_first_pending;
+	  for (dimension_type i = new_first_pending; i-- > 0; )
+	    if (cs[i][eps_index] != 0) {
+	      --new_first_pending;
+	      swap(cs[i], cs[new_first_pending]);
+	    }
+	  const dimension_type num_swaps
+	    = old_first_pending - new_first_pending;
           cs.set_index_first_pending_row(new_first_pending);
-          // Move the swapped rows to the real end of the matrix.
-          for (dimension_type i = num_swaps; i-- > 0; )
-            swap(cs[old_first_pending - i], cs[cs_num_rows - i]);
-          cs_num_rows -= num_swaps;
-          // Now iterate through the pending rows.
-          for (dimension_type i = cs_num_rows; i-- > new_first_pending; )
-            if (cs[i][eps_index] != 0) {
-              --cs_num_rows;
-              swap(cs[i], cs[cs_num_rows]);
-            }
-          cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
-        }
+	  // Move the swapped rows to the real end of the matrix.
+	  for (dimension_type i = num_swaps; i-- > 0; )
+	    swap(cs[old_first_pending - i], cs[cs_num_rows - i]);
+	  cs_num_rows -= num_swaps;
+	  // Now iterate through the pending rows.
+	  for (dimension_type i = cs_num_rows; i-- > new_first_pending; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_num_rows;
+	      swap(cs[i], cs[cs_num_rows]);
+	    }
+	  cs.remove_trailing_rows(old_cs_num_rows - cs_num_rows);
+	}
 
-        // If `cs' was sorted we sort it again.
-        if (was_sorted)
-          cs.sort_rows();
-        if (--cols_to_be_added > 0)
-          add_zero_columns(cols_to_be_added);
-        set_necessarily_closed();
+	// If `cs' was sorted we sort it again.
+	if (was_sorted)
+	  cs.sort_rows();
+	if (--cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
+	set_necessarily_closed();
       }
       else {
-        // A NECESSARILY_CLOSED constraint system is converted to
-        // a NOT_NECESSARILY_CLOSED one by adding a further column
-        // of zeroes for the epsilon coefficients.
-        add_zero_columns(++cols_to_be_added);
-        set_not_necessarily_closed();
+	// A NECESSARILY_CLOSED constraint system is converted to
+	// a NOT_NECESSARILY_CLOSED one by adding a further column
+	// of zeroes for the epsilon coefficients.
+	add_zero_columns(++cols_to_be_added);
+	set_not_necessarily_closed();
       }
     else {
       // Topologies agree: first add the required zero columns ...
@@ -181,25 +181,25 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       // ... and, if needed, move the epsilon coefficients
       // to the new last column.
       if (old_topology == NOT_NECESSARILY_CLOSED)
-        swap_columns(old_space_dim + 1, new_space_dim + 1);
+	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
     // Here `cols_to_be_added == 0'.
     if (old_topology != new_topology) {
       if (new_topology == NECESSARILY_CLOSED) {
-        // A NOT_NECESSARILY_CLOSED constraint system
-        // can be converted to a NECESSARILY_CLOSED one
-        // only if it does not contain strict inequalities.
-        if (has_strict_inequalities())
-          return false;
-        // We just remove the column of the epsilon coefficients.
-        remove_trailing_columns(1);
-        set_necessarily_closed();
+	// A NOT_NECESSARILY_CLOSED constraint system
+	// can be converted to a NECESSARILY_CLOSED one
+	// only if it does not contain strict inequalities.
+	if (has_strict_inequalities())
+	  return false;
+	// We just remove the column of the epsilon coefficients.
+	remove_trailing_columns(1);
+	set_necessarily_closed();
       }
       else {
-        // We just add the column of the epsilon coefficients.
-        add_zero_columns(1);
-        set_not_necessarily_closed();
+	// We just add the column of the epsilon coefficients.
+	add_zero_columns(1);
+	set_not_necessarily_closed();
       }
     }
   // We successfully adjusted space dimensions and topology.
@@ -260,7 +260,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
       // FIXME: provide a resizing copy constructor taking
       // topology and the space dimension.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
-                                                   space_dimension());
+						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
       Linear_System::insert(tmp_c);
@@ -286,7 +286,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       // Copying the constraint adding the epsilon coefficient
       // and the missing space dimensions, if any.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
-                                                   space_dimension());
+						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
       Linear_System::insert_pending(tmp_c);
@@ -309,7 +309,7 @@ PPL::Constraint_System::num_inequalities() const {
   else
     for (dimension_type i = num_rows(); i-- > 0 ; )
       if (cs[i].is_inequality())
-        ++n;
+	++n;
   return n;
 }
 
@@ -342,24 +342,24 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     if (g.is_line()) {
       // Lines must saturate all constraints.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-        if (sps(g, cs[i]) != 0)
-          return false;
+	if (sps(g, cs[i]) != 0)
+	  return false;
     }
     else
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-        const Constraint& c = cs[i];
-        const int sp_sign = sps(g, c);
-        if (c.is_inequality()) {
-          // As `cs' is necessarily closed,
-          // `c' is a non-strict inequality.
-          if (sp_sign < 0)
-            return false;
-        }
-        else
-          // `c' is an equality.
-          if (sp_sign != 0)
-            return false;
+	const Constraint& c = cs[i];
+	const int sp_sign = sps(g, c);
+	if (c.is_inequality()) {
+	  // As `cs' is necessarily closed,
+	  // `c' is a non-strict inequality.
+	  if (sp_sign < 0)
+	    return false;
+	}
+	else
+	  // `c' is an equality.
+	  if (sp_sign != 0)
+	    return false;
       }
   }
   else
@@ -369,30 +369,30 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::LINE:
       // Lines must saturate all constraints.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-        if (sps(g, cs[i]) != 0)
-          return false;
+	if (sps(g, cs[i]) != 0)
+	  return false;
       break;
 
     case Generator::POINT:
       // Have to perform the special test
       // when dealing with a strict inequality.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-        const Constraint& c = cs[i];
-        const int sp_sign = sps(g, c);
-        switch (c.type()) {
-        case Constraint::EQUALITY:
-          if (sp_sign != 0)
-            return false;
-          break;
-        case Constraint::NONSTRICT_INEQUALITY:
-          if (sp_sign < 0)
-            return false;
-          break;
-        case Constraint::STRICT_INEQUALITY:
-          if (sp_sign <= 0)
-            return false;
-          break;
-        }
+	const Constraint& c = cs[i];
+	const int sp_sign = sps(g, c);
+	switch (c.type()) {
+	case Constraint::EQUALITY:
+	  if (sp_sign != 0)
+	    return false;
+	  break;
+	case Constraint::NONSTRICT_INEQUALITY:
+	  if (sp_sign < 0)
+	    return false;
+	  break;
+	case Constraint::STRICT_INEQUALITY:
+	  if (sp_sign <= 0)
+	    return false;
+	  break;
+	}
       }
       break;
 
@@ -400,17 +400,17 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
       // Intentionally fall through.
     case Generator::CLOSURE_POINT:
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-        const Constraint& c = cs[i];
-        const int sp_sign = sps(g, c);
-        if (c.is_inequality()) {
-          // Constraint `c' is either a strict or a non-strict inequality.
-          if (sp_sign < 0)
-            return false;
-        }
-        else
-          // Constraint `c' is an equality.
-          if (sp_sign != 0)
-            return false;
+	const Constraint& c = cs[i];
+	const int sp_sign = sps(g, c);
+	if (c.is_inequality()) {
+	  // Constraint `c' is either a strict or a non-strict inequality.
+	  if (sp_sign < 0)
+	    return false;
+	}
+	else
+	  // Constraint `c' is an equality.
+	  if (sp_sign != 0)
+	    return false;
       }
       break;
     }
@@ -423,8 +423,8 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 void
 PPL::Constraint_System
 ::affine_preimage(const dimension_type v,
-                  const Linear_Expression& expr,
-                  Coefficient_traits::const_reference denominator) {
+		  const Linear_Expression& expr,
+		  Coefficient_traits::const_reference denominator) {
   Constraint_System& x = *this;
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
@@ -443,17 +443,17 @@ PPL::Constraint_System
       Constraint& row = x[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
-        for (dimension_type j = n_columns; j-- > 0; )
-          if (j != v) {
-            Coefficient& row_j = row[j];
-            row_j *= denominator;
-            if (j < expr_size)
-              add_mul_assign(row_j, row_v, expr[j]);
-          }
-        if (not_invertible)
-          row_v = 0;
-        else
-          row_v *= expr[v];
+	for (dimension_type j = n_columns; j-- > 0; )
+	  if (j != v) {
+	    Coefficient& row_j = row[j];
+	    row_j *= denominator;
+	    if (j < expr_size)
+	      add_mul_assign(row_j, row_v, expr[j]);
+	  }
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
       }
     }
   else
@@ -463,13 +463,13 @@ PPL::Constraint_System
       Constraint& row = x[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
-        for (dimension_type j = expr_size; j-- > 0; )
-          if (j != v)
-            add_mul_assign(row[j], row_v, expr[j]);
-        if (not_invertible)
-          row_v = 0;
-        else
-          row_v *= expr[v];
+	for (dimension_type j = expr_size; j-- > 0; )
+	  if (j != v)
+	    add_mul_assign(row[j], row_v, expr[j]);
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
       }
     }
   // Strong normalization also resets the sortedness flag.
@@ -482,8 +482,8 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
   const dimension_type x_num_rows = x.num_rows();
   const dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
-                       ? "NECESSARILY_CLOSED"
-                       : "NOT_NECESSARILY_CLOSED")
+		       ? "NECESSARILY_CLOSED"
+		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
     << x_num_rows << " x " << x_num_columns << ' '
     << (x.is_sorted() ? "(sorted)" : "(not_sorted)")
@@ -550,7 +550,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
       if (!(s >> x[i][j]))
-        return false;
+	return false;
 
     if (!(s >> str))
       return false;
@@ -565,15 +565,15 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     switch (x[i].type()) {
     case Constraint::EQUALITY:
       if (str == "=")
-        continue;
+	continue;
       break;
     case Constraint::NONSTRICT_INEQUALITY:
       if (str == ">=")
-        continue;
+	continue;
       break;
     case Constraint::STRICT_INEQUALITY:
       if (str == ">")
-        continue;
+	continue;
       break;
     }
     // Reaching this point means that the input was illegal.
@@ -629,7 +629,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
     while (i != cs_end) {
       s << *i++;
       if (i != cs_end)
-        s << ", ";
+	s << ", ";
     }
   }
   return s;

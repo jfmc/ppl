@@ -45,25 +45,25 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
     }
     else
       if (gr.generators_are_up_to_date() && gr.generators_are_minimized()) {
-        // Calculate number of congruences from generators.
-        num_proper_congruences
-          = gr.gen_sys.num_parameters() + 1 /* Integrality cg. */;
-        num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
+	// Calculate number of congruences from generators.
+ 	num_proper_congruences
+	  = gr.gen_sys.num_parameters() + 1 /* Integrality cg. */;
+	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
       }
       else {
-        // Minimize gr congruence system.  As in Polyhedron assume
-        // that gr contains at least one point.
+	// Minimize gr congruence system.  As in Polyhedron assume
+	// that gr contains at least one point.
 #ifndef NDEBUG
-        Grid::simplify(gr.con_sys, gr.dim_kinds);
+	Grid::simplify(gr.con_sys, gr.dim_kinds);
 #else
-        bool contains_points = Grid::simplify(gr.con_sys, gr.dim_kinds);
-        used(contains_points);  // Quiet compiler warning.
-        PPL_ASSERT(contains_points);
+	bool contains_points = Grid::simplify(gr.con_sys, gr.dim_kinds);
+	used(contains_points);	// Quiet compiler warning.
+	PPL_ASSERT(contains_points);
 #endif
-        gr.set_congruences_minimized();
+	gr.set_congruences_minimized();
 
-        num_proper_congruences = gr.con_sys.num_proper_congruences();
-        num_equalities = gr.con_sys.num_equalities();
+	num_proper_congruences = gr.con_sys.num_proper_congruences();
+	num_equalities = gr.con_sys.num_equalities();
       }
   else {
     if (!gr.generators_are_minimized()) {

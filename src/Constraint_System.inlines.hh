@@ -51,8 +51,8 @@ Constraint_System::Constraint_System(const Topology topol)
 
 inline
 Constraint_System::Constraint_System(const Topology topol,
-                                     const dimension_type n_rows,
-                                     const dimension_type n_columns)
+				     const dimension_type n_rows,
+				     const dimension_type n_columns)
   : Linear_System(topol, n_rows, n_columns) {
 }
 
@@ -155,7 +155,7 @@ Constraint_System::const_iterator::operator!=(const const_iterator& y) const {
 inline
 Constraint_System::const_iterator::
 const_iterator(const Linear_System::const_iterator& iter,
-               const Constraint_System& cs)
+	       const Constraint_System& cs)
   : i(iter), csp(&cs) {
 }
 

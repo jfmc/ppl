@@ -51,7 +51,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   PPL_ASSERT(num_constraints == 0);
   const Constraint_System& cs = ph.minimized_constraints();
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
       --affine_dim;
@@ -61,7 +61,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   PPL_ASSERT(num_points == 0);
   const Generator_System& gs = ph.minimized_generators();
   for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
       // Intentionally fall through.
@@ -73,12 +73,12 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
       // `num_rays_null_coord[j]' will be the number of rays
       // having exactly `j' coordinates equal to 0.
       {
-        const Generator& r = *i;
-        dimension_type num_zeroes = 0;
-        for (dimension_type j = space_dim; j-- > 0; )
-          if (r.coefficient(Variable(j)) == 0)
-            ++num_zeroes;
-        ++num_rays_null_coord[num_zeroes];
+	const Generator& r = *i;
+	dimension_type num_zeroes = 0;
+	for (dimension_type j = space_dim; j-- > 0; )
+	  if (r.coefficient(Variable(j)) == 0)
+	    ++num_zeroes;
+	++num_rays_null_coord[num_zeroes];
       }
       break;
     case Generator::LINE:
@@ -147,7 +147,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   dimension_type ph_num_constraints = 0;
   const Constraint_System& cs = ph.minimized_constraints();
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())
       --ph_affine_dim;
@@ -176,7 +176,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   dimension_type ph_num_points = 0;
   const Generator_System& gs = ph.minimized_generators();
   for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
       // Intentionally fall through.
@@ -226,13 +226,13 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // compute information about rays.
   std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
   for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     if (i->is_ray()) {
       const Generator& r = *i;
       dimension_type num_zeroes = 0;
       for (dimension_type j = space_dim; j-- > 0; )
-        if (r.coefficient(Variable(j)) == 0)
-          ++num_zeroes;
+	if (r.coefficient(Variable(j)) == 0)
+	  ++num_zeroes;
       ++ph_num_rays_null_coord[num_zeroes];
     }
   // Compare (lexicographically) the two vectors:
@@ -258,9 +258,9 @@ PPL::BHRZ03_Certificate::OK() const {
   if (affine_dim > space_dim) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
-         << endl
-         << "the affine dimension is greater than the space dimension!"
-         << endl;
+	 << endl
+	 << "the affine dimension is greater than the space dimension!"
+	 << endl;
 #endif
     return false;
   }
@@ -268,10 +268,10 @@ PPL::BHRZ03_Certificate::OK() const {
   if (lin_space_dim > affine_dim) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
-         << endl
-         << "the lineality space dimension is greater than "
-         << "the affine dimension!"
-         << endl;
+	 << endl
+	 << "the lineality space dimension is greater than "
+	 << "the affine dimension!"
+	 << endl;
 #endif
     return false;
   }
@@ -279,15 +279,15 @@ PPL::BHRZ03_Certificate::OK() const {
   if (num_constraints < space_dim - affine_dim) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
-         << endl
-         << "in a vector space of dimension `n',"
-         << "any polyhedron of affine dimension `k'" << endl
-         << "should have `n-k' non-redundant constraints at least."
-         << endl
-         << "Here space_dim = " << space_dim << ", "
-         << "affine_dim = " << affine_dim << ", "
-         << "but num_constraints = " << num_constraints << "!"
-         << endl;
+	 << endl
+	 << "in a vector space of dimension `n',"
+	 << "any polyhedron of affine dimension `k'" << endl
+	 << "should have `n-k' non-redundant constraints at least."
+	 << endl
+	 << "Here space_dim = " << space_dim << ", "
+	 << "affine_dim = " << affine_dim << ", "
+	 << "but num_constraints = " << num_constraints << "!"
+	 << endl;
 #endif
     return false;
   }
@@ -295,9 +295,9 @@ PPL::BHRZ03_Certificate::OK() const {
   if (num_points == 0) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
-         << endl
-         << "the generator system has no points!"
-         << endl;
+	 << endl
+	 << "the generator system has no points!"
+	 << endl;
 #endif
     return false;
   }
@@ -307,9 +307,9 @@ PPL::BHRZ03_Certificate::OK() const {
     if (num_constraints > 0) {
 #ifndef NDEBUG
       cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
-           << endl
-           << "a universe polyhedron has non-redundant constraints!"
-           << endl;
+	   << endl
+	   << "a universe polyhedron has non-redundant constraints!"
+	   << endl;
 #endif
       return false;
     }
@@ -317,9 +317,9 @@ PPL::BHRZ03_Certificate::OK() const {
     if (num_points != 1) {
 #ifndef NDEBUG
       cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
-           << endl
-           << "a universe polyhedron has more than one non-redundant point!"
-           << endl;
+	   << endl
+	   << "a universe polyhedron has more than one non-redundant point!"
+	   << endl;
 #endif
       return false;
     }

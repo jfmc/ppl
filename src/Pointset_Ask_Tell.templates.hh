@@ -62,7 +62,7 @@ Pointset_Ask_Tell<NNC_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Ask_Tell& x = *this;
   for (typename Pointset_Ask_Tell<QH>::const_iterator i = y.begin(),
-         y_end = y.end(); i != y_end; ++i) {
+	 y_end = y.end(); i != y_end; ++i) {
     Determinate<NNC_Polyhedron>
       nnc_ask(NNC_Polyhedron(i->ask().pointset().constraints()));
     Determinate<NNC_Polyhedron>
@@ -81,7 +81,7 @@ Pointset_Ask_Tell<C_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Ask_Tell& x = *this;
   for (typename Pointset_Ask_Tell<QH>::const_iterator i = y.begin(),
-         y_end = y.end(); i != y_end; ++i) {
+	 y_end = y.end(); i != y_end; ++i) {
     Determinate<C_Polyhedron>
       c_ask(C_Polyhedron(i->ask().pointset().constraints()));
     Determinate<C_Polyhedron>
@@ -118,7 +118,7 @@ void
 Pointset_Ask_Tell<PSET>::add_constraint(const Constraint& c) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_constraint(c);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
@@ -129,7 +129,7 @@ void
 Pointset_Ask_Tell<PSET>::add_constraints(const Constraint_System& cs) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_constraints(cs);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
@@ -140,7 +140,7 @@ void
 Pointset_Ask_Tell<PSET>::unconstrain(const Variable var) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().unconstrain(var);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
@@ -151,7 +151,7 @@ void
 Pointset_Ask_Tell<PSET>::unconstrain(const Variables_Set& vars) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().unconstrain(vars);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
@@ -162,7 +162,7 @@ void
 Pointset_Ask_Tell<PSET>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_space_dimensions_and_embed(m);
   x.space_dim += m;
   PPL_ASSERT_HEAVY(x.OK());
@@ -173,7 +173,7 @@ void
 Pointset_Ask_Tell<PSET>::add_space_dimensions_and_project(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+	 s_end = x.sequence.end(); si != s_end; ++si)
     si->pointset().add_space_dimensions_and_project(m);
   x.space_dim += m;
   PPL_ASSERT_HEAVY(x.OK());
@@ -187,18 +187,18 @@ remove_space_dimensions(const Variables_Set& vars) {
   Variables_Set::size_type num_removed = vars.size();
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
-           s_end = x.sequence.end(); si != s_end; ) {
+	   s_end = x.sequence.end(); si != s_end; ) {
       PSET& ask = si->ask().pointset();
       PSET& tell = si->tell().pointset();
       ask.remove_space_dimensions(vars);
       tell.remove_space_dimensions(vars);
       if (tell.contains(ask)) {
-        si = x.sequence.erase(si);
-        s_end = x.sequence.end();
+	si = x.sequence.erase(si);
+	s_end = x.sequence.end();
       }
       else {
-        x.normalized = false;
-        ++si;
+	x.normalized = false;
+	++si;
       }
     }
     x.space_dim -= num_removed;
@@ -209,11 +209,11 @@ remove_space_dimensions(const Variables_Set& vars) {
 template <typename PSET>
 void
 Pointset_Ask_Tell<PSET>::remove_higher_space_dimensions(dimension_type
-                                                       new_dimension) {
+						       new_dimension) {
   Pointset_Ask_Tell& x = *this;
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
-           s_end = x.sequence.end(); si != s_end; ++si) {
+	   s_end = x.sequence.end(); si != s_end; ++si) {
       si->ask().pointset().remove_higher_space_dimensions(new_dimension);
       si->tell().pointset().remove_higher_space_dimensions(new_dimension);
       x.reduced = false;
@@ -233,14 +233,14 @@ Pointset_Ask_Tell<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
     for (dimension_type i = x.space_dim; i-- > 0; ) {
       dimension_type new_i;
       if (pfunc.maps(i, new_i))
-        ++n;
+	++n;
     }
     x.space_dim = n;
   }
   else {
     Sequence_iterator s_begin = x.sequence.begin();
     for (Sequence_iterator si = s_begin,
-           s_end = x.sequence.end(); si != s_end; ++si)
+	   s_end = x.sequence.end(); si != s_end; ++si)
       si->pointset().map_space_dimensions(pfunc);
     x.space_dim = s_begin->pointset().space_dimension();
     x.reduced = false;
@@ -303,15 +303,15 @@ Pointset_Ask_Tell<PSET>::OK() const {
     const PSET& ask_i = xi->ask().pointset();
     const PSET& tell_i = xi->tell().pointset();
     if (ask_i.space_dimension() != x.space_dim
-        || tell_i.space_dimension() != x.space_dim) {
+	|| tell_i.space_dimension() != x.space_dim) {
 #ifndef NDEBUG
       std::cerr << "Space dimension mismatch: is ("
-                << ask_i.space_dimension()
-                << " -> "
-                << tell_i.space_dimension()
-                << ") in an element of the sequence,\nshould be "
-                << x.space_dim << "."
-                << std::endl;
+		<< ask_i.space_dimension()
+		<< " -> "
+		<< tell_i.space_dimension()
+		<< ") in an element of the sequence,\nshould be "
+		<< x.space_dim << "."
+		<< std::endl;
 #endif
       return false;
     }

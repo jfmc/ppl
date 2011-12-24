@@ -293,7 +293,7 @@ abs_generic(To& to, const From& from, Rounding_Dir dir) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-          typename To, typename From>
+	  typename To, typename From>
 inline void
 gcd_exact_no_abs(To& to, const From& x, const From& y) {
   To w_x = x;
@@ -312,7 +312,7 @@ gcd_exact_no_abs(To& to, const From& x, const From& y) {
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-          typename To, typename From1, typename From2>
+	  typename To, typename From1, typename From2>
 inline Result
 gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   gcd_exact_no_abs<To_Policy, From1_Policy, From2_Policy>(to, x, y);
@@ -320,12 +320,12 @@ gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 }
 
 template <typename To1_Policy, typename To2_Policy, typename To3_Policy,
-          typename From1_Policy, typename From2_Policy,
-          typename To1, typename To2, typename To3,
-          typename From1, typename From2>
+	  typename From1_Policy, typename From2_Policy,
+	  typename To1, typename To2, typename To3,
+	  typename From1, typename From2>
 inline Result
 gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
-             Rounding_Dir dir) {
+	     Rounding_Dir dir) {
   // In case this becomes a bottleneck, we may consider using the
   // Stehle'-Zimmermann algorithm (see R. Crandall and C. Pomerance,
   // Prime Numbers - A Computational Perspective, Second Edition,
@@ -338,9 +338,9 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
     }
     else {
       if (x < 0)
-        s = -1;
+	s = -1;
       else
-        s = 1;
+	s = 1;
       t = 0;
       return abs<To1_Policy, From1_Policy>(to, x, dir);
     }
@@ -385,7 +385,7 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
       t = v2;
       to = v3;
       if (t3 == 0)
-        break;
+	break;
       v1 = t1;
       v2 = t2;
       v3 = t3;
@@ -407,7 +407,7 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
-          typename To, typename From1, typename From2>
+	  typename To, typename From1, typename From2>
 inline Result
 lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (x == 0 || y == 0) {
@@ -449,89 +449,89 @@ struct Safe_Int_Comparison : public False {
 template <typename T1, typename T2>
 struct Safe_Int_Comparison<T1, T2, typename Enable_If<(C_Integer<T1>::value && C_Integer<T2>::value)>::type>
   : public Bool<(C_Integer<T1>::is_signed
-                 ? (C_Integer<T2>::is_signed
-                    || sizeof(T2) < sizeof(T1)
-                    || sizeof(T2) < sizeof(int))
-                 : (!C_Integer<T2>::is_signed
-                    || sizeof(T1) < sizeof(T2)
-                    || sizeof(T1) < sizeof(int)))> {
+		 ? (C_Integer<T2>::is_signed
+		    || sizeof(T2) < sizeof(T1)
+		    || sizeof(T2) < sizeof(int))
+		 : (!C_Integer<T2>::is_signed
+		    || sizeof(T1) < sizeof(T2)
+		    || sizeof(T1) < sizeof(int)))> {
 };
 
 
 template <typename T1, typename T2>
 inline typename Enable_If<(Safe_Int_Comparison<T1, T2>::value
-                           || Safe_Conversion<T1, T2>::value
-                           || Safe_Conversion<T2, T1>::value), bool>::type
+			   || Safe_Conversion<T1, T2>::value
+			   || Safe_Conversion<T2, T1>::value), bool>::type
 lt(const T1& x, const T2& y) {
   return x < y;
 }
 template <typename T1, typename T2>
 inline typename Enable_If<(Safe_Int_Comparison<T1, T2>::value
-                           || Safe_Conversion<T1, T2>::value
-                           || Safe_Conversion<T2, T1>::value), bool>::type
+			   || Safe_Conversion<T1, T2>::value
+			   || Safe_Conversion<T2, T1>::value), bool>::type
 le(const T1& x, const T2& y) {
   return x <= y;
 }
 template <typename T1, typename T2>
 inline typename Enable_If<(Safe_Int_Comparison<T1, T2>::value
-                           || Safe_Conversion<T1, T2>::value
-                           || Safe_Conversion<T2, T1>::value), bool>::type
+			   || Safe_Conversion<T1, T2>::value
+			   || Safe_Conversion<T2, T1>::value), bool>::type
 eq(const T1& x, const T2& y) {
   return x == y;
 }
 
 template <typename S, typename U>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-                           && C_Integer<U>::value
-                           && C_Integer<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 lt(const S& x, const U& y) {
   return x < 0 || static_cast<typename C_Integer<S>::other_type>(x) < y;
 }
 
 template <typename U, typename S>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-                           && C_Integer<U>::value
-                           && C_Integer<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 lt(const U& x, const S& y) {
   return y >= 0 && x < static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename S, typename U>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-                           && C_Integer<U>::value
-                           && C_Integer<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 le(const S& x, const U& y) {
   return x < 0 || static_cast<typename C_Integer<S>::other_type>(x) <= y;
 }
 
 template <typename U, typename S>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-                           && C_Integer<U>::value
-                           && C_Integer<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 le(const U& x, const S& y) {
   return y >= 0 && x <= static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename S, typename U>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-                           && C_Integer<U>::value
-                           && C_Integer<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 eq(const S& x, const U& y) {
   return x >= 0 && static_cast<typename C_Integer<S>::other_type>(x) == y;
 }
 
 template <typename U, typename S>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-                           && C_Integer<U>::value
-                           && C_Integer<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 eq(const U& x, const S& y) {
   return y >= 0 && x == static_cast<typename C_Integer<S>::other_type>(y);
 }
 
 template <typename T1, typename T2>
 inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
-                           && !Safe_Conversion<T2, T1>::value
-                           && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
+			   && !Safe_Conversion<T2, T1>::value
+			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_CHECK);
@@ -545,8 +545,8 @@ eq(const T1& x, const T2& y) {
 
 template <typename T1, typename T2>
 inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
-                           && !Safe_Conversion<T2, T1>::value
-                           && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
+			   && !Safe_Conversion<T2, T1>::value
+			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 lt(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_UP);
@@ -594,28 +594,28 @@ le(const T1& x, const T2& y) {
 }
 
 template <typename Policy1, typename Policy2,
-          typename Type1, typename Type2>
+	  typename Type1, typename Type2>
 inline bool
 lt_p(const Type1& x, const Type2& y) {
   return lt(x, y);
 }
 
 template <typename Policy1, typename Policy2,
-          typename Type1, typename Type2>
+	  typename Type1, typename Type2>
 inline bool
 le_p(const Type1& x, const Type2& y) {
   return le(x, y);
 }
 
 template <typename Policy1, typename Policy2,
-          typename Type1, typename Type2>
+	  typename Type1, typename Type2>
 inline bool
 eq_p(const Type1& x, const Type2& y) {
   return eq(x, y);
 }
 
 template <typename Policy1, typename Policy2,
-          typename Type1, typename Type2>
+	  typename Type1, typename Type2>
 inline Result_Relation
 cmp_generic(const Type1& x, const Type2& y) {
   if (lt(y, x))

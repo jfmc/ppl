@@ -40,7 +40,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
   : Dense_Matrix(0, cs.space_dimension() + 2) {
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       insert(*i);
 }
@@ -110,8 +110,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
       // Resize the system, if necessary.
       add_zero_columns(cg_size - old_num_columns);
       if (!has_no_rows())
-        // Move the moduli to the last column.
-        swap_columns(old_num_columns - 1, cg_size - 1);
+	// Move the moduli to the last column.
+	swap_columns(old_num_columns - 1, cg_size - 1);
     }
     Congruence cg(c, cg_size, row_capacity);
     add_recycled_row(cg);
@@ -197,16 +197,16 @@ PPL::Congruence_System::normalize_moduli() {
       --row;
       lcm = cgs[row].modulus();
       if (lcm > 0)
-        break;
+	break;
       if (row == 0)
-        // All rows are equalities.
-        return;
+	// All rows are equalities.
+	return;
     }
     while (row > 0) {
       --row;
       const Coefficient& modulus = cgs[row].modulus();
       if (modulus > 0)
-        lcm_assign(lcm, lcm, modulus);
+	lcm_assign(lcm, lcm, modulus);
     }
 
     // Represent every row using the LCM as the modulus.
@@ -216,10 +216,10 @@ PPL::Congruence_System::normalize_moduli() {
       Congruence& cgs_row = cgs[row];
       const Coefficient& modulus = cgs_row.modulus();
       if (modulus <= 0 || modulus == lcm)
-        continue;
+	continue;
       exact_div_assign(factor, lcm, modulus);
       for (dimension_type col = row_size; col-- > 0; ) {
-        cgs_row[col] *= factor;
+	cgs_row[col] *= factor;
       }
       cgs_row[row_size-1] = lcm;
     }
@@ -238,7 +238,7 @@ PPL::Congruence_System::is_equal_to(const Congruence_System& y) const {
     const Congruence& y_row = y[row];
     for (dimension_type col = y.num_columns(); col-- > 0; ) {
       if (x_row[col] == y_row[col])
-        continue;
+	continue;
       return false;
     }
   }
@@ -296,7 +296,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
       if (sp != 0)
-        return false;
+	return false;
     }
   else {
     const Coefficient& divisor = g.divisor();
@@ -304,11 +304,11 @@ satisfies_all_congruences(const Grid_Generator& g) const {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
       if (cg.is_equality()) {
-        if (sp != 0)
-          return false;
+	if (sp != 0)
+	  return false;
       }
       else if (sp % (cg.modulus() * divisor) != 0)
-        return false;
+	return false;
     }
   }
   return true;
@@ -325,20 +325,20 @@ PPL::Congruence_System::has_a_free_dimension() const {
     const Congruence& cg = (*this)[row];
     for (dimension_type dim = space_dim; dim-- > 0; )
       if (free_dim[dim] && cg[dim+1] != 0) {
-        if (--free_dims == 0) {
-          // All dimensions are constrained.
+	if (--free_dims == 0) {
+	  // All dimensions are constrained.
 #ifndef NDEBUG
-          free_dim[dim] = false;
-          // Check that there are free_dims dimensions marked free
-          // in free_dim.
-          dimension_type count = 0;
-          for (dimension_type i = space_dim; i-- > 0; )
-            count += free_dim[i];
-          PPL_ASSERT(count == free_dims);
+	  free_dim[dim] = false;
+	  // Check that there are free_dims dimensions marked free
+	  // in free_dim.
+	  dimension_type count = 0;
+	  for (dimension_type i = space_dim; i-- > 0; )
+	    count += free_dim[i];
+	  PPL_ASSERT(count == free_dims);
 #endif
-          return true;
-        }
-        free_dim[dim] = false;
+	  return true;
+	}
+	free_dim[dim] = false;
       }
   }
   // At least one dimension is free of constraint.
@@ -348,8 +348,8 @@ PPL::Congruence_System::has_a_free_dimension() const {
 void
 PPL::Congruence_System::
 affine_preimage(dimension_type v,
-                const Linear_Expression& expr,
-                Coefficient_traits::const_reference denominator) {
+		const Linear_Expression& expr,
+		Coefficient_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to a "user" variable
   // (i.e., it cannot be the inhomogeneous term).
   PPL_ASSERT(v > 0 && v <= space_dimension());
@@ -369,14 +369,14 @@ affine_preimage(dimension_type v,
       Congruence& row = x[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
-        for (dimension_type j = expr_size; j-- > 0; )
-          if (j != v)
-            // row[j] = row[j] + row_v * expr[j]
-            add_mul_assign(row[j], row_v, expr[j]);
-        if (not_invertible)
-          row_v = 0;
-        else
-          row_v *= expr[v];
+	for (dimension_type j = expr_size; j-- > 0; )
+	  if (j != v)
+	    // row[j] = row[j] + row_v * expr[j]
+	    add_mul_assign(row[j], row_v, expr[j]);
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
       }
     }
   else
@@ -384,17 +384,17 @@ affine_preimage(dimension_type v,
       Congruence& row = x[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
-        for (dimension_type j = num_columns; j-- > 0; )
-          if (j != v) {
-            Coefficient& row_j = row[j];
-            row_j *= denominator;
-            if (j < expr_size)
-              add_mul_assign(row_j, row_v, expr[j]);
-          }
-        if (not_invertible)
-          row_v = 0;
-        else
-          row_v *= expr[v];
+	for (dimension_type j = num_columns; j-- > 0; )
+	  if (j != v) {
+	    Coefficient& row_j = row[j];
+	    row_j *= denominator;
+	    if (j < expr_size)
+	      add_mul_assign(row_j, row_v, expr[j]);
+	  }
+	if (not_invertible)
+	  row_v = 0;
+	else
+	  row_v *= expr[v];
       }
     }
 }
@@ -462,7 +462,7 @@ PPL::Congruence_System::OK() const {
     if (num_columns() < 2) {
 #ifndef NDEBUG
       std::cerr << "Congruence_System has rows and fewer than two columns."
-                << std::endl;
+		<< std::endl;
 #endif
       return false;
     }
@@ -504,9 +504,9 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
     dimension_type num_rows = x.num_rows();
     if (num_rows == y.num_rows()) {
       while (num_rows--) {
-        if (x[num_rows] == y[num_rows])
-          continue;
-        return false;
+	if (x[num_rows] == y[num_rows])
+	  continue;
+	return false;
       }
       return true;
     }
@@ -520,8 +520,8 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
   dimension_type col = num_columns() - 1;
   dimension_type old_num_rows = num_rows();
   add_zero_rows_and_columns(dims, dims,
-                            Linear_Row::Flags(NECESSARILY_CLOSED,
-                                              Linear_Row::LINE_OR_EQUALITY));
+			    Linear_Row::Flags(NECESSARILY_CLOSED,
+					      Linear_Row::LINE_OR_EQUALITY));
   // Swap the modulus column into the new last column.
   swap_columns(col, col + dims);
 

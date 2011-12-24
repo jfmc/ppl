@@ -155,7 +155,7 @@ BD_Shape<T>::Status::OK() const {
     else {
 #ifndef NDEBUG
       std::cerr << "The empty flag is incompatible with any other one."
-                << std::endl;
+		<< std::endl;
 #endif
       return false;
     }
@@ -168,8 +168,8 @@ BD_Shape<T>::Status::OK() const {
     else {
 #ifndef NDEBUG
       std::cerr << "The shortest-path reduction flag should also imply "
-                << "the closure flag."
-                << std::endl;
+		<< "the closure flag."
+		<< std::endl;
 #endif
       return false;
     }

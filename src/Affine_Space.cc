@@ -261,51 +261,51 @@ PPL::Affine_Space::affine_image(const Variable var,
 void
 PPL::Affine_Space::
 affine_preimage(const Variable var,
-                const Linear_Expression& expr,
-                Coefficient_traits::const_reference denominator) {
+		const Linear_Expression& expr,
+		Coefficient_traits::const_reference denominator) {
   gr.affine_preimage(var, expr, denominator);
 }
 
 void
 PPL::Affine_Space::
 generalized_affine_image(const Variable var,
-                         const Relation_Symbol relsym,
-                         const Linear_Expression& expr,
-                         Coefficient_traits::const_reference denominator) {
+			 const Relation_Symbol relsym,
+			 const Linear_Expression& expr,
+			 Coefficient_traits::const_reference denominator) {
   gr.generalized_affine_image(var, relsym, expr, denominator);
 }
 
 void
 PPL::Affine_Space::
 generalized_affine_preimage(const Variable var,
-                            const Relation_Symbol relsym,
-                            const Linear_Expression& expr,
-                            Coefficient_traits::const_reference denominator) {
+			    const Relation_Symbol relsym,
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator) {
   gr.generalized_affine_preimage(var, relsym, expr, denominator);
 }
 
 void
 PPL::Affine_Space::
 generalized_affine_image(const Linear_Expression& lhs,
-                         const Relation_Symbol relsym,
-                         const Linear_Expression& rhs) {
+			 const Relation_Symbol relsym,
+			 const Linear_Expression& rhs) {
   gr.generalized_affine_image(lhs, relsym, rhs);
 }
 
 void
 PPL::Affine_Space::
 generalized_affine_preimage(const Linear_Expression& lhs,
-                            const Relation_Symbol relsym,
-                            const Linear_Expression& rhs) {
+			    const Relation_Symbol relsym,
+			    const Linear_Expression& rhs) {
   gr.generalized_affine_preimage(lhs, relsym, rhs);
 }
 
 void
 PPL::Affine_Space::
 bounded_affine_image(const Variable var,
-                     const Linear_Expression& lb_expr,
-                     const Linear_Expression& ub_expr,
-                     Coefficient_traits::const_reference denominator) {
+		     const Linear_Expression& lb_expr,
+		     const Linear_Expression& ub_expr,
+		     Coefficient_traits::const_reference denominator) {
   gr.bounded_affine_image(var, lb_expr, ub_expr, denominator);
 }
 
@@ -313,9 +313,9 @@ bounded_affine_image(const Variable var,
 void
 PPL::Affine_Space::
 bounded_affine_preimage(const Variable var,
-                        const Linear_Expression& lb_expr,
-                        const Linear_Expression& ub_expr,
-                        Coefficient_traits::const_reference denominator) {
+			const Linear_Expression& lb_expr,
+			const Linear_Expression& ub_expr,
+			Coefficient_traits::const_reference denominator) {
   gr.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);
 }
 
@@ -446,3 +446,4 @@ PPL::Affine_Space
                                const Affine_Space& as) const {
   throw_dimension_incompatible(method, as_name, as.space_dimension());
 }
+

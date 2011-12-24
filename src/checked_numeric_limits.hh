@@ -32,43 +32,43 @@ namespace std {
 
 using namespace Parma_Polyhedra_Library;
 
-#define PPL_SPECIALIZE_LIMITS_INT(T)                                    \
-/*! \brief Partial specialization of std::numeric_limits. */            \
-template <typename Policy>                                              \
+#define PPL_SPECIALIZE_LIMITS_INT(T)					\
+/*! \brief Partial specialization of std::numeric_limits. */		\
+template <typename Policy>						\
  class numeric_limits<Checked_Number<T, Policy> >                       \
-  : public numeric_limits<T> {                                          \
- private:                                                               \
+  : public numeric_limits<T> {						\
+ private:								\
   typedef Checked_Number<T, Policy> Type;                               \
-                                                                        \
- public:                                                                \
-  static const bool has_infinity = Policy::has_infinity;                \
+									\
+ public:								\
+  static const bool has_infinity = Policy::has_infinity;		\
   static const bool has_quiet_NaN =  Policy::has_nan;                   \
                                                                         \
-  static Type min() {                                                   \
-    Type v;                                                             \
-    v.raw_value() = Checked::Extended_Int<Policy, T>::min;              \
-    return v;                                                           \
-  }                                                                     \
+  static Type min() {							\
+    Type v;								\
+    v.raw_value() = Checked::Extended_Int<Policy, T>::min;		\
+    return v;								\
+  }									\
                                                                         \
-  static Type max() {                                                   \
-    Type v;                                                             \
-    v.raw_value() = Checked::Extended_Int<Policy, T>::max;              \
-    return v;                                                           \
-  }                                                                     \
-                                                                        \
-  static Type infinity() {                                              \
-    Type v;                                                             \
-    Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,    \
-                            ROUND_IGNORE);                              \
-    return v;                                                           \
-  }                                                                     \
-                                                                        \
-  static Type quiet_NaN() {                                             \
-    Type v;                                                             \
-    Checked::assign_special<Policy>(v.raw_value(), VC_NAN,              \
-                            ROUND_IGNORE);                              \
-    return v;                                                           \
-  }                                                                     \
+  static Type max() {							\
+    Type v;								\
+    v.raw_value() = Checked::Extended_Int<Policy, T>::max;		\
+    return v;								\
+  }									\
+									\
+  static Type infinity() {						\
+    Type v;								\
+    Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,	\
+			    ROUND_IGNORE);				\
+    return v;								\
+  }									\
+									\
+  static Type quiet_NaN() {						\
+    Type v;								\
+    Checked::assign_special<Policy>(v.raw_value(), VC_NAN,		\
+			    ROUND_IGNORE);				\
+    return v;								\
+  }									\
 };
 
 PPL_SPECIALIZE_LIMITS_INT(char)
@@ -87,11 +87,11 @@ PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 
 #undef PPL_SPECIALIZE_LIMITS_INT
 
-#define PPL_SPECIALIZE_LIMITS_FLOAT(T)                                  \
-/*! \brief Partial specialization of std::numeric_limits. */            \
-template <typename Policy>                                              \
+#define PPL_SPECIALIZE_LIMITS_FLOAT(T)					\
+/*! \brief Partial specialization of std::numeric_limits. */		\
+template <typename Policy>						\
 struct numeric_limits<Checked_Number<T, Policy> > \
-  : public numeric_limits<T> {                                          \
+  : public numeric_limits<T> {						\
 };
 
 #if PPL_SUPPORTED_FLOAT
@@ -123,7 +123,7 @@ public:
   static Type infinity() {
     Type v;
     Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,
-                                    ROUND_IGNORE);
+				    ROUND_IGNORE);
     return v;
   }
 
@@ -151,7 +151,7 @@ public:
   static Type infinity() {
     Type v;
     Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,
-                                    ROUND_IGNORE);
+				    ROUND_IGNORE);
     return v;
   }
 

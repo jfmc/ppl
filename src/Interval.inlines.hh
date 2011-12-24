@@ -148,9 +148,9 @@ check_empty_arg(const T& x) {
 
 template <typename T1, typename T2>
 inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
-                           && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
-                           && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
-                          bool>::type
+			   && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
+			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
+			  bool>::type
 operator==(const T1& x, const T2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
@@ -167,9 +167,9 @@ operator==(const T1& x, const T2& y) {
 
 template <typename T1, typename T2>
 inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
-                           && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
-                           && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
-                          bool>::type
+			   && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
+			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
+			  bool>::type
 operator!=(const T1& x, const T2& y) {
   return !(x == y);
 }
@@ -210,9 +210,9 @@ Interval<Boundary, Info>::strictly_contains(const T& y) const {
     return le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
       && ge(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y));
   return (lt(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
-          && ge(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y)))
+	  && ge(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y)))
     || (le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
-        && gt(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y)));
+	&& gt(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y)));
 }
 
 template <typename Boundary, typename Info>
@@ -244,9 +244,9 @@ Interval<To_Boundary, To_Info>::assign(const From& x) {
   if (!assign_restriction(to_info, x))
     return assign(EMPTY);
   Result rl = Boundary_NS::assign(LOWER, lower(), to_info,
-                                  LOWER, f_lower(x), f_info(x));
+				  LOWER, f_lower(x), f_info(x));
   Result ru = Boundary_NS::assign(UPPER, upper(), to_info,
-                                  UPPER, f_upper(x), f_info(x));
+				  UPPER, f_upper(x), f_info(x));
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return combine(rl, ru);
@@ -275,7 +275,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
@@ -290,11 +290,11 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
     return assign(EMPTY);
   Result rl, ru;
   rl = min_assign(LOWER, lower(), to_info,
-                  LOWER, f_lower(x), f_info(x),
-                  LOWER, f_lower(y), f_info(y));
+		  LOWER, f_lower(x), f_info(x),
+		  LOWER, f_lower(y), f_info(y));
   ru = max_assign(UPPER, upper(), to_info,
-                  UPPER, f_upper(x), f_info(x),
-                  UPPER, f_upper(y), f_info(y));
+		  UPPER, f_upper(x), f_info(x),
+		  UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return combine(rl, ru);
@@ -342,7 +342,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::intersect_assign(const From1& x,
                                                  const From2& y) {
@@ -397,7 +397,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
                                                   const From2& y) {
@@ -445,40 +445,40 @@ Interval<To_Boundary, To_Info>
   case LESS_THAN:
     {
       if (lt(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Boundary_NS::assign(UPPER, upper(), info(),
-                          UPPER, f_upper(x), f_info(x), true);
+			  UPPER, f_upper(x), f_info(x), true);
       normalize();
       return I_ANY;
     }
   case LESS_OR_EQUAL:
     {
       if (le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Boundary_NS::assign(UPPER, upper(), info(),
-                          UPPER, f_upper(x), f_info(x));
+			  UPPER, f_upper(x), f_info(x));
       normalize();
       return I_ANY;
     }
   case GREATER_THAN:
     {
       if (gt(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Boundary_NS::assign(LOWER, lower(), info(),
-                          LOWER, f_lower(x), f_info(x), true);
+			  LOWER, f_lower(x), f_info(x), true);
       normalize();
       return I_ANY;
     }
   case GREATER_OR_EQUAL:
     {
       if (ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Boundary_NS::assign(LOWER, lower(), info(),
-                          LOWER, f_lower(x), f_info(x));
+			  LOWER, f_lower(x), f_info(x));
       normalize();
       return I_ANY;
     }
@@ -487,13 +487,13 @@ Interval<To_Boundary, To_Info>
   case NOT_EQUAL:
     {
       if (!f_is_singleton(x))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       if (check_empty_arg(*this))
-        return I_EMPTY;
+	return I_EMPTY;
       if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
-        remove_inf();
+	remove_inf();
       if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
-        remove_sup();
+	remove_sup();
       normalize();
       return I_ANY;
     }
@@ -517,10 +517,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
   case LESS_THAN:
     {
       if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-                                      LOWER, f_lower(x), SCALAR_INFO,
+				      LOWER, f_lower(x), SCALAR_INFO,
                                       !is_open(LOWER, f_lower(x), f_info(x)));
       used(ru);
       normalize();
@@ -529,10 +529,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
   case LESS_OR_EQUAL:
     {
       if (le(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
-                                      LOWER, f_lower(x), SCALAR_INFO);
+				      LOWER, f_lower(x), SCALAR_INFO);
       used(ru);
       normalize();
       return I_ANY;
@@ -540,10 +540,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
   case GREATER_THAN:
     {
       if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-                                      UPPER, f_upper(x), SCALAR_INFO,
+				      UPPER, f_upper(x), SCALAR_INFO,
                                       !is_open(UPPER, f_upper(x), f_info(x)));
       used(rl);
       normalize();
@@ -552,10 +552,10 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
   case GREATER_OR_EQUAL:
     {
       if (ge(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
-        return combine(V_EQ, V_EQ);
+	return combine(V_EQ, V_EQ);
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
-                                      UPPER, f_upper(x), SCALAR_INFO);
+				      UPPER, f_upper(x), SCALAR_INFO);
       used(rl);
       normalize();
       return I_ANY;
@@ -567,11 +567,11 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
   case NOT_EQUAL:
     {
       if (check_empty_arg(*this))
-        return I_EMPTY;
+	return I_EMPTY;
       if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
-        remove_inf();
+	remove_inf();
       if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
-        remove_sup();
+	remove_sup();
       normalize();
       return I_ANY;
     }
@@ -607,7 +607,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
@@ -630,11 +630,11 @@ Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
   if (!add_restriction(to_info, x, y))
     return assign(EMPTY);
   Result rl = Boundary_NS::add_assign(LOWER, lower(), to_info,
-                                      LOWER, f_lower(x), f_info(x),
-                                      LOWER, f_lower(y), f_info(y));
+				      LOWER, f_lower(x), f_info(x),
+				      LOWER, f_lower(y), f_info(y));
   Result ru = Boundary_NS::add_assign(UPPER, upper(), to_info,
-                                      UPPER, f_upper(x), f_info(x),
-                                      UPPER, f_upper(y), f_info(y));
+				      UPPER, f_upper(x), f_info(x),
+				      UPPER, f_upper(y), f_info(y));
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return combine(rl, ru);
@@ -644,7 +644,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
@@ -670,11 +670,11 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
   Result rl, ru;
   PPL_DIRTY_TEMP(To_Boundary, to_lower);
   rl = Boundary_NS::sub_assign(LOWER, to_lower, to_info,
-                               LOWER, f_lower(x), f_info(x),
-                               UPPER, f_upper(y), f_info(y));
+			       LOWER, f_lower(x), f_info(x),
+			       UPPER, f_upper(y), f_info(y));
   ru = Boundary_NS::sub_assign(UPPER, upper(), to_info,
-                               UPPER, f_upper(x), f_info(x),
-                               LOWER, f_lower(y), f_info(y));
+			       UPPER, f_upper(x), f_info(x),
+			       LOWER, f_lower(y), f_info(y));
   assign_or_swap(lower(), to_lower);
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
@@ -697,7 +697,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
@@ -722,15 +722,15 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
       us = xus;
     inf:
       if (ls == 0 && us == 0)
-        return assign(EMPTY);
+	return assign(EMPTY);
       if (ls == -us)
-        return set_infinities();
+	return set_infinities();
       if (ls < 0 || us < 0)
-        inf = -inf;
+	inf = -inf;
       if (inf < 0)
-        return assign(MINUS_INFINITY);
+	return assign(MINUS_INFINITY);
       else
-        return assign(PLUS_INFINITY);
+	return assign(PLUS_INFINITY);
     }
   }
 
@@ -745,77 +745,77 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
     if (yls >= 0) {
       // 0 <= xl <= xu, 0 <= yl <= yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        LOWER, f_lower(y), f_info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = mul_assign_z(UPPER, upper(), to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        UPPER, f_upper(y), f_info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else if (yus <= 0) {
       // 0 <= xl <= xu, yl <= yu <= 0
       rl = mul_assign_z(LOWER, to_lower, to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        LOWER, f_lower(y), f_info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = mul_assign_z(UPPER, upper(), to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        UPPER, f_upper(y), f_info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else {
       // 0 <= xl <= xu, yl < 0 < yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        LOWER, f_lower(y), f_info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = mul_assign_z(UPPER, upper(), to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        UPPER, f_upper(y), f_info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
     }
   }
   else if (xus <= 0) {
     if (yls >= 0) {
       // xl <= xu <= 0, 0 <= yl <= yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        UPPER, f_upper(y), f_info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = mul_assign_z(UPPER, upper(), to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        LOWER, f_lower(y), f_info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else if (yus <= 0) {
       // xl <= xu <= 0, yl <= yu <= 0
       rl = mul_assign_z(LOWER, to_lower, to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        UPPER, f_upper(y), f_info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = mul_assign_z(UPPER, upper(), to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        LOWER, f_lower(y), f_info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else {
       // xl <= xu <= 0, yl < 0 < yu
       rl = mul_assign_z(LOWER, to_lower, to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        UPPER, f_upper(y), f_info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = mul_assign_z(UPPER, upper(), to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        LOWER, f_lower(y), f_info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
     }
   }
   else if (yls >= 0) {
     // xl < 0 < xu, 0 <= yl <= yu
     rl = mul_assign_z(LOWER, to_lower, to_info,
-                      LOWER, f_lower(x), f_info(x), xls,
-                      UPPER, f_upper(y), f_info(y), yus);
+		      LOWER, f_lower(x), f_info(x), xls,
+		      UPPER, f_upper(y), f_info(y), yus);
     ru = mul_assign_z(UPPER, upper(), to_info,
-                      UPPER, f_upper(x), f_info(x), xus,
-                      UPPER, f_upper(y), f_info(y), yus);
+		      UPPER, f_upper(x), f_info(x), xus,
+		      UPPER, f_upper(y), f_info(y), yus);
   }
   else if (yus <= 0) {
     // xl < 0 < xu, yl <= yu <= 0
     rl = mul_assign_z(LOWER, to_lower, to_info,
-                      UPPER, f_upper(x), f_info(x), xus,
-                      LOWER, f_lower(y), f_info(y), yls);
+		      UPPER, f_upper(x), f_info(x), xus,
+		      LOWER, f_lower(y), f_info(y), yls);
     ru = mul_assign_z(UPPER, upper(), to_info,
-                      LOWER, f_lower(x), f_info(x), xls,
-                      LOWER, f_lower(y), f_info(y), yls);
+		      LOWER, f_lower(x), f_info(x), xls,
+		      LOWER, f_lower(y), f_info(y), yls);
   }
   else {
     // xl < 0 < xu, yl < 0 < yu
@@ -824,22 +824,22 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
     tmp_info.clear();
     Result tmp_r;
     tmp_r = Boundary_NS::mul_assign(LOWER, tmp, tmp_info,
-                                    UPPER, f_upper(x), f_info(x),
-                                    LOWER, f_lower(y), f_info(y));
+				    UPPER, f_upper(x), f_info(x),
+				    LOWER, f_lower(y), f_info(y));
     rl = Boundary_NS::mul_assign(LOWER, to_lower, to_info,
-                                 LOWER, f_lower(x), f_info(x),
-                                 UPPER, f_upper(y), f_info(y));
+				 LOWER, f_lower(x), f_info(x),
+				 UPPER, f_upper(y), f_info(y));
     if (gt(LOWER, to_lower, to_info, LOWER, tmp, tmp_info)) {
       to_lower = tmp;
       rl = tmp_r;
     }
     tmp_info.clear();
     tmp_r = Boundary_NS::mul_assign(UPPER, tmp, tmp_info,
-                                    UPPER, f_upper(x), f_info(x),
-                                    UPPER, f_upper(y), f_info(y));
+				    UPPER, f_upper(x), f_info(x),
+				    UPPER, f_upper(y), f_info(y));
     ru = Boundary_NS::mul_assign(UPPER, upper(), to_info,
-                                 LOWER, f_lower(x), f_info(x),
-                                 LOWER, f_lower(y), f_info(y));
+				 LOWER, f_lower(x), f_info(x),
+				 LOWER, f_lower(y), f_info(y));
     if (lt(UPPER, upper(), to_info, UPPER, tmp, tmp_info)) {
       upper() = tmp;
       ru = tmp_r;
@@ -866,7 +866,7 @@ template <typename To_Boundary, typename To_Info>
 template <typename From1, typename From2>
 inline typename Enable_If<((Is_Singleton<From1>::value
                             || Is_Interval<From1>::value)
-                           && (Is_Singleton<From2>::value
+			   && (Is_Singleton<From2>::value
                                || Is_Interval<From2>::value)), I_Result>::type
 Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
@@ -902,53 +902,53 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   if (yls >= 0) {
     if (xls >= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        UPPER, f_upper(y), f_info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = div_assign_z(UPPER, upper(), to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        LOWER, f_lower(y), f_info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else if (xus <= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        LOWER, f_lower(y), f_info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = div_assign_z(UPPER, upper(), to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        UPPER, f_upper(y), f_info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else {
       rl = div_assign_z(LOWER, to_lower, to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        LOWER, f_lower(y), f_info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = div_assign_z(UPPER, upper(), to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        LOWER, f_lower(y), f_info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
     }
   }
   else if (yus <= 0) {
     if (xls >= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        UPPER, f_upper(y), f_info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = div_assign_z(UPPER, upper(), to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        LOWER, f_lower(y), f_info(y), yls);
+			LOWER, f_lower(x), f_info(x), xls,
+			LOWER, f_lower(y), f_info(y), yls);
     }
     else if (xus <= 0) {
       rl = div_assign_z(LOWER, to_lower, to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        LOWER, f_lower(y), f_info(y), yls);
+			UPPER, f_upper(x), f_info(x), xus,
+			LOWER, f_lower(y), f_info(y), yls);
       ru = div_assign_z(UPPER, upper(), to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        UPPER, f_upper(y), f_info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
     }
     else {
       rl = div_assign_z(LOWER, to_lower, to_info,
-                        UPPER, f_upper(x), f_info(x), xus,
-                        UPPER, f_upper(y), f_info(y), yus);
+			UPPER, f_upper(x), f_info(x), xus,
+			UPPER, f_upper(y), f_info(y), yus);
       ru = div_assign_z(UPPER, upper(), to_info,
-                        LOWER, f_lower(x), f_info(x), xls,
-                        UPPER, f_upper(y), f_info(y), yus);
+			LOWER, f_lower(x), f_info(x), xls,
+			UPPER, f_upper(y), f_info(y), yus);
     }
   }
   else {

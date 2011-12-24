@@ -70,7 +70,7 @@ public:
     by default, the rows will have all flags unset.
   */
   Dense_Matrix(dimension_type n_rows, dimension_type n_columns,
-         Dense_Row::Flags row_flags = Dense_Row::Flags());
+	 Dense_Row::Flags row_flags = Dense_Row::Flags());
 
   //! Copy constructor.
   Dense_Matrix(const Dense_Matrix& y);

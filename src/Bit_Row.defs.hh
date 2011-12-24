@@ -91,7 +91,7 @@ bool subset_or_equal(const Bit_Row& x, const Bit_Row& y);
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
-                     bool& strict_subset);
+		     bool& strict_subset);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
@@ -161,7 +161,7 @@ public:
   friend bool operator!=(const Bit_Row& x, const Bit_Row& y);
   friend bool subset_or_equal(const Bit_Row& x, const Bit_Row& y);
   friend bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
-                              bool& strict_subset);
+			      bool& strict_subset);
   friend bool strict_subset(const Bit_Row& x, const Bit_Row& y);
 
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.

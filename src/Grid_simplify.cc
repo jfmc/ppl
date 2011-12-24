@@ -29,7 +29,7 @@ namespace Parma_Polyhedra_Library {
 
 void
 Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
-                            dimension_type column) {
+			    dimension_type column) {
   const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
   PPL_DIRTY_TEMP_COEFFICIENT(reduced_row_col);
@@ -55,8 +55,8 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 
 void
 Grid::reduce_equality_with_equality(Congruence& row,
-                                    const Congruence& pivot,
-                                    const dimension_type column) {
+				    const Congruence& pivot,
+				    const dimension_type column) {
   // Assume two equalities.
   PPL_ASSERT(row.modulus() == 0 && pivot.modulus() == 0);
 
@@ -82,9 +82,9 @@ Grid::reduce_equality_with_equality(Congruence& row,
 template <typename R>
 void
 Grid::reduce_pc_with_pc(R& row, R& pivot,
-                        const dimension_type column,
-                        const dimension_type start,
-                        const dimension_type end) {
+			const dimension_type column,
+			const dimension_type start,
+			const dimension_type end) {
   Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
@@ -123,9 +123,9 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
 
 void
 Grid::reduce_parameter_with_line(Grid_Generator& row,
-                                 const Grid_Generator& pivot,
-                                 const dimension_type column,
-                                 Grid_Generator_System& sys) {
+				 const Grid_Generator& pivot,
+				 const dimension_type column,
+				 Grid_Generator_System& sys) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
 
@@ -179,9 +179,9 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
 void
 Grid::reduce_congruence_with_equality(Congruence& row,
-                                      const Congruence& pivot,
-                                      const dimension_type column,
-                                      Congruence_System& sys) {
+				      const Congruence& pivot,
+				      const dimension_type column,
+				      Congruence_System& sys) {
   // Very similar to reduce_parameter_with_line above.  Any change
   // here may be needed there too.
   PPL_ASSERT(row.modulus() > 0 && pivot.modulus() == 0);
@@ -235,12 +235,12 @@ Grid::reduce_congruence_with_equality(Congruence& row,
 template <typename M, typename R>
 bool
 Grid::rows_are_zero(M& system, dimension_type first,
-                    dimension_type last, dimension_type row_size) {
+		    dimension_type last, dimension_type row_size) {
   while (first <= last) {
     const R& row = system[first++];
     for (dimension_type col = 0; col < row_size; ++col)
       if (row[col] != 0)
-        return false;
+	return false;
   }
   return true;
 }
@@ -282,7 +282,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     else {
       if (row_index != pivot_index) {
         using std::swap;
-        swap(sys[row_index], sys[pivot_index]);
+	swap(sys[row_index], sys[pivot_index]);
       }
       Grid_Generator& pivot = sys[pivot_index];
       bool pivot_is_line = pivot.is_line();
@@ -290,49 +290,49 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
       // Change the matrix so that the value at `dim' in every row
       // following `pivot_index' is 0, leaving an equivalent grid.
       while (row_index < num_rows - 1) {
-        ++row_index;
+	++row_index;
 
-        Grid_Generator& row = sys[row_index];
+	Grid_Generator& row = sys[row_index];
 
-        if (row[dim] == 0)
-          continue;
+	if (row[dim] == 0)
+	  continue;
 
-        if (row.is_line())
-          if (pivot_is_line)
-            reduce_line_with_line(row, pivot, dim);
-          else {
-            PPL_ASSERT(pivot.is_parameter_or_point());
+	if (row.is_line())
+	  if (pivot_is_line)
+	    reduce_line_with_line(row, pivot, dim);
+	  else {
+	    PPL_ASSERT(pivot.is_parameter_or_point());
             using std::swap;
-            swap(row, pivot);
-            pivot_is_line = true;
-            reduce_parameter_with_line(row, pivot, dim, sys);
-          }
-        else {
-          PPL_ASSERT(row.is_parameter_or_point());
-          if (pivot_is_line)
-            reduce_parameter_with_line(row, pivot, dim, sys);
-          else {
-            PPL_ASSERT(pivot.is_parameter_or_point());
-            reduce_pc_with_pc(row, pivot, dim, dim + 1, num_columns);
-          }
-        }
+	    swap(row, pivot);
+	    pivot_is_line = true;
+	    reduce_parameter_with_line(row, pivot, dim, sys);
+	  }
+	else {
+	  PPL_ASSERT(row.is_parameter_or_point());
+	  if (pivot_is_line)
+	    reduce_parameter_with_line(row, pivot, dim, sys);
+	  else {
+	    PPL_ASSERT(pivot.is_parameter_or_point());
+	    reduce_pc_with_pc(row, pivot, dim, dim + 1, num_columns);
+	  }
+	}
       }
 
       if (pivot_is_line)
-        dim_kinds[dim] = LINE;
+	dim_kinds[dim] = LINE;
       else {
-        PPL_ASSERT(pivot.is_parameter_or_point());
-        dim_kinds[dim] = PARAMETER;
+	PPL_ASSERT(pivot.is_parameter_or_point());
+	dim_kinds[dim] = PARAMETER;
       }
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
-        pivot.negate(dim, num_columns - 1);
+	pivot.negate(dim, num_columns - 1);
 
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
-        (sys, dim, pivot_index, dim, num_columns - 1, dim_kinds);
+	(sys, dim, pivot_index, dim, num_columns - 1, dim_kinds);
 
       ++pivot_index;
     }
@@ -360,7 +360,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // divisor.
   const Coefficient& system_divisor = sys[0][0];
   for (dimension_type row = sys.num_rows() - 1,
-         dim = sys.num_columns() - 2;
+	 dim = sys.num_columns() - 2;
        dim > 0; --dim)
     switch (dim_kinds[dim]) {
     case PARAMETER:
@@ -412,7 +412,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // row_index != num_rows
       if (row_index != pivot_index) {
         using std::swap;
-        swap(sys[row_index], sys[pivot_index]);
+	swap(sys[row_index], sys[pivot_index]);
       }
       Congruence& pivot = sys[pivot_index];
       bool pivot_is_equality = pivot.is_equality();
@@ -420,48 +420,48 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       // Change the matrix so that the value at `dim' in every row
       // following `pivot_index' is 0, leaving an equivalent grid.
       while (row_index < num_rows - 1) {
-        ++row_index;
+	++row_index;
 
-        Congruence& row = sys[row_index];
+	Congruence& row = sys[row_index];
 
-        if (row[dim] == 0)
-          continue;
+	if (row[dim] == 0)
+	  continue;
 
-        if (row.is_equality())
-          if (pivot_is_equality)
-            reduce_equality_with_equality(row, pivot, dim);
-          else {
-            PPL_ASSERT(pivot.is_proper_congruence());
+	if (row.is_equality())
+	  if (pivot_is_equality)
+	    reduce_equality_with_equality(row, pivot, dim);
+	  else {
+	    PPL_ASSERT(pivot.is_proper_congruence());
             using std::swap;
-            swap(row, pivot);
-            pivot_is_equality = true;
-            reduce_congruence_with_equality(row, pivot, dim, sys);
-          }
-        else {
-          PPL_ASSERT(row.is_proper_congruence());
-          if (pivot_is_equality)
-            reduce_congruence_with_equality(row, pivot, dim, sys);
-          else {
-            PPL_ASSERT(pivot.is_proper_congruence());
-            reduce_pc_with_pc(row, pivot, dim, 0, dim);
-          }
-        }
+	    swap(row, pivot);
+	    pivot_is_equality = true;
+	    reduce_congruence_with_equality(row, pivot, dim, sys);
+	  }
+	else {
+	  PPL_ASSERT(row.is_proper_congruence());
+	  if (pivot_is_equality)
+	    reduce_congruence_with_equality(row, pivot, dim, sys);
+	  else {
+	    PPL_ASSERT(pivot.is_proper_congruence());
+	    reduce_pc_with_pc(row, pivot, dim, 0, dim);
+	  }
+	}
       }
 
       if (pivot_is_equality)
-        dim_kinds[dim] = EQUALITY;
+	dim_kinds[dim] = EQUALITY;
       else {
-        PPL_ASSERT(pivot.is_proper_congruence());
-        dim_kinds[dim] = PROPER_CONGRUENCE;
+	PPL_ASSERT(pivot.is_proper_congruence());
+	dim_kinds[dim] = PROPER_CONGRUENCE;
       }
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
       if (pivot[dim] < 0)
-        pivot.negate(0, dim);
+	pivot.negate(0, dim);
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System, Congruence>
-        (sys, dim, pivot_index, 0, dim, dim_kinds, false);
+	(sys, dim, pivot_index, 0, dim, dim_kinds, false);
 
       ++pivot_index;
     }
@@ -476,10 +476,10 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     Congruence& last_row = sys[reduced_num_rows - 1];
     if (dim_kinds[0] == PROPER_CONGRUENCE) {
       if (last_row.inhomogeneous_term() % last_row.modulus() != 0) {
-        // The last row is a false proper congruence.
-        last_row.set_is_equality();
-        dim_kinds[0] = EQUALITY;
-        goto return_empty;
+	// The last row is a false proper congruence.
+	last_row.set_is_equality();
+	dim_kinds[0] = EQUALITY;
+	goto return_empty;
       }
     }
     else if (dim_kinds[0] == EQUALITY) {
@@ -505,8 +505,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     dim_kinds[0] = PROPER_CONGRUENCE;
     if (num_rows == 0) {
       sys.add_zero_rows(1,
-                        Linear_Row::Flags(NECESSARILY_CLOSED,
-                                          Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+			Linear_Row::Flags(NECESSARILY_CLOSED,
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
       Congruence& cg = sys[0];
       cg[num_columns] = 1;
       cg[0] = 1;
@@ -544,8 +544,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
     sys.add_zero_rows(1,
-                      Linear_Row::Flags(NECESSARILY_CLOSED,
-                                        Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+		      Linear_Row::Flags(NECESSARILY_CLOSED,
+					Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     Congruence& new_last_row = sys[reduced_num_rows];
     new_last_row[mod_index] = 1;
     // Try use an existing modulus.
@@ -553,8 +553,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     while (row_index-- > 0) {
       Congruence& row = sys[row_index];
       if (row[mod_index] > 0) {
-        new_last_row[mod_index] = row[mod_index];
-        break;
+	new_last_row[mod_index] = row[mod_index];
+	break;
       }
     }
     new_last_row[0] = new_last_row[mod_index];

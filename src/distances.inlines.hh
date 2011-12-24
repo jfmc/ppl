@@ -68,8 +68,8 @@ maybe_assign(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
 template <typename Temp>
 inline void
 Rectilinear_Distance_Specialization<Temp>::combine(Temp& running,
-                                                   const Temp& current,
-                                                   Rounding_Dir dir) {
+						   const Temp& current,
+						   Rounding_Dir dir) {
   add_assign_r(running, running, current, dir);
 }
 
@@ -81,8 +81,8 @@ Rectilinear_Distance_Specialization<Temp>::finalize(Temp&, Rounding_Dir) {
 template <typename Temp>
 inline void
 Euclidean_Distance_Specialization<Temp>::combine(Temp& running,
-                                                 Temp& current,
-                                                 Rounding_Dir dir) {
+						 Temp& current,
+						 Rounding_Dir dir) {
   mul_assign_r(current, current, current, dir);
   add_assign_r(running, running, current, dir);
 }
@@ -90,15 +90,15 @@ Euclidean_Distance_Specialization<Temp>::combine(Temp& running,
 template <typename Temp>
 inline void
 Euclidean_Distance_Specialization<Temp>::finalize(Temp& running,
-                                                  Rounding_Dir dir) {
+						  Rounding_Dir dir) {
   sqrt_assign_r(running, running, dir);
 }
 
 template <typename Temp>
 inline void
 L_Infinity_Distance_Specialization<Temp>::combine(Temp& running,
-                                                  const Temp& current,
-                                                  Rounding_Dir) {
+						  const Temp& current,
+						  Rounding_Dir) {
   if (current > running)
     running = current;
 }

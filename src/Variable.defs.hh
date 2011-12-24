@@ -135,7 +135,7 @@ private:
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-                                                    const Variable& v);
+						    const Variable& v);
 
   //! Pointer to the current output function.
   static output_function_type* current_output_function;

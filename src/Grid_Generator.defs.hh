@@ -239,9 +239,9 @@ public:
     Thrown if \p d is zero.
   */
   static Grid_Generator parameter(const Linear_Expression& e
-                                  = Linear_Expression::zero(),
-                                  Coefficient_traits::const_reference d
-                                  = Coefficient_one());
+				  = Linear_Expression::zero(),
+				  Coefficient_traits::const_reference d
+				  = Coefficient_one());
 
   //! Returns the point at \p e / \p d.
   /*!
@@ -252,9 +252,9 @@ public:
     Thrown if \p d is zero.
   */
   static Grid_Generator grid_point(const Linear_Expression& e
-                                   = Linear_Expression::zero(),
-                                   Coefficient_traits::const_reference d
-                                   = Coefficient_one());
+				   = Linear_Expression::zero(),
+				   Coefficient_traits::const_reference d
+				   = Coefficient_one());
 
   //! Ordinary copy constructor.
   Grid_Generator(const Grid_Generator& g);
@@ -357,7 +357,7 @@ public:
     dimension \p dim.
   */
   bool is_equal_at_dimension(dimension_type dim,
-                             const Grid_Generator& gg) const;
+			     const Grid_Generator& gg) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if all the homogeneous terms
@@ -495,7 +495,7 @@ Grid_Generator grid_line(const Linear_Expression& e);
 /*! \relates Grid_Generator */
 Grid_Generator
 parameter(const Linear_Expression& e = Linear_Expression::zero(),
-          Coefficient_traits::const_reference d = Coefficient_one());
+	  Coefficient_traits::const_reference d = Coefficient_one());
 
 /*! \brief
   Shorthand for Grid_Generator
@@ -505,7 +505,7 @@ parameter(const Linear_Expression& e = Linear_Expression::zero(),
 /*! \relates Grid_Generator */
 Grid_Generator
 grid_point(const Linear_Expression& e = Linear_Expression::zero(),
-           Coefficient_traits::const_reference d = Coefficient_one());
+	   Coefficient_traits::const_reference d = Coefficient_one());
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
 /*! \relates Grid_Generator */

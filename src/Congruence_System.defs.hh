@@ -227,10 +227,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-                           Congruence,
-                           ptrdiff_t,
-                           const Congruence*,
-                           const Congruence&> {
+			   Congruence,
+			   ptrdiff_t,
+			   const Congruence*,
+			   const Congruence&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -279,7 +279,7 @@ public:
 
     //! Constructor.
     const_iterator(const Dense_Matrix::const_iterator& iter,
-                   const Congruence_System& cgs);
+		   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
     void skip_forward();
@@ -460,8 +460,8 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_preimage(dimension_type v,
-                       const Linear_Expression& expr,
-                       Coefficient_traits::const_reference denominator);
+		       const Linear_Expression& expr,
+		       Coefficient_traits::const_reference denominator);
 
   /*! \brief
     Removes the higher dimensions of the system so that the resulting
@@ -485,7 +485,7 @@ private:
     The contents of the original system is lost.
   */
   void resize_no_copy(dimension_type new_num_rows,
-                      dimension_type new_num_columns);
+		      dimension_type new_num_columns);
 };
 
 // Congruence_System.inlines.hh is not included here on purpose.

@@ -52,7 +52,7 @@ Pointset_Powerset<PSET>::max_space_dimension() {
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(dimension_type num_dimensions,
-                                           Degenerate_Element kind)
+					   Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   Pointset_Powerset& x = *this;
   if (kind == UNIVERSE)
@@ -63,14 +63,14 @@ Pointset_Powerset<PSET>::Pointset_Powerset(dimension_type num_dimensions,
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Pointset_Powerset& y,
-                                           Complexity_Class)
+					   Complexity_Class)
   : Base(y), space_dim(y.space_dim) {
 }
 
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
-                                           Complexity_Class complexity)
+					   Complexity_Class complexity)
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
@@ -87,7 +87,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
-                                           Complexity_Class complexity)
+					   Complexity_Class complexity)
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
@@ -103,7 +103,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
 template <typename PSET>
 inline
 Pointset_Powerset<PSET>::Pointset_Powerset(const Grid& gr,
-                                           Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(gr.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!gr.is_empty()) {
@@ -134,7 +134,7 @@ Pointset_Powerset<PSET>
 template <typename PSET>
 template <typename Interval>
 Pointset_Powerset<PSET>::Pointset_Powerset(const Box<Interval>& box,
-                                           Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(box.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!box.is_empty())
@@ -145,7 +145,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Box<Interval>& box,
 template <typename PSET>
 template <typename T>
 Pointset_Powerset<PSET>::Pointset_Powerset(const Octagonal_Shape<T>& os,
-                                           Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(os.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!os.is_empty())
@@ -156,7 +156,7 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Octagonal_Shape<T>& os,
 template <typename PSET>
 template <typename T>
 Pointset_Powerset<PSET>::Pointset_Powerset(const BD_Shape<T>& bds,
-                                           Complexity_Class)
+					   Complexity_Class)
   : Base(), space_dim(bds.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (!bds.is_empty())
@@ -303,9 +303,9 @@ check_containment(const PSET& ph, const Pointset_Powerset<PSET>& ps) {
 template <>
 inline bool
 check_containment(const C_Polyhedron& ph,
-                  const Pointset_Powerset<C_Polyhedron>& ps) {
+		  const Pointset_Powerset<C_Polyhedron>& ps) {
   return check_containment(NNC_Polyhedron(ph),
-                           Pointset_Powerset<NNC_Polyhedron>(ps));
+			   Pointset_Powerset<NNC_Polyhedron>(ps));
 }
 
 /*! \relates Pointset_Powerset */

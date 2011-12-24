@@ -95,12 +95,12 @@ Congruence_System::space_dimension() const {
 inline void
 Congruence_System::clear() {
   Dense_Matrix::clear();
-  add_zero_columns(2);          // Modulus and constant term.
+  add_zero_columns(2);		// Modulus and constant term.
 }
 
 inline void
 Congruence_System::resize_no_copy(const dimension_type new_num_rows,
-                                  const dimension_type new_num_columns) {
+				  const dimension_type new_num_columns) {
   Dense_Matrix::resize_no_copy(new_num_rows, new_num_columns,
                                Dense_Row::Flags());
 }
@@ -169,7 +169,7 @@ Congruence_System::const_iterator::operator!=(const const_iterator& y) const {
 inline
 Congruence_System::const_iterator::
 const_iterator(const Dense_Matrix::const_iterator& iter,
-               const Congruence_System& cgs)
+	       const Congruence_System& cgs)
   : i(iter), csp(&cgs) {
 }
 

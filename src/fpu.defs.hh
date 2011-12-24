@@ -79,9 +79,9 @@ fpu_check_inexact();
 
 #if defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 #include "fpu-ia32.inlines.hh"
-#elif defined(PPL_HAVE_IEEEFP_H)                                        \
-  && (defined(__sparc)                                                  \
-      || defined(sparc)                                                 \
+#elif defined(PPL_HAVE_IEEEFP_H)					\
+  && (defined(__sparc)							\
+      || defined(sparc)							\
       || defined(__sparc__))
 #include "fpu-sparc.inlines.hh"
 #elif defined(PPL_HAVE_FENV_H)

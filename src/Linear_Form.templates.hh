@@ -238,7 +238,8 @@ operator-(const C& n, const Linear_Form<C>& f) {
 /*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
 Linear_Form<C>
-operator*(const C& n, const Linear_Form<C>& f) {
+operator*(const C& n,
+	       const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
   for (dimension_type i = f.size(); i-- > 0; )
     r[i] *= n;
@@ -266,7 +267,7 @@ operator+=(Linear_Form<C>& f, const Variable v) {
   if (v_space_dim > Linear_Form<C>::max_space_dimension())
     throw std::length_error("Linear_Form<C>& "
                             "operator+=(e, v):\n"
-                            "v exceeds the maximum allowed space dimension.");
+			    "v exceeds the maximum allowed space dimension.");
   if (v_space_dim > f.space_dimension())
     f.extend(v_space_dim+1);
   f[v_space_dim] += static_cast<C>(1.0);
@@ -294,7 +295,7 @@ operator-=(Linear_Form<C>& f, const Variable v) {
   if (v_space_dim > Linear_Form<C>::max_space_dimension())
     throw std::length_error("Linear_Form<C>& "
                             "operator-=(e, v):\n"
-                            "v exceeds the maximum allowed space dimension.");
+			    "v exceeds the maximum allowed space dimension.");
   if (v_space_dim > f.space_dimension())
     f.extend(v_space_dim+1);
   f[v_space_dim] -= static_cast<C>(1.0);
@@ -382,7 +383,7 @@ Linear_Form<C>::OK() const {
 template <typename C>
 void
 Linear_Form<C>::relative_error(
-                const Floating_Point_Format analyzed_format,
+		const Floating_Point_Format analyzed_format,
                 Linear_Form& result) const {
   typedef typename C::boundary_type analyzer_format;
 
@@ -504,7 +505,7 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
   const C& it = f[0];
   if (it != 0) {
     if (!first)
-        s << " + ";
+	s << " + ";
     else
       first = false;
     s << it;

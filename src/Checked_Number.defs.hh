@@ -348,7 +348,7 @@ public:
   //! Add and assign operator.
   template <typename From>
   typename Enable_If<Is_Native_Or_Checked<From>::value,
-                     Checked_Number<T, Policy>&>::type
+		     Checked_Number<T, Policy>&>::type
   operator+=(const From& y);
 
   //! Subtract and assign operator.
@@ -361,7 +361,7 @@ public:
   //! Subtract and assign operator.
   template <typename From>
   typename Enable_If<Is_Native_Or_Checked<From>::value,
-                     Checked_Number<T, Policy>&>::type
+		     Checked_Number<T, Policy>&>::type
   operator-=(const From& y);
 
   //! Multiply and assign operator.
@@ -374,7 +374,7 @@ public:
   //! Multiply and assign operator.
   template <typename From>
   typename Enable_If<Is_Native_Or_Checked<From>::value,
-                     Checked_Number<T, Policy>&>::type
+		     Checked_Number<T, Policy>&>::type
   operator*=(const From& y);
 
   //! Divide and assign operator.
@@ -387,7 +387,7 @@ public:
   //! Divide and assign operator.
   template <typename From>
   typename Enable_If<Is_Native_Or_Checked<From>::value,
-                     Checked_Number<T, Policy>&>::type
+		     Checked_Number<T, Policy>&>::type
   operator/=(const From& y);
 
   //! Compute remainder and assign operator.
@@ -400,7 +400,7 @@ public:
   //! Compute remainder and assign operator.
   template <typename From>
   typename Enable_If<Is_Native_Or_Checked<From>::value,
-                     Checked_Number<T, Policy>& >::type
+		     Checked_Number<T, Policy>& >::type
   operator%=(const From& y);
 
   //@} // Assignment Operators
@@ -535,12 +535,12 @@ PPL_DECLARE_FUNC2(sub_mul_assign_r)
 
 #define PPL_DECLARE_FUNC4(name) \
 template <typename To1, typename To2, typename To3, \
-          typename From1, typename From2> \
+	  typename From1, typename From2> \
 typename Enable_If<Is_Native_Or_Checked<To1>::value \
                    && Is_Native_Or_Checked<To2>::value \
                    && Is_Native_Or_Checked<To3>::value \
                    && Is_Native_Or_Checked<From1>::value \
-                   && Is_Native_Or_Checked<From2>::value, \
+		   && Is_Native_Or_Checked<From2>::value, \
                    Result>::type \
 name(To1& to, To2& s, To3& t, \
      const From1& x, const From2& y, \
@@ -652,24 +652,24 @@ abs_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 template <typename T, typename Policy>
 void
 add_mul_assign(Checked_Number<T, Policy>& x,
-               const Checked_Number<T, Policy>& y,
-               const Checked_Number<T, Policy>& z);
+	       const Checked_Number<T, Policy>& y,
+	       const Checked_Number<T, Policy>& z);
 
 //! Assigns to \p x the value <CODE>x - y * z</CODE>.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void
 sub_mul_assign(Checked_Number<T, Policy>& x,
-               const Checked_Number<T, Policy>& y,
-               const Checked_Number<T, Policy>& z);
+	       const Checked_Number<T, Policy>& y,
+	       const Checked_Number<T, Policy>& z);
 
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void
 gcd_assign(Checked_Number<T, Policy>& x,
-           const Checked_Number<T, Policy>& y,
-           const Checked_Number<T, Policy>& z);
+	   const Checked_Number<T, Policy>& y,
+	   const Checked_Number<T, Policy>& z);
 
 /*! \brief
   Assigns to \p x the greatest common divisor of \p y and \p z,
@@ -679,18 +679,18 @@ gcd_assign(Checked_Number<T, Policy>& x,
 template <typename T, typename Policy>
 void
 gcdext_assign(Checked_Number<T, Policy>& x,
-              Checked_Number<T, Policy>& s,
-              Checked_Number<T, Policy>& t,
-              const Checked_Number<T, Policy>& y,
-              const Checked_Number<T, Policy>& z);
+	      Checked_Number<T, Policy>& s,
+	      Checked_Number<T, Policy>& t,
+	      const Checked_Number<T, Policy>& y,
+	      const Checked_Number<T, Policy>& z);
 
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void
 lcm_assign(Checked_Number<T, Policy>& x,
-           const Checked_Number<T, Policy>& y,
-           const Checked_Number<T, Policy>& z);
+	   const Checked_Number<T, Policy>& y,
+	   const Checked_Number<T, Policy>& z);
 
 //! Assigns to \p x the value \f$ y \cdot 2^\mathtt{exp} \f$.
 /*! \relates Checked_Number */
@@ -705,8 +705,8 @@ mul_2exp_assign(Checked_Number<T, Policy>& x,
 template <typename T, typename Policy>
 void
 div_2exp_assign(Checked_Number<T, Policy>& x,
-               const Checked_Number<T, Policy>& y,
-               unsigned int exp);
+	       const Checked_Number<T, Policy>& y,
+	       unsigned int exp);
 
 /*! \brief
   If \p z divides \p y, assigns to \p x the quotient of the integer
@@ -718,14 +718,14 @@ div_2exp_assign(Checked_Number<T, Policy>& x,
 template <typename T, typename Policy>
 void
 exact_div_assign(Checked_Number<T, Policy>& x,
-                 const Checked_Number<T, Policy>& y,
-                 const Checked_Number<T, Policy>& z);
+		 const Checked_Number<T, Policy>& y,
+		 const Checked_Number<T, Policy>& z);
 
 //! Assigns to \p x the integer square root of \p y.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void sqrt_assign(Checked_Number<T, Policy>& x,
-                 const Checked_Number<T, Policy>& y);
+		 const Checked_Number<T, Policy>& y);
 
 //@} // Arithmetic Operators
 
@@ -740,13 +740,13 @@ inline
 typename Enable_If<Is_Native_Or_Checked<T1>::value
                    && Is_Native_Or_Checked<T2>::value
                    && (Is_Checked<T1>::value || Is_Checked<T2>::value),
-                   bool>::type
+		   bool>::type
 operator==(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
-                          && Is_Native_Or_Checked<T2>::value,
-                          bool>::type
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 equal(const T1& x, const T2& y);
 
 //! Disequality operator.
@@ -756,13 +756,13 @@ inline
 typename Enable_If<Is_Native_Or_Checked<T1>::value
                    && Is_Native_Or_Checked<T2>::value
                    && (Is_Checked<T1>::value || Is_Checked<T2>::value),
-                   bool>::type
+		   bool>::type
 operator!=(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
-                          && Is_Native_Or_Checked<T2>::value,
-                          bool>::type
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 not_equal(const T1& x, const T2& y);
 
 //! Greater than or equal to operator.
@@ -772,13 +772,13 @@ inline
 typename Enable_If<Is_Native_Or_Checked<T1>::value
                    && Is_Native_Or_Checked<T2>::value
                    && (Is_Checked<T1>::value || Is_Checked<T2>::value),
-                   bool>::type
+		   bool>::type
 operator>=(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
-                          && Is_Native_Or_Checked<T2>::value,
-                          bool>::type
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 greater_or_equal(const T1& x, const T2& y);
 
 //! Greater than operator.
@@ -788,13 +788,13 @@ inline
 typename Enable_If<Is_Native_Or_Checked<T1>::value
                    && Is_Native_Or_Checked<T2>::value
                    && (Is_Checked<T1>::value || Is_Checked<T2>::value),
-                   bool>::type
+		   bool>::type
 operator>(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
-                          && Is_Native_Or_Checked<T2>::value,
-                          bool>::type
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 greater_than(const T1& x, const T2& y);
 
 //! Less than or equal to operator.
@@ -804,13 +804,13 @@ inline
 typename Enable_If<Is_Native_Or_Checked<T1>::value
                    && Is_Native_Or_Checked<T2>::value
                    && (Is_Checked<T1>::value || Is_Checked<T2>::value),
-                   bool>::type
+		   bool>::type
 operator<=(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
-                          && Is_Native_Or_Checked<T2>::value,
-                          bool>::type
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 less_or_equal(const T1& x, const T2& y);
 
 //! Less than operator.
@@ -820,13 +820,13 @@ inline
 typename Enable_If<Is_Native_Or_Checked<T1>::value
                    && Is_Native_Or_Checked<T2>::value
                    && (Is_Checked<T1>::value || Is_Checked<T2>::value),
-                   bool>::type
+		   bool>::type
 operator<(const T1& x, const T2& y);
 
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
-                          && Is_Native_Or_Checked<T2>::value,
-                          bool>::type
+			  && Is_Native_Or_Checked<T2>::value,
+			  bool>::type
 less_than(const T1& x, const T2& y);
 
 /*! \brief
@@ -960,44 +960,44 @@ ascii_dump(std::ostream& s, const T& t);
   (if such a delimiter is desired, it has to be written as <CODE>*^</CODE>).
 
 \code
-number  : NAN                                   INF     : 'inf'
-        | SIGN INF                                      ;
-        | INF
-        | num                                   NAN     : 'nan'
-        | num DIV num                                   ;
-        ;
-                                                SIGN    : '-'
-num     : u_num                                         | '+'
-        | SIGN u_num                                    ;
+number	: NAN					INF	: 'inf'
+	| SIGN INF					;
+	| INF
+	| num					NAN	: 'nan'
+	| num DIV num					;
+	;
+						SIGN	: '-'
+num     : u_num						| '+'
+        | SIGN u_num					;
 
-u_num   : u_num1                                EXP     : 'e'
-        | HEX u_num1                                    | 'p'
-        | base BASE u_num1                              | '*^'
-        ;                                               ;
-                                                POINT   : '.'
-u_num1  : mantissa                                      ;
-        | mantissa EXP exponent
-        ;                                       DIV     : '/'
-                                                        ;
+u_num	: u_num1				EXP	: 'e'
+	| HEX u_num1					| 'p'
+	| base BASE u_num1				| '*^'
+	;                                               ;
+						POINT	: '.'
+u_num1	: mantissa					;
+	| mantissa EXP exponent
+	;					DIV	: '/'
+							;
 mantissa: bdigits
-        | POINT bdigits                         MINUS   : '-'
-        | bdigits POINT                                 ;
-        | bdigits POINT bdigits
-        ;                                       PLUS    : '+'
-                                                ;
+        | POINT bdigits				MINUS	: '-'
+	| bdigits POINT					;
+	| bdigits POINT bdigits
+	;					PLUS	: '+'
+						;
 exponent: SIGN digits
-        | digits                                HEX     : '0x'
-        ;                                       ;
+	| digits				HEX	: '0x'
+	;					;
 
-bdigits : BDIGIT                                BASE    : '^^'
-        | bdigits BDIGIT                                ;
-        ;
-                                                DIGIT   : '0' .. '9'
-digits  : DIGIT                                         ;
-        | digits DIGIT
-        ;                                       BDIGIT  : '0' .. '9'
-                                                        | 'a' .. 'z'
-                                                        ;
+bdigits : BDIGIT				BASE	: '^^'
+	| bdigits BDIGIT				;
+	;
+						DIGIT   : '0' .. '9'
+digits  : DIGIT						;
+	| digits DIGIT
+	;					BDIGIT  : '0' .. '9'
+							| 'a' .. 'z'
+							;
 \endcode
 */
 template <typename T>

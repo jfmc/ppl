@@ -105,7 +105,7 @@ PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
 
 void
 PPL::Bit_Matrix::resize(dimension_type new_n_rows,
-                       dimension_type new_n_columns) {
+		       dimension_type new_n_columns) {
   PPL_ASSERT(OK());
   const dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {
@@ -124,7 +124,7 @@ PPL::Bit_Matrix::resize(dimension_type new_n_rows,
       new_rows.insert(new_rows.end(), new_n_rows, Bit_Row());
       // Steal the old rows.
       for (dimension_type i = old_num_rows; i-- > 0; )
-        new_rows[i].m_swap(rows[i]);
+	new_rows[i].m_swap(rows[i]);
       // Put the new vector into place.
       using std::swap;
       swap(rows, new_rows);
@@ -173,11 +173,11 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
     for (dimension_type j = 0; j < num_columns(); ++j) {
       int bit;
       if (!(s >> bit))
-        return false;
+	return false;
       if (bit)
-        x[i].set(j);
+	x[i].set(j);
       else
-        x[i].clear(j);
+	x[i].clear(j);
     }
 
   // Check invariants.
@@ -208,10 +208,10 @@ PPL::Bit_Matrix::OK() const {
     else if (row.last() != ULONG_MAX && row.last() >= row_size) {
 #ifndef NDEBUG
       cerr << "Bit_Matrix[" << i << "] is a row with too many bits!"
-           << endl
-           << "(row_size == " << row_size
-           << ", row.last() == " << row.last() << ")"
-           << endl;
+	   << endl
+	   << "(row_size == " << row_size
+	   << ", row.last() == " << row.last() << ")"
+	   << endl;
 #endif
       return false;
     }

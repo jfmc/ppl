@@ -73,9 +73,9 @@ template <typename U>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row(U& y
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-                , dimension_type s
+		, dimension_type s
 #endif
-                )
+		)
   : first(&y)
 #if PPL_OR_MATRIX_EXTRA_DEBUG
   , size_(s)
@@ -143,9 +143,9 @@ inline
 OR_Matrix<T>::any_row_iterator<U>::any_row_iterator(U& base)
   :  value(base
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-           , OR_Matrix<T>::row_size(0)
+	   , OR_Matrix<T>::row_size(0)
 #endif
-           ),
+	   ),
      e(0),
      i(0) {
 }
@@ -453,9 +453,9 @@ inline typename OR_Matrix<T>::row_reference_type
 OR_Matrix<T>::operator[](dimension_type k) {
   return row_reference_type(vec[row_first_element_index(k)]
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-                            , row_size(k)
+			    , row_size(k)
 #endif
-                            );
+			    );
 }
 
 template <typename T>
@@ -463,9 +463,9 @@ inline typename OR_Matrix<T>::const_row_reference_type
 OR_Matrix<T>::operator[](dimension_type k) const {
   return const_row_reference_type(vec[row_first_element_index(k)]
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-                                  , row_size(k)
+				  , row_size(k)
 #endif
-                                  );
+				  );
 }
 
 template <typename T>
@@ -550,8 +550,8 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
       OR_Matrix<T> new_matrix(new_dim);
       element_iterator j = new_matrix.element_begin();
       for (element_iterator i = element_begin(),
-             mend = element_end(); i != mend; ++i, ++j)
-        assign_or_swap(*j, *i);
+	     mend = element_end(); i != mend; ++i, ++j)
+	assign_or_swap(*j, *i);
       m_swap(new_matrix);
     }
   }
@@ -592,27 +592,27 @@ OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                    const OR_Matrix<T>& x,
-                    const OR_Matrix<T>& y,
-                    const Rounding_Dir dir,
-                    Temp& tmp0,
-                    Temp& tmp1,
-                    Temp& tmp2) {
+		    const OR_Matrix<T>& x,
+		    const OR_Matrix<T>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0,
+		    Temp& tmp1,
+		    Temp& tmp2) {
   if (x.num_rows() != y.num_rows())
     return false;
   assign_r(tmp0, 0, ROUND_NOT_NEEDED);
   for (typename OR_Matrix<T>::const_element_iterator
-         i = x.element_begin(), j = y.element_begin(),
-         mat_end = x.element_end(); i != mat_end; ++i, ++j) {
+	 i = x.element_begin(), j = y.element_begin(),
+	 mat_end = x.element_end(); i != mat_end; ++i, ++j) {
     const T& x_i = *i;
     const T& y_i = *j;
     if (is_plus_infinity(x_i)) {
       if (is_plus_infinity(y_i))
-        continue;
+	continue;
       else {
       pinf:
-        assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
-        return true;
+	assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+	return true;
       }
     }
     else if (is_plus_infinity(y_i))
@@ -645,18 +645,18 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                            const OR_Matrix<T>& x,
-                            const OR_Matrix<T>& y,
-                            const Rounding_Dir dir,
-                            Temp& tmp0,
-                            Temp& tmp1,
-                            Temp& tmp2) {
+			    const OR_Matrix<T>& x,
+			    const OR_Matrix<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
   return
     l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >(r, x, y,
-                                                                    dir,
-                                                                    tmp0,
-                                                                    tmp1,
-                                                                    tmp2);
+								    dir,
+								    tmp0,
+								    tmp1,
+								    tmp2);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -665,18 +665,18 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                          const OR_Matrix<T>& x,
-                          const OR_Matrix<T>& y,
-                          const Rounding_Dir dir,
-                          Temp& tmp0,
-                          Temp& tmp1,
-                          Temp& tmp2) {
+			  const OR_Matrix<T>& x,
+			  const OR_Matrix<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
   return
     l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >(r, x, y,
-                                                                  dir,
-                                                                  tmp0,
-                                                                  tmp1,
-                                                                  tmp2);
+								  dir,
+								  tmp0,
+								  tmp1,
+								  tmp2);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -685,18 +685,18 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                           const OR_Matrix<T>& x,
-                           const OR_Matrix<T>& y,
-                           const Rounding_Dir dir,
-                           Temp& tmp0,
-                           Temp& tmp1,
-                           Temp& tmp2) {
+			   const OR_Matrix<T>& x,
+			   const OR_Matrix<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
   return
     l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >(r, x, y,
-                                                                   dir,
-                                                                   tmp0,
-                                                                   tmp1,
-                                                                   tmp2);
+								   dir,
+								   tmp0,
+								   tmp1,
+								   tmp2);
 }
 
 /*! \relates OR_Matrix */

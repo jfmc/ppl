@@ -45,7 +45,7 @@ H79_Certificate::~H79_Certificate() {
 
 inline bool
 H79_Certificate::Compare::operator()(const H79_Certificate& x,
-                                     const H79_Certificate& y) const {
+				     const H79_Certificate& y) const {
   // For an efficient evaluation of the multiset ordering based
   // on this LGO relation, we want larger elements to come first.
   return x.compare(y) == 1;

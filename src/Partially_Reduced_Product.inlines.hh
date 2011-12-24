@@ -44,7 +44,7 @@ template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(dimension_type num_dimensions,
-                            const Degenerate_Element kind)
+			    const Degenerate_Element kind)
   : d1(num_dimensions, kind),
     d2(num_dimensions, kind) {
   set_reduced_flag();
@@ -262,8 +262,8 @@ template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::affine_image(Variable var,
-               const Linear_Expression& expr,
-               Coefficient_traits::const_reference denominator) {
+	       const Linear_Expression& expr,
+	       Coefficient_traits::const_reference denominator) {
   d1.affine_image(var, expr, denominator);
   d2.affine_image(var, expr, denominator);
   clear_reduced_flag();
@@ -273,8 +273,8 @@ template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::affine_preimage(Variable var,
-                  const Linear_Expression& expr,
-                  Coefficient_traits::const_reference denominator) {
+		  const Linear_Expression& expr,
+		  Coefficient_traits::const_reference denominator) {
   d1.affine_preimage(var, expr, denominator);
   d2.affine_preimage(var, expr, denominator);
   clear_reduced_flag();
@@ -284,9 +284,9 @@ template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_image(Variable var,
-                           const Relation_Symbol relsym,
-                           const Linear_Expression& expr,
-                           Coefficient_traits::const_reference denominator) {
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator) {
   d1.generalized_affine_image(var, relsym, expr, denominator);
   d2.generalized_affine_image(var, relsym, expr, denominator);
   clear_reduced_flag();
@@ -296,9 +296,9 @@ template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_preimage(Variable var,
-                              const Relation_Symbol relsym,
-                              const Linear_Expression& expr,
-                              Coefficient_traits::const_reference denominator) {
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator) {
   d1.generalized_affine_preimage(var, relsym, expr, denominator);
   d2.generalized_affine_preimage(var, relsym, expr, denominator);
   clear_reduced_flag();
@@ -308,8 +308,8 @@ template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::generalized_affine_image(const Linear_Expression& lhs,
-                           const Relation_Symbol relsym,
-                           const Linear_Expression& rhs) {
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& rhs) {
   d1.generalized_affine_image(lhs, relsym, rhs);
   d2.generalized_affine_image(lhs, relsym, rhs);
   clear_reduced_flag();
@@ -636,7 +636,7 @@ template <typename D1, typename D2, typename R>
 inline void
 Partially_Reduced_Product<D1, D2, R>
 ::fold_space_dimensions(const Variables_Set& vars,
-                        Variable dest) {
+			Variable dest) {
   d1.fold_space_dimensions(vars, dest);
   d2.fold_space_dimensions(vars, dest);
 }
@@ -716,7 +716,7 @@ Partially_Reduced_Product<D1, D2, R>::hash_code() const {
 template <typename D1, typename D2, typename R>
 inline bool
 operator==(const Partially_Reduced_Product<D1, D2, R>& x,
-           const Partially_Reduced_Product<D1, D2, R>& y) {
+	   const Partially_Reduced_Product<D1, D2, R>& y) {
   x.reduce();
   y.reduce();
   return x.d1 == y.d1 && x.d2 == y.d2;
@@ -726,7 +726,7 @@ operator==(const Partially_Reduced_Product<D1, D2, R>& x,
 template <typename D1, typename D2, typename R>
 inline bool
 operator!=(const Partially_Reduced_Product<D1, D2, R>& x,
-           const Partially_Reduced_Product<D1, D2, R>& y) {
+	   const Partially_Reduced_Product<D1, D2, R>& y) {
   return !(x == y);
 }
 
@@ -735,9 +735,9 @@ template <typename D1, typename D2, typename R>
 inline std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& pd) {
   return s << "Domain 1:\n"
-           << pd.d1
-           << "Domain 2:\n"
-           << pd.d2;
+	   << pd.d1
+	   << "Domain 2:\n"
+	   << pd.d2;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -76,7 +76,7 @@ public:
     to be of the given topology.
   */
   Linear_System(Topology topol,
-                dimension_type n_rows, dimension_type n_columns);
+		dimension_type n_rows, dimension_type n_columns);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A tag class.
@@ -501,7 +501,7 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 iter_swap(Linear_System::With_Bit_Matrix_iterator x,
-          Linear_System::With_Bit_Matrix_iterator y);
+	  Linear_System::With_Bit_Matrix_iterator y);
 
 } // namespace Parma_Polyhedra_Library
 

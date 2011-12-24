@@ -463,8 +463,8 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-                               const char* name_var,
-                               Variable v) const;
+			       const char* name_var,
+			       Variable v) const;
 
   friend Constraint
   operator==(const Linear_Expression& e1, const Linear_Expression& e2);

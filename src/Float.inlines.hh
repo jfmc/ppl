@@ -369,7 +369,7 @@ float_intel_double_extended::set_max(bool negative) {
 
 inline void
 float_intel_double_extended::build(bool negative,
-                                   mpz_t mantissa, int exponent) {
+				   mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
   mpz_export(&lsp, 0, -1, 8, 0, 0, mantissa);
 #else

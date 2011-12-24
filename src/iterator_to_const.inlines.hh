@@ -185,7 +185,7 @@ const_iterator_to_const<Container>
 template <typename Container>
 inline bool
 operator==(const iterator_to_const<Container>& x,
-           const const_iterator_to_const<Container>& y) {
+	   const const_iterator_to_const<Container>& y) {
   return const_iterator_to_const<Container>(x).operator==(y);
 }
 
@@ -193,7 +193,7 @@ operator==(const iterator_to_const<Container>& x,
 template <typename Container>
 inline bool
 operator!=(const iterator_to_const<Container>& x,
-           const const_iterator_to_const<Container>& y) {
+	   const const_iterator_to_const<Container>& y) {
   return !(x == y);
 }
 

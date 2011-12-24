@@ -165,7 +165,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Variable_Floating_Point_Expression(
-                          const Variable_Floating_Point_Expression& y);
+			  const Variable_Floating_Point_Expression& y);
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -173,7 +173,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Variable_Floating_Point_Expression& operator=(
-                          const Variable_Floating_Point_Expression& y);
+		          const Variable_Floating_Point_Expression& y);
 
   //! The index of the variable.
   dimension_type variable_index;

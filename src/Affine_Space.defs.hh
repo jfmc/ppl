@@ -721,7 +721,7 @@ public:
     maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -755,8 +755,8 @@ public:
     and \p point are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-                Generator& point) const;
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -786,7 +786,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -820,8 +820,8 @@ public:
     and \p point are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-                Generator& point) const;
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& point) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -1170,14 +1170,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-         \mathrm{denominator} * {x'}_\mathrm{var}
-           = \sum_{i = 0}^{n - 1} a_i x_i + b
-           = a_\mathrm{var} x_\mathrm{var}
-             + \sum_{i \neq var} a_i x_i + b,
+  	 \mathrm{denominator} * {x'}_\mathrm{var}
+	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+	   = a_\mathrm{var} x_\mathrm{var}
+	     + \sum_{i \neq var} a_i x_i + b,
        \f]
        so that the inverse transformation is
        \f[
-         a_\mathrm{var} x_\mathrm{var}
+	 a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
              - \sum_{i \neq j} a_i x_i - b.
        \f]
@@ -1189,9 +1189,9 @@ public:
     \endif
   */
   void affine_image(Variable var,
-                    const Linear_Expression& expr,
-                    Coefficient_traits::const_reference denominator
-                    = Coefficient_one());
+		    const Linear_Expression& expr,
+		    Coefficient_traits::const_reference denominator
+		    = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the
@@ -1214,9 +1214,9 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p *this.
   */
   void affine_preimage(Variable var,
-                       const Linear_Expression& expr,
-                       Coefficient_traits::const_reference denominator
-                         = Coefficient_one());
+		       const Linear_Expression& expr,
+		       Coefficient_traits::const_reference denominator
+		         = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1245,10 +1245,10 @@ public:
   */
   void
   generalized_affine_image(Variable var,
-                           Relation_Symbol relsym,
-                           const Linear_Expression& expr,
-                           Coefficient_traits::const_reference denominator
-                           = Coefficient_one());
+			   Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator
+			   = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1277,10 +1277,10 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-                              Relation_Symbol relsym,
-                              const Linear_Expression& expr,
-                              Coefficient_traits::const_reference denominator
-                              = Coefficient_one());
+			      Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1303,8 +1303,8 @@ public:
   */
   void
   generalized_affine_image(const Linear_Expression& lhs,
-                           Relation_Symbol relsym,
-                           const Linear_Expression& rhs);
+			   Relation_Symbol relsym,
+			   const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1327,8 +1327,8 @@ public:
   */
   void
   generalized_affine_preimage(const Linear_Expression& lhs,
-                              Relation_Symbol relsym,
-                              const Linear_Expression& rhs);
+			      Relation_Symbol relsym,
+			      const Linear_Expression& rhs);
 
   /*!
     \brief
@@ -1357,10 +1357,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-                            const Linear_Expression& lb_expr,
-                            const Linear_Expression& ub_expr,
-                            Coefficient_traits::const_reference denominator
-                            = Coefficient_one());
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
 
   /*!
     \brief
@@ -1389,10 +1389,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-                               const Linear_Expression& lb_expr,
-                               const Linear_Expression& ub_expr,
-                               Coefficient_traits::const_reference denominator
-                               = Coefficient_one());
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1436,8 +1436,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_extrapolation_assign(const Affine_Space& y,
-                                    const Constraint_System& cs,
-                                    unsigned* tp = NULL);
+				    const Constraint_System& cs,
+				    unsigned* tp = NULL);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -1685,25 +1685,25 @@ protected:
   void throw_invalid_argument(const char* method, const char* reason) const;
 #endif
   void throw_dimension_incompatible(const char* method,
-                                    const char* other_name,
-                                    dimension_type other_dim) const;
+				    const char* other_name,
+				    dimension_type other_dim) const;
   void throw_dimension_incompatible(const char* method,
-                                    const char* as_name,
-                                    const Affine_Space& as) const;
+				    const char* as_name,
+				    const Affine_Space& as) const;
 
   // Note: it has to be a static method, because it can be called inside
   // constructors (before actually constructing the grid object).
   static void throw_space_dimension_overflow(const char* method,
-                                             const char* reason);
+					     const char* reason);
 
   void throw_invalid_constraint(const char* method,
                                 const char* c_name) const;
   void throw_invalid_constraints(const char* method,
                                  const char* cs_name) const;
   void throw_invalid_generator(const char* method,
-                               const char* g_name) const;
+			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
-                                const char* gs_name) const;
+				const char* gs_name) const;
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

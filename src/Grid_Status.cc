@@ -177,7 +177,7 @@ PPL::Grid::Status::OK() const {
       return true;
 #ifndef NDEBUG
     cerr << "The empty flag is incompatible with any other one."
-         << endl << "Flags:" << endl;
+	 << endl << "Flags:" << endl;
     ascii_dump(cerr);
 #endif
     return false;
@@ -189,7 +189,7 @@ PPL::Grid::Status::OK() const {
     cerr <<
       "If a saturation matrix is up-to-date, congruences and\n"
       "generators have to be both up-to-date."
-         << endl;
+	 << endl;
 #endif
     return false;
   }
@@ -197,7 +197,7 @@ PPL::Grid::Status::OK() const {
   if (test_c_minimized() && !test_c_up_to_date()) {
 #ifndef NDEBUG
     cerr << "If congruences are minimized they must be up-to-date."
-         << endl;
+	 << endl;
 #endif
     return false;
   }
@@ -205,7 +205,7 @@ PPL::Grid::Status::OK() const {
   if (test_g_minimized() && !test_g_up_to_date()) {
 #ifndef NDEBUG
     cerr << "If generators are minimized they must be up-to-date."
-         << endl;
+	 << endl;
 #endif
     return false;
   }
@@ -213,7 +213,7 @@ PPL::Grid::Status::OK() const {
   if (test_c_pending() && test_g_pending()) {
 #ifndef NDEBUG
     cerr << "There cannot be both pending congruences and pending generators."
-         << endl;
+	 << endl;
 #endif
     return false;
   }
@@ -224,7 +224,7 @@ PPL::Grid::Status::OK() const {
     cerr <<
       "If there are pending congruences or generators, congruences\n"
       "and generators must be minimized."
-         << endl;
+	 << endl;
 #endif
       return false;
     }
@@ -234,7 +234,7 @@ PPL::Grid::Status::OK() const {
     cerr <<
       "If there are pending congruences or generators, there must\n"
       "be at least a saturation matrix up-to-date."
-         << endl;
+	 << endl;
 #endif
       return false;
     }

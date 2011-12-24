@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 template <typename PSET>
 inline
 Determinate<PSET>::Rep::Rep(dimension_type num_dimensions,
-                          Degenerate_Element kind)
+			  Degenerate_Element kind)
   : references(0), pset(num_dimensions, kind) {
 }
 

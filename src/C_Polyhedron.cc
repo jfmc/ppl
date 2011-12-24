@@ -33,7 +33,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   const Constraint_System& cs = y.constraints();
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
     add_constraint(c.is_strict_inequality() ? (Linear_Expression(c) >= 0) : c);
   }
@@ -42,41 +42,41 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
 
 PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
   : Polyhedron(NECESSARILY_CLOSED,
-               (cgs.space_dimension() <= max_space_dimension())
-               ? cgs.space_dimension()
-               : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-                                                 "C_Polyhedron(cgs)",
-                                                 "the space dimension of cgs "
-                                                 "exceeds the maximum allowed "
-                                                 "space dimension"), 0),
-               UNIVERSE) {
+	       (cgs.space_dimension() <= max_space_dimension())
+	       ? cgs.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(cgs)",
+						 "the space dimension of cgs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
   add_congruences(cgs);
 }
 
 PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
-               (cgs.space_dimension() <= max_space_dimension())
-               ? cgs.space_dimension()
-               : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-                                                 "NNC_Polyhedron"
-                                                 "(cgs, recycle)",
-                                                 "the space dimension of cgs "
-                                                 "exceeds the maximum allowed "
-                                                 "space dimension"), 0),
-               UNIVERSE) {
+	       (cgs.space_dimension() <= max_space_dimension())
+	       ? cgs.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "NNC_Polyhedron"
+						 "(cgs, recycle)",
+						 "the space dimension of cgs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
   add_congruences(cgs);
 }
 
 PPL::C_Polyhedron::C_Polyhedron(const Grid& grid, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
-               (grid.space_dimension() <= max_space_dimension())
-               ? grid.space_dimension()
-               : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-                                                 "C_Polyhedron(grid)",
-                                                 "the space dimension of grid "
-                                                 "exceeds the maximum allowed "
-                                                 "space dimension"), 0),
-               UNIVERSE) {
+	       (grid.space_dimension() <= max_space_dimension())
+	       ? grid.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(grid)",
+						 "the space dimension of grid "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
   add_constraints(grid.constraints());
 }
 

@@ -51,8 +51,8 @@ Generator_System::Generator_System(const Topology topol)
 
 inline
 Generator_System::Generator_System(const Topology topol,
-                                   const dimension_type n_rows,
-                                   const dimension_type n_columns)
+				   const dimension_type n_rows,
+				   const dimension_type n_columns)
   : Linear_System(topol, n_rows, n_columns) {
 }
 
@@ -151,7 +151,7 @@ Generator_System::const_iterator::operator!=(const const_iterator& y) const {
 inline
 Generator_System::const_iterator::
 const_iterator(const Linear_System::const_iterator& iter,
-               const Generator_System& gs)
+	       const Generator_System& gs)
   : i(iter), gsp(&gs) {
 }
 

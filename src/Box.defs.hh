@@ -98,9 +98,9 @@ std::ostream& operator<<(std::ostream& s, const Box<ITV>& box);
 template <typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                            const Box<ITV>& x,
-                            const Box<ITV>& y,
-                            Rounding_Dir dir);
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
+			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Box
@@ -116,9 +116,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                            const Box<ITV>& x,
-                            const Box<ITV>& y,
-                            Rounding_Dir dir);
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
+			    Rounding_Dir dir);
 
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates Box
@@ -134,12 +134,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                            const Box<ITV>& x,
-                            const Box<ITV>& y,
-                            Rounding_Dir dir,
-                            Temp& tmp0,
-                            Temp& tmp1,
-                            Temp& tmp2);
+			    const Box<ITV>& x,
+			    const Box<ITV>& y,
+			    Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Box
@@ -155,9 +155,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                          const Box<ITV>& x,
-                          const Box<ITV>& y,
-                          Rounding_Dir dir);
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
+			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Box
@@ -173,9 +173,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                          const Box<ITV>& x,
-                          const Box<ITV>& y,
-                          Rounding_Dir dir);
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
+			  Rounding_Dir dir);
 
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates Box
@@ -191,12 +191,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                          const Box<ITV>& x,
-                          const Box<ITV>& y,
-                          Rounding_Dir dir,
-                          Temp& tmp0,
-                          Temp& tmp1,
-                          Temp& tmp2);
+			  const Box<ITV>& x,
+			  const Box<ITV>& y,
+			  Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Box
@@ -212,9 +212,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                           const Box<ITV>& x,
-                           const Box<ITV>& y,
-                           Rounding_Dir dir);
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
+			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Box
@@ -230,9 +230,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                           const Box<ITV>& x,
-                           const Box<ITV>& y,
-                           Rounding_Dir dir);
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
+			   Rounding_Dir dir);
 
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates Box
@@ -248,12 +248,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                           const Box<ITV>& x,
-                           const Box<ITV>& y,
-                           Rounding_Dir dir,
-                           Temp& tmp0,
-                           Temp& tmp1,
-                           Temp& tmp2);
+			   const Box<ITV>& x,
+			   const Box<ITV>& y,
+			   Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Box
@@ -261,12 +261,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization,
-          typename Temp, typename To, typename ITV>
+	  typename Temp, typename To, typename ITV>
 bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                    const Box<ITV>& x, const Box<ITV>& y,
-                    Rounding_Dir dir,
-                    Temp& tmp0, Temp& tmp1, Temp& tmp2);
+		    const Box<ITV>& x, const Box<ITV>& y,
+		    Rounding_Dir dir,
+		    Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -326,7 +326,7 @@ public:
     Specifies whether the universe or the empty box has to be built.
   */
   explicit Box(dimension_type num_dimensions = 0,
-               Degenerate_Element kind = UNIVERSE);
+	       Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy constructor.
   /*!
@@ -433,7 +433,7 @@ public:
   */
   template <typename T>
   explicit Box(const BD_Shape<T>& bds,
-               Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
+	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
   //! Builds a box containing the octagonal shape \p oct.
   /*!
@@ -442,7 +442,7 @@ public:
   */
   template <typename T>
   explicit Box(const Octagonal_Shape<T>& oct,
-               Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
+	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
   //! Builds a box containing the polyhedron \p ph.
   /*!
@@ -452,7 +452,7 @@ public:
     smallest one containing \p ph.
   */
   explicit Box(const Polyhedron& ph,
-               Complexity_Class complexity = ANY_COMPLEXITY);
+	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a box containing the grid \p gr.
   /*!
@@ -460,7 +460,7 @@ public:
     The \p complexity argument is ignored.
   */
   explicit Box(const Grid& ph,
-               Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
+	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
   //! Builds a box containing the partially reduced product \p dp.
   /*!
@@ -469,7 +469,7 @@ public:
   */
   template <typename D1, typename D2, typename R>
   explicit Box(const Partially_Reduced_Product<D1, D2, R>& dp,
-               Complexity_Class complexity = ANY_COMPLEXITY);
+	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator
@@ -595,7 +595,7 @@ public:
     and \p maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -626,8 +626,8 @@ public:
     and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-                Generator& g) const;
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -654,7 +654,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -685,8 +685,8 @@ public:
     and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-                Generator& g) const;
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if there exist a
@@ -1020,9 +1020,9 @@ public:
     \p *this.
   */
   void affine_image(Variable var,
-                    const Linear_Expression& expr,
-                    Coefficient_traits::const_reference denominator
-                      = Coefficient_one());
+		    const Linear_Expression& expr,
+		    Coefficient_traits::const_reference denominator
+		      = Coefficient_one());
 
   // FIXME: To be completed.
   /*! \brief
@@ -1069,9 +1069,9 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p *this.
   */
   void affine_preimage(Variable var,
-                       const Linear_Expression& expr,
-                       Coefficient_traits::const_reference denominator
-                         = Coefficient_one());
+		       const Linear_Expression& expr,
+		       Coefficient_traits::const_reference denominator
+		         = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1098,10 +1098,10 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p *this.
   */
   void generalized_affine_image(Variable var,
-                                Relation_Symbol relsym,
-                                const Linear_Expression& expr,
-                                Coefficient_traits::const_reference denominator
-                                  = Coefficient_one());
+				Relation_Symbol relsym,
+				const Linear_Expression& expr,
+				Coefficient_traits::const_reference denominator
+				  = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1129,10 +1129,10 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-                              Relation_Symbol relsym,
-                              const Linear_Expression& expr,
-                              Coefficient_traits::const_reference denominator
-                              = Coefficient_one());
+			      Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1153,8 +1153,8 @@ public:
     Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-                                Relation_Symbol relsym,
-                                const Linear_Expression& rhs);
+				Relation_Symbol relsym,
+				const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1175,8 +1175,8 @@ public:
     Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-                                   Relation_Symbol relsym,
-                                   const Linear_Expression& rhs);
+				   Relation_Symbol relsym,
+				   const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1204,10 +1204,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-                            const Linear_Expression& lb_expr,
-                            const Linear_Expression& ub_expr,
-                            Coefficient_traits::const_reference denominator
-                            = Coefficient_one());
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1235,10 +1235,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-                               const Linear_Expression& lb_expr,
-                               const Linear_Expression& ub_expr,
-                               Coefficient_traits::const_reference denominator
-                               = Coefficient_one());
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1375,7 +1375,7 @@ public:
                      && Is_Same_Or_Derived<Interval_Base, ITV>::value,
                      void>::type
   CC76_widening_assign(const T& y,
-                       Iterator first, Iterator last);
+		       Iterator first, Iterator last);
 
   //! Same as CC76_widening_assign(y, tp).
   void widening_assign(const Box& y, unsigned* tp = 0);
@@ -1401,8 +1401,8 @@ public:
     if \p cs contains a strict inequality.
   */
   void limited_CC76_extrapolation_assign(const Box& y,
-                                         const Constraint_System& cs,
-                                         unsigned* tp = 0);
+					 const Constraint_System& cs,
+					 unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of restoring in \p y the constraints
@@ -1651,7 +1651,7 @@ public:
     or equal to the space dimension of \p *this.
   */
   bool get_lower_bound(dimension_type k, bool& closed,
-                       Coefficient& n, Coefficient& d) const;
+		       Coefficient& n, Coefficient& d) const;
 
   /*! \brief
     If the <CODE>k</CODE>-th space dimension is unbounded above, returns
@@ -1672,7 +1672,7 @@ public:
     or equal to the space dimension of \p *this.
   */
   bool get_upper_bound(dimension_type k, bool& closed,
-                       Coefficient& n, Coefficient& d) const;
+		       Coefficient& n, Coefficient& d) const;
 
   //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
@@ -2096,9 +2096,9 @@ private:
     \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-               bool maximize,
-               Coefficient& ext_n, Coefficient& ext_d, bool& included,
-               Generator& g) const;
+	       bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
+	       Generator& g) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!
@@ -2126,8 +2126,8 @@ private:
     \p included and \p point are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
-               bool maximize,
-               Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+	       bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
 
   /*! \brief
     Adds to \p limiting_box the interval constraints in \p cs
@@ -2139,29 +2139,29 @@ private:
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-                                    const Box& x) const;
+				    const Box& x) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    dimension_type required_dim) const;
+				    dimension_type required_dim) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const Constraint& c) const;
+				    const Constraint& c) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const Congruence& cg) const;
+				    const Congruence& cg) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const Constraint_System& cs) const;
+				    const Constraint_System& cs) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const Congruence_System& cgs) const;
+				    const Congruence_System& cgs) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const Generator& g) const;
+				    const Generator& g) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const char* name_row,
-                                    const Linear_Expression& y) const;
+				    const char* name_row,
+				    const Linear_Expression& y) const;
 
   template <typename C>
   void throw_dimension_incompatible(const char* method,
@@ -2169,12 +2169,12 @@ private:
                                     const Linear_Form<C>& y) const;
 
   static void throw_space_dimension_overflow(const char* method,
-                                             const char* reason);
+					     const char* reason);
 
   static void throw_constraint_incompatible(const char* method);
 
   static void throw_expression_too_complex(const char* method,
-                                           const Linear_Expression& e);
+					   const Linear_Expression& e);
 
   static void throw_generic(const char* method, const char* reason);
   //@} // Exception Throwers
@@ -2239,14 +2239,14 @@ interval_relation(const ITV& i,
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_interval_constraint(const Constraint& c,
-                                 dimension_type c_space_dim,
-                                 dimension_type& c_num_vars,
-                                 dimension_type& c_only_var);
+				 dimension_type c_space_dim,
+				 dimension_type& c_num_vars,
+				 dimension_type& c_only_var);
 
 bool extract_interval_congruence(const Congruence& cg,
-                                 dimension_type cg_space_dim,
-                                 dimension_type& cg_num_vars,
-                                 dimension_type& cg_only_var);
+				 dimension_type cg_space_dim,
+				 dimension_type& cg_num_vars,
+				 dimension_type& cg_only_var);
 
 } // namespace Parma_Polyhedra_Library
 

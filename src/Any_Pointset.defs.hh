@@ -208,7 +208,7 @@ public:
   */
   virtual bool
   maximize(const Linear_Expression& expr,
-           Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const = 0;
+	   Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -239,8 +239,8 @@ public:
     and \p point are left untouched.
   */
   virtual bool maximize(const Linear_Expression& expr,
-                        Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-                        Generator& point) const = 0;
+			Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+			Generator& point) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -268,7 +268,7 @@ public:
   */
   virtual bool
   minimize(const Linear_Expression& expr,
-           Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const = 0;
+	   Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -299,8 +299,8 @@ public:
     and \p point are left untouched.
   */
   virtual bool minimize(const Linear_Expression& expr,
-                        Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-                        Generator& point) const = 0;
+			Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+			Generator& point) const = 0;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -516,14 +516,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-         \mathrm{denominator} * {x'}_\mathrm{var}
-           = \sum_{i = 0}^{n - 1} a_i x_i + b
-           = a_\mathrm{var} x_\mathrm{var}
-             + \sum_{i \neq var} a_i x_i + b,
+  	 \mathrm{denominator} * {x'}_\mathrm{var}
+	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+	   = a_\mathrm{var} x_\mathrm{var}
+	     + \sum_{i \neq var} a_i x_i + b,
        \f]
        so that the inverse transformation is
        \f[
-         a_\mathrm{var} x_\mathrm{var}
+	 a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
              - \sum_{i \neq j} a_i x_i - b.
        \f]
@@ -540,9 +540,9 @@ public:
             \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
           \bigm|
             \vect{x} = \vect{\lambda} R + \vect{\mu} V,
-            \vect{\lambda} \in \Rset^{m_1}_+,
-            \vect{\mu} \in \Rset^{m_2}_+,
-            \sum_{i = 0}^{m_2 - 1} \mu_i = 1
+	    \vect{\lambda} \in \Rset^{m_1}_+,
+	    \vect{\mu} \in \Rset^{m_2}_+,
+	    \sum_{i = 0}^{m_2 - 1} \mu_i = 1
           \,\bigr\}
     \f]
     and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
@@ -563,9 +563,9 @@ public:
     \endif
   */
   virtual void affine_image(Variable var,
-                            const Linear_Expression& expr,
-                            Coefficient_traits::const_reference denominator
-                            = Coefficient_one()) = 0;
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the
@@ -608,14 +608,14 @@ public:
        is different from zero.
     -# If the transformation is invertible, then we can write
        \f[
-         \mathrm{denominator} * {x'}_\mathrm{var}
-           = \sum_{i = 0}^{n - 1} a_i x_i + b
+  	 \mathrm{denominator} * {x'}_\mathrm{var}
+	   = \sum_{i = 0}^{n - 1} a_i x_i + b
            = a_\mathrm{var} x_\mathrm{var}
                + \sum_{i \neq \mathrm{var}} a_i x_i + b,
        \f],
        the inverse transformation is
        \f[
-         a_\mathrm{var} x_\mathrm{var}
+	 a_\mathrm{var} x_\mathrm{var}
            = \mathrm{denominator} * {x'}_\mathrm{var}
                - \sum_{i \neq j} a_i x_i - b.
        \f].
@@ -655,9 +655,9 @@ public:
     \endif
   */
   virtual void affine_preimage(Variable var,
-                               const Linear_Expression& expr,
-                               Coefficient_traits::const_reference denominator
-                               = Coefficient_one()) = 0;
+			       const Linear_Expression& expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -687,10 +687,10 @@ public:
   */
   virtual
   void generalized_affine_image(Variable var,
-                                Relation_Symbol relsym,
-                                const Linear_Expression& expr,
-                                Coefficient_traits::const_reference denominator
-                                = Coefficient_one()) = 0;
+				Relation_Symbol relsym,
+				const Linear_Expression& expr,
+				Coefficient_traits::const_reference denominator
+				= Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -720,10 +720,10 @@ public:
   */
   virtual void
   generalized_affine_preimage(Variable var,
-                              Relation_Symbol relsym,
-                              const Linear_Expression& expr,
-                              Coefficient_traits::const_reference denominator
-                              = Coefficient_one()) = 0;
+			      Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -746,8 +746,8 @@ public:
     relation symbol.
   */
   virtual void generalized_affine_image(const Linear_Expression& lhs,
-                                        Relation_Symbol relsym,
-                                        const Linear_Expression& rhs) = 0;
+					Relation_Symbol relsym,
+					const Linear_Expression& rhs) = 0;
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -770,8 +770,8 @@ public:
     relation symbol.
   */
   virtual void generalized_affine_preimage(const Linear_Expression& lhs,
-                                           Relation_Symbol relsym,
-                                           const Linear_Expression& rhs) = 0;
+					   Relation_Symbol relsym,
+					   const Linear_Expression& rhs) = 0;
 
   /*!
     \brief
@@ -801,10 +801,10 @@ public:
   */
   virtual
   void bounded_affine_image(Variable var,
-                            const Linear_Expression& lb_expr,
-                            const Linear_Expression& ub_expr,
-                            Coefficient_traits::const_reference denominator
-                            = Coefficient_one()) = 0;
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one()) = 0;
 
   /*!
     \brief
@@ -834,10 +834,10 @@ public:
   */
   virtual
   void bounded_affine_preimage(Variable var,
-                               const Linear_Expression& lb_expr,
-                               const Linear_Expression& ub_expr,
-                               Coefficient_traits::const_reference denominator
-                               = Coefficient_one()) = 0;
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -877,8 +877,8 @@ public:
     dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const Any_Pointset& y,
-                                        const Constraint_System& cs,
-                                        unsigned* tp = 0);
+					const Constraint_System& cs,
+					unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"
@@ -903,8 +903,8 @@ public:
     dimension-incompatible.
   */
   void bounded_H79_extrapolation_assign(const Any_Pointset& y,
-                                        const Constraint_System& cs,
-                                        unsigned* tp = 0);
+					const Constraint_System& cs,
+					unsigned* tp = 0);
 #endif
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
@@ -1099,7 +1099,7 @@ public:
 
 #if 0
   friend bool Parma_Polyhedra_Library::operator==(const Any_Pointset& x,
-                                                  const Any_Pointset& y);
+						  const Any_Pointset& y);
 #endif
 
   //! \name Miscellaneous Member Functions
@@ -1144,213 +1144,213 @@ public:
 };
 
 #define PPL_ANY_POINTSET_WRAPPER_CLASS(TEMPLATE, WRAPPER_NAME, BASE_CLASS) \
-TEMPLATE                                                                \
-class WRAPPER_NAME : public Any_Pointset {                              \
- private:                                                               \
-  BASE_CLASS x;                                                         \
- public:                                                                \
-  explicit WRAPPER_NAME(const C_Polyhedron& y)                          \
-    : x(y) {                                                            \
-  }                                                                     \
-  explicit WRAPPER_NAME(const NNC_Polyhedron& y)                        \
-    : x(y) {                                                            \
-  }                                                                     \
-  template <typename U>                                                 \
-  explicit WRAPPER_NAME(const Box<U>& y)                                \
-    : x(y) {                                                            \
-  }                                                                     \
-  template <typename U>                                                 \
-  explicit WRAPPER_NAME(const BD_Shape<U>& y)                           \
-    : x(y) {                                                            \
-  }                                                                     \
-  template <typename U>                                                 \
-  explicit WRAPPER_NAME(const Octagonal_Shape<U>& y)                    \
-    : x(y) {                                                            \
-  }                                                                     \
-                                                                        \
-  explicit WRAPPER_NAME(const Constraint_System& y)                     \
-    : x(y) {                                                            \
-  }                                                                     \
-  explicit WRAPPER_NAME(const Congruence_System& y)                     \
-    : x(y) {                                                            \
-  }                                                                     \
-                                                                        \
-  ~WRAPPER_NAME() {                                                     \
-  }                                                                     \
-                                                                        \
-  dimension_type space_dimension() const {                              \
-    return x.space_dimension();                                         \
-  }                                                                     \
-  dimension_type affine_dimension() const {                             \
-    return x.space_dimension();                                         \
-  }                                                                     \
-  Constraint_System constraints() const {                               \
-    return x.constraints();                                             \
-  }                                                                     \
-  Congruence_System congruences() const {                               \
-    return x.congruences();                                             \
-  }                                                                     \
-                                                                        \
-  bool is_empty() const {                                               \
-    return x.is_empty();                                                \
-  }                                                                     \
-  bool is_universe() const {                                            \
-    return x.is_universe();                                             \
-  }                                                                     \
-  bool is_bounded() const {                                             \
-    return x.is_bounded();                                              \
-  }                                                                     \
-  bool is_topologically_closed() const {                                \
-    return x.is_topologically_closed();                                 \
-  }                                                                     \
-  bool is_discrete() const {                                            \
-    return x.is_discrete();                                             \
-  }                                                                     \
-  bool contains_integer_point() const {                                 \
-    return x.contains_integer_point();                                  \
-  }                                                                     \
-                                                                        \
-  bool contains(const Any_Pointset& y) const {                          \
-    return x.contains(dynamic_cast<const BASE_CLASS&>(y));              \
-  }                                                                     \
-  bool strictly_contains(const Any_Pointset& y) const {                 \
-    return x.strictly_contains(dynamic_cast<const BASE_CLASS&>(y));     \
-  }                                                                     \
-  bool is_disjoint_from(const Any_Pointset& y) const {                  \
-    return x.is_disjoint_from(dynamic_cast<const BASE_CLASS&>(y));      \
-  }                                                                     \
-                                                                        \
-  void add_space_dimensions_and_embed(dimension_type m) {               \
-    return x.add_space_dimensions_and_embed(m);                         \
-  }                                                                     \
-  void add_space_dimensions_and_project(dimension_type m) {             \
-    return x.add_space_dimensions_and_project(m);                       \
-  }                                                                     \
+TEMPLATE								\
+class WRAPPER_NAME : public Any_Pointset {				\
+ private:								\
+  BASE_CLASS x;								\
+ public:								\
+  explicit WRAPPER_NAME(const C_Polyhedron& y)				\
+    : x(y) {								\
+  }									\
+  explicit WRAPPER_NAME(const NNC_Polyhedron& y)			\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const Box<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>							\
+  explicit WRAPPER_NAME(const BD_Shape<U>& y)				\
+    : x(y) {								\
+  }									\
+  template <typename U>					                \
+  explicit WRAPPER_NAME(const Octagonal_Shape<U>& y)			\
+    : x(y) {								\
+  }									\
+									\
+  explicit WRAPPER_NAME(const Constraint_System& y)			\
+    : x(y) {								\
+  }									\
+  explicit WRAPPER_NAME(const Congruence_System& y)			\
+    : x(y) {								\
+  }									\
+									\
+  ~WRAPPER_NAME() {							\
+  }									\
+									\
+  dimension_type space_dimension() const {				\
+    return x.space_dimension();						\
+  }									\
+  dimension_type affine_dimension() const {				\
+    return x.space_dimension();						\
+  }									\
+  Constraint_System constraints() const {				\
+    return x.constraints();						\
+  }									\
+  Congruence_System congruences() const {				\
+    return x.congruences();						\
+  }									\
+									\
+  bool is_empty() const {						\
+    return x.is_empty();						\
+  }									\
+  bool is_universe() const {						\
+    return x.is_universe();						\
+  }									\
+  bool is_bounded() const {						\
+    return x.is_bounded();						\
+  }									\
+  bool is_topologically_closed() const {				\
+    return x.is_topologically_closed();					\
+  }									\
+  bool is_discrete() const {						\
+    return x.is_discrete();						\
+  }									\
+  bool contains_integer_point() const {					\
+    return x.contains_integer_point();					\
+  }									\
+									\
+  bool contains(const Any_Pointset& y) const {				\
+    return x.contains(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  bool strictly_contains(const Any_Pointset& y) const {			\
+    return x.strictly_contains(dynamic_cast<const BASE_CLASS&>(y));	\
+  }									\
+  bool is_disjoint_from(const Any_Pointset& y) const {			\
+    return x.is_disjoint_from(dynamic_cast<const BASE_CLASS&>(y));	\
+  }									\
+									\
+  void add_space_dimensions_and_embed(dimension_type m) {		\
+    return x.add_space_dimensions_and_embed(m);				\
+  }									\
+  void add_space_dimensions_and_project(dimension_type m) {		\
+    return x.add_space_dimensions_and_project(m);			\
+  }									\
   void remove_space_dimensions(const Variables_Set& vars) {             \
     x.remove_space_dimensions(vars);                                    \
-  }                                                                     \
-  void remove_higher_space_dimensions(dimension_type new_dimension) {   \
-    x.remove_higher_space_dimensions(new_dimension);                    \
-  }                                                                     \
-                                                                        \
-  void add_constraint(const Constraint& c) {                            \
-    x.add_constraint(c);                                                \
-  }                                                                     \
-                                                                        \
-  void add_constraints(const Constraint_System& cs) {                   \
-    x.add_constraints(cs);                                              \
-  }                                                                     \
-                                                                        \
-  void intersection_assign(const Any_Pointset& y) {                     \
-    x.intersection_assign(dynamic_cast<const BASE_CLASS&>(y));          \
-  }                                                                     \
-  void upper_bound_assign(const Any_Pointset& y) {                      \
-    x.upper_bound_assign(dynamic_cast<const BASE_CLASS&>(y));           \
-  }                                                                     \
-  void difference_assign(const Any_Pointset& y) {                       \
-    x.difference_assign(dynamic_cast<const BASE_CLASS&>(y));            \
-  }                                                                     \
-  void concatenate_assign(const Any_Pointset& y) {                      \
-    x.concatenate_assign(dynamic_cast<const BASE_CLASS&>(y));           \
-  }                                                                     \
-  void time_elapse_assign(const Any_Pointset& y) {                      \
-    x.time_elapse_assign(dynamic_cast<const BASE_CLASS&>(y));           \
-  }                                                                     \
-                                                                        \
-  void affine_image(Variable var,                                       \
-                    const Linear_Expression& expr,                      \
-                    Coefficient_traits::const_reference denominator     \
-                    = Coefficient_one()) {                              \
-    x.affine_image(var, expr, denominator);                             \
-  }                                                                     \
-  void affine_preimage(Variable var,                                    \
-                       const Linear_Expression& expr,                   \
-                       Coefficient_traits::const_reference denominator  \
-                       = Coefficient_one()) {                           \
-    x.affine_image(var, expr, denominator);                             \
-  }                                                                     \
-  void generalized_affine_image(Variable var,                           \
-                                Relation_Symbol relsym,                 \
-                                const Linear_Expression& expr,          \
-                                Coefficient_traits::const_reference     \
-                                denominator = Coefficient_one()) {      \
-    x.generalized_affine_image(var, relsym, expr, denominator);         \
-  }                                                                     \
-  void                                                                  \
-  generalized_affine_preimage(Variable var,                             \
-                              Relation_Symbol relsym,                   \
-                              const Linear_Expression& expr,            \
-                              Coefficient_traits::const_reference denominator \
-                              = Coefficient_one()) {                    \
-    x.generalized_affine_preimage(var, relsym, expr, denominator);      \
-  }                                                                     \
-  virtual void generalized_affine_image(const Linear_Expression& lhs,   \
-                                        Relation_Symbol relsym,         \
-                                        const Linear_Expression& rhs) { \
-    x.generalized_affine_image(lhs, relsym, rhs);                       \
-  }                                                                     \
-  void generalized_affine_preimage(const Linear_Expression& lhs,        \
-                                   Relation_Symbol relsym,              \
-                                   const Linear_Expression& rhs) {      \
-    x.generalized_affine_preimage(lhs, relsym, rhs);                    \
-  }                                                                     \
-                                                                        \
-  void bounded_affine_image(Variable var,                               \
-                            const Linear_Expression& lb_expr,           \
-                            const Linear_Expression& ub_expr,           \
-                            Coefficient_traits::const_reference         \
-                            denominator = Coefficient_one()) {          \
-    x.bounded_affine_image(var, lb_expr, ub_expr, denominator);         \
-  }                                                                     \
-  void bounded_affine_preimage(Variable var,                            \
-                               const Linear_Expression& lb_expr,        \
-                               const Linear_Expression& ub_expr,        \
-                               Coefficient_traits::const_reference      \
-                               denominator = Coefficient_one()) {       \
-    x.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);      \
-  }                                                                     \
-                                                                        \
-  bool bounds_from_above(const Linear_Expression& expr) const {         \
-    return x.bounds_from_above(expr);                                   \
-  }                                                                     \
-  bool bounds_from_below(const Linear_Expression& expr) const {         \
-    return x.bounds_from_below(expr);                                   \
-  }                                                                     \
-  bool maximize(const Linear_Expression& expr,                          \
-                Coefficient& sup_n, Coefficient& sup_d,                 \
-                bool& maximum) const {                                  \
-    return maximize(expr, sup_n, sup_d, maximum);                       \
-  }                                                                     \
-  bool maximize(const Linear_Expression& expr,                          \
-                Coefficient& sup_n, Coefficient& sup_d,                 \
-                bool& maximum, Generator& point) const {                \
-    return maximize(expr, sup_n, sup_d, maximum, point);                \
-  }                                                                     \
-  bool minimize(const Linear_Expression& expr,                          \
-                Coefficient& inf_n, Coefficient& inf_d,                 \
-                bool& minimum) const {                                  \
-    return minimize(expr, inf_n, inf_d, minimum);                       \
-  }                                                                     \
-  bool minimize(const Linear_Expression& expr,                          \
-                Coefficient& inf_n, Coefficient& inf_d,                 \
-                bool& minimum, Generator& point) const {                \
-    return minimize(expr, inf_n, inf_d, minimum, point);                \
-  }                                                                     \
-                                                                        \
-  memory_size_type total_memory_in_bytes() const {                      \
-    return x.total_memory_in_bytes();                                   \
-  }                                                                     \
-  memory_size_type external_memory_in_bytes() const {                   \
-    return x.total_memory_in_bytes();                                   \
-  }                                                                     \
-                                                                        \
-  int32_t hash_code() const {                                           \
-    return x.hash_code();                                               \
-  }                                                                     \
-                                                                        \
-  bool OK() const {                                                     \
-    return x.OK();                                                      \
-  }                                                                     \
+  }									\
+  void remove_higher_space_dimensions(dimension_type new_dimension) {	\
+    x.remove_higher_space_dimensions(new_dimension);			\
+  }									\
+									\
+  void add_constraint(const Constraint& c) {				\
+    x.add_constraint(c);						\
+  }									\
+									\
+  void add_constraints(const Constraint_System& cs) {			\
+    x.add_constraints(cs);						\
+  }									\
+									\
+  void intersection_assign(const Any_Pointset& y) {			\
+    x.intersection_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  void upper_bound_assign(const Any_Pointset& y) {			\
+    x.upper_bound_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  void difference_assign(const Any_Pointset& y) {			\
+    x.difference_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  void concatenate_assign(const Any_Pointset& y) {			\
+    x.concatenate_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  void time_elapse_assign(const Any_Pointset& y) {			\
+    x.time_elapse_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+									\
+  void affine_image(Variable var,					\
+		    const Linear_Expression& expr,			\
+		    Coefficient_traits::const_reference denominator	\
+		    = Coefficient_one()) {				\
+    x.affine_image(var, expr, denominator);				\
+  }									\
+  void affine_preimage(Variable var,					\
+		       const Linear_Expression& expr,			\
+		       Coefficient_traits::const_reference denominator	\
+		       = Coefficient_one()) {				\
+    x.affine_image(var, expr, denominator);				\
+  }									\
+  void generalized_affine_image(Variable var,				\
+				Relation_Symbol relsym,			\
+				const Linear_Expression& expr,		\
+				Coefficient_traits::const_reference	\
+				denominator = Coefficient_one()) {	\
+    x.generalized_affine_image(var, relsym, expr, denominator);		\
+  }									\
+  void									\
+  generalized_affine_preimage(Variable var,				\
+			      Relation_Symbol relsym,			\
+			      const Linear_Expression& expr,		\
+			      Coefficient_traits::const_reference denominator \
+			      = Coefficient_one()) {			\
+    x.generalized_affine_preimage(var, relsym, expr, denominator);	\
+  }									\
+  virtual void generalized_affine_image(const Linear_Expression& lhs,	\
+					Relation_Symbol relsym,		\
+					const Linear_Expression& rhs) { \
+    x.generalized_affine_image(lhs, relsym, rhs);			\
+  }									\
+  void generalized_affine_preimage(const Linear_Expression& lhs,	\
+				   Relation_Symbol relsym,		\
+				   const Linear_Expression& rhs) {	\
+    x.generalized_affine_preimage(lhs, relsym, rhs);			\
+  }									\
+									\
+  void bounded_affine_image(Variable var,				\
+			    const Linear_Expression& lb_expr,		\
+			    const Linear_Expression& ub_expr,		\
+			    Coefficient_traits::const_reference		\
+			    denominator = Coefficient_one()) {		\
+    x.bounded_affine_image(var, lb_expr, ub_expr, denominator);		\
+  }									\
+  void bounded_affine_preimage(Variable var,				\
+			       const Linear_Expression& lb_expr,	\
+			       const Linear_Expression& ub_expr,	\
+			       Coefficient_traits::const_reference	\
+			       denominator = Coefficient_one()) {	\
+    x.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);	\
+  }									\
+									\
+  bool bounds_from_above(const Linear_Expression& expr) const {		\
+    return x.bounds_from_above(expr);					\
+  }									\
+  bool bounds_from_below(const Linear_Expression& expr) const {		\
+    return x.bounds_from_below(expr);					\
+  }									\
+  bool maximize(const Linear_Expression& expr,				\
+		Coefficient& sup_n, Coefficient& sup_d,			\
+		bool& maximum) const {					\
+    return maximize(expr, sup_n, sup_d, maximum);			\
+  }									\
+  bool maximize(const Linear_Expression& expr,				\
+		Coefficient& sup_n, Coefficient& sup_d,			\
+		bool& maximum, Generator& point) const {		\
+    return maximize(expr, sup_n, sup_d, maximum, point);		\
+  }									\
+  bool minimize(const Linear_Expression& expr,				\
+		Coefficient& inf_n, Coefficient& inf_d,			\
+		bool& minimum) const {					\
+    return minimize(expr, inf_n, inf_d, minimum);			\
+  }									\
+  bool minimize(const Linear_Expression& expr,				\
+		Coefficient& inf_n, Coefficient& inf_d,			\
+		bool& minimum, Generator& point) const {		\
+    return minimize(expr, inf_n, inf_d, minimum, point);		\
+  }									\
+									\
+  memory_size_type total_memory_in_bytes() const {			\
+    return x.total_memory_in_bytes();					\
+  }									\
+  memory_size_type external_memory_in_bytes() const {			\
+    return x.total_memory_in_bytes();					\
+  }									\
+									\
+  int32_t hash_code() const {						\
+    return x.hash_code();						\
+  }									\
+									\
+  bool OK() const {							\
+    return x.OK();							\
+  }									\
 };
 
 namespace Parma_Polyhedra_Library {

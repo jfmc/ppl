@@ -52,11 +52,11 @@ Pointset_Ask_Tell<PSET>::max_space_dimension() {
 template <typename PSET>
 inline
 Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(dimension_type num_dimensions,
-                                         Degenerate_Element kind)
+					 Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   if (kind == EMPTY)
     pair_insert(Determinate<PSET>(PSET(num_dimensions, UNIVERSE)),
-                Determinate<PSET>(PSET(num_dimensions, EMPTY)));
+		Determinate<PSET>(PSET(num_dimensions, EMPTY)));
   PPL_ASSERT_HEAVY(OK());
 }
 
@@ -199,9 +199,9 @@ check_containment(const PSET& ph, const Pointset_Ask_Tell<PSET>& ps) {
 template <>
 inline bool
 check_containment(const C_Polyhedron& ph,
-                  const Pointset_Ask_Tell<C_Polyhedron>& ps) {
+		  const Pointset_Ask_Tell<C_Polyhedron>& ps) {
   return check_containment(NNC_Polyhedron(ph),
-                           Pointset_Ask_Tell<NNC_Polyhedron>(ps));
+			   Pointset_Ask_Tell<NNC_Polyhedron>(ps));
 }
 
 /*! \relates Pointset_Ask_Tell */

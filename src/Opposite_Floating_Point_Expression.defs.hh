@@ -171,7 +171,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Opposite_Floating_Point_Expression(
-                          const Opposite_Floating_Point_Expression& y);
+			  const Opposite_Floating_Point_Expression& y);
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -179,7 +179,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Opposite_Floating_Point_Expression& operator=(
-                          const Opposite_Floating_Point_Expression& y);
+			  const Opposite_Floating_Point_Expression& y);
 
   //! Pointer to the operand.
   Floating_Point_Expression<FP_Interval_Type, FP_Format>* operand;

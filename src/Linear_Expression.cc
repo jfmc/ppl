@@ -80,12 +80,12 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
 
 PPL::Linear_Expression::Linear_Expression(const Variable v)
   : Linear_Row((v.space_dimension() <= max_space_dimension())
-               ? (v.space_dimension() + 1)
-               : (throw std::length_error("PPL::Linear_Expression::"
-                                          "Linear_Expression(v):\n"
-                                          "v exceeds the maximum allowed "
-                                          "space dimension."),
-                  (v.space_dimension() + 1)),
+	       ? (v.space_dimension() + 1)
+	       : (throw std::length_error("PPL::Linear_Expression::"
+					  "Linear_Expression(v):\n"
+					  "v exceeds the maximum allowed "
+					  "space dimension."),
+		  (v.space_dimension() + 1)),
                Linear_Row::Flags()) {
   ++((*this)[v.space_dimension()]);
 }
@@ -158,7 +158,7 @@ PPL::operator+(const Variable v, const Linear_Expression& e) {
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(Coefficient_traits::const_reference n,
-               const Linear_Expression& e) {
+	       const Linear_Expression& e) {
   Linear_Expression r(e);
   r[0] += n;
   return r;
@@ -259,7 +259,7 @@ PPL::operator-(const Linear_Expression& e, const Variable v) {
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(Coefficient_traits::const_reference n,
-               const Linear_Expression& e) {
+	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     neg_assign(r[i]);
@@ -270,7 +270,7 @@ PPL::operator-(Coefficient_traits::const_reference n,
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator*(Coefficient_traits::const_reference n,
-               const Linear_Expression& e) {
+	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     r[i] *= n;
@@ -301,7 +301,7 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   if (v_space_dim > Linear_Expression::max_space_dimension())
     throw std::length_error("Linear_Expression& "
                             "PPL::operator+=(e, v):\n"
-                            "v exceeds the maximum allowed space dimension.");
+			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
@@ -335,7 +335,7 @@ PPL::operator-=(Linear_Expression& e, const Variable v) {
   if (v_space_dim > Linear_Expression::max_space_dimension())
     throw std::length_error("Linear_Expression& "
                             "PPL::operator-=(e, v):\n"
-                            "v exceeds the maximum allowed space dimension.");
+			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
@@ -363,7 +363,7 @@ PPL::add_mul_assign(Linear_Expression& e,
   if (v_space_dim > Linear_Expression::max_space_dimension())
     throw std::length_error("Linear_Expression& "
                             "PPL::add_mul_assign(e, n, v):\n"
-                            "v exceeds the maximum allowed space dimension.");
+			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
@@ -382,7 +382,7 @@ PPL::sub_mul_assign(Linear_Expression& e,
   if (v_space_dim > Linear_Expression::max_space_dimension())
     throw std::length_error("Linear_Expression& "
                             "PPL::sub_mul_assign(e, n, v):\n"
-                            "v exceeds the maximum allowed space dimension.");
+			    "v exceeds the maximum allowed space dimension.");
   const dimension_type e_size = e.size();
   if (e_size <= v_space_dim) {
     Linear_Expression new_e(e, v_space_dim+1);
@@ -407,19 +407,19 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     ev = e[v+1];
     if (ev != 0) {
       if (!first) {
-        if (ev > 0)
-          s << " + ";
-        else {
-          s << " - ";
-          neg_assign(ev);
-        }
+	if (ev > 0)
+	  s << " + ";
+	else {
+	  s << " - ";
+	  neg_assign(ev);
+	}
       }
       else
-        first = false;
+	first = false;
       if (ev == -1)
-        s << "-";
+	s << "-";
       else if (ev != 1)
-        s << ev << "*";
+	s << ev << "*";
       s << PPL::Variable(v);
     }
   }
@@ -429,10 +429,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
   if (it != 0) {
     if (!first) {
       if (it > 0)
-        s << " + ";
+	s << " + ";
       else {
-        s << " - ";
-        neg_assign(it);
+	s << " - ";
+	neg_assign(it);
       }
     }
     else

@@ -44,7 +44,7 @@ inline dimension_type
 Partial_Function::max_in_codomain() const {
   if (has_empty_codomain())
     throw std::runtime_error("Partial_Function::max_in_codomain() called"
-                             " when has_empty_codomain()");
+			     " when has_empty_codomain()");
   PPL_ASSERT(codomain.begin() != codomain.end()
              && max == *codomain.rbegin());
   return max;

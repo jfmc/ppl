@@ -56,7 +56,7 @@ median(const Value_Type& x, const Value_Type& y, const Value_Type& z,
 template <typename Iter, typename Value_Type, typename Compare>
 Iter
 swapping_partition(Iter first, Iter last, const Value_Type& pivot,
-                   Compare comp) {
+		   Compare comp) {
   for ( ; ; ) {
     while (comp(*first, pivot))
       ++first;
@@ -84,12 +84,12 @@ swapping_insertion_sort(Iter first, Iter last, Compare comp) {
     if (comp(*current, *first)) {
       Iter next = current + 1;
       while (current != first)
-        iter_swap(--current, --next);
+	iter_swap(--current, --next);
     }
     else {
       Iter previous = current - 1;
       while (comp(*current, *previous))
-        iter_swap(current--, previous--);
+	iter_swap(current--, previous--);
     }
   }
 }

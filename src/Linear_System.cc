@@ -72,8 +72,8 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
       swap(x[xi++], *tmp.insert(tmp.end(), Linear_Row()));
       if (comp == 0)
-        // A duplicate element.
-        ++yi;
+	// A duplicate element.
+	++yi;
     }
     else {
       // (comp > 0)
@@ -121,8 +121,8 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
-                       ? "NECESSARILY_CLOSED"
-                       : "NOT_NECESSARILY_CLOSED")
+		       ? "NECESSARILY_CLOSED"
+		       : "NOT_NECESSARILY_CLOSED")
     << "\n"
     << x_num_rows << " x " << x_num_columns
     << (x.sorted ? "(sorted)" : "(not_sorted)")
@@ -303,7 +303,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
       // `y' is sorted and has no pending rows.
       const dimension_type n_rows = num_rows();
       if (n_rows > 0)
-        set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
+	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
     }
   }
 
@@ -331,7 +331,7 @@ PPL::Linear_System::sort_rows() {
 
 void
 PPL::Linear_System::sort_rows(const dimension_type first_row,
-                              const dimension_type last_row) {
+			      const dimension_type last_row) {
   PPL_ASSERT(first_row <= last_row && last_row <= num_rows());
   // We cannot mix pending and non-pending rows.
   PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
@@ -570,23 +570,23 @@ PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
       if (x[i][j] == 0)
-        continue;
+	continue;
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
       if (i > rank) {
         using std::swap;
-        swap(x[i], x[rank]);
-        // After swapping the system is no longer sorted.
-        changed = true;
+	swap(x[i], x[rank]);
+	// After swapping the system is no longer sorted.
+	changed = true;
       }
       // Combine the row containing the pivot with all the lines or
       // equalities following it, so that all the elements on the j-th
       // column in these rows become 0.
       for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k)
-        if (x[k][j] != 0) {
-          x[k].linear_combine(x[rank], j);
-          changed = true;
-        }
+	if (x[k][j] != 0) {
+	  x[k].linear_combine(x[rank], j);
+	  changed = true;
+	}
       // Already dealt with the rank-th row.
       ++rank;
       // Consider another column index `j'.
@@ -639,16 +639,16 @@ PPL::Linear_System
     for (dimension_type i = k; i-- > 0; ) {
       Linear_Row& x_i = x[i];
       if (x_i[j] != 0) {
-        // Combine linearly `x_i' with `x_k'
-        // so that `x_i[j]' becomes zero.
-        x_i.linear_combine(x_k, j);
-        if (still_sorted) {
-          // Trying to keep sortedness: remember which rows
-          // have to be re-checked for sortedness at the end.
-          if (i > 0)
-            check_for_sortedness[i-1] = true;
-          check_for_sortedness[i] = true;
-        }
+	// Combine linearly `x_i' with `x_k'
+	// so that `x_i[j]' becomes zero.
+	x_i.linear_combine(x_k, j);
+	if (still_sorted) {
+	  // Trying to keep sortedness: remember which rows
+	  // have to be re-checked for sortedness at the end.
+	  if (i > 0)
+	    check_for_sortedness[i-1] = true;
+	  check_for_sortedness[i] = true;
+	}
       }
     }
 
@@ -660,7 +660,7 @@ PPL::Linear_System
     const bool have_to_negate = (x_k[j] < 0);
     if (have_to_negate)
       for (dimension_type h = ncols; h-- > 0; )
-        PPL::neg_assign(x_k[h]);
+	PPL::neg_assign(x_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
@@ -668,22 +668,22 @@ PPL::Linear_System
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Linear_Row& x_i = x[i];
       if (x_i[j] != 0) {
-        // Combine linearly the `x_i' with `x_k'
-        // so that `x_i[j]' becomes zero.
-        x_i.linear_combine(x_k, j);
-        if (still_sorted) {
-          // Trying to keep sortedness: remember which rows
-          // have to be re-checked for sortedness at the end.
-          if (i > n_lines_or_equalities)
-            check_for_sortedness[i-1] = true;
-          check_for_sortedness[i] = true;
-        }
+	// Combine linearly the `x_i' with `x_k'
+	// so that `x_i[j]' becomes zero.
+	x_i.linear_combine(x_k, j);
+	if (still_sorted) {
+	  // Trying to keep sortedness: remember which rows
+	  // have to be re-checked for sortedness at the end.
+	  if (i > n_lines_or_equalities)
+	    check_for_sortedness[i-1] = true;
+	  check_for_sortedness[i] = true;
+	}
       }
     }
     if (have_to_negate)
       // Negate `x_k' to restore strong-normalization.
       for (dimension_type h = ncols; h-- > 0; )
-        PPL::neg_assign(x_k[h]);
+	PPL::neg_assign(x_k[h]);
   }
 
   // Trying to keep sortedness.
@@ -714,9 +714,9 @@ PPL::Linear_System::simplify() {
     if (x[i].is_line_or_equality()) {
       if (n_lines_or_equalities < i) {
         using std::swap;
-        swap(x[i], x[n_lines_or_equalities]);
-        // The system was not sorted.
-        PPL_ASSERT(!x.sorted);
+	swap(x[i], x[n_lines_or_equalities]);
+	// The system was not sorted.
+	PPL_ASSERT(!x.sorted);
       }
       ++n_lines_or_equalities;
     }
@@ -728,7 +728,7 @@ PPL::Linear_System::simplify() {
       n_rays_or_points_or_inequalities = nrows - n_lines_or_equalities;
     const dimension_type
       num_swaps = std::min(n_lines_or_equalities - rank,
-                           n_rays_or_points_or_inequalities);
+			   n_rays_or_points_or_inequalities);
     using std::swap;
     for (dimension_type i = num_swaps; i-- > 0; )
       swap(x[--nrows], x[rank + i]);
@@ -811,7 +811,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
       ++k1;
       // Do not increment `k2'; instead, swap there the next pending row.
       if (k2 < num_rows)
-        swap(x[k2], x[k2 + num_duplicates]);
+	swap(x[k2], x[k2 + num_duplicates]);
     }
     else if (cmp < 0)
       // By initial sortedness, we can increment `k1'.
@@ -830,7 +830,7 @@ PPL::Linear_System::sort_pending_and_remove_duplicates() {
   if (num_duplicates > 0) {
     if (k2 < num_rows)
       for (++k2; k2 < num_rows; ++k2)
-        swap(x[k2], x[k2 + num_duplicates]);
+	swap(x[k2], x[k2 + num_duplicates]);
     x.remove_trailing_rows(old_num_rows - num_rows);
   }
   // Do not check for strong normalization,
@@ -858,7 +858,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
     cerr << "Linear_System has a negative number of pending rows!"
-         << endl;
+	 << endl;
 #endif
     return false;
   }
@@ -883,11 +883,11 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   if (num_columns() < min_cols) {
 #ifndef NDEBUG
     cerr << "Linear_System has fewer columns than the minimum "
-         << "allowed by its topology:"
-         << endl
-         << "num_columns is " << num_columns()
-         << ", minimum is " << min_cols
-         << endl;
+	 << "allowed by its topology:"
+	 << endl
+	 << "num_columns is " << num_columns()
+	 << ", minimum is " << min_cols
+	 << endl;
 #endif
     return false;
   }
@@ -901,8 +901,8 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
     if (x.topology() != x[i].topology()) {
 #ifndef NDEBUG
       cerr << "Topology mismatch between the system "
-           << "and one of its rows!"
-           << endl;
+	   << "and one of its rows!"
+	   << endl;
 #endif
       return false;
     }
@@ -919,7 +919,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
     if (x != tmp) {
 #ifndef NDEBUG
       cerr << "Linear_System rows are not strongly normalized!"
-           << endl;
+	   << endl;
 #endif
       return false;
     }
@@ -928,7 +928,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   if (sorted && !check_sorted()) {
 #ifndef NDEBUG
     cerr << "The system declares itself to be sorted but it is not!"
-         << endl;
+	 << endl;
 #endif
     return false;
   }

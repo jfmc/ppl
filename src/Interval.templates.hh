@@ -86,8 +86,8 @@ template <typename Boundary, typename Info>
 template <typename From, typename Iterator>
 typename Enable_If<Is_Interval<From>::value, void>::type
 Interval<Boundary, Info>::CC76_widening_assign(const From& y,
-                                               Iterator first,
-                                               Iterator last) {
+					       Iterator first,
+					       Iterator last) {
   // We assume that `y' is contained in or equal to `*this'.
   PPL_ASSERT(contains(y));
   Interval<Boundary, Info>& x = *this;
@@ -100,11 +100,11 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
     if (y_ub < x_ub) {
       Iterator k = std::lower_bound(first, last, x_ub);
       if (k != last) {
-        if (x_ub < *k)
-          x_ub = *k;
+	if (x_ub < *k)
+	  x_ub = *k;
       }
       else
-        x.upper_extend();
+	x.upper_extend();
     }
   }
 
@@ -116,12 +116,12 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
       if (k != last) {
-        if (x_lb < *k) {
-          if (k != first)
-            x_lb = *--k;
-          else
-            x.lower_extend();
-        }
+	if (x_lb < *k) {
+	  if (k != first)
+	    x_lb = *--k;
+	  else
+	    x.lower_extend();
+	}
       }
       else {
         if (k != first)
@@ -348,7 +348,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   if (!lower_boundary_infinity
       && !upper_boundary_infinity
       && (lower_bound > upper_bound
-          || (lower_open && lower_bound == upper_bound)))
+	  || (lower_open && lower_bound == upper_bound)))
     x.assign(EMPTY);
   else {
     if (lower_boundary_infinity)

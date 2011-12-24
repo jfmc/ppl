@@ -129,7 +129,7 @@ output_restriction(std::ostream&, const Interval_Restriction_None_Base&) {
 
 template <typename Base>
 class Interval_Restriction_None : public Interval_Restriction_None_Base,
-                                  public Base {
+				  public Base {
 public:
   Interval_Restriction_None() {
   }
@@ -168,13 +168,13 @@ public:
     switch (dir) {
     case V_GT:
       if (is_integer(x))
-        return add_assign_r(x, x, static_cast<T>(1), rdir);
+	return add_assign_r(x, x, static_cast<T>(1), rdir);
       /* Fall through */
     case V_GE:
       return ceil_assign_r(x, x, rdir);
     case V_LT:
       if (is_integer(x))
-        return sub_assign_r(x, x, static_cast<T>(1), rdir);
+	return sub_assign_r(x, x, static_cast<T>(1), rdir);
       /* Fall through */
     case V_LE:
       return floor_assign_r(x, x, rdir);
@@ -247,7 +247,7 @@ template <typename Base, typename From1, typename From2>
 inline bool
 join_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
-                 && Restriction_Integer<From2, Base>::get(y).get_integer());
+		 && Restriction_Integer<From2, Base>::get(y).get_integer());
   return true;
 }
 
@@ -255,14 +255,14 @@ template <typename Base, typename From1, typename From2>
 inline bool
 intersect_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
-                 || Restriction_Integer<From2, Base>::get(y).get_integer());
+		 || Restriction_Integer<From2, Base>::get(y).get_integer());
   return true;
 }
 
 template <typename Base, typename From1, typename From2>
 inline bool
 diff_restriction(Interval_Restriction_Integer<Base>& to,
-                 const From1& x, const From2&) {
+		 const From1& x, const From2&) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer());
   return true;
 }
@@ -278,7 +278,7 @@ template <typename Base, typename From1, typename From2>
 inline bool
 add_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
-                 && Restriction_Integer<From2, Base>::get(y).get_integer());
+		 && Restriction_Integer<From2, Base>::get(y).get_integer());
   return true;
 }
 
@@ -286,7 +286,7 @@ template <typename Base, typename From1, typename From2>
 inline bool
 sub_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
-                 && Restriction_Integer<From2, Base>::get(y).get_integer());
+		 && Restriction_Integer<From2, Base>::get(y).get_integer());
   return true;
 }
 
@@ -294,7 +294,7 @@ template <typename Base, typename From1, typename From2>
 inline bool
 mul_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
-                 && Restriction_Integer<From2, Base>::get(y).get_integer());
+		 && Restriction_Integer<From2, Base>::get(y).get_integer());
   return true;
 }
 
@@ -351,40 +351,40 @@ public:
     switch (dir) {
     case V_GT:
       if (s >= 0) {
-        r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
-        PPL_ASSERT(r == V_EQ);
-        return add_assign_r(x, x, n, rdir);
+	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
+	PPL_ASSERT(r == V_EQ);
+	return add_assign_r(x, x, n, rdir);
       }
       else
-        return sub_assign_r(x, x, n, rdir);
+	return sub_assign_r(x, x, n, rdir);
     case V_GE:
       if (s > 0) {
-        r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
-        PPL_ASSERT(r == V_EQ);
-        return add_assign_r(x, x, n, rdir);
+	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
+	PPL_ASSERT(r == V_EQ);
+	return add_assign_r(x, x, n, rdir);
       }
       else if (s < 0)
-        return sub_assign_r(x, x, n, rdir);
+	return sub_assign_r(x, x, n, rdir);
       else
-        return V_EQ;
+	return V_EQ;
     case V_LT:
       if (s <= 0) {
-        r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
-        PPL_ASSERT(r == V_EQ);
-        return sub_assign_r(x, x, n, rdir);
+	r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
+	PPL_ASSERT(r == V_EQ);
+	return sub_assign_r(x, x, n, rdir);
       }
       else
-        return sub_assign_r(x, x, n, rdir);
+	return sub_assign_r(x, x, n, rdir);
     case V_LE:
       if (s < 0) {
-        r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
-        PPL_ASSERT(r == V_EQ);
-        return sub_assign_r(x, x, n, rdir);
+	r = add_assign_r(n, div, n, ROUND_NOT_NEEDED);
+	PPL_ASSERT(r == V_EQ);
+	return sub_assign_r(x, x, n, rdir);
       }
       else if (s > 0)
-        return sub_assign_r(x, x, n, rdir);
+	return sub_assign_r(x, x, n, rdir);
       else
-        return V_EQ;
+	return V_EQ;
     default:
       PPL_UNREACHABLE;
       return dir;
@@ -616,7 +616,7 @@ intersect_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const Fr
 template <typename T, typename Base, typename From1, typename From2>
 inline bool
 diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to,
-                 const From1& x, const From2& y) {
+		 const From1& x, const From2& y) {
   // FIXME: to be written
   used(to);
   used(x);

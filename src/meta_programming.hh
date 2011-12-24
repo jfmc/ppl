@@ -39,7 +39,7 @@ namespace Parma_Polyhedra_Library {
   mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define const_bool_nodef(name, value)           \
+#define const_bool_nodef(name, value)		\
   enum anonymous_enum_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -68,9 +68,9 @@ namespace Parma_Polyhedra_Library {
   mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define const_value_nodef(type, name, value)    \
-  static type name() {                          \
-    return value;                               \
+#define const_value_nodef(type, name, value)	\
+  static type name() {				\
+    return value;				\
   }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -85,10 +85,10 @@ namespace Parma_Polyhedra_Library {
   mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define const_ref_nodef(type, name, value)                              \
+#define const_ref_nodef(type, name, value)				\
   static const type& PPL_U(name)() {                                    \
-    static type name(value);                                            \
-    return name;                                                        \
+    static type name(value);						\
+    return name;							\
   }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -116,10 +116,10 @@ struct Compile_Time_Check<true> {
 };
 
 #define PPL_COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
-#define PPL_COMPILE_TIME_CHECK_AUX(e, suffix)                           \
-  enum anonymous_enum_compile_time_check_ ## suffix {                   \
+#define PPL_COMPILE_TIME_CHECK_AUX(e, suffix)				\
+  enum anonymous_enum_compile_time_check_ ## suffix {			\
     /* If e evaluates to false, then the sizeof cannot be compiled. */  \
-    PPL_COMPILE_TIME_CHECK_NAME(suffix)                                 \
+    PPL_COMPILE_TIME_CHECK_NAME(suffix)					\
     = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<e>)            \
   }
 

@@ -30,7 +30,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid_Generator::throw_invalid_argument(const char* method,
-                                            const char* reason) const {
+					    const char* reason) const {
   std::ostringstream s;
   s << "PPL::Grid_Generator::" << method << ":" << std::endl
     << reason << ".";
@@ -39,13 +39,13 @@ PPL::Grid_Generator::throw_invalid_argument(const char* method,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::parameter(const Linear_Expression& e,
-                               Coefficient_traits::const_reference d) {
+			       Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::parameter(e, d):\n"
-                                "d == 0.");
+				"d == 0.");
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
-                       e.space_dimension() + 2);
+		       e.space_dimension() + 2);
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
   // Using this constructor saves reallocation when creating the
@@ -64,13 +64,13 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
-                                Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
-                                "d == 0.");
+				"d == 0.");
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
-                       e.space_dimension() + 2);
+		       e.space_dimension() + 2);
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   g[0] = d;
   // Using this constructor saves reallocation when creating the
@@ -93,11 +93,11 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::grid_line(e):\n"
-                                "e == 0, but the origin cannot be a line.");
+				"e == 0, but the origin cannot be a line.");
 
   // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
-                       e.space_dimension() + 2);
+		       e.space_dimension() + 2);
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   g[0] = 0;
   // Using this constructor saves reallocation when creating the
@@ -255,7 +255,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   if (is_parameter_or_point()) {
     if (d == 0)
       throw std::invalid_argument("PPL::Grid_Generator::scale_to_divisor(d):\n"
-                                  "d == 0.");
+				  "d == 0.");
 
     PPL_DIRTY_TEMP_COEFFICIENT(factor);
     exact_div_assign(factor, d, divisor());
@@ -263,7 +263,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
     PPL_ASSERT(factor > 0);
     if (factor > 1)
       for (dimension_type col = size() - 2; col >= 1; --col)
-        (*this)[col] *= factor;
+	(*this)[col] *= factor;
   }
 }
 
@@ -306,12 +306,12 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
       need_divisor = true;
       dimension_type num_non_zero_coefficients = 0;
       for (dimension_type v = 0; v < num_variables; ++v)
-        if (g[v+1] != 0)
-          if (++num_non_zero_coefficients > 1) {
-            extra_parentheses = true;
-            s << "(";
-            break;
-          }
+	if (g[v+1] != 0)
+	  if (++num_non_zero_coefficients > 1) {
+	    extra_parentheses = true;
+	    s << "(";
+	    break;
+	  }
     }
     break;
   }
@@ -322,19 +322,19 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     g_v = g[v+1];
     if (g_v != 0) {
       if (!first) {
-        if (g_v > 0)
-          s << " + ";
-        else {
-          s << " - ";
-          neg_assign(g_v);
-        }
+	if (g_v > 0)
+	  s << " + ";
+	else {
+	  s << " - ";
+	  neg_assign(g_v);
+	}
       }
       else
-        first = false;
+	first = false;
       if (g_v == -1)
-        s << "-";
+	s << "-";
       else if (g_v != 1)
-        s << g_v << "*";
+	s << g_v << "*";
       s << PPL::Variable(v);
     }
   }
@@ -352,7 +352,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s,
-                              const Grid_Generator::Type& t) {
+			      const Grid_Generator::Type& t) {
   const char* n = 0;
   switch (t) {
   case Grid_Generator::LINE:
@@ -374,7 +374,7 @@ PPL::Grid_Generator::OK() const {
   if (!is_necessarily_closed()) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator should be necessarily closed."
-              << std::endl;
+	      << std::endl;
 #endif
     return false;
   }
@@ -383,8 +383,8 @@ PPL::Grid_Generator::OK() const {
   if (size() < 1) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator has fewer coefficients than the minimum "
-              << "allowed:" << std::endl
-              << "size is " << size() << ", minimum is 1." << std::endl;
+	      << "allowed:" << std::endl
+	      << "size is " << size() << ", minimum is 1." << std::endl;
 #endif
     return false;
   }
@@ -394,7 +394,7 @@ PPL::Grid_Generator::OK() const {
     if ((*this)[0] != 0) {
 #ifndef NDEBUG
       std::cerr << "Inhomogeneous terms of lines must be zero!"
-                << std::endl;
+		<< std::endl;
 #endif
       return false;
     }
@@ -404,7 +404,7 @@ PPL::Grid_Generator::OK() const {
     if ((*this)[0] != 0) {
 #ifndef NDEBUG
       std::cerr << "Inhomogeneous terms of parameters must be zero!"
-                << std::endl;
+		<< std::endl;
 #endif
       return false;
     }
@@ -414,7 +414,7 @@ PPL::Grid_Generator::OK() const {
     if (divisor() <= 0) {
 #ifndef NDEBUG
       std::cerr << "Points and parameters must have positive divisors!"
-                << std::endl;
+		<< std::endl;
 #endif
       return false;
     }

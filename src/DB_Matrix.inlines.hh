@@ -207,12 +207,12 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                    const DB_Matrix<T>& x,
-                    const DB_Matrix<T>& y,
-                    const Rounding_Dir dir,
-                    Temp& tmp0,
-                    Temp& tmp1,
-                    Temp& tmp2) {
+		    const DB_Matrix<T>& x,
+		    const DB_Matrix<T>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0,
+		    Temp& tmp1,
+		    Temp& tmp2) {
   const dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
@@ -224,26 +224,26 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       const T& x_i_j = x_i[j];
       const T& y_i_j = y_i[j];
       if (is_plus_infinity(x_i_j)) {
-        if (is_plus_infinity(y_i_j))
-          continue;
-        else {
-        pinf:
-          assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
-          return true;
-        }
+	if (is_plus_infinity(y_i_j))
+	  continue;
+	else {
+	pinf:
+	  assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+	  return true;
+	}
       }
       else if (is_plus_infinity(y_i_j))
-        goto pinf;
+	goto pinf;
 
       const Temp* tmp1p;
       const Temp* tmp2p;
       if (x_i_j > y_i_j) {
-        maybe_assign(tmp1p, tmp1, x_i_j, dir);
-        maybe_assign(tmp2p, tmp2, y_i_j, inverse(dir));
+	maybe_assign(tmp1p, tmp1, x_i_j, dir);
+	maybe_assign(tmp2p, tmp2, y_i_j, inverse(dir));
       }
       else {
-        maybe_assign(tmp1p, tmp1, y_i_j, dir);
-        maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
+	maybe_assign(tmp1p, tmp1, y_i_j, dir);
+	maybe_assign(tmp2p, tmp2, x_i_j, inverse(dir));
       }
       sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
       PPL_ASSERT(sgn(tmp1) >= 0);
@@ -261,18 +261,18 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                            const DB_Matrix<T>& x,
-                            const DB_Matrix<T>& y,
-                            const Rounding_Dir dir,
-                            Temp& tmp0,
-                            Temp& tmp1,
-                            Temp& tmp2) {
+			    const DB_Matrix<T>& x,
+			    const DB_Matrix<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
   return
     l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >(r, x, y,
-                                                                    dir,
-                                                                    tmp0,
-                                                                    tmp1,
-                                                                    tmp2);
+								    dir,
+								    tmp0,
+								    tmp1,
+								    tmp2);
 }
 
 
@@ -282,18 +282,18 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                          const DB_Matrix<T>& x,
-                          const DB_Matrix<T>& y,
-                          const Rounding_Dir dir,
-                          Temp& tmp0,
-                          Temp& tmp1,
-                          Temp& tmp2) {
+			  const DB_Matrix<T>& x,
+			  const DB_Matrix<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
   return
     l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >(r, x, y,
-                                                                  dir,
-                                                                  tmp0,
-                                                                  tmp1,
-                                                                  tmp2);
+								  dir,
+								  tmp0,
+								  tmp1,
+								  tmp2);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -302,18 +302,18 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-                           const DB_Matrix<T>& x,
-                           const DB_Matrix<T>& y,
-                           const Rounding_Dir dir,
-                           Temp& tmp0,
-                           Temp& tmp1,
-                           Temp& tmp2) {
+			   const DB_Matrix<T>& x,
+			   const DB_Matrix<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
   return
     l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >(r, x, y,
-                                                                   dir,
-                                                                   tmp0,
-                                                                   tmp1,
-                                                                   tmp2);
+								   dir,
+								   tmp0,
+								   tmp1,
+								   tmp2);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

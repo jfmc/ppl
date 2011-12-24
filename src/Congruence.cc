@@ -34,24 +34,24 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence::Congruence(const Constraint& c)
   : Dense_Row(c.is_equality()
-        ? c
-        : (throw_invalid_argument("Congruence(c)",
-                                  "constraint c must be an equality."),
-           c),
-        c.space_dimension() + 2,
-        compute_capacity(c.space_dimension() + 2, Dense_Row::max_size())) {
+	? c
+	: (throw_invalid_argument("Congruence(c)",
+				  "constraint c must be an equality."),
+	   c),
+	c.space_dimension() + 2,
+	compute_capacity(c.space_dimension() + 2, Dense_Row::max_size())) {
   (*this)[size()-1] = 0;
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
-                            dimension_type sz, dimension_type capacity)
+			    dimension_type sz, dimension_type capacity)
   : Dense_Row(c.is_equality()
-        ? c
-        : (throw_invalid_argument("Congruence(c)",
-                                  "constraint c must be an equality."),
-           c),
-        sz,
-        capacity) {
+	? c
+	: (throw_invalid_argument("Congruence(c)",
+				  "constraint c must be an equality."),
+	   c),
+	sz,
+	capacity) {
   PPL_ASSERT(sz > 1);
   (*this)[sz-1] = 0;
 }
@@ -72,7 +72,7 @@ PPL::Congruence::sign_normalize() {
     // negate all the coefficients and the inhomogeneous term.
     if (x[first_non_zero] < 0) {
       for (dimension_type j = first_non_zero; j < sz; ++j)
-        neg_assign(x[j]);
+	neg_assign(x[j]);
       // Also negate the inhomogeneous term.
       neg_assign(x[0]);
     }
@@ -107,7 +107,7 @@ PPL::Congruence::strong_normalize() {
 
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
-                        const Linear_Expression& e2) {
+			const Linear_Expression& e2) {
   // Ensure that diff is created with capacity for the modulus.
   dimension_type dim, e1_dim, e2_dim;
   e1_dim = e1.space_dimension();
@@ -117,7 +117,7 @@ PPL::Congruence::create(const Linear_Expression& e1,
   else
     dim = e2_dim;
   Linear_Expression diff((e1_dim > e2_dim) ? e1 : e2,
-                         dim + 2);
+			 dim + 2);
   diff -= ((e1_dim > e2_dim) ? e2 : e1);
   Congruence cg(diff, 1);
   return cg;
@@ -125,7 +125,7 @@ PPL::Congruence::create(const Linear_Expression& e1,
 
 void
 PPL::Congruence::throw_invalid_argument(const char* method,
-                                        const char* message) const {
+					const char* message) const {
   std::ostringstream s;
   s << "PPL::Congruence::" << method << ":" << std::endl
     << message;
@@ -134,8 +134,8 @@ PPL::Congruence::throw_invalid_argument(const char* method,
 
 void
 PPL::Congruence::throw_dimension_incompatible(const char* method,
-                                              const char* v_name,
-                                              const Variable v) const {
+					      const char* v_name,
+					      const Variable v) const {
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
@@ -153,19 +153,19 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
     cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
-        if (cv > 0)
-          s << " + ";
-        else {
-          s << " - ";
-          neg_assign(cv);
-        }
+	if (cv > 0)
+	  s << " + ";
+	else {
+	  s << " - ";
+	  neg_assign(cv);
+	}
       }
       else
-        first = false;
+	first = false;
       if (cv == -1)
-        s << "-";
+	s << "-";
       else if (cv != 1)
-        s << cv << "*";
+	s << cv << "*";
       s << PPL::Variable(v);
     }
   }
@@ -181,10 +181,10 @@ bool
 PPL::Congruence::is_tautological() const {
   if ((is_equality() && inhomogeneous_term() == 0)
       || (is_proper_congruence()
-          && (inhomogeneous_term() % modulus() == 0))) {
+	  && (inhomogeneous_term() % modulus() == 0))) {
     for (dimension_type i = space_dimension(); i > 0; --i)
       if ((*this)[i] != 0)
-        return false;
+	return false;
     return true;
   }
   return false;
@@ -194,7 +194,7 @@ bool
 PPL::Congruence::is_inconsistent() const {
   if (inhomogeneous_term() == 0
       || (is_proper_congruence()
-          && ((inhomogeneous_term() % modulus()) == 0)))
+	  && ((inhomogeneous_term() % modulus()) == 0)))
     return false;
   for (dimension_type i = space_dimension(); i > 0; --i)
     if ((*this)[i] != 0)
@@ -238,7 +238,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
   if (new_size > 0) {
     for (dimension_type col = 0; col < new_size - 1; ++col)
       if (!(s >> x[col]))
-        return false;
+	return false;
     if (!(s >> str) || str != "m")
       return false;
     if (!(s >> x[new_size-1]))
@@ -257,7 +257,7 @@ PPL::Congruence::OK() const {
   if (modulus() < 0) {
 #ifndef NDEBUG
     std::cerr << "Congruence has a negative modulus " << modulus() << "."
-              << std::endl;
+	      << std::endl;
 #endif
     return false;
   }

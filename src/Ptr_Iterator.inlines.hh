@@ -178,7 +178,7 @@ operator-(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y) {
 template<typename P>
 inline Ptr_Iterator<P>
 operator+(typename Ptr_Iterator<P>::difference_type m,
-          const Ptr_Iterator<P>& y) {
+	  const Ptr_Iterator<P>& y) {
   return Ptr_Iterator<P>(m + y.base());
 }
 

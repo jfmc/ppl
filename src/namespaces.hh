@@ -44,7 +44,7 @@ namespace Parma_Polyhedra_Library {
   \code
     const Constraint_System& cs = ...;
     copy(cs.begin(), cs.end(),
-         ostream_iterator<Constraint>(cout, "\n"));
+	 ostream_iterator<Constraint>(cout, "\n"));
   \endcode
   the Parma_Polyhedra_Library namespace must be suitably extended.
   This can be done as follows:

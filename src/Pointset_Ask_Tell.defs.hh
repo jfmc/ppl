@@ -71,7 +71,7 @@ public:
   */
   explicit
   Pointset_Ask_Tell(dimension_type num_dimensions = 0,
-                    Degenerate_Element kind = UNIVERSE);
+		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy constructor.
   Pointset_Ask_Tell(const Pointset_Ask_Tell& y);
@@ -284,8 +284,8 @@ public:
   */
   template <typename Widening>
   void BGP99_extrapolation_assign(const Pointset_Ask_Tell& y,
-                                  Widening widen_fun,
-                                  unsigned max_disjuncts);
+				  Widening widen_fun,
+				  unsigned max_disjuncts);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -429,7 +429,7 @@ private:
   //! Records in \p cert_ms the certificates for this set of polyhedra.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
-                                     typename Cert::Compare>& cert_ms) const;
+		                     typename Cert::Compare>& cert_ms) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if the current set of polyhedra
@@ -438,7 +438,7 @@ private:
   template <typename Cert>
   bool is_cert_multiset_stabilizing(const std::map<Cert, size_type,
                                                    typename Cert::Compare>&
-                                    y_cert_ms) const;
+				    y_cert_ms) const;
 
   // FIXME: here it should be enough to befriend the template constructor
   // template <typename QH>

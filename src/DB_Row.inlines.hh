@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 inline void*
 DB_Row_Impl_Handler<T>::Impl::operator new(const size_t fixed_size,
-                                           const dimension_type capacity) {
+					   const dimension_type capacity) {
 #if PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(T));
 #else
@@ -173,9 +173,9 @@ template <typename T>
 inline void
 DB_Row<T>::allocate(
 #if PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
-               const
+	       const
 #endif
-               dimension_type capacity) {
+	       dimension_type capacity) {
   DB_Row<T>& x = *this;
   PPL_ASSERT(capacity <= max_size());
 #if !PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
@@ -216,7 +216,7 @@ template <typename T>
 template <typename U>
 inline void
 DB_Row<T>::construct_upward_approximation(const DB_Row<U>& y,
-                                          const dimension_type capacity) {
+					  const dimension_type capacity) {
   DB_Row<T>& x = *this;
   PPL_ASSERT(y.size() <= capacity && capacity <= max_size());
   allocate(capacity);
@@ -227,7 +227,7 @@ DB_Row<T>::construct_upward_approximation(const DB_Row<U>& y,
 template <typename T>
 inline void
 DB_Row<T>::construct(const dimension_type sz,
-                     const dimension_type capacity) {
+		     const dimension_type capacity) {
   PPL_ASSERT(sz <= capacity && capacity <= max_size());
   allocate(capacity);
   expand_within_capacity(sz);
@@ -242,7 +242,7 @@ DB_Row<T>::construct(const dimension_type sz) {
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const dimension_type sz,
-                  const dimension_type capacity)
+		  const dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
   construct(sz, capacity);
 }
@@ -266,7 +266,7 @@ DB_Row<T>::DB_Row(const DB_Row& y)
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y,
-                  const dimension_type capacity)
+		  const	dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
   PPL_ASSERT(y.impl);
   PPL_ASSERT(y.size() <= capacity && capacity <= max_size());
@@ -277,8 +277,8 @@ DB_Row<T>::DB_Row(const DB_Row& y,
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y,
-                  const dimension_type sz,
-                  const dimension_type capacity)
+		  const dimension_type sz,
+		  const	dimension_type capacity)
   : DB_Row_Impl_Handler<T>() {
   PPL_ASSERT(y.impl);
   PPL_ASSERT(y.size() <= sz && sz <= capacity && capacity <= max_size());
@@ -419,7 +419,7 @@ swap(DB_Row<T>& x, DB_Row<T>& y) {
 template <typename T>
 inline void
 iter_swap(typename std::vector<DB_Row<T> >::iterator x,
-          typename std::vector<DB_Row<T> >::iterator y) {
+	  typename std::vector<DB_Row<T> >::iterator y) {
   swap(*x, *y);
 }
 

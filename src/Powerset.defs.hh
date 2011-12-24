@@ -406,8 +406,8 @@ protected:
     it will be reduced upon successful return from the method.
   */
   iterator add_non_bottom_disjunct_preserve_reduction(const D& d,
-                                                      iterator first,
-                                                      iterator last);
+						      iterator first,
+						      iterator last);
 
   /*! \brief
     Adds to \p *this the disjunct \p d, assuming \p d is not the
@@ -428,7 +428,7 @@ protected:
   */
   template <typename Binary_Operator_Assign>
   void pairwise_apply_assign(const Powerset& y,
-                             Binary_Operator_Assign op_assign);
+			     Binary_Operator_Assign op_assign);
 
 private:
   /*! \brief

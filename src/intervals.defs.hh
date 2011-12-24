@@ -98,7 +98,7 @@ class Val_Or_Ref;
 
 template <typename T, typename Criteria>
 class Val_Or_Ref<T, Criteria,
-                 typename Enable_If<!Use_By_Ref<Criteria, T>::value>::type> {
+		 typename Enable_If<!Use_By_Ref<Criteria, T>::value>::type> {
   T value;
 public:
   typedef T Arg_Type;
@@ -126,7 +126,7 @@ public:
 
 template <typename T, typename Criteria>
 class Val_Or_Ref<T, Criteria,
-                 typename Enable_If<Use_By_Ref<Criteria, T>::value>::type> {
+		 typename Enable_If<Use_By_Ref<Criteria, T>::value>::type> {
   const T* ptr;
 public:
   typedef T& Arg_Type;
@@ -176,7 +176,7 @@ public:
       r = assign_r(to, c.value(), (ROUND_UP | ROUND_STRICT_RELATION));
       r = result_relation_class(r);
       if (r == V_EQ)
-        return V_LE;
+	return V_LE;
       goto lt;
     case V_LT:
       r = assign_r(to, c.value(), ROUND_UP);
@@ -186,20 +186,20 @@ public:
       case V_EMPTY:
       case V_LT_PLUS_INFINITY:
       case V_EQ_MINUS_INFINITY:
-        return r;
+	return r;
       case V_LT:
       case V_LE:
       case V_EQ:
-        return V_LT;
+	return V_LT;
       default:
-        break;
+	break;
       }
       break;
     case V_GE:
       r = assign_r(to, c.value(), (ROUND_DOWN | ROUND_STRICT_RELATION));
       r = result_relation_class(r);
       if (r == V_EQ)
-        return V_GE;
+	return V_GE;
       goto gt;
     case V_GT:
       r = assign_r(to, c.value(), ROUND_DOWN);
@@ -209,13 +209,13 @@ public:
       case V_EMPTY:
       case V_GT_MINUS_INFINITY:
       case V_EQ_PLUS_INFINITY:
-        return r;
+	return r;
       case V_LT:
       case V_LE:
       case V_EQ:
-        return V_GT;
+	return V_GT;
       default:
-        break;
+	break;
       }
       break;
     case V_EQ:
@@ -223,16 +223,16 @@ public:
       r = result_relation_class(r);
       PPL_ASSERT(r != V_LT && r != V_GT);
       if (r == V_EQ)
-        return V_EQ;
+	return V_EQ;
       else
-        return V_EMPTY;
+	return V_EMPTY;
     case V_NE:
       r = assign_r(to, c.value(), ROUND_CHECK);
       r = result_relation_class(r);
       if (r == V_EQ)
-        return V_NE;
+	return V_NE;
       else
-        return V_LGE;
+	return V_LGE;
     default:
       break;
     }
@@ -270,8 +270,8 @@ public:
     case V_GE:
       if (rel2 == V_LE && to1 == to2) {
       eq:
-        rel2 = V_EQ;
-        return V_LGE;
+	rel2 = V_EQ;
+	return V_LGE;
       }
       /* Fall through*/
     case V_GT:
@@ -297,9 +297,9 @@ public:
     switch (rel) {
     case V_LT:
       if (is_integer(to)) {
-        rel = sub_assign_r(to, to, T(1), (ROUND_UP | ROUND_STRICT_RELATION));
-        rel = result_relation_class(rel);
-        return (rel == V_EQ) ? V_LE : rel;
+	rel = sub_assign_r(to, to, T(1), (ROUND_UP | ROUND_STRICT_RELATION));
+	rel = result_relation_class(rel);
+	return (rel == V_EQ) ? V_LE : rel;
       }
       /* Fall through */
     case V_LE:
@@ -309,9 +309,9 @@ public:
       return V_LE;
     case V_GT:
       if (is_integer(to)) {
-        rel = add_assign_r(to, to, T(1), (ROUND_DOWN | ROUND_STRICT_RELATION));
-        rel = result_relation_class(rel);
-        return (rel == V_EQ) ? V_GE : rel;
+	rel = add_assign_r(to, to, T(1), (ROUND_DOWN | ROUND_STRICT_RELATION));
+	rel = result_relation_class(rel);
+	return (rel == V_EQ) ? V_GE : rel;
       }
       /* Fall through */
     case V_GE:
@@ -321,11 +321,11 @@ public:
       return V_GE;
     case V_EQ:
       if (is_integer(to))
-        return V_EQ;
+	return V_EQ;
       return V_EMPTY;
     case V_NE:
       if (is_integer(to))
-        return V_NE;
+	return V_NE;
       return V_LGE;
     default:
       return rel;
@@ -348,7 +348,7 @@ struct I_Constraint_Rel {
 };
 
 template <typename T, typename Val_Or_Ref_Criteria = Use_Slow_Copy,
-          bool extended = false>
+	  bool extended = false>
 class I_Constraint : public I_Constraint_Common<I_Constraint<T, Val_Or_Ref_Criteria, extended> > {
   typedef Val_Or_Ref<T, Val_Or_Ref_Criteria> Val_Ref;
   typedef typename Val_Ref::Arg_Type Arg_Type;

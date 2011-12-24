@@ -178,7 +178,7 @@ public:
     expression corresponding to \p x \f$\otimes\f$ \p y.
   */
   Multiplication_Floating_Point_Expression(
-           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
+	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y);
 
   //! Destructor.
@@ -208,7 +208,7 @@ public:
     is computed.
   */
   bool linearize(const FP_Interval_Abstract_Store& int_store,
-                         const FP_Linear_Form_Abstract_Store& lf_store,
+		         const FP_Linear_Form_Abstract_Store& lf_store,
                        FP_Linear_Form& result) const;
 
   //! Swaps \p *this with \p y.
@@ -238,7 +238,7 @@ private:
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
   operator=(const Multiplication_Floating_Point_Expression<FP_Interval_Type,
-            FP_Format>& e);
+	    FP_Format>& e);
 
 
 }; // class Multiplication_Floating_Point_Expression

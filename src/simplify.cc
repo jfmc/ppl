@@ -95,7 +95,7 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // Looking for the first inequality in `sys'.
   dimension_type num_lines_or_equalities = 0;
   while (num_lines_or_equalities < num_rows
-         && sys[num_lines_or_equalities].is_line_or_equality())
+	 && sys[num_lines_or_equalities].is_line_or_equality())
     ++num_lines_or_equalities;
 
   // `num_saturators[i]' will contain the number of generators
@@ -126,9 +126,9 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
       // We also move it just after all the other equalities,
       // so that system `sys' keeps its partial sortedness.
       if (i != num_lines_or_equalities) {
-        swap(sys[i], sys[num_lines_or_equalities]);
-        swap(sat[i], sat[num_lines_or_equalities]);
-        swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
+	swap(sys[i], sys[num_lines_or_equalities]);
+	swap(sat[i], sat[num_lines_or_equalities]);
+	swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
       }
       ++num_lines_or_equalities;
       // `sys' is no longer sorted.
@@ -165,10 +165,10 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
     // redundant equalities or because we have moved all the
     // inequalities.
     for (dimension_type redundant = rank,
-           erasing = num_rows;
-         redundant < num_lines_or_equalities
-           && erasing > num_lines_or_equalities;
-         ) {
+	   erasing = num_rows;
+	 redundant < num_lines_or_equalities
+	   && erasing > num_lines_or_equalities;
+	 ) {
       --erasing;
       swap(sys[redundant], sys[erasing]);
       swap(sat[redundant], sat[erasing]);
@@ -240,44 +240,44 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
     // sat[k])'.
     for (dimension_type j = num_lines_or_equalities; j < num_rows; ) {
       if (i == j)
-        // We want to compare different rows of `sys'.
-        ++j;
+	// We want to compare different rows of `sys'.
+	++j;
       else {
-        // Let us recall that each generator lies on a facet of the
-        // polyhedron (see the Introduction).
-        // Given two constraints `c_1' and `c_2', if there are `m'
-        // generators lying on the hyper-plane corresponding to `c_1',
-        // the same `m' generators lie on the hyper-plane
-        // corresponding to `c_2', too, and there is another one lying
-        // on the latter but not on the former, then `c_2' is more
-        // restrictive than `c_1', i.e., `c_1' is redundant.
-        bool strict_subset;
-        if (subset_or_equal(sat[j], sat[i], strict_subset))
-          if (strict_subset) {
-            // All the saturators of the inequality `sys[i]' are
-            // saturators of the inequality `sys[j]' too,
-            // and there exists at least one saturator of `sys[j]'
-            // which is not a saturator of `sys[i]'.
-            // It follows that inequality `sys[i]' is redundant.
-            redundant = true;
-            break;
-          }
-          else {
-            // We have `sat[j] == sat[i]'.  Hence inequalities
-            // `sys[i]' and `sys[j]' are saturated by the same set of
-            // generators. Then we can remove either one of the two
-            // inequalities: we remove `sys[j]'.
-            --num_rows;
-            swap(sys[j], sys[num_rows]);
-            swap(sat[j], sat[num_rows]);
-            swap(num_saturators[j], num_saturators[num_rows]);
-            sys.set_sorted(false);
-          }
-        else
-          // If we reach this point then we know that `sat[i]' does
-          // not contain (and is different from) `sat[j]', so that
-          // `sys[i]' is not made redundant by inequality `sys[j]'.
-          ++j;
+	// Let us recall that each generator lies on a facet of the
+	// polyhedron (see the Introduction).
+	// Given two constraints `c_1' and `c_2', if there are `m'
+	// generators lying on the hyper-plane corresponding to `c_1',
+	// the same `m' generators lie on the hyper-plane
+	// corresponding to `c_2', too, and there is another one lying
+	// on the latter but not on the former, then `c_2' is more
+	// restrictive than `c_1', i.e., `c_1' is redundant.
+	bool strict_subset;
+	if (subset_or_equal(sat[j], sat[i], strict_subset))
+	  if (strict_subset) {
+	    // All the saturators of the inequality `sys[i]' are
+	    // saturators of the inequality `sys[j]' too,
+	    // and there exists at least one saturator of `sys[j]'
+	    // which is not a saturator of `sys[i]'.
+	    // It follows that inequality `sys[i]' is redundant.
+	    redundant = true;
+	    break;
+	  }
+	  else {
+	    // We have `sat[j] == sat[i]'.  Hence inequalities
+	    // `sys[i]' and `sys[j]' are saturated by the same set of
+	    // generators. Then we can remove either one of the two
+	    // inequalities: we remove `sys[j]'.
+	    --num_rows;
+	    swap(sys[j], sys[num_rows]);
+	    swap(sat[j], sat[num_rows]);
+	    swap(num_saturators[j], num_saturators[num_rows]);
+	    sys.set_sorted(false);
+	  }
+	else
+	  // If we reach this point then we know that `sat[i]' does
+	  // not contain (and is different from) `sat[j]', so that
+	  // `sys[i]' is not made redundant by inequality `sys[j]'.
+	  ++j;
       }
     }
     if (redundant) {

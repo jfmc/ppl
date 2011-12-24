@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Sum_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 void swap(Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
-          Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
+	  Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
 
 /*! \brief
   A generic Sum Floating Point Expression.
@@ -142,7 +142,7 @@ public:
     corresponding to \p x \f$\oplus\f$ \p y.
   */
   Sum_Floating_Point_Expression(
-           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
+	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y);
 
   //! Destructor.
@@ -200,7 +200,7 @@ private:
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Sum_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
   operator=(const Sum_Floating_Point_Expression<FP_Interval_Type,
-            FP_Format>& e);
+	    FP_Format>& e);
 
 
 }; // class Sum_Floating_Point_Expression

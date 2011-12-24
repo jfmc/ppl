@@ -288,7 +288,7 @@ public:
     dimension \p dim.
   */
   bool is_equal_at_dimension(dimension_type dim,
-                             const Congruence& cg) const;
+			     const Congruence& cg) const;
 
   //! Initializes the class.
   static void initialize();
@@ -393,13 +393,13 @@ private:
 
   //! Copy-constructs with specified size and capacity.
   Congruence(const Congruence& cg,
-             dimension_type sz,
-             dimension_type capacity);
+	     dimension_type sz,
+	     dimension_type capacity);
 
   //! Constructs from a constraint, with specified size and capacity.
   Congruence(const Constraint& c,
-             dimension_type sz,
-             dimension_type capacity);
+	     dimension_type sz,
+	     dimension_type capacity);
 
   //! Copy-constructs from \p cg, multiplying \p k into the modulus.
   /*!
@@ -421,7 +421,7 @@ private:
     The modulus for the congruence, which must be zero or greater.
   */
   Congruence(Linear_Expression& le,
-             Coefficient_traits::const_reference m);
+	     Coefficient_traits::const_reference m);
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception containing
@@ -436,8 +436,8 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-                               const char* v_name,
-                               Variable v) const;
+			       const char* v_name,
+			       Variable v) const;
 
   friend Congruence
   operator/(const Congruence& cg, Coefficient_traits::const_reference k);
@@ -453,7 +453,7 @@ private:
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators
   ::operator<<(std::ostream& s,
-               const Congruence_System& cgs);
+	       const Congruence_System& cgs);
 
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Constraint;

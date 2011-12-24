@@ -59,27 +59,27 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     if (new_n_rows <= row_capacity) {
       // We can recycle the old rows.
       if (rows.capacity() < new_n_rows) {
-        // Reallocation will take place.
-        std::vector<DB_Row<T> > new_rows;
-        new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
-        new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
-        // Construct the new rows.
-        dimension_type i = new_n_rows;
-        while (i-- > old_n_rows)
-          new_rows[i].construct(new_n_rows, row_capacity);
-        // Steal the old rows.
-        ++i;
-        while (i-- > 0)
-          swap(new_rows[i], rows[i]);
-        // Put the new vector into place.
+	// Reallocation will take place.
+	std::vector<DB_Row<T> > new_rows;
+	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
+	new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
+	// Construct the new rows.
+	dimension_type i = new_n_rows;
+	while (i-- > old_n_rows)
+	  new_rows[i].construct(new_n_rows, row_capacity);
+	// Steal the old rows.
+	++i;
+	while (i-- > 0)
+	  swap(new_rows[i], rows[i]);
+	// Put the new vector into place.
         using std::swap;
-        swap(rows, new_rows);
+	swap(rows, new_rows);
       }
       else {
-        // Reallocation will NOT take place.
-        rows.insert(rows.end(), new_n_rows - old_n_rows, DB_Row<T>());
-        for (dimension_type i = new_n_rows; i-- > old_n_rows; )
-          rows[i].construct(new_n_rows, row_capacity);
+	// Reallocation will NOT take place.
+	rows.insert(rows.end(), new_n_rows - old_n_rows, DB_Row<T>());
+	for (dimension_type i = new_n_rows; i-- > old_n_rows; )
+	  rows[i].construct(new_n_rows, row_capacity);
       }
     }
     else {
@@ -90,19 +90,19 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       // Construct the new rows.
       new_matrix.row_size = new_n_rows;
       new_matrix.row_capacity = compute_capacity(new_n_rows,
-                                                 max_num_columns());
+						 max_num_columns());
       dimension_type i = new_n_rows;
       while (i-- > old_n_rows)
-        new_matrix.rows[i].construct(new_matrix.row_size,
-                                     new_matrix.row_capacity);
+	new_matrix.rows[i].construct(new_matrix.row_size,
+				     new_matrix.row_capacity);
       // Copy the old rows.
       ++i;
       while (i-- > 0) {
-        // FIXME: copying may be unnecessarily costly.
-        DB_Row<T> new_row(rows[i],
-                          new_matrix.row_size,
-                          new_matrix.row_capacity);
-        swap(new_matrix.rows[i], new_row);
+	// FIXME: copying may be unnecessarily costly.
+	DB_Row<T> new_row(rows[i],
+			  new_matrix.row_size,
+			  new_matrix.row_capacity);
+	swap(new_matrix.rows[i], new_row);
       }
       // Put the new vector into place.
       m_swap(new_matrix);
@@ -115,16 +115,16 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     if (new_n_rows <= row_capacity)
       // But we have enough capacity: we resize existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; )
-        rows[i].expand_within_capacity(new_n_rows);
+	rows[i].expand_within_capacity(new_n_rows);
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
       const dimension_type new_row_capacity
-        = compute_capacity(new_n_rows, max_num_columns());
+	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
-        // FIXME: copying may be unnecessarily costly.
-        DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
-        swap(rows[i], new_row);
+	// FIXME: copying may be unnecessarily costly.
+	DB_Row<T> new_row(rows[i], new_n_rows, new_row_capacity);
+	swap(rows[i], new_row);
       }
       row_capacity = new_row_capacity;
     }
@@ -143,30 +143,30 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
     if (new_n_rows <= row_capacity) {
       // We can recycle the old rows.
       if (rows.capacity() < new_n_rows) {
-        // Reallocation (of vector `rows') will take place.
-        std::vector<DB_Row<T> > new_rows;
-        new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
-        new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
-        // Construct the new rows (be careful: each new row must have
-        // the same capacity as each one of the old rows).
-        dimension_type i = new_n_rows;
-        while (i-- > old_n_rows)
-          new_rows[i].construct(new_n_rows, row_capacity);
-        // Steal the old rows.
-        ++i;
-        while (i-- > 0)
-          swap(new_rows[i], rows[i]);
-        // Put the new vector into place.
+	// Reallocation (of vector `rows') will take place.
+	std::vector<DB_Row<T> > new_rows;
+	new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
+	new_rows.insert(new_rows.end(), new_n_rows, DB_Row<T>());
+	// Construct the new rows (be careful: each new row must have
+	// the same capacity as each one of the old rows).
+	dimension_type i = new_n_rows;
+	while (i-- > old_n_rows)
+	  new_rows[i].construct(new_n_rows, row_capacity);
+	// Steal the old rows.
+	++i;
+	while (i-- > 0)
+	  swap(new_rows[i], rows[i]);
+	// Put the new vector into place.
         using std::swap;
-        swap(rows, new_rows);
+	swap(rows, new_rows);
       }
       else {
-        // Reallocation (of vector `rows') will NOT take place.
-        rows.insert(rows.end(), new_n_rows - old_n_rows, DB_Row<T>());
-        // Be careful: each new row must have
-        // the same capacity as each one of the old rows.
-        for (dimension_type i = new_n_rows; i-- > old_n_rows; )
-          rows[i].construct(new_n_rows, row_capacity);
+	// Reallocation (of vector `rows') will NOT take place.
+	rows.insert(rows.end(), new_n_rows - old_n_rows, DB_Row<T>());
+	// Be careful: each new row must have
+	// the same capacity as each one of the old rows.
+	for (dimension_type i = new_n_rows; i-- > old_n_rows; )
+	  rows[i].construct(new_n_rows, row_capacity);
       }
     }
     else {
@@ -190,15 +190,15 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
     if (new_n_rows <= row_capacity)
       // But we have enough capacity: we resize existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; )
-        rows[i].expand_within_capacity(new_n_rows);
+	rows[i].expand_within_capacity(new_n_rows);
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
       const dimension_type new_row_capacity
-        = compute_capacity(new_n_rows, max_num_columns());
+	= compute_capacity(new_n_rows, max_num_columns());
       for (dimension_type i = old_n_rows; i-- > 0; ) {
-        DB_Row<T> new_row(new_n_rows, new_row_capacity);
-        swap(rows[i], new_row);
+	DB_Row<T> new_row(new_n_rows, new_row_capacity);
+	swap(rows[i], new_row);
       }
       row_capacity = new_row_capacity;
     }
@@ -237,7 +237,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
     for (dimension_type j = 0; j < nrows; ++j) {
       Result r = input(x[i][j], s, ROUND_CHECK);
       if (result_relation(r) != VR_EQ || is_minus_infinity(x[i][j]))
-        return false;
+	return false;
     }
 
   // Check invariants.
@@ -281,9 +281,9 @@ DB_Matrix<T>::OK() const {
   if (num_rows() != row_size) {
 #ifndef NDEBUG
     cerr << "DB_Matrix has fewer columns than rows:\n"
-         << "row_size is " << row_size
-         << ", num_rows() is " << num_rows() << "!"
-         << endl;
+	 << "row_size is " << row_size
+	 << ", num_rows() is " << num_rows() << "!"
+	 << endl;
 #endif
     return false;
   }
