@@ -343,6 +343,26 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+  Variable A(0);
+  Variable C(2);
+
+  BD_Shape<mpz_class> bds(3);
+  bds.add_constraint(C == 5);
+
+  print_constraints(bds, "*** bds ***");
+
+  bds.bounded_affine_preimage(C, A, A, 5);
+
+  BD_Shape<mpz_class> known_result(3);
+  bool ok = check_result(bds, known_result);
+
+  print_constraints(bds, "*** bds.bounded_affine_preimage(C, A, A, 5) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -357,4 +377,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
