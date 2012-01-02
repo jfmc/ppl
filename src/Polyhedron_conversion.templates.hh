@@ -353,11 +353,18 @@ Polyhedron::conversion(Source_Linear_System& source,
                        Dest_Linear_System& dest,
                        Bit_Matrix& sat,
                        dimension_type num_lines_or_equalities) {
-
   typedef typename Dest_Linear_System::row_type dest_row_type;
   typedef typename Source_Linear_System::row_type source_row_type;
 
+  // Constraints and generators must have the same dimension,
+  // otherwise the scalar products below will bomb.
+  PPL_ASSERT(source.space_dimension() == dest.space_dimension());
+  const dimension_type source_space_dim = source.space_dimension();
   const dimension_type source_num_rows = source.num_rows();
+  const dimension_type source_num_columns = source_space_dim
+    + (source.is_necessarily_closed() ? 1 : 2);
+
+
   dimension_type dest_num_rows = dest.num_rows();
   // The rows removed from `dest' will be placed in this vector, so they
   // can be recycled if needed.
@@ -388,10 +395,6 @@ Polyhedron::conversion(Source_Linear_System& source,
   for (dimension_type k = start; k < source_num_rows; ++k) {
     const source_row_type& source_k = source[k];
 
-    // Constraints and generators must have the same dimension,
-    // otherwise the scalar product below will bomb.
-    PPL_ASSERT(source.space_dimension() == dest.space_dimension());
-
     // `scalar_prod[i]' will contain the scalar product of the
     // constraint `source_k' and the generator `dest_rows[i]'.  This
     // product is 0 if and only if the generator saturates the
@@ -408,7 +411,7 @@ Polyhedron::conversion(Source_Linear_System& source,
       Scalar_Products::assign(scalar_prod[index_non_zero],
 			      source_k,
 			      dest.sys.rows[index_non_zero]);
-      WEIGHT_ADD_MUL(17, source.space_dimension());
+      WEIGHT_ADD_MUL(17, source_space_dim);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -420,7 +423,7 @@ Polyhedron::conversion(Source_Linear_System& source,
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[i], source_k, dest.sys.rows[i]);
-      WEIGHT_ADD_MUL(25, source.space_dimension());
+      WEIGHT_ADD_MUL(25, source_space_dim);
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -544,7 +547,7 @@ Polyhedron::conversion(Source_Linear_System& source,
           // They are all checked at the end of this function.
 	  scalar_prod[i] = 0;
 	  // `dest_sorted' has already been set to false.
-          WEIGHT_ADD_MUL(41, dest.space_dimension());
+          WEIGHT_ADD_MUL(41, source_space_dim);
 	}
         // Check if the client has requested abandoning all expensive
         // computations.  If so, the exception specified by the client
@@ -696,8 +699,8 @@ Polyhedron::conversion(Source_Linear_System& source,
 	      // Compute the number of common saturators.
 	      // NOTE: this number has to be less than `k' because
 	      // we are treating the `k'-th constraint.
-	      const dimension_type
-		num_common_satur = k - new_satrow.count_ones();
+	      const dimension_type num_common_satur
+                = k - new_satrow.count_ones();
 
 	      // Even before actually creating the new ray as a
 	      // positive combination of `dest_rows[i]' and `dest_rows[j]',
@@ -713,9 +716,6 @@ Polyhedron::conversion(Source_Linear_System& source,
 	      // an extremal ray saturates at least
 	      // `source_num_columns - num_lines_or_equalities - 2'
 	      // constraints.
-              const dimension_type source_num_columns
-                = source.topology() == NECESSARILY_CLOSED ? source.space_dimension() + 1
-                                                          : source.space_dimension() + 2;
 	      if (num_common_satur
 		  >= source_num_columns - num_lines_or_equalities - 2) {
 		// The minimal proper face rule is satisfied.
@@ -745,7 +745,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 		  else {
                     swap(new_row, recyclable_dest_rows.back());
                     recyclable_dest_rows.pop_back();
-                    new_row.set_space_dimension_no_ok(dest.space_dimension());
+                    new_row.set_space_dimension_no_ok(source_space_dim);
                     swap(sat[dest_num_rows], new_satrow);
                   }
 
@@ -764,7 +764,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 			     normalized_sp_i,
 			     normalized_sp_o);
 		  WEIGHT_BEGIN();
-                  
+
                   neg_assign(normalized_sp_o);
                   new_row = dest.sys.rows[j];
                   // TODO: Check if the following assertions hold.
@@ -772,8 +772,8 @@ Polyhedron::conversion(Source_Linear_System& source,
                   PPL_ASSERT(normalized_sp_o != 0);
                   new_row.expr.linear_combine(dest.sys.rows[i].expr,
                                               normalized_sp_i, normalized_sp_o);
-                  
-                  WEIGHT_ADD_MUL(86, dest.space_dimension());
+
+                  WEIGHT_ADD_MUL(86, source_space_dim);
 		  new_row.strong_normalize();
                   // Don't assert new_row.OK() here, because it may fail if
                   // the parameter `dest' contained a row that wasn't ok.
@@ -862,7 +862,6 @@ Polyhedron::conversion(Source_Linear_System& source,
     sat.remove_trailing_columns(redundant_source_rows.size());
   }
 
-  /* FIXME: Check why the following does not work anymore.
   // If `start == 0', then `source' was sorted and remained so.
   // If otherwise `start > 0', then the two sub-system made by the
   // non-pending rows and the pending rows, respectively, were both sorted.
@@ -872,8 +871,6 @@ Polyhedron::conversion(Source_Linear_System& source,
   // the two sub-systems.
   if (start > 0 && start < source.num_rows())
     source.set_sorted(compare(source[start - 1], source[start]) <= 0);
-  */
-  source.set_sorted(false);
   // There are no longer pending constraints in `source'.
   source.unset_pending_rows();
 
