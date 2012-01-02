@@ -3798,7 +3798,7 @@ BD_Shape<T>::refine(const Variable var,
     }
     else if (pinf_count == 1)
       if (pinf_index != v
-          && expr.get(Variable(pinf_index)) == denominator)
+          && expr.get(Variable(pinf_index - 1)) == denominator)
         // Add the constraint `v - pinf_index >= -sum',
         // i.e., `pinf_index - v <= sum'.
         add_dbm_constraint(v, pinf_index, sum);
