@@ -142,7 +142,7 @@ template <typename T>
 inline void
 Swapping_Vector<T>::push_back(const T& x) {
   reserve(size() + 1);
-  return impl.push_back(x);
+  impl.push_back(x);
 }
 
 template <typename T>
