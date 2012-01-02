@@ -2873,23 +2873,30 @@ generalized_affine_image(const Variable var,
       // `var' dimension, which is displaced along the direction of the
       // newly introduced ray.
       for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-        Generator& gen_i = gen_sys.sys.rows[i];
+        const Generator& gen_i = gen_sys.sys.rows[i];
 	if (gen_i.is_point()) {
-	  // Add a `var'-displaced copy of `rows[i]' to the generator
-          // system.
-          gen_sys.sys.rows.push_back(gen_i);
+          // Add a copy of `gen_i' at the end of the system.
+          // Note: copying is really meant, to avoid undefined behavior.
+          gen_sys.sys.rows.push_back(Generator(gen_i));
+          // Note: (re-)compute references (invalidated by push_back).
+          Generator& old_gen = gen_sys.sys.rows[i];
           Generator& new_gen = gen_sys.sys.rows.back();
-	  if (relsym == GREATER_THAN)
+          // Transform `old_gen' into a closure point.
+          old_gen.set_epsilon_coefficient(0);
+          old_gen.expr.normalize();
+          PPL_ASSERT(old_gen.OK());
+          // Displace `new_gen' by `var' (i.e., along the new ray).
+          if (relsym == GREATER_THAN)
             new_gen.expr += var;
-	  else
+          else
             new_gen.expr -= var;
-          
-	  // Transform gen_i' into a closure point.
-	  gen_i.set_epsilon_coefficient(0);
-          PPL_ASSERT(gen_i.OK());
+          new_gen.expr.normalize();
+          PPL_ASSERT(new_gen.OK());
 	}
       }
-
+      // Sortedness no longer hold.
+      gen_sys.set_sorted(false);
+      gen_sys.unset_pending_rows();
       PPL_ASSERT(gen_sys.sys.OK());
 
       clear_constraints_up_to_date();
