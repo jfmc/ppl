@@ -700,7 +700,7 @@ Polyhedron::conversion(Source_Linear_System& source,
 	      // NOTE: this number has to be less than `k' because
 	      // we are treating the `k'-th constraint.
 	      const dimension_type num_common_satur
-                = k - new_satrow.count_ones();
+                = k - redundant_source_rows.size() - new_satrow.count_ones();
 
 	      // Even before actually creating the new ray as a
 	      // positive combination of `dest_rows[i]' and `dest_rows[j]',
