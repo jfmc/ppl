@@ -782,7 +782,7 @@ PPL::Generator_System::finalize() {
 
 bool
 PPL::Generator_System::OK() const {
-  return true;
+  return sys.OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Generator_System */

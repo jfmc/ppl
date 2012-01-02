@@ -166,8 +166,7 @@ PPL::Grid_Generator_System::OK() const {
     return false;
   }
 
-  // All checks passed.
-  return true;
+  return sys.OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator_System */

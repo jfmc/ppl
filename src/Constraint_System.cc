@@ -359,7 +359,7 @@ PPL::Constraint_System::finalize() {
 
 bool
 PPL::Constraint_System::OK() const {
-  return true;
+  return sys.OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Constraint_System */
