@@ -178,15 +178,15 @@ public:
   static const Representation default_representation = DENSE;
 
   //! Default constructor: builds an empty system of generators.
-  explicit Grid_Generator_System(Representation r = DENSE);
+  explicit Grid_Generator_System(Representation r = default_representation);
 
   //! Builds the singleton system containing only generator \p g.
   explicit Grid_Generator_System(const Grid_Generator& g,
-                                 Representation r = DENSE);
+                                 Representation r = default_representation);
 
   //! Builds an empty system of generators of dimension \p dim.
   explicit Grid_Generator_System(dimension_type dim,
-                                 Representation r = DENSE);
+                                 Representation r = default_representation);
 
   //! Ordinary copy constructor.
   //! The new Grid_Generator_System will have the same representation as `gs'.
