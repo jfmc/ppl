@@ -1367,13 +1367,11 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	gen_sys.sys.rows.back().expr.normalize();
         PPL_ASSERT(gen_sys.sys.rows.back().OK());
         PPL_ASSERT(gen_sys.sys.OK());
-        if (has_pending) {
-          // Re-insert the point (which is already normalized).
+        // Re-insert the point (which is already normalized).
+        if (has_pending)
           gen_sys.insert_pending(g);
-        } else {
-          // Re-insert the point (which is already normalized).
+        else
           gen_sys.insert(g);
-        }
       }
     }
     else {
@@ -1478,15 +1476,13 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   const bool adding_pending = can_have_something_pending();
 
   // Here we do not require `con_sys' to be sorted.
-  // also, we _swap_ (instead of copying) the coefficients of `cs'
-  // (which is not a const).
+  // also, we _recycle_ (instead of copying) the coefficients of `cs'.
   if (adding_pending) {
     con_sys.insert_pending(cs, Recycle_Input());
-
     set_constraints_pending();
-  } else {
+  }
+  else {
     con_sys.insert(cs, Recycle_Input());
-
     // Constraints are not minimized and generators are not up-to-date.
     clear_constraints_minimized();
     clear_generators_up_to_date();
