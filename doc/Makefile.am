@@ -1663,6 +1663,8 @@ gpl.tex \
 interfaces-html.sed \
 interfaces-latex.sed \
 ppl.sty \
+ppl_logo.pdf \
+ppl_logo_no_ppl.pdf \
 user-language-interface.tex \
 user.tex
 
