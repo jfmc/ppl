@@ -1656,6 +1656,7 @@ EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
 README.doc \
+bugseng_logo.pdf \
 devref-language-interface.tex \
 devref.tex \
 fdl.tex \
