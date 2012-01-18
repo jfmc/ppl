@@ -391,8 +391,8 @@ protected:
   bool read_comment(std::istream& in) {
     comment = "";
     int count = 1;
-    char c;
     do {
+      char c;
       if (!in.get(c))
         return false;
       if (c == '(')
@@ -635,7 +635,6 @@ process_options(int argc, char* argv[]) {
       break;
 
     char* endptr;
-    long l;
     switch (c) {
     case 0:
       break;
@@ -649,7 +648,7 @@ process_options(int argc, char* argv[]) {
     case 'R':
       {
         const int MEGA = 1024*1024;
-        l = strtol(optarg, &endptr, 10);
+        long l = strtol(optarg, &endptr, 10);
         if (*endptr || l < 0)
           fatal("a non-negative integer must follow `-R'");
         else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)

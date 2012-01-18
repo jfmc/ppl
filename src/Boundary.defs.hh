@@ -716,7 +716,6 @@ inline Result
 div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
 	     Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
 	     Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
-  bool shrink;
   if (x1s != 0) {
     if (x2s != 0)
       return div_assign(to_type, to, to_info,
@@ -728,7 +727,7 @@ div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
     }
   }
   else {
-    shrink = info1.get_boundary_property(type1, OPEN)
+    bool shrink = info1.get_boundary_property(type1, OPEN)
       && !is_boundary_infinity_closed(type2, x2, info2);
     return set_zero(to_type, to, to_info, shrink);
   }

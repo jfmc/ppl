@@ -883,13 +883,13 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
 #endif
 
   const Generator_System& gs_in = ph.generators();
-  Generator_System gs_out;
   Generator_System::const_iterator gs_in_it = gs_in.begin();
   Generator_System::const_iterator gs_in_end = gs_in.end();
   if (gs_in_it == gs_in_end)
     // The system is unsatisfiable.
     mu_space = NNC_Polyhedron(n + 1, EMPTY);
   else {
+    Generator_System gs_out;
     for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
       const Generator& g = *gs_in_it;
       Linear_Expression le;

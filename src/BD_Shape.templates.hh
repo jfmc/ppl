@@ -412,12 +412,11 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // Select the cell to be modified for the "<=" part of the constraint,
   // and set `coeff' to the absolute value of itself.
   const bool negative = (coeff < 0);
-  N& x = negative ? dbm[i][j] : dbm[j][i];
-  N& y = negative ? dbm[j][i] : dbm[i][j];
   if (negative)
     neg_assign(coeff);
 
   bool changed = false;
+  N& x = negative ? dbm[i][j] : dbm[j][i];
   // Compute the bound for `x', rounding towards plus infinity.
   PPL_DIRTY_TEMP(N, d);
   div_round_up(d, inhomo, coeff);
@@ -427,6 +426,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   }
 
   if (c.is_equality()) {
+    N& y = negative ? dbm[j][i] : dbm[i][j];
     // Also compute the bound for `y', rounding towards plus infinity.
     PPL_DIRTY_TEMP_COEFFICIENT(minus_c_term);
     neg_assign(minus_c_term, inhomo);
@@ -2983,14 +2983,13 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
       const N& x = negative ? dbm[i][j] : dbm[j][i];
       const N& y = negative ? dbm[j][i] : dbm[i][j];
       DB_Matrix<N>& ls_dbm = limiting_shape.dbm;
-      N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
-      N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
       if (negative)
         neg_assign(coeff);
       // Compute the bound for `x', rounding towards plus infinity.
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d) {
         if (c.is_inequality()) {
+          N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
           if (ls_x > d) {
             ls_x = d;
             changed = true;
@@ -3000,12 +2999,15 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
           // Compute the bound for `y', rounding towards plus infinity.
           neg_assign(minus_c_term, c.inhomogeneous_term());
           div_round_up(d1, minus_c_term, coeff);
-          if (y <= d1)
+          if (y <= d1) {
+            N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
+            N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
 	    if ((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
 	      ls_x = d;
 	      ls_y = d1;
 	      changed = true;
             }
+          }
         }
       }
     }
@@ -4243,12 +4245,12 @@ void BD_Shape<T>
   PPL_DIRTY_TEMP(N, b_mlb);
   neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
-  // true if b = [b_lb, b_ub] = [0;0].
-  bool is_b_zero = (b_mlb == 0 && b_ub == 0);
   // true if w_coeff = [1;1]
   bool is_w_coeff_one = (w_coeff == 1);
 
   if (w_id == var_id) {
+    // true if b = [b_lb, b_ub] = [0;0].
+    bool is_b_zero = (b_mlb == 0 && b_ub == 0);
     // Here `lf' is of the form: [+/-1;+/-1] * v + b.
     if (is_w_coeff_one) {
       if (is_b_zero)

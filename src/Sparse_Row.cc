@@ -475,17 +475,17 @@ PPL::Sparse_Row::ascii_load(std::istream& s) {
   if (!(s >> size_))
     return false;
   clear();
-  dimension_type n_elements;
-  dimension_type current_key;
-  Coefficient current_data;
 
   if (!(s >> str) || str != "elements")
     return false;
 
+  dimension_type n_elements;
   if (!(s >> n_elements))
     return false;
 
+  PPL_DIRTY_TEMP_COEFFICIENT(current_data);
   for (dimension_type i = 0; i < n_elements; ++i) {
+    dimension_type current_key;
     if (!(s >> str) || str != "[")
       return false;
     if (!(s >> current_key))

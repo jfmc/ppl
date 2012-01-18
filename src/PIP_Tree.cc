@@ -735,11 +735,7 @@ compatibility_check_find_pivot(const Matrix& s,
         current_data.value = s_ij;
       } else {
         data_struct& current_data = candidates_map[j];
-
-        Coefficient_traits::const_reference value_b = s_i.get(j);
-
         PPL_ASSERT(current_data.value > 0);
-        PPL_ASSERT(value_b > 0);
 
         // Before computing and comparing the actual values, the signs are
         // compared. This speeds up the code, because the values' computation
@@ -759,9 +755,10 @@ compatibility_check_find_pivot(const Matrix& s,
           }
           // Otherwise, keep current pivot for this column.
         } else {
-
           // Sign comparison is not enough this time.
           // Do the full computation.
+          Coefficient_traits::const_reference value_b = s_i.get(j);
+          PPL_ASSERT(value_b > 0);
 
           PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
           lhs_coeff = current_data.cost;

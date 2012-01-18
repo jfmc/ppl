@@ -2662,8 +2662,8 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")")
     return false;
 
-  dimension_type base_value;
   for (dimension_type i = 0; i != base_size; ++i) {
+    dimension_type base_value;
     if (!(s >> base_value))
       return false;
     base.push_back(base_value);
@@ -2685,26 +2685,30 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")")
     return false;
 
-  dimension_type first_value;
-  dimension_type second_value;
-  dimension_type index;
-
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
   if (tableau.num_columns() != 0)
     mapping.push_back(std::make_pair(0, 0));
 
   for (dimension_type i = 1; i < mapping_size; ++i) {
+    dimension_type index;
     if (!(s >> index))
       return false;
+
     if (!(s >> str) || str != "->")
       return false;
+
+    dimension_type first_value;
     if (!(s >> first_value))
       return false;
+
     if (!(s >> str) || str != "->")
       return false;
+
+    dimension_type second_value;
     if (!(s >> second_value))
       return false;
+
     mapping.push_back(std::make_pair(first_value, second_value));
   }
 

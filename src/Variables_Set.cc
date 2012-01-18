@@ -81,8 +81,8 @@ PPL::Variables_Set::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")")
     return false;
 
-  dimension_type variable_value;
   for (dimension_type i = 0; i < size; ++i) {
+    dimension_type variable_value;
     if (!(s >> variable_value))
       return false;
     insert(variable_value);

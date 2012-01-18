@@ -168,8 +168,8 @@ wrap_assign(PSET& pointset,
   //         and  vars.space_dimension() <= pointset.space_dimension().
 
   // Dimension-compatibility check of `*cs_p', if any.
-  const dimension_type vars_space_dim = vars.space_dimension();
   if (cs_p != 0) {
+    const dimension_type vars_space_dim = vars.space_dimension();
     if (cs_p->space_dimension() > vars_space_dim) {
       std::ostringstream s;
       s << "PPL::" << class_name << "::wrap_assign(..., cs_p, ...):"
@@ -190,7 +190,7 @@ wrap_assign(PSET& pointset,
       const Constraint& c = *i;
       for (dimension_type d = cs_space_dim; d-- > 0; ) {
         PPL_ASSERT(c.coefficient(Variable(d)) == 0
-               || vars.find(d) != vars_end);
+                   || vars.find(d) != vars_end);
       }
     }
 #endif
