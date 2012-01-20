@@ -66,12 +66,12 @@ Grid::Grid(const Box<Interval>& box,
     for (dimension_type k = space_dim; k-- > 0; ) {
       // This is declared here because it may be invalidated by the call to
       // gen_sys.insert() at the end of the loop.
-      Grid_Generator& point = gen_sys[0];
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 	if (box.get_upper_bound(k, closed, u_n, u_d))
 	  if (l_n * u_d == u_n * l_d) {
+            Grid_Generator& point = gen_sys[0];
 	    // A point interval sets dimension k of every point to a
 	    // single value.
 	    con_sys.insert(l_d * Variable(k) == l_n);

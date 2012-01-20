@@ -83,10 +83,10 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
 
 void
 PPL::Grid_Generator_System::insert(const Grid_Generator& g) {
-  dimension_type g_space_dim = g.space_dimension();
 
   if (g.is_parameter())
     if (g.all_homogeneous_terms_are_zero()) {
+      dimension_type g_space_dim = g.space_dimension();
       dimension_type initial_space_dim = space_dimension();
       if (initial_space_dim < g_space_dim) {
 	// Adjust the space dimension.

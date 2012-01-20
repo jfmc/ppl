@@ -1059,7 +1059,8 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
 
     Grid tmp_gr = *this;
-    Congruence_System cs_copy = tmp_gr.con_sys;
+    // Make a copy here, before changing tmp_gr, to check later.
+    const Congruence_System cs_copy = tmp_gr.con_sys;
 
     // Clear the generators in tmp_gr.
     Grid_Generator_System gs(space_dim);
@@ -1643,7 +1644,6 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 
   const Congruence_System& x_cs = x.con_sys;
   const dimension_type x_cs_num_rows = x_cs.num_rows();
-  const Grid_Generator_System& y_gs = y.gen_sys;
 
   // Record into `redundant_by_y' the info about which congruences of
   // `x' are redundant in the context `y'.  Count the number of
@@ -1704,6 +1704,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	const Coefficient& modulus = c.modulus();
 	div = modulus;
 
+        const Grid_Generator_System& y_gs = y.gen_sys;
 	dimension_type num_ruled_out_generators = 0;
 	for (Grid_Generator_System::const_iterator k = y_gs.begin(),
 	       y_gs_end = y_gs.end(); k != y_gs_end; ++k) {
