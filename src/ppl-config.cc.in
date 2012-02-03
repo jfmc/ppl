@@ -207,6 +207,9 @@ static const char* usage_string
 const char* program_name = 0;
 
 void
+fatal(const char* format, ...) __attribute__((__noreturn__));
+
+void
 fatal(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
@@ -229,6 +232,8 @@ warning(const char* format, ...) {
   va_end(ap);
 }
 */
+
+void internal_error() __attribute__((__noreturn__));
 
 void internal_error() {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
