@@ -76,8 +76,8 @@ Grid_Generator::type() const {
   case Generator::LINE:
     return LINE;
   case Generator::CLOSURE_POINT:
+  default:
     PPL_UNREACHABLE;
-    return POINT;
   }
 }
 
