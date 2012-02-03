@@ -95,7 +95,12 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Helper function causing program termination by calling \c abort.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void ppl_unreachable() __attribute__((weak, noreturn));
+void ppl_unreachable()
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+  __attribute__((weak, noreturn));
+#else
+  __attribute__((noreturn));
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -105,7 +110,12 @@ void ppl_unreachable() __attribute__((weak, noreturn));
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void ppl_unreachable_msg(const char* msg,
                          const char* file, unsigned int line,
-                         const char* function) __attribute__((weak, noreturn));
+                         const char* function)
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+  __attribute__((weak, noreturn));
+#else
+  __attribute__((noreturn));
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
