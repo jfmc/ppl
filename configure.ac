@@ -24,7 +24,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.12pre3], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.12pre4], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -779,9 +779,6 @@ AC_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
 
 # Check whether the IEEE inexact flag is supported in C++.
 AC_CXX_SUPPORTS_IEEE_INEXACT_FLAG
-
-# Check whether the C++ compiler has the remainder bug.
-AC_CXX_HAS_REMAINDER_BUG
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK

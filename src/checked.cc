@@ -278,6 +278,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
           goto unexpected;
       exp:
         state = EXPONENT;
+        PPL_ASSERT(numer.base >= 2);
         max_exp_div = LONG_MAX / numer.base;
         max_exp_rem = static_cast<int>(LONG_MAX % numer.base);
         if (!is.get(c))
