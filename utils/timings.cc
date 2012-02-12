@@ -92,7 +92,7 @@ print_clock(ostream& s) {
       }
     }
     assert(csecs >= 0 && csecs < 100 && secs >= 0);
-    int fill_char = s.fill();
+    char fill_char = s.fill();
     s << secs << "." << setfill('0') << setw(2) << csecs;
     s.fill(fill_char);
   }
