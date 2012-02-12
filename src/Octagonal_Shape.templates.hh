@@ -1895,27 +1895,27 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
       switch (sgn(min_numer)) {
       case 1:
         if (c.is_equality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::is_included();
+          return Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::is_included();
       case 0:
         if (c.is_strict_inequality() || c.is_equality())
-          return  Poly_Con_Relation::strictly_intersects();
-        return  Poly_Con_Relation::is_included();
+          return Poly_Con_Relation::strictly_intersects();
+        return Poly_Con_Relation::is_included();
       case -1:
-        return  Poly_Con_Relation::strictly_intersects();
+        return Poly_Con_Relation::strictly_intersects();
       }
     }
     if (!bounded_below) {
       max_numer += c.inhomogeneous_term() * max_denom;
       switch (sgn(max_numer)) {
       case 1:
-        return  Poly_Con_Relation::strictly_intersects();
+        return Poly_Con_Relation::strictly_intersects();
       case 0:
         if (c.is_strict_inequality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::strictly_intersects();
       case -1:
-        return  Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::is_disjoint();
       }
     }
     else {
@@ -1926,30 +1926,30 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
         switch (sgn(min_numer)) {
         case 1:
           if (c.is_equality())
-            return  Poly_Con_Relation::is_disjoint();
-          return  Poly_Con_Relation::is_included();
+            return Poly_Con_Relation::is_disjoint();
+          return Poly_Con_Relation::is_included();
         case 0:
           if (c.is_equality())
-            return  Poly_Con_Relation::strictly_intersects();
+            return Poly_Con_Relation::strictly_intersects();
           if (c.is_strict_inequality())
-            return  Poly_Con_Relation::strictly_intersects();
-          return  Poly_Con_Relation::is_included();
+            return Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::is_included();
         case -1:
-          return  Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::strictly_intersects();
         }
       case 0:
         if (min_numer == 0) {
           if (c.is_strict_inequality())
-            return  Poly_Con_Relation::is_disjoint()
+            return Poly_Con_Relation::is_disjoint()
               && Poly_Con_Relation::saturates();
-          return  Poly_Con_Relation::is_included()
+          return Poly_Con_Relation::is_included()
             && Poly_Con_Relation::saturates();
         }
         if (c.is_strict_inequality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::strictly_intersects();
       case -1:
-        return  Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::is_disjoint();
       }
     }
   }
