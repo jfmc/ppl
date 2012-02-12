@@ -155,7 +155,9 @@ extern unsigned int in_assert;
     wp__.end(factor);                                                   \
   } while(0)
 #else
-#define WEIGHT_BEGIN()
+#define WEIGHT_BEGIN()                          \
+  do {                                          \
+  } while(0)
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
     Weightwatch_Traits::weight += (delta);      \

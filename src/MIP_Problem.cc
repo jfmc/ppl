@@ -685,7 +685,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 			 is_remergeable_variable)) {
     status = UNSATISFIABLE;
     return false;
-  };
+  }
 
   // Merge back any variable that was previously split into a positive
   // and a negative part and is now known to be nonnegative.

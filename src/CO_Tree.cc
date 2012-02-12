@@ -786,7 +786,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     subtree_reserved_size = 2*subtree_reserved_size + 1;
     --itr_depth_minus_1;
     PPL_ASSERT(itr.depth() - 1 == itr_depth_minus_1);
-  };
+  }
 
   // Now the subtree rooted at itr has been chosen as the subtree to be
   // rebalanced.
