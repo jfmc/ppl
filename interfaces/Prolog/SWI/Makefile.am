@@ -189,7 +189,7 @@ $(NO_UNDEFINED_FLAG) \
 bin_PROGRAMS = ppl_pl
 ppl_pl_SOURCES = ppl_pl.cc
 
-pkglib_DATA = ppl_swiprolog.pl
+pkgdata_DATA = ppl_swiprolog.pl
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \

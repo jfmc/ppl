@@ -188,7 +188,7 @@ $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
-pkglib_DATA = ppl_xsb.xwam
+pkgdata_DATA = ppl_xsb.xwam
 
 ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc libppl_xsb.la
 	cp -f ppl_xsb.cc ppl_xsb.c

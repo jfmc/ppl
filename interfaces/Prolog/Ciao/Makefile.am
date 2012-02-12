@@ -170,7 +170,7 @@ $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
-pkglib_DATA = ppl_ciao.po
+pkgdata_DATA = ppl_ciao.po
 
 ppl_ciao.pl: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \

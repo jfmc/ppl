@@ -69,7 +69,7 @@ ppl_sicstus_SOURCES =
 
 if ENABLE_SHARED
 
-pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
+pkgdata_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
 ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) libppl_sicstus.la
 	$(LIBTOOL) --mode=link --tag=CXX \
@@ -87,7 +87,7 @@ install-data-local: ppl_sicstus.so
 
 else !ENABLE_SHARED
 
-pkglib_DATA = ppl_sicstus.pl
+pkgdata_DATA = ppl_sicstus.pl
 
 endif !ENABLE_SHARED
 

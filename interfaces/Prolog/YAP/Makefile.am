@@ -179,7 +179,7 @@ $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
-pkglib_DATA = ppl_yap.pl
+pkgdata_DATA = ppl_yap.pl
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \

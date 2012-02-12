@@ -169,7 +169,7 @@ ppl_gprolog.pl: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
-pkglib_DATA = ppl_gprolog.pl
+pkgdata_DATA = ppl_gprolog.pl
 
 bin_PROGRAMS = ppl_gprolog
 
