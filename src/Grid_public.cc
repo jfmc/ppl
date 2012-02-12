@@ -637,7 +637,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
             point_is_included = !c.is_equality();
 	  break;
 	}
-	// Not the first point: convert `g' to be a parameter ...
+	// Not the first point: convert `g' to be a parameter
+	// and fall through into the parameter case.
 	Grid_Generator& gen = const_cast<Grid_Generator&>(g);
 	const Grid_Generator& point = *first_point;
         const Coefficient& p_div = g[0];
@@ -658,8 +659,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
         gen.strong_normalize();
 	gen.set_is_parameter();
         PPL_ASSERT(gen.OK());
-	// ... and fall through into the parameter case.
       }
+      // Intentionally fall through.
 
     case Grid_Generator::PARAMETER:
     case Grid_Generator::LINE:

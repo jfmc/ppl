@@ -1937,6 +1937,8 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
         case -1:
           return Poly_Con_Relation::strictly_intersects();
         }
+        PPL_UNREACHABLE;
+        break;
       case 0:
         if (min_numer == 0) {
           if (c.is_strict_inequality())

@@ -365,8 +365,10 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
     switch (dim_kinds[dim]) {
     case PARAMETER:
       sys[row].set_divisor(system_divisor);
+      // Intentionally fall through.
     case LINE:
       --row;
+      // Intentionally fall through.
     case GEN_VIRTUAL:
       break;
     }
