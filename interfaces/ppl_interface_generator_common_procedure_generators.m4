@@ -111,7 +111,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens/5 +sim
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign/3 *nofail +simple,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign/2 *nofail +wr_shape,
-ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +shape_group,
 dnl
 dnl NOTE: The next few schemas provide procedures specifically for
 dnl       the pointset_powerset domains.

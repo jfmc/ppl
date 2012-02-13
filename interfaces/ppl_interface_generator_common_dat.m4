@@ -706,7 +706,9 @@ m4_define(`m4_extrapolation_replacements', `NONE')
 m4_define(`m4_BD_Shape_extrapolation_replacements',
   `CC76')
 m4_define(`m4_Octagonal_Shape_extrapolation_replacements',
-   `CC76')
+  `CC76')
+m4_define(`m4_box_extrapolation_replacements',
+  `CC76')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == widenexp
