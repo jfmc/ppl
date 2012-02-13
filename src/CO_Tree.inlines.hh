@@ -46,33 +46,26 @@ CO_Tree::dfs_index(iterator itr) const {
 
 inline
 CO_Tree::CO_Tree() {
-
   init(0);
-
   PPL_ASSERT(OK());
 }
 
 inline
 CO_Tree::CO_Tree(const CO_Tree& x) {
-
   PPL_ASSERT(x.OK());
-
+  data_allocator = x.data_allocator;
   init(x.reserved_size);
-
   copy_data_from(x);
 }
 
 inline CO_Tree&
 CO_Tree::operator=(const CO_Tree& x) {
-
   if (this != &x) {
-
     destroy();
+    data_allocator = x.data_allocator;
     init(x.reserved_size);
-
     copy_data_from(x);
   }
-
   return *this;
 }
 
@@ -178,11 +171,12 @@ CO_Tree::m_swap(CO_Tree& x) {
   using std::swap;
   swap(max_depth, x.max_depth);
   swap(indexes, x.indexes);
+  swap(data_allocator, x.data_allocator);
   swap(data, x.data);
   swap(reserved_size, x.reserved_size);
   swap(size_, x.size_);
-  // Cached iterators have been invalidated by the swap, they must be
-  // refreshed here.
+  // Cached iterators have been invalidated by the swap,
+  // they must be refreshed here.
   refresh_cached_iterators();
   x.refresh_cached_iterators();
   PPL_ASSERT(structure_OK());

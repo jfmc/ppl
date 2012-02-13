@@ -27,6 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "CO_Tree.types.hh"
 
 #include "Coefficient.defs.hh"
+#include <memory>
 
 #ifndef PPL_CO_TREE_EXTRA_DEBUG
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
@@ -1012,8 +1013,8 @@ private:
 
   //! Compares the fractions numer/denom with ratio/100.
   /*!
-    \returns
-    Returns true if the fraction numer/denom is less than the fraction ratio/100.
+    \returns Returns true if the fraction numer/denom is less
+    than the fraction ratio/100.
 
     \param ratio
     It must be less than or equal to 100.
@@ -1279,6 +1280,9 @@ private:
   */
   dimension_type* indexes;
 
+  //! The allocator used to allocate/deallocate data.
+  std::allocator<data_type> data_allocator;
+
   //! The vector that contains the data of the keys in the tree.
   /*!
     If index[i] is \p unused_index, data[i] is unused.
@@ -1299,8 +1303,6 @@ private:
 
   //! The number of values stored in the tree.
   dimension_type size_;
-
-  std::allocator<Coefficient> coefficient_allocator;
 };
 
 class CO_Tree::tree_iterator {

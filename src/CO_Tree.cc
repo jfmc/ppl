@@ -521,9 +521,9 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     reserved_size = ((dimension_type)1 << max_depth) - 1;
     indexes = new dimension_type[reserved_size + 2];
     try {
-      data = coefficient_allocator.allocate(reserved_size + 1);
+      data = data_allocator.allocate(reserved_size + 1);
     } catch (...) {
-      delete [] indexes;
+      delete[] indexes;
       throw;
     }
     // Mark all pairs as unused.
@@ -549,8 +549,8 @@ PPL::CO_Tree::destroy() {
         data[i].~data_type();
     }
 
-    delete [] indexes;
-    coefficient_allocator.deallocate(data, reserved_size + 1);
+    delete[] indexes;
+    data_allocator.deallocate(data, reserved_size + 1);
   }
 }
 
@@ -704,9 +704,9 @@ PPL::CO_Tree::rebuild_bigger_tree() {
   data_type* new_data;
 
   try {
-    new_data = coefficient_allocator.allocate(new_reserved_size + 1);
+    new_data = data_allocator.allocate(new_reserved_size + 1);
   } catch (...) {
-    delete new_indexes;
+    delete[] new_indexes;
     throw;
   }
 
@@ -724,8 +724,8 @@ PPL::CO_Tree::rebuild_bigger_tree() {
   new_indexes[0] = 0;
   new_indexes[new_reserved_size + 1] = 0;
 
-  delete [] indexes;
-  operator delete(data);
+  delete[] indexes;
+  data_allocator.deallocate(data, reserved_size + 1);
 
   indexes = new_indexes;
   data = new_data;
@@ -1089,7 +1089,6 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 
 void
 PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
-
   PPL_ASSERT(size_ == 0);
   PPL_ASSERT(reserved_size == x.reserved_size);
   PPL_ASSERT(structure_OK());
