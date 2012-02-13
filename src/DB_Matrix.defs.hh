@@ -310,12 +310,12 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const DB_Matrix<T>& x,
-				 const DB_Matrix<T>& y,
-				 Rounding_Dir dir,
-				 Temp& tmp0,
-				 Temp& tmp1,
-				 Temp& tmp2);
+                                const DB_Matrix<T>& x,
+                                const DB_Matrix<T>& y,
+                                Rounding_Dir dir,
+                                Temp& tmp0,
+                                Temp& tmp1,
+                                Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
 
