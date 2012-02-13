@@ -24,6 +24,7 @@
 if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
+libtool --mode=execute \
 $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
 --num-callers=40 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
