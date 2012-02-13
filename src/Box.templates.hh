@@ -1920,8 +1920,7 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
   }
 
   // Loop index `i' is intentionally going upwards.
-  dimension_type i = 0;
-  for ( ; i < num_dims; ++i) {
+  for (dimension_type i = 0; i < num_dims; ++i) {
     if (!x.seq[i].simplify_using_context_assign(y.seq[i])) {
       PPL_ASSERT(!x.seq[i].is_empty());
       // The intersection of `x' and `y' is empty due to the i-th interval:
