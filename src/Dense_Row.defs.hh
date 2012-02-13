@@ -31,6 +31,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Sparse_Row.types.hh"
 #include "Row_Flags.defs.hh"
 #include "Coefficient.defs.hh"
+#include <memory>
 #include <vector>
 #include <limits>
 
@@ -392,6 +393,9 @@ private:
 
     //! The flags of this row.
     Row_Flags flags;
+
+    //! The allocator used to allocate/deallocate vec.
+    std::allocator<Coefficient> coeff_allocator;
 
     //! The vector of coefficients.
     //! An empty vector may be stored as NULL instead of using a valid pointer.

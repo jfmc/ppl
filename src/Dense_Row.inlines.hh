@@ -37,7 +37,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Dense_Row::Impl::Impl()
-  : size(0), capacity(0), flags(), vec(0) {
+  : size(0), capacity(0), flags(), coeff_allocator(), vec(0) {
 }
 
 inline
@@ -46,7 +46,7 @@ Dense_Row::Impl::~Impl() {
     --size;
     vec[size].~Coefficient();
   }
-  operator delete(vec);
+  coeff_allocator.deallocate(vec, capacity);
 }
 
 inline dimension_type
@@ -120,11 +120,11 @@ Dense_Row::Dense_Row(const Dense_Row& y)
   : impl() {
 
   impl.flags = y.flags();
+  impl.coeff_allocator = y.impl.coeff_allocator;
 
   if (y.impl.vec != 0) {
     impl.capacity = y.capacity();
-    impl.vec = static_cast<Coefficient*>(
-        operator new(sizeof(Coefficient) * impl.capacity));
+    impl.vec = impl.coeff_allocator.allocate(impl.capacity);
     while (impl.size != y.size()) {
       new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
       ++impl.size;
@@ -143,10 +143,9 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(capacity <= max_size());
 
   impl.flags = y.flags();
-
-  impl.vec = static_cast<Coefficient*>(
-      operator new(sizeof(Coefficient) * capacity));
   impl.capacity = capacity;
+  impl.coeff_allocator = y.impl.coeff_allocator;
+  impl.vec = impl.coeff_allocator.allocate(impl.capacity);
 
   if (y.impl.vec != 0) {
     while (impl.size != y.size()) {
@@ -171,12 +170,11 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(capacity != 0);
 
   impl.flags = y.flags();
-
-  impl.vec = static_cast<Coefficient*>(
-      operator new(sizeof(Coefficient) * capacity));
   impl.capacity = capacity;
+  impl.coeff_allocator = y.impl.coeff_allocator;
+  impl.vec = impl.coeff_allocator.allocate(impl.capacity);
 
-  dimension_type n = std::min(sz, y.size());
+  const dimension_type n = std::min(sz, y.size());
   while (impl.size != n) {
     new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
     ++impl.size;
@@ -199,7 +197,7 @@ Dense_Row::~Dense_Row() {
 inline void
 Dense_Row::destroy() {
   resize(0);
-  operator delete(impl.vec);
+  impl.coeff_allocator.deallocate(impl.vec, impl.capacity);
 }
 
 inline void
@@ -208,6 +206,7 @@ Dense_Row::m_swap(Dense_Row& y) {
   swap(impl.size, y.impl.size);
   swap(impl.capacity, y.impl.capacity);
   swap(impl.flags, y.impl.flags);
+  swap(impl.coeff_allocator, y.impl.coeff_allocator);
   swap(impl.vec, y.impl.vec);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());
