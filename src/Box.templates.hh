@@ -1205,9 +1205,9 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
     x.throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
 
   // The lub of a box with an empty box is equal to the first box.
-  if (y.marked_empty())
+  if (y.is_empty())
     return true;
-  if (x.marked_empty()) {
+  if (x.is_empty()) {
     x = y;
     return true;
   }
@@ -1753,9 +1753,9 @@ Box<ITV>::upper_bound_assign(const Box& y) {
     x.throw_dimension_incompatible("upper_bound_assign(y)", y);
 
   // The lub of a box with an empty box is equal to the first box.
-  if (y.marked_empty())
+  if (y.is_empty())
     return;
-  if (x.marked_empty()) {
+  if (x.is_empty()) {
     x = y;
     return;
   }
