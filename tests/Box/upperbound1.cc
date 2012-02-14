@@ -35,13 +35,10 @@ test01() {
   TBox box1(5);
   box1.add_constraint(x1 <= 5);
   box1.add_constraint(x2 <= -1);
-  box1.add_constraint(x1 -x2 <= 10);
 
   TBox box2(5);
-  box2.add_constraint(x1  <= 2);
+  box2.add_constraint(x1 <= 2);
   box2.add_constraint(x4 <= 7);
-  box2.add_constraint(x1 - x2 <= 20);
-  box2.add_constraint(x4 - x3 <= 3);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -50,7 +47,6 @@ test01() {
 
   Rational_Box known_result(5);
   known_result.add_constraint(x1 <= 5);
-  known_result.add_constraint(x1 - x2 <= 20);
 
   bool ok = check_result(box1, known_result);
 
@@ -69,10 +65,8 @@ test02() {
   box1.add_constraint(-x <= -1);
   box1.add_constraint(y <= 3);
   box1.add_constraint(-y <= -1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(3);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(-y <= 5);
 
@@ -84,10 +78,6 @@ test02() {
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 4);
   known_result.add_constraint(y >= -5);
-  known_result.add_constraint(x >= -4);
-  known_result.add_constraint(y <= 3);
-  known_result.add_constraint(x - y <= 8);
-  known_result.add_constraint(y - x <= 2);
 
   bool ok = check_result(box1, known_result);
 
@@ -106,10 +96,8 @@ test03() {
   box1.add_constraint(-x <= -1);
   box1.add_constraint(y <= 3);
   box1.add_constraint(-y <= -1);
-  box1.add_constraint(x - y <= 1);
 
   TBox box2(2);
-  box2.add_constraint(y - x <= -1);
   box2.add_constraint(x <= 3);
   box2.add_constraint(x >= 5);
 
@@ -137,12 +125,11 @@ test04() {
   box1.add_constraint(A >= 1);
   box1.add_constraint(B <= 3);
   box1.add_constraint(-B <= -1);
-  box1.add_constraint(A - B <= 1);
 
   TBox box2(2);
-  box2.add_constraint(B - A <= -1);
-  box2.add_constraint(A <= 3);
+  box2.add_constraint(A <= 8);
   box2.add_constraint(-B <= 5);
+  box2.add_constraint(B <= 0);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -150,12 +137,9 @@ test04() {
   box1.upper_bound_assign(box2);
 
   Rational_Box known_result(2);
-  known_result.add_constraint(A <= 4);
+  known_result.add_constraint(A <= 8);
   known_result.add_constraint(B >= -5);
-  known_result.add_constraint(A >= -4);
   known_result.add_constraint(B <= 3);
-  known_result.add_constraint(A - B <= 8);
-  known_result.add_constraint(B - A <= 2);
 
   bool ok = check_result(box1, known_result);
 
@@ -186,31 +170,6 @@ test05() {
 
 bool
 test06() {
-  Variable x(0);
-  Variable y(1);
-
-  TBox box1(2);
-  box1.add_constraint(x >= y);
-
-  TBox box2(3);
-
-  try {
-    // This is an invalid use of method
-    // Box::upper_bound_assign(box2): it is illegal
-    // to apply the method to two polyhedra of different dimensions.
-    box1.upper_bound_assign(box2);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-bool
-test07() {
   Variable A(0);
 
   TBox box1(1);
@@ -236,7 +195,7 @@ test07() {
 }
 
 bool
-test08() {
+test07() {
   Variable x1(0);
 
   TBox box1(1);
@@ -252,16 +211,41 @@ test08() {
   return true;
 }
 
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box1(2, UNIVERSE);
+  box1.add_constraint(A == 0);
+  box1.add_constraint(B == 1);
+
+  TBox box2(box1);
+  box1.affine_image(B, Linear_Expression(4));
+
+  box2.add_constraint(A > 1);
+  box1.upper_bound_assign(box2);
+
+  TBox known_result(2, UNIVERSE);
+  known_result.add_constraint(A == 0);
+  known_result.add_constraint(B == 4);
+
+  bool ok = check_result(box1, known_result);
+
+  print_constraints(box1, "=== box1 ===");
+  print_constraints(box2, "=== known_result ===");
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
-// CHECKME: why test from 1 to 7 are commented out?
-//   DO_TEST(test01);
-//   DO_TEST(test02);
-//   DO_TEST(test03);
-//   DO_TEST(test04);
-//   DO_TEST(test05);
-//   DO_TEST(test06);
-//   DO_TEST(test07);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
   DO_TEST(test08);
 END_MAIN
