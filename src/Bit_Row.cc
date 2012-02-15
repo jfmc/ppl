@@ -141,7 +141,7 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
     return false;
 
   mp_limb_t limb = *(vec->_mp_d + i);
-  return (limb >> (k % GMP_NUMB_BITS)) & 1;
+  return ((limb >> (k % GMP_NUMB_BITS)) & 1) != 0;
 }
 
 void
@@ -169,7 +169,7 @@ PPL::compare(const Bit_Row& x, const Bit_Row& y) {
       const mp_limb_t diff = xl ^ yl;
       // First bit that is different.
       const mp_limb_t mask = diff & ~(diff-1);
-      return (xl & mask) ? 1 : -1;
+      return ((xl & mask) != 0) ? 1 : -1;
     }
     ++xp;
     ++yp;
@@ -190,7 +190,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   while (x_size > 0) {
-    if (*xp & ~*yp)
+    if ((*xp & ~*yp) != 0)
       return false;
     ++xp;
     ++yp;
@@ -218,7 +218,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
     while (x_size > 0) {
       xl = *xp;
       yl = *yp;
-      if (xl & ~yl)
+      if ((xl & ~yl) != 0)
 	return false;
     strict_subset_next:
       ++xp;
@@ -231,7 +231,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
       xl = *xp;
       yl = *yp;
       if (xl != yl) {
-	if (xl & ~yl)
+	if ((xl & ~yl) != 0)
 	  return false;
 	strict_subset = true;
 	goto strict_subset_next;
@@ -259,7 +259,7 @@ PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
   while (x_size > 0) {
     const mp_limb_t xl = *xp;
     const mp_limb_t yl = *yp;
-    if (xl & ~yl)
+    if ((xl & ~yl) != 0)
       return false;
     if (!different && xl != yl)
       different = true;
