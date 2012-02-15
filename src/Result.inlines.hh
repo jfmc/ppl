@@ -71,7 +71,7 @@ result_overflow(Result r) {
 
 inline bool
 result_representable(Result r) {
-  return !(r & V_UNREPRESENTABLE);
+  return (r & V_UNREPRESENTABLE) == 0;
 }
 
 inline Result operator|(Result a, Result b) {
