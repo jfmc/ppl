@@ -417,7 +417,8 @@ i_constraint(I_Constraint_Rel rel, const T& v, const Val_Or_Ref_Criteria&) {
 
 template <typename T, typename Val_Or_Ref_Criteria>
 inline I_Constraint<T, Val_Or_Ref_Criteria>
-i_constraint(I_Constraint_Rel rel, const T& v, bool force, const Val_Or_Ref_Criteria&) {
+i_constraint(I_Constraint_Rel rel, const T& v, bool force,
+             const Val_Or_Ref_Criteria&) {
   return I_Constraint<T, Val_Or_Ref_Criteria>(rel, v, force);
 }
 

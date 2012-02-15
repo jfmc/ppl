@@ -393,27 +393,23 @@ Box<ITV>
   // Turn `numer/denom' into `-numer/denom'.
   q = -q;
 
-  I_Result res;
+  Relation_Symbol rel_sym;
   switch (type) {
   case Constraint::EQUALITY:
-    res = itv.add_constraint(i_constraint(EQUAL, q));
+    rel_sym = EQUAL;
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    res = itv.add_constraint(i_constraint(denom > 0
-                                          ? GREATER_OR_EQUAL
-                                          : LESS_OR_EQUAL, q));
+    rel_sym = (denom > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
     break;
   case Constraint::STRICT_INEQUALITY:
-    res = itv.add_constraint(i_constraint(denom > 0
-                                          ? GREATER_THAN
-                                          : LESS_THAN, q));
+    rel_sym = (denom > 0) ? GREATER_THAN : LESS_THAN;
     break;
   default:
     // Silence compiler warning.
     PPL_UNREACHABLE;
-    res = I_ANY;
-    break;
+    return I_ANY;
   }
+  I_Result res = itv.add_constraint(i_constraint(rel_sym, q));
   PPL_ASSERT(itv.OK());
   return res;
 }

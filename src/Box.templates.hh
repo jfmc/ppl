@@ -2435,10 +2435,10 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(((open == T_YES)
-                                          ? GREATER_THAN
-                                          : GREATER_OR_EQUAL),
-                                         t_bound));
+      {
+        Relation_Symbol rel = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
+        seq[k].add_constraint(i_constraint(rel, t_bound));
+      }
       reset_empty_up_to_date();
     maybe_refine_upper_1:
       if (c_type != Constraint::EQUALITY)
@@ -2502,10 +2502,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(((open == T_YES)
-                                          ? LESS_THAN
-                                          : LESS_OR_EQUAL),
-                                         t_bound));
+      Relation_Symbol rel = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
+      seq[k].add_constraint(i_constraint(rel, t_bound));
       reset_empty_up_to_date();
     }
     else {
@@ -2570,10 +2568,10 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(((open == T_YES)
-                                          ? LESS_THAN
-                                          : LESS_OR_EQUAL),
-                                         t_bound));
+      {
+        Relation_Symbol rel = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
+        seq[k].add_constraint(i_constraint(rel, t_bound));
+      }
       reset_empty_up_to_date();
     maybe_refine_upper_2:
       if (c_type != Constraint::EQUALITY)
@@ -2637,10 +2635,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      seq[k].add_constraint(i_constraint(((open == T_YES)
-                                          ? GREATER_THAN
-                                          : GREATER_OR_EQUAL),
-                                         t_bound));
+      Relation_Symbol rel = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
+      seq[k].add_constraint(i_constraint(rel, t_bound));
       reset_empty_up_to_date();
     }
   next_k:
@@ -2973,12 +2969,17 @@ Box<ITV>
 	assign_r(q2.get_num(), max_numer, ROUND_NOT_NEEDED);
 	assign_r(q2.get_den(), max_denom, ROUND_NOT_NEEDED);
 	q2.canonicalize();
-	if (denominator > 0)
-	  seq_v.build(i_constraint(min_included ? GREATER_OR_EQUAL : GREATER_THAN, q1),
-		      i_constraint(max_included ? LESS_OR_EQUAL : LESS_THAN, q2));
-	else
-	  seq_v.build(i_constraint(max_included ? GREATER_OR_EQUAL : GREATER_THAN, q2),
-		       i_constraint(min_included ? LESS_OR_EQUAL : LESS_THAN, q1));
+
+        if (denominator > 0) {
+          Relation_Symbol gr = min_included ? GREATER_OR_EQUAL : GREATER_THAN;
+          Relation_Symbol lr = max_included ? LESS_OR_EQUAL : LESS_THAN;
+          seq_v.build(i_constraint(gr, q1), i_constraint(lr, q2));
+        }
+	else {
+          Relation_Symbol gr = max_included ? GREATER_OR_EQUAL : GREATER_THAN;
+          Relation_Symbol lr = min_included ? LESS_OR_EQUAL : LESS_THAN;
+          seq_v.build(i_constraint(gr, q2), i_constraint(lr, q1));
+        }
       }
       else {
 	// The `ub_expr' has a maximum value but the `lb_expr'
@@ -2989,10 +2990,10 @@ Box<ITV>
 	assign_r(q.get_num(), max_numer, ROUND_NOT_NEEDED);
 	assign_r(q.get_den(), max_denom, ROUND_NOT_NEEDED);
 	q.canonicalize();
-	if (denominator > 0)
-	  seq_v.build(i_constraint(max_included ? LESS_OR_EQUAL : LESS_THAN, q));
-	else
-	  seq_v.build(i_constraint(max_included ? GREATER_OR_EQUAL : GREATER_THAN, q));
+        Relation_Symbol rel = (denominator > 0)
+          ? (max_included ? LESS_OR_EQUAL : LESS_THAN)
+          : (max_included ? GREATER_OR_EQUAL : GREATER_THAN);
+        seq_v.build(i_constraint(rel, q));
       }
     }
     else if (minimize(lb_expr, min_numer, min_denom, min_included)) {
@@ -3004,10 +3005,11 @@ Box<ITV>
 	assign_r(q.get_num(), min_numer, ROUND_NOT_NEEDED);
 	assign_r(q.get_den(), min_denom, ROUND_NOT_NEEDED);
 	q.canonicalize();
-	if (denominator > 0)
-	  seq_v.build(i_constraint(min_included ? GREATER_OR_EQUAL : GREATER_THAN, q));
-	else
-	  seq_v.build(i_constraint(min_included ? LESS_OR_EQUAL : LESS_THAN, q));
+
+        Relation_Symbol rel = (denominator > 0)
+          ? (min_included ? GREATER_OR_EQUAL : GREATER_THAN)
+          : (min_included ? LESS_OR_EQUAL : LESS_THAN);
+        seq_v.build(i_constraint(rel, q));
     }
     else {
       // The `ub_expr' has no maximum value and the `lb_expr'
@@ -3125,11 +3127,14 @@ Box<ITV>
         assign_r(q.get_num(), numer_lower, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_lower, ROUND_NOT_NEEDED);
         q.canonicalize();
-        open_lower = (open_lower || !included);
+        if (!included)
+          open_lower = true;
+        Relation_Symbol rel;
         if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom)
-          seq_var.add_constraint(i_constraint(open_lower ? GREATER_THAN : GREATER_OR_EQUAL, q));
+          rel = open_lower ? GREATER_THAN : GREATER_OR_EQUAL;
         else
-          seq_var.add_constraint(i_constraint(open_lower ? LESS_THAN : LESS_OR_EQUAL, q));
+          rel = open_lower ? LESS_THAN : LESS_OR_EQUAL;
+        seq_var.add_constraint(i_constraint(rel, q));
         if (seq_var.is_empty()) {
           set_empty();
           return;
@@ -3158,11 +3163,14 @@ Box<ITV>
         assign_r(q.get_num(), numer_upper, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_upper, ROUND_NOT_NEEDED);
         q.canonicalize();
-        open_upper = (open_upper || !included);
+        if (!included)
+          open_upper = true;
+        Relation_Symbol rel;
         if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom)
-          seq_var.add_constraint(i_constraint(open_upper ? LESS_THAN : LESS_OR_EQUAL, q));
+          rel = open_upper ? LESS_THAN : LESS_OR_EQUAL;
         else
-          seq_var.add_constraint(i_constraint(open_upper ? GREATER_THAN : GREATER_OR_EQUAL, q));
+          rel = open_upper ? GREATER_THAN : GREATER_OR_EQUAL;
+        seq_var.add_constraint(i_constraint(rel, q));
         if (seq_var.is_empty()) {
           set_empty();
           return;
@@ -3316,7 +3324,8 @@ Box<ITV>
     neg_assign(inverse_denominator, var_coefficient);
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
-      ? relsym : reversed_relsym;
+      ? relsym
+      : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse_expr,
 			     inverse_denominator);
     return;
@@ -3500,14 +3509,18 @@ Box<ITV>
       // The coefficient of the dimension in the lhs is positive.
       switch (relsym) {
       case LESS_OR_EQUAL:
-        max_rhs
-          ? seq_var.build(i_constraint(max_included ? LESS_OR_EQUAL : LESS_THAN, q_max))
-          : seq_var.assign(UNIVERSE);
+        if (max_rhs) {
+          Relation_Symbol rel = max_included ? LESS_OR_EQUAL : LESS_THAN;
+          seq_var.build(i_constraint(rel, q_max));
+        }
+        else
+          seq_var.assign(UNIVERSE);
         break;
       case LESS_THAN:
-        max_rhs
-          ? seq_var.build(i_constraint(LESS_THAN, q_max))
-          : seq_var.assign(UNIVERSE);
+        if (max_rhs)
+          seq_var.build(i_constraint(LESS_THAN, q_max));
+        else
+          seq_var.assign(UNIVERSE);
         break;
       case EQUAL:
 	{
@@ -3521,14 +3534,18 @@ Box<ITV>
           break;
 	}
       case GREATER_OR_EQUAL:
-        min_rhs
-          ? seq_var.build(i_constraint(min_included ? GREATER_OR_EQUAL : GREATER_THAN, q_min))
-          : seq_var.assign(UNIVERSE);
+        if (min_rhs) {
+          Relation_Symbol rel = min_included ? GREATER_OR_EQUAL : GREATER_THAN;
+          seq_var.build(i_constraint(rel, q_min));
+        }
+        else
+          seq_var.assign(UNIVERSE);
         break;
       case GREATER_THAN:
-        min_rhs
-          ? seq_var.build(i_constraint(GREATER_THAN, q_min))
-          : seq_var.assign(UNIVERSE);
+        if (min_rhs)
+          seq_var.build(i_constraint(GREATER_THAN, q_min));
+        else
+          seq_var.assign(UNIVERSE);
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
@@ -3539,14 +3556,18 @@ Box<ITV>
       // The coefficient of the dimension in the lhs is negative.
       switch (relsym) {
       case GREATER_OR_EQUAL:
-        min_rhs
-          ? seq_var.build(i_constraint(min_included ? LESS_OR_EQUAL : LESS_THAN, q_min))
-          : seq_var.assign(UNIVERSE);
+        if (min_rhs) {
+          Relation_Symbol rel = min_included ? LESS_OR_EQUAL : LESS_THAN;
+          seq_var.build(i_constraint(rel, q_min));
+        }
+        else
+          seq_var.assign(UNIVERSE);
         break;
       case GREATER_THAN:
-        min_rhs
-          ? seq_var.build(i_constraint(LESS_THAN, q_min))
-	  : seq_var.assign(UNIVERSE);
+        if (min_rhs)
+          seq_var.build(i_constraint(LESS_THAN, q_min));
+        else
+          seq_var.assign(UNIVERSE);
         break;
       case EQUAL:
 	{
@@ -3560,14 +3581,18 @@ Box<ITV>
           break;
 	}
       case LESS_OR_EQUAL:
-        max_rhs
-	  ? seq_var.build(i_constraint(max_included ? GREATER_OR_EQUAL : GREATER_THAN, q_max))
-          : seq_var.assign(UNIVERSE);
+        if (max_rhs) {
+          Relation_Symbol rel = max_included ? GREATER_OR_EQUAL : GREATER_THAN;
+          seq_var.build(i_constraint(rel, q_max));
+        }
+        else
+          seq_var.assign(UNIVERSE);
         break;
       case LESS_THAN:
-        max_rhs
-          ? seq_var.build(i_constraint(GREATER_THAN, q_max))
-          : seq_var.assign(UNIVERSE);
+        if (max_rhs)
+          seq_var.build(i_constraint(GREATER_THAN, q_max));
+        else
+          seq_var.assign(UNIVERSE);
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.

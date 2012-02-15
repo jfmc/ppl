@@ -204,13 +204,15 @@ public:
     PPL_ASSERT(!is_empty());
     if (info().get_boundary_property(LOWER, SPECIAL))
       return I_Constraint<boundary_type>();
-    return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL, lower(), true);
+    return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL,
+                        lower(), true);
   }
   I_Constraint<boundary_type> upper_constraint() const {
     PPL_ASSERT(!is_empty());
     if (info().get_boundary_property(UPPER, SPECIAL))
       return I_Constraint<boundary_type>();
-    return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL, upper(), true);
+    return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL,
+                        upper(), true);
   }
 
   bool has_restriction() const {
