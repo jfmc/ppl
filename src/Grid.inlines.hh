@@ -228,7 +228,7 @@ Grid::total_memory_in_bytes() const {
 
 inline int32_t
 Grid::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 inline Constraint_System

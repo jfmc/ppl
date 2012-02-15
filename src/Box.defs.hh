@@ -1692,6 +1692,14 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If <CODE>x</CODE> and <CODE>y</CODE> are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
+
   PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

@@ -838,7 +838,7 @@ BD_Shape<T>::total_memory_in_bytes() const {
 template <typename T>
 inline int32_t
 BD_Shape<T>::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 template <typename T>

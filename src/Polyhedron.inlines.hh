@@ -43,7 +43,7 @@ Polyhedron::space_dimension() const {
 
 inline int32_t
 Polyhedron::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 inline dimension_type

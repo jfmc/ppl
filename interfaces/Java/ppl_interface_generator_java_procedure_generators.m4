@@ -42,7 +42,7 @@ dnl The <name> must be exactly as written here.
 m4_define(`m4_procedure_list',
 `m4_echo_unquoted(`m4_common_procedure_list',
 ppl_free_@CLASS@/1 +all,
-ppl_@CLASS@_hashcode/2 +all -box,
+ppl_@CLASS@_hashcode/2 +all,
 ppl_@CLASS@_string/1 +all,
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/1 +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2 +simple,

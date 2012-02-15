@@ -34,6 +34,12 @@ not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
 }
 
+inline int32_t
+hash_code_from_dimension(dimension_type dim) {
+  const dimension_type divisor = 1U << (32 - 1);
+  return static_cast<int32_t>(dim % divisor);
+}
+
 inline const Weightwatch_Traits::Threshold&
 Weightwatch_Traits::get() {
   return weight;

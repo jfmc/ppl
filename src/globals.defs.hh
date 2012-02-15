@@ -42,6 +42,10 @@ namespace Parma_Polyhedra_Library {
 dimension_type
 not_a_dimension();
 
+//! Returns the hash code for space dimension \p dim.
+int32_t
+hash_code_from_dimension(dimension_type dim);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   Make sure swap() is specialized when needed.

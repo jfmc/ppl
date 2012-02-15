@@ -173,7 +173,7 @@ Pointset_Ask_Tell<PSET>::total_memory_in_bytes() const {
 template <typename PSET>
 inline int32_t
 Pointset_Ask_Tell<PSET>::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 template <>

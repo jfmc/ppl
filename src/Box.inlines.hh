@@ -133,6 +133,12 @@ Box<ITV>::max_space_dimension() {
 }
 
 template <typename ITV>
+inline int32_t
+Box<ITV>::hash_code() const {
+  return hash_code_from_dimension(space_dimension());
+}
+
+template <typename ITV>
 inline const ITV&
 Box<ITV>::operator[](const dimension_type k) const {
   PPL_ASSERT(k < seq.size());
