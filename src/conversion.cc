@@ -398,9 +398,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // product is 0 if and only if the generator saturates the
     // constraint.
     PPL_DIRTY_TEMP(std::vector<Coefficient>, scalar_prod);
-    const int needed_space = dest_num_rows - scalar_prod.size();
-    if (needed_space > 0)
-      scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
+    if (dest_num_rows > scalar_prod.size())
+      scalar_prod.resize(dest_num_rows, Coefficient_zero());
     // `index_non_zero' will indicate the first generator in `dest'
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
