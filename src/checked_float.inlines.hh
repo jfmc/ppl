@@ -153,11 +153,15 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
   if ((nan || sign) && CHECK_P(Policy::has_nan, f.u.binary.is_nan()))
     return V_NAN;
   if (inf) {
-    int i = CHECK_P(Policy::has_infinity, f.u.binary.is_inf());
-    if (i < 0)
-      return V_EQ_MINUS_INFINITY;
-    if (i > 0)
-      return V_EQ_PLUS_INFINITY;
+    if (Policy::has_infinity) {
+      int sign = f.u.binary.inf_sign();
+      if (sign < 0)
+        return V_EQ_MINUS_INFINITY;
+      if (sign > 0)
+        return V_EQ_PLUS_INFINITY;
+    }
+    else
+      PPL_ASSERT(f.u.binary.inf_sign() == 0);
   }
   if (sign) {
     if (v < 0)
@@ -180,20 +184,20 @@ template <typename Policy, typename T>
 inline bool
 is_inf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, (f.u.binary.is_inf() != 0));
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() != 0));
 }
 template <typename Policy, typename T>
 inline bool
 is_minf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, (f.u.binary.is_inf() < 0));
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() == -1));
 }
 
 template <typename Policy, typename T>
 inline bool
 is_pinf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, (f.u.binary.is_inf() > 0));
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() == 1));
 }
 
 
@@ -228,8 +232,8 @@ inline void
 pred_float(T& v) {
   Float<T> f(v);
   PPL_ASSERT(!f.u.binary.is_nan());
-  PPL_ASSERT(f.u.binary.is_inf() >= 0);
-  if (f.u.binary.is_zero() > 0) {
+  PPL_ASSERT(f.u.binary.inf_sign() >= 0);
+  if (f.u.binary.zero_sign() == 1) {
     f.u.binary.negate();
     f.u.binary.inc();
   }
@@ -247,8 +251,8 @@ inline void
 succ_float(T& v) {
   Float<T> f(v);
   PPL_ASSERT(!f.u.binary.is_nan());
-  PPL_ASSERT(f.u.binary.is_inf() <= 0);
-  if (f.u.binary.is_zero() < 0) {
+  PPL_ASSERT(f.u.binary.inf_sign() <= 0);
+  if (f.u.binary.zero_sign() == -1) {
     f.u.binary.negate();
     f.u.binary.inc();
   }

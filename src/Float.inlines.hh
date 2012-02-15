@@ -31,7 +31,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline int
-float_ieee754_half::is_inf() const {
+float_ieee754_half::inf_sign() const {
   if (word == NEG_INF)
     return -1;
   if (word == POS_INF)
@@ -45,7 +45,7 @@ float_ieee754_half::is_nan() const {
 }
 
 inline int
-float_ieee754_half::is_zero() const {
+float_ieee754_half::zero_sign() const {
   if (word == NEG_ZERO)
     return -1;
   if (word == POS_ZERO)
@@ -92,7 +92,7 @@ float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_ieee754_single::is_inf() const {
+float_ieee754_single::inf_sign() const {
   if (word == NEG_INF)
     return -1;
   if (word == POS_INF)
@@ -106,7 +106,7 @@ float_ieee754_single::is_nan() const {
 }
 
 inline int
-float_ieee754_single::is_zero() const {
+float_ieee754_single::zero_sign() const {
   if (word == NEG_ZERO)
     return -1;
   if (word == POS_ZERO)
@@ -153,7 +153,7 @@ float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_ieee754_double::is_inf() const {
+float_ieee754_double::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
   if (msp == MSP_NEG_INF)
@@ -170,7 +170,7 @@ float_ieee754_double::is_nan() const {
 }
 
 inline int
-float_ieee754_double::is_zero() const {
+float_ieee754_double::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
   if (msp == MSP_NEG_ZERO)
@@ -239,7 +239,7 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_ibm_single::is_inf() const {
+float_ibm_single::inf_sign() const {
   if (word == NEG_INF)
     return -1;
   if (word == POS_INF)
@@ -253,7 +253,7 @@ float_ibm_single::is_nan() const {
 }
 
 inline int
-float_ibm_single::is_zero() const {
+float_ibm_single::zero_sign() const {
   if (word == NEG_ZERO)
     return -1;
   if (word == POS_ZERO)
@@ -300,7 +300,7 @@ float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_intel_double_extended::is_inf() const {
+float_intel_double_extended::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
   uint32_t a = msp & MSP_NEG_INF;
@@ -318,7 +318,7 @@ float_intel_double_extended::is_nan() const {
 }
 
 inline int
-float_intel_double_extended::is_zero() const {
+float_intel_double_extended::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
   uint32_t a = msp & MSP_NEG_INF;
@@ -382,7 +382,7 @@ float_intel_double_extended::build(bool negative,
 }
 
 inline int
-float_ieee754_quad::is_inf() const {
+float_ieee754_quad::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
   if (msp == MSP_NEG_INF)
@@ -399,7 +399,7 @@ float_ieee754_quad::is_nan() const {
 }
 
 inline int
-float_ieee754_quad::is_zero() const {
+float_ieee754_quad::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
   if (msp == MSP_NEG_ZERO)

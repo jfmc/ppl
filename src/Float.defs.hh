@@ -65,9 +65,9 @@ struct float_ieee754_half {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_HALF;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -98,9 +98,9 @@ struct float_ieee754_single {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_SINGLE;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -144,9 +144,9 @@ struct float_ieee754_double {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_DOUBLE;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -176,9 +176,9 @@ struct float_ibm_single {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IBM_SINGLE;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -229,9 +229,9 @@ struct float_intel_double_extended {
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format =
                                      INTEL_DOUBLE_EXTENDED;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -268,9 +268,9 @@ struct float_ieee754_quad {
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
