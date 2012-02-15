@@ -503,10 +503,9 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
   if (x.num_columns() == y.num_columns()) {
     dimension_type num_rows = x.num_rows();
     if (num_rows == y.num_rows()) {
-      while (num_rows--) {
-	if (x[num_rows] == y[num_rows])
-	  continue;
-	return false;
+      while (num_rows-- > 0) {
+	if (x[num_rows] != y[num_rows])
+	  return false;
       }
       return true;
     }
