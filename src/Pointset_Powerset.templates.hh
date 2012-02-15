@@ -674,8 +674,8 @@ Pointset_Powerset<PSET>
     PSET context_i(si->pointset());
     context_i.intersection_assign(enlarged);
     PSET enlarged_i(dest);
-    nonempty_intersection
-      |= enlarged_i.simplify_using_context_assign(context_i);
+    if (enlarged_i.simplify_using_context_assign(context_i))
+      nonempty_intersection = true;
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }

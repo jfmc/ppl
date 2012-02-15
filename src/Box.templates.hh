@@ -3125,7 +3125,7 @@ Box<ITV>
         assign_r(q.get_num(), numer_lower, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_lower, ROUND_NOT_NEEDED);
         q.canonicalize();
-        open_lower |= !included;
+        open_lower = (open_lower || !included);
         if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom)
           seq_var.add_constraint(i_constraint(open_lower ? GREATER_THAN : GREATER_OR_EQUAL, q));
         else
@@ -3158,7 +3158,7 @@ Box<ITV>
         assign_r(q.get_num(), numer_upper, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_upper, ROUND_NOT_NEEDED);
         q.canonicalize();
-        open_upper |= !included;
+        open_upper = (open_upper || !included);
         if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom)
           seq_var.add_constraint(i_constraint(open_upper ? LESS_THAN : LESS_OR_EQUAL, q));
         else
