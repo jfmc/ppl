@@ -60,7 +60,7 @@ float_ieee754_half::negate() {
 
 inline bool
 float_ieee754_half::sign_bit() const {
-  return !!(word & SGN_MASK);
+  return (word & SGN_MASK) != 0;
 }
 
 inline void
@@ -121,7 +121,7 @@ float_ieee754_single::negate() {
 
 inline bool
 float_ieee754_single::sign_bit() const {
-  return !!(word & SGN_MASK);
+  return (word & SGN_MASK) != 0;
 }
 
 inline void
@@ -187,7 +187,7 @@ float_ieee754_double::negate() {
 
 inline bool
 float_ieee754_double::sign_bit() const {
-  return !!(msp & MSP_SGN_MASK);
+  return (msp & MSP_SGN_MASK) != 0;
 }
 
 inline void
@@ -268,7 +268,7 @@ float_ibm_single::negate() {
 
 inline bool
 float_ibm_single::sign_bit() const {
-  return !!(word & SGN_MASK);
+  return (word & SGN_MASK) != 0;
 }
 
 inline void
@@ -336,7 +336,7 @@ float_intel_double_extended::negate() {
 
 inline bool
 float_intel_double_extended::sign_bit() const {
-  return !!(msp & MSP_SGN_MASK);
+  return (msp & MSP_SGN_MASK) != 0;
 }
 
 inline void
@@ -416,7 +416,7 @@ float_ieee754_quad::negate() {
 
 inline bool
 float_ieee754_quad::sign_bit() const {
-  return !!(msp & MSP_SGN_MASK);
+  return (msp & MSP_SGN_MASK) != 0;
 }
 
 inline void
