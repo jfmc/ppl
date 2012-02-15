@@ -190,14 +190,14 @@ template <typename Policy, typename T>
 inline bool
 is_minf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() == -1));
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() < 0));
 }
 
 template <typename Policy, typename T>
 inline bool
 is_pinf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() == 1));
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() > 0));
 }
 
 
@@ -233,7 +233,7 @@ pred_float(T& v) {
   Float<T> f(v);
   PPL_ASSERT(!f.u.binary.is_nan());
   PPL_ASSERT(f.u.binary.inf_sign() >= 0);
-  if (f.u.binary.zero_sign() == 1) {
+  if (f.u.binary.zero_sign() > 0) {
     f.u.binary.negate();
     f.u.binary.inc();
   }
@@ -252,7 +252,7 @@ succ_float(T& v) {
   Float<T> f(v);
   PPL_ASSERT(!f.u.binary.is_nan());
   PPL_ASSERT(f.u.binary.inf_sign() <= 0);
-  if (f.u.binary.zero_sign() == -1) {
+  if (f.u.binary.zero_sign() < 0) {
     f.u.binary.negate();
     f.u.binary.inc();
   }
