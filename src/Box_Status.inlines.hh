@@ -62,7 +62,7 @@ Box<ITV>::Status::test_all(flags_t mask) const {
 template <typename ITV>
 inline bool
 Box<ITV>::Status::test_any(flags_t mask) const {
-  return flags & mask;
+  return (flags & mask) != 0;
 }
 
 template <typename ITV>
