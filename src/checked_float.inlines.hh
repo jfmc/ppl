@@ -180,18 +180,20 @@ template <typename Policy, typename T>
 inline bool
 is_inf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, f.u.binary.is_inf());
+  return CHECK_P(Policy::has_infinity, (f.u.binary.is_inf() != 0));
 }
 template <typename Policy, typename T>
 inline bool
 is_minf_float(const T v) {
-  return is_inf_float<Policy>(v) < 0;
+  Float<T> f(v);
+  return CHECK_P(Policy::has_infinity, (f.u.binary.is_inf() < 0));
 }
 
 template <typename Policy, typename T>
 inline bool
 is_pinf_float(const T v) {
-  return is_inf_float<Policy>(v) > 0;
+  Float<T> f(v);
+  return CHECK_P(Policy::has_infinity, (f.u.binary.is_inf() > 0));
 }
 
 
