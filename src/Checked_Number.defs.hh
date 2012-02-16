@@ -452,7 +452,7 @@ is_plus_infinity(const T& x);
 /*! \relates Checked_Number */
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type
-is_infinity(const T& x);
+infinity_sign(const T& x);
 
 /*! \relates Checked_Number */
 template <typename T>

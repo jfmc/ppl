@@ -456,7 +456,7 @@ public:
     info().set_boundary_property(UPPER, OPEN, true);
   }
 
-  bool is_infinity() const {
+  int infinity_sign() const {
     PPL_ASSERT(OK());
     if (is_reverse_infinity(LOWER, lower(), info()))
       return 1;
@@ -519,7 +519,7 @@ public:
       return assign(refinement);
     PPL_DIRTY_TEMP(Boundary, u);
     Result result = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
-    if (!result_overflow(result) && u > lower())
+    if (result_overflow(result) == 0 && u > lower())
       return assign(refinement);
     info().clear();
     switch (r) {

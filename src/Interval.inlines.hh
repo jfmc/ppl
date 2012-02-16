@@ -60,8 +60,8 @@ f_is_singleton(const Interval<Boundary, Info>& x) {
 }
 template <typename Boundary, typename Info>
 inline int
-is_infinity(const Interval<Boundary, Info>& x) {
-  return x.is_infinity();
+infinity_sign(const Interval<Boundary, Info>& x) {
+  return x.infinity_sign();
 }
 
 namespace Interval_NS {
@@ -614,16 +614,16 @@ Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
-  int inf = Parma_Polyhedra_Library::is_infinity(x);
-  if (inf) {
-    if (Parma_Polyhedra_Library::is_infinity(y) == -inf)
+  int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
+  if (inf_sign != 0) {
+    if (Parma_Polyhedra_Library::infinity_sign(y) == -inf_sign)
       return assign(EMPTY);
   }
   else
-    inf = Parma_Polyhedra_Library::is_infinity(y);
-  if (inf < 0)
+    inf_sign = Parma_Polyhedra_Library::infinity_sign(y);
+  if (inf_sign < 0)
     return assign(MINUS_INFINITY);
-  else if (inf > 0)
+  else if (inf_sign > 0)
     return assign(PLUS_INFINITY);
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
@@ -651,16 +651,16 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(y));
   if (check_empty_arg(x) || check_empty_arg(y))
     return assign(EMPTY);
-  int inf = Parma_Polyhedra_Library::is_infinity(x);
-  if (inf) {
-    if (Parma_Polyhedra_Library::is_infinity(y) == inf)
+  int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
+  if (inf_sign != 0) {
+    if (Parma_Polyhedra_Library::infinity_sign(y) == inf_sign)
       return assign(EMPTY);
   }
   else
-    inf = -Parma_Polyhedra_Library::is_infinity(y);
-  if (inf < 0)
+    inf_sign = -Parma_Polyhedra_Library::infinity_sign(y);
+  if (inf_sign < 0)
     return assign(MINUS_INFINITY);
-  else if (inf > 0)
+  else if (inf_sign > 0)
     return assign(PLUS_INFINITY);
 
   PPL_DIRTY_TEMP(To_Info, to_info);
@@ -708,16 +708,16 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   int xus = (xls > 0) ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int yus = (yls > 0) ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
-  int inf = Parma_Polyhedra_Library::is_infinity(x);
+  int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
   int ls, us;
-  if (inf) {
+  if (inf_sign != 0) {
     ls = yls;
     us = yus;
     goto inf;
   }
   else {
-    inf = Parma_Polyhedra_Library::is_infinity(y);
-    if (inf) {
+    inf_sign = Parma_Polyhedra_Library::infinity_sign(y);
+    if (inf_sign != 0) {
       ls = xls;
       us = xus;
     inf:
@@ -726,8 +726,8 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
       if (ls == -us)
 	return set_infinities();
       if (ls < 0 || us < 0)
-	inf = -inf;
-      if (inf < 0)
+	inf_sign = -inf_sign;
+      if (inf_sign < 0)
 	return assign(MINUS_INFINITY);
       else
 	return assign(PLUS_INFINITY);
@@ -877,15 +877,15 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   int yus = (yls > 0) ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
   if (yls == 0 && yus == 0)
     return assign(EMPTY);
-  int inf = Parma_Polyhedra_Library::is_infinity(x);
-  if (inf) {
-    if (Parma_Polyhedra_Library::is_infinity(y))
+  int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
+  if (inf_sign != 0) {
+    if (Parma_Polyhedra_Library::infinity_sign(y) != 0)
       return assign(EMPTY);
     if (yls == -yus)
       return set_infinities();
     if (yls < 0 || yus < 0)
-      inf = -inf;
-    if (inf < 0)
+    inf_sign = -inf_sign;
+    if (inf_sign < 0)
       return assign(MINUS_INFINITY);
     else
       return assign(PLUS_INFINITY);

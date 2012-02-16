@@ -297,7 +297,7 @@ is_reverse_infinity(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline int
-is_infinity(Boundary_Type type, const T& x, const Info& info) {
+infinity_sign(Boundary_Type type, const T& x, const Info& info) {
   if (is_boundary_infinity(type, x, info))
     return (type == LOWER) ? -1 : 1;
   else if (is_reverse_infinity(type, x, info))
