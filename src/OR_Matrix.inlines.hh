@@ -409,7 +409,7 @@ inline dimension_type
 isqrt(dimension_type x) {
   dimension_type r = 0;
   const dimension_type FIRST_BIT_MASK = 0x40000000U;
-  for (dimension_type t = FIRST_BIT_MASK; t; t >>= 2) {
+  for (dimension_type t = FIRST_BIT_MASK; t != 0; t >>= 2) {
     dimension_type s = r + t;
     if (s <= x) {
       x -= s;

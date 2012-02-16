@@ -2037,10 +2037,10 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
   // Re-examine remaining inequalities.
   // Iteration index `i' is _intentionally_ increasing.
   for (dimension_type i = 0; i < num_rows; ++i) {
-    if (ineqs_p[i]) {
+    if (ineqs_p[i] != 0) {
       for (dimension_type j = 0; j < num_rows; ++j) {
         bool strict_subset;
-        if (ineqs_p[j] && i != j
+        if (ineqs_p[j] != 0 && i != j
             && subset_or_equal(sat[j], sat[i], strict_subset)) {
           if (strict_subset) {
             ineqs_p[i] = 0;
@@ -2367,7 +2367,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         const Constraint& non_redundant_ineq_i = *(non_redundant_ineq_p[i]);
         Bit_Row& sat_i = sat[i];
         for (dimension_type j = z_gs_num_rows; j-- > 0; )
-          if (Scalar_Products::sign(non_redundant_ineq_i, z_gs[j]))
+          if (Scalar_Products::sign(non_redundant_ineq_i, z_gs[j]) != 0)
             sat_i.set(j);
         if (sat_i.empty() && num_non_redundant_eq < needed_non_redundant_eq) {
           // `non_redundant_ineq_i' is actually masking an equality
@@ -2398,7 +2398,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       for (dimension_type i = y_cs_num_ineq;
            i < non_redundant_ineq_p_size;
            ++i)
-        if (non_redundant_ineq_p[i])
+        if (non_redundant_ineq_p[i] != 0)
           result_cs.insert(*non_redundant_ineq_p[i]);
     }
   }

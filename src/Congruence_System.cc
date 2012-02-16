@@ -52,8 +52,8 @@ increase_space_dimension(const dimension_type new_space_dim) {
 
   const dimension_type cols_to_add = new_space_dim - space_dimension();
 
-  if (cols_to_add) {
-    if (num_rows()) {
+  if (cols_to_add > 0) {
+    if (num_rows() > 0) {
       const dimension_type old_num_columns = num_columns();
       add_zero_columns(cols_to_add);
       // Move the moduli.
@@ -406,7 +406,7 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   dimension_type x_num_columns = x.num_columns();
   s << x_num_rows << " x " << x_num_columns
     << std::endl;
-  if (x_num_rows && x_num_columns)
+  if (x_num_rows > 0 && x_num_columns > 0)
     for (dimension_type i = 0; i < x_num_rows; ++i)
       x[i].ascii_dump(s);
 }
@@ -458,7 +458,7 @@ PPL::Congruence_System::OK() const {
   if (!Dense_Matrix::OK())
     return false;
 
-  if (num_rows()) {
+  if (num_rows() > 0) {
     if (num_columns() < 2) {
 #ifndef NDEBUG
       std::cerr << "Congruence_System has rows and fewer than two columns."
