@@ -193,7 +193,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
     if (get_digit(c, 10) < 0)
       goto unexpected;
     char d;
-    if (c == '0' && is.get(d)) {
+    if (c == '0' && !is.get(d).fail()) {
       if (d == 'x' || d == 'X') {
         numer.base = 16;
         numer.base_for_exponent = 16;
@@ -309,7 +309,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
       goto ok;
     }
     is.get(c);
-  } while (is);
+  } while (!is.fail());
 
   if (empty_mantissa || is.bad())
     return V_CVT_STR_UNK;
