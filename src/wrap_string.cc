@@ -60,7 +60,7 @@ wrap_string(const std::string& src_string,
       else if (last_space >= 0)
 	split_pos = last_space;
       else {
-	for ( ; src[i]; ++i) {
+	for ( ; src[i] != 0; ++i) {
 	  if (src[i] == ',') {
 	    ++i;
 	    break;

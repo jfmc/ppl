@@ -314,13 +314,13 @@ wrap_assign(PSET& pointset,
 
     unsigned extension;
     Result res = assign_r(extension, quadrants, ROUND_IGNORE);
-    if (result_overflow(res) || extension > complexity_threshold)
+    if (result_overflow(res) != 0 || extension > complexity_threshold)
       goto set_full_range;
 
     if (!wrap_individually && !collective_wrap_too_complex) {
       res = mul_assign_r(collective_wrap_complexity,
                          collective_wrap_complexity, extension, ROUND_IGNORE);
-      if (result_overflow(res)
+      if (result_overflow(res) != 0
           || collective_wrap_complexity > complexity_threshold)
         collective_wrap_too_complex = true;
       if (collective_wrap_too_complex) {
