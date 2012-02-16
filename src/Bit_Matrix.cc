@@ -174,7 +174,7 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
       int bit;
       if (!(s >> bit))
 	return false;
-      if (bit)
+      if (bit != 0)
 	x[i].set(j);
       else
 	x[i].clear(j);
