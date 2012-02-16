@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_bool_nodef(name, value)		\
-  enum anonymous_enum_ ## name { PPL_U(name) = (value) }
+  enum const_bool_value_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -141,7 +141,7 @@ struct Compile_Time_Check<true> {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b>
 struct Bool {
-  enum anonymous_enum {
+  enum const_bool_value {
     value = b
   };
 };
@@ -207,7 +207,7 @@ struct Is_Same<T, T> : public True {
   template <typename T> struct D : public B<T>;
   \endcode
   Of course, we cannot test if, for some type variable <CODE>U</CODE>, we have
-  <CODE>Is_Same_Or_Derived<B<U>, Type>:: anonymous_enum:: value == true</CODE>.
+  <CODE>Is_Same_Or_Derived<B<U>, Type>:: const_bool_value:: value == true</CODE>.
   But we can do as follows:
   \code
   struct B_Base {
@@ -216,7 +216,7 @@ struct Is_Same<T, T> : public True {
   template <typename T> struct B : public B_Base;
   \endcode
   This enables us to inquire
-  <CODE>Is_Same_Or_Derived<B_Base, Type>:: anonymous_enum:: value</CODE>.
+  <CODE>Is_Same_Or_Derived<B_Base, Type>:: const_bool_value:: value</CODE>.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Base, typename Derived>
@@ -244,7 +244,7 @@ struct Is_Same_Or_Derived {
                          "architecture with sizeof(char) == sizeof(double)"
                          " (!?)");
 
-  enum anonymous_enum {
+  enum const_bool_value {
     /*!
       Assuming <CODE>sizeof(char) != sizeof(double)</CODE>, the C++
       overload resolution mechanism guarantees that <CODE>value</CODE>
