@@ -245,7 +245,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   if (indexes[hint] > key) {
     // The searched element is before `hint'.
 
-    while (1) {
+    while (true) {
 
       if (hint <= offset) {
         // The searched element is in (0,hint).
@@ -288,7 +288,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 
   } else {
     // The searched element is after `hint'.
-    while (1) {
+    while (true) {
 
       if (hint + offset > reserved_size) {
         // The searched element is in (hint,reserved_size+1).
@@ -446,7 +446,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   const dimension_type deleted_key = itr.index();
   tree_iterator deleted_node = itr;
   (*itr).~data_type();
-  while (1) {
+  while (true) {
     dimension_type& current_key  = itr.index();
     data_type&      current_data = *itr;
     if (itr.is_leaf())

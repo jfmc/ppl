@@ -152,24 +152,24 @@ extern unsigned int in_assert;
   do {                                                        \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
     wp__.end();                                               \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                                   \
   do {                                                                  \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
     wp__.end(factor);                                                   \
-  } while(0)
+  } while (false)
 #else
 #define WEIGHT_BEGIN()                          \
   do {                                          \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
     Weightwatch_Traits::weight += (delta);      \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
     Weightwatch_Traits::weight += (delta)*(factor);     \
-  } while(0)
+  } while (false)
 #endif
 #else
 #define WEIGHT_BEGIN()
@@ -177,12 +177,12 @@ extern unsigned int in_assert;
   do {                                          \
     if (!Implementation::in_assert)             \
       Weightwatch_Traits::weight += delta;      \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
     if (!Implementation::in_assert)                     \
       Weightwatch_Traits::weight += delta * factor;     \
-  } while(0)
+  } while (false)
 #endif
 
 //! User objects the PPL can throw.

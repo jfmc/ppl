@@ -64,7 +64,7 @@ site: http://bugseng.com/products/ppl/ . */
     PPL_ASSERT_IMPL_(cond__);                                     \
     PPL_ASSERT_IMPL_(old_weight__ == W_Traits::weight             \
                      && "PPL_ASSERT_HEAVY have to be used here"); \
-  } while(0)
+  } while (false)
 #endif // !defined(NDEBUG) && PPL_DEBUG_PPL_ASSERT
 
 
@@ -78,7 +78,7 @@ site: http://bugseng.com/products/ppl/ . */
     ++Parma_Polyhedra_Library::Implementation::in_assert;       \
     PPL_ASSERT_IMPL_(cond__);                                   \
     --Parma_Polyhedra_Library::Implementation::in_assert;	\
-  } while (0)
+  } while (false)
 #endif // !defined(NDEBUG)
 
 
