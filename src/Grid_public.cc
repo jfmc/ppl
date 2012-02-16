@@ -2629,13 +2629,11 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "con_sys")
     return false;
 
-  if (s >> str) {
-    if (str == "(up-to-date)")
-      set_congruences_up_to_date();
-    else if (str != "(not_up-to-date)")
-      return false;
-  }
-  else
+  if (!(s >> str))
+    return false;
+  if (str == "(up-to-date)")
+    set_congruences_up_to_date();
+  else if (str != "(not_up-to-date)")
     return false;
 
   if (!con_sys.ascii_load(s))
@@ -2644,13 +2642,11 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "gen_sys")
     return false;
 
-  if (s >> str) {
-    if (str == "(up-to-date)")
-      set_generators_up_to_date();
-    else if (str != "(not_up-to-date)")
-      return false;
-  }
-  else
+  if (!(s >> str))
+    return false;
+  if (str == "(up-to-date)")
+    set_generators_up_to_date();
+  else if (str != "(not_up-to-date)")
     return false;
 
   if (!gen_sys.ascii_load(s))

@@ -401,7 +401,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       ext_n = 0;
       ext_d = 1;
       included = true;
-      if (point)
+      if (point != 0)
 	*point = Generator::point();
       return true;
     }
@@ -424,7 +424,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     exact_div_assign(ext_d, ext_d, gcd);
 
     included = true;
-    if (point) {
+    if (point != 0) {
       Linear_Expression e;
       for (dimension_type i = space_dim; i-- > 0; )
 	e += gen.coefficient(Variable(i)) * Variable(i);
@@ -615,7 +615,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
 
-    if (first_point)
+    if (first_point != 0)
       lcm_assign(divisor, divisor, (*first_point).divisor());
     else {
       PPL_ASSERT(num_rows > 0);

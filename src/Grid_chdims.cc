@@ -340,7 +340,8 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
       dimension_type num_redundant = 0;
       const dimension_type num_old_gs = space_dim - new_dimension;
       for (dimension_type row = 0; row < num_old_gs; ++row)
-	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
+        if (dim_kinds[row] != GEN_VIRTUAL)
+          ++num_redundant;
       if (num_redundant > 0) {
 	// Chop zero rows from end of system, to keep minimal form.
 	gen_sys.remove_trailing_rows(num_redundant);
