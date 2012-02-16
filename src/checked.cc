@@ -396,7 +396,7 @@ input_mpq(mpq_class& to, std::istream& is) {
   is.clear(is.rdstate() & ~is.failbit);
   if (r != V_EQ)
     return r;
-  if (denom_struct.base && denom_struct.mantissa.empty())
+  if (denom_struct.base != 0 && denom_struct.mantissa.empty())
       return V_NAN;
   if (numer_struct.mantissa.empty()) {
     to = 0;
@@ -405,15 +405,15 @@ input_mpq(mpq_class& to, std::istream& is) {
   mpz_ptr numer = to.get_num().get_mpz_t();
   mpz_ptr denom = to.get_den().get_mpz_t();
   mpz_set_str(numer, numer_struct.mantissa.c_str(), numer_struct.base);
-  if (denom_struct.base) {
+  if (denom_struct.base != 0) {
     if (numer_struct.neg_mantissa != denom_struct.neg_mantissa)
       mpz_neg(numer, numer);
     mpz_set_str(denom, denom_struct.mantissa.c_str(), denom_struct.base);
-    if (numer_struct.exponent || denom_struct.exponent) {
+    if (numer_struct.exponent != 0 || denom_struct.exponent != 0) {
       // Multiply the exponents into the numerator and denominator.
       mpz_t z;
       mpz_init(z);
-      if (numer_struct.exponent) {
+      if (numer_struct.exponent != 0) {
         mpz_ui_pow_ui(z,
                       numer_struct.base_for_exponent, numer_struct.exponent);
         if (numer_struct.neg_exponent)
@@ -421,7 +421,7 @@ input_mpq(mpq_class& to, std::istream& is) {
         else
           mpz_mul(numer, numer, z);
       }
-      if (denom_struct.exponent) {
+      if (denom_struct.exponent != 0) {
         mpz_ui_pow_ui(z,
                       denom_struct.base_for_exponent, denom_struct.exponent);
         if (denom_struct.neg_exponent)
@@ -435,7 +435,7 @@ input_mpq(mpq_class& to, std::istream& is) {
   else {
     if (numer_struct.neg_mantissa)
       mpz_neg(numer, numer);
-    if (numer_struct.exponent) {
+    if (numer_struct.exponent != 0) {
       if (numer_struct.neg_exponent) {
         // Add the negative exponent as a denominator.
         mpz_ui_pow_ui(denom,
