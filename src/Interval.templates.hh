@@ -241,7 +241,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   do {
     if (!is.get(c))
       goto fail;
-  } while (isspace(c));
+  } while (is_space(c));
 
   // Get the opening parenthesis and handle the empty interval case.
   if (c == '(')
@@ -270,7 +270,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   do {
     if (!is.get(c))
       goto fail;
-  } while (isspace(c));
+  } while (is_space(c));
   if (c != ',')
     goto unexpected;
 
@@ -284,7 +284,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   do {
     if (!is.get(c))
       goto fail;
-  } while (isspace(c));
+  } while (is_space(c));
   if (c == ')')
     upper_open = true;
   else if (c != ']') {

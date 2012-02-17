@@ -26,6 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include <limits>
 #include <cassert>
+#include <cctype>
 
 namespace Parma_Polyhedra_Library {
 
@@ -118,6 +119,11 @@ external_memory_in_bytes(const mpq_class& x) {
 inline memory_size_type
 total_memory_in_bytes(const mpq_class& x) {
   return sizeof(x) + external_memory_in_bytes(x);
+}
+
+inline bool
+is_space(char c) {
+  return isspace(c) != 0;
 }
 
 } // namespace Parma_Polyhedra_Library

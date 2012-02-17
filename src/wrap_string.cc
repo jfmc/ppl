@@ -51,7 +51,7 @@ wrap_string(const std::string& src_string,
       }
       if (src[i] == ',' && i < line_length)
 	last_comma = i;
-      if (isspace(src[i]) && (i == 0 || !isspace(src[i-1])))
+      if (is_space(src[i]) && (i == 0 || !is_space(src[i-1])))
 	last_space = i;
     }
     if (split_pos < 0) {
@@ -65,7 +65,7 @@ wrap_string(const std::string& src_string,
 	    ++i;
 	    break;
 	  }
-	  if (isspace(src[i]))
+	  if (is_space(src[i]))
 	    break;
 	}
 	split_pos = i;
@@ -75,7 +75,7 @@ wrap_string(const std::string& src_string,
 	dst_string.append(indent_depth, ' ');
     dst_string.append(src, split_pos);
     src += split_pos;
-    if (isspace(*src))
+    if (is_space(*src))
       ++src;
     while (*src == ' ')
       ++src;

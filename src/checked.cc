@@ -147,7 +147,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
   do {
     if (!is.get(c))
       return V_CVT_STR_UNK;
-  } while (isspace(c));
+  } while (is_space(c));
   switch (c) {
   case '-':
     numer.neg_mantissa = true;

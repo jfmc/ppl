@@ -350,6 +350,9 @@ struct Recycle_Input {
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
 
+//! Returns <CODE>true</CODE> if \p c is any kind of space character.
+bool is_space(char c);
+
 template <typename T, long long v, typename Enable = void>
 struct Fit : public False {
 };
