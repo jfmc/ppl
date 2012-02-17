@@ -90,7 +90,7 @@ Powerset<D>::omega_reduce() const {
       xi = x.drop_disjunct(xi);
     else
       ++xi;
-    if (abandon_expensive_computations && xi != x.end()) {
+    if (abandon_expensive_computations != 0 && xi != x.end()) {
       // Hurry up!
       x.collapse(xi.base);
       break;

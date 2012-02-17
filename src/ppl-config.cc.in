@@ -241,7 +241,7 @@ void internal_error() {
 
 bool
 strcaseeq(const char* s1, const char* s2) {
-  while (*s1 && *s2
+  while (*s1 != 0 && *s2 != 0
 	 && tolower(static_cast<unsigned char>(*s1))
 	 == tolower(static_cast<unsigned char>(*s2))) {
     ++s1;
