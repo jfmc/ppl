@@ -1034,9 +1034,9 @@ PIP_Solution_Node::set_owner(const PIP_Problem* owner) {
 void
 PIP_Decision_Node::set_owner(const PIP_Problem* owner) {
   owner_ = owner;
-  if (false_child)
+  if (false_child != 0)
     false_child->set_owner(owner);
-  if (true_child)
+  if (true_child != 0)
     true_child->set_owner(owner);
 }
 
@@ -1048,8 +1048,8 @@ PIP_Solution_Node::check_ownership(const PIP_Problem* owner) const {
 bool
 PIP_Decision_Node::check_ownership(const PIP_Problem* owner) const {
   return get_owner() == owner
-    && (!false_child || false_child->check_ownership(owner))
-    && (!true_child || true_child->check_ownership(owner));
+    && (false_child == 0 || false_child->check_ownership(owner))
+    && (true_child == 0 || true_child->check_ownership(owner));
 }
 
 const PIP_Solution_Node*
@@ -1240,13 +1240,13 @@ PIP_Decision_Node::OK() const {
     return false;
 
   // Recursively check if child nodes are well-formed.
-  if (false_child && !false_child->OK())
+  if (false_child != 0 && !false_child->OK())
     return false;
-  if (true_child && !true_child->OK())
+  if (true_child != 0 && !true_child->OK())
     return false;
 
   // Decision nodes should always have a true child.
-  if (!true_child) {
+  if (true_child == 0) {
 #ifndef NDEBUG
     std::cerr << "PIP_Decision_Node with no 'true' child.\n";
 #endif
@@ -1254,9 +1254,9 @@ PIP_Decision_Node::OK() const {
   }
 
   // Decision nodes with a false child must have exactly one constraint.
-  if (false_child) {
-    dimension_type
-      dist = std::distance(constraints_.begin(), constraints_.end());
+  if (false_child != 0) {
+    dimension_type dist = std::distance(constraints_.begin(),
+                                        constraints_.end());
     if (dist != 1) {
 #ifndef NDEBUG
       std::cerr << "PIP_Decision_Node with a 'false' child has "
@@ -1283,7 +1283,7 @@ PIP_Decision_Node::update_tableau(
                              first_pending_constraint,
                              input_cs,
                              parameters);
-  if (false_child)
+  if (false_child != 0)
     false_child->update_tableau(pip,
                                 external_space_dim,
                                 first_pending_constraint,
@@ -3411,7 +3411,7 @@ PIP_Decision_Node::external_memory_in_bytes() const {
   memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
   PPL_ASSERT(true_child != 0);
   n += true_child->total_memory_in_bytes();
-  if (false_child)
+  if (false_child != 0)
     n += false_child->total_memory_in_bytes();
   return n;
 }
@@ -3522,7 +3522,7 @@ PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
 
   indent_and_print(s, indent, "else\n");
 
-  if (false_child)
+  if (false_child != 0)
     false_child->print_tree(s, indent+1, pip_dim_is_param,
                             child_first_art_dim);
   else

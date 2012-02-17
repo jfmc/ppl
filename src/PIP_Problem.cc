@@ -335,7 +335,7 @@ PPL::PIP_Problem::OK() const {
   if (!initial_context.OK())
     return false;
 
-  if (current_solution) {
+  if (current_solution != 0) {
     // Check well formedness of the solution tree.
     if (!current_solution->OK()) {
 #ifndef NDEBUG
@@ -708,7 +708,7 @@ PPL::memory_size_type
 PPL::PIP_Problem::external_memory_in_bytes() const {
   memory_size_type n = initial_context.external_memory_in_bytes();
   // Adding the external memory for `current_solution'.
-  if (current_solution)
+  if (current_solution != 0)
     n += current_solution->total_memory_in_bytes();
   // Adding the external memory for `input_cs'.
   n += input_cs.capacity() * sizeof(Constraint);
