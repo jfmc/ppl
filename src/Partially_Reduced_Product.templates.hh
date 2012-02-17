@@ -442,12 +442,17 @@ Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
       || str.substr(1) != "reduced")
     return false;
   reduced = (str[0] == yes);
-  return ((s >> str) && str == "Domain"
-          && (s >> str) && str == "1:"
-	  && d1.ascii_load(s)
-	  && (s >> str) && str == "Domain"
-	  && (s >> str) && str == "2:"
-	  && d2.ascii_load(s));
+  if (!(s >> str) || str != "Domain")
+    return false;
+  if (!(s >> str) || str != "1:")
+    return false;
+  if (!d1.ascii_load(s))
+    return false;
+  if (!(s >> str) || str != "Domain")
+    return false;
+  if (!(s >> str) || str != "2:")
+    return false;
+  return d2.ascii_load(s);
 }
 
 template <typename D1, typename D2>
