@@ -200,9 +200,10 @@ Linear_Form<C>::ascii_dump(std::ostream& s) const {
   using namespace IO_Operators;
   dimension_type space_dim = space_dimension();
   s << space_dim << "\n";
-  const char separator = ' ';
-  for (dimension_type i = 0; i <= space_dim; ++i)
+  for (dimension_type i = 0; i <= space_dim; ++i) {
+    const char separator = ' ';
     s << vec[i] << separator;
+  }
   s << "\n";
 }
 

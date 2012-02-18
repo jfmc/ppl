@@ -2364,7 +2364,6 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 
   // Here constraint c is non-trivial.
   PPL_ASSERT(last_k < c_space_dim);
-  Result r;
   Temp_Boundary_Type t_bound;
   Temp_Boundary_Type t_a;
   Temp_Boundary_Type t_x;
@@ -2374,6 +2373,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     int sgn_a_k = sgn(a_k);
     if (sgn_a_k == 0)
       continue;
+    Result r;
     if (sgn_a_k > 0) {
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
       if (open == T_NO)

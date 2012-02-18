@@ -32,9 +32,8 @@ unsigned long
 PPL::Bit_Row::first() const {
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
-  mp_size_t li = 0;
   mp_srcptr p = vec->_mp_d;
-  for (; li < vec_size; ++li, ++p) {
+  for (mp_size_t li = 0; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
       return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
