@@ -480,37 +480,37 @@ inline Result
 complement(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type, const T& x, const Info& info) {
   PPL_ASSERT(to_type != type);
-  bool shrink;
+  bool should_shrink;
   if (info.get_boundary_property(type, SPECIAL)) {
-    shrink = !special_is_open(type, x, info);
+    should_shrink = !special_is_open(type, x, info);
     if (type == LOWER)
-      return set_minus_infinity(to_type, to, to_info, shrink);
+      return set_minus_infinity(to_type, to, to_info, should_shrink);
     else
-      return set_plus_infinity(to_type, to, to_info, shrink);
+      return set_plus_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = !normal_is_open(type, x, info);
+  should_shrink = !normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+		|| (!should_shrink && (To_Info::store_open || to_info.has_restriction())));
   Result r = assign_r(to, x, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
 assign(Boundary_Type to_type, To& to, To_Info& to_info,
        Boundary_Type type, const T& x, const Info& info,
-       bool shrink = false) {
+       bool should_shrink = false) {
   PPL_ASSERT(to_type == type);
   if (info.get_boundary_property(type, SPECIAL)) {
-    shrink = shrink || special_is_open(type, x, info);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    should_shrink = should_shrink || special_is_open(type, x, info);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = shrink || normal_is_open(type, x, info);
+  should_shrink = should_shrink || normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open
+		|| (!should_shrink && (To_Info::store_open
                                 || to_info.has_restriction())));
   Result r = assign_r(to, x, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T, typename Info>
@@ -562,16 +562,16 @@ inline Result
 neg_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type, const T& x, const Info& info) {
   PPL_ASSERT(to_type != type);
-  bool shrink;
+  bool should_shrink;
   if (info.get_boundary_property(type, SPECIAL)) {
-    shrink = special_is_open(type, x, info);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    should_shrink = special_is_open(type, x, info);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type, x, info);
+  should_shrink = normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+		|| (!should_shrink && (To_Info::store_open || to_info.has_restriction())));
   Result r = neg_assign_r(to, x, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
@@ -580,25 +580,25 @@ add_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
   PPL_ASSERT(type1 == type2);
-  bool shrink;
+  bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1)
+    should_shrink = boundary_infinity_is_open(type1, info1)
       && !is_boundary_infinity_closed(type2, x2, info2);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2)
+    should_shrink = boundary_infinity_is_open(type2, info2)
       && !is_boundary_infinity_closed(type1, x1, info1);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type1, x1, info1)
+  should_shrink = normal_is_open(type1, x1, info1)
     || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open
+		|| (!should_shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
   // FIXME: extended handling is not needed
   Result r = add_assign_r(to, x1, x2, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
@@ -607,25 +607,25 @@ sub_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
   PPL_ASSERT(type1 != type2);
-  bool shrink;
+  bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1)
+    should_shrink = boundary_infinity_is_open(type1, info1)
       && !is_boundary_infinity_closed(type2, x2, info2);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2)
+    should_shrink = boundary_infinity_is_open(type2, info2)
       && !is_boundary_infinity_closed(type1, x1, info1);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type1, x1, info1)
+  should_shrink = normal_is_open(type1, x1, info1)
     || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open
+		|| (!should_shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
   // FIXME: extended handling is not needed
   Result r = sub_assign_r(to, x1, x2, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
@@ -633,35 +633,35 @@ inline Result
 mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
-  bool shrink;
+  bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1)
+    should_shrink = boundary_infinity_is_open(type1, info1)
       && !is_boundary_infinity_closed(type2, x2, info2);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2)
+    should_shrink = boundary_infinity_is_open(type2, info2)
       && !is_boundary_infinity_closed(type1, x1, info1);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type1, x1, info1)
+  should_shrink = normal_is_open(type1, x1, info1)
     || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open
+		|| (!should_shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
   PPL_ASSERT(x1 != Constant<0>::value && x2 != Constant<0>::value);
   // FIXME: extended handling is not needed
   Result r = mul_assign_r(to, x1, x2, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info>
 inline Result
-set_zero(Boundary_Type to_type, To& to, To_Info& to_info, bool shrink) {
+set_zero(Boundary_Type to_type, To& to, To_Info& to_info, bool should_shrink) {
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+		|| (!should_shrink && (To_Info::store_open || to_info.has_restriction())));
   Result r = assign_r(to, Constant<0>::value, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
@@ -669,20 +669,20 @@ inline Result
 mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
 	     Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
 	     Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
-  bool shrink;
+  bool should_shrink;
   if (x1s != 0) {
     if (x2s != 0)
       return mul_assign(to_type, to, to_info,
 			type1, x1, info1,
 			type2, x2, info2);
     else
-      shrink = info2.get_boundary_property(type2, OPEN);
+      should_shrink = info2.get_boundary_property(type2, OPEN);
   }
   else {
-    shrink = info1.get_boundary_property(type1, OPEN)
+    should_shrink = info1.get_boundary_property(type1, OPEN)
       && (x2s != 0 || info2.get_boundary_property(type2, OPEN));
   }
-  return set_zero(to_type, to, to_info, shrink);
+  return set_zero(to_type, to, to_info, should_shrink);
 }
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
@@ -690,24 +690,24 @@ inline Result
 div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
-  bool shrink;
+  bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
-    shrink = boundary_infinity_is_open(type1, info1);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    should_shrink = boundary_infinity_is_open(type1, info1);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
   else if (is_boundary_infinity(type2, x2, info2)) {
-    shrink = boundary_infinity_is_open(type2, info2);
-    return set_zero(to_type, to, to_info, shrink);
+    should_shrink = boundary_infinity_is_open(type2, info2);
+    return set_zero(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type1, x1, info1)
+  should_shrink = normal_is_open(type1, x1, info1)
     || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open
+		|| (!should_shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
   PPL_ASSERT(x1 != Constant<0>::value && x2 != Constant<0>::value);
   // FIXME: extended handling is not needed
   Result r = div_assign_r(to, x1, x2, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 
@@ -727,9 +727,9 @@ div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
     }
   }
   else {
-    bool shrink = info1.get_boundary_property(type1, OPEN)
+    bool should_shrink = info1.get_boundary_property(type1, OPEN)
       && !is_boundary_infinity_closed(type2, x2, info2);
-    return set_zero(to_type, to, to_info, shrink);
+    return set_zero(to_type, to, to_info, should_shrink);
   }
 }
 
@@ -739,16 +739,16 @@ umod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 		 Boundary_Type type, const T& x, const Info& info,
 		 unsigned int exp) {
   PPL_ASSERT(to_type == type);
-  bool shrink;
+  bool should_shrink;
   if (is_boundary_infinity(type, x, info)) {
-    shrink = boundary_infinity_is_open(type, info);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    should_shrink = boundary_infinity_is_open(type, info);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type, x, info);
+  should_shrink = normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+		|| (!should_shrink && (To_Info::store_open || to_info.has_restriction())));
   Result r = umod_2exp_assign_r(to, x, exp, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 template <typename To, typename To_Info, typename T, typename Info>
@@ -757,16 +757,16 @@ smod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 		 Boundary_Type type, const T& x, const Info& info,
 		 unsigned int exp) {
   PPL_ASSERT(to_type == type);
-  bool shrink;
+  bool should_shrink;
   if (is_boundary_infinity(type, x, info)) {
-    shrink = boundary_infinity_is_open(type, info);
-    return set_boundary_infinity(to_type, to, to_info, shrink);
+    should_shrink = boundary_infinity_is_open(type, info);
+    return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
-  shrink = normal_is_open(type, x, info);
+  should_shrink = normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+		|| (!should_shrink && (To_Info::store_open || to_info.has_restriction())));
   Result r = smod_2exp_assign_r(to, x, exp, round_dir_check(to_type, check));
-  return adjust_boundary(to_type, to, to_info, shrink, r);
+  return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 
 } // namespace Boundary_NS

@@ -177,10 +177,10 @@ PPL::PIP_Problem::solve() const {
           for (Variables_Set::const_iterator
                pi = param_begin; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
-              Coefficient_traits::const_reference x
+              Coefficient_traits::const_reference coeff_pi
                 = c.coefficient(Variable(*pi));
-              if (x != 0)
-                itr = row.insert(itr, i, x);
+              if (coeff_pi != 0)
+                itr = row.insert(itr, i, coeff_pi);
             } else
               break;
           }
