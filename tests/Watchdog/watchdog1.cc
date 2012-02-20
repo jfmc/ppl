@@ -38,7 +38,7 @@ test01() {
   try {
     bool ok;
     {
-      Watchdog::Watchdog w(csecs, do_interrupt);
+      Watchdog w(csecs, do_interrupt);
       nout << ((float) csecs)/100.0 << " seconds watchdog" << endl;
 
       nout << "starting iteration... " << std::flush;
