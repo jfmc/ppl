@@ -154,10 +154,10 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
     return V_NAN;
   if (inf) {
     if (Policy::has_infinity) {
-      int sign_inf = f.u.binary.inf_sign();
-      if (sign_inf < 0)
+      int sign = f.u.binary.inf_sign();
+      if (sign < 0)
         return V_EQ_MINUS_INFINITY;
-      if (sign_inf > 0)
+      if (sign > 0)
         return V_EQ_PLUS_INFINITY;
     }
     else

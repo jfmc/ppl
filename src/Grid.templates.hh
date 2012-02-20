@@ -270,7 +270,7 @@ Grid::reduce_reduced(M& sys,
 		     const dimension_type pivot_index,
 		     const dimension_type start,
 		     const dimension_type end,
-		     const Dimension_Kinds& sys_dim_kinds,
+		     const Dimension_Kinds& dim_kinds,
 		     const bool generators) {
   R& pivot = sys[pivot_index];
 
@@ -281,7 +281,7 @@ Grid::reduce_reduced(M& sys,
 
   PPL_DIRTY_TEMP_COEFFICIENT(pivot_dim_half);
   pivot_dim_half = (pivot_dim + 1) / 2;
-  Dimension_Kind row_kind = sys_dim_kinds[dim];
+  Dimension_Kind row_kind = dim_kinds[dim];
   Dimension_Kind line_or_equality, virtual_kind;
   int jump;
   if (generators) {
@@ -301,13 +301,13 @@ Grid::reduce_reduced(M& sys,
        row_index-- > 0;
        kinds_index += jump) {
     // Move over any virtual rows.
-    while (sys_dim_kinds[kinds_index] == virtual_kind)
+    while (dim_kinds[kinds_index] == virtual_kind)
       kinds_index += jump;
 
     // row_kind CONGRUENCE is included as PARAMETER
     if (row_kind == line_or_equality
 	|| (row_kind == PARAMETER
-	    && sys_dim_kinds[kinds_index] == PARAMETER)) {
+	    && dim_kinds[kinds_index] == PARAMETER)) {
       R& row = sys[row_index];
 
       const Coefficient& row_dim = row[dim];
