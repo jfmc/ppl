@@ -383,6 +383,10 @@ public:
       set_unbounded(UPPER, upper(), info());
       r = I_UNIVERSE | I_EXACT;
       break;
+    default:
+      PPL_UNREACHABLE;
+      r = I_EMPTY;
+      break;
     }
     PPL_ASSERT(OK());
     return r;
