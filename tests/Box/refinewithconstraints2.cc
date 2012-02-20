@@ -80,7 +80,7 @@ test01() {
     // refinement instance does not terminate: we use a watchdog timer.
     try {
       // Set a 0.1 seconds timeout.
-      Parma_Watchdog_Library::Watchdog
+      Parma_Polyhedra_Library::Watchdog
         w(10, abandon_expensive_computations, t);
 
       box.refine_with_constraints(cs);
@@ -397,7 +397,7 @@ test02() {
     // very slowly: we use a watchdog timer.
     try {
       // Set a 0.5 seconds timeout.
-      Parma_Watchdog_Library::Watchdog
+      Parma_Polyhedra_Library::Watchdog
         w(50, abandon_expensive_computations, t);
 
       box.refine_with_constraints(cs);

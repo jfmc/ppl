@@ -29,38 +29,30 @@ namespace Interfaces {
 
 namespace OCaml {
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher
+Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
 Weightwatch* p_deterministic_timeout_object = 0;
 
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 void
 reset_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 void
 reset_deterministic_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_deterministic_timeout_object) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 namespace {
@@ -1772,19 +1764,13 @@ extern "C"
 CAMLprim value
 ppl_set_timeout(value time) try {
   CAMLparam1(time);
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL OCaml interface usage error:\n"
-    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   // In case a timeout was already set.
   reset_timeout();
   unsigned cpp_time = value_to_unsigned<unsigned>(time);
   static timeout_exception e;
-  using Parma_Watchdog_Library::Watchdog;
+  using Parma_Polyhedra_Library::Watchdog;
   p_timeout_object = new Watchdog(cpp_time, abandon_expensive_computations, e);
   CAMLreturn(Val_unit);
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
@@ -1792,14 +1778,8 @@ extern "C"
 CAMLprim value
 ppl_reset_timeout(value unit) try {
   CAMLparam1(unit);
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL OCaml interface usage error:\n"
-    "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   reset_timeout();
   CAMLreturn(Val_unit);
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
@@ -1807,11 +1787,6 @@ extern "C"
 CAMLprim value
 ppl_set_deterministic_timeout(value weight) try {
   CAMLparam1(weight);
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL OCaml interface usage error:\n"
-    "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   // In case a timeout was already set.
   reset_deterministic_timeout();
   unsigned cpp_weight = value_to_unsigned<unsigned>(weight);
@@ -1819,7 +1794,6 @@ ppl_set_deterministic_timeout(value weight) try {
   p_deterministic_timeout_object
     = new Weightwatch(cpp_weight, abandon_expensive_computations, e);
   CAMLreturn(Val_unit);
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
@@ -1827,13 +1801,7 @@ extern "C"
 CAMLprim value
 ppl_reset_deterministic_timeout(value unit) try {
   CAMLparam1(unit);
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL OCaml interface usage error:\n"
-    "ppl_reset_deterministic_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   reset_deterministic_timeout();
   CAMLreturn(Val_unit);
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL

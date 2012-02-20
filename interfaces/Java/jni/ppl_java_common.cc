@@ -302,34 +302,26 @@ handle_exception(JNIEnv* env) {
   CHECK_RESULT_ABORT(env, ret == 0);
 }
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 Weightwatch* p_deterministic_timeout_object = 0;
 
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 void
 reset_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 void
 reset_deterministic_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_deterministic_timeout_object) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 jobject

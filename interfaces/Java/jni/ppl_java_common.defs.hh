@@ -27,10 +27,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-#include "pwl.hh"
-#endif
-
 #include <jni.h>
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
@@ -144,15 +140,13 @@ public:
   }
 };
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-extern Parma_Watchdog_Library::Watchdog* p_timeout_object;
+extern Parma_Polyhedra_Library::Watchdog* p_timeout_object;
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher
+Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
 extern Weightwatch* p_deterministic_timeout_object;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 void reset_timeout();
 

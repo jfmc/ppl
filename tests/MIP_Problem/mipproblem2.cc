@@ -125,7 +125,7 @@ bool test01() {
 
   try {
     // Set a 2 seconds timeout.
-    Parma_Watchdog_Library::Watchdog
+    Parma_Polyhedra_Library::Watchdog
       w(200, abandon_expensive_computations, t);
 
     pg = mip.optimizing_point();

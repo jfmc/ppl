@@ -25,9 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_ppl_ocaml_common_defs_hh 1
 
 #include "ppl.hh"
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-#include "pwl.hh"
-#endif
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 

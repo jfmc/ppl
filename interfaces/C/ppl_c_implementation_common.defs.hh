@@ -26,9 +26,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-#include "pwl.hh"
-#endif
 #include "ppl_c.h"
 #include <stdexcept>
 

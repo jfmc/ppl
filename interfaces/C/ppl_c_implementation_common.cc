@@ -94,38 +94,30 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
     user_error_handler(code, description);
 }
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher
+Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
 Weightwatch* p_deterministic_timeout_object = 0;
 
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 void
 reset_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 void
 reset_deterministic_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_deterministic_timeout_object) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 } // namespace C
@@ -250,63 +242,37 @@ CATCH_ALL
 
 int
 ppl_set_timeout(unsigned csecs) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  used(csecs);
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   // In case a timeout was already set.
   reset_timeout();
   static timeout_exception e;
-  using Parma_Watchdog_Library::Watchdog;
+  using Parma_Polyhedra_Library::Watchdog;
   p_timeout_object = new Watchdog(csecs, abandon_expensive_computations, e);
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
 int
 ppl_reset_timeout(void) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   reset_timeout();
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
 int
 ppl_set_deterministic_timeout(unsigned weight) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  used(weight);
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   // In case a deterministic timeout was already set.
   reset_deterministic_timeout();
   static timeout_exception e;
   p_deterministic_timeout_object
     = new Weightwatch(weight, abandon_expensive_computations, e);
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
 int
 ppl_reset_deterministic_timeout(void) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_reset_deterministic_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   reset_deterministic_timeout();
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
