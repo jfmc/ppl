@@ -39,8 +39,6 @@ TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 @extra_includes@ \

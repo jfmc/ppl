@@ -69,12 +69,6 @@ JAVACFLAGS = -classpath $(CLASSPATH)
 
 PPL_DLOPEN = -dlopen ../../../src/libppl.la
 
-if BUILD_WATCHDOG_LIBRARY
-
-PWL_DLOPEN = -dlopen ../../../Watchdog/src/libpwl.la
-
-endif BUILD_WATCHDOG_LIBRARY
-
 java_test_environment = \
 $(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(PWL_DLOPEN) \
 	$(JAVA) -classpath .:../ppl_java.jar \

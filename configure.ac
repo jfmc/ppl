@@ -24,7 +24,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.12pre6], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.12pre7], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -849,32 +849,6 @@ extra_includes="${extra_includes}${extra_includes:+ }${gmp_include_options}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_options}"
 
 enableval=yes
-AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
-AC_ARG_ENABLE(watchdog,
-  AS_HELP_STRING([--enable-watchdog],
-                 [build also the Parma Watchdog Library]))
-case "${enableval}" in
-yes)
-  build_watchdog_library=yes
-  ;;
-no)
-  build_watchdog_library=no
-  ;;
-*)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
-  ;;
-esac
-AC_MSG_RESULT($build_watchdog_library)
-AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
-if test x"$build_watchdog_library" = xyes
-then
-  AC_DEFINE(PPL_WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
-fi
-
-# Enabled or not, the Watchdog subdirectory must be configured.
-AC_CONFIG_SUBDIRS(Watchdog)
-
-enableval=yes
 AC_MSG_CHECKING([whether to build the ppl_lcdd program])
 AC_ARG_ENABLE(ppl_lcdd,
   AS_HELP_STRING([--enable-ppl_lcdd], [build the ppl_lcdd program]))
@@ -1561,6 +1535,12 @@ AC_CHECK_DECLS([getrusage, setrlimit],
 #endif
 ])
 
+AC_CHECK_DECLS([setitimer], [], [], [[
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+]])
+
 AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -1642,6 +1622,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Polyhedron/Makefile
                 tests/Powerset/Makefile
                 tests/Sparse_Matrix/Makefile
+                tests/Watchdog/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

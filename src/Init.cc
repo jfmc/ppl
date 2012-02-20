@@ -38,6 +38,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Polyhedron.defs.hh"
+#include "Watchdog.defs.hh"
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -157,6 +158,11 @@ PPL::Init::Init() {
     Grid_Generator_System::initialize();
     Polyhedron::initialize();
 
+#if PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+    // ... the Watchdog subsystem is initialized, ...
+    Watchdog::Watchdog::initialize();
+#endif // PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+
 #if PPL_CAN_CONTROL_FPU
 
     // ... and the FPU rounding direction is set.
@@ -186,6 +192,12 @@ PPL::Init::~Init() {
     // ... the FPU rounding direction is restored, ...
     fpu_set_rounding_direction(old_rounding_direction);
 #endif
+
+#if PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+    // ... the Watchdog subsystem is finalized, ...
+    Watchdog::Watchdog::finalize();
+#endif // PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+
     // ... the Polyhedron, Grid_Generator_System, Congruence_System,
     // Generator_System, Constraint_System, Grid_Generator,
     // Congruence, Generator and Constraint classes are finalized

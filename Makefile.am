@@ -24,7 +24,7 @@
 # Tell aclocal where to find `.m4' files.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = . utils src Watchdog tests interfaces demos doc m4
+SUBDIRS = . utils src tests interfaces demos doc m4
 
 dist_noinst_SCRIPTS = \
 configure
@@ -42,7 +42,7 @@ ppl-config.h.in: config.h.in $(srcdir)/ppl-config.sed
 	$(SED) -f $(srcdir)/ppl-config.sed $< >$@
 
 DISTCHECK_CONFIGURE_FLAGS = \
---enable-shared --enable-watchdog
+--enable-shared
 
 # Kludge: we need to force building `ppl-config.h' on `make dist',
 # hence we list it in `EXTRA_DIST';  but we do not want to distribute

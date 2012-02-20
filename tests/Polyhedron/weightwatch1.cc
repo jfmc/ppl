@@ -22,13 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
-#include "pwl.hh"
 #include <stdexcept>
 
 namespace {
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher<Weightwatch_Traits> Weightwatch;
+Parma_Polyhedra_Library::Threshold_Watcher<Weightwatch_Traits> Weightwatch;
 
 class Deterministic_Timeout
   : virtual public std::exception,

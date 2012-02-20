@@ -35,7 +35,7 @@ CHECKER =
 endif !VALGRIND_TESTS_ENABLED
 
 TESTS_ENVIRONMENT = \
-	$(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(PWL_DLOPEN) $(CHECKER)
+	$(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(CHECKER)
 
 interface_generator_files = \
 ppl_interface_generator_ocaml_test_ml.m4 \
@@ -74,25 +74,13 @@ if ENABLE_SHARED
 
 BUILT_PPL_FLAGS = -cclib $(top_builddir)/src/.libs/libppl$(SHREXT)
 
-if BUILD_WATCHDOG_LIBRARY
-BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl$(SHREXT)
-endif BUILD_WATCHDOG_LIBRARY
-
 else !ENABLE_SHARED
 
 BUILT_PPL_FLAGS = -cclib $(top_builddir)/src/.libs/libppl.$(LIBEXT)
 
-if BUILD_WATCHDOG_LIBRARY
-BUILT_PWL_FLAGS = -cclib $(top_builddir)/Watchdog/src/.libs/libpwl.$(LIBEXT)
-endif BUILD_WATCHDOG_LIBRARY
-
 endif !ENABLE_SHARED
 
 PPL_DLOPEN = -dlopen ../../../src/libppl.la
-
-if BUILD_WATCHDOG_LIBRARY
-PWL_DLOPEN = -dlopen ../../../Watchdog/src/libpwl.la
-endif BUILD_WATCHDOG_LIBRARY
 
 .ml.cmo:
 	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
@@ -125,7 +113,7 @@ test1_SOURCES = test1.ml
 test1$(EXEEXT): test1.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) $(OCAMLC) -o $@ \
 		-cc "$(CXX)" $(OCAMLC_COMPILE_FLAGS) \
-		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
 test1_opt_SOURCES = test1.ml
@@ -133,7 +121,7 @@ test1_opt_SOURCES = test1.ml
 test1_opt$(EXEEXT): test1.cmx ../ppl_ocaml.cmxa
 	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 
@@ -151,14 +139,14 @@ ppl_ocaml_generated_test$(EXEEXT): \
 ppl_ocaml_generated_test.cmo ../ppl_ocaml.cma
 	$(OCAMLC_ENV) $(OCAMLC) -o $@ \
 		-cc "$(CXX)" $(OCAMLC_COMPILE_FLAGS) \
-		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLC_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(OCAMLC_LINK_FLAGS) \
 		ppl_ocaml.cma $<
 
 ppl_ocaml_generated_test_opt$(EXEEXT): \
 ppl_ocaml_generated_test.cmx ../ppl_ocaml.cmxa
 	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ \
 		-cc "$(CXX)" $(OCAMLOPT_COMPILE_FLAGS) \
-		$(BUILT_PPL_FLAGS) $(BUILT_PWL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
+		$(BUILT_PPL_FLAGS) $(OCAMLOPT_LINK_FLAGS) \
 		ppl_ocaml.cmxa $<
 
 MOSTLYCLEANFILES = \

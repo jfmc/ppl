@@ -43,6 +43,9 @@ o  When the `--check' option is used, the input data for demo ppl_lpsol
 o  The input routine for PPL numeric datatypes has been extended to
    accept the ISO9899 (C99) hexadecimal floating constant syntax.
 
+o  The Parma Watchdog Library has been merged into the
+   Parma Polyhedra Library.
+
 
 Bugfixes
 ========

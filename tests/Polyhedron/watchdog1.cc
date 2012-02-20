@@ -22,7 +22,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
-#include "pwl.hh"
 #include "timings.hh"
 
 namespace {
@@ -65,7 +64,7 @@ Timeout t;
 bool
 timed_compute_open_hypercube_generators(dimension_type dimension, int csecs) {
   try {
-    Parma_Watchdog_Library::Watchdog
+    Parma_Polyhedra_Library::Watchdog
       w(csecs, abandon_expensive_computations, t);
 
     start_clock();
@@ -81,14 +80,14 @@ timed_compute_open_hypercube_generators(dimension_type dimension, int csecs) {
     nout << " s" << endl;
     return false;
   }
-#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+#if !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   // If Watchdog objects are not supported, an std::logic_error exception
   // will be thrown: this is normal.
   catch (const std::logic_error& e) {
   nout << "std::logic_error exception caught: \n" << e.what() << std::endl;
   exit(0);
 }
-#endif // !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+#endif // !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   catch (const std::exception& e) {
     nout << "unexpected std::exception caught: \n" << e.what() << endl;
     exit(1);

@@ -184,6 +184,3 @@ $(top_builddir)/tests/libppl_tests.a:
 
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

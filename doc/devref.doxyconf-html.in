@@ -387,6 +387,37 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_Form.templates.hh \
                          @srcdir@/../src/Linear_Form.cc \
                          @srcdir@/../src/linearize.hh \
+                         @srcdir@/../src/Doubly_Linked_Object.types.hh \
+                         @srcdir@/../src/Doubly_Linked_Object.defs.hh \
+                         @srcdir@/../src/Doubly_Linked_Object.inlines.hh \
+                         @srcdir@/../src/EList.types.hh \
+                         @srcdir@/../src/EList.defs.hh \
+                         @srcdir@/../src/EList.inlines.hh \
+                         @srcdir@/../src/EList_Iterator.types.hh \
+                         @srcdir@/../src/EList_Iterator.defs.hh \
+                         @srcdir@/../src/EList_Iterator.inlines.hh \
+                         @srcdir@/../src/Handler.types.hh \
+                         @srcdir@/../src/Handler.defs.hh \
+                         @srcdir@/../src/Handler.inlines.hh \
+                         @srcdir@/../src/Pending_Element.types.hh \
+                         @srcdir@/../src/Pending_Element.defs.hh \
+                         @srcdir@/../src/Pending_Element.inlines.hh \
+                         @srcdir@/../src/Pending_List.types.hh \
+                         @srcdir@/../src/Pending_List.defs.hh \
+                         @srcdir@/../src/Pending_List.inlines.hh \
+                         @srcdir@/../src/Threshold_Watcher.types.hh \
+                         @srcdir@/../src/Threshold_Watcher.defs.hh \
+                         @srcdir@/../src/Threshold_Watcher.inlines.hh \
+                         @srcdir@/../src/Threshold_Watcher.templates.hh \
+                         @srcdir@/../src/Threshold_Watcher.cc \
+                         @srcdir@/../src/Time.types.hh \
+                         @srcdir@/../src/Time.defs.hh \
+                         @srcdir@/../src/Time.inlines.hh \
+                         @srcdir@/../src/Time.cc \
+                         @srcdir@/../src/Watchdog.types.hh \
+                         @srcdir@/../src/Watchdog.defs.hh \
+                         @srcdir@/../src/Watchdog.inlines.hh \
+                         @srcdir@/../src/Watchdog.cc \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8

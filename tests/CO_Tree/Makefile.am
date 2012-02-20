@@ -66,7 +66,6 @@ cotree1_SOURCES = cotree1.cc
 
 check_PROGRAMS = \
 $(TESTS) \
-$(WATCHDOG_TESTS) \
 $(BUGS)
 
 $(top_builddir)/utils/libppl_utils.a:

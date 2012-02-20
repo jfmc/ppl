@@ -410,7 +410,36 @@ Division_Floating_Point_Expression.inlines.hh \
 Division_Floating_Point_Expression.templates.hh \
 Opposite_Floating_Point_Expression.types.hh \
 Opposite_Floating_Point_Expression.defs.hh \
-Opposite_Floating_Point_Expression.inlines.hh
+Opposite_Floating_Point_Expression.inlines.hh \
+Doubly_Linked_Object.types.hh \
+EList.types.hh \
+EList_Iterator.types.hh \
+Handler.types.hh \
+Pending_Element.types.hh \
+Pending_List.types.hh \
+Time.types.hh \
+Watchdog.types.hh \
+Threshold_Watcher.types.hh \
+Handler.defs.hh \
+Handler.inlines.hh \
+Time.defs.hh \
+Time.inlines.hh \
+Doubly_Linked_Object.defs.hh \
+Doubly_Linked_Object.inlines.hh \
+EList_Iterator.defs.hh \
+EList_Iterator.inlines.hh \
+EList.defs.hh \
+EList.inlines.hh \
+Pending_Element.defs.hh \
+Pending_Element.inlines.hh \
+Pending_List.defs.hh \
+Pending_List.inlines.hh \
+Pending_List.templates.hh \
+Watchdog.defs.hh \
+Watchdog.inlines.hh \
+Threshold_Watcher.defs.hh \
+Threshold_Watcher.inlines.hh \
+Threshold_Watcher.templates.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -502,7 +531,10 @@ $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.templates.hh \
 termination.cc \
-wrap_string.cc
+wrap_string.cc \
+Time.cc \
+Watchdog.cc \
+Threshold_Watcher.cc
 #Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED

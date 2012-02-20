@@ -149,16 +149,8 @@ ppl_ocaml_Constraints_Product_NNC_Polyhedron_Grid.cc \
 ppl_ocaml_Constraints_Product_Grid_C_Polyhedron.cc \
 ppl_ocaml_Constraints_Product_Grid_NNC_Polyhedron.cc
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-
-endif BUILD_WATCHDOG_LIBRARY
-
 libppl_ocaml_a_LIBADD = \
-@required_instantiations_ocaml_cxx_objects@ \
-$(WATCHDOG_LIBRARY)
+@required_instantiations_ocaml_cxx_objects@
 
 libppl_ocaml_a_DEPENDENCIES = \
 @required_instantiations_ocaml_cxx_objects@
@@ -181,7 +173,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 interface_generator_dependencies = \

@@ -37,6 +37,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include "version.hh"
 #include "ppl_include_files.hh"
 
+//! Defined to 1 if PPL::Watchdog objects are supported, to 0 otherwise.
+#define PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED \
+  (PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION)
+
 #undef PPL_SPECIALIZE_ABS
 #undef PPL_SPECIALIZE_ADD
 #undef PPL_SPECIALIZE_ADD_MUL

@@ -55,6 +55,7 @@ TESTS = \
 ascii_dump_load1 \
 exceptions1 \
 mipproblem1 \
+mipproblem2 \
 mipproblem3 \
 mipproblem4
 
@@ -72,30 +73,17 @@ exceptions1_SOURCES = exceptions1.cc
 
 mipproblem1_SOURCES = mipproblem1.cc
 
-mipproblem2_SRCS = mipproblem2.cc
+mipproblem2_SOURCES = mipproblem2.cc
 
 mipproblem3_SOURCES = mipproblem3.cc
 
 mipproblem4_SOURCES = mipproblem4.cc
 
-if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS = mipproblem2
-
-mipproblem2_SOURCES = $(mipproblem2_SRCS)
-mipproblem2_CPPFLAGS = \
-$(AM_CPPFLAGS) \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src
-mipproblem2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
-
-endif BUILD_WATCHDOG_LIBRARY
-
 check_PROGRAMS = \
 $(TESTS) \
-$(WATCHDOG_TESTS) \
 $(BUGS)
 
-EXTRA_DIST = $(mipproblem2_SRCS)
+EXTRA_DIST =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
@@ -108,6 +96,3 @@ $(top_builddir)/tests/libppl_tests.a:
 
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la
