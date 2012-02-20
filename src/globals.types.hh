@@ -39,13 +39,13 @@ enum Degenerate_Element {
 // This must be kept in sync with Result
 enum Relation_Symbol {
   //! \hideinitializer Equal to.
-  EQUAL = 1,
+  EQUAL = 1U,
   //! \hideinitializer Less than.
-  LESS_THAN = 2,
+  LESS_THAN = 2U,
   //! \hideinitializer Less than or equal to.
   LESS_OR_EQUAL = LESS_THAN | EQUAL,
   //! \hideinitializer Greater than.
-  GREATER_THAN = 4,
+  GREATER_THAN = 4U,
   //! \hideinitializer Greater than or equal to.
   GREATER_OR_EQUAL = GREATER_THAN | EQUAL,
   //! \hideinitializer Not equal to.
