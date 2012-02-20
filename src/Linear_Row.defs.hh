@@ -187,7 +187,7 @@ public:
   private:
     //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
-    
+
     //! Constructor from a Dense_Row::Flags object.
     explicit Flags(Dense_Row::Flags flags);
 

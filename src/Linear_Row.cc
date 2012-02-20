@@ -152,14 +152,14 @@ const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 void
 PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
-  s << (test_bits(1 << Flags::rpi_validity_bit) ? '+' : '-')
+  s << (test_bits(1U << Flags::rpi_validity_bit) ? '+' : '-')
     << rpi_valid << ' '
-    << (test_bits(1 << Flags::rpi_bit) ? '+' : '-')
+    << (test_bits(1U << Flags::rpi_bit) ? '+' : '-')
     << is_rpi << ' '
     << ' '
-    << (test_bits(1 << Flags::nnc_validity_bit) ? '+' : '-')
+    << (test_bits(1U << Flags::nnc_validity_bit) ? '+' : '-')
     << nnc_valid << ' '
-    << (test_bits(1 << Flags::nnc_bit) ? '+' : '-')
+    << (test_bits(1U << Flags::nnc_bit) ? '+' : '-')
     << is_nnc;
 }
 
@@ -176,7 +176,7 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
     if (!(s >> str))
       return false;
     if (str[0] == '+')
-      set_bits(1 << (Dense_Row::Flags::first_free_bit + bit));
+      set_bits(1U << (Dense_Row::Flags::first_free_bit + bit));
     else if (str[0] != '-')
       return false;
     if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)

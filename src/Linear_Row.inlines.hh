@@ -43,75 +43,76 @@ Linear_Row::Flags::Flags(Dense_Row::Flags f)
 
 inline
 Linear_Row::Flags::Flags(const Topology t)
-  : Dense_Row::Flags(t << nnc_bit) {
+  : Dense_Row::Flags(static_cast<unsigned>(t) << nnc_bit) {
 #ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
+  set_bits(1U << nnc_validity_bit);
 #endif
 }
 
 inline
 Linear_Row::Flags::Flags(const Topology t, const Kind k)
-  : Dense_Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
+  : Dense_Row::Flags((static_cast<unsigned>(k) << rpi_bit)
+                     | (static_cast<unsigned>(t) << nnc_bit)) {
 #ifndef NDEBUG
-  set_bits((1 << rpi_validity_bit)
-	   | (1 << nnc_validity_bit));
+  set_bits((1U << rpi_validity_bit) | (1U << nnc_validity_bit));
 #endif
 }
 
 inline bool
 Linear_Row::Flags::is_ray_or_point_or_inequality() const {
-  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
-  return test_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+  PPL_ASSERT(test_bits(1U << rpi_validity_bit));
+  return
+    test_bits(static_cast<unsigned>(RAY_OR_POINT_OR_INEQUALITY) << rpi_bit);
 }
 
 inline void
 Linear_Row::Flags::set_is_ray_or_point_or_inequality() {
 #ifndef NDEBUG
-  set_bits(1 << rpi_validity_bit);
+  set_bits(1U << rpi_validity_bit);
 #endif
-  set_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+  set_bits(static_cast<unsigned>(RAY_OR_POINT_OR_INEQUALITY) << rpi_bit);
 }
 
 inline bool
 Linear_Row::Flags::is_line_or_equality() const {
-  PPL_ASSERT(test_bits(1 << rpi_validity_bit));
+  PPL_ASSERT(test_bits(1U << rpi_validity_bit));
   return !is_ray_or_point_or_inequality();
 }
 
 inline void
 Linear_Row::Flags::set_is_line_or_equality() {
 #ifndef NDEBUG
-  set_bits(1 << rpi_validity_bit);
+  set_bits(1U << rpi_validity_bit);
 #endif
-  reset_bits(RAY_OR_POINT_OR_INEQUALITY << rpi_bit);
+  reset_bits(static_cast<unsigned>(RAY_OR_POINT_OR_INEQUALITY) << rpi_bit);
 }
 
 inline bool
 Linear_Row::Flags::is_not_necessarily_closed() const {
-  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
-  return test_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+  PPL_ASSERT(test_bits(1U << nnc_validity_bit));
+  return test_bits(static_cast<unsigned>(NOT_NECESSARILY_CLOSED) << nnc_bit);
 }
 
 inline bool
 Linear_Row::Flags::is_necessarily_closed() const {
-  PPL_ASSERT(test_bits(1 << nnc_validity_bit));
+  PPL_ASSERT(test_bits(1U << nnc_validity_bit));
   return !is_not_necessarily_closed();
 }
 
 inline void
 Linear_Row::Flags::set_not_necessarily_closed() {
 #ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
+  set_bits(1U << nnc_validity_bit);
 #endif
-  set_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+  set_bits(static_cast<unsigned>(NOT_NECESSARILY_CLOSED) << nnc_bit);
 }
 
 inline void
 Linear_Row::Flags::set_necessarily_closed() {
 #ifndef NDEBUG
-  set_bits(1 << nnc_validity_bit);
+  set_bits(1U << nnc_validity_bit);
 #endif
-  reset_bits(NOT_NECESSARILY_CLOSED << nnc_bit);
+  reset_bits(static_cast<unsigned>(NOT_NECESSARILY_CLOSED) << nnc_bit);
 }
 
 inline Topology
