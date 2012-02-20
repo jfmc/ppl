@@ -41,7 +41,8 @@ enum Ternary { T_YES, T_NO, T_MAYBE };
 
 inline I_Result
 combine(Result l, Result u) {
-  return static_cast<I_Result>(l | (u << 6));
+  unsigned res = static_cast<unsigned>(l) | (static_cast<unsigned>(u) << 6);
+  return static_cast<I_Result>(res);
 }
 
 struct Interval_Base {

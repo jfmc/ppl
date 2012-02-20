@@ -59,7 +59,7 @@ struct float_ieee754_half {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 5;
   static const unsigned int MANTISSA_BITS = 10;
-  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -92,7 +92,7 @@ struct float_ieee754_single {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 8;
   static const unsigned int MANTISSA_BITS = 23;
-  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -138,7 +138,7 @@ struct float_ieee754_double {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 11;
   static const unsigned int MANTISSA_BITS = 52;
-  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -171,7 +171,7 @@ struct float_ibm_single {
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 24;
   static const int EXPONENT_BIAS = 64;
-  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
@@ -222,7 +222,7 @@ struct float_intel_double_extended {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 63;
-  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -263,7 +263,7 @@ struct float_ieee754_quad {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 112;
-  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN

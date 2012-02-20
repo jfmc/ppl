@@ -33,13 +33,13 @@ namespace Parma_Polyhedra_Library {
 
 enum I_Result {
   //! The resulting set may be empty
-  I_EMPTY = 1,
+  I_EMPTY = 1U,
   //! The resulting set may have only one value
-  I_SINGLETON = 2,
+  I_SINGLETON = 2U,
   //! The resulting set may have more than one value and to be not the domain universe
-  I_SOME = 4,
+  I_SOME = 4U,
   //! The resulting set may be the domain universe
-  I_UNIVERSE = 8,
+  I_UNIVERSE = 8U,
   //! The resulting set is not empty
   I_NOT_EMPTY = I_SINGLETON | I_SOME | I_UNIVERSE,
   //! The resulting set may be empty or not empty

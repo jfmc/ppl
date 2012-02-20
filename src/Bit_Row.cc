@@ -140,7 +140,7 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
     return false;
 
   mp_limb_t limb = *(vec->_mp_d + i);
-  return ((limb >> (k % GMP_NUMB_BITS)) & 1) != 0;
+  return ((limb >> (k % GMP_NUMB_BITS)) & 1U) != 0;
 }
 
 void
