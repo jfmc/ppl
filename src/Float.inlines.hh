@@ -470,7 +470,7 @@ is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
 inline unsigned int
 msb_position(unsigned long long v) {
   PPL_ASSERT(v != 0);
-  return __builtin_clzll(v) ^ (sizeof(v)*8 - 1);
+  return static_cast<unsigned>(__builtin_clzll(v)) ^ (sizeof(v)*8 - 1);
 }
 #else
 unsigned int
