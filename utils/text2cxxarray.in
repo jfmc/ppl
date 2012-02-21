@@ -53,12 +53,8 @@ GetOptions(
 	'help|h'    => \&usage,
 ) || usage();
 
-@lines = <>;
-
-my $size = 1;
-foreach (@lines) {
-    $size = $size+1;
-}
+my @lines = <>;
+my $size = @lines + 1;
 
 print "extern const char* const $array_name" . "[$size]";
 
