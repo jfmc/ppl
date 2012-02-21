@@ -23,6 +23,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl.hh"
+#include "BUGS.hh"
+#include "COPYING.hh"
+#include "CREDITS.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -712,20 +715,14 @@ main(int argc, char* argv[]) try {
   if (required_license)
     portray("LICENSE", PPL_LICENSE);
 
-  if (required_copying) {
-    extern const char* const COPYING_array[];
+  if (required_copying)
     portray("COPYING", COPYING_array);
-  }
 
-  if (required_bugs) {
-    extern const char* const BUGS_array[];
+  if (required_bugs)
     portray("BUGS", BUGS_array);
-  }
 
-  if (required_credits) {
-    extern const char* const CREDITS_array[];
+  if (required_credits)
     portray("CREDITS", CREDITS_array);
-  }
 
   return 0;
 }

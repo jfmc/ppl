@@ -577,12 +577,21 @@ ppl.hh:	$(top_builddir)/ppl-config.h $(top_builddir)/src/version.hh ppl_header.h
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 
+BUGS.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	$(top_builddir)/utils/text2cxxarray --name=BUGS_array --decl-only \
+		$(top_srcdir)/BUGS >$@
 BUGS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
 	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
 		$(top_srcdir)/BUGS >$@
+COPYING.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	$(top_builddir)/utils/text2cxxarray --name=COPYING_array --decl-only \
+		$(top_srcdir)/COPYING >$@
 COPYING.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
 	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
 		$(top_srcdir)/COPYING >$@
+CREDITS.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array --decl-only \
+		$(top_srcdir)/CREDITS >$@
 CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
 		$(top_srcdir)/CREDITS >$@
@@ -604,9 +613,15 @@ ppl.hh:	ppl.hh.dist ppl.hh.sed
 	$(SED) -f ppl.hh.sed $< >$@
 	rm -f ppl.hh.sed
 
+BUGS.hh:	BUGS.hh.dist
+	cp -f $< $@
 BUGS.cc:	BUGS.cc.dist
 	cp -f $< $@
+COPYING.hh:	COPYING.hh.dist
+	cp -f $< $@
 COPYING.cc:	COPYING.cc.dist
+	cp -f $< $@
+CREDITS.hh:	CREDITS.hh.dist
 	cp -f $< $@
 CREDITS.cc:	CREDITS.cc.dist
 	cp -f $< $@
@@ -631,8 +646,11 @@ $(include_HEADERS) \
 $(nodist_noinst_HEADERS) \
 $(noinst_HEADERS) \
 $(PRECOMPILED) \
+BUGS.hh \
 BUGS.cc \
+COPYING.hh \
 COPYING.cc \
+CREDITS.hh \
 CREDITS.cc
 
 # ppl.hh is not distributed.
@@ -640,8 +658,11 @@ CREDITS.cc
 # likewise for BUGS.cc.dist, COPYING.cc.dist and CREDITS.cc.dist.
 dist-hook:
 	mv -f $(distdir)/ppl.hh $(distdir)/ppl.hh.dist
+	mv -f $(distdir)/BUGS.hh $(distdir)/BUGS.hh.dist
 	mv -f $(distdir)/BUGS.cc $(distdir)/BUGS.cc.dist
+	mv -f $(distdir)/COPYING.hh $(distdir)/COPYING.hh.dist
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
+	mv -f $(distdir)/CREDITS.hh $(distdir)/CREDITS.hh.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
 CLEANFILES = $(BUILT_SOURCES)
