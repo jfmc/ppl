@@ -38,25 +38,40 @@ Usage: text2cxxarray [OPTIONS] [FILE ...]
 
   [OPTIONS]
     --name=NAME               Use NAME as the array name.
+    --definition              Emit a defining declaration.
     -h, --help                Display this help message.
 EOF
         exit 1;
 }
 
 my $array_name = "a";
+my $decl_only = 0;
 
 GetOptions(
-	'name=s' => \$array_name,
-	'help|h' => \&usage,
+	'name=s'    => \$array_name,
+	'decl-only' => \$decl_only,
+	'help|h'    => \&usage,
 ) || usage();
 
-print "extern const char* const $array_name" . "[] = {\n";
-while (<>) {
-    chop;
-    s/\\/\\\\/g;
-    s/\t/\\t/g;
-    s/\"/\\"/g;
-    print "  \"$_\",\n";
+@lines = <>;
+
+my $size = 1;
+foreach (@lines) {
+    $size = $size+1;
 }
-print "  0";
-print "};\n";
+
+print "extern const char* const $array_name" . "[$size]";
+
+if (! $decl_only) {
+    print " = {\n";
+    foreach (@lines) {
+        chop;
+        s/\\/\\\\/g;
+        s/\t/\\t/g;
+        s/\"/\\"/g;
+        print "  \"$_\",\n";
+    }
+    print "  0";
+    print "}";
+}
+print ";\n";
