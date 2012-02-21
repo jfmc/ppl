@@ -520,8 +520,8 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
   bool max_included;
   PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
   PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
-  bool min_included;
   if (d2.maximize(e, max_numer, max_denom, max_included)) {
+    bool min_included;
     if (d2.minimize(e, min_numer, min_denom, min_included)) {
       // Adjust values to allow for the denominators max_denom and min_denom.
       max_numer *= min_denom;

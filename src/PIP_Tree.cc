@@ -134,12 +134,11 @@ merge_assign(Matrix& x, const Constraint_System& y,
     Coefficient_traits::const_reference inhomogeneous_term
       = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj = param_begin;
-    dimension_type j = 1;
     Row::iterator itr = x_i.end();
     if (inhomogeneous_term != 0)
       itr = x_i.insert(0, inhomogeneous_term);
     // itr may still be end() but it can still be used as a hint.
-    for ( ; pj != param_end; ++pj, ++j) {
+    for ( dimension_type j = 1; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
         break;
@@ -1134,13 +1133,12 @@ PIP_Tree_Node
     // Needed to avoid reallocations in expr when iterating upward.
     add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
     // The number of increments of j plus one.
-    dimension_type j_index = 1;
     Row::const_iterator i = row.begin();
     Row::const_iterator i_end = row.end();
     if (i != i_end && i.index() == 0)
       ++i;
     // NOTE: iterating in [1..num_params].
-    for ( ; i != i_end; ++i) {
+    for (dimension_type j_index = 1; i != i_end; ++i) {
       PPL_ASSERT(i.index() <= parameters.size());
       std::advance(j, i.index() - j_index);
       j_index = i.index();
@@ -3178,10 +3176,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 
   // Column index of already existing Artificial_Parameter.
   dimension_type ap_column = not_a_dimension();
-  bool reuse_ap = false;
 
   if (generate_parametric_cut) {
     // Fractional parameter coefficient found: generate parametric cut.
+    bool reuse_ap = false;
     Linear_Expression expr;
 
     // Limiting the scope of reference row_t (may be later invalidated).
@@ -3202,8 +3200,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         // To avoid reallocations of expr.
         add_mul_assign(expr, 0, Variable(*(parameters.rbegin())));
         Variables_Set::const_iterator p_j = parameters.begin();
-        dimension_type last_index = 1;
-        for ( ; j != j_end; ++j) {
+        for ( dimension_type last_index = 1; j != j_end; ++j) {
           pos_mod_assign(mod, *j, denom);
           if (mod != 0) {
             // Optimizing computation: expr += (denom - mod) * Variable(*p_j);
