@@ -619,16 +619,16 @@ main(int argc, char* argv[]) try {
     portray("VERSION", PPL_VERSION);
 
   if (required_version_major)
-    portray("VERSION_MAJOR", long(PPL_VERSION_MAJOR));
+    portray("VERSION_MAJOR", static_cast<long>(PPL_VERSION_MAJOR));
 
   if (required_version_minor)
-    portray("VERSION_MINOR", long(PPL_VERSION_MINOR));
+    portray("VERSION_MINOR", static_cast<long>(PPL_VERSION_MINOR));
 
   if (required_version_revision)
-    portray("VERSION_REVISION", long(PPL_VERSION_REVISION));
+    portray("VERSION_REVISION", static_cast<long>(PPL_VERSION_REVISION));
 
   if (required_version_beta)
-    portray("VERSION_BETA", long(PPL_VERSION_BETA));
+    portray("VERSION_BETA", static_cast<long>(PPL_VERSION_BETA));
 
   if (required_banner)
     portray("BANNER", PPL::banner());

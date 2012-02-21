@@ -364,7 +364,7 @@ assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
 		PPL_GT_SILENT(from, From(Extended_Int<To_Policy, To>::max))))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  to = To(from);
+  to = static_cast<To>(from);
   return V_EQ;
 }
 
@@ -376,7 +376,7 @@ assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
 		from > From(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  to = To(from);
+  to = static_cast<To>(from);
   return V_EQ;
 }
 
@@ -390,7 +390,7 @@ assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
 		from > From(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  to = To(from);
+  to = static_cast<To>(from);
   return V_EQ;
 }
 
@@ -404,7 +404,7 @@ assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
 		PPL_GT_SILENT(from, From(Extended_Int<To_Policy, To>::max))))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  to = To(from);
+  to = static_cast<To>(from);
   return V_EQ;
 }
 
