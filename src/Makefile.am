@@ -578,20 +578,31 @@ ppl.hh:	$(top_builddir)/ppl-config.h $(top_builddir)/src/version.hh ppl_header.h
 		$(top_srcdir)/src/ppl_header.hh >$@
 
 BUGS.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	@echo "#ifndef PPL_BUGS_hh" >$@
+	@echo "#define PPL_BUGS_hh 1" >>$@
 	$(top_builddir)/utils/text2cxxarray --name=BUGS_array --decl-only \
-		$(top_srcdir)/BUGS >$@
+		$(top_srcdir)/BUGS >>$@
+	@echo "#endif // !defined(PPL_BUGS_hh)" >>$@
 BUGS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
 	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
 		$(top_srcdir)/BUGS >$@
+
 COPYING.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	@echo "#ifndef PPL_COPYING_hh" >$@
+	@echo "#define PPL_COPYING_hh 1" >>$@
 	$(top_builddir)/utils/text2cxxarray --name=COPYING_array --decl-only \
-		$(top_srcdir)/COPYING >$@
+		$(top_srcdir)/COPYING >>$@
+	@echo "#endif // !defined(PPL_COPYING_hh)" >>$@
+
 COPYING.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
 	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
 		$(top_srcdir)/COPYING >$@
 CREDITS.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	@echo "#ifndef PPL_CREDITS_hh" >$@
+	@echo "#define PPL_CREDITS_hh 1" >>$@
 	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array --decl-only \
-		$(top_srcdir)/CREDITS >$@
+		$(top_srcdir)/CREDITS >>$@
+	@echo "#endif // !defined(PPL_CREDITS_hh)" >>$@
 CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
 		$(top_srcdir)/CREDITS >$@
