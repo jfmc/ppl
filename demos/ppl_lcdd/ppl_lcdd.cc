@@ -1192,7 +1192,7 @@ main(int argc, char* argv[]) try {
 #ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 
   if (max_seconds_of_cpu_time > 0)
-    set_alarm_on_cpu_time(max_seconds_of_cpu_time, timeout);
+    set_alarm_on_cpu_time(max_seconds_of_cpu_time, &timeout);
 
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 

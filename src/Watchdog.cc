@@ -237,7 +237,7 @@ PPL::Watchdog::initialize() {
   sigemptyset(&mask);
 
   struct sigaction s;
-  s.sa_handler = PPL_handle_timeout;
+  s.sa_handler = &PPL_handle_timeout;
   s.sa_mask = mask;
   s.sa_flags = 0;  // Was SA_ONESHOT: why?
 
