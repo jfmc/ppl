@@ -126,38 +126,6 @@ bool required_credits = false;
 
 unsigned num_required_items = 0;
 
-#ifdef PPL_HAVE_GETOPT_H
-struct option long_options[] = {
-  {"help",              no_argument,       0, 'h'},
-  {"format",            required_argument, 0, 'F'},
-  {"interface",         required_argument, 0, 'I'},
-  {"application",       no_argument,       0, 'A'},
-  {"library",           no_argument,       0, 'L'},
-  {"prefix",            optional_argument, 0, 'p'},
-  {"exec-prefix",       optional_argument, 0, 'e'},
-  {"configure-options", no_argument,       0, 'O'},
-  {"version",           no_argument,       0, 'V'},
-  {"version-major",     no_argument,       0, 'M'},
-  {"version-minor",     no_argument,       0, 'N'},
-  {"version-revision",  no_argument,       0, 'R'},
-  {"version-beta",      no_argument,       0, 'B'},
-  {"banner",            no_argument,       0, 'E'},
-  {"coefficients",      no_argument,       0, 'n'},
-  {"includedir",        no_argument,       0, 'i'},
-  {"bindir",            no_argument,       0, 'b'},
-  {"libdir",            no_argument,       0, 'l'},
-  {"cppflags",          no_argument,       0, 'P'},
-  {"cflags",            no_argument,       0, 'C'},
-  {"cxxflags",          no_argument,       0, 'X'},
-  {"ldflags",           no_argument,       0, 'D'},
-  {"license",           no_argument,       0, 'g'},
-  {"copying",           no_argument,       0, 'c'},
-  {"bugs",              no_argument,       0, 'u'},
-  {"credits",           no_argument,       0, 'r'},
-  {0, 0, 0, 0}
-};
-#endif
-
 
 #define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
 
@@ -212,6 +180,38 @@ void
 process_options(int argc, char* argv[]) {
 
   bool exec_prefix_set = false;
+
+#ifdef PPL_HAVE_GETOPT_H
+struct option long_options[] = {
+  {"help",              no_argument,       0, 'h'},
+  {"format",            required_argument, 0, 'F'},
+  {"interface",         required_argument, 0, 'I'},
+  {"application",       no_argument,       0, 'A'},
+  {"library",           no_argument,       0, 'L'},
+  {"prefix",            optional_argument, 0, 'p'},
+  {"exec-prefix",       optional_argument, 0, 'e'},
+  {"configure-options", no_argument,       0, 'O'},
+  {"version",           no_argument,       0, 'V'},
+  {"version-major",     no_argument,       0, 'M'},
+  {"version-minor",     no_argument,       0, 'N'},
+  {"version-revision",  no_argument,       0, 'R'},
+  {"version-beta",      no_argument,       0, 'B'},
+  {"banner",            no_argument,       0, 'E'},
+  {"coefficients",      no_argument,       0, 'n'},
+  {"includedir",        no_argument,       0, 'i'},
+  {"bindir",            no_argument,       0, 'b'},
+  {"libdir",            no_argument,       0, 'l'},
+  {"cppflags",          no_argument,       0, 'P'},
+  {"cflags",            no_argument,       0, 'C'},
+  {"cxxflags",          no_argument,       0, 'X'},
+  {"ldflags",           no_argument,       0, 'D'},
+  {"license",           no_argument,       0, 'g'},
+  {"copying",           no_argument,       0, 'c'},
+  {"bugs",              no_argument,       0, 'u'},
+  {"credits",           no_argument,       0, 'r'},
+  {0, 0, 0, 0}
+};
+#endif
 
   static const char* usage_string
   = "Usage: %s [OPTION]...\n"
