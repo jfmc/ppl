@@ -58,7 +58,7 @@ public:
  */
 template <typename Flag_Base, typename Flag>
 class Parma_Polyhedra_Library::Implementation::Watchdog::Handler_Flag
-  : virtual public Handler {
+  : public Handler {
 public:
   //! Constructor with a given function.
   Handler_Flag(const Flag_Base* volatile& holder, Flag& flag);
@@ -75,7 +75,7 @@ private:
 
 //! A kind of Handler calling a given function.
 class Parma_Polyhedra_Library::Implementation::Watchdog::Handler_Function
-  : virtual public Handler {
+  : public Handler {
 public:
   //! Constructor with a given function.
   Handler_Function(void (*function)());
