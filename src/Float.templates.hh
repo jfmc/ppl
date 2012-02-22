@@ -115,7 +115,8 @@ const FP_Interval_Type& compute_absolute_error(
 
   // We assume that f_base is a power of 2.
   analyzer_format omega;
-  int power = msb_position(f_base) * (1 - f_exponent_bias - f_mantissa_bits);
+  int power = static_cast<int>(msb_position(f_base))
+    * (1 - f_exponent_bias - static_cast<int>(f_mantissa_bits));
   omega = std::max(static_cast<analyzer_format>(ldexp(1.0, power)),
                    std::numeric_limits<analyzer_format>::denorm_min());
 

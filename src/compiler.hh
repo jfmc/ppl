@@ -77,10 +77,7 @@ struct Suppress_Uninitialized_Warnings_Type {
   type name
 #endif
 
-inline std::size_t
-sizeof_to_bits(std::size_t size) {
-  return size * static_cast<std::size_t>(CHAR_BIT);
-}
+#define sizeof_to_bits(size) (size * static_cast<std::size_t>(CHAR_BIT))
 
 #if !defined(__GNUC__)
 

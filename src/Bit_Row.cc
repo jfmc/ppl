@@ -99,7 +99,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
 
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size > 0);
-  mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
+  unsigned long li = position / PPL_BITS_PER_GMP_LIMB;
 
   mp_limb_t limb;
   mp_srcptr p = vec->_mp_d;
@@ -113,7 +113,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
   else {
     const mp_limb_t mask
       = (~static_cast<mp_limb_t>(0))
-      >> (PPL_BITS_PER_GMP_LIMB - 1 - position % PPL_BITS_PER_GMP_LIMB);
+      >> (PPL_BITS_PER_GMP_LIMB - 1U - position % PPL_BITS_PER_GMP_LIMB);
     p += li;
     limb = *p & mask;
   }
@@ -135,12 +135,12 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
 
-  unsigned long i = k / GMP_NUMB_BITS;
+  unsigned long i = k / static_cast<unsigned long>(GMP_NUMB_BITS);
   if (i >= static_cast<unsigned long>(vec_size))
     return false;
 
   mp_limb_t limb = *(vec->_mp_d + i);
-  return ((limb >> (k % GMP_NUMB_BITS)) & 1U) != 0;
+  return ((limb >> (k % static_cast<unsigned long>(GMP_NUMB_BITS))) & 1U) != 0;
 }
 
 void

@@ -50,16 +50,16 @@ namespace Parma_Polyhedra_Library {
 
 struct float_ieee754_half {
   uint16_t word;
-  static const uint16_t SGN_MASK = 0x8000;
-  static const uint16_t EXP_MASK = 0xfc00;
-  static const uint16_t POS_INF = 0xfc00;
-  static const uint16_t NEG_INF = 0x7c00;
-  static const uint16_t POS_ZERO = 0x0000;
-  static const uint16_t NEG_ZERO = 0x8000;
+  static const uint16_t SGN_MASK = 0x8000U;
+  static const uint16_t EXP_MASK = 0xfc00U;
+  static const uint16_t POS_INF = 0xfc00U;
+  static const uint16_t NEG_INF = 0x7c00U;
+  static const uint16_t POS_ZERO = 0x0000U;
+  static const uint16_t NEG_ZERO = 0x8000U;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 5;
   static const unsigned int MANTISSA_BITS = 10;
-  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -83,16 +83,16 @@ struct float_ieee754_half {
 
 struct float_ieee754_single {
   uint32_t word;
-  static const uint32_t SGN_MASK = 0x80000000;
-  static const uint32_t EXP_MASK = 0x7f800000;
-  static const uint32_t POS_INF = 0x7f800000;
-  static const uint32_t NEG_INF = 0xff800000;
-  static const uint32_t POS_ZERO = 0x00000000;
-  static const uint32_t NEG_ZERO = 0x80000000;
+  static const uint32_t SGN_MASK = 0x80000000U;
+  static const uint32_t EXP_MASK = 0x7f800000U;
+  static const uint32_t POS_INF = 0x7f800000U;
+  static const uint32_t NEG_INF = 0xff800000U;
+  static const uint32_t POS_ZERO = 0x00000000U;
+  static const uint32_t NEG_ZERO = 0x80000000U;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 8;
   static const unsigned int MANTISSA_BITS = 23;
-  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -127,18 +127,18 @@ struct float_ieee754_double {
   uint32_t lsp;
   uint32_t msp;
 #endif
-  static const uint32_t MSP_SGN_MASK = 0x80000000;
-  static const uint32_t MSP_POS_INF = 0x7ff00000;
-  static const uint32_t MSP_NEG_INF = 0xfff00000;
-  static const uint32_t MSP_POS_ZERO = 0x00000000;
-  static const uint32_t MSP_NEG_ZERO = 0x80000000;
+  static const uint32_t MSP_SGN_MASK = 0x80000000U;
+  static const uint32_t MSP_POS_INF = 0x7ff00000U;
+  static const uint32_t MSP_NEG_INF = 0xfff00000U;
+  static const uint32_t MSP_POS_ZERO = 0x00000000U;
+  static const uint32_t MSP_NEG_ZERO = 0x80000000U;
   static const uint32_t LSP_INF = 0;
   static const uint32_t LSP_ZERO = 0;
-  static const uint32_t LSP_MAX = 0xffffffff;
+  static const uint32_t LSP_MAX = 0xffffffffU;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 11;
   static const unsigned int MANTISSA_BITS = 52;
-  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
@@ -161,17 +161,17 @@ struct float_ieee754_double {
 
 struct float_ibm_single {
   uint32_t word;
-  static const uint32_t SGN_MASK = 0x80000000;
-  static const uint32_t EXP_MASK = 0x7f000000;
-  static const uint32_t POS_INF = 0x7f000000;
-  static const uint32_t NEG_INF = 0xff000000;
-  static const uint32_t POS_ZERO = 0x00000000;
-  static const uint32_t NEG_ZERO = 0x80000000;
+  static const uint32_t SGN_MASK = 0x80000000U;
+  static const uint32_t EXP_MASK = 0x7f000000U;
+  static const uint32_t POS_INF = 0x7f000000U;
+  static const uint32_t NEG_INF = 0xff000000U;
+  static const uint32_t POS_ZERO = 0x00000000U;
+  static const uint32_t NEG_ZERO = 0x80000000U;
   static const unsigned int BASE = 16;
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 24;
   static const int EXPONENT_BIAS = 64;
-  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
@@ -210,11 +210,11 @@ struct float_intel_double_extended {
   uint64_t lsp;
   uint32_t msp;
 #endif
-  static const uint32_t MSP_SGN_MASK = 0x00008000;
-  static const uint32_t MSP_POS_INF = 0x00007fff;
-  static const uint32_t MSP_NEG_INF = 0x0000ffff;
-  static const uint32_t MSP_POS_ZERO = 0x00000000;
-  static const uint32_t MSP_NEG_ZERO = 0x00008000;
+  static const uint32_t MSP_SGN_MASK = 0x00008000U;
+  static const uint32_t MSP_POS_INF = 0x00007fffU;
+  static const uint32_t MSP_NEG_INF = 0x0000ffffU;
+  static const uint32_t MSP_POS_ZERO = 0x00000000U;
+  static const uint32_t MSP_NEG_ZERO = 0x00008000U;
   static const uint64_t LSP_INF = static_cast<uint64_t>(0x8000000000000000ULL);
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_DMAX = static_cast<uint64_t>(0x7fffffffffffffffULL);
@@ -222,7 +222,7 @@ struct float_intel_double_extended {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 63;
-  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN

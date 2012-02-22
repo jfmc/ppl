@@ -47,15 +47,14 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
   tree_iterator root(*this);
 
   // This is static and with static allocation, to improve performance.
-  // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
+  // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that 2^k-1 is a
   // dimension_type, so it is the maximum tree height.
   // For each node level, the stack may contain up to 4 elements: two elements
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
-  static const unsigned stack_size
-    = 4U * static_cast<unsigned>(CHAR_BIT) * sizeof(dimension_type) + 1U;
-  static std::pair<dimension_type, signed char> stack[stack_size];
+  static std::pair<dimension_type, signed char>
+    stack[4U * sizeof_to_bits(sizeof(dimension_type)) + 1U];
 
   dimension_type stack_first_empty = 0;
 

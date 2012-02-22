@@ -35,7 +35,7 @@ site: http://bugseng.com/products/ppl/ . */
 # include <string.h>
 #endif
 
-#define PPL_BITS_PER_GMP_LIMB (PPL_SIZEOF_MP_LIMB_T*CHAR_BIT)
+#define PPL_BITS_PER_GMP_LIMB sizeof_to_bits(PPL_SIZEOF_MP_LIMB_T)
 
 namespace Parma_Polyhedra_Library {
 

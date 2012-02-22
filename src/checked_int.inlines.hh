@@ -1190,7 +1190,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
                       Rounding_Dir dir) {
-  if (exp >= sizeof(Type)*CHAR_BIT) {
+  if (exp >= sizeof_to_bits(sizeof(Type))) {
     to = 0;
     if (round_not_requested(dir))
       return V_GE;
@@ -1211,7 +1211,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
                     Rounding_Dir dir) {
-  if (exp > sizeof(Type)*CHAR_BIT - 1) {
+  if (exp > sizeof_to_bits(sizeof(Type)) - 1) {
   zero:
     to = 0;
     if (round_not_requested(dir))
@@ -1223,7 +1223,7 @@ div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     else
       return V_EQ;
   }
-  if (exp == sizeof(Type)*CHAR_BIT - 1) {
+  if (exp == sizeof_to_bits(sizeof(Type)) - 1) {
     if (x == C_Integer<Type>::min) {
       to = -1;
       return V_EQ;
@@ -1260,7 +1260,7 @@ add_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     to = x + (Type(1) << exp);
     return V_EQ;
   }
-  if (exp >= sizeof(Type)*CHAR_BIT)
+  if (exp >= sizeof_to_bits(sizeof(Type)))
     return set_pos_overflow_int<To_Policy>(to, dir);
   Type n = Type(1) << exp;
   return add_unsigned_int<To_Policy, From_Policy, void>(to, x, n, dir);
@@ -1274,9 +1274,9 @@ add_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     to = x + (Type(1) << exp);
     return V_EQ;
   }
-  if (exp >= sizeof(Type)*CHAR_BIT)
+  if (exp >= sizeof_to_bits(sizeof(Type)))
     return set_pos_overflow_int<To_Policy>(to, dir);
-  if (exp == sizeof(Type)*CHAR_BIT - 1) {
+  if (exp == sizeof_to_bits(sizeof(Type)) - 1) {
     Type n = -2 * (Type(1) << (exp - 1));
     return sub_signed_int<To_Policy, From_Policy, void>(to, x, n, dir);
   }
@@ -1294,7 +1294,7 @@ sub_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     to = x - (Type(1) << exp);
     return V_EQ;
   }
-  if (exp >= sizeof(Type)*CHAR_BIT)
+  if (exp >= sizeof_to_bits(sizeof(Type)))
     return set_neg_overflow_int<To_Policy>(to, dir);
   Type n = Type(1) << exp;
   return sub_unsigned_int<To_Policy, From_Policy, void>(to, x, n, dir);
@@ -1308,9 +1308,9 @@ sub_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     to = x - (Type(1) << exp);
     return V_EQ;
   }
-  if (exp >= sizeof(Type)*CHAR_BIT)
+  if (exp >= sizeof_to_bits(sizeof(Type)))
     return set_neg_overflow_int<To_Policy>(to, dir);
-  if (exp == sizeof(Type)*CHAR_BIT - 1) {
+  if (exp == sizeof_to_bits(sizeof(Type)) - 1) {
     Type n = -2 * (Type(1) << (exp - 1));
     return add_signed_int<To_Policy, From_Policy, void>(to, x, n, dir);
   }
@@ -1328,14 +1328,14 @@ mul_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     to = x << exp;
     return V_EQ;
   }
-  if (exp >= sizeof(Type)*CHAR_BIT) {
+  if (exp >= sizeof_to_bits(sizeof(Type))) {
     if (x == 0) {
       to = 0;
       return V_EQ;
     }
     return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  if (x & (((Type(1) << exp) - 1) << (sizeof(Type)*CHAR_BIT - exp)))
+  if (x & (((Type(1) << exp) - 1) << (sizeof_to_bits(sizeof(Type)) - exp)))
     return set_pos_overflow_int<To_Policy>(to, dir);
   Type n = x << exp;
   if (PPL_GT_SILENT(n, (Extended_Int<To_Policy, Type>::max)))
@@ -1352,7 +1352,7 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
     to = x << exp;
     return V_EQ;
   }
-  if (exp >= sizeof(Type)*CHAR_BIT - 1) {
+  if (exp >= sizeof_to_bits(sizeof(Type)) - 1) {
     if (x < 0)
       return set_neg_overflow_int<To_Policy>(to, dir);
     else if (x > 0)
@@ -1362,7 +1362,7 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
       return V_EQ;
     }
   }
-  Type mask = ((Type(1) << exp) - 1) << (sizeof(Type)*CHAR_BIT - 1 - exp);
+  Type mask = ((Type(1) << exp) - 1) << (sizeof_to_bits(sizeof(Type)) - 1 - exp);
   Type n;
   if (x < 0) {
     if ((x & mask) != mask)
@@ -1386,10 +1386,10 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 smod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
 		       Rounding_Dir dir) {
-  if (exp > sizeof(Type)*CHAR_BIT)
+  if (exp > sizeof_to_bits(sizeof(Type)))
     to = x;
   else {
-    Type v = (exp == sizeof(Type)*CHAR_BIT ? x : (x & ((Type(1) << exp) - 1)));
+    Type v = (exp == sizeof_to_bits(sizeof(Type)) ? x : (x & ((Type(1) << exp) - 1)));
     if (v >= Type(1) << (exp - 1))
       return set_neg_overflow_int<To_Policy>(to, dir);
     else
@@ -1402,7 +1402,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 smod_2exp_signed_int(Type& to, const Type x, unsigned int exp,
 		     Rounding_Dir) {
-  if (exp >= sizeof(Type)*CHAR_BIT)
+  if (exp >= sizeof_to_bits(sizeof(Type)))
     to = x;
   else {
     Type m = Type(1) << (exp - 1);
@@ -1415,7 +1415,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 umod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
 		       Rounding_Dir) {
-  if (exp >= sizeof(Type)*CHAR_BIT)
+  if (exp >= sizeof_to_bits(sizeof(Type)))
     to = x;
   else
     to = x & ((Type(1) << exp) - 1);
@@ -1426,7 +1426,7 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 umod_2exp_signed_int(Type& to, const Type x, unsigned int exp,
 		     Rounding_Dir dir) {
-  if (exp >= sizeof(Type)*CHAR_BIT) {
+  if (exp >= sizeof_to_bits(sizeof(Type))) {
     if (x < 0)
       return set_pos_overflow_int<To_Policy>(to, dir);
     to = x;
@@ -1442,7 +1442,7 @@ isqrt_rem(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
   Type t(1);
-  for (t <<= sizeof(Type)*CHAR_BIT - 2; t != 0; t >>= 2) {
+  for (t <<= sizeof_to_bits(sizeof(Type)) - 2; t != 0; t >>= 2) {
     Type s = q + t;
     if (s <= r) {
       r -= s;

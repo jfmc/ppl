@@ -609,7 +609,7 @@ inline Result
 add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     add<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -622,7 +622,7 @@ inline Result
 sub_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     sub<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -635,7 +635,7 @@ inline Result
 mul_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     mul<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -648,7 +648,7 @@ inline Result
 div_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     div<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -664,7 +664,7 @@ smod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x)) {
     return assign_nan<To_Policy>(to, V_INF_MOD);
   }
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   Type m = 1ULL << exp;
   rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
   Type m2 = m / 2;
@@ -683,7 +683,7 @@ umod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x)) {
     return assign_nan<To_Policy>(to, V_INF_MOD);
   }
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   Type m = 1ULL << exp;
   rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
   if (to < 0)
@@ -765,7 +765,7 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(From) * CHAR_BIT > Float<To>::Binary::MANTISSA_BITS)
+  if (sizeof_to_bits(sizeof(From)) > Float<To>::Binary::MANTISSA_BITS)
     return assign_float_int_inexact<To_Policy, From_Policy>(to, from, dir);
   else
     return assign_exact<To_Policy, From_Policy>(to, from, dir);

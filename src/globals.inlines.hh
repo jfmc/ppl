@@ -103,7 +103,8 @@ total_memory_in_bytes(const T&) {
 
 inline memory_size_type
 external_memory_in_bytes(const mpz_class& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
+  return static_cast<memory_size_type>(x.get_mpz_t()[0]._mp_alloc)
+    * PPL_SIZEOF_MP_LIMB_T;
 }
 
 inline memory_size_type
