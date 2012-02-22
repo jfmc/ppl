@@ -1295,7 +1295,8 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
                          const Matrix& context, const Variables_Set& params,
                          dimension_type space_dim,
-                         const unsigned indent_level) {
+                         const int indent_level) {
+  PPL_ASSERT(indent_level >= 0);
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING DECISION NODE\n");
 #else
@@ -2360,7 +2361,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
                          const Matrix& ctx, const Variables_Set& params,
                          dimension_type space_dim,
-                         const unsigned indent_level) {
+                         const int indent_level) {
+  PPL_ASSERT(indent_level >= 0);
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING NODE\n");
 #else
@@ -3140,7 +3142,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
                                 Variables_Set& parameters,
                                 Matrix& context,
                                 dimension_type& space_dimension,
-                                const unsigned indent_level) {
+                                const int indent_level) {
+  PPL_ASSERT(indent_level >= 0);
 #ifdef NOISY_PIP
   std::cerr << std::setw(2 * indent_level) << ""
             << "Row " << index << " requires cut generation.\n";
@@ -3452,13 +3455,14 @@ PIP_Solution_Node::total_memory_in_bytes() const {
 
 void
 PIP_Tree_Node::indent_and_print(std::ostream& s,
-                                const unsigned indent,
+                                const int indent,
                                 const char* str) {
+  PPL_ASSERT(indent >= 0);
   s << std::setw(2 * indent) << "" << str;
 }
 
 void
-PIP_Tree_Node::print(std::ostream& s, unsigned indent) const {
+PIP_Tree_Node::print(std::ostream& s, const int indent) const {
   const dimension_type pip_space_dim = get_owner()->space_dimension();
   const Variables_Set& pip_params = get_owner()->parameter_space_dimensions();
 
@@ -3475,7 +3479,7 @@ PIP_Tree_Node::print(std::ostream& s, unsigned indent) const {
 }
 
 void
-PIP_Tree_Node::print_tree(std::ostream& s, unsigned indent,
+PIP_Tree_Node::print_tree(std::ostream& s, const int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const {
   used(pip_dim_is_param);
@@ -3507,7 +3511,7 @@ PIP_Tree_Node::print_tree(std::ostream& s, unsigned indent,
 }
 
 void
-PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
+PIP_Decision_Node::print_tree(std::ostream& s, const int indent,
                               const std::vector<bool>& pip_dim_is_param,
                               const dimension_type first_art_dim) const {
   // First print info common to decision and solution nodes.
@@ -3529,7 +3533,7 @@ PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
 }
 
 void
-PIP_Solution_Node::print_tree(std::ostream& s, unsigned indent,
+PIP_Solution_Node::print_tree(std::ostream& s, const int indent,
                               const std::vector<bool>& pip_dim_is_param,
                               const dimension_type first_art_dim) const {
   // Print info common to decision and solution nodes.

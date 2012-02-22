@@ -113,7 +113,7 @@ public:
     \param indent
     The amount of indentation.
   */
-  void print(std::ostream& s, unsigned indent = 0) const;
+  void print(std::ostream& s, int indent = 0) const;
 
   //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
@@ -214,7 +214,7 @@ protected:
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim,
-                               unsigned indent_level) = 0;
+                               int indent_level) = 0;
 
   //! Inserts a new parametric constraint in internal row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -240,13 +240,13 @@ protected:
     that was created in this node (if any).
   */
   virtual void print_tree(std::ostream& s,
-                          unsigned indent,
+                          int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const = 0;
 
   //! A helper function used when printing PIP trees.
   static void
-  indent_and_print(std::ostream& s, unsigned indent, const char* str);
+  indent_and_print(std::ostream& s, int indent, const char* str);
 
   /*! \brief
     Checks whether a context matrix is satisfiable.
@@ -661,7 +661,7 @@ protected:
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim,
-                               unsigned indent_level);
+                               int indent_level);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
@@ -686,10 +686,10 @@ protected:
   */
   void generate_cut(dimension_type i, Variables_Set& parameters,
                     Matrix& context, dimension_type& space_dimension,
-                    unsigned indent_level);
+                    int indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s, unsigned indent,
+  virtual void print_tree(std::ostream& s, int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const;
 
@@ -800,10 +800,10 @@ protected:
                                const Matrix& context,
                                const Variables_Set& params,
                                dimension_type space_dim,
-                               unsigned indent_level);
+                               int indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s, unsigned indent,
+  virtual void print_tree(std::ostream& s, int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const;
 
