@@ -362,7 +362,7 @@ float_intel_double_extended::inc() {
 inline void
 float_intel_double_extended::set_max(bool negative) {
   msp = 0x00007ffe;
-  lsp = (uint64_t)0xffffffffffffffffULL;
+  lsp = static_cast<uint64_t>(0xffffffffffffffffULL);
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -441,8 +441,8 @@ float_ieee754_quad::inc() {
 
 inline void
 float_ieee754_quad::set_max(bool negative) {
-  msp = (uint64_t)0x7ffeffffffffffffULL;
-  lsp = (uint64_t)0xffffffffffffffffULL;
+  msp = static_cast<uint64_t>(0x7ffeffffffffffffULL);
+  lsp = static_cast<uint64_t>(0xffffffffffffffffULL);
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -453,7 +453,7 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
   mpz_export(parts, 0, -1, 8, 0, 0, mantissa);
   lsp = parts[0];
   msp = parts[1];
-  msp &= ((((uint64_t)1) << (MANTISSA_BITS - 64)) - 1);
+  msp &= ((static_cast<uint64_t>(1) << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;
   int exponent_repr = exponent + EXPONENT_BIAS;

@@ -36,7 +36,7 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
   }
 
   dimension_type new_max_depth = integer_log2(n) + 1;
-  reserved_size = ((dimension_type)1 << new_max_depth) - 1;
+  reserved_size = (static_cast<dimension_type>(1) << new_max_depth) - 1;
 
   if (is_greater_than_ratio(n, reserved_size, max_density_percent)
       && reserved_size != 3)

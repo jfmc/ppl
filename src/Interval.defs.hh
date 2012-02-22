@@ -329,7 +329,7 @@ public:
     case V_EQ:
     case V_NE:
       assign(UNIVERSE);
-      rs = (Relation_Symbol) c.rel();
+      rs = static_cast<Relation_Symbol>(c.rel());
       return refine_existential(rs, c.value());
     }
   }

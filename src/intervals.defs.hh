@@ -61,15 +61,18 @@ enum I_Result {
 };
 
 inline I_Result operator|(I_Result a, I_Result b) {
-  return static_cast<I_Result>((unsigned)a | (unsigned)b);
+  return static_cast<I_Result>(static_cast<unsigned>(a)
+                               | static_cast<unsigned>(b));
 }
 
 inline I_Result operator&(I_Result a, I_Result b) {
-  return static_cast<I_Result>((unsigned)a & (unsigned)b);
+  return static_cast<I_Result>(static_cast<unsigned>(a)
+                               & static_cast<unsigned>(b));
 }
 
 inline I_Result operator-(I_Result a, I_Result b) {
-  return static_cast<I_Result>((unsigned)a & ~(unsigned)b);
+    return static_cast<I_Result>(static_cast<unsigned>(a)
+                                 & ~static_cast<unsigned>(b));
 }
 
 template <typename Criteria, typename T>
@@ -340,7 +343,7 @@ struct I_Constraint_Rel {
     PPL_ASSERT(result_relation_class(r) == r);
   }
   I_Constraint_Rel(Relation_Symbol r)
-    : rel((Result)r) {
+    : rel(static_cast<Result>(r)) {
   }
   operator Result() const {
     return rel;

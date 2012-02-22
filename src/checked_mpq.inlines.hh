@@ -50,7 +50,7 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
     }
   }
   if (sign)
-    return (Result) sgn<Policy>(v);
+    return static_cast<Result>(sgn<Policy>(v));
   return V_LGE;
 }
 

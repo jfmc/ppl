@@ -63,7 +63,7 @@ PPL::Bit_Row::next(unsigned long position) const {
 
   // Mask off any bits before `position' in the first limb.
   mp_limb_t limb
-    = *p & ((~(mp_limb_t) 0) << (position % PPL_BITS_PER_GMP_LIMB));
+    = *p & ((~static_cast<mp_limb_t>(0)) << (position % PPL_BITS_PER_GMP_LIMB));
 
   while (true) {
     if (limb != 0)
@@ -112,7 +112,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
   }
   else {
     const mp_limb_t mask
-      = (~(mp_limb_t) 0)
+      = (~static_cast<mp_limb_t>(0))
       >> (PPL_BITS_PER_GMP_LIMB - 1 - position % PPL_BITS_PER_GMP_LIMB);
     p += li;
     limb = *p & mask;

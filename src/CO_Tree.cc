@@ -518,7 +518,7 @@ PPL::CO_Tree::init(dimension_type reserved_size1) {
     max_depth = integer_log2(reserved_size1) + 1;
 
     size_ = 0;
-    reserved_size = ((dimension_type)1 << max_depth) - 1;
+    reserved_size = (static_cast<dimension_type>(1) << max_depth) - 1;
     indexes = new dimension_type[reserved_size + 2];
     try {
       data = data_allocator.allocate(reserved_size + 1);
@@ -574,7 +574,7 @@ PPL::CO_Tree::structure_OK() const {
   if (reserved_size < 3)
     return false;
 
-  if (reserved_size != ((dimension_type)1 << max_depth) - 1)
+  if (reserved_size != (static_cast<dimension_type>(1) << max_depth) - 1)
     return false;
 
   if (data == NULL)
@@ -752,7 +752,8 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
   height_t itr_depth_minus_1 = itr.depth() - 1;
   height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
-  dimension_type subtree_reserved_size = ((dimension_type)1 << height) - 1;
+  dimension_type subtree_reserved_size = (static_cast<dimension_type>(1)
+                                          << height) - 1;
   const bool deleting = itr.index() == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
   if (deleting)
