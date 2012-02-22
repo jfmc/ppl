@@ -320,7 +320,7 @@ PPL::Generator::OK() const {
     return false;
 
   // Topology consistency check.
-  const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
+  const dimension_type min_size = is_necessarily_closed() ? 1U : 2U;
   if (size() < min_size) {
 #ifndef NDEBUG
     std::cerr << "Generator has fewer coefficients than the minimum "
