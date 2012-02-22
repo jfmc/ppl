@@ -63,9 +63,11 @@ public:
   //! Constructor with a given function.
   Handler_Flag(const Flag_Base* volatile& holder, Flag& flag);
 
-  //! Does its job: installs the flag onto the holder, if a flag with
-  //! an higher priority has not already been installed.
-  void act() const;
+  /*! \brief
+    Does its job: installs the flag onto the holder, if a flag with
+    an higher priority has not already been installed.
+  */
+  virtual void act() const;
 
 private:
   // declare holder as reference to volatile pointer to const Flag_Base
@@ -81,7 +83,7 @@ public:
   Handler_Function(void (*function)());
 
   //! Does its job: calls the embedded function.
-  void act() const;
+  virtual void act() const;
 
 private:
   //! Pointer to the embedded function.

@@ -43,7 +43,7 @@ protected:
     \remarks
     Specified by ISO/IEC 14882:1998: 27.5.2.4.3.
   */
-  int_type underflow();
+  virtual int_type underflow();
 
   /*! \brief
     In case of underflow, gets a character and advances the next pointer.
@@ -51,7 +51,7 @@ protected:
     \remarks
     Specified by ISO/IEC 14882:1998: 27.5.2.4.3.
   */
-  int_type uflow();
+  virtual int_type uflow();
 
   /*! \brief
     Gets a sequence of characters.
@@ -59,7 +59,7 @@ protected:
     \remarks
     Specified by ISO/IEC 14882:1998: 27.5.2.4.3.
   */
-  std::streamsize xsgetn(char_type* s, std::streamsize n);
+  virtual std::streamsize xsgetn(char_type* s, std::streamsize n);
 
   /*! \brief
     Puts character back in case of backup underflow.
@@ -67,7 +67,7 @@ protected:
     \remarks
     Specified by ISO/IEC 14882:1998: 27.5.2.4.4.
   */
-  int_type pbackfail(int_type c = traits_type::eof());
+  virtual int_type pbackfail(int_type c = traits_type::eof());
 
   /*! \brief
     Writes a sequence of characters.
@@ -75,21 +75,21 @@ protected:
     \remarks
     Specified by ISO/IEC 14882:1998: 27.5.2.4.5.
   */
-  std::streamsize xsputn(const char_type* s, std::streamsize n);
+  virtual std::streamsize xsputn(const char_type* s, std::streamsize n);
 
   /*! \brief
     Writes a character in case of overflow.
 
     Specified by ISO/IEC 14882:1998: 27.5.2.4.5.
   */
-  int_type overflow(int_type c);
+  virtual int_type overflow(int_type c);
 
   /*! \brief
     Synchronizes the stream buffer.
 
     Specified by ISO/IEC 14882:1998: 27.5.2.4.2.
   */
-  int sync();
+  virtual int sync();
 
 private:
   //! Character type of the streambuf.
