@@ -358,10 +358,12 @@ assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
 	  && (Extended_Int<To_Policy, To>::min > Extended_Int<From_Policy, From>::min
 	      || Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max))) {
     if (CHECK_P(To_Policy::check_overflow,
-		PPL_LT_SILENT(from, From(Extended_Int<To_Policy, To>::min))))
+		PPL_LT_SILENT(from,
+                              static_cast<From>(Extended_Int<To_Policy, To>::min))))
       return set_neg_overflow_int<To_Policy>(to, dir);
     if (CHECK_P(To_Policy::check_overflow,
-		PPL_GT_SILENT(from, From(Extended_Int<To_Policy, To>::max))))
+		PPL_GT_SILENT(from,
+                              static_cast<From>(Extended_Int<To_Policy, To>::max))))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = static_cast<To>(from);
@@ -373,7 +375,7 @@ inline Result
 assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
     if (CHECK_P(To_Policy::check_overflow,
-		from > From(Extended_Int<To_Policy, To>::max)))
+		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = static_cast<To>(from);
@@ -387,7 +389,7 @@ assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
     return set_neg_overflow_int<To_Policy>(to, dir);
   if (sizeof(To) < sizeof(From)) {
     if (CHECK_P(To_Policy::check_overflow,
-		from > From(Extended_Int<To_Policy, To>::max)))
+		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = static_cast<To>(from);
@@ -401,7 +403,8 @@ assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
       || (sizeof(To) == sizeof(From)
 	  && Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max)) {
     if (CHECK_P(To_Policy::check_overflow,
-		PPL_GT_SILENT(from, From(Extended_Int<To_Policy, To>::max))))
+		PPL_GT_SILENT(from,
+                              static_cast<From>(Extended_Int<To_Policy, To>::max))))
       return set_pos_overflow_int<To_Policy>(to, dir);
   }
   to = static_cast<To>(from);
