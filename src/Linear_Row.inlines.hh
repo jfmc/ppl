@@ -158,7 +158,7 @@ Linear_Row::space_dimension() const {
   const dimension_type sz = size();
   return (sz == 0)
     ? 0
-    : (sz - (is_necessarily_closed() ? 1 : 2));
+    : (sz - (is_necessarily_closed() ? 1U : 2U));
 }
 
 inline

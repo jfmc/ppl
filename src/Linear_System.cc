@@ -520,13 +520,17 @@ PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
   With_Bit_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
-  With_Bit_Matrix_iterator last = first + sat.num_rows();
+  typedef With_Bit_Matrix_iterator::difference_type diff_type;
+  With_Bit_Matrix_iterator last
+    = first + static_cast<diff_type>(sat.num_rows());
   Implementation::swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
   With_Bit_Matrix_iterator new_last
     = Implementation::swapping_unique(first, last);
 
-  const dimension_type num_duplicates = last - new_last;
+  const diff_type dist = last - new_last;
+  PPL_ASSERT(dist >= 0);
+  const dimension_type num_duplicates = static_cast<dimension_type>(dist);
   const dimension_type new_first_pending_row
     = sys.first_pending_row() - num_duplicates;
 
@@ -879,7 +883,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   // A non-empty system will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
   // term and, if it is NNC, another one for the epsilon coefficient.
-  const dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
+  const dimension_type min_cols = is_necessarily_closed() ? 1U : 2U;
   if (num_columns() < min_cols) {
 #ifndef NDEBUG
     cerr << "Linear_System has fewer columns than the minimum "
