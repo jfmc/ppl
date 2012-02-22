@@ -1051,23 +1051,23 @@ PIP_Decision_Node::check_ownership(const PIP_Problem* owner) const {
     && (true_child == 0 || true_child->check_ownership(owner));
 }
 
-const PIP_Solution_Node*
-PIP_Tree_Node::as_solution() const {
-  return 0;
+const PIP_Decision_Node*
+PIP_Decision_Node::as_decision() const {
+  return this;
 }
 
 const PIP_Decision_Node*
-PIP_Tree_Node::as_decision() const {
+PIP_Solution_Node::as_decision() const {
+  return 0;
+}
+
+const PIP_Solution_Node*
+PIP_Decision_Node::as_solution() const {
   return 0;
 }
 
 const PIP_Solution_Node*
 PIP_Solution_Node::as_solution() const {
-  return this;
-}
-
-const PIP_Decision_Node*
-PIP_Decision_Node::as_decision() const {
   return this;
 }
 

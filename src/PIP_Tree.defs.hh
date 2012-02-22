@@ -74,13 +74,13 @@ public:
   virtual ~PIP_Tree_Node();
 
   //! Returns \c true if and only if \p *this is well formed.
-  virtual bool OK() const;
+  virtual bool OK() const = 0;
 
   //! Returns \p this if \p *this is a solution node, 0 otherwise.
-  virtual const PIP_Solution_Node* as_solution() const;
+  virtual const PIP_Solution_Node* as_solution() const = 0;
 
   //! Returns \p this if \p *this is a decision node, 0 otherwise.
-  virtual const PIP_Decision_Node* as_decision() const;
+  virtual const PIP_Decision_Node* as_decision() const = 0;
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
@@ -242,7 +242,7 @@ protected:
   virtual void print_tree(std::ostream& s,
                           unsigned indent,
                           const std::vector<bool>& pip_dim_is_param,
-                          dimension_type first_art_dim) const;
+                          dimension_type first_art_dim) const = 0;
 
   //! A helper function used when printing PIP trees.
   static void
@@ -367,6 +367,9 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Solution_Node* as_solution() const;
+
+  //! Returns 0, since \p this is not a decision node.
+  virtual const PIP_Decision_Node* as_decision() const;
 
   /*! \brief
     Returns a parametric expression for the values of problem variable \p var.
@@ -707,6 +710,9 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Decision_Node* as_decision() const;
+
+  //! Returns 0, since \p this is not a solution node.
+  virtual const PIP_Solution_Node* as_solution() const;
 
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;
