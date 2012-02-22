@@ -24,10 +24,9 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_compiler_hh
 #define PPL_compiler_hh 1
 
-#include "assert.hh"
-
 #include <cstddef>
 #include <climits>
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
@@ -139,7 +138,7 @@ inline unsigned int ctz64(u_int64_t w) {
 
 inline unsigned int
 clz(unsigned int u) {
-  PPL_ASSERT(u != 0);
+  assert(u != 0);
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_clz(u));
 #elif PPL_SIZEOF_INT == 4
@@ -153,7 +152,7 @@ clz(unsigned int u) {
 
 inline unsigned int
 clz(unsigned long ul) {
-  PPL_ASSERT(ul != 0);
+  assert(ul != 0);
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_clzl(ul));
 #elif PPL_SIZEOF_LONG == 4
@@ -167,7 +166,7 @@ clz(unsigned long ul) {
 
 inline unsigned int
 clz(unsigned long long ull) {
-  PPL_ASSERT(ull != 0);
+  assert(ull != 0);
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_clzll(ull));
 #elif PPL_SIZEOF_LONG_LONG == 4
@@ -182,7 +181,7 @@ clz(unsigned long long ull) {
 
 inline unsigned int
 ctz(unsigned int u) {
-  PPL_ASSERT(u != 0);
+  assert(u != 0);
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_ctz(u));
 #elif PPL_SIZEOF_INT == 4
@@ -196,7 +195,7 @@ ctz(unsigned int u) {
 
 inline unsigned int
 ctz(unsigned long ul) {
-  PPL_ASSERT(ul != 0);
+  assert(ul != 0);
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_ctzl(ul));
 #elif PPL_SIZEOF_LONG == 4
@@ -210,7 +209,7 @@ ctz(unsigned long ul) {
 
 inline unsigned int
 ctz(unsigned long long ull) {
-  PPL_ASSERT(ull != 0);
+  assert(ull != 0);
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_ctzll(ull));
 #elif PPL_SIZEOF_LONG_LONG == 4
