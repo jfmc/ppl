@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "checked.defs.hh"
-#include <climits>
+#include "C_Integer.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -109,7 +109,7 @@ inline bool
 sum_sign(bool& a_neg, unsigned long& a_mod,
          bool b_neg, unsigned long b_mod) {
   if (a_neg == b_neg) {
-    if (a_mod > ULONG_MAX - b_mod)
+    if (a_mod > C_Integer<unsigned long>::max - b_mod)
       return false;
     a_mod += b_mod;
   }
@@ -279,8 +279,9 @@ parse_number_part(std::istream& is, number_struct& numer) {
       exp:
         state = EXPONENT;
         PPL_ASSERT(numer.base >= 2);
-        max_exp_div = LONG_MAX / numer.base;
-        max_exp_rem = static_cast<int>(LONG_MAX % numer.base);
+        const long l_max = C_Integer<long>::max;
+        max_exp_div = static_cast<unsigned long>(l_max) / numer.base;
+        max_exp_rem = static_cast<int>(l_max % static_cast<long>(numer.base));
         if (!is.get(c))
           return V_CVT_STR_UNK;
         if (c == '-') {

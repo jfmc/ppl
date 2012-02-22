@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "Bit_Row.defs.hh"
 #include "assert.hh"
-#include <climits>
+#include "C_Integer.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -38,7 +38,7 @@ PPL::Bit_Row::first() const {
     if (limb != 0)
       return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
   }
-  return ULONG_MAX;
+  return C_Integer<unsigned long>::max;
 }
 
 unsigned long
@@ -50,13 +50,13 @@ PPL::Bit_Row::next(unsigned long position) const {
   // case mpz_scan1() is improved.
   //
   // unsigned long r = mpz_scan1(vec, position);
-  // return (r == ULONG_MAX) ? -1 : r;
+  // return (r == C_Integer<unsigned long>::max) ? -1 : r;
 
   mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
   if (li >= vec_size)
-    return ULONG_MAX;
+    return C_Integer<unsigned long>::max;
 
   // Get the first limb.
   mp_srcptr p = vec->_mp_d + li;
@@ -74,7 +74,7 @@ PPL::Bit_Row::next(unsigned long position) const {
     ++p;
     limb = *p;
   }
-  return ULONG_MAX;
+  return C_Integer<unsigned long>::max;
 }
 
 unsigned long
@@ -82,7 +82,7 @@ PPL::Bit_Row::last() const {
   mp_size_t li = vec->_mp_size;
   PPL_ASSERT(li >= 0);
   if (li == 0)
-    return ULONG_MAX;
+    return C_Integer<unsigned long>::max;
   --li;
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
@@ -93,7 +93,7 @@ PPL::Bit_Row::last() const {
 unsigned long
 PPL::Bit_Row::prev(unsigned long position) const {
   if (position == 0)
-    return ULONG_MAX;
+    return C_Integer<unsigned long>::max;
 
   --position;
 
@@ -127,7 +127,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
     --p;
     limb = *p;
   }
-  return ULONG_MAX;
+  return C_Integer<unsigned long>::max;
 }
 
 bool

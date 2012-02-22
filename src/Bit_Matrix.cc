@@ -25,9 +25,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Bit_Matrix.defs.hh"
 #include "globals.defs.hh"
 #include "swapping_sort.templates.hh"
+#include "C_Integer.hh"
 #include <iostream>
 #include <string>
-#include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -85,7 +85,8 @@ PPL::Bit_Matrix::transpose() {
   const dimension_type ncols = num_columns();
   Bit_Matrix tmp(ncols, nrows);
   for (dimension_type i = nrows; i-- > 0; )
-    for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
+    for (unsigned long j = x[i].last();
+         j != C_Integer<unsigned long>::max; j = x[i].prev(j))
       tmp[j].set(i);
   m_swap(tmp);
   PPL_ASSERT(OK());
@@ -97,7 +98,8 @@ PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
   const dimension_type y_num_columns = y.num_columns();
   Bit_Matrix tmp(y_num_columns, y_num_rows);
   for (dimension_type i = y_num_rows; i-- > 0; )
-    for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
+    for (unsigned long j = y[i].last();
+         j != C_Integer<unsigned long>::max; j = y[i].prev(j))
       tmp[j].set(i);
   m_swap(tmp);
   PPL_ASSERT(OK());
@@ -205,7 +207,8 @@ PPL::Bit_Matrix::OK() const {
     const Bit_Row& row = x[i];
     if (!row.OK())
       return false;
-    else if (row.last() != ULONG_MAX && row.last() >= row_size) {
+    else if (row.last() != C_Integer<unsigned long>::max
+             && row.last() >= row_size) {
 #ifndef NDEBUG
       cerr << "Bit_Matrix[" << i << "] is a row with too many bits!"
 	   << endl
