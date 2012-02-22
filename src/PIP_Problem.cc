@@ -727,7 +727,7 @@ PPL::PIP_Problem::total_memory_in_bytes() const {
 }
 
 void
-PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
+PPL::PIP_Problem::print_solution(std::ostream& s, int indent) const {
   switch (status) {
 
   case UNSATISFIABLE:

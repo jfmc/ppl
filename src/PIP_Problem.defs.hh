@@ -686,7 +686,7 @@ public:
     Thrown if trying to print the solution when the PIP problem
     still has to be solved.
   */
-  void print_solution(std::ostream& s, unsigned indent = 0) const;
+  void print_solution(std::ostream& s, int indent = 0) const;
 
   PPL_OUTPUT_DECLARATIONS
 
