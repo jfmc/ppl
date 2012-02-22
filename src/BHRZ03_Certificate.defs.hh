@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "BHRZ03_Certificate.types.hh"
 #include "Polyhedron.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "assert.hh"
 #include <vector>
 
