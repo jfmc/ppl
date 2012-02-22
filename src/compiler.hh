@@ -24,6 +24,11 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_compiler_hh
 #define PPL_compiler_hh 1
 
+#include "assert.hh"
+
+#include <cstddef>
+#include <climits>
+
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -72,6 +77,150 @@ struct Suppress_Uninitialized_Warnings_Type {
 #define PPL_UNINITIALIZED(type, name)           \
   type name
 #endif
+
+inline std::size_t
+sizeof_to_bits(std::size_t size) {
+  return size * static_cast<std::size_t>(CHAR_BIT);
+}
+
+#if !defined(__GNUC__)
+
+inline unsigned int clz32(u_int32_t w) {
+  unsigned int r = 31;
+  if ((w & 0xffffffff00000000ULL) != 0) {
+    w = (w >> 31) >> 1;
+    r -= 32;
+  }
+  if ((w & 0xffff0000U) != 0) {
+    w >>= 16;
+    r -= 16;
+  }
+  if ((w & 0xff00U) != 0) {
+    w >>= 8;
+    r -= 8;
+  }
+  if ((w & 0xf0U) != 0) {
+    w >>= 4;
+    r -= 4;
+  }
+  if ((w & 0xcU) != 0) {
+    w >>= 2;
+    r -= 2;
+  }
+  if ((w & 0x2U) != 0)
+    r -= 1;
+  return r;
+}
+
+inline unsigned int clz64(u_int64_t w) {
+  if ((w & 0xffffffff00000000ULL) == 0)
+    return clz32(static_cast<u_int32_t>(w)) + 32;
+  else
+    return clz32(static_cast<u_int32_t>(w >> 32));
+}
+
+inline unsigned int ctz32(u_int32_t w) {
+  static const unsigned int mod37_table[] = {
+    32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30, 28, 11, 0, 13,
+    4, 7, 17, 0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9,
+    5, 20, 8, 19, 18
+  };
+  return mod37_table[(w & -w) % 37];
+}
+
+inline unsigned int ctz64(u_int64_t w) {
+  if ((w & 0x00000000ffffffffULL) == 0)
+    return ctz32(static_cast<u_int32_t>(w >> 32)) + 32;
+  else
+    return ctz32(static_cast<u_int32_t>(w));
+}
+
+#endif
+
+inline unsigned int
+clz(unsigned int u) {
+  PPL_ASSERT(u != 0);
+#if defined(__GNUC__)
+  return static_cast<unsigned int>(__builtin_clz(u));
+#elif PPL_SIZEOF_INT == 4
+  return clz32(u);
+#elif PPL_SIZEOF_INT == 8
+  return clz64(u);
+#else
+  #error "Unsupported unsigned int size"
+#endif
+}
+
+inline unsigned int
+clz(unsigned long ul) {
+  PPL_ASSERT(ul != 0);
+#if defined(__GNUC__)
+  return static_cast<unsigned int>(__builtin_clzl(ul));
+#elif PPL_SIZEOF_LONG == 4
+  return clz32(u);
+#elif PPL_SIZEOF_LONG == 8
+  return clz64(u);
+#else
+  #error "Unsupported unsigned long size"
+#endif
+}
+
+inline unsigned int
+clz(unsigned long long ull) {
+  PPL_ASSERT(ull != 0);
+#if defined(__GNUC__)
+  return static_cast<unsigned int>(__builtin_clzll(ull));
+#elif PPL_SIZEOF_LONG_LONG == 4
+  return clz32(u);
+#elif PPL_SIZEOF_LONG_LONG == 8
+  return clz64(u);
+#else
+  #error "Unsupported unsigned long long size"
+#endif
+}
+
+
+inline unsigned int
+ctz(unsigned int u) {
+  PPL_ASSERT(u != 0);
+#if defined(__GNUC__)
+  return static_cast<unsigned int>(__builtin_ctz(u));
+#elif PPL_SIZEOF_INT == 4
+  return ctz32(u);
+#elif PPL_SIZEOF_INT == 8
+  return ctz64(u);
+#else
+  #error "Unsupported unsigned int size"
+#endif
+}
+
+inline unsigned int
+ctz(unsigned long ul) {
+  PPL_ASSERT(ul != 0);
+#if defined(__GNUC__)
+  return static_cast<unsigned int>(__builtin_ctzl(ul));
+#elif PPL_SIZEOF_LONG == 4
+  return ctz32(u);
+#elif PPL_SIZEOF_LONG == 8
+  return ctz64(u);
+#else
+  #error "Unsupported unsigned long size"
+#endif
+}
+
+inline unsigned int
+ctz(unsigned long long ull) {
+  PPL_ASSERT(ull != 0);
+#if defined(__GNUC__)
+  return static_cast<unsigned int>(__builtin_ctzll(ull));
+#elif PPL_SIZEOF_LONG_LONG == 4
+  return ctz32(u);
+#elif PPL_SIZEOF_LONG_LONG == 8
+  return ctz64(u);
+#else
+  #error "Unsupported unsigned long long size"
+#endif
+}
 
 } // namespace Parma_Polyhedra_Library
 

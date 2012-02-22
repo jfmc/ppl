@@ -24,8 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_assert_hh
 #define PPL_assert_hh 1
 
-#include "globals.defs.hh"
-
 // The PPL_UNREACHABLE_MSG macro flags a program point as unreachable.
 // Argument `msg__' is added to output when assertions are turned on.
 #if defined(NDEBUG)
