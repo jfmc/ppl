@@ -53,8 +53,9 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
-  static std::pair<dimension_type, signed char>
-    stack[4*CHAR_BIT*sizeof(dimension_type)+1];
+  static const unsigned stack_size
+    = 4U * static_cast<unsigned>(CHAR_BIT) * sizeof(dimension_type) + 1U;
+  static std::pair<dimension_type, signed char> stack[stack_size];
 
   dimension_type stack_first_empty = 0;
 

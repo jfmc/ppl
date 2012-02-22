@@ -761,7 +761,8 @@ CO_Tree::tree_iterator::follow_left_children_with_value() {
   p -= (offset - 1);
   while (*p == unused_index)
     ++p;
-  i = p - tree.indexes;
+  PPL_ASSERT(p >= tree.indexes);
+  i = static_cast<dimension_type>(p - tree.indexes);
   offset = i & -i;
   PPL_ASSERT(OK());
 }
@@ -774,7 +775,7 @@ CO_Tree::tree_iterator::follow_right_children_with_value() {
   p += (offset - 1);
   while (*p == unused_index)
     --p;
-  i = p - tree.indexes;
+  i = static_cast<dimension_type>(p - tree.indexes);
   offset = i & -i;
   PPL_ASSERT(OK());
 }

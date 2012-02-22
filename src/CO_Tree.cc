@@ -893,7 +893,8 @@ PPL::CO_Tree
     --subtree_size;
   }
 
-  return first_unused_index - indexes;
+  PPL_ASSERT(first_unused_index >= indexes);
+  return static_cast<dimension_type>(first_unused_index - indexes);
 }
 
 void
@@ -911,8 +912,9 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
   // For each node level, the stack may contain up to two element (one for the
   // subtree rooted at the right son of a node of that level, and one for the
   // node itself). An additional element can be at the top of the tree.
-  static std::pair<dimension_type,dimension_type>
-    stack[2*CHAR_BIT*sizeof(dimension_type)+1];
+  static const unsigned stack_size
+    = 2U * static_cast<unsigned>(CHAR_BIT) * sizeof(dimension_type) + 1U;
+  static std::pair<dimension_type,dimension_type> stack[stack_size];
 
   std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
 
@@ -1003,8 +1005,9 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
-  static std::pair<dimension_type, signed char>
-    stack[5*CHAR_BIT*sizeof(dimension_type)];
+  static const unsigned stack_size
+    = 5U * static_cast<unsigned>(CHAR_BIT) * sizeof(dimension_type);
+  static std::pair<dimension_type, signed char> stack[stack_size];
 
   dimension_type stack_first_empty = 0;
 
