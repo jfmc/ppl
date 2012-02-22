@@ -64,9 +64,10 @@ PPL::Constraint::Constraint(const Congruence& cg)
 	       ? (cg.space_dimension() + 1)
 	       : (throw_invalid_argument("Constraint(cg)",
 					 "congruence cg must be an equality."),
-		  0),
+		  0U),
 	       // Capacity also includes a column for the epsilon coefficient.
-	       compute_capacity(cg.space_dimension() + 2, Dense_Row::max_size()),
+	       compute_capacity(cg.space_dimension() + 2,
+                                Dense_Row::max_size()),
 	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
   // Copy coefficients and inhomogeneous term.
@@ -83,7 +84,7 @@ PPL::Constraint::Constraint(const Congruence& cg,
 	       ? sz
 	       : (throw_invalid_argument("Constraint(cg, sz, c)",
 					 "congruence cg must be an equality."),
-		  0),
+		  0U),
 	       capacity,
 	       Flags(NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
   Constraint& c = *this;
@@ -331,7 +332,7 @@ PPL::Constraint::OK() const {
     return false;
 
   // Topology consistency checks.
-  const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
+  const dimension_type min_size = is_necessarily_closed() ? 1U : 2U;
   if (size() < min_size) {
 #ifndef NDEBUG
     std::cerr << "Constraint has fewer coefficients than the minimum "

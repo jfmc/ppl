@@ -785,7 +785,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // The expected number of columns in the constraint and generator
   // systems, if they are not empty.
   const dimension_type poly_num_columns
-    = space_dim + (is_necessarily_closed() ? 1 : 2);
+    = space_dim + (is_necessarily_closed() ? 1U : 2U);
 
   // Check whether the topologies of `con_sys' and `gen_sys' agree.
   if (con_sys.topology() != gen_sys.topology()) {
@@ -2018,7 +2018,7 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
   const dimension_type space_dim = ineqs_p[0]->space_dimension();
   PPL_ASSERT(space_dim > 0 && space_dim >= rank);
   const dimension_type num_coefficients
-    = space_dim + ((topology == NECESSARILY_CLOSED) ? 0 : 1);
+    = space_dim + ((topology == NECESSARILY_CLOSED) ? 0U : 1U);
   const dimension_type min_sat = num_coefficients - rank;
   const dimension_type num_cols_sat = sat.num_columns();
 

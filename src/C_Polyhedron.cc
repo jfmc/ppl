@@ -48,7 +48,7 @@ PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
 						 "C_Polyhedron(cgs)",
 						 "the space dimension of cgs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+						 "space dimension"), 0U),
 	       UNIVERSE) {
   add_congruences(cgs);
 }
@@ -62,7 +62,7 @@ PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
 						 "(cgs, recycle)",
 						 "the space dimension of cgs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+						 "space dimension"), 0U),
 	       UNIVERSE) {
   add_congruences(cgs);
 }
@@ -75,7 +75,7 @@ PPL::C_Polyhedron::C_Polyhedron(const Grid& grid, Complexity_Class)
 						 "C_Polyhedron(grid)",
 						 "the space dimension of grid "
 						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+						 "space dimension"), 0U),
 	       UNIVERSE) {
   add_constraints(grid.constraints());
 }
