@@ -92,11 +92,11 @@ void
 PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow(topology(),
-				   "add_space_dimensions_and_embed(m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 topology(),
+                                 "add_space_dimensions_and_embed(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
@@ -189,11 +189,11 @@ void
 PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow(topology(),
-				   "add_space_dimensions_and_project(m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 topology(),
+                                 "add_space_dimensions_and_project(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
@@ -294,11 +294,12 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   const dimension_type added_columns = y.space_dim;
-  if (added_columns > max_space_dimension() - space_dim)
-    throw_space_dimension_overflow(topology(),
-				   "concatenate_assign(y)",
-				   "concatenation exceeds the maximum "
-				   "allowed space dimension");
+  check_space_dimension_overflow(added_columns,
+                                 max_space_dimension() - space_dimension(),
+                                 topology(),
+                                 "concatenate_assign(y)",
+                                 "concatenation exceeds the maximum "
+                                 "allowed space dimension");
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
@@ -558,11 +559,11 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow(topology(),
-				   "expand_dimension(v, m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 topology(),
+                                 "expand_dimension(v, m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)

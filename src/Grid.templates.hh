@@ -33,17 +33,16 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
-Grid::Grid(const Box<Interval>& box,
-           Complexity_Class)
+Grid::Grid(const Box<Interval>& box, Complexity_Class)
   : con_sys(),
     gen_sys() {
-  if (box.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(box, from_bounding_box)",
-				   "the space dimension of box "
-				   "exceeds the maximum allowed "
-				   "space dimension");
-
-  space_dim = box.space_dimension();
+  space_dim = check_space_dimension_overflow(box.space_dimension(),
+                                             max_space_dimension(),
+                                             "PPL::Grid::",
+                                             "Grid(box, from_bounding_box)",
+                                             "the space dimension of box "
+                                             "exceeds the maximum allowed "
+                                             "space dimension");
 
   if (box.is_empty()) {
     // Empty grid.

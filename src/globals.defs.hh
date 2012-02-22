@@ -482,6 +482,13 @@ FOK(long double)
 FOK(mpz_class)
 FOK(mpq_class)
 
+dimension_type
+check_space_dimension_overflow(dimension_type dim,
+                               dimension_type max,
+                               const char* domain,
+                               const char* method,
+                               const char* reason);
+
 } // namespace Parma_Polyhedra_Library
 
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.

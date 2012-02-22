@@ -579,6 +579,18 @@ Polyhedron::throw_dimension_incompatible(const char* method,
   throw_dimension_incompatible(method, lf_name, lf.space_dimension());
 }
 
+template <typename Input>
+Input&
+Polyhedron::check_obj_space_dimension_overflow(Input& input,
+                                               const Topology topol,
+                                               const char* method,
+                                               const char* reason) {
+  check_space_dimension_overflow(input.space_dimension(),
+                                 max_space_dimension(),
+                                 topol, method, reason);
+  return input;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Polyhedron_templates_hh)

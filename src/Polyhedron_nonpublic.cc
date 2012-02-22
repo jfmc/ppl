@@ -2415,19 +2415,24 @@ throw_dimension_incompatible(const char* method,
   throw std::invalid_argument(s.str());
 }
 
-void
-PPL::Polyhedron::throw_space_dimension_overflow(const Topology topol,
+PPL::dimension_type
+PPL::Polyhedron::check_space_dimension_overflow(const dimension_type dim,
+                                                const dimension_type max,
+                                                const Topology topol,
 						const char* method,
 						const char* reason) {
-  std::ostringstream s;
-  s << "PPL::";
-  if (topol == NECESSARILY_CLOSED)
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << reason << ".";
-  throw std::length_error(s.str());
+  const char* domain = (topol == NECESSARILY_CLOSED)
+    ? "PPL::C_Polyhedron::" : "PPL::NNC_Polyhedron::";
+  return PPL::check_space_dimension_overflow(dim, max, domain, method, reason);
+}
+
+PPL::dimension_type
+PPL::Polyhedron::check_space_dimension_overflow(const dimension_type dim,
+                                                const Topology topol,
+						const char* method,
+						const char* reason) {
+  return check_space_dimension_overflow(dim, Polyhedron::max_space_dimension(),
+                                        topol, method, reason);
 }
 
 void

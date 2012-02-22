@@ -809,15 +809,6 @@ throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Grid::throw_space_dimension_overflow(const char* method,
-					  const char* reason) {
-  std::ostringstream s;
-  s << "PPL::Grid::" << method << ":" << std::endl
-    << reason << ".";
-  throw std::length_error(s.str());
-}
-
-void
 PPL::Grid::throw_invalid_constraint(const char* method,
 				    const char* c_name) const {
   std::ostringstream s;

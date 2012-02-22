@@ -234,7 +234,7 @@ PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
   if (x.type() != y.type())
     return false;
   for (dimension_type
-         col = x.size() - (x.is_parameter() ? 0 : 1); col-- > 0; )
+         col = x.size() - (x.is_parameter() ? 0U : 1U); col-- > 0; )
     if (x[col] != y[col])
       return false;
   return true;

@@ -2607,11 +2607,6 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 
-  // Note: it has to be a static method, because it can be called inside
-  // constructors (before actually constructing the grid object).
-  static void throw_space_dimension_overflow(const char* method,
-					     const char* reason);
-
   void throw_invalid_constraint(const char* method,
                                 const char* c_name) const;
   void throw_invalid_constraints(const char* method,

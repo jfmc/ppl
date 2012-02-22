@@ -48,12 +48,12 @@ namespace Parma_Polyhedra_Library {
 template <typename ITV>
 inline
 Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
-  : seq((num_dimensions <= max_space_dimension())
-	? num_dimensions
-	: (throw_space_dimension_overflow("Box(n, k)",
-					  "n exceeds the maximum "
-					  "allowed space dimension"),
-	   num_dimensions)),
+  : seq(check_space_dimension_overflow(num_dimensions,
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(n, k)",
+                                       "n exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   // In a box that is marked empty the intervals are completely
   // meaningless: we exploit this by avoiding their initialization.
@@ -70,12 +70,12 @@ Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
 template <typename ITV>
 inline
 Box<ITV>::Box(const Constraint_System& cs)
-  : seq((cs.space_dimension() <= max_space_dimension())
-	? cs.space_dimension()
-	: (throw_space_dimension_overflow("Box(cs)",
-					  "cs exceeds the maximum "
-					  "allowed space dimension"),
-	   cs.space_dimension())),
+  : seq(check_space_dimension_overflow(cs.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(cs)",
+                                       "cs exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   // FIXME: check whether we can avoid the double initialization.
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
@@ -86,12 +86,12 @@ Box<ITV>::Box(const Constraint_System& cs)
 template <typename ITV>
 inline
 Box<ITV>::Box(const Congruence_System& cgs)
-  : seq((cgs.space_dimension() <= max_space_dimension())
-	? cgs.space_dimension()
-	: (throw_space_dimension_overflow("Box(cgs)",
-					  "cgs exceeds the maximum "
-					  "allowed space dimension"),
-	   cgs.space_dimension())),
+  : seq(check_space_dimension_overflow(cgs.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(cgs)",
+                                       "cgs exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   // FIXME: check whether we can avoid the double initialization.
   for (dimension_type i = cgs.space_dimension(); i-- > 0; )
@@ -119,12 +119,12 @@ Box<ITV>::Box(const Box<Other_ITV>& y, Complexity_Class)
 
 template <typename ITV>
 Box<ITV>::Box(const Generator_System& gs)
-  : seq((gs.space_dimension() <= max_space_dimension())
-	? gs.space_dimension()
-	: (throw_space_dimension_overflow("Box(gs)",
-					  "gs exceeds the maximum "
-					  "allowed space dimension"),
-	   gs.space_dimension())),
+  : seq(check_space_dimension_overflow(gs.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(gs)",
+                                       "gs exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
@@ -224,12 +224,12 @@ Box<ITV>::Box(const Generator_System& gs)
 template <typename ITV>
 template <typename T>
 Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
-  : seq(bds.space_dimension() <= max_space_dimension()
-	? bds.space_dimension()
-	: (throw_space_dimension_overflow("Box(bds)",
-					  "bds exceeds the maximum "
-					  "allowed space dimension"),
-	   bds.space_dimension())),
+  : seq(check_space_dimension_overflow(bds.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(bds)",
+                                       "bds exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   // Expose all the interval constraints.
   bds.shortest_path_closure_assign();
@@ -276,12 +276,12 @@ Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
 template <typename ITV>
 template <typename T>
 Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
-  : seq(oct.space_dimension() <= max_space_dimension()
-	? oct.space_dimension()
-	: (throw_space_dimension_overflow("Box(oct)",
-					  "oct exceeds the maximum "
-					  "allowed space dimension"),
-	   oct.space_dimension())),
+  : seq(check_space_dimension_overflow(oct.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(oct)",
+                                       "oct exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   // Expose all the interval constraints.
   oct.strong_closure_assign();
@@ -329,12 +329,12 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 
 template <typename ITV>
 Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
-  : seq((ph.space_dimension() <= max_space_dimension())
-	? ph.space_dimension()
-	: (throw_space_dimension_overflow("Box(ph)",
-					  "ph exceeds the maximum "
-					  "allowed space dimension"),
-	   ph.space_dimension())),
+  : seq(check_space_dimension_overflow(ph.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(ph)",
+                                       "ph exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
   // The empty flag will be meaningful, whatever happens from now on.
   set_empty_up_to_date();
@@ -440,12 +440,12 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
 template <typename ITV>
 Box<ITV>::Box(const Grid& gr, Complexity_Class)
-  : seq((gr.space_dimension() <= max_space_dimension())
-	? gr.space_dimension()
-	: (throw_space_dimension_overflow("Box(gr)",
-					  "gr exceeds the maximum "
-					  "allowed space dimension"),
-	   gr.space_dimension())),
+  : seq(check_space_dimension_overflow(gr.space_dimension(),
+                                       max_space_dimension(),
+                                       "PPL::Box::",
+                                       "Box(gr)",
+                                       "gr exceeds the maximum "
+                                       "allowed space dimension")),
     status() {
 
   // FIXME: here we are not taking advantage of intervals with restrictions!
@@ -497,10 +497,12 @@ template <typename D1, typename D2, typename R>
 Box<ITV>::Box(const Partially_Reduced_Product<D1, D2, R>& dp,
               Complexity_Class complexity)
   : seq(), status() {
-  if (dp.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Box(dp)",
-                                   "dp exceeds the maximum "
-                                   "allowed space dimension");
+  check_space_dimension_overflow(dp.space_dimension(),
+                                 max_space_dimension(),
+                                 "PPL::Box::",
+                                 "Box(dp)",
+                                 "dp exceeds the maximum "
+                                 "allowed space dimension");
   Box tmp1(dp.domain1(), complexity);
   Box tmp2(dp.domain2(), complexity);
   tmp1.intersection_assign(tmp2);
@@ -513,6 +515,11 @@ Box<ITV>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Box::",
+                                 "add_space_dimensions_and_embed(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
   // To embed an n-dimension space box in a (n+m)-dimension space,
   // we just add `m' new universe elements to the sequence.
   seq.insert(seq.end(), m, ITV(UNIVERSE));
@@ -525,6 +532,11 @@ Box<ITV>::add_space_dimensions_and_project(const dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Box::",
+                                 "add_space_dimensions_and_project(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
   // Add `m' new zero elements to the sequence.
   seq.insert(seq.end(), m, ITV(0));
   PPL_ASSERT(OK());
@@ -1780,7 +1792,13 @@ Box<ITV>::concatenate_assign(const Box& y) {
   // If `y' is a 0-dim space box, there is nothing left to do.
   if (y_space_dim == 0)
     return;
-
+  // The resulting space dimension must be at most the maximum.
+  check_space_dimension_overflow(y.space_dimension(),
+                                 max_space_dimension() - space_dimension(),
+                                 "PPL::Box::",
+                                 "concatenate_assign(y)",
+                                 "concatenation exceeds the maximum "
+                                 "allowed space dimension");
   // Here `y_space_dim > 0', so that a non-trivial concatenation will occur:
   // make sure that reallocation will occur once at most.
   x.seq.reserve(x_space_dim + y_space_dim);
@@ -4153,16 +4171,6 @@ Box<ITV>::throw_generic(const char* method, const char* reason) {
   s << "PPL::Box::" << method << ":" << std::endl
     << reason;
   throw std::invalid_argument(s.str());
-}
-
-template <typename ITV>
-void
-Box<ITV>::throw_space_dimension_overflow(const char* method,
-                                         const char* reason) {
-  std::ostringstream s;
-  s << "PPL::Box::" << method << ":" << std::endl
-    << reason;
-  throw std::length_error(s.str());
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

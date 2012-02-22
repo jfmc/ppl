@@ -81,10 +81,11 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
 
   // The space dimension of the resulting grid must be at most the
   // maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("add_space_dimensions_and_embed(m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "add_space_dimensions_and_embed(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Adding dimensions to an empty grid is obtained by adjusting
   // `space_dim' and clearing `con_sys' (since it can contain the
@@ -155,10 +156,11 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 
   // The space dimension of the resulting grid should be at most the
   // maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("add_space_dimensions_and_project(m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "add_space_dimensions_and_project(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Adding dimensions to an empty grid is obtained by merely
   // adjusting `space_dim'.
@@ -217,10 +219,12 @@ void
 PPL::Grid::concatenate_assign(const Grid& y) {
   // The space dimension of the resulting grid must be at most the
   // maximum allowed space dimension.
-  if (y.space_dim > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("concatenate_assign(y)",
-				   "concatenation exceeds the maximum "
-				   "allowed space dimension");
+  check_space_dimension_overflow(y.space_dimension(),
+                                 max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "concatenate_assign(y)",
+                                 "concatenation exceeds the maximum "
+                                 "allowed space dimension");
 
   const dimension_type added_columns = y.space_dim;
 
@@ -406,10 +410,11 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
     return;
 
   // The resulting space dimension must be at most the maximum.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("expand_space_dimension(v, m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "expand_space_dimension(v, m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Save the number of dimensions before adding new ones.
   dimension_type old_dim = space_dim;

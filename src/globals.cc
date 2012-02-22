@@ -42,4 +42,20 @@ unsigned int in_assert = 0;
 } // namespace Implementation
 #endif
 
+
+dimension_type
+check_space_dimension_overflow(const dimension_type dim,
+                               const dimension_type max,
+                               const char* domain,
+                               const char* method,
+                               const char* reason) {
+  if (dim > max) {
+    std::ostringstream s;
+    s << domain << method << ":" << std::endl
+      << reason << ".";
+    throw std::length_error(s.str());
+  }
+  return dim;
+}
+
 } // namespace Parma_Polyhedra_Library

@@ -2688,11 +2688,20 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 
-  // Note: it has to be a static method, because it can be called inside
-  // constructors (before actually constructing the polyhedron object).
-  static void throw_space_dimension_overflow(Topology topol,
-					     const char* method,
-					     const char* reason);
+  // Note: the following three methods need to be static, because they
+  // can be called inside constructors (before actually constructing the
+  // polyhedron object).
+  static dimension_type
+  check_space_dimension_overflow(dimension_type dim, dimension_type max,
+                                 const Topology topol,
+                                 const char* method, const char* reason);
+  static dimension_type
+  check_space_dimension_overflow(dimension_type dim, const Topology topol,
+                                 const char* method, const char* reason);
+  template <typename Object>
+  static Object&
+  check_obj_space_dimension_overflow(Object& in, Topology topol,
+                                     const char* method, const char* reason);
 
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
