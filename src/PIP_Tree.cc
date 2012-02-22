@@ -115,7 +115,7 @@ void
 merge_assign(Matrix& x, const Constraint_System& y,
              const Variables_Set& parameters) {
   PPL_ASSERT(parameters.size() == x.num_columns() - 1);
-  const dimension_type new_rows = std::distance(y.begin(), y.end());
+  const dimension_type new_rows = Implementation::num_constraints(y);
   if (new_rows == 0)
     return;
   const dimension_type old_num_rows = x.num_rows();
@@ -1254,8 +1254,7 @@ PIP_Decision_Node::OK() const {
 
   // Decision nodes with a false child must have exactly one constraint.
   if (false_child != 0) {
-    dimension_type dist = std::distance(constraints_.begin(),
-                                        constraints_.end());
+    dimension_type dist = Implementation::num_constraints(constraints_);
     if (dist != 1) {
 #ifndef NDEBUG
       std::cerr << "PIP_Decision_Node with a 'false' child has "
@@ -1321,7 +1320,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
 
   if (has_false_child) {
     // Decision nodes with false child must have exactly one constraint
-    PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
+    PPL_ASSERT(1 == Implementation::num_constraints(constraints_));
     // NOTE: modify context_true in place, complementing its last constraint.
     Matrix& context_false = context_true;
     Row& last = context_false[context_false.num_rows() - 1];
@@ -2244,7 +2243,8 @@ PIP_Solution_Node::update_tableau(
     // Compute the column number of big parameter in tableau.t matrix.
     Variables_Set::const_iterator pos
       = parameters.find(pip.big_parameter_dimension);
-    big_dimension = std::distance(parameters.begin(), pos) + 1;
+    big_dimension = 1U
+      + static_cast<dimension_type>(std::distance(parameters.begin(), pos));
   }
 
   Coefficient_traits::const_reference denom = tableau.denominator();

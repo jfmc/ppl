@@ -2712,8 +2712,8 @@ Box<ITV>
 
   const Constraint_System::const_iterator cs_begin = cs.begin();
   const Constraint_System::const_iterator cs_end = cs.end();
-  const dimension_type cs_size = std::distance(cs_begin, cs_end);
-  const dimension_type propagation_weight = cs_size * space_dim;
+  const dimension_type propagation_weight
+    = Implementation::num_constraints(cs) * space_dim;
 
   Sequence copy;
   bool changed;

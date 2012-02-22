@@ -402,6 +402,20 @@ private:
   void add_low_level_constraints();
 };
 
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Helper returning number of constraints in system.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+dimension_type
+num_constraints(const Constraint_System& cs);
+
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
+
 // Constraint_System.inlines.hh is not included here on purpose.
 
 #endif // !defined(PPL_Constraint_System_defs_hh)

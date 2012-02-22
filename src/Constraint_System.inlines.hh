@@ -215,6 +215,18 @@ swap(Constraint_System& x, Constraint_System& y) {
   x.m_swap(y);
 }
 
+namespace Implementation {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Constraint_System */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+inline dimension_type
+num_constraints(const Constraint_System& cs) {
+  return static_cast<dimension_type>(std::distance(cs.begin(), cs.end()));
+}
+
+} // namespace Implementation
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Constraint_System_inlines_hh)

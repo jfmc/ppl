@@ -148,7 +148,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 			   Constraint_System& cs_out2) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = std::distance(cs.begin(), cs.end());
+  const dimension_type m = num_constraints(cs);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
@@ -362,8 +362,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   PPL_ASSERT(cs_after.space_dimension() % 2 == 0);
   PPL_ASSERT(2*cs_before.space_dimension() == cs_after.space_dimension());
   const dimension_type n = cs_before.space_dimension();
-  const dimension_type r = distance(cs_before.begin(), cs_before.end());
-  const dimension_type s = distance(cs_after.begin(), cs_after.end());
+  const dimension_type r = num_constraints(cs_before);
+  const dimension_type s = num_constraints(cs_after);
   const dimension_type m = r + s;
 
   // Make sure linear expressions are not reallocated multiple times.
@@ -439,7 +439,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
                                    Linear_Expression& le_out) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = distance(cs.begin(), cs.end());
+  const dimension_type m = num_constraints(cs);
 
   // Make sure linear expressions are not reallocated multiple times.
   if (m > 0)
@@ -535,7 +535,7 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(output_function_MS);
 
   output_function_MS_n = n;
-  output_function_MS_m = std::distance(cs.begin(), cs.end());
+  output_function_MS_m = num_constraints(cs);
 
   std::cout << "*** ph1 projected ***" << std::endl;
   output_function_MS_which = 4;
@@ -580,7 +580,7 @@ all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(output_function_MS);
 
   output_function_MS_n = n;
-  output_function_MS_m = std::distance(cs.begin(), cs.end());
+  output_function_MS_m = num_constraints(cs);
 
   std::cout << "*** ph1 projected ***" << std::endl;
   output_function_MS_which = 4;
@@ -624,8 +624,8 @@ termination_test_PR(const Constraint_System& cs_before,
     = Variable::get_output_function();
   Variable::set_output_function(output_function_PR);
 
-  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
-  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+  output_function_PR_r = num_constraints(cs_before);
+  output_function_PR_s = num_constraints(cs_after);
 
   std::cout << "*** cs_mip ***" << std::endl;
   using namespace IO_Operators;
@@ -656,8 +656,8 @@ one_affine_ranking_function_PR(const Constraint_System& cs_before,
     = Variable::get_output_function();
   Variable::set_output_function(output_function_PR);
 
-  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
-  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+  output_function_PR_r = num_constraints(cs_before);
+  output_function_PR_s = num_constraints(cs_after);
 
   std::cout << "*** cs_mip ***" << std::endl;
   using namespace IO_Operators;
@@ -709,7 +709,7 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
                                         Generator& mu) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = std::distance(cs.begin(), cs.end());
+  const dimension_type m = num_constraints(cs);
 
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
@@ -771,8 +771,8 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
     = Variable::get_output_function();
   Variable::set_output_function(output_function_PR);
 
-  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
-  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+  output_function_PR_r = num_constraints(cs_before);
+  output_function_PR_s = num_constraints(cs_after);
 
   std::cout << "*** cs_eqs ***" << std::endl;
   using namespace IO_Operators;
@@ -784,7 +784,7 @@ all_affine_ranking_functions_PR(const Constraint_System& cs_before,
   NNC_Polyhedron ph(cs_eqs);
   ph.add_constraint(le_ineq < 0);
   // u_3 corresponds to space dimensions 0, ..., s - 1.
-  const dimension_type s = distance(cs_after.begin(), cs_after.end());
+  const dimension_type s = num_constraints(cs_after);
   ph.remove_higher_space_dimensions(s);
 
 #if PRINT_DEBUG_INFO
@@ -856,7 +856,7 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
                                          NNC_Polyhedron& mu_space) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = distance(cs.begin(), cs.end());
+  const dimension_type m = num_constraints(cs);
 
   if (m == 0) {
     // If there are no constraints at all, we have non-termination,
