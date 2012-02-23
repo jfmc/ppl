@@ -280,33 +280,31 @@ Grid::reduce_reduced(M& sys,
 
   PPL_DIRTY_TEMP_COEFFICIENT(pivot_dim_half);
   pivot_dim_half = (pivot_dim + 1) / 2;
-  Dimension_Kind row_kind = sys_dim_kinds[dim];
-  Dimension_Kind line_or_equality, virtual_kind;
-  int jump;
-  if (generators) {
-    line_or_equality = LINE;
-    virtual_kind = GEN_VIRTUAL;
-    jump = -1;
-  }
-  else {
-    line_or_equality = EQUALITY;
-    virtual_kind = CON_VIRTUAL;
-    jump = 1;
-  }
+  const Dimension_Kind row_kind = sys_dim_kinds[dim];
+  const bool row_is_line_or_equality
+    = (row_kind == (generators ? LINE : EQUALITY));
 
   PPL_DIRTY_TEMP_COEFFICIENT(num_rows_to_subtract);
   PPL_DIRTY_TEMP_COEFFICIENT(row_dim_remainder);
-  for (dimension_type row_index = pivot_index, kinds_index = dim + jump;
-       row_index-- > 0;
-       kinds_index += jump) {
-    // Move over any virtual rows.
-    while (sys_dim_kinds[kinds_index] == virtual_kind)
-      kinds_index += jump;
+  for (dimension_type kinds_index = dim,
+         row_index = pivot_index; row_index-- > 0; ) {
+    if (generators) {
+      --kinds_index;
+      // Move over any virtual rows.
+      while (sys_dim_kinds[kinds_index] == GEN_VIRTUAL)
+        --kinds_index;
+    }
+    else {
+      ++kinds_index;
+      // Move over any virtual rows.
+      while (sys_dim_kinds[kinds_index] == CON_VIRTUAL)
+        ++kinds_index;
+    }
 
     // row_kind CONGRUENCE is included as PARAMETER
-    if (row_kind == line_or_equality
+    if (row_is_line_or_equality
 	|| (row_kind == PARAMETER
-	    && sys_dim_kinds[kinds_index] == PARAMETER)) {
+            && sys_dim_kinds[kinds_index] == PARAMETER)) {
       R& row = sys[row_index];
 
       const Coefficient& row_dim = row[dim];
