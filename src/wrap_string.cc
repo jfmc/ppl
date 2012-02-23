@@ -23,6 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "wrap_string.hh"
+#include "assert.hh"
 #include <cstdlib>
 
 namespace Parma_Polyhedra_Library {
@@ -31,48 +32,50 @@ namespace IO_Operators {
 
 std::string
 wrap_string(const std::string& src_string,
-	    unsigned indent_depth,
-	    unsigned preferred_first_line_length,
-	    unsigned preferred_line_length) {
+	    const unsigned indent_depth,
+	    const unsigned preferred_first_line_length,
+	    const unsigned preferred_line_length) {
+  const unsigned npos = C_Integer<unsigned>::max;
   std::string dst_string;
   const char *src = src_string.c_str();
-  for (int line = 0; ; ++line) {
-    int line_length = ((line == 0)
-                       ? preferred_first_line_length
-                       : preferred_line_length);
-    int last_comma = -1;
-    int last_space = -1;
-    int split_pos = -1;
-    int i;
-    for (i = 0; i <= line_length; ++i) {
-      if (src[i] == '\0' || src[i] == '\n') {
-	split_pos = i;
+  for (unsigned line = 0; ; ++line) {
+    const unsigned line_length = ((line == 0)
+                                  ? preferred_first_line_length
+                                  : preferred_line_length);
+    unsigned last_comma = npos;
+    unsigned last_space = npos;
+    unsigned split_pos = npos;
+    unsigned idx;
+    for (idx = 0; idx <= line_length; ++idx) {
+      if (src[idx] == '\0' || src[idx] == '\n') {
+	split_pos = idx;
 	break;
       }
-      if (src[i] == ',' && i < line_length)
-	last_comma = i;
-      if (is_space(src[i]) && (i == 0 || !is_space(src[i-1])))
-	last_space = i;
+      if (src[idx] == ',' && idx < line_length)
+	last_comma = idx;
+      if (is_space(src[idx]) && (idx == 0 || !is_space(src[idx-1])))
+	last_space = idx;
     }
-    if (split_pos < 0) {
-      if (last_comma >= 0)
+    if (split_pos == npos) {
+      if (last_comma != npos)
 	split_pos = last_comma + 1;
-      else if (last_space >= 0)
+      else if (last_space != npos)
 	split_pos = last_space;
       else {
-	for ( ; src[i] != 0; ++i) {
-	  if (src[i] == ',') {
-	    ++i;
+	for ( ; src[idx] != 0; ++idx) {
+	  if (src[idx] == ',') {
+	    ++idx;
 	    break;
 	  }
-	  if (is_space(src[i]))
+	  if (is_space(src[idx]))
 	    break;
 	}
-	split_pos = i;
+	split_pos = idx;
       }
     }
+    PPL_ASSERT(split_pos != npos);
     if (split_pos > 0 && line > 0 && indent_depth > 0)
-	dst_string.append(indent_depth, ' ');
+      dst_string.append(indent_depth, ' ');
     dst_string.append(src, split_pos);
     src += split_pos;
     if (is_space(*src))
