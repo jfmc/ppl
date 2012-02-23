@@ -36,7 +36,8 @@ PPL::Bit_Row::first() const {
   for (mp_size_t li = 0; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
+        + Implementation::first_one(limb);
   }
   return C_Integer<unsigned long>::max;
 }
@@ -52,7 +53,7 @@ PPL::Bit_Row::next(unsigned long position) const {
   // unsigned long r = mpz_scan1(vec, position);
   // return (r == C_Integer<unsigned long>::max) ? -1 : r;
 
-  mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
+  mp_size_t li = position / static_cast<mp_size_t>(PPL_BITS_PER_GMP_LIMB);
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
   if (li >= vec_size)
@@ -67,7 +68,8 @@ PPL::Bit_Row::next(unsigned long position) const {
 
   while (true) {
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
+        + Implementation::first_one(limb);
     ++li;
     if (li == vec_size)
       break;
@@ -87,7 +89,8 @@ PPL::Bit_Row::last() const {
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
   PPL_ASSERT(limb != 0);
-  return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
+  return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
+    + Implementation::last_one(limb);
 }
 
 unsigned long
@@ -99,7 +102,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
 
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size > 0);
-  unsigned long li = position / PPL_BITS_PER_GMP_LIMB;
+  mp_size_t li = position / static_cast<mp_size_t>(PPL_BITS_PER_GMP_LIMB);
 
   mp_limb_t limb;
   mp_srcptr p = vec->_mp_d;
@@ -120,7 +123,8 @@ PPL::Bit_Row::prev(unsigned long position) const {
 
   while (true) {
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB 
+        + Implementation::last_one(limb);
     if (li == 0)
       break;
     --li;
