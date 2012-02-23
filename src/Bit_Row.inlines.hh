@@ -57,13 +57,13 @@ Bit_Row::Bit_Row(const Bit_Row& y, const Bit_Row& z) {
   PPL_ASSERT(z_size >= 0);
   if (y_size < z_size) {
     PPL_ASSERT(static_cast<unsigned long>(z_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
     mpz_init2(vec, static_cast<unsigned long>(z_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, z);
   }
   else {
     PPL_ASSERT(static_cast<unsigned long>(y_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
     mpz_init2(vec, static_cast<unsigned long>(y_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(z, y);
   }
@@ -135,13 +135,13 @@ Bit_Row::union_assign(const Bit_Row& x, const Bit_Row& y) {
   PPL_ASSERT(y_size >= 0);
   if (x_size < y_size) {
     PPL_ASSERT(static_cast<unsigned long>(y_size)
-               <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
     mpz_realloc2(vec, static_cast<unsigned long>(y_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(x, y);
   }
   else {
     PPL_ASSERT(static_cast<unsigned long>(x_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
     mpz_realloc2(vec, static_cast<unsigned long>(x_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, x);
   }
