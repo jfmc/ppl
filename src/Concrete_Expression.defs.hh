@@ -102,7 +102,7 @@ public:
 private:
   //! A 32-bit word encoding the type.
   struct Implementation {
-    unsigned int bounded_integer:1;
+    bool bounded_integer:1;
     unsigned int bounded_integer_type_width:23;
     unsigned int bounded_integer_type_representation:2;
     unsigned int bounded_integer_type_overflow:2;

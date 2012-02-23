@@ -37,7 +37,7 @@ Concrete_Expression_Type
                   const Bounded_Integer_Type_Representation representation,
                   const Bounded_Integer_Type_Overflow overflow) {
   Implementation impl;
-  impl.bounded_integer = 1U;
+  impl.bounded_integer = true;
   impl.bounded_integer_type_width = width;
   impl.bounded_integer_type_representation = representation;
   impl.bounded_integer_type_overflow = overflow;
@@ -50,7 +50,7 @@ inline Concrete_Expression_Type
 Concrete_Expression_Type
 ::floating_point(const Floating_Point_Format format) {
   Implementation impl;
-  impl.bounded_integer = 0;
+  impl.bounded_integer = false;
   impl.floating_point_format = format;
   // Arbitrary choices to ensure determinism.
   impl.bounded_integer_type_width = BITS_128;
@@ -61,12 +61,12 @@ Concrete_Expression_Type
 
 inline bool
 Concrete_Expression_Type::is_bounded_integer() const {
-  return impl.bounded_integer != 0;
+  return impl.bounded_integer;
 }
 
 inline bool
 Concrete_Expression_Type::is_floating_point() const {
-  return impl.bounded_integer == 0;
+  return !impl.bounded_integer;
 }
 
 inline Bounded_Integer_Type_Width
