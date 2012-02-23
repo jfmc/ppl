@@ -378,7 +378,7 @@ template <typename To, typename From>					\
 inline typename Enable_If<Is_Native_Or_Checked<To>::value		\
                           && Is_Native_Or_Checked<From>::value,         \
                           Result>::type					\
-name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
+name(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {		\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
 		 ::Policy,						\
