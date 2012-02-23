@@ -164,16 +164,19 @@ void internal_error() {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
 }
 
+inline char to_lower(char c) {
+  return static_cast<char>(tolower(static_cast<int>(static_cast<unsigned char>(c))));
+}
+
 bool
 strcaseeq(const char* s1, const char* s2) {
-  while (*s1 != 0 && *s2 != 0
-	 && tolower(static_cast<unsigned char>(*s1))
-	 == tolower(static_cast<unsigned char>(*s2))) {
+  while (*s1 != 0) {
+    if (*s2 == 0 || to_lower(*s1) != to_lower(*s2))
+      return false;
     ++s1;
     ++s2;
   }
-  return tolower(static_cast<unsigned char>(*s1))
-    == tolower(static_cast<unsigned char>(*s2));
+  return *s2 == 0;
 }
 
 void
