@@ -51,8 +51,8 @@ struct number_struct {
   association; returns \f$-1\f$ otherwise.
 */
 inline int
-get_digit(char c, int base = 10) {
-  int n;
+get_digit(char c, unsigned int base = 10) {
+  unsigned int n;
   switch (c) {
   case '0': n = 0; break;
   case '1': n = 1; break;
@@ -95,7 +95,7 @@ get_digit(char c, int base = 10) {
   }
   if (n >= base)
     return -1;
-  return n;
+  return static_cast<int>(n);
 }
 
 /*! \brief
@@ -136,7 +136,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
   bool empty_exponent = true;
   bool empty_mantissa = true;
   long exponent_offset = 0;
-  long exponent_offset_scale = 1;
+  unsigned exponent_offset_scale = 1;
   numer.base = 10;
   numer.base_for_exponent = 10;
   numer.neg_mantissa = false;
@@ -223,7 +223,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         for (std::string::const_iterator i = numer.mantissa.begin();
              i != numer.mantissa.end();
              i++) {
-          numer.base = numer.base * 10 + get_digit(*i, 10);
+          numer.base = numer.base * 10 + static_cast<unsigned>(get_digit(*i, 10));
           if (numer.base > 36)
             goto unexpected;
         }
@@ -301,7 +301,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         if (numer.exponent > max_exp_div
             || (numer.exponent == max_exp_div && d > max_exp_rem))
           return V_CVT_STR_UNK;
-        numer.exponent = 10*numer.exponent + d;
+        numer.exponent = 10 * numer.exponent + static_cast<unsigned int>(d);
         break;
       }
       if (empty_exponent)
@@ -331,7 +331,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
     else
       neg = false;
     sum_sign(numer.neg_exponent, numer.exponent,
-             neg, exponent_offset * exponent_offset_scale);
+             neg, static_cast<unsigned long>(exponent_offset) * exponent_offset_scale);
     return V_EQ;
   }
 
@@ -405,11 +405,13 @@ input_mpq(mpq_class& to, std::istream& is) {
   }
   mpz_ptr numer = to.get_num().get_mpz_t();
   mpz_ptr denom = to.get_den().get_mpz_t();
-  mpz_set_str(numer, numer_struct.mantissa.c_str(), numer_struct.base);
+  mpz_set_str(numer, numer_struct.mantissa.c_str(),
+              static_cast<int>(numer_struct.base));
   if (denom_struct.base != 0) {
     if (numer_struct.neg_mantissa != denom_struct.neg_mantissa)
       mpz_neg(numer, numer);
-    mpz_set_str(denom, denom_struct.mantissa.c_str(), denom_struct.base);
+    mpz_set_str(denom, denom_struct.mantissa.c_str(),
+                static_cast<int>(denom_struct.base));
     if (numer_struct.exponent != 0 || denom_struct.exponent != 0) {
       // Multiply the exponents into the numerator and denominator.
       mpz_t z;

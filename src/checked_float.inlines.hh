@@ -862,8 +862,8 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr numer_z = numer.get_mpz_t();
   mpz_srcptr denom_z = denom.get_mpz_t();
   int sign = sgn(numer);
-  signed long exponent
-    = mpz_sizeinbase(numer_z, 2) - mpz_sizeinbase(denom_z, 2);
+  long exponent = static_cast<long>(mpz_sizeinbase(numer_z, 2))
+    - static_cast<long>(mpz_sizeinbase(denom_z, 2));
   if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
   inexact:
@@ -884,13 +884,13 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
     needed_bits -= Float<T>::Binary::EXPONENT_MIN - exponent;
   mpz_t mantissa;
   mpz_init(mantissa);
-  signed long shift = needed_bits - exponent;
+  long shift = static_cast<long>(needed_bits) - exponent;
   if (shift > 0) {
-    mpz_mul_2exp(mantissa, numer_z, shift);
+    mpz_mul_2exp(mantissa, numer_z, static_cast<mp_bitcnt_t>(shift));
     numer_z = mantissa;
   }
   else if (shift < 0) {
-    mpz_mul_2exp(mantissa, denom_z, -shift);
+    mpz_mul_2exp(mantissa, denom_z, static_cast<mp_bitcnt_t>(-shift));
     denom_z = mantissa;
   }
   mpz_t r;

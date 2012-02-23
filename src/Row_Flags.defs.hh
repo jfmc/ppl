@@ -67,7 +67,7 @@ protected:
   static const unsigned first_free_bit = 0;
 
   //! Total number of bits that can be stored.
-  static const unsigned num_bits = std::numeric_limits<base_type>::digits;
+  static const unsigned num_bits = sizeof_to_bits(sizeof(base_type));
 
   //! Constructs an object with flags set as in \p n.
   explicit Row_Flags(base_type n);

@@ -263,7 +263,7 @@ struct float_ieee754_quad {
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 112;
-  static const int EXPONENT_MAX = (1U << (EXPONENT_BITS - 1)) - 1;
+  static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
