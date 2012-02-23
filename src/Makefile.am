@@ -229,7 +229,6 @@ Boundary.defs.hh \
 intervals.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
-Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \

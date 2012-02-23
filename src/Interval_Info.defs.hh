@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Interval_Info_defs_hh 1
 
 #include "Boundary.defs.hh"
-#include "Interval_Restriction.defs.hh"
 
 #include <iostream>
 
@@ -106,9 +105,10 @@ public:
   const_bool_nodef(check_inexact, Policy::check_inexact);
   const_bool_nodef(store_special, false);
   const_bool_nodef(store_open, false);
-  const_bool_nodef(cache_normalized, false);
   const_bool_nodef(cache_empty, false);
   const_bool_nodef(cache_singleton, false);
+  Interval_Info_Null() {
+  }
   void clear() {
   }
   void clear_boundary_properties(Boundary_Type) {
@@ -167,16 +167,13 @@ public:
   const_bool_nodef(check_inexact, Policy::check_inexact);
   const_bool_nodef(store_special, Policy::store_special);
   const_bool_nodef(store_open, Policy::store_open);
-  const_bool_nodef(cache_normalized, Policy::cache_normalized);
   const_bool_nodef(cache_empty, Policy::cache_empty);
   const_bool_nodef(cache_singleton, Policy::cache_singleton);
   const_int_nodef(lower_special_bit, Policy::next_bit);
   const_int_nodef(lower_open_bit, lower_special_bit + store_special);
-  const_int_nodef(lower_normalized_bit, lower_open_bit + store_open);
-  const_int_nodef(upper_special_bit, lower_normalized_bit + cache_normalized);
+  const_int_nodef(upper_special_bit, lower_open_bit + store_open);
   const_int_nodef(upper_open_bit, upper_special_bit + store_special);
-  const_int_nodef(upper_normalized_bit, upper_open_bit + store_open);
-  const_int_nodef(cardinality_is_bit, upper_normalized_bit + cache_normalized);
+  const_int_nodef(cardinality_is_bit, upper_open_bit + store_open);
   const_int_nodef(cardinality_0_bit, cardinality_is_bit + ((cache_empty || cache_singleton) ? 1 : 0));
   const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
   const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
@@ -211,14 +208,6 @@ public:
 	  set_bit(bitset, upper_open_bit, value);
       }
       break;
-    case Boundary_NS::Property::NORMALIZED_:
-      if (cache_normalized) {
-	if (t == LOWER)
-	  set_bit(bitset, lower_normalized_bit, value);
-	else
-	  set_bit(bitset, upper_normalized_bit, value);
-      }
-      break;
     default:
       break;
     }
@@ -239,13 +228,6 @@ public:
 	return get_bit(bitset, lower_open_bit);
       else
 	return get_bit(bitset, upper_open_bit);
-    case Boundary_NS::Property::NORMALIZED_:
-      if (!cache_normalized)
-	return false;
-      else if (t == LOWER)
-	return get_bit(bitset, lower_normalized_bit);
-      else
-	return get_bit(bitset, upper_normalized_bit);
     default:
       return false;
     }

@@ -45,10 +45,8 @@ struct My_Interval {
     const_bool_nodef(check_inexact, false);
   };
 
-  typedef Interval_Restriction_None
-  <Interval_Info_Bitset<unsigned int,
-                        Floating_Point_Real_Interval_Info_Policy> >
-  Floating_Point_Real_Interval_Info;
+  typedef Interval_Info_Bitset<unsigned int,
+                               Floating_Point_Real_Interval_Info_Policy> Floating_Point_Real_Interval_Info;
 
   typedef Interval<F, Floating_Point_Real_Interval_Info> interval_type;
 };

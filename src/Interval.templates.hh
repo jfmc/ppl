@@ -370,7 +370,6 @@ template <typename From>
 typename Enable_If<Is_Interval<From>::value, bool>::type
 Interval<Boundary, Info>::simplify_using_context_assign(const From& y) {
   // FIXME: the following code wrongly assumes that intervals are closed
-  // and have no restrictions. It must be generalized.
   if (lt(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y))) {
     lower_extend();
     return false;

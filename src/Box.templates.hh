@@ -448,8 +448,6 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
                                        "allowed space dimension")),
     status() {
 
-  // FIXME: here we are not taking advantage of intervals with restrictions!
-
   if (gr.marked_empty()) {
     set_empty();
     return;
@@ -2201,7 +2199,6 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
     else if (cg.is_tautological())
       return;
     else
-      // FIXME: what about intervals with restrictions?
       throw_generic("add_congruence(cg)",
                     "cg is a nontrivial proper congruence");
   }
@@ -2291,7 +2288,6 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
   PPL_ASSERT(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
-    // FIXME: also deal with the case of interval with restrictions.
     // A proper congruences is also an interval constraint
     // if and only if it is trivial.
     if (cg.is_inconsistent())

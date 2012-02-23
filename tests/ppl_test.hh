@@ -431,9 +431,8 @@ struct Floating_Real_Closed_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Restriction_None
-<Interval_Info_Bitset<unsigned int, Floating_Real_Open_Interval_Info_Policy> >
-Floating_Real_Open_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Floating_Real_Open_Interval_Info_Policy> Floating_Real_Open_Interval_Info;
 
 typedef Interval<float, Floating_Real_Open_Interval_Info> fl_r_oc;
 typedef Interval<double, Floating_Real_Open_Interval_Info> db_r_oc;
@@ -452,9 +451,8 @@ struct Rational_Real_Open_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Restriction_None
-<Interval_Info_Bitset<unsigned int, Rational_Real_Open_Interval_Info_Policy> >
-Rational_Real_Open_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Rational_Real_Open_Interval_Info_Policy> Rational_Real_Open_Interval_Info;
 
 typedef Interval<mpq_class, Rational_Real_Open_Interval_Info> rt_r_oc;
 

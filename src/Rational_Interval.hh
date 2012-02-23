@@ -41,10 +41,8 @@ struct Rational_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef
-Interval_Restriction_None<Interval_Info_Bitset<unsigned int,
-                                               Rational_Interval_Info_Policy> >
-Rational_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Rational_Interval_Info_Policy> Rational_Interval_Info;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An interval with rational, possibly open boundaries.

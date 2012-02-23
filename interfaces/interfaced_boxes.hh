@@ -40,11 +40,8 @@ struct Z_Box_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef
-Interval_Restriction_None<Interval_Info_Bitset
-                          <unsigned int,
-                           Z_Box_Interval_Info_Policy> >
-Z_Box_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Z_Box_Interval_Info_Policy> Z_Box_Interval_Info;
 
 typedef Box<Interval<mpz_class, Z_Box_Interval_Info> > Z_Box;
 
@@ -61,11 +58,8 @@ struct Floating_Point_Box_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef
-Interval_Restriction_None<Interval_Info_Bitset
-                          <unsigned int,
-                           Floating_Point_Box_Interval_Info_Policy> >
-Floating_Point_Box_Interval_Info;
+typedef Interval_Info_Bitset <unsigned int,
+                              Floating_Point_Box_Interval_Info_Policy> Floating_Point_Box_Interval_Info;
 
 typedef
 Box<Interval<float, Floating_Point_Box_Interval_Info> >
@@ -90,11 +84,8 @@ struct Native_Integer_Box_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef
-Interval_Restriction_None<Interval_Info_Bitset
-                          <unsigned int,
-                           Native_Integer_Box_Interval_Info_Policy> >
-Native_Integer_Box_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Native_Integer_Box_Interval_Info_Policy> Native_Integer_Box_Interval_Info;
 
 typedef Box<Interval<int8_t, Native_Integer_Box_Interval_Info> > Int8_Box;
 

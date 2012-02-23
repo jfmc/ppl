@@ -501,7 +501,7 @@ template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
-name(To& to, const From& x, int exp, Rounding_Dir dir);
+name(To& to, const From& x, unsigned int exp, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC1_B(add_2exp_assign_r)
 PPL_DECLARE_FUNC1_B(sub_2exp_assign_r)

@@ -38,10 +38,8 @@ struct Unsigned_Integer_Closed_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Restriction_None
-<Interval_Info_Bitset<unsigned int,
-                      Unsigned_Integer_Closed_Interval_Info_Policy> >
-Unsigned_Integer_Closed_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Unsigned_Integer_Closed_Interval_Info_Policy> Unsigned_Integer_Closed_Interval_Info;
 
 typedef Interval<unsigned long long, Unsigned_Integer_Closed_Interval_Info>
 Unsigned_Integer_Closed_Interval;
