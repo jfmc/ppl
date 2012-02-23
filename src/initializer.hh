@@ -27,17 +27,13 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Init.defs.hh"
 
 #ifndef PPL_NO_AUTOMATIC_INITIALIZATION
-namespace {
 
-Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
+static Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
-} // namespace
 #else
-namespace {
 
-Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
+static Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
 
-} // namespace
 #endif
 
 namespace Parma_Polyhedra_Library {
