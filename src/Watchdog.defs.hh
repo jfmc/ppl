@@ -51,13 +51,13 @@ struct Watchdog_Traits {
 class Watchdog {
 public:
   template <typename Flag_Base, typename Flag>
-  Watchdog(unsigned int csecs, const Flag_Base* volatile& holder, Flag& flag);
+  Watchdog(long csecs, const Flag_Base* volatile& holder, Flag& flag);
 
   /*! \brief
     Constructor: if not reset, the watchdog will trigger after \p csecs
     centiseconds, invoking handler \p function.
   */
-  Watchdog(unsigned int csecs, void (*function)());
+  Watchdog(long csecs, void (*function)());
 
   //! Destructor.
   ~Watchdog();
@@ -122,7 +122,7 @@ private:
 
   //! Handles the addition of a new watchdog event.
   static WD_Pending_List::Iterator
-  new_watchdog_event(unsigned int csecs,
+  new_watchdog_event(long csecs,
                      const WD_Handler& handler,
                      bool& expired_flag);
 

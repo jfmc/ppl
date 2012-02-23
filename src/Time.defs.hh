@@ -78,22 +78,22 @@ public:
   Time();
 
   //! Constructor taking a number of centiseconds.
-  explicit Time(unsigned long centisecs);
+  explicit Time(long centisecs);
 
   //! Constructor with seconds and microseconds.
-  Time(unsigned long s, unsigned long m);
+  Time(long s, long m);
 
   /*! \brief
     Returns the number of whole seconds contained in the represented
     time interval.
   */
-  unsigned long seconds() const;
+  long seconds() const;
 
   /*! \brief
     Returns the number of microseconds that, when added to the number
     of seconds returned by seconds(), give the represent time interval.
   */
-  unsigned long microseconds() const;
+  long microseconds() const;
 
   //! Adds \p y to \p *this.
   Time& operator+=(const Time& y);
@@ -109,16 +109,16 @@ public:
 
 private:
   //! Number of microseconds in a second.
-  static const unsigned long USECS_PER_SEC = 1000000UL;
+  static const long USECS_PER_SEC = 1000000L;
 
   //! Number of centiseconds in a second.
-  static const unsigned long CSECS_PER_SEC = 100UL;
+  static const long CSECS_PER_SEC = 100L;
 
   //! Number of seconds.
-  unsigned long secs;
+  long secs;
 
   //! Number of microseconds.
-  unsigned long microsecs;
+  long microsecs;
 };
 
 #include "Time.inlines.hh"

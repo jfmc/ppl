@@ -675,7 +675,7 @@ mul_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-div_2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
+div_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
   if (!ext_to_handle<From_Policy>(x))
     goto native;
   if (is_nan<From_Policy>(x))

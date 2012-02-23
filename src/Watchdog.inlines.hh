@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 #if PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
-Watchdog::Watchdog(unsigned int csecs,
+Watchdog::Watchdog(long csecs,
 		   const Flag_Base* volatile& holder,
                    Flag& flag)
   : expired(false),
@@ -49,7 +49,7 @@ Watchdog::Watchdog(unsigned int csecs,
 }
 
 inline
-Watchdog::Watchdog(unsigned int csecs, void (*function)())
+Watchdog::Watchdog(long csecs, void (*function)())
   : expired(false),
     handler(*new Implementation::Watchdog::Handler_Function(function)) {
   if (csecs == 0)
@@ -78,7 +78,7 @@ Watchdog::reschedule() {
 #else // !PPL_HAVE_DECL_SETITIMER !! !PPL_HAVE_DECL_SIGACTION
 
 template <typename Flag_Base, typename Flag>
-Watchdog::Watchdog(unsigned int /* csecs */,
+Watchdog::Watchdog(long /* csecs */,
 		   const Flag_Base* volatile& /* holder */,
                    Flag& /* flag */) {
   throw std::logic_error("PPL::Watchdog::Watchdog objects not supported:"
@@ -86,7 +86,7 @@ Watchdog::Watchdog(unsigned int /* csecs */,
 }
 
 inline
-Watchdog::Watchdog(unsigned int /* csecs */, void (* /* function */)()) {
+Watchdog::Watchdog(long /* csecs */, void (* /* function */)()) {
   throw std::logic_error("PPL::Watchdog::Watchdog objects not supported:"
                          " system does not provide setitimer()");
 }

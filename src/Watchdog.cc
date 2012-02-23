@@ -166,7 +166,7 @@ PPL::PPL_handle_timeout(int signum) {
 }
 
 PPL::Watchdog::WD_Pending_List::Iterator
-PPL::Watchdog::new_watchdog_event(unsigned int csecs,
+PPL::Watchdog::new_watchdog_event(long csecs,
 				  const WD_Handler& handler,
 				  bool& expired_flag) {
   using namespace Implementation::Watchdog;
