@@ -744,13 +744,14 @@ PPL::MIP_Problem::process_pending_constraints() {
   // * number of non-pending constraints that are no longer satisfied
   //   due to re-merging of split variables.
 
-  dimension_type num_satisfied_inequalities
-    = std::count(is_satisfied_inequality.begin(),
-                 is_satisfied_inequality.end(),
-                 true);
+  const dimension_type num_satisfied_inequalities
+    = static_cast<dimension_type>(std::count(is_satisfied_inequality.begin(),
+                                             is_satisfied_inequality.end(),
+                                             true));
   const dimension_type unfeasible_tableau_rows_size
     = unfeasible_tableau_rows.size();
 
+  PPL_ASSERT(additional_tableau_rows >= num_satisfied_inequalities);
   const dimension_type additional_artificial_vars
     = (additional_tableau_rows - num_satisfied_inequalities)
     + unfeasible_tableau_rows_size;
