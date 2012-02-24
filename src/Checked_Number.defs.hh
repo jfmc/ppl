@@ -46,18 +46,19 @@ struct Extended_Number_Policy {
   const_bool_nodef(check_sqrt_neg, false);
   const_bool_nodef(has_nan, true);
   const_bool_nodef(has_infinity, true);
-  // Do not uncomment the following.
-  // The compile time error on conversions is the expected behavior.
-  // const_bool_nodef(convertible, false);
+
+  // `convertible' is intentionally not defined: the compile time
+  // error on conversions is the expected behavior.
+
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(fpu_check_nan_result, true);
-  // Do not uncomment the following.
-  // The compile time error is the expected behavior.
-  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+
+  // ROUND_DEFAULT_CONSTRUCTOR is intentionally not defined.
+  // ROUND_DEFAULT_OPERATOR is intentionally not defined.
+  // ROUND_DEFAULT_FUNCTION is intentionally not defined.
+  // ROUND_DEFAULT_INPUT is intentionally not defined.
+  // ROUND_DEFAULT_OUTPUT is intentionally not defined.
+
   static void handle_result(Result r);
 };
 

@@ -65,9 +65,8 @@ struct WRD_Extended_Number_Policy {
   //! Handle infinity special values.
   const_bool_nodef(has_infinity, true);
 
-  // Do not uncomment the following.
-  // The compile time error on conversions is the expected behavior.
-  // const_bool_nodef(convertible, false);
+  // `convertible' is intentionally not defined: the compile time
+  // error on conversions is the expected behavior.
 
   //! Honor requests to check for FPU inexact results.
   const_bool_nodef(fpu_check_inexact, true);
@@ -75,13 +74,11 @@ struct WRD_Extended_Number_Policy {
   //! Do not make extra checks to detect FPU NaN results.
   const_bool_nodef(fpu_check_nan_result, false);
 
-  // Do not uncomment the following.
-  // The compile time error is the expected behavior.
-  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+  // ROUND_DEFAULT_CONSTRUCTOR is intentionally not defined.
+  // ROUND_DEFAULT_OPERATOR is intentionally not defined.
+  // ROUND_DEFAULT_FUNCTION is intentionally not defined.
+  // ROUND_DEFAULT_INPUT is intentionally not defined.
+  // ROUND_DEFAULT_OUTPUT is intentionally not defined.
 
   /*! \brief
     Handles \p r: called by all constructors, operators and functions that
@@ -127,9 +124,8 @@ struct Debug_WRD_Extended_Number_Policy {
   //! Handle infinity special values.
   const_bool_nodef(has_infinity, true);
 
-  // Do not uncomment the following.
-  // The compile time error on conversions is the expected behavior.
-  // const_bool_nodef(convertible, false);
+  // `convertible' is intentionally not defined: the compile time
+  // error on conversions is the expected behavior.
 
   //! Honor requests to check for FPU inexact results.
   const_bool_nodef(fpu_check_inexact, true);
@@ -137,13 +133,11 @@ struct Debug_WRD_Extended_Number_Policy {
   //! Make extra checks to detect FPU NaN results.
   const_bool_nodef(fpu_check_nan_result, true);
 
-  // Do not uncomment the following.
-  // The compile time error is the expected behavior.
-  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+  // ROUND_DEFAULT_CONSTRUCTOR is intentionally not defined.
+  // ROUND_DEFAULT_OPERATOR is intentionally not defined.
+  // ROUND_DEFAULT_FUNCTION is intentionally not defined.
+  // ROUND_DEFAULT_INPUT is intentionally not defined.
+  // ROUND_DEFAULT_OUTPUT is intentionally not defined.
 
   /*! \brief
     Handles \p r: called by all constructors, operators and functions that

@@ -222,27 +222,27 @@ PPL_SAFE_CONVERSION(mpz_class, signed char);
 PPL_SAFE_CONVERSION(mpz_class, signed short);
 PPL_SAFE_CONVERSION(mpz_class, signed int);
 PPL_SAFE_CONVERSION(mpz_class, signed long);
-//PPL_SAFE_CONVERSION(mpz_class, signed long long);
+// GMP's API does not support signed long long.
 PPL_SAFE_CONVERSION(mpz_class, unsigned char);
 PPL_SAFE_CONVERSION(mpz_class, unsigned short);
 PPL_SAFE_CONVERSION(mpz_class, unsigned int);
 PPL_SAFE_CONVERSION(mpz_class, unsigned long);
-//PPL_SAFE_CONVERSION(mpz_class, unsigned long long);
+// GMP's API does not support unsigned long long.
 
 PPL_SAFE_CONVERSION(mpq_class, char);
 PPL_SAFE_CONVERSION(mpq_class, signed char);
 PPL_SAFE_CONVERSION(mpq_class, signed short);
 PPL_SAFE_CONVERSION(mpq_class, signed int);
 PPL_SAFE_CONVERSION(mpq_class, signed long);
-//PPL_SAFE_CONVERSION(mpq_class, signed long long);
+// GMP's API does not support signed long long.
 PPL_SAFE_CONVERSION(mpq_class, unsigned char);
 PPL_SAFE_CONVERSION(mpq_class, unsigned short);
 PPL_SAFE_CONVERSION(mpq_class, unsigned int);
 PPL_SAFE_CONVERSION(mpq_class, unsigned long);
-//PPL_SAFE_CONVERSION(mpq_class, unsigned long long);
+// GMP's API does not support unsigned long long.
 PPL_SAFE_CONVERSION(mpq_class, float);
 PPL_SAFE_CONVERSION(mpq_class, double);
-//PPL_SAFE_CONVERSION(mpq_class, long double);
+// GMP's API does not support long double.
 
 #undef PPL_SAFE_CONVERSION
 
