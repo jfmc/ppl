@@ -241,10 +241,10 @@ public:
   */
   const iterator& end();
 
-  //! Equivalent to cbegin().
+  //! Equivalent to <CODE>cbegin()</CODE>.
   const_iterator begin() const;
 
-  //! Equivalent to cend().
+  //! Equivalent to <CODE>cend()</CODE>.
   const const_iterator& end() const;
 
   //! Returns an %iterator that points at the first element.
@@ -297,7 +297,7 @@ public:
   */
   Coefficient& operator[](dimension_type i);
 
-  //! Equivalent to get(i), provided for convenience.
+  //! Equivalent to <CODE>get(i)</CODE>, provided for convenience.
   /*!
     This method takes \f$O(\log n)\f$ time.
   */
@@ -452,7 +452,7 @@ public:
   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
-  //! Equivalent to (*this)[i] = x; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i] = x; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
@@ -469,7 +469,7 @@ public:
   */
   iterator insert(dimension_type i, Coefficient_traits::const_reference x);
 
-  //! Equivalent to (*this)[i]=x; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i] = x; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
@@ -479,7 +479,7 @@ public:
 
     \param itr
     It is used as a hint. This method will be faster if the searched element
-    is near to \p itr, even faster than <CODE>(*this)[i]=x;</CODE>.
+    is near to \p itr, even faster than <CODE>(*this)[i] = x</CODE>.
 
     The value of \p itr does not affect the result of this method, as long it
     is a valid %iterator for this row. \p itr may even be end().
@@ -493,7 +493,7 @@ public:
   iterator insert(iterator itr, dimension_type i,
                   Coefficient_traits::const_reference x);
 
-  //! Equivalent to (*this)[i]; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i]; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
@@ -507,14 +507,14 @@ public:
   */
   iterator insert(dimension_type i);
 
-  //! Equivalent to (*this)[i]; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i]; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
 
     \param itr
     It is used as a hint. This method will be faster if the searched element
-    is near to \p itr, even faster than <CODE>(*this)[i];</CODE>.
+    is near to \p itr, even faster than <CODE>(*this)[i]</CODE>.
 
     The value of \p itr does not affect the result of this method, as long it
     is a valid %iterator for this row. \p itr may even be end().
