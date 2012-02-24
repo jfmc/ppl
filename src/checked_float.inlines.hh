@@ -840,7 +840,7 @@ assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
   else
     mpz_mul_2exp(mantissa, from_z, Float<T>::Binary::MANTISSA_BITS - exponent);
   Float<T> f;
-  f.u.binary.build(sign < 0, mantissa, exponent);
+  f.u.binary.build(sign < 0, mantissa, static_cast<long>(exponent));
   mpz_clear(mantissa);
   to = f.value();
   if (meaningful_bits > Float<T>::Binary::MANTISSA_BITS) {

@@ -184,7 +184,7 @@ ppl_@CLASS@_relation_with_@!RELATION_REPRESENT@
  ppl_const_@!RELATION_REPRESENT@_t c) try {
   const @CPP_CLASS@& pph = *to_const(ph);
   const @!RELATION_REPRESENT@& cc = *to_const(c);
-  return pph.relation_with(cc).get_flags();
+  return static_cast<int>(pph.relation_with(cc).get_flags());
 }
 CATCH_ALL
 

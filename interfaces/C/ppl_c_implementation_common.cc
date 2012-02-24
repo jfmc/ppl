@@ -306,25 +306,25 @@ CATCH_ALL
 
 int
 ppl_version_major(void) try {
-  return version_major();
+  return static_cast<int>(version_major());
 }
 CATCH_ALL
 
 int
 ppl_version_minor(void) try {
-  return version_minor();
+  return static_cast<int>(version_minor());
 }
 CATCH_ALL
 
 int
 ppl_version_revision(void) try {
-  return version_revision();
+  return static_cast<int>(version_revision());
 }
 CATCH_ALL
 
 int
 ppl_version_beta(void) try {
-  return version_beta();
+  return static_cast<int>(version_beta());
 }
 CATCH_ALL
 
@@ -1903,7 +1903,7 @@ int
 ppl_MIP_Problem_number_of_constraints(ppl_const_MIP_Problem_t mip,
 				      ppl_dimension_type* m) try {
   const MIP_Problem& mmip = *to_const(mip);
-  *m = mmip.constraints_end() - mmip.constraints_begin();
+  *m = static_cast<ppl_dimension_type>(mmip.constraints_end() - mmip.constraints_begin());
   return 0;
 }
 CATCH_ALL
@@ -2188,7 +2188,7 @@ int
 ppl_PIP_Problem_number_of_constraints(ppl_const_PIP_Problem_t pip,
 				      ppl_dimension_type* m) try {
   const PIP_Problem& ppip = *to_const(pip);
-  *m = ppip.constraints_end() - ppip.constraints_begin();
+  *m = static_cast<ppl_dimension_type>(ppip.constraints_end() - ppip.constraints_begin());
   return 0;
 }
 CATCH_ALL
