@@ -422,11 +422,11 @@ Linear_Form<C>::relative_error(
 
   C error_propagator;
   // We assume that f_base is a power of 2.
-  int power = msb_position(f_base) * (-f_mantissa_bits);
-  analyzer_format lb = -static_cast<analyzer_format>(ldexp(1.0, power));
+  int power = static_cast<int>(msb_position(f_base) * f_mantissa_bits);
+  analyzer_format lb = static_cast<analyzer_format>(ldexp(1.0, -power));
 
-  error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),
-                         i_constraint(LESS_OR_EQUAL, -lb));
+  error_propagator.build(i_constraint(GREATER_OR_EQUAL, -lb),
+                         i_constraint(LESS_OR_EQUAL, lb));
 
   // Handle the inhomogeneous term.
   const C* current_term = &inhomogeneous_term();
