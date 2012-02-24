@@ -2299,10 +2299,10 @@ PIP_Solution_Node::update_tableau(
         else {
           const dimension_type mv = mapping[v_index];
           if (basis[v_index]) {
-            // Basic variable : add coeff_i * x_i
+            // Basic variable: add coeff_i * x_i
             add_mul_assign(v_row[mv], coeff_i, denom);
           } else {
-            // Non-basic variable : add coeff_i * row_i
+            // Non-basic variable: add coeff_i * row_i
             add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
             add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
           }
@@ -2597,7 +2597,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       PPL_DIRTY_TEMP_COEFFICIENT(s_pivot_pj);
       s_pivot_pj = s_pivot.get(pj);
 
-      // Compute columns s[*][j] :
+      // Compute columns s[*][j]:
       // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
@@ -2634,7 +2634,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
 
-      // Compute columns t[*][j] :
+      // Compute columns t[*][j]:
       // t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
@@ -2698,7 +2698,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
 
-      // Compute column s[*][pj] : s[i][pj] /= s_pivot_pj;
+      // Compute column s[*][pj]: s[i][pj] /= s_pivot_pj;
       // Update column only if pivot coordinate != 1.
       if (s_pivot_pj != pivot_denom) {
         Row::iterator itr;
