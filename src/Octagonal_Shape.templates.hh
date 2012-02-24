@@ -3403,10 +3403,12 @@ Octagonal_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
   // We consider each variable and we check if it has to be removed.
   // If it has to be removed, we pass to the next one, then we will
   // overwrite its representation in the matrix.
+  typedef typename OR_Matrix<N>::element_iterator Elem_Iter;
+  typedef typename std::iterator_traits<Elem_Iter>::difference_type diff_t;
+
   dimension_type first = *vars.begin();
-  dimension_type first_size = 2*first*(first + 1);
-  typename OR_Matrix<N>::element_iterator
-    iter = matrix.element_begin() + first_size;
+  const dimension_type first_size = 2 * first * (first + 1);
+  Elem_Iter iter = matrix.element_begin() + static_cast<diff_t>(first_size);
 
   for (dimension_type i = first + 1; i < space_dim; ++i) {
     if (vars.count(i) == 0) {
