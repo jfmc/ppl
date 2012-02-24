@@ -872,7 +872,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
     else
       return round_gt_float<To_Policy>(to, dir);
   }
-  if (exponent > int(Float<T>::Binary::EXPONENT_MAX + 1)) {
+  if (exponent > Float<T>::Binary::EXPONENT_MAX + 1) {
   overflow:
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
@@ -905,7 +905,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
   }
   else
     --exponent;
-  if (exponent > int(Float<T>::Binary::EXPONENT_MAX)) {
+  if (exponent > Float<T>::Binary::EXPONENT_MAX) {
     mpz_clear(mantissa);
     goto overflow;
   }
