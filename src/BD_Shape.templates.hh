@@ -781,7 +781,7 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   // and return true. Otherwise the values for \p expr
   // are not discrete so return false.
 
-  // Space dimension = 0: if empty, then return false;
+  // Space dimension is 0: if empty, then return false;
   // otherwise the frequency is 0 and the value is the inhomogeneous term.
   if (space_dim == 0) {
     if (is_empty())
@@ -4247,11 +4247,11 @@ void BD_Shape<T>
   PPL_DIRTY_TEMP(N, b_mlb);
   neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
-  // true if w_coeff = [1;1]
+  // True if `w_coeff' is in [1, 1].
   bool is_w_coeff_one = (w_coeff == 1);
 
   if (w_id == var_id) {
-    // true if b = [b_lb, b_ub] = [0;0].
+    // True if `b' is in [b_mlb, b_ub] and that is [0, 0].
     bool is_b_zero = (b_mlb == 0 && b_ub == 0);
     // Here `lf' is of the form: [+/-1;+/-1] * v + b.
     if (is_w_coeff_one) {
@@ -4260,7 +4260,7 @@ void BD_Shape<T>
         return;
       else {
         // Translate all the constraints on `var' by adding the value
-        // `b_ub' or subtracting the value `b_lb'.
+        // `b_ub' or subtracting the value `b_mlb'.
         DB_Row<N>& dbm_v = dbm[var_id];
         for (dimension_type i = space_dim + 1; i-- > 0; ) {
           N& dbm_vi = dbm_v[i];
@@ -4281,7 +4281,7 @@ void BD_Shape<T>
       reset_shortest_path_closed();
       if (!is_b_zero) {
         // Translate the unary constraints on `var' by adding the value
-        // `b_ub' or subtracting the value `b_lb'.
+        // `b_ub' or subtracting the value `b_mlb'.
         N& dbm_v0 = dbm[var_id][0];
         add_assign_r(dbm_v0, dbm_v0, b_mlb, ROUND_UP);
         N& dbm_0v = dbm[0][var_id];
@@ -4298,7 +4298,7 @@ void BD_Shape<T>
     if (marked_shortest_path_reduced())
       reset_shortest_path_reduced();
     if (is_w_coeff_one) {
-      // Add the new constraints `var - w >= b_lb'
+      // Add the new constraints `var - w >= b_mlb'
       // `and var - w <= b_ub'.
       add_dbm_constraint(w_id, var_id, b_ub);
       add_dbm_constraint(var_id, w_id, b_mlb);
