@@ -5244,7 +5244,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
     return;
   }
 
-  // true if b = [0;0].
+  // True if `b' is [0, 0].
   bool is_b_zero = (b_mlb == 0 && b_ub == 0);
 
   if (t == 1) {
