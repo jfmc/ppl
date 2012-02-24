@@ -65,7 +65,6 @@ private:
 
   friend class const_iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the const_iterator, therefore
@@ -138,7 +137,6 @@ private:
 
   friend class iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the underlying const_iterator.
