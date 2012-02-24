@@ -484,14 +484,16 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
-	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod_nle);
-	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
-	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= normalized_sp_n;
-	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
-	  // }
+          // <CODE>
+	  //   Coefficient scale = scalar_prod[i];
+	  //   scale.gcd_assign(scalar_prod_nle);
+	  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+	  //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
+	  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	  //     dest[i][c] *= normalized_sp_n;
+	  //     dest[i][c] -= normalized_sp_i * dest_nle[c];
+	  //   }
+          // </CODE>
 	  normalize2(scalar_prod[i],
 		     scalar_prod_nle,
 		     normalized_sp_i,
@@ -520,14 +522,16 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
-	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod_nle);
-	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
-	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= normalized_sp_n;
-	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
-	  // }
+          // <CODE>
+	  //   Coefficient scale = scalar_prod[i];
+	  //   scale.gcd_assign(scalar_prod_nle);
+	  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+	  //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
+	  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	  //     dest[i][c] *= normalized_sp_n;
+	  //     dest[i][c] -= normalized_sp_i * dest_nle[c];
+	  //   }
+          // </CODE>
 	  normalize2(scalar_prod[i],
 		     scalar_prod_nle,
 		     normalized_sp_i,
@@ -735,14 +739,16 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
 		  //
-		  // Coefficient scale = scalar_prod[i];
-		  // scale.gcd_assign(scalar_prod[j]);
-		  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-		  // Coefficient normalized_sp_j = scalar_prod[j] / scale;
-		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		  //   new_row[c] = normalized_sp_i * dest[j][c];
-		  //   new_row[c] -= normalized_sp_j * dest[i][c];
-		  // }
+                  // <CODE>
+		  //   Coefficient scale = scalar_prod[i];
+		  //   scale.gcd_assign(scalar_prod[j]);
+		  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+		  //   Coefficient normalized_sp_j = scalar_prod[j] / scale;
+		  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+		  //     new_row[c] = normalized_sp_i * dest[j][c];
+		  //     new_row[c] -= normalized_sp_j * dest[i][c];
+		  //   }
+                  // </CODE>
 		  normalize2(scalar_prod[i],
 			     scalar_prod[j],
 			     normalized_sp_i,
