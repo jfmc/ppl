@@ -294,7 +294,7 @@ PPL::Dense_Matrix::resize_no_copy(const dimension_type new_n_rows,
   }
   else if (new_n_rows < old_n_rows) {
     // Drop some rows.
-    rows.erase(rows.begin() + new_n_rows, rows.end());
+    rows.resize(new_n_rows);
     old_n_rows = new_n_rows;
   }
   // Here we have the right number of rows.

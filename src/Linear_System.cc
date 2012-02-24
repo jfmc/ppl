@@ -337,8 +337,8 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   PPL_ASSERT(first_row >= first_pending_row() || last_row <= first_pending_row());
 
   // First sort without removing duplicates.
-  std::vector<Dense_Row>::iterator first = rows.begin() + first_row;
-  std::vector<Dense_Row>::iterator last = rows.begin() + last_row;
+  std::vector<Dense_Row>::iterator first = nth_iter(rows, first_row);
+  std::vector<Dense_Row>::iterator last = nth_iter(rows, last_row);
   Implementation::swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates to the end.
   std::vector<Dense_Row>::iterator new_last

@@ -63,7 +63,7 @@ Bit_Matrix::remove_trailing_rows(const dimension_type n) {
   // than the actual number of the rows of the matrix.
   PPL_ASSERT(n <= rows.size());
   if (n != 0)
-    rows.erase(rows.end() - n, rows.end());
+    rows.resize(rows.size() - n);
   PPL_ASSERT(OK());
 }
 

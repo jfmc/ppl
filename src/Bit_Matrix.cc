@@ -137,7 +137,7 @@ PPL::Bit_Matrix::resize(dimension_type new_n_rows,
   }
   else if (new_n_rows < old_num_rows)
     // Drop some rows.
-    rows.erase(rows.begin() + new_n_rows, rows.end());
+    rows.resize(new_n_rows);
 
   PPL_ASSERT(OK());
 }

@@ -489,6 +489,14 @@ check_space_dimension_overflow(dimension_type dim,
                                const char* method,
                                const char* reason);
 
+template <typename RA_Container>
+typename RA_Container::iterator
+nth_iter(RA_Container& cont, dimension_type n);
+
+template <typename RA_Container>
+typename RA_Container::const_iterator
+nth_iter(const RA_Container& cont, dimension_type n);
+
 } // namespace Parma_Polyhedra_Library
 
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.

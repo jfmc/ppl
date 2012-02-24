@@ -128,6 +128,20 @@ is_space(char c) {
   return isspace(c) != 0;
 }
 
+template <typename RA_Container>
+inline typename RA_Container::iterator
+nth_iter(RA_Container& cont, dimension_type n) {
+  typedef typename RA_Container::difference_type diff_t;
+  return cont.begin() + static_cast<diff_t>(n);
+}
+
+template <typename RA_Container>
+inline typename RA_Container::const_iterator
+nth_iter(const RA_Container& cont, dimension_type n) {
+  typedef typename RA_Container::difference_type diff_t;
+  return cont.begin() + static_cast<diff_t>(n);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_globals_inlines_hh)

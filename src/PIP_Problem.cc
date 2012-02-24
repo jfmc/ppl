@@ -132,7 +132,7 @@ PPL::PIP_Problem::solve() const {
 
       // Go through all pending constraints.
       for (Constraint_Sequence::const_iterator
-             cs_i = input_cs.begin() + first_pending_constraint,
+             cs_i = nth_iter(input_cs, first_pending_constraint),
              cs_end = input_cs.end(); cs_i != cs_end; ++cs_i) {
         const Constraint& c = *cs_i;
         const dimension_type c_space_dim = c.space_dimension();

@@ -2223,8 +2223,8 @@ PIP_Solution_Node::update_tableau(
           Need to insert the original variable id
           before the slack variable id's to respect variable ordering.
         */
-        basis.insert(basis.begin() + new_var_column, true);
-        mapping.insert(mapping.begin() + new_var_column, new_var_column);
+        basis.insert(nth_iter(basis, new_var_column), true);
+        mapping.insert(nth_iter(mapping, new_var_column), new_var_column);
         // Update variable id's of slack variables.
         for (dimension_type j = var_row.size(); j-- > 0; )
           if (var_row[j] >= new_var_column)
@@ -2252,7 +2252,7 @@ PIP_Solution_Node::update_tableau(
   Coefficient_traits::const_reference denom = tableau.denominator();
 
   for (Constraint_Sequence::const_iterator
-         c_iter = input_cs.begin() + first_pending_constraint,
+         c_iter = nth_iter(input_cs, first_pending_constraint),
          c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
     const Constraint& constraint = *c_iter;
     // (Tentatively) Add new rows to s and t matrices.

@@ -351,7 +351,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	gen_sys.remove_trailing_rows(num_redundant);
 	gen_sys.unset_pending_rows();
       }
-      dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+      dim_kinds.resize(new_dimension + 1);
       // TODO: Consider if it is worth also preserving the congruences
       //       if they are also in minimal form.
     }
@@ -383,7 +383,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
       // form.
       con_sys.remove_trailing_rows(num_redundant);
     }
-    dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+    dim_kinds.resize(new_dimension + 1);
     clear_generators_up_to_date();
     // Replace gen_sys with an empty system of the right dimension.
     // Extra 2 columns for inhomogeneous term and modulus.

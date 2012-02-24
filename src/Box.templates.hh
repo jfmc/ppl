@@ -2062,7 +2062,7 @@ Box<ITV>::remove_higher_space_dimensions(const dimension_type new_dim) {
     return;
   }
 
-  seq.erase(seq.begin() + new_dim, seq.end());
+  seq.resize(new_dim);
   PPL_ASSERT(OK());
 }
 
