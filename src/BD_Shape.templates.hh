@@ -597,24 +597,26 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   }
 
   /*
-    The `y' bounded difference shape need be closed.
-    In fact if, for example, in `*this' we have the constraints:
+    The `y' bounded difference shape must be closed.  As an example,
+    consider the case where in `*this' we have the constraints
 
-    x1 - x2 <= 1;
-    x1      <= 3;
-    x2      <= 2;
+    x1 - x2 <= 1,
+    x1      <= 3,
+    x2      <= 2,
 
-    in `y' the constraints are:
+    and in `y' the constraints are
 
-    x1 - x2 <= 0;
-    x2      <= 1;
+    x1 - x2 <= 0,
+    x2      <= 1.
 
-    without closure it returns "false", instead if we close `y' we have
-    the implicit constraint
+    Without closure the (erroneous) analysis of the inhomogeneous terms
+    would conclude containment does not hold.  Closing `y' results into
+    the "discovery" of the implicit constraint
 
-    x1      <= 1;
+    x1      <= 1,
 
-    and so we obtain the right result "true".
+    at which point the inhomogeneous terms can be examined to determine
+    that containment does hold.
   */
   y.shortest_path_closure_assign();
 

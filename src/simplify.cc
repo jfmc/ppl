@@ -192,11 +192,12 @@ PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // condition for an inequality to be irredundant (i.e., it provides
   // a sufficient condition for identifying redundant inequalities).
   // Let
-  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_points[i];
-  //   dim_lin_space = num_irredundant_lines;
+  //
+  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_points[i],
+  //   dim_lin_space = num_irredundant_lines,
   //   dim_ray_space
   //     = dim_vector_space - num_irredundant_equalities - dim_lin_space
-  //     = num_columns - 1 - num_lines_or_equalities - dim_lin_space;
+  //     = num_columns - 1 - num_lines_or_equalities - dim_lin_space,
   //   min_sat_rays_or_points = dim_ray_space.
   //
   // An inequality saturated by less than `dim_ray_space' _rays/points_

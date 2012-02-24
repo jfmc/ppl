@@ -229,7 +229,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // In contrast, in the system of constraints, new rows are needed
   // in order to avoid embedding the old polyhedron in the new space.
   // Thus, for each new dimensions `x[k]', we add the constraint
-  // x[k] = 0; this is done by invoking the function add_space_dimensions()
+  // x[k] = 0: this is done by invoking the function add_space_dimensions()
   // giving the system of constraints as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
@@ -237,7 +237,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
       if (!sat_g_is_up_to_date())
 	update_sat_g();
       // Adds rows and/or columns to both matrices.
-      // `add_space_dimensions' correctly handles pending constraints
+      // `add_space_dimensions()' correctly handles pending constraints
       // or generators.
       add_space_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
     }
