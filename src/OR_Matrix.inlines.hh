@@ -243,14 +243,14 @@ template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
-  difference_type increment = m + m*m/2 + m*e;
+  difference_type increment = m + m * m / 2 + m * static_cast<difference_type>(e);
   if (e % 2 == 0 && m % 2 != 0)
     ++increment;
-  e += m;
-  i += increment;
+  e = static_cast<dimension_type>(static_cast<difference_type>(e) + m);
+  i = static_cast<dimension_type>(static_cast<difference_type>(i) + increment);
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  value.size_ += (m - m%2);
+  value.size_ = static_cast<dimension_type>(static_cast<difference_type>(value.size_) + m - m % 2);
 #endif
   return *this;
 }
