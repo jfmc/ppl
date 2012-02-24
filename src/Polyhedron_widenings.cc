@@ -602,7 +602,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		if (!considered[h]) {
 		  tmp = x_g[k] * y_g[h];
 		  // The following line optimizes the computation of
-		  // tmp -= x_g[h] * y_g[k];
+		  // <CODE> tmp -= x_g[h] * y_g[k]; </CODE>
 		  sub_mul_assign(tmp, x_g[h], y_g[k]);
 		  const int clockwise
 		    = sgn(tmp);
