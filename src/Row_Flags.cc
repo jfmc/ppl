@@ -32,11 +32,13 @@ void
 PPL::Row_Flags::ascii_dump(std::ostream& s) const {
   s << "0x";
   std::istream::fmtflags f = s.setf(std::istream::hex);
-  std::streamsize sz = s.width(2*sizeof(Row_Flags::base_type));
+  const std::streamsize new_sz
+    = static_cast<std::streamsize>(2 * sizeof(Row_Flags::base_type));
+  const std::streamsize old_sz = s.width(new_sz);
   std::ostream::char_type ch = s.fill('0');
   s << bits;
   s.fill(ch);
-  s.width(sz);
+  s.width(old_sz);
   s.flags(f);
 }
 
