@@ -50,8 +50,10 @@ PPL::Bit_Row::next(unsigned long position) const {
   // of GMP was measured to be slower that ours.  Here it is, in
   // case mpz_scan1() is improved.
   //
-  // unsigned long r = mpz_scan1(vec, position);
-  // return (r == C_Integer<unsigned long>::max) ? -1 : r;
+  // <CODE>
+  //   unsigned long r = mpz_scan1(vec, position);
+  //   return (r == C_Integer<unsigned long>::max) ? -1 : r;
+  // </CODE>
 
   mp_size_t li = static_cast<mp_size_t>(position / PPL_BITS_PER_GMP_LIMB);
   const mp_size_t vec_size = vec->_mp_size;
