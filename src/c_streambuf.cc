@@ -23,6 +23,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "c_streambuf.defs.hh"
+#include "globals.defs.hh"
+#include "assert.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -48,22 +50,24 @@ c_streambuf::underflow() {
 
 std::streamsize
 c_streambuf::xsgetn(char_type* s, std::streamsize n) {
+  PPL_ASSERT(n >= 0);
   if (n == 0)
     return n;
   const int_type eof = traits_type::eof();
-  int a;
+  const size_t sz_n = static_cast<size_t>(n);
+  size_t a;
   if (traits_type::eq_int_type(next_char_buf, eof))
     a = 0;
   else {
     s[0] = static_cast<char_type>(next_char_buf);
     a = 1;
   }
-  std::streamsize r = cb_read(s + a, n - a) + a;
+  const size_t r = cb_read(s + a, sz_n - a) + a;
   if (r > 0)
     unget_char_buf = traits_type::to_int_type(s[r - 1]);
   else
     unget_char_buf = traits_type::eof();
-  return r;
+  return static_cast<std::streamsize>(r);
 }
 
 c_streambuf::int_type
@@ -76,7 +80,9 @@ c_streambuf::pbackfail(int_type c) {
 
 std::streamsize
 c_streambuf::xsputn(const char_type* s, std::streamsize n) {
-  return cb_write(s, n);
+  PPL_ASSERT(n >= 0);
+  size_t r = cb_write(s, static_cast<size_t>(n));
+  return static_cast<std::streamsize>(r);
 }
 
 c_streambuf::int_type

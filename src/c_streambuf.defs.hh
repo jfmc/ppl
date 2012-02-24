@@ -26,6 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "c_streambuf.types.hh"
 #include <streambuf>
+#include <cstddef>
 
 class Parma_Polyhedra_Library::c_streambuf
   : public std::basic_streambuf<char, std::char_traits<char> > {

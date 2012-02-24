@@ -23,6 +23,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "stdiobuf.defs.hh"
+#include "globals.defs.hh"
+#include "assert.hh"
+#include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 
@@ -40,12 +43,13 @@ stdiobuf::underflow() {
 
 std::streamsize
 stdiobuf::xsgetn(char_type* s, std::streamsize n) {
-  std::streamsize r = fread(s, 1, n, fp);
+  PPL_ASSERT(n >= 0);
+  size_t r = fread(s, 1, static_cast<size_t>(n), fp);
   if (r > 0)
     unget_char_buf = traits_type::to_int_type(s[r - 1]);
   else
     unget_char_buf = traits_type::eof();
-  return r;
+  return static_cast<std::streamsize>(r);
 }
 
 stdiobuf::int_type
@@ -58,7 +62,9 @@ stdiobuf::pbackfail(int_type c) {
 
 std::streamsize
 stdiobuf::xsputn(const char_type* s, std::streamsize n) {
-  return fwrite(s, 1, n, fp);
+  PPL_ASSERT(n >= 0);
+  size_t r = fwrite(s, 1, static_cast<size_t>(n), fp);
+  return static_cast<std::streamsize>(r);
 }
 
 stdiobuf::int_type
