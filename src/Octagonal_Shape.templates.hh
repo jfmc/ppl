@@ -4431,8 +4431,8 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP(N, minus_coeff_i);
         // Note: indices above `w' can be disregarded, as they all have
         // a zero coefficient in `sc_expr'.
-        for (Row_iterator m_iter = m_begin, m_end = m_begin + (2 * w_id + 2);
-             m_iter != m_end; ) {
+        for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+             m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
           Row_reference m_i = *m_iter;
@@ -4618,8 +4618,8 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
         // Note: indices above `w_id' can be disregarded, as they all have
         // a zero coefficient in `expr'.
-        for (Row_Iterator m_iter = m_begin, m_end = m_begin + (2 * w_id + 2);
-             m_iter != m_end; ) {
+        for (Row_Iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+             m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
           Row_Reference m_i = *m_iter;
@@ -4702,8 +4702,8 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP(N, coeff_i);
         PPL_DIRTY_TEMP(N, approx_i);
         PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
-        for (Row_Iterator m_iter = m_begin, m_end = m_begin + (2 * w_id + 2);
-             m_iter != m_end; ) {
+        for (Row_Iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+             m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
           Row_Reference m_i = *m_iter;
@@ -4999,8 +4999,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
   const Row_Iterator m_begin = matrix.row_begin();
-  for (Row_iterator m_iter = m_begin,
-         m_end = m_begin + (2 * w_id + 2); m_iter != m_end; ) {
+  for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+       m_iter != m_iter_end; ) {
     const dimension_type n_i = m_iter.index();
     const dimension_type id = n_i/2;
     Row_reference m_i = *m_iter;
@@ -5933,8 +5933,8 @@ Octagonal_Shape<T>
       PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
       // Note: indices above `w' can be disregarded, as they all have
       // a zero coefficient in `sc_expr'.
-      for (Row_iterator m_iter = m_begin, m_end = m_begin + (2 * w_id + 2);
-           m_iter != m_end; ) {
+      for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+           m_iter != m_iter_end; ) {
         const dimension_type n_i = m_iter.index();
         const dimension_type id = n_i/2;
         Row_reference m_i = *m_iter;
@@ -6027,8 +6027,8 @@ Octagonal_Shape<T>
       PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
       PPL_DIRTY_TEMP(N, approx_i);
       // Approximate the homogeneous part of `-sc_expr'.
-      for (Row_iterator m_iter = m_begin, m_end = m_begin + (2 * w_id + 2);
-           m_iter != m_end; ) {
+      for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+           m_iter != m_iter_end; ) {
         const dimension_type n_i = m_iter.index();
         const dimension_type id = n_i/2;
         Row_reference m_i = *m_iter;
@@ -6493,8 +6493,8 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  for (Row_iterator m_iter = m_begin, m_end = m_begin + (2 * w_id + 2);
-       m_iter != m_end; ) {
+  for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+       m_iter != m_iter_end; ) {
     const dimension_type n_i = m_iter.index();
     const dimension_type id = n_i/2;
     Row_reference m_i = *m_iter;
