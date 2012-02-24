@@ -257,6 +257,25 @@ OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
 
 template <typename T>
 template <typename U>
+template <typename Unsigned>
+inline typename
+Enable_If<(static_cast<Unsigned>(-1) > 0),
+            typename OR_Matrix<T>::template any_row_iterator<U>& >::type
+OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m) {
+  dimension_type increment = m + m * m / 2 + m * e;
+  if (e % 2 == 0 && m % 2 != 0)
+    ++increment;
+  e += m;
+  i += increment;
+  value.first += increment;
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  value.size_ = value.size_ + m - m % 2;
+#endif
+  return *this;
+}
+
+template <typename T>
+template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator-=(difference_type m) {
   return *this += -m;
@@ -273,6 +292,18 @@ template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>
 OR_Matrix<T>::any_row_iterator<U>::operator+(difference_type m) const {
+  any_row_iterator r = *this;
+  r += m;
+  return r;
+}
+
+template <typename T>
+template <typename U>
+template <typename Unsigned>
+inline typename
+Enable_If<(static_cast<Unsigned>(-1) > 0),
+            typename OR_Matrix<T>::template any_row_iterator<U> >::type
+OR_Matrix<T>::any_row_iterator<U>::operator+(Unsigned m) const {
   any_row_iterator r = *this;
   r += m;
   return r;

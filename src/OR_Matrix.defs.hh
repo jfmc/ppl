@@ -253,6 +253,11 @@ private:
     //! Assignment-increment operator.
     any_row_iterator& operator+=(difference_type m);
 
+    //! Assignment-increment operator for \p m of unsigned type.
+    template <typename Unsigned>
+    typename Enable_If<(static_cast<Unsigned>(-1) > 0), any_row_iterator&>::type
+    operator+=(Unsigned m);
+
     //! Assignment-decrement operator.
     any_row_iterator& operator-=(difference_type m);
 
@@ -261,6 +266,11 @@ private:
 
     //! Returns the sum of \p *this and \p m.
     any_row_iterator operator+(difference_type m) const;
+
+    //! Returns the sum of \p *this and \p m, for \p m of unsigned type.
+    template <typename Unsigned>
+    typename Enable_If<(static_cast<Unsigned>(-1) > 0), any_row_iterator>::type
+    operator+(Unsigned m) const;
 
     //! Returns the difference of \p *this and \p m.
     any_row_iterator operator-(difference_type m) const;
