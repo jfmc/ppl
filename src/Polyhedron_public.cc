@@ -3491,8 +3491,8 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   // `freq_n' is 0. Otherwise the values for \p expr are not discrete
   // and we return false.
 
-  // Space dimension = 0: if empty, then return false;
-  // otherwise the frequency is 1 and the value is 0
+  // Space dimension is 0: if empty, then return false;
+  // otherwise the frequency is 1 and the value is 0.
   if (space_dim == 0) {
     if (is_empty())
       return false;
