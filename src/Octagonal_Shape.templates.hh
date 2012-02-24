@@ -1305,7 +1305,7 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
   // and return true. Otherwise the values for \p expr
   // are not discrete so return false.
 
-  // Space dimension = 0: if empty, then return false;
+  // Space dimension is 0: if empty, then return false;
   // otherwise the frequency is 0 and the value is the inhomogeneous term.
   if (space_dim == 0) {
     if (is_empty())
@@ -2447,9 +2447,12 @@ Octagonal_Shape<T>::strong_closure_assign() const {
         // Unfolding two iterations on `j': this ensures that
         // the loop exit condition `j <= i' is OK.
         for (dimension_type j = 0; j <= i; ) {
-          // First iteration:
-          // sum1 = x_i_k + x_k_j == x_ck_ci + x_k_j;
-          // sum2 = x_i_ck + x_ck_j == x_k_ci + x_ck_j.
+          // First iteration: compute
+          //
+          // <CODE>
+          //   sum1 = x_i_k + x_k_j == x_ck_ci + x_k_j;
+          //   sum2 = x_i_ck + x_ck_j == x_k_ci + x_ck_j;
+          // </CODE>
           add_assign_r(sum1, vec_ck_ci, vec_k[j], ROUND_UP);
           add_assign_r(sum2, vec_k_ci, vec_ck[j], ROUND_UP);
           min_assign(sum1, sum2);

@@ -1685,10 +1685,13 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
   {
-    // This block is equivalent to:
-    // working_cost[new_last_column] = working_cost.get(old_last_column);
-    // But it avoids storing zeroes.
-
+    // This block is equivalent to
+    //
+    // <CODE>
+    //   working_cost[new_last_column] = working_cost.get(old_last_column);
+    // </CODE>
+    //
+    // but it avoids storing zeroes.
     Coefficient_traits::const_reference old_cost
       = working_cost.get(old_last_column);
     if (old_cost == 0)

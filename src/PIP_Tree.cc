@@ -257,7 +257,8 @@ column_lower(const Matrix& tableau,
   const dimension_type num_vars = mapping.size();
   dimension_type k = 0;
   // While loop guard is: (k < num_rows && lhs == rhs).
-  // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
+  // Return value is false, if k >= num_rows; it is equivalent to
+  // lhs < rhs, otherwise.
   // Try to optimize the computation of lhs and rhs.
   while (true) {
     const dimension_type mk = mapping[k];
@@ -282,7 +283,8 @@ column_lower(const Matrix& tableau,
       }
       // Optimizing for: lhs == 0 && rhs == 0;
       continue;
-    } else {
+    }
+    else {
       // Not in base.
       const Row& t_mk = tableau[mk];
       Coefficient_traits::const_reference t_mk_ja = t_mk.get(ja);
