@@ -1002,7 +1002,6 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 template <typename Boundary, typename Info>
 inline std::ostream&
 operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
-  // PPL_ASSERT(x.OK());
   if (check_empty_arg(x))
     return os << "[]";
   if (x.is_singleton()) {

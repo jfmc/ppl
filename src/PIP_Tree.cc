@@ -249,7 +249,6 @@ column_lower(const Matrix& tableau,
   if (ja == jb) {
     // Same column: just compare the ratios.
     // This works since all columns are lexico-positive.
-    // return cst_a * sij_b > cst_b * sij_a;
     return lhs_coeff > rhs_coeff;
   }
 
