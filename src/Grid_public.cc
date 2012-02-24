@@ -2509,8 +2509,8 @@ PPL::Grid::frequency(const Linear_Expression& expr,
   if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("frequency(e, ...)", "e", expr);
 
-  // Space dimension = 0: if empty, then return false;
-  // otherwise the frequency is 1 and the value is 0
+  // Space dimension is 0: if empty, then return false;
+  // otherwise the frequency is 1 and the value is 0.
   if (space_dim == 0) {
     if (is_empty())
       return false;
