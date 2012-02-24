@@ -2598,7 +2598,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       s_pivot_pj = s_pivot.get(pj);
 
       // Compute columns s[*][j]:
-      // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
+      //
+      // <CODE>
+      //   s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
+      // </CODE>
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         PPL_DIRTY_TEMP_COEFFICIENT(s_i_pj);
@@ -2635,7 +2638,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       }
 
       // Compute columns t[*][j]:
-      // t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
+      //
+      // <CODE>
+      //   t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
+      // </CODE>
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         Row& t_i = tableau.t[i];
@@ -3279,17 +3285,18 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
             *itr1 -= mod;
             itr2 = ctx2.insert(0, *itr1);
             neg_assign(*itr2);
-            // ctx2[0] += denom-1;
+            // Compute <CODE> ctx2[0] += denom-1; </CODE>
             *itr2 += denom;
             --(*itr2);
           } else {
-            // ctx2[0] += denom-1;
+            // Compute <CODE> ctx2[0] += denom-1; </CODE>
             itr2 = ctx2.insert(0, denom);
             --(*itr2);
           }
           ++j;
-        } else {
-          // ctx2[0] += denom-1;
+        }
+        else {
+          // Compute <CODE> ctx2[0] += denom-1; </CODE>
           itr2 = ctx2.insert(0, denom);
           --(*itr2);
         }
