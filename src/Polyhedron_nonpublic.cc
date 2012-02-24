@@ -1460,7 +1460,8 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Minimization is not really required, but it is probably the best
   // way of getting constraints, generators and saturation matrices
-  // up-to-date; it also removes redundant constraints/generators.
+  // up-to-date.  Minimization it also removes redundant
+  // constraints/generators.
   (void) x.minimize();
   (void) y.minimize();
 
@@ -1563,7 +1564,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Minimization is not really required, but it is probably the best
   // way of getting constraints, generators and saturation matrices
-  // up-to-date; it also removes redundant constraints/generators.
+  // up-to-date.  Minimization also removes redundant
+  // constraints/generators.
   (void) x.minimize();
   (void) y.minimize();
 
