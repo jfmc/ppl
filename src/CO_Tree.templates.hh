@@ -73,8 +73,12 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
 
   while (stack_first_empty != 0) {
 
-    // top_n         = stack.top().first;
-    // top_operation = stack.top().second;
+    // Implement
+    //
+    // <CODE>
+    //   top_n         = stack.top().first;
+    //   top_operation = stack.top().second;
+    // </CODE>
     const dimension_type top_n = stack[stack_first_empty - 1].first;
     const signed char top_operation = stack[stack_first_empty - 1].second;
 

@@ -930,8 +930,12 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
 
     --stack_first_empty;
 
-    // top_n = stack.top().first;
-    // top_i = stack.top().second;
+    // Implement
+    //
+    // <CODE>
+    //   top_n = stack.top().first;
+    //   top_i = stack.top().second;
+    // </CODE>
     const dimension_type top_n = stack_first_empty->first;
     const dimension_type top_i = stack_first_empty->second;
 
@@ -1024,8 +1028,12 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 
   while (stack_first_empty != 0) {
 
-    // top_n         = stack.top().first;
-    // top_operation = stack.top().second;
+    // Implement
+    //
+    // <CODE>
+    //   top_n         = stack.top().first;
+    //   top_operation = stack.top().second;
+    // </CODE>
     const dimension_type top_n = stack[stack_first_empty - 1].first;
     const signed char top_operation = stack[stack_first_empty - 1].second;
 

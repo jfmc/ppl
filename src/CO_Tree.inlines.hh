@@ -319,9 +319,10 @@ inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
   // The following code is equivalent (but slower):
   //
-  // new (&to) data_type(from);
-  // from.~data_type();
-
+  // <CODE>
+  //   new (&to) data_type(from);
+  //   from.~data_type();
+  // </CODE>
   std::memcpy(&to, &from, sizeof(data_type));
 }
 
