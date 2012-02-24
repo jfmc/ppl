@@ -5244,15 +5244,15 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
     return;
   }
 
-  // True if `b' is [0, 0].
+  // True if `b' is in [0, 0].
   bool is_b_zero = (b_mlb == 0 && b_ub == 0);
 
   if (t == 1) {
     // The one and only non-zero homogeneous coefficient in `lf'.
     const FP_Interval_Type& w_coeff = lf.coefficient(Variable(w_id));
-    // true if w_coeff = [1;1].
+    // True if `w_coeff' is in [1, 1].
     bool is_w_coeff_one = (w_coeff == 1);
-    // true if w_coeff = [-1;-1].
+    // True if `w_coeff' is in [-1, -1].
     bool is_w_coeff_minus_one = (w_coeff == -1);
     if (is_w_coeff_one || is_w_coeff_minus_one) {
       // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1;+/-1].
