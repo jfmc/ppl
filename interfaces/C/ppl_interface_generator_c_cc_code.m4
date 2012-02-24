@@ -758,7 +758,7 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
- int disjuncts) try {
+ unsigned disjuncts) try {
    @CPP_CLASS@& xx = *to_nonconst(x);
    const @CPP_CLASS@& yy = *to_const(y);
    xx.BGP99_extrapolation_assign(yy,
