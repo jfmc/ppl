@@ -312,7 +312,7 @@ wrap_assign(PSET& pointset,
     Coefficient& quadrants = u_d;
     quadrants = last_quadrant - first_quadrant + 1;
 
-    unsigned extension;
+    PPL_UNINITIALIZED(unsigned, extension);
     Result res = assign_r(extension, quadrants, ROUND_IGNORE);
     if (result_overflow(res) != 0 || extension > complexity_threshold)
       goto set_full_range;
