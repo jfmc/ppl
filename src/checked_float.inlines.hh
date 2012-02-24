@@ -881,7 +881,8 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
   }
   unsigned int needed_bits = Float<T>::Binary::MANTISSA_BITS + 1;
   if (exponent < Float<T>::Binary::EXPONENT_MIN)
-    needed_bits -= Float<T>::Binary::EXPONENT_MIN - exponent;
+    needed_bits -= static_cast<unsigned int>(Float<T>::Binary::EXPONENT_MIN
+                                             - exponent);
   mpz_t mantissa;
   mpz_init(mantissa);
   long shift = static_cast<long>(needed_bits) - exponent;
