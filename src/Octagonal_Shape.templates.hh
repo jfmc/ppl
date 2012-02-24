@@ -960,7 +960,7 @@ Octagonal_Shape<T>::affine_dimension() const {
   // The vector `leaders' is used to represent non-singular
   // equivalence classes:
   // `leaders[i] == i' if and only if `i' is the leader of its
-  // equivalence class (i.e., the minimum index in the class);
+  // equivalence class (i.e., the minimum index in the class).
   std::vector<dimension_type> leaders;
   compute_leaders(leaders);
 
@@ -996,7 +996,7 @@ Octagonal_Shape<T>::minimized_congruences() const {
 
     // The vector `leaders' is used to represent equivalence classes:
     // `leaders[i] == i' if and only if `i' is the leader of its
-    // equivalence class (i.e., the minimum index in the class);
+    // equivalence class (i.e., the minimum index in the class).
     std::vector<dimension_type> leaders;
     compute_leaders(leaders);
 

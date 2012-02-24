@@ -305,7 +305,7 @@ BD_Shape<T>::affine_dimension() const {
 
   // The vector `predecessor' is used to represent equivalence classes:
   // `predecessor[i] == i' if and only if `i' is the leader of its
-  // equivalence class (i.e., the minimum index in the class);
+  // equivalence class (i.e., the minimum index in the class).
   std::vector<dimension_type> predecessor;
   compute_predecessors(predecessor);
 
