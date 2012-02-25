@@ -64,7 +64,7 @@ Throwable::~Throwable() {
 inline void
 maybe_abandon() {
 #ifndef NDEBUG
-  if (Implementation::in_assert)
+  if (Implementation::in_assert != 0)
     return;
 #endif
   if (Weightwatch_Traits::check_function != 0)

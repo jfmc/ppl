@@ -175,12 +175,12 @@ extern unsigned int in_assert;
 #define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
-    if (!Implementation::in_assert)             \
+    if (Implementation::in_assert == 0)         \
       Weightwatch_Traits::weight += delta;      \
   } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
-    if (!Implementation::in_assert)                     \
+    if (Implementation::in_assert == 0)                 \
       Weightwatch_Traits::weight += delta * factor;     \
   } while (false)
 #endif
