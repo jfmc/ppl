@@ -679,7 +679,7 @@ CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1, dimension_type i1)
   PPL_ASSERT(tree.reserved_size != 0);
   PPL_ASSERT(i1 <= tree.reserved_size + 1);
   i = i1;
-  offset = i & -i;
+  offset = least_significant_one_mask(i);
   PPL_ASSERT(OK());
 }
 
@@ -703,9 +703,7 @@ inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
   PPL_ASSERT(itr != tree.end());
   i = tree.dfs_index(itr);
-  offset = i;
-  // This assumes two's complement encoding.
-  offset &= -i;
+  offset = least_significant_one_mask(i);
   return *this;
 }
 
@@ -762,9 +760,10 @@ CO_Tree::tree_iterator::follow_left_children_with_value() {
   p -= (offset - 1);
   while (*p == unused_index)
     ++p;
-  PPL_ASSERT(p >= tree.indexes);
-  i = static_cast<dimension_type>(p - tree.indexes);
-  offset = i & -i;
+  ptrdiff_t distance = p - tree.indexes;
+  PPL_ASSERT(distance >= 0);
+  i = static_cast<dimension_type>(distance);
+  offset = least_significant_one_mask(i);
   PPL_ASSERT(OK());
 }
 
@@ -776,8 +775,10 @@ CO_Tree::tree_iterator::follow_right_children_with_value() {
   p += (offset - 1);
   while (*p == unused_index)
     --p;
-  i = static_cast<dimension_type>(p - tree.indexes);
-  offset = i & -i;
+  ptrdiff_t distance = p - tree.indexes;
+  PPL_ASSERT(distance >= 0);
+  i = static_cast<dimension_type>(distance);
+  offset = least_significant_one_mask(i);
   PPL_ASSERT(OK());
 }
 
