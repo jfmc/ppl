@@ -885,14 +885,17 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
                                              - exponent);
   mpz_t mantissa;
   mpz_init(mantissa);
-  long shift = static_cast<long>(needed_bits) - exponent;
-  if (shift > 0) {
-    mpz_mul_2exp(mantissa, numer_z, static_cast<unsigned long>(shift));
-    numer_z = mantissa;
-  }
-  else if (shift < 0) {
-    mpz_mul_2exp(mantissa, denom_z, static_cast<unsigned long>(-shift));
-    denom_z = mantissa;
+  {
+    long shift = static_cast<long>(needed_bits) - exponent;
+    if (shift > 0) {
+      mpz_mul_2exp(mantissa, numer_z, static_cast<unsigned long>(shift));
+      numer_z = mantissa;
+    }
+    else if (shift < 0) {
+      shift = -shift;
+      mpz_mul_2exp(mantissa, denom_z, static_cast<unsigned long>(shift));
+      denom_z = mantissa;
+    }
   }
   mpz_t r;
   mpz_init(r);

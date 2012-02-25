@@ -893,8 +893,9 @@ PPL::CO_Tree
     --subtree_size;
   }
 
-  PPL_ASSERT(first_unused_index >= indexes);
-  return static_cast<dimension_type>(first_unused_index - indexes);
+  ptrdiff_t distance = first_unused_index - indexes;
+  PPL_ASSERT(distance >= 0);
+  return static_cast<dimension_type>(distance);
 }
 
 void
@@ -907,8 +908,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
     bool add_element) {
 
   // This is static and with static allocation, to improve performance.
-  // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that 2^k-1 is a
-  // dimension_type, so it is the maximum tree height.
+  // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that
+  // 2^k-1 is a dimension_type, so it is the maximum tree height.
   // For each node level, the stack may contain up to two element (one for the
   // subtree rooted at the right son of a node of that level, and one for the
   // node itself). An additional element can be at the top of the tree.
