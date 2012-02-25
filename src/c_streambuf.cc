@@ -89,7 +89,7 @@ c_streambuf::int_type
 c_streambuf::overflow(int_type c) {
   const int_type eof = traits_type::eof();
   if (traits_type::eq_int_type(c, eof))
-    return sync() ? eof : traits_type::not_eof(c);
+    return (sync() != 0) ? eof : traits_type::not_eof(c);
   else {
     char buf = static_cast<char>(c);
     if (cb_write(&buf, 1) == 1)

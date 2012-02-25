@@ -71,7 +71,7 @@ stdiobuf::int_type
 stdiobuf::overflow(int_type c) {
   const int_type eof = traits_type::eof();
   if (traits_type::eq_int_type(c, eof))
-    return fflush(fp) ? eof : traits_type::not_eof(c);
+    return (fflush(fp) != 0) ? eof : traits_type::not_eof(c);
   else
     return putc(c, fp);
 }
