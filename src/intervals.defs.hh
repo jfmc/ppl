@@ -31,46 +31,55 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The result of an operation on intervals.
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 enum I_Result {
-  //! The resulting set may be empty
+  //! \hideinitializer Result may be empty
   I_EMPTY = 1U,
-  //! The resulting set may have only one value
+  //! \hideinitializer Result may have only one value
   I_SINGLETON = 2U,
-  //! The resulting set may have more than one value and to be not the domain universe
+  /*! \brief \hideinitializer
+    Result may have more than one value, but it is not the domain universe
+  */
   I_SOME = 4U,
-  //! The resulting set may be the domain universe
+  //! \hideinitializer Result may be the domain universe
   I_UNIVERSE = 8U,
-  //! The resulting set is not empty
+  //! \hideinitializer Result is not empty
   I_NOT_EMPTY = I_SINGLETON | I_SOME | I_UNIVERSE,
-  //! The resulting set may be empty or not empty
+  //! \hideinitializer Result may be empty or not empty
   I_ANY = I_EMPTY | I_NOT_EMPTY,
-  //! The resulting set may be empty or not empty
+  //! \hideinitializer Result may be empty or not empty
   I_NOT_UNIVERSE = I_EMPTY | I_SINGLETON | I_SOME,
-  //! The resulting set can'be empty or the domain universe
+  //! \hideinitializer Result is neither empty nor the domain universe
   I_NOT_DEGENERATE = I_SINGLETON | I_SOME,
-  //! The resulting set is definitely exact
+  //! \hideinitializer Result is definitely exact
   I_EXACT = 16,
-  //! The resulting set is definitely inexact
+  //! \hideinitializer Result is definitely inexact
   I_INEXACT = 32,
-  //! The operation has definitely changed the set
+  //! \hideinitializer Operation has definitely changed the set
   I_CHANGED = 64,
-  //! The operation has left the set definitely unchanged
+  //! \hideinitializer Operation has left the set definitely unchanged
   I_UNCHANGED = 128,
-  //! The operation is undefined for some combination of values
+  //! \hideinitializer Operation is undefined for some combination of values
   I_SINGULARITIES = 256
 };
 
-inline I_Result operator|(I_Result a, I_Result b) {
+inline I_Result
+operator|(I_Result a, I_Result b) {
   return static_cast<I_Result>(static_cast<unsigned>(a)
                                | static_cast<unsigned>(b));
 }
 
-inline I_Result operator&(I_Result a, I_Result b) {
+inline I_Result
+operator&(I_Result a, I_Result b) {
   return static_cast<I_Result>(static_cast<unsigned>(a)
                                & static_cast<unsigned>(b));
 }
 
-inline I_Result operator-(I_Result a, I_Result b) {
+inline I_Result
+operator-(I_Result a, I_Result b) {
     return static_cast<I_Result>(static_cast<unsigned>(a)
                                  & ~static_cast<unsigned>(b));
 }
@@ -352,7 +361,9 @@ struct I_Constraint_Rel {
 
 template <typename T, typename Val_Or_Ref_Criteria = Use_Slow_Copy,
 	  bool extended = false>
-class I_Constraint : public I_Constraint_Common<I_Constraint<T, Val_Or_Ref_Criteria, extended> > {
+class I_Constraint
+  : public I_Constraint_Common<I_Constraint<T, Val_Or_Ref_Criteria,
+                                            extended> > {
   typedef Val_Or_Ref<T, Val_Or_Ref_Criteria> Val_Ref;
   typedef typename Val_Ref::Arg_Type Arg_Type;
   typedef typename Val_Ref::Return_Type Return_Type;
