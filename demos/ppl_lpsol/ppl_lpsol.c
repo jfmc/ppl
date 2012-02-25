@@ -326,7 +326,7 @@ process_options(int argc, char* argv[]) {
       my_exit(0);
       break;
 
-#ifdef PPL_LPSOL_SUPPORTS_TIMINGS
+#ifdef PPL_LPSOL_SUPPORTS_LIMIT_ON_CPU_TIME
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
