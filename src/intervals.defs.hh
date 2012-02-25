@@ -36,33 +36,33 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 enum I_Result {
-  //! \hideinitializer Result may be empty
+  //! \hideinitializer Result may be empty.
   I_EMPTY = 1U,
-  //! \hideinitializer Result may have only one value
+  //! \hideinitializer Result may have only one value.
   I_SINGLETON = 2U,
   /*! \brief \hideinitializer
-    Result may have more than one value, but it is not the domain universe
+    Result may have more than one value, but it is not the domain universe.
   */
   I_SOME = 4U,
-  //! \hideinitializer Result may be the domain universe
+  //! \hideinitializer Result may be the domain universe.
   I_UNIVERSE = 8U,
-  //! \hideinitializer Result is not empty
+  //! \hideinitializer Result is not empty.
   I_NOT_EMPTY = I_SINGLETON | I_SOME | I_UNIVERSE,
-  //! \hideinitializer Result may be empty or not empty
+  //! \hideinitializer Result may be empty or not empty.
   I_ANY = I_EMPTY | I_NOT_EMPTY,
-  //! \hideinitializer Result may be empty or not empty
+  //! \hideinitializer Result may be empty or not empty.
   I_NOT_UNIVERSE = I_EMPTY | I_SINGLETON | I_SOME,
-  //! \hideinitializer Result is neither empty nor the domain universe
+  //! \hideinitializer Result is neither empty nor the domain universe.
   I_NOT_DEGENERATE = I_SINGLETON | I_SOME,
-  //! \hideinitializer Result is definitely exact
+  //! \hideinitializer Result is definitely exact.
   I_EXACT = 16,
-  //! \hideinitializer Result is definitely inexact
+  //! \hideinitializer Result is definitely inexact.
   I_INEXACT = 32,
-  //! \hideinitializer Operation has definitely changed the set
+  //! \hideinitializer Operation has definitely changed the set.
   I_CHANGED = 64,
-  //! \hideinitializer Operation has left the set definitely unchanged
+  //! \hideinitializer Operation has left the set definitely unchanged.
   I_UNCHANGED = 128,
-  //! \hideinitializer Operation is undefined for some combination of values
+  //! \hideinitializer Operation is undefined for some combination of values.
   I_SINGULARITIES = 256
 };
 
