@@ -41,7 +41,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (ppl_@CLASS@_t* pph,
  ppl_dimension_type d,
  int empty) try {
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(d, empty ? EMPTY : UNIVERSE));
+  Degenerate_Element e = (empty != 0) ? EMPTY : UNIVERSE;
+  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(d, e));
   return 0;
 }
 CATCH_ALL
