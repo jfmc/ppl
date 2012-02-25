@@ -190,7 +190,9 @@ public:
     set_boundary_property(t, SPECIAL, false);
     set_boundary_property(t, OPEN, false);
   }
-  void set_boundary_property(Boundary_Type t, const Boundary_NS::Property& p, bool value = true) {
+  void set_boundary_property(Boundary_Type t,
+                             const Boundary_NS::Property& p,
+                             bool value = true) {
     switch (p.type) {
     case Boundary_NS::Property::SPECIAL_:
       if (store_special) {
