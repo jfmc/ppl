@@ -343,7 +343,7 @@ private:
 
 
 //! Swaps \p x with \p y.
-/* \relates PIP_Tree_Node::Artificial_Parameter */
+/*! \relates PIP_Tree_Node::Artificial_Parameter */
 void
 swap(PIP_Tree_Node::Artificial_Parameter& x,
      PIP_Tree_Node::Artificial_Parameter& y);

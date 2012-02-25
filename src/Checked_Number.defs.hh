@@ -750,6 +750,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator==(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -766,6 +767,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator!=(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -782,6 +784,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator>=(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -798,6 +801,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator>(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -814,6 +818,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator<=(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -830,6 +835,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator<(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -878,6 +884,7 @@ std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
 //! Ascii dump for native or checked.
+/*! \relates Checked_Number */
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 ascii_dump(std::ostream& s, const T& t);
@@ -1018,6 +1025,7 @@ std::istream&
 operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
 //! Ascii load for native or checked.
+/*! \relates Checked_Number */
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(std::ostream& s, T& t);

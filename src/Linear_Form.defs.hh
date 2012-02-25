@@ -221,7 +221,7 @@ std::ostream& operator<<(std::ostream& s, const Linear_Form<C>& f);
   have the template parameter \p C as their type. \p C must be the
   type of an Interval.
 
-  \par How to build a linear form. 
+  \par How to build a linear form.
   A full set of functions is defined in order to provide a convenient
   interface for building complex linear forms starting from simpler ones
   and from objects of the classes Variable and \p C. Available operators

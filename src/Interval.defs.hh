@@ -751,6 +751,7 @@ private:
 };
 
 //! Swaps \p x with \p y.
+/*! \relates Interval */
 template <typename Boundary, typename Info>
 void swap(Interval<Boundary, Info>& x, Interval<Boundary, Info>& y);
 

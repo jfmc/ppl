@@ -47,7 +47,6 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_half {
   uint16_t word;
   static const uint16_t SGN_MASK = 0x8000U;
@@ -80,7 +79,6 @@ struct float_ieee754_half {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_single {
   uint32_t word;
   static const uint32_t SGN_MASK = 0x80000000U;
@@ -118,7 +116,6 @@ struct float_ieee754_single {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_double {
 #ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
@@ -158,7 +155,6 @@ struct float_ieee754_double {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ibm_single {
   uint32_t word;
   static const uint32_t SGN_MASK = 0x80000000U;
@@ -190,7 +186,6 @@ struct float_ibm_single {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ibm_double {
   static const unsigned int BASE = 16;
   static const unsigned int EXPONENT_BITS = 7;
@@ -201,7 +196,6 @@ struct float_ibm_double {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_intel_double_extended {
 #ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
@@ -243,7 +237,6 @@ struct float_intel_double_extended {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_quad {
 #ifdef PPL_WORDS_BIGENDIAN
   uint64_t msp;
@@ -457,13 +450,13 @@ public:
 /* FIXME: some of the following  documentation should probably be
    under PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS */
 
-/*! \brief
+/*! \brief \relates Float
   Returns <CODE>true</CODE> if and only if there is some floating point
   number that is representable by \p f2 but not by \p f1.
 */
 bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
 
-/*! \brief
+/*! \brief \relates Float
   Computes the absolute error of floating point computations.
 
   \par Template type parameters
@@ -480,37 +473,40 @@ bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
   format between the analyzer format and the analyzed format.
 */
 template <typename FP_Interval_Type>
-const FP_Interval_Type& compute_absolute_error(
-                        Floating_Point_Format analyzed_format);
+const FP_Interval_Type&
+compute_absolute_error(Floating_Point_Format analyzed_format);
 
-/*! \brief
+/*! \brief \relates Linear_Form
   Discards all linear forms containing variable \p var from the
   linear form abstract store \p lf_store.
 */
 template <typename FP_Interval_Type>
-void discard_occurrences(std::map<dimension_type,
-                                Linear_Form<FP_Interval_Type> >& lf_store,
-                         Variable var);
+void
+discard_occurrences(std::map<dimension_type,
+                             Linear_Form<FP_Interval_Type> >& lf_store,
+                    Variable var);
 
-/*! \brief
+/*! \brief \relates Linear_Form
   Assigns the linear form \p lf to \p var in the linear form abstract
   store \p lf_store, then discards all occurrences of \p var from it.
 */
 template <typename FP_Interval_Type>
-void affine_form_image(std::map<dimension_type,
-                                Linear_Form<FP_Interval_Type> >& lf_store,
-                       Variable var,
-                       const Linear_Form<FP_Interval_Type>& lf);
+void
+affine_form_image(std::map<dimension_type,
+                           Linear_Form<FP_Interval_Type> >& lf_store,
+                  Variable var,
+                  const Linear_Form<FP_Interval_Type>& lf);
 
-/*! \brief
+/*! \brief \relates Linear_Form
   Discards from \p ls1 all linear forms but those that are associated
   to the same variable in \p ls2.
 */
 template <typename FP_Interval_Type>
-void upper_bound_assign(std::map<dimension_type,
-			         Linear_Form<FP_Interval_Type> >& ls1,
-                        const std::map<dimension_type,
-			               Linear_Form<FP_Interval_Type> >& ls2);
+void
+upper_bound_assign(std::map<dimension_type,
+                            Linear_Form<FP_Interval_Type> >& ls1,
+                   const std::map<dimension_type,
+                                  Linear_Form<FP_Interval_Type> >& ls2);
 
 } // namespace Parma_Polyhedra_Library
 
