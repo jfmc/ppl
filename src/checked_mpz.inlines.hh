@@ -329,14 +329,14 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_GT;
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_LT;
     return V_LE;
   }
 }
@@ -403,14 +403,14 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_GT;
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_LT;
     return V_LE;
   }
 }
@@ -492,7 +492,7 @@ div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
   if (round_down(dir)) {
     mpz_fdiv_q_2exp(to.get_mpz_t(), n, exp);
     if (round_strict_relation(dir))
-      return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_GT;
+      return (mpz_divisible_2exp_p(n, exp) != 0) ? V_EQ : V_GT;
     return V_GE;
   }
   else {
