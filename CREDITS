@@ -88,9 +88,9 @@ Past Contributors:
                         algorithms for rational grids and products
                         of grids and polyhedra.
 
-  Giordano Fracasso     (University of Parma) wrote the initial version
-                        of the support for native and checked integer
-                        coefficients.
+  Giordano Fracasso     (former student of the University of Parma) wrote
+                        the initial version of the support for native
+                        and checked integer coefficients.
 
   Francois Galea        [5] (University of Versailles) worked
                         at the implementation of the Parametric Integer
@@ -100,11 +100,12 @@ Past Contributors:
                         helped a little to improve the documentation for
                         bounded differences.
 
-  Elena Mazzi           (University of Parma) worked on our implementation
-                        of bounded differences and octagons.  She also
-                        participated in the theoretical and practical
-                        work concerning widening operators for weakly
-                        relational domains.
+  Elena Mazzi           (former student of the University of Parma) worked
+                        on our implementation of bounded differences
+                        and octagons.  She also participated in the
+                        theoretical and practical work concerning
+                        widening operators for weakly relational
+                        domains.
 
   David Merchat         (formerly at the University of Parma) helped us
                         with the generation of the library's documentation
@@ -129,11 +130,12 @@ Past Contributors:
   Angela Stazzone       (former student of the University of Parma)
                         worked on the library's documentation.
 
-  Fabio Trabucchi       (University of Parma) worked on a development
-                        branch where he added serializers for all the
-                        objects of the PPL.  Support for serialization
-                        based on Fabio's work will be available in a
-                        future release of the library.
+  Fabio Trabucchi       (former student of the University of Parma) worked
+                        on a development branch where he added
+                        serializers for all the objects of the PPL.
+                        Support for serialization based on Fabio's
+                        work will be available in a future release of
+                        the library.
 
   Claudio Trento        (former student of the University of Pisa) did
                         a small amount of work on an experimental OCaml

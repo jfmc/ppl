@@ -17,17 +17,24 @@ To be more precise, the Parma Polyhedra Library (PPL) can handle:
     by an equality or a (strict or non-strict) inequality with rational
     coefficients;
 
-  + convex polyhedra defined by systems of bounded differences with
-    a wide choice of integer, rational or floating point coefficients;
+  + some special classes of polyhedra shapes that offer interesting
+    complexity/precision tradeoffs: boxes, bounded difference shapes
+    and octagonal shapes defined over a wide choice of integer,
+    rational or floating point coefficients;
 
-  + all grids (or, equivalently, lattices); a grid is defined by a set
+  + all grids (or, equivalently, lattices): a grid is defined by a set
     of congruence relations with rational coefficients and consists of
     the set of all points that satisfy these relations;
 
-  + finite powersets of the above;
+  + finite powersets and products of the above;
 
   + linear programming problems, solved with an implementation of the
-    primal simplex algorithm using exact arithmetic.
+    primal simplex algorithm using exact arithmetic;
+
+  + parametric integer programming problems;
+
+  + termination analysis problems, via the automatic synthesis of
+    linear ranking functions.
 
 The Parma Polyhedra Library is:
 
