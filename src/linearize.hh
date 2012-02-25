@@ -380,15 +380,16 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearized_second_operand.intervalize(oracle,
                                              intervalized_second_operand))
     return false;
-  analyzer_format first_interval_size, second_interval_size;
 
   // FIXME: we are not sure that what we do here is policy-proof.
   if (intervalized_first_operand.is_bounded()) {
     if (intervalized_second_operand.is_bounded()) {
-      first_interval_size = intervalized_first_operand.upper() -
-                            intervalized_first_operand.lower();
-      second_interval_size = intervalized_second_operand.upper() -
-                             intervalized_second_operand.lower();
+      analyzer_format first_interval_size
+        = intervalized_first_operand.upper()
+        - intervalized_first_operand.lower();
+      analyzer_format second_interval_size
+        = intervalized_second_operand.upper()
+        - intervalized_second_operand.lower();
       if (first_interval_size <= second_interval_size)
         intervalize_first = true;
       else
