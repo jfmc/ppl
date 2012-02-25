@@ -3574,7 +3574,7 @@ PIP_Solution_Node::print_tree(std::ostream& s, const int indent,
 const Linear_Expression&
 PIP_Solution_Node::parametric_values(const Variable var) const {
   const PIP_Problem* pip = get_owner();
-  PPL_ASSERT(pip);
+  PPL_ASSERT(pip != 0);
 
   const dimension_type space_dim = pip->space_dimension();
   if (var.space_dimension() > space_dim) {
@@ -3613,7 +3613,7 @@ PIP_Solution_Node::update_solution() const {
     return;
 
   const PIP_Problem* pip = get_owner();
-  PPL_ASSERT(pip);
+  PPL_ASSERT(pip != 0);
   std::vector<bool> pip_dim_is_param(pip->space_dimension());
   const Variables_Set& params = pip->parameter_space_dimensions();
   for (Variables_Set::const_iterator p = params.begin(),

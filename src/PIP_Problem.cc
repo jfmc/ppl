@@ -232,10 +232,10 @@ PPL::PIP_Problem::solve() const {
                                                      external_space_dim,
                                                      /*indent_level=*/ 0);
       // Update problem status.
-      x.status = (x.current_solution) ? OPTIMIZED : UNSATISFIABLE;
+      x.status = (x.current_solution != 0) ? OPTIMIZED : UNSATISFIABLE;
 
       PPL_ASSERT(OK());
-      return (x.current_solution)
+      return (x.current_solution != 0)
         ? OPTIMIZED_PIP_PROBLEM
         : UNFEASIBLE_PIP_PROBLEM;
     } // End of handler for PARTIALLY_SATISFIABLE case.
