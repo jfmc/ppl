@@ -497,6 +497,9 @@ template <typename RA_Container>
 typename RA_Container::const_iterator
 nth_iter(const RA_Container& cont, dimension_type n);
 
+dimension_type
+least_significant_one_mask(dimension_type i);
+
 } // namespace Parma_Polyhedra_Library
 
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.

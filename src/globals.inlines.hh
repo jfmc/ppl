@@ -39,7 +39,8 @@ not_a_dimension() {
 inline int32_t
 hash_code_from_dimension(dimension_type dim) {
   const dimension_type divisor = 1U << (32 - 1);
-  return static_cast<int32_t>(dim % divisor);
+  dim = dim % divisor;
+  return static_cast<int32_t>(dim);
 }
 
 inline const Weightwatch_Traits::Threshold&
@@ -140,6 +141,11 @@ inline typename RA_Container::const_iterator
 nth_iter(const RA_Container& cont, dimension_type n) {
   typedef typename RA_Container::difference_type diff_t;
   return cont.begin() + static_cast<diff_t>(n);
+}
+
+inline dimension_type
+least_significant_one_mask(const dimension_type i) {
+  return i & (~i + 1U);
 }
 
 } // namespace Parma_Polyhedra_Library
