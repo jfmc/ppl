@@ -499,7 +499,7 @@ div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
     if (round_strict_relation(dir))
-      return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;
+      return (mpz_divisible_2exp_p(n, exp) != 0) ? V_EQ : V_LT;
     return V_LE;
   }
 }
