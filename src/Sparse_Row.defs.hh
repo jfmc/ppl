@@ -34,7 +34,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 //! A finite sparse sequence of coefficients.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class is implemented using a CO_Tree. See the documentation of CO_Tree
   for details on the implementation and the performance.
 
@@ -75,7 +75,7 @@ public:
     \see CO_Tree::const_iterator
   */
   typedef CO_Tree::const_iterator const_iterator;
-  
+
   explicit Sparse_Row(Flags flags);
 
   //! Constructs a row with the specified size.
@@ -821,12 +821,16 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Sparse_Row& x, Sparse_Row& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Sparse_Row& x, const Sparse_Row& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Sparse_Row& x, const Sparse_Row& y);
 
 } // namespace Parma_Polyhedra_Library

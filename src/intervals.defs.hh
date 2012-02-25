@@ -31,10 +31,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The result of an operation on intervals.
 /*! \ingroup PPL_CXX_interface */
-#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 enum I_Result {
   //! \hideinitializer Result may be empty.
   I_EMPTY = 1U,

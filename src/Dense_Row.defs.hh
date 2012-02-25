@@ -504,12 +504,16 @@ void swap(Dense_Row& x, Dense_Row& y);
 void iter_swap(std::vector<Dense_Row>::iterator x,
                std::vector<Dense_Row>::iterator y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Dense_Row& x, const Dense_Row& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Dense_Row& x, const Dense_Row& y);
 
 } // namespace Parma_Polyhedra_Library

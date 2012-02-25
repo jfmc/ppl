@@ -52,11 +52,11 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 //! A cache-oblivious binary search tree of pairs.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements a binary search tree with keys of dimension_type type
   and data of Coefficient type, laid out in a dynamically-sized array.
 
-  The array-based layout saves calls to new/delete (to insert n elements
+  The array-based layout saves calls to new/delete (to insert \f$n\f$ elements
   only \f$O(\log n)\f$ allocations are performed) and, more importantly, is
   much more cache-friendly than a standard (pointer-based) tree, because the
   elements are stored sequentially in memory (leaving some holes to allow
@@ -94,7 +94,7 @@ namespace Parma_Polyhedra_Library {
   The indexes and values are stored in different arrays to reduce
   cache-misses during key queries.
 
-  The tree can store up to (-(dimension_type)1)/100 elements.
+  The tree can store up to \f$(-(dimension_type)1)/100\f$ elements.
   This limit allows faster density computations, but can be removed if needed.
 */
 class CO_Tree {

@@ -371,6 +371,9 @@ Sparse_Row::total_memory_in_bytes(dimension_type /* capacity */) const {
   return total_memory_in_bytes();
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline void
 swap(Sparse_Row& x, Sparse_Row& y) {
   x.m_swap(y);

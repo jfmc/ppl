@@ -29,8 +29,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "globals.types.hh"
 #include <vector>
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A sparse matrix of Coefficient.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class is a drop-in replacement of Dense_Matrix, meaning that code
   using Dense_Matrix can be ported to Sparse_Matrix changing only references
   to Dense_Matrix and Dense_Row into references to Sparse_Matrix and
@@ -52,6 +53,7 @@ site: http://bugseng.com/products/ppl/ . */
 
   \see Sparse_Row
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Sparse_Matrix {
 
 public:
