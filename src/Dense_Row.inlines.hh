@@ -100,7 +100,7 @@ Dense_Row::Dense_Row(const dimension_type sz,
   resize(sz, capacity);
 
   PPL_ASSERT(size() == sz);
-  PPL_ASSERT(impl.capacity = capacity);
+  PPL_ASSERT(impl.capacity == capacity);
   PPL_ASSERT(OK());
 }
 
@@ -155,7 +155,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   }
 
   PPL_ASSERT(size() == y.size());
-  PPL_ASSERT(impl.capacity = capacity);
+  PPL_ASSERT(impl.capacity == capacity);
   PPL_ASSERT(OK());
 }
 
@@ -185,7 +185,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   }
 
   PPL_ASSERT(size() == sz);
-  PPL_ASSERT(impl.capacity = capacity);
+  PPL_ASSERT(impl.capacity == capacity);
   PPL_ASSERT(OK());
 }
 
