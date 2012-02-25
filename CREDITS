@@ -10,9 +10,10 @@ people:
 Core Development Team:
 ----------------------
 
-  Roberto Bagnara       [1] (University of Parma)
-  Patricia M. Hill      [2] (University of Leeds)
-  Enea Zaffanella       [3] (University of Parma)
+  Roberto Bagnara       [1] (BUGSENG srl and University of Parma)
+  Patricia M. Hill      [2] (BUGSENG srl and University of Leeds)
+  Enea Zaffanella       [3] (BUGSENG srl and University of Parma)
+  Abramo Bagnara            (BUGSENG srl)
 
 
 Former Members of the Core Development Team:
@@ -28,21 +29,6 @@ Former Members of the Core Development Team:
 Current Contributors:
 ---------------------
 
-  Abramo Bagnara        (Opera Unica) rewrote and generalized the
-                        support for checked coefficients.  He also
-                        wrote the support for extended numbers and is
-                        currently writing a new implementation of
-                        intervals.  He also helps on several other
-                        design and implementation issues.
-
-  Fabio Bossi           (student of the University of Parma)
-                        is working on the PPL support for the approximation
-                        of floating point computations.
-
-  Francois Galea        [*] (University of Versailles) is working
-                        at the implementation of the Parametric Integer
-                        Programming solver.
-
   Marco Poletti         (student of the University of Bologna)
                         implemented the sparse matrices that are used
                         in the MIP and PIP solvers of the PPL; he also
@@ -51,10 +37,7 @@ Current Contributors:
                         on improving the PPL's memory footprint and
                         on other improvements to the library.
 
-  Enric Rodriguez Carbonell [4] (Technical University of Catalonia) is
-                        working on the implementation of polynomial spaces.
-
-  Alessandro Zaccagnini [5] (University of Parma) has helped with
+  Alessandro Zaccagnini [4] (University of Parma) has helped with
                         the efficient implementation of GCD and LCM
                         for checked numbers.  He is now working on the
                         definitions of interval arithmetic operations.
@@ -65,7 +48,7 @@ Current Contributors:
 Past Contributors:
 ------------------
 
-  Roberto Amadini       (student of the University of Parma)
+  Roberto Amadini       (former student of the University of Parma)
                         did some work on the PPL support for the
                         approximation of floating point computations.
 
@@ -78,6 +61,10 @@ Past Contributors:
   Fabio Biselli         (student of the University of Parma)
                         did some work on the PPL support for the
                         approximation of floating point computations.
+
+  Fabio Bossi           (former student of the University of Parma)
+                        worked on the PPL support for the approximation
+                        of floating point computations.
 
   Danilo Bonardi        (former student of the University of Parma) worked
                         on a development branch where he experimented
@@ -96,7 +83,7 @@ Past Contributors:
                         solver, and also most of the Java and OCaml
                         interfaces.
 
-  Katy Dobson           [6] (former student of the University of Leeds)
+  Katy Dobson           (former student of the University of Leeds)
                         worked on the formalization and definition of
                         algorithms for rational grids and products
                         of grids and polyhedra.
@@ -104,6 +91,10 @@ Past Contributors:
   Giordano Fracasso     (University of Parma) wrote the initial version
                         of the support for native and checked integer
                         coefficients.
+
+  Francois Galea        [5] (University of Versailles) worked
+                        at the implementation of the Parametric Integer
+                        Programming solver.
 
   Maximiliano Marchesi  (former student of the University of Parma)
                         helped a little to improve the documentation for
@@ -119,17 +110,21 @@ Past Contributors:
                         with the generation of the library's documentation
                         using Doxygen.
 
-  Matthew Mundell       [7] (formerly at the University of Leeds) worked
+  Matthew Mundell       [6] (formerly at the University of Leeds) worked
                         on the implementation of rational grids.  He has
                         also helped on other implementation issues.
 
-  Andrea Pescetti       (University of Parma) was one of the four students
-                        with which the PPL project started.  Later, he
-                        helped a little with the library's documentation.
+  Andrea Pescetti       (former student of the University of Parma) was one
+                        of the four students with which the PPL
+                        project started.  Later, he helped a little
+                        with the library's documentation.
 
   Barbara Quartieri     (former student of the University of Parma) worked
                         on our implementation of bounded differences and
                         octagons.
+
+  Enric Rodriguez Carbonell [7] (Technical University of Catalonia)
+                        worked at the implementation of polynomial spaces.
 
   Angela Stazzone       (former student of the University of Parma)
                         worked on the library's documentation.
@@ -369,11 +364,10 @@ projects and organizations:
  [1] http://www.cs.unipr.it/~bagnara/
  [2] http://www.comp.leeds.ac.uk/hill/
  [3] http://www.cs.unipr.it/~zaffanella/
- [*] http://www.prism.uvsq.fr/~fgalea/
- [4] http://www.lsi.upc.edu/~erodri/
- [5] http://www.math.unipr.it/~zaccagni/
- [6] http://www.comp.leeds.ac.uk/katyd/
- [7] http://www.mundell.ukfsn.org/
+ [4] http://www.math.unipr.it/~zaccagni/
+ [5] http://www.prism.uvsq.fr/~fgalea/
+ [6] http://www.mundell.ukfsn.org/
+ [7] http://www.lsi.upc.edu/~erodri/
  [8] http://www.irisa.fr/lande/fbesson/fbesson.html
  [9] http://www.cs.ucsb.edu/~bultan/
 [10] http://www.clip.dia.fi.upm.es/~boris/
