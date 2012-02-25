@@ -241,7 +241,7 @@ set_input(const char* file_name) {
 
 std::istream&
 input() {
-  assert(input_stream_p);
+  assert(input_stream_p != 0);
   return *input_stream_p;
 }
 
@@ -269,7 +269,7 @@ set_output(const char* file_name) {
 
 std::ostream&
 output() {
-  assert(output_stream_p);
+  assert(output_stream_p != 0);
   return *output_stream_p;
 }
 
