@@ -350,7 +350,9 @@ struct Recycle_Input {
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if \p c is any kind of space character.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool is_space(char c);
 
 template <typename T, long long v, typename Enable = void>
@@ -399,8 +401,10 @@ template <long long v, bool prefer_signed = true>
 struct Constant : public Constant_<long long, v, prefer_signed> {
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \name Memory Size Inspection Functions
 //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -446,7 +450,9 @@ total_memory_in_bytes(const mpq_class& x);
 memory_size_type
 external_memory_in_bytes(const mpq_class& x);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //@} // Memory Size Inspection Functions
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 
 template <typename T, typename Enable = void>
