@@ -65,7 +65,7 @@ static int output_function_MS_which = -1;
   fill_constraint_systems_MS() for the allocation of variable indices.
 */
 inline void
-output_function_MS(std::ostream& s, const Variable& v) {
+output_function_MS(std::ostream& s, const Variable v) {
   dimension_type id = v.id();
   switch (output_function_MS_which) {
   case 0:
@@ -124,7 +124,7 @@ static dimension_type output_function_PR_r;
   fill_constraint_system_PR() for the allocation of variable indices.
 */
 inline void
-output_function_PR(std::ostream& s, const Variable& v) {
+output_function_PR(std::ostream& s, const Variable v) {
   dimension_type id = v.id();
   if (id < output_function_PR_s)
     s << "u3_" << id + 1;

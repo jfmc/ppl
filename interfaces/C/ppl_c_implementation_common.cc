@@ -73,7 +73,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
 ppl_io_variable_output_function_type* c_variable_output_function;
 
 void
-cxx_Variable_output_function(std::ostream& s, const Variable& v) {
+cxx_Variable_output_function(std::ostream& s, const Variable v) {
   const char* b = c_variable_output_function(v.id());
   if (b == 0)
     // Something went wrong in the client's output function.

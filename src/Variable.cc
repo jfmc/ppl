@@ -36,7 +36,7 @@ PPL::Variable::OK() const {
 }
 
 void
-PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
+PPL::Variable::default_output_function(std::ostream& s, const Variable v) {
   dimension_type varid = v.id();
   static const char var_name_letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const dimension_type num_letters = sizeof(var_name_letters) - 1;
@@ -47,7 +47,7 @@ PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
 
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Variable& v) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Variable v) {
   (*Variable::current_output_function)(s, v);
   return s;
 }

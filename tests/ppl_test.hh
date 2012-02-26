@@ -856,7 +856,7 @@ private:
 public:
   FCAIBVP();
 
-  explicit FCAIBVP(const Variable& x);
+  explicit FCAIBVP(const Variable x);
 
   explicit FCAIBVP(const Variables_Set& y);
 
@@ -895,7 +895,7 @@ FCAIBVP::FCAIBVP()
 }
 
 inline
-FCAIBVP::FCAIBVP(const Variable& x)
+FCAIBVP::FCAIBVP(const Variable x)
   : set() {
   set.insert(x.id());
 }

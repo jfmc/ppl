@@ -6267,7 +6267,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the following TODO note is accurately dealt with.
 
       // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(space_dim);
+      const Variable new_var(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
       // NOTE: calling affine_image() instead of refine_no_check()
@@ -6403,7 +6403,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
       if (w_id == var_id) {
         // Here `var' occurs in `lb_expr'.
         // To ease the computation, we add an additional dimension.
-        const Variable new_var = Variable(space_dim);
+        const Variable new_var(space_dim);
         add_space_dimensions_and_embed(1);
         // Constrain the new dimension to be equal to `lb_expr'.
         // Here `lb_expr' is of the form: +/- denominator * v + b.
@@ -6800,7 +6800,7 @@ Octagonal_Shape<T>
       // the following TODO note is accurately dealt with.
 
       // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(space_dim);
+      const Variable new_var(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
       // NOTE: calling affine_image() instead of refine_no_check()
@@ -6893,7 +6893,7 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   const Coefficient& expr_v = lb_expr.coefficient(var);
   // Here `var' occurs in `lb_expr' and `ub_expr'.
   // To ease the computation, we add an additional dimension.
-  const Variable new_var = Variable(space_dim);
+  const Variable new_var(space_dim);
   add_space_dimensions_and_embed(1);
   const Linear_Expression lb_inverse
     = lb_expr - (expr_v + denominator)*var;
@@ -7697,7 +7697,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   // (Note: loop iterator is incremented in the loop body.)
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
-    const Variable v_i = Variable(i/2);
+    const Variable v_i(i/2);
     const N& x_i_ii = (*i_iter)[i + 1];
     ++i_iter;
     const N& x_ii_i = (*i_iter)[i];
@@ -7751,14 +7751,14 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   // (Note: loop iterator is incremented in the loop body.)
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
-    const Variable v_i = Variable(i/2);
+    const Variable v_i(i/2);
     Row_Reference r_i = *i_iter;
     ++i_iter;
     Row_Reference r_ii = *i_iter;
     ++i_iter;
 
     for (dimension_type j = 0; j < i; j += 2) {
-      const Variable v_j = Variable(j/2);
+      const Variable v_j(j/2);
       // Print binary differences.
       const N& x_ii_jj = r_ii[j + 1];
       const N& x_i_j = r_i[j];

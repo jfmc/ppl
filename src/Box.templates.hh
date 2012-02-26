@@ -3679,7 +3679,7 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
   Linear_Expression revised_lhs = lhs;
   Linear_Expression revised_rhs = rhs;
   for (dimension_type d = lhs_space_dim; d-- > 0; ) {
-    const Variable& var = Variable(d);
+    const Variable var(d);
     if (lhs.coefficient(var) != 0) {
       PPL_DIRTY_TEMP(Coefficient, temp);
       temp = rhs.coefficient(var) + lhs.coefficient(var);

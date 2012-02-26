@@ -5065,7 +5065,7 @@ BD_Shape<T>
       if (w == v) {
         // Here `var' occurs in `ub_expr'.
         // To ease the computation, we add an additional dimension.
-        const Variable new_var = Variable(bds_space_dim);
+        const Variable new_var(bds_space_dim);
         add_space_dimensions_and_embed(1);
         // Constrain the new dimension to be equal to `ub_expr'.
         affine_image(new_var, ub_expr, denominator);
@@ -5278,7 +5278,7 @@ BD_Shape<T>
   const Coefficient& lb_expr_v = lb_expr.coefficient(var);
   // Here `var' occurs in `lb_expr' and `ub_expr'.
   // To ease the computation, we add an additional dimension.
-  const Variable new_var = Variable(space_dim);
+  const Variable new_var(space_dim);
   add_space_dimensions_and_embed(1);
   const Linear_Expression lb_inverse
     = lb_expr - (lb_expr_v + denominator)*var;
@@ -5842,7 +5842,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the following TODO note is accurately dealt with.
 
       // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(space_dim);
+      const Variable new_var(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
       // NOTE: calling affine_image() instead of refine_no_check()
@@ -6085,7 +6085,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
 
       // Some variables in `lhs' also occur in `rhs'.
       // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(bds_space_dim);
+      const Variable new_var(bds_space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `lhs'.
       // NOTE: calling affine_image() instead of refine_no_check()

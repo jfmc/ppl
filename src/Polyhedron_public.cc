@@ -2776,7 +2776,7 @@ bounded_affine_image(const Variable var,
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.
     // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
     // Constrain the new dimension to be equal to `ub_expr'.
     refine_no_check(denominator*new_var == ub_expr);
@@ -2840,7 +2840,7 @@ bounded_affine_preimage(const Variable var,
   else {
     // Here `var' occurs in `lb_expr' or `ub_expr'.
     // To ease the computation, add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
     // Swap dimensions `var' and `new_var'.
     std::vector<dimension_type> swapping_cycle;
@@ -3144,7 +3144,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   if (lhs_vars_intersects_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
@@ -3282,7 +3282,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
   if (lhs_vars_intersects_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'

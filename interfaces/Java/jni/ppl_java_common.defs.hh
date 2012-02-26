@@ -619,7 +619,7 @@ build_cxx_variable(JNIEnv* env, jobject j_var);
   from C++ Variable \p var.
 */
 jobject
-build_java_variable(JNIEnv* env, const Variable& var);
+build_java_variable(JNIEnv* env, const Variable var);
 
 /*! \brief
   Builds a C++ Coefficient

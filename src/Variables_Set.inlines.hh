@@ -40,7 +40,7 @@ Variables_Set::insert(const Variable v) {
 }
 
 inline
-Variables_Set::Variables_Set(const Variable& v)
+Variables_Set::Variables_Set(const Variable v)
   : Base() {
   insert(v);
 }

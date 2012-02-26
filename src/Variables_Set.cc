@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Variables_Set::Variables_Set(const Variable& v, const Variable& w)
+PPL::Variables_Set::Variables_Set(const Variable v, const Variable w)
   : Base() {
   for (dimension_type d = v.id(), last = w.id(); d <= last; ++d)
     insert(d);

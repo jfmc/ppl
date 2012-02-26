@@ -151,7 +151,7 @@ build_cxx_variable(JNIEnv* env, jobject j_var) {
 }
 
 inline jobject
-build_java_variable(JNIEnv* env, const Variable& var) {
+build_java_variable(JNIEnv* env, const Variable var) {
   jobject ret = env->NewObject(cached_classes.Variable,
                                cached_FMIDs.Variable_init_ID,
 			       var.id());

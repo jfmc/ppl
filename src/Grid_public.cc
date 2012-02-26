@@ -2180,7 +2180,7 @@ generalized_affine_image(const Linear_Expression& lhs,
   if (lhs_vars_intersect_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
@@ -2313,7 +2313,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   if (lhs_vars_intersect_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'
@@ -2750,7 +2750,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     PPL_DIRTY_TEMP_COEFFICIENT(v_d);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars_end; ++i) {
-      const Variable x = Variable(*i);
+      const Variable x(*i);
       // Find the frequency and a value for `x' in `gr'.
       if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
         continue;
@@ -2832,7 +2832,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   min_value *= div;
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars_end; ++i) {
-    const Variable x = Variable(*i);
+    const Variable x(*i);
     if (!gr.bounds_no_check(x)) {
       // `x' is not a constant in `gr'.
       // We know that `x' is not a constant, so `x' may wrap to any

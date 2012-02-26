@@ -63,7 +63,7 @@ wrap_assign_ind(PSET& pointset,
   const dimension_type cs_space_dim = cs.space_dimension();
   for (Wrap_Translations::const_iterator i = first; i != end; ++i) {
     const Wrap_Dim_Translations& wrap_dim_translations = *i;
-    const Variable& x = wrap_dim_translations.var;
+    const Variable x(wrap_dim_translations.var);
     const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
     const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
     Coefficient& quadrant = tmp1;
@@ -125,7 +125,7 @@ wrap_assign_col(PSET& dest,
       p.refine_with_constraints(*cs_p);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars_end; ++i) {
-      const Variable x = Variable(*i);
+      const Variable x(*i);
       p.refine_with_constraint(min_value <= x);
       p.refine_with_constraint(x <= max_value);
     }
@@ -133,7 +133,7 @@ wrap_assign_col(PSET& dest,
   }
   else {
     const Wrap_Dim_Translations& wrap_dim_translations = *first;
-    const Variable& x = wrap_dim_translations.var;
+    const Variable x(wrap_dim_translations.var);
     const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
     const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
     Coefficient& shift = tmp;
@@ -269,7 +269,7 @@ wrap_assign(PSET& pointset,
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars_end; ++i) {
 
-    const Variable x = Variable(*i);
+    const Variable x(*i);
 
     bool extremum;
 
@@ -329,7 +329,7 @@ wrap_assign(PSET& pointset,
                translations_end = translations.end();
              j != translations_end;
              ++j) {
-          const Variable& y = j->var;
+          const Variable y(j->var);
           pointset.unconstrain(y);
           full_range_bounds.insert(min_value <= y);
           full_range_bounds.insert(y <= max_value);

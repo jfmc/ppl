@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace {
 
 void
-aux_test01(std::ostream& s, const Variable& v) {
+aux_test01(std::ostream& s, const Variable v) {
   s << char('i' + v.id());
 }
 

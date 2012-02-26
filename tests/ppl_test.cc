@@ -328,7 +328,7 @@ operator<<(std::ostream& s, const FCAIBVP& x) {
   s << "{";
   for (FCAIBVP::Set::const_iterator i = x.set.begin(),
 	 x_end = x.set.end(); i != x_end; ) {
-    const Variable& v = Variable(*i++);
+    const Variable v(*i++);
     using IO_Operators::operator<<;
     s << v;
     if (i != x_end)

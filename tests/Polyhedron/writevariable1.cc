@@ -59,7 +59,7 @@ read_variables_and_check(const string& s) {
 }
 
 void
-my_output_function(std::ostream& s, const Variable& v) {
+my_output_function(std::ostream& s, const Variable v) {
   s << "x" << v.id();
 }
 

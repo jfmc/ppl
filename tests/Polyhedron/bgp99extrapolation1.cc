@@ -118,7 +118,7 @@ aux2_test01(unsigned n) {
 }
 
 void
-aux3_test01(std::ostream& s, const Variable& v) {
+aux3_test01(std::ostream& s, const Variable v) {
   s << char('x' + v.id());
 }
 
