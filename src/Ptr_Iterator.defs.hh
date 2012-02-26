@@ -31,27 +31,27 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-template<typename Q, typename R>
-bool operator==(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+bool operator==(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
-template<typename Q, typename R>
-bool operator!=(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+bool operator!=(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
-template<typename Q, typename R>
-bool operator<(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+bool operator<(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
-template<typename Q, typename R>
-bool operator<=(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+bool operator<=(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
-template<typename Q, typename R>
-bool operator>(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+bool operator>(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
-template<typename Q, typename R>
-bool operator>=(const Ptr_Iterator<Q>& x, const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+bool operator>=(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
-template<typename Q, typename R>
-typename Ptr_Iterator<Q>::difference_type operator-(const Ptr_Iterator<Q>& x,
-						    const Ptr_Iterator<R>& y);
+template<typename P, typename Q>
+typename Ptr_Iterator<P>::difference_type
+operator-(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
 template<typename P>
 Ptr_Iterator<P> operator+(typename Ptr_Iterator<P>::difference_type m,

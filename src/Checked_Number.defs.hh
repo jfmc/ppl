@@ -568,7 +568,7 @@ PPL_DECLARE_FUNC4(gcdext_assign_r)
 //! Returns the total size in bytes of the memory occupied by \p x.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
+memory_size_type
 total_memory_in_bytes(const Checked_Number<T, Policy>& x);
 
 //! Returns the size in bytes of the memory managed by \p x.
