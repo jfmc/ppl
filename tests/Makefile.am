@@ -34,8 +34,8 @@ MIP_Problem \
 Octagonal_Shape \
 BD_Shape \
 Polyhedron \
-Grid
-#Ask_Tell
+Grid \
+Watchdog
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
