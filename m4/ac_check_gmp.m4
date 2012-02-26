@@ -71,8 +71,12 @@ AC_ARG_WITH(gmp-build,
 
 gmp_library_options="$gmp_library_options $gmp_libs"
 
-ac_save_CXX="$CXX"
-CXX="libtool --mode=link --tag=CXX $CXX"
+if test -n "$with_gmp_build"
+then
+  ac_save_CXX="$CXX"
+  CXX="libtool --mode=link --tag=CXX $CXX"
+fi
+
 ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"
@@ -223,5 +227,9 @@ AC_LANG_POP(C++)
 eval $shared_library_path_env_var=\"$ac_save_shared_library_path\"
 LIBS="$ac_save_LIBS"
 CPPFLAGS="$ac_save_CPPFLAGS"
-CXX="$ac_save_CXX"
+
+if test -n "$with_gmp_build"
+then
+  CXX="$ac_save_CXX"
+fi
 ])
