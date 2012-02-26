@@ -46,5 +46,5 @@ site: http://www.cs.unipr.it/Software/ . */
 #elif defined(__sparc__)
 #include "pwl-sparc.hh"
 #else
-#error "This architecture is not supported by the currently installed ppl-pwl-devel packages."
+#error "This architecture is not supported by the currently installed ppl-pwl-devel packages"
 #endif

@@ -30,7 +30,7 @@ site: http://bugseng.com/products/ppl/ . */
    (defined(USE_PPL)   && defined(USE_POLKA)) \
 || (defined(USE_PPL)   && defined(USE_POLYLIB)) \
 || (defined(USE_POLKA) && defined(USE_POLYLIB))
-#error "Exactly one among USE_PPL, USE_POLKA and USE_POLYLIB must be defined."
+#error "Exactly one among USE_PPL, USE_POLKA and USE_POLYLIB must be defined"
 #endif
 
 #if defined(USE_PPL)

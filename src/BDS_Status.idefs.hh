@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_BDS_Status_idefs_hh 1
 
 #ifndef PPL_IN_BD_Shape_CLASS
-#error "Do not include BDS_Status.idefs.hh directly; use BD_Shape.defs.hh instead."
+#error "Do not include BDS_Status.idefs.hh directly; use BD_Shape.defs.hh instead"
 #endif
 
 //! A conjunctive assertion about a BD_Shape<T> object.

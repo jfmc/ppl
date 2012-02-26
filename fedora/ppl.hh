@@ -46,5 +46,5 @@ site: http://bugseng.com/products/ppl/ . */
 #elif defined(__sparc__)
 #include "ppl-sparc.hh"
 #else
-#error "This architecture is not supported by the currently installed ppl-devel packages."
+#error "This architecture is not supported by the currently installed ppl-devel packages"
 #endif

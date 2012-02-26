@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Og_Status_idefs_hh 1
 
 #ifndef PPL_IN_Octagonal_Shape_CLASS
-#error "Do not include Og_Status.idefs.hh directly; use Octagonal_Shape.defs.hh instead."
+#error "Do not include Og_Status.idefs.hh directly; use Octagonal_Shape.defs.hh instead"
 #endif
 
 //! A conjunctive assertion about a Octagonal_Shape<T> object.

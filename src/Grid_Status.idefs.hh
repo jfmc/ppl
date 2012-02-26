@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Grid_Status_idefs_hh 1
 
 #ifndef PPL_IN_Grid_CLASS
-#error "Do not include Grid_Status.idefs.hh directly; use Grid.defs.hh instead."
+#error "Do not include Grid_Status.idefs.hh directly; use Grid.defs.hh instead"
 #endif
 
 //! A conjunctive assertion about a grid.

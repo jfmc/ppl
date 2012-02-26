@@ -87,7 +87,7 @@ fpu_check_inexact();
 #elif defined(PPL_HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
 #else
-#error "PPL_CAN_CONTROL_FPU evaluates to true, but why?"
+#error "PPL_CAN_CONTROL_FPU evaluates to true: why?"
 #endif
 
 #else // !PPL_CAN_CONTROL_FPU

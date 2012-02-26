@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Box_Status_idefs_hh 1
 
 #ifndef PPL_IN_Box_CLASS
-#error "Do not include Box_Status.idefs.hh directly; use Box.defs.hh instead."
+#error "Do not include Box_Status.idefs.hh directly; use Box.defs.hh instead"
 #endif
 
 //! A conjunctive assertion about a Box<ITV> object.

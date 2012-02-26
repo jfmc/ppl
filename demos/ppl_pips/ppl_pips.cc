@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 #if (!defined(USE_PPL) && !defined(USE_PIPLIB))
 #define USE_PPL 1
 #elif (defined(USE_PPL) && defined(USE_PIPLIB))
-#error "Exactly one among USE_PPL and USE_PIPLIB must be defined."
+#error "Exactly one among USE_PPL and USE_PIPLIB must be defined"
 #endif
 
 #if defined(USE_PPL)

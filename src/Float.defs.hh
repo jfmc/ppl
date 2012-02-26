@@ -295,7 +295,7 @@ public:
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
   typedef float_intel_double_extended Binary;
 #else
-#error "invalid value for PPL_CXX_FLOAT_BINARY_FORMAT"
+#error "Invalid value for PPL_CXX_FLOAT_BINARY_FORMAT"
 #endif
   union {
     float number;
@@ -324,7 +324,7 @@ public:
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
   typedef float_intel_double_extended Binary;
 #else
-#error "invalid value for PPL_CXX_DOUBLE_BINARY_FORMAT"
+#error "Invalid value for PPL_CXX_DOUBLE_BINARY_FORMAT"
 #endif
   union {
     double number;
@@ -353,7 +353,7 @@ public:
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
   typedef float_intel_double_extended Binary;
 #else
-#error "invalid value for PPL_CXX_LONG_DOUBLE_BINARY_FORMAT"
+#error "Invalid value for PPL_CXX_LONG_DOUBLE_BINARY_FORMAT"
 #endif
   union {
     long double number;
