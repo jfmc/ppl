@@ -267,7 +267,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Poly_Gen_Relation.defs.hh \
                          @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
                          @srcdir@/../src/Poly_Gen_Relation.cc \
-                         @srcdir@/../src/Interval_Restriction.defs.hh \
                          @srcdir@/../src/Interval_Info.types.hh \
                          @srcdir@/../src/Interval_Info.defs.hh \
                          @srcdir@/../src/Interval_Info.inlines.hh \
