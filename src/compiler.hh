@@ -83,12 +83,8 @@ struct Suppress_Uninitialized_Warnings_Type {
 #if !defined(__GNUC__)
 
 inline unsigned int
-clz32(u_int32_t w) {
+clz32(uint32_t w) {
   unsigned int r = 31;
-  if ((w & 0xffffffff00000000ULL) != 0) {
-    w = (w >> 31) >> 1;
-    r -= 32;
-  }
   if ((w & 0xffff0000U) != 0) {
     w >>= 16;
     r -= 16;
@@ -111,15 +107,15 @@ clz32(u_int32_t w) {
 }
 
 inline unsigned int
-clz64(u_int64_t w) {
+clz64(uint64_t w) {
   if ((w & 0xffffffff00000000ULL) == 0)
-    return clz32(static_cast<u_int32_t>(w)) + 32;
+    return clz32(static_cast<uint32_t>(w)) + 32;
   else
-    return clz32(static_cast<u_int32_t>(w >> 32));
+    return clz32(static_cast<uint32_t>(w >> 32));
 }
 
 inline unsigned int
-ctz32(u_int32_t w) {
+ctz32(uint32_t w) {
   static const unsigned int mod37_table[] = {
     32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30, 28, 11, 0, 13,
     4, 7, 17, 0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9,
@@ -129,11 +125,11 @@ ctz32(u_int32_t w) {
 }
 
 inline unsigned int
-ctz64(u_int64_t w) {
+ctz64(uint64_t w) {
   if ((w & 0x00000000ffffffffULL) == 0)
-    return ctz32(static_cast<u_int32_t>(w >> 32)) + 32;
+    return ctz32(static_cast<uint32_t>(w >> 32)) + 32;
   else
-    return ctz32(static_cast<u_int32_t>(w));
+    return ctz32(static_cast<uint32_t>(w));
 }
 
 #endif
