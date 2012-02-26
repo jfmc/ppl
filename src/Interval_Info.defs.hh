@@ -75,7 +75,7 @@ set_bit(T& bits, unsigned int bit, bool value) {
 template <typename T>
 inline bool
 get_bit(const T& bits, unsigned int bit) {
-  return bits & (static_cast<T>(1) << bit);
+  return (bits & (static_cast<T>(1) << bit)) != 0;
 }
 
 template <typename T>

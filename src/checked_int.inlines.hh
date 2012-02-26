@@ -76,16 +76,18 @@ struct Extended_Int {
 				      : C_Integer<Type>::min);
   static const Type not_a_number
   = ((C_Integer<Type>::min >= 0)
-     ? (C_Integer<Type>::max - Policy::has_infinity * 2)
-     : (C_Integer<Type>::min + Policy::has_infinity));
-  static const Type min = (C_Integer<Type>::min
-			   + ((C_Integer<Type>::min >= 0)
-                              ? 0
-			      : (Policy::has_infinity + Policy::has_nan)));
-  static const Type max = (C_Integer<Type>::max
-			   - ((C_Integer<Type>::min >= 0)
-			      ? (2*Policy::has_infinity + Policy::has_nan)
-			      : Policy::has_infinity));
+     ? (C_Integer<Type>::max - 2 * (Policy::has_infinity ? 1 : 0))
+     : (C_Integer<Type>::min + (Policy::has_infinity ? 1 : 0)));
+  static const Type min
+  = (C_Integer<Type>::min
+     + ((C_Integer<Type>::min >= 0)
+        ? 0
+        : ((Policy::has_infinity ? 1 : 0) + (Policy::has_nan ? 1 : 0))));
+  static const Type max
+  = (C_Integer<Type>::max
+     - ((C_Integer<Type>::min >= 0)
+        ? (2 * (Policy::has_infinity ? 1 : 0) + (Policy::has_nan ? 1 : 0))
+        : (Policy::has_infinity ? 1 : 0)));
 };
 
 template <typename Policy, typename To>

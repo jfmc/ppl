@@ -925,13 +925,13 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_d);
   best_sup_n = 0;
   best_sup_d = 1;
-  bool best_max = 0;
+  bool best_max = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
   iter_sup_n = 0;
   iter_sup_d = 1;
-  bool iter_max = 0;
+  bool iter_max = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
@@ -981,14 +981,14 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_d);
   best_sup_n = 0;
   best_sup_d = 1;
-  bool best_max = 0;
+  bool best_max = false;
   Generator best_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
   iter_sup_n = 0;
   iter_sup_d = 1;
-  bool iter_max = 0;
+  bool iter_max = false;
   Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
@@ -1044,13 +1044,13 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_d);
   best_inf_n = 0;
   best_inf_d = 1;
-  bool best_min = 0;
+  bool best_min = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
   iter_inf_n = 0;
   iter_inf_d = 1;
-  bool iter_min = 0;
+  bool iter_min = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
@@ -1100,14 +1100,14 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_d);
   best_inf_n = 0;
   best_inf_d = 1;
-  bool best_min = 0;
+  bool best_min = false;
   Generator best_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
   iter_inf_n = 0;
   iter_inf_d = 1;
-  bool iter_min = 0;
+  bool iter_min = false;
   Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
