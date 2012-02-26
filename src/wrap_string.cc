@@ -62,7 +62,7 @@ wrap_string(const std::string& src_string,
       else if (last_space != npos)
 	split_pos = last_space;
       else {
-	for ( ; src[idx] != 0; ++idx) {
+	for ( ; src[idx] != '\0'; ++idx) {
 	  if (src[idx] == ',') {
 	    ++idx;
 	    break;
