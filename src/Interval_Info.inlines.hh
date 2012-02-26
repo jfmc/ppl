@@ -90,7 +90,7 @@ Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
   if (!s)
     return false;
   s.flags(old);
-  return s;
+  return true;
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
