@@ -170,13 +170,15 @@ public:
   const_bool_nodef(cache_empty, Policy::cache_empty);
   const_bool_nodef(cache_singleton, Policy::cache_singleton);
   const_int_nodef(lower_special_bit, Policy::next_bit);
-  const_int_nodef(lower_open_bit, lower_special_bit + store_special);
-  const_int_nodef(upper_special_bit, lower_open_bit + store_open);
-  const_int_nodef(upper_open_bit, upper_special_bit + store_special);
-  const_int_nodef(cardinality_is_bit, upper_open_bit + store_open);
-  const_int_nodef(cardinality_0_bit, cardinality_is_bit + ((cache_empty || cache_singleton) ? 1 : 0));
-  const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
-  const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
+  const_int_nodef(lower_open_bit, lower_special_bit + (store_special ? 1 : 0));
+  const_int_nodef(upper_special_bit, lower_open_bit + (store_open ? 1 : 0));
+  const_int_nodef(upper_open_bit, upper_special_bit + (store_special ? 1 : 0));
+  const_int_nodef(cardinality_is_bit, upper_open_bit + (store_open ? 1 : 0));
+  const_int_nodef(cardinality_0_bit, cardinality_is_bit
+                  + ((cache_empty || cache_singleton) ? 1 : 0));
+  const_int_nodef(cardinality_1_bit, cardinality_0_bit + (cache_empty ? 1 : 0));
+  const_int_nodef(next_bit, cardinality_1_bit + (cache_singleton ? 1 : 0));
+
   Interval_Info_Bitset() {
     // FIXME: would we have speed benefits with uninitialized info?
     // (Dirty_Temp)

@@ -43,7 +43,7 @@ Polyhedron::Status::test_all(flags_t mask) const {
 
 inline bool
 Polyhedron::Status::test_any(flags_t mask) const {
-  return flags & mask;
+  return (flags & mask) != 0;
 }
 
 inline void
