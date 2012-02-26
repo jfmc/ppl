@@ -762,17 +762,15 @@ AC_CXX_DOUBLE_BINARY_FORMAT
 # Detect the binary format used by C++ long doubles.
 AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 
-# Check whether the C++ run-time systems provides exact output for
-# floats.
-#AC_CXX_FLOAT_EXACT_OUTPUT
-
-# Check whether the C++ run-time systems provides exact output for
-# doubles.
-#AC_CXX_DOUBLE_EXACT_OUTPUT
-
-# Check whether the C++ run-time systems provides exact output for
-# long doubles.
-#AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
+# Test if some floating-point type is supported.
+if test $ac_supported_float = 1 \
+|| test $ac_supported_double = 1 \
+|| test $ac_supported_long_double = 1
+then
+  supported_some_floating_point_type=yes
+fi
+AM_CONDITIONAL(SUPPORTED_SOME_FLOATING_POINT_TYPE,
+               test x$supported_some_floating_point_type = xyes)
 
 # Check whether the C++ compiler supports zero-length arrays.
 AC_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
@@ -1222,7 +1220,7 @@ fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE,
                test x$build_yap_prolog_interface = xyes)
 
-# Test if *any* Prolog system has to be built.
+# Test if some Prolog interfaces have to be built.
 if test x$build_ciao_prolog_interface = xyes \
 || test x$build_gnu_prolog_interface = xyes \
 || test x$build_sicstus_prolog_interface = xyes \
