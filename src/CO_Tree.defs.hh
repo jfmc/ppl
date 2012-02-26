@@ -145,8 +145,6 @@ public:
   typedef Coefficient data_type;
   typedef Coefficient_traits::const_reference data_type_const_reference;
 
-  class iterator;
-
   //! A const %iterator on the tree elements, ordered by key.
   /*!
     Iterator increment and decrement operations are \f$O(1)\f$ time.

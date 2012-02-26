@@ -644,29 +644,6 @@ PPL::MIP_Problem
   return true;
 }
 
-namespace {
-
-// This is used as a template argument in process_pending_constraints(),
-// so it must be a global declaration.
-struct process_pending_constraints_helper_struct {
-
-  PPL::dimension_type index;
-  const PPL::Coefficient* data;
-  bool toggle_sign;
-
-  process_pending_constraints_helper_struct(PPL::dimension_type index1,
-                                            const PPL::Coefficient* data1,
-                                            bool toggle_sign1)
-  : index(index1), data(data1), toggle_sign(toggle_sign1) {
-  }
-
-  bool operator<(const process_pending_constraints_helper_struct& x) const {
-    return index < x.index;
-  }
-};
-
-} // namespace
-
 bool
 PPL::MIP_Problem::process_pending_constraints() {
   // Check the pending constraints to adjust the data structures.
@@ -790,8 +767,6 @@ PPL::MIP_Problem::process_pending_constraints() {
     = (additional_artificial_vars > 0)
     ? artificial_index
     : 0;
-
-  typedef process_pending_constraints_helper_struct buffer_element_t;
 
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows,
@@ -2390,7 +2365,7 @@ PPL::MIP_Problem::OK() const {
       for (dimension_type i = base.size(); i-- > 0; )
         vars_in_base.push_back(std::make_pair(base[i], i));
 
-      std::sort(vars_in_base.begin(),vars_in_base.end());
+      std::sort(vars_in_base.begin(), vars_in_base.end());
 
       for (dimension_type j = tableau_num_rows; j-- > 0; ) {
         const Row& tableau_j = tableau[j];
