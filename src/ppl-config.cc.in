@@ -339,7 +339,7 @@ struct option long_options[] = {
 
       // --prefix
     case 'p':
-      if (optarg) {
+      if (optarg != 0) {
 	prefix = optarg;
 	if (!exec_prefix_set) {
 	  exec_prefix = optarg;
@@ -354,7 +354,7 @@ struct option long_options[] = {
 
       // --exec_prefix
     case 'e':
-      if (optarg) {
+      if (optarg != 0) {
 	exec_prefix = optarg;
 	exec_prefix_set = true;
       }

@@ -86,12 +86,11 @@ template <typename T, typename Policy>
 inline bool
 Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
   std::ios_base::fmtflags old = s.flags();
-  if (s >> std::hex >> bitset) {
-    s.flags(old);
-    return s;
-  }
-  else
+  s >> std::hex >> bitset;
+  if (!s)
     return false;
+  s.flags(old);
+  return s;
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

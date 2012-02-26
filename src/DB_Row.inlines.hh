@@ -257,7 +257,7 @@ template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y)
   : DB_Row_Impl_Handler<T>() {
-  if (y.impl) {
+  if (y.impl != 0) {
     allocate(compute_capacity(y.size(), max_size()));
     copy_construct_coefficients(y);
   }

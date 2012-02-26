@@ -104,7 +104,7 @@ Weightwatch* p_deterministic_timeout_object = 0;
 
 void
 reset_timeout() {
-  if (p_timeout_object) {
+  if (p_timeout_object != 0) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
@@ -113,7 +113,7 @@ reset_timeout() {
 
 void
 reset_deterministic_timeout() {
-  if (p_deterministic_timeout_object) {
+  if (p_deterministic_timeout_object != 0) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
