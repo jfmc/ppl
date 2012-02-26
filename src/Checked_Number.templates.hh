@@ -39,12 +39,11 @@ ascii_dump(std::ostream& s, const T& t) {
   else {
     // An inexact data type (probably floating point):
     // first dump its hexadecimal representation ...
-    const std::ios_base::fmtflags old_flags = s.flags();
-    s << std::hex;
+    const std::ios::fmtflags old_flags = s.setf(std::ios::hex,
+                                                std::ios::basefield);
     const unsigned char* p = reinterpret_cast<const unsigned char*>(&t);
     for (unsigned i = 0; i < sizeof(T); ++i) {
-      s << std::setw(2) << std::setfill('0');
-      s << static_cast<unsigned>(p[i]);
+      s << std::setw(2) << std::setfill('0') << static_cast<unsigned>(p[i]);
     }
     s.flags(old_flags);
     // ... and then pretty print it for readability.
@@ -55,9 +54,11 @@ ascii_dump(std::ostream& s, const T& t) {
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(std::istream& s, T& t) {
-  if (std::numeric_limits<T>::is_exact)
+  if (std::numeric_limits<T>::is_exact) {
     // An exact data type: input from pretty printed version is accurate.
-    return s >> t;
+    s >> t;
+    return !s.fail();
+  }
   else {
     // An inexact data type (probably floating point):
     // first load its hexadecimal representation ...

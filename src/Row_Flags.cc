@@ -31,15 +31,12 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Row_Flags::ascii_dump(std::ostream& s) const {
   s << "0x";
-  std::istream::fmtflags f = s.setf(std::istream::hex);
+  std::ios::fmtflags old_flags = s.setf(std::ios::hex,
+                                        std::ios::basefield);
   const std::streamsize new_sz
     = static_cast<std::streamsize>(2 * sizeof(Row_Flags::base_type));
-  const std::streamsize old_sz = s.width(new_sz);
-  std::ostream::char_type ch = s.fill('0');
-  s << bits;
-  s.fill(ch);
-  s.width(old_sz);
-  s.flags(f);
+  s << std::setw(new_sz) << setfill('0') << bits;
+  s.flags(old_flags);
 }
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row_Flags)
@@ -47,12 +44,11 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row_Flags)
 bool
 PPL::Row_Flags::ascii_load(std::istream& s) {
   std::string str;
-  std::streamsize sz = s.width(2);
-  if (!(s >> str) || str != "0x")
+  if (!(s >> std::setw(2) >> str) || str != "0x")
     return false;
-  s.width(sz);
-  std::istream::fmtflags f = s.setf(std::istream::hex);
-  bool r = s >> bits;
-  s.flags(f);
-  return r;
+  const std::ios::fmtflags old_flags = s.setf(std::ios::hex,
+                                              std::ios::basefield);
+  s >> bits;
+  s.flags(old_flags);
+  return !s.fail();
 }

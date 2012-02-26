@@ -291,7 +291,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   unexpected:
     is.unget();
   fail:
-    is.setstate(std::ios_base::failbit);
+    is.setstate(std::ios::failbit);
     return is;
   }
 
