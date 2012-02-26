@@ -154,9 +154,9 @@ clz(unsigned long ul) {
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_clzl(ul));
 #elif PPL_SIZEOF_LONG == 4
-  return clz32(u);
+  return clz32(ul);
 #elif PPL_SIZEOF_LONG == 8
-  return clz64(u);
+  return clz64(ul);
 #else
   #error "Unsupported unsigned long size"
 #endif
@@ -168,9 +168,9 @@ clz(unsigned long long ull) {
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_clzll(ull));
 #elif PPL_SIZEOF_LONG_LONG == 4
-  return clz32(u);
+  return clz32(ull);
 #elif PPL_SIZEOF_LONG_LONG == 8
-  return clz64(u);
+  return clz64(ull);
 #else
   #error "Unsupported unsigned long long size"
 #endif
@@ -197,9 +197,9 @@ ctz(unsigned long ul) {
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_ctzl(ul));
 #elif PPL_SIZEOF_LONG == 4
-  return ctz32(u);
+  return ctz32(ul);
 #elif PPL_SIZEOF_LONG == 8
-  return ctz64(u);
+  return ctz64(ul);
 #else
   #error "Unsupported unsigned long size"
 #endif
@@ -211,9 +211,9 @@ ctz(unsigned long long ull) {
 #if defined(__GNUC__)
   return static_cast<unsigned int>(__builtin_ctzll(ull));
 #elif PPL_SIZEOF_LONG_LONG == 4
-  return ctz32(u);
+  return ctz32(ull);
 #elif PPL_SIZEOF_LONG_LONG == 8
-  return ctz64(u);
+  return ctz64(ull);
 #else
   #error "Unsupported unsigned long long size"
 #endif
