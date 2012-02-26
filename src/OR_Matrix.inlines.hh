@@ -243,14 +243,20 @@ template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
-  difference_type increment = m + m * m / 2 + m * static_cast<difference_type>(e);
-  if (e % 2 == 0 && m % 2 != 0)
+  difference_type e_dt = static_cast<difference_type>(e);
+  difference_type i_dt = static_cast<difference_type>(i);
+  difference_type increment = m + (m * m / 2) + (m * e_dt);
+  if (e_dt % 2 == 0 && m % 2 != 0)
     ++increment;
-  e = static_cast<dimension_type>(static_cast<difference_type>(e) + m);
-  i = static_cast<dimension_type>(static_cast<difference_type>(i) + increment);
+  e_dt += m;
+  i_dt += increment;
+  e = static_cast<dimension_type>(e_dt);
+  i = static_cast<dimension_type>(i_dt);
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  value.size_ = static_cast<dimension_type>(static_cast<difference_type>(value.size_) + m - m % 2);
+  difference_type value_size_dt = static_cast<difference_type>(value.size_);
+  value_size_dt += (m - m % 2);
+  value.size_ = static_cast<dimension_type>(value_size_dt);
 #endif
   return *this;
 }
@@ -262,7 +268,7 @@ inline typename
 Enable_If<(static_cast<Unsigned>(-1) > 0),
             typename OR_Matrix<T>::template any_row_iterator<U>& >::type
 OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m) {
-  dimension_type increment = m + m * m / 2 + m * e;
+  dimension_type increment = m + (m * m / 2) + (m * e);
   if (e % 2 == 0 && m % 2 != 0)
     ++increment;
   e += m;

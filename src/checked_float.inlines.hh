@@ -880,9 +880,10 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
       return set_pos_overflow_float<To_Policy>(to, dir);
   }
   unsigned int needed_bits = Float<T>::Binary::MANTISSA_BITS + 1;
-  if (exponent < Float<T>::Binary::EXPONENT_MIN)
-    needed_bits -= static_cast<unsigned int>(Float<T>::Binary::EXPONENT_MIN
-                                             - exponent);
+  if (exponent < Float<T>::Binary::EXPONENT_MIN) {
+    long diff = Float<T>::Binary::EXPONENT_MIN - exponent;
+    needed_bits -= static_cast<unsigned int>(diff);
+  }
   mpz_t mantissa;
   mpz_init(mantissa);
   {
