@@ -72,8 +72,11 @@ lib_LTLIBRARIES = libppl.la
 bin_PROGRAMS = ppl-config
 
 ppl_config_SOURCES = \
+BUGS.hh \
 BUGS.cc \
+COPYING.hh \
 COPYING.cc \
+CREDITS.hh \
 CREDITS.cc
 
 nodist_ppl_config_SOURCES = \
