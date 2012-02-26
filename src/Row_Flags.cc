@@ -35,7 +35,7 @@ PPL::Row_Flags::ascii_dump(std::ostream& s) const {
                                         std::ios::basefield);
   const std::streamsize new_sz
     = static_cast<std::streamsize>(2 * sizeof(Row_Flags::base_type));
-  s << std::setw(new_sz) << setfill('0') << bits;
+  s << std::setw(new_sz) << std::setfill('0') << bits;
   s.flags(old_flags);
 }
 
