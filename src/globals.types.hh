@@ -161,12 +161,26 @@ enum Bounded_Integer_Type_Overflow {
   "Analysis of floating point computations" for more information.
 */
 enum Floating_Point_Format {
+  //! IEEE 754 half precision, 16 bits (5 exponent, 10 mantissa).
   IEEE754_HALF,
+
+  //! IEEE 754 single precision, 32 bits (8 exponent, 23 mantissa).
   IEEE754_SINGLE,
+
+  //! IEEE 754 double precision, 64 bits (11 exponent, 52 mantissa).
   IEEE754_DOUBLE,
-  IBM_SINGLE,
+
+  //! IEEE 754 quad precision, 128 bits (15 exponent, 112 mantissa).
   IEEE754_QUAD,
-  INTEL_DOUBLE_EXTENDED
+
+  //! Intel double extended precision, 80 bits (15 exponent, 64 mantissa)
+  INTEL_DOUBLE_EXTENDED,
+
+  //! IBM single precision, 32 bits (7 exponent, 24 mantissa).
+  IBM_SINGLE,
+
+  //! IBM double precision, 64 bits (7 exponent, 56 mantissa).
+  IBM_DOUBLE
 };
 
 struct Weightwatch_Traits;
