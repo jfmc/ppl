@@ -30,6 +30,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! \name Functions for the Synthesis of Linear Rankings
+//@{
+
 /*! \brief \ingroup PPL_CXX_interface
   Termination test using an improvement of the method by Mesnard and
   Serebrenik \ref BMPZ10 "[BMPZ10]".
@@ -462,6 +465,8 @@ void
 all_affine_ranking_functions_PR_2(const PSET& pset_before,
 				  const PSET& pset_after,
 				  NNC_Polyhedron& mu_space);
+
+//@} // Functions for the Synthesis of Linear Rankings
 
 } // namespace Parma_Polyhedra_Library
 
