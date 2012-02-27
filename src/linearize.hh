@@ -643,8 +643,10 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   return !result.overflows();
 }
 
-//! Linearizes a floating point expression.
 /*! \brief
+  Linearizes a floating point expression.
+
+  \relates Concrete_Expression
   Makes \p result become a linear form that correctly approximates the
   value of \p expr in the given composite abstract store.
 
