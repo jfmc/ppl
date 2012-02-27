@@ -1,11 +1,10 @@
 
-Enhancements for PPL 0.12 or later versions
+Enhancements for PPL 0.13 or later versions
 ===========================================
 
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
 - Add the domains of bounded integers and affine spaces.
-- Finish the domain of intervals.
 - Intervals are best instantiated with checked numbers with
   particular policies: review all the interfaced boxes,
   augment the testsuite, and update the documentation.
@@ -66,7 +65,7 @@ Enhancements for PPL 0.12 or later versions
 - Any_Pointset domain: check the interface for lacking or useless methods.
 
 
-Enhancements for PPL 0.13 or later versions
+Enhancements for PPL 0.14 or later versions
 ===========================================
 
 - Find a way to let the GMP and checked-int versions of the PPL coexist
@@ -108,8 +107,5 @@ Efficiency Issues
 - There must be a more efficient way to implement
   bool Polyhedron::is_disjoint_from(const Polyhedron&).
 - There must be a more efficient way to compute convex differences.
-- We are being rather careless about the creation of temporaries
-  as far as the classes Linear_Expression, Constraint and Generator
-  are concerned.
 - Provide a better implementation of computing squares in MIP_Problem's
   steepest-edge to avoid big numbers.
