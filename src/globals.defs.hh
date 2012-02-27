@@ -42,7 +42,9 @@ namespace Parma_Polyhedra_Library {
 dimension_type
 not_a_dimension();
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the hash code for space dimension \p dim.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 int32_t
 hash_code_from_dimension(dimension_type dim);
 

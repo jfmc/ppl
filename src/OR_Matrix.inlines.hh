@@ -441,7 +441,9 @@ OR_Matrix<T>::m_swap(OR_Matrix& y) {
   swap(vec_capacity, y.vec_capacity);
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the integer square root of \p x.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline dimension_type
 isqrt(dimension_type x) {
   dimension_type r = 0;
