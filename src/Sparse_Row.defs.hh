@@ -33,6 +33,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sparse sequence of coefficients.
 /*! \ingroup PPL_CXX_interface
   This class is implemented using a CO_Tree. See the documentation of CO_Tree
@@ -56,6 +57,7 @@ namespace Parma_Polyhedra_Library {
   \see Sparse_Matrix
   \see CO_Tree
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Sparse_Row {
 
 public:

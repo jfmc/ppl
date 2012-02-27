@@ -51,6 +51,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A cache-oblivious binary search tree of pairs.
 /*! \ingroup PPL_CXX_interface
   This class implements a binary search tree with keys of dimension_type type
@@ -97,6 +98,7 @@ namespace Parma_Polyhedra_Library {
   The tree can store up to \f$(-(dimension_type)1)/100\f$ elements.
   This limit allows faster density computations, but can be removed if needed.
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class CO_Tree {
 
 public:
