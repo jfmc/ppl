@@ -1,3 +1,170 @@
+2012-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS, TODO: Updated.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Concrete_Expression.defs.hh, src/Concrete_Expression.types.hh: 
+	Let classes in Concrete_Expression.defs.hh appear in the user
+	manual.
+
+2012-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.types.hh: Documented the enumerated values of enum
+	Floating_Point_Format.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/intervals.defs.hh: Let the docs for the I_Result enum appear
+	on the devref manual only.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/OR_Matrix.inlines.hh, src/globals.defs.hh: Mark some docs for
+	the devref manual only.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/fpu.defs.hh: Group together documentation of functions
+	controlling FPU.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/linearize.hh: Fixed documentation for linearize and added
+	\relates directive.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/termination.defs.hh: Grouped together docs for the
+	linear-ranking functions.
+
+2012-02-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/CO_Tree.defs.hh, src/Sparse_Row.defs.hh: CO_Tree and
+	Sparse_Row should only appear in the devref manual.
+
+2012-02-26  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Row_Flags.cc: Fixed missing namespace.
+
+2012-02-26  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Checked_Number.templates.hh, src/Interval.templates.hh,
+	src/Interval_Info.inlines.hh, src/Row_Flags.cc: Fixed and uniformed
+	iomanip uses.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/wrap_string.cc: Avoid mixing plain character data with numeric
+	data.  Detected by ECLAIR service utypflag.
+
+2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in: Removed
+	references to an obsolete file.
+
+2012-02-26  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/CO_Tree.defs.hh, src/MIP_Problem.cc: Removed redundant and
+	unused stuff.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Checked_Number.defs.hh, src/Ptr_Iterator.defs.hh: Use the same
+	typenames in function declarations/definitions.  Detected by ECLAIR
+	service funtypes.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Interval_Info.defs.hh, src/Pointset_Powerset.templates.hh,
+	src/checked_int.inlines.hh: Avoid mixing boolean and arithmetic
+	values.  Detected by ECLAIR service utypflag.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/GMP_Integer.defs.hh: Get rid of redundant declarations of a
+	couple of functions.  Detected by ECLAIR service funtypes.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Interval_Info.inlines.hh: Simplified
+	Interval_Info::ascii_load().  Resettting format flags does not
+	change the istream status, which was previously tested and is known
+	to be good: hence, return true.
+
+2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_pips/ppl_pips.cc,
+	fedora/ppl.hh, fedora/ppl_c.h, fedora/pwl.hh,
+	src/BDS_Status.idefs.hh, src/Box_Status.idefs.hh,
+	src/Float.defs.hh, src/Grid_Status.idefs.hh,
+	src/Og_Status.idefs.hh, src/Ph_Status.idefs.hh, src/fpu.defs.hh: 
+	`#error' messages made consistent.
+
+2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/compiler.hh: Variable names fixed.
+
+2012-02-26  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* interfaces/C/ppl_c_implementation_common.cc,
+	interfaces/Java/jni/ppl_java_common.defs.hh,
+	interfaces/Java/jni/ppl_java_common.inlines.hh,
+	src/BD_Shape.templates.hh, src/Box.templates.hh,
+	src/Grid_public.cc, src/Octagonal_Shape.templates.hh,
+	src/Polyhedron_public.cc, src/Variable.cc, src/Variable.defs.hh,
+	src/Variables_Set.cc, src/Variables_Set.defs.hh,
+	src/Variables_Set.inlines.hh, src/termination.templates.hh,
+	src/wrap_assign.hh, tests/Polyhedron/affineimage2.cc,
+	tests/Polyhedron/bgp99extrapolation1.cc,
+	tests/Polyhedron/bhz03widening1.cc,
+	tests/Polyhedron/boundedbhrz03extrapolation1.cc,
+	tests/Polyhedron/writevariable1.cc, tests/ppl_test.cc,
+	tests/ppl_test.hh: Avoid to use Variable references. Uniformed
+	Variable creations.
+
+2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/compiler.hh: Types fixed.  Useless if-then-else removed.
+
+2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4: Use `libtool' to test linking with GMP only if
+	the option `--with-gmp-build' was given.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Congruence_System.cc, src/Interval_Info.defs.hh,
+	src/Ph_Status.inlines.hh: Prefer explicit tests against zero.  Avoid
+	using boolean values as integer values.  Detected by ECLAIR service
+	utypflag.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_Form.templates.hh, src/OR_Matrix.inlines.hh,
+	src/checked_float.inlines.hh: Improved implementation of
+	OR_Matrix<T>::any_row_iterator<U>::operator+=().  Increased
+	 readability: - separated explicit type conversions from code performing
+	   arithmetic operations (on non-mixed typed values);  - added a few redundant parentheses.  Similar improvement applied
+	to a couple of other functions.  Detected by ECLAIR service
+	utypflag.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/globals.defs.hh, src/version.hh.in: Provide a named group for
+	all library version control functions.
+
+2012-02-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.cc,
+	src/DB_Row.inlines.hh, src/Interval_Info.inlines.hh,
+	src/ppl-config.cc.in: Prefer explicit tests against zero.  Detected
+	by ECLAIR service utypflag.
+
+2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
 2012-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* tests/Makefile.am: Added `Watchdog' to `SUBDIRS'.
