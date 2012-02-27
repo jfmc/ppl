@@ -29,6 +29,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! \name Functions Controlling Floating Point Unit
+//@{
+
 //! Initializes the FPU control functions.
 void
 fpu_initialize_control_functions();
@@ -72,6 +75,8 @@ fpu_reset_inexact();
 */
 int
 fpu_check_inexact();
+
+//@} // Functions Controlling Floating Point Unit
 
 } // namespace Parma_Polyhedra_Library
 
