@@ -174,13 +174,13 @@ to_lower(char c) {
 
 bool
 strcaseeq(const char* s1, const char* s2) {
-  while (*s1 != 0) {
-    if (*s2 == 0 || to_lower(*s1) != to_lower(*s2))
+  while (*s1 != '\0') {
+    if (*s2 == '\0' || to_lower(*s1) != to_lower(*s2))
       return false;
     ++s1;
     ++s2;
   }
-  return *s2 == 0;
+  return *s2 == '\0';
 }
 
 void
