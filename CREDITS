@@ -199,10 +199,9 @@ People:
                         this possibility, porting the PPL to the ARM's
                         ABIs would have taken ages.
 
-  Bruno Haible          [19] (ILOG) made it possible (by writing the
-                        AC_LIB_LINKFLAGS macro and explaining how
-                        to use it) to allow the use of versions of the
-                        GMP library installed in nonstandard places.
+  Bruno Haible          [19] (ILOG) helped us in our first steps towards
+                        using versions of the GMP library installed in
+                        nonstandard places.
 
   Bertrand Jeannet      [20] (IRISA) wrote the New Polka library [21]
                         and made it available.  We had several
@@ -236,7 +235,8 @@ People:
                         analyze the same Prolog programs.  Since these
                         systems did not share a single line of code,
                         this gave us excellent opportunities for our
-                        initial testing and debugging work.
+                        initial testing and debugging work.  Fred has
+                        also helped us to port the PPL to Mac OS X.
 
   Ken Mixter            (then at Carnegie Mellon University) provided
                         useful feedback while working on an
@@ -321,9 +321,9 @@ We are grateful for the following contributions:
   numerical abstractions and how the PPL can help.  Special thanks go
   to Albert Cohen [57] for this sponsorship.
 
-- INRIA [56] is supporting Abramo Bagnara from January 1st to May 31st,
-  2009, to work on the PPL and its development infrastructure.
-  Many thanks go, in particular, to Albert Cohen [57].
+- INRIA [56] supported the work of Abramo Bagnara from January 1st to
+  May 31st, 2009, to work on the PPL and its development
+  infrastructure.  Many thanks go, in particular, to Albert Cohen [57].
 
 
 Some of our research work has been partly supported by the following
