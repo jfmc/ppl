@@ -158,14 +158,18 @@ warning(const char* format, ...) {
 }
 */
 
-void internal_error() __attribute__((__noreturn__));
+void
+internal_error() __attribute__((__noreturn__));
 
-void internal_error() {
+void
+internal_error() {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
 }
 
-inline char to_lower(char c) {
-  return static_cast<char>(tolower(static_cast<int>(static_cast<unsigned char>(c))));
+inline char
+to_lower(char c) {
+  return
+    static_cast<char>(tolower(static_cast<int>(static_cast<unsigned char>(c))));
 }
 
 bool
