@@ -1191,28 +1191,32 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
       const Generator tmp_gen = gen_sys[i];
       const Bit_Row tmp_sat = sat_c[i];
-      for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (Scalar_Products::sign(con_sys[j], tmp_gen) != tmp_sat[j]) {
+      for (dimension_type j = sat_c.num_columns(); j-- > 0; ) {
+	const bool sat_j = (Scalar_Products::sign(con_sys[j], tmp_gen) == 0);
+	if (sat_j == tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
 #endif
 	  goto bomb;
 	}
+      }
     }
 
   if (sat_g_is_up_to_date())
     for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
       const Constraint tmp_con = con_sys[i];
       const Bit_Row tmp_sat = sat_g[i];
-      for (dimension_type j = sat_g.num_columns(); j-- > 0; )
-	if (Scalar_Products::sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
+      for (dimension_type j = sat_g.num_columns(); j-- > 0; ) {
+	const bool sat_j = (Scalar_Products::sign(tmp_con, gen_sys[j]) == 0);
+	if (sat_j == tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_g is declared up-to-date, but it is not!"
 	       << endl;
 #endif
 	  goto bomb;
 	}
+      }
     }
 
   if (has_pending_constraints()) {
