@@ -178,7 +178,7 @@ Array_Partial_Function_Wrapper::has_empty_codomain() const {
         break;
       }
   }
-  return empty;
+  return (empty != 0);
 }
 
 inline dimension_type

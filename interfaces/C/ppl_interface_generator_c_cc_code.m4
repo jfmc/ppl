@@ -1381,7 +1381,7 @@ ppl_@CLASS@_wrap_assign
   for (ppl_dimension_type i = n; i-- > 0; )
     vars.insert(ds[i]);
   const Constraint_System* ccs = to_const(*pcs);
-  bool b = wrap_individually;
+  bool b = (wrap_individually != 0);
   pph.wrap_assign(vars,
                   bounded_integer_type_width(w),
                   bounded_integer_type_representation(r),
