@@ -115,7 +115,8 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
       new_x.sequence.push_back(zi);
     }
     ++xi;
-    if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
+    if ((abandon_expensive_computations != 0)
+        && (xi != x_end) && (y_begin != y_end)) {
       // Hurry up!
       PSET x_ph = xi->pointset();
       for (++xi; xi != x_end; ++xi)

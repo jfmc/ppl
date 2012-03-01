@@ -2430,7 +2430,7 @@ int
 ppl_PIP_Decision_Node_get_child_node(ppl_const_PIP_Decision_Node_t pip_dec,
                                      int b,
                                      ppl_const_PIP_Tree_Node_t* pip_tree) try {
-  *pip_tree = to_const(to_const(pip_dec)->child_node(b));
+  *pip_tree = to_const(to_const(pip_dec)->child_node(b != 0));
   return 0;
 }
 CATCH_ALL
