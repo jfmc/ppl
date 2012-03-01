@@ -66,9 +66,6 @@ protected:
   //! Index of the first bit derived classes can use.
   static const unsigned first_free_bit = 0;
 
-  //! Total number of bits that can be stored.
-  static const unsigned num_bits = sizeof_to_bits(sizeof(base_type));
-
   //! Constructs an object with flags set as in \p n.
   explicit Row_Flags(base_type n);
 
