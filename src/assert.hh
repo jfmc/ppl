@@ -61,7 +61,7 @@ site: http://bugseng.com/products/ppl/ . */
     W_Traits::Threshold old_weight__ = W_Traits::weight;          \
     PPL_ASSERT_IMPL_(cond__);                                     \
     PPL_ASSERT_IMPL_(old_weight__ == W_Traits::weight             \
-                     && "PPL_ASSERT_HEAVY have to be used here"); \
+                     && ("PPL_ASSERT_HEAVY has to be used here" != 0)); \
   } while (false)
 #endif // !defined(NDEBUG) && PPL_DEBUG_PPL_ASSERT
 
