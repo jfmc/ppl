@@ -33,8 +33,7 @@ PPL::Row_Flags::ascii_dump(std::ostream& s) const {
   s << "0x";
   std::ios::fmtflags old_flags = s.setf(std::ios::hex,
                                         std::ios::basefield);
-  const std::streamsize new_sz
-    = static_cast<std::streamsize>(2 * sizeof(Row_Flags::base_type));
+  const int new_sz = 2 * static_cast<int>(sizeof(Row_Flags::base_type));
   s << std::setw(new_sz) << std::setfill('0') << bits;
   s.flags(old_flags);
 }
