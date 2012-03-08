@@ -72,10 +72,10 @@ Polyhedron::Polyhedron(Topology topol,
     for (dimension_type k = space_dim; k-- > 0; ) {
       // See if we have a valid lower bound.
       bool l_closed = false;
-      bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
+      bool l_bounded = box.has_lower_bound(k, l_closed, l_n, l_d);
       // See if we have a valid upper bound.
       bool u_closed = false;
-      bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
+      bool u_bounded = box.has_upper_bound(k, u_closed, u_n, u_d);
 
       // See if we have an implicit equality constraint.
       if (l_bounded && u_bounded
@@ -99,10 +99,10 @@ Polyhedron::Polyhedron(Topology topol,
     for (dimension_type k = space_dim; k-- > 0; ) {
       // See if we have a valid lower bound.
       bool l_closed = false;
-      bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
+      bool l_bounded = box.has_lower_bound(k, l_closed, l_n, l_d);
       // See if we have a valid upper bound.
       bool u_closed = false;
-      bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
+      bool u_bounded = box.has_upper_bound(k, u_closed, u_n, u_d);
 
       // See if we have an implicit equality constraint.
       if (l_bounded && u_bounded

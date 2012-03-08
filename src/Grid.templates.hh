@@ -67,8 +67,8 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
       // gen_sys.insert() at the end of the loop.
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
-      if (box.get_lower_bound(k, closed, l_n, l_d)) {
-	if (box.get_upper_bound(k, closed, u_n, u_d))
+      if (box.has_lower_bound(k, closed, l_n, l_d)) {
+	if (box.has_upper_bound(k, closed, u_n, u_d))
 	  if (l_n * u_d == u_n * l_d) {
             Grid_Generator& point = gen_sys[0];
 	    // A point interval sets dimension k of every point to a
