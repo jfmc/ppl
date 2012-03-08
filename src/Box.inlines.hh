@@ -264,9 +264,9 @@ operator!=(const Box<ITV>& x, const Box<ITV>& y) {
 
 template <typename ITV>
 inline bool
-Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
+Box<ITV>::has_lower_bound(const dimension_type k, bool& closed,
                           Coefficient& n, Coefficient& d) const {
-  PPL_ASSERT(k < seq.size());
+  PPL_ASSERT(!is_empty() && k < seq.size());
   const ITV& seq_k = seq[k];
 
   if (seq_k.lower_is_boundary_infinity())
@@ -284,9 +284,9 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
 
 template <typename ITV>
 inline bool
-Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
+Box<ITV>::has_upper_bound(const dimension_type k, bool& closed,
                           Coefficient& n, Coefficient& d) const {
-  PPL_ASSERT(k < seq.size());
+  PPL_ASSERT(!is_empty() && k < seq.size());
   const ITV& seq_k = seq[k];
 
   if (seq_k.upper_is_boundary_infinity())

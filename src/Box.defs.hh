@@ -1630,48 +1630,55 @@ public:
   void set_interval(Variable var, const ITV& i);
 
   /*! \brief
-    If the <CODE>k</CODE>-th space dimension is unbounded below, returns
-    <CODE>false</CODE>. Otherwise returns <CODE>true</CODE> and set
+    If the <CODE>k</CODE>-th space dimension is unbounded below, return
+    <CODE>false</CODE>. Otherwise return <CODE>true</CODE> and set
     \p closed, \p n and \p d accordingly.
 
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
+    \note
+    It is assumed that <CODE>*this</CODE> is a non-empty box
+    having space dimension greater than \p k. An undefined behavior
+    is obtained if this assumption is not met.
 
-    An undefined behavior is obtained if \p k is greater than
-    or equal to the space dimension of \p *this.
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
+    space dimension of the non-empty box <CODE>*this</CODE>.
+    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>
+    (leaving all other parameters unchanged).
+    Otherwise, set \p closed, \p n and \p d as follows:
+     - \p closed is set to <CODE>true</CODE> if and only if the lower
+       boundary of \f$I\f$ is closed (i.e., it is included in the interval);
+     - \p n and \p d are assigned the integers \f$n\f$ and \f$d\f$ such
+       that the fraction \f$n/d\f$ corresponds to the greatest lower bound
+       of \f$I\f$. The fraction \f$n/d\f$ is in canonical form, meaning
+       that \f$n\f$ and \f$d\f$ have no common factors, \f$d\f$ is positive,
+       and if \f$n\f$ is zero then \f$d\f$ is one.
   */
-  bool get_lower_bound(dimension_type k, bool& closed,
+  bool has_lower_bound(dimension_type k, bool& closed,
 		       Coefficient& n, Coefficient& d) const;
 
   /*! \brief
-    If the <CODE>k</CODE>-th space dimension is unbounded above, returns
-    <CODE>false</CODE>. Otherwise returns <CODE>true</CODE> and set
+    If the <CODE>k</CODE>-th space dimension is unbounded above, return
+    <CODE>false</CODE>. Otherwise return <CODE>true</CODE> and set
     \p closed, \p n and \p d accordingly.
 
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    \note
+    It is assumed that <CODE>*this</CODE> is a non-empty box
+    having space dimension greater than \p k. An undefined behavior
+    is obtained if this assumption is not met.
 
-    An undefined behavior is obtained if \p k is greater than
-    or equal to the space dimension of \p *this.
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
+    space dimension of the non-empty box <CODE>*this</CODE>.
+    If \f$I\f$ is not bounded from above, simply return <CODE>false</CODE>
+    (leaving all other parameters unchanged).
+    Otherwise, set \p closed, \p n and \p d as follows:
+     - \p closed is set to <CODE>true</CODE> if and only if the upper
+       boundary of \f$I\f$ is closed (i.e., it is included in the interval);
+     - \p n and \p d are assigned the integers \f$n\f$ and \f$d\f$ such
+       that the fraction \f$n/d\f$ corresponds to the least upper bound
+       of \f$I\f$. The fraction \f$n/d\f$ is in canonical form, meaning
+       that \f$n\f$ and \f$d\f$ have no common factors, \f$d\f$ is positive,
+       and if \f$n\f$ is zero then \f$d\f$ is one.
   */
-  bool get_upper_bound(dimension_type k, bool& closed,
+  bool has_upper_bound(dimension_type k, bool& closed,
 		       Coefficient& n, Coefficient& d) const;
 
   //! Returns a system of constraints defining \p *this.
