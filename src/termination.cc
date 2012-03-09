@@ -427,9 +427,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   for (dimension_type i = s + 2*r; i-- > 0; )
     cs_out.insert(Variable(i) >= 0);
 
-  // FIXME: iterate backwards once the debugging phase is over.
-  //for (dimension_type j = 2*n; j-- > 0; )
-  for (dimension_type j = 0; j < 2*n; ++j)
+  for (dimension_type j = 2*n; j-- > 0; )
     cs_out.insert(les_eq[j] == 0);
 }
 
@@ -479,9 +477,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   for (dimension_type i = 2*m; i-- > 0; )
     cs_out.insert(Variable(i) >= 0);
 
-  // FIXME: iterate backwards once the debugging phase is over.
-  //for (dimension_type j = 3*n; j-- > 0; )
-  for (dimension_type j = 0; j < 3*n; ++j)
+  for (dimension_type j = 3*n; j-- > 0; )
     cs_out.insert(les_eq[j] == 0);
 }
 
