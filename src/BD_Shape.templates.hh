@@ -4255,7 +4255,7 @@ void BD_Shape<T>
   if (w_id == var_id) {
     // True if `b' is in [b_mlb, b_ub] and that is [0, 0].
     bool is_b_zero = (b_mlb == 0 && b_ub == 0);
-    // Here `lf' is of the form: [+/-1;+/-1] * v + b.
+    // Here `lf' is of the form: [+/-1, +/-1] * v + b.
     if (is_w_coeff_one) {
       if (is_b_zero)
         // The transformation is the identity function.
@@ -4274,7 +4274,7 @@ void BD_Shape<T>
       }
     }
     else {
-      // Here `w_coeff = [-1;-1].
+      // Here `w_coeff = [-1, -1].
       // Remove the binary constraints on `var'.
       forget_binary_dbm_constraints(var_id);
       using std::swap;
@@ -4293,7 +4293,7 @@ void BD_Shape<T>
   }
   else {
     // Here `w != var', so that `lf' is of the form
-    // [+/-1;+/-1] * w + b.
+    // [+/-1, +/-1] * w + b.
     // Remove all constraints on `var'.
     forget_all_dbm_constraints(var_id);
     // Shortest-path closure is preserved, but not reduction.
@@ -4328,7 +4328,7 @@ void BD_Shape<T>
 // General case.
 // Either t == 2, so that
 // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
-// or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
+// or t == 1, lf == i*w + b, but i <> [+/-1, +/-1].
 template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>
@@ -4514,8 +4514,8 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
   if (right_t == 1) {
-    // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
-    // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
+    // The constraint has the form [a-, a+] <= [b-, b+] + [c-, c+] * x.
+    // Reduce it to the constraint +/-x <= b+ - a- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& right_w_coeff =
 	                      right.coefficient(Variable(right_w_id));
       if (right_w_coeff == 1) {
@@ -4554,8 +4554,8 @@ BD_Shape<T>
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
     if (right_t == 0) {
-      // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
-      // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
+      // The constraint has the form [b-, b+] + [c-, c+] * x <= [a-, a+]
+      // Reduce it to the constraint +/-x <= a+ - b- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
 	left.coefficient(Variable(left_w_id));
 
@@ -4580,10 +4580,10 @@ BD_Shape<T>
       }
     }
     else if (right_t == 1) {
-      // The constraint has the form:
-      // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
+      // The constraint has the form
+      // [a-, a+] + [b-, b+] * x <= [c-, c+] + [d-, d+] * y.
       // Reduce it to the constraint +/-x +/-y <= c+ - a-
-      // if [b-;b+] = +/-[1;1] and [d-;d+] = +/-[1;1].
+      // if [b-, b+] = +/-[1, 1] and [d-, d+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
                               left.coefficient(Variable(left_w_id));
 
@@ -4844,7 +4844,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     if (curr_lb != 0 || curr_ub != 0) {
       assign_r(curr_var_ub, dbm[0][n_var], ROUND_NOT_NEEDED);
       neg_assign_r(curr_minus_var_ub, dbm[n_var][0], ROUND_NOT_NEEDED);
-      // Optimize the most commons cases: curr = +/-[1;1]
+      // Optimize the most commons cases: curr = +/-[1, 1].
       if (curr_lb == 1 && curr_ub == 1) {
         add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
                      ROUND_UP);

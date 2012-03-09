@@ -119,7 +119,7 @@ public:
   /*! \brief
     Absolute error.
 
-    Represents the interval \f$[-\omega; \omega]\f$ where \f$\omega\f$ is the
+    Represents the interval \f$[-\omega, \omega]\f$ where \f$\omega\f$ is the
     smallest non-zero positive number in the less precise floating point
     format between the analyzer format and the analyzed format.
 
@@ -150,13 +150,13 @@ public:
     on the linear form \p lf. This function is defined
     such as:
     \f[
-    \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
+    \varepsilon_{\mathbf{f}}\left([a, b]+\sum_{v \in \cV}[a_{v}, b_{v}]v\right)
     \defeq
-    (\textrm{max}(|a|,|b|) \amifp [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])
+    (\textrm{max}(|a|, |b|) \amifp [-\beta^{-\textrm{p}}, \beta^{-\textrm{p}}])
     +
     \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
     \amifp
-    [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])v
+    [-\beta^{-\textrm{p}}, \beta^{-\textrm{p}}])v
     \f]
     where p is the fraction size in bits for the format \f$\mathbf{f}\f$ and
     \f$\beta\f$ the base.
@@ -193,7 +193,7 @@ private:
     Static helper method that is used to compute the value of the public
     static field <CODE>absolute_error</CODE>.
 
-    \return The interval \f$[-\omega; \omega]\f$ corresponding to the value
+    \return The interval \f$[-\omega, \omega]\f$ corresponding to the value
     of <CODE>absolute_error</CODE>
   */
   static FP_Interval_Type compute_absolute_error();

@@ -58,7 +58,7 @@ void swap(Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
   \rrbracket\f$, we construct the interval
   linear form \f$\linexprenv{v}{\rho^{\#}}{\rho^{\#}_l}\f$ as
   \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as
-  \f$[-1;1]v\f$.
+  \f$[-1, 1]v\f$.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Variable_Floating_Point_Expression

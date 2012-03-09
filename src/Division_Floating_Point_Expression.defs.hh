@@ -72,28 +72,28 @@ void swap(Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
   \left(i \adivifp i'\right)
   + \sum_{v \in \cV}\left(i_{v} \adivifp i'\right)v.
   \f]
-  Given an expression \f$e_{1} \oslash [a;b]\f$ and a composite
+  Given an expression \f$e_{1} \oslash [a, b]\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$,
   we construct the interval linear form
   \f$
-  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \oslash [a, b]}{\rho^{\#}}{\rho^{\#}_l}
   \f$
   as follows:
   \f[
-  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \oslash [a, b]}{\rho^{\#}}{\rho^{\#}_l}
   =
   \left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \adivlf
-  [a;b]\right)
+  [a, b]\right)
   \aslf
   \left(\varepsilon_{\mathbf{f}}\left(
   \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \adivlf
-  [a;b]\right)
+  [a, b]\right)
   \aslf
-  mf_{\mathbf{f}}[-1;1],
+  mf_{\mathbf{f}}[-1, 1],
   \f]
   given an expression \f$e_{1} \oslash e_{2}\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
