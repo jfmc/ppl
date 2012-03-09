@@ -145,19 +145,6 @@ fatal(const char* format, ...) {
   exit(1);
 }
 
-// Currently unused, but we may want to use it in the future.
-/*
-void
-warning(const char* format, ...) {
-  va_list ap;
-  va_start(ap, format);
-  fprintf(stderr, "%s: Warning: ", program_name);
-  vfprintf(stderr, format, ap);
-  fprintf(stderr, "\n");
-  va_end(ap);
-}
-*/
-
 void
 internal_error() __attribute__((__noreturn__));
 
