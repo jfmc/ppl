@@ -221,8 +221,10 @@ add_artificial_parameters(Matrix& context, Variables_Set& params,
 }
 
 /* Compares two columns lexicographically in a revised simplex tableau:
-  - returns true if (column ja)*(-cst_a)/pivot_a[ja]
-                    << (column jb)*(-cst_b)/pivot_b[jb];
+  - returns true if
+    <CODE>
+      (column ja)*(-cst_a)/pivot_a[ja] < (column jb)*(-cst_b)/pivot_b[jb];
+    </CODE>
   - returns false otherwise.
 */
 bool
