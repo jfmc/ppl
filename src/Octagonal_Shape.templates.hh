@@ -557,8 +557,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
     }
 
     if (right_t == 1) {
-      // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
-      // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
+      // The constraint has the form [a-, a+] <= [b-, b+] + [c-, c+] * x.
+      // Reduce it to the constraint +/-x <= b+ - a- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& right_w_coeff =
 	                      right.coefficient(Variable(right_w_id));
       if (right_w_coeff == 1) {
@@ -592,8 +592,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   }
   else if (left_t == 1) {
     if (right_t == 0) {
-      // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
-      // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
+      // The constraint has the form [b-, b+] + [c-, c+] * x <= [a-, a+]
+      // Reduce it to the constraint +/-x <= a+ - b- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
 	                      left.coefficient(Variable(left_w_id));
       if (left_w_coeff == 1) {
@@ -626,10 +626,10 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
     }
 
     if (right_t == 1) {
-      // The constraint has the form:
-      // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
+      // The constraint has the form
+      // [a-, a+] + [b-, b+] * x <= [c-, c+] + [d-, d+] * y.
       // Reduce it to the constraint +/-x +/-y <= c+ - a-
-      // if [b-;b+] = +/-[1;1] and [d-;d+] = +/-[1;1].
+      // if [b-, b+] = +/-[1, 1] and [d-, d+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
                               left.coefficient(Variable(left_w_id));
       const FP_Interval_Type& right_w_coeff =
@@ -2131,8 +2131,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       : g.coefficient(x);
     if (is_additive_inverse(m_i_ii, m_ii_i)) {
       // The constraint has form ax = b.
-      // To satisfy the constraint it's necessary that the scalar product
-      // is not zero. The scalar product has the form:
+      // To satisfy the constraint it is necessary that the scalar product
+      // is not zero. The scalar product has the form
       // 'denom * g_coeff_x - numer * g.divisor()'.
       numer_denom(m_ii_i, numer, denom);
       denom *= 2;
@@ -2166,7 +2166,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
         else
           // If the generator is not a line it's necessary to check
           // that the scalar product sign is not positive and the scalar
-          // product has the form:
+          // product has the form
           // '-denom * g.coeff_x - numer * g.divisor()'.
           if (product > 0)
             return Poly_Gen_Relation::nothing();
@@ -2187,7 +2187,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
         else
           // If the generator is not a line it's necessary to check
           // that the scalar product sign is not positive and the scalar
-          // product has the form:
+          // product has the form
           // 'denom * g_coeff_x - numer * g.divisor()'.
           if (product > 0)
             return Poly_Gen_Relation::nothing();
@@ -5227,8 +5227,8 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
 
   // `w' is the variable with index `w_id'.
   // Now we know the form of `lf':
-  // - If t == 0, then lf == [lb;ub];
-  // - If t == 1, then lf == a*w + [lb;ub], where `w' can be `v' or another
+  // - If t == 0, then lf == [lb, ub];
+  // - If t == 1, then lf == a*w + [lb, ub], where `w' can be `v' or another
   //   variable;
   // - If t == 2, the `lf' is of the general form.
 
@@ -5238,7 +5238,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
   neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
   if (t == 0) {
-    // Case 1: lf = [lb;ub];
+    // Case 1: lf = [lb, ub].
     forget_all_octagonal_constraints(var_id);
     mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
     mul_2exp_assign_r(b_ub, b_ub, 1, ROUND_UP);
@@ -5260,9 +5260,9 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
     // True if `w_coeff' is in [-1, -1].
     bool is_w_coeff_minus_one = (w_coeff == -1);
     if (is_w_coeff_one || is_w_coeff_minus_one) {
-      // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1;+/-1].
+      // Case 2: lf = w_coeff*w + b, with w_coeff = [+/-1, +/-1].
       if (w_id == var_id) {
-        // Here lf = w_coeff*v + b, with w_coeff = [+/-1;+/-1].
+        // Here lf = w_coeff*v + b, with w_coeff = [+/-1, +/-1].
         if (is_w_coeff_one && is_b_zero)
           // The transformation is the identity function.
           return;
@@ -5308,7 +5308,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
       }
       else {
         // Here `w != var', so that `lf' is of the form
-        // [+/-1;+/-1] * w + b.
+        // [+/-1, +/-1] * w + b.
         // Remove all constraints on `var'.
         forget_all_octagonal_constraints(var_id);
         const dimension_type n_w = 2*w_id;
@@ -5344,7 +5344,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
   // General case.
   // Either t == 2, so that
   // expr == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
-  // or t == 1, expr == i*w + b, but i <> [+/-1;+/-1].
+  // or t == 1, expr == i*w + b, but i <> [+/-1, +/-1].
 
   // In the following, strong closure will be definitely lost.
   reset_strongly_closed();
@@ -5446,7 +5446,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
       div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_UP);
       neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var + 1], ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_DOWN);
-      // Optimize the most common case: curr = +/-[1;1].
+      // Optimize the most common case: curr = +/-[1, 1].
       if (curr_lb == 1 && curr_ub == 1) {
         add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
                      ROUND_UP);

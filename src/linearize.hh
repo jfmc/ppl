@@ -90,7 +90,7 @@ namespace Parma_Polyhedra_Library {
   \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \aslf
-  mf_{\mathbf{f}}[-1;1]
+  mf_{\mathbf{f}}[-1, 1]
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the relative error
   associated to \f$l\f$ (see method <CODE>relative_error</CODE> of
@@ -196,7 +196,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \aslf
-  mf_{\mathbf{f}}[-1;1]
+  mf_{\mathbf{f}}[-1, 1]
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the relative error
   associated to \f$l\f$ (see method <CODE>relative_error</CODE> of
@@ -284,35 +284,35 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   \left(i \amifp i'\right)
   + \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
   \f]
-  Given an expression \f$[a;b] \otimes e_{2}\f$ and a composite
+  Given an expression \f$[a, b] \otimes e_{2}\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
-  \f$\linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  \f$\linexprenv{[a, b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{[a, b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \left([a;b]
+  \left([a, b]
   \amlf
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}\right)
   \aslf
-  \left([a;b]
+  \left([a, b]
   \amlf
   \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \right)\right)
   \aslf
-  mf_{\mathbf{f}}[-1;1].
+  mf_{\mathbf{f}}[-1, 1].
   \f].
 
-  Given an expression \f$e_{1} \otimes [a;b]\f$ and a composite
+  Given an expression \f$e_{1} \otimes [a, b]\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
-  \f$\linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}\f$
+  \f$\linexprenv{e_{1} \otimes [a, b]}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \otimes [a, b]}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexprenv{[a;b] \otimes e_{1}}{\rho^{\#}}{\rho^{\#}_l}.
+  \linexprenv{[a, b] \otimes e_{1}}{\rho^{\#}}{\rho^{\#}_l}.
   \f]
 
   Given an expression \f$e_{1} \otimes e_{2}\f$ and a composite
@@ -474,28 +474,28 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   \left(i \adivifp i'\right)
   + \sum_{v \in \cV}\left(i_{v} \adivifp i'\right)v.
   \f]
-  Given an expression \f$e_{1} \oslash [a;b]\f$ and a composite
+  Given an expression \f$e_{1} \oslash [a, b]\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$,
   we construct the interval linear form
   \f$
-  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \oslash [a, b]}{\rho^{\#}}{\rho^{\#}_l}
   \f$
   as follows:
   \f[
-  \linexprenv{e_{1} \oslash [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \oslash [a, b]}{\rho^{\#}}{\rho^{\#}_l}
   =
   \left(\linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \adivlf
-  [a;b]\right)
+  [a, b]\right)
   \aslf
   \left(\varepsilon_{\mathbf{f}}\left(
   \linexprenv{e_{1}}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \adivlf
-  [a;b]\right)
+  [a, b]\right)
   \aslf
-  mf_{\mathbf{f}}[-1;1],
+  mf_{\mathbf{f}}[-1, 1],
   \f]
   given an expression \f$e_{1} \oslash e_{2}\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right

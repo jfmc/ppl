@@ -73,35 +73,35 @@ swap(Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
   \left(i \amifp i'\right)
   + \sum_{v \in \cV}\left(i \amifp i'_{v}\right)v.
   \f]
-  Given an expression \f$[a;b] \otimes e_{2}\f$ and a composite
+  Given an expression \f$[a, b] \otimes e_{2}\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
-  \f$\linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
+  \f$\linexprenv{[a, b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexprenv{[a;b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{[a, b] \otimes e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \left([a;b]
+  \left([a, b]
   \amlf
   \linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}\right)
   \aslf
-  \left([a;b]
+  \left([a, b]
   \amlf
   \varepsilon_{\mathbf{f}}\left(\linexprenv{e_{2}}{\rho^{\#}}{\rho^{\#}_l}
   \right)\right)
   \aslf
-  mf_{\mathbf{f}}[-1;1].
+  mf_{\mathbf{f}}[-1, 1].
   \f].
 
-  Given an expression \f$e_{1} \otimes [a;b]\f$ and a composite
+  Given an expression \f$e_{1} \otimes [a, b]\f$ and a composite
   abstract store \f$\left \llbracket \rho^{\#}, \rho^{\#}_l \right
   \rrbracket\f$, we construct the interval linear form
-  \f$\linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}\f$
+  \f$\linexprenv{e_{1} \otimes [a, b]}{\rho^{\#}}{\rho^{\#}_l}\f$
   as follows:
   \f[
-  \linexprenv{e_{1} \otimes [a;b]}{\rho^{\#}}{\rho^{\#}_l}
+  \linexprenv{e_{1} \otimes [a, b]}{\rho^{\#}}{\rho^{\#}_l}
   =
-  \linexprenv{[a;b] \otimes e_{1}}{\rho^{\#}}{\rho^{\#}_l}.
+  \linexprenv{[a, b] \otimes e_{1}}{\rho^{\#}}{\rho^{\#}_l}.
   \f]
 
   Given an expression \f$e_{1} \otimes e_{2}\f$ and a composite

@@ -468,7 +468,7 @@ bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
   \param analyzed_format The floating point format used by the analyzed
   program.
 
-  \return The interval \f$[-\omega; \omega]\f$ where \f$\omega\f$ is the
+  \return The interval \f$[-\omega, \omega]\f$ where \f$\omega\f$ is the
   smallest non-zero positive number in the less precise floating point
   format between the analyzer format and the analyzed format.
 */

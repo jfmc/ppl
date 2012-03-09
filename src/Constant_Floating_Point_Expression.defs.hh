@@ -54,7 +54,7 @@ void swap(Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
 
   The linearization of a constant floating point expression results in a
   linear form consisting of only the inhomogeneous term
-  \f$\left[ l;u \right]\f$, where \f$l\f$ and \f$u\f$ are the lower
+  \f$[l, u]\f$, where \f$l\f$ and \f$u\f$ are the lower
   and upper bounds of the constant value given to the class constructor.
 */
 template <typename FP_Interval_Type, typename FP_Format>
