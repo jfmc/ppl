@@ -62,12 +62,12 @@ DEVREF_CORE_PS_MANUAL = ppl-devref-@VERSION@.ps.gz
 USER_CORE_HTML_DIR = ppl-user-@VERSION@-html
 DEVREF_CORE_HTML_DIR = ppl-devref-@VERSION@-html
 
-DOX_LICENCE_FILES = \
+DOX_LICENSE_FILES = \
 gpl.dox \
 fdl.dox
 
 DOX_FILES = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 definitions.dox
 
 USER_CORE_STUFF = \
@@ -108,7 +108,7 @@ DEVREF_C_INTERFACE_HTML_DIR = \
 ppl-devref-c-interface-@VERSION@-html
 
 COMMON_C_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 ppl.sty \
 ../configure.ac \
 ../interfaces/C/ppl_c_version.h.in \
@@ -195,14 +195,14 @@ PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES = \
 ../interfaces/Prolog/Prolog_interface_sysdep.dox
 
 USER_PROLOG_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 user-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox \
 $(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES)
 
 DEVREF_PROLOG_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox \
@@ -235,14 +235,14 @@ DEVREF_CONFIGURED_PROLOG_INTERFACE_HTML_DIR = \
 ppl-devref-configured-prolog-interface-@VERSION@-html
 
 USER_CONFIGURED_PROLOG_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 user-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_configured_interface.dox \
 $(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES)
 
 DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_configured_interface.dox \
@@ -281,14 +281,14 @@ DEVREF_OCAML_INTERFACE_HTML_DIR = \
 ppl-devref-ocaml-interface-@VERSION@-html
 
 USER_OCAML_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 user-language-interface.tex \
 ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
 ../interfaces/OCaml/ppl_ocaml_globals.mli
 
 DEVREF_OCAML_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
@@ -398,13 +398,13 @@ JAVA_INTERFACE_JAVA_FILES = \
 ../interfaces/Java/parma_polyhedra_library/Variables_Set.java
 
 USER_JAVA_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 user-language-interface.tex \
 ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES)
 
 DEVREF_JAVA_INTERFACE_STUFF = \
-$(DOX_LICENCE_FILES) \
+$(DOX_LICENSE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES) \
