@@ -38,7 +38,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_FPU_DOWNWARD FE_DOWNWARD
 #endif
 #ifdef FE_TOWARDZERO
-#define PPL_PPL_FPU_TOWARDZERO FE_TOWARDZERO
+#define PPL_FPU_TOWARDZERO FE_TOWARDZERO
 #endif
 
 namespace Parma_Polyhedra_Library {
