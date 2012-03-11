@@ -470,16 +470,16 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! Shorthand for Generator Generator::line(const Linear_Expression& e).
+//! Shorthand for Generator::line(const Linear_Expression& e).
 /*! \relates Generator */
 Generator line(const Linear_Expression& e);
 
-//! Shorthand for Generator Generator::ray(const Linear_Expression& e).
+//! Shorthand for Generator::ray(const Linear_Expression& e).
 /*! \relates Generator */
 Generator ray(const Linear_Expression& e);
 
 /*! \brief
-  Shorthand for Generator
+  Shorthand for
   Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 
   \relates Generator
@@ -489,7 +489,7 @@ point(const Linear_Expression& e = Linear_Expression::zero(),
       Coefficient_traits::const_reference d = Coefficient_one());
 
 /*! \brief
-  Shorthand for Generator
+  Shorthand for
   Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 
   \relates Generator

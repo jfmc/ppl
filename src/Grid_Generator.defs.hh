@@ -481,14 +481,14 @@ private:
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
-  Shorthand for Grid_Generator
+  Shorthand for
   Grid_Generator::grid_line(const Linear_Expression& e).
 */
 /*! \relates Grid_Generator */
 Grid_Generator grid_line(const Linear_Expression& e);
 
 /*! \brief
-  Shorthand for Grid_Generator
+  Shorthand for
   Grid_Generator::parameter(const Linear_Expression& e,
   Coefficient_traits::const_reference d).
 */
@@ -498,8 +498,7 @@ parameter(const Linear_Expression& e = Linear_Expression::zero(),
 	  Coefficient_traits::const_reference d = Coefficient_one());
 
 /*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::grid_point(const Linear_Expression& e,
+  Shorthand for Grid_Generator::grid_point(const Linear_Expression& e,
   Coefficient_traits::const_reference d).
 */
 /*! \relates Grid_Generator */
