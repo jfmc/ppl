@@ -54,7 +54,7 @@ solve_query(Goals, VN, Polys_Out) :-
 
   % Now find and sort all the PPL dimensions for variables
   % that occur in bindings to external variables.
-  terms2wanted_dims(VN, [], Num_List),
+  terms_to_wanted_dims(VN, [], Num_List),
   sort(Num_List, Sorted_Num_List),
 
   % We want to remove (project away) all other dimensions.
@@ -117,13 +117,13 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
   ppl_Polyhedron_space_dimension(Poly, Dims),
 
   % Change any free variables into PPL variables.
-  term2PPLterm(Constraints, Dims, New_Dims),
+  term_to_PPL_term(Constraints, Dims, New_Dims),
   Added_Dims is New_Dims - Dims,
   ppl_Polyhedron_add_space_dimensions_and_embed(Poly, Added_Dims),
 
   % Make the sequence of constraints into a list
   % and check we do have constraints.
-  constraints2list(Constraints, Constraints_List),
+  constraints_to_list(Constraints, Constraints_List),
 
   ppl_Polyhedron_add_constraints(Poly, Constraints_List),
 
@@ -165,7 +165,7 @@ solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
   parameter_passing(Atom, Head, Binding_Constraints),
 
   % Change any free variables into PPL variables.
-  terms2PPLterms(Binding_Constraints, Dims, New_Dims),
+  terms_to_PPL_terms(Binding_Constraints, Dims, New_Dims),
   Added_Dims is New_Dims - Dims,
   ppl_Polyhedron_add_space_dimensions_and_embed(Poly_Copy, Added_Dims),
 
@@ -177,7 +177,7 @@ solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
 
   % Now remove any dimensions that are higher than
   % previously and higher than any PPL variables in the atom.
-  term2wanted_dims(Atom, [], Num_List),
+  term_to_wanted_dims(Atom, [], Num_List),
   Max_Wanted1 is Dims - 1,
   max(Num_List, Max_Wanted1, Max_Wanted),
   Un_Wanted is Max_Wanted + 1,
@@ -659,54 +659,54 @@ int_expr_aux(I-J) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% term2wanted_dims(?Term, -List_of_Integers)
+% term_to_wanted_dims(?Term, -List_of_Integers)
 %
 % Takes a term and returns list of numbers in the PPL variables
 % of the form '$VAR'(k).
 
-term2wanted_dims(V, Ns, Ns) :-
+term_to_wanted_dims(V, Ns, Ns) :-
   var(V),
   !.
-term2wanted_dims('$VAR'(N), Ns, [N|Ns]) :-
+term_to_wanted_dims('$VAR'(N), Ns, [N|Ns]) :-
   !.
-term2wanted_dims(Term, Ns_In, Ns_Out) :-
+term_to_wanted_dims(Term, Ns_In, Ns_Out) :-
   Term =.. [_F|Args],
-  terms2wanted_dims(Args, Ns_In, Ns_Out).
+  terms_to_wanted_dims(Args, Ns_In, Ns_Out).
 
-terms2wanted_dims([], Ns, Ns).
-terms2wanted_dims([Arg|Args], Ns_In, Ns_Out) :-
-  term2wanted_dims(Arg, Ns_In, Ns1),
-  terms2wanted_dims(Args, Ns1, Ns_Out).
+terms_to_wanted_dims([], Ns, Ns).
+terms_to_wanted_dims([Arg|Args], Ns_In, Ns_Out) :-
+  term_to_wanted_dims(Arg, Ns_In, Ns1),
+  terms_to_wanted_dims(Args, Ns1, Ns_Out).
 
-constraints2list(C, LC) :-
-  constraints2list(C, [], LC).
+constraints_to_list(C, LC) :-
+  constraints_to_list(C, [], LC).
 
-constraints2list((A, B), Rest, LC) :-
+constraints_to_list((A, B), Rest, LC) :-
   !,
-  constraints2list(B, Rest, BRest),
-  constraints2list(A, BRest, LC).
-constraints2list(C, Rest, Rest1) :-
+  constraints_to_list(B, Rest, BRest),
+  constraints_to_list(A, BRest, LC).
+constraints_to_list(C, Rest, Rest1) :-
   (check_constraint(C) ->
     Rest1 = [C|Rest]
   ;
     Rest1 = [0 = 1]
   ).
 
-% term2PPLterm(?Term, +In_N, ?Out_N)
+% term_to_PPL_term(?Term, +In_N, ?Out_N)
 %
 % Unifies each of the variables in Term with the special terms
 % '$VAR'(k), where k ranges from In_N to Out_N-1.
-term2PPLterm('$VAR'(In_N), In_N, Out_N) :-
+term_to_PPL_term('$VAR'(In_N), In_N, Out_N) :-
   !,
   Out_N is In_N + 1.
-term2PPLterm(Term, In_N, Out_N) :-
+term_to_PPL_term(Term, In_N, Out_N) :-
   Term =.. [_|Args],
-  terms2PPLterms(Args, In_N, Out_N).
+  terms_to_PPL_terms(Args, In_N, Out_N).
 
-terms2PPLterms([], In_N, In_N).
-terms2PPLterms([Arg|Args], In_N, Out_N) :-
-  term2PPLterm(Arg, In_N, Tmp_N),
-  terms2PPLterms(Args, Tmp_N, Out_N).
+terms_to_PPL_terms([], In_N, In_N).
+terms_to_PPL_terms([Arg|Args], In_N, Out_N) :-
+  term_to_PPL_term(Arg, In_N, Tmp_N),
+  terms_to_PPL_terms(Args, Tmp_N, Out_N).
 
 build_equality_constraints([], []).
 build_equality_constraints([Var = Num|Eqs], All_Eq_Constrs) :-
