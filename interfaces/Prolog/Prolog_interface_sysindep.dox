@@ -276,7 +276,7 @@ The specification uses the following grammar rules:
 
  Complexity  --> polynomial | simplex | any
 
- Vars_Pair   --> PPLVar - PPLVar        map relation
+ Vars_Pair   --> PPL_Var - PPL_Var      map relation
 
  P_Func      --> []    			list of map relations
             | [Vars_Pair | P_Func].
