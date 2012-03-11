@@ -910,19 +910,19 @@ SED_C_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_C_INPUT_USER = \
+$(DOX_LICENSE_FILES) \
 ../interfaces/C/ppl_c_version.h \
 $(srcdir)/../interfaces/C/ppl_c_header.h \
-$(srcdir)/../interfaces/C/C_interface.dox \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/C/C_interface.dox
 
 SED_C_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 ../interfaces/C/ppl_c_version.h \
 $(srcdir)/../interfaces/C/ppl_c_header.h \
 $(srcdir)/../interfaces/C/C_interface.dox \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.defs.hh \
-$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh
 
 user-c-interface.latex-dir: \
 user-language-interface.doxyconf \
@@ -991,14 +991,15 @@ SED_PROLOG_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_PROLOG_INPUT_USER = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
-$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox
 
 SED_PROLOG_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
@@ -1006,8 +1007,7 @@ $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
-$(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc
 
 user-prolog-interface.latex-dir: \
 user-language-interface.doxyconf \
@@ -1076,15 +1076,15 @@ SED_OCAML_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
 SED_OCAML_INPUT_USER = \
-$(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(DOX_LICENSE_FILES) \
+$(srcdir)/../interfaces/OCaml/OCaml_interface.dox
 
 SED_OCAML_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh
 
 OCAMLDOC_HTML_OPTIONS = \
 -I @mlgmp_dir@ -I $(top_builddir)/interfaces/OCaml -html
@@ -1170,16 +1170,16 @@ SED_JAVA_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_JAVA_INPUT_USER = \
-$(srcdir)/../interfaces/Java/parma_polyhedra_library \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(DOX_LICENSE_FILES) \
+$(srcdir)/../interfaces/Java/parma_polyhedra_library
 
 SED_JAVA_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/Java/parma_polyhedra_library \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.cc \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.defs.hh \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.inlines.hh \
-$(srcdir)/../interfaces/Java/jni/ppl_java_globals.cc \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/Java/jni/ppl_java_globals.cc
 
 user-java-interface.latex-dir: \
 user-language-interface.doxyconf \
@@ -1253,17 +1253,17 @@ SED_CONFIGURED_C_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_C_INPUT_USER = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/C/C_interface.dox \
-../interfaces/C/ppl_c.h \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+../interfaces/C/ppl_c.h
 
 SED_CONFIGURED_C_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.defs.hh \
-$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh
 # FIXME add generated files
 
 user-configured-c-interface.latex-dir: \
@@ -1338,14 +1338,15 @@ SED_CONFIGURED_PROLOG_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_PROLOG_INPUT_USER = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/Prolog/Prolog_configured_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 ../interfaces/Prolog/Prolog_configured_domains.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
-$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox
 
 SED_CONFIGURED_PROLOG_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/Prolog/Prolog_configured_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 ../interfaces/Prolog/Prolog_configured_domains.dox \
@@ -1353,8 +1354,7 @@ $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
-$(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc
 # FIXME: add appropriate generated files.
 
 user-configured-prolog-interface.latex-dir: \
@@ -1429,15 +1429,15 @@ SED_CONFIGURED_OCAML_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
 SED_CONFIGURED_OCAML_INPUT_USER = \
-$(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(DOX_LICENSE_FILES) \
+$(srcdir)/../interfaces/OCaml/OCaml_interface.dox
 
 SED_CONFIGURED_OCAML_INPUT_DEVREF = \
+$(DOX_LICENSE_FILES) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
-$(srcdir)/gpl.dox $(srcdir)/fdl.dox
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh
 
 user-configured-ocaml-interface.latex-dir: \
 user-language-interface.doxyconf \
