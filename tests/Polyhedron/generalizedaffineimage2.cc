@@ -240,7 +240,7 @@ test08() {
   print_constraints(ph, "*** after ph.generalized_affine_image"
 		    "(B, GREATER_THAN, A + B + 1) ***");
   print_generators(ph, "*** after ph.generalized_affine_image"
-		   "(B, PPLGT, A + B + 1) ***");
+		   "(B, GREATER_THAN, A + B + 1) ***");
 
   return ok;
 }
