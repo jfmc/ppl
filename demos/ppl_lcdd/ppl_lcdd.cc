@@ -504,7 +504,8 @@ template <typename T>
 bool
 guarded_read(std::istream& in, T& x) {
   try {
-    return in >> x;
+    in >> x;
+    return !in.fail();
   }
   catch (...) {
     return false;
@@ -516,7 +517,8 @@ void
 guarded_write(std::ostream& out, const T& x) {
   bool succeeded = false;
   try {
-    succeeded = out << x;
+    out << x;
+    succeeded = !out.fail();
   }
   catch (...) {
   }
@@ -1161,7 +1163,8 @@ write_polyhedron(std::ostream& out,
   // Flush `out'.
   bool flush_succeeded = false;
   try {
-    flush_succeeded = out.flush();
+    out.flush();
+    flush_succeeded = !out.fail();
   }
   catch (...) {
   }
