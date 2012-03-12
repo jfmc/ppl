@@ -47,7 +47,7 @@ Octagonal_Shape<T>::Status::test_all(flags_t mask) const {
 template <typename T>
 inline bool
 Octagonal_Shape<T>::Status::test_any(flags_t mask) const {
-  return flags & mask;
+  return (flags & mask) != 0;
 }
 
 template <typename T>
