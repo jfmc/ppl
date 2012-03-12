@@ -294,7 +294,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 inline int
 Prolog_is_cons(Prolog_term_ref t) {
-  return !PL_is_atom(t) && PL_is_list(t);
+  return (!PL_is_atom(t) && PL_is_list(t)) ? 1 : 0;
 }
 
 /*!

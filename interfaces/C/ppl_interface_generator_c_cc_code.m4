@@ -275,7 +275,7 @@ ppl_@CLASS@_frequency
   Coefficient& pfreq_d = *to_nonconst(freq_d);
   Coefficient& pval_n = *to_nonconst(val_n);
   Coefficient& pval_d = *to_nonconst(val_d);
-  return pph.frequency(lle, pfreq_n, pfreq_d, pval_n, pval_d);
+  return pph.frequency(lle, pfreq_n, pfreq_d, pval_n, pval_d) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1237,7 +1237,7 @@ ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
 (ppl_const_@CLASS@_t pset) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
-  return termination_test_@TERMINATION_ID@(ppset);
+  return termination_test_@TERMINATION_ID@(ppset) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1252,7 +1252,7 @@ ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
   const @TOPOLOGY@@CPP_CLASS@& ppset_after
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
-  return termination_test_@TERMINATION_ID@_2(ppset_before, ppset_after);
+  return termination_test_@TERMINATION_ID@_2(ppset_before, ppset_after) ? 1 : 0;
 }
 CATCH_ALL
 
