@@ -66,7 +66,6 @@ polyhedron2
 
 BUGS =
 
-EXTRA_DIST = $(ALL_TESTS) $(BUGS)
 
 # There are platforms where no floating-point type is supported.
 if SUPPORTED_SOME_FLOATING_POINT_TYPE
