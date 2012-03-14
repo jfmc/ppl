@@ -302,14 +302,14 @@ struct Recycle_Input {
 						class_prefix)		\
   template <typename type_symbol1, typename type_symbol2>		\
   void									\
-  PPL_U(class_prefix)<type_symbol1, type_symbol2>         \
+  PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2)>         \
   ::ascii_dump() const {                                                \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol1, typename type_symbol2>		\
   void									\
-  PPL_U(class_prefix)<type_symbol1, type_symbol2>         \
+  PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2)>         \
   ::print() const {                                                     \
     using IO_Operators::operator<<;					\
     std::cerr << *this;							\
@@ -322,8 +322,8 @@ struct Recycle_Input {
   template <typename type_symbol1, typename type_symbol2,		\
             typename type_symbol3>					\
   void									\
-  PPL_U(class_prefix)<type_symbol1, type_symbol2,         \
-                      type_symbol3>::ascii_dump()                \
+  PPL_U(class_prefix)<PPL_U(type_symbol1), type_symbol2,                \
+                      PPL_U(type_symbol3)>::ascii_dump()                \
     const {								\
     ascii_dump(std::cerr);						\
   }									\
@@ -331,8 +331,8 @@ struct Recycle_Input {
     template <typename type_symbol1, typename type_symbol2,		\
               typename type_symbol3>					\
     void								\
-    PPL_U(class_prefix)<type_symbol1, type_symbol2,       \
-                        type_symbol3>::print()                   \
+    PPL_U(class_prefix)<PPL_U(type_symbol1), type_symbol2,              \
+                        PPL_U(type_symbol3)>::print()                   \
       const {								\
       using IO_Operators::operator<<;					\
       std::cerr << *this;						\
@@ -341,13 +341,13 @@ struct Recycle_Input {
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
   template <typename type_symbol>					\
   void									\
-  class_prefix::ascii_dump() const {                             \
+  class_prefix::ascii_dump() const {                                    \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol>					\
   void									\
-  class_prefix::print() const {                                  \
+  class_prefix::print() const {                                         \
     std::cerr << "No user level output operator defined "		\
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
