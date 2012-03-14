@@ -35,10 +35,10 @@ using namespace Parma_Polyhedra_Library;
 #define PPL_SPECIALIZE_LIMITS_INT(T)					\
   /*! \brief Partial specialization of std::numeric_limits. */		\
   template <typename Policy>						\
-  class numeric_limits<Checked_Number<T, Policy> >               \
+  class numeric_limits<Checked_Number<PPL_U(T), Policy> >              \
     : public numeric_limits<PPL_U(T)> {                                 \
   private:								\
-    typedef Checked_Number<T, Policy> Type;                      \
+    typedef Checked_Number<PPL_U(T), Policy> Type;                      \
                                                                         \
   public:								\
     static const bool has_infinity = Policy::has_infinity;		\
@@ -46,13 +46,13 @@ using namespace Parma_Polyhedra_Library;
                                                                         \
     static Type min() {							\
       Type v;								\
-      v.raw_value() = Checked::Extended_Int<Policy, T>::min;     \
+      v.raw_value() = Checked::Extended_Int<Policy, PPL_U(T)>::min;     \
       return v;								\
     }									\
                                                                         \
     static Type max() {							\
       Type v;								\
-      v.raw_value() = Checked::Extended_Int<Policy, T>::max;     \
+      v.raw_value() = Checked::Extended_Int<Policy, PPL_U(T)>::max;     \
       return v;								\
     }									\
 									\
@@ -90,7 +90,7 @@ PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 #define PPL_SPECIALIZE_LIMITS_FLOAT(T)					\
   /*! \brief Partial specialization of std::numeric_limits. */		\
   template <typename Policy>						\
-  struct numeric_limits<Checked_Number<T, Policy> >              \
+  struct numeric_limits<Checked_Number<PPL_U(T), Policy> >              \
     : public numeric_limits<PPL_U(T)> {                                 \
 };
 
