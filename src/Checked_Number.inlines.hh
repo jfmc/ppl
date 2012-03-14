@@ -537,7 +537,7 @@ PPL_DEFINE_BINARY_OP_ASSIGN(operator %=, rem_assign_r)
 #define PPL_DEFINE_BINARY_OP(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
-PPL_U(f)(const Checked_Number<T, Policy>& x, \
+f(const Checked_Number<T, Policy>& x, \
          const Checked_Number<T, Policy>& y) {  \
   Checked_Number<T, Policy> r; \
   Policy::handle_result(fun(r, x, y, Policy::ROUND_DEFAULT_OPERATOR)); \

@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
   the compiler.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define used(v) (void)v
+#define used(v) (void)(v)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -70,11 +70,11 @@ struct Suppress_Uninitialized_Warnings_Type {
 };
 
 #define PPL_UNINITIALIZED(type, name)                                   \
-  type PPL_U(name)                                                      \
+  PPL_U(type) PPL_U(name)                                               \
   = Suppress_Uninitialized_Warnings_Type<PPL_U(type)>::synonym ()
 #else
 #define PPL_UNINITIALIZED(type, name)           \
-  type name
+  PPL_U(type) name
 #endif
 
 #define sizeof_to_bits(size)                    \
