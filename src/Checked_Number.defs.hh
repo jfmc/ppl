@@ -491,7 +491,7 @@ template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
-name(To& to, const From& x, Rounding_Dir dir);
+ PPL_U(name)(To& to, const From& x, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC1_A(assign_r)
 PPL_DECLARE_FUNC1_A(floor_assign_r)
@@ -508,7 +508,7 @@ template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
-name(To& to, const From& x, unsigned int exp, Rounding_Dir dir);
+ PPL_U(name)(To& to, const From& x, unsigned int exp, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC1_B(add_2exp_assign_r)
 PPL_DECLARE_FUNC1_B(sub_2exp_assign_r)
@@ -525,7 +525,7 @@ typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From1>::value \
                    && Is_Native_Or_Checked<From2>::value, \
                    Result>::type \
-name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
+ PPL_U(name)(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC2(add_assign_r)
 PPL_DECLARE_FUNC2(sub_assign_r)
@@ -549,7 +549,7 @@ typename Enable_If<Is_Native_Or_Checked<To1>::value \
                    && Is_Native_Or_Checked<From1>::value \
 		   && Is_Native_Or_Checked<From2>::value, \
                    Result>::type \
-name(To1& to, To2& s, To3& t, \
+ PPL_U(name)(To1& to, To2& s, To3& t,     \
      const From1& x, const From2& y, \
      Rounding_Dir dir);
 
