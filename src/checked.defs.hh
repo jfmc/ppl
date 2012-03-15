@@ -49,7 +49,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(qual) PPL_U(type)& arg) {                  \
+  inline ret_type PPL_U(name)(PPL_U(qual) PPL_U(type)& arg) {           \
     return PPL_FUNCTION_CLASS(name)<Policy, PPL_U(type)>::function(arg); \
   }
 
@@ -57,7 +57,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(qual) PPL_U(type)& arg, PPL_U(after1) a1) { \
+  inline ret_type PPL_U(name)(PPL_U(qual) PPL_U(type)& arg, PPL_U(after1) a1) { \
     return                                                              \
       PPL_FUNCTION_CLASS(name)<Policy, PPL_U(type)>::function(arg, a1); \
   }
@@ -66,7 +66,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(qual) PPL_U(type)& arg, PPL_U(after1) a1,  \
+  inline ret_type PPL_U(name)(PPL_U(qual) PPL_U(type)& arg, PPL_U(after1) a1, \
                        PPL_U(after2) a2) {                              \
     return                                                              \
       PPL_FUNCTION_CLASS(name)<Policy, PPL_U(type)>::function(arg,      \
@@ -78,7 +78,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(qual) PPL_U(type)& arg,                    \
+  inline ret_type PPL_U(name)(PPL_U(qual) PPL_U(type)& arg,             \
                        PPL_U(after1) a1, PPL_U(after2) a2,              \
                        PPL_U(after3) a3) {                              \
     return                                                              \
@@ -91,7 +91,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(before1) b1, PPL_U(qual) PPL_U(type)& arg, \
+  inline ret_type PPL_U(name)(PPL_U(before1) b1, PPL_U(qual) PPL_U(type)& arg, \
                        PPL_U(after1) a1) {                              \
     return                                                              \
       PPL_FUNCTION_CLASS(name)<Policy, PPL_U(type)>::function(b1, arg,  \
@@ -103,7 +103,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(before1) b1, PPL_U(qual) PPL_U(type)& arg, \
+  inline ret_type PPL_U(name)(PPL_U(before1) b1, PPL_U(qual) PPL_U(type)& arg, \
                        PPL_U(after1) a1, PPL_U(after2) a2) {            \
     return                                                              \
       PPL_FUNCTION_CLASS(name)<Policy, PPL_U(type)>::function(b1, arg,  \
@@ -115,7 +115,7 @@ namespace Checked {
   template <typename Policy, typename type>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy, typename type>                             \
-  inline ret_type name(PPL_U(before1) b1, PPL_U(before2) b2,            \
+  inline ret_type PPL_U(name)(PPL_U(before1) b1, PPL_U(before2) b2,     \
                        PPL_U(qual) PPL_U(type)& arg,                    \
                        PPL_U(after1) a1, PPL_U(after2) a2) {            \
     return                                                              \
@@ -130,7 +130,7 @@ namespace Checked {
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy1, typename Policy2,                         \
             typename type1, typename type2>                             \
-  inline ret_type name(PPL_U(qual1) PPL_U(type1)& arg1,                 \
+  inline ret_type PPL_U(name)(PPL_U(qual1) PPL_U(type1)& arg1,          \
                        PPL_U(qual2) PPL_U(type2)& arg2) {               \
     return PPL_FUNCTION_CLASS(name)<Policy1, Policy2,                   \
       type1, PPL_U(type2)>::function(arg1, arg2);                       \
@@ -143,7 +143,7 @@ namespace Checked {
   struct PPL_FUNCTION_CLASS(name);                              \
   template <typename Policy1, typename Policy2,                 \
             typename type1, typename type2>                     \
-  inline ret_type name(PPL_U(qual1) PPL_U(type1)& arg1,         \
+  inline ret_type PPL_U(name)(PPL_U(qual1) PPL_U(type1)& arg1,  \
                        PPL_U(qual2) PPL_U(type2)& arg2,         \
                        PPL_U(after1) a1) {                      \
     return PPL_FUNCTION_CLASS(name)<Policy1, Policy2,           \
@@ -157,7 +157,7 @@ namespace Checked {
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy1, typename Policy2,                         \
             typename type1, typename type2>                             \
-  inline ret_type name(PPL_U(qual1) PPL_U(type1)& arg1,                 \
+  inline ret_type PPL_U(name)(PPL_U(qual1) PPL_U(type1)& arg1,          \
                        PPL_U(qual2) PPL_U(type2)& arg2,                 \
                        PPL_U(after1) a1, PPL_U(after2) a2) {            \
     return PPL_FUNCTION_CLASS(name)<Policy1, Policy2,                   \
@@ -171,7 +171,7 @@ namespace Checked {
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy1, typename Policy2, typename Policy3,       \
             typename type1, typename type2, typename type3>             \
-  inline ret_type name(PPL_U(qual1) PPL_U(type1)& arg1,                 \
+  inline ret_type PPL_U(name)(PPL_U(qual1) PPL_U(type1)& arg1,          \
                        PPL_U(qual2) PPL_U(type2)& arg2,                 \
                        PPL_U(qual3) PPL_U(type3)& arg3,                 \
                        PPL_U(after1) a1) {                              \
@@ -193,7 +193,7 @@ namespace Checked {
             typename Policy4,typename Policy5,				\
             typename type1, typename type2, typename type3,		\
             typename type4, typename type5>				\
-  inline ret_type name(PPL_U(qual1) PPL_U(type1)& arg1, PPL_U(qual2)    \
+  inline ret_type PPL_U(name)(PPL_U(qual1) PPL_U(type1)& arg1, PPL_U(qual2) \
                        PPL_U(type2)& arg2,                              \
                        PPL_U(qual3) PPL_U(type3)& arg3, PPL_U(qual4)    \
                        PPL_U(type4)& arg4,                              \

@@ -69,7 +69,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_value_nodef(type, name, value)	\
-  static type name() {				\
+  static type PPL_U(name)() {                   \
     return (value);				\
   }
 
@@ -86,8 +86,8 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_ref_nodef(type, name, value)				\
-  static const type& name() {                                    \
-    static type name(value);						\
+  static const type& PPL_U(name)() {                                    \
+    static type PPL_U(name) = (value);                                       \
     return (name);							\
   }
 
