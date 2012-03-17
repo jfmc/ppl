@@ -17,7 +17,7 @@ Contents
 6. Configuring for Optimized Performance
 7. Configuring for Debugging
 8. Programs that Come with the Library
-9. Using the CVS Sources
+9. Using the Git Sources
 
 
 1. The Standard Thing (configure, make, make install)
@@ -437,11 +437,11 @@ In exchange, you will give up an important opportunity to discover
 whether the version of PPL you have built has been miscompiled.
 
 
-9. Using the CVS Sources
+9. Using the Git Sources
 ------------------------
 
-If you use the CVS sources, then you need recent versions of Autoconf
-Automake and Libtool installed.  After a `cvs checkout' or `cvs update'
+If you use the Git sources, then you need recent versions of Autoconf
+Automake and Libtool installed.  After a `git clone' or `git pull'
 you should run the `autoreconf' command.  In case you have fiddled
 around with some of the configuration files, or if you have problems
 you cannot explain otherwise, use `autoreconf -f'.
