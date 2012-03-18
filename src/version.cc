@@ -33,6 +33,7 @@ const char version_string[] = PPL_PACKAGE_VERSION;
 const char banner_string[] =
 "This is "PPL_PACKAGE_NAME" (PPL) version "PPL_PACKAGE_VERSION".\n"
 "Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>\n"
+"Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)\n"
 "\n"
 "The PPL is free software; see the source for copying conditions.\n"
 "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\n"
@@ -57,21 +58,22 @@ const char banner_string[] =
 "see the Parma Polyhedra Library site: http://bugseng.com/products/ppl/ .\n"
 "\n"
 "Contributors:\n"
-"Roberto Bagnara, Patricia M. Hill, Enea Zaffanella, Elisa Ricci,\n"
-"Abramo Bagnara, Andrea Cimino, Katy Dobson, Elena Mazzi,\n"
-"Matthew Mundell, Barbara Quartieri, Enric Rodriguez Carbonell,\n"
-"Alessandro Zaccagnini,\n"
-"Irene Bacchi, Danilo Bonardi, Sara Bonini, Giordano Fracasso,\n"
-"Maximiliano Marchesi, David Merchat, Andrea Pescetti, Angela Stazzone,\n"
-"Fabio Trabucchi, Claudio Trento, Tatiana Zolo.\n"
+"Roberto Bagnara, Patricia M. Hill, Enea Zaffanella, Abramo Bagnara,\n"
+"Elisa Ricci, Andrea Cimino, Marco Poletti, Alessandro Zaccagnini,\n"
+"Roberto Amadini, Irene Bacchi, Fabio Biselli, Fabio Bossi,\n"
+"Danilo Bonardi, Sara Bonini, Katy Dobson, Giordano Fracasso,\n"
+"Francois Galea, Maximiliano Marchesi, Elena Mazzi, David Merchat,\n"
+"Matthew Mundell, Andrea Pescetti, Barbara Quartieri,\n"
+"Enric Rodriguez Carbonell, Angela Stazzone, Fabio Trabucchi,\n"
+"Claudio Trento, Tatiana Zolo.\n"
 "\n"
 "Special thanks to:\n"
 "Lucia Alessandrini, Frederic Besson, Tevfik Bultan, Manuel Carro,\n"
 "Marco Comini, Goran Frehse, Denis Gopan, Martin Guy, Bruno Haible,\n"
-"Bertrand Jeannet, Herve Le Verge, Francesco Logozzo, Costantino Medori,\n"
-"Fred Mesnard, Ken Mixter, Jose Morales, Sebastian Pop, Thomas Reps,\n"
-"Mooly Sagiv, Sriram Sankaranarayanan, Axel Simon, Fausto Spoto,\n"
-"Basile Starynkevitch, Pedro Vasconcelos, Ralf Wildenhues.";
+"Bertrand Jeannet, Herve Le Verge, Francesco Logozzo, Kenneth MacKenzie,\n"
+"Costantino Medori, Fred Mesnard, Ken Mixter, Jose Morales, Sebastian Pop,\n"
+"Thomas Reps, Mooly Sagiv, Sriram Sankaranarayanan, Axel Simon,\n"
+"Fausto Spoto, Basile Starynkevitch, Pedro Vasconcelos, Ralf Wildenhues.";
 
 } // namespace
 
