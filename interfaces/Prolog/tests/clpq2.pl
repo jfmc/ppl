@@ -375,13 +375,9 @@ list_program :-
 list_program.
 
 pp(Head, Body) :-
-  % write(Head),
   (Body == true ->
-    % write('.')
     portray_clause(Head)
   ;
-    % write(' :- '),
-    % write(Body)
     portray_clause((Head :- Body))
   ),
   nl.
@@ -499,8 +495,6 @@ write_expr('$VAR'(N), Var_List, VN) :-
     write('_'),
     write('$VAR'(N))
   ).
-%write_expr('$VAR'(N), Variable_Names) :-
-%  write_var('$VAR'(N), Variable_Names).
 write_expr(Num*Var, Variable_Names, VN) :-
   (Num =:= 1 ->
     true
@@ -692,10 +686,12 @@ constraints_to_list(C, Rest, Rest1) :-
     Rest1 = [0 = 1]
   ).
 
+
 % term_to_PPL_term(?Term, +In_N, ?Out_N)
 %
 % Unifies each of the variables in Term with the special terms
 % '$VAR'(k), where k ranges from In_N to Out_N-1.
+
 term_to_PPL_term('$VAR'(In_N), In_N, Out_N) :-
   !,
   Out_N is In_N + 1.
