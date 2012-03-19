@@ -216,6 +216,16 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
 
 ')
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native boolean has_@UPPERLOWER@_bound(Variable var,
+				   By_Reference<Boolean> closed,
+				   Coefficient bound_n, Coefficient bound_d);
+
+')
+
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 ___END_OF_FILE___

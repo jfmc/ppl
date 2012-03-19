@@ -480,6 +480,19 @@ m4_define(`ppl_@CLASS@_constrains_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing has_@UPPERLOWER@_bound: ");
+    @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    boolean has_@UPPERLOWER@
+        = gd.has_@UPPERLOWER@_bound(var_C, bool_by_ref1, coeff_0, coeff_5);
+    report_success_or_failure(gd.OK());
+    gd.free();
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
     `dnl
 {
