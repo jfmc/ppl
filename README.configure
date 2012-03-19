@@ -24,11 +24,13 @@ Contents
 -----------------------------------------------------
 
 In an ideal situation (i.e., on a more or less standard Un*x
-environment, with the right compilers, the GMP library installed in a
-standard place and provided the user is satisfied with all the options
-we chose as defaults), a source distribution of the Parma Polyhedra
-Library (PPL) can be unpacked, configured, built and installed with
-the following, well-known procedure:
+environment, with the right C++ compiler to compile the core library
+as well as the right compilers to compile all the enabled language
+interfaces, with the GMP library installed in a standard place and
+provided the user is satisfied with all the options we chose as
+defaults), a source distribution of the Parma Polyhedra Library (PPL)
+can be unpacked, configured, built and installed with the following,
+well-known procedure:
 
   $ tar jxf ppl-x.y.tar.bz2
   $ ./configure
