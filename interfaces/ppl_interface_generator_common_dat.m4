@@ -509,6 +509,7 @@ class_represent,
 has_property,
 simplify,
 abovebelow,
+upperlower,
 maxmin,
 comparison,
 refine_represent,
@@ -938,6 +939,13 @@ dnl Used for the bounds_from_above and bounds_from_below methods.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_abovebelow_replacements', `above, below')
+
+dnl ---------------------------------------------------------------------
+dnl pattern -- upper/lower
+dnl Used for has_upper_bound and has_lower_bound methods (Box domains).
+dnl ---------------------------------------------------------------------
+
+m4_define(`m4_upperlower_replacements', `upper, lower')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == maxmin

@@ -260,6 +260,27 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`int
+ppl_@CLASS@_has_@UPPERLOWER@_bound
+(ppl_@CLASS@_t ps,
+ ppl_dimension_type dim,
+ int* pclosed,
+ ppl_Coefficient_t ext_n,
+ ppl_Coefficient_t ext_d) try {
+  const @CPP_CLASS@& pps = *to_const(ps);
+  Coefficient& eext_n = *to_nonconst(ext_n);
+  Coefficient& eext_d = *to_nonconst(ext_d);
+  bool closed;
+  bool bounded = pps.has_@UPPERLOWER@_bound(dim, closed, eext_n, eext_d);
+  if (bounded)
+    *pclosed = closed ? 1 : 0;
+  return bounded ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_frequency_code',
 `int
 ppl_@CLASS@_frequency
