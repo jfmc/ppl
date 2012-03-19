@@ -720,6 +720,30 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_has_@UPPERLOWER@_bound(value ph, value var) try {
+  CAMLparam2(ph, var);
+  CAMLlocal1(caml_return_value);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  bool is_closed = false;
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  dimension_type dd = value_to_ppl_dimension(var);
+  bool ppl_return_value = pph.has_@UPPERLOWER@_bound(dd, is_closed, num, den);
+  caml_return_value = caml_alloc(4, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, Val_bool(is_closed));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 3, build_ocaml_coefficient(den));
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 extern "C"

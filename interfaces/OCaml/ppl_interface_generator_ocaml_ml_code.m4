@@ -359,6 +359,15 @@ external ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_toke
 ')
 
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`dnl
+external ppl_@CLASS@_has_@UPPERLOWER@_bound:
+  @!CLASS@ -> int
+  -> bool * bool * Z.t * Z.t
+  = "ppl_@CLASS@_has_@UPPERLOWER@_bound"
+
+')
+
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl
 external ppl_@CLASS@_@MAXMIN@:
