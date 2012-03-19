@@ -280,6 +280,18 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 
 ')
 
+m4_define(`ppl_@CLASS@_get_@UPPERLOWER@_bound_code',
+`/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_get_@UPPERLOWER@_bound
+PPL_PROTO((ppl_@CLASS@_t ps,
+           ppl_dimension_type dim,
+           int* pclosed,
+           ppl_Coefficient_t ext_n,
+           ppl_Coefficient_t ext_d));
+
+')
+
 m4_define(`ppl_@CLASS@_frequency_code',
 `/*! \relates ppl_@CLASS@_tag */
 int
