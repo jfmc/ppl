@@ -5,8 +5,8 @@ See below for the copying conditions.
 How To Use the Test Programs (If You Really Want To Use Them)
 =============================================================
 
-The programs in this directory are part of the test suite of the Parma
-Polyhedra Library (PPL).  They have various origins:
+The programs in this directory are part of the extensive test suite of
+the Parma Polyhedra Library (PPL).  They have various origins:
 
 1) some have been written to test the expressivity of the library;
 2) some have been written to reproduce bugs that have now been fixed;
