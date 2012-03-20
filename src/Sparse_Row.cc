@@ -390,7 +390,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
   // This condition is arbitrary. Changing it affects performance but not
   // correctness. The values have been tuned using some ppl_lpsol benchmarks
   // on 2 October 2010.
-  if (counter == 0 || counter < 7 * size() / 64) {
+  if (counter == 0 || counter < (7 * size()) / 64) {
     // Few insertions needed, do them directly.
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.

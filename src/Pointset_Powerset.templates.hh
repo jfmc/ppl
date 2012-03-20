@@ -955,7 +955,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_max = iter_max;
         }
         else if (tmp == 0)
-          best_max = best_max || iter_max;
+          best_max = (best_max || iter_max);
       }
   }
   sup_n = best_sup_n;
@@ -1016,7 +1016,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_g = iter_g;
         }
         else if (tmp == 0) {
-          best_max = best_max || iter_max;
+          best_max = (best_max || iter_max);
           best_g = iter_g;
         }
       }
@@ -1074,7 +1074,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_min = iter_min;
         }
         else if (tmp == 0)
-          best_min = best_min || iter_min;
+          best_min = (best_min || iter_min);
       }
   }
   inf_n = best_inf_n;
@@ -1135,7 +1135,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_g = iter_g;
         }
         else if (tmp == 0) {
-          best_min = best_min || iter_min;
+          best_min = (best_min || iter_min);
           best_g = iter_g;
         }
       }
