@@ -763,14 +763,16 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     subtree_size = 2;
 
   while (is_greater_than_ratio(subtree_size, subtree_reserved_size,
-                               max_density_percent + itr_depth_minus_1
-                               *(100 - max_density_percent)
-                               /(max_depth - 1))
+                               max_density_percent
+                               + ((itr_depth_minus_1
+                                   * (100 - max_density_percent))
+                                  / (max_depth - 1)))
          || is_less_than_ratio(subtree_size, subtree_reserved_size,
-                               min_density_percent - itr_depth_minus_1
-                               *(min_density_percent
-                                 - min_leaf_density_percent)
-                               /(max_depth - 1))) {
+                               min_density_percent
+                               - ((itr_depth_minus_1
+                                   * (min_density_percent
+                                      - min_leaf_density_percent))
+                                  / (max_depth - 1)))) {
     // The density in the tree is correct, so the while condition is always
     // false for the root.
     PPL_ASSERT(itr_depth_minus_1 != 0);

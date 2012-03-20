@@ -600,14 +600,14 @@ compatibility_check_find_pivot_in_set(
           if (lhs_coeff_sgn == 0)
             new_candidates.push_back(*i);
           else
-            found_better_pivot = lhs_coeff_sgn > 0;
+            found_better_pivot = (lhs_coeff_sgn > 0);
         } else {
           if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
             if (rhs_coeff_sgn == 0)
               new_candidates.push_back(*i);
             else
-              found_better_pivot = 0 > rhs_coeff_sgn;
+              found_better_pivot = (0 > rhs_coeff_sgn);
           } else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.push_back(*i);
