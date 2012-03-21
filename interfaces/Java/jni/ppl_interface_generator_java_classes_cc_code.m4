@@ -516,17 +516,17 @@ m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
 JNIEXPORT jboolean JNICALL
 Java_parma_1polyhedra_1library_@1CLASS@_has_1@UPPERLOWER@_1bound
 (JNIEnv* env, jobject j_this, jobject j_var,
- jobject j_ref_boolean, jobject j_num, jobject j_den) {
+ jobject j_num, jobject j_den, jobject j_ref_boolean) {
   try {
     @CPP_CLASS@* this_ptr
       = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+    Variable var = build_cxx_variable(env, j_var);
     PPL_DIRTY_TEMP_COEFFICIENT(num);
     PPL_DIRTY_TEMP_COEFFICIENT(den);
     num = build_cxx_coeff(env, j_num);
     den = build_cxx_coeff(env, j_den);
-    Variable v = build_cxx_variable(env, j_var);
     bool b_value;
-    if (this_ptr->has_@UPPERLOWER@_bound(v.id(), b_value, num, den)) {
+    if (this_ptr->has_@UPPERLOWER@_bound(var, num, den, b_value)) {
       set_coefficient(env, j_num, build_java_coeff(env, num));
       set_coefficient(env, j_den, build_java_coeff(env, den));
       jobject j_boolean = bool_to_j_boolean_class(env, b_value);

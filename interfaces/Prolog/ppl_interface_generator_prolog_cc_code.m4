@@ -806,17 +806,17 @@ m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_has_@UPPERLOWER@_bound(Prolog_term_ref t_ph,
                        Prolog_term_ref t_v,
-                       Prolog_term_ref t_closed,
-                       Prolog_term_ref t_n, Prolog_term_ref t_d) {
+                       Prolog_term_ref t_n, Prolog_term_ref t_d,
+                       Prolog_term_ref t_closed) {
   static const char* where = "ppl_@CLASS@_has_@UPPERLOWER@_bound/5";
   try {
     const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Variable v = term_to_Variable(t_v, where);
-    bool closed;
     PPL_DIRTY_TEMP_COEFFICIENT(n);
     PPL_DIRTY_TEMP_COEFFICIENT(d);
-    if (ph->has_@UPPERLOWER@_bound(v, closed, n, d)) {
+    bool closed;
+    if (ph->has_@UPPERLOWER@_bound(v, n, d, closed)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (closed ? a_true : a_false);
       Prolog_put_atom(t, a);

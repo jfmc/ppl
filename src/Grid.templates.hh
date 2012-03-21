@@ -63,17 +63,18 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
     PPL_DIRTY_TEMP_COEFFICIENT(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     for (dimension_type k = space_dim; k-- > 0; ) {
+      const Variable v_k = Variable(k);
       // This is declared here because it may be invalidated by the call to
       // gen_sys.insert() at the end of the loop.
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
-      if (box.has_lower_bound(k, closed, l_n, l_d)) {
-	if (box.has_upper_bound(k, closed, u_n, u_d))
+      if (box.has_lower_bound(v_k, l_n, l_d, closed)) {
+	if (box.has_upper_bound(v_k, u_n, u_d, closed))
 	  if (l_n * u_d == u_n * l_d) {
             Grid_Generator& point = gen_sys[0];
 	    // A point interval sets dimension k of every point to a
 	    // single value.
-	    con_sys.insert(l_d * Variable(k) == l_n);
+	    con_sys.insert(l_d * v_k == l_n);
 
 	    // Scale the point to use as divisor the lcm of the
 	    // divisors of the existing point and the lower bound.
@@ -95,7 +96,7 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
 	  }
       }
       // A universe interval allows any value in dimension k.
-      gen_sys.insert(grid_line(Variable(k)));
+      gen_sys.insert(grid_line(v_k));
     }
     set_congruences_up_to_date();
     set_generators_up_to_date();

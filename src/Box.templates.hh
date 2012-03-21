@@ -3870,20 +3870,21 @@ Box<ITV>::constraints() const {
     cs.insert(0*Variable(space_dim-1) <= 0);
 
     for (dimension_type k = 0; k < space_dim; ++k) {
-      bool closed = false;
+      const Variable v_k = Variable(k);
       PPL_DIRTY_TEMP(Coefficient, n);
       PPL_DIRTY_TEMP(Coefficient, d);
-      if (has_lower_bound(k, closed, n, d)) {
+      bool closed = false;
+      if (has_lower_bound(v_k, n, d, closed)) {
 	if (closed)
-	  cs.insert(d*Variable(k) >= n);
+	  cs.insert(d * v_k >= n);
 	else
-	  cs.insert(d*Variable(k) > n);
+	  cs.insert(d * v_k > n);
       }
-      if (has_upper_bound(k, closed, n, d)) {
+      if (has_upper_bound(v_k, n, d, closed)) {
 	if (closed)
-	  cs.insert(d*Variable(k) <= n);
+	  cs.insert(d * v_k <= n);
 	else
-	  cs.insert(d*Variable(k) < n);
+	  cs.insert(d * v_k < n);
       }
     }
   }
@@ -3908,26 +3909,27 @@ Box<ITV>::minimized_constraints() const {
     cs.insert(0*Variable(space_dim-1) <= 0);
 
     for (dimension_type k = 0; k < space_dim; ++k) {
-      bool closed = false;
+      const Variable v_k = Variable(k);
       PPL_DIRTY_TEMP(Coefficient, n);
       PPL_DIRTY_TEMP(Coefficient, d);
-      if (has_lower_bound(k, closed, n, d)) {
+      bool closed = false;
+      if (has_lower_bound(v_k, n, d, closed)) {
 	if (closed)
 	  // Make sure equality constraints are detected.
 	  if (seq[k].is_singleton()) {
-	    cs.insert(d*Variable(k) == n);
+	    cs.insert(d * v_k == n);
 	    continue;
 	  }
 	  else
-	    cs.insert(d*Variable(k) >= n);
+	    cs.insert(d * v_k >= n);
 	else
-	  cs.insert(d*Variable(k) > n);
+	  cs.insert(d * v_k > n);
       }
-      if (has_upper_bound(k, closed, n, d)) {
+      if (has_upper_bound(v_k, n, d, closed)) {
 	if (closed)
-	  cs.insert(d*Variable(k) <= n);
+	  cs.insert(d * v_k <= n);
 	else
-	  cs.insert(d*Variable(k) < n);
+	  cs.insert(d * v_k < n);
       }
     }
   }
@@ -3952,13 +3954,14 @@ Box<ITV>::congruences() const {
     cgs.insert(0*Variable(space_dim-1) %= 0);
 
     for (dimension_type k = 0; k < space_dim; ++k) {
-      bool closed = false;
+      const Variable v_k = Variable(k);
       PPL_DIRTY_TEMP(Coefficient, n);
       PPL_DIRTY_TEMP(Coefficient, d);
-      if (has_lower_bound(k, closed, n, d) && closed)
+      bool closed = false;
+      if (has_lower_bound(v_k, n, d, closed) && closed)
 	  // Make sure equality congruences are detected.
 	  if (seq[k].is_singleton())
-	    cgs.insert((d*Variable(k) %= n) / 0);
+	    cgs.insert((d * v_k %= n) / 0);
     }
   }
   return cgs;

@@ -486,7 +486,7 @@ m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
     PPL_Test.print_if_noisy("Testing has_@UPPERLOWER@_bound: ");
     @TOPOLOGY@@CLASS@ gd = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
     boolean has_@UPPERLOWER@
-        = gd.has_@UPPERLOWER@_bound(var_C, bool_by_ref1, coeff_0, coeff_5);
+        = gd.has_@UPPERLOWER@_bound(var_C, coeff_0, coeff_5, bool_by_ref1);
     report_success_or_failure(gd.OK());
     gd.free();
 }

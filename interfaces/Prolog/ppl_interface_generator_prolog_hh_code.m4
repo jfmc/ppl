@@ -217,10 +217,9 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 
 m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
   `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_has_@UPPERLOWER@_bound(Prolog_term_ref t_ph,
-                       Prolog_term_ref t_v,
-		       Prolog_term_ref t_closed,
-		       Prolog_term_ref t_n, Prolog_term_ref t_d);
+  ppl_@CLASS@_has_@UPPERLOWER@_bound(Prolog_term_ref t_ph, Prolog_term_ref t_v,
+		       Prolog_term_ref t_n, Prolog_term_ref t_d,
+		       Prolog_term_ref t_closed);
 
 ')
 

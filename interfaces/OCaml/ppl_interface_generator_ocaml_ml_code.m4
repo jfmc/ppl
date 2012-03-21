@@ -363,7 +363,7 @@ m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
 `dnl
 external ppl_@CLASS@_has_@UPPERLOWER@_bound:
   @!CLASS@ -> int
-  -> bool * bool * Z.t * Z.t
+  -> bool * Z.t * Z.t * bool
   = "ppl_@CLASS@_has_@UPPERLOWER@_bound"
 
 ')
