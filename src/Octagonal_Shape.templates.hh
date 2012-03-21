@@ -235,7 +235,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
           Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + di + 1);
+          Row_Reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -262,7 +262,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
           Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + di + 1);
+          Row_Reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -308,7 +308,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
           Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + di + 1);
+          Row_Reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -336,7 +336,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
           Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + di + 1);
+          Row_Reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -1403,7 +1403,7 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
           break;
         }
 
-        m_j = *(m_begin + j + 1);
+        m_j = *(m_begin + (j + 1));
         m_cj = *(m_begin + cjj);
         const N& m_j_i1 = m_j[i];
         const N& m_i_j1 = m_cj[ci];

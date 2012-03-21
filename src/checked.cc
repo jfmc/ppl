@@ -301,7 +301,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         if (numer.exponent > max_exp_div
             || (numer.exponent == max_exp_div && d > max_exp_rem))
           return V_CVT_STR_UNK;
-        numer.exponent = 10 * numer.exponent + static_cast<unsigned int>(d);
+        numer.exponent = 10 * numer.exponent + static_cast<unsigned long>(d);
         break;
       }
       if (empty_exponent)

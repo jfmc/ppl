@@ -267,7 +267,8 @@ template <typename Unsigned>
 inline typename
 Enable_If<(static_cast<Unsigned>(-1) > 0),
             typename OR_Matrix<T>::template any_row_iterator<U>& >::type
-OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m) {
+OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m_) {
+  dimension_type m = m_;
   dimension_type increment = m + ((m * m) / 2) + (m * e);
   if (e % 2 == 0 && m % 2 != 0)
     ++increment;

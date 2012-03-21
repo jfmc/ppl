@@ -307,7 +307,7 @@ public:
 
     PPL::dimension_type bignum_column = (bignum_column_coding == -1)
       ? PPL::not_a_dimension()
-      : (bignum_column_coding + num_vars - 1);
+      : (num_vars + (bignum_column_coding - 1));
 
     bool result = update_pip(num_vars, num_params,
                              num_constraints, num_ctx_rows,
