@@ -727,17 +727,17 @@ CAMLprim value
 ppl_@CLASS@_has_@UPPERLOWER@_bound(value ph, value var) try {
   CAMLparam2(ph, var);
   CAMLlocal1(caml_return_value);
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  Variable vv = build_ppl_Variable(var);
   PPL_DIRTY_TEMP_COEFFICIENT(num);
   PPL_DIRTY_TEMP_COEFFICIENT(den);
   bool is_closed = false;
-  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  dimension_type dd = value_to_ppl_dimension(var);
-  bool ppl_return_value = pph.has_@UPPERLOWER@_bound(dd, is_closed, num, den);
+  bool ppl_return_value = pph.has_@UPPERLOWER@_bound(vv, num, den, is_closed);
   caml_return_value = caml_alloc(4, 0);
   Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
-  Store_field(caml_return_value, 1, Val_bool(is_closed));
-  Store_field(caml_return_value, 2, build_ocaml_coefficient(num));
-  Store_field(caml_return_value, 3, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 3, Val_bool(is_closed));
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL

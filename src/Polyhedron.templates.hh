@@ -70,65 +70,67 @@ Polyhedron::Polyhedron(Topology topol,
 
   if (topol == NECESSARILY_CLOSED) {
     for (dimension_type k = space_dim; k-- > 0; ) {
+      const Variable v_k = Variable(k);
       // See if we have a valid lower bound.
       bool l_closed = false;
-      bool l_bounded = box.has_lower_bound(k, l_closed, l_n, l_d);
+      bool l_bounded = box.has_lower_bound(v_k, l_n, l_d, l_closed);
       // See if we have a valid upper bound.
       bool u_closed = false;
-      bool u_bounded = box.has_upper_bound(k, u_closed, u_n, u_d);
+      bool u_bounded = box.has_upper_bound(v_k, u_n, u_d, u_closed);
 
       // See if we have an implicit equality constraint.
       if (l_bounded && u_bounded
           && l_closed && u_closed
           && l_n == u_n && l_d == u_d) {
         // Add the constraint `l_d*v_k == l_n'.
-        con_sys.insert(l_d * Variable(k) == l_n);
+        con_sys.insert(l_d * v_k == l_n);
       }
       else {
         if (l_bounded)
           // Add the constraint `l_d*v_k >= l_n'.
-          con_sys.insert(l_d * Variable(k) >= l_n);
+          con_sys.insert(l_d * v_k >= l_n);
         if (u_bounded)
           // Add the constraint `u_d*v_k <= u_n'.
-          con_sys.insert(u_d * Variable(k) <= u_n);
+          con_sys.insert(u_d * v_k <= u_n);
       }
     }
   }
   else {
     // topol == NOT_NECESSARILY_CLOSED
     for (dimension_type k = space_dim; k-- > 0; ) {
+      const Variable v_k = Variable(k);
       // See if we have a valid lower bound.
       bool l_closed = false;
-      bool l_bounded = box.has_lower_bound(k, l_closed, l_n, l_d);
+      bool l_bounded = box.has_lower_bound(v_k, l_n, l_d, l_closed);
       // See if we have a valid upper bound.
       bool u_closed = false;
-      bool u_bounded = box.has_upper_bound(k, u_closed, u_n, u_d);
+      bool u_bounded = box.has_upper_bound(v_k, u_n, u_d, u_closed);
 
       // See if we have an implicit equality constraint.
       if (l_bounded && u_bounded
           && l_closed && u_closed
           && l_n == u_n && l_d == u_d) {
         // Add the constraint `l_d*v_k == l_n'.
-        con_sys.insert(l_d * Variable(k) == l_n);
+        con_sys.insert(l_d * v_k == l_n);
       }
       else {
         // Check if a lower bound constraint is required.
         if (l_bounded) {
           if (l_closed)
             // Add the constraint `l_d*v_k >= l_n'.
-            con_sys.insert(l_d * Variable(k) >= l_n);
+            con_sys.insert(l_d * v_k >= l_n);
           else
             // Add the constraint `l_d*v_k > l_n'.
-            con_sys.insert(l_d * Variable(k) > l_n);
+            con_sys.insert(l_d * v_k > l_n);
         }
         // Check if an upper bound constraint is required.
         if (u_bounded) {
           if (u_closed)
             // Add the constraint `u_d*v_k <= u_n'.
-            con_sys.insert(u_d * Variable(k) <= u_n);
+            con_sys.insert(u_d * v_k <= u_n);
           else
             // Add the constraint `u_d*v_k < u_n'.
-            con_sys.insert(u_d * Variable(k) < u_n);
+            con_sys.insert(u_d * v_k < u_n);
         }
       }
     }
