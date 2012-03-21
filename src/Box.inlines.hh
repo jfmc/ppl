@@ -266,8 +266,11 @@ template <typename ITV>
 inline bool
 Box<ITV>::has_lower_bound(const Variable var,
                           Coefficient& n, Coefficient& d, bool& closed) const {
+  // NOTE: assertion !is_empty() would be wrong;
+  // see the calls in method Box<ITV>::constraints().
+  PPL_ASSERT(!marked_empty());
   const dimension_type k = var.id();
-  PPL_ASSERT(!is_empty() && k < seq.size());
+  PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
   if (seq_k.lower_is_boundary_infinity())
@@ -287,8 +290,11 @@ template <typename ITV>
 inline bool
 Box<ITV>::has_upper_bound(const Variable var,
                           Coefficient& n, Coefficient& d, bool& closed) const {
+  // NOTE: assertion !is_empty() would be wrong;
+  // see the calls in method Box<ITV>::constraints().
+  PPL_ASSERT(!marked_empty());
   const dimension_type k = var.id();
-  PPL_ASSERT(!is_empty() && k < seq.size());
+  PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
   if (seq_k.upper_is_boundary_infinity())
