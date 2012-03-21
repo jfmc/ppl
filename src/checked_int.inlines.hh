@@ -1364,7 +1364,7 @@ mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
       return V_EQ;
     }
   }
-  Type mask = ((Type(1) << exp) - 1) << (sizeof_to_bits(sizeof(Type)) - 1 - exp);
+  Type mask = ((Type(1) << exp) - 1) << ((sizeof_to_bits(sizeof(Type)) - 1) - exp);
   Type n;
   if (x < 0) {
     if ((x & mask) != mask)
