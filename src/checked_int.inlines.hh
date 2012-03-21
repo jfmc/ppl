@@ -1392,7 +1392,7 @@ smod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     to = x;
   else {
     Type v = (exp == sizeof_to_bits(sizeof(Type)) ? x : (x & ((Type(1) << exp) - 1)));
-    if (v >= Type(1) << (exp - 1))
+    if (v >= (Type(1) << (exp - 1)))
       return set_neg_overflow_int<To_Policy>(to, dir);
     else
       to = v;

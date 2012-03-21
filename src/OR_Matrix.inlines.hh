@@ -245,7 +245,7 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   difference_type e_dt = static_cast<difference_type>(e);
   difference_type i_dt = static_cast<difference_type>(i);
-  difference_type increment = m + ((m * m) / 2) + (m * e_dt);
+  difference_type increment = (m + ((m * m) / 2)) + (m * e_dt);
   if (e_dt % 2 == 0 && m % 2 != 0)
     ++increment;
   e_dt += m;
