@@ -495,11 +495,12 @@ m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_constpoly_doc',
 <P><CODE>ppl_@CLASS@_has_@UPPERLOWER@_bound(+Handle, +Var, ?Coeff_1, ?Coeff_2, ?Boolean)</CODE><BR>
   <EM>Succeeds if and only if \c Var is @UPPERLOWER@ bounded in
   m4_this_ppl_one_object \p P referenced by \c Handle. It is assumed
-  that \p P is not empty, otherwise the behavior is undefined.
+  that \p P is not empty and its space dimension is greater than or equal
+  to that of \c Var|COMMA| otherwise the behavior is undefined.
 
   \c Coeff_1 is unified with the numerator of the @UPPERLOWER@ bound
   and \c Coeff_2 with the denominator of the @UPPERLOWER@ bound.
-  If the @UPPERLOWER@ is included in \p P, then \c Boolean is unified
+  If the @UPPERLOWER@ is included in \p P|COMMA| then \c Boolean is unified
   with the atom \c true and|COMMA| otherwise|COMMA| unified with
   the atom \c false.</EM>
 
