@@ -1638,6 +1638,14 @@ public:
     It is assumed that <CODE>*this</CODE> is a non-empty box
     having space dimension greater than or equal to that of \p var.
     An undefined behavior is obtained if this assumption is not met.
+    \if Include_Implementation_Details
+    To be more precise, if <CODE>*this</CODE> is an <EM>empty</EM> box
+    (having space dimension greater than or equal to that of \p var)
+    such that <CODE>!marked_empty()</CODE> holds, then the method can be
+    called without incurring in undefined behavior: it will return
+    <EM>unspecified</EM> boundary values that, if queried systematically
+    on all space dimensions, will encode the box emptiness.
+    \endif
 
     Let \f$I\f$ be the interval corresponding to variable \p var
     in the non-empty box <CODE>*this</CODE>.
@@ -1664,6 +1672,14 @@ public:
     It is assumed that <CODE>*this</CODE> is a non-empty box
     having space dimension greater than or equal to that of \p var.
     An undefined behavior is obtained if this assumption is not met.
+    \if Include_Implementation_Details
+    To be more precise, if <CODE>*this</CODE> is an <EM>empty</EM> box
+    (having space dimension greater than or equal to that of \p var)
+    such that <CODE>!marked_empty()</CODE> holds, then the method can be
+    called without incurring in undefined behavior: it will return
+    <EM>unspecified</EM> boundary values that, if queried systematically
+    on all space dimensions, will encode the box emptiness.
+    \endif
 
     Let \f$I\f$ be the interval corresponding to variable \p var
     in the non-empty box <CODE>*this</CODE>.

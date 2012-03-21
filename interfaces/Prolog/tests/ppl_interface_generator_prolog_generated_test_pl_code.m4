@@ -834,6 +834,27 @@ ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
 
 ')
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`
+ppl_@CLASS@_has_@UPPERLOWER@_bound_5_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     (ppl_@CLASS@_is_empty(PS) ->
+       true
+     ;
+       make_vars(Space_Dim, [Var| _Var_List]),
+       (ppl_@CLASS@_has_@UPPERLOWER@_bound(PS, Var, _, _, _) -> true ; true)
+     ),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+  ).
+
+')
+
 dnl FIXME:: The test fails for BD_Shape.
 m4_define(`ppl_@CLASS@_@MAXMIN@_codeXXXXX',
 `

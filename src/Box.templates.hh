@@ -3856,36 +3856,41 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
 template <typename ITV>
 Constraint_System
 Box<ITV>::constraints() const {
-  Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
     if (marked_empty())
-      cs = Constraint_System::zero_dim_empty();
+      return Constraint_System::zero_dim_empty();
+    else
+      return Constraint_System();
   }
-  else if (marked_empty())
-    cs.insert(0*Variable(space_dim-1) <= -1);
-  else {
-    // KLUDGE: in the future `cs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cs.insert(0*Variable(space_dim-1) <= 0);
 
-    for (dimension_type k = 0; k < space_dim; ++k) {
-      const Variable v_k = Variable(k);
-      PPL_DIRTY_TEMP(Coefficient, n);
-      PPL_DIRTY_TEMP(Coefficient, d);
-      bool closed = false;
-      if (has_lower_bound(v_k, n, d, closed)) {
-	if (closed)
-	  cs.insert(d * v_k >= n);
-	else
-	  cs.insert(d * v_k > n);
-      }
-      if (has_upper_bound(v_k, n, d, closed)) {
-	if (closed)
-	  cs.insert(d * v_k <= n);
-	else
-	  cs.insert(d * v_k < n);
-      }
+  if (marked_empty()) {
+    Constraint_System cs;
+    cs.insert(0*Variable(space_dim-1) <= -1);
+    return cs;
+  }
+
+  Constraint_System cs;
+  // KLUDGE: in the future `cs' will be constructed of the right dimension.
+  // For the time being, we force the dimension with the following line.
+  cs.insert(0*Variable(space_dim-1) <= 0);
+
+  for (dimension_type k = 0; k < space_dim; ++k) {
+    const Variable v_k = Variable(k);
+    PPL_DIRTY_TEMP(Coefficient, n);
+    PPL_DIRTY_TEMP(Coefficient, d);
+    bool closed = false;
+    if (has_lower_bound(v_k, n, d, closed)) {
+      if (closed)
+        cs.insert(d * v_k >= n);
+      else
+        cs.insert(d * v_k > n);
+    }
+    if (has_upper_bound(v_k, n, d, closed)) {
+      if (closed)
+        cs.insert(d * v_k <= n);
+      else
+        cs.insert(d * v_k < n);
     }
   }
   return cs;
@@ -3894,43 +3899,48 @@ Box<ITV>::constraints() const {
 template <typename ITV>
 Constraint_System
 Box<ITV>::minimized_constraints() const {
-  Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
     if (marked_empty())
-      cs = Constraint_System::zero_dim_empty();
+      return Constraint_System::zero_dim_empty();
+    else
+      return Constraint_System();
   }
-  // Make sure emptiness is detected.
-  else if (is_empty())
-    cs.insert(0*Variable(space_dim-1) <= -1);
-  else {
-    // KLUDGE: in the future `cs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cs.insert(0*Variable(space_dim-1) <= 0);
 
-    for (dimension_type k = 0; k < space_dim; ++k) {
-      const Variable v_k = Variable(k);
-      PPL_DIRTY_TEMP(Coefficient, n);
-      PPL_DIRTY_TEMP(Coefficient, d);
-      bool closed = false;
-      if (has_lower_bound(v_k, n, d, closed)) {
-	if (closed)
-	  // Make sure equality constraints are detected.
-	  if (seq[k].is_singleton()) {
-	    cs.insert(d * v_k == n);
-	    continue;
-	  }
-	  else
-	    cs.insert(d * v_k >= n);
-	else
-	  cs.insert(d * v_k > n);
-      }
-      if (has_upper_bound(v_k, n, d, closed)) {
-	if (closed)
-	  cs.insert(d * v_k <= n);
-	else
-	  cs.insert(d * v_k < n);
-      }
+  // Make sure emptiness is detected.
+  if (is_empty()) {
+    Constraint_System cs;
+    cs.insert(0*Variable(space_dim-1) <= -1);
+    return cs;
+  }
+
+  Constraint_System cs;
+  // KLUDGE: in the future `cs' will be constructed of the right dimension.
+  // For the time being, we force the dimension with the following line.
+  cs.insert(0*Variable(space_dim-1) <= 0);
+
+  for (dimension_type k = 0; k < space_dim; ++k) {
+    const Variable v_k = Variable(k);
+    PPL_DIRTY_TEMP(Coefficient, n);
+    PPL_DIRTY_TEMP(Coefficient, d);
+    bool closed = false;
+    if (has_lower_bound(v_k, n, d, closed)) {
+      if (closed)
+        // Make sure equality constraints are detected.
+        if (seq[k].is_singleton()) {
+          cs.insert(d * v_k == n);
+          continue;
+        }
+        else
+          cs.insert(d * v_k >= n);
+      else
+        cs.insert(d * v_k > n);
+    }
+    if (has_upper_bound(v_k, n, d, closed)) {
+      if (closed)
+        cs.insert(d * v_k <= n);
+      else
+        cs.insert(d * v_k < n);
     }
   }
   return cs;
@@ -3939,30 +3949,35 @@ Box<ITV>::minimized_constraints() const {
 template <typename ITV>
 Congruence_System
 Box<ITV>::congruences() const {
-  Congruence_System cgs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
     if (marked_empty())
-      cgs = Congruence_System::zero_dim_empty();
+      return Congruence_System::zero_dim_empty();
+    else
+      return Congruence_System();
   }
-  // Make sure emptiness is detected.
-  else if (is_empty())
-    cgs.insert((0*Variable(space_dim-1) %= -1) / 0);
-  else {
-    // KLUDGE: in the future `cgs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cgs.insert(0*Variable(space_dim-1) %= 0);
 
-    for (dimension_type k = 0; k < space_dim; ++k) {
-      const Variable v_k = Variable(k);
-      PPL_DIRTY_TEMP(Coefficient, n);
-      PPL_DIRTY_TEMP(Coefficient, d);
-      bool closed = false;
-      if (has_lower_bound(v_k, n, d, closed) && closed)
-	  // Make sure equality congruences are detected.
-	  if (seq[k].is_singleton())
-	    cgs.insert((d * v_k %= n) / 0);
-    }
+  // Make sure emptiness is detected.
+  if (is_empty()) {
+    Congruence_System cgs;
+    cgs.insert((0*Variable(space_dim-1) %= -1) / 0);
+    return cgs;
+  }
+
+  Congruence_System cgs;
+  // KLUDGE: in the future `cgs' will be constructed of the right dimension.
+  // For the time being, we force the dimension with the following line.
+  cgs.insert(0*Variable(space_dim-1) %= 0);
+
+  for (dimension_type k = 0; k < space_dim; ++k) {
+    const Variable v_k = Variable(k);
+    PPL_DIRTY_TEMP(Coefficient, n);
+    PPL_DIRTY_TEMP(Coefficient, d);
+    bool closed = false;
+    if (has_lower_bound(v_k, n, d, closed) && closed)
+      // Make sure equality congruences are detected.
+      if (seq[k].is_singleton())
+        cgs.insert((d * v_k %= n) / 0);
   }
   return cgs;
 }
