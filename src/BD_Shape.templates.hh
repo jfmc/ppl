@@ -4763,7 +4763,7 @@ BD_Shape<T>
         Variable second(second_v);
         dimension_type n_first_var = first_v +1 ;
         dimension_type n_second_var = second_v + 1;
-	        linear_form_upper_bound(right_minus_left - first + second,
+        linear_form_upper_bound(right_minus_left - first + second,
                                 upper_bound);
         add_dbm_constraint(n_first_var, n_second_var, upper_bound);
         linear_form_upper_bound(right_minus_left + first - second,
