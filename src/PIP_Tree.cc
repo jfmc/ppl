@@ -1727,12 +1727,12 @@ PIP_Decision_Node::clone() const {
 }
 
 void
-PIP_Solution_Node::Tableau::ascii_dump(std::ostream& st) const {
-  st << "denominator " << denom << "\n";
-  st << "variables ";
-  s.ascii_dump(st);
-  st << "parameters ";
-  t.ascii_dump(st);
+PIP_Solution_Node::Tableau::ascii_dump(std::ostream& os) const {
+  os << "denominator " << denom << "\n";
+  os << "variables ";
+  s.ascii_dump(os);
+  os << "parameters ";
+  t.ascii_dump(os);
 }
 
 bool
@@ -2182,12 +2182,12 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
 }
 
 void
-PIP_Solution_Node::update_tableau(
-    const PIP_Problem& pip,
-    const dimension_type external_space_dim,
-    const dimension_type first_pending_constraint,
-    const Constraint_Sequence& input_cs,
-    const Variables_Set& parameters) {
+PIP_Solution_Node
+::update_tableau(const PIP_Problem& pip,
+                 const dimension_type external_space_dim,
+                 const dimension_type first_pending_constraint,
+                 const Constraint_Sequence& input_cs,
+                 const Variables_Set& parameters) {
 
   // Make sure a parameter column exists, for the inhomogeneous term.
   if (tableau.t.num_columns() == 0)
@@ -2362,7 +2362,8 @@ PIP_Solution_Node::update_tableau(
 PIP_Tree_Node*
 PIP_Solution_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
-                         const Matrix& ctx, const Variables_Set& params,
+                         const Matrix& context,
+                         const Variables_Set& params,
                          dimension_type space_dim,
                          const int indent_level) {
   PPL_ASSERT(indent_level >= 0);
@@ -2374,15 +2375,15 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
   // Reset current solution as invalid.
   solution_valid = false;
 
-  Matrix context(ctx);
+  Matrix ctx(context);
   Variables_Set all_params(params);
   const dimension_type num_art_params = artificial_parameters.size();
-  add_artificial_parameters(context, all_params, space_dim, num_art_params);
-  merge_assign(context, constraints_, all_params);
+  add_artificial_parameters(ctx, all_params, space_dim, num_art_params);
+  merge_assign(ctx, constraints_, all_params);
 
   // If needed, (re-)check feasibility of context.
   if (check_feasible_context) {
-    Matrix ctx_copy(context);
+    Matrix ctx_copy(ctx);
     if (!compatibility_check(ctx_copy)) {
       delete this;
       return 0;
@@ -2408,7 +2409,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 #ifdef VERY_NOISY_PIP
     tableau.ascii_dump(std::cerr);
     std::cerr << "context ";
-    context.ascii_dump(std::cerr);
+    ctx.ascii_dump(std::cerr);
 #endif // #ifdef VERY_NOISY_PIP
 
     // (Re-) Compute parameter row signs.
@@ -2437,13 +2438,13 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         const Row& t_i = tableau.t[i];
         Row_Sign new_sign = ZERO;
         // Check compatibility for constraint t_i(z) >= 0.
-        if (compatibility_check(context, t_i))
+        if (compatibility_check(ctx, t_i))
           new_sign = POSITIVE;
         // Check compatibility for constraint t_i(z) < 0,
         // i.e., -t_i(z) - 1 >= 0.
         Row t_i_complement(num_params, Row_Flags());
         complement_assign(t_i_complement, t_i, tableau_denom);
-        if (compatibility_check(context, t_i_complement))
+        if (compatibility_check(ctx, t_i_complement))
           new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
         // Update sign for parameter row i.
         sign[i] = new_sign;
@@ -2491,7 +2492,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Coefficient& row0 = row[0];
         pos_mod_assign(mod, row0, tableau_denom);
         row0 -= (mod == 0) ? tableau_denom : mod;
-        const bool compatible = compatibility_check(context, row);
+        const bool compatible = compatibility_check(ctx, row);
         // Maybe update sign (and first_* indices).
         if (compatible) {
           // Sign is still mixed.
@@ -2783,7 +2784,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Row tautology = tableau.t[i_neg];
         /* Simplify tautology by exploiting integrality. */
         integral_simplification(tautology);
-        context.add_row(tautology);
+        ctx.add_row(tautology);
         add_constraint(tautology, all_params);
         sign[i_neg] = POSITIVE;
 #ifdef NOISY_PIP
@@ -2850,13 +2851,13 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       std::auto_ptr<PIP_Tree_Node> wrapped_node(t_node);
 
       // Add parametric constraint to context.
-      context.add_row(t_test);
+      ctx.add_row(t_test);
       // Recursively solve true node with respect to updated context.
 #ifdef NOISY_PIP_TREE_STRUCTURE
       indent_and_print(std::cerr, indent_level, "=== SOLVING THEN CHILD\n");
 #endif
       t_node = t_node->solve(pip, check_feasible_context,
-                             context, all_params, space_dim,
+                             ctx, all_params, space_dim,
                              indent_level + 1);
       // Resolution may have changed t_node: in case, re-wrap it.
       if (t_node != wrapped_node.get()) {
@@ -2873,7 +2874,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       swap(cs, f_node->constraints_);
       swap(aps, f_node->artificial_parameters);
       // Compute the complement of the constraint used for the "true" node.
-      Row& f_test = context[context.num_rows() - 1];
+      Row& f_test = ctx[ctx.num_rows() - 1];
       complement_assign(f_test, t_test, 1);
 
       // Recursively solve false node with respect to updated context.
@@ -2881,7 +2882,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       indent_and_print(std::cerr, indent_level, "=== SOLVING ELSE CHILD\n");
 #endif
       f_node = f_node->solve(pip, check_feasible_context,
-                             context, all_params, space_dim,
+                             ctx, all_params, space_dim,
                              indent_level + 1);
 
       // Case analysis on recursive resolution calls outcome.
@@ -3063,7 +3064,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
       // Generate cut using 'best_i'.
-      generate_cut(best_i, all_params, context, space_dim, indent_level);
+      generate_cut(best_i, all_params, ctx, space_dim, indent_level);
     }
     else {
       PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST
@@ -3130,11 +3131,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           all_best_is.push_back(i);
       }
       if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
-        generate_cut(best_i, all_params, context, space_dim, indent_level);
+        generate_cut(best_i, all_params, ctx, space_dim, indent_level);
       else {
         PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
         for (dimension_type k = all_best_is.size(); k-- > 0; )
-          generate_cut(all_best_is[k], all_params, context,
+          generate_cut(all_best_is[k], all_params, ctx,
                        space_dim, indent_level);
       }
     } // End of processing for non-integer solutions.

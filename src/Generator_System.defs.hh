@@ -371,15 +371,14 @@ private:
 		   dimension_type n_rows, dimension_type n_columns);
 
   /*! \brief
-    Adjusts \p *this so that it matches the topology and
-    the number of space dimensions given as parameters
-    (adding or removing columns if needed).
+    Adjusts \p *this so that it matches the \p new_topology and
+    \p new_space_dim (adding or removing columns if needed).
     Returns <CODE>false</CODE> if and only if \p topol is
     equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
     contains closure points.
   */
-  bool adjust_topology_and_space_dimension(Topology topol,
-					   dimension_type num_dimensions);
+  bool adjust_topology_and_space_dimension(Topology new_topology,
+					   dimension_type new_space_dim);
 
   /*! \brief
     For each unmatched closure point in \p *this, adds the

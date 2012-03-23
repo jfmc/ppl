@@ -732,9 +732,9 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* e_name,
-					const Linear_Expression& e) const {
-  throw_dimension_incompatible(method, e_name, e.space_dimension());
+					const char* le_name,
+					const Linear_Expression& le) const {
+  throw_dimension_incompatible(method, le_name, le.space_dimension());
 }
 
 void

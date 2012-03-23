@@ -880,9 +880,9 @@ public:
     \param minimum
     <CODE>true</CODE> if the infimum value can be reached in \p this.
 
-    \param point
-    When minimization succeeds, will be assigned a generator point
-    where \p expr reaches its infimum value.
+    \param g
+    When minimization succeeds, will be assigned the point or closure
+    point where \p expr reaches its infimum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
@@ -893,7 +893,7 @@ public:
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if each component of \p *this

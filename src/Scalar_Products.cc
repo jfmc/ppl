@@ -41,53 +41,53 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Constraint& x, const Generator& y) {
-  // Scalar product is only defined if `x' and `y' are
+			     const Constraint& c, const Generator& g) {
+  // Scalar product is only defined if `c' and `g' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(c.size() <= g.size());
   z = 0;
-  for (dimension_type i = x.size(); i-- > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = c.size(); i-- > 0; )
+    // The following line optimizes the computation of z += c[i] * g[i].
+    add_mul_assign(z, c[i], g[i]);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Grid_Generator& x, const Congruence& y) {
-  // Scalar product is only defined if `x' and `y' are
+			     const Grid_Generator& gg, const Congruence& cg) {
+  // Scalar product is only defined if `gg' and `cg' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(gg.size() <= cg.size());
   z = 0;
-  for (dimension_type i = x.size() - 1 /* parameter divisor */; i-- > 0; )
-    // The following line optimizes the computation of z += x[i] *
-    // y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = gg.size() - 1 /* parameter divisor */; i-- > 0; )
+    // The following line optimizes the computation of z += gg[i] *
+    // cg[i].
+    add_mul_assign(z, gg[i], cg[i]);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Constraint& x,
-			     const Grid_Generator& y) {
-  // Scalar product is only defined if `x' and `y' are
+			     const Constraint& c,
+			     const Grid_Generator& gg) {
+  // Scalar product is only defined if `c' and `gg' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(c.size() <= gg.size());
   z = 0;
-  for (dimension_type i = x.size(); i-- > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = c.size(); i-- > 0; )
+    // The following line optimizes the computation of z += c[i] * gg[i].
+    add_mul_assign(z, c[i], gg[i]);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Congruence& x, const Grid_Generator& y) {
-  // Scalar product is only defined if `x' and `y' are
+			     const Congruence& cg, const Grid_Generator& gg) {
+  // Scalar product is only defined if `cg' and `gg' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(cg.size() <= gg.size());
   z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; )
-    // The following line optimizes the computation of z += x[i] *
-    // y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = cg.size() - 1; i-- > 0; )
+    // The following line optimizes the computation of z += cg[i] *
+    // gg[i].
+    add_mul_assign(z, cg[i], gg[i]);
 }
 
 void
@@ -106,15 +106,15 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
-				     const Grid_Generator& x,
-				     const Congruence& y) {
-  // The reduced scalar product is only defined if the topology of `x'
-  // is NNC and `y' has enough coefficients.
-  PPL_ASSERT(x.size() <= y.size());
+				     const Grid_Generator& gg,
+				     const Congruence& cg) {
+  // The reduced scalar product is only defined if the topology of `gg'
+  // is NNC and `cg' has enough coefficients.
+  PPL_ASSERT(gg.size() <= cg.size());
   z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; )
-    // The following line optimizes z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = gg.size() - 1; i-- > 0; )
+    // The following line optimizes z += gg[i] * cg[i].
+    add_mul_assign(z, gg[i], cg[i]);
 }
 
 void
@@ -133,28 +133,28 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Grid_Generator& x,
-					 const Congruence& y) {
-  // Scalar product is only defined if `x' and `y' are
+					 const Grid_Generator& gg,
+					 const Congruence& cg) {
+  // Scalar product is only defined if `gg' and `cg' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() <= y.size());
+  PPL_ASSERT(gg.size() <= cg.size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
-  for (dimension_type i = x.size() - 1; --i > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = gg.size() - 1; --i > 0; )
+    // The following line optimizes the computation of z += gg[i] * cg[i].
+    add_mul_assign(z, gg[i], cg[i]);
 }
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Grid_Generator& x,
-					 const Constraint& y) {
-  // Scalar product is only defined if `x' and `y' are
+					 const Grid_Generator& gg,
+					 const Constraint& c) {
+  // Scalar product is only defined if `gg' and `c' are
   // dimension-compatible.
-  PPL_ASSERT(x.size() - 1 <= y.size());
+  PPL_ASSERT(gg.size() - 1 <= c.size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
-  for (dimension_type i = x.size() - 1; --i > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
+  for (dimension_type i = gg.size() - 1; --i > 0; )
+    // The following line optimizes the computation of z += gg[i] * c[i].
+    add_mul_assign(z, gg[i], c[i]);
 }
