@@ -518,7 +518,7 @@ Polyhedron::convert_to_integer_expressions(
 	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension, Linear_Expression& res,
                 Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
-                Coefficient& lcm) {
+                Coefficient& denominator) {
   res = Linear_Expression();
 
   typedef Interval<FP_Format, Interval_Info> FP_Interval_Type;
@@ -527,6 +527,7 @@ Polyhedron::convert_to_integer_expressions(
 
   // Convert each floating point number to a pair <numerator, denominator>
   // and compute the lcm of all denominators.
+  Coefficient& lcm = denominator;
   lcm = 1;
   const FP_Interval_Type& b = lf.inhomogeneous_term();
   numer_denom(b.lower(), numerators[lf_dimension], denominators[lf_dimension]);

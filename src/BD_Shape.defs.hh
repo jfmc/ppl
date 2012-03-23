@@ -2326,7 +2326,7 @@ private:
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-                                    const BD_Shape& x) const;
+                                    const BD_Shape& y) const;
 
   void throw_dimension_incompatible(const char* method,
                                     dimension_type required_dim) const;
@@ -2341,17 +2341,18 @@ private:
                                     const Generator& g) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const char* name_row,
-                                    const Linear_Expression& y) const;
+                                    const char* le_name,
+                                    const Linear_Expression& le) const;
 
   template<typename Interval_Info>
-  void throw_dimension_incompatible(const char* method,
-				    const char* name_row,
-				    const Linear_Form<Interval<T,
-				    Interval_Info> >& lf) const;
+  void
+  throw_dimension_incompatible(const char* method,
+                               const char* lf_name,
+                               const Linear_Form<Interval<T, Interval_Info> >&
+                               lf) const;
 
   static void throw_expression_too_complex(const char* method,
-                                           const Linear_Expression& e);
+                                           const Linear_Expression& le);
 
   static void throw_generic(const char* method, const char* reason);
   //@} // Exception Throwers

@@ -477,9 +477,9 @@ OR_Matrix<T>::total_memory_in_bytes() const {
 
 template <typename T>
 inline
-OR_Matrix<T>::OR_Matrix(const dimension_type dim)
-  : vec(2*dim*(dim+1)),
-    space_dim(dim),
+OR_Matrix<T>::OR_Matrix(const dimension_type num_dimensions)
+  : vec(2*num_dimensions*(num_dimensions + 1)),
+    space_dim(num_dimensions),
     vec_capacity(vec.size()) {
 }
 

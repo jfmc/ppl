@@ -4608,8 +4608,8 @@ BD_Shape<T>
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
-	      div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-			                ROUND_UP);
+          div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                            ROUND_UP);
           add_dbm_constraint(0, left_w_id + 1, a_plus_minus_b_minus);
           return;
         }
@@ -4620,8 +4620,8 @@ BD_Shape<T>
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
                        ROUND_UP);
-	      div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
-			    ROUND_UP);
+          div_2exp_assign_r(a_plus_minus_b_minus, a_plus_minus_b_minus, 1,
+                            ROUND_UP);
           add_dbm_constraint(right_w_id + 1, 0, a_plus_minus_b_minus);
           return;
         }
@@ -6439,22 +6439,22 @@ BD_Shape<T>::drop_some_non_integer_points(const Variables_Set& vars,
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 template <typename T>
 std::ostream&
-IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
+IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& bds) {
   typedef typename BD_Shape<T>::coefficient_type N;
-  if (c.is_universe())
+  if (bds.is_universe())
     s << "true";
   else {
     // We control empty bounded difference shape.
-    dimension_type n = c.space_dimension();
-    if (c.marked_empty())
+    dimension_type n = bds.space_dimension();
+    if (bds.marked_empty())
       s << "false";
     else {
       PPL_DIRTY_TEMP(N, v);
       bool first = true;
       for (dimension_type i = 0; i <= n; ++i)
         for (dimension_type j = i + 1; j <= n; ++j) {
-          const N& c_i_j = c.dbm[i][j];
-          const N& c_j_i = c.dbm[j][i];
+          const N& c_i_j = bds.dbm[i][j];
+          const N& c_j_i = bds.dbm[j][i];
           if (is_additive_inverse(c_j_i, c_i_j)) {
             // We will print an equality.
             if (first)
@@ -6726,11 +6726,11 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 template <typename T>
 void
 BD_Shape<T>::throw_expression_too_complex(const char* method,
-                                          const Linear_Expression& e) {
+                                          const Linear_Expression& le) {
   using namespace IO_Operators;
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
-    << e << " is too complex.";
+    << le << " is too complex.";
   throw std::invalid_argument(s.str());
 }
 
@@ -6738,13 +6738,13 @@ BD_Shape<T>::throw_expression_too_complex(const char* method,
 template <typename T>
 void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-                                          const char* name_row,
-                                          const Linear_Expression& y) const {
+                                          const char* le_name,
+                                          const Linear_Expression& le) const {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
-    << y.space_dimension() << ".";
+    << ", " << le_name << "->space_dimension() == "
+    << le.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -6752,13 +6752,13 @@ template <typename T>
 template<typename Interval_Info>
 void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-                                          const char* name_row,
+                                          const char* lf_name,
                                           const Linear_Form< Interval<T,
 					  Interval_Info> >& lf) const {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
+    << ", " << lf_name << "->space_dimension() == "
     << lf.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }

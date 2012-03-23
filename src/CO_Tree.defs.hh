@@ -473,12 +473,12 @@ public:
 
   //! The copy constructor.
   /*!
-    \param v
+    \param y
     The tree that will be copied.
 
     This constructor takes \f$O(n)\f$ time.
   */
-  CO_Tree(const CO_Tree& v);
+  CO_Tree(const CO_Tree& y);
 
   //! A constructor from a sequence of \p n elements.
   /*!
@@ -502,12 +502,12 @@ public:
 
   //! The assignment operator.
   /*!
-    \param x
-    The tree that will be assigned into *this.
+    \param y
+    The tree that will be assigned to *this.
 
     This method takes \f$O(n)\f$ time.
   */
-  CO_Tree& operator=(const CO_Tree& x);
+  CO_Tree& operator=(const CO_Tree& y);
 
   //! Removes all elements from the tree.
   /*!

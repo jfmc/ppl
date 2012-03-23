@@ -466,7 +466,7 @@ public:
   /*!
     The complexity argument is ignored.
   */
-  Octagonal_Shape(const Octagonal_Shape& x,
+  Octagonal_Shape(const Octagonal_Shape& y,
                   Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! Builds a conservative, upward approximation of \p y.
@@ -2091,8 +2091,8 @@ private:
       - if <CODE>-1 \< q \< 0</CODE>, then
         <CODE>-v - u \<= -lb_v - ((-q)*ub_u + (1+q)*lb_u)</CODE>.
   */
-  void deduce_minus_v_pm_u_bounds(dimension_type v,
-                                  dimension_type last_v,
+  void deduce_minus_v_pm_u_bounds(dimension_type v_id,
+                                  dimension_type last_id,
                                   const Linear_Expression& sc_expr,
                                   Coefficient_traits::const_reference sc_denom,
                                   const N& minus_lb_v);
@@ -2126,7 +2126,8 @@ private:
 
   /*! \brief
     Stores into \p non_redundant information about the matrix entries
-    that are non-redundant (i.e., will occur in strongly reduced matrix).
+    that are non-redundant (i.e., they will occur in the strongly
+    reduced matrix).
 
     It is assumed that the OS is not empty and strongly closed;
     moreover, argument \p non_redundant is assumed to be empty.
@@ -2279,7 +2280,7 @@ private:
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-                                    const Octagonal_Shape& x) const;
+                                    const Octagonal_Shape& y) const;
 
   void throw_dimension_incompatible(const char* method,
                                     dimension_type required_dim) const;
@@ -2294,18 +2295,18 @@ private:
                                     const Generator& g) const;
 
   void throw_dimension_incompatible(const char* method,
-                                    const char* name_row,
-                                    const Linear_Expression& y) const;
+                                    const char* le_name,
+                                    const Linear_Expression& le) const;
 
   template <typename C>
   void throw_dimension_incompatible(const char* method,
-                                    const char* name_row,
-                                    const Linear_Form<C>& y) const;
+                                    const char* lf_name,
+                                    const Linear_Form<C>& lf) const;
 
   void throw_constraint_incompatible(const char* method) const;
 
   void throw_expression_too_complex(const char* method,
-                                    const Linear_Expression& e) const;
+                                    const Linear_Expression& le) const;
 
   void throw_generic(const char* method, const char* reason) const;
   //@} // Exception Throwers

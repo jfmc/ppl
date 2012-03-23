@@ -467,7 +467,7 @@ public:
   /*!
     The grid inherits the space dimension of the generator system.
 
-    \param const_gs
+    \param ggs
     The system of generators defining the grid.
 
     \exception std::invalid_argument
@@ -477,7 +477,7 @@ public:
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(const Grid_Generator_System& const_gs);
+  explicit Grid(const Grid_Generator_System& ggs);
 
   //! Builds a grid, recycling a system of grid generators.
   /*!
@@ -497,7 +497,7 @@ public:
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
-  Grid(Grid_Generator_System& gs, Recycle_Input dummy);
+  Grid(Grid_Generator_System& ggs, Recycle_Input dummy);
 
   //! Builds a grid out of a box.
   /*!
@@ -2513,7 +2513,7 @@ private:
   static void reduce_reduced(M& sys, dimension_type dim,
 			     dimension_type pivot_index,
 			     dimension_type start, dimension_type end,
-			     const Dimension_Kinds& dim_kinds,
+			     const Dimension_Kinds& sys_dim_kinds,
 			     bool generators = true);
 
   //! Multiply the elements of \p dest by \p multiplier.
@@ -2579,7 +2579,7 @@ protected:
 				    const Grid& gr) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* e_name,
-				    const Linear_Expression& e) const;
+				    const Linear_Expression& le) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cg_name,
 				    const Congruence& cg) const;

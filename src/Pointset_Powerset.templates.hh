@@ -182,11 +182,11 @@ Pointset_Powerset<PSET>::refine_with_constraints(const Constraint_System& cs) {
 
 template <typename PSET>
 void
-Pointset_Powerset<PSET>::add_congruence(const Congruence& c) {
+Pointset_Powerset<PSET>::add_congruence(const Congruence& cg) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->pointset().add_congruence(c);
+    si->pointset().add_congruence(cg);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -204,11 +204,11 @@ Pointset_Powerset<PSET>::refine_with_congruence(const Congruence& cg) {
 
 template <typename PSET>
 void
-Pointset_Powerset<PSET>::add_congruences(const Congruence_System& cs) {
+Pointset_Powerset<PSET>::add_congruences(const Congruence_System& cgs) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
 	 s_end = x.sequence.end(); si != s_end; ++si)
-    si->pointset().add_congruences(cs);
+    si->pointset().add_congruences(cgs);
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }

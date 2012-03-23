@@ -88,9 +88,9 @@ public:
   //@{
 
   /*! \brief
-    Constructs a COW-wrapped object corresponding to the pointset \p p.
+    Constructs a COW-wrapped object corresponding to the pointset \p pset.
   */
-  Determinate(const PSET& p);
+  Determinate(const PSET& pset);
 
   /*! \brief
     Constructs a COW-wrapped object corresponding to the pointset

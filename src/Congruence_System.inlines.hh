@@ -63,8 +63,8 @@ Congruence_System::Congruence_System(const Constraint& c)
 }
 
 inline
-Congruence_System::Congruence_System(const Congruence_System& cs)
-  : Dense_Matrix(cs) {
+Congruence_System::Congruence_System(const Congruence_System& cgs)
+  : Dense_Matrix(cgs) {
 }
 
 inline

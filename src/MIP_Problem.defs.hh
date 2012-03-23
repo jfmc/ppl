@@ -263,24 +263,31 @@ public:
 
     //! Prefix increment.
     const_iterator& operator++();
+
     //! Prefix decrement.
     const_iterator& operator--();
+
     //! Postfix increment.
     const_iterator operator++(int);
+
     //! Postfix decrement.
     const_iterator operator--(int);
 
     //! Moves iterator forward of \p n positions.
     const_iterator& operator+=(difference_type n);
+
     //! Moves iterator backward of \p n positions.
     const_iterator& operator-=(difference_type n);
+
     //! Returns an iterator \p n positions forward.
     const_iterator operator+(difference_type n) const;
+
     //! Returns an iterator \p n positions backward.
     const_iterator operator-(difference_type n) const;
 
     //! Returns a reference to the "pointed" object.
     reference operator*() const;
+
     //! Returns the address of the "pointed" object.
     pointer operator->() const;
 
@@ -300,7 +307,8 @@ public:
 
   private:
     //! Constructor from a Base iterator.
-    explicit const_iterator(Base itr);
+    explicit const_iterator(Base base);
+
     //! The Base iterator on the Constraint_Sequence.
     Base itr;
 

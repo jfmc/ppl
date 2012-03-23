@@ -712,8 +712,8 @@ mul_2exp_assign(Checked_Number<T, Policy>& x,
 template <typename T, typename Policy>
 void
 div_2exp_assign(Checked_Number<T, Policy>& x,
-	       const Checked_Number<T, Policy>& y,
-	       unsigned int exp);
+                const Checked_Number<T, Policy>& y,
+                unsigned int exp);
 
 /*! \brief
   If \p z divides \p y, assigns to \p x the quotient of the integer

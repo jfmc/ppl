@@ -27,8 +27,9 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Concrete_Expression_Type::Concrete_Expression_Type(Implementation i)
-  : impl(i) {
+Concrete_Expression_Type
+::Concrete_Expression_Type(Implementation implementation)
+  : impl(implementation) {
 }
 
 inline Concrete_Expression_Type

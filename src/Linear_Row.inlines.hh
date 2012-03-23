@@ -37,8 +37,8 @@ Linear_Row::Flags::Flags()
 }
 
 inline
-Linear_Row::Flags::Flags(Dense_Row::Flags f)
-: Dense_Row::Flags(f) {
+Linear_Row::Flags::Flags(Dense_Row::Flags flags)
+: Dense_Row::Flags(flags) {
 }
 
 inline
@@ -247,8 +247,8 @@ Linear_Row::inhomogeneous_term() const {
 }
 
 inline Coefficient_traits::const_reference
-Linear_Row::coefficient(const dimension_type k) const {
-  return (*this)[k+1];
+Linear_Row::coefficient(const dimension_type n) const {
+  return (*this)[n+1];
 }
 
 inline void

@@ -53,8 +53,8 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Congruence_System& ccgs)
-  : d1(ccgs), d2(ccgs) {
+::Partially_Reduced_Product(const Congruence_System& cgs)
+  : d1(cgs), d2(cgs) {
   clear_reduced_flag();
 }
 
@@ -69,8 +69,8 @@ Partially_Reduced_Product<D1, D2, R>
 template <typename D1, typename D2, typename R>
 inline
 Partially_Reduced_Product<D1, D2, R>
-::Partially_Reduced_Product(const Constraint_System& ccs)
-  : d1(ccs), d2(ccs) {
+::Partially_Reduced_Product(const Constraint_System& cs)
+  : d1(cs), d2(cs) {
   clear_reduced_flag();
 }
 
@@ -733,11 +733,12 @@ operator!=(const Partially_Reduced_Product<D1, D2, R>& x,
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */
 template <typename D1, typename D2, typename R>
 inline std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Partially_Reduced_Product<D1, D2, R>& pd) {
+IO_Operators::operator<<(std::ostream& s,
+                         const Partially_Reduced_Product<D1, D2, R>& dp) {
   return s << "Domain 1:\n"
-	   << pd.d1
+	   << dp.d1
 	   << "Domain 2:\n"
-	   << pd.d2;
+	   << dp.d2;
 }
 
 } // namespace Parma_Polyhedra_Library

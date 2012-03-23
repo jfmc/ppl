@@ -2659,7 +2659,7 @@ protected:
 				    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* e_name,
-				    const Linear_Expression& e) const;
+				    const Linear_Expression& le) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* c_name,
 				    const Constraint& c) const;
@@ -2695,16 +2695,19 @@ protected:
   check_space_dimension_overflow(dimension_type dim, dimension_type max,
                                  const Topology topol,
                                  const char* method, const char* reason);
+
   static dimension_type
   check_space_dimension_overflow(dimension_type dim, const Topology topol,
                                  const char* method, const char* reason);
+
   template <typename Object>
   static Object&
-  check_obj_space_dimension_overflow(Object& in, Topology topol,
+  check_obj_space_dimension_overflow(Object& input, Topology topol,
                                      const char* method, const char* reason);
 
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
+
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -2805,12 +2808,15 @@ protected:
     the upper bounds of variable coefficients in \p lf.
   */
   template <typename FP_Format, typename Interval_Info>
-  static void convert_to_integer_expressions(
-	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-              const dimension_type lf_dimension, Linear_Expression& res,
-              Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
-              Coefficient& denominator);
-
+  static void
+  convert_to_integer_expressions(const Linear_Form<Interval<FP_Format,
+                                                            Interval_Info> >&
+                                 lf,
+                                 const dimension_type lf_dimension,
+                                 Linear_Expression& res,
+                                 Coefficient& res_low_coeff,
+                                 Coefficient& res_hi_coeff,
+                                 Coefficient& denominator);
 };
 
 #include "Ph_Status.inlines.hh"
