@@ -1,6 +1,6 @@
 /* Header file for test programs.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -431,9 +431,8 @@ struct Floating_Real_Closed_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Restriction_None
-<Interval_Info_Bitset<unsigned int, Floating_Real_Open_Interval_Info_Policy> >
-Floating_Real_Open_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Floating_Real_Open_Interval_Info_Policy> Floating_Real_Open_Interval_Info;
 
 typedef Interval<float, Floating_Real_Open_Interval_Info> fl_r_oc;
 typedef Interval<double, Floating_Real_Open_Interval_Info> db_r_oc;
@@ -452,9 +451,8 @@ struct Rational_Real_Open_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Restriction_None
-<Interval_Info_Bitset<unsigned int, Rational_Real_Open_Interval_Info_Policy> >
-Rational_Real_Open_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Rational_Real_Open_Interval_Info_Policy> Rational_Real_Open_Interval_Info;
 
 typedef Interval<mpq_class, Rational_Real_Open_Interval_Info> rt_r_oc;
 
@@ -858,7 +856,7 @@ private:
 public:
   FCAIBVP();
 
-  explicit FCAIBVP(const Variable& x);
+  explicit FCAIBVP(const Variable x);
 
   explicit FCAIBVP(const Variables_Set& y);
 
@@ -897,7 +895,7 @@ FCAIBVP::FCAIBVP()
 }
 
 inline
-FCAIBVP::FCAIBVP(const Variable& x)
+FCAIBVP::FCAIBVP(const Variable x)
   : set() {
   set.insert(x.id());
 }

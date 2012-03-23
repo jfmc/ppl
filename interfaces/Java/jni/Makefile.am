@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -37,13 +37,6 @@ $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 EXTRA_DIST = \
 $(interface_generator_files)
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-
-endif BUILD_WATCHDOG_LIBRARY
-
 if HOST_OS_MINGW
 
 JNI_DEFINE_OPTIONS = -D_JNI_IMPLEMENTATION_
@@ -55,7 +48,6 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I../parma_polyhedra_library \
 -I$(top_srcdir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@ @JNIFLAGS@ $(JNI_DEFINE_OPTIONS)
 
 BUILT_SOURCES = \
@@ -184,7 +176,6 @@ libppl_java_la_LIBADD = \
 ppl_java_Termination.lo \
 @required_instantiations_java_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_java_la_DEPENDENCIES = \

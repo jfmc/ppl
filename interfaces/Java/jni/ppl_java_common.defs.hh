@@ -1,6 +1,6 @@
 /* Domain-independent part of the Java interface: declarations.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,10 +26,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #define PPL_NO_AUTOMATIC_INITIALIZATION
 #include "ppl.hh"
-
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-#include "pwl.hh"
-#endif
 
 #include <jni.h>
 #include "interfaced_boxes.hh"
@@ -144,15 +140,13 @@ public:
   }
 };
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-extern Parma_Watchdog_Library::Watchdog* p_timeout_object;
+extern Parma_Polyhedra_Library::Watchdog* p_timeout_object;
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher
+Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
 extern Weightwatch* p_deterministic_timeout_object;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 void reset_timeout();
 
@@ -625,7 +619,7 @@ build_cxx_variable(JNIEnv* env, jobject j_var);
   from C++ Variable \p var.
 */
 jobject
-build_java_variable(JNIEnv* env, const Variable& var);
+build_java_variable(JNIEnv* env, const Variable var);
 
 /*! \brief
   Builds a C++ Coefficient

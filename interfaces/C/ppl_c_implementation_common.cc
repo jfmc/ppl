@@ -1,6 +1,6 @@
 /* Implementation of the C interface: variables and non-inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -73,7 +73,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
 ppl_io_variable_output_function_type* c_variable_output_function;
 
 void
-cxx_Variable_output_function(std::ostream& s, const Variable& v) {
+cxx_Variable_output_function(std::ostream& s, const Variable v) {
   const char* b = c_variable_output_function(v.id());
   if (b == 0)
     // Something went wrong in the client's output function.
@@ -94,38 +94,30 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
     user_error_handler(code, description);
 }
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher
+Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
 Weightwatch* p_deterministic_timeout_object = 0;
 
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 void
 reset_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-  if (p_timeout_object) {
+  if (p_timeout_object != 0) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 void
 reset_deterministic_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-  if (p_deterministic_timeout_object) {
+  if (p_deterministic_timeout_object != 0) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 } // namespace C
@@ -250,63 +242,37 @@ CATCH_ALL
 
 int
 ppl_set_timeout(unsigned csecs) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  used(csecs);
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_set_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   // In case a timeout was already set.
   reset_timeout();
   static timeout_exception e;
-  using Parma_Watchdog_Library::Watchdog;
+  using Parma_Polyhedra_Library::Watchdog;
   p_timeout_object = new Watchdog(csecs, abandon_expensive_computations, e);
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
 int
 ppl_reset_timeout(void) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_reset_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   reset_timeout();
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
 int
 ppl_set_deterministic_timeout(unsigned weight) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  used(weight);
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_set_deterministic_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   // In case a deterministic timeout was already set.
   reset_deterministic_timeout();
   static timeout_exception e;
   p_deterministic_timeout_object
     = new Weightwatch(weight, abandon_expensive_computations, e);
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
 int
 ppl_reset_deterministic_timeout(void) try {
-#ifndef PPL_WATCHDOG_LIBRARY_ENABLED
-  const char* what = "PPL C interface usage error:\n"
-    "ppl_reset_deterministic_timeout: the PPL Watchdog library is not enabled.";
-  throw std::runtime_error(what);
-#else
   reset_deterministic_timeout();
   return 0;
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 CATCH_ALL
 
@@ -340,25 +306,25 @@ CATCH_ALL
 
 int
 ppl_version_major(void) try {
-  return version_major();
+  return static_cast<int>(version_major());
 }
 CATCH_ALL
 
 int
 ppl_version_minor(void) try {
-  return version_minor();
+  return static_cast<int>(version_minor());
 }
 CATCH_ALL
 
 int
 ppl_version_revision(void) try {
-  return version_revision();
+  return static_cast<int>(version_revision());
 }
 CATCH_ALL
 
 int
 ppl_version_beta(void) try {
-  return version_beta();
+  return static_cast<int>(version_beta());
 }
 CATCH_ALL
 
@@ -1937,7 +1903,7 @@ int
 ppl_MIP_Problem_number_of_constraints(ppl_const_MIP_Problem_t mip,
 				      ppl_dimension_type* m) try {
   const MIP_Problem& mmip = *to_const(mip);
-  *m = mmip.constraints_end() - mmip.constraints_begin();
+  *m = static_cast<ppl_dimension_type>(mmip.constraints_end() - mmip.constraints_begin());
   return 0;
 }
 CATCH_ALL
@@ -2222,7 +2188,7 @@ int
 ppl_PIP_Problem_number_of_constraints(ppl_const_PIP_Problem_t pip,
 				      ppl_dimension_type* m) try {
   const PIP_Problem& ppip = *to_const(pip);
-  *m = ppip.constraints_end() - ppip.constraints_begin();
+  *m = static_cast<ppl_dimension_type>(ppip.constraints_end() - ppip.constraints_begin());
   return 0;
 }
 CATCH_ALL
@@ -2464,7 +2430,7 @@ int
 ppl_PIP_Decision_Node_get_child_node(ppl_const_PIP_Decision_Node_t pip_dec,
                                      int b,
                                      ppl_const_PIP_Tree_Node_t* pip_tree) try {
-  *pip_tree = to_const(to_const(pip_dec)->child_node(b));
+  *pip_tree = to_const(to_const(pip_dec)->child_node(b != 0));
   return 0;
 }
 CATCH_ALL

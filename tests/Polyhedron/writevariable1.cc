@@ -1,7 +1,7 @@
 /* Test operator<<(std::ostream& s, Variable v)
    and the related machinery.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -59,7 +59,7 @@ read_variables_and_check(const string& s) {
 }
 
 void
-my_output_function(std::ostream& s, const Variable& v) {
+my_output_function(std::ostream& s, const Variable v) {
   s << "x" << v.id();
 }
 

@@ -1,6 +1,6 @@
 /* Specialized "checked" functions for native floating-point numbers.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -153,11 +153,15 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
   if ((nan || sign) && CHECK_P(Policy::has_nan, f.u.binary.is_nan()))
     return V_NAN;
   if (inf) {
-    int i = CHECK_P(Policy::has_infinity, f.u.binary.is_inf());
-    if (i < 0)
-      return V_EQ_MINUS_INFINITY;
-    if (i > 0)
-      return V_EQ_PLUS_INFINITY;
+    if (Policy::has_infinity) {
+      int sign_inf = f.u.binary.inf_sign();
+      if (sign_inf < 0)
+        return V_EQ_MINUS_INFINITY;
+      if (sign_inf > 0)
+        return V_EQ_PLUS_INFINITY;
+    }
+    else
+      PPL_ASSERT(f.u.binary.inf_sign() == 0);
   }
   if (sign) {
     if (v < 0)
@@ -177,21 +181,23 @@ is_nan_float(const T v) {
 }
 
 template <typename Policy, typename T>
-inline int
+inline bool
 is_inf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::has_infinity, f.u.binary.is_inf());
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() != 0));
 }
 template <typename Policy, typename T>
 inline bool
 is_minf_float(const T v) {
-  return is_inf_float<Policy>(v) < 0;
+  Float<T> f(v);
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() < 0));
 }
 
 template <typename Policy, typename T>
 inline bool
 is_pinf_float(const T v) {
-  return is_inf_float<Policy>(v) > 0;
+  Float<T> f(v);
+  return CHECK_P(Policy::has_infinity, (f.u.binary.inf_sign() > 0));
 }
 
 
@@ -226,8 +232,8 @@ inline void
 pred_float(T& v) {
   Float<T> f(v);
   PPL_ASSERT(!f.u.binary.is_nan());
-  PPL_ASSERT(f.u.binary.is_inf() >= 0);
-  if (f.u.binary.is_zero() > 0) {
+  PPL_ASSERT(f.u.binary.inf_sign() >= 0);
+  if (f.u.binary.zero_sign() > 0) {
     f.u.binary.negate();
     f.u.binary.inc();
   }
@@ -245,8 +251,8 @@ inline void
 succ_float(T& v) {
   Float<T> f(v);
   PPL_ASSERT(!f.u.binary.is_nan());
-  PPL_ASSERT(f.u.binary.is_inf() <= 0);
-  if (f.u.binary.is_zero() < 0) {
+  PPL_ASSERT(f.u.binary.inf_sign() <= 0);
+  if (f.u.binary.zero_sign() < 0) {
     f.u.binary.negate();
     f.u.binary.inc();
   }
@@ -603,7 +609,7 @@ inline Result
 add_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     add<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -616,7 +622,7 @@ inline Result
 sub_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     sub<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -629,7 +635,7 @@ inline Result
 mul_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     mul<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -642,7 +648,7 @@ inline Result
 div_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(x))
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   return
     div<To_Policy, From_Policy, Float_2exp>(to,
                                             x,
@@ -658,7 +664,7 @@ smod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x)) {
     return assign_nan<To_Policy>(to, V_INF_MOD);
   }
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   Type m = 1ULL << exp;
   rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
   Type m2 = m / 2;
@@ -677,7 +683,7 @@ umod_2exp_float(Type& to, const Type x, unsigned int exp, Rounding_Dir dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From_Policy>(x)) {
     return assign_nan<To_Policy>(to, V_INF_MOD);
   }
-  PPL_ASSERT(exp < sizeof(unsigned long long) * CHAR_BIT);
+  PPL_ASSERT(exp < sizeof_to_bits(sizeof(unsigned long long)));
   Type m = 1ULL << exp;
   rem_float<To_Policy, From_Policy, Float_2exp>(to, x, m, ROUND_IGNORE);
   if (to < 0)
@@ -759,7 +765,7 @@ assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(From) * CHAR_BIT > Float<To>::Binary::MANTISSA_BITS)
+  if (sizeof_to_bits(sizeof(From)) > Float<To>::Binary::MANTISSA_BITS)
     return assign_float_int_inexact<To_Policy, From_Policy>(to, from, dir);
   else
     return assign_exact<To_Policy, From_Policy>(to, from, dir);
@@ -834,7 +840,7 @@ assign_float_mpz(T& to, const mpz_class& from, Rounding_Dir dir) {
   else
     mpz_mul_2exp(mantissa, from_z, Float<T>::Binary::MANTISSA_BITS - exponent);
   Float<T> f;
-  f.u.binary.build(sign < 0, mantissa, exponent);
+  f.u.binary.build(sign < 0, mantissa, static_cast<long>(exponent));
   mpz_clear(mantissa);
   to = f.value();
   if (meaningful_bits > Float<T>::Binary::MANTISSA_BITS) {
@@ -856,8 +862,8 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr numer_z = numer.get_mpz_t();
   mpz_srcptr denom_z = denom.get_mpz_t();
   int sign = sgn(numer);
-  signed long exponent
-    = mpz_sizeinbase(numer_z, 2) - mpz_sizeinbase(denom_z, 2);
+  long exponent = static_cast<long>(mpz_sizeinbase(numer_z, 2))
+    - static_cast<long>(mpz_sizeinbase(denom_z, 2));
   if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
   inexact:
@@ -866,7 +872,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
     else
       return round_gt_float<To_Policy>(to, dir);
   }
-  if (exponent > int(Float<T>::Binary::EXPONENT_MAX + 1)) {
+  if (exponent > Float<T>::Binary::EXPONENT_MAX + 1) {
   overflow:
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
@@ -874,18 +880,23 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
       return set_pos_overflow_float<To_Policy>(to, dir);
   }
   unsigned int needed_bits = Float<T>::Binary::MANTISSA_BITS + 1;
-  if (exponent < Float<T>::Binary::EXPONENT_MIN)
-    needed_bits -= Float<T>::Binary::EXPONENT_MIN - exponent;
+  if (exponent < Float<T>::Binary::EXPONENT_MIN) {
+    long diff = Float<T>::Binary::EXPONENT_MIN - exponent;
+    needed_bits -= static_cast<unsigned int>(diff);
+  }
   mpz_t mantissa;
   mpz_init(mantissa);
-  signed long shift = needed_bits - exponent;
-  if (shift > 0) {
-    mpz_mul_2exp(mantissa, numer_z, shift);
-    numer_z = mantissa;
-  }
-  else if (shift < 0) {
-    mpz_mul_2exp(mantissa, denom_z, -shift);
-    denom_z = mantissa;
+  {
+    long shift = static_cast<long>(needed_bits) - exponent;
+    if (shift > 0) {
+      mpz_mul_2exp(mantissa, numer_z, static_cast<unsigned long>(shift));
+      numer_z = mantissa;
+    }
+    else if (shift < 0) {
+      shift = -shift;
+      mpz_mul_2exp(mantissa, denom_z, static_cast<unsigned long>(shift));
+      denom_z = mantissa;
+    }
   }
   mpz_t r;
   mpz_init(r);
@@ -899,7 +910,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir) {
   }
   else
     --exponent;
-  if (exponent > int(Float<T>::Binary::EXPONENT_MAX)) {
+  if (exponent > Float<T>::Binary::EXPONENT_MAX) {
     mpz_clear(mantissa);
     goto overflow;
   }

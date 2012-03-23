@@ -1,6 +1,6 @@
 /* Constraint_System class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -666,6 +666,20 @@ private:
   //! \p *this skips to the next non-trivial constraint.
   void skip_forward();
 };
+
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Helper returning number of constraints in system.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+dimension_type
+num_constraints(const Constraint_System& cs);
+
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
 
 // Constraint_System.inlines.hh is not included here on purpose.
 

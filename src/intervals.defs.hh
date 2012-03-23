@@ -1,6 +1,6 @@
 /* Helper classes for intervals.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,45 +31,83 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The result of an operation on intervals.
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 enum I_Result {
-  //! The resulting set may be empty
-  I_EMPTY = 1,
-  //! The resulting set may have only one value
-  I_SINGLETON = 2,
-  //! The resulting set may have more than one value and to be not the domain universe
-  I_SOME = 4,
-  //! The resulting set may be the domain universe
-  I_UNIVERSE = 8,
-  //! The resulting set is not empty
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result may be empty.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  I_EMPTY = 1U,
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result may have only one value.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  I_SINGLETON = 2U,
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief \hideinitializer
+    Result may have more than one value, but it is not the domain universe.
+  */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  I_SOME = 4U,
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result may be the domain universe.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+  I_UNIVERSE = 8U,
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result is not empty.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_NOT_EMPTY = I_SINGLETON | I_SOME | I_UNIVERSE,
-  //! The resulting set may be empty or not empty
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result may be empty or not empty.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_ANY = I_EMPTY | I_NOT_EMPTY,
-  //! The resulting set may be empty or not empty
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result may be empty or not empty.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_NOT_UNIVERSE = I_EMPTY | I_SINGLETON | I_SOME,
-  //! The resulting set can'be empty or the domain universe
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result is neither empty nor the domain universe.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_NOT_DEGENERATE = I_SINGLETON | I_SOME,
-  //! The resulting set is definitely exact
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result is definitely exact.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_EXACT = 16,
-  //! The resulting set is definitely inexact
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Result is definitely inexact.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_INEXACT = 32,
-  //! The operation has definitely changed the set
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Operation has definitely changed the set.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_CHANGED = 64,
-  //! The operation has left the set definitely unchanged
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Operation has left the set definitely unchanged.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_UNCHANGED = 128,
-  //! The operation is undefined for some combination of values
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \hideinitializer Operation is undefined for some combination of values.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   I_SINGULARITIES = 256
 };
 
-inline I_Result operator|(I_Result a, I_Result b) {
-  return static_cast<I_Result>((unsigned)a | (unsigned)b);
+inline I_Result
+operator|(I_Result a, I_Result b) {
+  return static_cast<I_Result>(static_cast<unsigned>(a)
+                               | static_cast<unsigned>(b));
 }
 
-inline I_Result operator&(I_Result a, I_Result b) {
-  return static_cast<I_Result>((unsigned)a & (unsigned)b);
+inline I_Result
+operator&(I_Result a, I_Result b) {
+  return static_cast<I_Result>(static_cast<unsigned>(a)
+                               & static_cast<unsigned>(b));
 }
 
-inline I_Result operator-(I_Result a, I_Result b) {
-  return static_cast<I_Result>((unsigned)a & ~(unsigned)b);
+inline I_Result
+operator-(I_Result a, I_Result b) {
+    return static_cast<I_Result>(static_cast<unsigned>(a)
+                                 & ~static_cast<unsigned>(b));
 }
 
 template <typename Criteria, typename T>
@@ -340,7 +378,7 @@ struct I_Constraint_Rel {
     PPL_ASSERT(result_relation_class(r) == r);
   }
   I_Constraint_Rel(Relation_Symbol r)
-    : rel((Result)r) {
+    : rel(static_cast<Result>(r)) {
   }
   operator Result() const {
     return rel;
@@ -349,7 +387,9 @@ struct I_Constraint_Rel {
 
 template <typename T, typename Val_Or_Ref_Criteria = Use_Slow_Copy,
 	  bool extended = false>
-class I_Constraint : public I_Constraint_Common<I_Constraint<T, Val_Or_Ref_Criteria, extended> > {
+class I_Constraint
+  : public I_Constraint_Common<I_Constraint<T, Val_Or_Ref_Criteria,
+                                            extended> > {
   typedef Val_Or_Ref<T, Val_Or_Ref_Criteria> Val_Ref;
   typedef typename Val_Ref::Arg_Type Arg_Type;
   typedef typename Val_Ref::Return_Type Return_Type;
@@ -417,7 +457,8 @@ i_constraint(I_Constraint_Rel rel, const T& v, const Val_Or_Ref_Criteria&) {
 
 template <typename T, typename Val_Or_Ref_Criteria>
 inline I_Constraint<T, Val_Or_Ref_Criteria>
-i_constraint(I_Constraint_Rel rel, const T& v, bool force, const Val_Or_Ref_Criteria&) {
+i_constraint(I_Constraint_Rel rel, const T& v, bool force,
+             const Val_Or_Ref_Criteria&) {
   return I_Constraint<T, Val_Or_Ref_Criteria>(rel, v, force);
 }
 

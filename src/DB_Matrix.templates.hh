@@ -1,6 +1,6 @@
 /* DB_Matrix class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -178,7 +178,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
   }
   else if (new_n_rows < old_n_rows) {
     // Drop some rows.
-    rows.erase(rows.begin() + new_n_rows, rows.end());
+    rows.resize(new_n_rows);
     // Shrink the existing rows.
     for (dimension_type i = new_n_rows; i-- > 0; )
       rows[i].shrink(new_n_rows);

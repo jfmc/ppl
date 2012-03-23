@@ -1,7 +1,7 @@
 /* Multiplication_Floating_Point_Expression class implementation:
    non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -60,15 +60,16 @@ bool Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   FP_Interval_Type intervalized_second_operand;
   this->intervalize(linearized_second_operand, int_store,
                     intervalized_second_operand);
-  boundary_type first_interval_size, second_interval_size;
 
   // FIXME: we are not sure that what we do here is policy-proof.
   if (intervalized_first_operand.is_bounded()) {
     if (intervalized_second_operand.is_bounded()) {
-      first_interval_size = intervalized_first_operand.upper() -
-                            intervalized_first_operand.lower();
-      second_interval_size = intervalized_second_operand.upper() -
-                             intervalized_second_operand.lower();
+      boundary_type first_interval_size
+        = intervalized_first_operand.upper()
+        - intervalized_first_operand.lower();
+      boundary_type second_interval_size
+        = intervalized_second_operand.upper()
+        - intervalized_second_operand.lower();
       if (first_interval_size <= second_interval_size)
         intervalize_first = true;
       else

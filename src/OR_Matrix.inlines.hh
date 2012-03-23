@@ -1,6 +1,6 @@
 /* OR_Matrix class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,7 +43,7 @@ OR_Matrix<T>::row_first_element_index(const dimension_type k) {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::row_size(const dimension_type k) {
-  return k + 2 - k%2;
+  return k + 2 - k % 2;
 }
 
 #if PPL_OR_MATRIX_EXTRA_DEBUG
@@ -243,14 +243,40 @@ template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
-  difference_type increment = m + m*m/2 + m*e;
+  difference_type e_dt = static_cast<difference_type>(e);
+  difference_type i_dt = static_cast<difference_type>(i);
+  difference_type increment = m + (m * m) / 2 + m * e_dt;
+  if (e_dt % 2 == 0 && m % 2 != 0)
+    ++increment;
+  e_dt += m;
+  i_dt += increment;
+  e = static_cast<dimension_type>(e_dt);
+  i = static_cast<dimension_type>(i_dt);
+  value.first += increment;
+#if PPL_OR_MATRIX_EXTRA_DEBUG
+  difference_type value_size_dt = static_cast<difference_type>(value.size_);
+  value_size_dt += (m - m % 2);
+  value.size_ = static_cast<dimension_type>(value_size_dt);
+#endif
+  return *this;
+}
+
+template <typename T>
+template <typename U>
+template <typename Unsigned>
+inline typename
+Enable_If<(static_cast<Unsigned>(-1) > 0),
+            typename OR_Matrix<T>::template any_row_iterator<U>& >::type
+OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m_) {
+  dimension_type m = m_;
+  dimension_type increment = m + (m * m) / 2 + m * e;
   if (e % 2 == 0 && m % 2 != 0)
     ++increment;
   e += m;
   i += increment;
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  value.size_ += (m - m%2);
+  value.size_ = value.size_ + m - m % 2;
 #endif
   return *this;
 }
@@ -273,6 +299,18 @@ template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>
 OR_Matrix<T>::any_row_iterator<U>::operator+(difference_type m) const {
+  any_row_iterator r = *this;
+  r += m;
+  return r;
+}
+
+template <typename T>
+template <typename U>
+template <typename Unsigned>
+inline typename
+Enable_If<(static_cast<Unsigned>(-1) > 0),
+            typename OR_Matrix<T>::template any_row_iterator<U> >::type
+OR_Matrix<T>::any_row_iterator<U>::operator+(Unsigned m) const {
   any_row_iterator r = *this;
   r += m;
   return r;
@@ -404,12 +442,14 @@ OR_Matrix<T>::m_swap(OR_Matrix& y) {
   swap(vec_capacity, y.vec_capacity);
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the integer square root of \p x.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline dimension_type
 isqrt(dimension_type x) {
   dimension_type r = 0;
   const dimension_type FIRST_BIT_MASK = 0x40000000U;
-  for (dimension_type t = FIRST_BIT_MASK; t; t >>= 2) {
+  for (dimension_type t = FIRST_BIT_MASK; t != 0; t >>= 2) {
     dimension_type s = r + t;
     if (s <= x) {
       x -= s;
@@ -426,7 +466,7 @@ OR_Matrix<T>::max_num_rows() {
   // Compute the maximum number of rows that are contained in a DB_Row
   // that allocates a pseudo-triangular matrix.
   dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
-  return (k - 1) - (k - 1)%2;
+  return (k - 1) - (k - 1) % 2;
 }
 
 template <typename T>

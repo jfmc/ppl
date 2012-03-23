@@ -1,6 +1,6 @@
 /* CO_Tree class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,7 +36,7 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
   }
 
   dimension_type new_max_depth = integer_log2(n) + 1;
-  reserved_size = ((dimension_type)1 << new_max_depth) - 1;
+  reserved_size = (static_cast<dimension_type>(1) << new_max_depth) - 1;
 
   if (is_greater_than_ratio(n, reserved_size, max_density_percent)
       && reserved_size != 3)
@@ -47,14 +47,14 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
   tree_iterator root(*this);
 
   // This is static and with static allocation, to improve performance.
-  // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
-  // dimension_type, so it is the maximum tree height.
+  // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that
+  // 2^k-1 is a dimension_type, so it is the maximum tree height.
   // For each node level, the stack may contain up to 4 elements: two elements
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
   static std::pair<dimension_type, signed char>
-    stack[4*CHAR_BIT*sizeof(dimension_type)+1];
+    stack[4U * sizeof_to_bits(sizeof(dimension_type)) + 1U];
 
   dimension_type stack_first_empty = 0;
 
@@ -73,8 +73,12 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
 
   while (stack_first_empty != 0) {
 
-    // top_n         = stack.top().first;
-    // top_operation = stack.top().second;
+    // Implement
+    //
+    // <CODE>
+    //   top_n         = stack.top().first;
+    //   top_operation = stack.top().second;
+    // </CODE>
     const dimension_type top_n = stack[stack_first_empty - 1].first;
     const signed char top_operation = stack[stack_first_empty - 1].second;
 

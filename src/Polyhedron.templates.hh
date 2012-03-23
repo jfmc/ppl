@@ -1,6 +1,6 @@
 /* Polyhedron class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -70,65 +70,67 @@ Polyhedron::Polyhedron(Topology topol,
 
   if (topol == NECESSARILY_CLOSED) {
     for (dimension_type k = space_dim; k-- > 0; ) {
+      const Variable v_k = Variable(k);
       // See if we have a valid lower bound.
       bool l_closed = false;
-      bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
+      bool l_bounded = box.has_lower_bound(v_k, l_n, l_d, l_closed);
       // See if we have a valid upper bound.
       bool u_closed = false;
-      bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
+      bool u_bounded = box.has_upper_bound(v_k, u_n, u_d, u_closed);
 
       // See if we have an implicit equality constraint.
       if (l_bounded && u_bounded
           && l_closed && u_closed
           && l_n == u_n && l_d == u_d) {
         // Add the constraint `l_d*v_k == l_n'.
-        con_sys.insert(l_d * Variable(k) == l_n);
+        con_sys.insert(l_d * v_k == l_n);
       }
       else {
         if (l_bounded)
           // Add the constraint `l_d*v_k >= l_n'.
-          con_sys.insert(l_d * Variable(k) >= l_n);
+          con_sys.insert(l_d * v_k >= l_n);
         if (u_bounded)
           // Add the constraint `u_d*v_k <= u_n'.
-          con_sys.insert(u_d * Variable(k) <= u_n);
+          con_sys.insert(u_d * v_k <= u_n);
       }
     }
   }
   else {
     // topol == NOT_NECESSARILY_CLOSED
     for (dimension_type k = space_dim; k-- > 0; ) {
+      const Variable v_k = Variable(k);
       // See if we have a valid lower bound.
       bool l_closed = false;
-      bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
+      bool l_bounded = box.has_lower_bound(v_k, l_n, l_d, l_closed);
       // See if we have a valid upper bound.
       bool u_closed = false;
-      bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
+      bool u_bounded = box.has_upper_bound(v_k, u_n, u_d, u_closed);
 
       // See if we have an implicit equality constraint.
       if (l_bounded && u_bounded
           && l_closed && u_closed
           && l_n == u_n && l_d == u_d) {
         // Add the constraint `l_d*v_k == l_n'.
-        con_sys.insert(l_d * Variable(k) == l_n);
+        con_sys.insert(l_d * v_k == l_n);
       }
       else {
         // Check if a lower bound constraint is required.
         if (l_bounded) {
           if (l_closed)
             // Add the constraint `l_d*v_k >= l_n'.
-            con_sys.insert(l_d * Variable(k) >= l_n);
+            con_sys.insert(l_d * v_k >= l_n);
           else
             // Add the constraint `l_d*v_k > l_n'.
-            con_sys.insert(l_d * Variable(k) > l_n);
+            con_sys.insert(l_d * v_k > l_n);
         }
         // Check if an upper bound constraint is required.
         if (u_bounded) {
           if (u_closed)
             // Add the constraint `u_d*v_k <= u_n'.
-            con_sys.insert(u_d * Variable(k) <= u_n);
+            con_sys.insert(u_d * v_k <= u_n);
           else
             // Add the constraint `u_d*v_k < u_n'.
-            con_sys.insert(u_d * Variable(k) < u_n);
+            con_sys.insert(u_d * v_k < u_n);
         }
       }
     }
@@ -561,6 +563,18 @@ Polyhedron::throw_dimension_incompatible(const char* method,
 				         const char* lf_name,
 				         const Linear_Form<C>& lf) const {
   throw_dimension_incompatible(method, lf_name, lf.space_dimension());
+}
+
+template <typename Input>
+Input&
+Polyhedron::check_obj_space_dimension_overflow(Input& input,
+                                               const Topology topol,
+                                               const char* method,
+                                               const char* reason) {
+  check_space_dimension_overflow(input.space_dimension(),
+                                 max_space_dimension(),
+                                 topol, method, reason);
+  return input;
 }
 
 } // namespace Parma_Polyhedra_Library

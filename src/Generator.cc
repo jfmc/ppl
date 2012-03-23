@@ -1,6 +1,6 @@
 /* Generator class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -410,13 +410,11 @@ PPL_OUTPUT_DEFINITIONS(Generator)
 
 bool
 PPL::Generator::OK() const {
-  // Topology consistency check.
+  // Topology consistency checks.
   if (is_not_necessarily_closed() && expr.space_dimension() == 0) {
 #ifndef NDEBUG
     std::cerr << "Generator has fewer coefficients than the minimum "
-	      << "allowed by its topology:"
-	      << std::endl
-	      << "space dimension is 0, minimum is 1."
+	      << "allowed by its topology."
 	      << std::endl;
 #endif
     return false;

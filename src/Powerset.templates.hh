@@ -1,6 +1,6 @@
 /* Powerset class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -90,7 +90,7 @@ Powerset<D>::omega_reduce() const {
       xi = x.drop_disjunct(xi);
     else
       ++xi;
-    if (abandon_expensive_computations && xi != x.end()) {
+    if (abandon_expensive_computations != 0 && xi != x.end()) {
       // Hurry up!
       x.collapse(xi.base);
       break;

@@ -1,6 +1,6 @@
 /* PIP_Tree related class implementation: non-inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -115,7 +115,7 @@ void
 merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
              const Variables_Set& parameters) {
   PPL_ASSERT(parameters.size() == x.num_columns() - 1);
-  const dimension_type new_rows = std::distance(y.begin(), y.end());
+  const dimension_type new_rows = Implementation::num_constraints(y);
   if (new_rows == 0)
     return;
   const dimension_type old_num_rows = x.num_rows();
@@ -134,7 +134,6 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
     Coefficient_traits::const_reference inhomogeneous_term
       = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj = param_begin;
-    dimension_type j = 1;
     PIP_Tree_Node::Row::iterator itr = x_i.end();
     if (inhomogeneous_term != 0)
       itr = x_i.insert(0, inhomogeneous_term);
@@ -142,7 +141,7 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
     // TODO: This code could be optimized more (if it's expected that the
     // size of `parameters' will be greater than the number of nonzero
     // coefficients in y_i).
-    for ( ; pj != param_end; ++pj, ++j) {
+    for (dimension_type j = 1; pj != param_end; ++pj, ++j) {
       Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
         break;
@@ -226,8 +225,10 @@ add_artificial_parameters(Matrix<PIP_Tree_Node::Row>& context,
 }
 
 /* Compares two columns lexicographically in a revised simplex tableau:
-  - returns true if (column ja)*(-cst_a)/pivot_a[ja]
-                    << (column jb)*(-cst_b)/pivot_b[jb];
+  - returns true if
+    <CODE>
+      (column ja)*(-cst_a)/pivot_a[ja] < (column jb)*(-cst_b)/pivot_b[jb];
+    </CODE>
   - returns false otherwise.
 */
 bool
@@ -254,7 +255,6 @@ column_lower(const Matrix<PIP_Tree_Node::Row>& tableau,
   if (ja == jb) {
     // Same column: just compare the ratios.
     // This works since all columns are lexico-positive.
-    // return cst_a * sij_b > cst_b * sij_a;
     return lhs_coeff > rhs_coeff;
   }
 
@@ -263,7 +263,8 @@ column_lower(const Matrix<PIP_Tree_Node::Row>& tableau,
   const dimension_type num_vars = mapping.size();
   dimension_type k = 0;
   // While loop guard is: (k < num_rows && lhs == rhs).
-  // Return value is false, if k >= num_rows; lhs < rhs, otherwise.
+  // Return value is false, if k >= num_rows; it is equivalent to
+  // lhs < rhs, otherwise.
   // Try to optimize the computation of lhs and rhs.
   while (true) {
     const dimension_type mk = mapping[k];
@@ -288,7 +289,8 @@ column_lower(const Matrix<PIP_Tree_Node::Row>& tableau,
       }
       // Optimizing for: lhs == 0 && rhs == 0;
       continue;
-    } else {
+    }
+    else {
       // Not in base.
       const PIP_Tree_Node::Row& t_mk = tableau[mk];
       Coefficient_traits::const_reference t_mk_ja = t_mk.get(ja);
@@ -604,14 +606,14 @@ compatibility_check_find_pivot_in_set(
           if (lhs_coeff_sgn == 0)
             new_candidates.push_back(*i);
           else
-            found_better_pivot = lhs_coeff_sgn > 0;
+            found_better_pivot = (lhs_coeff_sgn > 0);
         } else {
           if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
             if (rhs_coeff_sgn == 0)
               new_candidates.push_back(*i);
             else
-              found_better_pivot = 0 > rhs_coeff_sgn;
+              found_better_pivot = (0 > rhs_coeff_sgn);
           } else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.push_back(*i);
@@ -741,11 +743,7 @@ compatibility_check_find_pivot(const Matrix<PIP_Tree_Node::Row>& s,
         current_data.value = s_ij;
       } else {
         data_struct& current_data = candidates_map[j];
-
-        Coefficient_traits::const_reference value_b = s_i.get(j);
-
         PPL_ASSERT(current_data.value > 0);
-        PPL_ASSERT(value_b > 0);
 
         // Before computing and comparing the actual values, the signs are
         // compared. This speeds up the code, because the values' computation
@@ -765,9 +763,10 @@ compatibility_check_find_pivot(const Matrix<PIP_Tree_Node::Row>& s,
           }
           // Otherwise, keep current pivot for this column.
         } else {
-
           // Sign comparison is not enough this time.
           // Do the full computation.
+          Coefficient_traits::const_reference value_b = s_i.get(j);
+          PPL_ASSERT(value_b > 0);
 
           PPL_DIRTY_TEMP_COEFFICIENT(lhs_coeff);
           lhs_coeff = current_data.cost;
@@ -1023,9 +1022,9 @@ PIP_Solution_Node::set_owner(const PIP_Problem* owner) {
 void
 PIP_Decision_Node::set_owner(const PIP_Problem* owner) {
   owner_ = owner;
-  if (false_child)
+  if (false_child != 0)
     false_child->set_owner(owner);
-  if (true_child)
+  if (true_child != 0)
     true_child->set_owner(owner);
 }
 
@@ -1037,27 +1036,27 @@ PIP_Solution_Node::check_ownership(const PIP_Problem* owner) const {
 bool
 PIP_Decision_Node::check_ownership(const PIP_Problem* owner) const {
   return get_owner() == owner
-    && (!false_child || false_child->check_ownership(owner))
-    && (!true_child || true_child->check_ownership(owner));
-}
-
-const PIP_Solution_Node*
-PIP_Tree_Node::as_solution() const {
-  return 0;
+    && (false_child == 0 || false_child->check_ownership(owner))
+    && (true_child == 0 || true_child->check_ownership(owner));
 }
 
 const PIP_Decision_Node*
-PIP_Tree_Node::as_decision() const {
+PIP_Decision_Node::as_decision() const {
+  return this;
+}
+
+const PIP_Decision_Node*
+PIP_Solution_Node::as_decision() const {
+  return 0;
+}
+
+const PIP_Solution_Node*
+PIP_Decision_Node::as_solution() const {
   return 0;
 }
 
 const PIP_Solution_Node*
 PIP_Solution_Node::as_solution() const {
-  return this;
-}
-
-const PIP_Decision_Node*
-PIP_Decision_Node::as_decision() const {
   return this;
 }
 
@@ -1229,13 +1228,13 @@ PIP_Decision_Node::OK() const {
     return false;
 
   // Recursively check if child nodes are well-formed.
-  if (false_child && !false_child->OK())
+  if (false_child != 0 && !false_child->OK())
     return false;
-  if (true_child && !true_child->OK())
+  if (true_child != 0 && !true_child->OK())
     return false;
 
   // Decision nodes should always have a true child.
-  if (!true_child) {
+  if (true_child == 0) {
 #ifndef NDEBUG
     std::cerr << "PIP_Decision_Node with no 'true' child.\n";
 #endif
@@ -1243,9 +1242,8 @@ PIP_Decision_Node::OK() const {
   }
 
   // Decision nodes with a false child must have exactly one constraint.
-  if (false_child) {
-    dimension_type
-      dist = std::distance(constraints_.begin(), constraints_.end());
+  if (false_child != 0) {
+    dimension_type dist = Implementation::num_constraints(constraints_);
     if (dist != 1) {
 #ifndef NDEBUG
       std::cerr << "PIP_Decision_Node with a 'false' child has "
@@ -1272,7 +1270,7 @@ PIP_Decision_Node::update_tableau(
                              first_pending_constraint,
                              input_cs,
                              parameters);
-  if (false_child)
+  if (false_child != 0)
     false_child->update_tableau(pip,
                                 external_space_dim,
                                 first_pending_constraint,
@@ -1287,7 +1285,8 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
                          const Matrix<Row>& context,
                          const Variables_Set& params,
                          dimension_type space_dim,
-                         const unsigned indent_level) {
+                         const int indent_level) {
+  PPL_ASSERT(indent_level >= 0);
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING DECISION NODE\n");
 #else
@@ -1312,7 +1311,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
 
   if (has_false_child) {
     // Decision nodes with false child must have exactly one constraint
-    PPL_ASSERT(1 == std::distance(constraints_.begin(), constraints_.end()));
+    PPL_ASSERT(1 == Implementation::num_constraints(constraints_));
     // NOTE: modify context_true in place, complementing its last constraint.
     Matrix<Row>& context_false = context_true;
     Row& last = context_false[context_false.num_rows() - 1];
@@ -2213,8 +2212,8 @@ PIP_Solution_Node::update_tableau(
           Need to insert the original variable id
           before the slack variable id's to respect variable ordering.
         */
-        basis.insert(basis.begin() + new_var_column, true);
-        mapping.insert(mapping.begin() + new_var_column, new_var_column);
+        basis.insert(nth_iter(basis, new_var_column), true);
+        mapping.insert(nth_iter(mapping, new_var_column), new_var_column);
         // Update variable id's of slack variables.
         for (dimension_type j = var_row.size(); j-- > 0; )
           if (var_row[j] >= new_var_column)
@@ -2235,13 +2234,14 @@ PIP_Solution_Node::update_tableau(
     // Compute the column number of big parameter in tableau.t matrix.
     Variables_Set::const_iterator pos
       = parameters.find(pip.big_parameter_dimension);
-    big_dimension = std::distance(parameters.begin(), pos) + 1;
+    big_dimension = 1U
+      + static_cast<dimension_type>(std::distance(parameters.begin(), pos));
   }
 
   Coefficient_traits::const_reference denom = tableau.denominator();
 
   for (Constraint_Sequence::const_iterator
-         c_iter = input_cs.begin() + first_pending_constraint,
+         c_iter = nth_iter(input_cs, first_pending_constraint),
          c_end = input_cs.end(); c_iter != c_end; ++c_iter) {
     const Constraint& constraint = *c_iter;
     // (Tentatively) Add new rows to s and t matrices.
@@ -2293,10 +2293,10 @@ PIP_Solution_Node::update_tableau(
         else {
           const dimension_type mv = mapping[v_index];
           if (basis[v_index]) {
-            // Basic variable : add coeff_i * x_i
+            // Basic variable: add coeff_i * x_i
             add_mul_assign(v_row[mv], coeff_i, denom);
           } else {
-            // Non-basic variable : add coeff_i * row_i
+            // Non-basic variable: add coeff_i * row_i
             add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
             add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
           }
@@ -2356,7 +2356,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                          const bool check_feasible_context,
                          const Matrix<Row>& ctx, const Variables_Set& params,
                          dimension_type space_dim,
-                         const unsigned indent_level) {
+                         const int indent_level) {
+  PPL_ASSERT(indent_level >= 0);
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING NODE\n");
 #else
@@ -2592,8 +2593,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       PPL_DIRTY_TEMP_COEFFICIENT(s_pivot_pj);
       s_pivot_pj = s_pivot.get(pj);
 
-      // Compute columns s[*][j] :
-      // s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
+      // Compute columns s[*][j]:
+      //
+      // <CODE>
+      //   s[i][j] -= s[i][pj] * s_pivot[j] / s_pivot_pj;
+      // </CODE>
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         PPL_DIRTY_TEMP_COEFFICIENT(s_i_pj);
@@ -2629,8 +2633,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
 
-      // Compute columns t[*][j] :
-      // t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
+      // Compute columns t[*][j]:
+      //
+      // <CODE>
+      //   t[i][j] -= s[i][pj] * t_pivot[j] / s_pivot_pj;
+      // </CODE>
       for (dimension_type i = num_rows; i-- > 0; ) {
         Row& s_i = tableau.s[i];
         Row& t_i = tableau.t[i];
@@ -2693,7 +2700,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         }
       }
 
-      // Compute column s[*][pj] : s[i][pj] /= s_pivot_pj;
+      // Compute column s[*][pj]: s[i][pj] /= s_pivot_pj;
       // Update column only if pivot coordinate != 1.
       if (s_pivot_pj != pivot_denom) {
         Row::iterator itr;
@@ -3136,7 +3143,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
                                 Variables_Set& parameters,
                                 Matrix<Row>& context,
                                 dimension_type& space_dimension,
-                                const unsigned indent_level) {
+                                const int indent_level) {
+  PPL_ASSERT(indent_level >= 0);
 #ifdef NOISY_PIP
   std::cerr << std::setw(2 * indent_level) << ""
             << "Row " << index << " requires cut generation.\n";
@@ -3173,10 +3181,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
 
   // Column index of already existing Artificial_Parameter.
   dimension_type ap_column = not_a_dimension();
-  bool reuse_ap = false;
 
   if (generate_parametric_cut) {
     // Fractional parameter coefficient found: generate parametric cut.
+    bool reuse_ap = false;
     Linear_Expression expr;
 
     // Limiting the scope of reference row_t (may be later invalidated).
@@ -3273,17 +3281,18 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
             *itr1 -= mod;
             itr2 = ctx2.insert(0, *itr1);
             neg_assign(*itr2);
-            // ctx2[0] += denom-1;
+            // Compute <CODE> ctx2[0] += denom-1; </CODE>
             *itr2 += denom;
             --(*itr2);
           } else {
-            // ctx2[0] += denom-1;
+            // Compute <CODE> ctx2[0] += denom-1; </CODE>
             itr2 = ctx2.insert(0, denom);
             --(*itr2);
           }
           ++j;
-        } else {
-          // ctx2[0] += denom-1;
+        }
+        else {
+          // Compute <CODE> ctx2[0] += denom-1; </CODE>
           itr2 = ctx2.insert(0, denom);
           --(*itr2);
         }
@@ -3406,7 +3415,7 @@ PIP_Decision_Node::external_memory_in_bytes() const {
   memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
   PPL_ASSERT(true_child != 0);
   n += true_child->total_memory_in_bytes();
-  if (false_child)
+  if (false_child != 0)
     n += false_child->total_memory_in_bytes();
   return n;
 }
@@ -3448,13 +3457,14 @@ PIP_Solution_Node::total_memory_in_bytes() const {
 
 void
 PIP_Tree_Node::indent_and_print(std::ostream& s,
-                                const unsigned indent,
+                                const int indent,
                                 const char* str) {
+  PPL_ASSERT(indent >= 0);
   s << std::setw(2 * indent) << "" << str;
 }
 
 void
-PIP_Tree_Node::print(std::ostream& s, unsigned indent) const {
+PIP_Tree_Node::print(std::ostream& s, const int indent) const {
   const dimension_type pip_space_dim = get_owner()->space_dimension();
   const Variables_Set& pip_params = get_owner()->parameter_space_dimensions();
 
@@ -3471,7 +3481,7 @@ PIP_Tree_Node::print(std::ostream& s, unsigned indent) const {
 }
 
 void
-PIP_Tree_Node::print_tree(std::ostream& s, unsigned indent,
+PIP_Tree_Node::print_tree(std::ostream& s, const int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const {
   used(pip_dim_is_param);
@@ -3503,7 +3513,7 @@ PIP_Tree_Node::print_tree(std::ostream& s, unsigned indent,
 }
 
 void
-PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
+PIP_Decision_Node::print_tree(std::ostream& s, const int indent,
                               const std::vector<bool>& pip_dim_is_param,
                               const dimension_type first_art_dim) const {
   // First print info common to decision and solution nodes.
@@ -3517,7 +3527,7 @@ PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
 
   indent_and_print(s, indent, "else\n");
 
-  if (false_child)
+  if (false_child != 0)
     false_child->print_tree(s, indent+1, pip_dim_is_param,
                             child_first_art_dim);
   else
@@ -3525,7 +3535,7 @@ PIP_Decision_Node::print_tree(std::ostream& s, unsigned indent,
 }
 
 void
-PIP_Solution_Node::print_tree(std::ostream& s, unsigned indent,
+PIP_Solution_Node::print_tree(std::ostream& s, const int indent,
                               const std::vector<bool>& pip_dim_is_param,
                               const dimension_type first_art_dim) const {
   // Print info common to decision and solution nodes.
@@ -3558,7 +3568,7 @@ PIP_Solution_Node::print_tree(std::ostream& s, unsigned indent,
 const Linear_Expression&
 PIP_Solution_Node::parametric_values(const Variable var) const {
   const PIP_Problem* pip = get_owner();
-  PPL_ASSERT(pip);
+  PPL_ASSERT(pip != 0);
 
   const dimension_type space_dim = pip->space_dimension();
   if (var.space_dimension() > space_dim) {
@@ -3597,7 +3607,7 @@ PIP_Solution_Node::update_solution() const {
     return;
 
   const PIP_Problem* pip = get_owner();
-  PPL_ASSERT(pip);
+  PPL_ASSERT(pip != 0);
   std::vector<bool> pip_dim_is_param(pip->space_dimension());
   const Variables_Set& params = pip->parameter_space_dimensions();
   for (Variables_Set::const_iterator p = params.begin(),

@@ -1,7 +1,7 @@
 /* IEC 559 floating point format related functions:
    non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -115,7 +115,8 @@ const FP_Interval_Type& compute_absolute_error(
 
   // We assume that f_base is a power of 2.
   analyzer_format omega;
-  int power = msb_position(f_base) * (1 - f_exponent_bias - f_mantissa_bits);
+  int power = static_cast<int>(msb_position(f_base))
+    * ((1 - f_exponent_bias) - static_cast<int>(f_mantissa_bits));
   omega = std::max(static_cast<analyzer_format>(ldexp(1.0, power)),
                    std::numeric_limits<analyzer_format>::denorm_min());
 

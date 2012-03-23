@@ -1,6 +1,6 @@
 /* Common part of the Prolog interfaces: variables and non-inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -830,12 +830,10 @@ handle_exception() {
   Prolog_raise_exception(et);
 }
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher
+Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
 Weightwatch* p_deterministic_timeout_object = 0;
@@ -857,16 +855,13 @@ reset_deterministic_timeout() {
     abandon_expensive_computations = 0;
   }
 }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 
 Prolog_atom timeout_exception_atom;
 
 void
 handle_exception(const timeout_exception&) {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   assert(p_timeout_object);
   reset_timeout();
-#endif
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_atom(et, timeout_exception_atom);
   Prolog_raise_exception(et);
@@ -874,10 +869,8 @@ handle_exception(const timeout_exception&) {
 
 void
 handle_exception(const deterministic_timeout_exception&) {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   assert(p_deterministic_timeout_object);
   reset_deterministic_timeout();
-#endif
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_atom(et, timeout_exception_atom);
   Prolog_raise_exception(et);
@@ -1819,10 +1812,8 @@ ppl_finalize() {
     Prolog_interface_initialized = false;
     // Finalize the core library.
     finalize();
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     // Release the pending timeout object, if any.
     reset_timeout();
-#endif
     ppl_Prolog_sysdep_deinit();
     return PROLOG_SUCCESS;
   }
@@ -1911,20 +1902,15 @@ ppl_timeout_exception_atom(Prolog_term_ref t) {
 extern "C" Prolog_foreign_return_type
 ppl_set_timeout(Prolog_term_ref t_csecs) {
   try {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     // In case a timeout was already set.
     reset_timeout();
     static timeout_exception e;
     unsigned csecs = term_to_unsigned<unsigned>(t_csecs, "ppl_set_timeout/1");
     p_timeout_object =
-      new Parma_Watchdog_Library::Watchdog(csecs,
-					   abandon_expensive_computations,
-					   e);
+      new Parma_Polyhedra_Library::Watchdog(csecs,
+                                            abandon_expensive_computations,
+                                            e);
     return PROLOG_SUCCESS;
-#else
-    used(t_csecs);
-    return PROLOG_FAILURE;
-#endif
   }
   CATCH_ALL;
 }
@@ -1932,12 +1918,8 @@ ppl_set_timeout(Prolog_term_ref t_csecs) {
 extern "C" Prolog_foreign_return_type
 ppl_reset_timeout() {
   try {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     reset_timeout();
     return PROLOG_SUCCESS;
-#else
-    return PROLOG_FAILURE;
-#endif
   }
   CATCH_ALL;
 }
@@ -1945,7 +1927,6 @@ ppl_reset_timeout() {
 extern "C" Prolog_foreign_return_type
 ppl_set_deterministic_timeout(Prolog_term_ref t_weight) {
   try {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     // In case a deterministic timeout was already set.
     reset_deterministic_timeout();
     static deterministic_timeout_exception e;
@@ -1955,10 +1936,6 @@ ppl_set_deterministic_timeout(Prolog_term_ref t_weight) {
     p_deterministic_timeout_object =
       new Weightwatch(weight, abandon_expensive_computations, e);
     return PROLOG_SUCCESS;
-#else
-    used(t_weight);
-    return PROLOG_FAILURE;
-#endif
   }
   CATCH_ALL;
 }
@@ -1966,12 +1943,8 @@ ppl_set_deterministic_timeout(Prolog_term_ref t_weight) {
 extern "C" Prolog_foreign_return_type
 ppl_reset_deterministic_timeout() {
   try {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
     reset_deterministic_timeout();
     return PROLOG_SUCCESS;
-#else
-    return PROLOG_FAILURE;
-#endif
   }
   CATCH_ALL;
 }

@@ -1,6 +1,6 @@
 /* Variables_Set class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Variables_Set::Variables_Set(const Variable& v, const Variable& w)
+PPL::Variables_Set::Variables_Set(const Variable v, const Variable w)
   : Base() {
   for (dimension_type d = v.id(), last = w.id(); d <= last; ++d)
     insert(d);
@@ -81,8 +81,8 @@ PPL::Variables_Set::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")")
     return false;
 
-  dimension_type variable_value;
   for (dimension_type i = 0; i < size; ++i) {
+    dimension_type variable_value;
     if (!(s >> variable_value))
       return false;
     insert(variable_value);

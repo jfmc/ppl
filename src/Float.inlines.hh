@@ -1,6 +1,6 @@
 /* IEC 559 floating point format related functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -31,7 +31,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline int
-float_ieee754_half::is_inf() const {
+float_ieee754_half::inf_sign() const {
   if (word == NEG_INF)
     return -1;
   if (word == POS_INF)
@@ -45,7 +45,7 @@ float_ieee754_half::is_nan() const {
 }
 
 inline int
-float_ieee754_half::is_zero() const {
+float_ieee754_half::zero_sign() const {
   if (word == NEG_ZERO)
     return -1;
   if (word == POS_ZERO)
@@ -60,7 +60,7 @@ float_ieee754_half::negate() {
 
 inline bool
 float_ieee754_half::sign_bit() const {
-  return !!(word & SGN_MASK);
+  return (word & SGN_MASK) != 0;
 }
 
 inline void
@@ -75,7 +75,7 @@ float_ieee754_half::inc() {
 
 inline void
 float_ieee754_half::set_max(bool negative) {
-  word = 0x7bff;
+  word = 0x7bffU;
   if (negative)
     word |= SGN_MASK;
 }
@@ -92,7 +92,7 @@ float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_ieee754_single::is_inf() const {
+float_ieee754_single::inf_sign() const {
   if (word == NEG_INF)
     return -1;
   if (word == POS_INF)
@@ -106,7 +106,7 @@ float_ieee754_single::is_nan() const {
 }
 
 inline int
-float_ieee754_single::is_zero() const {
+float_ieee754_single::zero_sign() const {
   if (word == NEG_ZERO)
     return -1;
   if (word == POS_ZERO)
@@ -121,7 +121,7 @@ float_ieee754_single::negate() {
 
 inline bool
 float_ieee754_single::sign_bit() const {
-  return !!(word & SGN_MASK);
+  return (word & SGN_MASK) != 0;
 }
 
 inline void
@@ -136,7 +136,7 @@ float_ieee754_single::inc() {
 
 inline void
 float_ieee754_single::set_max(bool negative) {
-  word = 0x7f7fffff;
+  word = 0x7f7fffffU;
   if (negative)
     word |= SGN_MASK;
 }
@@ -153,7 +153,7 @@ float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_ieee754_double::is_inf() const {
+float_ieee754_double::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
   if (msp == MSP_NEG_INF)
@@ -170,7 +170,7 @@ float_ieee754_double::is_nan() const {
 }
 
 inline int
-float_ieee754_double::is_zero() const {
+float_ieee754_double::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
   if (msp == MSP_NEG_ZERO)
@@ -187,7 +187,7 @@ float_ieee754_double::negate() {
 
 inline bool
 float_ieee754_double::sign_bit() const {
-  return !!(msp & MSP_SGN_MASK);
+  return (msp & MSP_SGN_MASK) != 0;
 }
 
 inline void
@@ -212,8 +212,8 @@ float_ieee754_double::inc() {
 
 inline void
 float_ieee754_double::set_max(bool negative) {
-  msp = 0x7fefffff;
-  lsp = 0xffffffff;
+  msp = 0x7fefffffU;
+  lsp = 0xffffffffU;
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -239,7 +239,7 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_ibm_single::is_inf() const {
+float_ibm_single::inf_sign() const {
   if (word == NEG_INF)
     return -1;
   if (word == POS_INF)
@@ -253,7 +253,7 @@ float_ibm_single::is_nan() const {
 }
 
 inline int
-float_ibm_single::is_zero() const {
+float_ibm_single::zero_sign() const {
   if (word == NEG_ZERO)
     return -1;
   if (word == POS_ZERO)
@@ -268,7 +268,7 @@ float_ibm_single::negate() {
 
 inline bool
 float_ibm_single::sign_bit() const {
-  return !!(word & SGN_MASK);
+  return (word & SGN_MASK) != 0;
 }
 
 inline void
@@ -283,7 +283,7 @@ float_ibm_single::inc() {
 
 inline void
 float_ibm_single::set_max(bool negative) {
-  word = 0x7f000000;
+  word = 0x7f000000U;
   if (negative)
     word |= SGN_MASK;
 }
@@ -300,7 +300,7 @@ float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline int
-float_intel_double_extended::is_inf() const {
+float_intel_double_extended::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
   uint32_t a = msp & MSP_NEG_INF;
@@ -318,7 +318,7 @@ float_intel_double_extended::is_nan() const {
 }
 
 inline int
-float_intel_double_extended::is_zero() const {
+float_intel_double_extended::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
   uint32_t a = msp & MSP_NEG_INF;
@@ -336,7 +336,7 @@ float_intel_double_extended::negate() {
 
 inline bool
 float_intel_double_extended::sign_bit() const {
-  return !!(msp & MSP_SGN_MASK);
+  return (msp & MSP_SGN_MASK) != 0;
 }
 
 inline void
@@ -361,8 +361,8 @@ float_intel_double_extended::inc() {
 
 inline void
 float_intel_double_extended::set_max(bool negative) {
-  msp = 0x00007ffe;
-  lsp = (uint64_t)0xffffffffffffffffULL;
+  msp = 0x00007ffeU;
+  lsp = static_cast<uint64_t>(0xffffffffffffffffULL);
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -382,7 +382,7 @@ float_intel_double_extended::build(bool negative,
 }
 
 inline int
-float_ieee754_quad::is_inf() const {
+float_ieee754_quad::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
   if (msp == MSP_NEG_INF)
@@ -399,7 +399,7 @@ float_ieee754_quad::is_nan() const {
 }
 
 inline int
-float_ieee754_quad::is_zero() const {
+float_ieee754_quad::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
   if (msp == MSP_NEG_ZERO)
@@ -416,7 +416,7 @@ float_ieee754_quad::negate() {
 
 inline bool
 float_ieee754_quad::sign_bit() const {
-  return !!(msp & MSP_SGN_MASK);
+  return (msp & MSP_SGN_MASK) != 0;
 }
 
 inline void
@@ -441,8 +441,8 @@ float_ieee754_quad::inc() {
 
 inline void
 float_ieee754_quad::set_max(bool negative) {
-  msp = (uint64_t)0x7ffeffffffffffffULL;
-  lsp = (uint64_t)0xffffffffffffffffULL;
+  msp = static_cast<uint64_t>(0x7ffeffffffffffffULL);
+  lsp = static_cast<uint64_t>(0xffffffffffffffffULL);
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -453,7 +453,7 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
   mpz_export(parts, 0, -1, 8, 0, 0, mantissa);
   lsp = parts[0];
   msp = parts[1];
-  msp &= ((((uint64_t)1) << (MANTISSA_BITS - 64)) - 1);
+  msp &= ((static_cast<uint64_t>(1) << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;
   int exponent_repr = exponent + EXPONENT_BIAS;
@@ -466,42 +466,10 @@ is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
   return f1 < f2;
 }
 
-#if defined(__GNUC__)
 inline unsigned int
 msb_position(unsigned long long v) {
-  PPL_ASSERT(v != 0);
-  return __builtin_clzll(v) ^ (sizeof(v)*8 - 1);
+  return static_cast<unsigned int>(sizeof_to_bits(sizeof(v))) - 1U - clz(v);
 }
-#else
-unsigned int
-msb_position(unsigned long long v) {
-  PPL_ASSERT(v != 0);
-  unsigned r = 0;
-  if (v >= 0x100000000ULL) {
-    v >>= 32;
-    r += 32;
-  }
-  if (v >= 0x10000) {
-    v >>= 16;
-    r += 16;
-  }
-  if (v >= 0x100) {
-    v >>= 8;
-    r += 8;
-  }
-  if (v >= 0x10) {
-    v >>= 4;
-    r += 4;
-  }
-  if (v >= 4) {
-    v >>= 2;
-    r += 2;
-  }
-  if (v >= 2)
-    r++;
-  return r;
-}
-#endif
 
 template <typename FP_Interval_Type>
 inline void

@@ -4,7 +4,7 @@ m4_divert(-1)
 This m4 file contains the code for generating files <CLASS_NAME>.java
 
 Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -213,6 +213,16 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
     public native boolean bounds_from_@ABOVEBELOW@(Linear_Expression expr);
+
+')
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`dnl
+___END_OF_FILE___
+___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
+    public native boolean has_@UPPERLOWER@_bound(Variable var,
+				   Coefficient bound_n, Coefficient bound_d,
+				   By_Reference<Boolean> closed);
 
 ')
 

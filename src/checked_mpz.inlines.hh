@@ -1,6 +1,6 @@
 /* Specialized "checked" functions for GMP's mpz_class numbers.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -87,7 +87,7 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
     }
   }
   if (sign)
-    return (Result) sgn<Policy>(v);
+    return static_cast<Result>(sgn<Policy>(v));
   return V_LGE;
 }
 
@@ -329,14 +329,14 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_GT;
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_LT;
     return V_LE;
   }
 }
@@ -403,14 +403,14 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_GT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_GT;
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
-      return mpz_divisible_p(n, d) ? V_EQ : V_LT;
+      return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_LT;
     return V_LE;
   }
 }
@@ -492,14 +492,14 @@ div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
   if (round_down(dir)) {
     mpz_fdiv_q_2exp(to.get_mpz_t(), n, exp);
     if (round_strict_relation(dir))
-      return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_GT;
+      return (mpz_divisible_2exp_p(n, exp) != 0) ? V_EQ : V_GT;
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
     if (round_strict_relation(dir))
-      return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;
+      return (mpz_divisible_2exp_p(n, exp) != 0) ? V_EQ : V_LT;
     return V_LE;
   }
 }
@@ -510,7 +510,7 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 smod_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
 	      Rounding_Dir) {
-  if (mpz_tstbit(x.get_mpz_t(), exp - 1))
+  if (mpz_tstbit(x.get_mpz_t(), exp - 1) != 0)
     mpz_cdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
   else
     mpz_fdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);

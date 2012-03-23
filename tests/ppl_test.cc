@@ -1,6 +1,6 @@
 /* Implementation of utility functions used in test programs.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -328,7 +328,7 @@ operator<<(std::ostream& s, const FCAIBVP& x) {
   s << "{";
   for (FCAIBVP::Set::const_iterator i = x.set.begin(),
 	 x_end = x.set.end(); i != x_end; ) {
-    const Variable& v = Variable(*i++);
+    const Variable v(*i++);
     using IO_Operators::operator<<;
     s << v;
     if (i != x_end)

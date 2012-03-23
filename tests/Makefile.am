@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -33,8 +33,8 @@ MIP_Problem \
 Octagonal_Shape \
 BD_Shape \
 Polyhedron \
-Grid
-#Ask_Tell
+Grid \
+Watchdog
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 

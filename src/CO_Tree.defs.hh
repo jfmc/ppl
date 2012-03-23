@@ -1,6 +1,6 @@
 /* CO_Tree class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "CO_Tree.types.hh"
 
 #include "Coefficient.defs.hh"
+#include <memory>
 
 #ifndef PPL_CO_TREE_EXTRA_DEBUG
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
@@ -50,12 +51,13 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A cache-oblivious binary search tree of pairs.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements a binary search tree with keys of dimension_type type
   and data of Coefficient type, laid out in a dynamically-sized array.
 
-  The array-based layout saves calls to new/delete (to insert n elements
+  The array-based layout saves calls to new/delete (to insert \f$n\f$ elements
   only \f$O(\log n)\f$ allocations are performed) and, more importantly, is
   much more cache-friendly than a standard (pointer-based) tree, because the
   elements are stored sequentially in memory (leaving some holes to allow
@@ -93,9 +95,10 @@ namespace Parma_Polyhedra_Library {
   The indexes and values are stored in different arrays to reduce
   cache-misses during key queries.
 
-  The tree can store up to (-(dimension_type)1)/100 elements.
+  The tree can store up to \f$(-(dimension_type)1)/100\f$ elements.
   This limit allows faster density computations, but can be removed if needed.
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class CO_Tree {
 
 public:
@@ -107,7 +110,7 @@ private:
   typedef unsigned height_t;
 
   PPL_COMPILE_TIME_CHECK(C_Integer<height_t>::max
-                         >= CHAR_BITS*sizeof(dimension_type),
+                         >= sizeof_to_bits(sizeof(dimension_type)),
                          "height_t is too small to store depths.");
 
   class tree_iterator;
@@ -143,8 +146,6 @@ public:
   */
   typedef Coefficient data_type;
   typedef Coefficient_traits::const_reference data_type_const_reference;
-
-  class iterator;
 
   //! A const %iterator on the tree elements, ordered by key.
   /*!
@@ -1021,8 +1022,8 @@ private:
 
   //! Compares the fractions numer/denom with ratio/100.
   /*!
-    \returns
-    Returns true if the fraction numer/denom is less than the fraction ratio/100.
+    \returns Returns true if the fraction numer/denom is less
+    than the fraction ratio/100.
 
     \param ratio
     It must be less than or equal to 100.
@@ -1288,6 +1289,9 @@ private:
   */
   dimension_type* indexes;
 
+  //! The allocator used to allocate/deallocate data.
+  std::allocator<data_type> data_allocator;
+
   //! The vector that contains the data of the keys in the tree.
   /*!
     If index[i] is \p unused_index, data[i] is unused.
@@ -1308,8 +1312,6 @@ private:
 
   //! The number of values stored in the tree.
   dimension_type size_;
-
-  std::allocator<Coefficient> coefficient_allocator;
 };
 
 class CO_Tree::tree_iterator {

@@ -1,7 +1,7 @@
 /* Polyhedron class implementation
    (non-inline private or protected functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,6 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Scalar_Products.defs.hh"
 #include "Scalar_Products.inlines.hh"
 #include "Linear_Form.defs.hh"
+#include "C_Integer.hh"
 #include "assert.hh"
 #include <string>
 #include <iostream>
@@ -1451,7 +1452,8 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Minimization is not really required, but it is probably the best
   // way of getting constraints, generators and saturation matrices
-  // up-to-date; it also removes redundant constraints/generators.
+  // up-to-date.  Minimization it also removes redundant
+  // constraints/generators.
   (void) x.minimize();
   (void) y.minimize();
 
@@ -1554,7 +1556,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Minimization is not really required, but it is probably the best
   // way of getting constraints, generators and saturation matrices
-  // up-to-date; it also removes redundant constraints/generators.
+  // up-to-date.  Minimization also removes redundant
+  // constraints/generators.
   (void) x.minimize();
   (void) y.minimize();
 
@@ -1621,7 +1624,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   // in the topological closure of `y'.
   Bit_Row x_points_non_redundant_in_y_closure;
   for (dimension_type i = x_points_non_redundant_in_y.first();
-       i != ULONG_MAX;
+       i != C_Integer<unsigned long>::max;
        i = x_points_non_redundant_in_y.next(i)) {
     const Generator& x_p = x_gs[i];
     PPL_ASSERT(x_p.is_point());
@@ -1687,7 +1690,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   // in the topological closure of `x'.
   Bit_Row y_points_non_redundant_in_x_closure;
   for (dimension_type i = y_points_non_redundant_in_x.first();
-       i != ULONG_MAX;
+       i != C_Integer<unsigned long>::max;
        i = y_points_non_redundant_in_x.next(i)) {
     const Generator& y_p = y_gs[i];
     PPL_ASSERT(y_p.is_point());
@@ -1769,7 +1772,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     const Constraint& y_c = y_cs[i];
     if (y_c.is_strict_inequality()) {
       for (dimension_type j = x_gs_condition_3.first();
-           j != ULONG_MAX; j = x_gs_condition_3.next(j)) {
+           j != C_Integer<unsigned long>::max; j = x_gs_condition_3.next(j)) {
         const Generator& x_cp = x_gs[j];
         PPL_ASSERT(x_cp.is_closure_point());
         const int sp_sign = Scalar_Products::reduced_sign(y_c, x_cp);
@@ -1791,7 +1794,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (x_cs[i].is_strict_inequality()) {
       const Constraint& x_c = x_cs[i];
       for (dimension_type j = y_gs_condition_3.first();
-           j != ULONG_MAX; j = y_gs_condition_3.next(j)) {
+           j != C_Integer<unsigned long>::max; j = y_gs_condition_3.next(j)) {
         const Generator& y_cp = y_gs[j];
         PPL_ASSERT(y_cp.is_closure_point());
         const int sp_sign = Scalar_Products::reduced_sign(x_c, y_cp);
@@ -1815,7 +1818,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (ub_cs[i].is_strict_inequality()) {
       const Constraint& ub_c = ub_cs[i];
       for (dimension_type j = x_gs_condition_3_not_in_y.first();
-           j != ULONG_MAX; j = x_gs_condition_3_not_in_y.next(j)) {
+           j != C_Integer<unsigned long>::max;
+           j = x_gs_condition_3_not_in_y.next(j)) {
         const Generator& x_cp = x_gs[j];
         PPL_ASSERT(x_cp.is_closure_point());
         const int sp_sign = Scalar_Products::reduced_sign(ub_c, x_cp);
@@ -1824,7 +1828,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
           x_gs_condition_3_not_in_y.clear(j);
       }
       for (dimension_type j = y_gs_condition_3_not_in_x.first();
-           j != ULONG_MAX; j = y_gs_condition_3_not_in_x.next(j)) {
+           j != C_Integer<unsigned long>::max;
+           j = y_gs_condition_3_not_in_x.next(j)) {
         const Generator& y_cp = y_gs[j];
         PPL_ASSERT(y_cp.is_closure_point());
         const int sp_sign = Scalar_Products::reduced_sign(ub_c, y_cp);
@@ -1846,7 +1851,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Consider strict inequalities in `x' violated by `y'.
   for (dimension_type i = x_cs_condition_3.first();
-       i != ULONG_MAX; i = x_cs_condition_3.next(i)) {
+       i != C_Integer<unsigned long>::max; i = x_cs_condition_3.next(i)) {
     const Constraint& x_cs_i = x_cs[i];
     PPL_ASSERT(x_cs_i.is_strict_inequality());
     // Build the equality constraint induced by x_cs_i.
@@ -1864,7 +1869,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
 
   // Consider strict inequalities in `y' violated by `x'.
   for (dimension_type i = y_cs_condition_3.first();
-       i != ULONG_MAX; i = y_cs_condition_3.next(i)) {
+       i != C_Integer<unsigned long>::max; i = y_cs_condition_3.next(i)) {
     const Constraint& y_cs_i = y_cs[i];
     PPL_ASSERT(y_cs_i.is_strict_inequality());
     // Build the equality constraint induced by y_cs_i.
@@ -2378,19 +2383,24 @@ throw_dimension_incompatible(const char* method,
   throw std::invalid_argument(s.str());
 }
 
-void
-PPL::Polyhedron::throw_space_dimension_overflow(const Topology topol,
+PPL::dimension_type
+PPL::Polyhedron::check_space_dimension_overflow(const dimension_type dim,
+                                                const dimension_type max,
+                                                const Topology topol,
 						const char* method,
 						const char* reason) {
-  std::ostringstream s;
-  s << "PPL::";
-  if (topol == NECESSARILY_CLOSED)
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << reason << ".";
-  throw std::length_error(s.str());
+  const char* domain = (topol == NECESSARILY_CLOSED)
+    ? "PPL::C_Polyhedron::" : "PPL::NNC_Polyhedron::";
+  return PPL::check_space_dimension_overflow(dim, max, domain, method, reason);
+}
+
+PPL::dimension_type
+PPL::Polyhedron::check_space_dimension_overflow(const dimension_type dim,
+                                                const Topology topol,
+						const char* method,
+						const char* reason) {
+  return check_space_dimension_overflow(dim, Polyhedron::max_space_dimension(),
+                                        topol, method, reason);
 }
 
 void

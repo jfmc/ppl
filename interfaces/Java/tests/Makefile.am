@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -68,12 +68,6 @@ CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
 
 PPL_DLOPEN = -dlopen ../../../src/libppl.la
-
-if BUILD_WATCHDOG_LIBRARY
-
-PWL_DLOPEN = -dlopen ../../../Watchdog/src/libpwl.la
-
-endif BUILD_WATCHDOG_LIBRARY
 
 java_test_environment = \
 $(LIBTOOL) --mode=execute $(PPL_DLOPEN) $(PWL_DLOPEN) \

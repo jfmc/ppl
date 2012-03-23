@@ -1,6 +1,6 @@
 /* Linear_Form class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -422,11 +422,12 @@ Linear_Form<C>::relative_error(
 
   C error_propagator;
   // We assume that f_base is a power of 2.
-  int power = msb_position(f_base) * (-f_mantissa_bits);
-  analyzer_format lb = -static_cast<analyzer_format>(ldexp(1.0, power));
+  unsigned int u_power = msb_position(f_base) * f_mantissa_bits;
+  int neg_power = -static_cast<int>(u_power);
+  analyzer_format lb = static_cast<analyzer_format>(ldexp(1.0, neg_power));
 
-  error_propagator.build(i_constraint(GREATER_OR_EQUAL, lb),
-                         i_constraint(LESS_OR_EQUAL, -lb));
+  error_propagator.build(i_constraint(GREATER_OR_EQUAL, -lb),
+                         i_constraint(LESS_OR_EQUAL, lb));
 
   // Handle the inhomogeneous term.
   const C* current_term = &inhomogeneous_term();

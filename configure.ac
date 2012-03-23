@@ -1,6 +1,6 @@
 # Autoconf source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,7 +24,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.12pre3], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.12pre7], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -673,7 +673,7 @@ AM_CONDITIONAL(USE_INT64, test x"$coefficient_bits" = x64)
 
 if test x"$coefficient_kind" = xnative
 then
-  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy>"
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy<int${coefficient_bits}_t> >"
   AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
   AC_DEFINE_UNQUOTED(PPL_COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
   AC_DEFINE(PPL_NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
@@ -762,26 +762,21 @@ AC_CXX_DOUBLE_BINARY_FORMAT
 # Detect the binary format used by C++ long doubles.
 AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 
-# Check whether the C++ run-time systems provides exact output for
-# floats.
-#AC_CXX_FLOAT_EXACT_OUTPUT
-
-# Check whether the C++ run-time systems provides exact output for
-# doubles.
-#AC_CXX_DOUBLE_EXACT_OUTPUT
-
-# Check whether the C++ run-time systems provides exact output for
-# long doubles.
-#AC_CXX_LONG_DOUBLE_EXACT_OUTPUT
+# Test if some floating-point type is supported.
+if test $ac_supported_float = 1 \
+|| test $ac_supported_double = 1 \
+|| test $ac_supported_long_double = 1
+then
+  supported_some_floating_point_type=yes
+fi
+AM_CONDITIONAL(SUPPORTED_SOME_FLOATING_POINT_TYPE,
+               test x$supported_some_floating_point_type = xyes)
 
 # Check whether the C++ compiler supports zero-length arrays.
 AC_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
 
 # Check whether the IEEE inexact flag is supported in C++.
 AC_CXX_SUPPORTS_IEEE_INEXACT_FLAG
-
-# Check whether the C++ compiler has the remainder bug.
-AC_CXX_HAS_REMAINDER_BUG
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
@@ -850,32 +845,6 @@ fi
 
 extra_includes="${extra_includes}${extra_includes:+ }${gmp_include_options}"
 extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_options}"
-
-enableval=yes
-AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
-AC_ARG_ENABLE(watchdog,
-  AS_HELP_STRING([--enable-watchdog],
-                 [build also the Parma Watchdog Library]))
-case "${enableval}" in
-yes)
-  build_watchdog_library=yes
-  ;;
-no)
-  build_watchdog_library=no
-  ;;
-*)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
-  ;;
-esac
-AC_MSG_RESULT($build_watchdog_library)
-AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
-if test x"$build_watchdog_library" = xyes
-then
-  AC_DEFINE(PPL_WATCHDOG_LIBRARY_ENABLED, 1, [Defined if the Parma Watchdog Library is enabled.])
-fi
-
-# Enabled or not, the Watchdog subdirectory must be configured.
-AC_CONFIG_SUBDIRS(Watchdog)
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the ppl_lcdd program])
@@ -1251,7 +1220,7 @@ fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE,
                test x$build_yap_prolog_interface = xyes)
 
-# Test if *any* Prolog system has to be built.
+# Test if some Prolog interfaces have to be built.
 if test x$build_ciao_prolog_interface = xyes \
 || test x$build_gnu_prolog_interface = xyes \
 || test x$build_sicstus_prolog_interface = xyes \
@@ -1564,6 +1533,12 @@ AC_CHECK_DECLS([getrusage, setrlimit],
 #endif
 ])
 
+AC_CHECK_DECLS([setitimer], [], [], [[
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+]])
+
 AC_CHECK_DECLS([sigaction], , , [#include <csignal>])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -1644,6 +1619,7 @@ AC_CONFIG_FILES(Makefile
                 tests/PIP_Problem/Makefile
                 tests/Polyhedron/Makefile
                 tests/Powerset/Makefile
+                tests/Watchdog/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

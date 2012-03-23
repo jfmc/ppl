@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,8 +24,9 @@
 if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
+libtool --mode=execute \
 $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
---num-callers=100 --leak-resolution=high \
+--num-callers=40 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
 else !VALGRIND_TESTS_ENABLED
@@ -51,7 +52,7 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-ORIGINAL_TESTS = \
+ALL_TESTS = \
 C_Expr \
 linearform1 \
 linearize \
@@ -63,9 +64,18 @@ octagonalshape2 \
 polyhedron1 \
 polyhedron2
 
-DERIVED_TESTS =
+BUGS =
 
-ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
+
+# There are platforms where no floating-point type is supported.
+if SUPPORTED_SOME_FLOATING_POINT_TYPE
+
+check_PROGRAMS = $(ALL_TESTS) $(BUGS)
+
+TESTS = run_tests.stamp
+
+endif SUPPORTED_SOME_FLOATING_POINT_TYPE
+
 
 # This will be overridden by the `run_tests' script.
 if SUPPORTED_FLOAT
@@ -82,11 +92,10 @@ LONG_DOUBLE_FLAGS = \
 endif
 endif
 endif
+
 TEST_CPPFLAGS = $(FLOAT_FLAGS) $(DOUBLE_FLAGS) $(LONG_DOUBLE_FLAGS)
 
 dist_check_SCRIPTS = run_tests
-
-TESTS = run_tests.stamp
 
 .PHONY: run_tests.stamp
 run_tests.stamp: run_tests
@@ -151,29 +160,14 @@ polyhedron1_SOURCES = polyhedron1.cc
 
 polyhedron2_SOURCES = polyhedron2.cc
 
-#
-# Sources and compilation flags for the derived check programs
-#
-
-DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
-
-#nnc_frompolyhedron1_SOURCES = frompolyhedron1.cc
-#nnc_frompolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
-BUGS =
-
-check_PROGRAMS = $(ALL_TESTS) $(BUGS)
-
-#EXTRA_DIST = $(refinewithconstraints2_SRCS)
-
-#MOSTLYCLEANFILES = \
-#ascii_dump_load1.dat
 
 CLEANFILES = \
 run_tests.stamp
 
+
 DISTCLEANFILES = \
 dirty_marker
+
 
 $(top_builddir)/utils/libppl_utils.a:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
@@ -183,6 +177,3 @@ $(top_builddir)/tests/libppl_tests.a:
 
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

@@ -1,6 +1,6 @@
 /* BD_Shape class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -838,7 +838,7 @@ BD_Shape<T>::total_memory_in_bytes() const {
 template <typename T>
 inline int32_t
 BD_Shape<T>::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 template <typename T>

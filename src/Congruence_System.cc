@@ -1,6 +1,6 @@
 /* Congruence_System class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -69,31 +69,28 @@ PPL::Congruence_System::remove_rows(const dimension_type first,
 
   // Swap the rows in [first, last) with the rows in [size() - n, size())
   // (note that these intervals may not be disjunct).
-
   if (keep_sorted) {
     for (dimension_type i = last; i < rows.size(); i++)
       swap(rows[i], rows[i - n]);
-  } else {
+  }
+  else {
     const dimension_type offset = rows.size() - n - first;
     for (dimension_type i = first; i < last; i++)
       swap(rows[i], rows[i + offset]);
   }
 
   rows.resize(rows.size() - n);
-
   PPL_ASSERT(OK());
 }
 
 bool
 PPL::Congruence_System
 ::set_space_dimension(const dimension_type new_space_dim) {
-
   if (space_dimension() != new_space_dim) {
     space_dimension_ = new_space_dim;
     for (dimension_type i = num_rows(); i-- > 0; )
       rows[i].set_space_dimension(new_space_dim);
   }
-
   PPL_ASSERT(OK());
   return true;
 }
@@ -288,7 +285,6 @@ bool
 PPL::Congruence_System::has_a_free_dimension() const {
   // Search for a dimension that is free of any congruence or equality
   // constraint.  Assumes a minimized system.
-
   std::set<dimension_type> candidates;
   for (dimension_type i = space_dimension(); i-- > 0; )
     candidates.insert(i + 1);
@@ -375,23 +371,17 @@ PPL::Congruence_System::finalize() {
 
 bool
 PPL::Congruence_System::OK() const {
-  // All rows must have space dimension `space_dimension()' and representation
-  // `representation()'.
+  // All rows must have space dimension `space_dimension()'
+  // and representation `representation()'.
   for (dimension_type i = num_rows(); i-- > 0; ) {
-    if (rows[i].space_dimension() != space_dimension())
+    const Congruence& cg = rows[i];
+    if (cg.space_dimension() != space_dimension())
       return false;
-    if (rows[i].representation() != representation())
+    if (cg.representation() != representation())
       return false;
-  }
-
-  // Checking each congruence in the system.
-  const Congruence_System& x = *this;
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-    const Congruence& cg = x[i];
     if (!cg.OK())
       return false;
   }
-
   // All checks passed.
   return true;
 }
@@ -418,11 +408,11 @@ bool
 PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
   if (x.num_rows() != y.num_rows())
     return false;
-
-  for (dimension_type i = x.num_rows(); i-- > 0; )
+  for (dimension_type i = x.num_rows(); i-- > 0; ) {
+    // NOTE: this also checks for space dimension.
     if (x[i] != y[i])
       return false;
-
+  }
   return true;
 }
 

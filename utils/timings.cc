@@ -1,6 +1,6 @@
 /* Definitions of simple functions for printing timings.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -92,7 +92,7 @@ print_clock(ostream& s) {
       }
     }
     assert(csecs >= 0 && csecs < 100 && secs >= 0);
-    int fill_char = s.fill();
+    char fill_char = s.fill();
     s << secs << "." << setfill('0') << setw(2) << csecs;
     s.fill(fill_char);
   }

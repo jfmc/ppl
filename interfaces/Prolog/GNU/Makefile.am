@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -31,21 +31,11 @@ gnu_pl_check.pl \
 gnu_prolog_generated_test.pl \
 README.gprolog
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
-WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
-
-endif BUILD_WATCHDOG_LIBRARY
-
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 interface_generator_dependencies = \
@@ -154,7 +144,6 @@ endif NO_UNDEFINED
 libppl_gprolog_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_gprolog_la_DEPENDENCIES = \
@@ -169,7 +158,7 @@ ppl_gprolog.pl: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
-pkglib_DATA = ppl_gprolog.pl
+pkgdata_DATA = ppl_gprolog.pl
 
 bin_PROGRAMS = ppl_gprolog
 
@@ -193,19 +182,19 @@ endif !ENABLE_STATIC
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		ppl_gprolog.pl $(LIBPPL_GPROLOG) \
-		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl $(WATCHDOG_LINK_OPTIONS) -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -lgmpxx -lgmp'
 
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq.pl $(LIBPPL_GPROLOG) \
-		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl $(WATCHDOG_LINK_OPTIONS) -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -lgmpxx -lgmp'
 
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq2.pl $(LIBPPL_GPROLOG) \
-		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl $(WATCHDOG_LINK_OPTIONS) -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -lgmpxx -lgmp'
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -257,7 +246,6 @@ pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	echo "main." >>script_pchk
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
@@ -268,7 +256,6 @@ $(CLPQ_TESTS):
 clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./gp_clpq <$(SCRIPT_CLPQ) >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
@@ -276,7 +263,6 @@ clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS)
 clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
@@ -292,7 +278,6 @@ ppl_prolog_generated_test: gnu_prolog_generated_test.pl  ../tests/ppl_prolog_gen
 	echo "main." >>script_pgt
 	GLOBALSZ=131072 $(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pgt
 	rm -f ppl_prolog_generated_test_common.pl

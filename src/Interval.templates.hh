@@ -1,6 +1,6 @@
 /* Interval class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -241,7 +241,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   do {
     if (!is.get(c))
       goto fail;
-  } while (isspace(c));
+  } while (is_space(c));
 
   // Get the opening parenthesis and handle the empty interval case.
   if (c == '(')
@@ -270,7 +270,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   do {
     if (!is.get(c))
       goto fail;
-  } while (isspace(c));
+  } while (is_space(c));
   if (c != ',')
     goto unexpected;
 
@@ -284,14 +284,14 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   do {
     if (!is.get(c))
       goto fail;
-  } while (isspace(c));
+  } while (is_space(c));
   if (c == ')')
     upper_open = true;
   else if (c != ']') {
   unexpected:
     is.unget();
   fail:
-    is.setstate(std::ios_base::failbit);
+    is.setstate(std::ios::failbit);
     return is;
   }
 
@@ -370,7 +370,6 @@ template <typename From>
 typename Enable_If<Is_Interval<From>::value, bool>::type
 Interval<Boundary, Info>::simplify_using_context_assign(const From& y) {
   // FIXME: the following code wrongly assumes that intervals are closed
-  // and have no restrictions. It must be generalized.
   if (lt(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y))) {
     lower_extend();
     return false;

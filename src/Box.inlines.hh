@@ -1,6 +1,6 @@
 /* Box class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -133,6 +133,12 @@ Box<ITV>::max_space_dimension() {
 }
 
 template <typename ITV>
+inline int32_t
+Box<ITV>::hash_code() const {
+  return hash_code_from_dimension(space_dimension());
+}
+
+template <typename ITV>
 inline const ITV&
 Box<ITV>::operator[](const dimension_type k) const {
   PPL_ASSERT(k < seq.size());
@@ -258,8 +264,12 @@ operator!=(const Box<ITV>& x, const Box<ITV>& y) {
 
 template <typename ITV>
 inline bool
-Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
-                          Coefficient& n, Coefficient& d) const {
+Box<ITV>::has_lower_bound(const Variable var,
+                          Coefficient& n, Coefficient& d, bool& closed) const {
+  // NOTE: assertion !is_empty() would be wrong;
+  // see the calls in method Box<ITV>::constraints().
+  PPL_ASSERT(!marked_empty());
+  const dimension_type k = var.id();
   PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
@@ -278,8 +288,12 @@ Box<ITV>::get_lower_bound(const dimension_type k, bool& closed,
 
 template <typename ITV>
 inline bool
-Box<ITV>::get_upper_bound(const dimension_type k, bool& closed,
-                          Coefficient& n, Coefficient& d) const {
+Box<ITV>::has_upper_bound(const Variable var,
+                          Coefficient& n, Coefficient& d, bool& closed) const {
+  // NOTE: assertion !is_empty() would be wrong;
+  // see the calls in method Box<ITV>::constraints().
+  PPL_ASSERT(!marked_empty());
+  const dimension_type k = var.id();
   PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
@@ -393,27 +407,23 @@ Box<ITV>
   // Turn `numer/denom' into `-numer/denom'.
   q = -q;
 
-  I_Result res;
+  Relation_Symbol rel_sym;
   switch (type) {
   case Constraint::EQUALITY:
-    res = itv.add_constraint(i_constraint(EQUAL, q));
+    rel_sym = EQUAL;
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    res = itv.add_constraint(i_constraint(denom > 0
-                                          ? GREATER_OR_EQUAL
-                                          : LESS_OR_EQUAL, q));
+    rel_sym = (denom > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
     break;
   case Constraint::STRICT_INEQUALITY:
-    res = itv.add_constraint(i_constraint(denom > 0
-                                          ? GREATER_THAN
-                                          : LESS_THAN, q));
+    rel_sym = (denom > 0) ? GREATER_THAN : LESS_THAN;
     break;
   default:
     // Silence compiler warning.
     PPL_UNREACHABLE;
-    res = I_ANY;
-    break;
+    return I_ANY;
   }
+  I_Result res = itv.add_constraint(i_constraint(rel_sym, q));
   PPL_ASSERT(itv.OK());
   return res;
 }

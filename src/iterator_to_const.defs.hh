@@ -1,6 +1,6 @@
 /* iterator_to_const and const_iterator_to_const class declarations.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -65,7 +65,6 @@ private:
 
   friend class const_iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the const_iterator, therefore
@@ -138,7 +137,6 @@ private:
 
   friend class iterator_to_const<Container>;
   template <typename T> friend class Powerset;
-  //template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the underlying const_iterator.

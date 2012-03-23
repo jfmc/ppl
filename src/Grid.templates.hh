@@ -1,6 +1,6 @@
 /* Grid class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -33,17 +33,16 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
-Grid::Grid(const Box<Interval>& box,
-           Complexity_Class)
+Grid::Grid(const Box<Interval>& box, Complexity_Class)
   : con_sys(),
     gen_sys() {
-  if (box.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(box, from_bounding_box)",
-				   "the space dimension of box "
-				   "exceeds the maximum allowed "
-				   "space dimension");
-
-  space_dim = box.space_dimension();
+  space_dim = check_space_dimension_overflow(box.space_dimension(),
+                                             max_space_dimension(),
+                                             "PPL::Grid::",
+                                             "Grid(box, from_bounding_box)",
+                                             "the space dimension of box "
+                                             "exceeds the maximum allowed "
+                                             "space dimension");
 
   if (box.is_empty()) {
     // Empty grid.
@@ -64,15 +63,18 @@ Grid::Grid(const Box<Interval>& box,
     PPL_DIRTY_TEMP_COEFFICIENT(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     for (dimension_type k = space_dim; k-- > 0; ) {
+      const Variable v_k = Variable(k);
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
-      if (box.get_lower_bound(k, closed, l_n, l_d)) {
-	if (box.get_upper_bound(k, closed, u_n, u_d))
+      if (box.has_lower_bound(v_k, l_n, l_d, closed)) {
+	if (box.has_upper_bound(v_k, u_n, u_d, closed))
 	  if (l_n * u_d == u_n * l_d) {
 	    // A point interval sets dimension k of every point to a
 	    // single value.
-	    con_sys.insert(l_d * Variable(k) == l_n);
+	    con_sys.insert(l_d * v_k == l_n);
 
+            // This is declared here because it may be invalidated
+            // by the call to gen_sys.insert() at the end of the loop.
             Grid_Generator& point = gen_sys.sys.rows[0];
 
 	    // Scale the point to use as divisor the lcm of the
@@ -98,7 +100,7 @@ Grid::Grid(const Box<Interval>& box,
 	  }
       }
       // A universe interval allows any value in dimension k.
-      gen_sys.insert(grid_line(Variable(k)));
+      gen_sys.insert(grid_line(v_k));
     }
     set_congruences_up_to_date();
     set_generators_up_to_date();
@@ -261,7 +263,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
 		     const dimension_type pivot_index,
 		     const dimension_type start,
 		     const dimension_type end,
-		     const Dimension_Kinds& dim_kinds,
+		     const Dimension_Kinds& sys_dim_kinds,
 		     const bool generators) {
   // TODO: Remove this.
   typedef typename M::row_type M_row_type;
@@ -274,33 +276,31 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
 
   PPL_DIRTY_TEMP_COEFFICIENT(pivot_dim_half);
   pivot_dim_half = (pivot_dim + 1) / 2;
-  Dimension_Kind row_kind = dim_kinds[dim];
-  Dimension_Kind line_or_equality, virtual_kind;
-  int jump;
-  if (generators) {
-    line_or_equality = LINE;
-    virtual_kind = GEN_VIRTUAL;
-    jump = -1;
-  }
-  else {
-    line_or_equality = EQUALITY;
-    virtual_kind = CON_VIRTUAL;
-    jump = 1;
-  }
+  const Dimension_Kind row_kind = sys_dim_kinds[dim];
+  const bool row_is_line_or_equality
+    = (row_kind == (generators ? LINE : EQUALITY));
 
   PPL_DIRTY_TEMP_COEFFICIENT(num_rows_to_subtract);
   PPL_DIRTY_TEMP_COEFFICIENT(row_dim_remainder);
-  for (dimension_type row_index = pivot_index, kinds_index = dim + jump;
-       row_index-- > 0;
-       kinds_index += jump) {
-    // Move over any virtual rows.
-    while (dim_kinds[kinds_index] == virtual_kind)
-      kinds_index += jump;
+  for (dimension_type kinds_index = dim,
+         row_index = pivot_index; row_index-- > 0; ) {
+    if (generators) {
+      --kinds_index;
+      // Move over any virtual rows.
+      while (sys_dim_kinds[kinds_index] == GEN_VIRTUAL)
+        --kinds_index;
+    }
+    else {
+      ++kinds_index;
+      // Move over any virtual rows.
+      while (sys_dim_kinds[kinds_index] == CON_VIRTUAL)
+        ++kinds_index;
+    }
 
     // row_kind CONGRUENCE is included as PARAMETER
-    if (row_kind == line_or_equality
+    if (row_is_line_or_equality
 	|| (row_kind == PARAMETER
-	    && dim_kinds[kinds_index] == PARAMETER)) {
+	    && sys_dim_kinds[kinds_index] == PARAMETER)) {
       M_row_type& row = rows[row_index];
 
       const Coefficient& row_dim = row.expr.get(dim);

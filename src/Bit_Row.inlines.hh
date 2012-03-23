@@ -1,6 +1,6 @@
 /* Bit_Row class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,6 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Bit_Row_inlines_hh
 #define PPL_Bit_Row_inlines_hh 1
 
+#include "compiler.hh"
 #include "globals.defs.hh"
 #include "assert.hh"
 
@@ -34,7 +35,7 @@ site: http://bugseng.com/products/ppl/ . */
 # include <string.h>
 #endif
 
-#define PPL_BITS_PER_GMP_LIMB (PPL_SIZEOF_MP_LIMB_T*CHAR_BIT)
+#define PPL_BITS_PER_GMP_LIMB sizeof_to_bits(PPL_SIZEOF_MP_LIMB_T)
 
 namespace Parma_Polyhedra_Library {
 
@@ -56,14 +57,14 @@ Bit_Row::Bit_Row(const Bit_Row& y, const Bit_Row& z) {
   PPL_ASSERT(z_size >= 0);
   if (y_size < z_size) {
     PPL_ASSERT(static_cast<unsigned long>(z_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
-    mpz_init2(vec, z_size * PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
+    mpz_init2(vec, static_cast<unsigned long>(z_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, z);
   }
   else {
     PPL_ASSERT(static_cast<unsigned long>(y_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
-    mpz_init2(vec, y_size * PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
+    mpz_init2(vec, static_cast<unsigned long>(y_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(z, y);
   }
 }
@@ -118,7 +119,7 @@ Bit_Row::clear() {
 
 inline memory_size_type
 Bit_Row::external_memory_in_bytes() const {
-  return vec[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
+  return static_cast<memory_size_type>(vec[0]._mp_alloc) * PPL_SIZEOF_MP_LIMB_T;
 }
 
 inline memory_size_type
@@ -134,14 +135,14 @@ Bit_Row::union_assign(const Bit_Row& x, const Bit_Row& y) {
   PPL_ASSERT(y_size >= 0);
   if (x_size < y_size) {
     PPL_ASSERT(static_cast<unsigned long>(y_size)
-               <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
-    mpz_realloc2(vec, y_size * PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
+    mpz_realloc2(vec, static_cast<unsigned long>(y_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(x, y);
   }
   else {
     PPL_ASSERT(static_cast<unsigned long>(x_size)
-           <= ULONG_MAX / PPL_BITS_PER_GMP_LIMB);
-    mpz_realloc2(vec, x_size * PPL_BITS_PER_GMP_LIMB);
+               <= C_Integer<unsigned long>::max / PPL_BITS_PER_GMP_LIMB);
+    mpz_realloc2(vec, static_cast<unsigned long>(x_size) * PPL_BITS_PER_GMP_LIMB);
     union_helper(y, x);
   }
 }
@@ -160,15 +161,12 @@ Bit_Row::difference_assign(const Bit_Row& x, const Bit_Row& y) {
 
 namespace Implementation {
 
-#if defined(__GNUC__)
-
 /*! \brief
   Assuming \p u is nonzero, returns the index of the first set bit in \p u.
 */
 inline unsigned int
 first_one(unsigned int u) {
-  PPL_ASSERT(u != 0);
-  return __builtin_ctz(u);
+  return ctz(u);
 }
 
 /*! \brief
@@ -177,8 +175,7 @@ first_one(unsigned int u) {
 */
 inline unsigned int
 first_one(unsigned long ul) {
-  PPL_ASSERT(ul != 0);
-  return __builtin_ctzl(ul);
+  return ctz(ul);
 }
 
 /*! \brief
@@ -187,65 +184,16 @@ first_one(unsigned long ul) {
 */
 inline unsigned int
 first_one(unsigned long long ull) {
-  PPL_ASSERT(ull != 0);
-  return __builtin_ctzll(ull);
+  return ctz(ull);
 }
-
-#elif PPL_HAVE_DECL_FFS && PPL_SIZEOF_MP_LIMB_T == PPL_SIZEOF_INT
-
-/*! \brief
-  Assuming \p w is nonzero, returns the index of the first set bit in \p w.
-*/
-inline unsigned int
-first_one(mp_limb_t w) {
-  return ffs(w)-1;
-}
-
-#else
-
-/*! \brief
-  Assuming \p w is nonzero, returns the index of the first set bit in \p w.
-*/
-inline unsigned int
-first_one(mp_limb_t w) {
-  unsigned int r = 0;
-  w = w & -w;
-#if PPL_SIZEOF_MP_LIMB_T == 8
-  if ((w & 0xffffffff) == 0) {
-    w >>= 32;
-    r += 32;
-  }
-#elif PPL_SIZEOF_MP_LIMB_T != 4
-#error "size of mp_limb_t not supported by first_one(mp_limb_t w)."
-#endif
-  if ((w & 0xffff) == 0) {
-    w >>= 16;
-    r += 16;
-  }
-  if ((w & 0xff) == 0) {
-    w >>= 8;
-    r += 8;
-  }
-  if (w & 0xf0)
-    r += 4;
-  if (w & 0xcc)
-    r += 2;
-  if (w & 0xaa)
-    r += 1;
-  return r;
-}
-#endif // !defined(__GNUC__)
-       // && (!PPL_HAVE_DECL_FFS || PPL_SIZEOF_MP_LIMB_T != PPL_SIZEOF_INT)
-
-#if defined(__GNUC__)
 
 /*! \brief
   Assuming \p u is nonzero, returns the index of the last set bit in \p u.
 */
 inline unsigned int
 last_one(unsigned int u) {
-  PPL_ASSERT(u != 0);
-  return sizeof(unsigned int)*CHAR_BIT - 1 - __builtin_clz(u);
+  return static_cast<unsigned int>(sizeof_to_bits(sizeof(u)))
+    - 1U - clz(u);
 }
 
 /*! \brief
@@ -254,8 +202,8 @@ last_one(unsigned int u) {
 */
 inline unsigned int
 last_one(unsigned long ul) {
-  PPL_ASSERT(ul != 0);
-  return sizeof(unsigned long)*CHAR_BIT - 1 - __builtin_clzl(ul);
+  return static_cast<unsigned int>(sizeof_to_bits(sizeof(ul)))
+    - 1U - clz(ul);
 }
 
 /*! \brief
@@ -264,55 +212,9 @@ last_one(unsigned long ul) {
 */
 inline unsigned int
 last_one(unsigned long long ull) {
-  PPL_ASSERT(ull != 0);
-  return sizeof(unsigned long long)*CHAR_BIT - 1 - __builtin_clzll(ull);
+  return static_cast<unsigned int>(sizeof_to_bits(sizeof(ull)))
+    - 1U - clz(ull);
 }
-
-#else // !defined(__GNUC__)
-
-/*! \brief
-  Assuming \p w is nonzero, returns the index of the last set bit in \p w.
-*/
-inline unsigned int
-last_one(mp_limb_t w) {
-  PPL_ASSERT(w != 0);
-  unsigned int r = 0;
-#if PPL_SIZEOF_MP_LIMB_T == 8
-  if (w &
-#if PPL_SIZEOF_LONG == 8
-      0xffffffff00000000
-#else
-      0xffffffff00000000LL
-#endif
-      ) {
-    w >>= 32;
-    r += 32;
-  }
-#elif PPL_SIZEOF_MP_LIMB_T != 4
-#error "size of mp_limb_t not supported by last_one(mp_limb_t w)."
-#endif
-  if (w & 0xffff0000) {
-    w >>= 16;
-    r += 16;
-  }
-  if (w & 0xff00) {
-    w >>= 8;
-    r += 8;
-  }
-  if (w & 0xf0) {
-    w >>= 4;
-    r += 4;
-  }
-  if (w & 0xc) {
-    w >>= 2;
-    r += 2;
-  }
-  if (w & 0x2)
-    r += 1;
-  return r;
-}
-
-#endif // !defined(__GNUC__)
 
 } // namespace Implementation
 

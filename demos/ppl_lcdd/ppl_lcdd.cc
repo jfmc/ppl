@@ -1,6 +1,6 @@
 /* A sort of clone of the cddlib test program `lcdd'.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,7 +30,7 @@ site: http://bugseng.com/products/ppl/ . */
    (defined(USE_PPL)   && defined(USE_POLKA)) \
 || (defined(USE_PPL)   && defined(USE_POLYLIB)) \
 || (defined(USE_POLKA) && defined(USE_POLYLIB))
-#error "Exactly one among USE_PPL, USE_POLKA and USE_POLYLIB must be defined."
+#error "Exactly one among USE_PPL, USE_POLKA and USE_POLYLIB must be defined"
 #endif
 
 #if defined(USE_PPL)
@@ -241,7 +241,7 @@ set_input(const char* file_name) {
 
 std::istream&
 input() {
-  assert(input_stream_p);
+  assert(input_stream_p != 0);
   return *input_stream_p;
 }
 
@@ -269,7 +269,7 @@ set_output(const char* file_name) {
 
 std::ostream&
 output() {
-  assert(output_stream_p);
+  assert(output_stream_p != 0);
   return *output_stream_p;
 }
 
@@ -504,7 +504,8 @@ template <typename T>
 bool
 guarded_read(std::istream& in, T& x) {
   try {
-    return in >> x;
+    in >> x;
+    return !in.fail();
   }
   catch (...) {
     return false;
@@ -516,7 +517,8 @@ void
 guarded_write(std::ostream& out, const T& x) {
   bool succeeded = false;
   try {
-    succeeded = out << x;
+    out << x;
+    succeeded = !out.fail();
   }
   catch (...) {
   }
@@ -1161,7 +1163,8 @@ write_polyhedron(std::ostream& out,
   // Flush `out'.
   bool flush_succeeded = false;
   try {
-    flush_succeeded = out.flush();
+    out.flush();
+    flush_succeeded = !out.fail();
   }
   catch (...) {
   }
@@ -1192,7 +1195,7 @@ main(int argc, char* argv[]) try {
 #ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 
   if (max_seconds_of_cpu_time > 0)
-    set_alarm_on_cpu_time(max_seconds_of_cpu_time, timeout);
+    set_alarm_on_cpu_time(max_seconds_of_cpu_time, &timeout);
 
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 

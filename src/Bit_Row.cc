@@ -1,6 +1,6 @@
 /* Bit_Row class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "Bit_Row.defs.hh"
 #include "assert.hh"
-#include <climits>
+#include "C_Integer.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -32,14 +32,14 @@ unsigned long
 PPL::Bit_Row::first() const {
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
-  mp_size_t li = 0;
   mp_srcptr p = vec->_mp_d;
-  for (; li < vec_size; ++li, ++p) {
+  for (mp_size_t li = 0; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
+        + Implementation::first_one(limb);
   }
-  return ULONG_MAX;
+  return C_Integer<unsigned long>::max;
 }
 
 unsigned long
@@ -50,32 +50,36 @@ PPL::Bit_Row::next(unsigned long position) const {
   // of GMP was measured to be slower that ours.  Here it is, in
   // case mpz_scan1() is improved.
   //
-  // unsigned long r = mpz_scan1(vec, position);
-  // return (r == ULONG_MAX) ? -1 : r;
+  // <CODE>
+  //   unsigned long r = mpz_scan1(vec, position);
+  //   return (r == C_Integer<unsigned long>::max) ? -1 : r;
+  // </CODE>
 
-  mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
+  const unsigned long uli = position / PPL_BITS_PER_GMP_LIMB;
+  mp_size_t li = static_cast<mp_size_t>(uli);
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
   if (li >= vec_size)
-    return ULONG_MAX;
+    return C_Integer<unsigned long>::max;
 
   // Get the first limb.
   mp_srcptr p = vec->_mp_d + li;
 
   // Mask off any bits before `position' in the first limb.
   mp_limb_t limb
-    = *p & ((~(mp_limb_t) 0) << (position % PPL_BITS_PER_GMP_LIMB));
+    = *p & ((~static_cast<mp_limb_t>(0)) << (position % PPL_BITS_PER_GMP_LIMB));
 
   while (true) {
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + Implementation::first_one(limb);
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
+        + Implementation::first_one(limb);
     ++li;
     if (li == vec_size)
       break;
     ++p;
     limb = *p;
   }
-  return ULONG_MAX;
+  return C_Integer<unsigned long>::max;
 }
 
 unsigned long
@@ -83,24 +87,26 @@ PPL::Bit_Row::last() const {
   mp_size_t li = vec->_mp_size;
   PPL_ASSERT(li >= 0);
   if (li == 0)
-    return ULONG_MAX;
+    return C_Integer<unsigned long>::max;
   --li;
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
   PPL_ASSERT(limb != 0);
-  return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
+  return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
+    + Implementation::last_one(limb);
 }
 
 unsigned long
 PPL::Bit_Row::prev(unsigned long position) const {
   if (position == 0)
-    return ULONG_MAX;
+    return C_Integer<unsigned long>::max;
 
   --position;
 
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size > 0);
-  mp_size_t li = position / PPL_BITS_PER_GMP_LIMB;
+  const unsigned long uli = position / PPL_BITS_PER_GMP_LIMB;
+  mp_size_t li = static_cast<mp_size_t>(uli);
 
   mp_limb_t limb;
   mp_srcptr p = vec->_mp_d;
@@ -113,22 +119,23 @@ PPL::Bit_Row::prev(unsigned long position) const {
   }
   else {
     const mp_limb_t mask
-      = (~(mp_limb_t) 0)
-      >> (PPL_BITS_PER_GMP_LIMB - 1 - position % PPL_BITS_PER_GMP_LIMB);
+      = (~static_cast<mp_limb_t>(0))
+      >> (PPL_BITS_PER_GMP_LIMB - 1U - position % PPL_BITS_PER_GMP_LIMB);
     p += li;
     limb = *p & mask;
   }
 
   while (true) {
     if (limb != 0)
-      return li*PPL_BITS_PER_GMP_LIMB + Implementation::last_one(limb);
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB 
+        + Implementation::last_one(limb);
     if (li == 0)
       break;
     --li;
     --p;
     limb = *p;
   }
-  return ULONG_MAX;
+  return C_Integer<unsigned long>::max;
 }
 
 bool
@@ -136,12 +143,12 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
 
-  unsigned long i = k / GMP_NUMB_BITS;
+  unsigned long i = k / static_cast<unsigned long>(GMP_NUMB_BITS);
   if (i >= static_cast<unsigned long>(vec_size))
     return false;
 
   mp_limb_t limb = *(vec->_mp_d + i);
-  return (limb >> (k % GMP_NUMB_BITS)) & 1;
+  return ((limb >> (k % static_cast<unsigned long>(GMP_NUMB_BITS))) & 1U) != 0;
 }
 
 void
@@ -169,7 +176,7 @@ PPL::compare(const Bit_Row& x, const Bit_Row& y) {
       const mp_limb_t diff = xl ^ yl;
       // First bit that is different.
       const mp_limb_t mask = diff & ~(diff-1);
-      return (xl & mask) ? 1 : -1;
+      return ((xl & mask) != 0) ? 1 : -1;
     }
     ++xp;
     ++yp;
@@ -190,7 +197,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   while (x_size > 0) {
-    if (*xp & ~*yp)
+    if ((*xp & ~*yp) != 0)
       return false;
     ++xp;
     ++yp;
@@ -218,7 +225,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
     while (x_size > 0) {
       xl = *xp;
       yl = *yp;
-      if (xl & ~yl)
+      if ((xl & ~yl) != 0)
 	return false;
     strict_subset_next:
       ++xp;
@@ -231,7 +238,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
       xl = *xp;
       yl = *yp;
       if (xl != yl) {
-	if (xl & ~yl)
+	if ((xl & ~yl) != 0)
 	  return false;
 	strict_subset = true;
 	goto strict_subset_next;
@@ -259,7 +266,7 @@ PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
   while (x_size > 0) {
     const mp_limb_t xl = *xp;
     const mp_limb_t yl = *yp;
-    if (xl & ~yl)
+    if ((xl & ~yl) != 0)
       return false;
     if (!different && xl != yl)
       different = true;

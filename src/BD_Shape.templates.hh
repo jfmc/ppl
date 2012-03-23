@@ -1,6 +1,6 @@
 /* BD_Shape class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -316,7 +316,7 @@ BD_Shape<T>::affine_dimension() const {
 
   // The vector `predecessor' is used to represent equivalence classes:
   // `predecessor[i] == i' if and only if `i' is the leader of its
-  // equivalence class (i.e., the minimum index in the class);
+  // equivalence class (i.e., the minimum index in the class).
   std::vector<dimension_type> predecessor;
   compute_predecessors(predecessor);
 
@@ -422,12 +422,11 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   // Select the cell to be modified for the "<=" part of the constraint,
   // and set `coeff' to the absolute value of itself.
   const bool negative = (coeff < 0);
-  N& x = negative ? dbm[i][j] : dbm[j][i];
-  N& y = negative ? dbm[j][i] : dbm[i][j];
   if (negative)
     neg_assign(coeff);
 
   bool changed = false;
+  N& x = negative ? dbm[i][j] : dbm[j][i];
   // Compute the bound for `x', rounding towards plus infinity.
   PPL_DIRTY_TEMP(N, d);
   div_round_up(d, inhomo, coeff);
@@ -437,6 +436,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   }
 
   if (c.is_equality()) {
+    N& y = negative ? dbm[j][i] : dbm[i][j];
     // Also compute the bound for `y', rounding towards plus infinity.
     PPL_DIRTY_TEMP_COEFFICIENT(minus_c_term);
     neg_assign(minus_c_term, inhomo);
@@ -606,24 +606,26 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   }
 
   /*
-    The `y' bounded difference shape need be closed.
-    In fact if, for example, in `*this' we have the constraints:
+    The `y' bounded difference shape must be closed.  As an example,
+    consider the case where in `*this' we have the constraints
 
-    x1 - x2 <= 1;
-    x1      <= 3;
-    x2      <= 2;
+    x1 - x2 <= 1,
+    x1      <= 3,
+    x2      <= 2,
 
-    in `y' the constraints are:
+    and in `y' the constraints are
 
-    x1 - x2 <= 0;
-    x2      <= 1;
+    x1 - x2 <= 0,
+    x2      <= 1.
 
-    without closure it returns "false", instead if we close `y' we have
-    the implicit constraint
+    Without closure the (erroneous) analysis of the inhomogeneous terms
+    would conclude containment does not hold.  Closing `y' results into
+    the "discovery" of the implicit constraint
 
-    x1      <= 1;
+    x1      <= 1,
 
-    and so we obtain the right result "true".
+    at which point the inhomogeneous terms can be examined to determine
+    that containment does hold.
   */
   y.shortest_path_closure_assign();
 
@@ -790,7 +792,7 @@ BD_Shape<T>::frequency(const Linear_Expression& expr,
   // and return true. Otherwise the values for \p expr
   // are not discrete so return false.
 
-  // Space dimension = 0: if empty, then return false;
+  // Space dimension is 0: if empty, then return false;
   // otherwise the frequency is 0 and the value is the inhomogeneous term.
   if (space_dim == 0) {
     if (is_empty())
@@ -1472,27 +1474,27 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       switch (sgn(min_numer)) {
       case 1:
         if (c.is_equality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::is_included();
+          return Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::is_included();
       case 0:
         if (c.is_strict_inequality() || c.is_equality())
-          return  Poly_Con_Relation::strictly_intersects();
-        return  Poly_Con_Relation::is_included();
+          return Poly_Con_Relation::strictly_intersects();
+        return Poly_Con_Relation::is_included();
       case -1:
-        return  Poly_Con_Relation::strictly_intersects();
+        return Poly_Con_Relation::strictly_intersects();
       }
     }
     if (!bounded_below) {
       max_numer += c.inhomogeneous_term() * max_denom;
       switch (sgn(max_numer)) {
       case 1:
-        return  Poly_Con_Relation::strictly_intersects();
+        return Poly_Con_Relation::strictly_intersects();
       case 0:
         if (c.is_strict_inequality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::strictly_intersects();
       case -1:
-        return  Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::is_disjoint();
       }
     }
     else {
@@ -1503,30 +1505,32 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
         switch (sgn(min_numer)) {
         case 1:
           if (c.is_equality())
-            return  Poly_Con_Relation::is_disjoint();
-          return  Poly_Con_Relation::is_included();
+            return Poly_Con_Relation::is_disjoint();
+          return Poly_Con_Relation::is_included();
         case 0:
           if (c.is_equality())
-            return  Poly_Con_Relation::strictly_intersects();
+            return Poly_Con_Relation::strictly_intersects();
           if (c.is_strict_inequality())
-            return  Poly_Con_Relation::strictly_intersects();
-          return  Poly_Con_Relation::is_included();
+            return Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::is_included();
         case -1:
-          return  Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::strictly_intersects();
         }
+        PPL_UNREACHABLE;
+        break;
       case 0:
         if (min_numer == 0) {
           if (c.is_strict_inequality())
-            return  Poly_Con_Relation::is_disjoint()
+            return Poly_Con_Relation::is_disjoint()
               && Poly_Con_Relation::saturates();
-          return  Poly_Con_Relation::is_included()
+          return Poly_Con_Relation::is_included()
             && Poly_Con_Relation::saturates();
         }
         if (c.is_strict_inequality())
-          return  Poly_Con_Relation::is_disjoint();
-        return  Poly_Con_Relation::strictly_intersects();
+          return Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::strictly_intersects();
       case -1:
-        return  Poly_Con_Relation::is_disjoint();
+        return Poly_Con_Relation::is_disjoint();
       }
     }
   }
@@ -2985,14 +2989,13 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
       const N& x = negative ? dbm[i][j] : dbm[j][i];
       const N& y = negative ? dbm[j][i] : dbm[i][j];
       DB_Matrix<N>& ls_dbm = limiting_shape.dbm;
-      N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
-      N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
       if (negative)
         neg_assign(coeff);
       // Compute the bound for `x', rounding towards plus infinity.
       div_round_up(d, c.inhomogeneous_term(), coeff);
       if (x <= d) {
         if (c.is_inequality()) {
+          N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
           if (ls_x > d) {
             ls_x = d;
             changed = true;
@@ -3002,12 +3005,15 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
           // Compute the bound for `y', rounding towards plus infinity.
           neg_assign(minus_c_term, c.inhomogeneous_term());
           div_round_up(d1, minus_c_term, coeff);
-          if (y <= d1)
+          if (y <= d1) {
+            N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
+            N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
 	    if ((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
 	      ls_x = d;
 	      ls_y = d1;
 	      changed = true;
             }
+          }
         }
       }
     }
@@ -4256,20 +4262,20 @@ void BD_Shape<T>
   PPL_DIRTY_TEMP(N, b_mlb);
   neg_assign_r(b_mlb, b.lower(), ROUND_NOT_NEEDED);
 
-  // true if b = [b_lb, b_ub] = [0;0].
-  bool is_b_zero = (b_mlb == 0 && b_ub == 0);
-  // true if w_coeff = [1;1]
+  // True if `w_coeff' is in [1, 1].
   bool is_w_coeff_one = (w_coeff == 1);
 
   if (w_id == var_id) {
-    // Here `lf' is of the form: [+/-1;+/-1] * v + b.
+    // True if `b' is in [b_mlb, b_ub] and that is [0, 0].
+    bool is_b_zero = (b_mlb == 0 && b_ub == 0);
+    // Here `lf' is of the form: [+/-1, +/-1] * v + b.
     if (is_w_coeff_one) {
       if (is_b_zero)
         // The transformation is the identity function.
         return;
       else {
         // Translate all the constraints on `var' by adding the value
-        // `b_ub' or subtracting the value `b_lb'.
+        // `b_ub' or subtracting the value `b_mlb'.
         DB_Row<N>& dbm_v = dbm[var_id];
         for (dimension_type i = space_dim + 1; i-- > 0; ) {
           N& dbm_vi = dbm_v[i];
@@ -4281,7 +4287,7 @@ void BD_Shape<T>
       }
     }
     else {
-      // Here `w_coeff = [-1;-1].
+      // Here `w_coeff = [-1, -1].
       // Remove the binary constraints on `var'.
       forget_binary_dbm_constraints(var_id);
       using std::swap;
@@ -4290,7 +4296,7 @@ void BD_Shape<T>
       reset_shortest_path_closed();
       if (!is_b_zero) {
         // Translate the unary constraints on `var' by adding the value
-        // `b_ub' or subtracting the value `b_lb'.
+        // `b_ub' or subtracting the value `b_mlb'.
         N& dbm_v0 = dbm[var_id][0];
         add_assign_r(dbm_v0, dbm_v0, b_mlb, ROUND_UP);
         N& dbm_0v = dbm[0][var_id];
@@ -4300,14 +4306,14 @@ void BD_Shape<T>
   }
   else {
     // Here `w != var', so that `lf' is of the form
-    // [+/-1;+/-1] * w + b.
+    // [+/-1, +/-1] * w + b.
     // Remove all constraints on `var'.
     forget_all_dbm_constraints(var_id);
     // Shortest-path closure is preserved, but not reduction.
     if (marked_shortest_path_reduced())
       reset_shortest_path_reduced();
     if (is_w_coeff_one) {
-      // Add the new constraints `var - w >= b_lb'
+      // Add the new constraints `var - w >= b_mlb'
       // `and var - w <= b_ub'.
       add_dbm_constraint(w_id, var_id, b_ub);
       add_dbm_constraint(var_id, w_id, b_mlb);
@@ -4335,7 +4341,7 @@ void BD_Shape<T>
 // General case.
 // Either t == 2, so that
 // lf == i_1*x_1 + i_2*x_2 + ... + i_n*x_n + b, where n >= 2,
-// or t == 1, lf == i*w + b, but i <> [+/-1;+/-1].
+// or t == 1, lf == i*w + b, but i <> [+/-1, +/-1].
 template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>
@@ -4521,8 +4527,8 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
   if (right_t == 1) {
-    // The constraint has the form [a-;a+] <= [b-;b+] + [c-;c+] * x.
-    // Reduce it to the constraint +/-x <= b+ - a- if [c-;c+] = +/-[1;1].
+    // The constraint has the form [a-, a+] <= [b-, b+] + [c-, c+] * x.
+    // Reduce it to the constraint +/-x <= b+ - a- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& right_w_coeff =
 	                      right.coefficient(Variable(right_w_id));
       if (right_w_coeff == 1) {
@@ -4561,8 +4567,8 @@ BD_Shape<T>
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
     if (right_t == 0) {
-      // The constraint has the form [b-;b+] + [c-;c+] * x <= [a-;a+]
-      // Reduce it to the constraint +/-x <= a+ - b- if [c-;c+] = +/-[1;1].
+      // The constraint has the form [b-, b+] + [c-, c+] * x <= [a-, a+]
+      // Reduce it to the constraint +/-x <= a+ - b- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
 	left.coefficient(Variable(left_w_id));
 
@@ -4587,10 +4593,10 @@ BD_Shape<T>
       }
     }
     else if (right_t == 1) {
-      // The constraint has the form:
-      // [a-;a+] + [b-;b+] * x <= [c-;c+] + [d-;d+] * y.
+      // The constraint has the form
+      // [a-, a+] + [b-, b+] * x <= [c-, c+] + [d-, d+] * y.
       // Reduce it to the constraint +/-x +/-y <= c+ - a-
-      // if [b-;b+] = +/-[1;1] and [d-;d+] = +/-[1;1].
+      // if [b-, b+] = +/-[1, 1] and [d-, d+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
                               left.coefficient(Variable(left_w_id));
 
@@ -4851,7 +4857,7 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     if (curr_lb != 0 || curr_ub != 0) {
       assign_r(curr_var_ub, dbm[0][n_var], ROUND_NOT_NEEDED);
       neg_assign_r(curr_minus_var_ub, dbm[n_var][0], ROUND_NOT_NEEDED);
-      // Optimize the most commons cases: curr = +/-[1;1]
+      // Optimize the most commons cases: curr = +/-[1, 1].
       if (curr_lb == 1 && curr_ub == 1) {
         add_assign_r(result, result, std::max(curr_var_ub, curr_minus_var_ub),
                      ROUND_UP);
@@ -5068,7 +5074,7 @@ BD_Shape<T>
       if (w == v) {
         // Here `var' occurs in `ub_expr'.
         // To ease the computation, we add an additional dimension.
-        const Variable new_var = Variable(bds_space_dim);
+        const Variable new_var(bds_space_dim);
         add_space_dimensions_and_embed(1);
         // Constrain the new dimension to be equal to `ub_expr'.
         affine_image(new_var, ub_expr, denominator);
@@ -5284,7 +5290,7 @@ BD_Shape<T>
   const Coefficient& lb_expr_v = lb_expr.coefficient(var);
   // Here `var' occurs in `lb_expr' and `ub_expr'.
   // To ease the computation, we add an additional dimension.
-  const Variable new_var = Variable(space_dim);
+  const Variable new_var(space_dim);
   add_space_dimensions_and_embed(1);
   const Linear_Expression lb_inverse
     = lb_expr - (lb_expr_v + denominator)*var;
@@ -5843,7 +5849,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // the following TODO note is accurately dealt with.
 
       // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(space_dim);
+      const Variable new_var(space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `rhs'.
       // NOTE: calling affine_image() instead of refine_no_check()
@@ -6082,7 +6088,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
 
       // Some variables in `lhs' also occur in `rhs'.
       // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(bds_space_dim);
+      const Variable new_var(bds_space_dim);
       add_space_dimensions_and_embed(1);
       // Constrain the new dimension to be equal to `lhs'.
       // NOTE: calling affine_image() instead of refine_no_check()

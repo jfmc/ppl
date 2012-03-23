@@ -1,6 +1,6 @@
 /* Nifty counter object for the initialization of the library.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -27,17 +27,13 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Init.defs.hh"
 
 #ifndef PPL_NO_AUTOMATIC_INITIALIZATION
-namespace {
 
-Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
+static Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
-} // namespace
 #else
-namespace {
 
-Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
+static Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
 
-} // namespace
 #endif
 
 namespace Parma_Polyhedra_Library {

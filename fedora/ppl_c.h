@@ -1,6 +1,6 @@
 /* Header file switcher for the C interface.  -*- C -*-
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,5 +46,5 @@ site: http://bugseng.com/products/ppl/ . */
 #elif defined(__sparc__)
 #include "ppl_c-sparc.h"
 #else
-#error "This architecture is not supported by the currently installed ppl-devel packages."
+#error "This architecture is not supported by the currently installed ppl-devel packages"
 #endif

@@ -1,6 +1,6 @@
 /* Linear_Form class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -200,9 +200,10 @@ Linear_Form<C>::ascii_dump(std::ostream& s) const {
   using namespace IO_Operators;
   dimension_type space_dim = space_dimension();
   s << space_dim << "\n";
-  const char separator = ' ';
-  for (dimension_type i = 0; i <= space_dim; ++i)
+  for (dimension_type i = 0; i <= space_dim; ++i) {
+    const char separator = ' ';
     s << vec[i] << separator;
+  }
   s << "\n";
 }
 

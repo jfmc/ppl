@@ -1,6 +1,6 @@
 /* Polyhedron class implementation: conversion().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -400,9 +400,11 @@ Polyhedron::conversion(Source_Linear_System& source,
     // product is 0 if and only if the generator saturates the
     // constraint.
     PPL_DIRTY_TEMP(std::vector<Coefficient>, scalar_prod);
-    const int needed_space = dest_num_rows - scalar_prod.size();
-    if (needed_space > 0)
-      scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
+    if (dest_num_rows > scalar_prod.size()) {
+      scalar_prod.insert(scalar_prod.end(),
+                         dest_num_rows - scalar_prod.size(),
+                         Coefficient_zero());
+    }
     // `index_non_zero' will indicate the first generator in `dest_rows'
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
@@ -489,14 +491,16 @@ Polyhedron::conversion(Source_Linear_System& source,
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
-	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod_nle);
-	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
-	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest_rows[i][c] *= normalized_sp_n;
-	  //   dest_rows[i][c] -= normalized_sp_i * dest_nle[c];
-	  // }
+          // <CODE>
+	  //   Coefficient scale = scalar_prod[i];
+	  //   scale.gcd_assign(scalar_prod_nle);
+	  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+	  //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
+	  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	  //     dest[i][c] *= normalized_sp_n;
+	  //     dest[i][c] -= normalized_sp_i * dest_nle[c];
+	  //   }
+          // </CODE>
 	  normalize2(scalar_prod[i],
 		     scalar_prod_nle,
 		     normalized_sp_i,
@@ -525,14 +529,16 @@ Polyhedron::conversion(Source_Linear_System& source,
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
-	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod_nle);
-	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
-	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest_rows[i][c] *= normalized_sp_n;
-	  //   dest_rows[i][c] -= normalized_sp_i * dest_nle[c];
-	  // }
+          // <CODE>
+	  //   Coefficient scale = scalar_prod[i];
+	  //   scale.gcd_assign(scalar_prod_nle);
+	  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+	  //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
+	  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	  //     dest[i][c] *= normalized_sp_n;
+	  //     dest[i][c] -= normalized_sp_i * dest_nle[c];
+	  //   }
+          // </CODE>
 	  normalize2(scalar_prod[i],
 		     scalar_prod_nle,
 		     normalized_sp_i,
@@ -687,8 +693,10 @@ Polyhedron::conversion(Source_Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest_rows[i]' and
 	      // `dest_rows[j]', then they are NOT adjacent.
-	      PPL_ASSERT(sat[i].last() == ULONG_MAX || sat[i].last() < k);
-	      PPL_ASSERT(sat[j].last() == ULONG_MAX || sat[j].last() < k);
+	      PPL_ASSERT(sat[i].last() == C_Integer<unsigned long>::max
+                         || sat[i].last() < k);
+	      PPL_ASSERT(sat[j].last() == C_Integer<unsigned long>::max
+                         || sat[j].last() < k);
 
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
@@ -751,14 +759,16 @@ Polyhedron::conversion(Source_Linear_System& source,
 
 		  // The following fragment optimizes the computation of
 		  //
-		  // Coefficient scale = scalar_prod[i];
-		  // scale.gcd_assign(scalar_prod[j]);
-		  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-		  // Coefficient normalized_sp_j = scalar_prod[j] / scale;
-		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		  //   new_row[c] = normalized_sp_i * dest_rows[j][c];
-		  //   new_row[c] -= normalized_sp_j * dest_rows[i][c];
-		  // }
+                  // <CODE>
+		  //   Coefficient scale = scalar_prod[i];
+		  //   scale.gcd_assign(scalar_prod[j]);
+		  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+		  //   Coefficient normalized_sp_j = scalar_prod[j] / scale;
+		  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+		  //     new_row[c] = normalized_sp_i * dest[j][c];
+		  //     new_row[c] -= normalized_sp_j * dest[i][c];
+		  //   }
+                  // </CODE>
 		  normalize2(scalar_prod[i],
 			     scalar_prod[j],
 			     normalized_sp_i,

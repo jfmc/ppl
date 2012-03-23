@@ -6,7 +6,7 @@ files ppl_prolog_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -796,6 +796,35 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
     Linear_Expression l = build_linear_expression(t_expr, where);
     if (ph->bounds_from_@ABOVEBELOW@(l))
       return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_has_@UPPERLOWER@_bound(Prolog_term_ref t_ph,
+                       Prolog_term_ref t_v,
+                       Prolog_term_ref t_n, Prolog_term_ref t_d,
+                       Prolog_term_ref t_closed) {
+  static const char* where = "ppl_@CLASS@_has_@UPPERLOWER@_bound/5";
+  try {
+    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    PPL_CHECK(ph);
+    const Variable v = term_to_Variable(t_v, where);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
+    bool closed;
+    if (ph->has_@UPPERLOWER@_bound(v, n, d, closed)) {
+      Prolog_term_ref t = Prolog_new_term_ref();
+      Prolog_atom a = (closed ? a_true : a_false);
+      Prolog_put_atom(t, a);
+      if (Prolog_unify_Coefficient(t_n, n)
+          && Prolog_unify_Coefficient(t_d, d)
+          && Prolog_unify(t_closed, t))
+        return PROLOG_SUCCESS;
+    }
   }
   CATCH_ALL;
 }

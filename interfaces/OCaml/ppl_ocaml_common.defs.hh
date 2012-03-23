@@ -1,6 +1,6 @@
 /* Domain-independent part of the OCaml interface: declarations.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,9 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_ppl_ocaml_common_defs_hh 1
 
 #include "ppl.hh"
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-#include "pwl.hh"
-#endif
 #include "interfaced_boxes.hh"
 #include "marked_pointers.hh"
 

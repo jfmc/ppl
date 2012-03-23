@@ -1,5 +1,5 @@
 /* Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -39,13 +39,13 @@ enum Degenerate_Element {
 // This must be kept in sync with Result
 enum Relation_Symbol {
   //! \hideinitializer Equal to.
-  EQUAL = 1,
+  EQUAL = 1U,
   //! \hideinitializer Less than.
-  LESS_THAN = 2,
+  LESS_THAN = 2U,
   //! \hideinitializer Less than or equal to.
   LESS_OR_EQUAL = LESS_THAN | EQUAL,
   //! \hideinitializer Greater than.
-  GREATER_THAN = 4,
+  GREATER_THAN = 4U,
   //! \hideinitializer Greater than or equal to.
   GREATER_OR_EQUAL = GREATER_THAN | EQUAL,
   //! \hideinitializer Not equal to.
@@ -185,12 +185,26 @@ enum Representation {
   "Analysis of floating point computations" for more information.
 */
 enum Floating_Point_Format {
+  //! IEEE 754 half precision, 16 bits (5 exponent, 10 mantissa).
   IEEE754_HALF,
+
+  //! IEEE 754 single precision, 32 bits (8 exponent, 23 mantissa).
   IEEE754_SINGLE,
+
+  //! IEEE 754 double precision, 64 bits (11 exponent, 52 mantissa).
   IEEE754_DOUBLE,
-  IBM_SINGLE,
+
+  //! IEEE 754 quad precision, 128 bits (15 exponent, 112 mantissa).
   IEEE754_QUAD,
-  INTEL_DOUBLE_EXTENDED
+
+  //! Intel double extended precision, 80 bits (15 exponent, 64 mantissa)
+  INTEL_DOUBLE_EXTENDED,
+
+  //! IBM single precision, 32 bits (7 exponent, 24 mantissa).
+  IBM_SINGLE,
+
+  //! IBM double precision, 64 bits (7 exponent, 56 mantissa).
+  IBM_DOUBLE
 };
 
 struct Weightwatch_Traits;

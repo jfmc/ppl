@@ -1,6 +1,6 @@
 /* Interval_Info class declaration and implementation.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Interval_Info_defs_hh 1
 
 #include "Boundary.defs.hh"
-#include "Interval_Restriction.defs.hh"
 
 #include <iostream>
 
@@ -76,7 +75,7 @@ set_bit(T& bits, unsigned int bit, bool value) {
 template <typename T>
 inline bool
 get_bit(const T& bits, unsigned int bit) {
-  return bits & (static_cast<T>(1) << bit);
+  return (bits & (static_cast<T>(1) << bit)) != 0;
 }
 
 template <typename T>
@@ -106,9 +105,10 @@ public:
   const_bool_nodef(check_inexact, Policy::check_inexact);
   const_bool_nodef(store_special, false);
   const_bool_nodef(store_open, false);
-  const_bool_nodef(cache_normalized, false);
   const_bool_nodef(cache_empty, false);
   const_bool_nodef(cache_singleton, false);
+  Interval_Info_Null() {
+  }
   void clear() {
   }
   void clear_boundary_properties(Boundary_Type) {
@@ -167,19 +167,18 @@ public:
   const_bool_nodef(check_inexact, Policy::check_inexact);
   const_bool_nodef(store_special, Policy::store_special);
   const_bool_nodef(store_open, Policy::store_open);
-  const_bool_nodef(cache_normalized, Policy::cache_normalized);
   const_bool_nodef(cache_empty, Policy::cache_empty);
   const_bool_nodef(cache_singleton, Policy::cache_singleton);
   const_int_nodef(lower_special_bit, Policy::next_bit);
-  const_int_nodef(lower_open_bit, lower_special_bit + store_special);
-  const_int_nodef(lower_normalized_bit, lower_open_bit + store_open);
-  const_int_nodef(upper_special_bit, lower_normalized_bit + cache_normalized);
-  const_int_nodef(upper_open_bit, upper_special_bit + store_special);
-  const_int_nodef(upper_normalized_bit, upper_open_bit + store_open);
-  const_int_nodef(cardinality_is_bit, upper_normalized_bit + cache_normalized);
-  const_int_nodef(cardinality_0_bit, cardinality_is_bit + ((cache_empty || cache_singleton) ? 1 : 0));
-  const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
-  const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
+  const_int_nodef(lower_open_bit, lower_special_bit + (store_special ? 1 : 0));
+  const_int_nodef(upper_special_bit, lower_open_bit + (store_open ? 1 : 0));
+  const_int_nodef(upper_open_bit, upper_special_bit + (store_special ? 1 : 0));
+  const_int_nodef(cardinality_is_bit, upper_open_bit + (store_open ? 1 : 0));
+  const_int_nodef(cardinality_0_bit, cardinality_is_bit
+                  + ((cache_empty || cache_singleton) ? 1 : 0));
+  const_int_nodef(cardinality_1_bit, cardinality_0_bit + (cache_empty ? 1 : 0));
+  const_int_nodef(next_bit, cardinality_1_bit + (cache_singleton ? 1 : 0));
+
   Interval_Info_Bitset() {
     // FIXME: would we have speed benefits with uninitialized info?
     // (Dirty_Temp)
@@ -193,7 +192,9 @@ public:
     set_boundary_property(t, SPECIAL, false);
     set_boundary_property(t, OPEN, false);
   }
-  void set_boundary_property(Boundary_Type t, const Boundary_NS::Property& p, bool value = true) {
+  void set_boundary_property(Boundary_Type t,
+                             const Boundary_NS::Property& p,
+                             bool value = true) {
     switch (p.type) {
     case Boundary_NS::Property::SPECIAL_:
       if (store_special) {
@@ -209,14 +210,6 @@ public:
 	  set_bit(bitset, lower_open_bit, value);
 	else
 	  set_bit(bitset, upper_open_bit, value);
-      }
-      break;
-    case Boundary_NS::Property::NORMALIZED_:
-      if (cache_normalized) {
-	if (t == LOWER)
-	  set_bit(bitset, lower_normalized_bit, value);
-	else
-	  set_bit(bitset, upper_normalized_bit, value);
       }
       break;
     default:
@@ -239,13 +232,6 @@ public:
 	return get_bit(bitset, lower_open_bit);
       else
 	return get_bit(bitset, upper_open_bit);
-    case Boundary_NS::Property::NORMALIZED_:
-      if (!cache_normalized)
-	return false;
-      else if (t == LOWER)
-	return get_bit(bitset, lower_normalized_bit);
-      else
-	return get_bit(bitset, upper_normalized_bit);
     default:
       return false;
     }

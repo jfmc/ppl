@@ -1,7 +1,7 @@
 /* Grid class implementation
    (non-inline widening-related member functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -64,7 +64,8 @@ PPL::Grid::select_wider_congruences(const Grid& y,
       ++y_row;
       break;
     case CON_VIRTUAL:
-      y.dim_kinds[dim] == CON_VIRTUAL || ++y_row;
+      if (y.dim_kinds[dim] != CON_VIRTUAL)
+        ++y_row;
       break;
     }
   }
@@ -132,7 +133,7 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
 
   // Check whether we are using the widening-with-tokens technique
   // and there are still tokens available.
-  if (tp && *tp > 0) {
+  if (tp != 0 && *tp > 0) {
     // There are tokens available.  If `result' is not a subset of
     // `x', then it is less precise and we use one of the available
     // tokens.
@@ -248,7 +249,8 @@ PPL::Grid::select_wider_generators(const Grid& y,
       ++y_row;
       break;
     case GEN_VIRTUAL:
-      y.dim_kinds[dim] == GEN_VIRTUAL || ++y_row;
+      if (y.dim_kinds[dim] != GEN_VIRTUAL)
+        ++y_row;
       break;
     }
   }
@@ -316,7 +318,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
 
   // Check whether we are using the widening-with-tokens technique
   // and there are still tokens available.
-  if (tp && *tp > 0) {
+  if (tp != 0 && *tp > 0) {
     // There are tokens available.  If `result' is not a subset of
     // `x', then it is less precise and we use one of the available
     // tokens.

@@ -1,6 +1,6 @@
 /* Specialized "checked" functions for GMP's mpq_class numbers.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -50,7 +50,7 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
     }
   }
   if (sign)
-    return (Result) sgn<Policy>(v);
+    return static_cast<Result>(sgn<Policy>(v));
   return V_LGE;
 }
 

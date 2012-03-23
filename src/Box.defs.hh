@@ -1,6 +1,6 @@
 /* Box class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1630,49 +1630,72 @@ public:
   void set_interval(Variable var, const ITV& i);
 
   /*! \brief
-    If the <CODE>k</CODE>-th space dimension is unbounded below, returns
-    <CODE>false</CODE>. Otherwise returns <CODE>true</CODE> and set
-    \p closed, \p n and \p d accordingly.
+    If the space dimension of \p var is unbounded below, return
+    <CODE>false</CODE>. Otherwise return <CODE>true</CODE> and set
+    \p n, \p d and \p closed accordingly.
 
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
+    \note
+    It is assumed that <CODE>*this</CODE> is a non-empty box
+    having space dimension greater than or equal to that of \p var.
+    An undefined behavior is obtained if this assumption is not met.
+    \if Include_Implementation_Details
+    To be more precise, if <CODE>*this</CODE> is an <EM>empty</EM> box
+    (having space dimension greater than or equal to that of \p var)
+    such that <CODE>!marked_empty()</CODE> holds, then the method can be
+    called without incurring in undefined behavior: it will return
+    <EM>unspecified</EM> boundary values that, if queried systematically
+    on all space dimensions, will encode the box emptiness.
+    \endif
 
-    An undefined behavior is obtained if \p k is greater than
-    or equal to the space dimension of \p *this.
+    Let \f$I\f$ be the interval corresponding to variable \p var
+    in the non-empty box <CODE>*this</CODE>.
+    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>
+    (leaving all other parameters unchanged).
+    Otherwise, set \p n, \p d and \p closed as follows:
+     - \p n and \p d are assigned the integers \f$n\f$ and \f$d\f$ such
+       that the fraction \f$n/d\f$ corresponds to the greatest lower bound
+       of \f$I\f$. The fraction \f$n/d\f$ is in canonical form, meaning
+       that \f$n\f$ and \f$d\f$ have no common factors, \f$d\f$ is positive,
+       and if \f$n\f$ is zero then \f$d\f$ is one;
+     - \p closed is set to <CODE>true</CODE> if and only if the lower
+       boundary of \f$I\f$ is closed (i.e., it is included in the interval).
   */
-  bool get_lower_bound(dimension_type k, bool& closed,
-		       Coefficient& n, Coefficient& d) const;
+  bool has_lower_bound(Variable var,
+		       Coefficient& n, Coefficient& d, bool& closed) const;
 
   /*! \brief
-    If the <CODE>k</CODE>-th space dimension is unbounded above, returns
-    <CODE>false</CODE>. Otherwise returns <CODE>true</CODE> and set
-    \p closed, \p n and \p d accordingly.
+    If the space dimension of \p var is unbounded above, return
+    <CODE>false</CODE>. Otherwise return <CODE>true</CODE> and set
+    \p n, \p d and \p closed accordingly.
 
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    \note
+    It is assumed that <CODE>*this</CODE> is a non-empty box
+    having space dimension greater than or equal to that of \p var.
+    An undefined behavior is obtained if this assumption is not met.
+    \if Include_Implementation_Details
+    To be more precise, if <CODE>*this</CODE> is an <EM>empty</EM> box
+    (having space dimension greater than or equal to that of \p var)
+    such that <CODE>!marked_empty()</CODE> holds, then the method can be
+    called without incurring in undefined behavior: it will return
+    <EM>unspecified</EM> boundary values that, if queried systematically
+    on all space dimensions, will encode the box emptiness.
+    \endif
 
-    An undefined behavior is obtained if \p k is greater than
-    or equal to the space dimension of \p *this.
+    Let \f$I\f$ be the interval corresponding to variable \p var
+    in the non-empty box <CODE>*this</CODE>.
+    If \f$I\f$ is not bounded from above, simply return <CODE>false</CODE>
+    (leaving all other parameters unchanged).
+    Otherwise, set \p n, \p d and \p closed as follows:
+     - \p n and \p d are assigned the integers \f$n\f$ and \f$d\f$ such
+       that the fraction \f$n/d\f$ corresponds to the least upper bound
+       of \f$I\f$. The fraction \f$n/d\f$ is in canonical form, meaning
+       that \f$n\f$ and \f$d\f$ have no common factors, \f$d\f$ is positive,
+       and if \f$n\f$ is zero then \f$d\f$ is one;
+     - \p closed is set to <CODE>true</CODE> if and only if the upper
+       boundary of \f$I\f$ is closed (i.e., it is included in the interval).
   */
-  bool get_upper_bound(dimension_type k, bool& closed,
-		       Coefficient& n, Coefficient& d) const;
+  bool has_upper_bound(Variable var,
+                       Coefficient& n, Coefficient& d, bool& closed) const;
 
   //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
@@ -1691,6 +1714,14 @@ public:
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a 32-bit hash code for \p *this.
+
+    If <CODE>x</CODE> and <CODE>y</CODE> are such that <CODE>x == y</CODE>,
+    then <CODE>x.hash_code() == y.hash_code()</CODE>.
+  */
+  int32_t hash_code() const;
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -2167,9 +2198,6 @@ private:
   void throw_dimension_incompatible(const char* method,
                                     const char* name_row,
                                     const Linear_Form<C>& y) const;
-
-  static void throw_space_dimension_overflow(const char* method,
-					     const char* reason);
 
   static void throw_constraint_incompatible(const char* method);
 

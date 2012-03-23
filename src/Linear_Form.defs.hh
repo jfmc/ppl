@@ -1,6 +1,6 @@
 /* Linear_Form class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -221,7 +221,7 @@ std::ostream& operator<<(std::ostream& s, const Linear_Form<C>& f);
   have the template parameter \p C as their type. \p C must be the
   type of an Interval.
 
-  \par How to build a linear form. 
+  \par How to build a linear form.
   A full set of functions is defined in order to provide a convenient
   interface for building complex linear forms starting from simpler ones
   and from objects of the classes Variable and \p C. Available operators
@@ -348,13 +348,13 @@ public:
     obtained by evaluating the function \f$\varepsilon_{\mathbf{f}}(l)\f$
     on the linear form. This function is defined as:
     \f[
-    \varepsilon_{\mathbf{f}}\left([a;b]+\sum_{v \in \cV}[a_{v};b_{v}]v\right)
+    \varepsilon_{\mathbf{f}}\left([a, b]+\sum_{v \in \cV}[a_{v}, b_{v}]v\right)
     \defeq
-    (\textrm{max}(|a|,|b|) \amifp [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])
+    (\textrm{max}(|a|, |b|) \amifp [-\beta^{-\textrm{p}}, \beta^{-\textrm{p}}])
     +
     \sum_{v \in \cV}(\textrm{max}(|a_{v}|,|b_{v}|)
     \amifp
-    [-\beta^{-\textrm{p}};\beta^{-\textrm{p}}])v
+    [-\beta^{-\textrm{p}}, \beta^{-\textrm{p}}])v
     \f]
     where p is the fraction size in bits for the format \f$\mathbf{f}\f$ and
     \f$\beta\f$ the base.

@@ -1,6 +1,6 @@
 /* Metaprogramming utilities.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -40,7 +40,7 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_bool_nodef(name, value)		\
-  enum anonymous_enum_ ## name { PPL_U(name) = (value) }
+  enum const_bool_value_ ## name { PPL_U(name) = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -69,8 +69,8 @@ namespace Parma_Polyhedra_Library {
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_value_nodef(type, name, value)	\
-  static type name() {				\
-    return value;				\
+  static type PPL_U(name)() {                   \
+    return (value);				\
   }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -87,8 +87,8 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_ref_nodef(type, name, value)				\
   static const type& PPL_U(name)() {                                    \
-    static type name(value);						\
-    return name;							\
+    static type PPL_U(name) = (value);                                       \
+    return (name);							\
   }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -120,7 +120,7 @@ struct Compile_Time_Check<true> {
   enum anonymous_enum_compile_time_check_ ## suffix {			\
     /* If e evaluates to false, then the sizeof cannot be compiled. */  \
     PPL_COMPILE_TIME_CHECK_NAME(suffix)					\
-    = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<e>)            \
+      = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<(e)>)        \
   }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -141,7 +141,7 @@ struct Compile_Time_Check<true> {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b>
 struct Bool {
-  enum anonymous_enum {
+  enum const_bool_value {
     value = b
   };
 };
@@ -207,7 +207,7 @@ struct Is_Same<T, T> : public True {
   template <typename T> struct D : public B<T>;
   \endcode
   Of course, we cannot test if, for some type variable <CODE>U</CODE>, we have
-  <CODE>Is_Same_Or_Derived<B<U>, Type>:: anonymous_enum:: value == true</CODE>.
+  <CODE>Is_Same_Or_Derived<B<U>, Type>:: const_bool_value:: value == true</CODE>.
   But we can do as follows:
   \code
   struct B_Base {
@@ -216,7 +216,7 @@ struct Is_Same<T, T> : public True {
   template <typename T> struct B : public B_Base;
   \endcode
   This enables us to inquire
-  <CODE>Is_Same_Or_Derived<B_Base, Type>:: anonymous_enum:: value</CODE>.
+  <CODE>Is_Same_Or_Derived<B_Base, Type>:: const_bool_value:: value</CODE>.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Base, typename Derived>
@@ -244,7 +244,7 @@ struct Is_Same_Or_Derived {
                          "architecture with sizeof(char) == sizeof(double)"
                          " (!?)");
 
-  enum anonymous_enum {
+  enum const_bool_value {
     /*!
       Assuming <CODE>sizeof(char) != sizeof(double)</CODE>, the C++
       overload resolution mechanism guarantees that <CODE>value</CODE>

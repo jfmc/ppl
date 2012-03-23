@@ -1,6 +1,6 @@
 /* Utilities for termination analysis: non-inline, non-template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -128,7 +128,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 			   Constraint_System& cs_out2) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = std::distance(cs.begin(), cs.end());
+  const dimension_type m = num_constraints(cs);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
@@ -342,8 +342,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   PPL_ASSERT(cs_after.space_dimension() % 2 == 0);
   PPL_ASSERT(2*cs_before.space_dimension() == cs_after.space_dimension());
   const dimension_type n = cs_before.space_dimension();
-  const dimension_type r = distance(cs_before.begin(), cs_before.end());
-  const dimension_type s = distance(cs_after.begin(), cs_after.end());
+  const dimension_type r = num_constraints(cs_before);
+  const dimension_type s = num_constraints(cs_after);
   const dimension_type m = r + s;
 
   // Make sure linear expressions are not reallocated multiple times.
@@ -359,8 +359,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
     Variable u1_i(m + row_index);
     Variable u2_i(s + row_index);
     const Constraint::Expression& e_i = i->expression();
-    for (Constraint::Expression::const_iterator j = e_i.begin(), j_end = e_i.end();
-          j != j_end; ++j) {
+    for (Constraint::Expression::const_iterator
+           j = e_i.begin(), j_end = e_i.end(); j != j_end; ++j) {
       Coefficient_traits::const_reference A_ij_B = *j;
       const Variable v = j.variable();
       // (u1 - u2) A_B, in the context of j-th constraint.
@@ -382,7 +382,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
        ++i, ++row_index) {
     Variable u3_i(row_index);
     const Constraint::Expression& e_i = i->expression();
-    for (Constraint::Expression::const_iterator i = e_i.lower_bound(Variable(n)),
+    for (Constraint::Expression::const_iterator
+           i = e_i.lower_bound(Variable(n)),
            i_end = e_i.end(); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij_C = *i;
       const Variable v = i.variable();
@@ -407,9 +408,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   for (dimension_type i = s + 2*r; i-- > 0; )
     cs_out.insert(Variable(i) >= 0);
 
-  // FIXME: iterate backwards once the debugging phase is over.
-  //for (dimension_type j = 2*n; j-- > 0; )
-  for (dimension_type j = 0; j < 2*n; ++j)
+  for (dimension_type j = 2*n; j-- > 0; )
     cs_out.insert(les_eq[j] == 0);
 }
 
@@ -419,7 +418,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
                                    Linear_Expression& le_out) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = distance(cs.begin(), cs.end());
+  const dimension_type m = num_constraints(cs);
 
   // Make sure linear expressions are not reallocated multiple times.
   if (m > 0)
@@ -441,8 +440,9 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
       // lambda_2 A'
       add_mul_assign(les_eq[v.id()+n+n], Ap_ij, lambda2_i);
     }
-    for (Constraint::Expression::const_iterator i = e_i.lower_bound(Variable(n)),
-          i_end = e_i.end(); i != i_end; ++i) {
+    for (Constraint::Expression::const_iterator
+           i = e_i.lower_bound(Variable(n)),
+           i_end = e_i.end(); i != i_end; ++i) {
       Coefficient_traits::const_reference A_ij = *i;
       const Variable v = i.variable();
       // (lambda_1 - lambda_2) A
@@ -461,9 +461,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   for (dimension_type i = 2*m; i-- > 0; )
     cs_out.insert(Variable(i) >= 0);
 
-  // FIXME: iterate backwards once the debugging phase is over.
-  //for (dimension_type j = 3*n; j-- > 0; )
-  for (dimension_type j = 0; j < 3*n; ++j)
+  for (dimension_type j = 3*n; j-- > 0; )
     cs_out.insert(les_eq[j] == 0);
 }
 
@@ -513,7 +511,7 @@ all_affine_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(output_function_MS);
 
   output_function_MS_n = n;
-  output_function_MS_m = std::distance(cs.begin(), cs.end());
+  output_function_MS_m = num_constraints(cs);
 
   std::cout << "*** ph1 projected ***" << std::endl;
   output_function_MS_which = 4;
@@ -558,7 +556,7 @@ all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
   Variable::set_output_function(output_function_MS);
 
   output_function_MS_n = n;
-  output_function_MS_m = std::distance(cs.begin(), cs.end());
+  output_function_MS_m = num_constraints(cs);
 
   std::cout << "*** ph1 projected ***" << std::endl;
   output_function_MS_which = 4;
@@ -602,8 +600,8 @@ termination_test_PR(const Constraint_System& cs_before,
     = Variable::get_output_function();
   Variable::set_output_function(output_function_PR);
 
-  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
-  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+  output_function_PR_r = num_constraints(cs_before);
+  output_function_PR_s = num_constraints(cs_after);
 
   std::cout << "*** cs_mip ***" << std::endl;
   using namespace IO_Operators;
@@ -625,9 +623,10 @@ bool
 one_affine_ranking_function_PR(const Constraint_System& cs_before,
 			       const Constraint_System& cs_after,
 			       Generator& mu) {
-  return Termination_Helpers::one_affine_ranking_function_PR(cs_before, cs_after, mu);
+  return Termination_Helpers
+    ::one_affine_ranking_function_PR(cs_before, cs_after, mu);
 }
-                                          
+
 bool
 one_affine_ranking_function_PR_original(const Constraint_System& cs,
                                         Generator& mu) {
@@ -638,7 +637,8 @@ void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
 				const Constraint_System& cs_after,
 				NNC_Polyhedron& mu_space) {
-  Termination_Helpers::all_affine_ranking_functions_PR(cs_before, cs_after, mu_space);
+  Termination_Helpers::all_affine_ranking_functions_PR(cs_before, cs_after,
+                                                       mu_space);
 }
 
 void
@@ -652,20 +652,22 @@ all_affine_ranking_functions_PR_original(const Constraint_System& cs,
 } // namespace Implementation
 
 bool
-Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_before,
-                                                    const Constraint_System& cs_after,
-                                                    Generator& mu) {
+Termination_Helpers
+::one_affine_ranking_function_PR(const Constraint_System& cs_before,
+                                 const Constraint_System& cs_after,
+                                 Generator& mu) {
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
-  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination
+    ::fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
     = Variable::get_output_function();
   Variable::set_output_function(output_function_PR);
 
-  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
-  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+  output_function_PR_r = num_constraints(cs_before);
+  output_function_PR_s = num_constraints(cs_after);
 
   std::cout << "*** cs_mip ***" << std::endl;
   using namespace IO_Operators;
@@ -697,7 +699,8 @@ Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_
          cs_after_end = cs_after.end();
        i != cs_after_end;
        ++i, ++row_index) {
-    Coefficient_traits::const_reference fp_i = fp.coefficient(Variable(row_index));
+    Coefficient_traits::const_reference
+      fp_i = fp.coefficient(Variable(row_index));
     if (fp_i != 0)
       le.linear_combine(i->expr, 1, -fp_i, 1, n + 1);
   }
@@ -707,15 +710,17 @@ Termination_Helpers::one_affine_ranking_function_PR(const Constraint_System& cs_
 }
 
 bool
-Termination_Helpers::one_affine_ranking_function_PR_original(const Constraint_System& cs,
-                                                             Generator& mu) {
+Termination_Helpers
+::one_affine_ranking_function_PR_original(const Constraint_System& cs,
+                                          Generator& mu) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = std::distance(cs.begin(), cs.end());
+  const dimension_type m = Implementation::num_constraints(cs);
 
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
-  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination
+    ::fill_constraint_system_PR_original(cs, cs_mip, le_ineq);
 
 #if PRINT_DEBUG_INFO
   std::cout << "*** cs_mip ***" << std::endl;
@@ -753,20 +758,22 @@ Termination_Helpers::one_affine_ranking_function_PR_original(const Constraint_Sy
 }
 
 void
-Termination_Helpers::all_affine_ranking_functions_PR(const Constraint_System& cs_before,
-                                                     const Constraint_System& cs_after,
-                                                     NNC_Polyhedron& mu_space) {
+Termination_Helpers
+::all_affine_ranking_functions_PR(const Constraint_System& cs_before,
+                                  const Constraint_System& cs_after,
+                                  NNC_Polyhedron& mu_space) {
   Constraint_System cs_eqs;
   Linear_Expression le_ineq;
-  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR(cs_before, cs_after, cs_eqs, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination
+    ::fill_constraint_system_PR(cs_before, cs_after, cs_eqs, le_ineq);
 
 #if PRINT_DEBUG_INFO
   Variable::output_function_type* p_default_output_function
     = Variable::get_output_function();
   Variable::set_output_function(output_function_PR);
 
-  output_function_PR_r = distance(cs_before.begin(), cs_before.end());
-  output_function_PR_s = distance(cs_after.begin(), cs_after.end());
+  output_function_PR_r = num_constraints(cs_before);
+  output_function_PR_s = num_constraints(cs_after);
 
   std::cout << "*** cs_eqs ***" << std::endl;
   using namespace IO_Operators;
@@ -778,7 +785,7 @@ Termination_Helpers::all_affine_ranking_functions_PR(const Constraint_System& cs
   NNC_Polyhedron ph(cs_eqs);
   ph.add_constraint(le_ineq < 0);
   // u_3 corresponds to space dimensions 0, ..., s - 1.
-  const dimension_type s = distance(cs_after.begin(), cs_after.end());
+  const dimension_type s = Implementation::num_constraints(cs_after);
   ph.remove_higher_space_dimensions(s);
 
 #if PRINT_DEBUG_INFO
@@ -808,7 +815,8 @@ Termination_Helpers::all_affine_ranking_functions_PR(const Constraint_System& cs
              cs_after_end = cs_after.end();
            i != cs_after_end;
            ++i, ++row_index) {
-        Coefficient_traits::const_reference g_i = g.coefficient(Variable(row_index));
+        Coefficient_traits::const_reference
+          g_i = g.coefficient(Variable(row_index));
         if (g_i != 0)
           le.linear_combine(i->expr, 1, -g_i, 1, n + 1);
       }
@@ -839,11 +847,12 @@ Termination_Helpers::all_affine_ranking_functions_PR(const Constraint_System& cs
 }
 
 void
-Termination_Helpers::all_affine_ranking_functions_PR_original(const Constraint_System& cs,
-                                                              NNC_Polyhedron& mu_space) {
+Termination_Helpers
+::all_affine_ranking_functions_PR_original(const Constraint_System& cs,
+                                           NNC_Polyhedron& mu_space) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
-  const dimension_type m = distance(cs.begin(), cs.end());
+  const dimension_type m = Implementation::num_constraints(cs);
 
   if (m == 0) {
     // If there are no constraints at all, we have non-termination,
@@ -854,7 +863,8 @@ Termination_Helpers::all_affine_ranking_functions_PR_original(const Constraint_S
 
   Constraint_System cs_eqs;
   Linear_Expression le_ineq;
-  Parma_Polyhedra_Library::Implementation::Termination::fill_constraint_system_PR_original(cs, cs_eqs, le_ineq);
+  Parma_Polyhedra_Library::Implementation::Termination
+    ::fill_constraint_system_PR_original(cs, cs_eqs, le_ineq);
 
   NNC_Polyhedron ph(cs_eqs);
   ph.add_constraint(le_ineq < 0);
@@ -870,13 +880,13 @@ Termination_Helpers::all_affine_ranking_functions_PR_original(const Constraint_S
 #endif
 
   const Generator_System& gs_in = ph.generators();
-  Generator_System gs_out;
   Generator_System::const_iterator gs_in_it = gs_in.begin();
   Generator_System::const_iterator gs_in_end = gs_in.end();
   if (gs_in_it == gs_in_end)
     // The system is unsatisfiable.
     mu_space = NNC_Polyhedron(n + 1, EMPTY);
   else {
+    Generator_System gs_out;
     for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
       const Generator& g = *gs_in_it;
       Linear_Expression le;

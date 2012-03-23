@@ -1,6 +1,6 @@
 /* Result enum and supporting function declarations.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,16 +28,16 @@ namespace Parma_Polyhedra_Library {
 
 enum Result_Class {
   //! \hideinitializer Representable number result class.
-  VC_NORMAL = 0 << 4,
+  VC_NORMAL = 0U << 4,
 
   //! \hideinitializer Negative infinity result class.
-  VC_MINUS_INFINITY = 1 << 4,
+  VC_MINUS_INFINITY = 1U << 4,
 
   //! \hideinitializer Positive infinity result class.
-  VC_PLUS_INFINITY = 2 << 4,
+  VC_PLUS_INFINITY = 2U << 4,
 
   //! \hideinitializer Not a number result class.
-  VC_NAN = 3 << 4,
+  VC_NAN = 3U << 4,
 
   VC_MASK = VC_NAN
 };
@@ -45,16 +45,16 @@ enum Result_Class {
 // This must be kept in sync with Relation_Symbol
 enum Result_Relation {
   //! \hideinitializer No values satisfies the relation.
-  VR_EMPTY = 0,
+  VR_EMPTY = 0U,
 
   //! \hideinitializer Equal. This need to be accompanied by a value.
-  VR_EQ = 1,
+  VR_EQ = 1U,
 
   //! \hideinitializer Less than. This need to be accompanied by a value.
-  VR_LT = 2,
+  VR_LT = 2U,
 
   //! \hideinitializer Greater than. This need to be accompanied by a value.
-  VR_GT = 4,
+  VR_GT = 4U,
 
   //! \hideinitializer Not equal. This need to be accompanied by a value.
   VR_NE = VR_LT | VR_GT,
@@ -78,13 +78,13 @@ enum Result {
   V_EMPTY = VR_EMPTY,
 
   //! \hideinitializer The computed result is exact.
-  V_EQ = VR_EQ,
+  V_EQ = static_cast<unsigned>(VR_EQ),
 
   //! \hideinitializer The computed result is inexact and rounded up.
-  V_LT = VR_LT,
+  V_LT = static_cast<unsigned>(VR_LT),
 
   //! \hideinitializer The computed result is inexact and rounded down.
-  V_GT = VR_GT,
+  V_GT = static_cast<unsigned>(VR_GT),
 
   //! \hideinitializer The computed result is inexact.
   V_NE = VR_NE,
@@ -99,7 +99,7 @@ enum Result {
   V_LGE = VR_LGE,
 
   //! \hideinitializer The exact result is a number out of finite bounds.
-  V_OVERFLOW = 1 << 6,
+  V_OVERFLOW = 1U << 6,
 
   //! \hideinitializer A negative integer overflow occurred (rounding up).
   V_LT_INF = V_LT | V_OVERFLOW,
@@ -108,57 +108,61 @@ enum Result {
   V_GT_SUP = V_GT | V_OVERFLOW,
 
   //! \hideinitializer A positive integer overflow occurred (rounding up).
-  V_LT_PLUS_INFINITY = V_LT | VC_PLUS_INFINITY,
+  V_LT_PLUS_INFINITY = V_LT | static_cast<unsigned>(VC_PLUS_INFINITY),
 
   //! \hideinitializer A negative integer overflow occurred (rounding down).
-  V_GT_MINUS_INFINITY = V_GT | VC_MINUS_INFINITY,
+  V_GT_MINUS_INFINITY = V_GT | static_cast<unsigned>(VC_MINUS_INFINITY),
 
   //! \hideinitializer Negative infinity result.
-  V_EQ_MINUS_INFINITY = V_EQ | VC_MINUS_INFINITY,
+  V_EQ_MINUS_INFINITY = V_EQ | static_cast<unsigned>(VC_MINUS_INFINITY),
 
   //! \hideinitializer Positive infinity result.
-  V_EQ_PLUS_INFINITY = V_EQ | VC_PLUS_INFINITY,
+  V_EQ_PLUS_INFINITY = V_EQ | static_cast<unsigned>(VC_PLUS_INFINITY),
 
   //! \hideinitializer Not a number result.
-  V_NAN = VC_NAN,
+  V_NAN = static_cast<unsigned>(VC_NAN),
 
   //! \hideinitializer Converting from unknown string.
-  V_CVT_STR_UNK = V_NAN | (1 << 8),
+  V_CVT_STR_UNK = V_NAN | (1U << 8),
 
   //! \hideinitializer Dividing by zero.
-  V_DIV_ZERO = V_NAN | (2 << 8),
+  V_DIV_ZERO = V_NAN | (2U << 8),
 
   //! \hideinitializer Adding two infinities having opposite signs.
-  V_INF_ADD_INF = V_NAN | (3 << 8),
+  V_INF_ADD_INF = V_NAN | (3U << 8),
 
   //! \hideinitializer Dividing two infinities.
-  V_INF_DIV_INF = V_NAN | (4 << 8),
+  V_INF_DIV_INF = V_NAN | (4U << 8),
 
   //! \hideinitializer Taking the modulus of an infinity.
-  V_INF_MOD = V_NAN | (5 << 8),
+  V_INF_MOD = V_NAN | (5U << 8),
 
   //! \hideinitializer Multiplying an infinity by zero.
-  V_INF_MUL_ZERO = V_NAN | (6 << 8),
+  V_INF_MUL_ZERO = V_NAN | (6U << 8),
 
   //! \hideinitializer Subtracting two infinities having the same sign.
-  V_INF_SUB_INF = V_NAN | (7 << 8),
+  V_INF_SUB_INF = V_NAN | (7U << 8),
 
   //! \hideinitializer Computing a remainder modulo zero.
-  V_MOD_ZERO = V_NAN | (8 << 8),
+  V_MOD_ZERO = V_NAN | (8U << 8),
 
   //! \hideinitializer Taking the square root of a negative number.
-  V_SQRT_NEG = V_NAN | (9 << 8),
+  V_SQRT_NEG = V_NAN | (9U << 8),
 
   //! \hideinitializer Unknown result due to intermediate negative overflow.
-  V_UNKNOWN_NEG_OVERFLOW = V_NAN | (10 << 8),
+  V_UNKNOWN_NEG_OVERFLOW = V_NAN | (10U << 8),
 
   //! \hideinitializer Unknown result due to intermediate positive overflow.
-  V_UNKNOWN_POS_OVERFLOW = V_NAN | (11 << 8),
+  V_UNKNOWN_POS_OVERFLOW = V_NAN | (11U << 8),
 
   //! \hideinitializer The computed result is not representable.
-  V_UNREPRESENTABLE = 1 << 7
+  V_UNREPRESENTABLE = 1U << 7
 
 };
+
+Result operator&(Result x, Result y);
+Result operator|(Result x, Result y);
+Result operator-(Result x, Result y);
 
 //! Extracts the value class part of \p r (representable number, unrepresentable minus/plus infinity or nan).
 Result_Class result_class(Result r);

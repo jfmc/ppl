@@ -1,7 +1,7 @@
 /* Partially_Reduced_Product class implementation:
    non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -453,12 +453,17 @@ Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
       || str.substr(1) != "reduced")
     return false;
   reduced = (str[0] == yes);
-  return ((s >> str) && str == "Domain"
-          && (s >> str) && str == "1:"
-	  && d1.ascii_load(s)
-	  && (s >> str) && str == "Domain"
-	  && (s >> str) && str == "2:"
-	  && d2.ascii_load(s));
+  if (!(s >> str) || str != "Domain")
+    return false;
+  if (!(s >> str) || str != "1:")
+    return false;
+  if (!d1.ascii_load(s))
+    return false;
+  if (!(s >> str) || str != "Domain")
+    return false;
+  if (!(s >> str) || str != "2:")
+    return false;
+  return d2.ascii_load(s);
 }
 
 template <typename D1, typename D2>
@@ -522,8 +527,8 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
   bool max_included;
   PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
   PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
-  bool min_included;
   if (d2.maximize(e, max_numer, max_denom, max_included)) {
+    bool min_included;
     if (d2.minimize(e, min_numer, min_denom, min_included)) {
       // Adjust values to allow for the denominators max_denom and min_denom.
       max_numer *= min_denom;

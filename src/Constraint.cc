@@ -1,6 +1,6 @@
 /* Constraint class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -71,10 +71,8 @@ PPL::Constraint::Constraint(const Congruence& cg, Representation r)
   if (!cg.is_equality())
     throw_invalid_argument("Constraint(cg)",
                            "congruence cg must be an equality.");
-
   // Enforce normalization.
   strong_normalize();
-
   PPL_ASSERT(OK());
 }
 
@@ -91,15 +89,13 @@ PPL::Constraint::swap_space_dimensions(Variable v1, Variable v2) {
 void
 PPL::Constraint
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-
   if (cycle.size() < 2)
     // No-op. No need to call sign_normalize().
     return;
 
   expr.permute_space_dimensions(cycle);
-  
-  // *this is still normalized but may be not strongly normalized: sign
-  // normalization is necessary.
+  // *this is still normalized but may be not strongly normalized:
+  // sign normalization is necessary.
   sign_normalize();
   PPL_ASSERT(OK());
 }
@@ -432,10 +428,7 @@ PPL::Constraint::OK() const {
   if (is_not_necessarily_closed() && expr.space_dimension() == 0) {
 #ifndef NDEBUG
     std::cerr << "Constraint has fewer coefficients than the minimum "
-	      << "allowed by its topology:"
-	      << std::endl
-	      << "space dimension is " << expr.space_dimension()
-	      << ", minimum is 1."
+	      << "allowed by its topology."
 	      << std::endl;
 #endif
     return false;

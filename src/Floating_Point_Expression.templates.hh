@@ -1,7 +1,7 @@
 /* Floating_Point_Expression class implementation:
    non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -93,16 +93,13 @@ template<typename FP_Interval_Type, typename FP_Format>
 FP_Interval_Type
 Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::compute_absolute_error() {
-  boundary_type omega = std::max(
-  static_cast<typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>(pow(FP_Format::BASE, static_cast<typename
-		       Floating_Point_Expression<FP_Interval_Type, FP_Format>
-		       ::boundary_type>(1) - FP_Format
-		       ::EXPONENT_BIAS - FP_Format
-		       ::MANTISSA_BITS)),
-  std::numeric_limits<typename
-                      Floating_Point_Expression<FP_Interval_Type, FP_Format>
-  ::boundary_type>::denorm_min());
+  typedef typename Floating_Point_Expression<FP_Interval_Type, FP_Format>
+    ::boundary_type Boundary;
+  boundary_type omega;
+  omega = std::max(pow(static_cast<Boundary>(FP_Format::BASE),
+                       static_cast<Boundary>(1 - FP_Format::EXPONENT_BIAS
+                                             - FP_Format::MANTISSA_BITS)),
+                   std::numeric_limits<Boundary>::denorm_min());
   FP_Interval_Type result;
   result.build(i_constraint(GREATER_OR_EQUAL, -omega),
                i_constraint(LESS_OR_EQUAL, omega));

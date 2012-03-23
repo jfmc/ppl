@@ -1,6 +1,6 @@
 /* Sparse_Row class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -396,7 +396,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
   // This condition is arbitrary. Changing it affects performance but not
   // correctness. The values have been tuned using some ppl_lpsol benchmarks
   // on 2 October 2010.
-  if (counter == 0 || counter < 7 * size() / 64) {
+  if (counter == 0 || counter < (7 * size()) / 64) {
     // Few insertions needed, do them directly.
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.
@@ -638,17 +638,17 @@ PPL::Sparse_Row::ascii_load(std::istream& s) {
   if (!(s >> size_))
     return false;
   clear();
-  dimension_type n_elements;
-  dimension_type current_key;
-  Coefficient current_data;
 
   if (!(s >> str) || str != "elements")
     return false;
 
+  dimension_type n_elements;
   if (!(s >> n_elements))
     return false;
 
+  PPL_DIRTY_TEMP_COEFFICIENT(current_data);
   for (dimension_type i = 0; i < n_elements; ++i) {
+    dimension_type current_key;
     if (!(s >> str) || str != "[")
       return false;
     if (!(s >> current_key))

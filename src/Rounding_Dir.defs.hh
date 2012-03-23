@@ -1,6 +1,6 @@
 /* Declaration of Rounding_Dir and related functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -35,17 +35,17 @@ enum Rounding_Dir {
   /*! \hideinitializer
     Round toward \f$-\infty\f$.
   */
-  ROUND_DOWN = 0,
+  ROUND_DOWN = 0U,
 
   /*! \hideinitializer
     Round toward \f$+\infty\f$.
   */
-  ROUND_UP = 1,
+  ROUND_UP = 1U,
 
   /*! \hideinitializer
     Rounding is delegated to lower level. Result info is evaluated lazily.
   */
-  ROUND_IGNORE = 6,
+  ROUND_IGNORE = 6U,
   ROUND_NATIVE = ROUND_IGNORE,
 
   /*! \hideinitializer
@@ -53,21 +53,24 @@ enum Rounding_Dir {
     result is exact and representable in the destination type.
     Result info is evaluated lazily.
   */
-  ROUND_NOT_NEEDED = 7,
+  ROUND_NOT_NEEDED = 7U,
 
   ROUND_DIRECT = ROUND_UP,
   ROUND_INVERSE = ROUND_DOWN,
 
-  ROUND_DIR_MASK = 7,
+  ROUND_DIR_MASK = 7U,
 
   /*! \hideinitializer
     The client code is willing to pay an extra price to know the exact
     relation between the exact result and the computed one.
    */
-  ROUND_STRICT_RELATION = 8,
+  ROUND_STRICT_RELATION = 8U,
 
   ROUND_CHECK = ROUND_DIRECT | ROUND_STRICT_RELATION
 };
+
+Rounding_Dir operator&(Rounding_Dir x, Rounding_Dir y);
+Rounding_Dir operator|(Rounding_Dir x, Rounding_Dir y);
 
 /*! \brief
   Returns the inverse rounding mode of \p dir,

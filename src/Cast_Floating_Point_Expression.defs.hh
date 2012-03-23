@@ -1,7 +1,7 @@
 /* Declarations for the Cast_Floating_Point_Expression class and
    its constituents.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -79,7 +79,7 @@ swap(Cast_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
   \varepsilon_{\mathbf{f}}\left(\linexprenv{e}{\rho^{\#}}{\rho^{\#}_l}
   \right)
   \aslf
-  mf_{\mathbf{f}}[-1;1]
+  mf_{\mathbf{f}}[-1, 1]
   \f]
   where \f$\varepsilon_{\mathbf{f}}(l)\f$ is the linear form computed by
   calling method <CODE>Floating_Point_Expression::relative_error</CODE>

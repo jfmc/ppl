@@ -1,6 +1,6 @@
 /* Declarations of global objects.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -41,6 +41,12 @@ namespace Parma_Polyhedra_Library {
 //! Returns a value that does not designate a valid dimension.
 dimension_type
 not_a_dimension();
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the hash code for space dimension \p dim.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+int32_t
+hash_code_from_dimension(dimension_type dim);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -148,35 +154,37 @@ extern unsigned int in_assert;
   do {                                                        \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
     wp__.end();                                               \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                                   \
   do {                                                                  \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
     wp__.end(factor);                                                   \
-  } while(0)
+  } while (false)
 #else
-#define WEIGHT_BEGIN()
+#define WEIGHT_BEGIN()                          \
+  do {                                          \
+  } while (false)
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
     Weightwatch_Traits::weight += (delta);      \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
     Weightwatch_Traits::weight += (delta)*(factor);     \
-  } while(0)
+  } while (false)
 #endif
 #else
 #define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
-    if (!Implementation::in_assert)             \
+    if (Implementation::in_assert == 0)         \
       Weightwatch_Traits::weight += delta;      \
-  } while(0)
+  } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
-    if (!Implementation::in_assert)                     \
+    if (Implementation::in_assert == 0)                 \
       Weightwatch_Traits::weight += delta * factor;     \
-  } while(0)
+  } while (false)
 #endif
 
 //! User objects the PPL can throw.
@@ -278,13 +286,13 @@ struct Recycle_Input {
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS(type_symbol, class_prefix)	\
   template <typename type_symbol>					\
   void									\
-  PPL_U(class_prefix)::ascii_dump() const {                             \
+  class_prefix::ascii_dump() const {                             \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol>					\
   void									\
-  PPL_U(class_prefix)::print() const {                                  \
+  class_prefix::print() const {                                  \
     using IO_Operators::operator<<;					\
     std::cerr << *this;							\
   }
@@ -314,7 +322,7 @@ struct Recycle_Input {
   template <typename type_symbol1, typename type_symbol2,		\
             typename type_symbol3>					\
   void									\
-  PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2),         \
+  PPL_U(class_prefix)<PPL_U(type_symbol1), type_symbol2,                \
                       PPL_U(type_symbol3)>::ascii_dump()                \
     const {								\
     ascii_dump(std::cerr);						\
@@ -323,7 +331,7 @@ struct Recycle_Input {
     template <typename type_symbol1, typename type_symbol2,		\
               typename type_symbol3>					\
     void								\
-    PPL_U(class_prefix)<PPL_U(type_symbol1), PPL_U(type_symbol2),       \
+    PPL_U(class_prefix)<PPL_U(type_symbol1), type_symbol2,              \
                         PPL_U(type_symbol3)>::print()                   \
       const {								\
       using IO_Operators::operator<<;					\
@@ -333,16 +341,21 @@ struct Recycle_Input {
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
   template <typename type_symbol>					\
   void									\
-  PPL_U(class_prefix)::ascii_dump() const {                             \
+  class_prefix::ascii_dump() const {                                    \
     ascii_dump(std::cerr);						\
   }									\
 									\
   template <typename type_symbol>					\
   void									\
-  PPL_U(class_prefix)::print() const {                                  \
+  class_prefix::print() const {                                         \
     std::cerr << "No user level output operator defined "		\
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if \p c is any kind of space character.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+bool is_space(char c);
 
 template <typename T, long long v, typename Enable = void>
 struct Fit : public False {
@@ -390,8 +403,10 @@ template <long long v, bool prefer_signed = true>
 struct Constant : public Constant_<long long, v, prefer_signed> {
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \name Memory Size Inspection Functions
 //@{
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -437,7 +452,9 @@ total_memory_in_bytes(const mpq_class& x);
 memory_size_type
 external_memory_in_bytes(const mpq_class& x);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //@} // Memory Size Inspection Functions
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 
 template <typename T, typename Enable = void>
@@ -475,6 +492,24 @@ FOK(mpq_class)
 
 void ascii_dump(std::ostream& s, Representation r);
 bool ascii_load(std::istream& s, Representation& r);
+
+dimension_type
+check_space_dimension_overflow(dimension_type dim,
+                               dimension_type max,
+                               const char* domain,
+                               const char* method,
+                               const char* reason);
+
+template <typename RA_Container>
+typename RA_Container::iterator
+nth_iter(RA_Container& cont, dimension_type n);
+
+template <typename RA_Container>
+typename RA_Container::const_iterator
+nth_iter(const RA_Container& cont, dimension_type n);
+
+dimension_type
+least_significant_one_mask(dimension_type i);
 
 } // namespace Parma_Polyhedra_Library
 

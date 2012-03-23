@@ -1,6 +1,6 @@
 /* Polyhedron::Status class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -43,7 +43,7 @@ Polyhedron::Status::test_all(flags_t mask) const {
 
 inline bool
 Polyhedron::Status::test_any(flags_t mask) const {
-  return flags & mask;
+  return (flags & mask) != 0;
 }
 
 inline void

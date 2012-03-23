@@ -1,6 +1,6 @@
 /* Dense_Row class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Dense_Row::Impl::Impl()
-  : size(0), capacity(0), vec(0) {
+  : size(0), capacity(0), coeff_allocator(), vec(0) {
 }
 
 inline
@@ -42,7 +42,7 @@ Dense_Row::Impl::~Impl() {
     --size;
     vec[size].~Coefficient();
   }
-  operator delete(vec);
+  coeff_allocator.deallocate(vec, capacity);
 }
 
 inline dimension_type
@@ -75,7 +75,7 @@ Dense_Row::Dense_Row(const dimension_type sz,
   resize(sz, capacity);
 
   PPL_ASSERT(size() == sz);
-  PPL_ASSERT(impl.capacity = capacity);
+  PPL_ASSERT(impl.capacity == capacity);
   PPL_ASSERT(OK());
 }
 
@@ -92,11 +92,10 @@ Dense_Row::Dense_Row(const dimension_type sz)
 inline
 Dense_Row::Dense_Row(const Dense_Row& y)
   : impl() {
-
+  impl.coeff_allocator = y.impl.coeff_allocator;
   if (y.impl.vec != 0) {
     impl.capacity = y.capacity();
-    impl.vec = static_cast<Coefficient*>(
-        operator new(sizeof(Coefficient) * impl.capacity));
+    impl.vec = impl.coeff_allocator.allocate(impl.capacity);
     while (impl.size != y.size()) {
       new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
       ++impl.size;
@@ -114,9 +113,9 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(y.size() <= capacity);
   PPL_ASSERT(capacity <= max_size());
 
-  impl.vec = static_cast<Coefficient*>(
-      operator new(sizeof(Coefficient) * capacity));
   impl.capacity = capacity;
+  impl.coeff_allocator = y.impl.coeff_allocator;
+  impl.vec = impl.coeff_allocator.allocate(impl.capacity);
 
   if (y.impl.vec != 0) {
     while (impl.size != y.size()) {
@@ -126,7 +125,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   }
 
   PPL_ASSERT(size() == y.size());
-  PPL_ASSERT(impl.capacity = capacity);
+  PPL_ASSERT(impl.capacity == capacity);
   PPL_ASSERT(OK());
 }
 
@@ -139,11 +138,11 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   PPL_ASSERT(capacity <= max_size());
   PPL_ASSERT(capacity != 0);
 
-  impl.vec = static_cast<Coefficient*>(
-      operator new(sizeof(Coefficient) * capacity));
   impl.capacity = capacity;
+  impl.coeff_allocator = y.impl.coeff_allocator;
+  impl.vec = impl.coeff_allocator.allocate(impl.capacity);
 
-  dimension_type n = std::min(sz, y.size());
+  const dimension_type n = std::min(sz, y.size());
   while (impl.size != n) {
     new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
     ++impl.size;
@@ -154,7 +153,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
   }
 
   PPL_ASSERT(size() == sz);
-  PPL_ASSERT(impl.capacity = capacity);
+  PPL_ASSERT(impl.capacity == capacity);
   PPL_ASSERT(OK());
 }
 
@@ -166,7 +165,7 @@ Dense_Row::~Dense_Row() {
 inline void
 Dense_Row::destroy() {
   resize(0);
-  operator delete(impl.vec);
+  impl.coeff_allocator.deallocate(impl.vec, impl.capacity);
 }
 
 inline void
@@ -174,6 +173,7 @@ Dense_Row::m_swap(Dense_Row& y) {
   using std::swap;
   swap(impl.size, y.impl.size);
   swap(impl.capacity, y.impl.capacity);
+  swap(impl.coeff_allocator, y.impl.coeff_allocator);
   swap(impl.vec, y.impl.vec);
   PPL_ASSERT(OK());
   PPL_ASSERT(y.OK());

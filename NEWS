@@ -1,5 +1,5 @@
 Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 Verbatim copying and distribution of this entire article is permitted
 in any medium, provided this notice is preserved.
@@ -10,7 +10,7 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.12  (release date to be decided)
+NEWS for version 0.12  (released on February 27, 2012)
 --------------------------------------------------------------------------
 
 New and Changed Features
@@ -43,9 +43,32 @@ o  When the `--check' option is used, the input data for demo ppl_lpsol
 o  The input routine for PPL numeric datatypes has been extended to
    accept the ISO9899 (C99) hexadecimal floating constant syntax.
 
+o  The Parma Watchdog Library has been merged into the
+   Parma Polyhedra Library.
+
+
+Bugfixes
+========
+
+o  Corrected a precision bug in methods
+
+     Box<ITV>::upper_bound_assign(const Box&)
+     Box<ITV>::upper_bound_assign_if_exact(const Box&)
+
+   whereby, provided any argument is an empty box and under other rather
+   specific conditions, the computed result was correct but unnecessarily
+   imprecise.
+
+o  Corrected a bug in method
+
+     Grid::relation_with(const Constraint&) const
+
+   whereby, under specific conditions, the method was creating invalid
+   Grid_Generator objects and providing an incorrect result.
+
 
 --------------------------------------------------------------------------
-NEWS for version 0.11.2  (released date to be decided)
+NEWS for version 0.11.2  (released on February 27, 2011)
 --------------------------------------------------------------------------
 
 Bugfixes

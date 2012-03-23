@@ -1,7 +1,7 @@
 /* Declarations for the Variable_Floating_Point_Expression class and
    its constituents.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -58,7 +58,7 @@ void swap(Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
   \rrbracket\f$, we construct the interval
   linear form \f$\linexprenv{v}{\rho^{\#}}{\rho^{\#}_l}\f$ as
   \f$\rho^{\#}_l(v)\f$ if it is defined; otherwise we construct it as
-  \f$[-1;1]v\f$.
+  \f$[-1, 1]v\f$.
 */
 template <typename FP_Interval_Type, typename FP_Format>
 class Variable_Floating_Point_Expression

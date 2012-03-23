@@ -1,6 +1,6 @@
 /* Test the weightwatch (i.e., deterministic timeout) facility of the library.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,13 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
-#include "pwl.hh"
 #include <stdexcept>
 
 namespace {
 
 typedef
-Parma_Watchdog_Library::Threshold_Watcher<Weightwatch_Traits> Weightwatch;
+Parma_Polyhedra_Library::Threshold_Watcher<Weightwatch_Traits> Weightwatch;
 
 class Deterministic_Timeout
   : virtual public std::exception,

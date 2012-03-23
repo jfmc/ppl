@@ -1,6 +1,6 @@
 /* Checked_Number class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,18 +46,19 @@ struct Extended_Number_Policy {
   const_bool_nodef(check_sqrt_neg, false);
   const_bool_nodef(has_nan, true);
   const_bool_nodef(has_infinity, true);
-  // Do not uncomment the following.
-  // The compile time error on conversions is the expected behavior.
-  // const_bool_nodef(convertible, false);
+
+  // `convertible' is intentionally not defined: the compile time
+  // error on conversions is the expected behavior.
+
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(fpu_check_nan_result, true);
-  // Do not uncomment the following.
-  // The compile time error is the expected behavior.
-  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
-  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+
+  // ROUND_DEFAULT_CONSTRUCTOR is intentionally not defined.
+  // ROUND_DEFAULT_OPERATOR is intentionally not defined.
+  // ROUND_DEFAULT_FUNCTION is intentionally not defined.
+  // ROUND_DEFAULT_INPUT is intentionally not defined.
+  // ROUND_DEFAULT_OUTPUT is intentionally not defined.
+
   static void handle_result(Result r);
 };
 
@@ -138,15 +139,21 @@ struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
   }
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Is_Checked : public False { };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename P>
 struct Is_Checked<Checked_Number<T, P> > : public True { };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Is_Native_Or_Checked
   : public Bool<Is_Native<T>::value || Is_Checked<T>::value> { };
@@ -452,7 +459,7 @@ is_plus_infinity(const T& x);
 /*! \relates Checked_Number */
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type
-is_infinity(const T& x);
+infinity_sign(const T& x);
 
 /*! \relates Checked_Number */
 template <typename T>
@@ -484,7 +491,7 @@ template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
-name(To& to, const From& x, Rounding_Dir dir);
+ PPL_U(name)(To& to, const From& x, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC1_A(assign_r)
 PPL_DECLARE_FUNC1_A(floor_assign_r)
@@ -501,7 +508,7 @@ template <typename To, typename From> \
 typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From>::value, \
                    Result>::type \
-name(To& to, const From& x, int exp, Rounding_Dir dir);
+ PPL_U(name)(To& to, const From& x, unsigned int exp, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC1_B(add_2exp_assign_r)
 PPL_DECLARE_FUNC1_B(sub_2exp_assign_r)
@@ -518,7 +525,7 @@ typename Enable_If<Is_Native_Or_Checked<To>::value \
                    && Is_Native_Or_Checked<From1>::value \
                    && Is_Native_Or_Checked<From2>::value, \
                    Result>::type \
-name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
+ PPL_U(name)(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 PPL_DECLARE_FUNC2(add_assign_r)
 PPL_DECLARE_FUNC2(sub_assign_r)
@@ -542,7 +549,7 @@ typename Enable_If<Is_Native_Or_Checked<To1>::value \
                    && Is_Native_Or_Checked<From1>::value \
 		   && Is_Native_Or_Checked<From2>::value, \
                    Result>::type \
-name(To1& to, To2& s, To3& t, \
+ PPL_U(name)(To1& to, To2& s, To3& t,     \
      const From1& x, const From2& y, \
      Rounding_Dir dir);
 
@@ -561,7 +568,7 @@ PPL_DECLARE_FUNC4(gcdext_assign_r)
 //! Returns the total size in bytes of the memory occupied by \p x.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
-size_t
+memory_size_type
 total_memory_in_bytes(const Checked_Number<T, Policy>& x);
 
 //! Returns the size in bytes of the memory managed by \p x.
@@ -743,6 +750,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator==(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -759,6 +767,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator!=(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -775,6 +784,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator>=(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -791,6 +801,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator>(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -807,6 +818,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator<=(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -823,6 +835,7 @@ typename Enable_If<Is_Native_Or_Checked<T1>::value
 		   bool>::type
 operator<(const T1& x, const T2& y);
 
+/*! \relates Checked_Number */
 template <typename T1, typename T2>
 inline typename Enable_If<Is_Native_Or_Checked<T1>::value
 			  && Is_Native_Or_Checked<T2>::value,
@@ -871,6 +884,7 @@ std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x);
 
 //! Ascii dump for native or checked.
+/*! \relates Checked_Number */
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 ascii_dump(std::ostream& s, const T& t);
@@ -1011,6 +1025,7 @@ std::istream&
 operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
 //! Ascii load for native or checked.
+/*! \relates Checked_Number */
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 ascii_load(std::ostream& s, T& t);

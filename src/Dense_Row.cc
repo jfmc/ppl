@@ -1,6 +1,6 @@
 /* Dense_Row class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -47,14 +47,12 @@ PPL::Dense_Row::resize(dimension_type new_size) {
       // Reallocation is required.
       // TODO: Consider using realloc() here.
       // TODO: Consider using a smarter allocation strategy.
-      dimension_type new_capacity = new_size;
-      Coefficient* new_vec = static_cast<Coefficient*>(
-          operator new(sizeof(Coefficient) * new_capacity));
+      const dimension_type new_capacity = new_size;
+      Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
 
       if (impl.vec != 0) {
         memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
-
-        operator delete(impl.vec);
+        impl.coeff_allocator.deallocate(impl.vec, impl.capacity);
       }
 
       impl.vec = new_vec;
@@ -94,27 +92,24 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
 
     PPL_ASSERT(impl.size == new_size);
 
-    Coefficient* new_vec = static_cast<Coefficient*>(
-        operator new(sizeof(Coefficient) * new_capacity));
+    Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
 
     PPL_ASSERT(impl.vec != 0);
 
     memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
 
-    operator delete(impl.vec);
+    impl.coeff_allocator.deallocate(impl.vec, impl.capacity);
 
     impl.vec = new_vec;
     impl.capacity = new_capacity;
   } else {
     if (new_capacity > capacity()) {
 
-      Coefficient* new_vec = static_cast<Coefficient*>(
-          operator new(sizeof(Coefficient) * new_capacity));
+      Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
 
       if (impl.vec != 0) {
         memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
-
-        operator delete(impl.vec);
+        impl.coeff_allocator.deallocate(impl.vec, impl.capacity);
       }
 
       impl.vec = new_vec;
@@ -250,8 +245,7 @@ PPL::Dense_Row::Dense_Row(const Sparse_Row& row)
 void
 PPL::Dense_Row::init(const Sparse_Row& row) {
   impl.capacity = row.size();
-  impl.vec = static_cast<Coefficient*>(
-      operator new(sizeof(Coefficient) * impl.capacity));
+  impl.vec = impl.coeff_allocator.allocate(impl.capacity);
   Sparse_Row::const_iterator itr = row.begin();
   Sparse_Row::const_iterator itr_end = row.end();
   while (impl.size != impl.capacity) {

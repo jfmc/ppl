@@ -1,6 +1,6 @@
 /* Constraint_System class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -421,6 +421,18 @@ inline void
 swap(Constraint_System& x, Constraint_System& y) {
   x.m_swap(y);
 }
+
+namespace Implementation {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Constraint_System */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+inline dimension_type
+num_constraints(const Constraint_System& cs) {
+  return static_cast<dimension_type>(std::distance(cs.begin(), cs.end()));
+}
+
+} // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
 

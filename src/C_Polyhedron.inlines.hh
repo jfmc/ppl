@@ -1,6 +1,6 @@
 /* C_Polyhedron class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -37,63 +37,53 @@ inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Element kind)
   : Polyhedron(NECESSARILY_CLOSED,
-	       (num_dimensions <= max_space_dimension())
-	       ? num_dimensions
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(n, k)",
-						 "n exceeds the maximum "
-						 "allowed space dimension"),
-		  num_dimensions),
+               check_space_dimension_overflow(num_dimensions,
+                                              NECESSARILY_CLOSED,
+                                              "C_Polyhedron(n, k)",
+                                              "n exceeds the maximum "
+                                              "allowed space dimension"),
 	       kind) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NECESSARILY_CLOSED,
-	       (cs.space_dimension() <= max_space_dimension())
-	       ? cs
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs)",
-						 "the space dimension of cs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), cs)) {
+               check_obj_space_dimension_overflow(cs, NECESSARILY_CLOSED,
+                                                  "C_Polyhedron(cs)",
+                                                  "the space dimension of cs "
+                                                  "exceeds the maximum allowed "
+                                                  "space dimension")) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(Constraint_System& cs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
-	       (cs.space_dimension() <= max_space_dimension())
-	       ? cs
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs, recycle)",
-						 "the space dimension of cs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), cs),
+               check_obj_space_dimension_overflow(cs, NECESSARILY_CLOSED,
+                                                  "C_Polyhedron(cs, recycle)",
+                                                  "the space dimension of cs "
+                                                  "exceeds the maximum allowed "
+                                                  "space dimension"),
 	       Recycle_Input()) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(const Generator_System& gs)
   : Polyhedron(NECESSARILY_CLOSED,
-	       (gs.space_dimension() <= max_space_dimension())
-	       ? gs
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(gs)",
-						 "the space dimension of gs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), gs)) {
+               check_obj_space_dimension_overflow(gs, NECESSARILY_CLOSED,
+                                                  "C_Polyhedron(gs)",
+                                                  "the space dimension of gs "
+                                                  "exceeds the maximum allowed "
+                                                  "space dimension")) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(Generator_System& gs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
-	       (gs.space_dimension() <= max_space_dimension())
-	       ? gs
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(gs, recycle)",
-						 "the space dimension of gs "
-						 "exceeds the maximum allowed "
-						 "space dimension"), gs),
+               check_obj_space_dimension_overflow(gs, NECESSARILY_CLOSED,
+                                                  "C_Polyhedron(gs, recycle)",
+                                                  "the space dimension of gs "
+                                                  "exceeds the maximum allowed "
+                                                  "space dimension"),
 	       Recycle_Input()) {
 }
 
@@ -101,26 +91,23 @@ template <typename Interval>
 inline
 C_Polyhedron::C_Polyhedron(const Box<Interval>& box, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
-	       box.space_dimension() <= max_space_dimension()
-	       ? box
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(box): ",
-						 "the space dimension of box "
-						 "exceeds the maximum allowed "
-						 "space dimension"), box)) {
+               check_obj_space_dimension_overflow(box, NECESSARILY_CLOSED,
+                                                  "C_Polyhedron(box)",
+                                                  "the space dimension of box "
+                                                  "exceeds the maximum allowed "
+                                                  "space dimension")) {
 }
 
 template <typename U>
 inline
 C_Polyhedron::C_Polyhedron(const BD_Shape<U>& bd, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
-	       bd.space_dimension() <= max_space_dimension()
-	       ? bd.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(bd): ",
-						 "the space dimension of bd "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+               check_space_dimension_overflow(bd.space_dimension(),
+                                              NECESSARILY_CLOSED,
+                                              "C_Polyhedron(bd)",
+                                              "the space dimension of bd "
+                                              "exceeds the maximum allowed "
+                                              "space dimension"),
                UNIVERSE) {
   add_constraints(bd.constraints());
 }
@@ -129,13 +116,12 @@ template <typename U>
 inline
 C_Polyhedron::C_Polyhedron(const Octagonal_Shape<U>& os, Complexity_Class)
   : Polyhedron(NECESSARILY_CLOSED,
-	       os.space_dimension() <= max_space_dimension()
-	       ? os.space_dimension()
-	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(os): ",
-						 "the space dimension of os "
-						 "exceeds the maximum allowed "
-						 "space dimension"), 0),
+               check_space_dimension_overflow(os.space_dimension(),
+                                              NECESSARILY_CLOSED,
+                                              "C_Polyhedron(os)",
+                                              "the space dimension of os "
+                                              "exceeds the maximum allowed "
+                                              "space dimension"),
                UNIVERSE) {
   add_constraints(os.constraints());
 }

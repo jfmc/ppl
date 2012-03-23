@@ -1,6 +1,6 @@
 /* Concrete_Expression class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,6 +30,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! The type of a concrete expression.
 class Concrete_Expression_Type {
 public:
   /*! \brief
@@ -102,7 +103,7 @@ public:
 private:
   //! A 32-bit word encoding the type.
   struct Implementation {
-    unsigned int bounded_integer:1;
+    bool bounded_integer:1;
     unsigned int bounded_integer_type_width:23;
     unsigned int bounded_integer_type_representation:2;
     unsigned int bounded_integer_type_overflow:2;
@@ -116,6 +117,7 @@ private:
   Implementation impl;
 };
 
+//! Base class for all concrete expressions.
 template <typename Target>
 class Concrete_Expression_Common {
 public:
@@ -145,6 +147,7 @@ public:
 
 };
 
+//! Base class for binary operator applied to two concrete expressions.
 template <typename Target>
 class Binary_Operator_Common {
 public:
@@ -158,6 +161,7 @@ public:
   const Concrete_Expression<Target>* right_hand_side() const;
 };
 
+//! Base class for unary operator applied to one concrete expression.
 template <typename Target>
 class Unary_Operator_Common {
 public:
@@ -168,20 +172,24 @@ public:
   const Concrete_Expression<Target>* argument() const;
 };
 
+//! Base class for cast operator concrete expressions.
 template <typename Target>
 class Cast_Operator_Common {
   //! Returns the casted expression.
   const Concrete_Expression<Target>* argument() const;
 };
 
+//! Base class for integer constant concrete expressions.
 template <typename Target>
 class Integer_Constant_Common {
 };
 
+//! Base class for floating-point constant concrete expression.
 template <typename Target>
 class Floating_Point_Constant_Common {
 };
 
+//! Base class for references to some approximable.
 template <typename Target>
 class Approximable_Reference_Common {
 };

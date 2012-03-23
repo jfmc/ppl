@@ -1,6 +1,6 @@
 /* This is the header file switcher of the Parma Watchdog Library.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -46,5 +46,5 @@ site: http://www.cs.unipr.it/Software/ . */
 #elif defined(__sparc__)
 #include "pwl-sparc.hh"
 #else
-#error "This architecture is not supported by the currently installed ppl-pwl-devel packages."
+#error "This architecture is not supported by the currently installed ppl-pwl-devel packages"
 #endif

@@ -1,6 +1,6 @@
 /* Init class implementation (non-inline functions and static variables).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -38,6 +38,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Polyhedron.defs.hh"
+#include "Watchdog.defs.hh"
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -139,7 +140,7 @@ PPL::Init::Init() {
     // ... the GMP memory allocation functions are set, ...
     ppl_set_GMP_memory_allocation_functions();
     // ... the default output function for Variable objects is set, ...
-    Variable::set_output_function(Variable::default_output_function);
+    Variable::set_output_function(&Variable::default_output_function);
     // ... the Coefficient constants are initialized, ...
     Coefficient_constants_initialize();
     // ... the Linear_Expression class is initialized, ...
@@ -156,6 +157,11 @@ PPL::Init::Init() {
     Congruence_System::initialize();
     Grid_Generator_System::initialize();
     Polyhedron::initialize();
+
+#if PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+    // ... the Watchdog subsystem is initialized, ...
+    Watchdog::Watchdog::initialize();
+#endif // PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
 
 #if PPL_CAN_CONTROL_FPU
 
@@ -186,6 +192,12 @@ PPL::Init::~Init() {
     // ... the FPU rounding direction is restored, ...
     fpu_set_rounding_direction(old_rounding_direction);
 #endif
+
+#if PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+    // ... the Watchdog subsystem is finalized, ...
+    Watchdog::Watchdog::finalize();
+#endif // PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
+
     // ... the Polyhedron, Grid_Generator_System, Congruence_System,
     // Generator_System, Constraint_System, Grid_Generator,
     // Congruence, Generator and Constraint classes are finalized

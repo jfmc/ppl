@@ -1,7 +1,7 @@
 /* Polyhedron class implementation
    (non-inline widening-related member functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -609,7 +609,7 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
 
       if (y_k_var.id() == k) {
         // The following line optimizes the computation of
-        // tmp -= x[h] * y[k];
+        // <CODE> tmp -= x[h] * y[k]; </CODE>
         Parma_Polyhedra_Library::sub_mul_assign(tmp, *x_h, *y_k);
       }
 
@@ -664,8 +664,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	  Generator new_ray(x_g);
           // Modify `new_ray' according to the evolution of `x_g' with
           // respect to `y_g'.
-          modify_according_to_evolution(new_ray.expr,
-                                        x_g.expr, y_g.expr);
+          modify_according_to_evolution(new_ray.expr, x_g.expr, y_g.expr);
           PPL_ASSERT(new_ray.OK());
 	  candidate_rays.insert(new_ray);
 	}

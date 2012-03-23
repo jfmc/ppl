@@ -1,6 +1,6 @@
 /* This is the header file of the Parma Polyhedra Library.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,6 +36,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "version.hh"
 #include "ppl_include_files.hh"
+
+//! Defined to 1 if PPL::Watchdog objects are supported, to 0 otherwise.
+#define PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED \
+  (PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION)
 
 #undef PPL_SPECIALIZE_ABS
 #undef PPL_SPECIALIZE_ADD

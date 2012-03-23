@@ -1,6 +1,6 @@
 /* Abstract checked arithmetic functions: fall-backs.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -222,27 +222,27 @@ PPL_SAFE_CONVERSION(mpz_class, signed char);
 PPL_SAFE_CONVERSION(mpz_class, signed short);
 PPL_SAFE_CONVERSION(mpz_class, signed int);
 PPL_SAFE_CONVERSION(mpz_class, signed long);
-//PPL_SAFE_CONVERSION(mpz_class, signed long long);
+// GMP's API does not support signed long long.
 PPL_SAFE_CONVERSION(mpz_class, unsigned char);
 PPL_SAFE_CONVERSION(mpz_class, unsigned short);
 PPL_SAFE_CONVERSION(mpz_class, unsigned int);
 PPL_SAFE_CONVERSION(mpz_class, unsigned long);
-//PPL_SAFE_CONVERSION(mpz_class, unsigned long long);
+// GMP's API does not support unsigned long long.
 
 PPL_SAFE_CONVERSION(mpq_class, char);
 PPL_SAFE_CONVERSION(mpq_class, signed char);
 PPL_SAFE_CONVERSION(mpq_class, signed short);
 PPL_SAFE_CONVERSION(mpq_class, signed int);
 PPL_SAFE_CONVERSION(mpq_class, signed long);
-//PPL_SAFE_CONVERSION(mpq_class, signed long long);
+// GMP's API does not support signed long long.
 PPL_SAFE_CONVERSION(mpq_class, unsigned char);
 PPL_SAFE_CONVERSION(mpq_class, unsigned short);
 PPL_SAFE_CONVERSION(mpq_class, unsigned int);
 PPL_SAFE_CONVERSION(mpq_class, unsigned long);
-//PPL_SAFE_CONVERSION(mpq_class, unsigned long long);
+// GMP's API does not support unsigned long long.
 PPL_SAFE_CONVERSION(mpq_class, float);
 PPL_SAFE_CONVERSION(mpq_class, double);
-//PPL_SAFE_CONVERSION(mpq_class, long double);
+// GMP's API does not support long double.
 
 #undef PPL_SAFE_CONVERSION
 

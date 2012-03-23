@@ -1,7 +1,7 @@
 /* Test Box::add_space_dimensions_and_embed():
    we add two variables to a Box.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -45,10 +45,8 @@ struct My_Interval {
     const_bool_nodef(check_inexact, false);
   };
 
-  typedef Interval_Restriction_None
-  <Interval_Info_Bitset<unsigned int,
-                        Floating_Point_Real_Interval_Info_Policy> >
-  Floating_Point_Real_Interval_Info;
+  typedef Interval_Info_Bitset<unsigned int,
+                               Floating_Point_Real_Interval_Info_Policy> Floating_Point_Real_Interval_Info;
 
   typedef Interval<F, Floating_Point_Real_Interval_Info> interval_type;
 };

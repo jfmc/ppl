@@ -1,6 +1,6 @@
 /* Test the MIP_Problem class with instances that require a watchdog timer.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,7 +22,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
-#include "pwl.hh"
 #include <limits>
 
 namespace {
@@ -125,7 +124,7 @@ bool test01() {
 
   try {
     // Set a 2 seconds timeout.
-    Parma_Watchdog_Library::Watchdog
+    Parma_Polyhedra_Library::Watchdog
       w(200, abandon_expensive_computations, t);
 
     pg = mip.optimizing_point();

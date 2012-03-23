@@ -6,7 +6,7 @@ dnl - the control of the procedures to be generated for each class;
 dnl - the replacements for the patterns in the code files.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -509,6 +509,7 @@ class_represent,
 has_property,
 simplify,
 abovebelow,
+upperlower,
 maxmin,
 comparison,
 refine_represent,
@@ -706,7 +707,9 @@ m4_define(`m4_extrapolation_replacements', `NONE')
 m4_define(`m4_BD_Shape_extrapolation_replacements',
   `CC76')
 m4_define(`m4_Octagonal_Shape_extrapolation_replacements',
-   `CC76')
+  `CC76')
+m4_define(`m4_box_extrapolation_replacements',
+  `CC76')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == widenexp
@@ -936,6 +939,13 @@ dnl Used for the bounds_from_above and bounds_from_below methods.
 dnl ---------------------------------------------------------------------
 
 m4_define(`m4_abovebelow_replacements', `above, below')
+
+dnl ---------------------------------------------------------------------
+dnl pattern -- upper/lower
+dnl Used for has_upper_bound and has_lower_bound methods (Box domains).
+dnl ---------------------------------------------------------------------
+
+m4_define(`m4_upperlower_replacements', `upper, lower')
 
 dnl ---------------------------------------------------------------------
 dnl pattern == maxmin

@@ -1,6 +1,6 @@
 /* Implementation of PPL assert-like macros.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,8 +23,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #ifndef PPL_assert_hh
 #define PPL_assert_hh 1
-
-#include "globals.defs.hh"
 
 // The PPL_UNREACHABLE_MSG macro flags a program point as unreachable.
 // Argument `msg__' is added to output when assertions are turned on.
@@ -63,8 +61,8 @@ site: http://bugseng.com/products/ppl/ . */
     W_Traits::Threshold old_weight__ = W_Traits::weight;          \
     PPL_ASSERT_IMPL_(cond__);                                     \
     PPL_ASSERT_IMPL_(old_weight__ == W_Traits::weight             \
-                     && "PPL_ASSERT_HEAVY have to be used here"); \
-  } while(0)
+                     && ("PPL_ASSERT_HEAVY has to be used here" != 0)); \
+  } while (false)
 #endif // !defined(NDEBUG) && PPL_DEBUG_PPL_ASSERT
 
 
@@ -78,7 +76,7 @@ site: http://bugseng.com/products/ppl/ . */
     ++Parma_Polyhedra_Library::Implementation::in_assert;       \
     PPL_ASSERT_IMPL_(cond__);                                   \
     --Parma_Polyhedra_Library::Implementation::in_assert;	\
-  } while (0)
+  } while (false)
 #endif // !defined(NDEBUG)
 
 
@@ -95,7 +93,12 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Helper function causing program termination by calling \c abort.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void ppl_unreachable() __attribute__((weak, noreturn));
+void ppl_unreachable()
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+  __attribute__((weak, noreturn));
+#else
+  __attribute__((noreturn));
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -105,7 +108,12 @@ void ppl_unreachable() __attribute__((weak, noreturn));
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void ppl_unreachable_msg(const char* msg,
                          const char* file, unsigned int line,
-                         const char* function) __attribute__((weak, noreturn));
+                         const char* function)
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+  __attribute__((weak, noreturn));
+#else
+  __attribute__((noreturn));
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief

@@ -1,6 +1,6 @@
 /* Sparse_Row class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,8 +32,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sparse sequence of coefficients.
-/*!
+/*! \ingroup PPL_CXX_interface
   This class is implemented using a CO_Tree. See the documentation of CO_Tree
   for details on the implementation and the performance.
 
@@ -55,6 +56,7 @@ namespace Parma_Polyhedra_Library {
   \see Sparse_Matrix
   \see CO_Tree
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Sparse_Row {
 
 public:
@@ -72,7 +74,7 @@ public:
     \see CO_Tree::const_iterator
   */
   typedef CO_Tree::const_iterator const_iterator;
-  
+
   //! Constructs a row with the specified size.
   /*!
     \param n
@@ -242,10 +244,10 @@ public:
   */
   const iterator& end();
 
-  //! Equivalent to cbegin().
+  //! Equivalent to <CODE>cbegin()</CODE>.
   const_iterator begin() const;
 
-  //! Equivalent to cend().
+  //! Equivalent to <CODE>cend()</CODE>.
   const const_iterator& end() const;
 
   //! Returns an %iterator that points at the first element.
@@ -292,7 +294,7 @@ public:
   */
   Coefficient& operator[](dimension_type i);
 
-  //! Equivalent to get(i), provided for convenience.
+  //! Equivalent to <CODE>get(i)</CODE>, provided for convenience.
   /*!
     This method takes \f$O(\log n)\f$ time.
   */
@@ -447,7 +449,7 @@ public:
   */
   const_iterator lower_bound(const_iterator itr, dimension_type i) const;
 
-  //! Equivalent to (*this)[i] = x; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i] = x; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
@@ -464,7 +466,7 @@ public:
   */
   iterator insert(dimension_type i, Coefficient_traits::const_reference x);
 
-  //! Equivalent to (*this)[i]=x; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i] = x; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
@@ -474,7 +476,7 @@ public:
 
     \param itr
     It is used as a hint. This method will be faster if the searched element
-    is near to \p itr, even faster than <CODE>(*this)[i]=x;</CODE>.
+    is near to \p itr, even faster than <CODE>(*this)[i] = x</CODE>.
 
     The value of \p itr does not affect the result of this method, as long it
     is a valid %iterator for this row. \p itr may even be end().
@@ -488,7 +490,7 @@ public:
   iterator insert(iterator itr, dimension_type i,
                   Coefficient_traits::const_reference x);
 
-  //! Equivalent to (*this)[i]; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i]; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
@@ -502,14 +504,14 @@ public:
   */
   iterator insert(dimension_type i);
 
-  //! Equivalent to (*this)[i]; find(i); , but faster.
+  //! Equivalent to <CODE>(*this)[i]; find(i)</CODE>, but faster.
   /*!
     \param i
     The index of the desired element.
 
     \param itr
     It is used as a hint. This method will be faster if the searched element
-    is near to \p itr, even faster than <CODE>(*this)[i];</CODE>.
+    is near to \p itr, even faster than <CODE>(*this)[i]</CODE>.
 
     The value of \p itr does not affect the result of this method, as long it
     is a valid %iterator for this row. \p itr may even be end().
@@ -843,12 +845,16 @@ void swap(Parma_Polyhedra_Library::Dense_Row& x,
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Sparse_Row& x, const Sparse_Row& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Sparse_Row& x, const Sparse_Row& y);
 
 bool operator==(const Dense_Row& x, const Sparse_Row& y);

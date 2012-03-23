@@ -1,6 +1,6 @@
 /* PPL Java interface common routines implementation.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -302,34 +302,26 @@ handle_exception(JNIEnv* env) {
   CHECK_RESULT_ABORT(env, ret == 0);
 }
 
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 Weightwatch* p_deterministic_timeout_object = 0;
 
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
-
 void
 reset_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 void
 reset_deterministic_timeout() {
-#ifdef PPL_WATCHDOG_LIBRARY_ENABLED
   if (p_deterministic_timeout_object) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
-#endif // PPL_WATCHDOG_LIBRARY_ENABLED
 }
 
 jobject

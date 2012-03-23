@@ -1,6 +1,6 @@
 /* Grid class implementation (non-inline public functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -58,12 +58,13 @@ PPL::Grid::Grid(const Grid& y, Complexity_Class)
 }
 
 PPL::Grid::Grid(const Constraint_System& cs)
-  : con_sys((cs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(cs)",
-					     "the space dimension of cs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : cs.space_dimension()),
+  : con_sys(check_space_dimension_overflow(cs.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(cs)",
+                                           "the space dimension of cs "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(cs.space_dimension()) {
   space_dim = cs.space_dimension();
 
@@ -97,12 +98,13 @@ PPL::Grid::Grid(const Constraint_System& cs)
 }
 
 PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
-  : con_sys((cs.space_dimension() > max_space_dimension())
-            ? throw_space_dimension_overflow("Grid(cs, recycle)",
-                                             "the space dimension of cs "
-                                             "exceeds the maximum allowed "
-                                             "space dimension"), 0
-            : cs.space_dimension()),
+  : con_sys(check_space_dimension_overflow(cs.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(cs, recycle)",
+                                           "the space dimension of cs "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(cs.space_dimension()) {
   space_dim = cs.space_dimension();
 
@@ -137,12 +139,13 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
 
 PPL::Grid::Grid(const Polyhedron& ph,
                 Complexity_Class complexity)
-  : con_sys((ph.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(ph)",
-					     "the space dimension of ph "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : ph.space_dimension()),
+  : con_sys(check_space_dimension_overflow(ph.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(ph)",
+                                           "the space dimension of ph "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(ph.space_dimension()) {
   space_dim = ph.space_dimension();
 
@@ -303,7 +306,7 @@ const PPL::Grid_Generator_System&
 PPL::Grid::grid_generators() const {
   if (space_dim == 0) {
     PPL_ASSERT(gen_sys.space_dimension() == 0
-	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
+               && gen_sys.num_rows() == (marked_empty() ? 0U : 1U));
     return gen_sys;
   }
 
@@ -325,7 +328,7 @@ const PPL::Grid_Generator_System&
 PPL::Grid::minimized_grid_generators() const {
   if (space_dim == 0) {
     PPL_ASSERT(gen_sys.space_dimension() == 0
-	   && gen_sys.num_rows() == (marked_empty() ? 0 : 1));
+               && gen_sys.num_rows() == (marked_empty() ? 0U : 1U));
     return gen_sys;
   }
 
@@ -628,7 +631,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
             point_is_included = !c.is_equality();
 	  break;
 	}
-	// Not the first point: convert `g' to be a parameter ...
+	// Not the first point: convert `g' to be a parameter
+	// and fall through into the parameter case.
 	Grid_Generator& gen = const_cast<Grid_Generator&>(g);
 	const Grid_Generator& point = *first_point;
         const Coefficient& p_div = point.divisor();
@@ -639,9 +643,8 @@ PPL::Grid::relation_with(const Constraint& c) const {
         gen.strong_normalize();
 	gen.set_is_parameter();
         PPL_ASSERT(gen.OK());
-	// ... and fall through into the parameter case.
       }
-      // NOTE: no break!
+      // Intentionally fall through.
 
     case Grid_Generator::PARAMETER:
     case Grid_Generator::LINE:
@@ -1022,7 +1025,8 @@ PPL::Grid::OK(bool check_not_empty) const {
       goto fail;
 
     Grid tmp_gr = *this;
-    Congruence_System cs_copy = tmp_gr.con_sys;
+    // Make a copy here, before changing tmp_gr, to check later.
+    const Congruence_System cs_copy = tmp_gr.con_sys;
 
     // Clear the generators in tmp_gr.
     Grid_Generator_System gs(space_dim);
@@ -1604,7 +1608,6 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 
   const Congruence_System& x_cs = x.con_sys;
   const dimension_type x_cs_num_rows = x_cs.num_rows();
-  const Grid_Generator_System& y_gs = y.gen_sys;
 
   // Record into `redundant_by_y' the info about which congruences of
   // `x' are redundant in the context `y'.  Count the number of
@@ -1665,6 +1668,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
 	const Coefficient& modulus = c.modulus();
 	div = modulus;
 
+        const Grid_Generator_System& y_gs = y.gen_sys;
 	dimension_type num_ruled_out_generators = 0;
 	for (Grid_Generator_System::const_iterator k = y_gs.begin(),
 	       y_gs_end = y_gs.end(); k != y_gs_end; ++k) {
@@ -2133,7 +2137,7 @@ generalized_affine_image(const Linear_Expression& lhs,
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
@@ -2259,7 +2263,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'
@@ -2457,8 +2461,8 @@ PPL::Grid::frequency(const Linear_Expression& expr,
   if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("frequency(e, ...)", "e", expr);
 
-  // Space dimension = 0: if empty, then return false;
-  // otherwise the frequency is 1 and the value is 0
+  // Space dimension is 0: if empty, then return false;
+  // otherwise the frequency is 1 and the value is 0.
   if (space_dim == 0) {
     if (is_empty())
       return false;
@@ -2580,13 +2584,11 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "con_sys")
     return false;
 
-  if (s >> str) {
-    if (str == "(up-to-date)")
-      set_congruences_up_to_date();
-    else if (str != "(not_up-to-date)")
-      return false;
-  }
-  else
+  if (!(s >> str))
+    return false;
+  if (str == "(up-to-date)")
+    set_congruences_up_to_date();
+  else if (str != "(not_up-to-date)")
     return false;
 
   if (!con_sys.ascii_load(s))
@@ -2595,13 +2597,11 @@ PPL::Grid::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "gen_sys")
     return false;
 
-  if (s >> str) {
-    if (str == "(up-to-date)")
-      set_generators_up_to_date();
-    else if (str != "(not_up-to-date)")
-      return false;
-  }
-  else
+  if (!(s >> str))
+    return false;
+  if (str == "(up-to-date)")
+    set_generators_up_to_date();
+  else if (str != "(not_up-to-date)")
     return false;
 
   if (!gen_sys.ascii_load(s))
@@ -2702,7 +2702,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
     PPL_DIRTY_TEMP_COEFFICIENT(v_d);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars_end; ++i) {
-      const Variable x = Variable(*i);
+      const Variable x(*i);
       // Find the frequency and a value for `x' in `gr'.
       if (!gr.frequency_no_check(x, f_n, f_d, v_n, v_d))
         continue;
@@ -2784,7 +2784,7 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
   min_value *= div;
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars_end; ++i) {
-    const Variable x = Variable(*i);
+    const Variable x(*i);
     if (!gr.bounds_no_check(x)) {
       // `x' is not a constant in `gr'.
       // We know that `x' is not a constant, so `x' may wrap to any

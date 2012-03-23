@@ -1,7 +1,7 @@
 /* Solve linear programming problems by either vertex/point enumeration
    or the primal simplex algorithm.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -326,7 +326,7 @@ process_options(int argc, char* argv[]) {
       my_exit(0);
       break;
 
-#ifdef PPL_LPSOL_SUPPORTS_TIMINGS
+#ifdef PPL_LPSOL_SUPPORTS_LIMIT_ON_CPU_TIME
 
     case 'C':
       l = strtol(optarg, &endptr, 10);

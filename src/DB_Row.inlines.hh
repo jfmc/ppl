@@ -1,6 +1,6 @@
 /* DB_Row class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -257,7 +257,7 @@ template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y)
   : DB_Row_Impl_Handler<T>() {
-  if (y.impl) {
+  if (y.impl != 0) {
     allocate(compute_capacity(y.size(), max_size()));
     copy_construct_coefficients(y);
   }

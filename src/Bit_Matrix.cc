@@ -1,6 +1,6 @@
 /* Bit_Matrix class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,9 +26,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Dense_Row.defs.hh"
 #include "globals.defs.hh"
 #include "swapping_sort.templates.hh"
+#include "C_Integer.hh"
 #include <iostream>
 #include <string>
-#include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -94,7 +94,8 @@ PPL::Bit_Matrix::transpose() {
   const dimension_type ncols = num_columns();
   Bit_Matrix tmp(ncols, nrows);
   for (dimension_type i = nrows; i-- > 0; )
-    for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
+    for (unsigned long j = x[i].last();
+         j != C_Integer<unsigned long>::max; j = x[i].prev(j))
       tmp[j].set(i);
   m_swap(tmp);
   PPL_ASSERT(OK());
@@ -106,7 +107,8 @@ PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
   const dimension_type y_num_columns = y.num_columns();
   Bit_Matrix tmp(y_num_columns, y_num_rows);
   for (dimension_type i = y_num_rows; i-- > 0; )
-    for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
+    for (unsigned long j = y[i].last();
+         j != C_Integer<unsigned long>::max; j = y[i].prev(j))
       tmp[j].set(i);
   m_swap(tmp);
   PPL_ASSERT(OK());
@@ -144,7 +146,7 @@ PPL::Bit_Matrix::resize(dimension_type new_n_rows,
   }
   else if (new_n_rows < old_num_rows)
     // Drop some rows.
-    rows.erase(rows.begin() + new_n_rows, rows.end());
+    rows.resize(new_n_rows);
 
   PPL_ASSERT(OK());
 }
@@ -183,7 +185,7 @@ PPL::Bit_Matrix::ascii_load(std::istream& s) {
       int bit;
       if (!(s >> bit))
 	return false;
-      if (bit)
+      if (bit != 0)
 	x[i].set(j);
       else
 	x[i].clear(j);
@@ -214,7 +216,8 @@ PPL::Bit_Matrix::OK() const {
     const Bit_Row& row = x[i];
     if (!row.OK())
       return false;
-    else if (row.last() != ULONG_MAX && row.last() >= row_size) {
+    else if (row.last() != C_Integer<unsigned long>::max
+             && row.last() >= row_size) {
 #ifndef NDEBUG
       cerr << "Bit_Matrix[" << i << "] is a row with too many bits!"
 	   << endl

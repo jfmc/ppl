@@ -1,4 +1,4 @@
-# Doxyfile 1.6.3
+# Doxyfile 1.7.4
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -6,6 +6,8 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = PPL
 PROJECT_NUMBER         = @VERSION@
+PROJECT_BRIEF          =
+PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -36,6 +38,7 @@ SIP_SUPPORT            = NO
 IDL_PROPERTY_SUPPORT   = YES
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
+INLINE_GROUPED_CLASSES = NO
 TYPEDEF_HIDES_STRUCT   = NO
 SYMBOL_CACHE_SIZE      = 0
 #---------------------------------------------------------------------------
@@ -62,6 +65,7 @@ SORT_BRIEF_DOCS        = NO
 SORT_MEMBERS_CTORS_1ST = NO
 SORT_GROUP_NAMES       = NO
 SORT_BY_SCOPE_NAME     = NO
+STRICT_PROTO_MATCHING  = NO
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
@@ -263,7 +267,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Poly_Gen_Relation.defs.hh \
                          @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
                          @srcdir@/../src/Poly_Gen_Relation.cc \
-                         @srcdir@/../src/Interval_Restriction.defs.hh \
                          @srcdir@/../src/Interval_Info.types.hh \
                          @srcdir@/../src/Interval_Info.defs.hh \
                          @srcdir@/../src/Interval_Info.inlines.hh \
@@ -387,6 +390,37 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_Form.templates.hh \
                          @srcdir@/../src/Linear_Form.cc \
                          @srcdir@/../src/linearize.hh \
+                         @srcdir@/../src/Doubly_Linked_Object.types.hh \
+                         @srcdir@/../src/Doubly_Linked_Object.defs.hh \
+                         @srcdir@/../src/Doubly_Linked_Object.inlines.hh \
+                         @srcdir@/../src/EList.types.hh \
+                         @srcdir@/../src/EList.defs.hh \
+                         @srcdir@/../src/EList.inlines.hh \
+                         @srcdir@/../src/EList_Iterator.types.hh \
+                         @srcdir@/../src/EList_Iterator.defs.hh \
+                         @srcdir@/../src/EList_Iterator.inlines.hh \
+                         @srcdir@/../src/Handler.types.hh \
+                         @srcdir@/../src/Handler.defs.hh \
+                         @srcdir@/../src/Handler.inlines.hh \
+                         @srcdir@/../src/Pending_Element.types.hh \
+                         @srcdir@/../src/Pending_Element.defs.hh \
+                         @srcdir@/../src/Pending_Element.inlines.hh \
+                         @srcdir@/../src/Pending_List.types.hh \
+                         @srcdir@/../src/Pending_List.defs.hh \
+                         @srcdir@/../src/Pending_List.inlines.hh \
+                         @srcdir@/../src/Threshold_Watcher.types.hh \
+                         @srcdir@/../src/Threshold_Watcher.defs.hh \
+                         @srcdir@/../src/Threshold_Watcher.inlines.hh \
+                         @srcdir@/../src/Threshold_Watcher.templates.hh \
+                         @srcdir@/../src/Threshold_Watcher.cc \
+                         @srcdir@/../src/Time.types.hh \
+                         @srcdir@/../src/Time.defs.hh \
+                         @srcdir@/../src/Time.inlines.hh \
+                         @srcdir@/../src/Time.cc \
+                         @srcdir@/../src/Watchdog.types.hh \
+                         @srcdir@/../src/Watchdog.defs.hh \
+                         @srcdir@/../src/Watchdog.inlines.hh \
+                         @srcdir@/../src/Watchdog.cc \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8
@@ -405,6 +439,7 @@ IMAGE_PATH             =
 INPUT_FILTER           =
 FILTER_PATTERNS        =
 FILTER_SOURCE_FILES    = NO
+FILTER_SOURCE_PATTERNS =
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
 #---------------------------------------------------------------------------
@@ -431,12 +466,18 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            =
 HTML_FOOTER            =
 HTML_STYLESHEET        =
+HTML_EXTRA_FILES       =
+HTML_COLORSTYLE_HUE    = 220
+HTML_COLORSTYLE_SAT    = 100
+HTML_COLORSTYLE_GAMMA  = 80
 HTML_TIMESTAMP         = YES
 HTML_ALIGN_MEMBERS     = YES
 HTML_DYNAMIC_SECTIONS  = NO
 GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
+DOCSET_PUBLISHER_ID    = org.doxygen.Publisher
+DOCSET_PUBLISHER_NAME  = Publisher
 GENERATE_HTMLHELP      = NO
 CHM_FILE               =
 HHC_LOCATION           =
@@ -459,7 +500,11 @@ ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
 USE_INLINE_TREES       = NO
 TREEVIEW_WIDTH         = 250
+EXT_LINKS_IN_WINDOW    = NO
 FORMULA_FONTSIZE       = 10
+FORMULA_TRANSPARENT    = YES
+USE_MATHJAX            = NO
+MATHJAX_RELPATH        = http://www.mathjax.org/mathjax
 SEARCHENGINE           = NO
 SERVER_BASED_SEARCH    = NO
 #---------------------------------------------------------------------------
@@ -473,6 +518,7 @@ COMPACT_LATEX          = YES
 PAPER_TYPE             = a4wide
 EXTRA_PACKAGES         = ppl
 LATEX_HEADER           = @srcdir@/devref.tex
+LATEX_FOOTER           =
 PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = YES
@@ -541,6 +587,7 @@ CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            =
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
+DOT_NUM_THREADS        = 0
 DOT_FONTNAME           = FreeSans
 DOT_FONTSIZE           = 10
 DOT_FONTPATH           =
@@ -558,6 +605,7 @@ DIRECTORY_GRAPH        = NO
 DOT_IMAGE_FORMAT       = png
 DOT_PATH               =
 DOTFILE_DIRS           =
+MSCFILE_DIRS           =
 DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 0
 DOT_TRANSPARENT        = NO

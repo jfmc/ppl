@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Swapping_Vector_defs_hh 1
 
 #include "Swapping_Vector.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 
 #include <vector>
 #include "assert.hh"

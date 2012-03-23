@@ -1,6 +1,6 @@
 /* DB_Matrix class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -310,12 +310,12 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-				 const DB_Matrix<T>& x,
-				 const DB_Matrix<T>& y,
-				 Rounding_Dir dir,
-				 Temp& tmp0,
-				 Temp& tmp1,
-				 Temp& tmp2);
+                                const DB_Matrix<T>& x,
+                                const DB_Matrix<T>& y,
+                                Rounding_Dir dir,
+                                Temp& tmp0,
+                                Temp& tmp1,
+                                Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
 

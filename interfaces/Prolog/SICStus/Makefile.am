@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -31,21 +31,11 @@ sp_clpq.pl \
 sp_pl_check.pl \
 sp_prolog_generated_test.pl
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
-WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
-
-endif BUILD_WATCHDOG_LIBRARY
-
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -69,14 +59,13 @@ ppl_sicstus_SOURCES =
 
 if ENABLE_SHARED
 
-pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
+pkgdata_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY) libppl_sicstus.la
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la libppl_sicstus.la
 	$(LIBTOOL) --mode=link --tag=CXX \
 		splfr --cflag="$(AM_CPPFLAGS)" -o $@ \
 			$(srcdir)/ppl_sicstus.pl \
 			libppl_sicstus.la \
-			$(WATCHDOG_LIBRARY) \
 			@extra_libraries@
 
 #			@required_instantiations_prolog_cxx_objects@
@@ -87,7 +76,7 @@ install-data-local: ppl_sicstus.so
 
 else !ENABLE_SHARED
 
-pkglib_DATA = ppl_sicstus.pl
+pkgdata_DATA = ppl_sicstus.pl
 
 endif !ENABLE_SHARED
 
@@ -188,7 +177,6 @@ endif NO_UNDEFINED
 libppl_sicstus_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_sicstus_la_DEPENDENCIES = \
@@ -199,13 +187,12 @@ $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
-ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(WATCHDOG_LIBRARY)
+ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	$(LIBTOOL) --mode=link --tag=CXX \
 		spld --main=prolog \
 			--cflag=`echo '$(AM_CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
 			--resources=ppl_sicstus.s.o -o $@ \
 			$(top_builddir)/src/libppl.la \
-			$(WATCHDOG_LIBRARY) \
 			@extra_libraries@
 
 if ENABLE_STATIC
@@ -266,7 +253,6 @@ pl_check_test: ppl_sicstus ppl_sicstus.pl sp_pl_check.pl ../tests/pl_check.pl $(
 	cp -f $(srcdir)/../tests/pl_check.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
         --goal "main."  \
 			>obtained_pchk
@@ -281,7 +267,6 @@ $(CLPQ_TESTS):
 clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/script_clpq $(EXPECTED_CLPQ) $(CLPQ_TESTS) | pl_check_test
 	$(LIBTOOL) --mode=execute \
 	  -dlopen ../../../src/libppl.la \
-	  $(WATCHDOG_DLOPEN) \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq')." \
 	      <$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -292,7 +277,6 @@ clpq_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq.pl ../tests/scrip
 clpq2_test: ppl_sicstus ppl_sicstus.pl sp_clpq.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EXPECTED_CLPQ2) $(CLPQ_TESTS) | clpq_test
 	$(LIBTOOL) --mode=execute \
           -dlopen ../../../src/libppl.la \
-	  $(WATCHDOG_DLOPEN) \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
 	      <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
@@ -303,7 +287,6 @@ ppl_prolog_generated_test: ppl_sicstus ppl_sicstus.pl sp_prolog_generated_test.p
 	cp -f ../tests/ppl_prolog_generated_test_main.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		./ppl_sicstus -l $(srcdir)/sp_prolog_generated_test.pl \
         --goal "main."  \
 			>obtained_pgt
@@ -333,12 +316,3 @@ $(nodist_EXTRA_libppl_sicstus_la_SOURCES):
 # are actually required.
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-if BUILD_WATCHDOG_LIBRARY
-
-# FIXME: check whether the dependencies from `libpwl.la' in this Makefile.am
-# are actually required.
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la
-
-endif BUILD_WATCHDOG_LIBRARY

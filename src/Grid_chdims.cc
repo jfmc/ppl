@@ -1,7 +1,7 @@
 /* Grid class implementation
    (non-inline operators that may change the dimension of the vector space).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -79,10 +79,11 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
 
   // The space dimension of the resulting grid must be at most the
   // maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("add_space_dimensions_and_embed(m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "add_space_dimensions_and_embed(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Adding dimensions to an empty grid is obtained by adjusting
   // `space_dim' and clearing `con_sys' (since it can contain the
@@ -150,10 +151,11 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 
   // The space dimension of the resulting grid should be at most the
   // maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("add_space_dimensions_and_project(m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "add_space_dimensions_and_project(m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Adding dimensions to an empty grid is obtained by merely
   // adjusting `space_dim'.
@@ -212,10 +214,12 @@ void
 PPL::Grid::concatenate_assign(const Grid& y) {
   // The space dimension of the resulting grid must be at most the
   // maximum allowed space dimension.
-  if (y.space_dim > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("concatenate_assign(y)",
-				   "concatenation exceeds the maximum "
-				   "allowed space dimension");
+  check_space_dimension_overflow(y.space_dimension(),
+                                 max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "concatenate_assign(y)",
+                                 "concatenation exceeds the maximum "
+                                 "allowed space dimension");
 
   const dimension_type added_columns = y.space_dim;
 
@@ -343,7 +347,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	gen_sys.remove_trailing_rows(num_redundant);
 	gen_sys.unset_pending_rows();
       }
-      dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+      dim_kinds.resize(new_dimension + 1);
       // TODO: Consider if it is worth also preserving the congruences
       //       if they are also in minimal form.
     }
@@ -360,11 +364,14 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     con_sys.set_space_dimension(new_dimension);
     // Count the actual number of rows that are now redundant.
     dimension_type num_redundant = 0;
-    for (dimension_type row = space_dim; row > new_dimension; --row)
-      dim_kinds[row] == CON_VIRTUAL || ++num_redundant;
+    for (dimension_type row = space_dim; row > new_dimension; --row) {
+      if (dim_kinds[row] != CON_VIRTUAL)
+        ++num_redundant;
+    }
 
     con_sys.remove_rows(0, num_redundant, true);
-    dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+    dim_kinds.erase(dim_kinds.begin() + (new_dimension + 1),
+                    dim_kinds.end());
 
     clear_generators_up_to_date();
     // Replace gen_sys with an empty system of the right dimension.
@@ -390,10 +397,11 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
     return;
 
   // The resulting space dimension must be at most the maximum.
-  if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("expand_space_dimension(v, m)",
-				   "adding m new space dimensions exceeds "
-				   "the maximum allowed space dimension");
+  check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
+                                 "PPL::Grid::",
+                                 "expand_space_dimension(v, m)",
+                                 "adding m new space dimensions exceeds "
+                                 "the maximum allowed space dimension");
 
   // Save the number of dimensions before adding new ones.
   dimension_type old_dim = space_dim;

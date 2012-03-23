@@ -1,6 +1,6 @@
 /* Polyhedron class implementation (non-inline public functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1163,28 +1163,32 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
       const Generator tmp_gen = gen_sys[i];
       const Bit_Row tmp_sat = sat_c[i];
-      for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (Scalar_Products::sign(con_sys[j], tmp_gen) != tmp_sat[j]) {
+      for (dimension_type j = sat_c.num_columns(); j-- > 0; ) {
+	const bool sat_j = (Scalar_Products::sign(con_sys[j], tmp_gen) == 0);
+	if (sat_j == tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
 #endif
 	  goto bomb;
 	}
+      }
     }
 
   if (sat_g_is_up_to_date())
     for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
       const Constraint tmp_con = con_sys[i];
       const Bit_Row tmp_sat = sat_g[i];
-      for (dimension_type j = sat_g.num_columns(); j-- > 0; )
-	if (Scalar_Products::sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
+      for (dimension_type j = sat_g.num_columns(); j-- > 0; ) {
+	const bool sat_j = (Scalar_Products::sign(tmp_con, gen_sys[j]) == 0);
+	if (sat_j == tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_g is declared up-to-date, but it is not!"
 	       << endl;
 #endif
 	  goto bomb;
 	}
+      }
     }
 
   if (has_pending_constraints()) {
@@ -1938,7 +1942,7 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
   const dimension_type space_dim = ineqs_p[0]->space_dimension();
   PPL_ASSERT(space_dim > 0 && space_dim >= rank);
   const dimension_type num_coefficients
-    = space_dim + ((topology == NECESSARILY_CLOSED) ? 0 : 1);
+    = space_dim + ((topology == NECESSARILY_CLOSED) ? 0U : 1U);
   const dimension_type min_sat = num_coefficients - rank;
   const dimension_type num_cols_sat = sat.num_columns();
 
@@ -1957,10 +1961,10 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
   // Re-examine remaining inequalities.
   // Iteration index `i' is _intentionally_ increasing.
   for (dimension_type i = 0; i < num_rows; ++i) {
-    if (ineqs_p[i]) {
+    if (ineqs_p[i] != 0) {
       for (dimension_type j = 0; j < num_rows; ++j) {
         bool strict_subset;
-        if (ineqs_p[j] && i != j
+        if (ineqs_p[j] != 0 && i != j
             && subset_or_equal(sat[j], sat[i], strict_subset)) {
           if (strict_subset) {
             ineqs_p[i] = 0;
@@ -2338,7 +2342,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       for (dimension_type i = y_cs_num_ineq;
            i < non_redundant_ineq_p_size;
            ++i)
-        if (non_redundant_ineq_p[i])
+        if (non_redundant_ineq_p[i] != 0)
           result_cs.insert(*non_redundant_ineq_p[i]);
     }
   }
@@ -2716,7 +2720,7 @@ bounded_affine_image(const Variable var,
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.
     // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
     // Constrain the new dimension to be equal to `ub_expr'.
     refine_no_check(denominator*new_var == ub_expr);
@@ -2780,7 +2784,7 @@ bounded_affine_preimage(const Variable var,
   else {
     // Here `var' occurs in `lb_expr' or `ub_expr'.
     // To ease the computation, add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Swap dimensions `var' and `new_var'.
@@ -3094,7 +3098,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
@@ -3228,7 +3232,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
+    const Variable new_var(space_dim);
     add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to `lhs'
@@ -3439,8 +3443,8 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   // `freq_n' is 0. Otherwise the values for \p expr are not discrete
   // and we return false.
 
-  // Space dimension = 0: if empty, then return false;
-  // otherwise the frequency is 1 and the value is 0
+  // Space dimension is 0: if empty, then return false;
+  // otherwise the frequency is 1 and the value is 0.
   if (space_dim == 0) {
     if (is_empty())
       return false;

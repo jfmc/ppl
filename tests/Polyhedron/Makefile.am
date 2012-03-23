@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,6 +24,7 @@
 if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
+libtool --mode=execute \
 $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
 --num-callers=40 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
@@ -51,9 +52,6 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-termination1 \
-termination2 \
-hybrid \
 addcongruence1 \
 addcongruences1 \
 addconstraint1 \
@@ -100,12 +98,12 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generators1 \
 geomcovers1 \
 h79widening1 h79widening2 \
+hybrid \
 intersection1 \
-simplifyusingcontext1 \
 limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
-linearpartition1 \
 linearexpression1 \
+linearpartition1 \
 linearsystem1 \
 mapspacedims1 \
 matrix1 \
@@ -124,20 +122,24 @@ polydifference1 polydifference2 \
 polyhull1 polyhull2 \
 polyhullifexact1 polyhullifexact2 \
 randphull1 \
-refinewithconstraint1 \
-refinewithconstraints1 \
 refinewithcongruence1 \
 refinewithcongruences1 \
+refinewithconstraint1 \
+refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
+simplifyusingcontext1 \
 smm1 \
 sparserow1 \
+termination1 termination2 \
 timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
 unconstrain1 \
 universe1 universe2 \
 variablesset1 \
+watchdog1 \
+weightwatch1 \
 wrap1 wrap2 \
 writeconsys1 \
 writegensys1 \
@@ -217,12 +219,6 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
-
-termination1_SOURCES = termination1.cc
-
-termination2_SOURCES = termination2.cc
-
-hybrid_SOURCES = hybrid.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 
@@ -338,6 +334,8 @@ geomcovers1_SOURCES = geomcovers1.cc
 h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
 
+hybrid_SOURCES = hybrid.cc
+
 intersection1_SOURCES = intersection1.cc
 
 simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
@@ -408,6 +406,9 @@ smm1_SOURCES = smm1.cc
 
 sparserow1_SOURCES = sparserow1.cc
 
+termination1_SOURCES = termination1.cc
+termination2_SOURCES = termination2.cc
+
 timeelapse1_SOURCES = timeelapse1.cc
 timeelapse2_SOURCES = timeelapse2.cc
 
@@ -421,6 +422,10 @@ universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
 
 variablesset1_SOURCES = variablesset1.cc
+
+watchdog1_SOURCES = watchdog1.cc
+
+weightwatch1_SOURCES = weightwatch1.cc
 
 wrap1_SOURCES = wrap1.cc
 wrap2_SOURCES = wrap2.cc
@@ -661,9 +666,6 @@ nnc_writepolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 memory1_SRCS = memory1.cc
 
-watchdog1_SRCS = watchdog1.cc
-
-weightwatch1_SRCS = weightwatch1.cc
 
 if !VALGRIND_TESTS_ENABLED
 # The `memory1' test is currently disabled.  The reason is that there
@@ -685,42 +687,16 @@ if !VALGRIND_TESTS_ENABLED
 endif !VALGRIND_TESTS_ENABLED
 
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_TESTS = \
-watchdog1 \
-weightwatch1
-
-WATCHDOG_LIBRARY_CPPFLAGS = \
-$(AM_CPPFLAGS) \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src
-
-WATCHDOG_LIBRARY_LDADD = \
-$(LDADD) \
-$(top_builddir)/Watchdog/src/libpwl.la
-
-watchdog1_SOURCES = $(watchdog1_SRCS)
-watchdog1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
-watchdog1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
-
-weightwatch1_SOURCES = $(weightwatch1_SRCS)
-weightwatch1_CPPFLAGS = $(WATCHDOG_LIBRARY_CPPFLAGS)
-weightwatch1_LDADD = $(WATCHDOG_LIBRARY_LDADD)
-
-endif BUILD_WATCHDOG_LIBRARY
-
 TESTS = \
 $(ORIGINAL_TESTS) \
 $(DERIVED_TESTS) \
-$(VALGRIND_BRITTLE_TESTS) \
-$(WATCHDOG_TESTS)
+$(VALGRIND_BRITTLE_TESTS)
 
 XFAIL_TESTS =
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-EXTRA_DIST = $(memory1_SRCS) $(watchdog1_SRCS) $(weightwatch1_SRCS)
+EXTRA_DIST = $(memory1_SRCS)
 
 BUGS =
 
@@ -743,6 +719,3 @@ $(top_builddir)/tests/libppl_tests.a:
 
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

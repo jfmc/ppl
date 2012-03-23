@@ -4,7 +4,7 @@ m4_divert(-1)
 dnl This m4 file generates the file Prolog_configured_domains.dox
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -23,7 +23,7 @@ dnl along with this program; if not, write to the Free Software Foundation,
 dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
-dnl site: http://bugseng.com/ppl/ .
+dnl site: http://bugseng.com/products/ppl/ .
 
 dnl FIXME: This should be in the main m4 generator file.
 

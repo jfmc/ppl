@@ -1,6 +1,6 @@
 /* Generic implementation of the wrap_assign() function.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -62,7 +62,7 @@ wrap_assign_ind(PSET& pointset,
   const dimension_type space_dim = pointset.space_dimension();
   for (Wrap_Translations::const_iterator i = first; i != end; ++i) {
     const Wrap_Dim_Translations& wrap_dim_translations = *i;
-    const Variable& x = wrap_dim_translations.var;
+    const Variable x(wrap_dim_translations.var);
     const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
     const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
     Coefficient& quadrant = tmp1;
@@ -114,7 +114,7 @@ wrap_assign_col(PSET& dest,
       p.refine_with_constraints(*cs_p);
     for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars_end; ++i) {
-      const Variable x = Variable(*i);
+      const Variable x(*i);
       p.refine_with_constraint(min_value <= x);
       p.refine_with_constraint(x <= max_value);
     }
@@ -122,7 +122,7 @@ wrap_assign_col(PSET& dest,
   }
   else {
     const Wrap_Dim_Translations& wrap_dim_translations = *first;
-    const Variable& x = wrap_dim_translations.var;
+    const Variable x(wrap_dim_translations.var);
     const Coefficient& first_quadrant = wrap_dim_translations.first_quadrant;
     const Coefficient& last_quadrant = wrap_dim_translations.last_quadrant;
     Coefficient& shift = tmp;
@@ -157,8 +157,8 @@ wrap_assign(PSET& pointset,
   //         and  vars.space_dimension() <= pointset.space_dimension().
 
   // Dimension-compatibility check of `*cs_p', if any.
-  const dimension_type vars_space_dim = vars.space_dimension();
   if (cs_p != 0) {
+    const dimension_type vars_space_dim = vars.space_dimension();
     if (cs_p->space_dimension() > vars_space_dim) {
       std::ostringstream s;
       s << "PPL::" << class_name << "::wrap_assign(..., cs_p, ...):"
@@ -179,7 +179,7 @@ wrap_assign(PSET& pointset,
       const Constraint& c = *i;
       for (dimension_type d = cs_space_dim; d-- > 0; ) {
         PPL_ASSERT(c.coefficient(Variable(d)) == 0
-               || vars.find(d) != vars_end);
+                   || vars.find(d) != vars_end);
       }
     }
 #endif
@@ -258,7 +258,7 @@ wrap_assign(PSET& pointset,
   for (Variables_Set::const_iterator i = vars.begin(),
          vars_end = vars.end(); i != vars_end; ++i) {
 
-    const Variable x = Variable(*i);
+    const Variable x(*i);
 
     bool extremum;
 
@@ -301,15 +301,15 @@ wrap_assign(PSET& pointset,
     Coefficient& quadrants = u_d;
     quadrants = last_quadrant - first_quadrant + 1;
 
-    unsigned extension;
+    PPL_UNINITIALIZED(unsigned, extension);
     Result res = assign_r(extension, quadrants, ROUND_IGNORE);
-    if (result_overflow(res) || extension > complexity_threshold)
+    if (result_overflow(res) != 0 || extension > complexity_threshold)
       goto set_full_range;
 
     if (!wrap_individually && !collective_wrap_too_complex) {
       res = mul_assign_r(collective_wrap_complexity,
                          collective_wrap_complexity, extension, ROUND_IGNORE);
-      if (result_overflow(res)
+      if (result_overflow(res) != 0
           || collective_wrap_complexity > complexity_threshold)
         collective_wrap_too_complex = true;
       if (collective_wrap_too_complex) {
@@ -318,7 +318,7 @@ wrap_assign(PSET& pointset,
                translations_end = translations.end();
              j != translations_end;
              ++j) {
-          const Variable& y = j->var;
+          const Variable y(j->var);
           pointset.unconstrain(y);
           full_range_bounds.insert(min_value <= y);
           full_range_bounds.insert(y <= max_value);

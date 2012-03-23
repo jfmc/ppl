@@ -1,6 +1,6 @@
 /* Sparse_Row class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -35,24 +35,21 @@ Sparse_Row::Sparse_Row(dimension_type n)
 }
 
 inline
-Sparse_Row::Sparse_Row(dimension_type n, dimension_type capacity)
+Sparse_Row::Sparse_Row(dimension_type n, dimension_type)
   : size_(n) {
-  (void)capacity;
   PPL_ASSERT(OK());
 }
 
 inline
-Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type capacity)
+Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type)
   : tree(y.tree), size_(y.size_) {
-  (void)capacity;
 }
 
 inline
-Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz,
-                       dimension_type capacity)
-  : tree(y.begin(), std::distance(y.begin(), y.lower_bound(std::min(y.size(), sz)))),
+Sparse_Row::Sparse_Row(const Sparse_Row& y, dimension_type sz, dimension_type)
+  : tree(y.begin(),
+         std::distance(y.begin(), y.lower_bound(std::min(y.size(), sz)))),
     size_(sz) {
-  (void)capacity;
   PPL_ASSERT(OK());
 }
 
@@ -368,6 +365,9 @@ Sparse_Row::total_memory_in_bytes(dimension_type /* capacity */) const {
   return total_memory_in_bytes();
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Sparse_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline void
 swap(Sparse_Row& x, Sparse_Row& y) {
   x.m_swap(y);

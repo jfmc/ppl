@@ -1,6 +1,6 @@
 /* IEC 559 floating point format related functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -47,15 +47,14 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_half {
   uint16_t word;
-  static const uint16_t SGN_MASK = 0x8000;
-  static const uint16_t EXP_MASK = 0xfc00;
-  static const uint16_t POS_INF = 0xfc00;
-  static const uint16_t NEG_INF = 0x7c00;
-  static const uint16_t POS_ZERO = 0x0000;
-  static const uint16_t NEG_ZERO = 0x8000;
+  static const uint16_t SGN_MASK = 0x8000U;
+  static const uint16_t EXP_MASK = 0xfc00U;
+  static const uint16_t POS_INF = 0xfc00U;
+  static const uint16_t NEG_INF = 0x7c00U;
+  static const uint16_t POS_ZERO = 0x0000U;
+  static const uint16_t NEG_ZERO = 0x8000U;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 5;
   static const unsigned int MANTISSA_BITS = 10;
@@ -65,9 +64,9 @@ struct float_ieee754_half {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_HALF;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -80,15 +79,14 @@ struct float_ieee754_half {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_single {
   uint32_t word;
-  static const uint32_t SGN_MASK = 0x80000000;
-  static const uint32_t EXP_MASK = 0x7f800000;
-  static const uint32_t POS_INF = 0x7f800000;
-  static const uint32_t NEG_INF = 0xff800000;
-  static const uint32_t POS_ZERO = 0x00000000;
-  static const uint32_t NEG_ZERO = 0x80000000;
+  static const uint32_t SGN_MASK = 0x80000000U;
+  static const uint32_t EXP_MASK = 0x7f800000U;
+  static const uint32_t POS_INF = 0x7f800000U;
+  static const uint32_t NEG_INF = 0xff800000U;
+  static const uint32_t POS_ZERO = 0x00000000U;
+  static const uint32_t NEG_ZERO = 0x80000000U;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 8;
   static const unsigned int MANTISSA_BITS = 23;
@@ -98,9 +96,9 @@ struct float_ieee754_single {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_SINGLE;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -118,7 +116,6 @@ struct float_ieee754_single {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_double {
 #ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
@@ -127,14 +124,14 @@ struct float_ieee754_double {
   uint32_t lsp;
   uint32_t msp;
 #endif
-  static const uint32_t MSP_SGN_MASK = 0x80000000;
-  static const uint32_t MSP_POS_INF = 0x7ff00000;
-  static const uint32_t MSP_NEG_INF = 0xfff00000;
-  static const uint32_t MSP_POS_ZERO = 0x00000000;
-  static const uint32_t MSP_NEG_ZERO = 0x80000000;
+  static const uint32_t MSP_SGN_MASK = 0x80000000U;
+  static const uint32_t MSP_POS_INF = 0x7ff00000U;
+  static const uint32_t MSP_NEG_INF = 0xfff00000U;
+  static const uint32_t MSP_POS_ZERO = 0x00000000U;
+  static const uint32_t MSP_NEG_ZERO = 0x80000000U;
   static const uint32_t LSP_INF = 0;
   static const uint32_t LSP_ZERO = 0;
-  static const uint32_t LSP_MAX = 0xffffffff;
+  static const uint32_t LSP_MAX = 0xffffffffU;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 11;
   static const unsigned int MANTISSA_BITS = 52;
@@ -144,9 +141,9 @@ struct float_ieee754_double {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_DOUBLE;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -158,15 +155,14 @@ struct float_ieee754_double {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ibm_single {
   uint32_t word;
-  static const uint32_t SGN_MASK = 0x80000000;
-  static const uint32_t EXP_MASK = 0x7f000000;
-  static const uint32_t POS_INF = 0x7f000000;
-  static const uint32_t NEG_INF = 0xff000000;
-  static const uint32_t POS_ZERO = 0x00000000;
-  static const uint32_t NEG_ZERO = 0x80000000;
+  static const uint32_t SGN_MASK = 0x80000000U;
+  static const uint32_t EXP_MASK = 0x7f000000U;
+  static const uint32_t POS_INF = 0x7f000000U;
+  static const uint32_t NEG_INF = 0xff000000U;
+  static const uint32_t POS_ZERO = 0x00000000U;
+  static const uint32_t NEG_ZERO = 0x80000000U;
   static const unsigned int BASE = 16;
   static const unsigned int EXPONENT_BITS = 7;
   static const unsigned int MANTISSA_BITS = 24;
@@ -176,9 +172,9 @@ struct float_ibm_single {
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IBM_SINGLE;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -190,7 +186,6 @@ struct float_ibm_single {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ibm_double {
   static const unsigned int BASE = 16;
   static const unsigned int EXPONENT_BITS = 7;
@@ -201,7 +196,6 @@ struct float_ibm_double {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_intel_double_extended {
 #ifdef PPL_WORDS_BIGENDIAN
   uint32_t msp;
@@ -210,15 +204,15 @@ struct float_intel_double_extended {
   uint64_t lsp;
   uint32_t msp;
 #endif
-  static const uint32_t MSP_SGN_MASK = 0x00008000;
-  static const uint32_t MSP_POS_INF = 0x00007fff;
-  static const uint32_t MSP_NEG_INF = 0x0000ffff;
-  static const uint32_t MSP_POS_ZERO = 0x00000000;
-  static const uint32_t MSP_NEG_ZERO = 0x00008000;
-  static const uint64_t LSP_INF = (uint64_t)0x8000000000000000ULL;
+  static const uint32_t MSP_SGN_MASK = 0x00008000U;
+  static const uint32_t MSP_POS_INF = 0x00007fffU;
+  static const uint32_t MSP_NEG_INF = 0x0000ffffU;
+  static const uint32_t MSP_POS_ZERO = 0x00000000U;
+  static const uint32_t MSP_NEG_ZERO = 0x00008000U;
+  static const uint64_t LSP_INF = static_cast<uint64_t>(0x8000000000000000ULL);
   static const uint64_t LSP_ZERO = 0;
-  static const uint64_t LSP_DMAX = (uint64_t)0x7fffffffffffffffULL;
-  static const uint64_t LSP_NMAX = (uint64_t)0xffffffffffffffffULL;
+  static const uint64_t LSP_DMAX = static_cast<uint64_t>(0x7fffffffffffffffULL);
+  static const uint64_t LSP_NMAX = static_cast<uint64_t>(0xffffffffffffffffULL);
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 63;
@@ -229,9 +223,9 @@ struct float_intel_double_extended {
 					- static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format =
                                      INTEL_DOUBLE_EXTENDED;
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -243,7 +237,6 @@ struct float_intel_double_extended {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-
 struct float_ieee754_quad {
 #ifdef PPL_WORDS_BIGENDIAN
   uint64_t msp;
@@ -252,14 +245,14 @@ struct float_ieee754_quad {
   uint64_t lsp;
   uint64_t msp;
 #endif
-  static const uint64_t MSP_SGN_MASK = (uint64_t)0x8000000000000000ULL;
-  static const uint64_t MSP_POS_INF = (uint64_t)0x7fff000000000000ULL;
-  static const uint64_t MSP_NEG_INF = (uint64_t)0xffff000000000000ULL;
-  static const uint64_t MSP_POS_ZERO = (uint64_t)0x0000000000000000ULL;
-  static const uint64_t MSP_NEG_ZERO = (uint64_t)0x8000000000000000ULL;
+  static const uint64_t MSP_SGN_MASK = static_cast<uint64_t>(0x8000000000000000ULL);
+  static const uint64_t MSP_POS_INF = static_cast<uint64_t>(0x7fff000000000000ULL);
+  static const uint64_t MSP_NEG_INF = static_cast<uint64_t>(0xffff000000000000ULL);
+  static const uint64_t MSP_POS_ZERO = static_cast<uint64_t>(0x0000000000000000ULL);
+  static const uint64_t MSP_NEG_ZERO = static_cast<uint64_t>(0x8000000000000000ULL);
   static const uint64_t LSP_INF = 0;
   static const uint64_t LSP_ZERO = 0;
-  static const uint64_t LSP_MAX = (uint64_t)0xffffffffffffffffULL;
+  static const uint64_t LSP_MAX = static_cast<uint64_t>(0xffffffffffffffffULL);
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;
   static const unsigned int MANTISSA_BITS = 112;
@@ -268,9 +261,9 @@ struct float_ieee754_quad {
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
 					- static_cast<int>(MANTISSA_BITS);
-  int is_inf() const;
+  int inf_sign() const;
   bool is_nan() const;
-  int is_zero() const;
+  int zero_sign() const;
   bool sign_bit() const;
   void negate();
   void dec();
@@ -302,7 +295,7 @@ public:
 #elif PPL_CXX_FLOAT_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
   typedef float_intel_double_extended Binary;
 #else
-#error "invalid value for PPL_CXX_FLOAT_BINARY_FORMAT"
+#error "Invalid value for PPL_CXX_FLOAT_BINARY_FORMAT"
 #endif
   union {
     float number;
@@ -331,7 +324,7 @@ public:
 #elif PPL_CXX_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
   typedef float_intel_double_extended Binary;
 #else
-#error "invalid value for PPL_CXX_DOUBLE_BINARY_FORMAT"
+#error "Invalid value for PPL_CXX_DOUBLE_BINARY_FORMAT"
 #endif
   union {
     double number;
@@ -360,7 +353,7 @@ public:
 #elif PPL_CXX_LONG_DOUBLE_BINARY_FORMAT == PPL_FLOAT_INTEL_DOUBLE_EXTENDED
   typedef float_intel_double_extended Binary;
 #else
-#error "invalid value for PPL_CXX_LONG_DOUBLE_BINARY_FORMAT"
+#error "Invalid value for PPL_CXX_LONG_DOUBLE_BINARY_FORMAT"
 #endif
   union {
     long double number;
@@ -457,13 +450,13 @@ public:
 /* FIXME: some of the following  documentation should probably be
    under PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS */
 
-/*! \brief
+/*! \brief \relates Float
   Returns <CODE>true</CODE> if and only if there is some floating point
   number that is representable by \p f2 but not by \p f1.
 */
 bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
 
-/*! \brief
+/*! \brief \relates Float
   Computes the absolute error of floating point computations.
 
   \par Template type parameters
@@ -475,42 +468,45 @@ bool is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2);
   \param analyzed_format The floating point format used by the analyzed
   program.
 
-  \return The interval \f$[-\omega; \omega]\f$ where \f$\omega\f$ is the
+  \return The interval \f$[-\omega, \omega]\f$ where \f$\omega\f$ is the
   smallest non-zero positive number in the less precise floating point
   format between the analyzer format and the analyzed format.
 */
 template <typename FP_Interval_Type>
-const FP_Interval_Type& compute_absolute_error(
-                        Floating_Point_Format analyzed_format);
+const FP_Interval_Type&
+compute_absolute_error(Floating_Point_Format analyzed_format);
 
-/*! \brief
+/*! \brief \relates Linear_Form
   Discards all linear forms containing variable \p var from the
   linear form abstract store \p lf_store.
 */
 template <typename FP_Interval_Type>
-void discard_occurrences(std::map<dimension_type,
-                                Linear_Form<FP_Interval_Type> >& lf_store,
-                         Variable var);
+void
+discard_occurrences(std::map<dimension_type,
+                             Linear_Form<FP_Interval_Type> >& lf_store,
+                    Variable var);
 
-/*! \brief
+/*! \brief \relates Linear_Form
   Assigns the linear form \p lf to \p var in the linear form abstract
   store \p lf_store, then discards all occurrences of \p var from it.
 */
 template <typename FP_Interval_Type>
-void affine_form_image(std::map<dimension_type,
-                                Linear_Form<FP_Interval_Type> >& lf_store,
-                       Variable var,
-                       const Linear_Form<FP_Interval_Type>& lf);
+void
+affine_form_image(std::map<dimension_type,
+                           Linear_Form<FP_Interval_Type> >& lf_store,
+                  Variable var,
+                  const Linear_Form<FP_Interval_Type>& lf);
 
-/*! \brief
+/*! \brief \relates Linear_Form
   Discards from \p ls1 all linear forms but those that are associated
   to the same variable in \p ls2.
 */
 template <typename FP_Interval_Type>
-void upper_bound_assign(std::map<dimension_type,
-			         Linear_Form<FP_Interval_Type> >& ls1,
-                        const std::map<dimension_type,
-			               Linear_Form<FP_Interval_Type> >& ls2);
+void
+upper_bound_assign(std::map<dimension_type,
+                            Linear_Form<FP_Interval_Type> >& ls1,
+                   const std::map<dimension_type,
+                                  Linear_Form<FP_Interval_Type> >& ls2);
 
 } // namespace Parma_Polyhedra_Library
 

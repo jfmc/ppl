@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,6 +24,7 @@
 if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
+libtool --mode=execute \
 $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
 --num-callers=40 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
@@ -73,7 +74,6 @@ pipproblem3_SOURCES = pipproblem3.cc
 
 check_PROGRAMS = \
 $(TESTS) \
-$(WATCHDOG_TESTS) \
 $(BUGS)
 
 #EXTRA_DIST =
@@ -89,6 +89,3 @@ $(top_builddir)/tests/libppl_tests.a:
 
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

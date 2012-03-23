@@ -1,6 +1,6 @@
 /* MIP_Problem class implementation: non-inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -642,29 +642,6 @@ PPL::MIP_Problem
   return true;
 }
 
-namespace {
-
-// This is used as a template argument in process_pending_constraints(),
-// so it must be a global declaration.
-struct process_pending_constraints_helper_struct {
-
-  PPL::dimension_type index;
-  const PPL::Coefficient* data;
-  bool toggle_sign;
-
-  process_pending_constraints_helper_struct(PPL::dimension_type index1,
-                                            const PPL::Coefficient* data1,
-                                            bool toggle_sign1)
-  : index(index1), data(data1), toggle_sign(toggle_sign1) {
-  }
-
-  bool operator<(const process_pending_constraints_helper_struct& x) const {
-    return index < x.index;
-  }
-};
-
-} // namespace
-
 bool
 PPL::MIP_Problem::process_pending_constraints() {
   // Check the pending constraints to adjust the data structures.
@@ -683,7 +660,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 			 is_remergeable_variable)) {
     status = UNSATISFIABLE;
     return false;
-  };
+  }
 
   // Merge back any variable that was previously split into a positive
   // and a negative part and is now known to be nonnegative.
@@ -742,13 +719,14 @@ PPL::MIP_Problem::process_pending_constraints() {
   // * number of non-pending constraints that are no longer satisfied
   //   due to re-merging of split variables.
 
-  dimension_type num_satisfied_inequalities
-    = std::count(is_satisfied_inequality.begin(),
-                 is_satisfied_inequality.end(),
-                 true);
+  const dimension_type num_satisfied_inequalities
+    = static_cast<dimension_type>(std::count(is_satisfied_inequality.begin(),
+                                             is_satisfied_inequality.end(),
+                                             true));
   const dimension_type unfeasible_tableau_rows_size
     = unfeasible_tableau_rows.size();
 
+  PPL_ASSERT(additional_tableau_rows >= num_satisfied_inequalities);
   const dimension_type additional_artificial_vars
     = (additional_tableau_rows - num_satisfied_inequalities)
     + unfeasible_tableau_rows_size;
@@ -787,8 +765,6 @@ PPL::MIP_Problem::process_pending_constraints() {
     = (additional_artificial_vars > 0)
     ? artificial_index
     : 0;
-
-  typedef process_pending_constraints_helper_struct buffer_element_t;
 
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows,
@@ -1677,10 +1653,13 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
   {
-    // This block is equivalent to:
-    // working_cost[new_last_column] = working_cost.get(old_last_column);
-    // But it avoids storing zeroes.
-
+    // This block is equivalent to
+    //
+    // <CODE>
+    //   working_cost[new_last_column] = working_cost.get(old_last_column);
+    // </CODE>
+    //
+    // but it avoids storing zeroes.
     Coefficient_traits::const_reference old_cost
       = working_cost.get(old_last_column);
     if (old_cost == 0)
@@ -2383,7 +2362,7 @@ PPL::MIP_Problem::OK() const {
       for (dimension_type i = base.size(); i-- > 0; )
         vars_in_base.push_back(std::make_pair(base[i], i));
 
-      std::sort(vars_in_base.begin(),vars_in_base.end());
+      std::sort(vars_in_base.begin(), vars_in_base.end());
 
       for (dimension_type j = tableau_num_rows; j-- > 0; ) {
         const Row& tableau_j = tableau[j];
@@ -2659,8 +2638,8 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")")
     return false;
 
-  dimension_type base_value;
   for (dimension_type i = 0; i != base_size; ++i) {
+    dimension_type base_value;
     if (!(s >> base_value))
       return false;
     base.push_back(base_value);
@@ -2682,26 +2661,30 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")")
     return false;
 
-  dimension_type first_value;
-  dimension_type second_value;
-  dimension_type index;
-
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
   if (tableau.num_columns() != 0)
     mapping.push_back(std::make_pair(0, 0));
 
   for (dimension_type i = 1; i < mapping_size; ++i) {
+    dimension_type index;
     if (!(s >> index))
       return false;
+
     if (!(s >> str) || str != "->")
       return false;
+
+    dimension_type first_value;
     if (!(s >> first_value))
       return false;
+
     if (!(s >> str) || str != "->")
       return false;
+
+    dimension_type second_value;
     if (!(s >> second_value))
       return false;
+
     mapping.push_back(std::make_pair(first_value, second_value));
   }
 

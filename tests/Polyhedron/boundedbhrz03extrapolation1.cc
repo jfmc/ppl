@@ -1,6 +1,6 @@
 /* Test Polyhedron::bounded_BHRZ03_extrapolation_assign().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace {
 
 void
-aux_test01(std::ostream& s, const Variable& v) {
+aux_test01(std::ostream& s, const Variable v) {
   s << char('i' + v.id());
 }
 

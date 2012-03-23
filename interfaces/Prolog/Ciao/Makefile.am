@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -32,15 +32,6 @@ ciao_pl_check.pl \
 ppl_interface_generator_ciao_prolog_generated_test_pl.m4 \
 README.ciao
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
-WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
-
-endif BUILD_WATCHDOG_LIBRARY
-
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
@@ -48,7 +39,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 $(CIAO_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -159,7 +149,6 @@ endif NO_UNDEFINED
 libppl_ciao_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_ciao_la_DEPENDENCIES = \
@@ -170,7 +159,7 @@ $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
-pkglib_DATA = ppl_ciao.po
+pkgdata_DATA = ppl_ciao.po
 
 ppl_ciao.pl: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
@@ -266,7 +255,6 @@ check-local: ppl_prolog_generated_test
 pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_pl_check \
 			 >obtained_pchk
@@ -279,7 +267,6 @@ clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECT
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
@@ -289,7 +276,6 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
@@ -298,7 +284,6 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 ppl_prolog_generated_test: ciao_prolog_generated_test$(EXEEXT) .libs/libppl_ciao.so ../tests/expected_pgt
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		-dlopen libppl_ciao.la \
 		./ciao_prolog_generated_test \
 			 >obtained_pgt

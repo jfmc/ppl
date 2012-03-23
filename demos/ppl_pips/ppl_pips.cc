@@ -1,6 +1,6 @@
 /* A sort of clone of the cddlib test program `lcdd'.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 #if (!defined(USE_PPL) && !defined(USE_PIPLIB))
 #define USE_PPL 1
 #elif (defined(USE_PPL) && defined(USE_PIPLIB))
-#error "Exactly one among USE_PPL and USE_PIPLIB must be defined."
+#error "Exactly one among USE_PPL and USE_PIPLIB must be defined"
 #endif
 
 #if defined(USE_PPL)
@@ -307,7 +307,7 @@ public:
 
     PPL::dimension_type bignum_column = (bignum_column_coding == -1)
       ? PPL::not_a_dimension()
-      : (bignum_column_coding + num_vars - 1);
+      : (num_vars + (bignum_column_coding - 1));
 
     bool result = update_pip(num_vars, num_params,
                              num_constraints, num_ctx_rows,
@@ -391,8 +391,8 @@ protected:
   bool read_comment(std::istream& in) {
     comment = "";
     int count = 1;
-    char c;
     do {
+      char c;
       if (!in.get(c))
         return false;
       if (c == '(')
@@ -635,7 +635,6 @@ process_options(int argc, char* argv[]) {
       break;
 
     char* endptr;
-    long l;
     switch (c) {
     case 0:
       break;
@@ -649,7 +648,7 @@ process_options(int argc, char* argv[]) {
     case 'R':
       {
         const int MEGA = 1024*1024;
-        l = strtol(optarg, &endptr, 10);
+        long l = strtol(optarg, &endptr, 10);
         if (*endptr || l < 0)
           fatal("a non-negative integer must follow `-R'");
         else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)

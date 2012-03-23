@@ -1,6 +1,6 @@
 /* Generator class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -755,23 +755,19 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! Shorthand for Generator Generator::line(const Linear_Expression& e,
-//!                                         Representation r).
+//! Shorthand for Generator::line(const Linear_Expression& e, Representation r).
 /*! \relates Generator */
 Generator line(const Linear_Expression& e,
                Representation r = Generator::default_representation);
 
-//! Shorthand for Generator Generator::ray(const Linear_Expression& e,
-//!                                        Representation r).
+//! Shorthand for Generator::ray(const Linear_Expression& e, Representation r).
 /*! \relates Generator */
 Generator ray(const Linear_Expression& e,
               Representation r = Generator::default_representation);
 
 /*! \brief
-  Shorthand for Generator
-  Generator::point(const Linear_Expression& e,
-                   Coefficient_traits::const_reference d,
-                   Representation r).
+  Shorthand for
+  Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d, Representation r).
 
   \relates Generator
 */
@@ -780,17 +776,13 @@ point(const Linear_Expression& e = Linear_Expression::zero(),
       Coefficient_traits::const_reference d = Coefficient_one(),
       Representation r = Generator::default_representation);
 
-/*! \brief
-  Shorthand for Generator
-  Generator::point(Representation r).
-
-  \relates Generator
-*/
+//! Shorthand for Generator::point(Representation r).
+/*! \relates Generator */
 Generator
 point(Representation r);
 
 /*! \brief
-  Shorthand for Generator
+  Shorthand for
   Generator::point(const Linear_Expression& e, Representation r).
 
   \relates Generator
@@ -799,10 +791,8 @@ Generator
 point(const Linear_Expression& e, Representation r);
 
 /*! \brief
-  Shorthand for Generator
-  Generator::closure_point(const Linear_Expression& e,
-                           Coefficient_traits::const_reference d,
-                           Representation r).
+  Shorthand for
+  Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d, Representation r).
 
   \relates Generator
 */
@@ -811,17 +801,13 @@ closure_point(const Linear_Expression& e = Linear_Expression::zero(),
               Coefficient_traits::const_reference d = Coefficient_one(),
               Representation r = Generator::default_representation);
 
-/*! \brief
-  Shorthand for Generator
-  Generator::closure_point(Representation r).
-
-  \relates Generator
-*/
+//! Shorthand for Generator::closure_point(Representation r).
+/*! \relates Generator */
 Generator
 closure_point(Representation r);
 
 /*! \brief
-  Shorthand for Generator
+  Shorthand for
   Generator::closure_point(const Linear_Expression& e, Representation r).
 
   \relates Generator

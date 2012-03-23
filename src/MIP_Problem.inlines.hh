@@ -1,6 +1,6 @@
 /* MIP_Problem class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -111,7 +111,7 @@ MIP_Problem::~MIP_Problem() {
   // NOTE: do NOT delete inherited constraints; they are owned
   // (and will eventually be deleted) by ancestors.
   for (Constraint_Sequence::const_iterator
-         i = input_cs.begin() + inherited_constraints,
+         i = nth_iter(input_cs, inherited_constraints),
          i_end = input_cs.end(); i != i_end; ++i)
     delete *i;
 }
@@ -217,7 +217,7 @@ MIP_Problem::external_memory_in_bytes() const {
   // NOTE: disregard inherited constraints, as they are owned by ancestors.
   n += input_cs.capacity() * sizeof(Constraint*);
   for (Constraint_Sequence::const_iterator
-         i = input_cs.begin() + inherited_constraints,
+         i = nth_iter(input_cs, inherited_constraints),
          i_end = input_cs.end(); i != i_end; ++i)
     n += ((*i)->total_memory_in_bytes());
 

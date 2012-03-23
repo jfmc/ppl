@@ -1,6 +1,6 @@
 /* Grid_Generator class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -715,69 +715,62 @@ private:
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
-  Shorthand for Grid_Generator
+  Shorthand for
   Grid_Generator::grid_line(const Linear_Expression& e, Representation r).
+
+  \relates Grid_Generator
 */
-/*! \relates Grid_Generator */
 Grid_Generator
 grid_line(const Linear_Expression& e,
           Representation r = Grid_Generator::default_representation);
 
 /*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::parameter(const Linear_Expression& e,
-                            Coefficient_traits::const_reference d,
-                            Representation r).
+  Shorthand for
+  Grid_Generator::parameter(const Linear_Expression& e, Coefficient_traits::const_reference d, Representation r).
+
+  \relates Grid_Generator
 */
-/*! \relates Grid_Generator */
 Grid_Generator
 parameter(const Linear_Expression& e = Linear_Expression::zero(),
           Coefficient_traits::const_reference d = Coefficient_one(),
           Representation r = Grid_Generator::default_representation);
 
-/*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::parameter(Representation r).
-*/
+//! Shorthand for Grid_Generator::parameter(Representation r).
 /*! \relates Grid_Generator */
 Grid_Generator
 parameter(Representation r);
 
 /*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::parameter(const Linear_Expression& e,
-                            Representation r).
+  Shorthand for
+  Grid_Generator::parameter(const Linear_Expression& e, Representation r).
+
+  \relates Grid_Generator
 */
-/*! \relates Grid_Generator */
 Grid_Generator
 parameter(const Linear_Expression& e, Representation r);
 
 /*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::grid_point(const Linear_Expression& e,
-                             Coefficient_traits::const_reference d,
-                             Representation r).
+  Shorthand for
+  Grid_Generator::grid_point(const Linear_Expression& e, Coefficient_traits::const_reference d, Representation r).
+
+  \relates Grid_Generator
 */
-/*! \relates Grid_Generator */
 Grid_Generator
 grid_point(const Linear_Expression& e = Linear_Expression::zero(),
            Coefficient_traits::const_reference d = Coefficient_one(),
            Representation r = Grid_Generator::default_representation);
 
-/*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::grid_point(Representation r).
-*/
+//! Shorthand for Grid_Generator::grid_point(Representation r).
 /*! \relates Grid_Generator */
 Grid_Generator
 grid_point(Representation r);
 
 /*! \brief
-  Shorthand for Grid_Generator
-  Grid_Generator::grid_point(const Linear_Expression& e,
-                             Representation r).
+  Shorthand for
+  Grid_Generator::grid_point(const Linear_Expression& e, Representation r).
+
+  \relates Grid_Generator
 */
-/*! \relates Grid_Generator */
 Grid_Generator
 grid_point(const Linear_Expression& e, Representation r);
 

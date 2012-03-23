@@ -5,7 +5,7 @@ dnl for the Java interface; this includes:
 dnl - the list in the imported file and any Java specific methods.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -42,7 +42,7 @@ dnl The <name> must be exactly as written here.
 m4_define(`m4_procedure_list',
 `m4_echo_unquoted(`m4_common_procedure_list',
 ppl_free_@CLASS@/1 +all,
-ppl_@CLASS@_hashcode/2 +all -box,
+ppl_@CLASS@_hashcode/2 +all,
 ppl_@CLASS@_string/1 +all,
 ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/1 +simple,
 ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@/2 +simple,

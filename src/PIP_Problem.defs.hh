@@ -1,6 +1,6 @@
 /* PIP_Problem class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -685,7 +685,7 @@ public:
     Thrown if trying to print the solution when the PIP problem
     still has to be solved.
   */
-  void print_solution(std::ostream& s, unsigned indent = 0) const;
+  void print_solution(std::ostream& s, int indent = 0) const;
 
   PPL_OUTPUT_DECLARATIONS
 

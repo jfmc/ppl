@@ -1,6 +1,6 @@
 /* Pointset_Powerset class implementation: non-inline template functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -115,7 +115,8 @@ Pointset_Powerset<PSET>::concatenate_assign(const Pointset_Powerset& y) {
       new_x.sequence.push_back(zi);
     }
     ++xi;
-    if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
+    if ((abandon_expensive_computations != 0)
+        && (xi != x_end) && (y_begin != y_end)) {
       // Hurry up!
       PSET x_ph = xi->pointset();
       for (++xi; xi != x_end; ++xi)
@@ -674,8 +675,8 @@ Pointset_Powerset<PSET>
     PSET context_i(si->pointset());
     context_i.intersection_assign(enlarged);
     PSET enlarged_i(dest);
-    nonempty_intersection
-      |= enlarged_i.simplify_using_context_assign(context_i);
+    if (enlarged_i.simplify_using_context_assign(context_i))
+      nonempty_intersection = true;
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }
@@ -925,13 +926,13 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_d);
   best_sup_n = 0;
   best_sup_d = 1;
-  bool best_max = 0;
+  bool best_max = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
   iter_sup_n = 0;
   iter_sup_d = 1;
-  bool iter_max = 0;
+  bool iter_max = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
@@ -954,7 +955,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_max = iter_max;
         }
         else if (tmp == 0)
-          best_max = best_max || iter_max;
+          best_max = (best_max || iter_max);
       }
   }
   sup_n = best_sup_n;
@@ -981,14 +982,14 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_d);
   best_sup_n = 0;
   best_sup_d = 1;
-  bool best_max = 0;
+  bool best_max = false;
   Generator best_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_sup_d);
   iter_sup_n = 0;
   iter_sup_d = 1;
-  bool iter_max = 0;
+  bool iter_max = false;
   Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
@@ -1015,7 +1016,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_g = iter_g;
         }
         else if (tmp == 0) {
-          best_max = best_max || iter_max;
+          best_max = (best_max || iter_max);
           best_g = iter_g;
         }
       }
@@ -1044,13 +1045,13 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_d);
   best_inf_n = 0;
   best_inf_d = 1;
-  bool best_min = 0;
+  bool best_min = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
   iter_inf_n = 0;
   iter_inf_d = 1;
-  bool iter_min = 0;
+  bool iter_min = false;
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
 
@@ -1073,7 +1074,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_min = iter_min;
         }
         else if (tmp == 0)
-          best_min = best_min || iter_min;
+          best_min = (best_min || iter_min);
       }
   }
   inf_n = best_inf_n;
@@ -1100,14 +1101,14 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_d);
   best_inf_n = 0;
   best_inf_d = 1;
-  bool best_min = 0;
+  bool best_min = false;
   Generator best_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_n);
   PPL_DIRTY_TEMP_COEFFICIENT(iter_inf_d);
   iter_inf_n = 0;
   iter_inf_d = 1;
-  bool iter_min = 0;
+  bool iter_min = false;
   Generator iter_g = point();
 
   PPL_DIRTY_TEMP_COEFFICIENT(tmp);
@@ -1134,7 +1135,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_g = iter_g;
         }
         else if (tmp == 0) {
-          best_min = best_min || iter_min;
+          best_min = (best_min || iter_min);
           best_g = iter_g;
         }
       }

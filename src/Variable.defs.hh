@@ -1,6 +1,6 @@
 /* Variable class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -37,7 +37,7 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-operator<<(std::ostream& s, const Variable& v);
+operator<<(std::ostream& s, const Variable v);
 
 } // namespace IO_Operators
 
@@ -115,7 +115,7 @@ public:
   bool OK() const;
 
   //! Type of output functions.
-  typedef void output_function_type(std::ostream& s, const Variable& v);
+  typedef void output_function_type(std::ostream& s, const Variable v);
 
   //! Sets the output function to be used for printing Variable objects.
   static void set_output_function(output_function_type* p);
@@ -142,13 +142,13 @@ private:
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Variable& v);
+						    const Variable v);
 
   //! Pointer to the current output function.
   static output_function_type* current_output_function;
 
   //! The default output function.
-  static void default_output_function(std::ostream& s, const Variable& v);
+  static void default_output_function(std::ostream& s, const Variable v);
 };
 
 #include "Variable.inlines.hh"

@@ -3,7 +3,7 @@ m4_divert(-1)
 dnl This m4 file contains the program code for generating Prolog_interface.dox
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -489,6 +489,22 @@ m4_define(`ppl_@CLASS@_OK_testpoly_doc',
 dnl -----------------------------------------------------------------
 dnl Documentation for each of the "get information" predicates;
 dnl -----------------------------------------------------------------
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_constpoly_doc',
+`dnl
+<P><CODE>ppl_@CLASS@_has_@UPPERLOWER@_bound(+Handle, +Var, ?Coeff_1, ?Coeff_2, ?Boolean)</CODE><BR>
+  <EM>Succeeds if and only if \c Var is @UPPERLOWER@ bounded in
+  m4_this_ppl_one_object \p P referenced by \c Handle. It is assumed
+  that \p P is not empty and its space dimension is greater than or equal
+  to that of \c Var|COMMA| otherwise the behavior is undefined.
+
+  \c Coeff_1 is unified with the numerator of the @UPPERLOWER@ bound
+  and \c Coeff_2 with the denominator of the @UPPERLOWER@ bound.
+  If the @UPPERLOWER@ is included in \p P|COMMA| then \c Boolean is unified
+  with the atom \c true and|COMMA| otherwise|COMMA| unified with
+  the atom \c false.</EM>
+
+')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_constpoly_doc',
 `dnl

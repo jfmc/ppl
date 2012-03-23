@@ -1,6 +1,6 @@
 /* Polyhedron class implementation: simplify().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -205,11 +205,12 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
   // condition for an inequality to be irredundant (i.e., it provides
   // a sufficient condition for identifying redundant inequalities).
   // Let
-  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_points[i];
-  //   dim_lin_space = num_irredundant_lines;
+  //
+  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_points[i],
+  //   dim_lin_space = num_irredundant_lines,
   //   dim_ray_space
   //     = dim_vector_space - num_irredundant_equalities - dim_lin_space
-  //     = num_columns - 1 - num_lines_or_equalities - dim_lin_space;
+  //     = num_columns - 1 - num_lines_or_equalities - dim_lin_space,
   //   min_sat_rays_or_points = dim_ray_space.
   //
   // An inequality saturated by less than `dim_ray_space' _rays/points_

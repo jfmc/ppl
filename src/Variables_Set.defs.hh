@@ -1,6 +1,6 @@
 /* Variables_Set class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -54,7 +54,7 @@ public:
   Variables_Set();
 
   //! Builds the singleton set of indexes containing <CODE>v.id()</CODE>;
-  explicit Variables_Set(const Variable& v);
+  explicit Variables_Set(const Variable v);
 
   /*! \brief
     Builds the set of variables's indexes in the range from
@@ -65,7 +65,7 @@ public:
     <CODE>v.id()</CODE>, <CODE>v.id()+1</CODE>, ..., <CODE>w.id()</CODE>.
     The empty set is built otherwise.
   */
-  Variables_Set(const Variable& v, const Variable& w);
+  Variables_Set(const Variable v, const Variable w);
 
   //! Returns the maximum space dimension a Variables_Set can handle.
   static dimension_type max_space_dimension();

@@ -1,6 +1,6 @@
 /* Bit_Matrix class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -63,7 +63,7 @@ Bit_Matrix::remove_trailing_rows(const dimension_type n) {
   // than the actual number of the rows of the matrix.
   PPL_ASSERT(n <= rows.size());
   if (n != 0)
-    rows.erase(rows.end() - n, rows.end());
+    rows.resize(rows.size() - n);
   PPL_ASSERT(OK());
 }
 

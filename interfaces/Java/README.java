@@ -1,3 +1,15 @@
+# Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
+#
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without
+# modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.
+
 The Java interface of the Parma Polyhedra Library has been tested
 with both Sun's JDK 6 (http://java.sun.com/javase/downloads/)
 and the open-source OpenJDK 6 (http://openjdk.java.net/).
@@ -24,22 +36,22 @@ a) Load the PPL interface library, by calling `System.load' and
    on a Linux machine and assuming <PPL prefix>=/usr/local/, the call
    will be something like:
 
-    System.load("/usr/local/lib/ppl/libppl_java.so");
+     System.load("/usr/local/lib/ppl/libppl_java.so");
 
 b) Make sure that only the intended version(s) of the library has been
    loaded, e.g., by calling static method
 
-    Parma_Polyhedra_Library.version();
+     Parma_Polyhedra_Library.version();
 
 c) Starting from PPL version 0.11, before calling any other method from
    other PPL package classes, initialize the Java interface by calling
    the static method
 
-    Parma_Polyhedra_Library.initialize_library();
+     Parma_Polyhedra_Library.initialize_library();
 
    When done using the library, finalize it by calling the static method
 
-    Parma_Polyhedra_Library.finalize_library();
+     Parma_Polyhedra_Library.finalize_library();
 
    After finalization no other method of the library may be used (except
    for those in class Parma_Polyhedra_Library), unless the library

@@ -1,6 +1,6 @@
 /* CO_Tree class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -46,33 +46,26 @@ CO_Tree::dfs_index(iterator itr) const {
 
 inline
 CO_Tree::CO_Tree() {
-
   init(0);
-
   PPL_ASSERT(OK());
 }
 
 inline
 CO_Tree::CO_Tree(const CO_Tree& x) {
-
   PPL_ASSERT(x.OK());
-
+  data_allocator = x.data_allocator;
   init(x.reserved_size);
-
   copy_data_from(x);
 }
 
 inline CO_Tree&
 CO_Tree::operator=(const CO_Tree& x) {
-
   if (this != &x) {
-
     destroy();
+    data_allocator = x.data_allocator;
     init(x.reserved_size);
-
     copy_data_from(x);
   }
-
   return *this;
 }
 
@@ -176,11 +169,12 @@ CO_Tree::m_swap(CO_Tree& x) {
   using std::swap;
   swap(max_depth, x.max_depth);
   swap(indexes, x.indexes);
+  swap(data_allocator, x.data_allocator);
   swap(data, x.data);
   swap(reserved_size, x.reserved_size);
   swap(size_, x.size_);
-  // Cached iterators have been invalidated by the swap, they must be
-  // refreshed here.
+  // Cached iterators have been invalidated by the swap,
+  // they must be refreshed here.
   refresh_cached_iterators();
   x.refresh_cached_iterators();
   PPL_ASSERT(structure_OK());
@@ -334,9 +328,10 @@ inline void
 CO_Tree::move_data_element(data_type& to, data_type& from) {
   // The following code is equivalent (but slower):
   //
-  // new (&to) data_type(from);
-  // from.~data_type();
-
+  // <CODE>
+  //   new (&to) data_type(from);
+  //   from.~data_type();
+  // </CODE>
   std::memcpy(&to, &from, sizeof(data_type));
 }
 
@@ -693,7 +688,7 @@ CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1, dimension_type i1)
   PPL_ASSERT(tree.reserved_size != 0);
   PPL_ASSERT(i1 <= tree.reserved_size + 1);
   i = i1;
-  offset = i & -i;
+  offset = least_significant_one_mask(i);
   PPL_ASSERT(OK());
 }
 
@@ -717,9 +712,7 @@ inline CO_Tree::tree_iterator&
 CO_Tree::tree_iterator::operator=(const iterator& itr) {
   PPL_ASSERT(itr != tree.end());
   i = tree.dfs_index(itr);
-  offset = i;
-  // This assumes two's complement encoding.
-  offset &= -i;
+  offset = least_significant_one_mask(i);
   return *this;
 }
 
@@ -776,8 +769,10 @@ CO_Tree::tree_iterator::follow_left_children_with_value() {
   p -= (offset - 1);
   while (*p == unused_index)
     ++p;
-  i = p - tree.indexes;
-  offset = i & -i;
+  ptrdiff_t distance = p - tree.indexes;
+  PPL_ASSERT(distance >= 0);
+  i = static_cast<dimension_type>(distance);
+  offset = least_significant_one_mask(i);
   PPL_ASSERT(OK());
 }
 
@@ -789,8 +784,10 @@ CO_Tree::tree_iterator::follow_right_children_with_value() {
   p += (offset - 1);
   while (*p == unused_index)
     --p;
-  i = p - tree.indexes;
-  offset = i & -i;
+  ptrdiff_t distance = p - tree.indexes;
+  PPL_ASSERT(distance >= 0);
+  i = static_cast<dimension_type>(distance);
+  offset = least_significant_one_mask(i);
   PPL_ASSERT(OK());
 }
 

@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,6 +24,7 @@
 if VALGRIND_TESTS_ENABLED
 
 CHECKER = \
+libtool --mode=execute \
 $(VALGRIND) --tool=memcheck -q --trace-children=yes --leak-check=yes \
 --num-callers=40 --leak-resolution=high \
 --suppressions=$(top_srcdir)/tests/valgrind_suppressions
@@ -102,6 +103,7 @@ propagateconstraints1 propagateconstraints2 \
 relations1 relations2 relations3 relations4 \
 refinewithconstraint1 refinewithconstraint2 \
 refinewithconstraints1 \
+refinewithconstraints2 \
 refinewithcongruence1 \
 refinewithcongruences1 \
 removespacedims1 \
@@ -118,7 +120,7 @@ writebox1
 DERIVED_TESTS = \
 nnc_frompolyhedron1
 
-ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
+ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
 
 # This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
@@ -269,6 +271,7 @@ refinewithconstraint1_SOURCES = refinewithconstraint1.cc
 refinewithconstraint2_SOURCES = refinewithconstraint2.cc
 
 refinewithconstraints1_SOURCES = refinewithconstraints1.cc
+refinewithconstraints2_SOURCES = refinewithconstraints2.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
@@ -290,19 +293,6 @@ wrap1_SOURCES = wrap1.cc
 
 writebox1_SOURCES = writebox1.cc
 
-refinewithconstraints2_SRCS = refinewithconstraints2.cc
-
-if BUILD_WATCHDOG_LIBRARY
-WATCHDOG_TESTS = refinewithconstraints2
-
-refinewithconstraints2_SOURCES = $(refinewithconstraints2_SRCS)
-refinewithconstraints2_CPPFLAGS = \
-$(AM_CPPFLAGS) \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src
-refinewithconstraints2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
-
-endif BUILD_WATCHDOG_LIBRARY
 
 #
 # Sources and compilation flags for the derived check programs
@@ -317,7 +307,7 @@ BUGS =
 
 check_PROGRAMS = $(ALL_TESTS) $(BUGS)
 
-EXTRA_DIST = $(refinewithconstraints2_SRCS)
+EXTRA_DIST =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
@@ -336,6 +326,3 @@ $(top_builddir)/tests/libppl_tests.a:
 
 $(top_builddir)/src/libppl.la:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/src libppl.la
-
-$(top_builddir)/Watchdog/src/libpwl.la:
-	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/Watchdog/src libpwl.la

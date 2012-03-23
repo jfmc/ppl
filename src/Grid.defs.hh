@@ -1,6 +1,6 @@
 /* Grid class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -2626,11 +2626,6 @@ protected:
 				    Variable var) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
-
-  // Note: it has to be a static method, because it can be called inside
-  // constructors (before actually constructing the grid object).
-  static void throw_space_dimension_overflow(const char* method,
-					     const char* reason);
 
   void throw_invalid_constraint(const char* method,
                                 const char* c_name) const;

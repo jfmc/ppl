@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -24,7 +24,7 @@
 # Tell aclocal where to find `.m4' files.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = . utils src Watchdog tests interfaces demos doc m4
+SUBDIRS = . utils src tests interfaces demos doc m4
 
 dist_noinst_SCRIPTS = \
 configure
@@ -42,7 +42,7 @@ ppl-config.h.in: config.h.in $(srcdir)/ppl-config.sed
 	$(SED) -f $(srcdir)/ppl-config.sed $< >$@
 
 DISTCHECK_CONFIGURE_FLAGS = \
---enable-shared --enable-watchdog
+--enable-shared
 
 # Kludge: we need to force building `ppl-config.h' on `make dist',
 # hence we list it in `EXTRA_DIST';  but we do not want to distribute

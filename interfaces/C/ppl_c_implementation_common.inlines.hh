@@ -1,6 +1,6 @@
 /* Implementation of the C interface: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -178,7 +178,7 @@ Array_Partial_Function_Wrapper::has_empty_codomain() const {
         break;
       }
   }
-  return empty;
+  return (empty != 0);
 }
 
 inline dimension_type

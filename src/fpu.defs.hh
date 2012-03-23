@@ -1,6 +1,6 @@
 /* Floating point unit related functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,6 +28,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
+
+//! \name Functions Controlling Floating Point Unit
+//@{
 
 //! Initializes the FPU control functions.
 void
@@ -73,6 +76,8 @@ fpu_reset_inexact();
 int
 fpu_check_inexact();
 
+//@} // Functions Controlling Floating Point Unit
+
 } // namespace Parma_Polyhedra_Library
 
 #if PPL_CAN_CONTROL_FPU
@@ -87,7 +92,7 @@ fpu_check_inexact();
 #elif defined(PPL_HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
 #else
-#error "PPL_CAN_CONTROL_FPU evaluates to true, but why?"
+#error "PPL_CAN_CONTROL_FPU evaluates to true: why?"
 #endif
 
 #else // !PPL_CAN_CONTROL_FPU

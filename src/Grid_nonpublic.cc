@@ -1,7 +1,7 @@
 /* Grid class implementation
    (non-inline private or protected functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -405,7 +405,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       ext_n = 0;
       ext_d = 1;
       included = true;
-      if (point)
+      if (point != 0)
 	*point = Generator::point();
       return true;
     }
@@ -428,7 +428,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
     exact_div_assign(ext_d, ext_d, gcd);
 
     included = true;
-    if (point)
+    if (point != 0)
       *point = Generator::point(Linear_Expression(gen), gen.divisor());
     return true;
   }
@@ -615,7 +615,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
 
-    if (first_point)
+    if (first_point != 0)
       lcm_assign(divisor, divisor, (*first_point).divisor());
     else {
       PPL_ASSERT(num_rows > 0);
@@ -809,15 +809,6 @@ throw_dimension_incompatible(const char* method,
     << "this->space_dimension() == " << space_dimension()
     << ", required space dimension == " << required_space_dim << ".";
   throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Grid::throw_space_dimension_overflow(const char* method,
-					  const char* reason) {
-  std::ostringstream s;
-  s << "PPL::Grid::" << method << ":" << std::endl
-    << reason << ".";
-  throw std::length_error(s.str());
 }
 
 void

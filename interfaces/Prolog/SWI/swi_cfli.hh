@@ -1,6 +1,6 @@
 /* SWI-Prolog Common Foreign Language Interface.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -294,7 +294,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 inline int
 Prolog_is_cons(Prolog_term_ref t) {
-  return !PL_is_atom(t) && PL_is_list(t);
+  return (!PL_is_atom(t) && PL_is_list(t)) ? 1 : 0;
 }
 
 /*!

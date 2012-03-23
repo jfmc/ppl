@@ -6,7 +6,7 @@ dnl the generated Prolog interface predicates
 dnl and the main file ppl_prolog_generated_test_main.pl.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -825,6 +825,27 @@ ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
        \+ ppl_@CLASS@_bounds_from_@ABOVEBELOW@(PS, LE1)
      ;
        true
+     ),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`
+ppl_@CLASS@_has_@UPPERLOWER@_bound_5_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     (ppl_@CLASS@_is_empty(PS) ->
+       true
+     ;
+       make_vars(Space_Dim, [Var| _Var_List]),
+       (ppl_@CLASS@_has_@UPPERLOWER@_bound(PS, Var, _, _, _) -> true ; true)
      ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS)

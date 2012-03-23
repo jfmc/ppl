@@ -1,6 +1,6 @@
 /* C integers info.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -63,7 +63,7 @@ struct C_Integer : public False { };
 
 template <>
 struct C_Integer<char> : public True {
-  enum anonymous_enum {
+  enum const_bool_value {
 #if PPL_CXX_PLAIN_CHAR_IS_SIGNED
     is_signed = true
 #else
@@ -84,7 +84,7 @@ struct C_Integer<char> : public True {
 
 template <>
 struct C_Integer<signed char> : public True {
-  enum anonymous_enum { is_signed = true };
+  enum const_bool_value { is_signed = true };
   typedef void smaller_type;
   typedef void smaller_signed_type;
   typedef void smaller_unsigned_type;
@@ -95,7 +95,7 @@ struct C_Integer<signed char> : public True {
 
 template <>
 struct C_Integer<signed short> : public True {
-  enum anonymous_enum { is_signed = true };
+  enum const_bool_value { is_signed = true };
   typedef signed char smaller_type;
   typedef signed char smaller_signed_type;
   typedef unsigned char smaller_unsigned_type;
@@ -106,7 +106,7 @@ struct C_Integer<signed short> : public True {
 
 template <>
 struct C_Integer<signed int> : public True {
-  enum anonymous_enum { is_signed = true };
+  enum const_bool_value { is_signed = true };
   typedef signed short smaller_type;
   typedef signed short smaller_signed_type;
   typedef unsigned short smaller_unsigned_type;
@@ -117,7 +117,7 @@ struct C_Integer<signed int> : public True {
 
 template <>
 struct C_Integer<signed long> : public True {
-  enum anonymous_enum { is_signed = true };
+  enum const_bool_value { is_signed = true };
   typedef signed int smaller_type;
   typedef signed int smaller_signed_type;
   typedef unsigned int smaller_unsigned_type;
@@ -128,7 +128,7 @@ struct C_Integer<signed long> : public True {
 
 template <>
 struct C_Integer<signed long long> : public True {
-  enum anonymous_enum { is_signed = true };
+  enum const_bool_value { is_signed = true };
   typedef signed long smaller_type;
   typedef signed long smaller_signed_type;
   typedef unsigned long smaller_unsigned_type;
@@ -139,57 +139,57 @@ struct C_Integer<signed long long> : public True {
 
 template <>
 struct C_Integer<unsigned char> : public True {
-  enum anonymous_enum { is_signed = false };
+  enum const_bool_value { is_signed = false };
   typedef void smaller_type;
   typedef void smaller_signed_type;
   typedef void smaller_unsigned_type;
   typedef signed char other_type;
-  static const unsigned char min = 0;
-  static const unsigned char max = UCHAR_MAX;
+  static const unsigned char min = 0U;
+  static const unsigned char max = static_cast<unsigned char>(~0U);
 };
 
 template <>
 struct C_Integer<unsigned short> : public True {
-  enum anonymous_enum { is_signed = false };
+  enum const_bool_value { is_signed = false };
   typedef unsigned char smaller_type;
   typedef signed char smaller_signed_type;
   typedef unsigned char smaller_unsigned_type;
   typedef signed short other_type;
-  static const unsigned short min = 0;
-  static const unsigned short max = USHRT_MAX;
+  static const unsigned short min = 0U;
+  static const unsigned short max = static_cast<unsigned short>(~0U);
 };
 
 template <>
 struct C_Integer<unsigned int> : public True {
-  enum anonymous_enum { is_signed = false };
+  enum const_bool_value { is_signed = false };
   typedef unsigned short smaller_type;
   typedef signed short smaller_signed_type;
   typedef unsigned short smaller_unsigned_type;
   typedef signed int other_type;
-  static const unsigned int min = 0;
-  static const unsigned int max = UINT_MAX;
+  static const unsigned int min = 0U;
+  static const unsigned int max = ~0U;
 };
 
 template <>
 struct C_Integer<unsigned long> : public True {
-  enum anonymous_enum { is_signed = false };
+  enum const_bool_value { is_signed = false };
   typedef unsigned int smaller_type;
   typedef signed int smaller_signed_type;
   typedef unsigned int smaller_unsigned_type;
   typedef signed long other_type;
-  static const unsigned long min = 0;
-  static const unsigned long max = ULONG_MAX;
+  static const unsigned long min = 0UL;
+  static const unsigned long max = ~0UL;
 };
 
 template <>
 struct C_Integer<unsigned long long> : public True {
-  enum anonymous_enum { is_signed = false };
+  enum const_bool_value { is_signed = false };
   typedef unsigned long smaller_type;
   typedef signed long smaller_signed_type;
   typedef unsigned long smaller_unsigned_type;
   typedef signed long long other_type;
-  static const unsigned long long min = 0;
-  static const unsigned long long max = ULLONG_MAX;
+  static const unsigned long long min = 0ULL;
+  static const unsigned long long max = ~0ULL;
 };
 
 } // namespace Parma_Polyhedra_Library

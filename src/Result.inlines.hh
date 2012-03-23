@@ -1,6 +1,6 @@
 /* Result supporting functions implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,21 +29,44 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 /*! \relates Parma_Polyhedra_Library::Result */
+inline Result
+operator&(Result x, Result y) {
+  unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
+  return static_cast<Result>(res);
+}
+
+/*! \relates Parma_Polyhedra_Library::Result */
+inline Result
+operator|(Result x, Result y) {
+  unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
+  return static_cast<Result>(res);
+}
+
+/*! \relates Parma_Polyhedra_Library::Result */
+inline Result
+operator-(Result x, Result y) {
+  Result y_neg = static_cast<Result>(~static_cast<unsigned>(y));
+  return x & y_neg;
+}
+
+/*! \relates Parma_Polyhedra_Library::Result */
 inline Result_Class
 result_class(Result r) {
-  return static_cast<Result_Class>(r & VC_MASK);
+  Result rc = r & static_cast<Result>(VC_MASK);
+  return static_cast<Result_Class>(rc);
 }
 
 /*! \relates Parma_Polyhedra_Library::Result */
 inline Result_Relation
 result_relation(Result r) {
-  return static_cast<Result_Relation>(r & VR_MASK);
+  Result rc = r & static_cast<Result>(VR_MASK);
+  return static_cast<Result_Relation>(rc);
 }
 
 /*! \relates Parma_Polyhedra_Library::Result */
 inline Result
 result_relation_class(Result r) {
-  return static_cast<Result>(r & (VR_MASK | VC_MASK));
+  return r & (static_cast<Result>(VR_MASK) | static_cast<Result>(VC_MASK));
 }
 
 inline int
@@ -71,15 +94,7 @@ result_overflow(Result r) {
 
 inline bool
 result_representable(Result r) {
-  return !(r & V_UNREPRESENTABLE);
-}
-
-inline Result operator|(Result a, Result b) {
-  return static_cast<Result>((unsigned)a | (unsigned)b);
-}
-
-inline Result operator-(Result a, Result b) {
-  return static_cast<Result>((unsigned)a & ~(unsigned)b);
+  return (r & V_UNREPRESENTABLE) != V_UNREPRESENTABLE;
 }
 
 } // namespace Parma_Polyhedra_Library

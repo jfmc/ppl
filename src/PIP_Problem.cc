@@ -1,6 +1,6 @@
 /* PIP_Problem class implementation: non-inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -132,7 +132,7 @@ PPL::PIP_Problem::solve() const {
 
       // Go through all pending constraints.
       for (Constraint_Sequence::const_iterator
-             cs_i = input_cs.begin() + first_pending_constraint,
+             cs_i = nth_iter(input_cs, first_pending_constraint),
              cs_end = input_cs.end(); cs_i != cs_end; ++cs_i) {
         const Constraint& c = *cs_i;
         const dimension_type c_space_dim = c.space_dimension();
@@ -172,10 +172,10 @@ PPL::PIP_Problem::solve() const {
           for (Variables_Set::const_iterator
                pi = param_begin; pi != param_end; ++pi, ++i) {
             if (*pi < c_space_dim) {
-              Coefficient_traits::const_reference x
+              Coefficient_traits::const_reference coeff_pi
                 = c.coefficient(Variable(*pi));
-              if (x != 0)
-                itr = row.insert(itr, i, x);
+              if (coeff_pi != 0)
+                itr = row.insert(itr, i, coeff_pi);
             } else
               break;
           }
@@ -227,10 +227,10 @@ PPL::PIP_Problem::solve() const {
                                                      external_space_dim,
                                                      /*indent_level=*/ 0);
       // Update problem status.
-      x.status = (x.current_solution) ? OPTIMIZED : UNSATISFIABLE;
+      x.status = (x.current_solution != 0) ? OPTIMIZED : UNSATISFIABLE;
 
       PPL_ASSERT(OK());
-      return (x.current_solution)
+      return (x.current_solution != 0)
         ? OPTIMIZED_PIP_PROBLEM
         : UNFEASIBLE_PIP_PROBLEM;
     } // End of handler for PARTIALLY_SATISFIABLE case.
@@ -325,7 +325,7 @@ PPL::PIP_Problem::OK() const {
   if (!initial_context.OK())
     return false;
 
-  if (current_solution) {
+  if (current_solution != 0) {
     // Check well formedness of the solution tree.
     if (!current_solution->OK()) {
 #ifndef NDEBUG
@@ -698,7 +698,7 @@ PPL::memory_size_type
 PPL::PIP_Problem::external_memory_in_bytes() const {
   memory_size_type n = initial_context.external_memory_in_bytes();
   // Adding the external memory for `current_solution'.
-  if (current_solution)
+  if (current_solution != 0)
     n += current_solution->total_memory_in_bytes();
   // Adding the external memory for `input_cs'.
   n += input_cs.capacity() * sizeof(Constraint);
@@ -717,7 +717,7 @@ PPL::PIP_Problem::total_memory_in_bytes() const {
 }
 
 void
-PPL::PIP_Problem::print_solution(std::ostream& s, unsigned indent) const {
+PPL::PIP_Problem::print_solution(std::ostream& s, int indent) const {
   switch (status) {
 
   case UNSATISFIABLE:

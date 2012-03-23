@@ -1,6 +1,6 @@
 /* stdiobuf class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "stdiobuf.defs.hh"
+#include "globals.defs.hh"
+#include "assert.hh"
+#include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 
@@ -40,12 +43,13 @@ stdiobuf::underflow() {
 
 std::streamsize
 stdiobuf::xsgetn(char_type* s, std::streamsize n) {
-  std::streamsize r = fread(s, 1, n, fp);
+  PPL_ASSERT(n >= 0);
+  size_t r = fread(s, 1, static_cast<size_t>(n), fp);
   if (r > 0)
     unget_char_buf = traits_type::to_int_type(s[r - 1]);
   else
     unget_char_buf = traits_type::eof();
-  return r;
+  return static_cast<std::streamsize>(r);
 }
 
 stdiobuf::int_type
@@ -58,14 +62,16 @@ stdiobuf::pbackfail(int_type c) {
 
 std::streamsize
 stdiobuf::xsputn(const char_type* s, std::streamsize n) {
-  return fwrite(s, 1, n, fp);
+  PPL_ASSERT(n >= 0);
+  size_t r = fwrite(s, 1, static_cast<size_t>(n), fp);
+  return static_cast<std::streamsize>(r);
 }
 
 stdiobuf::int_type
 stdiobuf::overflow(int_type c) {
   const int_type eof = traits_type::eof();
   if (traits_type::eq_int_type(c, eof))
-    return fflush(fp) ? eof : traits_type::not_eof(c);
+    return (fflush(fp) != 0) ? eof : traits_type::not_eof(c);
   else
     return putc(c, fp);
 }

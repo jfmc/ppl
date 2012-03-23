@@ -6,7 +6,7 @@ files ppl_c_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -41,7 +41,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (ppl_@CLASS@_t* pph,
  ppl_dimension_type d,
  int empty) try {
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(d, empty ? EMPTY : UNIVERSE));
+  Degenerate_Element e = (empty != 0) ? EMPTY : UNIVERSE;
+  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(d, e));
   return 0;
 }
 CATCH_ALL
@@ -184,7 +185,7 @@ ppl_@CLASS@_relation_with_@!RELATION_REPRESENT@
  ppl_const_@!RELATION_REPRESENT@_t c) try {
   const @CPP_CLASS@& pph = *to_const(ph);
   const @!RELATION_REPRESENT@& cc = *to_const(c);
-  return pph.relation_with(cc).get_flags();
+  return static_cast<int>(pph.relation_with(cc).get_flags());
 }
 CATCH_ALL
 
@@ -259,6 +260,28 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`int
+ppl_@CLASS@_has_@UPPERLOWER@_bound
+(ppl_@CLASS@_t ps,
+ ppl_dimension_type var,
+ ppl_Coefficient_t ext_n,
+ ppl_Coefficient_t ext_d,
+ int* pclosed) try {
+  const @CPP_CLASS@& pps = *to_const(ps);
+  Coefficient& eext_n = *to_nonconst(ext_n);
+  Coefficient& eext_d = *to_nonconst(ext_d);
+  bool closed;
+  bool bounded
+    = pps.has_@UPPERLOWER@_bound(Variable(var), eext_n, eext_d, closed);
+  if (bounded)
+    *pclosed = closed ? 1 : 0;
+  return bounded ? 1 : 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_frequency_code',
 `int
 ppl_@CLASS@_frequency
@@ -274,7 +297,7 @@ ppl_@CLASS@_frequency
   Coefficient& pfreq_d = *to_nonconst(freq_d);
   Coefficient& pval_n = *to_nonconst(val_n);
   Coefficient& pval_d = *to_nonconst(val_d);
-  return pph.frequency(lle, pfreq_n, pfreq_d, pval_n, pval_d);
+  return pph.frequency(lle, pfreq_n, pfreq_d, pval_n, pval_d) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -758,7 +781,7 @@ m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
 ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
- int disjuncts) try {
+ unsigned disjuncts) try {
    @CPP_CLASS@& xx = *to_nonconst(x);
    const @CPP_CLASS@& yy = *to_const(y);
    xx.BGP99_extrapolation_assign(yy,
@@ -1236,7 +1259,7 @@ ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
 (ppl_const_@CLASS@_t pset) try {
   const @TOPOLOGY@@CPP_CLASS@& ppset
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
-  return termination_test_@TERMINATION_ID@(ppset);
+  return termination_test_@TERMINATION_ID@(ppset) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1251,7 +1274,7 @@ ppl_termination_test_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_before));
   const @TOPOLOGY@@CPP_CLASS@& ppset_after
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
-  return termination_test_@TERMINATION_ID@_2(ppset_before, ppset_after);
+  return termination_test_@TERMINATION_ID@_2(ppset_before, ppset_after) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1380,7 +1403,7 @@ ppl_@CLASS@_wrap_assign
   for (ppl_dimension_type i = n; i-- > 0; )
     vars.insert(ds[i]);
   const Constraint_System* ccs = to_const(*pcs);
-  bool b = wrap_individually;
+  bool b = (wrap_individually != 0);
   pph.wrap_assign(vars,
                   bounded_integer_type_width(w),
                   bounded_integer_type_representation(r),

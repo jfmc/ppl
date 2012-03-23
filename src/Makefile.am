@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -72,8 +72,11 @@ lib_LTLIBRARIES = libppl.la
 bin_PROGRAMS = ppl-config
 
 ppl_config_SOURCES = \
+BUGS.hh \
 BUGS.cc \
+COPYING.hh \
 COPYING.cc \
+CREDITS.hh \
 CREDITS.cc
 
 nodist_ppl_config_SOURCES = \
@@ -232,7 +235,6 @@ Boundary.defs.hh \
 intervals.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
-Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Interval.templates.hh \
@@ -419,7 +421,36 @@ Division_Floating_Point_Expression.inlines.hh \
 Division_Floating_Point_Expression.templates.hh \
 Opposite_Floating_Point_Expression.types.hh \
 Opposite_Floating_Point_Expression.defs.hh \
-Opposite_Floating_Point_Expression.inlines.hh
+Opposite_Floating_Point_Expression.inlines.hh \
+Doubly_Linked_Object.types.hh \
+EList.types.hh \
+EList_Iterator.types.hh \
+Handler.types.hh \
+Pending_Element.types.hh \
+Pending_List.types.hh \
+Time.types.hh \
+Watchdog.types.hh \
+Threshold_Watcher.types.hh \
+Handler.defs.hh \
+Handler.inlines.hh \
+Time.defs.hh \
+Time.inlines.hh \
+Doubly_Linked_Object.defs.hh \
+Doubly_Linked_Object.inlines.hh \
+EList_Iterator.defs.hh \
+EList_Iterator.inlines.hh \
+EList.defs.hh \
+EList.inlines.hh \
+Pending_Element.defs.hh \
+Pending_Element.inlines.hh \
+Pending_List.defs.hh \
+Pending_List.inlines.hh \
+Pending_List.templates.hh \
+Watchdog.defs.hh \
+Watchdog.inlines.hh \
+Threshold_Watcher.defs.hh \
+Threshold_Watcher.inlines.hh \
+Threshold_Watcher.templates.hh
 #Any_Pointset.types.hh \
 #Any_Pointset.defs.hh \
 #Any_Pointset.inlines.hh \
@@ -505,7 +536,10 @@ $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.templates.hh \
 termination.cc \
-wrap_string.cc
+wrap_string.cc \
+Time.cc \
+Watchdog.cc \
+Threshold_Watcher.cc
 #Pointset_Ask_Tell.cc
 
 if NO_UNDEFINED
@@ -548,12 +582,32 @@ ppl.hh:	$(top_builddir)/ppl-config.h $(top_builddir)/src/version.hh ppl_header.h
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
 
+BUGS.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
+	@echo "#ifndef PPL_BUGS_hh" >$@
+	@echo "#define PPL_BUGS_hh 1" >>$@
+	$(top_builddir)/utils/text2cxxarray --name=BUGS_array --decl-only \
+		$(top_srcdir)/BUGS >>$@
+	@echo "#endif // !defined(PPL_BUGS_hh)" >>$@
 BUGS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/BUGS
 	$(top_builddir)/utils/text2cxxarray --name=BUGS_array \
 		$(top_srcdir)/BUGS >$@
+
+COPYING.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
+	@echo "#ifndef PPL_COPYING_hh" >$@
+	@echo "#define PPL_COPYING_hh 1" >>$@
+	$(top_builddir)/utils/text2cxxarray --name=COPYING_array --decl-only \
+		$(top_srcdir)/COPYING >>$@
+	@echo "#endif // !defined(PPL_COPYING_hh)" >>$@
+
 COPYING.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/COPYING
 	$(top_builddir)/utils/text2cxxarray --name=COPYING_array \
 		$(top_srcdir)/COPYING >$@
+CREDITS.hh: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
+	@echo "#ifndef PPL_CREDITS_hh" >$@
+	@echo "#define PPL_CREDITS_hh 1" >>$@
+	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array --decl-only \
+		$(top_srcdir)/CREDITS >>$@
+	@echo "#endif // !defined(PPL_CREDITS_hh)" >>$@
 CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 	$(top_builddir)/utils/text2cxxarray --name=CREDITS_array \
 		$(top_srcdir)/CREDITS >$@
@@ -575,9 +629,15 @@ ppl.hh:	ppl.hh.dist ppl.hh.sed
 	$(SED) -f ppl.hh.sed $< >$@
 	rm -f ppl.hh.sed
 
+BUGS.hh:	BUGS.hh.dist
+	cp -f $< $@
 BUGS.cc:	BUGS.cc.dist
 	cp -f $< $@
+COPYING.hh:	COPYING.hh.dist
+	cp -f $< $@
 COPYING.cc:	COPYING.cc.dist
+	cp -f $< $@
+CREDITS.hh:	CREDITS.hh.dist
 	cp -f $< $@
 CREDITS.cc:	CREDITS.cc.dist
 	cp -f $< $@
@@ -602,8 +662,11 @@ $(include_HEADERS) \
 $(nodist_noinst_HEADERS) \
 $(noinst_HEADERS) \
 $(PRECOMPILED) \
+BUGS.hh \
 BUGS.cc \
+COPYING.hh \
 COPYING.cc \
+CREDITS.hh \
 CREDITS.cc
 
 # ppl.hh is not distributed.
@@ -611,8 +674,11 @@ CREDITS.cc
 # likewise for BUGS.cc.dist, COPYING.cc.dist and CREDITS.cc.dist.
 dist-hook:
 	mv -f $(distdir)/ppl.hh $(distdir)/ppl.hh.dist
+	mv -f $(distdir)/BUGS.hh $(distdir)/BUGS.hh.dist
 	mv -f $(distdir)/BUGS.cc $(distdir)/BUGS.cc.dist
+	mv -f $(distdir)/COPYING.hh $(distdir)/COPYING.hh.dist
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
+	mv -f $(distdir)/CREDITS.hh $(distdir)/CREDITS.hh.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
 
 CLEANFILES = $(BUILT_SOURCES)

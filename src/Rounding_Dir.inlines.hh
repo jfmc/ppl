@@ -1,6 +1,6 @@
 /* Inline functions operating on enum Rounding_Dir values.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,53 +28,77 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline Rounding_Dir
-round_dir(Rounding_Dir dir) {
-  return static_cast<Rounding_Dir>(dir & ROUND_DIR_MASK);
+operator&(Rounding_Dir x, Rounding_Dir y) {
+  unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
+  return static_cast<Rounding_Dir>(res);
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+inline Rounding_Dir
+operator|(Rounding_Dir x, Rounding_Dir y) {
+  unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
+  return static_cast<Rounding_Dir>(res);
+}
+
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+inline Rounding_Dir
+round_dir(Rounding_Dir dir) {
+  return dir & ROUND_DIR_MASK;
+}
+
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_down(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_DOWN;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_up(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_UP;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_ignore(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_IGNORE;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_not_needed(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_NOT_NEEDED;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_not_requested(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_IGNORE || round_dir(dir) == ROUND_NOT_NEEDED;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_direct(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_DIRECT;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_inverse(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_INVERSE;
 }
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline bool
 round_strict_relation(Rounding_Dir dir) {
-  return dir & ROUND_STRICT_RELATION;
+  return (dir & ROUND_STRICT_RELATION) == ROUND_STRICT_RELATION;
 }
 
 #if PPL_CAN_CONTROL_FPU
 
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline fpu_rounding_direction_type
 round_fpu_dir(Rounding_Dir dir) {
   switch (round_dir(dir)) {
@@ -99,25 +123,17 @@ round_fpu_dir(Rounding_Dir dir) {
 /*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline Rounding_Dir
 inverse(Rounding_Dir dir) {
-  Rounding_Dir d = round_dir(dir);
-  switch (d) {
+  switch (round_dir(dir)) {
   case ROUND_UP:
-    d = ROUND_DOWN;
-    break;
+    return ROUND_DOWN | (dir & ROUND_STRICT_RELATION);
   case ROUND_DOWN:
-    d = ROUND_UP;
-    break;
+    return ROUND_UP | (dir & ROUND_STRICT_RELATION);
   case ROUND_IGNORE:
     return dir;
   default:
     PPL_UNREACHABLE;
     return dir;
   }
-  return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
-}
-
-inline Rounding_Dir operator|(Rounding_Dir x, Rounding_Dir y) {
-  return static_cast<Rounding_Dir>((unsigned)x | (unsigned)y);
 }
 
 } // namespace Parma_Polyhedra_Library

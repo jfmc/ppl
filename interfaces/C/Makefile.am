@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -78,13 +78,6 @@ LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      0
 
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-
-endif BUILD_WATCHDOG_LIBRARY
-
 if HAVE_PERL
 
 ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)/utils/build_header
@@ -142,7 +135,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces \
 -I$(top_builddir)/interfaces/C \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
@@ -236,7 +228,6 @@ endif NO_UNDEFINED
 libppl_c_la_LIBADD = \
 @required_instantiations_c_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_c_la_DEPENDENCIES = \

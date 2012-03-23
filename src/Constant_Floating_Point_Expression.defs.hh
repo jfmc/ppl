@@ -1,7 +1,7 @@
 /* Declarations for the Constant_Floating_Point_Expression class and
    its constituents.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -54,7 +54,7 @@ void swap(Constant_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
 
   The linearization of a constant floating point expression results in a
   linear form consisting of only the inhomogeneous term
-  \f$\left[ l;u \right]\f$, where \f$l\f$ and \f$u\f$ are the lower
+  \f$[l, u]\f$, where \f$l\f$ and \f$u\f$ are the lower
   and upper bounds of the constant value given to the class constructor.
 */
 template <typename FP_Interval_Type, typename FP_Format>

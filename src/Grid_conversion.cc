@@ -1,6 +1,6 @@
 /* Grid class implementation: conversion().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -469,22 +469,26 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // Since we are reducing the system to "strong minimal form",
   // reduce the coordinates in the grid_generator system
   // using "diagonal" values.
-  for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
+  for (dimension_type dim = 0, i = 0; dim < dims; ++dim) {
     if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System>
 	(dest.sys.rows, dim, i++, dim, dims - 1, dim_kinds);
+  }
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
-  const Coefficient& system_divisor = dest.sys.rows[0].expr.inhomogeneous_term();
-  
+  const Coefficient& system_divisor
+    = dest.sys.rows[0].expr.inhomogeneous_term();
+
   for (dimension_type i = dest.sys.rows.size() - 1, dim = dims; dim-- > 1; ) {
     switch (dim_kinds[dim]) {
     case PARAMETER:
       dest.sys.rows[i].set_divisor(system_divisor);
+      // Intentionally fall through.
     case LINE:
       --i;
+      break;
     case GEN_VIRTUAL:
       break;
     }

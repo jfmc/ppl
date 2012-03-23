@@ -1,6 +1,6 @@
 /* PIP_Tree_Node class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -81,13 +81,13 @@ public:
   virtual ~PIP_Tree_Node();
 
   //! Returns \c true if and only if \p *this is well formed.
-  virtual bool OK() const;
+  virtual bool OK() const = 0;
 
   //! Returns \p this if \p *this is a solution node, 0 otherwise.
-  virtual const PIP_Solution_Node* as_solution() const;
+  virtual const PIP_Solution_Node* as_solution() const = 0;
 
   //! Returns \p this if \p *this is a decision node, 0 otherwise.
-  virtual const PIP_Decision_Node* as_decision() const;
+  virtual const PIP_Decision_Node* as_decision() const = 0;
 
   /*! \brief
     Returns the system of parameter constraints controlling \p *this.
@@ -120,7 +120,7 @@ public:
     \param indent
     The amount of indentation.
   */
-  void print(std::ostream& s, unsigned indent = 0) const;
+  void print(std::ostream& s, int indent = 0) const;
 
   //! Dumps to \p s an ASCII representation of \p *this.
   void ascii_dump(std::ostream& s) const;
@@ -221,7 +221,7 @@ protected:
                                const Matrix<Row>& context,
                                const Variables_Set& params,
                                dimension_type space_dim,
-                               unsigned indent_level) = 0;
+                               int indent_level) = 0;
 
   //! Inserts a new parametric constraint in internal row format
   void add_constraint(const Row& x, const Variables_Set& parameters);
@@ -247,13 +247,13 @@ protected:
     that was created in this node (if any).
   */
   virtual void print_tree(std::ostream& s,
-                          unsigned indent,
+                          int indent,
                           const std::vector<bool>& pip_dim_is_param,
-                          dimension_type first_art_dim) const;
+                          dimension_type first_art_dim) const = 0;
 
   //! A helper function used when printing PIP trees.
   static void
-  indent_and_print(std::ostream& s, unsigned indent, const char* str);
+  indent_and_print(std::ostream& s, int indent, const char* str);
 
   /*! \brief
     Checks whether a context matrix is satisfiable.
@@ -350,7 +350,7 @@ private:
 
 
 //! Swaps \p x with \p y.
-/* \relates PIP_Tree_Node::Artificial_Parameter */
+/*! \relates PIP_Tree_Node::Artificial_Parameter */
 void
 swap(PIP_Tree_Node::Artificial_Parameter& x,
      PIP_Tree_Node::Artificial_Parameter& y);
@@ -374,6 +374,9 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Solution_Node* as_solution() const;
+
+  //! Returns 0, since \p this is not a decision node.
+  virtual const PIP_Decision_Node* as_decision() const;
 
   /*! \brief
     Returns a parametric expression for the values of problem variable \p var.
@@ -665,7 +668,7 @@ protected:
                                const Matrix<Row>& context,
                                const Variables_Set& params,
                                dimension_type space_dim,
-                               unsigned indent_level);
+                               int indent_level);
 
   /*! \brief
     Generate a Gomory cut using non-integer tableau row \p i.
@@ -690,10 +693,10 @@ protected:
   */
   void generate_cut(dimension_type i, Variables_Set& parameters,
                     Matrix<Row>& context, dimension_type& space_dimension,
-                    unsigned indent_level);
+                    int indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s, unsigned indent,
+  virtual void print_tree(std::ostream& s, int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const;
 
@@ -714,6 +717,9 @@ public:
 
   //! Returns \p this.
   virtual const PIP_Decision_Node* as_decision() const;
+
+  //! Returns 0, since \p this is not a solution node.
+  virtual const PIP_Solution_Node* as_solution() const;
 
   //! Returns a const pointer to the \p b (true or false) branch of \p *this.
   const PIP_Tree_Node* child_node(bool b) const;
@@ -801,10 +807,10 @@ protected:
                                const Matrix<Row>& context,
                                const Variables_Set& params,
                                dimension_type space_dim,
-                               unsigned indent_level);
+                               int indent_level);
 
   //! Prints on \p s the tree rooted in \p *this.
-  virtual void print_tree(std::ostream& s, unsigned indent,
+  virtual void print_tree(std::ostream& s, int indent,
                           const std::vector<bool>& pip_dim_is_param,
                           dimension_type first_art_dim) const;
 

@@ -1,5 +1,5 @@
 /* Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -27,7 +27,7 @@ class Binary_Operator;
 template <typename Target>
 class Unary_Operator;
 
-//! A cast operator applied converting one concrete expression to some type.
+//! A cast operator converting one concrete expression to some type.
 template <typename Target>
 class Cast_Operator;
 
@@ -43,7 +43,6 @@ class Floating_Point_Constant;
 template <typename Target>
 class Approximable_Reference;
 
-//! The type of a concrete expression.
 class Concrete_Expression_Type;
 
 /*! \brief

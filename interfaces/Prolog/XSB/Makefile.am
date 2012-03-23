@@ -1,6 +1,6 @@
 # Automake source file for the Parma Polyhedra Library.
 # Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-# Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+# Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -33,15 +33,6 @@ xsb_clpq2.P \
 xsb_pl_check.P \
 ppl_interface_generator_xsb_prolog_generated_test_P.m4
 
-if BUILD_WATCHDOG_LIBRARY
-
-WATCHDOG_LIBRARY = $(top_builddir)/Watchdog/src/libpwl.la
-WATCHDOG_INCLUDE_OPTIONS = -I$(top_builddir)/Watchdog/src
-WATCHDOG_DLOPEN = -dlopen $(WATCHDOG_LIBRARY)
-WATCHDOG_LINK_OPTIONS = -L$(top_builddir)/Watchdog/src/.libs -lpwl
-
-endif BUILD_WATCHDOG_LIBRARY
-
 interface_generator_dependencies = \
 $(top_builddir)/interfaces/ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
@@ -73,7 +64,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \
 -I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
-$(WATCHDOG_INCLUDE_OPTIONS) \
 $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -177,7 +167,6 @@ endif NO_UNDEFINED
 libppl_xsb_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-$(WATCHDOG_LIBRARY) \
 @extra_libraries@
 
 libppl_xsb_la_DEPENDENCIES = \
@@ -188,7 +177,7 @@ $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
 
-pkglib_DATA = ppl_xsb.xwam
+pkgdata_DATA = ppl_xsb.xwam
 
 ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc libppl_xsb.la
 	cp -f ppl_xsb.cc ppl_xsb.c
@@ -196,10 +185,9 @@ ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc libppl_xsb.la
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
 	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -fPIC " \
 	    "-L.libs -lppl_xsb" \
-	    "-L../../../src/.libs -L../../../Watchdog/src/.libs')])." \
+	    "-L../../../src/.libs')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
-			$(WATCHDOG_DLOPEN) \
 			xsb
 	rm -f ppl_xsb.c
 
@@ -244,7 +232,6 @@ check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_
 	rm -f xsb_clpq.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		xsb xsb_clpq \
 			<$(srcdir)/../tests/script_clpq >obtained_clpq
 	rm -f clpq.pl
@@ -259,7 +246,6 @@ check-local: libppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_
 	rm -f xsb_clpq2.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		xsb xsb_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	rm -f clpq2.pl
@@ -276,7 +262,6 @@ pl_check_test: libppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	rm -f xsb_pl_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		xsb xsb_pl_check \
 			>obtained_pchk
 	rm -f pl_check.pl
@@ -291,7 +276,6 @@ ppl_prolog_generated_test: libppl_xsb.la ppl_xsb.xwam xsb_prolog_generated_test.
 	rm -f xsb_prolog_generated_test.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		$(WATCHDOG_DLOPEN) \
 		xsb xsb_prolog_generated_test \
 			>obtained_pgt
 	rm -f ppl_prolog_generated_test_common.pl

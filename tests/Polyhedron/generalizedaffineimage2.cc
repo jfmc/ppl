@@ -1,6 +1,6 @@
 /* Test Polyhedron::generalized_affine_image().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -240,7 +240,7 @@ test08() {
   print_constraints(ph, "*** after ph.generalized_affine_image"
 		    "(B, GREATER_THAN, A + B + 1) ***");
   print_generators(ph, "*** after ph.generalized_affine_image"
-		   "(B, PPLGT, A + B + 1) ***");
+		   "(B, GREATER_THAN, A + B + 1) ***");
 
   return ok;
 }

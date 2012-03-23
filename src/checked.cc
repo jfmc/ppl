@@ -1,6 +1,6 @@
 /* Helper functions for checked numbers.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "checked.defs.hh"
-#include <climits>
+#include "C_Integer.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -51,8 +51,8 @@ struct number_struct {
   association; returns \f$-1\f$ otherwise.
 */
 inline int
-get_digit(char c, int base = 10) {
-  int n;
+get_digit(char c, unsigned int base = 10) {
+  unsigned int n;
   switch (c) {
   case '0': n = 0; break;
   case '1': n = 1; break;
@@ -95,7 +95,7 @@ get_digit(char c, int base = 10) {
   }
   if (n >= base)
     return -1;
-  return n;
+  return static_cast<int>(n);
 }
 
 /*! \brief
@@ -109,7 +109,7 @@ inline bool
 sum_sign(bool& a_neg, unsigned long& a_mod,
          bool b_neg, unsigned long b_mod) {
   if (a_neg == b_neg) {
-    if (a_mod > ULONG_MAX - b_mod)
+    if (a_mod > C_Integer<unsigned long>::max - b_mod)
       return false;
     a_mod += b_mod;
   }
@@ -136,7 +136,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
   bool empty_exponent = true;
   bool empty_mantissa = true;
   long exponent_offset = 0;
-  long exponent_offset_scale = 1;
+  unsigned exponent_offset_scale = 1;
   numer.base = 10;
   numer.base_for_exponent = 10;
   numer.neg_mantissa = false;
@@ -147,7 +147,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
   do {
     if (!is.get(c))
       return V_CVT_STR_UNK;
-  } while (isspace(c));
+  } while (is_space(c));
   switch (c) {
   case '-':
     numer.neg_mantissa = true;
@@ -193,7 +193,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
     if (get_digit(c, 10) < 0)
       goto unexpected;
     char d;
-    if (c == '0' && is.get(d)) {
+    if (c == '0' && !is.get(d).fail()) {
       if (d == 'x' || d == 'X') {
         numer.base = 16;
         numer.base_for_exponent = 16;
@@ -223,7 +223,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         for (std::string::const_iterator i = numer.mantissa.begin();
              i != numer.mantissa.end();
              i++) {
-          numer.base = numer.base * 10 + get_digit(*i, 10);
+          numer.base = numer.base * 10 + static_cast<unsigned>(get_digit(*i, 10));
           if (numer.base > 36)
             goto unexpected;
         }
@@ -278,8 +278,10 @@ parse_number_part(std::istream& is, number_struct& numer) {
           goto unexpected;
       exp:
         state = EXPONENT;
-        max_exp_div = LONG_MAX / numer.base;
-        max_exp_rem = static_cast<int>(LONG_MAX % numer.base);
+        PPL_ASSERT(numer.base >= 2);
+        const long l_max = C_Integer<long>::max;
+        max_exp_div = static_cast<unsigned long>(l_max) / numer.base;
+        max_exp_rem = static_cast<int>(l_max % static_cast<long>(numer.base));
         if (!is.get(c))
           return V_CVT_STR_UNK;
         if (c == '-') {
@@ -299,7 +301,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         if (numer.exponent > max_exp_div
             || (numer.exponent == max_exp_div && d > max_exp_rem))
           return V_CVT_STR_UNK;
-        numer.exponent = 10*numer.exponent + d;
+        numer.exponent = 10 * numer.exponent + static_cast<unsigned long>(d);
         break;
       }
       if (empty_exponent)
@@ -308,7 +310,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
       goto ok;
     }
     is.get(c);
-  } while (is);
+  } while (!is.fail());
 
   if (empty_mantissa || is.bad())
     return V_CVT_STR_UNK;
@@ -329,7 +331,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
     else
       neg = false;
     sum_sign(numer.neg_exponent, numer.exponent,
-             neg, exponent_offset * exponent_offset_scale);
+             neg, static_cast<unsigned long>(exponent_offset) * exponent_offset_scale);
     return V_EQ;
   }
 
@@ -395,7 +397,7 @@ input_mpq(mpq_class& to, std::istream& is) {
   is.clear(is.rdstate() & ~is.failbit);
   if (r != V_EQ)
     return r;
-  if (denom_struct.base && denom_struct.mantissa.empty())
+  if (denom_struct.base != 0 && denom_struct.mantissa.empty())
       return V_NAN;
   if (numer_struct.mantissa.empty()) {
     to = 0;
@@ -403,16 +405,18 @@ input_mpq(mpq_class& to, std::istream& is) {
   }
   mpz_ptr numer = to.get_num().get_mpz_t();
   mpz_ptr denom = to.get_den().get_mpz_t();
-  mpz_set_str(numer, numer_struct.mantissa.c_str(), numer_struct.base);
-  if (denom_struct.base) {
+  mpz_set_str(numer, numer_struct.mantissa.c_str(),
+              static_cast<int>(numer_struct.base));
+  if (denom_struct.base != 0) {
     if (numer_struct.neg_mantissa != denom_struct.neg_mantissa)
       mpz_neg(numer, numer);
-    mpz_set_str(denom, denom_struct.mantissa.c_str(), denom_struct.base);
-    if (numer_struct.exponent || denom_struct.exponent) {
+    mpz_set_str(denom, denom_struct.mantissa.c_str(),
+                static_cast<int>(denom_struct.base));
+    if (numer_struct.exponent != 0 || denom_struct.exponent != 0) {
       // Multiply the exponents into the numerator and denominator.
       mpz_t z;
       mpz_init(z);
-      if (numer_struct.exponent) {
+      if (numer_struct.exponent != 0) {
         mpz_ui_pow_ui(z,
                       numer_struct.base_for_exponent, numer_struct.exponent);
         if (numer_struct.neg_exponent)
@@ -420,7 +424,7 @@ input_mpq(mpq_class& to, std::istream& is) {
         else
           mpz_mul(numer, numer, z);
       }
-      if (denom_struct.exponent) {
+      if (denom_struct.exponent != 0) {
         mpz_ui_pow_ui(z,
                       denom_struct.base_for_exponent, denom_struct.exponent);
         if (denom_struct.neg_exponent)
@@ -434,7 +438,7 @@ input_mpq(mpq_class& to, std::istream& is) {
   else {
     if (numer_struct.neg_mantissa)
       mpz_neg(numer, numer);
-    if (numer_struct.exponent) {
+    if (numer_struct.exponent != 0) {
       if (numer_struct.neg_exponent) {
         // Add the negative exponent as a denominator.
         mpz_ui_pow_ui(denom,

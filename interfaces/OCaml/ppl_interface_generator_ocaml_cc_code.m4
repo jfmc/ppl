@@ -6,7 +6,7 @@ files ppl_ocaml_DOMAIN.cc for each interface domain DOMAIN
 in ppl_interface instantiations.m4.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -715,6 +715,30 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
   @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs);
   CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_has_@UPPERLOWER@_bound(value ph, value var) try {
+  CAMLparam2(ph, var);
+  CAMLlocal1(caml_return_value);
+  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  Variable vv = build_ppl_Variable(var);
+  PPL_DIRTY_TEMP_COEFFICIENT(num);
+  PPL_DIRTY_TEMP_COEFFICIENT(den);
+  bool is_closed = false;
+  bool ppl_return_value = pph.has_@UPPERLOWER@_bound(vv, num, den, is_closed);
+  caml_return_value = caml_alloc(4, 0);
+  Store_field(caml_return_value, 0, Val_bool(ppl_return_value));
+  Store_field(caml_return_value, 1, build_ocaml_coefficient(num));
+  Store_field(caml_return_value, 2, build_ocaml_coefficient(den));
+  Store_field(caml_return_value, 3, Val_bool(is_closed));
+  CAMLreturn(caml_return_value);
 }
 CATCH_ALL
 

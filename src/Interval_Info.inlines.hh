@@ -1,6 +1,6 @@
 /* Interval_Info class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -77,21 +77,20 @@ Interval_Info_Bitset<T, Policy>::m_swap(Interval_Info_Bitset<T, Policy>& y) {
 template <typename T, typename Policy>
 inline void
 Interval_Info_Bitset<T, Policy>::ascii_dump(std::ostream& s) const {
-  std::ios_base::fmtflags old = s.flags();
-  s << std::hex << bitset;
-  s.flags(old);
+  const std::ios::fmtflags old_flags = s.setf(std::ios::hex,
+                                              std::ios::basefield);
+  s << bitset;
+  s.flags(old_flags);
 }
 
 template <typename T, typename Policy>
 inline bool
 Interval_Info_Bitset<T, Policy>::ascii_load(std::istream& s) {
-  std::ios_base::fmtflags old = s.flags();
-  if (s >> std::hex >> bitset) {
-    s.flags(old);
-    return s;
-  }
-  else
-    return false;
+  const std::ios::fmtflags old_flags = s.setf(std::ios::hex,
+                                              std::ios::basefield);
+  s >> bitset;
+  s.flags(old_flags);
+  return !s.fail();
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

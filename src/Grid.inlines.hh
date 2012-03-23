@@ -1,6 +1,6 @@
 /* Grid class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -122,24 +122,25 @@ inline
 Grid::Grid(dimension_type num_dimensions,
 	   const Degenerate_Element kind)
   : con_sys(),
-    gen_sys((num_dimensions > max_space_dimension())
-	    ? (throw_space_dimension_overflow("Grid(n, k)",
-					      "n exceeds the maximum "
-					      "allowed space dimension"),
-	       0)
-	    : num_dimensions) {
+    gen_sys(check_space_dimension_overflow(num_dimensions,
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(n, k)",
+                                           "n exceeds the maximum "
+                                           "allowed space dimension")) {
   construct(num_dimensions, kind);
   PPL_ASSERT(OK());
 }
 
 inline
 Grid::Grid(const Congruence_System& cgs)
-  : con_sys((cgs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(cgs)",
-					     "the space dimension of cgs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : cgs.space_dimension()),
+  : con_sys(check_space_dimension_overflow(cgs.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(cgs)",
+                                           "the space dimension of cgs "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(cgs.space_dimension()) {
   Congruence_System cgs_copy(cgs);
   construct(cgs_copy);
@@ -147,24 +148,26 @@ Grid::Grid(const Congruence_System& cgs)
 
 inline
 Grid::Grid(Congruence_System& cgs, Recycle_Input)
-  : con_sys((cgs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(cgs, recycle)",
-					     "the space dimension of cgs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : cgs.space_dimension()),
+  : con_sys(check_space_dimension_overflow(cgs.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(cgs, recycle)",
+                                           "the space dimension of cgs "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(cgs.space_dimension()) {
   construct(cgs);
 }
 
 inline
 Grid::Grid(const Grid_Generator_System& ggs)
-  : con_sys((ggs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(ggs)",
-					     "the space dimension of ggs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : ggs.space_dimension()),
+  : con_sys(check_space_dimension_overflow(ggs.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(ggs)",
+                                           "the space dimension of ggs "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(ggs.space_dimension()) {
   Grid_Generator_System ggs_copy(ggs);
   construct(ggs_copy);
@@ -172,26 +175,27 @@ Grid::Grid(const Grid_Generator_System& ggs)
 
 inline
 Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
-  : con_sys((ggs.space_dimension() > max_space_dimension())
-	    ? throw_space_dimension_overflow("Grid(ggs, recycle)",
-					     "the space dimension of ggs "
-					     "exceeds the maximum allowed "
-					     "space dimension"), 0
-	    : ggs.space_dimension()),
+  : con_sys(check_space_dimension_overflow(ggs.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(ggs, recycle)",
+                                           "the space dimension of ggs "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(ggs.space_dimension()) {
   construct(ggs);
 }
 
 template <typename U>
 inline
-Grid::Grid(const BD_Shape<U>& bd,
-           Complexity_Class)
-  : con_sys((bd.space_dimension() > max_space_dimension())
-	    ? (throw_space_dimension_overflow("Grid(bd)",
-                                              "the space dimension of bd "
-                                              "exceeds the maximum allowed "
-                                              "space dimension"), 0)
-	    : bd.space_dimension()),
+Grid::Grid(const BD_Shape<U>& bd, Complexity_Class)
+  : con_sys(check_space_dimension_overflow(bd.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(bd)",
+                                           "the space dimension of bd "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(bd.space_dimension()) {
   Congruence_System cgs = bd.congruences();
   construct(cgs);
@@ -199,14 +203,14 @@ Grid::Grid(const BD_Shape<U>& bd,
 
 template <typename U>
 inline
-Grid::Grid(const Octagonal_Shape<U>& os,
-           Complexity_Class)
-  : con_sys((os.space_dimension() > max_space_dimension())
-	    ? (throw_space_dimension_overflow("Grid(os)",
-                                              "the space dimension of os "
-                                              "exceeds the maximum allowed "
-                                              "space dimension"), 0)
-	    : os.space_dimension()),
+Grid::Grid(const Octagonal_Shape<U>& os, Complexity_Class)
+  : con_sys(check_space_dimension_overflow(os.space_dimension(),
+                                           max_space_dimension(),
+                                           "PPL::Grid::",
+                                           "Grid(os)",
+                                           "the space dimension of os "
+                                           "exceeds the maximum allowed "
+                                           "space dimension")),
     gen_sys(os.space_dimension()) {
   Congruence_System cgs = os.congruences();
   construct(cgs);
@@ -228,7 +232,7 @@ Grid::total_memory_in_bytes() const {
 
 inline int32_t
 Grid::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 inline Constraint_System

@@ -1,6 +1,6 @@
 /* Congruence class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -178,11 +178,14 @@ Congruence::operator/=(Coefficient_traits::const_reference k) {
 /*! \relates Congruence */
 inline bool
 operator==(const Congruence& x, const Congruence& y) {
+  if (x.space_dimension() != y.space_dimension())
+    return false;
   Congruence x_temp(x);
   Congruence y_temp(y);
   x_temp.strong_normalize();
   y_temp.strong_normalize();
-  return x_temp.expr.is_equal_to(y_temp.expr) && x_temp.modulus() == y_temp.modulus();
+  return x_temp.expr.is_equal_to(y_temp.expr)
+    && x_temp.modulus() == y_temp.modulus();
 }
 
 /*! \relates Congruence */

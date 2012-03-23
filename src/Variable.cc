@@ -1,6 +1,6 @@
 /* Variable class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -36,7 +36,7 @@ PPL::Variable::OK() const {
 }
 
 void
-PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
+PPL::Variable::default_output_function(std::ostream& s, const Variable v) {
   dimension_type varid = v.id();
   static const char var_name_letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const dimension_type num_letters = sizeof(var_name_letters) - 1;
@@ -47,7 +47,7 @@ PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
 
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Variable& v) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Variable v) {
   (*Variable::current_output_function)(s, v);
   return s;
 }

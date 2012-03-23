@@ -1,6 +1,6 @@
 /* Specializations of std::numeric_limits for "checked" types.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -33,43 +33,43 @@ namespace std {
 using namespace Parma_Polyhedra_Library;
 
 #define PPL_SPECIALIZE_LIMITS_INT(T)					\
-/*! \brief Partial specialization of std::numeric_limits. */		\
-template <typename Policy>						\
- class numeric_limits<Checked_Number<T, Policy> >                       \
-  : public numeric_limits<T> {						\
- private:								\
-  typedef Checked_Number<T, Policy> Type;                               \
-									\
- public:								\
-  static const bool has_infinity = Policy::has_infinity;		\
-  static const bool has_quiet_NaN =  Policy::has_nan;                   \
+  /*! \brief Partial specialization of std::numeric_limits. */		\
+  template <typename Policy>						\
+  class numeric_limits<Checked_Number<PPL_U(T), Policy> >              \
+    : public numeric_limits<PPL_U(T)> {                                 \
+  private:								\
+    typedef Checked_Number<PPL_U(T), Policy> Type;                      \
                                                                         \
-  static Type min() {							\
-    Type v;								\
-    v.raw_value() = Checked::Extended_Int<Policy, T>::min;		\
-    return v;								\
-  }									\
+  public:								\
+    static const bool has_infinity = Policy::has_infinity;		\
+    static const bool has_quiet_NaN =  Policy::has_nan;                 \
                                                                         \
-  static Type max() {							\
-    Type v;								\
-    v.raw_value() = Checked::Extended_Int<Policy, T>::max;		\
-    return v;								\
-  }									\
+    static Type min() {							\
+      Type v;								\
+      v.raw_value() = Checked::Extended_Int<Policy, PPL_U(T)>::min;     \
+      return v;								\
+    }									\
+                                                                        \
+    static Type max() {							\
+      Type v;								\
+      v.raw_value() = Checked::Extended_Int<Policy, PPL_U(T)>::max;     \
+      return v;								\
+    }									\
 									\
-  static Type infinity() {						\
-    Type v;								\
-    Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,	\
-			    ROUND_IGNORE);				\
-    return v;								\
-  }									\
+    static Type infinity() {						\
+      Type v;								\
+      Checked::assign_special<Policy>(v.raw_value(), VC_PLUS_INFINITY,	\
+                                      ROUND_IGNORE);                    \
+      return v;								\
+    }									\
 									\
-  static Type quiet_NaN() {						\
-    Type v;								\
-    Checked::assign_special<Policy>(v.raw_value(), VC_NAN,		\
-			    ROUND_IGNORE);				\
-    return v;								\
-  }									\
-};
+    static Type quiet_NaN() {						\
+      Type v;								\
+      Checked::assign_special<Policy>(v.raw_value(), VC_NAN,		\
+                                      ROUND_IGNORE);                    \
+      return v;								\
+    }									\
+  };
 
 PPL_SPECIALIZE_LIMITS_INT(char)
 
@@ -88,10 +88,10 @@ PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 #undef PPL_SPECIALIZE_LIMITS_INT
 
 #define PPL_SPECIALIZE_LIMITS_FLOAT(T)					\
-/*! \brief Partial specialization of std::numeric_limits. */		\
-template <typename Policy>						\
-struct numeric_limits<Checked_Number<T, Policy> > \
-  : public numeric_limits<T> {						\
+  /*! \brief Partial specialization of std::numeric_limits. */		\
+  template <typename Policy>						\
+  struct numeric_limits<Checked_Number<PPL_U(T), Policy> >              \
+    : public numeric_limits<PPL_U(T)> {                                 \
 };
 
 #if PPL_SUPPORTED_FLOAT

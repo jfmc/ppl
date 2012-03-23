@@ -1,7 +1,7 @@
 /* A program to enquire about the configuration of the PPL  -*- C++ -*-
    and of the applications using it.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl.hh"
+#include "BUGS.hh"
+#include "COPYING.hh"
+#include "CREDITS.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -97,10 +100,6 @@ Interface required_interface = NO_INTERFACE;
 std::string prefix;
 std::string exec_prefix;
 
-const char* variable_prefix = "PPL_";
-
-bool exec_prefix_set = false;
-
 bool required_application = false;
 bool required_library = false;
 bool required_prefix = false;
@@ -126,6 +125,55 @@ bool required_bugs = false;
 bool required_credits = false;
 
 unsigned num_required_items = 0;
+
+
+#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
+
+const char* program_name = 0;
+
+void
+fatal(const char* format, ...) __attribute__((__noreturn__));
+
+void
+fatal(const char* format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  fprintf(stderr, "%s: ", program_name);
+  vfprintf(stderr, format, ap);
+  fprintf(stderr, "\n");
+  va_end(ap);
+  exit(1);
+}
+
+void
+internal_error() __attribute__((__noreturn__));
+
+void
+internal_error() {
+  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
+}
+
+inline char
+to_lower(char c) {
+  return
+    static_cast<char>(tolower(static_cast<int>(static_cast<unsigned char>(c))));
+}
+
+bool
+strcaseeq(const char* s1, const char* s2) {
+  while (*s1 != '\0') {
+    if (*s2 == '\0' || to_lower(*s1) != to_lower(*s2))
+      return false;
+    ++s1;
+    ++s2;
+  }
+  return *s2 == '\0';
+}
+
+void
+process_options(int argc, char* argv[]) {
+
+  bool exec_prefix_set = false;
 
 #ifdef PPL_HAVE_GETOPT_H
 struct option long_options[] = {
@@ -159,8 +207,8 @@ struct option long_options[] = {
 };
 #endif
 
-static const char* usage_string
-= "Usage: %s [OPTION]...\n"
+  static const char* usage_string
+  = "Usage: %s [OPTION]...\n"
 "Displays information, in various formats, about an installation\n"
 "of the Parma Polyhedra Library.\n\n"
 "Options:\n"
@@ -202,52 +250,6 @@ static const char* usage_string
 "\n"
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
-#define OPTION_LETTERS "hF:I:ALp::e::OVMNRBEniblPCXDgcur"
-
-const char* program_name = 0;
-
-void
-fatal(const char* format, ...) {
-  va_list ap;
-  va_start(ap, format);
-  fprintf(stderr, "%s: ", program_name);
-  vfprintf(stderr, format, ap);
-  fprintf(stderr, "\n");
-  va_end(ap);
-  exit(1);
-}
-
-// Currently unused, but we may want to use it in the future.
-/*
-void
-warning(const char* format, ...) {
-  va_list ap;
-  va_start(ap, format);
-  fprintf(stderr, "%s: Warning: ", program_name);
-  vfprintf(stderr, format, ap);
-  fprintf(stderr, "\n");
-  va_end(ap);
-}
-*/
-
-void internal_error() {
-  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
-}
-
-bool
-strcaseeq(const char* s1, const char* s2) {
-  while (*s1 && *s2
-	 && tolower(static_cast<unsigned char>(*s1))
-	 == tolower(static_cast<unsigned char>(*s2))) {
-    ++s1;
-    ++s2;
-  }
-  return tolower(static_cast<unsigned char>(*s1))
-    == tolower(static_cast<unsigned char>(*s2));
-}
-
-void
-process_options(int argc, char* argv[]) {
   while (true) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
@@ -328,7 +330,7 @@ process_options(int argc, char* argv[]) {
 
       // --prefix
     case 'p':
-      if (optarg) {
+      if (optarg != 0) {
 	prefix = optarg;
 	if (!exec_prefix_set) {
 	  exec_prefix = optarg;
@@ -343,7 +345,7 @@ process_options(int argc, char* argv[]) {
 
       // --exec_prefix
     case 'e':
-      if (optarg) {
+      if (optarg != 0) {
 	exec_prefix = optarg;
 	exec_prefix_set = true;
       }
@@ -491,6 +493,7 @@ process_options(int argc, char* argv[]) {
 
 void
 portray_name(const char* name) {
+  const char* variable_prefix = "PPL_";
   switch (required_format) {
   case PLAIN:
     if (num_required_items > 1)
@@ -611,16 +614,16 @@ main(int argc, char* argv[]) try {
     portray("VERSION", PPL_VERSION);
 
   if (required_version_major)
-    portray("VERSION_MAJOR", long(PPL_VERSION_MAJOR));
+    portray("VERSION_MAJOR", static_cast<long>(PPL_VERSION_MAJOR));
 
   if (required_version_minor)
-    portray("VERSION_MINOR", long(PPL_VERSION_MINOR));
+    portray("VERSION_MINOR", static_cast<long>(PPL_VERSION_MINOR));
 
   if (required_version_revision)
-    portray("VERSION_REVISION", long(PPL_VERSION_REVISION));
+    portray("VERSION_REVISION", static_cast<long>(PPL_VERSION_REVISION));
 
   if (required_version_beta)
-    portray("VERSION_BETA", long(PPL_VERSION_BETA));
+    portray("VERSION_BETA", static_cast<long>(PPL_VERSION_BETA));
 
   if (required_banner)
     portray("BANNER", PPL::banner());
@@ -707,20 +710,14 @@ main(int argc, char* argv[]) try {
   if (required_license)
     portray("LICENSE", PPL_LICENSE);
 
-  if (required_copying) {
-    extern const char* const COPYING_array[];
+  if (required_copying)
     portray("COPYING", COPYING_array);
-  }
 
-  if (required_bugs) {
-    extern const char* const BUGS_array[];
+  if (required_bugs)
     portray("BUGS", BUGS_array);
-  }
 
-  if (required_credits) {
-    extern const char* const CREDITS_array[];
+  if (required_credits)
     portray("CREDITS", CREDITS_array);
-  }
 
   return 0;
 }

@@ -1,6 +1,6 @@
 /* Partially_Reduced_Product class implementation: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -715,7 +715,7 @@ Partially_Reduced_Product<D1, D2, R>::ascii_dump(std::ostream& s) const {
 template <typename D1, typename D2, typename R>
 inline int32_t
 Partially_Reduced_Product<D1, D2, R>::hash_code() const {
-  return space_dimension() & 0x7fffffff;
+  return hash_code_from_dimension(space_dimension());
 }
 
 /*! \relates Parma_Polyhedra_Library::Partially_Reduced_Product */

@@ -1,6 +1,6 @@
 /* Implementation of global objects: inline functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -28,12 +28,21 @@ site: http://bugseng.com/products/ppl/ . */
 #include <cassert>
 #include <istream>
 #include <ostream>
+#include <cctype>
+#include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
+}
+
+inline int32_t
+hash_code_from_dimension(dimension_type dim) {
+  const dimension_type divisor = 1U << (32 - 1);
+  dim = dim % divisor;
+  return static_cast<int32_t>(dim);
 }
 
 inline const Weightwatch_Traits::Threshold&
@@ -43,7 +52,7 @@ Weightwatch_Traits::get() {
 
 inline bool
 Weightwatch_Traits::less_than(const Threshold& a, const Threshold& b) {
-  return b - a < (1ULL << (sizeof(Threshold)*8 - 1));
+  return b - a < (1ULL << (sizeof_to_bits(sizeof(Threshold)) - 1));
 }
 
 inline void
@@ -58,10 +67,10 @@ Throwable::~Throwable() {
 inline void
 maybe_abandon() {
 #ifndef NDEBUG
-  if (Implementation::in_assert)
+  if (Implementation::in_assert != 0)
     return;
 #endif
-  if (Weightwatch_Traits::check_function)
+  if (Weightwatch_Traits::check_function != 0)
     Weightwatch_Traits::check_function();
   if (const Throwable* p = abandon_expensive_computations)
     p->throw_me();
@@ -97,7 +106,8 @@ total_memory_in_bytes(const T&) {
 
 inline memory_size_type
 external_memory_in_bytes(const mpz_class& x) {
-  return x.get_mpz_t()[0]._mp_alloc * PPL_SIZEOF_MP_LIMB_T;
+  return static_cast<memory_size_type>(x.get_mpz_t()[0]._mp_alloc)
+    * PPL_SIZEOF_MP_LIMB_T;
 }
 
 inline memory_size_type
@@ -134,13 +144,35 @@ ascii_load(std::istream& is, Representation& r) {
     r = DENSE;
     return true;
   }
-
   if (s == "SPARSE")  {
     r = SPARSE;
     return true;
   }
-
   return false;
+}
+
+inline bool
+is_space(char c) {
+  return isspace(c) != 0;
+}
+
+template <typename RA_Container>
+inline typename RA_Container::iterator
+nth_iter(RA_Container& cont, dimension_type n) {
+  typedef typename RA_Container::difference_type diff_t;
+  return cont.begin() + static_cast<diff_t>(n);
+}
+
+template <typename RA_Container>
+inline typename RA_Container::const_iterator
+nth_iter(const RA_Container& cont, dimension_type n) {
+  typedef typename RA_Container::difference_type diff_t;
+  return cont.begin() + static_cast<diff_t>(n);
+}
+
+inline dimension_type
+least_significant_one_mask(const dimension_type i) {
+  return i & (~i + 1U);
 }
 
 } // namespace Parma_Polyhedra_Library

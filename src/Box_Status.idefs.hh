@@ -1,6 +1,6 @@
 /* Box<ITV>::Status class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Box_Status_idefs_hh 1
 
 #ifndef PPL_IN_Box_CLASS
-#error "Do not include Box_Status.idefs.hh directly; use Box.defs.hh instead."
+#error "Do not include Box_Status.idefs.hh directly; use Box.defs.hh instead"
 #endif
 
 //! A conjunctive assertion about a Box<ITV> object.

@@ -4,7 +4,7 @@ m4_divert(-1)
 This m4 file contains the code for generating ppl_java_<CLASS_NAME>.cc
 
 Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -504,6 +504,36 @@ Java_parma_1polyhedra_1library_@1CLASS@_bounds_1from_1@1ABOVEBELOW@
       = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
     Linear_Expression le = build_cxx_linear_expression(env, j_le);
     return this_ptr->bounds_from_@ABOVEBELOW@(le);
+  }
+  CATCH_ALL;
+  return false;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`dnl
+JNIEXPORT jboolean JNICALL
+Java_parma_1polyhedra_1library_@1CLASS@_has_1@UPPERLOWER@_1bound
+(JNIEnv* env, jobject j_this, jobject j_var,
+ jobject j_num, jobject j_den, jobject j_ref_boolean) {
+  try {
+    @CPP_CLASS@* this_ptr
+      = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
+    Variable var = build_cxx_variable(env, j_var);
+    PPL_DIRTY_TEMP_COEFFICIENT(num);
+    PPL_DIRTY_TEMP_COEFFICIENT(den);
+    num = build_cxx_coeff(env, j_num);
+    den = build_cxx_coeff(env, j_den);
+    bool b_value;
+    if (this_ptr->has_@UPPERLOWER@_bound(var, num, den, b_value)) {
+      set_coefficient(env, j_num, build_java_coeff(env, num));
+      set_coefficient(env, j_den, build_java_coeff(env, den));
+      jobject j_boolean = bool_to_j_boolean_class(env, b_value);
+      set_by_reference(env, j_ref_boolean, j_boolean);
+      return true;
+    }
+    return false;
   }
   CATCH_ALL;
   return false;

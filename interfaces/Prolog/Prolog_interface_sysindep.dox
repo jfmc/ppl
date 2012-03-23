@@ -1,6 +1,6 @@
 /* Configuration Independent Documentation for Prolog.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://bugseng.com/ppl/ . */
+site: http://bugseng.com/products/ppl/ . */
 
 /*! \page PI_SI_Features System-Independent Features
 
@@ -276,7 +276,7 @@ The specification uses the following grammar rules:
 
  Complexity  --> polynomial | simplex | any
 
- Vars_Pair   --> PPLVar - PPLVar        map relation
+ Vars_Pair   --> PPL_Var - PPL_Var      map relation
 
  P_Func      --> []    			list of map relations
             | [Vars_Pair | P_Func].

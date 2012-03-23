@@ -1,6 +1,6 @@
 /* Rational_Interval class declaration and implementation.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -41,10 +41,8 @@ struct Rational_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef
-Interval_Restriction_None<Interval_Info_Bitset<unsigned int,
-                                               Rational_Interval_Info_Policy> >
-Rational_Interval_Info;
+typedef Interval_Info_Bitset<unsigned int,
+                             Rational_Interval_Info_Policy> Rational_Interval_Info;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An interval with rational, possibly open boundaries.

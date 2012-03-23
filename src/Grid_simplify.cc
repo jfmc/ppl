@@ -1,6 +1,6 @@
 /* Grid class implementation: simplify().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -351,14 +351,16 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Ensure that the parameter divisors are the same as the system
   // divisor.
   const Coefficient& system_divisor = sys.sys.rows[0].expr.inhomogeneous_term();
-  for (dimension_type i = sys.sys.rows.size() - 1, dim = num_columns - 1;
-       dim > 0; --dim) {
+  for (dimension_type i = sys.sys.rows.size() - 1,
+         dim = num_columns - 1; dim > 0; --dim) {
     switch (dim_kinds[dim]) {
     case PARAMETER:
       sys.sys.rows[i].set_divisor(system_divisor);
+      // Intentionally fall through.
     case LINE:
       PPL_ASSERT(sys.sys.rows[i].OK());
       --i;
+      break;
     case GEN_VIRTUAL:
       break;
     }

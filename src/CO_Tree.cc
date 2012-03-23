@@ -1,6 +1,6 @@
 /* CO_Tree class implementation.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -165,7 +165,7 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
     return;
   dimension_type i = dfs_index(itr);
   dimension_type* p = indexes + i;
-  dimension_type* p_end = indexes + reserved_size + 1;
+  dimension_type* p_end = indexes + (reserved_size + 1);
   for ( ; p != p_end; ++p)
     if (*p != unused_index)
       --(*p);
@@ -245,7 +245,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   if (indexes[hint] > key) {
     // The searched element is before `hint'.
 
-    while (1) {
+    while (true) {
 
       if (hint <= offset) {
         // The searched element is in (0,hint).
@@ -288,7 +288,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 
   } else {
     // The searched element is after `hint'.
-    while (1) {
+    while (true) {
 
       if (hint + offset > reserved_size) {
         // The searched element is in (hint,reserved_size+1).
@@ -476,7 +476,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   const dimension_type deleted_key = itr.index();
   tree_iterator deleted_node = itr;
   (*itr).~data_type();
-  while (1) {
+  while (true) {
     dimension_type& current_key  = itr.index();
     data_type&      current_data = *itr;
     if (itr.is_leaf())
@@ -537,34 +537,32 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
 void
 PPL::CO_Tree::init(dimension_type reserved_size1) {
-
   if (reserved_size1 == 0) {
     indexes = NULL;
     data = NULL;
     size_ = 0;
     reserved_size = 0;
     max_depth = 0;
-  } else {
-
+  }
+  else {
     init(0);
-
     const dimension_type new_max_depth = integer_log2(reserved_size1) + 1;
-    const dimension_type new_reserved_size = ((dimension_type)1 << new_max_depth) - 1;
-
+    const dimension_type new_reserved_size
+      = (static_cast<dimension_type>(1) << new_max_depth) - 1;
     // If this throws, *this will be the empty tree.
     indexes = new dimension_type[new_reserved_size + 2];
-
     try {
-      data = coefficient_allocator.allocate(new_reserved_size + 1);
-    } catch (...) {
-      delete [] indexes;
+      data = data_allocator.allocate(new_reserved_size + 1);
+    }
+    catch (...) {
+      delete[] indexes;
       indexes = 0;
       PPL_ASSERT(OK());
       throw;
     }
     max_depth = new_max_depth;
     reserved_size = new_reserved_size;
-    
+
     // Mark all pairs as unused.
     for (dimension_type i = 1; i <= reserved_size; ++i)
       indexes[i] = unused_index;
@@ -588,8 +586,8 @@ PPL::CO_Tree::destroy() {
         data[i].~data_type();
     }
 
-    delete [] indexes;
-    coefficient_allocator.deallocate(data, reserved_size + 1);
+    delete[] indexes;
+    data_allocator.deallocate(data, reserved_size + 1);
   }
 }
 
@@ -613,7 +611,7 @@ PPL::CO_Tree::structure_OK() const {
   if (reserved_size < 3)
     return false;
 
-  if (reserved_size != ((dimension_type)1 << max_depth) - 1)
+  if (reserved_size != (static_cast<dimension_type>(1) << max_depth) - 1)
     return false;
 
   if (data == NULL)
@@ -743,9 +741,9 @@ PPL::CO_Tree::rebuild_bigger_tree() {
   data_type* new_data;
 
   try {
-    new_data = coefficient_allocator.allocate(new_reserved_size + 1);
+    new_data = data_allocator.allocate(new_reserved_size + 1);
   } catch (...) {
-    delete new_indexes;
+    delete[] new_indexes;
     throw;
   }
 
@@ -763,8 +761,8 @@ PPL::CO_Tree::rebuild_bigger_tree() {
   new_indexes[0] = 0;
   new_indexes[new_reserved_size + 1] = 0;
 
-  delete [] indexes;
-  operator delete(data);
+  delete[] indexes;
+  data_allocator.deallocate(data, reserved_size + 1);
 
   indexes = new_indexes;
   data = new_data;
@@ -791,7 +789,8 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
   height_t itr_depth_minus_1 = itr.depth() - 1;
   height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
-  dimension_type subtree_reserved_size = ((dimension_type)1 << height) - 1;
+  dimension_type subtree_reserved_size = (static_cast<dimension_type>(1)
+                                          << height) - 1;
   const bool deleting = itr.index() == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
   if (deleting)
@@ -801,14 +800,16 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     subtree_size = 2;
 
   while (is_greater_than_ratio(subtree_size, subtree_reserved_size,
-                               max_density_percent + itr_depth_minus_1
-                               *(100 - max_density_percent)
-                               /(max_depth - 1))
+                               max_density_percent
+                               + ((itr_depth_minus_1
+                                   * (100 - max_density_percent))
+                                  / (max_depth - 1)))
          || is_less_than_ratio(subtree_size, subtree_reserved_size,
-                               min_density_percent - itr_depth_minus_1
-                               *(min_density_percent
-                                 - min_leaf_density_percent)
-                               /(max_depth - 1))) {
+                               min_density_percent
+                               - ((itr_depth_minus_1
+                                   * (min_density_percent
+                                      - min_leaf_density_percent))
+                                  / (max_depth - 1)))) {
     // The density in the tree is correct, so the while condition is always
     // false for the root.
     PPL_ASSERT(itr_depth_minus_1 != 0);
@@ -825,7 +826,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     subtree_reserved_size = 2*subtree_reserved_size + 1;
     --itr_depth_minus_1;
     PPL_ASSERT(itr.depth() - 1 == itr_depth_minus_1);
-  };
+  }
 
   // Now the subtree rooted at itr has been chosen as the subtree to be
   // rebalanced.
@@ -932,7 +933,9 @@ PPL::CO_Tree
     --subtree_size;
   }
 
-  return first_unused_index - indexes;
+  ptrdiff_t distance = first_unused_index - indexes;
+  PPL_ASSERT(distance >= 0);
+  return static_cast<dimension_type>(distance);
 }
 
 void
@@ -945,13 +948,13 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
     bool add_element) {
 
   // This is static and with static allocation, to improve performance.
-  // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
-  // dimension_type, so it is the maximum tree height.
+  // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that
+  // 2^k-1 is a dimension_type, so it is the maximum tree height.
   // For each node level, the stack may contain up to two element (one for the
   // subtree rooted at the right son of a node of that level, and one for the
   // node itself). An additional element can be at the top of the tree.
   static std::pair<dimension_type,dimension_type>
-    stack[2*CHAR_BIT*sizeof(dimension_type)+1];
+    stack[2U * sizeof_to_bits(sizeof(dimension_type)) + 1U];
 
   std::pair<dimension_type,dimension_type>* stack_first_empty = stack;
 
@@ -968,8 +971,12 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
 
     --stack_first_empty;
 
-    // top_n = stack.top().first;
-    // top_i = stack.top().second;
+    // Implement
+    //
+    // <CODE>
+    //   top_n = stack.top().first;
+    //   top_i = stack.top().second;
+    // </CODE>
     const dimension_type top_n = stack_first_empty->first;
     const dimension_type top_i = stack_first_empty->second;
 
@@ -1037,14 +1044,14 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
     ++source_index;
 
   // This is static and with static allocation, to improve performance.
-  // CHAR_BIT*sizeof(dimension_type) is the maximum k such that 2^k-1 is a
+  // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that 2^k-1 is a
   // dimension_type, so it is the maximum tree height.
   // For each node level, the stack may contain up to 4 elements: two elements
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
   static std::pair<dimension_type, signed char>
-    stack[5*CHAR_BIT*sizeof(dimension_type)];
+    stack[5U * sizeof_to_bits(sizeof(dimension_type))];
 
   dimension_type stack_first_empty = 0;
 
@@ -1063,8 +1070,12 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 
   while (stack_first_empty != 0) {
 
-    // top_n         = stack.top().first;
-    // top_operation = stack.top().second;
+    // Implement
+    //
+    // <CODE>
+    //   top_n         = stack.top().first;
+    //   top_operation = stack.top().second;
+    // </CODE>
     const dimension_type top_n = stack[stack_first_empty - 1].first;
     const signed char top_operation = stack[stack_first_empty - 1].second;
 
@@ -1130,7 +1141,6 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 
 void
 PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
-
   PPL_ASSERT(size_ == 0);
   PPL_ASSERT(reserved_size == x.reserved_size);
   PPL_ASSERT(structure_OK());
@@ -1161,10 +1171,10 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
         data[j].~data_type();
 
     // 2. Deallocate index[] and data[]
-    delete [] indexes;
-    operator delete(static_cast<void*>(data));
+    delete[] indexes;
+    data_allocator.deallocate(data, reserved_size + 1);
 
-    // 3. Set the tree to an empty tree.
+    // 3. Set the tree to an empty tree and rethrow exception.
     init(0);
     throw;
   }

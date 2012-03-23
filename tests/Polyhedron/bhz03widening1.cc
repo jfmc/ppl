@@ -1,6 +1,6 @@
 /* Test Pointset_Powerset<PH>::BHZ03_widening_assign().
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -120,7 +120,7 @@ aux2_test01(unsigned n) {
 }
 
 void
-aux3_test01(std::ostream& s, const Variable& v) {
+aux3_test01(std::ostream& s, const Variable v) {
   s << char('x' + v.id());
 }
 
@@ -350,7 +350,7 @@ aux2_test04(unsigned n) {
 }
 
 void
-aux3_test04(std::ostream& s, const Variable& v) {
+aux3_test04(std::ostream& s, const Variable v) {
   s << char('x' + v.id());
 }
 

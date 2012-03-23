@@ -1,6 +1,6 @@
 /* Test the timeout facility of the PPL C interface library.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -50,12 +50,12 @@ error_handler(enum ppl_enum_error_code code,
 	      const char* description) {
   if (check_noisy() || check_very_noisy())
     fprintf(stderr, "PPL error code %d: %s\n", code, description);
-#if !PWL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+#if !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   /* If Watchdog objects are not supported, a logic error will occur:
      this is normal. */
   if (code == PPL_ERROR_LOGIC_ERROR)
     my_exit(0);
-#endif
+#endif /* !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED */
 }
 
 void

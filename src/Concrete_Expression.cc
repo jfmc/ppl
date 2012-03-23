@@ -1,6 +1,6 @@
 /* Concrete_Expression class implementation (non-inline functions).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -29,7 +29,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 bool
 PPL::Concrete_Expression_Type::OK() const {
-  if (impl.bounded_integer != 0) {
+  if (impl.bounded_integer) {
     if (impl.bounded_integer_type_width != BITS_8
         && impl.bounded_integer_type_width != BITS_16
         && impl.bounded_integer_type_width != BITS_32
@@ -74,7 +74,7 @@ PPL::Concrete_Expression_Type::OK() const {
     }
   }
   else {
-    // Here we have impl.bounded_integer == 0.
+    // Here we have impl.bounded_integer == false.
     if (impl.floating_point_format != IEEE754_HALF
         && impl.floating_point_format != IEEE754_SINGLE
         && impl.floating_point_format != IEEE754_DOUBLE

@@ -1,6 +1,6 @@
 /* OR_Matrix class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -253,6 +253,11 @@ private:
     //! Assignment-increment operator.
     any_row_iterator& operator+=(difference_type m);
 
+    //! Assignment-increment operator for \p m of unsigned type.
+    template <typename Unsigned>
+    typename Enable_If<(static_cast<Unsigned>(-1) > 0), any_row_iterator&>::type
+    operator+=(Unsigned m);
+
     //! Assignment-decrement operator.
     any_row_iterator& operator-=(difference_type m);
 
@@ -261,6 +266,11 @@ private:
 
     //! Returns the sum of \p *this and \p m.
     any_row_iterator operator+(difference_type m) const;
+
+    //! Returns the sum of \p *this and \p m, for \p m of unsigned type.
+    template <typename Unsigned>
+    typename Enable_If<(static_cast<Unsigned>(-1) > 0), any_row_iterator>::type
+    operator+(Unsigned m) const;
 
     //! Returns the difference of \p *this and \p m.
     any_row_iterator operator-(difference_type m) const;

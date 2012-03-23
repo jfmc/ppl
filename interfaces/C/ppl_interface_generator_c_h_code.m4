@@ -5,7 +5,7 @@ This m4 file contains the program header code for generating the
 files ppl_c_domains.h.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -277,6 +277,18 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
            ppl_Coefficient_t ext_d,
            int* poptimum,
            ppl_Generator_t point));
+
+')
+
+m4_define(`ppl_@CLASS@_has_@UPPERLOWER@_bound_code',
+`/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_get_@UPPERLOWER@_bound
+PPL_PROTO((ppl_@CLASS@_t ps,
+           ppl_dimension_type var,
+           ppl_Coefficient_t ext_n,
+           ppl_Coefficient_t ext_d,
+           int* pclosed));
 
 ')
 

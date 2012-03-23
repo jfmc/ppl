@@ -1,6 +1,6 @@
 /* Checked extended arithmetic functions.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -675,7 +675,7 @@ mul_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-div_2exp_ext(To& to, const From& x, int exp, Rounding_Dir dir) {
+div_2exp_ext(To& to, const From& x, unsigned int exp, Rounding_Dir dir) {
   if (!ext_to_handle<From_Policy>(x))
     goto native;
   if (is_nan<From_Policy>(x))

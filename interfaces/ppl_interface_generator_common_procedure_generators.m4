@@ -4,7 +4,7 @@ dnl This m4 file defines the list of the procedures generated
 dnl that are independent of the interface being generated.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -63,6 +63,7 @@ ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s/2 +simple,
 ppl_@CLASS@_@HAS_PROPERTY@/1 +all,
 ppl_@CLASS@_@SIMPLIFY@/1 *nofail +all,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +all,
+ppl_@CLASS@_has_@UPPERLOWER@_bound/5 +box,
 ppl_@CLASS@_@MAXMIN@/5 +all,
 ppl_@CLASS@_@MAXMIN@_with_point/6 +all,
 ppl_@CLASS@_frequency/6 +simple,
@@ -111,7 +112,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens/5 +sim
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign/3 *nofail +simple,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign/2 *nofail +wr_shape,
-ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +shape_group,
 dnl
 dnl NOTE: The next few schemas provide procedures specifically for
 dnl       the pointset_powerset domains.

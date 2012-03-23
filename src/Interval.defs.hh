@@ -1,6 +1,6 @@
 /* Declarations for the Interval class and its constituents.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2011 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -41,7 +41,8 @@ enum Ternary { T_YES, T_NO, T_MAYBE };
 
 inline I_Result
 combine(Result l, Result u) {
-  return static_cast<I_Result>(l | (u << 6));
+  unsigned res = static_cast<unsigned>(l) | (static_cast<unsigned>(u) << 6);
+  return static_cast<I_Result>(res);
 }
 
 struct Interval_Base {
@@ -77,9 +78,6 @@ struct Is_Interval : public Is_Same_Or_Derived<Interval_Base, T> {};
   - the ability to represent empty intervals in addition to nonempty ones;
   - the ability to represent intervals of extended number families
     that contain positive and negative infinities;
-  - the ability to support (independently from the type of the boundaries)
-    plain intervals of real numbers and intervals subject to generic
-    <EM>restrictions</EM> (e.g., intervals of integer numbers).
 */
 template <typename Boundary, typename Info>
 class Interval : public Interval_Base, private Info {
@@ -91,49 +89,6 @@ private:
   Info& w_info() const {
     return const_cast<Interval&>(*this);
   }
-  Result lower_normalize() const {
-    Result r;
-    if (info().get_boundary_property(LOWER, NORMALIZED)
-	|| info().get_boundary_property(LOWER, SPECIAL))
-      r = V_EQ;
-    else {
-      Boundary& l = const_cast<Boundary&>(lower());
-      if (info().get_boundary_property(LOWER, OPEN)) {
-	r = info().restrict(round_dir_check(LOWER, true), l, V_GT);
-	if (r != V_GT)
-	  w_info().set_boundary_property(LOWER, OPEN, false);
-      }
-      else {
-	r = info().restrict(round_dir_check(LOWER, true), l, V_GE);
-	if (r == V_GT)
-	  w_info().set_boundary_property(LOWER, OPEN);
-      }
-      w_info().set_boundary_property(LOWER, NORMALIZED);
-    }
-    return r;
-  }
-  Result upper_normalize() const {
-    Result r;
-    if (info().get_boundary_property(UPPER, NORMALIZED)
-	|| info().get_boundary_property(UPPER, SPECIAL))
-      r = V_EQ;
-    else {
-      Boundary& u = const_cast<Boundary&>(upper());
-      if (info().get_boundary_property(UPPER, OPEN)) {
-	r = info().restrict(round_dir_check(UPPER, true), u, V_LT);
-	if (r != V_LT)
-	  w_info().set_boundary_property(UPPER, OPEN, false);
-      }
-      else {
-	r = info().restrict(round_dir_check(UPPER, true), u, V_LE);
-	if (r == V_LT)
-	  w_info().set_boundary_property(UPPER, OPEN);
-      }
-      w_info().set_boundary_property(UPPER, NORMALIZED);
-    }
-    return r;
-  }
-
 
 public:
   typedef Boundary boundary_type;
@@ -204,30 +159,15 @@ public:
     PPL_ASSERT(!is_empty());
     if (info().get_boundary_property(LOWER, SPECIAL))
       return I_Constraint<boundary_type>();
-    return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL, lower(), true);
+    return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL,
+                        lower(), true);
   }
   I_Constraint<boundary_type> upper_constraint() const {
     PPL_ASSERT(!is_empty());
     if (info().get_boundary_property(UPPER, SPECIAL))
       return I_Constraint<boundary_type>();
-    return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL, upper(), true);
-  }
-
-  bool has_restriction() const {
-    return info().has_restriction();
-  }
-
-  I_Result normalize() const {
-    PPL_ASSERT(OK());
-    if (has_restriction()) {
-      Result rl = lower_normalize();
-      Result ru = upper_normalize();
-      info().normalize();
-      PPL_ASSERT(OK());
-      return combine(rl, ru);
-    }
-    else
-      return combine(V_EQ, V_EQ);
+    return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL,
+                        upper(), true);
   }
 
   bool is_empty() const {
@@ -280,8 +220,7 @@ public:
 
   bool is_universe() const {
     PPL_ASSERT(OK());
-    return lower_is_domain_inf() && upper_is_domain_sup()
-      && !has_restriction();
+    return lower_is_domain_inf() && upper_is_domain_sup();
   }
 
   I_Result lower_extend() {
@@ -326,7 +265,7 @@ public:
     case V_EQ:
     case V_NE:
       assign(UNIVERSE);
-      rs = (Relation_Symbol) c.rel();
+      rs = static_cast<Relation_Symbol>(c.rel());
       return refine_existential(rs, c.value());
     }
   }
@@ -380,6 +319,10 @@ public:
       set_unbounded(UPPER, upper(), info());
       r = I_UNIVERSE | I_EXACT;
       break;
+    default:
+      PPL_UNREACHABLE;
+      r = I_EMPTY;
+      break;
     }
     PPL_ASSERT(OK());
     return r;
@@ -411,7 +354,6 @@ public:
 
   I_Result set_infinities() {
     info().clear();
-    // FIXME: what about restrictions?
     Result rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());
     Result ru = Boundary_NS::set_plus_infinity(UPPER, upper(), info());
     PPL_ASSERT(OK());
@@ -454,7 +396,7 @@ public:
     info().set_boundary_property(UPPER, OPEN, true);
   }
 
-  bool is_infinity() const {
+  int infinity_sign() const {
     PPL_ASSERT(OK());
     if (is_reverse_infinity(LOWER, lower(), info()))
       return 1;
@@ -517,7 +459,7 @@ public:
       return assign(refinement);
     PPL_DIRTY_TEMP(Boundary, u);
     Result result = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
-    if (!result_overflow(result) && u > lower())
+    if (result_overflow(result) == 0 && u > lower())
       return assign(refinement);
     info().clear();
     switch (r) {
@@ -591,16 +533,6 @@ public:
 #endif
 	return false;
       }
-#if 0
-      if (info().get_boundary_property(LOWER, NORMALIZED)
-	  && !info().is_restricted(lower())) {
-#ifndef NDEBUG
-	std::cerr << "The lower boundary is marked to be normalized, "
-                  << "but it is not.\n";
-#endif
-	return false;
-      }
-#endif
     }
 
     if (is_open(UPPER, upper(), info())) {
@@ -626,16 +558,6 @@ public:
 #endif
 	return false;
       }
-#if 0
-      if (info().get_boundary_property(UPPER, NORMALIZED)
-	  && !info().is_restricted(upper())) {
-#ifndef NDEBUG
-	std::cerr << "The upper boundary is marked to be normalized, "
-                  << "but it is not.\n";
-#endif
-	return false;
-      }
-#endif
     }
 
     // Everything OK.
@@ -749,10 +671,6 @@ public:
   /*! \brief
     Assigns to \p *this an interval having empty intersection with \p y.
     The assigned interval should be as large as possible.
-
-    \note
-    Depending on interval restrictions, there could be many
-    maximal intervals all inconsistent with respect to \p y.
   */
   template <typename From>
   typename Enable_If<Is_Interval<From>::value, void>::type
@@ -833,6 +751,7 @@ private:
 };
 
 //! Swaps \p x with \p y.
+/*! \relates Interval */
 template <typename Boundary, typename Info>
 void swap(Interval<Boundary, Info>& x, Interval<Boundary, Info>& y);
 
