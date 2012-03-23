@@ -41,6 +41,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/tests \
+@extra_includes@ \
 @debug_flag@
 
 LDADD = \
