@@ -363,11 +363,12 @@ Linear_System<Row>::set_space_dimension(dimension_type space_dim) {
 
 template <typename Row>
 inline void
-Linear_System<Row>::remove_row_no_ok(const dimension_type i, bool keep_sorted) {
+Linear_System<Row>::remove_row_no_ok(const dimension_type i,
+                                     const bool keep_sorted) {
   PPL_ASSERT(i < num_rows());
   bool was_pending = (i >= index_first_pending);
 
-  if (is_sorted() && keep_sorted && !was_pending) {
+  if (sorted && keep_sorted && !was_pending) {
     for (dimension_type j = i + 1; j < rows.size(); ++j)
       swap(rows[j], rows[j-1]);
     rows.pop_back();
@@ -386,14 +387,14 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i, bool keep_sorted) {
       // Swap the row with the last non-pending row.
       swap(rows[i], rows[index_first_pending - 1]);
 
-      // Now the (not-pending) row that has to be deleted is between the
-      // not-pending and the pending rows.
+      // Now the (non-pending) row that has to be deleted is between the
+      // non-pending and the pending rows.
       swap(rows[i], rows.back());
     }
     rows.pop_back();
   }
   if (!was_pending)
-    // A not-pending row has been removed.
+    // A non-pending row has been removed.
     --index_first_pending;
 }
 
@@ -418,20 +419,20 @@ Linear_System<Row>::remove_rows(dimension_type first,
     return;
 
   // All the rows that have to be removed must have the same (pending or
-  // not-pending) status.
+  // non-pending) status.
   PPL_ASSERT(first >= index_first_pending || last <= index_first_pending);
 
   bool were_pending = (first >= index_first_pending);
 
   // Move the rows in [first,last) at the end of the system.
-  if (is_sorted() && keep_sorted && !were_pending) {
+  if (sorted && keep_sorted && !were_pending) {
     // Preserve the row ordering.
     for (dimension_type i = last; i < rows.size(); ++i)
       swap(rows[i], rows[i - n]);
 
     rows.resize(rows.size() - n);
 
-    // `n' not-pending rows have been removed.
+    // `n' non-pending rows have been removed.
     index_first_pending -= n;
 
     PPL_ASSERT(OK());
@@ -439,7 +440,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   }
 
   // We can ignore the row ordering, but we must not mix pending and
-  // not-pending rows.
+  // non-pending rows.
 
   dimension_type offset = rows.size() - n - first;
   // We want to swap the rows in [first, last) and
@@ -454,7 +455,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
 
     rows.resize(rows.size() - n);
 
-    // `n' not-pending rows have been removed.
+    // `n' non-pending rows have been removed.
     index_first_pending -= n;
   } else {
     // There are some pending rows in [first + offset, last + offset).
@@ -466,13 +467,13 @@ Linear_System<Row>::remove_rows(dimension_type first,
 
       rows.resize(rows.size() - n);
 
-      // `n' not-pending rows have been removed.
+      // `n' non-pending rows have been removed.
       index_first_pending -= n;
     } else {
       PPL_ASSERT(rows.size() - n < index_first_pending);
       PPL_ASSERT(rows.size() > index_first_pending);
       PPL_ASSERT(!were_pending);
-      // In the [size() - n, size()) interval there are some not-pending
+      // In the [size() - n, size()) interval there are some non-pending
       // rows and some pending ones. Be careful not to mix them.
 
       PPL_ASSERT(index_first_pending >= last);
@@ -597,11 +598,11 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
     // Removing pending rows only.
   } else {
     if (indexes.back() < index_first_pending) {
-      // Removing not-pending rows only.
+      // Removing non-pending rows only.
       index_first_pending -= indexes.size();
     } else {
-      // Removing some pending and some not-pending rows, count the
-      // not-pending rows that must be removed.
+      // Removing some pending and some non-pending rows, count the
+      // non-pending rows that must be removed.
       // This exploits the fact that `indexes' is sorted by using binary
       // search.
       itr_t j = std::lower_bound(indexes.begin(), indexes.end(),
