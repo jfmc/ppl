@@ -140,7 +140,7 @@ public:
   ~Congruence_System();
 
   //! Assignment operator.
-  Congruence_System& operator=(const Congruence_System& cgs);
+  Congruence_System& operator=(const Congruence_System& y);
 
   //! Returns the maximum space dimension a Congruence_System can handle.
   static dimension_type max_space_dimension();
@@ -150,9 +150,9 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is exactly equal
-    to \p cgs.
+    to \p y.
   */
-  bool is_equal_to(const Congruence_System& cgs) const;
+  bool is_equal_to(const Congruence_System& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this contains one or
@@ -188,12 +188,12 @@ public:
   // TODO: Consider adding a recycling_insert(cg).
 
   /*! \brief
-    Inserts in \p *this a copy of the congruences in \p cgs,
+    Inserts in \p *this a copy of the congruences in \p y,
     increasing the number of space dimensions if needed.
 
     The inserted copies will be strongly normalized.
   */
-  void insert(const Congruence_System& cgs);
+  void insert(const Congruence_System& y);
 
   /*! \brief
     Inserts into \p *this the congruences in \p cgs, increasing the
@@ -330,7 +330,7 @@ public:
   dimension_type num_proper_congruences() const;
 
   //! Swaps \p *this with \p y.
-  void m_swap(Congruence_System& cgs);
+  void m_swap(Congruence_System& y);
 
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
@@ -369,14 +369,14 @@ private:
 
     \param cgs
     The congruence system to append to \p this.  The number of rows in
-    \p cgs must be strictly positive.
+    \p y must be strictly positive.
 
     The matrix for the new system of congruences is obtained by
     leaving the old system in the upper left-hand side and placing the
     congruences of \p cgs in the lower right-hand side, and padding
     with zeroes.
   */
-  void concatenate(const Congruence_System& cgs);
+  void concatenate(const Congruence_System& y);
 
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();

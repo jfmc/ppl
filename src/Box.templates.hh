@@ -2046,23 +2046,23 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
 
 template <typename ITV>
 void
-Box<ITV>::remove_higher_space_dimensions(const dimension_type new_dim) {
+Box<ITV>::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check: the variable having
   // maximum index is the one occurring last in the set.
-  const dimension_type old_dim = space_dimension();
-  if (new_dim > old_dim)
+  const dimension_type space_dim = space_dimension();
+  if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dim);
+				 new_dimension);
 
   // The removal of no dimensions from any box is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space box.
-  if (new_dim == old_dim) {
+  if (new_dimension == space_dim) {
     PPL_ASSERT(OK());
     return;
   }
 
-  seq.resize(new_dim);
+  seq.resize(new_dimension);
   PPL_ASSERT(OK());
 }
 
@@ -4143,24 +4143,24 @@ Box<ITV>::throw_constraint_incompatible(const char* method) {
 template <typename ITV>
 void
 Box<ITV>::throw_expression_too_complex(const char* method,
-                                       const Linear_Expression& e) {
+                                       const Linear_Expression& le) {
   using namespace IO_Operators;
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
-    << e << " is too complex.";
+    << le << " is too complex.";
   throw std::invalid_argument(s.str());
 }
 
 template <typename ITV>
 void
 Box<ITV>::throw_dimension_incompatible(const char* method,
-                                       const char* name_row,
-                                       const Linear_Expression& e) const {
+                                       const char* le_name,
+                                       const Linear_Expression& le) const {
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
-    << e.space_dimension() << ".";
+    << ", " << le_name << "->space_dimension() == "
+    << le.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -4168,13 +4168,13 @@ template <typename ITV>
 template <typename C>
 void
 Box<ITV>::throw_dimension_incompatible(const char* method,
-                                       const char* name_row,
-                                       const Linear_Form<C>& y) const {
+                                       const char* lf_name,
+                                       const Linear_Form<C>& lf) const {
   std::ostringstream s;
   s << "PPL::Box::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
-    << y.space_dimension() << ".";
+    << ", " << lf_name << "->space_dimension() == "
+    << lf.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

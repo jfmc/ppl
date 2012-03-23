@@ -821,20 +821,20 @@ public:
     \param maximum
     <CODE>true</CODE> if the supremum value can be reached in \p this.
 
-    \param point
-    When maximization succeeds, will be assigned a generator point
-    where \p expr reaches its supremum value.
+    \param g
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
 
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded by \p *this,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and

@@ -218,7 +218,7 @@ public:
   ~Congruence();
 
   //! Assignment operator.
-  Congruence& operator=(const Congruence& cg);
+  Congruence& operator=(const Congruence& y);
 
   //! Returns the maximum space dimension a Congruence can handle.
   static dimension_type max_space_dimension();

@@ -418,12 +418,12 @@ template <typename D1, typename D2, typename R>
 inline bool
 Partially_Reduced_Product<D1, D2, R>::OK() const {
   if (reduced) {
-    Partially_Reduced_Product<D1, D2, R> pd1 = *this;
-    Partially_Reduced_Product<D1, D2, R> pd2 = *this;
-    /* Force pd1 reduction */
-    pd1.clear_reduced_flag();
-    pd1.reduce();
-    if (pd1 != pd2)
+    Partially_Reduced_Product<D1, D2, R> dp1 = *this;
+    Partially_Reduced_Product<D1, D2, R> dp2 = *this;
+    /* Force dp1 reduction */
+    dp1.clear_reduced_flag();
+    dp1.reduce();
+    if (dp1 != dp2)
       return false;
   }
   return d1.OK() && d2.OK();

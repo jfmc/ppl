@@ -114,8 +114,8 @@ Congruence::zero_dim_false() {
 }
 
 inline Congruence&
-Congruence::operator=(const Congruence& c) {
-  Dense_Row::operator=(c);
+Congruence::operator=(const Congruence& y) {
+  Dense_Row::operator=(y);
   return *this;
 }
 

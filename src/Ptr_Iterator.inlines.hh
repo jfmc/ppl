@@ -52,8 +52,8 @@ Ptr_Iterator<P>::Ptr_Iterator(const P& q)
 template <typename P>
 template <typename Q>
 inline
-Ptr_Iterator<P>::Ptr_Iterator(const Ptr_Iterator<Q>& y)
-  : p(y.base()) {
+Ptr_Iterator<P>::Ptr_Iterator(const Ptr_Iterator<Q>& q)
+  : p(q.base()) {
 }
 
 template <typename P>

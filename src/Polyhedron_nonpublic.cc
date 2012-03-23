@@ -2337,10 +2337,11 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* e_name,
-					      const Linear_Expression& e) const {
-  throw_dimension_incompatible(method, e_name, e.space_dimension());
+PPL::Polyhedron
+::throw_dimension_incompatible(const char* method,
+                               const char* le_name,
+                               const Linear_Expression& le) const {
+  throw_dimension_incompatible(method, le_name, le.space_dimension());
 }
 
 void
@@ -2372,16 +2373,18 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* gs_name,
-					      const Generator_System& gs) const {
+PPL::Polyhedron
+::throw_dimension_incompatible(const char* method,
+                               const char* gs_name,
+                               const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 
 void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* cgs_name,
-					      const Congruence_System& cgs) const {
+PPL::Polyhedron
+::throw_dimension_incompatible(const char* method,
+                               const char* cgs_name,
+                               const Congruence_System& cgs) const {
   throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
 }
 

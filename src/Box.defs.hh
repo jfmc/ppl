@@ -459,7 +459,7 @@ public:
     Builds the smallest box containing \p gr using a polynomial algorithm.
     The \p complexity argument is ignored.
   */
-  explicit Box(const Grid& ph,
+  explicit Box(const Grid& gr,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
   //! Builds a box containing the partially reduced product \p dp.
@@ -2170,7 +2170,7 @@ private:
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-				    const Box& x) const;
+				    const Box& y) const;
 
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;
@@ -2191,18 +2191,18 @@ private:
 				    const Generator& g) const;
 
   void throw_dimension_incompatible(const char* method,
-				    const char* name_row,
-				    const Linear_Expression& y) const;
+				    const char* le_name,
+				    const Linear_Expression& le) const;
 
   template <typename C>
   void throw_dimension_incompatible(const char* method,
-                                    const char* name_row,
-                                    const Linear_Form<C>& y) const;
+                                    const char* lf_name,
+                                    const Linear_Form<C>& lf) const;
 
   static void throw_constraint_incompatible(const char* method);
 
   static void throw_expression_too_complex(const char* method,
-					   const Linear_Expression& e);
+					   const Linear_Expression& le);
 
   static void throw_generic(const char* method, const char* reason);
   //@} // Exception Throwers
