@@ -8067,12 +8067,12 @@ template <typename C>
 void
 Octagonal_Shape<T>
 ::throw_dimension_incompatible(const char* method,
-                               const char* le_name,
+                               const char* lf_name,
                                const Linear_Form<C>& lf) const {
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
-    << ", " << le_name << "->space_dimension() == "
+    << ", " << lf_name << "->space_dimension() == "
     << lf.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }

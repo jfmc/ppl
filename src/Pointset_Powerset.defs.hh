@@ -615,13 +615,13 @@ public:
   */
   void refine_with_constraints(const Constraint_System& cs);
 
-  //! Intersects \p *this with congruence \p c.
+  //! Intersects \p *this with congruence \p cg.
   /*!
     \exception std::invalid_argument
-    Thrown if \p *this and congruence \p c are topology-incompatible
+    Thrown if \p *this and congruence \p cg are topology-incompatible
     or dimension-incompatible.
   */
-  void add_congruence(const Congruence& c);
+  void add_congruence(const Congruence& cg);
 
   /*! \brief
     Use the congruence \p cg to refine \p *this.

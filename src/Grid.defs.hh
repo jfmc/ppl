@@ -2429,35 +2429,35 @@ private:
   /*!
     Expects \p gs to contain at least one point.
   */
-  static void simplify(Grid_Generator_System& gs,
+  static void simplify(Grid_Generator_System& ggs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Reduces the line \p row using the line \p pivot.
   /*!
-    Uses the line \p pivot to change the representation of the line \p
-    row so that the element at index \p col of \p row is zero.
+    Uses the line \p pivot to change the representation of the line
+    \p row so that the element at index \p column of \p row is zero.
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_line_with_line(Grid_Generator& row,
 				    Grid_Generator& pivot,
-				    dimension_type col);
+				    dimension_type column);
 
   //! Reduces the equality \p row using the equality \p pivot.
   /*!
     Uses the equality \p pivot to change the representation of the
-    equality \p row so that the element at index \p col of \p row is
-    zero.
+    equality \p row so that the element at index \p column of \p row
+    is zero.
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_equality_with_equality(Congruence& row,
 					    const Congruence& pivot,
-					    dimension_type col);
+					    dimension_type column);
 
   //! Reduces \p row using \p pivot.
   /*!
     Uses the point, parameter or proper congruence at \p pivot to
     change the representation of the point, parameter or proper
-    congruence at \p row so that the element at index \p col of \p row
+    congruence at \p row so that the element at index \p column of \p row
     is zero.  Only elements from index \p start to index \p end are
     modified (i.e. it is assumed that all other elements are zero).
   */
@@ -2465,32 +2465,32 @@ private:
   template <typename R>
   static void reduce_pc_with_pc(R& row,
 				R& pivot,
-				dimension_type col,
+				dimension_type column,
 				dimension_type start,
 				dimension_type end);
 
   //! Reduce \p row using \p pivot.
   /*!
     Use the line \p pivot to change the representation of the
-    parameter \p row such that the element at index \p col of \p row
+    parameter \p row such that the element at index \p column of \p row
     is zero.
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_parameter_with_line(Grid_Generator& row,
 					 const Grid_Generator& pivot,
-					 dimension_type col,
+					 dimension_type column,
 					 Grid_Generator_System& sys);
 
   //! Reduce \p row using \p pivot.
   /*!
     Use the equality \p pivot to change the representation of the
-    congruence \p row such that element at index \p col of \p row is
-    zero.
+    congruence \p row such that element at index \p column of \p row
+    is zero.
   */
   // A member of Grid for access to Dense_Matrix::rows.
   static void reduce_congruence_with_equality(Congruence& row,
 					      const Congruence& pivot,
-					      dimension_type col,
+					      dimension_type column,
 					      Congruence_System& sys);
 
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
@@ -2578,7 +2578,7 @@ protected:
 				    const char* gr_name,
 				    const Grid& gr) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* e_name,
+				    const char* le_name,
 				    const Linear_Expression& le) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cg_name,

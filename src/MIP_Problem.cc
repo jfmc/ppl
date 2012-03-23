@@ -1875,8 +1875,8 @@ PPL::MIP_Problem::second_phase() {
 void
 PPL::MIP_Problem
 ::evaluate_objective_function(const Generator& evaluating_point,
-                              Coefficient& ext_n,
-                              Coefficient& ext_d) const {
+                              Coefficient& numer,
+                              Coefficient& denom) const {
   const dimension_type ep_space_dim = evaluating_point.space_dimension();
   if (space_dimension() < ep_space_dim)
     throw std::invalid_argument("PPL::MIP_Problem::"
@@ -1893,12 +1893,12 @@ PPL::MIP_Problem
     = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
   Coefficient_traits::const_reference divisor = evaluating_point.divisor();
-  ext_n = input_obj_function.inhomogeneous_term() * divisor;
+  numer = input_obj_function.inhomogeneous_term() * divisor;
   for (dimension_type i = working_space_dim; i-- > 0; )
-    ext_n += evaluating_point.coefficient(Variable(i))
+    numer += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
   // Numerator and denominator should be coprime.
-  normalize2(ext_n, divisor, ext_n, ext_d);
+  normalize2(numer, divisor, numer, denom);
 }
 
 bool
@@ -1951,13 +1951,13 @@ PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
                             mpq_class& incumbent_solution_value,
                             Generator& incumbent_solution_point,
-                            MIP_Problem& lp,
+                            MIP_Problem& mip,
                             const Variables_Set& i_vars) {
   // Solve the problem as a non MIP one, it must be done internally.
-  PPL::MIP_Problem_Status lp_status;
-  if (lp.is_lp_satisfiable()) {
-    lp.second_phase();
-    lp_status = (lp.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
+  PPL::MIP_Problem_Status mip_status;
+  if (mip.is_lp_satisfiable()) {
+    mip.second_phase();
+    mip_status = (mip.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
       : UNBOUNDED_MIP_PROBLEM;
   }
   else
@@ -1969,29 +1969,29 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
 
-  if (lp_status == UNBOUNDED_MIP_PROBLEM)
-    p = lp.last_generator;
+  if (mip_status == UNBOUNDED_MIP_PROBLEM)
+    p = mip.last_generator;
   else {
-    PPL_ASSERT(lp_status == OPTIMIZED_MIP_PROBLEM);
+    PPL_ASSERT(mip_status == OPTIMIZED_MIP_PROBLEM);
     // Do not call optimizing_point().
-    p = lp.last_generator;
-    lp.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
+    p = mip.last_generator;
+    mip.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
     assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
     assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
     PPL_ASSERT(is_canonical(tmp_rational));
     if (have_incumbent_solution
-        && ((lp.optimization_mode() == MAXIMIZATION
+        && ((mip.optimization_mode() == MAXIMIZATION
               && tmp_rational <= incumbent_solution_value)
- 	    || (lp.optimization_mode() == MINIMIZATION
+ 	    || (mip.optimization_mode() == MINIMIZATION
                 && tmp_rational >= incumbent_solution_value)))
       // Abandon this path.
-      return lp_status;
+      return mip_status;
   }
 
   bool found_satisfiable_generator = true;
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   Coefficient_traits::const_reference p_divisor = p.divisor();
-  dimension_type non_int_dim = lp.space_dimension();
+  dimension_type non_int_dim = mip.space_dimension();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
@@ -2003,15 +2003,15 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   }
   if (found_satisfiable_generator) {
     // All the coordinates of `point' are satisfiable.
-    if (lp_status == UNBOUNDED_MIP_PROBLEM) {
+    if (mip_status == UNBOUNDED_MIP_PROBLEM) {
       // This is a point that belongs to the MIP_Problem.
       // In this way we are sure that we will return every time
       // a feasible point if requested by the user.
       incumbent_solution_point = p;
-      return lp_status;
+      return mip_status;
     }
     if (!have_incumbent_solution
-        || (lp.optimization_mode() == MAXIMIZATION
+        || (mip.optimization_mode() == MAXIMIZATION
             && tmp_rational > incumbent_solution_value)
         || tmp_rational < incumbent_solution_value) {
       incumbent_solution_value = tmp_rational;
@@ -2020,16 +2020,16 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 #if PPL_NOISY_SIMPLEX
       PPL_DIRTY_TEMP_COEFFICIENT(numer);
       PPL_DIRTY_TEMP_COEFFICIENT(denom);
-      lp.evaluate_objective_function(p, numer, denom);
+      mip.evaluate_objective_function(p, numer, denom);
       std::cout << "MIP_Problem::solve_mip(): "
                 << "new value found: " << numer << "/" << denom
                 << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
     }
-    return lp_status;
+    return mip_status;
   }
 
-  PPL_ASSERT(non_int_dim < lp.space_dimension());
+  PPL_ASSERT(non_int_dim < mip.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
 	   ROUND_NOT_NEEDED);
@@ -2038,8 +2038,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
-    MIP_Problem lp_aux(lp, Inherit_Constraints());
-    lp_aux.add_constraint(Variable(non_int_dim) <= tmp_coeff1);
+    MIP_Problem mip_aux(mip, Inherit_Constraints());
+    mip_aux.add_constraint(Variable(non_int_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
     std::cout << "MIP_Problem::solve_mip(): "
@@ -2048,10 +2048,10 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
               << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
     solve_mip(have_incumbent_solution, incumbent_solution_value,
-	      incumbent_solution_point, lp_aux, i_vars);
+	      incumbent_solution_point, mip_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
-  lp.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
+  mip.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
   std::cout << "MIP_Problem::solve_mip(): "
@@ -2060,18 +2060,18 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
   solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp, i_vars);
-  return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
+	    incumbent_solution_point, mip, i_vars);
+  return have_incumbent_solution ? mip_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
 bool
-PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
+PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
                                             const Variables_Set& i_vars,
                                             dimension_type& branching_index) {
   // Insert here the variables that do not satisfy the integrality
   // condition.
-  const std::vector<Constraint*>& input_cs = lp.input_cs;
-  const Generator& last_generator = lp.last_generator;
+  const std::vector<Constraint*>& input_cs = mip.input_cs;
+  const Generator& last_generator = mip.last_generator;
   Coefficient_traits::const_reference last_generator_divisor
     = last_generator.divisor();
   Variables_Set candidate_variables;
@@ -2121,7 +2121,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& lp,
 }
 
 bool
-PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
+PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& mip,
                                      const Variables_Set& i_vars,
                                      Generator& p) {
 #if PPL_NOISY_SIMPLEX
@@ -2130,10 +2130,10 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
             << "entering recursion level " << mip_recursion_level
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
-  PPL_ASSERT(lp.integer_space_dimensions().empty());
+  PPL_ASSERT(mip.integer_space_dimensions().empty());
 
-  // Solve the LP problem.
-  if (!lp.is_lp_satisfiable()) {
+  // Solve the MIP problem.
+  if (!mip.is_lp_satisfiable()) {
 #if PPL_NOISY_SIMPLEX
     std::cout << "MIP_Problem::is_mip_satisfiable(): "
               << "exiting from recursion level " << mip_recursion_level
@@ -2148,12 +2148,12 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
   bool found_satisfiable_generator = true;
   dimension_type non_int_dim;
-  p = lp.last_generator;
+  p = mip.last_generator;
   Coefficient_traits::const_reference p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
   found_satisfiable_generator
-    = choose_branching_variable(lp, i_vars, non_int_dim);
+    = choose_branching_variable(mip, i_vars, non_int_dim);
 #else
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
@@ -2170,7 +2170,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   if (found_satisfiable_generator)
     return true;
 
-  PPL_ASSERT(non_int_dim < lp.space_dimension());
+  PPL_ASSERT(non_int_dim < mip.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
 	   ROUND_NOT_NEEDED);
@@ -2179,8 +2179,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
-    MIP_Problem lp_aux(lp, Inherit_Constraints());
-    lp_aux.add_constraint(Variable(non_int_dim) <= tmp_coeff1);
+    MIP_Problem mip_aux(mip, Inherit_Constraints());
+    mip_aux.add_constraint(Variable(non_int_dim) <= tmp_coeff1);
 #if PPL_NOISY_SIMPLEX
     using namespace IO_Operators;
     std::cout << "MIP_Problem::is_mip_satisfiable(): "
@@ -2188,7 +2188,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
               << (Variable(non_int_dim) <= tmp_coeff1)
               << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
-    if (is_mip_satisfiable(lp_aux, i_vars, p)) {
+    if (is_mip_satisfiable(mip_aux, i_vars, p)) {
 #if PPL_NOISY_SIMPLEX
       std::cout << "MIP_Problem::is_mip_satisfiable(): "
                 << "exiting from recursion level " << mip_recursion_level
@@ -2198,7 +2198,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
       return true;
     }
   }
-  lp.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
+  mip.add_constraint(Variable(non_int_dim) >= tmp_coeff2);
 #if PPL_NOISY_SIMPLEX
   using namespace IO_Operators;
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
@@ -2206,7 +2206,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
             << (Variable(non_int_dim) >= tmp_coeff2)
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
-  bool satisfiable = is_mip_satisfiable(lp, i_vars, p);
+  bool satisfiable = is_mip_satisfiable(mip, i_vars, p);
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
             << "exiting from recursion level " << mip_recursion_level
@@ -2703,17 +2703,17 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
 
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
+PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& mip) {
   s << "Constraints:";
-  for (MIP_Problem::const_iterator i = lp.constraints_begin(),
-	 i_end = lp.constraints_end(); i != i_end; ++i)
+  for (MIP_Problem::const_iterator i = mip.constraints_begin(),
+	 i_end = mip.constraints_end(); i != i_end; ++i)
     s << "\n" << *i;
   s << "\nObjective function: "
-    << lp.objective_function()
+    << mip.objective_function()
     << "\nOptimization mode: "
-    << ((lp.optimization_mode() == MAXIMIZATION)
+    << ((mip.optimization_mode() == MAXIMIZATION)
         ? "MAXIMIZATION"
         : "MINIMIZATION");
-  s << "\nInteger variables: " << lp.integer_space_dimensions();
+  s << "\nInteger variables: " << mip.integer_space_dimensions();
   return s;
 }
