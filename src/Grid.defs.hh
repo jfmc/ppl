@@ -2505,9 +2505,26 @@ private:
     \f$\{3x \equiv_3 0, x + y \equiv_3 1\}\f$
     (which is in strong minimal form).
 
-    Only consider from index \p start to index \p end of the row at \p
-    pivot_index.  Flag \p generators indicates whether \p sys is a
-    congruence or generator system.
+    \param sys
+    The generator or congruence system to be reduced to strong minimal form.
+
+    \param dim
+    Column to be reduced.
+
+    \param pivot_index
+    Index of last row to be reduced.
+
+    \param start
+    Index of first column to be changed.
+
+    \param end
+    Index of last column to be changed.
+
+    \param sys_dim_kinds
+    Dimension kinds of the elements of \p sys.
+
+    \param generators
+    Flag indicating whether \p sys is a congruence or generator system
   */
   template <typename M, typename R>
   static void reduce_reduced(M& sys, dimension_type dim,
