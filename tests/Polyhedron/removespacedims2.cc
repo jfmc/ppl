@@ -60,8 +60,40 @@ test01() {
   return ok;
 }
 
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  NNC_Polyhedron ph(3);
+
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(y >= 1);
+  ph.add_constraint(z >= 1);
+
+  print_generators(ph, "*** ph ***");
+
+  Variables_Set to_be_removed;
+  to_be_removed.insert(x);
+  to_be_removed.insert(z);
+
+  ph.remove_space_dimensions(to_be_removed);
+
+  NNC_Polyhedron known_result(1);
+  known_result.add_constraint(x >= 1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph.remove_space_dimensions() ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
