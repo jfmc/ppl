@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Matrix_templates_hh
 #define PPL_Matrix_templates_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Matrix.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 template <typename Row>

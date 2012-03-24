@@ -24,10 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Linear_System_templates_hh
 #define PPL_Linear_System_templates_hh 1
 
-// TODO: Remove this.
-// It was added to please KDevelop4.
-#include "Linear_System.defs.hh"
-
 #include "Bit_Matrix.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Scalar_Products.defs.hh"
@@ -373,7 +369,9 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
 template <typename Row>
 void
 Linear_System<Row>::shift_space_dimensions(Variable v, dimension_type n) {
-  PPL_ASSERT(v.space_dimension() <= space_dimension());
+  // NOTE: v.id() may be equal to the space dimension of the system
+  // (when no space dimension need to be shifted).
+  PPL_ASSERT(v.id() <= space_dimension());
   for (dimension_type i = rows.size(); i-- > 0; )
     rows[i].shift_space_dimensions(v, n);
   space_dimension_ += n;
