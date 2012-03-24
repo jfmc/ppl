@@ -104,8 +104,8 @@ Linear_Expression_Impl<Sparse_Row>
     // Delete the element.
     if (src != row_end && src.index() == *vsi + 1)
       src = row.reset(src);
-    num_removed++;
-    vsi++;
+    ++num_removed;
+    ++vsi;
     if (vsi != vsi_end) {
       // Shift left the coefficients in [src.index(), *vsi + 1) by num_removed
       // positions.
@@ -175,7 +175,7 @@ Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start,
                                        dimension_type end) const {
   dimension_type i;
 
-  for (i = start; i < end; i++)
+  for (i = start; i < end; ++i)
     if (row[i] != 0)
       break;
 
@@ -296,7 +296,7 @@ Linear_Expression_Impl<Sparse_Row>
   PPL_ASSERT(start != 0);
   PPL_ASSERT(start <= end);
   for (Sparse_Row::const_iterator i = row.lower_bound(start),
-         i_end = row.lower_bound(end); i != i_end; i++)
+         i_end = row.lower_bound(end); i != i_end; ++i)
     if (vars.count(i.index() - 1) == 0)
       return false;
 

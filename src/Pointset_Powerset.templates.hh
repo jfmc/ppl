@@ -1314,7 +1314,7 @@ collect_certificates(std::map<Cert, size_type,
   const Pointset_Powerset& x = *this;
   PPL_ASSERT(x.is_omega_reduced());
   PPL_ASSERT(cert_ms.size() == 0);
-  for (const_iterator i = x.begin(), end = x.end(); i != end; i++) {
+  for (const_iterator i = x.begin(), end = x.end(); i != end; ++i) {
     Cert ph_cert(i->pointset());
     ++cert_ms[ph_cert];
   }

@@ -109,7 +109,7 @@ PPL::Generator_System::add_corresponding_points() {
   // Updating `index_first_pending', if needed, is done by the caller.
   Generator_System& gs = *this;
   const dimension_type n_rows = gs.sys.num_rows();
-  for (dimension_type i = 0; i < n_rows; i++) {
+  for (dimension_type i = 0; i < n_rows; ++i) {
     const Generator& g = gs[i];
     if (!g.is_line_or_ray() && g.epsilon_coefficient() == 0) {
       // `g' is a closure point: adding the point.
@@ -793,7 +793,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   if (i == gs_end)
     return s << "false";
   while (true) {
-    s << *i++;
+    s << *i;
+    ++i;
     if (i == gs_end)
       return s;
     s << ", ";

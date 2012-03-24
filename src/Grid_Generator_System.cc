@@ -178,7 +178,8 @@ PPL::IO_Operators::operator<<(std::ostream& s,
   if (i == gs_end)
     return s << "false";
   while (true) {
-    s << *i++;
+    s << *i;
+    ++i;
     if (i == gs_end)
       return s;
     s << ", ";

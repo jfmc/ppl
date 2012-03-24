@@ -725,7 +725,7 @@ PPL::operator==(const Dense_Row& x, const Sparse_Row& y) {
   if (x.size() != y.size())
     return false;
   Sparse_Row::const_iterator itr = y.end();
-  for (dimension_type i = 0; i < x.size(); i++) {
+  for (dimension_type i = 0; i < x.size(); ++i) {
     itr = y.lower_bound(itr, i);
     if (itr != y.end() && itr.index() == i) {
       if (x[i] != *itr)
@@ -763,7 +763,7 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
 
   Sparse_Row::iterator itr = x.end();
 
-  for (dimension_type i = 0; i < y.size(); i++) {
+  for (dimension_type i = 0; i < y.size(); ++i) {
     itr = x.lower_bound(itr, i);
     if (itr == x.end() || itr.index() != i) {
       if (y[i] == 0)
@@ -791,12 +791,12 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
   PPL_ASSERT(start <= end);
   PPL_ASSERT(end <= x.size());
   PPL_ASSERT(end <= y.size());
-  
+
   Sparse_Row::iterator itr = x.lower_bound(start);
-  
+
   if (coeff1 == 1) {
     if (coeff2 == 1) {
-      for (dimension_type i = start; i < end; i++) {
+      for (dimension_type i = start; i < end; ++i) {
         PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
         if (itr != x.end() && itr.index() < i)
           ++itr;
@@ -816,7 +816,7 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       return;
     }
     if (coeff2 == -1) {
-      for (dimension_type i = start; i < end; i++) {
+      for (dimension_type i = start; i < end; ++i) {
         PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
         if (itr != x.end() && itr.index() < i)
           ++itr;
@@ -836,7 +836,7 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       }
       return;
     }
-    for (dimension_type i = start; i < end; i++) {
+    for (dimension_type i = start; i < end; ++i) {
       PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
       if (itr != x.end() && itr.index() < i)
         ++itr;
@@ -858,7 +858,7 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
   }
 
   if (coeff2 == 1) {
-    for (dimension_type i = start; i < end; i++) {
+    for (dimension_type i = start; i < end; ++i) {
       PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
       if (itr != x.end() && itr.index() < i)
         ++itr;
@@ -879,7 +879,7 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
     return;
   }
   if (coeff2 == -1) {
-    for (dimension_type i = start; i < end; i++) {
+    for (dimension_type i = start; i < end; ++i) {
       PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
       if (itr != x.end() && itr.index() < i)
         ++itr;
@@ -901,7 +901,7 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
     return;
   }
 
-  for (dimension_type i = start; i < end; i++) {
+  for (dimension_type i = start; i < end; ++i) {
     PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
     if (itr != x.end() && itr.index() < i)
       ++itr;
@@ -935,11 +935,11 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
 
   Sparse_Row::const_iterator itr = y.end();
 
-  for (dimension_type i = 0; i < x.size(); i++) {
+  for (dimension_type i = 0; i < x.size(); ++i) {
     x[i] *= coeff1;
-    
+
     itr = y.lower_bound(itr, i);
-    
+
     if (itr == y.end() || itr.index() != i)
       continue;
 
@@ -976,39 +976,39 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
   }
 
   if (coeff2 == 1) {
-    for (dimension_type i = start; i < end; i++) {
+    for (dimension_type i = start; i < end; ++i) {
       x[i] *= coeff1;
-      
+
       PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
       if (itr != y.end() && itr.index() < i)
         ++itr;
       PPL_ASSERT(itr == y.end() || itr.index() >= i);
-      
+
       if (itr == y.end() || itr.index() != i)
         continue;
-      
+
       x[i] += *itr;
     }
     return;
   }
   if (coeff2 == -1) {
-    for (dimension_type i = start; i < end; i++) {
+    for (dimension_type i = start; i < end; ++i) {
       x[i] *= coeff1;
-      
+
       PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
       if (itr != y.end() && itr.index() < i)
         ++itr;
       PPL_ASSERT(itr == y.end() || itr.index() >= i);
-      
+
       if (itr == y.end() || itr.index() != i)
         continue;
-      
+
       x[i] -= *itr;
     }
     return;
   }
 
-  for (dimension_type i = start; i < end; i++) {
+  for (dimension_type i = start; i < end; ++i) {
     x[i] *= coeff1;
 
     PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);

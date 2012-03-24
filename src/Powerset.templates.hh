@@ -259,7 +259,8 @@ operator<<(std::ostream& s, const Powerset<D>& x) {
   else
     for (typename Powerset<D>::const_iterator i = x.begin(),
 	   x_end = x.end(); i != x_end; ) {
-      s << "{ " << *i++ << " }";
+      s << "{ " << *i << " }";
+      ++i;
       if (i != x_end)
 	s << ", ";
     }

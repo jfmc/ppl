@@ -1564,7 +1564,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     // Here we do not require `gen_sys' to be sorted.
     // also, we _remove_ (instead of copying) the rows of `gs'
     // (which is not a const).
-    for (dimension_type i = 0; i < gs.num_rows(); i++) {
+    for (dimension_type i = 0; i < gs.num_rows(); ++i) {
       gs.sys.rows[i].set_topology(topology());
       gen_sys.insert_pending(gs.sys.rows[i], Recycle_Input());
     }
@@ -1575,7 +1575,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     // Here we do not require `gen_sys' to be sorted.
     // also, we _remove_ (instead of copying) the coefficients of `gs'
     // (which is not a const).
-    for (dimension_type i = 0; i < gs.num_rows(); i++) {
+    for (dimension_type i = 0; i < gs.num_rows(); ++i) {
       gs.sys.rows[i].set_topology(topology());
       gen_sys.insert(gs.sys.rows[i], Recycle_Input());
     }

@@ -282,7 +282,7 @@ CO_Tree::insert_in_empty_tree(dimension_type key1,
   // Set the index afterwards, so that if the constructor above throws
   // the tree's structure is consistent.
   itr.index() = key1;
-  size_++;
+  ++size_;
 
   PPL_ASSERT(OK());
 }

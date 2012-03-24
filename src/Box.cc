@@ -32,14 +32,14 @@ PPL::Box_Helpers::extract_interval_constraint(const Constraint& c,
                                               dimension_type& c_only_var) {
   // Check for preconditions.
   PPL_ASSERT(c_num_vars == 0 && c_only_var == 0);
-  
+
   c_only_var = c.expression().first_nonzero(1, c.space_dimension() + 1);
   if (c_only_var == c.space_dimension() + 1)
     // All the inhomogeneous coefficients are zero.
     return true;
-  
+
+  ++c_num_vars;
   --c_only_var;
-  c_num_vars++;
   return c.expression().all_zeroes(c_only_var + 2, c.space_dimension() + 1);
 }
 
@@ -57,7 +57,7 @@ PPL::Box_Helpers::extract_interval_congruence(const Congruence& cg,
     // All the inhomogeneous coefficients are zero.
     return true;
 
+  ++cg_num_vars;
   --cg_only_var;
-  cg_num_vars++;
   return cg.expression().all_zeroes(cg_only_var + 2, cg.space_dimension() + 1);
 }

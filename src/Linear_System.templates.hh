@@ -288,7 +288,7 @@ Linear_System<Row>::insert_pending(Linear_System& y, Recycle_Input) {
   // Steal the rows of `y'.
   // This loop must use an increasing index (instead of a decreasing one) to
   // preserve the row ordering.
-  for (dimension_type i = 0; i < y.num_rows(); i++)
+  for (dimension_type i = 0; i < y.num_rows(); ++i)
     x.insert_pending(y.rows[i], Recycle_Input());
 
   y.clear();
@@ -745,7 +745,7 @@ Linear_System<Row>
       swap(r, rows[i]);
       // Note: `r' is strongly normalized.
     }
-    c++;
+    ++c;
   }
   // If the old system was empty, the last row added is either
   // a positivity constraint or a point.
@@ -776,10 +776,8 @@ Linear_System<Row>
       sorted = true;
     }
   }
-
-  unset_pending_rows();
-
-  PPL_ASSERT(OK());
+  // NOTE: this already checks for OK().
+  set_index_first_pending_row(index_first_pending + n);
 }
 
 template <typename Row>

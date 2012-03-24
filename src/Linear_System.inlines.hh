@@ -137,7 +137,7 @@ Linear_System<Row>::Linear_System(const Linear_System& y, Representation r)
     row_topology(y.row_topology),
     representation_(r) {
   rows.resize(y.num_rows());
-  for (dimension_type i = 0; i < y.num_rows(); i++) {
+  for (dimension_type i = 0; i < y.num_rows(); ++i) {
     // Create the copies with the right representation.
     Row row(y.rows[i], r);
     swap(rows[i], row);
@@ -171,7 +171,7 @@ Linear_System<Row>::Linear_System(const Linear_System& y, Representation r,
     sorted(y.sorted),
     representation_(r) {
   rows.resize(y.num_rows());
-  for (dimension_type i = 0; i < y.num_rows(); i++) {
+  for (dimension_type i = 0; i < y.num_rows(); ++i) {
     // Create the copies with the right representation.
     Row row(y.rows[i], r);
     swap(rows[i], row);
@@ -329,7 +329,7 @@ template <typename Row>
 inline void
 Linear_System<Row>::set_representation(Representation r) {
   representation_ = r;
-  for (dimension_type i = 0; i < rows.size(); i++)
+  for (dimension_type i = 0; i < rows.size(); ++i)
     rows[i].set_representation(r);
   PPL_ASSERT(OK());
 }
@@ -527,7 +527,7 @@ Linear_System<Row>::swap_row_intervals(dimension_type first,
     // Nothing to do.
     return;
 
-  for (dimension_type i = first; i < last; i++)
+  for (dimension_type i = first; i < last; ++i)
     swap(rows[i], rows[i + offset]);
 
   if (first < index_first_pending)

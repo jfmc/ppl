@@ -220,9 +220,8 @@ parse_number_part(std::istream& is, number_struct& numer) {
         if (c != '^')
           goto unexpected;
         numer.base = 0;
-        for (std::string::const_iterator i = numer.mantissa.begin();
-             i != numer.mantissa.end();
-             i++) {
+        for (std::string::const_iterator
+               i = numer.mantissa.begin(); i != numer.mantissa.end(); ++i) {
           numer.base = numer.base * 10 + static_cast<unsigned>(get_digit(*i, 10));
           if (numer.base > 36)
             goto unexpected;

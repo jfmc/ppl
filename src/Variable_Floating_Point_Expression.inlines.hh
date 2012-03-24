@@ -70,16 +70,13 @@ inline void
 Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::linear_form_assign(const FP_Linear_Form& lf,
                            FP_Linear_Form_Abstract_Store& lf_store) const {
-
-  for (typename FP_Linear_Form_Abstract_Store::iterator i = lf_store.begin();
-                                                       i != lf_store.end();) {
-    typename FP_Linear_Form_Abstract_Store::iterator j = i++;
-
-    if ((j->second).coefficient(Variable(variable_index)) != 0) {
-      lf_store.erase(j);
-    }
+  for (typename FP_Linear_Form_Abstract_Store::iterator
+         i = lf_store.begin(); i != lf_store.end(); ) {
+    if ((i->second).coefficient(Variable(variable_index)) != 0)
+      i = lf_store.erase(i);
+    else
+      ++i;
   }
-
   lf_store[variable_index] = lf;
   return;
 }

@@ -48,8 +48,8 @@ PPL::Octagonal_Shape_Helper
     c_term = c.inhomogeneous_term();
     return true;
   }
-  
-  c_num_vars++;
+
+  ++c_num_vars;
   --c_first_var;
 
   c_second_var = c.expression().first_nonzero(c_first_var + 2, c_space_dim + 1);
@@ -69,7 +69,7 @@ PPL::Octagonal_Shape_Helper
     return true;
   }
 
-  c_num_vars++;
+  ++c_num_vars;
   --c_second_var;
 
   if (!c.expression().all_zeroes(c_second_var + 2, c_space_dim + 1))

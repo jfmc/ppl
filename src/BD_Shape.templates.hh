@@ -3451,9 +3451,9 @@ BD_Shape<T>::refine(const Variable var,
   dimension_type w = expr.last_nonzero();
 
   if (w != 0) {
-    t++;
+    ++t;
     if (!expr.all_zeroes(1, w))
-      t++;
+      ++t;
   }
 
   // Since we are only able to record bounded differences, we can
@@ -3854,9 +3854,9 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type w = expr.last_nonzero();
 
   if (w != 0) {
-    t++;
+    ++t;
     if (!expr.all_zeroes(1, w))
-      t++;
+      ++t;
   }
 
   // Now we know the form of `expr':
@@ -4935,7 +4935,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
   if (j != 0) {
     ++t;
     if (!expr.all_zeroes(1, j))
-      t++;
+      ++t;
   }
 
   // Now we know the form of `expr':

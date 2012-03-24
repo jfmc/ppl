@@ -4265,16 +4265,16 @@ Octagonal_Shape<T>::refine(const Variable var,
   dimension_type w_id = expr.last_nonzero();
 
   if (w_id != 0) {
-    t++;
+    ++t;
     if (!expr.all_zeroes(1, w_id))
-      t++;
+      ++t;
     --w_id;
   }
 
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*j + b, where `j != v';
-  // - If t == 2, the `expr' is of the general form.
+  // - If t == 2, then `expr' is of the general form.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
@@ -4831,9 +4831,9 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   dimension_type w_id = expr.last_nonzero();
 
   if (w_id != 0) {
-    t++;
+    ++t;
     if (!expr.all_zeroes(1, w_id))
-      t++;
+      ++t;
     --w_id;
   }
 
@@ -5568,9 +5568,9 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   dimension_type w_id = expr.last_nonzero();
 
   if (w_id != 0) {
-    t++;
+    ++t;
     if (!expr.all_zeroes(1, w_id))
-      t++;
+      ++t;
     --w_id;
   }
 
@@ -5686,9 +5686,9 @@ Octagonal_Shape<T>
   dimension_type w_id = expr.last_nonzero();
 
   if (w_id != 0) {
-    t++;
+    ++t;
     if (!expr.all_zeroes(1, w_id))
-      t++;
+      ++t;
     --w_id;
   }
 
@@ -6164,9 +6164,9 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   dimension_type j_lhs = lhs.last_nonzero();
 
   if (j_lhs != 0) {
-    t_lhs++;
+    ++t_lhs;
     if (!lhs.all_zeroes(1, j_lhs))
-      t_lhs++;
+      ++t_lhs;
     --j_lhs;
   }
 
@@ -6352,9 +6352,9 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   dimension_type w_id = lb_expr.last_nonzero();
 
   if (w_id != 0) {
-    t++;
+    ++t;
     if (!lb_expr.all_zeroes(1, w_id))
-      t++;
+      ++t;
     --w_id;
   }
 
@@ -6712,9 +6712,9 @@ Octagonal_Shape<T>
   dimension_type j_lhs = lhs.last_nonzero();
 
   if (j_lhs != 0) {
-    t_lhs++;
+    ++t_lhs;
     if (!lhs.all_zeroes(1, j_lhs))
-      t_lhs++;
+      ++t_lhs;
     j_lhs--;
   }
 

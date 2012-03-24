@@ -411,7 +411,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
   PPL_ASSERT(!is_greater_than_ratio(size_ + 1, reserved_size,
                                     max_density_percent));
 
-  size_++;
+  ++size_;
 
   if (!itr.is_leaf()) {
     if (key1 < itr.index())

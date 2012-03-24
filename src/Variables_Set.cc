@@ -47,7 +47,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Variables_Set& vs) {
   s << '{';
   for (Variables_Set::const_iterator i = vs.begin(),
 	 vs_end = vs.end(); i != vs_end; ) {
-    s << ' ' << Variable(*i++);
+    s << ' ' << Variable(*i);
+    ++i;
     if (i != vs_end)
       s << ',';
   }

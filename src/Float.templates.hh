@@ -126,19 +126,15 @@ const FP_Interval_Type& compute_absolute_error(
 }
 
 template <typename FP_Interval_Type>
-void discard_occurrences(std::map<dimension_type,
-                                Linear_Form<FP_Interval_Type> >& lf_store,
-                         Variable var) {
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
+void
+discard_occurrences(std::map<dimension_type,
+                             Linear_Form<FP_Interval_Type> >& lf_store,
+                    Variable var) {
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
-
-  typename FP_Linear_Form_Abstract_Store::iterator i = lf_store.begin();
-  typename FP_Linear_Form_Abstract_Store::iterator ls_end = lf_store.end();
-  while (i != ls_end) {
+  typedef typename std::map<dimension_type, FP_Linear_Form>::iterator Iter;
+  for (Iter i = lf_store.begin(); i != lf_store.end(); ) {
     if((i->second).coefficient(var) != 0)
-      lf_store.erase(i++);
+      i = lf_store.erase(i);
     else
       ++i;
   }
@@ -151,19 +147,16 @@ void upper_bound_assign(std::map<dimension_type,
 			         Linear_Form<FP_Interval_Type> >& ls1,
                         const std::map<dimension_type,
 			               Linear_Form<FP_Interval_Type> >& ls2) {
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
+  typedef typename std::map<dimension_type, FP_Linear_Form>::iterator Iter;
+  typedef typename std::map<dimension_type,
+                            FP_Linear_Form>::const_iterator Const_Iter;
 
-  typename FP_Linear_Form_Abstract_Store::iterator i1 = ls1.begin();
-  typename FP_Linear_Form_Abstract_Store::iterator i1_end = ls1.end();
-  typename FP_Linear_Form_Abstract_Store::const_iterator i2_end = ls2.end();
-  while (i1 != i1_end) {
-    typename FP_Linear_Form_Abstract_Store::const_iterator
-      i2 = ls2.find(i1->first);
+  Const_Iter i2_end = ls2.end();
+  for (Iter i1 = ls1.begin(), i1_end = ls1.end(); i1 != i1_end; ) {
+    Const_Iter i2 = ls2.find(i1->first);
     if ((i2 == i2_end) || (i1->second != i2->second))
-      ls1.erase(i1++);
+      i1 = ls1.erase(i1);
     else
       ++i1;
   }

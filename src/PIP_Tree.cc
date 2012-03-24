@@ -3368,10 +3368,14 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     dimension_type ti = 1;
     dimension_type si = 0;
     for (dimension_type j = 0; j < space_dimension; ++j) {
-      if (parameters.count(j) == 1)
-        add_mul_assign(expr, cut_t.get(ti++), Variable(j));
-      else
-        add_mul_assign(expr, cut_s.get(si++), Variable(j));
+      if (parameters.count(j) == 1) {
+        add_mul_assign(expr, cut_t.get(ti), Variable(j));
+        ++ti;
+      }
+      else {
+        add_mul_assign(expr, cut_s.get(si), Variable(j));
+        ++si;
+      }
     }
     std::cerr << std::setw(2 * indent_level) << ""
               << "Adding cut: "

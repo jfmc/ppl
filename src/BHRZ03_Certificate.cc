@@ -109,7 +109,7 @@ PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   PPL_ASSERT(num_rays_null_coord.size() == y.num_rays_null_coord.size());
   // Note: iterating upwards, because we have to check first
   // the number of rays having more NON-zero coordinates.
-  for (dimension_type i = 0; i < space_dim; i++)
+  for (dimension_type i = 0; i < space_dim; ++i)
     if (num_rays_null_coord[i] != y.num_rays_null_coord[i])
       return (num_rays_null_coord[i] > y.num_rays_null_coord[i]) ? 1 : -1;
   // All components are equal.
@@ -225,7 +225,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
 
   // Compare (lexicographically) the two vectors:
   // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.
-  for (dimension_type i = 0; i < space_dim; i++)
+  for (dimension_type i = 0; i < space_dim; ++i)
     if (ph_num_rays_null_coord[i] != num_rays_null_coord[i])
       return (ph_num_rays_null_coord[i] < num_rays_null_coord[i]) ? 1 : -1;
 

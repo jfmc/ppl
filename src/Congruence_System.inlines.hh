@@ -100,7 +100,7 @@ Congruence_System::Congruence_System(const Congruence_System& cs, Representation
     space_dimension_(cs.space_dimension_),
     representation_(r) {
   if (cs.representation() != r) {
-    for (dimension_type i = 0; i < num_rows(); i++)
+    for (dimension_type i = 0; i < num_rows(); ++i)
       rows[i].set_representation(representation());
   }
 }
@@ -133,7 +133,7 @@ Congruence_System::set_representation(Representation r) {
   if (representation_ == r)
     return;
   representation_ = r;
-  for (dimension_type i = 0; i < num_rows(); i++)
+  for (dimension_type i = 0; i < num_rows(); ++i)
     rows[i].set_representation(r);
   PPL_ASSERT(OK());
 }

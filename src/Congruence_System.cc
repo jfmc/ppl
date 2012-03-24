@@ -70,12 +70,12 @@ PPL::Congruence_System::remove_rows(const dimension_type first,
   // Swap the rows in [first, last) with the rows in [size() - n, size())
   // (note that these intervals may not be disjunct).
   if (keep_sorted) {
-    for (dimension_type i = last; i < rows.size(); i++)
+    for (dimension_type i = last; i < rows.size(); ++i)
       swap(rows[i], rows[i - n]);
   }
   else {
     const dimension_type offset = rows.size() - n - first;
-    for (dimension_type i = first; i < last; i++)
+    for (dimension_type i = first; i < last; ++i)
       swap(rows[i], rows[i + offset]);
   }
 
@@ -394,9 +394,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
   if (i == cgs_end)
     return s << "true";
   while (true) {
-    Congruence cg = *i++;
+    Congruence cg = *i;
     cg.strong_normalize();
     s << cg;
+    ++i;
     if (i == cgs_end)
       return s;
     s << ", ";

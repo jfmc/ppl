@@ -371,7 +371,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
     s << "true";
   else {
     while (i != cs_end) {
-      s << *i++;
+      s << *i;
+      ++i;
       if (i != cs_end)
 	s << ", ";
     }
