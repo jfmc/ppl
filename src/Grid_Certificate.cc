@@ -55,11 +55,12 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
 	// that `gr' contains at least one point.
         Grid& mgr = const_cast<Grid&>(gr);
 #ifndef NDEBUG
-	Grid::simplify(mgr.con_sys, mgr.dim_kinds);
-#else
 	bool contains_points = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
-	used(contains_points);	// Quiet compiler warning.
+	// Avoid possible compiler warning.
+	used(contains_points);
 	PPL_ASSERT(contains_points);
+#else
+	Grid::simplify(mgr.con_sys, mgr.dim_kinds);
 #endif
 	mgr.set_congruences_minimized();
 
