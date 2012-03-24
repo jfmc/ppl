@@ -106,11 +106,11 @@ public:
 
   //! Resizes the row to \p sz, with capacity \p capacity.
   void resize(dimension_type sz, dimension_type capacity);
-  
+
   //! Resets all the elements of this row.
   void clear();
 
-  //! Adds \p n zeroes before index i.
+  //! Adds \p n zeroes before index \p i.
   /*!
     \param n
     The number of zeroes that will be added to the row.
@@ -118,8 +118,8 @@ public:
     \param i
     The index of the element before which the zeroes will be added.
 
-    Existing elements with index greater than or equal to i are shifted to
-    the right by n positions. The size is increased by \p n.
+    Existing elements with index greater than or equal to \p i are shifted
+    to the right by \p n positions. The size is increased by \p n.
 
     Existing iterators are invalidated.
   */

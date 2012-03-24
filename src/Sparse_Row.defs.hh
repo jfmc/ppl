@@ -206,7 +206,7 @@ public:
   */
   void delete_element_and_shift(dimension_type i);
 
-  //! Adds \p n zeroes before index i.
+  //! Adds \p n zeroes before index \p i.
   /*!
     \param n
     The number of non-stored zeroes that will be added to the row.
@@ -214,16 +214,16 @@ public:
     \param i
     The index of the element before which the zeroes will be added.
 
-    Existing elements with index greater than or equal to i are shifted to
-    the right by n positions. The size is increased by \p n.
+    Existing elements with index greater than or equal to \p i are shifted to
+    the right by \p n positions. The size is increased by \p n.
 
-    Existing iterators are not invalidated, but are shifted to the right by n
-    if they pointed at or after index i (i.e. they point to the same,
-    possibly shifted, values as before).
+    Existing iterators are not invalidated, but are shifted to the right
+    by \p n if they pointed at or after index \p i (i.e., they point to
+    the same, possibly shifted, values as before).
 
-    This method takes \f$O(k+\log n)\f$ expected time, where k is the number
-    of elements with index greater than or equal to i and n the number of
-    stored elements (not the parameter to this method).
+    This method takes \f$O(k + \log m)\f$ expected time, where \f$k\f$ is
+    the number of elements with index greater than or equal to \p i and
+    \f$m\f$ the number of stored elements.
   */
   void add_zeroes_and_shift(dimension_type n, dimension_type i);
 

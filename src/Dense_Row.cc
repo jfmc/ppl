@@ -136,13 +136,9 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
   const dimension_type new_size = size() + n;
   if (new_size > capacity()) {
     Dense_Row new_row;
-    
     const dimension_type new_capacity = compute_capacity(new_size, max_size());
-    
     // This may throw.
-    new_row.impl.vec
-      = static_cast<Coefficient*>(operator new(sizeof(Coefficient)
-                                               * new_capacity));
+    new_row.impl.vec = new_row.impl.coeff_allocator.allocate(new_capacity);
     new_row.impl.capacity = new_capacity;
 
     dimension_type j = i;
@@ -157,7 +153,6 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
         --j;
         new_row.impl.vec[j].~Coefficient();
       }
-      
       // The new_row's destructor will de-allocate the memory.
       throw;
     }
@@ -170,7 +165,7 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
     using std::swap;
     swap(impl.vec, new_row.impl.vec);
     swap(impl.capacity, new_row.impl.capacity);
-    
+
     // *this now owns all coefficients, including the newly-added zeroes.
     impl.size = new_size;
 
@@ -201,7 +196,7 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
       throw;
     }
   }
-  
+
   PPL_ASSERT(OK());
 }
 
