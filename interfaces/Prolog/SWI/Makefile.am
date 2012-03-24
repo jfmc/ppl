@@ -165,7 +165,8 @@ endif NO_UNDEFINED
 libppl_swiprolog_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-@extra_libraries@
+@extra_libraries@ \
+$(SWI_PROLOG_LD_OPTIONS)
 
 libppl_swiprolog_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
