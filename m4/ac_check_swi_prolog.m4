@@ -30,16 +30,16 @@ dnl On Windows, the console version of SWI-Prolog was called `plcon'.
 dnl Since SWI-Prolog 5.9.9, by default and on all systems, the
 dnl interpreter is called `swipl' and `plld' is called `swipl-ld'
 
-AC_PATH_PROG(swi_prolog, swipl)
+AC_PATH_PROG(swi_prolog, swipl$EXEEXT)
 if test -z $swi_prolog
 then
-  AC_PATH_PROG(swi_prolog, swi-prolog)
+  AC_PATH_PROG(swi_prolog, swi-prolog$EXEEXT)
   if test -z $swi_prolog
   then
-    AC_PATH_PROG(swi_prolog, pl)
+    AC_PATH_PROG(swi_prolog, pl$EXEEXT)
     if test -z $swi_prolog
     then
-      AC_PATH_PROG(swi_prolog, plcon)
+      AC_PATH_PROG(swi_prolog, plcon$EXEEXT)
     fi
   fi
 fi
@@ -53,10 +53,10 @@ then
 
   dnl Additional version checks could be inserted here, if necessary.
 
-  AC_PATH_PROG(swi_prolog_ld, swipl-ld)
+  AC_PATH_PROG(swi_prolog_ld, swipl-ld$EXEEXT)
   if test -z $swi_prolog_ld
   then
-    AC_PATH_PROG(swi_prolog_ld, plld)
+    AC_PATH_PROG(swi_prolog_ld, plld$EXEEXT)
   fi
 
   # In Fedora, SWI-Prolog.h is installed only in /usr/include/pl, which,
