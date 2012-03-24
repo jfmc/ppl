@@ -107,11 +107,6 @@ PPL::Grid_Certificate::compare(const Grid& gr) const {
 
 bool
 PPL::Grid_Certificate::OK() const {
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
-
-  // All tests passed.
+  // There is nothing to test.
   return true;
 }
