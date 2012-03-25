@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
   the compiler.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-#define used(v) (void)(v)
+#define PPL_USED(v) (void)(v)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -46,12 +46,12 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void
-cc_flush(const T& x) {
+PPL_CC_FLUSH(const T& x) {
 #if defined(__GNUC__) || defined(__INTEL_COMPILER)
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 #else
   // FIXME: is it possible to achieve the same effect in a portable way?
-  used(x);
+  PPL_USED(x);
 #endif
 }
 

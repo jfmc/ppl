@@ -56,7 +56,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
         Grid& mgr = const_cast<Grid&>(gr);
 	bool empty = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
 	// Avoid possible compiler warning.
-	used(empty);
+	PPL_USED(empty);
 	PPL_ASSERT(!empty);
 	mgr.set_congruences_minimized();
 

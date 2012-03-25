@@ -892,7 +892,7 @@ inline void
 BD_Shape<T>::drop_some_non_integer_points_helper(N& elem) {
   if (!is_integer(elem)) {
     Result r = floor_assign_r(elem, elem, ROUND_DOWN);
-    used(r);
+    PPL_USED(r);
     PPL_ASSERT(r == V_EQ);
     reset_shortest_path_closed();
   }
