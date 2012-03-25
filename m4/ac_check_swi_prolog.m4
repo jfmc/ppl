@@ -45,7 +45,7 @@ then
 fi
 if test x$swi_prolog != x
 then
-  swi_prolog_base=`$swi_prolog -dump-runtime-variables | grep PLBASE= | sed 's/PLBASE="\(.*\)";/\1/'`
+  swi_prolog_base=`$swi_prolog -dump-runtime-variables | grep PLBASE= | sed 's/PLBASE="\([[a-z]]:\)\{0,1\}\(.*\)";/\2/'`
   swi_prolog_version=`$swi_prolog -dump-runtime-variables | grep PLVERSION= | sed 's/PLVERSION="\(.*\)";/\1/'`
   swi_prolog_arch=`$swi_prolog -dump-runtime-variables | grep PLARCH= | sed 's/PLARCH="\(.*\)";/\1/'`
   swi_prolog_libs=`$swi_prolog -dump-runtime-variables | grep PLLIBS= | sed 's/PLLIBS="\(.*\)";/\1/'`
