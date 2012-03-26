@@ -192,7 +192,7 @@ public:
   ~Congruence();
 
   //! Assignment operator.
-  Congruence& operator=(const Congruence& cg);
+  Congruence& operator=(const Congruence& y);
 
   //! Returns the current representation of *this.
   Representation representation() const;

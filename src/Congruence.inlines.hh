@@ -151,10 +151,9 @@ Congruence::zero_dim_false() {
 }
 
 inline Congruence&
-Congruence::operator=(const Congruence& c) {
-  Congruence tmp = c;
+Congruence::operator=(const Congruence& y) {
+  Congruence tmp = y;
   swap(*this, tmp);
-
   return *this;
 }
 

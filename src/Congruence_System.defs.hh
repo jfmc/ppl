@@ -134,8 +134,9 @@ public:
 
   //! Ordinary copy constructor.
   /*!
-    \note The new Congruence_System will have the same Representation as `cgs'
-          so that it's indistinguishable from `cgs'.
+    \note
+    The new Congruence_System will have the same Representation as `cgs'
+    so that it's indistinguishable from `cgs'.
   */
   Congruence_System(const Congruence_System& cgs);
 
@@ -146,7 +147,7 @@ public:
   ~Congruence_System();
 
   //! Assignment operator.
-  Congruence_System& operator=(const Congruence_System& cgs);
+  Congruence_System& operator=(const Congruence_System& y);
 
   //! Returns the current representation of *this.
   Representation representation() const;
@@ -162,9 +163,9 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is exactly equal
-    to \p cgs.
+    to \p y.
   */
-  bool is_equal_to(const Congruence_System& cgs) const;
+  bool is_equal_to(const Congruence_System& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this contains one or
@@ -208,12 +209,12 @@ public:
   // TODO: Consider adding a insert(cg, Recycle_Input).
 
   /*! \brief
-    Inserts in \p *this a copy of the congruences in \p cgs,
+    Inserts in \p *this a copy of the congruences in \p y,
     increasing the number of space dimensions if needed.
 
     The inserted copies will be strongly normalized.
   */
-  void insert(const Congruence_System& cgs);
+  void insert(const Congruence_System& y);
 
   /*! \brief
     Inserts into \p *this the congruences in \p cgs, increasing the
@@ -350,7 +351,7 @@ public:
   dimension_type num_proper_congruences() const;
 
   //! Swaps \p *this with \p y.
-  void m_swap(Congruence_System& cgs);
+  void m_swap(Congruence_System& y);
 
   /*! \brief
     Adds \p dims rows and \p dims space dimensions to the matrix,
@@ -393,10 +394,9 @@ public:
   */
   bool set_space_dimension(dimension_type new_space_dim);
 
+  // Note: the following method is protected to allow tests/Grid/congruences2
+  // to call it using a derived class.
 protected:
-
-  // This is protected to allow tests/Grid/congruences2 to call this method,
-  // using a derived class.
   //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
   bool satisfies_all_congruences(const Grid_Generator& g) const;
 
@@ -457,18 +457,18 @@ private:
 
   // TODO: Consider making this private.
   /*! \brief
-    Concatenates copies of the congruences from \p cgs onto \p *this.
+    Concatenates copies of the congruences from \p y onto \p *this.
 
-    \param cgs
+    \param y
     The congruence system to append to \p this.  The number of rows in
-    \p cgs must be strictly positive.
+    \p y must be strictly positive.
 
     The matrix for the new system of congruences is obtained by
     leaving the old system in the upper left-hand side and placing the
-    congruences of \p cgs in the lower right-hand side, and padding
+    congruences of \p y in the lower right-hand side, and padding
     with zeroes.
   */
-  void concatenate(const Congruence_System& cgs);
+  void concatenate(const Congruence_System& y);
 
   /*! \brief
     Inserts in \p *this the congruence \p cg, stealing its contents and
@@ -496,7 +496,7 @@ private:
   static const Congruence_System* zero_dim_empty_p;
 
   Swapping_Vector<Congruence> rows;
-  
+
   dimension_type space_dimension_;
 
   Representation representation_;

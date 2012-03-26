@@ -45,7 +45,7 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::PIP_Problem */
 std::ostream&
-operator<<(std::ostream& s, const PIP_Problem& p);
+operator<<(std::ostream& s, const PIP_Problem& pip);
 
 } // namespace IO_Operators
 

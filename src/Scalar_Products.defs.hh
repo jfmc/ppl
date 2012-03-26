@@ -44,28 +44,36 @@ site: http://bugseng.com/products/ppl/ . */
 class Parma_Polyhedra_Library::Scalar_Products {
 public:
   //! Computes the scalar product of \p x and \p y and assigns it to \p z.
-  static void assign(Coefficient& z, const Linear_Expression& x,
-                     const Linear_Expression& y);
+  static void assign(Coefficient& z,
+                     const Linear_Expression& x, const Linear_Expression& y);
+
   //! Computes the scalar product of \p c and \p g and assigns it to \p z.
   static void assign(Coefficient& z, const Constraint& c, const Generator& g);
+
   //! Computes the scalar product of \p g and \p c and assigns it to \p z.
   static void assign(Coefficient& z, const Generator& g, const Constraint& c);
+
   //! Computes the scalar product of \p c and \p g and assigns it to \p z.
   static void assign(Coefficient& z,
-		     const Constraint& c, const Grid_Generator& g);
+		     const Constraint& c, const Grid_Generator& gg);
+
   //! Computes the scalar product of \p g and \p cg and assigns it to \p z.
   static void assign(Coefficient& z,
-		     const Grid_Generator& g, const Congruence& cg);
+		     const Grid_Generator& gg, const Congruence& cg);
+
   //! Computes the scalar product of \p cg and \p g and assigns it to \p z.
   static void assign(Coefficient& z,
-		     const Congruence& cg, const Grid_Generator& g);
+		     const Congruence& cg, const Grid_Generator& gg);
 
   //! Returns the sign of the scalar product between \p x and \p y.
   static int sign(const Linear_Expression& x, const Linear_Expression& y);
+
   //! Returns the sign of the scalar product between \p c and \p g.
   static int sign(const Constraint& c, const Generator& g);
+
   //! Returns the sign of the scalar product between \p g and \p c.
   static int sign(const Generator& g, const Constraint& c);
+
   //! Returns the sign of the scalar product between \p c and \p g.
   static int sign(const Constraint& c, const Grid_Generator& g);
 
@@ -77,6 +85,7 @@ public:
   static void reduced_assign(Coefficient& z,
 			     const Linear_Expression& x,
                              const Linear_Expression& y);
+
   /*! \brief
     Computes the \e reduced scalar product of \p c and \p g,
     where the \f$\epsilon\f$ coefficient of \p c is ignored,
@@ -84,6 +93,7 @@ public:
   */
   static void reduced_assign(Coefficient& z,
 			     const Constraint& c, const Generator& g);
+
   /*! \brief
     Computes the \e reduced scalar product of \p g and \p c,
     where the \f$\epsilon\f$ coefficient of \p g is ignored,
@@ -91,12 +101,13 @@ public:
   */
   static void reduced_assign(Coefficient& z,
 			     const Generator& g, const Constraint& c);
+
   //! \brief
   //! Computes the \e reduced scalar product of \p g and \p cg,
   //! where the \f$\epsilon\f$ coefficient of \p g is ignored,
   //! and assigns the result to \p z.
   static void reduced_assign(Coefficient& z,
-			     const Grid_Generator& g, const Congruence& cg);
+			     const Grid_Generator& gg, const Congruence& cg);
 
   /*! \brief
     Returns the sign of the \e reduced scalar product of \p x and \p y,
@@ -104,11 +115,13 @@ public:
   */
   static int reduced_sign(const Linear_Expression& x,
                           const Linear_Expression& y);
+
   /*! \brief
     Returns the sign of the \e reduced scalar product of \p c and \p g,
     where the \f$\epsilon\f$ coefficient of \p c is ignored.
   */
   static int reduced_sign(const Constraint& c, const Generator& g);
+
   /*! \brief
     Returns the sign of the \e reduced scalar product of \p g and \p c,
     where the \f$\epsilon\f$ coefficient of \p g is ignored.
@@ -131,18 +144,23 @@ public:
   static void homogeneous_assign(Coefficient& z,
 				 const Linear_Expression& e,
 				 const Generator& g);
+
   //! \brief
-  //! Computes the \e homogeneous scalar product of \p g and \p c,
+  //! Computes the \e homogeneous scalar product of \p gg and \p c,
   //! where the inhomogeneous terms are ignored,
   //! and assigns the result to \p z.
   static void homogeneous_assign(Coefficient& z,
-				 const Grid_Generator& g, const Constraint& c);
+				 const Grid_Generator& gg,
+                                 const Constraint& c);
+
   //! \brief
   //! Computes the \e homogeneous scalar product of \p g and \p cg,
   //! where the inhomogeneous terms are ignored,
   //! and assigns the result to \p z.
   static void homogeneous_assign(Coefficient& z,
-				 const Grid_Generator& g, const Congruence& cg);
+				 const Grid_Generator& gg,
+                                 const Congruence& cg);
+
   //! \brief
   //! Computes the \e homogeneous scalar product of \p e and \p g,
   //! where the inhomogeneous terms are ignored,
@@ -157,16 +175,19 @@ public:
   */
   static int homogeneous_sign(const Linear_Expression& x,
                               const Linear_Expression& y);
+
   /*! \brief
     Returns the sign of the \e homogeneous scalar product of \p e and \p g,
     where the inhomogeneous terms are ignored.
   */
   static int homogeneous_sign(const Linear_Expression& e, const Generator& g);
+
   //! \brief
   //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
   //! where the inhomogeneous terms are ignored,
   static int homogeneous_sign(const Linear_Expression& e,
 			      const Grid_Generator& g);
+
   //! \brief
   //! Returns the sign of the \e homogeneous scalar product of \p g and \p c,
   //! where the inhomogeneous terms are ignored,
@@ -181,11 +202,13 @@ class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign {
 public:
   //! Constructs the function object according to the topology of \p c.
   Topology_Adjusted_Scalar_Product_Sign(const Constraint& c);
+
   //! Constructs the function object according to the topology of \p g.
   Topology_Adjusted_Scalar_Product_Sign(const Generator& g);
 
   //! Computes the (topology adjusted) scalar product sign of \p c and \p g.
   int operator()(const Constraint&, const Generator&) const;
+
   //! Computes the (topology adjusted) scalar product sign of \p g and \p c.
   int operator()(const Generator&, const Constraint&) const;
 

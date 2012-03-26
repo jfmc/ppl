@@ -206,7 +206,7 @@ private:
     The size of \p y must be be less than or equal to the size of \p z.
     Upon entry, \p vec must have allocated enough space to contain the result.
   */
-  void union_helper(const Bit_Row& x, const Bit_Row& y);
+  void union_helper(const Bit_Row& y, const Bit_Row& z);
 };
 
 #include "Bit_Row.inlines.hh"

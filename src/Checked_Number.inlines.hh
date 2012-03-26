@@ -113,21 +113,21 @@ Checked_Number<T, Policy>
 #define PPL_DEFINE_CTOR(type) \
 template <typename T, typename Policy> \
 inline \
-Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
+Checked_Number<T, Policy>::Checked_Number(const type y, Rounding_Dir dir) { \
   Policy::handle_result							\
     (check_result(Checked::assign_ext<Policy,                           \
                                       Checked_Number_Transparent_Policy<PPL_U(type)> > \
-		  (v, x, rounding_dir(dir)),				\
+		  (v, y, rounding_dir(dir)),				\
 		  dir));						\
 }									\
 template <typename T, typename Policy>					\
 inline									\
-Checked_Number<T, Policy>::Checked_Number(const type x) {		\
+Checked_Number<T, Policy>::Checked_Number(const type y) {		\
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
     (check_result(Checked::assign_ext<Policy,                           \
                                       Checked_Number_Transparent_Policy<PPL_U(type)> > \
-		  (v, x, rounding_dir(dir)),				\
+		  (v, y, rounding_dir(dir)),				\
 		  dir));						\
 }
 
@@ -159,8 +159,8 @@ PPL_DEFINE_CTOR(mpz_class&)
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const char* x, Rounding_Dir dir) {
-  std::istringstream s(x);
+Checked_Number<T, Policy>::Checked_Number(const char* y, Rounding_Dir dir) {
+  std::istringstream s(y);
   Policy::handle_result(check_result(Checked::input<Policy>(v,
 							    s,
 							    rounding_dir(dir)),
@@ -169,8 +169,8 @@ Checked_Number<T, Policy>::Checked_Number(const char* x, Rounding_Dir dir) {
 
 template <typename T, typename Policy>
 inline
-Checked_Number<T, Policy>::Checked_Number(const char* x) {
-  std::istringstream s(x);
+Checked_Number<T, Policy>::Checked_Number(const char* y) {
+  std::istringstream s(y);
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;
   Policy::handle_result(check_result(Checked::input<Policy>(v,
 							    s,
@@ -181,11 +181,14 @@ Checked_Number<T, Policy>::Checked_Number(const char* x) {
 template <typename T, typename Policy>
 template <typename From>
 inline
-Checked_Number<T, Policy>::Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type) {
+Checked_Number<T, Policy>
+::Checked_Number(const From&,
+                 Rounding_Dir dir,
+                 typename Enable_If<Is_Special<From>::value, bool>::type) {
   Policy::handle_result(check_result(Checked::assign_special<Policy>(v,
-							    From::vclass,
-							    rounding_dir(dir)),
-				     dir));
+                                                                     From::vclass,
+                                                                     rounding_dir(dir)),
+                                     dir));
 }
 
 template <typename T, typename Policy>
@@ -698,9 +701,9 @@ PPL_DEFINE_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 #define PPL_DEFINE_ASSIGN_2EXP(f, fun)					\
 template <typename T, typename Policy>                                  \
 inline void								\
- PPL_U(f)(Checked_Number<T, Policy>& to,                                \
-  const Checked_Number<T, Policy>& x, unsigned int exp) {               \
-  Policy::handle_result((fun)(to, x, exp, Policy::ROUND_DEFAULT_FUNCTION)); \
+ PPL_U(f)(Checked_Number<T, Policy>& x,                                 \
+          const Checked_Number<T, Policy>& y, unsigned int exp) {       \
+  Policy::handle_result((fun)(x, y, exp, Policy::ROUND_DEFAULT_FUNCTION)); \
 }
 
 PPL_DEFINE_ASSIGN_2EXP(mul_2exp_assign, mul_2exp_assign_r)

@@ -30,15 +30,15 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
+PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
   : num_equalities(0), num_proper_congruences(0) {
-  Grid& gr = const_cast<Grid&>(cgr);
-  // As in Polyhedron assume that gr contains at least one point.
+
+  // As in Polyhedron assume that `gr' contains at least one point.
   PPL_ASSERT(!gr.marked_empty());
   if (gr.space_dimension() == 0)
     return;
   // One of the systems must be in minimal form.
-  if (gr.congruences_are_up_to_date())
+  if (gr.congruences_are_up_to_date()) {
     if (gr.congruences_are_minimized()) {
       num_proper_congruences = gr.con_sys.num_proper_congruences();
       num_equalities = gr.con_sys.num_equalities();
@@ -51,29 +51,29 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
 	num_equalities = gr.space_dimension() + 1 - gr.gen_sys.num_rows();
       }
       else {
-	// Minimize gr congruence system.  As in Polyhedron assume
-	// that gr contains at least one point.
-#ifndef NDEBUG
-	Grid::simplify(gr.con_sys, gr.dim_kinds);
-#else
-	bool contains_points = Grid::simplify(gr.con_sys, gr.dim_kinds);
-	used(contains_points);	// Quiet compiler warning.
-	PPL_ASSERT(contains_points);
-#endif
-	gr.set_congruences_minimized();
+	// Minimize `gr' congruence system.  As in Polyhedron assume
+	// that `gr' contains at least one point.
+        Grid& mgr = const_cast<Grid&>(gr);
+	bool empty = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
+	// Avoid possible compiler warning.
+	used(empty);
+	PPL_ASSERT(!empty);
+	mgr.set_congruences_minimized();
 
-	num_proper_congruences = gr.con_sys.num_proper_congruences();
-	num_equalities = gr.con_sys.num_equalities();
+	num_proper_congruences = mgr.con_sys.num_proper_congruences();
+	num_equalities = mgr.con_sys.num_equalities();
       }
+  }
   else {
     if (!gr.generators_are_minimized()) {
-      // Minimize gr generator system.  As in Polyhedron assume that
-      // gr contains at least one point.
-      Grid::simplify(gr.gen_sys, gr.dim_kinds);
+      // Minimize `gr' generator system.  As in Polyhedron assume that
+      // `gr' contains at least one point.
+      Grid& mgr = const_cast<Grid&>(gr);
+      Grid::simplify(mgr.gen_sys, mgr.dim_kinds);
       // If gen_sys contained rows before being reduced, it should
       // contain at least a single point afterward.
-      PPL_ASSERT(!gr.gen_sys.empty());
-      gr.set_generators_minimized();
+      PPL_ASSERT(!mgr.gen_sys.empty());
+      mgr.set_generators_minimized();
     }
     // Calculate number of congruences from generators.
     num_proper_congruences
@@ -103,11 +103,6 @@ PPL::Grid_Certificate::compare(const Grid& gr) const {
 
 bool
 PPL::Grid_Certificate::OK() const {
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
-
-  // All tests passed.
+  // There is nothing to test.
   return true;
 }

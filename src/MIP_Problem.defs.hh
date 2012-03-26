@@ -46,7 +46,7 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
 std::ostream&
-operator<<(std::ostream& s, const MIP_Problem& lp);
+operator<<(std::ostream& s, const MIP_Problem& mip);
 
 } // namespace IO_Operators
 
@@ -254,24 +254,31 @@ public:
 
     //! Prefix increment.
     const_iterator& operator++();
+
     //! Prefix decrement.
     const_iterator& operator--();
+
     //! Postfix increment.
     const_iterator operator++(int);
+
     //! Postfix decrement.
     const_iterator operator--(int);
 
     //! Moves iterator forward of \p n positions.
     const_iterator& operator+=(difference_type n);
+
     //! Moves iterator backward of \p n positions.
     const_iterator& operator-=(difference_type n);
+
     //! Returns an iterator \p n positions forward.
     const_iterator operator+(difference_type n) const;
+
     //! Returns an iterator \p n positions backward.
     const_iterator operator-(difference_type n) const;
 
     //! Returns a reference to the "pointed" object.
     reference operator*() const;
+
     //! Returns the address of the "pointed" object.
     pointer operator->() const;
 
@@ -291,7 +298,8 @@ public:
 
   private:
     //! Constructor from a Base iterator.
-    explicit const_iterator(Base itr);
+    explicit const_iterator(Base base);
+
     //! The Base iterator on the Constraint_Sequence.
     Base itr;
 
@@ -929,11 +937,12 @@ private:
   bool is_lp_satisfiable() const;
 
   /*! \brief
-    Returns \c true if and if only the LP problem \p lp is satisfiable
+    Returns \c true if and if only the MIP problem \p mip is satisfiable
     when variables in \p i_vars can only take integral values.
 
-    \param lp
-    The LP problem. This is assumed to have no integral space dimension.
+    \param mip
+    The MIP problem. This is assumed to have no integral space dimension
+    (so that it is a pure LP problem).
 
     \param i_vars
     The variables that are constrained to take integral values.
@@ -941,7 +950,7 @@ private:
     \param p
     If \c true is returned, it will encode a feasible point.
   */
-  static bool is_mip_satisfiable(MIP_Problem& lp,
+  static bool is_mip_satisfiable(MIP_Problem& mip,
                                  const Variables_Set& i_vars,
                                  Generator& p);
 
@@ -949,8 +958,9 @@ private:
     Returns \c true if and if only \c mip.last_generator satisfies all the
     integrality conditions implicitly stated using by \p i_vars.
 
-    \param lp
-    The LP problem. This is assumed to have no integral space dimension.
+    \param mip
+    The MIP problem. This is assumed to have no integral space dimension
+    (so that it is a pure LP problem).
 
     \param i_vars
     The variables that are constrained to take an integer value.
@@ -959,7 +969,7 @@ private:
     If \c false is returned, this will encode the non-integral variable
     index on which the `branch and bound' algorithm should be applied.
   */
-  static bool choose_branching_variable(const MIP_Problem& lp,
+  static bool choose_branching_variable(const MIP_Problem& mip,
                                         const Variables_Set& i_vars,
                                         dimension_type& branching_index);
 };

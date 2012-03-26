@@ -51,20 +51,20 @@ CO_Tree::CO_Tree() {
 }
 
 inline
-CO_Tree::CO_Tree(const CO_Tree& x) {
-  PPL_ASSERT(x.OK());
-  data_allocator = x.data_allocator;
-  init(x.reserved_size);
-  copy_data_from(x);
+CO_Tree::CO_Tree(const CO_Tree& y) {
+  PPL_ASSERT(y.OK());
+  data_allocator = y.data_allocator;
+  init(y.reserved_size);
+  copy_data_from(y);
 }
 
 inline CO_Tree&
-CO_Tree::operator=(const CO_Tree& x) {
-  if (this != &x) {
+CO_Tree::operator=(const CO_Tree& y) {
+  if (this != &y) {
     destroy();
-    data_allocator = x.data_allocator;
-    init(x.reserved_size);
-    copy_data_from(x);
+    data_allocator = y.data_allocator;
+    init(y.reserved_size);
+    copy_data_from(y);
   }
   return *this;
 }
@@ -104,30 +104,30 @@ CO_Tree::dump_tree() const {
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key1) {
+CO_Tree::insert(const dimension_type key) {
   if (empty())
-    return insert(key1, Coefficient_zero());
+    return insert(key, Coefficient_zero());
   else {
     tree_iterator itr(*this);
-    itr.go_down_searching_key(key1);
-    if (itr.index() == key1)
+    itr.go_down_searching_key(key);
+    if (itr.index() == key)
       return iterator(itr);
     else
-      return iterator(insert_precise(key1, Coefficient_zero(), itr));
+      return iterator(insert_precise(key, Coefficient_zero(), itr));
   }
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key1, data_type_const_reference data1) {
+CO_Tree::insert(dimension_type key, data_type_const_reference data1) {
   if (empty()) {
-    insert_in_empty_tree(key1, data1);
+    insert_in_empty_tree(key, data1);
     tree_iterator itr(*this);
     PPL_ASSERT(itr.index() != unused_index);
     return iterator(itr);
   } else {
     tree_iterator itr(*this);
-    itr.go_down_searching_key(key1);
-    return iterator(insert_precise(key1, data1, itr));
+    itr.go_down_searching_key(key);
+    return iterator(insert_precise(key, data1, itr));
   }
 }
 
@@ -271,17 +271,16 @@ CO_Tree::fast_shift(dimension_type i, iterator itr) {
 }
 
 inline void
-CO_Tree::insert_in_empty_tree(dimension_type key1,
+CO_Tree::insert_in_empty_tree(dimension_type key,
                               data_type_const_reference data1) {
   PPL_ASSERT(empty());
   rebuild_bigger_tree();
   tree_iterator itr(*this);
   PPL_ASSERT(itr.index() == unused_index);
-
   new (&(*itr)) data_type(data1);
   // Set the index afterwards, so that if the constructor above throws
   // the tree's structure is consistent.
-  itr.index() = key1;
+  itr.index() = key;
   ++size_;
 
   PPL_ASSERT(OK());

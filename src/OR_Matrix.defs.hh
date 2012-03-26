@@ -346,13 +346,13 @@ public:
 
   //! Builds a matrix with specified dimensions.
   /*!
-    \param space_dim
+    \param num_dimensions
     The space dimension of the matrix that will be created.
 
-    This constructor creates a matrix with \p 2*space_dim rows.
+    This constructor creates a matrix with \p 2*num_dimensions rows.
     Each element is initialized to plus infinity.
   */
-  OR_Matrix(dimension_type space_dim);
+  OR_Matrix(dimension_type num_dimensions);
 
   //! Copy constructor.
   OR_Matrix(const OR_Matrix& y);

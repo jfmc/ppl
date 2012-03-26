@@ -35,12 +35,12 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Generator::throw_dimension_incompatible(const char* method,
-					     const char* name_var,
+					     const char* v_name,
 					     const Variable v) const {
   std::ostringstream s;
   s << "PPL::Generator::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
-    << name_var << ".space_dimension() == " << v.space_dimension() << ".";
+    << v_name << ".space_dimension() == " << v.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

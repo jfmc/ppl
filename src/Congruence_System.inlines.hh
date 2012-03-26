@@ -88,18 +88,19 @@ Congruence_System::Congruence_System(const Constraint& c, Representation r)
 }
 
 inline
-Congruence_System::Congruence_System(const Congruence_System& cs)
-  : rows(cs.rows),
-    space_dimension_(cs.space_dimension_),
-    representation_(cs.representation_) {
+Congruence_System::Congruence_System(const Congruence_System& cgs)
+  : rows(cgs.rows),
+    space_dimension_(cgs.space_dimension_),
+    representation_(cgs.representation_) {
 }
 
 inline
-Congruence_System::Congruence_System(const Congruence_System& cs, Representation r)
-  : rows(cs.rows),
-    space_dimension_(cs.space_dimension_),
+Congruence_System::Congruence_System(const Congruence_System& cgs,
+                                     Representation r)
+  : rows(cgs.rows),
+    space_dimension_(cgs.space_dimension_),
     representation_(r) {
-  if (cs.representation() != r) {
+  if (cgs.representation() != r) {
     for (dimension_type i = 0; i < num_rows(); ++i)
       rows[i].set_representation(representation());
   }

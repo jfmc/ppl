@@ -93,14 +93,14 @@ PIP_Tree_Node::art_parameter_count() const {
 
 inline
 const PIP_Tree_Node*
-PIP_Decision_Node::child_node(bool v) const {
-  return v ? true_child : false_child;
+PIP_Decision_Node::child_node(bool b) const {
+  return b ? true_child : false_child;
 }
 
 inline
 PIP_Tree_Node*
-PIP_Decision_Node::child_node(bool v) {
-  return v ? true_child : false_child;
+PIP_Decision_Node::child_node(bool b) {
+  return b ? true_child : false_child;
 }
 
 inline

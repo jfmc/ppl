@@ -56,7 +56,9 @@ GetOptions(
 my @lines = <>;
 my $size = @lines + 1;
 
-print "extern const char* const ${array_name}[$size]";
+print "extern const char* const ";
+print $array_name;
+print "[$size]";
 
 if (! $decl_only) {
     print " = {\n";

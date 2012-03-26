@@ -75,9 +75,9 @@ PIP_Problem::operator=(const PIP_Problem& y) {
 }
 
 inline PIP_Problem::Control_Parameter_Value
-PIP_Problem::get_control_parameter(Control_Parameter_Name n) const {
-  PPL_ASSERT(n >= 0 && n < CONTROL_PARAMETER_NAME_SIZE);
-  return control_parameters[n];
+PIP_Problem::get_control_parameter(Control_Parameter_Name name) const {
+  PPL_ASSERT(name >= 0 && name < CONTROL_PARAMETER_NAME_SIZE);
+  return control_parameters[name];
 }
 
 inline dimension_type

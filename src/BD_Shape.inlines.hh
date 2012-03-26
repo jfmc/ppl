@@ -732,24 +732,26 @@ BD_Shape<T>::integer_upper_bound_assign_if_exact(const BD_Shape& y) {
 
 template <typename T>
 inline void
-BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
+BD_Shape<T>
+::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check: the variable having
   // maximum index is the one occurring last in the set.
-  if (new_dim > space_dimension())
+  const dimension_type space_dim = space_dimension();
+  if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dim);
+				 new_dimension);
 
   // The removal of no dimensions from any BDS is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space BDS.
-  if (new_dim == space_dimension()) {
+  if (new_dimension == space_dim) {
     PPL_ASSERT(OK());
     return;
   }
 
   // Shortest-path closure is necessary as in remove_space_dimensions().
   shortest_path_closure_assign();
-  dbm.resize_no_copy(new_dim + 1);
+  dbm.resize_no_copy(new_dimension + 1);
 
   // Shortest-path closure is maintained.
   // TODO: see whether or not reduction can be (efficiently!) maintained too.
@@ -758,7 +760,7 @@ BD_Shape<T>::remove_higher_space_dimensions(const dimension_type new_dim) {
 
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.
-  if (new_dim == 0 && !marked_empty())
+  if (new_dimension == 0 && !marked_empty())
     set_zero_dim_univ();
   PPL_ASSERT(OK());
 }

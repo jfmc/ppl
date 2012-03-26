@@ -31,7 +31,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Grid::select_wider_congruences(const Grid& y,
-				    Congruence_System& cgs_selected) const {
+				    Congruence_System& selected_cgs) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
   PPL_ASSERT(space_dim == y.space_dim);
@@ -53,13 +53,13 @@ PPL::Grid::select_wider_congruences(const Grid& y,
 	const Congruence& y_cg = y.con_sys[y_row];
 	if (cg.is_equal_at_dimension(Variable(dim - 1), y_cg))
 	  // The leading diagonal entries are equal.
-	  cgs_selected.insert(cg);
+	  selected_cgs.insert(cg);
 	++x_row;
 	++y_row;
       }
       break;
     case EQUALITY:
-      cgs_selected.insert(con_sys[x_row]);
+      selected_cgs.insert(con_sys[x_row]);
       ++x_row;
       ++y_row;
       break;
@@ -72,9 +72,8 @@ PPL::Grid::select_wider_congruences(const Grid& y,
 }
 
 void
-PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
+PPL::Grid::congruence_widening_assign(const Grid& y, unsigned* tp) {
   Grid& x = *this;
-  Grid& y = const_cast<Grid&>(const_y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
@@ -101,26 +100,27 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
     x.update_congruences();
 
   // Ensure that the `y' congruences are in minimal form.
-  if (y.congruences_are_up_to_date()) {
-    if (!y.congruences_are_minimized()) {
-      if (simplify(y.con_sys, y.dim_kinds)) {
+  Grid& yy = const_cast<Grid&>(y);
+  if (yy.congruences_are_up_to_date()) {
+    if (!yy.congruences_are_minimized()) {
+      if (simplify(yy.con_sys, yy.dim_kinds)) {
 	// `y' is empty.
-	y.set_empty();
+	yy.set_empty();
 	return;
       }
-      y.set_congruences_minimized();
+      yy.set_congruences_minimized();
     }
   }
   else
-    y.update_congruences();
+    yy.update_congruences();
 
-  if (con_sys.num_equalities() < y.con_sys.num_equalities())
+  if (con_sys.num_equalities() < yy.con_sys.num_equalities())
     return;
 
   // Copy into `cgs' the congruences of `x' that are common to `y',
   // according to the grid widening.
   Congruence_System cgs;
-  x.select_wider_congruences(y, cgs);
+  x.select_wider_congruences(yy, cgs);
 
   if (cgs.num_rows() == con_sys.num_rows())
     // All congruences were selected, thus the result is `x'.
@@ -213,7 +213,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
 
 void
 PPL::Grid::select_wider_generators(const Grid& y,
-				   Grid_Generator_System& ggs_selected) const {
+				   Grid_Generator_System& widened_ggs) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
   PPL_ASSERT(space_dim == y.space_dim);
@@ -236,15 +236,15 @@ PPL::Grid::select_wider_generators(const Grid& y,
 	const Grid_Generator& y_gg = y.gen_sys[y_row];
 	if (gg.is_equal_at_dimension(dim, y_gg))
 	  // The leading diagonal entry is equal.
-	  ggs_selected.insert(gg);
+	  widened_ggs.insert(gg);
         else
-          ggs_selected.insert(grid_line(Linear_Expression(gg)));
+          widened_ggs.insert(grid_line(Linear_Expression(gg)));
 	++x_row;
 	++y_row;
       }
       break;
     case LINE:
-      ggs_selected.insert(gen_sys[x_row]);
+      widened_ggs.insert(gen_sys[x_row]);
       ++x_row;
       ++y_row;
       break;
@@ -257,9 +257,9 @@ PPL::Grid::select_wider_generators(const Grid& y,
 }
 
 void
-PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
+PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
   Grid& x = *this;
-  Grid& y = const_cast<Grid&>(const_y);
+
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("generator_widening_assign(y)", "y", y);
@@ -286,26 +286,27 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
     return;
 
   // Ensure that the `y' generators are in minimal form.
-  if (y.generators_are_up_to_date()) {
-    if (!y.generators_are_minimized()) {
-      simplify(y.gen_sys, y.dim_kinds);
-      PPL_ASSERT(!y.gen_sys.has_no_rows());
-      y.set_generators_minimized();
+  Grid& yy = const_cast<Grid&>(y);
+  if (yy.generators_are_up_to_date()) {
+    if (!yy.generators_are_minimized()) {
+      simplify(yy.gen_sys, yy.dim_kinds);
+      PPL_ASSERT(!yy.gen_sys.has_no_rows());
+      yy.set_generators_minimized();
     }
   }
   else
-    y.update_generators();
+    yy.update_generators();
 
-  if (gen_sys.num_rows() > y.gen_sys.num_rows())
+  if (gen_sys.num_rows() > yy.gen_sys.num_rows())
     return;
 
-  if (gen_sys.num_lines() > y.gen_sys.num_lines())
+  if (gen_sys.num_lines() > yy.gen_sys.num_lines())
     return;
 
   // Copy into `ggs' the generators of `x' that are common to `y',
   // according to the grid widening.
   Grid_Generator_System ggs;
-  x.select_wider_generators(y, ggs);
+  x.select_wider_generators(yy, ggs);
 
   if (ggs.num_parameters() == gen_sys.num_parameters())
     // All parameters are kept as parameters, thus the result is `x'.
@@ -397,9 +398,9 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
 }
 
 void
-PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
+PPL::Grid::widening_assign(const Grid& y, unsigned* tp) {
   Grid& x = *this;
-  Grid& y = const_cast<Grid&>(const_y);
+
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);

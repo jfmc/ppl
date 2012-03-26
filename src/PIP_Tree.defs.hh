@@ -223,8 +223,8 @@ protected:
                                dimension_type space_dim,
                                int indent_level) = 0;
 
-  //! Inserts a new parametric constraint in internal row format
-  void add_constraint(const Row& x, const Variables_Set& parameters);
+  //! Inserts a new parametric constraint in internal row format.
+  void add_constraint(const Row& row, const Variables_Set& parameters);
 
   //! Merges parent's artificial parameters into \p *this.
   void parent_merge();
@@ -393,15 +393,15 @@ public:
   */
   const Linear_Expression& parametric_values(Variable var) const;
 
-  //! Dumps to \p s an ASCII representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  //! Dumps to \p os an ASCII representation of \p *this.
+  void ascii_dump(std::ostream& os) const;
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by
+    Loads from \p is an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-  bool ascii_load(std::istream& s);
+  bool ascii_load(std::istream& is);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   virtual memory_size_type total_memory_in_bytes() const;
@@ -473,39 +473,39 @@ private:
       \param basis
       The PIP_Solution_Node::basis vector for the tableau.
 
-      \param i
+      \param row_0
       The row number for the first pivot row and column pair to be compared.
 
-      \param j
+      \param col_0
       The column number for the first pivot row and column pair to be
       compared.
 
-      \param i_
+      \param row_1
       The row number for the second pivot row and column pair to be compared.
 
-      \param j_
+      \param col_1
       The column number for the second pivot row and column pair to be
       compared.
     */
     bool is_better_pivot(const std::vector<dimension_type>& mapping,
                          const std::vector<bool>& basis,
-                         const dimension_type i,
-                         const dimension_type j,
-                         const dimension_type i_,
-                         const dimension_type j_) const;
+                         const dimension_type row_0,
+                         const dimension_type col_0,
+                         const dimension_type row_1,
+                         const dimension_type col_1) const;
 
     //! Returns the value of the denominator.
     Coefficient_traits::const_reference denominator() const;
 
-    //! Dumps to \p s an ASCII representation of \p *this.
-    void ascii_dump(std::ostream& s) const;
+    //! Dumps to \p os an ASCII representation of \p *this.
+    void ascii_dump(std::ostream& os) const;
 
     /*! \brief
-      Loads from \p s an ASCII representation (as produced by
+      Loads from \p is an ASCII representation (as produced by
       ascii_dump(std::ostream&) const) and sets \p *this accordingly.
       Returns \c true if successful, \c false otherwise.
     */
-    bool ascii_load(std::istream& s);
+    bool ascii_load(std::istream& is);
 
     //! Returns the size in bytes of the memory managed by \p *this.
     /*!
@@ -671,9 +671,9 @@ protected:
                                int indent_level);
 
   /*! \brief
-    Generate a Gomory cut using non-integer tableau row \p i.
+    Generate a Gomory cut using non-integer tableau row \p index.
 
-    \param i
+    \param index
     Row index in simplex tableau from which the cut is generated.
 
     \param parameters
@@ -691,7 +691,7 @@ protected:
     \param indent_level
     The indentation level (for debugging output only).
   */
-  void generate_cut(dimension_type i, Variables_Set& parameters,
+  void generate_cut(dimension_type index, Variables_Set& parameters,
                     Matrix<Row>& context, dimension_type& space_dimension,
                     int indent_level);
 

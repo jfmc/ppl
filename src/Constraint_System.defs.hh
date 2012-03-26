@@ -293,15 +293,14 @@ private:
   void simplify();
 
   /*! \brief
-    Adjusts \p *this so that it matches the topology and
-    the number of space dimensions given as parameters
-    (adding or removing columns if needed).
+    Adjusts \p *this so that it matches \p new_topology and
+    \p new_space_dim (adding or removing columns if needed).
     Returns <CODE>false</CODE> if and only if \p topol is
     equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
     contains strict inequalities.
   */
-  bool adjust_topology_and_space_dimension(Topology topol,
-                                           dimension_type num_dimensions);
+  bool adjust_topology_and_space_dimension(Topology new_topology,
+                                           dimension_type new_space_dim);
 
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator[](dimension_type k) const;
@@ -605,14 +604,14 @@ for (Constraint_System::const_iterator i = cs.begin(),
   \endcode
 */
 // NOTE: This is not an inner class of Constraint_System, so Constraint can
-// declare that this class is his friend without including this file (the
-// .types.hh file suffices).
+// declare that this class is his friend without including this file
+// (the .types.hh file suffices).
 class Parma_Polyhedra_Library::Constraint_System_const_iterator
   : public std::iterator<std::forward_iterator_tag,
-        Constraint,
-        ptrdiff_t,
-        const Constraint*,
-        const Constraint&> {
+                         Constraint,
+                         ptrdiff_t,
+                         const Constraint*,
+                         const Constraint&> {
 public:
   //! Default constructor.
   Constraint_System_const_iterator();

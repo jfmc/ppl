@@ -2867,14 +2867,14 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
 template <typename T>
 void
 Octagonal_Shape<T>
-::non_redundant_matrix_entries(std::vector<Bit_Row>& nr_rows) const {
+::non_redundant_matrix_entries(std::vector<Bit_Row>& non_redundant) const {
   // Private method: the caller has to ensure the following.
   PPL_ASSERT(space_dim > 0 && !marked_empty() && marked_strongly_closed());
-  PPL_ASSERT(nr_rows.empty());
+  PPL_ASSERT(non_redundant.empty());
 
   // Initialize `non_redundant' as if it was an OR_Matrix of booleans
   // (initially set to false).
-  nr_rows.resize(2*space_dim);
+  non_redundant.resize(2*space_dim);
 
   // Step 1: compute zero-equivalence classes.
   // Variables corresponding to indices `i' and `j' are zero-equivalent
@@ -2907,12 +2907,12 @@ Octagonal_Shape<T>
         dimension_type j = i;
         dimension_type next_j = successor[j];
         while (j != next_j) {
-          nr_rows[next_j].set(j);
+          non_redundant[next_j].set(j);
           j = next_j;
           next_j = successor[j];
         }
         const dimension_type cj = coherent_index(j);
-        nr_rows[cj].set(ci);
+        non_redundant[cj].set(ci);
       }
     }
 
@@ -2969,7 +2969,7 @@ Octagonal_Shape<T>
 
       if (to_add)
         // The constraint is not redundant.
-        nr_rows[i].set(j);
+        non_redundant[i].set(j);
     }
   }
 
@@ -2978,19 +2978,19 @@ Octagonal_Shape<T>
   // variables.
   // Note: the singular class is not connected with the other classes.
   if (exist_sing_class) {
-    nr_rows[sing_leader].set(sing_leader + 1);
+    non_redundant[sing_leader].set(sing_leader + 1);
     if (successor[sing_leader + 1] != sing_leader + 1) {
       dimension_type j = sing_leader;
       dimension_type next_j = successor[j + 1];
       while (next_j != j + 1) {
-        nr_rows[next_j].set(j);
+        non_redundant[next_j].set(j);
         j = next_j;
         next_j = successor[j + 1];
       }
-      nr_rows[j + 1].set(j);
+      non_redundant[j + 1].set(j);
     }
     else
-      nr_rows[sing_leader + 1].set(sing_leader);
+      non_redundant[sing_leader + 1].set(sing_leader);
   }
 }
 
@@ -7661,13 +7661,13 @@ Octagonal_Shape<T>
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
+IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& oct) {
   // Handle special cases first.
-  if (x.marked_empty()) {
+  if (oct.marked_empty()) {
     s << "false";
     return s;
   }
-  if (x.is_universe()) {
+  if (oct.is_universe()) {
     s << "true";
     return s;
   }
@@ -7679,8 +7679,8 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   // Records whether or not we still have to print the first constraint.
   bool first = true;
 
-  Row_Iterator m_begin = x.matrix.row_begin();
-  Row_Iterator m_end = x.matrix.row_end();
+  Row_Iterator m_begin = oct.matrix.row_begin();
+  Row_Iterator m_end = oct.matrix.row_end();
 
   // Temporaries.
   PPL_DIRTY_TEMP(N, negation);
@@ -7690,51 +7690,57 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
     const Variable v_i(i/2);
-    const N& x_i_ii = (*i_iter)[i + 1];
+    const N& c_i_ii = (*i_iter)[i + 1];
     ++i_iter;
-    const N& x_ii_i = (*i_iter)[i];
+    const N& c_ii_i = (*i_iter)[i];
     ++i_iter;
     // Check whether or not it is an equality constraint.
-    if (is_additive_inverse(x_i_ii, x_ii_i)) {
+    if (is_additive_inverse(c_i_ii, c_ii_i)) {
       // It is an equality.
-      PPL_ASSERT(!is_plus_infinity(x_i_ii) && !is_plus_infinity(x_ii_i));
+      PPL_ASSERT(!is_plus_infinity(c_i_ii) && !is_plus_infinity(c_ii_i));
       if (first)
         first = false;
       else
         s << ", ";
       // If the value bound can NOT be divided by 2 exactly,
       // then we output the constraint `2*v_i = bound'.
-      if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
+      if (div_2exp_assign_r(half, c_ii_i, 1,
+                            ROUND_UP | ROUND_STRICT_RELATION)
+          == V_EQ)
         s << v_i << " = " << half;
       else
-        s << "2*" << v_i << " = " << x_ii_i;
+        s << "2*" << v_i << " = " << c_ii_i;
     }
     else {
       // We will print unary non-strict inequalities, if any.
-      if (!is_plus_infinity(x_i_ii)) {
+      if (!is_plus_infinity(c_i_ii)) {
         if (first)
           first = false;
         else
           s << ", ";
-        neg_assign_r(negation, x_i_ii, ROUND_NOT_NEEDED);
+        neg_assign_r(negation, c_i_ii, ROUND_NOT_NEEDED);
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i >= negation'.
-        if (div_2exp_assign_r(half, negation, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
+        if (div_2exp_assign_r(half, negation, 1,
+                              ROUND_UP | ROUND_STRICT_RELATION)
+            == V_EQ)
           s << v_i << " >= " << half;
         else
           s << "2*" << v_i << " >= " << negation;
       }
-      if (!is_plus_infinity(x_ii_i)) {
+      if (!is_plus_infinity(c_ii_i)) {
         if (first)
           first = false;
         else
           s << ", ";
         // If the value bound can NOT be divided by 2 exactly,
         // then we output the constraint `2*v_i <= bound'.
-        if (div_2exp_assign_r(half, x_ii_i, 1, ROUND_UP | ROUND_STRICT_RELATION) == V_EQ)
+        if (div_2exp_assign_r(half, c_ii_i, 1,
+                              ROUND_UP | ROUND_STRICT_RELATION)
+            == V_EQ)
           s << v_i << " <= " << half;
         else
-          s << "2*" << v_i << " <= " << x_ii_i;
+          s << "2*" << v_i << " <= " << c_ii_i;
       }
     }
   }
@@ -7752,77 +7758,77 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
     for (dimension_type j = 0; j < i; j += 2) {
       const Variable v_j(j/2);
       // Print binary differences.
-      const N& x_ii_jj = r_ii[j + 1];
-      const N& x_i_j = r_i[j];
+      const N& c_ii_jj = r_ii[j + 1];
+      const N& c_i_j = r_i[j];
       // Check whether or not it is an equality constraint.
-      if (is_additive_inverse(x_ii_jj, x_i_j)) {
+      if (is_additive_inverse(c_ii_jj, c_i_j)) {
         // It is an equality.
-        PPL_ASSERT(!is_plus_infinity(x_i_j) && !is_plus_infinity(x_ii_jj));
+        PPL_ASSERT(!is_plus_infinity(c_i_j) && !is_plus_infinity(c_ii_jj));
         if (first)
           first = false;
         else
           s << ", ";
-        if (sgn(x_i_j) >= 0)
-          s << v_j << " - " << v_i << " = " << x_i_j;
+        if (sgn(c_i_j) >= 0)
+          s << v_j << " - " << v_i << " = " << c_i_j;
         else
-          s << v_i << " - " << v_j << " = " << x_ii_jj;
+          s << v_i << " - " << v_j << " = " << c_ii_jj;
       }
       else {
         // We will print non-strict inequalities, if any.
-        if (!is_plus_infinity(x_i_j)) {
+        if (!is_plus_infinity(c_i_j)) {
           if (first)
             first = false;
           else
             s << ", ";
-          if (sgn(x_i_j) >= 0)
-            s << v_j << " - " << v_i << " <= " << x_i_j;
+          if (sgn(c_i_j) >= 0)
+            s << v_j << " - " << v_i << " <= " << c_i_j;
           else {
-            neg_assign_r(negation, x_i_j, ROUND_DOWN);
+            neg_assign_r(negation, c_i_j, ROUND_DOWN);
             s << v_i << " - " << v_j << " >= " << negation;
           }
         }
-        if (!is_plus_infinity(x_ii_jj)) {
+        if (!is_plus_infinity(c_ii_jj)) {
           if (first)
             first = false;
           else
             s << ", ";
-          if (sgn(x_ii_jj) >= 0)
-            s << v_i << " - " << v_j << " <= " << x_ii_jj;
+          if (sgn(c_ii_jj) >= 0)
+            s << v_i << " - " << v_j << " <= " << c_ii_jj;
           else {
-            neg_assign_r(negation, x_ii_jj, ROUND_DOWN);
+            neg_assign_r(negation, c_ii_jj, ROUND_DOWN);
             s << v_j << " - " << v_i << " >= " << negation;
           }
         }
       }
       // Print binary sums.
-      const N& x_i_jj = r_i[j + 1];
-      const N& x_ii_j = r_ii[j];
+      const N& c_i_jj = r_i[j + 1];
+      const N& c_ii_j = r_ii[j];
       // Check whether or not it is an equality constraint.
-      if (is_additive_inverse(x_i_jj, x_ii_j)) {
+      if (is_additive_inverse(c_i_jj, c_ii_j)) {
         // It is an equality.
-        PPL_ASSERT(!is_plus_infinity(x_i_jj) && !is_plus_infinity(x_ii_j));
+        PPL_ASSERT(!is_plus_infinity(c_i_jj) && !is_plus_infinity(c_ii_j));
         if (first)
           first = false;
         else
           s << ", ";
-        s << v_j << " + " << v_i << " = " << x_ii_j;
+        s << v_j << " + " << v_i << " = " << c_ii_j;
       }
       else {
         // We will print non-strict inequalities, if any.
-        if (!is_plus_infinity(x_i_jj)) {
+        if (!is_plus_infinity(c_i_jj)) {
           if (first)
             first = false;
           else
             s << ", ";
-          neg_assign_r(negation, x_i_jj, ROUND_DOWN);
+          neg_assign_r(negation, c_i_jj, ROUND_DOWN);
           s << v_j << " + " << v_i << " >= " << negation;
         }
-        if (!is_plus_infinity(x_ii_j)) {
+        if (!is_plus_infinity(c_ii_j)) {
           if (first)
             first = false;
           else
             s << ", ";
-          s << v_j << " + " << v_i << " <= " << x_ii_j;
+          s << v_j << " + " << v_i << " <= " << c_ii_j;
         }
       }
     }
@@ -8026,11 +8032,11 @@ template <typename T>
 void
 Octagonal_Shape<T>
 ::throw_expression_too_complex(const char* method,
-                               const Linear_Expression& e) const {
+                               const Linear_Expression& le) const {
   using namespace IO_Operators;
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
-    << e << " is too complex.";
+    << le << " is too complex.";
   throw std::invalid_argument(s.str());
 }
 
@@ -8038,13 +8044,13 @@ template <typename T>
 void
 Octagonal_Shape<T>
 ::throw_dimension_incompatible(const char* method,
-                               const char* name_row,
-                               const Linear_Expression& y) const {
+                               const char* le_name,
+                               const Linear_Expression& le) const {
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
-    << y.space_dimension() << ".";
+    << ", " << le_name << "->space_dimension() == "
+    << le.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -8053,13 +8059,13 @@ template <typename C>
 void
 Octagonal_Shape<T>
 ::throw_dimension_incompatible(const char* method,
-                               const char* name_row,
-                               const Linear_Form<C>& y) const {
+                               const char* lf_name,
+                               const Linear_Form<C>& lf) const {
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
-    << ", " << name_row << "->space_dimension() == "
-    << y.space_dimension() << ".";
+    << ", " << lf_name << "->space_dimension() == "
+    << lf.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

@@ -87,35 +87,36 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y, Complexity_Class)
     sat_g = y.sat_g;
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& cs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
-  PPL_ASSERT(ccs.space_dimension() <= max_space_dimension());
+  PPL_ASSERT(cs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  Constraint_System cs = ccs;
+  Constraint_System cs_copy = cs;
 
-  // Try to adapt `cs' to the required topology.
-  const dimension_type cs_space_dim = cs.space_dimension();
-  if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
+  // Try to adapt `cs_copy' to the required topology.
+  const dimension_type cs_copy_space_dim = cs_copy.space_dimension();
+  if (!cs_copy.adjust_topology_and_space_dimension(topol, cs_copy_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
 				? "C_Polyhedron(cs)"
-				: "NNC_Polyhedron(cs)", "cs", cs);
+				: "NNC_Polyhedron(cs)", "cs", cs_copy);
 
   // Set the space dimension.
-  space_dim = cs_space_dim;
+  space_dim = cs_copy_space_dim;
 
   if (space_dim > 0) {
-    // Stealing the rows from `cs'.
-    swap(con_sys, cs);
+    // Stealing the rows from `cs_copy'.
+    using std::swap;
+    swap(con_sys, cs_copy);
     if (con_sys.num_pending_rows() > 0) {
-      // Even though `cs' has pending constraints, since the generators
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending constraints. By integrating the pending part
-      // of `con_sys' we may loose sortedness.
+      // Even though `cs_copy' has pending constraints, since the
+      // generators of the polyhedron are not up-to-date, the
+      // polyhedron cannot have pending constraints. By integrating
+      // the pending part of `con_sys' we may loose sortedness.
       con_sys.set_sorted(false);
       con_sys.unset_pending_rows();
     }
@@ -123,9 +124,10 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
     set_constraints_up_to_date();
   }
   else {
+    // Here `space_dim == 0'.
     // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs.num_rows(); i-- > 0; )
-      if (cs[i].is_inconsistent()) {
+    for (dimension_type i = cs_copy.num_rows(); i-- > 0; )
+      if (cs_copy[i].is_inconsistent()) {
         // Inconsistent constraint found: the polyhedron is empty.
         set_empty();
         break;
@@ -182,16 +184,13 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   PPL_ASSERT_HEAVY(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& gs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
-  PPL_ASSERT(cgs.space_dimension() <= max_space_dimension());
-
-  // TODO: this implementation is just an executable specification.
-  Generator_System gs = cgs;
+  PPL_ASSERT(gs.space_dimension() <= max_space_dimension());
 
   // An empty set of generators defines the empty polyhedron.
   if (gs.has_no_rows()) {
@@ -207,25 +206,29 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
 			     ? "C_Polyhedron(gs)"
 			     : "NNC_Polyhedron(gs)", "gs");
 
-  const dimension_type gs_space_dim = gs.space_dimension();
-  // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
+  // TODO: this implementation is just an executable specification.
+  Generator_System gs_copy = gs;
+
+  const dimension_type gs_copy_space_dim = gs_copy.space_dimension();
+  // Try to adapt `gs_copy' to the required topology.
+  if (!gs_copy.adjust_topology_and_space_dimension(topol, gs_copy_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
 				? "C_Polyhedron(gs)"
-				: "NNC_Polyhedron(gs)", "gs", gs);
+				: "NNC_Polyhedron(gs)", "gs", gs_copy);
 
-  if (gs_space_dim > 0) {
-    // Stealing the rows from `gs'.
-    swap(gen_sys, gs);
+  if (gs_copy_space_dim > 0) {
+    // Stealing the rows from `gs_copy'.
+    using std::swap;
+    swap(gen_sys, gs_copy);
     // In a generator system describing a NNC polyhedron,
     // for each point we must also have the corresponding closure point.
     if (topol == NOT_NECESSARILY_CLOSED)
       gen_sys.add_corresponding_closure_points();
     if (gen_sys.num_pending_rows() > 0) {
-      // Even though `gs' has pending generators, since the constraints
-      // of the polyhedron are not up-to-date, the polyhedron cannot
-      // have pending generators. By integrating the pending part
-      // of `gen_sys' we may loose sortedness.
+      // Even though `gs_copy' has pending generators, since the
+      // constraints of the polyhedron are not up-to-date, the
+      // polyhedron cannot have pending generators. By integrating the
+      // pending part of `gen_sys' we may loose sortedness.
       gen_sys.set_sorted(false);
       gen_sys.unset_pending_rows();
     }
@@ -233,12 +236,12 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
     set_generators_up_to_date();
 
     // Set the space dimension.
-    space_dim = gs_space_dim;
+    space_dim = gs_copy_space_dim;
     PPL_ASSERT_HEAVY(OK());
     return;
   }
 
-  // Here `gs.num_rows > 0' and `gs_space_dim == 0':
+  // Here `gs_copy.num_rows > 0' and `gs_copy_space_dim == 0':
   // we already checked for both the topology-compatibility
   // and the supporting point.
   space_dim = 0;
@@ -2303,10 +2306,11 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* e_name,
-					      const Linear_Expression& e) const {
-  throw_dimension_incompatible(method, e_name, e.space_dimension());
+PPL::Polyhedron
+::throw_dimension_incompatible(const char* method,
+                               const char* le_name,
+                               const Linear_Expression& le) const {
+  throw_dimension_incompatible(method, le_name, le.space_dimension());
 }
 
 void
@@ -2338,16 +2342,18 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* gs_name,
-					      const Generator_System& gs) const {
+PPL::Polyhedron
+::throw_dimension_incompatible(const char* method,
+                               const char* gs_name,
+                               const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 
 void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* cgs_name,
-					      const Congruence_System& cgs) const {
+PPL::Polyhedron
+::throw_dimension_incompatible(const char* method,
+                               const char* cgs_name,
+                               const Congruence_System& cgs) const {
   throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
 }
 

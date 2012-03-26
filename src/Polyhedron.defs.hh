@@ -2475,7 +2475,7 @@ private:
     to the definition of the CH78-widening of \p *this and \p y.
   */
   void select_CH78_constraints(const Polyhedron& y,
-			       Constraint_System& cs_selected) const;
+			       Constraint_System& cs_selection) const;
 
   /*! \brief
     Splits the constraints of `x' into two subsets, depending on whether
@@ -2489,7 +2489,7 @@ private:
   bool BHRZ03_combining_constraints(const Polyhedron& y,
 				    const BHRZ03_Certificate& y_cert,
  				    const Polyhedron& H79,
-				    const Constraint_System& x_minus_H79_con_sys);
+				    const Constraint_System& x_minus_H79_cs);
 
   bool BHRZ03_evolving_points(const Polyhedron& y,
 			      const BHRZ03_Certificate& y_cert,
@@ -2505,35 +2505,37 @@ private:
 
   //@} // Widening- and Extrapolation-Related Functions
 
-  //! Adds new space dimensions to the given matrices.
+  //! Adds new space dimensions to the given linear systems.
   /*!
-    \param mat1
-    The matrix to which columns are added;
+    \param sys1
+    The linear system to which columns are added;
 
-    \param mat2
-    The matrix to which rows and columns are added;
+    \param sys2
+    The linear system to which rows and columns are added;
 
     \param sat1
     The saturation matrix whose columns are indexed by the rows of
-    matrix \p mat1. On entry it is up-to-date;
+    \p sys1. On entry it is up-to-date;
 
     \param sat2
     The saturation matrix whose columns are indexed by the rows of \p
-    mat2;
+    sys2;
 
     \param add_dim
     The number of space dimensions to add.
 
-    Adds new space dimensions to the vector space modifying the matrices.
+    Adds new space dimensions to the vector space modifying the linear
+    systems and saturation matrices.
     This function is invoked only by
     <CODE>add_space_dimensions_and_embed()</CODE> and
-    <CODE>add_space_dimensions_and_project()</CODE>, passing the matrix of
-    constraints and that of generators (and the corresponding saturation
-    matrices) in different order (see those methods for details).
+    <CODE>add_space_dimensions_and_project()</CODE>, passing the
+    linear system of constraints and that of generators (and the
+    corresponding saturation matrices) in different order (see those
+    methods for details).
   */
   template <typename Linear_System1, typename Linear_System2>
-  static void add_space_dimensions(Linear_System1& mat1,
-				   Linear_System2& mat2,
+  static void add_space_dimensions(Linear_System1& sys1,
+				   Linear_System2& sys2,
 				   Bit_Matrix& sat1,
 				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
@@ -2588,7 +2590,7 @@ private:
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
   template <typename Linear_System1>
-  static dimension_type simplify(Linear_System1& mat, Bit_Matrix& sat);
+  static dimension_type simplify(Linear_System1& sys, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
@@ -2669,8 +2671,8 @@ protected:
 				    const char* ph_name,
 				    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* e_name,
-				    const Linear_Expression& e) const;
+				    const char* le_name,
+				    const Linear_Expression& le) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* c_name,
 				    const Constraint& c) const;
@@ -2706,16 +2708,19 @@ protected:
   check_space_dimension_overflow(dimension_type dim, dimension_type max,
                                  const Topology topol,
                                  const char* method, const char* reason);
+
   static dimension_type
   check_space_dimension_overflow(dimension_type dim, const Topology topol,
                                  const char* method, const char* reason);
+
   template <typename Object>
   static Object&
-  check_obj_space_dimension_overflow(Object& in, Topology topol,
+  check_obj_space_dimension_overflow(Object& input, Topology topol,
                                      const char* method, const char* reason);
 
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
+
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -2816,11 +2821,15 @@ protected:
     the upper bounds of variable coefficients in \p lf.
   */
   template <typename FP_Format, typename Interval_Info>
-  static void convert_to_integer_expressions(
-	      const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
-              const dimension_type lf_dimension, Linear_Expression& res,
-              Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
-              Coefficient& denominator);
+  static void
+  convert_to_integer_expressions(const Linear_Form<Interval<FP_Format,
+                                                            Interval_Info> >&
+                                 lf,
+                                 const dimension_type lf_dimension,
+                                 Linear_Expression& res,
+                                 Coefficient& res_low_coeff,
+                                 Coefficient& res_hi_coeff,
+                                 Coefficient& denominator);
 
   template <typename Linear_System1, typename Row2>
   static bool

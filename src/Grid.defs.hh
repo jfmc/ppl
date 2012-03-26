@@ -467,7 +467,7 @@ public:
   /*!
     The grid inherits the space dimension of the generator system.
 
-    \param const_gs
+    \param ggs
     The system of generators defining the grid.
 
     \exception std::invalid_argument
@@ -477,7 +477,7 @@ public:
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(const Grid_Generator_System& const_gs);
+  explicit Grid(const Grid_Generator_System& ggs);
 
   //! Builds a grid, recycling a system of grid generators.
   /*!
@@ -497,7 +497,7 @@ public:
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
-  Grid(Grid_Generator_System& gs, Recycle_Input dummy);
+  Grid(Grid_Generator_System& ggs, Recycle_Input dummy);
 
   //! Builds a grid out of a box.
   /*!
@@ -2429,35 +2429,35 @@ private:
   /*!
     Expects \p gs to contain at least one point.
   */
-  static void simplify(Grid_Generator_System& gs,
+  static void simplify(Grid_Generator_System& ggs,
 		       Dimension_Kinds& dim_kinds);
 
   //! Reduces the line \p row using the line \p pivot.
   /*!
-    Uses the line \p pivot to change the representation of the line \p
-    row so that the element at index \p col of \p row is zero.
+    Uses the line \p pivot to change the representation of the line
+    \p row so that the element at index \p column of \p row is zero.
   */
   // A member of Grid for access to Matrix<Dense_Row>::rows.
   static void reduce_line_with_line(Grid_Generator& row,
 				    Grid_Generator& pivot,
-				    dimension_type col);
+				    dimension_type column);
 
   //! Reduces the equality \p row using the equality \p pivot.
   /*!
     Uses the equality \p pivot to change the representation of the
-    equality \p row so that the element at index \p col of \p row is
-    zero.
+    equality \p row so that the element at index \p column of \p row
+    is zero.
   */
   // A member of Grid for access to Matrix<Dense_Row>::rows.
   static void reduce_equality_with_equality(Congruence& row,
 					    const Congruence& pivot,
-					    dimension_type col);
+					    dimension_type column);
 
   //! Reduces \p row using \p pivot.
   /*!
     Uses the point, parameter or proper congruence at \p pivot to
     change the representation of the point, parameter or proper
-    congruence at \p row so that the element at index \p col of \p row
+    congruence at \p row so that the element at index \p column of \p row
     is zero.  Only elements from index \p start to index \p end are
     modified (i.e. it is assumed that all other elements are zero).
     This means that \p col must be in [start,end).
@@ -2469,14 +2469,14 @@ private:
   template <typename R>
   static void reduce_pc_with_pc(R& row,
 				R& pivot,
-				dimension_type col,
+				dimension_type column,
 				dimension_type start,
 				dimension_type end);
 
   //! Reduce \p row using \p pivot.
   /*!
     Use the line \p pivot to change the representation of the
-    parameter \p row such that the element at index \p col of \p row
+    parameter \p row such that the element at index \p column of \p row
     is zero.
   */
   // This takes a parameter with type Swapping_Vector<Grid_Generator> (instead
@@ -2485,22 +2485,22 @@ private:
   // fix/check this.
   static void reduce_parameter_with_line(Grid_Generator& row,
 					 const Grid_Generator& pivot,
-					 dimension_type col,
+					 dimension_type column,
 					 Swapping_Vector<Grid_Generator>& sys,
                                          dimension_type num_columns);
 
   //! Reduce \p row using \p pivot.
   /*!
     Use the equality \p pivot to change the representation of the
-    congruence \p row such that element at index \p col of \p row is
-    zero.
+    congruence \p row such that element at index \p column of \p row
+    is zero.
   */
   // A member of Grid for access to Matrix<Dense_Row>::rows.
   // This takes a parameter with type Swapping_Vector<Congruence> (instead of
   // Congruence_System) to simplify the implementation of `conversion()'.
   static void reduce_congruence_with_equality(Congruence& row,
 					      const Congruence& pivot,
-					      dimension_type col,
+					      dimension_type column,
 					      Swapping_Vector<Congruence>& sys);
 
   //! Reduce column \p dim in rows preceding \p pivot_index in \p sys.
@@ -2515,9 +2515,26 @@ private:
     \f$\{3x \equiv_3 0, x + y \equiv_3 1\}\f$
     (which is in strong minimal form).
 
-    Only consider from index \p start to index \p end of the row at \p
-    pivot_index.  Flag \p generators indicates whether \p sys is a
-    congruence or generator system.
+    \param sys
+    The generator or congruence system to be reduced to strong minimal form.
+
+    \param dim
+    Column to be reduced.
+
+    \param pivot_index
+    Index of last row to be reduced.
+
+    \param start
+    Index of first column to be changed.
+
+    \param end
+    Index of last column to be changed.
+
+    \param sys_dim_kinds
+    Dimension kinds of the elements of \p sys.
+
+    \param generators
+    Flag indicating whether \p sys is a congruence or generator system
   */
   template <typename M>
   // This takes a parameter with type `Swapping_Vector<M::row_type>'
@@ -2528,7 +2545,7 @@ private:
                              dimension_type dim,
 			     dimension_type pivot_index,
 			     dimension_type start, dimension_type end,
-			     const Dimension_Kinds& dim_kinds,
+			     const Dimension_Kinds& sys_dim_kinds,
 			     bool generators = true);
 
   //! Multiply the elements of \p dest by \p multiplier.
@@ -2598,8 +2615,8 @@ protected:
 				    const char* gr_name,
 				    const Grid& gr) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* e_name,
-				    const Linear_Expression& e) const;
+				    const char* le_name,
+				    const Linear_Expression& le) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cg_name,
 				    const Congruence& cg) const;

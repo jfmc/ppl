@@ -444,9 +444,9 @@ PPL::Congruence_System::add_unit_rows_and_space_dimensions(dimension_type dims) 
 }
 
 void
-PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
+PPL::Congruence_System::concatenate(const Congruence_System& y) {
   // TODO: this implementation is just an executable specification.
-  Congruence_System cgs = const_cgs;
+  Congruence_System cgs = y;
 
   dimension_type added_rows = cgs.num_rows();
   dimension_type added_columns = cgs.space_dimension();

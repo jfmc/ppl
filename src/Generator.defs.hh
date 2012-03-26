@@ -669,7 +669,7 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-			       const char* name_var,
+			       const char* v_name,
 			       Variable v) const;
 
   /*! \brief

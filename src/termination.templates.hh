@@ -434,8 +434,8 @@ termination_test_PR_2(const PSET& pset_before, const PSET& pset_after) {
 
 template <typename PSET>
 bool
-termination_test_PR(const PSET& pset_after) {
-  const dimension_type space_dim = pset_after.space_dimension();
+termination_test_PR(const PSET& pset) {
+  const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
     s << "PPL::termination_test_PR(pset):\n"
@@ -446,7 +446,7 @@ termination_test_PR(const PSET& pset_after) {
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_after, cs);
+  assign_all_inequalities_approximation(pset, cs);
   return termination_test_PR_original(cs);
 }
 
@@ -477,8 +477,8 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
 
 template <typename PSET>
 bool
-one_affine_ranking_function_PR(const PSET& pset_after, Generator& mu) {
-  const dimension_type space_dim = pset_after.space_dimension();
+one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
+  const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
     s << "PPL::one_affine_ranking_function_PR(pset, mu):\n"
@@ -489,7 +489,7 @@ one_affine_ranking_function_PR(const PSET& pset_after, Generator& mu) {
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_after, cs);
+  assign_all_inequalities_approximation(pset, cs);
   return one_affine_ranking_function_PR_original(cs, mu);
 }
 
@@ -525,9 +525,9 @@ all_affine_ranking_functions_PR_2(const PSET& pset_before,
 
 template <typename PSET>
 void
-all_affine_ranking_functions_PR(const PSET& pset_after,
+all_affine_ranking_functions_PR(const PSET& pset,
 				NNC_Polyhedron& mu_space) {
-  const dimension_type space_dim = pset_after.space_dimension();
+  const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;
     s << "PPL::all_affine_ranking_functions_PR(pset, mu_space):\n"
@@ -536,14 +536,14 @@ all_affine_ranking_functions_PR(const PSET& pset_after,
     throw std::invalid_argument(s.str());
   }
 
-  if (pset_after.is_empty()) {
+  if (pset.is_empty()) {
     mu_space = NNC_Polyhedron(1 + space_dim/2);
     return;
   }
 
   using namespace Implementation::Termination;
   Constraint_System cs;
-  assign_all_inequalities_approximation(pset_after, cs);
+  assign_all_inequalities_approximation(pset, cs);
   all_affine_ranking_functions_PR_original(cs, mu_space);
 }
 

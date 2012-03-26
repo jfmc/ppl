@@ -267,16 +267,16 @@ template <typename Unsigned>
 inline typename
 Enable_If<(static_cast<Unsigned>(-1) > 0),
             typename OR_Matrix<T>::template any_row_iterator<U>& >::type
-OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m_) {
-  dimension_type m = m_;
-  dimension_type increment = m + (m * m) / 2 + m * e;
-  if (e % 2 == 0 && m % 2 != 0)
+OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m) {
+  dimension_type n = m;
+  dimension_type increment = n + (n*n)/2 + n*e;
+  if (e % 2 == 0 && n % 2 != 0)
     ++increment;
-  e += m;
+  e += n;
   i += increment;
   value.first += increment;
 #if PPL_OR_MATRIX_EXTRA_DEBUG
-  value.size_ = value.size_ + m - m % 2;
+  value.size_ = value.size_ + n - n % 2;
 #endif
   return *this;
 }
@@ -477,9 +477,9 @@ OR_Matrix<T>::total_memory_in_bytes() const {
 
 template <typename T>
 inline
-OR_Matrix<T>::OR_Matrix(const dimension_type dim)
-  : vec(2*dim*(dim+1)),
-    space_dim(dim),
+OR_Matrix<T>::OR_Matrix(const dimension_type num_dimensions)
+  : vec(2*num_dimensions*(num_dimensions + 1)),
+    space_dim(num_dimensions),
     vec_capacity(vec.size()) {
 }
 
