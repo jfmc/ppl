@@ -1342,12 +1342,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   }
 
   gs.sys.index_first_pending = gs.num_rows();
-
-  /* FIXME: Check why the following does not work anymore.
-  if (gs_sorted)
-    gs.set_sorted(true);
-  */
-  gs.set_sorted(false);
+  gs.set_sorted(gs_sorted);
 
   PPL_ASSERT(gs.sys.OK());
 
