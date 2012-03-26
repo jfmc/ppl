@@ -1068,10 +1068,12 @@ struct Select_Temp_Boundary_Type {
   typedef Interval_Boundary_Type type;
 };
 
+#if PPL_SUPPORTED_DOUBLE
 template <>
 struct Select_Temp_Boundary_Type<float> {
   typedef double type;
 };
+#endif
 
 template <>
 struct Select_Temp_Boundary_Type<char> {

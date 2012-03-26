@@ -58,7 +58,7 @@ bool
 test02() {
   C_Polyhedron ph(1);
   FP_Interval_Abstract_Store store(1);
-  store.set_interval(Variable(0), FP_Interval(1.5));
+  store.set_interval(Variable(0), FP_Interval(static_cast<FP_Interval::boundary_type>(1.5)));
   FP_Interval interval(57);
   FP_Linear_Form lf1(Variable(0));
   FP_Linear_Form lf2(interval);
@@ -181,8 +181,8 @@ test05() {
   FP_Linear_Form lb(B);
   tmp += tmp;
   lb *= tmp;
-  tmp.lower() = -0.5;
-  tmp.upper() = 0.5;
+  tmp.lower() = static_cast<FP_Interval::boundary_type>(-0.5);
+  tmp.upper() = static_cast<FP_Interval::boundary_type>(0.5);
   lb += tmp;
 
   NNC_Polyhedron ph(2);
