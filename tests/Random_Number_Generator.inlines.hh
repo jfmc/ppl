@@ -73,9 +73,8 @@ Random_Number_Generator::Random_Number_Generator(const unsigned long seed)
 
 template <typename T>
 inline void
-Random_Number_Generator::get(T& x, unsigned int info) {
+Random_Number_Generator::get(T& x, unsigned int) {
   using Implementation::Random_Numbers::Random_Number_Generator_Aux;
-  used(info);
   static Random_Number_Generator_Aux<T> aux(max_bits);
   mpz_class n;
   if (std::numeric_limits<T>::is_bounded) {
