@@ -92,7 +92,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& cs)
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
-  PPL_ASSERT(ccs.space_dimension() <= max_space_dimension());
+  PPL_ASSERT(cs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
   Constraint_System cs_copy = cs;
@@ -191,7 +191,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& gs)
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
-  PPL_ASSERT(cgs.space_dimension() <= max_space_dimension());
+  PPL_ASSERT(gs.space_dimension() <= max_space_dimension());
 
   // An empty set of generators defines the empty polyhedron.
   if (gs.has_no_rows()) {

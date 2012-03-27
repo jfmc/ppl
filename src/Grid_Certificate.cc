@@ -54,13 +54,10 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
 	// Minimize `gr' congruence system.  As in Polyhedron assume
 	// that `gr' contains at least one point.
         Grid& mgr = const_cast<Grid&>(gr);
-#ifndef NDEBUG
-	Grid::simplify(mgr.con_sys, mgr.dim_kinds);
-#else
-	bool contains_points = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
-	used(contains_points);	// Quiet compiler warning.
-	PPL_ASSERT(contains_points);
-#endif
+	bool empty = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
+	// Avoid possible compiler warning.
+	PPL_USED(empty);
+	PPL_ASSERT(!empty);
 	mgr.set_congruences_minimized();
 
 	num_proper_congruences = mgr.con_sys.num_proper_congruences();
@@ -106,11 +103,6 @@ PPL::Grid_Certificate::compare(const Grid& gr) const {
 
 bool
 PPL::Grid_Certificate::OK() const {
-#ifndef NDEBUG
-  using std::endl;
-  using std::cerr;
-#endif
-
-  // All tests passed.
+  // There is nothing to test.
   return true;
 }

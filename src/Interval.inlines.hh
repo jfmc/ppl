@@ -480,7 +480,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
 				      LOWER, f_lower(x), SCALAR_INFO,
                                       !is_open(LOWER, f_lower(x), f_info(x)));
-      used(ru);
+      PPL_USED(ru);
       return I_ANY;
     }
   case LESS_OR_EQUAL:
@@ -490,7 +490,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
 				      LOWER, f_lower(x), SCALAR_INFO);
-      used(ru);
+      PPL_USED(ru);
       return I_ANY;
     }
   case GREATER_THAN:
@@ -501,7 +501,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
 				      UPPER, f_upper(x), SCALAR_INFO,
                                       !is_open(UPPER, f_upper(x), f_info(x)));
-      used(rl);
+      PPL_USED(rl);
       return I_ANY;
     }
   case GREATER_OR_EQUAL:
@@ -511,7 +511,7 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
 				      UPPER, f_upper(x), SCALAR_INFO);
-      used(rl);
+      PPL_USED(rl);
       return I_ANY;
     }
   case EQUAL:
@@ -1068,10 +1068,12 @@ struct Select_Temp_Boundary_Type {
   typedef Interval_Boundary_Type type;
 };
 
+#if PPL_SUPPORTED_DOUBLE
 template <>
 struct Select_Temp_Boundary_Type<float> {
   typedef double type;
 };
+#endif
 
 template <>
 struct Select_Temp_Boundary_Type<char> {

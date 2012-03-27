@@ -93,7 +93,7 @@ test03() {
   Variable A(0);
   Variable B(1);
   FP_Interval_Abstract_Store store(2);
-  FP_Interval tmp(1 / 2.0);
+  FP_Interval tmp(FP_Interval::boundary_type(1 / 2.0));
   store.set_interval(A, tmp);
   store.set_interval(B, tmp);
   Generator_System gs;

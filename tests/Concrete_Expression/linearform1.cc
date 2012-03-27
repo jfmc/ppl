@@ -155,8 +155,8 @@ test05() {
   Variable B(1);
 
   FP_Linear_Form f = A;
-  FP_Interval x(2.0);
-  x /= FP_Interval(3.0);
+  FP_Interval x(FP_Interval::boundary_type(2));
+  x /= FP_Interval(FP_Interval::boundary_type(3));
   f *= x;
 
   FP_Linear_Form known_result = f + B;
@@ -205,12 +205,12 @@ test07() {
 
   bool result1 = (f1 == f2);
 
-  f2 += FP_Interval(1.0);
+  f2 += FP_Interval(FP_Interval::boundary_type(1));
   bool result2 = (f1 == f2);
 
   bool result3 = (f2 == f1);
 
-  f1 += FP_Interval(1.0);
+  f1 += FP_Interval(FP_Interval::boundary_type(1));
   bool result4 = (f2 == f1);
 
   nout << "*** known_result ***" << endl
@@ -312,11 +312,11 @@ test10() {
   Variable x5(5);
   Variable x2(2);
   FP_Interval x5_coefficient;
-  x5_coefficient.lower() = 2.0;
-  x5_coefficient.upper() = 3.0;
+  x5_coefficient.lower() = FP_Interval::boundary_type(2);
+  x5_coefficient.upper() = FP_Interval::boundary_type(3);
   FP_Interval inhomogeneous_term;
-  inhomogeneous_term.lower() = 4.0;
-  inhomogeneous_term.upper() = 8.0;
+  inhomogeneous_term.lower() = FP_Interval::boundary_type(4);
+  inhomogeneous_term.upper() = FP_Interval::boundary_type(8);
   FP_Linear_Form lf(x2);
   lf = -lf;
   lf += FP_Linear_Form(x2);

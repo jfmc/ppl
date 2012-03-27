@@ -97,7 +97,7 @@ bool test03() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  FP_Interval free_term(0.5);
+  FP_Interval free_term(static_cast<FP_Interval::boundary_type>(0.5));
   free_term.join_assign(2);
   FP_Linear_Form l(-A);
   l += free_term;
@@ -127,8 +127,8 @@ bool test04() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  FP_Interval free_term(-1.5);
-  free_term.join_assign(3.5);
+  FP_Interval free_term(static_cast<FP_Interval::boundary_type>(-1.5));
+  free_term.join_assign(static_cast<FP_Interval::boundary_type>(3.5));
   FP_Linear_Form l(B);
   l += free_term;
   oc1.affine_form_image(B, l);
@@ -156,7 +156,7 @@ bool test05() {
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
   FP_Interval free_term(-2);
-  free_term.join_assign(0.5);
+  free_term.join_assign(static_cast<FP_Interval::boundary_type>(0.5));
   FP_Linear_Form l(B);
   l += free_term;
   oc1.affine_form_image(A, l);
@@ -271,8 +271,8 @@ bool test09() {
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= 3);
   oc1.add_constraint(B <= 2);
-  FP_Interval coeff(-0.5);
-  coeff.join_assign(0.5);
+  FP_Interval coeff(static_cast<FP_Interval::boundary_type>(-0.5));
+  coeff.join_assign(static_cast<FP_Interval::boundary_type>(0.5));
   FP_Linear_Form l(A);
   l *= coeff;
   oc1.affine_form_image(B, l);

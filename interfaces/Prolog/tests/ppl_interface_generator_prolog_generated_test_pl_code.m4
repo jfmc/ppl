@@ -841,7 +841,11 @@ ppl_@CLASS@_has_@UPPERLOWER@_bound_5_test :-
    choose_test(TEST_DATA, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
-     (ppl_@CLASS@_is_empty(PS) ->
+     ((
+       Space_Dim = 0
+      ;
+       ppl_@CLASS@_is_empty(PS)
+      ) ->
        true
      ;
        make_vars(Space_Dim, [Var| _Var_List]),

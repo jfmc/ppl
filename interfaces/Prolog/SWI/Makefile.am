@@ -165,7 +165,8 @@ endif NO_UNDEFINED
 libppl_swiprolog_la_LIBADD = \
 @required_instantiations_prolog_cxx_objects@ \
 $(top_builddir)/src/libppl.la \
-@extra_libraries@
+@extra_libraries@ \
+$(SWI_PROLOG_LD_OPTIONS)
 
 libppl_swiprolog_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
@@ -174,9 +175,6 @@ libppl_swiprolog_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
-
-bin_PROGRAMS = ppl_pl
-ppl_pl_SOURCES = ppl_pl.cc
 
 pkgdata_DATA = ppl_swiprolog.pl
 
@@ -194,7 +192,7 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-check_PROGRAMS = pl_clpq pl_clpq2
+check_PROGRAMS = ppl_pl pl_clpq pl_clpq2
 pl_clpq_SOURCES = pl_clpq.cc
 pl_clpq2_SOURCES = pl_clpq.cc
 
@@ -221,6 +219,15 @@ else !ENABLE_STATIC
 LIBPPL_SWIPROLOG_LINK_OPTIONS = -L.libs -lppl_swiprolog
 
 endif !ENABLE_STATIC
+
+# Apart from the internal testing purposes, `ppl_pl' only makes
+# sense when shared libraries are disabled.
+if !ENABLE_SHARED
+bin_PROGRAMS = ppl_pl
+endif !ENABLE_SHARED
+
+ppl_pl_SOURCES = ppl_pl.cc
+
 
 ppl_pl$(EXEEXT): libppl_swiprolog.la ppl_pl.o
 	$(SWI_PROLOG_LD) -pl $(SWI_PROLOG) -cc "$(CC)" -c++ "$(CXX)" -ld "$(CXX)" \
