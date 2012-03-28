@@ -2020,6 +2020,9 @@ public:
   //@} // Miscellaneous Member Functions
 
 private:
+  static const Representation default_con_sys_repr = DENSE;
+  static const Representation default_gen_sys_repr = DENSE;
+
   //! The system of constraints.
   Constraint_System con_sys;
 

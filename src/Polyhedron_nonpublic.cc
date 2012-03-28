@@ -52,8 +52,8 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Polyhedron::Polyhedron(const Topology topol,
 			    const dimension_type num_dimensions,
 			    const Degenerate_Element kind)
-  : con_sys(topol),
-    gen_sys(topol),
+  : con_sys(topol, default_con_sys_repr),
+    gen_sys(topol, default_gen_sys_repr),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
@@ -71,8 +71,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
 }
 
 PPL::Polyhedron::Polyhedron(const Polyhedron& y, Complexity_Class)
-  : con_sys(y.topology()),
-    gen_sys(y.topology()),
+  : con_sys(y.topology(), default_con_sys_repr),
+    gen_sys(y.topology(), default_gen_sys_repr),
     status(y.status),
     space_dim(y.space_dim) {
   // Being a protected method, we simply assert that topologies do match.
@@ -88,8 +88,8 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y, Complexity_Class)
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& cs)
-  : con_sys(topol),
-    gen_sys(topol),
+  : con_sys(topol, default_con_sys_repr),
+    gen_sys(topol, default_gen_sys_repr),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
@@ -139,8 +139,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& cs)
 PPL::Polyhedron::Polyhedron(const Topology topol,
 			    Constraint_System& cs,
 			    Recycle_Input)
-  : con_sys(topol),
-    gen_sys(topol),
+  : con_sys(topol, default_con_sys_repr),
+    gen_sys(topol, default_gen_sys_repr),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
@@ -185,8 +185,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& gs)
-  : con_sys(topol),
-    gen_sys(topol),
+  : con_sys(topol, default_con_sys_repr),
+    gen_sys(topol, default_gen_sys_repr),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.
@@ -251,8 +251,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& gs)
 PPL::Polyhedron::Polyhedron(const Topology topol,
 			    Generator_System& gs,
 			    Recycle_Input)
-  : con_sys(topol),
-    gen_sys(topol),
+  : con_sys(topol, default_con_sys_repr),
+    gen_sys(topol, default_gen_sys_repr),
     sat_c(),
     sat_g() {
   // Protecting against space dimension overflow is up to the caller.

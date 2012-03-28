@@ -994,7 +994,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // lines, rays and points of the polyhedron must be the same as
       // of a temporary, minimized one. If this does not happen then
       // the polyhedron is not OK.
-      Constraint_System new_con_sys(topology());
+      Constraint_System new_con_sys(topology(), default_con_sys_repr);
       Generator_System gs_without_pending = gen_sys;
       gs_without_pending.remove_trailing_rows(gs_without_pending.num_rows()
                                               - gen_sys.first_pending_row());
@@ -1104,7 +1104,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     Constraint_System copy_of_con_sys = cs_without_pending;
     bool empty = false;
     if (check_not_empty || constraints_are_minimized()) {
-      Generator_System new_gen_sys(topology());
+      Generator_System new_gen_sys(topology(), default_gen_sys_repr);
       Bit_Matrix new_sat_g;
       empty = minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g);
     }

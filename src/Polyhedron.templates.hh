@@ -39,8 +39,8 @@ template <typename Interval>
 Polyhedron::Polyhedron(Topology topol,
                        const Box<Interval>& box,
                        Complexity_Class)
-  : con_sys(topol),
-    gen_sys(topol),
+  : con_sys(topol, default_con_sys_repr),
+    gen_sys(topol, default_gen_sys_repr),
     sat_c(),
     sat_g() {
   // Initialize the space dimension as indicated by the box.
@@ -58,10 +58,8 @@ Polyhedron::Polyhedron(Topology topol,
     return;
   }
 
-  // Insert a dummy constraint of the highest dimension to avoid the
-  // need of resizing the matrix of constraints later;
-  // this constraint will be removed at the end.
-  con_sys.insert(Variable(space_dim - 1) >= 0);
+  // Properly set the space dimension of `con_sys'.
+  con_sys.set_space_dimension(space_dim);
 
   PPL_DIRTY_TEMP_COEFFICIENT(l_n);
   PPL_DIRTY_TEMP_COEFFICIENT(l_d);
@@ -139,9 +137,6 @@ Polyhedron::Polyhedron(Topology topol,
   // Adding the low-level constraints.
   con_sys.add_low_level_constraints();
 
-  // Now removing the dummy constraint inserted before.
-  con_sys.remove_row(0, false);
-
   // Constraints are up-to-date.
   set_constraints_up_to_date();
   PPL_ASSERT_HEAVY(OK());
@@ -188,7 +183,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     for (dimension_type i = space_dim; i-- > 0; ) {
       if (visited[i])
         continue;
-      
+
       dimension_type j = i;
       do {
         visited[j] = true;
