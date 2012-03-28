@@ -147,9 +147,11 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   dimension_type y_begin = n+1;
   dimension_type z_begin = y_begin + ((&cs_out1 == &cs_out2) ? m : 0);
 
-  // Make sure linear expressions are not reallocated multiple times.
-  Linear_Expression y_le(0*Variable(y_begin + m - 1));
-  Linear_Expression z_le(0*Variable(z_begin + m + 2 - 1));
+  // Make sure linear expressions have the correct space dimension.
+  Linear_Expression y_le;
+  y_le.set_space_dimension(y_begin + m);
+  Linear_Expression z_le;
+  z_le.set_space_dimension(z_begin + m + 2);
   std::vector<Linear_Expression> y_les(2*n, y_le);
   std::vector<Linear_Expression> z_les(2*n + 1, z_le);
 
@@ -348,7 +350,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 
   // Make sure linear expressions are not reallocated multiple times.
   if (m > 0)
-    le_out = 0 * Variable(m + r - 1);
+    le_out.set_space_dimension(m + r);
   std::vector<Linear_Expression> les_eq(2*n, le_out);
 
   dimension_type row_index = 0;
@@ -422,7 +424,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
 
   // Make sure linear expressions are not reallocated multiple times.
   if (m > 0)
-    le_out = 0 * Variable(2*m - 1);
+    le_out.set_space_dimension(2*m);
   std::vector<Linear_Expression> les_eq(3*n, le_out);
 
   dimension_type row_index = 0;
@@ -690,9 +692,9 @@ Termination_Helpers
 
   // u_3 corresponds to space dimensions 0, ..., s - 1.
   const dimension_type n = cs_before.space_dimension();
+  // mu_0 is zero: properly set space dimension.
   Linear_Expression le;
-  // mu_0 is zero: do this first to avoid reallocations.
-  le += 0*Variable(n);
+  le.set_space_dimension(1 + n);
   // Multiply u_3 by E'_C to obtain mu_1, ..., mu_n.
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs_after.begin(),
@@ -739,9 +741,9 @@ Termination_Helpers
 
   const Generator& fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
+  // mu_0 is zero: properly set space dimension.
   Linear_Expression le;
-  // mu_0 is zero: do this first to avoid reallocations.
-  le += 0*Variable(n);
+  le.set_space_dimension(1 + n);
   // Multiply -lambda_2 by A' to obtain mu_1, ..., mu_n.
   // lambda_2 corresponds to space dimensions m, ..., 2*m - 1.
   dimension_type row_index = m;
