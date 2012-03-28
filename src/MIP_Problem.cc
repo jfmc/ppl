@@ -895,7 +895,8 @@ PPL::MIP_Problem::process_pending_constraints() {
   if (tableau_num_rows == 0) {
     if (is_unbounded_obj_function(input_obj_function, mapping, opt_mode)) {
       // Ensure the right space dimension is obtained.
-      last_generator = point(0 * Variable(space_dimension() - 1));
+      last_generator = point();
+      last_generator.set_space_dimension(space_dimension());
       status = UNBOUNDED;
       return true;
     }
@@ -905,7 +906,8 @@ PPL::MIP_Problem::process_pending_constraints() {
     // out which case applies.
     status = OPTIMIZED;
     // Ensure the right space dimension is obtained.
-    last_generator = point(0 * Variable(space_dimension() - 1));
+    last_generator = point();
+    last_generator.set_space_dimension(space_dimension());
     PPL_ASSERT(OK());
     return true;
   }

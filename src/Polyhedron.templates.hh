@@ -245,32 +245,33 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
     const Generator::Expression& old_e = old_g.expression();
-    Linear_Expression e(0 * Variable(new_space_dimension-1));
+    Linear_Expression expr;
+    expr.set_space_dimension(new_space_dimension);
     bool all_zeroes = true;
     for (Generator::Expression::const_iterator j = old_e.begin(),
           j_end = old_e.end(); j != j_end; ++j) {
       const dimension_type mapped_id = pfunc_maps[j.variable().id()];
       if (mapped_id != not_a_dimension()) {
-        add_mul_assign(e, *j, Variable(mapped_id));
+        add_mul_assign(expr, *j, Variable(mapped_id));
 	all_zeroes = false;
       }
     }
     switch (old_g.type()) {
     case Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(line(e));
+	new_gensys.insert(line(expr));
       break;
     case Generator::RAY:
       if (!all_zeroes)
-	new_gensys.insert(ray(e));
+	new_gensys.insert(ray(expr));
       break;
     case Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
-      new_gensys.insert(point(e, old_g.divisor()));
+      new_gensys.insert(point(expr, old_g.divisor()));
       break;
     case Generator::CLOSURE_POINT:
       // A closure point in the origin has all zero homogeneous coefficients.
-      new_gensys.insert(closure_point(e, old_g.divisor()));
+      new_gensys.insert(closure_point(expr, old_g.divisor()));
       break;
     }
   }

@@ -334,7 +334,7 @@ bool is_necessarily_closed_for_interfaces(const Polyhedron& ph);
   <CODE>remove_space_dimensions</CODE>:
   \code
   Generator_System gs;
-  gs.insert(point(3*x + y +0*z + 2*w));
+  gs.insert(point(3*x + y + 0*z + 2*w));
   C_Polyhedron ph(gs);
   Variables_Set vars;
   vars.insert(y);
