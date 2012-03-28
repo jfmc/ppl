@@ -284,7 +284,7 @@ std::ostream& operator<<(std::ostream& s, const Linear_Expression& e);
 class Parma_Polyhedra_Library::Linear_Expression {
 public:
 
-  static const Representation default_representation = DENSE;
+  static const Representation default_representation = SPARSE;
 
   //! Default constructor: returns a copy of Linear_Expression::zero().
   explicit Linear_Expression(Representation r = default_representation);

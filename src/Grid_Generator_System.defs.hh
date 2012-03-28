@@ -175,7 +175,7 @@ class Parma_Polyhedra_Library::Grid_Generator_System {
 public:
   typedef Grid_Generator row_type;
 
-  static const Representation default_representation = DENSE;
+  static const Representation default_representation = SPARSE;
 
   //! Default constructor: builds an empty system of generators.
   explicit Grid_Generator_System(Representation r = default_representation);

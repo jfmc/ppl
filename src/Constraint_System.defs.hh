@@ -137,7 +137,7 @@ class Parma_Polyhedra_Library::Constraint_System {
 public:
   typedef Constraint row_type;
 
-  static const Representation default_representation = DENSE;
+  static const Representation default_representation = SPARSE;
 
   //! Default constructor: builds an empty system of constraints.
   explicit Constraint_System(Representation r = default_representation);

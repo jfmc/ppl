@@ -104,7 +104,7 @@ public:
 
   typedef Congruence row_type;
 
-  static const Representation default_representation = DENSE;
+  static const Representation default_representation = SPARSE;
 
   //! Default constructor: builds an empty system of congruences.
   explicit Congruence_System(Representation r = default_representation);

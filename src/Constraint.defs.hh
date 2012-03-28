@@ -300,7 +300,7 @@ public:
           use the representation of the original object, so that it is
           indistinguishable from the original object.
   */
-  static const Representation default_representation = DENSE;
+  static const Representation default_representation = SPARSE;
 
   //! Constructs the \f$0<=0\f$ constraint.
   explicit Constraint(Representation r = default_representation);
