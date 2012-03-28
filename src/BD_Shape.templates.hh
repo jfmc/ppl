@@ -2097,7 +2097,8 @@ BD_Shape<T>::BFT00_upper_bound_assign_if_exact(const BD_Shape& y) {
   // tailored to the special case of BD shapes.
 
   Variable epsilon(x_space_dim);
-  Linear_Expression zero_expr = 0*epsilon;
+  Linear_Expression zero_expr;
+  zero_expr.set_space_dimension(x_space_dim + 1);
   Linear_Expression db_expr;
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
