@@ -56,7 +56,6 @@ PPL::Grid::construct(dimension_type num_dimensions,
   if (kind == EMPTY) {
     // Set emptiness directly instead of with set_empty, as gen_sys is
     // already correctly initialized.
-
     status.set_empty();
 
     // Extend the zero dim false congruence system to the appropriate
@@ -69,40 +68,35 @@ PPL::Grid::construct(dimension_type num_dimensions,
     return;
   }
 
-  if (num_dimensions > 0) {
-    con_sys.set_space_dimension(num_dimensions);
-
-    // Initialize both systems to universe representations.
-
-    set_congruences_minimized();
-    set_generators_minimized();
-    dim_kinds.resize(num_dimensions + 1);
-
-    // Extend the zero dim integrality congruence system to the
-    // appropriate dimension and then store it in `con_sys'.
-    Congruence_System cgs(Congruence::zero_dim_integrality());
-    cgs.set_space_dimension(space_dim);
-
-    // Recover minimal form after cgs(zdi) normalization.
-    cgs.rows[0].expr.set_inhomogeneous_term(Coefficient_one());
-    PPL_ASSERT(cgs.OK());
-
-    swap(con_sys, cgs);
-
-    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
-
-    // Trivially true point.
-    gen_sys.insert(grid_point(0*(Variable(0))));
-
-    // A line for each dimension.
-    dimension_type dim = 0;
-    while (dim < num_dimensions) {
-      gen_sys.insert(grid_line(Variable(dim)));
-      dim_kinds[++dim] = CON_VIRTUAL /* a.k.a. LINE */;
-    }
-  }
-  else
+  if (space_dim == 0) {
     set_zero_dim_univ();
+    return;
+  }
+
+  // Initialize both systems to universe representations.
+  set_congruences_minimized();
+  set_generators_minimized();
+  dim_kinds.resize(space_dim + 1);
+
+  // Building a universe congruence system.
+  // Extend the zero dim integrality congruence system to the
+  // appropriate dimension and then store it in `con_sys'.
+  Congruence_System cgs(Congruence::zero_dim_integrality());
+  cgs.set_space_dimension(num_dimensions);
+  // Recover minimal form after cgs(zdi) normalization.
+  cgs.rows[0].expr.set_inhomogeneous_term(Coefficient_one());
+  PPL_ASSERT(cgs.OK());
+  swap(con_sys, cgs);
+
+  // Building a universe grid generator system (and dim_kinds).
+  gen_sys.set_space_dimension(space_dim);
+  gen_sys.insert(grid_point());
+  dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
+  for (dimension_type dim = 0; dim < space_dim; ++dim) {
+    gen_sys.insert(grid_line(Variable(dim)));
+    dim_kinds[1+dim] = CON_VIRTUAL /* a.k.a. LINE */;
+  }
+  PPL_ASSERT(OK());
 }
 
 void

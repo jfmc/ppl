@@ -57,7 +57,7 @@ PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
   cgs.add_unit_rows_and_space_dimensions(dims);
 
   // Add `dims' zero columns onto gs.
-  gs.insert(parameter(0*Variable(space_dim + dims - 1)));
+  gs.set_space_dimension(space_dim + dims);
 
   normalize_divisors(gs);
 
@@ -195,7 +195,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
     PPL_ASSERT(generators_are_up_to_date());
 
     // Add m zero columns onto gs.
-    gen_sys.insert(parameter(0*Variable(space_dim + m - 1)));
+    gen_sys.set_space_dimension(space_dim + m);
 
     normalize_divisors(gen_sys);
 

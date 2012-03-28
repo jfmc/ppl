@@ -56,12 +56,13 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
   else {
     // Initialize the space dimension as indicated by the box.
     con_sys.set_space_dimension(space_dim);
+    gen_sys.set_space_dimension(space_dim);
     // Add congruences and generators according to `box'.
     PPL_DIRTY_TEMP_COEFFICIENT(l_n);
     PPL_DIRTY_TEMP_COEFFICIENT(l_d);
     PPL_DIRTY_TEMP_COEFFICIENT(u_n);
     PPL_DIRTY_TEMP_COEFFICIENT(u_d);
-    gen_sys.insert(grid_point(0*Variable(space_dim-1)));
+    gen_sys.insert(grid_point());
     for (dimension_type k = space_dim; k-- > 0; ) {
       const Variable v_k = Variable(k);
       bool closed = false;
@@ -164,7 +165,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	} while (!visited[j]);
 
 	// End of cycle.
-        
+
         // Avoid calling clear_*_minimized() if cycle.size() is less than 2,
         // to improve efficiency.
         if (cycle.size() >= 2) {
@@ -223,27 +224,28 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
     const Grid_Generator& old_g = *i;
     const Grid_Generator::Expression& old_g_e = old_g.expression();
-    Linear_Expression e(0 * Variable(new_space_dimension-1));
+    Linear_Expression expr;
+    expr.set_space_dimension(new_space_dimension);
     bool all_zeroes = true;
     for (Grid_Generator::Expression::const_iterator j = old_g_e.begin(),
           j_end = old_g_e.end(); j != j_end; ++j) {
       const dimension_type mapped_id = pfunc_maps[j.variable().id()];
       if (mapped_id != not_a_dimension()) {
-        add_mul_assign(e, *j, Variable(mapped_id));
+        add_mul_assign(expr, *j, Variable(mapped_id));
 	all_zeroes = false;
       }
     }
     switch (old_g.type()) {
     case Grid_Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(grid_line(e));
+	new_gensys.insert(grid_line(expr));
       break;
     case Grid_Generator::PARAMETER:
       if (!all_zeroes)
-	new_gensys.insert(parameter(e, system_divisor));
+	new_gensys.insert(parameter(expr, system_divisor));
       break;
     case Grid_Generator::POINT:
-      new_gensys.insert(grid_point(e, old_g.divisor()));
+      new_gensys.insert(grid_point(expr, old_g.divisor()));
       break;
     }
   }

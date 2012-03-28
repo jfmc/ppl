@@ -125,8 +125,7 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
     return;
   }
 
-  Congruence_System cgs;
-  cgs.insert(0*Variable(space_dim - 1) %= 1);
+  Congruence_System cgs(space_dim);
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
@@ -178,8 +177,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
     // Only the equality constraints need be used.
     PPL_ASSERT(ph.constraints_are_up_to_date());
     const Constraint_System& cs = ph.constraints();
-    Congruence_System cgs;
-    cgs.insert(0*Variable(space_dim - 1) %= 1);
+    Congruence_System cgs(space_dim);
     for (Constraint_System::const_iterator i = cs.begin(),
            cs_end = cs.end(); i != cs_end; ++i)
       if (i->is_equality())
@@ -716,11 +714,18 @@ PPL::Grid::is_universe() const {
   // Test con_sys's inclusion in a universe generator system.
 
   // The zero dimension cases are handled above.
-  Variable var(space_dim - 1);
-  for (dimension_type i = space_dim; i-- > 0; )
-    if (!con_sys.satisfies_all_congruences(grid_line(Variable(i) + var)))
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Linear_Expression expr;
+    expr.set_space_dimension(space_dim);
+    expr += Variable(i);
+    if (!con_sys.satisfies_all_congruences(grid_line(expr)))
       return false;
-  PPL_ASSERT(con_sys.satisfies_all_congruences(grid_point(0*var)));
+  }
+#ifndef NDEBUG
+  Linear_Expression expr;
+  expr.set_space_dimension(space_dim);
+  PPL_ASSERT(con_sys.satisfies_all_congruences(grid_point(expr)));
+#endif
   return true;
 }
 
@@ -1252,7 +1257,7 @@ PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
     throw_invalid_generators("add_recycled_grid_generators(gs)", "gs");
 
   // Adjust `gs' to the right dimension.
-  gs.insert(parameter(0*Variable(space_dim-1)));
+  gs.set_space_dimension(space_dim);
 
   gen_sys.m_swap(gs);
 
@@ -2150,7 +2155,7 @@ generalized_affine_image(const Linear_Expression& lhs,
       // hand side expression.
 
       // Adjust `new_lines' to the right dimension.
-      new_lines.insert(parameter(0*Variable(space_dim-1)));
+      new_lines.set_space_dimension(space_dim);
       // Add the lines to `gen_sys' (first make sure they are up-to-date).
       update_generators();
       gen_sys.insert(new_lines, Recycle_Input());
@@ -2276,7 +2281,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       // hand side
 
       // Adjust `new_lines' to the right dimension.
-      new_lines.insert(parameter(0*Variable(space_dim-1)));
+      new_lines.set_space_dimension(space_dim);
       // Add the lines to `gen_sys' (first make sure they are up-to-date).
       update_generators();
       gen_sys.insert(new_lines, Recycle_Input());
