@@ -86,8 +86,7 @@ PPL::Grid::Grid(const Constraint_System& cs)
     return;
   }
 
-  Congruence_System cgs;
-  cgs.insert(0*Variable(space_dim - 1) %= 1);
+  Congruence_System cgs(cs.space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
