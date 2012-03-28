@@ -339,43 +339,43 @@ BD_Shape<T>::minimized_congruences() const {
   shortest_path_closure_assign();
 
   const dimension_type space_dim = space_dimension();
-  Congruence_System cgs;
+  Congruence_System cgs(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
       cgs = Congruence_System::zero_dim_empty();
+    return cgs;
   }
-  else if (marked_empty())
-    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
-  else {
-    // KLUDGE: in the future `cgs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cgs.insert(0*Variable(space_dim-1) == 0);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(numer);
-    PPL_DIRTY_TEMP_COEFFICIENT(denom);
+  if (marked_empty()) {
+    cgs.insert(Congruence::zero_dim_false());
+    return cgs;
+  }
 
-    // Compute leader information.
-    std::vector<dimension_type> leaders;
-    compute_leaders(leaders);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
 
-    // Go through the non-leaders to generate equality constraints.
-    const DB_Row<N>& dbm_0 = dbm[0];
-    for (dimension_type i = 1; i <= space_dim; ++i) {
-      const dimension_type leader = leaders[i];
-      if (i != leader) {
-        // Generate the constraint relating `i' and its leader.
-        if (leader == 0) {
-          // A unary equality has to be generated.
-          PPL_ASSERT(!is_plus_infinity(dbm_0[i]));
-          numer_denom(dbm_0[i], numer, denom);
-          cgs.insert(denom*Variable(i-1) == numer);
-        }
-        else {
-          // A binary equality has to be generated.
-          PPL_ASSERT(!is_plus_infinity(dbm[i][leader]));
-          numer_denom(dbm[i][leader], numer, denom);
-          cgs.insert(denom*Variable(leader-1) - denom*Variable(i-1) == numer);
-        }
+  // Compute leader information.
+  std::vector<dimension_type> leaders;
+  compute_leaders(leaders);
+
+  // Go through the non-leaders to generate equality constraints.
+  const DB_Row<N>& dbm_0 = dbm[0];
+  for (dimension_type i = 1; i <= space_dim; ++i) {
+    const dimension_type leader = leaders[i];
+    if (i != leader) {
+      // Generate the constraint relating `i' and its leader.
+      if (leader == 0) {
+        // A unary equality has to be generated.
+        PPL_ASSERT(!is_plus_infinity(dbm_0[i]));
+        numer_denom(dbm_0[i], numer, denom);
+        cgs.insert(denom*Variable(i-1) == numer);
+      }
+      else {
+        // A binary equality has to be generated.
+        PPL_ASSERT(!is_plus_infinity(dbm[i][leader]));
+        numer_denom(dbm[i][leader], numer, denom);
+        cgs.insert(denom*Variable(leader-1) - denom*Variable(i-1) == numer);
       }
     }
   }
@@ -6134,71 +6134,75 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
 template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
-  Constraint_System cs;
   const dimension_type space_dim = space_dimension();
+  Constraint_System cs;
+  cs.set_space_dimension(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
       cs = Constraint_System::zero_dim_empty();
+    return cs;
   }
-  else if (marked_empty())
-    cs.insert(0*Variable(space_dim-1) <= -1);
-  else if (marked_shortest_path_reduced())
+
+  if (marked_empty()) {
+    cs.insert(Constraint::zero_dim_false());
+    return cs;
+  }
+
+  if (marked_shortest_path_reduced()) {
     // Disregard redundant constraints.
     cs = minimized_constraints();
-  else {
-    // KLUDGE: in the future `cs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cs.insert(0*Variable(space_dim-1) <= 0);
+    return cs;
+  }
 
-    PPL_DIRTY_TEMP_COEFFICIENT(a);
-    PPL_DIRTY_TEMP_COEFFICIENT(b);
-    // Go through all the unary constraints in `dbm'.
-    const DB_Row<N>& dbm_0 = dbm[0];
-    for (dimension_type j = 1; j <= space_dim; ++j) {
-      const Variable x(j-1);
-      const N& dbm_0j = dbm_0[j];
-      const N& dbm_j0 = dbm[j][0];
-      if (is_additive_inverse(dbm_j0, dbm_0j)) {
-        // We have a unary equality constraint.
+  PPL_DIRTY_TEMP_COEFFICIENT(a);
+  PPL_DIRTY_TEMP_COEFFICIENT(b);
+  // Go through all the unary constraints in `dbm'.
+  const DB_Row<N>& dbm_0 = dbm[0];
+  for (dimension_type j = 1; j <= space_dim; ++j) {
+    const Variable x(j-1);
+    const N& dbm_0j = dbm_0[j];
+    const N& dbm_j0 = dbm[j][0];
+    if (is_additive_inverse(dbm_j0, dbm_0j)) {
+      // We have a unary equality constraint.
+      numer_denom(dbm_0j, b, a);
+      cs.insert(a*x == b);
+    }
+    else {
+      // We have 0, 1 or 2 unary inequality constraints.
+      if (!is_plus_infinity(dbm_0j)) {
         numer_denom(dbm_0j, b, a);
-        cs.insert(a*x == b);
+        cs.insert(a*x <= b);
       }
-      else {
-        // We have 0, 1 or 2 unary inequality constraints.
-        if (!is_plus_infinity(dbm_0j)) {
-          numer_denom(dbm_0j, b, a);
-          cs.insert(a*x <= b);
-        }
-        if (!is_plus_infinity(dbm_j0)) {
-          numer_denom(dbm_j0, b, a);
-          cs.insert(-a*x <= b);
-        }
+      if (!is_plus_infinity(dbm_j0)) {
+        numer_denom(dbm_j0, b, a);
+        cs.insert(-a*x <= b);
       }
     }
+  }
 
-    // Go through all the binary constraints in `dbm'.
-    for (dimension_type i = 1; i <= space_dim; ++i) {
-      const Variable y(i-1);
-      const DB_Row<N>& dbm_i = dbm[i];
-      for (dimension_type j = i + 1; j <= space_dim; ++j) {
-        const Variable x(j-1);
-        const N& dbm_ij = dbm_i[j];
-        const N& dbm_ji = dbm[j][i];
-        if (is_additive_inverse(dbm_ji, dbm_ij)) {
-          // We have a binary equality constraint.
+  // Go through all the binary constraints in `dbm'.
+  for (dimension_type i = 1; i <= space_dim; ++i) {
+    const Variable y(i-1);
+    const DB_Row<N>& dbm_i = dbm[i];
+    for (dimension_type j = i + 1; j <= space_dim; ++j) {
+      const Variable x(j-1);
+      const N& dbm_ij = dbm_i[j];
+      const N& dbm_ji = dbm[j][i];
+      if (is_additive_inverse(dbm_ji, dbm_ij)) {
+        // We have a binary equality constraint.
+        numer_denom(dbm_ij, b, a);
+        cs.insert(a*x - a*y == b);
+      }
+      else {
+        // We have 0, 1 or 2 binary inequality constraints.
+        if (!is_plus_infinity(dbm_ij)) {
           numer_denom(dbm_ij, b, a);
-          cs.insert(a*x - a*y == b);
+          cs.insert(a*x - a*y <= b);
         }
-        else {
-          // We have 0, 1 or 2 binary inequality constraints.
-          if (!is_plus_infinity(dbm_ij)) {
-            numer_denom(dbm_ij, b, a);
-            cs.insert(a*x - a*y <= b);
-          }
-          if (!is_plus_infinity(dbm_ji)) {
-            numer_denom(dbm_ji, b, a);
-            cs.insert(a*y - a*x <= b);
-          }
+        if (!is_plus_infinity(dbm_ji)) {
+          numer_denom(dbm_ji, b, a);
+          cs.insert(a*y - a*x <= b);
         }
       }
     }
@@ -6210,79 +6214,80 @@ template <typename T>
 Constraint_System
 BD_Shape<T>::minimized_constraints() const {
   shortest_path_reduction_assign();
-  Constraint_System cs;
   const dimension_type space_dim = space_dimension();
+  Constraint_System cs;
+  cs.set_space_dimension(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
       cs = Constraint_System::zero_dim_empty();
+    return cs;
   }
-  else if (marked_empty())
-    cs.insert(0*Variable(space_dim-1) <= -1);
-  else {
-    // KLUDGE: in the future `cs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cs.insert(0*Variable(space_dim-1) <= 0);
 
-    PPL_DIRTY_TEMP_COEFFICIENT(numer);
-    PPL_DIRTY_TEMP_COEFFICIENT(denom);
+  if (marked_empty()) {
+    cs.insert(Constraint::zero_dim_false());
+    return cs;
+  }
 
-    // Compute leader information.
-    std::vector<dimension_type> leaders;
-    compute_leaders(leaders);
-    std::vector<dimension_type> leader_indices;
-    compute_leader_indices(leaders, leader_indices);
-    const dimension_type num_leaders = leader_indices.size();
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
 
-    // Go through the non-leaders to generate equality constraints.
-    const DB_Row<N>& dbm_0 = dbm[0];
-    for (dimension_type i = 1; i <= space_dim; ++i) {
-      const dimension_type leader = leaders[i];
-      if (i != leader) {
-        // Generate the constraint relating `i' and its leader.
-        if (leader == 0) {
-          // A unary equality has to be generated.
-          PPL_ASSERT(!is_plus_infinity(dbm_0[i]));
-          numer_denom(dbm_0[i], numer, denom);
-          cs.insert(denom*Variable(i-1) == numer);
-        }
-        else {
-          // A binary equality has to be generated.
-          PPL_ASSERT(!is_plus_infinity(dbm[i][leader]));
-          numer_denom(dbm[i][leader], numer, denom);
-          cs.insert(denom*Variable(leader-1) - denom*Variable(i-1) == numer);
-        }
-      }
-    }
+  // Compute leader information.
+  std::vector<dimension_type> leaders;
+  compute_leaders(leaders);
+  std::vector<dimension_type> leader_indices;
+  compute_leader_indices(leaders, leader_indices);
+  const dimension_type num_leaders = leader_indices.size();
 
-    // Go through the leaders to generate inequality constraints.
-    // First generate all the unary inequalities.
-    const Bit_Row& red_0 = redundancy_dbm[0];
-    for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
-      const dimension_type i = leader_indices[l_i];
-      if (!red_0[i]) {
+  // Go through the non-leaders to generate equality constraints.
+  const DB_Row<N>& dbm_0 = dbm[0];
+  for (dimension_type i = 1; i <= space_dim; ++i) {
+    const dimension_type leader = leaders[i];
+    if (i != leader) {
+      // Generate the constraint relating `i' and its leader.
+      if (leader == 0) {
+        // A unary equality has to be generated.
+        PPL_ASSERT(!is_plus_infinity(dbm_0[i]));
         numer_denom(dbm_0[i], numer, denom);
-        cs.insert(denom*Variable(i-1) <= numer);
+        cs.insert(denom*Variable(i-1) == numer);
       }
-      if (!redundancy_dbm[i][0]) {
-        numer_denom(dbm[i][0], numer, denom);
-        cs.insert(-denom*Variable(i-1) <= numer);
+      else {
+        // A binary equality has to be generated.
+        PPL_ASSERT(!is_plus_infinity(dbm[i][leader]));
+        numer_denom(dbm[i][leader], numer, denom);
+        cs.insert(denom*Variable(leader-1) - denom*Variable(i-1) == numer);
       }
     }
-    // Then generate all the binary inequalities.
-    for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
-      const dimension_type i = leader_indices[l_i];
-      const DB_Row<N>& dbm_i = dbm[i];
-      const Bit_Row& red_i = redundancy_dbm[i];
-      for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
-        const dimension_type j = leader_indices[l_j];
-        if (!red_i[j]) {
-          numer_denom(dbm_i[j], numer, denom);
-          cs.insert(denom*Variable(j-1) - denom*Variable(i-1) <= numer);
-        }
-        if (!redundancy_dbm[j][i]) {
-          numer_denom(dbm[j][i], numer, denom);
-          cs.insert(denom*Variable(i-1) - denom*Variable(j-1) <= numer);
-        }
+  }
+
+  // Go through the leaders to generate inequality constraints.
+  // First generate all the unary inequalities.
+  const Bit_Row& red_0 = redundancy_dbm[0];
+  for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
+    const dimension_type i = leader_indices[l_i];
+    if (!red_0[i]) {
+      numer_denom(dbm_0[i], numer, denom);
+      cs.insert(denom*Variable(i-1) <= numer);
+    }
+    if (!redundancy_dbm[i][0]) {
+      numer_denom(dbm[i][0], numer, denom);
+      cs.insert(-denom*Variable(i-1) <= numer);
+    }
+  }
+  // Then generate all the binary inequalities.
+  for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
+    const dimension_type i = leader_indices[l_i];
+    const DB_Row<N>& dbm_i = dbm[i];
+    const Bit_Row& red_i = redundancy_dbm[i];
+    for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
+      const dimension_type j = leader_indices[l_j];
+      if (!red_i[j]) {
+        numer_denom(dbm_i[j], numer, denom);
+        cs.insert(denom*Variable(j-1) - denom*Variable(i-1) <= numer);
+      }
+      if (!redundancy_dbm[j][i]) {
+        numer_denom(dbm[j][i], numer, denom);
+        cs.insert(denom*Variable(i-1) - denom*Variable(j-1) <= numer);
       }
     }
   }

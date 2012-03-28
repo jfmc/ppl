@@ -996,82 +996,82 @@ Octagonal_Shape<T>::minimized_congruences() const {
   // and all (possibly implicit) equalities.
   strong_closure_assign();
   const dimension_type space_dim = space_dimension();
-  Congruence_System cgs;
+  Congruence_System cgs(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
       cgs = Congruence_System::zero_dim_empty();
+    return cgs;
   }
-  else if (marked_empty())
-    cgs.insert((0*Variable(space_dim-1) %= 1) / 0);
-  else {
-    // KLUDGE: in the future `cgs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cgs.insert(0*Variable(space_dim-1) == 0);
 
-    // The vector `leaders' is used to represent equivalence classes:
-    // `leaders[i] == i' if and only if `i' is the leader of its
-    // equivalence class (i.e., the minimum index in the class).
-    std::vector<dimension_type> leaders;
-    compute_leaders(leaders);
+  if (marked_empty()) {
+    cgs.insert(Congruence::zero_dim_false());
+    return cgs;
+  }
 
-    PPL_DIRTY_TEMP_COEFFICIENT(numer);
-    PPL_DIRTY_TEMP_COEFFICIENT(denom);
-    for (dimension_type i = 0, i_end = 2*space_dim; i != i_end; i += 2) {
-      const dimension_type lead_i = leaders[i];
-      if (i == lead_i) {
-        if (leaders[i + 1] == i)
-          // `i' is the leader of the singular equivalence class.
-          goto singular;
-        else
-          // `i' is the leader of a non-singular equivalence class.
-          continue;
-      }
-      else {
-        // `i' is not a leader.
-        if (leaders[i + 1] == lead_i)
-          // `i' belongs to the singular equivalence class.
-          goto singular;
-        else
-          // `i' does not belong to the singular equivalence class.
-          goto non_singular;
-      }
+  // The vector `leaders' is used to represent equivalence classes:
+  // `leaders[i] == i' if and only if `i' is the leader of its
+  // equivalence class (i.e., the minimum index in the class).
+  std::vector<dimension_type> leaders;
+  compute_leaders(leaders);
 
-    singular:
-      // `i' belongs to the singular equivalence class:
-      // we have a unary equality constraint.
-      {
-        const Variable x(i/2);
-        const N& c_ii_i = matrix[i + 1][i];
-#ifndef NDEBUG
-        const N& c_i_ii = matrix[i][i + 1];
-        PPL_ASSERT(is_additive_inverse(c_i_ii, c_ii_i));
-#endif
-        numer_denom(c_ii_i, numer, denom);
-        denom *= 2;
-        cgs.insert(denom*x == numer);
-      }
-      continue;
-
-    non_singular:
-      // `i' does not belong to the singular equivalence class.
-      // we have a binary equality constraint.
-      {
-        const N& c_i_li = matrix[i][lead_i];
-#ifndef NDEBUG
-        using namespace Implementation::Octagonal_Shapes;
-        const N& c_ii_lii = matrix[i + 1][coherent_index(lead_i)];
-        PPL_ASSERT(is_additive_inverse(c_ii_lii, c_i_li));
-#endif
-        const Variable x(lead_i/2);
-        const Variable y(i/2);
-        numer_denom(c_i_li, numer, denom);
-        if (lead_i % 2 == 0)
-          cgs.insert(denom*x - denom*y == numer);
-        else
-          cgs.insert(denom*x + denom*y + numer == 0);
-      }
-      continue;
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
+  for (dimension_type i = 0, i_end = 2*space_dim; i != i_end; i += 2) {
+    const dimension_type lead_i = leaders[i];
+    if (i == lead_i) {
+      if (leaders[i + 1] == i)
+        // `i' is the leader of the singular equivalence class.
+        goto singular;
+      else
+        // `i' is the leader of a non-singular equivalence class.
+        continue;
     }
+    else {
+      // `i' is not a leader.
+      if (leaders[i + 1] == lead_i)
+        // `i' belongs to the singular equivalence class.
+        goto singular;
+      else
+        // `i' does not belong to the singular equivalence class.
+        goto non_singular;
+    }
+
+  singular:
+    // `i' belongs to the singular equivalence class:
+    // we have a unary equality constraint.
+    {
+      const Variable x(i/2);
+      const N& c_ii_i = matrix[i + 1][i];
+#ifndef NDEBUG
+      const N& c_i_ii = matrix[i][i + 1];
+      PPL_ASSERT(is_additive_inverse(c_i_ii, c_ii_i));
+#endif
+      numer_denom(c_ii_i, numer, denom);
+      denom *= 2;
+      cgs.insert(denom*x == numer);
+    }
+    continue;
+
+  non_singular:
+    // `i' does not belong to the singular equivalence class.
+    // we have a binary equality constraint.
+    {
+      const N& c_i_li = matrix[i][lead_i];
+#ifndef NDEBUG
+      using namespace Implementation::Octagonal_Shapes;
+      const N& c_ii_lii = matrix[i + 1][coherent_index(lead_i)];
+      PPL_ASSERT(is_additive_inverse(c_ii_lii, c_i_li));
+#endif
+      const Variable x(lead_i/2);
+      const Variable y(i/2);
+      numer_denom(c_i_li, numer, denom);
+      if (lead_i % 2 == 0)
+        cgs.insert(denom*x - denom*y == numer);
+      else
+        cgs.insert(denom*x + denom*y + numer == 0);
+    }
+    continue;
   }
   return cgs;
 }
@@ -6907,102 +6907,104 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
 template <typename T>
 Constraint_System
 Octagonal_Shape<T>::constraints() const {
+  const dimension_type space_dim = space_dimension();
   Constraint_System cs;
+  cs.set_space_dimension(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
       cs = Constraint_System::zero_dim_empty();
+    return cs;
   }
-  else if (marked_empty())
-    cs.insert(0*Variable(space_dim-1) <= -1);
-  else {
-    // KLUDGE: in the future `cs' will be constructed of the right dimension.
-    // For the time being, we force the dimension with the following line.
-    cs.insert(0*Variable(space_dim-1) <= 0);
 
-    typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-    typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  if (marked_empty()) {
+    cs.insert(Constraint::zero_dim_false());
+    return cs;
+  }
 
-    Row_Iterator m_begin = matrix.row_begin();
-    Row_Iterator m_end = matrix.row_end();
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
 
-    PPL_DIRTY_TEMP_COEFFICIENT(a);
-    PPL_DIRTY_TEMP_COEFFICIENT(b);
+  Row_Iterator m_begin = matrix.row_begin();
+  Row_Iterator m_end = matrix.row_end();
 
-    // Go through all the unary constraints in `matrix'.
-    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
-      const dimension_type i = i_iter.index();
-      const Variable x(i/2);
-      const N& c_i_ii = (*i_iter)[i + 1];
-      ++i_iter;
-      const N& c_ii_i = (*i_iter)[i];
-      ++i_iter;
-      // Go through unary constraints.
-      if (is_additive_inverse(c_i_ii, c_ii_i)) {
-        // We have a unary equality constraint.
+  PPL_DIRTY_TEMP_COEFFICIENT(a);
+  PPL_DIRTY_TEMP_COEFFICIENT(b);
+
+  // Go through all the unary constraints in `matrix'.
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+    const dimension_type i = i_iter.index();
+    const Variable x(i/2);
+    const N& c_i_ii = (*i_iter)[i + 1];
+    ++i_iter;
+    const N& c_ii_i = (*i_iter)[i];
+    ++i_iter;
+    // Go through unary constraints.
+    if (is_additive_inverse(c_i_ii, c_ii_i)) {
+      // We have a unary equality constraint.
+      numer_denom(c_ii_i, b, a);
+      a *= 2;
+      cs.insert(a*x == b);
+    }
+    else {
+      // We have 0, 1 or 2 inequality constraints.
+      if (!is_plus_infinity(c_i_ii)) {
+        numer_denom(c_i_ii, b, a);
+        a *= 2;
+        cs.insert(-a*x <= b);
+      }
+      if (!is_plus_infinity(c_ii_i)) {
         numer_denom(c_ii_i, b, a);
         a *= 2;
-        cs.insert(a*x == b);
+        cs.insert(a*x <= b);
+      }
+    }
+  }
+  //  Go through all the binary constraints in `matrix'.
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+    const dimension_type i = i_iter.index();
+    Row_Reference r_i = *i_iter;
+    ++i_iter;
+    Row_Reference r_ii = *i_iter;
+    ++i_iter;
+    const Variable y(i/2);
+    for (dimension_type j = 0; j < i; j += 2) {
+      const N& c_i_j = r_i[j];
+      const N& c_ii_jj = r_ii[j + 1];
+      const Variable x(j/2);
+      if (is_additive_inverse(c_ii_jj, c_i_j)) {
+        // We have an equality constraint of the form a*x - a*y = b.
+        numer_denom(c_i_j, b, a);
+        cs.insert(a*x - a*y == b);
       }
       else {
         // We have 0, 1 or 2 inequality constraints.
-        if (!is_plus_infinity(c_i_ii)) {
-          numer_denom(c_i_ii, b, a);
-          a *= 2;
-          cs.insert(-a*x <= b);
+        if (!is_plus_infinity(c_i_j)) {
+          numer_denom(c_i_j, b, a);
+          cs.insert(a*x - a*y <= b);
         }
-        if (!is_plus_infinity(c_ii_i)) {
-          numer_denom(c_ii_i, b, a);
-          a *= 2;
-          cs.insert(a*x <= b);
+        if (!is_plus_infinity(c_ii_jj)) {
+          numer_denom(c_ii_jj, b, a);
+          cs.insert(a*y - a*x <= b);
         }
       }
-    }
-    //  Go through all the binary constraints in `matrix'.
-    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
-      const dimension_type i = i_iter.index();
-      Row_Reference r_i = *i_iter;
-      ++i_iter;
-      Row_Reference r_ii = *i_iter;
-      ++i_iter;
-      const Variable y(i/2);
-      for (dimension_type j = 0; j < i; j += 2) {
-        const N& c_i_j = r_i[j];
-        const N& c_ii_jj = r_ii[j + 1];
-        const Variable x(j/2);
-        if (is_additive_inverse(c_ii_jj, c_i_j)) {
-          // We have an equality constraint of the form a*x - a*y = b.
-          numer_denom(c_i_j, b, a);
-          cs.insert(a*x - a*y == b);
-        }
-        else {
-          // We have 0, 1 or 2 inequality constraints.
-          if (!is_plus_infinity(c_i_j)) {
-            numer_denom(c_i_j, b, a);
-            cs.insert(a*x - a*y <= b);
-          }
-          if (!is_plus_infinity(c_ii_jj)) {
-            numer_denom(c_ii_jj, b, a);
-            cs.insert(a*y - a*x <= b);
-          }
-        }
 
-        const N& c_ii_j = r_ii[j];
-        const N& c_i_jj = r_i[j + 1];
-        if (is_additive_inverse(c_i_jj, c_ii_j)) {
-          // We have an equality constraint of the form a*x + a*y = b.
-          numer_denom(c_ii_j, b, a);
-          cs.insert(a*x + a*y == b);
+      const N& c_ii_j = r_ii[j];
+      const N& c_i_jj = r_i[j + 1];
+      if (is_additive_inverse(c_i_jj, c_ii_j)) {
+        // We have an equality constraint of the form a*x + a*y = b.
+        numer_denom(c_ii_j, b, a);
+        cs.insert(a*x + a*y == b);
+      }
+      else {
+        // We have 0, 1 or 2 inequality constraints.
+        if (!is_plus_infinity(c_i_jj)) {
+          numer_denom(c_i_jj, b, a);
+          cs.insert(-a*x - a*y <= b);
         }
-        else {
-          // We have 0, 1 or 2 inequality constraints.
-          if (!is_plus_infinity(c_i_jj)) {
-            numer_denom(c_i_jj, b, a);
-            cs.insert(-a*x - a*y <= b);
-          }
-          if (!is_plus_infinity(c_ii_j)) {
-            numer_denom(c_ii_j, b, a);
-            cs.insert(a*x + a*y <= b);
-          }
+        if (!is_plus_infinity(c_ii_j)) {
+          numer_denom(c_ii_j, b, a);
+          cs.insert(a*x + a*y <= b);
         }
       }
     }

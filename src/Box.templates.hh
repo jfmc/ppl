@@ -3863,23 +3863,19 @@ template <typename ITV>
 Constraint_System
 Box<ITV>::constraints() const {
   const dimension_type space_dim = space_dimension();
+  Constraint_System cs;
+  cs.set_space_dimension(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
-      return Constraint_System::zero_dim_empty();
-    else
-      return Constraint_System();
-  }
-
-  if (marked_empty()) {
-    Constraint_System cs;
-    cs.insert(0*Variable(space_dim-1) <= -1);
+      cs = Constraint_System::zero_dim_empty();
     return cs;
   }
 
-  Constraint_System cs;
-  // KLUDGE: in the future `cs' will be constructed of the right dimension.
-  // For the time being, we force the dimension with the following line.
-  cs.insert(0*Variable(space_dim-1) <= 0);
+  if (marked_empty()) {
+    cs.insert(Constraint::zero_dim_false());
+    return cs;
+  }
 
   for (dimension_type k = 0; k < space_dim; ++k) {
     const Variable v_k = Variable(k);
@@ -3906,24 +3902,20 @@ template <typename ITV>
 Constraint_System
 Box<ITV>::minimized_constraints() const {
   const dimension_type space_dim = space_dimension();
+  Constraint_System cs;
+  cs.set_space_dimension(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
-      return Constraint_System::zero_dim_empty();
-    else
-      return Constraint_System();
+      cs = Constraint_System::zero_dim_empty();
+    return cs;
   }
 
   // Make sure emptiness is detected.
   if (is_empty()) {
-    Constraint_System cs;
-    cs.insert(0*Variable(space_dim-1) <= -1);
+    cs.insert(Constraint::zero_dim_false());
     return cs;
   }
-
-  Constraint_System cs;
-  // KLUDGE: in the future `cs' will be constructed of the right dimension.
-  // For the time being, we force the dimension with the following line.
-  cs.insert(0*Variable(space_dim-1) <= 0);
 
   for (dimension_type k = 0; k < space_dim; ++k) {
     const Variable v_k = Variable(k);
@@ -3956,24 +3948,19 @@ template <typename ITV>
 Congruence_System
 Box<ITV>::congruences() const {
   const dimension_type space_dim = space_dimension();
+  Congruence_System cgs(space_dim);
+
   if (space_dim == 0) {
     if (marked_empty())
-      return Congruence_System::zero_dim_empty();
-    else
-      return Congruence_System();
+      cgs = Congruence_System::zero_dim_empty();
+    return cgs;
   }
 
   // Make sure emptiness is detected.
   if (is_empty()) {
-    Congruence_System cgs;
-    cgs.insert((0*Variable(space_dim-1) %= -1) / 0);
+    cgs.insert(Congruence::zero_dim_false());
     return cgs;
   }
-
-  Congruence_System cgs;
-  // KLUDGE: in the future `cgs' will be constructed of the right dimension.
-  // For the time being, we force the dimension with the following line.
-  cgs.insert(0*Variable(space_dim-1) %= 0);
 
   for (dimension_type k = 0; k < space_dim; ++k) {
     const Variable v_k = Variable(k);
