@@ -63,7 +63,7 @@ Grid_Generator::set_is_ray_or_point_or_inequality() {
 
 inline void
 Grid_Generator::set_topology(Topology x) {
-  used(x);
+  PPL_USED(x);
   PPL_ASSERT(x == NECESSARILY_CLOSED);
 }
 
@@ -121,7 +121,7 @@ Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind,
     semi_wrapped_expr(expr),
     wrapped_expr(semi_wrapped_expr, true),
     kind_(kind) {
-  used(topology);
+  PPL_USED(topology);
   PPL_ASSERT(topology == NECESSARILY_CLOSED);
   expr.set_space_dimension(space_dim + 1);
   PPL_ASSERT(space_dimension() == space_dim);
