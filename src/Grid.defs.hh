@@ -483,7 +483,7 @@ public:
   /*!
     The grid inherits the space dimension of the generator system.
 
-    \param gs
+    \param ggs
     The system of generators defining the grid.  Its data-structures
     may be recycled to build the grid.
 

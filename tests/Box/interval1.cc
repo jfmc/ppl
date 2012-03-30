@@ -46,7 +46,8 @@ struct My_Interval {
   };
 
   typedef Interval_Info_Bitset<unsigned int,
-                               Floating_Point_Real_Interval_Info_Policy> Floating_Point_Real_Interval_Info;
+                               Floating_Point_Real_Interval_Info_Policy>
+  Floating_Point_Real_Interval_Info;
 
   typedef Interval<F, Floating_Point_Real_Interval_Info> interval_type;
 };
@@ -71,15 +72,15 @@ test01() {
     nout << "x = " << x << endl;
   }
 
-  typename My_Interval<F>::interval_type z(1.41420757770538330078125);
-  z.join_assign(1.41421949863433837890625);
+  typename My_Interval<F>::interval_type z(F(1.41420757770538330078125));
+  z.join_assign(F(1.41421949863433837890625));
 
   nout << "z = " << x << endl;
 
   return !x.is_empty()
 #if PPL_CXX_SUPPORTS_IEEE_INEXACT_FLAG
-    && x.is_disjoint_from(1.41420757770538330078125)
-    && x.is_disjoint_from(1.41421949863433837890625)
+    && x.is_disjoint_from(F(1.41420757770538330078125))
+    && x.is_disjoint_from(F(1.41421949863433837890625))
     && z.strictly_contains(x)
 #else
     && x.is_topologically_closed()
@@ -96,7 +97,7 @@ polynomial_evaluate(const std::vector<N>& P,
                     const std::complex<N>& x,
                     std::complex<N>& P_x) {
   // Note: the coefficient of the leading term is implicitly 1.
-  P_x = std::complex<N>(N(1.0), N(0.0));
+  P_x = std::complex<N>(N(1), N(0));
   for (int i = P.size(); i >= 1; --i)
     P_x = P_x*x + P[i-1];
 }
@@ -124,7 +125,7 @@ solve(const std::vector<N>& P,
     for (int i = 0; i < degree; ++i) {
       std::complex<N> P_x_i;
       polynomial_evaluate(P, x[i], P_x_i);
-      std::complex<N> d(N(1.0), N(0.0));
+      std::complex<N> d(N(1), N(0));
       for (int j = 0; j < degree; ++j)
         if (i != j)
           d *= (x[i] - x[j]);
@@ -167,10 +168,10 @@ bool test04() {
   // x^2 - 1
   P[1] = 0;
   P[0] = -1;
-  for (double d = 0.0; d <= 10.0; d += 1.0) {
+  for (int d = 0; d <= 10; ++d) {
     std::complex<N> P_x_i;
     polynomial_evaluate(P,
-                        std::complex<N>(N(d), N(0.0)),
+                        std::complex<N>(N(d), N(0)),
                         P_x_i);
     nout << d << " " << P_x_i << endl;
   }

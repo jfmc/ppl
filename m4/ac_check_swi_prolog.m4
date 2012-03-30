@@ -45,11 +45,11 @@ then
 fi
 if test x$swi_prolog != x
 then
-  swi_prolog_base=`$swi_prolog -dump-runtime-variables | grep PLBASE= | sed 's/PLBASE="\(.*\)";/\1/'`
-  swi_prolog_version=`$swi_prolog -dump-runtime-variables | grep PLVERSION= | sed 's/PLVERSION="\(.*\)";/\1/'`
-  swi_prolog_arch=`$swi_prolog -dump-runtime-variables | grep PLARCH= | sed 's/PLARCH="\(.*\)";/\1/'`
-  swi_prolog_libs=`$swi_prolog -dump-runtime-variables | grep PLLIBS= | sed 's/PLLIBS="\(.*\)";/\1/'`
-  swi_prolog_lib=`$swi_prolog -dump-runtime-variables | grep PLLIB= | sed 's/PLLIB="\(.*\)";/\1/'`
+  swi_prolog_base=`$swi_prolog -dump-runtime-variables | grep PLBASE= | sed 's/PLBASE="\([[a-z]]:\)\{0,1\}\(.*\)";.*/\2/'`
+  swi_prolog_version=`$swi_prolog -dump-runtime-variables | grep PLVERSION= | sed 's/PLVERSION="\(.*\)";.*/\1/'`
+  swi_prolog_arch=`$swi_prolog -dump-runtime-variables | grep PLARCH= | sed 's/PLARCH="\(.*\)";.*/\1/'`
+  swi_prolog_libs=`$swi_prolog -dump-runtime-variables | grep PLLIBS= | sed 's/PLLIBS="\(.*\)";.*/\1/'`
+  swi_prolog_lib=`$swi_prolog -dump-runtime-variables | grep PLLIB= | sed 's/PLLIB="\(.*\)";.*/\1/'`
 
   dnl Additional version checks could be inserted here, if necessary.
 
@@ -62,7 +62,10 @@ then
   # In Fedora, SWI-Prolog.h is installed only in /usr/include/pl, which,
   # IMHO, is a bug (https://bugzilla.redhat.com/show_bug.cgi?id=471071).
   SWI_PROLOG_INCLUDE_OPTIONS="-I${swi_prolog_base}/include -I/usr/include/pl"
-  SWI_PROLOG_LD_OPTIONS="-L${swi_prolog_base}/lib/${swi_prolog_arch} ${swi_prolog_lib} ${swi_prolog_libs}"
+  # If SWI-Prolog was configured with `--disable-libdirversion', then
+  # the files are not in the `${swi_prolog_arch}' subdirectory.  Since
+  # currently there is no way to know that, we look in both places.
+  SWI_PROLOG_LD_OPTIONS="-L${swi_prolog_base}/lib/${swi_prolog_arch} -L${swi_prolog_base}/lib ${swi_prolog_lib} ${swi_prolog_libs}"
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $SWI_PROLOG_INCLUDE_OPTIONS"
   AC_LANG_PUSH(C++)

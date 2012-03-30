@@ -244,8 +244,8 @@ test07() {
   linearize(div, oracle, FP_Linear_Form_Abstract_Store(), result);
 
   Variable A(0);
-  FP_Interval coeff = FP_Interval(1 / 2.0);
-  FP_Linear_Form known_result = FP_Linear_Form(A);
+  FP_Interval coeff(FP_Interval::boundary_type(1 / 2.0));
+  FP_Linear_Form known_result(A);
   FP_Linear_Form rel_err;
   known_result.relative_error(ANALYZED_FP_FORMAT, rel_err);
   known_result *= coeff;

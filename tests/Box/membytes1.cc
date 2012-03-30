@@ -63,17 +63,21 @@ bool test02() {
 
   Pointset_Powerset<TBox> pbox(2, EMPTY);
   TBox box(2);
-  TBox::interval_type ix;
-  TBox::interval_type iy;
+
+  typedef TBox::interval_type interval_type;
+  typedef interval_type::boundary_type boundary_type;
+
+  interval_type ix;
+  interval_type iy;
 
   for (double d = -M_PI; d <= M_PI; d += 0.01) {
     ix.assign(EMPTY);
-    ix.join_assign(d-0.015);
-    ix.join_assign(d+0.015);
+    ix.join_assign(boundary_type(d-0.015));
+    ix.join_assign(boundary_type(d+0.015));
 
     iy.assign(EMPTY);
-    iy.join_assign(sin(d-0.015));
-    iy.join_assign(sin(d+0.015));
+    iy.join_assign(boundary_type(sin(d-0.015)));
+    iy.join_assign(boundary_type(sin(d+0.015)));
 
     box.set_interval(x, ix);
     box.set_interval(y, iy);

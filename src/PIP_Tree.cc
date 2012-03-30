@@ -1290,7 +1290,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING DECISION NODE\n");
 #else
-  used(indent_level);
+  PPL_USED(indent_level);
 #endif
   PPL_ASSERT(true_child != 0);
   Matrix<Row> context_true(context);
@@ -2362,7 +2362,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 #ifdef NOISY_PIP_TREE_STRUCTURE
   indent_and_print(std::cerr, indent_level, "=== SOLVING NODE\n");
 #else
-  used(indent_level);
+  PPL_USED(indent_level);
 #endif
   // Reset current solution as invalid.
   solution_valid = false;
@@ -3150,7 +3150,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
   std::cerr << std::setw(2 * indent_level) << ""
             << "Row " << index << " requires cut generation.\n";
 #else
-  used(indent_level);
+  PPL_USED(indent_level);
 #endif // #ifdef NOISY_PIP
 
   const dimension_type num_rows = tableau.t.num_rows();
@@ -3487,10 +3487,8 @@ PIP_Tree_Node::print(std::ostream& s, const int indent) const {
 
 void
 PIP_Tree_Node::print_tree(std::ostream& s, const int indent,
-                          const std::vector<bool>& pip_dim_is_param,
+                          const std::vector<bool>&,
                           dimension_type first_art_dim) const {
-  used(pip_dim_is_param);
-
   using namespace IO_Operators;
 
   // Print artificial parameters.

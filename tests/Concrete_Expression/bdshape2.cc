@@ -113,11 +113,11 @@ test03() {
   bd1.add_constraint(A - B <= 3);
   bd1.add_constraint(B <= 2);
   FP_Octagonal_Shape known_result(bd1);
-  FP_Interval tmp(3.5);
+  FP_Interval tmp(static_cast<FP_Interval::boundary_type>(3.5));
   tmp.join_assign(6);
   FP_Linear_Form l1(tmp);
   FP_Linear_Form l2(-A);
-  tmp.lower() = -2.5;
+  tmp.lower() = static_cast<FP_Interval::boundary_type>(-2.5);
   tmp.upper() = 0;
   l2 += tmp;
   bd1.refine_with_linear_form_inequality(l1, l2);
@@ -151,12 +151,12 @@ test04() {
   bd1.add_constraint(A - B <= 3);
   bd1.add_constraint(B <= 2);
   FP_BD_Shape known_result(bd1);
-  FP_Interval tmp(-0.5);
+  FP_Interval tmp(static_cast<FP_Interval::boundary_type>(-0.5));
   tmp.join_assign(1);
   FP_Linear_Form l1(A);
   l1 += tmp;
   FP_Linear_Form l2(B);
-  tmp.lower() = 2.5;
+  tmp.lower() = static_cast<FP_Interval::boundary_type>(2.5);
   tmp.upper() = 5;
   l2 += tmp;
   bd1.refine_with_linear_form_inequality(l1, l2);
@@ -272,7 +272,7 @@ test07() {
   l2 += tmp;
   FP_Linear_Form l1(-A);
   tmp.lower() = -3;
-  tmp.upper() = -0.5;
+  tmp.upper() = static_cast<FP_Interval::boundary_type>(-0.5);
   l1 += tmp;
   bd1.refine_with_linear_form_inequality(l1, l2);
   print_constraints(bd1, "*** [-3, -0.5] - A <= [-2, -1] - B ***");
@@ -310,7 +310,7 @@ test08() {
   FP_Linear_Form l1(B);
   l1 *= tmp;
   FP_Linear_Form l2(A);
-  tmp.lower() = -1.5;
+  tmp.lower() = static_cast<FP_Interval::boundary_type>(-1.5);
   tmp.upper() = 0;
   l2 *= tmp;
   bd1.refine_with_linear_form_inequality(l1, l2);
@@ -340,8 +340,8 @@ test09() {
   tmp.join_assign(-2);
   FP_Linear_Form l2(tmp);
   FP_Linear_Form l1(A);
-  tmp.lower() = 0.25;
-  tmp.upper() = 0.5;
+  tmp.lower() = static_cast<FP_Interval::boundary_type>(0.25);
+  tmp.upper() = static_cast<FP_Interval::boundary_type>(0.5);
   l1 *= tmp;
   tmp.lower() = -2;
   tmp.upper() = -1;
@@ -380,7 +380,7 @@ test10() {
   tmp.join_assign(3);
   FP_Linear_Form l2(B);
   l2 *= tmp;
-  tmp.lower() = 0.5;
+  tmp.lower() = static_cast<FP_Interval::boundary_type>(0.5);
   tmp.upper() = 1;
   l2 += tmp;
   FP_Linear_Form l1(A);
@@ -407,8 +407,8 @@ test11() {
   Variable A(0);
   Variable B(1);
   FP_Interval_Abstract_Store store(2);
-  FP_Interval tmp(-2.5);
-  tmp.join_assign(3.5);
+  FP_Interval tmp(static_cast<FP_Interval::boundary_type>(-2.5));
+  tmp.join_assign(static_cast<FP_Interval::boundary_type>(3.5));
   store.set_interval(A, tmp);
   tmp.lower() = -4;
   tmp.upper() = 4;
@@ -424,7 +424,7 @@ test11() {
   nout << "*** store.get_interval(A) ***" << endl
        << tmp << endl;
 
-  FP_Interval known_result1(-2.5);
+  FP_Interval known_result1(static_cast<FP_Interval::boundary_type>(-2.5));
   known_result1.join_assign(2);
   nout << "*** known_result1 ***" << endl
        << known_result1 << endl;
@@ -435,7 +435,7 @@ test11() {
   nout << "*** store.get_interval(B) ***" << endl
        << tmp << endl;
 
-  FP_Interval known_result2(-1.5);
+  FP_Interval known_result2(static_cast<FP_Interval::boundary_type>(-1.5));
   known_result2.join_assign(2);
   nout << "*** known_result2 ***" << endl
        << known_result2 << endl;

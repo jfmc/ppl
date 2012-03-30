@@ -134,12 +134,12 @@ fpu_inverse_rounding(Rounding_Dir dir) {
 
 inline void
 limit_precision(const float& v) {
-  cc_flush(v);
+  PPL_CC_FLUSH(v);
 }
 
 inline void
 limit_precision(const double& v) {
-  cc_flush(v);
+  PPL_CC_FLUSH(v);
 }
 
 inline void

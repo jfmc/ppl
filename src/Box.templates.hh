@@ -1539,8 +1539,8 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
                               complexity_threshold, wrap_individually,
                               "Box");
 #else // Specialized implementation.
-  used(wrap_individually);
-  used(complexity_threshold);
+  PPL_USED(wrap_individually);
+  PPL_USED(complexity_threshold);
   Box& x = *this;
 
   // Dimension-compatibility check for `*cs_p', if any.
