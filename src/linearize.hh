@@ -643,28 +643,34 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
   return !result.overflows();
 }
 
-/*! \brief
-  Linearizes a floating point expression.
-
-  \relates Concrete_Expression
+//! Linearizes a floating point expression.
+/*! \relates Concrete_Expression
   Makes \p result become a linear form that correctly approximates the
   value of \p expr in the given composite abstract store.
 
-  \par Template type parameters
+  \tparam Target
+  A type template parameter specifying the instantiation of
+  Concrete_Expression to be used.
 
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
+  \tparam FP_Interval_Type
+  A type template parameter for the intervals used in the abstract domain.
+  The interval bounds should have a floating point type.
 
-  \param expr The concrete expression to linearize.
-  \param oracle The FP_Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result Becomes the linearized expression.
-
-  \return <CODE>true</CODE> if the linearization succeeded,
+  \return
+  <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
+
+  \param expr
+  The concrete expression to linearize.
+
+  \param oracle
+  The FP_Oracle to be queried.
+
+  \param lf_store
+  The linear form abstract store.
+
+  \param result
+  Becomes the linearized expression.
 
   Formally, if \p expr represents the expression \f$e\f$ and
   \p lf_store represents the linear form abstract store \f$\rho^{\#}_l\f$,
