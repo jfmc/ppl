@@ -358,7 +358,7 @@ ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
 
 /*@}*/ /* Error */
 
-/*! \defgroup Timeout Handling
+/*! \defgroup Timeout Timeout Handling
   Functions for setting and resetting timeouts.
 */
 /*@{*/
@@ -428,7 +428,7 @@ ppl_set_deterministic_timeout PPL_PROTO((unsigned weight));
 int
 ppl_reset_deterministic_timeout PPL_PROTO((void));
 
-/*@}*/ /* Timeout Handling */
+/*@}*/ /* Timeout */
 
 /*! \defgroup Datatypes Library Datatypes
   \brief
