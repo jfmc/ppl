@@ -28,69 +28,69 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline Rounding_Dir
 operator&(Rounding_Dir x, Rounding_Dir y) {
   unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
   return static_cast<Rounding_Dir>(res);
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline Rounding_Dir
 operator|(Rounding_Dir x, Rounding_Dir y) {
   unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
   return static_cast<Rounding_Dir>(res);
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline Rounding_Dir
 round_dir(Rounding_Dir dir) {
   return dir & ROUND_DIR_MASK;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_down(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_DOWN;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_up(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_UP;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_ignore(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_IGNORE;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_not_needed(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_NOT_NEEDED;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_not_requested(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_IGNORE || round_dir(dir) == ROUND_NOT_NEEDED;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_direct(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_DIRECT;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_inverse(Rounding_Dir dir) {
   return round_dir(dir) == ROUND_INVERSE;
 }
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline bool
 round_strict_relation(Rounding_Dir dir) {
   return (dir & ROUND_STRICT_RELATION) == ROUND_STRICT_RELATION;
@@ -98,7 +98,7 @@ round_strict_relation(Rounding_Dir dir) {
 
 #if PPL_CAN_CONTROL_FPU
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline fpu_rounding_direction_type
 round_fpu_dir(Rounding_Dir dir) {
   switch (round_dir(dir)) {
@@ -120,7 +120,7 @@ round_fpu_dir(Rounding_Dir dir) {
 
 #endif
 
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+/*! \ingroup PPL_CXX_interface */
 inline Rounding_Dir
 inverse(Rounding_Dir dir) {
   switch (round_dir(dir)) {

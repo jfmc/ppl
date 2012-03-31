@@ -28,42 +28,42 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \relates Parma_Polyhedra_Library::Result */
+/*! \ingroup PPL_CXX_interface */
 inline Result
 operator&(Result x, Result y) {
   unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
   return static_cast<Result>(res);
 }
 
-/*! \relates Parma_Polyhedra_Library::Result */
+/*! \ingroup PPL_CXX_interface */
 inline Result
 operator|(Result x, Result y) {
   unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
   return static_cast<Result>(res);
 }
 
-/*! \relates Parma_Polyhedra_Library::Result */
+/*! \ingroup PPL_CXX_interface */
 inline Result
 operator-(Result x, Result y) {
   Result y_neg = static_cast<Result>(~static_cast<unsigned>(y));
   return x & y_neg;
 }
 
-/*! \relates Parma_Polyhedra_Library::Result */
+/*! \ingroup PPL_CXX_interface */
 inline Result_Class
 result_class(Result r) {
   Result rc = r & static_cast<Result>(VC_MASK);
   return static_cast<Result_Class>(rc);
 }
 
-/*! \relates Parma_Polyhedra_Library::Result */
+/*! \ingroup PPL_CXX_interface */
 inline Result_Relation
 result_relation(Result r) {
   Result rc = r & static_cast<Result>(VR_MASK);
   return static_cast<Result_Relation>(rc);
 }
 
-/*! \relates Parma_Polyhedra_Library::Result */
+/*! \ingroup PPL_CXX_interface */
 inline Result
 result_relation_class(Result r) {
   return r & (static_cast<Result>(VR_MASK) | static_cast<Result>(VC_MASK));

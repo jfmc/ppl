@@ -160,15 +160,33 @@ enum Result {
 
 };
 
+//! \name Functions Inspecting and/or Combining Result Values
+//@{
+
+/*! \ingroup PPL_CXX_interface */
 Result operator&(Result x, Result y);
+
+/*! \ingroup PPL_CXX_interface */
 Result operator|(Result x, Result y);
+
+/*! \ingroup PPL_CXX_interface */
 Result operator-(Result x, Result y);
 
-//! Extracts the value class part of \p r (representable number, unrepresentable minus/plus infinity or nan).
+/*! \brief \ingroup PPL_CXX_interface
+  Extracts the value class part of \p r (representable number,
+  unrepresentable minus/plus infinity or nan).
+*/
 Result_Class result_class(Result r);
 
-//! Extracts the relation part of \p r.
+/*! \brief \ingroup PPL_CXX_interface
+  Extracts the relation part of \p r.
+*/
 Result_Relation result_relation(Result r);
+
+/*! \ingroup PPL_CXX_interface */
+Result result_relation_class(Result r);
+
+//@} // Functions Inspecting and/or Combining Result Values
 
 } // namespace Parma_Polyhedra_Library
 
