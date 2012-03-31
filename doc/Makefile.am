@@ -29,7 +29,6 @@ psdir = $(docdir)
 txtdir = $(docdir)
 
 DOXYGEN = doxygen
-INSTALLDOX = ./installdox -q
 
 PDF_LICENSES = \
 gpl.pdf \
@@ -62,9 +61,18 @@ DEVREF_CORE_PS_MANUAL = ppl-devref-@VERSION@.ps.gz
 USER_CORE_HTML_DIR = ppl-user-@VERSION@-html
 DEVREF_CORE_HTML_DIR = ppl-devref-@VERSION@-html
 
+# NOTE: this variable is used to record Makefile dependencies.
+# The file path is that of the source directory.
 DOX_LICENSE_FILES = \
 gpl.dox \
 fdl.dox
+
+# NOTE: this variable is used to populate Doxygen configuration tag INPUT.
+# The file path is that of the build directory, hence we ca not use
+# variable DOX_LICENSE_FILES defined above.
+DOX_LICENSE_INPUT = \
+$(srcdir)/gpl.dox \
+$(srcdir)/fdl.dox
 
 DOX_FILES = \
 $(DOX_LICENSE_FILES) \
@@ -888,10 +896,10 @@ SED_HTML_OPTION = -f $(srcdir)/interfaces-html.sed
 SED_LATEX_OPTION = -f $(srcdir)/interfaces-latex.sed
 
 SED_USER_HTML_OPTION = $(SED_HTML_OPTION) \
--e 's|<PPL_SED_TAGFILES>|ppl-user-@VERSION@-html.tag=../ppl-user-@VERSION@-html.tag|'
+-e 's|<PPL_SED_TAGFILES>|ppl-user-@VERSION@-html.tag=../ppl-user-@VERSION@-html|'
 
 SED_DEVREF_HTML_OPTION = $(SED_HTML_OPTION) \
--e 's|<PPL_SED_TAGFILES>|ppl-devref-@VERSION@-html.tag=../ppl-devref-@VERSION@-html.tag|'
+-e 's|<PPL_SED_TAGFILES>|ppl-devref-@VERSION@-html.tag=../ppl-devref-@VERSION@-html|'
 
 SED_USER_LATEX_OPTION = \
 $(SED_LATEX_OPTION) \
@@ -910,13 +918,13 @@ SED_C_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_C_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 ../interfaces/C/ppl_c_version.h \
 $(srcdir)/../interfaces/C/ppl_c_header.h \
 $(srcdir)/../interfaces/C/C_interface.dox
 
 SED_C_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 ../interfaces/C/ppl_c_version.h \
 $(srcdir)/../interfaces/C/ppl_c_header.h \
 $(srcdir)/../interfaces/C/C_interface.dox \
@@ -965,8 +973,6 @@ $(USER_C_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-c-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 
 ppl-devref-c-interface-@VERSION@-html: \
 devref-language-interface.doxyconf \
@@ -979,8 +985,6 @@ $(DEVREF_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_DEVREF)"'|' \
 	    $<  > Doxyfile.devref-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-c-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
 # (System Independent) Prolog Language Interface Targets
 
@@ -991,7 +995,7 @@ SED_PROLOG_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_PROLOG_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
@@ -999,7 +1003,7 @@ $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox
 
 SED_PROLOG_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Prolog/Prolog_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
@@ -1050,8 +1054,6 @@ $(USER_PROLOG_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-prolog-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 
 ppl-devref-prolog-interface-@VERSION@-html: \
 devref-language-interface.doxyconf \
@@ -1064,8 +1066,6 @@ $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-prolog-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
 # OCaml Language Interface Targets
 
@@ -1076,11 +1076,11 @@ SED_OCAML_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
 SED_OCAML_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox
 
 SED_OCAML_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
@@ -1138,8 +1138,6 @@ $(USER_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
@@ -1155,8 +1153,6 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
@@ -1170,11 +1166,11 @@ SED_JAVA_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_JAVA_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Java/parma_polyhedra_library
 
 SED_JAVA_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Java/parma_polyhedra_library \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.cc \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.defs.hh \
@@ -1222,8 +1218,6 @@ $(USER_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-java-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 
 ppl-devref-java-interface-@VERSION@-html: \
 devref-language-interface.doxyconf \
@@ -1236,8 +1230,6 @@ $(DEVREF_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-java-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
 ############################################################################
 
@@ -1253,12 +1245,12 @@ SED_CONFIGURED_C_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_C_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h
 
 SED_CONFIGURED_C_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
@@ -1309,8 +1301,6 @@ $(USER_CONFIGURED_C_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-configured-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-c-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 
 ppl-devref-configured-c-interface-@VERSION@-html: \
 devref-language-interface.doxyconf \
@@ -1323,8 +1313,6 @@ $(DEVREF_CONFIGURED_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_DEVREF)"'|' \
 	    $<  > Doxyfile.devref-configured-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-c-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
 endif BUILD_C_INTERFACE
 
@@ -1338,7 +1326,7 @@ SED_CONFIGURED_PROLOG_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>//'
 
 SED_CONFIGURED_PROLOG_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Prolog/Prolog_configured_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 ../interfaces/Prolog/Prolog_configured_domains.dox \
@@ -1346,7 +1334,7 @@ $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox
 
 SED_CONFIGURED_PROLOG_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Prolog/Prolog_configured_interface.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 ../interfaces/Prolog/Prolog_configured_domains.dox \
@@ -1400,8 +1388,6 @@ $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
 	  $<  > Doxyfile.user-configured-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-prolog-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 
 ppl-devref-configured-prolog-interface-@VERSION@-html: \
 devref-language-interface.doxyconf \
@@ -1414,8 +1400,6 @@ $(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-configured-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-prolog-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
 endif BUILD_SOME_PROLOG_INTERFACES
 
@@ -1429,11 +1413,11 @@ SED_CONFIGURED_OCAML_OPTION = \
   -e 's/<PPL_SED_USEPACKAGE_OCAMLDOC>/\\usepackage{ocamldoc}/'
 
 SED_CONFIGURED_OCAML_INPUT_USER = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox
 
 SED_CONFIGURED_OCAML_INPUT_DEVREF = \
-$(DOX_LICENSE_FILES) \
+$(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
@@ -1486,8 +1470,6 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
 	    $<  > Doxyfile.user-configured-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		../interfaces/OCaml/ppl_ocaml.mli
@@ -1503,8 +1485,6 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
 	  $<  > Doxyfile.devref-configured-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
 		../interfaces/OCaml/ppl_ocaml.mli
@@ -1587,8 +1567,6 @@ $(USER_CONFIGURED_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
 	    >> Doxyfile.user-configured-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-java-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(USER_CORE_HTML_DIR).tag@../$(USER_CORE_HTML_DIR))
 
 ppl-devref-configured-java-interface-@VERSION@-html: \
 devref-language-interface.doxyconf \
@@ -1603,8 +1581,6 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
 	    >> Doxyfile.devref-configured-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-html
-	(cd $@; $(INSTALLDOX) \
-		-l $(DEVREF_CORE_HTML_DIR).tag@../$(DEVREF_CORE_HTML_DIR))
 
 endif BUILD_JAVA_INTERFACE
 
