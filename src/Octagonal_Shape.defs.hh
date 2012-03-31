@@ -1399,7 +1399,7 @@ public:
          \leq \mathrm{var}'
          \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
 
-         \param var
+    \param var
     The variable updated by the affine relation;
 
     \param lb_expr
