@@ -365,15 +365,15 @@ private:
   explicit Congruence_System(dimension_type d);
 
   /*! \brief
-    Concatenates copies of the congruences from \p cgs onto \p *this.
+    Concatenates copies of the congruences from \p y onto \p *this.
 
-    \param cgs
+    \param y
     The congruence system to append to \p this.  The number of rows in
     \p y must be strictly positive.
 
     The matrix for the new system of congruences is obtained by
     leaving the old system in the upper left-hand side and placing the
-    congruences of \p cgs in the lower right-hand side, and padding
+    congruences of \p y in the lower right-hand side, and padding
     with zeroes.
   */
   void concatenate(const Congruence_System& y);
