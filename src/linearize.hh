@@ -32,29 +32,37 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \brief
+/*! \brief \relates Parma_Polyhedra_Library::Concrete_Expression
   Helper function used by <CODE>linearize</CODE> to linearize a
   sum of floating point expressions.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
 
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param bop_expr The binary operator concrete expression to linearize.
-  Its binary operator type must be <CODE>ADD</CODE>.
-  \param oracle The FP_Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result The modified linear form.
+  \tparam Target
+  A type template parameter specifying the instantiation of
+  Concrete_Expression to be used.
 
-  \return <CODE>true</CODE> if the linearization succeeded,
+  \tparam FP_Interval_Type
+  A type template parameter for the intervals used in the abstract domain.
+  The interval bounds should have a floating point type.
+
+  \return
+  <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
+
+  \param bop_expr
+  The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>ADD</CODE>.
+
+  \param oracle
+  The FP_Oracle to be queried.
+
+  \param lf_store
+  The linear form abstract store.
+
+  \param result
+  The modified linear form.
 
   \par Linearization of sum floating-point expressions
 
@@ -132,29 +140,37 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
-/*! \brief
+/*! \brief \relates Parma_Polyhedra_Library::Concrete_Expression
   Helper function used by <CODE>linearize</CODE> to linearize a
   difference of floating point expressions.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
 
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param bop_expr The binary operator concrete expression to linearize.
-  Its binary operator type must be <CODE>SUB</CODE>.
-  \param oracle The FP_Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result The modified linear form.
+  \tparam Target
+  A type template parameter specifying the instantiation of
+  Concrete_Expression to be used.
 
-  \return <CODE>true</CODE> if the linearization succeeded,
+  \tparam FP_Interval_Type
+  A type template parameter for the intervals used in the abstract domain.
+  The interval bounds should have a floating point type.
+
+  \return
+  <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
+
+  \param bop_expr
+  The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>SUB</CODE>.
+
+  \param oracle
+  The FP_Oracle to be queried.
+
+  \param lf_store
+  The linear form abstract store.
+
+  \param result
+  The modified linear form.
 
   \par Linearization of difference floating-point expressions
 
@@ -238,29 +254,37 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
-/*! \brief
+/*! \brief \relates Parma_Polyhedra_Library::Concrete_Expression
   Helper function used by <CODE>linearize</CODE> to linearize a
   product of floating point expressions.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
 
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param bop_expr The binary operator concrete expression to linearize.
-  Its binary operator type must be <CODE>MUL</CODE>.
-  \param oracle The FP_Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result The modified linear form.
+  \tparam Target
+  A type template parameter specifying the instantiation of
+  Concrete_Expression to be used.
 
-  \return <CODE>true</CODE> if the linearization succeeded,
+  \tparam FP_Interval_Type
+  A type template parameter for the intervals used in the abstract domain.
+  The interval bounds should have a floating point type.
+
+  \return
+  <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
+
+  \param bop_expr
+  The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>MUL</CODE>.
+
+  \param oracle
+  The FP_Oracle to be queried.
+
+  \param lf_store
+  The linear form abstract store.
+
+  \param result
+  The modified linear form.
 
   \par Linearization of multiplication floating-point expressions
 
@@ -428,29 +452,37 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
-/*! \brief
+/*! \brief \relates Parma_Polyhedra_Library::Concrete_Expression
   Helper function used by <CODE>linearize</CODE> to linearize a
   division of floating point expressions.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
 
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param bop_expr The binary operator concrete expression to linearize.
-  Its binary operator type must be <CODE>DIV</CODE>.
-  \param oracle The FP_Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result The modified linear form.
+  \tparam Target
+  A type template parameter specifying the instantiation of
+  Concrete_Expression to be used.
 
-  \return <CODE>true</CODE> if the linearization succeeded,
+  \tparam FP_Interval_Type
+  A type template parameter for the intervals used in the abstract domain.
+  The interval bounds should have a floating point type.
+
+  \return
+  <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
+
+  \param bop_expr
+  The binary operator concrete expression to linearize.
+  Its binary operator type must be <CODE>DIV</CODE>.
+
+  \param oracle
+  The FP_Oracle to be queried.
+
+  \param lf_store
+  The linear form abstract store.
+
+  \param result
+  The modified linear form.
 
   \par Linearization of division floating-point expressions
 
@@ -561,28 +593,36 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   return !result.overflows();
 }
 
-/*! \brief
+/*! \brief \relates Parma_Polyhedra_Library::Concrete_Expression
   Helper function used by <CODE>linearize</CODE> to linearize a cast
   floating point expression.
-
-  \par Template type parameters
-
-  - The class template parameter \p Target specifies the implementation
-  of Concrete_Expression to be used.
-  - The class template parameter \p FP_Interval_Type represents the type
-  of the intervals used in the abstract domain. The interval bounds
-  should have a floating point type.
 
   Makes \p result become the linearization of \p *this in the given
   composite abstract store.
 
-  \param cast_expr The cast operator concrete expression to linearize.
-  \param oracle The FP_Oracle to be queried.
-  \param lf_store The linear form abstract store.
-  \param result The modified linear form.
+  \tparam Target
+  A type template parameter specifying the instantiation of
+  Concrete_Expression to be used.
 
-  \return <CODE>true</CODE> if the linearization succeeded,
+  \tparam FP_Interval_Type
+  A type template parameter for the intervals used in the abstract domain.
+  The interval bounds should have a floating point type.
+
+  \return
+  <CODE>true</CODE> if the linearization succeeded,
   <CODE>false</CODE> otherwise.
+
+  \param cast_expr
+  The cast operator concrete expression to linearize.
+
+  \param oracle
+  The FP_Oracle to be queried.
+
+  \param lf_store
+  The linear form abstract store.
+
+  \param result
+  The modified linear form.
 */
 template <typename Target, typename FP_Interval_Type>
 static bool
@@ -644,7 +684,7 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
 }
 
 //! Linearizes a floating point expression.
-/*! \relates Concrete_Expression
+/*! \relates Parma_Polyhedra_Library::Concrete_Expression
   Makes \p result become a linear form that correctly approximates the
   value of \p expr in the given composite abstract store.
 
