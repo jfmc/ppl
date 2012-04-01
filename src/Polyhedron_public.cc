@@ -194,18 +194,6 @@ PPL::Polyhedron::minimized_generators() const {
   return generators();
 }
 
-PPL::Grid_Generator_System
-PPL::Polyhedron::grid_generators() const {
-  Grid_Generator_System ggs(space_dim);
-  // Trivially true point.
-  ggs.insert(grid_point(0*(Variable(0))));
-  // A line for each dimension.
-  dimension_type dim = 0;
-  while (dim < space_dim)
-    ggs.insert(grid_line(Variable(dim)));
-  return ggs;
-}
-
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
