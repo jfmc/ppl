@@ -369,11 +369,6 @@ Polyhedron::minimized_congruences() const {
   return Congruence_System(minimized_constraints());
 }
 
-inline Grid_Generator_System
-Polyhedron::minimized_grid_generators() const {
-  return grid_generators();
-}
-
 inline void
 Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
   add_congruences(cgs);

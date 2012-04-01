@@ -35,8 +35,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
-#include "Grid_Generator_System.defs.hh"
-#include "Grid_Generator_System.inlines.hh"
 #include "Bit_Matrix.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
@@ -549,12 +547,6 @@ public:
     as \p *this.
   */
   Congruence_System minimized_congruences() const;
-
-  //! Returns a universe system of grid generators.
-  Grid_Generator_System grid_generators() const;
-
-  //! Returns a universe system of grid generators.
-  Grid_Generator_System minimized_grid_generators() const;
 
   /*! \brief
     Returns the relations holding between the polyhedron \p *this
