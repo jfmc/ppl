@@ -47,6 +47,10 @@ $(PDF_LICENSES) \
 $(TXT_LICENSES) \
 $(PS_LICENSES)
 
+BIBLIOGRAPHIES = \
+ppl.bib \
+ppl_citations.bib
+
 ##### Library Core Manuals (C++ Interface) #####
 
 USER_CORE_HTML_MANUAL = ppl-user-@VERSION@-html.tar.gz
@@ -1629,6 +1633,7 @@ user-language-interface.doxyconf $(USER_JAVA_INTERFACE_STUFF)
 	pdftops $< $@
 
 EXTRA_DIST= \
+$(BIBLIOGRAPHIES) \
 $(DIST_DOCS) \
 $(DOX_FILES) \
 README.doc \
