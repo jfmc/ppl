@@ -10,6 +10,33 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.12.1  (to be released on April 1?, 2012)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  Added new Box<ITV> methods
+
+   bool has_upper_bound(Variable var,
+                        Coefficient& n, Coefficient& d, bool& closed) const;
+   bool has_upper_bound(Variable var,
+                        Coefficient& n, Coefficient& d, bool& closed) const;
+
+   to query a non-empty box for the existence and value of its upper/lower
+   bound on variable `var'. The methods have been also added to all the
+   available language interfaces.
+
+
+Bugfixes
+========
+
+o  Minor documentation fixes.
+
+o  Portability improved.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.12  (released on February 27, 2012)
 --------------------------------------------------------------------------
 
