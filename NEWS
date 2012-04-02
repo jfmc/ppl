@@ -20,7 +20,7 @@ o  Added new Box<ITV> methods
 
    bool has_upper_bound(Variable var,
                         Coefficient& n, Coefficient& d, bool& closed) const;
-   bool has_upper_bound(Variable var,
+   bool has_lower_bound(Variable var,
                         Coefficient& n, Coefficient& d, bool& closed) const;
 
    to query a non-empty box for the existence and value of its upper/lower
