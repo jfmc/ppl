@@ -27,6 +27,9 @@ o  Added new Box<ITV> methods
    bound on variable `var'. The methods have been also added to all the
    available language interfaces.
 
+o  Two BibTeX databases of papers related to the Parma Polyhedra Library
+   have been added to the distribution (in the `doc' directory).
+
 
 Bugfixes
 ========
