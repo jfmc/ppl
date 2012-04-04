@@ -69,27 +69,52 @@ enum Rounding_Dir {
   ROUND_CHECK = ROUND_DIRECT | ROUND_STRICT_RELATION
 };
 
+//! \name Functions Inspecting and/or Combining Rounding_Dir Values
+//@{
+
+/*! \ingroup PPL_CXX_interface */
 Rounding_Dir operator&(Rounding_Dir x, Rounding_Dir y);
+
+/*! \ingroup PPL_CXX_interface */
 Rounding_Dir operator|(Rounding_Dir x, Rounding_Dir y);
 
-/*! \brief
+/*! \brief \ingroup PPL_CXX_interface
   Returns the inverse rounding mode of \p dir,
   <CODE>ROUND_IGNORE</CODE> being the inverse of itself.
 */
 Rounding_Dir inverse(Rounding_Dir dir);
 
+/*! \ingroup PPL_CXX_interface */
 Rounding_Dir round_dir(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_down(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_up(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_ignore(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_not_needed(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_not_requested(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_direct(Rounding_Dir dir);
+
+/*! \ingroup PPL_CXX_interface */
 bool round_inverse(Rounding_Dir dir);
 
+/*! \ingroup PPL_CXX_interface */
 bool round_strict_relation(Rounding_Dir dir);
 
+/*! \ingroup PPL_CXX_interface */
 fpu_rounding_direction_type round_fpu_dir(Rounding_Dir dir);
+
+//@} // Functions Inspecting and/or Combining Rounding_Dir Values
 
 } // namespace Parma_Polyhedra_Library
 

@@ -1,3 +1,1847 @@
+2012-04-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh, src/Polyhedron.inlines.hh,
+	src/Polyhedron_public.cc: Removed two unused and unwanted methods.
+	(They were also wrongly implemented.)
+
+2012-04-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraMPZ12IC.
+
+2012-04-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraMPZ12TR.
+
+2011-09-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Broken link removed.
+
+2011-09-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Links fixed.
+
+2011-09-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Links fixed.
+
+2011-09-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Broken links removed.
+
+2011-09-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: URI's updated.
+
+2010-11-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Andre10.
+
+2010-05-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Fixed CousotC79.
+
+2010-04-30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ10CGTA has been published.
+
+2010-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added BandaG10.
+
+2010-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraMPZ10TR.
+
+2010-03-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added BozgaGI09.
+
+2010-02-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added FeautrierCB07.
+
+2010-02-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added TrifunovicCEFG+10.
+
+2010-01-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ09CGTA renamed and completed.
+
+2010-01-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ10FMSD renamed and completed.
+
+2010-01-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added Feautrier88.
+
+2010-01-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Updated BagnaraHZ10FMSD.
+
+2009-12-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added FagesR09 and JhalaM09.
+
+2009-10-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added the online version of BagnaraHZ09CGTA.
+
+2009-10-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Completed BagnaraHZ09TCS.
+
+2009-09-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ09CGTA.
+
+2009-09-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ09TCS completed.
+
+2009-08-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Improved BagnaraHZ09TCS and BagnaraHZ09FMSD. Added
+	BagnaraHZ09TRb.
+
+2009-08-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Typo fixed.
+
+2009-08-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ09TCS updated.
+
+2009-07-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added PerezRS09.
+
+2009-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added JeannetM09.
+
+2009-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Halbwachs93 completed.
+
+2009-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ09 updated and renamed BagnaraHZ09FMSD.
+
+2009-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added LimeRST09.
+
+2009-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: URL added.
+
+2009-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added RizkBFS09.
+
+2009-05-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ09 will be published in Formal Methods in
+	System Design.
+
+2009-05-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added LeconteB06.
+
+2009-05-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added SenS07TR.
+
+2009-04-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added LogozzoF08.
+
+2009-04-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ09TRa updated.
+
+2009-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Updated BagnaraHZ09TRa.
+
+2009-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added URI for arXiv.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added YangWGI09. Non-ASCII characters
+	removed.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added AlbertACGPZ08.
+
+2009-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ09TRa.
+
+2009-04-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added MoserKK07. Entries sorted. Some
+	specifications of page numbers fixed.
+
+2009-04-07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Added bibtex entry for BagnaraHZ09 (submitted for
+	publication).
+
+2009-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added BandaG09. Used the right kind of dash
+	in other entries.
+
+2009-01-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Frehse08.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added AlbertAGPZ08.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added DenmatGD07.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added KimGR07.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: GulwaniL-AS09 updated.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: AlurKRS08 updated.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added AlbertAGP08.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added MakhloufK06.
+
+2009-01-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BjorndalenA05.
+
+2009-01-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added PopeeaC08.
+
+2009-01-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added BramanM08.
+
+2009-01-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added ChenMC08.
+
+2009-01-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Entries reordered.
+
+2009-01-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added LavironL09.
+
+2009-01-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GulwaniL-AS09.
+
+2009-01-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ09TCS.
+
+2008-12-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added TraonouezLR08.
+
+2008-11-24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Added BemporadFT00TR and BemporadFT01.
+
+2008-11-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Use \url instead of \tt.
+
+2008-11-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added QuillereRW00.
+
+2008-10-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Several corrections to BlanchetCCFMMMR02.
+
+2008-10-27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Added reference to the paper by Blanchet et al that
+	proposes the widening with thresholds (2002).
+
+2008-10-22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Soffia08TR.
+
+2008-09-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Vasconcelos08th.
+
+2008-08-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Removed note from BagnaraHZ08SCP.
+
+2008-08-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added AlurKRS08.
+
+2008-07-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added BouchyFL08.
+
+2008-07-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ08SCP completed.
+
+2008-06-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added Warren03.
+
+2008-06-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added SenS07.
+
+2008-06-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added RepsBL06.
+
+2008-06-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added SimonK07.
+
+2008-04-17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Added bibliographic entry HenkinMT71 (to be double
+	checked).
+
+2008-03-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added PayetS07th.
+
+2008-03-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: GopanR07a completed.
+
+2008-03-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Gopan07th.
+
+2008-03-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Gobert07th.
+
+2008-03-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added SankaranarayananIG07. Completed
+	GopanR07b.
+
+2008-02-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ08 renamed BagnaraHZ08SCP (the paper to
+	appear on Science of Computer Programming). New paper BagnaraHZ08
+	(the VMCAI 2008 paper).
+
+2008-02-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Henriksen07th.
+
+2007-08-30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Starynkevitch07 completed.
+
+2007-08-30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Starynkevitch07.
+
+2007-08-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ08.
+
+2007-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added YangWGI06.
+
+2007-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GopanR07a.
+
+2007-07-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GopanR07b.
+
+2007-07-04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GobertLC07.
+
+2007-07-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: CovaFBV06 completed.
+
+2007-07-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added SankaranarayananISG06.
+
+2007-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Doyen06th.
+
+2007-06-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Typo fixed.
+
+2007-06-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added SlaninaSSM07TR.
+
+2007-06-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ07TRb completed.
+
+2007-06-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Typo fixed.
+
+2007-06-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Vigna07.
+
+2007-06-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added ArmandoBM07.
+
+2007-06-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ07TRb (still incomplete).
+
+2007-06-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Renamed.
+
+2007-06-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ07TR renamed BagnaraHZ07TRa.
+
+2007-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraDHMZ07 completed.
+
+2007-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Revised Ricci02th.
+
+2007-02-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: DoyenHR05 added. Formed DoyenHR05 now has
+	key DoyenHR05TR.
+
+2007-01-19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Added volume number for BagnaraDHMZ07
+
+2007-01-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ07TR.
+
+2007-01-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Fixed Frehse05.
+
+2007-01-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Fixed StoerW70.
+
+2007-01-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added FrankM02th. Completed Flexeder05th.
+
+2007-01-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: FrehseKRM05 replaced by FrehseKRM06.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added a PDF URL to BagnaraHZ06TR.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Flexeder05th.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added ChakrabortyMS06.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added CovaFBV06.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: AsarinDFGLGM06 is no longer "to appear."
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Completed vanHeeOSV06.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: HenriksenG06 completed.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: GopanR06 completed.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: GonnordH06 completed.
+
+2006-12-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: SongCR05 rekeyed SongCR06, corrected and
+	completed.
+
+2006-12-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ06STTT completed.
+
+2006-12-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraDHMZ05TR.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Missing comma added.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraDHMZ06a substituted by BagnaraDHMZ07.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: HalbwachsMG06 completed.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Typo fixed.
+
+2006-12-18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Updated BagnaraDHMZ06a and BagnaraDHMZ06b entries.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ06STTT updated.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Typo fixed.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ06TR corrected and completed.
+
+2006-12-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Key BagnaraHZ04TRa changed to BagnaraHZ04TR.
+	Provisional entry for BagnaraHZ06TR added. Do not use double quotes
+	for numeric fields.
+
+2006-12-18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl_citations.bib: Spelling corrected.
+
+2006-12-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added NakanishiJPF99 and NakanishiF01.
+
+2006-12-11  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Previous references added removed.
+
+2006-12-11  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Revised the reference for BagnaraDHMZ06a.  Added references for AlurCHHHNOSY95, AlurCHH93, and Henzinger96.
+
+2006-09-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Avoid non-ASCII characters.
+
+2006-09-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: Spelling corrections.
+
+2006-09-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added GoldfarbR77.
+
+2006-09-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added PapadimitriouS98.
+
+2006-09-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added AsarinDFGLGM06.
+
+2006-08-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: HalbwachsMP-V03 fixed (copy and paste
+	mistake).
+
+2006-08-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added UchoaFLPPdAA06TR.
+
+2006-08-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GonnordH06.
+
+2006-08-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added HalbwachsMG06.
+
+2006-08-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added HenriksenG06.
+
+2006-08-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added abstracts for Avery06,
+	CarloniPPS-V06, GulavaniR06 and Pop06.
+
+2006-08-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added CarloniPPS-V06.
+
+2006-08-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Pop06.
+
+2006-08-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Avery06.
+
+2006-08-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GulavaniR06.
+
+2006-06-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GopanR06.
+
+2006-04-28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Corrected a spelling error.
+
+2006-04-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Fixed Ancourt91th.
+
+2006-04-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added DooseM05.
+
+2006-04-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: MesnardB05TPLP fixed.
+
+2006-04-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Capitalization fixed in the references about
+	`polymake'.
+
+2006-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added vanHeeOSV06.
+
+2006-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added Ellenbogen04th.
+
+2006-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added SankaranarayananSM06.
+
+2006-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added SankaranarayananCSM06.
+
+2006-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Minor formatting change.
+
+2006-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: GopanDMDRS04 was missing the address field: added.
+
+2006-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added Ricci02th.
+
+2006-04-14  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Added bib entries for Grid papers submitted to FM and
+	about to be sub,itted to LOPSTR. Note that the link on my site to
+	the postscript for the LOPSTR submission is deliberately unreadable
+	until the actual submission.
+
+2006-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: FrehseKR06 fixed.
+
+2006-04-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ05STTT renamed BagnaraHZ06STTT; year field
+	changed to 2006.
+
+2006-04-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added KhachiyanBBEG06.
+
+2006-01-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added FrehseKR06.
+
+2006-01-20  Andrea Pescetti <pescetti@no.email>
+
+	* doc/ppl.bib: Broken and obsolete links updated.
+
+2006-01-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: Added ISBN for the SAS 2005
+	volume.
+
+2006-01-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Trailing blanks removed.
+
+2006-01-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Missing comma added.
+
+2006-01-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraDHMZ05TR.pdf.
+
+2005-09-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Ancourt91th completed.
+
+2005-09-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Fixed many broken or redirected links.
+
+2005-09-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Frehse05th added.
+
+2005-09-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: CacheraM-A05 added.
+
+2005-09-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added DoyenHR05.
+
+2005-09-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added LagoonMS03.
+
+2005-09-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: KruegelKMRV05 added.
+
+2005-09-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added FrehseKRM05.
+
+2005-09-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: SongCR05 added.
+
+2005-09-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: BagnaraR-CZ05 completed.
+
+2005-09-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Completed the bibliographic information for
+	BagnaraHRZ05SCP.
+
+2005-09-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added HuelsbergenHL90.
+
+2005-09-03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Completed the entry for BagnaraHZ05FAC.
+
+2005-08-05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Added 1997 paper by Quinton et al.
+
+2005-05-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Address added to CousotC76.
+
+2005-05-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Unwanted quotes removed.
+
+2005-05-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Conflict removed.
+
+2005-05-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Frehse05 completed.
+
+2005-05-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHZ05FAC.
+
+2005-05-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added BagnaraR-CZ05 and BagnaraR-CZ05TR.
+
+2005-05-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHMZ05 and BagnaraHZ05STTT.
+
+2005-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Announce the new paper on widenings for
+	weakly-relational numeric abstractions.
+
+2005-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Reordered.
+
+2005-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added JaffarMSY94, NelsonO77, NelsonO80, Pratt77 and
+	Shostak81.
+
+2005-04-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Use a double hyphen in page ranges. Use month codes
+	instead of month names.
+
+2005-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraMHZ05TR.
+
+2005-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Mine04 fixed.
+
+2005-03-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added page numbers to Frehse05.
+
+2005-03-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added Mine05th.
+
+2005-02-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added GopanRS05.
+
+2005-01-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Spurious booktitle field removed.
+
+2005-01-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ03b improved.
+
+2005-01-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added SankaranarayananSM05.
+
+2005-01-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Frehse05 added.
+
+2005-01-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHMZ04EA.
+
+2005-01-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Links to Komei Fukuda's home page updated.
+
+2005-01-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BagnaraHRZ05SCP.
+
+2005-01-04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Removed erroneous line in Mine01a.
+
+2004-12-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added Mine01a and Mine02. Minor improvements
+	elsewhere.
+
+2004-12-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Mine04 added.
+
+2004-11-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Previous change reverted.
+
+2004-11-02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: "official" changed to "full".
+
+2004-09-27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: References added to abstract for the Granger 1997
+	paper.
+
+2004-09-27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Removed citations to applications in the paragraph
+	about integral grids. Added to ppl.bib, references for Ancourt
+	thesis, two papers by Granger (1991 and 1997) and Technical report
+	by Quinton et al.
+
+2004-09-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Last change reverted: in the bibliography we use the
+	right LaTeX code, which is then simplified, when needed, for the
+	sake of BibTeX2HTML.
+
+2004-09-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Do not use LaTeX that cannot be decently handled by
+	BibTeX2HTML.
+
+2004-09-27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: Completed draft descriptions of the numerical
+	abstractions. Added to ppl.bib reference to the Mine paper on the
+	octagon domain and to Roberto's thesis. Updated the gif version of
+	the illustration of a relational grid to correspond to that already
+	in abstractions.tex.
+
+2004-08-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Make sure `I/O' is not touched by BibTeX.
+
+2004-08-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Missing comma added.
+
+2004-08-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added a first draft for FrehseHK04.
+
+2004-08-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added a first draft for Frehse04.
+
+2004-08-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Added HalbwachsMP-V03.
+
+2004-08-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: New page and bibliography for citations.
+
+2004-08-25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Integrated the "abstract" of CousotC79.
+
+2004-08-24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Added entries for CousotC76 and CousotC79, with
+	"abstracts" (actually, the first sentences from the introductions)
+	and URLs to PDF versions.
+
+2004-07-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added BalasundaramK89. This paper, back in 1989,
+	introduced what are now called "octagons" under the name "simple
+	sections."
+
+2004-07-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Kannan92 removed.
+
+2004-07-05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Kannan92.
+
+2004-05-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Bagnara98SCP fixed.
+
+2004-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added GopanDMDRS04.
+
+2004-02-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added Masdupuy92 and Masdupuy93th.
+
+2004-01-21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Added entry for Q349.
+
+2004-01-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ03a added. BagnaraHZ03 renamed BagnaraHZ03b.
+
+2004-01-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ04 fixed, completed and renamed BagnaraHZ03
+	(since the publication date is 2003).
+
+2003-11-19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: added reference to Schriver text book.
+
+2003-11-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Key for NookalaR00 capitalized consistently.
+
+2003-11-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ04 added.
+
+2003-11-05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/ppl.bib: NELS and similar changes.
+
+2003-07-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Bagnara98SCP added.
+
+2003-05-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHRZ03 completed.
+
+2003-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Missing commas added, unnecessary commas removed.
+
+2003-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHRZ03 added.
+
+2003-03-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: GawrilowJ01 fixed.
+
+2003-02-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Entry for Quaderno 312 completed. Abstract for
+	Quaderno 305 added.
+
+2003-02-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Draft entry for BagnaraHRZ03TR added.
+
+2003-02-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Typo fixed in Halbwachs79th. HenzingerH95 and
+	HenzingerPW01 added.
+
+2002-11-15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ02TR will appear as Quaderno 305.
+
+2002-10-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ02TR added.
+
+2002-10-15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Halbwachs93 added.
+
+2002-10-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BessonJT99 added.
+
+2002-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BultanGP99 added.
+
+2002-10-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Dantzig63 added.
+
+2002-10-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Typo fixed. File bibliography.raw regenerated with
+	the new version of bibtex2html (1.54).
+
+2002-10-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Srivastava93 added.
+
+2002-09-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraHZ02a added.
+
+2002-09-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraRZH02 added.
+
+2002-07-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Force capitalization of "Parma Polyhedra Library" the
+	right way.
+
+2002-07-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: In the entry for BagnaraRZH02, enforced
+	capitalization of the PPL.
+
+2002-07-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Entry for BagnaraRZH02 completed.
+
+2002-07-03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraRZH02 added.
+
+2002-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraRZH02TR and BagnaraRZH02TRerrata added.
+
+2002-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Halbwachs79th added.
+
+2002-06-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: CousotC92-PLILP added.
+
+2002-04-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: HalbwachsKP95 added.
+
+2002-04-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/ppl.bib: Corrected entry of LeVerge92, so as to consider "Le"
+	as part of the family name.
+
+2002-04-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: LeVergeVDW94 added.
+
+2002-04-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Loechner99 added.
+
+2002-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: StoerW70 added.
+
+2002-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Kuhn56 added.
+
+2002-04-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: HalbwachsPR94 added.
+
+2002-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: NEW-POLKA-1-1-3c added.
+
+2002-04-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Added GawrilowJ00, GawrilowJ01, and LoechnerW97.
+
+2002-04-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: NemhauserW88 fixed.
+
+2001-12-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: There is no abstract in Weyl50.
+
+2001-12-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Weyl35 and Weyl50 added.
+
+2001-10-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: MotzkinRTT53 added.
+
+2001-10-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: NemhauserW88 added.
+
+2001-10-10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Provide the source code from LeVerge92.
+
+2001-10-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Chernikova6[458] fixed: they were all wrong.
+
+2001-10-08  Elisa Ricci <ericci@no.email>
+
+	* doc/ppl.bib: Added the Chernikova's articles (what I know).
+
+2001-10-08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: LeVerge92 fixed (missing comma and spurious
+	brackets).
+
+2001-10-08  Elisa Ricci <ericci@no.email>
+
+	* doc/ppl.bib: Added the 'Abstract' for "A note on Chernikova's
+	Algorithm".
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Fukuda98 added.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: LeVerge92 added.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: CousotH78 fixed.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: FukudaP96 updated: abstract revised, URL and backup
+	copy provided.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: FukudaP96 added.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Generate a bibliography page from ppl.bib: this is
+	referenced from the Documentation page. Abstract of Wilde93th added.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: CousotH78 added.
+
+2001-10-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: All the documentation, both ours and the papers we
+	cite, belong to the Documentation directory.  The mirror subdirectory will contain backup copies of the papers we
+	reference: things disappear from the web far too often.  HalbwachsPR97 added.
+
+2012-04-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/devref-language-interface.doxyconf.in,
+	doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in,
+	doc/user-language-interface.doxyconf.in, doc/user.doxyconf-html.in,
+	doc/user.doxyconf-latex.in: Updated for Doxygen 1.8.0.
+
+2012-03-31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Octagonal_Shape.defs.hh: Indentation fixed.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in: 
+	Simplified INPUT tag values in devref manuals' Doxygen configuration
+	files.  Avoid most of the explicit listing of source files,
+	favouring a much smaller number of file name patterns.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Result.defs.hh, src/Result.inlines.hh,
+	src/Rounding_Dir.defs.hh, src/Rounding_Dir.inlines.hh: Doxygen
+	\relates command can not be used with enumerated types.  Replace it
+	with \name grouping.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/Makefile.am: No longer using the installdox command
+	(deprecated and subject to removal).  Fixed Doxygen configuration
+	paths for license files.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/linearize.hh: Further improvements to documentation of helper
+	functions.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Concrete_Expression.types.hh: Use Doxygen command \class for
+	declared-but-undefined class templates.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/linearize.hh: Improved documentation formatting using Doxygen
+	command \tparam.
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Congruence_System.defs.hh: Fixed typo in documentation
+	(causing a Doxygen warning).
+
+2012-03-31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_header.h: Corrected name of Doxygen
+	documentation group.
+
+2012-03-30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/propagateconstraints2.cc: On machines where float is
+	supported and double is not supported, test01() can yield results
+	that are significantly less precise.  (Thanks to Sean McGovern.)
+
+2012-03-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid.defs.hh: Parameter name fixed.
+
+2012-03-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac, tests/Box/interval1.cc, tests/Box/membytes1.cc: Do
+	not assume doubles are supported.
+
+2012-03-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2012-03-26  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Interval.inlines.hh, tests/Concrete_Expression/bdshape1.cc,
+	tests/Concrete_Expression/bdshape2.cc,
+	tests/Concrete_Expression/octagonalshape1.cc,
+	tests/Concrete_Expression/octagonalshape2.cc,
+	tests/Concrete_Expression/polyhedron2.cc: Surround non integer
+	costants with a cast to boundary type.
+
+2012-03-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Linear_Form.templates.hh,
+	tests/Concrete_Expression/digitalfilters1.cc,
+	tests/Concrete_Expression/linearform1.cc,
+	tests/Concrete_Expression/linearize.cc,
+	tests/Concrete_Expression/polyhedron1.cc: Do not rely on doubles
+	being supported.
+
+2012-03-26  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* m4/ac_cxx_float_exact_output.m4: Output is exact also with some
+	added needless zeroes.
+
+2012-03-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Random_Number_Generator.inlines.hh: Removed unused parameter
+	name.
+
+2012-03-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.inlines.hh, src/Box.templates.hh,
+	src/Grid_Certificate.cc, src/Interval.inlines.hh,
+	src/MIP_Problem.inlines.hh, src/PIP_Tree.cc,
+	src/checked_float.inlines.hh, src/compiler.hh: Keep macro names
+	within the PPL namespace.
+
+2012-03-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am: Only build `ppl_pl' for
+	checking and install it only when shared libraries are disabled.
+
+2012-03-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_swi_prolog.m4: Cater for versions of SWI-Prolog
+	configured with `--disable-libdirversion'.
+
+2012-03-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_swi_prolog.m4: Make sure the trailing ^M are
+	suppressed under Windows.
+
+2012-03-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_swi_prolog.m4: Remove the drive indication SWI-Prolog
+	prepends to the PLBASE path under Windows.
+
+2012-03-25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Grid_Certificate.cc: Corrected wrong assertion after call to
+	Grid::simplify().
+
+2012-03-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_swi_prolog.m4: Added missing uses of `$EXEEXT'.
+
+2012-03-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am: Added missing link options.
+
+2012-03-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid_Certificate.cc: Useless declarations removed.
+
+2012-03-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Grid_Certificate.cc: Fixed debugging code.
+
+2012-03-24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl_code.m4: Corrected test for has_{upper,lower}_bound so as to
+	avoid calling the predicate on zero-dim boxes.
+
+2012-03-24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_nonpublic.cc: Restored the build.
+
+2012-03-23  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/Grid.defs.hh: Added comments.
+
+2012-03-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Watchdog/Makefile.am: Added `@extra_includes@' to
+	`AM_CPPFLAGS'.  (Thanks to Joao M. Santos Silva.)
+
+2012-03-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* utils/text2cxxarray.in: Portability improved.  (Thanks to Tim
+	Donahue.)
+
+2012-03-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Generator.defs.hh, src/Generator_System.defs.hh,
+	src/Grid.defs.hh, src/Grid_Certificate.cc, src/Grid_nonpublic.cc,
+	src/Grid_simplify.cc, src/Grid_widenings.cc, src/MIP_Problem.cc,
+	src/MIP_Problem.defs.hh, src/OR_Matrix.inlines.hh,
+	src/Octagonal_Shape.templates.hh, src/PIP_Problem.defs.hh,
+	src/PIP_Tree.cc, src/PIP_Tree.defs.hh,
+	src/Partially_Reduced_Product.defs.hh,
+	src/Pointset_Powerset.defs.hh, src/Polyhedron.defs.hh,
+	src/Polyhedron_nonpublic.cc, src/Scalar_Products.cc,
+	src/Scalar_Products.defs.hh, src/Variables_Set.defs.hh: Fixed lots
+	of parameter names.  Detected by ECLAIR service funparam.
+
+2012-03-23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.defs.hh, src/BD_Shape.inlines.hh,
+	src/BD_Shape.templates.hh, src/Bit_Row.defs.hh, src/Box.defs.hh,
+	src/Box.templates.hh, src/CO_Tree.defs.hh, src/CO_Tree.inlines.hh,
+	src/Checked_Number.defs.hh, src/Checked_Number.inlines.hh,
+	src/Concrete_Expression.inlines.hh, src/Congruence.defs.hh,
+	src/Congruence.inlines.hh, src/Congruence_System.cc,
+	src/Congruence_System.defs.hh, src/Congruence_System.inlines.hh,
+	src/Constraint_System.defs.hh, src/Determinate.defs.hh,
+	src/Generator.cc, src/Grid.defs.hh, src/Linear_Row.inlines.hh,
+	src/MIP_Problem.defs.hh, src/MIP_Problem.inlines.hh,
+	src/OR_Matrix.defs.hh, src/OR_Matrix.inlines.hh,
+	src/Octagonal_Shape.defs.hh, src/Octagonal_Shape.templates.hh,
+	src/PIP_Problem.inlines.hh, src/PIP_Tree.inlines.hh,
+	src/Partially_Reduced_Product.defs.hh,
+	src/Partially_Reduced_Product.inlines.hh,
+	src/Partially_Reduced_Product.templates.hh,
+	src/Pointset_Powerset.templates.hh, src/Polyhedron.defs.hh,
+	src/Polyhedron.templates.hh, src/Polyhedron_nonpublic.cc,
+	src/Ptr_Iterator.inlines.hh, src/termination.templates.hh: Fixed
+	lots of parameter names.  Detected by ECLAIR service funparam.
+
+2012-03-22  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/BD_Shape.templates.hh: Fixed indentation.
+
+2012-03-21  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/OR_Matrix.inlines.hh: Removed extra parenthesis.
+
+2012-03-21  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* demos/ppl_pips/ppl_pips.cc, src/CO_Tree.cc,
+	src/Floating_Point_Expression.templates.hh,
+	src/OR_Matrix.inlines.hh, src/Octagonal_Shape.templates.hh,
+	src/checked.cc, src/checked_int.inlines.hh: Added some missing
+	parenthesis.
+
+2012-03-21  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/OR_Matrix.inlines.hh, src/checked_int.inlines.hh: Added
+	missing parentheses.  Detected by eclair service exprprns.
+
+2012-03-21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4: 
+	Fixed a couple of typos.
+
+2012-03-21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4,
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl_code.m4, src/Box.defs.hh, src/Box.inlines.hh,
+	src/Box.templates.hh: Improved documentation for
+	Box<ITV>::has_{upper,lower}_bound().  Weakened precondition
+	regarding box emptiness: the box can be empty, but it can not be
+	marked empty.  Added a test to the Prolog interface.
+
+2012-03-21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	interfaces/C/ppl_interface_generator_c_h_code.m4,
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	,
+	interfaces/Java/parma_polyhedra_library/ppl_interface_generator_jav
+	a_classes_java_code.m4,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m
+	4, interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4,
+	src/Box.defs.hh, src/Box.inlines.hh, src/Box.templates.hh,
+	src/Grid.templates.hh, src/Polyhedron.templates.hh: Modified
+	interface for Box<ITV>::has_{upper,lower}_bound.  The changes are
+	meant to make it more similar to, e.g., maximize().  Hence, we no
+	pass in a Variable rather than a bare dimension_type and the boolean
+	reference argument `closed' is the last one.
+
+2012-03-20  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/Boundary.defs.hh, src/CO_Tree.cc, src/Float.templates.hh,
+	src/OR_Matrix.inlines.hh, src/PIP_Tree.cc,
+	src/Pointset_Powerset.templates.hh, src/Sparse_Row.cc: Added
+	parentheses and improved formatting.  Missing parentheses detected
+	by ECLAIR service exprprns.
+
+2012-03-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/glpk_set_d_eps.c: This file is not part of the
+	Parma Polyhedra Library.
+
+2012-03-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4: Added
+	Box method has_{upper.lower}_bound to OCaml and Prolog lang
+	interfaces.
+
+2012-03-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	*
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	,
+	interfaces/Java/parma_polyhedra_library/ppl_interface_generator_jav
+	a_classes_java_code.m4,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m
+	4: Added Box method has_{upper,lower}_bound to Java language
+	interface.
+
+2012-03-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	interfaces/C/ppl_interface_generator_c_h_code.m4,
+	interfaces/ppl_interface_generator_common_dat.m4,
+	interfaces/ppl_interface_generator_common_procedure_generators.m4: 
+	Added Box methods has_{upper,lower}_bound to C language interface.
+
+2012-03-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/README: Text revised.
+
+2012-03-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure: Sentence revised.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_pips/ppl_pips.1, doc/libppl.3, doc/libppl_c.3,
+	doc/ppl-config.1, doc/ppl-config_extra_man_text: Man pages updated.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox,
+	interfaces/Prolog/Prolog_interface_compilation.dox: Use a canonical
+	FDL text.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/version.cc: Updated.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox,
+	interfaces/Prolog/Prolog_interface_compilation.dox: URL fixed.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox: Indentation fixed.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/tests/clpq2.pl: Cleaned.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, README.alpha, README.arm, README.configure,
+	README.solaris, STANDARDS, tests/README: Copyright wording fixed.
+
+2012-03-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox,
+	interfaces/Prolog/Prolog_interface_compilation.dox: Updated two
+	spurious references to FDL 1.1.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, README.alpha, README.arm, README.configure,
+	README.solaris, STANDARDS, doc/README.doc, tests/README: Use a
+	consistent formatting.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, README.alpha, README.arm, README.configure,
+	README.solaris, STANDARDS, doc/README.doc,
+	doc/devref-language-interface.tex, doc/devref.tex,
+	doc/user-language-interface.tex, doc/user.tex, tests/README: Wording
+	fixed/improved.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/README.doc: Blank line added.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README, README.alpha, README.arm, README.configure,
+	README.solaris, STANDARDS, doc/README.doc, tests/README: Use
+	consistent formatting for the FDL.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface_compilation.dox: Added missing
+	paragraph.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox, doc/devref-language-interface.tex,
+	doc/devref.tex, doc/user-language-interface.tex, doc/user.tex: 
+	Standardized copyright messages.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.alpha, README.arm, README.solaris: Made uniform as far as
+	the copyright message and licensing conditions are concerned.
+
+2012-03-17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure: Updated: we no longer use CVS.
+
+2012-03-15  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/Checked_Number.defs.hh, src/Checked_Number.inlines.hh,
+	src/checked.defs.hh, src/meta_programming.hh: Ensure macro
+	parameters in macro bodies are in parentheses.
+
+2012-03-14  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/checked.defs.hh, src/checked_numeric_limits.hh,
+	src/globals.defs.hh: Ensure parameters in bodies of macros are
+	parenthesized.
+
+2012-03-14  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/Checked_Number.inlines.hh, src/checked.defs.hh,
+	src/checked_numeric_limits.hh, src/compiler.hh,
+	src/globals.defs.hh, src/meta_programming.hh: Ensure parameters in
+	macro bodies are parenthesized appropriately.  Missing parentheses
+	detected by ECLAIR service macrbody.
+
+2012-03-14  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Checked_Number.inlines.hh: Avoid needless macro complexity.
+
+2012-03-13  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* README.configure, demos/ppl_lpsol/glpk_set_d_eps.c,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m
+	4, interfaces/Prolog/Prolog_configured_interface.dox,
+	interfaces/Prolog/Prolog_interface.dox,
+	interfaces/Prolog/Prolog_interface_sysdep.dox,
+	interfaces/Prolog/Prolog_interface_sysindep.dox,
+	interfaces/Prolog/Prolog_interface_sysindep_domains.dox,
+	interfaces/Prolog/ppl_interface_generator_prolog_dox.m4,
+	tests/Concrete_Expression/linearize.cc, tests/Grid/Makefile.am,
+	tests/Partially_Reduced_Product/Makefile.am,
+	tests/Powerset/Makefile.am, tests/README: Fixed licenses text.
+
+2012-03-13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Concrete_Expression/Makefile.am: Removed bogus use of
+	EXTRA_DIST.
+
+2012-03-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc: Avoid implicit conversions to bool.
+	Detected by ECLAIR service utypflag.
+
+2012-03-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	interfaces/Prolog/SWI/swi_cfli.hh: Avoid implicit conversion from
+	boolean to integral.  Detected by ECLAIR service utypflag.
+
+2012-03-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BDS_Status.inlines.hh, src/Og_Status.inlines.hh: Prefer
+	testing explicitly against zero.  Detected by ECLAIR service
+	utypflag.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am: Use variables instead of repetition.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am: Typo fixed.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface_sysindep.dox: Typos fixed.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/tests/clpq2.pl: Predicates renamed.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/fpu-c99.inlines.hh: Identifier fixed.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/generalizedaffineimage2.cc: String fixed.
+
+2012-03-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Generator.defs.hh, src/Grid_Generator.defs.hh: Comments
+	simplified.
+
+2012-03-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/ppl-config.cc.in: Commented-out code removed.  Detected by
+	ECLAIR service cmntdout.
+
+2012-03-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Comment corrected.
+
+2012-03-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/termination.cc: Old FIXMEs dealt with.  Detected by ECLAIR
+	service cmntdout.
+
+2012-03-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh,
+	src/Cast_Floating_Point_Expression.defs.hh,
+	src/Constant_Floating_Point_Expression.defs.hh,
+	src/Difference_Floating_Point_Expression.defs.hh,
+	src/Division_Floating_Point_Expression.defs.hh, src/Float.defs.hh,
+	src/Floating_Point_Expression.defs.hh, src/Linear_Form.defs.hh,
+	src/Multiplication_Floating_Point_Expression.defs.hh,
+	src/Octagonal_Shape.templates.hh,
+	src/Sum_Floating_Point_Expression.defs.hh,
+	src/Variable_Floating_Point_Expression.defs.hh, src/linearize.hh: Do
+	use the notation "[l, u]" to denote the closed interval with
+	boundaries `l' and `u'.
+
+2012-03-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Octagonal_Shape.templates.hh: Added missing full-stop in
+	comment.
+
+2012-03-08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.defs.hh, src/Box.inlines.hh, src/Box.templates.hh,
+	src/Grid.templates.hh, src/Polyhedron.templates.hh: Renamed Box
+	methods get_{upper,lower}_bound() as has_{upper,lower}_bound().
+	Improved documentation: in particular, make clearer that undefined
+	behavior is obtained when calling them on an empty box.
+
+2012-03-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_public.cc: Avoid implicit conversions to bool
+	(prefer explicit tests against zero).  Detected by ECLAIR service
+	utypflag.
+
+2012-03-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Row_Flags.cc: Avoid implicit cast narrowing a signed integer
+	value.  Detected by ECLAIR service utypflag.
+
+2012-03-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Row_Flags.defs.hh: Removed unused static const data member.
+
+2012-03-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.cc,
+	interfaces/C/ppl_c_implementation_common.inlines.hh,
+	interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	src/Pointset_Powerset.templates.hh: Avoid implicit conversions to
+	bool.  Detected by ECLAIR service utypflag.
+
+2012-03-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/assert.hh: Avoid implicit coversion to bool.  Detected by
+	Boolean service utypflag.
+
+2012-02-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_numeric_limits.hh: Added missing parentheses around a
+	macro arguments.  Detected by ECLAIR service macrbody.
+
+2012-02-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/ppl-config.cc.in: Avoid mixing plain character data with
+	numeric data.  Detected by ECLAIR service utypflag.
+
+2012-02-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/ppl-config.cc.in: Code layout fixed.
+
+2012-02-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Updated.
+
+2012-02-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Added a missing project and updated a broken link.
+
+2012-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
 2012-02-27  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* CREDITS, TODO: Updated.

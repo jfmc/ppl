@@ -15,31 +15,51 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-//! The base class of all concrete expressions.
+/*
+  NOTE: Doxygen seems to ignore documentation blocks attached to
+  template class declarations that are not provided with a definition.
+  This justifies (here below) the explicit use of Doxygen command \class.
+*/
+
+/*! \brief \class Parma_Polyhedra_Library::Concrete_Expression
+  The base class of all concrete expressions.
+*/
 template <typename Target>
 class Concrete_Expression;
 
-//! A binary operator applied to two concrete expressions.
+/*! \brief \class Parma_Polyhedra_Library::Binary_Operator
+  A binary operator applied to two concrete expressions.
+*/
 template <typename Target>
 class Binary_Operator;
 
-//! A unary operator applied to one concrete expression.
+/*! \brief \class Parma_Polyhedra_Library::Unary_Operator
+  A unary operator applied to one concrete expression.
+*/
 template <typename Target>
 class Unary_Operator;
 
-//! A cast operator converting one concrete expression to some type.
+/*! \brief \class Parma_Polyhedra_Library::Cast_Operator
+  A cast operator converting one concrete expression to some type.
+*/
 template <typename Target>
 class Cast_Operator;
 
-//! An integer constant concrete expression.
+/*! \brief \class Parma_Polyhedra_Library::Integer_Constant
+  An integer constant concrete expression.
+*/
 template <typename Target>
 class Integer_Constant;
 
-//! A floating-point constant concrete expression.
+/*! \brief \class Parma_Polyhedra_Library::Floating_Point_Constant
+  A floating-point constant concrete expression.
+*/
 template <typename Target>
 class Floating_Point_Constant;
 
-//! A concrete expression representing a reference to some approximable.
+/*! \brief \class Parma_Polyhedra_Library::Approximable_Reference
+  A concrete expression representing a reference to some approximable.
+*/
 template <typename Target>
 class Approximable_Reference;
 

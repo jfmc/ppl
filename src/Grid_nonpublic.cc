@@ -701,8 +701,7 @@ PPL::Grid::refine_no_check(const Constraint& c) {
 }
 
 void
-PPL::Grid::throw_invalid_argument(const char* method,
-				  const char* reason) const {
+PPL::Grid::throw_invalid_argument(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << reason << ".";
@@ -807,7 +806,7 @@ throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_invalid_constraint(const char* method,
-				    const char* c_name) const {
+				    const char* c_name) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << c_name << " is not an equality constraint.";
@@ -816,7 +815,7 @@ PPL::Grid::throw_invalid_constraint(const char* method,
 
 void
 PPL::Grid::throw_invalid_constraints(const char* method,
-				    const char* cs_name) const {
+				    const char* cs_name) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "the constraint system " << cs_name
@@ -826,7 +825,7 @@ PPL::Grid::throw_invalid_constraints(const char* method,
 
 void
 PPL::Grid::throw_invalid_generator(const char* method,
-				   const char* g_name) const {
+				   const char* g_name) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty grid and "
@@ -836,7 +835,7 @@ PPL::Grid::throw_invalid_generator(const char* method,
 
 void
 PPL::Grid::throw_invalid_generators(const char* method,
-				    const char* gs_name) const {
+				    const char* gs_name) {
   std::ostringstream s;
   s << "PPL::Grid::" << method << ":" << std::endl
     << "*this is an empty grid and" << std::endl

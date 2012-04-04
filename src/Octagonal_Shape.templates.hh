@@ -302,8 +302,9 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw_generic("Octagonal_Shape(gs)",
-                  "the non-empty generator system gs contains no points.");
+    throw_invalid_argument("Octagonal_Shape(gs)",
+                           "the non-empty generator system gs "
+                           "contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator k = gs_begin; k != gs_end; ++k) {
@@ -402,7 +403,8 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
     if (c.is_tautological())
       return;
     // Nontrivial strict inequalities are not allowed.
-    throw_generic("add_constraint(c)", "strict inequalities are not allowed");
+    throw_invalid_argument("add_constraint(c)",
+                           "strict inequalities are not allowed");
   }
 
   dimension_type num_vars = 0;
@@ -414,8 +416,8 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   if (!Octagonal_Shape_Helper
     ::extract_octagonal_difference(c, c_space_dim, num_vars,
                                    i, j, coeff, term))
-    throw_generic("add_constraint(c)",
-                  "c is not an octagonal constraint");
+    throw_invalid_argument("add_constraint(c)",
+                           "c is not an octagonal constraint");
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint (not a strict inequality).
@@ -486,8 +488,8 @@ Octagonal_Shape<T>::add_congruence(const Congruence& cg) {
       return;
     }
     // Non-trivial and proper congruences are not allowed.
-    throw_generic("add_congruence(cg)",
-                  "cg is a non-trivial, proper congruence");
+    throw_invalid_argument("add_congruence(cg)",
+                           "cg is a non-trivial, proper congruence");
   }
 
   PPL_ASSERT(cg.is_equality());
@@ -696,7 +698,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         if (left_w_id < right_w_id)
           add_octagonal_constraint(n_right, n_left, c_plus_minus_a_minus);
         else
-          add_octagonal_constraint(n_left + 1, n_right + 1, c_plus_minus_a_minus);
+          add_octagonal_constraint(n_left + 1, n_right + 1,
+                                   c_plus_minus_a_minus);
         PPL_ASSERT(OK());
         return;
       }
@@ -739,7 +742,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
         if (left_w_id < right_w_id)
-          add_octagonal_constraint(n_right + 1, n_left + 1, c_plus_minus_a_minus);
+          add_octagonal_constraint(n_right + 1, n_left + 1,
+                                   c_plus_minus_a_minus);
         else
           add_octagonal_constraint(n_left, n_right, c_plus_minus_a_minus);
         PPL_ASSERT(OK());
@@ -814,7 +818,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         dimension_type n_second_var = second_v * 2;
         linear_form_upper_bound(right_minus_left - first + second,
                                 upper_bound);
-        add_octagonal_constraint(n_second_var + 1, n_first_var + 1, upper_bound);
+        add_octagonal_constraint(n_second_var + 1, n_first_var + 1,
+                                 upper_bound);
         linear_form_upper_bound(right_minus_left + first + second,
                                 upper_bound);
         add_octagonal_constraint(n_second_var + 1, n_first_var, upper_bound);
@@ -1149,7 +1154,8 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   // is greater than or equal to the correspondent one of `y'.
   for (typename OR_Matrix<N>::const_element_iterator
          i = matrix.element_begin(), j = y.matrix.element_begin(),
-         matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i, ++j)
+         matrix_element_end = matrix.element_end();
+       i != matrix_element_end; ++i, ++j)
     if (*i < *j)
       return false;
   return true;
@@ -4120,7 +4126,9 @@ Octagonal_Shape<T>
         // it is used for the computation of `lb_v'.
         // Let half = m_cu_u / 2.
         div_2exp_assign_r(half, matrix[n_u + 1][n_u], 1, ROUND_UP);
-        N& m_minus_v_minus_u = (n_v < n_u) ? matrix[n_u][n_v + 1] : m_v[n_u + 1];
+        N& m_minus_v_minus_u = (n_v < n_u)
+          ? matrix[n_u][n_v + 1]
+          : m_v[n_u + 1];
         sub_assign_r(m_minus_v_minus_u, minus_lb_v, half, ROUND_UP);
       }
       else {
@@ -4444,7 +4452,8 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP(N, minus_coeff_i);
         // Note: indices above `w' can be disregarded, as they all have
         // a zero coefficient in `sc_expr'.
-        for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+        for (Row_iterator m_iter = m_begin,
+               m_iter_end = m_begin + (2 * w_id + 2);
              m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
@@ -4589,7 +4598,8 @@ Octagonal_Shape<T>::refine(const Variable var,
             mul_2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_UP);
             matrix[n_var][n_var + 1] = double_neg_sum;
             // Deduce constraints of the form `-v +/- u', where `u != v'.
-            deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_denom, neg_sum);
+            deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_denom,
+                                       neg_sum);
           }
           else
             // Here `neg_pinf_count == 1'.
@@ -4631,7 +4641,8 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
         // Note: indices above `w_id' can be disregarded, as they all have
         // a zero coefficient in `expr'.
-        for (Row_Iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+        for (Row_Iterator m_iter = m_begin,
+               m_iter_end = m_begin + (2 * w_id + 2);
              m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
@@ -4715,7 +4726,8 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP(N, coeff_i);
         PPL_DIRTY_TEMP(N, approx_i);
         PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
-        for (Row_Iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
+        for (Row_Iterator m_iter = m_begin,
+               m_iter_end = m_begin + (2 * w_id + 2);
              m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
@@ -4748,9 +4760,10 @@ Octagonal_Shape<T>::refine(const Variable var,
         // Divide by the (sign corrected) denominator (if needed).
         if (sc_denom != 1) {
           // Before computing the quotient, the denominator should be
-          // approximated towards zero. Since `sc_denom' is known to be positive,
-          // this amounts to rounding downwards, which is achieved by rounding
-          // upwards `minus_sc_denom' and negating again the result.
+          // approximated towards zero. Since `sc_denom' is known to be
+          // positive, this amounts to rounding downwards, which is
+          // achieved by rounding upwards `minus_sc_denom' and
+          // negating again the result.
           PPL_DIRTY_TEMP(N, down_sc_denom);
           assign_r(down_sc_denom, minus_sc_denom, ROUND_UP);
           neg_assign_r(down_sc_denom, down_sc_denom, ROUND_UP);
@@ -4763,7 +4776,8 @@ Octagonal_Shape<T>::refine(const Variable var,
           mul_2exp_assign_r(double_sum, sum, 1, ROUND_UP);
           add_octagonal_constraint(n_var, n_var + 1, double_sum);
           // Deduce constraints of the form `-v +/- u', where `u != v'.
-          deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_denom, sum);
+          deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_denom,
+                                     sum);
         }
         else if (pinf_count == 1) {
           dimension_type pinf_ind = 2*pinf_index;
@@ -4805,7 +4819,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
                                  denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_image(v, e, d)", "d == 0");
+    throw_invalid_argument("affine_image(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -5454,7 +5468,8 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
     if (curr_lb != 0 || curr_ub != 0) {
       assign_r(curr_var_ub, matrix[n_var + 1][n_var], ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_var_ub, curr_var_ub, 1, ROUND_UP);
-      neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var + 1], ROUND_NOT_NEEDED);
+      neg_assign_r(curr_minus_var_ub, matrix[n_var][n_var + 1],
+                   ROUND_NOT_NEEDED);
       div_2exp_assign_r(curr_minus_var_ub, curr_minus_var_ub, 1, ROUND_DOWN);
       // Optimize the most common case: curr = +/-[1, 1].
       if (curr_lb == 1 && curr_ub == 1) {
@@ -5539,7 +5554,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
 
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_preimage(v, e, d)", "d == 0");
+    throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -5645,7 +5660,7 @@ Octagonal_Shape<T>
                            Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -5663,9 +5678,12 @@ Octagonal_Shape<T>
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_image(v, r, e, d)",
-                  "r is a strict relation symbol and "
-                  "*this is an Octagonal_Shape");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
+                           "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
+                           "r is the disequality relation symbol");
 
   if (relsym == EQUAL) {
     // The relation symbol is "=":
@@ -6148,9 +6166,12 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
   // Strict relation symbols are not admitted for octagons.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_image(e1, r, e2)",
-                  "r is a strict relation symbol and "
-                  "*this is an Octagonal_Shape");
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+                           "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+                           "r is the disequality relation symbol");
 
   strong_closure_assign();
   // The image of an empty octagon is empty.
@@ -6321,7 +6342,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
                                          denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
 
   // `var' should be one of the dimensions of the octagon.
   const dimension_type var_id = var.id();
@@ -6333,11 +6354,11 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "ub", ub_expr);
 
   strong_closure_assign();
@@ -6608,7 +6629,7 @@ Octagonal_Shape<T>
                               denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("generalized_affine_preimage(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -6626,9 +6647,12 @@ Octagonal_Shape<T>
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_preimage(v, r, e, d)",
-                  "r is a strict relation symbol and "
-                  "*this is an Octagonal_Shape");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "r is the disequality relation symbol");
 
   if (relsym == EQUAL) {
     // The relation symbol is "=":
@@ -6696,9 +6720,12 @@ Octagonal_Shape<T>
 
   // Strict relation symbols are not admitted for octagons.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_preimage(e1, r, e2)",
-                  "r is a strict relation symbol and "
-                  "*this is an Octagonal_Shape");
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
+                           "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
+                           "r is the disequality relation symbol");
 
   strong_closure_assign();
   // The image of an empty octagon is empty.
@@ -6845,7 +6872,7 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
                                             denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
 
   // `var' should be one of the dimensions of the octagon.
   const dimension_type var_id = var.id();
@@ -6857,11 +6884,11 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "ub", ub_expr);
 
   strong_closure_assign();
@@ -7023,9 +7050,9 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   // The space dimension of the resulting octagon should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dim)
-    throw_generic("expand_dimension(v, m)",
-                  "adding m new space dimensions exceeds "
-                  "the maximum allowed space dimension");
+    throw_invalid_argument("expand_dimension(v, m)",
+                           "adding m new space dimensions exceeds "
+                           "the maximum allowed space dimension");
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)
@@ -7097,8 +7124,8 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
 
   // Moreover, `dest.id()' should not occur in `vars'.
   if (vars.find(dest.id()) != vars.end())
-    throw_generic("fold_space_dimensions(vs, v)",
-                  "v should not occur in vs");
+    throw_invalid_argument("fold_space_dimensions(vs, v)",
+                           "v should not occur in vs");
 
   // Recompute the elements of the row and the column corresponding
   // to variable `dest' by taking the join of their value with the
@@ -8023,7 +8050,7 @@ Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-Octagonal_Shape<T>::throw_constraint_incompatible(const char* method) const {
+Octagonal_Shape<T>::throw_constraint_incompatible(const char* method) {
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "the constraint is incompatible.";
@@ -8032,9 +8059,8 @@ Octagonal_Shape<T>::throw_constraint_incompatible(const char* method) const {
 
 template <typename T>
 void
-Octagonal_Shape<T>
-::throw_expression_too_complex(const char* method,
-                               const Linear_Expression& le) const {
+Octagonal_Shape<T>::throw_expression_too_complex(const char* method,
+                                                 const Linear_Expression& le) {
   using namespace IO_Operators;
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
@@ -8073,8 +8099,8 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
-Octagonal_Shape<T>::throw_generic(const char* method,
-                                  const char* reason) const {
+Octagonal_Shape<T>::throw_invalid_argument(const char* method,
+                                           const char* reason) {
   std::ostringstream s;
   s << "PPL::Octagonal_Shape::" << method << ":\n"
     << reason << ".";

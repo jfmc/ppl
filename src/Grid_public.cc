@@ -1899,7 +1899,6 @@ generalized_affine_image(const Variable var,
 			 const Linear_Expression& expr,
 			 Coefficient_traits::const_reference denominator,
 			 Coefficient_traits::const_reference modulus) {
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
@@ -1917,6 +1916,10 @@ generalized_affine_image(const Variable var,
   if (space_dim < var_space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d, m)",
 				 "v", var);
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
+                           "r is the disequality relation symbol");
 
   // Any image of an empty grid is empty.
   if (marked_empty())
@@ -1982,20 +1985,24 @@ generalized_affine_preimage(const Variable var,
 			    Coefficient_traits::const_reference modulus) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_invalid_argument("generalized_affine_preimage(v, e, d, m)",
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d, m)",
 			   "d == 0");
 
   // The dimension of `expr' should be at most the dimension of
   // `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("generalized_affine_preimage(v, e, d, m)",
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d, m)",
 				 "e", expr);
   // `var' should be one of the dimensions of the grid.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
-    throw_dimension_incompatible("generalized_affine_preimage(v, e, d, m)",
+    throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d, m)",
 				 "v", var);
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d, m)",
+                           "r is the disequality relation symbol");
 
   // If relsym is not EQUAL, then we return a safe approximation
   // by adding a line in the direction of var.
@@ -2077,14 +2084,18 @@ generalized_affine_image(const Linear_Expression& lhs,
   // `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, m)",
 				 "e1", lhs);
   // The dimension of `rhs' should be at most the dimension of
   // `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
   if (space_dim < rhs_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, m)",
 				 "e2", rhs);
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_image(e1, r, e2, m)",
+                           "r is the disequality relation symbol");
 
   // Any image of an empty grid is empty.
   if (marked_empty())
@@ -2200,17 +2211,20 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 			    const Relation_Symbol relsym,
 			    const Linear_Expression& rhs,
 			    Coefficient_traits::const_reference modulus) {
-
   // The dimension of `lhs' must be at most the dimension of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
-    throw_dimension_incompatible("generalized_affine_preimage(e1, e2, m)",
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2, m)",
 				 "lhs", lhs);
   // The dimension of `rhs' must be at most the dimension of `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
   if (space_dim < rhs_space_dim)
-    throw_dimension_incompatible("generalized_affine_preimage(e1, e2, m)",
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2, m)",
 				 "e2", rhs);
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2, m)",
+                           "r is the disequality relation symbol");
 
   // Any preimage of an empty grid is empty.
   if (marked_empty())
@@ -2339,11 +2353,11 @@ bounded_affine_image(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any image of an empty grid is empty.
@@ -2382,11 +2396,11 @@ bounded_affine_preimage(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any preimage of an empty grid is empty.

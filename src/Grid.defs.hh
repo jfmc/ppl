@@ -2606,8 +2606,6 @@ private:
   //@{
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 protected:
-  void throw_invalid_argument(const char* method, const char* reason) const;
-
   void throw_dimension_incompatible(const char* method,
 				    const char* other_name,
 				    dimension_type other_dim) const;
@@ -2644,14 +2642,16 @@ protected:
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
 
-  void throw_invalid_constraint(const char* method,
-                                const char* c_name) const;
-  void throw_invalid_constraints(const char* method,
-                                 const char* cs_name) const;
-  void throw_invalid_generator(const char* method,
-			       const char* g_name) const;
-  void throw_invalid_generators(const char* method,
-				const char* gs_name) const;
+  static void throw_invalid_argument(const char* method,
+                                     const char* reason);
+  static void throw_invalid_constraint(const char* method,
+                                       const char* c_name);
+  static void throw_invalid_constraints(const char* method,
+                                        const char* cs_name);
+  static void throw_invalid_generator(const char* method,
+                                      const char* g_name);
+  static void throw_invalid_generators(const char* method,
+                                       const char* gs_name);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@} // Exception Throwers
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)

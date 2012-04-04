@@ -2356,7 +2356,7 @@ private:
   static void throw_expression_too_complex(const char* method,
                                            const Linear_Expression& le);
 
-  static void throw_generic(const char* method, const char* reason);
+  static void throw_invalid_argument(const char* method, const char* reason);
   //@} // Exception Throwers
 };
 

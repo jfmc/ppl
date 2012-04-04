@@ -386,7 +386,11 @@ bool test01() {
 
   print_constraints(tbox, "*** tbox.propagate_edges() ***");
 
+#if PPL_SUPPORTED_DOUBLE
   bool ok = check_result(tbox, qbox2, "18.36", "2.83", "2.79");
+#else
+  bool ok = check_result(tbox, qbox2, "30.96", "2.83", "2.79");
+#endif
 
   return ok;
 }

@@ -195,18 +195,6 @@ PPL::Polyhedron::minimized_generators() const {
   return generators();
 }
 
-PPL::Grid_Generator_System
-PPL::Polyhedron::grid_generators() const {
-  Grid_Generator_System ggs(space_dim);
-  // Trivially true point.
-  ggs.insert(grid_point(0*(Variable(0))));
-  // A line for each dimension.
-  dimension_type dim = 0;
-  while (dim < space_dim)
-    ggs.insert(grid_line(Variable(dim)));
-  return ggs;
-}
-
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
@@ -2683,11 +2671,11 @@ bounded_affine_image(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any image of an empty polyhedron is empty.
@@ -2758,11 +2746,11 @@ bounded_affine_preimage(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any preimage of an empty polyhedron is empty.
