@@ -246,9 +246,9 @@ Box<ITV>::expand_space_dimension(const Variable var,
   // The space dimension of the resulting Box should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dim)
-    throw_generic("expand_dimension(v, m)",
-		  "adding m new space dimensions exceeds "
-		  "the maximum allowed space dimension");
+    throw_invalid_argument("expand_dimension(v, m)",
+                           "adding m new space dimensions exceeds "
+                           "the maximum allowed space dimension");
 
   // To expand the space dimension corresponding to variable `var',
   // we append to the box `m' copies of the corresponding interval.

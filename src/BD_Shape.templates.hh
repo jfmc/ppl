@@ -125,8 +125,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw_generic("BD_Shape(gs)",
-                  "the non-empty generator system gs contains no points.");
+    throw_invalid_argument("BD_Shape(gs)",
+                           "the non-empty generator system gs "
+                           "contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator gs_i = gs_begin;
@@ -388,7 +389,8 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
     if (c.is_tautological())
       return;
     // Nontrivial strict inequalities are not allowed.
-    throw_generic("add_constraint(c)", "strict inequalities are not allowed");
+    throw_invalid_argument("add_constraint(c)",
+                           "strict inequalities are not allowed");
   }
 
   dimension_type num_vars = 0;
@@ -397,8 +399,8 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   // Constraints that are not bounded differences are not allowed.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff))
-    throw_generic("add_constraint(c)",
-                  "c is not a bounded difference constraint");
+    throw_invalid_argument("add_constraint(c)",
+                           "c is not a bounded difference constraint");
 
   const Coefficient& inhomo = c.inhomogeneous_term();
   if (num_vars == 0) {
@@ -462,8 +464,8 @@ BD_Shape<T>::add_congruence(const Congruence& cg) {
       return;
     }
     // Non-trivial and proper congruences are not allowed.
-    throw_generic("add_congruence(cg)",
-                  "cg is a non-trivial, proper congruence");
+    throw_invalid_argument("add_congruence(cg)",
+                           "cg is a non-trivial, proper congruence");
   }
 
   PPL_ASSERT(cg.is_equality());
@@ -3038,13 +3040,13 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_generic("limited_CC76_extrapolation_assign(y, cs)",
-                  "cs is space_dimension incompatible");
+    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
+                           "cs is space_dimension incompatible");
 
   // Strict inequalities not allowed.
   if (cs.has_strict_inequalities())
-    throw_generic("limited_CC76_extrapolation_assign(y, cs)",
-                  "cs has strict inequalities");
+    throw_invalid_argument("limited_CC76_extrapolation_assign(y, cs)",
+                           "cs has strict inequalities");
 
   // The limited CC76-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -3146,13 +3148,13 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_generic("limited_BHMZ05_extrapolation_assign(y, cs)",
-                  "cs is space-dimension incompatible");
+    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
+                           "cs is space-dimension incompatible");
 
   // Strict inequalities are not allowed.
   if (cs.has_strict_inequalities())
-    throw_generic("limited_BHMZ05_extrapolation_assign(y, cs)",
-                  "cs has strict inequalities");
+    throw_invalid_argument("limited_BHMZ05_extrapolation_assign(y, cs)",
+                           "cs has strict inequalities");
 
   // The limited BHMZ05-extrapolation between two systems of bounded
   // differences in a zero-dimensional space is a system of bounded
@@ -3815,7 +3817,7 @@ BD_Shape<T>::affine_image(const Variable var,
                           Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_image(v, e, d)", "d == 0");
+    throw_invalid_argument("affine_image(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -4891,7 +4893,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
                              Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_preimage(v, e, d)", "d == 0");
+    throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -4995,7 +4997,7 @@ BD_Shape<T>
                        Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the BD_Shape.
@@ -5008,11 +5010,11 @@ BD_Shape<T>
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (bds_space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (bds_space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "ub", ub_expr);
 
   // Any image of an empty BDS is empty.
@@ -5237,7 +5239,7 @@ BD_Shape<T>
                           Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the BD_Shape.
@@ -5250,11 +5252,11 @@ BD_Shape<T>
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "ub", ub_expr);
 
   // Any preimage of an empty BDS is empty.
@@ -5306,7 +5308,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
                                       denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -5325,14 +5327,12 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_image(v, r, e, d)",
-                  "r is a strict relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
+                           "r is a strict relation symbol");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_image(v, r, e, d)",
-                  "r is the disequality relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
+                           "r is the disequality relation symbol");
 
   if (relsym == EQUAL) {
     // The relation symbol is "=":
@@ -5720,14 +5720,12 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
   // Strict relation symbols are not admitted for BDSs.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_image(e1, r, e2)",
-                  "r is a strict relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+                           "r is a strict relation symbol");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_image(e1, r, e2)",
-                  "r is the disequality relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+                           "r is the disequality relation symbol");
 
   // The image of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -5894,7 +5892,8 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
                                          denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("generalized_affine_preimage(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
@@ -5913,14 +5912,12 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_preimage(v, r, e, d)",
-                  "r is a strict relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "r is a strict relation symbol");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_preimage(v, r, e, d)",
-                  "r is the disequality relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "r is the disequality relation symbol");
 
   if (relsym == EQUAL) {
     // The relation symbol is "=":
@@ -5986,14 +5983,12 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
 
   // Strict relation symbols are not admitted for BDSs.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
-    throw_generic("generalized_affine_preimage(e1, r, e2)",
-                  "r is a strict relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
+                           "r is a strict relation symbol");
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_preimage(e1, r, e2)",
-                  "r is the disequality relation symbol and "
-                  "*this is a BD_Shape");
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
+                           "r is the disequality relation symbol");
 
   // The preimage of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -6297,9 +6292,9 @@ BD_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   // The space dimension of the resulting BDS should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dimension())
-    throw_generic("expand_dimension(v, m)",
-                  "adding m new space dimensions exceeds "
-                  "the maximum allowed space dimension");
+    throw_invalid_argument("expand_dimension(v, m)",
+                           "adding m new space dimensions exceeds "
+                           "the maximum allowed space dimension");
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)
@@ -6350,8 +6345,8 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
 
   // Moreover, `dest.id()' should not occur in `vars'.
   if (vars.find(dest.id()) != vars.end())
-    throw_generic("fold_space_dimensions(vs, v)",
-                  "v should not occur in vs");
+    throw_invalid_argument("fold_space_dimensions(vs, v)",
+                           "v should not occur in vs");
 
   shortest_path_closure_assign();
   if (!marked_empty()) {
@@ -6765,7 +6760,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-BD_Shape<T>::throw_generic(const char* method, const char* reason) {
+BD_Shape<T>::throw_invalid_argument(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
     << reason << ".";

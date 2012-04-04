@@ -463,8 +463,8 @@ inline void
 Octagonal_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
   if (cs.space_dimension() > space_dimension())
-    throw_generic("refine_with_constraints(cs)",
-                  "cs and *this are space-dimension incompatible");
+    throw_invalid_argument("refine_with_constraints(cs)",
+                           "cs and *this are space-dimension incompatible");
 
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
@@ -488,8 +488,8 @@ void
 Octagonal_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
   // Dimension-compatibility check.
   if (cgs.space_dimension() > space_dimension())
-    throw_generic("refine_with_congruences(cgs)",
-                  "cgs and *this are space-dimension incompatible");
+    throw_invalid_argument("refine_with_congruences(cgs)",
+                           "cgs and *this are space-dimension incompatible");
 
   for (Congruence_System::const_iterator i = cgs.begin(),
 	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)

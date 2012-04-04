@@ -2119,8 +2119,8 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
 
   // Moreover, `dest.id()' should not occur in `vars'.
   if (vars.find(dest.id()) != vars.end())
-    throw_generic("fold_space_dimensions(vs, v)",
-		  "v should not occur in vs");
+    throw_invalid_argument("fold_space_dimensions(vs, v)",
+                           "v should not occur in vs");
 
   // Note: the check for emptiness is needed for correctness.
   if (!is_empty()) {
@@ -2144,13 +2144,15 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
   dimension_type c_only_var = 0;
   // Throw an exception if c is not an interval constraints.
   if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
-    throw_generic("add_constraint(c)", "c is not an interval constraint");
+    throw_invalid_argument("add_constraint(c)",
+                           "c is not an interval constraint");
 
   // Throw an exception if c is a nontrivial strict constraint
   // and ITV does not support open boundaries.
   if (c.is_strict_inequality() && c_num_vars != 0
       && ITV::is_always_topologically_closed())
-    throw_generic("add_constraint(c)", "c is a nontrivial strict constraint");
+    throw_invalid_argument("add_constraint(c)",
+                           "c is a nontrivial strict constraint");
 
   // Avoid doing useless work if the box is known to be empty.
   if (marked_empty())
@@ -2199,8 +2201,8 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
     else if (cg.is_tautological())
       return;
     else
-      throw_generic("add_congruence(cg)",
-                    "cg is a nontrivial proper congruence");
+      throw_invalid_argument("add_congruence(cg)",
+                             "cg is a nontrivial proper congruence");
   }
 
   PPL_ASSERT(cg.is_equality());
@@ -2208,7 +2210,8 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
   dimension_type cg_only_var = 0;
   // Throw an exception if c is not an interval congruence.
   if (!extract_interval_congruence(cg, cg_space_dim, cg_num_vars, cg_only_var))
-    throw_generic("add_congruence(cg)", "cg is not an interval congruence");
+    throw_invalid_argument("add_congruence(cg)",
+                           "cg is not an interval congruence");
 
   // Avoid doing useless work if the box is known to be empty.
   if (marked_empty())
@@ -2761,7 +2764,7 @@ Box<ITV>::affine_image(const Variable var,
                        Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_image(v, e, d)", "d == 0");
+    throw_invalid_argument("affine_image(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
@@ -2840,7 +2843,7 @@ Box<ITV>::affine_preimage(const Variable var,
                           denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_preimage(v, e, d)", "d == 0");
+    throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   const dimension_type x_space_dim = space_dimension();
@@ -2902,7 +2905,7 @@ Box<ITV>
                        Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
 
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
@@ -3045,7 +3048,7 @@ Box<ITV>
   // The denominator cannot be zero.
   const dimension_type space_dim = space_dimension();
   if (denominator == 0)
-    throw_generic("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
+    throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
 
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the polyhedron.
@@ -3057,11 +3060,11 @@ Box<ITV>
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any preimage of an empty polyhedron is empty.
@@ -3214,7 +3217,7 @@ Box<ITV>
                            Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
@@ -3231,8 +3234,8 @@ Box<ITV>
 
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_image(v, r, e, d)",
-		  "r is the disequality relation symbol");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
+                           "r is the disequality relation symbol");
 
   // First compute the affine image.
   affine_image(var, expr, denominator);
@@ -3281,8 +3284,8 @@ Box<ITV>
 {
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("generalized_affine_preimage(v, r, e, d)",
-			   "d == 0");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "d == 0");
 
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
@@ -3298,8 +3301,8 @@ Box<ITV>
 				 "v", var);
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_preimage(v, r, e, d)",
-                  "r is the disequality relation symbol");
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+                           "r is the disequality relation symbol");
 
   // Check whether the affine relation is indeed an affine function.
   if (relsym == EQUAL) {
@@ -3442,8 +3445,8 @@ Box<ITV>
 
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_image(e1, r, e2)",
-                  "r is the disequality relation symbol");
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+                           "r is the disequality relation symbol");
 
   // Any image of an empty box is empty.
   if (marked_empty())
@@ -3666,8 +3669,8 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
 
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL)
-    throw_generic("generalized_affine_image(e1, r, e2)",
-                  "r is the disequality relation symbol");
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+                           "r is the disequality relation symbol");
 
   // Any image of an empty box is empty.
   if (marked_empty())
@@ -4180,7 +4183,7 @@ Box<ITV>::throw_dimension_incompatible(const char* method,
 
 template <typename ITV>
 void
-Box<ITV>::throw_generic(const char* method, const char* reason) {
+Box<ITV>::throw_invalid_argument(const char* method, const char* reason) {
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
     << reason;
