@@ -2126,7 +2126,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
     Coefficient_traits::const_reference pivot_pj = pivot.get(pj);
     {
       for (Row::const_iterator
-           j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
+             j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
         if (j.index() == pj)
           continue;
         Coefficient_traits::const_reference pivot_j = *j;
