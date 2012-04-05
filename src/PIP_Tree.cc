@@ -36,14 +36,14 @@ namespace Parma_Polyhedra_Library {
 
 namespace {
 
-// Calculate positive modulo of x % y
+//! Assigns to \p x the positive remainder of the division of \p y by \p z.
 inline void
-pos_mod_assign(Coefficient& z,
-               Coefficient_traits::const_reference x,
-               Coefficient_traits::const_reference y) {
-  z = x % y;
-  if (z < 0)
-    z += y;
+pos_rem_assign(Coefficient& x,
+               Coefficient_traits::const_reference y,
+               Coefficient_traits::const_reference z) {
+  rem_assign(x, y, z);
+  if (x < 0)
+    x += z;
 }
 
 class Add_Mul_Assign_Row_Helper1 {
@@ -185,7 +185,7 @@ complement_assign(Row& x,
     --x_0;
   else {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
-    pos_mod_assign(mod, x_0, denom);
+    pos_rem_assign(mod, x_0, denom);
     x_0 -= (mod == 0) ? denom : mod;
   }
   if (x_0 == 0)
@@ -512,7 +512,7 @@ integral_simplification(Row& row) {
     gcd_assign_iter(gcd, j_begin, j_end);
     if (gcd != 1) {
       PPL_DIRTY_TEMP_COEFFICIENT(mod);
-      pos_mod_assign(mod, row[0], gcd);
+      pos_rem_assign(mod, row[0], gcd);
       row[0] -= mod;
     }
   }
@@ -2080,7 +2080,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         cut = s_mi;
         for (Row::iterator
                j = cut.begin(), j_end = cut.end(); j != j_end; ++j)
-          pos_mod_assign(*j, *j, denom);
+          pos_rem_assign(*j, *j, denom);
         cut[0] -= denom;
         scaling.push_back(denom);
       }
@@ -2490,7 +2490,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Row row(tableau.t[i]);
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
         Coefficient& row0 = row[0];
-        pos_mod_assign(mod, row0, tableau_denom);
+        pos_rem_assign(mod, row0, tableau_denom);
         row0 -= (mod == 0) ? tableau_denom : mod;
         const bool compatible = compatibility_check(ctx, row);
         // Maybe update sign (and first_* indices).
@@ -3054,7 +3054,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         const Row& t_i = tableau.t[i];
         for (Row::const_iterator
                j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-          pos_mod_assign(mod, *j, denom);
+          pos_rem_assign(mod, *j, denom);
           if (mod != 0)
             ++pcount;
         }
@@ -3088,7 +3088,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& t_i = tableau.t[i];
           for (Row::const_iterator
                  j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-            pos_mod_assign(mod, *j, denom);
+            pos_rem_assign(mod, *j, denom);
             if (mod != 0) {
               score += denom;
               score -= mod;
@@ -3103,7 +3103,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& s_i = tableau.s[i];
           for (Row::const_iterator
                  j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
-            pos_mod_assign(mod, *j, denom);
+            pos_rem_assign(mod, *j, denom);
             s_score += denom;
             s_score -= mod;
           }
@@ -3202,7 +3202,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       Row::const_iterator j = row_t.begin();
       Row::const_iterator j_end = row_t.end();
       if (j != j_end && j.index() == 0) {
-        pos_mod_assign(mod, *j, denom);
+        pos_rem_assign(mod, *j, denom);
         ++j;
         if (mod != 0) {
           // Optimizing computation: expr += (denom - mod);
@@ -3216,7 +3216,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Variables_Set::const_iterator p_j = parameters.begin();
         dimension_type last_index = 1;
         for ( ; j != j_end; ++j) {
-          pos_mod_assign(mod, *j, denom);
+          pos_rem_assign(mod, *j, denom);
           if (mod != 0) {
             // Optimizing computation: expr += (denom - mod) * Variable(*p_j);
             coeff = denom - mod;
@@ -3284,7 +3284,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         Row::iterator itr1 = ctx1.end();
         Row::iterator itr2 = ctx2.end();
         if (j != j_end && j.index() == 0) {
-          pos_mod_assign(mod, *j, denom);
+          pos_rem_assign(mod, *j, denom);
           if (mod != 0) {
             itr1 = ctx1.insert(0, denom);
             *itr1 -= mod;
@@ -3306,7 +3306,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
           --(*itr2);
         }
         for ( ; j != j_end; ++j) {
-          pos_mod_assign(mod, *j, denom);
+          pos_rem_assign(mod, *j, denom);
           if (mod != 0) {
             const dimension_type j_index = j.index();
             itr1 = ctx1.insert(itr1, j_index, denom);
@@ -3352,14 +3352,14 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     for (Row::const_iterator
            j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
       itr = cut_s.insert(itr, j.index(), *j);
-      pos_mod_assign(*itr, *itr, denom);
+      pos_rem_assign(*itr, *itr, denom);
     }
   }
   {
     Row::iterator cut_t_itr = cut_t.end();
     for (Row::const_iterator
            j = row_t.begin(), j_end = row_t.end(); j!=j_end; ++j) {
-      pos_mod_assign(mod, *j, denom);
+      pos_rem_assign(mod, *j, denom);
       if (mod != 0) {
         cut_t_itr = cut_t.insert(cut_t_itr, j.index(), mod);
         *cut_t_itr -= denom;
