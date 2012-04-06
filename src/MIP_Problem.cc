@@ -1028,15 +1028,16 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         break;
       if (k->first > column) {
         j = tableau_i.lower_bound(j, k->first);
-      } else {
+      }
+      else {
         PPL_ASSERT(k->first == column);
-        WEIGHT_BEGIN();
         PPL_ASSERT(tableau_i.get(base[i]) != 0);
+        WEIGHT_BEGIN();
         assign(float_tableau_value, *j);
         float_tableau_value /= float_tableau_denom;
         float_tableau_value *= float_tableau_value;
         k->second += float_tableau_value;
-        WEIGHT_ADD_MUL(338, tableau_num_rows);
+        WEIGHT_ADD(22);
         ++j;
         ++k;
       }
@@ -1086,7 +1087,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
         current_value = challenger_value;
         entering_index = j;
       }
-      WEIGHT_ADD_MUL(338, tableau_num_rows);
+      WEIGHT_ADD_MUL(10, tableau_num_rows);
     }
   }
 
@@ -1337,7 +1338,7 @@ PPL::MIP_Problem::linear_combine(Row& x, const Row& y,
 #endif
 
   x.normalize();
-  WEIGHT_ADD_MUL(83, x_size);
+  WEIGHT_ADD_MUL(31, x_size);
 }
 
 // TODO: Remove this when the sparse working cost has been tested enough.
@@ -1461,7 +1462,7 @@ PPL::MIP_Problem
         t_e0 = t_i0;
         t_ee = t_ie;
       }
-      WEIGHT_ADD(1044);
+      WEIGHT_ADD(642);
     }
   }
   return exiting_base_index;
@@ -1555,7 +1556,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (cost_sgn_coeff < 0)
       neg_assign(current_numer);
     abs_assign(current_denom, cost_sgn_coeff);
-    WEIGHT_ADD(566);
+    WEIGHT_ADD(433);
   }
 }
 
