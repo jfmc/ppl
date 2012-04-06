@@ -38,7 +38,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 // The PPL_ASSERTION_FAILED macro is used to output a message after
 // an assertion failure and then cause program termination.
-// (It is meant to be used only when assertions are turned on).
+// (It is meant to be used only when assertions are turned on.)
 #define PPL_ASSERTION_FAILED(msg__) Parma_Polyhedra_Library:: \
   ppl_assertion_failed(msg__, __FILE__, __LINE__, __func__)
 
