@@ -47,6 +47,6 @@ PPL::ppl_assertion_failed(const char* assertion_text,
                           const char* file, unsigned int line,
                           const char* function) {
   std::cerr << file << ":" << line << ": " << function
-            << ": Assertion `" << assertion_text << "' failed\n";
+            << ": Assertion `" << assertion_text << "' failed.\n";
   abort();
 }
