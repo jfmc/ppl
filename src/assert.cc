@@ -37,8 +37,8 @@ void
 PPL::ppl_unreachable_msg(const char* msg,
                          const char* file, unsigned int line,
                          const char* function) {
-  std::cerr << "Aborting PPL computation!\n";
-  std::cerr << file << ":" << line << ": " << function << ": " << msg << "\n";
+  std::cerr << file << ":" << line << ": " << function
+            << ": Latent fault detected: " << msg << ".\n";
   abort();
 }
 
