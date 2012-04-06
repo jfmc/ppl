@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "files.hh"
 #include <fstream>
-#include <iostream>
 
 using namespace IO_Operators;
 
@@ -110,19 +109,12 @@ test01() {
   cs.insert(O >= 0);
   cs.insert(H >= 0);
 
-#if 0
-  MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end());
-  std::cout << mip.is_satisfiable() << endl;
-  Variables_Set integer_space_dimensions(A, F1);
-  mip.add_to_integer_space_dimensions(integer_space_dimensions);
-  std::cout << mip.is_satisfiable() << endl;
-#endif
-
   PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
-  bool ok = pip.is_satisfiable();
+  if (pip.is_satisfiable())
+    return false;
 
-  return ok;
+  return true;
 }
 
 } // namespace
