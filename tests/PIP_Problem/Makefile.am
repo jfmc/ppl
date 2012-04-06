@@ -58,7 +58,7 @@ pipproblem1 pipproblem2 pipproblem3
 
 XFAIL_TESTS =
 
-BUGS =
+BUGS = bug1 bug2
 
 #
 # Sources for the tests
@@ -71,6 +71,8 @@ exceptions1_SOURCES = exceptions1.cc
 pipproblem1_SOURCES = pipproblem1.cc
 pipproblem2_SOURCES = pipproblem2.cc
 pipproblem3_SOURCES = pipproblem3.cc
+
+bug1_SOURCES = bug1.cc
 
 check_PROGRAMS = \
 $(TESTS) \
