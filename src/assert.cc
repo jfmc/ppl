@@ -42,3 +42,11 @@ PPL::ppl_unreachable_msg(const char* msg,
   abort();
 }
 
+void
+PPL::ppl_assertion_failed(const char* assertion_text,
+                          const char* file, unsigned int line,
+                          const char* function) {
+  std::cerr << file << ":" << line << ": " << function
+            << ": Assertion `" << assertion_text << "' failed\n";
+  abort();
+}
