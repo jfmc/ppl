@@ -34,7 +34,7 @@ site: http://bugseng.com/products/ppl/ . */
 
   \tparam Traits
   A class to set data types and functions for the threshold handling.
-  See \c Parma_Polyhedra_Library::Watchdog::Weightwatch_Traits for an example.
+  See \c Parma_Polyhedra_Library::Weightwatch_Traits for an example.
 */
 template <typename Traits>
 class Parma_Polyhedra_Library::Threshold_Watcher {
@@ -80,7 +80,7 @@ private:
   //! Check threshold reaching.
   static void check();
 
-}; // class Parma_Polyhedra_Library::Watchdog::Threshold_Watcher
+}; // class Parma_Polyhedra_Library::Threshold_Watcher
 
 
 // Templatic initialization of static data member.
