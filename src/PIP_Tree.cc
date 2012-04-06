@@ -48,13 +48,13 @@ pos_rem_assign(Coefficient& x,
 
 class Add_Mul_Assign_Row_Helper1 {
 public:
-  Add_Mul_Assign_Row_Helper1(Coefficient_traits::const_reference c1)
-    : c(c1) {
+  Add_Mul_Assign_Row_Helper1(Coefficient_traits::const_reference coeff)
+    : c(coeff) {
   }
 
   void
   operator()(Coefficient& x, Coefficient_traits::const_reference y) const {
-    x += c * y;
+    add_mul_assign(x, c, y);
   }
 
 private:
@@ -64,8 +64,8 @@ private:
 
 class Add_Mul_Assign_Row_Helper2 {
 public:
-  Add_Mul_Assign_Row_Helper2(Coefficient_traits::const_reference c1)
-    : c(c1) {
+  Add_Mul_Assign_Row_Helper2(Coefficient_traits::const_reference coeff)
+    : c(coeff) {
   }
 
   void
