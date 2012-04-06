@@ -152,14 +152,26 @@ const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 void
 PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
+#ifndef NDEBUG
   s << (test_bits(1U << Flags::rpi_validity_bit) ? '+' : '-')
-    << rpi_valid << ' '
-    << (test_bits(1U << Flags::rpi_bit) ? '+' : '-')
+    << rpi_valid << ' ';
+#else
+  // NOTE: dump the (unavailable) validity bit as set to avoid
+  // crashes when ascii_loading with assertions turned on.
+  s << '+' << rpi_valid << ' ';
+#endif
+  s << (test_bits(1U << Flags::rpi_bit) ? '+' : '-')
     << is_rpi << ' '
-    << ' '
-    << (test_bits(1U << Flags::nnc_validity_bit) ? '+' : '-')
-    << nnc_valid << ' '
-    << (test_bits(1U << Flags::nnc_bit) ? '+' : '-')
+    << ' ';
+#ifndef NDEBUG
+  s << (test_bits(1U << Flags::nnc_validity_bit) ? '+' : '-')
+    << nnc_valid << ' ';
+#else
+  // NOTE: dump the (unavailable) validity bit as set to avoid
+  // crashes when ascii_loading with assertions turned on.
+  s << '+' << nnc_valid << ' ';
+#endif
+  s << (test_bits(1U << Flags::nnc_bit) ? '+' : '-')
     << is_nnc;
 }
 
