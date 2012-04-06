@@ -53,6 +53,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 
 // Non zero to detect use of PPL_ASSERT instead of PPL_ASSERT_HEAVY
+// Note: flag does not affect code built with NDEBUG defined.
 #define PPL_DEBUG_PPL_ASSERT 1
 
 // The PPL_ASSERT macro states that Boolean condition cond__ should hold.
@@ -60,6 +61,9 @@ site: http://bugseng.com/products/ppl/ . */
 #if defined(NDEBUG) || (!PPL_DEBUG_PPL_ASSERT)
 #define PPL_ASSERT(cond__) PPL_ASSERT_IMPL_(cond__)
 #else
+// Note: here we have assertions enabled and PPL_DEBUG_PPL_ASSERT is 1.
+// Check if the call to PPL_ASSERT should be replaced by PPL_ASSERT_HEAVY
+// (i.e., if the former may interfere with computational weights).
 #define PPL_ASSERT(cond__)                                        \
   do {                                                            \
     typedef Parma_Polyhedra_Library::Weightwatch_Traits W_Traits; \
