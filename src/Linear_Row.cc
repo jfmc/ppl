@@ -142,37 +142,35 @@ PPL::Linear_Row::all_homogeneous_terms_are_zero() const {
 namespace {
 
 // These are the keywords that indicate the individual assertions.
-const char* rpi_valid = "RPI_V";
-const char* is_rpi = "RPI";
-const char* nnc_valid = "NNC_V";
-const char* is_nnc = "NNC";
-const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
+const char* rpi_valid_text = "RPI_V";
+const char* is_rpi_text = "RPI";
+const char* nnc_valid_text = "NNC_V";
+const char* is_nnc_text = "NNC";
+const char* bit_texts[] = {rpi_valid_text, is_rpi_text,
+                           nnc_valid_text, is_nnc_text};
 
 } // namespace
 
 void
 PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
-#ifndef NDEBUG
-  s << (test_bits(1U << Flags::rpi_validity_bit) ? '+' : '-')
-    << rpi_valid << ' ';
+  bool is_rpi = test_bits(1U << Flags::rpi_bit);
+  bool is_nnc = test_bits(1U << Flags::nnc_bit);
+  bool rpi_valid;
+  bool nnc_valid;
+#ifdef NDEBUG
+  // Dump unhandled bits always as true so to permit loading from a
+  // debug enabled executable without failing assertions.
+  rpi_valid = true;
+  nnc_valid = true;
 #else
-  // NOTE: dump the (unavailable) validity bit as set to avoid
-  // crashes when ascii_loading with assertions turned on.
-  s << '+' << rpi_valid << ' ';
+  rpi_valid = test_bits(1U << Flags::rpi_validity_bit);
+  nnc_valid = test_bits(1U << Flags::nnc_validity_bit);
 #endif
-  s << (test_bits(1U << Flags::rpi_bit) ? '+' : '-')
-    << is_rpi << ' '
-    << ' ';
-#ifndef NDEBUG
-  s << (test_bits(1U << Flags::nnc_validity_bit) ? '+' : '-')
-    << nnc_valid << ' ';
-#else
-  // NOTE: dump the (unavailable) validity bit as set to avoid
-  // crashes when ascii_loading with assertions turned on.
-  s << '+' << nnc_valid << ' ';
-#endif
-  s << (test_bits(1U << Flags::nnc_bit) ? '+' : '-')
-    << is_nnc;
+  s << (rpi_valid ? '+' : '-') << rpi_valid_text << ' '
+    << (is_rpi ? '+' : '-') << is_rpi_text << ' '
+    << ' '
+    << (nnc_valid ? '+' : '-') << nnc_valid_text << ' '
+    << (is_nnc ? '+' : '-') << is_nnc_text;
 }
 
 PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row::Flags)
@@ -183,15 +181,23 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
   // Assume that the bits are used in sequence.
   reset_bits(std::numeric_limits<base_type>::max());
   for (unsigned int bit = 0;
-       bit < (sizeof(bit_names) / sizeof(char*));
+       bit < (sizeof(bit_texts) / sizeof(char*));
        ++bit) {
     if (!(s >> str))
       return false;
-    if (str[0] == '+')
-      set_bits(1U << (Dense_Row::Flags::first_free_bit + bit));
+    if (str[0] == '+') {
+      bool load = true;
+#ifdef NDEBUG
+      // Do not load unhandled bits.
+      if (bit == rpi_validity_bit || bit == nnc_validity_bit)
+        load = false;
+#endif
+      if (load)
+        set_bits(1U << (Dense_Row::Flags::first_free_bit + bit));
+    }
     else if (str[0] != '-')
       return false;
-    if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
+    if (str.compare(1, strlen(bit_texts[bit]), bit_texts[bit]) != 0)
       return false;
   }
   return true;
