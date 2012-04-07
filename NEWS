@@ -34,6 +34,10 @@ o  Two BibTeX databases of papers related to the Parma Polyhedra Library
 Bugfixes
 ========
 
+o  Fixed a bug in the Prolog interface whereby predicate
+   ppl_set_deterministic_timeout/1 was flagging arguments bigger than
+   4294967295 as erroneous.
+
 o  Minor documentation fixes.
 
 o  Portability improved.

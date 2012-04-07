@@ -1930,11 +1930,11 @@ ppl_set_deterministic_timeout(Prolog_term_ref t_weight) {
     // In case a deterministic timeout was already set.
     reset_deterministic_timeout();
     static deterministic_timeout_exception e;
-    unsigned weight
-      = term_to_unsigned<unsigned>(t_weight,
-                                   "ppl_set_deterministic_timeout/1");
-    p_deterministic_timeout_object =
-      new Weightwatch(weight, abandon_expensive_computations, e);
+    unsigned long long weight
+      = term_to_unsigned<unsigned long long>(t_weight,
+                                             "ppl_set_deterministic_timeout/1");
+    p_deterministic_timeout_object
+      = new Weightwatch(weight, abandon_expensive_computations, e);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
