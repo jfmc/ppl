@@ -420,7 +420,7 @@ ppl_reset_timeout PPL_PROTO((void));
   weight thresholds when upgrading to newer version of the PPL.
 */
 int
-ppl_set_deterministic_timeout PPL_PROTO((unsigned long long weight));
+ppl_set_deterministic_timeout PPL_PROTO((unsigned weight));
 
 /*! \brief
   Resets the deterministic timeout so that the computation is not interrupted.
