@@ -1367,7 +1367,7 @@ test06() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable A to be constrained to have an integer value.
+  // Set variable A to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(A));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1379,7 +1379,7 @@ test06() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable B to be constrained to have an integer value.
+  // Set variable B to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(B));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1426,7 +1426,7 @@ test07() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable A to be constrained to have an integer value.
+  // Set variable A to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(A));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1442,7 +1442,7 @@ test07() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable B to be constrained to have an integer value.
+  // Set variable B to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(B));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1506,7 +1506,7 @@ test08() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable A to be constrained to have an integer value.
+  // Set variable A to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(A));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1523,7 +1523,7 @@ test08() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable B to be constrained to have an integer value.
+  // Set variable B to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(B));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1539,7 +1539,7 @@ test08() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable C to be constrained to have an integer value.
+  // Set variable C to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(C));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1555,7 +1555,7 @@ test08() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable D to be constrained to have an integer value.
+  // Set variable D to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(D));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1606,7 +1606,7 @@ test09() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable A to be constrained to have an integer value.
+  // Set variable A to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(A));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1619,7 +1619,7 @@ test09() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable B to be constrained to have an integer value.
+  // Set variable B to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(B));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
@@ -1632,7 +1632,7 @@ test09() {
   if (pg != pg_kr)
     return false;
 
-  // Set Variable C to be constrained to have an integer value.
+  // Set variable C to be constrained to have an integer value.
   mip.add_to_integer_space_dimensions(Variables_Set(C));
   pg = mip.optimizing_point();
   mip.evaluate_objective_function(pg, num, den);
