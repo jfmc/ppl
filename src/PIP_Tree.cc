@@ -87,7 +87,7 @@ add_mul_assign_row(Row& x,
   x.combine_needs_second(y,
                          Add_Mul_Assign_Row_Helper1(c),
                          Add_Mul_Assign_Row_Helper2(c));
-  WEIGHT_ADD_MUL(1, x.size());
+  WEIGHT_ADD_MUL(108, x.size());
 }
 
 
@@ -111,7 +111,7 @@ inline void
 sub_assign(Row& x, const Row& y) {
   WEIGHT_BEGIN();
   x.combine_needs_second(y, Sub_Assign_Helper1(), Sub_Assign_Helper2());
-  WEIGHT_ADD_MUL(1, x.size());
+  WEIGHT_ADD_MUL(10, x.size());
 }
 
 // Merge constraint system to a matrix-form context such as x = x U y
@@ -152,7 +152,7 @@ merge_assign(Matrix& x, const Constraint_System& y,
       if (c != 0)
         itr = x_i.insert(itr, j, c);
     }
-    WEIGHT_ADD_MUL(1, params_size);
+    WEIGHT_ADD_MUL(102, params_size);
   }
 }
 
@@ -177,7 +177,7 @@ neg_assign_row(Row& x, const Row& y) {
   const dimension_type x_size = x.size();
   for (dimension_type i = x_size; i-- > 0; )
     neg_assign(x[i], y[i]);
-  WEIGHT_ADD_MUL(1, x_size);
+  WEIGHT_ADD_MUL(14, x_size);
 }
 
 #endif // !PPL_USE_SPARSE_MATRIX
@@ -322,7 +322,8 @@ column_lower(const Matrix& tableau,
             continue;
           else
             return lhs_sign > 0;
-        } else {
+        }
+        else {
           WEIGHT_ADD(2);
           lhs = lhs_coeff * t_mk_ja;
           rhs = rhs_coeff * t_mk_jb;
@@ -391,13 +392,15 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
             min_column = *i;
             sij_b = sij_a;
             new_candidates.push_back(min_column);
-          } else
+          }
+          else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.push_back(*i);
         }
       }
-      WEIGHT_ADD_MUL(1, candidates.size());
-    } else {
+      WEIGHT_ADD_MUL(44, candidates.size());
+    }
+    else {
       // Not in base.
       const Row& row = tableau[row_index];
       Row::const_iterator row_itr = row.lower_bound(min_column);
@@ -445,7 +448,7 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
             new_candidates.push_back(min_column);
           }
       }
-      WEIGHT_ADD_MUL(1, candidates.size());
+      WEIGHT_ADD_MUL(68, candidates.size());
     }
     using std::swap;
     swap(candidates, new_candidates);
@@ -478,7 +481,7 @@ find_lexico_minimal_column(const Matrix& tableau,
     if (*i > 0)
       candidates.push_back(i.index());
   }
-  WEIGHT_ADD_MUL(1, candidates.size());
+  WEIGHT_ADD_MUL(201, candidates.size());
 
   if (candidates.empty()) {
     j_out = num_columns;
@@ -506,7 +509,7 @@ gcd_assign_iter(Coefficient& gcd, Iter first, Iter last) {
   for ( ; first != last; ++first) {
     Coefficient_traits::const_reference coeff = *first;
     if (coeff != 0) {
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(24);
       gcd_assign(gcd, coeff, gcd);
       if (gcd == 1)
         return;
@@ -555,7 +558,7 @@ row_normalize(Row& x, Coefficient& denom) {
   for (Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient& x_i = *i;
     exact_div_assign(x_i, x_i, gcd);
-    WEIGHT_ADD(1);
+    WEIGHT_ADD(22);
   }
   // Divide the denominator by the GCD.
   exact_div_assign(denom, denom, gcd);
@@ -624,14 +627,16 @@ compatibility_check_find_pivot_in_set(
             new_candidates.push_back(*i);
           else
             found_better_pivot = (lhs_coeff_sgn > 0);
-        } else {
+        }
+        else {
           if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
             if (rhs_coeff_sgn == 0)
               new_candidates.push_back(*i);
             else
               found_better_pivot = (0 > rhs_coeff_sgn);
-          } else
+          }
+          else
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.push_back(*i);
         }
@@ -643,7 +648,8 @@ compatibility_check_find_pivot_in_set(
           new_candidates.push_back(*i);
         }
       }
-    } else {
+    }
+    else {
       // Not in base.
       const Row& row = s[row_index];
       Row::const_iterator row_itr = row.lower_bound(pj);
@@ -653,7 +659,8 @@ compatibility_check_find_pivot_in_set(
       if (row_itr != row_end && row_itr.index() == pj) {
         row_value = *row_itr;
         ++row_itr;
-      } else
+      }
+      else
         row_value = 0;
       PPL_DIRTY_TEMP_COEFFICIENT(row_challenger_value);
       for (++i; i != i_end; ++i) {
@@ -670,7 +677,8 @@ compatibility_check_find_pivot_in_set(
           row_challenger_value = *new_row_itr;
           // Use new_row_itr as a hint in next iterations
           row_itr = new_row_itr;
-        } else {
+        }
+        else {
           row_challenger_value = 0;
           // Using end() as a hint is not useful, keep the current hint.
         }
@@ -692,7 +700,8 @@ compatibility_check_find_pivot_in_set(
             new_candidates.clear();
             new_candidates.push_back(*i);
           }
-        } else {
+        }
+        else {
 
           // Sign comparison is not enough this time.
           // Do the full computation.
@@ -758,7 +767,8 @@ compatibility_check_find_pivot(const Matrix& s,
         current_data.row_index = i;
         current_data.cost = s_i0;
         current_data.value = s_ij;
-      } else {
+      }
+      else {
         data_struct& current_data = candidates_map[j];
         PPL_ASSERT(current_data.value > 0);
 
@@ -779,7 +789,8 @@ compatibility_check_find_pivot(const Matrix& s,
             current_data.value = s_ij;
           }
           // Otherwise, keep current pivot for this column.
-        } else {
+        }
+        else {
           // Sign comparison is not enough this time.
           // Do the full computation.
           Coefficient_traits::const_reference value_b = s_i.get(j);
@@ -817,7 +828,8 @@ compatibility_check_find_pivot(const Matrix& s,
     PPL_ASSERT(!candidates.empty());
     pi = candidates.begin()->second.row_index;
     pj = candidates.begin()->first;
-  } else {
+  }
+  else {
     pi = s.num_rows();
     pj = 0;
   }
@@ -1170,7 +1182,7 @@ PIP_Tree_Node
       PPL_ASSERT(i.index() <= parameters.size());
       std::advance(j, i.index() - j_index);
       j_index = i.index();
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(74);
       add_mul_assign(expr, *i, Variable(*j));
     }
   }
@@ -1577,7 +1589,7 @@ PIP_Solution_Node::Tableau::normalize() {
            j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
       Coefficient_traits::const_reference s_ij = *j;
       if (s_ij != 0) {
-        WEIGHT_ADD(1);
+        WEIGHT_ADD(30);
         gcd_assign(gcd, s_ij, gcd);
         if (gcd == 1)
           return;
@@ -1589,7 +1601,7 @@ PIP_Solution_Node::Tableau::normalize() {
            j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
       Coefficient_traits::const_reference t_ij = *j;
       if (t_ij != 0) {
-        WEIGHT_ADD(1);
+        WEIGHT_ADD(14);
         gcd_assign(gcd, t_ij, gcd);
         if (gcd == 1)
           return;
@@ -1603,13 +1615,13 @@ PIP_Solution_Node::Tableau::normalize() {
     Row& s_i = s[i];
     for (Row::iterator j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
       Coefficient& s_ij = *j;
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(19);
       exact_div_assign(s_ij, s_ij, gcd);
     }
     Row& t_i = t[i];
     for (Row::iterator j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
       Coefficient& t_ij = *j;
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(27);
       exact_div_assign(t_ij, t_ij, gcd);
     }
   }
@@ -1623,12 +1635,12 @@ PIP_Solution_Node::Tableau::scale(Coefficient_traits::const_reference ratio) {
   for (dimension_type i = s.num_rows(); i-- > 0; ) {
     Row& s_i = s[i];
     for (Row::iterator j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(19);
       *j *= ratio;
     }
     Row& t_i = t[i];
     for (Row::iterator j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(25);
       *j *= ratio;
     }
   }
@@ -1669,7 +1681,7 @@ PIP_Solution_Node::Tableau
     j1 = t_1.begin();
     while (j0 != j0_end && j1 != j1_end) {
       if (j0.index() == j1.index()) {
-        WEIGHT_ADD(4);
+        WEIGHT_ADD(1361);
         product_0 = (*j0) * s_1_1 * s_i_col_0;
         product_1 = (*j1) * s_0_0 * s_i_col_1;
         if (product_0 != product_1) {
@@ -1679,7 +1691,8 @@ PIP_Solution_Node::Tableau
         }
         ++j0;
         ++j1;
-      } else
+      }
+      else
         if (j0.index() < j1.index()) {
           if (*j0 != 0 && s_1_1 != 0 && s_i_col_0 != 0) {
             // Mismatch found: exit from both loops.
@@ -1687,7 +1700,8 @@ PIP_Solution_Node::Tableau
             goto end_loop;
           }
           ++j0;
-        } else {
+        }
+        else {
           PPL_ASSERT(j0.index() > j1.index());
           if (*j1 != 0 && s_0_0 != 0 && s_i_col_1 != 0) {
             // Mismatch found: exit from both loops.
@@ -2103,7 +2117,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
           // Basic variable = 0, hence integer.
           continue;
         // Not a basic variable.
-        WEIGHT_ADD(1);
+        WEIGHT_ADD(70);
         const dimension_type mi = mapping[i];
         Coefficient_traits::const_reference denom = scaling[mi];
         if (s[mi].get(0) % denom == 0)
@@ -2121,7 +2135,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         cut = s_mi;
         for (Row::iterator
                j = cut.begin(), j_end = cut.end(); j != j_end; ++j) {
-          WEIGHT_ADD(1);
+          WEIGHT_ADD(32);
           pos_rem_assign(*j, *j, denom);
         }
         cut[0] -= denom;
@@ -2181,13 +2195,13 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
           Row& s_i = s[i];
           product = s_i.get(pj) * pivot_j;
           if (product % pivot_pj != 0) {
-            WEIGHT_ADD(4);
+            WEIGHT_ADD(103);
             // Must scale row s_i to stay in integer case.
             gcd_assign(gcd, product, pivot_pj);
             exact_div_assign(scale_factor, pivot_pj, gcd);
             for (Row::iterator
                    k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k) {
-              WEIGHT_ADD(1);
+              WEIGHT_ADD(30);
               *k *= scale_factor;
             }
             product *= scale_factor;
@@ -2196,7 +2210,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
           PPL_ASSERT(product % pivot_pj == 0);
           exact_div_assign(product, product, pivot_pj);
           s_i[j.index()] -= product;
-          WEIGHT_ADD(4);
+          WEIGHT_ADD(134);
         }
       }
     }
@@ -2208,13 +2222,13 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         Coefficient& s_i_pj = s_i[pj];
         product = s_i_pj * pivot_denom;
         if (product % pivot_pj != 0) {
-          WEIGHT_ADD(4);
+          WEIGHT_ADD(98);
           // As above, perform row scaling.
           gcd_assign(gcd, product, pivot_pj);
           exact_div_assign(scale_factor, pivot_pj, gcd);
           for (Row::iterator
                  k = s_i.begin(), k_end = s_i.end(); k != k_end; ++k) {
-            WEIGHT_ADD(1);
+            WEIGHT_ADD(26);
             *k *= scale_factor;
           }
           product *= scale_factor;
@@ -2222,7 +2236,7 @@ PIP_Tree_Node::compatibility_check(Matrix& s) {
         }
         PPL_ASSERT(product % pivot_pj == 0);
         exact_div_assign(s_i_pj, product, pivot_pj);
-        WEIGHT_ADD(3);
+        WEIGHT_ADD(97);
       }
     }
     // Drop pivot to restore proper matrix size.
@@ -2351,7 +2365,7 @@ PIP_Solution_Node
           continue;
         }
 
-        WEIGHT_ADD(1);
+        WEIGHT_ADD(140);
         if (is_parameter) {
           p_row.insert(p_index, coeff_i * denom);
           ++p_index;
@@ -2361,7 +2375,8 @@ PIP_Solution_Node
           if (basis[v_index]) {
             // Basic variable: add coeff_i * x_i
             add_mul_assign(v_row[mv], coeff_i, denom);
-          } else {
+          }
+          else {
             // Non-basic variable: add coeff_i * row_i
             add_mul_assign_row(v_row, coeff_i, tableau.s[mv]);
             add_mul_assign_row(p_row, coeff_i, tableau.t[mv]);
@@ -2403,7 +2418,8 @@ PIP_Solution_Node
           basis.push_back(false);
           mapping.push_back(1 + row_id);
           var_row.push_back(1 + var_id);
-        } else {
+        }
+        else {
           // The special constraint already exists and is nonbasic.
           const dimension_type m_eq = mapping[special_equality_row];
           sub_assign(tableau.s[m_eq], v_row);
@@ -2549,7 +2565,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         Coefficient& row0 = row[0];
         pos_rem_assign(mod, row0, tableau_denom);
         row0 -= (mod == 0) ? tableau_denom : mod;
-        WEIGHT_ADD(2);
+        WEIGHT_ADD(210);
         const bool compatible = compatibility_check(ctx, row);
         // Maybe update sign (and first_* indices).
         if (compatible) {
@@ -2689,15 +2705,15 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                 tableau.scale(scale_factor);
                 s_i_pj *= scale_factor;
                 product *= scale_factor;
-                WEIGHT_ADD(4);
+                WEIGHT_ADD(102);
               }
               PPL_ASSERT(product % s_pivot_pj == 0);
               exact_div_assign(product, product, s_pivot_pj);
-              WEIGHT_ADD(2);
+              WEIGHT_ADD(130);
               if (product != 0) {
                 itr = s_i.insert(itr, j.index());
                 *itr -= product;
-                WEIGHT_ADD(1);
+                WEIGHT_ADD(34);
               }
             }
           }
@@ -2740,15 +2756,15 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
               exact_div_assign(scale_factor, s_pivot_pj, gcd);
               tableau.scale(scale_factor);
               product *= scale_factor;
-              WEIGHT_ADD(3);
+              WEIGHT_ADD(261);
             }
             PPL_ASSERT(product % s_pivot_pj == 0);
             exact_div_assign(product, product, s_pivot_pj);
-            WEIGHT_ADD(3);
+            WEIGHT_ADD(115);
             if (product != 0) {
               k = t_i.insert(k, j.index());
               *k -= product;
-              WEIGHT_ADD(1);
+              WEIGHT_ADD(41);
             }
 
             // Update row sign.
@@ -2785,7 +2801,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           itr = s_i.find(pj);
           if (itr == s_i.end())
             continue;
-          WEIGHT_ADD(2);
+          WEIGHT_ADD(43);
           product = *itr * pivot_denom;
           if (product % s_pivot_pj != 0) {
             // As above, perform matrix scaling.
@@ -2793,11 +2809,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             exact_div_assign(scale_factor, s_pivot_pj, gcd);
             tableau.scale(scale_factor);
             product *= scale_factor;
-            WEIGHT_ADD(3);
+            WEIGHT_ADD(177);
           }
           PPL_ASSERT(product % s_pivot_pj == 0);
           if (product != 0 || *itr != 0) {
-            WEIGHT_ADD(1);
+            WEIGHT_ADD(106);
             exact_div_assign(*itr, product, s_pivot_pj);
           }
         }
@@ -2844,7 +2860,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& t_i = tableau.t[i];
           for (Row::const_iterator
                  j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-            WEIGHT_ADD(1);
+            WEIGHT_ADD(55);
             score += *j;
           }
         }
@@ -2893,7 +2909,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& t_i = tableau.t[i];
           for (Row::const_iterator
                  j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-            WEIGHT_ADD(1);
+            WEIGHT_ADD(51);
             score += *j;
           }
         }
@@ -3101,7 +3117,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       WEIGHT_BEGIN();
       for (Row::const_iterator
              j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-        WEIGHT_ADD(1);
+        WEIGHT_ADD(27);
         if (*j % denom != 0)
           goto non_integer;
       }
@@ -3134,7 +3150,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         const Row& t_i = tableau.t[i];
         for (Row::const_iterator
                j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-          WEIGHT_ADD(1);
+          WEIGHT_ADD(18);
           pos_rem_assign(mod, *j, denom);
           if (mod != 0)
             ++pcount;
@@ -3170,10 +3186,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& t_i = tableau.t[i];
           for (Row::const_iterator
                  j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
-            WEIGHT_ADD(1);
+            WEIGHT_ADD(46);
             pos_rem_assign(mod, *j, denom);
             if (mod != 0) {
-              WEIGHT_ADD(2);
+              WEIGHT_ADD(94);
               score += denom;
               score -= mod;
               ++pcount;
@@ -3188,7 +3204,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           const Row& s_i = tableau.s[i];
           for (Row::const_iterator
                  j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
-            WEIGHT_ADD(3);
+            WEIGHT_ADD(94);
             pos_rem_assign(mod, *j, denom);
             s_score += denom;
             s_score -= mod;
@@ -3269,7 +3285,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       ++j;
     WEIGHT_BEGIN();
     for ( ; j != j_end; ++j) {
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(7);
       if (*j % denom != 0) {
         generate_parametric_cut = true;
         break;
@@ -3306,11 +3322,11 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
         dimension_type last_index = 1;
         WEIGHT_BEGIN();
         for ( ; j != j_end; ++j) {
-          WEIGHT_ADD(1);
+          WEIGHT_ADD(69);
           pos_rem_assign(mod, *j, denom);
           if (mod != 0) {
             // Optimizing computation: expr += (denom - mod) * Variable(*p_j);
-            WEIGHT_ADD(1);
+            WEIGHT_ADD(164);
             coeff = denom - mod;
             PPL_ASSERT(last_index <= j.index());
             std::advance(p_j, j.index() - last_index);
@@ -3385,7 +3401,8 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
             // Compute <CODE> ctx2[0] += denom-1; </CODE>
             *itr2 += denom;
             --(*itr2);
-          } else {
+          }
+          else {
             // Compute <CODE> ctx2[0] += denom-1; </CODE>
             itr2 = ctx2.insert(0, denom);
             --(*itr2);
@@ -3406,13 +3423,13 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
             *itr1 -= mod;
             itr2 = ctx2.insert(itr2, j_index, *itr1);
             neg_assign(*itr2);
-            WEIGHT_ADD(2);
+            WEIGHT_ADD(294);
           }
         }
         itr1 = ctx1.insert(itr1, num_params, denom);
         neg_assign(*itr1);
         itr2 = ctx2.insert(itr2, num_params, denom);
-        WEIGHT_ADD(2);
+        WEIGHT_ADD(122);
       }
 
 #ifdef NOISY_PIP
@@ -3447,7 +3464,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     Row::iterator itr = cut_s.end();
     for (Row::const_iterator
            j = row_s.begin(), j_end = row_s.end(); j != j_end; ++j) {
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(55);
       itr = cut_s.insert(itr, j.index(), *j);
       pos_rem_assign(*itr, *itr, denom);
     }
@@ -3456,10 +3473,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     Row::iterator cut_t_itr = cut_t.end();
     for (Row::const_iterator
            j = row_t.begin(), j_end = row_t.end(); j!=j_end; ++j) {
-      WEIGHT_ADD(1);
+      WEIGHT_ADD(37);
       pos_rem_assign(mod, *j, denom);
       if (mod != 0) {
-        WEIGHT_ADD(1);
+        WEIGHT_ADD(108);
         cut_t_itr = cut_t.insert(cut_t_itr, j.index(), mod);
         *cut_t_itr -= denom;
       }
