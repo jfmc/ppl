@@ -30,6 +30,10 @@ o  Added new Box<ITV> methods
 o  Two BibTeX databases of papers related to the Parma Polyhedra Library
    have been added to the distribution (in the `doc' directory).
 
+o  The function ppl_set_deterministic_timeout() in the C interface now
+   takes an unsigned long long parameter (it erroneously used to take
+   an unsigned int).
+
 
 Bugfixes
 ========

@@ -259,7 +259,7 @@ ppl_reset_timeout(void) try {
 CATCH_ALL
 
 int
-ppl_set_deterministic_timeout(unsigned weight) try {
+ppl_set_deterministic_timeout(unsigned long long weight) try {
   // In case a deterministic timeout was already set.
   reset_deterministic_timeout();
   static timeout_exception e;
