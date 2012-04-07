@@ -282,7 +282,7 @@ public class Parma_Polyhedra_Library {
       (CPU, operating system, compiler, etc.).
 
       \warning
-      The weight mechanism is under alpha testing. In particular,
+      The weight mechanism is under beta testing. In particular,
       there is still no clear relation between the weight threshold and
       the actual computational complexity. As a consequence, client
       applications should be ready to reconsider the tuning of these

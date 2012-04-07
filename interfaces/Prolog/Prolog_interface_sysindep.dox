@@ -430,7 +430,7 @@ that are included with all instantiations of the Prolog interfaces.
    Its behavior will only depend on (some of the) computations performed
    in the PPL library and it will be otherwise independent from the
    computation environment (CPU, operating system, compiler, etc.).
-   The weight mechanism is under alpha testing: client applications
+   The weight mechanism is under beta testing: client applications
    should be ready to reconsider the tuning of these weight thresholds
    when upgrading to newer version of the PPL.
 
