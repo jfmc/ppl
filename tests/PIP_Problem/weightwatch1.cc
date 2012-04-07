@@ -1,4 +1,4 @@
-/* Reproduce Mantis issue [PPL 0000353].
+/* Test PIP_Problem (and MIP_Problem) with respect to deterministic timeouts.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
@@ -32,6 +32,33 @@ using std::fstream;
 using std::ios_base;
 
 namespace {
+
+typedef
+Parma_Polyhedra_Library::Threshold_Watcher<Weightwatch_Traits> Weightwatch;
+
+class Deterministic_Timeout
+  : virtual public std::exception,
+    public Parma_Polyhedra_Library::Throwable {
+public:
+  const char* what() const throw() {
+    return "deterministic timeout in weightwatch1.cc";
+  }
+
+  void throw_me() const {
+    throw *this;
+  }
+
+  int priority() const {
+    return 0;
+  }
+
+  ~Deterministic_Timeout() throw() {
+  }
+};
+
+void too_fat() {
+  throw Deterministic_Timeout();
+}
 
 bool
 test01() {
@@ -109,12 +136,48 @@ test01() {
   cs.insert(O >= 0);
   cs.insert(H >= 0);
 
-  PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
+  try {
+    PIP_Problem pip(cs.space_dimension(), cs.begin(), cs.end(), params);
 
-  if (pip.is_satisfiable())
+    Weightwatch ww(200000000, too_fat);
+
+    (void) pip.is_satisfiable();
+
+    // Should not get there.
     return false;
+  }
+  // Note: other exceptions are just propagated.
+  catch (const Deterministic_Timeout& e) {
+    // Expected timeout exception.
+    nout << endl << e.what() << endl;
 
-  return true;
+    try {
+      MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(), params);
+      // Set all variable to be constrained to have an integer value.
+      mip.add_to_integer_space_dimensions(Variables_Set(A, F1));
+
+      Weightwatch ww(4000000, too_fat);
+
+      if (mip.is_satisfiable()) {
+        nout << "mip is satisfiable?!" << endl;
+        return false;
+      }
+
+      return true;
+    }
+    // Note: other exceptions are just propagated.
+    catch (const Deterministic_Timeout& e) {
+      // Unexpected timeout exception.
+      nout << endl << e.what() << endl;
+      return false;
+    }
+
+    // Should never get here.
+    return false;
+  }
+
+  // Should never get here.
+  return false;
 }
 
 } // namespace
