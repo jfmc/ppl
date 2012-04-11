@@ -189,7 +189,7 @@ val ppl_reset_timeout:
   unit -> unit
 
 val ppl_set_deterministic_timeout:
-  int -> unit
+  int -> int -> unit
 
 val ppl_reset_deterministic_timeout:
   unit -> unit

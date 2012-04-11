@@ -53,6 +53,15 @@ Weightwatch_Traits::less_than(const Threshold& a, const Threshold& b) {
   return b - a < (1ULL << (sizeof_to_bits(sizeof(Threshold)) - 1));
 }
 
+inline Weightwatch_Traits::Delta
+Weightwatch_Traits::compute_delta(unsigned long unscaled, unsigned scale) {
+  if ((std::numeric_limits<Delta>::max() >> scale) < unscaled)
+    throw std::invalid_argument("PPL::Weightwatch_Traits::"
+                                "compute_delta(u, s):\n"
+                                "values of u and s cause wrap around.");
+  return static_cast<Delta>(unscaled) << scale;
+}
+
 inline void
 Weightwatch_Traits::from_delta(Threshold& threshold, const Delta& delta) {
   threshold = weight + delta;

@@ -393,14 +393,22 @@ ppl_reset_timeout PPL_PROTO((void));
   Sets a threshold for computations whose completion could require
   an exponential amount of time.
 
-  \param weight
-  The maximum computational weight allowed; it must be strictly
-  greater than zero.
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if \p unscaled_weight is zero
+  or if the computed weight threshold exceeds the maximum allowed value.
 
+  \param unscaled_weight
+  The unscaled maximum computational weight; it has to be non-zero.
+
+  \param scale
+  The scaling factor to be applied to \p unscaled_weight.
+
+  If \p unscaled_weight has value \f$u\f$ and \p scale has value \f$s\f$,
+  then the (scaled) weight threshold is computed as \f$w = u \cdot 2^s\f$.
   Computations taking exponential time will be interrupted some time
-  after reaching the \p weight complexity threshold. If the computation
-  is interrupted that way, the interrupted function will return error code
-  <code>PPL_TIMEOUT_EXCEPTION</code>.
+  after reaching the complexity threshold \f$w\f$;
+  If the computation is interrupted that way, the interrupted function
+  will return error code <code>PPL_TIMEOUT_EXCEPTION</code>.
   Otherwise, if the computation completes without being interrupted,
   then the deterministic timeout should be reset by calling
   <code>ppl_reset_deterministic_timeout()</code>.
@@ -420,7 +428,8 @@ ppl_reset_timeout PPL_PROTO((void));
   weight thresholds when upgrading to newer version of the PPL.
 */
 int
-ppl_set_deterministic_timeout PPL_PROTO((unsigned weight));
+ppl_set_deterministic_timeout PPL_PROTO((unsigned long unscaled_weight,
+                                         unsigned scale));
 
 /*! \brief
   Resets the deterministic timeout so that the computation is not interrupted.

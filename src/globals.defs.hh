@@ -115,6 +115,20 @@ struct Weightwatch_Traits {
   //! Compares the two weights \p a and \p b.
   static bool less_than(const Threshold& a, const Threshold& b);
 
+  //! Computes a \c Delta value from \p unscaled and \p scale.
+  /*!
+    \return
+    \f$u \cdot 2^s\f$, where \f$u\f$ is the value of \p unscaled and
+    \f$s\f$ is the value of \p scale.
+
+    \param unscaled
+    The value of delta before scaling.
+
+    \param scale
+    The scaling to be applied to \p unscaled.
+  */
+  static Delta compute_delta(unsigned long unscaled, unsigned scale);
+
   //! Sets \p threshold to be \p delta units bigger than the current weight.
   static void from_delta(Threshold& threshold, const Delta& delta);
 

@@ -96,7 +96,7 @@ open_hypercube(int dimension, ppl_Polyhedron_t ph) {
 }
 
 void
-weighted_compute_open_hypercube_generators(unsigned weight,
+weighted_compute_open_hypercube_generators(unsigned long weight,
                                            int max_dimension) {
   int i;
   int result;
@@ -106,7 +106,7 @@ weighted_compute_open_hypercube_generators(unsigned weight,
   for (i = 0; i <= max_dimension; ++i) {
     ppl_new_NNC_Polyhedron_from_space_dimension(&ph, i, 0);
     open_hypercube(i, ph);
-    ppl_set_deterministic_timeout(weight);
+    ppl_set_deterministic_timeout(weight, 0);
     result = ppl_Polyhedron_get_generators(ph, &gs);
     ppl_reset_deterministic_timeout();
     ppl_delete_Polyhedron(ph);

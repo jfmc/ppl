@@ -831,7 +831,8 @@ extern "C" Prolog_foreign_return_type
 ppl_reset_timeout();
 
 extern "C" Prolog_foreign_return_type
-ppl_set_deterministic_timeout(Prolog_term_ref t_weight);
+ppl_set_deterministic_timeout(Prolog_term_ref t_unscaled_weight,
+                              Prolog_term_ref t_scale);
 
 extern "C" Prolog_foreign_return_type
 ppl_reset_deterministic_timeout();

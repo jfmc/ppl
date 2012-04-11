@@ -464,7 +464,7 @@ in (
   begin
     try
       print_string_if_noisy "\nStarting ppl_reset_deterministic_timeout test:\n";
-      ppl_set_deterministic_timeout 2000;
+      ppl_set_deterministic_timeout 2000 0;
       compute_timeout_hypercube 0 2;
       ppl_reset_deterministic_timeout ();
       print_string_if_noisy "ppl_reset_deterministic_timeout test succeeded.\n"
@@ -482,7 +482,7 @@ in (
   begin
     try
       print_string_if_noisy "\nStarting ppl_set_deterministic_timeout test:\n";
-      ppl_set_deterministic_timeout 2000;
+      ppl_set_deterministic_timeout 2000 0;
       compute_timeout_hypercube 0 100;
       ppl_reset_deterministic_timeout ();
       print_string_if_noisy "ppl_set_deterministic_timeout test seems to be failed!\n"
