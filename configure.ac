@@ -24,7 +24,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [0.12.1pre2], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [0.12.1pre3], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -145,7 +145,7 @@ AC_ARG_WITH(cxx,
 
 # Checks for programs.
 
-# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
+# Note that AC_PROG_CC must precede the first use of $GCC and AC_PROG_CXX
 # must precede the first use of $GXX.  Note also that we do not allow
 # AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
 save_CFLAGS="$CFLAGS"
