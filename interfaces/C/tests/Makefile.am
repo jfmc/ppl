@@ -50,7 +50,15 @@ AM_CFLAGS = -pedantic -std=gnu89 -Werror
 
 else !HOST_OS_MINGW
 
+if ICC
+
+AM_CFLAGS = -std=c89
+
+else !ICC
+
 AM_CFLAGS = -pedantic -std=c89 -Werror
+
+endif !ICC
 
 endif !HOST_OS_MINGW
 
