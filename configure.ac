@@ -173,6 +173,8 @@ choke me
   AC_LANG_POP(C)
 fi
 
+AM_CONDITIONAL(ICC, test x"$ICC" = xyes)
+
 # The clang compiler masquerades as gcc, but we want to know.
 if test x"$GCC" = xyes
 then

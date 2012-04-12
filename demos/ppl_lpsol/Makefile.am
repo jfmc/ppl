@@ -52,8 +52,17 @@ dummy.cc
 
 if GCC
 
+if ICC
+
+# We cannot use -std=c89 because of the definition of sigaction in <signal.h>.
+ppl_lpsol_CFLAGS = -std=gnu89
+
+else !ICC
+
 # We cannot use -std=c89 because of the definition of sigaction in <signal.h>.
 ppl_lpsol_CFLAGS = -pedantic -std=gnu89 -Werror
+
+endif !ICC
 
 endif GCC
 
