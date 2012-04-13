@@ -406,7 +406,7 @@ ppl_reset_timeout PPL_PROTO((void));
   If \p unscaled_weight has value \f$u\f$ and \p scale has value \f$s\f$,
   then the (scaled) weight threshold is computed as \f$w = u \cdot 2^s\f$.
   Computations taking exponential time will be interrupted some time
-  after reaching the complexity threshold \f$w\f$;
+  after reaching the complexity threshold \f$w\f$.
   If the computation is interrupted that way, the interrupted function
   will return error code <code>PPL_TIMEOUT_EXCEPTION</code>.
   Otherwise, if the computation completes without being interrupted,
