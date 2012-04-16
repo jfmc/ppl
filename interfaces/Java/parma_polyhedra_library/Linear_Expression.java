@@ -64,11 +64,11 @@ public abstract class Linear_Expression implements Cloneable {
     //! Returns a string representation of \p this.
     public native String toString();
 
-    //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+    //! Returns <CODE>true</CODE> if and only if \p this is \f$0\f$.
     public native boolean is_zero();
 
     /*! \brief Returns <CODE>true</CODE> if and only if all the homogeneous
-        terms of \p *this are \f$0\f$.
+        terms of \p this are \f$0\f$.
     */
     public native boolean all_homogeneous_terms_are_zero();
 

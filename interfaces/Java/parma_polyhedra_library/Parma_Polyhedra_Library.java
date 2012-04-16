@@ -280,7 +280,7 @@ public class Parma_Polyhedra_Library {
       The scaling factor to be applied to \p unscaled_weight; it has
       to be non-negative.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the computation of the weight threshold exceeds the
       maximum allowed value.
 
