@@ -119,7 +119,7 @@ static {
             open_hypercube(i, ph);
             PPL_Test.println_if_noisy("Hypercube of dimension " + i);
             try {
-                Parma_Polyhedra_Library.set_deterministic_timeout(weight);
+                Parma_Polyhedra_Library.set_deterministic_timeout(weight, 0);
                 try {
                     ph.generators();
                 } finally {

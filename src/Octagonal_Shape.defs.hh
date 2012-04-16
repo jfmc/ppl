@@ -2303,12 +2303,12 @@ private:
                                     const char* lf_name,
                                     const Linear_Form<C>& lf) const;
 
-  void throw_constraint_incompatible(const char* method) const;
+  static void throw_constraint_incompatible(const char* method);
 
-  void throw_expression_too_complex(const char* method,
-                                    const Linear_Expression& le) const;
+  static void throw_expression_too_complex(const char* method,
+                                           const Linear_Expression& le);
 
-  void throw_generic(const char* method, const char* reason) const;
+  static void throw_invalid_argument(const char* method, const char* reason);
   //@} // Exception Throwers
 };
 

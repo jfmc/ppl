@@ -1,3 +1,250 @@
+2012-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, README, demos/ppl_lcdd/ppl_lcdd.1,
+	demos/ppl_lpsol/ppl_lpsol.1, demos/ppl_pips/ppl_pips.1,
+	doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1: Updated.
+
+2012-04-13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_header.h,
+	interfaces/OCaml/OCaml_interface.dox,
+	interfaces/Prolog/Prolog_interface_sysindep.dox: Minor corrections
+	in the documentation for set_deterministic_timeout.
+
+2012-04-12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS: Updated.
+
+2012-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/tests/Makefile.am: The Intel C/C++ compiler does not
+	support -pedantic.
+
+2012-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac, demos/ppl_lpsol/Makefile.am: The Intel C/C++
+	compiler does not support -pedantic.
+
+2012-04-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Typo fixed.  Version number bumped.
+
+2012-04-11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/PIP_Problem/weightwatch1.cc: Test PIP_Problem/weightwatch1
+	requires unbounded coefficients.
+
+2012-04-11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_header.h,
+	interfaces/C/ppl_c_implementation_common.cc,
+	interfaces/C/tests/weightwatch1.c,
+	interfaces/Java/jni/ppl_java_globals.cc,
+	interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.jav
+	a, interfaces/Java/tests/Parma_Polyhedra_Library_test2.java,
+	interfaces/OCaml/ppl_ocaml_common.cc,
+	interfaces/OCaml/ppl_ocaml_globals.ml,
+	interfaces/OCaml/ppl_ocaml_globals.mli,
+	interfaces/OCaml/tests/test1.ml,
+	interfaces/Prolog/Prolog_interface_sysindep.dox,
+	interfaces/Prolog/ppl_interface_generator_prolog_procedure_generato
+	rs.m4, interfaces/Prolog/ppl_prolog_common.cc,
+	interfaces/Prolog/ppl_prolog_common.defs.hh,
+	src/Threshold_Watcher.inlines.hh, src/globals.defs.hh,
+	src/globals.inlines.hh: Modified signature of function
+	set_deterministic_timeout().
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, interfaces/Prolog/ppl_prolog_common.cc: Fixed a bug in the
+	Prolog interface whereby predicate ppl_set_deterministic_timeout/1.
+	It was flagging arguments bigger than 4294967295 as erroneous.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, interfaces/C/ppl_c_header.h,
+	interfaces/C/ppl_c_implementation_common.cc: Revert "The function
+	ppl_set_deterministic_timeout() in the C interface now takes an
+	unsigned long long parameter." This reverts commit 7781b2d72ad31906c830a16a942b31ac305924c2.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c_header.h,
+	interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.jav
+	a, interfaces/OCaml/OCaml_interface.dox,
+	interfaces/Prolog/Prolog_interface_sysindep.dox: Substituted "alpha
+	testing" with "beta testing".
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, interfaces/C/ppl_c_header.h,
+	interfaces/C/ppl_c_implementation_common.cc: The function
+	ppl_set_deterministic_timeout() in the C interface now takes an
+	unsigned long long parameter.  It erroneously used to take an
+	unsigned int.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Profiled.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/PIP_Problem/Makefile.am, tests/PIP_Problem/{bug1.cc =>
+	weightwatch1.cc}: New test program.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/MIP_Problem/mipproblem1.cc: Comments improved.
+
+2012-04-07  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/Linear_Row.cc: Ignore always unhandled bits.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/PIP_Problem/Makefile.am: Cleaned.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: Avoid using @ outside BibTex entries.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Avoid using @ outside BibTex entries.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Missing comma added.
+
+2012-04-07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: Avoid non-ASCII characters.
+
+2012-04-07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Added calls to WEIGHT macros.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/MIP_Problem.cc: Weight computation fixed and adjusted.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/assert.cc: Let ppl_unreachable_msg() print a more sensible
+	message.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/assert.hh: Punctuation fixed.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/assert.cc: Mimic the message given by standard assert.
+
+2012-04-06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/assert.hh: Added a comment to clarify definition of
+	PPL_ASSERT.
+
+2012-04-06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/assert.cc, src/assert.hh: Improved error message reporting for
+	assertion failures.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.defs.hh: Reordered so as to allow compilability with
+	-DPPL_PROFILE_ADD_WEIGHT=1.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Weight_Profiler.cc: Variable name fixed.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Threshold_Watcher.defs.hh: Reference to no longer existing
+	namespace removed.  (Wonder why we did not have a Doxygen warning.)
+
+2012-04-06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_Row.inlines.hh: Clarified reason of assertion failing
+	by adding a message.
+
+2012-04-06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_Row.cc: When dumping Linear_Row::Flags with assertions
+	turned off, force the (unavailable) rpi/nnc validity bits as "set".
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Do not use #define without a value.
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/PIP_Problem/bug1.cc: The given problem is not satisfiable
+	(independently verified with other solvers).
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/PIP_Problem/Makefile.am, tests/PIP_Problem/bug1.cc,
+	tests/PIP_Problem/bug1.dat: Make it easier to reproduce issue [PPL
+	0000353].
+
+2012-04-06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Use add_mul_assign().
+
+2012-04-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Function renamed and documented.
+
+2012-04-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Indentation fixed.
+
+2012-04-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Indentation fixed.
+
+2012-04-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/PIP_Problem/bug1.dat: Set the validity bits.
+
+2012-04-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/PIP_Problem/bug1.cc, tests/PIP_Problem/bug1.dat: To
+	reproduce Mantis issue [PPL 0000353].
+
+2012-04-04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.defs.hh, src/BD_Shape.inlines.hh,
+	src/BD_Shape.templates.hh, src/Box.defs.hh, src/Box.inlines.hh,
+	src/Box.templates.hh, src/Grid.defs.hh, src/Grid_nonpublic.cc,
+	src/Grid_public.cc, src/Octagonal_Shape.defs.hh,
+	src/Octagonal_Shape.inlines.hh, src/Octagonal_Shape.templates.hh,
+	src/Polyhedron_public.cc: Made several exception thrower methods
+	static.  Renamed throw_generic() as throw_invalid_argument() for
+	consistency.  In generalized_affine_{pre}image(), systematically
+	throw an invalid argument exception if relsym == NOT_EQUAL.
+	Corrected several inaccuracies in exception error messages.
+
+2012-04-02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS: Corrected typo.
+
+2012-04-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, doc/Makefile.am: Distribute the bibliographies.
+
+2012-04-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: Added copyright and licensing
+	information.
+
+2012-04-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, NEWS, src/Makefile.am: Updated.
+
 2012-04-01  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/Polyhedron.defs.hh, src/Polyhedron.inlines.hh,

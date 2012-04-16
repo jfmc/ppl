@@ -145,7 +145,7 @@ AC_ARG_WITH(cxx,
 
 # Checks for programs.
 
-# Note that AC_PROG_CC must precede the first use of $GCC abd AC_PROG_CXX
+# Note that AC_PROG_CC must precede the first use of $GCC and AC_PROG_CXX
 # must precede the first use of $GXX.  Note also that we do not allow
 # AC_PROG_CC and AC_PROG_CXX to affect CFLAGS and CXXFLAGS.
 save_CFLAGS="$CFLAGS"
@@ -172,6 +172,8 @@ choke me
   ICC=no)
   AC_LANG_POP(C)
 fi
+
+AM_CONDITIONAL(ICC, test x"$ICC" = xyes)
 
 # The clang compiler masquerades as gcc, but we want to know.
 if test x"$GCC" = xyes

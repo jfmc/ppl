@@ -3,10 +3,10 @@ Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.12)
-======================================
+Parma Polyhedra Library (Release 0.12.1)
+========================================
 
-This is the release 0.12 of the Parma Polyhedra Library:
+This is the release 0.12.1 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -71,10 +71,10 @@ See http://bugseng.com/products/ppl/ for more information on the PPL.
 For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 0.12 source distribution
-(44 directories, 1589 files):
+Here is the contents of the PPL 0.12.1 source distribution
+(42 directories, 1622 files):
 
-ppl-0.12
+ppl-0.12.1/
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -91,114 +91,6 @@ ppl-0.12
 |-- README.solaris
 |-- STANDARDS
 |-- TODO
-|-- Watchdog
-|   |-- BUGS
-|   |-- COPYING
-|   |-- CREDITS
-|   |-- ChangeLog
-|   |-- ChangeLog_2001-2008
-|   |-- INSTALL
-|   |-- Makefile.am
-|   |-- Makefile.in
-|   |-- NEWS
-|   |-- README
-|   |-- aclocal.m4
-|   |-- compile
-|   |-- config.guess
-|   |-- config.h.in
-|   |-- config.rpath
-|   |-- config.sub
-|   |-- configure
-|   |-- configure.ac
-|   |-- depcomp
-|   |-- doc
-|   |   |-- Makefile.am
-|   |   |-- Makefile.in
-|   |   |-- README.doc
-|   |   |-- devref.doxyconf-html.in
-|   |   |-- devref.doxyconf-latex.in
-|   |   |-- devref.tex
-|   |   |-- fdl.dox
-|   |   |-- fdl.pdf
-|   |   |-- fdl.ps.gz
-|   |   |-- fdl.tex
-|   |   |-- fdl.txt
-|   |   |-- gpl.dox
-|   |   |-- gpl.pdf
-|   |   |-- gpl.ps.gz
-|   |   |-- gpl.tex
-|   |   |-- gpl.txt
-|   |   |-- pwl-user-0.8-html.tar.gz
-|   |   |-- pwl-user-0.8.pdf
-|   |   |-- pwl-user-0.8.ps.gz
-|   |   |-- pwl.sty
-|   |   |-- user.doxyconf-html.in
-|   |   |-- user.doxyconf-latex.in
-|   |   `-- user.tex
-|   |-- install-sh
-|   |-- ltmain.sh
-|   |-- m4
-|   |   |-- Makefile.am
-|   |   |-- Makefile.in
-|   |   |-- lib-ld.m4
-|   |   |-- lib-link.m4
-|   |   |-- libtool.m4
-|   |   |-- ltoptions.m4
-|   |   |-- ltsugar.m4
-|   |   |-- ltversion.m4
-|   |   `-- lt~obsolete.m4
-|   |-- missing
-|   |-- mkinstalldirs
-|   |-- pwl-config.h.in
-|   |-- pwl-config.sed
-|   |-- src
-|   |   |-- Doubly_Linked_Object.defs.hh
-|   |   |-- Doubly_Linked_Object.inlines.hh
-|   |   |-- Doubly_Linked_Object.types.hh
-|   |   |-- EList.defs.hh
-|   |   |-- EList.inlines.hh
-|   |   |-- EList.types.hh
-|   |   |-- EList_Iterator.defs.hh
-|   |   |-- EList_Iterator.inlines.hh
-|   |   |-- EList_Iterator.types.hh
-|   |   |-- Handler.defs.hh
-|   |   |-- Handler.inlines.hh
-|   |   |-- Handler.types.hh
-|   |   |-- Makefile.am
-|   |   |-- Makefile.in
-|   |   |-- Pending_Element.defs.hh
-|   |   |-- Pending_Element.inlines.hh
-|   |   |-- Pending_Element.types.hh
-|   |   |-- Pending_List.defs.hh
-|   |   |-- Pending_List.inlines.hh
-|   |   |-- Pending_List.templates.hh
-|   |   |-- Pending_List.types.hh
-|   |   |-- Threshold_Watcher.cc
-|   |   |-- Threshold_Watcher.defs.hh
-|   |   |-- Threshold_Watcher.inlines.hh
-|   |   |-- Threshold_Watcher.templates.hh
-|   |   |-- Threshold_Watcher.types.hh
-|   |   |-- Time.cc
-|   |   |-- Time.defs.hh
-|   |   |-- Time.inlines.hh
-|   |   |-- Time.types.hh
-|   |   |-- Watchdog.cc
-|   |   |-- Watchdog.defs.hh
-|   |   |-- Watchdog.inlines.hh
-|   |   |-- Watchdog.types.hh
-|   |   |-- pwl.hh.dist
-|   |   `-- pwl_header.hh
-|   |-- tests
-|   |   |-- Makefile.am
-|   |   |-- Makefile.in
-|   |   |-- pwl_test.cc
-|   |   |-- pwl_test.hh
-|   |   |-- valgrind_suppressions
-|   |   `-- watchdog1.cc
-|   `-- utils
-|       |-- Makefile.am
-|       |-- Makefile.in
-|       `-- build_header.in
 |-- aclocal.m4
 |-- compile
 |-- config.guess
@@ -430,6 +322,7 @@ ppl-0.12
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- README.doc
+|   |-- bugseng_logo.pdf
 |   |-- definitions.dox
 |   |-- devref-language-interface.doxyconf.in
 |   |-- devref-language-interface.tex
@@ -451,22 +344,26 @@ ppl-0.12
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.12-html.tar.gz
-|   |-- ppl-user-0.12.pdf
-|   |-- ppl-user-0.12.ps.gz
-|   |-- ppl-user-c-interface-0.12-html.tar.gz
-|   |-- ppl-user-c-interface-0.12.pdf
-|   |-- ppl-user-c-interface-0.12.ps.gz
-|   |-- ppl-user-java-interface-0.12-html.tar.gz
-|   |-- ppl-user-java-interface-0.12.pdf
-|   |-- ppl-user-java-interface-0.12.ps.gz
-|   |-- ppl-user-ocaml-interface-0.12-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.12.pdf
-|   |-- ppl-user-ocaml-interface-0.12.ps.gz
-|   |-- ppl-user-prolog-interface-0.12-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.12.pdf
-|   |-- ppl-user-prolog-interface-0.12.ps.gz
+|   |-- ppl-user-0.12.1-html.tar.gz
+|   |-- ppl-user-0.12.1.pdf
+|   |-- ppl-user-0.12.1.ps.gz
+|   |-- ppl-user-c-interface-0.12.1-html.tar.gz
+|   |-- ppl-user-c-interface-0.12.1.pdf
+|   |-- ppl-user-c-interface-0.12.1.ps.gz
+|   |-- ppl-user-java-interface-0.12.1-html.tar.gz
+|   |-- ppl-user-java-interface-0.12.1.pdf
+|   |-- ppl-user-java-interface-0.12.1.ps.gz
+|   |-- ppl-user-ocaml-interface-0.12.1-html.tar.gz
+|   |-- ppl-user-ocaml-interface-0.12.1.pdf
+|   |-- ppl-user-ocaml-interface-0.12.1.ps.gz
+|   |-- ppl-user-prolog-interface-0.12.1-html.tar.gz
+|   |-- ppl-user-prolog-interface-0.12.1.pdf
+|   |-- ppl-user-prolog-interface-0.12.1.ps.gz
+|   |-- ppl.bib
 |   |-- ppl.sty
+|   |-- ppl_citations.bib
+|   |-- ppl_logo.pdf
+|   |-- ppl_logo_no_ppl.pdf
 |   |-- user-language-interface.doxyconf.in
 |   |-- user-language-interface.tex
 |   |-- user.doxyconf-html.in
@@ -646,7 +543,12 @@ ppl-0.12
 |   |   |   `-- ppl_prolog_sysdep.hh
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
+|   |   |-- Prolog_configured_interface.dox
 |   |   |-- Prolog_interface.dox
+|   |   |-- Prolog_interface_compilation.dox
+|   |   |-- Prolog_interface_sysdep.dox
+|   |   |-- Prolog_interface_sysindep.dox
+|   |   |-- Prolog_interface_sysindep_domains.dox
 |   |   |-- SICStus
 |   |   |   |-- Makefile.am
 |   |   |   |-- Makefile.in
@@ -715,8 +617,6 @@ ppl-0.12
 |   |   |-- ppl_prolog_common.cc
 |   |   |-- ppl_prolog_common.defs.hh
 |   |   |-- ppl_prolog_common.inlines.hh
-|   |   |-- ppl_prolog_sysdep_dox
-|   |   |-- ppl_prolog_sysindep_dox
 |   |   `-- tests
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
@@ -789,23 +689,20 @@ ppl-0.12
 |   |-- ac_cxx_attribute_weak.m4
 |   |-- ac_cxx_double_binary_format.m4
 |   |-- ac_cxx_double_exact_output.m4
-|   |-- ac_cxx_flexible_arrays.m4
 |   |-- ac_cxx_float_binary_format.m4
 |   |-- ac_cxx_float_exact_output.m4
 |   |-- ac_cxx_ieee_inexact_flag.m4
 |   |-- ac_cxx_limit_memory.m4
 |   |-- ac_cxx_long_double_binary_format.m4
 |   |-- ac_cxx_long_double_exact_output.m4
+|   |-- ac_cxx_plain_char_is_signed.m4
 |   |-- ac_cxx_proper_long_double.m4
-|   |-- ac_cxx_remainder_bug.m4
+|   |-- ac_cxx_zero_length_arrays.m4
 |   |-- ac_prog_jar.m4
 |   |-- ac_prog_java.m4
 |   |-- ac_prog_javac.m4
 |   |-- ac_prog_javah.m4
 |   |-- ac_text_md5sum.m4
-|   |-- lib-ld.m4
-|   |-- lib-link.m4
-|   |-- lib-prefix.m4
 |   |-- libtool.m4
 |   |-- ltoptions.m4
 |   |-- ltsugar.m4
@@ -833,6 +730,7 @@ ppl-0.12
 |   |-- BHRZ03_Certificate.inlines.hh
 |   |-- BHRZ03_Certificate.types.hh
 |   |-- BUGS.cc.dist
+|   |-- BUGS.hh.dist
 |   |-- Bit_Matrix.cc
 |   |-- Bit_Matrix.defs.hh
 |   |-- Bit_Matrix.inlines.hh
@@ -850,12 +748,23 @@ ppl-0.12
 |   |-- Box_Status.idefs.hh
 |   |-- Box_Status.inlines.hh
 |   |-- COPYING.cc.dist
+|   |-- COPYING.hh.dist
+|   |-- CO_Tree.cc
+|   |-- CO_Tree.defs.hh
+|   |-- CO_Tree.inlines.hh
+|   |-- CO_Tree.templates.hh
+|   |-- CO_Tree.types.hh
 |   |-- CREDITS.cc.dist
+|   |-- CREDITS.hh.dist
 |   |-- C_Integer.hh
 |   |-- C_Polyhedron.cc
 |   |-- C_Polyhedron.defs.hh
 |   |-- C_Polyhedron.inlines.hh
 |   |-- C_Polyhedron.types.hh
+|   |-- Cast_Floating_Point_Expression.defs.hh
+|   |-- Cast_Floating_Point_Expression.inlines.hh
+|   |-- Cast_Floating_Point_Expression.templates.hh
+|   |-- Cast_Floating_Point_Expression.types.hh
 |   |-- Checked_Number.cc
 |   |-- Checked_Number.defs.hh
 |   |-- Checked_Number.inlines.hh
@@ -866,6 +775,10 @@ ppl-0.12
 |   |-- Coefficient.inlines.hh
 |   |-- Coefficient.types.hh
 |   |-- Coefficient_traits_template.hh
+|   |-- Concrete_Expression.cc
+|   |-- Concrete_Expression.defs.hh
+|   |-- Concrete_Expression.inlines.hh
+|   |-- Concrete_Expression.types.hh
 |   |-- Congruence.cc
 |   |-- Congruence.defs.hh
 |   |-- Congruence.inlines.hh
@@ -874,6 +787,9 @@ ppl-0.12
 |   |-- Congruence_System.defs.hh
 |   |-- Congruence_System.inlines.hh
 |   |-- Congruence_System.types.hh
+|   |-- Constant_Floating_Point_Expression.defs.hh
+|   |-- Constant_Floating_Point_Expression.inlines.hh
+|   |-- Constant_Floating_Point_Expression.types.hh
 |   |-- Constraint.cc
 |   |-- Constraint.defs.hh
 |   |-- Constraint.inlines.hh
@@ -890,12 +806,43 @@ ppl-0.12
 |   |-- DB_Row.inlines.hh
 |   |-- DB_Row.templates.hh
 |   |-- DB_Row.types.hh
+|   |-- Dense_Matrix.cc
+|   |-- Dense_Matrix.defs.hh
+|   |-- Dense_Matrix.inlines.hh
+|   |-- Dense_Matrix.types.hh
+|   |-- Dense_Row.cc
+|   |-- Dense_Row.defs.hh
+|   |-- Dense_Row.inlines.hh
+|   |-- Dense_Row.templates.hh
+|   |-- Dense_Row.types.hh
 |   |-- Determinate.defs.hh
 |   |-- Determinate.inlines.hh
 |   |-- Determinate.types.hh
+|   |-- Difference_Floating_Point_Expression.defs.hh
+|   |-- Difference_Floating_Point_Expression.inlines.hh
+|   |-- Difference_Floating_Point_Expression.templates.hh
+|   |-- Difference_Floating_Point_Expression.types.hh
+|   |-- Division_Floating_Point_Expression.defs.hh
+|   |-- Division_Floating_Point_Expression.inlines.hh
+|   |-- Division_Floating_Point_Expression.templates.hh
+|   |-- Division_Floating_Point_Expression.types.hh
+|   |-- Doubly_Linked_Object.defs.hh
+|   |-- Doubly_Linked_Object.inlines.hh
+|   |-- Doubly_Linked_Object.types.hh
+|   |-- EList.defs.hh
+|   |-- EList.inlines.hh
+|   |-- EList.types.hh
+|   |-- EList_Iterator.defs.hh
+|   |-- EList_Iterator.inlines.hh
+|   |-- EList_Iterator.types.hh
 |   |-- Float.cc
 |   |-- Float.defs.hh
 |   |-- Float.inlines.hh
+|   |-- Float.templates.hh
+|   |-- Floating_Point_Expression.defs.hh
+|   |-- Floating_Point_Expression.inlines.hh
+|   |-- Floating_Point_Expression.templates.hh
+|   |-- Floating_Point_Expression.types.hh
 |   |-- GMP_Integer.defs.hh
 |   |-- GMP_Integer.inlines.hh
 |   |-- GMP_Integer.types.hh
@@ -936,11 +883,15 @@ ppl-0.12
 |   |-- H79_Certificate.defs.hh
 |   |-- H79_Certificate.inlines.hh
 |   |-- H79_Certificate.types.hh
+|   |-- Handler.defs.hh
+|   |-- Handler.inlines.hh
+|   |-- Handler.types.hh
 |   |-- Has_Assign_Or_Swap.hh
 |   |-- Init.cc
 |   |-- Init.defs.hh
 |   |-- Init.inlines.hh
 |   |-- Init.types.hh
+|   |-- Integer_Interval.hh
 |   |-- Interval.defs.hh
 |   |-- Interval.inlines.hh
 |   |-- Interval.templates.hh
@@ -948,11 +899,15 @@ ppl-0.12
 |   |-- Interval_Info.defs.hh
 |   |-- Interval_Info.inlines.hh
 |   |-- Interval_Info.types.hh
-|   |-- Interval_Restriction.defs.hh
 |   |-- Linear_Expression.cc
 |   |-- Linear_Expression.defs.hh
 |   |-- Linear_Expression.inlines.hh
 |   |-- Linear_Expression.types.hh
+|   |-- Linear_Form.cc
+|   |-- Linear_Form.defs.hh
+|   |-- Linear_Form.inlines.hh
+|   |-- Linear_Form.templates.hh
+|   |-- Linear_Form.types.hh
 |   |-- Linear_Row.cc
 |   |-- Linear_Row.defs.hh
 |   |-- Linear_Row.inlines.hh
@@ -968,10 +923,12 @@ ppl-0.12
 |   |-- MIP_Problem.types.hh
 |   |-- Makefile.am
 |   |-- Makefile.in
-|   |-- Matrix.cc
 |   |-- Matrix.defs.hh
-|   |-- Matrix.inlines.hh
 |   |-- Matrix.types.hh
+|   |-- Multiplication_Floating_Point_Expression.defs.hh
+|   |-- Multiplication_Floating_Point_Expression.inlines.hh
+|   |-- Multiplication_Floating_Point_Expression.templates.hh
+|   |-- Multiplication_Floating_Point_Expression.types.hh
 |   |-- NNC_Polyhedron.cc
 |   |-- NNC_Polyhedron.defs.hh
 |   |-- NNC_Polyhedron.inlines.hh
@@ -988,6 +945,9 @@ ppl-0.12
 |   |-- Octagonal_Shape.types.hh
 |   |-- Og_Status.idefs.hh
 |   |-- Og_Status.inlines.hh
+|   |-- Opposite_Floating_Point_Expression.defs.hh
+|   |-- Opposite_Floating_Point_Expression.inlines.hh
+|   |-- Opposite_Floating_Point_Expression.types.hh
 |   |-- PIP_Problem.cc
 |   |-- PIP_Problem.defs.hh
 |   |-- PIP_Problem.inlines.hh
@@ -1005,6 +965,13 @@ ppl-0.12
 |   |-- Partially_Reduced_Product.inlines.hh
 |   |-- Partially_Reduced_Product.templates.hh
 |   |-- Partially_Reduced_Product.types.hh
+|   |-- Pending_Element.defs.hh
+|   |-- Pending_Element.inlines.hh
+|   |-- Pending_Element.types.hh
+|   |-- Pending_List.defs.hh
+|   |-- Pending_List.inlines.hh
+|   |-- Pending_List.templates.hh
+|   |-- Pending_List.types.hh
 |   |-- Ph_Status.cc
 |   |-- Ph_Status.idefs.hh
 |   |-- Ph_Status.inlines.hh
@@ -1042,35 +1009,67 @@ ppl-0.12
 |   |-- Result.inlines.hh
 |   |-- Rounding_Dir.defs.hh
 |   |-- Rounding_Dir.inlines.hh
-|   |-- Row.cc
 |   |-- Row.defs.hh
-|   |-- Row.inlines.hh
 |   |-- Row.types.hh
+|   |-- Row_Flags.cc
+|   |-- Row_Flags.defs.hh
+|   |-- Row_Flags.inlines.hh
+|   |-- Row_Flags.types.hh
 |   |-- Scalar_Products.cc
 |   |-- Scalar_Products.defs.hh
 |   |-- Scalar_Products.inlines.hh
 |   |-- Scalar_Products.types.hh
 |   |-- Slow_Copy.hh
+|   |-- Sparse_Matrix.cc
+|   |-- Sparse_Matrix.defs.hh
+|   |-- Sparse_Matrix.inlines.hh
+|   |-- Sparse_Matrix.types.hh
+|   |-- Sparse_Row.cc
+|   |-- Sparse_Row.defs.hh
+|   |-- Sparse_Row.inlines.hh
+|   |-- Sparse_Row.templates.hh
+|   |-- Sparse_Row.types.hh
+|   |-- Sum_Floating_Point_Expression.defs.hh
+|   |-- Sum_Floating_Point_Expression.inlines.hh
+|   |-- Sum_Floating_Point_Expression.templates.hh
+|   |-- Sum_Floating_Point_Expression.types.hh
 |   |-- Temp.defs.hh
 |   |-- Temp.inlines.hh
 |   |-- Temp.templates.hh
-|   |-- Topology.hh
+|   |-- Threshold_Watcher.cc
+|   |-- Threshold_Watcher.defs.hh
+|   |-- Threshold_Watcher.inlines.hh
+|   |-- Threshold_Watcher.templates.hh
+|   |-- Threshold_Watcher.types.hh
+|   |-- Time.cc
+|   |-- Time.defs.hh
+|   |-- Time.inlines.hh
+|   |-- Time.types.hh
+|   |-- Topology.types.hh
 |   |-- Variable.cc
 |   |-- Variable.defs.hh
 |   |-- Variable.inlines.hh
 |   |-- Variable.types.hh
+|   |-- Variable_Floating_Point_Expression.defs.hh
+|   |-- Variable_Floating_Point_Expression.inlines.hh
+|   |-- Variable_Floating_Point_Expression.types.hh
 |   |-- Variables_Set.cc
 |   |-- Variables_Set.defs.hh
 |   |-- Variables_Set.inlines.hh
 |   |-- Variables_Set.types.hh
 |   |-- WRD_coefficient_types.defs.hh
 |   |-- WRD_coefficient_types.inlines.hh
+|   |-- Watchdog.cc
+|   |-- Watchdog.defs.hh
+|   |-- Watchdog.inlines.hh
+|   |-- Watchdog.types.hh
 |   |-- Weight_Profiler.cc
 |   |-- Weight_Profiler.defs.hh
 |   |-- Widening_Function.defs.hh
 |   |-- Widening_Function.inlines.hh
 |   |-- Widening_Function.types.hh
 |   |-- algorithms.hh
+|   |-- assert.cc
 |   |-- assert.hh
 |   |-- assign_or_swap.hh
 |   |-- c_streambuf.cc
@@ -1107,6 +1106,7 @@ ppl-0.12
 |   |-- iterator_to_const.defs.hh
 |   |-- iterator_to_const.inlines.hh
 |   |-- iterator_to_const.types.hh
+|   |-- linearize.hh
 |   |-- math_utilities.defs.hh
 |   |-- math_utilities.inlines.hh
 |   |-- max_space_dimension.hh
@@ -1124,7 +1124,7 @@ ppl-0.12
 |   |-- stdiobuf.defs.hh
 |   |-- stdiobuf.inlines.hh
 |   |-- stdiobuf.types.hh
-|   |-- swapping_sort.icc
+|   |-- swapping_sort.templates.hh
 |   |-- termination.cc
 |   |-- termination.defs.hh
 |   |-- termination.templates.hh
@@ -1281,6 +1281,26 @@ ppl-0.12
 |   |   |-- upperboundifexact1.cc
 |   |   |-- wrap1.cc
 |   |   `-- writebox1.cc
+|   |-- CO_Tree
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   `-- cotree1.cc
+|   |-- Concrete_Expression
+|   |   |-- C_Expr.cc
+|   |   |-- C_Expr.defs.hh
+|   |   |-- C_Expr.inlines.hh
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- bdshape1.cc
+|   |   |-- bdshape2.cc
+|   |   |-- digitalfilters1.cc
+|   |   |-- linearform1.cc
+|   |   |-- linearize.cc
+|   |   |-- octagonalshape1.cc
+|   |   |-- octagonalshape2.cc
+|   |   |-- polyhedron1.cc
+|   |   |-- polyhedron2.cc
+|   |   `-- run_tests
 |   |-- Grid
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
@@ -1385,7 +1405,8 @@ ppl-0.12
 |   |   |-- exceptions1.cc
 |   |   |-- mipproblem1.cc
 |   |   |-- mipproblem2.cc
-|   |   `-- mipproblem3.cc
+|   |   |-- mipproblem3.cc
+|   |   `-- mipproblem4.cc
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- Octagonal_Shape
@@ -1468,7 +1489,8 @@ ppl-0.12
 |   |   |-- exceptions1.cc
 |   |   |-- pipproblem1.cc
 |   |   |-- pipproblem2.cc
-|   |   `-- pipproblem3.cc
+|   |   |-- pipproblem3.cc
+|   |   `-- weightwatch1.cc
 |   |-- Partially_Reduced_Product
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
@@ -1556,6 +1578,7 @@ ppl-0.12
 |   |   |-- contains1.cc
 |   |   |-- contains2.cc
 |   |   |-- containsintegerpoint1.cc
+|   |   |-- densematrix1.cc
 |   |   |-- disjoint1.cc
 |   |   |-- disjoint2.cc
 |   |   |-- dropsomenonintegerpoints1.cc
@@ -1592,7 +1615,6 @@ ppl-0.12
 |   |   |-- linearpartition1.cc
 |   |   |-- linearsystem1.cc
 |   |   |-- mapspacedims1.cc
-|   |   |-- matrix1.cc
 |   |   |-- max_min1.cc
 |   |   |-- maxspacedim1.cc
 |   |   |-- mc91.cc
@@ -1694,6 +1716,15 @@ ppl-0.12
 |   |-- Random_Number_Generator.defs.hh
 |   |-- Random_Number_Generator.inlines.hh
 |   |-- Random_Number_Generator.types.hh
+|   |-- Sparse_Matrix
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- sparsematrix1.cc
+|   |   `-- sparserow1.cc
+|   |-- Watchdog
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   `-- watchdog1.cc
 |   |-- files.cc
 |   |-- files.hh
 |   |-- ppl_test.cc

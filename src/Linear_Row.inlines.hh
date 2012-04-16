@@ -60,7 +60,8 @@ Linear_Row::Flags::Flags(const Topology t, const Kind k)
 
 inline bool
 Linear_Row::Flags::is_ray_or_point_or_inequality() const {
-  PPL_ASSERT(test_bits(1U << rpi_validity_bit));
+  PPL_ASSERT(test_bits(1U << rpi_validity_bit)
+             && ("rpi bit tested before being initialized" != 0));
   return
     test_bits(static_cast<unsigned>(RAY_OR_POINT_OR_INEQUALITY) << rpi_bit);
 }
@@ -75,7 +76,8 @@ Linear_Row::Flags::set_is_ray_or_point_or_inequality() {
 
 inline bool
 Linear_Row::Flags::is_line_or_equality() const {
-  PPL_ASSERT(test_bits(1U << rpi_validity_bit));
+  PPL_ASSERT(test_bits(1U << rpi_validity_bit)
+             && ("rpi bit tested before being initialized" != 0));
   return !is_ray_or_point_or_inequality();
 }
 
@@ -89,13 +91,15 @@ Linear_Row::Flags::set_is_line_or_equality() {
 
 inline bool
 Linear_Row::Flags::is_not_necessarily_closed() const {
-  PPL_ASSERT(test_bits(1U << nnc_validity_bit));
+  PPL_ASSERT(test_bits(1U << nnc_validity_bit)
+             && ("nnc bit tested before being initialized" != 0));
   return test_bits(static_cast<unsigned>(NOT_NECESSARILY_CLOSED) << nnc_bit);
 }
 
 inline bool
 Linear_Row::Flags::is_necessarily_closed() const {
-  PPL_ASSERT(test_bits(1U << nnc_validity_bit));
+  PPL_ASSERT(test_bits(1U << nnc_validity_bit)
+             && ("nnc bit tested before being initialized" != 0));
   return !is_not_necessarily_closed();
 }
 

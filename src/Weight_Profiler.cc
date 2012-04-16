@@ -47,7 +47,7 @@ void Weight_Profiler::output_stats() {
 		<< " max( " << stat[VALID].max << ")"
 		<< " average(" << average << ")";
       std::cout << " variance( " << variance << ")"
-		<< " stddev( " << sqrt(var) << ")";
+		<< " stddev( " << sqrt(variance) << ")";
     }
     if (stat[DISCARDED].samples > 0) {
       std::cout << " min_threshold( " << min_threshold << ")"

@@ -2731,11 +2731,11 @@ bounded_affine_image(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any image of an empty polyhedron is empty.
@@ -2806,11 +2806,11 @@ bounded_affine_preimage(const Variable var,
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
   if (space_dim < lb_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "lb", lb_expr);
   const dimension_type ub_space_dim = ub_expr.space_dimension();
   if (space_dim < ub_space_dim)
-    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
 				 "ub", ub_expr);
 
   // Any preimage of an empty polyhedron is empty.

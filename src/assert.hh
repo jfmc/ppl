@@ -36,6 +36,11 @@ site: http://bugseng.com/products/ppl/ . */
 // The PPL_UNREACHABLE macro flags a program point as unreachable.
 #define PPL_UNREACHABLE PPL_UNREACHABLE_MSG("unreachable")
 
+// The PPL_ASSERTION_FAILED macro is used to output a message after
+// an assertion failure and then cause program termination.
+// (It is meant to be used only when assertions are turned on.)
+#define PPL_ASSERTION_FAILED(msg__) Parma_Polyhedra_Library:: \
+  ppl_assertion_failed(msg__, __FILE__, __LINE__, __func__)
 
 // Helper macro PPL_ASSERT_IMPL_: do not use it directly.
 #if defined(NDEBUG)
@@ -43,11 +48,12 @@ site: http://bugseng.com/products/ppl/ . */
 #else
 #define PPL_STRING_(s) #s
 #define PPL_ASSERT_IMPL_(cond__) \
-  ((cond__) ? (void) 0 : PPL_UNREACHABLE_MSG(PPL_STRING_(cond__)))
+  ((cond__) ? (void) 0 : PPL_ASSERTION_FAILED(PPL_STRING_(cond__)))
 #endif
 
 
 // Non zero to detect use of PPL_ASSERT instead of PPL_ASSERT_HEAVY
+// Note: flag does not affect code built with NDEBUG defined.
 #define PPL_DEBUG_PPL_ASSERT 1
 
 // The PPL_ASSERT macro states that Boolean condition cond__ should hold.
@@ -55,6 +61,9 @@ site: http://bugseng.com/products/ppl/ . */
 #if defined(NDEBUG) || (!PPL_DEBUG_PPL_ASSERT)
 #define PPL_ASSERT(cond__) PPL_ASSERT_IMPL_(cond__)
 #else
+// Note: here we have assertions enabled and PPL_DEBUG_PPL_ASSERT is 1.
+// Check if the call to PPL_ASSERT should be replaced by PPL_ASSERT_HEAVY
+// (i.e., if the former may interfere with computational weights).
 #define PPL_ASSERT(cond__)                                        \
   do {                                                            \
     typedef Parma_Polyhedra_Library::Weightwatch_Traits W_Traits; \
@@ -90,15 +99,16 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+#define PPL_WEAK_NORETURN __attribute__((weak, noreturn))
+#else
+#define PPL_WEAK_NORETURN __attribute__((noreturn))
+#endif
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Helper function causing program termination by calling \c abort.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-void ppl_unreachable()
-#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
-  __attribute__((weak, noreturn));
-#else
-  __attribute__((noreturn));
-#endif
+void ppl_unreachable() PPL_WEAK_NORETURN;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -108,12 +118,18 @@ void ppl_unreachable()
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void ppl_unreachable_msg(const char* msg,
                          const char* file, unsigned int line,
-                         const char* function)
-#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
-  __attribute__((weak, noreturn));
-#else
-  __attribute__((noreturn));
-#endif
+                         const char* function) PPL_WEAK_NORETURN;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Helper function printing an assertion failure message on \c std::cerr
+  and causing program termination by calling \c abort.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+void ppl_assertion_failed(const char* assertion_text,
+                          const char* file, unsigned int line,
+                          const char* function) PPL_WEAK_NORETURN;
+
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief

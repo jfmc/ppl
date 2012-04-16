@@ -32,7 +32,10 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Traits>
 template <typename Flag_Base, typename Flag>
-Threshold_Watcher<Traits>::Threshold_Watcher(const typename Traits::Delta& delta, const Flag_Base* volatile& holder, Flag& flag)
+Threshold_Watcher<Traits>
+::Threshold_Watcher(const typename Traits::Delta& delta,
+                    const Flag_Base* volatile& holder,
+                    Flag& flag)
   : expired(false),
     handler(*new
             Implementation::Watchdog::Handler_Flag<Flag_Base, Flag>(holder,
