@@ -761,7 +761,7 @@ void
 PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2) {
-  PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(x.size() >= y.size());
   PPL_ASSERT(coeff1 != 0);
   PPL_ASSERT(coeff2 != 0);
 
@@ -930,7 +930,7 @@ void
 PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2) {
-  PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(x.size() >= y.size());
   if (coeff1 == 1) {
     for (Sparse_Row::const_iterator i = y.begin(),
            i_end = y.end(); i != i_end; ++i)
@@ -957,7 +957,7 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2,
                     dimension_type start, dimension_type end) {
-  PPL_ASSERT(x.size() == y.size());
+  PPL_ASSERT(x.size() >= y.size());
   PPL_ASSERT(coeff1 != 0);
   PPL_ASSERT(coeff2 != 0);
 
