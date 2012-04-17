@@ -31,7 +31,8 @@ namespace {
 
 class Sparse_Row_from_Dense_Row_helper_iterator {
 public:
-  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1, PPL::dimension_type sz)
+  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1,
+                                            PPL::dimension_type sz)
     : row(row1), sz(sz), i(0) {
     if (row.size() != 0 && row[0] == 0)
       ++(*this);
@@ -472,7 +473,8 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     if (coeff2 == 1) {
       // Optimized implementation for coeff1==1, coeff2==1.
       iterator i = this->end();
-      for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
+      for (const_iterator j = y.lower_bound(start),
+             j_end = y.lower_bound(end); j != j_end; ++j) {
         i = insert(i, j.index());
         *i += *j;
         if (*i == 0)
@@ -483,7 +485,8 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     if (coeff2 == -1) {
       // Optimized implementation for coeff1==1, coeff2==-1.
       iterator i = this->end();
-      for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
+      for (const_iterator j = y.lower_bound(start),
+             j_end = y.lower_bound(end); j != j_end; ++j) {
         i = insert(i, j.index());
         *i -= *j;
         if (*i == 0)
@@ -493,7 +496,8 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     }
     // Optimized implementation for coeff1==1.
     iterator i = this->end();
-    for (const_iterator j = y.lower_bound(start), j_end = y.lower_bound(end); j != j_end; ++j) {
+    for (const_iterator j = y.lower_bound(start),
+           j_end = y.lower_bound(end); j != j_end; ++j) {
       i = insert(i, j.index());
       add_mul_assign(*i, *j, coeff2);
       if (*i == 0)
@@ -928,7 +932,8 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
                     Coefficient_traits::const_reference coeff2) {
   PPL_ASSERT(x.size() == y.size());
   if (coeff1 == 1) {
-    for (Sparse_Row::const_iterator i = y.begin(), i_end = y.end(); i != i_end; ++i)
+    for (Sparse_Row::const_iterator i = y.begin(),
+           i_end = y.end(); i != i_end; ++i)
       add_mul_assign(x[i.index()], *i, coeff2);
     return;
   }
