@@ -1925,16 +1925,21 @@ ppl_reset_timeout() {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_set_deterministic_timeout(Prolog_term_ref t_weight) {
+ppl_set_deterministic_timeout(Prolog_term_ref t_unscaled_weight,
+                              Prolog_term_ref t_scale) {
   try {
     // In case a deterministic timeout was already set.
     reset_deterministic_timeout();
     static deterministic_timeout_exception e;
-    unsigned weight
-      = term_to_unsigned<unsigned>(t_weight,
-                                   "ppl_set_deterministic_timeout/1");
-    p_deterministic_timeout_object =
-      new Weightwatch(weight, abandon_expensive_computations, e);
+    unsigned long unscaled_weight
+      = term_to_unsigned<unsigned long>(t_unscaled_weight,
+                                        "ppl_set_deterministic_timeout/2");
+    unsigned scale
+      = term_to_unsigned<unsigned>(t_scale, "ppl_set_deterministic_timeout/2");
+    typedef Parma_Polyhedra_Library::Weightwatch_Traits Traits;
+    p_deterministic_timeout_object
+      = new Weightwatch(Traits::compute_delta(unscaled_weight, scale),
+                        abandon_expensive_computations, e);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

@@ -81,7 +81,7 @@ public class Poly_Con_Relation {
 	return new Poly_Con_Relation(Poly_Con_Relation.SATURATES);
     }
 
-    //! True if and only if \p *this implies \p y.
+    //! True if and only if \p this implies \p y.
     public boolean implies(Poly_Con_Relation y) {
 	return (this.mask_value & y.mask_value) ==  y.mask_value;
     }

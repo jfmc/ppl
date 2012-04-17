@@ -259,12 +259,15 @@ ppl_reset_timeout(void) try {
 CATCH_ALL
 
 int
-ppl_set_deterministic_timeout(unsigned weight) try {
+ppl_set_deterministic_timeout(unsigned long unscaled_weight,
+                              unsigned scale) try {
   // In case a deterministic timeout was already set.
   reset_deterministic_timeout();
   static timeout_exception e;
+  typedef Parma_Polyhedra_Library::Weightwatch_Traits Traits;
   p_deterministic_timeout_object
-    = new Weightwatch(weight, abandon_expensive_computations, e);
+    = new Weightwatch(Traits::compute_delta(unscaled_weight, scale),
+                      abandon_expensive_computations, e);
   return 0;
 }
 CATCH_ALL

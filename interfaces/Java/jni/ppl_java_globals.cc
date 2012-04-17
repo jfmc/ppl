@@ -820,16 +820,20 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1timeout
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1deterministic_1timeout
-(JNIEnv* env, jclass, jint weight) {
+(JNIEnv* env, jclass, jint unscaled_weight, jint scale) {
   try {
     // In case a timeout was already set.
     reset_deterministic_timeout();
-    assert(weight > 0);
-    unsigned cxx_weight = jtype_to_unsigned<unsigned>(weight);
-    assert(cxx_weight > 0);
+    // Note: let `unscaled_weight == 0' result in an exception.
+    assert(unscaled_weight >= 0 && scale >= 0);
+    unsigned long cxx_unscaled_weight
+      = jtype_to_unsigned<unsigned long>(unscaled_weight);
+    unsigned cxx_scale = jtype_to_unsigned<unsigned>(scale);
     static deterministic_timeout_exception e;
+    typedef Parma_Polyhedra_Library::Weightwatch_Traits Traits;
     p_deterministic_timeout_object
-      = new Weightwatch(cxx_weight, abandon_expensive_computations, e);
+      = new Weightwatch(Traits::compute_delta(cxx_unscaled_weight, cxx_scale),
+                        abandon_expensive_computations, e);
   }
   CATCH_ALL;
 }

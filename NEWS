@@ -10,11 +10,17 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.12.1  (to be released on April 1?, 2012)
+NEWS for version 0.12.1  (released on April 16, 2012)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
+
+o  In the C, Java, OCaml and Prolog interfaces, modified the signature
+   of the function/method/predicate for setting the deterministic timeout
+   threshold. The new interfaces take two input values, named `unscaled'
+   and `scale', that are used to compute the threshold value as
+   `unscaled * 2^scale'.
 
 o  Added new Box<ITV> methods
 
@@ -33,6 +39,9 @@ o  Two BibTeX databases of papers related to the Parma Polyhedra Library
 
 Bugfixes
 ========
+
+o  Restored the support for deterministic timeouts in the PIP solver
+   (it was removed by accident in PPL 0.12).
 
 o  Minor documentation fixes.
 

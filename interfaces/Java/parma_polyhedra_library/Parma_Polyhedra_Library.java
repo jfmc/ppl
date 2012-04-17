@@ -263,16 +263,26 @@ public class Parma_Polyhedra_Library {
       Sets a threshold for computations whose completion could require
       an exponential amount of time.
 
-      \param weight
-      The maximum computational weight allowed; it must be strictly
-      greater than zero.
-
+      If \p unscaled_weight has value \f$u\f$ and \p scale has value \f$s\f$,
+      then the (scaled) weight threshold is computed as \f$w = u \cdot 2^s\f$.
       Computations taking exponential time will be interrupted some time
-      after reaching the \p weight complexity threshold, by throwing a
+      after reaching the complexity threshold \f$w\f$, by throwing a
       <CODE>Timeout_Exception</CODE> object.
       Otherwise, if the computation completes without being interrupted,
       then the deterministic timeout should be reset by calling
       <CODE>reset_deterministic_timeout()</CODE>.
+
+      \param unscaled_weight
+      The unscaled maximum computational weight; it has to be strictly
+      greater than zero.
+
+      \param scale
+      The scaling factor to be applied to \p unscaled_weight; it has
+      to be non-negative.
+
+      \exception Invalid_Argument_Exception
+      Thrown if the computation of the weight threshold exceeds the
+      maximum allowed value.
 
       \note
       This "timeout" checking functionality is said to be \e deterministic
@@ -282,13 +292,14 @@ public class Parma_Polyhedra_Library {
       (CPU, operating system, compiler, etc.).
 
       \warning
-      The weight mechanism is under alpha testing. In particular,
+      The weight mechanism is under beta testing. In particular,
       there is still no clear relation between the weight threshold and
       the actual computational complexity. As a consequence, client
       applications should be ready to reconsider the tuning of these
       weight thresholds when upgrading to newer version of the PPL.
     */
-    public static native void set_deterministic_timeout(int weight);
+    public static native void set_deterministic_timeout(int unscaled_weight,
+                                                        int scale);
 
     /*! \brief
       Resets the deterministic timeout so that the computation is not

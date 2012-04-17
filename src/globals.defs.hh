@@ -32,9 +32,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include <exception>
 #include <gmpxx.h>
 
-#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
-#include "Weight_Profiler.defs.hh"
-#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -118,6 +115,20 @@ struct Weightwatch_Traits {
   //! Compares the two weights \p a and \p b.
   static bool less_than(const Threshold& a, const Threshold& b);
 
+  //! Computes a \c Delta value from \p unscaled and \p scale.
+  /*!
+    \return
+    \f$u \cdot 2^s\f$, where \f$u\f$ is the value of \p unscaled and
+    \f$s\f$ is the value of \p scale.
+
+    \param unscaled
+    The value of delta before scaling.
+
+    \param scale
+    The scaling to be applied to \p unscaled.
+  */
+  static Delta compute_delta(unsigned long unscaled, unsigned scale);
+
   //! Sets \p threshold to be \p delta units bigger than the current weight.
   static void from_delta(Threshold& threshold, const Delta& delta);
 
@@ -143,49 +154,6 @@ extern unsigned int in_assert;
 } // namespace Implementation
 #endif
 
-#ifndef PPL_PROFILE_ADD_WEIGHT
-#define PPL_PROFILE_ADD_WEIGHT 0
-#endif
-
-#if defined(NDEBUG)
-#if PPL_PROFILE_ADD_WEIGHT
-#define WEIGHT_BEGIN() Weight_Profiler::begin()
-#define WEIGHT_ADD(delta)                                     \
-  do {                                                        \
-    static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
-    wp__.end();                                               \
-  } while (false)
-#define WEIGHT_ADD_MUL(delta, factor)                                   \
-  do {                                                                  \
-    static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
-    wp__.end(factor);                                                   \
-  } while (false)
-#else
-#define WEIGHT_BEGIN()                          \
-  do {                                          \
-  } while (false)
-#define WEIGHT_ADD(delta)                       \
-  do {                                          \
-    Weightwatch_Traits::weight += (delta);      \
-  } while (false)
-#define WEIGHT_ADD_MUL(delta, factor)                   \
-  do {                                                  \
-    Weightwatch_Traits::weight += (delta)*(factor);     \
-  } while (false)
-#endif
-#else
-#define WEIGHT_BEGIN()
-#define WEIGHT_ADD(delta)                       \
-  do {                                          \
-    if (Implementation::in_assert == 0)         \
-      Weightwatch_Traits::weight += delta;      \
-  } while (false)
-#define WEIGHT_ADD_MUL(delta, factor)                   \
-  do {                                                  \
-    if (Implementation::in_assert == 0)                 \
-      Weightwatch_Traits::weight += delta * factor;     \
-  } while (false)
-#endif
 
 //! User objects the PPL can throw.
 /*! \ingroup PPL_CXX_interface
@@ -516,6 +484,54 @@ least_significant_one_mask(dimension_type i);
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.
 #ifndef PPL_USE_SPARSE_MATRIX
 #define PPL_USE_SPARSE_MATRIX 1
+#endif
+
+#ifndef PPL_PROFILE_ADD_WEIGHT
+#define PPL_PROFILE_ADD_WEIGHT 0
+#endif
+
+#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
+#include "Weight_Profiler.defs.hh"
+#endif
+
+#if defined(NDEBUG)
+#if PPL_PROFILE_ADD_WEIGHT
+#define WEIGHT_BEGIN() Weight_Profiler::begin()
+#define WEIGHT_ADD(delta)                                     \
+  do {                                                        \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
+    wp__.end();                                               \
+  } while (false)
+#define WEIGHT_ADD_MUL(delta, factor)                                   \
+  do {                                                                  \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
+    wp__.end(factor);                                                   \
+  } while (false)
+#else
+#define WEIGHT_BEGIN()                          \
+  do {                                          \
+  } while (false)
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    Weightwatch_Traits::weight += (delta);      \
+  } while (false)
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    Weightwatch_Traits::weight += (delta)*(factor);     \
+  } while (false)
+#endif
+#else
+#define WEIGHT_BEGIN()
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    if (Implementation::in_assert == 0)         \
+      Weightwatch_Traits::weight += delta;      \
+  } while (false)
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    if (Implementation::in_assert == 0)                 \
+      Weightwatch_Traits::weight += delta * factor;     \
+  } while (false)
 #endif
 
 #include "globals.inlines.hh"

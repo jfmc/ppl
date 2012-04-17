@@ -1785,14 +1785,18 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_set_deterministic_timeout(value weight) try {
-  CAMLparam1(weight);
+ppl_set_deterministic_timeout(value unscaled_weight, value scale) try {
+  CAMLparam2(unscaled_weight, scale);
   // In case a timeout was already set.
   reset_deterministic_timeout();
-  unsigned cpp_weight = value_to_unsigned<unsigned>(weight);
+  unsigned long cpp_unscaled_weight
+    = value_to_unsigned<unsigned long>(unscaled_weight);
+  unsigned cpp_scale = value_to_unsigned<unsigned>(scale);
   static deterministic_timeout_exception e;
+  typedef Parma_Polyhedra_Library::Weightwatch_Traits Traits;
   p_deterministic_timeout_object
-    = new Weightwatch(cpp_weight, abandon_expensive_computations, e);
+    = new Weightwatch(Traits::compute_delta(cpp_unscaled_weight, cpp_scale),
+                      abandon_expensive_computations, e);
   CAMLreturn(Val_unit);
 }
 CATCH_ALL

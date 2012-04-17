@@ -104,10 +104,10 @@ public class PIP_Problem extends PPL_Object {
     vector space is an optimal solution.
 
     \param dim
-    The dimension of the vector space enclosing \p *this
+    The dimension of the vector space enclosing \p this
     (optional argument with default value \f$0\f$).
 
-    \exception std::length_error
+    \exception Length_Error_Exception
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
   */
     public PIP_Problem(long dim) {
@@ -247,7 +247,7 @@ public class PIP_Problem extends PPL_Object {
     /*! \brief
       Adds a copy of constraint \p c to the PIP problem.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the constraint \p c is a strict inequality or if its space
       dimension is strictly greater than the space dimension of \p this.
     */
@@ -256,10 +256,10 @@ public class PIP_Problem extends PPL_Object {
     /*! \brief
       Adds a copy of the constraints in \p cs to the PIP problem.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the constraint system \p cs contains any strict inequality
       or if its space dimension is strictly greater than the space dimension
-      of \p *this.
+      of \p this.
     */
     public native void add_constraints(Constraint_System cs);
 
@@ -268,7 +268,7 @@ public class PIP_Problem extends PPL_Object {
     //! \name Computing the Solution of the PIP_Problem
     /*@{*/
 
-    //! Checks satisfiability of \p *this.
+    //! Checks satisfiability of \p this.
     /*!
       \return
       <CODE>true</CODE> if and only if the PIP problem is satisfiable.

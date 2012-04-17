@@ -68,7 +68,7 @@ public class MIP_Problem extends PPL_Object {
       \param dim
       The dimension of the vector space enclosing \p this.
 
-      \exception std::length_error
+      \exception Length_Error_Exception
       Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
     */
     public MIP_Problem(long dim) {
@@ -92,10 +92,10 @@ public class MIP_Problem extends PPL_Object {
       \param mode
       The optimization mode.
 
-      \exception std::length_error
+      \exception Length_Error_Exception
       Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the constraint system contains any strict inequality
       or if the space dimension of the constraint system (resp., the
       objective function) is strictly greater than \p dim.
@@ -178,7 +178,7 @@ public class MIP_Problem extends PPL_Object {
       \param m
       The number of dimensions to add.
 
-      \exception std::length_error
+      \exception Length_Error_Exception
       Thrown if adding \p m new space dimensions would cause the
       vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
@@ -191,7 +191,7 @@ public class MIP_Problem extends PPL_Object {
       Sets the variables whose indexes are in set \p i_vars to be
       integer space dimensions.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if some index in \p i_vars does not correspond to
       a space dimension in \p this.
     */
@@ -200,7 +200,7 @@ public class MIP_Problem extends PPL_Object {
     /*! \brief
       Adds a copy of constraint \p c to the MIP problem.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the constraint \p c is a strict inequality or if its space
       dimension is strictly greater than the space dimension of \p this.
     */
@@ -209,16 +209,16 @@ public class MIP_Problem extends PPL_Object {
     /*! \brief
       Adds a copy of the constraints in \p cs to the MIP problem.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the constraint system \p cs contains any strict inequality
       or if its space dimension is strictly greater than the space dimension
-      of \p *this.
+      of \p this.
     */
     public native void add_constraints(Constraint_System cs);
 
     //! Sets the objective function to \p obj.
     /*!
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if the space dimension of \p obj is strictly greater than
       the space dimension of \p this.
     */
@@ -232,7 +232,7 @@ public class MIP_Problem extends PPL_Object {
     //! \name Computing the Solution of the MIP_Problem
     /*@{*/
 
-    //! Checks satisfiability of \p *this.
+    //! Checks satisfiability of \p this.
     /*!
       \return
       <CODE>true</CODE> if and only if the MIP problem is satisfiable.
@@ -260,7 +260,7 @@ public class MIP_Problem extends PPL_Object {
       \param den
       On exit will contain the denominator of the evaluated value.
 
-      \exception std::invalid_argument
+      \exception Invalid_Argument_Exception
       Thrown if \p this and \p evaluating_point are dimension-incompatible
       or if the generator \p evaluating_point is not a point.
     */
@@ -268,16 +268,16 @@ public class MIP_Problem extends PPL_Object {
 						   Coefficient num,
 						   Coefficient den);
 
-    //! Returns a feasible point for \p *this, if it exists.
+    //! Returns a feasible point for \p this, if it exists.
     /*!
-      \exception std::domain_error
+      \exception Domain_Error_Exception
       Thrown if the MIP problem is not satisfiable.
     */
     public native Generator feasible_point();
 
     //! Returns an optimal point for \p this, if it exists.
     /*!
-      \exception std::domain_error
+      \exception Domain_Error_Exception
       Thrown if \p this doesn't not have an optimizing point, i.e.,
       if the MIP problem is unbounded or not satisfiable.
     */
@@ -287,8 +287,8 @@ public class MIP_Problem extends PPL_Object {
       Sets \p num and \p den so that \f$\frac{num}{den}\f$ is
       the solution of the optimization problem.
 
-      \exception std::domain_error
-      Thrown if \p *this doesn't not have an optimizing point, i.e.,
+      \exception Domain_Error_Exception
+      Thrown if \p this doesn't not have an optimizing point, i.e.,
       if the MIP problem is unbounded or not satisfiable.
     */
     public native void optimal_value(Coefficient num, Coefficient den);
