@@ -3017,46 +3017,52 @@ exception_cplusplus(10, [A, B, C]) :-
 % If expected exception is caught, it succeeds and fails if not.
 
 must_catch(Call, prolog_exception_error) :-
-   !,
-   catch( Call, Message, format_exception_message( Message ) ),
-   ( \+var(Message) ->
-       ((Message =.. [ppl_invalid_argument|_] ; Message = out_of_memory) ->
-           true
-       ;
-           check_exception_term(Message)
-       )
-   ;
-       fail
-   ).
+    !,
+    catch( Call, Message, format_exception_message( Message ) ),
+    ( \+var(Message) ->
+        ((
+          Message =.. [ppl_invalid_argument|_]
+         ;
+          Message =.. [ppl_length_error|_]
+         ;
+          Message = out_of_memory
+         ) ->
+            true
+        ;
+            check_exception_term(Message)
+        )
+    ;
+        fail
+    ).
 must_catch(Call, cpp_error) :-
-   !,
-   catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
-   ( ( \+ var(Message),
-       functor(Message, ppl_invalid_argument, _) ) ->
-       true
-   ;
-       fail
-   ).
+    !,
+    catch( Call, Message, format_exception_message( cpp_error(Message) ) ),
+    ( ( \+ var(Message),
+          functor(Message, ppl_invalid_argument, _) ) ->
+        true
+    ;
+        fail
+    ).
 must_catch(Call, ppl_sys_prolog_error) :-
-   !,
-   catch( Call, Message, format_exception_message(Message) ),
-   ( ( \+ var(Message),
-         (Message =.. [ppl_representation_error|_] )) ->
-       true
-   ;
-       fail
-   ).
+    !,
+    catch( Call, Message, format_exception_message(Message) ),
+    ( ( \+ var(Message),
+          (Message =.. [ppl_representation_error|_] )) ->
+        true
+    ;
+        fail
+    ).
 must_catch(Call, Expected) :-
-   catch(Call, Message, format_exception_message(Message) ),
-   (\+ var(Message), Message = ppl_overflow_error(_) ->
-       true
-   ;
-       ( \+ var(Message), Message =.. [Expected|_] ->
-           true
-       ;
-           fail
-       )
-   ).
+    catch(Call, Message, format_exception_message(Message) ),
+    (\+ var(Message), Message = ppl_overflow_error(_) ->
+        true
+    ;
+        ( \+ var(Message), Message =.. [Expected|_] ->
+            true
+        ;
+            fail
+        )
+    ).
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
 
@@ -3323,6 +3329,11 @@ format_exception_message(
   display_message(['PPL Prolog Interface Exception:', nl, '   ',
                    F, 'is an invalid argument for', W, nl, '   ',
                   F, 'should be', E, '.']).
+
+format_exception_message(ppl_length_error(Error)) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'ppl_length_error', Error]).
 
 format_exception_message(
              ppl_representation_error(I, where(W))
