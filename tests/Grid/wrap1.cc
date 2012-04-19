@@ -554,7 +554,7 @@ BEGIN_MAIN
   DO_TEST_F8(test11);
   DO_TEST_F8(test12);
   DO_TEST_F8(test13);
-  DO_TEST_F8(test14);
+  DO_TEST_F16(test14);
   DO_TEST_F8(test15);
   DO_TEST_F8(test16);
   DO_TEST_F8(test17);
