@@ -156,7 +156,7 @@ public:
     ++count;
   }
   ~In_Assert() {
-    ++count;
+    --count;
   }
   static bool asserting() {
     return count != 0;
