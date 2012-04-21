@@ -82,9 +82,8 @@ site: http://bugseng.com/products/ppl/ . */
 #else
 #define PPL_ASSERT_HEAVY(cond__)                                \
   do {                                                          \
-    ++Parma_Polyhedra_Library::Implementation::in_assert;       \
+    Parma_Polyhedra_Library::In_Assert guard;                   \
     PPL_ASSERT_IMPL_(cond__);                                   \
-    --Parma_Polyhedra_Library::Implementation::in_assert;	\
   } while (false)
 #endif // !defined(NDEBUG)
 

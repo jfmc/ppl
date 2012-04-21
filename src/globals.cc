@@ -35,11 +35,9 @@ Weightwatch_Traits::Threshold Weightwatch_Traits::weight = 0;
 void (*Weightwatch_Traits::check_function)(void) = 0;
 
 #ifndef NDEBUG
-namespace Implementation {
 
-unsigned int in_assert = 0;
+unsigned int In_Assert::count = 0;
 
-} // namespace Implementation
 #endif
 
 

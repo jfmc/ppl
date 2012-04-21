@@ -146,12 +146,23 @@ struct Weightwatch_Traits {
 
 
 #ifndef NDEBUG
-namespace Implementation {
 
-//! Non zero during evaluation of PPL_ASSERT expression.
-extern unsigned int in_assert;
+class In_Assert {
+private:
+  //! Non zero during evaluation of PPL_ASSERT expression.
+  static unsigned int count;
+public:
+  In_Assert() {
+    ++count;
+  }
+  ~In_Assert() {
+    ++count;
+  }
+  static bool asserting() {
+    return count != 0;
+  }
+};
 
-} // namespace Implementation
 #endif
 
 
@@ -524,12 +535,12 @@ least_significant_one_mask(dimension_type i);
 #define WEIGHT_BEGIN()
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
-    if (Implementation::in_assert == 0)         \
+    if (!In_Assert::asserting())                       \
       Weightwatch_Traits::weight += delta;      \
   } while (false)
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
-    if (Implementation::in_assert == 0)                 \
+    if (!In_Assert::asserting())                               \
       Weightwatch_Traits::weight += delta * factor;     \
   } while (false)
 #endif
