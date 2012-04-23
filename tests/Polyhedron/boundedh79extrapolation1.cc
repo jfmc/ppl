@@ -71,5 +71,11 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
+// Note: test01() only overflows on NNC polyhedra
+// (with 8-bit coefficients and assertions turned on).
+#ifdef DERIVED_TEST
   DO_TEST_F8A(test01);
+#else
+  DO_TEST(test01);
+#endif
 END_MAIN
