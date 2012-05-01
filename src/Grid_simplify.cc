@@ -498,7 +498,7 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
       // The last row is a false proper congruence.
       last_row.set_modulus(Coefficient_zero());
       dim_kinds[0] = EQUALITY;
-      // Intentionally falling through.
+      // Intentionally fall through.
 
     case EQUALITY:
       // The last row is a false equality, as all the coefficient terms
@@ -509,7 +509,6 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
       using std::swap;
       swap(cgs.rows[0], last_row);
       cgs.remove_trailing_rows(cgs.num_rows() - 1);
-
       PPL_ASSERT(cgs.OK());
       return true;
 
