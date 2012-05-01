@@ -46,8 +46,8 @@ OR_Matrix<T>::OK() const {
   if (vec.size() != 2*dim*(dim + 1)) {
 #ifndef NDEBUG
     cerr << "OR_Matrix has a wrong number of cells:\n"
-	 << "vec.size() is " << vec.size()
-	 << ", expected size is " << 2*dim*(dim+1) << "!\n";
+         << "vec.size() is " << vec.size()
+         << ", expected size is " << (2*dim*(dim+1)) << "!\n";
 #endif
     return false;
   }

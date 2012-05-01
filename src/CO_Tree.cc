@@ -368,7 +368,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
     return itr;
   }
 
-  if (data <= &data1 && &data1 < data + reserved_size + 1) {
+  if (data <= &data1 && &data1 < data + (reserved_size + 1)) {
     // data1 is a coefficient of this row.
     // Avoid invalidating it.
     data_type x = data1;
