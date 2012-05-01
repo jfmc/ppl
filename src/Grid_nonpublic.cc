@@ -606,7 +606,6 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      const Grid_Generator* first_point) {
   PPL_ASSERT(divisor >= 0);
   if (sys.space_dimension() > 0 && divisor > 0) {
-    dimension_type row = 0;
     dimension_type num_rows = sys.num_rows();
 
     if (first_point != 0)
@@ -614,6 +613,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
     else {
       PPL_ASSERT(num_rows > 0);
       // Move to the first point or parameter.
+      dimension_type row = 0;
       while (sys[row].is_line())
 	if (++row == num_rows)
 	  // All rows are lines.
