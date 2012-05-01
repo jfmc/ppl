@@ -1,6 +1,5 @@
-/* Polyhedron class implementation
-   (non-inline template operators that may change the dimension of the vector
-   space).
+/* Polyhedron class implementation (non-inline template operators that
+   may change the dimension of the vector space).
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
