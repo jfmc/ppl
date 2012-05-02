@@ -291,8 +291,8 @@ CO_Tree::is_less_than_ratio(dimension_type numer, dimension_type denom,
                             dimension_type ratio) {
   PPL_ASSERT(ratio <= 100);
   // If these are true, no overflows are possible.
-  PPL_ASSERT(denom <= (-(dimension_type)1)/100);
-  PPL_ASSERT(numer <= (-(dimension_type)1)/100);
+  PPL_ASSERT(denom <= unused_index/100);
+  PPL_ASSERT(numer <= unused_index/100);
   return 100*numer < ratio*denom;
 }
 
@@ -301,8 +301,8 @@ CO_Tree::is_greater_than_ratio(dimension_type numer, dimension_type denom,
                                dimension_type ratio) {
   PPL_ASSERT(ratio <= 100);
   // If these are true, no overflows are possible.
-  PPL_ASSERT(denom <= (-(dimension_type)1)/100);
-  PPL_ASSERT(numer <= (-(dimension_type)1)/100);
+  PPL_ASSERT(denom <= unused_index/100);
+  PPL_ASSERT(numer <= unused_index/100);
   return 100*numer > ratio*denom;
 }
 
