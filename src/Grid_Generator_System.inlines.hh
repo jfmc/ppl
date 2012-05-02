@@ -177,12 +177,12 @@ Grid_Generator_System::const_iterator::operator=(const const_iterator& y) {
 
 inline const Grid_Generator&
 Grid_Generator_System::const_iterator::operator*() const {
-  return static_cast<const Grid_Generator&>(*i);
+  return *i;
 }
 
 inline const Grid_Generator*
 Grid_Generator_System::const_iterator::operator->() const {
-  return static_cast<const Grid_Generator*>(i.operator->());
+  return i.operator->();
 }
 
 inline Grid_Generator_System::const_iterator&
@@ -233,7 +233,7 @@ Grid_Generator_System::end() const {
 
 inline const Grid_Generator&
 Grid_Generator_System::operator[](const dimension_type k) const {
-  return static_cast<const Grid_Generator&>(sys[k]);
+  return sys[k];
 }
 
 inline bool

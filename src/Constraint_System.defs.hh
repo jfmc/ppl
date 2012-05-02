@@ -623,7 +623,8 @@ public:
   ~Constraint_System_const_iterator();
 
   //! Assignment operator.
-  Constraint_System_const_iterator& operator=(const Constraint_System_const_iterator& y);
+  Constraint_System_const_iterator&
+  operator=(const Constraint_System_const_iterator& y);
 
   //! Dereference operator.
   const Constraint& operator*() const;
@@ -659,8 +660,9 @@ private:
   const Linear_System<Constraint>* csp;
 
   //! Constructor.
-  Constraint_System_const_iterator(const Linear_System<Constraint>::const_iterator& iter,
-      const Constraint_System& cs);
+  Constraint_System_const_iterator(const Linear_System<Constraint>
+                                   ::const_iterator& iter,
+                                   const Constraint_System& cs);
 
   //! \p *this skips to the next non-trivial constraint.
   void skip_forward();

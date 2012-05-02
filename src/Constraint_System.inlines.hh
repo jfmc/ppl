@@ -75,7 +75,7 @@ Constraint_System::operator=(const Constraint_System& y) {
 
 inline const Constraint&
 Constraint_System::operator[](const dimension_type k) const {
-  return static_cast<const Constraint&>(sys[k]);
+  return sys[k];
 }
 
 inline Representation
@@ -137,12 +137,12 @@ Constraint_System_const_iterator::operator=(const Constraint_System_const_iterat
 
 inline const Constraint&
 Constraint_System_const_iterator::operator*() const {
-  return static_cast<const Constraint&>(*i);
+  return *i;
 }
 
 inline const Constraint*
 Constraint_System_const_iterator::operator->() const {
-  return static_cast<const Constraint*>(i.operator->());
+  return i.operator->();
 }
 
 inline Constraint_System_const_iterator&
