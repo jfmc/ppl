@@ -241,9 +241,6 @@ template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-
-  using std::swap;
-
   const dimension_type n = cycle.size();
   if (n < 2)
     return;
@@ -251,16 +248,19 @@ Linear_Expression_Impl<Row>
   if (n == 2) {
     row.swap_coefficients(cycle[0].space_dimension(),
                           cycle[1].space_dimension());
-  } else {
+  }
+  else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
     tmp = row.get(cycle.back().space_dimension());
     for (dimension_type i = n - 1; i-- > 0; )
-     row.swap_coefficients(cycle[i + 1].space_dimension(),
-                           cycle[i].space_dimension());
+      row.swap_coefficients(cycle[i + 1].space_dimension(),
+                            cycle[i].space_dimension());
     if (tmp == 0)
       row.reset(cycle[0].space_dimension());
-    else
+    else {
+      using std::swap;
       swap(tmp, row[cycle[0].space_dimension()]);
+    }
   }
   PPL_ASSERT(OK());
 }

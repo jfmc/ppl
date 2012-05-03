@@ -498,31 +498,34 @@ Generator::ascii_load(std::istream& s) {
     if (is_not_necessarily_closed())
       // TODO: Avoid using the mark_as_*() methods if possible.
       mark_as_necessarily_closed();
-  } else
+  }
+  else {
     if (str2 == "(NNC)") {
       if (is_necessarily_closed())
         // TODO: Avoid using the mark_as_*() methods if possible.
         mark_as_not_necessarily_closed();
-    } else
+    }
+    else
       return false;
+  }
 
   // Checking for equality of actual and declared types.
   switch (type()) {
   case Generator::LINE:
     if (str != "L")
-  return false;
+      return false;
     break;
   case Generator::RAY:
     if (str != "R")
-  return false;
+      return false;
     break;
   case Generator::POINT:
     if (str != "P")
-  return false;
+      return false;
     break;
   case Generator::CLOSURE_POINT:
     if (str != "C")
-  return false;
+      return false;
     break;
   }
 
