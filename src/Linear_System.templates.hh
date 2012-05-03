@@ -405,17 +405,23 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
 
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
+  using namespace Implementation;
   typedef Swapping_Vector<Row> Cont;
-  Implementation::Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows, first_row);
-  Unique_Compare unique_cmp(rows, first_row);
-  Implementation::Indirect_Swapper<Cont> swapper(rows, first_row);
-
+  typedef Indirect_Sort_Compare<Cont, Row_Less_Than> Sort_Compare;
+  typedef Indirect_Swapper<Cont> Swapper;
   const dimension_type num_duplicates
-    = Implementation::indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+    = indirect_sort_and_unique(num_elems,
+                               Sort_Compare(rows, first_row),
+                               Unique_Compare(rows, first_row),
+                               Swapper(rows, first_row));
 
-  if (num_duplicates > 0)
-    rows.erase(rows.begin() + (last_row - num_duplicates),
-               rows.begin() + last_row);
+  if (num_duplicates > 0) {
+    typedef typename Cont::iterator Iter;
+    typedef typename std::iterator_traits<Iter>::difference_type diff_t;
+    Iter last = rows.begin() + static_cast<diff_t>(last_row);
+    Iter first = last - + static_cast<diff_t>(num_duplicates);
+    rows.erase(first, last);
+  }
 
   if (sorting_pending) {
     PPL_ASSERT(old_num_pending >= num_duplicates);

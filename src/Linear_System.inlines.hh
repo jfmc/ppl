@@ -607,7 +607,9 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
       // search.
       itr_t j = std::lower_bound(indexes.begin(), indexes.end(),
                                  index_first_pending);
-      index_first_pending -= (j - indexes.begin());
+      std::iterator_traits<itr_t>::difference_type
+        non_pending = j - indexes.begin();
+      index_first_pending -= static_cast<dimension_type>(non_pending);
     }
   }
 

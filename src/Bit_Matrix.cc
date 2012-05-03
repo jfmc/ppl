@@ -48,16 +48,24 @@ PPL::Bit_Matrix::sort_rows() {
 
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
+  using namespace Implementation;
   typedef std::vector<Bit_Row> Cont;
-  Implementation::Indirect_Sort_Compare<Cont, Bit_Row_Less_Than> sort_cmp(rows);
-  Implementation::Indirect_Unique_Compare<Cont> unique_cmp(rows);
-  Implementation::Indirect_Swapper<Cont> swapper(rows);
-
+  typedef Indirect_Sort_Compare<Cont, Bit_Row_Less_Than> Sort_Compare;
+  typedef Indirect_Unique_Compare<Cont> Unique_Compare;
+  typedef Indirect_Swapper<Cont> Swapper;
   const dimension_type num_duplicates
-    = Implementation::indirect_sort_and_unique(num_elems, sort_cmp, unique_cmp, swapper);
+    = indirect_sort_and_unique(num_elems,
+                               Sort_Compare(rows),
+                               Unique_Compare(rows),
+                               Swapper(rows));
 
-  if (num_duplicates > 0)
-    rows.erase(rows.end() - num_duplicates, rows.end());
+  if (num_duplicates > 0) {
+    typedef Cont::iterator Iter;
+    typedef std::iterator_traits<Iter>::difference_type diff_t;
+    Iter last = rows.end();
+    Iter first = last - static_cast<diff_t>(num_duplicates);
+    rows.erase(first, last);
+  }
 
   PPL_ASSERT(OK());
 }

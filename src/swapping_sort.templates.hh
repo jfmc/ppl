@@ -146,7 +146,7 @@ indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
   // Unique `iv' by comparing the rows indexed by its elements.
   iv_end = std::unique(iv_begin, iv_end, unique_cmp);
 
-  const index_type num_sorted = iv_end - iv_begin;
+  const index_type num_sorted = static_cast<index_type>(iv_end - iv_begin);
   const index_type num_duplicates = num_elems - num_sorted;
   if (num_duplicates == 0)
     return 0;

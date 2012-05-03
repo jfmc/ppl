@@ -206,8 +206,9 @@ Swapping_Vector<T>::erase(iterator first, iterator last) {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= end());
   const iterator old_first = first;
-  const dimension_type k = last - first;
-  const dimension_type n = end() - last;
+  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
+  const diff_t k = last - first;
+  const dimension_type n = static_cast<dimension_type>(end() - last);
   using std::swap;
   for (dimension_type i = 0; i < n; ++i, ++first)
     swap(*first, *(first + k));
