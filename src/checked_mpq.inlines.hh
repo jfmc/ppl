@@ -188,12 +188,13 @@ assign_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
   else if (is_pinf<From_Policy>(from))
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
-  to = from;
+  assign_mpq_numeric_float(to, from);
   return V_EQ;
 }
 
 PPL_SPECIALIZE_ASSIGN(assign_mpq_float, mpq_class, float)
 PPL_SPECIALIZE_ASSIGN(assign_mpq_float, mpq_class, double)
+PPL_SPECIALIZE_ASSIGN(assign_mpq_float, mpq_class, long double)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
@@ -509,23 +510,6 @@ output_mpq(std::ostream& os,
 }
 
 PPL_SPECIALIZE_OUTPUT(output_mpq, mpq_class)
-
-template <typename To_Policy, typename From_Policy, typename From>
-inline Result
-assign_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
-    return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(from))
-    return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
-    return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
-  // FIXME: this is an incredibly inefficient implementation!
-  std::stringstream ss;
-  output<From_Policy>(ss, from, Numeric_Format(), dir);
-  return input_mpq(to, ss);
-}
-
-PPL_SPECIALIZE_ASSIGN(assign_mpq_long_double, mpq_class, long double)
 
 } // namespace Checked
 

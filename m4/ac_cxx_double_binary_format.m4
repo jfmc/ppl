@@ -97,9 +97,7 @@ main() {
 
 AC_MSG_RESULT($ac_cxx_double_binary_format)
 
-AC_CXX_DOUBLE_EXACT_OUTPUT
-
-if test x"$ac_cxx_double_binary_format" = x"unknown" || test $ac_cxx_double_exact_output = 0 || test $ac_cv_can_control_fpu = 0
+if test x"$ac_cxx_double_binary_format" = x"unknown" || test $ac_cv_can_control_fpu = 0
 then
   ac_supported_double=0
 else

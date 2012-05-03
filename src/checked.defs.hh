@@ -579,6 +579,8 @@ Result round(To& to, Result r, Rounding_Dir dir);
 
 Result input_mpq(mpq_class& to, std::istream& is);
 
+std::string float_mpq_to_string(mpq_class& q);
+
 } // namespace Checked
 
 struct Minus_Infinity {

@@ -994,6 +994,48 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   return result_relation<To_Policy>(dir);
 }
 
+template <typename From>
+inline void
+assign_mpq_numeric_float(mpq_class& to, const From from) {
+  to = from;
+}
+
+template <>
+inline void
+assign_mpq_numeric_float(mpq_class& to, const long double from) {
+  to = 0;
+  if (from == 0)
+    return;
+  mpz_class& num = to.get_num();
+  mpz_class& den = to.get_den();
+  int exp;
+  long double n = frexpl(from, &exp);
+  bool neg = false;
+  if (n < 0) {
+    neg = true;
+    n = -n;
+  }
+  const long double mult = static_cast<long double>(ULONG_MAX) + 1;
+  const unsigned int bits = sizeof(unsigned long) * CHAR_BIT;
+  while (true) {
+    n *= mult;
+    exp -= bits;
+    long double intpart = floorl(n);
+    num += (unsigned long)intpart;
+    n -= intpart;
+    if (n == 0)
+      break;
+    num <<= bits;
+  }
+  if (exp < 0)
+    den <<= -exp;
+  else
+    num <<= exp;
+  if (neg)
+    to = -to;
+  to.canonicalize();
+}
+
 template <typename Policy, typename Type>
 inline Result
 output_float(std::ostream& os, const Type from, const Numeric_Format&,
@@ -1007,14 +1049,10 @@ output_float(std::ostream& os, const Type from, const Numeric_Format&,
   else if (is_nan<Policy>(from))
     os << "nan";
   else {
-    std::streamsize old_precision = os.precision(10000);
-    // FIXME: here correctness depends on the behavior of the standard
-    // output operator which, in turn, may depend on the behavior
-    // of printf().  The C99 standard, 7.19.16.1#13, does not give
-    // enough guarantees.  We could not find something similar
-    // in the C++ standard, so there is a concrete danger here.
-    os << from;
-    os.precision(old_precision);
+    mpq_class q;
+    assign_mpq_numeric_float(q, from);
+    std::string s = float_mpq_to_string(q);
+    os << s;
   }
   return V_EQ;
 }
