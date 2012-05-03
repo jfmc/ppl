@@ -1213,8 +1213,8 @@ PPL::CO_Tree::const_iterator::OK() const {
       return false;
   } else
     if (tree->reserved_size == 0) {
-      if (current_index != 1 + (dimension_type*)0
-          || current_data != 1 + (data_type*)0)
+      if (current_index != 1 + static_cast<dimension_type*>(0)
+          || current_data != 1 + static_cast<data_type*>(0))
         return false;
     } else {
       if (current_index <= &(tree->indexes[0]))
@@ -1244,8 +1244,8 @@ PPL::CO_Tree::iterator::OK() const {
       return false;
   } else
     if (tree->reserved_size == 0) {
-      if (current_index != 1 + (dimension_type*)0
-          || current_data != 1 + (data_type*)0)
+      if (current_index != 1 + static_cast<dimension_type*>(0)
+          || current_data != 1 + static_cast<data_type*>(0))
         return false;
     } else {
       if (current_index <= &(tree->indexes[0]))
