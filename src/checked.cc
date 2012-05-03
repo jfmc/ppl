@@ -462,6 +462,39 @@ input_mpq(mpq_class& to, std::istream& is) {
   return V_EQ;
 }
 
+/* NOTE: q is overwritten! */
+std::string float_mpq_to_string(mpq_class& q) {
+  mpz_ptr n = q.get_num().get_mpz_t();
+  mpz_ptr d = q.get_den().get_mpz_t();
+  unsigned long decimals = mpz_sizeinbase(d, 2) - 1;
+  if (decimals != 0) {
+    mpz_ui_pow_ui(d, 5, decimals);
+    mpz_mul(n, n, d);
+  }
+  size_t bufsize = mpz_sizeinbase(n, 10);
+  if (bufsize < decimals)
+    bufsize = decimals + 4;
+  else
+    bufsize += 3;
+  char buf[bufsize];
+  mpz_get_str(buf, 10, n);
+  if (decimals != 0) {
+    size_t len = strlen(buf);
+    if (decimals < len) {
+      memmove(&buf[len - decimals + 1], &buf[len - decimals], decimals + 1);
+      buf[len - decimals] = '.';
+    }
+    else {
+      size_t zeroes = decimals - len;
+      memmove(&buf[2 + zeroes], &buf[0], len + 1);
+      buf[0] = '0';
+      buf[1] = '.';
+      memset(&buf[2], '0', zeroes);
+    }
+  }
+  return buf;
+}
+
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library

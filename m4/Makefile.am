@@ -38,14 +38,11 @@ ac_check_swi_prolog.m4 \
 ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
 ac_cxx_double_binary_format.m4 \
-ac_cxx_double_exact_output.m4 \
 ac_cxx_zero_length_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
-ac_cxx_float_exact_output.m4 \
 ac_cxx_ieee_inexact_flag.m4 \
 ac_cxx_limit_memory.m4 \
 ac_cxx_long_double_binary_format.m4 \
-ac_cxx_long_double_exact_output.m4 \
 ac_cxx_plain_char_is_signed.m4 \
 ac_cxx_proper_long_double.m4 \
 ac_prog_jar.m4 \
