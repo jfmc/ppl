@@ -26,8 +26,11 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Linear_Expression_Impl.types.hh"
 #include "Congruence.types.hh"
+#include "Coefficient.defs.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
+#include "Dense_Row.defs.hh"
+#include "Sparse_Row.defs.hh"
 #include <cstddef>
 #include "Linear_Expression_Interface.defs.hh"
 
@@ -711,7 +714,173 @@ private:
 
   template <typename Row2>
   friend class Linear_Expression_Impl;
-};
+
+}; // class Parma_Polyhedra_Library::Linear_Expression_Impl
+
+
+namespace Parma_Polyhedra_Library {
+
+// NOTE: declaring explicit specializations.
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::OK() const;
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::OK() const;
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::all_homogeneous_terms_are_zero() const;
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::all_homogeneous_terms_are_zero() const;
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::all_zeroes(dimension_type start,
+                                              dimension_type end) const;
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::all_zeroes(dimension_type start,
+                                               dimension_type end) const;
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::all_zeroes(const Variables_Set& vars) const;
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::all_zeroes(const Variables_Set& vars) const;
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::all_zeroes_except(const Variables_Set& vars,
+                    dimension_type start, dimension_type end) const;
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::all_zeroes_except(const Variables_Set& vars,
+                    dimension_type start, dimension_type end) const;
+
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>
+::first_nonzero(dimension_type first, dimension_type last) const;
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>
+::first_nonzero(dimension_type first, dimension_type last) const;
+
+template <>
+Coefficient
+Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start,
+                                       dimension_type end) const;
+template <>
+Coefficient
+Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start,
+                                        dimension_type end) const;
+
+template <>
+void
+Linear_Expression_Impl<Dense_Row>
+::has_a_free_dimension_helper(std::set<dimension_type>& x) const;
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>
+::has_a_free_dimension_helper(std::set<dimension_type>& x) const;
+
+template <>
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Dense_Row>& y,
+                         Variable first, Variable last) const;
+template <>
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Sparse_Row>& y,
+                         Variable first, Variable last) const;
+template <>
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Dense_Row>& y,
+                         Variable first, Variable last) const;
+template <>
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>
+::have_a_common_variable(const Linear_Expression_Impl<Sparse_Row>& y,
+                         Variable first, Variable last) const;
+
+template <>
+bool
+Linear_Expression_Impl<Dense_Row>::is_zero() const;
+template <>
+bool
+Linear_Expression_Impl<Sparse_Row>::is_zero() const;
+
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>::last_nonzero() const;
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>::last_nonzero() const;
+
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>
+::last_nonzero(dimension_type first, dimension_type last) const;
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>
+::last_nonzero(dimension_type first, dimension_type last) const;
+
+template <>
+dimension_type
+Linear_Expression_Impl<Dense_Row>::num_zeroes(dimension_type start,
+                                              dimension_type end) const;
+template <>
+dimension_type
+Linear_Expression_Impl<Sparse_Row>::num_zeroes(dimension_type start,
+                                               dimension_type end) const;
+
+template <>
+void
+Linear_Expression_Impl<Dense_Row>
+::remove_space_dimensions(const Variables_Set& vars);
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>
+::remove_space_dimensions(const Variables_Set& vars);
+
+template <>
+Representation
+Linear_Expression_Impl<Dense_Row>::representation() const;
+template <>
+Representation
+Linear_Expression_Impl<Sparse_Row>::representation() const;
+
+template <>
+void
+Linear_Expression_Impl<Dense_Row>::const_iterator::skip_zeroes_backward();
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>::const_iterator::skip_zeroes_backward();
+
+template <>
+void
+Linear_Expression_Impl<Dense_Row>::const_iterator::skip_zeroes_forward();
+template <>
+void
+Linear_Expression_Impl<Sparse_Row>::const_iterator::skip_zeroes_forward();
+
+} // namespace Parma_Polyhedra_Library
+
 
 #include "Linear_Expression_Impl.inlines.hh"
 #include "Linear_Expression_Impl.templates.hh"
