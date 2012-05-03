@@ -57,7 +57,7 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Inte
     construct(*p);
   } else {
     // Add implementations for other derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -73,7 +73,7 @@ Linear_Expression_Impl<Row>
     construct(*p, space_dim);
   } else {
     // Add implementations for other derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -220,7 +220,8 @@ Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Variable v) {
 template <typename Row>
 template <typename Row2>
 bool
-Linear_Expression_Impl<Row>::is_equal_to(const Linear_Expression_Impl<Row2>& x) const {
+Linear_Expression_Impl<Row>
+::is_equal_to(const Linear_Expression_Impl<Row2>& x) const {
   return row == x.row;
 }
 
@@ -238,7 +239,8 @@ Linear_Expression_Impl<Row>::get_row(Sparse_Row& row) const {
 
 template <typename Row>
 void
-Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable>& cycle) {
+Linear_Expression_Impl<Row>
+::permute_space_dimensions(const std::vector<Variable>& cycle) {
 
   using std::swap;
 
@@ -247,12 +249,14 @@ Linear_Expression_Impl<Row>::permute_space_dimensions(const std::vector<Variable
     return;
 
   if (n == 2) {
-    row.swap_coefficients(cycle[0].space_dimension(), cycle[1].space_dimension());
+    row.swap_coefficients(cycle[0].space_dimension(),
+                          cycle[1].space_dimension());
   } else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
     tmp = row.get(cycle.back().space_dimension());
     for (dimension_type i = n - 1; i-- > 0; )
-     row.swap_coefficients(cycle[i + 1].space_dimension(), cycle[i].space_dimension());
+     row.swap_coefficients(cycle[i + 1].space_dimension(),
+                           cycle[i].space_dimension());
     if (tmp == 0)
       row.reset(cycle[0].space_dimension());
     else
@@ -813,7 +817,7 @@ Linear_Expression_Impl<Row>
     linear_combine(*p, v);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -831,7 +835,7 @@ Linear_Expression_Impl<Row>
     linear_combine(*p, c1, c2);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -849,7 +853,7 @@ Linear_Expression_Impl<Row>
     linear_combine_lax(*p, c1, c2);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -865,7 +869,7 @@ Linear_Expression_Impl<Row>
     return is_equal_to(*p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return false;
   }
 }
@@ -882,7 +886,7 @@ Linear_Expression_Impl<Row>
     return operator+=(*p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return *this;
   }
 }
@@ -899,7 +903,7 @@ Linear_Expression_Impl<Row>
     return operator-=(*p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return *this;
   }
 }
@@ -917,7 +921,7 @@ Linear_Expression_Impl<Row>
     add_mul_assign(factor, *p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -934,7 +938,7 @@ Linear_Expression_Impl<Row>
     sub_mul_assign(factor, *p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -950,7 +954,7 @@ Linear_Expression_Impl<Row>
     linear_combine(*p, i);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -969,7 +973,7 @@ Linear_Expression_Impl<Row>
     linear_combine(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -988,7 +992,7 @@ Linear_Expression_Impl<Row>
     linear_combine_lax(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -1004,7 +1008,7 @@ Linear_Expression_Impl<Row>
     return compare(*p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return 0;
   }
 }
@@ -1021,7 +1025,7 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y) {
     return construct(*p);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -1037,14 +1041,15 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
     return construct(*p, space_dim);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
 template <typename Row>
 void
 Linear_Expression_Impl<Row>
-::scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
+::scalar_product_assign(Coefficient& result,
+                        const Linear_Expression_Interface& y,
                         dimension_type start, dimension_type end) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
@@ -1054,7 +1059,7 @@ Linear_Expression_Impl<Row>
     scalar_product_assign(result, *p, start, end);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -1071,7 +1076,7 @@ Linear_Expression_Impl<Row>
     return scalar_product_sign(*p, start, end);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
     return 0;
   }
 }
@@ -1089,8 +1094,8 @@ Linear_Expression_Impl<Row>
     return is_equal_to(*p, start, end);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
-    return 0;
+    PPL_UNREACHABLE;
+    return false;
   }
 }
 
@@ -1109,8 +1114,8 @@ Linear_Expression_Impl<Row>
     return is_equal_to(*p, c1, c2, start, end);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
-    return 0;
+    PPL_UNREACHABLE;
+    return false;
   }
 }
 
@@ -1127,8 +1132,8 @@ Linear_Expression_Impl<Row>
     return have_a_common_variable(*p, first, last);
   } else {
     // Add implementations for new derived classes here.
-    PPL_ASSERT(false);
-    return 0;
+    PPL_UNREACHABLE;
+    return false;
   }
 }
 

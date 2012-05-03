@@ -65,7 +65,7 @@ PPL::Linear_Expression::Linear_Expression(Representation r) {
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -81,7 +81,7 @@ PPL::Linear_Expression::Linear_Expression(dimension_type space_dim, bool x,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -97,7 +97,7 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& c,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -114,7 +114,7 @@ PPL::Linear_Expression::Linear_Expression(const Congruence& c,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -129,7 +129,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e) {
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -145,7 +145,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -161,7 +161,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -178,7 +178,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -194,7 +194,7 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
   }
 }
 
@@ -268,7 +268,8 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
     break;
 
   default:
-    PPL_ASSERT(false);
+    PPL_UNREACHABLE;
+    break;
   }
 }
 

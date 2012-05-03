@@ -206,7 +206,7 @@ Box<ITV>::Box(const Generator_System& gs)
 	  seq[i.variable().id()].lower_extend();
 	  break;
 	default:
-          PPL_ASSERT(false);
+          PPL_UNREACHABLE;
 	  break;
 	}
       break;
@@ -598,7 +598,7 @@ Box<ITV>::bounds(const Linear_Expression& expr, const bool from_above) const {
 	return false;
       break;
     case 0:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       break;
     case -1:
       if (seq[v.id()].lower_is_boundary_infinity())
@@ -985,7 +985,7 @@ Box<ITV>::relation_with(const Generator& g) const {
 	    return Poly_Gen_Relation::nothing();
 	  break;
 	case 0:
-          PPL_ASSERT(false);
+          PPL_UNREACHABLE;
 	  break;
 	case -1:
 	  if (!seq[v.id()].lower_is_boundary_infinity())
@@ -1089,7 +1089,7 @@ Box<ITV>::max_min(const Linear_Expression& expr,
 	is_included = false;
       break;
     case 0:
-      PPL_ASSERT(false);
+      PPL_UNREACHABLE;
       break;
     case -1:
       if (seq_i.lower_is_boundary_infinity())
