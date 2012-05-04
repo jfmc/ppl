@@ -150,10 +150,30 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(A == B);
+  cs.insert(A == -1);
+
+  PIP_Problem pip(2);
+  pip.add_constraints(cs);
+
+  bool ok = !pip.is_satisfiable();
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST_F8(test01);
   DO_TEST_F8(test02);
   DO_TEST_F8(test03);
+  DO_TEST(test04);
 END_MAIN
