@@ -2416,6 +2416,7 @@ PIP_Solution_Node
           const dimension_type m_eq = mapping[special_equality_row];
           sub_assign(tableau.s[m_eq], v_row);
           sub_assign(tableau.t[m_eq], p_row);
+          sign[m_eq] = row_sign(tableau.t[m_eq], big_dimension);
         }
       }
     }
