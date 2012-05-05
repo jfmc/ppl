@@ -24,10 +24,11 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_globals_inlines_hh
 #define PPL_globals_inlines_hh 1
 
+#include "compiler.hh"
 #include <limits>
 #include <cassert>
 #include <cctype>
-#include "compiler.hh"
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
