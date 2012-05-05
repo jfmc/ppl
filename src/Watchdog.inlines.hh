@@ -24,9 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Watchdog_inlines_hh
 #define PPL_Watchdog_inlines_hh 1
 
-#include <stdexcept>
-
 #include "Handler.defs.hh"
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
