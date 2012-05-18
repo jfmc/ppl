@@ -8,6 +8,29 @@ in any medium, provided this notice is preserved.
 Parma Polyhedra Library NEWS -- history of user-visible changes
 ===============================================================
 
+--------------------------------------------------------------------------
+NEWS for version 0.13  (release date TBD)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  Added a generic interface for sequences of coefficients enabling a
+   seamless switch between the dense or the sparse row representation.
+   The implementation of many library entities (linear expressions,
+   constraints, generators, congruences, and their systems) can now be
+   tailored to the specific usage context, sometimes leading to significant
+   memory space savings (e.g., for constraint systems describing weakly
+   relational abstractions such as boxes and octagonal shapes).
+
+
+Bugfixes
+========
+
+o  Fixed a bug affecting the PIP solver whereby a wrong result could have
+   been obtained if the input constraint system contained multiple linear
+   equality constraints.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.12.1  (released on April 16, 2012)
