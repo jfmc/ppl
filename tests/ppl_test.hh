@@ -371,7 +371,7 @@ check_noisy(const char*
     return true;
 #endif
   return false;
-#endif
+#endif // !PPL_HAVE_DECL_GETENV
 }
 
 template<typename CharT, typename Traits = std::char_traits<CharT> >
@@ -493,8 +493,8 @@ typedef BD_Shape<ANALYZER_FP_FORMAT> FP_BD_Shape;
   floating point computations.
 */
 typedef Octagonal_Shape<ANALYZER_FP_FORMAT> FP_Octagonal_Shape;
-#endif
-#endif
+#endif // ANALYZED_FP_FORMAT
+#endif // ANALYZER_FP_FORMAT
 
 template <typename Shape>
 inline bool
