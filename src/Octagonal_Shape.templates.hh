@@ -1133,15 +1133,12 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("contains(y)", y);
 
-  // The zero-dimensional universe octagon contains any other
-  // dimension-compatible octagon.
-  // The zero-dimensional empty octagon only contains another
-  // zero-dimensional empty octagon.
   if (space_dim == 0) {
-    if (!marked_empty())
-      return true;
-    else
-      return y.marked_empty();
+    // The zero-dimensional empty octagon only contains another
+    // zero-dimensional empty octagon.
+    // The zero-dimensional universe octagon contains any other
+    // zero-dimensional octagon.
+    return marked_empty() ? y.marked_empty() : true;
   }
 
   // `y' needs to be transitively closed.
@@ -1149,6 +1146,10 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   // An empty octagon is in any other dimension-compatible octagons.
   if (y.marked_empty())
     return true;
+
+  // If `*this' is empty it can not contain `y' (which is not empty).
+  if (is_empty())
+    return false;
 
   // `*this' contains `y' if and only if every element of `*this'
   // is greater than or equal to the correspondent one of `y'.

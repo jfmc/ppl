@@ -596,15 +596,12 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   if (x_space_dim != y.space_dimension())
     throw_dimension_incompatible("contains(y)", y);
 
-  // The zero-dimensional universe shape contains any other
-  // dimension-compatible shape.
-  // The zero-dimensional empty shape only contains another
-  // zero-dimensional empty shape.
   if (x_space_dim == 0) {
-    if (!marked_empty())
-      return true;
-    else
-      return y.marked_empty();
+    // The zero-dimensional empty shape only contains another
+    // zero-dimensional empty shape.
+    // The zero-dimensional universe shape contains any other
+    // zero-dimensional shape.
+    return marked_empty() ? y.marked_empty() : true;
   }
 
   /*
@@ -630,10 +627,13 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
     that containment does hold.
   */
   y.shortest_path_closure_assign();
-
   // An empty shape is contained in any other dimension-compatible shapes.
   if (y.marked_empty())
     return true;
+
+  // If `x' is empty it can not contain `y' (which is not empty).
+  if (x.is_empty())
+    return false;
 
   // `*this' contains `y' if and only if every cell of `dbm'
   // is greater than or equal to the correspondent one of `y.dbm'.
