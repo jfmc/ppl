@@ -245,20 +245,24 @@ test07() {
 
 bool
 test08() {
-  TOctagonal_Shape oc1(0);
+  TOctagonal_Shape oc1(3, UNIVERSE);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagonal_Shape oc2(0, EMPTY);
+  TOctagonal_Shape oc2(3, EMPTY);
 
   print_constraints(oc2, "*** oc2 ***");
 
   bool contained = oc1.contains(oc2);
+  bool strictly_contained = oc1.strictly_contains(oc2);
 
   nout << "*** oc1.contains(oc2) ***" << endl;
   nout << (contained ? "true" : "false") << endl;
 
-  return contained;
+  nout << "*** oc1.strictly_contains(oc2) ***" << endl;
+  nout << (strictly_contained ? "true" : "false") << endl;
+
+  return contained && strictly_contained;
 }
 
 bool
@@ -333,6 +337,24 @@ test11() {
   return !contained;
 }
 
+bool
+test12() {
+  TOctagonal_Shape oc1(3, EMPTY);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagonal_Shape oc2(3, UNIVERSE);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  bool contained = oc1.contains(oc2);
+
+  nout << "*** oc1.contains(oc2) ***" << endl;
+  nout << (contained ? "true" : "false") << endl;
+
+  return !contained;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -347,4 +369,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

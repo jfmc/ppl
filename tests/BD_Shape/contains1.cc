@@ -172,6 +172,24 @@ test06() {
   return !contained;
 }
 
+bool
+test07() {
+  TBD_Shape bds1(3, EMPTY);
+
+  print_constraints(bds1, "*** bds1 ***");
+
+  TBD_Shape bds2(3, UNIVERSE);
+
+  print_constraints(bds2, "*** bds2 ***");
+
+  bool contained = bds1.contains(bds2);
+
+  nout << "*** bds1.contains(bds2) ***" << endl;
+  nout << (contained ? "true" : "false") << endl;
+
+  return !contained;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -181,4 +199,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
