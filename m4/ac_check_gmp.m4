@@ -49,7 +49,7 @@ fi
 
 if test -n "$with_gmp_lib"
 then
-  gmp_library_paths="$with_gmp_lib/lib"
+  gmp_library_paths="$with_gmp_lib"
   gmp_library_options="-L$gmp_library_paths"
 fi
 
