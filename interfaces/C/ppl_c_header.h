@@ -597,7 +597,7 @@ PPL_TYPE_DECLARATION(Constraint_System)
 
   The types and functions for constraint systems iterators provide
   read-only access to the elements of a constraint system by interfacing
-  \extref{Parma_Polyhedra_Library::Constraint_System::const_iterator,
+  \extref{Parma_Polyhedra_Library::Constraint_System_const_iterator,
   Constraint_System::const_iterator}.
 */
 PPL_TYPE_DECLARATION(Constraint_System_const_iterator)
@@ -627,7 +627,7 @@ PPL_TYPE_DECLARATION(Generator_System)
 
   The types and functions for generator systems iterators provide
   read-only access to the elements of a generator system by interfacing
-  \extref{Parma_Polyhedra_Library::Generator_System::const_iterator,
+  \extref{Parma_Polyhedra_Library::Generator_System_const_iterator,
   Generator_System::const_iterator}.
 */
 PPL_TYPE_DECLARATION(Generator_System_const_iterator)
