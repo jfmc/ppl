@@ -27,6 +27,14 @@ o  Added a generic interface for sequences of coefficients enabling a
 Bugfixes
 ========
 
+o  Fixed a bug affecting methods
+
+   bool BD_Shape<T>::contains(const BD_Shape& y) const;
+   bool Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const;
+
+   whereby the wrong result was obtained when *this is an empty
+   weakly-relational shape and y is not empty.
+
 o  Fixed a bug affecting the PIP solver whereby a wrong result could have
    been obtained if the input constraint system contained multiple linear
    equality constraints.
