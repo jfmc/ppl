@@ -9,7 +9,7 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 ===============================================================
 
 --------------------------------------------------------------------------
-NEWS for version 0.13  (release date TBD)
+NEWS for version 1.0  (released on June 27, 2012)
 --------------------------------------------------------------------------
 
 New and Changed Features
@@ -19,9 +19,10 @@ o  Added a generic interface for sequences of coefficients enabling a
    seamless switch between the dense or the sparse row representation.
    The implementation of many library entities (linear expressions,
    constraints, generators, congruences, and their systems) can now be
-   tailored to the specific usage context, sometimes leading to significant
-   memory space savings (e.g., for constraint systems describing weakly
-   relational abstractions such as boxes and octagonal shapes).
+   tailored to the specific usage context, sometimes leading to
+   significant memory space savings (e.g., for constraint systems
+   describing weakly relational abstractions such as boxes and
+   octagonal shapes).
 
 
 Bugfixes
@@ -29,8 +30,8 @@ Bugfixes
 
 o  Fixed a bug affecting methods
 
-   bool BD_Shape<T>::contains(const BD_Shape& y) const;
-   bool Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const;
+     bool BD_Shape<T>::contains(const BD_Shape& y) const;
+     bool Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const;
 
    whereby the wrong result was obtained when *this is an empty
    weakly-relational shape and y is not empty.
@@ -55,10 +56,10 @@ o  In the C, Java, OCaml and Prolog interfaces, modified the signature
 
 o  Added new Box<ITV> methods
 
-   bool has_upper_bound(Variable var,
-                        Coefficient& n, Coefficient& d, bool& closed) const;
-   bool has_lower_bound(Variable var,
-                        Coefficient& n, Coefficient& d, bool& closed) const;
+     bool has_upper_bound(Variable var,
+                          Coefficient& n, Coefficient& d, bool& closed) const;
+     bool has_lower_bound(Variable var,
+                          Coefficient& n, Coefficient& d, bool& closed) const;
 
    to query a non-empty box for the existence and value of its upper/lower
    bound on variable `var'. The methods have been also added to all the
