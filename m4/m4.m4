@@ -26,7 +26,7 @@ AC_PATH_PROGS_FEATURE_CHECK([M4], [m4 gm4 gnum4],
       && ac_cv_path_M4=$ac_path_M4 ac_path_M4_found=:
       rm -f conftest.m4f],
       [AC_MSG_ERROR([no acceptable m4 could be found in \$PATH.
-GNU M4 1.4.5 or later is required; 1.4.11 is recommended])])])
+GNU M4 1.4.5 or later is required; 1.4.11 or later is recommended])])])
   M4=$ac_cv_path_M4
   AC_CACHE_CHECK([how m4 supports trace files], [ac_cv_prog_gnu_m4_debugfile],
     [case `$M4 --help < /dev/null 2>&1` in
