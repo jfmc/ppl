@@ -88,11 +88,13 @@ struct Scalar_As_Interval_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
+typedef Interval_Info_Null<Scalar_As_Interval_Policy>
+Scalar_As_Interval_Info;
 
 const Scalar_As_Interval_Info SCALAR_INFO;
 
-typedef Interval_Info_Null_Open<Scalar_As_Interval_Policy> Scalar_As_Interval_Info_Open;
+typedef Interval_Info_Null_Open<Scalar_As_Interval_Policy>
+Scalar_As_Interval_Info_Open;
 
 template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value, const T&>::type
@@ -105,12 +107,14 @@ f_upper(const T& x) {
   return x;
 }
 template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value, const Scalar_As_Interval_Info&>::type
+inline typename Enable_If<Is_Singleton<T>::value,
+                          const Scalar_As_Interval_Info&>::type
 f_info(const T&) {
   return SCALAR_INFO;
 }
 template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value, Scalar_As_Interval_Info_Open>::type
+inline typename Enable_If<Is_Singleton<T>::value,
+                          Scalar_As_Interval_Info_Open>::type
 f_info(const T&, bool open) {
   return Scalar_As_Interval_Info_Open(open);
 }
@@ -130,13 +134,15 @@ f_is_singleton(const T& x) {
 } // namespace Interval_NS
 
 template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value
+                          || Is_Interval<T>::value, bool>::type
 is_singleton_integer(const T& x) {
   return is_singleton(x) && is_integer(f_lower(x));
 }
 
 template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value
+                          || Is_Interval<T>::value, bool>::type
 check_empty_arg(const T& x) {
   if (f_info(x).may_be_empty)
     return f_is_empty(x);
@@ -147,9 +153,12 @@ check_empty_arg(const T& x) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
-			   && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
-			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
+inline typename Enable_If<((Is_Singleton<T1>::value
+                            || Is_Interval<T1>::value)
+			   && (Is_Singleton<T2>::value
+                               || Is_Interval<T2>::value)
+			   && (Is_Interval<T1>::value
+                               || Is_Interval<T2>::value)),
 			  bool>::type
 operator==(const T1& x, const T2& y) {
   PPL_ASSERT(f_OK(x));
@@ -163,9 +172,12 @@ operator==(const T1& x, const T2& y) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Singleton<T1>::value || Is_Interval<T1>::value)
-			   && (Is_Singleton<T2>::value || Is_Interval<T2>::value)
-			   && (Is_Interval<T1>::value || Is_Interval<T2>::value)),
+inline typename Enable_If<((Is_Singleton<T1>::value
+                            || Is_Interval<T1>::value)
+			   && (Is_Singleton<T2>::value
+                               || Is_Interval<T2>::value)
+			   && (Is_Interval<T1>::value
+                               || Is_Interval<T2>::value)),
 			  bool>::type
 operator!=(const T1& x, const T2& y) {
   return !(x == y);
@@ -173,7 +185,8 @@ operator!=(const T1& x, const T2& y) {
 
 template <typename Boundary, typename Info>
 template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value
+                          || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::contains(const T& y) const {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(y));
@@ -187,7 +200,8 @@ Interval<Boundary, Info>::contains(const T& y) const {
 
 template <typename Boundary, typename Info>
 template <typename T>
-inline typename Enable_If<Is_Singleton<T>::value || Is_Interval<T>::value, bool>::type
+inline typename Enable_If<Is_Singleton<T>::value
+                          || Is_Interval<T>::value, bool>::type
 Interval<Boundary, Info>::strictly_contains(const T& y) const {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(y));
