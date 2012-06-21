@@ -42,6 +42,11 @@ void set_rounding_for_PPL();
 /*! \brief
   Sets the FPU rounding mode as it was before initialization of the PPL.
 
+  This is important if the application uses floating-point computations
+  outside the PPL.  It is crucial when the application uses functions
+  from a mathematical library that is not guaranteed to work correctly
+  under all rounding modes.
+
   After calling this function it is absolutely necessary to call
   set_rounding_for_PPL() before using any PPL abstractions based on
   floating point numbers.
