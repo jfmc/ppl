@@ -98,6 +98,11 @@ point_on_the_unit_n_sphere(unsigned n,
 			   const std::vector<float>& theta,
 			   std::vector<float>& coordinate) {
   assert(n >= 2);
+
+  // Many libm implementations only work with round-to-nearest.
+  // See, e.g, http://sources.redhat.com/bugzilla/show_bug.cgi?id=3976
+  restore_pre_PPL_rounding();
+
   if (n == 2) {
     coordinate[0] *= sin(theta[0]);
     coordinate[1] *= cos(theta[0]);
@@ -109,6 +114,8 @@ point_on_the_unit_n_sphere(unsigned n,
       coordinate[i] *= sin_theta_n_2;
     coordinate[n-1] *= cos(theta[n-2]);
   }
+
+  set_rounding_for_PPL();
 }
 
 void

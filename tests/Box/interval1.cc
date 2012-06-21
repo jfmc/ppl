@@ -115,9 +115,16 @@ solve(const std::vector<N>& P,
   // Initial estimates are given by roots of unity.
   std::vector<std::complex<N> > x(5);
   double theta = 2*M_PI/degree;
-  for (int i = 0; i < degree; ++i)
-    x[i] = std::complex<N>(N(cos(i*theta)),
-                                     N(sin(i*theta)));
+  for (int i = 0; i < degree; ++i) {
+    // Many libm implementations only work with round-to-nearest.
+    // See, e.g, http://sources.redhat.com/bugzilla/show_bug.cgi?id=3976
+    restore_pre_PPL_rounding();
+    N cos_i_theta = N(cos(i*theta));
+    N sin_i_theta = N(sin(i*theta));
+    set_rounding_for_PPL();
+
+    x[i] = std::complex<N>(cos_i_theta, sin_i_theta);
+  }
 
   for (int iteration = 0; iteration < 50; ++iteration) {
     for (int i = 0; i < degree; ++i)

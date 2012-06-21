@@ -75,9 +75,16 @@ bool test02() {
     ix.join_assign(boundary_type(d-0.015));
     ix.join_assign(boundary_type(d+0.015));
 
+    // Many libm implementations only work with round-to-nearest.
+    // See, e.g, http://sources.redhat.com/bugzilla/show_bug.cgi?id=3976
+    restore_pre_PPL_rounding();
+    boundary_type sdm = boundary_type(sin(d-0.015));
+    boundary_type sdp = boundary_type(sin(d-0.015));
+    set_rounding_for_PPL();
+
     iy.assign(EMPTY);
-    iy.join_assign(boundary_type(sin(d-0.015)));
-    iy.join_assign(boundary_type(sin(d+0.015)));
+    iy.join_assign(sdm);
+    iy.join_assign(sdp);
 
     box.set_interval(x, ix);
     box.set_interval(y, iy);
