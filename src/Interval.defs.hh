@@ -502,14 +502,12 @@ public:
   bool ascii_load(std::istream& s);
 
   bool OK() const {
-#if 0
     if (!Info::may_be_empty && is_empty()) {
 #ifndef NDEBUG
-	std::cerr << "The interval is unexpectedly empty.\n";
+      std::cerr << "The interval is unexpectedly empty.\n";
 #endif
-	return false;
+      return false;
     }
-#endif
 
     if (is_open(LOWER, lower(), info())) {
       if (is_plus_infinity(LOWER, lower(), info())) {
