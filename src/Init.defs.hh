@@ -44,7 +44,7 @@ void set_rounding_for_PPL();
 
   This is important if the application uses floating-point computations
   outside the PPL.  It is crucial when the application uses functions
-  from a mathematical library that is not guaranteed to work correctly
+  from a mathematical library that are not guaranteed to work correctly
   under all rounding modes.
 
   After calling this function it is absolutely necessary to call
