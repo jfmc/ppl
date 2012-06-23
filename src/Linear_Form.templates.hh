@@ -82,7 +82,7 @@ Linear_Form<C>::Linear_Form(const Linear_Expression& e)
   vec[0] = e.inhomogeneous_term();
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
@@ -133,7 +133,7 @@ operator+(const Variable v, const Linear_Form<C>& f) {
   return r;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator+(const C& n, const Linear_Form<C>& f) {
@@ -142,7 +142,7 @@ operator+(const C& n, const Linear_Form<C>& f) {
   return r;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f) {
@@ -152,7 +152,7 @@ operator-(const Linear_Form<C>& f) {
   return r;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
@@ -188,7 +188,7 @@ operator-(const Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const Variable v, const Linear_Form<C>& f) {
@@ -224,7 +224,7 @@ operator-(const Linear_Form<C>& f, const Variable v) {
   return r;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
 operator-(const C& n, const Linear_Form<C>& f) {
@@ -235,18 +235,17 @@ operator-(const C& n, const Linear_Form<C>& f) {
   return r;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>
-operator*(const C& n,
-	       const Linear_Form<C>& f) {
+operator*(const C& n, const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
   for (dimension_type i = f.size(); i-- > 0; )
     r[i] *= n;
   return r;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
@@ -259,7 +258,7 @@ operator+=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   return f1;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f, const Variable v) {
@@ -274,7 +273,7 @@ operator+=(Linear_Form<C>& f, const Variable v) {
   return f;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
@@ -287,7 +286,7 @@ operator-=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   return f1;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f, const Variable v) {
@@ -302,7 +301,7 @@ operator-=(Linear_Form<C>& f, const Variable v) {
   return f;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator*=(Linear_Form<C>& f, const C& n) {
@@ -312,7 +311,7 @@ operator*=(Linear_Form<C>& f, const C& n) {
   return f;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 Linear_Form<C>&
 operator/=(Linear_Form<C>& f, const C& n) {
@@ -322,7 +321,7 @@ operator/=(Linear_Form<C>& f, const C& n) {
   return f;
 }
 
-/*! \relates Linear_Row */
+/*! \relates Linear_Form */
 template <typename C>
 inline bool
 operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
@@ -474,7 +473,7 @@ Linear_Form<C>::intervalize(const FP_Oracle<Target,C>& oracle,
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Form */
+/*! \relates Linear_Form */
 template <typename C>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {

@@ -79,6 +79,9 @@ public:
     \param space_dim
     The number of space dimensions of the system that will be created.
 
+    \param r
+    The representation for system's rows.
+
     Creates a \p n_rows \f$\times\f$ \p space_dim system whose
     coefficients are all zero and with the given topology.
   */
