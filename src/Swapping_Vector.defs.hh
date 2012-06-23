@@ -84,7 +84,7 @@ private:
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Swapping_Vector<T> */
+/*! \relates Swapping_Vector */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void swap(Swapping_Vector<T>& x, Swapping_Vector<T>& y);

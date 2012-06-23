@@ -473,7 +473,7 @@ Linear_Form<C>::intervalize(const FP_Oracle<Target,C>& oracle,
   return true;
 }
 
-/*! \relates Linear_Form */
+/*! \relates Parma_Polyhedra_Library::Linear_Form */
 template <typename C>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
