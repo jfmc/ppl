@@ -47,7 +47,6 @@ DECLARE_CONVERSIONS(Constraint, Constraint)
 
 DECLARE_CONVERSIONS(Constraint_System, Constraint_System)
 
-typedef Constraint_System::const_iterator Constraint_System_const_iterator;
 DECLARE_CONVERSIONS(Constraint_System_const_iterator,
                     Constraint_System_const_iterator)
 
@@ -55,7 +54,6 @@ DECLARE_CONVERSIONS(Generator, Generator)
 
 DECLARE_CONVERSIONS(Generator_System, Generator_System)
 
-typedef Generator_System::const_iterator Generator_System_const_iterator;
 DECLARE_CONVERSIONS(Generator_System_const_iterator,
                     Generator_System_const_iterator)
 
