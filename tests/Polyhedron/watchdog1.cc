@@ -84,9 +84,9 @@ timed_compute_open_hypercube_generators(dimension_type dimension, int csecs) {
   // If Watchdog objects are not supported, an std::logic_error exception
   // will be thrown: this is normal.
   catch (const std::logic_error& e) {
-  nout << "std::logic_error exception caught: \n" << e.what() << std::endl;
-  exit(0);
-}
+    nout << "std::logic_error exception caught: \n" << e.what() << std::endl;
+    exit(0);
+  }
 #endif // !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   catch (const std::exception& e) {
     nout << "unexpected std::exception caught: \n" << e.what() << endl;
