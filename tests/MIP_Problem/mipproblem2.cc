@@ -139,6 +139,14 @@ bool test01() {
     nout << "timeout, as expected" << endl;
     return true;
   }
+#if !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED
+  // If Watchdog objects are not supported, an std::logic_error exception
+  // will be thrown: this is normal.
+  catch (const std::logic_error& e) {
+    nout << "std::logic_error exception caught: \n" << e.what() << std::endl;
+    exit(0);
+  }
+#endif // !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED
   catch (const std::overflow_error& e) {
     abandon_expensive_computations = 0;
     if (std::numeric_limits<Coefficient>::is_integer
