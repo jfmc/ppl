@@ -38,8 +38,10 @@ namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Linear_Expression_Impl */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Row>
 std::ostream&
 operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e);
@@ -48,9 +50,11 @@ operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e);
 
 } // namespace Parma_Polyhedra_Library
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A linear expression.
 /*! \ingroup PPL_CXX_interface
-  An object of the class Linear_Expression_Impl represents the linear expression
+  An object of the class Linear_Expression_Impl represents the linear
+  expression
   \f[
     \sum_{i=0}^{n-1} a_i x_i + b
   \f]
@@ -95,8 +99,10 @@ operator<<(std::ostream& s, const Linear_Expression_Impl<Row>& e);
   with space dimension zero and then extended to space dimension 3
   in the fifth line.
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Row>
-class Parma_Polyhedra_Library::Linear_Expression_Impl : public Linear_Expression_Interface {
+class Parma_Polyhedra_Library::Linear_Expression_Impl
+  : public Linear_Expression_Interface {
 public:
   //! Default constructor: returns a copy of Linear_Expression_Impl::zero().
   Linear_Expression_Impl();
@@ -277,7 +283,7 @@ public:
     represented by the vector containing \f$ x_1, x_2, x_3 \f$.
   */
   virtual void permute_space_dimensions(const std::vector<Variable>& cycle);
-  
+
   //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
   virtual bool is_zero() const;
 
@@ -298,7 +304,7 @@ public:
 
   //! Writes to \p s an ASCII representation of \p *this.
   virtual void ascii_dump(std::ostream& s) const;
-  
+
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
@@ -332,36 +338,43 @@ public:
   */
   virtual void negate(dimension_type first, dimension_type last);
 
-  virtual Linear_Expression_Impl& operator+=(Coefficient_traits::const_reference n);
-  virtual Linear_Expression_Impl& operator-=(Coefficient_traits::const_reference n);
+  virtual Linear_Expression_Impl&
+  operator+=(Coefficient_traits::const_reference n);
+  virtual Linear_Expression_Impl&
+  operator-=(Coefficient_traits::const_reference n);
 
   //! The basic comparison function.
   /*! \relates Linear_Expression_Impl
 
-    \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
-            is greater. The absolute value of the result is 1 if the difference
-            is only in the inhomogeneous terms, 2 otherwise
+    \returns
+    -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
+    is greater. The absolute value of the result is 1 if the difference
+    is only in the inhomogeneous terms, 2 otherwise.
 
-    The order is a lexicographic. It starts comparing the variables' coefficient,
-    starting from Variable(0), and at the end it compares the inhomogeneous
-    terms.
+    The order is a lexicographic. It starts comparing the variables'
+    coefficient, starting from Variable(0), and at the end it compares
+    the inhomogeneous terms.
   */
   virtual int compare(const Linear_Expression_Interface& y) const;
 
-  virtual Linear_Expression_Impl& operator+=(const Linear_Expression_Interface& e2);
+  virtual Linear_Expression_Impl&
+  operator+=(const Linear_Expression_Interface& e2);
   virtual Linear_Expression_Impl& operator+=(const Variable v);
-  virtual Linear_Expression_Impl& operator-=(const Linear_Expression_Interface& e2);
+  virtual Linear_Expression_Impl&
+  operator-=(const Linear_Expression_Interface& e2);
   virtual Linear_Expression_Impl& operator-=(const Variable v);
-  virtual Linear_Expression_Impl& operator*=(Coefficient_traits::const_reference n);
-  virtual Linear_Expression_Impl& operator/=(Coefficient_traits::const_reference n);
+  virtual Linear_Expression_Impl&
+  operator*=(Coefficient_traits::const_reference n);
+  virtual Linear_Expression_Impl&
+  operator/=(Coefficient_traits::const_reference n);
 
   virtual void negate();
 
-  virtual Linear_Expression_Impl& add_mul_assign(Coefficient_traits::const_reference n,
-                                                 const Variable v);
+  virtual Linear_Expression_Impl&
+  add_mul_assign(Coefficient_traits::const_reference n, const Variable v);
 
-  virtual Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
-                                                 const Variable v);
+  virtual Linear_Expression_Impl&
+  sub_mul_assign(Coefficient_traits::const_reference n, const Variable v);
 
   virtual void add_mul_assign(Coefficient_traits::const_reference factor,
                               const Linear_Expression_Interface& e2);
@@ -451,7 +464,8 @@ public:
 
     \p *this and \p y must have the same space dimension.
   */
-  virtual void linear_combine(const Linear_Expression_Interface& y, dimension_type i);
+  virtual void
+  linear_combine(const Linear_Expression_Interface& y, dimension_type i);
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
@@ -479,7 +493,7 @@ public:
   //! Returns the index of the last nonzero element, or 0 if there are no
   //! nonzero elements.
   virtual dimension_type last_nonzero() const;
-  
+
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
@@ -487,42 +501,49 @@ public:
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.
   */
-  virtual bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+  virtual bool
+  all_zeroes_except(const Variables_Set& vars,
+                    dimension_type start, dimension_type end) const;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
-  virtual void scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
-                                     dimension_type start, dimension_type end) const;
+  virtual void
+  scalar_product_assign(Coefficient& result,
+                        const Linear_Expression_Interface& y,
+                        dimension_type start, dimension_type end) const;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
-  virtual int scalar_product_sign(const Linear_Expression_Interface& y,
-                                  dimension_type start, dimension_type end) const;
+  virtual int
+  scalar_product_sign(const Linear_Expression_Interface& y,
+                      dimension_type start, dimension_type end) const;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   //! Returns the index of the first nonzero element, or \p last if there are no
   //! nonzero elements, considering only elements in [first,last).
-  virtual dimension_type first_nonzero(dimension_type first, dimension_type last) const;
+  virtual dimension_type
+  first_nonzero(dimension_type first, dimension_type last) const;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   //! Returns the index of the last nonzero element in [first,last), or last
   //! if there are no nonzero elements.
-  virtual dimension_type last_nonzero(dimension_type first, dimension_type last) const;
+  virtual dimension_type
+  last_nonzero(dimension_type first, dimension_type last) const;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   //! Removes from the set x all the indexes of nonzero elements of *this.
   virtual void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
-  
+
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
@@ -564,7 +585,7 @@ public:
   /*!
     Given the congruence
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
+    builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
   */
   Linear_Expression_Impl(const Congruence& cg, dimension_type space_dim);
 
@@ -611,9 +632,10 @@ public:
   Linear_Expression_Impl& operator-=(const Linear_Expression_Impl<Row2>& e2);
 
   template <typename Row2>
-  Linear_Expression_Impl& sub_mul_assign(Coefficient_traits::const_reference n,
-                                         const Linear_Expression_Impl<Row2>& y,
-                                         dimension_type start, dimension_type end);
+  Linear_Expression_Impl&
+  sub_mul_assign(Coefficient_traits::const_reference n,
+                 const Linear_Expression_Impl<Row2>& y,
+                 dimension_type start, dimension_type end);
 
   template <typename Row2>
   void add_mul_assign(Coefficient_traits::const_reference factor,
@@ -660,23 +682,27 @@ public:
   //! The basic comparison function.
   /*! \relates Linear_Expression_Impl
 
-    \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
-            is greater. The absolute value of the result is 1 if the difference
-            is only in the inhomogeneous terms, 2 otherwise
+    \returns
+    -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
+    is greater. The absolute value of the result is 1 if the difference
+    is only in the inhomogeneous terms, 2 otherwise.
 
-    The order is a lexicographic. It starts comparing the variables' coefficient,
-    starting from Variable(0), and at the end it compares the inhomogeneous
-    terms.
+    The order is a lexicographic. It starts comparing the variables'
+    coefficient, starting from Variable(0), and at the end it compares
+    the inhomogeneous terms.
   */
   template <typename Row2>
   int compare(const Linear_Expression_Impl<Row2>& y) const;
-  
+
   //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
   template <typename Row2>
-  void scalar_product_assign(Coefficient& result, const Linear_Expression_Impl<Row2>& y,
-                             dimension_type start, dimension_type end) const;
+  void
+  scalar_product_assign(Coefficient& result,
+                        const Linear_Expression_Impl<Row2>& y,
+                        dimension_type start, dimension_type end) const;
 
-  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
+  //! Computes the sign of the sum of (*this)[i]*y[i],
+  //! for each i in [start,end).
   template <typename Row2>
   int scalar_product_sign(const Linear_Expression_Impl<Row2>& y,
                           dimension_type start, dimension_type end) const;
@@ -703,12 +729,14 @@ public:
 private:
 
   void construct(const Linear_Expression_Interface& e);
-  void construct(const Linear_Expression_Interface& e, dimension_type space_dim);
+  void construct(const Linear_Expression_Interface& e,
+                 dimension_type space_dim);
 
   template <typename Row2>
   void construct(const Linear_Expression_Impl<Row2>& e);
   template <typename Row2>
-  void construct(const Linear_Expression_Impl<Row2>& e, dimension_type space_dim);
+  void construct(const Linear_Expression_Impl<Row2>& e,
+                 dimension_type space_dim);
 
   Row row;
 

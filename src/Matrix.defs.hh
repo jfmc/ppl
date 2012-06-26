@@ -30,7 +30,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Swapping_Vector.defs.hh"
 #include <ostream>
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A sparse matrix of Coefficient.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Row>
 class Parma_Polyhedra_Library::Matrix {
 
@@ -90,7 +92,7 @@ public:
     This method takes \f$O(1)\f$ time.
   */
   dimension_type num_columns() const;
-  
+
   // TODO: Check if this can be removed.
   //! Returns the capacity of the row vector.
   dimension_type capacity() const;
@@ -108,7 +110,7 @@ public:
 
   //! Equivalent to resize(n, n).
   void resize(dimension_type n);
-  
+
   // TODO: Check if this can become private.
   //! Reserves space for at least \p n rows.
   void reserve_rows(dimension_type n);
@@ -215,7 +217,7 @@ public:
     rows.
   */
   void remove_trailing_rows(dimension_type n);
-  
+
   void remove_rows(iterator first, iterator last);
 
   //! Permutes the columns of the matrix.

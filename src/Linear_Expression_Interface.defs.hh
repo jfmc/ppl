@@ -33,10 +33,11 @@ site: http://bugseng.com/products/ppl/ . */
 #include <vector>
 #include <set>
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A linear expression.
 /*! \ingroup PPL_CXX_interface
-  An object of a class implementing Linear_Expression_Interface represents a
-  linear expression
+  An object of a class implementing Linear_Expression_Interface
+  represents a linear expression
   \f[
     \sum_{i=0}^{n-1} a_i x_i + b
   \f]
@@ -45,6 +46,7 @@ site: http://bugseng.com/products/ppl/ . */
   of the \f$i\f$-th variable \f$x_i\f$
   and \f$b\f$ is the integer for the inhomogeneous term.
 */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Linear_Expression_Interface {
 public:
   virtual ~Linear_Expression_Interface();
@@ -123,17 +125,19 @@ public:
   virtual void set_space_dimension(dimension_type n) = 0;
 
   //! Returns the coefficient of \p v in \p *this.
-  virtual Coefficient_traits::const_reference coefficient(Variable v) const = 0;
+  virtual Coefficient_traits::const_reference
+  coefficient(Variable v) const = 0;
 
   //! Sets the coefficient of \p v in \p *this to \p n.
-  virtual void set_coefficient(Variable v,
-                               Coefficient_traits::const_reference n) = 0;
+  virtual void
+  set_coefficient(Variable v, Coefficient_traits::const_reference n) = 0;
 
   //! Returns the inhomogeneous term of \p *this.
   virtual Coefficient_traits::const_reference inhomogeneous_term() const = 0;
 
   //! Sets the inhomogeneous term of \p *this to \p n.
-  virtual void set_inhomogeneous_term(Coefficient_traits::const_reference n) = 0;
+  virtual void
+  set_inhomogeneous_term(Coefficient_traits::const_reference n) = 0;
 
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
@@ -150,7 +154,8 @@ public:
 
     \p *this and \p y must have the same space dimension.
   */
-  virtual void linear_combine(const Linear_Expression_Interface& y, Variable v) = 0;
+  virtual void
+  linear_combine(const Linear_Expression_Interface& y, Variable v) = 0;
 
   //! Equivalent to <CODE>*this = *this * c1 + y * c2</CODE>, but assumes that
   //! \p *this and \p y have the same space dimension.
@@ -191,8 +196,9 @@ public:
     \f$ \{ x_1 \mapsto x_2, x_2 \mapsto x_3, x_3 \mapsto x_1 \}\f$ can be
     represented by the vector containing \f$ x_1, x_2, x_3 \f$.
   */
-  virtual void permute_space_dimensions(const std::vector<Variable>& cycle) = 0;
-  
+  virtual void
+  permute_space_dimensions(const std::vector<Variable>& cycle) = 0;
+
   //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
   virtual bool is_zero() const = 0;
 
@@ -243,8 +249,10 @@ public:
   */
   virtual void negate(dimension_type first, dimension_type last) = 0;
 
-  virtual Linear_Expression_Interface& operator+=(Coefficient_traits::const_reference n) = 0;
-  virtual Linear_Expression_Interface& operator-=(Coefficient_traits::const_reference n) = 0;
+  virtual Linear_Expression_Interface&
+  operator+=(Coefficient_traits::const_reference n) = 0;
+  virtual Linear_Expression_Interface&
+  operator-=(Coefficient_traits::const_reference n) = 0;
 
   //! The basic comparison function.
   /*! \relates Linear_Expression_Interface
@@ -253,26 +261,32 @@ public:
             is greater. The absolute value of the result is 1 if the difference
             is only in the inhomogeneous terms, 2 otherwise
 
-    The order is a lexicographic. It starts comparing the variables' coefficient,
-    starting from Variable(0), and at the end it compares the inhomogeneous
-    terms.
+    The order is a lexicographic. It starts comparing the variables'
+    coefficient, starting from Variable(0), and at the end it compares
+    the inhomogeneous terms.
   */
   virtual int compare(const Linear_Expression_Interface& y) const = 0;
 
-  virtual Linear_Expression_Interface& operator+=(const Linear_Expression_Interface& e2) = 0;
-  virtual Linear_Expression_Interface& operator+=(const Variable v) = 0;
-  virtual Linear_Expression_Interface& operator-=(const Linear_Expression_Interface& e2) = 0;
-  virtual Linear_Expression_Interface& operator-=(const Variable v) = 0;
-  virtual Linear_Expression_Interface& operator*=(Coefficient_traits::const_reference n) = 0;
-  virtual Linear_Expression_Interface& operator/=(Coefficient_traits::const_reference n) = 0;
+  virtual Linear_Expression_Interface&
+  operator+=(const Linear_Expression_Interface& e2) = 0;
+  virtual Linear_Expression_Interface&
+  operator+=(const Variable v) = 0;
+  virtual Linear_Expression_Interface&
+  operator-=(const Linear_Expression_Interface& e2) = 0;
+  virtual Linear_Expression_Interface&
+  operator-=(const Variable v) = 0;
+  virtual Linear_Expression_Interface&
+  operator*=(Coefficient_traits::const_reference n) = 0;
+  virtual Linear_Expression_Interface&
+  operator/=(Coefficient_traits::const_reference n) = 0;
 
   virtual void negate() = 0;
 
-  virtual Linear_Expression_Interface& add_mul_assign(Coefficient_traits::const_reference n,
-                                                      const Variable v) = 0;
+  virtual Linear_Expression_Interface&
+  add_mul_assign(Coefficient_traits::const_reference n, const Variable v) = 0;
 
-  virtual Linear_Expression_Interface& sub_mul_assign(Coefficient_traits::const_reference n,
-                                                      const Variable v) = 0;
+  virtual Linear_Expression_Interface&
+  sub_mul_assign(Coefficient_traits::const_reference n, const Variable v) = 0;
 
   virtual void add_mul_assign(Coefficient_traits::const_reference factor,
                               const Linear_Expression_Interface& e2) = 0;
@@ -320,7 +334,8 @@ public:
   /*! \brief
     Returns the number of zero coefficient in [start, end).
   */
-  virtual dimension_type num_zeroes(dimension_type start, dimension_type end) const = 0;
+  virtual dimension_type
+  num_zeroes(dimension_type start, dimension_type end) const = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
@@ -362,7 +377,8 @@ public:
 
     \p *this and \p y must have the same space dimension.
   */
-  virtual void linear_combine(const Linear_Expression_Interface& y, dimension_type i) = 0;
+  virtual void
+  linear_combine(const Linear_Expression_Interface& y, dimension_type i) = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
@@ -396,11 +412,13 @@ public:
   // Linear_Expression.
   //! Returns the index of the last nonzero element in [first,last), or last
   //! if there are no nonzero elements.
-  virtual dimension_type last_nonzero(dimension_type first, dimension_type last) const = 0;
+  virtual dimension_type
+  last_nonzero(dimension_type first, dimension_type last) const = 0;
 
   //! Returns the index of the first nonzero element, or \p last if there are no
   //! nonzero elements, considering only elements in [first,last).
-  virtual dimension_type first_nonzero(dimension_type first, dimension_type last) const = 0;
+  virtual dimension_type
+  first_nonzero(dimension_type first, dimension_type last) const = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
@@ -409,27 +427,34 @@ public:
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.
   */
-  virtual bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const = 0;
-  
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
-  virtual void scalar_product_assign(Coefficient& result, const Linear_Expression_Interface& y,
-                                     dimension_type start, dimension_type end) const = 0;
+  virtual bool
+  all_zeroes_except(const Variables_Set& vars,
+                    dimension_type start, dimension_type end) const = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
-  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
-  virtual int scalar_product_sign(const Linear_Expression_Interface& y,
-                                  dimension_type start, dimension_type end) const = 0;
+  //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
+  virtual void
+  scalar_product_assign(Coefficient& result,
+                        const Linear_Expression_Interface& y,
+                        dimension_type start, dimension_type end) const = 0;
+
+  // NOTE: This method is public, but it's not exposed in Linear_Expression,
+  // so that it can be used internally in the PPL, by friends of
+  // Linear_Expression.
+  //! Computes the sign of the sum of (*this)[i]*y[i],
+  //! for each i in [start,end).
+  virtual int
+  scalar_product_sign(const Linear_Expression_Interface& y,
+                      dimension_type start, dimension_type end) const = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
   //! Removes from the set x all the indexes of nonzero elements of *this.
-  virtual void has_a_free_dimension_helper(std::set<dimension_type>& x) const = 0;
+  virtual void
+  has_a_free_dimension_helper(std::set<dimension_type>& x) const = 0;
 
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of

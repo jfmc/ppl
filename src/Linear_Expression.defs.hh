@@ -184,6 +184,8 @@ operator*=(Linear_Expression& e, Coefficient_traits::const_reference n);
 Linear_Expression&
 operator/=(Linear_Expression& e, Coefficient_traits::const_reference n);
 
+//! Assigns to \p e its own negation.
+/*! \relates Linear_Expression */
 void
 neg_assign(Linear_Expression& e);
 
@@ -194,11 +196,13 @@ add_mul_assign(Linear_Expression& e,
                Coefficient_traits::const_reference n, Variable v);
 
 //! Sums \p e2 multiplied by \p factor into \p e1.
+/*! \relates Linear_Expression */
 void add_mul_assign(Linear_Expression& e1,
                     Coefficient_traits::const_reference factor,
                     const Linear_Expression& e2);
 
 //! Subtracts \p e2 multiplied by \p factor from \p e1.
+/*! \relates Linear_Expression */
 void sub_mul_assign(Linear_Expression& e1,
                     Coefficient_traits::const_reference factor,
                     const Linear_Expression& e2);
@@ -212,7 +216,7 @@ sub_mul_assign(Linear_Expression& e,
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Linear_Expression
- 
+
   \returns -1 or -2 if x is less than y, 0 if they are equal and 1 or 2 is y
            is greater. The absolute value of the result is 1 if the difference
            is only in the inhomogeneous terms, 2 otherwise
@@ -308,7 +312,8 @@ public:
   //! Copy constructor from a Expression_Hide_Inhomo that takes a
   //! Representation.
   template <typename Expression>
-  Linear_Expression(const Expression_Hide_Inhomo<Expression>& e, Representation r);
+  Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
+                    Representation r);
 
   //! Copy constructor from a Expression_Hide_Inhomo that takes a space
   //! dimension.
@@ -316,7 +321,8 @@ public:
   //! representation and not necessarily default_representation, so that
   //! the copy and e are indistinguishable.
   template <typename Expression>
-  explicit Linear_Expression(const Expression_Hide_Inhomo<Expression>& e, dimension_type space_dim);
+  explicit Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
+                             dimension_type space_dim);
 
   //! Copy constructor from a Expression_Hide_Inhomo that takes a
   //! space dimension and a Representation.
@@ -334,7 +340,8 @@ public:
   //! Copy constructor from a Expression_Hide_Last that takes a
   //! Representation.
   template <typename Expression>
-  Linear_Expression(const Expression_Hide_Last<Expression>& e, Representation r);
+  Linear_Expression(const Expression_Hide_Last<Expression>& e,
+                    Representation r);
 
   //! Copy constructor from a Expression_Hide_Last that takes a space
   //! dimension.
@@ -672,7 +679,7 @@ public:
     represented by the vector containing \f$ x_1, x_2, x_3 \f$.
   */
   void permute_space_dimensions(const std::vector<Variable>& cycle);
-  
+
   //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
   bool is_zero() const;
 
@@ -766,7 +773,8 @@ private:
   /*!
     Given the congruence
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
+    this builds the linear expression
+    \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
 
     The constructed Linear_Expression has the same representation as \p cg.
   */
@@ -777,7 +785,8 @@ private:
   /*!
     Given the congruence
     \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
+    this builds the linear expression
+    \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
   */
   Linear_Expression(const Congruence& cg, dimension_type space_dim,
                     Representation r);
@@ -825,7 +834,7 @@ private:
 
   void exact_div_assign(Coefficient_traits::const_reference c,
                         dimension_type start, dimension_type end);
-  
+
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.
   /*!
@@ -872,15 +881,17 @@ private:
   //! Returns the index of the first nonzero element, or \p last if there are no
   //! nonzero elements, considering only elements in [first,last).
   dimension_type first_nonzero(dimension_type first, dimension_type last) const;
-  
+
   /*! \brief
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.
   */
-  bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+  bool all_zeroes_except(const Variables_Set& vars,
+                         dimension_type start, dimension_type end) const;
 
   //! Sets results to the sum of (*this)[i]*y[i], for each i.
-  void scalar_product_assign(Coefficient& result, const Linear_Expression& y) const;
+  void scalar_product_assign(Coefficient& result,
+                             const Linear_Expression& y) const;
 
   //! Sets results to the sum of (*this)[i]*y[i], for each i in [start,end).
   void scalar_product_assign(Coefficient& result, const Linear_Expression& y,
@@ -889,7 +900,8 @@ private:
   //! Computes the sign of the sum of (*this)[i]*y[i], for each i.
   int scalar_product_sign(const Linear_Expression& y) const;
 
-  //! Computes the sign of the sum of (*this)[i]*y[i], for each i in [start,end).
+  //! Computes the sign of the sum of (*this)[i]*y[i],
+  //! for each i in [start,end).
   int scalar_product_sign(const Linear_Expression& y,
                           dimension_type start, dimension_type end) const;
 

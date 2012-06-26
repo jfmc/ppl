@@ -536,12 +536,18 @@ bool operator==(const Dense_Row& x, const Dense_Row& y);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Dense_Row& x, const Dense_Row& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void linear_combine(Dense_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference coeff1,
                     Coefficient_traits::const_reference coeff2);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Equivalent to <CODE>x[i] = x[i] * c1 + y[i] * c2</CODE>,
 //! for each i in [start, end).
+/*! \relates Dense_Row */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void linear_combine(Dense_Row& x, const Dense_Row& y,
                     Coefficient_traits::const_reference c1,
                     Coefficient_traits::const_reference c2,

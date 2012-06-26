@@ -30,8 +30,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A Linear_Expression-like object that may or may not hide the last
 //! coefficient.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Expression>
 class Parma_Polyhedra_Library::Expression_Hide_Last {
 public:
@@ -131,7 +133,8 @@ private:
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.
   */
-  bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+  bool all_zeroes_except(const Variables_Set& vars,
+                         dimension_type start, dimension_type end) const;
 
   //! Removes from the set x all the indexes of nonzero elements of *this.
   void has_a_free_dimension_helper(std::set<dimension_type>& x) const;

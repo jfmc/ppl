@@ -30,8 +30,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A Linear_Expression-like object that hides the inhomogeneous term.
 //! The methods of this class always pretend that it's 0.
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Expression>
 class Parma_Polyhedra_Library::Expression_Hide_Inhomo {
 public:
