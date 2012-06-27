@@ -36,6 +36,9 @@ expected_int32_a \
 expected_int64 \
 expected_int64_a
 
+dist_man_MANS = \
+ppl_lpsol.1
+
 if BUILD_C_INTERFACE
 if HAVE_GLPK
 
@@ -76,9 +79,6 @@ $(top_builddir)/src/libppl.la \
 noinst_LIBRARIES = libglpk_set_d_eps.a
 libglpk_set_d_eps_a_SOURCES = \
 glpk_set_d_eps.c
-
-dist_man_MANS = \
-ppl_lpsol.1
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
