@@ -2958,7 +2958,7 @@ C.&nbsp;Ancourt.
 <DT>[BA05]</DT>
 <DD>
 \anchor BA05
-J.&nbsp;M. Bjorndalen and O.&nbsp;Anshus.
+J.&nbsp;M. Bj&oslash;rndalen and O.&nbsp;Anshus.
  Lessons learned in benchmarking - Floating point benchmarks: Can
   you trust them?
  In <em>Proceedings of the <em>Norsk informatikkonferanse 2005</em>
@@ -3014,8 +3014,6 @@ B.&nbsp;Blanchet, P.&nbsp;Cousot, R.&nbsp;Cousot, J.&nbsp;Feret, L.&nbsp;Mauborg
 R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
  A linear domain for analyzing the distribution of numerical values.
  Report 2005.06, School of Computing, University of Leeds, UK, 2005.
- Available at
-  <a href="http://www.comp.leeds.ac.uk/research/pubs/reports.shtml">http://www.comp.leeds.ac.uk/research/pubs/reports.shtml</a>.
 
 
 </DD>
@@ -3409,8 +3407,6 @@ R.&nbsp;Bagnara, P.&nbsp;M. Hill, and E.&nbsp;Zaffanella.
   abstractions.
  <em>Computational Geometry: Theory and Applications</em>,
   43(5):453-473, 2010.
- To appear in print. Available online at
-  <a href="http://dx.doi.org/10.1016/j.comgeo.2009.09.002">http://dx.doi.org/10.1016/j.comgeo.2009.09.002</a>.
 
 
 </DD>
@@ -3451,9 +3447,31 @@ R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
   unabridged version.
  Quaderno 498, Dipartimento di Matematica, Universit&agrave; di Parma,
   Italy, 2010.
- Available at <a href="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</a>. Also
-  published as <tt>arXiv:cs.PL/1004.0944</tt>, available from
-  <a href="http://arxiv.org/">http://arxiv.org/</a>.
+ Superseded by \ref BMPZ12a "[BMPZ12a]".
+
+</DD>
+
+
+<DT>[BMPZ12a]</DT>
+<DD>
+\anchor BMPZ12a
+R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
+ The automatic synthesis of linear ranking functions: The complete
+  unabridged version.
+ Report <tt>arXiv:cs.PL/1004.0944v2</tt>, 2012.
+ Available at <a href="http://arxiv.org/">http://arxiv.org/</a> and
+  <a href="http://bugseng.com/products/ppl/">http://bugseng.com/products/ppl/</a>. Improved version of
+  \ref BMPZ10 "[BMPZ10]".
+
+</DD>
+
+
+<DT>[BMPZ12b]</DT>
+<DD>
+\anchor BMPZ12b
+R.&nbsp;Bagnara, F.&nbsp;Mesnard, A.&nbsp;Pescetti, and E.&nbsp;Zaffanella.
+ A new look at the automatic synthesis of linear ranking functions.
+ <em>Information and Computation</em>, 215:47-–67, 2012.
 
 </DD>
 
@@ -3518,7 +3536,8 @@ P.&nbsp;Cousot and R.&nbsp;Cousot.
 P.&nbsp;Cousot and R.&nbsp;Cousot.
  Systematic design of program analysis frameworks.
  In <em>Proceedings of the Sixth Annual ACM Symposium on Principles
-  of Programming Languages</em>, pages 269-282, New York, 1979. ACM Press.
+  of Programming Languages</em>, pages 269-282, San Antonio, TX, USA, 1979. ACM
+  Press.
 
 
 </DD>
@@ -3844,8 +3863,7 @@ T.&nbsp;A. Henzinger, J.&nbsp;Preussig, and H.&nbsp;Wong-Toi.
 \anchor Jea02
 B.&nbsp;Jeannet.
  <em>Convex Polyhedra Library</em>, release 1.1.3c edition, March 2002.
- Documentation of the &ldquo;New Polka&rdquo; library available at
-  <a href="http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html">http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html</a>.
+ Documentation of the &ldquo;New Polka&rdquo; library.
 
 </DD>
 
@@ -3869,7 +3887,7 @@ J.&nbsp;Jaffar, M.&nbsp;J. Maher, P.&nbsp;J. Stuckey, and R.&nbsp;H.&nbsp;C. Yap
 L.&nbsp;Khachiyan, E.&nbsp;Boros, K.&nbsp;Borys, K.&nbsp;Elbassioni, and V.&nbsp;Gurvich.
  Generating all vertices of a polyhedron is hard.
  <em>Discrete and Computational Geometry</em>, 2006.
- Invited contribution. To appear.
+ Invited contribution.
 
 </DD>
 
