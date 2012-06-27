@@ -30,8 +30,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "Dense_Row.types.hh"
 
-namespace Parma_Polyhedra_Library {
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sparse sequence of coefficients.
 /*! \ingroup PPL_CXX_interface
@@ -57,7 +55,7 @@ namespace Parma_Polyhedra_Library {
   \see CO_Tree
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-class Sparse_Row {
+class Parma_Polyhedra_Library::Sparse_Row {
 
 public:
 
@@ -757,7 +755,7 @@ public:
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,
                       dimension_type start, dimension_type end);
-  
+
   PPL_OUTPUT_DECLARATIONS
 
   //! Loads the row from an ASCII representation generated using ascii_dump().
@@ -824,7 +822,6 @@ private:
   dimension_type size_;
 };
 
-} // namespace Parma_Polyhedra_Library
 
 namespace Parma_Polyhedra_Library {
 
@@ -840,10 +837,6 @@ void swap(Parma_Polyhedra_Library::Sparse_Row& x,
 
 void swap(Parma_Polyhedra_Library::Dense_Row& x,
           Parma_Polyhedra_Library::Sparse_Row& y);
-
-} // namespace std
-
-namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
