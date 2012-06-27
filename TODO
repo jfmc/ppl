@@ -1,6 +1,6 @@
 
-Enhancements for PPL 0.13 or later versions
-===========================================
+Enhancements for PPL 1.1 or later versions
+==========================================
 
 - Make all the *affine*image() methods uniform as far as the
   specification is concerned.
@@ -65,8 +65,8 @@ Enhancements for PPL 0.13 or later versions
 - Any_Pointset domain: check the interface for lacking or useless methods.
 
 
-Enhancements for PPL 0.14 or later versions
-===========================================
+Enhancements for PPL 1.2 or later versions
+==========================================
 
 - Find a way to let the GMP and checked-int versions of the PPL coexist
   so as to allow using them in the same application.
