@@ -15,14 +15,44 @@ NEWS for version 1.0  (released on June 28, 2012)
 New and Changed Features
 ========================
 
-o  Added a generic interface for sequences of coefficients enabling a
-   seamless switch between the dense or the sparse row representation.
-   The implementation of many library entities (linear expressions,
-   constraints, generators, congruences, and their systems) can now be
-   tailored to the specific usage context, sometimes leading to
-   significant memory space savings (e.g., for constraint systems
-   describing weakly relational abstractions such as boxes and
-   octagonal shapes).
+o  Significant improvements have been obtained in both time and space
+   resource usage by the definition of data structures and algorithms
+   for the case of "sparse rows", i.e., sequences of coefficients
+   where most of the values are zero.
+
+o  The library fully supports two different representations for rows:
+   the "dense" representation is an array-like representation tailored
+   to sequences having most of their coefficients different from zero;
+   the "sparse" representation saves memory space (as well as CPU
+   cycles) when most of the coefficients in the sequence are zero.
+
+o  A generic interface allows for a seamless interaction between the
+   dense and the sparse row representation. Most library entities
+   (linear expressions, constraints, generators, congruences, and
+   their systems) can be built using either representation, specified
+   as a constructor's argument.
+
+o  As a by-product of this sparse/dense refactoring work, efficiency
+   improvements have been obtained even for those computations that
+   are still based on the dense row representation.
+
+o  Reasonable default values for the row representation are provided
+   for each library entity, automatically leading to significant
+   memory space savings even in old client/library code, e.g., when
+   dealing with constraint systems describing weakly relational
+   abstractions such as boxes and octagonal shapes.
+
+o  If desired, these default values can be customized to user's needs
+   by changing just a few lines of library code.  For instance, the
+   constraint systems stored inside C_Polyhedron and NNC_Polyhedron
+   objects can be made to use the sparse representation by just
+   changing the following line in Polyhedron.defs.hh:
+
+     static const Representation default_con_sys_repr = DENSE;
+
+   to become
+
+     static const Representation default_con_sys_repr = SPARSE;
 
 
 Bugfixes
