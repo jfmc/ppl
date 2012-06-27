@@ -3,10 +3,10 @@ Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 0.12.1)
-========================================
+Parma Polyhedra Library (Release 1.0)
+=====================================
 
-This is the release 0.12.1 of the Parma Polyhedra Library:
+This is the release 1.0 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -71,10 +71,10 @@ See http://bugseng.com/products/ppl/ for more information on the PPL.
 For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 0.12.1 source distribution
-(42 directories, 1622 files):
+Here is the contents of the PPL 1.0 source distribution
+(41 directories, 1616 files):
 
-ppl-0.12.1/
+ppl-1.0
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -344,21 +344,18 @@ ppl-0.12.1/
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-0.12.1-html.tar.gz
-|   |-- ppl-user-0.12.1.pdf
-|   |-- ppl-user-0.12.1.ps.gz
-|   |-- ppl-user-c-interface-0.12.1-html.tar.gz
-|   |-- ppl-user-c-interface-0.12.1.pdf
-|   |-- ppl-user-c-interface-0.12.1.ps.gz
-|   |-- ppl-user-java-interface-0.12.1-html.tar.gz
-|   |-- ppl-user-java-interface-0.12.1.pdf
-|   |-- ppl-user-java-interface-0.12.1.ps.gz
-|   |-- ppl-user-ocaml-interface-0.12.1-html.tar.gz
-|   |-- ppl-user-ocaml-interface-0.12.1.pdf
-|   |-- ppl-user-ocaml-interface-0.12.1.ps.gz
-|   |-- ppl-user-prolog-interface-0.12.1-html.tar.gz
-|   |-- ppl-user-prolog-interface-0.12.1.pdf
-|   |-- ppl-user-prolog-interface-0.12.1.ps.gz
+|   |-- ppl-user-1.0-html.tar.gz
+|   |-- ppl-user-1.0.pdf
+|   |-- ppl-user-1.0.ps.gz
+|   |-- ppl-user-c-interface-1.0-html.tar.gz
+|   |-- ppl-user-c-interface-1.0.pdf
+|   |-- ppl-user-c-interface-1.0.ps.gz
+|   |-- ppl-user-ocaml-interface-1.0-html.tar.gz
+|   |-- ppl-user-ocaml-interface-1.0.pdf
+|   |-- ppl-user-ocaml-interface-1.0.ps.gz
+|   |-- ppl-user-prolog-interface-1.0-html.tar.gz
+|   |-- ppl-user-prolog-interface-1.0.pdf
+|   |-- ppl-user-prolog-interface-1.0.ps.gz
 |   |-- ppl.bib
 |   |-- ppl.sty
 |   |-- ppl_citations.bib
@@ -803,10 +800,6 @@ ppl-0.12.1/
 |   |-- DB_Row.inlines.hh
 |   |-- DB_Row.templates.hh
 |   |-- DB_Row.types.hh
-|   |-- Dense_Matrix.cc
-|   |-- Dense_Matrix.defs.hh
-|   |-- Dense_Matrix.inlines.hh
-|   |-- Dense_Matrix.types.hh
 |   |-- Dense_Row.cc
 |   |-- Dense_Row.defs.hh
 |   |-- Dense_Row.inlines.hh
@@ -832,6 +825,12 @@ ppl-0.12.1/
 |   |-- EList_Iterator.defs.hh
 |   |-- EList_Iterator.inlines.hh
 |   |-- EList_Iterator.types.hh
+|   |-- Expression_Hide_Inhomo.defs.hh
+|   |-- Expression_Hide_Inhomo.inlines.hh
+|   |-- Expression_Hide_Inhomo.types.hh
+|   |-- Expression_Hide_Last.defs.hh
+|   |-- Expression_Hide_Last.inlines.hh
+|   |-- Expression_Hide_Last.types.hh
 |   |-- Float.cc
 |   |-- Float.defs.hh
 |   |-- Float.inlines.hh
@@ -900,18 +899,22 @@ ppl-0.12.1/
 |   |-- Linear_Expression.defs.hh
 |   |-- Linear_Expression.inlines.hh
 |   |-- Linear_Expression.types.hh
+|   |-- Linear_Expression_Impl.cc
+|   |-- Linear_Expression_Impl.defs.hh
+|   |-- Linear_Expression_Impl.inlines.hh
+|   |-- Linear_Expression_Impl.templates.hh
+|   |-- Linear_Expression_Impl.types.hh
+|   |-- Linear_Expression_Interface.cc
+|   |-- Linear_Expression_Interface.defs.hh
+|   |-- Linear_Expression_Interface.types.hh
 |   |-- Linear_Form.cc
 |   |-- Linear_Form.defs.hh
 |   |-- Linear_Form.inlines.hh
 |   |-- Linear_Form.templates.hh
 |   |-- Linear_Form.types.hh
-|   |-- Linear_Row.cc
-|   |-- Linear_Row.defs.hh
-|   |-- Linear_Row.inlines.hh
-|   |-- Linear_Row.types.hh
-|   |-- Linear_System.cc
 |   |-- Linear_System.defs.hh
 |   |-- Linear_System.inlines.hh
+|   |-- Linear_System.templates.hh
 |   |-- Linear_System.types.hh
 |   |-- MIP_Problem.cc
 |   |-- MIP_Problem.defs.hh
@@ -921,6 +924,8 @@ ppl-0.12.1/
 |   |-- Makefile.am
 |   |-- Makefile.in
 |   |-- Matrix.defs.hh
+|   |-- Matrix.inlines.hh
+|   |-- Matrix.templates.hh
 |   |-- Matrix.types.hh
 |   |-- Multiplication_Floating_Point_Expression.defs.hh
 |   |-- Multiplication_Floating_Point_Expression.inlines.hh
@@ -990,8 +995,12 @@ ppl-0.12.1/
 |   |-- Polyhedron.templates.hh
 |   |-- Polyhedron.types.hh
 |   |-- Polyhedron_chdims.cc
+|   |-- Polyhedron_chdims.templates.hh
+|   |-- Polyhedron_conversion.templates.hh
+|   |-- Polyhedron_minimize.templates.hh
 |   |-- Polyhedron_nonpublic.cc
 |   |-- Polyhedron_public.cc
+|   |-- Polyhedron_simplify.templates.hh
 |   |-- Polyhedron_widenings.cc
 |   |-- Powerset.defs.hh
 |   |-- Powerset.inlines.hh
@@ -1006,21 +1015,11 @@ ppl-0.12.1/
 |   |-- Result.inlines.hh
 |   |-- Rounding_Dir.defs.hh
 |   |-- Rounding_Dir.inlines.hh
-|   |-- Row.defs.hh
-|   |-- Row.types.hh
-|   |-- Row_Flags.cc
-|   |-- Row_Flags.defs.hh
-|   |-- Row_Flags.inlines.hh
-|   |-- Row_Flags.types.hh
 |   |-- Scalar_Products.cc
 |   |-- Scalar_Products.defs.hh
 |   |-- Scalar_Products.inlines.hh
 |   |-- Scalar_Products.types.hh
 |   |-- Slow_Copy.hh
-|   |-- Sparse_Matrix.cc
-|   |-- Sparse_Matrix.defs.hh
-|   |-- Sparse_Matrix.inlines.hh
-|   |-- Sparse_Matrix.types.hh
 |   |-- Sparse_Row.cc
 |   |-- Sparse_Row.defs.hh
 |   |-- Sparse_Row.inlines.hh
@@ -1030,6 +1029,9 @@ ppl-0.12.1/
 |   |-- Sum_Floating_Point_Expression.inlines.hh
 |   |-- Sum_Floating_Point_Expression.templates.hh
 |   |-- Sum_Floating_Point_Expression.types.hh
+|   |-- Swapping_Vector.defs.hh
+|   |-- Swapping_Vector.inlines.hh
+|   |-- Swapping_Vector.types.hh
 |   |-- Temp.defs.hh
 |   |-- Temp.inlines.hh
 |   |-- Temp.templates.hh
@@ -1083,7 +1085,6 @@ ppl-0.12.1/
 |   |-- checked_mpz.inlines.hh
 |   |-- checked_numeric_limits.hh
 |   |-- compiler.hh
-|   |-- conversion.cc
 |   |-- distances.defs.hh
 |   |-- distances.inlines.hh
 |   |-- distances.types.hh
@@ -1108,7 +1109,6 @@ ppl-0.12.1/
 |   |-- math_utilities.inlines.hh
 |   |-- max_space_dimension.hh
 |   |-- meta_programming.hh
-|   |-- minimize.cc
 |   |-- mp_std_bits.cc
 |   |-- mp_std_bits.defs.hh
 |   |-- mp_std_bits.inlines.hh
@@ -1116,7 +1116,6 @@ ppl-0.12.1/
 |   |-- ppl-config.cc.in
 |   |-- ppl.hh.dist
 |   |-- ppl_header.hh
-|   |-- simplify.cc
 |   |-- stdiobuf.cc
 |   |-- stdiobuf.defs.hh
 |   |-- stdiobuf.inlines.hh
@@ -1125,6 +1124,7 @@ ppl-0.12.1/
 |   |-- termination.cc
 |   |-- termination.defs.hh
 |   |-- termination.templates.hh
+|   |-- termination.types.hh
 |   |-- version.cc
 |   |-- version.hh.in
 |   |-- wrap_assign.hh
@@ -1575,7 +1575,6 @@ ppl-0.12.1/
 |   |   |-- contains1.cc
 |   |   |-- contains2.cc
 |   |   |-- containsintegerpoint1.cc
-|   |   |-- densematrix1.cc
 |   |   |-- disjoint1.cc
 |   |   |-- disjoint2.cc
 |   |   |-- dropsomenonintegerpoints1.cc
@@ -1612,6 +1611,7 @@ ppl-0.12.1/
 |   |   |-- linearpartition1.cc
 |   |   |-- linearsystem1.cc
 |   |   |-- mapspacedims1.cc
+|   |   |-- matrix1.cc
 |   |   |-- max_min1.cc
 |   |   |-- maxspacedim1.cc
 |   |   |-- mc91.cc
@@ -1645,6 +1645,7 @@ ppl-0.12.1/
 |   |   |-- removespacedims2.cc
 |   |   |-- simplifyusingcontext1.cc
 |   |   |-- smm1.cc
+|   |   |-- sparserow1.cc
 |   |   |-- termination1.cc
 |   |   |-- termination2.cc
 |   |   |-- timeelapse1.cc
@@ -1713,11 +1714,6 @@ ppl-0.12.1/
 |   |-- Random_Number_Generator.defs.hh
 |   |-- Random_Number_Generator.inlines.hh
 |   |-- Random_Number_Generator.types.hh
-|   |-- Sparse_Matrix
-|   |   |-- Makefile.am
-|   |   |-- Makefile.in
-|   |   |-- sparsematrix1.cc
-|   |   `-- sparserow1.cc
 |   |-- Watchdog
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
