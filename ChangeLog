@@ -1,3 +1,407 @@
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox: Work around a Doxygen bug.  Stick to ASCII.
+
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: More PPL citations.
+
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Stick to ASCII.
+
+2012-06-28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* README.configure: Added a section on README.configure describing
+	dense/sparse row choices.
+
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: More PPL citations.
+
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl_citations.bib: New PPL citations.
+
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* devtools/generate_dox_ci_prolog_manual: Redundant script removed.
+
+2012-06-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/devref-language-interface.doxyconf.in,
+	doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in,
+	doc/user-language-interface.doxyconf.in, doc/user.doxyconf-html.in,
+	doc/user.doxyconf-latex.in: Upgraded doxygen configuration files to
+	version 1.8.1.1.
+
+2012-06-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Sparse_Row.defs.hh: Avoid useless namespace closing and
+	reopening.
+
+2012-06-27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS: Improved section announcing sparse/dense row representation
+	adoption.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL, compile, config.guess, config.sub, depcomp, install-sh,
+	missing, mkinstalldirs: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1,
+	doc/ppl-config_extra_man_text: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: Notes fixed.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.bib: BagnaraMPZ12IC has just been published.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.1, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_pips/ppl_pips.1, doc/ppl-config.1: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README: Updated.
+
+2012-06-27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/Makefile.am: Unconditionally distribute the man
+	page.
+
+2012-06-26  Abramo Bagnara <abramo.bagnara@bugseng.com>
+
+	* tests/Polyhedron/randphull1.cc: Fixed fpu rounding set/restore.
+
+2012-06-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Dense_Row.defs.hh, src/Expression_Hide_Inhomo.defs.hh,
+	src/Expression_Hide_Last.defs.hh, src/Linear_Expression.defs.hh,
+	src/Linear_Expression_Impl.defs.hh,
+	src/Linear_Expression_Interface.defs.hh, src/Matrix.defs.hh,
+	src/Sparse_Row.defs.hh, src/Swapping_Vector.defs.hh: Use macro
+	PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS to exclude several
+	classes/functions from user documentation.  While at it, also wrap
+	several long lines.
+
+2012-06-26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am: Version bumped.
+
+2012-06-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Polyhedron/watchdog1.cc: Indentation fixed.
+
+2012-06-25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/MIP_Problem/mipproblem2.cc: Cater for systems where Watchdog
+	objects are not supported.
+
+2012-06-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_implementation_common.inlines.hh: Removed a
+	couple of typedefs.  These have become useless (and confusing) after
+	the merge of sparse_matrices.
+
+2012-06-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_Form.templates.hh, src/Swapping_Vector.defs.hh: Fixed
+	another couple of Doxygen warnings.
+
+2012-06-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_Form.templates.hh, src/Linear_System.defs.hh: Fixed
+	several Doxygen warnings.
+
+2012-06-22  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* src/Init.defs.hh: Typo in documentation fixed.
+
+2012-06-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Interval.inlines.hh: Long source lines avoided.
+
+2012-06-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Interval.defs.hh: Test restored.
+
+2012-06-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Box/interval1.cc, tests/Box/membytes1.cc,
+	tests/Polyhedron/randphull1.cc: Restore the pre-PPL rounding mode
+	before using libm functions.
+
+2012-06-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Init.defs.hh: Documentation of restore_pre_PPL_rounding()
+	extended.
+
+2012-06-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS: Updated.
+
+2012-06-21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/m4.m4: Message improved.
+
+2012-06-20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c_header.h: Fixed a couple of Doxygen references.
+
+2012-06-20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS: Mentioned a bug corrected.
+
+2012-06-19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* m4/ac_check_gmp.m4: Fixed copy-and-paste mistake.  (Thanks to
+	Christian Luidolt.)
+
+2012-05-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape.templates.hh, src/Octagonal_Shape.templates.hh: Fixed
+	a bug affecting method contains() of weakly-relational shapes.
+
+2012-05-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/BD_Shape/contains1.cc, tests/Octagonal_Shape/contains1.cc: 
+	Added tests showing a bug in method contains() of weakly-relational
+	shapes.  Method returns a wrong result when the shape is empty and the other
+	argument is not empty. Tests are based on a bug report from Gianluca
+	Amato.
+
+2012-05-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS: Links fixed.
+
+2012-05-18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS: Mention a recently fixed bug in the PIP solver.
+
+2012-05-18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/ppl_test.hh: Properly match #endif's directives using
+	comments.
+
+2012-05-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Watchdog.inlines.hh: Inclusions reordered to match the PPL
+	coding standard.
+
+2012-05-05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.inlines.hh: Added missing inclusion of <stdexcept>.
+
+2012-05-04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/PIP_Tree.cc: Recompute the sign of the special_equality_row
+	after modyfying it.  This fixes the bug shown by test04() in
+	tests/PIP_Problem/pipproblem3.cc.
+
+2012-05-04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/PIP_Problem/pipproblem3.cc: Added a new test showing a bug
+	in PIP_Problem.  The test was reduced from a slightly bigger one
+	provided by Fred Mesnard.
+
+2012-05-03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Linear_Expression_Impl.defs.hh,
+	src/Linear_Expression_Impl.inlines.hh: Make sure template
+	specializations are declared.
+
+2012-05-03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Bit_Matrix.cc, src/Linear_System.inlines.hh,
+	src/Linear_System.templates.hh, src/Swapping_Vector.inlines.hh,
+	src/swapping_sort.templates.hh: Avoid implicit conversions changing
+	integer signedness.  Detected by ECLAIR service utypflag.
+
+2012-05-03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.inlines.hh, src/Linear_Expression_Impl.templates.hh: 
+	Fixed indentation.  Detected by ECLAIR service indntion.
+
+2012-05-03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/CO_Tree.cc: Avoid C-style casts.  Detected by ECLAIR service
+	castexpr.
+
+2012-05-03  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Box.templates.hh, src/Linear_Expression.cc,
+	src/Linear_Expression_Impl.templates.hh: Prefer PPL_UNREACHABLE to
+	PPL_ASSERT(false).
+
+2012-05-02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint_System.defs.hh, src/Constraint_System.inlines.hh,
+	src/Grid_Generator_System.inlines.hh: Avoid redundant explicit
+	casts.  Detected by ECLAIR service castexpr.
+
+2012-05-02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/CO_Tree.inlines.hh: Avoid unsigned integer wrap-around in
+	constant expressions.  Detected by ECLAIR service cnstwrap.
+
+2012-05-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/CO_Tree.cc, src/OR_Matrix.templates.hh: Prefer parentheses to
+	excessive reliance on C++ operator precedence rules.  Detected by
+	ECLAIR service exprprns.
+
+2012-05-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Grid_nonpublic.cc: Reduced scope of local variable.  Detected
+	by ECLAIR service minscope.
+
+2012-05-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Grid_simplify.cc: Fixed comment about case-block termination.
+	Detected by ECLAIR service swchsynt.
+
+2012-05-01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_chdims.templates.hh: Fixed file comment block.
+	Detected by ECLAIR service cmntfile.
+
+2012-05-03  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* README, m4/Makefile.am, m4/ac_cxx_double_binary_format.m4,
+	m4/ac_cxx_double_exact_output.m4, m4/ac_cxx_float_binary_format.m4,
+	m4/ac_cxx_float_exact_output.m4,
+	m4/ac_cxx_long_double_binary_format.m4,
+	m4/ac_cxx_long_double_exact_output.m4, src/checked.cc,
+	src/checked.defs.hh, src/checked_float.inlines.hh,
+	src/checked_mpq.inlines.hh: Avoid use C++ library for exact
+	conversion from floating point numbers to string: the library is
+	free to ignore requested precision.
+
+2012-04-30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Expression_Hide_Inhomo.defs.hh,
+	src/Expression_Hide_Inhomo.inlines.hh,
+	src/Expression_Hide_Inhomo.types.hh,
+	src/Expression_Hide_Last.defs.hh,
+	src/Expression_Hide_Last.inlines.hh, src/Linear_Expression_Impl.cc,
+	src/Linear_Expression_Impl.defs.hh,
+	src/Linear_Expression_Impl.inlines.hh,
+	src/Linear_Expression_Impl.templates.hh,
+	src/Linear_Expression_Impl.types.hh,
+	src/Linear_Expression_Interface.defs.hh,
+	src/Linear_System.templates.hh, src/Matrix.inlines.hh,
+	src/Polyhedron_chdims.templates.hh, src/Swapping_Vector.defs.hh,
+	src/Swapping_Vector.inlines.hh: Updated copyright years.
+
+2012-04-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* demos/ppl_lpsol/expected_int16_a,
+	demos/ppl_lpsol/expected_int8_a,
+	interfaces/Prolog/tests/expected_pchk_int8_a: Corrected expected
+	results for (overflowing) tests on bounded coefficients.
+
+2012-04-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/tests/expected_clpq2_int16_a: Changed sign of
+	overflow in 16-bits Prolog test.
+
+2012-04-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Polyhedron/boundedh79extrapolation1.cc: test01() no longer
+	overflows with 8-bits and assertions on C polyhedra.
+
+2012-04-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/simplifyusingcontext1.cc: test09() no longer
+	overflows with 8-bit coefficients and assertions on.
+
+2012-04-21  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/globals.defs.hh: Fixed typo.
+
+2012-04-21  Abramo Bagnara <abramo.bagnara@gmail.com>
+
+	* src/assert.hh, src/globals.cc, src/globals.defs.hh,
+	src/globals.inlines.hh: Protect in_assert flag from exceptions.
+
+2012-04-20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/tests/expected_clpq2_int16: Another test where
+	we get an overflow with changed sign.
+
+2012-04-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/tests/expected_clpq2_int8,
+	interfaces/Prolog/tests/expected_pchk_int8: Sign of overflow has
+	changed.
+
+2012-04-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Grid/wrap1.cc: test14() overflows with 16 bit integers and
+	assertions turned off.
+
+2012-04-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Grid/affineimage2.cc: test16() overflows on 16 bits even
+	with assertions turned off.
+
+2012-04-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* demos/ppl_lcdd/expected_int32: Test sampleh7.ine no longer causes
+	an overflow.
+
+2012-04-18  Patricia Hill <p.m.hill@leeds.ac.uk>
+
+	* interfaces/Prolog/tests/pl_check.pl: Allow for Prolog exception
+	errors to have message functor ppl_length_error.
+
+2012-04-18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac: Version number bumped.
+
+2012-04-17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Sparse_Row.cc: Weaken assertion in mixed Sparse-Dense
+	linear_combine().  (Note: they can be called in
+	Constraint_System::affine_preimage() with a second argument row with
+	a smaller size than the first one; see e.g.  test02() in
+	tests/Concrete_Expression/polyhedron1.cc).  a call in
+	Constraint_System::affine_preimage()).
+
+2012-04-17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Sparse_Row.cc: Wrap a few long lines.
+
+2012-04-17  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* : commit c098c056b375b809087be22be43abf29ee516d63 Author: Enea
+	Zaffanella <zaffanella@cs.unipr.it> Date:   Mon Apr 16 22:04:46 2012
+	+0200
+
+2012-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog: Updated.
+
 2012-04-16  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* NEWS, README, demos/ppl_lcdd/ppl_lcdd.1,
