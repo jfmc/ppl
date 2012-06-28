@@ -132,6 +132,43 @@ Summarizing:
               object-oriented, bytecode programming language."
 }
 
+@Inproceedings{AlonsoAG11,
+  Author = "D. Alonso and P. Arenas and S. Genaim",
+  Title = "Handling Non-linear Operations in the Value Analysis of {COSTA}",
+  Booktitle = "Proceedings of the 6th Workshop on Bytecode Semantics,
+               Verification, Analysis and Transformation (Bytecode 2011)",
+  Address = "Saarbrucken, Germany",
+  Series = "Electronic Notes in Theoretical Computer Science",
+  Volume = 279,
+  Number = 1,
+  Pages = "3--17",
+  Year = 2011,
+  ISSN = "1571-0661",
+  Abstract = "Inferring precise relations between (the values of)
+              program variables at different program points is
+              essential for termination and resource usage
+              analysis. In both cases, this information is used to
+              synthesize ranking functions that imply the programʼs
+              termination and bound the number of iterations of its
+              loops. For efficiency, it is common to base value
+              analysis on non-disjunctive abstract domains such as
+              Polyhedra, Octagon, etc. While these domains are
+              efficient and able to infer complex relations for a wide
+              class of programs, they are often not sufficient for
+              modeling the effect of non-linear and bit arithmetic
+              operations. Modeling such operations precisely can be
+              done by using more sophisticated abstract domains, at
+              the price of performance overhead. In this paper we
+              report on the value analysis of COSTA that is based on
+              the idea of encoding the disjunctive nature of
+              non-linear operations into the (abstract) program
+              itself, instead of using more sophisticated abstract
+              domains. Our experiments demonstrate that COSTA is able
+              to prove termination and infer bounds on resource
+              consumption for programs that could not be handled
+              before."
+}
+
 @Inproceedings{AlurKRS08,
   Author = "R. Alur and A. Kanade and S. Ramesh and K. Shashidhar",
   Title = "Symbolic Analysis for Improving Simulation Coverage
@@ -190,6 +227,31 @@ Summarizing:
              present new features and optimizations of the tool, and
              give results of applications to various examples of
              asynchronous circuits and communication protocols."
+}
+
+@Techreport{AndreFS11TR,
+  Author = "{\'E}. Andr{\'e} and L. Fribourg and R. Soulat",
+  Title = "Enhancing the Inverse Method with State Merging",
+  Type = "Research report",
+  Number = "LSV-11-26",
+  Year = 2011,
+  Month = dec,
+  Institution = "Laboratoire Sp\'ecification \& V\'erification",
+  Address = "\'Ecole Normale Sup\'erieure de Cachan, Paris, France",
+  Abstract = "Keeping the state space small is essential when
+              verifying realtime systems using Timed Automata (TA). In
+              the model-checker Uppaal, the merging operation has been
+              used extensively in order to reduce the number of
+              states. Actually, Uppaal’s merging technique applies
+              within the more general setting of Parametric Timed
+              Automata (PTA). The Inverse Method (IM) for a PTA A is a
+              procedure that synthesizes a zone around a given point
+              0 (parameter valuation) over which A is guaranteed to
+              behave similarly. We show that the integration of
+              merging into IM leads to the synthesis of larger zones
+              around 0. It also often improves the performance of
+              IM, both in terms of computational space and time, as
+              shown by our experimental results."
 }
 
 @Inproceedings{ArmandoBM07,
@@ -373,6 +435,39 @@ Summarizing:
               experimental results to support the usefulness of the
               approach and argue that we contribute to the general
               field of using static analysis tools for verification."
+}
+
+@Inproceedings{BerendsenJV10,
+  Author = "J. Berendsen and D. N. Jansen and F. W. Vaandrager",
+  Title = "Fortuna: Model Checking Priced Probabilistic Timed Automata",
+  Booktitle = "Proceedings of the 7th International Conference on the
+               Quantitative Evaluation of Systems (QEST 2010)",
+  Address = "Williamsburg, Virginia, USA",
+  Publisher = "IEEE Computer Society",
+  Year = 2010,
+  Pages = "273--281",
+  ISBN = "978-0-7695-4188-4",
+  Abstract = "Fortuna is the first tool for model checking priced
+              probabilistic timed automata (PPTAs). PPTAs are an
+              important model that can handle the combination of
+              real-time, probabilistic and cost features. Only model
+              checkers that incorporate all these features can
+              address the key design trade-offs that arise in many
+              practical applications such as: the Zeroconf,
+              Bluetooth, IEEE802.11 and Firewire protocols, protocols
+              for sensor networks, and scheduling problems with
+              failures. PPTAs are an extension of probabilistic timed
+              automata (PTAs), by having cost-rates and discrete cost
+              increments on states. Fortuna is able to compute the
+              maximal probability by which a class of states can be
+              reached under a certain cost-bound (and time bound.)
+              Although the problem is undecidable in general, there
+              exists a semi-algorithm that produces a non-decreasing
+              sequence of maximal probabilities. This paper enhances
+              that algorithm. We compared the performance of Fortuna
+              with existing approaches for PTAs. Surprisingly,
+              although PPTAs are more general, our techniques exhibit
+              superior performance.",
 }
 
 @Inproceedings{BeyerG11,
@@ -624,6 +719,7 @@ Summarizing:
               sound way."
 }
 
+
 @Inproceedings{CovaFBV06,
   Author = "M. Cova and V. Felmetsger and G. Banks and G. Vigna",
   Title = "Static Detection of Vulnerabilities in x86 Executables",
@@ -869,6 +965,27 @@ Summarizing:
               systems biology, and provide some performance figures on
               parameter optimization problems with respect to temporal
               logic specifications."
+}
+
+@Inproceedings{FenacciM11,
+  Author = "D. Fenacci and K. MacKenzie",
+  Title = "Static Resource Analysis for Java Bytecode Using Amortisation
+           and Separation Logic",
+  Booktitle = "Proceedings of the 6th Workshop on Bytecode Semantics,
+               Verification, Analysis and Transformation (Bytecode 2011)",
+  Address = "Saarbrucken, Germany",
+  Series = "Electronic Notes in Theoretical Computer Science",
+  Volume = 279,
+  Number = 1,
+  Pages =  "19--32",
+  Year = 2011,
+  ISSN = "1571-0661",
+  Abstract = "In this paper we describe a static analyser for Java
+              bytecode which uses a combination of amortised analysis
+              and Separation Logic due to Robert Atkey. With the help
+              of Java annotations we are able to give precise resource
+              utilisation constraints for Java methods which
+              manipulate various heap-based data structures."
 }
 
 @MastersThesis{Flexeder05th,
@@ -1117,6 +1234,34 @@ Summarizing:
               verifying, for the first time, the limit cycle
               oscillation behavior of a third-order model of a
               differential VCO circuit."
+}
+
+@Inproceedings{FribourgK11,
+  author    = "L. Fribourg and U. K{\"u}hne",
+  title     = "Parametric Verification and Test Coverage for Hybrid Automata
+               Using the Inverse Method",
+  Booktitle = "In Proceedings of the 5th International Workshop
+               on Reachability Problems (RP 2011)",
+  Address = "Genova, Italy",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "G. Delzanno and I. Potapov",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-24287-8",
+  Pages =  "191--204",
+  Volume = 6945,
+  Year = 2011,
+  Abstract = "Hybrid systems combine continuous and discrete
+              behavior.  Hybrid Automata are a powerful formalism for
+              the modeling and verification of such systems. A common
+              problem in hybrid system verification is the good
+              parameters problem, which consists in identifying a set
+              of parameter valuations which guarantee a certain
+              behavior of a system. Recently, a method has been
+              presented for attacking this problem for Timed
+              Automata. In this paper, we show the extension of this
+              methodology for hybrid automata with linear and affine
+              dynamics. The method is demonstrated with a hybrid
+              system benchmark from the literature."
 }
 
 @PhdThesis{Gobert07th,
@@ -1718,6 +1863,46 @@ Summarizing:
   Abstract = "We survey recent progress in software model checking."
 }
 
+@Inproceedings{Jeannet10,
+  Author = "B. Jeannet",
+  Title = "Some Experience on the Software Engineering of
+           Abstract Interpretation Tools",
+  Booktitle = "Proceedings of Tools for Automatic Program AnalysiS
+               (TAPAS 2010)",
+  Address = "Perpignan, France",
+  Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
+  Volume = 267,
+  Number = 2,
+  Pages =  "29--42",
+  Year = 2010,
+  ISSN = "1571-0661",
+  Abstract = "The ``right'' way of writing and structuring compilers is
+              well-known. The situation is a bit less clear for static
+              analysis tools. It seems to us that a static analysis
+              tool is ideally decomposed into three building blocks:
+              (1) a front-end, which parses programs, generates
+              semantic equations, and supervises the analysis process;
+              (2) a fixpoint equation solver, which takes equations
+              and solves them; (3) and an abstract domain, on which
+              equations are interpreted. The expected advantages of
+              such a modular structure is the ability of sharing
+              development efforts between analyzers for different
+              languages, using common solvers and abstract
+              domains. However putting in practice such ideal concepts
+              is not so easy, and some static analyzers merge for
+              instance the blocks (1) and (2).
+
+              We show how we instantiated these principles with three
+              different static analyzers (addressing resp. imperative
+              sequential programs, imperative concurrent programs, and
+              synchronous dataflow programs), a generic fixpoint
+              solver (Fixpoint), and two different abstract
+              domains. We discussed our experience on the advantages
+              and the limits of this approach compared to related
+              work."
+}
+
 @Inproceedings{JeannetM09,
   Author = "B. Jeannet and A. Min{\'e}",
   Title = "Apron: A Library of Numerical Abstract Domains for Static
@@ -2211,6 +2396,37 @@ Summarizing:
               declarative networking application."
 }
 
+@Inproceedings{PhamTTC11,
+  Author = "T.-H. Pham and M.-T. Trinh and A.-H. Truong and W.-N. Chin",
+  Title = "{FixBag:} A Fixpoint Calculator for Quantified Bag Constraints",
+  Booktitle = "Proceedings of the 23rd International Conference on
+               Computer Aided Verification (CAV 2011)",
+  Address = "Snowbird, UT, USA",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "G. Gopalakrishnan and S. Qadeer",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-22109-5",
+  Pages =  "656--662",
+  Volume = 6806,
+  Year = 2011,
+  Abstract = "Abstract interpretation techniques have played a major
+              role in advancing the state-of-the-art in program
+              analysis. Traditionally, stand-alone tools for these
+              techniques have been developed for the numerical domains
+              which may be sufficient for lower levels of program
+              correctness. To analyze a wider range of programs, we
+              have developed a tool to compute symbolic fixpoints for
+              quantified bag domain . This domain is useful for
+              programs that deal with collections of values. Our tool
+              is able to derive both loop invariants and method
+              pre/post conditions via fixpoint analysis of recursive
+              bag constraints. To support better precision, we have
+              allowed disjunctive formulae to be inferred, where
+              appropriate. As a stand-alone tool, we have tested it on
+              a range of small but challenging examples with
+              acceptable precision and performance."
+}
+
 @Techreport{Pop06,
   Author = "S. Pop and G.-A. Silber and A. Cohen and C. Bastoul
             and S. Girbal and N. Vasilache",
@@ -2597,6 +2813,34 @@ Summarizing:
               inequalities by converting the polyhedra into a normal
               form and give experimental evidence of the merit of our
               method."
+}
+
+@Inproceedings{SimonL10,
+  Author = "A. Simon and L. Chen",
+  Title = "Simple and Precise Widenings for {H-Polyhedra}",
+  Booktitle = "Proceedings of the 8th Asian Symposium
+               on the Programming Languages and Systems (APLAS 2010)",
+  Address = "Shanghai, China",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "K. Ueda",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-17163-5",
+  Pages =  "139--155",
+  Volume = 6461,
+  Year = 2010,
+  Abstract = "While the definition of the revised widening for
+              polyhedra is defined in terms of inequalities, most
+              implementations use the double description method as a
+              means to an efficient implementation. We show how
+              standard widening can be implemented in a simple and
+              efficient way using a normalized H -representation
+              (constraint-only) which has become popular in recent
+              approximations to polyhedral analysis. We then detail a
+              novel heuristic for this representation that is tuned
+              to capture linear transformations of the state space
+              while ensuring quick convergence for non-linear
+              transformations for which no precise linear invariants
+              exist."
 }
 
 @Techreport{SlaninaSSM07TR,
