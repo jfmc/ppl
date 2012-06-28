@@ -9,15 +9,16 @@ Configuration of the Parma Polyhedra Library
 Contents
 --------
 
-1. The Standard Thing (configure, make, make install)
-2. Using the Right Version of GMP
-3. Using the Right C and C++ Compilers
-4. Enabling the Use of Alternative Coefficient Types
-5. Configuring the Language Interfaces
-6. Configuring for Optimized Performance
-7. Configuring for Debugging
-8. Programs that Come with the Library
-9. Using the Git Sources
+ 1. The Standard Thing (configure, make, make install)
+ 2. Using the Right Version of GMP
+ 3. Using the Right C and C++ Compilers
+ 4. Enabling the Use of Alternative Coefficient Types
+ 5. Configuring the Language Interfaces
+ 6. Configuring for Optimized Performance
+ 7. Advanced Performance Tuning
+ 8. Configuring for Debugging
+ 9. Programs that Come with the Library
+10. Using the Git Sources
 
 
 1. The Standard Thing (configure, make, make install)
@@ -373,7 +374,42 @@ in decreasing order of optimization, `--enable-optimization=mild'
 configure options that are useful for debugging purposes.
 
 
-7. Configuring for Debugging
+7. Advanced Performance Tuning
+------------------------------
+
+Starting from version 1.0, the library fully supports two different
+representations for rows (i.e., sequences of coefficients):
+
+  - the "dense" representation is an array-like representation tailored
+    to sequences having most of their coefficients different from zero;
+
+  - the "sparse" representation saves memory space (as well as CPU
+    cycles) when most of the coefficients in the sequence are zero.
+
+A generic interface allows for a seamless interaction between the
+dense and the sparse row representation. Most library entities (linear
+expressions, constraints, generators, congruences, and their systems)
+can be built using either representation, specified as a constructor's
+argument. Reasonable default values for the row representation are
+provided for each library entity, automatically leading to significant
+memory space savings even in old client/library code, e.g., when
+dealing with constraint systems describing weakly relational
+abstractions such as boxes and octagonal shapes.
+
+If desired, these default values can be customized to user's needs by
+changing just a few lines of library code. For instance, the
+constraint systems stored inside C_Polyhedron and NNC_Polyhedron
+objects can be made to use the sparse representation by just changing
+the following line in Polyhedron.defs.hh:
+
+  static const Representation default_con_sys_repr = DENSE;
+
+to become
+
+  static const Representation default_con_sys_repr = SPARSE;
+
+
+8. Configuring for Debugging
 ----------------------------
 
 By default, the PPL is configured with debugging information enabled.
@@ -411,7 +447,7 @@ In order to assess the coverage of the PPL test suite, the
 code to be used in conjunction with the `gcov' coverage testing tool.
 
 
-8. Programs that Come with the Library
+9. Programs that Come with the Library
 --------------------------------------
 
 The PPL is shipped with two programs that are interesting per se, and
@@ -439,8 +475,8 @@ In exchange, you will give up an important opportunity to discover
 whether the version of PPL you have built has been miscompiled.
 
 
-9. Using the Git Sources
-------------------------
+10. Using the Git Sources
+-------------------------
 
 If you use the Git sources, then you need recent versions of Autoconf
 Automake and Libtool installed.  After a `git clone' or `git pull'
