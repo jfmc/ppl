@@ -21,7 +21,7 @@ Summarizing:
 @Inproceedings{AlbertACGPZ08,
   Author = "E. Albert and P. Arenas and M. Codish and S. Genaim
             and G. Puebla and D. Zanardini",
-  Title = "Termination Analysis of {Java} {Bytecode}",
+  Title = "Termination Analysis of {Java} Bytecode",
   Booktitle = "Proceedings of the 10th IFIP WG 6.1 International Conference
                on Formal Methods for Open Object-Based Distributed Systems
                (FMOODS 2008)",
@@ -51,6 +51,40 @@ Summarizing:
               programs to termination of Java bytecode. A prototype
               analyzer is described and initial experimentation is
               reported."
+}
+
+@Article{AlbertACGPZ12,
+  Author = "E. Albert and P. Arenas and S. Genaim and G. Puebla
+            and D. Zanardini",
+  Title = "Cost analysis of object-oriented bytecode programs",
+  Journal = "Theoretical Computer Science",
+  Volume = 413,
+  Number = 1,
+  Pages =  "142--159",
+  Year = 2012,
+  Note = "Quantitative Aspects of Programming Languages (QAPL 2010)",
+  ISSN = "0304-3975",
+  URL = "http://www.sciencedirect.com/science/article/pii/S0304397511006190",
+  Abstract = "Cost analysis statically approximates the cost of
+              programs in terms of their input data size. This paper
+              presents, to the best of our knowledge, the first
+              approach to the automatic cost analysis of
+              object-oriented bytecode programs. In languages such as
+              Java and C#, analyzing bytecode has a much wider
+              application area than analyzing source code since the
+              latter is often not available. Cost analysis in this
+              context has to consider, among others, dynamic dispatch,
+              jumps, the operand stack, and the heap. Our method takes
+              a bytecode program and a cost model specifying the
+              resource of interest, and generates cost relations which
+              approximate the execution cost of the program with
+              respect to such resource. We report on COSTA, an
+              implementation for Java bytecode which can obtain upper
+              bounds on cost for a large class of programs and
+              complexity classes. Our basic techniques can be directly
+              applied to infer cost relations for other
+              object-oriented imperative languages, not necessarily in
+              bytecode form."
 }
 
 @Inproceedings{AlbertAGP08,
@@ -139,6 +173,7 @@ Summarizing:
                Verification, Analysis and Transformation (Bytecode 2011)",
   Address = "Saarbrucken, Germany",
   Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
   Volume = 279,
   Number = 1,
   Pages = "3--17",
@@ -148,7 +183,7 @@ Summarizing:
               program variables at different program points is
               essential for termination and resource usage
               analysis. In both cases, this information is used to
-              synthesize ranking functions that imply the programʼs
+              synthesize ranking functions that imply the program's
               termination and bound the number of iterations of its
               loops. For efficiency, it is common to base value
               analysis on non-disjunctive abstract domains such as
@@ -167,6 +202,32 @@ Summarizing:
               to prove termination and infer bounds on resource
               consumption for programs that could not be handled
               before."
+}
+
+@Inproceedings{Alur11,
+  Author = "R. Alur",
+  Title = "Formal Verification of Hybrid Systems",
+  Booktitle = "Proceedings of the 11th International Conference
+               on Embedded Software (EMSOFT 2011)",
+  Address =  "Taipei, Taiwan",
+  Editor = "S. Chakraborty and A. Jerraya and S. K. Baruah
+            and S. Fischmeister",
+  Publisher = "ACM Press",
+  Year = 2011,
+  Pages = "273--278",
+  ISBN = "978-1-4503-0714-7",
+  Abstract = "In formal verification, a designer first constructs a
+              model, with mathematically precise semantics, of the
+              system under design, and performs extensive analysis
+              with respect to correctness requirements. The
+              appropriate mathematical model for embedded control
+              systems is hybrid systems that combines the traditional
+              state-machine based models for discrete control with
+              classical differential-equations based models for
+              continuously evolving physical activities. In this
+              article, we briefly review selected existing approaches
+              to formal verification of hybrid systems, along with
+              directions for future research."
 }
 
 @Inproceedings{AlurKRS08,
@@ -198,6 +259,57 @@ Summarizing:
               One case study is a benchmark proposed in the literature
               for hybrid systems verification and another is a Simulink
               demo model from Mathworks."
+}
+
+@Inproceedings {AmatoPS10,
+  Author = "G. Amato and M. Parton and F. Scozzari",
+  Title = "A Tool Which Mines Partial Execution Traces to Improve
+           Static Analysis",
+  Booktitle = "Proceedings of the 1st International Conference on
+               Runtime Verification (RV 2010)",
+  Address = "Balluta Bay, St Julians, Malta",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "H. Barringer and Y. Falcone and B. Finkbeiner and K. Havelund
+            and I. Lee and G. Pace and G. Rosu and O. Sokolsky and
+            N. Tillmann",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-16611-2",
+  Pages =  "475--479",
+  Volume = 6418,
+  Year = 2010,
+  Abstract = "We present a tool which performs abstract interpretation
+              based static analysis of numerical variables. The
+              novelty is that the analysis is parametric, and
+              parameters are chosen by applying a variant of principal
+              component analysis to partial execution traces of
+              programs."
+}
+
+@Inproceedings{AmatoS12,
+  Author = "G. Amato and F. Scozzari",
+  Title = "Random: R-Based Analyzer for Numerical Domains",
+  Booktitle = "Proceedings of the 18th International Conference
+               on Logic for Programming, Artificial Intelligence,
+               and Reasoning (LPAR 2012)",
+  Address = "M\'erida, Venezuela",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "N. Bj{\o}rner and A. Voronkov",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-28716-9",
+  Pages =  "375--382",
+  Volume = 7180,
+  Year = 2012,
+  Abstract = "We present the tool Random (R-based Analyzer for
+              Numerical DOMains) for static analysis of imperative
+              programs. The tool is based on the theory of abstract
+              interpretation and implements several abstract
+              domains for detecting numerical properties, in
+              particular integer loop invariants.  The tool
+              combines a statistical dynamic analysis with a static
+              analysis on the new domain of parallelotopes.  The
+              tool has a graphical interface for tuning the
+              parameters of the analysis and visualizing partial
+              traces."
 }
 
 @Inproceedings{Andre10,
@@ -242,7 +354,7 @@ Summarizing:
               verifying realtime systems using Timed Automata (TA). In
               the model-checker Uppaal, the merging operation has been
               used extensively in order to reduce the number of
-              states. Actually, Uppaal’s merging technique applies
+              states. Actually, Uppaal's merging technique applies
               within the more general setting of Parametric Timed
               Automata (PTA). The Inverse Method (IM) for a PTA A is a
               procedure that synthesizes a zone around a given point
@@ -437,6 +549,27 @@ Summarizing:
               field of using static analysis tools for verification."
 }
 
+@Inproceedings{BenerecettiFM11,
+  Author = "M. Benerecetti and M. Faella and S. Minopoli",
+  Title = "Towards Efficient Exact Synthesis for Linear Hybrid Systems",
+  Booktitle = "Proceedings of 2nd International Symposium on Games,
+               Automata, Logics and Formal Verification (GandALF 2011)",
+  Address = "Minori, Amalfi Coast, Italy",
+  Series = "Electronic Proceedings in Theoretical Computer Science",
+  Volume = 54,
+  Pages = "263--277",
+  Year = 2011,
+  Abstract = "We study the problem of automatically computing the
+              controllable region of a Linear Hybrid Automaton, with
+              respect to a safety objective. We describe the
+              techniques that are needed to effectively and
+              efficiently implement a recently-proposed solution
+              procedure, based on polyhedral abstractions of the state
+              space. Supporting experimental results are presented,
+              based on an implementation of the proposed techniques on
+              top of the tool PHAVer."
+}
+
 @Inproceedings{BerendsenJV10,
   Author = "J. Berendsen and D. N. Jansen and F. W. Vaandrager",
   Title = "Fortuna: Model Checking Priced Probabilistic Timed Automata",
@@ -470,6 +603,26 @@ Summarizing:
               superior performance.",
 }
 
+@TechReport{BeyL11TR,
+  Author = "A. Bey S. Leue",
+  Title = "Modeling and Analyzing Spike Timing Dependent Plasticity
+           with Linear Hybrid Automata",
+  Number = "soft-11-03",
+  Institution = "University of Konstanz, Germany",
+  Year = 2011,
+  Month = may,
+  Abstract = "We propose a model for synaptic plasticity according to
+              the Spike Timing Dependent Plasticity (STDP) theory
+              using Linear Hybrid Au- tomata (LHA). We first present a
+              compositional LHA model in which each component
+              corresponds to some process in STDP. We then ab- stract
+              this model into a monolithic LHA model in order to
+              enable formal analysis using hybrid model checking. We
+              discuss how the avail- ability of an LHA model as well
+              as its formal analysis using the tool PHAVer can support
+              a better understanding of the dynamics of STDP."
+}
+
 @Inproceedings{BeyerG11,
   Author = "M. Beyer and S. Glesner",
   Title = "Static Run-Time Mode Extraction by State Partitioning
@@ -497,6 +650,35 @@ Summarizing:
               represent transitions among them. Optimizing back-ends
               mapping from PNs to concurrent architectures can be
               guided by these analysis results."
+}
+
+@Inproceedings{BeyerG12,
+  Author = "M. Beyer and S. Glesner",
+  Title = "Static Analysis of Run-Time Modes in Synchronous Process Network",
+  Booktitle = "Perspectives of Systems Informatics: Proceedings of the
+               8th International Andrei Ershov Memorial Conference",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "E. Clarke and I. Virbitskaite and A. Voronkov",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-29708-3",
+  Pages =  "55--67",
+  Volume = 7162,
+  Year = 2012,
+  Abstract = "For modeling modern streaming-oriented applications,
+              Process Networks (PNs) are used to describe systems with
+              changing behavior, which must be mapped on a concurrent
+              architecture to meet the performance and energy
+              constraints of embedded devices. Finding an optimal
+              mapping of Process Networks to the constrained
+              architecture presumes that the behavior of the Process
+              Network is statically known. In this paper we present a
+              static analysis for synchronous PNs that extracts
+              different run-time modes by using polyhedral
+              abstraction. The result is a Mealy machine whose states
+              describe different run-time modes and the edges among
+              them represent transitions. This machine can be used to
+              guide optimizing backend mappings from PNs to concurrent
+              architectures."
 }
 
 @Inproceedings{BouchyFL08,
@@ -584,6 +766,23 @@ Summarizing:
               the control program based on estimation uncertainty is
               found."
 }
+
+@Techreport{Braun12TR,
+  Author = "V. Braun",
+  Title = "Counting Points and {Hilbert} Series in String Theory",
+  Institution = "University of Pennsylvania in Philadelphia, USA",
+  Number = "arXiv:1206.2236v1 [hep-th]",
+  Note = "Available from \url{http://arxiv.org/}",
+  Year = 2012,
+  Month = jun,
+  URL = "http://arxiv.org/abs/1206.2236v1",
+  Abstract = "The problem of counting points is revisited from the
+              perspective of reflexive 4-dimensional polytopes. As an
+              application, the Hilbert series of the 473,800,776
+              reflexive polytopes (equivalently, their Calabi-Yau
+              hypersurfaces) are computed."
+}
+
 
 @Techreport{CacheraM-A05,
   Author = "D. Cachera and K. Morin-Allory",
@@ -719,6 +918,51 @@ Summarizing:
               sound way."
 }
 
+
+@Inproceedings{ColonS11,
+  Author = "M. Col{\'o}n and S. Sankaranarayanan",
+  Title = "Generalizing the Template Polyhedral Domain",
+  Booktitle = "Proceedings of the 20th European Symposium on Programming
+              (ESOP 2011)",
+  Address = "Saarbr{\"u}cken, Germany",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "G. Barthe",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-19717-8",
+  Pages =  "176--195",
+  Volume = 6602,
+  Year = 2011,
+  Abstract = "Template polyhedra generalize weakly relational domains
+              by specifying arbitrary fixed linear expressions on the
+              left-hand sides of inequalities and undetermined
+              constants on the right. The domain operations required
+              for analysis over template polyhedra can be computed in
+              polynomial time using linear programming. In this paper,
+              we introduce the generalized template polyhedral domain
+              that extends template polyhedra using fixed left-hand
+              side expressions with bilinear forms involving program
+              variables and unknown parameters to the right. We prove
+              that the domain operations over generalized templates
+              can be defined as the ``best possible abstractions'' of
+              the corresponding polyhedral domain operations. The
+              resulting analysis can straddle the entire space of
+              linear relation analysis starting from the template
+              domain to the full polyhedral domain. We show that
+              analysis in the generalized template domain can be
+              performed by dualizing the join, post-condition and
+              widening operations. We also investigate the special
+              case of template polyhedra wherein each bilinear form
+              has at most two parameters. For this domain, we use the
+              special properties of two dimensional polyhedra and
+              techniques from fractional linear programming to derive
+              domain operations that can be implemented in polynomial
+              time over the number of variables in the program and the
+              size of the polyhedra. We present applications of
+              generalized template polyhedra to strengthen previously
+              obtained invariants by converting them into
+              templates. We describe an experimental evaluation of an
+              implementation over several benchmark systems."
+}
 
 @Inproceedings{CovaFBV06,
   Author = "M. Cova and V. Felmetsger and G. Banks and G. Vigna",
@@ -969,12 +1213,13 @@ Summarizing:
 
 @Inproceedings{FenacciM11,
   Author = "D. Fenacci and K. MacKenzie",
-  Title = "Static Resource Analysis for Java Bytecode Using Amortisation
+  Title = "Static Resource Analysis for {Java} Bytecode Using Amortisation
            and Separation Logic",
   Booktitle = "Proceedings of the 6th Workshop on Bytecode Semantics,
                Verification, Analysis and Transformation (Bytecode 2011)",
   Address = "Saarbrucken, Germany",
   Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
   Volume = 279,
   Number = 1,
   Pages =  "19--32",
@@ -1042,7 +1287,7 @@ Summarizing:
               implementation described in [E.~Godehardt and
               D.~Seifert.  Kooperation und Koordination von Constraint
               Solvern --- Implementierung eines Prototyps. Master's
-              thesis, Technische {Universit\"at} Berlin, January
+              thesis, Technische Universit{\"a}t Berlin, January
               2001]. Taking aboard the lessons learned in the
               prototype, we introduce a revised implementation of the
               framework, to serve as a flexible basis for the
@@ -1190,9 +1435,9 @@ Summarizing:
   Address = "Edinburgh, Scotland",
   Pages = "9--22",
   Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
   Volume = 153,
   Number = 3,
-  Publisher = "Elsevier Science B.V.",
   Year = 2006,
   Abstract = "The application of formal methods to analog and mixed
               signal circuits requires efficient methods for
@@ -1586,7 +1831,7 @@ Summarizing:
               procedure."
 }
 
-@Inproceedings{BandaG10,
+@Inproceedings{BandaG10a,
   Author = "G. Banda and J. P. Gallagher",
   Title = "Constraint-Based Abstraction of a Model Checker
            for Infinite State Systems",
@@ -1611,6 +1856,78 @@ Summarizing:
               leads directly to implementation of abstract model
               checking algorithms for abstract domains based on
               constraints, making use of an SMT solver."
+}
+
+@Inproceedings{BandaG10b,
+  Author = "G. Banda and J. P. Gallagher",
+   Title = "Constraint-Based Abstract Semantics for Temporal Logic:
+            A Direct Approach to Design and Implementation",
+   Booktitle = "Proceedings of the 17th International Conference
+                on Logic for Programming,
+                Artificial Intelligence, and Reasoning (LPAR 2010)",
+   Address = "Yogyakarta, Indonesia",
+   Series = "Lecture Notes in Computer Science",
+   Editor = "E. Clarke and A. Voronkov",
+   Publisher = "Springer-Verlag, Berlin",
+   ISBN = "978-3-642-17510-7",
+   Year = 2010,
+   Pages =  "27--45",
+   Volume = 6355,
+   Abstract = "Abstract interpretation provides a practical approach
+               to verifying properties of infinite-state systems. We
+               apply the framework of abstract interpretation to
+               derive an abstract semantic function for the modal ?
+               -calculus, which is the basis for abstract model
+               checking. The abstract semantic function is constructed
+               directly from the standard concrete semantics together
+               with a Galois connection between the concrete
+               state-space and an abstract domain. There is no need
+               for mixed or modal transition systems to abstract
+               arbitrary temporal properties, as in previous work in
+               the area of abstract model checking. Using the modal ?
+               -calculus to implement CTL, the abstract semantics
+               gives an over-approximation of the set of states in
+               which an arbitrary CTL formula holds. Then we show that
+               this leads directly to an effective implementation of
+               an abstract model checking algorithm for CTL using
+               abstract domains based on linear constraints. The
+               implementation of the abstract semantic function makes
+               use of an SMT solver. We describe an implemented system
+               for proving properties of linear hybrid automata and
+               give some experimental results."
+}
+
+@Inproceedings{Grosser09,
+  Author = "T. Grosser",
+  Title = "Optimization opportunities based on the polyhedral model in
+           {GRAPHITE}. How much impact has {GRAPHITE} already?",
+  Booktitle = "Proceedings of the {GCC} Developers' Summit",
+  Address = "Montreal, Quebec, Canada",
+  Year = 2009,
+  Month = jun,
+  Pages = "33--46",
+  URL = "http://www.gccsummit.org/2009/gcc09-proceedings.pdf",
+  Abstract = "The polytope model is used since many years to describe
+              standard loop optimizations like blocking, interchange
+              or fusion, but also advanced memory access optimizations
+              and automatic parallelization. Its exact mathematical
+              description of memory accesses and loop iterations
+              allows to concentrate on the optimization problem and to
+              take advantage of professional problem solving tools
+              developed for operational research.  Up to today the
+              polytope model was limited to research compilers or
+              source to source transformations. Graphite generates a
+              polytope description of all programs compiled by the
+              gcc. Therefore polytope optimization techniques are not
+              limited anymore to hand selected code pieces, but can
+              actually be applied in large scale on real world
+              programs. By showing the impact of GRAPHITE on important
+              benchmarks --- ``How much runtime is actually spent in
+              code, that can be optimized by polytope optimization
+              techniques?'' --- we invite people to base their current
+              polytope research on GRAPHITE to make these
+              optimizations available to the large set of gcc compiled
+              applications."
 }
 
 @Inproceedings{GulavaniR06,
@@ -2249,6 +2566,68 @@ Summarizing:
               analysis feasible."
 }
 
+@Techreport{McCloskeyS09TR,
+  Author = "B. McCloskey and M. Sagiv",
+  Title = "Combining Quantified Domains",
+  Number = "EECS-2009-106",
+  Year = 2009,
+  Month = jul,
+  Institution = "EECS Department University of California",
+  Address = "Berkeley USA",
+  URL = "http://www.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-106.pdf",
+  Abstract = "We develop general algorithms for reasoning about
+              numerical properties of programs manipulating the heap
+              via pointers. We automatically infer quantified
+              invariants regarding unbounded sets of memory locations
+              and unbounded numeric values. As an example, we can
+              infer that for every node in a data structure, the
+              node's length field is less than its capacity field. We
+              can also infer per-node statements about cardinality,
+              such as that each node's count field is equal to the
+              number of elements reachable from it. This additional
+              power allows us to prove properties about reference
+              counted data structures and B-trees that were previously
+              unattainable. Besides the ability to verify more
+              programs, we believe that our work sheds new light on
+              the interaction between heap and numerical reasoning.
+
+              Our algorithms are parametric in the heap and the
+              numeric abstractions. They permit heap and numerical
+              abstractions to be combined into a single abstraction
+              while maintaining correlations between these
+              abstractions. In certain combinations not involving
+              cardinality, we prove that our combination technique is
+              complete, which is surprising in the presence of
+              quantification."
+}
+
+@PhdThesis{Meijer10th,
+  Author = "S. Meijer",
+  Title = "Transformations for Polyhedral Process Networks",
+  School = "Leiden Institute of Advanced Computer Science (LIACS),
+            Faculty of Science, Leiden University",
+  Address = "Leiden, The Netherlands",
+  Year = 2010,
+  ISBN = "978-90-9025792-1",
+  Abstract = "We use the polyhedral process network (PPN) model of
+              computation to program and map streaming applications
+              onto embedded Multi-Processor Systems on Chip (MPSoCs)
+              platforms. The PPNs, which can be automatically derived
+              from sequential program applications, do not necessarily
+              meet the performance/resource constraints. A designer
+              can therefore apply the process splitting
+              transformations to increase program performance, and the
+              process merging transformation to reduce the number of
+              processes in a PPN. These transformations were defined,
+              but a designer had many possibilities to apply a
+              particular transformation, and these transformations can
+              also be ordered in many different ways. In this
+              dissertation, we define compile-time solution approaches
+              that assist the designer in evaluating and applying
+              process splitting and merging transformations in the
+              most effective way."
+}
+
 @Article{MesnardB05TPLP,
   Author = "F. Mesnard and R. Bagnara",
   Title = "{cTI}: A Constraint-Based Termination Inference Tool
@@ -2277,6 +2656,26 @@ Summarizing:
               classical examples from the logic programming
               termination literature and several Prolog programs of
               respectable size and complexity."
+}
+
+@Inproceedings{MonniauxG11,
+  Author = "D. Monniaux and J. {Le Guen}",
+  Title = "Stratified Static Analysis Based on Variable Dependencies",
+  Booktitle = "Proceedings of the Third International Workshop on
+               Numerical and Symbolic Abstract Domains (NSAD 2011)",
+  Address = "Venice, Italy",
+  Year = 2011,
+  URL = "http://arxiv.org/abs/1109.2405",
+  Abstract = "In static analysis by abstract interpretation, one often
+              uses \emph{widening operators} in order to enforce
+              convergence within finite time to an inductive
+              invariant. Certain widening operators, including the
+              classical one over finite polyhedra, exhibit an
+              unintuitive behavior: analyzing the program over a
+              subset of its variables may lead a more precise result
+              than analyzing the original program! In this article, we
+              present simple workarounds for such behavior."
+
 }
 
 @Inproceedings{MoserKK07,
@@ -2318,6 +2717,86 @@ Summarizing:
               from the environment. Thus, by exploring multiple
               execution paths, we can obtain a more complete picture
               of their actions."
+}
+
+@Inproceedings{NavasMH09,
+  Author = "J. Navas and M. M{\'e}ndez-Lojo and M. V. Hermenegildo",
+  Title = "User-Definable Resource Usage Bounds Analysis for {Java} Bytecode",
+  Booktitle = "Proceedings of the 4th Workshop on Bytecode Semantics,
+               Verification, Analysis and Transformation (Bytecode 2009)",
+  Address = "York, UK",
+  Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
+  Volume = 253,
+  Number = 5,
+  Pages =  "65--82",
+  Year = 2009,
+  ISSN = "1571-0661",
+  Abstract = "Automatic cost analysis of programs has been
+              traditionally concentrated on a reduced number of
+              resources such as execution steps, time, or
+              memory. However, the increasing relevance of analysis
+              applications such as static debugging and/or
+              certification of user-level properties (including for
+              mobile code) makes it interesting to develop analyses
+              for resource notions that are actually
+              application-dependent. This may include, for example,
+              bytes sent or received by an application, number of
+              files left open, number of SMSs sent or received, number
+              of accesses to a database, money spent, energy
+              consumption, etc. We present a fully automated analysis
+              for inferring upper bounds on the usage that a Java
+              bytecode program makes of a set of application
+              programmer-definable resources. In our context, a
+              resource is defined by programmer-provided annotations
+              which state the basic consumption that certain program
+              elements make of that resource. From these definitions
+              our analysis derives functions which return an upper
+              bound on the usage that the whole program (and
+              individual blocks) make of that resource for any given
+              set of input data sizes. The analysis proposed is
+              independent of the particular resource. We also present
+              some experimental results from a prototype
+              implementation of the approach covering a significant
+              set of interesting resources."
+}
+
+@Inproceedings{CuervoParrinoNVM12,
+  Author = "B. {Cuervo Parrino} and J. Narboux and E. Violard and N. Magaud",
+  Title = "Dealing with Arithmetic Overflows in the Polyhedral Model",
+  Booktitle = "Proceedings of the 2nd International Workshop
+               on Polyhedral Compilation Techniques (IMPACT 2012)",
+  Address = "Paris, France",
+  Editor = "U. Bondhugula and V. Loechner ",
+  Year = 2012,
+  URL = "http://hal.inria.fr/hal-00655485",
+  Abstract = "The polyhedral model provides techniques to optimize
+              Static Control Programs (SCoP) using some complex
+              transforma- tions which improve data-locality and which
+              can exhibit parallelism. These advanced
+              transformations are now available in both GCC and
+              LLVM. In this paper, we focus on the cor- rectness of
+              these transformations and in particular on the problem
+              of integer overflows. Indeed, the strength of the
+              polyhedral model is to produce an abstract mathematical
+              representation of a loop nest which allows high-level
+              trans- formations. But this abstract representation is
+              valid only when we ignore the fact that our integers are
+              only machine integers. In this paper, we present a
+              method to deal with this problem of mismatch between the
+              mathematical and concrete representations of loop
+              nests. We assume the exis- tence of polyhedral
+              optimization transformations which are proved to be
+              correct in a world without overflows and we provide a
+              self-verifying compilation function. Rather than
+              verifying the correctness of this function, we use an
+              approach based on a validator, which is a tool that is
+              run by the com- piler after the transformation itself
+              and which confirms that the code produced is equivalent
+              to the original code. As we aim at the formal proof of
+              the validator we implement this validator using the Coq
+              proof assistant as a programming language [4]."
+
 }
 
 @Inproceedings{PayetS07,
@@ -2787,13 +3266,39 @@ Summarizing:
               results."
 }
 
-@Inproceedings{Simon10,
+@Inproceedings{Simon10a,
+  Author = "A. Simon",
+  Title = "A Note on the Inversion Join for Polyhedral Analysis",
+  Booktitle = "Proceedings of the 2nd International Workshop on
+               Numerical and Symbolic Abstract Domains (NSAD 2010)",
+  Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
+  Volume = 267,
+  Pages =  "115--126",
+  Year = 2010,
+  ISSN = "1571-0661",
+  Abstract = "Linear invariants are essential in many optimization and
+              verification tasks. The domain of convex polyhedra (sets
+              of linear inequalities) has the potential to infer all
+              linear relationships. Yet, it is rarely applied to
+              larger problems due to the join operation whose most
+              precise result is given by the convex hull of two
+              polyhedra which, in turn, may be of exponential
+              size. Recently, Sankaranarayanan et al. proposed an
+              operation called inversion join to efficiently
+              approximate the convex hull. While their proposal has an
+              ad-hoc flavour, we show that it is quite principled and,
+              indeed, complete for planar polyhedra and, for general
+              polyhedra, complete on over 70% of our benchmarks."
+}
+
+@Inproceedings{Simon10b,
   Author = "A. Simon",
   Title = "Speeding up Polyhedral Analysis by Identifying Common Constraints",
-  Booktitle = "Proceedings of the Second International Workshop on
+  Booktitle = "Proceedings of the 2nd International Workshop on
                Numerical and Symbolic Abstract Domains (NSAD 2010)",
-  Publisher = "Springer-Verlag, Berlin",
   Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
   Volume = 267,
   Pages =  "127--138",
   Year = 2010,
@@ -2872,7 +3377,7 @@ Summarizing:
   Title = "Definition and Implementation of a Points-To Analysis
            for C-like Languages",
   Institution = "Dipartimento di Matematica, Universit\`a di Parma, Italy",
-  Number = "\url{arXiv:cs.PL/0810.0753}",
+  Number = "arXiv:cs.PL/0810.0753",
   Year = 2008,
   Note = "Available from \url{http://arxiv.org/}",
   Abstract = "The points-to problem is the problem of determining the
@@ -2911,7 +3416,7 @@ Summarizing:
 @Inproceedings{Starynkevitch07,
   Author = "B. Starynkevitch",
   Title = "Multi-Stage Construction of a Global Static Analyzer",
-  Booktitle = "Proceedings of the 2007 GCC Developers' Summit",
+  Booktitle = "Proceedings of the 2007 {GCC} Developers' Summit",
   Address = "Ottawa, Canada",
   Pages = "143--151",
   Year = 2007,
@@ -2969,6 +3474,7 @@ Summarizing:
   Address = "University of Warwick, UK",
   Editor = "R. Lazic and R. Nagarajan",
   Series = "Electronic Notes in Theoretical Computer Science",
+  Publisher = "Elsevier Science B.V.",
   Volume = 145,
   Pages = "167--183",
   Year = 2006,
@@ -3118,7 +3624,7 @@ Summarizing:
   Author = "K. {van Hee} and O. Oanea and N. Sidorova and M. Voorhoeve",
   Title = "Verifying Generalized Soundness for Workflow Nets",
   Booktitle = "Perspectives of System Informatics: Proceedings of the
-               Sixth International Andrei Ershov Memorial Conference",
+               6th International Andrei Ershov Memorial Conference",
   Address = "Akademgorodok, Novosibirsk, Russia",
   Editor = "I. Virbitskaite and A. Voronkov",
   Publisher = "Springer-Verlag, Berlin",
@@ -3326,7 +3832,7 @@ Summarizing:
               aim of proving that there will not be leaks of
               sensitive information. In this paper we propose a new
               domain that combines variable dependency analysis,
-              based on propositional formulas, and variables’ value
+              based on propositional formulas, and variables' value
               analysis, based on polyhedra. The resulting analysis is
               strictly more accurate than the state of the art
               abstract interpretation based analyses for information
