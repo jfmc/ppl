@@ -1,5 +1,9 @@
 2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
 
+	* PPL 1.0 released.
+
+2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
+
 	* doc/definitions.dox: Work around a Doxygen bug.  Stick to ASCII.
 
 2012-06-28  Roberto Bagnara <bagnara@cs.unipr.it>
