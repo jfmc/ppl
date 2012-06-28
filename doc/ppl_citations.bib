@@ -175,7 +175,6 @@ Summarizing:
   Series = "Electronic Proceedings in Theoretical Computer Science",
   Volume = 39,
   Year = 2010,
-  URL =	"http://www.lsv.ens-cachan.fr/Publis/PAPERS/PDF/andre-infinity10.pdf",
   Abstract = "We present here \textsc{Imitator}~II, a new version of
              \textsc{Imitator}, a tool implementing the ``inverse
              method'' for parametric timed automata: given a reference
@@ -374,6 +373,35 @@ Summarizing:
               experimental results to support the usefulness of the
               approach and argue that we contribute to the general
               field of using static analysis tools for verification."
+}
+
+@Inproceedings{BeyerG11,
+  Author = "M. Beyer and S. Glesner",
+  Title = "Static Run-Time Mode Extraction by State Partitioning
+           in Synchronous Process Networks",
+  Booktitle = "Proceedings of the 14th International Workshop on
+               Software and Compilers for Embedded Systems (SCOPES 2011)",
+  Year = 2011,
+  ISBN = "978-1-4503-0763-5",
+  Pages = "28--37",
+  URL = "http://doi.acm.org/10.1145/1988932.1988938",
+  Publisher = "ACM Press",
+  Address = "New York, NY, USA",
+  Abstract = "Process Networks (PNs) are used for modeling
+              streaming-oriented applications with changing behavior,
+              which must be mapped on a concurrent architecture to
+              meet the performance and energy constraints of embedded
+              devices. Finding an optimal mapping of Process Networks
+              to the constrained architecture presumes that the
+              behavior of the PN is statically known. In this paper we
+              present a static analysis for synchronous PNs that
+              partitions the state space according to extract run-time
+              modes based on a Data Augmented Control Flow Automaton
+              (DACFA). The result is a mode automaton whose nodes
+              describe identified program modes and whose edges
+              represent transitions among them. Optimizing back-ends
+              mapping from PNs to concurrent architectures can be
+              guided by these analysis results."
 }
 
 @Inproceedings{BouchyFL08,
@@ -1716,6 +1744,24 @@ Summarizing:
               interpretation."
 }
 
+@Incollection {KhalilGP09,
+  Author = "G. Khalil and E. Goubault and S. Putot",
+  Title = "The Zonotope Abstract Domain {Taylor1+}",
+  Booktitle = "Computer Aided Verification",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "A. Bouajjani and O. Maler",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-02657-7",
+  Pages = "627--633",
+  Volume = 5643,
+  Year = 2009,
+  Abstract = "Static analysis by abstract interpretation [1] aims it
+              automatically inferring properties on the behaviour of
+              programs. We focus here on a specific kind of numerical
+              invariants: the set of values taken by numerical
+              variables, with a real numbers semantics, at each
+              control point of a program."
+}
 @Incollection{KimGR07,
   Author = "D. Kim and G. Gupta and S. V. Rajopadhye",
   Title = "On Control Signals for Multi-Dimensional Time",
@@ -2287,6 +2333,36 @@ Summarizing:
              \url{http://contraintes.inria.fr/BIOCHAM/}"
 }
 
+@Article{RizkBFS11,
+  Author = "A. Rizk and G. Batt and F. Fages and S. Soliman",
+  Title = "Continuous Valuations of Temporal Logic Specifications with
+           Applications to Parameter Optimization and Robustness
+           Measures",
+  Journal = "Theoretical Computer Science",
+  Publisher = "Elsevier",
+  Volume = 412,
+  Number = 26,
+  Pages =  "2827--2839",
+  Year = 2011,
+  ISSN = "0304-3975",
+  Abstract = "Finding mathematical models satisfying a specification
+              built from the formalization of biological experiments,
+              is a common task of the modeler that techniques like
+              model-checking help solving, in the qualitative but also
+              in the quantitative case. In this article we define a
+              continuous degree of satisfaction of temporal logic
+              formulae with constraints. We show how such a
+              satisfaction measure can be used as a fitness function
+              with state-of-the-art evolutionary optimization methods
+              in order to find biochemical kinetic parameter values
+              satisfying a set of biological properties formalized in
+              temporal logic. We also show how it can be used to
+              define a measure of robustness of a biological model
+              with respect to some temporal specification. These
+              methods are evaluated on models of the cell cycle and of
+              the MAPK signaling cascade."
+}
+
 @Inproceedings{SankaranarayananIG07,
   Author = "S. Sankaranarayanan and F. Ivancic and A. Gupta",
   Title = "Program Analysis Using Symbolic Ranges",
@@ -2495,6 +2571,34 @@ Summarizing:
               results."
 }
 
+@Inproceedings{Simon10,
+  Author = "A. Simon",
+  Title = "Speeding up Polyhedral Analysis by Identifying Common Constraints",
+  Booktitle = "Proceedings of the Second International Workshop on
+               Numerical and Symbolic Abstract Domains (NSAD 2010)",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Electronic Notes in Theoretical Computer Science",
+  Volume = 267,
+  Pages =  "127--138",
+  Year = 2010,
+  ISSN = "1571-0661",
+  Abstract = "Sets of linear inequalities are an expressive reasoning
+              tool for approximating the reachable states of a
+              program. However, the most precise way to join two
+              states is to calculate the convex hull of the two
+              polyhedra that are represented by the inequality sets,
+              an operation that is exponential in the dimension of the
+              polyhedra. We investigate how similarities in the two
+              input polyhedra can be exploited to improve the
+              performance of this costly operation. In particular, we
+              discuss how common equalities and certain inequalities
+              can be omitted from the calculation without affecting
+              the result. We expose a maximum of common equalities and
+              inequalities by converting the polyhedra into a normal
+              form and give experimental evidence of the merit of our
+              method."
+}
+
 @Techreport{SlaninaSSM07TR,
   Author = "M. Slanina and S. Sankaranarayanan and H. B. Sipma and Z. Manna",
   Title = "Controller Synthesis of Discrete Linear Plants Using Polyhedra",
@@ -2666,6 +2770,46 @@ Summarizing:
               parameter valuations that satisfy the formulae."
 }
 
+@Article{TraonouezLR09,
+  Author = "L.-M. Traonouez and D. Lime and O. H. Roux",
+  Title = "Parametric Model-Checking of Stopwatch Petri Nets",
+  Journal = "Journal of Universal Computer Science",
+  Year = 2009,
+  Volume = 15,
+  Number = 17,
+  Pages = "3273--3304",
+  Abstract = "At the border between control and verification,
+              parametric verification can be used to synthesize
+              constraints on the parameters to ensure that a system
+              verifies given specifications. In this paper we propose
+              a new framework for the parametric verification of time
+              Petri nets with stopwatches. We first introduce a
+              parametric extension of time Petri nets with inhibitor
+              arcs (ITPNs) with temporal parameters and we define a
+              symbolic representation of the parametric state-space
+              based on the classical state-class graph method. Then,
+              we propose semi-algorithms for the parametric
+              modelchecking of a subset of parametric TCTL formulae on
+              ITPNs. These results have been implemented in the tool
+              Romeo and we illustrate them in a case-study based on a
+              scheduling problem.", } Abstract: At the border between
+              control and verification, parametric verification can be
+              used to synthesize constraints on the parameters to
+              ensure that a system verifies given specifications. In
+              this paper we propose a new framework for the parametric
+              verification of time Petri nets with stopwatches. We
+              first introduce a parametric extension of time Petri
+              nets with inhibitor arcs (ITPNs) with temporal
+              parameters and we define a symbolic representation of
+              the parametric state-space based on the classical
+              state-class graph method. Then, we propose
+              semi-algorithms for the parametric modelchecking of a
+              subset of parametric TCTL formulae on ITPNs. These
+              results have been implemented in the tool Romeo and we
+              illustrate them in a case-study based on a scheduling
+              problem."
+}
+
 @Inproceedings{TrifunovicCEFG+10,
   Author = "K. Trifunovic and A. Cohen and D. Edelsohn and L. Feng
            and T. Grosser and H. Jagasia and R. Ladelsky and S. Pop
@@ -2803,6 +2947,35 @@ Summarizing:
               simplified embedded systems."
 }
 
+@Inproceedings{Verdoolaege10,
+  Author = "S. Verdoolaege",
+  Title = "An Integer Set Library for the Polyhedral Model",
+  Booktitle = "Proceedings of the 3rd International Congress
+               on Mathematical Software (ICMS 2010)",
+  Address = "Kobe, Japan",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "K. Fukuda and J. Hoeven and M. Joswig and N. Takayama",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-15581-9",
+  Pages =  "299--302",
+  Volume = 6327,
+  ISBN = "978-3-642-15581-9",
+  Year = 2010,
+  Abstract = "In compiler research, polytopes and related mathematical
+              objects have been successfully used for several decades
+              to represent and manipulate computer programs in an
+              approach that has become known as the polyhedral
+              model. The key insight is that the kernels of many
+              compute-intensive applications are composed of loops
+              with bounds that are affine combinations of symbolic
+              constants and outer loop iterators. The iterations of a
+              loop nest can then be represented as the integer points
+              in a (parametric) polytope and manipulated as a whole,
+              rather than as individual iterations. A similar
+              reasoning holds for the elements of an array and for
+              mappings between loop iterations and array elements."
+}
+
 @Incollection{Vigna07,
   Author = "G. Vigna",
   Editor = "M. Christodorescu and S. Jha and D. Maughan
@@ -2887,6 +3060,36 @@ Summarizing:
               that the new symbolic search algorithms can achieve
               several orders-of-magnitude improvements over existing
               methods based on bit-level (Boolean) reasoning."
+}
+
+@Incollection{ZanioliC11,
+  Author = "M. Zanioli and A. Cortesi",
+  Title = "Information Leakage Analysis by Abstract Interpretation",
+  Booktitle = "SOFTSEM 2011: Theory and Practice of Computer Science",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "I. Cern{\'a} and T. Gyim{\'o}thy and J. Hromkovic and K. Jefferey
+            and R. Kr{\'a}lovic and M. Vukolic and S. Wolf",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-18380-5",
+  Pages =  "545--557",
+  Volume = 6543,
+  Year = 2011,
+  Abstract = "Protecting the confidentiality of information stored in
+              a computer system or transmitted over a public network
+              is a relevant problem in computer security. The
+              approach of information flow analysis involves
+              performing a static analysis of the program with the
+              aim of proving that there will not be leaks of
+              sensitive information. In this paper we propose a new
+              domain that combines variable dependency analysis,
+              based on propositional formulas, and variables’ value
+              analysis, based on polyhedra. The resulting analysis is
+              strictly more accurate than the state of the art
+              abstract interpretation based analyses for information
+              leakage detection. Its modular construction allows to
+              deal with the tradeoff between efficiency and accuracy
+              by tuning the granularity of the abstraction and the
+              complexity of the abstract operators."
 }
 
 ==============================================================================
