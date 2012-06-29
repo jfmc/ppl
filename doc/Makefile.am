@@ -72,7 +72,7 @@ gpl.dox \
 fdl.dox
 
 # NOTE: this variable is used to populate Doxygen configuration tag INPUT.
-# The file path is that of the build directory, hence we ca not use
+# The file path is that of the build directory, hence we cannot use
 # variable DOX_LICENSE_FILES defined above.
 DOX_LICENSE_INPUT = \
 $(srcdir)/gpl.dox \
