@@ -25,9 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_checked_float_inlines_hh 1
 
 #include "compiler.hh"
-#ifndef __alpha
 #include <cmath>
-#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -1009,7 +1007,7 @@ assign_mpq_numeric_float(mpq_class& to, const long double from) {
   mpz_class& num = to.get_num();
   mpz_class& den = to.get_den();
   int exp;
-  long double n = frexpl(from, &exp);
+  long double n = std::frexp(from, &exp);
   bool neg = false;
   if (n < 0) {
     neg = true;
@@ -1020,7 +1018,7 @@ assign_mpq_numeric_float(mpq_class& to, const long double from) {
   while (true) {
     n *= mult;
     exp -= bits;
-    long double intpart = floorl(n);
+    long double intpart = std::floor(n);
     num += (unsigned long)intpart;
     n -= intpart;
     if (n == 0)
