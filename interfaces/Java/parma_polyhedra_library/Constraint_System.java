@@ -23,15 +23,12 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A system of constraints.
 /*! \ingroup PPL_Java_interface
     An object of the class Constraint_System is a system of constraints,
     i.e., a multiset of objects of the class Constraint.
 */
-public class Constraint_System extends java.util.Vector<Constraint> {
+public class Constraint_System extends java.util.ArrayList<Constraint> {
 
     //! Default constructor: builds an empty system of constraints.
     public Constraint_System() {

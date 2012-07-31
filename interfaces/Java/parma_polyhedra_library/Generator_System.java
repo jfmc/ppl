@@ -23,16 +23,13 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A system of generators.
 /*! \ingroup PPL_Java_interface
     An object of the class Generator_System is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
 */
-public class Generator_System extends java.util.Vector<Generator> {
+public class Generator_System extends java.util.ArrayList<Generator> {
 
     //! Default constructor: builds an empty system of generators.
     public Generator_System() {

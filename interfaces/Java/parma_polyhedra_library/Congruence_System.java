@@ -23,15 +23,12 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A system of congruences.
 /*! \ingroup PPL_Java_interface
     An object of the class Congruence_System is a system of congruences,
     i.e., a multiset of objects of the class Congruence.
 */
-public class Congruence_System extends java.util.Vector<Congruence> {
+public class Congruence_System extends java.util.ArrayList<Congruence> {
     //! Default constructor: builds an empty system of congruences.
     public Congruence_System() {
     }

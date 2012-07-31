@@ -22,22 +22,19 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.Vector;
 import parma_polyhedra_library.*;
 
 public class C_Polyhedron_test1 {
-static {
-    try {
-        System.loadLibrary("ppl_java");
+    static {
+        try {
+            System.loadLibrary("ppl_java");
+        }
+        catch (UnsatisfiedLinkError  e) {
+            System.out.println("Unable to load the library");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
     }
-    catch (UnsatisfiedLinkError  e) {
-        System.out.println("Unable to load the library");
-        System.out.println(e.getMessage());
-        System.exit(-1);
-    }
-}
 
     // This code tests the method `map_space_dimension(pfunc)'.
     public static boolean test01() {

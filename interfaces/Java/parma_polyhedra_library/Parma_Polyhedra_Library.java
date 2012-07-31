@@ -105,7 +105,7 @@ site: http://bugseng.com/products/ppl/ . */
 
   - In the following, any of the above numerical
     abstract domains  is called a PPL <EM>domain</EM>
-    and any element of a PPL domain is called a <EM>PPL object</EM>.
+    and any element of a PPL domain is called a PPL <EM>object</EM>.
 
   - A Java program can create a new object for a PPL domain by
     using the constructors for the class corresponding to the domain.
@@ -128,6 +128,22 @@ site: http://bugseng.com/products/ppl/ . */
     topological compatibility rules stated in Section
     \extref{representation, Representations of Convex Polyhedra}
     of the main PPL user manual.
+
+  - A <EM>system</EM> of constraints (i.e., an instance of class
+    <CODE>parma_polyhedra_library.Constraint_System</CODE>)
+    is implemented by extending class <CODE>java.util.ArrayList</CODE>
+    (note: <CODE>java.util.Vector</CODE> was used up to version 1.0.)
+    As a consequence, it is possible to iterate over the constraints
+    in the system by using corresponding inherited methods. Similarly,
+    it is possible to modify a system of constraints by using methods
+    such as <CODE>add</CODE>; be warned, however, that the constraint
+    system obtained from a PPL object is a <EM>copy</EM> of the (C++)
+    data structure used in the object itself: any modification will not
+    directly affect the original PPL object; clearly, the modified
+    constraint system can be used with appropriate methods to,
+    e.g., build a new PPL object or modify an existing one.
+    The same observations apply to systems of congruences and
+    systems of (grid) generators.
 
 */ /* \mainpage */
 

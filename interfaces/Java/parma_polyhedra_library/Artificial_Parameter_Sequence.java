@@ -23,16 +23,13 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A sequence of artificial parameters.
 /*! \ingroup PPL_Java_interface
     An object of the class Artificial_Parameter_Sequence is a
     sequence of artificial parameters.
 */
 public class Artificial_Parameter_Sequence
-  extends java.util.Vector<Artificial_Parameter> {
+  extends java.util.ArrayList<Artificial_Parameter> {
 
     //! Default constructor: builds an empty sequence of artificial parameters.
     public Artificial_Parameter_Sequence() {

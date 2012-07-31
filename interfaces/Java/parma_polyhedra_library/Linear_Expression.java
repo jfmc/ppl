@@ -23,9 +23,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A linear expression.
 /*! \ingroup PPL_Java_interface
   An object of the class Linear_Expression represents a linear expression

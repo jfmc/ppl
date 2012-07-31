@@ -24,15 +24,13 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A system of grid generators.
 /*! \ingroup PPL_Java_interface
     An object of the class Grid_Generator_System is a system of grid
     generators, i.e., a multiset of objects of the class Grid_Generator.
 */
-public class Grid_Generator_System extends java.util.Vector<Grid_Generator> {
+public class Grid_Generator_System
+    extends java.util.ArrayList<Grid_Generator> {
 
     //! Default constructor: builds an empty system of grid generators.
     public Grid_Generator_System() {

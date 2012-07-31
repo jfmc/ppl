@@ -24,9 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A Mixed Integer (linear) Programming problem.
 /*! \ingroup PPL_Java_interface
   An object of this class encodes a mixed integer (linear) programming problem.
