@@ -189,6 +189,8 @@ handle_exception(JNIEnv* env);
 */
 class Java_Class_Cache {
 public:
+  // The Java VM pointer (not a class, but sometimes needed).
+  JavaVM* jvm;
   // Non-PPL types.
   jclass Boolean;
   jclass Integer;
@@ -230,6 +232,7 @@ public:
   jclass PPL_Object;
   jclass Relation_Symbol;
   jclass Variable;
+  jclass Variable_Stringifier;
   jclass Variables_Set;
 
   //! Default constructor.
@@ -400,7 +403,10 @@ struct Java_FMID_Cache {
   jmethodID Relation_Symbol_ordinal_ID;
   // Variable.
   jfieldID Variable_varid_ID;
+  jfieldID Variable_stringifier_ID;
   jmethodID Variable_init_ID;
+  // Variable_Stringifier.
+  jmethodID Variable_Stringifier_stringify_ID;
   // Variables_Set.
   jmethodID Variables_Set_init_ID;
   jmethodID Variables_Set_add_ID;
@@ -620,6 +626,16 @@ build_cxx_variable(JNIEnv* env, jobject j_var);
 */
 jobject
 build_java_variable(JNIEnv* env, const Variable var);
+
+/*! \brief
+  The customizable variable output function for Java interface.
+
+  Customization is obtained by providing an object implementing interface
+  <CODE>Variable_Stringifier</CODE> and attaching it to class
+  <CODE>Variable</CODE> using static method <CODE>setStringifier</CODE>.
+*/
+void
+Java_Variable_output_function(std::ostream& s, Variable v);
 
 /*! \brief
   Builds a C++ Coefficient

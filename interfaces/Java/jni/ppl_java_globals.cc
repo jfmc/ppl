@@ -678,6 +678,10 @@ Java_parma_1polyhedra_1library_Variable_initIDs
   jfieldID fID = env->GetFieldID(j_variable_class, "varid", "I");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.Variable_varid_ID = fID;
+  fID = env->GetStaticFieldID(j_variable_class, "stringifier",
+                              "Lparma_polyhedra_library/Variable_Stringifier;");
+  CHECK_RESULT_ASSERT(env, fID);
+  cached_FMIDs.Variable_stringifier_ID = fID;
   jmethodID mID = env->GetMethodID(j_variable_class, "<init>", "(I)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Variable_init_ID = mID;
@@ -1249,6 +1253,44 @@ Java_parma_1polyhedra_1library_MIP_1Problem_ascii_1dump
   }
   CATCH_ALL;
   return 0;
+}
+
+JNIEXPORT jstring JNICALL
+Java_parma_1polyhedra_1library_Variable_toString
+(JNIEnv* env, jobject j_this) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  Variable ppl_var = build_cxx_variable(env, j_this);
+  std::ostringstream s;
+  s << ppl_var;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Variable_setStringifier
+(JNIEnv* env, jclass j_variable_class, jobject j_stringifier) {
+  // Store j_stringifier in the corresponding static field.
+  env->SetStaticObjectField(j_variable_class,
+                            cached_FMIDs.Variable_stringifier_ID,
+                            j_stringifier);
+  if (j_stringifier == NULL) {
+    // No stringifier object: reset cache values.
+    cached_classes.Variable_Stringifier = NULL;
+    cached_FMIDs.Variable_Stringifier_stringify_ID = NULL;
+    // Reset default C++ output function.
+    Variable::set_output_function(&Variable::default_output_function);
+  }
+  else {
+    // Update cache with values computed for concrete class.
+    jclass vs_class = env->GetObjectClass(j_stringifier);
+    CHECK_RESULT_ASSERT(env, vs_class);
+    cached_classes.Variable_Stringifier = vs_class;
+    jmethodID mID = env->GetMethodID(vs_class, "stringify",
+                                     "(I)Ljava/lang/String;");
+    CHECK_RESULT_ASSERT(env, mID);
+    cached_FMIDs.Variable_Stringifier_stringify_ID = mID;
+    // Set C++ output function to the Java wrapper.
+    Variable::set_output_function(&Java_Variable_output_function);
+  }
 }
 
 JNIEXPORT jstring JNICALL

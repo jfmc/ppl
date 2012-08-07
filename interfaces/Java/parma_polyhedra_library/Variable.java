@@ -59,14 +59,29 @@ public class Variable implements Comparable<Variable> {
 	return varid;
     }
 
-  /*! \brief
-    Returns a negative number if \p this comes first than \p v,
-    a zero if \p this equals \p v, a positive number if
-   if \p this comes first than \p v.
-   */
+    /*! \brief
+      Returns a negative number if \p this is smaller than \p v,
+      a zero if \p this equals \p v, a positive number if \p v
+      is greater than \p v.
+    */
     public int compareTo(Variable v) {
         return varid - v.varid;
     }
+
+    //! Optional customization provider for \c toString.
+    private static Variable_Stringifier stringifier;
+
+    /*! \brief
+      Sets the variable stringifier object.
+
+      A variable stringifier object provides customization for the
+      \c toString method; if no variable stringifier object is set
+      (or if it is set to a null refeerence value), the PPL default
+      variable output function will be used.
+    */
+    public static native void setStringifier(Variable_Stringifier vs);
+
+    public native String toString();
 
     private static native void initIDs();
     static {
