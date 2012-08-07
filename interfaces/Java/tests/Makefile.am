@@ -49,7 +49,9 @@ PIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 PPL_Test.java \
-ppl_java_tests_common
+ppl_java_tests_common \
+Custom_Variable_Stringifier.java \
+Variable_Output_test1.java
 
 if ENABLE_SHARED
 
@@ -62,6 +64,8 @@ MIP_Problem_test1.java \
 PIP_Problem_test1.java \
 Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
+Custom_Variable_Stringifier.java \
+Variable_Output_test1.java \
 PPL_Test.java
 
 CLASSPATH = ../ppl_java.jar:.
@@ -88,6 +92,7 @@ check-local: ppl_java_generated_tests.java
 	$(java_test_environment) PIP_Problem_test1
 	$(java_test_environment) Parma_Polyhedra_Library_test1
 	$(java_test_environment) Parma_Polyhedra_Library_test2
+	$(java_test_environment) Variable_Output_test1
 
 CLEANFILES = \
 ppl_java_generated_tests.java
