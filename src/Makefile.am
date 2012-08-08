@@ -59,8 +59,9 @@
 #	    0.12		   10:0:0
 #	    0.12.1		   11:0:0
 #	    1.0			   12:0:0
+#	    1.1			   13:0:0
 
-LIBPPL_LT_CURRENT =  12
+LIBPPL_LT_CURRENT =  13
 LIBPPL_LT_REVISION =  0
 LIBPPL_LT_AGE =       0
 
