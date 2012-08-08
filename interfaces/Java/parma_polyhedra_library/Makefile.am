@@ -186,6 +186,7 @@ $(srcdir)/PPL_Object.java \
 $(srcdir)/Relation_Symbol.java \
 $(srcdir)/Timeout_Exception.java \
 $(srcdir)/Variable.java \
+$(srcdir)/Variable_Stringifier.java \
 $(srcdir)/Variables_Set.java
 
 # NOTE: do _NOT_ add Fake_Class_for_Doxygen.java to this list.

@@ -23,10 +23,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
-import java.util.*;
 import javax.management.RuntimeErrorException;
 
 //! A line, ray, point or closure point.

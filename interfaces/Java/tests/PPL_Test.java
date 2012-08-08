@@ -21,8 +21,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-import java.util.Map;
-
 public class PPL_Test {
 
     static boolean NOISY = false;

@@ -1,5 +1,4 @@
-/* Congruence_System Java class declaration and implementation.
-   Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Variable_Stringifier Java interface.
    Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,24 +22,12 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-//! A system of congruences.
+//! An interface for objects converting a Variable id to a string.
 /*! \ingroup PPL_Java_interface
-    An object of the class Congruence_System is a system of congruences,
-    i.e., a multiset of objects of the class Congruence.
+  If customized variable output is required, the user should implement
+  this interface and pass a corresponding instance to Variable's static
+  method \c setStringifier.
 */
-public class Congruence_System extends java.util.ArrayList<Congruence> {
-    //! Default constructor: builds an empty system of congruences.
-    public Congruence_System() {
-    }
-
-    //! Returns an ascii formatted internal representation of \p this.
-    public native String ascii_dump();
-
-    //! Returns a string representation of \p this.
-    public native String toString();
-
-    private static native void initIDs();
-    static {
-        initIDs();
-    }
+public interface Variable_Stringifier {
+    public String stringify(int var_id);
 }

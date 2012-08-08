@@ -36,10 +36,10 @@ dist_noinst_HEADERS = \
 instchk.hh
 
 ppl-config.h: config.h $(srcdir)/ppl-config.sed
-	$(SED) -f $(srcdir)/ppl-config.sed $< >$@
+	$(SED) -f $(srcdir)/ppl-config.sed config.h >$@
 
 ppl-config.h.in: config.h.in $(srcdir)/ppl-config.sed
-	$(SED) -f $(srcdir)/ppl-config.sed $< >$@
+	$(SED) -f $(srcdir)/ppl-config.sed config.h.in >$@
 
 DISTCHECK_CONFIGURE_FLAGS = \
 --enable-shared

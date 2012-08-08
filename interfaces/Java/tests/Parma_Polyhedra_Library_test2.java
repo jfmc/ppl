@@ -25,16 +25,16 @@ site: http://bugseng.com/products/ppl/ . */
 import parma_polyhedra_library.*;
 
 public class Parma_Polyhedra_Library_test2 {
-static {
-    try {
-        System.loadLibrary("ppl_java");
+    static {
+        try {
+            System.loadLibrary("ppl_java");
+        }
+        catch (UnsatisfiedLinkError  e) {
+            System.out.println("Unable to load the library");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
     }
-    catch (UnsatisfiedLinkError  e) {
-        System.out.println("Unable to load the library");
-        System.out.println(e.getMessage());
-        System.exit(-1);
-    }
-}
 
     // This code tests the timeout functions.
     public static boolean test01() {

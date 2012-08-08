@@ -34,6 +34,8 @@ Java_Class_Cache cached_classes;
 Java_FMID_Cache cached_FMIDs;
 
 Java_Class_Cache::Java_Class_Cache() {
+  // Java Virtual Machine pointer.
+  jvm = NULL;
   // Non-PPL classes.
   Boolean = NULL;
   Integer = NULL;
@@ -75,6 +77,7 @@ Java_Class_Cache::Java_Class_Cache() {
   PPL_Object = NULL;
   Relation_Symbol = NULL;
   Variable = NULL;
+  Variable_Stringifier = NULL;
   Variables_Set = NULL;
 }
 
@@ -93,6 +96,8 @@ Java_Class_Cache::init_cache(JNIEnv* env, jclass& field, const char* name) {
 void
 Java_Class_Cache::init_cache(JNIEnv* env) {
   assert(env != NULL);
+  // Java Virtual Machine pointer.
+  env->GetJavaVM(&jvm);
   // Non-PPL classes.
   init_cache(env, Boolean, "java/lang/Boolean");
   init_cache(env, Integer, "java/lang/Integer");
@@ -155,6 +160,8 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
   init_cache(env, PPL_Object, "parma_polyhedra_library/PPL_Object");
   init_cache(env, Relation_Symbol, "parma_polyhedra_library/Relation_Symbol");
   init_cache(env, Variable, "parma_polyhedra_library/Variable");
+  // NOTE: initialization of concrete Variable_Stringifier is responsibility
+  // of static (native) method Variable.setStringifier.
   init_cache(env, Variables_Set, "parma_polyhedra_library/Variables_Set");
 }
 
@@ -170,6 +177,8 @@ Java_Class_Cache::clear_cache(JNIEnv* env, jclass& field) {
 void
 Java_Class_Cache::clear_cache(JNIEnv* env) {
   assert(env != NULL);
+  // Clearing the JVM pointer.
+  jvm = NULL;
   // Non-PPL classes.
   clear_cache(env, Boolean);
   clear_cache(env, Integer);
@@ -209,6 +218,7 @@ Java_Class_Cache::clear_cache(JNIEnv* env) {
   clear_cache(env, PPL_Object);
   clear_cache(env, Relation_Symbol);
   clear_cache(env, Variable);
+  clear_cache(env, Variable_Stringifier);
   clear_cache(env, Variables_Set);
 }
 
@@ -1193,6 +1203,40 @@ build_java_artificial_parameter
 			       j_le, j_den);
   CHECK_RESULT_THROW(env, ret);
   return ret;
+}
+
+void
+Java_Variable_output_function(std::ostream& s, Variable v) {
+  // Use cached Java Virtual Machine pointer to retrieve JNI env.
+  JavaVM* jvm = cached_classes.jvm;
+  JNIEnv *env = 0;
+  jvm->AttachCurrentThread((void **)&env, NULL);
+  CHECK_EXCEPTION_ASSERT(env);
+  // Retrieve stringifier object.
+  jclass var_class = cached_classes.Variable;
+  jfieldID fID = cached_FMIDs.Variable_stringifier_ID;
+  jobject stringifier = env->GetStaticObjectField(var_class, fID);
+  CHECK_RESULT_THROW(env, stringifier);
+  // Use it to get the Java string for the variable.
+  jmethodID mID = cached_FMIDs.Variable_Stringifier_stringify_ID;
+#ifndef NDEBUG
+  {
+    // Dynamically retrieve stringifier class and use it to compute
+    // the corresponding method ID, so as to compare it with cached one.
+    jclass dyn_class = env->GetObjectClass(stringifier);
+    jmethodID dyn_mID = env->GetMethodID(dyn_class, "stringify",
+                                         "(I)Ljava/lang/String;");
+    CHECK_RESULT_ASSERT(env, mID == dyn_mID);
+  }
+#endif // #ifndef NDEBUG
+  jstring bi_string
+    = (jstring) env->CallObjectMethod(stringifier, mID, v.id());
+  CHECK_EXCEPTION_THROW(env);
+  // Convert the string and print it on C++ stream.
+  const char* nativeString = env->GetStringUTFChars(bi_string, 0);
+  CHECK_RESULT_THROW(env, nativeString);
+  s << nativeString;
+  env->ReleaseStringUTFChars(bi_string, nativeString);
 }
 
 } // namespace Java

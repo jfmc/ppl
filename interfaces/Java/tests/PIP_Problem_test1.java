@@ -22,23 +22,19 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.Vector;
 import parma_polyhedra_library.*;
 
-
 public class PIP_Problem_test1 {
-static {
-    try {
-        System.loadLibrary("ppl_java");
+    static {
+        try {
+            System.loadLibrary("ppl_java");
+        }
+        catch (UnsatisfiedLinkError  e) {
+            System.out.println("Unable to load the library");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
     }
-    catch (UnsatisfiedLinkError  e) {
-        System.out.println("Unable to load the library");
-        System.out.println(e.getMessage());
-        System.exit(-1);
-    }
-}
 
     // This code tests the PIP_Problem methods.
     public static boolean test01() {
@@ -392,7 +388,7 @@ static {
         Constraint_System cs1 = root.constraints();
         if (cs1.size() != 1)
           return false;
-        Constraint c = cs.firstElement();
+        Constraint c = cs.get(0);
         Linear_Expression le_left = c.left_hand_side();
         Linear_Expression le_right = c.right_hand_side();
         Relation_Symbol relsym = c.kind();
@@ -417,7 +413,7 @@ static {
         Constraint_System cs2 = t_child.constraints();
         if (cs2.size() != 1)
           return false;
-        Constraint c2 = cs2.firstElement();
+        Constraint c2 = cs2.get(0);
         Linear_Expression le_left2 = c2.left_hand_side();
         Linear_Expression le_right2 = c2.right_hand_side();
         Relation_Symbol relsym2 = c2.kind();
@@ -448,7 +444,7 @@ static {
         // Check artificial parameter.
         if (t_f_child.number_of_artificials() != 1)
           return false;
-        Artificial_Parameter ap = t_f_child.artificials().firstElement();
+        Artificial_Parameter ap = t_f_child.artificials().get(0);
         Linear_Expression ap_le = ap.linear_expression();
         Coefficient ap_den = ap.denominator();
 
@@ -462,7 +458,7 @@ static {
         Constraint_System cs4 = t_f_child.constraints();
         if (cs4.size() != 1)
           return false;
-        Constraint c4 = cs4.firstElement();
+        Constraint c4 = cs4.get(0);
         if (c4.kind() != Relation_Symbol.GREATER_OR_EQUAL)
           return false;
         // Check parametric values.

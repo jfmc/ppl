@@ -24,9 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A node of the PIP solution tree.
 /*!
   This is the base class for the nodes of the binary trees representing

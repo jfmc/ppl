@@ -23,9 +23,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 //! A linear congruence.
 /*! \ingroup PPL_Java_interface
   An object of the class Congruence is an object represeting a congruence:

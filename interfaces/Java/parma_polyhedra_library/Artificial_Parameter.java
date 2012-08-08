@@ -24,9 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 package parma_polyhedra_library;
 
-import java.io.Writer;
-import java.io.IOException;
-
 /*!
   An Artificial_Parameter object represents the result
   of the integer division of a Linear_Expression (on the other

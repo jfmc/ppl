@@ -59,8 +59,9 @@
 #	    0.12		   10:0:0
 #	    0.12.1		   11:0:0
 #	    1.0			   12:0:0
+#	    1.1			   13:0:0
 
-LIBPPL_LT_CURRENT =  12
+LIBPPL_LT_CURRENT =  13
 LIBPPL_LT_REVISION =  0
 LIBPPL_LT_AGE =       0
 
@@ -628,28 +629,28 @@ ppl.hh.sed: Makefile
 	@echo "}"                                     >>$@
 
 ppl.hh:	ppl.hh.dist ppl.hh.sed
-	$(SED) -f ppl.hh.sed $< >$@
+	$(SED) -f ppl.hh.sed ppl.hh.dist >$@
 	rm -f ppl.hh.sed
 
 BUGS.hh:	BUGS.hh.dist
-	cp -f $< $@
+	cp -f BUGS.hh.dist $@
 BUGS.cc:	BUGS.cc.dist
-	cp -f $< $@
+	cp -f BUGS.cc.dist $@
 COPYING.hh:	COPYING.hh.dist
-	cp -f $< $@
+	cp -f COPYING.hh.dist $@
 COPYING.cc:	COPYING.cc.dist
-	cp -f $< $@
+	cp -f COPYING.cc.dist $@
 CREDITS.hh:	CREDITS.hh.dist
-	cp -f $< $@
+	cp -f CREDITS.hh.dist $@
 CREDITS.cc:	CREDITS.cc.dist
-	cp -f $< $@
+	cp -f CREDITS.cc.dist $@
 
 endif !HAVE_PERL
 
 if USE_PRECOMPILED_HEADERS
 
 ppl.hh.gch: ppl.hh
-	$(CXXCOMPILE) -xc++-header -o $@ $<
+	$(CXXCOMPILE) -xc++-header -o $@ ppl.hh
 
 PRECOMPILED = ppl.hh.gch
 
