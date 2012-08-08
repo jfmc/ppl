@@ -559,6 +559,8 @@ build_cxx_relsym(JNIEnv* env, jobject j_relsym) {
     return GREATER_OR_EQUAL;
   case 4:
     return GREATER_THAN;
+  case 5:
+    return NOT_EQUAL;
   default:
     PPL_JAVA_UNEXPECTED;
   }
@@ -848,7 +850,7 @@ build_cxx_linear_expression(JNIEnv* env, jobject j_le) {
   if (env->IsAssignableFrom(current_class,
                             cached_classes.Linear_Expression_Variable)) {
     jmethodID mID = cached_FMIDs.Linear_Expression_Variable_var_id_ID;
-    jint var_id = env->CallIntMethod(j_le, mID);
+    jlong var_id = env->CallLongMethod(j_le, mID);
     return Linear_Expression(Variable(var_id));
   }
   // LE_Coefficient
@@ -1225,7 +1227,7 @@ Java_Variable_output_function(std::ostream& s, Variable v) {
     // the corresponding method ID, so as to compare it with cached one.
     jclass dyn_class = env->GetObjectClass(stringifier);
     jmethodID dyn_mID = env->GetMethodID(dyn_class, "stringify",
-                                         "(I)Ljava/lang/String;");
+                                         "(J)Ljava/lang/String;");
     CHECK_RESULT_ASSERT(env, mID == dyn_mID);
   }
 #endif // #ifndef NDEBUG

@@ -45,7 +45,7 @@ extends Linear_Expression {
 	return new Linear_Expression_Variable(arg);
     }
 
-    private int var_id() {
+    private long var_id() {
         return arg.id();
     }
 
