@@ -9,6 +9,30 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 ===============================================================
 
 --------------------------------------------------------------------------
+NEWS for version 1.1  (released date to be decided)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  In the Java language interface:
+
+    - The constraint/generator/... system classes now extend the ArrayList
+      generic container (rather than Vector);
+
+    - Variable objects are now built from a long (rather than int) value,
+      thereby matching the type used elsewhere for space dimensions;
+
+    - added new static method to Variable class
+          void setStringifier(Variable_Stringifier)
+      where Variable_Stringifier is an interface allowing for
+      customization of the output routine for variable's names
+      (see example in interfaces/Java/tests/Variable_Output_test1.java);
+
+    - added value NOT_EQUAL to enumeration Relation_Symbol.
+
+
+--------------------------------------------------------------------------
 NEWS for version 1.0  (released on June 28, 2012)
 --------------------------------------------------------------------------
 
