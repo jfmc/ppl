@@ -29,5 +29,5 @@ package parma_polyhedra_library;
   method \c setStringifier.
 */
 public interface Variable_Stringifier {
-    public String stringify(int var_id);
+    public String stringify(long var_id);
 }

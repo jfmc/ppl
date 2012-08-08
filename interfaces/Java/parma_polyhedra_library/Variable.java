@@ -37,14 +37,14 @@ import javax.management.RuntimeErrorException;
 */
 public class Variable implements Comparable<Variable> {
     //! The index of the Cartesian axis.
-    private int varid;
+    private long varid;
 
     //! Builds the variable corresponding to the Cartesian axis of index \p i.
     /*!
       \exception RuntimeErrorException
       Thrown if <CODE>i</CODE> is has negative value.
     */
-    public Variable(int i) {
+    public Variable(long i) {
 	if (i < 0)
 	    throw new
 		RuntimeErrorException(new Error("parma_polyhedra_library.Variable::"
@@ -55,7 +55,7 @@ public class Variable implements Comparable<Variable> {
     }
 
     //! Returns the index of the Cartesian axis associated to \p this.
-    public int id() {
+    public long id() {
 	return varid;
     }
 
@@ -65,7 +65,12 @@ public class Variable implements Comparable<Variable> {
       is greater than \p v.
     */
     public int compareTo(Variable v) {
-        return varid - v.varid;
+        if (varid < v.varid)
+            return -1;
+        else if (varid == v.varid)
+            return 0;
+        else
+            return 1;
     }
 
     //! Optional customization provider for \c toString.
