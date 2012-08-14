@@ -530,9 +530,9 @@ public:
   */
   void set_divisor(Coefficient_traits::const_reference d);
 
-  //! The type returned by the expression() method, that provides most
-  //! of the const methods in Linear_Expression.
-  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Linear_Expression> > Expression;
+  typedef Linear_Expression expr_type;
+  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Grid_Generator> >
+  Expression;
 
   //! Allows user code to read the internal expression (but note that this
   //! is a different type, not all operations are allowed).
@@ -540,10 +540,6 @@ public:
 
 private:
   Linear_Expression expr;
-
-  Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
-
-  Expression wrapped_expr;
 
   Kind kind_;
 
@@ -704,6 +700,7 @@ private:
   friend int
   compare(const Grid_Generator& x, const Grid_Generator& y);
 
+  friend class Expression_Adapter<Grid_Generator>;
   friend class Grid_Generator_System;
   friend class Grid;
   friend class Linear_System<Grid_Generator>;
@@ -790,6 +787,9 @@ namespace IO_Operators {
 std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
 
 } // namespace IO_Operators
+
+// Declare specializations of adapter functions.
+PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Grid_Generator)
 
 } // namespace Parma_Polyhedra_Library
 

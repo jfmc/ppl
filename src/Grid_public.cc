@@ -545,7 +545,7 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (!congruences_are_up_to_date())
     update_congruences();
 
-  Linear_Expression expr(g);
+  Linear_Expression expr(g.expression());
   Grid_Generator gg(grid_point());
   if (g.is_point() || g.is_closure_point())
     // Points and closure points are converted to grid points.
@@ -1509,7 +1509,7 @@ PPL::Grid::difference_assign(const Grid& y) {
       continue;
 
     if (cg.is_proper_congruence()) {
-      const Linear_Expression e = Linear_Expression(cg);
+      const Linear_Expression e(cg.expression());
       // Congruence cg is ((e %= 0) / m).
       const Coefficient& m = cg.modulus();
       // If x is included in the grid defined by the congruences cg
@@ -1584,7 +1584,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
         // Found: we obtain a congruence `c' contradicting the one we
         // found, and assign to `x' the grid `gr' with `c' as
         // the only congruence.
-        const Linear_Expression le(y_con_sys_i);
+        const Linear_Expression le(y_con_sys_i.expression());
         if (y_con_sys_i.is_equality()) {
           gr.refine_no_check(le == 1);
           break;

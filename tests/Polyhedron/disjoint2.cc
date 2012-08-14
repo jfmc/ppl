@@ -31,7 +31,7 @@ half_strip(const Generator& p,
 	   bool closed = true) {
   assert((p.is_point() && closed) || (p.is_closure_point() && ! closed));
 
-  Linear_Expression e1(p);
+  Linear_Expression e1(p.expression());
   e1 += 3*Variable(0);
 
   Generator_System gs;

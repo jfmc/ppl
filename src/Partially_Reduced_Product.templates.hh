@@ -518,7 +518,7 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
   // It is assumed that cg is satisfied by all points in d1.
   PPL_ASSERT(d1.relation_with(cg) == Poly_Con_Relation::is_included());
 
-  Linear_Expression e(cg);
+  Linear_Expression e(cg.expression());
 
   // Find the maximum and minimum bounds for the domain element d with the
   // linear expression e.
@@ -591,7 +591,7 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
 
 template <typename D1, typename D2>
 void
-  Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   if (d1.is_empty() || d2.is_empty()) {
     // If one of the components is empty, do the smash reduction and return.
     Parma_Polyhedra_Library::Smash_Reduction<D1, D2> sr;
@@ -628,12 +628,12 @@ void
 
 template <typename D1, typename D2>
 void
-  Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
-    // First do the congruences reduction.
-    Parma_Polyhedra_Library::Congruences_Reduction<D1, D2> cgr;
-    cgr.product_reduce(d1, d2);
-    if (d1.is_empty())
-      return;
+Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
+  // First do the congruences reduction.
+  Parma_Polyhedra_Library::Congruences_Reduction<D1, D2> cgr;
+  cgr.product_reduce(d1, d2);
+  if (d1.is_empty())
+    return;
 
   PPL_DIRTY_TEMP_COEFFICIENT(freq_n);
   PPL_DIRTY_TEMP_COEFFICIENT(freq_d);
@@ -650,7 +650,7 @@ void
       continue;
     // Check the frequency and value of the linear expression for
     // the constraint `c'.
-    Linear_Expression le(c);
+    Linear_Expression le(c.expression());
     if (!d1.frequency(le, freq_n, freq_d, val_n, val_d))
       // Nothing to do.
       continue;
@@ -680,7 +680,7 @@ void
       continue;
     // Check the frequency and value of the linear expression for
     // the constraint `c'.
-    Linear_Expression le(c);
+    Linear_Expression le(c.expression());
     if (!d2.frequency(le, freq_n, freq_d, val_n, val_d))
       // Nothing to do.
       continue;

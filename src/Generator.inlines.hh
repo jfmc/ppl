@@ -38,7 +38,7 @@ Generator::is_not_necessarily_closed() const {
 
 inline dimension_type
 Generator::space_dimension() const {
-  return wrapped_expr.space_dimension();
+  return expression().space_dimension();
 }
 
 inline bool
@@ -73,11 +73,9 @@ Generator::set_topology(Topology x) {
   if (topology() == NECESSARILY_CLOSED) {
     // Add a column for the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
-    wrapped_expr.set_hide_last(true);
   } else {
     PPL_ASSERT(expr.space_dimension() > 0);
     expr.set_space_dimension(expr.space_dimension() - 1);
-    wrapped_expr.set_hide_last(false);
   }
   topology_ = x;
 }
@@ -86,14 +84,12 @@ inline void
 Generator::mark_as_necessarily_closed() {
   PPL_ASSERT(is_not_necessarily_closed());
   topology_ = NECESSARILY_CLOSED;
-  wrapped_expr.set_hide_last(false);
 }
 
 inline void
 Generator::mark_as_not_necessarily_closed() {
   PPL_ASSERT(is_necessarily_closed());
   topology_ = NOT_NECESSARILY_CLOSED;
-  wrapped_expr.set_hide_last(true);
 }
 
 inline void
@@ -109,8 +105,6 @@ Generator::set_not_necessarily_closed() {
 inline
 Generator::Generator(Representation r)
   : expr(r),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, false),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NECESSARILY_CLOSED) {
   expr.set_inhomogeneous_term(Coefficient_one());
@@ -122,8 +116,6 @@ inline
 Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
                      Representation r)
   : expr(r),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
     topology_(topology) {
   if (is_necessarily_closed())
@@ -136,9 +128,7 @@ Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
 
 inline
 Generator::Generator(Linear_Expression& e, Type type, Topology topology)
-  : semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
-    topology_(topology) {
+  : topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
@@ -152,9 +142,7 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
 
 inline
 Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
-  : semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, topology == NOT_NECESSARILY_CLOSED),
-    kind_(kind),
+  : kind_(kind),
     topology_(topology) {
   swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
@@ -165,8 +153,6 @@ Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
 inline
 Generator::Generator(const Generator& g)
   : expr(g.expr),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
     topology_(g.topology_) {
 }
@@ -174,8 +160,6 @@ Generator::Generator(const Generator& g)
 inline
 Generator::Generator(const Generator& g, Representation r)
   : expr(g.expr, r),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
     topology_(g.topology_) {
   // This does not assert OK() because it's called by OK().
@@ -185,8 +169,6 @@ Generator::Generator(const Generator& g, Representation r)
 inline
 Generator::Generator(const Generator& g, dimension_type space_dim)
   : expr(g.expr, g.is_necessarily_closed() ? space_dim : (space_dim + 1)),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
     topology_(g.topology_) {
   PPL_ASSERT(OK());
@@ -197,8 +179,6 @@ inline
 Generator::Generator(const Generator& g, dimension_type space_dim,
                      Representation r)
   : expr(g.expr, g.is_necessarily_closed() ? space_dim : (space_dim + 1), r),
-    semi_wrapped_expr(expr),
-    wrapped_expr(semi_wrapped_expr, g.is_not_necessarily_closed()),
     kind_(g.kind_),
     topology_(g.topology_) {
   PPL_ASSERT(OK());
@@ -219,7 +199,7 @@ Generator::operator=(const Generator& g) {
 
 inline const Generator::Expression&
 Generator::expression() const {
-  return wrapped_expr;
+  return reinterpret_cast<const Generator::Expression&>(*this);
 }
 
 inline Representation
@@ -538,8 +518,6 @@ Generator::m_swap(Generator& y) {
   swap(expr, y.expr);
   swap(kind_, y.kind_);
   swap(topology_, y.topology_);
-  wrapped_expr.set_hide_last(is_not_necessarily_closed());
-  y.wrapped_expr.set_hide_last(y.is_not_necessarily_closed());
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -721,6 +699,18 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 inline void
 swap(Generator& x, Generator& y) {
   x.m_swap(y);
+}
+
+template <>
+inline Expression_Adapter<Generator>::obj_expr_type const&
+Expression_Adapter<Generator>::obj_expr() const {
+  return obj().expr;
+}
+
+template <>
+inline bool
+Expression_Adapter<Generator>::hiding_last() const {
+  return obj().is_not_necessarily_closed();
 }
 
 } // namespace Parma_Polyhedra_Library

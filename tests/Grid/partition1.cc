@@ -37,7 +37,7 @@ partition_aux(const Congruence& c,
 	      Pointset_Powerset<Grid>& r) {
   const Coefficient& c_modulus = c.modulus();
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
-  Linear_Expression le(c);
+  Linear_Expression le(c.expression());
   le -= c_inhomogeneous_term;
   PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);

@@ -396,8 +396,10 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
       for (Constraint_System::const_iterator i = ph_cs.begin(),
 	     ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
 	const Constraint& c = *i;
-	if (c.is_strict_inequality())
-	  lp.add_constraint(Linear_Expression(c) >= 0);
+	if (c.is_strict_inequality()) {
+          Linear_Expression expr(c.expression());
+	  lp.add_constraint(expr >= 0);
+        }
 	else
 	  lp.add_constraint(c);
       }

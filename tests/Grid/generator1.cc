@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace {
 
 // Point.
-static bool
+bool
 test01() {
   Variable A(0);
   Variable B(1);
@@ -45,7 +45,7 @@ test01() {
 }
 
 // Point with divisor.
-static bool
+bool
 test02() {
   Variable A(0);
   Variable B(1);
@@ -64,7 +64,7 @@ test02() {
 }
 
 // Line.
-static bool
+bool
 test03() {
   Variable A(0);
   Variable B(1);
@@ -83,7 +83,7 @@ test03() {
 }
 
 // Parameter.
-static bool
+bool
 test04() {
   Variable A(0);
   Variable B(1);
@@ -102,7 +102,7 @@ test04() {
 }
 
 // Parameter with divisor.
-static bool
+bool
 test05() {
   Variable A(0);
   Variable B(1);
@@ -121,7 +121,7 @@ test05() {
 }
 
 // Negative first coefficient.
-static bool
+bool
 test06() {
   Variable A(0);
   Variable B(1);
@@ -140,7 +140,7 @@ test06() {
 }
 
 // Construction from Generator.
-static bool
+bool
 test07() {
   Variable A(0);
   Variable B(1);
@@ -159,7 +159,7 @@ test07() {
 }
 
 // Construction from reference to Generator.
-static bool
+bool
 test08() {
   Variable A(0);
   Variable B(1);
@@ -181,7 +181,7 @@ test08() {
 }
 
 // Create from empty linear expression.
-static bool
+bool
 test09() {
   Linear_Expression le;
   Grid_Generator a(grid_point(le));
@@ -197,7 +197,7 @@ test09() {
 }
 
 // Parameter with negative divisor.
-static bool
+bool
 test10() {
   Variable A(0);
   Variable B(1);
@@ -216,7 +216,7 @@ test10() {
 }
 
 // Point with negative divisor.
-static bool
+bool
 test11() {
   Variable A(0);
   Variable B(1);
@@ -235,7 +235,7 @@ test11() {
 }
 
 // Parameter with zero divisor.
-static bool
+bool
 test12() {
   Variable A(0);
   Variable B(1);
@@ -254,7 +254,7 @@ test12() {
 }
 
 // Point with zero divisor.
-static bool
+bool
 test13() {
   Variable A(0);
   Variable B(1);
@@ -273,7 +273,7 @@ test13() {
 }
 
 // Line.
-static bool
+bool
 test14() {
   Variable A(0);
   Variable B(1);
@@ -292,7 +292,7 @@ test14() {
 }
 
 // is_equivalent_to() and is_equal_to(): generators have different types
-static bool
+bool
 test15() {
   Variable A(0);
 
@@ -321,7 +321,7 @@ test15() {
 }
 
 // is_equivalent_to(): generators have different space dimensions
-static bool
+bool
 test16() {
   Variable A(0);
   Variable B(1);
@@ -349,7 +349,7 @@ test16() {
 
 // Getting coefficients of dimensions and rebuilding a generator from
 // them. This is based on Example 6 in Grid_Generator.defs.hh
-static bool
+bool
 test17() {
   Variable A(0);
   Variable B(1);
@@ -373,7 +373,7 @@ test17() {
 }
 
 // Copy construction of a grid generator.
-static bool
+bool
 test18() {
   Variable A(0);
   Variable B(1);
@@ -392,7 +392,7 @@ test18() {
 }
 
 // Method zero_dim_point.
-static bool
+bool
 test19() {
   Grid_Generator a(Grid_Generator::zero_dim_point());
 
@@ -407,7 +407,7 @@ test19() {
 }
 
 // Method `type'.
-static bool
+bool
 test20() {
   Variable C(2);
 
@@ -424,7 +424,7 @@ test20() {
 }
 
 // Exception when trying to get the divisor of a line.
-static bool
+bool
 test21() {
   Variable C(2);
 
@@ -444,14 +444,11 @@ test21() {
   return false;
 }
 
-// Method zero_dim_point.
-static bool
+bool
 test22() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-
-  Linear_Expression le(grid_point(A - B - 2*C));
 
   bool ok = (grid_point(A - B - 2*C) == grid_point(A - B - 2*C));
 

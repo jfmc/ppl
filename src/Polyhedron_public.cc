@@ -294,7 +294,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   // Build the equality corresponding to the congruence (ignoring the modulus).
-  Linear_Expression expr = Linear_Expression(cg);
+  Linear_Expression expr(cg.expression());
   Constraint c(expr == 0);
 
   // The polyhedron is non-empty so that there exists a point.
@@ -602,7 +602,7 @@ PPL::Polyhedron::contains_integer_point() const {
         PPL_ASSERT(c.is_inconsistent());
         return false;
       }
-      Linear_Expression le(c);
+      Linear_Expression le(c.expression());
       if (homogeneous_gcd != 1)
         le /= homogeneous_gcd;
       // Further tighten the constraint if the inhomogeneous term
@@ -646,7 +646,7 @@ PPL::Polyhedron::contains_integer_point() const {
 	  if (c.type() == Constraint::EQUALITY)
 	    return false;
 	  // Extract the homogeneous part of the constraint.
-	  Linear_Expression le = Linear_Expression(c);
+	  Linear_Expression le(c.expression());
 	  le -= inhomogeneous;
 	  // Tighten the inhomogeneous term.
 	  assign_r(rational_inhomogeneous.get_num(),
@@ -1267,7 +1267,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   }
 
   // Add the equality.
-  Linear_Expression le(cg);
+  Linear_Expression le(cg.expression());
   Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
 
   refine_no_check(c);
@@ -1330,7 +1330,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
-      const Linear_Expression nc_expr = Linear_Expression(g);
+      const Linear_Expression nc_expr(g.expression());
       gen_sys.insert(Generator::point(nc_expr, g.divisor()));
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
@@ -1373,7 +1373,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
-      const Linear_Expression nc_expr = Linear_Expression(g);
+      const Linear_Expression nc_expr(g.expression());
       switch (g.type()) {
       case Generator::LINE:
 	if (has_pending)
@@ -1595,7 +1595,7 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
          cgs_end = cgs.end(); i != cgs_end; ++i) {
     const Congruence& cg = *i;
     if (cg.is_equality()) {
-      Linear_Expression le(cg);
+      Linear_Expression le(cg.expression());
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
 
       // TODO: Consider stealing the row in c when adding it to cs.
@@ -1646,7 +1646,7 @@ PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
   }
 
   if (cg.is_equality()) {
-    Linear_Expression le(cg);
+    Linear_Expression le(cg.expression());
     Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
 
     refine_no_check(c);
@@ -1706,7 +1706,7 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
       // would cause a change in the topology of `con_sys', which is
       // wrong.  Thus, we insert a topology closed and "topology
       // corrected" version of `c'.
-      Linear_Expression nc_expr = Linear_Expression(c);
+      Linear_Expression nc_expr(c.expression());
       if (c.is_equality())
         if (adding_pending)
           con_sys.insert_pending(nc_expr == 0);
@@ -1744,7 +1744,7 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
   for (Congruence_System::const_iterator i = cgs.begin(),
          cgs_end = cgs.end(); i != cgs_end; ++i) {
     if (i->is_equality()) {
-      Linear_Expression le(*i);
+      Linear_Expression le(i->expression());
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
 
       // TODO: Consider stealing the row in c when adding it to cs.
@@ -2027,7 +2027,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         // found, and assign to `x' the polyhedron `ph' with `c' as
         // the only constraint.
         Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
-        Linear_Expression le(y_con_sys_i);
+        Linear_Expression le(y_con_sys_i.expression());
         switch (y_con_sys_i.type()) {
         case Constraint::EQUALITY:
           ph.refine_no_check(le == 1);
@@ -2464,7 +2464,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     Polyhedron z = x;
-    const Linear_Expression e = Linear_Expression(c);
+    const Linear_Expression e(c.expression());
     switch (c.type()) {
     case Constraint::NONSTRICT_INEQUALITY:
       if (is_necessarily_closed())

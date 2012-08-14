@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Linear_Expression_Impl_defs_hh 1
 
 #include "Linear_Expression_Impl.types.hh"
-#include "Congruence.types.hh"
 #include "Coefficient.defs.hh"
 #include "Variable.defs.hh"
 #include "Variables_Set.defs.hh"
@@ -575,19 +574,10 @@ public:
 
   //! Implementation sizing constructor.
   /*!
-    The bool parameter is just to avoid problems with
-    the constructor Linear_Expression_Impl(Coefficient_traits::const_reference n).
+    The bool parameter is just to avoid problems with the constructor
+    Linear_Expression_Impl(Coefficient_traits::const_reference n).
   */
   Linear_Expression_Impl(dimension_type space_dim, bool);
-
-  //! Builds the linear expression corresponding to congruence \p cg, and
-  //! with the specified space dimension.
-  /*!
-    Given the congruence
-    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    builds the linear expression \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
-  */
-  Linear_Expression_Impl(const Congruence& cg, dimension_type space_dim);
 
   //! Linearly combines \p *this with \p y so that the coefficient of \p v
   //! is 0.

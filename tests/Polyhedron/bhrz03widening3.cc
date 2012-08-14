@@ -206,16 +206,19 @@ aux1_test04() {
 Generator
 aux2_test04(const Generator& p1, const Generator& p2, unsigned magic_number) {
   // Splitting segment.
+  Linear_Expression expr1(p1.expression());
+  Linear_Expression expr2(p2.expression());
   const Coefficient& d1 = p1.divisor();
   const Coefficient& d2 = p2.divisor();
-  Linear_Expression expr = d2 * Linear_Expression(p1);
-  expr += d1 * Linear_Expression(p2);
+  expr1 *= d2;
+  expr2 *= d1;
+  expr1 += expr2;
   // The divisor for the average is 2 * d1 * d2.
   // by carefully taking a smaller divisor, we obtain a point
   // that won't be redundant in the polyhedron.
   // NOTE: I am not *sure* this dirty kludge of using such
   // a magic number will always succeed.
-  return point((magic_number+1)*expr, magic_number*2*d1*d2);
+  return point((magic_number+1)*expr1, magic_number*2*d1*d2);
 }
 
 Generator_System
@@ -333,15 +336,14 @@ aux2_test05(const Generator& r1, const Generator& r2, unsigned magic_number) {
   //  Variable A(0);
   //  Variable B(1);
   Variable C(2);
-
-  Linear_Expression expr;
-  expr += Linear_Expression(r1);
-  expr += Linear_Expression(r2);
+  Linear_Expression expr1(r1.expression());
+  Linear_Expression expr2(r2.expression());
+  expr1 += expr2;
   // NOTE: I am not *sure* this dirty kludge of using such
   // a magic number will always succeed.
-  expr *= magic_number + 1;
-  expr -= C;
-  return ray(expr);
+  expr1 *= (magic_number + 1);
+  expr1 -= C;
+  return ray(expr1);
 }
 
 Generator_System

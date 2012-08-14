@@ -159,7 +159,7 @@ approximate_partition_aux(const PPL::Congruence& c,
   // in this direction, then there is a finite partition and that
   // is added to r.
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
-  Linear_Expression le(c);
+  Linear_Expression le(c.expression());
   le -= c_inhomogeneous_term;
   PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);

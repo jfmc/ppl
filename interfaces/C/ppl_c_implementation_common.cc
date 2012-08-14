@@ -725,7 +725,7 @@ int
 ppl_new_Linear_Expression_from_Constraint(ppl_Linear_Expression_t* ple,
 					  ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  *ple = to_nonconst(new Linear_Expression(cc));
+  *ple = to_nonconst(new Linear_Expression(cc.expression()));
   return 0;
 }
 CATCH_ALL
@@ -1045,7 +1045,7 @@ int
 ppl_new_Linear_Expression_from_Generator(ppl_Linear_Expression_t* ple,
 					 ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
-  *ple = to_nonconst(new Linear_Expression(gg));
+  *ple = to_nonconst(new Linear_Expression(gg.expression()));
   return 0;
 }
 CATCH_ALL
@@ -1332,7 +1332,7 @@ int
 ppl_new_Linear_Expression_from_Congruence(ppl_Linear_Expression_t* ple,
 					  ppl_const_Congruence_t c) try {
   const Congruence& cc = *to_const(c);
-  *ple = to_nonconst(new Linear_Expression(cc));
+  *ple = to_nonconst(new Linear_Expression(cc.expression()));
   return 0;
 }
 CATCH_ALL

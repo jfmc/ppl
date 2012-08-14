@@ -526,9 +526,8 @@ public:
   //! Swaps \p *this with \p y.
   void m_swap(Generator& y);
 
-  //! The type returned by the expression() method, that provides most
-  //! of the const methods in Linear_Expression.
-  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Linear_Expression> > Expression;
+  typedef Linear_Expression expr_type;
+  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Generator> > Expression;
 
   //! Allows user code to read the internal expression (but note that this
   //! is a different type, not all operations are allowed).
@@ -542,10 +541,6 @@ private:
   };
 
   Linear_Expression expr;
-
-  Expression_Hide_Inhomo<Linear_Expression> semi_wrapped_expr;
-
-  Expression wrapped_expr;
 
   Kind kind_;
 
@@ -727,6 +722,7 @@ private:
   //! This is used by operator<<();
   void fancy_print(std::ostream& s) const;
 
+  friend class Expression_Adapter<Generator>;
   friend class Linear_System<Generator>;
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
@@ -740,9 +736,9 @@ private:
   friend class Parma_Polyhedra_Library::MIP_Problem;
   friend class Parma_Polyhedra_Library::Grid;
 
-  friend
-  Parma_Polyhedra_Library
-  ::Linear_Expression::Linear_Expression(const Generator& g);
+  // friend
+  // Parma_Polyhedra_Library
+  // ::Linear_Expression::Linear_Expression(const Generator& g);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
@@ -1028,6 +1024,9 @@ namespace IO_Operators {
 std::ostream& operator<<(std::ostream& s, const Generator::Type& t);
 
 } // namespace IO_Operators
+
+// Declare specializations of adapter functions.
+PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Generator)
 
 } // namespace Parma_Polyhedra_Library
 

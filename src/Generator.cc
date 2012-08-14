@@ -228,8 +228,8 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
     // Due to the presence of epsilon-coefficients, syntactically
     // different points may actually encode the same generator.
     // First, drop the epsilon-coefficient ...
-    Linear_Expression x_expr(x);
-    Linear_Expression y_expr(y);
+    Linear_Expression x_expr(x.expression());
+    Linear_Expression y_expr(y.expression());
     // ... second, re-normalize ...
     x_expr.normalize();
     y_expr.normalize();

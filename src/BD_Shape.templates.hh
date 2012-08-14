@@ -91,7 +91,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
           DB_Row<N>& dbm_i = dbm[i];
           for (dimension_type j = space_dim; j > 0; --j)
             if (i != j)
-              div_round_up(dbm_i[j], g.expression().get(Variable(j - 1)) - g_i, d);
+              div_round_up(dbm_i[j],
+                           g.expression().get(Variable(j - 1)) - g_i,
+                           d);
           div_round_up(dbm_i[0], -g_i, d);
         }
         for (dimension_type j = space_dim; j > 0; --j)
@@ -243,8 +245,10 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       for (Constraint_System::const_iterator i = ph_cs.begin(),
              ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
         const Constraint& c = *i;
-        if (c.is_strict_inequality())
-          lp.add_constraint(Linear_Expression(c) >= 0);
+        if (c.is_strict_inequality()) {
+          Linear_Expression expr(c.expression());
+          lp.add_constraint(expr >= 0);
+        }
         else
           lp.add_constraint(c);
       }
@@ -1353,7 +1357,7 @@ BD_Shape<T>::relation_with(const Congruence& cg) const {
 
   // Find the lower bound for a hyperplane with direction
   // defined by the congruence.
-  Linear_Expression le = Linear_Expression(cg);
+  Linear_Expression le = Linear_Expression(cg.expression());
   PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
   PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
   bool min_included;
@@ -1458,7 +1462,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     // Find the linear expression for the constraint and use that to
     // find if the expression is bounded from above or below and if it
     // is, find the maximum and minimum values.
-    Linear_Expression le(c);
+    Linear_Expression le(c.expression());
     le.set_inhomogeneous_term(Coefficient_zero());
 
     PPL_DIRTY_TEMP(Coefficient, max_numer);
@@ -2381,7 +2385,7 @@ BD_Shape<T>::difference_assign(const BD_Shape& y) {
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     BD_Shape z = x;
-    const Linear_Expression e = Linear_Expression(c);
+    const Linear_Expression e(c.expression());
     z.add_constraint(e <= 0);
     if (!z.is_empty())
       new_bd_shape.upper_bound_assign(z);
@@ -4853,8 +4857,8 @@ linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
   for (dimension_type curr_var = 0, n_var = 0; curr_var < lf_space_dimension;
        ++curr_var) {
     n_var = curr_var + 1;
-    const FP_Interval_Type& curr_coefficient =
-                            lf.coefficient(Variable(curr_var));
+    const FP_Interval_Type&
+      curr_coefficient = lf.coefficient(Variable(curr_var));
     assign_r(curr_lb, curr_coefficient.lower(), ROUND_NOT_NEEDED);
     assign_r(curr_ub, curr_coefficient.upper(), ROUND_NOT_NEEDED);
     if (curr_lb != 0 || curr_ub != 0) {

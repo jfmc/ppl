@@ -102,8 +102,10 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
       for (Constraint_System::const_iterator i = ph_cs.begin(),
              ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
         const Constraint& c = *i;
-        if (c.is_strict_inequality())
-          lp.add_constraint(Linear_Expression(c) >= 0);
+        if (c.is_strict_inequality()) {
+          Linear_Expression expr(c.expression());
+          lp.add_constraint(expr >= 0);
+        }
         else
           lp.add_constraint(c);
       }
@@ -1789,7 +1791,7 @@ Octagonal_Shape<T>::relation_with(const Congruence& cg) const {
 
   // Find the lower bound for a hyperplane with direction
   // defined by the congruence.
-  Linear_Expression le = Linear_Expression(cg);
+  Linear_Expression le(cg.expression());
   PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
   PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
   bool min_included;
@@ -3078,7 +3080,7 @@ Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     Octagonal_Shape z = x;
-    const Linear_Expression e = Linear_Expression(c);
+    const Linear_Expression e(c.expression());
     z.add_constraint(e <= 0);
     if (!z.is_empty())
       new_oct.upper_bound_assign(z);

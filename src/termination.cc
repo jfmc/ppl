@@ -42,12 +42,15 @@ assign_all_inequalities_approximation(const Constraint_System& cs_in,
       const Constraint& c = *i;
       if (c.is_equality()) {
         // Insert the two corresponding opposing inequalities.
-        cs_out.insert(Linear_Expression(c) >= 0);
-        cs_out.insert(Linear_Expression(c) <= 0);
+        Linear_Expression expr(c.expression());
+        cs_out.insert(expr >= 0);
+        cs_out.insert(expr <= 0);
       }
-      else if (c.is_strict_inequality())
+      else if (c.is_strict_inequality()) {
         // Insert the non-strict approximation.
-        cs_out.insert(Linear_Expression(c) >= 0);
+        Linear_Expression expr(c.expression());
+        cs_out.insert(expr >= 0);
+      }
       else
         // Insert as is.
         cs_out.insert(c);
@@ -70,8 +73,9 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
       const Constraint& c = *i;
       if (c.is_equality()) {
 	// Insert the two corresponding opposing inequalities.
-	cs.insert(Linear_Expression(c) >= 0);
-	cs.insert(Linear_Expression(c) <= 0);
+	Linear_Expression expr(c.expression());
+	cs.insert(expr >= 0);
+	cs.insert(expr <= 0);
       }
       else
 	// Insert as is.

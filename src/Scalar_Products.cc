@@ -50,8 +50,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
 void
 PPL::Scalar_Products::assign(Coefficient& z,
 			     const Grid_Generator& gg, const Congruence& cg) {
-  gg.expr.scalar_product_assign(z, cg.expression(),
-                                0, gg.space_dimension() + 1);
+  gg.expr.scalar_product_assign(z, cg.expr, 0, gg.space_dimension() + 1);
 }
 
 void
@@ -67,7 +66,7 @@ PPL::Scalar_Products::assign(Coefficient& z,
   // Scalar product is only defined if `cg' and `gg' are
   // dimension-compatible.
   PPL_ASSERT(cg.space_dimension() <= gg.space_dimension());
-  cg.expression().scalar_product_assign(z, gg.expr);
+  cg.expr.scalar_product_assign(z, gg.expr);
 }
 
 void
@@ -84,10 +83,10 @@ void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
 				     const Grid_Generator& gg,
 				     const Congruence& cg) {
-  // The reduced scalar product is only defined if the topology of `gg'
-  // is NNC and `cg' has enough coefficients.
+  // The reduced scalar product is only defined
+  // if `cg' has enough coefficients.
   PPL_ASSERT(gg.space_dimension() <= cg.space_dimension());
-  gg.expr.scalar_product_assign(z, cg.expression(), 0, gg.space_dimension());
+  gg.expr.scalar_product_assign(z, cg.expr, 0, gg.space_dimension());
 }
 
 void
@@ -107,8 +106,7 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
   // Scalar product is only defined if `gg' and `cg' are
   // dimension-compatible.
   PPL_ASSERT(gg.space_dimension() <= cg.space_dimension());
-  gg.expr.scalar_product_assign(z, cg.expression(),
-                                1, gg.space_dimension() + 1);
+  gg.expr.scalar_product_assign(z, cg.expr, 1, gg.space_dimension() + 1);
 }
 
 void

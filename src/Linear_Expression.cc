@@ -28,9 +28,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Linear_Expression_Impl.defs.hh"
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
-#include "Congruence.defs.hh"
-#include "Grid_Generator.defs.hh"
-#include "Generator.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -78,39 +75,6 @@ PPL::Linear_Expression::Linear_Expression(dimension_type space_dim, bool x,
 
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(space_dim, x);
-    break;
-
-  default:
-    PPL_UNREACHABLE;
-  }
-}
-
-PPL::Linear_Expression::Linear_Expression(const Congruence& c,
-                                          dimension_type space_dim) {
-  switch (c.expression().representation()) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(c, space_dim);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(c, space_dim);
-    break;
-
-  default:
-    PPL_UNREACHABLE;
-  }
-}
-
-PPL::Linear_Expression::Linear_Expression(const Congruence& c,
-                                          dimension_type space_dim,
-                                          Representation r) {
-  switch (r) {
-  case DENSE:
-    impl = new Linear_Expression_Impl<Dense_Row>(c, space_dim);
-    break;
-
-  case SPARSE:
-    impl = new Linear_Expression_Impl<Sparse_Row>(c, space_dim);
     break;
 
   default:
@@ -196,65 +160,6 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
   default:
     PPL_UNREACHABLE;
   }
-}
-
-PPL::Linear_Expression::Linear_Expression(const Constraint& c)
-  : impl(NULL) {
-  Linear_Expression tmp(c.expression());
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Constraint& c,
-                                          Representation r)
-  : impl(NULL) {
-  Linear_Expression tmp(c.expression(), r);
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Generator& g)
-  : impl(NULL) {
-  Linear_Expression tmp(g.expression());
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Generator& g, Representation r)
-  : impl(NULL) {
-  Linear_Expression tmp(g.expression(), r);
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
-  : impl(NULL) {
-  Linear_Expression tmp(g.expression());
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g,
-                                          Representation r)
-  : impl(NULL) {
-  Linear_Expression tmp(g.expression(), r);
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
-  : impl(NULL) {
-  Linear_Expression tmp(cg.expression());
-  using std::swap;
-  swap(impl, tmp.impl);
-}
-
-PPL::Linear_Expression::Linear_Expression(const Congruence& cg,
-                                          Representation r)
-  : impl(NULL) {
-  Linear_Expression tmp(cg.expression(), r);
-  using std::swap;
-  swap(impl, tmp.impl);
 }
 
 PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
