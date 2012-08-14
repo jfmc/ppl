@@ -67,6 +67,19 @@ Expression_Hide_Inhomo<T>::get(dimension_type i) const {
 }
 
 template <typename T>
+inline Coefficient_traits::const_reference
+Expression_Hide_Inhomo<T>::get(Variable v) const {
+  return this->obj_expr().get(v);
+}
+
+template <typename T>
+inline bool
+Expression_Hide_Inhomo<T>
+::all_zeroes(const Variables_Set& vars) const {
+  return this->obj_expr().all_zeroes(vars);
+}
+
+template <typename T>
 inline bool
 Expression_Hide_Inhomo<T>::all_zeroes(dimension_type start,
                                       dimension_type end) const {
@@ -101,6 +114,12 @@ Expression_Hide_Inhomo<T>::gcd(dimension_type start,
   if (start == 0)
     ++start;
   return this->obj_expr().gcd(start, end);
+}
+
+template <typename T>
+inline dimension_type
+Expression_Hide_Inhomo<T>::last_nonzero() const {
+  return this->obj_expr().last_nonzero();
 }
 
 template <typename T>

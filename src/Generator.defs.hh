@@ -736,10 +736,6 @@ private:
   friend class Parma_Polyhedra_Library::MIP_Problem;
   friend class Parma_Polyhedra_Library::Grid;
 
-  // friend
-  // Parma_Polyhedra_Library
-  // ::Linear_Expression::Linear_Expression(const Generator& g);
-
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Generator& g);

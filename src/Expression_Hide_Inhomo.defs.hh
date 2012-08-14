@@ -55,6 +55,15 @@ public:
   //! Returns the i-th coefficient.
   Coefficient_traits::const_reference get(dimension_type i) const;
 
+  //! Returns the coefficient of v.
+  Coefficient_traits::const_reference get(Variable v) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if the coefficient of each variable in
+    \p vars[i] is \f$0\f$.
+  */
+  bool all_zeroes(const Variables_Set& vars) const;
+
   /*! \brief
     Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
     [start, end).
@@ -71,6 +80,10 @@ public:
     coefficients in this range are 0 returns 0.
   */
   Coefficient gcd(dimension_type start, dimension_type end) const;
+
+  //! Returns the index of the last nonzero element, or 0 if there are no
+  //! nonzero elements.
+  dimension_type last_nonzero() const;
 
   //! Returns the index of the last nonzero element in [first,last), or last
   //! if there are no nonzero elements.

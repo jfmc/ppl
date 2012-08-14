@@ -90,14 +90,16 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
           const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
           for (dimension_type j = space_dim; j > 0; --j)
-            if (i != j)
-              div_round_up(dbm_i[j],
-                           g.expression().get(Variable(j - 1)) - g_i,
-                           d);
+            if (i != j) {
+              const Coefficient& g_j = g.expression().get(Variable(j - 1));
+              div_round_up(dbm_i[j], g_j - g_i, d);
+            }
           div_round_up(dbm_i[0], -g_i, d);
         }
-        for (dimension_type j = space_dim; j > 0; --j)
-          div_round_up(dbm_0[j], g.expression().get(Variable(j - 1)), d);
+        for (dimension_type j = space_dim; j > 0; --j) {
+          const Coefficient& g_j = g.expression().get(Variable(j - 1));
+          div_round_up(dbm_0[j], g_j, d);
+        }
         // Note: no need to initialize the first element of the main diagonal.
       }
       else {
@@ -111,14 +113,16 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
           DB_Row<N>& dbm_i = dbm[i];
           // The loop correctly handles the case when i == j.
           for (dimension_type j = space_dim; j > 0; --j) {
-            div_round_up(tmp, g.expression().get(Variable(j - 1)) - g_i, d);
+            const Coefficient& g_j = g.expression().get(Variable(j - 1));
+            div_round_up(tmp, g_j - g_i, d);
             max_assign(dbm_i[j], tmp);
           }
           div_round_up(tmp, -g_i, d);
           max_assign(dbm_i[0], tmp);
         }
         for (dimension_type j = space_dim; j > 0; --j) {
-          div_round_up(tmp, g.expression().get(Variable(j - 1)), d);
+          const Coefficient& g_j = g.expression().get(Variable(j - 1));
+          div_round_up(tmp, g_j, d);
           max_assign(dbm_0[j], tmp);
         }
       }
