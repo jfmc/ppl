@@ -582,8 +582,11 @@ private:
   bool is_equal_at_dimension(dimension_type dim,
                              const Grid_Generator& gg) const;
 
-  //! Another print functions, with fancy output, more human-friendly.
-  //! This is used by operator<<();
+  /*! \brief
+    A print function, with fancy, more human-friendly output.
+
+    This is used by operator<<().
+  */
   void fancy_print(std::ostream& s) const;
 
   //! Converts the Grid_Generator into a parameter.
