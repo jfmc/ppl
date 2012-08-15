@@ -32,6 +32,68 @@ site: http://bugseng.com/products/ppl/ . */
 #include <exception>
 #include <gmpxx.h>
 
+#ifndef PPL_PROFILE_ADD_WEIGHT
+#define PPL_PROFILE_ADD_WEIGHT 0
+#endif
+
+#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
+#include "Weight_Profiler.defs.hh"
+#endif
+
+#if defined(NDEBUG)
+
+#if PPL_PROFILE_ADD_WEIGHT
+
+#define WEIGHT_BEGIN() Weight_Profiler::begin()
+
+#define WEIGHT_ADD(delta)                                     \
+  do {                                                        \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
+    wp__.end();                                               \
+  } while (false)
+
+#define WEIGHT_ADD_MUL(delta, factor)                                   \
+  do {                                                                  \
+    static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
+    wp__.end(factor);                                                   \
+  } while (false)
+
+#else // !PPL_PROFILE_ADD_WEIGHT
+
+#define WEIGHT_BEGIN()                          \
+  do {                                          \
+  } while (false)
+
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    Weightwatch_Traits::weight += (delta);      \
+  } while (false)
+
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    Weightwatch_Traits::weight += (delta)*(factor);     \
+  } while (false)
+
+#endif // !PPL_PROFILE_ADD_WEIGHT
+
+#else // !defined(NDEBUG)
+
+#define WEIGHT_BEGIN()
+
+#define WEIGHT_ADD(delta)                       \
+  do {                                          \
+    if (!In_Assert::asserting())                \
+      Weightwatch_Traits::weight += delta;      \
+  } while (false)
+
+#define WEIGHT_ADD_MUL(delta, factor)                   \
+  do {                                                  \
+    if (!In_Assert::asserting())                        \
+      Weightwatch_Traits::weight += delta * factor;     \
+  } while (false)
+
+#endif // !defined(NDEBUG)
+
 
 namespace Parma_Polyhedra_Library {
 
@@ -495,54 +557,6 @@ least_significant_one_mask(dimension_type i);
 // By default, use sparse matrices both for MIP_Problem and PIP_Problem.
 #ifndef PPL_USE_SPARSE_MATRIX
 #define PPL_USE_SPARSE_MATRIX 1
-#endif
-
-#ifndef PPL_PROFILE_ADD_WEIGHT
-#define PPL_PROFILE_ADD_WEIGHT 0
-#endif
-
-#if defined(NDEBUG) && PPL_PROFILE_ADD_WEIGHT
-#include "Weight_Profiler.defs.hh"
-#endif
-
-#if defined(NDEBUG)
-#if PPL_PROFILE_ADD_WEIGHT
-#define WEIGHT_BEGIN() Weight_Profiler::begin()
-#define WEIGHT_ADD(delta)                                     \
-  do {                                                        \
-    static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
-    wp__.end();                                               \
-  } while (false)
-#define WEIGHT_ADD_MUL(delta, factor)                                   \
-  do {                                                                  \
-    static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
-    wp__.end(factor);                                                   \
-  } while (false)
-#else
-#define WEIGHT_BEGIN()                          \
-  do {                                          \
-  } while (false)
-#define WEIGHT_ADD(delta)                       \
-  do {                                          \
-    Weightwatch_Traits::weight += (delta);      \
-  } while (false)
-#define WEIGHT_ADD_MUL(delta, factor)                   \
-  do {                                                  \
-    Weightwatch_Traits::weight += (delta)*(factor);     \
-  } while (false)
-#endif
-#else
-#define WEIGHT_BEGIN()
-#define WEIGHT_ADD(delta)                       \
-  do {                                          \
-    if (!In_Assert::asserting())                       \
-      Weightwatch_Traits::weight += delta;      \
-  } while (false)
-#define WEIGHT_ADD_MUL(delta, factor)                   \
-  do {                                                  \
-    if (!In_Assert::asserting())                               \
-      Weightwatch_Traits::weight += delta * factor;     \
-  } while (false)
 #endif
 
 #include "globals.inlines.hh"
