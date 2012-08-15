@@ -718,8 +718,11 @@ private:
   */
   bool check_strong_normalized() const;
 
-  //! Another print functions, with fancy output, more human-friendly.
-  //! This is used by operator<<();
+  /*! \brief
+    A print function, with fancy, more human-friendly output.
+
+    This is used by operator<<().
+  */
   void fancy_print(std::ostream& s) const;
 
   friend class Expression_Adapter<Generator>;

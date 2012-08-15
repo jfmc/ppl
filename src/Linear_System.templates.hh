@@ -240,11 +240,12 @@ Linear_System<Row>::insert_pending_no_ok(Row& r, Recycle_Input) {
   // TODO: A Grid_Generator_System may contain non-normalized lines that
   // represent parameters, so this check is disabled. Consider re-enabling it
   // when it's possibile.
-  /*
-    // The added row must be strongly normalized and have the same
-    // number of elements as the existing rows of the system.
-    PPL_ASSERT(r.check_strong_normalized());
-  */
+#if 0
+  // The added row must be strongly normalized and have the same
+  // number of elements as the existing rows of the system.
+  PPL_ASSERT(r.check_strong_normalized());
+#endif
+
   PPL_ASSERT(r.topology() == topology());
 
   r.set_representation(representation());
