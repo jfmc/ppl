@@ -1019,7 +1019,7 @@ assign_mpq_numeric_float(mpq_class& to, const long double from) {
     n *= mult;
     exp -= bits;
     long double intpart = std::floor(n);
-    num += (unsigned long)intpart;
+    num += static_cast<unsigned long>(intpart);
     n -= intpart;
     if (n == 0)
       break;
