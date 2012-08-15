@@ -2181,7 +2181,8 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
       changed = true;
     }
 
-    next_constraint: ;
+  next_constraint:
+    ;
   }
 
   con_sys.set_sorted(!changed && con_sys_was_sorted);
