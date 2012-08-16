@@ -33,8 +33,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \brief
-  \ingroup PPL_CXX_Interface
+/*! \ingroup PPL_CXX_Interface \brief
   A floating point expression on a given format.
 
   This class represents a concrete <EM>floating point expression</EM>. This

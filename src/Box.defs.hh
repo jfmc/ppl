@@ -93,7 +93,7 @@ std::ostream& operator<<(std::ostream& s, const Box<ITV>& box);
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 */
 template <typename To, typename ITV>
 bool
@@ -111,7 +111,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 */
 template <typename Temp, typename To, typename ITV>
 bool
@@ -150,7 +150,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 */
 template <typename To, typename ITV>
 bool
@@ -168,7 +168,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 */
 template <typename Temp, typename To, typename ITV>
 bool
@@ -207,7 +207,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 */
 template <typename To, typename ITV>
 bool
@@ -225,7 +225,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 */
 template <typename Temp, typename To, typename ITV>
 bool

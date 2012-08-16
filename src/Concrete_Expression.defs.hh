@@ -127,20 +127,20 @@ public:
   //! Returns the kind of \* this.
   Concrete_Expression_Kind kind() const;
 
-  //! Tests if \p *this has the same kind as <CODE>Derived<Target></CODE>.
+  //! Tests if \p *this has the same kind as <CODE>Derived\<Target\></CODE>.
   template <template <typename T> class Derived>
   bool is() const;
 
   /*! \brief
     Returns a pointer to \p *this converted to type
-    <CODE>Derived<Target>*</CODE>.
+    <CODE>Derived\<Target\>*</CODE>.
   */
   template <template <typename T> class Derived>
   Derived<Target>* as();
 
   /*! \brief
     Returns a pointer to \p *this converted to type
-    <CODE>const Derived<Target>*</CODE>.
+    <CODE>const Derived\<Target\>*</CODE>.
   */
   template <template <typename T> class Derived>
   const Derived<Target>* as() const;
