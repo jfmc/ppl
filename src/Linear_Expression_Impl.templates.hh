@@ -618,9 +618,9 @@ Linear_Expression_Impl<Row>::sign_normalize() {
     for ( ; i != i_end; ++i)
       neg_assign(*i);
     // Negate the first coefficient, too.
-    typename Row::iterator i = row.begin();
-    if (i != row.end() && i.index() == 0)
-      neg_assign(*i);
+    typename Row::iterator first = row.begin();
+    if (first != row.end() && first.index() == 0)
+      neg_assign(*first);
   }
   PPL_ASSERT(OK());
 }
