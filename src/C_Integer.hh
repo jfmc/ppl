@@ -89,8 +89,8 @@ struct C_Integer<signed char> : public True {
   typedef void smaller_signed_type;
   typedef void smaller_unsigned_type;
   typedef unsigned char other_type;
-  static const signed char min = SCHAR_MIN;
-  static const signed char max = SCHAR_MAX;
+  static const signed char min = static_cast<signed char>(SCHAR_MIN);
+  static const signed char max = static_cast<signed char>(SCHAR_MAX);
 };
 
 template <>
@@ -100,8 +100,8 @@ struct C_Integer<signed short> : public True {
   typedef signed char smaller_signed_type;
   typedef unsigned char smaller_unsigned_type;
   typedef unsigned short other_type;
-  static const signed short min = SHRT_MIN;
-  static const signed short max = SHRT_MAX;
+  static const signed short min = static_cast<signed short>(SHRT_MIN);
+  static const signed short max = static_cast<signed short>(SHRT_MAX);
 };
 
 template <>
@@ -144,8 +144,8 @@ struct C_Integer<unsigned char> : public True {
   typedef void smaller_signed_type;
   typedef void smaller_unsigned_type;
   typedef signed char other_type;
-  static const unsigned char min = 0U;
-  static const unsigned char max = static_cast<unsigned char>(~0U);
+  static const unsigned char min = static_cast<unsigned char>(0U);
+  static const unsigned char max = static_cast<unsigned char>(UCHAR_MAX);
 };
 
 template <>
@@ -155,8 +155,8 @@ struct C_Integer<unsigned short> : public True {
   typedef signed char smaller_signed_type;
   typedef unsigned char smaller_unsigned_type;
   typedef signed short other_type;
-  static const unsigned short min = 0U;
-  static const unsigned short max = static_cast<unsigned short>(~0U);
+  static const unsigned short min = static_cast<unsigned short>(0U);
+  static const unsigned short max = static_cast<unsigned short>(USHRT_MAX);
 };
 
 template <>
@@ -167,7 +167,7 @@ struct C_Integer<unsigned int> : public True {
   typedef unsigned short smaller_unsigned_type;
   typedef signed int other_type;
   static const unsigned int min = 0U;
-  static const unsigned int max = ~0U;
+  static const unsigned int max = UINT_MAX;
 };
 
 template <>
@@ -178,7 +178,7 @@ struct C_Integer<unsigned long> : public True {
   typedef unsigned int smaller_unsigned_type;
   typedef signed long other_type;
   static const unsigned long min = 0UL;
-  static const unsigned long max = ~0UL;
+  static const unsigned long max = ULONG_MAX;
 };
 
 template <>
@@ -189,7 +189,7 @@ struct C_Integer<unsigned long long> : public True {
   typedef unsigned long smaller_unsigned_type;
   typedef signed long long other_type;
   static const unsigned long long min = 0ULL;
-  static const unsigned long long max = ~0ULL;
+  static const unsigned long long max = ULLONG_MAX;
 };
 
 } // namespace Parma_Polyhedra_Library
