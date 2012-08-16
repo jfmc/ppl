@@ -189,10 +189,10 @@ namespace Parma_Polyhedra_Library {
 
 #define PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Class) \
 template <> \
-Expression_Adapter<Class>::obj_expr_type const& \
-Expression_Adapter<Class>::obj_expr() const; \
+Expression_Adapter<PPL_U(Class)>::obj_expr_type const& \
+Expression_Adapter<PPL_U(Class)>::obj_expr() const;    \
 template <> \
-bool Expression_Adapter<Class>::hiding_last() const;
+bool Expression_Adapter<PPL_U(Class)>::hiding_last() const;
 
 } // namespace Parma_Polyhedra_Library
 
