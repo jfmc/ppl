@@ -556,7 +556,6 @@ PPL::CO_Tree::init(dimension_type n) {
   max_depth = 0;
 
   if (n > 0) {
-    init(0);
     const dimension_type max_d = integer_log2(n) + 1;
     const height_t new_max_depth = static_cast<height_t>(max_d);
     const dimension_type new_reserved_size
