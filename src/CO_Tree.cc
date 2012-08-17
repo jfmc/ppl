@@ -536,17 +536,16 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 }
 
 void
-PPL::CO_Tree::init(dimension_type reserved_size1) {
-  if (reserved_size1 == 0) {
-    indexes = NULL;
-    data = NULL;
-    size_ = 0;
-    reserved_size = 0;
-    max_depth = 0;
-  }
-  else {
+PPL::CO_Tree::init(dimension_type n) {
+  indexes = NULL;
+  data = NULL;
+  size_ = 0;
+  reserved_size = 0;
+  max_depth = 0;
+
+  if (n > 0) {
     init(0);
-    const dimension_type new_max_depth = integer_log2(reserved_size1) + 1;
+    const dimension_type new_max_depth = integer_log2(n) + 1;
     const dimension_type new_reserved_size
       = (static_cast<dimension_type>(1) << new_max_depth) - 1;
     // If this throws, *this will be the empty tree.
