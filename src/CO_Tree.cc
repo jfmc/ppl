@@ -357,54 +357,69 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
   PPL_ASSERT(!empty());
 
 #ifndef NDEBUG
+  // Check that `itr' is a correct hint.
   tree_iterator itr2(*this);
   itr2.go_down_searching_key(key1);
   PPL_ASSERT(itr == itr2);
 #endif
 
   if (itr.index() == key1) {
+    // Replacement, rather than insertion.
     *itr = data1;
     PPL_ASSERT(OK());
     return itr;
   }
 
-  if (data <= &data1 && &data1 < data + (reserved_size + 1)) {
-    // data1 is a coefficient of this row.
-    // Avoid invalidating it.
-    data_type x = data1;
+  // Proper insertion: check if it would invalidate `data1'.
+  const bool invalidating
+    = (data <= &data1) && (&data1 < data + (reserved_size + 1));
+
+  if (!invalidating)
+    return insert_precise_aux(key1, data1, itr);
+
+  // `data1' could be invalidated by the insert, because it is
+  // a coefficient of this row. Avoid the issue by copying it.
+  data_type data1_copy = data1;
 
 #ifndef NDEBUG
-    dimension_type i = &data1 - data;
-    dimension_type key2 = indexes[i];
-    PPL_ASSERT(key2 != unused_index);
-    // This is true since key1 is not in the tree.
-    PPL_ASSERT(key2 != key1);
+  dimension_type i = &data1 - data;
+  dimension_type key2 = indexes[i];
+  PPL_ASSERT(key2 != unused_index);
+  // This is true since `key1' is not in the tree.
+  PPL_ASSERT(key2 != key1);
 #endif
 
-    // Insert a dummy coefficient.
-    // NOTE: This may invalidate data1, because it may reallocate the tree
-    // and/or move coefficients during rebalancing).
-    itr = insert_precise(key1, Coefficient_zero(), itr);
+  // Insert a dummy coefficient.
+  // NOTE: this may invalidate `data1', because it may reallocate the tree
+  // and/or move coefficients during rebalancing.
+  itr = insert_precise_aux(key1, Coefficient_zero(), itr);
 
-    PPL_ASSERT(itr.index() == key1);
+  PPL_ASSERT(itr.index() == key1);
 
-    using std::swap;
+  // Swap the correct coefficient in place.
+  using std::swap;
+  swap(*itr, data1_copy);
 
-    // Swap the correct coefficient in place.
-    swap(*itr, x);
+  PPL_ASSERT(OK());
+  return itr;
+}
 
-    PPL_ASSERT(OK());
-    return itr;
-  }
+PPL::CO_Tree::tree_iterator
+PPL::CO_Tree::insert_precise_aux(dimension_type key1,
+                                 data_type_const_reference data1,
+                                 tree_iterator itr) {
+  PPL_ASSERT(key1 != unused_index);
+  PPL_ASSERT(!empty());
+  // This is a proper insert.
+  PPL_ASSERT(itr.index() != key1);
+  // `data1' is not going to be invalidated.
+  PPL_ASSERT(!(data <= &data1 && &data1 < data + (reserved_size + 1)));
 
   if (is_greater_than_ratio(size_ + 1, reserved_size, max_density_percent)) {
-
     rebuild_bigger_tree();
-
-    // itr was invalidated by the rebuild operation
+    // `itr' was invalidated by the rebuild operation
     itr.get_root();
     itr.go_down_searching_key(key1);
-
     PPL_ASSERT(itr.index() != key1);
   }
 
@@ -423,13 +438,10 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
     new (&(*itr)) data_type(data1);
     // Set the index only if the construction was successful.
     itr.index() = key1;
-
-  } else {
-
+  }
+  else {
     itr = rebalance(itr, key1, data1);
-
     itr.go_down_searching_key(key1);
-
     PPL_ASSERT(itr.index() == key1);
   }
   PPL_ASSERT(OK());
