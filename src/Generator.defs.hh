@@ -827,7 +827,7 @@ bool operator!=(const Generator& x, const Generator& y);
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 
   \note
   Distances are \e only defined between generators that are points and/or
@@ -848,7 +848,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 
   \note
   Distances are \e only defined between generators that are points and/or
@@ -893,7 +893,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 
   \note
   Distances are \e only defined between generators that are points and/or
@@ -914,7 +914,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 
   \note
   Distances are \e only defined between generators that are points and/or
@@ -959,7 +959,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 
   \note
   Distances are \e only defined between generators that are points and/or
@@ -980,7 +980,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 
   \note
   Distances are \e only defined between generators that are points and/or
