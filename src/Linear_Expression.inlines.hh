@@ -24,9 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Linear_Expression_inlines_hh
 #define PPL_Linear_Expression_inlines_hh 1
 
-#include "Expression_Hide_Inhomo.defs.hh"
-#include "Expression_Hide_Last.defs.hh"
-
+#include "Expression_Adapter.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -378,8 +376,8 @@ neg_assign(Linear_Expression& e) {
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 inline Linear_Expression&
 add_mul_assign(Linear_Expression& e,
-                    Coefficient_traits::const_reference n,
-                    const Variable v) {
+               Coefficient_traits::const_reference n,
+               const Variable v) {
   e.impl->add_mul_assign(n, v);
   return e;
 }
@@ -395,8 +393,8 @@ sub_mul_assign(Linear_Expression& e,
 
 inline void
 add_mul_assign(Linear_Expression& e1,
-                    Coefficient_traits::const_reference factor,
-                    const Linear_Expression& e2) {
+               Coefficient_traits::const_reference factor,
+               const Linear_Expression& e2) {
   e1.impl->add_mul_assign(factor, *e2.impl);
 }
 
@@ -474,7 +472,9 @@ Linear_Expression::all_zeroes(const Variables_Set& vars) const {
 }
 
 inline bool
-Linear_Expression::all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const {
+Linear_Expression::all_zeroes_except(const Variables_Set& vars,
+                                     dimension_type start,
+                                     dimension_type end) const {
   return impl->all_zeroes_except(vars, start, end);
 }
 
@@ -715,111 +715,47 @@ Linear_Expression
   return const_iterator(impl->lower_bound(v));
 }
 
-template <typename Expression>
+template <typename LE_Adapter>
 inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e)
+Linear_Expression::Linear_Expression(const LE_Adapter& e,
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
   Linear_Expression tmp(e.representation());
   tmp.set_space_dimension(e.space_dimension());
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
-  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
-    add_mul_assign(tmp, i.variable(), *i);
-}
-
-template <typename Expression>
-inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e, Representation r)
-  : impl(NULL) {
-  Linear_Expression tmp(r);
-  tmp.set_space_dimension(e.space_dimension());
-  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
-  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
-    add_mul_assign(tmp, i.variable(), *i);
-}
-
-template <typename Expression>
-inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
-                    dimension_type space_dim)
-  : impl(NULL) {
-  Linear_Expression tmp(e.representation());
-  tmp.set_space_dimension(e.space_dimension());
-  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
-  itr_t i_end;
-  if (space_dim <= e.space_dimension())
-    i_end = e.lower_bound(Variable(space_dim));
-  else
-    i_end = e.end();
-  for (itr_t i = e.begin(); i != i_end; ++i)
-    add_mul_assign(tmp, i.variable(), *i);
-}
-
-template <typename Expression>
-inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
-                    dimension_type space_dim, Representation r)
-  : impl(NULL) {
-  Linear_Expression tmp(r);
-  tmp.set_space_dimension(e.space_dimension());
-  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Inhomo<Expression>::const_iterator itr_t;
-  itr_t i_end;
-  if (space_dim <= e.space_dimension())
-    i_end = e.lower_bound(Variable(space_dim));
-  else
-    i_end = e.end();
-  for (itr_t i = e.begin(); i != i_end; ++i)
-    add_mul_assign(tmp, i.variable(), *i);
-}
-
-template <typename Expression>
-inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Last<Expression>& e)
-  : impl(NULL) {
-  using std::swap;
-  Linear_Expression tmp(e.representation());
-  tmp.set_space_dimension(e.space_dimension());
-  tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
-  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
+  for (typename LE_Adapter::const_iterator i = e.begin(),
+         i_end = e.end(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
+  using std::swap;
   swap(impl, tmp.impl);
 }
 
-template <typename Expression>
+template <typename LE_Adapter>
 inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Last<Expression>& e, Representation r)
+Linear_Expression::Linear_Expression(const LE_Adapter& e,
+                                     Representation r,
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
-  using std::swap;
   Linear_Expression tmp(r);
   tmp.set_space_dimension(e.space_dimension());
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
-  for (itr_t i = e.begin(), i_end = e.end(); i != i_end; ++i)
+  for (typename LE_Adapter::const_iterator i = e.begin(),
+         i_end = e.end(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
+  using std::swap;
   swap(impl, tmp.impl);
 }
 
-template <typename Expression>
+template <typename LE_Adapter>
 inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Last<Expression>& e,
-                    dimension_type space_dim)
+Linear_Expression::Linear_Expression(const LE_Adapter& e,
+                                     dimension_type space_dim,
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
-  using std::swap;
   Linear_Expression tmp(e.representation());
   tmp.set_space_dimension(space_dim);
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
+  typedef typename LE_Adapter::const_iterator itr_t;
   itr_t i_end;
   if (space_dim <= e.space_dimension())
     i_end = e.lower_bound(Variable(space_dim));
@@ -827,20 +763,21 @@ Linear_Expression
     i_end = e.end();
   for (itr_t i = e.begin(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
+  using std::swap;
   swap(impl, tmp.impl);
 }
 
-template <typename Expression>
+template <typename LE_Adapter>
 inline
-Linear_Expression
-::Linear_Expression(const Expression_Hide_Last<Expression>& e,
-                    dimension_type space_dim, Representation r)
+Linear_Expression::Linear_Expression(const LE_Adapter& e,
+                                     dimension_type space_dim,
+                                     Representation r,
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
-  using std::swap;
   Linear_Expression tmp(r);
   tmp.set_space_dimension(space_dim);
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
-  typedef typename Expression_Hide_Last<Expression>::const_iterator itr_t;
+  typedef typename LE_Adapter::const_iterator itr_t;
   itr_t i_end;
   if (space_dim <= e.space_dimension())
     i_end = e.lower_bound(Variable(space_dim));
@@ -848,6 +785,7 @@ Linear_Expression
     i_end = e.end();
   for (itr_t i = e.begin(); i != i_end; ++i)
     add_mul_assign(tmp, *i, i.variable());
+  using std::swap;
   swap(impl, tmp.impl);
 }
 

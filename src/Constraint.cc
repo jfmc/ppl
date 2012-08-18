@@ -64,8 +64,7 @@ PPL::Constraint::construct_epsilon_geq_zero() {
 }
 
 PPL::Constraint::Constraint(const Congruence& cg, Representation r)
-  : expr(cg, r),
-    wrapped_expr(expr, false),
+  : expr(cg.expression(), r),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
   if (!cg.is_equality())
@@ -130,7 +129,7 @@ PPL::Constraint::is_tautological() const {
 	// Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
-        return wrapped_expr.all_homogeneous_terms_are_zero();
+        return expression().all_homogeneous_terms_are_zero();
       }
     }
 }
@@ -164,7 +163,7 @@ PPL::Constraint::is_inconsistent() const {
         // Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
-        return wrapped_expr.all_homogeneous_terms_are_zero();
+        return expression().all_homogeneous_terms_are_zero();
       }
     }
 }
@@ -208,8 +207,8 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
     // different strict inequalities may actually encode the same
     // topologically open half-space.
     // First, drop the epsilon-coefficient ...
-    Linear_Expression x_expr(x);
-    Linear_Expression y_expr(y);
+    Linear_Expression x_expr(x.expression());
+    Linear_Expression y_expr(y.expression());
     // ... then, re-normalize ...
     x_expr.normalize();
     y_expr.normalize();

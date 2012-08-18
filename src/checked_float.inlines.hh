@@ -1002,26 +1002,26 @@ template <>
 inline void
 assign_mpq_numeric_float(mpq_class& to, const long double from) {
   to = 0;
-  if (from == 0)
+  if (from == 0.0L)
     return;
   mpz_class& num = to.get_num();
   mpz_class& den = to.get_den();
   int exp;
   long double n = std::frexp(from, &exp);
   bool neg = false;
-  if (n < 0) {
+  if (n < 0.0L) {
     neg = true;
     n = -n;
   }
-  const long double mult = static_cast<long double>(ULONG_MAX) + 1;
+  const long double mult = static_cast<long double>(ULONG_MAX) + 1.0L;
   const unsigned int bits = sizeof(unsigned long) * CHAR_BIT;
   while (true) {
     n *= mult;
     exp -= bits;
     long double intpart = std::floor(n);
-    num += (unsigned long)intpart;
+    num += static_cast<unsigned long>(intpart);
     n -= intpart;
-    if (n == 0)
+    if (n == 0.0L)
       break;
     num <<= bits;
   }

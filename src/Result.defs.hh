@@ -172,13 +172,13 @@ Result operator|(Result x, Result y);
 /*! \ingroup PPL_CXX_interface */
 Result operator-(Result x, Result y);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Extracts the value class part of \p r (representable number,
   unrepresentable minus/plus infinity or nan).
 */
 Result_Class result_class(Result r);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Extracts the relation part of \p r.
 */
 Result_Relation result_relation(Result r);

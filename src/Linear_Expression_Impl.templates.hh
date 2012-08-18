@@ -37,18 +37,21 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
+Linear_Expression_Impl<Row>
+::Linear_Expression_Impl(const Linear_Expression_Impl& e) {
   construct(e);
 }
 
 template <typename Row>
 template <typename Row2>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Impl<Row2>& e) {
+Linear_Expression_Impl<Row>
+::Linear_Expression_Impl(const Linear_Expression_Impl<Row2>& e) {
   construct(e);
 }
 
 template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
+Linear_Expression_Impl<Row>
+::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
@@ -75,12 +78,6 @@ Linear_Expression_Impl<Row>
     // Add implementations for other derived classes here.
     PPL_UNREACHABLE;
   }
-}
-
-template <typename Row>
-Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Congruence& cg,
-                                                    dimension_type space_dim) {
-  construct(*(cg.expression().impl), space_dim);
 }
 
 template <typename Row>
@@ -621,9 +618,9 @@ Linear_Expression_Impl<Row>::sign_normalize() {
     for ( ; i != i_end; ++i)
       neg_assign(*i);
     // Negate the first coefficient, too.
-    typename Row::iterator i = row.begin();
-    if (i != row.end() && i.index() == 0)
-      neg_assign(*i);
+    typename Row::iterator first = row.begin();
+    if (first != row.end() && first.index() == 0)
+      neg_assign(*first);
   }
   PPL_ASSERT(OK());
 }

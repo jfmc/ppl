@@ -78,7 +78,7 @@ Rounding_Dir operator&(Rounding_Dir x, Rounding_Dir y);
 /*! \ingroup PPL_CXX_interface */
 Rounding_Dir operator|(Rounding_Dir x, Rounding_Dir y);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Returns the inverse rounding mode of \p dir,
   <CODE>ROUND_IGNORE</CODE> being the inverse of itself.
 */

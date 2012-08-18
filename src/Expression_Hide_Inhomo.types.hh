@@ -15,7 +15,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Expression>
+template <typename T>
 class Expression_Hide_Inhomo;
 
 } // namespace Parma_Polyhedra_Library

@@ -52,7 +52,7 @@ C_Polyhedron
 half_strip(const Generator& p, const Linear_Expression& e) {
   assert(p.is_point());
 
-  Linear_Expression e1(p);
+  Linear_Expression e1(p.expression());
   e1 += 3*Variable(0);
 
   Generator_System gs;

@@ -60,7 +60,7 @@ public:
 //! \name Functions for the Synthesis of Linear Rankings
 //@{
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Termination test using an improvement of the method by Mesnard and
   Serebrenik \ref BMPZ10 "[BMPZ10]".
 
@@ -93,7 +93,7 @@ template <typename PSET>
 bool
 termination_test_MS(const PSET& pset);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Termination test using an improvement of the method by Mesnard and
   Serebrenik \ref BMPZ10 "[BMPZ10]".
 
@@ -135,7 +135,7 @@ template <typename PSET>
 bool
 termination_test_MS_2(const PSET& pset_before, const PSET& pset_after);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Termination test with witness ranking function using an improvement
   of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
@@ -177,7 +177,7 @@ template <typename PSET>
 bool
 one_affine_ranking_function_MS(const PSET& pset, Generator& mu);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Termination test with witness ranking function using an improvement
   of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
@@ -230,7 +230,7 @@ one_affine_ranking_function_MS_2(const PSET& pset_before,
 				 const PSET& pset_after,
 				 Generator& mu);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Termination test with ranking function space using an improvement
   of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
@@ -272,7 +272,7 @@ template <typename PSET>
 void
 all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Termination test with ranking function space using an improvement
   of the method by Mesnard and Serebrenik \ref BMPZ10 "[BMPZ10]".
 
@@ -325,7 +325,7 @@ all_affine_ranking_functions_MS_2(const PSET& pset_before,
 				  const PSET& pset_after,
 				  C_Polyhedron& mu_space);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Computes the spaces of affine \e quasi ranking functions
   using an improvement of the method by Mesnard and Serebrenik
   \ref BMPZ10 "[BMPZ10]".
@@ -377,7 +377,7 @@ all_affine_quasi_ranking_functions_MS(const PSET& pset,
                                       C_Polyhedron& decreasing_mu_space,
                                       C_Polyhedron& bounded_mu_space);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Computes the spaces of affine \e quasi ranking functions
   using an improvement of the method by Mesnard and Serebrenik
   \ref BMPZ10 "[BMPZ10]".
@@ -439,7 +439,7 @@ all_affine_quasi_ranking_functions_MS_2(const PSET& pset_before,
                                         C_Polyhedron& decreasing_mu_space,
                                         C_Polyhedron& bounded_mu_space);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Like termination_test_MS() but using the method by Podelski and
   Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
@@ -447,7 +447,7 @@ template <typename PSET>
 bool
 termination_test_PR(const PSET& pset);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Like termination_test_MS_2() but using an alternative formalization
   of the method by Podelski and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
@@ -455,7 +455,7 @@ template <typename PSET>
 bool
 termination_test_PR_2(const PSET& pset_before, const PSET& pset_after);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Like one_affine_ranking_function_MS() but using the method by Podelski
   and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
@@ -463,7 +463,7 @@ template <typename PSET>
 bool
 one_affine_ranking_function_PR(const PSET& pset, Generator& mu);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Like one_affine_ranking_function_MS_2() but using an alternative
   formalization of the method by Podelski and Rybalchenko
   \ref BMPZ10 "[BMPZ10]".
@@ -474,7 +474,7 @@ one_affine_ranking_function_PR_2(const PSET& pset_before,
 				 const PSET& pset_after,
 				 Generator& mu);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Like all_affine_ranking_functions_MS() but using the method by Podelski
   and Rybalchenko \ref BMPZ10 "[BMPZ10]".
 */
@@ -482,7 +482,7 @@ template <typename PSET>
 void
 all_affine_ranking_functions_PR(const PSET& pset, NNC_Polyhedron& mu_space);
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Like all_affine_ranking_functions_MS_2() but using an alternative
   formalization of the method by Podelski and Rybalchenko
   \ref BMPZ10 "[BMPZ10]".

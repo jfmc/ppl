@@ -1,4 +1,4 @@
-/* Expression_Hide_Last class declaration.
+/* Expression_Adapter class declaration.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
    Copyright (C) 2010-2012 BUGSENG srl (http://bugseng.com)
 
@@ -21,32 +21,53 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#ifndef PPL_Expression_Hide_Last_defs_hh
-#define PPL_Expression_Hide_Last_defs_hh 1
+#ifndef PPL_Expression_Adapter_defs_hh
+#define PPL_Expression_Adapter_defs_hh 1
 
-#include "Expression_Hide_Last.types.hh"
-
-#include "Expression_Adapter.defs.hh"
+#include "Expression_Adapter.types.hh"
+#include "Variable.types.hh"
+#include "Variables_Set.types.hh"
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A Linear_Expression-like object that may or may not hide the last
-//! coefficient.
+//! An adapter for Linear_Expression-like objects.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
-class Parma_Polyhedra_Library::Expression_Hide_Last
-  : public Expression_Adapter<T> {
+class Parma_Polyhedra_Library::Expression_Adapter {
+private:
+  // NOTE: this class is meant to have no constructors at all.
+  // Private and not implemented: copy and assignment are not allowed.
+  Expression_Adapter(const Expression_Adapter&);
+  Expression_Adapter& operator=(const Expression_Adapter&);
+
 public:
-  typedef Expression_Adapter<T> base_type;
-  typedef typename base_type::const_iterator const_iterator;
+  //! \name Typedefs meant be only used internally.
+  //@{
+  //! The type we are adapting (could be itself an adapter).
+  typedef T obj_type;
+  //! The type of expressions as provided by \c obj_type.
+  typedef typename T::expr_type obj_expr_type;
+  //! The type of expressions as provided by this adapter.
+  typedef Expression_Adapter<T> expr_type;
+  //@} // Typedefs meant be only used internally.
+
+  //! The type of const iterators on wrapped coefficients.
+  typedef typename obj_expr_type::const_iterator const_iterator;
+
+  //! Returns the current representation of *this.
+  Representation representation() const;
+
+  //! Returns an iterator that points to the first nonzero coefficient in the
+  //! expression.
+  const_iterator begin() const;
 
   //! Returns an iterator that points to the last nonzero coefficient in the
   //! expression.
   const_iterator end() const;
 
   //! Returns an iterator that points to the first nonzero coefficient of a
-  //! variable bigger than or equal to v.
+  //! variable bigger than or equal to \p v.
   const_iterator lower_bound(Variable v) const;
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -54,6 +75,9 @@ public:
 
   //! Returns the coefficient of \p v in \p *this.
   Coefficient_traits::const_reference coefficient(Variable v) const;
+
+  //! Returns the inhomogeneous term of \p *this.
+  Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
   bool is_zero() const;
@@ -64,16 +88,29 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  //! Returns \p true if *this is equal to \p y.
-  //! Note that (*this == y) has a completely different meaning.
-  template <typename Expression>
-  bool is_equal_to(const Expression& y) const;
+  //! Returns \p true if *this is equal to \p x.
+  //! Note that (*this == x) has a completely different meaning.
+  template <typename Expression2>
+  bool is_equal_to(const Expression2& x) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in
     \p vars[i] is \f$0\f$.
   */
   bool all_zeroes(const Variables_Set& vars) const;
+
+  //! \name Member functions meant to be used internally.
+  //@{
+
+  //! Helper for accessing the wrapped object.
+  const obj_type& obj() const;
+
+  //! Helper for accessing the expression inside the wrapped object.
+  const obj_expr_type& obj_expr() const;
+
+  //! Return \c true if it would make sense to hide last coefficient.
+  //! Note: this is queried by derived class Expression_Hide_Last.
+  bool hiding_last() const;
 
   //! Returns the i-th coefficient.
   Coefficient_traits::const_reference get(dimension_type i) const;
@@ -93,8 +130,8 @@ public:
   dimension_type num_zeroes(dimension_type start, dimension_type end) const;
 
   /*! \brief
-    Returns the gcd of the nonzero coefficients in [start,end). If all the
-    coefficients in this range are 0 returns 0.
+    Returns the gcd of the nonzero coefficients in [start,end).
+    Returns 0 if all the coefficients in the range are 0.
   */
   Coefficient gcd(dimension_type start, dimension_type end) const;
 
@@ -120,15 +157,15 @@ public:
   //! Removes from the set x all the indexes of nonzero elements of *this.
   void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
 
-  //! Returns \p true if (*this)[i] is equal to y[i], for each i in [start,end).
-  template <typename Expression>
-  bool is_equal_to(const Expression& y,
+  //! Returns \p true if (*this)[i] is equal to x[i], for each i in [start,end).
+  template <typename Expression2>
+  bool is_equal_to(const Expression2& x,
                    dimension_type start, dimension_type end) const;
 
-  //! Returns \p true if (*this)[i]*c1 is equal to y[i]*c2, for each i in
+  //! Returns \p true if (*this)[i]*c1 is equal to x[i]*c2, for each i in
   //! [start,end).
-  template <typename Expression>
-  bool is_equal_to(const Expression& y,
+  template <typename Expression2>
+  bool is_equal_to(const Expression2& x,
                    Coefficient_traits::const_reference c1,
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
@@ -140,12 +177,25 @@ public:
   void get_row(Sparse_Row& row) const;
 
   //! Returns true if there is a variable in [first,last) whose coefficient
-  //! is nonzero in both *this and y.
-  template <typename Expression>
-  bool have_a_common_variable(const Expression& y,
+  //! is nonzero in both *this and x.
+  template <typename Expression2>
+  bool have_a_common_variable(const Expression2& x,
                               Variable first, Variable last) const;
+
+  //@} // Member functions meant to be used internally.
 };
 
-#include "Expression_Hide_Last.inlines.hh"
+namespace Parma_Polyhedra_Library {
 
-#endif // !defined(PPL_Expression_Hide_Last_defs_hh)
+#define PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Class) \
+template <> \
+Expression_Adapter<PPL_U(Class)>::obj_expr_type const& \
+Expression_Adapter<PPL_U(Class)>::obj_expr() const;    \
+template <> \
+bool Expression_Adapter<PPL_U(Class)>::hiding_last() const;
+
+} // namespace Parma_Polyhedra_Library
+
+#include "Expression_Adapter.inlines.hh"
+
+#endif // !defined(PPL_Expression_Adapter_defs_hh)

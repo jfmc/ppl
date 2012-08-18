@@ -34,7 +34,7 @@ public:
 };
 
 // Negative inhomogeneous term.
-static bool
+bool
 test01() {
   Variable A(0);
   Variable B(1);
@@ -55,7 +55,7 @@ test01() {
 }
 
 // Positive inhomogeneous term.
-static bool
+bool
 test02() {
   Variable A(0);
   Variable B(1);
@@ -76,7 +76,7 @@ test02() {
 }
 
 // Common factors and reducible positive inhomogeneous term.
-static bool
+bool
 test03() {
   Variable A(0);
   Variable B(1);
@@ -97,7 +97,7 @@ test03() {
 }
 
 // Negative first coefficient.
-static bool
+bool
 test04() {
   Variable A(0);
   Variable B(1);
@@ -118,7 +118,7 @@ test04() {
 }
 
 // Constructed with only the %= operator.
-static bool
+bool
 test05() {
   Variable A(0);
   Variable B(1);
@@ -142,7 +142,7 @@ test05() {
 }
 
 // Equality congruence (a modulus of 0).
-static bool
+bool
 test06() {
   Variable A(0);
   Variable B(1);
@@ -163,7 +163,7 @@ test06() {
 }
 
 // Constructed from a Constraint with the `/' operator.
-static bool
+bool
 test07() {
   Variable A(0);
   Variable B(1);
@@ -184,7 +184,7 @@ test07() {
 }
 
 // Constructed from a Constraint.
-static bool
+bool
 test08() {
   Variable A(0);
   Variable B(1);
@@ -205,7 +205,7 @@ test08() {
 }
 
 // Set modulus with `/='.
-static bool
+bool
 test09() {
   Variable A(0);
   Variable B(1);
@@ -228,7 +228,7 @@ test09() {
 }
 
 // is_tautological and is_inconsistent.
-static bool
+bool
 test10() {
   Variable A(0);
   Variable B(1);
@@ -287,7 +287,7 @@ test10() {
 }
 
 // Negative moduli.
-static bool
+bool
 test11() {
   Variable A(0);
   Variable B(1);
@@ -308,7 +308,7 @@ test11() {
 }
 
 // Negative modulus and negative first coefficient.
-static bool
+bool
 test12() {
   Variable A(0);
   Variable B(1);
@@ -331,7 +331,7 @@ test12() {
 }
 
 // Create from empty linear expression.
-static bool
+bool
 test13() {
   Linear_Expression le;
   Test_Congruence a(le %= le);
@@ -349,7 +349,7 @@ test13() {
 }
 
 // Linear expressions on both sides.
-static bool
+bool
 test14() {
   Variable A(0);
   Variable B(1);
@@ -370,7 +370,7 @@ test14() {
 }
 
 // Try construct congruence from inequality constraint.
-static bool
+bool
 test15() {
   Variable A(0);
   Variable C(2);
@@ -389,7 +389,7 @@ test15() {
 
 // Try access the coefficient of a space dimension higher than that of
 // a congruence.
-static bool
+bool
 test16() {
   Variable A(0);
   Variable C(2);
@@ -409,7 +409,7 @@ test16() {
 }
 
 // Check if the congruences are equivalent.
-static bool
+bool
 test17() {
   Variable A(0);
   Variable B(1);

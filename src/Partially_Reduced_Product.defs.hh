@@ -311,11 +311,11 @@ public:
   <CODE>C_Polyhedron</CODE>,
   <CODE>NNC_Polyhedron</CODE>,
   <CODE>Grid</CODE>,
-  <CODE>Octagonal_Shape<T></CODE>,
-  <CODE>BD_Shape<T></CODE>,
-  <CODE>Box<T></CODE>.
+  <CODE>Octagonal_Shape\<T\></CODE>,
+  <CODE>BD_Shape\<T\></CODE>,
+  <CODE>Box\<T\></CODE>.
 
-  An object of the class <CODE>Partially_Reduced_Product<D1, D2, R></CODE>
+  An object of the class <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE>
   represents the (partially reduced) product of two pointset domains \p D1
   and \p D2 where the form of any reduction is defined by the
   reduction class \p R.
@@ -336,8 +336,8 @@ public:
   The operations are defined to be the result of applying the corresponding
   operations on each of the components provided the product is already reduced
   by the reduction method defined by \p R.
-  In particular, if \p R is the <CODE>No_Reduction<D1, D2></CODE> class,
-  then the class <CODE>Partially_Reduced_Product<D1, D2, R></CODE> domain
+  In particular, if \p R is the <CODE>No_Reduction\<D1, D2\></CODE> class,
+  then the class <CODE>Partially_Reduced_Product\<D1, D2, R\></CODE> domain
   is the direct product as defined in \ref CC79 "[CC79]".
 
   How the results on the components are interpreted and
@@ -356,7 +356,7 @@ public:
 
   \par
   In all the examples it is assumed that the template \c R is the
-  <CODE>No_Reduction<D1, D2></CODE> class and that variables
+  <CODE>No_Reduction\<D1, D2\></CODE> class and that variables
   \c x and \c y are defined (where they are used) as follows:
   \code
   Variable x(0);
@@ -1659,8 +1659,8 @@ namespace Parma_Polyhedra_Library {
   be supported in C++.
 
   When template typedefs will be supported in C++, what now is verbosely
-  denoted by Domain_Product<Domain1, Domain2>::Direct_Product will simply
-  be denoted by Direct_Product<Domain1, Domain2>.
+  denoted by <CODE>Domain_Product\<Domain1, Domain2\>::Direct_Product</CODE>
+  will simply be denoted by <CODE>Direct_Product\<Domain1, Domain2\></CODE>.
 */
 template <typename D1, typename D2>
 class Domain_Product {

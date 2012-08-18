@@ -46,17 +46,16 @@ site: http://bugseng.com/products/ppl/ . */
 #include <map>
 
 //! The powerset construction instantiated on PPL pointset domains.
-/*! \ingroup PPL_CXX_interface */
-/*!
+/*! \ingroup PPL_CXX_interface
   \warning
   At present, the supported instantiations for the
   disjunct domain template \p PSET are the simple pointset domains:
   <CODE>C_Polyhedron</CODE>,
   <CODE>NNC_Polyhedron</CODE>,
   <CODE>Grid</CODE>,
-  <CODE>Octagonal_Shape<T></CODE>,
-  <CODE>BD_Shape<T></CODE>,
-  <CODE>Box<T></CODE>.
+  <CODE>Octagonal_Shape\<T\></CODE>,
+  <CODE>BD_Shape\<T\></CODE>,
+  <CODE>Box\<T\></CODE>.
 */
 template <typename PSET>
 class Parma_Polyhedra_Library::Pointset_Powerset

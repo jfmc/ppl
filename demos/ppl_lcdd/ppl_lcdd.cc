@@ -409,21 +409,21 @@ process_options(int argc, char* argv[]) {
       if (*endptr || l < 0)
 	fatal("a non-negative integer must follow `-C'");
       else
-	max_seconds_of_cpu_time = l;
+	max_seconds_of_cpu_time = static_cast<unsigned long>(l);
       break;
 
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 
     case 'R':
       {
-        const int MEGA = 1024*1024;
+        const unsigned long MEGA = 1024U*1024U;
         l = strtol(optarg, &endptr, 10);
         if (*endptr || l < 0)
           fatal("a non-negative integer must follow `-R'");
         else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)
           max_bytes_of_virtual_memory = ULONG_MAX;
         else
-          max_bytes_of_virtual_memory = l*MEGA;
+          max_bytes_of_virtual_memory = static_cast<unsigned long>(l)*MEGA;
       }
       break;
 

@@ -10,14 +10,14 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Expression_Hide_Last_types_hh
-#define PPL_Expression_Hide_Last_types_hh 1
+#ifndef PPL_Expression_Adapter_types_hh
+#define PPL_Expression_Adapter_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
-class Expression_Hide_Last;
+class Expression_Adapter;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Expression_Hide_Last_types_hh)
+#endif // !defined(PPL_Expression_Adapter_types_hh)

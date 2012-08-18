@@ -447,7 +447,7 @@ PPL::Polyhedron
 	  for (dimension_type h = combining_cs_num_rows; h-- > 0; ) {
 	    if (combining_cs[h].is_strict_inequality())
 	      strict_inequality = true;
-	    e += Linear_Expression(combining_cs[h]);
+	    e += Linear_Expression(combining_cs[h].expression());
 	  }
 
 	  if (!e.all_homogeneous_terms_are_zero()) {

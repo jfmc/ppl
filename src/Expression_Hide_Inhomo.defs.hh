@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Expression_Hide_Inhomo.types.hh"
 
-#include "Linear_Expression.types.hh"
+#include "Expression_Adapter.defs.hh"
 #include "Dense_Row.defs.hh"
 #include "Sparse_Row.defs.hh"
 
@@ -34,68 +34,35 @@ site: http://bugseng.com/products/ppl/ . */
 //! A Linear_Expression-like object that hides the inhomogeneous term.
 //! The methods of this class always pretend that it's 0.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
-template <typename Expression>
-class Parma_Polyhedra_Library::Expression_Hide_Inhomo {
+template <typename T>
+class Parma_Polyhedra_Library::Expression_Hide_Inhomo
+  : public Expression_Adapter<T> {
 public:
+  typedef Expression_Adapter<T> base_type;
+  typedef typename base_type::const_iterator const_iterator;
 
-  //! Wraps `expr'. Note that `expr' must not be destroyed as long as this
-  //! object is alive.
-  explicit Expression_Hide_Inhomo(Expression& expr);
-
-  //! Returns the current representation of *this.
-  Representation representation() const;
-
-  typedef typename Expression::const_iterator const_iterator;
-
-  //! Returns an iterator that points to the first nonzero coefficient in the
-  //! expression.
-  const_iterator begin() const;
-
-  //! Returns an iterator that points to the last nonzero coefficient in the
-  //! expression.
-  const_iterator end() const;
-
-  //! Returns an iterator that points to the first nonzero coefficient of a
-  //! variable bigger than or equal to v.
-  const_iterator lower_bound(Variable v) const;
-
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
-
-  //! Returns the coefficient of \p v in \p *this.
-  Coefficient_traits::const_reference coefficient(Variable v) const;
-
-  //! Returns the inhomogeneous term of \p *this.
+  //! Returns the constant zero.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
   bool is_zero() const;
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if all the homogeneous
-    terms of \p *this are \f$0\f$.
-  */
-  bool all_homogeneous_terms_are_zero() const;
-
-  //! Returns \p true if *this is equal to \p x.
-  //! Note that (*this == x) has a completely different meaning.
-  template <typename Expression2>
-  bool is_equal_to(const Expression2& x) const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if the coefficient of each variable in
-    \p vars[i] is \f$0\f$.
-  */
-  bool all_zeroes(const Variables_Set& vars) const;
-
-private:
-  Expression& expr;
+  //! Returns \p true if *this is equal to \p y.
+  //! Note that (*this == y) has a completely different meaning.
+  template <typename Expression>
+  bool is_equal_to(const Expression& y) const;
 
   //! Returns the i-th coefficient.
   Coefficient_traits::const_reference get(dimension_type i) const;
 
   //! Returns the coefficient of v.
   Coefficient_traits::const_reference get(Variable v) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if the coefficient of each variable in
+    \p vars[i] is \f$0\f$.
+  */
+  bool all_zeroes(const Variables_Set& vars) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
@@ -130,20 +97,21 @@ private:
     Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
     \f$0\f$, disregarding coefficients of variables in \p vars.
   */
-  bool all_zeroes_except(const Variables_Set& vars, dimension_type start, dimension_type end) const;
+  bool all_zeroes_except(const Variables_Set& vars,
+                         dimension_type start, dimension_type end) const;
 
   //! Removes from the set x all the indexes of nonzero elements of *this.
   void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
 
-  //! Returns \p true if (*this)[i] is equal to x[i], for each i in [start,end).
-  template <typename Expression2>
-  bool is_equal_to(const Expression2& x,
+  //! Returns \p true if (*this)[i] is equal to y[i], for each i in [start,end).
+  template <typename Expression>
+  bool is_equal_to(const Expression& y,
                    dimension_type start, dimension_type end) const;
 
-  //! Returns \p true if (*this)[i]*c1 is equal to x[i]*c2, for each i in
+  //! Returns \p true if (*this)[i]*c1 is equal to y[i]*c2, for each i in
   //! [start,end).
-  template <typename Expression2>
-  bool is_equal_to(const Expression2& x,
+  template <typename Expression>
+  bool is_equal_to(const Expression& y,
                    Coefficient_traits::const_reference c1,
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
@@ -153,22 +121,6 @@ private:
 
   //! Sets `row' to a copy of the row that implements *this.
   void get_row(Sparse_Row& row) const;
-
-  //! Returns true if there is a variable in [first,last) whose coefficient
-  //! is nonzero in both *this and x.
-  template <typename Expression2>
-  bool have_a_common_variable(const Expression2& x,
-                              Variable first, Variable last) const;
-
-  // NOTE: The following classes are friends of Expression_Hide_Inhomo in
-  // order to access its private methods.
-  template <typename T>
-  friend class Linear_System;
-  friend class Box_Helpers;
-  template <typename T>
-  friend class Expression_Hide_Inhomo;
-  template <typename T>
-  friend class Expression_Hide_Last;
 };
 
 #include "Expression_Hide_Inhomo.inlines.hh"

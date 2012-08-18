@@ -28,24 +28,24 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
-#include "Grid_Generator.types.hh"
 #include "Congruence.types.hh"
-#include "Generator.types.hh"
-#include "Constraint.types.hh"
+#include "Grid_Generator.types.hh"
+#include "Linear_System.types.hh"
 #include "Constraint_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Coefficient.types.hh"
 #include "Polyhedron.types.hh"
-#include "Linear_System.types.hh"
 #include "Grid.types.hh"
 #include "PIP_Problem.types.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "Scalar_Products.types.hh"
 #include "MIP_Problem.types.hh"
 #include "Box.types.hh"
-#include "Congruence_System.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include "termination.types.hh"
+
+#include "Expression_Adapter.defs.hh"
 #include "Expression_Hide_Inhomo.types.hh"
 #include "Expression_Hide_Last.types.hh"
 
@@ -293,71 +293,55 @@ public:
   //! Default constructor: returns a copy of Linear_Expression::zero().
   explicit Linear_Expression(Representation r = default_representation);
 
-  //! Ordinary copy constructor.
-  //! Note that the representation of the new expression will be e's
-  //! representation and not necessarily default_representation, so that
-  //! the copy and e are indistinguishable.
+  /*! \brief Ordinary copy constructor.
+    \note
+    The new expression will have the same representation as \p e
+    (not necessarily the default_representation).
+  */
   Linear_Expression(const Linear_Expression& e);
 
   //! Copy constructor that takes also a Representation.
   Linear_Expression(const Linear_Expression& e, Representation r);
 
-  //! Copy constructor from a Expression_Hide_Inhomo.
-  //! Note that the representation of the new expression will be e's
-  //! representation and not necessarily default_representation, so that
-  //! the copy and e are indistinguishable.
-  template <typename Expression>
-  explicit Linear_Expression(const Expression_Hide_Inhomo<Expression>& e);
+  /*! \brief Copy constructor from a linear expression adapter.
+    \note
+    The new expression will have the same representation as \p e
+    (not necessarily the default_representation).
+  */
+  template <typename LE_Adapter>
+  explicit
+  Linear_Expression(const LE_Adapter& e,
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
 
-  //! Copy constructor from a Expression_Hide_Inhomo that takes a
-  //! Representation.
-  template <typename Expression>
-  Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
-                    Representation r);
+  /*! \brief Copy constructor from a linear expression adapter that takes a
+    Representation.
+  */
+  template <typename LE_Adapter>
+  Linear_Expression(const LE_Adapter& e, Representation r,
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
 
-  //! Copy constructor from a Expression_Hide_Inhomo that takes a space
-  //! dimension.
-  //! Note that the representation of the new expression will be e's
-  //! representation and not necessarily default_representation, so that
-  //! the copy and e are indistinguishable.
-  template <typename Expression>
-  explicit Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
-                             dimension_type space_dim);
+  /*! \brief
+    Copy constructor from a linear expression adapter that takes a
+    space dimension.
+    \note
+    The new expression will have the same representation as \p e
+    (not necessarily default_representation).
+  */
+  template <typename LE_Adapter>
+  explicit
+  Linear_Expression(const LE_Adapter& e, dimension_type space_dim,
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
 
-  //! Copy constructor from a Expression_Hide_Inhomo that takes a
-  //! space dimension and a Representation.
-  template <typename Expression>
-  Linear_Expression(const Expression_Hide_Inhomo<Expression>& e,
-                    dimension_type space_dim, Representation r);
+  /*! \brief
+    Copy constructor from a linear expression adapter that takes a
+    space dimension and a Representation.
+  */
+  template <typename LE_Adapter>
+  Linear_Expression(const LE_Adapter& e,
+                    dimension_type space_dim, Representation r,
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
 
-  //! Copy constructor from a Expression_Hide_Last.
-  //! Note that the representation of the new expression will be e's
-  //! representation and not necessarily default_representation, so that
-  //! the copy and e are indistinguishable.
-  template <typename Expression>
-  explicit Linear_Expression(const Expression_Hide_Last<Expression>& e);
-
-  //! Copy constructor from a Expression_Hide_Last that takes a
-  //! Representation.
-  template <typename Expression>
-  Linear_Expression(const Expression_Hide_Last<Expression>& e,
-                    Representation r);
-
-  //! Copy constructor from a Expression_Hide_Last that takes a space
-  //! dimension.
-  //! Note that the representation of the new expression will be e's
-  //! representation and not necessarily default_representation, so that
-  //! the copy and e are indistinguishable.
-  template <typename Expression>
-  explicit Linear_Expression(const Expression_Hide_Last<Expression>& e,
-                             dimension_type space_dim);
-
-  //! Copy constructor from a Expression_Hide_Last that takes a
-  //! space dimension and a Representation.
-  template <typename Expression>
-  Linear_Expression(const Expression_Hide_Last<Expression>& e,
-                    dimension_type space_dim, Representation r);
-
+  //! Assignment operator.
   Linear_Expression& operator=(const Linear_Expression& e);
 
   //! Destructor.
@@ -377,114 +361,6 @@ public:
     <CODE>Linear_Expression::max_space_dimension()</CODE>.
   */
   Linear_Expression(Variable v, Representation r = default_representation);
-
-  // TODO: Consider removing this.
-  //! Builds the linear expression corresponding to constraint \p c.
-  /*!
-    Given the constraint
-    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relsym 0\bigr)\f$,
-    where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-    If \p c is an inequality (resp., equality) constraint, then
-    the built linear expression is unique up to a positive
-    (resp., non-zero) factor.
-
-    The constructed Linear_Expression has the same representation as \p c.
-  */
-  explicit Linear_Expression(const Constraint& c);
-
-  // TODO: Consider removing this.
-  //! Builds the linear expression corresponding to constraint \p c.
-  /*!
-    Given the constraint
-    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relsym 0\bigr)\f$,
-    where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-    If \p c is an inequality (resp., equality) constraint, then
-    the built linear expression is unique up to a positive
-    (resp., non-zero) factor.
-  */
-  explicit Linear_Expression(const Constraint& c, Representation r);
-
-  // TODO: Consider removing this.
-  /*! \brief
-    Builds the linear expression corresponding to generator \p g
-    (for points and closure points, the divisor is not copied).
-
-    Given the generator
-    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
-    (where, for lines and rays, we have \f$d = 1\f$),
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
-    The inhomogeneous term of the linear expression will always be 0.
-    If \p g is a ray, point or closure point (resp., a line), then
-    the linear expression is unique up to a positive
-    (resp., non-zero) factor.
-
-    The constructed Linear_Expression has the same representation as \p g.
-  */
-  explicit Linear_Expression(const Generator& g);
-
-  // TODO: Consider removing this.
-  /*! \brief
-    Builds the linear expression corresponding to generator \p g
-    (for points and closure points, the divisor is not copied).
-
-    Given the generator
-    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
-    (where, for lines and rays, we have \f$d = 1\f$),
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
-    The inhomogeneous term of the linear expression will always be 0.
-    If \p g is a ray, point or closure point (resp., a line), then
-    the linear expression is unique up to a positive
-    (resp., non-zero) factor.
-  */
-  explicit Linear_Expression(const Generator& g, Representation r);
-
-  // TODO: Consider removing this.
-  /*! \brief
-    Builds the linear expression corresponding to grid generator \p g
-    (for points, parameters and lines the divisor is not copied).
-
-    Given the grid generator
-    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
-    The inhomogeneous term of the linear expression is always 0.
-
-    The constructed Linear_Expression has the same representation as \p g.
-  */
-  explicit Linear_Expression(const Grid_Generator& g);
-
-  // TODO: Consider removing this.
-  /*! \brief
-    Builds the linear expression corresponding to grid generator \p g
-    (for points, parameters and lines the divisor is not copied).
-
-    Given the grid generator
-    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
-    The inhomogeneous term of the linear expression is always 0.
-  */
-  explicit Linear_Expression(const Grid_Generator& g, Representation r);
-
-  // TODO: Consider removing this.
-  //! Builds the linear expression corresponding to congruence \p cg.
-  /*!
-    Given the congruence
-    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-
-    The constructed Linear_Expression has the same representation as \p cg.
-  */
-  explicit Linear_Expression(const Congruence& cg);
-
-  // TODO: Consider removing this.
-  //! Builds the linear expression corresponding to congruence \p cg.
-  /*!
-    Given the congruence
-    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
-  */
-  explicit Linear_Expression(const Congruence& cg, Representation r);
 
   //! Returns the current representation of *this.
   Representation representation() const;
@@ -768,29 +644,6 @@ private:
   Linear_Expression(dimension_type space_dim, bool,
                     Representation r = default_representation);
 
-  //! Builds the linear expression corresponding to congruence \p cg, and
-  //! with the specified space dimension.
-  /*!
-    Given the congruence
-    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression
-    \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
-
-    The constructed Linear_Expression has the same representation as \p cg.
-  */
-  Linear_Expression(const Congruence& cg, dimension_type space_dim);
-
-  //! Builds the linear expression corresponding to congruence \p cg, and
-  //! with the specified space dimension.
-  /*!
-    Given the congruence
-    \f$cg = \bigl(\sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod{m}\bigr)\f$,
-    this builds the linear expression
-    \f$\sum_{i=0}^{space_dim-1} a_i x_i + b\f$.
-  */
-  Linear_Expression(const Congruence& cg, dimension_type space_dim,
-                    Representation r);
-
   // NOTE: This method is public, but it's not exposed in Linear_Expression,
   // so that it can be used internally in the PPL, by friends of
   // Linear_Expression.
@@ -969,6 +822,8 @@ private:
   friend class Linear_System;
   template <typename T>
   friend class Box;
+  template <typename T>
+  friend class Expression_Adapter;
   template <typename T>
   friend class Expression_Hide_Inhomo;
   template <typename T>

@@ -954,6 +954,17 @@ private:
                                data_type_const_reference data,
                                tree_iterator itr);
 
+  //! Helper for \c insert_precise.
+  /*!
+    This helper method takes the same arguments as \c insert_precise,
+    but besides assuming that \p itr is a correct hint, it also assumes
+    that \p key and \p data are not in the tree; namely, a proper
+    insertion has to be done and the insertion can not invalidate \p data.
+  */
+  tree_iterator insert_precise_aux(dimension_type key,
+                                   data_type_const_reference data,
+                                   tree_iterator itr);
+
   //! Inserts an element in the tree.
   /*!
 

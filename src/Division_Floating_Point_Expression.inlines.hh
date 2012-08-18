@@ -37,7 +37,7 @@ Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   : first_operand(num), second_operand(den) {
   assert(num != 0);
   assert(den != 0);
- }
+}
 
 template <typename FP_Interval_Type, typename FP_Format>
 inline

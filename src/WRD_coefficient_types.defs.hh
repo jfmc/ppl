@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   The production policy for checked numbers used in weakly-relational
   domains.
  */
@@ -88,7 +88,7 @@ struct WRD_Extended_Number_Policy {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   The debugging policy for checked numbers used in weakly-relational
   domains.
  */

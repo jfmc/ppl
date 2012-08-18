@@ -517,9 +517,8 @@ public:
   */
   static const Constraint& epsilon_leq_one();
 
-  //! The type returned by the expression() method, that provides most
-  //! of the const methods in Linear_Expression.
-  typedef Expression_Hide_Last<Linear_Expression> Expression;
+  typedef Linear_Expression expr_type;
+  typedef Expression_Hide_Last<Constraint> Expression;
 
   //! Allows user code to read the constraint's expression (but note that the
   //! return type is not Linear_Expression, not all operations are allowed).
@@ -534,8 +533,6 @@ private:
   };
 
   Linear_Expression expr;
-
-  Expression wrapped_expr;
 
   Kind kind_;
 
@@ -736,6 +733,7 @@ private:
   friend int
   compare(const Constraint& x, const Constraint& y);
 
+  friend class Expression_Adapter<Constraint>;
   friend class Linear_System<Constraint>;
   friend class Constraint_System;
   friend class Polyhedron;
@@ -834,8 +832,10 @@ operator!=(const Constraint& x, const Constraint& y);
 /*! \relates Constraint */
 void swap(Constraint& x, Constraint& y);
 
-} // namespace Parma_Polyhedra_Library
+// Declare specializations of adapter functions.
+PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Constraint)
 
+} // namespace Parma_Polyhedra_Library
 
 #include "Constraint.inlines.hh"
 

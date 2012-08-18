@@ -40,7 +40,7 @@ Constraint::is_not_necessarily_closed() const {
 
 inline dimension_type
 Constraint::space_dimension() const {
-  return wrapped_expr.space_dimension();
+  return expression().space_dimension();
 }
 
 inline void
@@ -80,11 +80,9 @@ Constraint::set_topology(Topology x) {
   if (topology() == NECESSARILY_CLOSED) {
     // Add a column for the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
-    wrapped_expr.set_hide_last(true);
   } else {
     PPL_ASSERT(expr.space_dimension() != 0);
     expr.set_space_dimension(expr.space_dimension() - 1);
-    wrapped_expr.set_hide_last(false);
   }
   topology_ = x;
 }
@@ -93,14 +91,12 @@ inline void
 Constraint::mark_as_necessarily_closed() {
   PPL_ASSERT(is_not_necessarily_closed());
   topology_ = NECESSARILY_CLOSED;
-  wrapped_expr.set_hide_last(false);
 }
 
 inline void
 Constraint::mark_as_not_necessarily_closed() {
   PPL_ASSERT(is_necessarily_closed());
   topology_ = NOT_NECESSARILY_CLOSED;
-  wrapped_expr.set_hide_last(true);
 }
 
 inline void
@@ -116,7 +112,6 @@ Constraint::set_not_necessarily_closed() {
 inline
 Constraint::Constraint(Representation r)
   : expr(r),
-    wrapped_expr(expr, false),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NECESSARILY_CLOSED) {
   PPL_ASSERT(OK());
@@ -126,7 +121,6 @@ inline
 Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology,
                        Representation r)
   : expr(r),
-    wrapped_expr(expr, topology == NOT_NECESSARILY_CLOSED),
     kind_(kind),
     topology_(topology) {
   expr.set_space_dimension(space_dim + 1);
@@ -136,8 +130,7 @@ Constraint::Constraint(dimension_type space_dim, Kind kind, Topology topology,
 
 inline
 Constraint::Constraint(Linear_Expression& e, Kind kind, Topology topology)
-  : wrapped_expr(expr, topology == NOT_NECESSARILY_CLOSED),
-    kind_(kind),
+  : kind_(kind),
     topology_(topology) {
   PPL_ASSERT(kind != RAY_OR_POINT_OR_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
@@ -150,8 +143,7 @@ Constraint::Constraint(Linear_Expression& e, Kind kind, Topology topology)
 
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
-  : wrapped_expr(expr, topology == NOT_NECESSARILY_CLOSED),
-    topology_(topology) {
+  : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
   if (topology == NOT_NECESSARILY_CLOSED)
@@ -167,7 +159,6 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
 inline
 Constraint::Constraint(const Constraint& c)
   : expr(c.expr),
-    wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_),
     topology_(c.topology_) {
   // NOTE: This does not call PPL_ASSERT(OK()) because this is called by OK().
@@ -176,7 +167,6 @@ Constraint::Constraint(const Constraint& c)
 inline
 Constraint::Constraint(const Constraint& c, Representation r)
   : expr(c.expr, r),
-    wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_),
     topology_(c.topology_) {
   PPL_ASSERT(OK());
@@ -185,7 +175,6 @@ Constraint::Constraint(const Constraint& c, Representation r)
 inline
 Constraint::Constraint(const Constraint& c, const dimension_type space_dim)
   : expr(c.expr, c.is_necessarily_closed() ? space_dim : (space_dim + 1)),
-    wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_), topology_(c.topology_) {
   PPL_ASSERT(space_dimension() == space_dim);
   PPL_ASSERT(OK());
@@ -195,7 +184,6 @@ inline
 Constraint::Constraint(const Constraint& c, const dimension_type space_dim,
                        Representation r)
   : expr(c.expr, c.is_necessarily_closed() ? space_dim : (space_dim + 1), r),
-    wrapped_expr(expr, c.is_not_necessarily_closed()),
     kind_(c.kind_), topology_(c.topology_) {
   PPL_ASSERT(space_dimension() == space_dim);
   PPL_ASSERT(OK());
@@ -215,7 +203,7 @@ Constraint::operator=(const Constraint& c) {
 
 inline const Constraint::Expression&
 Constraint::expression() const {
-  return wrapped_expr;
+  return reinterpret_cast<const Constraint::Expression&>(*this);
 }
 
 inline Representation
@@ -561,8 +549,6 @@ Constraint::m_swap(Constraint& y) {
   swap(expr, y.expr);
   swap(kind_, y.kind_);
   swap(topology_, y.topology_);
-  wrapped_expr.set_hide_last(is_not_necessarily_closed());
-  y.wrapped_expr.set_hide_last(y.is_not_necessarily_closed());
 }
 
 inline Coefficient_traits::const_reference
@@ -581,6 +567,18 @@ Constraint::set_epsilon_coefficient(Coefficient_traits::const_reference n) {
 inline void
 swap(Constraint& x, Constraint& y) {
   x.m_swap(y);
+}
+
+template <>
+inline Expression_Adapter<Constraint>::obj_expr_type const&
+Expression_Adapter<Constraint>::obj_expr() const {
+  return obj().expr;
+}
+
+template <>
+inline bool
+Expression_Adapter<Constraint>::hiding_last() const {
+  return obj().is_not_necessarily_closed();
 }
 
 } // namespace Parma_Polyhedra_Library

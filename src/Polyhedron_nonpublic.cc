@@ -1382,7 +1382,7 @@ PPL::Polyhedron::refine_no_check(const Constraint& c) {
     // However, by barely invoking `con_sys.insert(c)' we would
     // cause a change in the topology of `con_sys', which is wrong.
     // Thus, we insert a "topology corrected" copy of `c'.
-    Linear_Expression nc_expr = Linear_Expression(c);
+    Linear_Expression nc_expr(c.expression());
     if (c.is_equality())
       if (adding_pending)
         con_sys.insert_pending(nc_expr == 0);
@@ -1853,7 +1853,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     const Constraint& x_cs_i = x_cs[i];
     PPL_ASSERT(x_cs_i.is_strict_inequality());
     // Build the equality constraint induced by x_cs_i.
-    Constraint eq_i(Linear_Expression(x_cs_i) == 0);
+    Linear_Expression expr(x_cs_i.expression());
+    Constraint eq_i(expr == 0);
     PPL_ASSERT(!(ub.relation_with(eq_i)
                  .implies(Poly_Con_Relation::is_disjoint())));
     Polyhedron ub_inters_hyperplane(ub);
@@ -1871,7 +1872,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     const Constraint& y_cs_i = y_cs[i];
     PPL_ASSERT(y_cs_i.is_strict_inequality());
     // Build the equality constraint induced by y_cs_i.
-    Constraint eq_i(Linear_Expression(y_cs_i) == 0);
+    Constraint eq_i(Linear_Expression(y_cs_i.expression()) == 0);
     PPL_ASSERT(!(ub.relation_with(eq_i)
                  .implies(Poly_Con_Relation::is_disjoint())));
     Polyhedron ub_inters_hyperplane(ub);
@@ -2180,7 +2181,8 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
       changed = true;
     }
 
-    next_constraint: ;
+  next_constraint:
+    ;
   }
 
   con_sys.set_sorted(!changed && con_sys_was_sorted);

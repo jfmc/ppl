@@ -21,43 +21,43 @@ namespace Parma_Polyhedra_Library {
   This justifies (here below) the explicit use of Doxygen command \class.
 */
 
-/*! \brief \class Parma_Polyhedra_Library::Concrete_Expression
+/*! \class Parma_Polyhedra_Library::Concrete_Expression \brief
   The base class of all concrete expressions.
 */
 template <typename Target>
 class Concrete_Expression;
 
-/*! \brief \class Parma_Polyhedra_Library::Binary_Operator
+/*! \class Parma_Polyhedra_Library::Binary_Operator \brief
   A binary operator applied to two concrete expressions.
 */
 template <typename Target>
 class Binary_Operator;
 
-/*! \brief \class Parma_Polyhedra_Library::Unary_Operator
+/*! \class Parma_Polyhedra_Library::Unary_Operator \brief
   A unary operator applied to one concrete expression.
 */
 template <typename Target>
 class Unary_Operator;
 
-/*! \brief \class Parma_Polyhedra_Library::Cast_Operator
+/*! \class Parma_Polyhedra_Library::Cast_Operator \brief
   A cast operator converting one concrete expression to some type.
 */
 template <typename Target>
 class Cast_Operator;
 
-/*! \brief \class Parma_Polyhedra_Library::Integer_Constant
+/*! \class Parma_Polyhedra_Library::Integer_Constant \brief
   An integer constant concrete expression.
 */
 template <typename Target>
 class Integer_Constant;
 
-/*! \brief \class Parma_Polyhedra_Library::Floating_Point_Constant
+/*! \class Parma_Polyhedra_Library::Floating_Point_Constant \brief
   A floating-point constant concrete expression.
 */
 template <typename Target>
 class Floating_Point_Constant;
 
-/*! \brief \class Parma_Polyhedra_Library::Approximable_Reference
+/*! \class Parma_Polyhedra_Library::Approximable_Reference \brief
   A concrete expression representing a reference to some approximable.
 */
 template <typename Target>
@@ -73,7 +73,7 @@ class Concrete_Expression_Type;
   Cast_Operator, Integer_Constant, Floating_Point_Constant, or
   Approximable_Reference.  For example, the Binary_Operator kind
   integer constant should be defined by an instance as the member
-  <CODE>Binary_Operator<T>::KIND</CODE>
+  <CODE>Binary_Operator\<T\>::KIND</CODE>
 */
 typedef int Concrete_Expression_Kind;
 

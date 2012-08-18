@@ -72,7 +72,7 @@ enum Optimization_Mode {
   MAXIMIZATION
 };
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Widths of bounded integer types.
 
   See the section on
@@ -95,7 +95,7 @@ enum Bounded_Integer_Type_Width {
   BITS_128 = 128
 };
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Representation of bounded integer types.
 
   See the section on
@@ -112,7 +112,7 @@ enum Bounded_Integer_Type_Representation {
   SIGNED_2_COMPLEMENT
 };
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Overflow behavior of bounded integer types.
 
   See the section on
@@ -153,7 +153,7 @@ enum Bounded_Integer_Type_Overflow {
   OVERFLOW_IMPOSSIBLE
 };
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Possible representations of coefficient sequences (i.e. linear expressions
   and more complex objects containing linear expressions, e.g. Constraints,
   Generators, etc.).
@@ -177,7 +177,7 @@ enum Representation {
   SPARSE
 };
 
-/*! \brief \ingroup PPL_CXX_interface
+/*! \ingroup PPL_CXX_interface \brief
   Floating point formats known to the library.
 
   The parameters of each format are defined by a specific struct

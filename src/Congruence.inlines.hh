@@ -71,7 +71,7 @@ Congruence::set_representation(Representation r) {
 
 inline const Congruence::Expression&
 Congruence::expression() const {
-  return expr;
+  return reinterpret_cast<const Congruence::Expression&>(*this);
 }
 
 inline void
@@ -274,6 +274,18 @@ Congruence::swap_space_dimensions(Variable v1, Variable v2) {
 inline void
 swap(Congruence& x, Congruence& y) {
   x.m_swap(y);
+}
+
+template <>
+inline Expression_Adapter<Congruence>::obj_expr_type const&
+Expression_Adapter<Congruence>::obj_expr() const {
+  return obj().expr;
+}
+
+template <>
+inline bool
+Expression_Adapter<Congruence>::hiding_last() const {
+  return false;
 }
 
 } // namespace Parma_Polyhedra_Library

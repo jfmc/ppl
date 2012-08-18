@@ -227,7 +227,6 @@ private:
   operator=(const Division_Floating_Point_Expression<FP_Interval_Type,
 	    FP_Format>& e);
 
-
 }; // class Division_Floating_Point_Expression
 
 } // namespace Parma_Polyhedra_Library

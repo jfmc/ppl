@@ -237,8 +237,11 @@ PPL::Grid::select_wider_generators(const Grid& y,
 	if (gg.is_equal_at_dimension(dim, y_gg))
 	  // The leading diagonal entry is equal.
 	  widened_ggs.insert(gg);
-        else
-          widened_ggs.insert(grid_line(Linear_Expression(gg)));
+        else {
+          Linear_Expression expr(gg.expression());
+          Grid_Generator line = grid_line(expr);
+          widened_ggs.insert(line, Recycle_Input());
+        }
 	++x_row;
 	++y_row;
       }

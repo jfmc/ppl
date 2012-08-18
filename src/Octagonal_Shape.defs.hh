@@ -104,7 +104,7 @@ bool operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 */
 template <typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -121,7 +121,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 */
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -158,7 +158,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 */
 template <typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -175,7 +175,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 */
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -212,7 +212,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<To, Extended_Number_Policy>.
+  <CODE>Checked_Number\<To, Extended_Number_Policy\></CODE>.
 */
 template <typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -229,7 +229,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   The direction of the approximation is specified by \p dir.
 
   All computations are performed using variables of type
-  Checked_Number<Temp, Extended_Number_Policy>.
+  <CODE>Checked_Number\<Temp, Extended_Number_Policy\></CODE>.
 */
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,

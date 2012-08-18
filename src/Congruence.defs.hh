@@ -31,7 +31,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Constraint.types.hh"
 #include "Grid.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Linear_Expression.defs.hh"
+#include "Expression_Adapter.defs.hh"
 
 #include <iosfwd>
 #include <vector>
@@ -208,9 +210,8 @@ public:
 
   void permute_space_dimensions(const std::vector<Variable>& cycles);
 
-  //! The type returned by the expression() method, that provides most
-  //! of the const methods in Linear_Expression.
-  typedef Linear_Expression Expression;
+  typedef Linear_Expression expr_type;
+  typedef Expression_Adapter<Congruence> Expression;
 
   const Expression& expression() const;
 
@@ -453,6 +454,8 @@ private:
   friend bool
   operator!=(const Congruence& x, const Congruence& y);
 
+  friend class Expression_Adapter<Congruence>;
+  friend class Scalar_Products;
   friend class Grid;
 };
 
@@ -496,6 +499,9 @@ operator/(const Constraint& c, Coefficient_traits::const_reference m);
 /*! \relates Congruence */
 void
 swap(Congruence& x, Congruence& y);
+
+// Declare specializations of adapter functions.
+PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Congruence)
 
 } // namespace Parma_Polyhedra_Library
 
