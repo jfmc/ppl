@@ -42,22 +42,22 @@ void Weight_Profiler::output_stats() {
       double variance
         = stat[VALID].squares_sum / stat[VALID].count - average * average;
       std::cout << " samples(" << stat[VALID].samples << ")"
-		<< " count(" << stat[VALID].count << ")"
-		<< " min( " << stat[VALID].min << ")"
-		<< " max( " << stat[VALID].max << ")"
-		<< " average(" << average << ")";
+                << " count(" << stat[VALID].count << ")"
+                << " min( " << stat[VALID].min << ")"
+                << " max( " << stat[VALID].max << ")"
+                << " average(" << average << ")";
       std::cout << " variance( " << variance << ")"
-		<< " stddev( " << sqrt(variance) << ")";
+                << " stddev( " << sqrt(variance) << ")";
     }
     if (stat[DISCARDED].samples > 0) {
       std::cout << " min_threshold( " << min_threshold << ")"
-		<< " max_threshold( " << max_threshold << ")";
+                << " max_threshold( " << max_threshold << ")";
       double average = stat[DISCARDED].sum / stat[DISCARDED].count;
       std::cout << " samples(" << stat[DISCARDED].samples << ")"
-		<< " count(" << stat[DISCARDED].count << ")"
-		<< " min( " << stat[DISCARDED].min << ")"
-		<< " max( " << stat[DISCARDED].max << ")"
-		<< " average(" << average << ")";
+                << " count(" << stat[DISCARDED].count << ")"
+                << " min( " << stat[DISCARDED].min << ")"
+                << " max( " << stat[DISCARDED].max << ")"
+                << " average(" << average << ")";
     }
   }
   std::cout << std::endl;

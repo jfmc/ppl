@@ -45,7 +45,7 @@ PPL::Grid_Generator::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid_Generator::throw_invalid_argument(const char* method,
-					    const char* reason) const {
+                                            const char* reason) const {
   std::ostringstream s;
   s << "PPL::Grid_Generator::" << method << ":" << std::endl
     << reason << ".";
@@ -54,11 +54,11 @@ PPL::Grid_Generator::throw_invalid_argument(const char* method,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::parameter(const Linear_Expression& e,
-			       Coefficient_traits::const_reference d,
+                               Coefficient_traits::const_reference d,
                                Representation r) {
   if (d == 0)
     throw std::invalid_argument("PPL::parameter(e, d):\n"
-				"d == 0.");
+                                "d == 0.");
   // Add 1 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, e.space_dimension() + 1, r);
 
@@ -82,11 +82,11 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
-				Coefficient_traits::const_reference d,
+                                Coefficient_traits::const_reference d,
                                 Representation r) {
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
-				"d == 0.");
+                                "d == 0.");
   // Add 1 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 1 + e.space_dimension(), r);
   ec.set_inhomogeneous_term(d);
@@ -121,7 +121,7 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::grid_line(e):\n"
-				"e == 0, but the origin cannot be a line.");
+                                "e == 0, but the origin cannot be a line.");
 
   // Add 1 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 1 + e.space_dimension(), r);
@@ -394,7 +394,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
 /*! \relates Parma_Polyhedra_Library::Grid_Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s,
-			      const Grid_Generator::Type& t) {
+                              const Grid_Generator::Type& t) {
   const char* n = 0;
   switch (t) {
   case Grid_Generator::LINE:
@@ -426,7 +426,7 @@ PPL::Grid_Generator::OK() const {
   if (x.expr.space_dimension() < 1) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator has fewer coefficients than the minimum "
-	      << "allowed:\nspace dimension is " << x.expr.space_dimension()
+              << "allowed:\nspace dimension is " << x.expr.space_dimension()
               << ", minimum is 1.\n";
 #endif
     return false;

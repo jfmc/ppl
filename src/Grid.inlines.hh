@@ -112,15 +112,15 @@ Grid::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return std::min(std::numeric_limits<dimension_type>::max() - 1,
-		  std::min(Congruence_System::max_space_dimension(),
-			   Grid_Generator_System::max_space_dimension()
-			   )
-		  );
+                  std::min(Congruence_System::max_space_dimension(),
+                           Grid_Generator_System::max_space_dimension()
+                           )
+                  );
 }
 
 inline
 Grid::Grid(dimension_type num_dimensions,
-	   const Degenerate_Element kind)
+           const Degenerate_Element kind)
   : con_sys(),
     gen_sys(check_space_dimension_overflow(num_dimensions,
                                            max_space_dimension(),
@@ -325,27 +325,27 @@ Grid::bounds_from_below(const Linear_Expression& expr) const {
 
 inline bool
 Grid::maximize(const Linear_Expression& expr,
-	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
+               Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
   return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum);
 }
 
 inline bool
 Grid::maximize(const Linear_Expression& expr,
-	       Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-	       Generator& point) const {
+               Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+               Generator& point) const {
   return max_min(expr, "maximize(e, ...)", sup_n, sup_d, maximum, &point);
 }
 
 inline bool
 Grid::minimize(const Linear_Expression& expr,
-	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
+               Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum);
 }
 
 inline bool
 Grid::minimize(const Linear_Expression& expr,
-	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-	       Generator& point) const {
+               Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+               Generator& point) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
 }
 

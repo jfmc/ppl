@@ -352,7 +352,7 @@ test09() {
 
   for (unsigned i = 1; i <= 100; ++i) {
     print_generators(q_i_minus_1.generators(),
-		     "*** Result of the previous iteration ***");
+                     "*** Result of the previous iteration ***");
 
     C_Polyhedron p_i = aux2_test09(i);
     print_generators(p_i.generators(), "*** New stuff ***");
@@ -360,11 +360,11 @@ test09() {
     C_Polyhedron q_i = q_i_minus_1;
     q_i.upper_bound_assign(p_i);
     print_generators(q_i.generators(),
-		     "*** Poly-hull of previous with new ***");
+                     "*** Poly-hull of previous with new ***");
 
     q_i.BHRZ03_widening_assign(q_i_minus_1);
     print_generators(q_i.generators(),
-		     "*** Result of widening poly-hull with new ***");
+                     "*** Result of widening poly-hull with new ***");
 
     if (q_i == q_i_minus_1) {
 

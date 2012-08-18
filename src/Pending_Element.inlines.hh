@@ -41,8 +41,8 @@ Pending_Element<Threshold>::OK() const {
 template <typename Threshold>
 inline
 Pending_Element<Threshold>::Pending_Element(const Threshold& deadline,
-					    const Handler& handler,
-					    bool& expired_flag)
+                                            const Handler& handler,
+                                            bool& expired_flag)
   : d(deadline), p_h(&handler), p_f(&expired_flag) {
   assert(OK());
 }
@@ -50,8 +50,8 @@ Pending_Element<Threshold>::Pending_Element(const Threshold& deadline,
 template <typename Threshold>
 inline void
 Pending_Element<Threshold>::assign(const Threshold& deadline,
-				   const Handler& handler,
-				   bool& expired_flag) {
+                                   const Handler& handler,
+                                   bool& expired_flag) {
   d = deadline;
   p_h = &handler;
   p_f = &expired_flag;

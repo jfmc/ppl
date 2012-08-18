@@ -225,7 +225,7 @@ Ask_Tell<D>::definitely_entails(const Ask_Tell& y) const {
   y.normalize();
   bool found = true;
   for (const_iterator x_begin = x.begin(), x_end = x.end(), y_end = y.end(),
-	 yi = y.begin(); found && yi != y_end; ++yi) {
+         yi = y.begin(); found && yi != y_end; ++yi) {
     found = false;
     for (const_iterator xi = x_begin; !found && xi != x_end; ++xi)
       found = xi->definitely_entails(*yi);
@@ -303,11 +303,11 @@ Ask_Tell<D>::probe(const D& tell, const D& ask) const {
     tell_changed = false;
     for (yi = begin(); yi != end(); ++yi) {
       if (xtell.definitely_entails(yi->ask())
-	  && !xtell.definitely_entails(yi->tell())) {
-	  xtell.meet_assign(yi->tell());
-	  if (xtell.definitely_entails(ask))
-	    return true;
-	  tell_changed = true;
+          && !xtell.definitely_entails(yi->tell())) {
+          xtell.meet_assign(yi->tell());
+          if (xtell.definitely_entails(ask))
+            return true;
+          tell_changed = true;
       }
     }
   }

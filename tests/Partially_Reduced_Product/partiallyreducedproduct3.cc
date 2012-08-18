@@ -102,13 +102,13 @@ test02() {
   sp.refine_with_congruence((A %= 2) / 0);
 
   bool ok = (sp.relation_with(B == 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates())
-	     && sp.relation_with(B >= 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates()));
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates())
+             && sp.relation_with(B >= 0)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates()));
 
   print_constraints(sp, "*** sp constraints ***");
   print_congruences(sp, "*** sp congruences ***");
@@ -128,13 +128,13 @@ test03() {
   cp.refine_with_congruence((A %= 0) / 2);
 
   bool ok = (cp.relation_with(B == 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates())
-	     && cp.relation_with(B >= 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates()));
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates())
+             && cp.relation_with(B >= 0)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates()));
 
   print_constraints(cp, "*** cp constraints ***");
   print_congruences(cp, "*** cp congruences ***");
@@ -155,21 +155,21 @@ test04() {
   sp.refine_with_congruence(6*A + 3*B %= 0);
 
   bool ok = (sp.relation_with(A + B + C == 0)
-	     == Poly_Con_Relation::nothing()
-	     && sp.relation_with(A + B == 0)
-	     == Poly_Con_Relation::nothing()
-	     && sp.relation_with(A == 0)
-	     == Poly_Con_Relation::nothing()
-	     && sp.relation_with(Linear_Expression(0) == 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::saturates())
-	     && sp.relation_with(2*A + B >= 3)
-	     == Poly_Con_Relation::is_included()
-	     && sp.relation_with(3*A + 3*B + C >= 7)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::saturates())
-	     && sp.relation_with(3*A - C <= 3)
-	     == (Poly_Con_Relation::nothing()));
+             == Poly_Con_Relation::nothing()
+             && sp.relation_with(A + B == 0)
+             == Poly_Con_Relation::nothing()
+             && sp.relation_with(A == 0)
+             == Poly_Con_Relation::nothing()
+             && sp.relation_with(Linear_Expression(0) == 0)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::saturates())
+             && sp.relation_with(2*A + B >= 3)
+             == Poly_Con_Relation::is_included()
+             && sp.relation_with(3*A + 3*B + C >= 7)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::saturates())
+             && sp.relation_with(3*A - C <= 3)
+             == (Poly_Con_Relation::nothing()));
 
   print_constraints(sp, "*** sp constraints ***");
   print_congruences(sp, "*** sp congruences ***");
@@ -191,21 +191,21 @@ test05() {
   cp.refine_with_congruence(6*A + 3*B %= 0);
 
   bool ok = (cp.relation_with(A + B + C == 0)
-	     == Poly_Con_Relation::nothing()
-	     && cp.relation_with(A + B == 0)
-	     == Poly_Con_Relation::nothing()
-	     && cp.relation_with(A == 0)
-	     == Poly_Con_Relation::nothing()
-	     && cp.relation_with(Linear_Expression(0) == 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::saturates())
-	     && cp.relation_with(2*A + B >= 3)
-	     == Poly_Con_Relation::is_included()
-	     && cp.relation_with(3*A + 3*B + C >= 7)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::saturates())
-	     && cp.relation_with(3*A - C <= 3)
-	     == (Poly_Con_Relation::nothing()));
+             == Poly_Con_Relation::nothing()
+             && cp.relation_with(A + B == 0)
+             == Poly_Con_Relation::nothing()
+             && cp.relation_with(A == 0)
+             == Poly_Con_Relation::nothing()
+             && cp.relation_with(Linear_Expression(0) == 0)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::saturates())
+             && cp.relation_with(2*A + B >= 3)
+             == Poly_Con_Relation::is_included()
+             && cp.relation_with(3*A + 3*B + C >= 7)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::saturates())
+             && cp.relation_with(3*A - C <= 3)
+             == (Poly_Con_Relation::nothing()));
 
   print_constraints(cp, "*** cp constraints ***");
   print_congruences(cp, "*** cp congruences ***");
@@ -233,14 +233,14 @@ test06() {
   Poly_Con_Relation rel6 = sp.relation_with(3*A + 3*B + C %= 7);
   Poly_Con_Relation rel7 = sp.relation_with(3*A - C %= 3);
   bool ok = (rel1 == Poly_Con_Relation::nothing()
-	     && rel2 == Poly_Con_Relation::nothing()
-	     && rel3 == Poly_Con_Relation::nothing()
-	     && rel4 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates())
-	     && rel5 == Poly_Con_Relation::nothing()
-	     && rel6 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates())
-	     && rel7 == (Poly_Con_Relation::is_included()));
+             && rel2 == Poly_Con_Relation::nothing()
+             && rel3 == Poly_Con_Relation::nothing()
+             && rel4 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates())
+             && rel5 == Poly_Con_Relation::nothing()
+             && rel6 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates())
+             && rel7 == (Poly_Con_Relation::is_included()));
 
   nout << "sp.relation_with(A + B + C %= 0) == " << rel1 << endl;
   nout << "sp.relation_with(A + B %= 0) == " << rel2 << endl;
@@ -276,14 +276,14 @@ test07() {
   Poly_Con_Relation rel6 = cp.relation_with(3*A + 3*B + C %= 7);
   Poly_Con_Relation rel7 = cp.relation_with(3*A - C %= 3);
   bool ok = (rel1 == Poly_Con_Relation::nothing()
-	     && rel2 == Poly_Con_Relation::nothing()
-	     && rel3 == Poly_Con_Relation::nothing()
-	     && rel4 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates())
-	     && rel5 == Poly_Con_Relation::nothing()
-	     && rel6 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates())
-	     && rel7 == (Poly_Con_Relation::is_included()));
+             && rel2 == Poly_Con_Relation::nothing()
+             && rel3 == Poly_Con_Relation::nothing()
+             && rel4 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates())
+             && rel5 == Poly_Con_Relation::nothing()
+             && rel6 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates())
+             && rel7 == (Poly_Con_Relation::is_included()));
 
   nout << "cp.relation_with(A + B + C %= 0) == " << rel1 << endl;
   nout << "cp.relation_with(A + B %= 0) == " << rel2 << endl;

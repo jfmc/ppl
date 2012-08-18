@@ -37,12 +37,12 @@ public class Pair<K, V>  {
 
     //! Returns the object of type K.
     public K getFirst() {
-	return first;
+        return first;
     }
 
     //! Returns the object of type V.
     public V getSecond() {
-	return second;
+        return second;
     }
 
     private static native void initIDs();

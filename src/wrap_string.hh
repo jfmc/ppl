@@ -49,9 +49,9 @@ namespace IO_Operators {
 */
 std::string
 wrap_string(const std::string& src_string,
-	    unsigned indent_depth,
-	    unsigned preferred_first_line_length,
-	    unsigned preferred_line_length);
+            unsigned indent_depth,
+            unsigned preferred_first_line_length,
+            unsigned preferred_line_length);
 
 } // namespace IO_Operators
 

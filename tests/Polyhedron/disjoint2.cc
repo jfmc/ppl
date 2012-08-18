@@ -27,8 +27,8 @@ namespace {
 
 NNC_Polyhedron
 half_strip(const Generator& p,
-	   const Linear_Expression& e,
-	   bool closed = true) {
+           const Linear_Expression& e,
+           bool closed = true) {
   assert((p.is_point() && closed) || (p.is_closure_point() && ! closed));
 
   Linear_Expression e1(p.expression());

@@ -69,7 +69,7 @@ public class MIP_Problem extends PPL_Object {
       Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
     */
     public MIP_Problem(long dim) {
-	build_cpp_object(dim);
+        build_cpp_object(dim);
     }
 
     /*! \brief
@@ -99,12 +99,12 @@ public class MIP_Problem extends PPL_Object {
     */
     public MIP_Problem(long dim, Constraint_System cs, Linear_Expression obj,
                        Optimization_Mode mode) {
-	build_cpp_object(dim, cs, obj, mode);
+        build_cpp_object(dim, cs, obj, mode);
     }
 
     //! Builds a copy of \p y.
     public MIP_Problem(MIP_Problem y) {
-	build_cpp_object(y);
+        build_cpp_object(y);
     }
 
     /*! \brief
@@ -262,8 +262,8 @@ public class MIP_Problem extends PPL_Object {
       or if the generator \p evaluating_point is not a point.
     */
     public native void evaluate_objective_function(Generator evaluating_point,
-						   Coefficient num,
-						   Coefficient den);
+                                                   Coefficient num,
+                                                   Coefficient den);
 
     //! Returns a feasible point for \p this, if it exists.
     /*!
@@ -313,9 +313,9 @@ public class MIP_Problem extends PPL_Object {
 
     //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim,
-					 Constraint_System cs,
-					 Linear_Expression obj,
-					 Optimization_Mode mode);
+                                         Constraint_System cs,
+                                         Linear_Expression obj,
+                                         Optimization_Mode mode);
 
     //! Builds the underlying C++ object.
     private native void build_cpp_object(MIP_Problem y);

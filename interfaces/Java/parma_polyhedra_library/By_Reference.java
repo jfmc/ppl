@@ -31,17 +31,17 @@ public class By_Reference<T> {
 
     //! Builds an object encapsulating \p object_value.
     public By_Reference(T object_value) {
-	obj = object_value;
+        obj = object_value;
     }
 
     //! Set an object to value \p object_value.
     public void set(T y) {
-	obj = y;
+        obj = y;
     }
 
     //! Returns the value held by \p this.
     public T get() {
-	return obj;
+        return obj;
     }
 
     private static native void initIDs();

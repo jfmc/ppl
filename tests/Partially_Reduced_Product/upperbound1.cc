@@ -136,7 +136,7 @@ test04() {
   prp2.refine_with_congruence((B %= 1) / 3);
 
   bool cons_ok = (!prp1.upper_bound_assign_if_exact(prp2)
-		   && !prp2.upper_bound_assign_if_exact(prp1));
+                   && !prp2.upper_bound_assign_if_exact(prp1));
 
   if (!cons_ok) {
     print_congruences(prp1, "*** prp1 congruences ub exact ***");

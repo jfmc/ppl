@@ -43,7 +43,7 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
   // It is assumed that `ph' is not an empty polyhedron.
   PPL_ASSERT(!ph.marked_empty());
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+         cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
       --affine_dim;
@@ -85,7 +85,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   // polyhedron described by `*this': hence, it cannot be empty.
   PPL_ASSERT(!ph.marked_empty());
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+         cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())
       --ph_affine_dim;

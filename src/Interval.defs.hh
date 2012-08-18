@@ -273,7 +273,7 @@ public:
   template <typename C1, typename C2>
   typename Enable_If<Is_Same_Or_Derived<I_Constraint_Base, C1>::value
                      &&
-		     Is_Same_Or_Derived<I_Constraint_Base, C2>::value,
+                     Is_Same_Or_Derived<I_Constraint_Base, C2>::value,
                      I_Result>::type
   build(const C1& c1, const C2& c2) {
     switch (c1.rel()) {
@@ -452,7 +452,7 @@ public:
   typename Enable_If<Is_Singleton<From>::value || Is_Interval<From>::value, I_Result>::type
   wrap_assign(Bounded_Integer_Type_Width w,
               Bounded_Integer_Type_Representation r,
-	      const From& refinement) {
+              const From& refinement) {
     if (is_empty())
       return I_EMPTY;
     if (lower_is_boundary_infinity() || upper_is_boundary_infinity())
@@ -465,15 +465,15 @@ public:
     switch (r) {
     case UNSIGNED:
       umod_2exp_assign(LOWER, lower(), info(),
-		       LOWER, lower(), info(), w);
+                       LOWER, lower(), info(), w);
       umod_2exp_assign(UPPER, upper(), info(),
-		       UPPER, upper(), info(), w);
+                       UPPER, upper(), info(), w);
       break;
     case SIGNED_2_COMPLEMENT:
       smod_2exp_assign(LOWER, lower(), info(),
-		       LOWER, lower(), info(), w);
+                       LOWER, lower(), info(), w);
       smod_2exp_assign(UPPER, upper(), info(),
-		       UPPER, upper(), info(), w);
+                       UPPER, upper(), info(), w);
       break;
     default:
       PPL_UNREACHABLE;
@@ -484,7 +484,7 @@ public:
     PPL_DIRTY_TEMP(Interval, tmp);
     tmp.info().clear();
     Boundary_NS::assign(LOWER, tmp.lower(), tmp.info(),
-			LOWER, lower(), info());
+                        LOWER, lower(), info());
     set_unbounded(UPPER, tmp.upper(), tmp.info());
     tmp.intersect_assign(refinement);
     lower_extend();
@@ -512,13 +512,13 @@ public:
     if (is_open(LOWER, lower(), info())) {
       if (is_plus_infinity(LOWER, lower(), info())) {
 #ifndef NDEBUG
-	std::cerr << "The lower boundary is +inf open.\n";
+        std::cerr << "The lower boundary is +inf open.\n";
 #endif
       }
     }
     else if (!Info::may_contain_infinity
-	     && (is_minus_infinity(LOWER, lower(), info())
-		 || is_plus_infinity(LOWER, lower(), info()))) {
+             && (is_minus_infinity(LOWER, lower(), info())
+                 || is_plus_infinity(LOWER, lower(), info()))) {
 #ifndef NDEBUG
       std::cerr << "The lower boundary is unexpectedly infinity.\n";
 #endif
@@ -527,22 +527,22 @@ public:
     if (!info().get_boundary_property(LOWER, SPECIAL)) {
       if (is_not_a_number(lower())) {
 #ifndef NDEBUG
-	std::cerr << "The lower boundary is not a number.\n";
+        std::cerr << "The lower boundary is not a number.\n";
 #endif
-	return false;
+        return false;
       }
     }
 
     if (is_open(UPPER, upper(), info())) {
       if (is_minus_infinity(UPPER, upper(), info())) {
 #ifndef NDEBUG
-	std::cerr << "The upper boundary is -inf open.\n";
+        std::cerr << "The upper boundary is -inf open.\n";
 #endif
       }
     }
     else if (!Info::may_contain_infinity
-	     && (is_minus_infinity(UPPER, upper(), info())
-		 || is_plus_infinity(UPPER, upper(), info()))) {
+             && (is_minus_infinity(UPPER, upper(), info())
+                 || is_plus_infinity(UPPER, upper(), info()))) {
 #ifndef NDEBUG
       std::cerr << "The upper boundary is unexpectedly infinity."
                 << std::endl;
@@ -552,9 +552,9 @@ public:
     if (!info().get_boundary_property(UPPER, SPECIAL)) {
       if (is_not_a_number(upper())) {
 #ifndef NDEBUG
-	std::cerr << "The upper boundary is not a number.\n";
+        std::cerr << "The upper boundary is not a number.\n";
 #endif
-	return false;
+        return false;
       }
     }
 
@@ -610,7 +610,7 @@ public:
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value
                        || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value
+                      && (Is_Singleton<From2>::value
                           || Is_Interval<From2>::value)), I_Result>::type
   join_assign(const From1& x, const From2& y);
 
@@ -622,7 +622,7 @@ public:
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value
                        || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value
+                      && (Is_Singleton<From2>::value
                           || Is_Interval<From2>::value)), I_Result>::type
   intersect_assign(const From1& x, const From2& y);
 
@@ -642,7 +642,7 @@ public:
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value
                        || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value
+                      && (Is_Singleton<From2>::value
                           || Is_Interval<From2>::value)), I_Result>::type
   difference_assign(const From1& x, const From2& y);
 
@@ -721,22 +721,22 @@ public:
 
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
+                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   add_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
+                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   sub_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
+                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   mul_assign(const From1& x, const From2& y);
 
   template <typename From1, typename From2>
   typename Enable_If<((Is_Singleton<From1>::value || Is_Interval<From1>::value)
-		      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
+                      && (Is_Singleton<From2>::value || Is_Interval<From2>::value)), I_Result>::type
   div_assign(const From1& x, const From2& y);
 
   template <typename From, typename Iterator>

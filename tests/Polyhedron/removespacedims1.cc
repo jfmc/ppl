@@ -233,7 +233,7 @@ test07() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** after ph.remove_space_dimensions(to_be_removed) ***");
+                    "*** after ph.remove_space_dimensions(to_be_removed) ***");
 
   return ok;
 }

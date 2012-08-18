@@ -47,8 +47,8 @@ test01() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_preimage"
-		   "(B, GREATER_OR_EQUAL, A+2) ***");
+                   "ph.generalized_affine_preimage"
+                   "(B, GREATER_OR_EQUAL, A+2) ***");
 
   return ok;
 }
@@ -76,7 +76,7 @@ test02() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_preimage"
+                   "ph.generalized_affine_preimage"
                    "(B, GREATER_OR_EQUAL, A+2, -2) ***");
 
   return ok;
@@ -109,8 +109,8 @@ test03() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_preimage"
-		   "(B, LESS_OR_EQUAL, A-B+2, -3) ***");
+                   "ph.generalized_affine_preimage"
+                   "(B, LESS_OR_EQUAL, A-B+2, -3) ***");
 
   return ok;
 }

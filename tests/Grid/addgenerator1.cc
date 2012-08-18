@@ -110,7 +110,7 @@ test04() {
   print_congruences(gr, "*** gr ***");
 
   for (Grid_Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i)
     gr.add_grid_generator(*i);
 
   Grid known_gr(2);
@@ -170,7 +170,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point(12*A + 7*D)) ***");
+                    "*** gr.add_grid_generator(grid_point(12*A + 7*D)) ***");
 
   return ok;
 }
@@ -199,7 +199,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point(B, 3)) ***");
+                    "*** gr.add_grid_generator(grid_point(B, 3)) ***");
 
   return ok;
 }

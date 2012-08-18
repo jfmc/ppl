@@ -29,8 +29,8 @@ prolog_system('YAP').
 
 main :-
     (check_all ->
-	write('OK')
+        write('OK')
     ;
-	write('FAILURE')
+        write('FAILURE')
     ),
     nl.

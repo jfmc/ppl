@@ -52,7 +52,7 @@ test01() {
   bool ok = (ph == kr1);
 
   print_generators(ph,
-		   "*** ph.bounded_affine_image(A, 7-B, B+3) ***");
+                   "*** ph.bounded_affine_image(A, 7-B, B+3) ***");
 
   return ok;
 }
@@ -84,9 +84,9 @@ test02() {
   bool ok = (ph == kr1);
 
   print_generators(ph,
-		   "*** ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
+                   "*** ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
   print_generators(kr1,
-		   "*** kr1.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
+                   "*** kr1.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
 
   return ok;
 }
@@ -140,10 +140,10 @@ test04() {
   bool ok = (kr1 == ph);
 
   print_constraints(ph,
-		    "*** ph.bounded_affine_image("
-		    "x, -2*x+y+1, -2*x+y+1, -1) ***");
+                    "*** ph.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1, -1) ***");
   print_constraints(kr1,
-		    "*** kr1 ***");
+                    "*** kr1 ***");
 
   return ok;
 }
@@ -174,10 +174,10 @@ test05() {
   bool ok = (kr1 == ph);
 
   print_constraints(ph,
-		    "*** ph.bounded_affine_image("
-		    "x, 2*x+y+1, 2*x+y+1, -1) ***");
+                    "*** ph.bounded_affine_image("
+                    "x, 2*x+y+1, 2*x+y+1, -1) ***");
   print_constraints(kr1,
-		    "*** kr1 ***");
+                    "*** kr1 ***");
 
   return ok;
 }
@@ -208,10 +208,10 @@ test06() {
   bool ok = (kr1 == ph);
 
   print_constraints(ph,
-		    "*** ph.bounded_affine_image("
-		    "x, -2*x+y+1, -2*x+y+1) ***");
+                    "*** ph.bounded_affine_image("
+                    "x, -2*x+y+1, -2*x+y+1) ***");
   print_constraints(kr1,
-		    "*** kr1 ***");
+                    "*** kr1 ***");
 
   return ok;
 }

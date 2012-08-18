@@ -34,8 +34,8 @@ private:
 
 public:
   Weight_Profiler(const char* file, int line,
-		  Weightwatch_Traits::Delta delta,
-		  double min_threshold = 0, double max_threshold = 0)
+                  Weightwatch_Traits::Delta delta,
+                  double min_threshold = 0, double max_threshold = 0)
     : file(file), line(line), delta(delta),
       min_threshold(min_threshold), max_threshold(max_threshold) {
     for (int i = 0; i < 2; ++i) {
@@ -71,11 +71,11 @@ public:
     double elapsed;
     if (stamp.tv_nsec >= start.tv_nsec) {
       elapsed = (stamp.tv_nsec - start.tv_nsec)
-	+ (stamp.tv_sec - start.tv_sec) * 1e9;
+        + (stamp.tv_sec - start.tv_sec) * 1e9;
     }
     else {
       elapsed = (1000000000 - start.tv_nsec + stamp.tv_nsec )
-	+ (stamp.tv_sec - start.tv_sec - 1) * 1e9;
+        + (stamp.tv_sec - start.tv_sec - 1) * 1e9;
     }
     elapsed -= adjustment;
     double elapsed1 = elapsed / factor;

@@ -43,7 +43,7 @@ bool operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
 //! Yields the logical conjunction of \p x and \p y.
 /*! \relates Poly_Con_Relation */
 Poly_Con_Relation operator&&(const Poly_Con_Relation& x,
-			     const Poly_Con_Relation& y);
+                             const Poly_Con_Relation& y);
 
 /*! \brief
   Yields the assertion with all the conjuncts of \p x
@@ -52,7 +52,7 @@ Poly_Con_Relation operator&&(const Poly_Con_Relation& x,
   \relates Poly_Con_Relation
 */
 Poly_Con_Relation operator-(const Poly_Con_Relation& x,
-			    const Poly_Con_Relation& y);
+                            const Poly_Con_Relation& y);
 
 namespace IO_Operators {
 

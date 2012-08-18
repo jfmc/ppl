@@ -710,11 +710,11 @@ private:
     that the variable is nonnegative.
   */
   bool parse_constraints(dimension_type& additional_tableau_rows,
-			 dimension_type& additional_slack_variables,
-			 std::deque<bool>& is_tableau_constraint,
-			 std::deque<bool>& is_satisfied_inequality,
-			 std::deque<bool>& is_nonnegative_variable,
-			 std::deque<bool>& is_remergeable_variable) const;
+                         dimension_type& additional_slack_variables,
+                         std::deque<bool>& is_tableau_constraint,
+                         std::deque<bool>& is_satisfied_inequality,
+                         std::deque<bool>& is_nonnegative_variable,
+                         std::deque<bool>& is_remergeable_variable) const;
 
   /*! \brief
     Computes the row index of the variable exiting the base
@@ -878,7 +878,7 @@ private:
                          dimension_type end_artificials);
 
   bool is_in_base(dimension_type var_index,
-		  dimension_type& row_index) const;
+                  dimension_type& row_index) const;
 
   /*! \brief
     Computes a valid generator that satisfies all the constraints of the

@@ -85,7 +85,7 @@ public:
   */
   explicit
   Pointset_Powerset(dimension_type num_dimensions = 0,
-		    Degenerate_Element kind = UNIVERSE);
+                    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy constructor.
   /*!
@@ -365,7 +365,7 @@ public:
     and \p maximum are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -396,8 +396,8 @@ public:
     and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& g) const;
+                Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -424,7 +424,7 @@ public:
     and \p minimum are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
 
   /*! \brief
@@ -456,8 +456,8 @@ public:
     and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& g) const;
+                Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this geometrically
@@ -767,9 +767,9 @@ public:
     \p *this.
   */
   void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		      = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator
+                      = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the
@@ -793,9 +793,9 @@ public:
     \p *this.
   */
   void affine_preimage(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		      = Coefficient_one());
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator
+                      = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -824,10 +824,10 @@ public:
     relation symbol.
   */
   void generalized_affine_image(Variable var,
-				Relation_Symbol relsym,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				  = Coefficient_one());
+                                Relation_Symbol relsym,
+                                const Linear_Expression& expr,
+                                Coefficient_traits::const_reference denominator
+                                  = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -857,10 +857,10 @@ public:
   */
   void
   generalized_affine_preimage(Variable var,
-			      Relation_Symbol relsym,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator
-			      = Coefficient_one());
+                              Relation_Symbol relsym,
+                              const Linear_Expression& expr,
+                              Coefficient_traits::const_reference denominator
+                              = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -883,8 +883,8 @@ public:
     relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				Relation_Symbol relsym,
-				const Linear_Expression& rhs);
+                                Relation_Symbol relsym,
+                                const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -907,8 +907,8 @@ public:
     relation symbol.
   */
   void generalized_affine_preimage(const Linear_Expression& lhs,
-				   Relation_Symbol relsym,
-				   const Linear_Expression& rhs);
+                                   Relation_Symbol relsym,
+                                   const Linear_Expression& rhs);
 
   /*!
     \brief
@@ -937,10 +937,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_image(Variable var,
-			    const Linear_Expression& lb_expr,
-			    const Linear_Expression& ub_expr,
-			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+                            const Linear_Expression& lb_expr,
+                            const Linear_Expression& ub_expr,
+                            Coefficient_traits::const_reference denominator
+                            = Coefficient_one());
 
   /*!
     \brief
@@ -969,10 +969,10 @@ public:
     dimension of \p *this.
   */
   void bounded_affine_preimage(Variable var,
-			       const Linear_Expression& lb_expr,
-			       const Linear_Expression& ub_expr,
-			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+                               const Linear_Expression& lb_expr,
+                               const Linear_Expression& ub_expr,
+                               Coefficient_traits::const_reference denominator
+                               = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1077,8 +1077,8 @@ public:
   */
   template <typename Widening>
   void BGP99_extrapolation_assign(const Pointset_Powerset& y,
-				  Widening widen_fun,
-				  unsigned max_disjuncts);
+                                  Widening widen_fun,
+                                  unsigned max_disjuncts);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1283,7 +1283,7 @@ private:
   //! Records in \p cert_ms the certificates for this set of disjuncts.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
-			             typename Cert::Compare>& cert_ms) const;
+                                     typename Cert::Compare>& cert_ms) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if the current set of disjuncts
@@ -1292,7 +1292,7 @@ private:
   template <typename Cert>
   bool is_cert_multiset_stabilizing(const std::map<Cert, size_type,
                                                    typename Cert::Compare>&
-				    y_cert_ms) const;
+                                    y_cert_ms) const;
 
   // FIXME: here it should be enough to befriend the template constructor
   // template <typename QH>
@@ -1340,7 +1340,7 @@ linear_partition(const PSET& p, const PSET& q);
 */
 bool
 check_containment(const NNC_Polyhedron& ph,
-		  const Pointset_Powerset<NNC_Polyhedron>& ps);
+                  const Pointset_Powerset<NNC_Polyhedron>& ps);
 
 
 /*! \brief
@@ -1375,7 +1375,7 @@ approximate_partition(const Grid& p, const Grid& q, bool& finite_partition);
 */
 bool
 check_containment(const Grid& ph,
-		  const Pointset_Powerset<Grid>& ps);
+                  const Pointset_Powerset<Grid>& ps);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of

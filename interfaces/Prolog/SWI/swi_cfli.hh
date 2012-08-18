@@ -171,7 +171,7 @@ Prolog_atom_from_string(const char* s) {
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1) {
+                          Prolog_term_ref a1) {
 #if PLVERSION >= 50800
   return PL_cons_functor(t, PL_new_functor(f, 1), a1);
 #else
@@ -186,7 +186,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2) {
+                          Prolog_term_ref a1, Prolog_term_ref a2) {
 #if PLVERSION >= 50800
   return PL_cons_functor(t, PL_new_functor(f, 2), a1, a2);
 #else
@@ -201,8 +201,8 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3) {
 #if PLVERSION >= 50800
   return PL_cons_functor(t, PL_new_functor(f, 3), a1, a2, a3);
 #else
@@ -217,8 +217,8 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3, Prolog_term_ref a4) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3, Prolog_term_ref a4) {
 #if PLVERSION >= 50800
   return PL_cons_functor(t, PL_new_functor(f, 4), a1, a2, a3, a4);
 #else
@@ -232,7 +232,7 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 */
 inline int
 Prolog_construct_cons(Prolog_term_ref c,
-		      Prolog_term_ref h, Prolog_term_ref t) {
+                      Prolog_term_ref h, Prolog_term_ref t) {
 #if PLVERSION >= 50800
   return PL_cons_list(c, h, t);
 #else

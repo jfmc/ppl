@@ -316,19 +316,19 @@ handle_exception(const Prolog_unsigned_out_of_range& e) {
   Prolog_term_ref max = Prolog_new_term_ref();
   Prolog_put_ulong(max, e.max());
   Prolog_construct_compound(max,
-			    Prolog_atom_from_string("unsigned_integer"
-						    "_less_or_equal"),
-			    max);
+                            Prolog_atom_from_string("unsigned_integer"
+                                                    "_less_or_equal"),
+                            max);
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected, max);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -339,15 +339,15 @@ handle_exception(const not_unsigned_integer& e) {
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("unsigned_integer"));
+                            Prolog_atom_term_from_string("unsigned_integer"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -358,16 +358,16 @@ handle_exception(const non_linear& e) {
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string
-			    ("linear_expression_or_constraint"));
+                            Prolog_atom_term_from_string
+                            ("linear_expression_or_constraint"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -375,20 +375,20 @@ void
 handle_exception(const not_a_variable& e) {
   Prolog_term_ref found = Prolog_new_term_ref();
   Prolog_construct_compound(found, a_found,
-			    e.term());
+                            e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string
-			    ("$VAR(unsigned_integer)"));
+                            Prolog_atom_term_from_string
+                            ("$VAR(unsigned_integer)"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -399,15 +399,15 @@ handle_exception(const not_an_integer& e) {
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("integer"));
+                            Prolog_atom_term_from_string("integer"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -418,15 +418,15 @@ handle_exception(const ppl_handle_mismatch& e) {
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("handle"));
+                            Prolog_atom_term_from_string("handle"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -438,17 +438,17 @@ handle_exception(const not_an_optimization_mode& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("max"), expected);
+                        Prolog_atom_term_from_string("max"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("min"), expected);
+                        Prolog_atom_term_from_string("min"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -460,19 +460,19 @@ handle_exception(const not_a_complexity_class& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("polynomial"), expected);
+                        Prolog_atom_term_from_string("polynomial"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("simplex"), expected);
+                        Prolog_atom_term_from_string("simplex"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("any"), expected);
+                        Prolog_atom_term_from_string("any"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -484,14 +484,14 @@ void
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pricing"), expected);
+                        Prolog_atom_term_from_string("pricing"), expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -503,21 +503,21 @@ void
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pricing_steepest_edge_float"),
+                        Prolog_atom_term_from_string("pricing_steepest_edge_float"),
                         expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pricing_steepest_edge_exact"),
+                        Prolog_atom_term_from_string("pricing_steepest_edge_exact"),
                         expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pricing_textbook"),
+                        Prolog_atom_term_from_string("pricing_textbook"),
                         expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -529,18 +529,18 @@ void
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("cutting_strategy"),
+                        Prolog_atom_term_from_string("cutting_strategy"),
                         expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pivot_row_strategy"),
+                        Prolog_atom_term_from_string("pivot_row_strategy"),
                         expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -552,26 +552,26 @@ void
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("cutting_strategy_first"),
+                        Prolog_atom_term_from_string("cutting_strategy_first"),
                         expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("cutting_strategy_deepest"),
+                        Prolog_atom_term_from_string("cutting_strategy_deepest"),
                         expected);
    Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("cutting_strategy_all"),
+                        Prolog_atom_term_from_string("cutting_strategy_all"),
                         expected);
    Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pivot_row_strategy_first"),
+                        Prolog_atom_term_from_string("pivot_row_strategy_first"),
                         expected);
     Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("pivot_row_strategy_max_column"),
+                        Prolog_atom_term_from_string("pivot_row_strategy_max_column"),
                         expected);
  Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -583,17 +583,17 @@ handle_exception(const not_universe_or_empty& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("universe"), expected);
+                        Prolog_atom_term_from_string("universe"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("empty"), expected);
+                        Prolog_atom_term_from_string("empty"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -605,17 +605,17 @@ handle_exception(const not_a_boolean& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("true"), expected);
+                        Prolog_atom_term_from_string("true"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("false"), expected);
+                        Prolog_atom_term_from_string("false"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -627,23 +627,23 @@ handle_exception(const not_a_bounded_integer_type_width& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("bits_8"), expected);
+                        Prolog_atom_term_from_string("bits_8"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("bits_16"), expected);
+                        Prolog_atom_term_from_string("bits_16"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("bits_32"), expected);
+                        Prolog_atom_term_from_string("bits_32"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("bits_64"), expected);
+                        Prolog_atom_term_from_string("bits_64"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("bits_128"), expected);
+                        Prolog_atom_term_from_string("bits_128"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -655,18 +655,18 @@ handle_exception(const not_a_bounded_integer_type_representation& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("unsigned"), expected);
+                        Prolog_atom_term_from_string("unsigned"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("signed_2_complement"),
+                        Prolog_atom_term_from_string("signed_2_complement"),
                         expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -678,22 +678,22 @@ handle_exception(const not_a_bounded_integer_type_overflow& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("overflow_wraps"),
+                        Prolog_atom_term_from_string("overflow_wraps"),
                         expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("overflow_undefined"),
+                        Prolog_atom_term_from_string("overflow_undefined"),
                         expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("overflow_impossible"),
+                        Prolog_atom_term_from_string("overflow_impossible"),
                         expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -705,23 +705,23 @@ handle_exception(const not_a_relation& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("="), expected);
+                        Prolog_atom_term_from_string("="), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string(">="), expected);
+                        Prolog_atom_term_from_string(">="), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("=<"), expected);
+                        Prolog_atom_term_from_string("=<"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string(">"), expected);
+                        Prolog_atom_term_from_string(">"), expected);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string("<"), expected);
+                        Prolog_atom_term_from_string("<"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -733,16 +733,16 @@ handle_exception(const not_a_nil_terminated_list& e) {
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_put_atom(expected, a_nil);
   Prolog_construct_cons(expected,
-			Prolog_atom_term_from_string
+                        Prolog_atom_term_from_string
                         ("Prolog_list"), expected);
   Prolog_construct_compound(expected, a_expected, expected);
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string(e.where()));
+                            Prolog_atom_term_from_string(e.where()));
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -750,15 +750,15 @@ void
 handle_exception(const PPL_integer_out_of_range& e) {
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string("Coefficient_to_integer_term"));
+                            Prolog_atom_term_from_string("Coefficient_to_integer_term"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   std::ostringstream s;
   s << e.value();
   std::string str = s.str();
   Prolog_construct_compound(exception_term, a_ppl_representation_error,
-			    Prolog_atom_term_from_string(str.c_str()),
-			    where);
+                            Prolog_atom_term_from_string(str.c_str()),
+                            where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -773,7 +773,7 @@ void
 handle_exception(const std::overflow_error& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_construct_compound(et, a_ppl_overflow_error,
-			    Prolog_atom_term_from_string(e.what()));
+                            Prolog_atom_term_from_string(e.what()));
   Prolog_raise_exception(et);
 }
 
@@ -781,7 +781,7 @@ void
 handle_exception(const std::domain_error& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_construct_compound(et, a_ppl_domain_error,
-			    Prolog_atom_term_from_string(e.what()));
+                            Prolog_atom_term_from_string(e.what()));
   Prolog_raise_exception(et);
 }
 
@@ -789,7 +789,7 @@ void
 handle_exception(const std::length_error& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_construct_compound(et, a_ppl_length_error,
-			    Prolog_atom_term_from_string(e.what()));
+                            Prolog_atom_term_from_string(e.what()));
   Prolog_raise_exception(et);
 }
 
@@ -797,7 +797,7 @@ void
 handle_exception(const std::invalid_argument& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_construct_compound(et, a_ppl_invalid_argument,
-			    Prolog_atom_term_from_string(e.what()));
+                            Prolog_atom_term_from_string(e.what()));
   Prolog_raise_exception(et);
 }
 
@@ -805,7 +805,7 @@ void
 handle_exception(const std::logic_error& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_construct_compound(et, a_ppl_logic_error,
-			    Prolog_atom_term_from_string(e.what()));
+                            Prolog_atom_term_from_string(e.what()));
   Prolog_raise_exception(et);
 }
 
@@ -890,7 +890,7 @@ term_to_boolean(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_true || name == a_false))
+        && (name == a_true || name == a_false))
       return name;
   }
   throw not_a_boolean(t, where);
@@ -901,7 +901,7 @@ term_to_universe_or_empty(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_universe || name == a_empty))
+        && (name == a_universe || name == a_empty))
       return name;
   }
   throw not_universe_or_empty(t, where);
@@ -947,53 +947,53 @@ build_linear_expression(Prolog_term_ref t, const char* where) {
     switch (arity) {
     case 1:
       {
-	Prolog_term_ref arg = Prolog_new_term_ref();
-	Prolog_get_arg(1, t, arg);
-	if (functor == a_minus)
-	  // Unary minus.
-	  return -build_linear_expression(arg, where);
-	else if (functor == a_dollar_VAR)
-	  // Variable.
-	  return Variable(term_to_unsigned<dimension_type>(arg, where));
+        Prolog_term_ref arg = Prolog_new_term_ref();
+        Prolog_get_arg(1, t, arg);
+        if (functor == a_minus)
+          // Unary minus.
+          return -build_linear_expression(arg, where);
+        else if (functor == a_dollar_VAR)
+          // Variable.
+          return Variable(term_to_unsigned<dimension_type>(arg, where));
       }
       break;
     case 2:
       {
-	Prolog_term_ref arg1 = Prolog_new_term_ref();
-	Prolog_term_ref arg2 = Prolog_new_term_ref();
-	Prolog_get_arg(1, t, arg1);
-	Prolog_get_arg(2, t, arg2);
-	if (functor == a_plus)
-	  // Plus.
-	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Coefficient(arg1)
-	      + build_linear_expression(arg2, where);
-	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1, where)
-	      + integer_term_to_Coefficient(arg2);
-	  else
-	    return build_linear_expression(arg1, where)
-	      + build_linear_expression(arg2, where);
-	else if (functor == a_minus)
-	  // Minus.
-	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Coefficient(arg1)
-	      - build_linear_expression(arg2, where);
-	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1, where)
-	      - integer_term_to_Coefficient(arg2);
-	  else
-	    return build_linear_expression(arg1, where)
-	      - build_linear_expression(arg2, where);
-	else if (functor == a_asterisk) {
-	  // Times.
-	  if (Prolog_is_integer(arg1))
-	    return integer_term_to_Coefficient(arg1)
-	      * build_linear_expression(arg2, where);
-	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1, where)
-	      * integer_term_to_Coefficient(arg2);
-	}
+        Prolog_term_ref arg1 = Prolog_new_term_ref();
+        Prolog_term_ref arg2 = Prolog_new_term_ref();
+        Prolog_get_arg(1, t, arg1);
+        Prolog_get_arg(2, t, arg2);
+        if (functor == a_plus)
+          // Plus.
+          if (Prolog_is_integer(arg1))
+            return integer_term_to_Coefficient(arg1)
+              + build_linear_expression(arg2, where);
+          else if (Prolog_is_integer(arg2))
+            return build_linear_expression(arg1, where)
+              + integer_term_to_Coefficient(arg2);
+          else
+            return build_linear_expression(arg1, where)
+              + build_linear_expression(arg2, where);
+        else if (functor == a_minus)
+          // Minus.
+          if (Prolog_is_integer(arg1))
+            return integer_term_to_Coefficient(arg1)
+              - build_linear_expression(arg2, where);
+          else if (Prolog_is_integer(arg2))
+            return build_linear_expression(arg1, where)
+              - integer_term_to_Coefficient(arg2);
+          else
+            return build_linear_expression(arg1, where)
+              - build_linear_expression(arg2, where);
+        else if (functor == a_asterisk) {
+          // Times.
+          if (Prolog_is_integer(arg1))
+            return integer_term_to_Coefficient(arg1)
+              * build_linear_expression(arg2, where);
+          else if (Prolog_is_integer(arg2))
+            return build_linear_expression(arg1, where)
+              * integer_term_to_Coefficient(arg2);
+        }
       }
     }
   }
@@ -1013,60 +1013,60 @@ build_constraint(Prolog_term_ref t, const char* where) {
       Prolog_get_arg(1, t, arg1);
       Prolog_get_arg(2, t, arg2);
       if (functor == a_equal)
-	// =
-	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Coefficient(arg1)
-	    == build_linear_expression(arg2, where);
-	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1, where)
-	    == integer_term_to_Coefficient(arg2);
-	else
-	  return build_linear_expression(arg1, where)
-	    == build_linear_expression(arg2, where);
+        // =
+        if (Prolog_is_integer(arg1))
+          return integer_term_to_Coefficient(arg1)
+            == build_linear_expression(arg2, where);
+        else if (Prolog_is_integer(arg2))
+          return build_linear_expression(arg1, where)
+            == integer_term_to_Coefficient(arg2);
+        else
+          return build_linear_expression(arg1, where)
+            == build_linear_expression(arg2, where);
       else if (functor == a_equal_less_than)
-	// =<
-	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Coefficient(arg1)
-	    <= build_linear_expression(arg2, where);
-	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1, where)
-	    <= integer_term_to_Coefficient(arg2);
-	else
-	  return build_linear_expression(arg1, where)
-	    <= build_linear_expression(arg2, where);
+        // =<
+        if (Prolog_is_integer(arg1))
+          return integer_term_to_Coefficient(arg1)
+            <= build_linear_expression(arg2, where);
+        else if (Prolog_is_integer(arg2))
+          return build_linear_expression(arg1, where)
+            <= integer_term_to_Coefficient(arg2);
+        else
+          return build_linear_expression(arg1, where)
+            <= build_linear_expression(arg2, where);
       else if (functor == a_greater_than_equal)
-	// >=
-	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Coefficient(arg1)
-	    >= build_linear_expression(arg2, where);
-	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1, where)
-	    >= integer_term_to_Coefficient(arg2);
-	else
-	  return build_linear_expression(arg1, where)
-	    >= build_linear_expression(arg2, where);
+        // >=
+        if (Prolog_is_integer(arg1))
+          return integer_term_to_Coefficient(arg1)
+            >= build_linear_expression(arg2, where);
+        else if (Prolog_is_integer(arg2))
+          return build_linear_expression(arg1, where)
+            >= integer_term_to_Coefficient(arg2);
+        else
+          return build_linear_expression(arg1, where)
+            >= build_linear_expression(arg2, where);
       else if (functor == a_less_than)
-	// <
-	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Coefficient(arg1)
-	    < build_linear_expression(arg2, where);
-	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1, where)
-	    < integer_term_to_Coefficient(arg2);
-	else
-	  return build_linear_expression(arg1, where)
-	    < build_linear_expression(arg2, where);
+        // <
+        if (Prolog_is_integer(arg1))
+          return integer_term_to_Coefficient(arg1)
+            < build_linear_expression(arg2, where);
+        else if (Prolog_is_integer(arg2))
+          return build_linear_expression(arg1, where)
+            < integer_term_to_Coefficient(arg2);
+        else
+          return build_linear_expression(arg1, where)
+            < build_linear_expression(arg2, where);
       else if (functor == a_greater_than) {
-	// >
-	if (Prolog_is_integer(arg1))
-	  return integer_term_to_Coefficient(arg1)
-	    > build_linear_expression(arg2, where);
-	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1, where)
-	    > integer_term_to_Coefficient(arg2);
-	else
-	  return build_linear_expression(arg1, where)
-	    > build_linear_expression(arg2, where);
+        // >
+        if (Prolog_is_integer(arg1))
+          return integer_term_to_Coefficient(arg1)
+            > build_linear_expression(arg2, where);
+        else if (Prolog_is_integer(arg2))
+          return build_linear_expression(arg1, where)
+            > integer_term_to_Coefficient(arg2);
+        else
+          return build_linear_expression(arg1, where)
+            > build_linear_expression(arg2, where);
       }
     }
   }
@@ -1087,51 +1087,51 @@ build_congruence(Prolog_term_ref t, const char* where) {
       Prolog_get_arg(2, t, arg2);
       if (functor == a_modulo) {
         // /
-	if (Prolog_is_integer(arg2)) {
+        if (Prolog_is_integer(arg2)) {
           Prolog_atom functor1;
           int arity1;
           Prolog_get_compound_name_arity(arg1, &functor1, &arity1);
           if (arity1 == 2) {
             if (functor1 == a_is_congruent_to) {
-      	      // =:=
+              // =:=
               Prolog_term_ref arg11 = Prolog_new_term_ref();
               Prolog_term_ref arg12 = Prolog_new_term_ref();
               Prolog_get_arg(1, arg1, arg11);
               Prolog_get_arg(2, arg1, arg12);
               if (Prolog_is_integer(arg12))
-	        return (build_linear_expression(arg11, where)
-			%= integer_term_to_Coefficient(arg12))
-		  / integer_term_to_Coefficient(arg2);
-	      else
-	        return (build_linear_expression(arg11, where)
-			%= build_linear_expression(arg12, where))
-		  / integer_term_to_Coefficient(arg2);
-	    }
-	  }
-	}
+                return (build_linear_expression(arg11, where)
+                        %= integer_term_to_Coefficient(arg12))
+                  / integer_term_to_Coefficient(arg2);
+              else
+                return (build_linear_expression(arg11, where)
+                        %= build_linear_expression(arg12, where))
+                  / integer_term_to_Coefficient(arg2);
+            }
+          }
+        }
       }
       else
         if (functor == a_is_congruent_to)
-      	  // =:=
+          // =:=
           if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1, where)
-	      %= integer_term_to_Coefficient(arg2);
-	  else
-	    return build_linear_expression(arg1, where)
-	      %= build_linear_expression(arg2, where);
-	else
+            return build_linear_expression(arg1, where)
+              %= integer_term_to_Coefficient(arg2);
+          else
+            return build_linear_expression(arg1, where)
+              %= build_linear_expression(arg2, where);
+        else
           if (functor == a_equal) {
-	    // =
-	    if (Prolog_is_integer(arg1))
-	      return (build_linear_expression(arg2, where)
-		      %= integer_term_to_Coefficient(arg1)) / 0;
-	    else if (Prolog_is_integer(arg2))
-	      return (build_linear_expression(arg1, where)
-		      %= integer_term_to_Coefficient(arg2)) / 0;
-	    else
-	      return (build_linear_expression(arg1, where)
-		      %= build_linear_expression(arg2, where)) / 0;
-	  }
+            // =
+            if (Prolog_is_integer(arg1))
+              return (build_linear_expression(arg2, where)
+                      %= integer_term_to_Coefficient(arg1)) / 0;
+            else if (Prolog_is_integer(arg2))
+              return (build_linear_expression(arg1, where)
+                      %= integer_term_to_Coefficient(arg2)) / 0;
+            else
+              return (build_linear_expression(arg1, where)
+                      %= build_linear_expression(arg2, where)) / 0;
+          }
     }
   }
   // Invalid.
@@ -1148,13 +1148,13 @@ build_generator(Prolog_term_ref t, const char* where) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       if (functor == a_line)
-	return Generator::line(build_linear_expression(arg, where));
+        return Generator::line(build_linear_expression(arg, where));
       else if (functor == a_ray)
-	return Generator::ray(build_linear_expression(arg, where));
+        return Generator::ray(build_linear_expression(arg, where));
       else if (functor == a_point)
-	return Generator::point(build_linear_expression(arg, where));
+        return Generator::point(build_linear_expression(arg, where));
       else if (functor == a_closure_point)
-	return Generator::closure_point(build_linear_expression(arg, where));
+        return Generator::closure_point(build_linear_expression(arg, where));
     }
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
@@ -1163,11 +1163,11 @@ build_generator(Prolog_term_ref t, const char* where) {
       Prolog_get_arg(2, t, arg2);
       if (Prolog_is_integer(arg2)) {
         if (functor == a_point)
-	  return Generator::point(build_linear_expression(arg1, where),
-				  integer_term_to_Coefficient(arg2));
+          return Generator::point(build_linear_expression(arg1, where),
+                                  integer_term_to_Coefficient(arg2));
         else if (functor == a_closure_point)
-	  return Generator::closure_point(build_linear_expression(arg1, where),
-					  integer_term_to_Coefficient(arg2));
+          return Generator::closure_point(build_linear_expression(arg1, where),
+                                          integer_term_to_Coefficient(arg2));
       }
     }
   }
@@ -1185,11 +1185,11 @@ build_grid_generator(Prolog_term_ref t, const char* where) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       if (functor == a_grid_line)
-	return Grid_Generator::grid_line(build_linear_expression(arg, where));
+        return Grid_Generator::grid_line(build_linear_expression(arg, where));
       else if (functor == a_parameter)
-	return Grid_Generator::parameter(build_linear_expression(arg, where));
+        return Grid_Generator::parameter(build_linear_expression(arg, where));
       else if (functor == a_grid_point)
-	return Grid_Generator::grid_point(build_linear_expression(arg, where));
+        return Grid_Generator::grid_point(build_linear_expression(arg, where));
     }
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
@@ -1198,13 +1198,13 @@ build_grid_generator(Prolog_term_ref t, const char* where) {
       Prolog_get_arg(2, t, arg2);
       if (Prolog_is_integer(arg2)) {
         if (functor == a_grid_point)
-	  return Grid_Generator::grid_point(build_linear_expression(arg1,
-								    where),
-					    integer_term_to_Coefficient(arg2));
+          return Grid_Generator::grid_point(build_linear_expression(arg1,
+                                                                    where),
+                                            integer_term_to_Coefficient(arg2));
         else if (functor == a_parameter)
-	  return Grid_Generator::parameter(build_linear_expression(arg1,
-								   where),
-					  integer_term_to_Coefficient(arg2));
+          return Grid_Generator::parameter(build_linear_expression(arg1,
+                                                                   where),
+                                          integer_term_to_Coefficient(arg2));
       }
     }
   }
@@ -1220,31 +1220,31 @@ get_homogeneous_expression(const R& r) {
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
   while (varid < space_dimension
-	 && (coefficient = r.coefficient(Variable(varid))) == 0)
+         && (coefficient = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
     Prolog_put_long(so_far, 0);
   }
   else {
     Prolog_construct_compound(so_far, a_asterisk,
-			      Coefficient_to_integer_term(coefficient),
-			      variable_term(varid));
+                              Coefficient_to_integer_term(coefficient),
+                              variable_term(varid));
     while (true) {
       ++varid;
       while (varid < space_dimension
-	     && (coefficient = r.coefficient(Variable(varid))) == 0)
-	++varid;
+             && (coefficient = r.coefficient(Variable(varid))) == 0)
+        ++varid;
       if (varid >= space_dimension)
-	break;
+        break;
       else {
-	Prolog_term_ref addendum = Prolog_new_term_ref();
-	Prolog_construct_compound(addendum, a_asterisk,
-				  Coefficient_to_integer_term(coefficient),
-				  variable_term(varid));
-	Prolog_term_ref new_so_far = Prolog_new_term_ref();
-	Prolog_construct_compound(new_so_far, a_plus,
-				  so_far, addendum);
-	so_far = new_so_far;
+        Prolog_term_ref addendum = Prolog_new_term_ref();
+        Prolog_construct_compound(addendum, a_asterisk,
+                                  Coefficient_to_integer_term(coefficient),
+                                  variable_term(varid));
+        Prolog_term_ref new_so_far = Prolog_new_term_ref();
+        Prolog_construct_compound(new_so_far, a_plus,
+                                  so_far, addendum);
+        so_far = new_so_far;
       }
     }
   }
@@ -1329,12 +1329,12 @@ generator_term(const Generator& g) {
       constructor = a_point;
       const Coefficient& divisor = g.divisor();
       if (divisor == 1)
-	break;
+        break;
       else {
-	Prolog_construct_compound(t, constructor,
-				  get_homogeneous_expression(g),
-				  Coefficient_to_integer_term(divisor));
-	return t;
+        Prolog_construct_compound(t, constructor,
+                                  get_homogeneous_expression(g),
+                                  Coefficient_to_integer_term(divisor));
+        return t;
       }
     }
   case Generator::CLOSURE_POINT:
@@ -1342,12 +1342,12 @@ generator_term(const Generator& g) {
       constructor = a_closure_point;
       const Coefficient& divisor = g.divisor();
       if (divisor == 1)
-	break;
+        break;
       else {
-	Prolog_construct_compound(t, constructor,
-				  get_homogeneous_expression(g),
-				  Coefficient_to_integer_term(divisor));
-	return t;
+        Prolog_construct_compound(t, constructor,
+                                  get_homogeneous_expression(g),
+                                  Coefficient_to_integer_term(divisor));
+        return t;
       }
     }
   default:
@@ -1370,12 +1370,12 @@ grid_generator_term(const Grid_Generator& g) {
       constructor = a_parameter;
       const Coefficient& divisor = g.divisor();
       if (divisor == 1)
-	break;
+        break;
       else {
-	Prolog_construct_compound(t, constructor,
-				  get_homogeneous_expression(g),
-				  Coefficient_to_integer_term(divisor));
-	return t;
+        Prolog_construct_compound(t, constructor,
+                                  get_homogeneous_expression(g),
+                                  Coefficient_to_integer_term(divisor));
+        return t;
       }
     }
   case Grid_Generator::POINT:
@@ -1383,12 +1383,12 @@ grid_generator_term(const Grid_Generator& g) {
       constructor = a_grid_point;
       const Coefficient& divisor = g.divisor();
       if (divisor == 1)
-	break;
+        break;
       else {
-	Prolog_construct_compound(t, constructor,
-				  get_homogeneous_expression(g),
-				  Coefficient_to_integer_term(divisor));
-	return t;
+        Prolog_construct_compound(t, constructor,
+                                  get_homogeneous_expression(g),
+                                  Coefficient_to_integer_term(divisor));
+        return t;
       }
     }
   default:
@@ -1417,7 +1417,7 @@ term_to_Variable(Prolog_term_ref t, const char* where) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       return
-	Variable(term_to_unsigned<dimension_type>(arg, "term_to_Variable"));
+        Variable(term_to_unsigned<dimension_type>(arg, "term_to_Variable"));
     }
   }
   throw not_a_variable(t, where);
@@ -1436,7 +1436,7 @@ term_to_bounded_integer_type_width(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_bits_8 || name == a_bits_16
+        && (name == a_bits_8 || name == a_bits_16
             || name == a_bits_32 || name == a_bits_64
             || name == a_bits_128))
       return name;
@@ -1450,7 +1450,7 @@ term_to_bounded_integer_type_representation(Prolog_term_ref t,
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_unsigned || name == a_signed_2_complement))
+        && (name == a_unsigned || name == a_signed_2_complement))
       return name;
   }
   throw not_a_bounded_integer_type_representation(t, where);
@@ -1462,7 +1462,7 @@ term_to_bounded_integer_type_overflow(Prolog_term_ref t,
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_overflow_wraps
+        && (name == a_overflow_wraps
             || name == a_overflow_undefined
             || name == a_overflow_impossible))
       return name;
@@ -1475,7 +1475,7 @@ term_to_optimization_mode(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_max || name == a_min))
+        && (name == a_max || name == a_min))
       return name;
   }
   throw not_an_optimization_mode(t, where);
@@ -1486,7 +1486,7 @@ term_to_control_parameter_name(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_pricing || name == a_cutting_strategy))
+        && (name == a_pricing || name == a_cutting_strategy))
       return name;
   }
   throw not_a_control_parameter_name(t, where);
@@ -1497,7 +1497,7 @@ term_to_pip_problem_control_parameter_name(Prolog_term_ref t, const char* where)
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_cutting_strategy || name == a_pivot_row_strategy))
+        && (name == a_cutting_strategy || name == a_pivot_row_strategy))
       return name;
   }
   throw not_a_pip_problem_control_parameter_name(t, where);
@@ -1508,7 +1508,7 @@ term_to_control_parameter_value(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_pricing_steepest_edge_float
+        && (name == a_pricing_steepest_edge_float
             || name == a_pricing_steepest_edge_exact
             || name == a_pricing_textbook
             || name == a_cutting_strategy_first
@@ -1524,7 +1524,7 @@ term_to_pip_problem_control_parameter_value(Prolog_term_ref t,
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_cutting_strategy_first
+        && (name == a_cutting_strategy_first
             || name == a_cutting_strategy_deepest
             || name == a_cutting_strategy_all
             || name == a_pivot_row_strategy_first
@@ -1557,8 +1557,8 @@ max_representable_dimension(dimension_type d) {
 
 bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
-		 bool& finite, bool& closed,
-		 Coefficient& n, Coefficient& d) {
+                 bool& finite, bool& closed,
+                 Coefficient& n, Coefficient& d) {
   if (!Prolog_is_compound(t_b))
     return false;
 
@@ -1621,11 +1621,11 @@ term_to_relation(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_equal
-	    || name == a_greater_than_equal
-	    || name == a_equal_less_than
-	    || name == a_greater_than
-	    || name == a_less_than))
+        && (name == a_equal
+            || name == a_greater_than_equal
+            || name == a_equal_less_than
+            || name == a_greater_than
+            || name == a_less_than))
       return name;
   }
   throw not_a_relation(t, where);
@@ -1661,8 +1661,8 @@ rational_term(const Rational_Box::interval_type::boundary_type& q) {
     Prolog_put_Coefficient(t, numerator);
   else
     Prolog_construct_compound(t, a_slash,
-			      Coefficient_to_integer_term(numerator),
-			      Coefficient_to_integer_term(denominator));
+                              Coefficient_to_integer_term(numerator),
+                              Coefficient_to_integer_term(denominator));
   return t;
 }
 
@@ -1702,7 +1702,7 @@ term_to_complexity_class(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
-	&& (name == a_polynomial || name == a_simplex || name == a_any))
+        && (name == a_polynomial || name == a_simplex || name == a_any))
       return name;
   }
   throw not_a_complexity_class(t, where);
@@ -1864,8 +1864,8 @@ ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
     if (Prolog_is_atom(t_tea)) {
       Prolog_atom tea;
       if (Prolog_get_atom_name(t_tea, &tea)) {
-	timeout_exception_atom = tea;
-	return PROLOG_SUCCESS;
+        timeout_exception_atom = tea;
+        return PROLOG_SUCCESS;
       }
     }
     Prolog_term_ref found = Prolog_new_term_ref();
@@ -1873,16 +1873,16 @@ ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
 
     Prolog_term_ref expected = Prolog_new_term_ref();
     Prolog_construct_compound(expected, a_expected,
-			      Prolog_atom_term_from_string("atom"));
+                              Prolog_atom_term_from_string("atom"));
 
     Prolog_term_ref where = Prolog_new_term_ref();
     Prolog_construct_compound(where, a_where,
-			      Prolog_atom_term_from_string
-			      ("ppl_set_timeout_exception_atom"));
+                              Prolog_atom_term_from_string
+                              ("ppl_set_timeout_exception_atom"));
 
     Prolog_term_ref exception_term = Prolog_new_term_ref();
     Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			      found, expected, where);
+                              found, expected, where);
     Prolog_raise_exception(exception_term);
     return PROLOG_FAILURE;
   }
@@ -1979,9 +1979,9 @@ ppl_Coefficient_min(Prolog_term_ref t_min) {
       PPL_DIRTY_TEMP_COEFFICIENT(min);
       min = std::numeric_limits<Coefficient>::min();
       if (Prolog_has_unbounded_integers
-	  || (min >= Prolog_min_integer && min <= Prolog_min_integer))
-	return Prolog_unify_Coefficient(t_min, min)
-	  ? PROLOG_SUCCESS : PROLOG_FAILURE;
+          || (min >= Prolog_min_integer && min <= Prolog_min_integer))
+        return Prolog_unify_Coefficient(t_min, min)
+          ? PROLOG_SUCCESS : PROLOG_FAILURE;
     }
   }
   CATCH_ALL;
@@ -1994,9 +1994,9 @@ ppl_Coefficient_max(Prolog_term_ref t_max) {
       PPL_DIRTY_TEMP_COEFFICIENT(max);
       max = std::numeric_limits<Coefficient>::max();
       if (Prolog_has_unbounded_integers
-	  || (max >= Prolog_min_integer && max <= Prolog_min_integer))
-	return Prolog_unify_Coefficient(t_max, max)
-	  ? PROLOG_SUCCESS : PROLOG_FAILURE;
+          || (max >= Prolog_min_integer && max <= Prolog_min_integer))
+        return Prolog_unify_Coefficient(t_max, max)
+          ? PROLOG_SUCCESS : PROLOG_FAILURE;
     }
   }
   CATCH_ALL;
@@ -2023,10 +2023,10 @@ ppl_new_MIP_Problem_from_space_dimension
 
 extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem(Prolog_term_ref t_nd,
-		    Prolog_term_ref t_clist,
-		    Prolog_term_ref t_le_expr,
-		    Prolog_term_ref t_opt,
-		    Prolog_term_ref t_mip) {
+                    Prolog_term_ref t_clist,
+                    Prolog_term_ref t_le_expr,
+                    Prolog_term_ref t_opt,
+                    Prolog_term_ref t_mip) {
   static const char* where = "ppl_new_MIP_Problem/5";
   try {
     Constraint_System cs;
@@ -2044,7 +2044,7 @@ ppl_new_MIP_Problem(Prolog_term_ref t_nd,
 
     MIP_Problem* mip
       = new MIP_Problem(term_to_unsigned<dimension_type>(t_nd, where),
-			cs, le, mode);
+                        cs, le, mode);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, mip);
     if (Prolog_unify(t_mip, tmp)) {
@@ -2059,7 +2059,7 @@ ppl_new_MIP_Problem(Prolog_term_ref t_nd,
 
 extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem_from_MIP_Problem(Prolog_term_ref t_mip_source,
-				     Prolog_term_ref t_mip) {
+                                     Prolog_term_ref t_mip) {
   static const char* where = "ppl_new_MIP_Problem_from_MIP_Problem/2";
   try {
     const MIP_Problem* mip_source
@@ -2119,7 +2119,7 @@ ppl_MIP_Problem_space_dimension(Prolog_term_ref t_mip, Prolog_term_ref t_sd) {
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
-					 Prolog_term_ref t_vlist) {
+                                         Prolog_term_ref t_vlist) {
   static const char* where = "ppl_MIP_Problem_integer_space_dimensions/2";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2130,7 +2130,7 @@ ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
     const Variables_Set& i_vars = mip->integer_space_dimensions();
 
     for (Variables_Set::const_iterator i = i_vars.begin(),
-	   i_end = i_vars.end(); i != i_end; ++i)
+           i_end = i_vars.end(); i != i_end; ++i)
       Prolog_construct_cons(tail, variable_term(*i), tail);
 
     if (Prolog_unify(t_vlist, tail))
@@ -2141,7 +2141,7 @@ ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_constraints(Prolog_term_ref t_mip,
-			    Prolog_term_ref t_clist) {
+                            Prolog_term_ref t_clist) {
   static const char* where = "ppl_MIP_Problem_constraints/2";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2150,7 +2150,7 @@ ppl_MIP_Problem_constraints(Prolog_term_ref t_mip,
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (MIP_Problem::const_iterator i = mip->constraints_begin(),
-	   i_end = mip->constraints_end(); i != i_end; ++i)
+           i_end = mip->constraints_end(); i != i_end; ++i)
       Prolog_construct_cons(tail, constraint_term(*i), tail);
 
     if (Prolog_unify(t_clist, tail))
@@ -2161,7 +2161,7 @@ ppl_MIP_Problem_constraints(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_objective_function(Prolog_term_ref t_mip,
-				   Prolog_term_ref t_le_expr) {
+                                   Prolog_term_ref t_le_expr) {
   static const char* where = "ppl_MIP_Problem_objective_function/2";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2178,7 +2178,7 @@ ppl_MIP_Problem_objective_function(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_optimization_mode(Prolog_term_ref t_mip,
-				  Prolog_term_ref t_opt) {
+                                  Prolog_term_ref t_opt) {
   static const char* where = "ppl_MIP_Problem_optimization_mode/2";
   try {
     MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2223,7 +2223,7 @@ ppl_MIP_Problem_add_space_dimensions_and_embed
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_add_to_integer_space_dimensions(Prolog_term_ref t_mip,
-						Prolog_term_ref t_vlist) {
+                                                Prolog_term_ref t_vlist) {
   static const char* where
     = "ppl_MIP_Problem_add_to_integer_space_dimensions/2";
   try {
@@ -2260,7 +2260,7 @@ ppl_MIP_Problem_add_constraint(Prolog_term_ref t_mip, Prolog_term_ref t_c) {
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_add_constraints(Prolog_term_ref t_mip,
-				Prolog_term_ref t_clist) {
+                                Prolog_term_ref t_clist) {
   static const char* where = "ppl_MIP_Problem_add_constraints/2";
   try {
     MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2284,7 +2284,7 @@ ppl_MIP_Problem_add_constraints(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_objective_function(Prolog_term_ref t_mip,
-				       Prolog_term_ref t_le_expr) {
+                                       Prolog_term_ref t_le_expr) {
   static const char* where = "ppl_MIP_Problem_set_objective_function/2";
   try {
     MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2297,7 +2297,7 @@ ppl_MIP_Problem_set_objective_function(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
-				      Prolog_term_ref t_opt) {
+                                      Prolog_term_ref t_opt) {
   static const char* where = "ppl_MIP_Problem_set_optimization_mode/2";
   try {
     MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2313,7 +2313,7 @@ ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_control_parameter(Prolog_term_ref t_mip,
-				      Prolog_term_ref t_cp_value) {
+                                      Prolog_term_ref t_cp_value) {
   static const char* where = "ppl_MIP_Problem_set_control_parameter/2";
   try {
     MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2413,7 +2413,7 @@ ppl_MIP_Problem_solve(Prolog_term_ref t_mip, Prolog_term_ref t_status) {
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_feasible_point(Prolog_term_ref t_mip,
-			       Prolog_term_ref t_g) {
+                               Prolog_term_ref t_g) {
   static const char* where = "ppl_MIP_Problem_feasible_point/2";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2427,7 +2427,7 @@ ppl_MIP_Problem_feasible_point(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_optimizing_point(Prolog_term_ref t_mip,
-				 Prolog_term_ref t_g) {
+                                 Prolog_term_ref t_g) {
   static const char* where = "ppl_MIP_Problem_optimizing_point/2";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2441,8 +2441,8 @@ ppl_MIP_Problem_optimizing_point(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_optimal_value(Prolog_term_ref t_mip,
-			      Prolog_term_ref t_n,
-			      Prolog_term_ref t_d) {
+                              Prolog_term_ref t_n,
+                              Prolog_term_ref t_d) {
   static const char* where = "ppl_MIP_Problem_optimal_value/3";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2451,7 +2451,7 @@ ppl_MIP_Problem_optimal_value(Prolog_term_ref t_mip,
     PPL_DIRTY_TEMP_COEFFICIENT(d);
     mip->optimal_value(n, d);
     if (Prolog_unify_Coefficient(t_n, n)
-	&& Prolog_unify_Coefficient(t_d, d))
+        && Prolog_unify_Coefficient(t_d, d))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2459,9 +2459,9 @@ ppl_MIP_Problem_optimal_value(Prolog_term_ref t_mip,
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
-					    Prolog_term_ref t_g,
-					    Prolog_term_ref t_n,
-					    Prolog_term_ref t_d) {
+                                            Prolog_term_ref t_g,
+                                            Prolog_term_ref t_n,
+                                            Prolog_term_ref t_d) {
   static const char* where = "ppl_MIP_Problem_evaluate_objective_function/4";
   try {
     const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
@@ -2470,7 +2470,7 @@ ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
     PPL_DIRTY_TEMP_COEFFICIENT(d);
     mip->evaluate_objective_function(build_generator(t_g, where), n, d);
     if (Prolog_unify_Coefficient(t_n, n)
-	&& Prolog_unify_Coefficient(t_d, d))
+        && Prolog_unify_Coefficient(t_d, d))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2560,7 +2560,7 @@ ppl_new_PIP_Problem(Prolog_term_ref t_dim,
 
 extern "C" Prolog_foreign_return_type
 ppl_new_PIP_Problem_from_PIP_Problem(Prolog_term_ref t_pip_source,
-				     Prolog_term_ref t_pip) {
+                                     Prolog_term_ref t_pip) {
   static const char* where = "ppl_new_PIP_Problem_from_PIP_Problem/2";
   try {
     const PIP_Problem* pip_source
@@ -2631,7 +2631,7 @@ ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
     const Variables_Set& params = pip->parameter_space_dimensions();
 
     for (Variables_Set::const_iterator i = params.begin(),
-	   i_end = params.end(); i != i_end; ++i)
+           i_end = params.end(); i != i_end; ++i)
       Prolog_construct_cons(tail, variable_term(*i), tail);
 
     if (Prolog_unify(t_vlist, tail))
@@ -2642,7 +2642,7 @@ ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
-			    Prolog_term_ref t_clist) {
+                            Prolog_term_ref t_clist) {
   static const char* where = "ppl_PIP_Problem_constraints/2";
   try {
     const PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
@@ -2651,7 +2651,7 @@ ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (PIP_Problem::const_iterator i = pip->constraints_begin(),
-	   i_end = pip->constraints_end(); i != i_end; ++i)
+           i_end = pip->constraints_end(); i != i_end; ++i)
       Prolog_construct_cons(tail, constraint_term(*i), tail);
 
     if (Prolog_unify(t_clist, tail))
@@ -2729,7 +2729,7 @@ ppl_PIP_Problem_add_constraint(Prolog_term_ref t_pip, Prolog_term_ref t_c) {
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_add_constraints(Prolog_term_ref t_pip,
-				Prolog_term_ref t_clist) {
+                                Prolog_term_ref t_clist) {
   static const char* where = "ppl_PIP_Problem_add_constraints/2";
   try {
     PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
@@ -2808,7 +2808,7 @@ ppl_PIP_Problem_get_control_parameter(Prolog_term_ref t_pip,
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_set_control_parameter(Prolog_term_ref t_pip,
-				      Prolog_term_ref t_cp_value) {
+                                      Prolog_term_ref t_cp_value) {
   static const char* where = "ppl_PIP_Problem_set_control_parameter/2";
   try {
     PIP_Problem* pip = term_to_handle<PIP_Problem>(t_pip, where);
@@ -2962,7 +2962,7 @@ ppl_PIP_Problem_ascii_dump(Prolog_term_ref t_pip) {
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_constraints(Prolog_term_ref t_pip,
-			      Prolog_term_ref t_cs) {
+                              Prolog_term_ref t_cs) {
   static const char* where = "ppl_PIP_Tree_Node_constraints/2";
   try {
     const PIP_Tree_Node* pip = term_to_handle<PIP_Tree_Node>(t_pip, where);
@@ -3048,8 +3048,8 @@ ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_parametric_values(Prolog_term_ref t_pip,
-			                    Prolog_term_ref t_var,
-			                    Prolog_term_ref t_le) {
+                                            Prolog_term_ref t_var,
+                                            Prolog_term_ref t_le) {
   static const char* where = "ppl_PIP_Solution_Node_get_parametric_values/3";
   try {
     const PIP_Solution_Node* pip
@@ -3064,7 +3064,7 @@ ppl_PIP_Tree_Node_parametric_values(Prolog_term_ref t_pip,
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_true_child(Prolog_term_ref t_pip,
-			             Prolog_term_ref t_ptree) {
+                                     Prolog_term_ref t_ptree) {
   static const char* where = "ppl_PIP_Decision_Node_get_true_child/2";
   try {
     const PIP_Decision_Node* pip
@@ -3084,7 +3084,7 @@ ppl_PIP_Tree_Node_true_child(Prolog_term_ref t_pip,
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Tree_Node_false_child(Prolog_term_ref t_pip,
-			              Prolog_term_ref t_ptree) {
+                                      Prolog_term_ref t_ptree) {
   static const char* where = "ppl_PIP_Decision_Node_get_false_child/2";
   try {
     const PIP_Decision_Node* pip

@@ -70,8 +70,8 @@ private:
   // Handle the addition of a new threshold.
   static typename TW_Pending_List::Iterator
   add_threshold(typename Traits::Threshold threshold,
-		const TW_Handler& handler,
-		bool& expired_flag);
+                const TW_Handler& handler,
+                bool& expired_flag);
 
   // Handle the removal of a threshold.
   static typename TW_Pending_List::Iterator

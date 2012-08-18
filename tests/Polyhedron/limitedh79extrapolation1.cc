@@ -67,7 +67,7 @@ test01() {
   known_result.add_constraint(x <= 5);
 
   print_constraints(computed_result,
-		    "*** after limited_H79_extrapolation_assign ***");
+                    "*** after limited_H79_extrapolation_assign ***");
 
   return computed_result == known_result;
 }
@@ -109,7 +109,7 @@ test02() {
   known_result.add_generator(point(5*x + 5*y));
 
   print_constraints(computed_result,
-		    "*** after limited_H79_extrapolation_assign ***");
+                    "*** after limited_H79_extrapolation_assign ***");
 
   return computed_result == known_result;
 }
@@ -142,7 +142,7 @@ test03() {
   C_Polyhedron known_result(cs);
 
   print_constraints(computed_result,
-		    "*** after limited_H79_extrapolation_assign ***");
+                    "*** after limited_H79_extrapolation_assign ***");
 
   return computed_result == known_result;
 }
@@ -173,8 +173,8 @@ test04() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
-		    " ***");
+                    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
+                    " ***");
   return ok;
 }
 
@@ -200,8 +200,8 @@ test05() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
-		    " ***");
+                    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
+                    " ***");
   return ok;
 }
 
@@ -225,8 +225,8 @@ test06() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
-		    " ***");
+                    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
+                    " ***");
   return ok;
 }
 
@@ -256,8 +256,8 @@ test07() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
-		    " ***");
+                    "*** after ph2.limited_H79_extrapolation_assign(ph1, cs)"
+                    " ***");
   return ok;
 }
 

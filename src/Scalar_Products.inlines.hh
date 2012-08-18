@@ -90,33 +90,33 @@ Scalar_Products::reduced_sign(const Generator& g, const Constraint& c) {
 
 inline void
 Scalar_Products::homogeneous_assign(Coefficient& z,
-				    const Linear_Expression& e,
-				    const Generator& g) {
+                                    const Linear_Expression& e,
+                                    const Generator& g) {
   homogeneous_assign(z, e, g.expr);
 }
 
 inline void
 Scalar_Products::homogeneous_assign(Coefficient& z,
-				    const Linear_Expression& e,
-				    const Grid_Generator& g) {
+                                    const Linear_Expression& e,
+                                    const Grid_Generator& g) {
   homogeneous_assign(z, e, g.expr);
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
-				  const Generator& g) {
+                                  const Generator& g) {
   return homogeneous_sign(e, g.expr);
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
-				  const Grid_Generator& g) {
+                                  const Grid_Generator& g) {
   return homogeneous_sign(e, g.expr);
 }
 
 inline int
 Scalar_Products::homogeneous_sign(const Grid_Generator& g,
-				  const Constraint& c) {
+                                  const Constraint& c) {
   PPL_DIRTY_TEMP_COEFFICIENT(z);
   homogeneous_assign(z, g, c);
   return sgn(z);
@@ -126,35 +126,35 @@ inline
 Topology_Adjusted_Scalar_Product_Sign
 ::Topology_Adjusted_Scalar_Product_Sign(const Constraint& c)
   : sps_fp(c.is_necessarily_closed()
-	   ? static_cast<SPS_type>(&Scalar_Products::sign)
-	   : static_cast<SPS_type>(&Scalar_Products::reduced_sign)) {
+           ? static_cast<SPS_type>(&Scalar_Products::sign)
+           : static_cast<SPS_type>(&Scalar_Products::reduced_sign)) {
 }
 
 inline
 Topology_Adjusted_Scalar_Product_Sign
 ::Topology_Adjusted_Scalar_Product_Sign(const Generator& g)
   : sps_fp(g.is_necessarily_closed()
-	   ? static_cast<SPS_type>(&Scalar_Products::sign)
-	   : static_cast<SPS_type>(&Scalar_Products::reduced_sign)) {
+           ? static_cast<SPS_type>(&Scalar_Products::sign)
+           : static_cast<SPS_type>(&Scalar_Products::reduced_sign)) {
 }
 
 inline int
 Topology_Adjusted_Scalar_Product_Sign::operator()(const Constraint& c,
-						  const Generator& g) const {
+                                                  const Generator& g) const {
   PPL_ASSERT(c.space_dimension() <= g.space_dimension());
   PPL_ASSERT(sps_fp == (c.is_necessarily_closed()
-		    ? static_cast<SPS_type>(&Scalar_Products::sign)
-		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
+                    ? static_cast<SPS_type>(&Scalar_Products::sign)
+                    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
   return sps_fp(c.expr, g.expr);
 }
 
 inline int
 Topology_Adjusted_Scalar_Product_Sign::operator()(const Generator& g,
-						  const Constraint& c) const {
+                                                  const Constraint& c) const {
   PPL_ASSERT(g.space_dimension() <= c.space_dimension());
   PPL_ASSERT(sps_fp == (g.is_necessarily_closed()
-		    ? static_cast<SPS_type>(&Scalar_Products::sign)
-		    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
+                    ? static_cast<SPS_type>(&Scalar_Products::sign)
+                    : static_cast<SPS_type>(&Scalar_Products::reduced_sign)));
   return sps_fp(g.expr, c.expr);
 }
 

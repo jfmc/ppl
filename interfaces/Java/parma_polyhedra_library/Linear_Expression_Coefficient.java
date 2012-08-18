@@ -33,17 +33,17 @@ public class Linear_Expression_Coefficient
 
     //! Builds the object corresponding to a copy of the coefficient \p c.
     public Linear_Expression_Coefficient(Coefficient c) {
-	coeff = new Coefficient(c);
+        coeff = new Coefficient(c);
     }
 
     //! Returns coefficient representing the linear expression.
     public Coefficient argument() {
-	return coeff;
+        return coeff;
     }
 
     //! Builds a copy of this.
     public Linear_Expression_Coefficient clone() {
-	return new Linear_Expression_Coefficient(coeff);
+        return new Linear_Expression_Coefficient(coeff);
     }
 
     private static native void initIDs();

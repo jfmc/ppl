@@ -38,29 +38,29 @@ public class MIP_Problem_test1 {
 
     // This code tests the MIP_Problem methods.
     public static boolean test01() {
-	Variable A = new Variable(0);
-	Variable B = new Variable(1);
-	Variable C = new Variable(2);
-	Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
-	Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
-	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+        Variable A = new Variable(0);
+        Variable B = new Variable(1);
+        Variable C = new Variable(2);
+        Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
+        Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
+        Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_3 = new Coefficient(3);
         Coefficient coeff_5 = new Coefficient(5);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
-	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
+        Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
 
-	// Constraint declarations.
-	Constraint c_a_geq_1
+        // Constraint declarations.
+        Constraint c_a_geq_1
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_1);
-	Constraint c_a_leq_5
+        Constraint c_a_leq_5
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_5);
-	Constraint c_b_geq_3
+        Constraint c_b_geq_3
           = new Constraint(le_b, Relation_Symbol.GREATER_OR_EQUAL, le_3);
-	Constraint constraint1 = c_a_geq_1;
-	Constraint constraint2 = c_b_geq_3;
-	Constraint_System constraints1 = new Constraint_System();
+        Constraint constraint1 = c_a_geq_1;
+        Constraint constraint2 = c_b_geq_3;
+        Constraint_System constraints1 = new Constraint_System();
         constraints1.add(constraint1);
         C_Polyhedron ph1 = new C_Polyhedron(3, Degenerate_Element.UNIVERSE);
         ph1.add_constraints(constraints1);
@@ -68,7 +68,7 @@ public class MIP_Problem_test1 {
         ph2.add_constraints(constraints1);
         ph2.add_constraint(constraint2);
 
-	MIP_Problem mip1
+        MIP_Problem mip1
           = new MIP_Problem(3, constraints1, le_a,
                            Optimization_Mode.MAXIMIZATION);
         Constraint_System mip1_constraints = mip1.constraints();
@@ -104,36 +104,36 @@ public class MIP_Problem_test1 {
         mip3_ph.add_constraints(mip3_constraints);
         ok = ok && mip3_ph.equals(ph2);
 
-	return ok;
+        return ok;
     }
 
     // This code tests more MIP_Problem methods.
     public static boolean test02() {
-	Variable A = new Variable(0);
-	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+        Variable A = new Variable(0);
+        Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
         Coefficient coeff_0 = new Coefficient(0);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_5 = new Coefficient(5);
         Coefficient coeff_8 = new Coefficient(8);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
-	Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
+        Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
 
-	// Constraint declarations.
-	Constraint c_a_geq_1
+        // Constraint declarations.
+        Constraint c_a_geq_1
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_1);
-	Constraint c_a_leq_5
+        Constraint c_a_leq_5
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_5);
-	Constraint c_a_eq_8
+        Constraint c_a_eq_8
           = new Constraint(le_a, Relation_Symbol.EQUAL, le_8);
-	Constraint constraint1 = c_a_geq_1;
-	Constraint_System constraints1 = new Constraint_System();
+        Constraint constraint1 = c_a_geq_1;
+        Constraint_System constraints1 = new Constraint_System();
         constraints1.add(constraint1);
 
         Variables_Set var_set_A = new Variables_Set();
         var_set_A.add(A);
 
-	MIP_Problem mip1
+        MIP_Problem mip1
           = new MIP_Problem(1, constraints1, le_a,
                            Optimization_Mode.MAXIMIZATION);
         Constraint_System mip1_constraints = mip1.constraints();
@@ -155,16 +155,16 @@ public class MIP_Problem_test1 {
 
         MIP_Problem_Status mip1_status;
         mip1_status = mip1.solve();
-	ok = ok && (mip1_status == MIP_Problem_Status.UNBOUNDED_MIP_PROBLEM);
+        ok = ok && (mip1_status == MIP_Problem_Status.UNBOUNDED_MIP_PROBLEM);
 
         MIP_Problem_Status mip2_status;
         mip1.add_constraint(c_a_leq_5);
         mip2_status = mip1.solve();
-	ok = ok && (mip2_status == MIP_Problem_Status.OPTIMIZED_MIP_PROBLEM);
+        ok = ok && (mip2_status == MIP_Problem_Status.OPTIMIZED_MIP_PROBLEM);
         if (!ok)
           return false;
 
-	MIP_Problem mip3
+        MIP_Problem mip3
           = new MIP_Problem(1, constraints1, le_a,
                            Optimization_Mode.MAXIMIZATION);
         MIP_Problem_Status mip3_status;
@@ -174,11 +174,11 @@ public class MIP_Problem_test1 {
         Constraint_System cs = mip3.constraints();
         mip3_status = mip3.solve();
         ok = !mip3.is_satisfiable();
-	ok = ok && (mip3_status == MIP_Problem_Status.UNFEASIBLE_MIP_PROBLEM);
+        ok = ok && (mip3_status == MIP_Problem_Status.UNFEASIBLE_MIP_PROBLEM);
         if (!ok)
           return false;
 
-	Generator g1 = Generator.point(le_a, coeff_1);
+        Generator g1 = Generator.point(le_a, coeff_1);
         Coefficient num = coeff_1;
         Coefficient den = coeff_1;
         mip1.evaluate_objective_function(g1, num, den);
@@ -186,12 +186,12 @@ public class MIP_Problem_test1 {
         if (!ok)
           return false;
 
-	Linear_Expression le_5a = le_a.times(coeff_5);
+        Linear_Expression le_5a = le_a.times(coeff_5);
 
         Generator f_point = mip1.feasible_point();
         C_Polyhedron f_ph = new C_Polyhedron(1, Degenerate_Element.EMPTY);
         f_ph.add_generator(f_point);
-	Generator expected_f_point = Generator.point(le_5a, coeff_1);
+        Generator expected_f_point = Generator.point(le_5a, coeff_1);
         C_Polyhedron expected_f_ph
           = new C_Polyhedron(1, Degenerate_Element.EMPTY);
         expected_f_ph.add_generator(expected_f_point);
@@ -200,7 +200,7 @@ public class MIP_Problem_test1 {
         Generator o_point = mip1.optimizing_point();
         C_Polyhedron o_ph = new C_Polyhedron(1, Degenerate_Element.EMPTY);
         o_ph.add_generator(o_point);
-	Generator expected_o_point = Generator.point(le_5a, coeff_1);
+        Generator expected_o_point = Generator.point(le_5a, coeff_1);
         C_Polyhedron expected_o_ph
           = new C_Polyhedron(1, Degenerate_Element.EMPTY);
         expected_o_ph.add_generator(expected_o_point);
@@ -216,9 +216,9 @@ public class MIP_Problem_test1 {
         // ok = (le_ov_num == le_5 && le_ov_den == le_1);
         C_Polyhedron ov_ph
           = new C_Polyhedron(1, Degenerate_Element.EMPTY);
-	Constraint c_a_leq_ov_num
+        Constraint c_a_leq_ov_num
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_ov_num);
-	Constraint c_a_geq_ov_num
+        Constraint c_a_geq_ov_num
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_ov_den);
         ov_ph.add_constraint(c_a_leq_ov_num);
         C_Polyhedron expected_ov_ph
@@ -259,16 +259,16 @@ public class MIP_Problem_test1 {
           && (cp_value3
                 == Control_Parameter_Value.PRICING_TEXTBOOK);
 
-	return ok && mip1.OK();
+        return ok && mip1.OK();
     }
 
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
-	boolean test_result_ok =
-	    Test_Executor.executeTests(MIP_Problem_test1.class);
+        boolean test_result_ok =
+            Test_Executor.executeTests(MIP_Problem_test1.class);
         Parma_Polyhedra_Library.finalize_library();
-	if (!test_result_ok)
-	    System.exit(1);
-	System.exit(0);
+        if (!test_result_ok)
+            System.exit(1);
+        System.exit(0);
     }
 }

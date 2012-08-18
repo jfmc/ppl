@@ -371,8 +371,8 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
   // Parameter `start' is set to the index of the first pending constraint.
   const dimension_type num_lines_or_equalities
     = conversion(source, source.first_pending_row(),
-		 dest, sat,
-		 dest.num_lines_or_equalities());
+                 dest, sat,
+                 dest.num_lines_or_equalities());
 
   // conversion() may have modified the number of rows in `dest'.
   const dimension_type dest_num_rows = dest.num_rows();

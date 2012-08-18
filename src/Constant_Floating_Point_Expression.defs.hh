@@ -154,7 +154,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Constant_Floating_Point_Expression(
-			  const Constant_Floating_Point_Expression& y);
+                          const Constant_Floating_Point_Expression& y);
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -162,7 +162,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAIL
   Constant_Floating_Point_Expression& operator=(
-		          const Constant_Floating_Point_Expression& y);
+                          const Constant_Floating_Point_Expression& y);
 
 }; // class Constant_Floating_Point_Expression
 

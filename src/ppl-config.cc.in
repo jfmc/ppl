@@ -254,7 +254,7 @@ struct option long_options[] = {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
-			&option_index);
+                        &option_index);
 #else
     int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
@@ -275,47 +275,47 @@ struct option long_options[] = {
       // --format
     case 'F':
       if (strcaseeq(optarg, "plain"))
-	required_format = PLAIN;
+        required_format = PLAIN;
       else if (strcaseeq(optarg, "makefile"))
-	required_format = MAKEFILE;
+        required_format = MAKEFILE;
       else if (strcaseeq(optarg, "sh"))
-	required_format = SH;
+        required_format = SH;
       else if (strcaseeq(optarg, "csh"))
-	required_format = CSH;
+        required_format = CSH;
       else
-	fatal("invalid argument `%s' to --format: "
-	      "must be `plain', `makefile', `sh' or `csh'",
-	      optarg);
+        fatal("invalid argument `%s' to --format: "
+              "must be `plain', `makefile', `sh' or `csh'",
+              optarg);
       break;
 
       // --interface
     case 'I':
       if (strcaseeq(optarg, "C++"))
-	required_interface = CXX;
+        required_interface = CXX;
       else if (strcaseeq(optarg, "C"))
-	required_interface = C;
+        required_interface = C;
       else if (strcaseeq(optarg, "Ciao-Prolog"))
-	required_interface = CIAO_PROLOG;
+        required_interface = CIAO_PROLOG;
       else if (strcaseeq(optarg, "GNU-Prolog"))
-	required_interface = GNU_PROLOG;
+        required_interface = GNU_PROLOG;
       else if (strcaseeq(optarg, "SICStus-Prolog"))
-	required_interface = SICSTUS_PROLOG;
+        required_interface = SICSTUS_PROLOG;
       else if (strcaseeq(optarg, "SWI-Prolog"))
-	required_interface = SWI_PROLOG;
+        required_interface = SWI_PROLOG;
       else if (strcaseeq(optarg, "XSB-Prolog"))
-	required_interface = XSB_PROLOG;
+        required_interface = XSB_PROLOG;
       else if (strcaseeq(optarg, "YAP-Prolog"))
-	required_interface = YAP_PROLOG;
+        required_interface = YAP_PROLOG;
       else if (strcaseeq(optarg, "OCaml"))
-	required_interface = OCAML;
+        required_interface = OCAML;
       else if (strcaseeq(optarg, "Java"))
-	required_interface = JAVA;
+        required_interface = JAVA;
       else
-	fatal("invalid argument `%s' to --interface: "
-	      "must be `C++', `C', `Ciao-Prolog', `GNU-Prolog', "
+        fatal("invalid argument `%s' to --interface: "
+              "must be `C++', `C', `Ciao-Prolog', `GNU-Prolog', "
               "`SICStus-Prolog', `SWI-Prolog', `XSB-Prolog', `YAP-Prolog', "
-	      "`OCaml' or `Java'",
-	      optarg);
+              "`OCaml' or `Java'",
+              optarg);
       break;
 
       // --application
@@ -331,27 +331,27 @@ struct option long_options[] = {
       // --prefix
     case 'p':
       if (optarg != 0) {
-	prefix = optarg;
-	if (!exec_prefix_set) {
-	  exec_prefix = optarg;
-	  exec_prefix_set = true;
-	}
+        prefix = optarg;
+        if (!exec_prefix_set) {
+          exec_prefix = optarg;
+          exec_prefix_set = true;
+        }
       }
       else {
-	required_prefix = true;
-	++num_required_items;
+        required_prefix = true;
+        ++num_required_items;
       }
       break;
 
       // --exec_prefix
     case 'e':
       if (optarg != 0) {
-	exec_prefix = optarg;
-	exec_prefix_set = true;
+        exec_prefix = optarg;
+        exec_prefix_set = true;
       }
       else {
-	required_exec_prefix = true;
-	++num_required_items;
+        required_exec_prefix = true;
+        ++num_required_items;
       }
       break;
 
@@ -557,7 +557,7 @@ portray(const char* name, long n) {
 
 void
 replace(std::string& s,
-	const std::string& pattern, const std::string& replacement) {
+        const std::string& pattern, const std::string& replacement) {
   std::string::size_type pos = 0;
   while (true) {
     pos = s.find(pattern, pos);
@@ -590,7 +590,7 @@ main(int argc, char* argv[]) try {
 
   if (strcmp(PPL_VERSION, PPL::version()) != 0)
     fatal("was compiled with PPL version %s, but linked with version %s",
-	  PPL_VERSION, PPL::version());
+          PPL_VERSION, PPL::version());
 
   // Initialize prefixes.
   prefix = "@prefix@";
@@ -648,18 +648,18 @@ main(int argc, char* argv[]) try {
       // `/usr/include' is the standard include directory:
       // thus it needs not be specified.
       if (s == "/usr/include")
-	s = cppflags;
+        s = cppflags;
       else {
-	s = "-I" + s;
-	// Avoid duplicating the -I options.
-	if (cppflags.find(s) != std::string::npos)
-	  s = "";
-	if (s.length() > 0 && strlen("@CPPFLAGS@") > 0)
-	  s += ' ';
-	s += "@CPPFLAGS@";
+        s = "-I" + s;
+        // Avoid duplicating the -I options.
+        if (cppflags.find(s) != std::string::npos)
+          s = "";
+        if (s.length() > 0 && strlen("@CPPFLAGS@") > 0)
+          s += ' ';
+        s += "@CPPFLAGS@";
       }
       if (s.length() > 0 && strlen("@extra_includes@") > 0)
-	  s += ' ';
+          s += ' ';
       s += "@extra_includes@";
       portray("CPPFLAGS", s);
     }
@@ -685,23 +685,23 @@ main(int argc, char* argv[]) try {
       s = "-L" + s;
       // Avoid duplicating the -L options.
       if (ldflags.find(s) != std::string::npos)
-	s = "";
+        s = "";
       if (s.length() > 0 && ldflags.length() > 0)
-	s += ' ';
+        s += ' ';
       s += ldflags;
     }
     if (required_library) {
       if (s.length() > 0 && strlen("@extra_libraries@") > 0)
-	s += ' ';
+        s += ' ';
       s += "@extra_libraries@";
     }
     else {
       assert(required_application);
       if (s.length() > 0)
-	s += ' ';
+        s += ' ';
       s += "-lppl";
       if (required_interface == C)
-	s += " -lppl_c";
+        s += " -lppl_c";
       s += " -lgmpxx -lgmp";
     }
     portray("LDFLAGS", s);

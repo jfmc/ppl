@@ -48,7 +48,7 @@ test01() {
   bool ok = (gr == known_gr) ;
 
   print_congruences(gr,
-		    "*** gr.add_congruence((A + B %= 0) / 3) ***");
+                    "*** gr.add_congruence((A + B %= 0) / 3) ***");
 
   return ok;
 }

@@ -93,7 +93,7 @@ test03() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** after ph.refine_with_congruence(B >= 1) ***");
+                    "*** after ph.refine_with_congruence(B >= 1) ***");
   return ok;
 }
 

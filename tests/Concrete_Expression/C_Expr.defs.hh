@@ -230,7 +230,7 @@ class Approximable_Reference<C_Expr>
 public:
   //! Builds a reference to the entity having the given index.
   Approximable_Reference<C_Expr>(Concrete_Expression_Type type,
-				 const Integer_Interval& val,
+                                 const Integer_Interval& val,
                                  dimension_type index);
 
   //! Do-nothing destructor.

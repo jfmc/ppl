@@ -251,7 +251,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 5) ***");
+                    "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 5) ***");
 
   return ok;
 }
@@ -280,7 +280,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 0) ***");
+                    "*** gr.generalized_affine_preimage(A, EQUAL, A - C + 2, 1, 0) ***");
 
   return ok;
 }
@@ -303,7 +303,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(A, EQUAL, A - 2*C + 3, 4, 7) ***");
+                    "*** gr.generalized_affine_preimage(A, EQUAL, A - 2*C + 3, 4, 7) ***");
 
   return ok;
 }
@@ -326,7 +326,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
+                    "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
 
   return ok;
 }
@@ -347,7 +347,7 @@ test10() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
+                    "*** gr.generalized_affine_preimage(A, EQUAL, A + 2, 1, 1) ***");
 
   return ok;
 }
@@ -447,7 +447,7 @@ test14() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, 0) ***");
+                    "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, 0) ***");
 
   return ok;
 }
@@ -476,7 +476,7 @@ test15() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, -7) ***");
+                    "*** gr.generalized_affine_preimage(B, EQUAL, A + B, 1, -7) ***");
 
   return ok;
 }
@@ -511,7 +511,7 @@ test16() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.generalized_affine_preimage(A + 2*B, EQUAL, A - B, 3) ***");
+                    "*** gr.generalized_affine_preimage(A + 2*B, EQUAL, A - B, 3) ***");
 
   return ok;
 }

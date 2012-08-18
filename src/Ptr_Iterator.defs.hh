@@ -55,7 +55,7 @@ operator-(const Ptr_Iterator<P>& x, const Ptr_Iterator<Q>& y);
 
 template<typename P>
 Ptr_Iterator<P> operator+(typename Ptr_Iterator<P>::difference_type m,
-			  const Ptr_Iterator<P>& y);
+                          const Ptr_Iterator<P>& y);
 
 } // namespace Implementation
 
@@ -67,10 +67,10 @@ Ptr_Iterator<P> operator+(typename Ptr_Iterator<P>::difference_type m,
 template <typename P>
 class Parma_Polyhedra_Library::Implementation::Ptr_Iterator
   : public std::iterator<typename std::iterator_traits<P>::iterator_category,
-			 typename std::iterator_traits<P>::value_type,
-			 typename std::iterator_traits<P>::difference_type,
-			 typename std::iterator_traits<P>::pointer,
-			 typename std::iterator_traits<P>::reference> {
+                         typename std::iterator_traits<P>::value_type,
+                         typename std::iterator_traits<P>::difference_type,
+                         typename std::iterator_traits<P>::pointer,
+                         typename std::iterator_traits<P>::reference> {
 public:
   typedef typename std::iterator_traits<P>::difference_type difference_type;
   typedef typename std::iterator_traits<P>::reference reference;
@@ -164,7 +164,7 @@ private:
   friend Ptr_Iterator<P>
   Parma_Polyhedra_Library::Implementation::
   operator+<>(typename Ptr_Iterator<P>::difference_type m,
-	      const Ptr_Iterator<P>& y);
+              const Ptr_Iterator<P>& y);
 };
 
 #include "Ptr_Iterator.inlines.hh"

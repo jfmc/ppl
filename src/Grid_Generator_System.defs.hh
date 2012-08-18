@@ -53,7 +53,7 @@ void swap(Grid_Generator_System& x, Grid_Generator_System& y);
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Grid_Generator_System */
 bool operator==(const Grid_Generator_System& x,
-		const Grid_Generator_System& y);
+                const Grid_Generator_System& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -276,10 +276,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-			   Grid_Generator,
-			   ptrdiff_t,
-			   const Grid_Generator*,
-			   const Grid_Generator&> {
+                           Grid_Generator,
+                           ptrdiff_t,
+                           const Grid_Generator*,
+                           const Grid_Generator&> {
   public:
     //! Default constructor.
     const_iterator();

@@ -39,27 +39,27 @@ public class Test_Executor {
     */
     public static boolean executeTests(Class c) {
         PPL_Test.initialize();
-	boolean global_test_result_ok = true;
-	System.out.println("Checking " + c.getName());
-	Method methods[] = c.getDeclaredMethods();
+        boolean global_test_result_ok = true;
+        System.out.println("Checking " + c.getName());
+        Method methods[] = c.getDeclaredMethods();
         Object[] no_args = new Object[0];
-	for (Method currentMethod:methods) {
-	    try {
-		if (currentMethod.getName().startsWith("test")) {
-		    System.out.println("Executing " + currentMethod.getName());
-		    boolean ok = (Boolean) currentMethod.invoke(null, no_args);
-		    if (!ok) {
-			global_test_result_ok = false;
-			System.out.println(currentMethod.getName() + " failed");
-		    }
-		}
-	    }
-	    catch (Exception e) {
+        for (Method currentMethod:methods) {
+            try {
+                if (currentMethod.getName().startsWith("test")) {
+                    System.out.println("Executing " + currentMethod.getName());
+                    boolean ok = (Boolean) currentMethod.invoke(null, no_args);
+                    if (!ok) {
+                        global_test_result_ok = false;
+                        System.out.println(currentMethod.getName() + " failed");
+                    }
+                }
+            }
+            catch (Exception e) {
                 System.out.println("Unexpected exception caught.");
                 System.out.println(e.getMessage());
-		return false;
-	    }
-	}
-	return global_test_result_ok;
+                return false;
+            }
+        }
+        return global_test_result_ok;
     }
 }

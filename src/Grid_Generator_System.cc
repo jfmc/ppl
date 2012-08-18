@@ -74,8 +74,8 @@ PPL::Grid_Generator_System::insert(Grid_Generator& g, Recycle_Input) {
 void
 PPL::Grid_Generator_System
 ::affine_image(Variable v,
-	       const Linear_Expression& expr,
-	       Coefficient_traits::const_reference denominator) {
+               const Linear_Expression& expr,
+               Coefficient_traits::const_reference denominator) {
   // This is mostly a copy of Generator_System::affine_image.
 
   Grid_Generator_System& x = *this;
@@ -153,7 +153,7 @@ PPL::Grid_Generator_System::OK() const {
   if (sys.topology() == NOT_NECESSARILY_CLOSED) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator_System is NOT_NECESSARILY_CLOSED"
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -161,7 +161,7 @@ PPL::Grid_Generator_System::OK() const {
   if (sys.is_sorted()) {
 #ifndef NDEBUG
     std::cerr << "Grid_Generator_System is marked as sorted."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -172,7 +172,7 @@ PPL::Grid_Generator_System::OK() const {
 /*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s,
-			      const Grid_Generator_System& gs) {
+                              const Grid_Generator_System& gs) {
   Grid_Generator_System::const_iterator i = gs.begin();
   const Grid_Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
@@ -268,7 +268,7 @@ PPL::Grid_Generator_System::num_lines() const {
   else {
     for (dimension_type i = num_rows(); i-- > 0 ; )
       if (ggs[i].is_line())
-	++n;
+        ++n;
   }
   return n;
 }
@@ -287,12 +287,12 @@ PPL::Grid_Generator_System::num_parameters() const {
     for (dimension_type i = num_rows();
          i != 0 && ggs[--i].is_parameter_or_point(); )
       if (ggs[i].is_line_or_parameter())
-	++n;
+        ++n;
   }
   else {
     for (dimension_type i = num_rows(); i-- > 0 ; )
       if (ggs[i].is_parameter())
-	++n;
+        ++n;
   }
   return n;
 }

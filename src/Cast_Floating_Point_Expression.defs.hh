@@ -163,7 +163,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Cast_Floating_Point_Expression(
-			  const Cast_Floating_Point_Expression& y);
+                          const Cast_Floating_Point_Expression& y);
 
   #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -171,7 +171,7 @@ private:
   */
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAIL
   Cast_Floating_Point_Expression& operator=(
-		          const Cast_Floating_Point_Expression& y);
+                          const Cast_Floating_Point_Expression& y);
 
 }; // class Cast_Floating_Point_Expression
 

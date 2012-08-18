@@ -83,16 +83,16 @@ compute_open_hypercube_generators(dimension_type dimension) {
 }
 
 #define LIMIT(WHAT) \
-  do {									\
-    if (getrlimit(WHAT, &t) != 0) {					\
-      std::cerr << "getrlimit failed: " << strerror(errno) << endl;	\
-      exit(1);								\
-    }									\
-    t.rlim_cur = bytes;							\
-    if (setrlimit(WHAT, &t) != 0) {					\
-      std::cerr << "setrlimit failed: " << strerror(errno) << endl;	\
-      exit(1);								\
-    }									\
+  do {                                                                  \
+    if (getrlimit(WHAT, &t) != 0) {                                     \
+      std::cerr << "getrlimit failed: " << strerror(errno) << endl;     \
+      exit(1);                                                          \
+    }                                                                   \
+    t.rlim_cur = bytes;                                                 \
+    if (setrlimit(WHAT, &t) != 0) {                                     \
+      std::cerr << "setrlimit failed: " << strerror(errno) << endl;     \
+      exit(1);                                                          \
+    }                                                                   \
   } while (0)
 
 void
@@ -118,7 +118,7 @@ limit_memory(unsigned long bytes) {
 
 bool
 guarded_compute_open_hypercube_generators(dimension_type dimension,
-					  unsigned long max_memory_in_bytes) {
+                                          unsigned long max_memory_in_bytes) {
   try {
     limit_memory(max_memory_in_bytes);
     compute_open_hypercube_generators(dimension);

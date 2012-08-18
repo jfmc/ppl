@@ -34,14 +34,14 @@ NNC_Polyhedron::~NNC_Polyhedron() {
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
-			       Degenerate_Element kind)
+                               Degenerate_Element kind)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
                check_space_dimension_overflow(num_dimensions,
                                               NOT_NECESSARILY_CLOSED,
                                               "NNC_Polyhedron(n, k)",
                                               "n exceeds the maximum "
                                               "allowed space dimension"),
-	       kind) {
+               kind) {
 }
 
 inline
@@ -62,7 +62,7 @@ NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs, Recycle_Input)
                                                   "the space dimension of cs "
                                                   "exceeds the maximum allowed "
                                                   "space dimension"),
-	       Recycle_Input()) {
+               Recycle_Input()) {
 }
 
 inline
@@ -83,7 +83,7 @@ NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs, Recycle_Input)
                                                   "the space dimension of gs "
                                                   "exceeds the maximum allowed "
                                                   "space dimension"),
-	       Recycle_Input()) {
+               Recycle_Input()) {
 }
 
 template <typename Interval>

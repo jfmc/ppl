@@ -4,7 +4,7 @@ Building the Debian packages
 The simplest way to build the Debian packages is to run the following
 command in an up-to-date PPL directory.
 
-	dpkg-buildpackage -rsudo
+        dpkg-buildpackage -rsudo
 
 `dpkg-buildpackage' is available in the dpkg-dev package.  Here the
 `sudo' program (from the sudo package) is also required.  This will
@@ -26,10 +26,10 @@ References
 ----------
 
  - Debian Library Packaging guide
-	 http://www.netfort.gr.jp/~dancer/column/libpkg-guide/libpkg-guide.html
+         http://www.netfort.gr.jp/~dancer/column/libpkg-guide/libpkg-guide.html
 
  - Debian New Maintainers' Guide
-	 http://www.debian.org/doc/maint-guide/
+         http://www.debian.org/doc/maint-guide/
 
  - Debian Developer's Reference
-	 http://www.debian.org/doc/developers-reference/
+         http://www.debian.org/doc/developers-reference/

@@ -89,8 +89,8 @@ aux2_test01(unsigned n) {
   case 1:
 
     nout << "S" << n << " = { "
-	 << "P" << p_base + 1 << ", "
-	 << "P" << p_base + 3 << " }" << endl;
+         << "P" << p_base + 1 << ", "
+         << "P" << p_base + 3 << " }" << endl;
 
     s.add_disjunct(aux1_test01(p_base + 1));
     s.add_disjunct(aux1_test01(p_base + 3));
@@ -98,8 +98,8 @@ aux2_test01(unsigned n) {
   case 2:
 
     nout << "S" << n << " = { "
-	 << "P" << p_base + 2 << ", "
-	 << "P" << p_base + 3 << " }" << endl;
+         << "P" << p_base + 2 << ", "
+         << "P" << p_base + 3 << " }" << endl;
 
     s.add_disjunct(aux1_test01(p_base + 2));
     s.add_disjunct(aux1_test01(p_base + 3));
@@ -107,8 +107,8 @@ aux2_test01(unsigned n) {
   case 0:
 
     nout << "S" << n << " = { "
-	 << "P" << p_base + 2 << ", "
-	 << "P" << p_base + 4 << " }" << endl;
+         << "P" << p_base + 2 << ", "
+         << "P" << p_base + 4 << " }" << endl;
 
     s.add_disjunct(aux1_test01(p_base + 2));
     s.add_disjunct(aux1_test01(p_base + 4));

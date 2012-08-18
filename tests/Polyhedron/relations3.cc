@@ -124,7 +124,7 @@ test05() {
   NNC_Polyhedron ph(gs);
   Generator_System gs1;
   for (Generator_System::const_iterator i = ph.generators().begin(),
-	 gs_end = ph.generators().end(); i != gs_end; ++i)
+         gs_end = ph.generators().end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gs.insert(*i);
   C_Polyhedron ph1(gs);
@@ -154,7 +154,7 @@ test06() {
   ph1.add_constraint(B == 1);
   Generator_System gs1;
   for (Generator_System::const_iterator i = ph.generators().begin(),
-	 gs_end = ph.generators().end(); i != gs_end; ++i)
+         gs_end = ph.generators().end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gs1.insert(*i);
   ph1.add_generators(gs1);

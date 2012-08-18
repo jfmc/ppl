@@ -85,26 +85,26 @@ site: http://bugseng.com/products/ppl/ . */
     if (env->ExceptionOccurred())        \
       return;                            \
   } while (0)
-#define CHECK_RESULT_ABORT(env, cond)	 \
+#define CHECK_RESULT_ABORT(env, cond)    \
   do {                                   \
-    if (!(cond))			 \
+    if (!(cond))                         \
       abort();                           \
   } while (0)
 #define CHECK_RESULT_ASSERT(env, cond)   \
   assert(cond)
 #define CHECK_RESULT_THROW(env, cond)    \
   do {                                   \
-    if (!(cond))			 \
+    if (!(cond))                         \
       throw Java_ExceptionOccurred();    \
   } while (0)
 #define CHECK_RESULT_RETURN(env, cond, val)   \
   do {                                        \
-    if (!(cond))			      \
+    if (!(cond))                              \
       return val;                             \
   } while (0)
 #define CHECK_RESULT_RETURN_VOID(env, cond)   \
   do {                                        \
-    if (!(cond))			      \
+    if (!(cond))                              \
       return;                                 \
   } while (0)
 
@@ -877,7 +877,7 @@ get_ptr(JNIEnv* env, jobject ppl_object);
 template <typename T>
 void
 set_ptr(JNIEnv* env, jobject ppl_object,
-	const T* address, bool to_be_marked = false);
+        const T* address, bool to_be_marked = false);
 
 /*! \brief
   Builds a Java parma_polyhedra_library::Linear_Expression

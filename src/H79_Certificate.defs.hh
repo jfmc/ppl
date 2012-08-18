@@ -83,7 +83,7 @@ public:
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const H79_Certificate& x,
-		    const H79_Certificate& y) const;
+                    const H79_Certificate& y) const;
   };
 
 private:

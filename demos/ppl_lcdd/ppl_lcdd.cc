@@ -255,8 +255,8 @@ set_output(const char* file_name) {
 
   if (file_name) {
     output_stream_p = new std::ofstream(file_name,
-					std::ios_base::out
-					| std::ios_base::app);
+                                        std::ios_base::out
+                                        | std::ios_base::app);
     if (!*output_stream_p)
       fatal("cannot open output file `%s'", file_name);
     output_file_name = file_name;
@@ -360,7 +360,7 @@ extern "C" void
 timeout(int) {
   try {
     std::cerr << "TIMEOUT"
-	      << std::endl;
+              << std::endl;
   }
   catch (...) {
   }
@@ -368,7 +368,7 @@ timeout(int) {
   try {
     if (output_file_name)
       output() << "TIMEOUT"
-	       << std::endl;
+               << std::endl;
   }
   catch (...) {
   }
@@ -382,7 +382,7 @@ process_options(int argc, char* argv[]) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
-			&option_index);
+                        &option_index);
 #else
     int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
@@ -407,9 +407,9 @@ process_options(int argc, char* argv[]) {
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-C'");
+        fatal("a non-negative integer must follow `-C'");
       else
-	max_seconds_of_cpu_time = static_cast<unsigned long>(l);
+        max_seconds_of_cpu_time = static_cast<unsigned long>(l);
       break;
 
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
@@ -487,15 +487,15 @@ maybe_print_clock() {
 
 void
 normalize(const std::vector<mpq_class>& source,
-	  std::vector<mpz_class>& dest,
-	  mpz_class& denominator) {
+          std::vector<mpz_class>& dest,
+          mpz_class& denominator) {
   typedef std::vector<mpq_class>::size_type size_type;
   size_type n = source.size();
   denominator = 1;
   for (size_type i = 0; i < n; ++i)
     mpz_lcm(denominator.get_mpz_t(),
-	    denominator.get_mpz_t(),
-	    source[i].get_den().get_mpz_t());
+            denominator.get_mpz_t(),
+            source[i].get_den().get_mpz_t());
   for (size_type i = 0; i < n; ++i)
     dest[i] = denominator*source[i];
 }
@@ -545,17 +545,17 @@ enum Number_Type { INTEGER, RATIONAL, REAL };
 
 void
 read_coefficients(std::istream& in,
-		  const Number_Type number_type,
-		  std::vector<mpz_class>& coefficients,
-		  mpz_class& denominator) {
+                  const Number_Type number_type,
+                  std::vector<mpz_class>& coefficients,
+                  mpz_class& denominator) {
   typedef std::vector<mpz_class>::size_type size_type;
   size_type num_coefficients = coefficients.size();
   switch (number_type) {
   case INTEGER:
     {
       for (unsigned i = 0; i < num_coefficients; ++i)
-	if (!guarded_read(in, coefficients[i]))
-	  error("missing or invalid integer coefficient");
+        if (!guarded_read(in, coefficients[i]))
+          error("missing or invalid integer coefficient");
       denominator = 1;
       break;
     }
@@ -563,8 +563,8 @@ read_coefficients(std::istream& in,
     {
       std::vector<mpq_class> rational_coefficients(num_coefficients);
       for (unsigned i = 0; i < num_coefficients; ++i)
-	if (!guarded_read(in, rational_coefficients[i]))
-	  error("missing or invalid rational coefficient");
+        if (!guarded_read(in, rational_coefficients[i]))
+          error("missing or invalid rational coefficient");
       normalize(rational_coefficients, coefficients, denominator);
       break;
     }
@@ -572,10 +572,10 @@ read_coefficients(std::istream& in,
     {
       std::vector<mpq_class> rational_coefficients(num_coefficients);
       for (unsigned i = 0; i < num_coefficients; ++i) {
-	double d;
-	if (!guarded_read(in, d))
-	  error("missing or invalid real coefficient");
-	rational_coefficients[i] = mpq_class(d);
+        double d;
+        if (!guarded_read(in, d))
+          error("missing or invalid real coefficient");
+        rational_coefficients[i] = mpq_class(d);
       }
       normalize(rational_coefficients, coefficients, denominator);
       break;
@@ -585,8 +585,8 @@ read_coefficients(std::istream& in,
 
 void
 read_indexes_set(std::istream& in,
-		 std::set<unsigned>& dest,
-		 const char* what) {
+                 std::set<unsigned>& dest,
+                 const char* what) {
   assert(dest.empty());
   unsigned num_elements;
   if (!guarded_read(in, num_elements))
@@ -619,11 +619,11 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     else if (s == "linearity" || s == "equality" || s == "partial_enum") {
       read_indexes_set(in, linearity, "linearity");
       if (verbose) {
-	std::cerr << "Linearity: ";
-	for (std::set<unsigned>::const_iterator j = linearity.begin(),
-	       linearity_end = linearity.end(); j != linearity_end; ++j)
-	  std::cerr << *j << " ";
-	std::cerr << std::endl;
+        std::cerr << "Linearity: ";
+        for (std::set<unsigned>::const_iterator j = linearity.begin(),
+               linearity_end = linearity.end(); j != linearity_end; ++j)
+          std::cerr << *j << " ";
+        std::cerr << std::endl;
       }
     }
     else if (s == "begin")
@@ -644,7 +644,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     std::istringstream iss(s);
     if (!guarded_read(iss, num_rows))
       error("illegal number of rows `%s' (\"*****\" would be accepted)",
-	    s.c_str());
+            s.c_str());
     has_num_rows = true;
   }
 
@@ -672,8 +672,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     else
       std::cerr << '?';
     std::cerr << " x " << num_columns
-	      << "; number type: " << s
-	      << std::endl;
+              << "; number type: " << s
+              << std::endl;
   }
 
 #if defined(USE_PPL)
@@ -707,80 +707,80 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     for (row = 0; !has_num_rows || row < num_rows; ++row) {
       int vertex_marker;
       if (!has_num_rows) {
-	// Must be prepared to read an "end" here.
-	if (!guarded_read(in, s))
-	  error("missing vertex marker");
-	if (s == "end")
-	  break;
-	std::istringstream iss(s);
-	if (!guarded_read(iss, vertex_marker)
-	    || vertex_marker < 0 || vertex_marker > 1)
-	  error("illegal vertex marker `%s'", s.c_str());
+        // Must be prepared to read an "end" here.
+        if (!guarded_read(in, s))
+          error("missing vertex marker");
+        if (s == "end")
+          break;
+        std::istringstream iss(s);
+        if (!guarded_read(iss, vertex_marker)
+            || vertex_marker < 0 || vertex_marker > 1)
+          error("illegal vertex marker `%s'", s.c_str());
       }
       else if (!guarded_read(in, vertex_marker)
-		 || vertex_marker < 0 || vertex_marker > 1)
-	error("illegal or missing vertex marker");
+                 || vertex_marker < 0 || vertex_marker > 1)
+        error("illegal or missing vertex marker");
       read_coefficients(in, number_type, coefficients, denominator);
 
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::Linear_Expression e;
       for (unsigned j = space_dim; j-- > 0; )
-	e += coefficients[j] * PPL::Variable(j);
+        e += coefficients[j] * PPL::Variable(j);
 #elif defined(USE_POLKA)
       // NewPolka variables have indices 2, 3, ..., space_dim+1.
       for (unsigned j = space_dim; j-- > 0; )
-	pkint_set(mat->p[row][j+2], coefficients[j].get_mpz_t());
+        pkint_set(mat->p[row][j+2], coefficients[j].get_mpz_t());
 #elif defined(USE_POLYLIB)
       // PolyLib variables have indices 1, 2, ..., space_dim.
       for (unsigned j = space_dim; j-- > 0; )
-	value_assign(mat->p[row][j+1], coefficients[j].get_mpz_t());
+        value_assign(mat->p[row][j+1], coefficients[j].get_mpz_t());
 #endif
       if (vertex_marker == 1) {
-	assert(linearity.find(row+1) == linearity_end);
+        assert(linearity.find(row+1) == linearity_end);
 #if defined(USE_PPL)
-	gs.insert(point(e, denominator));
+        gs.insert(point(e, denominator));
 #elif defined(USE_POLKA)
-	// NewPolka stores the generator kind at index 0 (1 = ray/point)
-	// and the common denominator at index 1.
-	pkint_set_si(mat->p[row][0], 1);
-	pkint_set(mat->p[row][1], denominator.get_mpz_t());
+        // NewPolka stores the generator kind at index 0 (1 = ray/point)
+        // and the common denominator at index 1.
+        pkint_set_si(mat->p[row][0], 1);
+        pkint_set(mat->p[row][1], denominator.get_mpz_t());
 #elif defined(USE_POLYLIB)
-	// PolyLib stores the generator kind at index 0 (1 = ray/point)
-	// and the common denominator at index space_dim+1.
-	value_set_si(mat->p[row][0], 1);
-	value_assign(mat->p[row][space_dim+1], denominator.get_mpz_t());
+        // PolyLib stores the generator kind at index 0 (1 = ray/point)
+        // and the common denominator at index space_dim+1.
+        value_set_si(mat->p[row][0], 1);
+        value_assign(mat->p[row][space_dim+1], denominator.get_mpz_t());
 #endif
-	has_a_point = true;
+        has_a_point = true;
       }
       else if (linearity.find(row+1) != linearity_end) {
 #if defined(USE_PPL)
-	gs.insert(line(e));
+        gs.insert(line(e));
 #elif defined(USE_POLKA)
-	// NewPolka stores the generator kind at index 0 (0 = line)
-	// and the common denominator at index 1 (0 for ray/line).
-	pkint_set_si(mat->p[row][0], 0);
-	pkint_set_si(mat->p[row][1], 0);
+        // NewPolka stores the generator kind at index 0 (0 = line)
+        // and the common denominator at index 1 (0 for ray/line).
+        pkint_set_si(mat->p[row][0], 0);
+        pkint_set_si(mat->p[row][1], 0);
 #elif defined(USE_POLYLIB)
-	// PolyLib stores the generator kind at index 0 (0 = line)
-	// and the common denominator at index space_dim+1 (0 for ray/line).
-	value_set_si(mat->p[row][0], 0);
-	value_set_si(mat->p[row][space_dim+1], 0);
+        // PolyLib stores the generator kind at index 0 (0 = line)
+        // and the common denominator at index space_dim+1 (0 for ray/line).
+        value_set_si(mat->p[row][0], 0);
+        value_set_si(mat->p[row][space_dim+1], 0);
 #endif
       }
       else {
 #if defined(USE_PPL)
-	gs.insert(ray(e));
+        gs.insert(ray(e));
 #elif defined(USE_POLKA)
-	// NewPolka stores the generator kind at index 0 (1 = ray/point)
-	// and the common denominator at index 1 (0 for ray/line).
-	pkint_set_si(mat->p[row][0], 1);
-	pkint_set_si(mat->p[row][1], 0);
+        // NewPolka stores the generator kind at index 0 (1 = ray/point)
+        // and the common denominator at index 1 (0 for ray/line).
+        pkint_set_si(mat->p[row][0], 1);
+        pkint_set_si(mat->p[row][1], 0);
 #elif defined(USE_POLYLIB)
-	// PolyLib stores the generator kind at index 0 (1 = ray/point)
-	// and the common denominator at index space_dim+1 (0 for ray/line).
-	value_set_si(mat->p[row][0], 1);
-	value_set_si(mat->p[row][space_dim+1], 0);
+        // PolyLib stores the generator kind at index 0 (1 = ray/point)
+        // and the common denominator at index space_dim+1 (0 for ray/line).
+        value_set_si(mat->p[row][0], 1);
+        value_set_si(mat->p[row][space_dim+1], 0);
 #endif
       }
     }
@@ -793,23 +793,23 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       pkint_set_si(mat->p[num_rows][0], 1);
       pkint_set_si(mat->p[num_rows][1], 1);
       for (unsigned j = space_dim; j-- > 0; )
-	pkint_set_si(mat->p[num_rows][j+2], 0);
+        pkint_set_si(mat->p[num_rows][j+2], 0);
       ++num_rows;
 #elif defined(USE_POLYLIB)
       // Add the origin as a point.
       value_set_si(mat->p[num_rows][0], 1);
       value_set_si(mat->p[num_rows][space_dim+1], 1);
       for (unsigned j = space_dim; j-- > 0; )
-	value_set_si(mat->p[num_rows][j+1], 0);
+        value_set_si(mat->p[num_rows][j+1], 0);
       ++num_rows;
 #endif
     }
 
     if (verbose) {
       if (!has_num_rows)
-	std::cerr << "Problem dimension: " << row << " x " << num_columns
-		  << "; number type: " << s
-		  << std::endl;
+        std::cerr << "Problem dimension: " << row << " x " << num_columns
+                  << "; number type: " << s
+                  << std::endl;
 
 #if defined(USE_PPL)
       using namespace PPL::IO_Operators;
@@ -832,68 +832,68 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     mpz_class denominator;
     for (row = 0; !has_num_rows || row < num_rows; ++row) {
       if (!has_num_rows) {
-	// Must be prepared to read an "end" here.
-	std::getline(in, s);
-	if (!in)
-	  error("premature end of file while seeking "
-		"for coefficients or `end'");
-	if (s.substr(0, 2) == "end")
-	  break;
-	std::istringstream iss(s);
-	read_coefficients(iss, number_type, coefficients, denominator);
+        // Must be prepared to read an "end" here.
+        std::getline(in, s);
+        if (!in)
+          error("premature end of file while seeking "
+                "for coefficients or `end'");
+        if (s.substr(0, 2) == "end")
+          break;
+        std::istringstream iss(s);
+        read_coefficients(iss, number_type, coefficients, denominator);
       }
       else
-	read_coefficients(in, number_type, coefficients, denominator);
+        read_coefficients(in, number_type, coefficients, denominator);
 
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::Linear_Expression e;
       for (unsigned j = num_columns; j-- > 1; )
-	e += coefficients[j] * PPL::Variable(j-1);
+        e += coefficients[j] * PPL::Variable(j-1);
       e += coefficients[0];
 #elif defined(USE_POLKA)
       // NewPolka variables have indices 2, 3, ..., space_dim+1.
       for (unsigned j = num_columns; j-- > 1; )
-	pkint_set(mat->p[row][j+1], coefficients[j].get_mpz_t());
+        pkint_set(mat->p[row][j+1], coefficients[j].get_mpz_t());
       // NewPolka stores the inhomogeneous term at index 1.
       pkint_set(mat->p[row][1], coefficients[0].get_mpz_t());
 #elif defined(USE_POLYLIB)
       // PolyLib variables have indices 1, 2, ..., space_dim.
       for (unsigned j = num_columns; j-- > 1; )
-	value_assign(mat->p[row][j], coefficients[j].get_mpz_t());
+        value_assign(mat->p[row][j], coefficients[j].get_mpz_t());
       // PolyLib stores the inhomogeneous term at index space_dim+1.
       value_assign(mat->p[row][space_dim+1], coefficients[0].get_mpz_t());
 #endif
 
       if (linearity.find(row+1) != linearity_end) {
 #if defined(USE_PPL)
-	cs.insert(e == 0);
+        cs.insert(e == 0);
 #elif defined(USE_POLKA)
-	// NewPolka stores the constraint kind at index 0 (0 = equality).
-	pkint_set_si(mat->p[row][0], 0);
+        // NewPolka stores the constraint kind at index 0 (0 = equality).
+        pkint_set_si(mat->p[row][0], 0);
 #elif defined(USE_POLYLIB)
-	// PolyLib stores the constraint kind at index 0 (0 = equality).
-	value_set_si(mat->p[row][0], 0);
+        // PolyLib stores the constraint kind at index 0 (0 = equality).
+        value_set_si(mat->p[row][0], 0);
 #endif
       }
       else {
 #if defined(USE_PPL)
-	cs.insert(e >= 0);
+        cs.insert(e >= 0);
 #elif defined(USE_POLKA)
-	// NewPolka stores the constraint kind at index 0 (1 = inequality).
-	pkint_set_si(mat->p[row][0], 1);
+        // NewPolka stores the constraint kind at index 0 (1 = inequality).
+        pkint_set_si(mat->p[row][0], 1);
 #elif defined(USE_POLYLIB)
-	// PolyLib stores the constraint kind at index 0 (1 = inequality).
-	value_set_si(mat->p[row][0], 1);
+        // PolyLib stores the constraint kind at index 0 (1 = inequality).
+        value_set_si(mat->p[row][0], 1);
 #endif
       }
     }
 
     if (verbose) {
       if (!has_num_rows)
-	std::cerr << "Problem dimension: " << row << " x " << num_columns
-		  << "; number type: " << s
-		  << std::endl;
+        std::cerr << "Problem dimension: " << row << " x " << num_columns
+                  << "; number type: " << s
+                  << std::endl;
 
 #if defined(USE_PPL)
       using namespace PPL::IO_Operators;
@@ -929,7 +929,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     // PolyLib is not lazy: it will perform the conversion immediately.
     maybe_start_clock();
     ph = AddConstraints(mat->p[0], num_rows, ph,
-			max_constraints_or_generators);
+                        max_constraints_or_generators);
     maybe_print_clock();
 #endif
   }
@@ -944,7 +944,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     // PolyLib is not lazy: it will perform the conversion immediately.
     maybe_start_clock();
     ph = AddRays(mat->p[0], num_rows, ph,
-		 max_constraints_or_generators);
+                 max_constraints_or_generators);
     maybe_print_clock();
 #endif
   }
@@ -953,8 +953,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 void
 write_polyhedron(std::ostream& out,
-		 const POLYHEDRON_TYPE& ph,
-		 const Representation rep) {
+                 const POLYHEDRON_TYPE& ph,
+                 const Representation rep) {
   if (rep == H)
     guarded_write(out, "H-representation\n");
   else {
@@ -968,19 +968,19 @@ write_polyhedron(std::ostream& out,
   if (rep == H) {
     const PPL::Constraint_System& cs = ph.constraints();
     for (PPL::Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
+           cs_end = cs.end(); i != cs_end; ++i) {
       ++num_rows;
       if (i->is_equality())
-	linearity.insert(linearity.end(), num_rows);
+        linearity.insert(linearity.end(), num_rows);
     }
   }
   else {
     const PPL::Generator_System& gs = ph.generators();
     for (PPL::Generator_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i) {
+           gs_end = gs.end(); i != gs_end; ++i) {
       ++num_rows;
       if (i->is_line())
-	linearity.insert(linearity.end(), num_rows);
+        linearity.insert(linearity.end(), num_rows);
     }
   }
 #elif defined(USE_POLKA)
@@ -1006,7 +1006,7 @@ write_polyhedron(std::ostream& out,
     guarded_write(out, "linearity ");
     guarded_write(out, linearity.size());
     for (std::set<unsigned>::const_iterator j = linearity.begin(),
-	   linearity_end = linearity.end(); j != linearity_end; ++j) {
+           linearity_end = linearity.end(); j != linearity_end; ++j) {
       guarded_write(out, ' ');
       guarded_write(out, *j);
     }
@@ -1035,12 +1035,12 @@ write_polyhedron(std::ostream& out,
   if (rep == H) {
     const PPL::Constraint_System& cs = ph.constraints();
     for (PPL::Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
+           cs_end = cs.end(); i != cs_end; ++i) {
       const PPL::Constraint& c = *i;
       guarded_write(out, c.inhomogeneous_term());
       for (PPL::dimension_type j = 0; j < space_dim; ++j) {
-	guarded_write(out, ' ');
-	guarded_write(out, c.coefficient(PPL::Variable(j)));
+        guarded_write(out, ' ');
+        guarded_write(out, c.coefficient(PPL::Variable(j)));
       }
       guarded_write(out, '\n');
     }
@@ -1049,32 +1049,32 @@ write_polyhedron(std::ostream& out,
     assert(rep == V);
     const PPL::Generator_System& gs = ph.generators();
     for (PPL::Generator_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i) {
+           gs_end = gs.end(); i != gs_end; ++i) {
       const PPL::Generator& g = *i;
       if (g.is_point()) {
-	guarded_write(out, '1');
-	const PPL::Coefficient& divisor = g.divisor();
-	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
-	  guarded_write(out, ' ');
-	  if (g.coefficient(PPL::Variable(j)) == 0)
-	    guarded_write(out, '0');
-	  else {
-	    mpz_class numer, denom;
-	    PPL::assign_r(numer,
-			g.coefficient(PPL::Variable(j)),
-			PPL::ROUND_NOT_NEEDED);
-	    PPL::assign_r(denom, divisor, PPL::ROUND_NOT_NEEDED);
-	    guarded_write(out, mpq_class(numer, denom));
-	  }
-	}
+        guarded_write(out, '1');
+        const PPL::Coefficient& divisor = g.divisor();
+        for (PPL::dimension_type j = 0; j < space_dim; ++j) {
+          guarded_write(out, ' ');
+          if (g.coefficient(PPL::Variable(j)) == 0)
+            guarded_write(out, '0');
+          else {
+            mpz_class numer, denom;
+            PPL::assign_r(numer,
+                        g.coefficient(PPL::Variable(j)),
+                        PPL::ROUND_NOT_NEEDED);
+            PPL::assign_r(denom, divisor, PPL::ROUND_NOT_NEEDED);
+            guarded_write(out, mpq_class(numer, denom));
+          }
+        }
       }
       else {
-	// `g' is a ray or a line.
-	guarded_write(out, '0');
-	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
-	  guarded_write(out, ' ');
-	  guarded_write(out, g.coefficient(PPL::Variable(j)));
-	}
+        // `g' is a ray or a line.
+        guarded_write(out, '0');
+        for (PPL::dimension_type j = 0; j < space_dim; ++j) {
+          guarded_write(out, ' ');
+          guarded_write(out, g.coefficient(PPL::Variable(j)));
+        }
       }
       guarded_write(out, '\n');
     }
@@ -1087,8 +1087,8 @@ write_polyhedron(std::ostream& out,
       guarded_write(out, c[1]);
       // The variables' coefficients.
       for (unsigned j = 0; j < space_dim; ++j) {
-	guarded_write(out, ' ');
-	guarded_write(out, c[j+2]);
+        guarded_write(out, ' ');
+        guarded_write(out, c[j+2]);
       }
       guarded_write(out, '\n');
     }
@@ -1100,21 +1100,21 @@ write_polyhedron(std::ostream& out,
       guarded_write(out, g[0]);
       const pkint_t divisor = g[1];
       if (pkint_sgn(divisor) != 0)
-	// `g' is a point.
-	for (unsigned j = 0; j < space_dim; ++j) {
-	  guarded_write(out, ' ');
-	  if (pkint_sgn(g[j+2]) == 0)
-	    guarded_write(out, '0');
-	  else
-	    guarded_write(out, mpq_class(mpz_class(g[j+2].rep),
-					 mpz_class(divisor.rep)));
-	}
+        // `g' is a point.
+        for (unsigned j = 0; j < space_dim; ++j) {
+          guarded_write(out, ' ');
+          if (pkint_sgn(g[j+2]) == 0)
+            guarded_write(out, '0');
+          else
+            guarded_write(out, mpq_class(mpz_class(g[j+2].rep),
+                                         mpz_class(divisor.rep)));
+        }
       else
-	// `g' is a ray or a line.
-	for (unsigned j = 0; j < space_dim; ++j) {
-	  guarded_write(out, ' ');
-	  guarded_write(out, g[j+2]);
-	}
+        // `g' is a ray or a line.
+        for (unsigned j = 0; j < space_dim; ++j) {
+          guarded_write(out, ' ');
+          guarded_write(out, g[j+2]);
+        }
       guarded_write(out, '\n');
     }
   }
@@ -1126,8 +1126,8 @@ write_polyhedron(std::ostream& out,
       guarded_write(out, c[space_dim+1]);
       // The variables' coefficients.
       for (unsigned j = 0; j < space_dim; ++j) {
-	guarded_write(out, ' ');
-	guarded_write(out, c[j+1]);
+        guarded_write(out, ' ');
+        guarded_write(out, c[j+1]);
       }
       guarded_write(out, '\n');
     }
@@ -1139,21 +1139,21 @@ write_polyhedron(std::ostream& out,
       guarded_write(out, g[0]);
       const Value& divisor = g[space_dim+1];
       if (value_sign(divisor) != 0)
-	// `g' is a point.
-	for (unsigned j = 0; j < space_dim; ++j) {
-	  guarded_write(out, ' ');
-	  if (value_sign(g[j+1]) == 0)
-	    guarded_write(out, '0');
-	  else
-	    guarded_write(out, mpq_class(mpz_class(g[j+1]),
-					 mpz_class(divisor)));
-	}
+        // `g' is a point.
+        for (unsigned j = 0; j < space_dim; ++j) {
+          guarded_write(out, ' ');
+          if (value_sign(g[j+1]) == 0)
+            guarded_write(out, '0');
+          else
+            guarded_write(out, mpq_class(mpz_class(g[j+1]),
+                                         mpz_class(divisor)));
+        }
       else
-	// `g' is a ray or a line.
-	for (unsigned j = 0; j < space_dim; ++j) {
-	  guarded_write(out, ' ');
-	  guarded_write(out, g[j+1]);
-	}
+        // `g' is a ray or a line.
+        for (unsigned j = 0; j < space_dim; ++j) {
+          guarded_write(out, ' ');
+          guarded_write(out, g[j+1]);
+        }
       guarded_write(out, '\n');
     }
   }
@@ -1181,12 +1181,12 @@ main(int argc, char* argv[]) try {
 #if defined(USE_PPL)
   if (strcmp(PPL_VERSION, PPL::version()) != 0)
     fatal("was compiled with PPL version %s, but linked with version %s",
-	  PPL_VERSION, PPL::version());
+          PPL_VERSION, PPL::version());
 
   if (verbose)
     std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
-	      << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
-	      << std::endl;
+              << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
+              << std::endl;
 #endif
 
   // Process command line options.
@@ -1264,71 +1264,71 @@ main(int argc, char* argv[]) try {
     switch (command) {
     case H_to_V:
       {
-	if (e_rep == H)
-	  warning("checking an H-to-V conversion with an H representation");
+        if (e_rep == H)
+          warning("checking an H-to-V conversion with an H representation");
 
-	// Count the number of generators of `ph'.
-	unsigned ph_num_generators = 0;
-	const PPL::Generator_System& ph_gs = ph.generators();
-	for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
-	       ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
-	  ++ph_num_generators;
+        // Count the number of generators of `ph'.
+        unsigned ph_num_generators = 0;
+        const PPL::Generator_System& ph_gs = ph.generators();
+        for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
+               ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
+          ++ph_num_generators;
 
-	// Count the number of generators of `e_ph'.
-	unsigned e_ph_num_generators = 0;
-	const PPL::Generator_System& e_ph_gs = e_ph.generators();
-	for (PPL::Generator_System::const_iterator i = e_ph_gs.begin(),
-	       e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
-	  ++e_ph_num_generators;
+        // Count the number of generators of `e_ph'.
+        unsigned e_ph_num_generators = 0;
+        const PPL::Generator_System& e_ph_gs = e_ph.generators();
+        for (PPL::Generator_System::const_iterator i = e_ph_gs.begin(),
+               e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
+          ++e_ph_num_generators;
 
-	// If the polyhedra differ, that is the problem.
-	if (ph != e_ph) {
-	  if (verbose)
-	    std::cerr << "Check failed: polyhedra differ"
-		      << std::endl;
-	  return 1;
-	}
-	else if (ph_num_generators != e_ph_num_generators)
-	  // If we have different number of generators, we fail.
-	  std::cerr << "Check failed: different number of generators:\n"
-		    << "expected " << e_ph_num_generators
-		    << ", obtained " << ph_num_generators
-		    << std::endl;
-	break;
+        // If the polyhedra differ, that is the problem.
+        if (ph != e_ph) {
+          if (verbose)
+            std::cerr << "Check failed: polyhedra differ"
+                      << std::endl;
+          return 1;
+        }
+        else if (ph_num_generators != e_ph_num_generators)
+          // If we have different number of generators, we fail.
+          std::cerr << "Check failed: different number of generators:\n"
+                    << "expected " << e_ph_num_generators
+                    << ", obtained " << ph_num_generators
+                    << std::endl;
+        break;
       }
     case V_to_H:
       {
-	if (e_rep == V)
-	  warning("checking an V-to-H conversion with a V representation");
+        if (e_rep == V)
+          warning("checking an V-to-H conversion with a V representation");
 
-	// Count the number of constraints of `ph'.
-	unsigned ph_num_constraints = 0;
-	const PPL::Constraint_System& ph_cs = ph.constraints();
-	for (PPL::Constraint_System::const_iterator i = ph_cs.begin(),
-	       ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
-	  ++ph_num_constraints;
+        // Count the number of constraints of `ph'.
+        unsigned ph_num_constraints = 0;
+        const PPL::Constraint_System& ph_cs = ph.constraints();
+        for (PPL::Constraint_System::const_iterator i = ph_cs.begin(),
+               ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
+          ++ph_num_constraints;
 
-	// Count the number of constraints of `e_ph'.
-	unsigned e_ph_num_constraints = 0;
-	const PPL::Constraint_System& e_ph_cs = e_ph.constraints();
-	for (PPL::Constraint_System::const_iterator i = e_ph_cs.begin(),
-	       e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
-	  ++e_ph_num_constraints;
+        // Count the number of constraints of `e_ph'.
+        unsigned e_ph_num_constraints = 0;
+        const PPL::Constraint_System& e_ph_cs = e_ph.constraints();
+        for (PPL::Constraint_System::const_iterator i = e_ph_cs.begin(),
+               e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
+          ++e_ph_num_constraints;
 
-	// If the polyhedra differ, that is the problem.
-	if (ph != e_ph) {
-	  if (verbose)
-	    std::cerr << "Check failed: polyhedra differ"
-		      << std::endl;
-	  return 1;
-	}
-	else if (ph_num_constraints != e_ph_num_constraints)
-	  // If we have different number of constraints, we fail.
-	  std::cerr << "Check failed: different number of constraints:\n"
-		    << "expected " << e_ph_num_constraints
-		    << ", obtained " << ph_num_constraints
-		    << std::endl;
-	break;
+        // If the polyhedra differ, that is the problem.
+        if (ph != e_ph) {
+          if (verbose)
+            std::cerr << "Check failed: polyhedra differ"
+                      << std::endl;
+          return 1;
+        }
+        else if (ph_num_constraints != e_ph_num_constraints)
+          // If we have different number of constraints, we fail.
+          std::cerr << "Check failed: different number of constraints:\n"
+                    << "expected " << e_ph_num_constraints
+                    << ", obtained " << ph_num_constraints
+                    << std::endl;
+        break;
       }
     case None:
       break;

@@ -27,8 +27,8 @@ namespace {
 
 void
 shift_rename_add(const C_Polyhedron& p,
-		 dimension_type offset,
-		 C_Polyhedron& q) {
+                 dimension_type offset,
+                 C_Polyhedron& q) {
   C_Polyhedron r(offset);
   r.concatenate_assign(p);
   q.intersection_assign(r);

@@ -46,7 +46,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_grid_generator(grid_point(2*A)) ***");
+                    "*** gr.add_grid_generator(grid_point(2*A)) ***");
 
   return ok;
 }

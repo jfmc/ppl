@@ -31,11 +31,11 @@ namespace {
 
 void
 shift_rename_add(const DEF_Formula& p,
-		 dimension_type offset,
-		 DEF_Formula& q) {
+                 dimension_type offset,
+                 DEF_Formula& q) {
   assert(p.OK());
   for (DEF_Formula::const_iterator i = p.begin(),
-	 p_end = p.end(); i != p_end; ++i)
+         p_end = p.end(); i != p_end; ++i)
     q.add_pair(FCAIBVP(i->ask(), offset), FCAIBVP(i->tell(), offset));
   assert(q.OK());
 }
@@ -45,7 +45,7 @@ remove_dimensions(DEF_Formula& f, const Variables_Set& to_remove) {
   f.normalize();
   DEF_Formula g;
   for (DEF_Formula::const_iterator i = f.begin(),
-	 f_end = f.end(); i != f_end; ++i) {
+         f_end = f.end(); i != f_end; ++i) {
     DEF_Formula h = f;
     const FCAIBVP& ask = i->ask();
     FCAIBVP projected_ask = ask;

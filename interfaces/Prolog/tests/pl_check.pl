@@ -101,20 +101,20 @@ run_fail(Group) :-
 % the exception was thrown and then it fails.
 
 run_exception(Group, Exception) :-
-	group_predicates(Group, Predicates),
-	(Exception = ppl_overflow_error(_) ->
-	    Kind = 'Overflow exception'
-	;
-	    Kind = 'Exception'
-	),
+        group_predicates(Group, Predicates),
+        (Exception = ppl_overflow_error(_) ->
+            Kind = 'Overflow exception'
+        ;
+            Kind = 'Exception'
+        ),
         prolog_system(System),
- 	display_message([Kind, 'occurred while performing test ', Group,
+        display_message([Kind, 'occurred while performing test ', Group,
                         'which checks predicates ', nl, Predicates]),
         display_message(['Prolog interface checks failed on', System,
                   'Prolog.']),
-	print_exception_term(Exception),
-	% Do fail for all but overflow exceptions.
-	Exception = ppl_overflow_error(_).
+        print_exception_term(Exception),
+        % Do fail for all but overflow exceptions.
+        Exception = ppl_overflow_error(_).
 
 % run_one/1
 % Runs the named group of tests.
@@ -1835,7 +1835,7 @@ termination_test :-
                                              -A + C >= 0,
                                              -B + D >= 1,
                                              B >= 0],
-					    P2),
+                                            P2),
   ppl_termination_test_NNC_Polyhedron_MS(P2),
   ppl_termination_test_NNC_Polyhedron_PR(P2),
   !,

@@ -45,9 +45,9 @@ solve(Goals, Variable_Names) :-
     ppl_new_C_Polyhedron_from_space_dimension(Dims, universe, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
-	Failed = no
+        Failed = no
     ;
-	Failed = yes
+        Failed = yes
     ),
     % On failure, cleanup must occur anyway.
     % The one who creates the polyhedron must delete it.
@@ -116,9 +116,9 @@ solve(Atom, Goals, Polyhedron) :-
 
     % Try to solve the body augmented with the parameter passing equations.
     (solve(PP_Constraints, (Body, Goals), Poly_Copy) ->
-	Failed = no
+        Failed = no
     ;
-	Failed = yes
+        Failed = yes
     ),
     % Our copy must be thrown anyway.
     ppl_delete_Polyhedron(Poly_Copy),
@@ -129,18 +129,18 @@ parameter_passing(Atom, Head, PP_Constraints) :-
     Atom =.. [_|Actuals],
     Head =.. [_|Formals],
     (Actuals == [] ->
-	PP_Constraints = true
+        PP_Constraints = true
     ;
-	build_pp_constraints(Actuals, Formals, Equations),
-	PP_Constraints = ({ Equations })
+        build_pp_constraints(Actuals, Formals, Equations),
+        PP_Constraints = ({ Equations })
     ).
 
 build_pp_constraints([A|Actuals], [F|Formals], Equations) :-
     (Actuals == [] ->
-	Equations = (A = F)
+        Equations = (A = F)
     ;
-	Equations = ((A = F), More_Equations),
-	build_pp_constraints(Actuals, Formals, More_Equations)
+        Equations = ((A = F), More_Equations),
+        build_pp_constraints(Actuals, Formals, More_Equations)
     ).
 
 select_clause(Atom, Head, Body) :-
@@ -265,8 +265,8 @@ main_loop :-
   % get rid of it.
   eat_eol,
   catch(do_command(Command, VN),
-	Exception,
-	(print_exception_term(Exception), main_loop_no)).
+        Exception,
+        (print_exception_term(Exception), main_loop_no)).
 
 print_exception_term(ppl_overflow_error(Cause)) :-
   nl,

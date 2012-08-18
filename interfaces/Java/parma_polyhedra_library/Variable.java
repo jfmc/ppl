@@ -45,18 +45,18 @@ public class Variable implements Comparable<Variable> {
       Thrown if <CODE>i</CODE> is has negative value.
     */
     public Variable(long i) {
-	if (i < 0)
-	    throw new
-		RuntimeErrorException(new Error("parma_polyhedra_library.Variable::"
-						+ "Variable:"
-						+ " an index variable"
-						+ " cannot be negative."));
-	varid = i;
+        if (i < 0)
+            throw new
+                RuntimeErrorException(new Error("parma_polyhedra_library.Variable::"
+                                                + "Variable:"
+                                                + " an index variable"
+                                                + " cannot be negative."));
+        varid = i;
     }
 
     //! Returns the index of the Cartesian axis associated to \p this.
     public long id() {
-	return varid;
+        return varid;
     }
 
     /*! \brief

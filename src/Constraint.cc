@@ -36,7 +36,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Constraint::throw_invalid_argument(const char* method,
-					const char* message) const {
+                                        const char* message) const {
   std::ostringstream s;
   s << "PPL::Constraint::" << method << ":" << std::endl
     << message;
@@ -45,8 +45,8 @@ PPL::Constraint::throw_invalid_argument(const char* method,
 
 void
 PPL::Constraint::throw_dimension_incompatible(const char* method,
-					      const char* name_var,
-					      const Variable v) const {
+                                              const char* name_var,
+                                              const Variable v) const {
   std::ostringstream s;
   s << "PPL::Constraint::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
@@ -115,18 +115,18 @@ PPL::Constraint::is_tautological() const {
       // The constraint is NOT necessarily closed.
       const int eps_sign = sgn(epsilon_coefficient());
       if (eps_sign > 0)
-	// We have found the constraint epsilon >= 0.
-	return true;
+        // We have found the constraint epsilon >= 0.
+        return true;
       if (eps_sign == 0)
-	// One of the `true' dimensions has a non-zero coefficient.
-	return false;
+        // One of the `true' dimensions has a non-zero coefficient.
+        return false;
       else {
-	// Here the epsilon coefficient is negative: strict inequality.
-	if (expr.inhomogeneous_term() <= 0)
-	  // A strict inequality such as `lhs - k > 0',
-	  // where k is a non negative integer, cannot be trivially true.
-	  return false;
-	// Checking for another non-zero coefficient.
+        // Here the epsilon coefficient is negative: strict inequality.
+        if (expr.inhomogeneous_term() <= 0)
+          // A strict inequality such as `lhs - k > 0',
+          // where k is a non negative integer, cannot be trivially true.
+          return false;
+        // Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
         return expression().all_homogeneous_terms_are_zero();
@@ -150,16 +150,16 @@ PPL::Constraint::is_inconsistent() const {
     else {
       // The constraint is NOT necessarily closed.
       if (epsilon_coefficient() >= 0)
-	// If positive, we have found the constraint epsilon >= 0.
-	// If zero, one of the `true' dimensions has a non-zero coefficient.
-	// In both cases, it is not trivially false.
-	return false;
+        // If positive, we have found the constraint epsilon >= 0.
+        // If zero, one of the `true' dimensions has a non-zero coefficient.
+        // In both cases, it is not trivially false.
+        return false;
       else {
-	// Here the epsilon coefficient is negative: strict inequality.
-	if (expr.inhomogeneous_term() > 0)
-	  // A strict inequality such as `lhs + k > 0',
-	  // where k is a positive integer, cannot be trivially false.
-	  return false;
+        // Here the epsilon coefficient is negative: strict inequality.
+        if (expr.inhomogeneous_term() > 0)
+          // A strict inequality such as `lhs + k > 0',
+          // where k is a positive integer, cannot be trivially false.
+          return false;
         // Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
@@ -427,8 +427,8 @@ PPL::Constraint::OK() const {
   if (is_not_necessarily_closed() && expr.space_dimension() == 0) {
 #ifndef NDEBUG
     std::cerr << "Constraint has fewer coefficients than the minimum "
-	      << "allowed by its topology."
-	      << std::endl;
+              << "allowed by its topology."
+              << std::endl;
 #endif
     return false;
   }
@@ -437,7 +437,7 @@ PPL::Constraint::OK() const {
       && epsilon_coefficient() != 0) {
 #ifndef NDEBUG
     std::cerr << "Illegal constraint: an equality cannot be strict."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }
@@ -448,7 +448,7 @@ PPL::Constraint::OK() const {
   if (tmp != *this) {
 #ifndef NDEBUG
     std::cerr << "Constraint is not strongly normalized as it should be."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }

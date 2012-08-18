@@ -57,16 +57,16 @@ test01() {
       // The following workaround is to avoid trivial positive overflows
       // when using bounded coefficients.
       if (std::numeric_limits<Coefficient>::is_bounded
-	  && c == std::numeric_limits<Coefficient>::min())
-	// Here the randomly generated coefficients is equal to the
-	// allowed minimum value for a signed integer data type that
-	// might adopt the 2's complement representation
-	// (e.g., -128 for 8 bit signed integers).
-	// Thus, it would cause a positive overflow during the normalization
-	// of the Linear_Row, because the GCD computation will try to negate
-	// such a coefficient.
-	// To avoid the problem, we simply increment the coefficient.
-	++c;
+          && c == std::numeric_limits<Coefficient>::min())
+        // Here the randomly generated coefficients is equal to the
+        // allowed minimum value for a signed integer data type that
+        // might adopt the 2's complement representation
+        // (e.g., -128 for 8 bit signed integers).
+        // Thus, it would cause a positive overflow during the normalization
+        // of the Linear_Row, because the GCD computation will try to negate
+        // such a coefficient.
+        // To avoid the problem, we simply increment the coefficient.
+        ++c;
       
       if (col == 0)
         e += c;
@@ -92,7 +92,7 @@ test01() {
       continue;
 
     nout << "Linear_System<Constraint>::ascii_dump/load test failed." << endl
-	 << "m1.ascii_dump() gives" << endl;
+         << "m1.ascii_dump() gives" << endl;
     ls1.ascii_dump(nout);
     nout << "m2.ascii_dump() gives" << endl;
     ls2.ascii_dump(nout);

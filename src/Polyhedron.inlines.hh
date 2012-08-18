@@ -52,10 +52,10 @@ Polyhedron::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return min(std::numeric_limits<dimension_type>::max() - 1,
-	     min(Constraint_System::max_space_dimension(),
-		 Generator_System::max_space_dimension()
-		 )
-	     );
+             min(Constraint_System::max_space_dimension(),
+                 Generator_System::max_space_dimension()
+                 )
+             );
 }
 
 inline Topology
@@ -320,31 +320,31 @@ Polyhedron::bounds_from_below(const Linear_Expression& expr) const {
 
 inline bool
 Polyhedron::maximize(const Linear_Expression& expr,
-		     Coefficient& sup_n, Coefficient& sup_d,
-		     bool& maximum) const {
+                     Coefficient& sup_n, Coefficient& sup_d,
+                     bool& maximum) const {
   Generator g(point());
   return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 inline bool
 Polyhedron::maximize(const Linear_Expression& expr,
-		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		     Generator& g) const {
+                     Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                     Generator& g) const {
   return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 inline bool
 Polyhedron::minimize(const Linear_Expression& expr,
-		     Coefficient& inf_n, Coefficient& inf_d,
-		     bool& minimum) const {
+                     Coefficient& inf_n, Coefficient& inf_d,
+                     bool& minimum) const {
   Generator g(point());
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
 inline bool
 Polyhedron::minimize(const Linear_Expression& expr,
-		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		     Generator& g) const {
+                     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                     Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
@@ -377,8 +377,8 @@ Polyhedron::add_recycled_congruences(Congruence_System& cgs) {
 template <typename FP_Format, typename Interval_Info>
 inline void
 Polyhedron::generalized_refine_with_linear_form_inequality(
-	    const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
-	    const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
+            const Linear_Form< Interval<FP_Format, Interval_Info> >& left,
+            const Linear_Form< Interval<FP_Format, Interval_Info> >& right,
             const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:
@@ -442,7 +442,7 @@ Polyhedron::drop_some_non_integer_points(Complexity_Class complexity) {
 
 inline void
 Polyhedron::drop_some_non_integer_points(const Variables_Set& vars,
-					 Complexity_Class complexity) {
+                                         Complexity_Class complexity) {
   drop_some_non_integer_points(&vars, complexity);
 }
 

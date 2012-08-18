@@ -145,8 +145,8 @@ public class Polyhedron extends PPL_Object {
       and \p maximum are left untouched.
     */
     public native boolean maximize(Linear_Expression expr,
-				   Coefficient sup_n, Coefficient sup_d,
-				   By_Reference<Boolean> maximum);
+                                   Coefficient sup_n, Coefficient sup_d,
+                                   By_Reference<Boolean> maximum);
 
     /*! \brief
       Returns \c true if and only if \p this is not empty
@@ -173,8 +173,8 @@ public class Polyhedron extends PPL_Object {
       and \p minimum are left untouched.
     */
     public native boolean minimize(Linear_Expression expr,
-				   Coefficient inf_n, Coefficient inf_d,
-				   By_Reference<Boolean> minimum);
+                                   Coefficient inf_n, Coefficient inf_d,
+                                   By_Reference<Boolean> minimum);
 
     /*! \brief
       Returns \c true if and only if \p this is not empty
@@ -205,9 +205,9 @@ public class Polyhedron extends PPL_Object {
       and \p g are left untouched.
     */
     public native boolean maximize(Linear_Expression expr,
-				   Coefficient sup_n, Coefficient sup_d,
-				   By_Reference<Boolean> maximum,
-				   Generator g);
+                                   Coefficient sup_n, Coefficient sup_d,
+                                   By_Reference<Boolean> maximum,
+                                   Generator g);
 
     /*! \brief
       Returns \c true if and only if \p this is not empty
@@ -238,9 +238,9 @@ public class Polyhedron extends PPL_Object {
       and \p g are left untouched.
     */
     public native boolean minimize(Linear_Expression expr,
-				   Coefficient inf_n, Coefficient inf_d,
-				   By_Reference<Boolean> minimum,
-				   Generator g);
+                                   Coefficient inf_n, Coefficient inf_d,
+                                   By_Reference<Boolean> minimum,
+                                   Generator g);
 
     /*! \brief
       Returns the relations holding between the polyhedron \p this
@@ -499,7 +499,7 @@ public class Polyhedron extends PPL_Object {
       \p this.
     */
     public native void affine_image(Variable var, Linear_Expression expr,
-				    Coefficient denominator);
+                                    Coefficient denominator);
 
     /*! \brief
       Assigns to \p this the
@@ -551,9 +551,9 @@ public class Polyhedron extends PPL_Object {
       dimension of \p this.
     */
     public native void bounded_affine_image(Variable var,
-					    Linear_Expression lb_expr,
-					    Linear_Expression ub_expr,
-					    Coefficient denominator);
+                                            Linear_Expression lb_expr,
+                                            Linear_Expression ub_expr,
+                                            Coefficient denominator);
 
     /*! \brief
       Assigns to \p this the preimage of \p this with respect to the
@@ -814,7 +814,7 @@ public class Polyhedron extends PPL_Object {
       \p this.
     */
     public native void remove_higher_space_dimensions(long
-						      new_dimension);
+                                                      new_dimension);
 
     //! Creates \p m copies of the space dimension corresponding to \p var.
     /*!
@@ -849,7 +849,7 @@ public class Polyhedron extends PPL_Object {
       Also thrown if \p dest is contained in \p vars.
     */
     public native void fold_space_dimensions(Variables_Set vars,
-					     Variable dest);
+                                             Variable dest);
 
     /*! \brief
       Remaps the dimensions of the vector space according to
@@ -966,9 +966,9 @@ public class Polyhedron extends PPL_Object {
       dimension-incompatible.
     */
     public native
-	void limited_BHRZ03_extrapolation_assign(Polyhedron y,
-						 Constraint_System cs,
-						 By_Reference<Integer> tp);
+        void limited_BHRZ03_extrapolation_assign(Polyhedron y,
+                                                 Constraint_System cs,
+                                                 By_Reference<Integer> tp);
 
     /*! \brief
       Improves the result of the \extref{H79_widening, H79-widening}
@@ -991,7 +991,7 @@ public class Polyhedron extends PPL_Object {
       dimension-incompatible.
     */
     public native
-	void limited_H79_extrapolation_assign(Polyhedron y,
+        void limited_H79_extrapolation_assign(Polyhedron y,
                                               Constraint_System cs,
                                               By_Reference<Integer> tp);
 
@@ -1018,9 +1018,9 @@ public class Polyhedron extends PPL_Object {
       dimension-incompatible.
     */
     public native
-	void bounded_BHRZ03_extrapolation_assign(Polyhedron y,
-						 Constraint_System cs,
-						 By_Reference<Integer> tp);
+        void bounded_BHRZ03_extrapolation_assign(Polyhedron y,
+                                                 Constraint_System cs,
+                                                 By_Reference<Integer> tp);
 
     /*! \brief
       Improves the result of the \extref{H79_widening, H79-widening}
@@ -1045,7 +1045,7 @@ public class Polyhedron extends PPL_Object {
       dimension-incompatible.
     */
     public native
-	void bounded_H79_extrapolation_assign(Polyhedron y,
+        void bounded_H79_extrapolation_assign(Polyhedron y,
                                               Constraint_System cs,
                                               By_Reference<Integer> tp);
 

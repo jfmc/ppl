@@ -34,7 +34,7 @@ public class Partial_Function extends PPL_Object {
       Builds the empty map.
     */
     public Partial_Function() {
-	build_cpp_object();
+        build_cpp_object();
     }
 
     /*! \brief

@@ -124,11 +124,11 @@ DB_Row_Impl_Handler<T>::Impl::external_memory_in_bytes() const {
 template <typename T>
 bool
 DB_Row<T>::OK(const dimension_type row_size,
-	      const dimension_type
+              const dimension_type
 #if PPL_DB_ROW_EXTRA_DEBUG
-	      row_capacity
+              row_capacity
 #endif
-	      ) const {
+              ) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -141,7 +141,7 @@ DB_Row<T>::OK(const dimension_type row_size,
 # if !PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
   if (x.capacity_ == 0) {
     cerr << "Illegal row capacity: is 0, should be at least 1"
-	 << endl;
+         << endl;
     is_broken = true;
   }
   else if (x.capacity_ == 1 && row_capacity == 0)
@@ -151,8 +151,8 @@ DB_Row<T>::OK(const dimension_type row_size,
 # endif // !PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
   if (x.capacity_ != row_capacity) {
     cerr << "DB_Row capacity mismatch: is " << x.capacity_
-	 << ", should be " << row_capacity << "."
-	 << endl;
+         << ", should be " << row_capacity << "."
+         << endl;
     is_broken = true;
   }
 #endif // PPL_DB_ROW_EXTRA_DEBUG
@@ -160,8 +160,8 @@ DB_Row<T>::OK(const dimension_type row_size,
   if (x.size() != row_size) {
 #ifndef NDEBUG
     cerr << "DB_Row size mismatch: is " << x.size()
-	 << ", should be " << row_size << "."
-	 << endl;
+         << ", should be " << row_size << "."
+         << endl;
 #endif
     is_broken = true;
   }
@@ -170,8 +170,8 @@ DB_Row<T>::OK(const dimension_type row_size,
   if (x.capacity_ < x.size()) {
 #ifndef NDEBUG
     cerr << "DB_Row is completely broken: capacity is " << x.capacity_
-	 << ", size is " << x.size() << "."
-	 << endl;
+         << ", size is " << x.size() << "."
+         << endl;
 #endif
     is_broken = true;
   }
@@ -188,7 +188,7 @@ DB_Row<T>::OK(const dimension_type row_size,
     if (is_not_a_number(element)) {
 #ifndef NDEBUG
       cerr << "Not-a-number found in DB_Row."
-	   << endl;
+           << endl;
 #endif
       is_broken = true;
       break;

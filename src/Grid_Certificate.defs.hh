@@ -82,7 +82,7 @@ public:
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const Grid_Certificate& x,
-		    const Grid_Certificate& y) const;
+                    const Grid_Certificate& y) const;
   };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

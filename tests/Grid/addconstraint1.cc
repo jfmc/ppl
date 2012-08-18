@@ -71,7 +71,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_constraint(*ph.constraints().begin()) ***");
+                    "*** gr.add_constraint(*ph.constraints().begin()) ***");
 
   return ok;
 }

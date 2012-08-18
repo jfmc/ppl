@@ -23,8 +23,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 foreign_resource(ppl_sicstus,
 [
-	init(ppl_sicstus_init),
-	deinit(ppl_sicstus_deinit)
+        init(ppl_sicstus_init),
+        deinit(ppl_sicstus_deinit)
 ]).
 
 :- load_foreign_resource(ppl_sicstus).

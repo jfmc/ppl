@@ -64,7 +64,7 @@ test01() {
   C_Polyhedron closed_known_result(known_result);
 
   bool ok = (ph == known_result
-	     && closed_ph == closed_known_result);
+             && closed_ph == closed_known_result);
 
   print_generators(ph, "*** after add_generators(gs) ***");
   print_generators(closed_ph, "*** closed_ph ***");

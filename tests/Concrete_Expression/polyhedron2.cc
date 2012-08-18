@@ -85,13 +85,13 @@ test03() {
 
   C_Polyhedron ph(3);
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
-				 FP_Linear_Form(FP_Interval(0)));
+                                 FP_Linear_Form(FP_Interval(0)));
   ph.refine_with_linear_form_inequality(FP_Linear_Form(A),
-				 FP_Linear_Form(FP_Interval(2)));
+                                 FP_Linear_Form(FP_Interval(2)));
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(A),
-				 FP_Linear_Form(FP_Interval(1)));
+                                 FP_Linear_Form(FP_Interval(1)));
   ph.refine_with_linear_form_inequality(-FP_Linear_Form(B),
-				 FP_Linear_Form(FP_Interval(-1)));
+                                 FP_Linear_Form(FP_Interval(-1)));
   ph.generalized_refine_with_linear_form_inequality(
     FP_Linear_Form(C), FP_Linear_Form(tmp), EQUAL);
   ph.generalized_refine_with_linear_form_inequality(

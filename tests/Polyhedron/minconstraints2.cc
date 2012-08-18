@@ -37,7 +37,7 @@ test01() {
   const Constraint_System& min_cs = ph2.minimized_constraints();
 
   bool ok = (ph1 == ph2
-	     && min_cs.begin() == min_cs.end());
+             && min_cs.begin() == min_cs.end());
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");

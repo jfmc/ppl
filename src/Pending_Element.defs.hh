@@ -41,13 +41,13 @@ class Parma_Polyhedra_Library::Implementation::Watchdog::Pending_Element
 public:
   //! Constructs an element with the given attributes.
   Pending_Element(const Threshold& deadline,
-		  const Handler& handler,
-		  bool& expired_flag);
+                  const Handler& handler,
+                  bool& expired_flag);
 
   //! Modifies \p *this so that it has the given attributes.
   void assign(const Threshold& deadline,
-	      const Handler& handler,
-	      bool& expired_flag);
+              const Handler& handler,
+              bool& expired_flag);
 
   //! Returns the deadline of the event.
   const Threshold& deadline() const;

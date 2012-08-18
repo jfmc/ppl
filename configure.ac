@@ -957,7 +957,7 @@ xall)
     enableval=${default_interfaces}
   fi
   # Make the list blank-separated and lowercase; turn "c++" into "cxx".
-  required_interfaces=`echo "${enableval}" | sed -e 's/-/_/g' -e 's/[[ 	,]][[ 	,]]*/ /g' -e 's/c++/cxx/g' | tr '[[:upper:]]' '[[:lower:]]'`
+  required_interfaces=`echo "${enableval}" | sed -e 's/-/_/g' -e 's/[[  ,]][[   ,]]*/ /g' -e 's/c++/cxx/g' | tr '[[:upper:]]' '[[:lower:]]'`
   # Check that the specified interfaces exist.
   for interface in ${required_interfaces}
   do
@@ -1114,7 +1114,7 @@ then
         ocamlopt_gmp="yes"
       else
         AC_MSG_RESULT(no)
-	ocamlopt_gmp="no"
+        ocamlopt_gmp="no"
       fi
     fi
   fi
@@ -1348,7 +1348,7 @@ xno | xnone)
     enableval=${available_instantiations}
   fi
   # Avoid extra blanks.
-  required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)/\1/g' -e 's/\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[    ]][[    ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)/\1/g' -e 's/\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
   # Check the specified instantiations for validity.
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I${srcdir} ${gmp_include_options}"
@@ -1642,12 +1642,12 @@ AC_CONFIG_FILES(Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
                 interfaces/C/tests/Makefile
-               	interfaces/Java/Makefile
-		interfaces/Java/jni/Makefile
-		interfaces/Java/tests/Makefile
+                interfaces/Java/Makefile
+                interfaces/Java/jni/Makefile
+                interfaces/Java/tests/Makefile
                 interfaces/Java/parma_polyhedra_library/Makefile
-		interfaces/OCaml/Makefile
-		interfaces/OCaml/tests/Makefile
+                interfaces/OCaml/Makefile
+                interfaces/OCaml/tests/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile

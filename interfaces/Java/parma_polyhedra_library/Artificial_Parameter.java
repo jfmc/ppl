@@ -56,22 +56,22 @@ public class Artificial_Parameter {
       and a denominator.
     */
     public Artificial_Parameter(Linear_Expression e, Coefficient d) {
-	le = e.clone();
-	den = new Coefficient(d);
+        le = e.clone();
+        den = new Coefficient(d);
     }
 
     /*! \brief
       Returns the linear expression in artificial parameter \p this.
     */
     public Linear_Expression linear_expression() {
-	return le;
+        return le;
     }
 
     /*! \brief
       Returns the denominator in artificial parameter \p this.
     */
     public Coefficient denominator() {
-	return den;
+        return den;
     }
 
     //! Returns an ascii formatted internal representation of \p this.

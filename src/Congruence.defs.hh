@@ -445,8 +445,8 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-			       const char* v_name,
-			       Variable v) const;
+                               const char* v_name,
+                               Variable v) const;
 
   friend bool
   operator==(const Congruence& x, const Congruence& y);

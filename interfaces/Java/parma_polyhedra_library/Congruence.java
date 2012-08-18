@@ -52,25 +52,25 @@ public class Congruence {
       \f$\mathtt{e1} = \mathtt{e2} \pmod{\mathtt{m}}\f$.
     */
     public Congruence(Linear_Expression e1, Linear_Expression e2,
-		      Coefficient m) {
-	mod = new Coefficient(m);
-	lhs = e1.clone();
-	rhs = e2.clone();
+                      Coefficient m) {
+        mod = new Coefficient(m);
+        lhs = e1.clone();
+        rhs = e2.clone();
     }
 
     //! Returns the left hand side of \p this.
     public Linear_Expression left_hand_side() {
-	return lhs;
+        return lhs;
     }
 
     //! Returns the right hand side of \p this.
     public Linear_Expression right_hand_side() {
-	return rhs;
+        return rhs;
     }
 
     //! Returns the relation symbol of \p this.
     public Coefficient modulus() {
-	return mod;
+        return mod;
     }
 
     //! Returns an ascii formatted internal representation of \p this.

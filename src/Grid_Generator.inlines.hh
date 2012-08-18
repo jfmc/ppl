@@ -241,7 +241,7 @@ Grid_Generator::divisor() const {
 
 inline bool
 Grid_Generator::is_equal_at_dimension(dimension_type dim,
-				      const Grid_Generator& y) const {
+                                      const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
   return x.expr.get(dim) * y.divisor() == y.expr.get(dim) * x.divisor();
 }

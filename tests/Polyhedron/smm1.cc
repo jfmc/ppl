@@ -46,18 +46,18 @@ less_than(C_Polyhedron& ph, Variable X, Variable Y) {
 
 void
 constraints(C_Polyhedron& ph,
-	    Variable S,
-	    Variable E,
-	    Variable N,
-	    Variable D,
-	    Variable M,
-	    Variable O,
-	    Variable R,
-	    Variable Y,
-	    int C1,
-	    int C2,
-	    int C3,
-	    int C4) {
+            Variable S,
+            Variable E,
+            Variable N,
+            Variable D,
+            Variable M,
+            Variable O,
+            Variable R,
+            Variable Y,
+            int C1,
+            int C2,
+            int C3,
+            int C4) {
   ph.add_constraint(S >= 0);
   ph.add_constraint(E >= 0);
   ph.add_constraint(N >= 0);
@@ -109,39 +109,39 @@ test01() {
   for (int C1 = 0; C1 <= 1; ++C1)
     for (int C2 = 0; C2 <= 1; ++C2)
       for (int C3 = 0; C3 <= 1; ++C3)
-	for (int C4 = 0; C4 <= 1; ++C4) {
-	  C_Polyhedron ph(8);
-	  test01_namespace::constraints(ph,
-					S, E, N, D, M, O, R, Y,
-					C1, C2, C3, C4);
-	  if (ph.is_empty())
-	    continue;
+        for (int C4 = 0; C4 <= 1; ++C4) {
+          C_Polyhedron ph(8);
+          test01_namespace::constraints(ph,
+                                        S, E, N, D, M, O, R, Y,
+                                        C1, C2, C3, C4);
+          if (ph.is_empty())
+            continue;
 
-	  nout << "Solution constraints" << endl;
-	  const Constraint_System& cs = ph.constraints();
-	  std::copy(cs.begin(), cs.end(),
-		    std::ostream_iterator<Constraint>(nout, "\n"));
-	  nout << "Solution generators" << endl;
-	  const Generator_System& gs = ph.generators();
-	  std::copy(gs.begin(), gs.end(),
-		    std::ostream_iterator<Generator>(nout, "\n"));
-	  if (solution_found)
-	    return true;
-	  solution_found = true;
+          nout << "Solution constraints" << endl;
+          const Constraint_System& cs = ph.constraints();
+          std::copy(cs.begin(), cs.end(),
+                    std::ostream_iterator<Constraint>(nout, "\n"));
+          nout << "Solution generators" << endl;
+          const Generator_System& gs = ph.generators();
+          std::copy(gs.begin(), gs.end(),
+                    std::ostream_iterator<Generator>(nout, "\n"));
+          if (solution_found)
+            return true;
+          solution_found = true;
 
-	  C_Polyhedron expected(8);
-	  expected.add_constraint(S == 9);
-	  expected.add_constraint(E == 5);
-	  expected.add_constraint(N == 6);
-	  expected.add_constraint(D == 7);
-	  expected.add_constraint(M == 1);
-	  expected.add_constraint(O == 0);
-	  expected.add_constraint(R == 8);
-	  expected.add_constraint(Y == 2);
+          C_Polyhedron expected(8);
+          expected.add_constraint(S == 9);
+          expected.add_constraint(E == 5);
+          expected.add_constraint(N == 6);
+          expected.add_constraint(D == 7);
+          expected.add_constraint(M == 1);
+          expected.add_constraint(O == 0);
+          expected.add_constraint(R == 8);
+          expected.add_constraint(Y == 2);
 
-	  if (ph != expected)
-	    return false;
-	}
+          if (ph != expected)
+            return false;
+        }
   return true;
 }
 

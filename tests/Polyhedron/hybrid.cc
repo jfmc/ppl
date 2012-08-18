@@ -475,8 +475,8 @@ test03() {
     ph_t2.H79_widening_assign(ph_t2_prev);
 
     if (ph_idle == ph_idle_prev
-	&& ph_t1 == ph_t1_prev
-	&& ph_t2 == ph_t2_prev) {
+        && ph_t1 == ph_t1_prev
+        && ph_t2 == ph_t2_prev) {
 
       NNC_Polyhedron known_result_idle(6);
       known_result_idle.add_constraint(c2 >= 0);
@@ -775,8 +775,8 @@ test04() {
     // The simpler test disjunct_covers() which is sufficient here
     // should be more efficient than geometrically_covers().
     if (disjunct_covers(ph_idle_prev, ph_idle)
- 	 && disjunct_covers(ph_t1_prev, ph_t1)
-  	 && disjunct_covers(ph_t2_prev, ph_t2)) {
+         && disjunct_covers(ph_t1_prev, ph_t1)
+         && disjunct_covers(ph_t2_prev, ph_t2)) {
 
       //  if (ph_idle_prev.geometrically_covers(ph_idle)
       //       && ph_t1_prev.geometrically_covers(ph_t1)

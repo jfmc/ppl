@@ -49,7 +49,7 @@ jtype_to_unsigned(const V& value) {
 template <typename T>
 inline void
 set_ptr(JNIEnv* env, jobject ppl_object,
-	const T* address, bool to_be_marked) {
+        const T* address, bool to_be_marked) {
   const T* ptr = (to_be_marked ? mark(address) : address);
   jlong pointer_value = reinterpret_cast<jlong>(ptr);
   assert(reinterpret_cast<const T*>(pointer_value) == ptr);
@@ -101,7 +101,7 @@ build_linear_expression(JNIEnv* env, const R& r) {
   dimension_type varid = 0;
   dimension_type space_dimension = r.space_dimension();
   while (varid < space_dimension
- 	 && (coefficient = r.coefficient(Variable(varid))) == 0)
+         && (coefficient = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
     jobject j_coefficient_zero = build_java_coeff(env, Coefficient(0));
@@ -124,21 +124,21 @@ build_linear_expression(JNIEnv* env, const R& r) {
     while (true) {
       ++varid;
       while (varid < space_dimension
-	     && (coefficient = r.coefficient(Variable(varid))) == 0)
-	++varid;
+             && (coefficient = r.coefficient(Variable(varid))) == 0)
+        ++varid;
       if (varid >= space_dimension)
-	break;
+        break;
       else {
- 	j_coefficient = build_java_coeff(env, coefficient);
+        j_coefficient = build_java_coeff(env, coefficient);
         j_variable = build_java_variable(env, Variable(varid));
         j_coeff_var = env->NewObject(j_le_times_class,
                                      coeff_var_init_ID,
                                      j_coefficient, j_variable);
-	CHECK_EXCEPTION_THROW(env);
+        CHECK_EXCEPTION_THROW(env);
         j_ret = env->CallObjectMethod(j_ret,
                                       cached_FMIDs.Linear_Expression_sum_ID,
                                       j_coeff_var);
-	CHECK_EXCEPTION_THROW(env);
+        CHECK_EXCEPTION_THROW(env);
       }
     }
   }
@@ -154,7 +154,7 @@ inline jobject
 build_java_variable(JNIEnv* env, const Variable var) {
   jobject ret = env->NewObject(cached_classes.Variable,
                                cached_FMIDs.Variable_init_ID,
-			       var.id());
+                               var.id());
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }

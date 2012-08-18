@@ -43,7 +43,7 @@ operator()(PSET& x, const PSET& y, unsigned* tp) const {
 template <typename PSET, typename CSYS>
 Limited_Widening_Function<PSET, CSYS>::
 Limited_Widening_Function(Limited_Widening_Method lwm,
-			  const CSYS& cs)
+                          const CSYS& cs)
   : lw_method(lwm), limiting_cs(cs) {
 }
 
@@ -65,7 +65,7 @@ widen_fun_ref(void (PSET::* wm)(const PSET&, unsigned*)) {
 template <typename PSET, typename CSYS>
 inline Limited_Widening_Function<PSET, CSYS>
 widen_fun_ref(void (PSET::* lwm)(const PSET&, const CSYS&, unsigned*),
-	      const CSYS& cs) {
+              const CSYS& cs) {
   return Limited_Widening_Function<PSET, CSYS>(lwm, cs);
 }
 

@@ -514,7 +514,7 @@ private:
     contains closure points.
   */
   bool adjust_topology_and_space_dimension(Topology new_topology,
-					   dimension_type new_space_dim);
+                                           dimension_type new_space_dim);
 
   /*! \brief
     For each unmatched closure point in \p *this, adds the
@@ -609,8 +609,8 @@ private:
     \p expr is a constant parameter and unaltered by this computation.
   */
   void affine_image(Variable v,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator);
+                    const Linear_Expression& expr,
+                    Coefficient_traits::const_reference denominator);
 
   //! Returns the number of lines of the system.
   dimension_type num_lines() const;

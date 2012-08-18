@@ -35,13 +35,13 @@ public class Variable_Output_test1 {
     }
 
     public static boolean test01() {
-	Variable A = new Variable(0);
-	Variable B = new Variable(1);
-	Variable C = new Variable(2);
-	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+        Variable A = new Variable(0);
+        Variable B = new Variable(1);
+        Variable C = new Variable(2);
+        Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
         Coefficient coeff_1 = new Coefficient(1);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Constraint con
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Constraint con
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_1);
         C_Polyhedron ph = new C_Polyhedron(1, Degenerate_Element.UNIVERSE);
         ph.add_constraint(con);
@@ -84,11 +84,11 @@ public class Variable_Output_test1 {
 
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
-	boolean test_result_ok =
-	    Test_Executor.executeTests(Variable_Output_test1.class);
+        boolean test_result_ok =
+            Test_Executor.executeTests(Variable_Output_test1.class);
         Parma_Polyhedra_Library.finalize_library();
-	if (!test_result_ok)
-	    System.exit(1);
-	System.exit(0);
+        if (!test_result_ok)
+            System.exit(1);
+        System.exit(0);
     }
 }

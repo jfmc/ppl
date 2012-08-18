@@ -203,7 +203,7 @@ bool
 test07() {
   Congruence_System cgs;
   Linear_Expression le;
-  cgs.insert((le %= le) / 1);	// (0 %= 0) / 1
+  cgs.insert((le %= le) / 1);   // (0 %= 0) / 1
 
   Grid gr1(cgs);
   print_congruences(gr1, "*** gr1 ***");

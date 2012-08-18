@@ -42,7 +42,7 @@ Bit_Matrix::max_num_rows() {
 
 inline
 Bit_Matrix::Bit_Matrix(const dimension_type n_rows,
-		       const dimension_type n_columns)
+                       const dimension_type n_columns)
   : rows(n_rows),
     row_size(n_columns) {
 }
@@ -129,7 +129,7 @@ inline bool
 Bit_Matrix::sorted_contains(const Bit_Row& row) const {
   PPL_ASSERT(check_sorted());
   return std::binary_search(rows.begin(), rows.end(), row,
-			    Bit_Row_Less_Than());
+                            Bit_Row_Less_Than());
 }
 
 /*! \relates Bit_Matrix */

@@ -95,7 +95,7 @@ test03() {
   bool ok = (computed_result == ph);
 
   print_constraints(computed_result,
-		    "*** after refine_with_constraints ***");
+                    "*** after refine_with_constraints ***");
 
   return ok;
 }

@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Division_Floating_Point_Expression */
 template <typename FP_Interval_Type, typename FP_Format>
 void swap(Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& x,
-	  Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
+          Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>& y);
 
 /*! \brief
   A generic Division Floating Point Expression.
@@ -165,7 +165,7 @@ public:
     expression corresponding to \p num \f$\oslash\f$ \p den.
   */
   Division_Floating_Point_Expression(
-	   Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
+           Floating_Point_Expression<FP_Interval_Type, FP_Format>* const num,
            Floating_Point_Expression<FP_Interval_Type, FP_Format>* const den);
 
   //! Destructor.
@@ -200,7 +200,7 @@ public:
 
   //! Swaps \p *this with \p y.
   void m_swap(Division_Floating_Point_Expression<FP_Interval_Type,
-	                                         FP_Format>& y);
+                                                 FP_Format>& y);
 
 private:
 
@@ -225,7 +225,7 @@ private:
   #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>&
   operator=(const Division_Floating_Point_Expression<FP_Interval_Type,
-	    FP_Format>& e);
+            FP_Format>& e);
 
 }; // class Division_Floating_Point_Expression
 

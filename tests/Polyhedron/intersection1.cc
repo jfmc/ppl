@@ -119,12 +119,12 @@ test02() {
     int num_points_below;
   } ph_nv[]
       = { {-1*(pyramid_height/4), 5, 0},
-	  { 0*(pyramid_height/4), 5, 4},
-	  { 1*(pyramid_height/4), 5, 8},
-	  { 2*(pyramid_height/4), 5, 8},
-	  { 3*(pyramid_height/4), 5, 8},
-	  { 4*(pyramid_height/4), 1, 5},
-	  { 5*(pyramid_height/4), 0, 5}
+          { 0*(pyramid_height/4), 5, 4},
+          { 1*(pyramid_height/4), 5, 8},
+          { 2*(pyramid_height/4), 5, 8},
+          { 3*(pyramid_height/4), 5, 8},
+          { 4*(pyramid_height/4), 1, 5},
+          { 5*(pyramid_height/4), 0, 5}
       };
 
   Generator_System gs;
@@ -149,7 +149,7 @@ test02() {
     computed_result.intersection_assign(hyper_space_above);
 
     if (ok
-	&& aux_test02(computed_result) != ph_nv[i].num_points_above)
+        && aux_test02(computed_result) != ph_nv[i].num_points_above)
       ok = false;
 
     print_constraints(hyper_space_above, "*** hyper_space_above ***");
@@ -163,7 +163,7 @@ test02() {
     computed_result.intersection_assign(hyper_space_below);
 
     if (ok
-	&& aux_test02(computed_result) != ph_nv[i].num_points_below)
+        && aux_test02(computed_result) != ph_nv[i].num_points_below)
       ok = false;
 
     print_constraints(hyper_space_below, "*** hyper_space_below ***");
@@ -232,7 +232,7 @@ test04() {
   C_Polyhedron known_result(2, EMPTY);
 
   bool ok = (computed_result1 == known_result
-	     && computed_result2 == known_result);
+             && computed_result2 == known_result);
 
   print_constraints(computed_result1, "*** after intersection_assign ***");
   print_constraints(computed_result2, "*** after intersection_assign ***");
@@ -308,9 +308,9 @@ test06() {
 
 bool
 aux_test07(C_Polyhedron& ph1,
-	   const C_Polyhedron& ph2,
-	   // Note intentional call-by-value!
-	   C_Polyhedron known_result) {
+           const C_Polyhedron& ph2,
+           // Note intentional call-by-value!
+           C_Polyhedron known_result) {
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");

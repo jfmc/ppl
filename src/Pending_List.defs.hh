@@ -47,8 +47,8 @@ public:
 
   //! Inserts a new Pending_Element object with the given attributes.
   Iterator insert(const typename Traits::Threshold& deadline,
-		  const Handler& handler,
-		  bool& expired_flag);
+                  const Handler& handler,
+                  bool& expired_flag);
 
   /*! \brief
     Removes the element pointed to by \p position, returning

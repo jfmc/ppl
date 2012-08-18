@@ -71,7 +71,7 @@ test02() {
   C_Polyhedron known_result(7, EMPTY);
 
   bool ok = (computed_result1 == known_result
-	     && computed_result2 == known_result);
+             && computed_result2 == known_result);
 
   print_constraints(computed_result1, "*** computed_result1 ***");
   print_constraints(computed_result2, "*** computed_result2 ***");
@@ -159,7 +159,7 @@ test05() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** after ph.add_space_dimensions_and_project(1) ***");
+                    "*** after ph.add_space_dimensions_and_project(1) ***");
 
   return ok;
 }
@@ -183,9 +183,9 @@ test06() {
   bool ok = (ph1 == ph2);
 
   print_constraints(ph1,
-		    "*** after ph1.add_space_dimensions_and_embed(0) ***");
+                    "*** after ph1.add_space_dimensions_and_embed(0) ***");
   print_constraints(ph2,
-		    "*** after ph2.add_space_dimensions_and_project(0) ***");
+                    "*** after ph2.add_space_dimensions_and_project(0) ***");
 
   return ok;
 }

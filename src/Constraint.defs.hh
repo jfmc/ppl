@@ -656,8 +656,8 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-			       const char* name_var,
-			       Variable v) const;
+                               const char* name_var,
+                               Variable v) const;
 
   //! Returns the epsilon coefficient. The constraint must be NNC.
   Coefficient_traits::const_reference epsilon_coefficient() const;

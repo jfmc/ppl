@@ -41,7 +41,7 @@ PPL::Constraint_System::Constraint_System(const Congruence_System& cgs,
                                           Representation r)
   : sys(NECESSARILY_CLOSED, cgs.space_dimension(), r) {
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i)
     if (i->is_equality()) {
       Constraint tmp(*i);
       insert(tmp, Recycle_Input());
@@ -52,7 +52,7 @@ PPL::Constraint_System::Constraint_System(const Congruence_System& cgs,
 bool
 PPL::Constraint_System::
 adjust_topology_and_space_dimension(const Topology new_topology,
-				    const dimension_type new_space_dim) {
+                                    const dimension_type new_space_dim) {
   PPL_ASSERT(space_dimension() <= new_space_dim);
 
   if (sys.topology() == NOT_NECESSARILY_CLOSED
@@ -176,7 +176,7 @@ PPL::Constraint_System::num_inequalities() const {
   else
     for (dimension_type i = sys.num_rows(); i-- > 0 ; )
       if (cs[i].is_inequality())
-	++n;
+        ++n;
   return n;
 }
 
@@ -208,24 +208,24 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     if (g.is_line()) {
       // Lines must saturate all constraints.
       for (dimension_type i = sys.num_rows(); i-- > 0; )
-	if (sps(g, sys[i]) != 0)
-	  return false;
+        if (sps(g, sys[i]) != 0)
+          return false;
     }
     else
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
         const Constraint& c = sys[i];
-	const int sp_sign = sps(g, c);
-	if (c.is_inequality()) {
-	  // As `cs' is necessarily closed,
-	  // `c' is a non-strict inequality.
-	  if (sp_sign < 0)
-	    return false;
-	}
-	else
-	  // `c' is an equality.
-	  if (sp_sign != 0)
-	    return false;
+        const int sp_sign = sps(g, c);
+        if (c.is_inequality()) {
+          // As `cs' is necessarily closed,
+          // `c' is a non-strict inequality.
+          if (sp_sign < 0)
+            return false;
+        }
+        else
+          // `c' is an equality.
+          if (sp_sign != 0)
+            return false;
       }
   }
   else
@@ -235,8 +235,8 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::LINE:
       // Lines must saturate all constraints.
       for (dimension_type i = sys.num_rows(); i-- > 0; )
-	if (sps(g, sys[i]) != 0)
-	  return false;
+        if (sps(g, sys[i]) != 0)
+          return false;
 
       break;
 
@@ -245,21 +245,21 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
       // when dealing with a strict inequality.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
         const Constraint& c = sys[i];
-	const int sp_sign = sps(g, c);
-	switch (c.type()) {
-	case Constraint::EQUALITY:
-	  if (sp_sign != 0)
-	    return false;
-	  break;
-	case Constraint::NONSTRICT_INEQUALITY:
-	  if (sp_sign < 0)
-	    return false;
-	  break;
-	case Constraint::STRICT_INEQUALITY:
-	  if (sp_sign <= 0)
-	    return false;
-	  break;
-	}
+        const int sp_sign = sps(g, c);
+        switch (c.type()) {
+        case Constraint::EQUALITY:
+          if (sp_sign != 0)
+            return false;
+          break;
+        case Constraint::NONSTRICT_INEQUALITY:
+          if (sp_sign < 0)
+            return false;
+          break;
+        case Constraint::STRICT_INEQUALITY:
+          if (sp_sign <= 0)
+            return false;
+          break;
+        }
       }
       break;
 
@@ -268,16 +268,16 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::CLOSURE_POINT:
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
         const Constraint& c = sys[i];
-	const int sp_sign = sps(g, c);
-	if (c.is_inequality()) {
-	  // Constraint `c' is either a strict or a non-strict inequality.
-	  if (sp_sign < 0)
-	    return false;
-	}
-	else
-	  // Constraint `c' is an equality.
-	  if (sp_sign != 0)
-	    return false;
+        const int sp_sign = sps(g, c);
+        if (c.is_inequality()) {
+          // Constraint `c' is either a strict or a non-strict inequality.
+          if (sp_sign < 0)
+            return false;
+        }
+        else
+          // Constraint `c' is an equality.
+          if (sp_sign != 0)
+            return false;
       }
       break;
     }
@@ -290,8 +290,8 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 void
 PPL::Constraint_System
 ::affine_preimage(const Variable v,
-		  const Linear_Expression& expr,
-		  Coefficient_traits::const_reference denominator) {
+                  const Linear_Expression& expr,
+                  Coefficient_traits::const_reference denominator) {
   PPL_ASSERT(v.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(expr.space_dimension() <= sys.space_dimension());
   PPL_ASSERT(denominator > 0);
@@ -374,7 +374,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
       s << *i;
       ++i;
       if (i != cs_end)
-	s << ", ";
+        s << ", ";
     }
   }
   return s;

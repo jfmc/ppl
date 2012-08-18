@@ -48,7 +48,7 @@ public class Generator {
       stealing the coefficients from \p e.
     */
     private Generator(Linear_Expression e, Generator_Type g_type) {
-	le = e.clone();
+        le = e.clone();
         gt = g_type;
     }
 
@@ -61,7 +61,7 @@ public class Generator {
         if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
             Error cause = new Error("parma_polyhedra_library.Generator::"
                                     + "Generator(e, d):\n"
-				    + "the divisor can not be zero.");
+                                    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
         Generator g = new Generator(e, Generator_Type.CLOSURE_POINT);
@@ -86,9 +86,9 @@ public class Generator {
     */
     public static Generator point(Linear_Expression e, Coefficient d) {
         if (d.getBigInteger().equals(java.math.BigInteger.ZERO)) {
-	    Error cause = new Error("parma_polyhedra_library.Generator::"
+            Error cause = new Error("parma_polyhedra_library.Generator::"
                                     + "Generator(e, d):\n"
-				    + "the divisor can not be zero.");
+                                    + "the divisor can not be zero.");
             throw new RuntimeErrorException(cause);
         }
 
@@ -124,12 +124,12 @@ public class Generator {
     */
     public Coefficient divisor() {
         if (this.gt == Generator_Type.POINT
-	    || this.gt == Generator_Type.CLOSURE_POINT)
-	    return div;
-	Error cause = new Error("parma_polyhedra_library.Generator::divisor:\n"
-				+ "this is neither a point"
-				+ " nor a closure point.");
-	throw new RuntimeErrorException(cause);
+            || this.gt == Generator_Type.CLOSURE_POINT)
+            return div;
+        Error cause = new Error("parma_polyhedra_library.Generator::divisor:\n"
+                                + "this is neither a point"
+                                + " nor a closure point.");
+        throw new RuntimeErrorException(cause);
     }
 
     //! Returns an ascii formatted internal representation of \p this.

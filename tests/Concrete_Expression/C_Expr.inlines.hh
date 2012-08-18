@@ -165,7 +165,7 @@ Floating_Point_Constant<C_Expr>::type() const {
 inline
 Approximable_Reference<C_Expr>::
 Approximable_Reference(Concrete_Expression_Type type,
-		       const Integer_Interval& val,
+                       const Integer_Interval& val,
                        dimension_type index)
   : Concrete_Expression<C_Expr>(type, APPROX_REF),
     value(val),

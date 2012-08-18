@@ -119,11 +119,11 @@ test03() {
   // intersection will consist of objects of affine dimension at most 1.
   bool ok1 = true;
   for (Pointset_Powerset<C_Polyhedron>::const_iterator
-	 i = intersection.begin(), in_end = intersection.end();
+         i = intersection.begin(), in_end = intersection.end();
        i != in_end; ++i)
     if (i->pointset().affine_dimension() > 1) {
       nout << "intersection contains " << i->pointset() << "," << endl
-	   << "which is of affine dimension greater than 1" << endl;
+           << "which is of affine dimension greater than 1" << endl;
       ok1 = false;
     }
 

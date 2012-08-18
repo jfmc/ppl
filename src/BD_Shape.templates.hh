@@ -3011,7 +3011,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
             ls_x = d;
             changed = true;
           }
-	}
+        }
         else {
           // Compute the bound for `y', rounding towards plus infinity.
           neg_assign(minus_c_term, c.inhomogeneous_term());
@@ -3019,10 +3019,10 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
           if (y <= d1) {
             N& ls_x = negative ? ls_dbm[i][j] : ls_dbm[j][i];
             N& ls_y = negative ? ls_dbm[j][i] : ls_dbm[i][j];
-	    if ((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
-	      ls_x = d;
-	      ls_y = d1;
-	      changed = true;
+            if ((ls_x >= d && ls_y > d1) || (ls_x > d && ls_y >= d1)) {
+              ls_x = d;
+              ls_y = d1;
+              changed = true;
             }
           }
         }
@@ -4172,7 +4172,7 @@ BD_Shape<T>::affine_form_image(const Variable var,
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-		    "BD_Shape<T>::affine_form_image(Variable, Linear_Form):"
+                    "BD_Shape<T>::affine_form_image(Variable, Linear_Form):"
                     " T not a floating point type.");
 
   // Dimension-compatibility checks.
@@ -4263,10 +4263,10 @@ template <typename T>
 template <typename Interval_Info>
 void BD_Shape<T>
 ::one_variable_affine_form_image(const dimension_type& var_id,
-			    const Interval<T, Interval_Info>& b,
-			    const Interval<T, Interval_Info>& w_coeff,
-			    const dimension_type& w_id,
-			    const dimension_type& space_dim) {
+                            const Interval<T, Interval_Info>& b,
+                            const Interval<T, Interval_Info>& w_coeff,
+                            const dimension_type& w_id,
+                            const dimension_type& space_dim) {
 
   PPL_DIRTY_TEMP(N, b_ub);
   assign_r(b_ub, b.upper(), ROUND_NOT_NEEDED);
@@ -4403,8 +4403,8 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
                    const Linear_Form< Interval<T, Interval_Info> >& right) {
     // Check that T is a floating point type.
     PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
-		    "Octagonal_Shape<T>::refine_with_linear_form_inequality:"
-		    " T not a floating point type.");
+                    "Octagonal_Shape<T>::refine_with_linear_form_inequality:"
+                    " T not a floating point type.");
 
     //We assume that the analyzer will not try to apply an unreachable filter.
     PPL_ASSERT(!marked_empty());
@@ -4475,9 +4475,9 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
   else if (left_t == 1) {
     if (left_w_coeff == 1 || left_w_coeff == -1) {
       if (right_t == 0 || (right_w_coeff == 1 || right_w_coeff == -1)) {
-	left_one_var_refine(left_w_id, right_t, right_w_id, left, right);
-	PPL_ASSERT(OK());
-	return;
+        left_one_var_refine(left_w_id, right_t, right_w_id, left, right);
+        PPL_ASSERT(OK());
+        return;
       }
     }
   }
@@ -4531,9 +4531,9 @@ template <typename T>
 template <typename Interval_Info>
 void
 BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
-				       const dimension_type& right_w_id,
-		    const Linear_Form< Interval<T, Interval_Info> >& left,
-		    const Linear_Form< Interval<T, Interval_Info> >& right) {
+                                       const dimension_type& right_w_id,
+                    const Linear_Form< Interval<T, Interval_Info> >& left,
+                    const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
@@ -4541,7 +4541,7 @@ BD_Shape<T>::left_inhomogeneous_refine(const dimension_type& right_t,
     // The constraint has the form [a-, a+] <= [b-, b+] + [c-, c+] * x.
     // Reduce it to the constraint +/-x <= b+ - a- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& right_w_coeff =
-	                      right.coefficient(Variable(right_w_id));
+                              right.coefficient(Variable(right_w_id));
       if (right_w_coeff == 1) {
         PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
         const FP_Interval_Type& left_a = left.inhomogeneous_term();
@@ -4570,10 +4570,10 @@ template <typename Interval_Info>
 void
 BD_Shape<T>
 ::left_one_var_refine(const dimension_type& left_w_id,
-		      const dimension_type& right_t,
-		      const dimension_type& right_w_id,
-	        const Linear_Form< Interval<T, Interval_Info> >& left,
-		const Linear_Form< Interval<T, Interval_Info> >& right) {
+                      const dimension_type& right_t,
+                      const dimension_type& right_w_id,
+                const Linear_Form< Interval<T, Interval_Info> >& left,
+                const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
@@ -4581,7 +4581,7 @@ BD_Shape<T>
       // The constraint has the form [b-, b+] + [c-, c+] * x <= [a-, a+]
       // Reduce it to the constraint +/-x <= a+ - b- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
-	left.coefficient(Variable(left_w_id));
+        left.coefficient(Variable(left_w_id));
 
       if (left_w_coeff == 1) {
         PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
@@ -4612,7 +4612,7 @@ BD_Shape<T>
                               left.coefficient(Variable(left_w_id));
 
       const FP_Interval_Type& right_w_coeff =
-	                      right.coefficient(Variable(right_w_id));
+                              right.coefficient(Variable(right_w_id));
 
       bool is_left_coeff_one = (left_w_coeff == 1);
       bool is_left_coeff_minus_one = (left_w_coeff == -1);
@@ -4639,7 +4639,7 @@ BD_Shape<T>
         }
         if (is_left_coeff_minus_one && is_right_coeff_one) {
           // We fall back to a previous case.
-	  PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
+          PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
           const FP_Interval_Type& left_b = left.inhomogeneous_term();
           const FP_Interval_Type& right_a = right.inhomogeneous_term();
           sub_assign_r(a_plus_minus_b_minus, right_a.upper(), left_b.lower(),
@@ -4694,16 +4694,16 @@ BD_Shape<T>
           add_assign_r(ub, ub, a_plus_minus_b_minus, ROUND_UP);
           add_dbm_constraint(0, right_w_id + 1, ub);
         }
-	    return;
+            return;
       }
       if (is_left_coeff_one && is_right_coeff_one) {
-	PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
-	const FP_Interval_Type& left_a = left.inhomogeneous_term();
+        PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
+        const FP_Interval_Type& left_a = left.inhomogeneous_term();
         const FP_Interval_Type& right_c = right.inhomogeneous_term();
         sub_assign_r(c_plus_minus_a_minus, right_c.upper(), left_a.lower(),
                      ROUND_UP);
         add_dbm_constraint(right_w_id+1, left_w_id+1, c_plus_minus_a_minus);
-	return;
+        return;
       }
       if (is_left_coeff_minus_one && is_right_coeff_minus_one) {
         PPL_DIRTY_TEMP(N, c_plus_minus_a_minus);
@@ -4722,9 +4722,9 @@ template <typename Interval_Info>
 void
 BD_Shape<T>
 ::general_refine(const dimension_type& left_w_id,
-		 const dimension_type& right_w_id,
-		 const Linear_Form< Interval<T, Interval_Info> >& left,
-		 const Linear_Form< Interval<T, Interval_Info> >& right) {
+                 const dimension_type& right_w_id,
+                 const Linear_Form< Interval<T, Interval_Info> >& left,
+                 const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   typedef Interval<T, Interval_Info> FP_Interval_Type;
   Linear_Form<FP_Interval_Type> right_minus_left(right);
@@ -4741,13 +4741,13 @@ BD_Shape<T>
     for (dimension_type second_v = first_v+1;
          second_v <= max_w_id; ++second_v) {
       const FP_Interval_Type& lfv_coefficient =
-	left.coefficient(Variable(first_v));
+        left.coefficient(Variable(first_v));
       const FP_Interval_Type& lsv_coefficient =
-	left.coefficient(Variable(second_v));
+        left.coefficient(Variable(second_v));
       const FP_Interval_Type& rfv_coefficient =
-	right.coefficient(Variable(first_v));
+        right.coefficient(Variable(first_v));
       const FP_Interval_Type& rsv_coefficient =
-	right.coefficient(Variable(second_v));
+        right.coefficient(Variable(second_v));
       // We update the constraints only when both variables appear in at
       // least one argument.
       bool do_update = false;
@@ -4834,7 +4834,7 @@ template <typename Interval_Info>
 void
 BD_Shape<T>::
 linear_form_upper_bound(const Linear_Form< Interval<T, Interval_Info> >& lf,
-			N& result) const {
+                        N& result) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
@@ -6766,7 +6766,7 @@ void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
                                           const char* lf_name,
                                           const Linear_Form< Interval<T,
-					  Interval_Info> >& lf) const {
+                                          Interval_Info> >& lf) const {
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()

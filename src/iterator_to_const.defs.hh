@@ -199,7 +199,7 @@ namespace Parma_Polyhedra_Library {
 template <typename Container>
 bool
 operator==(const iterator_to_const<Container>& x,
-	   const const_iterator_to_const<Container>& y);
+           const const_iterator_to_const<Container>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -212,7 +212,7 @@ operator==(const iterator_to_const<Container>& x,
 template <typename Container>
 bool
 operator!=(const iterator_to_const<Container>& x,
-	   const const_iterator_to_const<Container>& y);
+           const const_iterator_to_const<Container>& y);
 
 } // namespace Parma_Polyhedra_Library
 

@@ -52,7 +52,7 @@ test01() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_preimage(B, LESS_THAN, B+2) ***");
+                   "ph.generalized_affine_preimage(B, LESS_THAN, B+2) ***");
 
   return ok;
 }

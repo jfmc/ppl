@@ -39,24 +39,24 @@ public class Linear_Expression_Difference
       \p y.
     */
     public Linear_Expression_Difference(Linear_Expression x,
-					Linear_Expression y) {
+                                        Linear_Expression y) {
         lhs = x.clone();
         rhs = y.clone();
     }
 
     //! Returns the left hand side of \p this.
     public Linear_Expression left_hand_side() {
-	return lhs;
+        return lhs;
     }
 
     //! Returns the left hand side of \p this.
     public Linear_Expression right_hand_side() {
-	return rhs;
+        return rhs;
     }
 
     //! Builds a copy of this.
     public Linear_Expression_Difference clone() {
-	return new Linear_Expression_Difference(lhs, rhs);
+        return new Linear_Expression_Difference(lhs, rhs);
     }
 
     private static native void initIDs();

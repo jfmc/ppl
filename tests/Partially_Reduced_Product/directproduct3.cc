@@ -105,10 +105,10 @@ test02() {
 
 #ifdef PH_IS_FIRST
   ok = (dp.domain2().affine_dimension() == 3
-	&& dp.domain1().affine_dimension() == 2);
+        && dp.domain1().affine_dimension() == 2);
 #else
   ok = (dp.domain1().affine_dimension() == 2
-	&& dp.domain2().affine_dimension() == 3);
+        && dp.domain2().affine_dimension() == 3);
 #endif
   ok = (ok && dp.affine_dimension() == 2);
 
@@ -120,10 +120,10 @@ test02() {
 
 #ifdef PH_IS_FIRST
   ok = (dp.domain2().affine_dimension() == 1
-	&& dp.domain1().affine_dimension() == 0);
+        && dp.domain1().affine_dimension() == 0);
 #else
   ok = (dp.domain1().affine_dimension() == 1
-	&& dp.domain2().affine_dimension() == 0);
+        && dp.domain2().affine_dimension() == 0);
 #endif
 
   ok &= (ok && dp.affine_dimension() == 0);

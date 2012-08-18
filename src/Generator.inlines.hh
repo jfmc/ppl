@@ -317,7 +317,7 @@ Generator::divisor() const {
   Coefficient_traits::const_reference d = expr.inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("divisor()",
-			   "*this is neither a point nor a closure point");
+                           "*this is neither a point nor a closure point");
   return d;
 }
 
@@ -526,12 +526,12 @@ Generator::m_swap(Generator& y) {
 template <typename Specialization, typename Temp, typename To>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-		    const Generator& x,
-		    const Generator& y,
-		    const Rounding_Dir dir,
-		    Temp& tmp0,
-		    Temp& tmp1,
-		    Temp& tmp2) {
+                    const Generator& x,
+                    const Generator& y,
+                    const Rounding_Dir dir,
+                    Temp& tmp0,
+                    Temp& tmp1,
+                    Temp& tmp2) {
   // Generator kind compatibility check: we only compute distances
   // between (closure) points.
   if (x.is_line_or_ray() || y.is_line_or_ray())
@@ -585,12 +585,12 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Generator& x,
-			    const Generator& y,
-			    const Rounding_Dir dir,
-			    Temp& tmp0,
-			    Temp& tmp1,
-			    Temp& tmp2) {
+                            const Generator& x,
+                            const Generator& y,
+                            const Rounding_Dir dir,
+                            Temp& tmp0,
+                            Temp& tmp1,
+                            Temp& tmp2) {
   return l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >
     (r, x, y, dir, tmp0, tmp1, tmp2);
 }
@@ -599,9 +599,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Generator& x,
-			    const Generator& y,
-			    const Rounding_Dir dir) {
+                            const Generator& x,
+                            const Generator& y,
+                            const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -613,9 +613,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Generator& x,
-			    const Generator& y,
-			    const Rounding_Dir dir) {
+                            const Generator& x,
+                            const Generator& y,
+                            const Rounding_Dir dir) {
   return rectilinear_distance_assign<To, To>(r, x, y, dir);
 }
 
@@ -623,12 +623,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Generator& x,
-			  const Generator& y,
-			  const Rounding_Dir dir,
-			  Temp& tmp0,
-			  Temp& tmp1,
-			  Temp& tmp2) {
+                          const Generator& x,
+                          const Generator& y,
+                          const Rounding_Dir dir,
+                          Temp& tmp0,
+                          Temp& tmp1,
+                          Temp& tmp2) {
   return l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >
     (r, x, y, dir, tmp0, tmp1, tmp2);
 }
@@ -637,9 +637,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Generator& x,
-			  const Generator& y,
-			  const Rounding_Dir dir) {
+                          const Generator& x,
+                          const Generator& y,
+                          const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -651,9 +651,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Generator& x,
-			  const Generator& y,
-			  const Rounding_Dir dir) {
+                          const Generator& x,
+                          const Generator& y,
+                          const Rounding_Dir dir) {
   return euclidean_distance_assign<To, To>(r, x, y, dir);
 }
 
@@ -661,12 +661,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Generator& x,
-			   const Generator& y,
-			   const Rounding_Dir dir,
-			   Temp& tmp0,
-			   Temp& tmp1,
-			   Temp& tmp2) {
+                           const Generator& x,
+                           const Generator& y,
+                           const Rounding_Dir dir,
+                           Temp& tmp0,
+                           Temp& tmp1,
+                           Temp& tmp2) {
   return l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >
     (r, x, y, dir, tmp0, tmp1, tmp2);
 }
@@ -675,9 +675,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Generator& x,
-			   const Generator& y,
-			   const Rounding_Dir dir) {
+                           const Generator& x,
+                           const Generator& y,
+                           const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -689,9 +689,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Generator& x,
-			   const Generator& y,
-			   const Rounding_Dir dir) {
+                           const Generator& x,
+                           const Generator& y,
+                           const Rounding_Dir dir) {
   return l_infinity_distance_assign<To, To>(r, x, y, dir);
 }
 

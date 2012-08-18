@@ -26,24 +26,24 @@ prolog_system('SICStus').
 :- ensure_loaded('ppl_sicstus.pl').
 
 version_dependent_declarations :-
-	prolog_flag(version, V),
-	atom_codes(V, VList),
-	VList = [_S, _I, _C, _S, _t, _u, _s, _, N|_],
-	(N is "4" ->
-	    true
-	;
-	    set_prolog_flag(language, iso),
-	    use_module(library(lists), [append/3, member/2])
-	).
+        prolog_flag(version, V),
+        atom_codes(V, VList),
+        VList = [_S, _I, _C, _S, _t, _u, _s, _, N|_],
+        (N is "4" ->
+            true
+        ;
+            set_prolog_flag(language, iso),
+            use_module(library(lists), [append/3, member/2])
+        ).
 
 main :-
-	version_dependent_declarations,
-	ensure_loaded('pl_check.pl'),
-	set_prolog_flag(fileerrors, off),
-	(check_all ->
-	    write('OK')
-	;
-	    write('FAILURE')
-	),
-	nl,
-	halt.
+        version_dependent_declarations,
+        ensure_loaded('pl_check.pl'),
+        set_prolog_flag(fileerrors, off),
+        (check_all ->
+            write('OK')
+        ;
+            write('FAILURE')
+        ),
+        nl,
+        halt.

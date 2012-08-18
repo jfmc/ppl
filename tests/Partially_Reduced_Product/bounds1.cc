@@ -37,7 +37,7 @@ test01() {
   Product prp(7, EMPTY);
 
   bool ok = (prp.bounds_from_above(Linear_Expression(0))
-	     && prp.bounds_from_below(Linear_Expression(0)));
+             && prp.bounds_from_below(Linear_Expression(0)));
 
   print_congruences(prp, "*** prp congruences ***");
   print_constraints(prp, "*** prp constraints ***");
@@ -51,7 +51,7 @@ test02() {
   Product prp(0, EMPTY);
 
   bool ok = (prp.bounds_from_above(Linear_Expression(3))
-	     && prp.bounds_from_below(Linear_Expression(3)));
+             && prp.bounds_from_below(Linear_Expression(3)));
 
   print_congruences(prp, "*** prp congruences ***");
   print_constraints(prp, "*** prp constraints ***");
@@ -65,7 +65,7 @@ test03() {
   Product prp(0);
 
   bool ok = (prp.bounds_from_above(Linear_Expression(1))
-	     && prp.bounds_from_below(Linear_Expression(1)));
+             && prp.bounds_from_below(Linear_Expression(1)));
 
   print_congruences(prp, "*** prp congruences ***");
   print_constraints(prp, "*** prp constraints ***");

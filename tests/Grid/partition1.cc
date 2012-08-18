@@ -33,8 +33,8 @@ site: http://bugseng.com/products/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void
 partition_aux(const Congruence& c,
-	      Grid& qq,
-	      Pointset_Powerset<Grid>& r) {
+              Grid& qq,
+              Pointset_Powerset<Grid>& r) {
   const Coefficient& c_modulus = c.modulus();
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
   Linear_Expression le(c.expression());
@@ -47,7 +47,7 @@ partition_aux(const Congruence& c,
       Grid qqq(qq);
       qqq.add_congruence((le+i %= 0) / c_modulus);
       if (qqq.is_empty())
-	r.add_disjunct(qqq);
+        r.add_disjunct(qqq);
     }
   qq.add_congruence(c);
 }
@@ -59,7 +59,7 @@ partition(const Grid& p, const Grid& q) {
   Grid qq = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i)
+         pcs_end = pcs.end(); i != pcs_end; ++i)
     partition_aux(*i, qq, r);
   return std::pair<Grid, Pointset_Powerset<Grid> >(qq, r);
 }

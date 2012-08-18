@@ -41,12 +41,12 @@ public class Poly_Con_Relation {
 
     //! Constructs from a integer value.
     public Poly_Con_Relation(int val) {
-	mask_value = val;
+        mask_value = val;
     }
 
     //! The assertion that says nothing.
     public static Poly_Con_Relation nothing() {
-	return new Poly_Con_Relation(Poly_Con_Relation.NOTHING);
+        return new Poly_Con_Relation(Poly_Con_Relation.NOTHING);
     }
 
     /*! \brief
@@ -54,7 +54,7 @@ public class Poly_Con_Relation {
       the constraint are disjoint.
     */
     public static Poly_Con_Relation is_disjoint() {
-	return new  Poly_Con_Relation(Poly_Con_Relation.IS_DISJOINT);
+        return new  Poly_Con_Relation(Poly_Con_Relation.IS_DISJOINT);
     }
 
     /*! \brief
@@ -62,7 +62,7 @@ public class Poly_Con_Relation {
       the constraint, but it is not included in it.
     */
     public static Poly_Con_Relation strictly_intersects() {
-	return new Poly_Con_Relation(Poly_Con_Relation.STRICTLY_INTERSECTS);
+        return new Poly_Con_Relation(Poly_Con_Relation.STRICTLY_INTERSECTS);
     }
 
     /*! \brief
@@ -70,7 +70,7 @@ public class Poly_Con_Relation {
       the constraint.
     */
     public static Poly_Con_Relation is_included() {
-	return new Poly_Con_Relation(Poly_Con_Relation.IS_INCLUDED);
+        return new Poly_Con_Relation(Poly_Con_Relation.IS_INCLUDED);
     }
 
     /*! \brief
@@ -78,12 +78,12 @@ public class Poly_Con_Relation {
       the constraint.
     */
     public static Poly_Con_Relation saturates() {
-	return new Poly_Con_Relation(Poly_Con_Relation.SATURATES);
+        return new Poly_Con_Relation(Poly_Con_Relation.SATURATES);
     }
 
     //! True if and only if \p this implies \p y.
     public boolean implies(Poly_Con_Relation y) {
-	return (this.mask_value & y.mask_value) ==  y.mask_value;
+        return (this.mask_value & y.mask_value) ==  y.mask_value;
     }
 
     private static native void initIDs();

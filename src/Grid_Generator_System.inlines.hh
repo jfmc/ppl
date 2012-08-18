@@ -264,7 +264,7 @@ Grid_Generator_System::first_pending_row() const {
 /*! \relates Grid_Generator_System */
 inline bool
 operator==(const Grid_Generator_System& x,
-	   const Grid_Generator_System& y) {
+           const Grid_Generator_System& y) {
   return x.is_equal_to(y);
 }
 

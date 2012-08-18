@@ -98,7 +98,7 @@ namespace Parma_Polyhedra_Library {
     C\vect{x} \geq \vect{0}
       \quad\iff\quad
         \exists \vect{\lambda} \geq \vect{0} \mathrel{.}
-	\vect{x} = G\vect{\lambda}.
+        \vect{x} = G\vect{\lambda}.
   \f]
 
   The term "double description" is quite natural in the sense that
@@ -146,7 +146,7 @@ namespace Parma_Polyhedra_Library {
     -# \f$
          \forall \vect{y}
            \mathrel{:} (A\vect{y} \geq 0 \implies
-	   \langle \vect{y},\vect{c} \rangle \geq 0)
+           \langle \vect{y},\vect{c} \rangle \geq 0)
        \f$;
     -# \f$
          \exists \vect{\lambda} \geq \vect{0}
@@ -411,12 +411,12 @@ Polyhedron::conversion(Source_Linear_System& source,
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
       WEIGHT_BEGIN();
       Scalar_Products::assign(scalar_prod[index_non_zero],
-			      source_k,
-			      dest.sys.rows[index_non_zero]);
+                              source_k,
+                              dest.sys.rows[index_non_zero]);
       WEIGHT_ADD_MUL(17, source_space_dim);
       if (scalar_prod[index_non_zero] != 0)
-	// The generator does not saturate the constraint.
-	break;
+        // The generator does not saturate the constraint.
+        break;
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -449,9 +449,9 @@ Polyhedron::conversion(Source_Linear_System& source,
       // the constraint (namely, the ray whose scalar product
       // with the constraint gives a positive result).
       if (scalar_prod[index_non_zero] < 0) {
-	// The ray `dest_rows[index_non_zero]' lies on the wrong half-space:
-	// we change it to have the opposite direction.
-	neg_assign(scalar_prod[index_non_zero]);
+        // The ray `dest_rows[index_non_zero]' lies on the wrong half-space:
+        // we change it to have the opposite direction.
+        neg_assign(scalar_prod[index_non_zero]);
         neg_assign(dest.sys.rows[index_non_zero].expr);
         // The modified row may still not be OK(), so don't assert OK here.
         // They are all checked at the end of this function.
@@ -464,7 +464,7 @@ Polyhedron::conversion(Source_Linear_System& source,
       if (index_non_zero != num_lines_or_equalities) {
         swap(dest.sys.rows[index_non_zero],
              dest.sys.rows[num_lines_or_equalities]);
-	swap(scalar_prod[index_non_zero],
+        swap(scalar_prod[index_non_zero],
              scalar_prod[num_lines_or_equalities]);
       }
       const dest_row_type& dest_nle = dest.sys.rows[num_lines_or_equalities];
@@ -487,34 +487,34 @@ Polyhedron::conversion(Source_Linear_System& source,
       Coefficient& scalar_prod_nle = scalar_prod[num_lines_or_equalities];
       PPL_ASSERT(scalar_prod_nle != 0);
       for (dimension_type
-	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
-	if (scalar_prod[i] != 0) {
-	  // The following fragment optimizes the computation of
-	  //
+             i = index_non_zero; i < num_lines_or_equalities; ++i) {
+        if (scalar_prod[i] != 0) {
+          // The following fragment optimizes the computation of
+          //
           // <CODE>
-	  //   Coefficient scale = scalar_prod[i];
-	  //   scale.gcd_assign(scalar_prod_nle);
-	  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
-	  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //     dest[i][c] *= normalized_sp_n;
-	  //     dest[i][c] -= normalized_sp_i * dest_nle[c];
-	  //   }
+          //   Coefficient scale = scalar_prod[i];
+          //   scale.gcd_assign(scalar_prod_nle);
+          //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+          //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
+          //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+          //     dest[i][c] *= normalized_sp_n;
+          //     dest[i][c] -= normalized_sp_i * dest_nle[c];
+          //   }
           // </CODE>
-	  normalize2(scalar_prod[i],
-		     scalar_prod_nle,
-		     normalized_sp_i,
-		     normalized_sp_o);
+          normalize2(scalar_prod[i],
+                     scalar_prod_nle,
+                     normalized_sp_i,
+                     normalized_sp_o);
           dest_row_type& dest_i = dest.sys.rows[i];
           neg_assign(normalized_sp_i);
           dest_i.expr.linear_combine(dest_nle.expr,
                                      normalized_sp_o, normalized_sp_i);
-	  dest_i.strong_normalize();
+          dest_i.strong_normalize();
           // The modified row may still not be OK(), so don't assert OK here.
           // They are all checked at the end of this function.
-	  scalar_prod[i] = 0;
-	  // dest_sorted has already been set to false.
-	}
+          scalar_prod[i] = 0;
+          // dest_sorted has already been set to false.
+        }
       }
 
       // Computing the new pointed cone.
@@ -525,40 +525,40 @@ Polyhedron::conversion(Source_Linear_System& source,
       // are positively combined with the ray `dest_nle' so that the
       // resulting new rays saturate the constraint.
       for (dimension_type
-	     i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
-	if (scalar_prod[i] != 0) {
-	  // The following fragment optimizes the computation of
-	  //
+             i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
+        if (scalar_prod[i] != 0) {
+          // The following fragment optimizes the computation of
+          //
           // <CODE>
-	  //   Coefficient scale = scalar_prod[i];
-	  //   scale.gcd_assign(scalar_prod_nle);
-	  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
-	  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //     dest[i][c] *= normalized_sp_n;
-	  //     dest[i][c] -= normalized_sp_i * dest_nle[c];
-	  //   }
+          //   Coefficient scale = scalar_prod[i];
+          //   scale.gcd_assign(scalar_prod_nle);
+          //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+          //   Coefficient normalized_sp_n = scalar_prod_nle / scale;
+          //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+          //     dest[i][c] *= normalized_sp_n;
+          //     dest[i][c] -= normalized_sp_i * dest_nle[c];
+          //   }
           // </CODE>
-	  normalize2(scalar_prod[i],
-		     scalar_prod_nle,
-		     normalized_sp_i,
-		     normalized_sp_o);
+          normalize2(scalar_prod[i],
+                     scalar_prod_nle,
+                     normalized_sp_i,
+                     normalized_sp_o);
           dest_row_type& dest_i = dest.sys.rows[i];
           WEIGHT_BEGIN();
           neg_assign(normalized_sp_i);
           dest_i.expr.linear_combine(dest_nle.expr,
                                      normalized_sp_o, normalized_sp_i);
-	  dest_i.strong_normalize();
+          dest_i.strong_normalize();
           // The modified row may still not be OK(), so don't assert OK here.
           // They are all checked at the end of this function.
-	  scalar_prod[i] = 0;
-	  // `dest_sorted' has already been set to false.
+          scalar_prod[i] = 0;
+          // `dest_sorted' has already been set to false.
           WEIGHT_ADD_MUL(41, source_space_dim);
-	}
+        }
         // Check if the client has requested abandoning all expensive
         // computations.  If so, the exception specified by the client
         // is thrown now.
-	maybe_abandon();
+        maybe_abandon();
       }
       // Since the `scalar_prod_nle' is positive (by construction), it
       // does not saturate the constraint `source_k'.  Therefore, if
@@ -566,12 +566,12 @@ Polyhedron::conversion(Source_Linear_System& source,
       // corresponding element of `sat' ...
       Bit_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
-	sat_nle.set(k - redundant_source_rows.size());
+        sat_nle.set(k - redundant_source_rows.size());
       // ... otherwise, the constraint is an equality which is
       // violated by the generator `dest_nle': the generator has to be
       // removed from `dest_rows'.
       else {
-	--dest_num_rows;
+        --dest_num_rows;
         swap(dest.sys.rows[num_lines_or_equalities],
              dest.sys.rows[dest_num_rows]);
         recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
@@ -579,9 +579,9 @@ Polyhedron::conversion(Source_Linear_System& source,
         dest.sys.rows.pop_back();
         PPL_ASSERT(dest_num_rows == dest.sys.rows.size());
 
-	swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
-	swap(sat_nle, sat[dest_num_rows]);
-	// dest_sorted has already been set to false.
+        swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
+        swap(sat_nle, sat[dest_num_rows]);
+        // dest_sorted has already been set to false.
       }
     }
     // Here we have `index_non_zero' >= `num_lines_or_equalities',
@@ -604,46 +604,46 @@ Polyhedron::conversion(Source_Linear_System& source,
       // While we find saturating generators, we simply increment
       // `lines_or_equal_bound'.
       while (inf_bound > lines_or_equal_bound
-	     && scalar_prod[lines_or_equal_bound] == 0)
-	++lines_or_equal_bound;
+             && scalar_prod[lines_or_equal_bound] == 0)
+        ++lines_or_equal_bound;
       dimension_type sup_bound = lines_or_equal_bound;
       while (inf_bound > sup_bound) {
-	const int sp_sign = sgn(scalar_prod[sup_bound]);
-	if (sp_sign == 0) {
-	  // This generator has to be moved in Q=.
-	  swap(dest.sys.rows[sup_bound], dest.sys.rows[lines_or_equal_bound]);
-	  swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
-	  swap(sat[sup_bound], sat[lines_or_equal_bound]);
-	  ++lines_or_equal_bound;
-	  ++sup_bound;
+        const int sp_sign = sgn(scalar_prod[sup_bound]);
+        if (sp_sign == 0) {
+          // This generator has to be moved in Q=.
+          swap(dest.sys.rows[sup_bound], dest.sys.rows[lines_or_equal_bound]);
+          swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
+          swap(sat[sup_bound], sat[lines_or_equal_bound]);
+          ++lines_or_equal_bound;
+          ++sup_bound;
           dest_sorted = false;
-	}
-	else if (sp_sign < 0) {
-	  // This generator has to be moved in Q-.
-	  --inf_bound;
+        }
+        else if (sp_sign < 0) {
+          // This generator has to be moved in Q-.
+          --inf_bound;
           swap(dest.sys.rows[sup_bound], dest.sys.rows[inf_bound]);
-	  swap(sat[sup_bound], sat[inf_bound]);
-	  swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
+          swap(sat[sup_bound], sat[inf_bound]);
+          swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
           dest_sorted = false;
-	}
-	else
-	  // sp_sign > 0: this generator has to be moved in Q+.
-	  ++sup_bound;
+        }
+        else
+          // sp_sign > 0: this generator has to be moved in Q+.
+          ++sup_bound;
       }
 
       if (sup_bound == dest_num_rows) {
-	// Here the set Q- is empty.
-	// If the constraint is an inequality, then all the generators
-	// in Q= and Q+ satisfy the constraint. The constraint is redundant
-	// and it can be safely removed from the constraint system.
-	// This is why the `source' parameter is not declared `const'.
-	if (source_k.is_ray_or_point_or_inequality()) {
+        // Here the set Q- is empty.
+        // If the constraint is an inequality, then all the generators
+        // in Q= and Q+ satisfy the constraint. The constraint is redundant
+        // and it can be safely removed from the constraint system.
+        // This is why the `source' parameter is not declared `const'.
+        if (source_k.is_ray_or_point_or_inequality()) {
           redundant_source_rows.push_back(k);
-	} else {
-	  // The constraint is an equality, so that all the generators
-	  // in Q+ violate it. Since the set Q- is empty, we can simply
-	  // remove from `dest_rows' all the generators of Q+.
-	  PPL_ASSERT(dest_num_rows >= lines_or_equal_bound);
+        } else {
+          // The constraint is an equality, so that all the generators
+          // in Q+ violate it. Since the set Q- is empty, we can simply
+          // remove from `dest_rows' all the generators of Q+.
+          PPL_ASSERT(dest_num_rows >= lines_or_equal_bound);
           while (dest_num_rows != lines_or_equal_bound) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
             swap(dest.sys.rows.back(), recyclable_dest_rows.back());
@@ -654,13 +654,13 @@ Polyhedron::conversion(Source_Linear_System& source,
         }
       }
       else {
-	// The set Q- is not empty, i.e., at least one generator
-	// violates the constraint `source_k'.
-	// We have to further distinguish two cases:
-	if (sup_bound == num_lines_or_equalities) {
-	  // The set Q+ is empty, so that all generators that satisfy
-	  // the constraint also saturate it.
-	  // We can simply remove from `dest_rows' all the generators in Q-.
+        // The set Q- is not empty, i.e., at least one generator
+        // violates the constraint `source_k'.
+        // We have to further distinguish two cases:
+        if (sup_bound == num_lines_or_equalities) {
+          // The set Q+ is empty, so that all generators that satisfy
+          // the constraint also saturate it.
+          // We can simply remove from `dest_rows' all the generators in Q-.
           PPL_ASSERT(dest_num_rows >= sup_bound);
           while (dest_num_rows != sup_bound) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);
@@ -670,110 +670,110 @@ Polyhedron::conversion(Source_Linear_System& source,
           }
           PPL_ASSERT(dest_num_rows == dest.sys.rows.size());
         } else {
-	  // The sets Q+ and Q- are both non-empty.
-	  // The generators of the new pointed cone are all those satisfying
-	  // the constraint `source_k' plus a set of new rays enjoying
-	  // the following properties:
-	  // -# they lie on the hyper-plane represented by the constraint
-	  // -# they are obtained as a positive combination of two
-	  //    adjacent rays, the first taken from Q+ and the second
-	  //    taken from Q-.
+          // The sets Q+ and Q- are both non-empty.
+          // The generators of the new pointed cone are all those satisfying
+          // the constraint `source_k' plus a set of new rays enjoying
+          // the following properties:
+          // -# they lie on the hyper-plane represented by the constraint
+          // -# they are obtained as a positive combination of two
+          //    adjacent rays, the first taken from Q+ and the second
+          //    taken from Q-.
 
-	  // The adjacency property is necessary to have an irredundant
-	  // set of new rays (see proposition 2).
-	  const dimension_type bound = dest_num_rows;
+          // The adjacency property is necessary to have an irredundant
+          // set of new rays (see proposition 2).
+          const dimension_type bound = dest_num_rows;
 
-	  // In the following loop,
-	  // `i' runs through the generators in the set Q+ and
-	  // `j' runs through the generators in the set Q-.
-	  for (dimension_type i = lines_or_equal_bound; i < sup_bound; ++i) {
-	    for(dimension_type j = sup_bound; j < bound; ++j) {
-	      // Checking if generators `dest_rows[i]' and `dest_rows[j]' are
+          // In the following loop,
+          // `i' runs through the generators in the set Q+ and
+          // `j' runs through the generators in the set Q-.
+          for (dimension_type i = lines_or_equal_bound; i < sup_bound; ++i) {
+            for(dimension_type j = sup_bound; j < bound; ++j) {
+              // Checking if generators `dest_rows[i]' and `dest_rows[j]' are
               // adjacent.
-	      // If there exist another generator that saturates
-	      // all the constraints saturated by both `dest_rows[i]' and
-	      // `dest_rows[j]', then they are NOT adjacent.
-	      PPL_ASSERT(sat[i].last() == C_Integer<unsigned long>::max
+              // If there exist another generator that saturates
+              // all the constraints saturated by both `dest_rows[i]' and
+              // `dest_rows[j]', then they are NOT adjacent.
+              PPL_ASSERT(sat[i].last() == C_Integer<unsigned long>::max
                          || sat[i].last() < k);
-	      PPL_ASSERT(sat[j].last() == C_Integer<unsigned long>::max
+              PPL_ASSERT(sat[j].last() == C_Integer<unsigned long>::max
                          || sat[j].last() < k);
 
-	      // Being the union of `sat[i]' and `sat[j]',
-	      // `new_satrow' corresponds to a ray that saturates all the
-	      // constraints saturated by both `dest_rows[i]' and
+              // Being the union of `sat[i]' and `sat[j]',
+              // `new_satrow' corresponds to a ray that saturates all the
+              // constraints saturated by both `dest_rows[i]' and
               // `dest_rows[j]'.
-	      Bit_Row new_satrow(sat[i], sat[j]);
+              Bit_Row new_satrow(sat[i], sat[j]);
 
-	      // Compute the number of common saturators.
-	      // NOTE: this number has to be less than `k' because
-	      // we are treating the `k'-th constraint.
-	      const dimension_type num_common_satur
+              // Compute the number of common saturators.
+              // NOTE: this number has to be less than `k' because
+              // we are treating the `k'-th constraint.
+              const dimension_type num_common_satur
                 = k - redundant_source_rows.size() - new_satrow.count_ones();
 
-	      // Even before actually creating the new ray as a
-	      // positive combination of `dest_rows[i]' and `dest_rows[j]',
-	      // we exploit saturation information to check if
-	      // it can be an extremal ray. To this end, we refer
-	      // to the definition of a minimal proper face
-	      // (see comments in Polyhedron.defs.hh):
-	      // an extremal ray saturates at least `n' - `t' - 1
-	      // constraints, where `n' is the dimension of the space
-	      // and `t' is the dimension of the lineality space.
-	      // Since `n == source_num_columns - 1' and
-	      // `t == num_lines_or_equalities', we obtain that
-	      // an extremal ray saturates at least
-	      // `source_num_columns - num_lines_or_equalities - 2'
-	      // constraints.
-	      if (num_common_satur
-		  >= source_num_columns - num_lines_or_equalities - 2) {
-		// The minimal proper face rule is satisfied.
-		// Now we actually check for redundancy by computing
-		// adjacency information.
-		bool redundant = false;
-		WEIGHT_BEGIN();
-		for (dimension_type
-		       l = num_lines_or_equalities; l < bound; ++l)
-		  if (l != i && l != j
-		      && subset_or_equal(sat[l], new_satrow)) {
-		    // Found another generator saturating all the
-		    // constraints saturated by both `dest_rows[i]' and
+              // Even before actually creating the new ray as a
+              // positive combination of `dest_rows[i]' and `dest_rows[j]',
+              // we exploit saturation information to check if
+              // it can be an extremal ray. To this end, we refer
+              // to the definition of a minimal proper face
+              // (see comments in Polyhedron.defs.hh):
+              // an extremal ray saturates at least `n' - `t' - 1
+              // constraints, where `n' is the dimension of the space
+              // and `t' is the dimension of the lineality space.
+              // Since `n == source_num_columns - 1' and
+              // `t == num_lines_or_equalities', we obtain that
+              // an extremal ray saturates at least
+              // `source_num_columns - num_lines_or_equalities - 2'
+              // constraints.
+              if (num_common_satur
+                  >= source_num_columns - num_lines_or_equalities - 2) {
+                // The minimal proper face rule is satisfied.
+                // Now we actually check for redundancy by computing
+                // adjacency information.
+                bool redundant = false;
+                WEIGHT_BEGIN();
+                for (dimension_type
+                       l = num_lines_or_equalities; l < bound; ++l)
+                  if (l != i && l != j
+                      && subset_or_equal(sat[l], new_satrow)) {
+                    // Found another generator saturating all the
+                    // constraints saturated by both `dest_rows[i]' and
                     // `dest_rows[j]'.
-		    redundant = true;
-		    break;
-		  }
+                    redundant = true;
+                    break;
+                  }
                 PPL_ASSERT(bound >= num_lines_or_equalities);
                 WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
-		if (!redundant) {
-		  // Adding the new ray to `dest_rows' and the corresponding
-		  // saturation row to `sat'.
-		  dest_row_type new_row;
-		  if (recyclable_dest_rows.empty()) {
-		    sat.add_recycled_row(new_satrow);
-		  }
-		  else {
+                if (!redundant) {
+                  // Adding the new ray to `dest_rows' and the corresponding
+                  // saturation row to `sat'.
+                  dest_row_type new_row;
+                  if (recyclable_dest_rows.empty()) {
+                    sat.add_recycled_row(new_satrow);
+                  }
+                  else {
                     swap(new_row, recyclable_dest_rows.back());
                     recyclable_dest_rows.pop_back();
                     new_row.set_space_dimension_no_ok(source_space_dim);
                     swap(sat[dest_num_rows], new_satrow);
                   }
 
-		  // The following fragment optimizes the computation of
-		  //
+                  // The following fragment optimizes the computation of
+                  //
                   // <CODE>
-		  //   Coefficient scale = scalar_prod[i];
-		  //   scale.gcd_assign(scalar_prod[j]);
-		  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
-		  //   Coefficient normalized_sp_j = scalar_prod[j] / scale;
-		  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		  //     new_row[c] = normalized_sp_i * dest[j][c];
-		  //     new_row[c] -= normalized_sp_j * dest[i][c];
-		  //   }
+                  //   Coefficient scale = scalar_prod[i];
+                  //   scale.gcd_assign(scalar_prod[j]);
+                  //   Coefficient normalized_sp_i = scalar_prod[i] / scale;
+                  //   Coefficient normalized_sp_j = scalar_prod[j] / scale;
+                  //   for (dimension_type c = dest_num_columns; c-- > 0; ) {
+                  //     new_row[c] = normalized_sp_i * dest[j][c];
+                  //     new_row[c] -= normalized_sp_j * dest[i][c];
+                  //   }
                   // </CODE>
-		  normalize2(scalar_prod[i],
-			     scalar_prod[j],
-			     normalized_sp_i,
-			     normalized_sp_o);
-		  WEIGHT_BEGIN();
+                  normalize2(scalar_prod[i],
+                             scalar_prod[j],
+                             normalized_sp_i,
+                             normalized_sp_o);
+                  WEIGHT_BEGIN();
 
                   neg_assign(normalized_sp_o);
                   new_row = dest.sys.rows[j];
@@ -784,73 +784,73 @@ Polyhedron::conversion(Source_Linear_System& source,
                                               normalized_sp_i, normalized_sp_o);
 
                   WEIGHT_ADD_MUL(86, source_space_dim);
-		  new_row.strong_normalize();
+                  new_row.strong_normalize();
                   // Don't assert new_row.OK() here, because it may fail if
                   // the parameter `dest' contained a row that wasn't ok.
-		  // Since we added a new generator to `dest_rows',
-		  // we also add a new element to `scalar_prod';
-		  // by construction, the new ray lies on the hyper-plane
-		  // represented by the constraint `source_k'.
-		  // Thus, the added scalar product is 0.
-		  PPL_ASSERT(scalar_prod.size() >= dest_num_rows);
-		  if (scalar_prod.size() <= dest_num_rows)
-		    scalar_prod.push_back(Coefficient_zero());
-		  else
-		    scalar_prod[dest_num_rows] = Coefficient_zero();
+                  // Since we added a new generator to `dest_rows',
+                  // we also add a new element to `scalar_prod';
+                  // by construction, the new ray lies on the hyper-plane
+                  // represented by the constraint `source_k'.
+                  // Thus, the added scalar product is 0.
+                  PPL_ASSERT(scalar_prod.size() >= dest_num_rows);
+                  if (scalar_prod.size() <= dest_num_rows)
+                    scalar_prod.push_back(Coefficient_zero());
+                  else
+                    scalar_prod[dest_num_rows] = Coefficient_zero();
 
                   dest.sys.rows.resize(dest.sys.rows.size() + 1);
                   swap(dest.sys.rows.back(), new_row);
-		  // Increment the number of generators.
-		  ++dest_num_rows;
-		} // if (!redundant)
-	      }
-	    }
+                  // Increment the number of generators.
+                  ++dest_num_rows;
+                } // if (!redundant)
+              }
+            }
             // Check if the client has requested abandoning all expensive
             // computations.  If so, the exception specified by the client
             // is thrown now.
-	    maybe_abandon();
-	  }
-	  // Now we substitute the rays in Q- (i.e., the rays violating
-	  // the constraint) with the newly added rays.
-	  dimension_type j;
-	  if (source_k.is_ray_or_point_or_inequality()) {
-	    // The constraint is an inequality:
-	    // the violating generators are those in Q-.
-	    j = sup_bound;
-	    // For all the generators in Q+, set to 1 the corresponding
-	    // entry for the constraint `source_k' in the saturation matrix.
+            maybe_abandon();
+          }
+          // Now we substitute the rays in Q- (i.e., the rays violating
+          // the constraint) with the newly added rays.
+          dimension_type j;
+          if (source_k.is_ray_or_point_or_inequality()) {
+            // The constraint is an inequality:
+            // the violating generators are those in Q-.
+            j = sup_bound;
+            // For all the generators in Q+, set to 1 the corresponding
+            // entry for the constraint `source_k' in the saturation matrix.
 
             // After the removal of redundant rows in `source', the k-th
             // row will have index `new_k'.
             const dimension_type new_k = k - redundant_source_rows.size();
             for (dimension_type l = lines_or_equal_bound; l < sup_bound; ++l)
               sat[l].set(new_k);
-	  }
-	  else
-	    // The constraint is an equality:
-	    // the violating generators are those in the union of Q+ and Q-.
-	    j = lines_or_equal_bound;
+          }
+          else
+            // The constraint is an equality:
+            // the violating generators are those in the union of Q+ and Q-.
+            j = lines_or_equal_bound;
 
-	  // Swapping the newly added rays
-	  // (index `i' running through `dest_num_rows - 1' down-to `bound')
-	  // with the generators violating the constraint
-	  // (index `j' running through `j' up-to `bound - 1').
-	  dimension_type i = dest_num_rows;
-	  while (j < bound && i > bound) {
-	    --i;
+          // Swapping the newly added rays
+          // (index `i' running through `dest_num_rows - 1' down-to `bound')
+          // with the generators violating the constraint
+          // (index `j' running through `j' up-to `bound - 1').
+          dimension_type i = dest_num_rows;
+          while (j < bound && i > bound) {
+            --i;
             swap(dest.sys.rows[i], dest.sys.rows[j]);
-	    swap(scalar_prod[i], scalar_prod[j]);
-	    swap(sat[i], sat[j]);
-	    ++j;
-	    dest_sorted = false;
-	  }
-	  // Setting the number of generators in `dest':
-	  // - if the number of generators violating the constraint
-	  //   is less than or equal to the number of the newly added
-	  //   generators, we assign `i' to `dest_num_rows' because
-	  //   all generators above this index are significant;
-	  // - otherwise, we assign `j' to `dest_num_rows' because
-	  //   all generators below index `j-1' violates the constraint.
+            swap(scalar_prod[i], scalar_prod[j]);
+            swap(sat[i], sat[j]);
+            ++j;
+            dest_sorted = false;
+          }
+          // Setting the number of generators in `dest':
+          // - if the number of generators violating the constraint
+          //   is less than or equal to the number of the newly added
+          //   generators, we assign `i' to `dest_num_rows' because
+          //   all generators above this index are significant;
+          // - otherwise, we assign `j' to `dest_num_rows' because
+          //   all generators below index `j-1' violates the constraint.
           dimension_type new_num_rows = (j == bound) ? i : j;
           PPL_ASSERT(dest_num_rows >= new_num_rows);
           while (dest_num_rows != new_num_rows) {
@@ -860,7 +860,7 @@ Polyhedron::conversion(Source_Linear_System& source,
             --dest_num_rows;
           }
           PPL_ASSERT(dest_num_rows == dest.sys.rows.size());
-	}
+        }
       }
     }
   }
@@ -896,8 +896,8 @@ Polyhedron::conversion(Source_Linear_System& source,
     // pending generators.
     for (dimension_type i = dest_first_pending_row; i < dest_num_rows; ++i)
       if (compare(dest.sys.rows[i - 1], dest.sys.rows[i]) > 0) {
-	dest_sorted = false;
-	break;
+        dest_sorted = false;
+        break;
       }
 
 #ifndef NDEBUG

@@ -82,10 +82,10 @@ test02() {
     result = approximate_partition(q, p, finite_partition);
 
   print_congruences(result.first,
-		    "*** result.first ***");
+                    "*** result.first ***");
 
   print_congruences(result.second,
-		    "*** result.second ***");
+                    "*** result.second ***");
 
   if (finite_partition)
     return false;

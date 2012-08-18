@@ -23,10 +23,10 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
 
-#define test01_DO_CLASS(T)				\
-  nout << #T "::max_space_dimension() = "		\
-    << T::max_space_dimension() << endl;		\
-  if (T::max_space_dimension() < max_space_dimension())	\
+#define test01_DO_CLASS(T)                              \
+  nout << #T "::max_space_dimension() = "               \
+    << T::max_space_dimension() << endl;                \
+  if (T::max_space_dimension() < max_space_dimension()) \
     return false
 
 #if PPL_SUPPORTED_FLOAT
@@ -45,21 +45,21 @@ site: http://bugseng.com/products/ppl/ . */
 #define test01_DO_WRD_LONG_DOUBLE(WRD)
 #endif
 
-#define test01_DO_WRD(WRD)			\
-  test01_DO_CLASS(WRD<int8_t>);			\
-  test01_DO_CLASS(WRD<int16_t>);		\
-  test01_DO_CLASS(WRD<int32_t>);		\
-  test01_DO_CLASS(WRD<int64_t>);		\
-  test01_DO_CLASS(WRD<mpz_class>);		\
-  test01_DO_CLASS(WRD<mpq_class>);		\
+#define test01_DO_WRD(WRD)                      \
+  test01_DO_CLASS(WRD<int8_t>);                 \
+  test01_DO_CLASS(WRD<int16_t>);                \
+  test01_DO_CLASS(WRD<int32_t>);                \
+  test01_DO_CLASS(WRD<int64_t>);                \
+  test01_DO_CLASS(WRD<mpz_class>);              \
+  test01_DO_CLASS(WRD<mpq_class>);              \
   test01_DO_WRD_FLOAT(WRD);                     \
   test01_DO_WRD_DOUBLE(WRD);                    \
   test01_DO_WRD_LONG_DOUBLE(WRD)
 
-#define test01_DO_CONSTR_CLASS(CONSTR, T)				\
-  nout << #CONSTR "<" #T ">::max_space_dimension() = "			\
-       << CONSTR<T>::max_space_dimension() << endl;			\
-  if (CONSTR<T>::max_space_dimension() < max_space_dimension())		\
+#define test01_DO_CONSTR_CLASS(CONSTR, T)                               \
+  nout << #CONSTR "<" #T ">::max_space_dimension() = "                  \
+       << CONSTR<T>::max_space_dimension() << endl;                     \
+  if (CONSTR<T>::max_space_dimension() < max_space_dimension())         \
     return false
 
 #if PPL_SUPPORTED_FLOAT
@@ -81,13 +81,13 @@ site: http://bugseng.com/products/ppl/ . */
 #define test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)
 #endif
 
-#define test01_DO_CONSTR_WRD(CONSTR, WRD)			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<int8_t>);			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<int16_t>);			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<int32_t>);			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<int64_t>);			\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<mpz_class>);		\
-  test01_DO_CONSTR_CLASS(CONSTR, WRD<mpq_class>);		\
+#define test01_DO_CONSTR_WRD(CONSTR, WRD)                       \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int8_t>);                  \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int16_t>);                 \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int32_t>);                 \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int64_t>);                 \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<mpz_class>);               \
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<mpq_class>);               \
   test01_DO_CONSTR_WRD_FLOAT(CONSTR, WRD);                      \
   test01_DO_CONSTR_WRD_DOUBLE(CONSTR, WRD);                     \
   test01_DO_CONSTR_WRD_LONG_DOUBLE(CONSTR, WRD)

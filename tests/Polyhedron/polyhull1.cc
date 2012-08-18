@@ -89,7 +89,7 @@ test02() {
   bool ok = (computed_result1 == known_result);
 
   print_generators(computed_result1,
-		   "*** after upper_bound_assign ***");
+                   "*** after upper_bound_assign ***");
 
   return ok;
 }
@@ -131,8 +131,8 @@ test03() {
 
 bool
 aux_test04(C_Polyhedron& ph1, const C_Polyhedron& ph2,
-	   // Note intentional call-by-value!
-	   C_Polyhedron known_result) {
+           // Note intentional call-by-value!
+           C_Polyhedron known_result) {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
@@ -190,7 +190,7 @@ test05() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** after ph1.upper_bound_assign(ph2) ***");
+                   "*** after ph1.upper_bound_assign(ph2) ***");
 
   return ok;
 }
@@ -210,7 +210,7 @@ test06() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** after ph1.upper_bound_assign(ph2) ***");
+                   "*** after ph1.upper_bound_assign(ph2) ***");
 
   return ok;
 }
@@ -246,7 +246,7 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** after ph1.upper_bound_assign(ph2) ***");
+                   "*** after ph1.upper_bound_assign(ph2) ***");
 
   return ok;
 }
@@ -318,7 +318,7 @@ test10() {
 
   print_generators(ph1, "*** after upper_bound_assign ***");
   print_generators(copy_ph1,
-		    "*** after upper_bound_assign ***");
+                    "*** after upper_bound_assign ***");
 
   return ok;
 }
@@ -352,7 +352,7 @@ test11() {
 
   print_generators(ph1, "*** after upper_bound_assign ***");
   print_generators(copy_ph1,
-		    "*** after upper_bound_assign ***");
+                    "*** after upper_bound_assign ***");
 
   return ok;
 }

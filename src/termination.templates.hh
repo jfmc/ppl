@@ -93,7 +93,7 @@ output_function_MS(std::ostream& s, const Variable v) {
     else if (id == output_function_MS_n)
       s << "mu0";
     else if (output_function_MS_which == 2
-	     && id <= output_function_MS_n + output_function_MS_m + 2)
+             && id <= output_function_MS_n + output_function_MS_m + 2)
       s << "z" << id - output_function_MS_n;
     else
       s << "WHAT?";
@@ -139,30 +139,30 @@ output_function_PR(std::ostream& s, const Variable v) {
 
 void
 assign_all_inequalities_approximation(const Constraint_System& cs_in,
-				      Constraint_System& cs_out);
+                                      Constraint_System& cs_out);
 
 template <typename PSET>
 inline void
 assign_all_inequalities_approximation(const PSET& pset,
-				      Constraint_System& cs) {
+                                      Constraint_System& cs) {
   assign_all_inequalities_approximation(pset.minimized_constraints(), cs);
 }
 
 template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
-				      Constraint_System& cs);
+                                      Constraint_System& cs);
 
 bool
 termination_test_MS(const Constraint_System& cs);
 
 bool
 one_affine_ranking_function_MS(const Constraint_System& cs,
-			       Generator& mu);
+                               Generator& mu);
 
 void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
-				C_Polyhedron& mu_space);
+                                C_Polyhedron& mu_space);
 
 void
 all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
@@ -171,17 +171,17 @@ all_affine_quasi_ranking_functions_MS(const Constraint_System& cs,
 
 bool
 termination_test_PR(const Constraint_System& cs_before,
-		    const Constraint_System& cs_after);
+                    const Constraint_System& cs_after);
 
 bool
 one_affine_ranking_function_PR(const Constraint_System& cs_before,
-			       const Constraint_System& cs_after,
-			       Generator& mu);
+                               const Constraint_System& cs_after,
+                               Generator& mu);
 
 void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
-				const Constraint_System& cs_after,
-				NNC_Polyhedron& mu_space);
+                                const Constraint_System& cs_after,
+                                NNC_Polyhedron& mu_space);
 
 bool
 termination_test_PR_original(const Constraint_System& cs);
@@ -276,8 +276,8 @@ one_affine_ranking_function_MS(const PSET& pset, Generator& mu) {
 template <typename PSET>
 bool
 one_affine_ranking_function_MS_2(const PSET& pset_before,
-				 const PSET& pset_after,
-				 Generator& mu) {
+                                 const PSET& pset_after,
+                                 Generator& mu) {
   const dimension_type before_space_dim = pset_before.space_dimension();
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
@@ -322,8 +322,8 @@ all_affine_ranking_functions_MS(const PSET& pset, C_Polyhedron& mu_space) {
 template <typename PSET>
 void
 all_affine_ranking_functions_MS_2(const PSET& pset_before,
-				  const PSET& pset_after,
-				  C_Polyhedron& mu_space) {
+                                  const PSET& pset_after,
+                                  C_Polyhedron& mu_space) {
   const dimension_type before_space_dim = pset_before.space_dimension();
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
@@ -453,8 +453,8 @@ termination_test_PR(const PSET& pset) {
 template <typename PSET>
 bool
 one_affine_ranking_function_PR_2(const PSET& pset_before,
-				 const PSET& pset_after,
-				 Generator& mu) {
+                                 const PSET& pset_after,
+                                 Generator& mu) {
   const dimension_type before_space_dim = pset_before.space_dimension();
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
@@ -496,8 +496,8 @@ one_affine_ranking_function_PR(const PSET& pset, Generator& mu) {
 template <typename PSET>
 void
 all_affine_ranking_functions_PR_2(const PSET& pset_before,
-				  const PSET& pset_after,
-				  NNC_Polyhedron& mu_space) {
+                                  const PSET& pset_after,
+                                  NNC_Polyhedron& mu_space) {
   const dimension_type before_space_dim = pset_before.space_dimension();
   const dimension_type after_space_dim = pset_after.space_dimension();
   if (after_space_dim != 2*before_space_dim) {
@@ -526,7 +526,7 @@ all_affine_ranking_functions_PR_2(const PSET& pset_before,
 template <typename PSET>
 void
 all_affine_ranking_functions_PR(const PSET& pset,
-				NNC_Polyhedron& mu_space) {
+                                NNC_Polyhedron& mu_space) {
   const dimension_type space_dim = pset.space_dimension();
   if (space_dim % 2 != 0) {
     std::ostringstream s;

@@ -44,7 +44,7 @@ PPL::Congruence_System::Congruence_System(const Constraint_System& cs,
     space_dimension_(cs.space_dimension()),
     representation_(r) {
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       insert(*i);
 }
@@ -183,16 +183,16 @@ PPL::Congruence_System::normalize_moduli() {
       --row;
       lcm = cgs[row].modulus();
       if (lcm > 0)
-	break;
+        break;
       if (row == 0)
-	// All rows are equalities.
-	return;
+        // All rows are equalities.
+        return;
     }
     while (row > 0) {
       --row;
       const Coefficient& modulus = cgs[row].modulus();
       if (modulus > 0)
-	lcm_assign(lcm, lcm, modulus);
+        lcm_assign(lcm, lcm, modulus);
     }
 
     // Represent every row using the LCM as the modulus.
@@ -200,7 +200,7 @@ PPL::Congruence_System::normalize_moduli() {
     for (row = num_rows(); row-- > 0; ) {
       const Coefficient& modulus = cgs[row].modulus();
       if (modulus <= 0 || modulus == lcm)
-	continue;
+        continue;
       exact_div_assign(factor, lcm, modulus);
       rows[row].scale(factor);
     }
@@ -263,7 +263,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
       if (sp != 0)
-	return false;
+        return false;
     }
   else {
     const Coefficient& divisor = g.divisor();
@@ -271,11 +271,11 @@ satisfies_all_congruences(const Grid_Generator& g) const {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
       if (cg.is_equality()) {
-	if (sp != 0)
-	  return false;
+        if (sp != 0)
+          return false;
       }
       else if (sp % (cg.modulus() * divisor) != 0)
-	return false;
+        return false;
     }
   }
   return true;
@@ -300,8 +300,8 @@ PPL::Congruence_System::has_a_free_dimension() const {
 void
 PPL::Congruence_System::
 affine_preimage(Variable v,
-		const Linear_Expression& expr,
-		Coefficient_traits::const_reference denominator) {
+                const Linear_Expression& expr,
+                Coefficient_traits::const_reference denominator) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   PPL_ASSERT(expr.space_dimension() <= space_dimension());
   PPL_ASSERT(denominator > 0);

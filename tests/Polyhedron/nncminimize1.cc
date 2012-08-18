@@ -265,9 +265,9 @@ test04() {
   print_generators(ph.generators(), "*** ph generators ***");
 
   print_constraints(known_result.constraints(),
-		    "*** known_result constraints ***");
+                    "*** known_result constraints ***");
   print_generators(known_result.generators(),
-		   "*** known_result generators ***");
+                   "*** known_result generators ***");
   return ok && ok1;
 }
 
@@ -301,7 +301,7 @@ test05() {
 
   const Constraint_System& ph1_min_cs = ph1.minimized_constraints();
   const int num_minimized_constraints = std::distance(ph1_min_cs.begin(),
-						      ph1_min_cs.end());
+                                                      ph1_min_cs.end());
 
   print_constraints(ph1, "*** after ph1.minimized_constraints() ***");
   nout << "num_constraints = " << num_constraints << endl;
@@ -310,7 +310,7 @@ test05() {
 
   int num_points = 0;
   for (Generator_System::const_iterator i = copy_ph1.generators().begin(),
-	 gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
+         gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
     if ((*i).is_point() || (*i).is_closure_point())
       ++num_points;
 
@@ -318,15 +318,15 @@ test05() {
 
   int num_minimized_points = 0;
   for (Generator_System::const_iterator i = copy_ph1.generators().begin(),
-	 gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
+         gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
     if ((*i).is_point() || (*i).is_closure_point())
       ++num_minimized_points;
 
   bool ok = (num_constraints == num_minimized_constraints + 1
-	     && num_points == num_minimized_points + 1);
+             && num_points == num_minimized_points + 1);
 
   print_generators(copy_ph1,
-		   "*** after copy_ph1_minimized_generators() ***");
+                   "*** after copy_ph1_minimized_generators() ***");
   nout << "num_points = " << num_points << endl;
   nout << "num_minimized_points = "
        << num_minimized_points << endl;

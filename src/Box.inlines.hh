@@ -561,12 +561,12 @@ Box<ITV>::unconstrain(const Variable var) {
 template <typename Temp, typename To, typename ITV>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<ITV>& x,
-			    const Box<ITV>& y,
-			    const Rounding_Dir dir,
-			    Temp& tmp0,
-			    Temp& tmp1,
-			    Temp& tmp2) {
+                            const Box<ITV>& x,
+                            const Box<ITV>& y,
+                            const Rounding_Dir dir,
+                            Temp& tmp0,
+                            Temp& tmp1,
+                            Temp& tmp2) {
   return l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >
     (r, x, y, dir, tmp0, tmp1, tmp2);
 }
@@ -575,9 +575,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<ITV>& x,
-			    const Box<ITV>& y,
-			    const Rounding_Dir dir) {
+                            const Box<ITV>& x,
+                            const Box<ITV>& y,
+                            const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -589,9 +589,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename ITV>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Box<ITV>& x,
-			    const Box<ITV>& y,
-			    const Rounding_Dir dir) {
+                            const Box<ITV>& x,
+                            const Box<ITV>& y,
+                            const Rounding_Dir dir) {
   // FIXME: the following qualification is only to work around a bug
   // in the Intel C/C++ compiler version 10.1.x.
   return Parma_Polyhedra_Library
@@ -602,12 +602,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<ITV>& x,
-			  const Box<ITV>& y,
-			  const Rounding_Dir dir,
-			  Temp& tmp0,
-			  Temp& tmp1,
-			  Temp& tmp2) {
+                          const Box<ITV>& x,
+                          const Box<ITV>& y,
+                          const Rounding_Dir dir,
+                          Temp& tmp0,
+                          Temp& tmp1,
+                          Temp& tmp2) {
   return l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >
     (r, x, y, dir, tmp0, tmp1, tmp2);
 }
@@ -616,9 +616,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<ITV>& x,
-			  const Box<ITV>& y,
-			  const Rounding_Dir dir) {
+                          const Box<ITV>& x,
+                          const Box<ITV>& y,
+                          const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -630,9 +630,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename ITV>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Box<ITV>& x,
-			  const Box<ITV>& y,
-			  const Rounding_Dir dir) {
+                          const Box<ITV>& x,
+                          const Box<ITV>& y,
+                          const Rounding_Dir dir) {
   // FIXME: the following qualification is only to work around a bug
   // in the Intel C/C++ compiler version 10.1.x.
   return Parma_Polyhedra_Library
@@ -643,12 +643,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<ITV>& x,
-			   const Box<ITV>& y,
-			   const Rounding_Dir dir,
-			   Temp& tmp0,
-			   Temp& tmp1,
-			   Temp& tmp2) {
+                           const Box<ITV>& x,
+                           const Box<ITV>& y,
+                           const Rounding_Dir dir,
+                           Temp& tmp0,
+                           Temp& tmp1,
+                           Temp& tmp2) {
   return l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >
     (r, x, y, dir, tmp0, tmp1, tmp2);
 }
@@ -657,9 +657,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename ITV>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<ITV>& x,
-			   const Box<ITV>& y,
-			   const Rounding_Dir dir) {
+                           const Box<ITV>& x,
+                           const Box<ITV>& y,
+                           const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -671,9 +671,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename ITV>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Box<ITV>& x,
-			   const Box<ITV>& y,
-			   const Rounding_Dir dir) {
+                           const Box<ITV>& x,
+                           const Box<ITV>& y,
+                           const Rounding_Dir dir) {
   // FIXME: the following qualification is only to work around a bug
   // in the Intel C/C++ compiler version 10.1.x.
   return Parma_Polyhedra_Library

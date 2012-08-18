@@ -105,7 +105,7 @@ Octagonal_Shape<T>::reset_strongly_closed() {
 template <typename T>
 inline
 Octagonal_Shape<T>::Octagonal_Shape(const dimension_type num_dimensions,
-				    const Degenerate_Element kind)
+                                    const Degenerate_Element kind)
   : matrix(num_dimensions), space_dim(num_dimensions), status() {
   if (kind == EMPTY)
     set_empty();
@@ -275,34 +275,34 @@ Octagonal_Shape<T>::bounds_from_below(const Linear_Expression& expr) const {
 template <typename T>
 inline bool
 Octagonal_Shape<T>::maximize(const Linear_Expression& expr,
-			     Coefficient& sup_n, Coefficient& sup_d,
-			     bool& maximum) const {
+                             Coefficient& sup_n, Coefficient& sup_d,
+                             bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
 template <typename T>
 inline bool
 Octagonal_Shape<T>::maximize(const Linear_Expression& expr,
-			     Coefficient& sup_n, Coefficient& sup_d,
-			     bool& maximum,
-			     Generator& g) const {
+                             Coefficient& sup_n, Coefficient& sup_d,
+                             bool& maximum,
+                             Generator& g) const {
   return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 template <typename T>
 inline bool
 Octagonal_Shape<T>::minimize(const Linear_Expression& expr,
-			     Coefficient& inf_n, Coefficient& inf_d,
-			     bool& minimum) const {
+                             Coefficient& inf_n, Coefficient& inf_d,
+                             bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
 template <typename T>
 inline bool
 Octagonal_Shape<T>::minimize(const Linear_Expression& expr,
-			     Coefficient& inf_n, Coefficient& inf_d,
-			     bool& minimum,
-			     Generator& g) const {
+                             Coefficient& inf_n, Coefficient& inf_d,
+                             bool& minimum,
+                             Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
@@ -355,7 +355,7 @@ operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
 template <typename T>
 inline const typename Octagonal_Shape<T>::coefficient_type&
 Octagonal_Shape<T>::matrix_at(const dimension_type i,
-			      const dimension_type j) const {
+                              const dimension_type j) const {
   PPL_ASSERT(i < matrix.num_rows() && j < matrix.num_rows());
   using namespace Implementation::Octagonal_Shapes;
   return (j < matrix.row_size(i))
@@ -366,7 +366,7 @@ Octagonal_Shape<T>::matrix_at(const dimension_type i,
 template <typename T>
 inline typename Octagonal_Shape<T>::coefficient_type&
 Octagonal_Shape<T>::matrix_at(const dimension_type i,
-			      const dimension_type j) {
+                              const dimension_type j) {
   PPL_ASSERT(i < matrix.num_rows() && j < matrix.num_rows());
   using namespace Implementation::Octagonal_Shapes;
   return (j < matrix.row_size(i))
@@ -384,8 +384,8 @@ Octagonal_Shape<T>::minimized_constraints() const {
 template <typename T>
 inline void
 Octagonal_Shape<T>::add_octagonal_constraint(const dimension_type i,
-					     const dimension_type j,
-					     const N& k) {
+                                             const dimension_type j,
+                                             const N& k) {
   // Private method: the caller has to ensure the following.
 #ifndef NDEBUG
   PPL_ASSERT(i < 2*space_dim && j < 2*space_dim && i != j);
@@ -404,9 +404,9 @@ template <typename T>
 inline void
 Octagonal_Shape<T>
 ::add_octagonal_constraint(const dimension_type i,
-			   const dimension_type j,
-			   Coefficient_traits::const_reference numer,
-			   Coefficient_traits::const_reference denom) {
+                           const dimension_type j,
+                           Coefficient_traits::const_reference numer,
+                           Coefficient_traits::const_reference denom) {
 #ifndef NDEBUG
   // Private method: the caller has to ensure the following.
   PPL_ASSERT(i < 2*space_dim && j < 2*space_dim && i != j);
@@ -467,7 +467,7 @@ Octagonal_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
                            "cs and *this are space-dimension incompatible");
 
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
     refine_no_check(*i);
 }
 
@@ -492,7 +492,7 @@ Octagonal_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
                            "cgs and *this are space-dimension incompatible");
 
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+         cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
     refine_no_check(*i);
 }
 
@@ -533,7 +533,7 @@ Octagonal_Shape<T>
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimension(nd)",
-				 new_dimension);
+                                 new_dimension);
   // The removal of no dimensions from any octagon is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from an octagon in a 0-dim space.
@@ -576,7 +576,7 @@ Octagonal_Shape<T>::widening_assign(const Octagonal_Shape& y, unsigned* tp) {
 template <typename T>
 inline void
 Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
-					      unsigned* tp) {
+                                              unsigned* tp) {
   static N stop_points[] = {
     N(-2, ROUND_UP),
     N(-1, ROUND_UP),
@@ -585,10 +585,10 @@ Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
     N( 2, ROUND_UP)
   };
   CC76_extrapolation_assign(y,
-			    stop_points,
-			    stop_points
-			    + sizeof(stop_points)/sizeof(stop_points[0]),
-			    tp);
+                            stop_points,
+                            stop_points
+                            + sizeof(stop_points)/sizeof(stop_points[0]),
+                            tp);
 }
 
 template <typename T>
@@ -618,8 +618,8 @@ template <typename T>
 template <typename Interval_Info>
 inline void
 Octagonal_Shape<T>::generalized_refine_with_linear_form_inequality(
-		    const Linear_Form< Interval<T, Interval_Info> >& left,
-		    const Linear_Form< Interval<T, Interval_Info> >& right,
+                    const Linear_Form< Interval<T, Interval_Info> >& left,
+                    const Linear_Form< Interval<T, Interval_Info> >& right,
                     const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:
@@ -648,7 +648,7 @@ template <typename Interval_Info>
 inline void
 Octagonal_Shape<T>::
 refine_fp_interval_abstract_store(
-	  Box< Interval<T, Interval_Info> >& store) const {
+          Box< Interval<T, Interval_Info> >& store) const {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
@@ -664,12 +664,12 @@ refine_fp_interval_abstract_store(
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Octagonal_Shape<T>& x,
-			    const Octagonal_Shape<T>& y,
-			    const Rounding_Dir dir,
-			    Temp& tmp0,
-			    Temp& tmp1,
-			    Temp& tmp2) {
+                            const Octagonal_Shape<T>& x,
+                            const Octagonal_Shape<T>& y,
+                            const Rounding_Dir dir,
+                            Temp& tmp0,
+                            Temp& tmp1,
+                            Temp& tmp2) {
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     return false;
@@ -698,16 +698,16 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   }
 
   return rectilinear_distance_assign(r, x.matrix, y.matrix, dir,
-				     tmp0, tmp1, tmp2);
+                                     tmp0, tmp1, tmp2);
 }
 
 /*! \relates Octagonal_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Octagonal_Shape<T>& x,
-			    const Octagonal_Shape<T>& y,
-			    const Rounding_Dir dir) {
+                            const Octagonal_Shape<T>& x,
+                            const Octagonal_Shape<T>& y,
+                            const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -719,9 +719,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const Octagonal_Shape<T>& x,
-			    const Octagonal_Shape<T>& y,
-			    const Rounding_Dir dir) {
+                            const Octagonal_Shape<T>& x,
+                            const Octagonal_Shape<T>& y,
+                            const Rounding_Dir dir) {
   return rectilinear_distance_assign<To, To, T>(r, x, y, dir);
 }
 
@@ -729,12 +729,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Octagonal_Shape<T>& x,
-			  const Octagonal_Shape<T>& y,
-			  const Rounding_Dir dir,
-			  Temp& tmp0,
-			  Temp& tmp1,
-			  Temp& tmp2) {
+                          const Octagonal_Shape<T>& x,
+                          const Octagonal_Shape<T>& y,
+                          const Rounding_Dir dir,
+                          Temp& tmp0,
+                          Temp& tmp1,
+                          Temp& tmp2) {
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     return false;
@@ -763,16 +763,16 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   }
 
   return euclidean_distance_assign(r, x.matrix, y.matrix, dir,
-				   tmp0, tmp1, tmp2);
+                                   tmp0, tmp1, tmp2);
 }
 
 /*! \relates Octagonal_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Octagonal_Shape<T>& x,
-			  const Octagonal_Shape<T>& y,
-			  const Rounding_Dir dir) {
+                          const Octagonal_Shape<T>& x,
+                          const Octagonal_Shape<T>& y,
+                          const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -784,9 +784,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const Octagonal_Shape<T>& x,
-			  const Octagonal_Shape<T>& y,
-			  const Rounding_Dir dir) {
+                          const Octagonal_Shape<T>& x,
+                          const Octagonal_Shape<T>& y,
+                          const Rounding_Dir dir) {
   return euclidean_distance_assign<To, To, T>(r, x, y, dir);
 }
 
@@ -794,12 +794,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Octagonal_Shape<T>& x,
-			   const Octagonal_Shape<T>& y,
-			   const Rounding_Dir dir,
-			   Temp& tmp0,
-			   Temp& tmp1,
-			   Temp& tmp2) {
+                           const Octagonal_Shape<T>& x,
+                           const Octagonal_Shape<T>& y,
+                           const Rounding_Dir dir,
+                           Temp& tmp0,
+                           Temp& tmp1,
+                           Temp& tmp2) {
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
     return false;
@@ -828,16 +828,16 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   }
 
   return l_infinity_distance_assign(r, x.matrix, y.matrix, dir,
-				    tmp0, tmp1, tmp2);
+                                    tmp0, tmp1, tmp2);
 }
 
 /*! \relates Octagonal_Shape */
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Octagonal_Shape<T>& x,
-			   const Octagonal_Shape<T>& y,
-			   const Rounding_Dir dir) {
+                           const Octagonal_Shape<T>& x,
+                           const Octagonal_Shape<T>& y,
+                           const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -849,9 +849,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const Octagonal_Shape<T>& x,
-			   const Octagonal_Shape<T>& y,
-			   const Rounding_Dir dir) {
+                           const Octagonal_Shape<T>& x,
+                           const Octagonal_Shape<T>& y,
+                           const Rounding_Dir dir) {
   return l_infinity_distance_assign<To, To, T>(r, x, y, dir);
 }
 

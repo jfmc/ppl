@@ -49,7 +49,7 @@ unsigned long realloc_threshold = 0;
 
 void
 reset_allocators(unsigned long new_malloc_threshold,
-		 unsigned long new_realloc_threshold) {
+                 unsigned long new_realloc_threshold) {
   mallocated = reallocated = freed = 0;
   malloc_threshold = new_malloc_threshold;
   realloc_threshold = new_realloc_threshold;
@@ -59,13 +59,13 @@ void
 fail_if_leaked() {
   if (mallocated != freed) {
     nout << "Memory leak: allocated " << mallocated
-	 << ", freed " << freed
-	 << endl;
+         << ", freed " << freed
+         << endl;
     exit(1);
   }
   else {
     nout << "allocated = freed = " << mallocated
-	 << endl;
+         << endl;
   }
 }
 
@@ -187,7 +187,7 @@ test_every_allocation(const dimension_type d, const Threshold threshold) {
       C_Polyhedron ph(d);
       ph.add_constraint(Variable(0) == ULONG_MAX);
       for (dimension_type i = 1; i < d; ++i)
-	ph.add_constraint(Variable(i) == ULONG_MAX*Variable(i-1));
+        ph.add_constraint(Variable(i) == ULONG_MAX*Variable(i-1));
 
       (void) ph.minimized_generators();
     }
@@ -224,11 +224,11 @@ test3() {
 
 } // namespace
 
-#define IGNORE_OVERFLOWS(fun)			\
-  try {						\
-    fun;					\
-  }						\
-  catch (const std::overflow_error&) {		\
+#define IGNORE_OVERFLOWS(fun)                   \
+  try {                                         \
+    fun;                                        \
+  }                                             \
+  catch (const std::overflow_error&) {          \
   }
 
 extern "C" void

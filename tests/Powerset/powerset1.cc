@@ -90,7 +90,7 @@ test01() {
   // Constant reverse iterator.
   count = 0;
   for (PSET::const_reverse_iterator i = ps3.rbegin(),
-	 ps3_rend = ps3.rend(); i != ps3_rend; ++i)
+         ps3_rend = ps3.rend(); i != ps3_rend; ++i)
     ++count;
   if (count != 1)
     return false;

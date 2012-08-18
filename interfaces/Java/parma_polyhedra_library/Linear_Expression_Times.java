@@ -36,35 +36,35 @@ public class Linear_Expression_Times
 
     //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Coefficient c, Variable v) {
-	coeff = new Coefficient(c);
-	lin_expr = new Linear_Expression_Variable(v);
+        coeff = new Coefficient(c);
+        lin_expr = new Linear_Expression_Variable(v);
     }
 
     //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Coefficient c, Linear_Expression l) {
-	coeff = new Coefficient(c);
-	lin_expr = l.clone();
+        coeff = new Coefficient(c);
+        lin_expr = l.clone();
     }
 
     //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Linear_Expression l, Coefficient c) {
-	coeff = new Coefficient(c);
-	lin_expr = l.clone();
+        coeff = new Coefficient(c);
+        lin_expr = l.clone();
     }
 
     //! Returns the coefficient of \p this.
     public Coefficient coefficient() {
-	return coeff;
+        return coeff;
     }
 
     //! Returns the linear expression subobject of \p this.
     public Linear_Expression linear_expression() {
-	return lin_expr;
+        return lin_expr;
     }
 
     //! Builds a copy of this.
     public Linear_Expression_Times clone() {
-	return new Linear_Expression_Times(coeff, lin_expr);
+        return new Linear_Expression_Times(coeff, lin_expr);
     }
 
     private static native void initIDs();

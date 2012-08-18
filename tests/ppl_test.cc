@@ -52,7 +52,7 @@ void
 fpe_sigaction(int sig, siginfo_t* sip, void*) {
   if (sig != SIGFPE) {
     std::cerr << "fpe_handler called on signal different from SIGFPE"
-	      << std::endl;
+              << std::endl;
     exit(1);
   }
   const char* s = 0;
@@ -86,10 +86,10 @@ fpe_sigaction(int sig, siginfo_t* sip, void*) {
   }
   if (s != 0)
     std::cerr << "SIGFPE caught (cause: " << s << ")"
-	      << std::endl;
+              << std::endl;
   else {
     std::cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")"
-	      << std::endl;
+              << std::endl;
 #if defined(PPL_HAVE_FENV_H)
     std::cerr << "Inquire with fetestexcept(): ";
 #ifdef FE_INEXACT
@@ -124,7 +124,7 @@ void
 fpe_handler(int sig) {
   if (sig != SIGFPE) {
     std::cerr << "fpe_handler called on signal different from SIGFPE"
-	      << std::endl;
+              << std::endl;
     exit(1);
   }
   std::cerr << "SIGFPE caught"
@@ -180,7 +180,7 @@ set_handlers() {
 #endif // !defined(PPL_HAVE_SIGINFO_T) || !defined(SA_SIGINFO)
   if (sigaction(SIGFPE, &action, NULL) != 0) {
     std::cerr << "sigaction() failed"
-	      << std::endl;
+              << std::endl;
     abort();
   }
 #endif // PPL_HAVE_DECL_SIGACTION
@@ -204,7 +204,7 @@ check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
     else
       nout << raw_value(d).get_d() << " (rounded towards zero)";
     nout << ": should be at most " << max_d << "."
-	 << std::endl;
+         << std::endl;
     return false;
   }
   else
@@ -213,7 +213,7 @@ check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
 
 bool
 check_result(const BD_Shape<mpq_class>& computed_result,
-	     const BD_Shape<mpq_class>& known_result) {
+             const BD_Shape<mpq_class>& known_result) {
   if (computed_result == known_result)
     return true;
   else {
@@ -230,7 +230,7 @@ check_result(const BD_Shape<mpq_class>& computed_result,
 
 bool
 check_result(const Rational_Box& computed_result,
-	     const Rational_Box& known_result) {
+             const Rational_Box& known_result) {
   if (computed_result == known_result)
     return true;
   else {
@@ -327,7 +327,7 @@ std::ostream&
 operator<<(std::ostream& s, const FCAIBVP& x) {
   s << "{";
   for (FCAIBVP::Set::const_iterator i = x.set.begin(),
-	 x_end = x.set.end(); i != x_end; ) {
+         x_end = x.set.end(); i != x_end; ) {
     const Variable v(*i++);
     using IO_Operators::operator<<;
     s << v;
@@ -340,7 +340,7 @@ operator<<(std::ostream& s, const FCAIBVP& x) {
 
 void
 print_constraint(const Constraint& c,
-		 const std::string& intro, std::ostream& s) {
+                 const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   using IO_Operators::operator<<;
@@ -349,21 +349,21 @@ print_constraint(const Constraint& c,
 
 void
 print_constraints(const Polyhedron& ph,
-		  const std::string& intro, std::ostream& s) {
+                  const std::string& intro, std::ostream& s) {
   print_constraints(ph.constraints(), intro, s);
 }
 
 #if 0
 void
 print_constraints(const Affine_Space& affs,
-		  const std::string& intro, std::ostream& s) {
+                  const std::string& intro, std::ostream& s) {
   print_constraints(affs.constraints(), intro, s);
 }
 #endif
 
 void
 print_constraints(const Constraint_System& cs,
-		  const std::string& intro, std::ostream& s) {
+                  const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   Constraint_System::const_iterator i = cs.begin();
@@ -380,7 +380,7 @@ print_constraints(const Constraint_System& cs,
 
 void
 print_congruence(const Congruence& c,
-		 const std::string& intro, std::ostream& s) {
+                 const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   using IO_Operators::operator<<;
@@ -389,7 +389,7 @@ print_congruence(const Congruence& c,
 
 void
 print_congruences(const Congruence_System& cs,
-		  const std::string& intro, std::ostream& s) {
+                  const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << std::endl;
   Congruence_System::const_iterator i = cs.begin();
@@ -406,13 +406,13 @@ print_congruences(const Congruence_System& cs,
 
 void
 print_congruences(const Grid& gr,
-		  const std::string& intro, std::ostream& s) {
+                  const std::string& intro, std::ostream& s) {
   print_congruences(gr.congruences(), intro, s);
 }
 
 void
 print_generator(const Generator& g,
-		const std::string& intro, std::ostream& s) {
+                const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   using IO_Operators::operator<<;
@@ -421,7 +421,7 @@ print_generator(const Generator& g,
 
 void
 print_generator(const Grid_Generator& g,
-		const std::string& intro, std::ostream& s) {
+                const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   using IO_Operators::operator<<;
@@ -430,19 +430,19 @@ print_generator(const Grid_Generator& g,
 
 void
 print_generators(const Polyhedron& ph,
-		 const std::string& intro, std::ostream& s) {
+                 const std::string& intro, std::ostream& s) {
   print_generators(ph.generators(), intro, s);
 }
 
 void
 print_generators(const Grid& gr,
-		 const std::string& intro, std::ostream& s) {
+                 const std::string& intro, std::ostream& s) {
   print_generators(gr.grid_generators(), intro, s);
 }
 
 void
 print_generators(const Generator_System& gs,
-		 const std::string& intro, std::ostream& s) {
+                 const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   Generator_System::const_iterator i = gs.begin();
@@ -459,7 +459,7 @@ print_generators(const Generator_System& gs,
 
 void
 print_generators(const Grid_Generator_System& gs,
-		 const std::string& intro, std::ostream& s) {
+                 const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
   Grid_Generator_System::const_iterator i = gs.begin();
@@ -476,7 +476,7 @@ print_generators(const Grid_Generator_System& gs,
 
 void
 print_function(const Parma_Polyhedra_Library::Partial_Function& function,
-	       const std::string& intro, std::ostream& s) {
+               const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << std::endl;
   function.print(s);

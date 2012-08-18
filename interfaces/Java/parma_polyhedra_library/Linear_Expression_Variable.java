@@ -32,7 +32,7 @@ extends Linear_Expression {
 
     //! Builds the object associated to the copy of \p v.
     public Linear_Expression_Variable(Variable v) {
-	arg = new Variable(v.id());
+        arg = new Variable(v.id());
     }
 
     //! Returns the variable representing the linear expression.
@@ -42,7 +42,7 @@ extends Linear_Expression {
 
     //! Builds a copy of this.
     public Linear_Expression_Variable clone() {
-	return new Linear_Expression_Variable(arg);
+        return new Linear_Expression_Variable(arg);
     }
 
     private long var_id() {

@@ -168,7 +168,7 @@ test01() {
   Grid gr2(3, EMPTY);
   unsigned n = 0;
   for (Grid_Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i) {
+         gs_end = gs.end(); i != gs_end; ++i) {
     add_grid_generator(gr2, *i);
     if (++n % 4 == 0)
       minimize(gr2);
@@ -182,7 +182,7 @@ test01() {
 
   memory_size_type cgs_elements_size = 0;
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i)
     cgs_elements_size += i->total_memory_in_bytes();
 
   nout << "Sum of sizes of contained congruences = " << cgs_elements_size
@@ -194,7 +194,7 @@ test01() {
 
   memory_size_type gs_elements_size = 0;
   for (Grid_Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i)
     gs_elements_size += i->total_memory_in_bytes();
 
   nout << "Sum of sizes of contained generators = " << gs_elements_size

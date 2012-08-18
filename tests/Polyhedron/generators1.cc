@@ -69,8 +69,8 @@ test02() {
   C_Polyhedron ph(gs);
 
   bool ok = (gs.space_dimension() == known_result.space_dimension()
-	     && gs.begin() == gs.end()
-	     && ph == known_result);
+             && gs.begin() == gs.end()
+             && ph == known_result);
 
   print_generators(ph, "*** ph ***");
 
@@ -101,8 +101,8 @@ test03() {
   known_result2.insert(point());
 
   bool ok = (gs1.begin() == gs1.end()
-	     && C_Polyhedron(gs2) == C_Polyhedron(known_result2)
-	     && gs3.begin() == gs3.end());
+             && C_Polyhedron(gs2) == C_Polyhedron(known_result2)
+             && gs3.begin() == gs3.end());
 
   print_generators(gs1, "*** gs1 ***");
   print_generators(gs2, "*** gs2 ***");

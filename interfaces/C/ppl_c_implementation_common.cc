@@ -378,7 +378,7 @@ CATCH_ALL
 
 int
 ppl_new_Coefficient_from_Coefficient(ppl_Coefficient_t* pc,
-				     ppl_const_Coefficient_t c) try {
+                                     ppl_const_Coefficient_t c) try {
   const Coefficient& cc = *to_const(c);
   *pc = to_nonconst(new Coefficient(cc));
   return 0;
@@ -409,7 +409,7 @@ CATCH_ALL
 
 int
 ppl_assign_Coefficient_from_Coefficient(ppl_Coefficient_t dst,
-					ppl_const_Coefficient_t src) try {
+                                        ppl_const_Coefficient_t src) try {
   const Coefficient& ssrc = *to_const(src);
   Coefficient& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -433,8 +433,8 @@ int
 ppl_Coefficient_min(mpz_t min) try {
   if (std::numeric_limits<Coefficient>::is_bounded) {
     assign_r(reinterpret_mpz_class(min),
-	     std::numeric_limits<Coefficient>::min(),
-	     ROUND_NOT_NEEDED);
+             std::numeric_limits<Coefficient>::min(),
+             ROUND_NOT_NEEDED);
     return 1;
   }
   else
@@ -446,8 +446,8 @@ int
 ppl_Coefficient_max(mpz_t max) try {
   if (std::numeric_limits<Coefficient>::is_bounded) {
     assign_r(reinterpret_mpz_class(max),
-	     std::numeric_limits<Coefficient>::max(),
-	     ROUND_NOT_NEEDED);
+             std::numeric_limits<Coefficient>::max(),
+             ROUND_NOT_NEEDED);
     return 1;
   }
   else
@@ -466,10 +466,10 @@ CATCH_ALL
 
 int
 ppl_new_Linear_Expression_with_dimension(ppl_Linear_Expression_t* ple,
-					 ppl_dimension_type d) try {
+                                         ppl_dimension_type d) try {
   *ple = to_nonconst(d == 0
-		     ? new Linear_Expression(0)
-		     : new Linear_Expression(0*Variable(d-1)));
+                     ? new Linear_Expression(0)
+                     : new Linear_Expression(0*Variable(d-1)));
   return 0;
 }
 CATCH_ALL
@@ -502,8 +502,8 @@ CATCH_ALL
 
 int
 ppl_Linear_Expression_add_to_coefficient(ppl_Linear_Expression_t le,
-					 ppl_dimension_type var,
-					 ppl_const_Coefficient_t n) try {
+                                         ppl_dimension_type var,
+                                         ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
   const Coefficient& nn = *to_const(n);
   add_mul_assign(lle, nn, Variable(var));
@@ -513,7 +513,7 @@ CATCH_ALL
 
 int
 ppl_Linear_Expression_add_to_inhomogeneous(ppl_Linear_Expression_t le,
-					   ppl_const_Coefficient_t n) try {
+                                           ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
   const Coefficient& nn = *to_const(n);
   lle += nn;
@@ -543,7 +543,7 @@ CATCH_ALL
 
 int
 ppl_multiply_Linear_Expression_by_Coefficient(ppl_Linear_Expression_t le,
-					      ppl_const_Coefficient_t n) try {
+                                              ppl_const_Coefficient_t n) try {
   Linear_Expression& lle = *to_nonconst(le);
   const Coefficient& nn = *to_const(n);
   lle *= nn;
@@ -553,7 +553,7 @@ CATCH_ALL
 
 int
 ppl_Linear_Expression_space_dimension(ppl_const_Linear_Expression_t le,
-				      ppl_dimension_type* m) try {
+                                      ppl_dimension_type* m) try {
   *m = to_const(le)->space_dimension();
   return 0;
 }
@@ -561,8 +561,8 @@ CATCH_ALL
 
 int
 ppl_Linear_Expression_coefficient(ppl_const_Linear_Expression_t le,
-				  ppl_dimension_type var,
-				  ppl_Coefficient_t n) try {
+                                  ppl_dimension_type var,
+                                  ppl_Coefficient_t n) try {
   const Linear_Expression& lle = *to_const(le);
   Coefficient& nn = *to_nonconst(n);
   nn = lle.coefficient(Variable(var));
@@ -572,7 +572,7 @@ CATCH_ALL
 
 int
 ppl_Linear_Expression_inhomogeneous_term(ppl_const_Linear_Expression_t le,
-					 ppl_Coefficient_t n) try {
+                                         ppl_Coefficient_t n) try {
   const Linear_Expression& lle = *to_const(le);
   Coefficient& nn = *to_nonconst(n);
   nn = lle.inhomogeneous_term();
@@ -603,8 +603,8 @@ CATCH_ALL
 
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
-		   ppl_const_Linear_Expression_t le,
-		   enum ppl_enum_Constraint_Type t) try {
+                   ppl_const_Linear_Expression_t le,
+                   enum ppl_enum_Constraint_Type t) try {
   Constraint* ppc;
   const Linear_Expression& lle = *to_const(le);
   switch (t) {
@@ -625,7 +625,7 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
     break;
   default:
     throw std::invalid_argument("ppl_new_Constraint(pc, le, t): "
-				"t invalid");
+                                "t invalid");
   }
   *pc = to_nonconst(ppc);
   return 0;
@@ -648,7 +648,7 @@ CATCH_ALL
 
 int
 ppl_new_Constraint_from_Constraint(ppl_Constraint_t* pc,
-				   ppl_const_Constraint_t c) try {
+                                   ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   *pc = to_nonconst(new Constraint(cc));
   return 0;
@@ -664,7 +664,7 @@ CATCH_ALL
 
 int
 ppl_assign_Constraint_from_Constraint(ppl_Constraint_t dst,
-				      ppl_const_Constraint_t src) try {
+                                      ppl_const_Constraint_t src) try {
   const Constraint& ssrc = *to_const(src);
   Constraint& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -674,7 +674,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_space_dimension(ppl_const_Constraint_t c,
-			       ppl_dimension_type* m) try {
+                               ppl_dimension_type* m) try {
   *m = to_const(c)->space_dimension();
   return 0;
 }
@@ -696,8 +696,8 @@ CATCH_ALL
 
 int
 ppl_Constraint_coefficient(ppl_const_Constraint_t c,
-			   ppl_dimension_type var,
-			   ppl_Coefficient_t n) try {
+                           ppl_dimension_type var,
+                           ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
   Coefficient& nn = *to_nonconst(n);
   nn = cc.coefficient(Variable(var));
@@ -707,7 +707,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
-				  ppl_Coefficient_t n) try {
+                                  ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
   Coefficient& nn = *to_nonconst(n);
   nn = cc.inhomogeneous_term();
@@ -723,7 +723,7 @@ CATCH_ALL
 
 int
 ppl_new_Linear_Expression_from_Constraint(ppl_Linear_Expression_t* ple,
-					  ppl_const_Constraint_t c) try {
+                                          ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   *ple = to_nonconst(new Linear_Expression(cc.expression()));
   return 0;
@@ -742,7 +742,7 @@ CATCH_ALL
 int
 ppl_new_Constraint_System_zero_dim_empty(ppl_Constraint_System_t* pcs) try {
   *pcs = to_nonconst(new
-		     Constraint_System(Constraint_System::zero_dim_empty()));
+                     Constraint_System(Constraint_System::zero_dim_empty()));
   return 0;
 }
 CATCH_ALL
@@ -750,7 +750,7 @@ CATCH_ALL
 
 int
 ppl_new_Constraint_System_from_Constraint(ppl_Constraint_System_t* pcs,
-					  ppl_const_Constraint_t c) try {
+                                          ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   *pcs = to_nonconst(new Constraint_System(cc));
   return 0;
@@ -785,7 +785,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_System_space_dimension(ppl_const_Constraint_System_t cs,
-				      ppl_dimension_type* m) try {
+                                      ppl_dimension_type* m) try {
   *m = to_const(cs)->space_dimension();
   return 0;
 }
@@ -816,7 +816,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_System_insert_Constraint(ppl_Constraint_System_t cs,
-					ppl_const_Constraint_t c) try {
+                                        ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   Constraint_System& ccs = *to_nonconst(cs);
   ccs.insert(cc);
@@ -871,7 +871,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_System_begin(ppl_const_Constraint_System_t cs,
-			    ppl_Constraint_System_const_iterator_t cit) try {
+                            ppl_Constraint_System_const_iterator_t cit) try {
   const Constraint_System& ccs = *to_const(cs);
   Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.begin();
@@ -881,7 +881,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_System_end(ppl_const_Constraint_System_t cs,
-			  ppl_Constraint_System_const_iterator_t cit) try {
+                          ppl_Constraint_System_const_iterator_t cit) try {
   const Constraint_System& ccs = *to_const(cs);
   Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.end();
@@ -923,9 +923,9 @@ CATCH_ALL
 
 int
 ppl_new_Generator(ppl_Generator_t* pg,
-		  ppl_const_Linear_Expression_t le,
-		  enum ppl_enum_Generator_Type t,
-		  ppl_const_Coefficient_t d) try {
+                  ppl_const_Linear_Expression_t le,
+                  enum ppl_enum_Generator_Type t,
+                  ppl_const_Coefficient_t d) try {
   Generator* ppg;
   const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
@@ -966,7 +966,7 @@ CATCH_ALL
 
 int
 ppl_new_Generator_from_Generator(ppl_Generator_t* pg,
-				 ppl_const_Generator_t g) try {
+                                 ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
   *pg = to_nonconst(new Generator(gg));
   return 0;
@@ -982,7 +982,7 @@ CATCH_ALL
 
 int
 ppl_assign_Generator_from_Generator(ppl_Generator_t dst,
-				      ppl_const_Generator_t src) try {
+                                      ppl_const_Generator_t src) try {
   const Generator& ssrc = *to_const(src);
   Generator& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -992,7 +992,7 @@ CATCH_ALL
 
 int
 ppl_Generator_space_dimension(ppl_const_Generator_t g,
-			      ppl_dimension_type* m) try {
+                              ppl_dimension_type* m) try {
   *m = to_const(g)->space_dimension();
   return 0;
 }
@@ -1016,8 +1016,8 @@ CATCH_ALL
 
 int
 ppl_Generator_coefficient(ppl_const_Generator_t g,
-			  ppl_dimension_type var,
-			  ppl_Coefficient_t n) try {
+                          ppl_dimension_type var,
+                          ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
   Coefficient& nn = *to_nonconst(n);
   nn = gg.coefficient(Variable(var));
@@ -1027,7 +1027,7 @@ CATCH_ALL
 
 int
 ppl_Generator_divisor(ppl_const_Generator_t g,
-		      ppl_Coefficient_t n) try {
+                      ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
   Coefficient& nn = *to_nonconst(n);
   nn = gg.divisor();
@@ -1043,7 +1043,7 @@ CATCH_ALL
 
 int
 ppl_new_Linear_Expression_from_Generator(ppl_Linear_Expression_t* ple,
-					 ppl_const_Generator_t g) try {
+                                         ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
   *ple = to_nonconst(new Linear_Expression(gg.expression()));
   return 0;
@@ -1068,7 +1068,7 @@ CATCH_ALL
 
 int
 ppl_new_Generator_System_from_Generator(ppl_Generator_System_t* pgs,
-			      ppl_const_Generator_t g) try {
+                              ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
   *pgs = to_nonconst(new Generator_System(gg));
   return 0;
@@ -1103,7 +1103,7 @@ CATCH_ALL
 
 int
 ppl_Generator_System_space_dimension(ppl_const_Generator_System_t gs,
-				     ppl_dimension_type* m) try {
+                                     ppl_dimension_type* m) try {
   *m = to_const(gs)->space_dimension();
   return 0;
 }
@@ -1126,7 +1126,7 @@ CATCH_ALL
 
 int
 ppl_Generator_System_insert_Generator(ppl_Generator_System_t gs,
-				      ppl_const_Generator_t g) try {
+                                      ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
   Generator_System& ggs = *to_nonconst(gs);
   ggs.insert(gg);
@@ -1180,7 +1180,7 @@ CATCH_ALL
 
 int
 ppl_Generator_System_begin(ppl_const_Generator_System_t gs,
-			   ppl_Generator_System_const_iterator_t git) try {
+                           ppl_Generator_System_const_iterator_t git) try {
   const Generator_System& ggs = *to_const(gs);
   Generator_System::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.begin();
@@ -1190,7 +1190,7 @@ CATCH_ALL
 
 int
 ppl_Generator_System_end(ppl_const_Generator_System_t gs,
-			 ppl_Generator_System_const_iterator_t git) try {
+                         ppl_Generator_System_const_iterator_t git) try {
   const Generator_System& ggs = *to_const(gs);
   Generator_System::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.end();
@@ -1232,8 +1232,8 @@ CATCH_ALL
 
 int
 ppl_new_Congruence(ppl_Congruence_t* pc,
-		   ppl_const_Linear_Expression_t le,
-		   ppl_const_Coefficient_t m) try {
+                   ppl_const_Linear_Expression_t le,
+                   ppl_const_Coefficient_t m) try {
   Congruence* ppc;
   const Linear_Expression& lle = *to_const(le);
   const Coefficient& mm = *to_const(m);
@@ -1259,7 +1259,7 @@ CATCH_ALL
 
 int
 ppl_new_Congruence_from_Congruence(ppl_Congruence_t* pc,
-				   ppl_const_Congruence_t c) try {
+                                   ppl_const_Congruence_t c) try {
   const Congruence& cc = *to_const(c);
   *pc = to_nonconst(new Congruence(cc));
   return 0;
@@ -1275,7 +1275,7 @@ CATCH_ALL
 
 int
 ppl_assign_Congruence_from_Congruence(ppl_Congruence_t dst,
-				      ppl_const_Congruence_t src) try {
+                                      ppl_const_Congruence_t src) try {
   const Congruence& ssrc = *to_const(src);
   Congruence& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -1285,7 +1285,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_space_dimension(ppl_const_Congruence_t c,
-			       ppl_dimension_type* m) try {
+                               ppl_dimension_type* m) try {
   *m = to_const(c)->space_dimension();
   return 0;
 }
@@ -1293,8 +1293,8 @@ CATCH_ALL
 
 int
 ppl_Congruence_coefficient(ppl_const_Congruence_t c,
-			   ppl_dimension_type var,
-			   ppl_Coefficient_t n) try {
+                           ppl_dimension_type var,
+                           ppl_Coefficient_t n) try {
   const Congruence& cc = *to_const(c);
   Coefficient& nn = *to_nonconst(n);
   nn = cc.coefficient(Variable(var));
@@ -1304,7 +1304,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_inhomogeneous_term(ppl_const_Congruence_t c,
-				  ppl_Coefficient_t n) try {
+                                  ppl_Coefficient_t n) try {
   const Congruence& cc = *to_const(c);
   Coefficient& nn = *to_nonconst(n);
   nn = cc.inhomogeneous_term();
@@ -1314,7 +1314,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_modulus(ppl_const_Congruence_t c,
-		       ppl_Coefficient_t m) try {
+                       ppl_Coefficient_t m) try {
   const Congruence& cc = *to_const(c);
   Coefficient& mm = *to_nonconst(m);
   mm = cc.modulus();
@@ -1330,7 +1330,7 @@ CATCH_ALL
 
 int
 ppl_new_Linear_Expression_from_Congruence(ppl_Linear_Expression_t* ple,
-					  ppl_const_Congruence_t c) try {
+                                          ppl_const_Congruence_t c) try {
   const Congruence& cc = *to_const(c);
   *ple = to_nonconst(new Linear_Expression(cc.expression()));
   return 0;
@@ -1349,7 +1349,7 @@ CATCH_ALL
 int
 ppl_new_Congruence_System_zero_dim_empty(ppl_Congruence_System_t* pcs) try {
   *pcs = to_nonconst(new
-		     Congruence_System(Congruence_System::zero_dim_empty()));
+                     Congruence_System(Congruence_System::zero_dim_empty()));
   return 0;
 }
 CATCH_ALL
@@ -1357,7 +1357,7 @@ CATCH_ALL
 
 int
 ppl_new_Congruence_System_from_Congruence(ppl_Congruence_System_t* pcs,
-					  ppl_const_Congruence_t c) try {
+                                          ppl_const_Congruence_t c) try {
   const Congruence& cc = *to_const(c);
   *pcs = to_nonconst(new Congruence_System(cc));
   return 0;
@@ -1392,7 +1392,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_System_space_dimension(ppl_const_Congruence_System_t cs,
-				      ppl_dimension_type* m) try {
+                                      ppl_dimension_type* m) try {
   *m = to_const(cs)->space_dimension();
   return 0;
 }
@@ -1415,7 +1415,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_System_insert_Congruence(ppl_Congruence_System_t cs,
-					ppl_const_Congruence_t c) try {
+                                        ppl_const_Congruence_t c) try {
   const Congruence& cc = *to_const(c);
   Congruence_System& ccs = *to_nonconst(cs);
   ccs.insert(cc);
@@ -1470,7 +1470,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_System_begin(ppl_const_Congruence_System_t cs,
-			    ppl_Congruence_System_const_iterator_t cit) try {
+                            ppl_Congruence_System_const_iterator_t cit) try {
   const Congruence_System& ccs = *to_const(cs);
   Congruence_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.begin();
@@ -1480,7 +1480,7 @@ CATCH_ALL
 
 int
 ppl_Congruence_System_end(ppl_const_Congruence_System_t cs,
-			  ppl_Congruence_System_const_iterator_t cit) try {
+                          ppl_Congruence_System_const_iterator_t cit) try {
   const Congruence_System& ccs = *to_const(cs);
   Congruence_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.end();
@@ -1522,9 +1522,9 @@ CATCH_ALL
 
 int
 ppl_new_Grid_Generator(ppl_Grid_Generator_t* pg,
-		       ppl_const_Linear_Expression_t le,
-		       enum ppl_enum_Grid_Generator_Type t,
-		       ppl_const_Coefficient_t d) try {
+                       ppl_const_Linear_Expression_t le,
+                       enum ppl_enum_Grid_Generator_Type t,
+                       ppl_const_Coefficient_t d) try {
   Grid_Generator* ppg;
   const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
@@ -1540,7 +1540,7 @@ ppl_new_Grid_Generator(ppl_Grid_Generator_t* pg,
     break;
   default:
     throw std::invalid_argument("ppl_new_Grid_Generator(pg, le, t, d): "
-				"t invalid");
+                                "t invalid");
   }
   *pg = to_nonconst(ppg);
   return 0;
@@ -1556,7 +1556,7 @@ CATCH_ALL
 
 int
 ppl_new_Grid_Generator_from_Grid_Generator(ppl_Grid_Generator_t* pg,
-					   ppl_const_Grid_Generator_t g) try {
+                                           ppl_const_Grid_Generator_t g) try {
   const Grid_Generator& gg = *to_const(g);
   *pg = to_nonconst(new Grid_Generator(gg));
   return 0;
@@ -1583,7 +1583,7 @@ CATCH_ALL
 
 int
 ppl_Grid_Generator_space_dimension(ppl_const_Grid_Generator_t g,
-				   ppl_dimension_type* m) try {
+                                   ppl_dimension_type* m) try {
   *m = to_const(g)->space_dimension();
   return 0;
 }
@@ -1605,8 +1605,8 @@ CATCH_ALL
 
 int
 ppl_Grid_Generator_coefficient(ppl_const_Grid_Generator_t g,
-			       ppl_dimension_type var,
-			       ppl_Coefficient_t n) try {
+                               ppl_dimension_type var,
+                               ppl_Coefficient_t n) try {
   const Grid_Generator& gg = *to_const(g);
   Coefficient& nn = *to_nonconst(n);
   nn = gg.coefficient(Variable(var));
@@ -1616,7 +1616,7 @@ CATCH_ALL
 
 int
 ppl_Grid_Generator_divisor(ppl_const_Grid_Generator_t g,
-			   ppl_Coefficient_t n) try {
+                           ppl_Coefficient_t n) try {
   const Grid_Generator& gg = *to_const(g);
   Coefficient& nn = *to_nonconst(n);
   nn = gg.divisor();
@@ -1696,7 +1696,7 @@ CATCH_ALL
 
 int
 ppl_Grid_Generator_System_space_dimension(ppl_const_Grid_Generator_System_t gs,
-					  ppl_dimension_type* m) try {
+                                          ppl_dimension_type* m) try {
   *m = to_const(gs)->space_dimension();
   return 0;
 }
@@ -1835,9 +1835,9 @@ CATCH_ALL
 
 int
 ppl_new_MIP_Problem(ppl_MIP_Problem_t* pmip,
-		    ppl_dimension_type d,
-		    ppl_const_Constraint_System_t cs,
-		    ppl_const_Linear_Expression_t le, int m) try {
+                    ppl_dimension_type d,
+                    ppl_const_Constraint_System_t cs,
+                    ppl_const_Linear_Expression_t le, int m) try {
   const Constraint_System& ccs = *to_const(cs);
   const Linear_Expression& lle = *to_const(le);
   Optimization_Mode mm = (m == PPL_OPTIMIZATION_MODE_MINIMIZATION)
@@ -1849,7 +1849,7 @@ CATCH_ALL
 
 int
 ppl_new_MIP_Problem_from_MIP_Problem(ppl_MIP_Problem_t* pmip,
-				     ppl_const_MIP_Problem_t mip) try {
+                                     ppl_const_MIP_Problem_t mip) try {
   const MIP_Problem& mmip = *to_const(mip);
   *pmip = to_nonconst(new MIP_Problem(mmip));
   return 0;
@@ -1865,7 +1865,7 @@ CATCH_ALL
 
 int
 ppl_assign_MIP_Problem_from_MIP_Problem(ppl_MIP_Problem_t dst,
-					ppl_const_MIP_Problem_t src) try {
+                                        ppl_const_MIP_Problem_t src) try {
   const MIP_Problem& ssrc = *to_const(src);
   MIP_Problem& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -1875,7 +1875,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_space_dimension(ppl_const_MIP_Problem_t mip,
-				ppl_dimension_type* m) try {
+                                ppl_dimension_type* m) try {
   *m = to_const(mip)->space_dimension();
   return 0;
 }
@@ -1883,7 +1883,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_number_of_integer_space_dimensions(ppl_const_MIP_Problem_t mip,
-						   ppl_dimension_type* m) try {
+                                                   ppl_dimension_type* m) try {
   const MIP_Problem& mmip = *to_const(mip);
   *m = mmip.integer_space_dimensions().size();
   return 0;
@@ -1892,11 +1892,11 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_integer_space_dimensions(ppl_const_MIP_Problem_t mip,
-					 ppl_dimension_type ds[]) try {
+                                         ppl_dimension_type ds[]) try {
   const Variables_Set& vars = to_const(mip)->integer_space_dimensions();
   ppl_dimension_type* ds_i = ds;
   for (Variables_Set::const_iterator v_iter = vars.begin(),
-	 v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
+         v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
     *ds_i = *v_iter;
   return 0;
 }
@@ -1904,7 +1904,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_number_of_constraints(ppl_const_MIP_Problem_t mip,
-				      ppl_dimension_type* m) try {
+                                      ppl_dimension_type* m) try {
   const MIP_Problem& mmip = *to_const(mip);
   *m = static_cast<ppl_dimension_type>(mmip.constraints_end() - mmip.constraints_begin());
   return 0;
@@ -1913,8 +1913,8 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_constraint_at_index(ppl_const_MIP_Problem_t mip,
-				    ppl_dimension_type i,
-				    ppl_const_Constraint_t* pc) try {
+                                    ppl_dimension_type i,
+                                    ppl_const_Constraint_t* pc) try {
 #ifndef NDEBUG
   ppl_dimension_type num_constraints;
   ppl_MIP_Problem_number_of_constraints(mip, &num_constraints);
@@ -1929,7 +1929,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_objective_function(ppl_const_MIP_Problem_t mip,
-				   ppl_const_Linear_Expression_t* ple) try {
+                                   ppl_const_Linear_Expression_t* ple) try {
   const Linear_Expression& le = to_const(mip)->objective_function();
   *ple = to_const(&le);
   return 0;
@@ -1951,7 +1951,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_add_space_dimensions_and_embed(ppl_MIP_Problem_t mip,
-					       ppl_dimension_type d) try {
+                                               ppl_dimension_type d) try {
   MIP_Problem& mmip = *to_nonconst(mip);
   mmip.add_space_dimensions_and_embed(d);
   return 0;
@@ -1960,8 +1960,8 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_MIP_Problem_t mip,
-					        ppl_dimension_type ds[],
-					        size_t n) try {
+                                                ppl_dimension_type ds[],
+                                                size_t n) try {
   MIP_Problem& mmip = *to_nonconst(mip);
   Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
@@ -1973,7 +1973,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_add_constraint(ppl_MIP_Problem_t mip,
-			       ppl_const_Constraint_t c) try {
+                               ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   MIP_Problem& mmip = *to_nonconst(mip);
   mmip.add_constraint(cc);
@@ -1983,7 +1983,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_add_constraints(ppl_MIP_Problem_t mip,
-				ppl_const_Constraint_System_t cs) try {
+                                ppl_const_Constraint_System_t cs) try {
   const Constraint_System& ccs = *to_const(cs);
   MIP_Problem& mmip = *to_nonconst(mip);
   mmip.add_constraints(ccs);
@@ -1993,7 +1993,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_set_objective_function(ppl_MIP_Problem_t mip,
-				       ppl_const_Linear_Expression_t le) try {
+                                       ppl_const_Linear_Expression_t le) try {
   const Linear_Expression& lle = *to_const(le);
   MIP_Problem& mmip = *to_nonconst(mip);
   mmip.set_objective_function(lle);
@@ -2025,9 +2025,9 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_evaluate_objective_function(ppl_const_MIP_Problem_t mip,
-					    ppl_const_Generator_t g,
-					    ppl_Coefficient_t num,
-					    ppl_Coefficient_t den) try {
+                                            ppl_const_Generator_t g,
+                                            ppl_Coefficient_t num,
+                                            ppl_Coefficient_t den) try {
   const MIP_Problem& mmip = *to_const(mip);
   const Generator& gg = *to_const(g);
   Coefficient& nnum = *to_nonconst(num);
@@ -2039,7 +2039,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_feasible_point(ppl_const_MIP_Problem_t mip,
-			       ppl_const_Generator_t* pg) try {
+                               ppl_const_Generator_t* pg) try {
   const Generator& g = to_const(mip)->feasible_point();
   *pg = to_const(&g);
   return 0;
@@ -2048,7 +2048,7 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_optimizing_point(ppl_const_MIP_Problem_t mip,
-				 ppl_const_Generator_t* pg) try {
+                                 ppl_const_Generator_t* pg) try {
   const Generator& g = to_const(mip)->optimizing_point();
   *pg = to_const(&g);
   return 0;
@@ -2057,8 +2057,8 @@ CATCH_ALL
 
 int
 ppl_MIP_Problem_optimal_value(ppl_const_MIP_Problem_t mip,
-			      ppl_Coefficient_t num,
-			      ppl_Coefficient_t den) try {
+                              ppl_Coefficient_t num,
+                              ppl_Coefficient_t den) try {
   Coefficient& nnum = *to_nonconst(num);
   Coefficient& dden = *to_nonconst(den);
   to_const(mip)->optimal_value(nnum, dden);
@@ -2117,7 +2117,7 @@ CATCH_ALL
 
 int
 ppl_new_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t* dpip,
-				     ppl_const_PIP_Problem_t pip) try {
+                                     ppl_const_PIP_Problem_t pip) try {
   const PIP_Problem& spip = *to_const(pip);
   *dpip = to_nonconst(new PIP_Problem(spip));
   return 0;
@@ -2143,7 +2143,7 @@ CATCH_ALL
 
 int
 ppl_assign_PIP_Problem_from_PIP_Problem(ppl_PIP_Problem_t dst,
-					ppl_const_PIP_Problem_t src) try {
+                                        ppl_const_PIP_Problem_t src) try {
   const PIP_Problem& ssrc = *to_const(src);
   PIP_Problem& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -2160,7 +2160,7 @@ CATCH_ALL
 
 int
 ppl_PIP_Problem_space_dimension(ppl_const_PIP_Problem_t pip,
-				ppl_dimension_type* m) try {
+                                ppl_dimension_type* m) try {
   *m = to_const(pip)->space_dimension();
   return 0;
 }
@@ -2181,7 +2181,7 @@ ppl_PIP_Problem_parameter_space_dimensions(ppl_const_PIP_Problem_t pip,
   const Variables_Set& vars = to_const(pip)->parameter_space_dimensions();
   ppl_dimension_type* ds_i = ds;
   for (Variables_Set::const_iterator v_iter = vars.begin(),
-	 v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
+         v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
     *ds_i = *v_iter;
   return 0;
 }
@@ -2189,7 +2189,7 @@ CATCH_ALL
 
 int
 ppl_PIP_Problem_number_of_constraints(ppl_const_PIP_Problem_t pip,
-				      ppl_dimension_type* m) try {
+                                      ppl_dimension_type* m) try {
   const PIP_Problem& ppip = *to_const(pip);
   *m = static_cast<ppl_dimension_type>(ppip.constraints_end() - ppip.constraints_begin());
   return 0;
@@ -2198,8 +2198,8 @@ CATCH_ALL
 
 int
 ppl_PIP_Problem_constraint_at_index(ppl_const_PIP_Problem_t pip,
-				    ppl_dimension_type i,
-				    ppl_const_Constraint_t* pc) try {
+                                    ppl_dimension_type i,
+                                    ppl_const_Constraint_t* pc) try {
 #ifndef NDEBUG
   ppl_dimension_type num_constraints;
   ppl_PIP_Problem_number_of_constraints(pip, &num_constraints);
@@ -2219,8 +2219,8 @@ ppl_PIP_Problem_clear(ppl_PIP_Problem_t pip) try {
 CATCH_ALL
 int
 ppl_PIP_Problem_add_space_dimensions_and_embed(ppl_PIP_Problem_t pip,
-					       ppl_dimension_type pip_vars,
-					       ppl_dimension_type pip_params)
+                                               ppl_dimension_type pip_vars,
+                                               ppl_dimension_type pip_params)
   try {
   PIP_Problem& spip = *to_nonconst(pip);
   spip.add_space_dimensions_and_embed(pip_vars,pip_params);
@@ -2229,8 +2229,8 @@ ppl_PIP_Problem_add_space_dimensions_and_embed(ppl_PIP_Problem_t pip,
 CATCH_ALL
 int
 ppl_PIP_Problem_add_to_parameter_space_dimensions(ppl_PIP_Problem_t pip,
-					          ppl_dimension_type ds[],
-					          size_t n) try {
+                                                  ppl_dimension_type ds[],
+                                                  size_t n) try {
   PIP_Problem& ppip = *to_nonconst(pip);
   Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
@@ -2241,7 +2241,7 @@ ppl_PIP_Problem_add_to_parameter_space_dimensions(ppl_PIP_Problem_t pip,
 CATCH_ALL
 int
 ppl_PIP_Problem_add_constraint(ppl_PIP_Problem_t pip,
-			       ppl_const_Constraint_t c) try {
+                               ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
   PIP_Problem& ppip = *to_nonconst(pip);
   ppip.add_constraint(cc);
@@ -2251,7 +2251,7 @@ CATCH_ALL
 
 int
 ppl_PIP_Problem_add_constraints(ppl_PIP_Problem_t pip,
-				ppl_const_Constraint_System_t cs) try {
+                                ppl_const_Constraint_System_t cs) try {
   const Constraint_System& ccs = *to_const(cs);
   PIP_Problem& ppip = *to_nonconst(pip);
   ppip.add_constraints(ccs);
@@ -2376,7 +2376,7 @@ CATCH_ALL
 
 int
 ppl_PIP_Tree_Node_number_of_artificials(ppl_const_PIP_Tree_Node_t pip_tree,
-					ppl_dimension_type* m) try {
+                                        ppl_dimension_type* m) try {
   const PIP_Tree_Node& node = *to_const(pip_tree);
   *m = node.art_parameter_count();
   return 0;
@@ -2616,13 +2616,13 @@ DEFINE_OUTPUT_FUNCTIONS(Artificial_Parameter)
 
 char*
 ppl_io_wrap_string(const char* src,
-		   unsigned indent_depth,
-		   unsigned preferred_first_line_length,
-		   unsigned preferred_line_length) {
+                   unsigned indent_depth,
+                   unsigned preferred_first_line_length,
+                   unsigned preferred_line_length) {
   using namespace IO_Operators;
   return strdup(wrap_string(src, indent_depth,
-			    preferred_first_line_length,
-			    preferred_line_length).c_str());
+                            preferred_first_line_length,
+                            preferred_line_length).c_str());
 }
 
 int

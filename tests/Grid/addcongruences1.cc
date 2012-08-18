@@ -148,7 +148,7 @@ test05() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_congruences(cgs) ***");
+                    "*** gr.add_recycled_congruences(cgs) ***");
 
   return ok;
 }
@@ -195,7 +195,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_congruences(cgs) ***");
+                    "*** gr.add_recycled_congruences(cgs) ***");
 
   return ok;
 }
@@ -223,7 +223,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_congruences(cgs) ***");
+                    "*** gr.add_recycled_congruences(cgs) ***");
 
   return ok;
 }
@@ -250,7 +250,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_congruences(cgs) ***");
+                    "*** gr.add_recycled_congruences(cgs) ***");
 
   return ok;
 }
@@ -310,7 +310,7 @@ test11() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_congruences(cgs) ***");
+                    "*** gr.add_recycled_congruences(cgs) ***");
 
   return ok;
 }

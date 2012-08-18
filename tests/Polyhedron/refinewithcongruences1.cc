@@ -89,7 +89,7 @@ test03() {
   bool ok = (computed_result == ph);
 
   print_constraints(computed_result,
-		    "*** after refine_with_congruences ***");
+                    "*** after refine_with_congruences ***");
 
   return ok;
 }
