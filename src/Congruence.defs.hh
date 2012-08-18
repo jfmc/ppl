@@ -210,10 +210,10 @@ public:
 
   void permute_space_dimensions(const std::vector<Variable>& cycles);
 
-  typedef Linear_Expression expr_type;
-  typedef Expression_Adapter<Congruence> Expression;
-
-  const Expression& expression() const;
+  //! The type of the (adapted) internal expression.
+  typedef Expression_Adapter_Transparent<Linear_Expression> expr_type;
+  //! Partial read access to the (adapted) internal expression.
+  expr_type expression() const;
 
   //! Returns the coefficient of \p v in \p *this.
   /*!
@@ -454,7 +454,6 @@ private:
   friend bool
   operator!=(const Congruence& x, const Congruence& y);
 
-  friend class Expression_Adapter<Congruence>;
   friend class Scalar_Products;
   friend class Grid;
 };
@@ -499,9 +498,6 @@ operator/(const Constraint& c, Coefficient_traits::const_reference m);
 /*! \relates Congruence */
 void
 swap(Congruence& x, Congruence& y);
-
-// Declare specializations of adapter functions.
-PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Congruence)
 
 } // namespace Parma_Polyhedra_Library
 

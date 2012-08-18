@@ -38,6 +38,11 @@ Constraint::is_not_necessarily_closed() const {
   return !is_necessarily_closed();
 }
 
+inline Constraint::expr_type
+Constraint::expression() const {
+  return expr_type(expr, is_not_necessarily_closed());
+}
+
 inline dimension_type
 Constraint::space_dimension() const {
   return expression().space_dimension();
@@ -199,11 +204,6 @@ Constraint::operator=(const Constraint& c) {
   swap(*this, tmp);
 
   return *this;
-}
-
-inline const Constraint::Expression&
-Constraint::expression() const {
-  return reinterpret_cast<const Constraint::Expression&>(*this);
 }
 
 inline Representation
@@ -567,18 +567,6 @@ Constraint::set_epsilon_coefficient(Coefficient_traits::const_reference n) {
 inline void
 swap(Constraint& x, Constraint& y) {
   x.m_swap(y);
-}
-
-template <>
-inline Expression_Adapter<Constraint>::obj_expr_type const&
-Expression_Adapter<Constraint>::obj_expr() const {
-  return obj().expr;
-}
-
-template <>
-inline bool
-Expression_Adapter<Constraint>::hiding_last() const {
-  return obj().is_not_necessarily_closed();
 }
 
 } // namespace Parma_Polyhedra_Library

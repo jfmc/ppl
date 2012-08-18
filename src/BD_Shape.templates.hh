@@ -85,7 +85,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         dbm_initialized = true;
         const Coefficient& d = g.divisor();
         // TODO: Check if the following loop can be optimized used
-        // Generator::Expression::const_iterator.
+        // Generator::expr_type::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
           const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
@@ -107,7 +107,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         // valid values and we must compute maxima.
         const Coefficient& d = g.divisor();
         // TODO: Check if the following loop can be optimized used
-        // Generator::Expression::const_iterator.
+        // Generator::expr_type::const_iterator.
         for (dimension_type i = space_dim; i > 0; --i) {
           const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
@@ -146,7 +146,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
     switch (g.type()) {
     case Generator::LINE:
       // TODO: Check if the following loop can be optimized used
-      // Generator::Expression::const_iterator.
+      // Generator::expr_type::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
         const Coefficient& g_i = g.expression().get(Variable(i - 1));
         DB_Row<N>& dbm_i = dbm[i];
@@ -157,14 +157,14 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         if (g_i != 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
-      for (Generator::Expression::const_iterator i = g.expression().begin(),
+      for (Generator::expr_type::const_iterator i = g.expression().begin(),
             i_end = g.expression().end(); i != i_end; ++i)
         assign_r(dbm_0[i.variable().space_dimension()],
                  PLUS_INFINITY, ROUND_NOT_NEEDED);
       break;
     case Generator::RAY:
       // TODO: Check if the following loop can be optimized used
-      // Generator::Expression::const_iterator.
+      // Generator::expr_type::const_iterator.
       for (dimension_type i = space_dim; i > 0; --i) {
         const Coefficient& g_i = g.expression().get(Variable(i - 1));
         DB_Row<N>& dbm_i = dbm[i];
@@ -175,7 +175,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         if (g_i < 0)
           assign_r(dbm_i[0], PLUS_INFINITY, ROUND_NOT_NEEDED);
       }
-      for (Generator::Expression::const_iterator i = g.expression().begin(),
+      for (Generator::expr_type::const_iterator i = g.expression().begin(),
             i_end = g.expression().end(); i != i_end; ++i)
         if (*i > 0)
           assign_r(dbm_0[i.variable().space_dimension()],

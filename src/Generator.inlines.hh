@@ -36,6 +36,11 @@ Generator::is_not_necessarily_closed() const {
   return (topology() == NOT_NECESSARILY_CLOSED);
 }
 
+inline Generator::expr_type
+Generator::expression() const {
+  return expr_type(expr, is_not_necessarily_closed());
+}
+
 inline dimension_type
 Generator::space_dimension() const {
   return expression().space_dimension();
@@ -195,11 +200,6 @@ Generator::operator=(const Generator& g) {
   swap(*this, tmp);
 
   return *this;
-}
-
-inline const Generator::Expression&
-Generator::expression() const {
-  return reinterpret_cast<const Generator::Expression&>(*this);
 }
 
 inline Representation
@@ -699,18 +699,6 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 inline void
 swap(Generator& x, Generator& y) {
   x.m_swap(y);
-}
-
-template <>
-inline Expression_Adapter<Generator>::obj_expr_type const&
-Expression_Adapter<Generator>::obj_expr() const {
-  return obj().expr;
-}
-
-template <>
-inline bool
-Expression_Adapter<Generator>::hiding_last() const {
-  return obj().is_not_necessarily_closed();
 }
 
 } // namespace Parma_Polyhedra_Library

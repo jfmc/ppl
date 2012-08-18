@@ -31,24 +31,42 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Sparse_Row.defs.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A Linear_Expression-like object that hides the inhomogeneous term.
-//! The methods of this class always pretend that it's 0.
+/*! \brief
+  An adapter for Linear_Expression that hides the inhomogeneous term.
+
+  The methods of this class always pretend that the value of the
+  inhomogeneous term is zero.
+*/
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::Expression_Hide_Inhomo
   : public Expression_Adapter<T> {
-public:
   typedef Expression_Adapter<T> base_type;
+public:
+  //! The type of this object.
+  typedef Expression_Hide_Inhomo<T> const_reference;
+  //! The type obtained by one-level unwrapping.
+  typedef typename base_type::inner_type inner_type;
+  //! The raw, completely unwrapped type.
+  typedef typename base_type::raw_type raw_type;
+
+  //! Constructor.
+  explicit Expression_Hide_Inhomo(const raw_type& expr);
+
+public:
+  //! The type of const iterators on coefficients.
   typedef typename base_type::const_iterator const_iterator;
 
   //! Returns the constant zero.
   Coefficient_traits::const_reference inhomogeneous_term() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+  //! Returns <CODE>true</CODE> if and only if \p *this is zero.
   bool is_zero() const;
 
-  //! Returns \p true if *this is equal to \p y.
-  //! Note that (*this == y) has a completely different meaning.
+  /*! \brief Returns \p true if \p *this is equal to \p y.
+
+    Note that <CODE>(*this == y)</CODE> has a completely different meaning.
+  */
   template <typename Expression>
   bool is_equal_to(const Expression& y) const;
 
@@ -60,13 +78,13 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in
-    \p vars[i] is \f$0\f$.
+    \p vars is zero.
   */
   bool all_zeroes(const Variables_Set& vars) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
-    [start, end).
+    Returns <CODE>true</CODE> if (*this)[i] is zero,
+    for each i in [start, end).
   */
   bool all_zeroes(dimension_type start, dimension_type end) const;
 
@@ -77,11 +95,11 @@ public:
 
   /*! \brief
     Returns the gcd of the nonzero coefficients in [start,end). If all the
-    coefficients in this range are 0 returns 0.
+    coefficients in this range are zero, returns zero.
   */
   Coefficient gcd(dimension_type start, dimension_type end) const;
 
-  //! Returns the index of the last nonzero element, or 0 if there are no
+  //! Returns the index of the last nonzero element, or zero if there are no
   //! nonzero elements.
   dimension_type last_nonzero() const;
 
@@ -89,37 +107,38 @@ public:
   //! if there are no nonzero elements.
   dimension_type last_nonzero(dimension_type first, dimension_type last) const;
 
-  //! Returns the index of the first nonzero element, or \p last if there are no
-  //! nonzero elements, considering only elements in [first,last).
+  //! Returns the index of the first nonzero element, or \p last if there
+  //! are no nonzero elements, considering only elements in [first,last).
   dimension_type first_nonzero(dimension_type first, dimension_type last) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
-    \f$0\f$, disregarding coefficients of variables in \p vars.
+    Returns <CODE>true</CODE> if all coefficients in [start,end),
+    except those corresponding to variables in \p vars, are zero.
   */
   bool all_zeroes_except(const Variables_Set& vars,
                          dimension_type start, dimension_type end) const;
 
-  //! Removes from the set x all the indexes of nonzero elements of *this.
+  //! Removes from set \p x all the indexes of nonzero elements in \p *this.
   void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
 
-  //! Returns \p true if (*this)[i] is equal to y[i], for each i in [start,end).
+  //! Returns \c true if <CODE>(*this)[i]</CODE> is equal to <CODE>y[i]</CODE>,
+  //! for each i in [start,end).
   template <typename Expression>
   bool is_equal_to(const Expression& y,
                    dimension_type start, dimension_type end) const;
 
-  //! Returns \p true if (*this)[i]*c1 is equal to y[i]*c2, for each i in
-  //! [start,end).
+  //! Returns \c true if <CODE>(*this)[i]*c1</CODE> is equal to
+  //! <CODE>y[i]*c2</CODE>, for each i in [start,end).
   template <typename Expression>
   bool is_equal_to(const Expression& y,
                    Coefficient_traits::const_reference c1,
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
 
-  //! Sets `row' to a copy of the row that implements *this.
+  //! Sets \p row to a copy of the row as adapted by \p *this.
   void get_row(Dense_Row& row) const;
 
-  //! Sets `row' to a copy of the row that implements *this.
+  //! Sets \p row to a copy of the row as adapted by \p *this.
   void get_row(Sparse_Row& row) const;
 };
 

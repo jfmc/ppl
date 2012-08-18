@@ -526,12 +526,11 @@ public:
   //! Swaps \p *this with \p y.
   void m_swap(Generator& y);
 
-  typedef Linear_Expression expr_type;
-  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Generator> > Expression;
-
-  //! Allows user code to read the internal expression (but note that this
-  //! is a different type, not all operations are allowed).
-  const Expression& expression() const;
+  //! The type of the (adapted) internal expression.
+  typedef Expression_Hide_Last<Expression_Hide_Inhomo<Linear_Expression> >
+  expr_type;
+  //! Partial read access to the (adapted) internal expression.
+  expr_type expression() const;
 
 private:
   //! The possible kinds of Generator objects.
@@ -1023,9 +1022,6 @@ namespace IO_Operators {
 std::ostream& operator<<(std::ostream& s, const Generator::Type& t);
 
 } // namespace IO_Operators
-
-// Declare specializations of adapter functions.
-PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Generator)
 
 } // namespace Parma_Polyhedra_Library
 

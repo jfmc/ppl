@@ -31,22 +31,31 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Sparse_Row.defs.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A Linear_Expression-like object that may or may not hide the last
-//! coefficient.
+//! An adapter for Linear_Expression that maybe hides the last coefficient.
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::Expression_Hide_Last
   : public Expression_Adapter<T> {
-public:
   typedef Expression_Adapter<T> base_type;
+public:
+  //! The type of this object.
+  typedef Expression_Hide_Last<T> const_reference;
+  //! The type obtained by one-level unwrapping.
+  typedef typename base_type::inner_type inner_type;
+  //! The raw, completely unwrapped type.
+  typedef typename base_type::raw_type raw_type;
+
+  //! The type of const iterators on coefficients.
   typedef typename base_type::const_iterator const_iterator;
 
-  //! Returns an iterator that points to the last nonzero coefficient in the
-  //! expression.
+  //! Constructor.
+  explicit Expression_Hide_Last(const raw_type& expr, bool hide_last);
+
+  //! Iterator pointing after the last nonzero variable coefficient.
   const_iterator end() const;
 
-  //! Returns an iterator that points to the first nonzero coefficient of a
-  //! variable bigger than or equal to v.
+  //! Iterator pointing to the first nonzero variable coefficient
+  //! of a variable bigger than or equal to \p v.
   const_iterator lower_bound(Variable v) const;
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -55,55 +64,55 @@ public:
   //! Returns the coefficient of \p v in \p *this.
   Coefficient_traits::const_reference coefficient(Variable v) const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is \f$0\f$.
+  //! Returns <CODE>true</CODE> if and only if \p *this is zero.
   bool is_zero() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if all the homogeneous
-    terms of \p *this are \f$0\f$.
+    terms of \p *this are zero.
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  //! Returns \p true if *this is equal to \p y.
-  //! Note that (*this == y) has a completely different meaning.
+  /*! \brief Returns \p true if \p *this is equal to \p y.
+
+    Note that <CODE>(*this == y)</CODE> has a completely different meaning.
+  */
   template <typename Expression>
   bool is_equal_to(const Expression& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the coefficient of each variable in
-    \p vars[i] is \f$0\f$.
+    \p vars is zero.
   */
   bool all_zeroes(const Variables_Set& vars) const;
 
-  //! Returns the i-th coefficient.
+  //! Returns the \p i -th coefficient.
   Coefficient_traits::const_reference get(dimension_type i) const;
 
-  //! Returns the coefficient of v.
+  //! Returns the coefficient of variable \p v.
   Coefficient_traits::const_reference get(Variable v) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if (*this)[i] is \f$0\f$, for each i in
-    [start, end).
+    Returns <CODE>true</CODE> if (*this)[i] is zero,
+    for each i in [start, end).
   */
   bool all_zeroes(dimension_type start, dimension_type end) const;
 
-  /*! \brief
-    Returns the number of zero coefficient in [start, end).
-  */
+  //! Returns the number of zero coefficient in [start, end).
   dimension_type num_zeroes(dimension_type start, dimension_type end) const;
 
   /*! \brief
-    Returns the gcd of the nonzero coefficients in [start,end). If all the
-    coefficients in this range are 0 returns 0.
+    Returns the gcd of the nonzero coefficients in [start,end).
+    Returns zero if all the coefficients in the range are zero.
   */
   Coefficient gcd(dimension_type start, dimension_type end) const;
 
-  //! Returns the index of the last nonzero element, or 0 if there are no
+  //! Returns the index of the last nonzero element, or zero if there are no
   //! nonzero elements.
   dimension_type last_nonzero() const;
 
-  //! Returns the index of the last nonzero element in [first,last), or last
-  //! if there are no nonzero elements.
+  //! Returns the index of the last nonzero element in [first,last),
+  //! or \p last if there are no nonzero elements.
   dimension_type last_nonzero(dimension_type first, dimension_type last) const;
 
   //! Returns the index of the first nonzero element, or \p last if there are no
@@ -111,39 +120,44 @@ public:
   dimension_type first_nonzero(dimension_type first, dimension_type last) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
-    \f$0\f$, disregarding coefficients of variables in \p vars.
+    Returns <CODE>true</CODE> if all coefficients in [start,end),
+    except those corresponding to variables in \p vars, are zero.
   */
   bool all_zeroes_except(const Variables_Set& vars,
                          dimension_type start, dimension_type end) const;
 
-  //! Removes from the set x all the indexes of nonzero elements of *this.
+  //! Removes from set \p x all the indexes of nonzero elements in \p *this.
   void has_a_free_dimension_helper(std::set<dimension_type>& x) const;
 
-  //! Returns \p true if (*this)[i] is equal to y[i], for each i in [start,end).
+  //! Returns \c true if <CODE>(*this)[i]</CODE> is equal to <CODE>y[i]</CODE>,
+  //! for each i in [start,end).
   template <typename Expression>
   bool is_equal_to(const Expression& y,
                    dimension_type start, dimension_type end) const;
 
-  //! Returns \p true if (*this)[i]*c1 is equal to y[i]*c2, for each i in
-  //! [start,end).
+  //! Returns \c true if <CODE>(*this)[i]*c1</CODE> is equal to
+  //! <CODE>y[i]*c2</CODE>, for each i in [start,end).
   template <typename Expression>
   bool is_equal_to(const Expression& y,
                    Coefficient_traits::const_reference c1,
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
 
-  //! Sets `row' to a copy of the row that implements *this.
+  //! Sets \p row to a copy of the row as adapted by \p *this.
   void get_row(Dense_Row& row) const;
 
-  //! Sets `row' to a copy of the row that implements *this.
+  //! Sets \p row to a copy of the row as adapted by \p *this.
   void get_row(Sparse_Row& row) const;
 
-  //! Returns true if there is a variable in [first,last) whose coefficient
-  //! is nonzero in both *this and y.
+  //! Returns \c true if there is a variable in [first,last) whose coefficient
+  //! is nonzero in both \p *this and \p y.
   template <typename Expression>
   bool have_a_common_variable(const Expression& y,
                               Variable first, Variable last) const;
+
+private:
+  //! Whether or not the last coefficient is hidden.
+  const bool hide_last_;
 };
 
 #include "Expression_Hide_Last.inlines.hh"

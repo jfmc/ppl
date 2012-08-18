@@ -15,8 +15,13 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+class Expression_Adapter_Base;
+
 template <typename T>
 class Expression_Adapter;
+
+template <typename T>
+class Expression_Adapter_Transparent;
 
 } // namespace Parma_Polyhedra_Library
 

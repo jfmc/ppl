@@ -287,7 +287,6 @@ std::ostream& operator<<(std::ostream& s, const Linear_Expression& e);
 */
 class Parma_Polyhedra_Library::Linear_Expression {
 public:
-
   static const Representation default_representation = SPARSE;
 
   //! Default constructor: returns a copy of Linear_Expression::zero().
@@ -303,6 +302,10 @@ public:
   //! Copy constructor that takes also a Representation.
   Linear_Expression(const Linear_Expression& e, Representation r);
 
+  // Queried by expression adapters.
+  typedef const Linear_Expression& const_reference;
+  typedef Linear_Expression raw_type;
+
   /*! \brief Copy constructor from a linear expression adapter.
     \note
     The new expression will have the same representation as \p e
@@ -311,14 +314,14 @@ public:
   template <typename LE_Adapter>
   explicit
   Linear_Expression(const LE_Adapter& e,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
 
   /*! \brief Copy constructor from a linear expression adapter that takes a
     Representation.
   */
   template <typename LE_Adapter>
   Linear_Expression(const LE_Adapter& e, Representation r,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
 
   /*! \brief
     Copy constructor from a linear expression adapter that takes a
@@ -330,7 +333,7 @@ public:
   template <typename LE_Adapter>
   explicit
   Linear_Expression(const LE_Adapter& e, dimension_type space_dim,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
 
   /*! \brief
     Copy constructor from a linear expression adapter that takes a
@@ -339,7 +342,7 @@ public:
   template <typename LE_Adapter>
   Linear_Expression(const LE_Adapter& e,
                     dimension_type space_dim, Representation r,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type = 0);
+                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
 
   //! Assignment operator.
   Linear_Expression& operator=(const Linear_Expression& e);
@@ -736,8 +739,8 @@ private:
   dimension_type first_nonzero(dimension_type first, dimension_type last) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if each coefficient in [start,end) is *not* in
-    \f$0\f$, disregarding coefficients of variables in \p vars.
+    Returns <CODE>true</CODE> if all coefficients in [start,end),
+    except those corresponding to variables in \p vars, are zero.
   */
   bool all_zeroes_except(const Variables_Set& vars,
                          dimension_type start, dimension_type end) const;

@@ -517,12 +517,10 @@ public:
   */
   static const Constraint& epsilon_leq_one();
 
-  typedef Linear_Expression expr_type;
-  typedef Expression_Hide_Last<Constraint> Expression;
-
-  //! Allows user code to read the constraint's expression (but note that the
-  //! return type is not Linear_Expression, not all operations are allowed).
-  const Expression& expression() const;
+  //! The type of the (adapted) internal expression.
+  typedef Expression_Hide_Last<Linear_Expression> expr_type;
+  //! Partial read access to the (adapted) internal expression.
+  expr_type expression() const;
 
 private:
 
@@ -733,7 +731,6 @@ private:
   friend int
   compare(const Constraint& x, const Constraint& y);
 
-  friend class Expression_Adapter<Constraint>;
   friend class Linear_System<Constraint>;
   friend class Constraint_System;
   friend class Polyhedron;
@@ -831,9 +828,6 @@ operator!=(const Constraint& x, const Constraint& y);
 
 /*! \relates Constraint */
 void swap(Constraint& x, Constraint& y);
-
-// Declare specializations of adapter functions.
-PPL_DECLARE_EXPR_ADAPTER_MEMBER_SPEC(Constraint)
 
 } // namespace Parma_Polyhedra_Library
 

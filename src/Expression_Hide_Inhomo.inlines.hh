@@ -29,6 +29,11 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+Expression_Hide_Inhomo<T>::Expression_Hide_Inhomo(const raw_type& expr)
+  : base_type(expr) {
+}
+
+template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Hide_Inhomo<T>::inhomogeneous_term() const {
   // Pretend it is zero.
@@ -39,7 +44,7 @@ template <typename T>
 inline bool
 Expression_Hide_Inhomo<T>::is_zero() const {
   // Don't check the inhomogeneous_term (i.e., pretend it is zero).
-  return this->obj_expr().all_homogeneous_terms_are_zero();
+  return this->inner().all_homogeneous_terms_are_zero();
 }
 
 template <typename T>
@@ -54,7 +59,7 @@ Expression_Hide_Inhomo<T>
   if (y.inhomogeneous_term() != 0)
     return false;
   // Note that the inhomogeneous term is not compared.
-  return this->obj_expr().is_equal_to(y, 1, x_dim + 1);
+  return this->inner().is_equal_to(y, 1, x_dim + 1);
 }
 
 template <typename T>
@@ -63,20 +68,20 @@ Expression_Hide_Inhomo<T>::get(dimension_type i) const {
   if (i == 0)
     return Coefficient_zero();
   else
-    return this->obj_expr().get(i);
+    return this->inner().get(i);
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Hide_Inhomo<T>::get(Variable v) const {
-  return this->obj_expr().get(v);
+  return this->inner().get(v);
 }
 
 template <typename T>
 inline bool
 Expression_Hide_Inhomo<T>
 ::all_zeroes(const Variables_Set& vars) const {
-  return this->obj_expr().all_zeroes(vars);
+  return this->inner().all_zeroes(vars);
 }
 
 template <typename T>
@@ -87,7 +92,7 @@ Expression_Hide_Inhomo<T>::all_zeroes(dimension_type start,
     return true;
   if (start == 0)
     ++start;
-  return this->obj_expr().all_zeroes(start, end);
+  return this->inner().all_zeroes(start, end);
 }
 
 template <typename T>
@@ -101,7 +106,7 @@ Expression_Hide_Inhomo<T>::num_zeroes(dimension_type start,
     ++start;
     ++nz;
   }
-  nz += this->obj_expr().num_zeroes(start, end);
+  nz += this->inner().num_zeroes(start, end);
   return nz;
 }
 
@@ -113,13 +118,13 @@ Expression_Hide_Inhomo<T>::gcd(dimension_type start,
     return Coefficient_zero();
   if (start == 0)
     ++start;
-  return this->obj_expr().gcd(start, end);
+  return this->inner().gcd(start, end);
 }
 
 template <typename T>
 inline dimension_type
 Expression_Hide_Inhomo<T>::last_nonzero() const {
-  return this->obj_expr().last_nonzero();
+  return this->inner().last_nonzero();
 }
 
 template <typename T>
@@ -130,7 +135,7 @@ Expression_Hide_Inhomo<T>::last_nonzero(dimension_type first,
     return last;
   if (first == 0)
     ++first;
-  return this->obj_expr().last_nonzero(first, last);
+  return this->inner().last_nonzero(first, last);
 }
 
 template <typename T>
@@ -141,7 +146,7 @@ Expression_Hide_Inhomo<T>::first_nonzero(dimension_type first,
     return last;
   if (first == 0)
     ++first;
-  return this->obj_expr().first_nonzero(first, last);
+  return this->inner().first_nonzero(first, last);
 }
 
 template <typename T>
@@ -153,7 +158,7 @@ Expression_Hide_Inhomo<T>
     return true;
   if (start == 0)
     ++start;
-  return this->obj_expr().all_zeroes_except(vars, start, end);
+  return this->inner().all_zeroes_except(vars, start, end);
 }
 
 template <typename T>
@@ -161,7 +166,7 @@ inline void
 Expression_Hide_Inhomo<T>
 ::has_a_free_dimension_helper(std::set<dimension_type>& y) const {
   bool had_0 = (y.count(0) == 1);
-  this->obj_expr().has_a_free_dimension_helper(y);
+  this->inner().has_a_free_dimension_helper(y);
   if (had_0)
     y.insert(0);
 }
@@ -176,7 +181,7 @@ Expression_Hide_Inhomo<T>
     return true;
   if (start == 0)
     ++start;
-  return this->obj_expr().is_equal_to(y, start, end);
+  return this->inner().is_equal_to(y, start, end);
 }
 
 template <typename T>
@@ -191,20 +196,20 @@ Expression_Hide_Inhomo<T>
     return true;
   if (start == 0)
     ++start;
-  return this->obj_expr().is_equal_to(y, c1, c2, start, end);
+  return this->inner().is_equal_to(y, c1, c2, start, end);
 }
 
 template <typename T>
 inline void
 Expression_Hide_Inhomo<T>::get_row(Dense_Row& row) const {
-  this->obj_expr().get_row(row);
+  this->inner().get_row(row);
   row.reset(0);
 }
 
 template <typename T>
 inline void
 Expression_Hide_Inhomo<T>::get_row(Sparse_Row& row) const {
-  this->obj_expr().get_row(row);
+  this->inner().get_row(row);
   row.reset(0);
 }
 
