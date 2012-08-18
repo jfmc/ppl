@@ -140,9 +140,9 @@ inline
 Grid_Generator::~Grid_Generator() {
 }
 
-inline const Grid_Generator::Expression&
+inline Grid_Generator::expr_type
 Grid_Generator::expression() const {
-  return reinterpret_cast<const Grid_Generator::Expression&>(*this);
+  return expr_type(expr, true);
 }
 
 inline Representation
@@ -361,18 +361,6 @@ grid_point(const Linear_Expression& e, Representation r) {
 inline void
 swap(Grid_Generator& x, Grid_Generator& y) {
   x.m_swap(y);
-}
-
-template <>
-inline Expression_Adapter<Grid_Generator>::obj_expr_type const&
-Expression_Adapter<Grid_Generator>::obj_expr() const {
-  return obj().expr;
-}
-
-template <>
-inline bool
-Expression_Adapter<Grid_Generator>::hiding_last() const {
-  return true;
 }
 
 } // namespace Parma_Polyhedra_Library

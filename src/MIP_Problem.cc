@@ -776,9 +776,9 @@ PPL::MIP_Problem::process_pending_constraints() {
     Row::iterator itr = tableau_k.end();
 
     const Constraint& c = *(input_cs[i + first_pending_constraint]);
-    const Constraint::Expression& c_e = c.expression();
-    for (Constraint::Expression::const_iterator j = c_e.begin(), j_end = c_e.end();
-        j != j_end; ++j) {
+    const Constraint::expr_type c_e = c.expression();
+    for (Constraint::expr_type::const_iterator j = c_e.begin(),
+           j_end = c_e.end(); j != j_end; ++j) {
       Coefficient_traits::const_reference coeff_sd = *j;
       const std::pair<dimension_type, dimension_type> mapped
         = mapping[j.variable().space_dimension()];

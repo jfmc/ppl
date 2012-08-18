@@ -718,7 +718,7 @@ Linear_Expression
 template <typename LE_Adapter>
 inline
 Linear_Expression::Linear_Expression(const LE_Adapter& e,
-                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
   Linear_Expression tmp(e.representation());
   tmp.set_space_dimension(e.space_dimension());
@@ -734,7 +734,7 @@ template <typename LE_Adapter>
 inline
 Linear_Expression::Linear_Expression(const LE_Adapter& e,
                                      Representation r,
-                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
   Linear_Expression tmp(r);
   tmp.set_space_dimension(e.space_dimension());
@@ -750,7 +750,7 @@ template <typename LE_Adapter>
 inline
 Linear_Expression::Linear_Expression(const LE_Adapter& e,
                                      dimension_type space_dim,
-                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
   Linear_Expression tmp(e.representation());
   tmp.set_space_dimension(space_dim);
@@ -772,7 +772,7 @@ inline
 Linear_Expression::Linear_Expression(const LE_Adapter& e,
                                      dimension_type space_dim,
                                      Representation r,
-                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter<typename LE_Adapter::obj_type>, LE_Adapter>::value, void*>::type)
+                                     typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type)
   : impl(NULL) {
   Linear_Expression tmp(r);
   tmp.set_space_dimension(space_dim);

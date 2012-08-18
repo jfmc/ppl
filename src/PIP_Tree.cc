@@ -2338,8 +2338,8 @@ PIP_Solution_Node
       }
       WEIGHT_BEGIN();
       dimension_type last_dim = 0;
-      const Constraint::Expression& e = constraint.expression();
-      for (Constraint::Expression::const_iterator
+      const Constraint::expr_type e = constraint.expression();
+      for (Constraint::expr_type::const_iterator
           i = e.begin(), i_end = e.end(); i != i_end; ++i) {
         const dimension_type dim = i.variable().space_dimension();
         if (dim != last_dim + 1) {

@@ -363,7 +363,7 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   PPL_DIRTY_TEMP_COEFFICIENT(cv);
   bool first = true;
-  for (Constraint::Expression::const_iterator i = c.expression().begin(),
+  for (Constraint::expr_type::const_iterator i = c.expression().begin(),
         i_end = c.expression().end(); i != i_end; ++i) {
     cv = *i;
     if (!first) {

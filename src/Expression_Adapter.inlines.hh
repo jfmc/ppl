@@ -25,147 +25,140 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Expression_Adapter_inlines_hh 1
 
 #include "Variables_Set.defs.hh"
-#include "Linear_Expression.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
-inline typename Expression_Adapter<T>::obj_type const&
-Expression_Adapter<T>::obj() const {
-  return reinterpret_cast<const obj_type&>(*this);
+inline
+Expression_Adapter<T>::Expression_Adapter(const raw_type& expr)
+  : raw_(expr) {
 }
 
 template <typename T>
-inline typename Expression_Adapter<T>::obj_expr_type const&
-Expression_Adapter<T>::obj_expr() const {
-  return obj();
-}
-
-template <typename T>
-inline bool
-Expression_Adapter<T>::hiding_last() const {
-  return obj().hiding_last();
+inline typename Expression_Adapter<T>::inner_type
+Expression_Adapter<T>::inner() const {
+  return inner_type(raw_);
 }
 
 template <typename T>
 inline Representation
 Expression_Adapter<T>::representation() const {
-  return obj_expr().representation();
+  return inner().representation();
 }
 
 template <typename T>
 inline typename Expression_Adapter<T>::const_iterator
 Expression_Adapter<T>::begin() const {
-  return obj_expr().begin();
+  return inner().begin();
 }
 
 template <typename T>
 inline typename Expression_Adapter<T>::const_iterator
 Expression_Adapter<T>::end() const {
-  return obj_expr().end();
+  return inner().end();
 }
 
 template <typename T>
 inline typename Expression_Adapter<T>::const_iterator
 Expression_Adapter<T>::lower_bound(Variable v) const {
-  return obj_expr().lower_bound(v);
+  return inner().lower_bound(v);
 }
 
 template <typename T>
 inline dimension_type
 Expression_Adapter<T>::space_dimension() const {
-  return obj_expr().space_dimension();
+  return inner().space_dimension();
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Adapter<T>::coefficient(Variable v) const {
-  return obj_expr().coefficient(v);
+  return inner().coefficient(v);
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Adapter<T>::inhomogeneous_term() const {
-  return obj_expr().inhomogeneous_term();
+  return inner().inhomogeneous_term();
 }
 
 template <typename T>
 inline bool
 Expression_Adapter<T>::is_zero() const {
-  return obj_expr().is_zero();
+  return inner().is_zero();
 }
 
 template <typename T>
 inline bool
 Expression_Adapter<T>::all_homogeneous_terms_are_zero() const {
-  return obj_expr().all_homogeneous_terms_are_zero();
+  return inner().all_homogeneous_terms_are_zero();
 }
 
 template <typename T>
 template <typename Expression>
 inline bool
 Expression_Adapter<T>::is_equal_to(const Expression& y) const {
-  return obj_expr().is_equal_to(y);
+  return inner().is_equal_to(y);
 }
 
 template <typename T>
 inline bool
 Expression_Adapter<T>
 ::all_zeroes(const Variables_Set& vars) const {
-  return obj_expr().all_zeroes(vars);
+  return inner().all_zeroes(vars);
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Adapter<T>::get(dimension_type i) const {
-  return obj_expr().get(i);
+  return inner().get(i);
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Adapter<T>::get(Variable v) const {
-  return obj_expr().get(v);
+  return inner().get(v);
 }
 
 template <typename T>
 inline bool
 Expression_Adapter<T>::all_zeroes(dimension_type start,
                                   dimension_type end) const {
-  return obj_expr().all_zeroes(start, end);
+  return inner().all_zeroes(start, end);
 }
 
 template <typename T>
 inline dimension_type
 Expression_Adapter<T>::num_zeroes(dimension_type start,
                                   dimension_type end) const {
-  return obj_expr().num_zeroes(start, end);
+  return inner().num_zeroes(start, end);
 }
 
 template <typename T>
 inline Coefficient
 Expression_Adapter<T>::gcd(dimension_type start,
                            dimension_type end) const {
-  return obj_expr().gcd(start, end);
+  return inner().gcd(start, end);
 }
 
 template <typename T>
 inline dimension_type
 Expression_Adapter<T>::last_nonzero() const {
-  return obj_expr().last_nonzero();
+  return inner().last_nonzero();
 }
 
 template <typename T>
 inline dimension_type
 Expression_Adapter<T>::last_nonzero(dimension_type first,
                                     dimension_type last) const {
-  return obj_expr().last_nonzero(first, last);
+  return inner().last_nonzero(first, last);
 }
 
 template <typename T>
 inline dimension_type
 Expression_Adapter<T>::first_nonzero(dimension_type first,
                                      dimension_type last) const {
-  return obj_expr().first_nonzero(first, last);
+  return inner().first_nonzero(first, last);
 }
 
 template <typename T>
@@ -173,14 +166,14 @@ inline bool
 Expression_Adapter<T>
 ::all_zeroes_except(const Variables_Set& vars,
                     dimension_type start, dimension_type end) const {
-  return obj_expr().all_zeroes_except(vars, start, end);
+  return inner().all_zeroes_except(vars, start, end);
 }
 
 template <typename T>
 inline void
 Expression_Adapter<T>
 ::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
-  obj_expr().has_a_free_dimension_helper(x);
+  inner().has_a_free_dimension_helper(x);
 }
 
 template <typename T>
@@ -189,7 +182,7 @@ inline bool
 Expression_Adapter<T>
 ::is_equal_to(const Expression& y,
               dimension_type start, dimension_type end) const {
-  return obj_expr().is_equal_to(y, start, end);
+  return inner().is_equal_to(y, start, end);
 }
 
 template <typename T>
@@ -200,19 +193,19 @@ Expression_Adapter<T>
               Coefficient_traits::const_reference c1,
               Coefficient_traits::const_reference c2,
               dimension_type start, dimension_type end) const {
-  return obj_expr().is_equal_to(y, c1, c2, start, end);
+  return inner().is_equal_to(y, c1, c2, start, end);
 }
 
 template <typename T>
 inline void
 Expression_Adapter<T>::get_row(Dense_Row& row) const {
-  obj_expr().get_row(row);
+  inner().get_row(row);
 }
 
 template <typename T>
 inline void
 Expression_Adapter<T>::get_row(Sparse_Row& row) const {
-  obj_expr().get_row(row);
+  inner().get_row(row);
 }
 
 template <typename T>
@@ -221,7 +214,14 @@ inline bool
 Expression_Adapter<T>
 ::have_a_common_variable(const Expression& y,
                          Variable first, Variable last) const {
-  return obj_expr().have_a_common_variable(y, first, last);
+  return inner().have_a_common_variable(y, first, last);
+}
+
+template <typename T>
+inline
+Expression_Adapter_Transparent<T>
+::Expression_Adapter_Transparent(const raw_type& expr)
+  : base_type(expr) {
 }
 
 } // namespace Parma_Polyhedra_Library
