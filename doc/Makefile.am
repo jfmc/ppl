@@ -872,25 +872,27 @@ TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
 user.latex-dir: user.doxyconf-latex $(USER_CORE_STUFF)
 	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
+	$(TEX_ENV) $(DOXYGEN) user.doxyconf-latex
 
 devref.latex-dir: devref.doxyconf-latex $(DEVREF_CORE_STUFF)
 	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
+	$(TEX_ENV) $(DOXYGEN) devref.doxyconf-latex
 
 ppl-user-@VERSION@.pdf: user.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user.latex-dir refman.pdf \
+	    && mv -f user.latex-dir/refman.pdf $@
 
 ppl-devref-@VERSION@.pdf: devref.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref.latex-dir refman.pdf \
+	    && mv -f devref.latex-dir/refman.pdf $@
 
 $(USER_CORE_HTML_DIR): user.doxyconf-html $(USER_CORE_STUFF)
 	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
+	$(TEX_ENV) $(DOXYGEN) user.doxyconf-html
 
 $(DEVREF_CORE_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
 	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
+	$(TEX_ENV) $(DOXYGEN) devref.doxyconf-html
 
 ############################################################################
 
@@ -945,7 +947,8 @@ $(USER_C_INTERFACE_STUFF)
 	    > user-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_USER_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-c-interface-latex
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-c-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-c-interface-latex
 
 devref-c-interface.latex-dir: \
@@ -957,14 +960,17 @@ $(DEVREF_C_INTERFACE_STUFF)
 	    > devref-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_DEVREF)"'|' \
-	    $<  > Doxyfile.devref-c-interface-latex
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-c-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-c-interface-latex
 
 ppl-user-c-interface-@VERSION@.pdf: user-c-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-c-interface.latex-dir refman.pdf \
+	    && mv -f user-c-interface.latex-dir/refman.pdf $@
 
 ppl-devref-c-interface-@VERSION@.pdf: devref-c-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-c-interface.latex-dir refman.pdf \
+	    && mv -f devref-c-interface.latex-dir/refman.pdf $@
 
 ppl-user-c-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -975,7 +981,8 @@ $(USER_C_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    > user-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-c-interface-html
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-c-interface-html
 
 ppl-devref-c-interface-@VERSION@-html: \
@@ -987,7 +994,8 @@ $(DEVREF_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    > devref-c-interface.tex
 	$(SED) $(SED_C_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_C_INPUT_DEVREF)"'|' \
-	    $<  > Doxyfile.devref-c-interface-html
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-c-interface-html
 
 # (System Independent) Prolog Language Interface Targets
@@ -1025,8 +1033,9 @@ $(USER_PROLOG_INTERFACE_STUFF)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_USER_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-prolog-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-prolog-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-prolog-interface-latex
 
 devref-prolog-interface.latex-dir: \
@@ -1037,15 +1046,18 @@ $(DEVREF_PROLOG_INTERFACE_STUFF)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_DEVREF_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-prolog-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-prolog-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-prolog-interface-latex
 
 ppl-user-prolog-interface-@VERSION@.pdf: user-prolog-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-prolog-interface.latex-dir refman.pdf \
+	    && mv -f user-prolog-interface.latex-dir/refman.pdf $@
 
 ppl-devref-prolog-interface-@VERSION@.pdf: devref-prolog-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-prolog-interface.latex-dir refman.pdf \
+	    && mv -f devref-prolog-interface.latex-dir/refman.pdf $@
 
 ppl-user-prolog-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1055,8 +1067,9 @@ $(USER_PROLOG_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_USER_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-prolog-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-prolog-interface-html
 
 ppl-devref-prolog-interface-@VERSION@-html: \
@@ -1067,8 +1080,9 @@ $(DEVREF_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-prolog-interface.tex
 	$(SED) $(SED_PROLOG_OPTION) $(SED_DEVREF_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-prolog-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_PROLOG_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf > \
+	    Doxyfile.devref-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-prolog-interface-html
 
 # OCaml Language Interface Targets
@@ -1105,8 +1119,9 @@ $(USER_OCAML_INTERFACE_STUFF)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_USER_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-ocaml-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf > \
+	    Doxyfile.user-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-latex
 	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
@@ -1119,17 +1134,20 @@ $(DEVREF_OCAML_INTERFACE_STUFF)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_DEVREF_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-ocaml-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-latex
 	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		$(srcdir)/../interfaces/OCaml/ppl_ocaml_globals.mli
 
 ppl-user-ocaml-interface-@VERSION@.pdf: user-ocaml-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-ocaml-interface.latex-dir refman.pdf \
+	    && mv -f user-ocaml-interface.latex-dir/refman.pdf $@
 
 ppl-devref-ocaml-interface-@VERSION@.pdf: devref-ocaml-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-ocaml-interface.latex-dir refman.pdf \
+	    && mv -f devref-ocaml-interface.latex-dir/refman.pdf $@
 
 ppl-user-ocaml-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1140,7 +1158,8 @@ $(USER_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    > user-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-ocaml-interface-html
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-ocaml-interface-html
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
@@ -1154,8 +1173,9 @@ $(DEVREF_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-ocaml-interface.tex
 	$(SED) $(SED_OCAML_OPTION) $(SED_DEVREF_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-ocaml-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_OCAML_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-ocaml-interface-html
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
@@ -1189,8 +1209,9 @@ $(USER_JAVA_INTERFACE_STUFF)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_USER_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-java-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-java-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-java-interface-latex
 
 devref-java-interface.latex-dir: \
@@ -1201,15 +1222,18 @@ $(DEVREF_JAVA_INTERFACE_STUFF)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_DEVREF_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-java-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-java-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-java-interface-latex
 
 ppl-user-java-interface-@VERSION@.pdf: user-java-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-java-interface.latex-dir refman.pdf \
+	    && mv -f user-java-interface.latex-dir/refman.pdf $@
 
 ppl-devref-java-interface-@VERSION@.pdf: devref-java-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-java-interface.latex-dir refman.pdf \
+	    && mv -f devref-java-interface.latex-dir/refman.pdf $@
 
 ppl-user-java-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1219,8 +1243,9 @@ $(USER_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_USER_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-java-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-java-interface-html
 
 ppl-devref-java-interface-@VERSION@-html: \
@@ -1231,8 +1256,9 @@ $(DEVREF_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-java-interface.tex
 	$(SED) $(SED_JAVA_OPTION) $(SED_DEVREF_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-java-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_JAVA_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-java-interface-html
 
 ############################################################################
@@ -1271,7 +1297,8 @@ $(USER_CONFIGURED_C_INTERFACE_STUFF)
 	    > user-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_USER_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-configured-c-interface-latex
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-c-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-c-interface-latex
 
 devref-configured-c-interface.latex-dir: \
@@ -1283,16 +1310,19 @@ $(DEVREF_CONFIGURED_C_INTERFACE_STUFF)
 	    > devref-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_DEVREF)"'|' \
-	    $<  > Doxyfile.devref-configured-c-interface-latex
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-c-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-c-interface-latex
 
 ppl-user-configured-c-interface-@VERSION@.pdf: \
 user-configured-c-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-configured-c-interface.latex-dir refman.pdf \
+	  && mv -f user-configured-c-interface.latex-dir/refman.pdf $@
 
 ppl-devref-configured-c-interface-@VERSION@.pdf: \
 devref-configured-c-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-configured-c-interface.latex-dir refman.pdf \
+	    && mv -f devref-configured-c-interface.latex-dir/refman.pdf $@
 
 ppl-user-configured-c-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1303,7 +1333,8 @@ $(USER_CONFIGURED_C_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    > user-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-configured-c-interface-html
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-c-interface-html
 
 ppl-devref-configured-c-interface-@VERSION@-html: \
@@ -1315,7 +1346,8 @@ $(DEVREF_CONFIGURED_C_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    > devref-configured-c-interface.tex
 	$(SED) $(SED_CONFIGURED_C_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_C_INPUT_DEVREF)"'|' \
-	    $<  > Doxyfile.devref-configured-c-interface-html
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-c-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-c-interface-html
 
 endif BUILD_C_INTERFACE
@@ -1357,8 +1389,9 @@ $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_USER_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-configured-prolog-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-prolog-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-prolog-interface-latex
 
 devref-configured-prolog-interface.latex-dir: \
@@ -1369,17 +1402,22 @@ $(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_DEVREF_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-configured-prolog-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-prolog-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-prolog-interface-latex
 
 ppl-user-configured-prolog-interface-@VERSION@.pdf: \
 user-configured-prolog-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-configured-prolog-interface.latex-dir \
+	    refman.pdf \
+	    && mv -f user-configured-prolog-interface.latex-dir/refman.pdf $@
 
 ppl-devref-configured-prolog-interface-@VERSION@.pdf: \
 devref-configured-prolog-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-configured-prolog-interface.latex-dir \
+	    refman.pdf \
+	    && mv -f devref-configured-prolog-interface.latex-dir/refman.pdf $@
 
 ppl-user-configured-prolog-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1389,8 +1427,9 @@ $(USER_CONFIGURED_PROLOG_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_USER_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-configured-prolog-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-prolog-interface-html
 
 ppl-devref-configured-prolog-interface-@VERSION@-html: \
@@ -1401,8 +1440,9 @@ $(DEVREF_CONFIGURED_PROLOG_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-configured-prolog-interface.tex
 	$(SED) $(SED_CONFIGURED_PROLOG_OPTION) $(SED_DEVREF_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-configured-prolog-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_PROLOG_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-prolog-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-prolog-interface-html
 
 endif BUILD_SOME_PROLOG_INTERFACES
@@ -1435,8 +1475,9 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF)
 	    $(srcdir)/user-language-interface.tex \
 	    > user-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_USER_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
-	  $<  > Doxyfile.user-configured-ocaml-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-latex
 	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		../interfaces/OCaml/ppl_ocaml.mli
@@ -1449,19 +1490,24 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_DEVREF_LATEX_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-configured-ocaml-interface-latex
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-ocaml-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-latex
 	$(OCAMLDOC) $(OCAMLDOC_LATEX_OPTIONS) -o $@/ocamldoc.tex \
 		../interfaces/OCaml/ppl_ocaml.mli
 
 ppl-user-configured-ocaml-interface-@VERSION@.pdf: \
 user-configured-ocaml-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-configured-ocaml-interface.latex-dir \
+	    refman.pdf \
+	    && mv -f user-configured-ocaml-interface.latex-dir/refman.pdf $@
 
 ppl-devref-configured-ocaml-interface-@VERSION@.pdf: \
 devref-configured-ocaml-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-configured-ocaml-interface.latex-dir \
+	    refman.pdf \
+	    && mv -f devref-configured-ocaml-interface.latex-dir/refman.pdf $@
 
 ppl-user-configured-ocaml-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1472,7 +1518,8 @@ $(USER_CONFIGURED_OCAML_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    > user-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-configured-ocaml-interface-html
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.user-configured-ocaml-interface-html
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
@@ -1486,8 +1533,9 @@ $(DEVREF_CONFIGURED_OCAML_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    $(srcdir)/devref-language-interface.tex \
 	    > devref-configured-ocaml-interface.tex
 	$(SED) $(SED_CONFIGURED_OCAML_OPTION) $(SED_DEVREF_HTML_OPTION) \
-	  -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
-	  $<  > Doxyfile.devref-configured-ocaml-interface-html
+	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_OCAML_INPUT_DEVREF)"'|' \
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-ocaml-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-ocaml-interface-html
 	mkdir $@/ocamldoc
 	$(OCAMLDOC) $(OCAMLDOC_HTML_OPTIONS) -d $@/ocamldoc \
@@ -1527,7 +1575,8 @@ $(USER_CONFIGURED_JAVA_INTERFACE_STUFF)
 	    > user-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_USER_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-configured-java-interface-latex
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-java-interface-latex
 	echo "HIDE_UNDOC_MEMBERS = NO" \
 	    >> Doxyfile.user-configured-java-interface-latex
 	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
@@ -1543,18 +1592,23 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF)
 	    > devref-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_DEVREF_LATEX_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
-	    $<  > Doxyfile.devref-configured-java-interface-latex
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-java-interface-latex
 	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
 	    >> Doxyfile.devref-configured-java-interface-latex
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-latex
 
 ppl-user-configured-java-interface-@VERSION@.pdf: \
 user-configured-java-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C user-configured-java-interface.latex-dir \
+	    refman.pdf \
+	    && mv -f user-configured-java-interface.latex-dir/refman.pdf $@
 
 ppl-devref-configured-java-interface-@VERSION@.pdf: \
 devref-configured-java-interface.latex-dir
-	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C devref-configured-java-interface.latex-dir \
+	    refman.pdf \
+	    && mv -f devref-configured-java-interface.latex-dir/refman.pdf $@
 
 ppl-user-configured-java-interface-@VERSION@-html: \
 user-language-interface.doxyconf \
@@ -1565,7 +1619,8 @@ $(USER_CONFIGURED_JAVA_INTERFACE_STUFF) $(USER_CORE_HTML_DIR)
 	    > user-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_USER_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_USER)"'|' \
-	    $<  > Doxyfile.user-configured-java-interface-html
+	    user-language-interface.doxyconf \
+	    > Doxyfile.user-configured-java-interface-html
 	echo "HIDE_UNDOC_MEMBERS = NO" \
 	    >> Doxyfile.user-configured-java-interface-html
 	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
@@ -1581,7 +1636,8 @@ $(DEVREF_CONFIGURED_JAVA_INTERFACE_STUFF) $(DEVREF_CORE_HTML_DIR)
 	    > devref-configured-java-interface.tex
 	$(SED) $(SED_CONFIGURED_JAVA_OPTION) $(SED_DEVREF_HTML_OPTION) \
 	    -e 's|<PPL_SED_INPUT>|'"$(SED_CONFIGURED_JAVA_INPUT_DEVREF)"'|' \
-	    $<  > Doxyfile.devref-configured-java-interface-html
+	    devref-language-interface.doxyconf \
+	    > Doxyfile.devref-configured-java-interface-html
 	echo "EXCLUDE_PATTERNS = */Fake_Class_for_Doxygen*" \
 	    >> Doxyfile.devref-configured-java-interface-html
 	$(TEX_ENV) $(DOXYGEN) Doxyfile.devref-configured-java-interface-html

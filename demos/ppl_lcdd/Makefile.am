@@ -43,14 +43,16 @@ polka_lcdd.o: $(srcdir)/ppl_lcdd.cc $(top_builddir)/utils/libppl_utils.a
 	$(CXXCOMPILE) -c -o $@ -DUSE_POLKA $(srcdir)/ppl_lcdd.cc
 
 polka_lcdd: polka_lcdd.o
-	$(CXXLINK) $< -lpolkag -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
+	$(CXXLINK) polka_lcdd.o \
+	    -lpolkag -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 
 polylib_lcdd.o:	$(srcdir)/ppl_lcdd.cc
 	$(CXXCOMPILE) -c -o $@ -DUSE_POLYLIB $(srcdir)/ppl_lcdd.cc
 
 polylib_lcdd: polylib_lcdd.o $(top_builddir)/utils/libppl_utils.a
-	$(CXXLINK) $< -lpolylibgmp -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
+	$(CXXLINK) polylib_lcdd.o \
+	    -lpolylibgmp -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 EXTRA_DIST = \
 expected_mpz \

@@ -216,7 +216,7 @@ ppl_ocaml.o: ppl_ocaml.cmx
 	fi
 
 ppl_ocaml.cmi: ppl_ocaml.mli
-	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) ppl_ocaml.mli
 
 ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
@@ -234,7 +234,8 @@ ppl_ocaml_globals.o: ppl_ocaml_globals.cmx
 	fi
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
-	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) $<
+	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
+	    ppl_ocaml_globals.mli
 
 ppl_ocaml.ml: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
