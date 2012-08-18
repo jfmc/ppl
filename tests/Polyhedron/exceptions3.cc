@@ -206,7 +206,7 @@ test09() {
     // vector space will have a dimension greater than
     // C_Polyhedron::max_space_dimension().
     ph.expand_space_dimension(Variable(0),
-			      C_Polyhedron::max_space_dimension());
+                              C_Polyhedron::max_space_dimension());
 
     // It is an error if the exception is not thrown.
   }

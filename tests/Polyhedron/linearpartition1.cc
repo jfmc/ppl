@@ -27,9 +27,9 @@ namespace {
 
 bool
 aux_test01(const C_Polyhedron& p,
-	   const C_Polyhedron& q,
-	   const std::pair<C_Polyhedron,
-	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
+           const C_Polyhedron& q,
+           const std::pair<C_Polyhedron,
+           Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
@@ -50,7 +50,7 @@ aux_test01(const C_Polyhedron& p,
       const NNC_Polyhedron& b = j->pointset();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
-	return false;
+        return false;
     }
     the_union.upper_bound_assign(a);
   }
@@ -100,9 +100,9 @@ test01() {
 
 bool
 aux_test02(const C_Polyhedron& p,
-	   const C_Polyhedron& q,
-	   const std::pair<C_Polyhedron,
-	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
+           const C_Polyhedron& q,
+           const std::pair<C_Polyhedron,
+           Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
@@ -123,7 +123,7 @@ aux_test02(const C_Polyhedron& p,
       const NNC_Polyhedron& b = j->pointset();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
-	return false;
+        return false;
     }
     the_union.upper_bound_assign(a);
   }
@@ -173,9 +173,9 @@ test02() {
 
 bool
 aux_test03(const C_Polyhedron& p,
-	   const C_Polyhedron& q,
-	   const std::pair<C_Polyhedron,
-	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
+           const C_Polyhedron& q,
+           const std::pair<C_Polyhedron,
+           Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
@@ -196,7 +196,7 @@ aux_test03(const C_Polyhedron& p,
       const NNC_Polyhedron& b = j->pointset();
       // All elements of `s' must be pairwise disjoint.
       if (!a.is_disjoint_from(b))
-	return false;
+        return false;
     }
     the_union.upper_bound_assign(a);
   }

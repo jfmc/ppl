@@ -43,12 +43,12 @@ public class Coefficient {
 
     //! Builds a coefficient valued \p l.
     public Coefficient(long l) {
-	value = BigInteger.valueOf(l);
+        value = BigInteger.valueOf(l);
     }
 
     //! Builds a coefficient valued \p bi.
     public Coefficient(BigInteger bi) {
-	value = bi;
+        value = bi;
     }
 
     //! Builds a coefficient from the decimal representation in \p s.
@@ -57,22 +57,22 @@ public class Coefficient {
       Thrown if \p s does not contain a valid decimal representation.
     */
     public Coefficient(String s) {
-	value = new BigInteger(s);
+        value = new BigInteger(s);
     }
 
     //! Builds a copy of \p c.
     public Coefficient(Coefficient c) {
-	value = c.value;
+        value = c.value;
     }
 
     //! Returns a String representation of \p this.
     public String toString() {
-	return value.toString();
+        return value.toString();
     }
 
     //! Returns the value held by \p this.
     public BigInteger getBigInteger() {
-	return value;
+        return value;
     }
 
     //! Returns the number of bits of PPL coefficients; 0 if unbounded.

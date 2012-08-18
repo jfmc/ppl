@@ -48,7 +48,7 @@ fatal(const char* format, ...) {
 
 static void
 error_handler(enum ppl_enum_error_code code,
-	      const char* description) {
+              const char* description) {
   fatal("PPL error code %d: %s", code, description);
 }
 

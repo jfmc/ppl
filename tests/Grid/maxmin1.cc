@@ -31,13 +31,13 @@ namespace {
 
 bool
 check_both(Grid& gr, const Linear_Expression& le,
-	   const std::string grid_name) {
+           const std::string grid_name) {
   Generator ext_pnt(point());
   bool dummy;
   Coefficient ext_n, ext_d;
 
   bool ok = (!gr.maximize(le, ext_n, ext_d, dummy, ext_pnt)
-	     && !gr.minimize(le, ext_n, ext_d, dummy, ext_pnt));
+             && !gr.minimize(le, ext_n, ext_d, dummy, ext_pnt));
 
   if (!ok)
     nout << grid_name << " bounded expr" << endl;
@@ -47,46 +47,46 @@ check_both(Grid& gr, const Linear_Expression& le,
 
 bool
 check_minimize(Grid& gr, const Linear_Expression& le,
-	       Coefficient_traits::const_reference expected_n,
-	       Coefficient_traits::const_reference expected_d,
-	       const Generator& expected_pnt,
-	       const std::string grid_name) {
+               Coefficient_traits::const_reference expected_n,
+               Coefficient_traits::const_reference expected_d,
+               const Generator& expected_pnt,
+               const std::string grid_name) {
   Generator inf_pnt(point());
 
   bool dummy;
   Coefficient inf_n, inf_d;
 
   bool ok = (gr.minimize(le, inf_n, inf_d, dummy, inf_pnt)
-	     && inf_n == expected_n
-	     && inf_d == expected_d
-	     && inf_pnt == expected_pnt);
+             && inf_n == expected_n
+             && inf_d == expected_d
+             && inf_pnt == expected_pnt);
 
   if (!ok)
     nout << "grid name " << grid_name << " min point " << inf_pnt
-	 << " (expected " << expected_pnt << ")" << endl;
+         << " (expected " << expected_pnt << ")" << endl;
 
   return ok;
 }
 
 bool
 check_maximize(Grid& gr, const Linear_Expression& le,
-	       Coefficient_traits::const_reference expected_n,
-	       Coefficient_traits::const_reference expected_d,
-	       const Generator& expected_pnt,
-	       const std::string grid_name) {
+               Coefficient_traits::const_reference expected_n,
+               Coefficient_traits::const_reference expected_d,
+               const Generator& expected_pnt,
+               const std::string grid_name) {
   Generator sup_pnt(point());
 
   bool dummy;
   Coefficient sup_n, sup_d;
 
   bool ok = (gr.maximize(le, sup_n, sup_d, dummy, sup_pnt)
-	     && sup_n == expected_n
-	     && sup_d == expected_d
-	     && sup_pnt == expected_pnt);
+             && sup_n == expected_n
+             && sup_d == expected_d
+             && sup_pnt == expected_pnt);
 
   if (!ok)
     nout << "grid name " << grid_name << " max point " << sup_pnt
-	 << " (expected " << expected_pnt << ")" << endl;
+         << " (expected " << expected_pnt << ")" << endl;
 
   return ok;
 }
@@ -101,7 +101,7 @@ test01() {
   Generator pnt(point());
 
   bool ok = (!gr.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt)
-	     && !gr.minimize(Linear_Expression(0), extr_n, extr_d, dummy, pnt));
+             && !gr.minimize(Linear_Expression(0), extr_n, extr_d, dummy, pnt));
   return ok;
 }
 

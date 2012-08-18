@@ -78,8 +78,8 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
       swap(tmp.back(), x.rows[xi++]);
       tmp.back().set_representation(representation());
       if (comp == 0)
-	// A duplicate element.
-	++yi;
+        // A duplicate element.
+        ++yi;
     }
     else {
       // (comp > 0)
@@ -118,8 +118,8 @@ Linear_System<Row>::ascii_dump(std::ostream& s) const {
   // Constraint_System and Generator_System take care of properly
   // printing the contents of the system.
   s << "topology " << (is_necessarily_closed()
-		       ? "NECESSARILY_CLOSED"
-		       : "NOT_NECESSARILY_CLOSED")
+                       ? "NECESSARILY_CLOSED"
+                       : "NOT_NECESSARILY_CLOSED")
     << "\n"
     << num_rows() << " x " << space_dimension() << " ";
   Parma_Polyhedra_Library::ascii_dump(s, representation());
@@ -391,7 +391,7 @@ Linear_System<Row>::sort_rows() {
 template <typename Row>
 void
 Linear_System<Row>::sort_rows(const dimension_type first_row,
-			      const dimension_type last_row) {
+                              const dimension_type last_row) {
   PPL_ASSERT(first_row <= last_row && last_row <= num_rows());
   // We cannot mix pending and non-pending rows.
   PPL_ASSERT(first_row >= first_pending_row()
@@ -549,13 +549,13 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
       if ((*this)[i].expr.get(j) == 0)
-	continue;
+        continue;
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
       if (i > rank) {
-	swap(rows[i], rows[rank]);
-	// After swapping the system is no longer sorted.
-	changed = true;
+        swap(rows[i], rows[rank]);
+        // After swapping the system is no longer sorted.
+        changed = true;
       }
       // Combine the row containing the pivot with all the lines or
       // equalities following it, so that all the elements on the j-th
@@ -614,16 +614,16 @@ Linear_System<Row>
     for (dimension_type i = k; i-- > 0; ) {
       Row& row_i = rows[i];
       if (row_i.expr.get(Variable(j - 1)) != 0) {
-	// Combine linearly `row_i' with `row_k'
-	// so that `row_i[j]' becomes zero.
+        // Combine linearly `row_i' with `row_k'
+        // so that `row_i[j]' becomes zero.
         row_i.linear_combine(row_k, j);
-	if (still_sorted) {
-	  // Trying to keep sortedness: remember which rows
-	  // have to be re-checked for sortedness at the end.
-	  if (i > 0)
-	    check_for_sortedness[i-1] = true;
-	  check_for_sortedness[i] = true;
-	}
+        if (still_sorted) {
+          // Trying to keep sortedness: remember which rows
+          // have to be re-checked for sortedness at the end.
+          if (i > 0)
+            check_for_sortedness[i-1] = true;
+          check_for_sortedness[i] = true;
+        }
       }
     }
 
@@ -645,16 +645,16 @@ Linear_System<Row>
     for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Row& row_i = rows[i];
       if (row_i.expr.get(Variable(j - 1)) != 0) {
-	// Combine linearly the `row_i' with `row_k'
-	// so that `row_i[j]' becomes zero.
+        // Combine linearly the `row_i' with `row_k'
+        // so that `row_i[j]' becomes zero.
         row_i.linear_combine(row_k, j);
-	if (still_sorted) {
-	  // Trying to keep sortedness: remember which rows
-	  // have to be re-checked for sortedness at the end.
-	  if (i > n_lines_or_equalities)
-	    check_for_sortedness[i-1] = true;
-	  check_for_sortedness[i] = true;
-	}
+        if (still_sorted) {
+          // Trying to keep sortedness: remember which rows
+          // have to be re-checked for sortedness at the end.
+          if (i > n_lines_or_equalities)
+            check_for_sortedness[i-1] = true;
+          check_for_sortedness[i] = true;
+        }
       }
     }
     if (have_to_negate)
@@ -689,9 +689,9 @@ Linear_System<Row>::simplify() {
   for (dimension_type i = 0; i < nrows; ++i)
     if ((*this)[i].is_line_or_equality()) {
       if (n_lines_or_equalities < i) {
-	swap(rows[i], rows[n_lines_or_equalities]);
-	// The system was not sorted.
-	PPL_ASSERT(!sorted);
+        swap(rows[i], rows[n_lines_or_equalities]);
+        // The system was not sorted.
+        PPL_ASSERT(!sorted);
       }
       ++n_lines_or_equalities;
     }
@@ -703,7 +703,7 @@ Linear_System<Row>::simplify() {
       n_rays_or_points_or_inequalities = nrows - n_lines_or_equalities;
     const dimension_type
       num_swaps = std::min(n_lines_or_equalities - rank,
-			   n_rays_or_points_or_inequalities);
+                           n_rays_or_points_or_inequalities);
     for (dimension_type i = num_swaps; i-- > 0; )
       swap(rows[--nrows], rows[rank + i]);
     remove_trailing_rows(old_nrows - nrows);
@@ -890,7 +890,7 @@ Linear_System<Row>::OK() const {
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
     cerr << "Linear_System has a negative number of pending rows!"
-	 << endl;
+         << endl;
 #endif
     return false;
   }
@@ -901,8 +901,8 @@ Linear_System<Row>::OK() const {
     if (topology() != rows[i].topology()) {
 #ifndef NDEBUG
       cerr << "Topology mismatch between the system "
-	   << "and one of its rows!"
-	   << endl;
+           << "and one of its rows!"
+           << endl;
 #endif
       return false;
     }
@@ -910,7 +910,7 @@ Linear_System<Row>::OK() const {
   if (sorted && !check_sorted()) {
 #ifndef NDEBUG
     cerr << "The system declares itself to be sorted but it is not!"
-	 << endl;
+         << endl;
 #endif
     return false;
   }

@@ -28,19 +28,19 @@ site: http://bugseng.com/products/ppl/ . */
 
 #define DEFINE_PRINT_TO_BUFFER(Type)                                    \
 char*                                                                   \
- print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,			\
-			      unsigned indent_depth,			\
-			      unsigned preferred_first_line_length,	\
-			      unsigned preferred_line_length) {		\
-  char *buf, *ret;							\
-  int r = ppl_io_asprint_##Type(&buf, p);				\
-  if (r != 0)								\
-    return 0;								\
-  ret = ppl_io_wrap_string(buf, indent_depth,				\
-			   preferred_first_line_length,			\
-			   preferred_line_length);			\
-  free(buf);								\
-  return ret;								\
+ print_ppl_##Type##_to_buffer(ppl_const_##Type##_t p,                   \
+                              unsigned indent_depth,                    \
+                              unsigned preferred_first_line_length,     \
+                              unsigned preferred_line_length) {         \
+  char *buf, *ret;                                                      \
+  int r = ppl_io_asprint_##Type(&buf, p);                               \
+  if (r != 0)                                                           \
+    return 0;                                                           \
+  ret = ppl_io_wrap_string(buf, indent_depth,                           \
+                           preferred_first_line_length,                 \
+                           preferred_line_length);                      \
+  free(buf);                                                            \
+  return ret;                                                           \
 }
 
 DEFINE_PRINT_TO_BUFFER(Coefficient)

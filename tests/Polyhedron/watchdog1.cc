@@ -38,7 +38,7 @@ compute_open_hypercube_generators(dimension_type dimension) {
 }
 
 class Timeout : virtual public std::exception,
-		public Parma_Polyhedra_Library::Throwable {
+                public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
     return "timeout in watchdog1.cc";

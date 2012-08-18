@@ -360,7 +360,7 @@ get_linear_expression(const R& r) {
   dimension_type varid = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(coeff);
   while (varid < space_dimension
-	 && (coeff = r.coefficient(Variable(varid))) == 0)
+         && (coeff = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
     zero_mpz = unregistered_value_p_zero_mpz();
@@ -379,21 +379,21 @@ get_linear_expression(const R& r) {
     while (true) {
       ++varid;
       while (varid < space_dimension
-	     && (coeff = r.coefficient(Variable(varid))) == 0)
-	++varid;
+             && (coeff = r.coefficient(Variable(varid))) == 0)
+        ++varid;
       if (varid >= space_dimension)
-	CAMLreturn(term1);
+        CAMLreturn(term1);
       else {
-	ml_le_var2 = caml_alloc(1,0);
-	Store_field(ml_le_var2, 0, ppl_dimension_to_value(varid));
-	term2 = caml_alloc(2,6);
-	ppl_coeff = r.coefficient(Variable(varid));
-	Store_field(term2, 0, build_ocaml_coefficient(ppl_coeff));
-	Store_field(term2, 1, ml_le_var2);
-	sum = caml_alloc(2,4);
-	Store_field(sum, 0, term1);
-	Store_field(sum, 1, term2);
-	term1 = sum;
+        ml_le_var2 = caml_alloc(1,0);
+        Store_field(ml_le_var2, 0, ppl_dimension_to_value(varid));
+        term2 = caml_alloc(2,6);
+        ppl_coeff = r.coefficient(Variable(varid));
+        Store_field(term2, 0, build_ocaml_coefficient(ppl_coeff));
+        Store_field(term2, 1, ml_le_var2);
+        sum = caml_alloc(2,4);
+        Store_field(sum, 0, term1);
+        Store_field(sum, 1, term2);
+        term1 = sum;
       }
     }
   }
@@ -513,7 +513,7 @@ build_ocaml_congruence_system(const Congruence_System& ppl_cgs) {
   CAMLlocal2(result, new_tail);
   result = Val_emptylist;
   for (Congruence_System::const_iterator v_begin = ppl_cgs.begin(),
-  	 v_end = ppl_cgs.end(); v_begin != v_end; ++v_begin) {
+         v_end = ppl_cgs.end(); v_begin != v_end; ++v_begin) {
     new_tail = caml_alloc_tuple(2);
     Store_field(new_tail, 0, build_ocaml_congruence(*v_begin));
     Store_field(new_tail, 1, result);
@@ -528,7 +528,7 @@ build_ocaml_constraint_system(const Constraint_System& ppl_cs) {
   CAMLlocal2(result, new_tail);
   result = Val_emptylist;
   for (Constraint_System::const_iterator v_begin = ppl_cs.begin(),
-  	 v_end = ppl_cs.end(); v_begin != v_end; ++v_begin) {
+         v_end = ppl_cs.end(); v_begin != v_end; ++v_begin) {
     new_tail = caml_alloc_tuple(2);
     Store_field(new_tail, 0, build_ocaml_constraint(*v_begin));
     Store_field(new_tail, 1, result);
@@ -543,7 +543,7 @@ build_ocaml_generator_system(const Generator_System& ppl_gs) {
   CAMLlocal2(result, new_tail);
   result = Val_emptylist;
   for (Generator_System::const_iterator v_begin = ppl_gs.begin(),
-  	 v_end = ppl_gs.end(); v_begin != v_end; ++v_begin) {
+         v_end = ppl_gs.end(); v_begin != v_end; ++v_begin) {
     new_tail = caml_alloc_tuple(2);
     Store_field(new_tail, 0, build_ocaml_generator(*v_begin));
     Store_field(new_tail, 1, result);
@@ -558,7 +558,7 @@ build_ocaml_grid_generator_system(const Grid_Generator_System& ppl_ggs) {
   CAMLlocal2(result, new_tail);
   result = Val_emptylist;
   for (Grid_Generator_System::const_iterator v_begin = ppl_ggs.begin(),
-  	 v_end = ppl_ggs.end(); v_begin != v_end; ++v_begin) {
+         v_end = ppl_ggs.end(); v_begin != v_end; ++v_begin) {
     new_tail = caml_alloc_tuple(2);
     Store_field(new_tail, 0, build_ocaml_grid_generator(*v_begin));
     Store_field(new_tail, 1, result);
@@ -645,13 +645,13 @@ build_ppl_Generator(value g) {
     // Point
     mpz_class z(mpz_ptr_val(Field(g, 1)));
     return Generator::point(build_ppl_Linear_Expression(Field(g, 0)),
-			    Coefficient(z));
+                            Coefficient(z));
   }
   case 3: {
     // Closure_point
     mpz_class z(mpz_ptr_val(Field(g, 1)));
     return Generator::closure_point(build_ppl_Linear_Expression(Field(g, 0)),
-				    Coefficient(z));
+                                    Coefficient(z));
   }
   default:
     throw std::invalid_argument("PPL OCaml interface invalid argument:\n"
@@ -669,13 +669,13 @@ build_ppl_Grid_Generator(value gg) {
      // Parameter
      mpz_class z(mpz_ptr_val(Field(gg, 1)));
      return parameter(build_ppl_Linear_Expression(Field(gg, 0)),
-		      Coefficient(z));
+                      Coefficient(z));
    }
    case 2: {
      // Point
      mpz_class z(mpz_ptr_val(Field(gg, 1)));
      return grid_point(build_ppl_Linear_Expression(Field(gg, 0)),
-		       Coefficient(z));
+                       Coefficient(z));
    }
   default:
     // We should not be here!
@@ -842,13 +842,13 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_new_MIP_Problem(value d, value caml_cs, value caml_cost,
-		    value caml_opt_mode) try {
+                    value caml_opt_mode) try {
   CAMLparam4(d, caml_cs, caml_cost, caml_opt_mode);
   dimension_type dd = value_to_ppl_dimension(d);
   Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
   Linear_Expression ppl_cost = build_ppl_Linear_Expression(caml_cost);
   Optimization_Mode ppl_opt_mode = build_ppl_opt_mode(caml_opt_mode);
-  MIP_Problem& ppl_mip = *new MIP_Problem(dd, ppl_cs, ppl_cost,	ppl_opt_mode);
+  MIP_Problem& ppl_mip = *new MIP_Problem(dd, ppl_cs, ppl_cost, ppl_opt_mode);
   CAMLreturn(unregistered_value_p_MIP_Problem(ppl_mip));
 }
 CATCH_ALL
@@ -890,7 +890,7 @@ ppl_MIP_Problem_constraints(value caml_mip) try {
   const MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   Constraint_System cs;
   for (MIP_Problem::const_iterator cs_it = ppl_mip.constraints_begin(),
-	 cs_end = ppl_mip.constraints_end(); cs_it != cs_end; ++cs_it) {
+         cs_end = ppl_mip.constraints_end(); cs_it != cs_end; ++cs_it) {
     cs.insert(*cs_it);
   }
   CAMLreturn(build_ocaml_constraint_system(cs));
@@ -911,7 +911,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_MIP_Problem_add_to_integer_space_dimensions(value caml_mip,
-						value caml_ivars) try {
+                                                value caml_ivars) try {
   CAMLparam2(caml_mip, caml_ivars);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_to_integer_space_dimensions(build_ppl_Variables_Set(caml_ivars));
@@ -922,7 +922,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_MIP_Problem_add_constraint(value caml_mip,
-			       value caml_constraint) try {
+                               value caml_constraint) try {
   CAMLparam2(caml_mip, caml_constraint);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_constraint(build_ppl_Constraint(caml_constraint));
@@ -944,7 +944,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_MIP_Problem_set_objective_function(value caml_mip,
-				       value caml_cost) try {
+                                       value caml_cost) try {
   CAMLparam2(caml_mip, caml_cost);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.set_objective_function(build_ppl_Linear_Expression(caml_cost));
@@ -1067,7 +1067,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_MIP_Problem_evaluate_objective_function(value caml_mip,
-					    value caml_generator) try {
+                                            value caml_generator) try {
   CAMLparam2(caml_mip, caml_generator);
   CAMLlocal1(caml_return_value);
   Generator g = build_ppl_Generator(caml_generator);
@@ -1221,7 +1221,7 @@ ppl_PIP_Problem_constraints(value caml_pip) try {
   const PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
   Constraint_System cs;
   for (PIP_Problem::const_iterator cs_it = ppl_pip.constraints_begin(),
-	 cs_end = ppl_pip.constraints_end(); cs_it != cs_end; ++cs_it) {
+         cs_end = ppl_pip.constraints_end(); cs_it != cs_end; ++cs_it) {
     cs.insert(*cs_it);
   }
   CAMLreturn(build_ocaml_constraint_system(cs));
@@ -1244,7 +1244,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_PIP_Problem_add_to_parameter_space_dimensions(value caml_pip,
-						  value caml_ivars) try {
+                                                  value caml_ivars) try {
   CAMLparam2(caml_pip, caml_ivars);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
   ppl_pip.add_to_parameter_space_dimensions
@@ -1256,7 +1256,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_PIP_Problem_add_constraint(value caml_pip,
-			       value caml_constraint) try {
+                               value caml_constraint) try {
   CAMLparam2(caml_pip, caml_constraint);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
   ppl_pip.add_constraint(build_ppl_Constraint(caml_constraint));
@@ -1278,7 +1278,7 @@ CATCH_ALL
 extern "C"
 CAMLprim value
 ppl_PIP_Problem_set_big_parameter_dimension(value caml_pip,
-				            value caml_dim) try {
+                                            value caml_dim) try {
   CAMLparam2(caml_pip, caml_dim);
   dimension_type ppl_dim = value_to_ppl_dimension(caml_dim);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
@@ -1505,7 +1505,7 @@ ppl_PIP_Tree_Node_artificials(value caml_node) try {
                                 "node is bottom.");
   for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
          v_begin = ppl_node->art_parameter_begin(),
-  	 v_end = ppl_node->art_parameter_end(); v_begin != v_end; ++v_begin) {
+         v_end = ppl_node->art_parameter_end(); v_begin != v_end; ++v_begin) {
     new_tail = caml_alloc_tuple(2);
     Store_field(new_tail, 0, build_ocaml_artificial_parameter(*v_begin));
     Store_field(new_tail, 1, result);

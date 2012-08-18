@@ -62,11 +62,11 @@ public class Parma_Polyhedra_Library_test1 {
 
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
-	boolean test_result_ok =
-	    Test_Executor.executeTests(Parma_Polyhedra_Library_test1.class);
+        boolean test_result_ok =
+            Test_Executor.executeTests(Parma_Polyhedra_Library_test1.class);
         Parma_Polyhedra_Library.finalize_library();
-	if (!test_result_ok)
-	    System.exit(1);
-	System.exit(0);
+        if (!test_result_ok)
+            System.exit(1);
+        System.exit(0);
     }
 }

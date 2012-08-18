@@ -45,7 +45,7 @@ test01() {
 
   const Generator_System& gs1 = ph1.minimized_generators();
   for (Generator_System::const_iterator i = gs1.begin(),
-	 gs1_end = gs1.end(); i != gs1_end; ++i)
+         gs1_end = gs1.end(); i != gs1_end; ++i)
     ph2.add_generator(*i);
 
   C_Polyhedron known_result(2);
@@ -75,7 +75,7 @@ test02() {
 
   const Generator_System& gs1 = ph1.minimized_generators();
   for (Generator_System::const_iterator i = gs1.begin(),
-	 gs1_end = gs1.end(); i != gs1_end; ++i)
+         gs1_end = gs1.end(); i != gs1_end; ++i)
     ph2.add_generator(*i);
 
   C_Polyhedron known_result(2);
@@ -104,7 +104,7 @@ test03() {
   C_Polyhedron ph(2, EMPTY);
 
   for (Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       ph.add_generator(*i);
 

@@ -354,7 +354,7 @@ enum ppl_enum_error_code {
 */
 int
 ppl_set_error_handler PPL_PROTO((void (*h)(enum ppl_enum_error_code code,
-					   const char* description)));
+                                           const char* description)));
 
 /*@}*/ /* Error */
 
@@ -537,9 +537,9 @@ ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
 */
 char*
 ppl_io_wrap_string(const char* src,
-		   unsigned indent_depth,
-		   unsigned preferred_first_line_length,
-		   unsigned preferred_line_length);
+                   unsigned indent_depth,
+                   unsigned preferred_first_line_length,
+                   unsigned preferred_line_length);
 
 /*@}*/ /* Datatypes */
 
@@ -842,7 +842,7 @@ ppl_new_Coefficient_from_mpz_t PPL_PROTO((ppl_Coefficient_t* pc, mpz_t z));
 */
 int
 ppl_new_Coefficient_from_Coefficient PPL_PROTO((ppl_Coefficient_t* pc,
-						ppl_const_Coefficient_t c));
+                                                ppl_const_Coefficient_t c));
 
 /*! \relates ppl_Coefficient_tag \brief
   Assign to \p dst the value given by the GMP integer \p z.
@@ -1005,8 +1005,8 @@ PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_dimension_type* m));
 */
 int
 ppl_Linear_Expression_coefficient PPL_PROTO((ppl_const_Linear_Expression_t le,
-					     ppl_dimension_type var,
-					     ppl_Coefficient_t n));
+                                             ppl_dimension_type var,
+                                             ppl_Coefficient_t n));
 
 /*! \relates ppl_Linear_Expression_tag \brief
   Copies into \p n the inhomogeneous term of linear expression \p le.
@@ -1050,8 +1050,8 @@ PPL_PROTO((ppl_const_Linear_Expression_t le));
 int
 ppl_Linear_Expression_add_to_coefficient
 PPL_PROTO((ppl_Linear_Expression_t le,
-	   ppl_dimension_type var,
-	   ppl_const_Coefficient_t n));
+           ppl_dimension_type var,
+           ppl_const_Coefficient_t n));
 
 /*! \relates ppl_Linear_Expression_tag \brief
   Adds \p n to the inhomogeneous term of the linear expression \p le.
@@ -1111,8 +1111,8 @@ enum ppl_enum_Constraint_Type {
 */
 int
 ppl_new_Constraint PPL_PROTO((ppl_Constraint_t* pc,
-			      ppl_const_Linear_Expression_t le,
-			      enum ppl_enum_Constraint_Type rel));
+                              ppl_const_Linear_Expression_t le,
+                              enum ppl_enum_Constraint_Type rel));
 
 /*! \relates ppl_Constraint_tag \brief
   Creates the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$
@@ -1135,14 +1135,14 @@ ppl_new_Constraint_zero_dim_positivity PPL_PROTO((ppl_Constraint_t* pc));
 */
 int
 ppl_new_Constraint_from_Constraint PPL_PROTO((ppl_Constraint_t* pc,
-					      ppl_const_Constraint_t c));
+                                              ppl_const_Constraint_t c));
 
 /*! \relates ppl_Constraint_tag \brief
   Assigns a copy of the constraint \p src to \p dst.
 */
 int
 ppl_assign_Constraint_from_Constraint PPL_PROTO((ppl_Constraint_t dst,
-						 ppl_const_Constraint_t src));
+                                                 ppl_const_Constraint_t src));
 
 /*! \relates ppl_Constraint_tag \brief
   Invalidates the handle \p c: this makes sure the corresponding
@@ -1161,7 +1161,7 @@ ppl_delete_Constraint PPL_PROTO((ppl_const_Constraint_t c));
 */
 int
 ppl_Constraint_space_dimension PPL_PROTO((ppl_const_Constraint_t c,
-					  ppl_dimension_type* m));
+                                          ppl_dimension_type* m));
 
 /*! \relates ppl_Constraint_tag \brief
   Returns the type of constraint \p c.
@@ -1175,15 +1175,15 @@ ppl_Constraint_type PPL_PROTO((ppl_const_Constraint_t c));
 */
 int
 ppl_Constraint_coefficient PPL_PROTO((ppl_const_Constraint_t c,
-				      ppl_dimension_type var,
-				      ppl_Coefficient_t n));
+                                      ppl_dimension_type var,
+                                      ppl_Coefficient_t n));
 
 /*! \relates ppl_Constraint_tag \brief
   Copies into \p n the inhomogeneous term of constraint \p c.
 */
 int
 ppl_Constraint_inhomogeneous_term PPL_PROTO((ppl_const_Constraint_t c,
-					     ppl_Coefficient_t n));
+                                             ppl_Coefficient_t n));
 
 /*! \relates ppl_Constraint_tag \brief
   Returns a positive integer if \p c is well formed, i.e., if it
@@ -1282,7 +1282,7 @@ PPL_PROTO((ppl_const_Constraint_System_t cs));
 int
 ppl_Constraint_System_begin
 PPL_PROTO((ppl_const_Constraint_System_t cs,
-	   ppl_Constraint_System_const_iterator_t cit));
+           ppl_Constraint_System_const_iterator_t cit));
 
 /*! \relates ppl_Constraint_System_tag \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
@@ -1291,7 +1291,7 @@ PPL_PROTO((ppl_const_Constraint_System_t cs,
 int
 ppl_Constraint_System_end
 PPL_PROTO((ppl_const_Constraint_System_t cs,
-	   ppl_Constraint_System_const_iterator_t cit));
+           ppl_Constraint_System_const_iterator_t cit));
 
 /*! \relates ppl_Constraint_System_tag \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -1319,7 +1319,7 @@ ppl_Constraint_System_clear PPL_PROTO((ppl_Constraint_System_t cs));
 */
 int
 ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
-						   ppl_const_Constraint_t c));
+                                                   ppl_const_Constraint_t c));
 
 /*@}*/ /* Functions that May Modify the Constraint System */
 
@@ -1344,7 +1344,7 @@ PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit));
 int
 ppl_new_Constraint_System_const_iterator_from_Constraint_System_const_iterator
 PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit,
-	   ppl_const_Constraint_System_const_iterator_t cit));
+           ppl_const_Constraint_System_const_iterator_t cit));
 
 /*! \relates ppl_Constraint_System_const_iterator_tag \brief
   Assigns a copy of the const iterator \p src to \p dst.
@@ -1352,7 +1352,7 @@ PPL_PROTO((ppl_Constraint_System_const_iterator_t* pcit,
 int
 ppl_assign_Constraint_System_const_iterator_from_Constraint_System_const_iterator
 PPL_PROTO((ppl_Constraint_System_const_iterator_t dst,
-	   ppl_const_Constraint_System_const_iterator_t src));
+           ppl_const_Constraint_System_const_iterator_t src));
 
 /*! \relates ppl_Constraint_System_const_iterator_tag \brief
   Invalidates the handle \p cit: this makes sure the corresponding
@@ -1374,7 +1374,7 @@ PPL_PROTO((ppl_const_Constraint_System_const_iterator_t cit));
 int
 ppl_Constraint_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Constraint_System_const_iterator_t cit,
-	   ppl_const_Constraint_t* pc));
+           ppl_const_Constraint_t* pc));
 
 /*! \relates ppl_Constraint_System_const_iterator_tag \brief
   Increment \p cit so that it "points" to the next constraint.
@@ -1390,7 +1390,7 @@ PPL_PROTO((ppl_Constraint_System_const_iterator_t cit));
 int
 ppl_Constraint_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Constraint_System_const_iterator_t x,
-	   ppl_const_Constraint_System_const_iterator_t y));
+           ppl_const_Constraint_System_const_iterator_t y));
 
 /*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
@@ -1422,9 +1422,9 @@ enum ppl_enum_Generator_Type {
 */
 int
 ppl_new_Generator PPL_PROTO((ppl_Generator_t* pg,
-			     ppl_const_Linear_Expression_t le,
-			     enum ppl_enum_Generator_Type t,
-			     ppl_const_Coefficient_t d));
+                             ppl_const_Linear_Expression_t le,
+                             enum ppl_enum_Generator_Type t,
+                             ppl_const_Coefficient_t d));
 
 /*! \relates ppl_Generator_tag \brief
   Creates the point that is the origin of the zero-dimensional space
@@ -1448,14 +1448,14 @@ ppl_new_Generator_zero_dim_closure_point PPL_PROTO((ppl_Generator_t* pg));
 */
 int
 ppl_new_Generator_from_Generator PPL_PROTO((ppl_Generator_t* pg,
-					    ppl_const_Generator_t g));
+                                            ppl_const_Generator_t g));
 
 /*! \relates ppl_Generator_tag \brief
   Assigns a copy of the generator \p src to \p dst.
 */
 int
 ppl_assign_Generator_from_Generator PPL_PROTO((ppl_Generator_t dst,
-					       ppl_const_Generator_t src));
+                                               ppl_const_Generator_t src));
 
 /*! \relates ppl_Generator_tag \brief
   Invalidates the handle \p g: this makes sure the corresponding
@@ -1474,7 +1474,7 @@ ppl_delete_Generator PPL_PROTO((ppl_const_Generator_t g));
 */
 int
 ppl_Generator_space_dimension PPL_PROTO((ppl_const_Generator_t g,
-					 ppl_dimension_type* m));
+                                         ppl_dimension_type* m));
 
 /*! \relates ppl_Generator_tag \brief
   Returns the type of generator \p g.
@@ -1487,15 +1487,15 @@ ppl_Generator_type PPL_PROTO((ppl_const_Generator_t g));
 */
 int
 ppl_Generator_coefficient PPL_PROTO((ppl_const_Generator_t g,
-				     ppl_dimension_type var,
-				     ppl_Coefficient_t n));
+                                     ppl_dimension_type var,
+                                     ppl_Coefficient_t n));
 
 /*! \relates ppl_Generator_tag \brief
   If \p g is a point or a closure point assigns its divisor to \p n.
 */
 int
 ppl_Generator_divisor PPL_PROTO((ppl_const_Generator_t g,
-				 ppl_Coefficient_t n));
+                                 ppl_Coefficient_t n));
 
 /*! \relates ppl_Generator_tag \brief
   Returns a positive integer if \p g is well formed, i.e., if it
@@ -1536,7 +1536,7 @@ PPL_PROTO((ppl_Generator_System_t* pgs));
 */
 int
 ppl_new_Generator_System_from_Generator PPL_PROTO((ppl_Generator_System_t* pgs,
-						   ppl_const_Generator_t g));
+                                                   ppl_const_Generator_t g));
 
 /*! \relates ppl_Generator_System_tag \brief
   Builds a generator system that is a copy of \p gs; writes a handle
@@ -1587,7 +1587,7 @@ PPL_PROTO((ppl_const_Generator_System_t gs));
 int
 ppl_Generator_System_begin
 PPL_PROTO((ppl_const_Generator_System_t gs,
-	   ppl_Generator_System_const_iterator_t git));
+           ppl_Generator_System_const_iterator_t git));
 
 /*! \relates ppl_Generator_System_tag \brief
   Assigns to \p git a const iterator "pointing" past the end of the
@@ -1596,7 +1596,7 @@ PPL_PROTO((ppl_const_Generator_System_t gs,
 int
 ppl_Generator_System_end
 PPL_PROTO((ppl_const_Generator_System_t gs,
-	   ppl_Generator_System_const_iterator_t git));
+           ppl_Generator_System_const_iterator_t git));
 
 /*! \relates ppl_Generator_System_tag \brief
   Returns a positive integer if \p gs is well formed, i.e., if it
@@ -1624,7 +1624,7 @@ ppl_Generator_System_clear PPL_PROTO((ppl_Generator_System_t gs));
 */
 int
 ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
-						 ppl_const_Generator_t g));
+                                                 ppl_const_Generator_t g));
 
 /*@}*/ /* Functions that May Modify the Generator System */
 
@@ -1649,7 +1649,7 @@ PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit));
 int
 ppl_new_Generator_System_const_iterator_from_Generator_System_const_iterator
 PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit,
-	   ppl_const_Generator_System_const_iterator_t git));
+           ppl_const_Generator_System_const_iterator_t git));
 
 /*! \relates ppl_Generator_System_const_iterator_tag \brief
   Assigns a copy of the const iterator \p src to \p dst.
@@ -1657,7 +1657,7 @@ PPL_PROTO((ppl_Generator_System_const_iterator_t* pgit,
 int
 ppl_assign_Generator_System_const_iterator_from_Generator_System_const_iterator
 PPL_PROTO((ppl_Generator_System_const_iterator_t dst,
-	   ppl_const_Generator_System_const_iterator_t src));
+           ppl_const_Generator_System_const_iterator_t src));
 
 /*! \relates ppl_Generator_System_const_iterator_tag \brief
   Invalidates the handle \p git: this makes sure the corresponding
@@ -1679,7 +1679,7 @@ PPL_PROTO((ppl_const_Generator_System_const_iterator_t git));
 int
 ppl_Generator_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Generator_System_const_iterator_t git,
-	   ppl_const_Generator_t* pg));
+           ppl_const_Generator_t* pg));
 
 /*! \relates ppl_Generator_System_const_iterator_tag \brief
   Increment \p git so that it "points" to the next generator.
@@ -1695,7 +1695,7 @@ PPL_PROTO((ppl_Generator_System_const_iterator_t git));
 int
 ppl_Generator_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Generator_System_const_iterator_t x,
-	   ppl_const_Generator_System_const_iterator_t y));
+           ppl_const_Generator_System_const_iterator_t y));
 
 /*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
@@ -1710,8 +1710,8 @@ PPL_PROTO((ppl_const_Generator_System_const_iterator_t x,
 */
 int
 ppl_new_Congruence PPL_PROTO((ppl_Congruence_t* pc,
-			      ppl_const_Linear_Expression_t le,
-			      ppl_const_Coefficient_t m));
+                              ppl_const_Linear_Expression_t le,
+                              ppl_const_Coefficient_t m));
 
 /*! \relates ppl_Congruence_tag \brief
   Creates the unsatisfiable (zero-dimension space) congruence
@@ -1734,14 +1734,14 @@ ppl_new_Congruence_zero_dim_integrality PPL_PROTO((ppl_Congruence_t* pc));
 */
 int
 ppl_new_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t* pc,
-					      ppl_const_Congruence_t c));
+                                              ppl_const_Congruence_t c));
 
 /*! \relates ppl_Congruence_tag \brief
   Assigns a copy of the congruence \p src to \p dst.
 */
 int
 ppl_assign_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t dst,
-						 ppl_const_Congruence_t src));
+                                                 ppl_const_Congruence_t src));
 
 /*! \relates ppl_Congruence_tag \brief
   Invalidates the handle \p c: this makes sure the corresponding
@@ -1760,7 +1760,7 @@ ppl_delete_Congruence PPL_PROTO((ppl_const_Congruence_t c));
 */
 int
 ppl_Congruence_space_dimension PPL_PROTO((ppl_const_Congruence_t c,
-					  ppl_dimension_type* m));
+                                          ppl_dimension_type* m));
 
 /*! \relates ppl_Congruence_tag \brief
   Copies into \p n the coefficient of variable \p var in
@@ -1768,22 +1768,22 @@ ppl_Congruence_space_dimension PPL_PROTO((ppl_const_Congruence_t c,
 */
 int
 ppl_Congruence_coefficient PPL_PROTO((ppl_const_Congruence_t c,
-				      ppl_dimension_type var,
-				      ppl_Coefficient_t n));
+                                      ppl_dimension_type var,
+                                      ppl_Coefficient_t n));
 
 /*! \relates ppl_Congruence_tag \brief
   Copies into \p n the inhomogeneous term of congruence \p c.
 */
 int
 ppl_Congruence_inhomogeneous_term PPL_PROTO((ppl_const_Congruence_t c,
-					     ppl_Coefficient_t n));
+                                             ppl_Coefficient_t n));
 
 /*! \relates ppl_Congruence_tag \brief
   Copies into \p m the modulus of congruence \p c.
 */
 int
 ppl_Congruence_modulus PPL_PROTO((ppl_const_Congruence_t c,
-				  ppl_Coefficient_t m));
+                                  ppl_Coefficient_t m));
 
 /*! \relates ppl_Congruence_tag \brief
   Returns a positive integer if \p c is well formed, i.e., if it
@@ -1874,7 +1874,7 @@ PPL_PROTO((ppl_const_Congruence_System_t cs));
 int
 ppl_Congruence_System_begin
 PPL_PROTO((ppl_const_Congruence_System_t cs,
-	   ppl_Congruence_System_const_iterator_t cit));
+           ppl_Congruence_System_const_iterator_t cit));
 
 /*! \relates ppl_Congruence_System_tag \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
@@ -1883,7 +1883,7 @@ PPL_PROTO((ppl_const_Congruence_System_t cs,
 int
 ppl_Congruence_System_end
 PPL_PROTO((ppl_const_Congruence_System_t cs,
-	   ppl_Congruence_System_const_iterator_t cit));
+           ppl_Congruence_System_const_iterator_t cit));
 
 /*! \relates ppl_Congruence_System_tag \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -1911,7 +1911,7 @@ ppl_Congruence_System_clear PPL_PROTO((ppl_Congruence_System_t cs));
 */
 int
 ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
-						   ppl_const_Congruence_t c));
+                                                   ppl_const_Congruence_t c));
 
 /*@}*/ /* Functions that May Modify the Congruence System */
 
@@ -1936,7 +1936,7 @@ PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit));
 int
 ppl_new_Congruence_System_const_iterator_from_Congruence_System_const_iterator
 PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit,
-	   ppl_const_Congruence_System_const_iterator_t cit));
+           ppl_const_Congruence_System_const_iterator_t cit));
 
 /*! \relates ppl_Congruence_System_const_iterator_tag \brief
   Assigns a copy of the const iterator \p src to \p dst.
@@ -1944,7 +1944,7 @@ PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit,
 int
 ppl_assign_Congruence_System_const_iterator_from_Congruence_System_const_iterator
 PPL_PROTO((ppl_Congruence_System_const_iterator_t dst,
-	   ppl_const_Congruence_System_const_iterator_t src));
+           ppl_const_Congruence_System_const_iterator_t src));
 
 /*! \relates ppl_Congruence_System_const_iterator_tag \brief
   Invalidates the handle \p cit: this makes sure the corresponding
@@ -1966,7 +1966,7 @@ PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit));
 int
 ppl_Congruence_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit,
-	   ppl_const_Congruence_t* pc));
+           ppl_const_Congruence_t* pc));
 
 /*! \relates ppl_Congruence_System_const_iterator_tag \brief
   Increment \p cit so that it "points" to the next congruence.
@@ -1982,7 +1982,7 @@ PPL_PROTO((ppl_Congruence_System_const_iterator_t cit));
 int
 ppl_Congruence_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Congruence_System_const_iterator_t x,
-	   ppl_const_Congruence_System_const_iterator_t y));
+           ppl_const_Congruence_System_const_iterator_t y));
 
 /*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
@@ -2012,9 +2012,9 @@ enum ppl_enum_Grid_Generator_Type {
 */
 int
 ppl_new_Grid_Generator PPL_PROTO((ppl_Grid_Generator_t* pg,
-				  ppl_const_Linear_Expression_t le,
-				  enum ppl_enum_Grid_Generator_Type t,
-				  ppl_const_Coefficient_t d));
+                                  ppl_const_Linear_Expression_t le,
+                                  enum ppl_enum_Grid_Generator_Type t,
+                                  ppl_const_Coefficient_t d));
 
 /*! \relates ppl_Grid_Generator_tag \brief
   Creates the point that is the origin of the zero-dimensional space
@@ -2038,7 +2038,7 @@ PPL_PROTO((ppl_Grid_Generator_t* pg, ppl_const_Grid_Generator_t g));
 int
 ppl_assign_Grid_Generator_from_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_t dst,
-	   ppl_const_Grid_Generator_t src));
+           ppl_const_Grid_Generator_t src));
 
 /*! \relates ppl_Grid_Generator_tag \brief
   Invalidates the handle \p g: this makes sure the corresponding
@@ -2057,7 +2057,7 @@ ppl_delete_Grid_Generator PPL_PROTO((ppl_const_Grid_Generator_t g));
 */
 int
 ppl_Grid_Generator_space_dimension PPL_PROTO((ppl_const_Grid_Generator_t g,
-					      ppl_dimension_type* m));
+                                              ppl_dimension_type* m));
 
 /*! \relates ppl_Grid_Generator_tag \brief
   Returns the type of grid generator \p g.
@@ -2071,15 +2071,15 @@ ppl_Grid_Generator_type PPL_PROTO((ppl_const_Grid_Generator_t g));
 */
 int
 ppl_Grid_Generator_coefficient PPL_PROTO((ppl_const_Grid_Generator_t g,
-					  ppl_dimension_type var,
-					  ppl_Coefficient_t n));
+                                          ppl_dimension_type var,
+                                          ppl_Coefficient_t n));
 
 /*! \relates ppl_Grid_Generator_tag \brief
   If \p g is a point or a parameter assigns its divisor to \p n.
 */
 int
 ppl_Grid_Generator_divisor PPL_PROTO((ppl_const_Grid_Generator_t g,
-				      ppl_Coefficient_t n));
+                                      ppl_Coefficient_t n));
 
 /*! \relates ppl_Grid_Generator_tag \brief
   Returns a positive integer if \p g is well formed, i.e., if it
@@ -2121,7 +2121,7 @@ PPL_PROTO((ppl_Grid_Generator_System_t* pgs));
 int
 ppl_new_Grid_Generator_System_from_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
-	   ppl_const_Grid_Generator_t g));
+           ppl_const_Grid_Generator_t g));
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
   Builds a grid generator system that is a copy of \p gs; writes a handle
@@ -2130,7 +2130,7 @@ PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
 int
 ppl_new_Grid_Generator_System_from_Grid_Generator_System
 PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
-	   ppl_const_Grid_Generator_System_t gs));
+           ppl_const_Grid_Generator_System_t gs));
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
   Assigns a copy of the grid generator system \p src to \p dst.
@@ -2138,7 +2138,7 @@ PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
 int
 ppl_assign_Grid_Generator_System_from_Grid_Generator_System
 PPL_PROTO((ppl_Grid_Generator_System_t dst,
-	   ppl_const_Grid_Generator_System_t src));
+           ppl_const_Grid_Generator_System_t src));
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
   Invalidates the handle \p gs: this makes sure the corresponding
@@ -2175,7 +2175,7 @@ PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
 int
 ppl_Grid_Generator_System_begin
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
-	   ppl_Grid_Generator_System_const_iterator_t git));
+           ppl_Grid_Generator_System_const_iterator_t git));
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
   Assigns to \p git a const iterator "pointing" past the end of the
@@ -2184,7 +2184,7 @@ PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
 int
 ppl_Grid_Generator_System_end
 PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
-	   ppl_Grid_Generator_System_const_iterator_t git));
+           ppl_Grid_Generator_System_const_iterator_t git));
 
 /*! \relates ppl_Grid_Generator_System_tag \brief
   Returns a positive integer if \p gs is well formed, i.e., if it
@@ -2213,7 +2213,7 @@ ppl_Grid_Generator_System_clear PPL_PROTO((ppl_Grid_Generator_System_t gs));
 int
 ppl_Grid_Generator_System_insert_Grid_Generator
 PPL_PROTO((ppl_Grid_Generator_System_t gs,
-	   ppl_const_Grid_Generator_t g));
+           ppl_const_Grid_Generator_t g));
 
 /*@}*/ /* Functions that May Modify the Grid Generator System */
 
@@ -2238,7 +2238,7 @@ PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit));
 int
 ppl_new_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
 PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit,
-	   ppl_const_Grid_Generator_System_const_iterator_t git));
+           ppl_const_Grid_Generator_System_const_iterator_t git));
 
 /*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
   Assigns a copy of the const iterator \p src to \p dst.
@@ -2246,7 +2246,7 @@ PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit,
 int
 ppl_assign_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
 PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t dst,
-	   ppl_const_Grid_Generator_System_const_iterator_t src));
+           ppl_const_Grid_Generator_System_const_iterator_t src));
 
 /*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
   Invalidates the handle \p git: this makes sure the corresponding
@@ -2268,7 +2268,7 @@ PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git));
 int
 ppl_Grid_Generator_System_const_iterator_dereference
 PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git,
-	   ppl_const_Grid_Generator_t* pg));
+           ppl_const_Grid_Generator_t* pg));
 
 /*! \relates ppl_Grid_Generator_System_const_iterator_tag \brief
   Increment \p git so that it "points" to the next grid generator.
@@ -2284,7 +2284,7 @@ PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t git));
 int
 ppl_Grid_Generator_System_const_iterator_equal_test
 PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t x,
-	   ppl_const_Grid_Generator_System_const_iterator_t y));
+           ppl_const_Grid_Generator_System_const_iterator_t y));
 
 /*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 
@@ -2509,7 +2509,7 @@ extern int PPL_PIP_PROBLEM_CONTROL_PARAMETER_PIVOT_ROW_STRATEGY_MAX_COLUMN;
 */
 int
 ppl_new_MIP_Problem_from_space_dimension PPL_PROTO((ppl_MIP_Problem_t* pmip,
-						    ppl_dimension_type d));
+                                                    ppl_dimension_type d));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Builds a MIP problem of space dimension \p d having feasible region \p cs,
@@ -2518,10 +2518,10 @@ ppl_new_MIP_Problem_from_space_dimension PPL_PROTO((ppl_MIP_Problem_t* pmip,
 */
 int
 ppl_new_MIP_Problem PPL_PROTO((ppl_MIP_Problem_t* pmip,
-			       ppl_dimension_type d,
-			       ppl_const_Constraint_System_t cs,
-			       ppl_const_Linear_Expression_t le,
-			       int m));
+                               ppl_dimension_type d,
+                               ppl_const_Constraint_System_t cs,
+                               ppl_const_Linear_Expression_t le,
+                               int m));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Builds a MIP problem that is a copy of \p mip; writes a handle
@@ -2579,7 +2579,7 @@ PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type ds[]));
 */
 int
 ppl_MIP_Problem_number_of_constraints PPL_PROTO((ppl_const_MIP_Problem_t mip,
-						 ppl_dimension_type* m));
+                                                 ppl_dimension_type* m));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Writes at address \p pc a const handle to the \p i-th constraint
@@ -2587,8 +2587,8 @@ ppl_MIP_Problem_number_of_constraints PPL_PROTO((ppl_const_MIP_Problem_t mip,
 */
 int
 ppl_MIP_Problem_constraint_at_index PPL_PROTO((ppl_const_MIP_Problem_t mip,
-					       ppl_dimension_type i,
-					       ppl_const_Constraint_t* pc));
+                                               ppl_dimension_type i,
+                                               ppl_const_Constraint_t* pc));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Writes a const handle to the linear expression defining the
@@ -2646,7 +2646,7 @@ PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type ds[], size_t n));
 */
 int
 ppl_MIP_Problem_add_constraint PPL_PROTO((ppl_MIP_Problem_t mip,
-					  ppl_const_Constraint_t c));
+                                          ppl_const_Constraint_t c));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Modifies the feasible region of the MIP problem \p mip by adding a copy
@@ -2654,7 +2654,7 @@ ppl_MIP_Problem_add_constraint PPL_PROTO((ppl_MIP_Problem_t mip,
 */
 int
 ppl_MIP_Problem_add_constraints PPL_PROTO((ppl_MIP_Problem_t mip,
-					   ppl_const_Constraint_System_t cs));
+                                           ppl_const_Constraint_System_t cs));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Sets the objective function of the MIP problem \p mip to a copy of \p le.
@@ -2668,7 +2668,7 @@ PPL_PROTO((ppl_MIP_Problem_t mip, ppl_const_Linear_Expression_t le));
 */
 int
 ppl_MIP_Problem_set_optimization_mode PPL_PROTO((ppl_MIP_Problem_t mip,
-						 int mode));
+                                                 int mode));
 
 /*@}*/ /* Functions that May Modify the MIP_Problem */
 
@@ -2714,7 +2714,7 @@ ppl_MIP_Problem_solve PPL_PROTO((ppl_const_MIP_Problem_t mip));
 int
 ppl_MIP_Problem_evaluate_objective_function
 PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_const_Generator_t g,
-	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+           ppl_Coefficient_t num, ppl_Coefficient_t den));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Writes a const handle to a feasible point for the MIP problem \p mip
@@ -2722,7 +2722,7 @@ PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_const_Generator_t g,
 */
 int
 ppl_MIP_Problem_feasible_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
-					  ppl_const_Generator_t* pg));
+                                          ppl_const_Generator_t* pg));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Writes a const handle to an optimizing point for the MIP problem \p mip
@@ -2730,7 +2730,7 @@ ppl_MIP_Problem_feasible_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
 */
 int
 ppl_MIP_Problem_optimizing_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
-					    ppl_const_Generator_t* pg));
+                                            ppl_const_Generator_t* pg));
 
 /*! \relates ppl_MIP_Problem_tag \brief
   Returns the optimal value for \p mip.
@@ -2747,7 +2747,7 @@ ppl_MIP_Problem_optimizing_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
 int
 ppl_MIP_Problem_optimal_value
 PPL_PROTO((ppl_const_MIP_Problem_t mip,
-	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+           ppl_Coefficient_t num, ppl_Coefficient_t den));
 
 /*@}*/ /* Computing the Solution of the MIP_Problem */
 
@@ -2794,7 +2794,7 @@ PPL_PROTO((ppl_const_MIP_Problem_t mip, size_t* sz));
 */
 int
 ppl_new_PIP_Problem_from_space_dimension PPL_PROTO((ppl_PIP_Problem_t* ppip,
-						    ppl_dimension_type d));
+                                                    ppl_dimension_type d));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Builds a PIP problem that is a copy of \p pip; writes a handle
@@ -2878,7 +2878,7 @@ PPL_PROTO((ppl_const_PIP_Problem_t pip, ppl_dimension_type* pd));
 */
 int
 ppl_PIP_Problem_number_of_constraints PPL_PROTO((ppl_const_PIP_Problem_t pip,
-						 ppl_dimension_type* m));
+                                                 ppl_dimension_type* m));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Writes at address \p pc a const handle to the \p i-th constraint
@@ -2886,8 +2886,8 @@ ppl_PIP_Problem_number_of_constraints PPL_PROTO((ppl_const_PIP_Problem_t pip,
 */
 int
 ppl_PIP_Problem_constraint_at_index PPL_PROTO((ppl_const_PIP_Problem_t pip,
-					       ppl_dimension_type i,
-					       ppl_const_Constraint_t* pc));
+                                               ppl_dimension_type i,
+                                               ppl_const_Constraint_t* pc));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Writes into \p *sz the size in bytes of the memory occupied by \p pip.
@@ -2970,7 +2970,7 @@ PPL_PROTO((ppl_PIP_Problem_t pip, ppl_dimension_type d));
 */
 int
 ppl_PIP_Problem_add_constraint PPL_PROTO((ppl_PIP_Problem_t pip,
-					  ppl_const_Constraint_t c));
+                                          ppl_const_Constraint_t c));
 
 /*! \relates ppl_PIP_Problem_tag \brief
   Modifies the feasible region of the PIP problem \p pip by adding a copy
@@ -2978,7 +2978,7 @@ ppl_PIP_Problem_add_constraint PPL_PROTO((ppl_PIP_Problem_t pip,
 */
 int
 ppl_PIP_Problem_add_constraints PPL_PROTO((ppl_PIP_Problem_t pip,
-					   ppl_const_Constraint_System_t cs));
+                                           ppl_const_Constraint_System_t cs));
 
 /*@}*/ /* Functions that May Modify the PIP_Problem */
 
@@ -3192,7 +3192,7 @@ PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit));
 int
 ppl_new_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
 PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit,
-	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
+           ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
 
 /*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
   Assigns a copy of the const iterator \p src to \p dst.
@@ -3200,7 +3200,7 @@ PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t* papit,
 int
 ppl_assign_Artificial_Parameter_Sequence_const_iterator_from_Artificial_Parameter_Sequence_const_iterator
 PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t dst,
-	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t src));
+           ppl_const_Artificial_Parameter_Sequence_const_iterator_t src));
 
 /*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
   Invalidates the handle \p apit: this makes sure the corresponding
@@ -3222,7 +3222,7 @@ PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit));
 int
 ppl_Artificial_Parameter_Sequence_const_iterator_dereference
 PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t apit,
-	   ppl_const_Artificial_Parameter_t* pap));
+           ppl_const_Artificial_Parameter_t* pap));
 
 /*! \relates ppl_Artificial_Parameter_Sequence_const_iterator_tag \brief
   Increment \p apit so that it "points" to the next artificial parameter.
@@ -3238,7 +3238,7 @@ PPL_PROTO((ppl_Artificial_Parameter_Sequence_const_iterator_t apit));
 int
 ppl_Artificial_Parameter_Sequence_const_iterator_equal_test
 PPL_PROTO((ppl_const_Artificial_Parameter_Sequence_const_iterator_t x,
-	   ppl_const_Artificial_Parameter_Sequence_const_iterator_t y));
+           ppl_const_Artificial_Parameter_Sequence_const_iterator_t y));
 
 /*@}*/ /* Dereferencing, Incrementing and Equality Testing */
 

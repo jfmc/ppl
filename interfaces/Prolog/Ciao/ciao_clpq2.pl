@@ -31,18 +31,18 @@ site: http://bugseng.com/products/ppl/ . */
 :- use_module(library(sort)).
 :- use_module(library(write)).
 :- use_module(ppl_ciao, [
-	ppl_initialize/0,
-	ppl_finalize/0,
-	ppl_new_C_Polyhedron_from_space_dimension/3,
-	ppl_new_NNC_Polyhedron_from_space_dimension/3,
-	ppl_new_C_Polyhedron_from_C_Polyhedron/2,
-	ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/2,
-	ppl_delete_Polyhedron/1,
-	ppl_Polyhedron_space_dimension/2,
-	ppl_Polyhedron_get_constraints/2,
-	ppl_Polyhedron_add_space_dimensions_and_embed/2,
-	ppl_Polyhedron_remove_space_dimensions/2,
-	ppl_Polyhedron_remove_higher_space_dimensions/2
+        ppl_initialize/0,
+        ppl_finalize/0,
+        ppl_new_C_Polyhedron_from_space_dimension/3,
+        ppl_new_NNC_Polyhedron_from_space_dimension/3,
+        ppl_new_C_Polyhedron_from_C_Polyhedron/2,
+        ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/2,
+        ppl_delete_Polyhedron/1,
+        ppl_Polyhedron_space_dimension/2,
+        ppl_Polyhedron_get_constraints/2,
+        ppl_Polyhedron_add_space_dimensions_and_embed/2,
+        ppl_Polyhedron_remove_space_dimensions/2,
+        ppl_Polyhedron_remove_higher_space_dimensions/2
 ]).
 
 :- set_prolog_flag(multi_arity_warnings, off).

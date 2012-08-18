@@ -88,7 +88,7 @@ test02() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** "
-		   "ph.bounded_affine_preimage(B, 7-3*A+2*B, B+5*A-3) ***");
+                   "ph.bounded_affine_preimage(B, 7-3*A+2*B, B+5*A-3) ***");
 
   return ok;
 }

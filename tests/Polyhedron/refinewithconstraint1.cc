@@ -39,7 +39,7 @@ test01() {
 
   C_Polyhedron ph2(2);
   for (Constraint_System::const_iterator i = ph1.constraints().begin(),
-	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
+         cs_end = ph1.constraints().end(); i != cs_end; ++i)
     ph2.refine_with_constraint(*i);
 
   C_Polyhedron known_result(2);
@@ -96,7 +96,7 @@ test03() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** after ph.refine_with_constraint(B >= 1) ***");
+                    "*** after ph.refine_with_constraint(B >= 1) ***");
   return ok;
 }
 

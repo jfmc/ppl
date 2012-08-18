@@ -80,7 +80,7 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 PPL::compute_leader_indices(const std::vector<dimension_type>& predecessor,
-			    std::vector<dimension_type>& indices) {
+                            std::vector<dimension_type>& indices) {
   // The vector `indices' contains one entry for each equivalence
   // class, storing the index of the corresponding leader in
   // increasing order: it is used to avoid repeated tests for leadership.

@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(long csecs,
-		   const Flag_Base* volatile& holder,
+                   const Flag_Base* volatile& holder,
                    Flag& flag)
   : expired(false),
     handler(*new
@@ -41,7 +41,7 @@ Watchdog::Watchdog(long csecs,
                                                                     flag)) {
   if (csecs == 0)
     throw std::invalid_argument("Watchdog constructor called with a"
-				" non-positive number of centiseconds");
+                                " non-positive number of centiseconds");
   in_critical_section = true;
   pending_position = new_watchdog_event(csecs, handler, expired);
   in_critical_section = false;
@@ -53,7 +53,7 @@ Watchdog::Watchdog(long csecs, void (*function)())
     handler(*new Implementation::Watchdog::Handler_Function(function)) {
   if (csecs == 0)
     throw std::invalid_argument("Watchdog constructor called with a"
-				" non-positive number of centiseconds");
+                                " non-positive number of centiseconds");
   in_critical_section = true;
   pending_position = new_watchdog_event(csecs, handler, expired);
   in_critical_section = false;
@@ -78,7 +78,7 @@ Watchdog::reschedule() {
 
 template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(long /* csecs */,
-		   const Flag_Base* volatile& /* holder */,
+                   const Flag_Base* volatile& /* holder */,
                    Flag& /* flag */) {
   throw std::logic_error("PPL::Watchdog::Watchdog objects not supported:"
                          " system does not provide setitimer()");

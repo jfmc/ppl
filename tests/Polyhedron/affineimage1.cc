@@ -221,7 +221,7 @@ test08() {
 
   print_generators(ph, "*** after ph.affine_image(A, A + 1) ***");
   print_generators(copy_ph,
-		   "*** after copy_ph.affine_image(A, -A - 1, -1) ***");
+                   "*** after copy_ph.affine_image(A, -A - 1, -1) ***");
 
   return ok;
 }
@@ -246,7 +246,7 @@ test09() {
 
   print_generators(ph, "*** after ph.affine_image(B, A + 1) ***");
   print_generators(copy_ph,
-		   "*** after copy_ph.affine_image(B, -A - 1, -1) ***");
+                   "*** after copy_ph.affine_image(B, -A - 1, -1) ***");
 
   return ok;
 }

@@ -158,8 +158,8 @@ private:
 
 public:
   Prolog_unsigned_out_of_range(Prolog_term_ref term,
-			       const char* where,
-			       unsigned long max)
+                               const char* where,
+                               unsigned long max)
     : internal_exception(term, where),
       m(max) {
   }
@@ -552,7 +552,7 @@ handle_exception(const deterministic_timeout_exception&);
   catch (const ppl_handle_mismatch& e) { \
     handle_exception(e); \
   } \
-  catch (const not_an_optimization_mode& e) {	\
+  catch (const not_an_optimization_mode& e) {   \
     handle_exception(e); \
   } \
   catch (const not_a_complexity_class& e) { \
@@ -645,7 +645,7 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
       throw not_unsigned_integer(t, where);
     else if (static_cast<unsigned long>(l) > std::numeric_limits<U>::max())
       throw Prolog_unsigned_out_of_range(t, where,
-					 std::numeric_limits<U>::max());
+                                         std::numeric_limits<U>::max());
     else
       d = l;
   else {
@@ -656,7 +656,7 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
     Result r = assign_r(d, raw_value(v), ROUND_IGNORE);
     if (result_overflow(r))
       throw Prolog_unsigned_out_of_range(t, where,
-					 std::numeric_limits<U>::max());
+                                         std::numeric_limits<U>::max());
   }
   return d;
 }
@@ -701,8 +701,8 @@ enum Boundary_Kind {
 
 bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
-		 bool& finite, bool& closed,
-		 Parma_Polyhedra_Library::Coefficient& n, Parma_Polyhedra_Library::Coefficient& d);
+                 bool& finite, bool& closed,
+                 Parma_Polyhedra_Library::Coefficient& n, Parma_Polyhedra_Library::Coefficient& d);
 
 Parma_Polyhedra_Library::Relation_Symbol
 term_to_relation_symbol(Prolog_term_ref t_r, const char* where);
@@ -855,14 +855,14 @@ ppl_new_MIP_Problem_from_space_dimension
 
 extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem(Prolog_term_ref t_nd,
-		    Prolog_term_ref t_clist,
-		    Prolog_term_ref t_le_expr,
-		    Prolog_term_ref t_opt,
-		    Prolog_term_ref t_mip);
+                    Prolog_term_ref t_clist,
+                    Prolog_term_ref t_le_expr,
+                    Prolog_term_ref t_opt,
+                    Prolog_term_ref t_mip);
 
 extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem_from_MIP_Problem(Prolog_term_ref t_mip_source,
-				     Prolog_term_ref t_mip);
+                                     Prolog_term_ref t_mip);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
@@ -875,19 +875,19 @@ ppl_MIP_Problem_space_dimension(Prolog_term_ref t_mip, Prolog_term_ref t_sd);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
-					 Prolog_term_ref t_vlist);
+                                         Prolog_term_ref t_vlist);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_constraints(Prolog_term_ref t_mip,
-			    Prolog_term_ref t_clist);
+                            Prolog_term_ref t_clist);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_objective_function(Prolog_term_ref t_mip,
-				   Prolog_term_ref t_le_expr);
+                                   Prolog_term_ref t_le_expr);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_optimization_mode(Prolog_term_ref t_mip,
-				  Prolog_term_ref t_opt);
+                                  Prolog_term_ref t_opt);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_get_control_parameter(Prolog_term_ref t_mip,
@@ -903,22 +903,22 @@ ppl_MIP_Problem_add_space_dimensions_and_embed
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_add_to_integer_space_dimensions(Prolog_term_ref t_mip,
-						Prolog_term_ref t_vlist);
+                                                Prolog_term_ref t_vlist);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_add_constraint(Prolog_term_ref t_mip, Prolog_term_ref t_c);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_add_constraints(Prolog_term_ref t_mip,
-				Prolog_term_ref t_clist);
+                                Prolog_term_ref t_clist);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_objective_function(Prolog_term_ref t_mip,
-				       Prolog_term_ref t_le_expr);
+                                       Prolog_term_ref t_le_expr);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
-				      Prolog_term_ref t_opt);
+                                      Prolog_term_ref t_opt);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_set_control_parameter(Prolog_term_ref t_mip,
@@ -932,22 +932,22 @@ ppl_MIP_Problem_solve(Prolog_term_ref t_mip, Prolog_term_ref t_status);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_feasible_point(Prolog_term_ref t_mip,
-			       Prolog_term_ref t_g);
+                               Prolog_term_ref t_g);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_optimizing_point(Prolog_term_ref t_mip,
-				 Prolog_term_ref t_g);
+                                 Prolog_term_ref t_g);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_optimal_value(Prolog_term_ref t_mip,
-			      Prolog_term_ref t_n,
-			      Prolog_term_ref t_d);
+                              Prolog_term_ref t_n,
+                              Prolog_term_ref t_d);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
-					    Prolog_term_ref t_g,
-					    Prolog_term_ref t_n,
-					    Prolog_term_ref t_d);
+                                            Prolog_term_ref t_g,
+                                            Prolog_term_ref t_n,
+                                            Prolog_term_ref t_d);
 
 extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_OK(Prolog_term_ref t_mip);
@@ -962,13 +962,13 @@ ppl_new_PIP_Problem_from_space_dimension(Prolog_term_ref t_nd,
 
 extern "C" Prolog_foreign_return_type
 ppl_new_PIP_Problem_from_PIP_Problem(Prolog_term_ref t_pip_source,
-				     Prolog_term_ref t_pip);
+                                     Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
 ppl_new_PIP_Problem(Prolog_term_ref t_dim,
-		    Prolog_term_ref t_cs,
-		    Prolog_term_ref t_params,
-		    Prolog_term_ref t_pip);
+                    Prolog_term_ref t_cs,
+                    Prolog_term_ref t_params,
+                    Prolog_term_ref t_pip);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
@@ -1009,7 +1009,7 @@ ppl_PIP_Problem_add_constraint(Prolog_term_ref t_pip, Prolog_term_ref t_c);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_add_constraints(Prolog_term_ref t_pip,
-				Prolog_term_ref t_clist);
+                                Prolog_term_ref t_clist);
 
 extern "C" Prolog_foreign_return_type
 ppl_PIP_Problem_set_control_parameter(Prolog_term_ref t_pip,

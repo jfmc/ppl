@@ -39,9 +39,9 @@ namespace {
 
 void
 closure_points_dual_hypercube(const dimension_type dims,
-			      const Linear_Expression& weight_center,
-			      const Coefficient& half_diagonal,
-			      Generator_System& gs) {
+                              const Linear_Expression& weight_center,
+                              const Coefficient& half_diagonal,
+                              Generator_System& gs) {
   // An ill-formed (it has no points at all) generator system
   // for a dual hypercube.
   for (dimension_type axis = dims; axis-- > 0; ) {
@@ -52,12 +52,12 @@ closure_points_dual_hypercube(const dimension_type dims,
 
 void
 add_facets(dimension_type& to_be_added,
-	   Generator_System& gs,
-	   const Linear_Expression& expr,
-	   const dimension_type axis,
-	   const dimension_type dims,
-	   const Linear_Expression& weight_center,
-	   const Coefficient& half_diagonal) {
+           Generator_System& gs,
+           const Linear_Expression& expr,
+           const dimension_type axis,
+           const dimension_type dims,
+           const Linear_Expression& weight_center,
+           const Coefficient& half_diagonal) {
   // Return if we have already added all facets.
   if (to_be_added == 0)
     return;
@@ -81,20 +81,20 @@ add_facets(dimension_type& to_be_added,
   // First recursive call with variable with index `axis'
   // having coordinate 1/dims.
   add_facets(to_be_added, gs, expr1,
-	     axis-1, dims, weight_center, half_diagonal);
+             axis-1, dims, weight_center, half_diagonal);
   if (to_be_added == 0)
     return;
   // Second recursive call with variable with index `axis'
   // having coordinate -1/dims.
   add_facets(to_be_added, gs, expr2,
-	     axis-1, dims, weight_center, half_diagonal);
+             axis-1, dims, weight_center, half_diagonal);
 }
 
 NNC_Polyhedron
 NNC_dual_hypercube(const dimension_type dims,
-		   const Linear_Expression& weight_center,
-		   const Coefficient& half_diagonal,
-		   const int facet_percentage) {
+                   const Linear_Expression& weight_center,
+                   const Coefficient& half_diagonal,
+                   const int facet_percentage) {
   Generator_System gs;
   closure_points_dual_hypercube(dims, weight_center, half_diagonal, gs);
   // Number of facets in the closed dual hypercube.
@@ -107,15 +107,15 @@ NNC_dual_hypercube(const dimension_type dims,
     gs.insert(point(weight_center));
   else
     add_facets(facets_to_be_added, gs, Linear_Expression(0),
-	       dims-1, dims, weight_center, half_diagonal);
+               dims-1, dims, weight_center, half_diagonal);
   // Actually build the polyhedron.
   return NNC_Polyhedron(gs);
 }
 
 void
 build_polyhedra(const dimension_type dims,
-		const int percentage,
-		std::vector<NNC_Polyhedron>& ph) {
+                const int percentage,
+                std::vector<NNC_Polyhedron>& ph) {
 
   Linear_Expression weight_center;
 
@@ -346,10 +346,10 @@ test01() {
     for (int percentage = 25; percentage <= 50; percentage += 25) {
 
       nout << endl
-	   << "++++++++ DIMENSIONS = " << dims << "  ++++++++"
-	   << endl
-	   << "++++++++ PERCENTAGE = " << percentage << " ++++++++"
-	   << endl;
+           << "++++++++ DIMENSIONS = " << dims << "  ++++++++"
+           << endl
+           << "++++++++ PERCENTAGE = " << percentage << " ++++++++"
+           << endl;
 
       // Standard evaluation strategy.
       ph.clear();
@@ -359,11 +359,11 @@ test01() {
       // Check if there is a known result.
       known_result = standard_cardinalities.find(make_pair(dims, percentage));
       if (known_result != standard_cardinalities.end()
-	  && known_result->second != standard_eval_card) {
-	++num_errors;
-	nout << "Cardinality mismatch: "
-	     << "expected " << known_result->second << ", "
-	     << "obtained " << standard_eval_card << ".\n";
+          && known_result->second != standard_eval_card) {
+        ++num_errors;
+        nout << "Cardinality mismatch: "
+             << "expected " << known_result->second << ", "
+             << "obtained " << standard_eval_card << ".\n";
       }
 
       // Enhanced evaluation strategy.
@@ -374,11 +374,11 @@ test01() {
       // Check if there is a known result.
       known_result = enhanced_cardinalities.find(make_pair(dims, percentage));
       if (known_result != enhanced_cardinalities.end()
-	  && known_result->second != enhanced_eval_card) {
-	++num_errors;
-	nout << "Cardinality mismatch: "
-	     << "expected " << known_result->second << ", "
-	     << "obtained " << enhanced_eval_card <<".\n";
+          && known_result->second != enhanced_eval_card) {
+        ++num_errors;
+        nout << "Cardinality mismatch: "
+             << "expected " << known_result->second << ", "
+             << "obtained " << enhanced_eval_card <<".\n";
       }
 
     }

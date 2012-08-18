@@ -70,67 +70,67 @@ main() try {                                             \
   std::list<std::string> failed_tests;                   \
   std::list<std::string> unexpectedly_succeeded_tests;
 
-#define END_MAIN							\
-  if (!failed_tests.empty()) {						\
-    std::cerr << "tests failed: ";					\
+#define END_MAIN                                                        \
+  if (!failed_tests.empty()) {                                          \
+    std::cerr << "tests failed: ";                                      \
     std::copy(failed_tests.begin(),                                     \
               failed_tests.end(),                                       \
-	      std::ostream_iterator<std::string>(std::cerr, " "));	\
-    std::cerr << std::endl;						\
-    return 1;								\
-  }									\
-  if (!unexpectedly_succeeded_tests.empty()) {				\
+              std::ostream_iterator<std::string>(std::cerr, " "));      \
+    std::cerr << std::endl;                                             \
+    return 1;                                                           \
+  }                                                                     \
+  if (!unexpectedly_succeeded_tests.empty()) {                          \
     std::cerr << "tests unexpectedly succeeded: ";                      \
     std::copy(unexpectedly_succeeded_tests.begin(),                     \
               unexpectedly_succeeded_tests.end(),                       \
-	      std::ostream_iterator<std::string>(std::cerr, " "));	\
-    std::cerr << std::endl;						\
-    return 1;								\
-  }									\
-  return 0;								\
-}									\
-catch (const std::overflow_error& e) {					\
-  std::cerr << "arithmetic overflow (" << e.what() << ")"		\
-            << std::endl;						\
-  exit(1);								\
-}									\
-catch (const std::exception& e) {					\
-  std::cerr << "std::exception caught: "				\
-	    << e.what() << " (type == " << typeid(e).name() << ")"	\
-	    << std::endl;						\
-  exit(1);								\
+              std::ostream_iterator<std::string>(std::cerr, " "));      \
+    std::cerr << std::endl;                                             \
+    return 1;                                                           \
+  }                                                                     \
+  return 0;                                                             \
+}                                                                       \
+catch (const std::overflow_error& e) {                                  \
+  std::cerr << "arithmetic overflow (" << e.what() << ")"               \
+            << std::endl;                                               \
+  exit(1);                                                              \
+}                                                                       \
+catch (const std::exception& e) {                                       \
+  std::cerr << "std::exception caught: "                                \
+            << e.what() << " (type == " << typeid(e).name() << ")"      \
+            << std::endl;                                               \
+  exit(1);                                                              \
 }
 
-#define ANNOUNCE_TEST(test)		 \
+#define ANNOUNCE_TEST(test)              \
   nout << "\n=== " #test " ===" << std::endl
 
-#define RUN_TEST(test)							\
-  try {									\
-    overflow = false;							\
-    succeeded = test();							\
-  }									\
-  catch (const std::overflow_error& e) {				\
-    nout << "arithmetic overflow (" << e.what() << ")"			\
-	 << std::endl;							\
-    overflow = true;							\
-    succeeded = false;							\
-  }									\
-  catch (const std::exception& e) {					\
-    nout << "std::exception caught: "					\
-	 << e.what() << " (type == " << typeid(e).name() << ")"		\
-	 << std::endl;							\
-    succeeded = false;							\
-  }									\
-  catch (...) {								\
-    nout << "unknown exception caught"					\
-	 << std::endl;							\
-    succeeded = false;							\
+#define RUN_TEST(test)                                                  \
+  try {                                                                 \
+    overflow = false;                                                   \
+    succeeded = test();                                                 \
+  }                                                                     \
+  catch (const std::overflow_error& e) {                                \
+    nout << "arithmetic overflow (" << e.what() << ")"                  \
+         << std::endl;                                                  \
+    overflow = true;                                                    \
+    succeeded = false;                                                  \
+  }                                                                     \
+  catch (const std::exception& e) {                                     \
+    nout << "std::exception caught: "                                   \
+         << e.what() << " (type == " << typeid(e).name() << ")"         \
+         << std::endl;                                                  \
+    succeeded = false;                                                  \
+  }                                                                     \
+  catch (...) {                                                         \
+    nout << "unknown exception caught"                                  \
+         << std::endl;                                                  \
+    succeeded = false;                                                  \
   }
 
-#define DO_TEST(test)			 \
-  ANNOUNCE_TEST(test);			 \
-  RUN_TEST(test);			 \
-  if (!succeeded)			 \
+#define DO_TEST(test)                    \
+  ANNOUNCE_TEST(test);                   \
+  RUN_TEST(test);                        \
+  if (!succeeded)                        \
     failed_tests.push_back(#test);
 
 #define DO_TEST_F(test)                                 \
@@ -147,11 +147,11 @@ catch (const std::exception& e) {					\
   else if (!overflow)                                   \
     failed_tests.push_back(#test);
 
-#define DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)			\
-  ANNOUNCE_TEST(test);							\
-  RUN_TEST(test);							\
-  if (!succeeded)							\
-    if (!overflow || has_exact_coefficient_type(shape(0, EMPTY)))	\
+#define DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)                    \
+  ANNOUNCE_TEST(test);                                                  \
+  RUN_TEST(test);                                                       \
+  if (!succeeded)                                                       \
+    if (!overflow || has_exact_coefficient_type(shape(0, EMPTY)))       \
       failed_tests.push_back(#test);
 
 
@@ -389,10 +389,10 @@ private:
 
 public:
   noisy_ostream(const std::basic_ostream<CharT, Traits>& os,
-		const char* environment_variable)
+                const char* environment_variable)
     : std::basic_ostream<CharT, Traits>(check_noisy(environment_variable)
-					? os.rdbuf()
-					: &black_hole) {
+                                        ? os.rdbuf()
+                                        : &black_hole) {
   }
 };
 
@@ -510,26 +510,26 @@ has_exact_coefficient_type(const Box<Interval>&) {
 
 bool
 check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
-	       const char* max_d_s, const char* d_name);
+               const char* max_d_s, const char* d_name);
 
 template <typename T>
 bool
 check_result_i(const BD_Shape<T>& computed_result,
-	       const BD_Shape<mpq_class>& known_result,
-	       const char* max_r_d_s,
-	       const char* max_e_d_s,
-	       const char* max_l_d_s) {
+               const BD_Shape<mpq_class>& known_result,
+               const char* max_r_d_s,
+               const char* max_e_d_s,
+               const char* max_l_d_s) {
   BD_Shape<mpq_class> q_computed_result(computed_result);
   // Handle in a more efficient way the case where equality is expected.
   if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
     if (q_computed_result != known_result) {
       using IO_Operators::operator<<;
       nout << "Equality does not hold:"
-	   << "\ncomputed result is\n"
-	   << q_computed_result
-	   << "\nknown result is\n"
-	   << known_result
-	   << std::endl;
+           << "\ncomputed result is\n"
+           << q_computed_result
+           << "\nknown result is\n"
+           << known_result
+           << std::endl;
       return false;
     }
     else
@@ -539,11 +539,11 @@ check_result_i(const BD_Shape<T>& computed_result,
   if (!q_computed_result.contains(known_result)) {
     using IO_Operators::operator<<;
     nout << "Containment does not hold:"
-	 << "\ncomputed result is\n"
-	 << q_computed_result
-	 << "\nknown result is\n"
-	 << known_result
-	 << std::endl;
+         << "\ncomputed result is\n"
+         << q_computed_result
+         << "\nknown result is\n"
+         << known_result
+         << std::endl;
     return false;
   }
 
@@ -560,10 +560,10 @@ check_result_i(const BD_Shape<T>& computed_result,
   if (!ok) {
     using IO_Operators::operator<<;
     nout << "Computed result is\n"
-	 << q_computed_result
-	 << "\nknown result is\n"
-	 << known_result
-	 << std::endl;
+         << q_computed_result
+         << "\nknown result is\n"
+         << known_result
+         << std::endl;
   }
   return ok;
 }
@@ -571,21 +571,21 @@ check_result_i(const BD_Shape<T>& computed_result,
 template <typename T>
 bool
 check_result(const BD_Shape<T>& computed_result,
-	     const BD_Shape<mpq_class>& known_result,
-	     const char* max_r_d_s,
-	     const char* max_e_d_s,
-	     const char* max_l_d_s) {
+             const BD_Shape<mpq_class>& known_result,
+             const char* max_r_d_s,
+             const char* max_e_d_s,
+             const char* max_l_d_s) {
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result,
-		     "+inf", "+inf", "+inf")
+                     "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result,
-		     max_r_d_s, max_e_d_s, max_l_d_s);
+                     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
 template <typename T>
 bool
 check_result(const BD_Shape<T>& computed_result,
-	     const BD_Shape<T>& known_result) {
+             const BD_Shape<T>& known_result) {
   if (computed_result == known_result)
     return true;
   else {
@@ -603,7 +603,7 @@ check_result(const BD_Shape<T>& computed_result,
 template <typename T>
 bool
 check_result(const BD_Shape<T>& computed_result,
-	     const BD_Shape<mpq_class>& known_result) {
+             const BD_Shape<mpq_class>& known_result) {
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
@@ -611,26 +611,26 @@ check_result(const BD_Shape<T>& computed_result,
 
 bool
 check_result(const BD_Shape<mpq_class>& computed_result,
-	     const BD_Shape<mpq_class>& known_result);
+             const BD_Shape<mpq_class>& known_result);
 
 template <typename T>
 bool
 check_result_i(const Octagonal_Shape<T>& computed_result,
-	       const Octagonal_Shape<mpq_class>& known_result,
-	       const char* max_r_d_s,
-	       const char* max_e_d_s,
-	       const char* max_l_d_s) {
+               const Octagonal_Shape<mpq_class>& known_result,
+               const char* max_r_d_s,
+               const char* max_e_d_s,
+               const char* max_l_d_s) {
   Octagonal_Shape<mpq_class> q_computed_result(computed_result);
   // Handle in a more efficient way the case where equality is expected.
   if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
     if (q_computed_result != known_result) {
       using IO_Operators::operator<<;
       nout << "Equality does not hold:"
-	   << "\ncomputed result is\n"
+           << "\ncomputed result is\n"
            << q_computed_result
-	   << "\nknown result is\n"
+           << "\nknown result is\n"
            << known_result
-	   << std::endl;
+           << std::endl;
       return false;
     }
     else
@@ -640,11 +640,11 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
   if (!q_computed_result.contains(known_result)) {
     using IO_Operators::operator<<;
     nout << "Containment does not hold:"
-	 << "\ncomputed result is\n"
-	 << q_computed_result
-	 << "\nknown result is\n"
-	 << known_result
-	 << std::endl;
+         << "\ncomputed result is\n"
+         << q_computed_result
+         << "\nknown result is\n"
+         << known_result
+         << std::endl;
     return false;
   }
 
@@ -661,10 +661,10 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
   if (!ok) {
     using IO_Operators::operator<<;
     nout << "Computed result is\n"
-	 << q_computed_result
-	 << "\nknown result is\n"
-	 << known_result
-	 << std::endl;
+         << q_computed_result
+         << "\nknown result is\n"
+         << known_result
+         << std::endl;
   }
   return ok;
 }
@@ -672,32 +672,32 @@ check_result_i(const Octagonal_Shape<T>& computed_result,
 template <typename T>
 bool
 check_result(const Octagonal_Shape<T>& computed_result,
-	     const Octagonal_Shape<mpq_class>& known_result,
-	     const char* max_r_d_s,
-	     const char* max_e_d_s,
-	     const char* max_l_d_s) {
+             const Octagonal_Shape<mpq_class>& known_result,
+             const char* max_r_d_s,
+             const char* max_e_d_s,
+             const char* max_l_d_s) {
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result,
-		     "+inf", "+inf", "+inf")
+                     "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result,
-		     max_r_d_s, max_e_d_s, max_l_d_s);
+                     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
 template <>
 inline bool
 check_result(const Octagonal_Shape<mpq_class>& computed_result,
-	     const Octagonal_Shape<mpq_class>& known_result,
-	     const char*,
-	     const char*,
-	     const char*) {
+             const Octagonal_Shape<mpq_class>& known_result,
+             const char*,
+             const char*,
+             const char*) {
   return check_result_i(computed_result, known_result,
-			0, 0, 0);
+                        0, 0, 0);
 }
 
 template <typename T>
 bool
 check_result(const Octagonal_Shape<T>& computed_result,
-	     const Octagonal_Shape<mpq_class>& known_result) {
+             const Octagonal_Shape<mpq_class>& known_result) {
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
@@ -707,21 +707,21 @@ check_result(const Octagonal_Shape<T>& computed_result,
 template <typename Interval>
 bool
 check_result_i(const Box<Interval>& computed_result,
-	       const Rational_Box& known_result,
-	       const char* max_r_d_s,
-	       const char* max_e_d_s,
-	       const char* max_l_d_s) {
+               const Rational_Box& known_result,
+               const char* max_r_d_s,
+               const char* max_e_d_s,
+               const char* max_l_d_s) {
   Rational_Box q_computed_result(computed_result);
   // Handle in a more efficient way the case where equality is expected.
   if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
     if (q_computed_result != known_result) {
       using IO_Operators::operator<<;
       nout << "Equality does not hold:"
-	   << "\ncomputed result is\n"
-	   << q_computed_result
-	   << "\nknown result is\n"
-	   << known_result
-	   << std::endl;
+           << "\ncomputed result is\n"
+           << q_computed_result
+           << "\nknown result is\n"
+           << known_result
+           << std::endl;
       return false;
     }
     else
@@ -731,22 +731,22 @@ check_result_i(const Box<Interval>& computed_result,
   if (!q_computed_result.contains(known_result)) {
     using IO_Operators::operator<<;
     nout << "Containment does not hold:"
-	 << "\ncomputed result is\n"
-	 << q_computed_result
-	 << "\nknown result is\n"
-	 << known_result
-	 << std::endl;
+         << "\ncomputed result is\n"
+         << q_computed_result
+         << "\nknown result is\n"
+         << known_result
+         << std::endl;
     nout << "Individual dimensions where containment does not hold"
-	 << "\n(Variable: computed-result known-result):\n";
+         << "\n(Variable: computed-result known-result):\n";
     for (dimension_type i = 0; i < computed_result.space_dimension(); ++i) {
       if (!q_computed_result.get_interval(Variable(i))
           .contains(known_result.get_interval(Variable(i)))) {
         using IO_Operators::operator<<;
-	nout << Variable(i) << ": "
-	     << q_computed_result.get_interval(Variable(i))
-	     << ' '
-	     << known_result.get_interval(Variable(i))
-	     << std::endl;
+        nout << Variable(i) << ": "
+             << q_computed_result.get_interval(Variable(i))
+             << ' '
+             << known_result.get_interval(Variable(i))
+             << std::endl;
       }
     }
     return false;
@@ -765,10 +765,10 @@ check_result_i(const Box<Interval>& computed_result,
   if (!ok) {
     using IO_Operators::operator<<;
     nout << "Computed result is\n"
-	 << q_computed_result
-	 << "\nknown result is\n"
-	 << known_result
-	 << std::endl;
+         << q_computed_result
+         << "\nknown result is\n"
+         << known_result
+         << std::endl;
   }
   return ok;
 }
@@ -776,21 +776,21 @@ check_result_i(const Box<Interval>& computed_result,
 template <typename Interval>
 bool
 check_result(const Box<Interval>& computed_result,
-	     const Rational_Box& known_result,
-	     const char* max_r_d_s,
-	     const char* max_e_d_s,
-	     const char* max_l_d_s) {
+             const Rational_Box& known_result,
+             const char* max_r_d_s,
+             const char* max_e_d_s,
+             const char* max_l_d_s) {
   return std::numeric_limits<typename Interval::boundary_type>::is_integer
     ? check_result_i(computed_result, known_result,
-		     "+inf", "+inf", "+inf")
+                     "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result,
-		     max_r_d_s, max_e_d_s, max_l_d_s);
+                     max_r_d_s, max_e_d_s, max_l_d_s);
 }
 
 template <typename Interval>
 bool
 check_result(const Box<Interval>& computed_result,
-	     const Box<Interval>& known_result) {
+             const Box<Interval>& known_result) {
   if (computed_result == known_result)
     return true;
   else {
@@ -808,7 +808,7 @@ check_result(const Box<Interval>& computed_result,
 template <typename Interval>
 bool
 check_result(const Box<Interval>& computed_result,
-	     const Rational_Box& known_result) {
+             const Rational_Box& known_result) {
   return std::numeric_limits<typename Interval::boundary_type>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
@@ -816,7 +816,7 @@ check_result(const Box<Interval>& computed_result,
 
 bool
 check_result(const Rational_Box& computed_result,
-	     const Rational_Box& known_result);
+             const Rational_Box& known_result);
 
 bool
 check_result(const Generator& computed_result,
@@ -904,7 +904,7 @@ inline
 FCAIBVP::FCAIBVP(const Variables_Set& y)
   : set() {
   for (Variables_Set::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i)
     set.insert(*i);
 }
 
@@ -912,7 +912,7 @@ inline
 FCAIBVP::FCAIBVP(const FCAIBVP& y, unsigned offset)
   : set() {
   for (Set::const_iterator i = y.set.begin(),
-	 y_set_end = y.set.end(); i != y_set_end; ++i)
+         y_set_end = y.set.end(); i != y_set_end; ++i)
     set.insert(*i + offset);
 }
 
@@ -935,7 +935,7 @@ inline bool
 FCAIBVP::definitely_entails(const FCAIBVP& y) const{
   const FCAIBVP& x = *this;
   return std::includes(x.set.begin(), x.set.end(),
-		       y.set.begin(), y.set.end());
+                       y.set.begin(), y.set.end());
 }
 
 inline void
@@ -943,8 +943,8 @@ FCAIBVP::upper_bound_assign(const FCAIBVP& y) {
   FCAIBVP& x = *this;
   FCAIBVP z;
   std::set_intersection(x.set.begin(), x.set.end(),
-			y.set.begin(), y.set.end(),
-			std::inserter(z.set, z.set.begin()));
+                        y.set.begin(), y.set.end(),
+                        std::inserter(z.set, z.set.begin()));
   using std::swap;
   swap(x, z);
 }
@@ -954,8 +954,8 @@ FCAIBVP::difference_assign(const FCAIBVP& y) {
   FCAIBVP& x = *this;
   FCAIBVP z;
   std::set_difference(x.set.begin(), x.set.end(),
-		      y.set.begin(), y.set.end(),
-		      std::inserter(z.set, z.set.begin()));
+                      y.set.begin(), y.set.end(),
+                      std::inserter(z.set, z.set.begin()));
   using std::swap;
   swap(x, z);
 }
@@ -992,31 +992,31 @@ operator!=(const FCAIBVP& x, const FCAIBVP& y) {
 
 void
 print_constraint(const Constraint& c,
-		 const std::string& intro = "",
-		 std::ostream& s = nout);
+                 const std::string& intro = "",
+                 std::ostream& s = nout);
 
 void
 print_constraints(const Constraint_System& cs,
-		  const std::string& intro = "",
-		  std::ostream& s = nout);
+                  const std::string& intro = "",
+                  std::ostream& s = nout);
 
 void
 print_constraints(const Polyhedron& ph,
-		  const std::string& intro = "",
-		  std::ostream& s = nout);
+                  const std::string& intro = "",
+                  std::ostream& s = nout);
 
 #if 0
 void
 print_constraints(const Affine_Space& affs,
-		  const std::string& intro = "",
-		  std::ostream& s = nout);
+                  const std::string& intro = "",
+                  std::ostream& s = nout);
 #endif
 
 template <typename Interval>
 void
 print_constraints(const Box<Interval>& box,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << std::endl;
   using IO_Operators::operator<<;
@@ -1026,8 +1026,8 @@ print_constraints(const Box<Interval>& box,
 template <typename T>
 void
 print_constraints(const BD_Shape<T>& bd,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << std::endl;
   using IO_Operators::operator<<;
@@ -1037,8 +1037,8 @@ print_constraints(const BD_Shape<T>& bd,
 template <typename T>
 void
 print_constraints(const Octagonal_Shape<T>& oc,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << std::endl;
   using IO_Operators::operator<<;
@@ -1048,8 +1048,8 @@ print_constraints(const Octagonal_Shape<T>& oc,
 template <typename PH>
 void
 print_constraints(const Pointset_Powerset<PH>& pps,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << std::endl;
   using IO_Operators::operator<<;
@@ -1059,8 +1059,8 @@ print_constraints(const Pointset_Powerset<PH>& pps,
 template <typename PH>
 void
 print_congruences(const Pointset_Powerset<PH>& pps,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << std::endl;
   using IO_Operators::operator<<;
@@ -1071,8 +1071,8 @@ print_congruences(const Pointset_Powerset<PH>& pps,
 template <typename PH>
 void
 print_constraints(const Pointset_Ask_Tell<PH>& pat,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   if (!intro.empty())
     s << intro << std::endl;
   using IO_Operators::operator<<;
@@ -1082,69 +1082,69 @@ print_constraints(const Pointset_Ask_Tell<PH>& pat,
 
 void
 print_congruence(const Congruence& c,
-		 const std::string& intro = "",
-		 std::ostream& s = nout);
+                 const std::string& intro = "",
+                 std::ostream& s = nout);
 
 void
 print_congruences(const Congruence_System& cgs,
-		  const std::string& intro = "",
-		  std::ostream& s = nout);
+                  const std::string& intro = "",
+                  std::ostream& s = nout);
 
 void
 print_congruences(const Grid& gr,
-		  const std::string& intro = "",
-		  std::ostream& s = nout);
+                  const std::string& intro = "",
+                  std::ostream& s = nout);
 
 void
 print_generator(const Generator& g,
-		const std::string& intro = "",
-		std::ostream& s = nout);
+                const std::string& intro = "",
+                std::ostream& s = nout);
 
 void
 print_generator(const Grid_Generator& g,
-		const std::string& intro = "",
-		std::ostream& s = nout);
+                const std::string& intro = "",
+                std::ostream& s = nout);
 
 void
 print_generators(const Generator_System& gs,
-		 const std::string& intro = "",
-		 std::ostream& s = nout);
+                 const std::string& intro = "",
+                 std::ostream& s = nout);
 
 void
 print_generators(const Grid_Generator_System& gs,
-		 const std::string& intro = "",
-		 std::ostream& s = nout);
+                 const std::string& intro = "",
+                 std::ostream& s = nout);
 
 void
 print_generators(const Polyhedron& ph,
-		 const std::string& intro = "",
-		 std::ostream& s = nout);
+                 const std::string& intro = "",
+                 std::ostream& s = nout);
 
 void
 print_generators(const Grid& gr,
-		 const std::string& intro = "",
-		 std::ostream& s = nout);
+                 const std::string& intro = "",
+                 std::ostream& s = nout);
 
 template <typename D1, typename D2, typename R>
 void
 print_constraints(const Partially_Reduced_Product<D1, D2, R>& pd,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   print_constraints(pd.constraints(), intro, s);
 }
 
 template <typename D1, typename D2, typename R>
 void
 print_congruences(const Partially_Reduced_Product<D1, D2, R>& pd,
-		  const std::string& intro = "",
-		  std::ostream& s = nout) {
+                  const std::string& intro = "",
+                  std::ostream& s = nout) {
   print_congruences(pd.congruences(), intro, s);
 }
 
 void
 print_function(const Parma_Polyhedra_Library::Partial_Function& function,
-	       const std::string& intro = "",
-	       std::ostream& s = nout);
+               const std::string& intro = "",
+               std::ostream& s = nout);
 
 } // namespace Test
 

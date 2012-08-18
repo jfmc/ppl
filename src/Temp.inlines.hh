@@ -90,7 +90,7 @@ Temp_Value_Holder<T>::item() {
 
 } // namespace Parma_Polyhedra_Library
 
-#define PPL_DIRTY_TEMP(T, id)						\
+#define PPL_DIRTY_TEMP(T, id)                                           \
   Parma_Polyhedra_Library::Dirty_Temp<PPL_U(T)> holder_ ## id;          \
   PPL_U(T)& PPL_U(id) = holder_ ## id.item()
 

@@ -62,7 +62,7 @@ struct float_ieee754_half {
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
-					- static_cast<int>(MANTISSA_BITS);
+                                        - static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_HALF;
   int inf_sign() const;
   bool is_nan() const;
@@ -94,7 +94,7 @@ struct float_ieee754_single {
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
-					- static_cast<int>(MANTISSA_BITS);
+                                        - static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_SINGLE;
   int inf_sign() const;
   bool is_nan() const;
@@ -139,7 +139,7 @@ struct float_ieee754_double {
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
-					- static_cast<int>(MANTISSA_BITS);
+                                        - static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IEEE754_DOUBLE;
   int inf_sign() const;
   bool is_nan() const;
@@ -170,7 +170,7 @@ struct float_ibm_single {
   static const int EXPONENT_MAX = (1 << (EXPONENT_BITS - 1)) - 1;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
-					- static_cast<int>(MANTISSA_BITS);
+                                        - static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format = IBM_SINGLE;
   int inf_sign() const;
   bool is_nan() const;
@@ -220,7 +220,7 @@ struct float_intel_double_extended {
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
-					- static_cast<int>(MANTISSA_BITS);
+                                        - static_cast<int>(MANTISSA_BITS);
   static const Floating_Point_Format floating_point_format =
                                      INTEL_DOUBLE_EXTENDED;
   int inf_sign() const;
@@ -260,7 +260,7 @@ struct float_ieee754_quad {
   static const int EXPONENT_BIAS = EXPONENT_MAX;
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
-					- static_cast<int>(MANTISSA_BITS);
+                                        - static_cast<int>(MANTISSA_BITS);
   int inf_sign() const;
   bool is_nan() const;
   int zero_sign() const;
@@ -442,7 +442,7 @@ public:
     The resulting set MUST NOT contain <CODE>not_a_dimension()</CODE>.
   */
   virtual bool get_associated_dimensions(
-	  const Approximable_Reference<Target>& expr,
+          const Approximable_Reference<Target>& expr,
           std::set<dimension_type>& result) const = 0;
 
 };

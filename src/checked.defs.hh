@@ -180,19 +180,19 @@ namespace Checked {
       ::function(arg1, arg2, arg3, a1);                                 \
   }
 
-#define PPL_DECLARE_FUN5_0_1(name, ret_type,				\
-                             qual1, type1, qual2, type2, qual3, type3,	\
+#define PPL_DECLARE_FUN5_0_1(name, ret_type,                            \
+                             qual1, type1, qual2, type2, qual3, type3,  \
                              qual4, type4, qual5, type5,                \
-                             after1)					\
+                             after1)                                    \
   template <typename Policy1, typename Policy2, typename Policy3,       \
-            typename Policy4,typename Policy5,				\
-            typename type1, typename type2, typename type3,		\
-            typename type4, typename type5>				\
+            typename Policy4,typename Policy5,                          \
+            typename type1, typename type2, typename type3,             \
+            typename type4, typename type5>                             \
   struct PPL_FUNCTION_CLASS(name);                                      \
   template <typename Policy1, typename Policy2, typename Policy3,       \
-            typename Policy4,typename Policy5,				\
-            typename type1, typename type2, typename type3,		\
-            typename type4, typename type5>				\
+            typename Policy4,typename Policy5,                          \
+            typename type1, typename type2, typename type3,             \
+            typename type4, typename type5>                             \
   inline ret_type PPL_U(name)(PPL_U(qual1) PPL_U(type1)& arg1, PPL_U(qual2) \
                        PPL_U(type2)& arg2,                              \
                        PPL_U(qual3) PPL_U(type3)& arg3, PPL_U(qual4)    \
@@ -204,7 +204,7 @@ namespace Checked {
       type1, type2,                                                     \
       type3, type4,                                                     \
       PPL_U(type5)>                                                     \
-      ::function(arg1, arg2, arg3, arg4, arg5, a1);			\
+      ::function(arg1, arg2, arg3, arg4, arg5, a1);                     \
   }
 
 #define PPL_SPECIALIZE_FUN1_0_0(name, func, ret_type, qual, type)       \
@@ -283,7 +283,7 @@ namespace Checked {
 
 #define PPL_SPECIALIZE_FUN2_0_0(name, func, ret_type, qual1, type1,     \
                                 qual2, type2)                           \
-  template <typename Policy1, typename Policy2>				\
+  template <typename Policy1, typename Policy2>                         \
   struct PPL_FUNCTION_CLASS(name)<Policy1, Policy2, type1,              \
                                   PPL_U(type2)> {                       \
     static inline ret_type function(PPL_U(qual1) PPL_U(type1)& arg1,    \
@@ -336,8 +336,8 @@ namespace Checked {
                                 qual1, type1, qual2, type2,             \
                                 qual3, type3,                           \
                                 qual4, type4, qual5, type5, after1)     \
-  template <typename Policy1, typename Policy2, typename Policy3,	\
-	    typename Policy4, typename Policy5>				\
+  template <typename Policy1, typename Policy2, typename Policy3,       \
+            typename Policy4, typename Policy5>                         \
   struct PPL_FUNCTION_CLASS(name) <Policy1, Policy2, Policy3, Policy4,  \
                                    Policy5,                             \
                                    type1, type2,                        \
@@ -351,7 +351,7 @@ namespace Checked {
                PPL_U(qual5) PPL_U(type5) &arg5, PPL_U(after1) a1) {     \
       return PPL_U(func)<Policy1, Policy2, Policy3, Policy4,            \
         Policy5>(arg1, arg2, arg3, arg4, arg5, a1);                     \
-    }									\
+    }                                                                   \
   };
 
 // The `nonconst' macro helps readability of the sequel.
@@ -437,11 +437,11 @@ namespace Checked {
 #define PPL_SPECIALIZE_DIV_2EXP(func, To, From)                         \
   PPL_SPECIALIZE_FUN2_0_2(div_2exp, func, Result, nonconst, To,         \
                           const, From, unsigned int, Rounding_Dir)
-#define PPL_SPECIALIZE_SMOD_2EXP(func, To, From)			\
-  PPL_SPECIALIZE_FUN2_0_2(smod_2exp, func, Result, nonconst, To,	\
+#define PPL_SPECIALIZE_SMOD_2EXP(func, To, From)                        \
+  PPL_SPECIALIZE_FUN2_0_2(smod_2exp, func, Result, nonconst, To,        \
                           const, From, unsigned int, Rounding_Dir)
-#define PPL_SPECIALIZE_UMOD_2EXP(func, To, From)			\
-  PPL_SPECIALIZE_FUN2_0_2(umod_2exp, func, Result, nonconst, To,	\
+#define PPL_SPECIALIZE_UMOD_2EXP(func, To, From)                        \
+  PPL_SPECIALIZE_FUN2_0_2(umod_2exp, func, Result, nonconst, To,        \
                           const, From, unsigned int, Rounding_Dir)
 #define PPL_SPECIALIZE_ADD_MUL(func, To, From1, From2)                  \
   PPL_SPECIALIZE_FUN3_0_1(add_mul, func, Result, nonconst, To,          \
@@ -453,7 +453,7 @@ namespace Checked {
   PPL_SPECIALIZE_FUN3_0_1(gcd, func, Result, nonconst, To,              \
                           const, From1, const, From2, Rounding_Dir)
 #define PPL_SPECIALIZE_GCDEXT(func, To1, From1, From2, To2, To3)        \
-  PPL_SPECIALIZE_FUN5_0_1(gcdext, func, Result, nonconst, To1,		\
+  PPL_SPECIALIZE_FUN5_0_1(gcdext, func, Result, nonconst, To1,          \
                           nonconst, To2, nonconst, To3,                 \
                           const, From1, const, From2, Rounding_Dir)
 #define PPL_SPECIALIZE_LCM(func, To, From1, From2)                      \

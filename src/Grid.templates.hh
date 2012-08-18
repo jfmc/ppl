@@ -68,37 +68,37 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.has_lower_bound(v_k, l_n, l_d, closed)) {
-	if (box.has_upper_bound(v_k, u_n, u_d, closed))
-	  if (l_n * u_d == u_n * l_d) {
-	    // A point interval sets dimension k of every point to a
-	    // single value.
-	    con_sys.insert(l_d * v_k == l_n);
+        if (box.has_upper_bound(v_k, u_n, u_d, closed))
+          if (l_n * u_d == u_n * l_d) {
+            // A point interval sets dimension k of every point to a
+            // single value.
+            con_sys.insert(l_d * v_k == l_n);
 
             // This is declared here because it may be invalidated
             // by the call to gen_sys.insert() at the end of the loop.
             Grid_Generator& point = gen_sys.sys.rows[0];
 
-	    // Scale the point to use as divisor the lcm of the
-	    // divisors of the existing point and the lower bound.
-	    const Coefficient& point_divisor = point.divisor();
-	    gcd_assign(u_n, l_d, point_divisor);
-	    // `u_n' now holds the gcd.
-	    exact_div_assign(u_n, point_divisor, u_n);
-	    if (l_d < 0)
-	      neg_assign(u_n);
-	    // l_d * u_n == abs(l_d * (point_divisor / gcd(l_d, point_divisor)))
-	    point.scale_to_divisor(l_d * u_n);
-	    // Set dimension k of the point to the lower bound.
-	    if (l_d < 0)
-	      neg_assign(u_n);
-	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
-	    point.expr.set(Variable(k), l_n * u_n);
+            // Scale the point to use as divisor the lcm of the
+            // divisors of the existing point and the lower bound.
+            const Coefficient& point_divisor = point.divisor();
+            gcd_assign(u_n, l_d, point_divisor);
+            // `u_n' now holds the gcd.
+            exact_div_assign(u_n, point_divisor, u_n);
+            if (l_d < 0)
+              neg_assign(u_n);
+            // l_d * u_n == abs(l_d * (point_divisor / gcd(l_d, point_divisor)))
+            point.scale_to_divisor(l_d * u_n);
+            // Set dimension k of the point to the lower bound.
+            if (l_d < 0)
+              neg_assign(u_n);
+            // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
+            point.expr.set(Variable(k), l_n * u_n);
             PPL_ASSERT(point.OK());
 
             PPL_ASSERT(gen_sys.sys.OK());
 
-	    continue;
-	  }
+            continue;
+          }
       }
       // A universe interval allows any value in dimension k.
       gen_sys.insert(grid_line(v_k));
@@ -119,7 +119,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the grid becomes zero_dimensional.
     if (marked_empty()
-	|| (!generators_are_up_to_date() && !update_generators())) {
+        || (!generators_are_up_to_date() && !update_generators())) {
       // Removing all dimensions from the empty grid.
       space_dim = 0;
       set_empty();
@@ -148,23 +148,23 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
     for (dimension_type i = space_dim; i-- > 0; ) {
       if (!visited[i]) {
-	dimension_type j = i;
-	do {
-	  visited[j] = true;
-	  // The following initialization is only to make the compiler happy.
-	  dimension_type k = 0;
-	  if (!pfunc.maps(j, k))
-	    throw_invalid_argument("map_space_dimensions(pfunc)",
-				   " pfunc is inconsistent");
-	  if (k == j)
-	    break;
+        dimension_type j = i;
+        do {
+          visited[j] = true;
+          // The following initialization is only to make the compiler happy.
+          dimension_type k = 0;
+          if (!pfunc.maps(j, k))
+            throw_invalid_argument("map_space_dimensions(pfunc)",
+                                   " pfunc is inconsistent");
+          if (k == j)
+            break;
 
-	  cycle.push_back(Variable(j));
-	  // Go along the cycle.
-	  j = k;
-	} while (!visited[j]);
+          cycle.push_back(Variable(j));
+          // Go along the cycle.
+          j = k;
+        } while (!visited[j]);
 
-	// End of cycle.
+        // End of cycle.
 
         // Avoid calling clear_*_minimized() if cycle.size() is less than 2,
         // to improve efficiency.
@@ -232,17 +232,17 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       const dimension_type mapped_id = pfunc_maps[j.variable().id()];
       if (mapped_id != not_a_dimension()) {
         add_mul_assign(expr, *j, Variable(mapped_id));
-	all_zeroes = false;
+        all_zeroes = false;
       }
     }
     switch (old_g.type()) {
     case Grid_Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(grid_line(expr));
+        new_gensys.insert(grid_line(expr));
       break;
     case Grid_Generator::PARAMETER:
       if (!all_zeroes)
-	new_gensys.insert(parameter(expr, system_divisor));
+        new_gensys.insert(parameter(expr, system_divisor));
       break;
     case Grid_Generator::POINT:
       new_gensys.insert(grid_point(expr, old_g.divisor()));
@@ -261,12 +261,12 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 template <typename M>
 void
 Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
-		     const dimension_type dim,
-		     const dimension_type pivot_index,
-		     const dimension_type start,
-		     const dimension_type end,
-		     const Dimension_Kinds& sys_dim_kinds,
-		     const bool generators) {
+                     const dimension_type dim,
+                     const dimension_type pivot_index,
+                     const dimension_type start,
+                     const dimension_type end,
+                     const Dimension_Kinds& sys_dim_kinds,
+                     const bool generators) {
   // TODO: Remove this.
   typedef typename M::row_type M_row_type;
 
@@ -301,8 +301,8 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
 
     // row_kind CONGRUENCE is included as PARAMETER
     if (row_is_line_or_equality
-	|| (row_kind == PARAMETER
-	    && sys_dim_kinds[kinds_index] == PARAMETER)) {
+        || (row_kind == PARAMETER
+            && sys_dim_kinds[kinds_index] == PARAMETER)) {
       M_row_type& row = rows[row_index];
 
       const Coefficient& row_dim = row.expr.get(dim);
@@ -315,11 +315,11 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
       // -5 < row_dim <= 5.
       row_dim_remainder = row_dim % pivot_dim;
       if (row_dim_remainder < 0) {
-	if (row_dim_remainder <= -pivot_dim_half)
-	  --num_rows_to_subtract;
+        if (row_dim_remainder <= -pivot_dim_half)
+          --num_rows_to_subtract;
       }
       else if (row_dim_remainder > 0 && row_dim_remainder > pivot_dim_half)
-	++num_rows_to_subtract;
+        ++num_rows_to_subtract;
 
       // Subtract num_rows_to_subtract copies of pivot from row i.  Only the
       // entries from dim need to be subtracted, as the preceding

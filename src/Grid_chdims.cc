@@ -32,8 +32,8 @@ namespace PPL = Parma_Polyhedra_Library;
 // Used for add_space_dimensions_and_embed.
 void
 PPL::Grid::add_space_dimensions(Congruence_System& cgs,
-				Grid_Generator_System& gs,
-				const dimension_type dims) {
+                                Grid_Generator_System& gs,
+                                const dimension_type dims) {
   PPL_ASSERT(cgs.space_dimension() == gs.space_dimension());
   PPL_ASSERT(dims > 0);
 
@@ -49,8 +49,8 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
 // Used for add_space_dimensions_and_project.
 void
 PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
-				Congruence_System& cgs,
-				const dimension_type dims) {
+                                Congruence_System& cgs,
+                                const dimension_type dims) {
   PPL_ASSERT(cgs.space_dimension() == gs.space_dimension());
   PPL_ASSERT(dims > 0);
 
@@ -119,7 +119,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
       // Only congruences are up-to-date, so modify only them.
       con_sys.set_space_dimension(con_sys.space_dimension() + m);
       if (congruences_are_minimized())
-	dim_kinds.resize(con_sys.space_dimension() + 1, CON_VIRTUAL);
+        dim_kinds.resize(con_sys.space_dimension() + 1, CON_VIRTUAL);
     }
   else {
     // Only generators are up-to-date, so modify only them.
@@ -188,7 +188,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
       // Only congruences are up-to-date so modify only them.
       con_sys.add_unit_rows_and_space_dimensions(m);
       if (congruences_are_minimized())
-	dim_kinds.resize(con_sys.space_dimension() + 1, EQUALITY);
+        dim_kinds.resize(con_sys.space_dimension() + 1, EQUALITY);
     }
   else {
     // Only generators are up-to-date so modify only them.
@@ -305,7 +305,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dimension);
+                                 new_dimension);
 
   // The removal of no dimensions from any grid is a no-op.
   // Note that this case also captures the only legal removal of
@@ -339,13 +339,13 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
       dimension_type num_redundant = 0;
       const dimension_type num_old_gs = space_dim - new_dimension;
       for (dimension_type row = 0; row < num_old_gs; ++row) {
-	if (dim_kinds[row] != GEN_VIRTUAL)
+        if (dim_kinds[row] != GEN_VIRTUAL)
           ++num_redundant;
       }
       if (num_redundant > 0) {
-	// Chop zero rows from end of system, to keep minimal form.
-	gen_sys.remove_trailing_rows(num_redundant);
-	gen_sys.unset_pending_rows();
+        // Chop zero rows from end of system, to keep minimal form.
+        gen_sys.remove_trailing_rows(num_redundant);
+        gen_sys.unset_pending_rows();
       }
       dim_kinds.resize(new_dimension + 1);
       // TODO: Consider if it is worth also preserving the congruences
@@ -412,7 +412,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
   const Congruence_System& cgs = congruences();
   Congruence_System new_congruences;
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); i != cgs_end; ++i) {
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
     const Congruence& cg = *i;
 
     Coefficient_traits::const_reference coeff = cg.coefficient(var);
@@ -450,13 +450,13 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& vars, Variable dest) {
   // All variables in `vars' must be dimensions of the grid.
   if (vars.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
-				 "vs.space_dimension()",
-				 vars.space_dimension());
+                                 "vs.space_dimension()",
+                                 vars.space_dimension());
 
   // Moreover, `dest.id()' must not occur in `vars'.
   if (vars.find(dest.id()) != vars.end())
     throw_invalid_argument("fold_space_dimensions(vs, v)",
-			   "v should not occur in vs");
+                           "v should not occur in vs");
   // All of the affine images we are going to compute are not invertible,
   // hence we will need to compute the grid generators of the polyhedron.
   // Since we keep taking copies, make sure that a single conversion

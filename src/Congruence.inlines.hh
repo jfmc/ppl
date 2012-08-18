@@ -91,7 +91,7 @@ Congruence::~Congruence() {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m,
+                       Coefficient_traits::const_reference m,
                        Recycle_Input)
   : modulus_(m) {
   PPL_ASSERT(m >= 0);
@@ -102,7 +102,7 @@ Congruence::Congruence(Linear_Expression& le,
 
 inline Congruence
 Congruence::create(const Linear_Expression& e,
-		   Coefficient_traits::const_reference n,
+                   Coefficient_traits::const_reference n,
                    Representation r) {
   Linear_Expression diff(e, r);
   diff -= n;
@@ -112,7 +112,7 @@ Congruence::create(const Linear_Expression& e,
 
 inline Congruence
 Congruence::create(Coefficient_traits::const_reference n,
-		   const Linear_Expression& e,
+                   const Linear_Expression& e,
                    Representation r) {
   Linear_Expression diff(e, r);
   diff -= n;
@@ -243,7 +243,7 @@ Congruence::is_equality() const {
 
 inline bool
 Congruence::is_equal_at_dimension(Variable v,
-				  const Congruence& cg) const {
+                                  const Congruence& cg) const {
   return coefficient(v) * cg.modulus() == cg.coefficient(v) * modulus();
 }
 

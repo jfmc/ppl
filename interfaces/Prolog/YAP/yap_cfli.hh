@@ -128,7 +128,7 @@ Prolog_atom_from_string(const char* s) {
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1) {
+                          Prolog_term_ref a1) {
   YAP_Term args[1];
   args[0] = a1;
   t = YAP_MkApplTerm(YAP_MkFunctor(f, 1), 1, args);
@@ -141,7 +141,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2) {
+                          Prolog_term_ref a1, Prolog_term_ref a2) {
   YAP_Term args[2];
   args[0] = a1;
   args[1] = a2;
@@ -155,8 +155,8 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3) {
   YAP_Term args[3];
   args[0] = a1;
   args[1] = a2;
@@ -171,8 +171,8 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3, Prolog_term_ref a4) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3, Prolog_term_ref a4) {
   YAP_Term args[4];
   args[0] = a1;
   args[1] = a2;
@@ -187,7 +187,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_cons(Prolog_term_ref& c,
-		      Prolog_term_ref h, Prolog_term_ref t) {
+                      Prolog_term_ref h, Prolog_term_ref t) {
   c = YAP_MkPairTerm(h, t);
   return 1;
 }
@@ -264,7 +264,7 @@ Prolog_get_long(Prolog_term_ref t, long* lp) {
     }
     YAP_BigNumOfTerm(t, tmp_mpz_t);
     if (mpz_cmp_si(tmp_mpz_t, LONG_MIN) >= 0
-	&& mpz_cmp_si(tmp_mpz_t, LONG_MAX) <= 0)
+        && mpz_cmp_si(tmp_mpz_t, LONG_MAX) <= 0)
       *lp = mpz_get_si(tmp_mpz_t);
     else
       return 0;

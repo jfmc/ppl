@@ -43,7 +43,7 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const Congruence_System& cgs)
                                               "the space dimension of cgs "
                                               "exceeds the maximum allowed "
                                               "space dimension"),
-	       UNIVERSE) {
+               UNIVERSE) {
   add_congruences(cgs);
   PPL_ASSERT_HEAVY(OK());
 }
@@ -56,7 +56,7 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(Congruence_System& cgs, Recycle_Input)
                                               "the space dimension of cgs "
                                               "exceeds the maximum allowed "
                                               "space dimension"),
-	       UNIVERSE) {
+               UNIVERSE) {
   add_congruences(cgs);
   PPL_ASSERT_HEAVY(OK());
 }
@@ -69,7 +69,7 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const Grid& grid, Complexity_Class)
                                               "the space dimension of grid "
                                               "exceeds the maximum allowed "
                                               "space dimension"),
-	       UNIVERSE) {
+               UNIVERSE) {
   add_constraints(grid.constraints());
 }
 

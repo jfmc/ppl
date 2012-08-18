@@ -132,7 +132,7 @@ test05() {
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_recycled_grid_generators(gs) ***");
+                   "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
@@ -151,7 +151,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_grid_generators(Grid_Generator_System::zero_dim_univ()) ***");
+                   "*** gr.add_grid_generators(Grid_Generator_System::zero_dim_univ()) ***");
 
   return ok;
 }

@@ -47,7 +47,7 @@ fatal(const char* format, ...) {
 
 static void
 error_handler(enum ppl_enum_error_code code,
-	      const char* description) {
+              const char* description) {
   if (check_noisy() || check_very_noisy())
     fprintf(stderr, "PPL error code %d: %s\n", code, description);
 #if !PPL_WATCHDOG_OBJECTS_ARE_SUPPORTED

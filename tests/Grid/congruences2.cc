@@ -190,8 +190,8 @@ test07() {
 */
 bool
 satisfies(const Grid_Generator& g,
-	  const Test_Congruence_System& cgs,
-	  bool expected = true) {
+          const Test_Congruence_System& cgs,
+          bool expected = true) {
   if (cgs.satisfies_all_congruences(g) == expected)
     return true;
 
@@ -208,7 +208,7 @@ satisfies(const Grid_Generator& g,
 
 inline bool
 fails_to_satisfy(const Grid_Generator& g,
-		 const Congruence_System& cgs) {
+                 const Congruence_System& cgs) {
   return satisfies(g, cgs, false);
 }
 
@@ -252,7 +252,7 @@ test08() {
   cgs0.insert((A %= 0) / 2);
   ok &= (fails_to_satisfy(grid_line(3*A), cgs0));
   print_congruences(cgs0,
-		    "*** cgs0.clear(); cgs0.insert((A %= 0) / 2) ***");
+                    "*** cgs0.clear(); cgs0.insert((A %= 0) / 2) ***");
 
   return ok;
 }
@@ -265,7 +265,7 @@ test09() {
 
   Test_Congruence_System cgs0((A - B %= 0) / 7);
   print_congruences(cgs0,
-		    "*** cgs0((A - B %= 0) / 7) ***");
+                    "*** cgs0((A - B %= 0) / 7) ***");
 
   // Points.
 
@@ -297,7 +297,7 @@ test09() {
   cgs0.insert((A %= 0) / 2);
   ok &= (fails_to_satisfy(grid_line(3*A), cgs0));
   print_congruences(cgs0,
-		    "*** cgs0.clear(); cgs0.insert((A %= 0) / 2) ***");
+                    "*** cgs0.clear(); cgs0.insert((A %= 0) / 2) ***");
 
   return ok;
 }

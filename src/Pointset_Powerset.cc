@@ -42,9 +42,9 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
     const NNC_Polyhedron& ph_yi = yi->pointset();
     Sequence tmp_sequence;
     for (Sequence_const_iterator itr = new_sequence.begin(),
-	   ns_end = new_sequence.end(); itr != ns_end; ++itr) {
+           ns_end = new_sequence.end(); itr != ns_end; ++itr) {
       std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> > partition
-	= linear_partition(ph_yi, itr->pointset());
+        = linear_partition(ph_yi, itr->pointset());
       const Pointset_Powerset<NNC_Polyhedron>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -70,38 +70,38 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 bool
 PPL::check_containment(const NNC_Polyhedron& ph,
-		       const Pointset_Powerset<NNC_Polyhedron>& ps) {
+                       const Pointset_Powerset<NNC_Polyhedron>& ps) {
   if (ph.is_empty())
     return true;
   Pointset_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator
-	 i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
+         i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
     const NNC_Polyhedron& pi = i->pointset();
     for (Pointset_Powerset<NNC_Polyhedron>::iterator
-	   j = tmp.begin(); j != tmp.end(); ) {
+           j = tmp.begin(); j != tmp.end(); ) {
       const NNC_Polyhedron& pj = j->pointset();
       if (pi.contains(pj))
-	j = tmp.drop_disjunct(j);
+        j = tmp.drop_disjunct(j);
       else
-	++j;
+        ++j;
     }
     if (tmp.empty())
       return true;
     else {
       Pointset_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
-						      EMPTY);
+                                                      EMPTY);
       for (Pointset_Powerset<NNC_Polyhedron>::iterator
-	     j = tmp.begin(); j != tmp.end(); ) {
-	const NNC_Polyhedron& pj = j->pointset();
-	if (pj.is_disjoint_from(pi))
-	  ++j;
-	else {
-	  std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
-	    partition = linear_partition(pi, pj);
-	  new_disjuncts.upper_bound_assign(partition.second);
-	  j = tmp.drop_disjunct(j);
-	}
+             j = tmp.begin(); j != tmp.end(); ) {
+        const NNC_Polyhedron& pj = j->pointset();
+        if (pj.is_disjoint_from(pi))
+          ++j;
+        else {
+          std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
+            partition = linear_partition(pi, pj);
+          new_disjuncts.upper_bound_assign(partition.second);
+          j = tmp.drop_disjunct(j);
+        }
       }
       tmp.upper_bound_assign(new_disjuncts);
     }
@@ -123,8 +123,8 @@ namespace {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 approximate_partition_aux(const PPL::Congruence& c,
-			  PPL::Grid& gr,
-			  PPL::Pointset_Powerset<PPL::Grid>& r) {
+                          PPL::Grid& gr,
+                          PPL::Pointset_Powerset<PPL::Grid>& r) {
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
   Grid gr_copy(gr);
@@ -171,7 +171,7 @@ approximate_partition_aux(const PPL::Congruence& c,
       Grid gr_tmp(gr_copy);
       gr_tmp.add_congruence((le+i %= 0) / c_modulus);
       if (!gr_tmp.is_empty())
-	r.add_disjunct(gr_tmp);
+        r.add_disjunct(gr_tmp);
     }
   return true;
 }
@@ -181,7 +181,7 @@ approximate_partition_aux(const PPL::Congruence& c,
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 std::pair<PPL::Grid, PPL::Pointset_Powerset<PPL::Grid> >
 PPL::approximate_partition(const Grid& p, const Grid& q,
-			   bool& finite_partition) {
+                           bool& finite_partition) {
   using namespace PPL;
   finite_partition = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
@@ -191,7 +191,7 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   Grid gr = q;
   const Congruence_System& p_congruences = p.congruences();
   for (Congruence_System::const_iterator i = p_congruences.begin(),
-	 p_congruences_end = p_congruences.end(); i != p_congruences_end; ++i)
+         p_congruences_end = p_congruences.end(); i != p_congruences_end; ++i)
     if (!approximate_partition_aux(*i, gr, r)) {
       finite_partition = false;
       Pointset_Powerset<Grid> s(q);
@@ -203,36 +203,36 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 bool
 PPL::check_containment(const Grid& ph,
-		       const Pointset_Powerset<Grid>& ps) {
+                       const Pointset_Powerset<Grid>& ps) {
   if (ph.is_empty())
     return true;
   Pointset_Powerset<Grid> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<Grid>::const_iterator
-	 i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
+         i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
     const Grid& pi = i->pointset();
     for (Pointset_Powerset<Grid>::iterator
-	   j = tmp.begin(); j != tmp.end(); ) {
+           j = tmp.begin(); j != tmp.end(); ) {
       const Grid& pj = j->pointset();
       if (pi.contains(pj))
-	j = tmp.drop_disjunct(j);
+        j = tmp.drop_disjunct(j);
       else
-	++j;
+        ++j;
     }
     if (tmp.empty())
       return true;
     else {
       Pointset_Powerset<Grid> new_disjuncts(ph.space_dimension(),
-						      EMPTY);
+                                                      EMPTY);
       for (Pointset_Powerset<Grid>::iterator
-	     j = tmp.begin(); j != tmp.end(); ) {
-	const Grid& pj = j->pointset();
-	if (pj.is_disjoint_from(pi))
-	  ++j;
-	else {
+             j = tmp.begin(); j != tmp.end(); ) {
+        const Grid& pj = j->pointset();
+        if (pj.is_disjoint_from(pi))
+          ++j;
+        else {
           bool finite_partition;
-	  std::pair<Grid, Pointset_Powerset<Grid> >
-	    partition = approximate_partition(pi, pj, finite_partition);
+          std::pair<Grid, Pointset_Powerset<Grid> >
+            partition = approximate_partition(pi, pj, finite_partition);
 
           // If there is a finite partition, then we add the new
           // disjuncts to the temporary set of disjuncts and drop pj.
@@ -243,9 +243,9 @@ PPL::check_containment(const Grid& ph,
           // also not have a finite partition with respect to pi.
           if (!finite_partition)
             break;
-	  new_disjuncts.upper_bound_assign(partition.second);
-	  j = tmp.drop_disjunct(j);
-	}
+          new_disjuncts.upper_bound_assign(partition.second);
+          j = tmp.drop_disjunct(j);
+        }
       }
       tmp.upper_bound_assign(new_disjuncts);
     }
@@ -267,10 +267,10 @@ PPL::Pointset_Powerset<PPL::Grid>
     const Grid& gr_yi = yi->pointset();
     Sequence tmp_sequence;
     for (Sequence_const_iterator itr = new_sequence.begin(),
-	   ns_end = new_sequence.end(); itr != ns_end; ++itr) {
+           ns_end = new_sequence.end(); itr != ns_end; ++itr) {
       bool finite_partition;
       std::pair<Grid, Pointset_Powerset<Grid> > partition
-	= approximate_partition(gr_yi, itr->pointset(), finite_partition);
+        = approximate_partition(gr_yi, itr->pointset(), finite_partition);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -301,9 +301,9 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->pointset())));
+                         (NNC_Polyhedron(i->pointset())));
   x.reduced = y.reduced;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -316,9 +316,9 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<NNC_Polyhedron>
-			 (NNC_Polyhedron(i->pointset())));
+                         (NNC_Polyhedron(i->pointset())));
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -331,9 +331,9 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i)
     x.sequence.push_back(Determinate<C_Polyhedron>
-			 (C_Polyhedron(i->pointset())));
+                         (C_Polyhedron(i->pointset())));
 
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of C_Polyhedron, by

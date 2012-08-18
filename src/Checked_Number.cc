@@ -37,18 +37,18 @@ throw_result_exception(Result r) {
     throw std::logic_error("Exact result is less than computed one.");
   case V_LE:
     throw std::logic_error("Exact result is less than or equal to "
-			   "computed one.");
+                           "computed one.");
   case V_GT:
     throw std::logic_error("Exact result is greater than computed one.");
   case V_GE:
     throw std::logic_error("Exact result is greater than or equal to "
-			   "computed one.");
+                           "computed one.");
   case V_NE:
     throw std::logic_error("Exact result is less than or greater than "
-			   "computed one.");
+                           "computed one.");
   case V_LGE:
     throw std::logic_error("Exact result is less than, greater than or "
-			   "equal to computed one.");
+                           "equal to computed one.");
   case V_EQ_MINUS_INFINITY:
     throw std::overflow_error("Minus infinity.");
   case V_GT_MINUS_INFINITY:

@@ -44,7 +44,7 @@ Threshold_Watcher<Traits>
   Traits::from_delta(threshold, delta);
   if (!Traits::less_than(Traits::get(), threshold))
     throw std::invalid_argument("Threshold_Watcher constructor called with a"
-				" threshold already reached");
+                                " threshold already reached");
   pending_position = add_threshold(threshold, handler, expired);
 }
 
@@ -57,7 +57,7 @@ Threshold_Watcher<Traits>::Threshold_Watcher(const typename Traits::Delta& delta
   Traits::from_delta(threshold, delta);
   if (!Traits::less_than(Traits::get(), threshold))
     throw std::invalid_argument("Threshold_Watcher constructor called with a"
-				" threshold already reached");
+                                " threshold already reached");
   pending_position = add_threshold(threshold, handler, expired);
 }
 

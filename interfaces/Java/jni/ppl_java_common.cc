@@ -344,7 +344,7 @@ build_java_poly_gen_relation(JNIEnv* env, Poly_Gen_Relation& r) {
     }
   }
   jobject ret = env->NewObject(cached_classes.Poly_Gen_Relation,
-			       cached_FMIDs.Poly_Gen_Relation_init_ID,
+                               cached_FMIDs.Poly_Gen_Relation_init_ID,
                                j_value);
   CHECK_RESULT_THROW(env, ret);
   return ret;
@@ -372,7 +372,7 @@ build_java_poly_con_relation(JNIEnv* env, Poly_Con_Relation& r) {
     }
   }
   jobject ret = env->NewObject(cached_classes.Poly_Con_Relation,
-			       cached_FMIDs.Poly_Con_Relation_init_ID,
+                               cached_FMIDs.Poly_Con_Relation_init_ID,
                                j_value);
   CHECK_RESULT_THROW(env, ret);
   return ret;
@@ -479,7 +479,7 @@ build_java_variables_set(JNIEnv* env, const Variables_Set& v_set) {
                                 cached_FMIDs.Variables_Set_init_ID);
   CHECK_RESULT_THROW(env, j_vs);
   for (Variables_Set::const_iterator v_begin = v_set.begin(),
-	 v_end = v_set.end(); v_begin != v_end; ++v_begin) {
+         v_end = v_set.end(); v_begin != v_end; ++v_begin) {
     Variable var(*v_begin);
     jobject j_variable = build_java_variable(env, var);
     env->CallBooleanMethod(j_vs,
@@ -655,11 +655,11 @@ build_java_control_parameter_name
   CHECK_RESULT_ASSERT(env, j_cp_name_class);
   jfieldID cp_name_pricing_get_id
     = env->GetStaticFieldID(j_cp_name_class, "PRICING",
-			    "Lparma_polyhedra_library/Control_Parameter_Name;");
+                            "Lparma_polyhedra_library/Control_Parameter_Name;");
   CHECK_RESULT_ASSERT(env, cp_name_pricing_get_id);
   if (cp_name == MIP_Problem::PRICING)
     return env->GetStaticObjectField(j_cp_name_class,
-				     cp_name_pricing_get_id);
+                                     cp_name_pricing_get_id);
   else
     PPL_UNREACHABLE;
 }
@@ -738,19 +738,19 @@ build_java_pip_problem_control_parameter_name
   CHECK_RESULT_ASSERT(env, j_cp_name_class);
   jfieldID cp_name_cutting_strategy_get_id
     = env->GetStaticFieldID(j_cp_name_class, "CUTTING_STRATEGY",
-			    "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Name;");
+                            "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Name;");
   CHECK_RESULT_ASSERT(env, cp_name_cutting_strategy_get_id);
   jfieldID cp_name_pivot_row_strategy_get_id
     = env->GetStaticFieldID(j_cp_name_class, "PIVOT_ROW_STRATEGY",
-			    "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Name;");
+                            "Lparma_polyhedra_library/PIP_Problem_Control_Parameter_Name;");
   CHECK_RESULT_ASSERT(env, cp_name_pivot_row_strategy_get_id);
   switch (cp_name) {
   case PIP_Problem::CUTTING_STRATEGY:
     return env->GetStaticObjectField(j_cp_name_class,
-				     cp_name_cutting_strategy_get_id);
+                                     cp_name_cutting_strategy_get_id);
   case PIP_Problem::PIVOT_ROW_STRATEGY:
     return env->GetStaticObjectField(j_cp_name_class,
-				     cp_name_pivot_row_strategy_get_id);
+                                     cp_name_pivot_row_strategy_get_id);
   default:
     PPL_UNREACHABLE;
   }
@@ -1037,7 +1037,7 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
     = env->GetStaticObjectField(cached_classes.Relation_Symbol, fID);
   jobject ret = env->NewObject(cached_classes.Constraint,
                                cached_FMIDs.Constraint_init_ID,
-			       lhs, relation, rhs);
+                               lhs, relation, rhs);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }
@@ -1050,7 +1050,7 @@ build_java_congruence(JNIEnv* env, const Congruence& cg) {
     = build_java_linear_expression_coefficient(env, -cg.inhomogeneous_term());
   jobject ret = env->NewObject(cached_classes.Congruence,
                                cached_FMIDs.Congruence_init_ID,
-			       j_lhs, j_rhs, j_mod);
+                               j_lhs, j_rhs, j_mod);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }
@@ -1062,12 +1062,12 @@ build_java_generator(JNIEnv* env, const Generator& g) {
   switch (g.type()) {
   case Generator::LINE:
     ret = env->CallStaticObjectMethod(cached_classes.Generator,
-				      cached_FMIDs.Generator_line_ID,
+                                      cached_FMIDs.Generator_line_ID,
                                       j_g_le);
     break;
   case Generator::RAY:
     ret = env->CallStaticObjectMethod(cached_classes.Generator,
-				      cached_FMIDs.Generator_ray_ID,
+                                      cached_FMIDs.Generator_ray_ID,
                                       j_g_le);
     break;
   case Generator::POINT:
@@ -1102,7 +1102,7 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   switch (g.type()) {
   case Grid_Generator::LINE:
     ret = env->CallStaticObjectMethod(cached_classes.Grid_Generator,
-				      cached_FMIDs.Grid_Generator_grid_line_ID,
+                                      cached_FMIDs.Grid_Generator_grid_line_ID,
                                       j_g_le);
     break;
   case Grid_Generator::PARAMETER:
@@ -1136,7 +1136,7 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs) {
                                 cached_FMIDs.Constraint_System_init_ID);
   CHECK_RESULT_THROW(env, j_cs);
   for (Constraint_System::const_iterator v_begin = cs.begin(),
-	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
+         v_end = cs.end(); v_begin != v_end; ++v_begin) {
     jobject j_constraint = build_java_constraint(env, *v_begin);
     env->CallBooleanMethod(j_cs,
                            cached_FMIDs.Constraint_System_add_ID,
@@ -1152,7 +1152,7 @@ build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
                                 cached_FMIDs.Generator_System_init_ID);
   CHECK_RESULT_THROW(env, j_gs);
   for (Generator_System::const_iterator v_begin = gs.begin(),
-	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+         v_end = gs.end(); v_begin != v_end; ++v_begin) {
     jobject j_generator = build_java_generator(env, *v_begin);
     env->CallBooleanMethod(j_gs,
                            cached_FMIDs.Generator_System_add_ID,
@@ -1164,12 +1164,12 @@ build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
 
 jobject
 build_java_grid_generator_system(JNIEnv* env,
-				 const Grid_Generator_System& gs) {
+                                 const Grid_Generator_System& gs) {
   jobject j_gs = env->NewObject(cached_classes.Grid_Generator_System,
                                 cached_FMIDs.Grid_Generator_System_init_ID);
   CHECK_RESULT_THROW(env, j_gs);
   for (Grid_Generator_System::const_iterator v_begin = gs.begin(),
-	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+         v_end = gs.end(); v_begin != v_end; ++v_begin) {
     jobject j_generator = build_java_grid_generator(env, *v_begin);
     env->CallBooleanMethod(j_gs,
                            cached_FMIDs.Grid_Generator_System_add_ID,
@@ -1185,7 +1185,7 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
                                  cached_FMIDs.Congruence_System_init_ID);
   CHECK_RESULT_THROW(env, j_cgs);
   for (Congruence_System::const_iterator v_begin = cgs.begin(),
-	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
+         v_end = cgs.end(); v_begin != v_end; ++v_begin) {
     jobject j_congruence = build_java_congruence(env,*v_begin);
     env->CallBooleanMethod(j_cgs,
                            cached_FMIDs.Congruence_System_add_ID,
@@ -1202,7 +1202,7 @@ build_java_artificial_parameter
   jobject j_den = build_java_coeff(env, art.denominator());
   jobject ret = env->NewObject(cached_classes.Artificial_Parameter,
                                cached_FMIDs.Artificial_Parameter_init_ID,
-			       j_le, j_den);
+                               j_le, j_den);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }

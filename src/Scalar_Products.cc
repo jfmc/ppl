@@ -30,7 +30,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Linear_Expression& x,
+                             const Linear_Expression& x,
                              const Linear_Expression& y) {
   x.scalar_product_assign(z, y);
 }
@@ -49,20 +49,20 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Grid_Generator& gg, const Congruence& cg) {
+                             const Grid_Generator& gg, const Congruence& cg) {
   gg.expr.scalar_product_assign(z, cg.expr, 0, gg.space_dimension() + 1);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Constraint& c,
-			     const Grid_Generator& gg) {
+                             const Constraint& c,
+                             const Grid_Generator& gg) {
   assign(z, c.expr, gg.expr);
 }
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
-			     const Congruence& cg, const Grid_Generator& gg) {
+                             const Congruence& cg, const Grid_Generator& gg) {
   // Scalar product is only defined if `cg' and `gg' are
   // dimension-compatible.
   PPL_ASSERT(cg.space_dimension() <= gg.space_dimension());
@@ -71,8 +71,8 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
-				     const Linear_Expression& x,
-				     const Linear_Expression& y) {
+                                     const Linear_Expression& x,
+                                     const Linear_Expression& y) {
   // The reduced scalar product is only defined
   // if `y' has enough coefficients.
   PPL_ASSERT(x.space_dimension() - 1 <= y.space_dimension());
@@ -81,8 +81,8 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::reduced_assign(Coefficient& z,
-				     const Grid_Generator& gg,
-				     const Congruence& cg) {
+                                     const Grid_Generator& gg,
+                                     const Congruence& cg) {
   // The reduced scalar product is only defined
   // if `cg' has enough coefficients.
   PPL_ASSERT(gg.space_dimension() <= cg.space_dimension());
@@ -91,8 +91,8 @@ PPL::Scalar_Products::reduced_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Linear_Expression& x,
-					 const Linear_Expression& y) {
+                                         const Linear_Expression& x,
+                                         const Linear_Expression& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   PPL_ASSERT(x.space_dimension() <= y.space_dimension());
@@ -101,8 +101,8 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Grid_Generator& gg,
-					 const Congruence& cg) {
+                                         const Grid_Generator& gg,
+                                         const Congruence& cg) {
   // Scalar product is only defined if `gg' and `cg' are
   // dimension-compatible.
   PPL_ASSERT(gg.space_dimension() <= cg.space_dimension());
@@ -111,8 +111,8 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
-					 const Grid_Generator& gg,
-					 const Constraint& c) {
+                                         const Grid_Generator& gg,
+                                         const Constraint& c) {
   // Scalar product is only defined if `gg' and `c' are
   // dimension-compatible.
   PPL_ASSERT(gg.space_dimension() <= c.space_dimension());

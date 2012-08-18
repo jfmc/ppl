@@ -82,25 +82,25 @@ Prolog_atom_from_string(const char* s);
 
 PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1);
+                          Prolog_term_ref a1);
 
 PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2);
+                          Prolog_term_ref a1, Prolog_term_ref a2);
 
 PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3);
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3);
 
 PCFLI_DECLSPEC int
 Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3, Prolog_term_ref a4);
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3, Prolog_term_ref a4);
 
 PCFLI_DECLSPEC int
 Prolog_construct_cons(Prolog_term_ref c,
-		      Prolog_term_ref h, Prolog_term_ref t);
+                      Prolog_term_ref h, Prolog_term_ref t);
 
 PCFLI_DECLSPEC void
 Prolog_raise_exception(Prolog_term_ref t);
@@ -134,7 +134,7 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name);
 
 PCFLI_DECLSPEC int
 Prolog_get_compound_name_arity(Prolog_term_ref t,
-			       Prolog_atom& name, int& arity);
+                               Prolog_atom& name, int& arity);
 
 PCFLI_DECLSPEC int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a);

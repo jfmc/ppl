@@ -36,7 +36,7 @@ public class PPL_Object {
 
     //! Builds an object that points to `null'.
     protected PPL_Object() {
-	ptr = 0;
+        ptr = 0;
     }
 
     private static native void initIDs();

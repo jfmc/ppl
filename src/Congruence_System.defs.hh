@@ -248,10 +248,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-			   Congruence,
-			   ptrdiff_t,
-			   const Congruence*,
-			   const Congruence&> {
+                           Congruence,
+                           ptrdiff_t,
+                           const Congruence*,
+                           const Congruence&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -300,7 +300,7 @@ public:
 
     //! Constructor.
     const_iterator(const Swapping_Vector<Congruence>::const_iterator& iter,
-		   const Congruence_System& cgs);
+                   const Congruence_System& cgs);
 
     //! \p *this skips to the next non-trivial congruence.
     void skip_forward();

@@ -128,7 +128,7 @@ PPL::Congruence
 
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
-			const Linear_Expression& e2,
+                        const Linear_Expression& e2,
                         Representation r) {
   Linear_Expression e(e1,
                       std::max(e1.space_dimension(), e2.space_dimension()),
@@ -139,7 +139,7 @@ PPL::Congruence::create(const Linear_Expression& e1,
 
 void
 PPL::Congruence::throw_invalid_argument(const char* method,
-					const char* message) const {
+                                        const char* message) const {
   std::ostringstream s;
   s << "PPL::Congruence::" << method << ":" << std::endl
     << message;
@@ -148,8 +148,8 @@ PPL::Congruence::throw_invalid_argument(const char* method,
 
 void
 PPL::Congruence::throw_dimension_incompatible(const char* method,
-					      const char* v_name,
-					      const Variable v) const {
+                                              const char* v_name,
+                                              const Variable v) const {
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
@@ -235,7 +235,7 @@ PPL::Congruence::OK() const {
   if (modulus() < 0) {
 #ifndef NDEBUG
     std::cerr << "Congruence has a negative modulus " << modulus() << "."
-	      << std::endl;
+              << std::endl;
 #endif
     return false;
   }

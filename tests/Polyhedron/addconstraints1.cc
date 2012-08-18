@@ -46,8 +46,8 @@ test01() {
   C_Polyhedron univ_result;
 
   bool ok = (ph1 == empty_result
-	     && ph2 == empty_result
-	     && ph3 == univ_result);
+             && ph2 == empty_result
+             && ph3 == univ_result);
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");

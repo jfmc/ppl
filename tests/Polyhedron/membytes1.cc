@@ -182,7 +182,7 @@ test01() {
   C_Polyhedron qh(3, EMPTY);
   unsigned n = 0;
   for (Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i) {
+         gs_end = gs.end(); i != gs_end; ++i) {
     add_generator(qh, *i);
     if (++n % 4 == 0)
       minimize(qh);
@@ -197,7 +197,7 @@ test01() {
 
   memory_size_type cs_elements_size = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i)
     cs_elements_size += i->total_memory_in_bytes();
 
   nout << "Sum of sizes of contained constraints = " << cs_elements_size
@@ -210,7 +210,7 @@ test01() {
 
   memory_size_type gs_elements_size = 0;
   for (Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i)
     gs_elements_size += i->total_memory_in_bytes();
 
   nout << "Sum of sizes of contained generators = " << gs_elements_size

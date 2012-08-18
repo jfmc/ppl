@@ -38,35 +38,35 @@ public class PIP_Problem_test1 {
 
     // This code tests the PIP_Problem methods.
     public static boolean test01() {
-	Variable A = new Variable(0);
-	Variable B = new Variable(1);
-	Variable C = new Variable(2);
-	Variable D = new Variable(3);
+        Variable A = new Variable(0);
+        Variable B = new Variable(1);
+        Variable C = new Variable(2);
+        Variable D = new Variable(3);
         Variables_Set var_set_D = new Variables_Set();
         var_set_D.add(D);
-	Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
-	Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
-	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
-	Linear_Expression_Variable le_d = new Linear_Expression_Variable(D);
+        Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
+        Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
+        Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+        Linear_Expression_Variable le_d = new Linear_Expression_Variable(D);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_3 = new Coefficient(3);
         Coefficient coeff_5 = new Coefficient(5);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
-	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
+        Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
 
-	// Constraint declarations.
-	Constraint c_a_geq_1
+        // Constraint declarations.
+        Constraint c_a_geq_1
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_1);
-	Constraint c_a_leq_5
+        Constraint c_a_leq_5
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_5);
-	Constraint c_b_geq_3
+        Constraint c_b_geq_3
           = new Constraint(le_b, Relation_Symbol.GREATER_OR_EQUAL, le_3);
-	Constraint c_d_leq_1
+        Constraint c_d_leq_1
           = new Constraint(le_d, Relation_Symbol.LESS_OR_EQUAL, le_1);
-	Constraint constraint1 = c_a_geq_1;
-	Constraint constraint2 = c_b_geq_3;
-	Constraint_System constraints1 = new Constraint_System();
+        Constraint constraint1 = c_a_geq_1;
+        Constraint constraint2 = c_b_geq_3;
+        Constraint_System constraints1 = new Constraint_System();
         constraints1.add(constraint1);
         C_Polyhedron ph1 = new C_Polyhedron(3, Degenerate_Element.UNIVERSE);
         ph1.add_constraints(constraints1);
@@ -74,7 +74,7 @@ public class PIP_Problem_test1 {
         ph2.add_constraints(constraints1);
         ph2.add_constraint(constraint2);
 
-	PIP_Problem pip1 = new PIP_Problem(3);
+        PIP_Problem pip1 = new PIP_Problem(3);
         pip1.add_constraints(constraints1);
         Constraint pip1_c1 = pip1.constraint_at_index(0);
         long pip1_dim = pip1.space_dimension();
@@ -92,8 +92,8 @@ public class PIP_Problem_test1 {
         pip3.add_constraint(constraint2);
         ok = ok && (pip3.space_dimension() == 4);
 
-	Constraint constraint4 = c_d_leq_1;
-	Constraint_System constraints4 = new Constraint_System();
+        Constraint constraint4 = c_d_leq_1;
+        Constraint_System constraints4 = new Constraint_System();
         constraints4.add(constraint1);
         constraints4.add(constraint4);
         PIP_Problem pip4 = new PIP_Problem(4, constraints4, var_set_D);
@@ -101,37 +101,37 @@ public class PIP_Problem_test1 {
              && (pip4.space_dimension() == 4)
              && (pip4.number_of_parameter_space_dimensions() == 1);
 
-	return ok;
+        return ok;
     }
 
     // This code tests more PIP_Problem methods.
     public static boolean test02() {
-	Variable A = new Variable(0);
-	Variable B = new Variable(1);
-	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+        Variable A = new Variable(0);
+        Variable B = new Variable(1);
+        Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
         Coefficient coeff_0 = new Coefficient(0);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_5 = new Coefficient(5);
         Coefficient coeff_8 = new Coefficient(8);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
-	Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
+        Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
 
-	// Constraint declarations.
-	Constraint c_a_geq_1
+        // Constraint declarations.
+        Constraint c_a_geq_1
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_1);
-	Constraint c_a_leq_5
+        Constraint c_a_leq_5
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_5);
-	Constraint c_a_eq_8
+        Constraint c_a_eq_8
           = new Constraint(le_a, Relation_Symbol.EQUAL, le_8);
-	Constraint constraint1 = c_a_geq_1;
-	Constraint_System constraints1 = new Constraint_System();
+        Constraint constraint1 = c_a_geq_1;
+        Constraint_System constraints1 = new Constraint_System();
         constraints1.add(constraint1);
 
         Variables_Set var_set_B = new Variables_Set();
         var_set_B.add(B);
 
-	PIP_Problem pip1 = new PIP_Problem(2);
+        PIP_Problem pip1 = new PIP_Problem(2);
         pip1.add_constraints(constraints1);
          long pip1_dim = pip1.space_dimension();
         pip1.add_to_parameter_space_dimensions(var_set_B);
@@ -145,12 +145,12 @@ public class PIP_Problem_test1 {
 
         PIP_Problem_Status pip1_status;
         pip1_status = pip1.solve();
-	ok = ok && (pip1_status == PIP_Problem_Status.OPTIMIZED_PIP_PROBLEM);
+        ok = ok && (pip1_status == PIP_Problem_Status.OPTIMIZED_PIP_PROBLEM);
 
         PIP_Problem_Status pip2_status;
         pip1.add_constraint(c_a_leq_5);
         pip2_status = pip1.solve();
-	ok = ok && (pip2_status == PIP_Problem_Status.OPTIMIZED_PIP_PROBLEM);
+        ok = ok && (pip2_status == PIP_Problem_Status.OPTIMIZED_PIP_PROBLEM);
         if (!ok)
           return false;
 
@@ -195,49 +195,49 @@ public class PIP_Problem_test1 {
           && (cp_value4
                 == PIP_Problem_Control_Parameter_Value.CUTTING_STRATEGY_ALL);
 
-	return ok && pip1.OK();
+        return ok && pip1.OK();
     }
 
 
     // This code tests PIP_Tree and its methods.
     public static boolean test03() {
-	Variable A = new Variable(0);
-	Variable B = new Variable(1);
-	Variable C = new Variable(2);
-	Variable D = new Variable(3);
+        Variable A = new Variable(0);
+        Variable B = new Variable(1);
+        Variable C = new Variable(2);
+        Variable D = new Variable(3);
         Variables_Set var_set_D = new Variables_Set();
         var_set_D.add(D);
-	Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
-	Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
-	Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
-	Linear_Expression_Variable le_d = new Linear_Expression_Variable(D);
+        Linear_Expression_Variable le_b = new Linear_Expression_Variable(B);
+        Linear_Expression_Variable le_c = new Linear_Expression_Variable(C);
+        Linear_Expression_Variable le_a = new Linear_Expression_Variable(A);
+        Linear_Expression_Variable le_d = new Linear_Expression_Variable(D);
         Coefficient coeff_0 = new Coefficient(0);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_3 = new Coefficient(3);
         Coefficient coeff_5 = new Coefficient(5);
         Coefficient coeff_8 = new Coefficient(8);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
-	Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
-	Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
+        Linear_Expression le_5 = new Linear_Expression_Coefficient(coeff_5);
+        Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
 
-	// Constraint declarations.
-	Constraint c_a_geq_1
+        // Constraint declarations.
+        Constraint c_a_geq_1
           = new Constraint(le_a, Relation_Symbol.GREATER_OR_EQUAL, le_1);
-	Constraint c_a_leq_5
+        Constraint c_a_leq_5
           = new Constraint(le_a, Relation_Symbol.LESS_OR_EQUAL, le_5);
-	Constraint c_a_eq_8
+        Constraint c_a_eq_8
           = new Constraint(le_a, Relation_Symbol.EQUAL, le_8);
-	Constraint c_d_leq_1
+        Constraint c_d_leq_1
           = new Constraint(le_d, Relation_Symbol.LESS_OR_EQUAL, le_1);
-	Constraint constraint1 = c_a_geq_1;
-	Constraint_System constraints1 = new Constraint_System();
+        Constraint constraint1 = c_a_geq_1;
+        Constraint_System constraints1 = new Constraint_System();
         constraints1.add(constraint1);
 
         Variables_Set var_set_B = new Variables_Set();
         var_set_B.add(B);
 
-	PIP_Problem pip1 = new PIP_Problem(2);
+        PIP_Problem pip1 = new PIP_Problem(2);
         pip1.add_constraints(constraints1);
         long pip1_dim = pip1.space_dimension();
         pip1.add_to_parameter_space_dimensions(var_set_B);
@@ -270,8 +270,8 @@ public class PIP_Problem_test1 {
         PPL_Test.println_if_noisy(IO.wrap_string(ptree1.toString(), 4, 64, 60));
         PPL_Test.println_if_noisy();
 
-	Constraint constraint2 = c_d_leq_1;
-	Constraint_System constraints2 = new Constraint_System();
+        Constraint constraint2 = c_d_leq_1;
+        Constraint_System constraints2 = new Constraint_System();
         constraints2.add(constraint1);
         constraints2.add(constraint2);
         PIP_Problem pip2 = new PIP_Problem(4, constraints2, var_set_D);
@@ -298,17 +298,17 @@ public class PIP_Problem_test1 {
 
    // This code is based on test02 in pipproblem1.cc.
     public static boolean test04() {
-	Variable I = new Variable(0);
-	Variable J = new Variable(1);
-	Variable N = new Variable(2);
-	Variable M = new Variable(3);
+        Variable I = new Variable(0);
+        Variable J = new Variable(1);
+        Variable N = new Variable(2);
+        Variable M = new Variable(3);
         Variables_Set params = new Variables_Set();
         params.add(N);
         params.add(M);
-	Linear_Expression_Variable le_i = new Linear_Expression_Variable(I);
-	Linear_Expression_Variable le_j = new Linear_Expression_Variable(J);
-	Linear_Expression_Variable le_n = new Linear_Expression_Variable(N);
-	Linear_Expression_Variable le_m = new Linear_Expression_Variable(M);
+        Linear_Expression_Variable le_i = new Linear_Expression_Variable(I);
+        Linear_Expression_Variable le_j = new Linear_Expression_Variable(J);
+        Linear_Expression_Variable le_n = new Linear_Expression_Variable(N);
+        Linear_Expression_Variable le_m = new Linear_Expression_Variable(M);
         Coefficient coeff_0 = new Coefficient(0);
         Coefficient coeff_1 = new Coefficient(1);
         Coefficient coeff_2 = new Coefficient(2);
@@ -317,42 +317,42 @@ public class PIP_Problem_test1 {
         Coefficient coeff_7 = new Coefficient(7);
         Coefficient coeff_8 = new Coefficient(8);
         Coefficient coeff_10 = new Coefficient(10);
-	Linear_Expression le_0 = new Linear_Expression_Coefficient(coeff_0);
-	Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
-	Linear_Expression le_2 = new Linear_Expression_Coefficient(coeff_2);
-	Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
-	Linear_Expression le_4 = new Linear_Expression_Coefficient(coeff_4);
-	Linear_Expression le_7 = new Linear_Expression_Coefficient(coeff_7);
-	Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
-	Linear_Expression le_10 = new Linear_Expression_Coefficient(coeff_10);
-	Linear_Expression le_2i = le_i.times(coeff_2);
-	Linear_Expression le_3j = le_j.times(coeff_3);
-	Linear_Expression le_2i_plus_3j = le_2i.sum(le_3j);
-	Linear_Expression le_4i = le_i.times(coeff_4);
-	Linear_Expression le_4i_diff_j = le_4i.subtract(le_j);
-	Linear_Expression le_m_diff_j = le_m.subtract(le_j);
-	Linear_Expression le_n_diff_i = le_n.subtract(le_i);
+        Linear_Expression le_0 = new Linear_Expression_Coefficient(coeff_0);
+        Linear_Expression le_1 = new Linear_Expression_Coefficient(coeff_1);
+        Linear_Expression le_2 = new Linear_Expression_Coefficient(coeff_2);
+        Linear_Expression le_3 = new Linear_Expression_Coefficient(coeff_3);
+        Linear_Expression le_4 = new Linear_Expression_Coefficient(coeff_4);
+        Linear_Expression le_7 = new Linear_Expression_Coefficient(coeff_7);
+        Linear_Expression le_8 = new Linear_Expression_Coefficient(coeff_8);
+        Linear_Expression le_10 = new Linear_Expression_Coefficient(coeff_10);
+        Linear_Expression le_2i = le_i.times(coeff_2);
+        Linear_Expression le_3j = le_j.times(coeff_3);
+        Linear_Expression le_2i_plus_3j = le_2i.sum(le_3j);
+        Linear_Expression le_4i = le_i.times(coeff_4);
+        Linear_Expression le_4i_diff_j = le_4i.subtract(le_j);
+        Linear_Expression le_m_diff_j = le_m.subtract(le_j);
+        Linear_Expression le_n_diff_i = le_n.subtract(le_i);
 
-	// Constraint declarations.
-	Constraint c_1
+        // Constraint declarations.
+        Constraint c_1
           = new Constraint(le_2i_plus_3j, Relation_Symbol.GREATER_OR_EQUAL,
                            le_8);
-	Constraint c_2
+        Constraint c_2
           = new Constraint(le_4i_diff_j, Relation_Symbol.GREATER_OR_EQUAL,
                            le_4);
-	Constraint c_3
+        Constraint c_3
           = new Constraint(le_m_diff_j, Relation_Symbol.GREATER_OR_EQUAL,
                            le_0);
-	Constraint c_4
+        Constraint c_4
           = new Constraint(le_n_diff_i, Relation_Symbol.GREATER_OR_EQUAL,
                            le_0);
-	Constraint_System cs = new Constraint_System();
+        Constraint_System cs = new Constraint_System();
         cs.add(c_1);
         cs.add(c_2);
         cs.add(c_3);
         cs.add(c_4);
 
-	PIP_Problem pip = new PIP_Problem(4, cs, params);
+        PIP_Problem pip = new PIP_Problem(4, cs, params);
 
         // Known to overflow if PPL uses 8-bits checked integers.
         try {
@@ -470,11 +470,11 @@ public class PIP_Problem_test1 {
 
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
-	boolean test_result_ok =
-	    Test_Executor.executeTests(PIP_Problem_test1.class);
+        boolean test_result_ok =
+            Test_Executor.executeTests(PIP_Problem_test1.class);
         Parma_Polyhedra_Library.finalize_library();
-	if (!test_result_ok)
-	    System.exit(1);
-	System.exit(0);
+        if (!test_result_ok)
+            System.exit(1);
+        System.exit(0);
     }
 }

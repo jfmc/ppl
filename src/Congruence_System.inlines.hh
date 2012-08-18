@@ -219,7 +219,7 @@ Congruence_System::const_iterator::operator!=(const const_iterator& y) const {
 inline
 Congruence_System::const_iterator::
 const_iterator(const Swapping_Vector<Congruence>::const_iterator& iter,
-	       const Congruence_System& cgs)
+               const Congruence_System& cgs)
   : i(iter), csp(&cgs.rows) {
 }
 

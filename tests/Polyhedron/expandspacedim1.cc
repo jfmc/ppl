@@ -215,8 +215,8 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** after ph1.expand_space_dimension(A, 1);"
-		    " ph1.expand_space_dimension(C, 1) ***");
+                    "*** after ph1.expand_space_dimension(A, 1);"
+                    " ph1.expand_space_dimension(C, 1) ***");
 
   return ok;
 }

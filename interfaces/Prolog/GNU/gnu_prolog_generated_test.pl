@@ -28,9 +28,9 @@ main :-
     open(obtained_pgt, write, Stream),
     set_output(Stream),
     (check_all ->
-	write('OK')
+        write('OK')
     ;
-	write('FAILURE')
+        write('FAILURE')
     ),
     nl,
     close(Stream),

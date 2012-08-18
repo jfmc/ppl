@@ -69,7 +69,7 @@ test01() {
   Product dp(7, EMPTY);
 
   bool ok = (dp.bounds_from_above(Linear_Expression(0))
-	     && dp.bounds_from_below(Linear_Expression(0)));
+             && dp.bounds_from_below(Linear_Expression(0)));
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -83,7 +83,7 @@ test02() {
   Product dp(0, EMPTY);
 
   bool ok = (dp.bounds_from_above(Linear_Expression(3))
-	     && dp.bounds_from_below(Linear_Expression(3)));
+             && dp.bounds_from_below(Linear_Expression(3)));
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");
@@ -97,7 +97,7 @@ test03() {
   Product dp(0);
 
   bool ok = (dp.bounds_from_above(Linear_Expression(1))
-	     && dp.bounds_from_below(Linear_Expression(1)));
+             && dp.bounds_from_below(Linear_Expression(1)));
 
   print_congruences(dp, "*** dp congruences ***");
   print_constraints(dp, "*** dp constraints ***");

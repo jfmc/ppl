@@ -424,7 +424,7 @@ test14() {
   sp2.refine_with_congruence((B %= 1) / 3);
 
   bool smash_ok = (!sp1.upper_bound_assign_if_exact(sp2)
-		   && !sp2.upper_bound_assign_if_exact(sp1));
+                   && !sp2.upper_bound_assign_if_exact(sp1));
 
   if (!smash_ok) {
     print_congruences(sp1, "*** sp1 congruences ub exact ***");

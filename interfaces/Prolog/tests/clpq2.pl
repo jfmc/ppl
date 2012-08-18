@@ -348,8 +348,8 @@ main_loop :-
   read_term(Command, [variable_names(VN)]),
   eat_eol,
   catch(do_command(Command, VN),
-	Exception,
-	(print_exception_term(Exception), main_loop_no)).
+        Exception,
+        (print_exception_term(Exception), main_loop_no)).
 
 print_exception_term(ppl_overflow_error(Cause)) :-
   nl,

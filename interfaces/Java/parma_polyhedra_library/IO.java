@@ -44,5 +44,5 @@ public class IO {
       The wrapped string.
     */
     public static native String wrap_string(String str, int indent_depth,
-					    int preferred_first_line_length, int preferred_line_length);
+                                            int preferred_first_line_length, int preferred_line_length);
 }

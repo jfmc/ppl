@@ -41,8 +41,8 @@ test01() {
     for (dimension_type num_cols = 0; num_cols <= 3; ++num_cols) {
       Matrix<Dense_Row> m1(num_rows, num_cols);
       for (dimension_type row = 0; row < num_rows; ++row)
-	for (dimension_type col = 0; col < num_cols; ++col)
-	  r.get(m1[row][col], 0);
+        for (dimension_type col = 0; col < num_cols; ++col)
+          r.get(m1[row][col], 0);
 
       std::fstream f;
       open(f, data_file, std::ios_base::out);
@@ -56,13 +56,13 @@ test01() {
 
       if (m1 != m2) {
 
-	nout << "Matrix<Dense_Row>::ascii_dump/load test failed." << endl
-	     << "m1.ascii_dump() gives" << endl;
-	m1.ascii_dump(nout);
-	nout << "m2.ascii_dump() gives" << endl;
-	m2.ascii_dump(nout);
+        nout << "Matrix<Dense_Row>::ascii_dump/load test failed." << endl
+             << "m1.ascii_dump() gives" << endl;
+        m1.ascii_dump(nout);
+        nout << "m2.ascii_dump() gives" << endl;
+        m2.ascii_dump(nout);
 
-	return false;
+        return false;
       }
     }
   return true;

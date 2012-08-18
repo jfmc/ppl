@@ -151,9 +151,9 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
     if (marked_empty()
-	|| (has_pending_constraints()
-	    && !remove_pending_to_obtain_generators())
-	|| (!generators_are_up_to_date() && !update_generators())) {
+        || (has_pending_constraints()
+            && !remove_pending_to_obtain_generators())
+        || (!generators_are_up_to_date() && !update_generators())) {
       // Removing all dimensions from the empty polyhedron.
       space_dim = 0;
       con_sys.clear();
@@ -242,7 +242,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 
   Generator_System new_gensys;
   for (Generator_System::const_iterator i = old_gensys.begin(),
-	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
+         old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
     const Generator::Expression& old_e = old_g.expression();
     Linear_Expression expr;
@@ -253,17 +253,17 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       const dimension_type mapped_id = pfunc_maps[j.variable().id()];
       if (mapped_id != not_a_dimension()) {
         add_mul_assign(expr, *j, Variable(mapped_id));
-	all_zeroes = false;
+        all_zeroes = false;
       }
     }
     switch (old_g.type()) {
     case Generator::LINE:
       if (!all_zeroes)
-	new_gensys.insert(line(expr));
+        new_gensys.insert(line(expr));
       break;
     case Generator::RAY:
       if (!all_zeroes)
-	new_gensys.insert(ray(expr));
+        new_gensys.insert(ray(expr));
       break;
     case Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
@@ -495,7 +495,7 @@ Polyhedron::convert_to_integer_expression(
 template <typename FP_Format, typename Interval_Info>
 void
 Polyhedron::convert_to_integer_expressions(
-	        const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
                 const dimension_type lf_dimension, Linear_Expression& res,
                 Coefficient& res_low_coeff, Coefficient& res_hi_coeff,
                 Coefficient& denominator) {
@@ -557,8 +557,8 @@ Polyhedron::convert_to_integer_expressions(
 template <typename C>
 void
 Polyhedron::throw_dimension_incompatible(const char* method,
-				         const char* lf_name,
-				         const Linear_Form<C>& lf) const {
+                                         const char* lf_name,
+                                         const Linear_Form<C>& lf) const {
   throw_dimension_incompatible(method, lf_name, lf.space_dimension());
 }
 

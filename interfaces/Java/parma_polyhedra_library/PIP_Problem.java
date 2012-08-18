@@ -108,7 +108,7 @@ public class PIP_Problem extends PPL_Object {
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
   */
     public PIP_Problem(long dim) {
-	build_cpp_object(dim);
+        build_cpp_object(dim);
     }
 
   //! Builds a PIP problem from a sequence of constraints.
@@ -118,12 +118,12 @@ public class PIP_Problem extends PPL_Object {
     parameters.
   */
    public PIP_Problem(long dim, Constraint_System cs, Variables_Set params) {
-	build_cpp_object(dim, cs, params);
+        build_cpp_object(dim, cs, params);
     }
 
     //! Builds a copy of \p y.
     public PIP_Problem(PIP_Problem y) {
-	build_cpp_object(y);
+        build_cpp_object(y);
     }
 
     /*! \brief
@@ -315,7 +315,7 @@ public class PIP_Problem extends PPL_Object {
 
     //! Builds the underlying C++ object.
     private native void build_cpp_object(long dim,
-					 Constraint_System cs,
+                                         Constraint_System cs,
                                          Variables_Set vars);
 
     //! Builds the underlying C++ object.

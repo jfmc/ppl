@@ -324,10 +324,10 @@ test10() {
 #if BD_Shape_Class || Octagonal_Shape_Class
   #ifdef PH_IS_FIRST
     bool ok = (dp.domain2() == known_dp.domain2()
-	       && dp.domain1().is_universe());
+               && dp.domain1().is_universe());
   #else
     bool ok = (dp.domain1() == known_dp.domain1()
-	       && dp.domain2().is_universe());
+               && dp.domain2().is_universe());
   #endif
 #else
   bool ok = (dp == known_dp);

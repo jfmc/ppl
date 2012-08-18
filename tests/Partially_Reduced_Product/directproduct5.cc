@@ -341,13 +341,13 @@ test11() {
   dp.refine_with_congruence((A %= 2) / 0);
 
   bool ok = (dp.relation_with(B == 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates())
-	     && dp.relation_with(B >= 0)
-	     == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates()));
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates())
+             && dp.relation_with(B >= 0)
+             == (Poly_Con_Relation::is_included()
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates()));
 
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");
@@ -394,13 +394,13 @@ test12() {
   Poly_Con_Relation rel7 = dp.relation_with(2*A + B >= 3);
   Poly_Con_Relation rel8 = dp.relation_with(3*A + 3*B + C >= 7);
   bool ok = (rel3 == Poly_Con_Relation::nothing()
-	     && rel4 == Poly_Con_Relation::nothing()
-	     && rel5 == Poly_Con_Relation::nothing()
-	     && rel6 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates())
-	     && rel7 == Poly_Con_Relation::is_included()
-	     && rel8 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates()));
+             && rel4 == Poly_Con_Relation::nothing()
+             && rel5 == Poly_Con_Relation::nothing()
+             && rel6 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates())
+             && rel7 == Poly_Con_Relation::is_included()
+             && rel8 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates()));
 
   nout << "dp.relation_with(A + B + C %= 0) == " << rel3 << endl;
   nout << "dp.relation_with(A + B %= 0) == " << rel4 << endl;
@@ -479,8 +479,8 @@ test15() {
 
   Poly_Con_Relation rel = dp.relation_with(B %= 0);
   bool ok = (rel == (Poly_Con_Relation::is_included()
-		 && Poly_Con_Relation::is_disjoint()
-	         && Poly_Con_Relation::saturates()));
+                 && Poly_Con_Relation::is_disjoint()
+                 && Poly_Con_Relation::saturates()));
 
   nout << "dp.relation_with(B %= 0) == " << rel << endl;
   print_constraints(dp, "*** dp constraints ***");
@@ -526,13 +526,13 @@ test16() {
   Poly_Con_Relation rel7 = dp.relation_with(2*A + B %= 3);
   Poly_Con_Relation rel8 = dp.relation_with(3*A + 3*B + C %= 7);
   bool ok = (rel3 == Poly_Con_Relation::nothing()
-	     && rel4 == Poly_Con_Relation::nothing()
-	     && rel5 == Poly_Con_Relation::nothing()
-	     && rel6 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates())
-	     && rel7 == Poly_Con_Relation::is_included()
-	     && rel8 == (Poly_Con_Relation::is_included()
-			 && Poly_Con_Relation::saturates()));
+             && rel4 == Poly_Con_Relation::nothing()
+             && rel5 == Poly_Con_Relation::nothing()
+             && rel6 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates())
+             && rel7 == Poly_Con_Relation::is_included()
+             && rel8 == (Poly_Con_Relation::is_included()
+                         && Poly_Con_Relation::saturates()));
 
   nout << "dp.relation_with(A + B + C %= 0) == " << rel3 << endl;
   nout << "dp.relation_with(A + B %= 0) == " << rel4 << endl;
@@ -558,14 +558,14 @@ test17() {
   dp.refine_with_congruence(6*A + 3*B %= 0);
 
   bool okdp1 = (dp.domain1().relation_with(2*A + B %= 3)
-		== Poly_Con_Relation::strictly_intersects());
+                == Poly_Con_Relation::strictly_intersects());
 
   bool okdp2 = (dp.domain2().relation_with(2*A + B %= 3)
-	       == Poly_Con_Relation::strictly_intersects());
+               == Poly_Con_Relation::strictly_intersects());
 
   Poly_Con_Relation rel = dp.relation_with(2*A + B %= 3);
   bool ok = (okdp1 && okdp2
-	     && rel == Poly_Con_Relation::nothing());
+             && rel == Poly_Con_Relation::nothing());
 
   print_constraints(dp, "*** dp constraints ***");
   print_congruences(dp, "*** dp congruences ***");

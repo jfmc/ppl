@@ -30,9 +30,9 @@ main :-
     open(obtained_pchk, write, Stream),
     set_output(Stream),
     (check_all ->
-	write('OK')
+        write('OK')
     ;
-	write('FAILURE')
+        write('FAILURE')
     ),
     nl,
     close(Stream),

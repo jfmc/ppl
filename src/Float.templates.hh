@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename FP_Interval_Type>
 const FP_Interval_Type& compute_absolute_error(
-		        const Floating_Point_Format analyzed_format) {
+                        const Floating_Point_Format analyzed_format) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
 
   // FIXME: check if initializing caches with EMPTY is better.
@@ -144,9 +144,9 @@ discard_occurrences(std::map<dimension_type,
    variables as an argument. */
 template <typename FP_Interval_Type>
 void upper_bound_assign(std::map<dimension_type,
-			         Linear_Form<FP_Interval_Type> >& ls1,
+                                 Linear_Form<FP_Interval_Type> >& ls1,
                         const std::map<dimension_type,
-			               Linear_Form<FP_Interval_Type> >& ls2) {
+                                       Linear_Form<FP_Interval_Type> >& ls2) {
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
   typedef typename std::map<dimension_type, FP_Linear_Form>::iterator Iter;
   typedef typename std::map<dimension_type,

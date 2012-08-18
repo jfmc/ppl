@@ -563,8 +563,8 @@ set_output(const char* file_name) {
 
   if (file_name) {
     output_stream_p = new std::ofstream(file_name,
-					std::ios_base::out
-					| std::ios_base::app);
+                                        std::ios_base::out
+                                        | std::ios_base::app);
     if (!*output_stream_p)
       fatal("cannot open output file `%s'", file_name);
     output_file_name = file_name;
@@ -630,7 +630,7 @@ process_options(int argc, char* argv[]) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
-			&option_index);
+                        &option_index);
 #else
     int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
@@ -685,7 +685,7 @@ process_options(int argc, char* argv[]) {
     case 'i':
       loop_iterations = strtol(optarg, &endptr, 10);
       if (*endptr || loop_iterations < 1)
-	fatal("a positive integer must follow `-i'");
+        fatal("a positive integer must follow `-i'");
       break;
 
 #if defined(USE_PPL)
@@ -760,12 +760,12 @@ main(int argc, char* argv[]) try {
 #if defined(USE_PPL)
   if (strcmp(PPL_VERSION, PPL::version()) != 0)
     fatal("was compiled with PPL version %s, but linked with version %s",
-	  PPL_VERSION, PPL::version());
+          PPL_VERSION, PPL::version());
 
   if (verbose)
     std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
-	      << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
-	      << std::endl;
+              << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
+              << std::endl;
 #endif
 
   // Process command line options.

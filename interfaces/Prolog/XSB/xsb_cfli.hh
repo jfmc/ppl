@@ -134,7 +134,7 @@ Prolog_atom_from_string(const char* s) {
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1) {
+                          Prolog_term_ref a1) {
   prolog_term new_compound = p2p_new();
   c2p_functor(f, 1, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
@@ -148,7 +148,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2) {
+                          Prolog_term_ref a1, Prolog_term_ref a2) {
   prolog_term new_compound = p2p_new();
   c2p_functor(f, 2, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
@@ -163,8 +163,8 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3) {
   prolog_term new_compound = p2p_new();
   c2p_functor(f, 3, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
@@ -180,8 +180,8 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3, Prolog_term_ref a4) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3, Prolog_term_ref a4) {
   prolog_term new_compound = p2p_new();
   c2p_functor(f, 4, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
@@ -197,7 +197,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_cons(Prolog_term_ref& c,
-		      Prolog_term_ref h, Prolog_term_ref t) {
+                      Prolog_term_ref h, Prolog_term_ref t) {
   prolog_term new_cons = p2p_new();
   c2p_list(new_cons);
   p2p_unify(p2p_car(new_cons), h);

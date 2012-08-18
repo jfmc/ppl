@@ -33,7 +33,7 @@ namespace Termination {
 
 void
 assign_all_inequalities_approximation(const Constraint_System& cs_in,
-				      Constraint_System& cs_out) {
+                                      Constraint_System& cs_out) {
   if (cs_in.has_strict_inequalities() || cs_in.has_equalities()) {
     // Here we have some strict inequality and/or equality constraints:
     // translate them into non-strict inequality constraints.
@@ -64,22 +64,22 @@ assign_all_inequalities_approximation(const Constraint_System& cs_in,
 template <>
 void
 assign_all_inequalities_approximation(const C_Polyhedron& ph,
-				      Constraint_System& cs) {
+                                      Constraint_System& cs) {
   const Constraint_System& ph_cs = ph.minimized_constraints();
   if (ph_cs.has_equalities()) {
     // Translate equalities into inequalities.
     for (Constraint_System::const_iterator i = ph_cs.begin(),
-	   i_end = ph_cs.end(); i != i_end; ++i) {
+           i_end = ph_cs.end(); i != i_end; ++i) {
       const Constraint& c = *i;
       if (c.is_equality()) {
-	// Insert the two corresponding opposing inequalities.
-	Linear_Expression expr(c.expression());
-	cs.insert(expr >= 0);
-	cs.insert(expr <= 0);
+        // Insert the two corresponding opposing inequalities.
+        Linear_Expression expr(c.expression());
+        cs.insert(expr >= 0);
+        cs.insert(expr <= 0);
       }
       else
-	// Insert as is.
-	cs.insert(c);
+        // Insert as is.
+        cs.insert(c);
     }
   }
   else
@@ -128,8 +128,8 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
 */
 void
 fill_constraint_systems_MS(const Constraint_System& cs,
-			   Constraint_System& cs_out1,
-			   Constraint_System& cs_out2) {
+                           Constraint_System& cs_out1,
+                           Constraint_System& cs_out2) {
   PPL_ASSERT(cs.space_dimension() % 2 == 0);
   const dimension_type n = cs.space_dimension() / 2;
   const dimension_type m = num_constraints(cs);
@@ -162,7 +162,7 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   dimension_type y = y_begin;
   dimension_type z = z_begin;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+         cs_end = cs.end(); i != cs_end; ++i) {
     Variable v_y(y);
     Variable v_z(z);
     ++y;
@@ -342,9 +342,9 @@ fill_constraint_systems_MS(const Constraint_System& cs,
 */
 void
 fill_constraint_system_PR(const Constraint_System& cs_before,
-			  const Constraint_System& cs_after,
-			  Constraint_System& cs_out,
-			  Linear_Expression& le_out) {
+                          const Constraint_System& cs_after,
+                          Constraint_System& cs_out,
+                          Linear_Expression& le_out) {
   PPL_ASSERT(cs_after.space_dimension() % 2 == 0);
   PPL_ASSERT(2*cs_before.space_dimension() == cs_after.space_dimension());
   const dimension_type n = cs_before.space_dimension();
@@ -359,7 +359,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs_before.begin(),
-	 cs_before_end = cs_before.end();
+         cs_before_end = cs_before.end();
        i != cs_before_end;
        ++i, ++row_index) {
     Variable u1_i(m + row_index);
@@ -383,7 +383,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
 
   row_index = 0;
   for (Constraint_System::const_iterator i = cs_after.begin(),
-	 cs_after_end = cs_after.end();
+         cs_after_end = cs_after.end();
        i != cs_after_end;
        ++i, ++row_index) {
     Variable u3_i(row_index);
@@ -433,7 +433,7 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
 
   dimension_type row_index = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
+         cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
     const Constraint::Expression& e_i = i->expression();
     const Variable lambda1_i(row_index);
     const Variable lambda2_i(m + row_index);
@@ -499,7 +499,7 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
 
 void
 all_affine_ranking_functions_MS(const Constraint_System& cs,
-				C_Polyhedron& mu_space) {
+                                C_Polyhedron& mu_space) {
   Constraint_System cs_out1;
   Constraint_System cs_out2;
   fill_constraint_systems_MS(cs, cs_out1, cs_out2);
@@ -596,7 +596,7 @@ termination_test_PR_original(const Constraint_System& cs) {
 
 bool
 termination_test_PR(const Constraint_System& cs_before,
-		    const Constraint_System& cs_after) {
+                    const Constraint_System& cs_after) {
   Constraint_System cs_mip;
   Linear_Expression le_ineq;
   fill_constraint_system_PR(cs_before, cs_after, cs_mip, le_ineq);
@@ -627,8 +627,8 @@ termination_test_PR(const Constraint_System& cs_before,
 
 bool
 one_affine_ranking_function_PR(const Constraint_System& cs_before,
-			       const Constraint_System& cs_after,
-			       Generator& mu) {
+                               const Constraint_System& cs_after,
+                               Generator& mu) {
   return Termination_Helpers
     ::one_affine_ranking_function_PR(cs_before, cs_after, mu);
 }
@@ -641,8 +641,8 @@ one_affine_ranking_function_PR_original(const Constraint_System& cs,
 
 void
 all_affine_ranking_functions_PR(const Constraint_System& cs_before,
-				const Constraint_System& cs_after,
-				NNC_Polyhedron& mu_space) {
+                                const Constraint_System& cs_after,
+                                NNC_Polyhedron& mu_space) {
   Termination_Helpers::all_affine_ranking_functions_PR(cs_before, cs_after,
                                                        mu_space);
 }

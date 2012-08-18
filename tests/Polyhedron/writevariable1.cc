@@ -73,7 +73,7 @@ main() TRY {
   write_variables();
   // ... read back.
   read_variables_and_check("A F K P U Z E1 J1 O1 T1 Y1 "
-			   "D2 I2 N2 S2 X2 C3 H3 M3 R3 W3 ");
+                           "D2 I2 N2 S2 X2 C3 H3 M3 R3 W3 ");
 
   // Save the default output function.
   Variable::output_function_type* p_default_output_function
@@ -90,7 +90,7 @@ main() TRY {
   write_variables();
   // ... read back.
   read_variables_and_check("x0 x5 x10 x15 x20 x25 x30 x35 x40 x45 "
-			   "x50 x55 x60 x65 x70 x75 x80 x85 x90 x95 x100 ");
+                           "x50 x55 x60 x65 x70 x75 x80 x85 x90 x95 x100 ");
 
   // Restore the default output function.
   Variable::set_output_function(p_default_output_function);

@@ -32,9 +32,9 @@ namespace IO_Operators {
 
 std::string
 wrap_string(const std::string& src_string,
-	    const unsigned indent_depth,
-	    const unsigned preferred_first_line_length,
-	    const unsigned preferred_line_length) {
+            const unsigned indent_depth,
+            const unsigned preferred_first_line_length,
+            const unsigned preferred_line_length) {
   const unsigned npos = C_Integer<unsigned>::max;
   std::string dst_string;
   const char *src = src_string.c_str();
@@ -48,29 +48,29 @@ wrap_string(const std::string& src_string,
     unsigned idx;
     for (idx = 0; idx <= line_length; ++idx) {
       if (src[idx] == '\0' || src[idx] == '\n') {
-	split_pos = idx;
-	break;
+        split_pos = idx;
+        break;
       }
       if (src[idx] == ',' && idx < line_length)
-	last_comma = idx;
+        last_comma = idx;
       if (is_space(src[idx]) && (idx == 0 || !is_space(src[idx-1])))
-	last_space = idx;
+        last_space = idx;
     }
     if (split_pos == npos) {
       if (last_comma != npos)
-	split_pos = last_comma + 1;
+        split_pos = last_comma + 1;
       else if (last_space != npos)
-	split_pos = last_space;
+        split_pos = last_space;
       else {
-	for ( ; src[idx] != '\0'; ++idx) {
-	  if (src[idx] == ',') {
-	    ++idx;
-	    break;
-	  }
-	  if (is_space(src[idx]))
-	    break;
-	}
-	split_pos = idx;
+        for ( ; src[idx] != '\0'; ++idx) {
+          if (src[idx] == ',') {
+            ++idx;
+            break;
+          }
+          if (is_space(src[idx]))
+            break;
+        }
+        split_pos = idx;
       }
     }
     PPL_ASSERT(split_pos != npos);

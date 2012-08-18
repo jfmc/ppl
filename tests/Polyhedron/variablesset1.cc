@@ -103,23 +103,23 @@ test04() {
   Variables_Set vs_intersection;
 
   std::set_union(vs1.begin(), vs1.end(),
-		 vs2.begin(), vs2.end(),
-		 std::inserter(vs_union, vs_union.begin()));
+                 vs2.begin(), vs2.end(),
+                 std::inserter(vs_union, vs_union.begin()));
   nout << "*** vs_union ***" << endl << vs_union << endl;
   if (vs_union != Variables_Set(A, I))
     return false;
 
   std::set_difference(vs1.begin(), vs1.end(),
-		      vs2.begin(), vs2.end(),
-		      std::inserter(vs_difference, vs_difference.begin()));
+                      vs2.begin(), vs2.end(),
+                      std::inserter(vs_difference, vs_difference.begin()));
   nout << "*** vs_difference ***" << endl << vs_difference << endl;
   if (vs_difference != Variables_Set(A, B))
     return false;
 
   std::set_intersection(vs1.begin(), vs1.end(),
-			vs2.begin(), vs2.end(),
-			std::inserter(vs_intersection,
-				      vs_intersection.begin()));
+                        vs2.begin(), vs2.end(),
+                        std::inserter(vs_intersection,
+                                      vs_intersection.begin()));
   nout << "*** vs_intersection ***" << endl << vs_intersection << endl;
   if (vs_intersection != Variables_Set(C))
     return false;

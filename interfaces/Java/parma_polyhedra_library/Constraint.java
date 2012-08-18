@@ -47,24 +47,24 @@ public class Constraint {
     */
     public Constraint(Linear_Expression le1, Relation_Symbol rel_sym,
                       Linear_Expression le2) {
-	lhs = le1.clone();
-	rhs = le2.clone();
-	kind = rel_sym;
+        lhs = le1.clone();
+        rhs = le2.clone();
+        kind = rel_sym;
     }
 
     //! Returns the left hand side of \p this.
     public Linear_Expression left_hand_side() {
-	return lhs;
+        return lhs;
     }
 
     //! Returns the right hand side of \p this.
     public Linear_Expression right_hand_side() {
-	return rhs;
+        return rhs;
     }
 
     //! Returns the relation symbol of \p this.
     public Relation_Symbol kind() {
-	return kind;
+        return kind;
     }
 
     //! Returns an ascii formatted internal representation of \p this.

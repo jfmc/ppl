@@ -55,7 +55,7 @@ test01() {
 
   print_constraints(ph1, "*** after remove_higher_space_dimensions(1) ***");
   print_constraints(ph2,
-		    "*** after remove_space_dimensions(to_be_removed) ***");
+                    "*** after remove_space_dimensions(to_be_removed) ***");
 
   return ok;
 }

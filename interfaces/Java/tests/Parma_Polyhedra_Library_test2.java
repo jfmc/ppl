@@ -53,12 +53,12 @@ public class Parma_Polyhedra_Library_test2 {
 
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
-	boolean test_result_ok =
-	    Test_Executor.executeTests(Parma_Polyhedra_Library_test2.class);
+        boolean test_result_ok =
+            Test_Executor.executeTests(Parma_Polyhedra_Library_test2.class);
         Parma_Polyhedra_Library.finalize_library();
-	if (!test_result_ok)
-	    System.exit(1);
-	System.exit(0);
+        if (!test_result_ok)
+            System.exit(1);
+        System.exit(0);
     }
 
     private static void open_hypercube(int dimension, Polyhedron ph) {

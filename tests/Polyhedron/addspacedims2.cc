@@ -210,7 +210,7 @@ test06() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** after ph1.add_space_dimensions_and_embed(1) ***");
+                    "*** after ph1.add_space_dimensions_and_embed(1) ***");
   print_generators(ph1, "*** after ph1.add_space_dimensions_and_embed(1) ***");
 
   return ok;

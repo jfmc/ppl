@@ -36,7 +36,7 @@ Doubly_Linked_Object::Doubly_Linked_Object() {
 
 inline
 Doubly_Linked_Object::Doubly_Linked_Object(Doubly_Linked_Object* f,
-					   Doubly_Linked_Object* b)
+                                           Doubly_Linked_Object* b)
   : next(f),
     prev(b) {
 }

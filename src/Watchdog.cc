@@ -97,14 +97,14 @@ my_getitimer(int which, struct itimerval* value) {
 
 void
 my_setitimer(int which,
-	     const struct itimerval* value, struct itimerval* old_value) {
+             const struct itimerval* value, struct itimerval* old_value) {
   if (setitimer(which, value, old_value) != 0)
     throw_syscall_error("setitimer");
 }
 
 void
 my_sigaction(int signum,
-	     const struct sigaction* act, struct sigaction* old_action) {
+             const struct sigaction* act, struct sigaction* old_action) {
   if (sigaction(signum, act, old_action) != 0)
     throw_syscall_error("sigaction");
 }
@@ -116,7 +116,7 @@ PPL::Watchdog::get_timer(Implementation::Watchdog::Time& time) {
   using namespace Implementation::Watchdog;
   my_getitimer(THE_TIMER, &current_timer_status);
   time = Time(current_timer_status.it_value.tv_sec,
-	      current_timer_status.it_value.tv_usec);
+              current_timer_status.it_value.tv_usec);
 }
 
 void
@@ -145,14 +145,14 @@ PPL::Watchdog::handle_timeout(int) {
     if (!pending.empty()) {
       WD_Pending_List::Iterator i = pending.begin();
       do {
-	i->handler().act();
-	i->expired_flag() = true;
-	i = pending.erase(i);
+        i->handler().act();
+        i->expired_flag() = true;
+        i = pending.erase(i);
       } while (i != pending.end() && i->deadline() <= time_so_far);
       if (pending.empty())
-	alarm_clock_running = false;
+        alarm_clock_running = false;
       else
-	set_timer((*pending.begin()).deadline() - time_so_far);
+        set_timer((*pending.begin()).deadline() - time_so_far);
     }
     else
       alarm_clock_running = false;
@@ -166,8 +166,8 @@ PPL::PPL_handle_timeout(int signum) {
 
 PPL::Watchdog::WD_Pending_List::Iterator
 PPL::Watchdog::new_watchdog_event(long csecs,
-				  const WD_Handler& handler,
-				  bool& expired_flag) {
+                                  const WD_Handler& handler,
+                                  bool& expired_flag) {
   using namespace Implementation::Watchdog;
   assert(csecs > 0);
   WD_Pending_List::Iterator position;
@@ -207,14 +207,14 @@ PPL::Watchdog::remove_watchdog_event(WD_Pending_List::Iterator position) {
       Time first_deadline(position->deadline());
       Time next_deadline(next->deadline());
       if (first_deadline != next_deadline) {
-	Time time_to_shoot;
-	get_timer(time_to_shoot);
-	Time elapsed_time(last_time_requested);
-	elapsed_time -= time_to_shoot;
-	time_so_far += elapsed_time;
-	next_deadline -= first_deadline;
-	time_to_shoot += next_deadline;
-	set_timer(time_to_shoot);
+        Time time_to_shoot;
+        get_timer(time_to_shoot);
+        Time elapsed_time(last_time_requested);
+        elapsed_time -= time_to_shoot;
+        time_so_far += elapsed_time;
+        next_deadline -= first_deadline;
+        time_to_shoot += next_deadline;
+        set_timer(time_to_shoot);
       }
     }
     else {

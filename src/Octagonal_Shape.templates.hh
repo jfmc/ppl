@@ -503,8 +503,8 @@ template <typename T>
 template <typename Interval_Info>
 void
 Octagonal_Shape<T>::refine_with_linear_form_inequality(
-		    const Linear_Form< Interval<T, Interval_Info> >& left,
-		    const Linear_Form< Interval<T, Interval_Info> >& right) {
+                    const Linear_Form< Interval<T, Interval_Info> >& left,
+                    const Linear_Form< Interval<T, Interval_Info> >& right) {
 
   // Check that T is a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<T>::is_exact,
@@ -577,7 +577,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
       // The constraint has the form [a-, a+] <= [b-, b+] + [c-, c+] * x.
       // Reduce it to the constraint +/-x <= b+ - a- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& right_w_coeff =
-	                      right.coefficient(Variable(right_w_id));
+                              right.coefficient(Variable(right_w_id));
       if (right_w_coeff == 1) {
         const dimension_type n_right = right_w_id * 2;
         PPL_DIRTY_TEMP(N, b_plus_minus_a_minus);
@@ -612,7 +612,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
       // The constraint has the form [b-, b+] + [c-, c+] * x <= [a-, a+]
       // Reduce it to the constraint +/-x <= a+ - b- if [c-, c+] = +/-[1, 1].
       const FP_Interval_Type& left_w_coeff =
-	                      left.coefficient(Variable(left_w_id));
+                              left.coefficient(Variable(left_w_id));
       if (left_w_coeff == 1) {
         const dimension_type n_left = left_w_id * 2;
         PPL_DIRTY_TEMP(N, a_plus_minus_b_minus);
@@ -650,7 +650,7 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
       const FP_Interval_Type& left_w_coeff =
                               left.coefficient(Variable(left_w_id));
       const FP_Interval_Type& right_w_coeff =
-	                      right.coefficient(Variable(right_w_id));
+                              right.coefficient(Variable(right_w_id));
       bool is_left_coeff_one = (left_w_coeff == 1);
       bool is_left_coeff_minus_one = (left_w_coeff == -1);
       bool is_right_coeff_one = (right_w_coeff == 1);

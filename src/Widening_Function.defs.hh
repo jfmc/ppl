@@ -75,7 +75,7 @@ public:
     The constraint system limiting the widening.
   */
   Limited_Widening_Function(Limited_Widening_Method lwm,
-			    const CSYS& cs);
+                            const CSYS& cs);
 
   //! Function-application operator.
   /*!
@@ -118,7 +118,7 @@ widen_fun_ref(void (PSET::* wm)(const PSET&, unsigned*));
 template <typename PSET, typename CSYS>
 Limited_Widening_Function<PSET, CSYS>
 widen_fun_ref(void (PSET::* lwm)(const PSET&, const CSYS&, unsigned*),
-	      const CSYS& cs);
+              const CSYS& cs);
 
 } // namespace Parma_Polyhedra_Library
 

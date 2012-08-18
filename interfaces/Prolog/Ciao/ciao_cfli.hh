@@ -121,7 +121,7 @@ Prolog_atom_from_string(const char* s) {
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1) {
+                          Prolog_term_ref a1) {
   Prolog_term_ref args[1];
   args[0] = a1;
   t = ciao_structure_a(f, 1, args);
@@ -134,7 +134,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2) {
+                          Prolog_term_ref a1, Prolog_term_ref a2) {
   Prolog_term_ref args[2];
   args[0] = a1;
   args[1] = a2;
@@ -148,8 +148,8 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3) {
   Prolog_term_ref args[3];
   args[0] = a1;
   args[1] = a2;
@@ -164,8 +164,8 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
-			  Prolog_term_ref a1, Prolog_term_ref a2,
-			  Prolog_term_ref a3, Prolog_term_ref a4) {
+                          Prolog_term_ref a1, Prolog_term_ref a2,
+                          Prolog_term_ref a3, Prolog_term_ref a4) {
   Prolog_term_ref args[4];
   args[0] = a1;
   args[1] = a2;
@@ -180,7 +180,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 */
 inline int
 Prolog_construct_cons(Prolog_term_ref& c,
-		      Prolog_term_ref h, Prolog_term_ref t) {
+                      Prolog_term_ref h, Prolog_term_ref t) {
   c = ciao_list(h, t);
   return 1;
 }

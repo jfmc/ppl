@@ -38,7 +38,7 @@ count_points(const C_Polyhedron& ph) {
   int count = 0;
   const Generator_System& gs = ph.minimized_generators();
   for (Generator_System::const_iterator i = gs.begin(),
-	 gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i)
     if (i->type() == Generator::POINT)
       ++count;
   return count;
@@ -95,8 +95,8 @@ namespace test02_namespace {
 
 void
 point_on_the_unit_n_sphere(unsigned n,
-			   const std::vector<float>& theta,
-			   std::vector<float>& coordinate) {
+                           const std::vector<float>& theta,
+                           std::vector<float>& coordinate) {
   assert(n >= 2);
 
   if (n == 2) {
@@ -114,9 +114,9 @@ point_on_the_unit_n_sphere(unsigned n,
 
 void
 random_polytope(C_Polyhedron& ph,
-		unsigned dimension,
-		unsigned num_points,
-		float radius = 1.0) {
+                unsigned dimension,
+                unsigned num_points,
+                float radius = 1.0) {
   assert(dimension >= 2);
 
   // This setting and resetting of the rounding mode was prompted by
@@ -172,23 +172,23 @@ test02() {
     const Constraint_System& cs = ph.minimized_constraints();
     unsigned num_constraints = 0;
     for (Constraint_System::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i)
+           cs_end = cs.end(); i != cs_end; ++i)
       ++num_constraints;
     // Count the number of generators.
     const Generator_System& gs = ph.minimized_generators();
     unsigned num_points = 0;
     for (Generator_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i)
+           gs_end = gs.end(); i != gs_end; ++i)
       if (i->type() == Generator::POINT)
-	++num_points;
+        ++num_points;
       else {
-	using namespace Parma_Polyhedra_Library::IO_Operators;
-	nout << "i->type() == " << i->type() << endl;
-	return false;
+        using namespace Parma_Polyhedra_Library::IO_Operators;
+        nout << "i->type() == " << i->type() << endl;
+        return false;
       }
     nout << "dimension = " << dimension
-	 << ", points = " << num_points << " (" << dimension*dimension << ")"
-	 << ", constraints = " << num_constraints << endl;
+         << ", points = " << num_points << " (" << dimension*dimension << ")"
+         << ", constraints = " << num_constraints << endl;
   }
   return true;
 }

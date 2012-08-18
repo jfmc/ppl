@@ -31,7 +31,7 @@ test01() {
   Grid gr(7, EMPTY);
 
   bool ok = (gr.bounds_from_above(Linear_Expression(0))
-	     && gr.bounds_from_below(Linear_Expression(0)));
+             && gr.bounds_from_below(Linear_Expression(0)));
 
   print_congruences(gr, "*** gr ***");
 
@@ -44,7 +44,7 @@ test02() {
   Grid gr(0, EMPTY);
 
   bool ok = (gr.bounds_from_above(Linear_Expression(3))
-	     && gr.bounds_from_below(Linear_Expression(3)));
+             && gr.bounds_from_below(Linear_Expression(3)));
 
   print_congruences(gr, "*** gr ***");
 
@@ -57,7 +57,7 @@ test03() {
   Grid gr(0);
 
   bool ok = (gr.bounds_from_above(Linear_Expression(1))
-	     && gr.bounds_from_below(Linear_Expression(1)));
+             && gr.bounds_from_below(Linear_Expression(1)));
 
   print_congruences(gr, "*** gr ***");
 

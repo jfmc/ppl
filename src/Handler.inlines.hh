@@ -36,7 +36,7 @@ Handler::~Handler() {
 
 template <typename Flag_Base, typename Flag>
 Handler_Flag<Flag_Base, Flag>::Handler_Flag(const Flag_Base* volatile& holder,
-					    Flag& flag)
+                                            Flag& flag)
   : h(holder), f(flag) {
 }
 

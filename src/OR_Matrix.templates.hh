@@ -68,7 +68,7 @@ OR_Matrix<T>::ascii_dump(std::ostream& s) const {
   dimension_type space = x.space_dimension();
   s << space << separator << "\n";
   for (const_row_iterator i = x.row_begin(),
-	 x_row_end = x.row_end(); i != x_row_end; ++i) {
+         x_row_end = x.row_end(); i != x_row_end; ++i) {
     const_row_reference_type r = *i;
     dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
@@ -89,13 +89,13 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
     return false;
   resize_no_copy(space);
   for (row_iterator i = row_begin(),
-	 this_row_end = row_end(); i != this_row_end; ++i) {
+         this_row_end = row_end(); i != this_row_end; ++i) {
     row_reference_type r_i = *i;
     const dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
       Result r = input(r_i[j], s, ROUND_CHECK);
       if (result_relation(r) != VR_EQ || is_minus_infinity(r_i[j]))
-	return false;
+        return false;
     }
   }
   PPL_ASSERT(OK());
@@ -109,7 +109,7 @@ template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {
   for (typename OR_Matrix<T>::const_row_iterator m_iter = m.row_begin(),
-	 m_end = m.row_end(); m_iter != m_end; ++m_iter) {
+         m_end = m.row_end(); m_iter != m_end; ++m_iter) {
     typename OR_Matrix<T>::const_row_reference_type r_m = *m_iter;
     const dimension_type mr_size = m_iter.row_size();
     for (dimension_type j = 0; j < mr_size; ++j)

@@ -38,22 +38,22 @@ public class Poly_Gen_Relation {
 
     //! Constructs from a integer value.
     public Poly_Gen_Relation(int val) {
-	mask_value = val;
+        mask_value = val;
     }
 
     //! The assertion that says nothing.
     public static Poly_Gen_Relation nothing() {
-	return new Poly_Gen_Relation(Poly_Gen_Relation.NOTHING);
+        return new Poly_Gen_Relation(Poly_Gen_Relation.NOTHING);
     }
 
     //! Adding the generator would not change the polyhedron.
     public static Poly_Gen_Relation subsumes() {
-	return new  Poly_Gen_Relation(Poly_Gen_Relation.SUBSUMES);
+        return new  Poly_Gen_Relation(Poly_Gen_Relation.SUBSUMES);
     }
 
     //! True if and only if \p this implies \p y.
     public boolean implies(Poly_Gen_Relation y) {
-	return (this.mask_value & y.mask_value) ==  y.mask_value;
+        return (this.mask_value & y.mask_value) ==  y.mask_value;
     }
 
     private static native void initIDs();

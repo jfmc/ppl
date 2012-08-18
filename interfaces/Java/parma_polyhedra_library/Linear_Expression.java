@@ -34,22 +34,22 @@ public abstract class Linear_Expression implements Cloneable {
 
     //! Returns the sum of \p this and \p y.
     public Linear_Expression sum(Linear_Expression y) {
-	return new Linear_Expression_Sum(this, y);
+        return new Linear_Expression_Sum(this, y);
     }
 
     //! Returns the difference of \p this and \p y.
     public Linear_Expression subtract(Linear_Expression y) {
-	return new Linear_Expression_Difference(this, y);
+        return new Linear_Expression_Difference(this, y);
     }
 
     //! Returns the product of \p this times \p c.
     public Linear_Expression times(Coefficient c) {
-	return new Linear_Expression_Times(this, c);
+        return new Linear_Expression_Times(this, c);
     }
 
     //! Returns the negation of \p this.
     public Linear_Expression unary_minus() {
-	return new Linear_Expression_Unary_Minus(this);
+        return new Linear_Expression_Unary_Minus(this);
     }
 
     //! Returns a copy of the linear expression.

@@ -77,7 +77,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
     if (generators_are_up_to_date()) {
       // `sat_c' must be up to date for add_space_dimensions().
       if (!sat_c_is_up_to_date())
-	update_sat_c();
+        update_sat_c();
       // Adds rows and/or columns to both matrices.
       // `add_space_dimensions' correctly handles pending constraints
       // or generators.
@@ -150,7 +150,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     if (generators_are_up_to_date()) {
       // `sat_g' must be up to date for add_space_dimensions().
       if (!sat_g_is_up_to_date())
-	update_sat_g();
+        update_sat_g();
       // Adds rows and/or columns to both matrices.
       // `add_space_dimensions()' correctly handles pending constraints
       // or generators.
@@ -340,7 +340,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dimension);
+                                 new_dimension);
 
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
@@ -409,7 +409,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   const Constraint_System& cs = constraints();
   Constraint_System new_constraints(cs.topology());
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
+         cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
 
     Coefficient_traits::const_reference coeff = c.coefficient(var);
@@ -435,7 +435,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
 void
 PPL::Polyhedron::fold_space_dimensions(const Variables_Set& vars,
-				       Variable dest) {
+                                       Variable dest) {
   // TODO: this implementation is _really_ an executable specification.
 
   // `dest' should be one of the dimensions of the polyhedron.
@@ -449,13 +449,13 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& vars,
   // All variables in `vars' should be dimensions of the polyhedron.
   if (vars.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
-				 "vs.space_dimension()",
-				 vars.space_dimension());
+                                 "vs.space_dimension()",
+                                 vars.space_dimension());
 
   // Moreover, `dest.id()' should not occur in `vars'.
   if (vars.find(dest.id()) != vars.end())
     throw_invalid_argument("fold_space_dimensions(vs, v)",
-			   "v should not occur in vs");
+                           "v should not occur in vs");
 
   // All of the affine images we are going to compute are not invertible,
   // hence we will need to compute the generators of the polyhedron.

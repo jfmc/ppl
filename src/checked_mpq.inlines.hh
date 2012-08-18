@@ -44,9 +44,9 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
       return V_LGE;
     if (Policy::has_infinity) {
       if (s < 0)
-	return inf ? V_EQ_MINUS_INFINITY : V_LT;
+        return inf ? V_EQ_MINUS_INFINITY : V_LT;
       if (s > 0)
-	return inf ? V_EQ_PLUS_INFINITY : V_GT;
+        return inf ? V_EQ_PLUS_INFINITY : V_GT;
     }
   }
   if (sign)
@@ -235,7 +235,7 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 floor_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
   mpz_fdiv_q(to.get_num().get_mpz_t(),
-	     from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
+             from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
   to.get_den() = 1;
   return V_EQ;
 }
@@ -246,7 +246,7 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 ceil_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
   mpz_cdiv_q(to.get_num().get_mpz_t(),
-	     from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
+             from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
   to.get_den() = 1;
   return V_EQ;
 }
@@ -257,7 +257,7 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 trunc_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
   mpz_tdiv_q(to.get_num().get_mpz_t(),
-	     from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
+             from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
   to.get_den() = 1;
   return V_EQ;
 }
@@ -392,7 +392,7 @@ PPL_SPECIALIZE_DIV_2EXP(div_2exp_mpq, mpq_class, mpq_class)
 template <typename To_Policy, typename From_Policy>
 inline Result
 smod_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
-	      Rounding_Dir) {
+              Rounding_Dir) {
   mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
   mpz_fdiv_r(to.get_num().get_mpz_t(), x.get_num().get_mpz_t(), to.get_den().get_mpz_t());
   mpz_fdiv_q_2exp(to.get_den().get_mpz_t(), to.get_den().get_mpz_t(), 1);
@@ -410,7 +410,7 @@ PPL_SPECIALIZE_SMOD_2EXP(smod_2exp_mpq, mpq_class, mpq_class)
 template <typename To_Policy, typename From_Policy>
 inline Result
 umod_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
-	      Rounding_Dir) {
+              Rounding_Dir) {
   mpz_mul_2exp(to.get_den().get_mpz_t(), x.get_den().get_mpz_t(), exp);
   mpz_fdiv_r(to.get_num().get_mpz_t(), x.get_num().get_mpz_t(), to.get_den().get_mpz_t());
   mpz_mul_2exp(to.get_num().get_mpz_t(), to.get_num().get_mpz_t(), exp);
@@ -432,7 +432,7 @@ PPL_SPECIALIZE_ABS(abs_mpq, mpq_class, mpq_class)
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
-	    Rounding_Dir) {
+            Rounding_Dir) {
   to += x * y;
   return V_EQ;
 }
@@ -442,7 +442,7 @@ PPL_SPECIALIZE_ADD_MUL(add_mul_mpq, mpq_class, mpq_class, mpq_class)
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
 sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
-	    Rounding_Dir) {
+            Rounding_Dir) {
   to -= x * y;
   return V_EQ;
 }
@@ -502,9 +502,9 @@ PPL_SPECIALIZE_INPUT(input_mpq, mpq_class)
 template <typename Policy>
 inline Result
 output_mpq(std::ostream& os,
-	   const mpq_class& from,
-	   const Numeric_Format&,
-	   Rounding_Dir) {
+           const mpq_class& from,
+           const Numeric_Format&,
+           Rounding_Dir) {
   os << from;
   return V_EQ;
 }
@@ -534,7 +534,7 @@ set_irrational_precision(const unsigned p) {
     Checked::irrational_precision = p;
   else
     throw std::invalid_argument("PPL::set_irrational_precision(p)"
-				" with p > INT_MAX");
+                                " with p > INT_MAX");
 }
 
 } // namespace Parma_Polyhedra_Library

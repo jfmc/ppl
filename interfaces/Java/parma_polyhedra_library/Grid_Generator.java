@@ -47,10 +47,10 @@ public class Grid_Generator {
     private Coefficient div;
 
     private Grid_Generator(Linear_Expression e, Coefficient d,
-			   Grid_Generator_Type generator_type) {
-	le = e.clone();
-	div = new Coefficient(d);
-	gt = generator_type;
+                           Grid_Generator_Type generator_type) {
+        le = e.clone();
+        div = new Coefficient(d);
+        gt = generator_type;
     }
 
     //! Returns the line of direction \p e.
@@ -60,8 +60,8 @@ public class Grid_Generator {
       the vector space.
     */
     public static Grid_Generator grid_line(Linear_Expression e) {
-	return new Grid_Generator(e, new Coefficient(0),
-				  Grid_Generator_Type.LINE);
+        return new Grid_Generator(e, new Coefficient(0),
+                                  Grid_Generator_Type.LINE);
     }
 
     //! Returns the parameter at \p e / \p d.
@@ -70,8 +70,8 @@ public class Grid_Generator {
       Thrown if \p d is zero.
     */
     public static Grid_Generator parameter(Linear_Expression e,
-					   Coefficient d) {
-	return new Grid_Generator(e, d, Grid_Generator_Type.PARAMETER);
+                                           Coefficient d) {
+        return new Grid_Generator(e, d, Grid_Generator_Type.PARAMETER);
     }
 
     //! Returns the point at \p e / \p d.
@@ -80,8 +80,8 @@ public class Grid_Generator {
       Thrown if \p d is zero.
     */
     public static Grid_Generator grid_point(Linear_Expression e,
-					    Coefficient d) {
-	return new Grid_Generator(e, d, Grid_Generator_Type.POINT);
+                                            Coefficient d) {
+        return new Grid_Generator(e, d, Grid_Generator_Type.POINT);
     }
 
     //! Returns the generator type.
@@ -101,12 +101,12 @@ public class Grid_Generator {
     */
     public Coefficient divisor() {
         if (this.gt != Grid_Generator_Type.LINE)
-	    return div;
-	Error cause = new Error("parma_polyhedra_library."
+            return div;
+        Error cause = new Error("parma_polyhedra_library."
                                 + "Grid_Generator::divisor:\n"
-				+ "this is neither a grid point"
-				+ " nor a parameter.");
-	throw new RuntimeErrorException(cause);
+                                + "this is neither a grid point"
+                                + " nor a parameter.");
+        throw new RuntimeErrorException(cause);
     }
 
     //! Returns an ascii formatted internal representation of \p this.

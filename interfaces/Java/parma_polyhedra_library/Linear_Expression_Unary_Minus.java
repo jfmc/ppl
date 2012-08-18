@@ -33,12 +33,12 @@ public class Linear_Expression_Unary_Minus
 
     //! Builds an object that represents the negation of the copy \p x.
     public Linear_Expression_Unary_Minus(Linear_Expression x) {
-	arg = x.clone();
+        arg = x.clone();
     }
 
     //! Returns the value that \p this negates.
     public Linear_Expression argument() {
-	return arg;
+        return arg;
     }
 
     //! Builds a copy of this.

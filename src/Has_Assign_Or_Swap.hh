@@ -44,8 +44,8 @@ struct Has_Assign_Or_Swap : public False {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Has_Assign_Or_Swap<T,
-			  typename Enable_If_Is<void (T::*)(T& x),
-						&T::assign_or_swap>::type>
+                          typename Enable_If_Is<void (T::*)(T& x),
+                                                &T::assign_or_swap>::type>
   : public True {
 };
 

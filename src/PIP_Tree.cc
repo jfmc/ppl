@@ -1139,7 +1139,7 @@ PIP_Tree_Node::OK() const {
       cerr << "The feasible region of the PIP_Problem parameter context"
            << "is defined by a constraint system containing strict "
            << "inequalities."
-	   << endl;
+           << endl;
       ascii_dump(cerr);
 #endif
       return false;

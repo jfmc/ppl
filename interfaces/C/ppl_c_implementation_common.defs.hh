@@ -133,7 +133,7 @@ void reset_deterministic_timeout();
 
 
 #define CATCH_STD_EXCEPTION(exception, code) \
-catch (const std::exception& e) {	     \
+catch (const std::exception& e) {            \
   notify_error(code, e.what()); \
   return code; \
 }
@@ -159,7 +159,7 @@ catch (deterministic_timeout_exception&) { \
 } \
 catch (...) { \
   notify_error(PPL_ERROR_UNEXPECTED_ERROR, \
-	       "completely unexpected error: a bug in the PPL"); \
+               "completely unexpected error: a bug in the PPL"); \
   return PPL_ERROR_UNEXPECTED_ERROR; \
 }
 

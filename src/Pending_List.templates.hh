@@ -35,8 +35,8 @@ namespace Watchdog {
 template <typename Traits>
 typename Pending_List<Traits>::Iterator
 Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
-			     const Handler& handler,
-			     bool& expired_flag) {
+                             const Handler& handler,
+                             bool& expired_flag) {
   Iterator position = active_list.begin();
   for (Iterator active_list_end = active_list.end();
        position != active_list_end
@@ -78,7 +78,7 @@ Pending_List<Traits>::OK() const {
     if (Traits::less_than(t, *old)) {
 #ifndef NDEBUG
       std::cerr << "The active list is not sorted!"
-		<< std::endl;
+                << std::endl;
 #endif
       return false;
     }

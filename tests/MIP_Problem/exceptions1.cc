@@ -227,7 +227,7 @@ test10() {
   try {
     // This tries to overflow the maximum space dimension.
     MIP_Problem mip(MIP_Problem::max_space_dimension() + 1,
-		    cs, cost, MAXIMIZATION);
+                    cs, cost, MAXIMIZATION);
   }
   catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
@@ -394,8 +394,8 @@ test16() {
   try {
     // This tries to overflow the maximum space dimension.
     MIP_Problem mip(MIP_Problem::max_space_dimension() + 1,
-		    cs.begin(), cs.end(),
-		    A + B, MAXIMIZATION);
+                    cs.begin(), cs.end(),
+                    A + B, MAXIMIZATION);
   }
   catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
@@ -421,8 +421,8 @@ test17() {
   try {
     // This tries to let exceed the objective function space dimension.
     MIP_Problem mip(cs.space_dimension(),
-		    cs.begin(), cs.end(),
-		    A + B + C, MAXIMIZATION);
+                    cs.begin(), cs.end(),
+                    A + B + C, MAXIMIZATION);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -447,7 +447,7 @@ test18() {
   try {
     // This tries to build an MIP_Problem with strict inequalities..
     MIP_Problem mip(cs.space_dimension(), cs.begin(), cs.end(),
-		    A + B, MAXIMIZATION);
+                    A + B, MAXIMIZATION);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -472,7 +472,7 @@ test19() {
   try {
     // This tries to build an MIP_Problem with a wrong space dimension.
     MIP_Problem mip(cs.space_dimension() - 1, cs.begin(), cs.end(),
-		    A + B, MAXIMIZATION);
+                    A + B, MAXIMIZATION);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

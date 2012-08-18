@@ -42,17 +42,17 @@ public class Linear_Expression_Sum
 
     //! Returns the left hand side of \p this.
     public Linear_Expression left_hand_side() {
-	return lhs;
+        return lhs;
     }
 
     //! Returns the right hand side of \p this.
     public Linear_Expression right_hand_side() {
-	return rhs;
+        return rhs;
     }
 
     //! Builds a copy of this.
     public Linear_Expression_Sum clone() {
-	return new Linear_Expression_Sum(lhs, rhs);
+        return new Linear_Expression_Sum(lhs, rhs);
     }
 
     private static native void initIDs();

@@ -47,7 +47,7 @@ BD_Shape<T>::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return std::min(DB_Matrix<N>::max_num_rows() - 1,
-		  DB_Matrix<N>::max_num_columns() - 1);
+                  DB_Matrix<N>::max_num_columns() - 1);
 }
 
 template <typename T>
@@ -113,7 +113,7 @@ BD_Shape<T>::reset_shortest_path_reduced() {
 template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
-		      const Degenerate_Element kind)
+                      const Degenerate_Element kind)
   : dbm(num_dimensions + 1), status(), redundancy_dbm() {
   if (kind == EMPTY)
     set_empty();
@@ -159,7 +159,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i)
     add_constraint(*i);
 }
 
@@ -173,7 +173,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_congruences(const Congruence_System& cgs) {
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i)
     add_congruence(*i);
 }
 
@@ -204,7 +204,7 @@ BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
                            "cs and *this are space-dimension incompatible");
 
   for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
     refine_no_check(*i);
 }
 
@@ -229,7 +229,7 @@ BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
                            "cgs and *this are space-dimension incompatible");
 
   for (Congruence_System::const_iterator i = cgs.begin(),
-	 cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+         cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
     refine_no_check(*i);
 }
 
@@ -373,32 +373,32 @@ BD_Shape<T>::bounds_from_below(const Linear_Expression& expr) const {
 template <typename T>
 inline bool
 BD_Shape<T>::maximize(const Linear_Expression& expr,
-		      Coefficient& sup_n, Coefficient& sup_d,
-		      bool& maximum) const {
+                      Coefficient& sup_n, Coefficient& sup_d,
+                      bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
 template <typename T>
 inline bool
 BD_Shape<T>::maximize(const Linear_Expression& expr,
-		      Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		      Generator& g) const {
+                      Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+                      Generator& g) const {
   return max_min(expr, true, sup_n, sup_d, maximum, g);
 }
 
 template <typename T>
 inline bool
 BD_Shape<T>::minimize(const Linear_Expression& expr,
-		      Coefficient& inf_n, Coefficient& inf_d,
-		      bool& minimum) const {
+                      Coefficient& inf_n, Coefficient& inf_d,
+                      bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
 template <typename T>
 inline bool
 BD_Shape<T>::minimize(const Linear_Expression& expr,
-		      Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		      Generator& g) const {
+                      Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+                      Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
@@ -462,12 +462,12 @@ operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y) {
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const BD_Shape<T>& x,
-			    const BD_Shape<T>& y,
-			    const Rounding_Dir dir,
-			    Temp& tmp0,
-			    Temp& tmp1,
-			    Temp& tmp2) {
+                            const BD_Shape<T>& x,
+                            const BD_Shape<T>& y,
+                            const Rounding_Dir dir,
+                            Temp& tmp0,
+                            Temp& tmp1,
+                            Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dimension())
@@ -503,9 +503,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const BD_Shape<T>& x,
-			    const BD_Shape<T>& y,
-			    const Rounding_Dir dir) {
+                            const BD_Shape<T>& x,
+                            const BD_Shape<T>& y,
+                            const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -517,9 +517,9 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			    const BD_Shape<T>& x,
-			    const BD_Shape<T>& y,
-			    const Rounding_Dir dir) {
+                            const BD_Shape<T>& x,
+                            const BD_Shape<T>& y,
+                            const Rounding_Dir dir) {
   return rectilinear_distance_assign<To, To, T>(r, x, y, dir);
 }
 
@@ -527,12 +527,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const BD_Shape<T>& x,
-			  const BD_Shape<T>& y,
-			  const Rounding_Dir dir,
-			  Temp& tmp0,
-			  Temp& tmp1,
-			  Temp& tmp2) {
+                          const BD_Shape<T>& x,
+                          const BD_Shape<T>& y,
+                          const Rounding_Dir dir,
+                          Temp& tmp0,
+                          Temp& tmp1,
+                          Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dimension())
@@ -568,9 +568,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const BD_Shape<T>& x,
-			  const BD_Shape<T>& y,
-			  const Rounding_Dir dir) {
+                          const BD_Shape<T>& x,
+                          const BD_Shape<T>& y,
+                          const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -582,9 +582,9 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			  const BD_Shape<T>& x,
-			  const BD_Shape<T>& y,
-			  const Rounding_Dir dir) {
+                          const BD_Shape<T>& x,
+                          const BD_Shape<T>& y,
+                          const Rounding_Dir dir) {
   return euclidean_distance_assign<To, To, T>(r, x, y, dir);
 }
 
@@ -592,12 +592,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const BD_Shape<T>& x,
-			   const BD_Shape<T>& y,
-			   const Rounding_Dir dir,
-			   Temp& tmp0,
-			   Temp& tmp1,
-			   Temp& tmp2) {
+                           const BD_Shape<T>& x,
+                           const BD_Shape<T>& y,
+                           const Rounding_Dir dir,
+                           Temp& tmp0,
+                           Temp& tmp1,
+                           Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dimension())
@@ -633,9 +633,9 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const BD_Shape<T>& x,
-			   const BD_Shape<T>& y,
-			   const Rounding_Dir dir) {
+                           const BD_Shape<T>& x,
+                           const BD_Shape<T>& y,
+                           const Rounding_Dir dir) {
   typedef Checked_Number<Temp, Extended_Number_Policy> Checked_Temp;
   PPL_DIRTY_TEMP(Checked_Temp, tmp0);
   PPL_DIRTY_TEMP(Checked_Temp, tmp1);
@@ -647,17 +647,17 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 template <typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
-			   const BD_Shape<T>& x,
-			   const BD_Shape<T>& y,
-			   const Rounding_Dir dir) {
+                           const BD_Shape<T>& x,
+                           const BD_Shape<T>& y,
+                           const Rounding_Dir dir) {
   return l_infinity_distance_assign<To, To, T>(r, x, y, dir);
 }
 
 template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
-				const dimension_type j,
-				const N& k) {
+                                const dimension_type j,
+                                const N& k) {
   // Private method: the caller has to ensure the following.
   PPL_ASSERT(i <= space_dimension() && j <= space_dimension() && i != j);
   N& dbm_ij = dbm[i][j];
@@ -671,9 +671,9 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 template <typename T>
 inline void
 BD_Shape<T>::add_dbm_constraint(const dimension_type i,
-				const dimension_type j,
-				Coefficient_traits::const_reference numer,
-				Coefficient_traits::const_reference denom) {
+                                const dimension_type j,
+                                Coefficient_traits::const_reference numer,
+                                Coefficient_traits::const_reference denom) {
   // Private method: the caller has to ensure the following.
   PPL_ASSERT(i <= space_dimension() && j <= space_dimension() && i != j);
   PPL_ASSERT(denom != 0);
@@ -739,7 +739,7 @@ BD_Shape<T>
   const dimension_type space_dim = space_dimension();
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dimension);
+                                 new_dimension);
 
   // The removal of no dimensions from any BDS is a no-op.
   // Note that this case also captures the only legal removal of
@@ -791,10 +791,10 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp) {
     N( 2, ROUND_UP)
   };
   CC76_extrapolation_assign(y,
-			    stop_points,
-			    stop_points
-			    + sizeof(stop_points)/sizeof(stop_points[0]),
-			    tp);
+                            stop_points,
+                            stop_points
+                            + sizeof(stop_points)/sizeof(stop_points[0]),
+                            tp);
 }
 
 template <typename T>
@@ -819,8 +819,8 @@ BD_Shape<T>::widening_assign(const BD_Shape& y, unsigned* tp) {
 template <typename T>
 inline void
 BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
-					      const Constraint_System& cs,
-					      unsigned* tp) {
+                                              const Constraint_System& cs,
+                                              unsigned* tp) {
   // Compute the limited H79 extrapolation on polyhedra.
   // TODO: provide a direct implementation.
   C_Polyhedron ph_x(constraints());
@@ -847,8 +847,8 @@ template <typename T>
 template <typename Interval_Info>
 inline void
 BD_Shape<T>::generalized_refine_with_linear_form_inequality(
-	     const Linear_Form<Interval<T, Interval_Info> >& left,
-	     const Linear_Form<Interval<T, Interval_Info> >& right,
+             const Linear_Form<Interval<T, Interval_Info> >& left,
+             const Linear_Form<Interval<T, Interval_Info> >& right,
              const Relation_Symbol relsym) {
   switch (relsym) {
   case EQUAL:

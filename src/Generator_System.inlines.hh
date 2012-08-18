@@ -57,7 +57,7 @@ Generator_System::Generator_System(const Topology topol, Representation r)
 
 inline
 Generator_System::Generator_System(const Topology topol,
-				   const dimension_type space_dim,
+                                   const dimension_type space_dim,
                                    Representation r)
   : sys(topol, space_dim, r) {
 }

@@ -246,7 +246,7 @@ test06() {
   sp2.refine_with_congruence((B %= 1) / 3);
 
   bool smash_ok = (!sp1.upper_bound_assign_if_exact(sp2)
-		   && !sp2.upper_bound_assign_if_exact(sp1));
+                   && !sp2.upper_bound_assign_if_exact(sp1));
 
   if (!smash_ok) {
     print_congruences(sp1, "*** sp1 congruences ub exact ***");
@@ -661,7 +661,7 @@ test16() {
   cp2.refine_with_congruence((B %= 1) / 3);
 
   bool cons_ok = (!cp1.upper_bound_assign_if_exact(cp2)
-		   && !cp2.upper_bound_assign_if_exact(cp1));
+                   && !cp2.upper_bound_assign_if_exact(cp1));
 
   if (!cons_ok) {
     print_congruences(cp1, "*** cp1 congruences ub exact ***");

@@ -538,7 +538,7 @@ public:
   */
   template <typename In>
   PIP_Problem(dimension_type dim, In first, In last,
-	      const Variables_Set& p_vars);
+              const Variables_Set& p_vars);
 
   //! Ordinary copy-constructor.
   PIP_Problem(const PIP_Problem& y);

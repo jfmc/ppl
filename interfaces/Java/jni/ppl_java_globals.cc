@@ -388,7 +388,7 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Coefficient_initIDs
   cached_FMIDs.Linear_Expression_Coefficient_coeff_ID = fID;
   jmethodID mID;
   mID = env->GetMethodID(j_le_coeff_class, "<init>",
-			 "(Lparma_polyhedra_library/Coefficient;)V");
+                         "(Lparma_polyhedra_library/Coefficient;)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Linear_Expression_Coefficient_init_ID = mID;
 }
@@ -456,7 +456,7 @@ Java_parma_1polyhedra_1library_Linear_1Expression_1Variable_initIDs
 (JNIEnv* env, jclass j_le_var_class) {
   jmethodID mID;
   mID = env->GetMethodID(j_le_var_class, "<init>",
-			 "(Lparma_polyhedra_library/Variable;)V");
+                         "(Lparma_polyhedra_library/Variable;)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Linear_Expression_Variable_init_ID = mID;
   mID = env->GetMethodID(j_le_var_class, "var_id", "()J");
@@ -970,7 +970,7 @@ Java_parma_1polyhedra_1library_MIP_1Problem_constraints
     MIP_Problem* mip
       = reinterpret_cast<MIP_Problem*>(get_ptr(env, j_this_mip_problem));
     for (MIP_Problem::const_iterator cs_it = mip->constraints_begin(),
-	   cs_end = mip->constraints_end(); cs_it != cs_end; ++cs_it) {
+           cs_end = mip->constraints_end(); cs_it != cs_end; ++cs_it) {
       jobject j_constraint = build_java_constraint(env, *cs_it);
       env->CallBooleanMethod(j_cs,
                              cached_FMIDs.Constraint_System_add_ID,

@@ -1491,9 +1491,9 @@ We can define a <EM>floating-point interval linear form</EM>
 \f$\langle\vect{\alpha}, \vect{x}\rangle
  + \beta\f$ 
 as:
-	\f[\left<\vect{\alpha}, \vect{x}\right> + \beta = 
-	\alpha_0x_0 + \ldots + 
-	\alpha_{n-1}x_{n-1} + \beta,\f]
+        \f[\left<\vect{\alpha}, \vect{x}\right> + \beta = 
+        \alpha_0x_0 + \ldots + 
+        \alpha_{n-1}x_{n-1} + \beta,\f]
 
 where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$ 
 for each \f$k = 0, \ldots, n - 1\f$. 
@@ -4401,7 +4401,7 @@ If \f$A\f$ is a rational \f$m \times n\f$ matrix,
                                   + \vect{z}^\transpose B, \\
           \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \nonnegRset^{m},
           \sum_{k=0}^{m-1} y_k = 1, \\
-	  \vect{z} \in \nonnegRset^{m'}
+          \vect{z} \in \nonnegRset^{m'}
         },
 \f]
 then \f$\cQ\f$ is a rational polyhedron.
@@ -4464,7 +4464,7 @@ where \f$\xi \geq 0\f$. That is,
            (\xi \vect{x}^\transpose, \xi)^\transpose
       \mid
            \xi A\vect{x} - \xi \vect{b}
-	   \geq \vect{0}, \xi \geq 0
+           \geq \vect{0}, \xi \geq 0
       \,\}
     = \{\,\vect{x}' \mid A'\vect{x}' \geq \vect{0}\,\}
 \f]

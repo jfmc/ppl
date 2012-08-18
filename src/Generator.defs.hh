@@ -664,8 +664,8 @@ private:
   */
   void
   throw_dimension_incompatible(const char* method,
-			       const char* v_name,
-			       Variable v) const;
+                               const char* v_name,
+                               Variable v) const;
 
   /*! \brief
     Throw a <CODE>std::invalid_argument</CODE> exception
@@ -741,7 +741,7 @@ private:
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Generator& g);
+                                                    const Generator& g);
 
   friend int
   compare(const Generator& x, const Generator& y);

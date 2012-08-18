@@ -55,15 +55,15 @@ public:
 
   //! Computes the scalar product of \p c and \p g and assigns it to \p z.
   static void assign(Coefficient& z,
-		     const Constraint& c, const Grid_Generator& gg);
+                     const Constraint& c, const Grid_Generator& gg);
 
   //! Computes the scalar product of \p g and \p cg and assigns it to \p z.
   static void assign(Coefficient& z,
-		     const Grid_Generator& gg, const Congruence& cg);
+                     const Grid_Generator& gg, const Congruence& cg);
 
   //! Computes the scalar product of \p cg and \p g and assigns it to \p z.
   static void assign(Coefficient& z,
-		     const Congruence& cg, const Grid_Generator& gg);
+                     const Congruence& cg, const Grid_Generator& gg);
 
   //! Returns the sign of the scalar product between \p x and \p y.
   static int sign(const Linear_Expression& x, const Linear_Expression& y);
@@ -83,7 +83,7 @@ public:
     and assigns the result to \p z.
   */
   static void reduced_assign(Coefficient& z,
-			     const Linear_Expression& x,
+                             const Linear_Expression& x,
                              const Linear_Expression& y);
 
   /*! \brief
@@ -92,7 +92,7 @@ public:
     and assigns the result to \p z.
   */
   static void reduced_assign(Coefficient& z,
-			     const Constraint& c, const Generator& g);
+                             const Constraint& c, const Generator& g);
 
   /*! \brief
     Computes the \e reduced scalar product of \p g and \p c,
@@ -100,14 +100,14 @@ public:
     and assigns the result to \p z.
   */
   static void reduced_assign(Coefficient& z,
-			     const Generator& g, const Constraint& c);
+                             const Generator& g, const Constraint& c);
 
   //! \brief
   //! Computes the \e reduced scalar product of \p g and \p cg,
   //! where the \f$\epsilon\f$ coefficient of \p g is ignored,
   //! and assigns the result to \p z.
   static void reduced_assign(Coefficient& z,
-			     const Grid_Generator& gg, const Congruence& cg);
+                             const Grid_Generator& gg, const Congruence& cg);
 
   /*! \brief
     Returns the sign of the \e reduced scalar product of \p x and \p y,
@@ -134,7 +134,7 @@ public:
     and assigns the result to \p z.
   */
   static void homogeneous_assign(Coefficient& z,
-				 const Linear_Expression& x,
+                                 const Linear_Expression& x,
                                  const Linear_Expression& y);
   /*! \brief
     Computes the \e homogeneous scalar product of \p e and \p g,
@@ -142,15 +142,15 @@ public:
     and assigns the result to \p z.
   */
   static void homogeneous_assign(Coefficient& z,
-				 const Linear_Expression& e,
-				 const Generator& g);
+                                 const Linear_Expression& e,
+                                 const Generator& g);
 
   //! \brief
   //! Computes the \e homogeneous scalar product of \p gg and \p c,
   //! where the inhomogeneous terms are ignored,
   //! and assigns the result to \p z.
   static void homogeneous_assign(Coefficient& z,
-				 const Grid_Generator& gg,
+                                 const Grid_Generator& gg,
                                  const Constraint& c);
 
   //! \brief
@@ -158,7 +158,7 @@ public:
   //! where the inhomogeneous terms are ignored,
   //! and assigns the result to \p z.
   static void homogeneous_assign(Coefficient& z,
-				 const Grid_Generator& gg,
+                                 const Grid_Generator& gg,
                                  const Congruence& cg);
 
   //! \brief
@@ -166,8 +166,8 @@ public:
   //! where the inhomogeneous terms are ignored,
   //! and assigns the result to \p z.
   static void homogeneous_assign(Coefficient& z,
-				 const Linear_Expression& e,
-				 const Grid_Generator& g);
+                                 const Linear_Expression& e,
+                                 const Grid_Generator& g);
 
   /*! \brief
     Returns the sign of the \e homogeneous scalar product of \p x and \p y,
@@ -186,7 +186,7 @@ public:
   //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
   //! where the inhomogeneous terms are ignored,
   static int homogeneous_sign(const Linear_Expression& e,
-			      const Grid_Generator& g);
+                              const Grid_Generator& g);
 
   //! \brief
   //! Returns the sign of the \e homogeneous scalar product of \p g and \p c,

@@ -254,7 +254,7 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
 */
 int
 ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
-					 ppl_const_Polyhedron_t ph);
+                                         ppl_const_Polyhedron_t ph);
 
 /*! \relates ppl_Polyhedron_tag \brief
   Builds a C polyhedron that approximates NNC_Polyhedron \p ph,
@@ -277,7 +277,7 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron_with_complexity
 */
 int
 ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
-					 ppl_const_Polyhedron_t ph);
+                                         ppl_const_Polyhedron_t ph);
 
 /*! \relates ppl_Polyhedron_tag \brief
   Builds an NNC polyhedron that approximates C_Polyhedron \p ph,

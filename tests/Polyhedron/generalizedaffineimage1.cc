@@ -48,8 +48,8 @@ test01() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_image(B, GREATER_OR_EQUAL, A+2)"
-		   " ***");
+                   "ph.generalized_affine_image(B, GREATER_OR_EQUAL, A+2)"
+                   " ***");
 
   return ok;
 }
@@ -77,8 +77,8 @@ test02() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_image(B, GREATER_OR_EQUAL,"
-		   " A+2, -2) ***");
+                   "ph.generalized_affine_image(B, GREATER_OR_EQUAL,"
+                   " A+2, -2) ***");
 
   return ok;
 }
@@ -106,8 +106,8 @@ test03() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_image(B, LESS_OR_EQUAL,"
-		   " A-B+2, -3) ***");
+                   "ph.generalized_affine_image(B, LESS_OR_EQUAL,"
+                   " A-B+2, -3) ***");
 
   return ok;
 }
@@ -132,8 +132,8 @@ test04() {
   bool ok = (ph == known_result);
 
   print_generators(ph,
-		   "*** after ph.generalized_affine_image"
-		   "(A, EQUAL, A + 2) ***");
+                   "*** after ph.generalized_affine_image"
+                   "(A, EQUAL, A + 2) ***");
 
   return ok;
 }
@@ -159,8 +159,8 @@ test05() {
   bool ok = (ph == known_result);
 
   print_generators(ph,
-		   "*** after ph.generalized_affine_image"
-		   "(A + B, GREATER_OR_EQUAL, 2*A - B + 2) ***");
+                   "*** after ph.generalized_affine_image"
+                   "(A + B, GREATER_OR_EQUAL, 2*A - B + 2) ***");
 
   return ok;
 }
@@ -181,7 +181,7 @@ test06() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1, "*** after ph1.generalized_affine_image"
-		    "(A, LESS_OR_EQUAL, B + 1) ***");
+                    "(A, LESS_OR_EQUAL, B + 1) ***");
 
   return ok;
 }
@@ -202,7 +202,7 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1, "*** after ph1.generalized_affine_image"
-		    "(A + B, GREATER_OR_EQUAL, A + B + 1) ***");
+                    "(A + B, GREATER_OR_EQUAL, A + B + 1) ***");
 
   return ok;
 }
@@ -224,8 +224,8 @@ test08() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_image(A, GREATER_OR_EQUAL, A+2)"
-		   " ***");
+                   "ph.generalized_affine_image(A, GREATER_OR_EQUAL, A+2)"
+                   " ***");
 
   return ok;
 }
@@ -247,9 +247,9 @@ test09() {
   bool ok = (ph == known_result);
 
   print_generators(ph, "*** ph after "
-		   "ph.generalized_affine_image"
+                   "ph.generalized_affine_image"
                    "(A+1, GREATER_OR_EQUAL, A+2)"
-		   " ***");
+                   " ***");
 
   return ok;
 }

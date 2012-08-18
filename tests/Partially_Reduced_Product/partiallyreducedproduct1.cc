@@ -158,10 +158,10 @@ test04() {
 
   bool ok = (sp.affine_dimension() == 1
              && cp.affine_dimension() == 1
-	     && sp.domain1().affine_dimension() == 2
-	     && sp.domain2().affine_dimension() == 1
-	     && cp.domain1().affine_dimension() == 1
-	     && cp.domain2().affine_dimension() == 1);
+             && sp.domain1().affine_dimension() == 2
+             && sp.domain2().affine_dimension() == 1
+             && cp.domain1().affine_dimension() == 1
+             && cp.domain2().affine_dimension() == 1);
 
   ok = ok && sp.OK() && cp.OK();
 
@@ -556,14 +556,14 @@ test14() {
 
 #if PH_IS_FIRST
   print_constraints(sp.domain1().constraints(),
-		    "*** sp,domain1() constraints ***");
+                    "*** sp,domain1() constraints ***");
   print_congruences(sp.domain2().congruences(),
-		    "*** sp,domain2() congruences ***");
+                    "*** sp,domain2() congruences ***");
 #else
   print_congruences(sp.domain1().congruences(),
-		    "*** sp,domain1() congruences ***");
+                    "*** sp,domain1() congruences ***");
   print_constraints(sp.domain2().constraints(),
-		    "*** sp,domain2() constraints ***");
+                    "*** sp,domain2() constraints ***");
 #endif
 
   if (!ok)
@@ -579,14 +579,14 @@ test14() {
 
 #if PH_IS_FIRST
   print_constraints(cp.domain1().constraints(),
-		    "*** cp,domain1() constraints ***");
+                    "*** cp,domain1() constraints ***");
   print_congruences(cp.domain2().congruences(),
-		    "*** cp,domain2() congruences ***");
+                    "*** cp,domain2() congruences ***");
 #else
   print_congruences(cp.domain1().congruences(),
-		    "*** cp,domain1() congruences ***");
+                    "*** cp,domain1() congruences ***");
   print_constraints(cp.domain2().constraints(),
-		    "*** cp,domain2() constraints ***");
+                    "*** cp,domain2() constraints ***");
 #endif
 
   return ok;
@@ -620,14 +620,14 @@ test15() {
 
 #if PH_IS_FIRST
   print_constraints(sp.domain1().constraints(),
-		    "*** sp.domain1() constraints ***");
+                    "*** sp.domain1() constraints ***");
   print_congruences(sp.domain2().congruences(),
-		    "*** sp.domain2() congruences ***");
+                    "*** sp.domain2() congruences ***");
 #else
   print_congruences(sp.domain1().congruences(),
-		    "*** sp.domain1() congruences ***");
+                    "*** sp.domain1() congruences ***");
   print_constraints(sp.domain2().constraints(),
-		    "*** sp.domain2() constraints ***");
+                    "*** sp.domain2() constraints ***");
 #endif
 
   if (!ok)
@@ -654,14 +654,14 @@ test15() {
 
 #if PH_IS_FIRST
   print_constraints(cp.domain1().constraints(),
-		    "*** cp.domain1() constraints ***");
+                    "*** cp.domain1() constraints ***");
   print_congruences(cp.domain2().congruences(),
-		    "*** cp.domain2() congruences ***");
+                    "*** cp.domain2() congruences ***");
 #else
   print_congruences(cp.domain1().congruences(),
-		    "*** cp.domain1() congruences ***");
+                    "*** cp.domain1() congruences ***");
   print_constraints(cp.domain2().constraints(),
-		    "*** cp.domain2() constraints ***");
+                    "*** cp.domain2() constraints ***");
 #endif
 
   return ok;
