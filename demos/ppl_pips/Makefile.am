@@ -56,7 +56,8 @@ piplib_pips.o: $(srcdir)/ppl_pips.cc $(top_builddir)/utils/libppl_utils.a
 	$(CXXCOMPILE) -c -o $@ -DUSE_PIPLIB $(srcdir)/ppl_pips.cc
 
 piplib_pips: piplib_pips.o
-	$(CXXLINK) $< -lpip -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
+	$(CXXLINK) piplib_pips.o\
+	    -lpip -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
 
 EXTRA_DIST = \
 expected_mpz \

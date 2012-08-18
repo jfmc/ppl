@@ -72,7 +72,7 @@ ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la libppl_sicstus.la
 
 install-data-local: ppl_sicstus.so
 	$(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) \
-		$< $(DESTDIR)$(pkglibdir)/$<
+	    ppl_sicstus.so $(DESTDIR)$(pkglibdir)/ppl_sicstus.so
 
 else !ENABLE_SHARED
 

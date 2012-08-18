@@ -88,7 +88,7 @@ ppl_c.h: ppl_c_header.h ppl_c_version.h ppl_c_domains.h Makefile $(top_builddir)
 else !HAVE_PERL
 
 ppl_c.h:	ppl_c.h.dist
-	cp -f $< $@
+	cp -f ppl_c.h.dist $@
 
 endif !HAVE_PERL
 
