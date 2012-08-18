@@ -282,6 +282,7 @@ public:
       std::istringstream iss(line);
       iss >> bignum_column_coding;
     }
+    PPL_ASSERT(bignum_column_coding >= -1);
 
     PPL::dimension_type num_constraints;
     PPL::dimension_type constraint_width;
@@ -305,9 +306,10 @@ public:
       }
     }
 
-    PPL::dimension_type bignum_column = (bignum_column_coding == -1)
+    PPL::dimension_type bignum_column
+      = (bignum_column_coding == -1)
       ? PPL::not_a_dimension()
-      : (num_vars + (bignum_column_coding - 1));
+      : (num_vars + PPL::dimension_type(bignum_column_coding - 1));
 
     bool result = update_pip(num_vars, num_params,
                              num_constraints, num_ctx_rows,
@@ -349,9 +351,11 @@ public:
 
     int bignum_column_coding;
     in >> bignum_column_coding;
-    PPL::dimension_type bignum_column = (bignum_column_coding == -1)
+    PPL_ASSERT(bignum_column_coding >= -1);
+    PPL::dimension_type bignum_column
+      = (bignum_column_coding == -1)
       ? PPL::not_a_dimension()
-      : (bignum_column_coding - 1);
+      : PPL::dimension_type(bignum_column_coding - 1);
 
     int solve_integer;
     in >> solve_integer;
@@ -647,14 +651,14 @@ process_options(int argc, char* argv[]) {
 
     case 'R':
       {
-        const int MEGA = 1024*1024;
+        const unsigned long MEGA = 1024U*1024U;
         long l = strtol(optarg, &endptr, 10);
         if (*endptr || l < 0)
           fatal("a non-negative integer must follow `-R'");
         else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)
           max_bytes_of_virtual_memory = ULONG_MAX;
         else
-          max_bytes_of_virtual_memory = l*MEGA;
+          max_bytes_of_virtual_memory = static_cast<unsigned long>(l)*MEGA;
       }
       break;
 

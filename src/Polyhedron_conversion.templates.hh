@@ -362,7 +362,7 @@ Polyhedron::conversion(Source_Linear_System& source,
   const dimension_type source_space_dim = source.space_dimension();
   const dimension_type source_num_rows = source.num_rows();
   const dimension_type source_num_columns = source_space_dim
-    + (source.is_necessarily_closed() ? 1 : 2);
+    + (source.is_necessarily_closed() ? 1U : 2U);
 
 
   dimension_type dest_num_rows = dest.num_rows();

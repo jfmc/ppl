@@ -144,7 +144,7 @@ Polyhedron::minimize(const bool con_to_gen,
   // and the 5th parameter (representing the number of lines in `dest'),
   // by construction, is equal to `dest_num_rows'.
   const dimension_type num_lines_or_equalities
-    = conversion(source, 0, dest, tmp_sat, dest_num_rows);
+    = conversion(source, 0U, dest, tmp_sat, dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
   dest_num_rows = dest.num_rows();
 
