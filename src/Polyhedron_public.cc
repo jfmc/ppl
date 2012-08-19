@@ -1559,7 +1559,8 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     gs.clear();
 
     set_generators_pending();
-  } else {
+  }
+  else {
     // Here we do not require `gen_sys' to be sorted.
     // also, we _remove_ (instead of copying) the coefficients of `gs'
     // (which is not a const).

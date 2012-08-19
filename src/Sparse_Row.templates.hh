@@ -34,7 +34,8 @@ Sparse_Row::combine_needs_first(const Sparse_Row& y,
   if (this == &y) {
     for (iterator i = begin(), i_end = end(); i != i_end; ++i)
       g(*i, *i);
-  } else {
+  }
+  else {
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.
     // If we just stored a copy, that would be invalidated by the calls to
@@ -50,14 +51,16 @@ Sparse_Row::combine_needs_first(const Sparse_Row& y,
         else
           ++i;
         ++j;
-      } else
+      }
+      else
         if (i.index() < j.index()) {
           f(*i);
           if (*i == 0)
             i = reset(i);
           else
             ++i;
-        } else
+        }
+        else
           j = y.lower_bound(j, i.index());
     while (i != i_end) {
       f(*i);
@@ -90,7 +93,8 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
   if (this == &y) {
     for (iterator i = begin(), i_end = end(); i != i_end; ++i)
       g(*i, *i);
-  } else {
+  }
+  else {
     iterator i = begin();
     // This is a const reference to an internal iterator, that is kept valid.
     // If we just stored a copy, that would be invalidated by the calls to
@@ -106,14 +110,16 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
         else
           ++i;
         ++j;
-      } else
+      }
+      else
         if (i.index() < j.index()) {
           f(*i);
           if (*i == 0)
             i = reset(i);
           else
             ++i;
-        } else {
+        }
+        else {
           PPL_ASSERT(i.index() > j.index());
           i = insert(i, j.index());
           h(*i, *j);

@@ -358,7 +358,8 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
       // some rows already have the new space dimension and others still have
       // the old one.
       remove_row_no_ok(i, false);
-    } else
+    }
+    else
       ++i;
   }
 
@@ -427,7 +428,8 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   if (sorting_pending) {
     PPL_ASSERT(old_num_pending >= num_duplicates);
     index_first_pending = num_rows() - (old_num_pending - num_duplicates);
-  } else {
+  }
+  else {
     index_first_pending = num_rows() - old_num_pending;
   }
 
@@ -743,7 +745,8 @@ Linear_System<Row>
       le += Variable(c);
       Row r(le, Row::LINE_OR_EQUALITY, row_topology);
       swap(r, rows[i]);
-    } else {
+    }
+    else {
       // Variable(c) is the epsilon dimension.
       PPL_ASSERT(row_topology == NOT_NECESSARILY_CLOSED);
       Linear_Expression le(Variable(c), representation());
@@ -770,7 +773,8 @@ Linear_System<Row>
                                            Variable(old_space_dim - 1 + n));
         PPL_ASSERT(rows[i].OK());
       }
-    } else {
+    }
+    else {
       dimension_type old_eps_index = old_space_dim - 1;
       // The upper-right corner of `rows' contains the J matrix:
       // swap coefficients to preserve sortedness.

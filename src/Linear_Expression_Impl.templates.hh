@@ -56,9 +56,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
     construct(*p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
     construct(*p);
-  } else {
+  }
+  else {
     // Add implementations for other derived classes here.
     PPL_UNREACHABLE;
   }
@@ -72,9 +74,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
     construct(*p, space_dim);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
     construct(*p, space_dim);
-  } else {
+  }
+  else {
     // Add implementations for other derived classes here.
     PPL_UNREACHABLE;
   }
@@ -512,7 +516,8 @@ Linear_Expression_Impl<Row>
     const typename Row::iterator& i_end = row.end();
     while (i != i_end && i.index() < end)
       i = row.reset(i);
-  } else {
+  }
+  else {
     for (typename Row::iterator
       i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; ++i)
       (*i) *= c;
@@ -551,7 +556,8 @@ Linear_Expression_Impl<Row>
       const typename Row::iterator& i_end = row.end();
       while (i != i_end && i.index() < end)
         i = row.reset(i);
-    } else {
+    }
+    else {
       PPL_ASSERT(c1 == 0);
       PPL_ASSERT(c2 != 0);
 
@@ -587,7 +593,8 @@ Linear_Expression_Impl<Row>
         ++j;
       }
     }
-  } else {
+  }
+  else {
     if (c2 == 0) {
       PPL_ASSERT(c1 != 0);
       PPL_ASSERT(c2 == 0);
@@ -595,7 +602,8 @@ Linear_Expression_Impl<Row>
                                   i_end = row.lower_bound(end);
           i != i_end; ++i)
         (*i) *= c1;
-    } else {
+    }
+    else {
       PPL_ASSERT(c1 != 0);
       PPL_ASSERT(c2 != 0);
       Parma_Polyhedra_Library::linear_combine(row, y.row, c1, c2, start, end);
@@ -675,12 +683,14 @@ Linear_Expression_Impl<Row>
       Parma_Polyhedra_Library::add_mul_assign(result, *x_i, *y_i);
       ++x_i;
       ++y_i;
-    } else {
+    }
+    else {
       if (x_i.index() < y_i.index()) {
         PPL_ASSERT(y.row.get(x_i.index()) == 0);
         // (*x_i) * 0 == 0, nothing to do.
         ++x_i;
-      } else {
+      }
+      else {
         PPL_ASSERT(x.row.get(y_i.index()) == 0);
         // 0 * (*y_i) == 0, nothing to do.
         ++y_i;
@@ -723,12 +733,14 @@ Linear_Expression_Impl<Row>
         return false;
       ++i;
       ++j;
-    } else {
+    }
+    else {
       if (i.index() < j.index()) {
         if (*i != 0)
           return false;
         ++i;
-      } else {
+      }
+      else {
         PPL_ASSERT(i.index() > j.index());
         if (*j != 0)
           return false;
@@ -780,12 +792,14 @@ Linear_Expression_Impl<Row>
         return false;
       ++i;
       ++j;
-    } else {
+    }
+    else {
       if (i.index() < j.index()) {
         if (*i != 0)
           return false;
         ++i;
-      } else {
+      }
+      else {
         PPL_ASSERT(i.index() > j.index());
         if (*j != 0)
           return false;
@@ -810,9 +824,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, v);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, v);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -828,9 +844,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, c1, c2);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, c1, c2);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -846,9 +864,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -862,9 +882,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return false;
@@ -879,9 +901,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return operator+=(*p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return operator+=(*p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return *this;
@@ -896,9 +920,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return operator-=(*p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return operator-=(*p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return *this;
@@ -914,9 +940,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     add_mul_assign(factor, *p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     add_mul_assign(factor, *p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -931,9 +959,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     sub_mul_assign(factor, *p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     sub_mul_assign(factor, *p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -947,9 +977,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, i);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, i);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -966,9 +998,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, c1, c2, start, end);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, c1, c2, start, end);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -985,9 +1019,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -1001,9 +1037,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return compare(*p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return compare(*p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return 0;
@@ -1018,9 +1056,11 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y) {
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return construct(*p);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return construct(*p);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -1034,9 +1074,11 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return construct(*p, space_dim);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return construct(*p, space_dim);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -1052,9 +1094,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     scalar_product_assign(result, *p, start, end);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     scalar_product_assign(result, *p, start, end);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
   }
@@ -1069,9 +1113,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return scalar_product_sign(*p, start, end);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return scalar_product_sign(*p, start, end);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return 0;
@@ -1087,9 +1133,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p, start, end);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p, start, end);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return false;
@@ -1107,9 +1155,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return false;
@@ -1125,9 +1175,11 @@ Linear_Expression_Impl<Row>
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
   if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return have_a_common_variable(*p, first, last);
-  } else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  }
+  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return have_a_common_variable(*p, first, last);
-  } else {
+  }
+  else {
     // Add implementations for new derived classes here.
     PPL_UNREACHABLE;
     return false;

@@ -639,7 +639,8 @@ Polyhedron::conversion(Source_Linear_System& source,
         // This is why the `source' parameter is not declared `const'.
         if (source_k.is_ray_or_point_or_inequality()) {
           redundant_source_rows.push_back(k);
-        } else {
+        }
+        else {
           // The constraint is an equality, so that all the generators
           // in Q+ violate it. Since the set Q- is empty, we can simply
           // remove from `dest_rows' all the generators of Q+.
@@ -669,7 +670,8 @@ Polyhedron::conversion(Source_Linear_System& source,
             --dest_num_rows;
           }
           PPL_ASSERT(dest_num_rows == dest.sys.rows.size());
-        } else {
+        }
+        else {
           // The sets Q+ and Q- are both non-empty.
           // The generators of the new pointed cone are all those satisfying
           // the constraint `source_k' plus a set of new rays enjoying

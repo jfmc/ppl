@@ -124,7 +124,8 @@ CO_Tree::insert(dimension_type key, data_type_const_reference data1) {
     tree_iterator itr(*this);
     PPL_ASSERT(itr.index() != unused_index);
     return iterator(itr);
-  } else {
+  }
+  else {
     tree_iterator itr(*this);
     itr.go_down_searching_key(key);
     return iterator(insert_precise(key, data1, itr));

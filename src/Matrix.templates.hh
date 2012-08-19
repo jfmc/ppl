@@ -55,7 +55,8 @@ Matrix<Row>::resize(dimension_type num_rows, dimension_type num_columns) {
       for (dimension_type i = 0; i < old_num_rows; ++i)
         rows[i].resize(num_columns);
     }
-  } else
+  }
+  else
     if (num_columns_ != num_columns) {
       num_columns_ = num_columns;
       for (dimension_type i = 0; i < num_rows; ++i)

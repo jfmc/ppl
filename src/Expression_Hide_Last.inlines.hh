@@ -51,7 +51,8 @@ inline typename Expression_Hide_Last<T>::const_iterator
 Expression_Hide_Last<T>::end() const {
   if (hide_last_) {
     return this->inner().lower_bound(Variable(space_dimension()));
-  } else {
+  }
+  else {
     return this->inner().end();
   }
 }

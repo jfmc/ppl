@@ -110,14 +110,16 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
 
     if (top_n == 0) {
       --stack_first_empty;
-    } else {
+    }
+    else {
       if (top_n == 1) {
         PPL_ASSERT(root.index() == unused_index);
         root.index() = i.index();
         new (&(*root)) data_type(*i);
         ++i;
         --stack_first_empty;
-      } else {
+      }
+      else {
         PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
 
         const dimension_type half = (top_n + 1) / 2;

@@ -1208,7 +1208,8 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
         swap(current_denom, k->second);
         entering_index = k->first;
       }
-    } else {
+    }
+    else {
       PPL_ASSERT(working_cost.get(k->first) == 0);
       // Initialization during the first loop.
       if (entering_index == 0) {
@@ -1377,7 +1378,8 @@ PPL::MIP_Problem::is_unbounded_obj_function(
     if (optimization_mode == MAXIMIZATION) {
       if (*i > 0)
         return true;
-    } else {
+    }
+    else {
       PPL_ASSERT(optimization_mode == MINIMIZATION);
       if (*i < 0)
         return true;

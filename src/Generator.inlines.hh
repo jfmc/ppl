@@ -78,7 +78,8 @@ Generator::set_topology(Topology x) {
   if (topology() == NECESSARILY_CLOSED) {
     // Add a column for the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
-  } else {
+  }
+  else {
     PPL_ASSERT(expr.space_dimension() > 0);
     expr.set_space_dimension(expr.space_dimension() - 1);
   }
@@ -222,12 +223,14 @@ Generator::set_space_dimension_no_ok(dimension_type space_dim) {
   const dimension_type old_expr_space_dim = expr.space_dimension();
   if (topology() == NECESSARILY_CLOSED) {
     expr.set_space_dimension(space_dim);
-  } else {
+  }
+  else {
     const dimension_type old_space_dim = space_dimension();
     if (space_dim > old_space_dim) {
       expr.set_space_dimension(space_dim + 1);
       expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
-    } else {
+    }
+    else {
       expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
       expr.set_space_dimension(space_dim + 1);
     }
