@@ -63,7 +63,7 @@ protected:
 
   /*! \brief
     Returns \c true if and only if all the nodes in the subtree
-    rooted in \p *this is owned by \p *pip.
+    rooted in \p *this are owned by \p *owner.
   */
   virtual bool check_ownership(const PIP_Problem* owner) const = 0;
 
