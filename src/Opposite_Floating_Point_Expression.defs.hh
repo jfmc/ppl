@@ -83,40 +83,40 @@ class Opposite_Floating_Point_Expression
 
 public:
 
-  /* \brief
-     Alias for the Linear_Form<FP_Interval_Type> from
-     Floating_Point_Expression
+  /*! \brief
+    Alias for the Linear_Form<FP_Interval_Type> from
+    Floating_Point_Expression
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form FP_Linear_Form;
 
-  /* \brief
-     Alias for the std::map<dimension_type, FP_Interval_Type> from
-     Floating_Point_Expression.
+  /*! \brief
+    Alias for the std::map<dimension_type, FP_Interval_Type> from
+    Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Interval_Abstract_Store FP_Interval_Abstract_Store;
 
-  /* \brief
-     Alias for the std::map<dimension_type, FP_Linear_Form> from
-     Floating_Point_Expression.
+  /*! \brief
+    Alias for the std::map<dimension_type, FP_Linear_Form> from
+    Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::
   FP_Linear_Form_Abstract_Store FP_Linear_Form_Abstract_Store;
 
-  /* \brief
-     Alias for the FP_Interval_Type::boundary_type from
-     Floating_Point_Expression.
+  /*! \brief
+    Alias for the FP_Interval_Type::boundary_type from
+    Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::boundary_type
   boundary_type;
 
-  /* \brief
-     Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
+  /*! \brief
+    Alias for the FP_Interval_Type::info_type from Floating_Point_Expression.
   */
   typedef typename
   Floating_Point_Expression<FP_Interval_Type, FP_Format>::info_type info_type;

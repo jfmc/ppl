@@ -2214,64 +2214,67 @@ private:
                                Coefficient_traits::const_reference sc_denom,
                                const N& ub_v);
 
-  /* \brief
+  /*! \brief
     Auxiliary function for \ref affine_form_relation "affine form image" that
     handle the general case: \f$l \equal c\f$
   */
   template <typename Interval_Info>
   void inhomogeneous_affine_form_image(const dimension_type& var_id,
-                                                       const Interval<T, Interval_Info>& b);
+                                       const Interval<T, Interval_Info>& b);
 
-  /* \brief
-    Auxiliary function for \ref affine_form_relation "affine form image" that
-    handle the general case: \f$l \equal ax + c\f$
+  /*! \brief
+    Auxiliary function for \ref affine_form_relation "affine form
+    image" that handle the general case: \f$l \equal ax + c\f$
   */
   template <typename Interval_Info>
-  void one_variable_affine_form_image(const dimension_type& var_id,
-                               const Interval<T, Interval_Info>& b,
-                               const Interval<T, Interval_Info>& w_coeff,
-                               const dimension_type& w_id,
-                               const dimension_type& space_dim);
+  void one_variable_affine_form_image
+  (const dimension_type& var_id,
+   const Interval<T, Interval_Info>& b,
+   const Interval<T, Interval_Info>& w_coeff,
+   const dimension_type& w_id,
+   const dimension_type& space_dim);
 
-  /* \brief
+  /*! \brief
     Auxiliary function for \ref affine_form_relation "affine form image" that
     handle the general case: \f$l \equal ax + by + c\f$
   */
   template <typename Interval_Info>
-  void two_variables_affine_form_image(const dimension_type& var_id,
-                 const Linear_Form<Interval<T,Interval_Info> >& lf,
-                                   const dimension_type& space_dim);
+  void two_variables_affine_form_image
+  (const dimension_type& var_id,
+   const Linear_Form<Interval<T,Interval_Info> >& lf,
+   const dimension_type& space_dim);
 
-  /* \brief
+  /*! \brief
     Auxiliary function for refine with linear form that handle
     the general case: \f$l \equal ax + c\f$
   */
   template <typename Interval_Info>
   void left_inhomogeneous_refine(const dimension_type& right_t,
                                  const dimension_type& right_w_id,
-                   const Linear_Form<Interval<T, Interval_Info> >& left,
-                   const Linear_Form<Interval<T, Interval_Info> >& right);
+                                 const Linear_Form<Interval<T, Interval_Info> >& left,
+                                 const Linear_Form<Interval<T, Interval_Info> >& right);
 
-  /* \brief
+  /*! \brief
     Auxiliary function for refine with linear form that handle
     the general case: \f$ax +b \equal cy + d\f$
   */
   template <typename Interval_Info>
-  void left_one_var_refine(const dimension_type& left_w_id,
-                           const dimension_type& right_t,
-                           const dimension_type& right_w_id,
-                   const Linear_Form<Interval<T, Interval_Info> >& left,
-                   const Linear_Form<Interval<T, Interval_Info> >& right);
+  void left_one_var_refine
+  (const dimension_type& left_w_id,
+   const dimension_type& right_t,
+   const dimension_type& right_w_id,
+   const Linear_Form<Interval<T, Interval_Info> >& left,
+   const Linear_Form<Interval<T, Interval_Info> >& right);
 
-/* \brief
+  /*! \brief
     Auxiliary function for refine with linear form that handle
     the general case.
   */
   template <typename Interval_Info>
   void general_refine(const dimension_type& left_w_id,
-                           const dimension_type& right_w_id,
-                   const Linear_Form<Interval<T, Interval_Info> >& left,
-                   const Linear_Form<Interval<T, Interval_Info> >& right);
+                      const dimension_type& right_w_id,
+                      const Linear_Form<Interval<T, Interval_Info> >& left,
+                      const Linear_Form<Interval<T, Interval_Info> >& right);
 
   template <typename Interval_Info>
   void linear_form_upper_bound(const Linear_Form<Interval<T, Interval_Info> >&
