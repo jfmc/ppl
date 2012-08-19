@@ -113,7 +113,8 @@ Linear_Expression_Impl<Sparse_Row>
         row.fast_swap(src.index() - num_removed, src);
         ++src;
       }
-    } else {
+    }
+    else {
       // Shift left the coefficients in [src.index(), row.size()) by
       // num_removed positions.
       while (src != row_end) {

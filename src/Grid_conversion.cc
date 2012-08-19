@@ -105,7 +105,8 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
   if (gen.is_line()) {
     // Multiply every element of the line.
     gen.expr *= multiplier;
-  } else {
+  }
+  else {
     PPL_ASSERT(gen.is_parameter_or_point());
     // Multiply every element of every parameter.
 
@@ -131,7 +132,8 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
       if (congruence.is_proper_congruence())
         congruence.scale(multiplier);
     }
-  } else {
+  }
+  else {
     PPL_ASSERT(cg.is_equality());
     // Multiply every element of the equality.
     cg.scale(multiplier);
@@ -200,7 +202,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
         le.set(dim, Coefficient_one());
         Congruence cg(le, Coefficient_zero(), Recycle_Input());
         dest.insert_verbatim(cg, Recycle_Input());
-      } else {
+      }
+      else {
         PPL_ASSERT(dim_kinds[dim] == PARAMETER);
         --source_index;
         PPL_DIRTY_TEMP_COEFFICIENT(tmp);

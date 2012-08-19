@@ -153,7 +153,8 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
       tree.erase(itr_j);
       itr_i = tree.insert(i);
       swap(*itr_i, tmp);
-    } else {
+    }
+    else {
       // Do nothing, elements are both non-stored zeroes.
     }
 }
@@ -279,7 +280,8 @@ private:
     if (i == i_end) {
       if (j == j_end) {
         return;
-      } else {
+      }
+      else {
         // i == i_end, j != j_end, so use j.
         current_index = j.index();
         current_value = *j;
@@ -287,7 +289,8 @@ private:
         from_i = false;
         from_j = true;
       }
-    } else {
+    }
+    else {
       if (j == j_end) {
         // i != i_end, j == j_end, so use i.
         current_index = i.index();
@@ -295,7 +298,8 @@ private:
         current_value *= coeff1;
         from_i = true;
         from_j = false;
-      } else {
+      }
+      else {
         // i != i_end and j != j_end.
         if (i.index() < j.index()) {
           // i.index() < j.index(), so use i.
@@ -304,7 +308,8 @@ private:
           current_value *= coeff1;
           from_i = true;
           from_j = false;
-        } else {
+        }
+        else {
           if (i.index() != j.index()) {
             PPL_ASSERT(i.index() > j.index());
             // i.index() > j.index(), so use j.
@@ -313,7 +318,8 @@ private:
             current_value *= coeff2;
             from_i = false;
             from_j = true;
-          } else {
+          }
+          else {
             // i.index() == j.index(), so use both i and j.
             current_index = i.index();
             current_value = *i;
@@ -378,12 +384,14 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
           ++j;
           if (i == i_end)
             break;
-        } else
+        }
+        else
           if (i.index() < j.index()) {
             i = lower_bound(i, j.index());
             if (i == i_end)
               break;
-          } else {
+          }
+          else {
             PPL_ASSERT(i.index() > j.index());
             ++counter;
             ++j;
@@ -415,11 +423,13 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         else
           ++i;
         ++j;
-      } else
+      }
+      else
         if (i.index() < j.index()) {
           (*i) *= coeff1;
           ++i;
-        } else {
+        }
+        else {
           PPL_ASSERT(i.index() > j.index());
           i = insert(i, j.index(), *j);
           (*i) *= coeff2;
@@ -434,7 +444,8 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       i = insert(i, j.index(), *j);
       (*i) *= coeff2;
     }
-  } else {
+  }
+  else {
     // Too many insertions needed, a full copy is probably faster than
     // inserting all those new elements into *this.
     CO_Tree new_tree(sparse_row_linear_combine_helper_iterator(*this, y,
@@ -454,7 +465,8 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
 #endif
         i = reset(i);
         PPL_ASSERT(find(old_index) == end());
-      } else
+      }
+      else
         ++i;
     }
   }
@@ -524,11 +536,13 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         else
           ++i;
         ++j;
-      } else
+      }
+      else
         if (i.index() < j.index()) {
           (*i) *= coeff1;
           ++i;
-        } else {
+        }
+        else {
           PPL_ASSERT(i.index() > j.index());
           i = insert(i, j.index(), *j);
           ++i;
@@ -561,11 +575,13 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         else
           ++i;
         ++j;
-      } else
+      }
+      else
         if (i.index() < j.index()) {
           (*i) *= coeff1;
           ++i;
-        } else {
+        }
+        else {
           PPL_ASSERT(i.index() > j.index());
           i = insert(i, j.index(), *j);
           neg_assign(*i);
@@ -599,11 +615,13 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       else
         ++i;
       ++j;
-    } else
+    }
+    else
       if (i.index() < j.index()) {
         (*i) *= coeff1;
         ++i;
-      } else {
+      }
+      else {
         PPL_ASSERT(i.index() > j.index());
         i = insert(i, j.index(), *j);
         (*i) *= coeff2;
@@ -696,12 +714,14 @@ PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
         return false;
       ++i;
       ++j;
-    } else {
+    }
+    else {
       if (i.index() < j.index()) {
         if (*i != 0)
           return false;
         ++i;
-      } else {
+      }
+      else {
         PPL_ASSERT(i.index() > j.index());
         if (*j != 0)
           return false;
@@ -734,7 +754,8 @@ PPL::operator==(const Dense_Row& x, const Sparse_Row& y) {
     if (itr != y.end() && itr.index() == i) {
       if (x[i] != *itr)
         return false;
-    } else {
+    }
+    else {
       if (x[i] != 0)
         return false;
     }
@@ -775,7 +796,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       itr = x.insert(itr, i, y[i]);
       (*itr) *= coeff2;
       PPL_ASSERT((*itr) != 0);
-    } else {
+    }
+    else {
       PPL_ASSERT(itr.index() == i);
       (*itr) *= coeff1;
       add_mul_assign(*itr, y[i], coeff2);
@@ -810,7 +832,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
             continue;
           itr = x.insert(itr, i, y[i]);
           PPL_ASSERT((*itr) != 0);
-        } else {
+        }
+        else {
           PPL_ASSERT(itr.index() == i);
           (*itr) += y[i];
           if (*itr == 0)
@@ -831,7 +854,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
           itr = x.insert(itr, i, y[i]);
           neg_assign(*itr);
           PPL_ASSERT((*itr) != 0);
-        } else {
+        }
+        else {
           PPL_ASSERT(itr.index() == i);
           (*itr) -= y[i];
           if (*itr == 0)
@@ -851,7 +875,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
         itr = x.insert(itr, i, y[i]);
         (*itr) *= coeff2;
         PPL_ASSERT((*itr) != 0);
-      } else {
+      }
+      else {
         PPL_ASSERT(itr.index() == i);
         add_mul_assign(*itr, y[i], coeff2);
         if (*itr == 0)
@@ -872,7 +897,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
           continue;
         itr = x.insert(itr, i, y[i]);
         PPL_ASSERT((*itr) != 0);
-      } else {
+      }
+      else {
         PPL_ASSERT(itr.index() == i);
         (*itr) *= coeff1;
         (*itr) += y[i];
@@ -894,7 +920,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
         itr = x.insert(itr, i, y[i]);
         neg_assign(*itr);
         PPL_ASSERT((*itr) != 0);
-      } else {
+      }
+      else {
         PPL_ASSERT(itr.index() == i);
         (*itr) *= coeff1;
         (*itr) -= y[i];
@@ -916,7 +943,8 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       itr = x.insert(itr, i, y[i]);
       (*itr) *= coeff2;
       PPL_ASSERT((*itr) != 0);
-    } else {
+    }
+    else {
       PPL_ASSERT(itr.index() == i);
       (*itr) *= coeff1;
       add_mul_assign(*itr, y[i], coeff2);

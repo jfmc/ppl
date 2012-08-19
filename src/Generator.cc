@@ -172,7 +172,8 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
 
     PPL_ASSERT(OK());
     return false;
-  } else {
+  }
+  else {
     strong_normalize();
     PPL_ASSERT(OK());
     return true;

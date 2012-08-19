@@ -331,12 +331,14 @@ PPL::Constraint::ascii_load(std::istream& s) {
     // TODO: Avoid the mark_as_*() methods if possible.
     if (topology() == NECESSARILY_CLOSED)
       mark_as_not_necessarily_closed();
-  } else
+  }
+  else
     if (str2 == "(C)") {
       // TODO: Avoid the mark_as_*() methods if possible.
       if (topology() == NOT_NECESSARILY_CLOSED)
         mark_as_necessarily_closed();
-    } else
+    }
+    else
       return false;
 
   // Checking for equality of actual and declared types.

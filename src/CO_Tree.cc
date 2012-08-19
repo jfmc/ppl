@@ -63,7 +63,8 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     --candidate2_index;
     while (indexes[candidate2_index] == unused_index)
       --candidate2_index;
-  } else {
+  }
+  else {
     ++candidate2_index;
     while (indexes[candidate2_index] == unused_index)
       ++candidate2_index;
@@ -91,7 +92,8 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     // candidate1_node.
     return iterator(insert_precise(key1, Coefficient_zero(),
                                    candidate1_node));
-  } else {
+  }
+  else {
     PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
     // candidate2_node is deeper in the tree than candidate1_node, so use
     // candidate2_node.
@@ -126,7 +128,8 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
     --candidate2_index;
     while (indexes[candidate2_index] == unused_index)
       --candidate2_index;
-  } else {
+  }
+  else {
     ++candidate2_index;
     while (indexes[candidate2_index] == unused_index)
       ++candidate2_index;
@@ -150,7 +153,8 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
     // candidate1_node is deeper in the tree than candidate2_node, so
     // use candidate1_node.
     return iterator(insert_precise(key1, data1, candidate1_node));
-  } else {
+  }
+  else {
     PPL_ASSERT(candidate1_node.depth() < candidate2_node.depth());
     // candidate2_node is deeper in the tree than candidate1_node, so
     // use candidate2_node.
@@ -214,7 +218,8 @@ PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
 
       last = half;
 
-    } else {
+    }
+    else {
 
       ++new_half;
       while (indexes[new_half] == unused_index)
@@ -259,7 +264,8 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         // The searched element is in (hint,new_hint) and both indexes point
         // to valid elements.
         break;
-      } else
+      }
+      else
         new_hint = hint - offset;
 
       PPL_ASSERT(new_hint > 0);
@@ -286,7 +292,8 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
       offset *= 2;
     }
 
-  } else {
+  }
+  else {
     // The searched element is after `hint'.
     while (true) {
 
@@ -301,7 +308,8 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         // The searched element is in (hint,new_hint) and both indexes point
         // to valid elements.
         break;
-      } else
+      }
+      else
         new_hint = hint + offset;
 
       PPL_ASSERT(new_hint > 0);
@@ -642,7 +650,8 @@ PPL::CO_Tree::structure_OK() const {
     if (itr.index() != unused_index)
       return false;
 
-  } else {
+  }
+  else {
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
     tree_iterator itr(*const_cast<CO_Tree*>(this));
@@ -905,7 +914,8 @@ PPL::CO_Tree
           --first_unused_data;
         }
         break;
-      } else {
+      }
+      else {
         if (last_index_in_subtree != first_unused_index) {
           PPL_ASSERT(first_unused_index != indexes);
           PPL_ASSERT(last_index_in_subtree != indexes);
@@ -1001,7 +1011,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
         new (&(data[top_i])) data_type(value);
         // Set the index only if the construction was successful.
         indexes[top_i] = key;
-      } else {
+      }
+      else {
         if (last_used != top_i) {
           PPL_ASSERT(indexes[top_i] == unused_index);
           indexes[top_i] = indexes[last_used];
@@ -1010,7 +1021,8 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
         }
         ++last_used;
       }
-    } else {
+    }
+    else {
       PPL_ASSERT(stack_first_empty + 2
                  < stack + sizeof(stack)/sizeof(stack[0]));
 
@@ -1119,7 +1131,8 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
 
     if (top_n == 0) {
       --stack_first_empty;
-    } else {
+    }
+    else {
       if (top_n == 1) {
         PPL_ASSERT(root.index() == unused_index);
         PPL_ASSERT(tree.indexes[source_index] != unused_index);
@@ -1131,7 +1144,8 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
         while (tree.indexes[source_index] == unused_index)
           ++source_index;
         --stack_first_empty;
-      } else {
+      }
+      else {
         PPL_ASSERT(stack_first_empty + 3 < sizeof(stack)/sizeof(stack[0]));
 
         const dimension_type half = (top_n + 1) / 2;
@@ -1167,7 +1181,8 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
       if (x.indexes[i] != unused_index) {
         indexes[i] = x.indexes[i];
         new (&(data[i])) data_type(x.data[i]);
-      } else {
+      }
+      else {
         PPL_ASSERT(indexes[i] == unused_index);
       }
   } catch (...) {
@@ -1222,12 +1237,14 @@ PPL::CO_Tree::const_iterator::OK() const {
       return false;
     if (current_data != 0)
       return false;
-  } else
+  }
+  else
     if (tree->reserved_size == 0) {
       if (current_index != 1 + static_cast<dimension_type*>(0)
           || current_data != 1 + static_cast<data_type*>(0))
         return false;
-    } else {
+    }
+    else {
       if (current_index <= &(tree->indexes[0]))
         return false;
       if (current_index > &(tree->indexes[tree->reserved_size + 1]))
@@ -1253,12 +1270,14 @@ PPL::CO_Tree::iterator::OK() const {
       return false;
     if (current_data != 0)
       return false;
-  } else
+  }
+  else
     if (tree->reserved_size == 0) {
       if (current_index != 1 + static_cast<dimension_type*>(0)
           || current_data != 1 + static_cast<data_type*>(0))
         return false;
-    } else {
+    }
+    else {
       if (current_index <= &(tree->indexes[0]))
         return false;
       if (current_index > &(tree->indexes[tree->reserved_size + 1]))
@@ -1305,7 +1324,8 @@ PPL::CO_Tree::tree_iterator::go_down_searching_key(dimension_type key) {
         get_parent();
         break;
       }
-    } else {
+    }
+    else {
       get_right_child();
       if (index() == unused_index) {
         get_parent();

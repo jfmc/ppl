@@ -157,7 +157,8 @@ PPL::PIP_Problem::solve() const {
             // Adjust inhomogeneous term if strict.
             if (c.is_strict_inequality())
               --(*itr);
-          } else {
+          }
+          else {
             // Adjust inhomogeneous term if strict.
             if (c.is_strict_inequality())
               itr = row.insert(0, -1);
@@ -176,7 +177,8 @@ PPL::PIP_Problem::solve() const {
                 = c.coefficient(Variable(*pi));
               if (coeff_pi != 0)
                 itr = row.insert(itr, i, coeff_pi);
-            } else
+            }
+            else
               break;
           }
         }

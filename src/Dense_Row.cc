@@ -102,7 +102,8 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
 
     impl.vec = new_vec;
     impl.capacity = new_capacity;
-  } else {
+  }
+  else {
     if (new_capacity > capacity()) {
 
       Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
@@ -171,7 +172,8 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
 
     // The old vec will be de-allocated at the end of this block.
 
-  } else {
+  }
+  else {
     memmove(&impl.vec[n + i], &impl.vec[i], sizeof(Coefficient)
             * (impl.size - i));
     impl.size = i;
@@ -248,7 +250,8 @@ PPL::Dense_Row::init(const Sparse_Row& row) {
     if (itr != itr_end && itr.index() == impl.size) {
       new (&impl.vec[impl.size]) Coefficient(*itr);
       ++itr;
-    } else
+    }
+    else
       new (&impl.vec[impl.size]) Coefficient();
     ++impl.size;
   }
@@ -269,10 +272,12 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
       if (itr != itr_end && itr.index() == i) {
         impl.vec[impl.size] = *itr;
         ++itr;
-      } else
+      }
+      else
         impl.vec[impl.size] = Coefficient_zero();
     }
-  } else {
+  }
+  else {
     if (capacity() >= row.size()) {
       // size() <= row.size() <= capacity().
       Sparse_Row::const_iterator itr = row.begin();
@@ -282,7 +287,8 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
         if (itr != itr_end && itr.index() == impl.size) {
           new (&impl.vec[impl.size]) Coefficient(*itr);
           ++itr;
-        } else
+        }
+        else
           new (&impl.vec[impl.size]) Coefficient();
       }
       // Construct the additional elements.
@@ -291,10 +297,12 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
         if (itr != itr_end && itr.index() == impl.size) {
           new (&impl.vec[impl.size]) Coefficient(*itr);
           ++itr;
-        } else
+        }
+        else
           new (&impl.vec[impl.size]) Coefficient();
       }
-    } else {
+    }
+    else {
       // Reallocation is required.
       destroy();
       init(row);
@@ -526,7 +534,8 @@ PPL::Dense_Row::OK() const {
   if (capacity() == 0) {
     if (impl.vec != 0)
       is_broken = true;
-  } else {
+  }
+  else {
     if (impl.vec == 0)
       is_broken = true;
   }

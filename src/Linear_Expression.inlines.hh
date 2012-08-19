@@ -158,7 +158,8 @@ operator-(const Variable v, const Variable w) {
     Linear_Expression e(v);
     e -= w;
     return e;
-  } else {
+  }
+  else {
     Linear_Expression e(w.space_dimension(), true);
     e -= w;
     e += v;
@@ -226,7 +227,8 @@ operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
     Linear_Expression e = e1;
     e += e2;
     return e;
-  } else {
+  }
+  else {
     Linear_Expression e = e2;
     e += e1;
     return e;
@@ -261,7 +263,8 @@ operator+(const Variable v, const Variable w) {
     Linear_Expression e(v);
     e += w;
     return e;
-  } else {
+  }
+  else {
     Linear_Expression e(w);
     e += v;
     return e;
@@ -283,7 +286,8 @@ operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
     Linear_Expression e = e1;
     e -= e2;
     return e;
-  } else {
+  }
+  else {
     Linear_Expression e = e2;
     neg_assign(e);
     e += e1;

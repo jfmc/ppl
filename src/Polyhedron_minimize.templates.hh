@@ -166,7 +166,8 @@ Polyhedron::minimize(const bool con_to_gen,
         ++first_point)
       if (dest[first_point].expr.inhomogeneous_term() > 0)
         break;
-  } else {
+  }
+  else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point)
@@ -390,7 +391,8 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
         ++first_point)
       if (dest[first_point].expr.inhomogeneous_term() > 0)
         break;
-  } else {
+  }
+  else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point)

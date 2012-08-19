@@ -60,7 +60,8 @@ adjust_topology_and_space_dimension(const Topology new_topology,
         else
           ++i;
       sys.set_necessarily_closed();
-    } else {
+    }
+    else {
       convert_into_non_necessarily_closed();
     }
   }
@@ -759,7 +760,8 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     if (g.is_line_or_ray() && g.expr.all_homogeneous_terms_are_zero()) {
       sys.remove_row(i, false);
       set_sorted(false);
-    } else
+    }
+    else
       ++i;
   }
 }

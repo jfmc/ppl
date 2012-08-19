@@ -171,7 +171,8 @@ Grid_Generator::set_space_dimension(dimension_type space_dim) {
   if (space_dim > old_space_dim) {
     expr.set_space_dimension(space_dim + 1);
     expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
-  } else {
+  }
+  else {
     expr.swap_space_dimensions(Variable(space_dim), Variable(old_space_dim));
     expr.set_space_dimension(space_dim + 1);
   }

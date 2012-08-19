@@ -372,7 +372,8 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i,
     for (dimension_type j = i + 1; j < rows.size(); ++j)
       swap(rows[j], rows[j-1]);
     rows.pop_back();
-  } else {
+  }
+  else {
     if (!was_pending)
       sorted = false;
     bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
@@ -457,7 +458,8 @@ Linear_System<Row>::remove_rows(dimension_type first,
 
     // `n' non-pending rows have been removed.
     index_first_pending -= n;
-  } else {
+  }
+  else {
     // There are some pending rows in [first + offset, last + offset).
     if (were_pending) {
       // Both intervals contain only pending rows, because the second
@@ -469,7 +471,8 @@ Linear_System<Row>::remove_rows(dimension_type first,
 
       // `n' non-pending rows have been removed.
       index_first_pending -= n;
-    } else {
+    }
+    else {
       PPL_ASSERT(rows.size() - n < index_first_pending);
       PPL_ASSERT(rows.size() > index_first_pending);
       PPL_ASSERT(!were_pending);
@@ -573,7 +576,8 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
     if (*itr == i) {
       // The current row has to be removed, don't increment last_unused_row.
       ++itr;
-    } else {
+    }
+    else {
       // The current row must not be removed, swap it after the last used row.
       swap(rows[last_unused_row], rows[i]);
       ++last_unused_row;
@@ -596,11 +600,13 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
   // Adjust index_first_pending.
   if (indexes[0] >= index_first_pending) {
     // Removing pending rows only.
-  } else {
+  }
+  else {
     if (indexes.back() < index_first_pending) {
       // Removing non-pending rows only.
       index_first_pending -= indexes.size();
-    } else {
+    }
+    else {
       // Removing some pending and some non-pending rows, count the
       // non-pending rows that must be removed.
       // This exploits the fact that `indexes' is sorted by using binary
