@@ -339,10 +339,10 @@ parse_number_part(std::istream& is, number_struct& numer) {
   return V_CVT_STR_UNK;
 }
 
-/* \brief
-   Reads a number from \p is writing it into \p numer, the numerator,
-   and \p denom, the denominator; the appropriate Result value is
-   returned.
+/*! \brief
+  Reads a number from \p is writing it into \p numer, the numerator,
+  and \p denom, the denominator; the appropriate Result value is
+  returned.
 */
 Result
 parse_number(std::istream& is, number_struct& numer, number_struct& denom) {
