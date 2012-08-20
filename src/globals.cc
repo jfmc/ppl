@@ -22,9 +22,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "globals.defs.hh"
-#include "Constraint.defs.hh"
-#include "Generator.defs.hh"
+#include "globals_defs.hh"
+#include "Constraint_defs.hh"
+#include "Generator_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

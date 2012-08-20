@@ -61,7 +61,7 @@ m4_undefine(`m4_current_interface')`'dnl
 
 m4_divert`'dnl
 
-`#'include "ppl_prolog_common.defs.hh"`'dnl
+`#'include "ppl_prolog_common_defs.hh"`'dnl
 dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl

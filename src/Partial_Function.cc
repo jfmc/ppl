@@ -22,8 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Partial_Function.defs.hh"
-#include "Variable.defs.hh"
+#include "Partial_Function_defs.hh"
+#include "Variable_defs.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {

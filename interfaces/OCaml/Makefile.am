@@ -72,8 +72,8 @@ ppl_ocaml_domains_cc_files.stamp
 pkglib_LIBRARIES = libppl_ocaml.a
 
 libppl_ocaml_a_SOURCES = \
-ppl_ocaml_common.defs.hh \
-ppl_ocaml_common.inlines.hh \
+ppl_ocaml_common_defs.hh \
+ppl_ocaml_common_inlines.hh \
 ppl_ocaml_common.cc
 
 nodist_EXTRA_libppl_ocaml_a_SOURCES = \
@@ -220,12 +220,12 @@ ppl_ocaml.cmi: ppl_ocaml.mli
 
 ppl_ocaml_globals.cmo: ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
-		$(srcdir)/ppl_ocaml_globals.ml
+	    $(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.cmx: \
 	ppl_ocaml_globals.ml ppl_ocaml_globals.cmi
 	$(OCAMLOPT_ENV) $(OCAMLOPT) -o $@ -c $(OCAMLOPT_COMPILE_FLAGS) \
-		$(srcdir)/ppl_ocaml_globals.ml
+	    $(srcdir)/ppl_ocaml_globals.ml
 
 ppl_ocaml_globals.o: ppl_ocaml_globals.cmx
 	@if test -f $@; then :; else \
@@ -235,20 +235,20 @@ ppl_ocaml_globals.o: ppl_ocaml_globals.cmx
 
 ppl_ocaml_globals.cmi: ppl_ocaml_globals.mli
 	$(OCAMLC_ENV) $(OCAMLC) -o $@ -c $(OCAMLC_COMPILE_FLAGS) \
-	    ppl_ocaml_globals.mli
+	    $(srcdir)/ppl_ocaml_globals.mli
 
 ppl_ocaml.ml: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
+	    $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
 
 ppl_ocaml.mli: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_ocaml_mli.m4 > $@
+	    $(srcdir)/ppl_interface_generator_ocaml_mli.m4 > $@
 
 ppl_ocaml_domains_cc_files.stamp: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_ocaml_cc_files.m4 \
-                > ppl_ocaml_cc_blob
+	    $(srcdir)/ppl_interface_generator_ocaml_cc_files.m4 \
+		> ppl_ocaml_cc_blob
 	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_ocaml_cc_blob
 	$(top_srcdir)/utils/cm_splitter.sh ./ppl_ocaml_cc_blob
 	rm -f ppl_ocaml_cc_blob
@@ -256,8 +256,8 @@ ppl_ocaml_domains_cc_files.stamp: $(interface_generator_dependencies)
 
 ppl_ocaml_domains.hh: $(interface_generator_dependencies)
 	$(M4) --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
-           $(srcdir)/ppl_interface_generator_ocaml_hh_files.m4 \
-                > ppl_ocaml_hh_blob
+	    $(srcdir)/ppl_interface_generator_ocaml_hh_files.m4 \
+		> ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_cleaner.sh ./ppl_ocaml_hh_blob
 	$(top_srcdir)/utils/cm_splitter.sh ./ppl_ocaml_hh_blob
 	rm -f ppl_ocaml_hh_blob

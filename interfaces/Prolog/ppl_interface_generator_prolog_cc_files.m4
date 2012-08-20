@@ -47,7 +47,7 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #include "ppl_prolog_sysdep.hh"
-#include "ppl_prolog_common.defs.hh"
+#include "ppl_prolog_common_defs.hh"
 
 ')
 

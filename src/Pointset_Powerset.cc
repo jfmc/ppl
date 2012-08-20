@@ -22,8 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Pointset_Powerset.defs.hh"
-#include "Grid.defs.hh"
+#include "Pointset_Powerset_defs.hh"
+#include "Grid_defs.hh"
 #include <utility>
 
 namespace PPL = Parma_Polyhedra_Library;

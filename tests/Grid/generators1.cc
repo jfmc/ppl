@@ -353,7 +353,7 @@ test14() {
 
 // test clear() for empty generator system.
 // This test showed a bug in the code for clear() in
-// Grid_Generator_System.inlines.hh which is now corrected.
+// Grid_Generator_System_inlines.hh which is now corrected.
 bool
 test15() {
   Grid_Generator_System gs;

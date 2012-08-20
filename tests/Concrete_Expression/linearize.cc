@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl_test.hh"
-#include "C_Expr.defs.hh"
+#include "C_Expr_defs.hh"
 
 namespace {
 

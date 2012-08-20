@@ -140,8 +140,8 @@ AM_CPPFLAGS = \
 lib_LTLIBRARIES = libppl_c.la
 
 libppl_c_la_SOURCES = \
-ppl_c_implementation_common.defs.hh \
-ppl_c_implementation_common.inlines.hh \
+ppl_c_implementation_common_defs.hh \
+ppl_c_implementation_common_inlines.hh \
 ppl_c_implementation_common.cc
 
 nodist_libppl_c_la_SOURCES =

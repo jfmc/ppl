@@ -22,11 +22,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Grid.defs.hh"
-#include "Topology.types.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
-#include "Polyhedron.defs.hh"
+#include "Grid_defs.hh"
+#include "Topology_types.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
+#include "Polyhedron_defs.hh"
 #include "assert.hh"
 #include <iostream>
 

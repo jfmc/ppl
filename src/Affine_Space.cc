@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Affine_Space.defs.hh"
+#include "Affine_Space_defs.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;

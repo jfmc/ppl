@@ -24,10 +24,10 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_wrap_assign_hh
 #define PPL_wrap_assign_hh 1
 
-#include "globals.defs.hh"
-#include "Coefficient.defs.hh"
-#include "Variable.defs.hh"
-#include "Constraint_System.defs.hh"
+#include "globals_defs.hh"
+#include "Coefficient_defs.hh"
+#include "Variable_defs.hh"
+#include "Constraint_System_defs.hh"
 #include "assert.hh"
 
 namespace Parma_Polyhedra_Library {

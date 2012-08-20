@@ -58,7 +58,7 @@ ___BEGIN_OF_FILE___ ppl_ocaml_domains.hh << ___END_OF_FILE___
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-`#'include "ppl_ocaml_common.defs.hh"
+`#'include "ppl_ocaml_common_defs.hh"
 m4_all_code
 ___END_OF_FILE___
 dnl

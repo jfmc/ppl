@@ -400,7 +400,7 @@ If desired, these default values can be customized to user's needs by
 changing just a few lines of library code. For instance, the
 constraint systems stored inside C_Polyhedron and NNC_Polyhedron
 objects can be made to use the sparse representation by just changing
-the following line in Polyhedron.defs.hh:
+the following line in Polyhedron_defs.hh:
 
   static const Representation default_con_sys_repr = DENSE;
 

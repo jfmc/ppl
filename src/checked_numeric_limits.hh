@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_checked_numeric_limits_hh
 #define PPL_checked_numeric_limits_hh 1
 
-#include "Checked_Number.defs.hh"
-#include "checked_int.inlines.hh"
+#include "Checked_Number_defs.hh"
+#include "checked_int_inlines.hh"
 #include <limits>
 
 namespace std {

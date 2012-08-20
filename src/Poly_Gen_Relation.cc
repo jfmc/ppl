@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Poly_Gen_Relation.defs.hh"
+#include "Poly_Gen_Relation_defs.hh"
 #include "assert.hh"
 #include <iostream>
 #include <string>

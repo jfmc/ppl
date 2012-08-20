@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 
-#include "Linear_Expression_Interface.defs.hh"
+#include "Linear_Expression_Interface_defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

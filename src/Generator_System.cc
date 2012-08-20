@@ -22,11 +22,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Generator_System.defs.hh"
-#include "Generator_System.inlines.hh"
-#include "Constraint.defs.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
+#include "Generator_System_defs.hh"
+#include "Generator_System_inlines.hh"
+#include "Constraint_defs.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
 #include "assert.hh"
 #include <string>
 #include <vector>

@@ -23,8 +23,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "H79_Certificate.defs.hh"
-#include "Polyhedron.defs.hh"
+#include "H79_Certificate_defs.hh"
+#include "Polyhedron_defs.hh"
 #include "assert.hh"
 #include <iostream>
 

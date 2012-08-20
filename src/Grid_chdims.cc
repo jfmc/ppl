@@ -23,8 +23,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Grid.defs.hh"
-#include "Variables_Set.defs.hh"
+#include "Grid_defs.hh"
+#include "Variables_Set_defs.hh"
 #include "assert.hh"
 
 namespace PPL = Parma_Polyhedra_Library;

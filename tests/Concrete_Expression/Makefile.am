@@ -140,7 +140,7 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-C_Expr_SOURCES = C_Expr.defs.hh C_Expr.inlines.hh C_Expr.cc
+C_Expr_SOURCES = C_Expr_defs.hh C_Expr_inlines.hh C_Expr.cc
 
 bdshape1_SOURCES = bdshape1.cc
 

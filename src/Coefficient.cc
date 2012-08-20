@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Coefficient.defs.hh"
+#include "Coefficient_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_ppl_test_hh 1
 
 #include "ppl_header.hh"
-#include "Random_Number_Generator.defs.hh"
+#include "Random_Number_Generator_defs.hh"
 #include <stdexcept>
 #include <sstream>
 #include <list>
