@@ -57,7 +57,7 @@ public:
     Constructor: if not reset, the watchdog will trigger after \p csecs
     centiseconds, invoking handler \p function.
   */
-  Watchdog(long csecs, void (*function)());
+  Watchdog(long csecs, void (* const function)());
 
   //! Destructor.
   ~Watchdog();
