@@ -257,7 +257,8 @@ Interval<To_Boundary, To_Info>::join_assign(const From& x) {
     return assign(x);
   if (check_empty_arg(x))
     return combine(V_EQ, V_EQ);
-  Result rl, ru;
+  Result rl;
+  Result ru;
   rl = min_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   ru = max_assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
   PPL_ASSERT(OK());
@@ -279,7 +280,8 @@ Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
     return assign(x);
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  Result rl, ru;
+  Result rl;
+  Result ru;
   rl = min_assign(LOWER, lower(), to_info,
                   LOWER, f_lower(x), f_info(x),
                   LOWER, f_lower(y), f_info(y));
@@ -355,7 +357,8 @@ Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
     return combine(V_EQ, V_EQ);
   bool nl = ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   bool nu = le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
-  Result rl = V_EQ, ru = V_EQ;
+  Result rl = V_EQ;
+  Result ru = V_EQ;
   if (nl) {
     if (nu)
       return assign(EMPTY);
@@ -389,7 +392,8 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
     return assign(x);
   bool nl = ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y));
   bool nu = le(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y));
-  Result rl = V_EQ, ru = V_EQ;
+  Result rl = V_EQ;
+  Result ru = V_EQ;
   if (nl) {
     if (nu)
       return assign(EMPTY);
@@ -558,7 +562,8 @@ Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
     return assign(EMPTY);
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  Result rl, ru;
+  Result rl;
+  Result ru;
   PPL_DIRTY_TEMP(To_Boundary, to_lower);
   rl = Boundary_NS::neg_assign(LOWER, to_lower, to_info, UPPER, f_upper(x), f_info(x));
   ru = Boundary_NS::neg_assign(UPPER, upper(), to_info, LOWER, f_lower(x), f_info(x));
@@ -628,7 +633,8 @@ Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
 
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  Result rl, ru;
+  Result rl;
+  Result ru;
   PPL_DIRTY_TEMP(To_Boundary, to_lower);
   rl = Boundary_NS::sub_assign(LOWER, to_lower, to_info,
                                LOWER, f_lower(x), f_info(x),
@@ -670,7 +676,8 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int yus = (yls > 0) ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
   int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
-  int ls, us;
+  int ls;
+  int us;
   if (inf_sign != 0) {
     ls = yls;
     us = yus;
@@ -697,7 +704,8 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
 
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  Result rl, ru;
+  Result rl;
+  Result ru;
   PPL_DIRTY_TEMP(To_Boundary, to_lower);
 
   if (xls >= 0) {
@@ -854,7 +862,8 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
 
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  Result rl, ru;
+  Result rl;
+  Result ru;
   PPL_DIRTY_TEMP(To_Boundary, to_lower);
   if (yls >= 0) {
     if (xls >= 0) {

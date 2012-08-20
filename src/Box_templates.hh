@@ -2801,7 +2801,9 @@ Box<ITV>::affine_image(const Variable var,
   if (is_empty())
     return;
 
-  Tmp_Interval_Type expr_value, temp0, temp1;
+  Tmp_Interval_Type expr_value;
+  Tmp_Interval_Type temp0;
+  Tmp_Interval_Type temp1;
   expr_value.assign(expr.inhomogeneous_term());
   for (Linear_Expression::const_iterator i = expr.begin(),
           i_end = expr.end(); i != i_end; ++i) {
@@ -2881,7 +2883,9 @@ Box<ITV>::affine_preimage(const Variable var,
   const Coefficient& expr_v = expr.coefficient(var);
   const bool invertible = (expr_v != 0);
   if (!invertible) {
-    Tmp_Interval_Type expr_value, temp0, temp1;
+    Tmp_Interval_Type expr_value;
+    Tmp_Interval_Type temp0;
+    Tmp_Interval_Type temp1;
     expr_value.assign(expr.inhomogeneous_term());
     for (Linear_Expression::const_iterator i = expr.begin(),
             i_end = expr.end(); i != i_end; ++i) {

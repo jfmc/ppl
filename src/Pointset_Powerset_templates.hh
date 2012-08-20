@@ -1329,11 +1329,10 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
   typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
   Cert_Multiset x_cert_ms;
   collect_certificates(x_cert_ms);
-  typename Cert_Multiset::const_iterator
-    xi = x_cert_ms.begin(),
-    x_cert_ms_end = x_cert_ms.end(),
-    yi = y_cert_ms.begin(),
-    y_cert_ms_end = y_cert_ms.end();
+  typename Cert_Multiset::const_iterator xi = x_cert_ms.begin();
+  typename Cert_Multiset::const_iterator x_cert_ms_end = x_cert_ms.end();
+  typename Cert_Multiset::const_iterator yi = y_cert_ms.begin();
+  typename Cert_Multiset::const_iterator y_cert_ms_end = y_cert_ms.end();
   while (xi != x_cert_ms_end && yi != y_cert_ms_end) {
     const Cert& xi_cert = xi->first;
     const Cert& yi_cert = yi->first;

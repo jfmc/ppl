@@ -323,7 +323,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
-  dimension_type source_num_rows = 0, dest_num_rows = 0;
+  dimension_type source_num_rows = 0;
+  dimension_type dest_num_rows = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   dimension_type dims = source.space_dimension() + 1;
