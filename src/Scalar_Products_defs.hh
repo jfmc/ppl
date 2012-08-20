@@ -214,7 +214,8 @@ public:
 
 private:
   //! The type of the scalar product sign function pointer.
-  typedef int (*SPS_type)(const Linear_Expression&, const Linear_Expression&);
+  typedef int (* const SPS_type)(const Linear_Expression&,
+                                 const Linear_Expression&);
 
   //! The scalar product sign function pointer.
   SPS_type sps_fp;
