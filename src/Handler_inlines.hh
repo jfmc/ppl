@@ -48,7 +48,7 @@ Handler_Flag<Flag_Base, Flag>::act() const {
 }
 
 inline
-Handler_Function::Handler_Function(void (*function)())
+Handler_Function::Handler_Function(void (* const function)())
   : f(function) {
 }
 
