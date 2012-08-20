@@ -22,12 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Polyhedron.defs.hh"
-#include "C_Polyhedron.defs.hh"
-#include "NNC_Polyhedron.defs.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
-#include "MIP_Problem.defs.hh"
+#include "Polyhedron_defs.hh"
+#include "C_Polyhedron_defs.hh"
+#include "NNC_Polyhedron_defs.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
+#include "MIP_Problem_defs.hh"
 #include "wrap_assign.hh"
 #include "assert.hh"
 #include <cstdlib>

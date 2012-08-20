@@ -22,12 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "globals.defs.hh"
+#include "globals_defs.hh"
 
 #if PPL_PROFILE_ADD_WEIGHT
 #include <iostream>
 #include <cmath>
-#include "Weight_Profiler.defs.hh"
+#include "Weight_Profiler_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

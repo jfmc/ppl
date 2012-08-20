@@ -24,10 +24,10 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_linearize_hh
 #define PPL_linearize_hh 1
 
-#include "Concrete_Expression.defs.hh"
-#include "Float.defs.hh"
-#include "Linear_Form.defs.hh"
-#include "Box.defs.hh"
+#include "Concrete_Expression_defs.hh"
+#include "Float_defs.hh"
+#include "Linear_Form_defs.hh"
+#include "Box_defs.hh"
 #include <map>
 
 namespace Parma_Polyhedra_Library {

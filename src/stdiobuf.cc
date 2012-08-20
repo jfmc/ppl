@@ -22,8 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "stdiobuf.defs.hh"
-#include "globals.defs.hh"
+#include "stdiobuf_defs.hh"
+#include "globals_defs.hh"
 #include "assert.hh"
 #include <cstddef>
 

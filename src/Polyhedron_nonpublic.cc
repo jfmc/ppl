@@ -23,10 +23,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Polyhedron.defs.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
-#include "Linear_Form.defs.hh"
+#include "Polyhedron_defs.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
+#include "Linear_Form_defs.hh"
 #include "C_Integer.hh"
 #include "assert.hh"
 #include <string>

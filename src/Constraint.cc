@@ -22,11 +22,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Constraint.defs.hh"
-#include "Variable.defs.hh"
-#include "Variables_Set.defs.hh"
-#include "Congruence.defs.hh"
-#include "math_utilities.defs.hh"
+#include "Constraint_defs.hh"
+#include "Variable_defs.hh"
+#include "Variables_Set_defs.hh"
+#include "Congruence_defs.hh"
+#include "math_utilities_defs.hh"
 
 #include <iostream>
 #include <sstream>

@@ -22,9 +22,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "C_Polyhedron.defs.hh"
-#include "NNC_Polyhedron.defs.hh"
-#include "Grid.defs.hh"
+#include "C_Polyhedron_defs.hh"
+#include "NNC_Polyhedron_defs.hh"
+#include "Grid_defs.hh"
 #include "algorithms.hh"
 
 namespace PPL = Parma_Polyhedra_Library;

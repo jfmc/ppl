@@ -22,10 +22,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Bit_Matrix.defs.hh"
-#include "Dense_Row.defs.hh"
-#include "globals.defs.hh"
-#include "swapping_sort.templates.hh"
+#include "Bit_Matrix_defs.hh"
+#include "Dense_Row_defs.hh"
+#include "globals_defs.hh"
+#include "swapping_sort_templates.hh"
 #include "C_Integer.hh"
 #include <iostream>
 #include <string>

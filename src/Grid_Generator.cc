@@ -22,10 +22,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Grid_Generator.defs.hh"
+#include "Grid_Generator_defs.hh"
 
-#include "Variables_Set.defs.hh"
-#include "math_utilities.defs.hh"
+#include "Variables_Set_defs.hh"
+#include "math_utilities_defs.hh"
 
 #include <iostream>
 #include <sstream>

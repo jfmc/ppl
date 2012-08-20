@@ -22,17 +22,17 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "MIP_Problem.defs.hh"
-#include "globals.defs.hh"
-#include "Checked_Number.defs.hh"
-#include "Linear_Expression.defs.hh"
-#include "Constraint.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Constraint_System.inlines.hh"
-#include "Generator.defs.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
-#include "math_utilities.defs.hh"
+#include "MIP_Problem_defs.hh"
+#include "globals_defs.hh"
+#include "Checked_Number_defs.hh"
+#include "Linear_Expression_defs.hh"
+#include "Constraint_defs.hh"
+#include "Constraint_System_defs.hh"
+#include "Constraint_System_inlines.hh"
+#include "Generator_defs.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
+#include "math_utilities_defs.hh"
 
 #include <stdexcept>
 #include <deque>
@@ -45,8 +45,8 @@ site: http://bugseng.com/products/ppl/ . */
 
 // These are needed for the linear_combine() method that takes a Dense_Row and
 // a Sparse_Row.
-#include "Dense_Row.defs.hh"
-#include "Sparse_Row.defs.hh"
+#include "Dense_Row_defs.hh"
+#include "Sparse_Row_defs.hh"
 
 #endif // PPL_USE_SPARSE_MATRIX
 

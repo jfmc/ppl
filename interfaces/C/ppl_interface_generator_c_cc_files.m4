@@ -46,7 +46,7 @@ ___BEGIN_OF_FILE___ ppl_c_`'m4_current_interface`'.cc << ___END_OF_FILE___
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-`#'include "ppl_c_implementation_common.defs.hh"
+`#'include "ppl_c_implementation_common_defs.hh"
 `#'include "interfaced_boxes.hh"
 `#'include "ppl_c_implementation_domains.hh"
 

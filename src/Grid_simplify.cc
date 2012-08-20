@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "assert.hh"
-#include "Grid.defs.hh"
+#include "Grid_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

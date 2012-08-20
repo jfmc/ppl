@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_algorithms_hh
 #define PPL_algorithms_hh 1
 
-#include "NNC_Polyhedron.defs.hh"
-#include "Pointset_Powerset.defs.hh"
+#include "NNC_Polyhedron_defs.hh"
+#include "Pointset_Powerset_defs.hh"
 #include <utility>
 #include "assert.hh"
 

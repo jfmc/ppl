@@ -69,8 +69,8 @@ ppl_interface_generator_prolog_dox_code.m4
 
 EXTRA_DIST = \
 $(interface_generator_files) \
-ppl_prolog_common.defs.hh \
-ppl_prolog_common.inlines.hh \
+ppl_prolog_common_defs.hh \
+ppl_prolog_common_inlines.hh \
 ppl_prolog_common.cc \
 Prolog_configured_interface.dox \
 $(interface_generator_dox_files) \

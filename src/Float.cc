@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Float.defs.hh"
+#include "Float_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

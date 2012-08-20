@@ -22,14 +22,14 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Congruence_System.defs.hh"
-#include "Congruence_System.inlines.hh"
-#include "Constraint_System.defs.hh"
-#include "Constraint_System.inlines.hh"
-#include "Congruence.defs.hh"
-#include "Grid_Generator.defs.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
+#include "Congruence_System_defs.hh"
+#include "Congruence_System_inlines.hh"
+#include "Constraint_System_defs.hh"
+#include "Constraint_System_inlines.hh"
+#include "Congruence_defs.hh"
+#include "Grid_Generator_defs.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
 #include "assert.hh"
 #include <string>
 #include <vector>

@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Watchdog.defs.hh"
+#include "Watchdog_defs.hh"
 
 #if PPL_HAVE_DECL_SETITIMER && PPL_HAVE_DECL_SIGACTION
 

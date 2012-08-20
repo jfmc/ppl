@@ -24,13 +24,13 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_max_space_dimension_hh
 #define PPL_max_space_dimension_hh 1
 
-#include "Polyhedron.defs.hh"
-#include "C_Polyhedron.defs.hh"
-#include "NNC_Polyhedron.defs.hh"
-#include "Grid.defs.hh"
+#include "Polyhedron_defs.hh"
+#include "C_Polyhedron_defs.hh"
+#include "NNC_Polyhedron_defs.hh"
+#include "Grid_defs.hh"
 #include "Rational_Box.hh"
-#include "BD_Shape.defs.hh"
-#include "Octagonal_Shape.defs.hh"
+#include "BD_Shape_defs.hh"
+#include "Octagonal_Shape_defs.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {

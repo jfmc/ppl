@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#include "ppl_java_common.defs.hh"
+#include "ppl_java_common_defs.hh"
 #include "parma_polyhedra_library_Artificial_Parameter.h"
 #include "parma_polyhedra_library_Artificial_Parameter_Sequence.h"
 #include "parma_polyhedra_library_Bounded_Integer_Type_Overflow.h"

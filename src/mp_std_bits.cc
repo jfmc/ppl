@@ -23,7 +23,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "mp_std_bits.defs.hh"
+#include "mp_std_bits_defs.hh"
 
 const bool std::numeric_limits<mpz_class>::is_specialized;
 const int std::numeric_limits<mpz_class>::digits;

@@ -52,8 +52,8 @@ libppl_tests.a \
 
 noinst_HEADERS = \
 ppl_test.hh \
-Random_Number_Generator.defs.hh \
-Random_Number_Generator.inlines.hh \
-Random_Number_Generator.types.hh
+Random_Number_Generator_defs.hh \
+Random_Number_Generator_inlines.hh \
+Random_Number_Generator_types.hh
 
 EXTRA_DIST = valgrind_suppressions

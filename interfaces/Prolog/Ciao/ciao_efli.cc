@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ciao_efli.hh"
-#include "ppl_prolog_common.defs.hh"
+#include "ppl_prolog_common_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

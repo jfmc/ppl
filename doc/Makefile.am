@@ -134,8 +134,8 @@ user-language-interface.tex
 DEVREF_C_INTERFACE_STUFF = \
 $(COMMON_C_INTERFACE_STUFF) \
 devref-language-interface.tex \
-../interfaces/C/ppl_c_implementation_common.defs.hh \
-../interfaces/C/ppl_c_implementation_common.inlines.hh \
+../interfaces/C/ppl_c_implementation_common_defs.hh \
+../interfaces/C/ppl_c_implementation_common_inlines.hh \
 ../interfaces/C/ppl_c_implementation_common.cc
 
 
@@ -168,8 +168,8 @@ $(top_builddir)/interfaces/C/ppl_c.h
 DEVREF_CONFIGURED_C_INTERFACE_STUFF = \
 $(COMMON_C_INTERFACE_STUFF) \
 $(top_builddir)/interfaces/C/ppl_c.h \
-../interfaces/C/ppl_c_implementation_common.defs.hh \
-../interfaces/C/ppl_c_implementation_common.inlines.hh \
+../interfaces/C/ppl_c_implementation_common_defs.hh \
+../interfaces/C/ppl_c_implementation_common_inlines.hh \
 ../interfaces/C/ppl_c_implementation_common.cc
 
 endif BUILD_C_INTERFACE
@@ -219,8 +219,8 @@ devref-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_interface.dox \
 $(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES) \
-../interfaces/Prolog/ppl_prolog_common.defs.hh \
-../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+../interfaces/Prolog/ppl_prolog_common_defs.hh \
+../interfaces/Prolog/ppl_prolog_common_inlines.hh \
 ../interfaces/Prolog/ppl_prolog_common.cc
 
 
@@ -259,8 +259,8 @@ devref-language-interface.tex \
 ppl.sty \
 ../interfaces/Prolog/Prolog_configured_interface.dox \
 $(PROLOG_INTERFACE_ADDITIONAL_DOX_PAGES) \
-../interfaces/Prolog/ppl_prolog_common.defs.hh \
-../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+../interfaces/Prolog/ppl_prolog_common_defs.hh \
+../interfaces/Prolog/ppl_prolog_common_inlines.hh \
 ../interfaces/Prolog/ppl_prolog_common.cc \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.hh \
 $(top_builddir)/interfaces/Prolog/ppl_prolog_domains.cc.stamp
@@ -304,8 +304,8 @@ $(DOX_LICENSE_FILES) \
 devref-language-interface.tex \
 ppl.sty \
 ../interfaces/OCaml/OCaml_interface.dox \
-../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-../interfaces/OCaml/ppl_ocaml_common.inlines.hh \
+../interfaces/OCaml/ppl_ocaml_common_defs.hh \
+../interfaces/OCaml/ppl_ocaml_common_inlines.hh \
 ../interfaces/OCaml/ppl_ocaml_common.cc \
 ../interfaces/OCaml/ppl_ocaml_globals.mli
 
@@ -421,8 +421,8 @@ devref-language-interface.tex \
 ppl.sty \
 $(JAVA_INTERFACE_JAVA_FILES) \
 ../interfaces/Java/jni/ppl_java_common.cc \
-../interfaces/Java/jni/ppl_java_common.defs.hh \
-../interfaces/Java/jni/ppl_java_common.inlines.hh \
+../interfaces/Java/jni/ppl_java_common_defs.hh \
+../interfaces/Java/jni/ppl_java_common_inlines.hh \
 ../interfaces/Java/jni/ppl_java_globals.cc
 
 
@@ -935,8 +935,8 @@ $(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/C/ppl_c_header.h \
 $(srcdir)/../interfaces/C/C_interface.dox \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
-$(srcdir)/../interfaces/C/ppl_c_implementation_common.defs.hh \
-$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh
+$(srcdir)/../interfaces/C/ppl_c_implementation_common_defs.hh \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common_inlines.hh
 
 user-c-interface.latex-dir: \
 user-language-interface.doxyconf \
@@ -1021,8 +1021,8 @@ $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep_domains.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
-$(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
-$(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common_defs.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common_inlines.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc
 
 user-prolog-interface.latex-dir: \
@@ -1101,8 +1101,8 @@ SED_OCAML_INPUT_DEVREF = \
 $(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
-$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common_defs.hh \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common_inlines.hh
 
 OCAMLDOC_HTML_OPTIONS = \
 -I @mlgmp_dir@ -I $(top_builddir)/interfaces/OCaml -html
@@ -1197,8 +1197,8 @@ SED_JAVA_INPUT_DEVREF = \
 $(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/Java/parma_polyhedra_library \
 $(srcdir)/../interfaces/Java/jni/ppl_java_common.cc \
-$(srcdir)/../interfaces/Java/jni/ppl_java_common.defs.hh \
-$(srcdir)/../interfaces/Java/jni/ppl_java_common.inlines.hh \
+$(srcdir)/../interfaces/Java/jni/ppl_java_common_defs.hh \
+$(srcdir)/../interfaces/Java/jni/ppl_java_common_inlines.hh \
 $(srcdir)/../interfaces/Java/jni/ppl_java_globals.cc
 
 user-java-interface.latex-dir: \
@@ -1284,8 +1284,8 @@ $(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/C/C_interface.dox \
 ../interfaces/C/ppl_c.h \
 $(srcdir)/../interfaces/C/ppl_c_implementation_common.cc \
-$(srcdir)/../interfaces/C/ppl_c_implementation_common.defs.hh \
-$(srcdir)/../interfaces/C/ppl_c_implementation_common.inlines.hh
+$(srcdir)/../interfaces/C/ppl_c_implementation_common_defs.hh \
+$(srcdir)/../interfaces/C/ppl_c_implementation_common_inlines.hh
 # FIXME add generated files
 
 user-configured-c-interface.latex-dir: \
@@ -1376,8 +1376,8 @@ $(srcdir)/../interfaces/Prolog/Prolog_interface_sysindep.dox \
 ../interfaces/Prolog/Prolog_configured_domains.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_compilation.dox \
 $(srcdir)/../interfaces/Prolog/Prolog_interface_sysdep.dox \
-$(srcdir)/../interfaces/Prolog/ppl_prolog_common.defs.hh \
-$(srcdir)/../interfaces/Prolog/ppl_prolog_common.inlines.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common_defs.hh \
+$(srcdir)/../interfaces/Prolog/ppl_prolog_common_inlines.hh \
 $(srcdir)/../interfaces/Prolog/ppl_prolog_common.cc
 # FIXME: add appropriate generated files.
 
@@ -1464,8 +1464,8 @@ SED_CONFIGURED_OCAML_INPUT_DEVREF = \
 $(DOX_LICENSE_INPUT) \
 $(srcdir)/../interfaces/OCaml/OCaml_interface.dox \
 $(srcdir)/../interfaces/OCaml/ppl_ocaml_common.cc \
-$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.defs.hh \
-$(srcdir)/../interfaces/OCaml/ppl_ocaml_common.inlines.hh
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common_defs.hh \
+$(srcdir)/../interfaces/OCaml/ppl_ocaml_common_inlines.hh
 
 user-configured-ocaml-interface.latex-dir: \
 user-language-interface.doxyconf \

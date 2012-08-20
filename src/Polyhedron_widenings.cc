@@ -23,11 +23,11 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Polyhedron.defs.hh"
-#include "BHRZ03_Certificate.defs.hh"
+#include "Polyhedron_defs.hh"
+#include "BHRZ03_Certificate_defs.hh"
 #include "Rational_Box.hh"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
 #include "assert.hh"
 #include <iostream>
 #include <stdexcept>

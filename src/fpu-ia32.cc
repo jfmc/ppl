@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
   && defined(__i386__) \
   && (defined(__GNUC__) || defined(__INTEL_COMPILER))
 
-#include "fpu.defs.hh"
+#include "fpu_defs.hh"
 #include <csetjmp>
 #include <csignal>
 // This inclusion is to work around a bug present in some versions

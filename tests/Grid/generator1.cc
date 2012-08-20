@@ -348,7 +348,7 @@ test16() {
 }
 
 // Getting coefficients of dimensions and rebuilding a generator from
-// them. This is based on Example 6 in Grid_Generator.defs.hh
+// them. This is based on Example 6 in Grid_Generator_defs.hh
 bool
 test17() {
   Variable A(0);

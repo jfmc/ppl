@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Rational_Box_hh 1
 
 #include "Rational_Interval.hh"
-#include "Box.defs.hh"
+#include "Box_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

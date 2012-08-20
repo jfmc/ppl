@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_initializer_hh
 #define PPL_initializer_hh 1
 
-#include "Init.defs.hh"
+#include "Init_defs.hh"
 
 #ifndef PPL_NO_AUTOMATIC_INITIALIZATION
 

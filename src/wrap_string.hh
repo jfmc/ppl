@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_wrap_hh
 #define PPL_wrap_hh 1
 
-#include "globals.defs.hh"
+#include "globals_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

@@ -22,9 +22,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Scalar_Products.defs.hh"
-#include "Scalar_Products.inlines.hh"
-#include "Coefficient.defs.hh"
+#include "Scalar_Products_defs.hh"
+#include "Scalar_Products_inlines.hh"
+#include "Coefficient_defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

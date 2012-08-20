@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 /* Interface for Coefficient. */
 
-#include "ppl_c_implementation_common.defs.hh"
+#include "ppl_c_implementation_common_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

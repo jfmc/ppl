@@ -23,4 +23,4 @@ site: http://bugseng.com/products/ppl/ . */
 
 
 #include "ppl-config.h"
-#include "Linear_Form.defs.hh"
+#include "Linear_Form_defs.hh"

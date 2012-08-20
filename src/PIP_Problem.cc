@@ -22,8 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "PIP_Problem.defs.hh"
-#include "PIP_Tree.defs.hh"
+#include "PIP_Problem_defs.hh"
+#include "PIP_Tree_defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

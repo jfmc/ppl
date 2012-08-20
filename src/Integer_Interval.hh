@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Integer_Interval_hh
 #define PPL_Integer_Interval_hh 1
 
-#include "Interval.defs.hh"
+#include "Interval_defs.hh"
 #include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {

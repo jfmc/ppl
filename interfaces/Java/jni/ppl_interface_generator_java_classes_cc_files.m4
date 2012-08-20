@@ -49,7 +49,7 @@ ___BEGIN_OF_FILE___ ppl_java_Termination.cc << ___END_OF_FILE___
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-`#'include "ppl_java_common.defs.hh"
+`#'include "ppl_java_common_defs.hh"
 `#'include "parma_polyhedra_library_Termination.h"
 `#'include "parma_polyhedra_library_C_Polyhedron.h"
 `#'include "parma_polyhedra_library_NNC_Polyhedron.h"
@@ -66,7 +66,7 @@ ___BEGIN_OF_FILE___ ppl_java_`'m4_current_interface`'.cc << ___END_OF_FILE___
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
-`#'include "ppl_java_common.defs.hh"
+`#'include "ppl_java_common_defs.hh"
 `#'include "parma_polyhedra_library_`'m4_current_interface`'.h"
 m4_ifelse(m4_current_interface, Polyhedron,
 `#'include "parma_polyhedra_library_C_Polyhedron.h"

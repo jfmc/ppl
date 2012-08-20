@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
-#include "Pointset_Ask_Tell.defs.hh"
+#include "Pointset_Ask_Tell_defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
