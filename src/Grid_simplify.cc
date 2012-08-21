@@ -467,7 +467,7 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
 
       ++pivot_index;
     }
-  } // end for (dimension_type dim = num_columns; dim-- > 0; )
+  }
 
   if (pivot_index > 0) {
     // If the last row is false then make it the equality 1 = 0, and
