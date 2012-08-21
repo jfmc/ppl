@@ -371,7 +371,7 @@ inline void
 float_intel_double_extended::build(bool negative,
                                    mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&lsp, 0, -1, 8, 0, 0, mantissa);
+  mpz_export(&lsp, 0, -1, sizeof(lsp), 0, 0, mantissa);
 #else
   lsp = mpz_get_ui(mantissa);
 #endif
@@ -450,7 +450,7 @@ float_ieee754_quad::set_max(bool negative) {
 inline void
 float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
   uint64_t parts[2];
-  mpz_export(parts, 0, -1, 8, 0, 0, mantissa);
+  mpz_export(parts, 0, -1, sizeof(parts[0]), 0, 0, mantissa);
   lsp = parts[0];
   msp = parts[1];
   msp &= ((static_cast<uint64_t>(1) << (MANTISSA_BITS - 64)) - 1);
