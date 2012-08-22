@@ -153,11 +153,11 @@ wrap_assign(PSET& pointset,
             const unsigned complexity_threshold,
             const bool wrap_individually,
             const char* class_name) {
-  PPL_ASSERT(vars.space_dimension() <= pointset.space_dimension());
+  // We must have cs_p->space_dimension() <= vars.space_dimension()
+  //         and  vars.space_dimension() <= pointset.space_dimension().
 
   // Dimension-compatibility check of `*cs_p', if any.
   if (cs_p != 0) {
-    PPL_ASSERT(cs_p->space_dimension() <= vars.space_dimension());
     const dimension_type vars_space_dim = vars.space_dimension();
     if (cs_p->space_dimension() > vars_space_dim) {
       std::ostringstream s;
