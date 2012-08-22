@@ -51,6 +51,7 @@ struct float_ieee754_half {
   uint16_t word;
   static const uint16_t SGN_MASK = 0x8000U;
   static const uint16_t EXP_MASK = 0xfc00U;
+  static const uint16_t WRD_MAX = 0x7bffU;
   static const uint16_t POS_INF = 0x7c00U;
   static const uint16_t NEG_INF = 0xfc00U;
   static const uint16_t POS_ZERO = 0x0000U;
@@ -83,6 +84,7 @@ struct float_ieee754_single {
   uint32_t word;
   static const uint32_t SGN_MASK = 0x80000000U;
   static const uint32_t EXP_MASK = 0x7f800000U;
+  static const uint32_t WRD_MAX = 0x7f7fffffU;
   static const uint32_t POS_INF = 0x7f800000U;
   static const uint32_t NEG_INF = 0xff800000U;
   static const uint32_t POS_ZERO = 0x00000000U;
@@ -131,6 +133,7 @@ struct float_ieee754_double {
   static const uint32_t MSP_NEG_ZERO = 0x80000000U;
   static const uint32_t LSP_INF = 0;
   static const uint32_t LSP_ZERO = 0;
+  static const uint32_t MSP_MAX = 0x7fefffffU;
   static const uint32_t LSP_MAX = 0xffffffffU;
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 11;
@@ -159,6 +162,7 @@ struct float_ibm_single {
   uint32_t word;
   static const uint32_t SGN_MASK = 0x80000000U;
   static const uint32_t EXP_MASK = 0x7f000000U;
+  static const uint32_t WRD_MAX = 0x7fffffffU;
   static const uint32_t POS_INF = 0x7f000000U;
   static const uint32_t NEG_INF = 0xff000000U;
   static const uint32_t POS_ZERO = 0x00000000U;
@@ -211,6 +215,7 @@ struct float_intel_double_extended {
   static const uint32_t MSP_NEG_ZERO = 0x00008000U;
   static const uint64_t LSP_INF = static_cast<uint64_t>(0x8000000000000000ULL);
   static const uint64_t LSP_ZERO = 0;
+  static const uint32_t MSP_MAX = 0x00007ffeU;
   static const uint64_t LSP_DMAX = static_cast<uint64_t>(0x7fffffffffffffffULL);
   static const uint64_t LSP_NMAX = static_cast<uint64_t>(0xffffffffffffffffULL);
   static const unsigned int BASE = 2;
@@ -252,6 +257,7 @@ struct float_ieee754_quad {
   static const uint64_t MSP_NEG_ZERO = static_cast<uint64_t>(0x8000000000000000ULL);
   static const uint64_t LSP_INF = 0;
   static const uint64_t LSP_ZERO = 0;
+  static const uint64_t MSP_MAX = static_cast<uint64_t>(0x7ffeffffffffffffULL);
   static const uint64_t LSP_MAX = static_cast<uint64_t>(0xffffffffffffffffULL);
   static const unsigned int BASE = 2;
   static const unsigned int EXPONENT_BITS = 15;

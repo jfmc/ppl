@@ -38,6 +38,7 @@ const uint64_t float_ieee754_quad::MSP_POS_ZERO;
 const uint64_t float_ieee754_quad::MSP_NEG_ZERO;
 const uint64_t float_ieee754_quad::LSP_INF;
 const uint64_t float_ieee754_quad::LSP_ZERO;
+const uint64_t float_ieee754_quad::MSP_MAX;
 const uint64_t float_ieee754_quad::LSP_MAX;
 
 } // Parma_Polyhedra_Library
