@@ -81,14 +81,14 @@ class Parma_Polyhedra_Library::Implementation::Watchdog::Handler_Function
   : public Handler {
 public:
   //! Constructor with a given function.
-  Handler_Function(void (*function)());
+  Handler_Function(void (* const function)());
 
   //! Does its job: calls the embedded function.
   virtual void act() const;
 
 private:
   //! Pointer to the embedded function.
-  void (*f)();
+  void (* const f)();
 };
 
 #include "Handler_inlines.hh"

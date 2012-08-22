@@ -116,11 +116,6 @@ set_unbounded(Boundary_Type type, T& x, Info& info) {
 template <typename T, typename Info>
 inline Result
 set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
-  /*
-  PPL_COMPILE_TIME_CHECK(Info::store_special
-                         || std::numeric_limits<T>::has_infinity,
-                         "minus infinity is not representable");
-  */
   if (open) {
     PPL_ASSERT(type == LOWER);
   }
@@ -144,11 +139,6 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 template <typename T, typename Info>
 inline Result
 set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
-  /*
-  PPL_COMPILE_TIME_CHECK(Info::store_special
-                         || std::numeric_limits<T>::has_infinity,
-                         "minus infinity is not representable");
-  */
   if (open) {
     PPL_ASSERT(type == UPPER);
   }

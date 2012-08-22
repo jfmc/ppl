@@ -332,7 +332,8 @@ public:
   typename Enable_If<Is_Special<From>::value, I_Result>::type
   assign(const From&) {
     info().clear();
-    Result rl, ru;
+    Result rl;
+    Result ru;
     switch (From::vclass) {
     case VC_MINUS_INFINITY:
       rl = Boundary_NS::set_minus_infinity(LOWER, lower(), info());

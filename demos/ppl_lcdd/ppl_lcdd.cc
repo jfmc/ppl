@@ -298,7 +298,7 @@ warning(const char* format, ...) {
 
 #ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 
-extern "C" typedef void (*sig_handler_type)(int);
+extern "C" typedef void (* const sig_handler_type)(int);
 
 void
 set_alarm_on_cpu_time(const unsigned long seconds, sig_handler_type handler) {

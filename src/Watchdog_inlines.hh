@@ -48,7 +48,7 @@ Watchdog::Watchdog(long csecs,
 }
 
 inline
-Watchdog::Watchdog(long csecs, void (*function)())
+Watchdog::Watchdog(long csecs, void (* const function)())
   : expired(false),
     handler(*new Implementation::Watchdog::Handler_Function(function)) {
   if (csecs == 0)
