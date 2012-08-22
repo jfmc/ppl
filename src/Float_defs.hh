@@ -51,8 +51,8 @@ struct float_ieee754_half {
   uint16_t word;
   static const uint16_t SGN_MASK = 0x8000U;
   static const uint16_t EXP_MASK = 0xfc00U;
-  static const uint16_t POS_INF = 0xfc00U;
-  static const uint16_t NEG_INF = 0x7c00U;
+  static const uint16_t POS_INF = 0x7c00U;
+  static const uint16_t NEG_INF = 0xfc00U;
   static const uint16_t POS_ZERO = 0x0000U;
   static const uint16_t NEG_ZERO = 0x8000U;
   static const unsigned int BASE = 2;
