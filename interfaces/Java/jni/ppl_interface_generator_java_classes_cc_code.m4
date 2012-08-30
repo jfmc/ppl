@@ -1171,7 +1171,7 @@ CATCH_ALL
 
 m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1integer_1points
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1integer_1points__Lparma_1polyhedra_1library_Complexity_1Class_2
 (JNIEnv* env, jobject j_this, jobject j_complexity) try {
   @CPP_CLASS@* this_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
@@ -1200,7 +1200,7 @@ CATCH_ALL
 
 m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
 `dnl
-JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1integer_1points_12
+JNIEXPORT void JNICALL Java_parma_1polyhedra_1library_@1CLASS@_drop_1some_1non_1integer_1points__Lparma_1polyhedra_1library_Variables_1Set_2Lparma_1polyhedra_1library_Complexity_1Class_2
 (JNIEnv* env, jobject j_this, jobject j_v_set, jobject j_complexity) try {
   @CPP_CLASS@* this_ptr
     = reinterpret_cast<@CPP_CLASS@*>(get_ptr(env, j_this));
