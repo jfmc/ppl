@@ -37,6 +37,14 @@ Bugfixes
 
 o  Portability improved.
 
+o  Fixed a precision regression in Polyhedron method
+     void drop_some_non_integer_points(const Variables_Set&,
+                                       Complexity_Class);
+
+o  In the Java interface, fixed declaration of methods
+     void drop_some_non_integer_points(...);
+   so as to accept a Complexity_Class enum value.
+
 
 --------------------------------------------------------------------------
 NEWS for version 1.0  (released on June 28, 2012)
