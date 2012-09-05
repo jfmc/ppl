@@ -21,44 +21,44 @@ namespace Parma_Polyhedra_Library {
   This justifies (here below) the explicit use of Doxygen command \class.
 */
 
-/*! \class Parma_Polyhedra_Library::Concrete_Expression \brief
-  The base class of all concrete expressions.
+/*! \brief The base class of all concrete expressions.
+  \class Parma_Polyhedra_Library::Concrete_Expression
 */
 template <typename Target>
 class Concrete_Expression;
 
-/*! \class Parma_Polyhedra_Library::Binary_Operator \brief
-  A binary operator applied to two concrete expressions.
+/*! \brief A binary operator applied to two concrete expressions.
+  \class Parma_Polyhedra_Library::Binary_Operator
 */
 template <typename Target>
 class Binary_Operator;
 
-/*! \class Parma_Polyhedra_Library::Unary_Operator \brief
-  A unary operator applied to one concrete expression.
+/*! \brief A unary operator applied to one concrete expression.
+  \class Parma_Polyhedra_Library::Unary_Operator
 */
 template <typename Target>
 class Unary_Operator;
 
-/*! \class Parma_Polyhedra_Library::Cast_Operator \brief
-  A cast operator converting one concrete expression to some type.
+/*! \brief A cast operator converting one concrete expression to some type.
+  \class Parma_Polyhedra_Library::Cast_Operator
 */
 template <typename Target>
 class Cast_Operator;
 
-/*! \class Parma_Polyhedra_Library::Integer_Constant \brief
-  An integer constant concrete expression.
+/*! \brief An integer constant concrete expression.
+  \class Parma_Polyhedra_Library::Integer_Constant
 */
 template <typename Target>
 class Integer_Constant;
 
-/*! \class Parma_Polyhedra_Library::Floating_Point_Constant \brief
-  A floating-point constant concrete expression.
+/*! \brief A floating-point constant concrete expression.
+  \class Parma_Polyhedra_Library::Floating_Point_Constant
 */
 template <typename Target>
 class Floating_Point_Constant;
 
-/*! \class Parma_Polyhedra_Library::Approximable_Reference \brief
-  A concrete expression representing a reference to some approximable.
+/*! \brief A concrete expression representing a reference to some approximable.
+  \class Parma_Polyhedra_Library::Approximable_Reference
 */
 template <typename Target>
 class Approximable_Reference;
@@ -73,7 +73,7 @@ class Concrete_Expression_Type;
   Cast_Operator, Integer_Constant, Floating_Point_Constant, or
   Approximable_Reference.  For example, the Binary_Operator kind
   integer constant should be defined by an instance as the member
-  <CODE>Binary_Operator\<T\>::KIND</CODE>
+  <CODE>Binary_Operator\<T\>::%KIND</CODE>.
 */
 typedef int Concrete_Expression_Kind;
 

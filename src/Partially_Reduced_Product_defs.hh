@@ -1659,7 +1659,7 @@ namespace Parma_Polyhedra_Library {
   be supported in C++.
 
   When template typedefs will be supported in C++, what now is verbosely
-  denoted by <CODE>Domain_Product\<Domain1, Domain2\>::Direct_Product</CODE>
+  denoted by <CODE>Domain_Product\<Domain1, Domain2\>::%Direct_Product</CODE>
   will simply be denoted by <CODE>Direct_Product\<Domain1, Domain2\></CODE>.
 */
 template <typename D1, typename D2>
