@@ -1213,45 +1213,40 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 div_2exp_signed_int(Type& to, const Type x, unsigned int exp,
                     Rounding_Dir dir) {
-  if (exp > sizeof_to_bits(sizeof(Type)) - 1) {
-  zero:
-    to = 0;
-    if (round_not_requested(dir))
-      return V_LGE;
-    if (x < 0)
+  if (x < 0) {
+    if (exp >= sizeof_to_bits(sizeof(Type))) {
+      to = 0;
+      if (round_not_requested(dir))
+        return V_LE;
       return round_lt_int_no_overflow<To_Policy>(to, dir);
-    else if (x > 0)
+    }
+    typedef typename C_Integer<Type>::other_type UType;
+    UType ux = x;
+    ux = -ux;
+    to = ~Type(~-(ux >> exp));
+    if (round_not_requested(dir))
+      return V_LE;
+    if (ux & ((UType(1) << exp) -1))
+      return round_lt_int_no_overflow<To_Policy>(to, dir);
+    return V_EQ;
+  }
+  else {
+    if (exp >= sizeof_to_bits(sizeof(Type)) - 1) {
+      to = 0;
+      if (round_not_requested(dir))
+        return V_GE;
+      if (x == 0)
+        return V_EQ;
+      return round_gt_int_no_overflow<To_Policy>(to, dir);
+    }
+    to = x >> exp;
+    if (round_not_requested(dir))
+      return V_GE;
+    if (x & ((Type(1) << exp) - 1))
       return round_gt_int_no_overflow<To_Policy>(to, dir);
     else
       return V_EQ;
   }
-  if (exp == sizeof_to_bits(sizeof(Type)) - 1) {
-    if (x == C_Integer<Type>::min) {
-      to = -1;
-      return V_EQ;
-    }
-    goto zero;
-  }
-#if 0
-  to = x / (Type(1) << exp);
-  if (round_not_requested(dir))
-    return V_GE;
-  Type r = x % (Type(1) << exp);
-  if (r < 0)
-    return round_lt_int_no_overflow<To_Policy>(to, dir);
-  else if (r > 0)
-    return round_gt_int_no_overflow<To_Policy>(to, dir);
-  else
-    return V_EQ;
-#else
-  // Faster but compiler implementation dependent (see C++98 5.8.3)
-  to = x >> exp;
-  if (round_not_requested(dir))
-    return V_GE;
-  if (x & ((Type(1) << exp) - 1))
-    return round_gt_int_no_overflow<To_Policy>(to, dir);
-  return V_EQ;
-#endif
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -1337,12 +1332,9 @@ mul_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
     }
     return set_pos_overflow_int<To_Policy>(to, dir);
   }
-  if (x & (((Type(1) << exp) - 1) << (sizeof_to_bits(sizeof(Type)) - exp)))
+  if (x > Extended_Int<To_Policy, Type>::max >> exp)
     return set_pos_overflow_int<To_Policy>(to, dir);
-  Type n = x << exp;
-  if (PPL_GT_SILENT(n, (Extended_Int<To_Policy, Type>::max)))
-    return set_pos_overflow_int<To_Policy>(to, dir);
-  to = n;
+  to = x << exp;
   return V_EQ;
 }
 
@@ -1350,37 +1342,40 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 mul_2exp_signed_int(Type& to, const Type x, unsigned int exp,
                     Rounding_Dir dir) {
-  if (!To_Policy::check_overflow) {
-    to = x << exp;
-    return V_EQ;
-  }
-  if (exp >= sizeof_to_bits(sizeof(Type)) - 1) {
-    if (x < 0)
-      return set_neg_overflow_int<To_Policy>(to, dir);
-    else if (x > 0)
-      return set_pos_overflow_int<To_Policy>(to, dir);
-    else {
-      to = 0;
+  if (x < 0) {
+    if (!To_Policy::check_overflow) {
+      to = x * (Type(1) << exp);
       return V_EQ;
     }
-  }
-  Type mask = ((Type(1) << exp) - 1) << ((sizeof_to_bits(sizeof(Type)) - 1) - exp);
-  Type n;
-  if (x < 0) {
-    if ((x & mask) != mask)
+    if (exp >= sizeof_to_bits(sizeof(Type)))
       return set_neg_overflow_int<To_Policy>(to, dir);
-    n = x << exp;
+    typedef typename C_Integer<Type>::other_type UType;
+    UType mask = UType(-1) << (sizeof_to_bits(sizeof(Type)) - exp - 1);
+    UType ux = x;
+    if ((ux & mask) != mask)
+      return set_neg_overflow_int<To_Policy>(to, dir);
+    ux <<= exp;
+    Type n = ~(Type(~ux));
     if (PPL_LT_SILENT(n, (Extended_Int<To_Policy, Type>::min)))
       return set_neg_overflow_int<To_Policy>(to, dir);
+    to = n;
   }
   else {
-    if (x & mask)
+    if (!To_Policy::check_overflow) {
+      to = x << exp;
+      return V_EQ;
+    }
+    if (exp >= sizeof_to_bits(sizeof(Type)) - 1) {
+      if (x == 0) {
+        to = 0;
+        return V_EQ;
+      }
       return set_pos_overflow_int<To_Policy>(to, dir);
-    n = x << exp;
-    if (PPL_GT_SILENT(n, (Extended_Int<To_Policy, Type>::max)))
+    }
+    if (x > Extended_Int<To_Policy, Type>::max >> exp)
       return set_pos_overflow_int<To_Policy>(to, dir);
+    to = x << exp;
   }
-  to = n;
   return V_EQ;
 }
 

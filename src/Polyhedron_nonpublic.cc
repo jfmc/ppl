@@ -2130,14 +2130,25 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
 
   const bool con_sys_was_sorted = con_sys.is_sorted();
 
+  Variables_Set other_vars;
+  if (vars_p != 0) {
+    // Compute the complement of `*vars_p'.
+    for (dimension_type i = 0; i < space_dim; ++i) {
+      if (vars_p->find(i) == vars_p->end())
+        other_vars.insert(Variable(i));
+    }
+  }
+
   for (dimension_type j = con_sys.sys.rows.size(); j-- > 0; ) {
     Constraint& c = con_sys.sys.rows[j];
     if (c.is_tautological())
       continue;
 
-    if (vars_p != 0) {
-      if (!c.expression().all_zeroes(*vars_p))
-        goto next_constraint;
+    if (!other_vars.empty()) {
+      // Skip constraints having a nonzero coefficient for a variable
+      // that does not occurr in the input set.
+      if (!c.expression().all_zeroes(other_vars))
+        continue;
     }
 
     if (!is_necessarily_closed()) {
@@ -2180,21 +2191,16 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
       PPL_ASSERT(c.OK());
       changed = true;
     }
-
-  next_constraint:
-    ;
   }
 
   con_sys.set_sorted(!changed && con_sys_was_sorted);
   PPL_ASSERT(con_sys.sys.OK());
 
   if (changed) {
-    if (!is_necessarily_closed())
+    if (is_necessarily_closed())
+      con_sys.insert(Constraint::zero_dim_positivity());
+    else
       con_sys.insert(Constraint::epsilon_leq_one());
-
-    // FIXME: make sure this is correct (otherwise it should be removed).
-    if (is_necessarily_closed() && con_sys_was_sorted)
-      con_sys.set_sorted(true);
 
     // After changing the system of constraints, the generators
     // are no longer up-to-date and the constraints are no longer

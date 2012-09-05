@@ -93,6 +93,27 @@ public class C_Polyhedron_test1 {
         return cs.isEmpty();
     }
 
+    public static boolean test03() {
+        Variable A = new Variable(0);
+        Variable B = new Variable(1);
+        Generator_System gs = new Generator_System();
+        gs.add(Generator.point(new Linear_Expression_Variable(A),
+                               new Coefficient(2)));
+        gs.add(Generator.point(new Linear_Expression_Variable(B),
+                               new Coefficient(2)));
+        C_Polyhedron ph = new C_Polyhedron(gs);
+        Variables_Set var_set = new Variables_Set();
+        var_set.add(B);
+        ph.drop_some_non_integer_points(var_set,
+                                        Complexity_Class.ANY_COMPLEXITY);
+        Generator_System gs_out = ph.minimized_generators();
+        boolean ok = (gs_out.size() == 1);
+        ph.drop_some_non_integer_points(Complexity_Class.ANY_COMPLEXITY);
+        gs_out = ph.minimized_generators();
+        ok = ok && gs_out.isEmpty();
+        return ok;
+    }
+
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
         boolean test_result_ok =

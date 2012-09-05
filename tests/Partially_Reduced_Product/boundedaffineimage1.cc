@@ -196,7 +196,7 @@ test08() {
 
 // Non-empty product. bounded_affine_preimage/3
 bool
-test16() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -229,7 +229,7 @@ test16() {
 
 // Empty product. bounded_affine_preimage/3
 bool
-test09() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -266,4 +266,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

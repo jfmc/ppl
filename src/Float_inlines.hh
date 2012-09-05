@@ -75,7 +75,7 @@ float_ieee754_half::inc() {
 
 inline void
 float_ieee754_half::set_max(bool negative) {
-  word = 0x7bffU;
+  word = WRD_MAX;
   if (negative)
     word |= SGN_MASK;
 }
@@ -136,7 +136,7 @@ float_ieee754_single::inc() {
 
 inline void
 float_ieee754_single::set_max(bool negative) {
-  word = 0x7f7fffffU;
+  word = WRD_MAX;
   if (negative)
     word |= SGN_MASK;
 }
@@ -212,8 +212,8 @@ float_ieee754_double::inc() {
 
 inline void
 float_ieee754_double::set_max(bool negative) {
-  msp = 0x7fefffffU;
-  lsp = 0xffffffffU;
+  msp = MSP_MAX;
+  lsp = LSP_MAX;
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -283,7 +283,7 @@ float_ibm_single::inc() {
 
 inline void
 float_ibm_single::set_max(bool negative) {
-  word = 0x7f000000U;
+  word = WRD_MAX;
   if (negative)
     word |= SGN_MASK;
 }
@@ -361,8 +361,8 @@ float_intel_double_extended::inc() {
 
 inline void
 float_intel_double_extended::set_max(bool negative) {
-  msp = 0x00007ffeU;
-  lsp = static_cast<uint64_t>(0xffffffffffffffffULL);
+  msp = MSP_MAX;
+  lsp = LSP_NMAX;
   if (negative)
     msp |= MSP_SGN_MASK;
 }
@@ -441,8 +441,8 @@ float_ieee754_quad::inc() {
 
 inline void
 float_ieee754_quad::set_max(bool negative) {
-  msp = static_cast<uint64_t>(0x7ffeffffffffffffULL);
-  lsp = static_cast<uint64_t>(0xffffffffffffffffULL);
+  msp = MSP_MAX;
+  lsp = LSP_MAX;
   if (negative)
     msp |= MSP_SGN_MASK;
 }

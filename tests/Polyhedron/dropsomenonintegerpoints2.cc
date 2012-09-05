@@ -150,6 +150,40 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  ph.add_generator(point(A, 2));
+  ph.add_generator(point(B, 2));
+
+  print_generators(ph, "*** ph ***");
+
+  ph.drop_some_non_integer_points(Variables_Set(B));
+
+  C_Polyhedron known_result1(2, EMPTY);
+  known_result1.add_generator(point(A, 2));
+
+  bool ok = (ph == known_result1);
+
+  print_constraints(ph, "*** after ph.drop_some_non_integer_points({B}) ***");
+
+  if (!ok)
+    return ok;
+
+  ph.drop_some_non_integer_points(Variables_Set(A));
+
+  C_Polyhedron known_result2(2, EMPTY);
+
+  ok = (ph == known_result2);
+
+  print_constraints(ph, "*** after ph.drop_some_non_integer_points({A}) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -158,4 +192,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

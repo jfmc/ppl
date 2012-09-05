@@ -538,7 +538,7 @@ m4_define(`ppl_@CLASS@_drop_some_non_integer_points_code',
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
     public native void drop_some_non_integer_points
-      (Integer complexity_threshold);
+      (Complexity_Class complexity);
 
 ')
 
@@ -546,8 +546,8 @@ m4_define(`ppl_@CLASS@_drop_some_non_integer_points_2_code',
 `dnl
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
-    public native void drop_some_non_integer_points_2
-      (Variables_Set vars, Integer complexity_threshold);
+    public native void drop_some_non_integer_points
+      (Variables_Set vars, Complexity_Class complexity);
 
 ')
 
