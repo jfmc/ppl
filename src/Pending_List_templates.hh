@@ -33,17 +33,17 @@ namespace Implementation {
 namespace Watchdog {
 
 template <typename Traits>
-typename Pending_List<Traits>::Iterator
+typename Pending_List<Traits>::iterator
 Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
                              const Handler& handler,
                              bool& expired_flag) {
-  Iterator position = active_list.begin();
-  for (Iterator active_list_end = active_list.end();
+  iterator position = active_list.begin();
+  for (iterator active_list_end = active_list.end();
        position != active_list_end
          && Traits::less_than(position->deadline(), deadline);
        ++position)
     ;
-  Iterator pending_element_p;
+  iterator pending_element_p;
   // Only allocate a new element if the free list is empty.
   if (free_list.empty())
     pending_element_p
@@ -55,7 +55,7 @@ Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
     free_list.erase(pending_element_p);
     pending_element_p->assign(deadline, handler, expired_flag);
   }
-  Iterator r = active_list.insert(position, *pending_element_p);
+  iterator r = active_list.insert(position, *pending_element_p);
   assert(OK());
   return r;
 }
@@ -70,10 +70,10 @@ Pending_List<Traits>::OK() const {
     return false;
 
   const typename Traits::Threshold* old;
-  Const_Iterator i = active_list.begin();
+  const_iterator i = active_list.begin();
   old = &i->deadline();
   ++i;
-  for (Const_Iterator active_list_end = active_list.end(); i != active_list_end; ++i) {
+  for (const_iterator active_list_end = active_list.end(); i != active_list_end; ++i) {
     const typename Traits::Threshold& t = i->deadline();
     if (Traits::less_than(t, *old)) {
 #ifndef NDEBUG

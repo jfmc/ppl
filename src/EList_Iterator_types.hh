@@ -17,12 +17,8 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-namespace Watchdog {
-
 template <typename T>
 class EList_Iterator;
-
-} // namespace Watchdog
 
 } // namespace Implementation
 

@@ -28,8 +28,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-namespace Watchdog {
-
 inline
 Doubly_Linked_Object::Doubly_Linked_Object() {
 }
@@ -68,8 +66,6 @@ inline
 Doubly_Linked_Object::~Doubly_Linked_Object() {
   erase();
 }
-
-} // namespace Watchdog
 
 } // namespace Implementation
 

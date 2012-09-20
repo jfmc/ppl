@@ -17,11 +17,7 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-namespace Watchdog {
-
 class Doubly_Linked_Object;
-
-} // namespace Watchdog
 
 } // namespace Implementation
 

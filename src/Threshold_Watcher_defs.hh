@@ -55,7 +55,7 @@ private:
 
   bool expired;
   const TW_Handler& handler;
-  typename TW_Pending_List::Iterator pending_position;
+  typename TW_Pending_List::iterator pending_position;
 
   // Just to prevent their use.
   Threshold_Watcher(const Threshold_Watcher&);
@@ -68,14 +68,14 @@ private:
   static Initialize init;
 
   // Handle the addition of a new threshold.
-  static typename TW_Pending_List::Iterator
+  static typename TW_Pending_List::iterator
   add_threshold(typename Traits::Threshold threshold,
                 const TW_Handler& handler,
                 bool& expired_flag);
 
   // Handle the removal of a threshold.
-  static typename TW_Pending_List::Iterator
-  remove_threshold(typename TW_Pending_List::Iterator position);
+  static typename TW_Pending_List::iterator
+  remove_threshold(typename TW_Pending_List::iterator position);
 
   //! Check threshold reaching.
   static void check();

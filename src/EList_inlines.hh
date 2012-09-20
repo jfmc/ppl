@@ -30,8 +30,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-namespace Watchdog {
-
 template <typename T>
 inline
 EList<T>::EList()
@@ -51,34 +49,34 @@ EList<T>::push_back(T& obj) {
 }
 
 template <typename T>
-inline typename EList<T>::Iterator
-EList<T>::insert(Iterator position, T& obj) {
+inline typename EList<T>::iterator
+EList<T>::insert(iterator position, T& obj) {
   position->insert_before(obj);
-  return Iterator(&obj);
+  return iterator(&obj);
 }
 
 template <typename T>
-inline typename EList<T>::Iterator
+inline typename EList<T>::iterator
 EList<T>::begin() {
-  return Iterator(next);
+  return iterator(next);
 }
 
 template <typename T>
-inline typename EList<T>::Iterator
+inline typename EList<T>::iterator
 EList<T>::end() {
-  return Iterator(this);
+  return iterator(this);
 }
 
 template <typename T>
-inline typename EList<T>::Const_Iterator
+inline typename EList<T>::const_iterator
 EList<T>::begin() const {
-  return Const_Iterator(next);
+  return const_iterator(next);
 }
 
 template <typename T>
-inline typename EList<T>::Const_Iterator
+inline typename EList<T>::const_iterator
 EList<T>::end() const {
-  return Const_Iterator(const_cast<EList<T>*>(this));
+  return const_iterator(const_cast<EList<T>*>(this));
 }
 
 template <typename T>
@@ -88,17 +86,17 @@ EList<T>::empty() const {
 }
 
 template <typename T>
-inline typename EList<T>::Iterator
-EList<T>::erase(Iterator position) {
+inline typename EList<T>::iterator
+EList<T>::erase(iterator position) {
   assert(!empty());
-  return Iterator(position->erase());
+  return iterator(position->erase());
 }
 
 template <typename T>
 inline
 EList<T>::~EList() {
   // Erase and deallocate all the elements.
-  for (Iterator i = begin(), lend = end(), next; i != lend; i = next) {
+  for (iterator i = begin(), lend = end(), next; i != lend; i = next) {
     next = erase(i);
     delete &*i;
   }
@@ -107,14 +105,12 @@ EList<T>::~EList() {
 template <typename T>
 inline bool
 EList<T>::OK() const {
-  for (Const_Iterator i = begin(), lend = end(); i != lend; ++i)
+  for (const_iterator i = begin(), lend = end(); i != lend; ++i)
     if (!i->OK())
       return false;
 
   return true;
 }
-
-} // namespace Watchdog
 
 } // namespace Implementation
 

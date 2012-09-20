@@ -215,7 +215,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
     return;
   }
 
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typename OR_Matrix<N>::row_iterator mat_begin = matrix.row_begin();
 
   PPL_DIRTY_TEMP(N, tmp);
@@ -239,8 +239,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
-          Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + (di + 1));
+          row_reference x_i = *(mat_begin + di);
+          row_reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -269,8 +269,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
-          Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + (di + 1));
+          row_reference x_i = *(mat_begin + di);
+          row_reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -319,8 +319,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
-          Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + (di + 1));
+          row_reference x_i = *(mat_begin + di);
+          row_reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -350,8 +350,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
         for (dimension_type i = 0; i < space_dim; ++i) {
           const Coefficient& g_i = g.coefficient(Variable(i));
           const dimension_type di = 2*i;
-          Row_Reference x_i = *(mat_begin + di);
-          Row_Reference x_ii = *(mat_begin + (di + 1));
+          row_reference x_i = *(mat_begin + di);
+          row_reference x_ii = *(mat_begin + (di + 1));
           for (dimension_type j = 0; j < i; ++j) {
             const Coefficient& g_j = g.coefficient(Variable(j));
             const dimension_type dj = 2*j;
@@ -556,8 +556,8 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
         right_w_id = i;
     }
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
@@ -876,15 +876,15 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
     Now move the newly computed coefficients from the main diagonal to
     their proper place, and restore +infinity on the diagonal.
   */
-  Row_Iterator m_ite = matrix.row_begin();
-  Row_Iterator m_end = matrix.row_end();
+  row_iterator m_ite = matrix.row_begin();
+  row_iterator m_end = matrix.row_end();
   for (dimension_type i = 0; m_ite != m_end; i += 2) {
-    Row_Reference upper = *m_ite;
+    row_reference upper = *m_ite;
     N& ul = upper[i];
     add_octagonal_constraint(i, i + 1, ul);
     assign_r(ul, PLUS_INFINITY, ROUND_NOT_NEEDED);
     ++m_ite;
-    Row_Reference lower = *m_ite;
+    row_reference lower = *m_ite;
     N& lr = lower[i + 1];
     add_octagonal_constraint(i + 1, i, lr);
     assign_r(lr, PLUS_INFINITY, ROUND_NOT_NEEDED);
@@ -1188,27 +1188,27 @@ Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
 
   const dimension_type n_rows = matrix.num_rows();
 
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
+  const row_iterator m_begin = matrix.row_begin();
+  const row_iterator m_end = matrix.row_end();
 
-  const Row_Iterator y_begin = y.matrix.row_begin();
+  const row_iterator y_begin = y.matrix.row_begin();
 
   PPL_DIRTY_TEMP(N, neg_y_ci_cj);
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
     using namespace Implementation::Octagonal_Shapes;
     const dimension_type i = i_iter.index();
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
-    Row_Reference m_i = *i_iter;
+    row_reference m_i = *i_iter;
     for (dimension_type j = 0; j < n_rows; ++j) {
       const dimension_type cj = coherent_index(j);
-      Row_Reference m_cj = *(m_begin + cj);
+      row_reference m_cj = *(m_begin + cj);
       const N& m_i_j = (j < rs_i) ? m_i[j] : m_cj[ci];
-      Row_Reference y_ci = *(y_begin + ci);
-      Row_Reference y_j = *(y_begin + j);
+      row_reference y_ci = *(y_begin + ci);
+      row_reference y_j = *(y_begin + j);
       const N& y_ci_cj = (j < rs_i) ? y_ci[cj] : y_j[i];
       neg_assign_r(neg_y_ci_cj, y_ci_cj, ROUND_UP);
       if (m_i_j < neg_y_ci_cj)
@@ -1356,16 +1356,16 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
   // than `v' and are already in `le', then this is set to true.
   bool constant_v = false;
 
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
+  const row_iterator m_begin = matrix.row_begin();
+  const row_iterator m_end = matrix.row_end();
 
   PPL_DIRTY_TEMP_COEFFICIENT(val_denom);
   val_denom = 1;
 
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
     constant_v = false;
     dimension_type i = i_iter.index();
     const Variable v(i/2);
@@ -1375,8 +1375,8 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
       continue;
     }
     // We check the unary constraints.
-    Row_Reference m_i = *i_iter;
-    Row_Reference m_ii = *(i_iter + 1);
+    row_reference m_i = *i_iter;
+    row_reference m_ii = *(i_iter + 1);
     const N& m_i_ii = m_i[i + 1];
     const N& m_ii_i = m_ii[i];
     if ((!is_plus_infinity(m_i_ii) && !is_plus_infinity(m_ii_i))
@@ -1397,7 +1397,7 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
       PPL_ASSERT(!constant_v);
       using namespace Implementation::Octagonal_Shapes;
       const dimension_type ci = coherent_index(i);
-      for (Row_Iterator j_iter = i_iter; j_iter != m_end; j_iter += 2) {
+      for (row_iterator j_iter = i_iter; j_iter != m_end; j_iter += 2) {
         dimension_type j = j_iter.index();
         const Variable vj(j/2);
         coeff_j = le.coefficient(vj);
@@ -1407,8 +1407,8 @@ Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
         const dimension_type cj = coherent_index(j);
         const dimension_type cjj = coherent_index(j + 1);
 
-        Row_Reference m_j = *(m_begin + j);
-        Row_Reference m_cj = *(m_begin + cj);
+        row_reference m_j = *(m_begin + j);
+        row_reference m_cj = *(m_begin + cj);
         const N& m_j_i = m_j[i];
         const N& m_i_j = m_cj[ci];
         if ((!is_plus_infinity(m_i_j) && !is_plus_infinity(m_j_i))
@@ -2132,21 +2132,21 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   // studying the sign of the scalar product between the generator and
   // all the constraints in the octagon.
 
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
+  const row_iterator m_begin = matrix.row_begin();
+  const row_iterator m_end = matrix.row_end();
 
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
   PPL_DIRTY_TEMP_COEFFICIENT(product);
 
   // We find in `*this' all the constraints.
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
     dimension_type i = i_iter.index();
-    Row_Reference m_i = *i_iter;
-    Row_Reference m_ii = *(i_iter + 1);
+    row_reference m_i = *i_iter;
+    row_reference m_ii = *(i_iter + 1);
     const N& m_i_ii = m_i[i + 1];
     const N& m_ii_i = m_ii[i];
     // We have the unary constraints.
@@ -2222,10 +2222,10 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   }
 
   // We have the binary constraints.
-  for (Row_Iterator i_iter = m_begin ; i_iter != m_end; i_iter += 2) {
+  for (row_iterator i_iter = m_begin ; i_iter != m_end; i_iter += 2) {
     dimension_type i = i_iter.index();
-    Row_Reference m_i = *i_iter;
-    Row_Reference m_ii = *(i_iter + 1);
+    row_reference m_i = *i_iter;
+    row_reference m_ii = *(i_iter + 1);
     for (dimension_type j = 0; j < i; j += 2) {
       const N& m_i_j = m_i[j];
       const N& m_ii_jj = m_ii[j + 1];
@@ -2387,15 +2387,15 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   // is going to be modified by the closure algorithm.
   Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
 
   const dimension_type n_rows = x.matrix.num_rows();
-  const Row_Iterator m_begin = x.matrix.row_begin();
-  const Row_Iterator m_end = x.matrix.row_end();
+  const row_iterator m_begin = x.matrix.row_begin();
+  const row_iterator m_end = x.matrix.row_end();
 
   // Fill the main diagonal with zeros.
-  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+  for (row_iterator i = m_begin; i != m_end; ++i) {
     PPL_ASSERT(is_plus_infinity((*i)[i.index()]));
     assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
@@ -2416,17 +2416,17 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   std::vector<N> vec_ck(n_rows);
   PPL_DIRTY_TEMP(N, sum1);
   PPL_DIRTY_TEMP(N, sum2);
-  Row_Reference x_k;
-  Row_Reference x_ck;
-  Row_Reference x_i;
-  Row_Reference x_ci;
+  row_reference x_k;
+  row_reference x_ck;
+  row_reference x_i;
+  row_reference x_ci;
 
   // Since the index `j' of the inner loop will go from 0 up to `i',
   // the three nested loops have to be executed twice.
   for (int twice = 0; twice < 2; ++twice) {
 
-    Row_Iterator x_k_iter = m_begin;
-    Row_Iterator x_i_iter = m_begin;
+    row_iterator x_k_iter = m_begin;
+    row_iterator x_i_iter = m_begin;
     for (dimension_type k = 0; k < n_rows; k += 2) {
       const dimension_type ck = k + 1;
       // Re-initialize the element iterator.
@@ -2501,7 +2501,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 
   // Check for emptiness: the octagon is empty if and only if there is a
   // negative value in the main diagonal.
-  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+  for (row_iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
     if (sgn(x_i_i) < 0) {
       x.set_empty();
@@ -2616,14 +2616,14 @@ Octagonal_Shape<T>
 
   Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
 
-  const Row_Iterator m_begin = x.matrix.row_begin();
-  const Row_Iterator m_end = x.matrix.row_end();
+  const row_iterator m_begin = x.matrix.row_begin();
+  const row_iterator m_end = x.matrix.row_end();
 
   // Fill the main diagonal with zeros.
-  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+  for (row_iterator i = m_begin; i != m_end; ++i) {
     PPL_ASSERT(is_plus_infinity((*i)[i.index()]));
     assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
@@ -2632,27 +2632,27 @@ Octagonal_Shape<T>
   // Step 1: Improve all constraints on variable `var'.
   const dimension_type v = 2*var.id();
   const dimension_type cv = v + 1;
-  Row_Iterator v_iter = m_begin + v;
-  Row_Iterator cv_iter = v_iter + 1;
-  Row_Reference x_v = *v_iter;
-  Row_Reference x_cv = *cv_iter;
+  row_iterator v_iter = m_begin + v;
+  row_iterator cv_iter = v_iter + 1;
+  row_reference x_v = *v_iter;
+  row_reference x_cv = *cv_iter;
   const dimension_type rs_v = v_iter.row_size();
   const dimension_type n_rows = x.matrix.num_rows();
   PPL_DIRTY_TEMP(N, sum);
   using namespace Implementation::Octagonal_Shapes;
-  for (Row_Iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
+  for (row_iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
     const dimension_type k = k_iter.index();
     const dimension_type ck = coherent_index(k);
     const dimension_type rs_k = k_iter.row_size();
-    Row_Reference x_k = *k_iter;
-    Row_Reference x_ck = (k % 2 != 0) ? *(k_iter-1) : *(k_iter + 1);
+    row_reference x_k = *k_iter;
+    row_reference x_ck = (k % 2 != 0) ? *(k_iter-1) : *(k_iter + 1);
 
-    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+    for (row_iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
       const dimension_type i = i_iter.index();
       const dimension_type ci = coherent_index(i);
       const dimension_type rs_i = i_iter.row_size();
-      Row_Reference x_i = *i_iter;
-      Row_Reference x_ci = (i % 2 != 0) ? *(i_iter-1) : *(i_iter + 1);
+      row_reference x_i = *i_iter;
+      row_reference x_ci = (i % 2 != 0) ? *(i_iter-1) : *(i_iter + 1);
 
       const N& x_i_k = (k < rs_i) ? x_i[k] : x_ck[ci];
       if (!is_plus_infinity(x_i_k)) {
@@ -2690,18 +2690,18 @@ Octagonal_Shape<T>
 
   // Step 2: improve the other bounds by using the precise bounds
   // for the constraints on `var'.
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
     const dimension_type i = i_iter.index();
     const dimension_type ci = coherent_index(i);
     const dimension_type rs_i = i_iter.row_size();
-    Row_Reference x_i = *i_iter;
+    row_reference x_i = *i_iter;
     const N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
     // TODO: see if it is possible to optimize this inner loop
     // by splitting it into several parts, so as to avoid
     // conditional expressions.
     for (dimension_type j = 0; j < n_rows; ++j) {
       const dimension_type cj = coherent_index(j);
-      Row_Reference x_cj = *(m_begin + cj);
+      row_reference x_cj = *(m_begin + cj);
       N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
       if (!is_plus_infinity(x_i_v)) {
         const N& x_v_j = (j < rs_v) ? x_v[j] : x_cj[cv];
@@ -2723,7 +2723,7 @@ Octagonal_Shape<T>
 
   // Check for emptiness: the octagon is empty if and only if there is a
   // negative value on the main diagonal.
-  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+  for (row_iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
     if (sgn(x_i_i) < 0) {
       x.set_empty();
@@ -3492,12 +3492,12 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   // We create a new matrix with the new space dimension.
   OR_Matrix<N> x(new_space_dim);
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
 
-  Row_Iterator m_begin = x.row_begin();
+  row_iterator m_begin = x.row_begin();
 
-  for (Row_Iterator i_iter = matrix.row_begin(), i_end = matrix.row_end();
+  for (row_iterator i_iter = matrix.row_begin(), i_end = matrix.row_end();
        i_iter != i_end; i_iter += 2) {
     dimension_type new_i;
     dimension_type i = i_iter.index()/2;
@@ -3505,12 +3505,12 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
     // the `matrix' that refer to both mapped variables,
     // the variable `i' and `j'.
     if (pfunc.maps(i, new_i)) {
-      Row_Reference r_i = *i_iter;
-      Row_Reference r_ii = *(i_iter + 1);
+      row_reference r_i = *i_iter;
+      row_reference r_ii = *(i_iter + 1);
       dimension_type double_new_i = 2*new_i;
-      Row_Iterator x_iter = m_begin + double_new_i;
-      Row_Reference x_i = *x_iter;
-      Row_Reference x_ii = *(x_iter + 1);
+      row_iterator x_iter = m_begin + double_new_i;
+      row_reference x_i = *x_iter;
+      row_reference x_ii = *(x_iter + 1);
       for (dimension_type j = 0; j <= i; ++j) {
         dimension_type new_j;
         // If also the second variable is mapped, we work.
@@ -3528,9 +3528,9 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
             assign_or_swap(x_i[double_new_j + 1], r_i[dj + 1]);
           }
           else {
-            Row_Iterator x_j_iter = m_begin + double_new_j;
-            Row_Reference x_j = *x_j_iter;
-            Row_Reference x_jj = *(x_j_iter + 1);
+            row_iterator x_j_iter = m_begin + double_new_j;
+            row_reference x_j = *x_j_iter;
+            row_reference x_jj = *(x_j_iter + 1);
             assign_or_swap(x_jj[double_new_i + 1], r_i[dj]);
             assign_or_swap(x_jj[double_new_i], r_ii[dj]);
             assign_or_swap(x_j[double_new_i + 1], r_i[dj + 1]);
@@ -3689,15 +3689,15 @@ Octagonal_Shape<T>
 
     typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
     typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
-    typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-    typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+    typedef typename OR_Matrix<N>::row_iterator row_iterator;
+    typedef typename OR_Matrix<N>::row_reference_type row_reference;
     Row_iterator m_begin = matrix.row_begin();
     // Select the cell to be modified for the "<=" part of the constraint.
     Row_iterator i_iter = m_begin + i;
     Row_reference m_i = *i_iter;
     OR_Matrix<N>& lo_mat = limiting_octagon.matrix;
-    Row_Iterator lo_iter = lo_mat.row_begin() + i;
-    Row_Reference lo_m_i = *lo_iter;
+    row_iterator lo_iter = lo_mat.row_begin() + i;
+    row_reference lo_m_i = *lo_iter;
     N& lo_m_i_j = lo_m_i[j];
     if (coeff < 0)
       neg_assign(coeff);
@@ -3720,7 +3720,7 @@ Octagonal_Shape<T>
             --lo_iter;
           }
           Row_reference m_ci = *i_iter;
-          Row_Reference lo_m_ci = *lo_iter;
+          row_reference lo_m_ci = *lo_iter;
           // Select the right column of the cell.
           using namespace Implementation::Octagonal_Shapes;
           dimension_type cj = coherent_index(j);
@@ -4286,12 +4286,12 @@ Octagonal_Shape<T>::refine(const Variable var,
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*j + b, where `j != v';
   // - If t == 2, then `expr' is of the general form.
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
+  const row_iterator m_begin = matrix.row_begin();
   const dimension_type n_var = 2*var_id;
   PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
   neg_assign(minus_denom, denominator);
@@ -4644,14 +4644,14 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
         // Note: indices above `w_id' can be disregarded, as they all have
         // a zero coefficient in `expr'.
-        for (Row_Iterator m_iter = m_begin,
+        for (row_iterator m_iter = m_begin,
                m_iter_end = m_begin + (2 * w_id + 2);
              m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
-          Row_Reference m_i = *m_iter;
+          row_reference m_i = *m_iter;
           ++m_iter;
-          Row_Reference m_ci = *m_iter;
+          row_reference m_ci = *m_iter;
           ++m_iter;
           const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
           const int sign_i = sgn(sc_i);
@@ -4729,14 +4729,14 @@ Octagonal_Shape<T>::refine(const Variable var,
         PPL_DIRTY_TEMP(N, coeff_i);
         PPL_DIRTY_TEMP(N, approx_i);
         PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
-        for (Row_Iterator m_iter = m_begin,
+        for (row_iterator m_iter = m_begin,
                m_iter_end = m_begin + (2 * w_id + 2);
              m_iter != m_iter_end; ) {
           const dimension_type n_i = m_iter.index();
           const dimension_type id = n_i/2;
-          Row_Reference m_i = *m_iter;
+          row_reference m_i = *m_iter;
           ++m_iter;
-          Row_Reference m_ci = *m_iter;
+          row_reference m_ci = *m_iter;
           ++m_iter;
           const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
           const int sign_i = sgn(sc_i);
@@ -4854,8 +4854,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     --w_id;
   }
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   using std::swap;
@@ -4906,12 +4906,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         div_round_up(minus_d, b, minus_denom);
         if (sign_symmetry)
           swap(d, minus_d);
-        const Row_Iterator m_begin = matrix.row_begin();
-        const Row_Iterator m_end = matrix.row_end();
-        Row_Iterator m_iter = m_begin + n_var;
-        Row_Reference m_v = *m_iter;
+        const row_iterator m_begin = matrix.row_begin();
+        const row_iterator m_end = matrix.row_end();
+        row_iterator m_iter = m_begin + n_var;
+        row_reference m_v = *m_iter;
         ++m_iter;
-        Row_Reference m_cv = *m_iter;
+        row_reference m_cv = *m_iter;
         ++m_iter;
         // NOTE: delay update of unary constraints on `var'.
         for (dimension_type j = n_var; j-- > 0; ) {
@@ -4923,7 +4923,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
             swap(m_v_j, m_cv_j);
         }
         for ( ; m_iter != m_end; ++m_iter) {
-          Row_Reference m_i = *m_iter;
+          row_reference m_i = *m_iter;
           N& m_i_v = m_i[n_var];
           add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
           N& m_i_cv = m_i[n_var + 1];
@@ -5025,7 +5025,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   PPL_DIRTY_TEMP_COEFFICIENT(minus_sc_i);
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  const Row_Iterator m_begin = matrix.row_begin();
+  const row_iterator m_begin = matrix.row_begin();
   for (Row_iterator m_iter = m_begin, m_iter_end = m_begin + (2 * w_id + 2);
        m_iter != m_iter_end; ) {
     const dimension_type n_i = m_iter.index();
@@ -5242,8 +5242,8 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
         w_id = i;
     }
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
@@ -5297,12 +5297,12 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
         // `b_ub' or subtracting the value `b_lb'.
         if (is_w_coeff_minus_one)
           swap(b_ub, b_mlb);
-        const Row_Iterator m_begin = matrix.row_begin();
-        const Row_Iterator m_end = matrix.row_end();
-        Row_Iterator m_iter = m_begin + n_var;
-        Row_Reference m_v = *m_iter;
+        const row_iterator m_begin = matrix.row_begin();
+        const row_iterator m_end = matrix.row_end();
+        row_iterator m_iter = m_begin + n_var;
+        row_reference m_v = *m_iter;
         ++m_iter;
-        Row_Reference m_cv = *m_iter;
+        row_reference m_cv = *m_iter;
         ++m_iter;
         // NOTE: delay update of unary constraints on `var'.
         for (dimension_type j = n_var; j-- > 0; ) {
@@ -5314,7 +5314,7 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
             swap(m_v_j, m_cv_j);
         }
         for ( ; m_iter != m_end; ++m_iter) {
-          Row_Reference m_i = *m_iter;
+          row_reference m_i = *m_iter;
           N& m_i_v = m_i[n_var];
           add_assign_r(m_i_v, m_i_v, b_ub, ROUND_UP);
           N& m_i_cv = m_i[n_var + 1];
@@ -5382,13 +5382,13 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
   // Declare temporaries outside the loop.
   PPL_DIRTY_TEMP(N, upper_bound);
 
-  Row_Iterator m_iter = matrix.row_begin();
+  row_iterator m_iter = matrix.row_begin();
   m_iter += n_var;
-  Row_Reference var_ite = *m_iter;
+  row_reference var_ite = *m_iter;
   ++m_iter;
-  Row_Reference var_cv_ite = *m_iter;
+  row_reference var_cv_ite = *m_iter;
   ++m_iter;
-  Row_Iterator m_end = matrix.row_end();
+  row_iterator m_end = matrix.row_end();
 
   // Update binary constraints on var FIRST.
   for (dimension_type curr_var = var_id,
@@ -5405,9 +5405,9 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
     n_curr_var -= 2;
   }
   for (dimension_type curr_var = var_id + 1; m_iter != m_end; ++m_iter) {
-    Row_Reference m_v_ite = *m_iter;
+    row_reference m_v_ite = *m_iter;
     ++m_iter;
-    Row_Reference m_cv_ite = *m_iter;
+    row_reference m_cv_ite = *m_iter;
     Variable current(curr_var);
     linear_form_upper_bound(lf + current, upper_bound);
     assign_r(m_cv_ite[n_var], upper_bound, ROUND_NOT_NEEDED);
@@ -5713,13 +5713,13 @@ Octagonal_Shape<T>
     --w_id;
   }
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
+  const row_iterator m_begin = matrix.row_begin();
+  const row_iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = expr.inhomogeneous_term();
   PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
@@ -5779,16 +5779,16 @@ Octagonal_Shape<T>
               // Translate all the constraints of the form `v - w <= cost'
               // into the constraint `v - w <= cost + b/denominator';
               // forget each constraint `w - v <= cost1'.
-              Row_Iterator m_iter = m_begin + n_var;
-              Row_Reference m_v = *m_iter;
+              row_iterator m_iter = m_begin + n_var;
+              row_reference m_v = *m_iter;
               N& m_v_cv = m_v[n_var + 1];
               ++m_iter;
-              Row_Reference m_cv = *m_iter;
+              row_reference m_cv = *m_iter;
               N& m_cv_v = m_cv[n_var];
               ++m_iter;
               // NOTE: delay update of m_v_cv and m_cv_v.
               for ( ; m_iter != m_end; ++m_iter) {
-                Row_Reference m_i = *m_iter;
+                row_reference m_i = *m_iter;
                 N& m_i_v = m_i[n_var];
                 add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
                 assign_r(m_i[n_var + 1], PLUS_INFINITY, ROUND_NOT_NEEDED);
@@ -5847,16 +5847,16 @@ Octagonal_Shape<T>
               // Translate each constraint `w - v <= cost'
               // into the constraint `w - v <= cost - b/denominator';
               // forget each constraint `v - w <= cost1'.
-              Row_Iterator m_iter = m_begin + n_var;
-              Row_Reference m_v = *m_iter;
+              row_iterator m_iter = m_begin + n_var;
+              row_reference m_v = *m_iter;
               N& m_v_cv = m_v[n_var + 1];
               ++m_iter;
-              Row_Reference m_cv = *m_iter;
+              row_reference m_cv = *m_iter;
               N& m_cv_v = m_cv[n_var];
               ++m_iter;
               // NOTE: delay update of m_v_cv and m_cv_v.
               for ( ; m_iter != m_end; ++m_iter) {
-                Row_Reference m_i = *m_iter;
+                row_reference m_i = *m_iter;
                 assign_r(m_i[n_var], PLUS_INFINITY, ROUND_NOT_NEEDED);
                 add_assign_r(m_i[n_var + 1], m_i[n_var + 1], d, ROUND_UP);
               }
@@ -6382,12 +6382,12 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
     --w_id;
   }
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
+  const row_iterator m_begin = matrix.row_begin();
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = lb_expr.inhomogeneous_term();
   PPL_DIRTY_TEMP_COEFFICIENT(minus_denom);
@@ -6952,17 +6952,17 @@ Octagonal_Shape<T>::constraints() const {
     return cs;
   }
 
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
 
-  Row_Iterator m_begin = matrix.row_begin();
-  Row_Iterator m_end = matrix.row_end();
+  row_iterator m_begin = matrix.row_begin();
+  row_iterator m_end = matrix.row_end();
 
   PPL_DIRTY_TEMP_COEFFICIENT(a);
   PPL_DIRTY_TEMP_COEFFICIENT(b);
 
   // Go through all the unary constraints in `matrix'.
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
     const Variable x(i/2);
     const N& c_i_ii = (*i_iter)[i + 1];
@@ -6991,11 +6991,11 @@ Octagonal_Shape<T>::constraints() const {
     }
   }
   //  Go through all the binary constraints in `matrix'.
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
-    Row_Reference r_i = *i_iter;
+    row_reference r_i = *i_iter;
     ++i_iter;
-    Row_Reference r_ii = *i_iter;
+    row_reference r_ii = *i_iter;
     ++i_iter;
     const Variable y(i/2);
     for (dimension_type j = 0; j < i; j += 2) {
@@ -7070,22 +7070,22 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   // For each constraints involving variable `var', we add a
   // similar constraint with the new variable substituted for
   // variable `var'.
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
-  const Row_Iterator m_end = matrix.row_end();
+  const row_iterator m_begin = matrix.row_begin();
+  const row_iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
   Row_iterator v_iter = m_begin + n_var;
   Row_reference m_v = *v_iter;
   Row_reference m_cv = *(v_iter + 1);
 
-  for (Row_Iterator i_iter = m_begin + old_num_rows; i_iter != m_end;
+  for (row_iterator i_iter = m_begin + old_num_rows; i_iter != m_end;
        i_iter += 2) {
-    Row_Reference m_i = *i_iter;
-    Row_Reference m_ci = *(i_iter + 1);
+    row_reference m_i = *i_iter;
+    row_reference m_ci = *(i_iter + 1);
     const dimension_type i = i_iter.index();
     const dimension_type ci = i + 1;
     m_i[ci] = m_v[n_var + 1];
@@ -7095,8 +7095,8 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
       m_ci[j] = m_cv[j];
     }
     for (dimension_type j = n_var + 2; j < old_num_rows; ++j) {
-      Row_Iterator j_iter = m_begin + j;
-      Row_Reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter + 1);
+      row_iterator j_iter = m_begin + j;
+      row_reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter + 1);
       m_i[j] = m_cj[n_var + 1];
       m_ci[j] = m_cj[n_var];
     }
@@ -7134,24 +7134,24 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
   // to variable `dest' by taking the join of their value with the
   // value of the corresponding elements in the row and column of the
   // variable `vars'.
-  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
 
-  const Row_Iterator m_begin = matrix.row_begin();
+  const row_iterator m_begin = matrix.row_begin();
 
   strong_closure_assign();
   const dimension_type n_rows = matrix.num_rows();
   const dimension_type n_dest = 2*dest.id();
-  Row_Iterator v_iter = m_begin + n_dest;
-  Row_Reference m_v = *v_iter;
-  Row_Reference m_cv = *(v_iter + 1);
+  row_iterator v_iter = m_begin + n_dest;
+  row_reference m_v = *v_iter;
+  row_reference m_cv = *(v_iter + 1);
   for (Variables_Set::const_iterator i = vars.begin(),
          vs_end = vars.end(); i != vs_end; ++i) {
     const dimension_type tbf_id = *i;
     const dimension_type tbf_var = 2*tbf_id;
-    Row_Iterator tbf_iter = m_begin + tbf_var;
-    Row_Reference m_tbf = *tbf_iter;
-    Row_Reference m_ctbf = *(tbf_iter + 1);
+    row_iterator tbf_iter = m_begin + tbf_var;
+    row_reference m_tbf = *tbf_iter;
+    row_reference m_ctbf = *(tbf_iter + 1);
     max_assign(m_v[n_dest + 1], m_tbf[tbf_var + 1]);
     max_assign(m_cv[n_dest], m_ctbf[tbf_var]);
 
@@ -7168,9 +7168,9 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
     }
     for (dimension_type j = min_id + 2; j < max_id; ++j) {
       const dimension_type cj = coherent_index(j);
-      Row_Iterator j_iter = m_begin + j;
-      Row_Reference m_j = *j_iter;
-      Row_Reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter + 1);
+      row_iterator j_iter = m_begin + j;
+      row_reference m_j = *j_iter;
+      row_reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter + 1);
       if (n_dest == min_id) {
         max_assign(m_cj[n_dest + 1], m_tbf[j]);
         max_assign(m_cj[n_dest], m_ctbf[j]);
@@ -7185,9 +7185,9 @@ Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& vars,
       }
     }
     for (dimension_type j = max_id + 2; j < n_rows; ++j) {
-      Row_Iterator j_iter = m_begin + j;
-      Row_Reference m_j = *j_iter;
-      Row_Reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter + 1);
+      row_iterator j_iter = m_begin + j;
+      row_reference m_j = *j_iter;
+      row_reference m_cj = (j % 2 != 0) ? *(j_iter-1) : *(j_iter + 1);
       max_assign(m_cj[n_dest + 1], m_cj[tbf_var + 1]);
       max_assign(m_cj[n_dest], m_cj[tbf_var]);
       max_assign(m_j[n_dest], m_j[tbf_var]);
@@ -7246,21 +7246,21 @@ Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
   PPL_DIRTY_TEMP(N, temp_zero);
   assign_r(temp_zero, 0, ROUND_NOT_NEEDED);
 
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
   const dimension_type n_rows = x.matrix.num_rows();
-  const Row_Iterator x_m_begin = x.matrix.row_begin();
-  const Row_Iterator y_m_begin = y.matrix.row_begin();
-  const Row_Iterator ub_m_begin = ub.matrix.row_begin();
+  const row_iterator x_m_begin = x.matrix.row_begin();
+  const row_iterator y_m_begin = y.matrix.row_begin();
+  const row_iterator ub_m_begin = ub.matrix.row_begin();
 
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Bit_Row& x_non_red_i = x_non_red[i];
     using namespace Implementation::Octagonal_Shapes;
     const dimension_type ci = coherent_index(i);
     const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
-    Row_Reference x_i = *(x_m_begin + i);
-    Row_Reference y_i = *(y_m_begin + i);
-    Row_Reference ub_i = *(ub_m_begin + i);
+    row_reference x_i = *(x_m_begin + i);
+    row_reference y_i = *(y_m_begin + i);
+    row_reference ub_i = *(ub_m_begin + i);
     const N& ub_i_ci = ub_i[ci];
     for (dimension_type j = row_size_i; j-- > 0; ) {
       // Check redundancy of x_i_j.
@@ -7272,15 +7272,15 @@ Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
         continue;
       const dimension_type cj = coherent_index(j);
       const dimension_type row_size_cj = OR_Matrix<N>::row_size(cj);
-      Row_Reference ub_cj = *(ub_m_begin + cj);
+      row_reference ub_cj = *(ub_m_begin + cj);
       const N& ub_cj_j = ub_cj[j];
       for (dimension_type k = 0; k < n_rows; ++k) {
         const Bit_Row& y_non_red_k = y_non_red[k];
         const dimension_type ck = coherent_index(k);
         const dimension_type row_size_k = OR_Matrix<N>::row_size(k);
-        Row_Reference x_k = *(x_m_begin + k);
-        Row_Reference y_k = *(y_m_begin + k);
-        Row_Reference ub_k = *(ub_m_begin + k);
+        row_reference x_k = *(x_m_begin + k);
+        row_reference y_k = *(y_m_begin + k);
+        row_reference ub_k = *(ub_m_begin + k);
         const N& ub_k_ck = ub_k[ck];
         // Be careful: for each index h, the diagonal element m[h][h]
         // is (by convention) +infty in our implementation; however,
@@ -7303,7 +7303,7 @@ Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
           if (y_k_ell >= x_k[ell])
             continue;
           const dimension_type cell = coherent_index(ell);
-          Row_Reference ub_cell = *(ub_m_begin + cell);
+          row_reference ub_cell = *(ub_m_begin + cell);
           const N& ub_i_ell
             = (i == ell)
             ? temp_zero
@@ -7432,21 +7432,21 @@ Octagonal_Shape<T>
   PPL_DIRTY_TEMP(N, temp_two);
   assign_r(temp_two, 2, ROUND_NOT_NEEDED);
 
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
   const dimension_type n_rows = tx.matrix.num_rows();
-  const Row_Iterator tx_m_begin = tx.matrix.row_begin();
-  const Row_Iterator ty_m_begin = ty.matrix.row_begin();
-  const Row_Iterator ub_m_begin = ub.matrix.row_begin();
+  const row_iterator tx_m_begin = tx.matrix.row_begin();
+  const row_iterator ty_m_begin = ty.matrix.row_begin();
+  const row_iterator ub_m_begin = ub.matrix.row_begin();
 
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Bit_Row& tx_non_red_i = tx_non_red[i];
     using namespace Implementation::Octagonal_Shapes;
     const dimension_type ci = coherent_index(i);
     const dimension_type row_size_i = OR_Matrix<N>::row_size(i);
-    Row_Reference tx_i = *(tx_m_begin + i);
-    Row_Reference ty_i = *(ty_m_begin + i);
-    Row_Reference ub_i = *(ub_m_begin + i);
+    row_reference tx_i = *(tx_m_begin + i);
+    row_reference ty_i = *(ty_m_begin + i);
+    row_reference ub_i = *(ub_m_begin + i);
     const N& ub_i_ci = ub_i[ci];
     for (dimension_type j = row_size_i; j-- > 0; ) {
       // Check redundancy of tx_i_j.
@@ -7460,15 +7460,15 @@ Octagonal_Shape<T>
       if (lhs_i_j > ty_i[j])
         continue;
       const dimension_type row_size_cj = OR_Matrix<N>::row_size(cj);
-      Row_Reference ub_cj = *(ub_m_begin + cj);
+      row_reference ub_cj = *(ub_m_begin + cj);
       const N& ub_cj_j = ub_cj[j];
       for (dimension_type k = 0; k < n_rows; ++k) {
         const Bit_Row& ty_non_red_k = ty_non_red[k];
         const dimension_type ck = coherent_index(k);
         const dimension_type row_size_k = OR_Matrix<N>::row_size(k);
-        Row_Reference tx_k = *(tx_m_begin + k);
-        Row_Reference ty_k = *(ty_m_begin + k);
-        Row_Reference ub_k = *(ub_m_begin + k);
+        row_reference tx_k = *(tx_m_begin + k);
+        row_reference ty_k = *(ty_m_begin + k);
+        row_reference ub_k = *(ub_m_begin + k);
         const N& ub_k_ck = ub_k[ck];
         // Be careful: for each index h, the diagonal element m[h][h]
         // is (by convention) +infty in our implementation; however,
@@ -7493,7 +7493,7 @@ Octagonal_Shape<T>
           add_assign_r(lhs_k_ell, ty_k_ell, eps_k_ell, ROUND_NOT_NEEDED);
           if (lhs_k_ell > tx_k[ell])
             continue;
-          Row_Reference ub_cell = *(ub_m_begin + cell);
+          row_reference ub_cell = *(ub_m_begin + cell);
           const N& ub_i_ell
             = (i == ell)
             ? temp_zero
@@ -7606,12 +7606,12 @@ Octagonal_Shape<T>
   const Variables_Set::const_iterator v_begin = vars.begin();
   const Variables_Set::const_iterator v_end = vars.end();
   PPL_ASSERT(v_begin != v_end);
-  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   for (Variables_Set::const_iterator v_i = v_begin; v_i != v_end; ++v_i) {
     const dimension_type i = 2 * (*v_i);
     const dimension_type ci = i + 1;
-    Row_Reference m_i = matrix[i];
-    Row_Reference m_ci = matrix[ci];
+    row_reference m_i = matrix[i];
+    row_reference m_ci = matrix[ci];
 
     // Unary constraints: should be even integers.
     N& m_i_ci = m_i[ci];
@@ -7705,21 +7705,21 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& oct) {
   }
 
   typedef typename Octagonal_Shape<T>::coefficient_type N;
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type row_reference;
 
   // Records whether or not we still have to print the first constraint.
   bool first = true;
 
-  Row_Iterator m_begin = oct.matrix.row_begin();
-  Row_Iterator m_end = oct.matrix.row_end();
+  row_iterator m_begin = oct.matrix.row_begin();
+  row_iterator m_end = oct.matrix.row_end();
 
   // Temporaries.
   PPL_DIRTY_TEMP(N, negation);
   PPL_DIRTY_TEMP(N, half);
   // Go through all the unary constraints.
   // (Note: loop iterator is incremented in the loop body.)
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
     const Variable v_i(i/2);
     const N& c_i_ii = (*i_iter)[i + 1];
@@ -7779,12 +7779,12 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& oct) {
 
   // Go through all the binary constraints.
   // (Note: loop iterator is incremented in the loop body.)
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+  for (row_iterator i_iter = m_begin; i_iter != m_end; ) {
     const dimension_type i = i_iter.index();
     const Variable v_i(i/2);
-    Row_Reference r_i = *i_iter;
+    row_reference r_i = *i_iter;
     ++i_iter;
-    Row_Reference r_ii = *i_iter;
+    row_reference r_ii = *i_iter;
     ++i_iter;
 
     for (dimension_type j = 0; j < i; j += 2) {

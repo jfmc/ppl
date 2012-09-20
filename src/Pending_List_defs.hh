@@ -34,10 +34,10 @@ template <typename Traits>
 class Parma_Polyhedra_Library::Implementation::Watchdog::Pending_List {
 public:
   //! A non-const iterator to traverse the list.
-  typedef typename EList<Pending_Element<typename Traits::Threshold> >::Iterator Iterator;
+  typedef typename EList<Pending_Element<typename Traits::Threshold> >::iterator iterator;
 
   //! A const iterator to traverse the list.
-  typedef typename EList<Pending_Element<typename Traits::Threshold> >::Const_Iterator Const_Iterator;
+  typedef typename EList<Pending_Element<typename Traits::Threshold> >::const_iterator const_iterator;
 
   //! Constructs an empty list.
   Pending_List();
@@ -46,7 +46,7 @@ public:
   ~Pending_List();
 
   //! Inserts a new Pending_Element object with the given attributes.
-  Iterator insert(const typename Traits::Threshold& deadline,
+  iterator insert(const typename Traits::Threshold& deadline,
                   const Handler& handler,
                   bool& expired_flag);
 
@@ -54,16 +54,16 @@ public:
     Removes the element pointed to by \p position, returning
     an iterator pointing to the next element, if any, or end(), otherwise.
   */
-  Iterator erase(Iterator position);
+  iterator erase(iterator position);
 
   //! Returns <CODE>true</CODE> if and only if the list is empty.
   bool empty() const;
 
   //! Returns an iterator pointing to the beginning of the list.
-  Iterator begin();
+  iterator begin();
 
   //! Returns an iterator pointing one past the last element in the list.
-  Iterator end();
+  iterator end();
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

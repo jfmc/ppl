@@ -80,7 +80,7 @@ private:
   WD_Handler;
 
   const WD_Handler& handler;
-  WD_Pending_List::Iterator pending_position;
+  WD_Pending_List::iterator pending_position;
 
   // Private and not implemented: copy construction is not allowed.
   Watchdog(const Watchdog&);
@@ -121,13 +121,13 @@ private:
   static void handle_timeout(int);
 
   //! Handles the addition of a new watchdog event.
-  static WD_Pending_List::Iterator
+  static WD_Pending_List::iterator
   new_watchdog_event(long csecs,
                      const WD_Handler& handler,
                      bool& expired_flag);
 
   //! Handles the removal of the watchdog event referred by \p position.
-  void remove_watchdog_event(WD_Pending_List::Iterator position);
+  void remove_watchdog_event(WD_Pending_List::iterator position);
 
   //! Whether the alarm clock is running.
   static volatile bool alarm_clock_running;

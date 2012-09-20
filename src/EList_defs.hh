@@ -33,14 +33,14 @@ site: http://bugseng.com/products/ppl/ . */
   where the links are embedded in the objects themselves).
 */
 template <typename T>
-class Parma_Polyhedra_Library::Implementation::Watchdog::EList
+class Parma_Polyhedra_Library::Implementation::EList
   : private Doubly_Linked_Object {
 public:
   //! A const iterator to traverse the list.
-  typedef EList_Iterator<const T> Const_Iterator;
+  typedef EList_Iterator<const T> const_iterator;
 
   //! A non-const iterator to traverse the list.
-  typedef EList_Iterator<T> Iterator;
+  typedef EList_Iterator<T> iterator;
 
   //! Constructs an empty list.
   EList();
@@ -58,28 +58,28 @@ public:
     Inserts \p obj just before \p position and returns an iterator
     that points to the inserted object.
   */
-  Iterator insert(Iterator position, T& obj);
+  iterator insert(iterator position, T& obj);
 
   /*! \brief
     Removes the element pointed to by \p position, returning
     an iterator pointing to the next element, if any, or end(), otherwise.
   */
-  Iterator erase(Iterator position);
+  iterator erase(iterator position);
 
   //! Returns <CODE>true</CODE> if and only if the list is empty.
   bool empty() const;
 
   //! Returns an iterator pointing to the beginning of the list.
-  Iterator begin();
+  iterator begin();
 
   //! Returns an iterator pointing one past the last element in the list.
-  Iterator end();
+  iterator end();
 
   //! Returns a const iterator pointing to the beginning of the list.
-  Const_Iterator begin() const;
+  const_iterator begin() const;
 
   //! Returns a const iterator pointing one past the last element in the list.
-  Const_Iterator end() const;
+  const_iterator end() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

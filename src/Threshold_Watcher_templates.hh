@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Traits>
-typename Threshold_Watcher<Traits>::TW_Pending_List::Iterator
+typename Threshold_Watcher<Traits>::TW_Pending_List::iterator
 Threshold_Watcher<Traits>::add_threshold(typename Traits::Threshold threshold,
                                          const TW_Handler& handler,
                                          bool& expired_flag) {
@@ -36,10 +36,10 @@ Threshold_Watcher<Traits>::add_threshold(typename Traits::Threshold threshold,
 }
 
 template <typename Traits>
-typename Threshold_Watcher<Traits>::TW_Pending_List::Iterator
+typename Threshold_Watcher<Traits>::TW_Pending_List::iterator
 Threshold_Watcher<Traits>
-::remove_threshold(typename TW_Pending_List::Iterator position) {
-  typename TW_Pending_List::Iterator i = init.pending.erase(position);
+::remove_threshold(typename TW_Pending_List::iterator position) {
+  typename TW_Pending_List::iterator i = init.pending.erase(position);
   if (init.pending.empty())
     Traits::check_function = 0;
   return i;
@@ -55,7 +55,7 @@ Threshold_Watcher<Traits>::~Threshold_Watcher() {
 template <typename Traits>
 void
 Threshold_Watcher<Traits>::check() {
-  typename TW_Pending_List::Iterator i = init.pending.begin();
+  typename TW_Pending_List::iterator i = init.pending.begin();
   assert(i != init.pending.end());
   const typename Traits::Threshold& current = Traits::get();
   while (!Traits::less_than(current, i->deadline())) {

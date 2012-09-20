@@ -46,13 +46,13 @@ Pending_List<Traits>::~Pending_List() {
 }
 
 template <typename Traits>
-inline typename Pending_List<Traits>::Iterator
+inline typename Pending_List<Traits>::iterator
 Pending_List<Traits>::begin() {
   return active_list.begin();
 }
 
 template <typename Traits>
-inline typename Pending_List<Traits>::Iterator
+inline typename Pending_List<Traits>::iterator
 Pending_List<Traits>::end() {
   return active_list.end();
 }
@@ -64,10 +64,10 @@ Pending_List<Traits>::empty() const {
 }
 
 template <typename Traits>
-inline typename Pending_List<Traits>::Iterator
-Pending_List<Traits>::erase(Iterator position) {
+inline typename Pending_List<Traits>::iterator
+Pending_List<Traits>::erase(iterator position) {
   assert(!empty());
-  Iterator next = active_list.erase(position);
+  iterator next = active_list.erase(position);
   free_list.push_back(*position);
   assert(OK());
   return next;

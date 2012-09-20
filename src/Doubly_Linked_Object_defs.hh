@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "EList_Iterator_types.hh"
 
 //! A (base) class for doubly linked objects.
-class Parma_Polyhedra_Library::Implementation::Watchdog::Doubly_Linked_Object {
+class Parma_Polyhedra_Library::Implementation::Doubly_Linked_Object {
 public:
   //! Default constructor.
   Doubly_Linked_Object();

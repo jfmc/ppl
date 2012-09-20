@@ -30,8 +30,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-namespace Watchdog {
-
 template <typename T>
 inline
 EList_Iterator<T>::EList_Iterator() {
@@ -103,8 +101,6 @@ inline bool
 operator!=(const EList_Iterator<T>& x, const EList_Iterator<T>& y) {
   return x.ptr != y.ptr;
 }
-
-} // namespace Watchdog
 
 } // namespace Implementation
 

@@ -143,7 +143,7 @@ PPL::Watchdog::handle_timeout(int) {
   else {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
-      WD_Pending_List::Iterator i = pending.begin();
+      WD_Pending_List::iterator i = pending.begin();
       do {
         i->handler().act();
         i->expired_flag() = true;
@@ -164,13 +164,13 @@ PPL::PPL_handle_timeout(int signum) {
   PPL::Watchdog::handle_timeout(signum);
 }
 
-PPL::Watchdog::WD_Pending_List::Iterator
+PPL::Watchdog::WD_Pending_List::iterator
 PPL::Watchdog::new_watchdog_event(long csecs,
                                   const WD_Handler& handler,
                                   bool& expired_flag) {
   using namespace Implementation::Watchdog;
   assert(csecs > 0);
-  WD_Pending_List::Iterator position;
+  WD_Pending_List::iterator position;
   Time deadline(csecs);
   if (!alarm_clock_running) {
     position = pending.insert(deadline, handler, expired_flag);
@@ -197,11 +197,11 @@ PPL::Watchdog::new_watchdog_event(long csecs,
 }
 
 void
-PPL::Watchdog::remove_watchdog_event(WD_Pending_List::Iterator position) {
+PPL::Watchdog::remove_watchdog_event(WD_Pending_List::iterator position) {
   using namespace Implementation::Watchdog;
   assert(!pending.empty());
   if (position == pending.begin()) {
-    WD_Pending_List::Iterator next = position;
+    WD_Pending_List::iterator next = position;
     ++next;
     if (next != pending.end()) {
       Time first_deadline(position->deadline());

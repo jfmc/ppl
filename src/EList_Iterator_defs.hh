@@ -31,8 +31,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
 
-namespace Watchdog {
-
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 template <typename T>
 bool operator==(const EList_Iterator<T>& x, const EList_Iterator<T>& y);
@@ -41,15 +39,13 @@ bool operator==(const EList_Iterator<T>& x, const EList_Iterator<T>& y);
 template <typename T>
 bool operator!=(const EList_Iterator<T>& x, const EList_Iterator<T>& y);
 
-} // namespace Watchdog
-
 } // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
 
 //! A class providing iterators for embedded lists.
 template <typename T>
-class Parma_Polyhedra_Library::Implementation::Watchdog::EList_Iterator {
+class Parma_Polyhedra_Library::Implementation::EList_Iterator {
 public:
   //! Constructs an iterator pointing to nothing.
   EList_Iterator();
