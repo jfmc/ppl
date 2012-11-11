@@ -24,7 +24,7 @@
 # Process this file with Autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], [1.1pre3], [ppl-devel@cs.unipr.it], [ppl])
+AC_INIT([the Parma Polyhedra Library], [1.1pre4], [ppl-devel@cs.unipr.it], [ppl])
 
 # Minimum Autoconf version required.
 AC_PREREQ(2.61)
@@ -178,7 +178,7 @@ AM_CONDITIONAL(ICC, test x"$ICC" = xyes)
 # The clang compiler masquerades as gcc, but we want to know.
 if test x"$GCC" = xyes
 then
-  AC_MSG_CHECKING([whether we are actually using Clang])
+  AC_MSG_CHECKING([whether we are actually using clang])
   AC_LANG_PUSH(C)
   AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #ifndef __clang__
@@ -191,6 +191,28 @@ choke me
   CLANG=no,
   AC_MSG_RESULT(no)
   CLANG=no)
+  AC_LANG_POP(C)
+fi
+
+# The llvm-gcc compiler masquerades as gcc, but we want to know.
+if test x"$GCC" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using llvm-gcc])
+  AC_LANG_PUSH(C)
+  save_CFLAGS="$CFLAGS"
+  CFLAGS="-fplugin-arg-dragonegg-emit-ir -S"
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+int main() {
+  return 0;
+}
+]])],
+  AC_MSG_RESULT(yes)
+  LLVM_GCC=yes,
+  AC_MSG_RESULT(no)
+  LLVM_GCC=no,
+  AC_MSG_RESULT(no)
+  LLVM_GCC=no)
+  CFLAGS="$save_CFLAGS"
   AC_LANG_POP(C)
 fi
 
@@ -235,6 +257,29 @@ choke me
   CLANGXX=no)
   AC_LANG_POP(C++)
 fi
+
+# The llvm-++ compiler masquerades as g++, but we want to know.
+if test x"$GXX" = xyes
+then
+  AC_MSG_CHECKING([whether we are actually using llvm-g++])
+  AC_LANG_PUSH(C++)
+  save_CXXFLAGS="$CXXFLAGS"
+  CXXFLAGS="-fplugin-arg-dragonegg-emit-ir -S"
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+int main() {
+  return 0;
+}
+]])],
+  AC_MSG_RESULT(yes)
+  LLVM_GXX=yes,
+  AC_MSG_RESULT(no)
+  LLVM_GXX=no,
+  AC_MSG_RESULT(no)
+  LLVM_GXX=no)
+  CXXFLAGS="$save_CXXFLAGS"
+  AC_LANG_POP(C++)
+fi
+
 
 AC_PROG_FGREP
 AC_PROG_EGREP
@@ -492,15 +537,14 @@ then
   then
     OPT_FLAGS="$OPT_FLAGS -fp-model strict -fp-speculation off"
   else
-    # -frounding-math is not yet supported in clang++, if we use it we get
-    # lots of warnings.
-    if test x"$CLANGXX" = xyes
+    # -frounding-math is not yet supported in clang++ or llvm-g++.
+    if test x"$CLANGXX" = xyes || x"$LLVM_GXX" = xyes
     then
       if test x"$use_fpmath" = xyes
       then
         AC_MSG_WARN([CANNOT RELY ON DIRECTED ROUNDING:
 *** DISABLED ALL ABSTRACTIONS BASED ON MACHINE FLOATING-POINT NUMBERS.
-*** clang++ has been detected, which does not provide support for
+*** A compiler has been detected that does not provide support for
 *** -frounding-math (or any other option with the same semantics).
 *** Hence, we cannot rely on floating-point computations to happen
 *** in agreement with the rounding direction(s) used by the PPL.])
