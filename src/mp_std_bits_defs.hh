@@ -38,6 +38,9 @@ void swap(mpz_class& x, mpz_class& y);
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(mpq_class& x, mpq_class& y);
 
+#if __GNU_MP_VERSION < 5 \
+  || (__GNU_MP_VERSION == 5 && __GNU_MP_VERSION_MINOR < 1)
+
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -163,6 +166,9 @@ public:
 };
 
 } // namespace std
+
+#endif // __GNU_MP_VERSION < 5
+       // || (__GNU_MP_VERSION == 5 && __GNU_MP_VERSION_MINOR < 1)
 
 #include "mp_std_bits_inlines.hh"
 

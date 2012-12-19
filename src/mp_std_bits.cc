@@ -25,6 +25,9 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "mp_std_bits_defs.hh"
 
+#if __GNU_MP_VERSION < 5 \
+  || (__GNU_MP_VERSION == 5 && __GNU_MP_VERSION_MINOR < 1)
+
 const bool std::numeric_limits<mpz_class>::is_specialized;
 const int std::numeric_limits<mpz_class>::digits;
 const int std::numeric_limits<mpz_class>::digits10;
@@ -70,3 +73,6 @@ const bool std::numeric_limits<mpq_class>::is_modulo;
 const bool std::numeric_limits<mpq_class>::traps;
 const bool std::numeric_limits<mpq_class>::tininess_before;
 const std::float_round_style std::numeric_limits<mpq_class>::round_style;
+
+#endif // __GNU_MP_VERSION < 5
+       // || (__GNU_MP_VERSION == 5 && __GNU_MP_VERSION_MINOR < 1)
