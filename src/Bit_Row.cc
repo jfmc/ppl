@@ -143,11 +143,11 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
 
-  unsigned long i = k / static_cast<unsigned long>(GMP_NUMB_BITS);
+  const unsigned long i = k / static_cast<unsigned long>(GMP_NUMB_BITS);
   if (i >= static_cast<unsigned long>(vec_size))
     return false;
 
-  mp_limb_t limb = *(vec->_mp_d + i);
+  const mp_limb_t limb = *(vec->_mp_d + i);
   return ((limb >> (k % static_cast<unsigned long>(GMP_NUMB_BITS))) & 1U) != 0;
 }
 
@@ -190,7 +190,7 @@ bool
 PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
   mp_size_t x_size = x.vec->_mp_size;
   PPL_ASSERT(x_size >= 0);
-  mp_size_t y_size = y.vec->_mp_size;
+  const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
   if (x_size > y_size)
     return false;
@@ -212,7 +212,7 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
                      bool& strict_subset) {
   mp_size_t x_size = x.vec->_mp_size;
   PPL_ASSERT(x_size >= 0);
-  mp_size_t y_size = y.vec->_mp_size;
+  const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
   if (x_size > y_size)
     return false;
@@ -256,7 +256,7 @@ bool
 PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
   mp_size_t x_size = x.vec->_mp_size;
   PPL_ASSERT(x_size >= 0);
-  mp_size_t y_size = y.vec->_mp_size;
+  const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
   if (x_size > y_size)
     return false;

@@ -173,7 +173,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
 void
 PPL::Congruence_System::normalize_moduli() {
-  Congruence_System& cgs = *this;
+  const Congruence_System& cgs = *this;
   dimension_type row = cgs.num_rows();
   if (row > 0) {
     // Calculate the LCM of all the moduli.

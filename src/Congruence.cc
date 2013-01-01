@@ -153,7 +153,7 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "
     << v_name << ".space_dimension() == " << v.space_dimension() << ".";
-  std::string str = s.str();
+  const std::string str = s.str();
   throw_invalid_argument(method, str.c_str());
 }
 

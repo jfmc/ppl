@@ -243,7 +243,8 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
                    dimension_type key) const {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
-  dimension_type index = bisect_in(dfs_index(first), dfs_index(last), key);
+  const dimension_type index
+    = bisect_in(dfs_index(first), dfs_index(last), key);
   return const_iterator(*this, index);
 }
 
@@ -251,7 +252,8 @@ inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, dimension_type key) {
   if (hint == end())
     return bisect(key);
-  dimension_type index = bisect_near(dfs_index(hint), key);
+  const dimension_type index
+    = bisect_near(dfs_index(hint), key);
   return iterator(*this, index);
 }
 
@@ -259,7 +261,7 @@ inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
   if (hint == end())
     return bisect(key);
-  dimension_type index = bisect_near(dfs_index(hint), key);
+  const dimension_type index = bisect_near(dfs_index(hint), key);
   return const_iterator(*this, index);
 }
 
@@ -764,12 +766,12 @@ CO_Tree::tree_iterator::get_parent() {
 inline void
 CO_Tree::tree_iterator::follow_left_children_with_value() {
   PPL_ASSERT(index() != unused_index);
-  dimension_type* p = tree.indexes;
+  const dimension_type* p = tree.indexes;
   p += i;
   p -= (offset - 1);
   while (*p == unused_index)
     ++p;
-  ptrdiff_t distance = p - tree.indexes;
+  const ptrdiff_t distance = p - tree.indexes;
   PPL_ASSERT(distance >= 0);
   i = static_cast<dimension_type>(distance);
   offset = least_significant_one_mask(i);
@@ -779,12 +781,12 @@ CO_Tree::tree_iterator::follow_left_children_with_value() {
 inline void
 CO_Tree::tree_iterator::follow_right_children_with_value() {
   PPL_ASSERT(index() != unused_index);
-  dimension_type* p = tree.indexes;
+  const dimension_type* p = tree.indexes;
   p += i;
   p += (offset - 1);
   while (*p == unused_index)
     --p;
-  ptrdiff_t distance = p - tree.indexes;
+  const ptrdiff_t distance = p - tree.indexes;
   PPL_ASSERT(distance >= 0);
   i = static_cast<dimension_type>(distance);
   offset = least_significant_one_mask(i);

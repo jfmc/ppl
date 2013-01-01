@@ -183,7 +183,6 @@ Box<ITV>::Box(const Generator_System& gs)
                                 "contains no points.");
 
   // Going through all the lines, rays and closure points.
-  ITV q_interval;
   for (Generator_System::const_iterator gs_i = gs_begin;
        gs_i != gs_end; ++gs_i) {
     const Generator& g = *gs_i;
@@ -379,7 +378,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
     for (dimension_type i = space_dim; i-- > 0; )
       seq[i].assign(UNIVERSE);
     // Get a simplified version of the constraints.
-    Constraint_System cs = ph.simplified_constraints();
+    const Constraint_System cs = ph.simplified_constraints();
     // Propagate easy-to-find bounds from the constraints,
     // allowing for a limited number of iterations.
     // FIXME: 20 is just a wild guess.
@@ -397,7 +396,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
              ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
         const Constraint& c = *i;
         if (c.is_strict_inequality()) {
-          Linear_Expression expr(c.expression());
+          const Linear_Expression expr(c.expression());
           lp.add_constraint(expr >= 0);
         }
         else
@@ -2384,7 +2383,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
 
   // Find a space dimension having a non-zero coefficient (if any).
-  dimension_type last_k = c.expression().last_nonzero(1, c_space_dim + 1);
+  const dimension_type last_k
+    = c.expression().last_nonzero(1, c_space_dim + 1);
   if (last_k == c_space_dim + 1) {
     // Constraint c is trivial: check if it is inconsistent.
     if (c_inhomogeneous_term < 0
@@ -2405,7 +2405,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
          k_end = c_e.lower_bound(Variable(last_k)); k != k_end; ++k) {
     const Coefficient& a_k = *k;
     const Variable k_var = k.variable();
-    int sgn_a_k = sgn(a_k);
+    const int sgn_a_k = sgn(a_k);
     if (sgn_a_k == 0)
       continue;
     Result r;
@@ -2425,7 +2425,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
         if (i_var.id() == k_var.id())
           continue;
         const Coefficient& a_i = *i;
-        int sgn_a_i = sgn(a_i);
+        const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
           if (x_i.lower_is_boundary_infinity())
@@ -2471,7 +2471,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
         open = T_YES;
       {
-        Relation_Symbol rel = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
+        const Relation_Symbol rel
+          = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
         seq[k_var.id()].add_constraint(i_constraint(rel, t_bound));
       }
       reset_empty_up_to_date();
@@ -2492,7 +2493,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
         if (i_var.id() == k_var.id())
           continue;
         const Coefficient& a_i = *i;
-        int sgn_a_i = sgn(a_i);
+        const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
           if (x_i.upper_is_boundary_infinity())
@@ -2558,7 +2559,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
         if (i_var.id() == k_var.id())
           continue;
         const Coefficient& a_i = *i;
-        int sgn_a_i = sgn(a_i);
+        const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
           if (x_i.lower_is_boundary_infinity())
@@ -2604,7 +2605,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
         open = T_YES;
       {
-        Relation_Symbol rel = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
+        const Relation_Symbol rel
+          = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
         seq[k_var.id()].add_constraint(i_constraint(rel, t_bound));
       }
       reset_empty_up_to_date();
@@ -2625,7 +2627,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
         if (i_var.id() == k_var.id())
           continue;
         const Coefficient& a_i = *i;
-        int sgn_a_i = sgn(a_i);
+        const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
           if (x_i.upper_is_boundary_infinity())

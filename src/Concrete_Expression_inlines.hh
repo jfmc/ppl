@@ -72,25 +72,25 @@ Concrete_Expression_Type::is_floating_point() const {
 
 inline Bounded_Integer_Type_Width
 Concrete_Expression_Type::bounded_integer_type_width() const {
-  unsigned int u = impl.bounded_integer_type_width;
+  const unsigned int u = impl.bounded_integer_type_width;
   return static_cast<Bounded_Integer_Type_Width>(u);
 }
 
 inline Bounded_Integer_Type_Representation
 Concrete_Expression_Type::bounded_integer_type_representation() const {
-  unsigned int u = impl.bounded_integer_type_representation;
+  const unsigned int u = impl.bounded_integer_type_representation;
   return static_cast<Bounded_Integer_Type_Representation>(u);
 }
 
 inline Bounded_Integer_Type_Overflow
 Concrete_Expression_Type::bounded_integer_type_overflow() const {
-  unsigned int u = impl.bounded_integer_type_overflow;
+  const unsigned int u = impl.bounded_integer_type_overflow;
   return static_cast<Bounded_Integer_Type_Overflow>(u);
 }
 
 inline Floating_Point_Format
 Concrete_Expression_Type::floating_point_format() const {
-  unsigned int u = impl.floating_point_format;
+  const unsigned int u = impl.floating_point_format;
   return static_cast<Floating_Point_Format>(u);
 }
 
