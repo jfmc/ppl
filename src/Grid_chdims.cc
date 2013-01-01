@@ -404,7 +404,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
                                  "the maximum allowed space dimension");
 
   // Save the number of dimensions before adding new ones.
-  dimension_type old_dim = space_dim;
+  const dimension_type old_dim = space_dim;
 
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);

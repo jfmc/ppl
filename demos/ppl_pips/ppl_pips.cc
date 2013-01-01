@@ -148,7 +148,7 @@ pip_display_sol(std::ostream& out,
         out << ((i == cs_begin) ? "" : " and ") << *i;
       out << " then" << endl;
     }
-    const PIP_Decision_Node* decision_node_p = pip->as_decision();
+    const PIP_Decision_Node* const decision_node_p = pip->as_decision();
     if (decision_node_p) {
       pip_display_sol(out, decision_node_p->child_node(true),
                       parameters, vars, space_dimension, indent+1);
@@ -157,7 +157,7 @@ pip_display_sol(std::ostream& out,
                       parameters, vars, space_dimension, indent+1);
     }
     else {
-      const PIP_Solution_Node* solution_node_p = pip->as_solution();
+      const PIP_Solution_Node* const solution_node_p = pip->as_solution();
       out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
       for (Variables_Set::const_iterator
              v_begin = vars.begin(),

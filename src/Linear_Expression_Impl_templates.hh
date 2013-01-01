@@ -99,7 +99,7 @@ template <typename Row2>
 void
 Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Impl<Row2>& y, dimension_type i) {
-  Linear_Expression_Impl& x = *this;
+  const Linear_Expression_Impl& x = *this;
   PPL_ASSERT(i < x.space_dimension() + 1);
   PPL_ASSERT(x.space_dimension() == y.space_dimension());
   Coefficient_traits::const_reference x_i = x.row.get(i);
@@ -148,7 +148,8 @@ Linear_Expression_Impl<Row>
 template <typename Row>
 template <typename Row2>
 int
-Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) const {
+Linear_Expression_Impl<Row>
+::compare(const Linear_Expression_Impl<Row2>& y) const {
   const Linear_Expression_Impl& x = *this;
   // Compare all the coefficients of the row starting from position 1.
   // NOTE: x and y may be of different size.
@@ -158,21 +159,21 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) cons
   typename Row2::const_iterator j_end = y.row.end();
   while (i != i_end && j != j_end) {
     if (i.index() < j.index()) {
-      int s = sgn(*i);
+      const int s = sgn(*i);
       if (s != 0)
         return 2*s;
       ++i;
       continue;
     }
     if (i.index() > j.index()) {
-      int s = sgn(*j);
+      const int s = sgn(*j);
       if (s != 0)
         return -2*s;
       ++j;
       continue;
     }
     PPL_ASSERT(i.index() == j.index());
-    int s = cmp(*i, *j);
+    const int s = cmp(*i, *j);
     if (s < 0)
       return -2;
     if (s > 0)
@@ -182,12 +183,12 @@ Linear_Expression_Impl<Row>::compare(const Linear_Expression_Impl<Row2>& y) cons
     ++j;
   }
   for ( ; i != i_end; ++i) {
-    int s = sgn(*i);
+    const int s = sgn(*i);
     if (s != 0)
       return 2*s;
   }
   for ( ; j != j_end; ++j) {
-    int s = sgn(*j);
+    const int s = sgn(*j);
     if (s != 0)
       return -2*s;
   }
@@ -330,7 +331,8 @@ Linear_Expression_Impl<Row>::operator*=(Coefficient_traits::const_reference n) {
     PPL_ASSERT(OK());
     return *this;
   }
-  for (typename Row::iterator i = row.begin(), i_end = row.end(); i != i_end; ++i)
+  for (typename Row::iterator i = row.begin(),
+         i_end = row.end(); i != i_end; ++i)
     (*i) *= n;
   PPL_ASSERT(OK());
   return *this;
@@ -357,7 +359,8 @@ Linear_Expression_Impl<Row>::operator/=(Coefficient_traits::const_reference n) {
 template <typename Row>
 void
 Linear_Expression_Impl<Row>::negate() {
-  for (typename Row::iterator i = row.begin(), i_end = row.end(); i != i_end; ++i)
+  for (typename Row::iterator i = row.begin(),
+         i_end = row.end(); i != i_end; ++i)
     neg_assign(*i);
   PPL_ASSERT(OK());
 }
@@ -500,8 +503,8 @@ Linear_Expression_Impl<Row>
   // NOTE: Since all coefficients in [start,end) are multiple of c,
   // each of the resulting coefficients will be nonzero iff the initial
   // coefficient was.
-  for (typename Row::iterator
-    i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; ++i)
+  for (typename Row::iterator i = row.lower_bound(start),
+         i_end = row.lower_bound(end); i != i_end; ++i)
     Parma_Polyhedra_Library::exact_div_assign(*i, *i, c);
   PPL_ASSERT(OK());
 }
@@ -667,7 +670,8 @@ template <typename Row>
 template <typename Row2>
 void
 Linear_Expression_Impl<Row>
-::scalar_product_assign(Coefficient& result, const Linear_Expression_Impl<Row2>& y,
+::scalar_product_assign(Coefficient& result,
+                        const Linear_Expression_Impl<Row2>& y,
                         dimension_type start, dimension_type end) const {
   const Linear_Expression_Impl<Row>& x = *this;
   PPL_ASSERT(start <= end);
@@ -1254,8 +1258,7 @@ template <typename Row>
 bool
 Linear_Expression_Impl<Row>::const_iterator
 ::operator==(const const_iterator_interface& x) const {
-  const const_iterator* p
-    = dynamic_cast<const const_iterator*>(&x);
+  const const_iterator* const p = dynamic_cast<const const_iterator*>(&x);
   // Comparing iterators belonging to different rows is forbidden.
   PPL_ASSERT(p != 0);
   PPL_ASSERT(row == p->row);

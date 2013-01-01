@@ -191,7 +191,7 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
     if (x.con_sys.num_rows() != y.con_sys.num_rows())
       return Grid::TVB_FALSE;
     //  - the same number of equalities; ...
-    dimension_type x_num_equalities = x.con_sys.num_equalities();
+    const dimension_type x_num_equalities = x.con_sys.num_equalities();
     if (x_num_equalities != y.con_sys.num_equalities())
       return Grid::TVB_FALSE;
     //  - and if there are no equalities, the same congruences.
@@ -259,7 +259,7 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Grid_Generator_System& gs = x.gen_sys;
   const Congruence_System& cgs = y.con_sys;
 
-  dimension_type num_rows = gs.num_rows();
+  const dimension_type num_rows = gs.num_rows();
   for (dimension_type i = num_rows; i-- > 0; )
     if (!cgs.satisfies_all_congruences(gs[i]))
       return false;
@@ -339,7 +339,7 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
 
   // The frequency is the gcd of the scalar products of the parameters
   // in `gen_sys'.
-  dimension_type num_rows = gen_sys.num_rows();
+  const dimension_type num_rows = gen_sys.num_rows();
   PPL_DIRTY_TEMP_COEFFICIENT(sp);
   freq_n = 0;
 
@@ -423,7 +423,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
 
     included = true;
     if (point != 0) {
-      Linear_Expression g_expr(gen.expression());
+      const Linear_Expression g_expr(gen.expression());
       *point = Generator::point(g_expr, gen.divisor());
     }
     return true;
@@ -608,7 +608,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
                               const Grid_Generator* first_point) {
   PPL_ASSERT(divisor >= 0);
   if (sys.space_dimension() > 0 && divisor > 0) {
-    dimension_type num_rows = sys.num_rows();
+    const dimension_type num_rows = sys.num_rows();
 
     if (first_point != 0)
       lcm_assign(divisor, divisor, (*first_point).divisor());
@@ -685,7 +685,7 @@ PPL::Grid::add_constraint_no_check(const Constraint& c) {
   }
 
   PPL_ASSERT(c.is_equality());
-  Congruence cg(c);
+  const Congruence cg(c);
   add_congruence_no_check(cg);
 }
 
@@ -695,7 +695,7 @@ PPL::Grid::refine_no_check(const Constraint& c) {
   PPL_ASSERT(space_dim >= c.space_dimension());
 
   if (c.is_equality()) {
-    Congruence cg(c);
+    const Congruence cg(c);
     add_congruence_no_check(cg);
   }
   else if (c.is_inconsistent())

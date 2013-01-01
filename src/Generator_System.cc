@@ -53,7 +53,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       // closure points that were matching a point (i.e., those
       // that are in the generator system, but are invisible to
       // the user).
-      Generator_System& gs = *this;
+      const Generator_System& gs = *this;
       for (dimension_type i = 0; i < sys.num_rows(); )
         if (gs[i].is_closure_point())
           sys.remove_row(i, false);
@@ -275,7 +275,7 @@ PPL::Generator_System::num_lines() const {
   // If sys happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
   if (sys.is_sorted()) {
-    dimension_type nrows = sys.num_rows();
+    const dimension_type nrows = sys.num_rows();
     for (dimension_type i = 0; i < nrows && gs[i].is_line(); ++i)
       ++n;
   }
@@ -623,7 +623,7 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
   // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of space dimensions).
-  Topology_Adjusted_Scalar_Product_Sign sps(c);
+  const Topology_Adjusted_Scalar_Product_Sign sps(c);
 
   const Generator_System& gs = *this;
   switch (c.type()) {

@@ -86,7 +86,7 @@ float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
                                & ((1UL << MANTISSA_BITS) - 1));
   if (negative)
     word |= SGN_MASK;
-  int exponent_repr = exponent + EXPONENT_BIAS;
+  const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   word |= static_cast<uint16_t>(exponent_repr) << MANTISSA_BITS;
 }
@@ -147,7 +147,7 @@ float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
                                & ((1UL << MANTISSA_BITS) - 1));
   if (negative)
     word |= SGN_MASK;
-  int exponent_repr = exponent + EXPONENT_BIAS;
+  const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   word |= static_cast<uint32_t>(exponent_repr) << MANTISSA_BITS;
 }
@@ -165,7 +165,7 @@ float_ieee754_double::inf_sign() const {
 
 inline bool
 float_ieee754_double::is_nan() const {
-  uint32_t a = msp & ~MSP_SGN_MASK;
+  const uint32_t a = msp & ~MSP_SGN_MASK;
   return a > MSP_POS_INF || (a == MSP_POS_INF && lsp != LSP_INF);
 }
 
@@ -233,7 +233,7 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
   msp = static_cast<uint32_t>(m & ((1UL << (MANTISSA_BITS - 32)) - 1));
   if (negative)
     msp |= MSP_SGN_MASK;
-  int exponent_repr = exponent + EXPONENT_BIAS;
+  const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   msp |= static_cast<uint32_t>(exponent_repr) << (MANTISSA_BITS - 32);
 }
@@ -294,7 +294,7 @@ float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
                                & ((1UL << MANTISSA_BITS) - 1));
   if (negative)
     word |= SGN_MASK;
-  int exponent_repr = exponent + EXPONENT_BIAS;
+  const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   word |= static_cast<uint32_t>(exponent_repr) << MANTISSA_BITS;
 }
@@ -303,7 +303,7 @@ inline int
 float_intel_double_extended::inf_sign() const {
   if (lsp != LSP_INF)
     return 0;
-  uint32_t a = msp & MSP_NEG_INF;
+  const uint32_t a = msp & MSP_NEG_INF;
   if (a == MSP_NEG_INF)
     return -1;
   if (a == MSP_POS_INF)
@@ -321,7 +321,7 @@ inline int
 float_intel_double_extended::zero_sign() const {
   if (lsp != LSP_ZERO)
     return 0;
-  uint32_t a = msp & MSP_NEG_INF;
+  const uint32_t a = msp & MSP_NEG_INF;
   if (a == MSP_NEG_ZERO)
     return -1;
   if (a == MSP_POS_ZERO)
@@ -376,7 +376,7 @@ float_intel_double_extended::build(bool negative,
   lsp = mpz_get_ui(mantissa);
 #endif
   msp = (negative ? MSP_SGN_MASK : 0);
-  int exponent_repr = exponent + EXPONENT_BIAS;
+  const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   msp |= static_cast<uint32_t>(exponent_repr);
 }
@@ -456,7 +456,7 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
   msp &= ((static_cast<uint64_t>(1) << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;
-  int exponent_repr = exponent + EXPONENT_BIAS;
+  const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   msp |= static_cast<uint64_t>(exponent_repr) << (MANTISSA_BITS - 64);
 }

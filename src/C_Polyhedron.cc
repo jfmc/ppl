@@ -36,7 +36,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
          cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
     if (c.is_strict_inequality()) {
-      Linear_Expression expr(c.expression());
+      const Linear_Expression expr(c.expression());
       add_constraint(expr >= 0);
     }
     else

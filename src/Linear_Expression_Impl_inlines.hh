@@ -91,7 +91,7 @@ inline void
 Linear_Expression_Impl<Row>
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
-  dimension_type i = v.space_dimension();
+  const dimension_type i = v.space_dimension();
   if (n == 0)
     row.reset(i);
   else

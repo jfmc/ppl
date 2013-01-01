@@ -313,8 +313,8 @@ affine_preimage(Variable v,
 void
 PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   const Congruence_System& x = *this;
-  dimension_type x_num_rows = x.num_rows();
-  dimension_type x_space_dim = x.space_dimension();
+  const dimension_type x_num_rows = x.num_rows();
+  const dimension_type x_space_dim = x.space_dimension();
   s << x_num_rows << " x " << x_space_dim << " ";
   Parma_Polyhedra_Library::ascii_dump(s, representation());
   s << std::endl;
@@ -418,8 +418,9 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
 }
 
 void
-PPL::Congruence_System::add_unit_rows_and_space_dimensions(dimension_type dims) {
-  dimension_type old_num_rows = num_rows();
+PPL::Congruence_System
+::add_unit_rows_and_space_dimensions(dimension_type dims) {
+  const dimension_type old_num_rows = num_rows();
   set_space_dimension(space_dimension() + dims);
 
   rows.resize(rows.size() + dims);
@@ -448,11 +449,11 @@ PPL::Congruence_System::concatenate(const Congruence_System& y) {
   // TODO: this implementation is just an executable specification.
   Congruence_System cgs = y;
 
-  dimension_type added_rows = cgs.num_rows();
-  dimension_type added_columns = cgs.space_dimension();
+  const dimension_type added_rows = cgs.num_rows();
+  const dimension_type added_columns = cgs.space_dimension();
 
-  dimension_type old_num_rows = num_rows();
-  dimension_type old_space_dim = space_dimension();
+  const dimension_type old_num_rows = num_rows();
+  const dimension_type old_space_dim = space_dimension();
 
   set_space_dimension(space_dimension() + added_columns);
 

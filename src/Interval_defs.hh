@@ -41,7 +41,8 @@ enum Ternary { T_YES, T_NO, T_MAYBE };
 
 inline I_Result
 combine(Result l, Result u) {
-  unsigned res = static_cast<unsigned>(l) | (static_cast<unsigned>(u) << 6);
+  const unsigned res
+    = static_cast<unsigned>(l) | (static_cast<unsigned>(u) << 6);
   return static_cast<I_Result>(res);
 }
 
@@ -293,7 +294,7 @@ public:
       break;
     }
     build(c1);
-    I_Result r = add_constraint(c2);
+    const I_Result r = add_constraint(c2);
     return r - (I_CHANGED | I_UNCHANGED);
   }
 

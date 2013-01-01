@@ -162,7 +162,7 @@ PPL::Grid::Grid(const Polyhedron& ph,
     return;
   }
 
-  bool use_constraints = ph.constraints_are_minimized()
+  const bool use_constraints = ph.constraints_are_minimized()
     || !ph.generators_are_up_to_date();
 
   // Minimize the constraint description if it is needed and
@@ -527,7 +527,7 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
 
 PPL::Poly_Gen_Relation
 PPL::Grid::relation_with(const Generator& g) const {
-  dimension_type g_space_dim = g.space_dimension();
+  const dimension_type g_space_dim = g.space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim < g_space_dim)
@@ -545,7 +545,7 @@ PPL::Grid::relation_with(const Generator& g) const {
   if (!congruences_are_up_to_date())
     update_congruences();
 
-  Linear_Expression expr(g.expression());
+  const Linear_Expression expr(g.expression());
   Grid_Generator gg(grid_point());
   if (g.is_point() || g.is_closure_point())
     // Points and closure points are converted to grid points.
@@ -568,7 +568,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
     throw_dimension_incompatible("relation_with(c)", "c", c);
 
   if (c.is_equality()) {
-    Congruence cg(c);
+    const Congruence cg(c);
     return relation_with(cg);
   }
 
@@ -1434,7 +1434,7 @@ PPL::Grid::upper_bound_assign(const Grid& y) {
 
 bool
 PPL::Grid::upper_bound_assign_if_exact(const Grid& y) {
-  Grid& x = *this;
+  const Grid& x = *this;
 
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
@@ -1703,7 +1703,7 @@ PPL::Grid::simplify_using_context_assign(const Grid& y) {
     std::sort(ruled_out_vec.begin(), ruled_out_vec.end(),
               Ruled_Out_Less_Than());
 
-    bool empty_intersection = (!z.minimize());
+    const bool empty_intersection = (!z.minimize());
 
     // Add the congruences in the "ruled out" order to `w'
     // until the result is the intersection.
@@ -2040,7 +2040,7 @@ generalized_affine_preimage(const Variable var,
   // computed as the image of its inverse relation.
   const Coefficient& var_coefficient = expr.coefficient(var);
   if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
-    Linear_Expression inverse_expr
+    const Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
     PPL_DIRTY_TEMP_COEFFICIENT(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
@@ -2148,7 +2148,7 @@ generalized_affine_image(const Linear_Expression& lhs,
         i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i)
     new_lines.insert(grid_line(i.variable()));
 
-  dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
+  const dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
@@ -2277,7 +2277,8 @@ generalized_affine_preimage(const Linear_Expression& lhs,
         i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i)
       new_lines.insert(grid_line(i.variable()));
 
-  dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
+  const dimension_type num_common_dims
+    = std::min(lhs_space_dim, rhs_space_dim);
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, add an additional dimension.
@@ -2443,7 +2444,7 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   // At this point both generator systems are up-to-date.
   Grid_Generator_System gs = y.gen_sys;
-  dimension_type gs_num_rows = gs.num_rows();
+  const dimension_type gs_num_rows = gs.num_rows();
 
   normalize_divisors(gs, gen_sys);
 

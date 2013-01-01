@@ -423,7 +423,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   // non-pending) status.
   PPL_ASSERT(first >= index_first_pending || last <= index_first_pending);
 
-  bool were_pending = (first >= index_first_pending);
+  const bool were_pending = (first >= index_first_pending);
 
   // Move the rows in [first,last) at the end of the system.
   if (sorted && keep_sorted && !were_pending) {
@@ -443,7 +443,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   // We can ignore the row ordering, but we must not mix pending and
   // non-pending rows.
 
-  dimension_type offset = rows.size() - n - first;
+  const dimension_type offset = rows.size() - n - first;
   // We want to swap the rows in [first, last) and
   // [first + offset, last + offset) (note that these intervals may not be
   // disjunct).
