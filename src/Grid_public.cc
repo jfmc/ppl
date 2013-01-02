@@ -71,7 +71,7 @@ PPL::Grid::Grid(const Constraint_System& cs)
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
     for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+           cs_end = cs.end(); i != cs_end; ++i)
       if (i->is_inconsistent()) {
         // Inconsistent constraint found: the grid is empty.
         status.set_empty();
@@ -110,7 +110,7 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
     for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+           cs_end = cs.end(); i != cs_end; ++i)
       if (i->is_inconsistent()) {
         // Inconsistent constraint found: the grid is empty.
         status.set_empty();

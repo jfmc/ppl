@@ -37,14 +37,14 @@ stdiobuf::uflow() {
 
 stdiobuf::int_type
 stdiobuf::underflow() {
-  int_type c = getc(fp);
+  const int_type c = getc(fp);
   return ungetc(c, fp);
 }
 
 std::streamsize
 stdiobuf::xsgetn(char_type* s, std::streamsize n) {
   PPL_ASSERT(n >= 0);
-  size_t r = fread(s, 1, static_cast<size_t>(n), fp);
+  const size_t r = fread(s, 1, static_cast<size_t>(n), fp);
   if (r > 0)
     unget_char_buf = traits_type::to_int_type(s[r - 1]);
   else
@@ -55,7 +55,7 @@ stdiobuf::xsgetn(char_type* s, std::streamsize n) {
 stdiobuf::int_type
 stdiobuf::pbackfail(int_type c) {
   const int_type eof = traits_type::eof();
-  int_type u = traits_type::eq_int_type(c, eof) ? unget_char_buf : c;
+  const int_type u = traits_type::eq_int_type(c, eof) ? unget_char_buf : c;
   unget_char_buf = eof;
   return traits_type::eq_int_type(u, eof) ? eof : ungetc(u, fp);
 }
@@ -63,7 +63,7 @@ stdiobuf::pbackfail(int_type c) {
 std::streamsize
 stdiobuf::xsputn(const char_type* s, std::streamsize n) {
   PPL_ASSERT(n >= 0);
-  size_t r = fwrite(s, 1, static_cast<size_t>(n), fp);
+  const size_t r = fwrite(s, 1, static_cast<size_t>(n), fp);
   return static_cast<std::streamsize>(r);
 }
 

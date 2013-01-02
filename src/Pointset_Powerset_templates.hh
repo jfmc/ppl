@@ -1566,7 +1566,7 @@ void
 linear_partition_aux(const Constraint& c,
                      PSET& pset,
                      Pointset_Powerset<NNC_Polyhedron>& r) {
-  Linear_Expression le(c.expression());
+  const Linear_Expression le(c.expression());
   const Constraint& neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron nnc_ph_pset(pset);
   nnc_ph_pset.add_constraint(neg_c);
@@ -1595,7 +1595,7 @@ linear_partition(const PSET& p, const PSET& q) {
        ++i) {
     const Constraint& c = *i;
     if (c.is_equality()) {
-      Linear_Expression le(c.expression());
+      const Linear_Expression le(c.expression());
       linear_partition_aux(le <= 0, pset, r);
       linear_partition_aux(le >= 0, pset, r);
     }

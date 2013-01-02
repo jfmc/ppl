@@ -44,7 +44,7 @@ template <typename T>
 inline Temp_Item<T>&
 Temp_Item<T>::obtain() {
   if (free_list_head != 0) {
-    Temp_Item* p = free_list_head;
+    Temp_Item* const p = free_list_head;
     free_list_head = free_list_head->next;
     return *p;
   }

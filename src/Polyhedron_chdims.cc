@@ -219,7 +219,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // by leaving the old system of constraints in the upper left-hand side
   // and placing the constraints of `cs' in the lower right-hand side.
   // NOTE: here topologies agree, whereas dimensions may not agree.
-  dimension_type added_rows = cs.num_rows();
+  const dimension_type added_rows = cs.num_rows();
 
   // We already dealt with the cases of an empty or zero-dim `y' polyhedron;
   // also, `cs' contains the low-level constraints, at least.
@@ -401,7 +401,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
     return;
 
   // Keep track of the dimension before adding the new ones.
-  dimension_type old_dim = space_dim;
+  const dimension_type old_dim = space_dim;
 
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);

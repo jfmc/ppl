@@ -280,7 +280,7 @@ wrap_assign(PSET& pointset,
     div_2exp_assign_r(l_n, l_n, w, ROUND_DOWN);
     div_2exp_assign_r(u_n, u_n, w, ROUND_DOWN);
     Coefficient& first_quadrant = l_n;
-    Coefficient& last_quadrant = u_n;
+    const Coefficient& last_quadrant = u_n;
 
     // Special case: this variable does not need wrapping.
     if (first_quadrant == 0 && last_quadrant == 0)

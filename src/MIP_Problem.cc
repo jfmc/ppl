@@ -441,7 +441,7 @@ bool
 PPL::MIP_Problem::is_satisfied(const Constraint& c, const Generator& g) {
   // Scalar_Products::sign() requires the second argument to be at least
   // as large as the first one.
-  int sp_sign
+  const int sp_sign
     = (g.space_dimension() <= c.space_dimension())
     ? Scalar_Products::sign(g, c)
     : Scalar_Products::sign(c, g);
@@ -452,7 +452,7 @@ bool
 PPL::MIP_Problem::is_saturated(const Constraint& c, const Generator& g) {
   // Scalar_Products::sign() requires the space dimension of the second
   // argument to be at least as large as the one of the first one.
-  int sp_sign
+  const int sp_sign
     = (g.space_dimension() <= c.space_dimension())
     ? Scalar_Products::sign(g, c)
     : Scalar_Products::sign(c, g);
@@ -527,10 +527,10 @@ PPL::MIP_Problem
     const Constraint& cs_i = *(input_cs[i]);
     const dimension_type cs_i_end = cs_i.space_dimension() + 1;
 
-    dimension_type nonzero_coeff_column_index
+    const dimension_type nonzero_coeff_column_index
       = cs_i.expression().first_nonzero(1, cs_i_end);
-    bool found_a_nonzero_coeff = (nonzero_coeff_column_index != cs_i_end);
-    bool found_many_nonzero_coeffs
+    const bool found_a_nonzero_coeff = (nonzero_coeff_column_index != cs_i_end);
+    const bool found_many_nonzero_coeffs
       = (found_a_nonzero_coeff
          && !cs_i.expression().all_zeroes(nonzero_coeff_column_index + 1,
                                                cs_i_end));
@@ -913,7 +913,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Now we are ready to solve the first phase.
-  bool first_phase_successful
+  const bool first_phase_successful
     = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
     ? compute_simplex_using_steepest_edge_float()
     : compute_simplex_using_exact_pricing();
@@ -1367,8 +1367,8 @@ PPL::MIP_Problem::is_unbounded_obj_function(
   const std::vector<std::pair<dimension_type, dimension_type> >& mapping,
   Optimization_Mode optimization_mode) {
 
-  for (Linear_Expression::const_iterator i = x.begin(), i_end = x.end();
-        i != i_end; ++i) {
+  for (Linear_Expression::const_iterator i = x.begin(),
+         i_end = x.end(); i != i_end; ++i) {
     // If a the value of a variable in the objective function is
     // different from zero, the final status is unbounded.
     // In the first part the variable is constrained to be greater or equal
@@ -1796,8 +1796,8 @@ PPL::MIP_Problem::second_phase() {
 
   // Negate the cost function if we are minimizing.
   if (opt_mode == MINIMIZATION)
-    for (Row::iterator
-         i = new_cost.begin(), i_end = new_cost.end(); i != i_end; ++i)
+    for (Row::iterator i = new_cost.begin(),
+           i_end = new_cost.end(); i != i_end; ++i)
       neg_assign(*i);
 
   const dimension_type cost_zero_size = working_cost.size();
@@ -1813,9 +1813,8 @@ PPL::MIP_Problem::second_phase() {
       = working_cost.insert(cost_zero_size - 1, Coefficient_one());
 
     // Split the variables in the cost function.
-    for (Row::const_iterator
-         i = new_cost.lower_bound(1), i_end = new_cost.end();
-         i != i_end; ++i) {
+    for (Row::const_iterator i = new_cost.lower_bound(1),
+           i_end = new_cost.end(); i != i_end; ++i) {
       const dimension_type index = i.index();
       const dimension_type original_var = mapping[index].first;
       const dimension_type split_var = mapping[index].second;
@@ -1842,7 +1841,7 @@ PPL::MIP_Problem::second_phase() {
   }
 
   // Solve the second phase problem.
-  bool second_phase_successful
+  const bool second_phase_successful
     = (get_control_parameter(PRICING) == PRICING_STEEPEST_EDGE_FLOAT)
     ? compute_simplex_using_steepest_edge_float()
     : compute_simplex_using_exact_pricing();
@@ -2208,7 +2207,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& mip,
             << (Variable(non_int_dim) >= tmp_coeff2)
             << "." << std::endl;
 #endif // PPL_NOISY_SIMPLEX
-  bool satisfiable = is_mip_satisfiable(mip, i_vars, p);
+  const bool satisfiable = is_mip_satisfiable(mip, i_vars, p);
 #if PPL_NOISY_SIMPLEX
   std::cout << "MIP_Problem::is_mip_satisfiable(): "
             << "exiting from recursion level " << mip_recursion_level
@@ -2311,7 +2310,7 @@ PPL::MIP_Problem::OK() const {
       // to be greater than the number of nonzeroes in last_generator in most
       // cases.
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
-            v_end = i_variables.end(); v_it != v_end; ++v_it) {
+             v_end = i_variables.end(); v_it != v_end; ++v_it) {
         gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),
                    last_generator.divisor());
         if (gcd != last_generator.divisor())

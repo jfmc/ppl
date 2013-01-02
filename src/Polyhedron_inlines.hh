@@ -298,13 +298,11 @@ Polyhedron::process_pending() const {
   PPL_ASSERT(space_dim > 0 && !marked_empty());
   PPL_ASSERT(has_something_pending());
 
-  Polyhedron& x = const_cast<Polyhedron&>(*this);
+  if (has_pending_constraints())
+    return process_pending_constraints();
 
-  if (x.has_pending_constraints())
-    return x.process_pending_constraints();
-
-  PPL_ASSERT(x.has_pending_generators());
-  x.process_pending_generators();
+  PPL_ASSERT(has_pending_generators());
+  process_pending_generators();
   return true;
 }
 

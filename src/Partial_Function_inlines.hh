@@ -78,7 +78,7 @@ inline bool
 Partial_Function::maps(dimension_type i, dimension_type& j) const {
   if (i >= vec.size())
     return false;
-  dimension_type vec_i = vec[i];
+  const dimension_type vec_i = vec[i];
   if (vec_i == not_a_dimension())
     return false;
   j = vec_i;

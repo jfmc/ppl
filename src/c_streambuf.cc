@@ -81,7 +81,7 @@ c_streambuf::pbackfail(int_type c) {
 std::streamsize
 c_streambuf::xsputn(const char_type* s, std::streamsize n) {
   PPL_ASSERT(n >= 0);
-  size_t r = cb_write(s, static_cast<size_t>(n));
+  const size_t r = cb_write(s, static_cast<size_t>(n));
   return static_cast<std::streamsize>(r);
 }
 

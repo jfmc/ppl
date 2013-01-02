@@ -37,11 +37,11 @@ PPL::Variable::OK() const {
 
 void
 PPL::Variable::default_output_function(std::ostream& s, const Variable v) {
-  dimension_type varid = v.id();
+  const dimension_type varid = v.id();
   static const char var_name_letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const dimension_type num_letters = sizeof(var_name_letters) - 1;
   s << var_name_letters[varid % num_letters];
-  if (dimension_type i = varid / num_letters)
+  if (const dimension_type i = varid / num_letters)
     s << i;
 }
 

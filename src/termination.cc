@@ -42,13 +42,13 @@ assign_all_inequalities_approximation(const Constraint_System& cs_in,
       const Constraint& c = *i;
       if (c.is_equality()) {
         // Insert the two corresponding opposing inequalities.
-        Linear_Expression expr(c.expression());
+        const Linear_Expression expr(c.expression());
         cs_out.insert(expr >= 0);
         cs_out.insert(expr <= 0);
       }
       else if (c.is_strict_inequality()) {
         // Insert the non-strict approximation.
-        Linear_Expression expr(c.expression());
+        const Linear_Expression expr(c.expression());
         cs_out.insert(expr >= 0);
       }
       else
@@ -73,7 +73,7 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
       const Constraint& c = *i;
       if (c.is_equality()) {
         // Insert the two corresponding opposing inequalities.
-        Linear_Expression expr(c.expression());
+        const Linear_Expression expr(c.expression());
         cs.insert(expr >= 0);
         cs.insert(expr <= 0);
       }
@@ -148,8 +148,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   std::cout << cs << std::endl;
 #endif
 
-  dimension_type y_begin = n+1;
-  dimension_type z_begin = y_begin + ((&cs_out1 == &cs_out2) ? m : 0);
+  const dimension_type y_begin = n+1;
+  const dimension_type z_begin = y_begin + ((&cs_out1 == &cs_out2) ? m : 0);
 
   // Make sure linear expressions have the correct space dimension.
   Linear_Expression y_le;
@@ -163,8 +163,8 @@ fill_constraint_systems_MS(const Constraint_System& cs,
   dimension_type z = z_begin;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
-    Variable v_y(y);
-    Variable v_z(z);
+    const Variable v_y(y);
+    const Variable v_z(z);
     ++y;
     ++z;
     cs_out1.insert(v_y >= 0);
@@ -362,8 +362,8 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
          cs_before_end = cs_before.end();
        i != cs_before_end;
        ++i, ++row_index) {
-    Variable u1_i(m + row_index);
-    Variable u2_i(s + row_index);
+    const Variable u1_i(m + row_index);
+    const Variable u2_i(s + row_index);
     const Constraint::expr_type e_i = i->expression();
     for (Constraint::expr_type::const_iterator
            j = e_i.begin(), j_end = e_i.end(); j != j_end; ++j) {
@@ -386,7 +386,7 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
          cs_after_end = cs_after.end();
        i != cs_after_end;
        ++i, ++row_index) {
-    Variable u3_i(row_index);
+    const Variable u3_i(row_index);
     const Constraint::expr_type e_i = i->expression();
     for (Constraint::expr_type::const_iterator
            j = e_i.lower_bound(Variable(n)),
@@ -476,7 +476,7 @@ termination_test_MS(const Constraint_System& cs) {
   Constraint_System cs_mip;
   fill_constraint_systems_MS(cs, cs_mip, cs_mip);
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+  const MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
   return mip.is_satisfiable();
 }
 
@@ -485,14 +485,14 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
   Constraint_System cs_mip;
   fill_constraint_systems_MS(cs, cs_mip, cs_mip);
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+  const MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
   if (!mip.is_satisfiable())
     return false;
 
-  Generator fp = mip.feasible_point();
+  const Generator fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
   const dimension_type n = cs.space_dimension() / 2;
-  Linear_Expression le(fp.expression(), n + 1);
+  const Linear_Expression le(fp.expression(), n + 1);
   mu = point(le, fp.divisor());
   return true;
 }
@@ -590,7 +590,7 @@ termination_test_PR_original(const Constraint_System& cs) {
   // Turn minimization problem into satisfiability.
   cs_mip.insert(le_ineq <= -1);
 
-  MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
+  const MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
   return mip.is_satisfiable();
 }
 
@@ -621,7 +621,7 @@ termination_test_PR(const Constraint_System& cs_before,
   // Turn minimization problem into satisfiability.
   cs_mip.insert(le_ineq <= -1);
 
-  MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
+  const MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
   return mip.is_satisfiable();
 }
 
@@ -687,7 +687,7 @@ Termination_Helpers
   // Turn minimization problem into satisfiability.
   cs_mip.insert(le_ineq <= -1);
 
-  MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
+  const MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
   if (!mip.is_satisfiable())
     return false;
 
@@ -739,7 +739,7 @@ Termination_Helpers
   // Turn minimization problem into satisfiability.
   cs_mip.insert(le_ineq <= -1);
 
-  MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
+  const MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
   if (!mip.is_satisfiable())
     return false;
 
@@ -753,7 +753,7 @@ Termination_Helpers
   dimension_type row_index = m;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-    Variable lambda_2(row_index);
+    const Variable lambda_2(row_index);
     Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
     if (fp_i != 0)
       le.linear_combine(i->expr, 1, -fp_i, 1, n + 1);
@@ -875,7 +875,7 @@ Termination_Helpers
   NNC_Polyhedron ph(cs_eqs);
   ph.add_constraint(le_ineq < 0);
   // lambda_2 corresponds to space dimensions m, ..., 2*m-1.
-  Variables_Set lambda1(Variable(0), Variable(m-1));
+  const Variables_Set lambda1(Variable(0), Variable(m-1));
   ph.remove_space_dimensions(lambda1);
 
 #if PRINT_DEBUG_INFO
@@ -901,7 +901,7 @@ Termination_Helpers
       dimension_type row_index = 0;
       for (Constraint_System::const_iterator i = cs.begin(),
              cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
-        Variable lambda2_i(row_index);
+        const Variable lambda2_i(row_index);
         Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
         if (g_i != 0)
           le.linear_combine(i->expr, 1, -g_i, 1, n + 1);

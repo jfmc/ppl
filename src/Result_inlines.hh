@@ -31,35 +31,35 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 inline Result
 operator&(Result x, Result y) {
-  unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
+  const unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
   return static_cast<Result>(res);
 }
 
 /*! \ingroup PPL_CXX_interface */
 inline Result
 operator|(Result x, Result y) {
-  unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
+  const unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
   return static_cast<Result>(res);
 }
 
 /*! \ingroup PPL_CXX_interface */
 inline Result
 operator-(Result x, Result y) {
-  Result y_neg = static_cast<Result>(~static_cast<unsigned>(y));
+  const Result y_neg = static_cast<Result>(~static_cast<unsigned>(y));
   return x & y_neg;
 }
 
 /*! \ingroup PPL_CXX_interface */
 inline Result_Class
 result_class(Result r) {
-  Result rc = r & static_cast<Result>(VC_MASK);
+  const Result rc = r & static_cast<Result>(VC_MASK);
   return static_cast<Result_Class>(rc);
 }
 
 /*! \ingroup PPL_CXX_interface */
 inline Result_Relation
 result_relation(Result r) {
-  Result rc = r & static_cast<Result>(VR_MASK);
+  const Result rc = r & static_cast<Result>(VR_MASK);
   return static_cast<Result_Relation>(rc);
 }
 

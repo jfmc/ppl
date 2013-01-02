@@ -66,9 +66,9 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
                                tmp.max_num_rows()));
 
   dimension_type xi = 0;
-  dimension_type x_num_rows = x.num_rows();
+  const dimension_type x_num_rows = x.num_rows();
   dimension_type yi = 0;
-  dimension_type y_num_rows = y.num_rows();
+  const dimension_type y_num_rows = y.num_rows();
 
   while (xi < x_num_rows && yi < y_num_rows) {
     const int comp = compare(x[xi], y[yi]);
@@ -495,9 +495,10 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
   typedef Swapping_Vector<Row> Cont;
-  Implementation::Indirect_Sort_Compare<Cont, Row_Less_Than> sort_cmp(rows);
-  Unique_Compare unique_cmp(rows);
-  Implementation::Indirect_Swapper2<Cont, Bit_Matrix> swapper(rows, sat);
+  const Implementation::Indirect_Sort_Compare<Cont, Row_Less_Than>
+    sort_cmp(rows);
+  const Unique_Compare unique_cmp(rows);
+  const Implementation::Indirect_Swapper2<Cont, Bit_Matrix> swapper(rows, sat);
 
   const dimension_type num_duplicates
     = Implementation::indirect_sort_and_unique(num_elems, sort_cmp,
@@ -609,7 +610,7 @@ Linear_System<Row>
     // looks for the last non-zero element.
     // `j' will be the index of such a element.
     Row& row_k = rows[k];
-    dimension_type j = row_k.expr.last_nonzero();
+    const dimension_type j = row_k.expr.last_nonzero();
     // TODO: Check this.
     PPL_ASSERT(j != 0);
 

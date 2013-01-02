@@ -356,7 +356,7 @@ PPL::Grid_Generator::fancy_print(std::ostream& s) const {
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   bool first = true;
   for (Linear_Expression::const_iterator i = expr.begin(),
-        i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
+         i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
     c = *i;
     if (!first) {
       if (c > 0)

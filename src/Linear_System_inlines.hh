@@ -376,7 +376,7 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i,
   else {
     if (!was_pending)
       sorted = false;
-    bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
+    const bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
     if (was_pending == last_row_is_pending)
       // Either both rows are pending or both rows are not pending.
       swap(rows[i], rows.back());

@@ -63,7 +63,7 @@ PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
   PPL_ASSERT(OK());
 }
 
-PPL::PIP_Problem::PIP_Problem(const PIP_Problem &y)
+PPL::PIP_Problem::PIP_Problem(const PIP_Problem& y)
   : external_space_dim(y.external_space_dim),
     internal_space_dim(y.internal_space_dim),
     status(y.status),
@@ -193,8 +193,8 @@ PPL::PIP_Problem::solve() const {
 
           last_row = x.initial_context[x.initial_context.num_rows()-2];
 
-          for (Row::iterator
-               i = last_row.begin(), i_end = last_row.end(); i != i_end; ++i)
+          for (Row::iterator i = last_row.begin(),
+                 i_end = last_row.end(); i != i_end; ++i)
             neg_assign(*i);
         }
       }
@@ -387,7 +387,7 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ncontrol_parameters\n";
   for (dimension_type i = 0; i < CONTROL_PARAMETER_NAME_SIZE; ++i) {
-    Control_Parameter_Value value = control_parameters[i];
+    const Control_Parameter_Value value = control_parameters[i];
     switch (value) {
     case CUTTING_STRATEGY_FIRST:
       s << "CUTTING_STRATEGY_FIRST";
@@ -415,12 +415,13 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\ncurrent_solution: ";
   if (current_solution == 0)
     s << "BOTTOM\n";
-  else if (const PIP_Decision_Node* dec = current_solution->as_decision()) {
+  else if (const PIP_Decision_Node* const dec
+             = current_solution->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    const PIP_Solution_Node* sol = current_solution->as_solution();
+    const PIP_Solution_Node* const sol = current_solution->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -533,14 +534,14 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (str == "BOTTOM")
     current_solution = 0;
   else if (str == "DECISION") {
-    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
+    PIP_Decision_Node* const dec = new PIP_Decision_Node(0, 0, 0);
     current_solution = dec;
     if (!dec->ascii_load(s))
       return false;
     dec->set_owner(this);
   }
   else if (str == "SOLUTION") {
-    PIP_Solution_Node* sol = new PIP_Solution_Node(0);
+    PIP_Solution_Node* const sol = new PIP_Solution_Node(0);
     current_solution = sol;
     if (!sol->ascii_load(s))
       return false;
@@ -648,7 +649,7 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
 }
 
 void
-PPL::PIP_Problem::add_constraints(const Constraint_System &cs) {
+PPL::PIP_Problem::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator ci = cs.begin(),
          ci_end = cs.end(); ci != ci_end; ++ci)
     add_constraint(*ci);
@@ -705,7 +706,7 @@ PPL::PIP_Problem::external_memory_in_bytes() const {
   // Adding the external memory for `input_cs'.
   n += input_cs.capacity() * sizeof(Constraint);
   for (const_iterator i = input_cs.begin(),
-       i_end = input_cs.end(); i != i_end; ++i)
+         i_end = input_cs.end(); i != i_end; ++i)
     n += (i->external_memory_in_bytes());
   // FIXME: Adding the external memory for `parameters'.
   n += parameters.size() * sizeof(dimension_type);

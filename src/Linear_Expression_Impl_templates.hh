@@ -54,10 +54,10 @@ Linear_Expression_Impl<Row>
 ::Linear_Expression_Impl(const Linear_Expression_Interface& e) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
     construct(*p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
     construct(*p);
   }
   else {
@@ -72,10 +72,10 @@ Linear_Expression_Impl<Row>
                          dimension_type space_dim) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&e)) {
     construct(*p, space_dim);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&e)) {
     construct(*p, space_dim);
   }
   else {
@@ -826,10 +826,10 @@ Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, Variable v) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, v);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, v);
   }
   else {
@@ -846,10 +846,10 @@ Linear_Expression_Impl<Row>
                  Coefficient_traits::const_reference c2) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, c1, c2);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, c1, c2);
   }
   else {
@@ -866,10 +866,10 @@ Linear_Expression_Impl<Row>
                      Coefficient_traits::const_reference c2) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2);
   }
   else {
@@ -884,10 +884,10 @@ Linear_Expression_Impl<Row>
 ::is_equal_to(const Linear_Expression_Interface& y) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p);
   }
   else {
@@ -903,10 +903,10 @@ Linear_Expression_Impl<Row>
 ::operator+=(const Linear_Expression_Interface& y) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return operator+=(*p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return operator+=(*p);
   }
   else {
@@ -922,10 +922,10 @@ Linear_Expression_Impl<Row>
 ::operator-=(const Linear_Expression_Interface& y) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return operator-=(*p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return operator-=(*p);
   }
   else {
@@ -942,10 +942,10 @@ Linear_Expression_Impl<Row>
                  const Linear_Expression_Interface& y) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     add_mul_assign(factor, *p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     add_mul_assign(factor, *p);
   }
   else {
@@ -961,10 +961,10 @@ Linear_Expression_Impl<Row>
                  const Linear_Expression_Interface& y) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     sub_mul_assign(factor, *p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     sub_mul_assign(factor, *p);
   }
   else {
@@ -979,10 +979,10 @@ Linear_Expression_Impl<Row>
 ::linear_combine(const Linear_Expression_Interface& y, dimension_type i) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, i);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, i);
   }
   else {
@@ -1000,10 +1000,10 @@ Linear_Expression_Impl<Row>
                  dimension_type start, dimension_type end) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine(*p, c1, c2, start, end);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine(*p, c1, c2, start, end);
   }
   else {
@@ -1021,10 +1021,10 @@ Linear_Expression_Impl<Row>
                      dimension_type start, dimension_type end) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     linear_combine_lax(*p, c1, c2, start, end);
   }
   else {
@@ -1039,10 +1039,10 @@ Linear_Expression_Impl<Row>
 ::compare(const Linear_Expression_Interface& y) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return compare(*p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return compare(*p);
   }
   else {
@@ -1058,10 +1058,10 @@ void
 Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return construct(*p);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return construct(*p);
   }
   else {
@@ -1076,10 +1076,10 @@ Linear_Expression_Impl<Row>::construct(const Linear_Expression_Interface& y,
                                        dimension_type space_dim) {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return construct(*p, space_dim);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return construct(*p, space_dim);
   }
   else {
@@ -1096,10 +1096,10 @@ Linear_Expression_Impl<Row>
                         dimension_type start, dimension_type end) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     scalar_product_assign(result, *p, start, end);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     scalar_product_assign(result, *p, start, end);
   }
   else {
@@ -1115,10 +1115,10 @@ Linear_Expression_Impl<Row>
                       dimension_type start, dimension_type end) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return scalar_product_sign(*p, start, end);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return scalar_product_sign(*p, start, end);
   }
   else {
@@ -1135,10 +1135,10 @@ Linear_Expression_Impl<Row>
               dimension_type start, dimension_type end) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p, start, end);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p, start, end);
   }
   else {
@@ -1157,10 +1157,10 @@ Linear_Expression_Impl<Row>
               dimension_type start, dimension_type end) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return is_equal_to(*p, c1, c2, start, end);
   }
   else {
@@ -1177,10 +1177,10 @@ Linear_Expression_Impl<Row>
                          Variable first, Variable last) const {
   typedef const Linear_Expression_Impl<Dense_Row>* Dense_Ptr;
   typedef const Linear_Expression_Impl<Sparse_Row>* Sparse_Ptr;
-  if (Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
+  if (const Dense_Ptr p = dynamic_cast<Dense_Ptr>(&y)) {
     return have_a_common_variable(*p, first, last);
   }
-  else if (Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
+  else if (const Sparse_Ptr p = dynamic_cast<Sparse_Ptr>(&y)) {
     return have_a_common_variable(*p, first, last);
   }
   else {

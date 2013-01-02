@@ -43,8 +43,8 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
     Sequence tmp_sequence;
     for (Sequence_const_iterator itr = new_sequence.begin(),
            ns_end = new_sequence.end(); itr != ns_end; ++itr) {
-      std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> > partition
-        = linear_partition(ph_yi, itr->pointset());
+      const std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
+        partition = linear_partition(ph_yi, itr->pointset());
       const Pointset_Powerset<NNC_Polyhedron>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -97,7 +97,7 @@ PPL::check_containment(const NNC_Polyhedron& ph,
         if (pj.is_disjoint_from(pi))
           ++j;
         else {
-          std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
+          const std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
             partition = linear_partition(pi, pj);
           new_disjuncts.upper_bound_assign(partition.second);
           j = tmp.drop_disjunct(j);
@@ -127,15 +127,15 @@ approximate_partition_aux(const PPL::Congruence& c,
                           PPL::Pointset_Powerset<PPL::Grid>& r) {
   using namespace PPL;
   const Coefficient& c_modulus = c.modulus();
-  Grid gr_copy(gr);
+  const Grid gr_copy(gr);
   gr.add_congruence(c);
   if (gr.is_empty()) {
     r.add_disjunct(gr_copy);
     return true;
   }
 
-  Congruence_System cgs = gr.congruences();
-  Congruence_System cgs_copy = gr_copy.congruences();
+  const Congruence_System cgs = gr.congruences();
+  const Congruence_System cgs_copy = gr_copy.congruences();
   // When c is an equality, not satisfied by Grid gr
   // then add gr to the set r. There is no finite
   // partition in this case.
@@ -194,7 +194,7 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
          p_congruences_end = p_congruences.end(); i != p_congruences_end; ++i)
     if (!approximate_partition_aux(*i, gr, r)) {
       finite_partition = false;
-      Pointset_Powerset<Grid> s(q);
+      const Pointset_Powerset<Grid> s(q);
       return std::make_pair(gr, s);
     }
   return std::make_pair(gr, r);
@@ -231,7 +231,7 @@ PPL::check_containment(const Grid& ph,
           ++j;
         else {
           bool finite_partition;
-          std::pair<Grid, Pointset_Powerset<Grid> >
+          const std::pair<Grid, Pointset_Powerset<Grid> >
             partition = approximate_partition(pi, pj, finite_partition);
 
           // If there is a finite partition, then we add the new
@@ -269,7 +269,7 @@ PPL::Pointset_Powerset<PPL::Grid>
     for (Sequence_const_iterator itr = new_sequence.begin(),
            ns_end = new_sequence.end(); itr != ns_end; ++itr) {
       bool finite_partition;
-      std::pair<Grid, Pointset_Powerset<Grid> > partition
+      const std::pair<Grid, Pointset_Powerset<Grid> > partition
         = approximate_partition(gr_yi, itr->pointset(), finite_partition);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.

@@ -145,7 +145,7 @@ template <typename PSET>
 inline void
 Determinate<PSET>::mutate() {
   if (prep->is_shared()) {
-    Rep* new_prep = new Rep(prep->pset);
+    Rep* const new_prep = new Rep(prep->pset);
     (void) prep->del_reference();
     new_prep->new_reference();
     prep = new_prep;

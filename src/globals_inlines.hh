@@ -82,7 +82,7 @@ maybe_abandon() {
 #endif
   if (Weightwatch_Traits::check_function != 0)
     Weightwatch_Traits::check_function();
-  if (const Throwable* p = abandon_expensive_computations)
+  if (const Throwable* const p = abandon_expensive_computations)
     p->throw_me();
 }
 

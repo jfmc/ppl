@@ -171,7 +171,7 @@ PPL::Watchdog::new_watchdog_event(long csecs,
   using namespace Implementation::Watchdog;
   assert(csecs > 0);
   WD_Pending_List::iterator position;
-  Time deadline(csecs);
+  const Time deadline(csecs);
   if (!alarm_clock_running) {
     position = pending.insert(deadline, handler, expired_flag);
     time_so_far = Time(0);
@@ -204,7 +204,7 @@ PPL::Watchdog::remove_watchdog_event(WD_Pending_List::iterator position) {
     WD_Pending_List::iterator next = position;
     ++next;
     if (next != pending.end()) {
-      Time first_deadline(position->deadline());
+      const Time first_deadline(position->deadline());
       Time next_deadline(next->deadline());
       if (first_deadline != next_deadline) {
         Time time_to_shoot;
