@@ -756,7 +756,7 @@ PPL::CO_Tree::rebuild_bigger_tree() {
 
   const dimension_type new_reserved_size = reserved_size*2 + 1;
 
-  dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
+  dimension_type* const new_indexes = new dimension_type[new_reserved_size + 2];
 
   data_type* new_data;
 

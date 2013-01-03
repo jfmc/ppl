@@ -234,7 +234,8 @@ inline CO_Tree::iterator
 CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
-  dimension_type index = bisect_in(dfs_index(first), dfs_index(last), key);
+  const dimension_type index
+    = bisect_in(dfs_index(first), dfs_index(last), key);
   return iterator(*this, index);
 }
 
