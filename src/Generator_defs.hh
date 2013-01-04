@@ -539,10 +539,13 @@ private:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
+  //! The linear expression encoding \p *this.
   Linear_Expression expr;
 
+  //! The kind of \p *this.
   Kind kind_;
 
+  //! The topology of \p *this.
   Topology topology_;
 
   /*! \brief
