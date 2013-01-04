@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 c_streambuf::int_type
 c_streambuf::uflow() {
-  int_type c = underflow();
+  const int_type c = underflow();
   next_char_buf = traits_type::eof();
   return c;
 }

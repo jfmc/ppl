@@ -2538,7 +2538,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
         open = T_YES;
-      Relation_Symbol rel = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
+      const Relation_Symbol rel
+        = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
       seq[k_var.id()].add_constraint(i_constraint(rel, t_bound));
       reset_empty_up_to_date();
     }
@@ -2672,7 +2673,8 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
         open = T_YES;
-      Relation_Symbol rel = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
+      const Relation_Symbol rel
+        = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
       seq[k_var.id()].add_constraint(i_constraint(rel, t_bound));
       reset_empty_up_to_date();
     }

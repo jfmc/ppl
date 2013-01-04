@@ -366,7 +366,7 @@ inline void
 Linear_System<Row>::remove_row_no_ok(const dimension_type i,
                                      const bool keep_sorted) {
   PPL_ASSERT(i < num_rows());
-  bool was_pending = (i >= index_first_pending);
+  const bool was_pending = (i >= index_first_pending);
 
   if (sorted && keep_sorted && !was_pending) {
     for (dimension_type j = i + 1; j < rows.size(); ++j)

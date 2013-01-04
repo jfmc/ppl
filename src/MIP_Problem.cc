@@ -1035,7 +1035,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // this implementation and the dense implementation below.
   for (std::vector<std::pair<dimension_type, double> >::const_reverse_iterator
        i = columns.rbegin(), i_end = columns.rend(); i != i_end; ++i) {
-    double challenger_value = sqrt(i->second);
+    const double challenger_value = sqrt(i->second);
     if (entering_index == 0 || challenger_value > current_value) {
       current_value = challenger_value;
       entering_index = i->first;

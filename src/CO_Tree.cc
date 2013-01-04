@@ -169,7 +169,7 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
     return;
   const dimension_type i = dfs_index(itr);
   dimension_type* p = indexes + i;
-  const dimension_type* p_end = indexes + (reserved_size + 1);
+  const dimension_type* const p_end = indexes + (reserved_size + 1);
   for ( ; p != p_end; ++p)
     if (*p != unused_index)
       --(*p);
