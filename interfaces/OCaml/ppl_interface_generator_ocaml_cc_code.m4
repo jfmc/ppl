@@ -67,8 +67,8 @@ extern "C"
 CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d, value caml_de) try {
   CAMLparam2(d, caml_de);
-  dimension_type dd = value_to_ppl_dimension(d);
-  Degenerate_Element ppl_de = build_ppl_Degenerate_Element(caml_de);
+  const dimension_type dd = value_to_ppl_dimension(d);
+  const Degenerate_Element ppl_de = build_ppl_Degenerate_Element(caml_de);
   @TOPOLOGY@@CPP_CLASS@& ppl_value = *new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de);
   CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
@@ -255,7 +255,7 @@ CAMLprim value
 ppl_@CLASS@_@BINOP@(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@BINOP@(pph2);
   CAMLreturn(Val_unit);
 }
@@ -270,7 +270,7 @@ CAMLprim value
 ppl_@CLASS@_simplify_using_context_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   CAMLreturn(Val_bool(pph1.simplify_using_context_assign(pph2)));
 }
 CATCH_ALL
@@ -284,7 +284,7 @@ CAMLprim value
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (value ph, value d) try {
   CAMLparam2(ph, d);
-  dimension_type dd = value_to_ppl_dimension(d);
+  const dimension_type dd = value_to_ppl_dimension(d);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.add_space_dimensions_and_embed(dd);
   CAMLreturn(Val_unit);
@@ -313,7 +313,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_remove_higher_space_dimensions(value ph, value d) try {
   CAMLparam2(ph, d);
-  dimension_type dd = value_to_ppl_dimension(d);
+  const dimension_type dd = value_to_ppl_dimension(d);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.remove_higher_space_dimensions(dd);
   CAMLreturn(Val_unit);
@@ -329,7 +329,7 @@ CAMLprim value
 ppl_@CLASS@_fold_space_dimensions
 (value ph, value caml_vset, value caml_dim) try {
   CAMLparam1(ph);
-  dimension_type ppl_dim = Int_val(caml_dim);
+  const dimension_type ppl_dim = Int_val(caml_dim);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   Variables_Set ppl_vset;
   if (Int_val(caml_vset) == 0)
@@ -358,8 +358,8 @@ ppl_@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try {
   Partial_Function pfunc;
   while (caml_mapped_dims != Val_emptylist) {
     head = Field(caml_mapped_dims, 0);
-    dimension_type domain_dim = value_to_ppl_dimension(Field(head, 0));
-    dimension_type codomain_dim = value_to_ppl_dimension(Field(head, 1));
+    const dimension_type domain_dim = value_to_ppl_dimension(Field(head, 0));
+    const dimension_type codomain_dim = value_to_ppl_dimension(Field(head, 1));
     pfunc.insert(domain_dim, codomain_dim);
     caml_mapped_dims = Field(caml_mapped_dims, 1);
   }
@@ -378,8 +378,8 @@ CAMLprim value
 ppl_@CLASS@_expand_space_dimension
 (value ph, value var_index, value m) try {
   CAMLparam3(ph, var_index, m);
-  Variable var = build_ppl_Variable(var_index);
-  dimension_type c_m = value_to_ppl_dimension(m);
+  const Variable var = build_ppl_Variable(var_index);
+  const dimension_type c_m = value_to_ppl_dimension(m);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   pph.expand_space_dimension(var, c_m);
   CAMLreturn(Val_unit);
@@ -396,7 +396,7 @@ ppl_@CLASS@_drop_some_non_integer_points
 (value ph, value caml_cc) try {
   CAMLparam1(ph);
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
-  Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
+  const Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
   pph.drop_some_non_integer_points(ppl_cc);
   CAMLreturn(Val_unit);
 }
@@ -421,7 +421,7 @@ ppl_@CLASS@_drop_some_non_integer_points_2
       break;
     caml_vset = Field(caml_vset, 1);
   }
-  Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
+  const Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
   pph.drop_some_non_integer_points(ppl_vset, ppl_cc);
   CAMLreturn(Val_unit);
 }
@@ -625,7 +625,7 @@ CAMLprim value
 ppl_@CLASS@_@WIDEN@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.@WIDEN@_widening_assign(pph2);
   CAMLreturn(Val_unit);
 }
@@ -642,7 +642,7 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 (value ph1, value ph2, value tokens) try {
   CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@WIDEN@_widening_assign(pph2, &u_tokens);
   CAMLreturn(Val_long(u_tokens));
@@ -658,7 +658,7 @@ CAMLprim value
 ppl_@CLASS@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   pph1.widening_assign(pph2);
   CAMLreturn(Val_unit);
 }
@@ -674,7 +674,7 @@ ppl_@CLASS@_widening_assign_with_tokens
 (value ph1, value ph2, value tokens) try {
   CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.widening_assign(pph2, &u_tokens);
   CAMLreturn(Val_long(u_tokens));
@@ -691,8 +691,8 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
 (value ph1, value ph2, value caml_cs, value tokens) try {
   CAMLparam4(ph1, ph2, caml_cs, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
   unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs,
 							 &u_tokens);
@@ -711,8 +711,8 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
 						   value caml_cs) try {
   CAMLparam3(ph1, ph2, caml_cs);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @!CONSTRAINER@_System ppl_cs = build_ppl_@!CONSTRAINER@_System(caml_cs);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs);
   CAMLreturn(Val_unit);
 }
@@ -839,7 +839,7 @@ extern "C"
 CAMLprim value
 ppl_@CLASS@_@MEMBYTES@(value ph) try {
   CAMLparam1(ph);
-  @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
+  const @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   CAMLreturn(Val_long(pph.@MEMBYTES@()));
 }
 CATCH_ALL
@@ -867,8 +867,8 @@ extern "C"
 CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(value ph) try {
   CAMLparam1(ph);
-  @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>( p_@A_FRIEND@_val(ph)));
-  @CPP_CLASS@& ppl_value
+  @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>(p_@A_FRIEND@_val(ph)));
+  const @CPP_CLASS@& ppl_value
     = *(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph)));
   CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
 }
@@ -883,7 +883,7 @@ CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_with_complexity(value ph, value caml_cc) try {
   CAMLparam1(ph);
   @B_FRIEND@& pph = *(reinterpret_cast<@B_FRIEND@*>( p_@A_FRIEND@_val(ph)));
-  Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
+  const Complexity_Class ppl_cc = build_ppl_Complexity_Class(caml_cc);
   @CPP_CLASS@& ppl_value
     = *(reinterpret_cast<@CPP_CLASS@*>(new @TOPOLOGY@@CPP_CLASS@(pph, ppl_cc)));
   CAMLreturn(unregistered_value_p_@CLASS@(ppl_value));
@@ -959,7 +959,7 @@ ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (value ph1, value ph2, value tokens) try {
   CAMLparam3(ph1, ph2, tokens);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
-  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  const @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
   unsigned u_tokens = value_to_unsigned<unsigned>(tokens);
   pph1.@EXTRAPOLATION@_extrapolation_assign(pph2, &u_tokens);
   CAMLreturn(Val_long(u_tokens));
@@ -1491,9 +1491,9 @@ ppl_@CLASS@_wrap_assign_native
   }
   build_ppl_bounded_integer_type_representation(rep);
   build_ppl_bounded_integer_type_overflow(oflow);
-  Constraint_System ppl_cs = build_ppl_Constraint_System(cs);
-  unsigned ppl_complexity = value_to_unsigned<unsigned>(complexity);
-  bool ppl_wrap_ind = Bool_val(wrap_ind);
+  const Constraint_System ppl_cs = build_ppl_Constraint_System(cs);
+  const unsigned ppl_complexity = value_to_unsigned<unsigned>(complexity);
+  const bool ppl_wrap_ind = Bool_val(wrap_ind);
   pph.wrap_assign(ppl_vset,
                   build_ppl_bounded_integer_type_width(width),
                   build_ppl_bounded_integer_type_representation(rep),

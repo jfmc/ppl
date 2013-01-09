@@ -272,7 +272,7 @@ ppl_@CLASS@_has_@UPPERLOWER@_bound
   Coefficient& eext_n = *to_nonconst(ext_n);
   Coefficient& eext_d = *to_nonconst(ext_d);
   bool closed;
-  bool bounded
+  const bool bounded
     = pps.has_@UPPERLOWER@_bound(Variable(var), eext_n, eext_d, closed);
   if (bounded)
     *pclosed = closed ? 1 : 0;
