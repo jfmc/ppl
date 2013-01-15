@@ -228,7 +228,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& gs)
       // Even though `gs_copy' has pending generators, since the
       // constraints of the polyhedron are not up-to-date, the
       // polyhedron cannot have pending generators. By integrating the
-      // pending part of `gen_sys' we may loose sortedness.
+      // pending part of `gen_sys' we may lose sortedness.
       gen_sys.set_sorted(false);
       gen_sys.unset_pending_rows();
     }
@@ -2209,6 +2209,170 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
     clear_constraints_minimized();
   }
   PPL_ASSERT_HEAVY(OK());
+}
+
+void
+PPL::Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
+  // Private method: the caller must ensure the following.
+  PPL_ASSERT(!is_necessarily_closed());
+
+  Polyhedron& x = *this;
+  // Dimension-compatibility checks.
+  if (x.space_dim != y.space_dim)
+    throw_dimension_incompatible("positive_time_elapse_assign(y)", "y", y);
+
+  // Dealing with the zero-dimensional case.
+  if (x.space_dim == 0) {
+    if (y.marked_empty())
+      x.set_empty();
+    return;
+  }
+
+  // If either one of `x' or `y' is empty, the result is empty too.
+  if (x.marked_empty() || y.marked_empty()
+      || (x.has_pending_constraints() && !x.process_pending_constraints())
+      || (!x.generators_are_up_to_date() && !x.update_generators())
+      || (y.has_pending_constraints() && !y.process_pending_constraints())
+      || (!y.generators_are_up_to_date() && !y.update_generators())) {
+    x.set_empty();
+    return;
+  }
+
+  // At this point both generator systems are up-to-date,
+  // possibly containing pending generators.
+
+  // The new system of generators that will replace the one of x.
+  Generator_System new_gs(x.gen_sys);
+  dimension_type num_rows = new_gs.num_rows();
+
+  // We are going to do all sorts of funny things with new_gs, so we better
+  // mark it unsorted.
+  // Notice: "Sorted" is an attribute of Linear_System, encapsulated by Generator_System;
+  //         hence, the following is equivalent to new_gs.set_sorted(false).
+  new_gs.sys.set_sorted(false);
+
+  // DEBUG
+  // std::cout << std::endl << "new_gs 1 (" << new_gs.num_rows() << "): ";
+  // new_gs.ascii_dump(std::cout);
+
+  // Remove all points from new_gs and put them in 'x_points_gs' for later use.
+  // Notice that we do not remove the corresponding closure points.
+  Generator_System x_points_gs;
+  for (dimension_type i = num_rows; i-- > 0;) {  
+    Generator &g = new_gs.sys.rows[i];
+    if (g.is_point()) {
+      x_points_gs.insert(g);
+      num_rows--;
+      swap(g, new_gs.sys.rows[num_rows]);
+    }
+  }
+  new_gs.sys.rows.resize(num_rows);
+
+  // When there are no pending rows, the pending row index points at
+  // the smallest non-valid row, i.e., it is equal to the number of rows.
+  // Hence, each time the system is manually resized, the pending row index
+  // must be updated.
+  new_gs.unset_pending_rows();
+  PPL_ASSERT(new_gs.sys.OK());
+
+  // We use a pointer in order to avoid copying the generator
+  // system when it is not necessary, i.e., when y is an NNC.
+  const Generator_System *gs = &y.gen_sys;
+  Generator_System y_gs;
+
+  // If y is closed, promote its generator system to not necessarily closed.
+  if (y.is_necessarily_closed()) {
+    y_gs = y.gen_sys;
+    y_gs.convert_into_non_necessarily_closed();
+    y_gs.add_corresponding_closure_points();
+    gs = &y_gs;
+  }
+
+  PPL_ASSERT(gs->OK());
+  //gs->ascii_dump(std::cout);
+  //IO_Operators::operator<<(std::cout, *gs);
+
+  const dimension_type gs_num_rows = gs->num_rows();
+
+  // For each generator g of y...
+  for (dimension_type i = gs_num_rows; i-- > 0; ) {
+    const Generator &g = gs->sys.rows[i];
+
+    switch (g.type()) {
+    case Generator::POINT:
+      // In principle, points should be added to new_gs as rays.
+      // However, for each point there is a corresponding closure point in "gs".
+      // Hence, we leave this operation to closure points.
+
+      // Insert into new_gs the sum of g and each point of x.
+      // For each original point gx of x...
+      for (dimension_type j = x_points_gs.sys.num_rows(); j-- > 0; ) {
+	const Generator &gx = x_points_gs.sys.rows[j];
+	PPL_ASSERT(gx.is_point());
+	// ...insert the point obtained as the sum of g and gx.
+	Generator new_g = g; // make a copy
+	Coefficient new_divisor = g.expr.inhomogeneous_term() * gx.expr.inhomogeneous_term();
+
+	new_g.expr.linear_combine(gx.expr, gx.expr.inhomogeneous_term(), g.expr.inhomogeneous_term());
+	new_g.expr.set_inhomogeneous_term(new_divisor);
+	if (new_g.is_not_necessarily_closed()) {
+	  new_g.set_epsilon_coefficient(g.epsilon_coefficient());
+	}
+	new_g.expr.normalize();
+
+	// DEBUG
+	// std::cout << std::endl << "g:";
+	// IO_Operators::operator<<(std::cout, g.expr);
+	// std::cout << std::endl << "gx:";
+	// IO_Operators::operator<<(std::cout, gx.expr);
+	// std::cout << std::endl << "new_g:";
+	// IO_Operators::operator<<(std::cout, new_g.expr);
+
+	PPL_ASSERT(new_g.OK());
+
+	new_gs.insert(new_g);
+      }
+      break;
+    case Generator::CLOSURE_POINT:
+      // If g is not the origin, insert g into new_gs, as a ray.
+      if (!g.expr.all_homogeneous_terms_are_zero()) {
+	// Turn a copy of g into a ray.
+	Generator g_as_a_ray = g; 
+	g_as_a_ray.expr.set_inhomogeneous_term(0);
+	g_as_a_ray.expr.normalize();
+	PPL_ASSERT(g_as_a_ray.OK());
+	// Insert the ray.
+	new_gs.insert(g_as_a_ray);
+      }
+      break;
+    case Generator::RAY:
+    case Generator::LINE:
+      // Insert g into new_gs.
+      new_gs.insert(g);
+      break;
+    }
+  }
+  new_gs.add_corresponding_closure_points();
+  // Notice: add_corresponding_closure_points adds them as pending.
+  new_gs.unset_pending_rows();
+
+  //Polyhedron new_x(...,new_gs);
+  //swap(x,new_x);
+  
+  PPL_ASSERT(new_gs.sys.OK());
+
+  // Stealing the rows from `new_gs'.
+  using std::swap;
+  swap(gen_sys, new_gs);
+
+  gen_sys.set_sorted(false);
+  clear_generators_minimized();
+  // Generators are now up-to-date.
+  set_generators_up_to_date();
+  // Constraints are not up-to-date.
+  clear_constraints_up_to_date();
+
+  PPL_ASSERT_HEAVY(x.OK(true) && y.OK(true));
 }
 
 void

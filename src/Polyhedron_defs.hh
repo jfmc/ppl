@@ -2830,6 +2830,8 @@ protected:
   static bool
   add_to_system_and_check_independence(Linear_System1& eq_sys,
                                        const Row2& eq);
+
+  void positive_time_elapse_assign(const Polyhedron& y);
 };
 
 #include "Ph_Status_inlines.hh"
