@@ -118,7 +118,7 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   // then add to it a (possibly negative) multiple of row such that
   // the result in pivot[column] is the smallest possible positive
   // integer.
-  Linear_Expression old_pivot_e = pivot_e;
+  const Linear_Expression old_pivot_e = pivot_e;
   pivot_e.linear_combine_lax(row_e, s, t, start, end);
   PPL_ASSERT(pivot_e.get(column) == gcd);
   row_e.linear_combine(old_pivot_e, reduced_pivot_col, -reduced_row_col, start, end);

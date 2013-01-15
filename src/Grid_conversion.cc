@@ -327,7 +327,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   dimension_type dest_num_rows = 0;
   PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
-  dimension_type dims = source.space_dimension() + 1;
+  const dimension_type dims = source.space_dimension() + 1;
   for (dimension_type dim = dims; dim-- > 0; )
     if (dim_kinds[dim] == CON_VIRTUAL)
       // Virtual congruences map to lines.

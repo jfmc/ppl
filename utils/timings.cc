@@ -70,10 +70,10 @@ print_clock(ostream& s) {
     exit(1);
   }
   else {
-    time_t current_secs = usage.ru_utime.tv_sec;
-    time_t current_usecs = usage.ru_utime.tv_usec;
-    time_t saved_secs = saved_ru_utime.tv_sec;
-    time_t saved_usecs = saved_ru_utime.tv_usec;
+    const time_t current_secs = usage.ru_utime.tv_sec;
+    const time_t current_usecs = usage.ru_utime.tv_usec;
+    const time_t saved_secs = saved_ru_utime.tv_sec;
+    const time_t saved_usecs = saved_ru_utime.tv_usec;
     time_t secs;
     time_t csecs;
     secs = current_secs - saved_secs;
@@ -92,7 +92,7 @@ print_clock(ostream& s) {
       }
     }
     assert(csecs >= 0 && csecs < 100 && secs >= 0);
-    char fill_char = s.fill();
+    const char fill_char = s.fill();
     s << secs << "." << setfill('0') << setw(2) << csecs;
     s.fill(fill_char);
   }

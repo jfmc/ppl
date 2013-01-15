@@ -138,7 +138,7 @@ pip_display_sol(std::ostream& out,
           << " = " << *i << endl;
     }
     const Constraint_System &constraints = pip->constraints();
-    bool constraints_empty = constraints.empty();
+    const bool constraints_empty = constraints.empty();
     if (!constraints_empty) {
       out << setw(indent*2) << "" << "if ";
       for (Constraint_System::const_iterator
@@ -148,7 +148,7 @@ pip_display_sol(std::ostream& out,
         out << ((i == cs_begin) ? "" : " and ") << *i;
       out << " then" << endl;
     }
-    const PIP_Decision_Node* decision_node_p = pip->as_decision();
+    const PIP_Decision_Node* const decision_node_p = pip->as_decision();
     if (decision_node_p) {
       pip_display_sol(out, decision_node_p->child_node(true),
                       parameters, vars, space_dimension, indent+1);
@@ -157,7 +157,7 @@ pip_display_sol(std::ostream& out,
                       parameters, vars, space_dimension, indent+1);
     }
     else {
-      const PIP_Solution_Node* solution_node_p = pip->as_solution();
+      const PIP_Solution_Node* const solution_node_p = pip->as_solution();
       out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
       for (Variables_Set::const_iterator
              v_begin = vars.begin(),
@@ -306,16 +306,16 @@ public:
       }
     }
 
-    PPL::dimension_type bignum_column
+    const PPL::dimension_type bignum_column
       = (bignum_column_coding == -1)
       ? PPL::not_a_dimension()
       : (num_vars + PPL::dimension_type(bignum_column_coding - 1));
 
-    bool result = update_pip(num_vars, num_params,
-                             num_constraints, num_ctx_rows,
-                             constraints, context,
-                             constraint_type, ctx_type,
-                             bignum_column);
+    const bool result = update_pip(num_vars, num_params,
+                                   num_constraints, num_ctx_rows,
+                                   constraints, context,
+                                   constraint_type, ctx_type,
+                                   bignum_column);
     return result;
   }
 
@@ -352,7 +352,7 @@ public:
     int bignum_column_coding;
     in >> bignum_column_coding;
     PPL_ASSERT(bignum_column_coding >= -1);
-    PPL::dimension_type bignum_column
+    const PPL::dimension_type bignum_column
       = (bignum_column_coding == -1)
       ? PPL::not_a_dimension()
       : PPL::dimension_type(bignum_column_coding - 1);
@@ -366,7 +366,7 @@ public:
 
     if (!expect(in, '('))
       return false;
-    PPL::dimension_type constraint_width = num_vars+num_params+1;
+    const PPL::dimension_type constraint_width = num_vars+num_params+1;
     Coeff_Vector constraints(num_constraints * constraint_width);
     Int_Vector constraint_type(num_constraints);
     for (PPL::dimension_type i = 0; i < num_constraints; ++i)
@@ -383,11 +383,11 @@ public:
       if (!read_vector(in, i, num_params+1, num_params, context))
         return false;
 
-    bool result = update_pip(num_vars, num_params,
-                             num_constraints, num_ctx_rows,
-                             constraints, context,
-                             constraint_type, ctx_type,
-                             bignum_column);
+    const bool result = update_pip(num_vars, num_params,
+                                   num_constraints, num_ctx_rows,
+                                   constraints, context,
+                                   constraint_type, ctx_type,
+                                   bignum_column);
     return result;
   }
 
@@ -431,7 +431,7 @@ protected:
     if (in.fail())
       return false;
     std::istringstream iss(s);
-    PPL::dimension_type start_index = row_index * row_size;
+    const PPL::dimension_type start_index = row_index * row_size;
     PPL::dimension_type k = start_index;
     for (PPL::dimension_type i = 0; i < cst_col; ++i, ++k) {
       iss >> tab[k];
@@ -629,10 +629,10 @@ process_options(int argc, char* argv[]) {
   while (true) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
-    int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
+    const int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
                         &option_index);
 #else
-    int c = getopt(argc, argv, OPTION_LETTERS);
+    const int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
 
     if (c == EOF)
@@ -652,7 +652,7 @@ process_options(int argc, char* argv[]) {
     case 'R':
       {
         const unsigned long MEGA = 1024U*1024U;
-        long l = strtol(optarg, &endptr, 10);
+        const long l = strtol(optarg, &endptr, 10);
         if (*endptr || l < 0)
           fatal("a non-negative integer must follow `-R'");
         else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)

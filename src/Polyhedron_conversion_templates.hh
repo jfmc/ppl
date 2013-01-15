@@ -853,7 +853,7 @@ Polyhedron::conversion(Source_Linear_System& source,
           //   all generators above this index are significant;
           // - otherwise, we assign `j' to `dest_num_rows' because
           //   all generators below index `j-1' violates the constraint.
-          dimension_type new_num_rows = (j == bound) ? i : j;
+          const dimension_type new_num_rows = (j == bound) ? i : j;
           PPL_ASSERT(dest_num_rows >= new_num_rows);
           while (dest_num_rows != new_num_rows) {
             recyclable_dest_rows.resize(recyclable_dest_rows.size() + 1);

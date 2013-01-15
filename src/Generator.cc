@@ -129,7 +129,7 @@ PPL::Generator::ray(const Linear_Expression& e, Representation r) {
 
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
-  Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
+  const Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
 
   return g;
 }
@@ -143,7 +143,7 @@ PPL::Generator::line(const Linear_Expression& e, Representation r) {
 
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
-  Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
+  const Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
 
   return g;
 }
@@ -292,7 +292,7 @@ PPL::Generator::fancy_print(std::ostream& s) const {
     bool needed_divisor = false;
   bool extra_parentheses = false;
   const dimension_type num_variables = space_dimension();
-  Generator::Type t = type();
+  const Generator::Type t = type();
   switch (t) {
   case Generator::LINE:
     s << "l(";

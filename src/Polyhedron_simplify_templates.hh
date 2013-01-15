@@ -108,7 +108,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
     simplify_num_saturators_p = new dimension_type[new_size];
     simplify_num_saturators_size = new_size;
   }
-  dimension_type* num_saturators = simplify_num_saturators_p;
+  dimension_type* const num_saturators = simplify_num_saturators_p;
 
   bool sys_sorted = sys.is_sorted();
 

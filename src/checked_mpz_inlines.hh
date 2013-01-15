@@ -324,8 +324,8 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
     to = from;
     return V_LGE;
   }
-  mpz_srcptr n = from.get_num().get_mpz_t();
-  mpz_srcptr d = from.get_den().get_mpz_t();
+  const mpz_srcptr n = from.get_num().get_mpz_t();
+  const mpz_srcptr d = from.get_den().get_mpz_t();
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     if (round_strict_relation(dir))
@@ -390,8 +390,8 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   if (CHECK_P(To_Policy::check_div_zero, ::sgn(y) == 0)) {
     return assign_nan<To_Policy>(to, V_DIV_ZERO);
   }
-  mpz_srcptr n = x.get_mpz_t();
-  mpz_srcptr d = y.get_mpz_t();
+  const mpz_srcptr n = x.get_mpz_t();
+  const mpz_srcptr d = y.get_mpz_t();
   if (round_not_needed(dir)) {
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
@@ -484,7 +484,7 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
              Rounding_Dir dir) {
-  mpz_srcptr n = x.get_mpz_t();
+  const mpz_srcptr n = x.get_mpz_t();
   if (round_not_requested(dir)) {
     mpz_tdiv_q_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
     return V_LGE;
@@ -610,8 +610,8 @@ PPL_SPECIALIZE_SQRT(sqrt_mpz, mpz_class, mpz_class)
 template <typename Policy, typename Type>
 inline Result_Relation
 sgn_mp(const Type& x) {
-  int i = ::sgn(x);
-  return (i > 0) ? VR_GT : ((i < 0) ? VR_LT : VR_EQ);
+  const int sign = ::sgn(x);
+  return (sign > 0) ? VR_GT : ((sign < 0) ? VR_LT : VR_EQ);
 }
 
 PPL_SPECIALIZE_SGN(sgn_mp, mpz_class)

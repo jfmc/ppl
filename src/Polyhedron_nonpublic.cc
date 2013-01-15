@@ -351,7 +351,7 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
         if (x.con_sys.num_rows() != y.con_sys.num_rows())
           return Polyhedron::TVB_FALSE;
         //  - the same number of equalities; ...
-        dimension_type x_num_equalities = x.con_sys.num_equalities();
+        const dimension_type x_num_equalities = x.con_sys.num_equalities();
         if (x_num_equalities != y.con_sys.num_equalities())
           return Polyhedron::TVB_FALSE;
         //  - if there are no equalities, they have the same constraints.
@@ -1126,9 +1126,12 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       PPL_UNREACHABLE;
       break;
     }
-  Bit_Row sat_lines_and_rays(sat_all_but_points, sat_all_but_closure_points);
-  Bit_Row sat_lines_and_closure_points(sat_all_but_rays, sat_all_but_points);
-  Bit_Row sat_lines(sat_lines_and_rays, sat_lines_and_closure_points);
+  const Bit_Row
+    sat_lines_and_rays(sat_all_but_points, sat_all_but_closure_points);
+  const Bit_Row
+    sat_lines_and_closure_points(sat_all_but_rays, sat_all_but_points);
+  const Bit_Row
+    sat_lines(sat_lines_and_rays, sat_lines_and_closure_points);
 
   // These flags are maintained to later decide if we have to add the
   // eps_leq_one constraint and whether or not the constraint system
@@ -1231,7 +1234,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // The objective function is `epsilon'.
       lp.set_objective_function(Variable(x.space_dim));
       lp.set_optimization_mode(MAXIMIZATION);
-      MIP_Problem_Status status = lp.solve();
+      const MIP_Problem_Status status = lp.solve();
       PPL_ASSERT(status != UNFEASIBLE_MIP_PROBLEM);
       // If the epsilon dimension is actually unbounded,
       // then add the eps_leq_one constraint.
@@ -1293,13 +1296,13 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (g.is_point()) {
       // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      Bit_Row sat_gs_i(sat[i], sat_all_but_strict_ineq);
+      const Bit_Row sat_gs_i(sat[i], sat_all_but_strict_ineq);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
       for (dimension_type j = n_lines; j < gs_rows; ++j) {
-        Generator& g2 = gs.sys.rows[j];
+        const Generator& g2 = gs.sys.rows[j];
         if (i != j && g2.is_point() && subset_or_equal(sat[j], sat_gs_i)) {
           // Point `g' is eps-redundant:
           // move it to the bottom of the generator system,
@@ -1382,7 +1385,7 @@ PPL::Polyhedron::refine_no_check(const Constraint& c) {
     // However, by barely invoking `con_sys.insert(c)' we would
     // cause a change in the topology of `con_sys', which is wrong.
     // Thus, we insert a "topology corrected" copy of `c'.
-    Linear_Expression nc_expr(c.expression());
+    const Linear_Expression nc_expr(c.expression());
     if (c.is_equality())
       if (adding_pending)
         con_sys.insert_pending(nc_expr == 0);
@@ -1853,8 +1856,8 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     const Constraint& x_cs_i = x_cs[i];
     PPL_ASSERT(x_cs_i.is_strict_inequality());
     // Build the equality constraint induced by x_cs_i.
-    Linear_Expression expr(x_cs_i.expression());
-    Constraint eq_i(expr == 0);
+    const Linear_Expression expr(x_cs_i.expression());
+    const Constraint eq_i(expr == 0);
     PPL_ASSERT(!(ub.relation_with(eq_i)
                  .implies(Poly_Con_Relation::is_disjoint())));
     Polyhedron ub_inters_hyperplane(ub);
@@ -1872,7 +1875,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
     const Constraint& y_cs_i = y_cs[i];
     PPL_ASSERT(y_cs_i.is_strict_inequality());
     // Build the equality constraint induced by y_cs_i.
-    Constraint eq_i(Linear_Expression(y_cs_i.expression()) == 0);
+    const Constraint eq_i(Linear_Expression(y_cs_i.expression()) == 0);
     PPL_ASSERT(!(ub.relation_with(eq_i)
                  .implies(Poly_Con_Relation::is_disjoint())));
     Polyhedron ub_inters_hyperplane(ub);
@@ -2562,7 +2565,7 @@ PPL::Polyhedron::check_space_dimension_overflow(const dimension_type dim,
                                                 const Topology topol,
                                                 const char* method,
                                                 const char* reason) {
-  const char* domain = (topol == NECESSARILY_CLOSED)
+  const char* const domain = (topol == NECESSARILY_CLOSED)
     ? "PPL::C_Polyhedron::" : "PPL::NNC_Polyhedron::";
   return PPL::check_space_dimension_overflow(dim, max, domain, method, reason);
 }

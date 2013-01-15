@@ -148,7 +148,7 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
     // size of `parameters' will be greater than the number of nonzero
     // coefficients in y_i).
     for (dimension_type j = 1; pj != param_end; ++pj, ++j) {
-      Variable vj(*pj);
+      const Variable vj(*pj);
       if (vj.space_dimension() > cs_space_dim)
         break;
       Coefficient_traits::const_reference c = y_i->coefficient(vj);
@@ -694,8 +694,8 @@ compatibility_check_find_pivot_in_set(
         // compared. This speeds up the code, because the values' computation
         // is a bit expensive.
 
-        int lhs_sign = sgn(cost) * sgn(row_value);
-        int rhs_sign = sgn(challenger_cost) * sgn(row_challenger_value);
+        const int lhs_sign = sgn(cost) * sgn(row_value);
+        const int rhs_sign = sgn(challenger_cost) * sgn(row_challenger_value);
 
         if (lhs_sign != rhs_sign) {
           if (lhs_sign > rhs_sign) {
@@ -781,8 +781,8 @@ compatibility_check_find_pivot(const Matrix<PIP_Tree_Node::Row>& s,
         // Before computing and comparing the actual values, the signs are
         // compared. This speeds up the code, because the values' computation
         // is a bit expensive.
-        int lhs_coeff_sgn = sgn(current_data.cost);
-        int rhs_coeff_sgn = sgn(s_i0);
+        const int lhs_coeff_sgn = sgn(current_data.cost);
+        const int rhs_coeff_sgn = sgn(s_i0);
 
         if (lhs_coeff_sgn != rhs_coeff_sgn) {
           // Same column: just compare the ratios.
@@ -1280,7 +1280,7 @@ PIP_Decision_Node::OK() const {
 
   // Decision nodes with a false child must have exactly one constraint.
   if (false_child != 0) {
-    dimension_type dist = Implementation::num_constraints(constraints_);
+    const dimension_type dist = Implementation::num_constraints(constraints_);
     if (dist != 1) {
 #ifndef NDEBUG
       std::cerr << "PIP_Decision_Node with a 'false' child has "
@@ -1382,7 +1382,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     indent_and_print(std::cerr, indent_level,
                      "==> merge then branch with parent.\n");
 #endif
-    PIP_Tree_Node* node = true_child;
+    PIP_Tree_Node* const node = true_child;
     node->parent_merge();
     node->set_parent(parent());
     true_child = 0;
@@ -1399,7 +1399,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
     indent_and_print(std::cerr, indent_level,
                      "==> merge else branch with parent.\n");
 #endif
-    PIP_Tree_Node* node = false_child;
+    PIP_Tree_Node* const node = false_child;
     node->parent_merge();
     node->set_parent(parent());
     false_child = 0;
@@ -1431,7 +1431,7 @@ PIP_Decision_Node::solve(const PIP_Problem& pip,
       indent_and_print(std::cerr, indent_level,
                        "==> merge then branch with parent.\n");
 #endif
-      PIP_Tree_Node* node = true_child;
+      PIP_Tree_Node* const node = true_child;
       node->parent_merge();
       node->set_parent(parent());
       true_child = 0;
@@ -1457,12 +1457,12 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
     // for debugging purposes (since we want to dump broken nodes).
     s << "BOTTOM\n";
   }
-  else if (const PIP_Decision_Node* dec = true_child->as_decision()) {
+  else if (const PIP_Decision_Node* const dec = true_child->as_decision()) {
     s << "DECISION\n";
     dec->ascii_dump(s);
   }
   else {
-    const PIP_Solution_Node* sol = true_child->as_solution();
+    const PIP_Solution_Node* const sol = true_child->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -1472,7 +1472,7 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
   s << "\nfalse_child: ";
   if (false_child == 0)
     s << "BOTTOM\n";
-  else if (const PIP_Decision_Node* dec = false_child->as_decision()) {
+  else if (const PIP_Decision_Node* const dec = false_child->as_decision()) {
     // Note: this branch should normally be unreachable code.
     // Since a well-formed decision node having a false child should have
     // a single context constraint, its false child will have no context
@@ -1482,7 +1482,7 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
     dec->ascii_dump(s);
   }
   else {
-    const PIP_Solution_Node* sol = false_child->as_solution();
+    const PIP_Solution_Node* const sol = false_child->as_solution();
     PPL_ASSERT(sol != 0);
     s << "SOLUTION\n";
     sol->ascii_dump(s);
@@ -1510,13 +1510,13 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
     // Note: normally unreachable code (see comment on ascii_dump).
     true_child = 0;
   else if (str == "DECISION") {
-    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
+    PIP_Decision_Node* const dec = new PIP_Decision_Node(0, 0, 0);
     true_child = dec;
     if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    PIP_Solution_Node* sol = new PIP_Solution_Node(0);
+    PIP_Solution_Node* const sol = new PIP_Solution_Node(0);
     true_child = sol;
     if (!sol->ascii_load(s))
       return false;
@@ -1538,13 +1538,13 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
     false_child = 0;
   else if (str == "DECISION") {
     // Note: normally unreachable code (see comment on ascii_dump).
-    PIP_Decision_Node* dec = new PIP_Decision_Node(0, 0, 0);
+    PIP_Decision_Node* const dec = new PIP_Decision_Node(0, 0, 0);
     false_child = dec;
     if (!dec->ascii_load(s))
       return false;
   }
   else if (str == "SOLUTION") {
-    PIP_Solution_Node* sol = new PIP_Solution_Node(0);
+    PIP_Solution_Node* const sol = new PIP_Solution_Node(0);
     false_child = sol;
     if (!sol->ascii_load(s))
       return false;
@@ -1724,7 +1724,8 @@ void
 PIP_Tree_Node::ascii_dump(std::ostream& s) const {
   s << "constraints_\n";
   constraints_.ascii_dump(s);
-  dimension_type artificial_parameters_size = artificial_parameters.size();
+  const dimension_type artificial_parameters_size
+    = artificial_parameters.size();
   s << "\nartificial_parameters( " << artificial_parameters_size << " )\n";
   for (dimension_type i = 0; i < artificial_parameters_size; ++i)
     artificial_parameters[i].ascii_dump(s);
@@ -1804,25 +1805,25 @@ PIP_Solution_Node::ascii_dump(std::ostream& os) const {
   tableau.ascii_dump(os);
 
   os << "\nbasis ";
-  dimension_type basis_size = basis.size();
+  const dimension_type basis_size = basis.size();
   os << basis_size;
   for (dimension_type i = 0; i < basis_size; ++i)
     os << (basis[i] ? " true" : " false");
 
   os << "\nmapping ";
-  dimension_type mapping_size = mapping.size();
+  const dimension_type mapping_size = mapping.size();
   os << mapping_size;
   for (dimension_type i = 0; i < mapping_size; ++i)
     os << " " << mapping[i];
 
   os << "\nvar_row ";
-  dimension_type var_row_size = var_row.size();
+  const dimension_type var_row_size = var_row.size();
   os << var_row_size;
   for (dimension_type i = 0; i < var_row_size; ++i)
     os << " " << var_row[i];
 
   os << "\nvar_column ";
-  dimension_type var_column_size = var_column.size();
+  const dimension_type var_column_size = var_column.size();
   os << var_column_size;
   for (dimension_type i = 0; i < var_column_size; ++i)
     os << " " << var_column[i];
@@ -1832,7 +1833,7 @@ PIP_Solution_Node::ascii_dump(std::ostream& os) const {
   os << "big_dimension " << big_dimension << "\n";
 
   os << "sign ";
-  dimension_type sign_size = sign.size();
+  const dimension_type sign_size = sign.size();
   os << sign_size;
   for (dimension_type i = 0; i < sign_size; ++i) {
     os << " ";
@@ -1856,7 +1857,7 @@ PIP_Solution_Node::ascii_dump(std::ostream& os) const {
   }
   os << "\n";
 
-  dimension_type solution_size = solution.size();
+  const dimension_type solution_size = solution.size();
   os << "solution " << solution_size << "\n";
   for (dimension_type i = 0; i < solution_size; ++i)
     solution[i].ascii_dump(os);
@@ -2085,7 +2086,7 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
     // pj is the pivot's column index.
     dimension_type pj = 0;
 
-    bool found_positive_pivot_candidate
+    const bool found_positive_pivot_candidate
       = compatibility_check_find_pivot(s, mapping, basis, pi, pj);
 
     if (!found_positive_pivot_candidate)
@@ -2345,9 +2346,10 @@ PIP_Solution_Node
         if (dim != last_dim + 1) {
           // We have skipped some zero coefficients.
           // Update p_index and v_index accordingly.
-          dimension_type n = std::distance(parameters.lower_bound(last_dim),
-                                           parameters.lower_bound(dim - 1));
-          dimension_type num_skipped = dim - last_dim - 1;
+          const dimension_type n
+            = std::distance(parameters.lower_bound(last_dim),
+                            parameters.lower_bound(dim - 1));
+          const dimension_type num_skipped = dim - last_dim - 1;
           p_index += n;
           v_index += (num_skipped - n);
         }
@@ -2727,10 +2729,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (s_i_pj_itr == s_i.end())
           continue;
 
+        // FIXME: the following comment does not make sense.
         // NOTE: This is a Coefficient& instead of a
         // Coefficient_traits::const_reference, because scale() may silently
         // modify it.
-        Coefficient& s_i_pj = *s_i_pj_itr;
+        const Coefficient& s_i_pj = *s_i_pj_itr;
 
         if (s_i_pj == 0)
           continue;
@@ -3007,11 +3010,11 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // then we would obtain a node violating the PIP_Decision_Node
         // invariant saying that t_node should have a single constraint:
         // it will have, at least, the two splitting constraints.
-        PIP_Decision_Node* decision_node_p
+        const PIP_Decision_Node* const decision_node_p
           = dynamic_cast<PIP_Decision_Node*>(t_node);
         if (decision_node_p != 0 && decision_node_p->false_child != 0) {
           // Do NOT merge: create a new decision node.
-          PIP_Tree_Node* parent
+          PIP_Tree_Node* const parent
             = new PIP_Decision_Node(t_node->get_owner(), 0, t_node);
           // Previously wrapped 't_node' is now safe: release it
           // and protect new 'parent' node from exception safety issues.
@@ -3330,7 +3333,7 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       }
     }
     // Generate new artificial parameter.
-    Artificial_Parameter ap(expr, denom);
+    const Artificial_Parameter ap(expr, denom);
 
     // Search if the Artificial_Parameter has already been generated.
     ap_column = space_dimension;
@@ -3640,7 +3643,8 @@ PIP_Decision_Node::print_tree(std::ostream& s, const int indent,
   PIP_Tree_Node::print_tree(s, indent, pip_dim_is_param, first_art_dim);
 
   // Then print info specific of decision nodes.
-  dimension_type child_first_art_dim = first_art_dim + art_parameter_count();
+  const dimension_type child_first_art_dim
+    = first_art_dim + art_parameter_count();
 
   PPL_ASSERT(true_child != 0);
   true_child->print_tree(s, indent+1, pip_dim_is_param, child_first_art_dim);
@@ -3687,7 +3691,7 @@ PIP_Solution_Node::print_tree(std::ostream& s, const int indent,
 
 const Linear_Expression&
 PIP_Solution_Node::parametric_values(const Variable var) const {
-  const PIP_Problem* pip = get_owner();
+  const PIP_Problem* const pip = get_owner();
   PPL_ASSERT(pip != 0);
 
   const dimension_type space_dim = pip->space_dimension();
@@ -3726,7 +3730,7 @@ PIP_Solution_Node::update_solution() const {
   if (solution_valid)
     return;
 
-  const PIP_Problem* pip = get_owner();
+  const PIP_Problem* const pip = get_owner();
   PPL_ASSERT(pip != 0);
   std::vector<bool> pip_dim_is_param(pip->space_dimension());
   const Variables_Set& params = pip->parameter_space_dimensions();

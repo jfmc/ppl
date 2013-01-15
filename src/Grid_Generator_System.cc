@@ -261,7 +261,7 @@ PPL::Grid_Generator_System::num_lines() const {
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
   if (sys.is_sorted()) {
-    dimension_type nrows = num_rows();
+    const dimension_type nrows = num_rows();
     for (dimension_type i = 0; i < nrows && ggs[i].is_line(); ++i)
       ++n;
   }

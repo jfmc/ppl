@@ -473,8 +473,9 @@ assign(Boundary_Type to_type, To& to, To_Info& to_info,
     return set_boundary_infinity(to_type, to, to_info, should_shrink);
   }
   should_shrink = (should_shrink || normal_is_open(type, x, info));
-  bool check = (To_Info::check_inexact || (!should_shrink && To_Info::store_open));
-  Result r = assign_r(to, x, round_dir_check(to_type, check));
+  const bool check
+    = (To_Info::check_inexact || (!should_shrink && To_Info::store_open));
+  const Result r = assign_r(to, x, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, should_shrink, r);
 }
 

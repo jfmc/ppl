@@ -58,7 +58,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Variables_Set& vs) {
 
 void
 PPL::Variables_Set::ascii_dump(std::ostream& s) const {
-  dimension_type variables_set_size = size();
+  const dimension_type variables_set_size = size();
   s << "\nvariables( " << variables_set_size << " )\n";
   for (Variables_Set::const_iterator i = begin(),
          i_end = end(); i != i_end; ++i)

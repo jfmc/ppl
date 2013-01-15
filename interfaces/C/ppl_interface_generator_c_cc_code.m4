@@ -41,7 +41,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (ppl_@CLASS@_t* pph,
  ppl_dimension_type d,
  int empty) try {
-  Degenerate_Element e = (empty != 0) ? EMPTY : UNIVERSE;
+  const Degenerate_Element e = (empty != 0) ? EMPTY : UNIVERSE;
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(d, e));
   return 0;
 }
@@ -227,7 +227,7 @@ ppl_@CLASS@_@MAXMIN@
   Coefficient& ssup_n = *to_nonconst(sup_n);
   Coefficient& ssup_d = *to_nonconst(sup_d);
   bool optimum;
-  bool ok = pph.@MAXMIN@(lle, ssup_n, ssup_d, optimum);
+  const bool ok = pph.@MAXMIN@(lle, ssup_n, ssup_d, optimum);
   if (ok)
     *poptimum = optimum ? 1 : 0;
   return ok ? 1 : 0;
@@ -251,7 +251,7 @@ ppl_@CLASS@_@MAXMIN@_with_point
   Coefficient& ssup_d = *to_nonconst(sup_d);
   Generator& ppoint = *to_nonconst(point);
   bool optimum;
-  bool ok = pph.@MAXMIN@(lle, ssup_n, ssup_d, optimum, ppoint);
+  const bool ok = pph.@MAXMIN@(lle, ssup_n, ssup_d, optimum, ppoint);
   if (ok)
     *poptimum = optimum ? 1 : 0;
   return ok ? 1 : 0;
@@ -272,7 +272,7 @@ ppl_@CLASS@_has_@UPPERLOWER@_bound
   Coefficient& eext_n = *to_nonconst(ext_n);
   Coefficient& eext_d = *to_nonconst(ext_d);
   bool closed;
-  bool bounded
+  const bool bounded
     = pps.has_@UPPERLOWER@_bound(Variable(var), eext_n, eext_d, closed);
   if (bounded)
     *pclosed = closed ? 1 : 0;
@@ -386,7 +386,7 @@ ppl_@CLASS@_constrains
 (ppl_@CLASS@_t ph,
  ppl_dimension_type var
 ) try {
-  @CPP_CLASS@& pph = *to_nonconst(ph);
+  const @CPP_CLASS@& pph = *to_const(ph);
   return pph.constrains(Variable(var)) ? 1 : 0;
 }
 CATCH_ALL
@@ -845,7 +845,7 @@ ppl_@CLASS@_map_space_dimensions
  ppl_dimension_type maps[],
  size_t n) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  Array_Partial_Function_Wrapper function(maps, n);
+  const Array_Partial_Function_Wrapper function(maps, n);
   pph.map_space_dimensions(function);
   return 0;
 }
@@ -1288,7 +1288,7 @@ ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@
   const @TOPOLOGY@@CPP_CLASS@& ppset
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset));
   Generator& ppoint = *to_nonconst(point);
-  bool ok = one_affine_ranking_function_@TERMINATION_ID@(ppset, ppoint);
+  const bool ok = one_affine_ranking_function_@TERMINATION_ID@(ppset, ppoint);
   return ok ? 1 : 0;
 }
 CATCH_ALL
@@ -1306,9 +1306,9 @@ ppl_one_affine_ranking_function_@TERMINATION_ID@_@TOPOLOGY@@CLASS@_2
   const @TOPOLOGY@@CPP_CLASS@& ppset_after
     = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(pset_after));
   Generator& ppoint = *to_nonconst(point);
-  bool ok = one_affine_ranking_function_@TERMINATION_ID@_2(ppset_before,
-                                                           ppset_after,
-                                                           ppoint);
+  const bool ok = one_affine_ranking_function_@TERMINATION_ID@_2(ppset_before,
+                                                                 ppset_after,
+                                                                 ppoint);
   return ok ? 1 : 0;
 }
 CATCH_ALL
@@ -1402,8 +1402,8 @@ ppl_@CLASS@_wrap_assign
   Variables_Set vars;
   for (ppl_dimension_type i = n; i-- > 0; )
     vars.insert(ds[i]);
-  const Constraint_System* ccs = to_const(*pcs);
-  bool b = (wrap_individually != 0);
+  const Constraint_System* const ccs = to_const(*pcs);
+  const bool b = (wrap_individually != 0);
   pph.wrap_assign(vars,
                   bounded_integer_type_width(w),
                   bounded_integer_type_representation(r),

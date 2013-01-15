@@ -381,10 +381,10 @@ process_options(int argc, char* argv[]) {
   while (true) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
-    int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
-                        &option_index);
+    const int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
+                              &option_index);
 #else
-    int c = getopt(argc, argv, OPTION_LETTERS);
+    const int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
 
     if (c == EOF)
@@ -490,7 +490,7 @@ normalize(const std::vector<mpq_class>& source,
           std::vector<mpz_class>& dest,
           mpz_class& denominator) {
   typedef std::vector<mpq_class>::size_type size_type;
-  size_type n = source.size();
+  const size_type n = source.size();
   denominator = 1;
   for (size_type i = 0; i < n; ++i)
     mpz_lcm(denominator.get_mpz_t(),
@@ -549,7 +549,7 @@ read_coefficients(std::istream& in,
                   std::vector<mpz_class>& coefficients,
                   mpz_class& denominator) {
   typedef std::vector<mpz_class>::size_type size_type;
-  size_type num_coefficients = coefficients.size();
+  const size_type num_coefficients = coefficients.size();
   switch (number_type) {
   case INTEGER:
     {
@@ -651,7 +651,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   unsigned num_columns;
   if (!guarded_read(in, num_columns))
     error("illegal or missing number of columns");
-  unsigned space_dim = num_columns - 1;
+  const unsigned space_dim = num_columns - 1;
 
   if (!guarded_read(in, s))
     error("missing number type");
@@ -1014,11 +1014,11 @@ write_polyhedron(std::ostream& out,
   }
 
 #if defined(USE_PPL)
-  PPL::dimension_type space_dim = ph.space_dimension();
+  const PPL::dimension_type space_dim = ph.space_dimension();
 #elif defined(USE_POLKA)
-  unsigned space_dim = poly_dimension(ph);
+  const unsigned space_dim = poly_dimension(ph);
 #elif defined(USE_POLYLIB)
-  unsigned space_dim = mat->NbColumns - 2;
+  const unsigned space_dim = mat->NbColumns - 2;
 #endif
 
   guarded_write(out, "begin\n");
@@ -1207,7 +1207,7 @@ main(int argc, char* argv[]) try {
   set_output(output_file_name);
 
   POLYHEDRON_TYPE ph;
-  Representation rep = read_polyhedron(input(), ph);
+  const Representation rep = read_polyhedron(input(), ph);
 
   enum Command { None, H_to_V, V_to_H };
   Command command = None;
@@ -1259,7 +1259,7 @@ main(int argc, char* argv[]) try {
     set_input(check_file_name);
     // Read the polyhedron containing the expected result.
     PPL::C_Polyhedron e_ph;
-    Representation e_rep = read_polyhedron(input(), e_ph);
+    const Representation e_rep = read_polyhedron(input(), e_ph);
 
     switch (command) {
     case H_to_V:

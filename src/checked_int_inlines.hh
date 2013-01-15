@@ -670,7 +670,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       return V_EQ;
     }
     if (from.fits_ulong_p()) {
-      unsigned long v = from.get_ui();
+      const unsigned long v = from.get_ui();
       if (PPL_GT_SILENT(v, (Extended_Int<To_Policy, To>::max)))
         return set_pos_overflow_int<To_Policy>(to, dir);
       to = static_cast<To>(v);
@@ -678,8 +678,8 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
   }
   else {
-    mpz_srcptr m = from.get_mpz_t();
-    size_t sz = mpz_size(m);
+    const mpz_srcptr m = from.get_mpz_t();
+    const size_t sz = mpz_size(m);
     if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
       if (sz == 0)
         to = 0;

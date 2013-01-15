@@ -33,7 +33,8 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Dense_Row::Dense_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity) {
   resize(sz, capacity);
-  for (Sparse_Row::const_iterator i = y.begin(), i_end = y.lower_bound(sz); i != i_end; ++i)
+  for (Sparse_Row::const_iterator i = y.begin(),
+         i_end = y.lower_bound(sz); i != i_end; ++i)
     (*this)[i.index()] = *i;
   PPL_ASSERT(OK());
 }
@@ -48,7 +49,7 @@ PPL::Dense_Row::resize(dimension_type new_size) {
       // TODO: Consider using realloc() here.
       // TODO: Consider using a smarter allocation strategy.
       const dimension_type new_capacity = new_size;
-      Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
+      Coefficient* const new_vec = impl.coeff_allocator.allocate(new_capacity);
 
       if (impl.vec != 0) {
         memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);
@@ -92,7 +93,7 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
 
     PPL_ASSERT(impl.size == new_size);
 
-    Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
+    Coefficient* const new_vec = impl.coeff_allocator.allocate(new_capacity);
 
     PPL_ASSERT(impl.vec != 0);
 
@@ -106,7 +107,7 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
   else {
     if (new_capacity > capacity()) {
 
-      Coefficient* new_vec = impl.coeff_allocator.allocate(new_capacity);
+      Coefficient* const new_vec = impl.coeff_allocator.allocate(new_capacity);
 
       if (impl.vec != 0) {
         memcpy(new_vec, impl.vec, sizeof(Coefficient) * impl.size);

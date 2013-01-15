@@ -366,7 +366,7 @@ inline void
 Linear_System<Row>::remove_row_no_ok(const dimension_type i,
                                      const bool keep_sorted) {
   PPL_ASSERT(i < num_rows());
-  bool was_pending = (i >= index_first_pending);
+  const bool was_pending = (i >= index_first_pending);
 
   if (sorted && keep_sorted && !was_pending) {
     for (dimension_type j = i + 1; j < rows.size(); ++j)
@@ -376,7 +376,7 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i,
   else {
     if (!was_pending)
       sorted = false;
-    bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
+    const bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
     if (was_pending == last_row_is_pending)
       // Either both rows are pending or both rows are not pending.
       swap(rows[i], rows.back());
@@ -423,7 +423,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   // non-pending) status.
   PPL_ASSERT(first >= index_first_pending || last <= index_first_pending);
 
-  bool were_pending = (first >= index_first_pending);
+  const bool were_pending = (first >= index_first_pending);
 
   // Move the rows in [first,last) at the end of the system.
   if (sorted && keep_sorted && !were_pending) {
@@ -443,7 +443,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   // We can ignore the row ordering, but we must not mix pending and
   // non-pending rows.
 
-  dimension_type offset = rows.size() - n - first;
+  const dimension_type offset = rows.size() - n - first;
   // We want to swap the rows in [first, last) and
   // [first + offset, last + offset) (note that these intervals may not be
   // disjunct).

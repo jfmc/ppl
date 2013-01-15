@@ -450,7 +450,7 @@ isqrt(dimension_type x) {
   dimension_type r = 0;
   const dimension_type FIRST_BIT_MASK = 0x40000000U;
   for (dimension_type t = FIRST_BIT_MASK; t != 0; t >>= 2) {
-    dimension_type s = r + t;
+    const dimension_type s = r + t;
     if (s <= x) {
       x -= s;
       r = s + t;
@@ -465,7 +465,7 @@ inline dimension_type
 OR_Matrix<T>::max_num_rows() {
   // Compute the maximum number of rows that are contained in a DB_Row
   // that allocates a pseudo-triangular matrix.
-  dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
+  const dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
   return (k - 1) - (k - 1) % 2;
 }
 

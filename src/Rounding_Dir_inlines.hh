@@ -31,14 +31,14 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 inline Rounding_Dir
 operator&(Rounding_Dir x, Rounding_Dir y) {
-  unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
+  const unsigned res = static_cast<unsigned>(x) & static_cast<unsigned>(y);
   return static_cast<Rounding_Dir>(res);
 }
 
 /*! \ingroup PPL_CXX_interface */
 inline Rounding_Dir
 operator|(Rounding_Dir x, Rounding_Dir y) {
-  unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
+  const unsigned res = static_cast<unsigned>(x) | static_cast<unsigned>(y);
   return static_cast<Rounding_Dir>(res);
 }
 

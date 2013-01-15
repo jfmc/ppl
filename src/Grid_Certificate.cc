@@ -54,7 +54,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
         // Minimize `gr' congruence system.  As in Polyhedron assume
         // that `gr' contains at least one point.
         Grid& mgr = const_cast<Grid&>(gr);
-        bool empty = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
+        const bool empty = Grid::simplify(mgr.con_sys, mgr.dim_kinds);
         // Avoid possible compiler warning.
         PPL_USED(empty);
         PPL_ASSERT(!empty);
@@ -97,7 +97,7 @@ PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
 
 int
 PPL::Grid_Certificate::compare(const Grid& gr) const {
-  Grid_Certificate gc(gr);
+  const Grid_Certificate gc(gr);
   return compare(gc);
 }
 

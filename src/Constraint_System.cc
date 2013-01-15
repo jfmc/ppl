@@ -68,7 +68,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     // If they are present, we erase these rows, so that the
     // epsilon column will only contain zeroes: as a consequence,
     // we just decrement the number of columns to be added.
-    bool was_sorted = sys.is_sorted();
+    const bool was_sorted = sys.is_sorted();
 
     // Note that num_rows() is *not* constant, because it is decreased by
     // remove_row().
@@ -202,7 +202,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
   // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  Topology_Adjusted_Scalar_Product_Sign sps(g);
+  const Topology_Adjusted_Scalar_Product_Sign sps(g);
 
   if (sys.is_necessarily_closed()) {
     if (g.is_line()) {
@@ -306,7 +306,7 @@ PPL::Constraint_System
     Constraint& row = sys.rows[i];
     Coefficient_traits::const_reference row_v = row.coefficient(v);
     if (row_v != 0) {
-      Coefficient c = row_v;
+      const Coefficient c = row_v;
       if (denominator != 1)
         row.expr *= denominator;
       row.expr.linear_combine(expr, 1, c, 0, expr.space_dimension() + 1);

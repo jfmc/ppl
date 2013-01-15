@@ -62,18 +62,18 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Prolog_term_ref t_nd,
 
   m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@(
-                     Prolog_term_ref t_ph_source, Prolog_term_ref t_ph)
+ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@
+(Prolog_term_ref t_ph_source, Prolog_term_ref t_ph)
 {
-  static const char* where =
-                   "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2";
+  static const char* where
+    = "ppl_new_@TOPOLOGY@@CLASS@_from_@FRIEND@/2";
   try {
     @TOPOLOGY@@CPP_CLASS@* ph;
-    const @B_FRIEND@* ph_source
-        = static_cast<const @B_FRIEND@*>
+    const @B_FRIEND@* const ph_source
+      = static_cast<const @B_FRIEND@*>
         (term_to_handle<@B_FRIEND@ >(t_ph_source, where));
     PPL_CHECK(ph_source);
-        ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
+    ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -217,7 +217,8 @@ m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
                                    Prolog_term_ref t_glist) {
   static const char* where = "ppl_@CLASS@_get_@CLASS_REPRESENT@s/2";
   try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    const @CPP_CLASS@* const ph
+      = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -241,7 +242,8 @@ m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
                                              Prolog_term_ref t_glist) {
   static const char* where = "ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s/2";
   try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    const @CPP_CLASS@* const ph
+      = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -703,7 +705,8 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
   ppl_@CLASS@_@HAS_PROPERTY@(Prolog_term_ref t_ph) {
   static const char* where = "ppl_@CLASS@_@HAS_PROPERTY@/1";
   try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    const @CPP_CLASS@* const ph
+      = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     if (ph->@HAS_PROPERTY@())
       return PROLOG_SUCCESS;
@@ -793,7 +796,7 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
   try {
     @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
-    Linear_Expression l = build_linear_expression(t_expr, where);
+    const Linear_Expression l = build_linear_expression(t_expr, where);
     if (ph->bounds_from_@ABOVEBELOW@(l))
       return PROLOG_SUCCESS;
   }
@@ -838,7 +841,8 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
                        Prolog_term_ref t_maxmin) {
   static const char* where = "ppl_@CLASS@_@MAXMIN@/5";
   try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    const @CPP_CLASS@* const ph
+      = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr, where);
     PPL_DIRTY_TEMP_COEFFICIENT(n);
@@ -846,7 +850,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
     bool maxmin;
     if (ph->@MAXMIN@(le, n, d, maxmin)) {
       Prolog_term_ref t = Prolog_new_term_ref();
-      Prolog_atom a = (maxmin ? a_true : a_false);
+      const Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
       if (Prolog_unify_Coefficient(t_n, n)
           && Prolog_unify_Coefficient(t_d, d)
@@ -860,14 +864,15 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 ')
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
-  `extern "C" Prolog_foreign_return_type
-  ppl_@CLASS@_@MAXMIN@_with_point(Prolog_term_ref t_ph,
-                                  Prolog_term_ref t_le_expr,
-                                  Prolog_term_ref t_n, Prolog_term_ref t_d,
-                                  Prolog_term_ref t_maxmin, Prolog_term_ref t_g) {
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@MAXMIN@_with_point
+(Prolog_term_ref t_ph,
+ Prolog_term_ref t_le_expr,
+ Prolog_term_ref t_n, Prolog_term_ref t_d,
+ Prolog_term_ref t_maxmin, Prolog_term_ref t_g) {
   static const char* where = "ppl_@CLASS@_@MAXMIN@_with_point/6";
   try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    const @CPP_CLASS@* const ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr, where);
     PPL_DIRTY_TEMP_COEFFICIENT(n);
@@ -876,7 +881,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
     Generator g(point());
     if (ph->@MAXMIN@(le, n, d, maxmin, g)) {
       Prolog_term_ref t = Prolog_new_term_ref();
-      Prolog_atom a = (maxmin ? a_true : a_false);
+      const Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
       if (Prolog_unify_Coefficient(t_n, n)
           && Prolog_unify_Coefficient(t_d, d)
@@ -930,7 +935,7 @@ m4_define(`ppl_@CLASS@_OK_code',
   ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
   static const char* where = "ppl_@CLASS@_OK/1";
   try {
-    const @CPP_CLASS@* ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
+    const @CPP_CLASS@* const ph = term_to_handle<@CPP_CLASS@ >(t_ph, where);
     PPL_CHECK(ph);
     if (ph->OK())
       return PROLOG_SUCCESS;

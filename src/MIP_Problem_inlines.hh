@@ -59,9 +59,8 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     last_generator(y.last_generator),
     i_variables(y.i_variables) {
   input_cs.reserve(y.input_cs.size());
-  for (Constraint_Sequence::const_iterator
-       i = y.input_cs.begin(), i_end = y.input_cs.end();
-       i != i_end; ++i)
+  for (Constraint_Sequence::const_iterator i = y.input_cs.begin(),
+         i_end = y.input_cs.end(); i != i_end; ++i)
     add_constraint_helper(*(*i));
   PPL_ASSERT(OK());
 }

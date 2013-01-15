@@ -48,7 +48,7 @@ const bool std::numeric_limits<mpz_class>::is_iec559;
 const bool std::numeric_limits<mpz_class>::is_bounded;
 const bool std::numeric_limits<mpz_class>::is_modulo;
 const bool std::numeric_limits<mpz_class>::traps;
-const bool std::numeric_limits<mpz_class>::tininess_before;
+const bool std::numeric_limits<mpz_class>::tinyness_before;
 const std::float_round_style std::numeric_limits<mpz_class>::round_style;
 
 const bool std::numeric_limits<mpq_class>::is_specialized;
@@ -71,7 +71,7 @@ const bool std::numeric_limits<mpq_class>::is_iec559;
 const bool std::numeric_limits<mpq_class>::is_bounded;
 const bool std::numeric_limits<mpq_class>::is_modulo;
 const bool std::numeric_limits<mpq_class>::traps;
-const bool std::numeric_limits<mpq_class>::tininess_before;
+const bool std::numeric_limits<mpq_class>::tinyness_before;
 const std::float_round_style std::numeric_limits<mpq_class>::round_style;
 
 #endif // __GNU_MP_VERSION < 5

@@ -73,7 +73,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
-  Grid_Generator gg(ec, PARAMETER);
+  const Grid_Generator gg(ec, PARAMETER);
 
   // NOTE: normalize() must *not* be called here, because this is a parameter,
   // and it would change the represented parameter.
@@ -248,7 +248,7 @@ PPL::compare(const Grid_Generator& x, const Grid_Generator& y) {
 bool
 PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
-  dimension_type x_space_dim = x.space_dimension();
+  const dimension_type x_space_dim = x.space_dimension();
   if (x_space_dim != y.space_dimension())
     return false;
 
@@ -258,7 +258,7 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
 
   Grid_Generator tmp_x = *this;
   Grid_Generator tmp_y = y;
-  Variable last_var(x_space_dim);
+  const Variable last_var(x_space_dim);
   if (x_type == POINT || x_type == LINE) {
     tmp_x.expr.set(last_var, Coefficient_zero());
     tmp_y.expr.set(last_var, Coefficient_zero());
@@ -329,7 +329,7 @@ PPL::Grid_Generator::fancy_print(std::ostream& s) const {
   bool need_divisor = false;
   bool extra_parentheses = false;
   const dimension_type num_variables = space_dimension();
-  Grid_Generator::Type t = type();
+  const Grid_Generator::Type t = type();
   switch (t) {
   case Grid_Generator::LINE:
     s << "l(";
@@ -356,7 +356,7 @@ PPL::Grid_Generator::fancy_print(std::ostream& s) const {
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   bool first = true;
   for (Linear_Expression::const_iterator i = expr.begin(),
-        i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
+         i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
     c = *i;
     if (!first) {
       if (c > 0)

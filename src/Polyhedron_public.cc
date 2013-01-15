@@ -263,7 +263,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Congruence& cg) const {
-  dimension_type cg_space_dim = cg.space_dimension();
+  const dimension_type cg_space_dim = cg.space_dimension();
   // Dimension-compatibility check.
   if (space_dim < cg_space_dim)
     throw_dimension_incompatible("relation_with(cg)", "cg", cg);
@@ -295,7 +295,7 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
 
   // Build the equality corresponding to the congruence (ignoring the modulus).
   Linear_Expression expr(cg.expression());
-  Constraint c(expr == 0);
+  const Constraint c(expr == 0);
 
   // The polyhedron is non-empty so that there exists a point.
   // For an arbitrary generator point, compute the scalar product with
@@ -329,9 +329,9 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
 
   // Build first halfspace constraint.
   const bool positive = (signed_distance > 0);
-  Constraint first_halfspace = positive ? (expr >= 0) : (expr <= 0);
+  const Constraint first_halfspace = positive ? (expr >= 0) : (expr <= 0);
 
-  Poly_Con_Relation first_rels = relation_with(first_halfspace);
+  const Poly_Con_Relation first_rels = relation_with(first_halfspace);
   PPL_ASSERT(!first_rels.implies(Poly_Con_Relation::saturates())
              && !first_rels.implies(Poly_Con_Relation::is_disjoint()));
   if (first_rels.implies(Poly_Con_Relation::strictly_intersects()))
@@ -342,10 +342,10 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
     expr -= modulus;
   else
     expr += modulus;
-  Constraint second_halfspace = positive ? (expr <= 0) : (expr >= 0);
+  const Constraint second_halfspace = positive ? (expr <= 0) : (expr >= 0);
 
   PPL_ASSERT(first_rels == Poly_Con_Relation::is_included());
-  Poly_Con_Relation second_rels = relation_with(second_halfspace);
+  const Poly_Con_Relation second_rels = relation_with(second_halfspace);
   PPL_ASSERT(!second_rels.implies(Poly_Con_Relation::saturates())
              && !second_rels.implies(Poly_Con_Relation::is_disjoint()));
   if (second_rels.implies(Poly_Con_Relation::strictly_intersects()))
@@ -1268,8 +1268,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 
   // Add the equality.
   Linear_Expression le(cg.expression());
-  Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-
+  const Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
   refine_no_check(c);
 }
 
@@ -1597,7 +1596,7 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
     const Congruence& cg = *i;
     if (cg.is_equality()) {
       Linear_Expression le(cg.expression());
-      Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+      const Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
 
       // TODO: Consider stealing the row in c when adding it to cs.
       cs.insert(c);
@@ -1648,8 +1647,7 @@ PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
 
   if (cg.is_equality()) {
     Linear_Expression le(cg.expression());
-    Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-
+    const Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
     refine_no_check(c);
   }
 }
@@ -1707,7 +1705,7 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
       // would cause a change in the topology of `con_sys', which is
       // wrong.  Thus, we insert a topology closed and "topology
       // corrected" version of `c'.
-      Linear_Expression nc_expr(c.expression());
+      const Linear_Expression nc_expr(c.expression());
       if (c.is_equality())
         if (adding_pending)
           con_sys.insert_pending(nc_expr == 0);
@@ -1746,7 +1744,7 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
          cgs_end = cgs.end(); i != cgs_end; ++i) {
     if (i->is_equality()) {
       Linear_Expression le(i->expression());
-      Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+      const Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
 
       // TODO: Consider stealing the row in c when adding it to cs.
       cs.insert(c);
@@ -2028,7 +2026,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         // found, and assign to `x' the polyhedron `ph' with `c' as
         // the only constraint.
         Polyhedron ph(x.topology(), x.space_dim, UNIVERSE);
-        Linear_Expression le(y_con_sys_i.expression());
+        const Linear_Expression le(y_con_sys_i.expression());
         switch (y_con_sys_i.type()) {
         case Constraint::EQUALITY:
           ph.refine_no_check(le == 1);
@@ -2123,7 +2121,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       for (dimension_type i = 0, j = 0; i < x_cs_num_rows; ++i) {
         if (!redundant_by_y[i]) {
           const Constraint& c = x_cs[i];
-          Topology_Adjusted_Scalar_Product_Sign sps(c);
+          const Topology_Adjusted_Scalar_Product_Sign sps(c);
           dimension_type num_ruled_out_generators = 0;
           for (Generator_System::const_iterator k = y_gs.begin(),
                  y_gs_end = y_gs.end(); k != y_gs_end; ++k) {
@@ -2211,7 +2209,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
         const Constraint& c = x_cs[j->constraint_index];
         result_cs.insert(c);
         lp.add_constraint(c);
-        MIP_Problem_Status status = lp.solve();
+        const MIP_Problem_Status status = lp.solve();
         if (status == UNFEASIBLE_MIP_PROBLEM) {
           Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
           result_ph.add_constraints(result_cs);
@@ -2970,11 +2968,11 @@ generalized_affine_preimage(const Variable var,
   // computed as the image of its inverse relation.
   const Coefficient& var_coefficient = expr.coefficient(var);
   if (var_coefficient != 0) {
-    Linear_Expression inverse_expr
+    const Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
     PPL_DIRTY_TEMP_COEFFICIENT(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
-    Relation_Symbol inverse_relsym
+    const Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
       ? relsym : reversed_relsym;
     generalized_affine_image(var, inverse_relsym, inverse_expr,

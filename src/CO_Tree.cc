@@ -167,9 +167,9 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   iterator itr = erase(key);
   if (itr == end())
     return;
-  dimension_type i = dfs_index(itr);
+  const dimension_type i = dfs_index(itr);
   dimension_type* p = indexes + i;
-  dimension_type* p_end = indexes + (reserved_size + 1);
+  const dimension_type* const p_end = indexes + (reserved_size + 1);
   for ( ; p != p_end; ++p)
     if (*p != unused_index)
       --(*p);
@@ -655,7 +655,7 @@ PPL::CO_Tree::structure_OK() const {
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
     tree_iterator itr(*const_cast<CO_Tree*>(this));
-    dimension_type real_size = count_used_in_subtree(itr);
+    const dimension_type real_size = count_used_in_subtree(itr);
     if (real_size != size_)
       // There are \p real_size elements in the tree that are reachable by the
       // root, but size is \p size.
@@ -754,9 +754,9 @@ PPL::CO_Tree::rebuild_bigger_tree() {
     return;
   }
 
-  dimension_type new_reserved_size = reserved_size*2 + 1;
+  const dimension_type new_reserved_size = reserved_size*2 + 1;
 
-  dimension_type* new_indexes = new dimension_type[new_reserved_size + 2];
+  dimension_type* const new_indexes = new dimension_type[new_reserved_size + 2];
 
   data_type* new_data;
 
@@ -807,7 +807,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
   }
   PPL_ASSERT(itr.index() == unused_index || itr.is_leaf());
   height_t itr_depth_minus_1 = itr.depth() - 1;
-  height_t height = max_depth - itr_depth_minus_1;
+  const height_t height = max_depth - itr_depth_minus_1;
   dimension_type subtree_size;
   dimension_type subtree_reserved_size = (static_cast<dimension_type>(1)
                                           << height) - 1;
@@ -833,7 +833,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     // The density in the tree is correct, so the while condition is always
     // false for the root.
     PPL_ASSERT(itr_depth_minus_1 != 0);
-    bool is_right_brother = itr.is_right_child();
+    const bool is_right_brother = itr.is_right_child();
     itr.get_parent();
     if (is_right_brother)
       itr.get_left_child();
@@ -853,10 +853,10 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
 
   // Step 1: compact elements of this subtree in the rightmost end, from right
   //         to left.
-  dimension_type last_index_in_subtree
+  const dimension_type last_index_in_subtree
     = itr.dfs_index() + itr.get_offset() - 1;
 
-  dimension_type first_unused
+  const dimension_type first_unused
     = compact_elements_in_the_rightmost_end(last_index_in_subtree,
                                             subtree_size, key, value,
                                             !deleting);
@@ -954,7 +954,7 @@ PPL::CO_Tree
     --subtree_size;
   }
 
-  ptrdiff_t distance = first_unused_index - indexes;
+  const ptrdiff_t distance = first_unused_index - indexes;
   PPL_ASSERT(distance >= 0);
   return static_cast<dimension_type>(distance);
 }
@@ -1220,7 +1220,8 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
 
   PPL_ASSERT(root_index > (k - 1));
 
-  dimension_type* current_index = &(itr.tree.indexes[root_index - (k - 1)]);
+  const dimension_type* current_index
+    = &(itr.tree.indexes[root_index - (k - 1)]);
 
   for (dimension_type j = 2*k - 1; j > 0; --j, ++current_index)
     if (*current_index != unused_index)
@@ -1301,7 +1302,7 @@ PPL::CO_Tree::tree_iterator::OK() const {
     return false;
 
   // This assumes two's complement encoding.
-  dimension_type correct_offset = i & -i;
+  const dimension_type correct_offset = i & -i;
 
   if (offset != correct_offset)
     return false;

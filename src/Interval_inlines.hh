@@ -238,10 +238,10 @@ Interval<To_Boundary, To_Info>::assign(const From& x) {
     return assign(EMPTY);
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  Result rl = Boundary_NS::assign(LOWER, lower(), to_info,
-                                  LOWER, f_lower(x), f_info(x));
-  Result ru = Boundary_NS::assign(UPPER, upper(), to_info,
-                                  UPPER, f_upper(x), f_info(x));
+  const Result rl = Boundary_NS::assign(LOWER, lower(), to_info,
+                                        LOWER, f_lower(x), f_info(x));
+  const Result ru = Boundary_NS::assign(UPPER, upper(), to_info,
+                                        UPPER, f_upper(x), f_info(x));
   assign_or_swap(info(), to_info);
   PPL_ASSERT(OK());
   return combine(rl, ru);

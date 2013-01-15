@@ -106,7 +106,7 @@ Congruence::create(const Linear_Expression& e,
                    Representation r) {
   Linear_Expression diff(e, r);
   diff -= n;
-  Congruence cg(diff, 1, Recycle_Input());
+  const Congruence cg(diff, 1, Recycle_Input());
   return cg;
 }
 
@@ -116,7 +116,7 @@ Congruence::create(Coefficient_traits::const_reference n,
                    Representation r) {
   Linear_Expression diff(e, r);
   diff -= n;
-  Congruence cg(diff, 1, Recycle_Input());
+  const Congruence cg(diff, 1, Recycle_Input());
   return cg;
 }
 

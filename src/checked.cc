@@ -294,7 +294,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
       is.unget();
       goto ok;
     case EXPONENT:
-      int d = get_digit(c, 10);
+      const int d = get_digit(c, 10);
       if (d >= 0) {
         empty_exponent = false;
         if (numer.exponent > max_exp_div
@@ -388,7 +388,7 @@ Result
 input_mpq(mpq_class& to, std::istream& is) {
   number_struct numer_struct;
   number_struct denom_struct;
-  Result r = parse_number(is, numer_struct, denom_struct);
+  const Result r = parse_number(is, numer_struct, denom_struct);
   if (r == V_CVT_STR_UNK) {
     is.setstate(is.failbit);
     return r;
@@ -402,8 +402,8 @@ input_mpq(mpq_class& to, std::istream& is) {
     to = 0;
     return V_EQ;
   }
-  mpz_ptr numer = to.get_num().get_mpz_t();
-  mpz_ptr denom = to.get_den().get_mpz_t();
+  const mpz_ptr numer = to.get_num().get_mpz_t();
+  const mpz_ptr denom = to.get_den().get_mpz_t();
   mpz_set_str(numer, numer_struct.mantissa.c_str(),
               static_cast<int>(numer_struct.base));
   if (denom_struct.base != 0) {
@@ -463,9 +463,9 @@ input_mpq(mpq_class& to, std::istream& is) {
 
 /* NOTE: q is overwritten! */
 std::string float_mpq_to_string(mpq_class& q) {
-  mpz_ptr n = q.get_num().get_mpz_t();
-  mpz_ptr d = q.get_den().get_mpz_t();
-  unsigned long decimals = mpz_sizeinbase(d, 2) - 1;
+  const mpz_ptr n = q.get_num().get_mpz_t();
+  const mpz_ptr d = q.get_den().get_mpz_t();
+  const unsigned long decimals = mpz_sizeinbase(d, 2) - 1;
   if (decimals != 0) {
     mpz_ui_pow_ui(d, 5, decimals);
     mpz_mul(n, n, d);
@@ -478,13 +478,13 @@ std::string float_mpq_to_string(mpq_class& q) {
   char buf[bufsize];
   mpz_get_str(buf, 10, n);
   if (decimals != 0) {
-    size_t len = strlen(buf);
+    const size_t len = strlen(buf);
     if (decimals < len) {
       memmove(&buf[len - decimals + 1], &buf[len - decimals], decimals + 1);
       buf[len - decimals] = '.';
     }
     else {
-      size_t zeroes = decimals - len;
+      const size_t zeroes = decimals - len;
       memmove(&buf[2 + zeroes], &buf[0], len + 1);
       buf[0] = '0';
       buf[1] = '.';

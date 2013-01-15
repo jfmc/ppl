@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 c_streambuf::int_type
 c_streambuf::uflow() {
-  int_type c = underflow();
+  const int_type c = underflow();
   next_char_buf = traits_type::eof();
   return c;
 }
@@ -81,7 +81,7 @@ c_streambuf::pbackfail(int_type c) {
 std::streamsize
 c_streambuf::xsputn(const char_type* s, std::streamsize n) {
   PPL_ASSERT(n >= 0);
-  size_t r = cb_write(s, static_cast<size_t>(n));
+  const size_t r = cb_write(s, static_cast<size_t>(n));
   return static_cast<std::streamsize>(r);
 }
 

@@ -833,7 +833,7 @@ extern "C"
 CAMLprim value
 ppl_new_MIP_Problem_from_space_dimension(value d) try {
   CAMLparam1(d);
-  dimension_type dd = value_to_ppl_dimension(d);
+  const dimension_type dd = value_to_ppl_dimension(d);
   MIP_Problem& ppl_mip = *new MIP_Problem(dd);
   CAMLreturn(unregistered_value_p_MIP_Problem(ppl_mip));
 }
@@ -844,10 +844,10 @@ CAMLprim value
 ppl_new_MIP_Problem(value d, value caml_cs, value caml_cost,
                     value caml_opt_mode) try {
   CAMLparam4(d, caml_cs, caml_cost, caml_opt_mode);
-  dimension_type dd = value_to_ppl_dimension(d);
-  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
-  Linear_Expression ppl_cost = build_ppl_Linear_Expression(caml_cost);
-  Optimization_Mode ppl_opt_mode = build_ppl_opt_mode(caml_opt_mode);
+  const dimension_type dd = value_to_ppl_dimension(d);
+  const Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  const Linear_Expression ppl_cost = build_ppl_Linear_Expression(caml_cost);
+  const Optimization_Mode ppl_opt_mode = build_ppl_opt_mode(caml_opt_mode);
   MIP_Problem& ppl_mip = *new MIP_Problem(dd, ppl_cs, ppl_cost, ppl_opt_mode);
   CAMLreturn(unregistered_value_p_MIP_Problem(ppl_mip));
 }
@@ -901,7 +901,7 @@ extern "C"
 CAMLprim value
 ppl_MIP_Problem_add_space_dimensions_and_embed(value caml_mip, value dim) try {
   CAMLparam2(caml_mip, dim);
-  dimension_type ppl_dim = value_to_ppl_dimension(dim);
+  const dimension_type ppl_dim = value_to_ppl_dimension(dim);
   MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
   ppl_mip.add_space_dimensions_and_embed(ppl_dim);
   CAMLreturn(Val_unit);
@@ -1157,7 +1157,7 @@ extern "C"
 CAMLprim value
 ppl_new_PIP_Problem_from_space_dimension(value d) try {
   CAMLparam1(d);
-  dimension_type dd = value_to_ppl_dimension(d);
+  const dimension_type dd = value_to_ppl_dimension(d);
   PIP_Problem& ppl_pip = *new PIP_Problem(dd);
   CAMLreturn(unregistered_value_p_PIP_Problem(ppl_pip));
 }
@@ -1167,8 +1167,8 @@ extern "C"
 CAMLprim value
 ppl_new_PIP_Problem(value d, value caml_cs, value caml_vset) try {
   CAMLparam3(d, caml_cs, caml_vset);
-  dimension_type dd = value_to_ppl_dimension(d);
-  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  const dimension_type dd = value_to_ppl_dimension(d);
+  const Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
   Variables_Set ppl_vset;
   if (Int_val(caml_vset) == 0)
     CAMLreturn(Val_unit);
@@ -1190,7 +1190,7 @@ CAMLprim value
 ppl_PIP_Problem_space_dimension(value pip) try {
   CAMLparam1(pip);
   const PIP_Problem& ppip = *p_PIP_Problem_val(pip);
-  dimension_type d = ppip.space_dimension();
+  const dimension_type d = ppip.space_dimension();
   CAMLreturn(ppl_dimension_to_value(d));
 }
 CATCH_ALL
@@ -1280,7 +1280,7 @@ CAMLprim value
 ppl_PIP_Problem_set_big_parameter_dimension(value caml_pip,
                                             value caml_dim) try {
   CAMLparam2(caml_pip, caml_dim);
-  dimension_type ppl_dim = value_to_ppl_dimension(caml_dim);
+  const dimension_type ppl_dim = value_to_ppl_dimension(caml_dim);
   PIP_Problem& ppl_pip = *p_PIP_Problem_val(caml_pip);
   ppl_pip.set_big_parameter_dimension(ppl_dim);
   CAMLreturn(Val_unit);

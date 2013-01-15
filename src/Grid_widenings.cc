@@ -238,7 +238,7 @@ PPL::Grid::select_wider_generators(const Grid& y,
           // The leading diagonal entry is equal.
           widened_ggs.insert(gg);
         else {
-          Linear_Expression expr(gg.expression());
+          const Linear_Expression expr(gg.expression());
           Grid_Generator line = grid_line(expr);
           widened_ggs.insert(line, Recycle_Input());
         }

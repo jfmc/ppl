@@ -1018,7 +1018,7 @@ assign_mpq_numeric_float(mpq_class& to, const long double from) {
   while (true) {
     n *= mult;
     exp -= bits;
-    long double intpart = std::floor(n);
+    const long double intpart = std::floor(n);
     num += static_cast<unsigned long>(intpart);
     n -= intpart;
     if (n == 0.0L)
