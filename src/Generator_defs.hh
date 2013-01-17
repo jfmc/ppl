@@ -625,14 +625,14 @@ private:
 
   //! Marks the epsilon dimension as a standard dimension.
   /*!
-    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
+    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
     the number of space dimensions is increased by 1.
   */
   void mark_as_necessarily_closed();
 
   //! Marks the last dimension as the epsilon dimension.
   /*!
-    The row topology is changed to <CODE>NECESSARILY_CLOSED</CODE>, and
+    The row topology is changed to <CODE>NOT_NECESSARILY_CLOSED</CODE>, and
     the number of space dimensions is decreased by 1.
   */
   void mark_as_not_necessarily_closed();
