@@ -252,6 +252,6 @@ public:
 } // namespace Parma_Polyhedra_Library
 
 #include "C_Expr_inlines.hh"
-//#include "C_Expr.templates.hh"
+//#include "C_Expr_templates.hh"
 
 #endif // !defined(PPL_C_Expr_defs_hh)

@@ -249,20 +249,20 @@ developer of the library should be provided with a set of source files
 whose filenames start with `Xtype'. The source files for such a type
 should be named and populated as follows:
 
-a) Xtype.types.hh
+a) Xtype_types.hh
 Contains the forward declarations of type names (in particular, the
 one for `Xtype') and other useful typedef's.
 
-b) Xtype.defs.hh
+b) Xtype_defs.hh
 Contains the definition of the type, together with the declaration of
 any function that, even though not being formally part of the type, is
 nonetheless related to it and should therefore be considered part of
 its interface.
 
-c) Xtype.inlines.hh
+c) Xtype_inlines.hh
 Contains the definitions of inline functions.
 
-d) Xtype.templates.hh
+d) Xtype_templates.hh
 Contains the non-inline definitions of all class template members and
 all (member or non-member) function templates that are not fully
 specialized.
@@ -277,8 +277,8 @@ Polyhedron_public.cc, Polyhedron_nonpublic.cc, Polyhedron_chdims.cc
 and Polyhedron_widenings.cc, or even conversion.cc, minimize.cc, etc.).
 
 Note that:
-  - all interface functions should be declared in Xtype.defs.hh;
-  - no function definition should be placed in Xtype.defs.hh;
+  - all interface functions should be declared in Xtype_defs.hh;
+  - no function definition should be placed in Xtype_defs.hh;
   - bare declarations should not be declared inline (i.e., inline directives
     should be placed only in front of the definition of the functions);
   - inner classes are usually kept in the same files as the outer class;
@@ -374,7 +374,7 @@ Standards for Documenting the Project with Doxygen
 
 5) In the source files, detailed comments should be placed together
    with the brief ones, so that all the documentation pertinent to a
-   code entity is kept in a single file (typically, the *.defs.hh file).
+   code entity is kept in a single file (typically, the *_defs.hh file).
 
 6) Brief Doxygen comments should be brief (indeed).
    If more than two lines are required, then the comment should be
@@ -421,7 +421,7 @@ Standards for Documenting the Project with Doxygen
    It seems that, in order to correctly match function declarations
    and definitions, the \relates command should be placed in both places.
    Typically, this will be the only kind of Doxygen command
-   occurring in *.inlines.hh and *.cc source files.
+   occurring in *_inlines.hh and *.cc source files.
 
    If Classname is a template class, the arguments of the template
    (as well as the angle brackets) should be omitted.
