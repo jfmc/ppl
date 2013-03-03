@@ -156,14 +156,11 @@ inline
 Partially_Reduced_Product<D1, D2, R>
 ::Partially_Reduced_Product(const Partially_Reduced_Product<E1, E2, S>& y,
                             Complexity_Class complexity)
-  : d1(y.space_dimension()), d2(y.space_dimension()) {
+  : d1(y.space_dimension()), d2(y.space_dimension()), reduced(false) {
   Partially_Reduced_Product<D1, D2, R> pg1(y.domain1(), complexity);
   Partially_Reduced_Product<D1, D2, R> pg2(y.domain2(), complexity);
   pg1.intersection_assign(pg2);
   m_swap(pg1);
-  /* Even if y is reduced, the built product may not be reduced as
-     the reduction method may have changed (i.e., S != R). */
-  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, typename R>
