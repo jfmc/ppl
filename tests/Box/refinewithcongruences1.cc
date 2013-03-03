@@ -122,7 +122,8 @@ test05() {
   cgs.insert(B %= 0);
   cgs.insert(C %= 7);
 
-  TBox box(cgs);
+  TBox box(3);
+  box.refine_with_congruences(cgs);
 
   TBox box1(box.congruences());
 
@@ -147,16 +148,13 @@ test06() {
   Congruence_System cgs;
   cgs.insert((A %= 7) / 0);
   cgs.insert((B %= 3) / 0);
-  // This inconsistent equality is ignored when congruences
-  // are added to the box.
   cgs.insert((A + B %= 0) / 0);
   cgs.insert(C %= 7);
 
-  TBox box(cgs);
+  TBox box(3);
+  box.refine_with_congruences(cgs);
 
-  Rational_Box known_result(3);
-  known_result.add_constraint(A == 7);
-  known_result.add_constraint(B == 3);
+  Rational_Box known_result(3, EMPTY);
 
   bool ok = check_result(box, known_result);
 
@@ -376,6 +374,8 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
