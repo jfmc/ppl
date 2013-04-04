@@ -45,6 +45,9 @@ o  In the Java interface, fixed declaration of methods
      void drop_some_non_integer_points(...);
    so as to accept a Complexity_Class enum value.
 
+o  Fixed an issue in method MIP_Problem::OK() whereby the method
+   was trying to enforce a non-invariant condition.
+
 
 --------------------------------------------------------------------------
 NEWS for version 1.0  (released on June 28, 2012)
