@@ -354,7 +354,7 @@ public:
                       Coefficient_traits::const_reference c1,
                       Coefficient_traits::const_reference c2,
                       dimension_type start, dimension_type end);
-  
+
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
