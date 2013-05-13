@@ -29,11 +29,20 @@ Former Members of the Core Development Team:
 Current Contributors:
 ---------------------
 
+  Massimo Benerecetti   (University of Naples) is working on additional
+                        operators on polyhedra.
+
   Andrea Cimino         (former student of the University of Parma)
                         wrote most of the mixed integer programming
                         solver, and also most of the Java and OCaml
                         interfaces.  He keeps helping us, especially
                         with the web site.
+
+  Marco Faella          (University of Naples) is working on additional
+                        operators on polyhedra.
+
+  Stefano Minopoli      (University of Naples) is working on additional
+                        operators on polyhedra.
 
   Marco Poletti         (student of the University of Bologna)
                         implemented the sparse matrices that are used

@@ -121,6 +121,7 @@ permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
 polyhullifexact1 polyhullifexact2 \
+postimeelapse1 \
 randphull1 \
 refinewithcongruence1 \
 refinewithcongruences1 \
