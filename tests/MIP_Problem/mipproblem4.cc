@@ -34,8 +34,22 @@ test01() {
   return true;
 }
 
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  MIP_Problem mip(1);
+  Generator p1 = mip.optimizing_point();
+  bool ok1 = (p1 == point(0*A));
+  mip.add_space_dimensions_and_embed(1);
+  Generator p2 = mip.optimizing_point();
+  bool ok2 = (p2 == point(0*A + 0*B));
+  return ok1 && ok2;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

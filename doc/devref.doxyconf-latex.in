@@ -102,10 +102,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = *.types.hh \
-                         *.defs.hh \
-                         *.inlines.hh \
-                         *.templates.hh \
+FILE_PATTERNS          = *_types.hh \
+                         *_defs.hh \
+                         *_inlines.hh \
+                         *_templates.hh \
                          *.cc \
                          C_Integer.hh \
                          Coefficient_traits_template.hh \

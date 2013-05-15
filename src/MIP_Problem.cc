@@ -642,7 +642,7 @@ PPL::MIP_Problem
   return true;
 }
 
-bool
+void
 PPL::MIP_Problem::process_pending_constraints() {
   // Check the pending constraints to adjust the data structures.
   // If `false' is returned, they are trivially unfeasible.
@@ -659,7 +659,7 @@ PPL::MIP_Problem::process_pending_constraints() {
                          is_nonnegative_variable,
                          is_remergeable_variable)) {
     status = UNSATISFIABLE;
-    return false;
+    return;
   }
 
   // Merge back any variable that was previously split into a positive
@@ -789,8 +789,7 @@ PPL::MIP_Problem::process_pending_constraints() {
         neg_assign(*itr, coeff_sd);
       }
     }
-    Coefficient_traits::const_reference inhomo
-      = c.inhomogeneous_term();
+    Coefficient_traits::const_reference inhomo = c.inhomogeneous_term();
     if (inhomo != 0) {
       tableau_k.insert(itr, mapping[0].first, inhomo);
       // Split if needed.
@@ -885,7 +884,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   if (space_dimension() == 0) {
     status = OPTIMIZED;
     last_generator = point();
-    return true;
+    return;
   }
   // Deal with trivial cases.
   // If there is no constraint in the tableau, then the feasible region
@@ -898,7 +897,7 @@ PPL::MIP_Problem::process_pending_constraints() {
       last_generator = point();
       last_generator.set_space_dimension(space_dimension());
       status = UNBOUNDED;
-      return true;
+      return;
     }
 
     // The problem is neither trivially unfeasible nor trivially unbounded.
@@ -908,8 +907,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     // Ensure the right space dimension is obtained.
     last_generator = point();
     last_generator.set_space_dimension(space_dimension());
-    PPL_ASSERT(OK());
-    return true;
+    return;
   }
 
   // Now we are ready to solve the first phase.
@@ -927,7 +925,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   if (!first_phase_successful || working_cost.get(0) != 0) {
     // The feasible region is empty.
     status = UNSATISFIABLE;
-    return false;
+    return;
   }
 
   // Prepare *this for a possible second phase.
@@ -935,8 +933,6 @@ PPL::MIP_Problem::process_pending_constraints() {
     erase_artificials(begin_artificials, end_artificials);
   compute_generator();
   status = SATISFIABLE;
-  PPL_ASSERT(OK());
-  return true;
 }
 
 namespace {
@@ -2262,6 +2258,28 @@ PPL::MIP_Problem::OK() const {
       return false;
     }
 
+  if (external_space_dim < internal_space_dim) {
+#ifndef NDEBUG
+    cerr << "The MIP_Problem claims to have an internal space dimension "
+         << "greater than its external space dimension."
+         << endl;
+    ascii_dump(cerr);
+#endif
+    return false;
+  }
+
+  if (external_space_dim > internal_space_dim
+      && status != UNSATISFIABLE
+      && status != PARTIALLY_SATISFIABLE) {
+#ifndef NDEBUG
+    cerr << "The MIP_Problem claims to have a pending space dimension "
+         << "addition, but the status is incompatible."
+         << endl;
+    ascii_dump(cerr);
+#endif
+    return false;
+  }
+
   // Constraint system and objective function should be dimension compatible.
   if (external_space_dim < input_obj_function.space_dimension()) {
 #ifndef NDEBUG
@@ -2278,11 +2296,11 @@ PPL::MIP_Problem::OK() const {
   if (status != UNSATISFIABLE && initialized) {
     // Here `last_generator' has to be meaningful.
     // Check for dimension compatibility and actual feasibility.
-    if (external_space_dim != last_generator.space_dimension()) {
+    if (internal_space_dim != last_generator.space_dimension()) {
 #ifndef NDEBUG
       cerr << "The MIP_Problem and the cached feasible point have "
            << "incompatible space dimensions ("
-           << external_space_dim << " != "
+           << internal_space_dim << " != "
            << last_generator.space_dimension() << ")."
            << endl;
       ascii_dump(cerr);
@@ -2329,11 +2347,12 @@ PPL::MIP_Problem::OK() const {
 #endif
       return false;
     }
-    // The size of `mapping' should be equal to the space dimension
-    // of `input_cs' plus one.
-    if (mapping.size() != external_space_dim + 1) {
+    // The size of `mapping' should be equal to the internal
+    // space dimension plus one.
+    if (mapping.size() != internal_space_dim + 1) {
 #ifndef NDEBUG
-      cerr << "`input_cs' and `mapping' have incompatible sizes" << endl;
+      cerr << "The internal space dimension and `mapping' "
+           << "have incompatible sizes" << endl;
       ascii_dump(cerr);
 #endif
       return false;

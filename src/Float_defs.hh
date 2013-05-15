@@ -267,6 +267,7 @@ struct float_ieee754_quad {
   static const int EXPONENT_MIN = -EXPONENT_MAX + 1;
   static const int EXPONENT_MIN_DENORM = EXPONENT_MIN
                                         - static_cast<int>(MANTISSA_BITS);
+  static const Floating_Point_Format floating_point_format = IEEE754_QUAD;
   int inf_sign() const;
   bool is_nan() const;
   int zero_sign() const;

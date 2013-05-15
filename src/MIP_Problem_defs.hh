@@ -628,12 +628,7 @@ private:
   void add_constraint_helper(const Constraint& c);
 
   //! Processes the pending constraints of \p *this.
-  /*!
-    \return
-    <CODE>true</CODE> if and only if the MIP problem is satisfiable after
-    processing the pending constraints, <CODE>false</CODE> otherwise.
-  */
-  bool process_pending_constraints();
+  void process_pending_constraints();
 
   /*! \brief
     Optimizes the MIP problem using the second phase of the

@@ -1370,6 +1370,6 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, 
 } // namespace Parma_Polyhedra_Library
 
 #include "Any_Pointset_inlines.hh"
-//#include "Any_Pointset.templates.hh"
+//#include "Any_Pointset_templates.hh"
 
 #endif // !defined(PPL_Any_Pointset_defs_hh)
