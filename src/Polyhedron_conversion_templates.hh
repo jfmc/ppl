@@ -60,6 +60,8 @@ namespace Parma_Polyhedra_Library {
   the polyhedron (when \p dest is a system of generators) or equality
   constraints (when \p dest is a system of constraints).
 
+  \if Include_Implementation_Details
+
   For simplicity, all the following comments assume we are converting a
   constraint system \p source to a generator system \p dest;
   the comments for the symmetric case can be obtained by duality.
@@ -345,6 +347,8 @@ namespace Parma_Polyhedra_Library {
   of \f$P\f$.
   These two adjacent rays build a ray equal to \f$\vect{r}\f$ and so
   \f$\vect{r}\f$ is redundant.
+
+  \endif
 */
 template <typename Source_Linear_System, typename Dest_Linear_System>
 dimension_type
