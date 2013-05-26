@@ -607,7 +607,7 @@ Java_parma_1polyhedra_1library_@1CLASS@_@1MAXMIN@__Lparma_1polyhedra_1library_Li
 m4_define(`ppl_@CLASS@_frequency_code',
 `dnl
 JNIEXPORT jboolean JNICALL
-Java_parma_1polyhedra_1library_@1CLASS@_1frequency__Lparma_1polyhedra_1library_Linear_1Expression_2Lparma_1polyhedra_1library_Coefficient_2Lparma_1polyhedra_1library_Coefficient_2Lparma_1polyhedra_1library_Coefficient_2Lparma_1polyhedra_1library_Coefficient_2
+Java_parma_1polyhedra_1library_@1CLASS@_frequency
 (JNIEnv* env, jobject j_this, jobject j_le,
  jobject j_freqn, jobject j_freqd, jobject j_valn, jobject j_vald) {
   try {
