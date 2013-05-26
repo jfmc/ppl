@@ -114,6 +114,17 @@ public class C_Polyhedron_test1 {
         return ok;
     }
 
+    public static boolean test04() {
+        Coefficient freq_n = new Coefficient(0);
+        Coefficient freq_d = new Coefficient(0);
+        Coefficient val_n = new Coefficient(0);
+        Coefficient val_d = new Coefficient(0);
+        Linear_Expression le
+            = new Linear_Expression_Coefficient(new Coefficient(0));
+        C_Polyhedron ph = new C_Polyhedron(0, Degenerate_Element.UNIVERSE);
+        return ph.frequency(le, freq_n, freq_d, val_n, val_d);
+    }
+
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
         boolean test_result_ok =

@@ -252,8 +252,8 @@ m4_define(`ppl_@CLASS@_frequency_code',
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
     public native boolean frequency(Linear_Expression expr,
-				   Coefficient freq_n, Coefficient freq_d,
-				   Coefficient val_n, Coefficient val_d);
+				    Coefficient freq_n, Coefficient freq_d,
+				    Coefficient val_n, Coefficient val_d);
 
 ')
 
