@@ -21,6 +21,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://bugseng.com/products/ppl/ .
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 GPROLOG_CFLI_FILES = gprolog_cfli.hh
 
 EXTRA_DIST = \
