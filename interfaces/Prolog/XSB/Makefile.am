@@ -21,6 +21,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://bugseng.com/products/ppl/ .
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 XSB_CFLI_FILES = xsb_cfli.hh
 
 EXTRA_DIST = \
