@@ -21,7 +21,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://bugseng.com/products/ppl/ .
 
-AUTOMAKE_OPTIONS = subdir-objects
+AUTOMAKE_OPTIONS = -Wno-unsupported
 
 GPROLOG_CFLI_FILES = gprolog_cfli.hh
 
