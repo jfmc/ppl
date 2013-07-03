@@ -34,9 +34,9 @@ namespace GNU {
 
 bool Prolog_has_unbounded_integers;
 
-long Prolog_min_integer;
+PlLong Prolog_min_integer;
 
-long Prolog_max_integer;
+PlLong Prolog_max_integer;
 
 void
 ppl_Prolog_sysdep_init() {
@@ -51,18 +51,19 @@ ppl_Prolog_sysdep_deinit() {
 
 int
 Prolog_get_Coefficient(Prolog_term_ref t, Coefficient& n) {
-  long v;
-  Prolog_get_long(t, &v);
+  assert(Prolog_is_integer(t));
+  PlLong v = Pl_Rd_Integer_Check(t);
   n = v;
   return 1;
 }
 
 int
 Prolog_put_Coefficient(Prolog_term_ref& t, const Coefficient& n) {
-  long l = 0;
+  PlLong l = 0;
   Result r = assign_r(l, n, ROUND_IGNORE);
-  if (result_overflow(r) || !Prolog_put_long(t, l))
+  if (result_overflow(r) || l < INT_LOWEST_VALUE || l > INT_GREATEST_VALUE)
     throw PPL_integer_out_of_range(n);
+  t = Pl_Mk_Integer(l);
   return 1;
 }
 
