@@ -50,7 +50,8 @@ struct custom_operations m4_current_interface`'_custom_operations = {
   custom_compare_default|COMMA|
   custom_hash_default|COMMA|
   custom_serialize_default|COMMA|
-  custom_deserialize_default
+  custom_deserialize_default|COMMA|
+  custom_compare_ext_default
 };
 
 } // namespace OCaml
@@ -1086,7 +1087,8 @@ struct custom_operations @CLASS@_iterator_custom_operations = {
   custom_compare_default|COMMA|
   custom_hash_default|COMMA|
   custom_serialize_default|COMMA|
-  custom_deserialize_default
+  custom_deserialize_default|COMMA|
+  custom_compare_ext_default
 };
 
 inline value

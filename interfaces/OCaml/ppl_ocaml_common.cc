@@ -741,7 +741,8 @@ static struct custom_operations MIP_Problem_custom_operations = {
   custom_compare_default,
   custom_hash_default,
   custom_serialize_default,
-  custom_deserialize_default
+  custom_deserialize_default,
+  custom_compare_ext_default
 };
 
 inline value
@@ -769,7 +770,8 @@ static struct custom_operations PIP_Problem_custom_operations = {
   custom_compare_default,
   custom_hash_default,
   custom_serialize_default,
-  custom_deserialize_default
+  custom_deserialize_default,
+  custom_compare_ext_default
 };
 
 inline value
@@ -791,7 +793,8 @@ static struct custom_operations PIP_Tree_Node_custom_operations = {
   custom_compare_default,
   custom_hash_default,
   custom_serialize_default,
-  custom_deserialize_default
+  custom_deserialize_default,
+  custom_compare_ext_default
 };
 
 //! Give access to the embedded const PIP_Tree_Node* in \p v.
