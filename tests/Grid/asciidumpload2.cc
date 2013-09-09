@@ -36,7 +36,7 @@ namespace {
 // ascii_load simple test of loading the result of ascii_dump()
 bool
 test01() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -66,7 +66,7 @@ test01() {
 
 bool
 test02() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -100,7 +100,7 @@ test02() {
 
 bool
 test03() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -132,7 +132,7 @@ test03() {
 
 bool
 test04() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -164,7 +164,7 @@ test04() {
 
 bool
 test05() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -196,7 +196,7 @@ test05() {
 
 bool
 test06() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -228,7 +228,7 @@ test06() {
 
 bool
 test07() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -260,7 +260,7 @@ test07() {
 
 bool
 test08() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -292,7 +292,7 @@ test08() {
 
 bool
 test09() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
 
@@ -324,7 +324,7 @@ test09() {
 
 bool
 test10() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
@@ -341,7 +341,7 @@ test10() {
 
 bool
 test11() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
@@ -358,7 +358,7 @@ test11() {
 
 bool
 test12() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
@@ -375,7 +375,7 @@ test12() {
 
 bool
 test13() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
@@ -393,7 +393,7 @@ test13() {
 // A grid with a virtual generator.
 bool
 test14() {
-  const char* my_file = "ascii_dump_load1.dat";
+  const char* my_file = "ascii_dump_load2.dat";
   Variable A(0);
   Variable B(1);
   Variable C(2);
