@@ -413,7 +413,7 @@ jobject
 bool_to_j_boolean_class(JNIEnv* env, const bool value) {
   jobject ret = env->CallStaticObjectMethod(cached_classes.Boolean,
                                             cached_FMIDs.Boolean_valueOf_ID,
-                                            value);
+                                            static_cast<jboolean>(value));
   CHECK_EXCEPTION_ASSERT(env);
   return ret;
 }
@@ -1231,8 +1231,9 @@ Java_Variable_output_function(std::ostream& s, Variable v) {
     CHECK_RESULT_ASSERT(env, mID == dyn_mID);
   }
 #endif // #ifndef NDEBUG
+  jlong j_var_id = v.id();
   jstring bi_string
-    = (jstring) env->CallObjectMethod(stringifier, mID, v.id());
+    = (jstring) env->CallObjectMethod(stringifier, mID, j_var_id);
   CHECK_EXCEPTION_THROW(env);
   // Convert the string and print it on C++ stream.
   const char* nativeString = env->GetStringUTFChars(bi_string, 0);

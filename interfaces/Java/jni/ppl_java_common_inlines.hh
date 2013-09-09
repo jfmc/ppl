@@ -152,9 +152,10 @@ build_cxx_variable(JNIEnv* env, jobject j_var) {
 
 inline jobject
 build_java_variable(JNIEnv* env, const Variable var) {
+  jlong j_var_id = var.id();
   jobject ret = env->NewObject(cached_classes.Variable,
                                cached_FMIDs.Variable_init_ID,
-                               var.id());
+                               j_var_id);
   CHECK_RESULT_THROW(env, ret);
   return ret;
 }
