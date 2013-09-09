@@ -298,8 +298,7 @@ ascii_dump_load2.dat \
 ascii_dump_load3.dat \
 ascii_dump_load4.dat \
 ascii_dump_load5.dat \
-ascii_dump_load6.dat \
-ascii_dump_load7.dat
+ascii_dump_load6.dat
 
 $(top_builddir)/utils/libppl_utils.a:
 	$(MAKE) $(AM_MAKEFLAGS) -C $(top_builddir)/utils libppl_utils.a
