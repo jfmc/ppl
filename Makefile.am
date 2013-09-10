@@ -39,7 +39,7 @@ ppl-config.h: config.h $(srcdir)/ppl-config.sed
 	$(SED) -f $(srcdir)/ppl-config.sed config.h >$@
 
 ppl-config.h.in: $(srcdir)/config.h.in $(srcdir)/ppl-config.sed
-	$(SED) -f $(srcdir)/ppl-config.sed config.h.in >$@
+	$(SED) -f $(srcdir)/ppl-config.sed $(srcdir)/config.h.in >$@
 
 DISTCHECK_CONFIGURE_FLAGS = \
 --enable-shared
