@@ -46,7 +46,7 @@ if GCC
 if HOST_OS_MINGW
 
 # MinGW's <stdlib.h> cannot be compiled in c89 mode.
-AM_CFLAGS = -pedantic -std=gnu89 -Werror
+AM_CFLAGS = -pedantic -std=gnu89
 
 else !HOST_OS_MINGW
 
@@ -56,7 +56,7 @@ AM_CFLAGS = -std=c89
 
 else !ICC
 
-AM_CFLAGS = -pedantic -std=c89 -Werror
+AM_CFLAGS = -pedantic -std=c89
 
 endif !ICC
 
