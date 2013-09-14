@@ -249,6 +249,15 @@ public:
 
   //! Same as poly_hull_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const NNC_Polyhedron& y);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    "positive time-elapse" between \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void positive_time_elapse_assign(const Polyhedron& y);
 };
 
 #include "NNC_Polyhedron_inlines.hh"

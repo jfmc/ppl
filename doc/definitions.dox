@@ -1583,6 +1583,30 @@ is the smallest NNC polyhedron containing the set
 Note that the above set might not be an NNC polyhedron.
 
 
+\subsection Positive_Time_Elapse_Operator Positive Time-Elapse Operator
+
+The <EM>positive time-elapse</EM> operator has been defined in \ref BFM11 "[BFM11,"
+\ref BFM12 "BFM12]".
+The operator provided by the library works on NNC
+polyhedra.  For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$, the
+positive time-elapse between \f$\cP\f$ and \f$\cQ\f$, denoted \f$ \cP
+\nearrow_{>0} \cQ\f$, is the NNC polyhedron containing exactly the set
+\f[ 
+\bigl\{\, \vect{p} + \lambda \vect{q} \in \Rset^n \bigm| \vect{p}
+\in \cP, \vect{q} \in \cQ, \lambda \in \Rset^{>0} \,\bigr\},
+\f]
+where \f$\Rset^{>0}\f$ denotes the set of strictly positive
+reals. Notice that, differently from the case of the time-elapse
+operator, the set \f$ \cP \nearrow_{>0} \cQ\f$ is always an NNC
+polyhedron, if \f$\cP\f$ and \f$\cQ\f$ are.
+
+The exact version of the time-elapse operator \f$\cP \nearrow \cQ\f$
+defined in Section \ref Time_Elapse_Operator,
+which may not be an NNC polyhedron, can be computed as
+the union of two NNC polyhedra, according to the following equation:
+\f$\cP \nearrow \cQ = \cP \cup \left(\cP \nearrow_{>0} \cQ\right)\f$.
+
+
 \subsection Meet_Preserving_Simplification Meet-Preserving Enlargement and Simplification
 
 Let \f$\cP, \cQ, \cR \in \Pset_n\f$ be NNC polyhedra. Then:
@@ -3512,6 +3536,27 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
   2002.
  See \ref BRZH02b "[BRZH02b]".
 
+</DD>
+
+
+<DT>[BFM11]</DT>
+<DD>
+\anchor BFM11
+M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
+  Towards efficient exact synthesis for Linear Hybrid Systems.
+ In <em>Proceedings of the 2nd International Symposium on Games,
+               Automata, Logics and Formal Verification (GandALF 2011)</em>,
+  volume 54 of <em>Electronic Proceedings in Theoretical Computer Science</em>,
+  pages 263-277.
+</DD>
+
+
+<DT>[BFM12]</DT>
+<DD>
+\anchor BFM12
+M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
+ Automatic synthesis of switching controllers for Linear Hybrid Systems: safety control.
+ <em>Theoretical Computer Science</em>, Elsevier. To appear.
 </DD>
 
 
