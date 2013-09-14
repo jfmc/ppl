@@ -2250,18 +2250,15 @@ PPL::Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
 
   // We are going to do all sorts of funny things with new_gs, so we better
   // mark it unsorted.
-  // Notice: "Sorted" is an attribute of Linear_System, encapsulated by Generator_System;
-  //         hence, the following is equivalent to new_gs.set_sorted(false).
+  // Note: `sorted' is an attribute of Linear_System, encapsulated by
+  // Generator_System; hence, the following is equivalent to
+  // new_gs.set_sorted(false).
   new_gs.sys.set_sorted(false);
-
-  // DEBUG
-  // std::cout << std::endl << "new_gs 1 (" << new_gs.num_rows() << "): ";
-  // new_gs.ascii_dump(std::cout);
 
   // Remove all points from new_gs and put them in 'x_points_gs' for later use.
   // Notice that we do not remove the corresponding closure points.
   Generator_System x_points_gs;
-  for (dimension_type i = num_rows; i-- > 0;) {  
+  for (dimension_type i = num_rows; i-- > 0;) {
     Generator &g = new_gs.sys.rows[i];
     if (g.is_point()) {
       x_points_gs.insert(g);
@@ -2310,29 +2307,19 @@ PPL::Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
       // Insert into new_gs the sum of g and each point of x.
       // For each original point gx of x...
       for (dimension_type j = x_points_gs.sys.num_rows(); j-- > 0; ) {
-	const Generator &gx = x_points_gs.sys.rows[j];
-	PPL_ASSERT(gx.is_point());
-	// ...insert the point obtained as the sum of g and gx.
-	Generator new_g = g; // make a copy
-	Coefficient new_divisor = g.expr.inhomogeneous_term() * gx.expr.inhomogeneous_term();
+        const Generator &gx = x_points_gs.sys.rows[j];
+        PPL_ASSERT(gx.is_point());
+        // ...insert the point obtained as the sum of g and gx.
+        Generator new_g = g; // make a copy
+        Coefficient new_divisor = g.expr.inhomogeneous_term() * gx.expr.inhomogeneous_term();
 
-	new_g.expr.linear_combine(gx.expr, gx.expr.inhomogeneous_term(), g.expr.inhomogeneous_term());
-	new_g.expr.set_inhomogeneous_term(new_divisor);
-	if (new_g.is_not_necessarily_closed()) {
-	  new_g.set_epsilon_coefficient(g.epsilon_coefficient());
-	}
-	new_g.expr.normalize();
-
-	// DEBUG
-	// std::cout << std::endl << "g:";
-	// IO_Operators::operator<<(std::cout, g.expr);
-	// std::cout << std::endl << "gx:";
-	// IO_Operators::operator<<(std::cout, gx.expr);
-	// std::cout << std::endl << "new_g:";
-	// IO_Operators::operator<<(std::cout, new_g.expr);
-
-	PPL_ASSERT(new_g.OK());
-
+        new_g.expr.linear_combine(gx.expr, gx.expr.inhomogeneous_term(), g.expr.inhomogeneous_term());
+        new_g.expr.set_inhomogeneous_term(new_divisor);
+        if (new_g.is_not_necessarily_closed()) {
+          new_g.set_epsilon_coefficient(g.epsilon_coefficient());
+        }
+        new_g.expr.normalize();
+        PPL_ASSERT(new_g.OK());
 	new_gs.insert(new_g);
       }
       break;
@@ -2340,7 +2327,7 @@ PPL::Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
       // If g is not the origin, insert g into new_gs, as a ray.
       if (!g.expr.all_homogeneous_terms_are_zero()) {
 	// Turn a copy of g into a ray.
-	Generator g_as_a_ray = g; 
+	Generator g_as_a_ray = g;
 	g_as_a_ray.expr.set_inhomogeneous_term(0);
 	g_as_a_ray.expr.normalize();
 	PPL_ASSERT(g_as_a_ray.OK());
@@ -2361,7 +2348,7 @@ PPL::Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
 
   //Polyhedron new_x(...,new_gs);
   //swap(x,new_x);
-  
+
   PPL_ASSERT(new_gs.sys.OK());
 
   // Stealing the rows from `new_gs'.
