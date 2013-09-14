@@ -2831,6 +2831,13 @@ protected:
   add_to_system_and_check_independence(Linear_System1& eq_sys,
                                        const Row2& eq);
 
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    "positive time-elapse" between \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
   void positive_time_elapse_assign(const Polyhedron& y);
 };
 
