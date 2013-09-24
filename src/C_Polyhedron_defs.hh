@@ -273,6 +273,17 @@ public:
 
   //! Same as poly_hull_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const C_Polyhedron& y);
+
+  /*! \brief
+    Assigns to \p *this the smallest C polyhedron containing the
+    result of computing the
+    \ref Positive_Time_Elapse_Operator "positive time-elapse"
+    between \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void positive_time_elapse_assign(const Polyhedron& y);
 };
 
 #include "C_Polyhedron_inlines.hh"

@@ -132,6 +132,13 @@ val ppl_@CLASS@_@BINOP@:
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+`dnl
+val ppl_@CLASS@_positive_time_elapse_assign:
+   @!CLASS@ -> @!CLASS@ -> unit
+
+')
+
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 `dnl
 val ppl_@CLASS@_simplify_using_context_assign:

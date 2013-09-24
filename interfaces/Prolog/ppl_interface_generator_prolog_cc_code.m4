@@ -1081,6 +1081,34 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_positive_time_elapse_assign
+  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_@CLASS@_positive_time_elapse_assign";
+  try {
+    const Polyhedron* xlhs = term_to_handle<Polyhedron >(t_lhs, where);
+    if (Interfaces::is_necessarily_closed_for_interfaces(*xlhs)) {
+      C_Polyhedron* lhs = term_to_handle<C_Polyhedron >(t_lhs, where);
+      const C_Polyhedron* rhs = term_to_handle<C_Polyhedron >(t_rhs, where);
+      PPL_CHECK(lhs);
+      PPL_CHECK(rhs);
+      lhs->positive_time_elapse_assign(*rhs);
+    }
+    else {
+      NNC_Polyhedron* lhs = term_to_handle<NNC_Polyhedron >(t_lhs, where);
+      const NNC_Polyhedron* rhs = term_to_handle<NNC_Polyhedron >(t_rhs, where);
+      PPL_CHECK(lhs);
+      PPL_CHECK(rhs);
+      lhs->positive_time_elapse_assign(*rhs);
+    }
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_simplify_using_context_assign

@@ -191,6 +191,20 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+    `dnl
+{
+    PPL_Test.print_if_noisy("Testing positive_time_elapse_assign: ");
+    @TOPOLOGY@@CLASS@ gd1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+    @TOPOLOGY@@CLASS@ gd2 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s2);
+    gd1.positive_time_elapse_assign(gd2);
+    report_success_or_failure(gd1.OK());
+    gd1.free();
+    gd2.free();
+}
+
+')
+
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
     `dnl
 {

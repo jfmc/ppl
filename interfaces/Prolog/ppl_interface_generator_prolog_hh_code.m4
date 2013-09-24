@@ -294,6 +294,13 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+  `extern "C" Prolog_foreign_return_type
+  ppl_@CLASS@_positive_time_elapse_assign
+  (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs);
+
+')
+
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
   `extern "C" Prolog_foreign_return_type
   ppl_@CLASS@_simplify_using_context_assign

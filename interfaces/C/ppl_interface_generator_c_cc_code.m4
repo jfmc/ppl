@@ -407,6 +407,27 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+`int
+ppl_@CLASS@_positive_time_elapse_assign
+(ppl_@CLASS@_t x,
+ ppl_const_@CLASS@_t y) try {
+  if (Interfaces::is_necessarily_closed_for_interfaces(*to_const(x))) {
+    C_Polyhedron& xx = static_cast<C_Polyhedron&>(*to_nonconst(x));
+    const C_Polyhedron& yy = static_cast<const C_Polyhedron&>(*to_const(y));
+    xx.positive_time_elapse_assign(yy);
+  }
+  else {
+    NNC_Polyhedron& xx = static_cast<NNC_Polyhedron&>(*to_nonconst(x));
+    const NNC_Polyhedron& yy = static_cast<const NNC_Polyhedron&>(*to_const(y));
+    xx.positive_time_elapse_assign(yy);
+  }
+  return 0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `int
 ppl_@CLASS@_@UB_EXACT@

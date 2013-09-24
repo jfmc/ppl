@@ -148,6 +148,11 @@ NNC_Polyhedron::upper_bound_assign_if_exact(const NNC_Polyhedron& y) {
   return poly_hull_assign_if_exact(y);
 }
 
+inline void
+NNC_Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
+  Polyhedron::positive_time_elapse_assign_impl(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_NNC_Polyhedron_inlines_hh)

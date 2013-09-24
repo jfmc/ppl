@@ -251,8 +251,10 @@ public:
   bool upper_bound_assign_if_exact(const NNC_Polyhedron& y);
 
   /*! \brief
-    Assigns to \p *this the result of computing the
-    "positive time-elapse" between \p *this and \p y.
+    Assigns to \p *this (the best approximation of) the result of
+    computing the
+    \ref Positive_Time_Elapse_Operator "positive time-elapse"
+    between \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.

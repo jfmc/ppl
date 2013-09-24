@@ -1554,6 +1554,17 @@ public:
   void time_elapse_assign(const Polyhedron& y);
 
   /*! \brief
+    Assigns to \p *this (the best approximation of) the result of
+    computing the
+    \ref Positive_Time_Elapse_Operator "positive time-elapse"
+    between \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void positive_time_elapse_assign(const Polyhedron& y);
+
+  /*! \brief
     \ref Wrapping_Operator "Wraps" the specified dimensions of the
     vector space.
 
@@ -2832,13 +2843,13 @@ protected:
                                        const Row2& eq);
 
   /*! \brief
-    Assigns to \p *this the result of computing the
+    Assuming \p *this is NNC, assigns to \p *this the result of the
     "positive time-elapse" between \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void positive_time_elapse_assign(const Polyhedron& y);
+  void positive_time_elapse_assign_impl(const Polyhedron& y);
 };
 
 #include "Ph_Status_inlines.hh"

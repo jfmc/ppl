@@ -2215,7 +2215,7 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
 }
 
 void
-PPL::Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
+PPL::Polyhedron::positive_time_elapse_assign_impl(const Polyhedron& y) {
   // Private method: the caller must ensure the following.
   PPL_ASSERT(!is_necessarily_closed());
 

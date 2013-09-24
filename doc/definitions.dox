@@ -530,7 +530,7 @@ One possibility for precisely approximating the semantics of programs that
 operate on bounded integer variables is to follow the approach described
 in \ref SK07 "[SK07]".  The idea is to associate space dimensions to the
 <EM>unwrapped values</EM> of bounded variables.  Suppose <CODE>j</CODE>
-is a \f$w\textrm{-bit}\f$, unsigned program variable associated to a space 
+is a \f$w\textrm{-bit}\f$, unsigned program variable associated to a space
 dimension
 labeled by the variable \f$x\f$.  If \f$x\f$ is constrained by some
 numerical abstraction to take values in a set \f$S \sseq \Rset\f$, then
@@ -1483,25 +1483,25 @@ is defined as
 \f]
 
 \subsection affine_form_relation Affine Form Relations.
-Let \f$\mathbb{F}_{\mathrm{f}}\f$ be the set of floating point numbers 
-representables in a certain 
-format \f$\mathrm{f}\f$ and let \f$\mathbb{I}_\mathrm{f}\f$ be the set of 
+Let \f$\mathbb{F}_{\mathrm{f}}\f$ be the set of floating point numbers
+representables in a certain
+format \f$\mathrm{f}\f$ and let \f$\mathbb{I}_\mathrm{f}\f$ be the set of
 real intervals with bounds in \f$\mathbb{F}_{\mathrm{f}}\f$.
-We can define a <EM>floating-point interval linear form</EM> 
+We can define a <EM>floating-point interval linear form</EM>
 \f$\langle\vect{\alpha}, \vect{x}\rangle
- + \beta\f$ 
+ + \beta\f$
 as:
-        \f[\left<\vect{\alpha}, \vect{x}\right> + \beta = 
-        \alpha_0x_0 + \ldots + 
+        \f[\left<\vect{\alpha}, \vect{x}\right> + \beta =
+        \alpha_0x_0 + \ldots +
         \alpha_{n-1}x_{n-1} + \beta,\f]
 
-where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$ 
-for each \f$k = 0, \ldots, n - 1\f$. 
+where \f$\beta\f$, \f$\vect{\alpha}_k \in \mathbb{I}_{\mathrm{f}}\f$
+for each \f$k = 0, \ldots, n - 1\f$.
 
-Given a such linear form \f$\mathrm{lf}\f$ and a primed variable \f$x'_k\f$ the 
-<EM>affine form image</EM> operator computes the bounded affine image of a 
+Given a such linear form \f$\mathrm{lf}\f$ and a primed variable \f$x'_k\f$ the
+<EM>affine form image</EM> operator computes the bounded affine image of a
 polyhedron \f$\cP\f$ under \f$\mathrm{lb} \leq x'_k \leq \mathrm{ub}\f$, where
-\f$\mathrm{lb}\f$ and \f$\mathrm{ub}\f$ are the upper and lower bound 
+\f$\mathrm{lb}\f$ and \f$\mathrm{ub}\f$ are the upper and lower bound
 of \f$\mathrm{lf}\f$ respectively.
 
 \subsection Generalized_Affine_Relations Generalized Affine Relations.
@@ -1585,15 +1585,18 @@ Note that the above set might not be an NNC polyhedron.
 
 \subsection Positive_Time_Elapse_Operator Positive Time-Elapse Operator
 
-The <EM>positive time-elapse</EM> operator has been defined in \ref BFM11 "[BFM11,"
-\ref BFM12 "BFM12]".
+The <EM>positive time-elapse</EM> operator has been defined in
+\ref BFM11 "[BFM11,BFM12]".
 The operator provided by the library works on NNC
 polyhedra.  For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$, the
 positive time-elapse between \f$\cP\f$ and \f$\cQ\f$, denoted \f$ \cP
 \nearrow_{>0} \cQ\f$, is the NNC polyhedron containing exactly the set
-\f[ 
-\bigl\{\, \vect{p} + \lambda \vect{q} \in \Rset^n \bigm| \vect{p}
-\in \cP, \vect{q} \in \cQ, \lambda \in \Rset^{>0} \,\bigr\},
+\f[
+  \bigl\{\,
+    \vect{p} + \lambda \vect{q} \in \Rset^n
+  \bigm|
+    \vect{p} \in \cP, \vect{q} \in \cQ, \lambda \in \Rset^{>0}
+  \,\bigr\},
 \f]
 where \f$\Rset^{>0}\f$ denotes the set of strictly positive
 reals. Notice that, differently from the case of the time-elapse

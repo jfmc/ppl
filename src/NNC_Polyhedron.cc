@@ -86,8 +86,3 @@ PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& y) {
 #endif
 #undef USE_BHZ09
 }
-
-void
-PPL::NNC_Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
-  Polyhedron::positive_time_elapse_assign(y);
-}

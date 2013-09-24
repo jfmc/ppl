@@ -264,6 +264,33 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_positive_time_elapse_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  if (Interfaces::is_necessarily_closed_for_interfaces
+        (*p_Polyhedron_val(ph1))) {
+    C_Polyhedron& xx
+      = static_cast<C_Polyhedron&>(*p_Polyhedron_val(ph1));
+    const C_Polyhedron& yy
+      = static_cast<const C_Polyhedron&>(*p_Polyhedron_val(ph2));
+    xx.positive_time_elapse_assign(yy);
+  }
+  else {
+    NNC_Polyhedron& xx
+      = static_cast<NNC_Polyhedron&>(*p_Polyhedron_val(ph1));
+    const NNC_Polyhedron& yy
+      = static_cast<const NNC_Polyhedron&>(*p_Polyhedron_val(ph2));
+    xx.positive_time_elapse_assign(yy);
+  }
+  CAMLreturn(Val_unit);
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_simplify_using_context_assign_code',
 `dnl
 extern "C"

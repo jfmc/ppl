@@ -376,6 +376,15 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
+`/*! \relates ppl_@CLASS@_tag */
+int
+ppl_@CLASS@_positive_time_elapse_assign
+PPL_PROTO((ppl_@CLASS@_t x,
+           ppl_const_@CLASS@_t y));
+
+')
+
 m4_define(`ppl_@CLASS@_@UB_EXACT@_code',
 `/*! \relates ppl_@CLASS@_tag */
 int

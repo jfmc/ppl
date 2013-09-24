@@ -98,3 +98,12 @@ PPL::C_Polyhedron::poly_hull_assign_if_exact(const C_Polyhedron& y) {
 #undef USE_BHZ09
 #undef USE_BFT00
 }
+
+
+void
+PPL::C_Polyhedron::positive_time_elapse_assign(const Polyhedron& y) {
+  NNC_Polyhedron nnc_this(*this);
+  nnc_this.positive_time_elapse_assign(y);
+  *this = nnc_this;
+}
+
