@@ -780,19 +780,16 @@ CATCH_ALL
 
 m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
 `dnl
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_@1TOPOLOGY@@1CLASS@_positive_time_elapse_assign
-(JNIEnv* env, jobject j_this, jobject j_y) {
-  try {
-    @TOPOLOGY@@CPP_CLASS@* this_ptr
-      = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_this));
-    @TOPOLOGY@@CPP_CLASS@* y_ptr
-      = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_y));
-    this_ptr->positive_time_elapse_assign(*y_ptr);
-  }
-  CATCH_ALL;
-  return false;
+(JNIEnv* env, jobject j_this, jobject j_y) try {
+  @TOPOLOGY@@CPP_CLASS@* this_ptr
+    = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_this));
+  @TOPOLOGY@@CPP_CLASS@* y_ptr
+    = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(get_ptr(env, j_y));
+  this_ptr->positive_time_elapse_assign(*y_ptr);
 }
+CATCH_ALL;
 
 ')
 
