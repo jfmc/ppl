@@ -337,11 +337,11 @@ ___BEGIN_OF_FILE___ @CLASS@.java << ___END_OF_FILE___
 
 ')
 
-m4_define(`ppl_@TOPOLOGY@@CLASS@_positive_time_elapse_assign_code',
+m4_define(`ppl_@CLASS@_positive_time_elapse_assign_code',
 `dnl
 ___END_OF_FILE___
 ___BEGIN_OF_FILE___ @TOPOLOGY@@CLASS@.java << ___END_OF_FILE___
-    public native void positive_time_elapse_assign(@CLASS@ p);
+    public native void positive_time_elapse_assign(@TOPOLOGY@@CLASS@ p);
 
 ')
 
