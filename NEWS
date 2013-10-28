@@ -9,11 +9,13 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 ===============================================================
 
 --------------------------------------------------------------------------
-NEWS for version 1.1  (released date to be decided)
+NEWS for version 1.1  (released on October 28, 2013)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
+
+o  Added a new operator on polyhedra: the positive time elapse.
 
 o  In the Java language interface:
 
