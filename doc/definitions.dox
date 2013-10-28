@@ -3070,6 +3070,30 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
 </DD>
 
 
+<DT>[BFM11]</DT>
+<DD>
+\anchor BFM11
+M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
+ Towards efficient exact synthesis for linear hybrid systems.
+ In <em>Proceedings of 2nd International Symposium on Games,
+  Automata, Logics and Formal Verification (GandALF 2011)</em>, volume&nbsp;54 of <em>
+  Electronic Proceedings in Theoretical Computer Science</em>, pages 263-277,
+  Minori, Amalfi Coast, Italy, 2011.
+
+</DD>
+
+
+<DT>[BFM13]</DT>
+<DD>
+\anchor BFM13
+M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
+ Automatic synthesis of switching controllers for linear hybrid
+  systems: Safety control.
+ <em>Theoretical Computer Science</em>, 493:116-138, 2013.
+
+</DD>
+
+
 <DT>[BFT00]</DT>
 <DD>
 \anchor BFT00
@@ -3539,27 +3563,6 @@ R.&nbsp;Bagnara, E.&nbsp;Ricci, E.&nbsp;Zaffanella, and P.&nbsp;M. Hill.
   2002.
  See \ref BRZH02b "[BRZH02b]".
 
-</DD>
-
-
-<DT>[BFM11]</DT>
-<DD>
-\anchor BFM11
-M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
-  Towards efficient exact synthesis for Linear Hybrid Systems.
- In <em>Proceedings of the 2nd International Symposium on Games,
-               Automata, Logics and Formal Verification (GandALF 2011)</em>,
-  volume 54 of <em>Electronic Proceedings in Theoretical Computer Science</em>,
-  pages 263-277.
-</DD>
-
-
-<DT>[BFM12]</DT>
-<DD>
-\anchor BFM12
-M.&nbsp;Benerecetti, M.&nbsp;Faella, and S.&nbsp;Minopoli.
- Automatic synthesis of switching controllers for Linear Hybrid Systems: safety control.
- <em>Theoretical Computer Science</em>, Elsevier. To appear.
 </DD>
 
 
