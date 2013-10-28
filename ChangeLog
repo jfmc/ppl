@@ -1,5 +1,24 @@
 2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
 
+	* doc/devref-language-interface.doxyconf.in,
+	doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in,
+	doc/user-language-interface.doxyconf.in, doc/user.doxyconf-html.in,
+	doc/user.doxyconf-latex.in: Updated.
+
+2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/globals_defs.hh: Worked around a Doxygen bug.
+
+2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* NEWS: Updated.
+
+2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* ChangeLog: Updated.
+
+2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
 	* doc/definitions.dox: Label updated.
 
 2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
