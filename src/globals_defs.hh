@@ -424,6 +424,9 @@ template <typename T, long long v, bool prefer_signed = true,
 struct Constant_ : public TConstant<T, v> {
 };
 
+//! \cond
+// Keep Doxygen off until it learns how to deal properly with `||'.
+
 template <typename T, long long v, bool prefer_signed>
 struct Constant_<T, v, prefer_signed,
                  typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
@@ -439,6 +442,8 @@ struct Constant_<T, v, prefer_signed,
                                          || !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
   : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
 };
+
+//! \endcond
 
 template <long long v, bool prefer_signed = true>
 struct Constant : public Constant_<long long, v, prefer_signed> {
