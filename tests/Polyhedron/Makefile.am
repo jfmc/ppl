@@ -115,13 +115,13 @@ memory2 \
 minconstraints1 minconstraints2 \
 mingenerators1 mingenerators2 \
 nncminimize1 nncminimize2 \
+nncpostimeelapse1 \
 numberinput1 \
 onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
 polyhullifexact1 polyhullifexact2 \
-postimeelapse1 \
 randphull1 \
 refinewithcongruence1 \
 refinewithcongruences1 \
@@ -375,6 +375,8 @@ numberinput1_SOURCES = numberinput1.cc
 
 nncminimize1_SOURCES = nncminimize1.cc
 nncminimize2_SOURCES = nncminimize2.cc
+
+nncpostimeelapse1_SOURCES = nncpostimeelapse1.cc
 
 onepoint_SOURCES = onepoint.cc
 
