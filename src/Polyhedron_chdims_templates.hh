@@ -34,9 +34,6 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
                                  Bit_Matrix& sat1,
                                  Bit_Matrix& sat2,
                                  dimension_type add_dim) {
-
-  typedef typename Linear_System2::row_type sys2_row_type;
-
   PPL_ASSERT(sys1.topology() == sys2.topology());
   PPL_ASSERT(sys1.space_dimension() == sys2.space_dimension());
   PPL_ASSERT(add_dim != 0);

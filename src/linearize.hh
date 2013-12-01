@@ -109,14 +109,12 @@ template <typename Target, typename FP_Interval_Type>
 static bool
 add_linearize(const Binary_Operator<Target>& bop_expr,
               const FP_Oracle<Target,FP_Interval_Type>& oracle,
-              const std::map<dimension_type, Linear_Form<FP_Interval_Type> >& lf_store,
+              const std::map<dimension_type, Linear_Form<FP_Interval_Type> >&
+              lf_store,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::ADD);
 
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
     return false;
@@ -227,10 +225,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::SUB);
 
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
     return false;
@@ -372,8 +367,6 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
 
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   /*
     FIXME: We currently adopt the "Interval-Size Local" strategy in order to
@@ -556,10 +549,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
               Linear_Form<FP_Interval_Type>& result) {
   PPL_ASSERT(bop_expr.binary_operator() == Binary_Operator<Target>::DIV);
 
-  typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   FP_Linear_Form linearized_second_operand;
   if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
@@ -571,10 +561,10 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
     return false;
 
   // Check if we may divide by zero.
-  if ((intervalized_second_operand.lower_is_boundary_infinity() ||
-       intervalized_second_operand.lower() <= 0) &&
-      (intervalized_second_operand.upper_is_boundary_infinity() ||
-       intervalized_second_operand.upper() >= 0))
+  if ((intervalized_second_operand.lower_is_boundary_infinity()
+       || intervalized_second_operand.lower() <= 0) &&
+      (intervalized_second_operand.upper_is_boundary_infinity()
+       || intervalized_second_operand.upper() >= 0))
     return false;
 
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
@@ -632,8 +622,6 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
                Linear_Form<FP_Interval_Type>& result) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
 
   Floating_Point_Format analyzed_format =
     cast_expr.type().floating_point_format();
@@ -642,9 +630,9 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     if (!linearize(*cast_arg, oracle, lf_store, result))
       return false;
     if (!is_less_precise_than(analyzed_format,
-                              cast_arg->type().floating_point_format()) ||
-        result == FP_Linear_Form(FP_Interval_Type(0)) ||
-        result == FP_Linear_Form(FP_Interval_Type(1)))
+                              cast_arg->type().floating_point_format())
+        || result == FP_Linear_Form(FP_Interval_Type(0))
+        || result == FP_Linear_Form(FP_Interval_Type(1)))
       /*
         FIXME: find a general way to check if the casted constant
         is exactly representable in the less precise format.
@@ -660,9 +648,9 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     if (!oracle.get_integer_expr_value(*cast_arg, expr_value))
       return false;
     result = FP_Linear_Form(expr_value);
-    if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format) ||
-        result == FP_Linear_Form(FP_Interval_Type(0)) ||
-        result == FP_Linear_Form(FP_Interval_Type(1)))
+    if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format)
+        || result == FP_Linear_Form(FP_Interval_Type(0))
+        || result == FP_Linear_Form(FP_Interval_Type(1)))
       /*
         FIXME: find a general way to check if the casted constant
         is exactly representable in the less precise format.
@@ -725,8 +713,8 @@ linearize(const Concrete_Expression<Target>& expr,
           Linear_Form<FP_Interval_Type>& result) {
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
-  typedef Box<FP_Interval_Type> FP_Interval_Abstract_Store;
-  typedef std::map<dimension_type, FP_Linear_Form> FP_Linear_Form_Abstract_Store;
+  typedef std::map<dimension_type, FP_Linear_Form>
+    FP_Linear_Form_Abstract_Store;
 
   PPL_ASSERT(expr.type().is_floating_point());
   // Check that analyzer_format is a floating point type.
@@ -818,7 +806,7 @@ linearize(const Concrete_Expression<Target>& expr,
       PPL_ASSERT(variable_index != not_a_dimension());
 
       typename FP_Linear_Form_Abstract_Store::const_iterator
-               variable_value = lf_store.find(variable_index);
+        variable_value = lf_store.find(variable_index);
       if (variable_value == lf_store.end()) {
         result = FP_Linear_Form(Variable(variable_index));
         return true;
@@ -835,9 +823,10 @@ linearize(const Concrete_Expression<Target>& expr,
       of all intervals associated to each space dimension.
     */
     PPL_ASSERT(associated_dimensions.size() > 1);
-    std::set<dimension_type>::const_iterator i = associated_dimensions.begin();
-    std::set<dimension_type>::const_iterator i_end =
-      associated_dimensions.end();
+    std::set<dimension_type>::const_iterator i
+      = associated_dimensions.begin();
+    std::set<dimension_type>::const_iterator i_end
+      = associated_dimensions.end();
     FP_Interval_Type lub(EMPTY);
     for (; i != i_end; ++i) {
       FP_Interval_Type curr_int;

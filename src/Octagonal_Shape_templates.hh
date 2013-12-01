@@ -558,8 +558,6 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
 
   typedef typename OR_Matrix<N>::row_iterator row_iterator;
   typedef typename OR_Matrix<N>::row_reference_type row_reference;
-  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
 
   // FIXME: there is plenty of duplicate code in the following lines. We could
@@ -3122,11 +3120,6 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
     return false;
   }
 
-  typedef typename OR_Matrix<N>::row_iterator Row_Iter;
-  typedef typename OR_Matrix<N>::const_row_iterator Row_CIter;
-  typedef typename OR_Matrix<N>::element_iterator Elem_Iter;
-  typedef typename OR_Matrix<N>::const_element_iterator Elem_CIter;
-
   // Filter away the case where `x' is empty.
   x.strong_closure_assign();
   if (x.marked_empty()) {
@@ -5244,8 +5237,6 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
 
   typedef typename OR_Matrix<N>::row_iterator row_iterator;
   typedef typename OR_Matrix<N>::row_reference_type row_reference;
-  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   typedef Interval<T, Interval_Info> FP_Interval_Type;
   using std::swap;
 
@@ -6383,7 +6374,6 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   }
 
   typedef typename OR_Matrix<N>::row_iterator row_iterator;
-  typedef typename OR_Matrix<N>::row_reference_type row_reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
 

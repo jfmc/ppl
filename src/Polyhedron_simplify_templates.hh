@@ -82,9 +82,6 @@ namespace Parma_Polyhedra_Library {
 template <typename Linear_System1>
 dimension_type
 Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
-
-  typedef typename Linear_System1::row_type sys_row_type;
-
   dimension_type num_rows = sys.num_rows();
   const dimension_type num_cols_sat = sat.num_columns();
 
