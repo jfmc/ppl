@@ -1538,12 +1538,8 @@ bool Prolog_interface_initialized = false;
 
 void
 check_nil_terminating(Prolog_term_ref t, const char* where) {
-  if (Prolog_is_atom(t)) {
-    Prolog_atom a;
-    Prolog_get_atom_name(t, &a);
-    if (Prolog_get_nil(a))
-      return;
-  }
+  if (Prolog_get_nil(t))
+    return;
   throw not_a_nil_terminated_list(t, where);
 }
 
