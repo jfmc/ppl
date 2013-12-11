@@ -145,6 +145,16 @@ Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
 }
 
 /*!
+  Assign to \p t the list terminator <CODE>[]</CODE> (which needs not
+  be an atom).
+*/
+inline int
+Prolog_put_nil(Prolog_term_ref t) {
+  PL_put_nil(to_term_t(t));
+  return 1;
+}
+
+/*!
   Assign to \p t a term representing the address contained in \p p.
 */
 inline int
@@ -351,6 +361,15 @@ inline int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   assert(Prolog_is_compound(t));
   return PL_get_arg(i, t, a);
+}
+
+/*!
+  Succeeds if and only if \p t represents the list terminator <CODE>[]</CODE>
+  (which needs not be an atom).
+*/
+inline int
+Prolog_get_nil(Prolog_term_ref t) {
+  return PL_get_nil(to_term_t(t));
 }
 
 /*!
