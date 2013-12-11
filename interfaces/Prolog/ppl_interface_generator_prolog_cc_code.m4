@@ -222,7 +222,7 @@ m4_define(`ppl_@CLASS@_get_@CLASS_REPRESENT@s_code',
     PPL_CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     const @!CLASS_REPRESENT@_System& gs = ph->@CLASS_REPRESENT@s();
     for (@!CLASS_REPRESENT@_System::const_iterator i = gs.begin(),
            gs_end = gs.end(); i != gs_end; ++i)
@@ -247,7 +247,7 @@ m4_define(`ppl_@CLASS@_get_minimized_@CLASS_REPRESENT@s_code',
     PPL_CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     const @!CLASS_REPRESENT@_System& gs = ph->minimized_@CLASS_REPRESENT@s();
     for (@!CLASS_REPRESENT@_System::const_iterator i = gs.begin(),
            gs_end = gs.end(); i != gs_end; ++i)
@@ -606,7 +606,7 @@ m4_define(`relation_with_constraint_code', `
   Poly_Con_Relation r = ph->relation_with(build_constraint(t_c, where));
 
   Prolog_term_ref tail = Prolog_new_term_ref();
-  Prolog_put_atom(tail, a_nil);
+  Prolog_put_nil(tail);
   while (r != Poly_Con_Relation::nothing()) {
     if (r.implies(Poly_Con_Relation::is_disjoint())) {
       Prolog_term_ref t_dis = Prolog_new_term_ref();
@@ -639,7 +639,7 @@ m4_define(`relation_with_congruence_code', `
   Poly_Con_Relation r = ph->relation_with(build_congruence(t_c, where));
 
   Prolog_term_ref tail = Prolog_new_term_ref();
-  Prolog_put_atom(tail, a_nil);
+  Prolog_put_nil(tail);
   while (r != Poly_Con_Relation::nothing()) {
     if (r.implies(Poly_Con_Relation::is_disjoint())) {
       Prolog_term_ref t_dis = Prolog_new_term_ref();
@@ -674,7 +674,7 @@ m4_define(`relation_with_generator_code', `
   Poly_Gen_Relation r = ph->relation_with(build_generator(t_c, where));
 
   Prolog_term_ref tail = Prolog_new_term_ref();
-Prolog_put_atom(tail, a_nil);
+Prolog_put_nil(tail);
 while (r != Poly_Gen_Relation::nothing()) {
   if (r.implies(Poly_Gen_Relation::subsumes())) {
     Prolog_term_ref t_sub = Prolog_new_term_ref();
@@ -689,7 +689,7 @@ m4_define(`relation_with_grid_generator_code', `
   Poly_Gen_Relation r = ph->relation_with(build_grid_generator(t_c, where));
 
   Prolog_term_ref tail = Prolog_new_term_ref();
-  Prolog_put_atom(tail, a_nil);
+  Prolog_put_nil(tail);
   while (r != Poly_Gen_Relation::nothing()) {
     if (r.implies(Poly_Gen_Relation::subsumes())) {
       Prolog_term_ref t_sub = Prolog_new_term_ref();

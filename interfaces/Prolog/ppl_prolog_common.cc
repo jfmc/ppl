@@ -436,7 +436,7 @@ handle_exception(const not_an_optimization_mode& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("max"), expected);
   Prolog_construct_cons(expected,
@@ -458,7 +458,7 @@ handle_exception(const not_a_complexity_class& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("polynomial"), expected);
   Prolog_construct_cons(expected,
@@ -482,7 +482,7 @@ void
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("pricing"), expected);
 
@@ -501,7 +501,7 @@ void
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("pricing_steepest_edge_float"),
                         expected);
@@ -527,7 +527,7 @@ void
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("cutting_strategy"),
                         expected);
@@ -550,7 +550,7 @@ void
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("cutting_strategy_first"),
                         expected);
@@ -581,7 +581,7 @@ handle_exception(const not_universe_or_empty& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("universe"), expected);
   Prolog_construct_cons(expected,
@@ -603,7 +603,7 @@ handle_exception(const not_a_boolean& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("true"), expected);
   Prolog_construct_cons(expected,
@@ -625,7 +625,7 @@ handle_exception(const not_a_bounded_integer_type_width& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("bits_8"), expected);
   Prolog_construct_cons(expected,
@@ -653,7 +653,7 @@ handle_exception(const not_a_bounded_integer_type_representation& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("unsigned"), expected);
   Prolog_construct_cons(expected,
@@ -676,7 +676,7 @@ handle_exception(const not_a_bounded_integer_type_overflow& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("overflow_wraps"),
                         expected);
@@ -703,7 +703,7 @@ handle_exception(const not_a_relation& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string("="), expected);
   Prolog_construct_cons(expected,
@@ -731,7 +731,7 @@ handle_exception(const not_a_nil_terminated_list& e) {
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_put_atom(expected, a_nil);
+  Prolog_put_nil(expected);
   Prolog_construct_cons(expected,
                         Prolog_atom_term_from_string
                         ("Prolog_list"), expected);
@@ -1541,7 +1541,7 @@ check_nil_terminating(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom a;
     Prolog_get_atom_name(t, &a);
-    if (a == a_nil)
+    if (Prolog_get_nil(a))
       return;
   }
   throw not_a_nil_terminated_list(t, where);
@@ -2126,7 +2126,7 @@ ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
     PPL_CHECK(mip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     const Variables_Set& i_vars = mip->integer_space_dimensions();
 
     for (Variables_Set::const_iterator i = i_vars.begin(),
@@ -2148,7 +2148,7 @@ ppl_MIP_Problem_constraints(Prolog_term_ref t_mip,
     PPL_CHECK(mip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     for (MIP_Problem::const_iterator i = mip->constraints_begin(),
            i_end = mip->constraints_end(); i != i_end; ++i)
       Prolog_construct_cons(tail, constraint_term(*i), tail);
@@ -2627,7 +2627,7 @@ ppl_PIP_Problem_parameter_space_dimensions(Prolog_term_ref t_pip,
     PPL_CHECK(pip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     const Variables_Set& params = pip->parameter_space_dimensions();
 
     for (Variables_Set::const_iterator i = params.begin(),
@@ -2649,7 +2649,7 @@ ppl_PIP_Problem_constraints(Prolog_term_ref t_pip,
     PPL_CHECK(pip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     for (PIP_Problem::const_iterator i = pip->constraints_begin(),
            i_end = pip->constraints_end(); i != i_end; ++i)
       Prolog_construct_cons(tail, constraint_term(*i), tail);
@@ -2969,7 +2969,7 @@ ppl_PIP_Tree_Node_constraints(Prolog_term_ref t_pip,
     PPL_CHECK(pip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     const Constraint_System& ppl_cs = pip->constraints();
     for (Constraint_System::const_iterator i = ppl_cs.begin(),
            ppl_cs_end = ppl_cs.end(); i != ppl_cs_end; ++i)
@@ -3034,7 +3034,7 @@ ppl_PIP_Tree_Node_artificials(Prolog_term_ref t_tree_node,
     PPL_CHECK(node);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
+    Prolog_put_nil(tail);
     for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
            i = node->art_parameter_begin(),
            arts_end = node->art_parameter_end(); i != arts_end; ++i)
