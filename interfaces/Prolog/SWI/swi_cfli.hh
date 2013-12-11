@@ -150,7 +150,7 @@ Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
 */
 inline int
 Prolog_put_nil(Prolog_term_ref t) {
-  PL_put_nil(to_term_t(t));
+  PL_put_nil(t);
   return 1;
 }
 
@@ -304,7 +304,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 inline int
 Prolog_is_cons(Prolog_term_ref t) {
-  return (!PL_is_atom(t) && PL_is_list(t)) ? 1 : 0;
+  return PL_is_pair(t);
 }
 
 /*!
@@ -369,7 +369,7 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
 */
 inline int
 Prolog_get_nil(Prolog_term_ref t) {
-  return PL_get_nil(to_term_t(t));
+  return PL_get_nil(t);
 }
 
 /*!
