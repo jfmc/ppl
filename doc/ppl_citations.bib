@@ -166,6 +166,58 @@ Summarizing:
               object-oriented, bytecode programming language."
 }
 
+@Inproceedings{AlbertAPCFGGMPRRZ13,
+  Author = "E. Albert and D. E. Alonso-Blas and A. Puri and J. Correas and A. Flores-Montoya and S. Genaim and M. G{\'o}mez-Zamalloa and A. N. Masud and G. Puebla and J. M. Rojas and G. Rom{\'a}n-D{\'i}ez and D. Zanardini",
+  Title = "Automatic Inference of Bounds on Resource Consumption",
+  Booktitle = "Formal Methods for Components and Objects, 11th International Symposium, {FMCO} 2012",
+  Address   = "Bertinoro, Italy",
+  Editor = "E. Giachino and R. H{\"a}hnle and F. S. de Boer and M. M. Bonsangue",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7866,
+  Year = 2013,
+  Pages = "119--144",
+  ISBN = "978-3-642-40614-0 (Print) 978-3-642-40615-7 (Online)",
+  Abstract = "In this tutorial paper, we overview the techniques that
+              underlie the automatic inference of resource consumption
+              bounds. We first explain the basic techniques on a
+              Java-like sequential language. Then, we describe the
+              extensions that are required to apply our method on
+              concurrent ABS programs. Finally, we discuss some
+              advanced issues in resource analysis, including the
+              inference of non-cumulative resources and the treatment
+              of shared mutable data."
+}
+
+@Article{AlbertGM13,
+  Author    = "E. Albert and S. Genaim and A. N. Masud",
+  Title     = "On the Inference of Resource Usage Upper and Lower Bounds",
+  Journal   = "ACM Transactions on Computational Logic (TOCL)",
+  Volume    = 14,
+  Number    = 3,
+  Year      = 2013,
+  Abstract = "Cost analysis aims at determining the amount of
+              resources required to run a program in terms of its
+              input data sizes. The most challenging step is to infer
+              the cost of executing the loops in the program. This
+              requires bounding the number of iterations of each loop
+              and finding tight bounds for the cost of each of its
+              iterations. This article presents a novel approach to
+              infer upper and lower bounds from cost relations. These
+              relations are an extended form of standard recurrence
+              equations that can be nondeterministic, contain inexact
+              size constraints and have multiple arguments that
+              increase and/or decrease. We propose novel techniques to
+              automatically transform cost relations into worst-case
+              and best-case deterministic one-argument recurrence
+              relations. The solution of each recursive relation
+              provides a precise upper-bound and lower-bound for
+              executing a corresponding loop in the
+              program. Importantly, since the approach is developed at
+              the level of the cost equations, our techniques are
+              programming language independent."
+}
+
 @Inproceedings{AlonsoAG11,
   Author = "D. Alonso and P. Arenas and S. Genaim",
   Title = "Handling Non-linear Operations in the Value Analysis of {COSTA}",
@@ -202,6 +254,39 @@ Summarizing:
               to prove termination and infer bounds on resource
               consumption for programs that could not be handled
               before."
+}
+
+@Inproceedings{AlthoffK12,
+  Author = "M. Althoff and B. H. Krogh",
+  Title = "Avoiding Geometric Intersection Operations in Reachability Analysis of Hybrid Systems",
+  Booktitle = "Proceedings of the 15th {ACM} International Conference on Hybrid Systems: Computation and Control, (HSCC '12)",
+  Year = 2012,
+  ISBN = "978-1-4503-1220-2",
+  Address = "Beijing, China",
+  Pages = "45--54",
+  Publisher = "ACM Press, New York, USA",
+  Abstract = "Although a growing number of dynamical systems studied
+              in various fields are hybrid in nature, the verification
+              of properties, such as stability, safety, etc., is still
+              a challenging problem. Reachability analysis is one of
+              the promising methods for hybrid system verification,
+              which together with all other verification techniques
+              faces the challenge of making the analysis scale with
+              respect to the number of continuous state variables. The
+              bottleneck of many reachability analysis techniques for
+              hybrid systems is the geometrically computed
+              intersection with guard sets. In this work, we replace
+              the intersection operation by a nonlinear mapping onto
+              the guard, which is not only numerically stable, but
+              also scalable, making it possible to verify systems
+              which were previously out of reach. The approach can be
+              applied to the fairly common class of hybrid systems
+              with piecewise continuous solutions, guard sets modeled
+              as halfspaces, and urgent semantics, i.e. discrete
+              transitions are immediately taken when enabled by guard
+              sets. We demonstrate the usefulness of the new approach
+              by a mechanical system with backlash which has 101
+              continuous state variables."
 }
 
 @Inproceedings{Alur11,
@@ -331,6 +416,29 @@ Summarizing:
               traces."
 }
 
+@Inproceedings{AmatoS13,
+  Author = "G. Amato and F. Scozzari",
+  Title = "Localizing Widening and Narrowing",
+  Booktitle = "Static Analysis:
+               Proceedings of the 20th International Symposium",
+  Address = "Seattle, USA",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "F. Logozzo and M. F{\"a}hndrich",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-38855-2 (Print) 978-3-642-38856-9 (Online)",
+  Pages =  "25--42",
+  Volume = 7935,
+  Year = 2013,
+  Abstract = "We show two strategies which may be easily applied to
+              standard abstract interpretation-based static
+              analyzers. They consist in 1) restricting the scope of
+              widening, and 2) intertwining the computation of
+              ascending and descending chains. Using these
+              optimizations it is possible to improve the precision of
+              the analysis, without any change to the abstract
+              domains."
+}
+
 @Inproceedings{Andre10,
   Author = "{\'E}. Andr{\'e}",
   Title = "{IMITATOR~II}:
@@ -383,6 +491,97 @@ Summarizing:
               around 0. It also often improves the performance of
               IM, both in terms of computational space and time, as
               shown by our experimental results."
+}
+@Inproceedings{AndreFS12,
+  Author = "{\'E}. Andr{\'e} and L. Fribourg and R. Soulat",
+  Title = "Enhancing the Inverse Method with State Merging",
+  Booktitle = "Proceedings of the 4th International Symposium on {NASA} Formal Methods, {NFM} 2012",
+  Editor = "A. E. Goodloe and S. Person",
+  Address = "Norfolk, USA",
+  Pages = "381--396",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7226,
+  Year = 2012,
+  Abstract = "Keeping the state space small is essential when
+              verifying realtime systems using Timed Automata (TA). In
+              the model-checker Uppaal, the merging operation has been
+              used extensively in order to reduce the number of
+              states. Actually, Uppaal's merging technique applies
+              within the more general setting of Parametric Timed
+              Automata (PTA). The Inverse Method (IM) for a PTA A is a
+              procedure that synthesizes a zone around a given point
+              0 (parameter valuation) over which A is guaranteed to
+              behave similarly. We show that the integration of
+              merging into IM leads to the synthesis of larger zones
+              around 0. It also often improves the performance of
+              IM, both in terms of computational space and time, as
+              shown by our experimental results."
+}
+
+
+@Inproceedings{AndreFS13,
+  Author = "{\'E}. Andr{\'e} and L. Fribourg and R. Soulat",
+  Title = "Merge and Conquer: State Merging in Parametric Timed Automata",
+  Booktitle = "Proceedings of the 11th International Symposium on Automated Technology for Verification and Analysis, {ATVA 2013}",
+  Editor = "D. Van Hung and M. Ogawa",
+  Address = "Hanoi, Vietnam",
+  Pages = "381--396",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 8172,
+  Year = 2013,
+  Abstract = "Parameter synthesis for real-time systems aims at
+              synthesizing dense sets of valuations for the timing
+              requirements, guaranteeing a good behavior. A popular
+              formalism for modeling parameterized real-time systems
+              is parametric timed automata (PTAs). Compacting the
+              state space of PTAs as much as possible is
+              fundamental. We present here a state merging reduction
+              based on convex union, that reduces the state space, but
+              yields an over-approximation of the executable
+              paths. However, we show that it preserves the sets of
+              reachable locations and executable actions. We also show
+              that our merging technique associated with the inverse
+              method, an algorithm for parameter synthesis, preserves
+              locations as well, and outputs larger sets of parameter
+              valuations."
+}
+
+@Inproceedings{AndreLSDL13,
+  Author    = "E. Andr{\'e} and Y. Liu and J. Sun and J. S. Dong and {S.-W}. Lin",
+  Title     = "PSyHCoS: Parameter Synthesis for Hierarchical Concurrent
+               Real-Time Systems",
+  Booktitle = "Proceedings of Computer Aided Verification - 25th International Conference, {CAV} 2013",
+  Year      = 2013,
+  Pages     = "984--989",
+  Editor    = "N. Sharygina and H. Veith",
+  Publisher = "Springer-Verlag, Berlin",
+  Series    = "Lecture Notes in Computer Science",
+  Volume    = 8044,
+  ISBN      = "978-3-642-39798-1",
+  Abstract = "Real-time systems are often hard to control, due to
+              their complicated structures, quantitative time factors
+              and even unknown delays.  We present here PSyHCoS, a
+              tool for analyzing parametric real-time systems
+              specied using the hierarchical modeling language
+              PSTCSP.  PSyHCoS supports several algorithms for
+              parameter synthesis and model checking, as well as state
+              space reduction techniques. Its architecture favors
+              reusability in terms of syntax, semantics, and
+              algorithms. It comes with a friendly user interface that
+              can be used to edit, simulate and verify PSTCSP
+              models. Experiments show its eciency and
+              applicability."
+}
+
+@Book{AndreS13,
+  Author = "{\'E}. Andr{\'e} and R. Soulat",
+  Title = "The Inverse Method: Parametric Verification of Real-time Unbedded Systems",
+  Publisher = "John Wiley and Sons.",
+  Series = "{FOCUS Series}",
+  ISBN = "9781118569405",
+  Year = 2013,
 }
 
 @Inproceedings{ArmandoBM07,
@@ -566,6 +765,65 @@ Summarizing:
               experimental results to support the usefulness of the
               approach and argue that we contribute to the general
               field of using static analysis tools for verification."
+}
+
+@Inproceedings{Ben-AmramG13,
+ Author = "A. M. Ben-Amram and S. Genaim",
+ Title = "On the Linear Ranking Problem for Integer Linear-constraint Loops",
+ Booktitle = "{POPL '13} Proceedings of the 40th Annual {ACM SIGPLAN-SIGACT} Symposium on Principles of Programming Languages",
+ Year = 2013,
+ ISBN = "978-1-4503-1832-7",
+ Address = "Rome, Italy",
+ Pages = "51--62",
+ Publisher = "ACM Press",
+ Note = "Also published in ACM SIGPLAN Notices, POPL '13, Volume 48 Issue 1",
+ Abstract = "In this paper we study the complexity of the Linear
+             Ranking problem: given a loop, described by linear
+             constraints over a finite set of integer variables, is
+             there a linear ranking function for this loop? While
+             existence of such a function implies termination, this
+             problem is not equivalent to termination. When the
+             variables range over the rationals or reals, the Linear
+             Ranking problem is known to be PTIME decidable. However,
+             when they range over the integers, whether for
+             single-path or multipath loops, the complexity of the
+             Linear Ranking problem has not yet been determined. We
+             show that it is coNP-complete. However, we point out some
+             special cases of importance of PTIME complexity. We also
+             present complete algorithms for synthesizing linear
+             ranking functions, both for the general case and the
+             special PTIME cases."
+}
+
+@Article{benerecettiFM13,
+  Author= "M. Benerecetti and M. Faella and S. Minopoli",
+  Title = "Automatic synthesis of switching controllers for linear hybrid systems: Safety control",
+  Journal = "Theoretical Computer Science",
+  Year = 2013,
+  Volume = 493,
+  Pages = "116--138",
+  DOI = "10.1016/j.tcs.2012.10.042",
+  Publisher="Elsevier Science B.V.",
+  Abstract = "In this paper we study the problem of automatically
+              generating switching con- trollers for the class of
+              Linear Hybrid Automata, with respect to safety
+              objectives. While the same problem has been already
+              considered in the literature, no sound and complete
+              solution has been provided so far. We identify and solve
+              inaccuracies contained in previous characterizations of
+              the problem, providing a sound and complete symbolic
+              xpoint procedure to compute the set of states from which
+              a controller can keep the system in a given set of
+              desired states.  While the overall procedure may not
+              terminate, we prove the termination of each iteration,
+              thus paving the way to an effective implementation.  The
+              techniques needed to effectively and efficiently
+              implement the proposed solution procedure, based on
+              polyhedral abstractions of the state space, are
+              thoroughly illustrated and discussed. Finally, some
+              supporting and promising experimental results, based on
+              the implementation of the proposed techniques on top of
+              the tool PHAVer, are presented."
 }
 
 @Inproceedings{BerendsenJV10,
@@ -781,6 +1039,35 @@ Summarizing:
               hypersurfaces) are computed."
 }
 
+@Inproceedings{BrihayeDGQRW13,
+  Author = "T. Brihaye and L. Doyen and G. Geeraerts and J. Ouaknine and J.-F. Raskin and J. Worrell",
+  Title = "Time-Bounded Reachability for Monotonic Hybrid Automata: Complexity and Fixed Points",
+  Booktitle = "Automated Technology for Verification and Analysis,
+               11th International Symposium, {ATVA 2013}",
+  Address = "Hanoi, Vietnam",
+  Editor = "Dang Van Hung",
+  Year = 2013,
+  Pages = "55--70",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 8172,
+  ISBN = "978-3-319-02443-1",
+  Abstract = "We study the time-bounded reachability problem for
+              monotonic hybrid automata (MHA), i.e., rectangular
+              hybrid automata for which the rate of each variable is
+              either always non-negative or always non-positive. In
+              this paper, we revisit the decidability results
+              presented in [T.~Brihaye and L.~Doyen and G.~Geeraerts
+              and J.~Ouaknine. and J.-F.~Raskin and J.~Worrell: On
+              reachability for hybrid automata over bounded time. In:
+              ICALP 2011, Part II. LNCS, vol. 6756,
+              pp. 416–427. Springer, Heidelberg (2011)] and show that
+              the problem is NExpTime-complete. We also show that we
+              can effectively compute fixed points that characterise
+              the sets of states that are reachable
+              (resp. co-reachable) within T time units from a given
+              state."
+}
 
 @Techreport{CacheraM-A05,
   Author = "D. Cachera and K. Morin-Allory",
@@ -855,6 +1142,78 @@ Summarizing:
               representations."
 }
 
+@Inproceedings{CarnevaliPSV13,
+ Author = "L. Carnevali and M. Paolieri and A. Santoni and E. Vicario",
+ Title = "Non-markovian Analysis for Model Driven Engineering of Real-time Software",
+ Booktitle = "{ICPE '13} Proceedings of the 4th {ACM/SPEC} International Conference on Performance Engineering",
+ Year = 2013,
+ ISBN = "978-1-4503-1636-1",
+ Address = "Prague, Czech Republic",
+ Pages = "113--124",
+ Publisher = "ACM, New York, USA",
+ Abstract = "Quantitative evaluation of models with stochastic timings
+             can decisively support schedulability analysis and
+             performance engineering of real-time concurrent
+             systems. These tasks require modeling formalisms and
+             solution techniques that can encompass stochastic
+             temporal parameters firmly constrained within a bounded
+             support, thus breaking the limits of Markovian
+             approaches. The problem is further exacerbated by the
+             need to represent suspension of timers, which results
+             from common patterns of real-time programming. This poses
+             relevant challenges both in the theoretical development
+             of non-Markovian solution techniques and in their
+             practical integration within a viable tailoring of
+             industrial processes.
+
+             We address both issues by extending a method for
+             transient analysis of non-Markovian models to encompass
+             suspension of timers. The solution technique addresses
+             models that include timers with bounded and deterministic
+             support, which are essential to represent synchronous
+             task releases, timeouts, offsets, jitters, and
+             computations constrained by a Best Case Execution Time
+             (BCET) and a Worst Case Execution Time (WCET). As a
+             notable trait, the theory of analysis is amenable to the
+             integration within a Model Driven Development (MDD)
+             approach, providing specific evaluation capabilities in
+             support of performance engineering without disrupting the
+             flow of design and documentation of the consolidated
+             practice.",
+}
+
+
+@Inproceedings{ChakarovS13,
+  Author    = "A. Chakarov and S. Sankaranarayanan",
+  Title     = "Probabilistic Program Analysis with Martingales",
+  Booktitle = "Proceedings of Computer Aided Verification - 25th International Conference, {CAV} 2013",
+  Year      = 2013,
+  Pages     = "511-526",
+  Editor    = "N. Sharygina and H. Veith",
+  Publisher = "Springer-Verlag, Berlin",
+  Series    = "Lecture Notes in Computer Science",
+  Volume    = 8044,
+  ISBN      = "978-3-642-39798-1",
+  Abstract = "We present techniques for the analysis of infinite state
+              probabilistic programs to synthesize probabilistic
+              invariants and prove almost-sure termination.  Our
+              analysis is based on the notion of (super) martingales
+              from probability theory. First, we define the concept of
+              (super) martingales for loops in probabilistic
+              programs. Next, we present the use of concentration of
+              measure inequalities to bound the values of martingales
+              with high probability. This directly allows us to infer
+              probabilistic bounds on assertions involving the program
+              variables. Next, we present the notion of a super
+              martingale ranking function (SMRF) to prove almost sure
+              termination of probabilistic programs. Finally, we
+              extend constraint-based techniques to synthesize
+              martingales and super-martingale ranking functions for
+              probabilistic programs. We present some applications of
+              our approach to reason about invariance and termination
+              of small but complex probabilistic programs."
+}
+
 @Article{ChakrabortyMS06,
   Title = "Reasoning about Synchronization in {GALS} Systems",
   Author = "S. Chakraborty and J. Mekie and D. K. Sharma",
@@ -916,6 +1275,34 @@ Summarizing:
               sound way."
 }
 
+@Inproceedings{ChenKSW13,
+  Author = "T. Chen and M. Kwiatkowska and A. Simaitis and C. Wiltsche",
+  Title = "Synthesis for Multi-objective Stochastic Games: An Application to Autonomous Urban Driving",
+  Booktitle = "Proceedings of the 10th International Conference on Quantitative Evaluation of Systems, {QEST} 2013",
+  Address = "Buenos Aires, Argentina",
+  Editor = "K. Joshi and M. Siegle and M. Stoelinga and P. R. D’Argenio",
+  Year = 2013,
+  Pages = "322--337",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 8054,
+  ISBN = "978-3-642-40195-4 (Print) 978-3-642-40196-1 (Online)",
+  Abstract = "We study strategy synthesis for stochastic two-player
+              games with multiple objectives expressed as a
+              conjunction of LTL and expected total reward goals. For
+              stopping games, the strategies are constructed from the
+              Pareto frontiers that we compute via value
+              iteration. Since, in general, infinite memory is
+              required for deterministic winning strategies in such
+              games, our construction takes advantage of randomised
+              memory updates in order to provide compact
+              strategies. We implement our methods in PRISM-games, a
+              model checker for stochastic multi-player games, and
+              present a case study motivated by the DARPA Urban
+              Challenge, illustrating how our methods can be used to
+              synthesise strategies for high-level control of
+              autonomous vehicles."
+}
 
 @Inproceedings{ColonS11,
   Author = "M. Col{\'o}n and S. Sankaranarayanan",
@@ -985,6 +1372,32 @@ Summarizing:
               used it to detect taint-style vulnerabilities in binary
               code.  The results of our evaluation show that our
               approach is both practical and effective."
+}
+
+@Article{DangT12,
+  Author = "T. Dang and R. Testylier",
+  Title = "Reachability Analysis for Polynomial Dynamical Systems Using the Bernstein Expansion",
+  Journal = "Reliable Computing",
+  Publisher = "Kluwer Academic Publishers",
+  Volume = 17,
+  Number = 2,
+  Year = 2012,
+  ISBN = "1573-1340",
+  Pages = "128--152",
+  Abstract = "This paper is concerned with the reachability
+              computation problem for polynomial discrete-time
+              dynamical systems. Such computations con- stitute a
+              crucial component in algorithmic verication tools for
+              hybrid systems and embedded software with polynomial
+              dynamics, which have found applications in many
+              engineering domains. We describe two meth- ods for
+              over-approximating the reachable sets of such systems;
+              these meth- ods are based on a combination of the
+              Bernstein expansion of polynomial functions and a
+              representation of reachable sets by template polyhedra.
+              Using a prototype implementation, the performance of the
+              methods was demonstrated on a number of examples of
+              control systems and biological systems."
 }
 
 @Inproceedings{DenmatGD07,
@@ -1231,6 +1644,78 @@ Summarizing:
               manipulate various heap-based data structures."
 }
 
+@Inproceedings{FioravantiPPS12,
+  Author = "F. Fioravanti and A. Pettorossi and M. Proietti and V. Senni",
+  Title = "Using Real Relaxations during Program Specialization",
+  Booktitle = "Logic Program Synthesis and Transformation:
+               Proceedings of the 21st International Symposium",
+  Address = "Odense, Denmark",
+  Editor = "G. Vidal",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7225,
+  Pages = "106--122",
+  Year = 2012,
+  ISBN = "978-3-642-32210-5 (Print) 978-3-642-32211-2 (Online)",
+  Abstract = "We propose a program specialization technique for
+              locally stratified CLP(Z) programs, that is, logic
+              programs with linear constraints over the set Z of the
+              integer numbers. For reasons of efficiency our technique
+              makes use of a relaxation from integers to reals. We
+              reformulate the familiar unfold/fold transformation
+              rules for CLP programs so that: (i) the applicability
+              conditions of the rules are based on the satisfiability
+              or entailment of constraints over the set R of the real
+              numbers, and (ii) every application of the rules
+              transforms a given program into a new program with the
+              same perfect model constructed over Z. Then, we
+              introduce a strategy which applies the transformation
+              rules for specializing CLP(Z) programs with respect to a
+              given query. Finally, we show that our specialization
+              strategy can be applied for verifying properties of
+              infinite state reactive systems specified by constraints
+              over Z."
+}
+
+@Article{FioravantiPPS12-FI,
+  Author = "F. Fioravanti and A. Pettorossi and M. Proietti and V. Senni",
+  Title = "Improving Reachability Analysis of Infinite State Systems by Specialization",
+  Journal = "Fundamenta Informaticae",
+  Publisher = "IOS Press",
+  Volume = 119,
+  Number = "3--4",
+  Pages = "281--300",
+  Year = 2012,
+  ISSN = "0169-2968 (Print) 1875-8681 (Online)",
+  Abstract = "We consider infinite state reactive systems specified by
+              using linear constraints over the integers, and we
+              address the problem of verifying safety properties of
+              these systems by applying reachability analysis
+              techniques. We propose a method based on program
+              specialization, which improves the effectiveness of the
+              backward and forward reachability analyses. For backward
+              reachability our method consists in: (i) specializing
+              the reactive system with respect to the initial states,
+              and then (ii) applying to the specialized system the
+              reachability analysis that works backwards from the
+              unsafe states. For reasons of efficiency, during
+              specialization we make use of a relaxation from integers
+              to reals. In particular, we test the satisfiability or
+              entailment of constraints over the real numbers, while
+              preserving the reachability properties of the reactive
+              systems when constraints are interpreted over the
+              integers. For forward reachability our method works as
+              for backward reachability, except that the role of the
+              initial states and the unsafe states are
+              interchanged. We have implemented our method using the
+              MAP transformation system and the ALV verification
+              system. Through various experiments performed on several
+              infinite state systems, we have shown that our
+              specialization-based verification technique considerably
+              increases the number of successful verifications without
+              a significant degradation of the time performance."
+}
+
 @MastersThesis{Flexeder05th,
   Author = "A. Flexeder",
   Title = "{Interprozedurale Analyse linearer Ungleichungen}",
@@ -1263,7 +1748,34 @@ Summarizing:
               der linearen Algebra die affinen Beziehungen, welche
               zwischen den Programmvariablen an einem bestimmten
               Programmpunkt gelten, erkennen. Die Behandlung von
-              Prozeduraufrufen steht dabei im Vordergrund.}"
+              Prozeduraufrufen steht dabei im Vordergrund."
+}
+
+@Inproceedings{FouiheMP13,
+  Author = "A. Fouilhe and D. Monniaux and M. P{\'e}rin,
+  Title = "Efficient Generation of Correctness Certificates for the Abstract Domain of Polyhedra",
+  Booktitle = "Static Analysis:
+               Proceedings of the 20th International Symposium",
+  Address = "Seattle, USA",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "F. Logozzo and M. F{\"a}hndrich",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-38855-2 (Print) 978-3-642-38856-9 (Online)",
+  Volume = 7935,
+  pages = "345--365",
+  Year = 2013,
+  Abstract = "Polyhedra form an established abstract domain for
+              inferring runtime properties of programs using abstract
+              interpretation. Computations on them need to be
+              certified for the whole static analysis results to be
+              trusted. In this work, we look at how far we can get
+              down the road of a posteriori verification to lower the
+              overhead of certification of the abstract domain of
+              polyhedra. We demonstrate methods for making the cost of
+              inclusion certificate generation negligible. From a
+              performance point of view, our single-representation,
+              constraints-based implementation compares with
+              state-of-the-art implementations."
 }
 
 @MastersThesis{FrankM02th,
@@ -1505,6 +2017,59 @@ Summarizing:
               methodology for hybrid automata with linear and affine
               dynamics. The method is demonstrated with a hybrid
               system benchmark from the literature."
+}
+
+@Inproceedings{Fu14,
+  Author = "Z. Fu",
+  Title = "Modularly Combining Numeric Abstract Domains with Points-to Analysis, and a Scalable Static Numeric Analyzer for Java",
+  Booktitle = "{VMCAI} - 15th International Conference on Verification, Model Checking, and Abstract Interpretation - 2014",
+  Address = "San Diego, US",
+  Editor = "K. McMillan and X. Rival",
+  Publisher = "Springer-Verlag, Berlin",
+  Year = 2014,
+  Abstract = "This paper contributes to a new abstract domain that
+              combines static numeric analysis and points-to
+              analysis. One particularity of this abstract domain lies
+              in its high degree of modularity, in the sense that the
+              domain is constructed by reusing its combined components
+              as black-boxes. This modularity dramatically eases the
+              proof of its soundness and renders its algorithm
+              intuitive. We have prototyped the abstract domain for
+              analyzing real-world Java programs. Our experimental
+              results show a tangible precision enhancement compared
+              to what is possible by traditional static numeric
+              analysis, and this at a cost that is comparable to the
+              cost of running the numeric and pointer analyses
+              separately."
+}
+
+@Article{GallardoP13,
+  Author = "{M.-d.-M}. Gallardo and L.Panizo",
+  Title = "Extending model checkers for hybrid system verification: the case study of SPIN.",
+  Journal = "Software Testing, Verification and Reliability",
+  Publisher = "John Wiley & Sons, Ltd.",
+  DOI = "10.1002/stvr.1505",
+  ISSN ="1099-1689 (online)",
+  Year = 2013,
+  Note = "Early View (Online Version of Record published before inclusion in an issue)",
+  Abstract = "A hybrid system is a system that evolves following a
+              continuous dynamic, which may instantaneously change
+              when certain internal or external events occur. Because
+              of this combination of discrete and continuous dynamics,
+              the behaviour of a hybrid system is, in general,
+              difficult to model and analyse. Model checking
+              techniques have been proven to be an excellent approach
+              to analyse critical properties of complex systems. This
+              paper presents a new methodology to extend explicit
+              model checkers for hybrid systems analysis. The explicit
+              model checker is integrated, in a non-intrusive way,
+              with some external structures and existing abstraction
+              libraries, which store and manipulate the abstraction of
+              the continuous behaviour irrespective of the underlying
+              model checker. The methodology is applied to SPIN using
+              Parma Polyhedra Library. In addition, the authors are
+              currently working on the extension of other model
+              checkers."
 }
 
 @PhdThesis{Gobert07th,
@@ -2139,6 +2704,65 @@ Summarizing:
               been made available online for demonstration."
 }
 
+@Inproceedings{HenryMM12,
+  Author = "J. Henry and D. Monniaux and M. Moy",
+  Title = "Succinct Representations for Abstract Interpretation",
+  Booktitle = "Static Analysis:
+               Proceedings of the 19th International Symposium",
+  Address = "Deauville, France",
+  Editor = "A. Mine and D. Schmidt",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7460,
+  Year = 2012,
+  Pages = "283--299",
+  Abstract = "Abstract interpretation techniques can be made more
+              precise by distinguishing paths inside loops, at the
+              expense of possibly exponential complexity. SMT-solving
+              techniques and sparse representations of paths and sets
+              of paths avoid this pitfall.
+
+              We improve previously proposed techniques for guided
+              static analysis and the generation of disjunctive
+              invariants by combining them with techniques for
+              succinct representations of paths and symbolic
+              representations for transitions based on static single
+              assignment.
+
+              Because of the non-monotonicity of the results of
+              abstract interpretation with widening operators, it is
+              difficult to conclude that some abstraction is more
+              precise than another based on theoretical local
+              precision results. We thus conducted extensive
+              comparisons between our new techniques and previous
+              ones, on a variety of open-source packages."
+}
+
+@Inproceedings{HoweK12,
+  Author = "J. M. Howe and A. King",
+  Title = "Polyhedral Analysis Using Parametric Objectives",
+  Booktitle = "Static Analysis:
+               Proceedings of the 19th International Symposium",
+  Address = "Deauville, France",
+  Editor = "A. Mine and D. Schmidt",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7460,
+  Year = 2012,
+  Pages = "41--57",
+  Abstract = "The abstract domain of polyhedra lies at the heart of
+              many program analysis techniques. However, its
+              operations can be expensive, precluding their
+              application to polyhedra that involve many
+              variables. This paper describes a new approach to
+              computing polyhedral domain operations. The core of this
+              approach is an algorithm to calculate variable
+              elimination (projection) based on parametric linear
+              programming. The algorithm enumerates only non-redundant
+              inequalities of the projection space, hence permits
+              anytime approximation of the output."
+}
+
 @Inproceedings{HymansU04,
   Author = "C. Hymans and E. Upton",
   Title = "Static Analysis of Gated Data Dependence Graphs",
@@ -2295,6 +2919,32 @@ Summarizing:
               these control signals."
 }
 
+@Inproceedings{KopfE13,
+  Author = "B. K{\"o}pf and A. Rybalchenko ",
+  Title = "Automation of Quantitative Information-Flow Analysis",
+  Booktitle = "Formal Methods for Dynamical Systems:
+               13th International School on Formal Methods for the Design of Computer, Communication, and Software Systems, {SFM} 2013",
+  Address = "Bertinoro, Italy",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "M. Bernardo and E. de Vink and A. Di Pierro and H. Wiklicky",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "7938",
+  Pages =  "1--28",
+  Volume = 7938,
+  Year = 2013,
+  Abstract = "Quantitative information-flow analysis (QIF) is an
+              emerging technique for establishing
+              information-theoretic confidentiality
+              properties. Automation of QIF is an important step
+              towards ensuring its practical applicability, since
+              manual reasoning about program security has been shown
+              to be a tedious and expensive task. In this chapter we
+              describe a approximation and randomization techniques to
+              bear on the challenge of sufficiently precise, yet
+              efficient computation of quantitative information flow
+              properties."
+}
+
 @Inproceedings{KruegelKMRV05,
   Author = "C. Kruegel and E. Kirda and D. Mutz and W. Robertson and G. Vigna",
   Title = "Automating Mimicry Attacks Using Static Binary Analysis",
@@ -2359,6 +3009,29 @@ Summarizing:
               regularly typed programs, and demonstrate how it is able
               to prove termination of programs which the untyped
               analysis can not."
+}
+
+@Article{LarsenLTW13,
+  Author = "K. G. Larsen and A. Legay and L.-M. Traonouez and A. Wasowski",
+  Title = "Robust synthesis for real-time systems",
+  Journal = "Theoretical Computer Science",
+  Publisher = "Elsevier",
+  Volume = 515,
+  Pages =  "96--122",
+  Year = 2013,
+  Abstract = "Specification theories for real-time systems allow
+              reasoning about interfaces and their implementation
+              models, using a set of operators that includes
+              satisfaction, refinement, logical and parallel
+              composition. To make such theories applicable throughout
+              the entire design process from an abstract specification
+              to an implementation, we need to reason about the
+              possibility to effectively implement the theoretical
+              specifications on physical systems, despite their
+              limited precision. In the literature, this
+              implementation problem has been linked to the robustness
+              problem that analyzes the consequences of introducing
+              small perturbations into formal models."
 }
 
 @Inproceedings{LavironL09,
@@ -2459,6 +3132,35 @@ Summarizing:
               models. Furthermore, its audience has increased leading
               to several industrial contracts. This paper reports on
               these recent developments of Romeo."
+}
+
+@Article{LimeMR13,
+  Author = "D. Lime and C. Martinez and O. H. Roux",
+  Title = "Shrinking of Time Petri nets",
+  Journal = "Discrete Event Dynamic Systems",
+  Publisher = "Springer-Verlag, Berlin",
+  Volume = 23,
+  Number = 4,
+  Pages = "419--438",
+  Year = 2013,
+  ISSN = "0924-6703 (Print) 1573-7594 (Online)",
+  Abstract = "The problem of the synthesis of time bounds enforcing
+              good properties for reactive systems has been much
+              studied in the literature. These works mainly rely on
+              dioid algebra theory and require important restrictions
+              on the structure of the model (notably by restricting to
+              timed event graphs). In this paper, we address the
+              problems of existence and synthesis of shrinkings of the
+              bounds of the time intervals of a time Petri net, such
+              that a given property is verified. We show that this
+              problem is decidable for CTL properties on bounded time
+              Petri nets. We then propose a symbolic algorithm based
+              on the state class graph for a fragment of CTL. If the
+              desired property ``include'' k-boundedness, the proposed
+              algorithm terminates even if the net is unbounded. A
+              prototype has been implemented in our tool Romeo and the
+              method is illustrated on a small case study from the
+              literature."
 }
 
 @Inproceedings{LogozzoF08,
@@ -2757,6 +3459,31 @@ Summarizing:
               some experimental results from a prototype
               implementation of the approach covering a significant
               set of interesting resources."
+}
+
+@Article{PanizoG12,
+  Author = "L.Panizo and {M.-d.-M}. Gallardo",
+  Title = "An extension of Java PathFinder for hybrid systems",
+  Booktitle = "ACM SIGSOFT Software Engineering Notes",
+  Volume = 37,
+  Number = 6,
+  Year = 2012,
+  ISSN = "0163-5948",
+  Pages = "1--5",
+  Publisher = "ACM New York, USA",
+  Abstract = "Hybrid systems are characterized by combining discrete
+              and continuous behaviors. Verification of hybrid systems
+              is, in general, a diffcult task due to the potential
+              complexity of the continuous dynamics. Currently, there
+              are different formalisms and tools which are able to
+              analyze specific types of hybrid systems, model checking
+              being one of the most used approaches. In this paper, we
+              describe an extension of Java PathFinder in order to
+              analyze hybrid systems. We apply a general methodology
+              which has been successfully used to extend Spin. This
+              methodology is non-intrusive, and uses external
+              libraries, such as the Parma Polyhedra Library, to
+              abstract the continuous behavior of the hybrid system."
 }
 
 @Inproceedings{CuervoParrinoNVM12,
@@ -3617,6 +4344,41 @@ Summarizing:
               over previous algorithms. Several open instances could
               be solved to optimality."
 }
+[download]
+
+@Inproceedings{UpadrastaC13,
+ Author = "R. Upadrasta and A. Cohen",
+ Title = "Sub-polyhedral Scheduling Using (Unit-)Two-variable-per-inequality Polyhedra",
+ Booktitle = "Proceedings of the 40th Annual {ACM SIGPLAN-SIGACT} Symposium on Principles of Programming Languages, {POPL '13}",
+ Year = 2013,
+ ISBN = "978-1-4503-1832-7",
+ Address = "Rome, Italy",
+ Pages = "483--496",
+ Publisher = "ACM Press, New York, USA",
+ Note = "Also published in SIGPLAN Notices, Volume 48, Number 1.",
+ Abstract = "Polyhedral compilation has been successful in the design
+             and implementation of complex loop nest optimizers and
+             parallelizing compilers. The algorithmic complexity and
+             scalability limitations remain one important weakness. We
+             address it using sub-polyhedral under-aproximations of
+             the systems of constraints resulting from affine
+             scheduling problems. We propose a sub-polyhedral
+             scheduling technique using
+             (Unit-)Two-Variable-Per-Inequality or (U)TVPI
+             Polyhedra. This technique relies on simple polynomial
+             time algorithms to under-approximate a general polyhedron
+             into (U)TVPI polyhedra. We modify the state-of-the-art
+             PLuTo compiler using our scheduling technique, and show
+             that for a majority of the Polybench (2.0) kernels, the
+             above under-approximations yield polyhedra that are
+             non-empty. Solving the under-approximated system leads to
+             asymptotic gains in complexity, and shows practically
+             significant improvements when compared to a traditional
+             LP solver. We also verify that code generated by our
+             sub-polyhedral parallelization prototype matches the
+             performance of PLuTo-optimized code when the
+             under-approximation preserves feasibility."
+}
 
 @Inproceedings{vanHeeOSV06,
   Author = "K. {van Hee} and O. Oanea and N. Sidorova and M. Voorhoeve",
@@ -3843,7 +4605,7 @@ Summarizing:
 ==============================================================================
 
 <h2>ODC Attribution License (ODC-By)</h2>
-
+and,
 ### Preamble
 
 The Open Data Commons Attribution License is a license agreement
