@@ -376,6 +376,7 @@ Summarizing:
   Author = "G. Amato and M. Parton and F. Scozzari",
   Title = "Discovering Invariants via Simple Component Analysis",
   Journal = "Journal of Symbolic Computation",
+  Publisher = "Elsevier Science B.V.",
   Volume = 47,
   Number = 12,
   Year = 2012,
@@ -494,6 +495,7 @@ Summarizing:
               IM, both in terms of computational space and time, as
               shown by our experimental results."
 }
+
 @Inproceedings{AndreFS12,
   Author = "{\'E}. Andr{\'e} and L. Fribourg and R. Soulat",
   Title = "Enhancing the Inverse Method with State Merging",
@@ -2070,6 +2072,41 @@ Summarizing:
               currently working on the extension of other model
               checkers."
 }
+@Inproceedings{MihailaSS13,
+  Author = "{P.-L}. Garoche and T. Kahsai and C. Tinelli",
+  Title = "Incremental Invariant Generation Using Logic-Based Automatic Abstract Transformers",
+  Booktitle = "Proceedings of the 5th International Symposium on {NASA} Formal Methods, {NFM} 2013",
+  Editor = "G. Brat and N. Rungta and A. Venet",
+  Address = "Moffett Field, CA, USA",
+  Pages = "139--154",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7871,
+  Year = 2013,
+  Abstract = "Formal analysis tools for system models often require or
+              benefit from the availability of auxiliary system
+              invariants. Abstract interpretation is currently one of
+              the best approaches for discovering useful invariants,
+              in particular numerical ones. However, its application
+              is limited by two orthogonal issues: (i) developing an
+              abstract interpretation is often non-trivial; each
+              transfer function of the system has to be represented at
+              the abstract level, depending on the abstract domain
+              used; (ii) with precise but costly abstract domains, the
+              information computed by the abstract interpreter can be
+              used only once a post fix point has been reached; this
+              may take a long time for large systems or when widening
+              is delayed to improve precision. We propose a new,
+              completely automatic, method to build abstract
+              interpreters which, in addition, can provide sound
+              invariants of the system under analysis before reaching
+              the end of the post fix point computation. In effect,
+              such interpreters act as on-the-fly invariant generators
+              and can be used by other tools such as logic-based model
+              checkers. We present some experimental results that
+              provide initial evidence of the practical usefulness of
+              our method."
+}
 
 @PhdThesis{Gobert07th,
   Author = "F. Gobert",
@@ -3379,6 +3416,44 @@ Summarizing:
 
 }
 
+@Inproceedings{MihailaSS13,
+  Author = "B. Mihaila and A. Sepp and A. Simon",
+  Title = "Widening as Abstract Domain",
+  Booktitle = "Proceedings of the 5th International Symposium on {NASA} Formal Methods, {NFM} 2013",
+  Editor = "G. Brat and N. Rungta and A. Venet",
+  Address = "Moffett Field, CA, USA",
+  Pages = "170--174",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7871,
+  Year = 2013,
+  Abstract = "Verification using static analysis often hinges on
+              precise numeric invariants. Numeric domains of infinite
+              height can infer these invariants, but require
+              widening/narrowing which complicates the fixpoint
+              computation and is often too imprecise. As a
+              consequence, several strategies have been proposed to
+              prevent a precision loss during widening or to narrow in
+              a smarter way. Most of these strategies are difficult to
+              retrofit into an existing analysis as they either
+              require a pre-analysis, an on-the-fly modification of
+              the CFG, or modifications to the fixpoint algorithm. We
+              propose to encode widening and its various refinements
+              from the literature as cofibered abstract domains that
+              wrap standard numeric domains, thereby providing a
+              modular way to add numeric analysis to any static
+              analysis, that is, without modifying the fixpoint
+              engine. Since these domains cannot make any assumptions
+              about the structure of the program, our approach is
+              suitable to the analysis of executables, where the
+              (potentially irreducible) CFG is re-constructed
+              on-the-fly. Moreover, our domain-based approach not only
+              mirrors the precision of more intrusive approaches in
+              the literature but also requires fewer iterations to
+              find a fixpoint of loops than many heuristics that
+              merely aim for precision."
+}
+
 @Inproceedings{MoserKK07,
   Author = "A. Moser and C. Kr{\"u}gel and E. Kirda",
   Title = "Exploring Multiple Execution Paths for Malware Analysis",
@@ -3990,6 +4065,26 @@ Summarizing:
               disjuncts. We have implemented a light-weight static
               analyzer for C programs with encouraging initial
               results."
+}
+
+@Article{SchrammelJ12,
+  Author = "P. Schrammel and B. Jeannet",
+  Title = "Applying Abstract Acceleration to (Co-)Reachability Analysis of Reactive Programs",
+  Journal = "Journal of Symbolic Computation",
+  Publisher = "Elsevier Science B.V.",
+  Volume = 47,
+  Number = 12,
+  Year = 2012,
+  Pages = "1512--1532",
+  Abstract = "We propose a new technique combining dynamic and static
+              analysis of programs to find linear invariants. We use a
+              statistical tool, called simple component analysis, to
+              analyze partial execution traces of a given program. We
+              get a new coordinate system in the vector space of
+              program variables, which is used to specialize numerical
+              abstract domains. As an application, we instantiate our
+              technique to interval analysis of simple imperative
+              programs and show some experimental evaluations."
 }
 
 @Inproceedings{Simon10a,
