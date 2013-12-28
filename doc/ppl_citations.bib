@@ -1401,6 +1401,45 @@ Summarizing:
               implementation over several benchmark systems."
 }
 
+@Inproceedings{CostantiniFM13,
+  author    = "G. Costantini and P. Ferrara and G. Maggiore",
+  title     = "The Domain of Parametric Hypercubes for Static Analysis of Computer Games Software",
+  Booktitle = "Formal Methods and Software Engineering:
+               Proceedings of 15th International Conference on Formal
+               Engineering Methods, {ICFEM} 2013",
+  Address = "Queenstown, New Zealand",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "L. Groves and J. Sun",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-41201-1 (Print) 978-3-642-41202-8 (Online)",
+  Pages =  "447--463",
+  Volume = 8144,
+  Year = 2013,
+  Abstract = "Computer Games Software deeply relies on physics
+              simulations, which are particularly demanding to analyze
+              because they manipulate a large amount of interleaving
+              floating point variables. Therefore, this application
+              domain is an interesting workbench to stress the
+              trade-off between accuracy and efficiency of abstract
+              domains for static analysis.
+
+              In this paper, we introduce Parametric Hypercubes, a
+              novel disjunctive non-relational abstract domain. Its
+              main features are: (i) it combines the low computational
+              cost of operations on (selected) multidimensional
+              intervals with the accuracy provided by lifting to a
+              power-set disjunctive domain, (ii) the compact
+              representation of its elements allows to limit the space
+              complexity of the analysis, and (iii) the parametric
+              nature of the domain provides a way to tune the
+              accuracy/efficiency of the analysis by just setting the
+              widths of the hypercubes sides.
+
+              The first experimental results on a representative
+              Computer Games case study outline both the efficiency
+              and the precision of the proposal."
+}
+
 @Inproceedings{CovaFBV06,
   Author = "M. Cova and V. Felmetsger and G. Banks and G. Vigna",
   Title = "Static Detection of Vulnerabilities in x86 Executables",
@@ -2127,7 +2166,7 @@ Summarizing:
               checkers."
 }
 
-@Inproceedings{MihailaSS13a,
+@Inproceedings{GarocheKT13,
   Author = "P.-L. Garoche and T. Kahsai and C. Tinelli",
   Title = "Incremental Invariant Generation Using Logic-Based Automatic Abstract Transformers",
   Booktitle = "NASA Formal Methods:
@@ -2162,6 +2201,40 @@ Summarizing:
               checkers. We present some experimental results that
               provide initial evidence of the practical usefulness of
               our method."
+}
+
+@Inproceedings{GhorbalIBMG12,
+  Author = "K Ghorbal and F Ivan{\vc}i{\'c} and G Balakrishnan and N Maeda",
+  Title = "Donut Domains:
+           Efficient Non-convex Domains for Abstract Interpretation",
+  Booktitle = "Verification, Model Checking, and Abstract Interpretation:
+               Proceedings of the 13th International Conference ({VMCAI} 2012)",
+  Address = "Philadelphia, PA, USA",
+  Editor = "V. Kuncak and A. Rybalchenko",
+  Publisher = "Springer-Verlag, Berlin",
+  Volume = 7148,
+  Year = 2012,
+  Pages = "235--250",
+  ISBN = "978-3-642-27939-3 (Print) 978-3-642-27940-9 (Online)",
+  Abstract = "Program analysis using abstract interpretation has been
+              successfully applied in practice to find runtime bugs or
+              prove software correct. Most abstract domains that are
+              used widely rely on convexity for their
+              scalability. However, the ability to express non-convex
+              properties is sometimes required in order to achieve a
+              precise analysis of some numerical properties. This work
+              combines already known abstract domains in a novel way
+              in order to design new abstract domains that tackle some
+              non-convex invariants. The abstract objects of interest
+              are encoded as a pair of two convex abstract objects:
+              the first abstract object defines an over-approximation
+              of the possible reached values, as is done
+              customarily. The second abstract object
+              under-approximates the set of impossible values within
+              the state-space of the first abstract object. Therefore,
+              the geometrical concretization of our objects is defined
+              by a convex set minus another convex set (or hole). We
+              thus call these domains donut domains."
 }
 
 @PhdThesis{Gobert07th,
@@ -3599,7 +3672,7 @@ Summarizing:
 @Article{PanizoG12,
   Author = "L. Panizo and M.-d.-M. Gallardo",
   Title = "An extension of Java PathFinder for hybrid systems",
-  Booktitle = "ACM SIGSOFT Software Engineering Notes",
+  Journal = "ACM SIGSOFT Software Engineering Notes",
   Volume = 37,
   Number = 6,
   Year = 2012,
