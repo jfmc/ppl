@@ -18,6 +18,49 @@ Summarizing:
   intact any notices on the original database.
 
 
+@Inproceedings{AlbarghouthiG12,
+  Author = "A. Albarghouthi and A. Gurfinkel and M. Chechik",
+  Title = "Craig Interpretation",
+  Booktitle = "Static Analysis:
+               Proceedings of the 19th International Symposium",
+  Address = "Deauville, France",
+  Editor = "A. Min{'e} and D. Schmidt",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7460,
+  Year = 2012,
+  ISBN = "978-3-642-33124-4 (Print) 978-3-642-33125-1 (Online)",
+  Pages = "300--316",
+  Abstract = "Abstract interpretation (AI) is one of the most scalable
+              automated approaches to program verification available
+              today. To achieve efficiency, many steps of the
+              analysis, e.g., joins and widening, lose precision. As a
+              result, AI often produces false alarms, coming from the
+              inability to find a safe inductive invariant even when
+              it exists in a chosen abstract domain.
+
+              To tackle this problem, we present Vinta, an iterative
+              algorithm that uses Craig interpolants to refine and
+              guide AI away from false alarms. Vinta is based on a
+              novel refinement strategy that capitalizes on recent
+              advances in SMT and interpolation-based verification to
+              (a) find counterexamples to justify alarms produced by
+              AI, and (b) to strengthen an invariant to exclude alarms
+              that cannot be justified. The refinement process
+              continues until either a safe inductive invariant is
+              computed, a counterexample is found, or resources are
+              exhausted. This strategy allows Vinta to recover
+              precision lost in many AI steps, and even to compute
+              inductive invariants that are inexpressible in the
+              chosen abstract domain (e.g., by adding disjunctions and
+              new terms).
+
+              We have implemented Vinta and compared it against top
+              verification tools from the recent software verification
+              competition. Our results show that Vinta outperforms
+              state-of-the-art verification tools."
+}
+
 @Inproceedings{AlbertACGPZ08,
   Author = "E. Albert and P. Arenas and M. Codish and S. Genaim
             and G. Puebla and D. Zanardini",
@@ -2753,7 +2796,7 @@ Summarizing:
   Booktitle = "Static Analysis:
                Proceedings of the 19th International Symposium",
   Address = "Deauville, France",
-  Editor = "A. Mine and D. Schmidt",
+  Editor = "A. Min{'e} and D. Schmidt",
   Publisher = "Springer-Verlag, Berlin",
   Series = "Lecture Notes in Computer Science",
   Volume = 7460,
@@ -2787,7 +2830,7 @@ Summarizing:
   Booktitle = "Static Analysis:
                Proceedings of the 19th International Symposium",
   Address = "Deauville, France",
-  Editor = "A. Mine and D. Schmidt",
+  Editor = "A. Min{'e} and D. Schmidt",
   Publisher = "Springer-Verlag, Berlin",
   Series = "Lecture Notes in Computer Science",
   Volume = 7460,
@@ -3569,6 +3612,56 @@ Summarizing:
               abstract the continuous behavior of the hybrid system."
 }
 
+@Inproceedings{PartushY13,
+  Author = "N. Partush and E. Yahav",
+  Title = "Abstract Semantic Differencing for Numerical Programs",
+  Booktitle = "Static Analysis:
+               Proceedings of the 20th International Symposium",
+  Address = "Seattle, WA, USA",
+  Editor = "F. Logozzo and M. F{\"a}hndrich",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7935,
+  Pages = "238--258",
+  Year = 2013,
+  ISBN = "978-3-642-38855-2 (Print) 978-3-642-38856-9 (Online)",
+  Abstract = "We address the problem of computing semantic differences
+              between a program and a patched version of the
+              program. Our goal is to obtain a precise
+              characterization of the difference between program
+              versions, or establish their equivalence when no
+              difference exists.
+
+              We focus on computing semantic differences in numerical
+              programs where the values of variables have no a-priori
+              bounds, and use abstract interpretation to compute an
+              over-approximation of program differences. Computing
+              differences and establishing equivalence under
+              abstraction requires abstracting relationships between
+              variables in the two programs. Towards that end, we
+              first construct a correlating program in which these
+              relationships can be tracked, and then use a correlating
+              abstract domain to compute a sound approximation of
+              these relationships. To better establish equivalence
+              between correlated variables and precisely capture
+              differences, our domain has to represent non-convex
+              information using a partially-disjunctive abstract
+              domain. To balance precision and cost of this
+              representation, our domain over-approximates numerical
+              information while preserving equivalence between
+              correlated variables by dynamically partitioning the
+              disjunctive state according to equivalence criteria.
+
+              We have implemented our approach in a tool called DIZY,
+              and applied it to a number of real-world examples,
+              including programs from the GNU core utilities, Mozilla
+              Firefox and the Linux Kernel. Our evaluation shows that
+              DIZY often manages to establish equivalence, describes
+              precise approximation of semantic differences when
+              difference exists, and reports only a few false
+              differences."
+}
+
 @Inproceedings{CuervoParrinoNVM12,
   Author = "B. {Cuervo Parrino} and J. Narboux and E. Violard and N. Magaud",
   Title = "Dealing with Arithmetic Overflows in the Polyhedral Model",
@@ -4092,6 +4185,40 @@ Summarizing:
               abstract domains. As an application, we instantiate our
               technique to interval analysis of simple imperative
               programs and show some experimental evaluations."
+}
+
+@Inproceedings{SharmaGHAN13,
+  Author = "R. Sharma and S. Gupta and B. Hariharan and A. Aiken and AV. Nori",
+  Title = "Verification as Learning Geometric Concepts",
+  Booktitle = "Static Analysis:
+               Proceedings of the 20th International Symposium",
+  Address = "Seattle, USA",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "F. Logozzo and M. F{\"a}hndrich",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-38855-2 (Print) 978-3-642-38856-9 (Online)",
+  Pages =  "388--411",
+  Volume = 7935,
+  Year = 2013,
+  Abstract = "We formalize the problem of program verification as a
+              learning problem, showing that invariants in program
+              verification can be regarded as geometric concepts in
+              machine learning. Safety properties define bad states:
+              states a program should not reach. Program verification
+              explains why a program’s set of reachable states is
+              disjoint from the set of bad states. In Hoare Logic,
+              these explanations are predicates that form inductive
+              assertions. Using samples for reachable and bad states
+              and by applying well known machine learning algorithms
+              for classification, we are able to generate inductive
+              assertions. By relaxing the search for an exact proof to
+              classifiers, we obtain complexity theoretic
+              improvements. Further, we extend the learning algorithm
+              to obtain a sound procedure that can generate proofs
+              containing invariants that are arbitrary boolean
+              combinations of polynomial inequalities. We have
+              evaluated our approach on a number of challenging
+              benchmarks and the results are promising."
 }
 
 @Inproceedings{Simon10a,
@@ -4702,6 +4829,44 @@ Summarizing:
               deal with the tradeoff between efficiency and accuracy
               by tuning the granularity of the abstraction and the
               complexity of the abstract operators."
+}
+
+@Incollection{ZuffereyWH12,
+  Author = "D. Zufferey and T. Wies and T. A. Henzinger",
+  Title = "Ideal Abstractions for Well-Structured Transition Systems",
+  Booktitle = "Proceedings of 13th International Conference on Verification, Model Checking, and Abstract Interpretation, {VMCAI} 2012",
+  Series = "Lecture Notes in Computer Science",
+  Editor = "V. Kuncak and A. Rybalchenko",
+  Publisher = "Springer-Verlag, Berlin",
+  ISBN = "978-3-642-27939-3 (Print) 978-3-642-27940-9 (Online)",
+  Pages =  "445--460",
+  Volume = 7148,
+  Year = 2012,
+  Abstract = "Many infinite state systems can be seen as
+              well-structured transition systems (WSTS), i.e., systems
+              equipped with a well-quasi-ordering on states that is
+              also a simulation relation. WSTS are an attractive
+              target for formal analysis because there exist generic
+              algorithms that decide interesting verification problems
+              for this class. Among the most popular algorithms are
+              acceleration-based forward analyses for computing the
+              covering set. Termination of these algorithms can only
+              be guaranteed for flattable WSTS. Yet, many WSTS of
+              practical interest are not flattable and the question
+              whether any given WSTS is flattable is itself
+              undecidable. We therefore propose an analysis that
+              computes the covering set and captures the essence of
+              acceleration-based algorithms, but sacrifices precision
+              for guaranteed termination. Our analysis is an abstract
+              interpretation whose abstract domain builds on the ideal
+              completion of the well-quasi-ordered state space, and a
+              widening operator that mimics acceleration and controls
+              the loss of precision of the analysis. We present
+              instances of our framework for various classes of
+              WSTS. Our experience with a prototype implementation
+              indicates that, despite the inherent precision loss, our
+              analysis often computes the precise covering set of the
+              analyzed system."
 }
 
 ==============================================================================
