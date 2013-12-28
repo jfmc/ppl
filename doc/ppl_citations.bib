@@ -1043,6 +1043,45 @@ Summarizing:
               number of test cases."
 }
 
+@InProceedings{BozgaIK12,
+  Author = "M. Bozga and R. Iosif and F. Kone\vcn\'y",
+  Title = "Deciding Conditional Termination",
+  Booktitle = "Tools and Algorithms for the Construction and Analysis
+               of Systems:
+               18th International Conference, {TACAS} 2012",
+  Address = "Tallinn, Estonia",
+  Editor = "C. Flanagan and B. K{\"o}nig",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7214,
+  ISBN = "978-3-642-28755-8 (Print) 978-3-642-28756-5 (Online)",
+  Pages = "252--266",
+  Year = 2012,
+  Abstract = "This paper addresses the problem of conditional
+              termination, which is that of defining the set of
+              initial configurations from which a given program
+              terminates. First we define the dual set, of initial
+              configurations, from which a non-terminating execution
+              exists, as the greatest fixpoint of the pre-image of the
+              transition relation. This definition enables the
+              representation of this set, whenever the closed form of
+              the relation of the loop is definable in a logic that
+              has quantifier elimination. This entails the
+              decidability of the termination problem for such
+              loops. Second, we present effective ways to compute the
+              weakest precondition for non-termination for difference
+              bounds and octagonal (non-deterministic) relations, by
+              avoiding complex quantifier eliminations. We also
+              investigate the existence of linear ranking functions
+              for such loops. Finally, we study the class of linear
+              affine relations and give a method of
+              under-approximating the termination precondition for a
+              non-trivial subclass of affine relations. We have
+              performed preliminary experiments on transition systems
+              modeling real-life systems, and have obtained
+              encouraging results."
+}
+
 @Inproceedings{BramanM08,
   Title = "Safety Verification of Fault Tolerant Goal-based Control Programs
            with Estimation Uncertainty",
@@ -3090,6 +3129,40 @@ Summarizing:
               interpretation."
 }
 
+@InCollection{KapurZHZLN13,
+  Author = "D. Kapur and Z. Zhang and M. Horbach and H. Zhao and Q. Lu and T. Nguyen",
+  Title = "Geometric Quantifier Elimination Heuristics for Automatically Generating Octagonal and Max-plus Invariants",
+  Booktitle = "Automated Reasoning and Mathematics:
+               Essays in Memory of William W. McCune",
+  Editor = "M. P. Bonacina and M. E. Stickel",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7788,
+  Pages = "189--228",
+  Year = 2013,
+  ISBN = "978-3-642-36674-1 (Print) 978-3-642-36675-8 (Online)",
+  Abstract = "Geometric heuristics for the quantifier elimination
+              approach presented by Kapur (2004) are investigated to
+              automatically derive loop invariants expressing weakly
+              relational numerical properties (such as l =< x =< h or
+              l =< +/- x +/- y =< h) for imperative programs. Such properties
+              have been successfully used to analyze commercial
+              software consisting of hundreds of thousands of lines of
+              code (using for example, the Astr\'ee tool based on
+              abstract interpretation framework proposed by Cousot and
+              his group). The main attraction of the proposed approach
+              is its much lower complexity in contrast to the abstract
+              interpretation approach (O(n^2) in contrast to O(n^4),
+              where n is the number of variables) with the ability to
+              still generate invariants of comparable strength. This
+              approach has been generalized to consider disjunctive
+              invariants of the similar form, expressed using maximum
+              function (such as max (x + a,y + b,z + c,d) ≤ max
+              (x + e,y + f,z + g,h)), thus enabling automatic
+              generation of a subclass of disjunctive invariants for
+              imperative programs as well."
+}
+
 @Incollection {KhalilGP09,
   Author = "G. Khalil and E. Goubault and S. Putot",
   Title = "The Zonotope Abstract Domain {Taylor1+}",
@@ -3604,6 +3677,28 @@ Summarizing:
 
 }
 
+@Article{MonniauxG12,
+  Author = "D. Monniaux and J. {Le Guen}",
+  Title = "Stratified Static Analysis Based on Variable Dependencies",
+  Journal = "Electronic Notes in Theoretical Computer Science ({ENTCS})",
+  Publisher = "Elsevier Science Publishers B. V.",
+  Address = "Amsterdam, The Netherlands",
+  Volume = 288,
+  Pages = "61--74",
+  Year = 2012,
+  ISSN = "1571-0661",
+  Abstract = "In static analysis by abstract interpretation, one often
+              uses widening operators in order to enforce convergence
+              within finite time to an inductive invariant. Certain
+              widening operators, including the classical one over
+              finite polyhedra, exhibit an unintuitive behavior:
+              analyzing the program over a subset of its variables may
+              lead a more precise result than analyzing the original
+              program! In this article, we present simple workarounds
+              for such behavior."
+
+}
+
 @Inproceedings{MihailaSS13b,
   Author = "B. Mihaila and A. Sepp and A. Simon",
   Title = "Widening as Abstract Domain",
@@ -4024,6 +4119,26 @@ Summarizing:
               where the relational domain and the proposed operators
               can progressively enhance precision at a reasonable
               cost."
+}
+
+@article{LuMMRFL12,
+  Author = "Q. Lu and M. Madsen and M. Milata and S. Ravn and U. Fahrenberg and K. G. Larsen",
+  Title = "Reachability analysis for timed automata using max-plus algebra",
+  ISSN = "1567-8326",
+  Journal = "Journal of Logic and Algebraic Programming",
+  Volume = 81,
+  Number = 3,
+  Year = 2012,
+  Abstract = "We show that max-plus polyhedra are usable as a data
+             structure in reachability analysis of timed
+             automata. Drawing inspiration from the extensive work
+             that has been done on difference bound matrices, as well
+             as previous work on max-plus polyhedra in other areas, we
+             develop the algorithms needed to perform forward and
+             backward reachability analysis using max-plus
+             polyhedra. To show that the approach works in practice
+             and theory alike, we have created a proof-of-concept
+             implementation on top of the model checker opaal."
 }
 
 @Article{RizkBFS09,
