@@ -3687,6 +3687,52 @@ Summarizing:
               for hybrid systems."
 }
 
+@Article{MardzielMHS13,
+  Title = "Dynamic Enforcement of Knowledge-based Security Policies
+           using Probabilistic Abstract Interpretation",
+  Author = "P. Mardziel and S. Magill and M. Hicks and M. Srivatsa",
+  Year = 2013,
+  Journal = "Journal of Computer Security",
+  Volume = 21,
+  Number = 4,
+  Pages = "463--532",
+  ISSN = "0926-227X (Print) 1875-8924 (Online)",
+  Publisher = "IOS Press",
+  Abstract = "This paper explores the idea of knowledge-based security
+              policies, which are used to decide whether to answer
+              queries over secret data based on an estimation of the
+              querier's (possibly increased) knowledge given the
+              results. Limiting knowledge is the goal of existing
+              information release policies that employ mechanisms such
+              as noising, anonymization, and
+              redaction. Knowledge-based policies are more general:
+              they increase flexibility by not fixing the means to
+              restrict information flow. We enforce a knowledge-based
+              policy by explicitly tracking a model of a querier's
+              belief about secret data, represented as a probability
+              distribution, and denying any query that could increase
+              knowledge above a given threshold. We implement query
+              analysis and belief tracking via abstract
+              interpretation, which allows us to trade off precision
+              and performance through the use of abstraction. We have
+              developed an approach to augment standard abstract
+              domains to include probabilities, and thus define
+              distributions. We focus on developing probabilistic
+              polyhedra in particular, to support numeric
+              programs. While probabilistic abstract interpretation
+              has been considered before, our domain is the first
+              whose design supports sound conditioning, which is
+              required to ensure that estimates of a querier's
+              knowledge are accurate. Experiments with our
+              implementation show that several useful queries can be
+              handled efficiently, particularly compared to exact
+              (i.e., sound) inference involving sampling. We also show
+              that, for our benchmarks, restricting constraints to
+              octagons or intervals, rather than full polyhedra, can
+              dramatically improve performance while incurring little
+              to no loss in precision."
+}
+
 @Inproceedings{ManevichSRF04,
   Author = "R. Manevich and M. Sagiv and G. Ramalingam and J. Field",
   Title = "Partially Disjunctive Heap Abstraction",
@@ -3829,6 +3875,45 @@ Summarizing:
               respectable size and complexity."
 }
 
+@Inproceedings{MihailaSS13,
+  Author = "B. Mihaila and A. Sepp and A. Simon",
+  Title = "Widening as Abstract Domain",
+  Booktitle = "NASA Formal Methods:
+               Proceedings of the 5th International Symposium (NFM 2013)",
+  Editor = "G. Brat and N. Rungta and A. Venet",
+  Address = "Moffett Field, CA, USA",
+  Pages = "170--174",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 7871,
+  Year = 2013,
+  Abstract = "Verification using static analysis often hinges on
+              precise numeric invariants. Numeric domains of infinite
+              height can infer these invariants, but require
+              widening/narrowing which complicates the fixpoint
+              computation and is often too imprecise. As a
+              consequence, several strategies have been proposed to
+              prevent a precision loss during widening or to narrow in
+              a smarter way. Most of these strategies are difficult to
+              retrofit into an existing analysis as they either
+              require a pre-analysis, an on-the-fly modification of
+              the CFG, or modifications to the fixpoint algorithm. We
+              propose to encode widening and its various refinements
+              from the literature as cofibered abstract domains that
+              wrap standard numeric domains, thereby providing a
+              modular way to add numeric analysis to any static
+              analysis, that is, without modifying the fixpoint
+              engine. Since these domains cannot make any assumptions
+              about the structure of the program, our approach is
+              suitable to the analysis of executables, where the
+              (potentially irreducible) CFG is re-constructed
+              on-the-fly. Moreover, our domain-based approach not only
+              mirrors the precision of more intrusive approaches in
+              the literature but also requires fewer iterations to
+              find a fixpoint of loops than many heuristics that
+              merely aim for precision."
+}
+
 @Inproceedings{MonniauxG11,
   Author = "D. Monniaux and J. {Le Guen}",
   Title = "Stratified Static Analysis Based on Variable Dependencies",
@@ -3869,45 +3954,6 @@ Summarizing:
               program! In this article, we present simple workarounds
               for such behavior."
 
-}
-
-@Inproceedings{MihailaSS13,
-  Author = "B. Mihaila and A. Sepp and A. Simon",
-  Title = "Widening as Abstract Domain",
-  Booktitle = "NASA Formal Methods:
-               Proceedings of the 5th International Symposium (NFM 2013)",
-  Editor = "G. Brat and N. Rungta and A. Venet",
-  Address = "Moffett Field, CA, USA",
-  Pages = "170--174",
-  Publisher = "Springer-Verlag, Berlin",
-  Series = "Lecture Notes in Computer Science",
-  Volume = 7871,
-  Year = 2013,
-  Abstract = "Verification using static analysis often hinges on
-              precise numeric invariants. Numeric domains of infinite
-              height can infer these invariants, but require
-              widening/narrowing which complicates the fixpoint
-              computation and is often too imprecise. As a
-              consequence, several strategies have been proposed to
-              prevent a precision loss during widening or to narrow in
-              a smarter way. Most of these strategies are difficult to
-              retrofit into an existing analysis as they either
-              require a pre-analysis, an on-the-fly modification of
-              the CFG, or modifications to the fixpoint algorithm. We
-              propose to encode widening and its various refinements
-              from the literature as cofibered abstract domains that
-              wrap standard numeric domains, thereby providing a
-              modular way to add numeric analysis to any static
-              analysis, that is, without modifying the fixpoint
-              engine. Since these domains cannot make any assumptions
-              about the structure of the program, our approach is
-              suitable to the analysis of executables, where the
-              (potentially irreducible) CFG is re-constructed
-              on-the-fly. Moreover, our domain-based approach not only
-              mirrors the precision of more intrusive approaches in
-              the literature but also requires fewer iterations to
-              find a fixpoint of loops than many heuristics that
-              merely aim for precision."
 }
 
 @Incollection{MontenegroSEP12,
@@ -4323,6 +4369,50 @@ Summarizing:
               can progressively enhance precision at a reasonable
               cost."
 }
+@Inproceedings{RastogiMMH13,
+  Author = "A. Rastogi and P. Mardziel and M. Hammer and M. Hicks",
+  Title = "Knowledge Inference for Optimizing Secure Multi-party Computation",
+  Year = 2013,
+  Booktitle = "{PLAS} '13:
+               Proceedings of the Eighth ACM SIGPLAN Workshop on
+               Programming Languages and Analysis for Security",
+  Editor = "P. Naldurg",
+  ISBN = "978-1-4503-2144-0",
+  Address = "Seattle, Washington, USA",
+  Publisher = "ACM Press, New York, USA",
+  Pages = "3--14",
+  Abstract = "In secure multi-party computation, mutually distrusting
+              parties cooperatively compute functions of their private
+              data; in the process, they only learn certain results as
+              per the protocol (e.g., the final output). The
+              realization of these protocols uses cryptographic
+              techniques to avoid leaking information between the
+              parties. A protocol for a secure computation can
+              sometimes be optimized without changing its security
+              guarantee: when the parties can use their private data
+              and the revealed output to infer the values of other
+              data, then this other data need not be concealed from
+              them via cryptography.
+
+              In the context of automatically optimizing secure
+              multi-party computation, we define two related problems,
+              knowledge inference and constructive knowledge
+              inference. In both problems, we attempt to automatically
+              discover when and if intermediate variables used in a
+              protocol will (eventually) be known to the parties
+              involved in the computation. Provably-known variables
+              offer optimization opportunities.
+
+              We formally state the problem of knowledge inference
+              (and its constructive variant); we describe our
+              solutions, which are built atop existing, standard
+              technology such as SMT solvers. We show that our
+              approach is sound, and further, we characterize the
+              completeness properties enjoyed by our approach. We have
+              implemented our approach, and present a preliminary
+              experimental evaluation."
+}
+
 
 @Article{RizkBFS09,
   Author = "A. Rizk and G. Batt and F. Fages and S. Soliman",
