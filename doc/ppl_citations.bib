@@ -3733,6 +3733,42 @@ Summarizing:
               to no loss in precision."
 }
 
+@Inproceedings{MardzielMMS11,
+  Title = "Dynamic Enforcement of Knowledge-based Security Policies",
+  Author = "P. Mardziel and S. Magill and M. Hicks and M. Srivatsa",
+  Year = 2011,
+  Booktitle = "Proceedings of the 24th IEEE Computer Security
+               Foundations Symposium ({CSF})",
+  Publisher = "IEEE Xplore Digital Library",
+  Address = "New Orleans, Louisiana, USA",
+  Editor = "M. Backes and S.Zdancewic",
+  Pages = "114--128",
+  ISBN = "978-0-7695-4365-9",
+  Abstract = "This paper explores the idea of knowledge-based security
+              policies, which are used to decide whether to answer
+              queries over secret data based on an estimation of the
+              querier's (possibly increased) knowledge given the
+              results. Limiting knowledge is the goal of existing
+              information release policies that employ mechanisms such
+              as noising, anonymization, and
+              redaction. Knowledge-based policies are more general:
+              they increase flexibility by not fixing the means to
+              restrict information flow. We enforce a knowledge-based
+              policy by explicitly tracking a model of a querier's
+              belief about secret data, represented as a probability
+              distribution, and denying any query that could increase
+              knowledge above a given threshold. We implement query
+              analysis and belief tracking via abstract interpretation
+              using a novel probabilistic polyhedral domain, whose
+              design permits trading off precision with performance
+              while ensuring estimates of a querier's knowledge are
+              sound. Experiments with our implementation show that
+              several useful queries can be handled efficiently, and
+              performance scales far better than would more standard
+              implementations of probabilistic computation based on
+              sampling."
+}
+
 @Inproceedings{ManevichSRF04,
   Author = "R. Manevich and M. Sagiv and G. Ramalingam and J. Field",
   Title = "Partially Disjunctive Heap Abstraction",
