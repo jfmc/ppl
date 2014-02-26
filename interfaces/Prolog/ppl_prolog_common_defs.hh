@@ -324,9 +324,6 @@ public:
   }
 };
 
-// For Prolog lists.
-extern Prolog_atom a_nil;
-
 // For variables.
 extern Prolog_atom a_dollar_VAR;
 

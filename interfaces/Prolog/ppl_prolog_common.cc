@@ -57,9 +57,6 @@ Allocation_Tracker allocation_tracker;
 // For the out-of-memory exception.
 Prolog_atom out_of_memory_exception_atom;
 
-// For Prolog lists.
-Prolog_atom a_nil;
-
 // For variables.
 Prolog_atom a_dollar_VAR;
 
@@ -193,8 +190,6 @@ Prolog_atom a_found;
 Prolog_atom a_where;
 
 const Prolog_Interface_Atom prolog_interface_atoms[] = {
-  { &a_nil,                      "[]" },
-
   { &a_dollar_VAR,               "$VAR" },
 
   { &a_plus,                     "+" },
