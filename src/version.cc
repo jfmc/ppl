@@ -31,7 +31,7 @@ namespace {
 const char version_string[] = PPL_PACKAGE_VERSION;
 
 const char banner_string[] =
-"This is "PPL_PACKAGE_NAME" (PPL) version "PPL_PACKAGE_VERSION".\n"
+"This is " PPL_PACKAGE_NAME " (PPL) version " PPL_PACKAGE_VERSION ".\n"
 "Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>\n"
 "Copyright (C) 2010-2014 BUGSENG srl (http://bugseng.com)\n"
 "\n"
@@ -48,12 +48,12 @@ const char banner_string[] =
 #define xstr(s) str(s)
 "Compiled by the Intel C++ compiler version "xstr(__INTEL_COMPILER)".\n"
 #elif defined(__GNUC__)
-"Compiled by the GNU C++ compiler version "__VERSION__".\n"
+"Compiled by the GNU C++ compiler version " __VERSION__ ".\n"
 #else
 "Compiled by an unknown compiler.\n"
 #endif
 "\n"
-"Report bugs to "PPL_PACKAGE_BUGREPORT"."
+"Report bugs to " PPL_PACKAGE_BUGREPORT "."
 "  For the most up-to-date information\n"
 "see the Parma Polyhedra Library site: http://bugseng.com/products/ppl/ .\n"
 "\n"
