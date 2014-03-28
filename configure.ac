@@ -280,7 +280,6 @@ int main() {
   AC_LANG_POP(C++)
 fi
 
-
 AC_PROG_FGREP
 AC_PROG_EGREP
 AC_PROG_SED
@@ -1620,6 +1619,8 @@ then
   fi
 fi
 
+# Check if the C++ compiler supports C++11 features.
+AC_CHECK_CXX11
 
 AC_SUBST(LIBEXT, [$libext])
 AC_SUBST(SHREXT, [$shrext_cmds])
