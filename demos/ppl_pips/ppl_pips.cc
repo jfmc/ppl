@@ -538,7 +538,7 @@ std::istream* input_stream_p = 0;
 
 void
 set_input(const char* file_name) {
-  if (input_stream_p && *input_stream_p != std::cin)
+  if (input_stream_p && (input_stream_p != &std::cin))
     delete input_stream_p;
 
   if (file_name) {
@@ -558,7 +558,7 @@ std::ostream* output_stream_p = 0;
 
 void
 set_output(const char* file_name) {
-  if (output_stream_p && *output_stream_p != std::cout)
+  if (output_stream_p && (output_stream_p != &std::cout))
     delete output_stream_p;
 
   if (file_name) {
