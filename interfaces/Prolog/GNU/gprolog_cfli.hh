@@ -252,6 +252,16 @@ Prolog_construct_cons(Prolog_term_ref& c,
 }
 
 /*!
+  Assign to \p t the list terminator <CODE>[]</CODE> (which needs not
+  be an atom).
+*/
+inline int
+Prolog_put_nil(Prolog_term_ref& t) {
+  t = Mk_Atom(atom_nil);
+  return 1;
+}
+
+/*!
   Assign to \p t a term representing the address contained in \p p.
 */
 inline int
@@ -429,6 +439,21 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   static int dummy_arity;
   a = Rd_Compound_Check(t, &dummy_name, &dummy_arity)[i-1];
   return 1;
+}
+
+/*!
+  Succeeds if and only if \p t represents the list terminator <CODE>[]</CODE>
+  (which needs not be an atom).
+*/
+inline int
+Prolog_get_nil(Prolog_term_ref t) {
+  if (Blt_Atom(t) == FALSE) {
+    return 0;
+  }
+  else {
+    int a = atom_nil;
+    return Rd_Atom_Check(t) == a;
+  }
 }
 
 /*!
