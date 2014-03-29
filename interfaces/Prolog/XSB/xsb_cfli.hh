@@ -93,6 +93,16 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 }
 
 /*!
+  Assign to \p t the list terminator <CODE>[]</CODE> (which needs not
+  be an atom).
+*/
+inline int
+Prolog_put_nil(Prolog_term_ref& t) {
+  assert(is_var(t) == TRUE);
+  return c2p_nil(t) != FALSE;
+}
+
+/*!
   Assign to \p t an atom whose name is given
   by the null-terminated string \p s.
 */
@@ -322,6 +332,15 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   assert(Prolog_is_compound(t));
   a = p2p_arg(t, i);
   return 1;
+}
+
+/*!
+  Succeeds if and only if \p t represents the list terminator <CODE>[]</CODE>
+  (which needs not be an atom).
+*/
+inline int
+Prolog_get_nil(Prolog_term_ref t) {
+  return is_nil(t) != FALSE;
 }
 
 /*!
