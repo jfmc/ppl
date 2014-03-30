@@ -1000,7 +1000,6 @@ Octagonal_Shape<T>::minimized_congruences() const {
   // Strong closure is necessary to detect emptiness
   // and all (possibly implicit) equalities.
   strong_closure_assign();
-  const dimension_type space_dim = space_dimension();
   Congruence_System cgs(space_dim);
 
   if (space_dim == 0) {
@@ -1267,7 +1266,6 @@ Octagonal_Shape<T>::contains_integer_point() const {
   // Force strong closure.
   if (is_empty())
     return false;
-  const dimension_type space_dim = space_dimension();
   if (space_dim == 0)
     return true;
 
@@ -1316,7 +1314,6 @@ bool
 Octagonal_Shape<T>::frequency(const Linear_Expression& expr,
                               Coefficient& freq_n, Coefficient& freq_d,
                               Coefficient& val_n, Coefficient& val_d) const {
-  dimension_type space_dim = space_dimension();
   // The dimension of `expr' must be at most the dimension of *this.
   if (space_dim < expr.space_dimension())
     throw_dimension_incompatible("frequency(e, ...)", "e", expr);
@@ -2552,7 +2549,6 @@ bool
 Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
   PPL_ASSERT(std::numeric_limits<N>::is_integer);
   PPL_ASSERT(marked_strongly_closed());
-  const dimension_type space_dim = space_dimension();
   for (dimension_type i = 0; i < 2*space_dim; i += 2) {
     const dimension_type ci = i + 1;
     const N& mat_i_ci = matrix[i][ci];
@@ -2583,7 +2579,6 @@ Octagonal_Shape<T>::tight_closure_assign() {
     // Tighten the unary constraints.
     PPL_DIRTY_TEMP(N, temp_one);
     assign_r(temp_one, 1, ROUND_NOT_NEEDED);
-    const dimension_type space_dim = space_dimension();
     for (dimension_type i = 0; i < 2*space_dim; i += 2) {
       const dimension_type ci = i + 1;
       N& mat_i_ci = matrix[i][ci];
@@ -6927,7 +6922,6 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
 template <typename T>
 Constraint_System
 Octagonal_Shape<T>::constraints() const {
-  const dimension_type space_dim = space_dimension();
   Constraint_System cs;
   cs.set_space_dimension(space_dim);
 
@@ -7543,7 +7537,6 @@ Octagonal_Shape<T>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<T>::is_integer)
     return;
 
-  const dimension_type space_dim = space_dimension();
   strong_closure_assign();
   if (space_dim == 0 || marked_empty())
     return;
