@@ -167,6 +167,7 @@ ppl_yap_la_DEPENDENCIES = \
 
 ppl_yap_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version
 
 pkgdata_DATA = ppl_yap.pl

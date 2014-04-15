@@ -77,6 +77,7 @@ if HOST_OS_MINGW
 
 libppl_java_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version \
 -Wl,--kill-at
 
@@ -84,6 +85,7 @@ else !HOST_OS_MINGW
 
 libppl_java_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version
 
 endif !HOST_OS_MINGW

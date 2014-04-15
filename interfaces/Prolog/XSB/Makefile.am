@@ -176,6 +176,7 @@ libppl_xsb_la_DEPENDENCIES = \
 
 libppl_xsb_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version
 
 pkgdata_DATA = ppl_xsb.xwam

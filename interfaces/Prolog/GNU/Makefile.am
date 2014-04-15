@@ -153,6 +153,7 @@ libppl_gprolog_la_DEPENDENCIES = \
 
 libppl_gprolog_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version
 
 ppl_gprolog.pl: $(interface_generator_dependencies)

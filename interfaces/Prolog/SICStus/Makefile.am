@@ -186,6 +186,7 @@ libppl_sicstus_la_DEPENDENCIES = \
 
 libppl_sicstus_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version
 
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la

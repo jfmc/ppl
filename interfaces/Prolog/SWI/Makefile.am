@@ -175,6 +175,7 @@ libppl_swiprolog_la_DEPENDENCIES = \
 
 libppl_swiprolog_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
+-module \
 -avoid-version
 
 pkgdata_DATA = ppl_swiprolog.pl
