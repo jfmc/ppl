@@ -33,7 +33,7 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 #include "../ppl_prolog_domains.hh"
 
-#define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
+#define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (pl_function_t) name, 0 },
 
 namespace {
 
