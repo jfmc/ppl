@@ -45,14 +45,14 @@ extern bool Prolog_has_unbounded_integers;
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-extern long Prolog_min_integer;
+extern PlLong Prolog_min_integer;
 
 /*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
 */
-extern long Prolog_max_integer;
+extern PlLong Prolog_max_integer;
 
 /*!
   Performs system-dependent initialization.
