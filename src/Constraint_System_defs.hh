@@ -37,6 +37,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "termination_types.hh"
 #include <iterator>
 #include <iosfwd>
+#include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 
@@ -609,7 +610,7 @@ for (Constraint_System::const_iterator i = cs.begin(),
 class Parma_Polyhedra_Library::Constraint_System_const_iterator
   : public std::iterator<std::forward_iterator_tag,
                          Constraint,
-                         ptrdiff_t,
+                         std::ptrdiff_t,
                          const Constraint*,
                          const Constraint&> {
 public:

@@ -28,6 +28,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Coefficient_defs.hh"
 #include <memory>
+#include <cstddef>
 
 #ifndef PPL_CO_TREE_EXTRA_DEBUG
 #ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
@@ -159,7 +160,7 @@ public:
 
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef const data_type value_type;
-    typedef ptrdiff_t difference_type;
+    typedef std::ptrdiff_t difference_type;
     typedef value_type* pointer;
     typedef data_type_const_reference reference;
 
@@ -314,7 +315,7 @@ public:
 
     typedef std::bidirectional_iterator_tag iterator_category;
     typedef data_type value_type;
-    typedef ptrdiff_t difference_type;
+    typedef std::ptrdiff_t difference_type;
     typedef value_type* pointer;
     typedef value_type& reference;
 
