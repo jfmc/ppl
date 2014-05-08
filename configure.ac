@@ -537,7 +537,7 @@ then
     OPT_FLAGS="$OPT_FLAGS -fp-model strict -fp-speculation off"
   else
     # -frounding-math is not yet supported in clang++ or llvm-g++.
-    if test x"$CLANGXX" = xyes || x"$LLVM_GXX" = xyes
+    if test x"$CLANGXX" = xyes || test x"$LLVM_GXX" = xyes
     then
       if test x"$use_fpmath" = xyes
       then
@@ -1605,6 +1605,9 @@ then
   if test x"$ICC" = xyes
   then
     CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
+  elif test x"$CLANG" = xyes
+  then
+    CFLAGS="$CFLAGS -Weverything -Wno-exit-time-destructors -Wno-global-constructors -Wno-documentation -Wno-missing-noreturn -Wno-covered-switch-default -Wno-unreachable-code -Wno-c++98-compat-pedantic -Wno-switch-enum -Wno-sign-conversion -Wno-c++98-compat -Wno-padded -Wno-disabled-macro-expansion"
   else
     CFLAGS="$CFLAGS -W -Wall"
   fi
@@ -1614,6 +1617,9 @@ then
   if test x"$ICPC" = xyes
   then
     CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
+  elif test x"$CLANGXX" = xyes
+  then
+    CXXFLAGS="$CXXFLAGS -Weverything -Wno-exit-time-destructors -Wno-global-constructors -Wno-documentation -Wno-missing-noreturn -Wno-covered-switch-default -Wno-unreachable-code -Wno-c++98-compat-pedantic -Wno-switch-enum -Wno-sign-conversion -Wno-c++98-compat -Wno-padded -Wno-disabled-macro-expansion"
   else
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
