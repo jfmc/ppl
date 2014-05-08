@@ -50,14 +50,12 @@ round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
   return V_GT;
 }
 
-#ifdef PPL_HAVE_TYPEOF
-#ifdef PPL_HAVE_CXX11
+#if __cplusplus >= 201103L
 //! Type of the _mp_size field of GMP's __mpz_struct.
 typedef decltype(__mpz_struct()._mp_size) mp_size_field_t;
-#else
+#elif PPL_HAVE_TYPEOF
 //! Type of the _mp_size field of GMP's __mpz_struct.
 typedef typeof(__mpz_struct()._mp_size) mp_size_field_t;
-#endif
 #else
 //! This is assumed to be the type of the _mp_size field of GMP's __mpz_struct.
 typedef int mp_size_field_t;
