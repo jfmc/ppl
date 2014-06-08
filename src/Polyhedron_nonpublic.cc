@@ -2310,10 +2310,13 @@ PPL::Polyhedron::positive_time_elapse_assign_impl(const Polyhedron& y) {
         const Generator &gx = x_points_gs.sys.rows[j];
         PPL_ASSERT(gx.is_point());
         // ...insert the point obtained as the sum of g and gx.
-        Generator new_g = g; // make a copy
-        Coefficient new_divisor = g.expr.inhomogeneous_term() * gx.expr.inhomogeneous_term();
+        Generator new_g = g;
+        Coefficient new_divisor
+          = g.expr.inhomogeneous_term() * gx.expr.inhomogeneous_term();
 
-        new_g.expr.linear_combine(gx.expr, gx.expr.inhomogeneous_term(), g.expr.inhomogeneous_term());
+        new_g.expr.linear_combine(gx.expr,
+                                  gx.expr.inhomogeneous_term(),
+                                  g.expr.inhomogeneous_term());
         new_g.expr.set_inhomogeneous_term(new_divisor);
         if (new_g.is_not_necessarily_closed()) {
           new_g.set_epsilon_coefficient(g.epsilon_coefficient());
