@@ -2320,19 +2320,19 @@ PPL::Polyhedron::positive_time_elapse_assign_impl(const Polyhedron& y) {
         }
         new_g.expr.normalize();
         PPL_ASSERT(new_g.OK());
-	new_gs.insert(new_g);
+        new_gs.insert(new_g);
       }
       break;
     case Generator::CLOSURE_POINT:
       // If g is not the origin, insert g into new_gs, as a ray.
       if (!g.expr.all_homogeneous_terms_are_zero()) {
-	// Turn a copy of g into a ray.
-	Generator g_as_a_ray = g;
-	g_as_a_ray.expr.set_inhomogeneous_term(0);
-	g_as_a_ray.expr.normalize();
-	PPL_ASSERT(g_as_a_ray.OK());
-	// Insert the ray.
-	new_gs.insert(g_as_a_ray);
+        // Turn a copy of g into a ray.
+        Generator g_as_a_ray = g;
+        g_as_a_ray.expr.set_inhomogeneous_term(0);
+        g_as_a_ray.expr.normalize();
+        PPL_ASSERT(g_as_a_ray.OK());
+        // Insert the ray.
+        new_gs.insert(g_as_a_ray);
       }
       break;
     case Generator::RAY:
