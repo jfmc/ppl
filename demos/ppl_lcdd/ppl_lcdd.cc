@@ -1068,7 +1068,8 @@ write_polyhedron(std::ostream& out,
           if (g.coefficient(PPL::Variable(j)) == 0)
             guarded_write(out, '0');
           else {
-            mpz_class numer, denom;
+            mpz_class numer;
+            mpz_class denom;
             PPL::assign_r(numer,
                         g.coefficient(PPL::Variable(j)),
                         PPL::ROUND_NOT_NEEDED);
