@@ -492,12 +492,14 @@ normalize(const std::vector<mpq_class>& source,
   typedef std::vector<mpq_class>::size_type size_type;
   const size_type n = source.size();
   denominator = 1;
-  for (size_type i = 0; i < n; ++i)
+  for (size_type i = 0; i < n; ++i) {
     mpz_lcm(denominator.get_mpz_t(),
             denominator.get_mpz_t(),
             source[i].get_den().get_mpz_t());
-  for (size_type i = 0; i < n; ++i)
+  }
+  for (size_type i = 0; i < n; ++i) {
     dest[i] = denominator*source[i];
+  }
 }
 
 template <typename T>
@@ -553,18 +555,22 @@ read_coefficients(std::istream& in,
   switch (number_type) {
   case INTEGER:
     {
-      for (unsigned i = 0; i < num_coefficients; ++i)
-        if (!guarded_read(in, coefficients[i]))
+      for (unsigned i = 0; i < num_coefficients; ++i) {
+        if (!guarded_read(in, coefficients[i])) {
           error("missing or invalid integer coefficient");
+        }
+      }
       denominator = 1;
       break;
     }
   case RATIONAL:
     {
       std::vector<mpq_class> rational_coefficients(num_coefficients);
-      for (unsigned i = 0; i < num_coefficients; ++i)
-        if (!guarded_read(in, rational_coefficients[i]))
+      for (unsigned i = 0; i < num_coefficients; ++i) {
+        if (!guarded_read(in, rational_coefficients[i])) {
           error("missing or invalid rational coefficient");
+        }
+      }
       normalize(rational_coefficients, coefficients, denominator);
       break;
     }
@@ -621,8 +627,9 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       if (verbose) {
         std::cerr << "Linearity: ";
         for (std::set<unsigned>::const_iterator j = linearity.begin(),
-               linearity_end = linearity.end(); j != linearity_end; ++j)
+               linearity_end = linearity.end(); j != linearity_end; ++j) {
           std::cerr << *j << " ";
+        }
         std::cerr << std::endl;
       }
     }
@@ -725,8 +732,9 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::Linear_Expression e;
-      for (unsigned j = space_dim; j-- > 0; )
+      for (unsigned j = space_dim; j-- > 0; ) {
         e += coefficients[j] * PPL::Variable(j);
+      }
 #elif defined(USE_POLKA)
       // NewPolka variables have indices 2, 3, ..., space_dim+1.
       for (unsigned j = space_dim; j-- > 0; )
@@ -848,8 +856,9 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::Linear_Expression e;
-      for (unsigned j = num_columns; j-- > 1; )
+      for (unsigned j = num_columns; j-- > 1; ) {
         e += coefficients[j] * PPL::Variable(j-1);
+      }
       e += coefficients[0];
 #elif defined(USE_POLKA)
       // NewPolka variables have indices 2, 3, ..., space_dim+1.
@@ -1271,16 +1280,16 @@ main(int argc, char* argv[]) try {
         unsigned ph_num_generators = 0;
         const PPL::Generator_System& ph_gs = ph.generators();
         for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
-               ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
+               ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i) {
           ++ph_num_generators;
-
+        }
         // Count the number of generators of `e_ph'.
         unsigned e_ph_num_generators = 0;
         const PPL::Generator_System& e_ph_gs = e_ph.generators();
         for (PPL::Generator_System::const_iterator i = e_ph_gs.begin(),
-               e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
+               e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i) {
           ++e_ph_num_generators;
-
+        }
         // If the polyhedra differ, that is the problem.
         if (ph != e_ph) {
           if (verbose)
@@ -1305,16 +1314,16 @@ main(int argc, char* argv[]) try {
         unsigned ph_num_constraints = 0;
         const PPL::Constraint_System& ph_cs = ph.constraints();
         for (PPL::Constraint_System::const_iterator i = ph_cs.begin(),
-               ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
+               ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
           ++ph_num_constraints;
-
+        }
         // Count the number of constraints of `e_ph'.
         unsigned e_ph_num_constraints = 0;
         const PPL::Constraint_System& e_ph_cs = e_ph.constraints();
         for (PPL::Constraint_System::const_iterator i = e_ph_cs.begin(),
-               e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
+               e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i) {
           ++e_ph_num_constraints;
-
+        }
         // If the polyhedra differ, that is the problem.
         if (ph != e_ph) {
           if (verbose)

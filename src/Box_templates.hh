@@ -3685,14 +3685,14 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
                                  "e2", rhs);
 
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
                            "r is the disequality relation symbol");
-
+  }
   // Any image of an empty box is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
   // For any dimension occurring in the lhs, swap and change the sign
   // of this component for the rhs and lhs.  Then use these in a call
   // to generalized_affine_image/3.
@@ -3717,11 +3717,12 @@ typename Enable_If<Is_Same<T, Box<ITV> >::value
                    && Is_Same_Or_Derived<Interval_Base, ITV>::value,
                    void>::type
 Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
-  if (y.is_empty())
+  if (y.is_empty()) {
     return;
-
-  for (dimension_type i = seq.size(); i-- > 0; )
+  }
+  for (dimension_type i = seq.size(); i-- > 0; ) {
     seq[i].CC76_widening_assign(y.seq[i], first, last);
+  }
 
   PPL_ASSERT(OK());
 }
@@ -3746,8 +3747,9 @@ Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
     Box<ITV> x_tmp(x);
     x_tmp.CC76_widening_assign(y, 0);
     // If the widening was not precise, use one of the available tokens.
-    if (!x.contains(x_tmp))
+    if (!x.contains(x_tmp)) {
       --(*tp);
+    }
     return;
   }
   x.CC76_widening_assign(y,
@@ -3769,8 +3771,9 @@ Box<ITV>::get_limiting_box(const Constraint_System& cs,
     dimension_type c_num_vars = 0;
     dimension_type c_only_var = 0;
     // Constraints that are not interval constraints are ignored.
-    if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var))
+    if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var)) {
       continue;
+    }
     // Trivial constraints are ignored.
     if (c_num_vars != 0) {
       // c is a non-trivial interval constraint.
@@ -3778,9 +3781,10 @@ Box<ITV>::get_limiting_box(const Constraint_System& cs,
       const Coefficient& n = c.inhomogeneous_term();
       const Coefficient& d = c.coefficient(Variable(c_only_var));
       if (interval_relation(seq[c_only_var], c.type(), n, d)
-          == Poly_Con_Relation::is_included())
+          == Poly_Con_Relation::is_included()) {
         limiting_box.add_interval_constraint_no_check(c_only_var, c.type(),
                                                       n, d);
+      }
     }
   }
 }
@@ -3794,29 +3798,31 @@ Box<ITV>::limited_CC76_extrapolation_assign(const Box& y,
   const dimension_type space_dim = x.space_dimension();
 
   // Dimension-compatibility check.
-  if (space_dim != y.space_dimension())
+  if (space_dim != y.space_dimension()) {
     throw_dimension_incompatible("limited_CC76_extrapolation_assign(y, cs)",
-                                 y);
+                                  y);
+  }
   // `cs' must be dimension-compatible with the two boxes.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (space_dim < cs_space_dim)
+  if (space_dim < cs_space_dim) {
     throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
-
+  }
   // The limited CC76-extrapolation between two boxes in a
   // zero-dimensional space is also a zero-dimensional box
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
   // Assume `y' is contained in or equal to `*this'.
   PPL_EXPECT_HEAVY(copy_contains(*this, y));
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
+  }
   // If `y' is empty, we return.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     return;
-
+  }
   // Build a limiting box using all the constraints in cs
   // that are satisfied by *this.
   Box limiting_box(space_dim, UNIVERSE);
@@ -3845,16 +3851,17 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
 
   // If both boxes are zero-dimensional,
   // since `y' contains `*this', we simply return `*this'.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
   // If `y' is empty, since `y' contains `this', `*this' is empty too.
-  if (y.is_empty())
+  if (y.is_empty()) {
     return;
+  }
   // If `*this' is empty, we return.
-  if (is_empty())
+  if (is_empty()) {
     return;
-
+  }
   // Replace each constraint in `*this' by the corresponding constraint
   // in `y' if the corresponding inhomogeneous terms are both finite.
   for (dimension_type i = space_dim; i-- > 0; ) {
@@ -3862,12 +3869,14 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
     const ITV& y_i = y.seq[i];
     if (!x_i.lower_is_boundary_infinity()
         && !y_i.lower_is_boundary_infinity()
-        && x_i.lower() != y_i.lower())
+        && x_i.lower() != y_i.lower()) {
       x_i.lower() = y_i.lower();
+    }
     if (!x_i.upper_is_boundary_infinity()
         && !y_i.upper_is_boundary_infinity()
-        && x_i.upper() != y_i.upper())
+        && x_i.upper() != y_i.upper()) {
       x_i.upper() = y_i.upper();
+    }
   }
   PPL_ASSERT(OK());
 }
@@ -3880,8 +3889,9 @@ Box<ITV>::constraints() const {
   cs.set_space_dimension(space_dim);
 
   if (space_dim == 0) {
-    if (marked_empty())
+    if (marked_empty()) {
       cs = Constraint_System::zero_dim_empty();
+    }
     return cs;
   }
 
@@ -3902,10 +3912,12 @@ Box<ITV>::constraints() const {
         cs.insert(d * v_k > n);
     }
     if (has_upper_bound(v_k, n, d, closed)) {
-      if (closed)
+      if (closed) {
         cs.insert(d * v_k <= n);
-      else
+      }
+      else {
         cs.insert(d * v_k < n);
+      }
     }
   }
   return cs;
@@ -3919,8 +3931,9 @@ Box<ITV>::minimized_constraints() const {
   cs.set_space_dimension(space_dim);
 
   if (space_dim == 0) {
-    if (marked_empty())
+    if (marked_empty()) {
       cs = Constraint_System::zero_dim_empty();
+    }
     return cs;
   }
 
@@ -3936,22 +3949,27 @@ Box<ITV>::minimized_constraints() const {
     PPL_DIRTY_TEMP(Coefficient, d);
     bool closed = false;
     if (has_lower_bound(v_k, n, d, closed)) {
-      if (closed)
+      if (closed) {
         // Make sure equality constraints are detected.
         if (seq[k].is_singleton()) {
           cs.insert(d * v_k == n);
           continue;
         }
-        else
+        else {
           cs.insert(d * v_k >= n);
-      else
+        }
+      }
+      else {
         cs.insert(d * v_k > n);
+      }
     }
     if (has_upper_bound(v_k, n, d, closed)) {
-      if (closed)
+      if (closed) {
         cs.insert(d * v_k <= n);
-      else
+      }
+      else {
         cs.insert(d * v_k < n);
+      }
     }
   }
   return cs;
@@ -3964,8 +3982,9 @@ Box<ITV>::congruences() const {
   Congruence_System cgs(space_dim);
 
   if (space_dim == 0) {
-    if (marked_empty())
+    if (marked_empty()) {
       cgs = Congruence_System::zero_dim_empty();
+    }
     return cgs;
   }
 
@@ -3980,10 +3999,12 @@ Box<ITV>::congruences() const {
     PPL_DIRTY_TEMP(Coefficient, n);
     PPL_DIRTY_TEMP(Coefficient, d);
     bool closed = false;
-    if (has_lower_bound(v_k, n, d, closed) && closed)
+    if (has_lower_bound(v_k, n, d, closed) && closed) {
       // Make sure equality congruences are detected.
-      if (seq[k].is_singleton())
+      if (seq[k].is_singleton()) {
         cgs.insert((d * v_k %= n) / 0);
+      }
+    }
   }
   return cgs;
 }
@@ -3992,8 +4013,9 @@ template <typename ITV>
 memory_size_type
 Box<ITV>::external_memory_in_bytes() const {
   memory_size_type n = seq.capacity() * sizeof(ITV);
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     n += seq[k].external_memory_in_bytes();
+  }
   return n;
 }
 
@@ -4001,20 +4023,25 @@ Box<ITV>::external_memory_in_bytes() const {
 template <typename ITV>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Box<ITV>& box) {
-  if (box.is_empty())
+  if (box.is_empty()) {
     s << "false";
-  else if (box.is_universe())
+  }
+  else if (box.is_universe()) {
     s << "true";
-  else
+  }
+  else{
     for (dimension_type k = 0,
            space_dim = box.space_dimension(); k < space_dim; ) {
       s << Variable(k) << " in " << box[k];
       ++k;
-      if (k < space_dim)
+      if (k < space_dim){
         s << ", ";
-      else
+      }
+      else {
         break;
+      }
     }
+  }
   return s;
 }
 
@@ -4026,8 +4053,9 @@ Box<ITV>::ascii_dump(std::ostream& s) const {
   const dimension_type space_dim = space_dimension();
   s << "space_dim" << separator << space_dim;
   s << "\n";
-  for (dimension_type i = 0; i < space_dim;  ++i)
+  for (dimension_type i = 0; i < space_dim;  ++i) {
     seq[i].ascii_dump(s);
+  }
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(ITV, Box<ITV>)
@@ -4035,23 +4063,26 @@ PPL_OUTPUT_TEMPLATE_DEFINITIONS(ITV, Box<ITV>)
 template <typename ITV>
 bool
 Box<ITV>::ascii_load(std::istream& s) {
-  if (!status.ascii_load(s))
+  if (!status.ascii_load(s)) {
     return false;
-
+  }
   std::string str;
   dimension_type space_dim;
-  if (!(s >> str) || str != "space_dim")
+  if (!(s >> str) || str != "space_dim") {
     return false;
-  if (!(s >> space_dim))
+  }
+  if (!(s >> space_dim)) {
     return false;
-
+  }
   seq.clear();
   ITV seq_i;
   for (dimension_type i = 0; i < space_dim;  ++i) {
-    if (seq_i.ascii_load(s))
+    if (seq_i.ascii_load(s)) {
       seq.push_back(seq_i);
-    else
+    }
+    else {
       return false;
+    }
   }
 
   // Check invariants.
@@ -4205,15 +4236,17 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                     Temp& tmp0, Temp& tmp1, Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
   // Zero-dim boxes are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -4227,8 +4260,9 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       assign_r(r, 0, ROUND_NOT_NEEDED);
       return true;
     }
-    else
+    else {
       goto pinf;
+    }
   }
 
   assign_r(tmp0, 0, ROUND_NOT_NEEDED);
@@ -4237,11 +4271,13 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     const ITV& y_i = y.seq[i];
     // Dealing with the lower bounds.
     if (x_i.lower_is_boundary_infinity()) {
-      if (!y_i.lower_is_boundary_infinity())
+      if (!y_i.lower_is_boundary_infinity()) {
         goto pinf;
+      }
     }
-    else if (y_i.lower_is_boundary_infinity())
+    else if (y_i.lower_is_boundary_infinity()) {
       goto pinf;
+    }
     else {
       const Temp* tmp1p;
       const Temp* tmp2p;
@@ -4258,13 +4294,17 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       Specialization::combine(tmp0, tmp1, dir);
     }
     // Dealing with the lower bounds.
-    if (x_i.upper_is_boundary_infinity())
-      if (y_i.upper_is_boundary_infinity())
+    if (x_i.upper_is_boundary_infinity()) {
+      if (y_i.upper_is_boundary_infinity()) {
         continue;
-      else
+      }
+      else {
         goto pinf;
-    else if (y_i.upper_is_boundary_infinity())
+      }
+    }
+    else if (y_i.upper_is_boundary_infinity()) {
       goto pinf;
+    }
     else {
       const Temp* tmp1p;
       const Temp* tmp2p;

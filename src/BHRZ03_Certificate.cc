@@ -53,15 +53,16 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
-    if (i->is_equality())
+    if (i->is_equality()) {
       --affine_dim;
+    }
   }
 
   PPL_ASSERT(lin_space_dim == 0);
   PPL_ASSERT(num_points == 0);
   const Generator_System& gs = ph.minimized_generators();
   for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i) {
     switch (i->type()) {
     case Generator::POINT:
       // Intentionally fall through.
@@ -80,6 +81,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
       ++lin_space_dim;
       break;
     }
+  }
   PPL_ASSERT(OK());
 
   // TODO: this is an inefficient workaround.
@@ -89,29 +91,35 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   // We have to reinforce the (normal) minimization of the constraint
   // system. The future, lazy implementation of the strong minimization
   // process will solve this problem.
-  if (!ph.is_necessarily_closed())
+  if (!ph.is_necessarily_closed()) {
     ph.minimize();
+  }
 }
 
 int
 PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   PPL_ASSERT(OK() && y.OK());
-  if (affine_dim != y.affine_dim)
+  if (affine_dim != y.affine_dim) {
     return (affine_dim > y.affine_dim) ? 1 : -1;
-  if (lin_space_dim != y.lin_space_dim)
+  }
+  if (lin_space_dim != y.lin_space_dim) {
     return (lin_space_dim > y.lin_space_dim) ? 1 : -1;
-  if (num_constraints != y.num_constraints)
+  }
+  if (num_constraints != y.num_constraints) {
     return (num_constraints > y.num_constraints) ? 1 : -1;
-  if (num_points != y.num_points)
+  }
+  if (num_points != y.num_points) {
     return (num_points > y.num_points) ? 1 : -1;
-
+  }
   const dimension_type space_dim = num_rays_null_coord.size();
   PPL_ASSERT(num_rays_null_coord.size() == y.num_rays_null_coord.size());
   // Note: iterating upwards, because we have to check first
   // the number of rays having more NON-zero coordinates.
-  for (dimension_type i = 0; i < space_dim; ++i)
-    if (num_rays_null_coord[i] != y.num_rays_null_coord[i])
+  for (dimension_type i = 0; i < space_dim; ++i) {
+    if (num_rays_null_coord[i] != y.num_rays_null_coord[i]) {
       return (num_rays_null_coord[i] > y.num_rays_null_coord[i]) ? 1 : -1;
+    }
+  }
   // All components are equal.
   return 0;
 }
@@ -142,8 +150,9 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
-    if (i->is_equality())
+    if (i->is_equality()) {
       --ph_affine_dim;
+    }
   }
   // TODO: this is an inefficient workaround.
   // For NNC polyhedra, constraints might be no longer up-to-date
@@ -152,13 +161,13 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // We have to reinforce the (normal) minimization of the constraint
   // system. The future, lazy implementation of the strong minimization
   // process will solve this problem.
-  if (!ph.is_necessarily_closed())
+  if (!ph.is_necessarily_closed()) {
     ph.minimize();
-
+  }
   // If the dimension of `ph' is increasing, the chain is stabilizing.
-  if (ph_affine_dim > affine_dim)
+  if (ph_affine_dim > affine_dim) {
     return 1;
-
+  }
   // At this point the two polyhedra must have the same dimension.
   PPL_ASSERT(ph_affine_dim == affine_dim);
 
@@ -191,14 +200,14 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // We have to reinforce the (normal) minimization of the constraint
   // system. The future, lazy implementation of the strong minimization
   // process will solve this problem.
-  if (!ph.is_necessarily_closed())
+  if (!ph.is_necessarily_closed()) {
     ph.minimize();
-
+  }
   // If the dimension of the lineality space is increasing,
   // then the chain is stabilizing.
-  if (ph_lin_space_dim > lin_space_dim)
+  if (ph_lin_space_dim > lin_space_dim) {
     return 1;
-
+  }
   // At this point the lineality space of the two polyhedra must have
   // the same dimension.
   PPL_ASSERT(ph_lin_space_dim == lin_space_dim);
@@ -206,29 +215,31 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // If the number of constraints of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.
   // If they are equal, further investigation is needed.
-  if (ph_num_constraints != num_constraints)
+  if (ph_num_constraints != num_constraints) {
     return (ph_num_constraints < num_constraints) ? 1 : -1;
-
+  }
   // If the number of points of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.
   // If they are equal, further investigation is needed.
-  if (ph_num_points != num_points)
+  if (ph_num_points != num_points) {
     return (ph_num_points < num_points) ? 1 : -1;
-
+  }
   // The speculative optimization was not worth:
   // compute information about rays.
   std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
   for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
-    if (i->is_ray())
+         gs_end = gs.end(); i != gs_end; ++i) {
+    if (i->is_ray()) {
       ++ph_num_rays_null_coord[i->expression().num_zeroes(1, space_dim + 1)];
-
+    }
+  }
   // Compare (lexicographically) the two vectors:
   // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.
-  for (dimension_type i = 0; i < space_dim; ++i)
-    if (ph_num_rays_null_coord[i] != num_rays_null_coord[i])
+  for (dimension_type i = 0; i < space_dim; ++i) {
+    if (ph_num_rays_null_coord[i] != num_rays_null_coord[i]) {
       return (ph_num_rays_null_coord[i] < num_rays_null_coord[i]) ? 1 : -1;
-
+    }
+  }
   // All components are equal.
   return 0;
 }
