@@ -420,7 +420,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
     Constraint c_template = c;
     c_template.expr.set_coefficient(var, Coefficient_zero());
-    
+
     // Each relevant constraint results in `m' new constraints.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       Constraint new_c = c_template;
