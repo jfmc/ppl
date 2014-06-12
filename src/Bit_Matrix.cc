@@ -263,7 +263,7 @@ bool
 PPL::Bit_Matrix::check_sorted() const {
   const Bit_Matrix& x = *this;
   for (dimension_type i = num_rows(); i-- > 1; ) {
-    if (compare(x[i-1], x[i]) > 0)
+    if (compare(x[i-1], x[i]) > 0) {
       return false;
     }
   }
