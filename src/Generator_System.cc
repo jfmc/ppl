@@ -54,11 +54,12 @@ adjust_topology_and_space_dimension(const Topology new_topology,
       // that are in the generator system, but are invisible to
       // the user).
       const Generator_System& gs = *this;
-      for (dimension_type i = 0; i < sys.num_rows(); )
+      for (dimension_type i = 0; i < sys.num_rows(); ) {
         if (gs[i].is_closure_point())
           sys.remove_row(i, false);
         else
           ++i;
+      }
       sys.set_necessarily_closed();
     }
     else {
@@ -129,9 +130,10 @@ PPL::Generator_System::has_closure_points() const {
     return false;
   // Adopt the point of view of the user.
   for (Generator_System::const_iterator i = begin(),
-         this_end = end(); i != this_end; ++i)
+         this_end = end(); i != this_end; ++i) {
     if (i->is_closure_point())
       return true;
+  }
   return false;
 }
 
@@ -165,9 +167,10 @@ PPL::Generator_System::has_points() const {
     }
   else {
     // !is_necessarily_closed()
-    for (dimension_type i = sys.num_rows(); i-- > 0; )
-    if (gs[i].epsilon_coefficient() != 0)
-      return true;
+    for (dimension_type i = sys.num_rows(); i-- > 0; ) {
+      if (gs[i].epsilon_coefficient() != 0)
+        return true;
+    }
   }
   return false;
 }
@@ -276,13 +279,15 @@ PPL::Generator_System::num_lines() const {
   // that lines are at the top of the system.
   if (sys.is_sorted()) {
     const dimension_type nrows = sys.num_rows();
-    for (dimension_type i = 0; i < nrows && gs[i].is_line(); ++i)
+    for (dimension_type i = 0; i < nrows && gs[i].is_line(); ++i) {
       ++n;
+    }
   }
   else
-    for (dimension_type i = sys.num_rows(); i-- > 0 ; )
+    for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
       if (gs[i].is_line())
         ++n;
+    }
   return n;
 }
 
@@ -297,14 +302,17 @@ PPL::Generator_System::num_rays() const {
   // that rays and points are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
   if (sys.is_sorted()) {
-    for (dimension_type i = sys.num_rows(); i != 0 && gs[--i].is_ray_or_point(); )
+    for (dimension_type i = sys.num_rows();
+         i != 0 && gs[--i].is_ray_or_point(); ) {
       if (gs[i].is_line_or_ray())
         ++n;
+    }
   }
   else
-    for (dimension_type i = sys.num_rows(); i-- > 0 ; )
+    for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
       if (gs[i].is_ray())
         ++n;
+    }
   return n;
 }
 
@@ -629,9 +637,10 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
   switch (c.type()) {
   case Constraint::EQUALITY:
     // Equalities must be saturated by all generators.
-    for (dimension_type i = gs.sys.num_rows(); i-- > 0; )
+    for (dimension_type i = gs.sys.num_rows(); i-- > 0; ) {
       if (sps(c, gs[i]) != 0)
         return false;
+    }
     break;
   case Constraint::NONSTRICT_INEQUALITY:
     // Non-strict inequalities must be saturated by lines and

@@ -83,10 +83,11 @@ wrap_assign_ind(PSET& pointset,
         p.refine_with_constraints(cs);
       else {
         for (Constraint_System::const_iterator j = cs.begin(),
-               cs_end = cs.end(); j != cs_end; ++j)
+               cs_end = cs.end(); j != cs_end; ++j) {
           if (j->expression().all_zeroes(vars))
             // `*j' does not depend on variables in `vars'.
             p.refine_with_constraint(*j);
+        }
       }
       p.refine_with_constraint(min_value <= x);
       p.refine_with_constraint(x <= max_value);

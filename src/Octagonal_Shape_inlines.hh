@@ -423,8 +423,9 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
-         i_end = cs.end(); i != i_end; ++i)
+         i_end = cs.end(); i != i_end; ++i) {
     add_constraint(*i);
+  }
 }
 
 template <typename T>
@@ -443,8 +444,9 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::add_congruences(const Congruence_System& cgs) {
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
     add_congruence(*i);
+  }
 }
 
 template <typename T>
@@ -467,8 +469,9 @@ Octagonal_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
                            "cs and *this are space-dimension incompatible");
 
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
+  }
 }
 
 template <typename T>
@@ -492,8 +495,9 @@ Octagonal_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
                            "cgs and *this are space-dimension incompatible");
 
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+         cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i) {
     refine_no_check(*i);
+  }
 }
 
 template <typename T>

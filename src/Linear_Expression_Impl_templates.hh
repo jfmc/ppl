@@ -254,9 +254,10 @@ Linear_Expression_Impl<Row>
   else {
     PPL_DIRTY_TEMP_COEFFICIENT(tmp);
     tmp = row.get(cycle.back().space_dimension());
-    for (dimension_type i = n - 1; i-- > 0; )
+    for (dimension_type i = n - 1; i-- > 0; ) {
       row.swap_coefficients(cycle[i + 1].space_dimension(),
                             cycle[i].space_dimension());
+    }
     if (tmp == 0)
       row.reset(cycle[0].space_dimension());
     else {
@@ -332,8 +333,9 @@ Linear_Expression_Impl<Row>::operator*=(Coefficient_traits::const_reference n) {
     return *this;
   }
   for (typename Row::iterator i = row.begin(),
-         i_end = row.end(); i != i_end; ++i)
+         i_end = row.end(); i != i_end; ++i) {
     (*i) *= n;
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -360,8 +362,9 @@ template <typename Row>
 void
 Linear_Expression_Impl<Row>::negate() {
   for (typename Row::iterator i = row.begin(),
-         i_end = row.end(); i != i_end; ++i)
+         i_end = row.end(); i != i_end; ++i) {
     neg_assign(*i);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -504,8 +507,9 @@ Linear_Expression_Impl<Row>
   // each of the resulting coefficients will be nonzero iff the initial
   // coefficient was.
   for (typename Row::iterator i = row.lower_bound(start),
-         i_end = row.lower_bound(end); i != i_end; ++i)
+         i_end = row.lower_bound(end); i != i_end; ++i) {
     Parma_Polyhedra_Library::exact_div_assign(*i, *i, c);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -522,8 +526,10 @@ Linear_Expression_Impl<Row>
   }
   else {
     for (typename Row::iterator
-      i = row.lower_bound(start), i_end = row.lower_bound(end); i != i_end; ++i)
+      i = row.lower_bound(start), i_end = row.lower_bound(end);
+      i != i_end; ++i) {
       (*i) *= c;
+    }
   }
   PPL_ASSERT(OK());
 }
@@ -587,8 +593,9 @@ Linear_Expression_Impl<Row>
         ++i;
         ++j;
       }
-      while (i != i_end && i.index() < end)
+      while (i != i_end && i.index() < end) {
         i = row.reset(i);
+      }
       while (j != j_last) {
         i = row.insert(i, j.index(), *j);
         (*i) *= c2;
@@ -620,13 +627,15 @@ Linear_Expression_Impl<Row>::sign_normalize() {
   typename Row::iterator i = row.lower_bound(1);
   typename Row::iterator i_end = row.end();
 
-  for ( ; i != i_end; ++i)
+  for ( ; i != i_end; ++i) {
     if (*i != 0)
       break;
+  }
 
   if (i != i_end && *i < 0) {
-    for ( ; i != i_end; ++i)
+    for ( ; i != i_end; ++i) {
       neg_assign(*i);
+    }
     // Negate the first coefficient, too.
     typename Row::iterator first = row.begin();
     if (first != row.end() && first.index() == 0)
@@ -642,8 +651,9 @@ Linear_Expression_Impl<Row>::negate(dimension_type first, dimension_type last) {
   PPL_ASSERT(last <= row.size());
   typename Row::iterator i = row.lower_bound(first);
   typename Row::iterator i_end = row.lower_bound(last);
-  for ( ; i != i_end; ++i)
+  for ( ; i != i_end; ++i) {
     neg_assign(*i);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -751,12 +761,14 @@ Linear_Expression_Impl<Row>
       }
     }
   }
-  for ( ; i != i_end; ++i)
+  for ( ; i != i_end; ++i) {
     if (*i != 0)
       return false;
-  for ( ; j != j_end; ++j)
+  }
+  for ( ; j != j_end; ++j) {
     if (*j != 0)
       return false;
+  }
   return true;
 }
 
@@ -810,12 +822,14 @@ Linear_Expression_Impl<Row>
       }
     }
   }
-  for ( ; i != i_end; ++i)
+  for ( ; i != i_end; ++i) {
     if (*i != 0)
       return false;
-  for ( ; j != j_end; ++j)
+  }
+  for ( ; j != j_end; ++j) {
     if (*j != 0)
       return false;
+  }
   return true;
 }
 

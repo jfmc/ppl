@@ -44,9 +44,10 @@ PPL::Congruence_System::Congruence_System(const Constraint_System& cs,
     space_dimension_(cs.space_dimension()),
     representation_(r) {
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i) {
     if (i->is_equality())
       insert(*i);
+  }
 }
 
 void
@@ -70,13 +71,15 @@ PPL::Congruence_System::remove_rows(const dimension_type first,
   // Swap the rows in [first, last) with the rows in [size() - n, size())
   // (note that these intervals may not be disjunct).
   if (keep_sorted) {
-    for (dimension_type i = last; i < rows.size(); ++i)
+    for (dimension_type i = last; i < rows.size(); ++i) {
       swap(rows[i], rows[i - n]);
+    }
   }
   else {
     const dimension_type offset = rows.size() - n - first;
-    for (dimension_type i = first; i < last; ++i)
+    for (dimension_type i = first; i < last; ++i) {
       swap(rows[i], rows[i + offset]);
+    }
   }
 
   rows.resize(rows.size() - n);
@@ -88,8 +91,9 @@ PPL::Congruence_System
 ::set_space_dimension(const dimension_type new_space_dim) {
   if (space_dimension() != new_space_dim) {
     space_dimension_ = new_space_dim;
-    for (dimension_type i = num_rows(); i-- > 0; )
+    for (dimension_type i = num_rows(); i-- > 0; ) {
       rows[i].set_space_dimension(new_space_dim);
+    }
   }
   PPL_ASSERT(OK());
   return true;
@@ -97,8 +101,9 @@ PPL::Congruence_System
 
 void
 PPL::Congruence_System::swap_space_dimensions(Variable v1, Variable v2) {
-  for (dimension_type k = num_rows(); k-- > 0; )
+  for (dimension_type k = num_rows(); k-- > 0; ) {
     rows[k].swap_space_dimensions(v1, v2);
+  }
 }
 
 void
@@ -216,26 +221,29 @@ PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
 bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
-  for (dimension_type i = cgs.num_rows(); i-- > 0; )
+  for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
     if (cgs[i].modulus() == 0)
       return true;
+  }
   return false;
 }
 
 void
 PPL::Congruence_System::const_iterator::skip_forward() {
   const Swapping_Vector<Congruence>::const_iterator csp_end = csp->end();
-  while (i != csp_end && (*this)->is_tautological())
+  while (i != csp_end && (*this)->is_tautological()) {
     ++i;
+  }
 }
 
 PPL::dimension_type
 PPL::Congruence_System::num_equalities() const {
   const Congruence_System& cgs = *this;
   dimension_type n = 0;
-  for (dimension_type i = num_rows(); i-- > 0 ; )
+  for (dimension_type i = num_rows(); i-- > 0 ; ) {
     if (cgs[i].is_equality())
       ++n;
+  }
   return n;
 }
 
@@ -286,8 +294,9 @@ PPL::Congruence_System::has_a_free_dimension() const {
   // Search for a dimension that is free of any congruence or equality
   // constraint.  Assumes a minimized system.
   std::set<dimension_type> candidates;
-  for (dimension_type i = space_dimension(); i-- > 0; )
+  for (dimension_type i = space_dimension(); i-- > 0; ) {
     candidates.insert(i + 1);
+  }
 
   for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].expression().has_a_free_dimension_helper(candidates);
@@ -306,8 +315,9 @@ affine_preimage(Variable v,
   PPL_ASSERT(expr.space_dimension() <= space_dimension());
   PPL_ASSERT(denominator > 0);
 
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].affine_preimage(v, expr, denominator);
+  }
 }
 
 void
@@ -318,8 +328,9 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
   s << x_num_rows << " x " << x_space_dim << " ";
   Parma_Polyhedra_Library::ascii_dump(s, representation());
   s << std::endl;
-  for (dimension_type i = 0; i < x_num_rows; ++i)
+  for (dimension_type i = 0; i < x_num_rows; ++i) {
     x[i].ascii_dump(s);
+  }
 }
 
 PPL_OUTPUT_DEFINITIONS(Congruence_System)
@@ -426,8 +437,9 @@ PPL::Congruence_System
   rows.resize(rows.size() + dims);
 
   // Swap the added rows to the front of the vector.
-  for (dimension_type row = old_num_rows; row-- > 0; )
+  for (dimension_type row = old_num_rows; row-- > 0; ) {
     swap(rows[row], rows[row + dims]);
+  }
 
   const dimension_type dim = space_dimension();
   // Set the space dimension and the diagonal element of each added row.

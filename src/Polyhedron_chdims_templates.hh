@@ -49,8 +49,9 @@ Polyhedron::add_space_dimensions(Linear_System1& sys1,
   // because the polyhedron has not been embedded in the new space.
   sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
   // The old matrix is moved to the end of the new matrix.
-  for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; )
+  for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; ) {
     swap(sat1[i], sat1[i+add_dim]);
+  }
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 }

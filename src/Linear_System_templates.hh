@@ -43,9 +43,10 @@ Linear_System<Row>::num_lines_or_equalities() const {
   PPL_ASSERT(num_pending_rows() == 0);
   const Linear_System& x = *this;
   dimension_type n = 0;
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     if (x[i].is_line_or_equality())
       ++n;
+  }
   return n;
 }
 
@@ -127,8 +128,9 @@ Linear_System<Row>::ascii_dump(std::ostream& s) const {
     << "\n"
     << "index_first_pending " << first_pending_row()
     << "\n";
-  for (dimension_type i = 0; i < rows.size(); ++i)
+  for (dimension_type i = 0; i < rows.size(); ++i) {
     rows[i].ascii_dump(s);
+  }
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(Row, Linear_System<Row>)
@@ -289,8 +291,9 @@ Linear_System<Row>::insert_pending(Linear_System& y, Recycle_Input) {
   // Steal the rows of `y'.
   // This loop must use an increasing index (instead of a decreasing one) to
   // preserve the row ordering.
-  for (dimension_type i = 0; i < y.num_rows(); ++i)
+  for (dimension_type i = 0; i < y.num_rows(); ++i) {
     x.insert_pending(y.rows[i], Recycle_Input());
+  }
 
   y.clear();
 
@@ -374,8 +377,9 @@ Linear_System<Row>::shift_space_dimensions(Variable v, dimension_type n) {
   // NOTE: v.id() may be equal to the space dimension of the system
   // (when no space dimension need to be shifted).
   PPL_ASSERT(v.id() <= space_dimension());
-  for (dimension_type i = rows.size(); i-- > 0; )
+  for (dimension_type i = rows.size(); i-- > 0; ) {
     rows[i].shift_space_dimensions(v, n);
+  }
   space_dimension_ += n;
   PPL_ASSERT(OK());
 }
@@ -441,8 +445,9 @@ void
 Linear_System<Row>::strong_normalize() {
   const dimension_type nrows = rows.size();
   // We strongly normalize also the pending rows.
-  for (dimension_type i = nrows; i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; ) {
     rows[i].strong_normalize();
+  }
   sorted = (nrows <= 1);
   PPL_ASSERT(OK());
 }
@@ -452,8 +457,9 @@ void
 Linear_System<Row>::sign_normalize() {
   const dimension_type nrows = rows.size();
   // We sign-normalize also the pending rows.
-  for (dimension_type i = nrows; i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; ) {
     rows[i].sign_normalize();
+  }
   sorted = (nrows <= 1);
   PPL_ASSERT(OK());
 }
@@ -475,9 +481,10 @@ operator==(const Linear_System<Row>& x, const Linear_System<Row>& y) {
   //                                const Swapping_Vector<Row>&)
   // would be wrong here, as equality of the type fields would
   // not be checked.
-  for (dimension_type i = x_num_rows; i-- > 0; )
+  for (dimension_type i = x_num_rows; i-- > 0; ) {
     if (x[i] != y[i])
       return false;
+  }
   return true;
 }
 
@@ -510,8 +517,9 @@ Linear_System<Row>::sort_and_remove_with_sat(Bit_Matrix& sat) {
   if (num_pending_rows() > 0) {
     // In this case, we must put the duplicates after the pending rows.
     const dimension_type n_rows = num_rows() - 1;
-    for (dimension_type i = 0; i < num_duplicates; ++i)
+    for (dimension_type i = 0; i < num_duplicates; ++i) {
       swap(rows[new_first_pending_row + i], rows[n_rows - i]);
+    }
   }
 
   // Erasing the duplicated rows...
@@ -548,7 +556,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   // TODO: Consider exploiting the row (possible) sparseness of rows in the
   // following loop, if needed. It would probably make it more cache-efficient
   // for dense rows, too.
-  for (dimension_type j = num_cols; j-- > 0; )
+  for (dimension_type j = num_cols; j-- > 0; ) {
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
@@ -575,6 +583,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       // Consider another column index `j'.
       break;
     }
+  }
   if (changed)
     sorted = false;
 
@@ -669,10 +678,11 @@ Linear_System<Row>
   }
 
   // Trying to keep sortedness.
-  for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i)
+  for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i) {
     if (check_for_sortedness[i])
       // Have to check sortedness of `(*this)[i]' with respect to `(*this)[i+1]'.
       still_sorted = (compare((*this)[i], (*this)[i+1]) <= 0);
+  }
 
   // Set the sortedness flag.
   sorted = still_sorted;
@@ -690,7 +700,7 @@ Linear_System<Row>::simplify() {
   const dimension_type old_nrows = num_rows();
   dimension_type nrows = old_nrows;
   dimension_type n_lines_or_equalities = 0;
-  for (dimension_type i = 0; i < nrows; ++i)
+  for (dimension_type i = 0; i < nrows; ++i) {
     if ((*this)[i].is_line_or_equality()) {
       if (n_lines_or_equalities < i) {
         swap(rows[i], rows[n_lines_or_equalities]);
@@ -699,6 +709,7 @@ Linear_System<Row>::simplify() {
       }
       ++n_lines_or_equalities;
     }
+  }
   // Apply Gaussian elimination to the subsystem of lines/equalities.
   const dimension_type rank = gauss(n_lines_or_equalities);
   // Eliminate any redundant line/equality that has been detected.
@@ -708,8 +719,9 @@ Linear_System<Row>::simplify() {
     const dimension_type
       num_swaps = std::min(n_lines_or_equalities - rank,
                            n_rays_or_points_or_inequalities);
-    for (dimension_type i = num_swaps; i-- > 0; )
+    for (dimension_type i = num_swaps; i-- > 0; ) {
       swap(rows[--nrows], rows[rank + i]);
+    }
     remove_trailing_rows(old_nrows - nrows);
     if (n_rays_or_points_or_inequalities > num_swaps)
       set_sorted(false);
@@ -734,8 +746,9 @@ Linear_System<Row>
   set_space_dimension(space_dimension() + n);
   rows.resize(rows.size() + n);
   // The old system is moved to the bottom.
-  for (dimension_type i = old_n_rows; i-- > 0; )
+  for (dimension_type i = old_n_rows; i-- > 0; ) {
     swap(rows[i], rows[i + n]);
+  }
   for (dimension_type i = n, c = old_space_dim; i-- > 0; ) {
     // The top right-hand sub-system (i.e., the system made of new
     // rows and columns) is set to the specular image of the identity
@@ -841,8 +854,9 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
   // that has not been considered yet; then erase the duplicates.
   if (num_duplicates > 0) {
     if (k2 < num_rows)
-      for (++k2; k2 < num_rows; ++k2)
+      for (++k2; k2 < num_rows; ++k2)  {
         swap(rows[k2], rows[k2 + num_duplicates]);
+      }
     rows.resize(num_rows);
   }
   sorted = true;
@@ -852,9 +866,10 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
 template <typename Row>
 bool
 Linear_System<Row>::check_sorted() const {
-  for (dimension_type i = first_pending_row(); i-- > 1; )
+  for (dimension_type i = first_pending_row(); i-- > 1; ) {
     if (compare(rows[i], rows[i-1]) < 0)
       return false;
+  }
   return true;
 }
 
@@ -883,7 +898,7 @@ Linear_System<Row>::OK() const {
     }
   }
 
-  for (dimension_type i = rows.size(); i-- > 0; )
+  for (dimension_type i = rows.size(); i-- > 0; ) {
     if (rows[i].topology() != topology()) {
 #ifndef NDEBUG
       cerr << "Linear_System has a row with the wrong topology!"
@@ -892,6 +907,7 @@ Linear_System<Row>::OK() const {
       return false;
     }
 
+  }
   // `index_first_pending' must be less than or equal to `num_rows()'.
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
@@ -903,7 +919,7 @@ Linear_System<Row>::OK() const {
 
   // Check for topology mismatches.
   const dimension_type n_rows = num_rows();
-  for (dimension_type i = 0; i < n_rows; ++i)
+  for (dimension_type i = 0; i < n_rows; ++i) {
     if (topology() != rows[i].topology()) {
 #ifndef NDEBUG
       cerr << "Topology mismatch between the system "
@@ -913,6 +929,7 @@ Linear_System<Row>::OK() const {
       return false;
     }
 
+  }
   if (sorted && !check_sorted()) {
 #ifndef NDEBUG
     cerr << "The system declares itself to be sorted but it is not!"

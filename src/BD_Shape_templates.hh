@@ -89,11 +89,12 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
         for (dimension_type i = space_dim; i > 0; --i) {
           const Coefficient& g_i = g.expression().get(Variable(i - 1));
           DB_Row<N>& dbm_i = dbm[i];
-          for (dimension_type j = space_dim; j > 0; --j)
+          for (dimension_type j = space_dim; j > 0; --j) {
             if (i != j) {
               const Coefficient& g_j = g.expression().get(Variable(j - 1));
               div_round_up(dbm_i[j], g_j - g_i, d);
             }
+          }
           div_round_up(dbm_i[0], -g_i, d);
         }
         for (dimension_type j = space_dim; j > 0; --j) {
@@ -238,11 +239,12 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 
   // See if there is at least one inconsistent constraint in `ph.con_sys'.
   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-         cs_end = ph.con_sys.end(); i != cs_end; ++i)
+         cs_end = ph.con_sys.end(); i != cs_end; ++i) {
     if (i->is_inconsistent()) {
       *this = BD_Shape<T>(num_dimensions, EMPTY);
       return;
     }
+  }
 
   // If `complexity' allows it, use simplex to derive the exact (modulo
   // the fact that our BDSs are topologically closed) variable bounds.
@@ -1059,15 +1061,15 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // their sum is the same constraint with the inhomogeneous term
   // less than or equal to the `c' one.
   PPL_DIRTY_TEMP(N, c);
-  for (dimension_type k = 0; k <= space_dim; ++k)
+  for (dimension_type k = 0; k <= space_dim; ++k) {
     if (leader[k] == k) {
       const DB_Row<N>& x_k = x_copy.dbm[k];
-      for (dimension_type i = 0; i <= space_dim; ++i)
+      for (dimension_type i = 0; i <= space_dim; ++i) {
         if (leader[i] == i) {
           const DB_Row<N>& x_i = x_copy.dbm[i];
           const Bit_Row& redundancy_i = redundancy_dbm[i];
           const N& x_i_k = x_i[k];
-          for (dimension_type j = 0; j <= space_dim; ++j)
+          for (dimension_type j = 0; j <= space_dim; ++j) {
             if (leader[j] == j) {
               const N& x_i_j = x_i[j];
               if (!is_plus_infinity(x_i_j)) {
@@ -1077,8 +1079,11 @@ BD_Shape<T>::is_shortest_path_reduced() const {
                 }
               }
             }
+          }
         }
+      }
     }
+  }
 
   // The vector `var_conn' is used to check if there is a single cycle
   // that connected all zero-equivalent variables between them.
@@ -4635,8 +4640,9 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
       }
     }
   }
+
   // Get information about the number of non-zero coefficients in `right'.
-  for (dimension_type i = right_space_dim; i-- > 0; )
+  for (dimension_type i = right_space_dim; i-- > 0; ) {
     if (right.coefficient(Variable(i)) != 0) {
       if (right_t++ == 1) {
         break;
@@ -4645,6 +4651,7 @@ void BD_Shape<T>::refine_with_linear_form_inequality(
         right_w_id = i;
       }
     }
+  }
 
   const FP_Interval_Type& left_w_coeff =
           left.coefficient(Variable(left_w_id));
@@ -6713,7 +6720,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& bds) {
     else {
       PPL_DIRTY_TEMP(N, v);
       bool first = true;
-      for (dimension_type i = 0; i <= n; ++i)
+      for (dimension_type i = 0; i <= n; ++i) {
         for (dimension_type j = i + 1; j <= n; ++j) {
           const N& c_i_j = bds.dbm[i][j];
           const N& c_j_i = bds.dbm[j][i];
@@ -6809,6 +6816,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& bds) {
             }
           }
         }
+      }
     }
   }
   return s;

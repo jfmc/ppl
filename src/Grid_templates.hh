@@ -216,9 +216,10 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   // Get the divisor of the first point.
   Grid_Generator_System::const_iterator i;
   Grid_Generator_System::const_iterator old_gensys_end = old_gensys.end();
-  for (i = old_gensys.begin(); i != old_gensys_end; ++i)
+  for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
     if (i->is_point())
       break;
+  }
   PPL_ASSERT(i != old_gensys_end);
   const Coefficient& system_divisor = i->divisor();
   for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
@@ -289,14 +290,16 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
     if (generators) {
       --kinds_index;
       // Move over any virtual rows.
-      while (sys_dim_kinds[kinds_index] == GEN_VIRTUAL)
+      while (sys_dim_kinds[kinds_index] == GEN_VIRTUAL) {
         --kinds_index;
+      }
     }
     else {
       ++kinds_index;
       // Move over any virtual rows.
-      while (sys_dim_kinds[kinds_index] == CON_VIRTUAL)
+      while (sys_dim_kinds[kinds_index] == CON_VIRTUAL) {
         ++kinds_index;
+      }
     }
 
     // row_kind CONGRUENCE is included as PARAMETER

@@ -100,8 +100,10 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     // Delete the allocated constraints, to avoid memory leaks.
 
     for (Constraint_Sequence::const_iterator
-          i = input_cs.begin(), i_end = input_cs.end(); i != i_end; ++i)
+          i = input_cs.begin(), i_end = input_cs.end();
+          i != i_end; ++i) {
       delete *i;
+    }
 
     throw;
   }
@@ -168,8 +170,10 @@ MIP_Problem::MIP_Problem(dimension_type dim,
     // Delete the allocated constraints, to avoid memory leaks.
 
     for (Constraint_Sequence::const_iterator
-          i = input_cs.begin(), i_end = input_cs.end(); i != i_end; ++i)
+          i = input_cs.begin(), i_end = input_cs.end();
+          i != i_end; ++i) {
       delete *i;
+    }
 
     throw;
   }

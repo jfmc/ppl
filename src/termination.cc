@@ -411,11 +411,13 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   }
 
   // Add the nonnegativity constraints for u_1, u_2 and u_3.
-  for (dimension_type i = s + 2*r; i-- > 0; )
+  for (dimension_type i = s + 2*r; i-- > 0; ) {
     cs_out.insert(Variable(i) >= 0);
+  }
 
-  for (dimension_type j = 2*n; j-- > 0; )
+  for (dimension_type j = 2*n; j-- > 0; ) {
     cs_out.insert(les_eq[j] == 0);
+  }
 }
 
 void
@@ -464,11 +466,13 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   }
 
   // Add the non-negativity constraints for lambda_1 and lambda_2.
-  for (dimension_type i = 2*m; i-- > 0; )
+  for (dimension_type i = 2*m; i-- > 0; ) {
     cs_out.insert(Variable(i) >= 0);
+  }
 
-  for (dimension_type j = 3*n; j-- > 0; )
+  for (dimension_type j = 3*n; j-- > 0; ) {
     cs_out.insert(les_eq[j] == 0);
+  }
 }
 
 bool

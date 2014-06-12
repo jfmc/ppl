@@ -185,8 +185,9 @@ Dense_Row::operator=(const Dense_Row& y) {
   if (this != &y && size() == y.size()) {
     // Avoid reallocation.
 
-    for (dimension_type i = size(); i-- > 0; )
+    for (dimension_type i = size(); i-- > 0; ) {
       (*this)[i] = y[i];
+    }
 
     return *this;
   }

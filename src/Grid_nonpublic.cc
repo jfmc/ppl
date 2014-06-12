@@ -121,7 +121,7 @@ PPL::Grid::construct(Congruence_System& cgs) {
   else {
     // Here `space_dim == 0'.
     // See if an inconsistent congruence has been passed.
-    for (dimension_type i = cgs.num_rows(); i-- > 0; )
+    for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       if (cgs[i].is_inconsistent()) {
         // Inconsistent congruence found: the grid is empty.
         status.set_empty();
@@ -131,6 +131,7 @@ PPL::Grid::construct(Congruence_System& cgs) {
         PPL_ASSERT(OK());
         return;
       }
+    }
     set_zero_dim_univ();
   }
   PPL_ASSERT(OK());
@@ -260,9 +261,10 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Congruence_System& cgs = y.con_sys;
 
   const dimension_type num_rows = gs.num_rows();
-  for (dimension_type i = num_rows; i-- > 0; )
+  for (dimension_type i = num_rows; i-- > 0; ) {
     if (!cgs.satisfies_all_congruences(gs[i]))
       return false;
+  }
 
   // Inclusion holds.
   return true;
@@ -616,10 +618,11 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       PPL_ASSERT(num_rows > 0);
       // Move to the first point or parameter.
       dimension_type row = 0;
-      while (sys[row].is_line())
+      while (sys[row].is_line()) {
         if (++row == num_rows)
           // All rows are lines.
           return;
+      }
 
       // Calculate the LCM of the given divisor and the divisor of
       // every point or parameter.
@@ -633,8 +636,9 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 
     // Represent every point and every parameter using the newly
     // calculated divisor.
-    for (dimension_type i = num_rows; i-- > 0; )
+    for (dimension_type i = num_rows; i-- > 0; ) {
       sys.sys.rows[i].scale_to_divisor(divisor);
+    }
 
     // Put the rows back into the linear system.
     PPL_ASSERT(sys.sys.OK());

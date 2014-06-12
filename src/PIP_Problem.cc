@@ -33,8 +33,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& pip) {
   s << "Space dimension: " << pip.space_dimension();
   s << "\nConstraints:";
   for (PIP_Problem::const_iterator i = pip.constraints_begin(),
-         i_end = pip.constraints_end(); i != i_end; ++i)
+         i_end = pip.constraints_end(); i != i_end; ++i) {
     s << "\n" << *i;
+  }
   s << "\nProblem parameters: " << pip.parameter_space_dimensions();
   if (pip.get_big_parameter_dimension() == not_a_dimension())
     s << "\nNo big-parameter set.\n";
@@ -93,8 +94,9 @@ PPL::PIP_Problem::control_parameters_init() {
 
 void
 PPL::PIP_Problem::control_parameters_copy(const PIP_Problem& y) {
-  for (dimension_type i = CONTROL_PARAMETER_NAME_SIZE; i-- > 0; )
+  for (dimension_type i = CONTROL_PARAMETER_NAME_SIZE; i-- > 0; ) {
     control_parameters[i] = y.control_parameters[i];
+  }
 }
 
 PPL::PIP_Problem_Status
@@ -194,8 +196,9 @@ PPL::PIP_Problem::solve() const {
           last_row = x.initial_context[x.initial_context.num_rows()-2];
 
           for (Row::iterator i = last_row.begin(),
-                 i_end = last_row.end(); i != i_end; ++i)
+                 i_end = last_row.end(); i != i_end; ++i) {
             neg_assign(*i);
+          }
         }
       }
 
@@ -360,8 +363,9 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   const dimension_type input_cs_size = input_cs.size();
 
   s << "\ninput_cs( " << input_cs_size << " )\n";
-  for (dimension_type i = 0; i < input_cs_size; ++i)
+  for (dimension_type i = 0; i < input_cs_size; ++i) {
     input_cs[i].ascii_dump(s);
+  }
 
   s << "\nfirst_pending_constraint: " <<  first_pending_constraint << "\n";
 
@@ -651,8 +655,9 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
 void
 PPL::PIP_Problem::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator ci = cs.begin(),
-         ci_end = cs.end(); ci != ci_end; ++ci)
+         ci_end = cs.end(); ci != ci_end; ++ci) {
     add_constraint(*ci);
+  }
 }
 
 bool
@@ -706,8 +711,9 @@ PPL::PIP_Problem::external_memory_in_bytes() const {
   // Adding the external memory for `input_cs'.
   n += input_cs.capacity() * sizeof(Constraint);
   for (const_iterator i = input_cs.begin(),
-         i_end = input_cs.end(); i != i_end; ++i)
+         i_end = input_cs.end(); i != i_end; ++i) {
     n += (i->external_memory_in_bytes());
+  }
   // FIXME: Adding the external memory for `parameters'.
   n += parameters.size() * sizeof(dimension_type);
 

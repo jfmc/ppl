@@ -34,9 +34,10 @@ Partial_Function::print(std::ostream& s) const {
   if (has_empty_codomain())
     s << "empty" << std::endl;
   else
-    for (dimension_type i = 0, i_end = vec.size(); i < i_end; ++i)
+    for (dimension_type i = 0, i_end = vec.size(); i < i_end; ++i) {
       if (vec[i] != not_a_dimension())
         s << Variable(i) << " --> " << Variable(vec[i]) << "\n";
+    }
 }
 
 } // namespace Parma_Polyhedra_Library

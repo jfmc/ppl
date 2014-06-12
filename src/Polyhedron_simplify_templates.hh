@@ -90,8 +90,9 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
   // Looking for the first inequality in `sys'.
   dimension_type num_lines_or_equalities = 0;
   while (num_lines_or_equalities < num_rows
-         && sys[num_lines_or_equalities].is_line_or_equality())
+         && sys[num_lines_or_equalities].is_line_or_equality()) {
     ++num_lines_or_equalities;
+  }
 
   // `num_saturators[i]' will contain the number of generators
   // that saturate the constraint `sys[i]'.

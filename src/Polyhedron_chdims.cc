@@ -256,8 +256,10 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // The newly introduced lines saturate all the non-pending constraints,
     // thus their saturation rows are made of zeroes.
     using std::swap;
-    for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
+    for (dimension_type i = sat_c.num_rows() - added_columns;
+      i-- > 0; ) {
       swap(sat_c[i], sat_c[i+added_columns]);
+    }
     // Since `added_rows > 0', we now have pending constraints.
     set_constraints_pending();
   }
@@ -420,7 +422,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
     Constraint c_template = c;
     c_template.expr.set_coefficient(var, Coefficient_zero());
-    
+
     // Each relevant constraint results in `m' new constraints.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       Constraint new_c = c_template;

@@ -62,8 +62,9 @@ PIP_Problem::m_swap(PIP_Problem& y) {
   swap(first_pending_constraint, y.first_pending_constraint);
   swap(parameters, y.parameters);
   swap(initial_context, y.initial_context);
-  for (dimension_type i = CONTROL_PARAMETER_NAME_SIZE; i-- > 0; )
+  for (dimension_type i = CONTROL_PARAMETER_NAME_SIZE; i-- > 0; ) {
     swap(control_parameters[i], y.control_parameters[i]);
+  }
   swap(big_parameter_dimension, y.big_parameter_dimension);
 }
 

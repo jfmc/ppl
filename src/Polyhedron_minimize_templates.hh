@@ -163,16 +163,18 @@ Polyhedron::minimize(const bool con_to_gen,
   if (dest.is_necessarily_closed()) {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
-        ++first_point)
+        ++first_point) {
       if (dest[first_point].expr.inhomogeneous_term() > 0)
         break;
+    }
   }
   else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
-        ++first_point)
+        ++first_point) {
       if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0)
         break;
+    }
   }
 
   if (first_point == dest_num_rows)
@@ -306,8 +308,9 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
     // By sortedness, all the rows in `source2' having indexes
     // greater than or equal to `k2' were not in `source1'.
     // We add them as pending rows of 'source1' (sortedness not affected).
-    for ( ; k2 < source2_num_rows; ++k2)
+    for ( ; k2 < source2_num_rows; ++k2) {
       source1.add_pending_row(source2[k2]);
+    }
 
   if (source1.num_pending_rows() == 0)
     // No row was appended to `source1', because all the constraints
@@ -388,16 +391,18 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
   if (dest.is_necessarily_closed()) {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
-        ++first_point)
+        ++first_point) {
       if (dest[first_point].expr.inhomogeneous_term() > 0)
         break;
+    }
   }
   else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
-        ++first_point)
+        ++first_point) {
       if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0)
         break;
+     }
   }
 
   if (first_point == dest_num_rows)

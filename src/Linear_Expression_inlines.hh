@@ -728,8 +728,9 @@ Linear_Expression::Linear_Expression(const LE_Adapter& e,
   tmp.set_space_dimension(e.space_dimension());
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
   for (typename LE_Adapter::const_iterator i = e.begin(),
-         i_end = e.end(); i != i_end; ++i)
+         i_end = e.end(); i != i_end; ++i) {
     add_mul_assign(tmp, *i, i.variable());
+  }
   using std::swap;
   swap(impl, tmp.impl);
 }
@@ -744,8 +745,9 @@ Linear_Expression::Linear_Expression(const LE_Adapter& e,
   tmp.set_space_dimension(e.space_dimension());
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
   for (typename LE_Adapter::const_iterator i = e.begin(),
-         i_end = e.end(); i != i_end; ++i)
+         i_end = e.end(); i != i_end; ++i) {
     add_mul_assign(tmp, *i, i.variable());
+  }
   using std::swap;
   swap(impl, tmp.impl);
 }
@@ -765,8 +767,9 @@ Linear_Expression::Linear_Expression(const LE_Adapter& e,
     i_end = e.lower_bound(Variable(space_dim));
   else
     i_end = e.end();
-  for (itr_t i = e.begin(); i != i_end; ++i)
+  for (itr_t i = e.begin(); i != i_end; ++i) {
     add_mul_assign(tmp, *i, i.variable());
+  }
   using std::swap;
   swap(impl, tmp.impl);
 }
@@ -787,8 +790,9 @@ Linear_Expression::Linear_Expression(const LE_Adapter& e,
     i_end = e.lower_bound(Variable(space_dim));
   else
     i_end = e.end();
-  for (itr_t i = e.begin(); i != i_end; ++i)
+  for (itr_t i = e.begin(); i != i_end; ++i) {
     add_mul_assign(tmp, *i, i.variable());
+  }
   using std::swap;
   swap(impl, tmp.impl);
 }

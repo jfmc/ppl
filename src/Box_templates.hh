@@ -1964,10 +1964,12 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
       PPL_ASSERT(!x.seq[i].is_empty());
       // The intersection of `x' and `y' is empty due to the i-th interval:
       // reset other intervals to UNIVERSE.
-      for (dimension_type j = num_dims; j-- > i; )
+      for (dimension_type j = num_dims; j-- > i; ) {
         x.seq[j].assign(UNIVERSE);
-      for (dimension_type j = i; j-- > 0; )
+      }
+      for (dimension_type j = i; j-- > 0; ) {
         x.seq[j].assign(UNIVERSE);
+      }
       PPL_ASSERT(x.OK());
       return false;
     }
@@ -2053,13 +2055,16 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
   for (++vsi; vsi != vsi_end; ++vsi) {
     const dimension_type vsi_next = *vsi;
     // All intervals in between are moved to the left.
-    while (src < vsi_next)
+    while (src < vsi_next) {
       swap(seq[dst++], seq[src++]);
+    }
     ++src;
   }
+
   // Moving the remaining intervals.
-  while (src < old_space_dim)
+  while (src < old_space_dim) {
     swap(seq[dst++], seq[src++]);
+  }
 
   PPL_ASSERT(dst == new_space_dim);
   seq.resize(new_space_dim);
@@ -2151,8 +2156,9 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
     // corresponding to the variables in `vars'.
     ITV& seq_v = seq[dest.id()];
     for (Variables_Set::const_iterator i = vars.begin(),
-           vs_end = vars.end(); i != vs_end; ++i)
+           vs_end = vars.end(); i != vs_end; ++i) {
       seq_v.join_assign(seq[*i]);
+    }
   }
   remove_space_dimensions(vars);
 }
@@ -2203,8 +2209,9 @@ Box<ITV>::add_constraints_no_check(const Constraint_System& cs) {
   // through all the constraints to fulfill the method's contract
   // for what concerns exception throwing.
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i) {
     add_constraint_no_check(*i);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -2259,8 +2266,9 @@ Box<ITV>::add_congruences_no_check(const Congruence_System& cgs) {
   // through all the congruences to fulfill the method's contract
   // for what concerns exception throwing.
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
     add_congruence_no_check(*i);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -2298,8 +2306,9 @@ void
 Box<ITV>::refine_no_check(const Constraint_System& cs) {
   PPL_ASSERT(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -2328,8 +2337,9 @@ void
 Box<ITV>::refine_no_check(const Congruence_System& cgs) {
   PPL_ASSERT(cgs.space_dimension() <= space_dimension());
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i)
+         cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i) {
     refine_no_check(*i);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -2765,8 +2775,9 @@ Box<ITV>
     WEIGHT_BEGIN();
     ++num_iterations;
     copy = seq;
-    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i)
+    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
       propagate_constraint_no_check(*i);
+    }
 
     WEIGHT_ADD_MUL(40, propagation_weight);
     // Check if the client has requested abandoning all expensive

@@ -144,8 +144,9 @@ pip_display_sol(std::ostream& out,
       for (Constraint_System::const_iterator
              cs_begin = constraints.begin(),
              cs_end = constraints.end(),
-             i = cs_begin; i != cs_end; ++i)
+             i = cs_begin; i != cs_end; ++i) {
         out << ((i == cs_begin) ? "" : " and ") << *i;
+      }
       out << " then" << endl;
     }
     const PIP_Decision_Node* const decision_node_p = pip->as_decision();
@@ -162,9 +163,10 @@ pip_display_sol(std::ostream& out,
       for (Variables_Set::const_iterator
              v_begin = vars.begin(),
              v_end = vars.end(),
-             i = v_begin; i != v_end; ++i)
+             i = v_begin; i != v_end; ++i) {
         out << ((i == v_begin) ? "" : " ; ")
             << solution_node_p->parametric_values(Variable(*i));
+      }
       out << "}" << endl;
       if (!constraints_empty) {
         out << setw(indent*2) << "" << "else" << endl;
@@ -217,8 +219,9 @@ public:
     pip.add_space_dimensions_and_embed(num_vars, num_params);
     for (PPL::dimension_type k = 0, i = 0; i < num_constraints; ++i) {
       PPL::Linear_Expression expr;
-      for (PPL::dimension_type j = 0; j < num_vars + num_params; ++j)
+      for (PPL::dimension_type j = 0; j < num_vars + num_params; ++j) {
         add_mul_assign(expr, constraints[k++], PPL::Variable(j));
+      }
       expr += constraints[k++];
       if (constraint_type[i])
         pip.add_constraint(PPL::Constraint(expr >= 0));
@@ -228,8 +231,9 @@ public:
     if (num_params > 0) {
       for (PPL::dimension_type k = 0, i = 0; i < num_ctx_rows; ++i) {
         PPL::Linear_Expression expr;
-        for (PPL::dimension_type j = 0; j < num_params; ++j)
+        for (PPL::dimension_type j = 0; j < num_params; ++j) {
           add_mul_assign(expr, context[k++], PPL::Variable(num_vars+j));
+        }
         expr += context[k++];
         if (ctx_type[i])
           pip.add_constraint(PPL::Constraint(expr >= 0));
@@ -369,19 +373,23 @@ public:
     const PPL::dimension_type constraint_width = num_vars+num_params+1;
     Coeff_Vector constraints(num_constraints * constraint_width);
     Int_Vector constraint_type(num_constraints);
-    for (PPL::dimension_type i = 0; i < num_constraints; ++i)
+    for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
       constraint_type[i] = 1;
-    for (PPL::dimension_type i = 0; i < num_constraints; ++i)
+    }
+    for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
       if (!read_vector(in, i, constraint_width, num_vars, constraints))
         return false;
+    }
 
     Coeff_Vector context(num_ctx_rows * (1+num_params));
     Int_Vector ctx_type(num_ctx_rows);
-    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i)
+    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
       ctx_type[i] = 1;
-    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i)
+    }
+    for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
       if (!read_vector(in, i, num_params+1, num_params, context))
         return false;
+    }
 
     const bool result = update_pip(num_vars, num_params,
                                    num_constraints, num_ctx_rows,

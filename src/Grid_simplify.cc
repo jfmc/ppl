@@ -269,8 +269,9 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
 
     // Move down over rows which have zero in column `dim'.
     while (row_index < num_rows
-           && ggs.sys.rows[row_index].expr.get(dim) == 0)
+           && ggs.sys.rows[row_index].expr.get(dim) == 0) {
       ++row_index;
+    }
 
     if (row_index == num_rows)
       // Element in column `dim' is zero in all rows from the pivot.
@@ -400,8 +401,9 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
     dimension_type row_index = pivot_index;
 
     // Move down over rows which have zero in column `dim'.
-    while (row_index < num_rows && cgs.rows[row_index].expr.get(dim) == 0)
+    while (row_index < num_rows && cgs.rows[row_index].expr.get(dim) == 0) {
       ++row_index;
+    }
 
     if (row_index == num_rows)
       // Element in column `dim' is zero in all rows from the pivot,

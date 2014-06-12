@@ -227,8 +227,9 @@ Linear_System<Row>::mark_as_necessarily_closed() {
   PPL_ASSERT(topology() == NOT_NECESSARILY_CLOSED);
   row_topology = NECESSARILY_CLOSED;
   ++space_dimension_;
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].mark_as_necessarily_closed();
+  }
 }
 
 template <typename Row>
@@ -238,8 +239,9 @@ Linear_System<Row>::mark_as_not_necessarily_closed() {
   PPL_ASSERT(space_dimension() > 0);
   row_topology = NOT_NECESSARILY_CLOSED;
   --space_dimension_;
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].mark_as_not_necessarily_closed();
+  }
 }
 
 template <typename Row>
@@ -247,8 +249,9 @@ inline void
 Linear_System<Row>::set_topology(Topology t) {
   if (topology() == t)
     return;
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].set_topology(t);
+  }
   row_topology = t;
   PPL_ASSERT(OK());
 }
@@ -329,8 +332,9 @@ template <typename Row>
 inline void
 Linear_System<Row>::set_representation(Representation r) {
   representation_ = r;
-  for (dimension_type i = 0; i < rows.size(); ++i)
+  for (dimension_type i = 0; i < rows.size(); ++i) {
     rows[i].set_representation(r);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -349,8 +353,9 @@ Linear_System<Row>::space_dimension() const {
 template <typename Row>
 inline void
 Linear_System<Row>::set_space_dimension_no_ok(dimension_type space_dim) {
-  for (dimension_type i = rows.size(); i-- > 0; )
+  for (dimension_type i = rows.size(); i-- > 0; ) {
     rows[i].set_space_dimension_no_ok(space_dim);
+  }
   space_dimension_ = space_dim;
 }
 
@@ -369,8 +374,9 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i,
   const bool was_pending = (i >= index_first_pending);
 
   if (sorted && keep_sorted && !was_pending) {
-    for (dimension_type j = i + 1; j < rows.size(); ++j)
+    for (dimension_type j = i + 1; j < rows.size(); ++j) {
       swap(rows[j], rows[j-1]);
+    }
     rows.pop_back();
   }
   else {
@@ -428,8 +434,9 @@ Linear_System<Row>::remove_rows(dimension_type first,
   // Move the rows in [first,last) at the end of the system.
   if (sorted && keep_sorted && !were_pending) {
     // Preserve the row ordering.
-    for (dimension_type i = last; i < rows.size(); ++i)
+    for (dimension_type i = last; i < rows.size(); ++i) {
       swap(rows[i], rows[i - n]);
+    }
 
     rows.resize(rows.size() - n);
 
@@ -639,8 +646,9 @@ template <typename Row>
 inline void
 Linear_System<Row>
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].permute_space_dimensions(cycle);
+  }
   sorted = false;
   PPL_ASSERT(OK());
 }
@@ -651,8 +659,9 @@ Linear_System<Row>
 ::swap_space_dimensions(Variable v1, Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
-  for (dimension_type k = num_rows(); k-- > 0; )
+  for (dimension_type k = num_rows(); k-- > 0; ) {
     rows[k].swap_space_dimensions(v1, v2);
+  }
   sorted = false;
   PPL_ASSERT(OK());
 }

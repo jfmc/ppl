@@ -178,7 +178,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   dimension_type ph_num_points = 0;
   const Generator_System& gs = ph.minimized_generators();
   for (Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
+         gs_end = gs.end(); i != gs_end; ++i) {
     switch (i->type()) {
     case Generator::POINT:
       // Intentionally fall through.
@@ -193,6 +193,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
       ++ph_lin_space_dim;
       break;
     }
+  }
   // TODO: this is an inefficient workaround.
   // For NNC polyhedra, constraints might be no longer up-to-date
   // (and hence, neither minimized) due to the strong minimization

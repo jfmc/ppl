@@ -60,8 +60,9 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     i_variables(y.i_variables) {
   input_cs.reserve(y.input_cs.size());
   for (Constraint_Sequence::const_iterator i = y.input_cs.begin(),
-         i_end = y.input_cs.end(); i != i_end; ++i)
+         i_end = y.input_cs.end(); i != i_end; ++i) {
     add_constraint_helper(*(*i));
+  }
   PPL_ASSERT(OK());
 }
 
@@ -111,8 +112,9 @@ MIP_Problem::~MIP_Problem() {
   // (and will eventually be deleted) by ancestors.
   for (Constraint_Sequence::const_iterator
          i = nth_iter(input_cs, inherited_constraints),
-         i_end = input_cs.end(); i != i_end; ++i)
+         i_end = input_cs.end(); i != i_end; ++i) {
     delete *i;
+  }
 }
 
 
@@ -217,8 +219,9 @@ MIP_Problem::external_memory_in_bytes() const {
   n += input_cs.capacity() * sizeof(Constraint*);
   for (Constraint_Sequence::const_iterator
          i = nth_iter(input_cs, inherited_constraints),
-         i_end = input_cs.end(); i != i_end; ++i)
+         i_end = input_cs.end(); i != i_end; ++i) {
     n += ((*i)->total_memory_in_bytes());
+  }
 
   // Adding the external memory for `base'.
   n += base.capacity() * sizeof(dimension_type);

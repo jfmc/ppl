@@ -150,8 +150,9 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
                                 "cs contains strict inequalities.");
   // Actually copy the constraints.
   for (Constraint_System::const_iterator
-         i = cs.begin(), i_end = cs.end(); i != i_end; ++i)
+         i = cs.begin(), i_end = cs.end(); i != i_end; ++i) {
     add_constraint_helper(*i);
+  }
 
   PPL_ASSERT(OK());
 }
@@ -188,8 +189,9 @@ PPL::MIP_Problem::add_constraints(const Constraint_System& cs) {
     throw std::invalid_argument("PPL::MIP_Problem::add_constraints(cs):\n"
                                 "cs contains strict inequalities.");
   for (Constraint_System::const_iterator
-         i = cs.begin(), i_end = cs.end(); i != i_end; ++i)
+         i = cs.begin(), i_end = cs.end(); i != i_end; ++i) {
     add_constraint_helper(*i);
+  }
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
   PPL_ASSERT(OK());
@@ -387,9 +389,10 @@ PPL::MIP_Problem
 bool
 PPL::MIP_Problem::is_in_base(const dimension_type var_index,
                              dimension_type& row_index) const {
-  for (row_index = base.size(); row_index-- > 0; )
+  for (row_index = base.size(); row_index-- > 0; ) {
     if (base[row_index] == var_index)
       return true;
+  }
   return false;
 }
 
@@ -513,9 +516,10 @@ PPL::MIP_Problem
   if (mapping_size > 0) {
     // Note: mapping[0] is associated to the cost function.
     for (dimension_type i = std::min(mapping_size - 1, cs_space_dim);
-         i-- > 0; )
+         i-- > 0; ) {
       if (mapping[i + 1].second == 0)
         is_nonnegative_variable[i] = true;
+    }
   }
 
   // Process each pending constraint in `input_cs' and
@@ -810,9 +814,10 @@ PPL::MIP_Problem::process_pending_constraints() {
         worked_out_row[k] = true;
       }
     }
-    for (dimension_type j = base_size; j-- > 0; )
+    for (dimension_type j = base_size; j-- > 0; ) {
       if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
         linear_combine(tableau_k, tableau[j], base[j]);
+    }
   }
 
   // Let all inhomogeneous terms in the tableau be nonpositive,
@@ -822,8 +827,10 @@ PPL::MIP_Problem::process_pending_constraints() {
     Row& tableau_i = tableau[i];
     if (tableau_i.get(0) > 0) {
       for (Row::iterator
-           j = tableau_i.begin(), j_end = tableau_i.end(); j != j_end; ++j)
+           j = tableau_i.begin(), j_end = tableau_i.end();
+           j != j_end; ++j) {
         neg_assign(*j);
+      }
     }
   }
 
@@ -991,9 +998,10 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     // Note that find() is used instead of lower_bound().
     working_cost_type::const_iterator i_end
       = working_cost.find(tableau_num_columns_minus_1);
-    for ( ; i != i_end; ++i)
+    for ( ; i != i_end; ++i) {
       if (sgn(*i) == cost_sign)
         columns.push_back(std::make_pair(i.index(), 1.0));
+    }
   }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const Row& tableau_i = tableau[i];
@@ -1006,8 +1014,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       = columns.end();
     while (j != j_end && k != k_end) {
       const dimension_type column = j.index();
-      while (k != k_end && column > k->first)
+      while (k != k_end && column > k->first) {
         ++k;
+      }
       if (k == k_end)
         break;
       if (k->first > column) {
@@ -1094,11 +1103,13 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // Compute the lcm of all the coefficients of variables in base.
     PPL_DIRTY_TEMP_COEFFICIENT(lcm_basis);
     lcm_basis = 1;
-    for (dimension_type i = tableau_num_rows; i-- > 0; )
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
       lcm_assign(lcm_basis, lcm_basis, tableau[i].get(base[i]));
+    }
     // Compute normalization factors.
-    for (dimension_type i = tableau_num_rows; i-- > 0; )
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
       exact_div_assign(norm_factor[i], lcm_basis, tableau[i].get(base[i]));
+    }
     // Compute the square of `lcm_basis', exploiting the fact that
     // `lcm_basis' will no longer be needed.
     lcm_basis *= lcm_basis;
@@ -1138,10 +1149,11 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     // Note that find() is used instead of lower_bound.
     working_cost_type::const_iterator i_end
       = working_cost.find(tableau_num_columns_minus_1);
-    for ( ; i != i_end; ++i)
+    for ( ; i != i_end; ++i) {
       if (sgn(*i) == cost_sign)
         columns.push_back(std::pair<dimension_type, Coefficient>
                           (i.index(), squared_lcm_basis));
+    }
   }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
     const Row& tableau_i = tableau[i];
@@ -1152,8 +1164,9 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     std::vector<std::pair<dimension_type, Coefficient> >::iterator
       k_end = columns.end();
     while (j != j_end) {
-      while (k != k_end && j.index() > k->first)
+      while (k != k_end && j.index() > k->first) {
         ++k;
+      }
       if (k == k_end)
         break;
       PPL_ASSERT(j.index() <= k->first);
@@ -1769,8 +1782,9 @@ PPL::MIP_Problem::compute_generator() const {
 
   // Finally, build the generator.
   Linear_Expression expr;
-  for (dimension_type i = external_space_dim; i-- > 0; )
+  for (dimension_type i = external_space_dim; i-- > 0; ) {
     add_mul_assign(expr, numer[i], Variable(i));
+  }
 
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   x.last_generator = point(expr, lcm);
@@ -1791,10 +1805,12 @@ PPL::MIP_Problem::second_phase() {
   input_obj_function.get_row(new_cost);
 
   // Negate the cost function if we are minimizing.
-  if (opt_mode == MINIMIZATION)
+  if (opt_mode == MINIMIZATION) {
     for (Row::iterator i = new_cost.begin(),
-           i_end = new_cost.end(); i != i_end; ++i)
+           i_end = new_cost.end(); i != i_end; ++i) {
       neg_assign(*i);
+    }
+  }
 
   const dimension_type cost_zero_size = working_cost.size();
 
@@ -2075,12 +2091,13 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   // Check how many `active constraints' we have and track them.
   const dimension_type input_cs_num_rows = input_cs.size();
   std::deque<bool> satisfiable_constraints (input_cs_num_rows, false);
-  for (dimension_type i = input_cs_num_rows; i-- > 0; )
+  for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
     // An equality is an `active constraint' by definition.
     // If we have an inequality, check if it is an `active constraint'.
     if (input_cs[i]->is_equality()
         || is_saturated(*(input_cs[i]), last_generator))
       satisfiable_constraints[i] = true;
+  }
 
   dimension_type winning_num_appearances = 0;
 
@@ -2247,7 +2264,7 @@ PPL::MIP_Problem::OK() const {
     return false;
 
   // Constraint system should contain no strict inequalities.
-  for (dimension_type i = input_cs_num_rows; i-- > 0; )
+  for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
     if (input_cs[i]->is_strict_inequality()) {
 #ifndef NDEBUG
       cerr << "The feasible region of the MIP_Problem is defined by "
@@ -2257,6 +2274,8 @@ PPL::MIP_Problem::OK() const {
 #endif
       return false;
     }
+
+  }
 
   if (external_space_dim < internal_space_dim) {
 #ifndef NDEBUG
@@ -2308,7 +2327,7 @@ PPL::MIP_Problem::OK() const {
       return false;
     }
 
-    for (dimension_type i = 0; i < first_pending_constraint; ++i)
+    for (dimension_type i = 0; i < first_pending_constraint; ++i) {
       if (!is_satisfied(*(input_cs[i]), last_generator)) {
 #ifndef NDEBUG
         cerr << "The cached feasible point does not belong to "
@@ -2318,6 +2337,7 @@ PPL::MIP_Problem::OK() const {
 #endif
         return false;
       }
+    }
 
     // Check that every integer declared variable is really integer.
     // in the solution found.
@@ -2377,13 +2397,15 @@ PPL::MIP_Problem::OK() const {
         return false;
       }
     }
+
     {
       // Needed to sort accesses to tableau_j, improving performance.
       typedef std::vector<std::pair<dimension_type, dimension_type> >
         pair_vector_t;
       pair_vector_t vars_in_base;
-      for (dimension_type i = base.size(); i-- > 0; )
+      for (dimension_type i = base.size(); i-- > 0; ) {
         vars_in_base.push_back(std::make_pair(base[i], i));
+      }
 
       std::sort(vars_in_base.begin(), vars_in_base.end());
 
@@ -2420,7 +2442,7 @@ PPL::MIP_Problem::OK() const {
     }
 
     // The last column of the tableau must contain only zeroes.
-    for (dimension_type i = tableau_num_rows; i-- > 0; )
+    for (dimension_type i = tableau_num_rows; i-- > 0; ) {
       if (tableau[i].get(tableau_num_columns - 1) != 0) {
 #ifndef NDEBUG
         cerr << "the last column of the tableau must contain only"
@@ -2429,6 +2451,7 @@ PPL::MIP_Problem::OK() const {
 #endif
         return false;
       }
+    }
   }
 
   // All checks passed.
@@ -2444,8 +2467,9 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   const dimension_type input_cs_size = input_cs.size();
 
   s << "\ninput_cs( " << input_cs_size << " )\n";
-  for (dimension_type i = 0; i < input_cs_size; ++i)
+  for (dimension_type i = 0; i < input_cs_size; ++i) {
     input_cs[i]->ascii_dump(s);
+  }
 
   s << "\ninherited_constraints: " <<  inherited_constraints
     << std::endl;
@@ -2500,17 +2524,19 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
 
   const dimension_type base_size = base.size();
   s << "\nbase( " << base_size << " )\n";
-  for (dimension_type i = 0; i != base_size; ++i)
+  for (dimension_type i = 0; i != base_size; ++i) {
     s << base[i] << ' ';
+  }
 
   s << "\nlast_generator\n";
   last_generator.ascii_dump(s);
 
   const dimension_type mapping_size = mapping.size();
   s << "\nmapping( " << mapping_size << " )\n";
-  for (dimension_type i = 1; i < mapping_size; ++i)
+  for (dimension_type i = 1; i < mapping_size; ++i) {
     s << "\n"<< i << " -> " << mapping[i].first << " -> " << mapping[i].second
       << ' ';
+  }
 
   s << "\n\ninteger_variables";
   i_variables.ascii_dump(s);
@@ -2726,8 +2752,9 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& mip) {
   s << "Constraints:";
   for (MIP_Problem::const_iterator i = mip.constraints_begin(),
-         i_end = mip.constraints_end(); i != i_end; ++i)
+         i_end = mip.constraints_end(); i != i_end; ++i) {
     s << "\n" << *i;
+  }
   s << "\nObjective function: "
     << mip.objective_function()
     << "\nOptimization mode: "

@@ -40,17 +40,19 @@ Powerset<D>::collapse(const Sequence_iterator sink) {
   iterator next_x_sink = x_sink;
   ++next_x_sink;
   iterator x_end = end();
-  for (const_iterator xi = next_x_sink; xi != x_end; ++xi)
+  for (const_iterator xi = next_x_sink; xi != x_end; ++xi) {
     d.upper_bound_assign(*xi);
+  }
   // Drop the surplus disjuncts.
   drop_disjuncts(next_x_sink, x_end);
 
   // Ensure omega-reduction.
-  for (iterator xi = begin(); xi != x_sink; )
+  for (iterator xi = begin(); xi != x_sink; ) {
     if (xi->definitely_entails(d))
       xi = drop_disjunct(xi);
     else
       ++xi;
+  }
 
   PPL_ASSERT_HEAVY(OK());
 }
@@ -63,16 +65,17 @@ Powerset<D>::omega_reduce() const {
 
   Powerset& x = const_cast<Powerset&>(*this);
   // First remove all bottom elements.
-  for (iterator xi = x.begin(), x_end = x.end(); xi != x_end; )
+  for (iterator xi = x.begin(), x_end = x.end(); xi != x_end; ) {
     if (xi->is_bottom())
       xi = x.drop_disjunct(xi);
     else
       ++xi;
+  }
   // Then remove non-maximal elements.
   for (iterator xi = x.begin(); xi != x.end(); ) {
     const D& xv = *xi;
     bool dropping_xi = false;
-    for (iterator yi = x.begin(); yi != x.end(); )
+    for (iterator yi = x.begin(); yi != x.end(); ) {
       if (xi == yi)
         ++yi;
       else {
@@ -86,6 +89,7 @@ Powerset<D>::omega_reduce() const {
         else
           ++yi;
       }
+    }
     if (dropping_xi)
       xi = x.drop_disjunct(xi);
     else
@@ -178,8 +182,9 @@ Powerset<D>::definitely_entails(const Powerset& y) const {
          x_end = x.end(); found && xi != x_end; ++xi) {
     found = false;
     for (const_iterator yi = y.begin(),
-           y_end = y.end(); !found && yi != y_end; ++yi)
+           y_end = y.end(); !found && yi != y_end; ++yi) {
       found = (*xi).definitely_entails(*yi);
+    }
   }
   return found;
 }
@@ -217,13 +222,14 @@ Powerset<D>::pairwise_apply_assign(const Powerset& y,
   y.omega_reduce();
   Sequence new_sequence;
   for (const_iterator xi = begin(), x_end = end(),
-         y_begin = y.begin(), y_end = y.end(); xi != x_end; ++xi)
+         y_begin = y.begin(), y_end = y.end(); xi != x_end; ++xi) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       D zi = *xi;
       op_assign(zi, *yi);
       if (!zi.is_bottom())
         new_sequence.push_back(zi);
     }
+  }
   // Put the new sequence in place.
   using std::swap;
   swap(sequence, new_sequence);
@@ -239,10 +245,11 @@ Powerset<D>::least_upper_bound_assign(const Powerset& y) {
   y.omega_reduce();
   iterator old_begin = begin();
   iterator old_end = end();
-  for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
+  for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i) {
     old_begin = add_non_bottom_disjunct_preserve_reduction(*i,
                                                            old_begin,
                                                            old_end);
+  }
   PPL_ASSERT_HEAVY(OK());
 }
 

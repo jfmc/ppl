@@ -112,8 +112,9 @@ indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
   PPL_ASSERT(num_elems >= 2);
   std::vector<index_type> iv;
   iv.reserve(num_elems);
-  for (index_type i = 0, i_end = num_elems; i != i_end; ++i)
+  for (index_type i = 0, i_end = num_elems; i != i_end; ++i) {
     iv.push_back(i);
+  }
 
   typedef typename std::vector<index_type>::iterator Iter;
   const Iter iv_begin = iv.begin();
@@ -140,8 +141,9 @@ indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
   }
 
   // Restore `iv' indices to 0 .. num_elems-1 for the call to unique.
-  for (index_type i = num_elems; i-- > 0; )
+  for (index_type i = num_elems; i-- > 0; ) {
     iv[i] = i;
+  }
 
   // Unique `iv' by comparing the rows indexed by its elements.
   iv_end = std::unique(iv_begin, iv_end, unique_cmp);
@@ -153,8 +155,9 @@ indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
 
   // There were duplicates: swap the rows according to `iv'.
   index_type dst = 0;
-  while (dst < num_sorted && dst == iv[dst])
+  while (dst < num_sorted && dst == iv[dst]) {
     ++dst;
+  }
   if (dst == num_sorted)
     return num_duplicates;
   do {

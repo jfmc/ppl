@@ -212,8 +212,9 @@ Termination_Helpers
     ::assign_all_inequalities_approximation(pset_after, cs_after);
   // FIXME: provide an "append" for constraint systems.
   for (Constraint_System::const_iterator i = cs_after.begin(),
-         cs_after_end = cs_after.end(); i != cs_after_end; ++i)
+         cs_after_end = cs_after.end(); i != cs_after_end; ++i) {
     cs.insert(*i);
+  }
 }
 
 template <typename PSET>

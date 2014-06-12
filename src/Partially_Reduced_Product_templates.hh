@@ -51,8 +51,9 @@ Partially_Reduced_Product<D1, D2, R>::constraints() const {
   Constraint_System cs = d2.constraints();
   const Constraint_System& cs1 = d1.constraints();
   for (Constraint_System::const_iterator i = cs1.begin(),
-         cs_end = cs1.end(); i != cs_end; ++i)
+         cs_end = cs1.end(); i != cs_end; ++i) {
     cs.insert(*i);
+  }
   return cs;
 }
 
@@ -82,8 +83,9 @@ Partially_Reduced_Product<D1, D2, R>::congruences() const {
   Congruence_System cgs = d2.congruences();
   const Congruence_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
-         cgs_end = cgs1.end(); i != cgs_end; ++i)
+         cgs_end = cgs1.end(); i != cgs_end; ++i) {
     cgs.insert(*i);
+  }
   return cgs;
 }
 
@@ -94,8 +96,9 @@ Partially_Reduced_Product<D1, D2, R>::minimized_congruences() const {
   Congruence_System cgs = d2.congruences();
   const Congruence_System& cgs1 = d1.congruences();
   for (Congruence_System::const_iterator i = cgs1.begin(),
-         cgs_end = cgs1.end(); i != cgs_end; ++i)
+         cgs_end = cgs1.end(); i != cgs_end; ++i) {
     cgs.insert(*i);
+  }
   Grid gr(cgs);
   return gr.minimized_congruences();
 }

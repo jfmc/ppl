@@ -41,11 +41,12 @@ PPL::Constraint_System::Constraint_System(const Congruence_System& cgs,
                                           Representation r)
   : sys(NECESSARILY_CLOSED, cgs.space_dimension(), r) {
   for (Congruence_System::const_iterator i = cgs.begin(),
-         cgs_end = cgs.end(); i != cgs_end; ++i)
+         cgs_end = cgs.end(); i != cgs_end; ++i) {
     if (i->is_equality()) {
       Constraint tmp(*i);
       insert(tmp, Recycle_Input());
     }
+  }
   PPL_ASSERT(OK());
 }
 
@@ -72,11 +73,12 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 
     // Note that num_rows() is *not* constant, because it is decreased by
     // remove_row().
-    for (dimension_type i = 0; i < num_rows(); )
+    for (dimension_type i = 0; i < num_rows(); ) {
       if (sys[i].epsilon_coefficient() != 0)
         sys.remove_row(i, false);
       else
         ++i;
+    }
 
     // If `cs' was sorted we sort it again.
     if (was_sorted)
@@ -94,9 +96,10 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 bool
 PPL::Constraint_System::has_equalities() const {
   // We verify if the system has equalities also in the pending part.
-  for (dimension_type i = sys.num_rows(); i-- > 0; )
+  for (dimension_type i = sys.num_rows(); i-- > 0; ) {
     if (sys[i].is_equality())
       return true;
+  }
   return false;
 }
 
@@ -171,12 +174,15 @@ PPL::Constraint_System::num_inequalities() const {
   // If the Base happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
   if (sys.is_sorted())
-    for (dimension_type i = sys.num_rows(); i > 0 && cs[--i].is_inequality(); )
+    for (dimension_type i = sys.num_rows();
+         i > 0 && cs[--i].is_inequality(); ) {
       ++n;
+    }
   else
-    for (dimension_type i = sys.num_rows(); i-- > 0 ; )
+    for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
       if (cs[i].is_inequality())
         ++n;
+    }
   return n;
 }
 
@@ -191,8 +197,9 @@ PPL::Constraint_System::num_equalities() const {
 void
 PPL::Constraint_System_const_iterator::skip_forward() {
   const Linear_System<Constraint>::const_iterator csp_end = csp->end();
-  while (i != csp_end && (*this)->is_tautological())
+  while (i != csp_end && (*this)->is_tautological()) {
     ++i;
+  }
 }
 
 bool
@@ -207,9 +214,10 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
   if (sys.is_necessarily_closed()) {
     if (g.is_line()) {
       // Lines must saturate all constraints.
-      for (dimension_type i = sys.num_rows(); i-- > 0; )
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
         if (sps(g, sys[i]) != 0)
           return false;
+      }
     }
     else
       // `g' is either a ray, a point or a closure point.
@@ -234,9 +242,10 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
 
     case Generator::LINE:
       // Lines must saturate all constraints.
-      for (dimension_type i = sys.num_rows(); i-- > 0; )
+      for (dimension_type i = sys.num_rows(); i-- > 0; ) {
         if (sps(g, sys[i]) != 0)
           return false;
+      }
 
       break;
 

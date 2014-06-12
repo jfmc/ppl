@@ -222,8 +222,9 @@ inline void
 add_artificial_parameters(Variables_Set& params,
                           const dimension_type space_dim,
                           const dimension_type num_art_params) {
-  for (dimension_type i = 0; i < num_art_params; ++i)
+  for (dimension_type i = 0; i < num_art_params; ++i) {
     params.insert(space_dim + i);
+  }
 }
 
 // Update `context', `params' and `space_dim' to account for
@@ -532,8 +533,9 @@ integral_simplification(PIP_Tree_Node::Row& row) {
     /* Find next column with a non-zero value (there should be one). */
     ++j_begin;
     PPL_ASSERT(j_begin != j_end);
-    for ( ; *j_begin == 0; ++j_begin)
+    for ( ; *j_begin == 0; ++j_begin) {
       PPL_ASSERT(j_begin != j_end);
+    }
     /* Use it to initialize gcd. */
     PPL_DIRTY_TEMP_COEFFICIENT(gcd);
     gcd = *j_begin;
@@ -827,8 +829,9 @@ compatibility_check_find_pivot(const Matrix<PIP_Tree_Node::Row>& s,
   candidates_t candidates;
   for (candidates_map_t::iterator
          i = candidates_map.begin(), i_end = candidates_map.end();
-       i != i_end; ++i)
+       i != i_end; ++i) {
     candidates.push_back(*i);
+  }
   if (!candidates.empty()) {
     compatibility_check_find_pivot_in_set(candidates, s, mapping, basis);
     PPL_ASSERT(!candidates.empty());
@@ -1133,7 +1136,7 @@ PIP_Tree_Node::OK() const {
 
   // Parameter constraint system should contain no strict inequalities.
   for (Constraint_System::const_iterator
-         i = constraints_.begin(), i_end = constraints_.end(); i != i_end; ++i)
+         i = constraints_.begin(), i_end = constraints_.end(); i != i_end; ++i) {
     if (i->is_strict_inequality()) {
 #ifndef NDEBUG
       cerr << "The feasible region of the PIP_Problem parameter context"
@@ -1144,6 +1147,7 @@ PIP_Tree_Node::OK() const {
 #endif
       return false;
     }
+  }
   return true;
 }
 
@@ -1727,8 +1731,9 @@ PIP_Tree_Node::ascii_dump(std::ostream& s) const {
   const dimension_type artificial_parameters_size
     = artificial_parameters.size();
   s << "\nartificial_parameters( " << artificial_parameters_size << " )\n";
-  for (dimension_type i = 0; i < artificial_parameters_size; ++i)
+  for (dimension_type i = 0; i < artificial_parameters_size; ++i) {
     artificial_parameters[i].ascii_dump(s);
+  }
 }
 
 bool
@@ -1807,26 +1812,31 @@ PIP_Solution_Node::ascii_dump(std::ostream& os) const {
   os << "\nbasis ";
   const dimension_type basis_size = basis.size();
   os << basis_size;
-  for (dimension_type i = 0; i < basis_size; ++i)
+  for (dimension_type i = 0; i < basis_size; ++i) {
     os << (basis[i] ? " true" : " false");
+  }
 
   os << "\nmapping ";
   const dimension_type mapping_size = mapping.size();
   os << mapping_size;
-  for (dimension_type i = 0; i < mapping_size; ++i)
+  for (dimension_type i = 0; i < mapping_size; ++i) {
     os << " " << mapping[i];
+  }
 
   os << "\nvar_row ";
   const dimension_type var_row_size = var_row.size();
   os << var_row_size;
-  for (dimension_type i = 0; i < var_row_size; ++i)
+  for (dimension_type i = 0; i < var_row_size; ++i) {
     os << " " << var_row[i];
+  }
 
   os << "\nvar_column ";
   const dimension_type var_column_size = var_column.size();
   os << var_column_size;
-  for (dimension_type i = 0; i < var_column_size; ++i)
+  for (dimension_type i = 0; i < var_column_size; ++i) {
     os << " " << var_column[i];
+  }
+
   os << "\n";
 
   os << "special_equality_row " << special_equality_row << "\n";
@@ -1859,8 +1869,9 @@ PIP_Solution_Node::ascii_dump(std::ostream& os) const {
 
   const dimension_type solution_size = solution.size();
   os << "solution " << solution_size << "\n";
-  for (dimension_type i = 0; i < solution_size; ++i)
+  for (dimension_type i = 0; i < solution_size; ++i) {
     solution[i].ascii_dump(os);
+  }
   os << "\n";
 
   os << "solution_valid " << (solution_valid ? "true" : "false") << "\n";
@@ -2139,8 +2150,9 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
     // Here we have a positive s[pi][pj] pivot.
 
     // Normalize the tableau before pivoting.
-    for (dimension_type i = num_rows; i-- > 0; )
+    for (dimension_type i = num_rows; i-- > 0; ) {
       row_normalize(s[i], scaling[i]);
+    }
 
     // Update basis.
     {
@@ -2283,12 +2295,14 @@ PIP_Solution_Node
         basis.insert(nth_iter(basis, new_var_column), true);
         mapping.insert(nth_iter(mapping, new_var_column), new_var_column);
         // Update variable id's of slack variables.
-        for (dimension_type j = var_row.size(); j-- > 0; )
+        for (dimension_type j = var_row.size(); j-- > 0; ) {
           if (var_row[j] >= new_var_column)
             ++var_row[j];
-        for (dimension_type j = var_column.size(); j-- > 0; )
+        }
+        for (dimension_type j = var_column.size(); j-- > 0; ) {
           if (var_column[j] >= new_var_column)
             ++var_column[j];
+        }
         if (special_equality_row > 0)
           ++special_equality_row;
       }
@@ -2546,11 +2560,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         bool has_positive = false;
         {
           for (Row::const_iterator
-                 j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
+                 j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
             if (*j > 0) {
               has_positive = true;
               break;
             }
+          }
         }
         if (!has_positive)
           continue;
@@ -2840,11 +2855,12 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         {
           const Row& s_i = tableau.s[i];
           for (Row::const_iterator
-                 j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j)
+                 j = s_i.begin(), j_end = s_i.end(); j != j_end; ++j) {
             if (*j > 0) {
               has_positive = true;
               break;
             }
+          }
         }
         if (has_positive)
           continue;
@@ -3034,8 +3050,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           // a) append into `cs' the constraints of t_node;
           for (Constraint_System::const_iterator
                  i = t_node->constraints_.begin(),
-                 i_end = t_node->constraints_.end(); i != i_end; ++i)
+                 i_end = t_node->constraints_.end(); i != i_end; ++i) {
             cs.insert(*i);
+          }
           // b) append into `aps' the parameters of t_node;
           aps.insert(aps.end(),
                      t_node->artificial_parameters.begin(),
@@ -3232,9 +3249,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         generate_cut(best_i, all_params, ctx, space_dim, indent_level);
       else {
         PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
-        for (dimension_type k = all_best_is.size(); k-- > 0; )
+        for (dimension_type k = all_best_is.size(); k-- > 0; ) {
           generate_cut(all_best_is[k], all_params, ctx,
                        space_dim, indent_level);
+        }
       }
     } // End of processing for non-integer solutions.
 
@@ -3529,8 +3547,9 @@ PIP_Tree_Node::external_memory_in_bytes() const {
   n += artificial_parameters.capacity() * sizeof(Artificial_Parameter);
   for (Artificial_Parameter_Sequence::const_iterator
          ap = art_parameter_begin(),
-         ap_end = art_parameter_end(); ap != ap_end; ++ap)
+         ap_end = art_parameter_end(); ap != ap_end; ++ap) {
     n += (ap->external_memory_in_bytes());
+  }
 
   return n;
 }
@@ -3569,8 +3588,10 @@ PIP_Solution_Node::external_memory_in_bytes() const {
   // FIXME: Adding the external memory for `solution'.
   n += solution.capacity() * sizeof(Linear_Expression);
   for (std::vector<Linear_Expression>::const_iterator
-         i = solution.begin(), i_end = solution.end(); i != i_end; ++i)
+         i = solution.begin(), i_end = solution.end();
+         i != i_end; ++i) {
     n += (i->external_memory_in_bytes());
+  }
 
   return n;
 }
@@ -3595,12 +3616,15 @@ PIP_Tree_Node::print(std::ostream& s, const int indent) const {
 
   std::vector<bool> pip_dim_is_param(pip_space_dim);
   for (Variables_Set::const_iterator p = pip_params.begin(),
-         p_end = pip_params.end(); p != p_end; ++p)
+         p_end = pip_params.end(); p != p_end; ++p) {
     pip_dim_is_param[*p] = true;
+  }
 
   dimension_type first_art_dim = pip_space_dim;
-  for (const PIP_Tree_Node* node = parent(); node != 0; node = node->parent())
+  for (const PIP_Tree_Node* node = parent();
+       node != 0; node = node->parent()) {
     first_art_dim += node->art_parameter_count();
+  }
 
   print_tree(s, indent, pip_dim_is_param, first_art_dim);
 }
@@ -3628,8 +3652,9 @@ PIP_Tree_Node::print_tree(std::ostream& s, const int indent,
     Constraint_System::const_iterator ci_end = constraints_.end();
     PPL_ASSERT(ci != ci_end);
     s << *ci;
-    for (++ci; ci != ci_end; ++ci)
+    for (++ci; ci != ci_end; ++ci) {
       s << " and " << *ci;
+    }
 
     s << " then\n";
   }
@@ -3735,8 +3760,9 @@ PIP_Solution_Node::update_solution() const {
   std::vector<bool> pip_dim_is_param(pip->space_dimension());
   const Variables_Set& params = pip->parameter_space_dimensions();
   for (Variables_Set::const_iterator p = params.begin(),
-         p_end = params.end(); p != p_end; ++p)
+         p_end = params.end(); p != p_end; ++p) {
     pip_dim_is_param[*p] = true;
+  }
 
   update_solution(pip_dim_is_param);
 }
@@ -3764,14 +3790,16 @@ PIP_Solution_Node
   std::vector<dimension_type> all_param_names(num_all_params);
 
   // External indices for problem parameters.
-  for (dimension_type i = 0, p_index = 0; i < num_pip_dims; ++i)
+  for (dimension_type i = 0, p_index = 0; i < num_pip_dims; ++i) {
     if (pip_dim_is_param[i]) {
       all_param_names[p_index] = i;
       ++p_index;
     }
+  }
   // External indices for artificial parameters.
-  for (dimension_type i = 0; i < num_art_params; ++i)
+  for (dimension_type i = 0; i < num_art_params; ++i) {
     all_param_names[num_pip_params + i] = num_pip_dims + i;
+  }
 
 
   PPL_DIRTY_TEMP_COEFFICIENT(norm_coeff);

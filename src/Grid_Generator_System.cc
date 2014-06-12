@@ -41,8 +41,9 @@ PPL::Grid_Generator_System::insert(Grid_Generator_System& gs, Recycle_Input) {
   else
     gs.set_space_dimension(space_dimension());
 
-  for (dimension_type i = 0; i < gs_num_rows; ++i)
+  for (dimension_type i = 0; i < gs_num_rows; ++i) {
     sys.insert(gs.sys.rows[i], Recycle_Input());
+  }
 
   gs.clear();
 
@@ -229,7 +230,7 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
   // NOTE: the following swaps will mix grid generators without even trying
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
-  
+
   // Note that the num_rows() value is *not* constant because remove_row()
   // decreases it.
   for (dimension_type i = 0; i < num_rows(); ) {
@@ -262,13 +263,15 @@ PPL::Grid_Generator_System::num_lines() const {
   // that lines are at the top of the system.
   if (sys.is_sorted()) {
     const dimension_type nrows = num_rows();
-    for (dimension_type i = 0; i < nrows && ggs[i].is_line(); ++i)
+    for (dimension_type i = 0; i < nrows && ggs[i].is_line(); ++i) {
       ++n;
+    }
   }
   else {
-    for (dimension_type i = num_rows(); i-- > 0 ; )
+    for (dimension_type i = num_rows(); i-- > 0 ; ) {
       if (ggs[i].is_line())
         ++n;
+    }
   }
   return n;
 }
@@ -285,14 +288,16 @@ PPL::Grid_Generator_System::num_parameters() const {
   // rays have the inhomogeneous term equal to zero.
   if (sys.is_sorted()) {
     for (dimension_type i = num_rows();
-         i != 0 && ggs[--i].is_parameter_or_point(); )
+         i != 0 && ggs[--i].is_parameter_or_point(); ) {
       if (ggs[i].is_line_or_parameter())
         ++n;
+    }
   }
   else {
-    for (dimension_type i = num_rows(); i-- > 0 ; )
+    for (dimension_type i = num_rows(); i-- > 0 ; ) {
       if (ggs[i].is_parameter())
         ++n;
+    }
   }
   return n;
 }

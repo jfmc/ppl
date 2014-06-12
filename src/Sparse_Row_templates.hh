@@ -32,8 +32,9 @@ void
 Sparse_Row::combine_needs_first(const Sparse_Row& y,
                                 const Func1& f, const Func2& g) {
   if (this == &y) {
-    for (iterator i = begin(), i_end = end(); i != i_end; ++i)
+    for (iterator i = begin(), i_end = end(); i != i_end; ++i) {
       g(*i, *i);
+    }
   }
   else {
     iterator i = begin();
@@ -43,7 +44,7 @@ Sparse_Row::combine_needs_first(const Sparse_Row& y,
     const iterator& i_end = end();
     const_iterator j = y.begin();
     const_iterator j_end = y.end();
-    while (i != i_end && j != j_end)
+    while (i != i_end && j != j_end) {
       if (i.index() == j.index()) {
         g(*i, *j);
         if (*i == 0)
@@ -62,6 +63,7 @@ Sparse_Row::combine_needs_first(const Sparse_Row& y,
         }
         else
           j = y.lower_bound(j, i.index());
+    }
     while (i != i_end) {
       f(*i);
       if (*i == 0)
@@ -91,8 +93,9 @@ void
 Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
                     const Func2& g, const Func3& h) {
   if (this == &y) {
-    for (iterator i = begin(), i_end = end(); i != i_end; ++i)
+    for (iterator i = begin(), i_end = end(); i != i_end; ++i) {
       g(*i, *i);
+    }
   }
   else {
     iterator i = begin();

@@ -31,24 +31,27 @@ template <typename Func1, typename Func2>
 void
 Dense_Row::combine_needs_first(const Dense_Row& y, const Func1& /* f */,
                                const Func2& g) {
-  for (dimension_type i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; ) {
     g((*this)[i], y[i]);
+  }
 }
 
 template <typename Func1, typename Func2>
 void
 Dense_Row::combine_needs_second(const Dense_Row& y, const Func1& g,
                                 const Func2& /* h */) {
-  for (dimension_type i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; ) {
     g((*this)[i], y[i]);
+  }
 }
 
 template <typename Func1, typename Func2, typename Func3>
 void
 Dense_Row::combine(const Dense_Row& y, const Func1& /* f */, const Func2& g,
                    const Func3& /* h */) {
-  for (dimension_type i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; ) {
     g((*this)[i], y[i]);
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

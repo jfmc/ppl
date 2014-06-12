@@ -29,15 +29,18 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Variables_Set::Variables_Set(const Variable v, const Variable w)
   : Base() {
-  for (dimension_type d = v.id(), last = w.id(); d <= last; ++d)
+  for (dimension_type d = v.id(), last = w.id(); d <= last; ++d) {
     insert(d);
+  }
 }
 
 bool
 PPL::Variables_Set::OK() const {
-  for (const_iterator i = begin(), set_end = end(); i != set_end; ++i)
+  for (const_iterator i = begin(), set_end = end();
+       i != set_end; ++i) {
     if (!Variable(*i).OK())
       return false;
+  }
   return true;
 }
 
@@ -61,8 +64,9 @@ PPL::Variables_Set::ascii_dump(std::ostream& s) const {
   const dimension_type variables_set_size = size();
   s << "\nvariables( " << variables_set_size << " )\n";
   for (Variables_Set::const_iterator i = begin(),
-         i_end = end(); i != i_end; ++i)
+         i_end = end(); i != i_end; ++i) {
     s << *i << " ";
+  }
 }
 
 PPL_OUTPUT_DEFINITIONS(Variables_Set)

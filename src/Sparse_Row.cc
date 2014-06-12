@@ -41,8 +41,9 @@ public:
   Sparse_Row_from_Dense_Row_helper_iterator& operator++() {
     PPL_ASSERT(i < sz);
     ++i;
-    while (i < sz && row[i] == 0)
+    while (i < sz && row[i] == 0) {
       ++i;
+    }
     return *this;
   }
 
@@ -86,9 +87,10 @@ PPL::dimension_type
 Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row,
                                           PPL::dimension_type sz) {
   PPL::dimension_type count = 0;
-  for (PPL::dimension_type i = sz; i-- > 0; )
+  for (PPL::dimension_type i = sz; i-- > 0; ) {
     if (row[i] != 0)
       ++count;
+  }
   return count;
 }
 
@@ -169,8 +171,9 @@ PPL::Sparse_Row::reset(iterator first, iterator last) {
   PPL_ASSERT(first.index() <= j);
   // We can't just compare first and last at each iteration, because last will
   // be invalidated by the first erase.
-  while (first.index() < j)
+  while (first.index() < j) {
     first = reset(first);
+  }
 
   first = reset(first);
 
@@ -188,8 +191,9 @@ PPL::Sparse_Row::reset_after(dimension_type i) {
   // reset().
   const iterator& itr_end = end();
 
-  while (itr != itr_end)
+  while (itr != itr_end) {
     itr = reset(itr);
+  }
 
   PPL_ASSERT(OK());
 }
@@ -399,8 +403,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       }
     }
     PPL_ASSERT(i == i_end || j == j_end);
-    for ( ; j != j_end; ++j)
+    for ( ; j != j_end; ++j) {
       ++counter;
+    }
   }
   // This condition is arbitrary. Changing it affects performance but not
   // correctness. The values have been tuned using some ppl_lpsol benchmarks
@@ -438,8 +443,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         }
     }
     PPL_ASSERT(i == i_end || j == j_end);
-    for ( ; i != i_end; ++i)
+    for ( ; i != i_end; ++i) {
       (*i) *= coeff1;
+    }
     for ( ; j != j_end; ++j) {
       i = insert(i, j.index(), *j);
       (*i) *= coeff2;
@@ -550,10 +556,12 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         }
     }
     PPL_ASSERT(i == i_end || j == j_end);
-    for ( ; i != i_end && i.index() < end; ++i)
+    for ( ; i != i_end && i.index() < end; ++i) {
       (*i) *= coeff1;
-    for ( ; j != j_end; ++j)
+    }
+    for ( ; j != j_end; ++j) {
       i = insert(i, j.index(), *j);
+    }
     return;
   }
 
@@ -590,8 +598,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         }
     }
     PPL_ASSERT(i == i_end || j == j_end);
-    for ( ; i != i_end && i.index() < end; ++i)
+    for ( ; i != i_end && i.index() < end; ++i) {
       (*i) *= coeff1;
+    }
     for ( ; j != j_end; ++j) {
       i = insert(i, j.index(), *j);
       neg_assign(*i);
@@ -630,8 +639,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       }
   }
   PPL_ASSERT(i == i_end || j == j_end);
-  for ( ; i != i_end && i.index() < end; ++i)
+  for ( ; i != i_end && i.index() < end; ++i) {
     (*i) *= coeff1;
+  }
   for ( ; j != j_end; ++j) {
     i = insert(i, j.index(), *j);
     (*i) *= coeff2;
@@ -642,11 +652,13 @@ void
 PPL::Sparse_Row::ascii_dump(std::ostream& s) const {
   s << "size " << size_ << ' ';
   dimension_type n_elements = 0;
-  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
     ++n_elements;
+  }
   s << "elements " << n_elements << ' ';
-  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
     s << "[ " << i.index() << " ]= " << *i << ' ';
+  }
   s << "\n";
 }
 
@@ -729,12 +741,14 @@ PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
       }
     }
   }
-  for ( ; i != i_end; ++i)
+  for ( ; i != i_end; ++i) {
     if (*i != 0)
       return false;
-  for ( ; j != j_end; ++j)
+  }
+  for ( ; j != j_end; ++j) {
     if (*j != 0)
       return false;
+  }
   return true;
 }
 
@@ -961,8 +975,9 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
   PPL_ASSERT(x.size() >= y.size());
   if (coeff1 == 1) {
     for (Sparse_Row::const_iterator i = y.begin(),
-           i_end = y.end(); i != i_end; ++i)
+           i_end = y.end(); i != i_end; ++i) {
       add_mul_assign(x[i.index()], *i, coeff2);
+    }
     return;
   }
 
@@ -994,17 +1009,20 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
   if (coeff1 == 1) {
     Sparse_Row::const_iterator itr_end = y.lower_bound(end);
     if (coeff2 == 1) {
-      for ( ; itr != itr_end; ++itr)
+      for ( ; itr != itr_end; ++itr) {
         x[itr.index()] += *itr;
+      }
       return;
     }
     if (coeff2 == -1) {
-      for ( ; itr != itr_end; ++itr)
+      for ( ; itr != itr_end; ++itr) {
         x[itr.index()] -= *itr;
+      }
       return;
     }
-    for ( ; itr != itr_end; ++itr)
+    for ( ; itr != itr_end; ++itr) {
       add_mul_assign(x[itr.index()], *itr, coeff2);
+    }
     return;
   }
 
@@ -1075,8 +1093,10 @@ void
 PPL::swap(Sparse_Row& x, Dense_Row& y) {
   Dense_Row new_dense(x.size(), x.size());
 
-  for (Sparse_Row::iterator i = x.begin(), i_end = x.end(); i != i_end; ++i)
+  for (Sparse_Row::iterator i = x.begin(), i_end = x.end();
+       i != i_end; ++i) {
     swap(new_dense[i.index()], *i);
+  }
 
   // NOTE: This copies the coefficients, but it could steal them.
   // Implementing a stealing-based algorithm takes a lot of time and it's

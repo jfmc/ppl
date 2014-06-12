@@ -34,8 +34,9 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Dense_Row::Dense_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity) {
   resize(sz, capacity);
   for (Sparse_Row::const_iterator i = y.begin(),
-         i_end = y.lower_bound(sz); i != i_end; ++i)
+         i_end = y.lower_bound(sz); i != i_end; ++i) {
     (*this)[i.index()] = *i;
+  }
   PPL_ASSERT(OK());
 }
 
@@ -128,8 +129,9 @@ PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
 
 void
 PPL::Dense_Row::clear() {
-  for (iterator i = begin(), i_end = end(); i != i_end; ++i)
+  for (iterator i = begin(), i_end = end(); i != i_end; ++i) {
     *i = 0;
+  }
 }
 
 void
@@ -147,8 +149,9 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
     try {
       // Construct coefficients with value 0 in
       // new_row.impl.vec[i ... i + n - 1]
-      for ( ; j < i + n; ++j)
+      for ( ; j < i + n; ++j) {
         new (&(new_row.impl.vec[j])) Coefficient(0);
+      }
     } catch (...) {
       // Destroy the zeroes constructed so far.
       while (j != i) {
@@ -193,8 +196,9 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
       // because the memmove() moved already-constructed objects.
 
       // NOTE: This loop can't throw, because destructors must not throw.
-      for (dimension_type j = target_size; j < new_size; ++j)
+      for (dimension_type j = target_size; j < new_size; ++j) {
         impl.vec[j].~Coefficient();
+      }
 
       throw;
     }
@@ -367,8 +371,9 @@ void
 PPL::Dense_Row::reset(dimension_type first, dimension_type last) {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= size());
-  for (dimension_type i = first; i < last; ++i)
+  for (dimension_type i = first; i < last; ++i) {
     (*this)[i] = 0;
+  }
 }
 
 void
@@ -399,16 +404,18 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
   if (coeff1 == 1) {
     if (coeff2 == 1) {
       // Optimized implementation for coeff1==1, coeff2==1.
-      for (dimension_type i = start; i < end; ++i)
+      for (dimension_type i = start; i < end; ++i) {
         if (y[i] != 0)
           x[i] += y[i];
+      }
       return;
     }
     if (coeff2 == -1) {
       // Optimized implementation for coeff1==1, coeff2==-1.
-      for (dimension_type i = start; i < end; ++i)
+      for (dimension_type i = start; i < end; ++i) {
         if (y[i] != 0)
           x[i] -= y[i];
+      }
       return;
     }
     // Optimized implementation for coeff1==1.
@@ -458,8 +465,9 @@ PPL::Dense_Row::ascii_dump(std::ostream& s) const {
   const Dense_Row& x = *this;
   const dimension_type x_size = x.size();
   s << "size " << x_size << " ";
-  for (dimension_type i = 0; i < x_size; ++i)
+  for (dimension_type i = 0; i < x_size; ++i) {
     s << x[i] << ' ';
+  }
   s << "\n";
 }
 
@@ -476,9 +484,10 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
 
   resize(new_size);
 
-  for (dimension_type col = 0; col < new_size; ++col)
+  for (dimension_type col = 0; col < new_size; ++col) {
     if (!(s >> (*this)[col]))
       return false;
+  }
 
   return true;
 }
@@ -491,8 +500,9 @@ PPL::Dense_Row::external_memory_in_bytes(dimension_type /* capacity */) const {
 PPL::memory_size_type
 PPL::Dense_Row::external_memory_in_bytes() const {
   memory_size_type n = impl.capacity * sizeof(Coefficient);
-  for (dimension_type i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; ) {
     n += PPL::external_memory_in_bytes(impl.vec[i]);
+  }
   return n;
 }
 
@@ -573,9 +583,10 @@ PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   if (x_size != y_size)
     return false;
 
-  for (dimension_type i = x_size; i-- > 0; )
+  for (dimension_type i = x_size; i-- > 0; ) {
     if (x[i] != y[i])
       return false;
+  }
 
   return true;
 }

@@ -85,8 +85,9 @@ DB_Row_Impl_Handler<T>::Impl::shrink(dimension_type new_size) {
 #endif
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
-  for (dimension_type i = old_size; i-- > new_size; )
+  for (dimension_type i = old_size; i-- > new_size; ) {
     vec_[i].~T();
+  }
 }
 
 template <typename T>
@@ -116,8 +117,9 @@ template <typename T>
 memory_size_type
 DB_Row_Impl_Handler<T>::Impl::external_memory_in_bytes() const {
   memory_size_type n = 0;
-  for (dimension_type i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; ) {
     n += Parma_Polyhedra_Library::external_memory_in_bytes(vec_[i]);
+  }
   return n;
 }
 
@@ -204,9 +206,10 @@ bool
 operator==(const DB_Row<T>& x, const DB_Row<T>& y) {
   if (x.size() != y.size())
     return false;
-  for (dimension_type i = x.size(); i-- > 0; )
+  for (dimension_type i = x.size(); i-- > 0; ) {
     if (x[i] != y[i])
       return false;
+  }
   return true;
 }
 

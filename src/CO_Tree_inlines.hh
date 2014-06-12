@@ -772,8 +772,9 @@ CO_Tree::tree_iterator::follow_left_children_with_value() {
   const dimension_type* p = tree.indexes;
   p += i;
   p -= (offset - 1);
-  while (*p == unused_index)
+  while (*p == unused_index) {
     ++p;
+  }
   const std::ptrdiff_t distance = p - tree.indexes;
   PPL_ASSERT(distance >= 0);
   i = static_cast<dimension_type>(distance);
@@ -787,8 +788,9 @@ CO_Tree::tree_iterator::follow_right_children_with_value() {
   const dimension_type* p = tree.indexes;
   p += i;
   p += (offset - 1);
-  while (*p == unused_index)
+  while (*p == unused_index) {
     --p;
+  }
   const std::ptrdiff_t distance = p - tree.indexes;
   PPL_ASSERT(distance >= 0);
   i = static_cast<dimension_type>(distance);

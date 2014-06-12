@@ -61,9 +61,11 @@ bool
 PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 ::geometrically_covers(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
-  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
+  for (const_iterator yi = y.begin(), y_end = y.end();
+       yi != y_end; ++yi) {
     if (!check_containment(yi->pointset(), x))
       return false;
+  }
   return true;
 }
 
@@ -166,13 +168,14 @@ approximate_partition_aux(const PPL::Congruence& c,
   if (n < 0)
     n += c_modulus;
   PPL_DIRTY_TEMP_COEFFICIENT(i);
-  for (i = c_modulus; i-- > 0; )
+  for (i = c_modulus; i-- > 0; ) {
     if (i != n) {
       Grid gr_tmp(gr_copy);
       gr_tmp.add_congruence((le+i %= 0) / c_modulus);
       if (!gr_tmp.is_empty())
         r.add_disjunct(gr_tmp);
     }
+  }
   return true;
 }
 
@@ -191,12 +194,14 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   Grid gr = q;
   const Congruence_System& p_congruences = p.congruences();
   for (Congruence_System::const_iterator i = p_congruences.begin(),
-         p_congruences_end = p_congruences.end(); i != p_congruences_end; ++i)
+         p_congruences_end = p_congruences.end();
+         i != p_congruences_end; ++i) {
     if (!approximate_partition_aux(*i, gr, r)) {
       finite_partition = false;
       const Pointset_Powerset<Grid> s(q);
       return std::make_pair(gr, s);
     }
+  }
   return std::make_pair(gr, r);
 }
 
@@ -287,9 +292,11 @@ bool
 PPL::Pointset_Powerset<PPL::Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
-  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
+  for (const_iterator yi = y.begin(), y_end = y.end();
+       yi != y_end; ++yi) {
     if (!check_containment(yi->pointset(), x))
       return false;
+  }
   return true;
 }
 
@@ -301,9 +308,10 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
-         y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i) {
     x.sequence.push_back(Determinate<NNC_Polyhedron>
                          (NNC_Polyhedron(i->pointset())));
+  }
   x.reduced = y.reduced;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -316,9 +324,10 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<Grid>::const_iterator i = y.begin(),
-         y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i) {
     x.sequence.push_back(Determinate<NNC_Polyhedron>
                          (NNC_Polyhedron(i->pointset())));
+  }
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -331,9 +340,10 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron>
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
-         y_end = y.end(); i != y_end; ++i)
+         y_end = y.end(); i != y_end; ++i) {
     x.sequence.push_back(Determinate<C_Polyhedron>
                          (C_Polyhedron(i->pointset())));
+  }
 
   // Note: this might be non-reduced even when `y' is known to be
   // omega-reduced, because the constructor of C_Polyhedron, by

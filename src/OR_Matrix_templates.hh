@@ -112,8 +112,9 @@ IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {
          m_end = m.row_end(); m_iter != m_end; ++m_iter) {
     typename OR_Matrix<T>::const_row_reference_type r_m = *m_iter;
     const dimension_type mr_size = m_iter.row_size();
-    for (dimension_type j = 0; j < mr_size; ++j)
+    for (dimension_type j = 0; j < mr_size; ++j) {
       s << r_m[j] << " ";
+    }
     s << "\n";
   }
   return s;

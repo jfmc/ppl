@@ -67,8 +67,9 @@ Swapping_Vector<T>::reserve(dimension_type new_capacity) {
     using std::swap;
 
     // Steal the old elements.
-    for (dimension_type i = impl.size(); i-- > 0; )
+    for (dimension_type i = impl.size(); i-- > 0; ) {
       swap(new_impl[i], impl[i]);
+    }
 
     // Put the new vector into place.
     swap(impl, new_impl);
@@ -156,8 +157,9 @@ inline memory_size_type
 Swapping_Vector<T>::external_memory_in_bytes() const {
   // Estimate the size of vector.
   memory_size_type n = impl.capacity() * sizeof(T);
-  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i)
+  for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
     n += i->external_memory_in_bytes();
+  }
   return n;
 }
 
@@ -193,8 +195,9 @@ Swapping_Vector<T>::erase(iterator itr) {
   const dimension_type old_i = itr - begin();
   dimension_type i = old_i;
   ++i;
-  while (i != size())
+  while (i != size()) {
     swap(impl[i-1], impl[i]);
+  }
   impl.pop_back();
   return begin() + old_i;
 }
@@ -210,8 +213,9 @@ Swapping_Vector<T>::erase(iterator first, iterator last) {
   const diff_t k = last - first;
   const dimension_type n = static_cast<dimension_type>(end() - last);
   using std::swap;
-  for (dimension_type i = 0; i < n; ++i, ++first)
+  for (dimension_type i = 0; i < n; ++i, ++first) {
     swap(*first, *(first + k));
+  }
   impl.erase(end() - k, end());
   return old_first;
 }

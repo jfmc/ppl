@@ -829,8 +829,10 @@ Polyhedron::conversion(Source_Linear_System& source,
             // After the removal of redundant rows in `source', the k-th
             // row will have index `new_k'.
             const dimension_type new_k = k - redundant_source_rows.size();
-            for (dimension_type l = lines_or_equal_bound; l < sup_bound; ++l)
+            for (dimension_type l = lines_or_equal_bound;
+                 l < sup_bound; ++l) {
               sat[l].set(new_k);
+            }
           }
           else
             // The constraint is an equality:
@@ -900,11 +902,13 @@ Polyhedron::conversion(Source_Linear_System& source,
     // If the non-pending generators in `dest' are still declared to be
     // sorted, then we have to also check for the sortedness of the
     // pending generators.
-    for (dimension_type i = dest_first_pending_row; i < dest_num_rows; ++i)
+    for (dimension_type i = dest_first_pending_row;
+         i < dest_num_rows; ++i) {
       if (compare(dest.sys.rows[i - 1], dest.sys.rows[i]) > 0) {
         dest_sorted = false;
         break;
       }
+     }
 
 #ifndef NDEBUG
   // The previous code can modify the rows' fields, exploiting the friendness.

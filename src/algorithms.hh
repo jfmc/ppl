@@ -57,12 +57,13 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
     partition = linear_partition(q, poly_hull);
   const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
-  for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i)
+  for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     // The polyhedral hull is exact if and only if all the elements
     // of the partition of the polyhedral hull of `p' and `q' with
     // respect to `q' are included in `p'
     if (!nnc_p.contains(i->pointset()))
       return false;
+  }
   p = poly_hull;
   return true;
 }

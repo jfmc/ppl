@@ -105,9 +105,10 @@ EList<T>::~EList() {
 template <typename T>
 inline bool
 EList<T>::OK() const {
-  for (const_iterator i = begin(), lend = end(); i != lend; ++i)
+  for (const_iterator i = begin(), lend = end(); i != lend; ++i) {
     if (!i->OK())
       return false;
+  }
 
   return true;
 }

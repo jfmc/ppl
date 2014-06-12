@@ -71,7 +71,7 @@ PPL::Grid::Grid(const Constraint_System& cs)
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
     for (Constraint_System::const_iterator i = cs.begin(),
-           cs_end = cs.end(); i != cs_end; ++i)
+           cs_end = cs.end(); i != cs_end; ++i) {
       if (i->is_inconsistent()) {
         // Inconsistent constraint found: the grid is empty.
         status.set_empty();
@@ -81,6 +81,7 @@ PPL::Grid::Grid(const Constraint_System& cs)
         PPL_ASSERT(OK());
         return;
       }
+    }
     set_zero_dim_univ();
     PPL_ASSERT(OK());
     return;
@@ -110,7 +111,7 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
     for (Constraint_System::const_iterator i = cs.begin(),
-           cs_end = cs.end(); i != cs_end; ++i)
+           cs_end = cs.end(); i != cs_end; ++i) {
       if (i->is_inconsistent()) {
         // Inconsistent constraint found: the grid is empty.
         status.set_empty();
@@ -120,6 +121,7 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
         PPL_ASSERT(OK());
         return;
       }
+    }
     set_zero_dim_univ();
     PPL_ASSERT(OK());
     return;
@@ -127,11 +129,12 @@ PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
 
   Congruence_System cgs(space_dim);
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i) {
     if (i->is_equality())
       cgs.insert(*i);
     else
       throw_invalid_constraint("Grid(cs)", "cs");
+  }
   construct(cgs);
 }
 
@@ -179,9 +182,10 @@ PPL::Grid::Grid(const Polyhedron& ph,
     const Constraint_System& cs = ph.constraints();
     Congruence_System cgs(space_dim);
     for (Constraint_System::const_iterator i = cs.begin(),
-           cs_end = cs.end(); i != cs_end; ++i)
+           cs_end = cs.end(); i != cs_end; ++i) {
       if (i->is_equality())
         cgs.insert(*i);
+    }
     construct(cgs);
   }
   else {
@@ -263,9 +267,10 @@ PPL::Grid::affine_dimension() const {
     minimized_congruences();
   PPL_ASSERT(congruences_are_minimized());
   dimension_type d = space_dim;
-  for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+  for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
     if (con_sys[i].is_equality())
       --d;
+  }
   return d;
 }
 
@@ -762,9 +767,10 @@ PPL::Grid::is_discrete() const {
     return true;
 
   // Search for lines in the generator system.
-  for (dimension_type row = gen_sys.num_rows(); row-- > 1; )
+  for (dimension_type row = gen_sys.num_rows(); row-- > 1; ) {
     if (gen_sys[row].is_line())
       return false;
+  }
 
   // The system of generators is composed only by
   // points and parameters: the grid is discrete.
@@ -790,8 +796,9 @@ PPL::Grid::contains_integer_point() const {
   // A grid has an integer point if its intersection with the integer
   // grid is non-empty.
   Congruence_System cgs;
-  for (dimension_type var_index = space_dim; var_index-- > 0; )
+  for (dimension_type var_index = space_dim; var_index-- > 0; ) {
     cgs.insert(Variable(var_index) %= 0);
+  }
 
   Grid gr = *this;
   gr.add_recycled_congruences(cgs);
@@ -822,9 +829,10 @@ PPL::Grid::constrains(const Variable var) const {
       // a universe grid constrains no variable.
       // Count the number of lines (they are linearly independent).
       dimension_type num_lines = 0;
-      for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+      for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
         if (gen_sys[i].is_line())
           ++num_lines;
+      }
 
       if (num_lines == space_dim)
         return false;
@@ -853,9 +861,10 @@ PPL::Grid::constrains(const Variable var) const {
     return true;
 
  syntactic_check:
-  for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+  for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
     if (con_sys[i].coefficient(var) != 0)
       return true;
+  }
   return false;
 }
 
@@ -1294,8 +1303,9 @@ PPL::Grid::refine_with_constraints(const Constraint_System& cs) {
     throw_dimension_incompatible("refine_with_constraints(cs)", "cs", cs);
 
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i)
+         cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
+  }
 }
 
 void
@@ -2117,8 +2127,9 @@ generalized_affine_image(const Linear_Expression& lhs,
       return;
 
     for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
-          i != i_end; ++i)
+          i != i_end; ++i) {
       add_grid_generator(grid_line(i.variable()));
+    }
 
     PPL_ASSERT(OK());
     return;
@@ -2145,8 +2156,9 @@ generalized_affine_image(const Linear_Expression& lhs,
   // direction of variables occurring in `lhs'.
   Grid_Generator_System new_lines;
   for (Linear_Expression::const_iterator i = lhs.begin(),
-        i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i)
+        i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i) {
     new_lines.insert(grid_line(i.variable()));
+  }
 
   const dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
@@ -2246,8 +2258,9 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       return;
 
     for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
-          i != i_end; ++i)
+          i != i_end; ++i) {
       add_grid_generator(grid_line(i.variable()));
+    }
 
     PPL_ASSERT(OK());
     return;
@@ -2274,8 +2287,9 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // the direction of variables occurring in `lhs'.
   Grid_Generator_System new_lines;
   for (Linear_Expression::const_iterator i = lhs.begin(),
-        i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i)
+        i_end = lhs.lower_bound(Variable(lhs_space_dim)); i != i_end; ++i) {
       new_lines.insert(grid_line(i.variable()));
+  }
 
   const dimension_type num_common_dims
     = std::min(lhs_space_dim, rhs_space_dim);
@@ -2580,8 +2594,9 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
       || (congruences_are_up_to_date() && congruences_are_minimized()))
     for (Dimension_Kinds::const_iterator i = dim_kinds.begin();
          i != dim_kinds.end();
-         ++i)
+         ++i) {
       s << " " << *i;
+    }
   s << endl;
 }
 
@@ -2847,8 +2862,9 @@ PPL::Grid::drop_some_non_integer_points(Complexity_Class) {
   // congruence system, defining \p *this, the grid will keep only
   // those points that have integral coordinates. All points in \p
   // *this with non-integral coordinates are removed.
-  for (dimension_type i = space_dim; i-- > 0; )
+  for (dimension_type i = space_dim; i-- > 0; ) {
     add_congruence(Variable(i) %= 0);
+  }
 
   PPL_ASSERT(OK());
 }
@@ -2871,8 +2887,9 @@ PPL::Grid::drop_some_non_integer_points(const Variables_Set& vars,
   // in vars. All points in \p *this with non-integral coordinates for
   // the dimensions in vars are removed.
   for (Variables_Set::const_iterator i = vars.begin(),
-         vars_end = vars.end(); i != vars_end; ++i)
+         vars_end = vars.end(); i != vars_end; ++i) {
     add_congruence(Variable(*i) %= 0);
+  }
 
   PPL_ASSERT(OK());
 }

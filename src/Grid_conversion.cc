@@ -163,7 +163,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
   dimension_type source_index = source.num_rows();
-  for (dimension_type dim = dims; dim-- > 0; )
+  for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] == GEN_VIRTUAL)
       // Virtual generators map to equalities.
       ++dest_num_rows;
@@ -179,6 +179,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       }
       // Lines map to virtual congruences.
     }
+  }
   PPL_ASSERT(source_index == 0);
 
   // `source' must be regular.
@@ -264,7 +265,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
         --tmp_source_index;
         const Coefficient& source_dim = source[tmp_source_index].expr.get(dim);
-        
+
         // In order to compute the transpose of the inverse of
         // `source', subtract source[tmp_source_index][dim] times the
         // column vector in `dest' at `dim' from the column vector in
@@ -298,16 +299,18 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // Since we are reducing the system to "strong minimal form",
   // reduce the coefficients in the congruence system
   // using "diagonal" values.
-  for (dimension_type dim = dims, i = 0; dim-- > 0; )
+  for (dimension_type dim = dims, i = 0; dim-- > 0; )  {
     if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System>
         (dest.rows, dim, i++, 0, dim, dim_kinds, false);
+  }
 
 #ifndef NDEBUG
   // Make sure that all the rows are now OK.
-  for (dimension_type i = dest.num_rows(); i-- > 0; )
+  for (dimension_type i = dest.num_rows(); i-- > 0; ) {
     PPL_ASSERT(dest[i].OK());
+  }
 #endif
 
   PPL_ASSERT(dest.OK());
@@ -328,7 +331,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   PPL_DIRTY_TEMP_COEFFICIENT(diagonal_lcm);
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
-  for (dimension_type dim = dims; dim-- > 0; )
+  for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] == CON_VIRTUAL)
       // Virtual congruences map to lines.
       ++dest_num_rows;
@@ -345,6 +348,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       ++source_num_rows;
     }
 
+  }
   // `source' must be regular.
   PPL_ASSERT(diagonal_lcm != 0);
 

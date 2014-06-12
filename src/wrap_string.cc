@@ -80,8 +80,9 @@ wrap_string(const std::string& src_string,
     src += split_pos;
     if (is_space(*src))
       ++src;
-    while (*src == ' ')
+    while (*src == ' ') {
       ++src;
+    }
     if (*src == '\0')
       break;
     dst_string.push_back('\n');

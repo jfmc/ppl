@@ -590,8 +590,9 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
       OR_Matrix<T> new_matrix(new_dim);
       element_iterator j = new_matrix.element_begin();
       for (element_iterator i = element_begin(),
-             mend = element_end(); i != mend; ++i, ++j)
+             mend = element_end(); i != mend; ++i, ++j) {
         assign_or_swap(*j, *i);
+      }
       m_swap(new_matrix);
     }
   }

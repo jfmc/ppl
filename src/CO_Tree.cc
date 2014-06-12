@@ -34,8 +34,10 @@ PPL::CO_Tree::external_memory_in_bytes() const {
     memory_size += (reserved_size + 1)*sizeof(data[0]);
     // Add the size of indexes[]
     memory_size += (reserved_size + 2)*sizeof(indexes[0]);
-    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
+    for (const_iterator itr = begin(), itr_end = end();
+         itr != itr_end; ++itr) {
       memory_size += PPL::external_memory_in_bytes(*itr);
+    }
   }
   return memory_size;
 }
@@ -61,13 +63,15 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
 
   if (key1 < candidate1.index()) {
     --candidate2_index;
-    while (indexes[candidate2_index] == unused_index)
+    while (indexes[candidate2_index] == unused_index) {
       --candidate2_index;
+    }
   }
   else {
     ++candidate2_index;
-    while (indexes[candidate2_index] == unused_index)
+    while (indexes[candidate2_index] == unused_index) {
       ++candidate2_index;
+    }
   }
 
   tree_iterator candidate1_node(candidate1, *this);
@@ -126,13 +130,17 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
 
   if (key1 < candidate1.index()) {
     --candidate2_index;
-    while (indexes[candidate2_index] == unused_index)
+    while (indexes[candidate2_index] == unused_index) {
       --candidate2_index;
+    }
+
   }
   else {
     ++candidate2_index;
-    while (indexes[candidate2_index] == unused_index)
+    while (indexes[candidate2_index] == unused_index) {
       ++candidate2_index;
+    }
+
   }
 
   tree_iterator candidate1_node(candidate1, *this);
@@ -170,9 +178,10 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   const dimension_type i = dfs_index(itr);
   dimension_type* p = indexes + i;
   const dimension_type* const p_end = indexes + (reserved_size + 1);
-  for ( ; p != p_end; ++p)
+  for ( ; p != p_end; ++p) {
     if (*p != unused_index)
       --(*p);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -181,13 +190,15 @@ PPL::CO_Tree::increase_keys_from(dimension_type key, dimension_type n) {
   if (empty())
     return;
   dimension_type* p = indexes + reserved_size;
-  while (*p == unused_index)
+  while (*p == unused_index) {
     --p;
+  }
   while (p != indexes && *p >= key) {
     *p += n;
     --p;
-    while (*p == unused_index)
+    while (*p == unused_index) {
       --p;
+    }
   }
   PPL_ASSERT(OK());
 }
@@ -205,16 +216,18 @@ PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
     dimension_type half = (first + last) / 2;
     dimension_type new_half = half;
 
-    while (indexes[new_half] == unused_index)
+    while (indexes[new_half] == unused_index) {
       ++new_half;
+    }
 
     if (indexes[new_half] == key)
       return new_half;
 
     if (indexes[new_half] > key) {
 
-      while (indexes[half] == unused_index)
+      while (indexes[half] == unused_index) {
         --half;
+      }
 
       last = half;
 
@@ -222,8 +235,9 @@ PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
     else {
 
       ++new_half;
-      while (indexes[new_half] == unused_index)
+      while (indexes[new_half] == unused_index) {
         ++new_half;
+      }
 
       first = new_half;
     }
@@ -257,8 +271,10 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         new_hint = hint;
         hint = 1;
         // The searched element is in [hint,new_hint).
-        while (indexes[hint] == unused_index)
+        while (indexes[hint] == unused_index) {
           ++hint;
+        }
+
         if (indexes[hint] >= key)
           return hint;
         // The searched element is in (hint,new_hint) and both indexes point
@@ -272,8 +288,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
       PPL_ASSERT(new_hint <= reserved_size);
 
       // Find the element at `new_hint' (or the first after it).
-      while (indexes[new_hint] == unused_index)
+      while (indexes[new_hint] == unused_index) {
         ++new_hint;
+      }
 
       PPL_ASSERT(new_hint <= hint);
 
@@ -301,8 +318,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         // The searched element is in (hint,reserved_size+1).
         new_hint = reserved_size;
         // The searched element is in (hint,new_hint].
-        while (indexes[new_hint] == unused_index)
+        while (indexes[new_hint] == unused_index) {
           --new_hint;
+        }
         if (indexes[new_hint] <= key)
           return new_hint;
         // The searched element is in (hint,new_hint) and both indexes point
@@ -316,8 +334,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
       PPL_ASSERT(new_hint <= reserved_size);
 
       // Find the element at `new_hint' (or the first after it).
-      while (indexes[new_hint] == unused_index)
+      while (indexes[new_hint] == unused_index) {
         --new_hint;
+      }
 
       PPL_ASSERT(hint <= new_hint);
 
@@ -340,15 +359,18 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   PPL_ASSERT(indexes[new_hint] != unused_index);
 
   ++hint;
-  while (indexes[hint] == unused_index)
+  while (indexes[hint] == unused_index) {
     ++hint;
+  }
 
   if (hint == new_hint)
     return hint;
 
   --new_hint;
-  while (indexes[new_hint] == unused_index)
+
+  while (indexes[new_hint] == unused_index) {
     --new_hint;
+  }
 
   PPL_ASSERT(hint <= new_hint);
   PPL_ASSERT(indexes[hint] != unused_index);
@@ -583,8 +605,9 @@ PPL::CO_Tree::init(dimension_type n) {
     reserved_size = new_reserved_size;
 
     // Mark all pairs as unused.
-    for (dimension_type i = 1; i <= reserved_size; ++i)
+    for (dimension_type i = 1; i <= reserved_size; ++i) {
       indexes[i] = unused_index;
+    }
 
     // These are used as markers by iterators.
     indexes[0] = 0;
@@ -694,8 +717,9 @@ PPL::CO_Tree::OK() const {
   {
     dimension_type real_size = 0;
 
-    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr)
+    for (const_iterator itr = begin(), itr_end = end(); itr != itr_end; ++itr) {
       ++real_size;
+    }
 
     if (real_size != size_)
       // There are \p real_size elements in the tree, but size is \p size.
@@ -1063,8 +1087,9 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   tree_iterator root(*this);
 
   dimension_type source_index = 1;
-  while (tree.indexes[source_index] == unused_index)
+  while (tree.indexes[source_index] == unused_index) {
     ++source_index;
+  }
 
   // This is static and with static allocation, to improve performance.
   // sizeof_to_bits(sizeof(dimension_type)) is the maximum k such that 2^k-1 is a
@@ -1141,8 +1166,9 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
         move_data_element(*root, tree.data[source_index]);
         PPL_ASSERT(source_index <= tree.reserved_size);
         ++source_index;
-        while (tree.indexes[source_index] == unused_index)
+        while (tree.indexes[source_index] == unused_index) {
           ++source_index;
+        }
         --stack_first_empty;
       }
       else {
@@ -1177,7 +1203,7 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 
   dimension_type i;
   try {
-    for (i = x.reserved_size; i > 0; --i)
+    for (i = x.reserved_size; i > 0; --i) {
       if (x.indexes[i] != unused_index) {
         indexes[i] = x.indexes[i];
         new (&(data[i])) data_type(x.data[i]);
@@ -1185,6 +1211,7 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
       else {
         PPL_ASSERT(indexes[i] == unused_index);
       }
+    }
   } catch (...) {
     // The (used) data elements in (i,x.reserved_size] have been constructed
     // successfully.
@@ -1192,9 +1219,10 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
     // been constructed.
 
     // 1. Destroy the data elements that have been constructed successfully.
-    for (dimension_type j = x.reserved_size; j > i; --j)
+    for (dimension_type j = x.reserved_size; j > i; --j) {
       if (indexes[j] != unused_index)
         data[j].~data_type();
+    }
 
     // 2. Deallocate index[] and data[]
     delete[] indexes;
@@ -1223,9 +1251,10 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
   const dimension_type* current_index
     = &(itr.tree.indexes[root_index - (k - 1)]);
 
-  for (dimension_type j = 2*k - 1; j > 0; --j, ++current_index)
+  for (dimension_type j = 2*k - 1; j > 0; --j, ++current_index) {
     if (*current_index != unused_index)
       ++n;
+  }
 
   return n;
 }

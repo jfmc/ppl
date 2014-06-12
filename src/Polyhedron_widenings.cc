@@ -100,12 +100,13 @@ PPL::Polyhedron
   const Constraint_System& y_cs = y.con_sys;
   const dimension_type old_num_rows = y_cs.num_rows();
   dimension_type num_rows = old_num_rows;
-  for (dimension_type i = 0; i < num_rows; ++i)
+  for (dimension_type i = 0; i < num_rows; ++i) {
     if (y_cs[i].is_tautological()) {
       using std::swap;
       --num_rows;
       swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
     }
+  }
   tmp_sat_g.remove_trailing_rows(old_num_rows - num_rows);
   tmp_sat_g.sort_rows();
 
@@ -465,11 +466,12 @@ PPL::Polyhedron
   // then the technique was unsuccessful.
   bool improves_upon_H79 = false;
   const Poly_Con_Relation si = Poly_Con_Relation::strictly_intersects();
-  for (dimension_type i = new_cs.num_rows(); i-- > 0; )
+  for (dimension_type i = new_cs.num_rows(); i-- > 0; ) {
     if (H79.relation_with(new_cs[i]) == si) {
       improves_upon_H79 = true;
       break;
     }
+  }
   if (!improves_upon_H79)
     return false;
 
@@ -572,14 +574,16 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
   Linear_Expression::const_iterator x_end = x.end();
   Linear_Expression::const_iterator y_end = y.end();
   Linear_Expression::const_iterator y_k = y.begin();
-  for (Linear_Expression::const_iterator x_k = x.begin(); x_k != x_end; ++x_k) {
+  for (Linear_Expression::const_iterator x_k = x.begin();
+       x_k != x_end; ++x_k) {
     const Variable k_var = x_k.variable();
     const dimension_type k = k_var.id();
     if (considered[k])
       continue;
 
-    while (y_k != y_end && y_k.variable().id() < k)
+    while (y_k != y_end && y_k.variable().id() < k) {
       ++y_k;
+    }
 
     if (y_k == y_end)
       break;
@@ -597,8 +601,9 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
       if (considered[h])
         continue;
 
-      while (y_h != y_end && y_h.variable().id() < h)
+      while (y_h != y_end && y_h.variable().id() < h) {
         ++y_h;
+      }
 
       // Note that y_h may be y_end, and y_h.variable().id() may not be k.
 

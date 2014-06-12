@@ -82,11 +82,12 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 
   // See if there is at least one inconsistent constraint in `ph.con_sys'.
   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-         cs_end = ph.con_sys.end(); i != cs_end; ++i)
+         cs_end = ph.con_sys.end(); i != cs_end; ++i) {
     if (i->is_inconsistent()) {
       *this = Octagonal_Shape(num_dimensions, EMPTY);
       return;
     }
+  }
 
   // If `complexity' allows it, use simplex to derive the exact (modulo
   // the fact that our OSs are topologically closed) variable bounds.
@@ -539,22 +540,24 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
   dimension_type right_w_id = 0;
 
   // Get information about the number of non-zero coefficients in `left'.
-  for (dimension_type i = left_space_dim; i-- > 0; )
+  for (dimension_type i = left_space_dim; i-- > 0; ) {
     if (left.coefficient(Variable(i)) != 0) {
       if (left_t++ == 1)
         break;
       else
         left_w_id = i;
     }
+  }
 
   // Get information about the number of non-zero coefficients in `right'.
-  for (dimension_type i = right_space_dim; i-- > 0; )
+  for (dimension_type i = right_space_dim; i-- > 0; ) {
     if (right.coefficient(Variable(i)) != 0) {
       if (right_t++ == 1)
         break;
       else
         right_w_id = i;
     }
+  }
 
   typedef typename OR_Matrix<N>::row_iterator row_iterator;
   typedef typename OR_Matrix<N>::row_reference_type row_reference;
@@ -986,10 +989,11 @@ Octagonal_Shape<T>::affine_dimension() const {
   // Due to the splitting of variables, the affine dimension is the
   // number of non-singular positive zero-equivalence classes.
   dimension_type affine_dim = 0;
-  for (dimension_type i = 0; i < n_rows; i += 2)
+  for (dimension_type i = 0; i < n_rows; i += 2) {
     // Note: disregard the singular equivalence class.
     if (leaders[i] == i && leaders[i + 1] == i + 1)
       ++affine_dim;
+  }
 
   return affine_dim;
 }
@@ -1115,8 +1119,9 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
          matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     dimension_type rs_i = i.row_size();
-    for (dimension_type j = old_num_rows; j < rs_i; ++j, ++y_it)
+    for (dimension_type j = old_num_rows; j < rs_i; ++j, ++y_it) {
       r[j] = *y_it;
+    }
   }
 
   // The concatenation does not preserve the closure.
@@ -1155,9 +1160,10 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   for (typename OR_Matrix<N>::const_element_iterator
          i = matrix.element_begin(), j = y.matrix.element_begin(),
          matrix_element_end = matrix.element_end();
-       i != matrix_element_end; ++i, ++j)
+       i != matrix_element_end; ++i, ++j) {
     if (*i < *j)
       return false;
+  }
   return true;
 }
 
@@ -1231,9 +1237,10 @@ Octagonal_Shape<T>::is_universe() const {
   for (typename OR_Matrix<N>::const_element_iterator
          i = matrix.element_begin(), matrix_element_end = matrix.element_end();
        i != matrix_element_end;
-       ++i)
+       ++i) {
     if (!is_plus_infinity(*i))
       return false;
+  }
 
   return true;
 }
@@ -1251,10 +1258,11 @@ Octagonal_Shape<T>::is_bounded() const {
          matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::const_row_reference_type x_i = *i;
     const dimension_type i_index = i.index();
-    for (dimension_type j = i.row_size(); j-- > 0; )
+    for (dimension_type j = i.row_size(); j-- > 0; ) {
       if (i_index != j)
         if (is_plus_infinity(x_i[j]))
           return false;
+     }
   }
 
   return true;
@@ -1512,7 +1520,7 @@ Octagonal_Shape<T>::is_strong_coherent() const {
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
     using namespace Implementation::Octagonal_Shapes;
     const N& m_i_ci = m_i[coherent_index(i)];
-    for (dimension_type j = matrix.row_size(i); j-- > 0; )
+    for (dimension_type j = matrix.row_size(i); j-- > 0; ) {
       // Note: on the main diagonal only PLUS_INFINITY can occur.
       if (i != j) {
         const N& m_cj_j = matrix[coherent_index(j)][j];
@@ -1526,6 +1534,7 @@ Octagonal_Shape<T>::is_strong_coherent() const {
             return false;
         }
       }
+    }
   }
   return true;
 }
@@ -2532,7 +2541,8 @@ Octagonal_Shape<T>::strong_coherence_assign() {
     const N& x_i_ci = x_i[coherent_index(i)];
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0, rs_i = i_iter.row_size(); j < rs_i; ++j)
+      for (dimension_type j = 0, rs_i = i_iter.row_size();
+           j < rs_i; ++j) {
         if (i != j) {
           const N& x_cj_j = matrix[coherent_index(j)][j];
           if (!is_plus_infinity(x_cj_j)) {
@@ -2541,6 +2551,7 @@ Octagonal_Shape<T>::strong_coherence_assign() {
             min_assign(x_i[j], semi_sum);
           }
         }
+      }
   }
 }
 
@@ -2747,8 +2758,9 @@ Octagonal_Shape<T>
   const dimension_type successor_size = matrix.num_rows();
   // Initially, each variable is successor of its own zero-equivalence class.
   successor.reserve(successor_size);
-  for (dimension_type i = 0; i < successor_size; ++i)
+  for (dimension_type i = 0; i < successor_size; ++i) {
     successor.push_back(i);
+  }
   // Now compute actual successors.
   for (dimension_type i = successor_size; i-- > 0; )  {
     typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin() + i;
@@ -2779,8 +2791,9 @@ Octagonal_Shape<T>
   const dimension_type leader_size = matrix.num_rows();
   // Initially, each variable is leader of its own zero-equivalence class.
   leaders.reserve(leader_size);
-  for (dimension_type i = 0; i < leader_size; ++i)
+  for (dimension_type i = 0; i < leader_size; ++i) {
     leaders.push_back(i);
+  }
   // Now compute actual leaders.
   for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
          matrix_row_end = matrix.row_end();
@@ -3017,8 +3030,9 @@ Octagonal_Shape<T>::upper_bound_assign(const Octagonal_Shape& y) {
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
          matrix_element_end = matrix.element_end();
-       i != matrix_element_end; ++i, ++j)
+       i != matrix_element_end; ++i, ++j) {
     max_assign(*i, *j);
+  }
 
   // The result is still closed.
   PPL_ASSERT(OK());
@@ -3140,12 +3154,13 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
     }
     // Then search binary constraints.
     // TODO: use better iteration scheme.
-    for (i = 2; i < 2*dim; ++i)
+    for (i = 2; i < 2*dim; ++i) {
       for (j = 0; j < i; ++j) {
         // Use something like !is_maximal()?
         if (!is_plus_infinity(y.matrix_at(i, j)))
           goto found;
       }
+    }
 
     // Not found: we were not able to build a constraint contradicting
     // one of the constraints in `y': `x' cannot be enlarged.
@@ -3179,8 +3194,9 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
   x.non_redundant_matrix_entries(x_non_redundant);
   // ... count the non-redundant constraints.
   dimension_type x_num_non_redundant = 0;
-  for (size_t i = x_non_redundant.size(); i-- > 0 ; )
+  for (size_t i = x_non_redundant.size(); i-- > 0 ; ) {
     x_num_non_redundant += x_non_redundant[i].count_ones();
+  }
   PPL_ASSERT(x_num_non_redundant > 0);
 
   // Let `yy' be a copy of `y': we will keep adding to `yy'
@@ -3433,16 +3449,18 @@ Octagonal_Shape<T>::remove_space_dimensions(const Variables_Set& vars) {
       // row of variable(j), then we shift the cells corresponding to the
       // second row. We recall that every variable is represented
       // in the `matrix' by two rows and two columns.
-      for (dimension_type j = 0; j <= i; ++j)
+      for (dimension_type j = 0; j <= i; ++j) {
         if (vars.count(j) == 0) {
           assign_or_swap(*(iter++), row_ref[2*j]);
           assign_or_swap(*(iter++), row_ref[2*j + 1]);
         }
-      for (dimension_type j = 0; j <= i; ++j)
+      }
+      for (dimension_type j = 0; j <= i; ++j) {
         if (vars.count(j) == 0) {
           assign_or_swap(*(iter++), row_ref1[2*j]);
           assign_or_swap(*(iter++), row_ref1[2*j + 1]);
         }
+      }
     }
   }
   // Update the space dimension.
@@ -4236,8 +4254,9 @@ Octagonal_Shape<T>::unconstrain(const Variables_Set& vars) {
     return;
 
   for (Variables_Set::const_iterator vsi = vars.begin(),
-         vsi_end = vars.end(); vsi != vsi_end; ++vsi)
+         vsi_end = vars.end(); vsi != vsi_end; ++vsi) {
     forget_all_octagonal_constraints(*vsi);
+  }
   // Strong closure is preserved.
   PPL_ASSERT(OK());
 }
@@ -5222,13 +5241,14 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
   dimension_type w_id = 0;
 
   // Get information about the number of non-zero coefficients in `lf'.
-  for (dimension_type i = lf_space_dim; i-- > 0; )
+  for (dimension_type i = lf_space_dim; i-- > 0; ) {
     if (lf.coefficient(Variable(i)) != 0) {
       if (t++ == 1)
         break;
       else
         w_id = i;
     }
+  }
 
   typedef typename OR_Matrix<N>::row_iterator row_iterator;
   typedef typename OR_Matrix<N>::row_reference_type row_reference;
@@ -6230,8 +6250,9 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // Compute the set of variables occurring in `lhs'.
     std::vector<Variable> lhs_vars;
     for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
-          i != i_end; ++i)
+          i != i_end; ++i) {
       lhs_vars.push_back(i.variable());
+    }
 
     const dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
     if (!lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
@@ -6765,8 +6786,9 @@ Octagonal_Shape<T>
     // Compute the set of variables occurring in `lhs'.
     std::vector<Variable> lhs_vars;
     for (Linear_Expression::const_iterator i = lhs.begin(), i_end = lhs.end();
-          i != i_end; ++i)
+          i != i_end; ++i) {
       lhs_vars.push_back(i.variable());
+    }
 
     const dimension_type num_common_dims = std::min(lhs_space_dim, rhs_space_dim);
     if (!lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
@@ -7542,8 +7564,9 @@ Octagonal_Shape<T>::drop_some_non_integer_points(Complexity_Class) {
     return;
 
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-         i_end = matrix.element_end(); i != i_end; ++i)
+         i_end = matrix.element_end(); i != i_end; ++i) {
     drop_some_non_integer_points_helper(*i);
+  }
 
   // Unary constraints should have an even integer boundary.
   PPL_DIRTY_TEMP(N, temp_one);
@@ -7914,7 +7937,7 @@ Octagonal_Shape<T>::OK() const {
   for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
          matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::const_row_reference_type x_i = *i;
-    for (dimension_type j = i.row_size(); j-- > 0; )
+    for (dimension_type j = i.row_size(); j-- > 0; ) {
       if (is_minus_infinity(x_i[j])) {
 #ifndef NDEBUG
         using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -7925,6 +7948,7 @@ Octagonal_Shape<T>::OK() const {
 #endif
         return false;
       }
+    }
   }
 
   // On the main diagonal only PLUS_INFINITY can occur.
