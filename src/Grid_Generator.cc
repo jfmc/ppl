@@ -149,7 +149,7 @@ PPL::Grid_Generator::swap_space_dimensions(Variable v1, Variable v2) {
 bool
 PPL::Grid_Generator::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  
+
   expr.remove_space_dimensions(vars);
 
   PPL_ASSERT(OK());

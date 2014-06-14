@@ -67,7 +67,7 @@ test01() {
         // such a coefficient.
         // To avoid the problem, we simply increment the coefficient.
         ++c;
-      
+
       if (col == 0)
         e += c;
       else

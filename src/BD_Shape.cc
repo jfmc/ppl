@@ -71,7 +71,7 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
     return false;
 
   c_coeff = c1;
-  
+
   return true;
 }
 

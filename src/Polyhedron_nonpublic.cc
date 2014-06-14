@@ -1211,7 +1211,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
   }
-  
+
   PPL_ASSERT(cs.num_pending_rows() == 0);
 
   if (changed) {
@@ -1288,7 +1288,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
   }
-  
+
   // Will record whether or not we changed the generator system.
   bool changed = false;
 
@@ -1968,7 +1968,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
       ++num_y_gs_red_in_x;
     }
   }
-  
+
   // Step 2: if no redundant generator has been identified,
   // then the union is not convex. CHECKME: why?
   if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0)

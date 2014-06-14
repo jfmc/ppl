@@ -761,7 +761,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   // NOTE: the following swaps will mix generators without even trying
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
-  
+
   // Note that num_rows() is *not* constant, because it is decreased by
   // remove_row().
   for (dimension_type i = 0; i < num_rows(); ) {
@@ -811,4 +811,3 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
     s << ", ";
   }
 }
-

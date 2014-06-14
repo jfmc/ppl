@@ -392,7 +392,7 @@ PPL::Polyhedron::is_universe() const {
       break;
     }
   }
-  
+
   if (has_pending_generators()) {
     // The non-pending part of `gen_sys' was minimized:
     // a success-first test is possible in this case.
@@ -574,7 +574,7 @@ PPL::Polyhedron::contains_integer_point() const {
       if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
         return true;
     }
-    
+
   const Constraint_System& cs = constraints();
 #if 0 // TEMPORARILY DISABLED.
   MIP_Problem mip(space_dim,
@@ -721,7 +721,7 @@ PPL::Polyhedron::constrains(const Variable var) const {
         if (sign != 0) {
           if (gen_sys_i.expression().all_zeroes(1, var_id)
               && gen_sys_i.expression().all_zeroes(var_id + 1, space_dim + 1)) {
-            
+
             if (gen_sys_i.is_line())
               return true;
             if (sign > 0)
@@ -2076,7 +2076,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       ++num_redundant_by_y;
     }
   }
-  
+
   Constraint_System result_cs;
 
   if (num_redundant_by_y < x_cs_num_rows) {
@@ -3095,7 +3095,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i) {
     new_lines.insert(line(i.variable()));
   }
-  
+
   const dimension_type num_common_dims
     = std::min(lhs.space_dimension(), rhs.space_dimension());
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
@@ -3230,7 +3230,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i) {
     new_lines.insert(line(i.variable()));
   }
-  
+
   const dimension_type num_common_dims
     = std::min(lhs.space_dimension(), rhs.space_dimension());
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {

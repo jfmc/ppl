@@ -90,7 +90,7 @@ PPL::Octagonal_Shape_Helper
   if (c0 != c1 && c0 != -c1)
     // Constraint `c' is not an octagonal difference.
     return false;
-  
+
   c_first_var *= 2;
   c_second_var *= 2;
   if (sgn(c0) < 0)
@@ -98,7 +98,6 @@ PPL::Octagonal_Shape_Helper
   if (sgn(c1) > 0)
     ++c_second_var;
   c_coeff = c0;
-  
+
   return true;
 }
-

@@ -131,7 +131,7 @@ ppl_test_rounding() {
 
 } // namespace
 
-#endif // PPL_CAN_CONTROL_FPU 
+#endif // PPL_CAN_CONTROL_FPU
        // && defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
 
 PPL::Init::Init() {

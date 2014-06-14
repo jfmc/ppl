@@ -288,7 +288,7 @@ PPL::Constraint::ascii_dump(std::ostream& s) const {
   expr.ascii_dump(s);
 
   s << " ";
-  
+
   switch (type()) {
   case Constraint::EQUALITY:
     s << "=";

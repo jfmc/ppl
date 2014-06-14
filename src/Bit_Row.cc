@@ -127,7 +127,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
 
   while (true) {
     if (limb != 0)
-      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB 
+      return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
         + Implementation::last_one(limb);
     if (li == 0)
       break;

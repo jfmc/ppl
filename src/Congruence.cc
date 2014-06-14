@@ -79,13 +79,13 @@ PPL::Congruence::normalize() {
 void
 PPL::Congruence::strong_normalize() {
   normalize();
-  
+
   Coefficient gcd = expr.gcd(0, expr.space_dimension() + 1);
   if (gcd == 0)
     gcd = modulus_;
   else
     gcd_assign(gcd, modulus_, gcd);
-  
+
   if (gcd != 0 && gcd != 1) {
     expr /= gcd;
     modulus_ /= gcd;
@@ -98,7 +98,7 @@ PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
   if (factor == 1)
     // Nothing to do.
     return;
-  
+
   expr *= factor;
   modulus_ *= factor;
 }
@@ -195,7 +195,7 @@ bool
 PPL::Congruence::is_tautological() const {
   if (is_equality())
     return (inhomogeneous_term() == 0) && expr.all_homogeneous_terms_are_zero();
-  
+
   return (inhomogeneous_term() % modulus() == 0) && expr.all_homogeneous_terms_are_zero();
 }
 
@@ -203,7 +203,7 @@ bool
 PPL::Congruence::is_inconsistent() const {
   if (is_equality())
     return (inhomogeneous_term() != 0) && expr.all_homogeneous_terms_are_zero();
-  
+
   return (inhomogeneous_term() % modulus() != 0) && expr.all_homogeneous_terms_are_zero();
 }
 
