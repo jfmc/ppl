@@ -82,8 +82,9 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       else {
         // Reallocation will NOT take place.
         rows.insert(rows.end(), new_n_rows - old_n_rows, DB_Row<T>());
-        for (dimension_type i = new_n_rows; i-- > old_n_rows; )
+        for (dimension_type i = new_n_rows; i-- > old_n_rows; ) {
           rows[i].construct(new_n_rows, row_capacity);
+        }
       }
     }
     else {

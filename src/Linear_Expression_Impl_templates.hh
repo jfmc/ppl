@@ -521,8 +521,9 @@ Linear_Expression_Impl<Row>
   if (c == 0) {
     typename Row::iterator i = row.lower_bound(start);
     const typename Row::iterator& i_end = row.end();
-    while (i != i_end && i.index() < end)
+    while (i != i_end && i.index() < end) {
       i = row.reset(i);
+    }
   }
   else {
     for (typename Row::iterator
@@ -563,8 +564,9 @@ Linear_Expression_Impl<Row>
       PPL_ASSERT(c2 == 0);
       typename Row::iterator i = row.lower_bound(start);
       const typename Row::iterator& i_end = row.end();
-      while (i != i_end && i.index() < end)
+      while (i != i_end && i.index() < end) {
         i = row.reset(i);
+      }
     }
     else {
       PPL_ASSERT(c1 == 0);
@@ -609,8 +611,9 @@ Linear_Expression_Impl<Row>
       PPL_ASSERT(c1 != 0);
       PPL_ASSERT(c2 == 0);
       for (typename Row::iterator i = row.lower_bound(start),
-             i_end = row.lower_bound(end); i != i_end; ++i)
+             i_end = row.lower_bound(end); i != i_end; ++i) {
         (*i) *= c1;
+      }
     }
     else {
       PPL_ASSERT(c1 != 0);

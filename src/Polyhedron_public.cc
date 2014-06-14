@@ -65,9 +65,10 @@ PPL::Polyhedron::affine_dimension() const {
   const Constraint_System& cs = minimized_constraints();
   dimension_type d = space_dim;
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i) {
     if (i->is_equality())
       --d;
+  }
   return d;
 }
 
@@ -365,9 +366,10 @@ PPL::Polyhedron::is_universe() const {
 
   if (!has_pending_generators() && constraints_are_up_to_date()) {
     // Search for a constraint that is not a tautology.
-    for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+    for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
       if (!con_sys[i].is_tautological())
         return false;
+    }
     // All the constraints are tautologies.
     return true;
   }
@@ -378,7 +380,7 @@ PPL::Polyhedron::is_universe() const {
   dimension_type num_lines = 0;
   dimension_type num_rays = 0;
   const dimension_type first_pending = gen_sys.first_pending_row();
-  for (dimension_type i = first_pending; i-- > 0; )
+  for (dimension_type i = first_pending; i-- > 0; ) {
     switch (gen_sys[i].type()) {
     case Generator::RAY:
       ++num_rays;
@@ -389,7 +391,8 @@ PPL::Polyhedron::is_universe() const {
     default:
       break;
     }
-
+  }
+  
   if (has_pending_generators()) {
     // The non-pending part of `gen_sys' was minimized:
     // a success-first test is possible in this case.
@@ -403,7 +406,7 @@ PPL::Polyhedron::is_universe() const {
     dimension_type num_pending_lines = 0;
     dimension_type num_pending_rays = 0;
     const dimension_type gs_num_rows = gen_sys.num_rows();
-    for (dimension_type i = first_pending; i < gs_num_rows; ++i)
+    for (dimension_type i = first_pending; i < gs_num_rows; ++i) {
       switch (gen_sys[i].type()) {
       case Generator::RAY:
         ++num_pending_rays;
@@ -414,6 +417,7 @@ PPL::Polyhedron::is_universe() const {
       default:
         break;
       }
+    }
     // If no pending rays and lines were found,
     // then it is not the universe polyhedron.
     if (num_pending_rays == 0 && num_pending_lines == 0)
@@ -491,10 +495,10 @@ PPL::Polyhedron::is_bounded() const {
 
   // If the system of generators contains any line or a ray,
   // then the polyhedron is unbounded.
-  for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+  for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     if (gen_sys[i].is_line_or_ray())
       return false;
-
+  }
   // The system of generators is composed only by
   // points and closure points: the polyhedron is bounded.
   return true;
@@ -566,10 +570,11 @@ PPL::Polyhedron::contains_integer_point() const {
   // Is any integer point already available?
   PPL_ASSERT(!has_pending_constraints());
   if (generators_are_up_to_date())
-    for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
       if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
         return true;
-
+    }
+    
   const Constraint_System& cs = constraints();
 #if 0 // TEMPORARILY DISABLED.
   MIP_Problem mip(space_dim,
@@ -695,10 +700,10 @@ PPL::Polyhedron::constrains(const Variable var) const {
       // (hence, linearly independent) lines.
       dimension_type num_lines = 0;
       const dimension_type first_pending = gen_sys.first_pending_row();
-      for (dimension_type i = first_pending; i-- > 0; )
+      for (dimension_type i = first_pending; i-- > 0; ) {
         if (gen_sys[i].is_line())
           ++num_lines;
-
+      }
       if (num_lines == space_dim)
         return false;
     }
@@ -749,9 +754,10 @@ PPL::Polyhedron::constrains(const Variable var) const {
     return true;
 
  syntactic_check:
-  for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+  for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
     if (con_sys[i].coefficient(var) != 0)
       return true;
+  }
   return false;
 }
 
@@ -1052,11 +1058,12 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     // -* the positivity constraint, for necessarily closed polyhedra;
     // -* the epsilon <= 1 constraint, for NNC polyhedra.
     bool no_positivity_constraint = true;
-    for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+    for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
       if (con_sys[i].inhomogeneous_term() != 0) {
         no_positivity_constraint = false;
         break;
       }
+    }
     if (no_positivity_constraint) {
 #ifndef NDEBUG
       cerr << "Non-empty constraint system has no positivity constraint"
@@ -1070,11 +1077,12 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // must also contain a (combination of) the constraint epsilon >= 0,
       // i.e., a constraint with a positive epsilon coefficient.
       bool no_epsilon_geq_zero = true;
-      for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+      for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
         if (con_sys[i].epsilon_coefficient() > 0) {
           no_epsilon_geq_zero = false;
           break;
         }
+      }
       if (no_epsilon_geq_zero) {
 #ifndef NDEBUG
         cerr << "Non-empty constraint system for NNC polyhedron "
@@ -1817,13 +1825,15 @@ PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
   Variables_Set::const_iterator vsi = vars.begin();
   Variables_Set::const_iterator vsi_end = vars.end();
   if (can_have_something_pending()) {
-    for ( ; vsi != vsi_end; ++vsi)
+    for ( ; vsi != vsi_end; ++vsi) {
       gen_sys.insert_pending(Generator::line(Variable(*vsi)));
+    }
     set_generators_pending();
   }
   else {
-    for ( ; vsi != vsi_end; ++vsi)
+    for ( ; vsi != vsi_end; ++vsi) {
       gen_sys.insert(Generator::line(Variable(*vsi)));
+    }
     // After adding the new generators,
     // constraints are no longer up-to-date.
     clear_generators_minimized();
@@ -2060,12 +2070,13 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   // redundancies found.
   std::vector<bool> redundant_by_y(x_cs_num_rows, false);
   dimension_type num_redundant_by_y = 0;
-  for (dimension_type i = 0; i < x_cs_num_rows; ++i)
+  for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
     if (y_gs.satisfied_by_all_generators(x_cs[i])) {
       redundant_by_y[i] = true;
       ++num_redundant_by_y;
     }
-
+  }
+  
   Constraint_System result_cs;
 
   if (num_redundant_by_y < x_cs_num_rows) {
@@ -2233,14 +2244,17 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       // Compute the number of equalities in x_cs, y_cs and z_cs
       // (exploiting minimal form knowledge).
       dimension_type x_cs_num_eq = 0;
-      while (x_cs[x_cs_num_eq].is_equality())
+      while (x_cs[x_cs_num_eq].is_equality()) {
         ++x_cs_num_eq;
+      }
       dimension_type y_cs_num_eq = 0;
-      while (y_cs[y_cs_num_eq].is_equality())
+      while (y_cs[y_cs_num_eq].is_equality()) {
         ++y_cs_num_eq;
+      }
       dimension_type z_cs_num_eq = 0;
-      while (z_cs[z_cs_num_eq].is_equality())
+      while (z_cs[z_cs_num_eq].is_equality()) {
         ++z_cs_num_eq;
+      }
       PPL_ASSERT(x_cs_num_eq <= z_cs_num_eq && y_cs_num_eq <= z_cs_num_eq);
 
       // Identify non-redundant equalities.
@@ -2250,8 +2264,9 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       Constraint_System eqs(x.topology());
       if (needed_non_redundant_eq > 0) {
         // Populate eqs with the equalities from y.
-        for (dimension_type i = 0; i < y_cs_num_eq; ++i)
+        for (dimension_type i = 0; i < y_cs_num_eq; ++i) {
           eqs.insert(y_cs[i]);
+        }
         // Try to find another `needed_non_redundant_eq' linear independent
         // equalities among those from x.
         for (dimension_type i = 0; i < x_cs_num_eq; ++i) {
@@ -3077,9 +3092,10 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
   for (Linear_Expression::const_iterator
-      i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i)
+      i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i) {
     new_lines.insert(line(i.variable()));
-
+  }
+  
   const dimension_type num_common_dims
     = std::min(lhs.space_dimension(), rhs.space_dimension());
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {
@@ -3211,9 +3227,10 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
   // occurring in both `lhs' and `rhs'.
   Generator_System new_lines;
   for (Linear_Expression::const_iterator
-      i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i)
+      i = lhs.begin(), i_end = lhs.end(); i != i_end; ++i) {
     new_lines.insert(line(i.variable()));
-
+  }
+  
   const dimension_type num_common_dims
     = std::min(lhs.space_dimension(), rhs.space_dimension());
   if (lhs.have_a_common_variable(rhs, Variable(0), Variable(num_common_dims))) {

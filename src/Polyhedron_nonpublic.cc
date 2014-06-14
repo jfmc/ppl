@@ -126,12 +126,13 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& cs)
   else {
     // Here `space_dim == 0'.
     // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs_copy.num_rows(); i-- > 0; )
+    for (dimension_type i = cs_copy.num_rows(); i-- > 0; ) {
       if (cs_copy[i].is_inconsistent()) {
         // Inconsistent constraint found: the polyhedron is empty.
         set_empty();
         break;
       }
+    }
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -174,12 +175,13 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
     // Here `space_dim == 0'.
 
     // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs.num_rows(); i-- > 0; )
+    for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       if (cs[i].is_inconsistent()) {
         // Inconsistent constraint found: the polyhedron is empty.
         set_empty();
         break;
       }
+    }
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -453,9 +455,10 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       }
       else {
         // `c' is an equality.
-        for (dimension_type j = gs.num_rows(); j-- > 0; )
+        for (dimension_type j = gs.num_rows(); j-- > 0; ) {
           if (Scalar_Products::sign(c, gs[j]) != 0)
             return false;
+        }
       }
     }
   else {
@@ -479,9 +482,10 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
         }
         break;
       case Constraint::EQUALITY:
-        for (dimension_type j = gs.num_rows(); j-- > 0; )
+        for (dimension_type j = gs.num_rows(); j-- > 0; ) {
           if (Scalar_Products::reduced_sign(c, gs[j]) != 0)
             return false;
+        }
         break;
       case Constraint::STRICT_INEQUALITY:
         for (dimension_type j = gs.num_rows(); j-- > 0; ) {
@@ -863,7 +867,7 @@ PPL::Polyhedron::update_sat_c() const {
   // The columns of `sat_c' represent the constraints and
   // its rows represent the generators: resize accordingly.
   x.sat_c.resize(gsr, csr);
-  for (dimension_type i = gsr; i-- > 0; )
+  for (dimension_type i = gsr; i-- > 0; ) {
     for (dimension_type j = csr; j-- > 0; ) {
       const int sp_sign = Scalar_Products::sign(con_sys[j], gen_sys[i]);
       // The negativity of this scalar product would mean
@@ -878,6 +882,7 @@ PPL::Polyhedron::update_sat_c() const {
         // `gen_sys[i]' saturates `con_sys[j]'.
         x.sat_c[i].clear(j);
     }
+  }
   x.set_sat_c_up_to_date();
 }
 
@@ -895,7 +900,7 @@ PPL::Polyhedron::update_sat_g() const {
   // The columns of `sat_g' represent generators and its
   // rows represent the constraints: resize accordingly.
   x.sat_g.resize(csr, gsr);
-  for (dimension_type i = csr; i-- > 0; )
+  for (dimension_type i = csr; i-- > 0; ) {
     for (dimension_type j = gsr; j-- > 0; ) {
       const int sp_sign = Scalar_Products::sign(con_sys[i], gen_sys[j]);
       // The negativity of this scalar product would mean
@@ -910,6 +915,7 @@ PPL::Polyhedron::update_sat_g() const {
         // `gen_sys[j]' saturates `con_sys[i]'.
         x.sat_g[i].clear(j);
     }
+  }
   x.set_sat_g_up_to_date();
 }
 
@@ -1110,7 +1116,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 
   const dimension_type gs_rows = gen_sys.num_rows();
   const dimension_type n_lines = gen_sys.num_lines();
-  for (dimension_type i = gs_rows; i-- > n_lines; )
+  for (dimension_type i = gs_rows; i-- > n_lines; ) {
     switch (gen_sys[i].type()) {
     case Generator::RAY:
       sat_all_but_rays.set(i);
@@ -1126,6 +1132,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       PPL_UNREACHABLE;
       break;
     }
+  }
   const Bit_Row
     sat_lines_and_rays(sat_all_but_points, sat_all_but_closure_points);
   const Bit_Row
@@ -1147,7 +1154,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   const Variable eps_var(cs.space_dimension());
   // Note that cs.num_rows() is *not* constant because the calls to
   // cs.remove_row() decrease it.
-  for (dimension_type i = 0; i < cs.num_rows(); )
+  for (dimension_type i = 0; i < cs.num_rows(); ) {
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
       Bit_Row sat_ci;
@@ -1182,7 +1189,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // when disregarding points.
       sat_ci.union_assign(sat[i], sat_all_but_points);
       bool eps_redundant = false;
-      for (dimension_type j = 0; j < cs.num_rows(); ++j)
+      for (dimension_type j = 0; j < cs.num_rows(); ++j) {
         if (i != j && cs[j].is_strict_inequality()
             && subset_or_equal(sat[j], sat_ci)) {
           // Constraint `cs[i]' is eps-redundant:
@@ -1194,6 +1201,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
           changed = true;
           break;
         }
+      }
       // Continue with next constraint, which is already in place
       // due to the swap if we have found an eps-redundant constraint.
       if (!eps_redundant)
@@ -1202,7 +1210,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     else
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
-
+  }
+  
   PPL_ASSERT(cs.num_pending_rows() == 0);
 
   if (changed) {
@@ -1275,10 +1284,11 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   Bit_Row sat_all_but_strict_ineq;
   const dimension_type cs_rows = con_sys.num_rows();
   const dimension_type n_equals = con_sys.num_equalities();
-  for (dimension_type i = cs_rows; i-- > n_equals; )
+  for (dimension_type i = cs_rows; i-- > n_equals; ) {
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
-
+  }
+  
   // Will record whether or not we changed the generator system.
   bool changed = false;
 
@@ -1483,19 +1493,20 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Step 1: generators of `x' that are redundant in `y', and vice versa.
   Bit_Row x_gs_red_in_y;
   dimension_type num_x_gs_red_in_y = 0;
-  for (dimension_type i = x_gs_num_rows; i-- > 0; )
+  for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
     if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
       x_gs_red_in_y.set(i);
       ++num_x_gs_red_in_y;
     }
+  }
   Bit_Row y_gs_red_in_x;
   dimension_type num_y_gs_red_in_x = 0;
-  for (dimension_type i = y_gs_num_rows; i-- > 0; )
+  for (dimension_type i = y_gs_num_rows; i-- > 0; ) {
     if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
       y_gs_red_in_x.set(i);
       ++num_y_gs_red_in_x;
     }
-
+  }
   // Step 2: filter away special cases.
 
   // Step 2.1: inclusion tests.
@@ -1539,10 +1550,10 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
   }
 
   // Here we know that the upper bound is exact: compute it.
-  for (dimension_type j = y_gs_num_rows; j-- > 0; )
+  for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
     if (!y_gs_red_in_x[j])
       add_generator(y_gs[j]);
-
+  }
   PPL_ASSERT_HEAVY(OK());
   return true;
 }
@@ -1746,17 +1757,19 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   if (x_cs_condition_3.empty() && y_cs_condition_3.empty()) {
     // No test for condition 3 is needed.
     // The hull is exact: compute it.
-    for (dimension_type j = y_gs_num_rows; j-- > 0; )
+    for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
       if (y_gs_non_redundant_in_x[j])
         add_generator(y_gs[j]);
+    }
     return true;
   }
 
   // We have anyway to compute the upper bound and its constraints too.
   Polyhedron ub(x);
-  for (dimension_type j = y_gs_num_rows; j-- > 0; )
+  for (dimension_type j = y_gs_num_rows; j-- > 0; ) {
     if (y_gs_non_redundant_in_x[j])
       ub.add_generator(y_gs[j]);
+  }
   (void) ub.minimize();
   PPL_ASSERT(!ub.is_empty());
 
@@ -1941,19 +1954,21 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   // Step 1: generators of `x' that are redundant in `y', and vice versa.
   std::vector<bool> x_gs_red_in_y(x_gs_num_rows, false);
   dimension_type num_x_gs_red_in_y = 0;
-  for (dimension_type i = x_gs_num_rows; i-- > 0; )
+  for (dimension_type i = x_gs_num_rows; i-- > 0; ) {
     if (y.relation_with(x_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
       x_gs_red_in_y[i] = true;
       ++num_x_gs_red_in_y;
     }
+  }
   std::vector<bool> y_gs_red_in_x(y_gs_num_rows, false);
   dimension_type num_y_gs_red_in_x = 0;
-  for (dimension_type i = y_gs_num_rows; i-- > 0; )
+  for (dimension_type i = y_gs_num_rows; i-- > 0; ) {
     if (x.relation_with(y_gs[i]).implies(Poly_Gen_Relation::subsumes())) {
       y_gs_red_in_x[i] = true;
       ++num_y_gs_red_in_x;
     }
-
+  }
+  
   // Step 2: if no redundant generator has been identified,
   // then the union is not convex. CHECKME: why?
   if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0)

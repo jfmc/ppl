@@ -537,9 +537,10 @@ Linear_System<Row>::swap_row_intervals(dimension_type first,
     // Nothing to do.
     return;
 
-  for (dimension_type i = first; i < last; ++i)
+  for (dimension_type i = first; i < last; ++i) {
     swap(rows[i], rows[i + offset]);
-
+  }
+  
   if (first < index_first_pending)
     // The swaps involved not pending rows, so they may not be sorted anymore.
     set_sorted(false);

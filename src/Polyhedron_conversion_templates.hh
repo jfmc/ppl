@@ -608,8 +608,9 @@ Polyhedron::conversion(Source_Linear_System& source,
       // While we find saturating generators, we simply increment
       // `lines_or_equal_bound'.
       while (inf_bound > lines_or_equal_bound
-             && scalar_prod[lines_or_equal_bound] == 0)
+             && scalar_prod[lines_or_equal_bound] == 0) {
         ++lines_or_equal_bound;
+      }
       dimension_type sup_bound = lines_or_equal_bound;
       while (inf_bound > sup_bound) {
         const int sp_sign = sgn(scalar_prod[sup_bound]);
@@ -738,7 +739,7 @@ Polyhedron::conversion(Source_Linear_System& source,
                 bool redundant = false;
                 WEIGHT_BEGIN();
                 for (dimension_type
-                       l = num_lines_or_equalities; l < bound; ++l)
+                       l = num_lines_or_equalities; l < bound; ++l) {
                   if (l != i && l != j
                       && subset_or_equal(sat[l], new_satrow)) {
                     // Found another generator saturating all the
@@ -747,6 +748,7 @@ Polyhedron::conversion(Source_Linear_System& source,
                     redundant = true;
                     break;
                   }
+                }
                 PPL_ASSERT(bound >= num_lines_or_equalities);
                 WEIGHT_ADD_MUL(15, bound - num_lines_or_equalities);
                 if (!redundant) {

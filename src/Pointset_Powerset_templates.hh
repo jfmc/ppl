@@ -363,8 +363,9 @@ Pointset_Powerset<PSET>::fold_space_dimensions(const Variables_Set& vars,
   Variables_Set::size_type num_folded = vars.size();
   if (num_folded > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
-           s_end = x.sequence.end(); si != s_end; ++si)
+           s_end = x.sequence.end(); si != s_end; ++si) {
       si->pointset().fold_space_dimensions(vars, dest);
+    }
   }
   x.space_dim -= num_folded;
   PPL_ASSERT_HEAVY(x.OK());
@@ -599,9 +600,10 @@ bool
 Pointset_Powerset<PSET>::is_bounded() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     if (!si->pointset().is_bounded())
       return false;
+  }
   return true;
 }
 

@@ -89,11 +89,12 @@ PPL::Grid::Grid(const Constraint_System& cs)
 
   Congruence_System cgs(cs.space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+         cs_end = cs.end(); i != cs_end; ++i) {
     if (i->is_equality())
       cgs.insert(*i);
     else
       throw_invalid_constraints("Grid(cs)", "cs");
+  }
   construct(cgs);
 }
 

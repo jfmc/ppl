@@ -1302,9 +1302,10 @@ PPL::MIP_Problem::textbook_entering_index() const {
   // equivalent when searching the last element in the row.
   working_cost_type::const_iterator i_end
     = working_cost.find(cost_sign_index);
-  for ( ; i != i_end; ++i)
+  for ( ; i != i_end; ++i) {
     if (sgn(*i) == cost_sign)
       return i.index();
+  }
   // No variable has to enter the base:
   // the cost function was optimized.
   return 0;
@@ -1631,12 +1632,13 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       // Skip the first element
       if (j != j_end && j.index() == 0)
         ++j;
-      for ( ; (j != j_end) && (j.index() < begin_artificials); ++j)
+      for ( ; (j != j_end) && (j.index() < begin_artificials); ++j) {
         if (*j != 0) {
           pivot(j.index(), i);
           redundant = false;
           break;
         }
+      }
       if (redundant) {
         // No original variable entered the base:
         // the constraint is redundant and should be deleted.
@@ -1661,9 +1663,9 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 
   // Zero the last column of the tableau.
   const dimension_type new_last_column = tableau.num_columns() - 1;
-  for (dimension_type i = tableau_n_rows; i-- > 0; )
+  for (dimension_type i = tableau_n_rows; i-- > 0; ) {
     tableau[i].reset(new_last_column);
-
+  }
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
   {
@@ -1771,8 +1773,9 @@ PPL::MIP_Problem::compute_generator() const {
   // Compute the lcm of all denominators.
   PPL_ASSERT(external_space_dim > 0);
   lcm = denom[0];
-  for (dimension_type i = 1; i < external_space_dim; ++i)
+  for (dimension_type i = 1; i < external_space_dim; ++i) {
     lcm_assign(lcm, lcm, denom[i]);
+  }
   // Use the denominators to store the numerators' multipliers
   // and then compute the normalized numerators.
   for (dimension_type i = external_space_dim; i-- > 0; ) {

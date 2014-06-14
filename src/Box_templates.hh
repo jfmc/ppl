@@ -58,8 +58,9 @@ Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   // In a box that is marked empty the intervals are completely
   // meaningless: we exploit this by avoiding their initialization.
   if (kind == UNIVERSE) {
-    for (dimension_type i = num_dimensions; i-- > 0; )
+    for (dimension_type i = num_dimensions; i-- > 0; ) {
       seq[i].assign(UNIVERSE);
+    }
     set_empty_up_to_date();
   }
   else
@@ -78,8 +79,9 @@ Box<ITV>::Box(const Constraint_System& cs)
                                        "allowed space dimension")),
     status() {
   // FIXME: check whether we can avoid the double initialization.
-  for (dimension_type i = cs.space_dimension(); i-- > 0; )
+  for (dimension_type i = cs.space_dimension(); i-- > 0; ) {
     seq[i].assign(UNIVERSE);
+  }
   add_constraints_no_check(cs);
 }
 
@@ -94,8 +96,9 @@ Box<ITV>::Box(const Congruence_System& cgs)
                                        "allowed space dimension")),
     status() {
   // FIXME: check whether we can avoid the double initialization.
-  for (dimension_type i = cgs.space_dimension(); i-- > 0; )
+  for (dimension_type i = cgs.space_dimension(); i-- > 0; ) {
     seq[i].assign(UNIVERSE);
+  }
   add_congruences_no_check(cgs);
 }
 
@@ -112,8 +115,9 @@ Box<ITV>::Box(const Box<Other_ITV>& y, Complexity_Class)
     set_empty();
 
   if (!y.marked_empty())
-    for (dimension_type k = y.space_dimension(); k-- > 0; )
+    for (dimension_type k = y.space_dimension(); k-- > 0; ) {
       seq[k].assign(y.seq[k]);
+    }
   PPL_ASSERT(OK());
 }
 
@@ -190,13 +194,14 @@ Box<ITV>::Box(const Generator_System& gs)
     case Generator::LINE:
       for (Generator::expr_type::const_iterator i = g.expression().begin(),
               i_end = g.expression().end();
-              i != i_end; ++i)
+              i != i_end; ++i) {
           seq[i.variable().id()].assign(UNIVERSE);
+      }
       break;
     case Generator::RAY:
       for (Generator::expr_type::const_iterator i = g.expression().begin(),
               i_end = g.expression().end();
-              i != i_end; ++i)
+              i != i_end; ++i) {
         switch (sgn(*i)) {
         case 1:
           seq[i.variable().id()].upper_extend();
@@ -208,6 +213,7 @@ Box<ITV>::Box(const Generator_System& gs)
           PPL_UNREACHABLE;
           break;
         }
+      }
       break;
     case Generator::CLOSURE_POINT:
       {
@@ -375,8 +381,9 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
   if (complexity == POLYNOMIAL_COMPLEXITY) {
     // FIXME: is there a way to avoid this initialization?
-    for (dimension_type i = space_dim; i-- > 0; )
+    for (dimension_type i = space_dim; i-- > 0; ) {
       seq[i].assign(UNIVERSE);
+    }
     // Get a simplified version of the constraints.
     const Constraint_System cs = ph.simplified_constraints();
     // Propagate easy-to-find bounds from the constraints,
@@ -567,9 +574,10 @@ operator==(const Box<ITV>& x, const Box<ITV>& y) {
   if (y.is_empty())
     return x.is_empty();
 
-  for (dimension_type k = x_space_dim; k-- > 0; )
+  for (dimension_type k = x_space_dim; k-- > 0; ) {
     if (x.seq[k] != y.seq[k])
       return false;
+  }
   return true;
 }
 
@@ -969,9 +977,10 @@ Box<ITV>::relation_with(const Generator& g) const {
     if (g.is_line()) {
       const Generator::expr_type& e = g.expression();
       for (Generator::expr_type::const_iterator i = e.begin(), i_end = e.end();
-           i != i_end; ++i)
+           i != i_end; ++i) {
         if (!seq[i.variable().id()].is_universe())
           return Poly_Gen_Relation::nothing();
+      }
       return Poly_Gen_Relation::subsumes();
     }
     else {
@@ -1210,10 +1219,11 @@ Box<ITV>::contains(const Box& y) const {
   if (x.is_empty())
     return false;
 
-  for (dimension_type k = x.seq.size(); k-- > 0; )
+  for (dimension_type k = x.seq.size(); k-- > 0; ) {
     // FIXME: fix this name qualification issue.
     if (!x.seq[k].contains(y.seq[k]))
       return false;
+  }
   return true;
 }
 
@@ -1230,10 +1240,11 @@ Box<ITV>::is_disjoint_from(const Box& y) const {
   if (x.marked_empty() || y.marked_empty())
     return true;
 
-  for (dimension_type k = x.seq.size(); k-- > 0; )
+  for (dimension_type k = x.seq.size(); k-- > 0; ) {
     // FIXME: fix this name qualification issue.
     if (x.seq[k].is_disjoint_from(y.seq[k]))
       return true;
+  }
   return false;
 }
 
@@ -1281,8 +1292,9 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
   }
 
   // The upper bound is exact: compute it into *this.
-  for (dimension_type k = x.seq.size(); k-- > 0; )
+  for (dimension_type k = x.seq.size(); k-- > 0; ) {
     x.seq[k].join_assign(y.seq[k]);
+  }
   return true;
 }
 
@@ -1303,9 +1315,10 @@ Box<ITV>::OK() const {
 
   // A box that is not marked empty must have meaningful intervals.
   if (!marked_empty()) {
-    for (dimension_type k = seq.size(); k-- > 0; )
+    for (dimension_type k = seq.size(); k-- > 0; ) {
       if (!seq[k].OK())
         return false;
+    }
   }
 
   return true;
@@ -1323,10 +1336,11 @@ Box<ITV>::affine_dimension() const {
   if (is_empty())
     return 0;
 
-  for (dimension_type k = d; k-- > 0; )
+  for (dimension_type k = d; k-- > 0; ) {
     if (seq[k].is_singleton())
       --d;
-
+  }
+  
   return d;
 }
 
@@ -1335,11 +1349,12 @@ bool
 Box<ITV>::check_empty() const {
   PPL_ASSERT(!marked_empty());
   Box<ITV>& x = const_cast<Box<ITV>&>(*this);
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     if (seq[k].is_empty()) {
       x.set_empty();
       return true;
     }
+  }
   x.set_nonempty();
   return false;
 }
@@ -1349,9 +1364,10 @@ bool
 Box<ITV>::is_universe() const {
   if (marked_empty())
     return false;
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     if (!seq[k].is_universe())
       return false;
+  }
   return true;
 }
 
@@ -1361,9 +1377,10 @@ Box<ITV>::is_topologically_closed() const {
   if (ITV::is_always_topologically_closed() || is_empty())
     return true;
 
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     if (!seq[k].is_topologically_closed())
       return false;
+  }
   return true;
 }
 
@@ -1372,9 +1389,10 @@ bool
 Box<ITV>::is_discrete() const {
   if (is_empty())
     return true;
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     if (!seq[k].is_singleton())
       return false;
+  }
   return true;
 }
 
@@ -1383,9 +1401,10 @@ bool
 Box<ITV>::is_bounded() const {
   if (is_empty())
     return true;
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     if (!seq[k].is_bounded())
       return false;
+  }
   return true;
 }
 
@@ -1394,9 +1413,10 @@ bool
 Box<ITV>::contains_integer_point() const {
   if (marked_empty())
     return false;
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     if (!seq[k].contains_integer_point())
       return false;
+  }
   return true;
 }
 
@@ -1521,8 +1541,9 @@ Box<ITV>::topological_closure_assign() {
   if (ITV::is_always_topologically_closed() || is_empty())
     return;
 
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].topological_closure_assign();
+  }
 }
 
 template <typename ITV>
@@ -1615,8 +1636,9 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
     // No constraint refinement is needed here.
     switch (o) {
     case OVERFLOW_WRAPS:
-      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i)
+      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
         x.seq[*i].wrap_assign(w, r, integer_quadrant_itv);
+      }
       reset_empty_up_to_date();
       break;
     case OVERFLOW_UNDEFINED:
@@ -1628,8 +1650,9 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
       }
       break;
     case OVERFLOW_IMPOSSIBLE:
-      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i)
+      for (Variables_Set::const_iterator i = vars.begin(); i != vs_end; ++i) {
         x.seq[*i].intersect_assign(integer_quadrant_itv);
+      }
       reset_empty_up_to_date();
       break;
     }
@@ -1713,9 +1736,10 @@ Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
   if (marked_empty())
     return;
 
-  for (dimension_type k = seq.size(); k-- > 0; )
+  for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].drop_some_non_integer_points();
-
+  }
+  
   PPL_ASSERT(OK());
 }
 
@@ -1737,9 +1761,10 @@ Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
     return;
 
   for (Variables_Set::const_iterator v_i = vars.begin(),
-         v_end = vars.end(); v_i != v_end; ++v_i)
+         v_end = vars.end(); v_i != v_end; ++v_i) {
     seq[*v_i].drop_some_non_integer_points();
-
+  }
+  
   PPL_ASSERT(OK());
 }
 
@@ -1770,9 +1795,10 @@ Box<ITV>::intersection_assign(const Box& y) {
   // underlying interval to eagerly detect empty results.
   reset_empty_up_to_date();
 
-  for (dimension_type k = space_dim; k-- > 0; )
+  for (dimension_type k = space_dim; k-- > 0; ) {
     x.seq[k].intersect_assign(y.seq[k]);
-
+  }
+  
   PPL_ASSERT(x.OK());
 }
 
@@ -1793,9 +1819,10 @@ Box<ITV>::upper_bound_assign(const Box& y) {
     return;
   }
 
-  for (dimension_type k = x.seq.size(); k-- > 0; )
+  for (dimension_type k = x.seq.size(); k-- > 0; ) {
     x.seq[k].join_assign(y.seq[k]);
-
+  }
+  
   PPL_ASSERT(x.OK());
 }
 
@@ -1872,14 +1899,15 @@ Box<ITV>::difference_assign(const Box& y) {
     {
       dimension_type index_non_contained = space_dim;
       dimension_type number_non_contained = 0;
-      for (dimension_type i = space_dim; i-- > 0; )
+      for (dimension_type i = space_dim; i-- > 0; ) {
         if (!y.seq[i].contains(x.seq[i])) {
           if (++number_non_contained == 1)
             index_non_contained = i;
           else
             break;
         }
-
+      }
+      
       switch (number_non_contained) {
       case 0:
         // `y' covers `x': the difference is empty.
@@ -1922,8 +1950,9 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
 
   // Filter away the case when `y' is empty.
   if (y.is_empty()) {
-    for (dimension_type i = num_dims; i-- > 0; )
+    for (dimension_type i = num_dims; i-- > 0; ) {
       x.seq[i].assign(UNIVERSE);
+    }
     x.set_nonempty();
     return false;
   }
@@ -1945,8 +1974,9 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
         }
         // We assigned to `seq_i' a non-empty interval:
         // set the other intervals to universe and return.
-        for (++i; i < num_dims; ++i)
+        for (++i; i < num_dims; ++i) {
           x.seq[i].assign(UNIVERSE);
+        }
         x.set_nonempty();
         PPL_ASSERT(x.OK());
         return false;

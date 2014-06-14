@@ -64,8 +64,9 @@ Partially_Reduced_Product<D1, D2, R>::minimized_constraints() const {
   Constraint_System cs = d2.constraints();
   const Constraint_System& cs1 = d1.constraints();
   for (Constraint_System::const_iterator i = cs1.begin(),
-         cs_end = cs1.end(); i != cs_end; ++i)
+         cs_end = cs1.end(); i != cs_end; ++i) {
     cs.insert(*i);
+  }
   if (cs.has_strict_inequalities()) {
     NNC_Polyhedron ph(cs);
     return ph.minimized_constraints();
