@@ -1666,6 +1666,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   for (dimension_type i = tableau_n_rows; i-- > 0; ) {
     tableau[i].reset(new_last_column);
   }
+  
   // ... then properly set the element in the (new) last column,
   // encoding the kind of optimization; ...
   {
