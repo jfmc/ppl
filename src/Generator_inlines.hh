@@ -436,7 +436,7 @@ Generator::ascii_dump(std::ostream& s) const {
   expr.ascii_dump(s);
 
   s << " ";
-  
+
   switch (type()) {
   case Generator::LINE:
     s << "L ";

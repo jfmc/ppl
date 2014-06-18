@@ -1499,7 +1499,7 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
       ++num_x_gs_red_in_y;
     }
   }
-  
+
   Bit_Row y_gs_red_in_x;
   dimension_type num_y_gs_red_in_x = 0;
   for (dimension_type i = y_gs_num_rows; i-- > 0; ) {
@@ -1555,7 +1555,7 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (!y_gs_red_in_x[j])
       add_generator(y_gs[j]);
   }
-  
+
   PPL_ASSERT_HEAVY(OK());
   return true;
 }

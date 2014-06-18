@@ -499,7 +499,7 @@ PPL::Polyhedron::is_bounded() const {
     if (gen_sys[i].is_line_or_ray())
       return false;
   }
-  
+
   // The system of generators is composed only by
   // points and closure points: the polyhedron is bounded.
   return true;
@@ -705,7 +705,7 @@ PPL::Polyhedron::constrains(const Variable var) const {
         if (gen_sys[i].is_line())
           ++num_lines;
       }
-      
+
       if (num_lines == space_dim)
         return false;
     }

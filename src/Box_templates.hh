@@ -1340,7 +1340,7 @@ Box<ITV>::affine_dimension() const {
     if (seq[k].is_singleton())
       --d;
   }
-  
+
   return d;
 }
 
@@ -1739,7 +1739,7 @@ Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
   for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].drop_some_non_integer_points();
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -1764,7 +1764,7 @@ Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
          v_end = vars.end(); v_i != v_end; ++v_i) {
     seq[*v_i].drop_some_non_integer_points();
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -1798,7 +1798,7 @@ Box<ITV>::intersection_assign(const Box& y) {
   for (dimension_type k = space_dim; k-- > 0; ) {
     x.seq[k].intersect_assign(y.seq[k]);
   }
-  
+
   PPL_ASSERT(x.OK());
 }
 
@@ -1822,7 +1822,7 @@ Box<ITV>::upper_bound_assign(const Box& y) {
   for (dimension_type k = x.seq.size(); k-- > 0; ) {
     x.seq[k].join_assign(y.seq[k]);
   }
-  
+
   PPL_ASSERT(x.OK());
 }
 
@@ -1907,7 +1907,7 @@ Box<ITV>::difference_assign(const Box& y) {
             break;
         }
       }
-      
+
       switch (number_non_contained) {
       case 0:
         // `y' covers `x': the difference is empty.
